@@ -1,0 +1,47 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="login">
+
+        <rich:panel>
+            <f:facet name="header">Login</f:facet>
+
+            <p>Please login here</p>
+
+            <div class="dialog">
+                <h:panelGrid columns="2" rowClasses="prop" columnClasses="name,value">
+                    <h:outputLabel for="username">Username</h:outputLabel>
+                    <h:inputText id="username"
+                              value="#{credentials.username}"/>
+                    <h:outputLabel for="password">Password</h:outputLabel>
+                    <h:inputSecret id="password"
+                                value="#{credentials.password}"/>
+                    <h:outputLabel for="rememberMe">Remember me</h:outputLabel>
+                    <h:selectBooleanCheckbox id="rememberMe"
+                                          value="#{identity.rememberMe}"/>
+                </h:panelGrid>
+            </div>
+
+            <p>
+              <i>Note - </i> You may login with the username 'admin' and a blank password.
+            </p>
+
+        </rich:panel>
+
+        <div class="actionButtons">
+            <h:commandButton value="Login" action="#{identity.login}"/>
+        </div>
+
+    </h:form>
+
+ </ui:define>
+</ui:composition>

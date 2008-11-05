@@ -1,0 +1,11 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jstl/core"
+    xmlns:s="http://jboss.com/products/seam/taglib">
+    <s:link styleClass="columnHeader" value="#{propertyLabel} #{entityList.orderColumn == propertyPath ? (entityList.orderDirection == 'desc' ? messages.down : messages.up) : ''}">
+        <f:param name="sort" value="#{propertyPath}"/>
+        <f:param name="dir" value="#{entityList.orderColumn == propertyPath and entityList.orderDirection == 'asc' ? 'desc' : 'asc'}"/>
+    </s:link>
+</ui:composition>

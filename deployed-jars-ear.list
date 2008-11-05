@@ -1,0 +1,11 @@
+antlr-runtime.jar
+core.jar
+drools-compiler.jar
+drools-core.jar
+groovy-all.jar
+janino.jar
+jboss-el.jar
+jbpm-jpdl.jar
+mvel14.jar
+richfaces-api.jar
+jboss-seam-remoting.jar

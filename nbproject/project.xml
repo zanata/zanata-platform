@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.ant.freeform</type>
+    <configuration>
+        <general-data xmlns="http://www.netbeans.org/ns/freeform-project/1">
+            <!-- Do not use Project Properties customizer when editing this file manually. -->
+            <name>flies</name>
+            <properties/>
+            <folders>
+                <source-folder>
+                    <label>main</label>
+                    <type>java</type>
+                    <location>src/main</location>
+                </source-folder>
+                <source-folder>
+                    <label>hot</label>
+                    <type>java</type>
+                    <location>src/hot</location>
+                </source-folder>
+                <source-folder>
+                    <label>test</label>
+                    <type>java</type>
+                    <location>src/test</location>
+                </source-folder>
+                <source-folder>
+                    <label>view</label>
+                    <type>doc_root</type>
+                    <location>view</location>
+                </source-folder>
+            </folders>
+            <ide-actions>
+                <action name="clean">
+                    <target>clean</target>
+                    <target>unexplode</target>
+                </action>
+                <action name="build">
+                    <target>explode</target>
+                </action>
+                <action name="redeploy">
+                    <target>restart</target>
+                </action>
+                <action name="Undeploy">
+                    <target>unexplode</target>
+                </action>
+                <action name="test">
+                    <target>test</target>
+                </action>
+                <action name="debug">
+                    <script>nbproject/ide-file-targets.xml</script>
+                    <target>debug-nb</target>
+                </action>
+                <action name="rebuild">
+                    <target>clean</target>
+                    <target>unexplode</target>
+                    <target>explode</target>
+                </action>
+            </ide-actions>
+            <view>
+                <items>
+                    <source-folder style="packages">
+                        <label>main</label>
+                        <location>src/main</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>hot</label>
+                        <location>src/hot</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>test</label>
+                        <location>src/test</location>
+                    </source-folder>
+                    <source-folder style="tree">
+                        <label>view</label>
+                        <location>view</location>
+                    </source-folder>
+                    <source-folder style="tree">
+                        <label>resources</label>
+                        <location>resources</location>
+                    </source-folder>
+                    <source-file>
+                        <location>build.xml</location>
+                    </source-file>
+                </items>
+                <context-menu>
+                    <ide-action name="clean"/>
+                    <ide-action name="build"/>
+                    <ide-action name="redeploy"/>
+                    <ide-action name="Undeploy"/>
+                    <ide-action name="test"/>
+                    <ide-action name="debug"/>
+                    <ide-action name="rebuild"/>
+                </context-menu>
+            </view>
+            <subprojects/>
+        </general-data>
+        <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/2">
+            <compilation-unit>
+                <package-root>src/main</package-root>
+                <classpath mode="compile">lib/hibernate-validator.jar:lib/hibernate.jar:lib/hibernate-annotations.jar:lib/hibernate-commons-annotations.jar:lib/hibernate-entitymanager.jar:lib/jboss-seam.jar:lib/jboss-seam-debug.jar:lib/jboss-cache.jar:lib/jbpm-jpdl.jar:lib/antlr.jar:lib/jgroups.jar:lib/jsf-facelets.jar:lib/jstl.jar:lib/jsf-api.jar:lib/servlet-api.jar:lib/jboss-el.jar:lib/el-api.jar:lib/mvel14.jar:lib/drools-core.jar:lib/drools-compiler.jar:lib/janino.jar:lib/antlr-runtime.jar:lib/mail.jar:lib/persistence-api.jar:lib/ejb-api.jar:lib/jsr250-api.jar:lib/jta.jar:lib/core.jar:lib/jboss-embedded-api.jar:lib/hibernate-search.jar:lib/richfaces-api.jar:lib/richfaces-ui.jar:lib/mysql-connector-java-5.1.6.jar:lib/lucene-core.jar</classpath>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>src/hot</package-root>
+                <classpath mode="compile">lib/hibernate-validator.jar:lib/hibernate.jar:lib/hibernate-annotations.jar:lib/hibernate-commons-annotations.jar:lib/hibernate-entitymanager.jar:lib/jboss-seam.jar:lib/jboss-seam-debug.jar:lib/jboss-cache.jar:lib/jbpm-jpdl.jar:lib/antlr.jar:lib/jgroups.jar:lib/jsf-facelets.jar:lib/jstl.jar:lib/jsf-api.jar:lib/servlet-api.jar:lib/jboss-el.jar:lib/el-api.jar:lib/mvel14.jar:lib/drools-core.jar:lib/drools-compiler.jar:lib/janino.jar:lib/antlr-runtime.jar:lib/mail.jar:lib/persistence-api.jar:lib/ejb-api.jar:lib/jsr250-api.jar:lib/jta.jar:lib/core.jar:lib/jboss-embedded-api.jar:lib/hibernate-search.jar:lib/richfaces-api.jar:lib/richfaces-ui.jar:lib/mysql-connector-java-5.1.6.jar:lib/lucene-core.jar</classpath>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>src/test</package-root>
+                <unit-tests/>
+                <classpath mode="compile">bootstrap:lib/hibernate-validator.jar:lib/hibernate.jar:lib/hibernate-annotations.jar:lib/hibernate-commons-annotations.jar:lib/hibernate-entitymanager.jar:lib/jboss-seam.jar:lib/jboss-seam-debug.jar:lib/jboss-cache.jar:lib/jbpm-jpdl.jar:lib/antlr.jar:lib/jgroups.jar:lib/jsf-facelets.jar:lib/jstl.jar:lib/jsf-api.jar:lib/servlet-api.jar:lib/testng.jar:lib/jboss-el.jar:lib/el-api.jar:lib/mvel14.jar:lib/drools-core.jar:lib/drools-compiler.jar:lib/janino.jar:lib/antlr-runtime.jar:lib/mail.jar:lib/persistence-api.jar:lib/ejb-api.jar:lib/jsr250-api.jar:lib/jta.jar:lib/core.jar:lib/jboss-embedded-api.jar:lib/hibernate-search.jar:lib/richfaces-api.jar:lib/mysql-connector-java-5.1.6.jar:lib/lucene-core.jar</classpath>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+        </java-data>
+        <web-data xmlns="http://www.netbeans.org/ns/freeform-project-web/1">
+            <web-module>
+                <doc-root>view</doc-root>
+                <classpath/>
+                <context-path>/flies</context-path>
+                <j2ee-spec-level>1.5</j2ee-spec-level>
+            </web-module>
+        </web-data>
+    </configuration>
+</project>

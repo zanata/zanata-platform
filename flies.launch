@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Hibernate Console launch configuration -->
+<launchConfiguration type="org.hibernate.eclipse.launch.ConsoleConfigurationLaunchConfigurationType">
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="flies"/>
+<stringAttribute key="org.hibernate.eclipse.launch.PROPERTY_FILE" value="/flies/hibernate-console.properties"/>
+<stringAttribute key="org.hibernate.eclipse.launch.CONFIGURATION_FACTORY" value="JPA"/>
+</launchConfiguration>

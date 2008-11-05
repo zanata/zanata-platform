@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Persistence deployment descriptor for tests -->
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" 
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd" 
+             version="1.0">
+             
+   <persistence-unit name="flies">
+      <provider>org.hibernate.ejb.HibernatePersistence</provider>
+      <jta-data-source>java:/DefaultDS</jta-data-source>
+      <properties>
+         <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+         <property name="hibernate.show_sql" value="true"/>
+         <property name="hibernate.cache.use_second_level_cache" value="false"/>
+         <property name="jboss.entity.manager.factory.jndi.name" value="java:/fliesEntityManagerFactory"/>
+      </properties>
+   </persistence-unit>
+    
+</persistence>

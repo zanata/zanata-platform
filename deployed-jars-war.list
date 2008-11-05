@@ -1,0 +1,14 @@
+commons-beanutils.jar
+commons-digester.jar
+jsf-facelets.jar
+jxl.jar
+richfaces-impl.jar
+richfaces-ui.jar
+jboss-seam-debug.jar
+jboss-seam-excel.jar
+jboss-seam-ioc.jar
+jboss-seam-mail.jar
+jboss-seam-pdf.jar
+jboss-seam-resteasy.jar
+jboss-seam-rss.jar
+jboss-seam-ui.jar
