@@ -39,6 +39,18 @@ input[type=text], input[type=password], textarea {
 	text-align: right;
 }
 
+.header {
+	position:absolute;
+	left: 10px;
+	top:10px;
+}
+
+.header_top_right {
+	position:absolute;
+	right: 10px;
+	top:10px;
+}
+
 .footer {
 	text-align: center;
 	font-size: 11px;
@@ -50,7 +62,7 @@ input[type=text], input[type=password], textarea {
 }
 
 .body {
-	padding: 30px;
+	padding: 10px;
 }
 
 .columnHeader:hover {

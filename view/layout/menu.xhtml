@@ -1,18 +1,38 @@
-<rich:toolBar
+<div id="tabs"
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:s="http://jboss.com/products/seam/taglib"
     xmlns:rich="http://richfaces.org/rich">
-    <rich:toolBarGroup>
-        <h:outputText value="#{projectName}:"/>
-        <s:link view="/home.xhtml" value="Home" propagation="none"/>
-    </rich:toolBarGroup>
-    <!-- @newMenuItem@ -->
-    <rich:toolBarGroup location="right">
-        <h:outputText value="signed in as: #{identity.username}" rendered="#{identity.loggedIn}"/>
-        <s:link view="/login.xhtml" value="Login" rendered="#{not identity.loggedIn}" propagation="none"/>
-        <s:link view="/home.xhtml" action="#{identity.logout}" value="Logout" rendered="#{identity.loggedIn}" propagation="none"/>
-    </rich:toolBarGroup>
-</rich:toolBar>
+  <ul class="ui-tabs-nav">
+    <li id="tab_home">
+      <s:link view="/home.xhtml" propagation="none"><span>Home</span></s:link>
+    </li>
+    <li id="tab_projects">
+      <s:link view="/projects.xhtml" propagation="none"><span>Projects</span></s:link>
+    </li>
+    <li id="tab_teams">
+      <s:link view="/teams.xhtml" propagation="none"><span>Translation Teams</span></s:link>
+    </li>
+    <s:fragment rendered="#{s:hasRole('admin')}">
+      <li  id="tab_administration" class="ui-tabs-nav-issues">
+        <s:link view="/security.xhtml" propagation="none"><span>Administration &#187;</span></s:link>
+        <ul>
+          <li><s:link view="/usermanager.xhtml" propagation="none">Manage Users</s:link></li>
+          <li><s:link view="/rolemanager.xhtml" propagation="none">Manage Roles</s:link></li>
+        </ul>
+      </li>
+    </s:fragment>
+    <s:fragment rendered="#{s:hasRole('user')}">
+      <li id="tab_my_dashboard" class="tabs-right tabs-far-right">
+        <a href="#"><span>My Dashboard</span></a>
+      </li>
+    </s:fragment>
+    <s:fragment rendered="#{identity.loggedIn}">
+      <li id="tab_my_account" class="tabs-right">
+        <a href="#"><span>My Account</span></a>
+      </li>
+    </s:fragment>
+  </ul>
+</div>
