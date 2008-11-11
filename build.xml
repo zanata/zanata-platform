@@ -50,7 +50,7 @@
         <available property="deps.installed" value="true" file="${lib.dir}" type="dir"/>
     </target>
 
-    <target name="download-deps" depends="init-deps" unless="deps.installed">
+    <target name="download-deps" depends="init-deps" unless="deps.installed" description="Download jar dependencies">
         <mkdir dir="${lib.dir}"/>
         <echo message="Downloading library dependencies..."/>
         <get src="${deps.repo}/flies-deps-${deps.version}.zip"
@@ -58,12 +58,12 @@
 		<unzip src="flies-deps-${deps.version}.zip" dest="${lib.dir}"/>            
     </target>
 
-    <target name="create-deps-archive">
+    <target name="create-deps-archive" description="Create Zip archive of current dependencies">
 		<zip destfile="flies-deps-${deps.version}.zip" basedir="${lib.dir}"/>
     </target>
 
 
-    <target name="init" description="Initialize the build">
+    <target name="init" depends="download-deps" description="Initialize the build">
         <taskdef name="groovyc"
             classname ="org.codehaus.groovy.ant.Groovyc"
             classpathref="build.classpath"/> <!-- really only the groovy jar is necessary -->
