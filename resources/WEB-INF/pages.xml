@@ -14,6 +14,11 @@
         </navigation>
     </page>
 
+    <page view-id="/damnedLiesImport.xhtml">
+      <restrict>#{identity.loggedIn}</restrict>
+    </page>
+
+
     <exception class="org.jboss.seam.framework.EntityNotFoundException">
         <redirect view-id="/error.xhtml">
             <message severity="warn">Record not found</message>

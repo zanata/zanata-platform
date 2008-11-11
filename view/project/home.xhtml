@@ -1,0 +1,55 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="../layout/template.xhtml">
+
+<ui:define name="left_content">
+MENU GOES HERE
+</ui:define>
+
+<ui:define name="center_content">
+
+    <rich:panel>
+        <f:facet name="header">projects</f:facet>
+
+        <div class="results">
+
+            <h:outputText value="No project exists"
+                       rendered="#{empty projectList.resultList}"/>
+
+            <h:dataTable id="projectList" var="project"
+                      value="#{projectList.resultList}"
+                   rendered="#{not empty projectList.resultList}">
+                <h:column>
+                    <f:facet name="header">Id</f:facet>
+                    #{project.id}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Name</f:facet>
+                    <s:link id="project"
+                         value="#{project.name}"
+                   propagation="none"
+                         view="/project/project.xhtml">
+                        <f:param name="projectId"
+                                value="#{project.id}"/>
+                    </s:link>
+                </h:column>
+            </h:dataTable>
+
+        </div>
+
+    </rich:panel>
+</ui:define>
+
+<ui:define name="right_content">
+  <div class="actionButtons">
+    <s:button id="done" value="Create project" view="/project/project.xhtml"/>
+  </div>
+</ui:define>
+
+</ui:composition>

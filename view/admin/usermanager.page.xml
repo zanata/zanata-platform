@@ -1,0 +1,14 @@
+<page xmlns="http://jboss.com/products/seam/pages"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.1.xsd"
+    action="#{userSearch.loadUsers}">
+  <restrict>#{s:hasPermission('seam.user', 'read')}</restrict>    
+  
+  <navigation from-action="#{userAction.createUser}">
+    <redirect view-id="/admin/userdetail.xhtml"/>
+  </navigation>
+  
+  <navigation from-action="#{userAction.editUser(userSearch.selectedUser)}">
+    <redirect view-id="/admin/userdetail.xhtml"/>
+  </navigation>      
+</page>

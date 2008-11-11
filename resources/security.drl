@@ -1,6 +1,44 @@
-package Permissions;
+package FliesPermissions;
 
 import java.security.Principal;
 
 import org.jboss.seam.security.permission.PermissionCheck;
+import org.jboss.seam.security.permission.RoleCheck;
 import org.jboss.seam.security.Role;
+
+rule CreateAccount
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(target == "seam.account", action == "create", granted == false)
+  Role(name == "admin")
+then
+  check.grant();
+end
+
+/*****************************************************************************************
+
+  The Following Rules are for Identity Management
+  
+******************************************************************************************/
+
+rule ManageUsers
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(target == "seam.user", granted == false)
+  Role(name == "admin")
+then
+  check.grant();
+end
+
+rule ManageRoles
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(target == "seam.role", granted == false)
+  Role(name == "admin")
+then
+  check.grant();
+end
+

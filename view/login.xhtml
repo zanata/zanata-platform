@@ -6,9 +6,9 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
-    template="layout/template.xhtml">
+    template="./layout/template.xhtml">
 
-<ui:define name="body">
+<ui:define name="center_content">
 
     <h:form id="login">
 
@@ -30,10 +30,6 @@
                                           value="#{identity.rememberMe}"/>
                 </h:panelGrid>
             </div>
-
-            <p>
-              <i>Note - </i> You may login with the username 'admin' and a blank password.
-            </p>
 
         </rich:panel>
 

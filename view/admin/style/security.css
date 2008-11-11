@@ -1,0 +1,126 @@
+input.newuser {
+  background: url(btn_newuser.png) top left no-repeat;
+  height: 39px;
+  width: 113px;
+  margin: 4px 4px 4px 4px;
+  border: 0px;
+  cursor: pointer;  
+}
+
+input.newrole {
+  background: url(btn_newrole.png) top left no-repeat;
+  height: 39px;
+  width: 113px;
+  margin: 4px 4px 4px 4px;
+  border: 0px;
+  cursor: pointer;  
+}
+
+input.newpermission {
+  background: url(btn_newpermission.png) top left no-repeat;
+  height: 39px;
+  width: 113px;
+  margin: 4px 4px 4px 4px;
+  border: 0px;
+  cursor: pointer;  
+}
+
+input.manageusers {
+  display: block;
+  background: url(manage_users.png) top left no-repeat;
+  height: 88px;
+  width: 300px;
+  padding-left: 10px;
+  font-size: 19px;
+  font-weight: bold;
+  color: #333333;
+  border: 0px;
+  cursor: pointer;
+  margin-top: 20px;
+  margin-left: 20px;
+}
+
+input.manageroles {
+  display: block;
+  background: url(manage_roles.png) top left no-repeat;
+  height: 88px;
+  width: 300px;
+  padding-left: 10px;
+  font-size: 19px;
+  font-weight: bold;
+  color: #333333;
+  border: 0px;
+  cursor: pointer;  
+  margin-top: 20px;
+  margin-left: 20px;
+}
+
+.roles {
+  width: 120px;
+  border: 1px solid #7F9DB9;
+  background-color: #E7EDF7;
+}
+
+div.selectMany label {
+  float: none;
+}
+
+.formButton {
+  background: url(../images/bg_button.png) top left repeat-x;
+  border: 1px solid #003399;
+  font-size: small;
+  font-weight: bold;
+  color: #000000; 
+  margin-right: 8px;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+div.formButtons {
+  float: right;
+  padding: 4px 8px 16px 2px;
+}
+
+div.checkmark {
+  background: url(../images/checkmark.png) top left no-repeat;
+  width: 14px;
+  height: 15px;
+  margin-left: auto;
+  margin-right: auto;    
+}
+
+div.cross {
+  background: url(../images/cross.png) top left no-repeat;
+  width: 14px;
+  height: 15px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+table.security {
+  border: 1px solid black;
+  width: 500px;
+}
+
+th.header {
+  background: url(table_header.png) top left repeat-x;
+  color: #ffffff;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+tr.odd {
+  background-color: #ffffff;
+}
+
+tr.even {
+  background-color: #E9F5FF;
+}
+
+td.enabled {
+  text-align: center;
+}
+
+td.action {
+  text-align: right;
+}

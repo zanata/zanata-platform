@@ -1,0 +1,52 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="../layout/template.xhtml">
+
+<ui:define name="center_content">
+
+    <h:form id="projectForm">
+
+        <rich:panel>
+            <f:facet name="header">project</f:facet>
+
+            <s:decorate id="nameField" template="../layout/edit.xhtml">
+                <ui:define name="label">Name</ui:define>
+                <h:inputText id="name" required="true"
+                             value="#{projectHome.instance.name}"/>
+            </s:decorate>
+
+            <div style="clear:both"/>
+
+        </rich:panel>
+
+        <div class="actionButtons">
+            <h:commandButton id="save"
+                          value="Save"
+                         action="#{projectHome.persist}"
+                       rendered="#{!projectHome.managed}"/>
+            <h:commandButton id="update"
+                          value="Save"
+                         action="#{projectHome.update}"
+                       rendered="#{projectHome.managed}"/>
+            <h:commandButton id="delete"
+                          value="Delete"
+                         action="#{projectHome.remove}"
+                      immediate="true"
+                       rendered="#{projectHome.managed}"/>
+            <s:button propagation="end"
+                               id="cancel"
+                            value="Cancel"
+                             view="/project/home.xhtml"/>
+        </div>
+
+    </h:form>
+
+</ui:define>
+
+</ui:composition>

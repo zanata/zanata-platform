@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:rich="http://richfaces.org/rich"       
+    xmlns:s="http://jboss.com/products/seam/taglib">
+
+  <ui:composition template="../layout/template.xhtml">
+  
+    <ui:define name="head">
+      <link href="../style/security.css" rel="stylesheet" type="text/css"/>
+    </ui:define>  
+   
+    <ui:define name="center_content">
+        
+      <div id="contentMain">
+
+  	    <h2>Role Details</h2>  
+  	    
+  	    <h:messages globalOnly="true"/>
+  	    
+  	    <h:form>
+              
+          <div class="formRow">
+            <h:outputLabel for="role" value="Role" styleClass="formLabel"/>
+            <h:inputText id="role" value="#{roleAction.role}" readonly="#{identityManager.userExists(roleAction.role)}"/>
+            <div class="validationError"><h:message for="role"/></div>
+          </div>              
+
+          <div class="formRow">            
+            <h:outputLabel for="groups" value="Member of" styleClass="formLabel"/>
+            <div class="selectMany">
+              <h:selectManyCheckbox id="groups" value="#{roleAction.groups}" layout="pageDirection" styleClass="roles">
+                <s:selectItems value="#{identityManager.listRoles()}" var="role" label="#{role}"/>
+              </h:selectManyCheckbox>
+            </div>
+            <div class="validationError"><h:message for="roles"/></div>            
+          </div>
+          
+          <div class="formButtons">
+            <h:commandButton value="Save" action="#{roleAction.save}" styleClass="formButton"/>
+            <s:button view="/admin/rolemanager.xhtml" value="Cancel" propagation="end" styleClass="formButton"/>
+          </div>
+    
+          <br class="clear"/>
+  	    
+  	    </h:form>
+
+	    </div>
+	    
+    </ui:define>
+    
+  </ui:composition>
+</html>

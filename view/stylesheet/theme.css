@@ -1,21 +1,23 @@
-html {
-	overflow-y: scroll;
-}
-
+/* <!-- */
 body {
-	font-size: 12px;
-	margin: 0px;
-}
-
-a img {
-	border: none;
+	margin:0;
+	padding:0;
+	border:0;			/* This removes the border around the viewport in old versions of IE */
+	width:100%;
+	background:#fff;
+	min-width:800px;		/* Minimum width of layout - remove line if not required */
+					/* The min-width property does not work in old versions of Internet Explorer */
+	font-size:90%;
 }
 
 h1 {
-	font-size: 1.6em;
-	margin-top: 0;
+	border-bottom: 1px solid #eee;
 }
+	
 
+a img{
+	border: none;
+}
 input[type=submit], input[type=button] {
 	font-size: 10px;
 	margin: 5px 5px 5px 0;
@@ -39,30 +41,8 @@ input[type=text], input[type=password], textarea {
 	text-align: right;
 }
 
-.header {
-	position:absolute;
-	left: 10px;
-	top:10px;
-}
-
-.header_top_right {
-	position:absolute;
-	right: 10px;
-	top:10px;
-}
-
-.footer {
-	text-align: center;
-	font-size: 11px;
-	margin-bottom: 10px;
-}
-
 .rich-table {
 	width: 100%;
-}
-
-.body {
-	padding: 10px;
 }
 
 .columnHeader:hover {
@@ -209,3 +189,84 @@ td.action a {
 	padding-left: 1px;
 	padding-right: 1px;
 }
+
+.dr-pnl{
+	border: none;
+	background-color: inherit;
+}
+
+#headerlogo {
+	position: absolute;
+	left: 10px;
+	top:10px;
+}
+
+#header_top_right {
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	font-size: 11px;
+}
+
+/* column container */
+.colmask {
+	position:relative;	/* This fixes the IE7 overflow hidden bug */
+	clear:both;
+	float:left;
+	width:100%;			/* width of whole page */
+	overflow:hidden;		/* This chops off any overhanging divs */
+}
+/* common column settings */
+.colright,
+.colmid,
+.colleft {
+	float:left;
+	width:100%;			/* width of page */
+	position:relative;
+}
+.col_center,
+.col_left,
+.col_right {
+	float:left;
+	position:relative;
+	padding:10px 0 1em 0;	/* no left and right padding on columns, we just make them narrower instead 
+					only padding top and bottom is included here, make it whatever value you need */
+	overflow:hidden;
+}
+/* 3 Column settings */
+.threecol {
+	/*background:#eee;*/		/* right column background colour */
+}
+.threecol .colmid {
+	right:20%;			/* width of the right column  (25%)*/
+	/*background:#fff;*/		/* center column background colour */
+}
+.threecol .colleft {
+	right:60%;			/* width of the middle column (50%)*/
+	/*background:#f4f4f4;*/	/* left column background colour */
+}
+.threecol .col_center {
+	width:56%;			/* width of center column content (column width minus padding on either side)  (46%)*/
+	left:102%;			/* 100% plus left padding of center column (102%)*/
+}
+.threecol .col_left {
+	width:16%;			/* Width of left column content (column width minus padding on either side) (21%)*/
+	left:26%;			/* width of (right column) plus (center column left and right padding) plus (left column left padding) (31%)*/
+}
+.threecol .col_right {
+	width:16%;			/* Width of right column content (column width minus padding on either side) (21%)*/
+	left:91%;			/* Please make note of the brackets here: (85%)
+					(100% - left column width) plus (center column left and right padding) plus (left column left and right padding) plus (right column left padding) */
+}
+/* Footer styles */
+#footer {
+	clear:both;
+	float:left;
+	width:100%;
+	border-top:1px solid #eee;
+	text-align: center;
+	font-size: 11px;
+	padding: 5px;
+	margin-bottom: 10px;
+}
+/* --> */

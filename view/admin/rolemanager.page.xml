@@ -1,0 +1,14 @@
+<page xmlns="http://jboss.com/products/seam/pages"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.1.xsd"
+    action="#{roleSearch.loadRoles}">
+  <restrict>#{s:hasPermission('seam.role', 'read')}</restrict>    
+  
+  <navigation from-action="#{roleAction.createRole}">
+    <redirect view-id="/admin/roledetail.xhtml"/>
+  </navigation>
+  
+  <navigation from-action="#{roleAction.editRole(roleSearch.selectedRole)}">
+    <redirect view-id="/admin/roledetail.xhtml"/>
+  </navigation>          
+</page>

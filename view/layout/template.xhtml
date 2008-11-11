@@ -6,43 +6,54 @@
         xmlns:h="http://java.sun.com/jsf/html"
         xmlns:f="http://java.sun.com/jsf/core"
         xmlns:a="http://richfaces.org/a4j"
-        xmlns:s="http://jboss.com/products/seam/taglib">
+        xmlns:s="http://jboss.com/products/seam/taglib"
+                                        xmlns:rich="http://richfaces.org/rich">
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>flies</title>
-    <link rel="shortcut icon" href="#{request.contextPath}/favicon.ico"/>
-    <a:loadStyle src="resource:///stylesheet/theme.xcss"/>
+    <link rel="shortcut icon" href="#{request.contextPath}/img/favicon.ico" type="image/x-icon"/>
     <a:loadStyle src="/stylesheet/theme.css"/>
+    <a:loadStyle src="/stylesheet/layout.css"/>
+    <a:loadStyle src="resource:///stylesheet/theme.xcss"/>
     <a:loadStyle src="/stylesheet/tabs.css"/>
     <ui:insert name="head"/>
 </head>
 
 <body>
-
-  <div class="header">
-    <s:link view="/home.xhtml" propagation="none"><img src="./img/flies_banner.png"/></s:link>
+  <div id="headerlogo">
+    <s:link view="/home.xhtml" propagation="none"><img src="#{request.contextPath}/img/flies_banner.png"/></s:link>
   </div>
-  
-  <div class="header_top_right">
-    <h:outputText value="signed in as: #{identity.username}" rendered="#{identity.loggedIn}"/>
+    
+  <div id="header_top_right">
+    <h:outputText value="signed in as: #{identity.username} " rendered="#{identity.loggedIn}"/>
     <s:link view="/login.xhtml" value="Login" rendered="#{not identity.loggedIn}" propagation="none"/>
     <s:link view="/home.xhtml" action="#{identity.logout}" value="Logout" rendered="#{identity.loggedIn}" propagation="none"/>
   </div>
-  
   <ui:include src="menu.xhtml">
       <ui:param name="projectName" value="flies"/>
   </ui:include>
-
-  <div class="body">
-    <h:messages id="messages" globalOnly="true" styleClass="message"
-        errorClass="errormsg" infoClass="infomsg" warnClass="warnmsg"
-        rendered="#{showGlobalMessages != 'false'}"/>
-    <ui:insert name="body"/>
+  <div class="colmask threecol">
+    <div class="colmid">
+      <div class="colleft">
+        <div class="col_center">
+          <h:messages id="messages" globalOnly="true" styleClass="message"
+              errorClass="errormsg" infoClass="infomsg" warnClass="warnmsg"
+              rendered="#{showGlobalMessages != 'false'}"/>
+          <ui:insert name="center_content"/>
+        </div>
+        <div class="col_left">
+          <ui:insert name="left_content"/>
+        </div>
+        <div class="col_right">
+          <ui:insert name="right_content"/>
+        </div>
+      </div>
+    </div>
   </div>
-
-  <div class="footer">
-    Copyright 2008 Red Hat and Others. 
+  
+  <div id="footer">
+    Copyright 2008 <a href="http://www.redhat.com/">Red Hat</a> and Others. 
     Powered by <a href="http://jboss.com/products/seam">Seam</a>.
   </div>
 
