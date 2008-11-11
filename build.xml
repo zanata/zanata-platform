@@ -43,6 +43,26 @@
         <fileset refid="lib"/>
     </path>
 
+    <property name="deps.repo" value="http://hiro/~asgeirf"/>
+    <property name="deps.version" value="1.0"/>
+
+    <target name="init-deps">
+        <available property="deps.installed" value="true" file="${lib.dir}" type="dir"/>
+    </target>
+
+    <target name="download-deps" depends="init-deps" unless="deps.installed">
+        <mkdir dir="${lib.dir}"/>
+        <echo message="Downloading library dependencies..."/>
+        <get src="${deps.repo}/flies-deps-${deps.version}.zip"
+            dest="flies-deps-${deps.version}.zip"/>
+		<unzip src="flies-deps-${deps.version}.zip" dest="${lib.dir}"/>            
+    </target>
+
+    <target name="create-deps-archive">
+		<zip destfile="flies-deps-${deps.version}.zip" basedir="${lib.dir}"/>
+    </target>
+
+
     <target name="init" description="Initialize the build">
         <taskdef name="groovyc"
             classname ="org.codehaus.groovy.ant.Groovyc"
