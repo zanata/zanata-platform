@@ -57,6 +57,7 @@
         <get src="${deps.repo}/flies-deps-${deps.version}.zip"
             dest="flies-deps-${deps.version}.zip"/>
 		<unzip src="flies-deps-${deps.version}.zip" dest="${lib.dir}"/>            
+		<delete file="flies-deps-${deps.version}.zip" quiet="true"/>
     </target>
 
     <target name="create-deps-archive" description="Create Zip archive of current dependencies">
