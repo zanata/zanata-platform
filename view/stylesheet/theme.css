@@ -127,7 +127,6 @@ img.errors {
 	padding: 2px 3px;
 }
 
-
 select {
 	font-size: 12px;
 }
@@ -191,7 +190,6 @@ td.action a {
 }
 
 .dr-pnl{
-	border: none;
 	background-color: inherit;
 }
 
