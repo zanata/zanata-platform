@@ -47,10 +47,11 @@
     <property name="deps.version" value="1.0"/>
 
     <target name="init-deps">
-        <available property="deps.installed" value="true" file="${lib.dir}" type="dir"/>
+        <available property="deps.installed" value="true" file="${lib.dir}/flies-deps-${deps.version}" type="file"/>
     </target>
 
     <target name="download-deps" depends="init-deps" unless="deps.installed" description="Download jar dependencies">
+		<delete dir="${lib.dir}" quiet="true"/>
         <mkdir dir="${lib.dir}"/>
         <echo message="Downloading library dependencies..."/>
         <get src="${deps.repo}/flies-deps-${deps.version}.zip"
@@ -59,6 +60,10 @@
     </target>
 
     <target name="create-deps-archive" description="Create Zip archive of current dependencies">
+	    <delete>
+    		<fileset dir="${lib.dir}" includes="flies-deps-*"/>
+  		</delete>
+        <touch file="${lib.dir}/flies-deps-${deps.version}"/>
 		<zip destfile="flies-deps-${deps.version}.zip" basedir="${lib.dir}"/>
     </target>
 
