@@ -10,14 +10,14 @@
       <s:link view="/home.xhtml" propagation="none"><span>Home</span></s:link>
     </li>
     <li id="tab_projects">
-      <s:link view="/projects.xhtml" propagation="none"><span>Projects</span></s:link>
+      <s:link view="/project/home.xhtml" propagation="none"><span>Projects</span></s:link>
     </li>
     <li id="tab_teams">
       <s:link view="/teams.xhtml" propagation="none"><span>Translation Teams</span></s:link>
     </li>
     <s:fragment rendered="#{s:hasRole('admin')}">
       <li  id="tab_admin" class="ui-tabs-nav-issues">
-        <s:link view="/admin/home.seam" propagation="none"><span>Administration ↓</span></s:link>
+        <s:link view="/admin/home.xhtml" propagation="none"><span>Administration ↓</span></s:link>
         <ul>
           <li><s:link view="/admin/usermanager.xhtml" propagation="none">Manage Users</s:link></li>
           <li><s:link view="/admin/rolemanager.xhtml" propagation="none">Manage Roles</s:link></li>
