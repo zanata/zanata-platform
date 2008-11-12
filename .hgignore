@@ -1,5 +1,10 @@
-lib/*
-~
-test-build/*
-exploded-archives/*
-classes/*
+syntax: glob
+*~
+
+syntax: regexp
+^\.pc/
+^lib/
+^test-build/
+^exploded-archives/
+^classes/
+^flies-deps-[0-9.\-_]*.zip
