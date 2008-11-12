@@ -303,5 +303,27 @@ td.action {
   text-align: right;
 }
 
+table.fullwidth {
+  width: 100%
+}
+
+
+#search_panel{
+  margin: 0 auto 0.5em auto;
+  width: 80%;
+  border:1px solid #efefff;
+  background-color: #f5f5ff;
+  padding: 20px;
+  -moz-border-radius: 15px;
+  font-size: 16px;
+}
+
+#search_panel_form, #search_panel_links{
+  text-align: center;
+  margin: 0.2em auto 0.2em auto;
+}
+
+
+
 
 /* --> */

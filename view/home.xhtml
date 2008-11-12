@@ -7,15 +7,26 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
     template="layout/template.xhtml">
+    
     <ui:define name="right_content">
       <s:fragment rendered="#{not identity.loggedIn}">
         <ui:include src="login_form.xhtml"/>
       </s:fragment>
+
+      <h2 id="xxx">Content:</h2>
+      <ul>
+        <li>Link to Register new user</li>
+        <li>Latest registered projects</li>
+        <li>Latest translation activity</li>
+      </ul>
     </ui:define>
+    
+    
     <ui:define name="center_content">
         <rich:jQuery selector="#tab_home" query="addClass('ui-tabs-selected')" />
         <h1>Welcome to Flies!</h1>
         <rich:panel>
+          
             <h:panelGrid columns="2">
 			    <h:graphicImage value="/img/seamlogo.png" alt="Seam logo"/>
                 <s:div styleClass="info">

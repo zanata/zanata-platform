@@ -1,0 +1,40 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="../layout/template.xhtml">
+  
+  <ui:define name="center_content">
+    <rich:jQuery selector="#tab_collections" query="addClass('ui-tabs-selected')" />
+
+    <div id="search_panel">
+      <form id="search_panel_form" action="#" method="get">
+        Find collection: <input name="q" type="text" value="$q"/>
+        <input type="submit" value="Search"/>
+      </form>
+      <div id="search_panel_links">
+        <a href="${tg.url('/projects/browse')}">Browse collections</a>
+      </div>
+    </div>
+    <h2>Featured</h2>
+    <ul>
+      <li>List all featured collections such as the current translation priorities</li>
+      <li>For logged in users, this could be priorities based on the team-memberships</li>
+    </ul>
+    <h2>Recently Added or Recent Activity</h2>
+    <ul>
+      <li>List all featured collections that have recently been added or have recent activity</li>
+      <li>For logged in users, list collections that this user has recently viewed</li>
+    </ul>
+
+  </ui:define>
+
+  <ui:define name="right_content">
+      <s:link id="done" value="Create project" view="/project/project.xhtml"/>
+  </ui:define>
+
+</ui:composition>

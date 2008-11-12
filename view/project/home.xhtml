@@ -8,12 +8,23 @@
     xmlns:rich="http://richfaces.org/rich"
     template="../layout/template.xhtml">
 
-<ui:define name="left_content">
-MENU GOES HERE
-</ui:define>
-
-<ui:define name="center_content">
+  <ui:define name="left_content">
+  MENU GOES HERE
+  </ui:define>
+  
+  <ui:define name="center_content">
     <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
+
+    <div id="search_panel">
+      <form id="search_panel_form" action="#" method="get">
+        Find project: <input name="q" type="text" value="$q"/>
+        <input type="submit" value="Search"/>
+      </form>
+      <div id="search_panel_links">
+        <a href="${tg.url('/projects/browse')}">Browse projects</a>
+      </div>
+    </div>
+
 
     <rich:panel>
         <f:facet name="header">projects</f:facet>
@@ -45,10 +56,10 @@ MENU GOES HERE
         </div>
 
     </rich:panel>
-</ui:define>
-
-<ui:define name="right_content">
-    <s:link id="done" value="Create project" view="/project/project.xhtml"/>
-</ui:define>
+  </ui:define>
+  
+  <ui:define name="right_content">
+      <s:link id="done" value="Create project" view="/project/project.xhtml"/>
+  </ui:define>
 
 </ui:composition>
