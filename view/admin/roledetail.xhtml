@@ -8,46 +8,34 @@
 
   <ui:composition template="../layout/template.xhtml">
   
-    <ui:define name="head">
-      <link href="../style/security.css" rel="stylesheet" type="text/css"/>
-    </ui:define>  
-   
     <ui:define name="center_content">
         
-      <div id="contentMain">
+  
+      <h:form>
+        <rich:panel>
+          <f:facet name="header">Role Details</f:facet>
 
-  	    <h2>Role Details</h2>  
-  	    
-  	    <h:messages globalOnly="true"/>
-  	    
-  	    <h:form>
-              
-          <div class="formRow">
-            <h:outputLabel for="role" value="Role" styleClass="formLabel"/>
+          <s:decorate id="roleField" template="../layout/edit.xhtml">
+            <ui:define name="label">Role</ui:define>
             <h:inputText id="role" value="#{roleAction.role}" readonly="#{identityManager.userExists(roleAction.role)}"/>
-            <div class="validationError"><h:message for="role"/></div>
-          </div>              
-
-          <div class="formRow">            
-            <h:outputLabel for="groups" value="Member of" styleClass="formLabel"/>
-            <div class="selectMany">
-              <h:selectManyCheckbox id="groups" value="#{roleAction.groups}" layout="pageDirection" styleClass="roles">
+          </s:decorate>
+              
+          <s:decorate id="groupsField" template="../layout/edit.xhtml">
+            <ui:define name="label">Member of</ui:define>
+              <h:selectManyCheckbox id="groups" value="#{roleAction.groups}" layout="pageDirection">
                 <s:selectItems value="#{identityManager.listRoles()}" var="role" label="#{role}"/>
               </h:selectManyCheckbox>
-            </div>
-            <div class="validationError"><h:message for="roles"/></div>            
-          </div>
-          
-          <div class="formButtons">
-            <h:commandButton value="Save" action="#{roleAction.save}" styleClass="formButton"/>
-            <s:button view="/admin/rolemanager.xhtml" value="Cancel" propagation="end" styleClass="formButton"/>
+          </s:decorate>
+              
+          <div style="clear:both"/>
+
+          <div class="actionButtons">
+            <h:commandButton value="Save" action="#{roleAction.save}"/>
+            <s:button view="/admin/rolemanager.xhtml" value="Cancel" propagation="end"/>
           </div>
     
-          <br class="clear"/>
-  	    
-  	    </h:form>
-
-	    </div>
+        </rich:panel>
+      </h:form>
 	    
     </ui:define>
     

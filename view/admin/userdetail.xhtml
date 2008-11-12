@@ -14,14 +14,10 @@
    
     <ui:define name="center_content">
         
-      <div id="contentMain">
+      <h:form>
+        <rich:panel>
+          <f:facet name="header">User Details</f:facet>
 
-  	    <h2>User Details</h2>  
-  	    
-  	    <h:messages globalOnly="true"/>
-  	    
-  	    <h:form>
-  	    
           <s:decorate id="firstnameField" template="../layout/edit.xhtml">
             <ui:define name="label">First name</ui:define>
             <h:inputText id="firstname" value="#{userAction.firstname}" readonly="#{identityManager.userExists(userAction.username)}"/>
@@ -50,7 +46,7 @@
           <s:decorate id="rolesField" template="../layout/edit.xhtml">
             <ui:define name="label">Member of</ui:define>
             <div class="selectMany">
-              <h:selectManyCheckbox id="roles" value="#{userAction.roles}" layout="pageDirection" styleClass="roles">
+              <h:selectManyCheckbox id="roles" value="#{userAction.roles}" layout="pageDirection">
                 <s:selectItems value="#{identityManager.listGrantableRoles()}" var="role" label="#{role}"/>
               </h:selectManyCheckbox>
             </div>
@@ -61,17 +57,16 @@
             <h:selectBooleanCheckbox id="enabled" value="#{userAction.enabled}"/>
           </s:decorate>
                                       
-          <div class="formButtons">
-            <h:commandButton value="Save" action="#{userAction.save}" styleClass="formButton"/>
-            <s:button view="/admin/usermanager.xhtml" value="Cancel" propagation="end" styleClass="formButton"/>
+          <div style="clear:both"/>
+
+          <div class="actionButtons">
+            <h:commandButton value="Save" action="#{userAction.save}"/>
+            <s:button view="/admin/usermanager.xhtml" value="Cancel" propagation="end"/>
           </div>
     
-          <br class="clear"/>
-  	    
-  	    </h:form>
+        </rich:panel>
+      </h:form>
 
-	    </div>
-	    
     </ui:define>
     
   </ui:composition>

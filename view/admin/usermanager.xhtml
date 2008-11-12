@@ -3,14 +3,16 @@
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:rich="http://richfaces.org/rich" 
     xmlns:s="http://jboss.com/products/seam/taglib">
 
   <ui:composition template="../layout/template.xhtml">
+    <ui:define name="right_content">
+        <s:link action="#{userAction.createUser}"
+          rendered="#{s:hasPermission('seam.account', 'create')}"
+          value="Create new User"/>
+    </ui:define>
   
-    <ui:define name="head">
-      <link href="style/security.css" rel="stylesheet" type="text/css"/>
-    </ui:define>  
-   
     <ui:define name="center_content">
         
       <script type="text/javascript">
@@ -19,18 +21,13 @@
           return confirm("Are you sure you wish to delete this user? This action cannot be undone.");
         }
       </script>
-
-      <div id="contentMain">
-
-  	    <h2>User Manager</h2>  
-  	    
-        <s:button action="#{userAction.createUser}" styleClass="newuser" rendered="#{s:hasPermission('seam.account', 'create')}"/>
+      <rich:panel>
+        <f:facet name="header">User Manager</f:facet>
   	    
         <h:dataTable 
             id="threads"
             value="#{users}" 
             var="user" 
-            styleClass="security"
             cellspacing="0"
             headerClass="columnHeader"
             rowClasses="odd,even"
@@ -66,8 +63,7 @@
                     onclick="return confirmDelete()"/>
           </h:column>
   	    </h:dataTable>
-	    </div>
-	    
+      </rich:panel>	    
     </ui:define>
     
   </ui:composition>

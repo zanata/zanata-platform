@@ -28,10 +28,10 @@
                                   value="#{identity.rememberMe}"/>
         </s:decorate>
         <div style="clear:both"/>
+        <div class="actionButtons">
+            <h:commandButton value="Login" action="#{identity.login}"/>
+        </div>
     </rich:panel>
 
-    <div class="actionButtons">
-        <h:commandButton value="Login" action="#{identity.login}"/>
-    </div>
 
 </h:form>

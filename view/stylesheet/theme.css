@@ -148,7 +148,8 @@ select {
 }
 
 .actionButtons {
-	padding-left: 1px;
+	padding-right: 10px;
+	text-align: right;
 }
 
 .actionButtons select {
@@ -267,4 +268,40 @@ td.action a {
 	padding: 5px;
 	margin-bottom: 10px;
 }
+
+/* Styles from the security-stuff in seamspace*/
+
+div.checkmark {
+  background: url(../img/checkmark.png) top left no-repeat;
+  width: 14px;
+  height: 15px;
+  margin-left: auto;
+  margin-right: auto;    
+}
+
+div.cross {
+  background: url(../img/cross.png) top left no-repeat;
+  width: 14px;
+  height: 15px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+tr.odd {
+  background-color: #ffffff;
+}
+
+tr.even {
+  background-color: #E9F5FF;
+}
+
+td.enabled {
+  text-align: center;
+}
+
+td.action {
+  text-align: right;
+}
+
+
 /* --> */
