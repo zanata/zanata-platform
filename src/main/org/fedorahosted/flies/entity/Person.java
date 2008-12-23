@@ -5,10 +5,17 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
+import org.hibernate.validator.Email;
+import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.NotNull;
+
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = "personId"))
 public class Person {
 
 	private Long id;
@@ -16,6 +23,10 @@ public class Person {
     private String name;
     private Account account;
 
+    private String email;
+    
+    private String personId;
+    
     // from Damned Lies:
     private String imageUrl;
     private String ircNick;
@@ -46,6 +57,16 @@ public class Person {
     public void setName(String name) {
 		this.name = name;
 	}
+
+    @NotNull
+    @NotEmpty
+    public String getPersonId() {
+		return personId;
+	}
+    
+    public void setPersonId(String personId) {
+		this.personId = personId;
+	}
     
     @OneToOne(optional=true, fetch=FetchType.EAGER)
     public Account getAccount() {
@@ -62,6 +83,37 @@ public class Person {
     }
     
     
+    public String getImageUrl() {
+		return imageUrl;
+	}
     
+    public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+    
+    public String getIrcNick() {
+		return ircNick;
+	}
+    
+    public void setIrcNick(String ircNick) {
+		this.ircNick = ircNick;
+	}
+    
+    public String getWebpageUrl() {
+		return webpageUrl;
+	}
+    
+    public void setWebpageUrl(String webpageUrl) {
+		this.webpageUrl = webpageUrl;
+	}
+    
+    public void setEmail(String email) {
+		this.email = email;
+	}
+    
+    @Email
+    public String getEmail() {
+		return email;
+	}
     
 }

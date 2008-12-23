@@ -1,5 +1,7 @@
 package org.fedorahosted.flies;
 
+import javax.persistence.NoResultException;
+
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.web.RequestParameter;
@@ -11,21 +13,43 @@ import org.fedorahosted.flies.entity.Project;
 public class ProjectHome extends EntityHome<Project>
 {
     @RequestParameter
-    Long projectId;
+    String uname;
 
+    private Long pid;
+    
+    
     @Override
     public Object getId()
     {
-        if (projectId == null)
+        if (uname == null)
         {
             return super.getId();
         }
-        else
+        else if(pid == null)
         {
-            return projectId;
+        	try{
+            	// TODO calling a separate query to get the ID isn't very efficient.  
+        		pid = (Long) getEntityManager().createQuery("Select p.id from Project p where p.uname = :uname")
+    			.setParameter("uname", uname).getSingleResult();
+        	}
+        	catch(NoResultException nre){
+        		return super.getId();
+        	}
+    		
+    		getLog().info("found project with id {0}", pid);
+            return pid;
         }
+        
+        return pid;
     }
-
+    
+    @Override
+    protected Project loadInstance() 
+    {
+       return getEntityManager().find(getEntityClass(), getId());
+    }    
+    
+    
     @Override @Begin
     public void create() {
         super.create();

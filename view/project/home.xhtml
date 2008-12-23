@@ -21,7 +21,10 @@
         <input type="submit" value="Search"/>
       </form>
       <div id="search_panel_links">
-        <a href="${tg.url('/projects/browse')}">Browse projects</a>
+        <s:link id="project_browse"
+                         value="Browse Projects"
+                   propagation="none"
+                         view="/project/browse.xhtml"></s:link>
       </div>
     </div>
 
@@ -47,9 +50,13 @@
                          value="#{project.name}"
                    propagation="none"
                          view="/project/project.xhtml">
-                        <f:param name="projectId"
-                                value="#{project.id}"/>
+                        <f:param name="uname"
+                                value="#{project.uname}"/>
                     </s:link>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Description</f:facet>
+                    #{project.shortDescription}
                 </h:column>
             </h:dataTable>
 

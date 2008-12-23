@@ -1,0 +1,81 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="../layout/template.xhtml">
+
+<ui:define name="center_content">
+    <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
+
+    <h1>#{projectHome.instance.name}</h1>
+
+    <s:formattedText id="project-long-description" value="#{projectHome.instance.longDescription}"></s:formattedText>
+
+    <h:form id="projectForm">
+
+        <rich:panel>
+            <f:facet name="header">project</f:facet>
+
+            <s:decorate id="nameField" template="../layout/edit.xhtml">
+                <ui:define name="label">Name</ui:define>
+                <h:inputText id="name" required="true"
+                             value="#{projectHome.instance.name}"/>
+            </s:decorate>
+
+            <s:decorate id="unameField" template="../layout/edit.xhtml">
+                <ui:define name="label">Unix Name</ui:define>
+                <h:inputText id="uname" required="true"
+                             value="#{projectHome.instance.uname}"/>
+            </s:decorate>
+
+            <s:decorate id="shortDescriptionField" template="../layout/edit.xhtml">
+                <ui:define name="label">Short Description</ui:define>
+                <h:inputText id="shortDescription" required="true"
+                             value="#{projectHome.instance.shortDescription}"/>
+            </s:decorate>
+
+            <s:decorate id="longDescriptionField" template="../layout/edit.xhtml">
+                <ui:define name="label">Long Description</ui:define>
+                <h:inputTextarea id="longDescription" required="false"
+                             value="#{projectHome.instance.longDescription}" rows="10"/>
+            </s:decorate>
+
+            <div style="clear:both"/>
+
+        </rich:panel>
+
+        <div class="actionButtons">
+            <h:commandButton id="save"
+                          value="Save"
+                         action="#{projectHome.persist}"
+                       rendered="#{!projectHome.managed}"/>
+            <h:commandButton id="update"
+                          value="Save"
+                         action="#{projectHome.update}"
+                       rendered="#{projectHome.managed}"/>
+            <h:commandButton id="delete"
+                          value="Delete"
+                         action="#{projectHome.remove}"
+                      immediate="true"
+                       rendered="#{projectHome.managed}"/>
+            <s:button propagation="end"
+                               id="cancel"
+                            value="Cancel"
+                             view="/project/home.xhtml"/>
+        </div>
+
+    </h:form>
+
+</ui:define>
+
+<ui:define name="right_content">
+  <rich:dataList value="#{projectHome.instance.projectSeries}" var="series">
+    <h:outputText value="#{series.name}"/><br/>
+  </rich:dataList>
+</ui:define>
+
+</ui:composition>
