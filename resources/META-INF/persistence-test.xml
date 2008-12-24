@@ -11,6 +11,8 @@
       <properties>
          <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
          <property name="hibernate.show_sql" value="true"/>
+         <property name="hibernate.connection.useUnicode" value="true" />
+         <property name="hibernate.connection.characterEncoding" value="UTF-8"/>         
          <property name="hibernate.cache.use_second_level_cache" value="false"/>
          <property name="jboss.entity.manager.factory.jndi.name" value="java:/fliesEntityManagerFactory"/>
       </properties>

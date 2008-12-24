@@ -12,6 +12,8 @@
          <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
          <property name="hibernate.hbm2ddl.auto" value="validate"/>
          <property name="hibernate.jdbc.batch_size" value="20"/>
+         <property name="hibernate.connection.useUnicode" value="true" />
+         <property name="hibernate.connection.characterEncoding" value="UTF-8"/>         
          <property name="jboss.entity.manager.factory.jndi.name" value="java:/fliesEntityManagerFactory"/>
       </properties>
    </persistence-unit>
