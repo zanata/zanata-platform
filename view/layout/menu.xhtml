@@ -18,11 +18,6 @@
     <li id="tab_teams">
       <s:link view="/team/home.xhtml" propagation="none"><span>Teams</span></s:link>
     </li>
-    <s:fragment rendered="#{identity.loggedIn}">
-      <li id="tab_people">
-        <s:link view="/people/home.xhtml" propagation="none"><span>People</span></s:link>
-      </li>
-    </s:fragment>
     <s:fragment rendered="#{s:hasRole('admin')}">
       <li  id="tab_admin" class="ui-tabs-nav-issues">
         <s:link view="/admin/home.xhtml" propagation="none"><span>Administration ↓</span></s:link>
