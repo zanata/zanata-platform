@@ -11,7 +11,7 @@
 <ui:define name="center_content">
     <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
 
-    <h1>#{projectHome.instance.name} <rich:toggleControl for="toggle_edit"><img src="/flies/img/msginfo.png"/></rich:toggleControl></h1>
+    <h1>#{projectHome.instance.name}</h1>
 
     <s:formattedText id="project-long-description" value="#{projectHome.instance.longDescription}"></s:formattedText>
     <h:outputText value="#{projectHome.instance.shortDescription}" rendered="#{empty projectHome.instance.longDescription}"/>
@@ -85,16 +85,24 @@
 
 <ui:define name="right_content">
   <rich:panel>
-    <f:facet name="header">Series</f:facet>
+    <f:facet name="header">Targets</f:facet>
     <rich:dataList value="#{projectHome.instance.projectSeries}" var="series">
-      <h:outputText value="#{series.name}"/><br/>
+      <h:outputText value="#{series.name}"/>
+      <!-- TODO: series can have children... -->
+      <rich:dataList value="#{series.projectTargets}" var="target">
+        <s:link view="/project/target.xhtml" value="#{target.name}" propagation="none">
+          <f:param name="uname" value="#{projectHome.instance.uname}"/>        
+          <f:param name="targetId" value="#{target.id}"/>        
+        </s:link>
+      </rich:dataList>
     </rich:dataList>
   </rich:panel>
   
   <rich:panel>
-    <f:facet name="header">Recent Activity</f:facet>
-    <rich:dataList value="#{projectHome.instance.projectSeries}" var="series">
-      <h:outputText value="#{series.name}"/><br/>
+    <f:facet name="header">Maintainers</f:facet>
+    <h:outputText rendered="#{empty projectHome.instance.maintainers}">(No maintainers defined)</h:outputText>
+    <rich:dataList value="#{projectHome.instance.maintainers}" var="maintainer">
+      <h:outputText value="#{maintainer.name}"/>
     </rich:dataList>
   </rich:panel>
   
@@ -104,7 +112,8 @@
 <ui:define name="left_content">
   <rich:panel>
     <f:facet name="header">Actions</f:facet>
-      <h:outputText value="Edit Project Description"/><br/>
+      <rich:toggleControl for="toggle_edit"><h:outputText value="Edit Project Description"/></rich:toggleControl>
+      
   </rich:panel>
   
 </ui:define>

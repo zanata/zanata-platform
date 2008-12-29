@@ -1,9 +1,14 @@
 package org.fedorahosted.flies.entity;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -31,6 +36,9 @@ public class Person {
     private String imageUrl;
     private String ircNick;
     private String webpageUrl;
+    
+    private List<Project> maintainerProjects;
+    private List<TranslationTeam> teamMemberships;
     
     @Id @GeneratedValue
     public Long getId() {
@@ -114,6 +122,34 @@ public class Person {
     @Email
     public String getEmail() {
 		return email;
+	}
+    
+    @ManyToMany
+    @JoinTable(
+            name="Project_Maintainer",
+            joinColumns=@JoinColumn(name="personId"),
+            inverseJoinColumns=@JoinColumn(name="projectId")
+        )
+    public List<Project> getMaintainerProjects() {
+		return maintainerProjects;
+	}
+    
+    public void setMaintainerProjects(List<Project> maintainerProjects) {
+		this.maintainerProjects = maintainerProjects;
+	}
+
+    @ManyToMany
+    @JoinTable(
+            name="TranslationTeam_Member",
+            joinColumns=@JoinColumn(name="personId"),
+            inverseJoinColumns=@JoinColumn(name="translationTeamId")
+        )
+    public List<TranslationTeam> getTeamMemberships() {
+		return teamMemberships;
+	}
+    
+    public void setTeamMemberships(List<TranslationTeam> teamMemberships) {
+		this.teamMemberships = teamMemberships;
 	}
     
 }

@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Version;
 
 import org.hibernate.validator.Length;
+import org.hibernate.validator.NotNull;
 
 @Entity
 public class ProjectTarget implements Serializable{
@@ -56,6 +57,7 @@ public class ProjectTarget implements Serializable{
 
     @ManyToOne
     @JoinColumn(name="projectSeriesId")
+    @NotNull
     public ProjectSeries getProjectSeries() {
 		return projectSeries;
 	}

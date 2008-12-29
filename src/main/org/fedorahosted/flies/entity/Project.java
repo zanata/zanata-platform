@@ -6,6 +6,9 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -29,10 +32,11 @@ public class Project implements Serializable {
     
     private String longDescription;
     
-    
     private List<ProjectSeries> projectSeries;
     private List<ProjectTarget> projectTargets;
 
+    private List<Person> maintainers;
+    
     @Id @GeneratedValue
     public Long getId() {
         return id;
@@ -105,5 +109,19 @@ public class Project implements Serializable {
     
     public void setProjectTargets(List<ProjectTarget> projectTargets) {
 		this.projectTargets = projectTargets;
+	}
+    
+    @ManyToMany
+    @JoinTable(
+            name="Project_Maintainer",
+            joinColumns=@JoinColumn(name="projectId"),
+            inverseJoinColumns=@JoinColumn(name="personId")
+        )
+    public List<Person> getMaintainers() {
+		return maintainers;
+	}
+    
+    public void setMaintainers(List<Person> maintainers) {
+		this.maintainers = maintainers;
 	}
 }

@@ -15,6 +15,8 @@ public class AuthenticationEvents {
 
 	@Observer(JpaIdentityStore.EVENT_USER_AUTHENTICATED)
 	public void loginSuccessful(Account account) {
+		log.info("Member {0} authenticated with person {1}", account.getUsername(), account.getPerson());
+
 		Contexts.getSessionContext().set("authenticatedPerson",
 				account.getPerson());
 	}

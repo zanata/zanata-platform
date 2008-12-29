@@ -9,8 +9,20 @@
     <li id="tab_home">
       <s:link view="/home.xhtml" propagation="none"><span>Home</span></s:link>
     </li>
-    <li id="tab_projects">
+    <li id="tab_projects" class="ui-tabs-nav-issues">
       <s:link view="/project/home.xhtml" propagation="none"><span>Projects</span></s:link>
+      <s:fragment rendered="#{authenticatedPerson != null}">
+        <ul>
+          <ui:repeat value="#{authenticatedPerson.maintainerProjects}" var="project">
+            <li>
+              <s:link view="/project/project.xhtml" propagation="none">
+                #{project.name}
+                <f:param name="uname" value="#{project.uname}"/>
+              </s:link>
+            </li>
+          </ui:repeat>
+        </ul>
+      </s:fragment>
     </li>
     <li id="tab_collections">
       <s:link view="/collection/home.xhtml" propagation="none"><span>Collections</span></s:link>
@@ -24,6 +36,7 @@
         <ul>
           <li><s:link view="/admin/usermanager.xhtml" propagation="none">Manage Users</s:link></li>
           <li><s:link view="/admin/rolemanager.xhtml" propagation="none">Manage Roles</s:link></li>
+          <li><s:link view="/admin/locales.xhtml" propagation="none">Manage Locales</s:link></li>
           <!-- 
           <li><s:link view="/admin/dlImport.xhtml" propagation="begin">Import from Damned Lies</s:link></li>
           -->
@@ -37,7 +50,7 @@
     </s:fragment>
     <s:fragment rendered="#{identity.loggedIn}">
       <li id="tab_my_account" class="tabs-right">
-        <a href="#"><span>My Account</span></a>
+        <s:link view="/account.xhtml" propagation="none"><span>My Account</span></s:link>
       </li>
     </s:fragment>
   </ul>

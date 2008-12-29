@@ -1,0 +1,50 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="../layout/template.xhtml">
+
+<ui:define name="center_content">
+    <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
+
+    <h1>#{projectHome.instance.name}</h1>
+
+    <s:formattedText id="project-long-description" value="#{projectHome.instance.longDescription}"></s:formattedText>
+    <h:outputText value="#{projectHome.instance.shortDescription}" rendered="#{empty projectHome.instance.longDescription}"/>
+
+</ui:define>
+
+<ui:define name="right_content">
+  <rich:panel>
+    <f:facet name="header">Targets</f:facet>
+    <rich:dataList value="#{projectHome.instance.projectTargets}" var="target">
+      <h:outputText value="#{target.name}"/>
+      <rich:dataList value="#{projectHome.instance.projectTargets}" var="target">
+        <h:outputText value="#{target.name}"/>
+      </rich:dataList>
+    </rich:dataList>
+  </rich:panel>
+  
+  <rich:panel>
+    <f:facet name="header">Recent Activity</f:facet>
+    <rich:dataList value="#{projectHome.instance.projectSeries}" var="series">
+      <h:outputText value="#{series.name}"/>
+    </rich:dataList>
+  </rich:panel>
+  
+  
+</ui:define>
+
+<ui:define name="left_content">
+  <rich:panel>
+    <f:facet name="header">Actions</f:facet>
+      <h:outputText value="Edit Project Description"/><br/>
+  </rich:panel>
+  
+</ui:define>
+
+</ui:composition>

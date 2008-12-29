@@ -323,7 +323,17 @@ table.fullwidth {
   margin: 0.2em auto 0.2em auto;
 }
 
+#projectList h3{
+	margin-bottom: 2px;
+}
 
+#projectList .no-description{
+	color: #777777;
+}
+
+#projectList .description{
+	color: #777777;
+}
 
 
 /* --> */

@@ -28,41 +28,36 @@
       </div>
     </div>
 
+    <h:outputText value="No project exists"
+               rendered="#{empty projectList.resultList}"/>
 
-    <rich:panel>
-        <f:facet name="header">projects</f:facet>
-
-        <div class="results">
-
-            <h:outputText value="No project exists"
-                       rendered="#{empty projectList.resultList}"/>
-
-            <h:dataTable id="projectList" var="project"
-                      value="#{projectList.resultList}"
-                   rendered="#{not empty projectList.resultList}">
-                <h:column>
-                    <f:facet name="header">Id</f:facet>
-                    #{project.id}
-                </h:column>
-                <h:column>
-                    <f:facet name="header">Name</f:facet>
-                    <s:link id="project"
-                         value="#{project.name}"
-                   propagation="none"
-                         view="/project/project.xhtml">
-                        <f:param name="uname"
-                                value="#{project.uname}"/>
-                    </s:link>
-                </h:column>
-                <h:column>
-                    <f:facet name="header">Description</f:facet>
-                    #{project.shortDescription}
-                </h:column>
-            </h:dataTable>
-
-        </div>
-
-    </rich:panel>
+    <h:dataTable id="projectList" var="project"
+      value="#{projectList.resultList}"
+      rendered="#{not empty projectList.resultList}"
+      styleClass="projectList">
+      <h:column>
+            <h3><s:link id="project"
+                 value="#{project.name}"
+                 propagation="none"
+                 view="/project/project.xhtml">
+              <f:param name="uname"
+                       value="#{project.uname}"/>
+            </s:link></h3>
+            <h:outputText rendered="#{not empty project.shortDescription}">
+              <em class="description">#{project.shortDescription}</em>
+            </h:outputText>
+            <h:outputText rendered="#{empty project.shortDescription}">
+              <em class="no-description">(No description available)</em>
+            </h:outputText>
+            <div style="clear:both;"><ui:repeat value="#{project.projectSeries}" var="s">
+            	#{s.name} (
+                <ui:repeat value="#{s.projectTargets}" var="t">
+                #{t.name}
+                </ui:repeat>
+              )
+            </ui:repeat></div>
+      </h:column>     
+    </h:dataTable>
   </ui:define>
   
   <ui:define name="right_content">
