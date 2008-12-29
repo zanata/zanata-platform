@@ -9,3 +9,4 @@ jbpm-jpdl.jar
 mvel14.jar
 richfaces-api.jar
 jboss-seam-remoting.jar
+icu4j-4_0.jar

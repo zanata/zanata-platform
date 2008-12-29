@@ -29,15 +29,16 @@
     <classpathentry kind="lib" path="lib/janino.jar"/>
     <classpathentry kind="lib" path="lib/antlr-runtime.jar"/>
     <classpathentry kind="lib" path="lib/mail.jar"/>
-    <classpathentry kind="lib" path="lib/persistence-api.jar" />
-    <classpathentry kind="lib" path="lib/ejb-api.jar" />
-    <classpathentry kind="lib" path="lib/jsr250-api.jar" />
-    <classpathentry kind="lib" path="lib/jta.jar" />
+    <classpathentry kind="lib" path="lib/persistence-api.jar"/>
+    <classpathentry kind="lib" path="lib/ejb-api.jar"/>
+    <classpathentry kind="lib" path="lib/jsr250-api.jar"/>
+    <classpathentry kind="lib" path="lib/jta.jar"/>
     <classpathentry kind="lib" path="lib/core.jar"/>
-    <classpathentry kind="lib" path="lib/jboss-embedded-api.jar"/> 
-    <classpathentry kind="lib" path="lib/hibernate-search.jar" />
-    <classpathentry kind="lib" path="lib/richfaces-api.jar" />
+    <classpathentry kind="lib" path="lib/jboss-embedded-api.jar"/>
+    <classpathentry kind="lib" path="lib/hibernate-search.jar"/>
+    <classpathentry kind="lib" path="lib/richfaces-api.jar"/>
     <classpathentry kind="lib" path="lib/mysql-connector-java-5.1.6.jar"/>
-    <classpathentry kind="lib" path="lib/lucene-core.jar" />
+    <classpathentry kind="lib" path="lib/lucene-core.jar"/>
+    <classpathentry kind="lib" path="lib/icu4j-4_0.jar"/>
     <classpathentry kind="output" path="test-build"/>
 </classpath>
