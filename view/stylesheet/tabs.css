@@ -85,6 +85,7 @@
 }
 .ui-tabs-nav .ui-tabs-selected a span, .ui-tabs-nav a:hover span, .ui-tabs-nav a:focus span, .ui-tabs-nav a:active span {
     background-position: 0 -50px;
+    cursor: pointer;
 }
 .ui-tabs-nav a span, .ui-tabs-nav .ui-tabs-disabled a:hover span, .ui-tabs-nav .ui-tabs-disabled a:focus span, .ui-tabs-nav .ui-tabs-disabled a:active span {
     background-position: 0 0;
