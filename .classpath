@@ -41,5 +41,6 @@
 	<classpathentry kind="lib" path="lib/lucene-core.jar"/>
 	<classpathentry kind="lib" path="lib/icu4j-4_0.jar"/>
 	<classpathentry kind="lib" path="lib/richfaces-ui.jar"/>
+	<classpathentry kind="lib" path="lib/richfaces-impl.jar"/>
 	<classpathentry kind="output" path="test-build"/>
 </classpath>
