@@ -26,14 +26,16 @@
   </div>
     
   <div id="header_top_right">
+    <h:outputText value="signed in as: #{identity.username} " rendered="#{identity.loggedIn}"/>
+    <s:link view="/login.xhtml" value="Login" rendered="#{not identity.loggedIn}" propagation="none"/>
+    <s:link view="/home.xhtml" action="#{identity.logout}" value="Logout" rendered="#{identity.loggedIn}" propagation="none"/>
+  </div>
+  <div id="loading_top_right">
     <a:status>
         <f:facet name="start">
             <h:graphicImage  value="/img/loading.gif"/>
         </f:facet>
     </a:status>
-    <h:outputText value="signed in as: #{identity.username} " rendered="#{identity.loggedIn}"/>
-    <s:link view="/login.xhtml" value="Login" rendered="#{not identity.loggedIn}" propagation="none"/>
-    <s:link view="/home.xhtml" action="#{identity.logout}" value="Logout" rendered="#{identity.loggedIn}" propagation="none"/>
   </div>
   <ui:include src="menu.xhtml">
       <ui:param name="projectName" value="flies"/>
