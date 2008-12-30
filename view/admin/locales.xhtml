@@ -65,7 +65,9 @@
               <rich:tree style="width:300px" switchType="client">
                 <rich:recursiveTreeNodesAdaptor roots="#{localeList.resultList}" includedRoot="#{locale.parent eq null}" var="locale" nodes="#{locale.children}">
                   <rich:treeNode>
-                      <h:outputText value="#{locale.name}" />
+                    #{locale.name}
+                    <br/>
+                    <em>#{locale.localeId}</em>
                   </rich:treeNode>
                 </rich:recursiveTreeNodesAdaptor>
               </rich:tree>
