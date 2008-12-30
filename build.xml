@@ -16,11 +16,12 @@
     <property name="lib.dir" value="lib"/>
     <property name="endorsed.dir" value="${lib.dir}/endorsed"/>
     <property name="ear.dir" value="exploded-archives/${project.name}.ear"/>
-    <property name="jar.dir" value="exploded-archives/${project.name}.jar"/>
-    <property name="war.dir" value="exploded-archives/${project.name}.war"/>
+    <property name="jar.dir" value="${ear.dir}/${project.name}.jar"/>
+    <property name="war.dir" value="${ear.dir}/${project.name}.war"/>
     <property name="test.dir" value="test-build"/>
     <property name="bootstrap.dir" value="${basedir}/bootstrap"/>
-    <property name="deploy.dir" value="${jboss.home}/server/default/deploy"/>
+    <property name="jboss.domain" value="default"/>
+    <property name="deploy.dir" value="${jboss.home}/server/${jboss.domain}/deploy"/>
     <property name="ear.deploy.dir" value="${deploy.dir}/${project.name}.ear"/>
     <property name="jar.deploy.dir" value="${ear.deploy.dir}/${project.name}.jar"/>
     <property name="war.deploy.dir" value="${ear.deploy.dir}/${project.name}.war"/>
@@ -28,13 +29,13 @@
     <property name="javac.debug" value="true"/>
     <property name="javac.deprecation" value="false"/>
     <property name="debug" value="false"/>
-	
+
     <!--Properties for validating configuration files -->
     <property name="validate.resources.dir" value="${basedir}/exploded-archives"/>
     <property name="schema.dir" value="${basedir}/exploded-archives/schemas"/>
     <property name="src.schema.dir" value="${schema.dir}/org/jboss/seam"/>
     <property name="schema.version" value="2.1"/>
-	
+
     <fileset id="lib" dir="${lib.dir}">
         <include name="*.jar"/>
     </fileset>
@@ -44,7 +45,7 @@
     </path>
 
     <property name="deps.repo" value="http://asgeirf.fedorapeople.org/flies-deps"/>
-    <property name="deps.version" value="1.0"/>
+    <property name="deps.version" value="1.1"/>
 
     <target name="init-deps">
         <available property="deps.installed" value="true" file="${lib.dir}/flies-deps-${deps.version}" type="file"/>
@@ -132,9 +133,9 @@
 
     <target name="groovy.copy" if="groovy.dynamic">
         <copy todir="${jar.dir}">
-        <fileset dir="${src.action.dir}">
-            <include name="**/*.groovy"/>
-        </fileset>
+            <fileset dir="${src.action.dir}">
+                <include name="**/*.groovy"/>
+            </fileset>
         </copy>
     </target>
 
@@ -170,6 +171,9 @@
             <fileset dir="${basedir}/resources">
                 <include name="seam.properties"/>
                 <include name="*.drl"/>
+            </fileset>
+            <fileset dir="${src.model.dir}">
+                <include name="**/*.component.xml" />
             </fileset>
         </copy>
         <copy todir="${jar.dir}/META-INF">
@@ -217,6 +221,11 @@
             <fileset dir="${basedir}/resources">
                 <include name="**/*.xcss"/>
             </fileset>
+            <!-- move XCSS into classpath for now
+                 loading from web context only works in JBoss AS 4 -->
+            <fileset dir="${basedir}/view">
+                <include name="**/*.xcss"/>
+            </fileset>
         </copy>
         <copy todir="${war.dir}/WEB-INF/classes">
             <fileset dir="${basedir}/resources">
@@ -251,12 +260,17 @@
         </copy>
     </target>
 
-    <target name="archive" depends="jar,war,ear"
+    <target name="stage" depends="jar,war,ear"/>
+
+    <target name="archive" depends="stage"
         description="Package the archives">
         <jar jarfile="${dist.dir}/${project.name}.jar" basedir="${jar.dir}"/>
         <jar jarfile="${dist.dir}/${project.name}.war" basedir="${war.dir}"/>
         <jar jarfile="${dist.dir}/${project.name}.ear">
-            <fileset dir="${ear.dir}"/>
+            <fileset dir="${ear.dir}">
+                <exclude name="${project.name}.jar/**"/>
+                <exclude name="${project.name}.war/**"/>
+            </fileset>
             <fileset dir="${dist.dir}">
                 <include name="${project.name}.jar"/>
                 <include name="${project.name}.war"/>
@@ -266,26 +280,15 @@
 
     <target name="datasource">
         <fail unless="jboss.home">jboss.home not set</fail>
-        <copy todir="${deploy.dir}">
-            <fileset dir="${basedir}/resources">
-                <include name="${project.name}-${profile}-ds.xml"/>
-            </fileset>
-        </copy>
+        <copy file="${basedir}/resources/${project.name}-${profile}-ds.xml"
+            tofile="${deploy.dir}/${project.name}-ds.xml"
+            overwrite="true"/>
     </target>
 
-    <target name="explode" depends="jar,war,ear,datasource"
+    <target name="explode" depends="stage,datasource"
         description="Deploy the exploded archive">
         <fail unless="jboss.home">jboss.home not set</fail>
 
-        <mkdir dir="${jar.deploy.dir}"/>
-        <mkdir dir="${war.deploy.dir}"/>
-
-        <copy todir="${jar.deploy.dir}">
-            <fileset dir="${jar.dir}"/>
-        </copy>
-        <copy todir="${war.deploy.dir}">
-            <fileset dir="${war.dir}"/>
-        </copy>
         <copy todir="${ear.deploy.dir}">
             <fileset dir="${ear.dir}"/>
         </copy>
@@ -297,7 +300,7 @@
                 <exclude name="**/*.jar"/>
             </fileset>
         </delete>
-        <delete file="${deploy.dir}/${project.name}-${profile}-ds.xml" failonerror="no"/>
+        <delete file="${deploy.dir}/${project.name}-ds.xml" failonerror="no"/>
         <delete dir="${ear.deploy.dir}" failonerror="no"/>
     </target>
 
@@ -329,8 +332,7 @@
 
     <target name="undeploy" description="Undeploy the packaged archive">
         <delete file="${deploy.dir}/${project.name}.ear"/>
-        <delete file="${deploy.dir}/${project.name}-dev-ds.xml"/>
-        <delete file="${deploy.dir}/${project.name}-prod-ds.xml"/>
+        <delete file="${deploy.dir}/${project.name}-ds.xml"/>
     </target>
 
     <target name="redeploy" depends="undeploy,clean,deploy"
@@ -418,6 +420,13 @@
     </target>
 
     <target name="test" depends="buildtest" description="Run the tests">
+        <condition property="incompatible.jdk">
+            <and>
+                <equals arg1="${ant.java.version}" arg2="1.6"/>
+                <not><available classname="javax.xml.bind.JAXB"/></not>
+            </and>
+        </condition>
+        <fail if="incompatible.jdk">You are using an incompatible JDK 6. Please use Sun JDK 6 Update 4 (1.6.0_04) or newer or use Open JDK 6.</fail>
         <taskdef resource="testngtasks" classpath="${testng.jar}"/>
         <path id="test.path">
             <path path="${test.dir}"/>
@@ -447,7 +456,10 @@
         </javadoc>
     </target>
 
-    <target name="validateConfiguration" depends="war,ear,jar" description="Validate the xml configuration files">
+    <!-- deprecated -->
+    <target name="validateConfiguration" depends="validate"/>
+
+    <target name="validate" depends="stage" description="Validate the XML configuration files">
         <mkdir dir="${schema.dir}"/>
         <unjar src="${lib.dir}/jboss-seam.jar" dest="${schema.dir}">
             <patternset>
