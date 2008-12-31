@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:root 
+	xmlns:f="http://ajax4jsf.org/cdk/template" 
+	xmlns:c=" http://java.sun.com/jsf/core" 
+	xmlns:ui=" http://ajax4jsf.org/cdk/ui"
+	xmlns:u=" http://ajax4jsf.org/cdk/u"
+	xmlns:x=" http://ajax4jsf.org/cdk/x"
+	class="org.fedorahosted.flies.renderkit.html.TranslationStatusBarRenderer"
+	baseclass="org.ajax4jsf.renderkit.AjaxComponentRendererBase"
+	component="org.fedorahosted.flies.component.UITranslationStatusBar" 
+	>
+	<f:clientid var="clientId"/>
+	<div id="#{clientId}"
+		x:passThruWithExclusions="value,name,type,id"
+		>
+	</div>
+</f:root>
