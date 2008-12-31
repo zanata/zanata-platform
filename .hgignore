@@ -1,6 +1,6 @@
 syntax: glob
 *~
-
+*/target/*
 syntax: regexp
 ^\.pc/
 ^lib/
@@ -9,3 +9,4 @@ syntax: regexp
 ^classes/
 ^flies-deps-[0-9.\-_]*.zip
 ^build.properties
+
