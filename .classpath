@@ -42,5 +42,6 @@
 	<classpathentry kind="lib" path="lib/icu4j-4_0.jar"/>
 	<classpathentry kind="lib" path="lib/richfaces-ui.jar"/>
 	<classpathentry kind="lib" path="lib/richfaces-impl.jar"/>
+	<classpathentry kind="lib" path="lib/flies-richfaces-ui-1.0-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="test-build"/>
 </classpath>
