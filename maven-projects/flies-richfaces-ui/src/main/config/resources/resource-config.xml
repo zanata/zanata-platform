@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource-config>
+    <resource>
+        <name>org/fedorahosted/flies/renderkit/html/images/bar.png</name>
+        <path>org/fedorahosted/flies/renderkit/html/images/bar.png</path>
+    </resource>
+    <resource>
+        <name>org/fedorahosted/flies/renderkit/html/css/translationStatusBar.xcss</name>
+        <path>org/fedorahosted/flies/renderkit/html/css/translationStatusBar.xcss</path>
+    </resource>
+</resource-config>

@@ -28,7 +28,7 @@
           <library>
             <prefix>org.fedorahosted.flies</prefix>
             <taglib>
-              <shortName>translation-status-bar</shortName>
+              <shortName>flies-richfaces-ui</shortName>
             </taglib>
           </library>
         </configuration>

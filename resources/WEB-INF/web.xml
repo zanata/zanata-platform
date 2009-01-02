@@ -27,12 +27,16 @@
 
    <context-param>
       <param-name>org.richfaces.LoadStyleStrategy</param-name>
-      <param-value>ALL</param-value>
+      <!-- 
+      TODO: When this is set to all, css from custom Richfaces components
+            such as flies-richfaces-ui components are not loaded.
+      -->
+      <param-value>DEFAULT</param-value>
    </context-param>
 
    <context-param>
       <param-name>org.richfaces.LoadScriptStrategy</param-name>
-      <param-value>ALL</param-value>
+      <param-value>DEFAULT</param-value>
    </context-param>
 
    <!-- Seam -->

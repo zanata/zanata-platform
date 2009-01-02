@@ -6,6 +6,7 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
+    xmlns:flies="http://flies.fedorahosted.org/ui"
     template="layout/template.xhtml">
     
     <ui:define name="right_content">
@@ -13,6 +14,19 @@
         <ui:include src="login_form.xhtml"/>
       </s:fragment>
 
+      <h2>Flies UI test</h2>
+        <flies:translation-status-bar translated="100" fuzzy="0" untranslated="0"/>
+        <flies:translation-status-bar translated="90" fuzzy="0" untranslated="10"/>
+        <flies:translation-status-bar translated="80" fuzzy="0" untranslated="20"/>
+        <flies:translation-status-bar translated="70" fuzzy="0" untranslated="30"/>
+        <flies:translation-status-bar translated="60" fuzzy="0" untranslated="40"/>
+        <flies:translation-status-bar translated="50" fuzzy="0" untranslated="50"/>
+        <flies:translation-status-bar translated="40" fuzzy="0" untranslated="60"/>
+        <flies:translation-status-bar translated="30" fuzzy="0" untranslated="70"/>
+        <flies:translation-status-bar translated="20" fuzzy="0" untranslated="80"/>
+        <flies:translation-status-bar translated="10" fuzzy="0" untranslated="90"/>
+        <flies:translation-status-bar translated="0" fuzzy="0" untranslated="100"/>
+        <flies:translation-status-bar translated="0" fuzzy="0" untranslated="-100"/>
       <h2 id="xxx">Content:</h2>
       <ul>
         <li>Link to Register new user</li>

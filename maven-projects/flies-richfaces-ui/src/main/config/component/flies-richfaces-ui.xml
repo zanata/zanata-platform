@@ -2,40 +2,51 @@
 <!DOCTYPE components PUBLIC "-//AJAX4JSF//CDK Generator config/EN"  "http://labs.jboss.com/jbossrichfaces/component-config.dtd">
 
 <components>
-	<component>
-		<name>org.fedorahosted.flies.TranslationStatusBar</name>
-		<family>org.fedorahosted.flies.TranslationStatusBar</family>
-		<classname>org.fedorahosted.flies.component.html.HtmlTranslationStatusBar</classname>
-		<superclass>org.fedorahosted.flies.component.UITranslationStatusBar</superclass>
-		<description>
-			<![CDATA[
+  <component>
+    <name>org.fedorahosted.flies.TranslationStatusBar</name>
+    <family>org.fedorahosted.flies.TranslationStatusBar</family>
+    <classname>org.fedorahosted.flies.component.html.HtmlTranslationStatusBar</classname>
+    <superclass>org.fedorahosted.flies.component.UITranslationStatusBar</superclass>
+    <description>
+    <![CDATA[
     ]]>
-		</description>
-		<renderer generate="true" override="true">
-			<name>org.fedorahosted.flies.TranslationStatusBarRenderer</name>
-			<template>org/fedorahosted/flies/htmlTranslationStatusBar.jspx</template>
-		</renderer>
-		<tag>
-			<name>translation-status-bar</name>
-			<classname>org.fedorahosted.flies.taglib.TranslationStatusBarTag</classname>
-			<superclass>
-				org.ajax4jsf.webapp.taglib.HtmlComponentTagBase
-			</superclass>
-		</tag>
-		<!--
-		<taghandler>
-			<classname>org.ajax4jsf.tag.TestHandler</classname>
-		</taghandler>
-		-->
-		&ui_component_attributes;
-		<!--
-		<property>
-			<name>param</name>
-			<classname>java.lang.String</classname>
-			<description>
-			</description>
-			<defaultvalue>"default"</defaultvalue>
-		</property>
-        -->
-	</component>
+    </description>
+    <renderer generate="true" override="true">
+      <name>org.fedorahosted.flies.TranslationStatusBarRenderer</name>
+      <template>org/fedorahosted/flies/htmlTranslationStatusBar.jspx</template>
+    </renderer>
+    <tag>
+      <name>translation-status-bar</name>
+      <classname>org.fedorahosted.flies.taglib.TranslationStatusBarTag</classname>
+      <superclass>
+        org.ajax4jsf.webapp.taglib.HtmlComponentTagBase
+      </superclass>
+    </tag>
+    <!--
+      <taghandler> <classname>org.ajax4jsf.tag.TestHandler</classname>
+      </taghandler>
+    -->
+    &ui_component_attributes;
+    <property>
+      <name>translated</name>
+      <classname>int</classname>
+      <description>
+      </description>
+      <defaultvalue>0</defaultvalue>
+    </property>
+    <property>
+      <name>untranslated</name>
+      <classname>int</classname>
+      <description>
+      </description>
+      <defaultvalue>0</defaultvalue>
+    </property>
+    <property>
+      <name>fuzzy</name>
+      <classname>int</classname>
+      <description>
+      </description>
+      <defaultvalue>0</defaultvalue>
+    </property>
+  </component>
 </components>
