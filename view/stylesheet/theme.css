@@ -342,4 +342,75 @@ table.fullwidth {
 }
 
 
+.resource-by-category-panel{
+	background-color: #fafafa;
+	border: 1px solid #efefef;
+	padding: 4px;
+    -moz-border-radius: 8px;
+    overflow: hidden;
+}
+
+.resource-by-category-panel .header{
+	display: block;
+	padding: 0px;
+	margin: 0px;
+	margin-bottom: 5px;
+	width: 100%;
+}
+
+.resource-by-category-panel .header h2{
+	float: left;
+	margin: 0px;
+	padding: 0px;
+	padding-right: 10px;
+}
+
+.resource-by-category-panel .header h2.cat-documentation{
+	padding-left: 24px;
+	background: transparent url("../img/cat-documentation.png") no-repeat;
+}
+
+
+.resource-by-category-panel .summary{
+	display: block;
+	font-style: italic;
+	margin-top: 2px;
+	margin-bottom: 4px;
+	font-size: 10px;
+	color: grey;
+}
+.resource-by-category-panel .header .status-bar{
+	float: right;
+	margin: 0px;
+	padding: 0px;
+}
+
+.resource-by-category-panel .toolbar{
+	display: block;
+	width: 100%;
+	margin-bottom: 5px;
+}
+
+.resource-by-category-panel .toolbar .actions{
+	float: left;
+}
+
+
+.resource-by-category-panel .toolbar .expand{
+	float: right;
+	font-style: italic;
+	font-size: 10px;
+	color: grey;
+}
+
+.resource-by-category-panel .toolbar .expand img{
+	margin-bottom: -5px;
+}
+
+.resource-by-category-panel .expanded-content{
+	padding: 5px;
+	margin-top: 10px;
+}
+
+
 /* --> */

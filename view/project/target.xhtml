@@ -6,45 +6,109 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
+    xmlns:flies="http://flies.fedorahosted.org/ui"
     template="../layout/template.xhtml">
 
 <ui:define name="center_content">
-    <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
+  <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
 
-    <h1>#{projectHome.instance.name}</h1>
+  <h1>#{projectHome.instance.name} : #{targetHome.instance.name}</h1>
 
-    <s:formattedText id="project-long-description" value="#{projectHome.instance.longDescription}"></s:formattedText>
-    <h:outputText value="#{projectHome.instance.shortDescription}" rendered="#{empty projectHome.instance.longDescription}"/>
+  <s:formattedText id="project-long-description" value="#{projectHome.instance.longDescription}"></s:formattedText>
+  <h:outputText value="#{projectHome.instance.shortDescription}" rendered="#{empty projectHome.instance.longDescription}"/>
 
+  <h:form>
+    <div class="resource-by-category-panel">
+      <div class="header">
+        <h2 class="cat-documentation">Documentation</h2>
+        <div class="status-bar">
+          <flies:translation-status-bar translated="100" fuzzy="0" untranslated="23"/>
+        </div>
+        <div style="clear: both;"/>
+      </div>
+      <div class="summary">
+        blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah 
+      </div>
+      <div class="toolbar">
+        <div class="actions">
+          <s:link view="/home.xhtml">Translate</s:link> &nbsp;|&nbsp; 
+          <s:link view="/home.xhtml">Download Archive</s:link> &nbsp;|&nbsp; 
+          <s:link view="/home.xhtml">More...</s:link>
+        </div>
+        <div class="expand">
+          1 File 
+          <a href="#" id="aShowDiv" onclick="showDiv();hideShow();showHide();" title="Expand!">
+            <h:graphicImage value="/img/expand.png"/>
+          </a>
+          <a href="#" id="aHideDiv" onclick="hideDiv();hideHide();showShow();" style="display:none;" title="Hide!">
+            <h:graphicImage value="/img/collapse.png"/>
+          </a>
+        </div>
+        <div style="clear: both;"/>
+      </div>
+      <rich:effect name="showHide"  for="aHideDiv"  type="Appear" params="delay:0.2,duration:0.4" />
+      <rich:effect name="hideHide"  for="aHideDiv"  type="Fade" params="duration:0.2" />
+      <rich:effect name="showShow"  for="aShowDiv"  type="Appear" params="delay:0.2,duration:0.4" />
+      <rich:effect name="hideShow"  for="aShowDiv"  type="Fade" params="duration:0.2" />
+
+      <rich:effect name="hideDiv" for="eContent" type="BlindUp" params="duration:0.2" />
+      <rich:effect name="showDiv" for="eContent" type="BlindDown" params="duration:0.2" />
+      <rich:panel id="eContent" styleClass="expanded-content" style="display:none;">
+        Here be content! Here be content! Here be content! Here be content! Here be content! Here be content!
+        <br/> 
+        Here be content! Here be content! Here be content! Here be content! Here be content! Here be content!
+        <br/> 
+        Here be content! Here be content! Here be content! Here be content! Here be content! Here be content!
+        <br/> 
+        Here be content! Here be content! Here be content! Here be content! Here be content! Here be content!
+        <br/> 
+        Here be content! Here be content! Here be content! Here be content! Here be content! Here be content!
+        <br/> 
+        Here be content! Here be content! Here be content! Here be content! Here be content! Here be content!
+        <br/> 
+        Here be content! Here be content! Here be content! Here be content! Here be content! Here be content!
+        <br/> 
+        Here be content! Here be content! Here be content! Here be content! Here be content! Here be content!
+        <br/> 
+        Here be content! Here be content! Here be content! Here be content! Here be content! Here be content!
+        <br/> 
+        Here be content! Here be content! Here be content! Here be content! Here be content! Here be content!
+        <br/> 
+        Here be content! Here be content! Here be content! Here be content! Here be content! Here be content!
+        <br/> 
+        Here be content! Here be content! Here be content! Here be content! Here be content! Here be content!
+        <br/> 
+        Here be content! Here be content! Here be content! Here be content! Here be content! Here be content!
+        <br/> 
+        Here be content! Here be content! Here be content! Here be content! Here be content! Here be content!
+        <br/> 
+      </rich:panel>
+    </div>
+  </h:form>
 </ui:define>
 
-<ui:define name="right_content">
-  <rich:panel>
-    <f:facet name="header">Targets</f:facet>
-    <rich:dataList value="#{projectHome.instance.projectTargets}" var="target">
-      <h:outputText value="#{target.name}"/>
-      <rich:dataList value="#{projectHome.instance.projectTargets}" var="target">
-        <h:outputText value="#{target.name}"/>
-      </rich:dataList>
-    </rich:dataList>
-  </rich:panel>
-  
-  <rich:panel>
-    <f:facet name="header">Recent Activity</f:facet>
-    <rich:dataList value="#{projectHome.instance.projectSeries}" var="series">
-      <h:outputText value="#{series.name}"/>
-    </rich:dataList>
-  </rich:panel>
-  
-  
-</ui:define>
+    <ui:define name="right_content">
 
-<ui:define name="left_content">
-  <rich:panel>
-    <f:facet name="header">Actions</f:facet>
-      <h:outputText value="Edit Project Description"/><br/>
-  </rich:panel>
-  
-</ui:define>
+      <h2>Flies UI test</h2>
+        <flies:translation-status-bar translated="100" fuzzy="0" untranslated="0"/>
+        <flies:translation-status-bar translated="90" fuzzy="0" untranslated="10"/>
+        <flies:translation-status-bar translated="80" fuzzy="0" untranslated="20"/>
+        <flies:translation-status-bar translated="70" fuzzy="0" untranslated="30"/>
+        <flies:translation-status-bar translated="60" fuzzy="0" untranslated="40"/>
+        <flies:translation-status-bar translated="50" fuzzy="0" untranslated="50"/>
+        <flies:translation-status-bar translated="40" fuzzy="0" untranslated="60"/>
+        <flies:translation-status-bar translated="30" fuzzy="0" untranslated="70"/>
+        <flies:translation-status-bar translated="20" fuzzy="0" untranslated="80"/>
+        <flies:translation-status-bar translated="10" fuzzy="0" untranslated="90"/>
+        <flies:translation-status-bar translated="0" fuzzy="0" untranslated="100"/>
+        <flies:translation-status-bar translated="0" fuzzy="0" untranslated="-100"/>
+      <h2 id="xxx">Content:</h2>
+      <ul>
+        <li>Link to Register new user</li>
+        <li>Latest registered projects</li>
+        <li>Latest translation activity</li>
+      </ul>
+    </ui:define>
+
 
 </ui:composition>
