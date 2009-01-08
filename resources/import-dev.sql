@@ -27,7 +27,9 @@ insert into ProjectTarget (id, projectSeriesId, projectId, name, version) values
 
 insert into ProjectTarget (id, projectSeriesId, projectId, name, version) values (3, 2, 2, '1.0', 0);
 
-
+insert into ResourceCategory(id, version, name) values(1, 1, 'Documentation');
+insert into ResourceCategory(id, version, name) values(2, 1, 'User Interface');
+insert into ResourceCategory(id, version, name) values(3, 1, 'Website');
 
 insert into Locale(id, version, localeId, name, nativeName, countryCode, languageCode, script, rightToLeft, variant) values(1, 0, 'af', 'Afrikaans', 'Afrikaans', '', 'af', NULL, FALSE, '')
 insert into Locale(id, version, localeId, name, nativeName, countryCode, languageCode, script, rightToLeft, variant) values(2, 0, 'af_NA', 'Afrikaans (Namibia)', 'Afrikaans (Namibië)', 'NA', 'af', NULL, FALSE, '')

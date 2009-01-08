@@ -10,8 +10,8 @@ import javax.persistence.OneToMany;
 @Entity
 public class TextFlowTemplate extends AbstractTextFlow{
 
-	List<TextFlowTarget> targets;
-	DocumentTemplate documentTemplate;
+	private List<TextFlowTarget> targets;
+	private DocumentTemplate documentTemplate;
 	
 	@OneToMany(mappedBy="template")
 	public List<TextFlowTarget> getTargets() {

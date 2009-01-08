@@ -11,10 +11,6 @@ public abstract class AbstractProjectAdapter implements IProjectAdapter{
 		this.basePath = basePath;
 	}
 	
-	public boolean isWritable() {
-		return false;
-	}
-	
 	public File getBasePath() {
 		return basePath;
 	}

@@ -8,8 +8,8 @@ import javax.persistence.OneToMany;
 @Entity
 public class TextFlowTarget extends AbstractTextFlow{
 
-	DocumentTarget documentTarget;
-	TextFlowTemplate template;
+	private DocumentTarget documentTarget;
+	private TextFlowTemplate template;
 	
 	@ManyToOne
 	@JoinColumn(name="template_id")

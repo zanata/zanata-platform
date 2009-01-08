@@ -122,6 +122,7 @@ public class PublicanProjectAdapter extends AbstractProjectAdapter{
 		for(String resource : adaptor.getResources()){
 			System.out.println(resource + StringUtils.join(adaptor.getTargetLanguages(resource),","));
 		}
+		System.out.println(adaptor.getBookName());
 	}
 	
 	public String getSourceLanguage(){
@@ -153,5 +154,13 @@ public class PublicanProjectAdapter extends AbstractProjectAdapter{
 		}
 		return brandName; 
 	}
+
+	public String getBookName(){
+		return getBasePath().getName();
+	}
 	
+	public static String getPublicanVersion(){
+		// TODO : parse output of rpm 
+		throw new AdapterException("Unable to retrieve version.");
+	}
 }

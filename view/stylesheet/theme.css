@@ -403,6 +403,22 @@ table.fullwidth {
 	color: grey;
 }
 
+.resource-name{
+	font-size: 14pt;
+	color: grey;
+	font-style: italic;
+}
+
+.resources-panel{
+	margin: 0px;
+	padding: 0px;
+	border: none;
+}
+
+.actions{
+	font-size: 10pt;
+}
+
 .resource-by-category-panel .toolbar .expand img{
 	margin-bottom: -5px;
 }

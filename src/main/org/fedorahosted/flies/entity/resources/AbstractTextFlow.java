@@ -3,15 +3,29 @@ package org.fedorahosted.flies.entity.resources;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Version;
 
-@Entity
+@MappedSuperclass
 public abstract class AbstractTextFlow implements Serializable{
 	
-	Long id;
-	String content;
+	private Long id;
+    private Integer version;
+	private String content;
 
-	@Id
+	private Integer documentRevision;
+	
+	public Integer getDocumentRevision() {
+		return documentRevision;
+	}
+	
+	public void setDocumentRevision(Integer documentRevision) {
+		this.documentRevision = documentRevision;
+	}
+	
+	@Id @GeneratedValue
 	public Long getId() {
 		return id;
 	}
@@ -19,6 +33,16 @@ public abstract class AbstractTextFlow implements Serializable{
 	private void setId(Long id) {
 		this.id = id;
 	}	
+
+    @Version
+    public Integer getVersion() {
+        return version;
+    }
+
+    private void setVersion(Integer version) {
+        this.version = version;
+    }
+	
 	
 	public void setContent(String content) {
 		this.content = content;

@@ -4,19 +4,23 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Version;
 
 @Entity
 public class DocumentTarget implements Serializable{
 
-	Long id;
-	DocumentTemplate template;
-	List<TextFlowTarget> entries;
+	private Long id;
+    private Integer version;
 
-	@Id
+	private DocumentTemplate template;
+	private List<TextFlowTarget> entries;
+
+	@Id @GeneratedValue
 	public Long getId() {
 		return id;
 	}
@@ -25,6 +29,14 @@ public class DocumentTarget implements Serializable{
 		this.id = id;
 	}
 	
+    @Version
+    public Integer getVersion() {
+        return version;
+    }
+
+    private void setVersion(Integer version) {
+        this.version = version;
+    }
 	
 	@ManyToOne
 	@JoinColumn(name="template_id")

@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
 
+import org.fedorahosted.flies.entity.resources.DocumentTemplate;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;
 
@@ -21,12 +22,15 @@ public class ProjectTarget implements Serializable{
     private Integer version;
     private String name;
 
+    private String description;
+    
     private ProjectSeries projectSeries;
     
     private Project project;
 
     private ProjectTarget parent;
     private List<ProjectTarget> children;
+    private List<DocumentTemplate> documents;
     
     @Id @GeneratedValue
     public Long getId() {
@@ -55,6 +59,14 @@ public class ProjectTarget implements Serializable{
         this.name = name;
     }
 
+    public String getDescription() {
+		return description;
+	}
+    
+    public void setDescription(String description) {
+		this.description = description;
+	}
+    
     @ManyToOne
     @JoinColumn(name="projectSeriesId")
     @NotNull
@@ -93,6 +105,15 @@ public class ProjectTarget implements Serializable{
     
     public void setParent(ProjectTarget parent) {
 		this.parent = parent;
+	}
+    
+    @OneToMany(mappedBy="projectTarget")
+    public List<DocumentTemplate> getDocuments() {
+		return documents;
+	}
+    
+    public void setDocuments(List<DocumentTemplate> documents) {
+		this.documents = documents;
 	}
     
 }

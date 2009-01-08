@@ -12,10 +12,13 @@
 <ui:define name="center_content">
   <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
 
-  <h1>#{projectHome.instance.name} : #{targetHome.instance.name}</h1>
+  <h1>#{targetHome.instance.project.name} : #{targetHome.instance.name}</h1>
 
-  <s:formattedText id="project-long-description" value="#{projectHome.instance.longDescription}"></s:formattedText>
-  <h:outputText value="#{projectHome.instance.shortDescription}" rendered="#{empty projectHome.instance.longDescription}"/>
+  <s:formattedText id="project-long-description" value="#{targetHome.instance.project.longDescription}"></s:formattedText>
+  <h:outputText value="#{targetHome.instance.project.shortDescription}" rendered="#{empty targetHome.instance.project.longDescription}"/>
+
+  <h2>TEST</h2>
+  <h2>END TEST</h2>
 
   <h:form>
     <div class="resource-by-category-panel">
@@ -26,9 +29,9 @@
         </div>
         <div style="clear: both;"/>
       </div>
-      <div class="summary">
-        blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah 
-      </div>
+      <s:div styleClass="summary" rendered="#{not empty targetHome.instance.description}">
+        #{targetHome.instance.description}
+      </s:div>
       <div class="toolbar">
         <div class="actions">
           <s:link view="/home.xhtml">Translate</s:link> &nbsp;|&nbsp; 
@@ -36,7 +39,7 @@
           <s:link view="/home.xhtml">More...</s:link>
         </div>
         <div class="expand">
-          1 File 
+          #{targetHome.instance.documents.size} File(s) 
           <a href="#" id="aShowDiv" onclick="showDiv();hideShow();showHide();" title="Expand!">
             <h:graphicImage value="/img/expand.png"/>
           </a>
@@ -53,62 +56,34 @@
 
       <rich:effect name="hideDiv" for="eContent" type="BlindUp" params="duration:0.2" />
       <rich:effect name="showDiv" for="eContent" type="BlindDown" params="duration:0.2" />
-      <rich:panel id="eContent" styleClass="expanded-content" style="display:none;">
-        Here be content! Here be content! Here be content! Here be content! Here be content! Here be content!
-        <br/> 
-        Here be content! Here be content! Here be content! Here be content! Here be content! Here be content!
-        <br/> 
-        Here be content! Here be content! Here be content! Here be content! Here be content! Here be content!
-        <br/> 
-        Here be content! Here be content! Here be content! Here be content! Here be content! Here be content!
-        <br/> 
-        Here be content! Here be content! Here be content! Here be content! Here be content! Here be content!
-        <br/> 
-        Here be content! Here be content! Here be content! Here be content! Here be content! Here be content!
-        <br/> 
-        Here be content! Here be content! Here be content! Here be content! Here be content! Here be content!
-        <br/> 
-        Here be content! Here be content! Here be content! Here be content! Here be content! Here be content!
-        <br/> 
-        Here be content! Here be content! Here be content! Here be content! Here be content! Here be content!
-        <br/> 
-        Here be content! Here be content! Here be content! Here be content! Here be content! Here be content!
-        <br/> 
-        Here be content! Here be content! Here be content! Here be content! Here be content! Here be content!
-        <br/> 
-        Here be content! Here be content! Here be content! Here be content! Here be content! Here be content!
-        <br/> 
-        Here be content! Here be content! Here be content! Here be content! Here be content! Here be content!
-        <br/> 
-        Here be content! Here be content! Here be content! Here be content! Here be content! Here be content!
-        <br/> 
+      <rich:panel id="eContent" styleClass="resources-panel" style="display:none;">
+        
+        <rich:dataTable value="#{targetHome.instance.documents}" 
+          var="document" width="100%" rows="50" reRender="ds">
+          <rich:column width="100%" sortBy="#{document.name}">
+            <f:facet name="header">
+              <h:outputText value="Name"/>
+            </f:facet>
+            <div class="resource-name">#{document.name}</div>
+            <div style="clear:both"/>
+            <div class="actions">
+              <a href="#">Translate</a> <a href="#">Export</a> <a href="#">Download</a> <a href="#">More...</a> 
+            </div>
+            
+          </rich:column>
+          <rich:column>
+            <f:facet name="header">
+              <h:outputText value="Status"/>
+            </f:facet>
+            <flies:translation-status-bar translated="20"/>
+          </rich:column>
+          <f:facet name="footer">
+            <rich:datascroller id="ds" rendered="#{targetHome.instance.documents.size > 50}"></rich:datascroller>
+          </f:facet>
+        </rich:dataTable>
       </rich:panel>
     </div>
   </h:form>
 </ui:define>
-
-    <ui:define name="right_content">
-
-      <h2>Flies UI test</h2>
-        <flies:translation-status-bar translated="100" fuzzy="0" untranslated="0"/>
-        <flies:translation-status-bar translated="90" fuzzy="0" untranslated="10"/>
-        <flies:translation-status-bar translated="80" fuzzy="0" untranslated="20"/>
-        <flies:translation-status-bar translated="70" fuzzy="0" untranslated="30"/>
-        <flies:translation-status-bar translated="60" fuzzy="0" untranslated="40"/>
-        <flies:translation-status-bar translated="50" fuzzy="0" untranslated="50"/>
-        <flies:translation-status-bar translated="40" fuzzy="0" untranslated="60"/>
-        <flies:translation-status-bar translated="30" fuzzy="0" untranslated="70"/>
-        <flies:translation-status-bar translated="20" fuzzy="0" untranslated="80"/>
-        <flies:translation-status-bar translated="10" fuzzy="0" untranslated="90"/>
-        <flies:translation-status-bar translated="0" fuzzy="0" untranslated="100"/>
-        <flies:translation-status-bar translated="0" fuzzy="0" untranslated="-100"/>
-      <h2 id="xxx">Content:</h2>
-      <ul>
-        <li>Link to Register new user</li>
-        <li>Latest registered projects</li>
-        <li>Latest translation activity</li>
-      </ul>
-    </ui:define>
-
 
 </ui:composition>

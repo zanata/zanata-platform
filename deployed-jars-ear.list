@@ -10,3 +10,4 @@ mvel14.jar
 richfaces-api.jar
 icu4j-4_0.jar
 mysql-connector-java-5.1.6.jar
+commons-lang.jar
