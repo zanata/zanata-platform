@@ -17,9 +17,6 @@
   <s:formattedText id="project-long-description" value="#{targetHome.instance.project.longDescription}"></s:formattedText>
   <h:outputText value="#{targetHome.instance.project.shortDescription}" rendered="#{empty targetHome.instance.project.longDescription}"/>
 
-  <h2>TEST</h2>
-  <h2>END TEST</h2>
-
   <h:form>
     <div class="resource-by-category-panel">
       <div class="header">
@@ -40,25 +37,18 @@
         </div>
         <div class="expand">
           #{targetHome.instance.documents.size} File(s) 
-          <a href="#" id="aShowDiv" onclick="showDiv();hideShow();showHide();" title="Expand!">
-            <h:graphicImage value="/img/expand.png"/>
-          </a>
-          <a href="#" id="aHideDiv" onclick="hideDiv();hideHide();showShow();" style="display:none;" title="Hide!">
-            <h:graphicImage value="/img/collapse.png"/>
-          </a>
+           <rich:toggleControl for="eContent" >
+             <h:graphicImage value="/img/expand.png" />
+           </rich:toggleControl>
         </div>
         <div style="clear: both;"/>
       </div>
-      <rich:effect name="showHide"  for="aHideDiv"  type="Appear" params="delay:0.2,duration:0.4" />
-      <rich:effect name="hideHide"  for="aHideDiv"  type="Fade" params="duration:0.2" />
-      <rich:effect name="showShow"  for="aShowDiv"  type="Appear" params="delay:0.2,duration:0.4" />
-      <rich:effect name="hideShow"  for="aShowDiv"  type="Fade" params="duration:0.2" />
-
-      <rich:effect name="hideDiv" for="eContent" type="BlindUp" params="duration:0.2" />
-      <rich:effect name="showDiv" for="eContent" type="BlindDown" params="duration:0.2" />
-      <rich:panel id="eContent" styleClass="resources-panel" style="display:none;">
-        
-        <rich:dataTable value="#{targetHome.instance.documents}" 
+    <rich:togglePanel id="eContent" switchType="ajax" stateOrder="closed,open" initialState="closed">
+     <f:facet name="closed">
+      <!-- Invisible -->
+     </f:facet>
+     <f:facet name="open">
+        <rich:dataTable value="#{targetHome.instance.documents}"
           var="document" width="100%" rows="50" reRender="ds">
           <rich:column width="100%" sortBy="#{document.name}">
             <f:facet name="header">
@@ -81,7 +71,9 @@
             <rich:datascroller id="ds" rendered="#{targetHome.instance.documents.size > 50}"></rich:datascroller>
           </f:facet>
         </rich:dataTable>
-      </rich:panel>
+     </f:facet>
+      
+    </rich:togglePanel>
     </div>
   </h:form>
 </ui:define>
