@@ -208,7 +208,7 @@ td.action a {
 }
 
 #loading_top_right {
-	position: absolute;
+	position: fixed;
 	right: 2px;
 	top: 2px;
 }
