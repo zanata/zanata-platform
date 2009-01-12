@@ -1,2 +1,2 @@
-jboss.home =/home/asgeirf/jdev/jboss-4.2.3.GA
+jboss.home =/usr/share/jboss-4.2.3.GA
 deps.repo=http://asgeirf.fedorapeople.org/flies-deps
