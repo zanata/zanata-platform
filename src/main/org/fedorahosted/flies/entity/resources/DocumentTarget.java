@@ -11,6 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
 
+import org.fedorahosted.flies.entity.locale.Locale;
+
 @Entity
 public class DocumentTarget implements Serializable{
 
@@ -18,8 +20,10 @@ public class DocumentTarget implements Serializable{
     private Integer version;
 
 	private Document template;
-	private List<TextUnit> entries;
+	private List<TextUnitTarget> entries;
 
+	private Locale locale;
+	
 	@Id @GeneratedValue
 	public Long getId() {
 		return id;
@@ -48,13 +52,24 @@ public class DocumentTarget implements Serializable{
 		this.template = template;
 	}
 	
-	@OneToMany(mappedBy="TargetDocument")
-	public List<TextUnit> getEntries() {
+	@OneToMany(mappedBy="documentTarget")
+	public List<TextUnitTarget> getEntries() {
 		return entries;
 	}
 	
-	public void setEntries(List<TextUnit> entries) {
+	public void setEntries(List<TextUnitTarget> entries) {
 		this.entries = entries;
+	}
+	
+	
+	@ManyToOne
+	@JoinColumn(name="locale_id")
+	public Locale getLocale() {
+		return locale;
+	}
+	
+	public void setLocale(Locale locale) {
+		this.locale = locale;
 	}
 	
 }

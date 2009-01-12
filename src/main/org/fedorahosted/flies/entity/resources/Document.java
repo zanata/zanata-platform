@@ -9,12 +9,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import org.fedorahosted.flies.entity.Project;
 import org.fedorahosted.flies.entity.ProjectTarget;
+import org.fedorahosted.flies.entity.locale.Locale;
 import org.hibernate.validator.Length;
-import org.hibernate.validator.Max;
 import org.hibernate.validator.NotEmpty;
 
 @Entity
@@ -27,15 +28,13 @@ public class Document implements Serializable{
     
     private String contentType;
     
-    
 	private List<DocumentTarget> targets;
-	private List<TextUnitTarget> entryTemplates;
+	private List<TextUnit> entries;
 
 	private Integer revision;
 	
 	private Project project;
 	private ProjectTarget projectTarget;
-	
 	
 	public Integer getRevision() {
 		return revision;
@@ -111,13 +110,21 @@ public class Document implements Serializable{
 		this.targets = targets;
 	}
 	
-	@OneToMany(mappedBy="documentTemplate")
-	public List<TextUnitTarget> getEntryTemplates() {
-		return entryTemplates;
+	@OneToMany(mappedBy="document")
+	public List<TextUnit> getEntries() {
+		return entries;
 	}
 	
-	public void setEntryTemplates(List<TextUnitTarget> entryTemplates) {
-		this.entryTemplates = entryTemplates;
+	public void setEntries(List<TextUnit> entries) {
+		this.entries = entries;
+	}
+	
+	@Transient
+	public DocumentTarget createTarget(Locale locale){
+		DocumentTarget target = new DocumentTarget();
+		target.setTemplate(this);
+		target.setLocale(locale);
+		return target;
 	}
 	
 	

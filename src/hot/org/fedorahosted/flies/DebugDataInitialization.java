@@ -2,6 +2,7 @@ package org.fedorahosted.flies;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -10,7 +11,9 @@ import org.fedorahosted.flies.entity.Project;
 import org.fedorahosted.flies.entity.ProjectSeries;
 import org.fedorahosted.flies.entity.ProjectTarget;
 import org.fedorahosted.flies.entity.resources.Document;
+import org.fedorahosted.flies.entity.resources.TextUnit;
 import org.fedorahosted.flies.entity.resources.TextUnitTarget;
+import org.fedorahosted.flies.entity.resources.TextUnitTarget.Status;
 import org.fedorahosted.flies.projects.publican.PublicanProjectAdapter;
 import org.fedorahosted.tennera.jgettext.Catalog;
 import org.fedorahosted.tennera.jgettext.Message;
@@ -73,6 +76,8 @@ public class DebugDataInitialization {
 	   log.info("*************************** end observing!");
       // Do your initialization here
 
+	   List<String> guResources = adapter.getResources("gu-IN");
+	   
 	   for(String resource : adapter.getResources()){
 		   final Document template = new Document();
 		   template.setRevision(1);
@@ -82,7 +87,19 @@ public class DebugDataInitialization {
 		   template.setContentType("pot");
 		   entityManager.persist(template);
 		   
-		   File poFile = new File(new File(basePath, adapter.getResourceBasePath()), resource);
+		   
+		   
+		   File poFile;
+		   final boolean foundTargetLangResource;
+		   if(guResources.contains(resource)){
+			   poFile= new File(new File(basePath, adapter.getResourceBasePath("gu-IN")), resource);
+			   foundTargetLangResource = true;
+		   }
+		   else{
+			   poFile= new File(new File(basePath, adapter.getResourceBasePath()), resource);
+			   foundTargetLangResource = false;
+		   }
+		   
 		   
 		   log.info("Importing resource {0}", resource);
 		   try{
@@ -93,11 +110,20 @@ public class DebugDataInitialization {
 					public void processMessage(Message message) {
 						if(!message.isHeader()){
 							// create Template...
-							TextUnitTarget tf = new TextUnitTarget();
-							tf.setDocumentTemplate(template);
-							tf.setContent(message.getMsgid());
-							tf.setDocumentRevision(template.getRevision());
-							entityManager.persist(tf);
+							TextUnit tu = new TextUnit();
+							tu.setDocument(template);
+							tu.setContent(message.getMsgid());
+							tu.setDocumentRevision(template.getRevision());
+							entityManager.persist(tu);
+							
+							if(foundTargetLangResource){
+								TextUnitTarget target = new TextUnitTarget();
+								target.setDocumentRevision(template.getRevision());
+								target.setStatus(Status.Approved);
+								target.setTemplate(tu);
+								target.setContent(message.getMsgstr());
+								entityManager.persist(target);
+							}
 						}
 			    		log.info(message.getMsgid());
 					}

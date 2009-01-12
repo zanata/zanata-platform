@@ -8,6 +8,9 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
+import org.hibernate.annotations.Type;
+import org.hibernate.validator.Length;
+
 @MappedSuperclass
 public abstract class AbstractTextUnit implements Serializable{
 	
@@ -48,6 +51,7 @@ public abstract class AbstractTextUnit implements Serializable{
 		this.content = content;
 	}
 	
+	@Type(type="text")
 	public String getContent() {
 		return content;
 	}

@@ -1,34 +1,39 @@
 package org.fedorahosted.flies.entity.resources;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
+
+import org.fedorahosted.flies.entity.locale.Locale;
 
 @Entity
 public class TextUnit extends AbstractTextUnit{
 
-	private DocumentTarget documentTarget;
-	private TextUnitTarget template;
-	
-	@ManyToOne
-	@JoinColumn(name="template_id")
-	public TextUnitTarget getTemplate() {
-		return template;
-	}
-	
-	public void setTemplate(TextUnitTarget template) {
-		this.template = template;
-	}
+	private Document document;
+
+	private List<TextUnitTarget> targets;
 	
 	@ManyToOne
 	@JoinColumn(name="document_id")
-	public DocumentTarget getDocumentTarget() {
-		return documentTarget;
+	public Document getDocument() {
+		return document;
 	}
 	
-	public void setDocumentTarget(DocumentTarget documentTarget) {
-		this.documentTarget = documentTarget;
+	public void setDocument(Document document) {
+		this.document = document;
+	}
+	
+	@OneToMany(mappedBy="template")
+	public List<TextUnitTarget> getTargets() {
+		return targets;
+	}
+	
+	public void setTargets(List<TextUnitTarget> targets) {
+		this.targets = targets;
 	}
 	
 }

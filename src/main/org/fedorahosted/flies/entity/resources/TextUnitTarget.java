@@ -10,26 +10,39 @@ import javax.persistence.OneToMany;
 @Entity
 public class TextUnitTarget extends AbstractTextUnit{
 
-	private List<TextUnit> targets;
-	private Document documentTemplate;
+	private TextUnit template;
+	private DocumentTarget documentTarget;
+
+	public static enum Status{New, FuzzyMatch, ForReview, Approved}
 	
-	@OneToMany(mappedBy="template")
-	public List<TextUnit> getTargets() {
-		return targets;
+	private Status status;
+	
+	@ManyToOne
+	@JoinColumn(name="documentTarget_id")
+	public DocumentTarget getDocumentTarget() {
+		return documentTarget;
 	}
 	
-	public void setTargets(List<TextUnit> targets) {
-		this.targets = targets;
+	public void setDocumentTarget(DocumentTarget documentTarget) {
+		this.documentTarget = documentTarget;
 	}
 	
 	@ManyToOne
-	@JoinColumn(name="document_template_id")
-	public Document getDocumentTemplate() {
-		return documentTemplate;
+	@JoinColumn(name="template_id")
+	public TextUnit getTemplate() {
+		return template;
+	}
+	
+	public void setTemplate(TextUnit template) {
+		this.template = template;
 	}
 
-	public void setDocumentTemplate(Document documentTemplate) {
-		this.documentTemplate = documentTemplate;
+	public Status getStatus() {
+		return status;
+	}
+	
+	public void setStatus(Status status) {
+		this.status = status;
 	}
 	
 }

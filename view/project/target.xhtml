@@ -66,6 +66,7 @@
               <h:outputText value="Status"/>
             </f:facet>
             <flies:translation-status-bar translated="20"/>
+            (#{document.entries.size})
           </rich:column>
           <f:facet name="footer">
             <rich:datascroller id="ds" rendered="#{targetHome.instance.documents.size > 50}"></rich:datascroller>
