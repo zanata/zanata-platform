@@ -14,7 +14,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
-import org.fedorahosted.flies.entity.resources.DocumentTemplate;
+import org.fedorahosted.flies.entity.resources.Document;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
@@ -37,7 +37,7 @@ public class Project implements Serializable {
     private List<ProjectSeries> projectSeries;
     private List<ProjectTarget> projectTargets;
 
-    private List<DocumentTemplate> documents;
+    private List<Document> documents;
 
     private List<Person> maintainers;
     
@@ -107,11 +107,11 @@ public class Project implements Serializable {
 	}
     
     @OneToMany(mappedBy="project")
-    public List<DocumentTemplate> getDocuments() {
+    public List<Document> getDocuments() {
 		return documents;
 	}
     
-    public void setDocuments(List<DocumentTemplate> documents) {
+    public void setDocuments(List<Document> documents) {
 		this.documents = documents;
 	}
     

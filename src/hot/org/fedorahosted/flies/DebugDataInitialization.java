@@ -9,8 +9,8 @@ import javax.persistence.NoResultException;
 import org.fedorahosted.flies.entity.Project;
 import org.fedorahosted.flies.entity.ProjectSeries;
 import org.fedorahosted.flies.entity.ProjectTarget;
-import org.fedorahosted.flies.entity.resources.DocumentTemplate;
-import org.fedorahosted.flies.entity.resources.TextFlowTemplate;
+import org.fedorahosted.flies.entity.resources.Document;
+import org.fedorahosted.flies.entity.resources.TextUnitTarget;
 import org.fedorahosted.flies.projects.publican.PublicanProjectAdapter;
 import org.fedorahosted.tennera.jgettext.Catalog;
 import org.fedorahosted.tennera.jgettext.Message;
@@ -74,7 +74,7 @@ public class DebugDataInitialization {
       // Do your initialization here
 
 	   for(String resource : adapter.getResources()){
-		   final DocumentTemplate template = new DocumentTemplate();
+		   final Document template = new Document();
 		   template.setRevision(1);
 		   template.setName(resource);
 		   template.setProject(project);
@@ -93,7 +93,7 @@ public class DebugDataInitialization {
 					public void processMessage(Message message) {
 						if(!message.isHeader()){
 							// create Template...
-							TextFlowTemplate tf = new TextFlowTemplate();
+							TextUnitTarget tf = new TextUnitTarget();
 							tf.setDocumentTemplate(template);
 							tf.setContent(message.getMsgid());
 							tf.setDocumentRevision(template.getRevision());

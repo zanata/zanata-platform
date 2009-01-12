@@ -18,7 +18,7 @@ import org.hibernate.validator.Max;
 import org.hibernate.validator.NotEmpty;
 
 @Entity
-public class DocumentTemplate implements Serializable{
+public class Document implements Serializable{
 
 	private Long id;
     private Integer version;
@@ -29,7 +29,7 @@ public class DocumentTemplate implements Serializable{
     
     
 	private List<DocumentTarget> targets;
-	private List<TextFlowTemplate> entryTemplates;
+	private List<TextUnitTarget> entryTemplates;
 
 	private Integer revision;
 	
@@ -112,11 +112,11 @@ public class DocumentTemplate implements Serializable{
 	}
 	
 	@OneToMany(mappedBy="documentTemplate")
-	public List<TextFlowTemplate> getEntryTemplates() {
+	public List<TextUnitTarget> getEntryTemplates() {
 		return entryTemplates;
 	}
 	
-	public void setEntryTemplates(List<TextFlowTemplate> entryTemplates) {
+	public void setEntryTemplates(List<TextUnitTarget> entryTemplates) {
 		this.entryTemplates = entryTemplates;
 	}
 	

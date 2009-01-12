@@ -6,18 +6,18 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 @Entity
-public class TextFlowTarget extends AbstractTextFlow{
+public class TextUnit extends AbstractTextUnit{
 
 	private DocumentTarget documentTarget;
-	private TextFlowTemplate template;
+	private TextUnitTarget template;
 	
 	@ManyToOne
 	@JoinColumn(name="template_id")
-	public TextFlowTemplate getTemplate() {
+	public TextUnitTarget getTemplate() {
 		return template;
 	}
 	
-	public void setTemplate(TextFlowTemplate template) {
+	public void setTemplate(TextUnitTarget template) {
 		this.template = template;
 	}
 	

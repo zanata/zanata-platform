@@ -17,8 +17,8 @@ public class DocumentTarget implements Serializable{
 	private Long id;
     private Integer version;
 
-	private DocumentTemplate template;
-	private List<TextFlowTarget> entries;
+	private Document template;
+	private List<TextUnit> entries;
 
 	@Id @GeneratedValue
 	public Long getId() {
@@ -40,20 +40,20 @@ public class DocumentTarget implements Serializable{
 	
 	@ManyToOne
 	@JoinColumn(name="template_id")
-	public DocumentTemplate getTemplate() {
+	public Document getTemplate() {
 		return template;
 	}
 	
-	public void setTemplate(DocumentTemplate template) {
+	public void setTemplate(Document template) {
 		this.template = template;
 	}
 	
-	@OneToMany(mappedBy="documentTarget")
-	public List<TextFlowTarget> getEntries() {
+	@OneToMany(mappedBy="TargetDocument")
+	public List<TextUnit> getEntries() {
 		return entries;
 	}
 	
-	public void setEntries(List<TextFlowTarget> entries) {
+	public void setEntries(List<TextUnit> entries) {
 		this.entries = entries;
 	}
 	

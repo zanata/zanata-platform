@@ -9,7 +9,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
 @MappedSuperclass
-public abstract class AbstractTextFlow implements Serializable{
+public abstract class AbstractTextUnit implements Serializable{
 	
 	private Long id;
     private Integer version;

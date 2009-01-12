@@ -8,27 +8,27 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 @Entity
-public class TextFlowTemplate extends AbstractTextFlow{
+public class TextUnitTarget extends AbstractTextUnit{
 
-	private List<TextFlowTarget> targets;
-	private DocumentTemplate documentTemplate;
+	private List<TextUnit> targets;
+	private Document documentTemplate;
 	
 	@OneToMany(mappedBy="template")
-	public List<TextFlowTarget> getTargets() {
+	public List<TextUnit> getTargets() {
 		return targets;
 	}
 	
-	public void setTargets(List<TextFlowTarget> targets) {
+	public void setTargets(List<TextUnit> targets) {
 		this.targets = targets;
 	}
 	
 	@ManyToOne
 	@JoinColumn(name="document_template_id")
-	public DocumentTemplate getDocumentTemplate() {
+	public Document getDocumentTemplate() {
 		return documentTemplate;
 	}
 
-	public void setDocumentTemplate(DocumentTemplate documentTemplate) {
+	public void setDocumentTemplate(Document documentTemplate) {
 		this.documentTemplate = documentTemplate;
 	}
 	
