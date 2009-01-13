@@ -124,7 +124,6 @@ public class DebugDataInitialization {
 								entityManager.persist(target);
 							}
 						}
-			    		log.info(message.getMsgid());
 					}
 			   });
 		   }
