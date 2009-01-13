@@ -45,7 +45,7 @@
     </path>
 
     <property name="deps.repo" value="http://asgeirf.fedorapeople.org/flies-deps"/>
-    <property name="deps.version" value="1.1"/>
+    <property name="deps.version" value="1.2"/>
 
     <target name="init-deps">
         <available property="deps.installed" value="true" file="${lib.dir}/flies-deps-${deps.version}" type="file"/>
