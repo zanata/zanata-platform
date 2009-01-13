@@ -2,6 +2,7 @@ package org.fedorahosted.flies.entity.resources;
 
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -11,28 +12,43 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 import org.fedorahosted.flies.entity.locale.Locale;
+import org.hibernate.annotations.NaturalId;
 
 @Entity
 public class TextUnit extends AbstractTextUnit{
 
-	private TextUnitId id;
-	
 	private List<TextUnitTarget> targets;
 	
 	private boolean obsolete;
 	
 	private Integer position;
+
+	private String resourceId;
+
+	private Document document;
 	
-	@Id
-	public TextUnitId getId() {
-		return id;
+	@Column(name="resource_id")
+	@NaturalId
+	public String getResourceId() {
+		return resourceId;
 	}
 	
-	public void setId(TextUnitId id) {
-		this.id = id;
+	public void setResourceId(String resourceId) {
+		this.resourceId = resourceId;
 	}
 	
-	@OneToMany(mappedBy="id.template")
+	@ManyToOne
+	@JoinColumn(name="document_id")
+	@NaturalId
+	public Document getDocument() {
+		return document;
+	}
+	
+	public void setDocument(Document document) {
+		this.document = document;
+	}
+	
+	@OneToMany(mappedBy="template")
 	public List<TextUnitTarget> getTargets() {
 		return targets;
 	}

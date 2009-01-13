@@ -14,10 +14,23 @@ import org.hibernate.validator.Length;
 @MappedSuperclass
 public abstract class AbstractTextUnit implements Serializable{
 	
+	private Long id;
+	
     private Integer version;
 	private String content;
 
 	private Integer documentRevision;
+	
+	@Id
+	@GeneratedValue
+	public Long getId() {
+		return id;
+	}
+	
+	private void setId(Long id) {
+		this.id = id;
+	}
+	
 	
 	public Integer getDocumentRevision() {
 		return documentRevision;

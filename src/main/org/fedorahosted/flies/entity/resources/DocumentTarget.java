@@ -12,23 +12,49 @@ import javax.persistence.OneToMany;
 import javax.persistence.Version;
 
 import org.fedorahosted.flies.entity.locale.Locale;
+import org.hibernate.annotations.NaturalId;
 
 @Entity
 public class DocumentTarget implements Serializable{
 
-    private DocumentTargetId id;
-    
+	private Long id;
+	private Document template;
+	private Locale locale;
+	
     private Integer version;
     
 	private List<TextUnitTarget> entries;
 
 	@Id
-	public DocumentTargetId getId() {
+	@GeneratedValue
+	public Long getId() {
 		return id;
-	}	
+	}
 	
-	public void setId(DocumentTargetId id) {
+	private void setId(Long id) {
 		this.id = id;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name="document_id")
+	@NaturalId
+	public Document getTemplate() {
+		return template;
+	}
+	
+	public void setTemplate(Document template) {
+		this.template = template;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name="locale_id")
+	@NaturalId
+	public Locale getLocale() {
+		return locale;
+	}
+	
+	public void setLocale(Locale locale) {
+		this.locale = locale;
 	}
 	
     @Version

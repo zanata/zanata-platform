@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
@@ -102,7 +103,7 @@ public class Document implements Serializable{
 		this.projectTarget = projectTarget;
 	}
     
-	@OneToMany(mappedBy="id.template")
+	@OneToMany(mappedBy="template")
 	public List<DocumentTarget> getTargets() {
 		return targets;
 	}
@@ -111,7 +112,8 @@ public class Document implements Serializable{
 		this.targets = targets;
 	}
 	
-	@OneToMany(mappedBy="id.document")
+	@OneToMany(mappedBy="document")
+	@OrderBy("position")
 	public List<TextUnit> getEntries() {
 		return entries;
 	}

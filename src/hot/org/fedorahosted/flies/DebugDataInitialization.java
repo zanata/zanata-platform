@@ -108,7 +108,7 @@ public class DebugDataInitialization {
 						if(!message.isHeader()){
 							// create Template...
 							TextUnit tu = new TextUnit();
-							tu.getId().setDocument(template);
+							tu.setDocument(template);
 							tu.setContent(message.getMsgid());
 							tu.setDocumentRevision(template.getRevision());
 							tu.setObsolete(message.isObsolete());
@@ -119,7 +119,7 @@ public class DebugDataInitialization {
 								target.setDocumentRevision(template.getRevision());
 								Status status = message.isFuzzy() ? Status.ForReview : Status.Approved;
 								target.setStatus(status);
-								target.getId().setTemplate(tu);
+								target.setTemplate(tu);
 								target.setContent(message.getMsgstr());
 								entityManager.persist(target);
 							}
