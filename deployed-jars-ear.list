@@ -9,6 +9,12 @@ jbpm-jpdl.jar
 mvel14.jar
 richfaces-api.jar
 icu4j-4_0.jar
-mysql-connector-java-5.1.6.jar
+slf4j-log4j12.jar
+slf4j-api.jar
+hibernate-annotations.jar
+hibernate-entitymanager.jar
+hibernate-commons-annotations.jar
+hibernate.jar
+hibernate-validator.jar
 commons-lang.jar
 jgettext-0.4-SNAPSHOT.jar
