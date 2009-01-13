@@ -16,20 +16,18 @@ import org.fedorahosted.flies.entity.locale.Locale;
 @Entity
 public class DocumentTarget implements Serializable{
 
-	private Long id;
+    private DocumentTargetId id;
+    
     private Integer version;
-
-	private Document template;
+    
 	private List<TextUnitTarget> entries;
 
-	private Locale locale;
-	
-	@Id @GeneratedValue
-	public Long getId() {
+	@Id
+	public DocumentTargetId getId() {
 		return id;
-	}
+	}	
 	
-	private void setId(Long id) {
+	public void setId(DocumentTargetId id) {
 		this.id = id;
 	}
 	
@@ -42,16 +40,6 @@ public class DocumentTarget implements Serializable{
         this.version = version;
     }
 	
-	@ManyToOne
-	@JoinColumn(name="template_id")
-	public Document getTemplate() {
-		return template;
-	}
-	
-	public void setTemplate(Document template) {
-		this.template = template;
-	}
-	
 	@OneToMany(mappedBy="documentTarget")
 	public List<TextUnitTarget> getEntries() {
 		return entries;
@@ -59,17 +47,6 @@ public class DocumentTarget implements Serializable{
 	
 	public void setEntries(List<TextUnitTarget> entries) {
 		this.entries = entries;
-	}
-	
-	
-	@ManyToOne
-	@JoinColumn(name="locale_id")
-	public Locale getLocale() {
-		return locale;
-	}
-	
-	public void setLocale(Locale locale) {
-		this.locale = locale;
 	}
 	
 }

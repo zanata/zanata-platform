@@ -39,7 +39,7 @@ public class DebugDataInitialization {
    @Logger
    Log log;
    
-   //@Observer("org.jboss.seam.postInitialization")
+   @Observer("org.jboss.seam.postInitialization")
    @Transactional
    public void initializeDebugData() {
 	   log.info("*************************** start observing!");
@@ -52,6 +52,7 @@ public class DebugDataInitialization {
 	   catch(NoResultException e){
 		   // continue
 	   }
+	   log.info("Delegate is of type {0}", entityManager.getDelegate().getClass());
 	   
 	   Project project = new Project();
 	   project.setName("RHEL Deployment Guide");
@@ -60,7 +61,7 @@ public class DebugDataInitialization {
 	   entityManager.persist(project);
 
 	   ProjectSeries series = new ProjectSeries();
-	   series.setName("default");
+	   series.setName("5.x");
 	   series.setProject(project);
 	   entityManager.persist(series);
 	   
@@ -73,8 +74,6 @@ public class DebugDataInitialization {
 	   File basePath = new File("/home/asgeirf/projects/Deployment_Guide");
 	   PublicanProjectAdapter adapter = new PublicanProjectAdapter(basePath);
 	   log.info(adapter.getBrandName());
-	   log.info("*************************** end observing!");
-      // Do your initialization here
 
 	   List<String> guResources = adapter.getResources("gu-IN");
 	   
@@ -86,8 +85,6 @@ public class DebugDataInitialization {
 		   template.setProjectTarget(target);
 		   template.setContentType("pot");
 		   entityManager.persist(template);
-		   
-		   
 		   
 		   File poFile;
 		   final boolean foundTargetLangResource;
@@ -111,16 +108,18 @@ public class DebugDataInitialization {
 						if(!message.isHeader()){
 							// create Template...
 							TextUnit tu = new TextUnit();
-							tu.setDocument(template);
+							tu.getId().setDocument(template);
 							tu.setContent(message.getMsgid());
 							tu.setDocumentRevision(template.getRevision());
+							tu.setObsolete(message.isObsolete());
 							entityManager.persist(tu);
 							
 							if(foundTargetLangResource){
 								TextUnitTarget target = new TextUnitTarget();
 								target.setDocumentRevision(template.getRevision());
-								target.setStatus(Status.Approved);
-								target.setTemplate(tu);
+								Status status = message.isFuzzy() ? Status.ForReview : Status.Approved;
+								target.setStatus(status);
+								target.getId().setTemplate(tu);
 								target.setContent(message.getMsgstr());
 								entityManager.persist(target);
 							}
@@ -140,6 +139,7 @@ public class DebugDataInitialization {
 	   }
 	   
 	   entityManager.flush();
+	   log.info("*************************** end observing!");
    }
    
 }

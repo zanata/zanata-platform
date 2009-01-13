@@ -3,6 +3,8 @@ package org.fedorahosted.flies.entity.resources;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -13,27 +15,46 @@ import org.fedorahosted.flies.entity.locale.Locale;
 @Entity
 public class TextUnit extends AbstractTextUnit{
 
-	private Document document;
-
+	private TextUnitId id;
+	
 	private List<TextUnitTarget> targets;
 	
-	@ManyToOne
-	@JoinColumn(name="document_id")
-	public Document getDocument() {
-		return document;
+	private boolean obsolete;
+	
+	private Integer position;
+	
+	@Id
+	public TextUnitId getId() {
+		return id;
 	}
 	
-	public void setDocument(Document document) {
-		this.document = document;
+	public void setId(TextUnitId id) {
+		this.id = id;
 	}
 	
-	@OneToMany(mappedBy="template")
+	@OneToMany(mappedBy="id.template")
 	public List<TextUnitTarget> getTargets() {
 		return targets;
 	}
 	
 	public void setTargets(List<TextUnitTarget> targets) {
 		this.targets = targets;
+	}
+
+	public boolean isObsolete() {
+		return obsolete;
+	}
+	
+	public void setObsolete(boolean obsolete) {
+		this.obsolete = obsolete;
+	}
+
+	public Integer getPosition() {
+		return position;
+	}
+	
+	public void setPosition(Integer position) {
+		this.position = position;
 	}
 	
 }

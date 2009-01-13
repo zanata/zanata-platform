@@ -29,6 +29,7 @@ public class Document implements Serializable{
     private String contentType;
     
 	private List<DocumentTarget> targets;
+	
 	private List<TextUnit> entries;
 
 	private Integer revision;
@@ -101,7 +102,7 @@ public class Document implements Serializable{
 		this.projectTarget = projectTarget;
 	}
     
-	@OneToMany(mappedBy="template")
+	@OneToMany(mappedBy="id.template")
 	public List<DocumentTarget> getTargets() {
 		return targets;
 	}
@@ -110,7 +111,7 @@ public class Document implements Serializable{
 		this.targets = targets;
 	}
 	
-	@OneToMany(mappedBy="document")
+	@OneToMany(mappedBy="id.document")
 	public List<TextUnit> getEntries() {
 		return entries;
 	}
@@ -118,14 +119,5 @@ public class Document implements Serializable{
 	public void setEntries(List<TextUnit> entries) {
 		this.entries = entries;
 	}
-	
-	@Transient
-	public DocumentTarget createTarget(Locale locale){
-		DocumentTarget target = new DocumentTarget();
-		target.setTemplate(this);
-		target.setLocale(locale);
-		return target;
-	}
-	
 	
 }
