@@ -12,7 +12,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 import org.fedorahosted.flies.entity.locale.Locale;
-import org.hibernate.annotations.NaturalId;
 
 @Entity
 public class TextUnit extends AbstractTextUnit{
@@ -28,7 +27,7 @@ public class TextUnit extends AbstractTextUnit{
 	private Document document;
 	
 	@Column(name="resource_id")
-	@NaturalId
+	//@NaturalId
 	public String getResourceId() {
 		return resourceId;
 	}
@@ -39,7 +38,7 @@ public class TextUnit extends AbstractTextUnit{
 	
 	@ManyToOne
 	@JoinColumn(name="document_id")
-	@NaturalId
+	//@NaturalId
 	public Document getDocument() {
 		return document;
 	}

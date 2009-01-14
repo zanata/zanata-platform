@@ -13,7 +13,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.fedorahosted.flies.entity.locale.Locale;
-import org.hibernate.annotations.NaturalId;
 
 @Entity
 public class TextUnitTarget extends AbstractTextUnit{
@@ -26,11 +25,7 @@ public class TextUnitTarget extends AbstractTextUnit{
 	private Status status;
 
 	@ManyToOne
-//	@JoinColumns({
-//	    @JoinColumn(name="resource_id", insertable=false, updatable=false),
-//	    @JoinColumn(name="document_id", insertable=false, updatable=false)
-//	})
-	@NaturalId
+	//@NaturalId
 	public TextUnit getTemplate() {
 		return template;
 	}
@@ -40,7 +35,7 @@ public class TextUnitTarget extends AbstractTextUnit{
 	}
 
 	@ManyToOne
-	@NaturalId
+	//@NaturalId
 	public Locale getLocale() {
 		return locale;
 	}
@@ -52,10 +47,6 @@ public class TextUnitTarget extends AbstractTextUnit{
 	private DocumentTarget documentTarget;
 	
 	@ManyToOne
-//	@JoinColumns({
-//	    @JoinColumn(name="locale_id", insertable=false, updatable=false),
-//	    @JoinColumn(name="document_id", insertable=false, updatable=false)
-//	})
 	public DocumentTarget getDocumentTarget() {
 		return documentTarget;
 	}

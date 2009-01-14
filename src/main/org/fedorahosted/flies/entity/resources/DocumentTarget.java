@@ -12,7 +12,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Version;
 
 import org.fedorahosted.flies.entity.locale.Locale;
-import org.hibernate.annotations.NaturalId;
 
 @Entity
 public class DocumentTarget implements Serializable{
@@ -37,7 +36,7 @@ public class DocumentTarget implements Serializable{
 	
 	@ManyToOne
 	@JoinColumn(name="document_id")
-	@NaturalId
+	//@NaturalId
 	public Document getTemplate() {
 		return template;
 	}
@@ -48,7 +47,7 @@ public class DocumentTarget implements Serializable{
 	
 	@ManyToOne
 	@JoinColumn(name="locale_id")
-	@NaturalId
+	//@NaturalId
 	public Locale getLocale() {
 		return locale;
 	}
