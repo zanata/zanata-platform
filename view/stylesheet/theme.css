@@ -348,6 +348,8 @@ table.fullwidth {
 	padding: 4px;
     -moz-border-radius: 8px;
     overflow: hidden;
+    margin-top: 10px;
+    margin-bottom: 5px;
 }
 
 .resource-by-category-panel .header{
@@ -428,5 +430,7 @@ table.fullwidth {
 	margin-top: 10px;
 }
 
-
+.dr-table{
+	border-collapse: separate;
+}
 /* --> */
