@@ -31,7 +31,7 @@
 
          String message = "(Not Available)";
          
-         if( translated < 0 || untranslated < 0 || fuzzy < 0){
+         if( translated < 0 || untranslated < 0 || fuzzy < 0 || (translated+untranslated+fuzzy) == 0){
              colorGreen = 100;
              colorRed = 100;
              colorBlue = 100;
