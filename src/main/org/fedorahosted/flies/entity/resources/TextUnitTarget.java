@@ -17,9 +17,10 @@ import javax.persistence.UniqueConstraint;
 import org.fedorahosted.flies.entity.locale.Locale;
 
 @Entity
-@Table(	uniqueConstraints = {@UniqueConstraint(columnNames={"template_id", "locale_id"})})
+@Table(	uniqueConstraints = {@UniqueConstraint(columnNames={"document_id", "template_id", "locale_id"})})
 public class TextUnitTarget extends AbstractTextUnit{
 
+	private Document document;
 	private TextUnit template;
 	private Locale locale;
 	
@@ -27,11 +28,23 @@ public class TextUnitTarget extends AbstractTextUnit{
 	
 	private Status status;
 
+	private DocumentTarget documentTarget;
+
 	@ManyToOne
 	@JoinColumn(name="template_id")
 	//@NaturalId
 	public TextUnit getTemplate() {
 		return template;
+	}
+
+	@ManyToOne
+	@JoinColumn(name="document_id")
+	public Document getDocument() {
+		return document;
+	}
+	
+	public void setDocument(Document document) {
+		this.document = document;
 	}
 	
 	public void setTemplate(TextUnit template) {
@@ -49,9 +62,11 @@ public class TextUnitTarget extends AbstractTextUnit{
 		this.locale = locale;
 	}
 	
-	private DocumentTarget documentTarget;
-	
 	@ManyToOne
+	@JoinColumns({
+		@JoinColumn(name="document_id", referencedColumnName="document_id", insertable=false, updatable=false),
+		@JoinColumn(name="locale_id", referencedColumnName="locale_id", insertable=false, updatable=false)
+	})
 	public DocumentTarget getDocumentTarget() {
 		return documentTarget;
 	}

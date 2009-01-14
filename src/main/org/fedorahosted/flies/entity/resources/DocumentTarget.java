@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -68,7 +70,11 @@ public class DocumentTarget implements Serializable{
         this.version = version;
     }
 	
-	@OneToMany(mappedBy="documentTarget")
+	@OneToMany
+	@JoinColumns({
+		@JoinColumn(name="document_id", referencedColumnName="document_id", insertable=false, updatable=false),
+		@JoinColumn(name="locale_id", referencedColumnName="locale_id", insertable=false, updatable=false)
+	})
 	public List<TextUnitTarget> getEntries() {
 		return entries;
 	}
