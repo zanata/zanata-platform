@@ -140,6 +140,7 @@ public class DebugDataInitialization {
 							if(foundTargetLangResource){
 								TextUnitTarget target = new TextUnitTarget();
 								target.setLocale(locale);
+								target.setDocument(template);
 								target.setDocumentRevision(template.getRevision());
 								Status status = message.isFuzzy() ? Status.ForReview : Status.Approved;
 								if(message.getMsgstr().isEmpty()){
