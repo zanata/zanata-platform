@@ -11,10 +11,13 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.fedorahosted.flies.entity.locale.Locale;
 
 @Entity
+@Table(	uniqueConstraints = {@UniqueConstraint(columnNames={"template_id", "locale_id"})})
 public class TextUnitTarget extends AbstractTextUnit{
 
 	private TextUnit template;
@@ -25,6 +28,7 @@ public class TextUnitTarget extends AbstractTextUnit{
 	private Status status;
 
 	@ManyToOne
+	@JoinColumn(name="template_id")
 	//@NaturalId
 	public TextUnit getTemplate() {
 		return template;
@@ -35,6 +39,7 @@ public class TextUnitTarget extends AbstractTextUnit{
 	}
 
 	@ManyToOne
+	@JoinColumn(name="locale_id")
 	//@NaturalId
 	public Locale getLocale() {
 		return locale;

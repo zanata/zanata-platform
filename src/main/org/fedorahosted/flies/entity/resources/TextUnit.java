@@ -9,11 +9,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
 import org.fedorahosted.flies.entity.locale.Locale;
 
 @Entity
+@Table(	uniqueConstraints = {@UniqueConstraint(columnNames={"resource_id", "document_id"})})
 public class TextUnit extends AbstractTextUnit{
 
 	private List<TextUnitTarget> targets;

@@ -9,11 +9,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
 import org.fedorahosted.flies.entity.locale.Locale;
 
 @Entity
+@Table(	uniqueConstraints = {@UniqueConstraint(columnNames={"id", "document_id"})})
 public class DocumentTarget implements Serializable{
 
 	private Long id;
