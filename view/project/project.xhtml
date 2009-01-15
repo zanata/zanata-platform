@@ -36,7 +36,7 @@
   
               <s:decorate id="unameField" template="../layout/edit.xhtml">
                   <ui:define name="label">Unix Name</ui:define>
-                  <h:inputText id="uname" required="true" readonly="true" disabled="true"
+                  <h:inputText id="uname" required="true" readonly="#{projectHome.managed}" disabled="#{projectHome.managed}"
                                value="#{projectHome.instance.uname}"/>
               </s:decorate>
   
@@ -83,7 +83,7 @@
 
 </ui:define>
 
-<ui:define name="right_content">
+<ui:define name="left_content">
   <rich:panel>
     <f:facet name="header">Targets</f:facet>
     <rich:dataList value="#{projectHome.instance.projectSeries}" var="series">
@@ -109,13 +109,16 @@
   
 </ui:define>
 
-<ui:define name="left_content">
+<ui:define name="right_content">
   <rich:panel>
     <f:facet name="header">Actions</f:facet>
-      <rich:toggleControl for="toggle_edit"><h:outputText value="Edit Project Description"/></rich:toggleControl>
-      
+      <s:link value="Edit" view="/project/edit.xhtml"/>
+      <br/>
+      <s:link id="delete"
+                    value="Delete"
+                   action="#{projectHome.remove}"
+                immediate="true" />
   </rich:panel>
-  
 </ui:define>
 
 </ui:composition>

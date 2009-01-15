@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
@@ -102,7 +104,7 @@ public class ProjectTarget implements Serializable{
     public ProjectTarget getParent() {
 		return parent;
 	}
-    
+
     public void setParent(ProjectTarget parent) {
 		this.parent = parent;
 	}
@@ -115,5 +117,4 @@ public class ProjectTarget implements Serializable{
     public void setDocuments(List<Document> documents) {
 		this.documents = documents;
 	}
-    
 }

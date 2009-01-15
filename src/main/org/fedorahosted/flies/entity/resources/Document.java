@@ -15,6 +15,7 @@ import javax.persistence.Version;
 
 import org.fedorahosted.flies.entity.Project;
 import org.fedorahosted.flies.entity.ProjectTarget;
+import org.fedorahosted.flies.entity.ResourceCategory;
 import org.fedorahosted.flies.entity.locale.Locale;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
@@ -37,6 +38,10 @@ public class Document implements Serializable{
 	
 	private Project project;
 	private ProjectTarget projectTarget;
+
+	private List<TextUnitTarget> targetEntries;
+	
+	private ResourceCategory resourceCategory;
 	
 	public Integer getRevision() {
 		return revision;
@@ -120,6 +125,26 @@ public class Document implements Serializable{
 	
 	public void setEntries(List<TextUnit> entries) {
 		this.entries = entries;
+	}
+	
+	@OneToMany(mappedBy="document")
+	public List<TextUnitTarget> getTargetEntries() {
+		return targetEntries;
+	}
+	
+	@OneToMany(mappedBy="document")
+	public void setTargetEntries(List<TextUnitTarget> targetEntries) {
+		this.targetEntries = targetEntries;
+	}
+
+    @ManyToOne
+    @JoinColumn(name="category_id")
+	public ResourceCategory getResourceCategory() {
+		return resourceCategory;
+	}
+	
+	public void setResourceCategory(ResourceCategory resourceCategory) {
+		this.resourceCategory = resourceCategory;
 	}
 	
 }

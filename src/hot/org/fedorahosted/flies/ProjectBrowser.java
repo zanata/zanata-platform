@@ -8,10 +8,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.fedorahosted.flies.entity.Project;
+import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.log.Log;
@@ -26,68 +29,66 @@ public class ProjectBrowser {
 	private static final String ORDERBY_TIMESTAMP = "timestamp";
 	private static final List<String> ORDERBY_VALUES = Arrays.asList(ORDERBY_NAME, ORDERBY_TIMESTAMP, ORDERBY_ID);
 	
-	@Logger
-	private Log log;
-	
 	@RequestParameter
 	private Integer page;
+
+	@RequestParameter("q")
+	private String query;
 	
-	@RequestParameter
 	private Integer limit;
 	
 	@RequestParameter
 	private String orderBy;
 	
+	@Logger
+	private Log log;
+	
 	@In
 	private EntityManager entityManager;
-	
+
+	@Out(required=false)
 	private List<Project> projects;
 	
-	public List<Project> getProjects() {
-		if(projects == null){
-			Query q = entityManager.createQuery("select p from Project p order by :order");
-			log.debug("setting order by to '{0}'", getOrderBy());
-			q.setParameter("order", getOrderBy());
-			q.setFirstResult( (getPage()-1 )* getLimit() );
-			q.setMaxResults(getLimit());
-			projects = q.getResultList();
-		}
-		return projects;
-	}
-
-	private Integer size;
-
-	private Integer getPage(){
-		if(page == null || page < 1){
-			return 1;
-		}
-		return page;
+	@Out(required=false)
+	private List<Project> latestProjects;
+	
+	@SuppressWarnings("unchecked")
+	@Factory("latestProjects")
+	public void getLatestProjects() {
+		Query q = entityManager.createQuery("select p from Project p order by :order");
+		q.setParameter("order",ORDERBY_NAME);
+		q.setMaxResults(DEFAULT_LIMIT);
+		latestProjects = q.getResultList();
 	}
 	
-	private Integer getLimit(){
-		if(limit == null || limit < 1 ){
-			return DEFAULT_LIMIT;
-		}
-		return limit;
-	}
-	
-	public String getOrderBy() {
-		log.info("order by before {0}", orderBy);
+	@SuppressWarnings("unchecked")
+	@Factory("projects")
+	public void getProjects() {
+		String order;
+		Integer pageNumber;
 		if(orderBy == null || !ORDERBY_VALUES.contains(orderBy)){
-			orderBy = ORDERBY_ID;
+			order = ORDERBY_ID;
+		}
+		else{
+			order = orderBy;
+		}
+		if(page == null || page < 1){
+			pageNumber = 1;
+		}
+		else{
+			pageNumber = page;
 		}
 
-		log.info("order by after {0}", orderBy);
-		
-		return orderBy;
+		Query q = entityManager.createQuery("select p from Project p order by :order");
+		log.debug("setting order by to '{0}'", order);
+		q.setParameter("order", order);
+		q.setFirstResult( (pageNumber-1 )* DEFAULT_LIMIT );
+		q.setMaxResults(DEFAULT_LIMIT);
+		projects = q.getResultList();
 	}
-	
+
 	public Integer getSize() {
-		if(size == null){
-			size = (Integer) entityManager.createQuery("select count(*) from Project p").getSingleResult();
-		}
-		
-		return size;
+		return (Integer) entityManager.createQuery("select count(*) from Project p").getSingleResult();
 	}
 
 	

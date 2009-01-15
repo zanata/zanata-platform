@@ -1,0 +1,43 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:flies="http://flies.fedorahosted.org/ui"
+    template="layout/template.xhtml">
+    
+    <ui:define name="left_content">
+    </ui:define>
+    <ui:define name="right_content">
+    </ui:define>    
+    
+    <ui:define name="center_content">
+        <rich:jQuery selector="#tab_home" query="addClass('ui-tabs-selected')" />
+        <s:formattedText rendered="#{not translateAction.valid}">
+          Not a valid translation resource
+        </s:formattedText>
+        <s:fragment rendered="#{translateAction.valid}">
+          <h1>View #{translateAction.documentTarget.template.name}</h1>
+          <h:form>
+            <rich:dataTable id="translation_table" value="#{translateAction.documentTarget.entries}" 
+            var="entry" rows="100" reRender="dsTop,dsBottom" width="100%">
+              <rich:column width="50%">
+                <f:facet name="header">Source</f:facet>
+                #{entry.template.content}
+              </rich:column>
+              <rich:column width="50%">
+                <f:facet name="header">Translation</f:facet>
+                #{entry.content}
+              </rich:column>
+              <f:facet name="footer">
+                <rich:datascroller id="dsBottom" rendered="#{translateAction.documentTarget.entries.size > 100}"></rich:datascroller>
+              </f:facet>
+            </rich:dataTable>
+          </h:form>
+        </s:fragment>
+
+    </ui:define>
+</ui:composition>

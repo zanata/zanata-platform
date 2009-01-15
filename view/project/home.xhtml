@@ -8,8 +8,11 @@
     xmlns:rich="http://richfaces.org/rich"
     template="../layout/template.xhtml">
 
-  <ui:define name="left_content">
-  MENU GOES HERE
+  <ui:define name="right_content">
+    <rich:panel>
+      <f:facet name="header">Actions</f:facet>
+        <s:link value="Create project" view="/project/edit.xhtml"/>
+    </rich:panel>
   </ui:define>
   
   <ui:define name="center_content">
@@ -17,7 +20,7 @@
 
     <div id="search_panel">
       <form id="search_panel_form" action="#" method="get">
-        Find project: <input name="q" type="text" value="$q"/>
+        Find project: <input name="q" type="text" value=""/>
         <input type="submit" value="Search"/>
       </form>
       <div id="search_panel_links">
@@ -29,11 +32,11 @@
     </div>
 
     <h:outputText value="No project exists"
-               rendered="#{empty projectList.resultList}"/>
+               rendered="#{empty latestProjects}"/>
 
     <h:dataTable id="projectList" var="project"
-      value="#{projectList.resultList}"
-      rendered="#{not empty projectList.resultList}"
+      value="#{latestProjects}"
+      rendered="#{not empty projects}"
       styleClass="projectList">
       <h:column>
             <h3><s:link id="project"
@@ -68,10 +71,6 @@
             </ui:repeat></div>
       </h:column>     
     </h:dataTable>
-  </ui:define>
-  
-  <ui:define name="right_content">
-      <s:link id="done" value="Create project" view="/project/project.xhtml"/>
   </ui:define>
 
 </ui:composition>
