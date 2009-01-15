@@ -433,4 +433,18 @@ table.fullwidth {
 .dr-table{
 	border-collapse: separate;
 }
+
+#projectList td{
+	margin-top: 0px;
+	padding-bottom: 10px;
+	margin-left: 0px;
+	margin-right: 0px;	
+}
+
+#projectList h3{
+	margin-top: 0px;
+	margin-bottom: 2px;
+	margin-left: 0px;
+	margin-right: 0px;	
+}
 /* --> */
