@@ -34,6 +34,8 @@ public class ProjectTarget implements Serializable{
     private List<ProjectTarget> children;
     private List<Document> documents;
     
+    private List<ProjectCollection> collections;
+    
     @Id @GeneratedValue
     public Long getId() {
         return id;
@@ -116,5 +118,15 @@ public class ProjectTarget implements Serializable{
     
     public void setDocuments(List<Document> documents) {
 		this.documents = documents;
+
+    }
+    
+    @ManyToMany(mappedBy="projectTargets")
+    public List<ProjectCollection> getCollections() {
+		return collections;
+	}
+    
+    public void setCollections(List<ProjectCollection> collections) {
+		this.collections = collections;
 	}
 }

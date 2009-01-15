@@ -7,34 +7,56 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
     template="../layout/template.xhtml">
+
+  <ui:define name="right_content">
+    <rich:panel>
+      <f:facet name="header">Actions</f:facet>
+        <s:link value="Create collection" view="/collection/edit.xhtml"/>
+    </rich:panel>
+  </ui:define>
   
   <ui:define name="center_content">
     <rich:jQuery selector="#tab_collections" query="addClass('ui-tabs-selected')" />
 
     <div id="search_panel">
       <form id="search_panel_form" action="#" method="get">
-        Find collection: <input name="q" type="text" value="$q"/>
+        Find collection: <input name="q" type="text" value=""/>
         <input type="submit" value="Search"/>
       </form>
       <div id="search_panel_links">
-        <a href="${tg.url('/projects/browse')}">Browse collections</a>
+        <s:link id="collection_browse"
+                         value="Browse Collections"
+                   propagation="none"
+                         view="/collection/browse.xhtml"></s:link>
       </div>
     </div>
-    <h2>Featured</h2>
-    <ul>
-      <li>List all featured collections such as the current translation priorities</li>
-      <li>For logged in users, this could be priorities based on the team-memberships</li>
-    </ul>
-    <h2>Recently Added or Recent Activity</h2>
-    <ul>
-      <li>List all featured collections that have recently been added or have recent activity</li>
-      <li>For logged in users, list collections that this user has recently viewed</li>
-    </ul>
 
-  </ui:define>
+    <h:outputText value="No collection exists"
+               rendered="#{empty latestCollections}"/>
 
-  <ui:define name="right_content">
-      <s:link id="done" value="Create project" view="/project/project.xhtml"/>
+    <s:fragment rendered="#{not empty collections}">
+      <h2>Latest Collections</h2>
+      <h:dataTable id="collectionList" var="collection"
+        value="#{latestCollections}"
+        rendered="#{not empty collections}"
+        styleClass="projectList">
+        <h:column>
+              <h3><s:link id="collection"
+                   value="#{collection.name}"
+                   propagation="none"
+                   view="/collection/collection.xhtml">
+                <f:param name="uname"
+                         value="#{collection.uname}"/>
+              </s:link></h3>
+              <h:outputText rendered="#{not empty collection.shortDescription}">
+                <em class="description">#{collection.shortDescription}</em>
+              </h:outputText>
+              <h:outputText rendered="#{empty collection.shortDescription}">
+                <em class="no-description">(No description available)</em>
+              </h:outputText>
+        </h:column>     
+      </h:dataTable>
+    </s:fragment>
   </ui:define>
 
 </ui:composition>
