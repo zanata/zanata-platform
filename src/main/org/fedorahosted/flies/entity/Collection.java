@@ -15,7 +15,7 @@ import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Pattern;
 
 @Entity
-public class ProjectCollection implements Serializable{
+public class Collection implements Serializable{
 
     private Long id;
     private Integer version;

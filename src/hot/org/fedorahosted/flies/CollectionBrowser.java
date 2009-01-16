@@ -7,7 +7,7 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.fedorahosted.flies.entity.ProjectCollection;
+import org.fedorahosted.flies.entity.Collection;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Factory;
@@ -47,10 +47,10 @@ public class CollectionBrowser {
 	private EntityManager entityManager;
 
 	@Out(required=false)
-	private List<ProjectCollection> collections;
+	private List<Collection> collections;
 	
 	@Out(required=false)
-	private List<ProjectCollection> latestCollections;
+	private List<Collection> latestCollections;
 	
 	@SuppressWarnings("unchecked")
 	@Factory("latestCollections")

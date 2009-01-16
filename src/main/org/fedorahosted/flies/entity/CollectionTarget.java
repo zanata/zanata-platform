@@ -18,7 +18,7 @@ import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;
 
 @Entity
-public class ProjectTarget implements Serializable{
+public class CollectionTarget implements Serializable{
 	
     private Long id;
     private Integer version;
@@ -26,15 +26,12 @@ public class ProjectTarget implements Serializable{
 
     private String description;
     
-    private ProjectSeries projectSeries;
+    private CollectionSeries collectionSeries;
     
-    private Project project;
+    private Collection collection;
 
-    private ProjectTarget parent;
-    private List<ProjectTarget> children;
-    private List<Document> documents;
-    
-    private List<Collection> collections;
+    private CollectionTarget parent;
+    private List<CollectionTarget> children;
     
     @Id @GeneratedValue
     public Long getId() {
@@ -72,61 +69,43 @@ public class ProjectTarget implements Serializable{
 	}
     
     @ManyToOne
-    @JoinColumn(name="projectSeriesId")
+    @JoinColumn(name="collectionSeriesId")
     @NotNull
-    public ProjectSeries getProjectSeries() {
-		return projectSeries;
+    public CollectionSeries getCollectionSeries() {
+		return collectionSeries;
 	}
     
-    public void setProjectSeries(ProjectSeries projectSeries) {
-		this.projectSeries = projectSeries;
+    public void setCollectionSeries(CollectionSeries collectionSeries) {
+		this.collectionSeries = collectionSeries;
 	}
     
     @ManyToOne
-    @JoinColumn(name="projectId")
-    public Project getProject() {
-		return project;
+    @JoinColumn(name="collectionId")
+    public Collection getCollection() {
+		return collection;
 	}
     
-    public void setProject(Project project) {
-		this.project = project;
+    public void setCollection(Collection collection) {
+		this.collection = collection;
 	}
     
     @OneToMany(mappedBy="parent")
-    public List<ProjectTarget> getChildren() {
+    public List<CollectionTarget> getChildren() {
 		return children;
 	}
     
-    public void setChildren(List<ProjectTarget> children) {
+    public void setChildren(List<CollectionTarget> children) {
 		this.children = children;
 	}
     
     @ManyToOne
     @JoinColumn(name="parentId")
-    public ProjectTarget getParent() {
+    public CollectionTarget getParent() {
 		return parent;
 	}
 
-    public void setParent(ProjectTarget parent) {
+    public void setParent(CollectionTarget parent) {
 		this.parent = parent;
 	}
     
-    @OneToMany(mappedBy="projectTarget")
-    public List<Document> getDocuments() {
-		return documents;
-	}
-    
-    public void setDocuments(List<Document> documents) {
-		this.documents = documents;
-
-    }
-    
-    @ManyToMany(mappedBy="projectTargets")
-    public List<Collection> getCollections() {
-		return collections;
-	}
-    
-    public void setCollections(List<Collection> collections) {
-		this.collections = collections;
-	}
 }
