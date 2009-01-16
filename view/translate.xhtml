@@ -12,6 +12,10 @@
     <ui:define name="left_content">
     </ui:define>
     <ui:define name="right_content">
+      <rich:panel>
+        <f:facet name="header">Terminology</f:facet>
+        (Show Relevant Terminology here)
+      </rich:panel>
     </ui:define>    
     
     <ui:define name="center_content">
@@ -23,7 +27,7 @@
           <h1>View #{translateAction.documentTarget.template.name}</h1>
           <h:form>
             <rich:dataTable id="translation_table" value="#{translateAction.documentTarget.entries}" 
-            var="entry" rows="100" reRender="dsTop,dsBottom" width="100%">
+            var="entry" rows="10" reRender="dsTop,dsBottom" width="100%">
               <rich:column width="50%">
                 <f:facet name="header">Source</f:facet>
                 #{entry.template.content}
@@ -33,7 +37,7 @@
                 #{entry.content}
               </rich:column>
               <f:facet name="footer">
-                <rich:datascroller id="dsBottom" rendered="#{translateAction.documentTarget.entries.size > 100}"></rich:datascroller>
+                <rich:datascroller id="dsBottom" rendered="#{translateAction.documentTarget.entries.size > 10}"></rich:datascroller>
               </f:facet>
             </rich:dataTable>
           </h:form>

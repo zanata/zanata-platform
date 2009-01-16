@@ -69,8 +69,11 @@
                   <f:param name="dId" value="#{document.id}"/>
                   <f:param name="lId" value="1"/>
                 </s:link>
-                 <a href="#">Export</a> <a href="#">Download</a> <a href="#">More...</a> 
+                 <a href="#">Download</a> <a href="#">Upload..</a> 
               </div>
+              <s:div styleClass="translation-status" rendered="#{document.id % 5 lt 2}">
+                Asgeir Frimannsson is working on this file
+              </s:div>
               
             </rich:column>
             <rich:column>
@@ -79,6 +82,7 @@
               </f:facet>
               <ui:param name="tstatus" value="#{projectTargetBrowser.getStatisticsForDocument(document)}" />
               <flies:translation-status-bar
+                title="Total: #{tstatus.total}, Translated: #{tstatus.approved}, Fuzzy #{tstatus.fuzzyMatch}"
                 translated="#{tstatus.approved}" 
                 fuzzy="0" 
                 untranslated="#{tstatus.notApproved}"/>
