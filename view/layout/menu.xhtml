@@ -45,7 +45,7 @@
     </s:fragment>
     <s:fragment rendered="#{s:hasRole('user')}">
       <li id="tab_my_dashboard" class="tabs-right tabs-far-right">
-        <a href="#"><span>My Dashboard</span></a>
+         <s:link view="/dashboard.xhtml" propagation="none"><span>My Dashboard</span></s:link>
       </li>
     </s:fragment>
     <s:fragment rendered="#{identity.loggedIn}">

@@ -15,15 +15,10 @@
           <f:facet name="header">User Details</f:facet>
 
           <s:decorate id="firstnameField" template="../layout/edit.xhtml">
-            <ui:define name="label">First name</ui:define>
+            <ui:define name="label">Name</ui:define>
             <h:inputText id="firstname" value="#{userAction.firstname}" readonly="#{identityManager.userExists(userAction.username)}"/>
           </s:decorate>
           
-          <s:decorate id="lastnameField" template="../layout/edit.xhtml">
-            <ui:define name="label">Last name</ui:define>
-            <h:inputText id="lastname" value="#{userAction.lastname}" readonly="#{identityManager.userExists(userAction.username)}"/>
-          </s:decorate>
-              
           <s:decorate id="usernameField" template="../layout/edit.xhtml">
             <ui:define name="label">Username</ui:define>
             <h:inputText id="username" value="#{userAction.username}" readonly="#{identityManager.userExists(userAction.username)}"/>

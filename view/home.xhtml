@@ -10,57 +10,18 @@
     template="layout/template.xhtml">
     
     <ui:define name="right_content">
-      <s:fragment rendered="#{not identity.loggedIn}">
-        <ui:include src="login_form.xhtml"/>
-      </s:fragment>
-
-      <h2>Flies UI test</h2>
-        <flies:translation-status-bar translated="100" fuzzy="0" untranslated="0"/>
-        <flies:translation-status-bar translated="90" fuzzy="0" untranslated="10"/>
-        <flies:translation-status-bar translated="80" fuzzy="0" untranslated="20"/>
-        <flies:translation-status-bar translated="70" fuzzy="0" untranslated="30"/>
-        <flies:translation-status-bar translated="60" fuzzy="0" untranslated="40"/>
-        <flies:translation-status-bar translated="50" fuzzy="0" untranslated="50"/>
-        <flies:translation-status-bar translated="40" fuzzy="0" untranslated="60"/>
-        <flies:translation-status-bar translated="30" fuzzy="0" untranslated="70"/>
-        <flies:translation-status-bar translated="20" fuzzy="0" untranslated="80"/>
-        <flies:translation-status-bar translated="10" fuzzy="0" untranslated="90"/>
-        <flies:translation-status-bar translated="0" fuzzy="0" untranslated="100"/>
-        <flies:translation-status-bar translated="0" fuzzy="0" untranslated="-100"/>
-      <h2 id="xxx">Content:</h2>
-      <ul>
-        <li>Link to Register new user</li>
-        <li>Latest registered projects</li>
-        <li>Latest translation activity</li>
-      </ul>
     </ui:define>
     
     
     <ui:define name="center_content">
         <rich:jQuery selector="#tab_home" query="addClass('ui-tabs-selected')" />
         <h1>Welcome to Flies!</h1>
-        <rich:panel>
-          
-            <h:panelGrid columns="2">
-			    <h:graphicImage value="/img/seamlogo.png" alt="Seam logo"/>
-                <s:div styleClass="info">
-                    <p><strong>Your seam-gen project is deployed!</strong> Here are some of the features this project provides:</p>
-                    <ul class="bullets">
-                        <li>Ant build script</li>
-                        <li>Deployment to JBoss AS (EAR or WAR)</li>
-                        <li>Development and production profiles</li>
-                        <li>Integration testing using TestNG and Embedded JBoss</li>
-                        <li>JavaBean or EJB 3.0 Seam components</li>
-                        <li>JPA entity classes</li>
-                        <li>A configurable DataSource and JPA EntityManager</li>
-                        <li>Templated Facelets views</li>
-                        <li>RichFaces panels and tables</li>
-                        <li>Default CSS stylesheet</li>
-                        <li>Internationalization support</li>
-                    </ul>
-                </s:div>
-            </h:panelGrid>
-        </rich:panel>
 
+        <p>On this page display:</p>
+        <ul>
+          <li>Getting started Information</li>
+          <li>Latest Activity</li>
+          <li>Popular / Active Translation Tasks</li>
+        </ul>
     </ui:define>
 </ui:composition>

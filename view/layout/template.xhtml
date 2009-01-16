@@ -25,8 +25,11 @@
     <s:link view="/home.xhtml" propagation="none"><img src="#{request.contextPath}/img/flies_banner.png"/></s:link>
   </div>
     
+  <s:div id="language-chooser" rendered="#{identity.loggedIn}">
+    Selected Language: <em>Gujarati (India)</em> (<a href="#">change</a>)        
+  </s:div>
   <div id="header_top_right">
-    <h:outputText value="signed in as: #{identity.username} " rendered="#{identity.loggedIn}"/>
+    <h:outputText rendered="#{identity.loggedIn}" value="signed in as: #{identity.username} "/>
     <s:link view="/login.xhtml" value="Login" rendered="#{not identity.loggedIn}" propagation="none"/>
     <s:link view="/home.xhtml" action="#{identity.logout}" value="Logout" rendered="#{identity.loggedIn}" propagation="none"/>
   </div>
