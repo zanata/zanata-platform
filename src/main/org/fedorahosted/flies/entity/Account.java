@@ -11,19 +11,21 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.JoinColumn;
 
 import org.hibernate.validator.NotNull;
 import org.jboss.seam.annotations.security.management.UserEnabled;
+import org.jboss.seam.annotations.security.management.UserFirstName;
 import org.jboss.seam.annotations.security.management.UserPassword;
 import org.jboss.seam.annotations.security.management.UserPrincipal;
 import org.jboss.seam.annotations.security.management.UserRoles;
 import org.jboss.seam.security.management.PasswordHash;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "username"))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"username", "person_id"}))
 public class Account implements Serializable{
 
     private Long id;
@@ -34,6 +36,8 @@ public class Account implements Serializable{
     
     private Person person;
     private Set<AccountRole> roles;
+    
+    private String name;
 
     @Id @GeneratedValue
     public Long getId() {
@@ -54,6 +58,7 @@ public class Account implements Serializable{
     }
     
     @OneToOne(optional=true, fetch=FetchType.EAGER)
+    @JoinColumn(name="person_id")
     public Person getPerson() {
 		return person;
 	}
@@ -111,4 +116,18 @@ public class Account implements Serializable{
        this.roles = roles;
     }
     
+    @Transient
+    @UserFirstName
+    public String getName() {
+    	return person == null ? name : person.getName(); 
+	}
+    
+    public void setName(String name) {
+		if(person != null){
+			person.setName(name);
+		}
+		else{
+			this.name = name;
+		}
+	}
 }
