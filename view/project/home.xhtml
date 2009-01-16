@@ -55,7 +55,7 @@
                 <em class="no-description">(No description available)</em>
               </h:outputText>
               <div style="clear:both;"><ui:repeat value="#{project.projectSeries}" var="s">
-                #{s.name} (
+                <s:fragment rendered="#{s.name != 'default'}">#{s.name} ( </s:fragment>
                   <ui:repeat value="#{s.projectTargets}" var="t">
                     <span style="margin-right: 1pt; margin-left: 1pt;">
                       <s:link id="project"
@@ -69,7 +69,7 @@
                       </s:link>
                     </span> 
                   </ui:repeat>
-                )
+                <s:fragment rendered="#{s.name != 'default'}"> ) </s:fragment>
               </ui:repeat></div>
         </h:column>     
       </h:dataTable>
