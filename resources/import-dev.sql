@@ -16,22 +16,22 @@ insert into AccountMembership (account_id, member_of) values (2, 2);
 
 insert into AccountRoleGroup (role_id, member_of) values (2, 1);
 
-insert into Project (id, uname, name, version) values (1, 'seam', 'Jboss Seam', 0);
-insert into Project (id, uname, name, version) values (2, 'webbeans', 'Web Beans', 0);
+insert into Project (id, uname, name, version) values (100, 'seam', 'Jboss Seam', 0);
+insert into Project (id, uname, name, version) values (101, 'webbeans', 'Web Beans', 0);
 
-insert into ProjectSeries (id, projectId, name, version) values (1, 1, '2.0.x', 0);
-insert into ProjectSeries (id, projectId, name, version) values (2, 2, 'default', 0);
+insert into ProjectSeries (id, projectId, name, version) values (100, 100, '2.0.x', 0);
+insert into ProjectSeries (id, projectId, name, version) values (101, 101, 'default', 0);
 
-insert into ProjectTarget (id, projectSeriesId, projectId, name, version) values (1, 1, 1, '2.0.0', 0);
-insert into ProjectTarget (id, projectSeriesId, projectId, name, version) values (2, 1, 1, '2.0.1', 0);
+insert into ProjectTarget (id, projectSeriesId, projectId, name, version) values (100, 100, 100, '2.0.0', 0);
+insert into ProjectTarget (id, projectSeriesId, projectId, name, version) values (101, 100, 100, '2.0.1', 0);
 
-insert into ProjectTarget (id, projectSeriesId, projectId, name, version) values (3, 2, 2, '1.0', 0);
+insert into ProjectTarget (id, projectSeriesId, projectId, name, version) values (102, 101, 101, '1.0', 0);
 
-insert into ResourceCategory(id, version, name) values(1, 1, 'Documentation');
-insert into ResourceCategory(id, version, name) values(2, 1, 'User Interface');
-insert into ResourceCategory(id, version, name) values(3, 1, 'Website');
+insert into ResourceCategory(id, version, name) values(100, 1, 'Documentation');
+insert into ResourceCategory(id, version, name) values(101, 1, 'User Interface');
+insert into ResourceCategory(id, version, name) values(102, 1, 'Website');
 
-insert into Locale(id, version, localeId, name, nativeName, countryCode, languageCode, script, rightToLeft, variant) values(1, 0, 'af', 'Afrikaans', 'Afrikaans', '', 'af', NULL, FALSE, '')
+insert into Locale(id, version, localeId, name, nativeName, countryCode, languageCode, script, rightToLeft, variant) values(999, 0, 'af', 'Afrikaans', 'Afrikaans', '', 'af', NULL, FALSE, '')
 insert into Locale(id, version, localeId, name, nativeName, countryCode, languageCode, script, rightToLeft, variant) values(2, 0, 'af_NA', 'Afrikaans (Namibia)', 'Afrikaans (Namibië)', 'NA', 'af', NULL, FALSE, '')
 insert into Locale(id, version, localeId, name, nativeName, countryCode, languageCode, script, rightToLeft, variant) values(3, 0, 'af_ZA', 'Afrikaans (South Africa)', 'Afrikaans (Suid-Afrika)', 'ZA', 'af', NULL, FALSE, '')
 insert into Locale(id, version, localeId, name, nativeName, countryCode, languageCode, script, rightToLeft, variant) values(4, 0, 'am', 'Amharic', 'አማርኛ', '', 'am', NULL, FALSE, '')

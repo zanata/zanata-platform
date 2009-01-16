@@ -11,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.entity.Project;
 import org.fedorahosted.flies.entity.ProjectSeries;
 import org.fedorahosted.flies.entity.ProjectTarget;
+import org.fedorahosted.flies.entity.ResourceCategory;
 import org.fedorahosted.flies.entity.locale.Locale;
 import org.fedorahosted.flies.entity.resources.Document;
 import org.fedorahosted.flies.entity.resources.DocumentTarget;
@@ -69,6 +70,16 @@ public class DebugDataInitialization {
 		   loc.setLocaleId("gu-IN");
 		   entityManager.persist(loc);
 	   }
+	   
+	   ResourceCategory cat;
+	   cat = entityManager.find(ResourceCategory.class, 1L);
+	   if(cat == null){
+		   cat = new ResourceCategory();
+		   cat.setName("Documentation");
+		   entityManager.persist(cat);
+	   }
+	   
+	   final ResourceCategory category = cat;
 	   final Locale locale = loc;
 	   
 	   Project project = new Project();
@@ -101,6 +112,7 @@ public class DebugDataInitialization {
 		   template.setName(resource);
 		   template.setProject(project);
 		   template.setProjectTarget(target);
+		   template.setResourceCategory(category);
 		   template.setContentType("pot");
 		   entityManager.persist(template);
 		   
