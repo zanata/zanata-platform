@@ -76,7 +76,7 @@ public class Person {
 		this.personId = personId;
 	}
     
-    @OneToOne(optional=true, fetch=FetchType.EAGER)
+    @OneToOne(mappedBy="person")
     public Account getAccount() {
 		return account;
 	}
