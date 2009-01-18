@@ -29,7 +29,7 @@ public class CollectionHome extends EntityHome<Collection>
         {
         	try{
             	// TODO calling a separate query to get the ID isn't very efficient.  
-        		pid = (Long) getEntityManager().createQuery("Select pc.id from ProjectCollection pc where pc.uname = :uname")
+        		pid = (Long) getEntityManager().createQuery("Select c.id from Collection c where c.uname = :uname")
     			.setParameter("uname", uname).getSingleResult();
         	}
         	catch(NoResultException nre){

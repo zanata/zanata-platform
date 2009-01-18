@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
 import org.hibernate.validator.Length;
@@ -15,6 +17,7 @@ import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Pattern;
 
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = "uname"))
 public class Collection implements Serializable{
 
     private Long id;
@@ -54,6 +57,7 @@ public class Collection implements Serializable{
         this.name = name;
     }
 
+    //@NaturalId
     @Length(min = 2, max = 40)
     @NotNull
     @Pattern(regex="[a-zA-Z_\\-]*")
@@ -65,7 +69,7 @@ public class Collection implements Serializable{
 		this.uname = uname;
 	}
     
-    @Length(max = 100)
+    @Length(max = 240)
     public String getShortDescription() {
 		return shortDescription;
 	}

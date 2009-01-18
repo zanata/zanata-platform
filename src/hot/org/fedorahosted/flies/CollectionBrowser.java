@@ -55,7 +55,7 @@ public class CollectionBrowser {
 	@SuppressWarnings("unchecked")
 	@Factory("latestCollections")
 	public void getLatestCollections() {
-		Query q = entityManager.createQuery("select pc from ProjectCollection pc order by :order");
+		Query q = entityManager.createQuery("select c from Collection c order by :order");
 		q.setParameter("order",ORDERBY_NAME);
 		q.setMaxResults(DEFAULT_LIMIT);
 		latestCollections = q.getResultList();
@@ -79,7 +79,7 @@ public class CollectionBrowser {
 			pageNumber = page;
 		}
 
-		Query q = entityManager.createQuery("select pc from ProjectCollection pc order by :order");
+		Query q = entityManager.createQuery("select c from Collection c order by :order");
 		log.debug("setting order by to '{0}'", order);
 		q.setParameter("order", order);
 		q.setFirstResult( (pageNumber-1 )* DEFAULT_LIMIT );
@@ -88,7 +88,7 @@ public class CollectionBrowser {
 	}
 
 	public Integer getSize() {
-		return (Integer) entityManager.createQuery("select count(*) from ProjectCollection pc").getSingleResult();
+		return (Integer) entityManager.createQuery("select count(*) from Collection c").getSingleResult();
 	}
 
 	

@@ -68,6 +68,7 @@ public class Project implements Serializable {
         this.name = name;
     }
 
+    //@NaturalId
     @Length(min = 2, max = 40)
     @NotNull
     @Pattern(regex="[a-zA-Z_\\-]*")
