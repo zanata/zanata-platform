@@ -4,10 +4,10 @@ import java.awt.ComponentOrientation;
 
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.framework.EntityQuery;
-import org.fedorahosted.flies.entity.locale.Locale;;
+import org.fedorahosted.flies.entity.FliesLocale;
 
 @Name("localeList")
-public class LocaleList extends EntityQuery<Locale>
+public class LocaleList extends EntityQuery<FliesLocale>
 {
     public LocaleList()
     {

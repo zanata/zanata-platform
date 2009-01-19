@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.entity.locale;
+package org.fedorahosted.flies.entity;
 
 import java.awt.ComponentOrientation;
 import java.io.Serializable;
@@ -15,7 +15,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
 
-import org.fedorahosted.flies.entity.TranslationTeam;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 
@@ -23,7 +22,7 @@ import com.ibm.icu.text.Bidi;
 import com.ibm.icu.util.ULocale;
 
 @Entity
-public class Locale implements Serializable{
+public class FliesLocale implements Serializable{
 
 	private Long id;
     private Integer version;
@@ -40,11 +39,11 @@ public class Locale implements Serializable{
     
     private Boolean rightToLeft = false;
     
-    private Locale parent;
+    private FliesLocale parent;
     
-    private List<Locale> children;
+    private List<FliesLocale> children;
     
-    private List<Locale> friends; // e.g. nn, nb.
+    private List<FliesLocale> friends; // e.g. nn, nb.
     
     private List<TranslationTeam> translationTeams;
     
@@ -53,8 +52,8 @@ public class Locale implements Serializable{
         return id;
     }
 
-    public static Locale fromLocale(java.util.Locale locale){
-    	Locale l = new Locale();
+    public static FliesLocale fromLocale(java.util.Locale locale){
+    	FliesLocale l = new FliesLocale();
     	l.setCountryCode(locale.getCountry());
     	l.setLanguageCode(locale.getLanguage());
     	l.setVariant(locale.getVariant());
@@ -154,30 +153,30 @@ public class Locale implements Serializable{
             joinColumns=@JoinColumn(name="localeId"),
             inverseJoinColumns=@JoinColumn(name="friendLocaleId")
         )
-    public List<Locale> getFriends() {
+    public List<FliesLocale> getFriends() {
 		return friends;
 	}
     
-    public void setFriends(List<Locale> friends) {
+    public void setFriends(List<FliesLocale> friends) {
 		this.friends = friends;
 	}
     
     @OneToMany(mappedBy="parent")
-    public List<Locale> getChildren() {
+    public List<FliesLocale> getChildren() {
 		return children;
 	}
     
-    public void setChildren(List<Locale> children) {
+    public void setChildren(List<FliesLocale> children) {
 		this.children = children;
 	}
     
     @ManyToOne
     @JoinColumn(name="parentId")
-    public Locale getParent() {
+    public FliesLocale getParent() {
 		return parent;
 	}
     
-    public void setParent(Locale parent) {
+    public void setParent(FliesLocale parent) {
 		this.parent = parent;
 	}
     

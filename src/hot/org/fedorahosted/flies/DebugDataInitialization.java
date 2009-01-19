@@ -8,11 +8,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
 import org.apache.commons.lang.StringUtils;
+import org.fedorahosted.flies.entity.FliesLocale;
 import org.fedorahosted.flies.entity.Project;
 import org.fedorahosted.flies.entity.ProjectSeries;
 import org.fedorahosted.flies.entity.ProjectTarget;
 import org.fedorahosted.flies.entity.ResourceCategory;
-import org.fedorahosted.flies.entity.locale.Locale;
 import org.fedorahosted.flies.entity.resources.Document;
 import org.fedorahosted.flies.entity.resources.DocumentTarget;
 import org.fedorahosted.flies.entity.resources.TextUnit;
@@ -59,14 +59,14 @@ public class DebugDataInitialization {
 	   }
 	   log.info("Delegate is of type {0}", entityManager.getDelegate().getClass());
 
-	   Locale loc;
+	   FliesLocale loc;
 	   try{
-		   loc = (Locale) entityManager.createQuery("Select l from Locale l where l.localeId = :id")
+		   loc = (FliesLocale) entityManager.createQuery("Select l from Locale l where l.localeId = :id")
 		   				.setParameter("id", "gu-IN").getSingleResult();
 		   log.info("Found locale");
 	   }
 	   catch(NoResultException e){
-		   loc = new Locale();
+		   loc = new FliesLocale();
 		   loc.setLocaleId("gu-IN");
 		   entityManager.persist(loc);
 	   }
@@ -80,7 +80,7 @@ public class DebugDataInitialization {
 	   }
 	   
 	   final ResourceCategory category = cat;
-	   final Locale locale = loc;
+	   final FliesLocale locale = loc;
 	   
 	   Project project = new Project();
 	   project.setName("RHEL Deployment Guide");

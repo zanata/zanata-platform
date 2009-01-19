@@ -14,7 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.fedorahosted.flies.entity.locale.Locale;
+import org.fedorahosted.flies.entity.FliesLocale;
 
 @Entity
 @Table(	uniqueConstraints = {@UniqueConstraint(columnNames={"document_id", "template_id", "locale_id"})})
@@ -22,7 +22,7 @@ public class TextUnitTarget extends AbstractTextUnit{
 
 	private Document document;
 	private TextUnit template;
-	private Locale locale;
+	private FliesLocale locale;
 	
 	public static enum Status{New, FuzzyMatch, ForReview, Approved}
 	
@@ -54,11 +54,11 @@ public class TextUnitTarget extends AbstractTextUnit{
 	@ManyToOne
 	@JoinColumn(name="locale_id")
 	//@NaturalId
-	public Locale getLocale() {
+	public FliesLocale getLocale() {
 		return locale;
 	}
 	
-	public void setLocale(Locale locale) {
+	public void setLocale(FliesLocale locale) {
 		this.locale = locale;
 	}
 	

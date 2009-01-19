@@ -3,7 +3,7 @@ package org.fedorahosted.flies;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
-import org.fedorahosted.flies.entity.locale.Locale;
+import org.fedorahosted.flies.entity.FliesLocale;
 import org.fedorahosted.flies.entity.resources.Document;
 import org.fedorahosted.flies.entity.resources.DocumentTarget;
 import org.hibernate.Session;
@@ -52,7 +52,7 @@ public class TranslateAction {
 				documentTarget = (DocumentTarget) session.createCriteria(DocumentTarget.class)
 					.add( Restrictions.naturalId()
 							.set("template", session.load(Document.class, documentId))
-							.set("locale", session.load(Locale.class, localeId))).uniqueResult();
+							.set("locale", session.load(FliesLocale.class, localeId))).uniqueResult();
 			}
 			catch(NoResultException e){
 				log.warn("Unable to find DocumentTarget with doc_id {0} and locale {1}", documentId, localeId);

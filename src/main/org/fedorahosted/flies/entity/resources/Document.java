@@ -13,10 +13,10 @@ import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
+import org.fedorahosted.flies.entity.FliesLocale;
 import org.fedorahosted.flies.entity.Project;
 import org.fedorahosted.flies.entity.ProjectTarget;
 import org.fedorahosted.flies.entity.ResourceCategory;
-import org.fedorahosted.flies.entity.locale.Locale;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 

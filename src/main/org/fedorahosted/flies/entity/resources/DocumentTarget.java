@@ -15,7 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
-import org.fedorahosted.flies.entity.locale.Locale;
+import org.fedorahosted.flies.entity.FliesLocale;
 
 @Entity
 @Table(	uniqueConstraints = {@UniqueConstraint(columnNames={"id", "document_id"})})
@@ -23,7 +23,7 @@ public class DocumentTarget implements Serializable{
 
 	private Long id;
 	private Document template;
-	private Locale locale;
+	private FliesLocale locale;
 	
     private Integer version;
     
@@ -53,11 +53,11 @@ public class DocumentTarget implements Serializable{
 	@ManyToOne
 	@JoinColumn(name="locale_id")
 	//@NaturalId
-	public Locale getLocale() {
+	public FliesLocale getLocale() {
 		return locale;
 	}
 	
-	public void setLocale(Locale locale) {
+	public void setLocale(FliesLocale locale) {
 		this.locale = locale;
 	}
 	

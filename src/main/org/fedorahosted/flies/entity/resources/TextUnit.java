@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
-import org.fedorahosted.flies.entity.locale.Locale;
+import org.fedorahosted.flies.entity.FliesLocale;
 
 @Entity
 @Table(	uniqueConstraints = {@UniqueConstraint(columnNames={"resource_id", "document_id"})})
