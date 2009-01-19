@@ -31,6 +31,8 @@ import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.log.Log;
 
+import com.ibm.icu.util.ULocale;
+
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
 
@@ -61,13 +63,12 @@ public class DebugDataInitialization {
 
 	   FliesLocale loc;
 	   try{
-		   loc = (FliesLocale) entityManager.createQuery("Select l from Locale l where l.localeId = :id")
+		   loc = (FliesLocale) entityManager.createQuery("Select l from FliesLocale l where l.id = :id")
 		   				.setParameter("id", "gu-IN").getSingleResult();
 		   log.info("Found locale");
 	   }
 	   catch(NoResultException e){
-		   loc = new FliesLocale();
-		   loc.setLocaleId("gu-IN");
+		   loc = new FliesLocale(new ULocale("gu", "IN"));
 		   entityManager.persist(loc);
 	   }
 	   

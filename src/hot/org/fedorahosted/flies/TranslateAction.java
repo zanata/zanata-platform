@@ -27,7 +27,7 @@ public class TranslateAction {
 	private Long documentId;
 	
 	@RequestParameter("lId")
-	private Long localeId;
+	private String localeId;
 
 	@In
 	private EntityManager entityManager;

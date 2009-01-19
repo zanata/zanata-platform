@@ -6,11 +6,14 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.framework.EntityQuery;
 import org.fedorahosted.flies.entity.FliesLocale;
 
+import com.ibm.icu.util.ULocale;
+
 @Name("localeList")
 public class LocaleList extends EntityQuery<FliesLocale>
 {
     public LocaleList()
     {
-        setEjbql("select locale from Locale locale");
+        setEjbql("select locale from FliesLocale locale");
     }
+    
 }

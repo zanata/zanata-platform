@@ -10,7 +10,7 @@ import org.jboss.seam.framework.EntityHome;
 public class LocaleHome extends EntityHome<FliesLocale>
 {
 	@RequestParameter
-    private Long id;
+    private String id;
     
     @Override
     public Object getId()
