@@ -16,10 +16,8 @@ import org.fedorahosted.flies.entity.locale.Locale;
 import org.hibernate.validator.Length;
 
 @Entity
-public class TranslationTeam implements Serializable{
+public class TranslationTeam extends AbstractFliesEntity implements Serializable{
 
-    private Long id;
-    private Integer version;
     private String name;
     private String shortDescription;
 
@@ -27,24 +25,6 @@ public class TranslationTeam implements Serializable{
     
     private List<Person> members;
     private List<Locale> locales;
-    
-    @Id @GeneratedValue
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-    
-    @Version
-    public Integer getVersion() {
-        return version;
-    }
-
-    private void setVersion(Integer version) {
-        this.version = version;
-    }
 
     @Length(max = 20)
     public String getName() {

@@ -18,35 +18,14 @@ import org.hibernate.validator.Pattern;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "uname"))
-public class Collection implements Serializable{
+public class Collection extends AbstractFliesEntity implements Serializable{
 
-    private Long id;
-    private Integer version;
-	
 	private String name;
     private String uname;
     private String shortDescription;
     private String longDescription;
 	
 	private List<ProjectTarget> projectTargets;
-	
-    @Id @GeneratedValue
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-    
-    @Version
-    public Integer getVersion() {
-        return version;
-    }
-
-    private void setVersion(Integer version) {
-        this.version = version;
-    }
 
     @Length(max = 80)
     public String getName() {

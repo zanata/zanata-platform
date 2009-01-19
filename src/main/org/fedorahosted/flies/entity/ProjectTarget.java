@@ -18,10 +18,8 @@ import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;
 
 @Entity
-public class ProjectTarget implements Serializable{
+public class ProjectTarget extends AbstractFliesEntity implements Serializable{
 	
-    private Long id;
-    private Integer version;
     private String name;
 
     private String description;
@@ -36,24 +34,6 @@ public class ProjectTarget implements Serializable{
     
     private List<Collection> collections;
     
-    @Id @GeneratedValue
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    @Version
-    public Integer getVersion() {
-        return version;
-    }
-
-    private void setVersion(Integer version) {
-        this.version = version;
-    }
-
     @Length(max = 20)
     public String getName() {
         return name;

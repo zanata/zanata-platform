@@ -14,10 +14,8 @@ import javax.persistence.Version;
 import org.hibernate.validator.Length;
 
 @Entity
-public class CollectionSeries implements Serializable{
+public class CollectionSeries extends AbstractFliesEntity implements Serializable{
 	
-    private Long id;
-    private Integer version;
     private String name;
 
     private Collection collection;
@@ -26,24 +24,6 @@ public class CollectionSeries implements Serializable{
     private List<CollectionSeries> children;
     
     private List<CollectionTarget> collectionTargets;
-    
-    @Id @GeneratedValue
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    @Version
-    public Integer getVersion() {
-        return version;
-    }
-
-    private void setVersion(Integer version) {
-        this.version = version;
-    }
 
     @Length(max = 20)
     public String getName() {

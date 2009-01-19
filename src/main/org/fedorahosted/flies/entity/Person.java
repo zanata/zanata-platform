@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -21,10 +22,8 @@ import org.hibernate.validator.NotNull;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "personId"))
-public class Person {
+public class Person extends AbstractFliesEntity implements Serializable{
 
-	private Long id;
-    private Integer version;
     private String name;
     private Account account;
 
@@ -40,24 +39,6 @@ public class Person {
     private List<Project> maintainerProjects;
     private List<TranslationTeam> teamMemberships;
     
-    @Id @GeneratedValue
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    @Version
-    public Integer getVersion() {
-        return version;
-    }
-
-    private void setVersion(Integer version) {
-        this.version = version;
-    }
-
     public String getName() {
 		return name;
 	}

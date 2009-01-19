@@ -26,10 +26,8 @@ import org.jboss.seam.security.management.PasswordHash;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"username", "person_id"}))
-public class Account implements Serializable{
+public class Account extends AbstractFliesEntity implements Serializable{
 
-    private Long id;
-    private Integer version;
     private String username;
     private String passwordHash;
     private boolean enabled;   
@@ -38,24 +36,6 @@ public class Account implements Serializable{
     private Set<AccountRole> roles;
     
     private String name;
-
-    @Id @GeneratedValue
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    @Version
-    public Integer getVersion() {
-        return version;
-    }
-
-    private void setVersion(Integer version) {
-        this.version = version;
-    }
     
     @OneToOne(optional=true, fetch=FetchType.EAGER)
     @JoinColumn(name="person_id")

@@ -1,16 +1,22 @@
 package org.fedorahosted.flies.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
+import javax.ejb.SessionContext;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
@@ -19,13 +25,12 @@ import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Pattern;
+import org.jboss.seam.contexts.Contexts;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "uname"))
-public class Project implements Serializable {
+public class Project extends AbstractFliesEntity implements Serializable {
 
-    private Long id;
-    private Integer version;
     private String name;
     
     private String uname;
@@ -41,24 +46,6 @@ public class Project implements Serializable {
 
     private List<Person> maintainers;
     
-    @Id @GeneratedValue
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-    
-    @Version
-    public Integer getVersion() {
-        return version;
-    }
-
-    private void setVersion(Integer version) {
-        this.version = version;
-    }
-
     @Length(max = 80)
     public String getName() {
         return name;
@@ -138,4 +125,5 @@ public class Project implements Serializable {
     public void setMaintainers(List<Person> maintainers) {
 		this.maintainers = maintainers;
 	}
+    
 }

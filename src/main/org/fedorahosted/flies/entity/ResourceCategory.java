@@ -16,34 +16,14 @@ import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;
 
 @Entity
-public class ResourceCategory implements Serializable{
+public class ResourceCategory extends AbstractFliesEntity implements Serializable{
 	
-    private Long id;
-    private Integer version;
     private String name;
 
     private Project project;
     
     private List<Document> documents;
     
-    @Id @GeneratedValue
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    @Version
-    public Integer getVersion() {
-        return version;
-    }
-
-    private void setVersion(Integer version) {
-        this.version = version;
-    }
-
     @Length(max = 20)
     public String getName() {
         return name;
