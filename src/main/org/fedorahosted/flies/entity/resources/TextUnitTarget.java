@@ -30,6 +30,8 @@ public class TextUnitTarget extends AbstractTextUnit{
 
 	private DocumentTarget documentTarget;
 
+	private List<TextUnitCandidate> candidates;
+	
 	@ManyToOne
 	@JoinColumn(name="template_id")
 	//@NaturalId
@@ -83,4 +85,12 @@ public class TextUnitTarget extends AbstractTextUnit{
 		this.status = status;
 	}
 	
+	@OneToMany(mappedBy="target")
+	public List<TextUnitCandidate> getCandidates() {
+		return candidates;
+	}
+	
+	public void setCandidates(List<TextUnitCandidate> candidates) {
+		this.candidates = candidates;
+	}
 }
