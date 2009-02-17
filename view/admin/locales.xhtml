@@ -15,64 +15,48 @@
       <h:outputText value="No Locales exists"
                     rendered="#{empty localeList.resultList}"/>
       <h:form>
-        <rich:tabPanel switchType="ajax">
-          <rich:tab label="Table View">
-              <rich:dataTable id="localeList" var="locale"
-                        value="#{localeList.resultList}"
-                     rendered="#{not empty localeList.resultList}">
-                <rich:column sortBy="#{locale.id}">
-                    <f:facet name="header">Id</f:facet>
-                    #{locale.id}
-                </rich:column>
-                <rich:column sortBy="#{locale.localeId}">
-                    <f:facet name="header">Locale Id</f:facet>
-                    #{locale.localeId}
-                </rich:column>
-                <rich:column sortBy="#{locale.name}">
-                    <f:facet name="header">Name</f:facet>
-                    <s:link id="locale"
-                         value="#{locale.name}"
-                   propagation="none"
-                         view="/admin/locale.xhtml">
-                        <f:param name="id"
-                                value="#{locale.id}"/>
-                    </s:link>
-                </rich:column>
-                <rich:column sortBy="#{locale.countryCode}">
-                    <f:facet name="header">Country Code</f:facet>
-                    #{locale.countryCode}
-                </rich:column>
-                <rich:column sortBy="#{locale.languageCode}">
-                    <f:facet name="header">Language Code</f:facet>
-                    #{locale.languageCode}
-                </rich:column>
-                <rich:column sortBy="#{locale.variant}">
-                    <f:facet name="header">Variant</f:facet>
-                    #{locale.variant}
-                </rich:column>
-                <rich:column sortBy="#{locale.script}">
-                    <f:facet name="header">Script</f:facet>
-                    #{locale.script}
-                </rich:column>
-                <rich:column sortBy="#{locale.nativeName}" dir="#{locale.isRightToLeft() ? 'rtl' : 'ltr'}">
-                    <f:facet name="header">Native Name</f:facet>
-                    #{locale.nativeName}
-                </rich:column>
-              </rich:dataTable>
-          </rich:tab>
-          <rich:tab label="Hierarchical View">
-            <p>TODO tree</p>
-              <rich:tree style="width:300px" switchType="client">
-                <rich:recursiveTreeNodesAdaptor roots="#{localeList.resultList}" includedRoot="#{locale.parent eq null}" var="locale" nodes="#{locale.children}">
-                  <rich:treeNode>
-                    #{locale.name}
-                    <br/>
-                    <em>#{locale.localeId}</em>
-                  </rich:treeNode>
-                </rich:recursiveTreeNodesAdaptor>
-              </rich:tree>
-          </rich:tab>
-        </rich:tabPanel>
+        <rich:dataTable id="localeList" var="locale"
+                  value="#{localeList.resultList}"
+               rendered="#{not empty localeList.resultList}">
+          <rich:column sortBy="#{locale.id}">
+              <f:facet name="header">Id</f:facet>
+              <s:link id="locale"
+                   value="#{locale.id}"
+             propagation="none"
+                   view="/admin/locale.xhtml">
+                  <f:param name="id"
+                          value="#{locale.id}"/>
+              </s:link>
+          </rich:column>
+          <rich:column sortBy="#{locale.locale.baseName}">
+              <f:facet name="header">Java Locale Id</f:facet>
+              #{locale.locale.name}
+          </rich:column>
+          <rich:column sortBy="#{locale.locale.name}">
+              <f:facet name="header">Name</f:facet>
+              #{locale.locale.displayName}
+          </rich:column>
+          <rich:column sortBy="#{locale.locale.country}">
+              <f:facet name="header">Country Code</f:facet>
+              #{locale.locale.country}
+          </rich:column>
+          <rich:column sortBy="#{locale.locale.language}">
+              <f:facet name="header">Language Code</f:facet>
+              #{locale.locale.language}
+          </rich:column>
+          <rich:column sortBy="#{locale.locale.variant}">
+              <f:facet name="header">Variant</f:facet>
+              #{locale.locale.variant}
+          </rich:column>
+          <rich:column sortBy="#{locale.locale.script}">
+              <f:facet name="header">Script</f:facet>
+              #{locale.locale.script}
+          </rich:column>
+          <rich:column sortBy="#{locale.locale.nativeName}" dir="#{locale.locale.lineOrientation ? 'rtl' : 'ltr'}">
+              <f:facet name="header">Native Name</f:facet>
+              #{locale.nativeName}
+          </rich:column>
+        </rich:dataTable>
       </h:form>                    
     </ui:define>
 </ui:composition>

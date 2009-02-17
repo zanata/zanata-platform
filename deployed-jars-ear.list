@@ -9,6 +9,6 @@ jbpm-jpdl.jar
 mvel14.jar
 richfaces-api.jar
 icu4j-4_0.jar
-mysql-connector-java-5.1.6.jar
 commons-lang.jar
 jgettext-0.4-SNAPSHOT.jar
+xom.jar

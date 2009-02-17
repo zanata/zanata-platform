@@ -12,39 +12,18 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 
-import org.fedorahosted.flies.entity.locale.Locale;
 import org.hibernate.validator.Length;
 
 @Entity
-public class TranslationTeam implements Serializable{
+public class TranslationTeam extends AbstractFliesEntity implements Serializable{
 
-    private Long id;
-    private Integer version;
     private String name;
     private String shortDescription;
 
     private Person coordinator;
     
     private List<Person> members;
-    private List<Locale> locales;
-    
-    @Id @GeneratedValue
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-    
-    @Version
-    public Integer getVersion() {
-        return version;
-    }
-
-    private void setVersion(Integer version) {
-        this.version = version;
-    }
+    private List<FliesLocale> locales;
 
     @Length(max = 20)
     public String getName() {
@@ -95,11 +74,11 @@ public class TranslationTeam implements Serializable{
             joinColumns=@JoinColumn(name="translationTeamId"),
             inverseJoinColumns=@JoinColumn(name="localeId")
         )
-    public List<Locale> getLocales() {
+    public List<FliesLocale> getLocales() {
 		return locales;
 	}
     
-    public void setLocales(List<Locale> locales) {
+    public void setLocales(List<FliesLocale> locales) {
 		this.locales = locales;
 	}
 }

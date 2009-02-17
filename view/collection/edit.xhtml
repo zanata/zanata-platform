@@ -9,42 +9,42 @@
     template="../layout/template.xhtml">
 
 <ui:define name="center_content">
-    <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
+    <rich:jQuery selector="#tab_collections" query="addClass('ui-tabs-selected')" />
 
-    <s:fragment rendered="#{projectHome.managed}">
-      <h1>#{projectHome.instance.name}</h1>
+    <s:fragment rendered="#{collectionHome.managed}">
+      <h1>#{collectionHome.instance.name}</h1>
     </s:fragment>
-    <s:fragment rendered="#{not projectHome.managed}">
-      <h1>Create a New Project</h1>
+    <s:fragment rendered="#{not collectionHome.managed}">
+      <h1>Create a New Collection</h1>
     </s:fragment>
 
-    <s:formattedText id="project-long-description" value="#{projectHome.instance.longDescription}"></s:formattedText>
+    <s:formattedText id="project-long-description" value="#{collectionHome.instance.longDescription}"></s:formattedText>
 
-    <h:form id="projectForm">
+    <h:form id="collectionForm">
 
         <rich:panel>
             <s:decorate id="nameField" template="../layout/edit.xhtml">
                 <ui:define name="label">Name</ui:define>
                 <h:inputText id="name" required="true"
-                             value="#{projectHome.instance.name}"/>
+                             value="#{collectionHome.instance.name}"/>
             </s:decorate>
 
             <s:decorate id="unameField" template="../layout/edit.xhtml">
                 <ui:define name="label">Unix Name</ui:define>
                 <h:inputText id="uname" required="true"
-                             value="#{projectHome.instance.uname}"/>
+                             value="#{collectionHome.instance.uname}"/>
             </s:decorate>
 
             <s:decorate id="shortDescriptionField" template="../layout/edit.xhtml">
                 <ui:define name="label">Short Description</ui:define>
                 <h:inputText id="shortDescription" required="true"
-                             value="#{projectHome.instance.shortDescription}" style="width:400px;"/>
+                             value="#{collectionHome.instance.shortDescription}" style="width:400px;"/>
             </s:decorate>
 
             <s:decorate id="longDescriptionField" template="../layout/edit.xhtml">
                 <ui:define name="label">Long Description</ui:define>
                 <h:inputTextarea id="longDescription" required="false" style="width:400px;"
-                             value="#{projectHome.instance.longDescription}" rows="10"/>
+                             value="#{collectionHome.instance.longDescription}" rows="10"/>
             </s:decorate>
 
             <div style="clear:both"/>
@@ -54,16 +54,16 @@
         <div class="actionButtons">
             <h:commandButton id="save"
                           value="Save"
-                         action="#{projectHome.persist}"
-                       rendered="#{!projectHome.managed}"/>
+                         action="#{collectionHome.persist}"
+                       rendered="#{!collectionHome.managed}"/>
             <h:commandButton id="update"
                           value="Save"
-                         action="#{projectHome.update}"
-                       rendered="#{projectHome.managed}"/>
+                         action="#{collectionHome.update}"
+                       rendered="#{collectionHome.managed}"/>
             <s:button propagation="end"
                                id="cancel"
                             value="Cancel"
-                             view="#{projectHome.managed ? '/project/project.xhtml' : '/project/home.xhtml'}"/>
+                             view="#{collectionHome.managed ? '/collection/collection.xhtml' : '/collection/home.xhtml'}"/>
         </div>
 
     </h:form>

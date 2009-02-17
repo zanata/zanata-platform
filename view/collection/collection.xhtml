@@ -1,0 +1,35 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="../layout/template.xhtml">
+
+<ui:define name="center_content">
+    <rich:jQuery selector="#tab_collections" query="addClass('ui-tabs-selected')" />
+
+    <h1>#{collectionHome.instance.name}</h1>
+
+    <s:formattedText id="project-long-description" value="#{collectionHome.instance.longDescription}"></s:formattedText>
+    
+    <h:outputText value="#{collectionHome.instance.shortDescription}" rendered="#{empty collectionHome.instance.longDescription}"/>
+    
+</ui:define>
+
+<ui:define name="right_content">
+  <rich:panel>
+    <f:facet name="header">Actions</f:facet>
+      <s:link value="Edit" view="/collection/edit.xhtml"/>
+      <br/>
+      <s:link id="delete"
+                    value="Delete"
+                   action="#{collectionHome.remove}"
+                   view="/collection/home.xhtml"
+                immediate="true" />
+  </rich:panel>
+</ui:define>
+
+</ui:composition>

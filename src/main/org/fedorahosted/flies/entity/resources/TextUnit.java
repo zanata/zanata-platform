@@ -2,23 +2,46 @@ package org.fedorahosted.flies.entity.resources;
 
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
-import org.fedorahosted.flies.entity.locale.Locale;
+import org.fedorahosted.flies.entity.FliesLocale;
 
 @Entity
+@Table(	uniqueConstraints = {@UniqueConstraint(columnNames={"resource_id", "document_id"})})
 public class TextUnit extends AbstractTextUnit{
-
-	private Document document;
 
 	private List<TextUnitTarget> targets;
 	
+	private boolean obsolete;
+	
+	private Integer position;
+
+	private String resourceId;
+
+	private Document document;
+	
+	@Column(name="resource_id")
+	//@NaturalId
+	public String getResourceId() {
+		return resourceId;
+	}
+	
+	public void setResourceId(String resourceId) {
+		this.resourceId = resourceId;
+	}
+	
 	@ManyToOne
 	@JoinColumn(name="document_id")
+	//@NaturalId
 	public Document getDocument() {
 		return document;
 	}
@@ -34,6 +57,22 @@ public class TextUnit extends AbstractTextUnit{
 	
 	public void setTargets(List<TextUnitTarget> targets) {
 		this.targets = targets;
+	}
+
+	public boolean isObsolete() {
+		return obsolete;
+	}
+	
+	public void setObsolete(boolean obsolete) {
+		this.obsolete = obsolete;
+	}
+
+	public Integer getPosition() {
+		return position;
+	}
+	
+	public void setPosition(Integer position) {
+		this.position = position;
 	}
 	
 }

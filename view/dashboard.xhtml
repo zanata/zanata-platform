@@ -17,15 +17,21 @@
         <h1>#{authenticatedPerson.name}</h1>
         <h2>My Projects</h2>
         <ul>
+            <li>List Projects this user maintains</li>          
           <ui:repeat value="#{authenticatedPerson.maintainerProjects}" var="project">
             <li>#{project.name}</li>          
           </ui:repeat>
         </ul>
         <h2>My Teams</h2>
         <ul>
+            <li>List Teams this user is a member of</li>          
           <ui:repeat value="#{authenticatedPerson.maintainerProjects}" var="project">
             <li>#{project.name}</li>          
           </ui:repeat>
+        </ul>
+        <h2>My Translation Tasks</h2>
+        <ul>
+            <li>List Translation Tasks I have been appointed to</li>          
         </ul>
         
     </ui:define>

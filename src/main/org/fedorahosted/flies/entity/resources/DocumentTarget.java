@@ -7,30 +7,58 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
-import org.fedorahosted.flies.entity.locale.Locale;
+import org.fedorahosted.flies.entity.FliesLocale;
 
 @Entity
+@Table(	uniqueConstraints = {@UniqueConstraint(columnNames={"id", "document_id"})})
 public class DocumentTarget implements Serializable{
 
 	private Long id;
-    private Integer version;
-
 	private Document template;
+	private FliesLocale locale;
+	
+    private Integer version;
+    
 	private List<TextUnitTarget> entries;
 
-	private Locale locale;
-	
-	@Id @GeneratedValue
+	@Id
+	@GeneratedValue
 	public Long getId() {
 		return id;
 	}
 	
 	private void setId(Long id) {
 		this.id = id;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name="document_id")
+	//@NaturalId
+	public Document getTemplate() {
+		return template;
+	}
+	
+	public void setTemplate(Document template) {
+		this.template = template;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name="locale_id")
+	//@NaturalId
+	public FliesLocale getLocale() {
+		return locale;
+	}
+	
+	public void setLocale(FliesLocale locale) {
+		this.locale = locale;
 	}
 	
     @Version
@@ -42,34 +70,17 @@ public class DocumentTarget implements Serializable{
         this.version = version;
     }
 	
-	@ManyToOne
-	@JoinColumn(name="template_id")
-	public Document getTemplate() {
-		return template;
-	}
-	
-	public void setTemplate(Document template) {
-		this.template = template;
-	}
-	
-	@OneToMany(mappedBy="documentTarget")
+	@OneToMany
+	@JoinColumns({
+		@JoinColumn(name="document_id", referencedColumnName="document_id", insertable=false, updatable=false),
+		@JoinColumn(name="locale_id", referencedColumnName="locale_id", insertable=false, updatable=false)
+	})
 	public List<TextUnitTarget> getEntries() {
 		return entries;
 	}
 	
 	public void setEntries(List<TextUnitTarget> entries) {
 		this.entries = entries;
-	}
-	
-	
-	@ManyToOne
-	@JoinColumn(name="locale_id")
-	public Locale getLocale() {
-		return locale;
-	}
-	
-	public void setLocale(Locale locale) {
-		this.locale = locale;
 	}
 	
 }

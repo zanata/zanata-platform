@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
@@ -16,10 +18,8 @@ import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;
 
 @Entity
-public class ProjectTarget implements Serializable{
+public class ProjectTarget extends AbstractFliesEntity implements Serializable{
 	
-    private Long id;
-    private Integer version;
     private String name;
 
     private String description;
@@ -32,24 +32,8 @@ public class ProjectTarget implements Serializable{
     private List<ProjectTarget> children;
     private List<Document> documents;
     
-    @Id @GeneratedValue
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    @Version
-    public Integer getVersion() {
-        return version;
-    }
-
-    private void setVersion(Integer version) {
-        this.version = version;
-    }
-
+    private List<Collection> collections;
+    
     @Length(max = 20)
     public String getName() {
         return name;
@@ -102,7 +86,7 @@ public class ProjectTarget implements Serializable{
     public ProjectTarget getParent() {
 		return parent;
 	}
-    
+
     public void setParent(ProjectTarget parent) {
 		this.parent = parent;
 	}
@@ -114,6 +98,15 @@ public class ProjectTarget implements Serializable{
     
     public void setDocuments(List<Document> documents) {
 		this.documents = documents;
+
+    }
+    
+    @ManyToMany(mappedBy="projectTargets")
+    public List<Collection> getCollections() {
+		return collections;
 	}
     
+    public void setCollections(List<Collection> collections) {
+		this.collections = collections;
+	}
 }

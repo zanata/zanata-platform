@@ -348,6 +348,8 @@ table.fullwidth {
 	padding: 4px;
     -moz-border-radius: 8px;
     overflow: hidden;
+    margin-top: 10px;
+    margin-bottom: 5px;
 }
 
 .resource-by-category-panel .header{
@@ -416,6 +418,7 @@ table.fullwidth {
 }
 
 .actions{
+	float:left;
 	font-size: 10pt;
 }
 
@@ -426,6 +429,43 @@ table.fullwidth {
 .resource-by-category-panel .expanded-content{
 	padding: 5px;
 	margin-top: 10px;
+}
+.translation-status{
+	float: right;
+	color: grey;
+}
+.dr-table{
+	border-collapse: separate;
+}
+
+.projectList td{
+	margin-top: 0px;
+	padding-bottom: 10px;
+	margin-left: 0px;
+	margin-right: 0px;	
+}
+
+.projectList h3{
+	margin-top: 0px;
+	margin-bottom: 2px;
+	margin-left: 0px;
+	margin-right: 0px;	
+}
+
+#language-chooser{
+	color: grey;
+	position: absolute;
+	left: 400px;
+	top: 10px;
+	font-size: 11px;
+}
+
+.rich-panel{
+	-moz-border-radius: 8px;
+}
+
+.rich-panel-header{
+	-moz-border-radius: 8px;
 }
 
 

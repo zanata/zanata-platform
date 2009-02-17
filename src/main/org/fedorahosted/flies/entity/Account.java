@@ -11,49 +11,34 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.JoinColumn;
 
 import org.hibernate.validator.NotNull;
 import org.jboss.seam.annotations.security.management.UserEnabled;
+import org.jboss.seam.annotations.security.management.UserFirstName;
 import org.jboss.seam.annotations.security.management.UserPassword;
 import org.jboss.seam.annotations.security.management.UserPrincipal;
 import org.jboss.seam.annotations.security.management.UserRoles;
 import org.jboss.seam.security.management.PasswordHash;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "username"))
-public class Account implements Serializable{
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"username", "person_id"}))
+public class Account extends AbstractFliesEntity implements Serializable{
 
-    private Long id;
-    private Integer version;
     private String username;
     private String passwordHash;
     private boolean enabled;   
     
     private Person person;
     private Set<AccountRole> roles;
-
-    @Id @GeneratedValue
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    @Version
-    public Integer getVersion() {
-        return version;
-    }
-
-    private void setVersion(Integer version) {
-        this.version = version;
-    }
+    
+    private String name;
     
     @OneToOne(optional=true, fetch=FetchType.EAGER)
+    @JoinColumn(name="person_id")
     public Person getPerson() {
 		return person;
 	}
@@ -111,4 +96,18 @@ public class Account implements Serializable{
        this.roles = roles;
     }
     
+    @Transient
+    @UserFirstName
+    public String getName() {
+    	return person == null ? name : person.getName(); 
+	}
+    
+    public void setName(String name) {
+		if(person != null){
+			person.setName(name);
+		}
+		else{
+			this.name = name;
+		}
+	}
 }

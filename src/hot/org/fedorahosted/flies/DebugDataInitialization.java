@@ -7,11 +7,15 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
+import org.apache.commons.lang.StringUtils;
+import org.fedorahosted.flies.entity.FliesLocale;
 import org.fedorahosted.flies.entity.Project;
 import org.fedorahosted.flies.entity.Repository;
 import org.fedorahosted.flies.entity.ProjectSeries;
 import org.fedorahosted.flies.entity.ProjectTarget;
+import org.fedorahosted.flies.entity.ResourceCategory;
 import org.fedorahosted.flies.entity.resources.Document;
+import org.fedorahosted.flies.entity.resources.DocumentTarget;
 import org.fedorahosted.flies.entity.resources.TextUnit;
 import org.fedorahosted.flies.entity.resources.TextUnitTarget;
 import org.fedorahosted.flies.entity.resources.TextUnitTarget.Status;
@@ -19,6 +23,7 @@ import org.fedorahosted.flies.projects.publican.PublicanProjectAdapter;
 import org.fedorahosted.tennera.jgettext.Catalog;
 import org.fedorahosted.tennera.jgettext.Message;
 import org.fedorahosted.tennera.jgettext.catalog.parse.ExtendedCatalogParser;
+import org.fedorahosted.tennera.jgettext.catalog.parse.ParseException;
 import org.fedorahosted.tennera.jgettext.catalog.write.MessageProcessor;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -26,6 +31,8 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.log.Log;
+
+import com.ibm.icu.util.ULocale;
 
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
@@ -53,6 +60,29 @@ public class DebugDataInitialization {
 	   catch(NoResultException e){
 		   // continue
 	   }
+	   log.info("Delegate is of type {0}", entityManager.getDelegate().getClass());
+
+	   FliesLocale loc;
+	   try{
+		   loc = (FliesLocale) entityManager.createQuery("Select l from FliesLocale l where l.id = :id")
+		   				.setParameter("id", "gu-IN").getSingleResult();
+		   log.info("Found locale");
+	   }
+	   catch(NoResultException e){
+		   loc = new FliesLocale(new ULocale("gu", "IN"));
+		   entityManager.persist(loc);
+	   }
+	   
+	   ResourceCategory cat;
+	   cat = entityManager.find(ResourceCategory.class, 1L);
+	   if(cat == null){
+		   cat = new ResourceCategory();
+		   cat.setName("Documentation");
+		   entityManager.persist(cat);
+	   }
+	   
+	   final ResourceCategory category = cat;
+	   final FliesLocale locale = loc;
 	   
            Repository repo1 = new Repository();
 	   repo1.setName("Flies");
@@ -80,7 +110,7 @@ public class DebugDataInitialization {
 	   entityManager.persist(project);
 
 	   ProjectSeries series = new ProjectSeries();
-	   series.setName("default");
+	   series.setName("5.x");
 	   series.setProject(project);
 	   entityManager.persist(series);
 	   
@@ -93,27 +123,30 @@ public class DebugDataInitialization {
 	   File basePath = new File("/home/jamesni/Deployment_Guide");
 	   PublicanProjectAdapter adapter = new PublicanProjectAdapter(basePath);
 	   log.info(adapter.getBrandName());
-	   log.info("*************************** end observing!");
-      // Do your initialization here
 
 	   List<String> guResources = adapter.getResources("gu-IN");
-	   
+	   log.info("gu-IN resources \n{0}", StringUtils.join(guResources, "\n"));
+	   log.info("template resources \n{0}", StringUtils.join(adapter.getResources(), "\n"));
 	   for(String resource : adapter.getResources()){
 		   final Document template = new Document();
 		   template.setRevision(1);
 		   template.setName(resource);
 		   template.setProject(project);
 		   template.setProjectTarget(target);
+		   template.setResourceCategory(category);
 		   template.setContentType("pot");
 		   entityManager.persist(template);
 		   
-		   
-		   
 		   File poFile;
 		   final boolean foundTargetLangResource;
-		   if(guResources.contains(resource)){
-			   poFile= new File(new File(basePath, adapter.getResourceBasePath("gu-IN")), resource);
+		   String poResourceName = resource.substring(0, resource.length()-1);
+		   if(guResources.contains(poResourceName)){
+			   poFile= new File(new File(basePath, adapter.getResourceBasePath("gu-IN")), poResourceName);
 			   foundTargetLangResource = true;
+			   DocumentTarget dTarget = new DocumentTarget();
+			   dTarget.setTemplate(template);
+			   dTarget.setLocale(locale);
+			   entityManager.persist(dTarget);
 		   }
 		   else{
 			   poFile= new File(new File(basePath, adapter.getResourceBasePath()), resource);
@@ -121,7 +154,7 @@ public class DebugDataInitialization {
 		   }
 		   
 		   
-		   log.info("Importing resource {0}", resource);
+		   log.info("Importing {0} from {1}", resource, poFile);
 		   try{
 			   ExtendedCatalogParser parser = new ExtendedCatalogParser(poFile);
 			   parser.catalog();
@@ -134,18 +167,24 @@ public class DebugDataInitialization {
 							tu.setDocument(template);
 							tu.setContent(message.getMsgid());
 							tu.setDocumentRevision(template.getRevision());
+							tu.setObsolete(message.isObsolete());
 							entityManager.persist(tu);
 							
 							if(foundTargetLangResource){
 								TextUnitTarget target = new TextUnitTarget();
+								target.setLocale(locale);
+								target.setDocument(template);
 								target.setDocumentRevision(template.getRevision());
-								target.setStatus(Status.Approved);
+								Status status = message.isFuzzy() ? Status.ForReview : Status.Approved;
+								if(message.getMsgstr().isEmpty()){
+									status = Status.New;
+								}
+								target.setStatus(status);
 								target.setTemplate(tu);
 								target.setContent(message.getMsgstr());
 								entityManager.persist(target);
 							}
 						}
-			    		log.info(message.getMsgid());
 					}
 			   });
 		   }
@@ -155,11 +194,14 @@ public class DebugDataInitialization {
 			   log.error(e);
 		} catch (TokenStreamException e) {
 			   log.error(e);
+		} catch (ParseException e){
+			   log.error("ParseException in file {1}: {0}", e.getMessage(), poFile.getName());
 		}
 		   
 	   }
 	   
 	   entityManager.flush();
+	   log.info("*************************** end observing!");
    }
    
 }

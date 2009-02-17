@@ -9,12 +9,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
+import org.fedorahosted.flies.entity.FliesLocale;
 import org.fedorahosted.flies.entity.Project;
 import org.fedorahosted.flies.entity.ProjectTarget;
-import org.fedorahosted.flies.entity.locale.Locale;
+import org.fedorahosted.flies.entity.ResourceCategory;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 
@@ -29,12 +31,17 @@ public class Document implements Serializable{
     private String contentType;
     
 	private List<DocumentTarget> targets;
+	
 	private List<TextUnit> entries;
 
 	private Integer revision;
 	
 	private Project project;
 	private ProjectTarget projectTarget;
+
+	private List<TextUnitTarget> targetEntries;
+	
+	private ResourceCategory resourceCategory;
 	
 	public Integer getRevision() {
 		return revision;
@@ -111,6 +118,7 @@ public class Document implements Serializable{
 	}
 	
 	@OneToMany(mappedBy="document")
+	@OrderBy("position")
 	public List<TextUnit> getEntries() {
 		return entries;
 	}
@@ -119,13 +127,24 @@ public class Document implements Serializable{
 		this.entries = entries;
 	}
 	
-	@Transient
-	public DocumentTarget createTarget(Locale locale){
-		DocumentTarget target = new DocumentTarget();
-		target.setTemplate(this);
-		target.setLocale(locale);
-		return target;
+	@OneToMany(mappedBy="document")
+	public List<TextUnitTarget> getTargetEntries() {
+		return targetEntries;
 	}
 	
+	@OneToMany(mappedBy="document")
+	public void setTargetEntries(List<TextUnitTarget> targetEntries) {
+		this.targetEntries = targetEntries;
+	}
+
+    @ManyToOne
+    @JoinColumn(name="category_id")
+	public ResourceCategory getResourceCategory() {
+		return resourceCategory;
+	}
+	
+	public void setResourceCategory(ResourceCategory resourceCategory) {
+		this.resourceCategory = resourceCategory;
+	}
 	
 }

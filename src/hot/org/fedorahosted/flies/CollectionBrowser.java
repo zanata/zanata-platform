@@ -7,7 +7,7 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.fedorahosted.flies.entity.Project;
+import org.fedorahosted.flies.entity.Collection;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Factory;
@@ -19,9 +19,9 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.log.Log;
 
-@Name("projectBrowser")
+@Name("collectionBrowser")
 @Scope(ScopeType.EVENT)
-public class ProjectBrowser {
+public class CollectionBrowser {
 	
 	private static final int DEFAULT_LIMIT = 20;
 	private static final String ORDERBY_NAME = "name";
@@ -47,23 +47,23 @@ public class ProjectBrowser {
 	private EntityManager entityManager;
 
 	@Out(required=false)
-	private List<Project> projects;
+	private List<Collection> collections;
 	
 	@Out(required=false)
-	private List<Project> latestProjects;
+	private List<Collection> latestCollections;
 	
 	@SuppressWarnings("unchecked")
-	@Factory("latestProjects")
-	public void getLatestProjects() {
-		Query q = entityManager.createQuery("select p from Project p order by :order");
+	@Factory("latestCollections")
+	public void getLatestCollections() {
+		Query q = entityManager.createQuery("select c from Collection c order by :order");
 		q.setParameter("order",ORDERBY_NAME);
 		q.setMaxResults(DEFAULT_LIMIT);
-		latestProjects = q.getResultList();
+		latestCollections = q.getResultList();
 	}
 	
 	@SuppressWarnings("unchecked")
-	@Factory("projects")
-	public void getProjects() {
+	@Factory("collections")
+	public void getCollections() {
 		String order;
 		Integer pageNumber;
 		if(orderBy == null || !ORDERBY_VALUES.contains(orderBy)){
@@ -79,16 +79,16 @@ public class ProjectBrowser {
 			pageNumber = page;
 		}
 
-		Query q = entityManager.createQuery("select p from Project p order by :order");
+		Query q = entityManager.createQuery("select c from Collection c order by :order");
 		log.debug("setting order by to '{0}'", order);
 		q.setParameter("order", order);
 		q.setFirstResult( (pageNumber-1 )* DEFAULT_LIMIT );
 		q.setMaxResults(DEFAULT_LIMIT);
-		projects = q.getResultList();
+		collections = q.getResultList();
 	}
 
 	public Integer getSize() {
-		return (Integer) entityManager.createQuery("select count(*) from Project p").getSingleResult();
+		return (Integer) entityManager.createQuery("select count(*) from Collection c").getSingleResult();
 	}
 
 	
