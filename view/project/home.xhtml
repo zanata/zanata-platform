@@ -71,7 +71,12 @@
   </ui:define>
   
   <ui:define name="right_content">
-      <s:link id="done" value="Create project" view="/project/project.xhtml"/>
+  <div id="create_project">
+	  <s:link id="done" value="Create project" view="/project/project.xhtml"/>
+  </div>
+  <div id="manage_repository">
+	  <s:link id="repo" value="Manage Repositories" view="/project/repositorylist.xhtml"/>
+  </div>		  
   </ui:define>
 
 </ui:composition>

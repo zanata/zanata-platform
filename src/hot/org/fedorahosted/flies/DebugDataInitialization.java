@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
 import org.fedorahosted.flies.entity.Project;
+import org.fedorahosted.flies.entity.Repository;
 import org.fedorahosted.flies.entity.ProjectSeries;
 import org.fedorahosted.flies.entity.ProjectTarget;
 import org.fedorahosted.flies.entity.resources.Document;
@@ -39,7 +40,7 @@ public class DebugDataInitialization {
    @Logger
    Log log;
    
-   //@Observer("org.jboss.seam.postInitialization")
+   @Observer("org.jboss.seam.postInitialization")
    @Transactional
    public void initializeDebugData() {
 	   log.info("*************************** start observing!");
@@ -53,7 +54,26 @@ public class DebugDataInitialization {
 		   // continue
 	   }
 	   
-	   Project project = new Project();
+           Repository repo1 = new Repository();
+	   repo1.setName("Flies");
+	   repo1.setUname("flies");
+	   repo1.setUrl("ssh://hg.fedorahosted.org//hg/flies");
+	   entityManager.persist(repo1);
+
+           Repository repo2 = new Repository();
+	   repo2.setName("Transifex");
+	   repo2.setUname("transifex");
+	   repo2.setUrl("http://code.transifexhg.org/mainline");
+	   entityManager.persist(repo2);
+
+	   
+           Repository repo3 = new Repository();
+	   repo3.setName("Fedora git");
+	   repo3.setUname("fedora");
+	   repo3.setUrl("ssh://git.fedorahosted.org/git");
+	   entityManager.persist(repo3);
+           
+           Project project = new Project();
 	   project.setName("RHEL Deployment Guide");
 	   project.setUname("deploymentguide");
 	   project.setShortDescription("A comprehensive manual for Red Hat Enterprise Linux");
@@ -70,7 +90,7 @@ public class DebugDataInitialization {
 	   target.setProjectSeries(series);
 	   entityManager.persist(target);
 	   
-	   File basePath = new File("/home/asgeirf/projects/Deployment_Guide");
+	   File basePath = new File("/home/jamesni/Deployment_Guide");
 	   PublicanProjectAdapter adapter = new PublicanProjectAdapter(basePath);
 	   log.info(adapter.getBrandName());
 	   log.info("*************************** end observing!");
