@@ -3,7 +3,7 @@
 	<classpathentry kind="src" output="classes/main" path="src/main"/>
 	<classpathentry kind="src" output="classes/hot" path="src/hot"/>
 	<classpathentry kind="src" output="classes/test" path="src/test"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="lib" path="bootstrap"/>
 	<classpathentry kind="lib" path="lib/hibernate-validator.jar"/>
 	<classpathentry kind="lib" path="lib/hibernate.jar"/>
