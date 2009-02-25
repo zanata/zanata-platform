@@ -9,7 +9,6 @@
 	<classpathentry kind="lib" path="lib/hibernate.jar"/>
 	<classpathentry kind="lib" path="lib/hibernate-annotations.jar"/>
 	<classpathentry kind="lib" path="lib/hibernate-commons-annotations.jar"/>
-	<classpathentry kind="lib" path="lib/hibernate-entitymanager.jar"/>
 	<classpathentry kind="lib" path="lib/jboss-seam.jar" sourcepath="lib/src/jboss-seam-sources.jar"/>
 	<classpathentry kind="lib" path="lib/jboss-seam-ui.jar" sourcepath="lib/src/jboss-seam-ui-sources.jar"/>
 	<classpathentry kind="lib" path="lib/jboss-seam-debug.jar"/>
@@ -37,7 +36,7 @@
 	<classpathentry kind="lib" path="lib/jboss-embedded-api.jar"/>
 	<classpathentry kind="lib" path="lib/hibernate-search.jar"/>
 	<classpathentry kind="lib" path="lib/richfaces-api.jar"/>
-	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.6.jar"/>
+	<classpathentry kind="lib" path="lib/mysql-connector-java.jar"/>
 	<classpathentry kind="lib" path="lib/lucene-core.jar"/>
 	<classpathentry kind="lib" path="lib/icu4j-4_0.jar"/>
 	<classpathentry kind="lib" path="lib/richfaces-ui.jar"/>
