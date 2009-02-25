@@ -42,9 +42,9 @@
 	<classpathentry kind="lib" path="lib/icu4j-4_0.jar"/>
 	<classpathentry kind="lib" path="lib/richfaces-ui.jar"/>
 	<classpathentry kind="lib" path="lib/richfaces-impl.jar"/>
-	<classpathentry kind="lib" path="lib/flies-richfaces-ui-1.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/flies-richfaces-ui.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang.jar"/>
-	<classpathentry kind="lib" path="lib/jgettext-0.4-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/jgettext.jar"/>
 	<classpathentry kind="lib" path="lib/xom.jar"/>
 	<classpathentry kind="lib" path="lib/dom4j.jar"/>
 	<classpathentry kind="output" path="test-build"/>

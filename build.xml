@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="flies" default="deploy" basedir=".">
+<project name="flies" default="deploy" basedir="." xmlns:artifact="urn:maven-artifact-ant">
 
     <!-- Give user a chance to override without editing this file or typing -D -->
     <property file="${basedir}/build.properties"/>
@@ -36,6 +36,30 @@
     <property name="src.schema.dir" value="${schema.dir}/org/jboss/seam"/>
     <property name="schema.version" value="2.1"/>
 
+    <!-- Fetch Maven Ant Tasks jar: -->
+    <property name="maven.version" value="2.0.9" />
+    <property name="maven-artifact-ant.bootstrap.jar" location="${lib.dir}/maven-ant-tasks-${maven.version}.jar" />
+    <property name="remoteRepo" value="" />
+
+    <target name="-check-get-maven-artifact-ant">
+        <available property="-get-maven-artifact-ant-done" file="${maven-artifact-ant.bootstrap.jar}" />
+    </target>
+
+    <target name="-get-maven-artifact-ant" depends="-check-get-maven-artifact-ant" unless="-get-maven-artifact-ant-done">
+        <mkdir dir="${lib.dir}" />
+        <get src="http://repository.jboss.com/maven2/org/apache/maven/maven-ant-tasks/${maven.version}/maven-ant-tasks-${maven.version}.jar" dest="${maven-artifact-ant.bootstrap.jar}" />
+    </target>
+
+    <!-- Define the Ant-Contrib and Tennera Ant Gettext tasks, using Maven 
+    to resolve dependencies: -->
+    <target name="-initTaskDefs" depends="-get-maven-artifact-ant">
+        <path id="maven-ant-tasks.classpath" 
+        	path="${maven-artifact-ant.bootstrap.jar}" />
+        <typedef resource="org/apache/maven/artifact/ant/antlib.xml" 
+        	uri="urn:maven-artifact-ant" 
+        	classpathref="maven-ant-tasks.classpath" />
+    </target>
+
     <fileset id="lib" dir="${lib.dir}">
         <include name="*.jar"/>
     </fileset>
@@ -44,6 +68,35 @@
         <fileset refid="lib"/>
     </path>
 
+    <target name="download-deps" depends="-initTaskDefs">
+        <!-- Maven dependencies  -->
+        <artifact:pom file="pom.xml" id="maven.project" />
+        <artifact:dependencies 
+           filesetId="dependency.fileset" 
+           pathId="dependency.classpath" 
+           versionsId="dependency.versions"
+           useScope="runtime" 
+           type="jar">
+            <pom refid="maven.project" />
+        </artifact:dependencies>
+        <!-- This mapper strips off all leading directory information -->
+<!--
+    	<copy todir="${lib.dir}">
+          <fileset refid="dependency.fileset" />
+          <mapper type="flatten" />
+        </copy>
+-->
+    	<!-- This mapper strips version number from directory path and filename -->
+        <copy todir="${lib.dir}">
+    	  <fileset refid="dependency.fileset" />
+    	  <mapper classpathref="maven-ant-tasks.classpath"
+    	          classname="org.apache.maven.artifact.ant.VersionMapper"
+    	          from="${dependency.versions}" 
+    	          to="flatten" />
+    	</copy>
+    </target>
+
+<!--
     <property name="deps.repo" value="http://asgeirf.fedorapeople.org/flies-deps"/>
     <property name="deps.version" value="1.1"/>
 
@@ -68,7 +121,7 @@
         <touch file="${lib.dir}/flies-deps-${deps.version}"/>
 		<zip destfile="flies-deps-${deps.version}.zip" basedir="${lib.dir}"/>
     </target>
-
+-->
 
     <target name="init" depends="download-deps" description="Initialize the build">
         <taskdef name="groovyc"
