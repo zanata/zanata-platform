@@ -43,7 +43,7 @@
       <option name="NAME" value="fliesDatasource" />
       <libraries>
         <library>
-          <url>jar://$PROJECT_DIR$/lib/mysql-connector-java-5.1.6.jar!/</url>
+          <url>jar://$PROJECT_DIR$/lib/mysql-connector-java.jar!/</url>
         </library>
       </libraries>
     </DataSource>

@@ -360,7 +360,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/mysql-connector-java-5.1.6.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/mysql-connector-java.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
