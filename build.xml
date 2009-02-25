@@ -47,7 +47,10 @@
 
     <target name="-get-maven-artifact-ant" depends="-check-get-maven-artifact-ant" unless="-get-maven-artifact-ant-done">
         <mkdir dir="${lib.dir}" />
-        <get src="http://repository.jboss.com/maven2/org/apache/maven/maven-ant-tasks/${maven.version}/maven-ant-tasks-${maven.version}.jar" dest="${maven-artifact-ant.bootstrap.jar}" />
+        <get 
+        	src="http://repository.jboss.com/maven2/org/apache/maven/maven-ant-tasks/${maven.version}/maven-ant-tasks-${maven.version}.jar" 
+        	dest="${maven-artifact-ant.bootstrap.jar}" 
+            usetimestamp="true" />
     </target>
 
     <!-- Define the Ant-Contrib and Tennera Ant Gettext tasks, using Maven 
@@ -68,7 +71,8 @@
         <fileset refid="lib"/>
     </path>
 
-    <target name="download-deps" depends="-initTaskDefs">
+    <target name="maven-deps" depends="-initTaskDefs">
+    	
         <!-- Maven dependencies  -->
         <artifact:pom file="pom.xml" id="maven.project" />
         <artifact:dependencies 
@@ -96,24 +100,31 @@
     	</copy>
     </target>
 
-<!--
-    <property name="deps.repo" value="http://asgeirf.fedorapeople.org/flies-deps"/>
-    <property name="deps.version" value="1.1"/>
+    <property name="deps.version" value="1.2"/>
 
     <target name="init-deps">
         <available property="deps.installed" value="true" file="${lib.dir}/flies-deps-${deps.version}" type="file"/>
     </target>
 
-    <target name="download-deps" depends="init-deps" unless="deps.installed" description="Download jar dependencies">
-		<delete dir="${lib.dir}" quiet="true"/>
-        <mkdir dir="${lib.dir}"/>
+    <target name="download-deps" depends="init-deps, maven-deps" unless="deps.installed" description="Download jar dependencies">
         <echo message="Downloading library dependencies..."/>
-        <get src="${deps.repo}/flies-deps-${deps.version}.zip"
-            dest="flies-deps-${deps.version}.zip"/>
-		<unzip src="flies-deps-${deps.version}.zip" dest="${lib.dir}"/>            
-		<delete file="flies-deps-${deps.version}.zip" quiet="true"/>
+    	<delete>
+        	<fileset dir="${lib.dir}" includes="flies-deps-*" />
+        </delete>
+        <!-- non-Maven dependencies -->
+        <get 
+            src="http://download.icu-project.org/files/icu4j/4.0.1/icu4j-4_0_1.jar" 
+            dest="${lib.dir}/icu4j.jar" 
+            verbose="true" usetimestamp="true" />
+        <get 
+            src="http://www.cafeconleche.org/XOM/xom-1.2.jar" 
+            dest="${lib.dir}/xom.jar" 
+            verbose="true" usetimestamp="true" />
+        <!-- apparently unused: nux.jar     1.6 -->
+    	<touch file="${lib.dir}/flies-deps-${deps.version}" />
     </target>
 
+<!--
     <target name="create-deps-archive" description="Create Zip archive of current dependencies">
 	    <delete>
     		<fileset dir="${lib.dir}" includes="flies-deps-*"/>
