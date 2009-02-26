@@ -47,7 +47,7 @@ public class DebugDataInitialization {
    @Logger
    Log log;
    
-   @Observer("org.jboss.seam.postInitialization")
+//   @Observer("org.jboss.seam.postInitialization")
    @Transactional
    public void initializeDebugData() {
 	   log.info("*************************** start observing!");
