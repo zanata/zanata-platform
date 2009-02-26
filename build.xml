@@ -53,8 +53,6 @@
             usetimestamp="true" />
     </target>
 
-    <!-- Define the Ant-Contrib and Tennera Ant Gettext tasks, using Maven 
-    to resolve dependencies: -->
     <target name="-initTaskDefs" depends="-get-maven-artifact-ant">
         <path id="maven-ant-tasks.classpath" 
         	path="${maven-artifact-ant.bootstrap.jar}" />
@@ -70,9 +68,9 @@
     <path id="build.classpath">
         <fileset refid="lib"/>
     </path>
-
-    <target name="maven-deps" depends="-initTaskDefs">
-    	
+	
+    <target name="download-maven-deps-force" depends="-initTaskDefs" 
+    	   description="Download Maven jar dependencies (updating SNAPSHOTs)">
         <!-- Maven dependencies  -->
         <artifact:pom file="pom.xml" id="maven.project" />
         <artifact:dependencies 
@@ -98,15 +96,27 @@
     	          from="${dependency.versions}" 
     	          to="flatten" />
     	</copy>
+        <touch file="${lib.dir}/.maven-deps-timestamp" />
     </target>
 
     <property name="deps.version" value="1.2"/>
 
-    <target name="init-deps">
+    <target name="-init-deps">
         <available property="deps.installed" value="true" file="${lib.dir}/flies-deps-${deps.version}" type="file"/>
+        <uptodate 
+            property="mavenuptodate" 
+            srcfile="pom.xml"
+            targetfile="${lib.dir}/.maven-deps-timestamp"> 
+        </uptodate>
     </target>
 
-    <target name="download-deps" depends="init-deps, maven-deps" unless="deps.installed" description="Download jar dependencies">
+    <target name="download-maven-deps" depends="-init-deps" unless="mavenuptodate"
+           description="Download Maven jar dependencies (unless already updated)">
+        <antcall target="download-maven-deps-force" />
+    </target>
+        
+    <target name="download-deps" depends="-init-deps, download-maven-deps" unless="deps.installed" 
+    	   description="Download all jar dependencies (unless already updated)">
         <echo message="Downloading library dependencies..."/>
     	<delete>
         	<fileset dir="${lib.dir}" includes="flies-deps-*" />
@@ -120,19 +130,13 @@
             src="http://www.cafeconleche.org/XOM/xom-1.2.jar" 
             dest="${lib.dir}/xom.jar" 
             verbose="true" usetimestamp="true" />
-        <!-- apparently unused: nux.jar     1.6 -->
+    	
+    	<!-- NB increment deps.version above if you add/update a jar! -->
+
+    	<!-- apparently unused: nux.jar     1.6 -->
+    	
     	<touch file="${lib.dir}/flies-deps-${deps.version}" />
     </target>
-
-<!--
-    <target name="create-deps-archive" description="Create Zip archive of current dependencies">
-	    <delete>
-    		<fileset dir="${lib.dir}" includes="flies-deps-*"/>
-  		</delete>
-        <touch file="${lib.dir}/flies-deps-${deps.version}"/>
-		<zip destfile="flies-deps-${deps.version}.zip" basedir="${lib.dir}"/>
-    </target>
--->
 
     <target name="init" depends="download-deps" description="Initialize the build">
         <taskdef name="groovyc"
