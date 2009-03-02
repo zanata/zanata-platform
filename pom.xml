@@ -42,7 +42,6 @@
                    <updatePolicy>always</updatePolicy>
               </snapshots>
         </repository>
-<!--
         <repository>
             <name>Tennera release repository on fedorahosted.org</name>
             <id>fhosted.tennera.svn</id>
@@ -59,7 +58,6 @@
             <enabled>true</enabled>
           </snapshots>
         </repository>
--->
     </repositories>
 
     <!-- Most of the following are straight out of <dependencyManagement> in
