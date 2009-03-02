@@ -38,7 +38,7 @@
 	<classpathentry kind="lib" path="lib/richfaces-api.jar"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-java.jar"/>
 	<classpathentry kind="lib" path="lib/lucene-core.jar"/>
-	<classpathentry kind="lib" path="lib/icu4j-4_0.jar"/>
+	<classpathentry kind="lib" path="lib/icu4j.jar"/>
 	<classpathentry kind="lib" path="lib/richfaces-ui.jar"/>
 	<classpathentry kind="lib" path="lib/richfaces-impl.jar"/>
 	<classpathentry kind="lib" path="lib/flies-richfaces-ui.jar"/>
