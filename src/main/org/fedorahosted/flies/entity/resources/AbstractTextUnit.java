@@ -2,6 +2,7 @@ package org.fedorahosted.flies.entity.resources;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -10,6 +11,7 @@ import javax.persistence.Version;
 
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.Length;
+import org.hibernate.validator.NotNull;
 
 @MappedSuperclass
 public abstract class AbstractTextUnit implements Serializable{
@@ -31,7 +33,8 @@ public abstract class AbstractTextUnit implements Serializable{
 		this.id = id;
 	}
 	
-	
+	@Column(name="document_revision")
+	@NotNull
 	public Integer getDocumentRevision() {
 		return documentRevision;
 	}

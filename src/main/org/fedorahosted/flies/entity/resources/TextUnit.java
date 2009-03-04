@@ -17,38 +17,9 @@ import org.fedorahosted.flies.entity.FliesLocale;
 
 @Entity
 @Table(	uniqueConstraints = {@UniqueConstraint(columnNames={"resource_id", "document_id"})})
-public class TextUnit extends AbstractTextUnit{
+public class TextUnit extends AbstractTextUnitTemplate{
 
 	private List<TextUnitTarget> targets;
-	
-	private boolean obsolete;
-	
-	private Integer position;
-
-	private String resourceId;
-
-	private Document document;
-	
-	@Column(name="resource_id")
-	//@NaturalId
-	public String getResourceId() {
-		return resourceId;
-	}
-	
-	public void setResourceId(String resourceId) {
-		this.resourceId = resourceId;
-	}
-	
-	@ManyToOne
-	@JoinColumn(name="document_id")
-	//@NaturalId
-	public Document getDocument() {
-		return document;
-	}
-	
-	public void setDocument(Document document) {
-		this.document = document;
-	}
 	
 	@OneToMany(mappedBy="template")
 	public List<TextUnitTarget> getTargets() {
@@ -59,20 +30,4 @@ public class TextUnit extends AbstractTextUnit{
 		this.targets = targets;
 	}
 
-	public boolean isObsolete() {
-		return obsolete;
-	}
-	
-	public void setObsolete(boolean obsolete) {
-		this.obsolete = obsolete;
-	}
-
-	public Integer getPosition() {
-		return position;
-	}
-	
-	public void setPosition(Integer position) {
-		this.position = position;
-	}
-	
 }

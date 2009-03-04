@@ -19,6 +19,7 @@ import org.fedorahosted.flies.entity.ProjectTarget;
 import org.fedorahosted.flies.entity.ResourceCategory;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.NotNull;
 
 @Entity
 public class Document implements Serializable{
@@ -34,7 +35,7 @@ public class Document implements Serializable{
 	
 	private List<TextUnit> entries;
 
-	private Integer revision;
+	private Integer revision = 1;
 	
 	private Project project;
 	private ProjectTarget projectTarget;
@@ -42,13 +43,19 @@ public class Document implements Serializable{
 	private List<TextUnitTarget> targetEntries;
 	
 	private ResourceCategory resourceCategory;
-	
+
+	@NotNull
 	public Integer getRevision() {
 		return revision;
 	}
 	
 	public void setRevision(Integer revision) {
 		this.revision = revision;
+	}
+
+	@Transient
+	public void incrementRevision(){
+		revision++;
 	}
 	
 	@Id @GeneratedValue
