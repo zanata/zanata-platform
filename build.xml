@@ -97,7 +97,7 @@
     	          from="${dependency.versions}" 
     	          to="flatten" />
     	</copy>
-        <copy todir="${lib.dir}/sources">
+        <copy todir="${lib.dir}/src">
     	  <fileset refid="dependency.sourcesFileset" />
     	  <mapper classpathref="maven-ant-tasks.classpath"
     	          classname="org.apache.maven.artifact.ant.VersionMapper"
