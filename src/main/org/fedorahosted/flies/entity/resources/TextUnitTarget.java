@@ -34,6 +34,15 @@ public class TextUnitTarget extends AbstractTextUnit{
 
 	private List<TextUnitCandidate> candidates;
 	
+	public TextUnitTarget() {
+	}
+
+	public TextUnitTarget(Document document, TextUnit template, FliesLocale locale) {
+		this.document = document;
+		this.template = template;
+		this.locale = locale;
+	}
+	
 	@ManyToOne
 	@JoinColumn(name="template_id")
 	//@NaturalId
