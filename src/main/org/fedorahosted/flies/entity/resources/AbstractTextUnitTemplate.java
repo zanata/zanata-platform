@@ -5,6 +5,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
+import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.NotNull;
+
 @MappedSuperclass
 public abstract class AbstractTextUnitTemplate extends AbstractTextUnit{
 
@@ -17,6 +20,7 @@ public abstract class AbstractTextUnitTemplate extends AbstractTextUnit{
 	private Document document;
 
 	
+	@NotNull
 	public boolean isObsolete() {
 		return obsolete;
 	}
@@ -33,6 +37,7 @@ public abstract class AbstractTextUnitTemplate extends AbstractTextUnit{
 		this.position = position;
 	}
 
+	@NotEmpty
 	@Column(name="resource_id")
 	//@NaturalId
 	public String getResourceId() {
@@ -43,6 +48,7 @@ public abstract class AbstractTextUnitTemplate extends AbstractTextUnit{
 		this.resourceId = resourceId;
 	}
 	
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name="document_id")
 	//@NaturalId
