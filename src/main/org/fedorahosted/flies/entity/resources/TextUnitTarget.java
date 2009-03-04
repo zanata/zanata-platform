@@ -16,6 +16,7 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.fedorahosted.flies.entity.FliesLocale;
+import org.hibernate.validator.NotNull;
 
 @Entity
 @Table(	uniqueConstraints = {@UniqueConstraint(columnNames={"document_id", "template_id", "locale_id"})})
@@ -27,7 +28,7 @@ public class TextUnitTarget extends AbstractTextUnit{
 	
 	public static enum Status{New, FuzzyMatch, ForReview, Approved}
 	
-	private Status status;
+	private Status status = Status.New;
 
 	private DocumentTarget documentTarget;
 
@@ -54,6 +55,7 @@ public class TextUnitTarget extends AbstractTextUnit{
 		this.template = template;
 	}
 
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name="locale_id")
 	//@NaturalId
@@ -78,6 +80,7 @@ public class TextUnitTarget extends AbstractTextUnit{
 		this.documentTarget = documentTarget;
 	}
 
+	@NotNull
 	public Status getStatus() {
 		return status;
 	}
