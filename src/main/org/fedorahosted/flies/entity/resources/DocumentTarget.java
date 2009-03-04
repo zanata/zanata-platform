@@ -16,6 +16,7 @@ import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
 import org.fedorahosted.flies.entity.FliesLocale;
+import org.hibernate.validator.NotNull;
 
 @Entity
 @Table(	uniqueConstraints = {@UniqueConstraint(columnNames={"id", "document_id"})})
@@ -50,6 +51,7 @@ public class DocumentTarget implements Serializable{
 		this.template = template;
 	}
 	
+    @NotNull
 	@ManyToOne
 	@JoinColumn(name="locale_id")
 	//@NaturalId

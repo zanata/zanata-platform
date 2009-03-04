@@ -95,6 +95,7 @@ public class Document implements Serializable{
 		this.contentType = contentType;
 	}
     
+    @NotNull
     @ManyToOne
     @JoinColumn(name="projectId")
     public Project getProject() {
@@ -105,6 +106,7 @@ public class Document implements Serializable{
 		this.project = project;
 	}
     
+    @NotNull
     @ManyToOne
     @JoinColumn(name="projectTargetId")
     public ProjectTarget getProjectTarget() {
@@ -144,6 +146,7 @@ public class Document implements Serializable{
 		this.targetEntries = targetEntries;
 	}
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name="category_id")
 	public ResourceCategory getResourceCategory() {
