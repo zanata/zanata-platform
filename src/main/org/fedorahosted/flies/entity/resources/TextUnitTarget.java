@@ -12,6 +12,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.fedorahosted.flies.entity.FliesLocale;
@@ -93,4 +94,16 @@ public class TextUnitTarget extends AbstractTextUnit{
 	public void setCandidates(List<TextUnitCandidate> candidates) {
 		this.candidates = candidates;
 	}
+	
+	/**
+	 * Checks if this target corresponds to the current version of the template
+	 * 
+	 * @return true if this target corresponds to the current version of the template
+	 */
+	@Transient
+	public boolean isCurrent(){
+		return this.getTemplate().getDocumentRevision() ==
+			this.getDocumentRevision();
+	}
+	
 }
