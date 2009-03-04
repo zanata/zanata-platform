@@ -5,46 +5,46 @@
 	<classpathentry kind="src" output="classes/test" path="src/test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="lib" path="bootstrap"/>
-	<classpathentry kind="lib" path="lib/hibernate-validator.jar"/>
-	<classpathentry kind="lib" path="lib/hibernate.jar"/>
-	<classpathentry kind="lib" path="lib/hibernate-annotations.jar"/>
-	<classpathentry kind="lib" path="lib/hibernate-commons-annotations.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate-validator.jar" sourcepath="lib/src/hibernate-validator-sources.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate.jar" sourcepath="lib/src/hibernate-sources.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate-annotations.jar" sourcepath="lib/src/hibernate-annotations-sources.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate-commons-annotations.jar" sourcepath="lib/src/hibernate-commons-annotations-sources.jar"/>
 	<classpathentry kind="lib" path="lib/jboss-seam.jar" sourcepath="lib/src/jboss-seam-sources.jar"/>
 	<classpathentry kind="lib" path="lib/jboss-seam-ui.jar" sourcepath="lib/src/jboss-seam-ui-sources.jar"/>
-	<classpathentry kind="lib" path="lib/jboss-seam-debug.jar"/>
-	<classpathentry kind="lib" path="lib/jboss-cache.jar"/>
-	<classpathentry kind="lib" path="lib/jbpm-jpdl.jar"/>
-	<classpathentry kind="lib" path="lib/antlr.jar"/>
-	<classpathentry kind="lib" path="lib/jgroups.jar"/>
-	<classpathentry kind="lib" path="lib/jsf-facelets.jar"/>
-	<classpathentry kind="lib" path="lib/jsf-api.jar"/>
-	<classpathentry kind="lib" path="lib/servlet-api.jar"/>
-	<classpathentry kind="lib" path="lib/testng.jar"/>
-	<classpathentry kind="lib" path="lib/jboss-el.jar"/>
-	<classpathentry kind="lib" path="lib/el-api.jar"/>
-	<classpathentry kind="lib" path="lib/mvel14.jar"/>
-	<classpathentry kind="lib" path="lib/drools-core.jar"/>
-	<classpathentry kind="lib" path="lib/drools-compiler.jar"/>
-	<classpathentry kind="lib" path="lib/janino.jar"/>
-	<classpathentry kind="lib" path="lib/antlr-runtime.jar"/>
-	<classpathentry kind="lib" path="lib/mail.jar"/>
-	<classpathentry kind="lib" path="lib/persistence-api.jar"/>
-	<classpathentry kind="lib" path="lib/ejb-api.jar"/>
-	<classpathentry kind="lib" path="lib/jsr250-api.jar"/>
-	<classpathentry kind="lib" path="lib/jta.jar"/>
-	<classpathentry kind="lib" path="lib/core.jar"/>
-	<classpathentry kind="lib" path="lib/jboss-embedded-api.jar"/>
-	<classpathentry kind="lib" path="lib/hibernate-search.jar"/>
-	<classpathentry kind="lib" path="lib/richfaces-api.jar"/>
-	<classpathentry kind="lib" path="lib/mysql-connector-java.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-core.jar"/>
-	<classpathentry kind="lib" path="lib/icu4j.jar"/>
-	<classpathentry kind="lib" path="lib/richfaces-ui.jar"/>
-	<classpathentry kind="lib" path="lib/richfaces-impl.jar"/>
-	<classpathentry kind="lib" path="lib/flies-richfaces-ui.jar"/>
-	<classpathentry kind="lib" path="lib/commons-lang.jar"/>
-	<classpathentry kind="lib" path="lib/jgettext.jar"/>
-	<classpathentry kind="lib" path="lib/xom.jar"/>
-	<classpathentry kind="lib" path="lib/dom4j.jar"/>
+	<classpathentry kind="lib" path="lib/jboss-seam-debug.jar" sourcepath="lib/src/jboss-seam-debug-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jboss-cache.jar" sourcespath="lib/src/jboss-cache-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jbpm-jpdl.jar" sourcepath="lib/src/jbpm-jpdl-sources.jar"/>
+	<classpathentry kind="lib" path="lib/antlr.jar" sourcepath="lib/src/antlr-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jgroups.jar" sourcepath="lib/jgroups-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jsf-facelets.jar" sourcepath="lib/jsf-facelets-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jsf-api.jar" sourcepath="lib/jsf-api-sources.jar"/>
+	<classpathentry kind="lib" path="lib/servlet-api.jar" sourcepath="lib/servlet-api-sources.jar"/>
+	<classpathentry kind="lib" path="lib/testng.jar" sourcepath="lib/testng-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jboss-el.jar" sourcepath="lib/jboss-el-sources.jar"/>
+	<classpathentry kind="lib" path="lib/el-api.jar" sourcepath="lib/el-api-sources.jar"/>
+	<classpathentry kind="lib" path="lib/mvel14.jar" sourcepath="lib/mvel14-sources.jar"/>
+	<classpathentry kind="lib" path="lib/drools-core.jar" sourcepath="lib/drools-core-sources.jar"/>
+	<classpathentry kind="lib" path="lib/drools-compiler.jar" sourcepath="lib/drools-compiler-sources.jar"/>
+	<classpathentry kind="lib" path="lib/janino.jar" sourcepath="lib/janino-sources.jar"/>
+	<classpathentry kind="lib" path="lib/antlr-runtime.jar" sourcepath="lib/antlr-runtime-sources.jar"/>
+	<classpathentry kind="lib" path="lib/mail.jar" sourcepath="lib/mail-sources.jar"/>
+	<classpathentry kind="lib" path="lib/persistence-api.jar" sourcepath="lib/persistence-api-sources.jar"/>
+	<classpathentry kind="lib" path="lib/ejb-api.jar" sourcepath="lib/ejb-api-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jsr250-api.jar" sourcepath="lib/jsr250-api-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jta.jar" sourcepath="lib/jta-sources.jar"/>
+	<classpathentry kind="lib" path="lib/core.jar" sourcepath="lib/core-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jboss-embedded-api.jar" sourcepath="lib/jboss-embedded-api-sources.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate-search.jar" sourcepath="lib/hibernate-search-sources.jar"/>
+	<classpathentry kind="lib" path="lib/richfaces-api.jar" sourcepath="lib/richfaces-api-sources.jar"/>
+	<classpathentry kind="lib" path="lib/mysql-connector-java.jar" sourcepath="lib/mysql-connector-java-sources.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-core.jar" sourcepath="lib/lucene-core-sources.jar"/>
+	<classpathentry kind="lib" path="lib/icu4j.jar" sourcepath="lib/icu4j-sources.jar"/>
+	<classpathentry kind="lib" path="lib/richfaces-ui.jar" sourcepath="lib/richfaces-ui-sources.jar"/>
+	<classpathentry kind="lib" path="lib/richfaces-impl.jar" sourcepath="lib/richfaces-impl-sources.jar"/>
+	<classpathentry kind="lib" path="lib/flies-richfaces-ui.jar" sourcepath="lib/flies-richfaces-ui-sources.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang.jar" sourcepath="lib/commons-lang-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jgettext.jar" sourcepath="lib/jgettext-sources.jar"/>
+	<classpathentry kind="lib" path="lib/xom.jar" sourcepath="lib/xom-sources.jar"/>
+	<classpathentry kind="lib" path="lib/dom4j.jar" sourcepath="lib/dom4j-sources.jar"/>
 	<classpathentry kind="output" path="test-build"/>
 </classpath>

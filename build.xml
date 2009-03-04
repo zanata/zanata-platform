@@ -75,6 +75,7 @@
         <artifact:pom file="pom.xml" id="maven.project" />
         <artifact:dependencies 
            filesetId="dependency.fileset" 
+           sourcesFilesetId="dependency.sourcesFileset"
            pathId="dependency.classpath" 
            versionsId="dependency.versions"
            useScope="runtime" 
@@ -91,6 +92,13 @@
     	<!-- This mapper strips version number from directory path and filename -->
         <copy todir="${lib.dir}">
     	  <fileset refid="dependency.fileset" />
+    	  <mapper classpathref="maven-ant-tasks.classpath"
+    	          classname="org.apache.maven.artifact.ant.VersionMapper"
+    	          from="${dependency.versions}" 
+    	          to="flatten" />
+    	</copy>
+        <copy todir="${lib.dir}/sources">
+    	  <fileset refid="dependency.sourcesFileset" />
     	  <mapper classpathref="maven-ant-tasks.classpath"
     	          classname="org.apache.maven.artifact.ant.VersionMapper"
     	          from="${dependency.versions}" 
@@ -122,10 +130,6 @@
         	<fileset dir="${lib.dir}" includes="flies-deps-*" />
         </delete>
         <!-- non-Maven dependencies -->
-        <get 
-            src="http://download.icu-project.org/files/icu4j/4.0.1/icu4j-4_0_1.jar" 
-            dest="${lib.dir}/icu4j.jar" 
-            verbose="true" usetimestamp="true" />
         <get 
             src="http://www.cafeconleche.org/XOM/xom-1.2.jar" 
             dest="${lib.dir}/xom.jar" 
