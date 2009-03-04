@@ -10,7 +10,7 @@ import org.fedorahosted.flies.entity.Person;
 import org.hibernate.validator.NotNull;
 
 @Entity
-public class TextUnitCandidate extends AbstractTextUnit implements Serializable{
+public class TextUnitCandidate extends AbstractTextUnit{
 	
 	public static enum Type {Suggestion}
 	public static enum Source {Web,PreviousVersion}
