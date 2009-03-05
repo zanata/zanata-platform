@@ -12,6 +12,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
+import org.fedorahosted.flies.validator.url.Slug;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Pattern;
@@ -39,7 +40,7 @@ public class Collection extends AbstractFliesEntity implements Serializable{
     //@NaturalId
     @Length(min = 2, max = 40)
     @NotNull
-    @Pattern(regex="[a-zA-Z_\\-]*")
+    @Slug
     public String getSlug() {
 		return slug;
 	}

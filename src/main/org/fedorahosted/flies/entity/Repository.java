@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
+import org.fedorahosted.flies.validator.url.Slug;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
@@ -45,7 +46,9 @@ import org.hibernate.validator.Pattern;
 	        this.name = name;
 	    }
 	    
-	    @Length(max = 80)
+	    @Length(min = 2, max = 40)
+	    @NotNull
+	    @Slug
 	    public String getSlug() {
 	        return slug;
 	    }
