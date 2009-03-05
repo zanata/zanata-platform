@@ -28,12 +28,12 @@ import org.hibernate.validator.Pattern;
 import org.jboss.seam.contexts.Contexts;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "uname"))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = "slug"))
 public class Project extends AbstractFliesEntity implements Serializable {
 
     private String name;
     
-    private String uname;
+    private String slug;
     
     private String shortDescription;
     
@@ -59,12 +59,12 @@ public class Project extends AbstractFliesEntity implements Serializable {
     @Length(min = 2, max = 40)
     @NotNull
     @Pattern(regex="[a-zA-Z_\\-]*")
-    public String getUname() {
-		return uname;
+    public String getSlug() {
+		return slug;
 	}
     
-    public void setUname(String uname) {
-		this.uname = uname;
+    public void setSlug(String slug) {
+		this.slug = slug;
 	}
     
     @Length(max = 100)

@@ -13,7 +13,7 @@ import org.fedorahosted.flies.entity.Collection;
 public class CollectionHome extends EntityHome<Collection>
 {
     @RequestParameter
-    String uname;
+    String slug;
 
     private Long pid;
     
@@ -21,7 +21,7 @@ public class CollectionHome extends EntityHome<Collection>
     @Override
     public Object getId()
     {
-        if (uname == null)
+        if (slug == null)
         {
             return super.getId();
         }
@@ -29,8 +29,8 @@ public class CollectionHome extends EntityHome<Collection>
         {
         	try{
             	// TODO calling a separate query to get the ID isn't very efficient.  
-        		pid = (Long) getEntityManager().createQuery("Select c.id from Collection c where c.uname = :uname")
-    			.setParameter("uname", uname).getSingleResult();
+        		pid = (Long) getEntityManager().createQuery("Select c.id from Collection c where c.slug = :slug")
+    			.setParameter("slug", slug).getSingleResult();
         	}
         	catch(NoResultException nre){
         		return super.getId();

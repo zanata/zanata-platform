@@ -6,7 +6,7 @@
    <navigation from-action="#{projectHome.update}">
       <rule if="#{projectHome.managed}">
          <redirect view-id="/project/project.xhtml">
-           <param name="uname" value="#{projectHome.instance.uname}"/>
+           <param name="slug" value="#{projectHome.instance.slug}"/>
          </redirect>
       </rule>
    </navigation>
@@ -14,7 +14,7 @@
    <navigation from-action="#{projectHome.persist}">
       <rule if="#{projectHome.managed}">
          <redirect view-id="/project/project.xhtml">
-           <param name="uname" value="#{projectHome.instance.uname}"/>
+           <param name="slug" value="#{projectHome.instance.slug}"/>
          </redirect>
       </rule>
    </navigation>

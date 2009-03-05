@@ -45,8 +45,8 @@
                    value="#{collection.name}"
                    propagation="none"
                    view="/collection/collection.xhtml">
-                <f:param name="uname"
-                         value="#{collection.uname}"/>
+                <f:param name="slug"
+                         value="#{collection.slug}"/>
               </s:link></h3>
               <h:outputText rendered="#{not empty collection.shortDescription}">
                 <em class="description">#{collection.shortDescription}</em>

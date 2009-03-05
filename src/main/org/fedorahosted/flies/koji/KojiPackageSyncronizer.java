@@ -49,7 +49,7 @@ public class KojiPackageSyncronizer {
 
 		Session session = (Session) entityManager.getDelegate();
 		Collection collection = (Collection) session.createCriteria(Collection.class).add(
-					Restrictions.naturalId().set("uname", "")).uniqueResult();
+					Restrictions.naturalId().set("slug", "")).uniqueResult();
 
 		if(collection == null)
 			collection = new Collection();
@@ -57,7 +57,7 @@ public class KojiPackageSyncronizer {
 		if(nameElem != null)
 			collection.setName(nameElem.getValue());
 		if(idElem != null)
-			collection.setUname(idElem.getValue());
+			collection.setSlug(idElem.getValue());
 		if(descriptionElem != null){
 			String desc = descriptionElem.getValue();
 			if(desc.length() > 240){

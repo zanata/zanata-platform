@@ -27,7 +27,7 @@
       <!-- TODO: series can have children... -->
       <rich:dataList value="#{series.projectTargets}" var="target">
         <s:link view="/project/target.xhtml" value="#{target.name}" propagation="none">
-          <f:param name="uname" value="#{projectHome.instance.uname}"/>        
+          <f:param name="slug" value="#{projectHome.instance.slug}"/>        
           <f:param name="targetId" value="#{target.id}"/>        
         </s:link>
       </rich:dataList>

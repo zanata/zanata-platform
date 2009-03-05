@@ -24,7 +24,7 @@ import org.hibernate.validator.Pattern;
 
 	    private Long id;
 	    private String name;
-	    private String uname;
+	    private String slug;
 	    private String url;
 	    
 	    @Id @GeneratedValue
@@ -46,12 +46,12 @@ import org.hibernate.validator.Pattern;
 	    }
 	    
 	    @Length(max = 80)
-	    public String getUname() {
-	        return uname;
+	    public String getSlug() {
+	        return slug;
 	    }
 	    
-	    public void setUname(String uname) {
-	        this.uname = uname;
+	    public void setSlug(String slug) {
+	        this.slug = slug;
 	    }
 
 	    @Length(max = 80)

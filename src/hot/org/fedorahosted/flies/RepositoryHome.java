@@ -13,7 +13,7 @@ import org.fedorahosted.flies.entity.Repository;
 public class RepositoryHome extends EntityHome<Repository>
 {
     @RequestParameter
-    String uname;
+    String slug;
 
     private Long pid;
     
@@ -21,7 +21,7 @@ public class RepositoryHome extends EntityHome<Repository>
     @Override
     public Object getId()
     {
-        if (uname == null)
+        if (slug == null)
         {
             return super.getId();
         }
@@ -29,8 +29,8 @@ public class RepositoryHome extends EntityHome<Repository>
         {
         	try{
             	// TODO calling a separate query to get the ID isn't very efficient.  
-        		pid = (Long) getEntityManager().createQuery("Select r.id from Repository r where r.uname = :uname")
-    			.setParameter("uname", uname).getSingleResult();
+        		pid = (Long) getEntityManager().createQuery("Select r.id from Repository r where r.slug = :slug")
+    			.setParameter("slug", slug).getSingleResult();
         	}
         	catch(NoResultException nre){
         		return super.getId();

@@ -52,8 +52,8 @@ public class DebugDataInitialization {
    public void initializeDebugData() {
 	   log.info("*************************** start observing!");
 	   try{
-		   Project project = (Project) entityManager.createQuery("Select p from Project p where p.uname = :uname")
-		   				.setParameter("uname", "deploymentguide").getSingleResult();
+		   Project project = (Project) entityManager.createQuery("Select p from Project p where p.slug = :slug")
+		   				.setParameter("slug", "deploymentguide").getSingleResult();
 		   log.info("Data already exists");
 		   return;
 	   }
@@ -86,26 +86,26 @@ public class DebugDataInitialization {
 	   
            Repository repo1 = new Repository();
 	   repo1.setName("Flies");
-	   repo1.setUname("flies");
+	   repo1.setSlug("flies");
 	   repo1.setUrl("ssh://hg.fedorahosted.org//hg/flies");
 	   entityManager.persist(repo1);
 
            Repository repo2 = new Repository();
 	   repo2.setName("Transifex");
-	   repo2.setUname("transifex");
+	   repo2.setSlug("transifex");
 	   repo2.setUrl("http://code.transifexhg.org/mainline");
 	   entityManager.persist(repo2);
 
 	   
            Repository repo3 = new Repository();
 	   repo3.setName("Fedora git");
-	   repo3.setUname("fedora");
+	   repo3.setSlug("fedora");
 	   repo3.setUrl("ssh://git.fedorahosted.org/git");
 	   entityManager.persist(repo3);
            
            Project project = new Project();
 	   project.setName("RHEL Deployment Guide");
-	   project.setUname("deploymentguide");
+	   project.setSlug("deploymentguide");
 	   project.setShortDescription("A comprehensive manual for Red Hat Enterprise Linux");
 	   entityManager.persist(project);
 

@@ -46,8 +46,8 @@
                    value="#{project.name}"
                    propagation="none"
                    view="/project/project.xhtml">
-                <f:param name="uname"
-                         value="#{project.uname}"/>
+                <f:param name="slug"
+                         value="#{project.slug}"/>
               </s:link></h3>
               <h:outputText rendered="#{not empty project.shortDescription}">
                 <em class="description">#{project.shortDescription}</em>
@@ -63,8 +63,8 @@
                            value="#{t.name}"
                            propagation="none"
                            view="/project/target.xhtml">
-                        <f:param name="uname"
-                                 value="#{project.uname}"/>
+                        <f:param name="slug"
+                                 value="#{project.slug}"/>
                         <f:param name="targetId"
                                  value="#{t.id}"/>
                       </s:link>

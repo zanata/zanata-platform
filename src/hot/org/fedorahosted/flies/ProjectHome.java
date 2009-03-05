@@ -13,7 +13,7 @@ import org.fedorahosted.flies.entity.Project;
 public class ProjectHome extends EntityHome<Project>
 {
     @RequestParameter
-    String uname;
+    String slug;
 
     private Long pid;
     
@@ -21,7 +21,7 @@ public class ProjectHome extends EntityHome<Project>
     @Override
     public Object getId()
     {
-        if (uname == null)
+        if (slug == null)
         {
             return super.getId();
         }
@@ -29,8 +29,8 @@ public class ProjectHome extends EntityHome<Project>
         {
         	try{
             	// TODO calling a separate query to get the ID isn't very efficient.  
-        		pid = (Long) getEntityManager().createQuery("Select p.id from Project p where p.uname = :uname")
-    			.setParameter("uname", uname).getSingleResult();
+        		pid = (Long) getEntityManager().createQuery("Select p.id from Project p where p.slug = :slug")
+    			.setParameter("slug", slug).getSingleResult();
         	}
         	catch(NoResultException nre){
         		return super.getId();
