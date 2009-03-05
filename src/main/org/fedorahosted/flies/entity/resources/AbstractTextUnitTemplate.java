@@ -13,7 +13,7 @@ public abstract class AbstractTextUnitTemplate extends AbstractTextUnit{
 
 	private boolean obsolete;
 	
-	private Integer position;
+	private Integer position = -1;
 
 	private String resourceId;
 
@@ -28,7 +28,8 @@ public abstract class AbstractTextUnitTemplate extends AbstractTextUnit{
 	public void setObsolete(boolean obsolete) {
 		this.obsolete = obsolete;
 	}
-
+	
+	@NotNull
 	public Integer getPosition() {
 		return position;
 	}

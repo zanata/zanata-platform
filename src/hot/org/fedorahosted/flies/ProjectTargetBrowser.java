@@ -11,7 +11,7 @@ import org.fedorahosted.flies.entity.Project;
 import org.fedorahosted.flies.entity.ProjectTarget;
 import org.fedorahosted.flies.entity.ResourceCategory;
 import org.fedorahosted.flies.entity.resources.Document;
-import org.fedorahosted.flies.entity.resources.TextUnitTarget.Status;
+import org.fedorahosted.flies.entity.resources.AbstractTextUnitTarget.Status;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Factory;

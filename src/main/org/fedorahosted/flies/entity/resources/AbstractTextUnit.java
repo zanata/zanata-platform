@@ -11,6 +11,7 @@ import javax.persistence.Version;
 
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.Length;
+import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 
 @MappedSuperclass
@@ -22,6 +23,19 @@ public abstract class AbstractTextUnit implements Serializable{
 	private String content;
 
 	private Integer documentRevision;
+	
+	public AbstractTextUnit() {
+	}
+	
+	public AbstractTextUnit(Integer documentRevision) {
+		this.documentRevision = documentRevision;
+	}
+
+	public AbstractTextUnit(AbstractTextUnit other) {
+		this.documentRevision = other.documentRevision;
+		this.content = other.content;
+	}
+
 	
 	@Id
 	@GeneratedValue
@@ -57,6 +71,7 @@ public abstract class AbstractTextUnit implements Serializable{
 		this.content = content;
 	}
 	
+	@NotEmpty
 	@Type(type="text")
 	public String getContent() {
 		return content;

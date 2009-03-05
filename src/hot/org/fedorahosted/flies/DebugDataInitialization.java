@@ -18,7 +18,7 @@ import org.fedorahosted.flies.entity.resources.Document;
 import org.fedorahosted.flies.entity.resources.DocumentTarget;
 import org.fedorahosted.flies.entity.resources.TextUnit;
 import org.fedorahosted.flies.entity.resources.TextUnitTarget;
-import org.fedorahosted.flies.entity.resources.TextUnitTarget.Status;
+import org.fedorahosted.flies.entity.resources.AbstractTextUnitTarget.Status;
 import org.fedorahosted.flies.projects.publican.PublicanProjectAdapter;
 import org.fedorahosted.tennera.jgettext.Catalog;
 import org.fedorahosted.tennera.jgettext.Message;

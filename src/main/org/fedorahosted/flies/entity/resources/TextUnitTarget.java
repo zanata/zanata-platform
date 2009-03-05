@@ -19,103 +19,30 @@ import org.fedorahosted.flies.entity.FliesLocale;
 import org.hibernate.validator.NotNull;
 
 @Entity
-@Table(	uniqueConstraints = {@UniqueConstraint(columnNames={"document_id", "template_id", "locale_id"})})
-public class TextUnitTarget extends AbstractTextUnit{
-
-	private Document document;
-	private TextUnit template;
-	private FliesLocale locale;
+@Table(	uniqueConstraints = {@UniqueConstraint(columnNames={"document_id", "template_id", "locale_id", "document_revision"})})
+public class TextUnitTarget extends AbstractTextUnitTarget{
 	
-	public static enum Status{New, FuzzyMatch, ForReview, Approved}
-	
-	private Status status = Status.New;
-
-	private DocumentTarget documentTarget;
-
-	private List<TextUnitCandidate> candidates;
+	private List<TextUnitTargetHistory> history;
 	
 	public TextUnitTarget() {
 	}
-
-	public TextUnitTarget(Document document, TextUnit template, FliesLocale locale) {
-		this.document = document;
-		this.template = template;
-		this.locale = locale;
+	
+	public TextUnitTarget(TextUnit template, FliesLocale locale){
+		super(template.getDocument(), template, locale);
 	}
 	
-	@ManyToOne
-	@JoinColumn(name="template_id")
-	//@NaturalId
-	public TextUnit getTemplate() {
-		return template;
-	}
-
-	@ManyToOne
-	@JoinColumn(name="document_id")
-	public Document getDocument() {
-		return document;
-	}
-	
-	public void setDocument(Document document) {
-		this.document = document;
-	}
-	
-	public void setTemplate(TextUnit template) {
-		this.template = template;
-	}
-
-	@NotNull
-	@ManyToOne
-	@JoinColumn(name="locale_id")
-	//@NaturalId
-	public FliesLocale getLocale() {
-		return locale;
-	}
-	
-	public void setLocale(FliesLocale locale) {
-		this.locale = locale;
-	}
-	
-	@ManyToOne
+	@OneToMany
 	@JoinColumns({
 		@JoinColumn(name="document_id", referencedColumnName="document_id", insertable=false, updatable=false),
+		@JoinColumn(name="template_id", referencedColumnName="template_id", insertable=false, updatable=false),
 		@JoinColumn(name="locale_id", referencedColumnName="locale_id", insertable=false, updatable=false)
 	})
-	public DocumentTarget getDocumentTarget() {
-		return documentTarget;
+	public List<TextUnitTargetHistory> getHistory() {
+		return history;
 	}
 	
-	public void setDocumentTarget(DocumentTarget documentTarget) {
-		this.documentTarget = documentTarget;
+	public void setHistory(List<TextUnitTargetHistory> history) {
+		this.history = history;
 	}
 
-	@NotNull
-	public Status getStatus() {
-		return status;
-	}
-	
-	public void setStatus(Status status) {
-		this.status = status;
-	}
-	
-	@OneToMany(mappedBy="target")
-	public List<TextUnitCandidate> getCandidates() {
-		return candidates;
-	}
-	
-	public void setCandidates(List<TextUnitCandidate> candidates) {
-		this.candidates = candidates;
-	}
-	
-	/**
-	 * Checks if this target corresponds to the current version of the template
-	 * 
-	 * @return true if this target corresponds to the current version of the template
-	 */
-	@Transient
-	public boolean isCurrent(){
-		return this.getTemplate().getDocumentRevision() ==
-			this.getDocumentRevision();
-	}
-	
 }
