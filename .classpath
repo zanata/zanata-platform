@@ -46,5 +46,6 @@
 	<classpathentry kind="lib" path="lib/jgettext.jar" sourcepath="lib/jgettext-sources.jar"/>
 	<classpathentry kind="lib" path="lib/xom.jar" sourcepath="lib/xom-sources.jar"/>
 	<classpathentry kind="lib" path="lib/dom4j.jar" sourcepath="lib/dom4j-sources.jar"/>
+	<classpathentry kind="lib" path="lib/dbunit.jar"/>
 	<classpathentry kind="output" path="test-build"/>
 </classpath>
