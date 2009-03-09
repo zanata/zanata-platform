@@ -7,7 +7,7 @@ import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.framework.EntityHome;
 
-import org.fedorahosted.flies.entity.Repository;
+import org.fedorahosted.flies.core.model.Repository;
 
 @Name("repoHome")
 public class RepositoryHome extends EntityHome<Repository>

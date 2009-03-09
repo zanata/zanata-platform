@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.entity.resources;
+package org.fedorahosted.flies.core.model.resources;
 
 import java.io.Serializable;
 
@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import org.fedorahosted.flies.entity.Person;
+import org.fedorahosted.flies.core.model.Person;
 import org.hibernate.validator.NotNull;
 
 @Entity

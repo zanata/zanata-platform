@@ -2,7 +2,7 @@ package org.fedorahosted.flies;
 
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.framework.EntityQuery;
-import org.fedorahosted.flies.entity.Repository;
+import org.fedorahosted.flies.core.model.Repository;
 
 @Name("repositoryList")
 public class RepositoryList extends EntityQuery<Repository>

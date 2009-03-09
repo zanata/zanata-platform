@@ -7,7 +7,7 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.fedorahosted.flies.entity.Repository;
+import org.fedorahosted.flies.core.model.Repository;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;

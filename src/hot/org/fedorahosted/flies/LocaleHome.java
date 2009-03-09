@@ -1,6 +1,6 @@
 package org.fedorahosted.flies;
 
-import org.fedorahosted.flies.entity.FliesLocale;
+import org.fedorahosted.flies.core.model.FliesLocale;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.web.RequestParameter;

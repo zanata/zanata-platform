@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.entity.resources;
+package org.fedorahosted.flies.core.model.resources;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
-import org.fedorahosted.flies.entity.FliesLocale;
+import org.fedorahosted.flies.core.model.FliesLocale;
 import org.hibernate.validator.NotNull;
 
 @MappedSuperclass

@@ -7,7 +7,7 @@ import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.framework.EntityHome;
 
-import org.fedorahosted.flies.entity.Collection;
+import org.fedorahosted.flies.core.model.Collection;
 
 @Name("collectionHome")
 public class CollectionHome extends EntityHome<Collection>

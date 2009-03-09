@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.entity.resources;
+package org.fedorahosted.flies.core.model.resources;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
-import org.fedorahosted.flies.entity.FliesLocale;
+import org.fedorahosted.flies.core.model.FliesLocale;
 import org.hibernate.validator.NotNull;
 
 @Entity

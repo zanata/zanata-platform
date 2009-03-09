@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.entity.resources;
+package org.fedorahosted.flies.core.model.resources;
 
 import javax.persistence.Column;
 import javax.persistence.JoinColumn;

@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.entity;
+package org.fedorahosted.flies.core.model;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -20,7 +20,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
-import org.fedorahosted.flies.entity.resources.Document;
+import org.fedorahosted.flies.core.model.resources.Document;
 import org.fedorahosted.flies.validator.url.Slug;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;

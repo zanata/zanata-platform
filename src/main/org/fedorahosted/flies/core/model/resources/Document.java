@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.entity.resources;
+package org.fedorahosted.flies.core.model.resources;
 
 import java.io.Serializable;
 import java.util.List;
@@ -13,10 +13,10 @@ import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
-import org.fedorahosted.flies.entity.FliesLocale;
-import org.fedorahosted.flies.entity.Project;
-import org.fedorahosted.flies.entity.ProjectTarget;
-import org.fedorahosted.flies.entity.ResourceCategory;
+import org.fedorahosted.flies.core.model.FliesLocale;
+import org.fedorahosted.flies.core.model.Project;
+import org.fedorahosted.flies.core.model.ProjectTarget;
+import org.fedorahosted.flies.core.model.ResourceCategory;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;

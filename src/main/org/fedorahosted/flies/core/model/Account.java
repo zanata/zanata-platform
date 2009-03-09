@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.entity;
+package org.fedorahosted.flies.core.model;
 
 import java.io.Serializable;
 import java.util.Set;

@@ -11,7 +11,7 @@ import nu.xom.Nodes;
 import nu.xom.ParsingException;
 import nu.xom.ValidityException;
 
-import org.fedorahosted.flies.entity.Collection;
+import org.fedorahosted.flies.core.model.Collection;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;

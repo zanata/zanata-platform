@@ -4,7 +4,7 @@ import java.awt.ComponentOrientation;
 
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.framework.EntityQuery;
-import org.fedorahosted.flies.entity.FliesLocale;
+import org.fedorahosted.flies.core.model.FliesLocale;
 
 import com.ibm.icu.util.ULocale;
 
