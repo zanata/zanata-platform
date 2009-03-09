@@ -20,6 +20,12 @@
 
    <core:init debug="@debug@" jndi-pattern="@jndiPattern@"/>
 
+    <component name="fliesInit" class="org.fedorahosted.flies.FliesInit" precedence="30">
+        <property name="adminContact">@adminContact@</property>
+        <property name="debug">@debug@</property>
+        <property name="authenticatedSessionTimeoutMinutes">@authenticatedSessionTimeoutMinutes@</property>
+    </component>
+
    <core:manager concurrent-request-timeout="500"
                  conversation-timeout="120000"
                  conversation-id-parameter="cid"
