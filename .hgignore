@@ -9,4 +9,5 @@ syntax: regexp
 ^classes/
 ^flies-deps-[0-9.\-_]*.zip
 ^build.properties
-
+^test-report/
+^bootstrap/data/hypersonic/
