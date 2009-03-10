@@ -29,10 +29,10 @@
                              value="#{projectHome.instance.name}"/>
             </s:decorate>
 
-            <s:decorate id="unameField" template="../layout/edit.xhtml">
-                <ui:define name="label">Unix Name</ui:define>
-                <h:inputText id="uname" required="true"
-                             value="#{projectHome.instance.uname}"/>
+            <s:decorate id="slugField" template="../layout/edit.xhtml">
+                <ui:define name="label">Slug</ui:define>
+                <h:inputText id="slug" required="true"
+                             value="#{projectHome.instance.slug}"/>
             </s:decorate>
 
             <s:decorate id="shortDescriptionField" template="../layout/edit.xhtml">

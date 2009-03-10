@@ -213,6 +213,12 @@ td.action a {
 	top: 2px;
 }
 
+#breadcrumbs{
+	margin:5px 0 0 255px;
+	font-size: small;
+	color: grey;
+}
+
 /* column container */
 .colmask {
 	position:relative;	/* This fixes the IE7 overflow hidden bug */

@@ -6,7 +6,7 @@
    <navigation from-action="#{collectionHome.update}">
       <rule if="#{collectionHome.managed}">
          <redirect view-id="/collection/collection.xhtml">
-           <param name="uname" value="#{collectionHome.instance.uname}"/>
+           <param name="slug" value="#{collectionHome.instance.slug}"/>
          </redirect>
       </rule>
    </navigation>
@@ -14,7 +14,7 @@
    <navigation from-action="#{collectionHome.persist}">
       <rule if="#{collectionHome.managed}">
          <redirect view-id="/collection/collection.xhtml">
-           <param name="uname" value="#{collectionHome.instance.uname}"/>
+           <param name="slug" value="#{collectionHome.instance.slug}"/>
          </redirect>
       </rule>
    </navigation>

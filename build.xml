@@ -542,7 +542,7 @@
         <taskdef resource="testngtasks" classpath="${testng.jar}"/>
         <path id="test.path">
             <path path="${test.dir}"/>
-            <fileset dir="${lib.dir}/test">
+            <fileset dir="${seam.home}/lib/test">
                 <include name="*.jar"/>
             </fileset>
             <path path="${bootstrap.dir}"/>
