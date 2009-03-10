@@ -4,8 +4,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
 import org.fedorahosted.flies.core.model.FliesLocale;
-import org.fedorahosted.flies.resources.model.Document;
-import org.fedorahosted.flies.resources.model.DocumentTarget;
+import org.fedorahosted.flies.repository.model.Document;
+import org.fedorahosted.flies.repository.model.DocumentTarget;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;

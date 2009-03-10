@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.resources.model;
+package org.fedorahosted.flies.repository.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;

@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.resources.model;
+package org.fedorahosted.flies.repository.model;
 
 import java.util.List;
 

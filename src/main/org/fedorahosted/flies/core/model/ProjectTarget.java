@@ -13,7 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
 
-import org.fedorahosted.flies.resources.model.Document;
+import org.fedorahosted.flies.repository.model.Document;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;
 
