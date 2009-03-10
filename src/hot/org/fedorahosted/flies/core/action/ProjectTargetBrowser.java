@@ -7,12 +7,12 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.fedorahosted.flies.TranslationStatistics;
 import org.fedorahosted.flies.core.model.Project;
 import org.fedorahosted.flies.core.model.ProjectTarget;
 import org.fedorahosted.flies.core.model.ResourceCategory;
 import org.fedorahosted.flies.repository.model.Document;
 import org.fedorahosted.flies.repository.model.AbstractTextUnitTarget.Status;
+import org.fedorahosted.flies.repository.util.TranslationStatistics;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Factory;
