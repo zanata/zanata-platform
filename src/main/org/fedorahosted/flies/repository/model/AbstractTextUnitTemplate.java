@@ -13,7 +13,7 @@ public abstract class AbstractTextUnitTemplate extends AbstractTextUnit{
 
 	private boolean obsolete;
 	
-	private Integer position = -1;
+	private Integer pos = -1;
 
 	private String resourceId;
 
@@ -30,12 +30,12 @@ public abstract class AbstractTextUnitTemplate extends AbstractTextUnit{
 	}
 	
 	@NotNull
-	public Integer getPosition() {
-		return position;
+	public Integer getPos() {
+		return pos;
 	}
 	
-	public void setPosition(Integer position) {
-		this.position = position;
+	public void setPos(Integer pos) {
+		this.pos = pos;
 	}
 
 	@NotEmpty

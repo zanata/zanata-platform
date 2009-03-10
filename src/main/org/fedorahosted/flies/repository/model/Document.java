@@ -127,7 +127,7 @@ public class Document implements Serializable{
 	}
 	
 	@OneToMany(mappedBy="document")
-	@OrderBy("position")
+	@OrderBy("pos")
 	public List<TextUnit> getEntries() {
 		return entries;
 	}
