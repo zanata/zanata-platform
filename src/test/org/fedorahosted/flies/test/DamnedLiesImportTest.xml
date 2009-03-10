@@ -1,9 +1,0 @@
-<!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
-
-<suite name="DamnedLiesImport Tests" verbose="2" parallel="false">
-   <test name="DamnedLiesImport Test">
-     <classes>
-       <class name="org.fedorahosted.flies.test.DamnedLiesImportTest"/>       
-     </classes>
-   </test>	
-</suite>
