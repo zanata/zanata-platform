@@ -9,4 +9,8 @@ syntax: regexp
 ^classes/
 ^flies-deps-[0-9.\-_]*.zip
 ^build.properties
-
+^test-report/
+^target/
+^.ant-targets-build.xml
+^dist/
+^bootstrap/data/hypersonic/
