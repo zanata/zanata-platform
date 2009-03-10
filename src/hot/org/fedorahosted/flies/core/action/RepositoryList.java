@@ -1,4 +1,4 @@
-package org.fedorahosted.flies;
+package org.fedorahosted.flies.core.action;
 
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.framework.EntityQuery;

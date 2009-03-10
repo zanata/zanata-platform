@@ -1,5 +1,5 @@
-#Wed Nov 05 21:15:20 EST 2008
-action.package=org.fedorahosted.flies
+#Tue Mar 10 11:48:46 EST 2009
+action.package=org.fedorahosted.flies.core.action
 action.sources=/flies/src/hot
 eclipse.preferences.version=1
 model.package=org.fedorahosted.flies

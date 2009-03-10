@@ -1,4 +1,4 @@
-package org.fedorahosted.flies;
+package org.fedorahosted.flies.core.action;
 
 import java.util.Arrays;
 import java.util.List;

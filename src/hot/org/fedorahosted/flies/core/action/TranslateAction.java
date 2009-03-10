@@ -1,4 +1,4 @@
-package org.fedorahosted.flies;
+package org.fedorahosted.flies.core.action;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;

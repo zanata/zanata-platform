@@ -1,4 +1,4 @@
-package org.fedorahosted.flies;
+package org.fedorahosted.flies.core.action;
 
 import javax.persistence.NoResultException;
 
@@ -7,10 +7,10 @@ import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.framework.EntityHome;
 
-import org.fedorahosted.flies.core.model.Project;
+import org.fedorahosted.flies.core.model.Collection;
 
-@Name("projectHome")
-public class ProjectHome extends EntityHome<Project>
+@Name("collectionHome")
+public class CollectionHome extends EntityHome<Collection>
 {
     @RequestParameter
     String slug;
@@ -29,14 +29,14 @@ public class ProjectHome extends EntityHome<Project>
         {
         	try{
             	// TODO calling a separate query to get the ID isn't very efficient.  
-        		pid = (Long) getEntityManager().createQuery("Select p.id from Project p where p.slug = :slug")
+        		pid = (Long) getEntityManager().createQuery("Select c.id from Collection c where c.slug = :slug")
     			.setParameter("slug", slug).getSingleResult();
         	}
         	catch(NoResultException nre){
         		return super.getId();
         	}
     		
-    		getLog().info("found project with id {0}", pid);
+    		getLog().info("found collection with id {0}", pid);
             return pid;
         }
         
@@ -44,7 +44,7 @@ public class ProjectHome extends EntityHome<Project>
     }
     
     @Override
-    protected Project loadInstance() 
+    protected Collection loadInstance() 
     {
        return getEntityManager().find(getEntityClass(), getId());
     }    

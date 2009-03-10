@@ -1,4 +1,4 @@
-package org.fedorahosted.flies;
+package org.fedorahosted.flies.core.action;
 
 import org.fedorahosted.flies.core.model.FliesLocale;
 import org.jboss.seam.annotations.Begin;
