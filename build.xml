@@ -486,7 +486,7 @@
             overwrite="true"/>
         <copy todir="${test.dir}" flatten="true">
             <fileset dir="${src.test.dir}">
-                <include name="**/*Test.xml"/>
+                <include name="**/*.tng.xml"/>
             </fileset>
         </copy>
     </target>
@@ -512,7 +512,7 @@
             <jvmarg line="-Djava.endorsed.dirs=${endorsed.dir}"/>
             <jvmarg line="-Dsun.lang.ClassLoader.allowArraySyntax=true"/>
             <classpath refid="test.path"/>
-            <xmlfileset dir="${test.dir}" includes="*Test.xml"/>
+            <xmlfileset dir="${test.dir}" includes="*.tng.xml"/>
         </testng>
     </target>
 
