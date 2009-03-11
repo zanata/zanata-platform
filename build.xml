@@ -75,7 +75,6 @@
         <artifact:pom file="pom.xml" id="maven.project" />
         <artifact:dependencies 
            filesetId="dependency.fileset" 
-           sourcesFilesetId="dependency.sourcesFileset"
            pathId="dependency.classpath" 
            versionsId="dependency.versions"
            useScope="runtime" 
@@ -97,16 +96,57 @@
     	          from="${dependency.versions}" 
     	          to="flatten" />
     	</copy>
-        <copy todir="${lib.dir}/src">
-    	  <fileset refid="dependency.sourcesFileset" />
-    	  <mapper classpathref="maven-ant-tasks.classpath"
-    	          classname="org.apache.maven.artifact.ant.VersionMapper"
-    	          from="${dependency.versions}" 
-    	          to="flatten" />
-    	</copy>
         <touch file="${lib.dir}/.maven-deps-timestamp" />
+    	
+        <mkdir dir="${lib.dir}/test" />
+
+        <artifact:dependencies 
+           filesetId="dependency.test.fileset" 
+           pathId="dependency.test.classpath" 
+           versionsId="dependency.test.versions"
+           useScope="test" 
+           type="jar">
+        	<!-- sourcesFilesetId="dependency.test.sourcesFileset" -->
+            <pom refid="maven.project" />
+        </artifact:dependencies>
+    	<difference id="testjars">
+    	   <fileset refid="dependency.fileset"/>
+           <fileset refid="dependency.test.fileset"/>
+    	</difference>
+        <copy todir="${lib.dir}/test">
+        	<!--
+          <fileset refid="dependency.test.fileset" />
+        	-->
+        	<difference refid="testjars"/>
+          <mapper classpathref="maven-ant-tasks.classpath"
+                  classname="org.apache.maven.artifact.ant.VersionMapper"
+                  from="${dependency.test.versions}" 
+                  to="flatten" />
+        </copy>
     </target>
 
+    <target name="download-maven-deps-source" depends="download-maven-deps-force"
+    	description="Download all available source jars for dependencies (SLOW)">
+    	<!--
+           filesetId="dependency.fileset" 
+           pathId="dependency.classpath" 
+           versionsId="dependency.versions"
+    	-->
+        <artifact:dependencies 
+           sourcesFilesetId="dependency.sourcesFileset"
+           useScope="runtime" 
+           type="jar">
+            <pom refid="maven.project" />
+        </artifact:dependencies>
+        <copy todir="${lib.dir}/src">
+          <fileset refid="dependency.sourcesFileset" />
+          <mapper classpathref="maven-ant-tasks.classpath"
+                  classname="org.apache.maven.artifact.ant.VersionMapper"
+                  from="${dependency.versions}" 
+                  to="flatten" />
+        </copy>
+    </target>
+    
     <property name="deps.version" value="1.2"/>
 
     <target name="-init-deps">

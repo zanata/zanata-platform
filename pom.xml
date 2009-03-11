@@ -12,6 +12,8 @@
     
 	  <properties>
 	    <version.seam>${project.parent.version}</version.seam>
+	    <!-- This comes from seam's build/common.build.xml:embedded.version -->
+	    <version.jboss.embedded>beta3</version.jboss.embedded>
 	  </properties>
 	
     <repositories>
@@ -423,6 +425,25 @@
 		    <artifactId>mysql-connector-java</artifactId>
 		    <version>5.1.6</version>
         </dependency>  
+
+      <dependency>
+        <groupId>org.jboss.embedded</groupId>
+        <artifactId>jboss-embedded-all</artifactId>
+        <version>${version.jboss.embedded}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.embedded</groupId>
+        <artifactId>thirdparty-all</artifactId>
+        <version>${version.jboss.embedded}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.embedded</groupId>
+        <artifactId>hibernate-all</artifactId>
+        <version>${version.jboss.embedded}</version>
+        <scope>test</scope>
+      </dependency>
     </dependencies>
 
 </project>
