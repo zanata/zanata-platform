@@ -3,14 +3,13 @@ syntax: glob
 */target/*
 syntax: regexp
 ^\.pc/
-^lib/
-^test-build/
-^exploded-archives/
-^classes/
-^flies-deps-[0-9.\-_]*.zip
-^build.properties
-^test-report/
-^target/
+^flies/lib/
+^flies/test-build/
+^flies/exploded-archives/
+^flies/classes/
+^flies/build.properties
+^flies/test-report/
+^flies/target/
 ^.ant-targets-build.xml
-^dist/
-^bootstrap/data/hypersonic/
+^flies/dist/
+^flies/bootstrap/data/hypersonic/
