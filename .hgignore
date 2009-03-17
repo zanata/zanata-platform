@@ -3,13 +3,13 @@ syntax: glob
 */target/*
 syntax: regexp
 ^\.pc/
-^flies/lib/
-^flies/test-build/
-^flies/exploded-archives/
-^flies/classes/
-^flies/build.properties
-^flies/test-report/
-^flies/target/
+^flies-web/lib/
+^flies-web/test-build/
+^flies-web/exploded-archives/
+^flies-web/classes/
+^flies-web/build.properties
+^flies-web/test-report/
+^flies-web/target/
 ^.ant-targets-build.xml
-^flies/dist/
-^flies/bootstrap/data/hypersonic/
+^flies-web/dist/
+^flies-web/bootstrap/data/hypersonic/
