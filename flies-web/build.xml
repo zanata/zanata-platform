@@ -71,7 +71,7 @@
 	
     <target name="download-maven-deps-force" depends="-initTaskDefs" 
     	   description="Download Maven jar dependencies (updating SNAPSHOTs)">
-        <!-- Maven dependencies  -->
+        <!-- Maven runtime-scope dependencies  -->
         <artifact:pom file="pom.xml" id="maven.project" />
         <artifact:dependencies 
            filesetId="dependency.fileset" 
@@ -96,8 +96,8 @@
     	          from="${dependency.versions}" 
     	          to="flatten" />
     	</copy>
-        <touch file="${lib.dir}/.maven-deps-timestamp" />
     	
+        <!-- Maven runtime-scope dependencies  -->
         <mkdir dir="${lib.dir}/test" />
 
         <artifact:dependencies 
@@ -123,6 +123,7 @@
                   from="${dependency.test.versions}" 
                   to="flatten" />
         </copy>
+        <touch file="${lib.dir}/.maven-deps-timestamp" />
     </target>
 
     <target name="download-maven-deps-source" depends="download-maven-deps-force"
