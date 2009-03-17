@@ -47,7 +47,7 @@ public class DebugDataInitialization {
    @Logger
    Log log;
    
-//   @Observer("org.jboss.seam.postInitialization")
+   @Observer("org.jboss.seam.postInitialization")
    @Transactional
    public void initializeDebugData() {
 	   log.info("*************************** start observing!");
@@ -120,7 +120,7 @@ public class DebugDataInitialization {
 	   target.setProjectSeries(series);
 	   entityManager.persist(target);
 	   
-	   File basePath = new File("/home/jamesni/Deployment_Guide");
+	   File basePath = new File("/home/asgeirf/projects/gitsvn/Deployment_Guide");
 	   PublicanProjectAdapter adapter = new PublicanProjectAdapter(basePath);
 	   log.info(adapter.getBrandName());
 
@@ -164,6 +164,7 @@ public class DebugDataInitialization {
 						if(!message.isHeader()){
 							// create Template...
 							TextUnit tu = new TextUnit();
+							tu.setResourceId(message.getMsgid());
 							tu.setDocument(template);
 							tu.setContent(message.getMsgid());
 							tu.setDocumentRevision(template.getRevision());
