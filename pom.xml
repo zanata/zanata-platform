@@ -8,7 +8,10 @@
   <packaging>pom</packaging>
   <modules>
     <module>flies-richfaces-ui</module>
-  </modules>
+<!--
+    <module>flies-vcs</module>
+
+-->  </modules>
     <repositories>
 
         <!--  jboss.org repo  -->

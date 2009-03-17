@@ -1,49 +1,21 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.fedorahosted.flies</groupId>
-    <artifactId>null</artifactId>
-    <version>0</version>
+    <artifactId>flies-web</artifactId>
+    <packaging>pom</packaging>
 
-	<parent>
-		<groupId>org.jboss.seam</groupId>
-		<artifactId>parent</artifactId>
-		<version>2.1.1.GA</version>
-	</parent>
-    
+      <parent>
+        <artifactId>root</artifactId>
+        <groupId>org.fedorahosted.flies</groupId>
+        <version>1.0-SNAPSHOT</version>
+      </parent>
+
 	  <properties>
-	    <version.seam>${project.parent.version}</version.seam>
+	    <version.seam>2.1.1.GA</version.seam>
 	    <!-- This comes from seam's build/common.build.xml:embedded.version -->
 	    <version.jboss.embedded>beta3</version.jboss.embedded>
 	  </properties>
 	
     <repositories>
-        <!--  jboss.org repo  -->
-        <repository>
-            <id>jboss-repository</id>
-            <name>JBoss Repository</name>
-            <url>http://repository.jboss.org/maven2</url>
-              <releases>
-                   <enabled>true</enabled>
-              </releases>
-              <snapshots>
-                   <enabled>false</enabled>
-                   <updatePolicy>never</updatePolicy>
-              </snapshots>
-        </repository>
-
-        <!--  jboss.org snapshot repo  -->
-        <repository>
-            <id>jboss-snapshots-repository</id>
-            <name>JBoss Snapshots Repository</name>
-            <url>http://snapshots.jboss.org/maven2</url>
-              <releases>
-                   <enabled>false</enabled>
-              </releases>
-              <snapshots>
-                   <enabled>true</enabled>
-                   <updatePolicy>always</updatePolicy>
-              </snapshots>
-        </repository>
         <repository>
             <name>Tennera release repository on fedorahosted.org</name>
             <id>fhosted.tennera.svn</id>
@@ -61,6 +33,17 @@
           </snapshots>
         </repository>
     </repositories>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jboss.seam</groupId>
+                <artifactId>parent</artifactId>
+                <version>${version.seam}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <!-- Most of the following are straight out of <dependencyManagement> in
     Seam's root.pom.xml -->
