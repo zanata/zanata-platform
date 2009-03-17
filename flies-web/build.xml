@@ -97,7 +97,7 @@
     	          to="flatten" />
     	</copy>
     	
-        <!-- Maven runtime-scope dependencies  -->
+        <!-- Maven test-scope dependencies  -->
         <mkdir dir="${lib.dir}/test" />
 
         <artifact:dependencies 
