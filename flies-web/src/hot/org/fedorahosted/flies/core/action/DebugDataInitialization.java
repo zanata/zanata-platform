@@ -1,7 +1,7 @@
 package org.fedorahosted.flies.core.action;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -189,7 +189,7 @@ public class DebugDataInitialization {
 					}
 			   });
 		   }
-		   catch(FileNotFoundException e){
+		   catch(IOException e){
 			   log.error(e);
 		   } catch (RecognitionException e) {
 			   log.error(e);
