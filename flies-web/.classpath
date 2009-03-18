@@ -2,9 +2,7 @@
 <classpath>
 	<classpathentry kind="src" output="classes/main" path="src/main"/>
 	<classpathentry kind="src" output="classes/hot" path="src/hot"/>
-	<classpathentry kind="src" output="classes/test" path="src/test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="lib" path="bootstrap"/>
 	<classpathentry kind="lib" path="lib/jboss-seam.jar" sourcepath="lib/src/jboss-seam-sources.jar"/>
 	<classpathentry kind="lib" path="lib/jboss-seam-ui.jar" sourcepath="lib/src/jboss-seam-ui-sources.jar"/>
 	<classpathentry kind="lib" path="lib/jboss-seam-debug.jar" sourcepath="lib/src/jboss-seam-debug-sources.jar"/>
@@ -29,7 +27,7 @@
 	<classpathentry kind="lib" path="lib/xom.jar" sourcepath="lib/xom-sources.jar"/>
 	<classpathentry kind="lib" path="lib/dom4j.jar" sourcepath="lib/dom4j-sources.jar"/>
 	<classpathentry kind="lib" path="lib/dbunit.jar"/>
-    <classpathentry kind="lib" path="lib/commons-lang.jar" sourcepath="lib/commons-lang-sources.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang.jar" sourcepath="lib/commons-lang-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.jboss.ide.eclipse.as.core.server.runtime.runtimeTarget/JBoss AS 4.2.3"/>
 	<classpathentry kind="output" path="test-build"/>
 </classpath>

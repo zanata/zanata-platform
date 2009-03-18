@@ -44,7 +44,6 @@
     </target>
 	
     <target name="-init-deps">
-        <available property="deps.installed" value="true" file="${webapp.lib.dir}/flies-deps-${deps.version}" type="file"/>
         <uptodate 
             property="mavenuptodate" 
             srcfile="pom.xml"

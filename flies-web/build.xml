@@ -4,7 +4,10 @@
     <!-- Give user a chance to override without editing this file or typing -D -->
     <property file="${basedir}/build.properties"/>
 
-    <property name="profile" value="dev"/>
+    <property name="deps.version" value="1"/>
+    <property name="deps.filename" value="build-tools/lib/flies-deps-${deps.version}"/>
+
+	<property name="profile" value="dev"/>
     <property file="build-${profile}.properties"/>
 
     <!-- set global properties for this build -->
@@ -12,7 +15,7 @@
     <property name="dist.dir" value="dist"/>
     <property name="src.model.dir" value="src/main"/>
     <property name="src.action.dir" value="src/hot"/>
-    <property name="src.test.dir" value="src/test"/>
+    <property name="src.test.dir" value="../flies-web-test/src/test"/>
     <property name="lib.dir" value="lib"/>
     <property name="endorsed.dir" value="${lib.dir}/endorsed"/>
     <property name="ear.dir" value="exploded-archives/${project.name}.ear"/>
@@ -40,11 +43,44 @@
         <include name="*.jar"/>
     </fileset>
 
+    <fileset id="jboss.client" dir="${jboss.home}/client">
+        <include name="*.jar"/>
+    </fileset>
+
+    <fileset id="jboss.default.lib" dir="${jboss.home}/server/default/lib">
+        <include name="*.jar"/>
+    </fileset>
+
     <path id="build.classpath">
         <fileset refid="lib"/>
+    	<fileset refid="jboss.client"/>
+    	<fileset refid="jboss.default.lib"/>
     </path>
 
 	<import file="build-tools/build-deps.xml"/>
+
+	<target name="-deps-installed">
+	    <available property="deps.installed" value="true" file="${deps.filename}" type="file"/>
+	</target>
+	
+	<target name="download-deps" depends="deps.download-deps,-deps-installed" unless="deps.installed">
+        <echo message="Downloading library dependencies..."/>
+    	<delete>
+        	<fileset dir="build-tools/lib" includes="flies-deps-*" />
+        </delete>
+        <!-- non-Maven dependencies -->
+        <get 
+            src="http://www.cafeconleche.org/XOM/xom-1.2.1.jar" 
+            dest="${lib.dir}/xom.jar" 
+            verbose="true" usetimestamp="true"/>
+    	
+    	<!-- NB increment deps.version above if you add/update a jar! -->
+
+    	<!-- apparently unused: nux.jar     1.6 -->
+    	
+    	<touch file="${deps.filename}" />
+		
+	</target>
 	
     <target name="init" depends="download-deps" description="Initialize the build">
         <taskdef name="groovyc"
