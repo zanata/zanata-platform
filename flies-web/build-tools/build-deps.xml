@@ -46,7 +46,7 @@
     <target name="-init-deps">
         <uptodate 
             property="mavenuptodate" 
-            srcfile="pom.xml"
+            srcfile="${build.dir}/pom.xml"
             targetfile="${webapp.lib.dir}/.maven-deps-timestamp"> 
         </uptodate>
     </target>
