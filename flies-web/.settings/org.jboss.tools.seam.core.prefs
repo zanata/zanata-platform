@@ -1,16 +1,16 @@
-#Tue Mar 10 11:48:46 EST 2009
+#Thu Mar 19 09:32:31 EST 2009
 action.package=org.fedorahosted.flies.core.action
-action.sources=/flies/src/hot
+action.sources=/flies-web/src/hot
 eclipse.preferences.version=1
 model.package=org.fedorahosted.flies
-model.sources=/flies/src/main
-seam.ejb.project=flies
+model.sources=/flies-web/src/main
+seam.ejb.project=flies-web
 seam.project.connection.profile=Flies MySQL
 seam.project.deployment.type=ear
 seam.project.settings.version=1.1
-seam.project.web.root.folder=/flies/view
+seam.project.web.root.folder=/flies-web/view
 seam.runtime.name=jboss-seam-2.1.1-SNAPSHOT
 seam.test.creating=true
-seam.test.project=flies
+seam.test.project=flies-web
 test.package=org.fedorahosted.flies.test
-test.sources=/flies/src/test
+test.sources=/flies-web/src/test

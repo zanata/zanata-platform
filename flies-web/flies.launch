@@ -8,5 +8,5 @@
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="flies"/>
 <stringAttribute key="org.hibernate.eclipse.launch.CONFIGURATION_FACTORY" value="JPA"/>
-<stringAttribute key="org.hibernate.eclipse.launch.PROPERTY_FILE" value="/flies/hibernate-console.properties"/>
+<stringAttribute key="org.hibernate.eclipse.launch.PROPERTY_FILE" value="/flies-web/hibernate-console.properties"/>
 </launchConfiguration>
