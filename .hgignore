@@ -13,3 +13,5 @@ syntax: regexp
 ^.ant-targets-build.xml
 ^flies-web/dist/
 ^flies-web/bootstrap/data/hypersonic/
+flies-web-test/lib/
+flies-web/build-tools/lib/

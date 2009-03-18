@@ -36,31 +36,6 @@
     <property name="src.schema.dir" value="${schema.dir}/org/jboss/seam"/>
     <property name="schema.version" value="2.1"/>
 
-    <!-- Fetch Maven Ant Tasks jar: -->
-    <property name="maven.version" value="2.0.9" />
-    <property name="maven-artifact-ant.bootstrap.jar" location="${lib.dir}/maven-ant-tasks-${maven.version}.jar" />
-    <property name="remoteRepo" value="" />
-
-    <target name="-check-get-maven-artifact-ant">
-        <available property="-get-maven-artifact-ant-done" file="${maven-artifact-ant.bootstrap.jar}" />
-    </target>
-
-    <target name="-get-maven-artifact-ant" depends="-check-get-maven-artifact-ant" unless="-get-maven-artifact-ant-done">
-        <mkdir dir="${lib.dir}" />
-        <get 
-        	src="http://repository.jboss.com/maven2/org/apache/maven/maven-ant-tasks/${maven.version}/maven-ant-tasks-${maven.version}.jar" 
-        	dest="${maven-artifact-ant.bootstrap.jar}" 
-            usetimestamp="true" />
-    </target>
-
-    <target name="-initTaskDefs" depends="-get-maven-artifact-ant">
-        <path id="maven-ant-tasks.classpath" 
-        	path="${maven-artifact-ant.bootstrap.jar}" />
-        <typedef resource="org/apache/maven/artifact/ant/antlib.xml" 
-        	uri="urn:maven-artifact-ant" 
-        	classpathref="maven-ant-tasks.classpath" />
-    </target>
-
     <fileset id="lib" dir="${lib.dir}">
         <include name="*.jar"/>
     </fileset>
@@ -68,120 +43,9 @@
     <path id="build.classpath">
         <fileset refid="lib"/>
     </path>
+
+	<import file="build-tools/build-deps.xml"/>
 	
-    <target name="download-maven-deps-force" depends="-initTaskDefs" 
-    	   description="Download Maven jar dependencies (updating SNAPSHOTs)">
-        <!-- Maven dependencies  -->
-        <artifact:pom file="pom.xml" id="maven.project" />
-        <artifact:dependencies 
-           filesetId="dependency.fileset" 
-           pathId="dependency.classpath" 
-           versionsId="dependency.versions"
-           useScope="runtime" 
-           type="jar">
-            <pom refid="maven.project" />
-        </artifact:dependencies>
-        <!-- This mapper strips off all leading directory information -->
-<!--
-    	<copy todir="${lib.dir}">
-          <fileset refid="dependency.fileset" />
-          <mapper type="flatten" />
-        </copy>
--->
-    	<!-- This mapper strips version number from directory path and filename -->
-        <copy todir="${lib.dir}">
-    	  <fileset refid="dependency.fileset" />
-    	  <mapper classpathref="maven-ant-tasks.classpath"
-    	          classname="org.apache.maven.artifact.ant.VersionMapper"
-    	          from="${dependency.versions}" 
-    	          to="flatten" />
-    	</copy>
-        <touch file="${lib.dir}/.maven-deps-timestamp" />
-    	
-        <mkdir dir="${lib.dir}/test" />
-
-        <artifact:dependencies 
-           filesetId="dependency.test.fileset" 
-           pathId="dependency.test.classpath" 
-           versionsId="dependency.test.versions"
-           useScope="test" 
-           type="jar">
-        	<!-- sourcesFilesetId="dependency.test.sourcesFileset" -->
-            <pom refid="maven.project" />
-        </artifact:dependencies>
-    	<difference id="testjars">
-    	   <fileset refid="dependency.fileset"/>
-           <fileset refid="dependency.test.fileset"/>
-    	</difference>
-        <copy todir="${lib.dir}/test">
-        	<!--
-          <fileset refid="dependency.test.fileset" />
-        	-->
-        	<difference refid="testjars"/>
-          <mapper classpathref="maven-ant-tasks.classpath"
-                  classname="org.apache.maven.artifact.ant.VersionMapper"
-                  from="${dependency.test.versions}" 
-                  to="flatten" />
-        </copy>
-    </target>
-
-    <target name="download-maven-deps-source" depends="download-maven-deps-force"
-    	description="Download all available source jars for dependencies (SLOW)">
-    	<!--
-           filesetId="dependency.fileset" 
-           pathId="dependency.classpath" 
-           versionsId="dependency.versions"
-    	-->
-        <artifact:dependencies 
-           sourcesFilesetId="dependency.sourcesFileset"
-           useScope="runtime" 
-           type="jar">
-            <pom refid="maven.project" />
-        </artifact:dependencies>
-        <copy todir="${lib.dir}/src">
-          <fileset refid="dependency.sourcesFileset" />
-          <mapper classpathref="maven-ant-tasks.classpath"
-                  classname="org.apache.maven.artifact.ant.VersionMapper"
-                  from="${dependency.versions}" 
-                  to="flatten" />
-        </copy>
-    </target>
-    
-    <property name="deps.version" value="1.3"/>
-
-    <target name="-init-deps">
-        <available property="deps.installed" value="true" file="${lib.dir}/flies-deps-${deps.version}" type="file"/>
-        <uptodate 
-            property="mavenuptodate" 
-            srcfile="pom.xml"
-            targetfile="${lib.dir}/.maven-deps-timestamp"> 
-        </uptodate>
-    </target>
-
-    <target name="download-maven-deps" depends="-init-deps" unless="mavenuptodate"
-           description="Download Maven jar dependencies (unless already updated)">
-        <antcall target="download-maven-deps-force" />
-    </target>
-        
-    <target name="download-deps" depends="-init-deps, download-maven-deps" unless="deps.installed" 
-    	   description="Download all jar dependencies (unless already updated)">
-        <echo message="Downloading library dependencies..."/>
-    	<delete>
-        	<fileset dir="${lib.dir}" includes="flies-deps-*" />
-        </delete>
-        <!-- non-Maven dependencies -->
-        <get 
-            src="http://www.cafeconleche.org/XOM/xom-1.2.1.jar" 
-            dest="${lib.dir}/xom.jar" 
-            verbose="true" usetimestamp="true" />
-    	
-    	<!-- NB increment deps.version above if you add/update a jar! -->
-
-    	<!-- apparently unused: nux.jar     1.6 -->
-    	
-    	<touch file="${lib.dir}/flies-deps-${deps.version}" />
-    </target>
-
     <target name="init" depends="download-deps" description="Initialize the build">
         <taskdef name="groovyc"
             classname ="org.codehaus.groovy.ant.Groovyc"
