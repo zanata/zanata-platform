@@ -9,6 +9,9 @@
 
     <property name="build.dir" value="build-tools"/>
     <property name="build.lib.dir" value="${build.dir}/lib"/>
+
+	<property name="webapp.pom" value="${build.dir}/webapp.pom.xml"/>
+    <property name="test.pom" value="${build.dir}/test.pom.xml"/>
     
 	<!--
 	<property name="maven.repo.local" value="/tmp/m2"/>
@@ -46,7 +49,7 @@
     <target name="-init-deps">
         <uptodate 
             property="mavenuptodate" 
-            srcfile="${build.dir}/pom.xml"
+            srcfile="${webapp.pom}"
             targetfile="${webapp.lib.dir}/.maven-deps-timestamp"> 
         </uptodate>
     </target>
@@ -67,7 +70,7 @@
 
    	    <artifact:localRepository id="local.repository" path="${maven.repo.local}"/>
 
-   		<artifact:pom file="${build.dir}/pom.xml" id="maven.project" />
+   		<artifact:pom file="${webapp.pom}" id="maven.project" />
 
         <artifact:dependencies 
            filesetId="dependency.fileset" 
@@ -100,7 +103,7 @@
 
    	    <artifact:localRepository id="local.repository" path="${maven.repo.local}"/>
 
-        <artifact:pom file="${build.dir}/pom.xml" id="maven.project" />
+        <artifact:pom file="${webapp.pom}" id="maven.project" />
 
         <artifact:dependencies 
            sourcesfilesetId="dependencySources.fileset" 
@@ -133,7 +136,7 @@
     	
    	    <artifact:localRepository id="local.repository" path="${maven.repo.local}"/>
 
-        <artifact:pom file="${build.dir}/test-pom.xml" id="maven.project" />
+        <artifact:pom file="${test.pom}" id="maven.project" />
 
         <artifact:dependencies 
            filesetId="dependency.test.fileset" 
