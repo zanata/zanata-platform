@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="seamproject" default="deploy" basedir=".">
+<project name="flies" default="deploy" basedir=".">
 
     <!-- Give user a chance to override without editing this file or typing -D -->
     <property file="${basedir}/build.properties" />
@@ -8,13 +8,13 @@
     <property file="build-${profile}.properties" />
 
     <!-- set global properties for this build -->
-    <property name="project.name" value="seamproject"/>
+    <property name="project.name" value="flies"/>
     <property name="project.war" value="true"/>
     <property name="richfaces.present" value="true"/>
     <property name="dist.dir" value="dist" />
     <property name="src.model.dir" value="src/main" />
     <property name="src.action.dir" value="src/hot" />
-    <property name="src.test.dir" value="src/test" />
+    <property name="src.test.dir" value="../flies-web-test/src/test" />
     <property name="lib.dir" value="lib" />
     <property name="endorsed.dir" value="${lib.dir}/endorsed" />
     <property name="war.dir" value="exploded-archives/${project.name}.war" />
@@ -23,12 +23,12 @@
     <property name="action.dir" value="WEB-INF/classes" />
     <property name="classes.action.dir" value="${war.dir}/${action.dir}" />
     <property name="test.dir" value="test-build" />
-    <property name="bootstrap.dir" value="${basedir}/bootstrap" />
+    <property name="bootstrap.dir" value="${basedir}../flies-web-test/bootstrap" />
     <property name="jboss.domain" value="default"/>
     <property name="deploy.dir" value="${jboss.home}/server/${jboss.domain}/deploy" />
     <property name="war.deploy.dir" value="${deploy.dir}/${project.name}.war" />
     <property name="packaged.archive" value="${dist.dir}/${project.name}.war"/>
-    <property name="testng.jar" value="${basedir}/lib/testng.jar" />
+    <property name="testng.jar" value="${basedir}../flies-web-test/lib/testng.jar" />
     <property name="javac.debug" value="true" />
     <property name="javac.deprecation" value="false" />
     <property name="debug" value="false" />
@@ -39,18 +39,60 @@
     <property name="src.schema.dir" value="${schema.dir}/org/jboss/seam"/>
     <property name="schema.version" value="2.1"/>
     
-    <fileset id="lib" dir="${lib.dir}">
+    <property name="deps.version" value="1"/>
+    <property name="deps.filename" value="build-tools/lib/flies-deps-${deps.version}"/>
+  
+  	
+  	<fileset id="lib" dir="${lib.dir}">
         <include name="*.jar" />
     </fileset>
     
+    <fileset id="jboss.client" dir="${jboss.home}/client">
+        <include name="*.jar"/>
+    </fileset>
+  
+    <fileset id="jboss.default.lib" dir="${jboss.home}/server/default/lib">
+        <include name="*.jar"/>
+    </fileset>
+	
     <path id="build.classpath">
         <fileset refid="lib" />
+        <fileset refid="jboss.client"/>
+        <fileset refid="jboss.default.lib"/>
     </path>
 
     <!-- Import GlassFish deployment targets -->
+	  <!-- 
     <import file="${basedir}/glassfish-build.xml"/>
-
-    <target name="init" description="Initialize the build">
+    -->
+	
+    <import file="build-tools/build-deps.xml"/>
+  
+    <target name="-deps-installed">
+        <available property="deps.installed" value="true" file="${deps.filename}" type="file"/>
+    </target>
+    
+    <target name="download-deps" depends="deps.download-deps,-deps-installed" unless="deps.installed">
+          <echo message="Downloading library dependencies..."/>
+        <delete>
+            <fileset dir="build-tools/lib" includes="flies-deps-*" />
+          </delete>
+          <!-- non-Maven dependencies -->
+          <get 
+              src="http://www.cafeconleche.org/XOM/xom-1.2.1.jar" 
+              dest="${lib.dir}/xom.jar" 
+              verbose="true" usetimestamp="true"/>
+        
+        <!-- NB increment deps.version above if you add/update a jar! -->
+  
+        <!-- apparently unused: nux.jar     1.6 -->
+        
+        <touch file="${deps.filename}" />
+      
+    </target>
+  	
+	
+    <target name="init" depends="download-deps" description="Initialize the build">
 
         <taskdef name="groovyc"
             classname ="org.codehaus.groovy.ant.Groovyc"

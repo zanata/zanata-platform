@@ -15,3 +15,8 @@ mvel14.jar
 richfaces-api.jar
 richfaces-impl.jar
 richfaces-ui.jar
+flies-richfaces-ui.jar
+icu4j.jar
+commons-lang.jar
+jgettext.jar
+xom.jar
