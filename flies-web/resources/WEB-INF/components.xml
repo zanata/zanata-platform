@@ -33,9 +33,13 @@
 
    <web:hot-deploy-filter url-pattern="*.seam"/>
 
-   <persistence:managed-persistence-context name="entityManager"
-                                     auto-create="true"
-                      persistence-unit-jndi-name="java:/fliesEntityManagerFactory"/>
+   <persistence:entity-manager-factory name="entityManagerFactory"
+                      persistence-unit-name="flies"
+                                  installed="@seamBootstrapsPu@"/>
+
+   <persistence:managed-persistence-context name="entityManager" auto-create="true"
+                          entity-manager-factory="@seamEmfRef@"
+                      persistence-unit-jndi-name="@puJndiName@"/>
 
    <drools:rule-base name="securityRules">
       <drools:rule-files>

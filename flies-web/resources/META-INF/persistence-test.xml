@@ -5,7 +5,7 @@
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd" 
              version="1.0">
              
-   <persistence-unit name="flies">
+   <persistence-unit name="flies" transaction-type="JTA">
       <provider>org.hibernate.ejb.HibernatePersistence</provider>
       <jta-data-source>java:/DefaultDS</jta-data-source>
       <properties>
@@ -14,7 +14,7 @@
          <property name="hibernate.connection.useUnicode" value="true" />
          <property name="hibernate.connection.characterEncoding" value="UTF-8"/>         
          <property name="hibernate.cache.use_second_level_cache" value="false"/>
-         <property name="jboss.entity.manager.factory.jndi.name" value="java:/fliesEntityManagerFactory"/>
+         <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.JBossTransactionManagerLookup"/>
          
          <!-- Enable Hibernate statistics, needs SessionFactory in JNDI for JMX monitoring -->
          <property name="hibernate.generate_statistics" value="true"/>
