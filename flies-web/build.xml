@@ -54,11 +54,23 @@
     <fileset id="jboss.default.lib" dir="${jboss.home}/server/default/lib">
         <include name="*.jar"/>
     </fileset>
+
+    <fileset id="test.deps" dir="${basedir}/../flies-web-test/lib">
+        <include name="testng.jar"/>
+  	</fileset>
+
 	
     <path id="build.classpath">
         <fileset refid="lib" />
         <fileset refid="jboss.client"/>
         <fileset refid="jboss.default.lib"/>
+    </path>
+	
+    <path id="test.classpath">
+      <fileset refid="lib" />
+      <fileset refid="jboss.client"/>
+      <fileset refid="jboss.default.lib"/>
+      <fileset refid="test.deps" />
     </path>
 
     <import file="build-tools/build-deps.xml"/>
@@ -397,7 +409,7 @@
     
     <target name="compiletest" depends="groovy.compiletest" unless="eclipse.running" description="Compile the Java source code for the tests">
         <mkdir dir="${test.dir}"/>
-        <javac classpathref="build.classpath"
+        <javac classpathref="test.classpath"
                destdir="${test.dir}"
                debug="${javac.debug}"
                deprecation="${javac.deprecation}"
