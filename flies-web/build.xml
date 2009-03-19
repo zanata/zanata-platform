@@ -61,11 +61,6 @@
         <fileset refid="jboss.default.lib"/>
     </path>
 
-    <!-- Import GlassFish deployment targets -->
-	  <!-- 
-    <import file="${basedir}/glassfish-build.xml"/>
-    -->
-	
     <import file="build-tools/build-deps.xml"/>
   
     <target name="-deps-installed">
