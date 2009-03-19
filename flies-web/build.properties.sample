@@ -1,2 +1,7 @@
 jboss.home =/usr/share/jboss-4.2.3.GA
+jboss.domain=default
 seam.home =/usr/share/jboss-seam-2.1.1.GA
+glassfish.home=
+glassfish.domain=domain1
+# Uncomment to stop the build from deploying the datasource to GlassFish
+#glassfish.datasource.useDefault=true
