@@ -21,3 +21,5 @@ syntax: regexp
 ^flies-web/build-tools/lib/
 ^flies-web-test/test-report/
 ^flies-web-test/test-build/
+^flies-web-test/test-output/
+^flies-web-test/bootstrap/data/

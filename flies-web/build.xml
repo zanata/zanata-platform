@@ -25,7 +25,7 @@
     <property name="action.dir" value="WEB-INF/classes" />
     <property name="classes.action.dir" value="${war.dir}/${action.dir}" />
     <property name="test.dir" value="${testproject.dir}/test-build" />
-    <property name="bootstrap.dir" value="${basedir}../flies-web-test/bootstrap" />
+    <property name="bootstrap.dir" value="${testproject.dir}/bootstrap" />
     <property name="jboss.domain" value="default"/>
     <property name="deploy.dir" value="${jboss.home}/server/${jboss.domain}/deploy" />
     <property name="war.deploy.dir" value="${deploy.dir}/${project.name}.war" />
