@@ -2,17 +2,22 @@ syntax: glob
 *~
 */target/*
 syntax: regexp
+
 ^\.pc/
+^.ant-targets-build.xml
+
+# flies-web
 ^flies-web/lib/
-^flies-web/test-build/
 ^flies-web/exploded-archives/
 ^flies-web/classes/
 ^flies-web/build.properties
-^flies-web/test-report/
 ^flies-web/target/
-^.ant-targets-build.xml
 ^flies-web/dist/
 ^flies-web/bootstrap/data/hypersonic/
-flies-web-test/lib/
-flies-web-test/bin/
-flies-web/build-tools/lib/
+
+# flies-web-test
+^flies-web-test/lib/
+^flies-web-test/bin/
+^flies-web/build-tools/lib/
+^flies-web-test/test-report/
+^flies-web-test/test-build/

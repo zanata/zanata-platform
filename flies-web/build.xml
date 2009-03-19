@@ -10,25 +10,27 @@
     <!-- set global properties for this build -->
     <property name="project.name" value="flies"/>
     <property name="project.war" value="true"/>
+    <property name="testproject.dir" value="../flies-web-test"/>
     <property name="richfaces.present" value="true"/>
     <property name="dist.dir" value="dist" />
     <property name="src.model.dir" value="src/main" />
     <property name="src.action.dir" value="src/hot" />
-    <property name="src.test.dir" value="../flies-web-test/src/test" />
+    <property name="src.test.dir" value="${testproject.dir}/src/test" />
     <property name="lib.dir" value="lib" />
+    <property name="test.lib.dir" value="${testproject.dir}/lib" />
     <property name="endorsed.dir" value="${lib.dir}/endorsed" />
     <property name="war.dir" value="exploded-archives/${project.name}.war" />
     <property name="exploded.archive.dir" value="${war.dir}" />
     <property name="classes.model.dir" value="${war.dir}/WEB-INF/classes" />
     <property name="action.dir" value="WEB-INF/classes" />
     <property name="classes.action.dir" value="${war.dir}/${action.dir}" />
-    <property name="test.dir" value="test-build" />
+    <property name="test.dir" value="${testproject.dir}/test-build" />
     <property name="bootstrap.dir" value="${basedir}../flies-web-test/bootstrap" />
     <property name="jboss.domain" value="default"/>
     <property name="deploy.dir" value="${jboss.home}/server/${jboss.domain}/deploy" />
     <property name="war.deploy.dir" value="${deploy.dir}/${project.name}.war" />
     <property name="packaged.archive" value="${dist.dir}/${project.name}.war"/>
-    <property name="testng.jar" value="${basedir}../flies-web-test/lib/testng.jar" />
+    <property name="testng.jar" value="${lib.dir}/testng.jar" />
     <property name="javac.debug" value="true" />
     <property name="javac.deprecation" value="false" />
     <property name="debug" value="false" />
@@ -398,7 +400,7 @@
     <target name="clean" description="Clean out the staging directory">
         <delete dir="${dist.dir}"/>
         <delete dir="${basedir}/exploded-archives"/>
-        <delete dir="${basedir}/test-report"/>
+        <delete dir="${testproject.dir}/test-report"/>
         <delete dir="${basedir}/test-output"/>
         <delete failonerror="no" includeemptydirs="true">
             <fileset dir="${test.dir}">
@@ -470,7 +472,7 @@
               overwrite="true"/>
         <copy todir="${test.dir}" flatten="true">
             <fileset dir="${src.test.dir}">
-                <include name="**/*Test.xml" />
+                <include name="**/*.tng.xml" />
             </fileset>
         </copy>
     </target>
@@ -486,17 +488,17 @@
         <taskdef resource="testngtasks" classpath="${testng.jar}" />
         <path id="test.path">
             <path path="${test.dir}" />
-            <fileset dir="${lib.dir}/test">
+            <fileset dir="${test.lib.dir}">
                 <include name="*.jar"/>
             </fileset>
             <path path="${bootstrap.dir}" />
             <path refid="build.classpath" />
         </path>
-        <testng outputdir="${basedir}/test-report">
+        <testng outputdir="${testproject.dir}/test-report">
             <jvmarg line="-Djava.endorsed.dirs=${endorsed.dir}"/>
             <jvmarg line="-Dsun.lang.ClassLoader.allowArraySyntax=true"/>
             <classpath refid="test.path" />
-            <xmlfileset dir="${test.dir}" includes="*Test.xml" />
+            <xmlfileset dir="${test.dir}" includes="*.tng.xml" />
         </testng>
     </target>
 
