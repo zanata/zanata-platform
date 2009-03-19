@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project basedir=".">
+<project basedir="../">
 	
 	<property name="seam.dir" value="${basedir}" />
 

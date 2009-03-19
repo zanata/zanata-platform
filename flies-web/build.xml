@@ -523,7 +523,7 @@
                 <include name="org/jboss/seam/*.dtd"/>
             </patternset>
         </unjar>
-        <ant antfile="validate.xml" target="validateConfiguration"/>
+        <ant antfile="build-tools/validate.xml" target="validateConfiguration"/>
     </target>
 
     <target name="purge" depends="undeploy" description="Clean out JBoss AS temporary deployment files">
