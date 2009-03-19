@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/test"/>
+	<classpathentry kind="lib" path="lib/core.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate-all.jar"/>
+	<classpathentry kind="lib" path="lib/jboss-embedded-all.jar"/>
+	<classpathentry kind="lib" path="lib/jboss-embedded-api.jar"/>
+	<classpathentry kind="lib" path="lib/testng.jar"/>
+	<classpathentry kind="lib" path="lib/thirdparty-all.jar"/>
+	<classpathentry kind="lib" path="lib/dbunit.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/flies-web"/>
+	<classpathentry kind="lib" path="bootstrap"/>
+	<classpathentry kind="lib" path="/flies-web/resources"/>
+	<classpathentry kind="lib" path="/flies-web/view"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

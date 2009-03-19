@@ -88,6 +88,12 @@
       </exclusions>
       <scope>embedded</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.dbunit</groupId>
+      <artifactId>dbunit</artifactId>
+      <scope>embedded</scope>
+    </dependency>
                   
   </dependencies>
 
