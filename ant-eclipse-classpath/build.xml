@@ -1,0 +1,58 @@
+<project name="eclipse-classpath-task">
+
+    <property name="build.dir" value="build"/>
+    <property name="lib.dir" value="lib"/>
+    <property name="build.version" value="0.1"/>
+    
+    <property name="deps.filename" value="${ant.project.name}-${build.version}"/>
+
+    <property name="package.filename" value="flies-eclipse-task-${build.version}.jar"/>
+    
+    <path id="build.classpath">
+        <fileset dir="${lib.dir}" includes="*.jar"/>
+    </path> 
+    
+    <target name="compile" depends="download-deps">
+        <mkdir dir="${build.dir}"/>
+        <javac classpathref="build.classpath"
+               destdir="${build.dir}"
+               nowarn="on">
+            <src path="src" />
+        </javac>
+        <copy todir="${build.dir}">
+            <fileset dir="src">
+                <include name="**/*.xml"/>
+            </fileset>
+        </copy>
+    </target>
+    
+    <target name="package" depends="compile">
+        <jar jarfile="${package.filename}" basedir="${build.dir}"/>     
+    </target>
+        
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <delete file="${package.filename}"/>
+    </target>
+    
+    <target name="-deps-installed">
+        <available property="deps.installed" value="true" file="${lib.dir}/${deps.filename}" type="file"/>
+    </target>
+    
+    <target name="download-deps" depends="-deps-installed" unless="deps.installed">
+        <echo message="Downloading library dependencies..."/>
+        <mkdir dir="${lib.dir}"/>
+        <delete>
+            <fileset dir="${lib.dir}" includes="${ant.project.name}-*" />
+        </delete>
+        <get 
+          src="http://www.cafeconleche.org/XOM/xom-1.2.1.jar" 
+          dest="${lib.dir}/xom.jar" 
+          verbose="true" usetimestamp="true"/>
+        
+        <touch file="${lib.dir}/${deps.filename}" />
+      
+    </target>
+    
+    
+</project>

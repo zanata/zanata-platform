@@ -23,3 +23,8 @@ syntax: regexp
 ^flies-web-test/test-build/
 ^flies-web-test/test-output/
 ^flies-web-test/bootstrap/data/
+
+# ant-eclipse-classpath
+^ant-eclipse-classpath/lib/
+^ant-eclipse-classpath/build/
+^ant-eclipse-classpath/*.jar
