@@ -61,7 +61,6 @@
         <include name="testng.jar"/>
   	</fileset>
 
-	
     <path id="build.classpath">
         <fileset refid="lib" />
         <fileset refid="jboss.client"/>
@@ -475,6 +474,11 @@
                 <include name="**/*.tng.xml" />
             </fileset>
         </copy>
+        <copy todir="${test.dir}">
+            <fileset dir="${src.test.dir}">
+                <include name="**/*.dbunit.xml" />
+            </fileset>
+        </copy>
     </target>
     
     <target name="test" depends="buildtest" description="Run the tests">            
@@ -536,4 +540,25 @@
         <delete dir="${jboss.home}/server/default/work/jboss.web/localhost/${project.name}"/>
     </target>
 
+	
+    <import file="${build.dir}/eclipse-deps.xml"/>
+	
+	<target name="update-eclipse-classpath" description="Update Eclipse Classpath for this project" depends="eclipse-deps.-initTaskDefs">
+		<f:update-eclipse-classpath xmlns:f="urn:fedorahosted:flies:ant:eclipse"
+			classPathFile=".classpath">
+			<fileset dir="${lib.dir}">
+                <include name="*.jar"/>
+			</fileset>
+		</f:update-eclipse-classpath>
+
+		<f:update-eclipse-classpath xmlns:f="urn:fedorahosted:flies:ant:eclipse"
+            classPathFile="${testproject.dir}/.classpath">
+            <fileset dir="${test.lib.dir}">
+                <include name="*.jar"/>
+            </fileset>
+            <fileset dir="${lib.dir}">
+                <include name="*.jar"/>
+            </fileset>
+        </f:update-eclipse-classpath>
+	</target>
 </project>

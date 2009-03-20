@@ -1,0 +1,34 @@
+<project name="eclipse-deps" xmlns:flies="urn:fedorahosted:flies:ant:eclipse" basedir=".">
+    
+    <property name="build.lib.dir" value="lib" />
+    <property name="artifact.name" value="flies-eclipse-task" />
+    <property name="artifact.version" value="0.1" />
+    <property name="artifact.filename" value="${artifact.name}-${artifact.version}.jar"/>
+    <property name="artifact.file" value="${build.lib.dir}/${artifact.filename}"/>
+    <property name="artifact.url" value="http://asgeirf.fedorapeople.org/${artifact.filename}"/>
+
+    <target name="-check-artifact-ant">
+        <available property="-get-artifact-ant-done" file="${artifact.file}" />
+    </target>
+
+    <target name="-get-artifact-ant" depends="-check-artifact-ant" unless="-get-artifact-ant-done">
+        <mkdir dir="${build.lib.dir}" />
+        <get 
+            src="${artifact.url}" 
+            dest="${artifact.file}" 
+            usetimestamp="true" />
+    </target>
+
+    <target name="-initTaskDefs" depends="-get-artifact-ant">
+	    <path id="ant-task.classpath">
+            <fileset id="test.deps" dir="lib">
+                <include name="xom.jar"/>
+            </fileset>	    
+            <pathelement path="${artifact.file}"/>
+	    </path> 
+        <typedef resource="org/fedorahosted/flies/ant/antlib.xml" 
+            uri="urn:fedorahosted:flies:ant:eclipse" 
+            classpathref="ant-task.classpath" />
+    </target>
+
+</project>
