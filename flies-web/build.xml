@@ -585,6 +585,8 @@
 				<exclude name="hibernate-tools*" />
 				<!-- We also need EHCache there -->
 				<include name="ehcache*" />
+				<!-- And Mysql -->
+				<include name="mysql*" />
 			</fileset>
 		</copy>
 	</target>

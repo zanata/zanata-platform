@@ -111,6 +111,12 @@ rg.fedorahosted.flies:jbossas:jar:1.0-SNAPSHOT
 			</exclusions>
 		</dependency>
 
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.6</version>
+		</dependency>
+
 	</dependencies>
 
 </project>
