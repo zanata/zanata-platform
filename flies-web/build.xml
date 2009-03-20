@@ -550,7 +550,7 @@
 	<import file="${build.dir}/eclipse-deps.xml" />
 
 	<target name="update-eclipse-classpath" description="Update Eclipse Classpath for this project"
-		depends="eclipse-deps.-initTaskDefs">
+		depends="eclipse-deps.-initialize-ant-task">
 		<f:update-eclipse-classpath xmlns:f="urn:fedorahosted:flies:ant:eclipse"
 			classPathFile=".classpath">
 			<fileset dir="${lib.dir}">

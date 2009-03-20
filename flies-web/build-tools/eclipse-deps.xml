@@ -9,17 +9,17 @@
 	<property name="artifact.url"
 		value="http://asgeirf.fedorapeople.org/${artifact.filename}" />
 
-	<target name="-check-artifact-ant">
-		<available property="-get-artifact-ant-done" file="${artifact.file}" />
+	<target name="-check-task-initialized">
+		<available property="-fetch-ant-task-done" file="${artifact.file}" />
 	</target>
 
-	<target name="-get-artifact-ant" depends="-check-artifact-ant"
-		unless="-get-artifact-ant-done">
+	<target name="-fetch-ant-task" depends="-check-task-initialized"
+		unless="-fetch-ant-task-done">
 		<mkdir dir="${build.lib.dir}" />
 		<get src="${artifact.url}" dest="${artifact.file}" usetimestamp="true" />
 	</target>
 
-	<target name="-initTaskDefs" depends="-get-artifact-ant">
+	<target name="-initialize-ant-task" depends="-fetch-ant-task">
 		<path id="ant-task.classpath">
 			<fileset id="test.deps" dir="lib">
 				<include name="xom.jar" />
