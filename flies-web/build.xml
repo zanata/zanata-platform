@@ -569,4 +569,24 @@
 		</f:update-eclipse-classpath>
 	</target>
 
+	<target name="update-jboss-deps" depends="download-deps" 
+		description="Update JBoss AS dependencies such as Hibernate">
+		<delete>
+			<fileset dir="${jboss.home}/server/${jboss.domain}/lib">
+				<include name="hibernate*" />
+			</fileset>
+		</delete>
+		<copy todir="${jboss.home}/server/${jboss.domain}/lib">
+			<fileset dir="${jbossas.lib.dir}">
+				<include name="hibernate*" />
+				<!-- We put this in WEB-INF/lib -->
+				<exclude name="hibernate-search*" />
+				<!-- We don't need that at runtime -->
+				<exclude name="hibernate-tools*" />
+				<!-- We also need EHCache there -->
+				<include name="ehcache*" />
+			</fileset>
+		</copy>
+	</target>
+	
 </project>

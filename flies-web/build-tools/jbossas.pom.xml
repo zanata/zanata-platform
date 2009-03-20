@@ -1,0 +1,116 @@
+<project>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.fedorahosted.flies</groupId>
+	<artifactId>jbossas</artifactId>
+	<version>1.0-SNAPSHOT</version>
+
+	<properties>
+		<version.seam>2.1.1.GA</version.seam>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.jboss.seam</groupId>
+				<artifactId>parent</artifactId>
+				<version>${version.seam}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+
+		<!-- We use a newer version of hibernate -->
+<!-- 
+rg.fedorahosted.flies:jbossas:jar:1.0-SNAPSHOT
+[INFO] +- org.hibernate:hibernate-validator:jar:3.0.0.GA:compile
+[INFO] +- org.hibernate:hibernate:jar:3.2.4.sp1:compile
+[INFO] |  +- javax.transaction:jta:jar:1.0.1B:compile
+[INFO] |  +- asm:asm-attrs:jar:1.5.3:compile
+[INFO] |  +- dom4j:dom4j:jar:1.6.1-brew:compile (version managed from 1.6.1)
+[INFO] |  +- antlr:antlr:jar:2.7.6:compile
+[INFO] |  +- cglib:cglib:jar:2.1_3:compile
+[INFO] |  \- asm:asm:jar:1.5.3:compile
+[INFO] +- org.hibernate:hibernate-annotations:jar:3.3.1.GA:compile
+[INFO] |  \- org.hibernate:hibernate-commons-annotations:jar:3.0.0.ga:compile
+[INFO] \- org.hibernate:hibernate-entitymanager:jar:3.3.2.GA:compile
+[INFO]    \- javassist:javassist:jar:3.8.0.GA:compile (version managed from 3.4.GA)
+[I
+
+ -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate</artifactId>
+			<version>3.2.4.sp1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.transaction</groupId>
+					<artifactId>jta</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>asm</groupId>
+					<artifactId>asm-attrs</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>dom4j</groupId>
+					<artifactId>dom4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>antlr</groupId>
+					<artifactId>antlr</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>cglib</groupId>
+					<artifactId>cglib</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>asm</groupId>
+					<artifactId>asm</artifactId>
+				</exclusion>
+			</exclusions>
+			
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>3.0.0.GA</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-annotations</artifactId>
+			<version>3.3.1.GA</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager
+			</artifactId>
+			<version>3.3.2.GA</version>
+			<exclusions>
+				<exclusion>
+					<groupId>javassist</groupId>
+					<artifactId>javassist</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-commons-annotations
+			</artifactId>
+			<version>3.0.0.ga</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+	</dependencies>
+
+</project>

@@ -7,11 +7,14 @@
 	<property name="webapp.test.dir" value="../flies-web-test" />
 	<property name="webapp.test.lib.dir" value="${webapp.test.dir}/lib" />
 
-	<property name="build.dir" value="build-tools" />
+	<property name="jbossas.lib.dir" value="${webapp.dir}/lib/jbossas" />
+
+		<property name="build.dir" value="build-tools" />
 	<property name="build.lib.dir" value="${build.dir}/lib" />
 
 	<property name="webapp.pom" value="${build.dir}/webapp.pom.xml" />
 	<property name="test.pom" value="${build.dir}/test.pom.xml" />
+	<property name="jbossas.pom" value="${build.dir}/jbossas.pom.xml" />
 
 	<!--
 	<property name="maven.repo.local" value="/tmp/m2"/>
@@ -58,7 +61,7 @@
 		<antcall target="download-deps-force" />
 	</target>
 
-	<target name="download-deps-force" depends="download-webapp-deps,download-test-deps"
+	<target name="download-deps-force" depends="download-webapp-deps,download-test-deps,download-jbossas-deps"
 		description="Download all dependencies (Will check for snapshot updates)" />
 
 	<target name="download-webapp-deps" depends="-initTaskDefs"
@@ -123,6 +126,37 @@
 
 	</target>
 
+	<target name="download-jbossas-deps" depends="-initTaskDefs"
+		description="Download JBossAS dependencies">
+
+		<mkdir dir="${jbossas.lib.dir}" />
+
+		<artifact:localRepository id="local.repository"
+			path="${maven.repo.local}" />
+
+		<artifact:pom file="${jbossas.pom}" id="maven.jbossas.project" />
+
+		<artifact:dependencies filesetId="dependency.jbossas.fileset"
+			pathId="dependency.jbossas.classpath" versionsId="dependency.jbossas.versions"
+			useScope="compile" type="jar" settingsfile="${build.dir}/maven-settings.xml">
+			<pom refid="maven.jbossas.project" />
+			<localRepository refid="local.repository" />
+		</artifact:dependencies>
+
+		<!--
+			This mapper strips version number from directory path and filename
+		-->
+		<copy todir="${jbossas.lib.dir}">
+			<fileset refid="dependency.jbossas.fileset" />
+			<mapper classpathref="maven-ant-tasks.classpath"
+				classname="org.apache.maven.artifact.ant.VersionMapper" from="${dependency.jbossas.versions}"
+				to="flatten" />
+		</copy>
+
+		<touch file="${jbossas.lib.dir}/.maven-deps-timestamp" />
+
+	</target>
+
 	<target name="download-test-deps" depends="-initTaskDefs"
 		description="Download Test dependencies">
 
@@ -131,13 +165,13 @@
 		<artifact:localRepository id="local.repository"
 			path="${maven.repo.local}" />
 
-		<artifact:pom file="${test.pom}" id="maven.project" />
+		<artifact:pom file="${test.pom}" id="maven.test.project" />
 
 		<artifact:dependencies filesetId="dependency.test.fileset"
 			pathId="dependency.test.classpath" versionsId="dependency.test.versions"
 			useScope="embedded" type="jar" settingsfile="${build.dir}/maven-settings.xml">
 			<!-- sourcesFilesetId="dependency.test.sourcesFileset" -->
-			<pom refid="maven.project" />
+			<pom refid="maven.test.project" />
 			<localRepository refid="local.repository" />
 		</artifact:dependencies>
 		<copy todir="${webapp.test.lib.dir}">
