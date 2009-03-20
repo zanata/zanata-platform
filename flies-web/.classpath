@@ -1,33 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" output="exploded-archives/flies.war/WEB-INF/classes" path="src/main"/>
-	<classpathentry kind="src" output="exploded-archives/flies.war/WEB-INF/dev" path="src/hot"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry exported="true" kind="lib" path="lib/jboss-seam.jar" sourcepath="lib/src/jboss-seam-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jboss-seam-ui.jar" sourcepath="lib/src/jboss-seam-ui-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jboss-seam-debug.jar" sourcepath="lib/src/jboss-seam-debug-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/antlr.jar" sourcepath="lib/src/antlr-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jsf-facelets.jar" sourcepath="lib/jsf-facelets-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jsf-api.jar" sourcepath="lib/jsf-api-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jboss-el.jar" sourcepath="lib/jboss-el-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/el-api.jar" sourcepath="lib/el-api-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/mvel14.jar" sourcepath="lib/mvel14-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/drools-core.jar" sourcepath="lib/drools-core-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/drools-compiler.jar" sourcepath="lib/drools-compiler-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/janino.jar" sourcepath="lib/janino-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/antlr-runtime.jar" sourcepath="lib/antlr-runtime-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jsr250-api.jar" sourcepath="lib/jsr250-api-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/core.jar" sourcepath="lib/core-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/richfaces-api.jar" sourcepath="lib/richfaces-api-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/icu4j.jar" sourcepath="lib/icu4j-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/richfaces-ui.jar" sourcepath="lib/richfaces-ui-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/richfaces-impl.jar" sourcepath="lib/richfaces-impl-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/flies-richfaces-ui.jar" sourcepath="lib/flies-richfaces-ui-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jgettext.jar" sourcepath="lib/jgettext-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/xom.jar" sourcepath="lib/xom-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/dom4j.jar" sourcepath="lib/dom4j-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/dbunit.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-lang.jar" sourcepath="lib/commons-lang-sources.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.jboss.ide.eclipse.as.core.server.runtime.runtimeTarget/JBoss AS 4.2.3"/>
-	<classpathentry kind="output" path="exploded-archives/flies.war/WEB-INF/classes"/>
+    <classpathentry kind="src" output="exploded-archives/flies.war/WEB-INF/classes" path="src/main"/>
+    <classpathentry kind="src" output="exploded-archives/flies.war/WEB-INF/dev" path="src/hot"/>
+    <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+    <classpathentry kind="lib" path="lib/antlr-runtime.jar"/>
+    <classpathentry kind="lib" path="lib/antlr.jar" sourcepath="lib/src/antlr-sources.jar"/>
+    <classpathentry kind="lib" path="lib/asm-attrs.jar"/>
+    <classpathentry kind="lib" path="lib/asm.jar"/>
+    <classpathentry kind="lib" path="lib/cglib.jar" sourcepath="lib/src/cglib-sources.jar"/>
+    <classpathentry kind="lib" path="lib/commons-beanutils.jar" sourcepath="lib/src/commons-beanutils-sources.jar"/>
+    <classpathentry kind="lib" path="lib/commons-collections.jar" sourcepath="lib/src/commons-collections-sources.jar"/>
+    <classpathentry kind="lib" path="lib/commons-digester.jar" sourcepath="lib/src/commons-digester-sources.jar"/>
+    <classpathentry kind="lib" path="lib/commons-lang.jar" sourcepath="lib/src/commons-lang-sources.jar"/>
+    <classpathentry kind="lib" path="lib/commons-logging.jar" sourcepath="lib/src/commons-logging-sources.jar"/>
+    <classpathentry kind="lib" path="lib/core.jar"/>
+    <classpathentry kind="lib" path="lib/dbunit.jar" sourcepath="lib/src/dbunit-sources.jar"/>
+    <classpathentry kind="lib" path="lib/dom4j.jar"/>
+    <classpathentry kind="lib" path="lib/drools-compiler.jar" sourcepath="lib/src/drools-compiler-sources.jar"/>
+    <classpathentry kind="lib" path="lib/drools-core.jar" sourcepath="lib/src/drools-core-sources.jar"/>
+    <classpathentry kind="lib" path="lib/ehcache.jar" sourcepath="lib/src/ehcache-sources.jar"/>
+    <classpathentry kind="lib" path="lib/el-api.jar"/>
+    <classpathentry kind="lib" path="lib/flies-richfaces-ui.jar"/>
+    <classpathentry kind="lib" path="lib/groovy-all.jar" sourcepath="lib/src/groovy-all-sources.jar"/>
+    <classpathentry kind="lib" path="lib/hibernate-annotations.jar"/>
+    <classpathentry kind="lib" path="lib/hibernate-commons-annotations.jar"/>
+    <classpathentry kind="lib" path="lib/hibernate-entitymanager.jar"/>
+    <classpathentry kind="lib" path="lib/hibernate-search.jar"/>
+    <classpathentry kind="lib" path="lib/hibernate-validator.jar"/>
+    <classpathentry kind="lib" path="lib/hibernate.jar" sourcepath="lib/src/hibernate-sources.jar"/>
+    <classpathentry kind="lib" path="lib/icu4j.jar"/>
+    <classpathentry kind="lib" path="lib/itext-rtf.jar"/>
+    <classpathentry kind="lib" path="lib/itext.jar" sourcepath="lib/src/itext-sources.jar"/>
+    <classpathentry kind="lib" path="lib/janino.jar"/>
+    <classpathentry kind="lib" path="lib/javassist.jar"/>
+    <classpathentry kind="lib" path="lib/jboss-el.jar" sourcepath="lib/src/jboss-el-sources.jar"/>
+    <classpathentry kind="lib" path="lib/jboss-seam-debug.jar" sourcepath="lib/src/jboss-seam-debug-sources.jar"/>
+    <classpathentry kind="lib" path="lib/jboss-seam-excel.jar" sourcepath="lib/src/jboss-seam-excel-sources.jar"/>
+    <classpathentry kind="lib" path="lib/jboss-seam-ioc.jar" sourcepath="lib/src/jboss-seam-ioc-sources.jar"/>
+    <classpathentry kind="lib" path="lib/jboss-seam-jul.jar" sourcepath="lib/src/jboss-seam-jul-sources.jar"/>
+    <classpathentry kind="lib" path="lib/jboss-seam-mail.jar" sourcepath="lib/src/jboss-seam-mail-sources.jar"/>
+    <classpathentry kind="lib" path="lib/jboss-seam-pdf.jar" sourcepath="lib/src/jboss-seam-pdf-sources.jar"/>
+    <classpathentry kind="lib" path="lib/jboss-seam-remoting.jar" sourcepath="lib/src/jboss-seam-remoting-sources.jar"/>
+    <classpathentry kind="lib" path="lib/jboss-seam-ui.jar" sourcepath="lib/src/jboss-seam-ui-sources.jar"/>
+    <classpathentry kind="lib" path="lib/jboss-seam.jar" sourcepath="lib/src/jboss-seam-sources.jar"/>
+    <classpathentry kind="lib" path="lib/jgettext.jar"/>
+    <classpathentry kind="lib" path="lib/jsf-api.jar"/>
+    <classpathentry kind="lib" path="lib/jsf-facelets.jar" sourcepath="lib/src/jsf-facelets-sources.jar"/>
+    <classpathentry kind="lib" path="lib/jsf-impl.jar"/>
+    <classpathentry kind="lib" path="lib/jsr250-api.jar" sourcepath="lib/src/jsr250-api-sources.jar"/>
+    <classpathentry kind="lib" path="lib/jta.jar"/>
+    <classpathentry kind="lib" path="lib/jxl.jar"/>
+    <classpathentry kind="lib" path="lib/lucene-core.jar" sourcepath="lib/src/lucene-core-sources.jar"/>
+    <classpathentry kind="lib" path="lib/mvel14.jar"/>
+    <classpathentry kind="lib" path="lib/richfaces-api.jar" sourcepath="lib/src/richfaces-api-sources.jar"/>
+    <classpathentry kind="lib" path="lib/richfaces-impl.jar" sourcepath="lib/src/richfaces-impl-sources.jar"/>
+    <classpathentry kind="lib" path="lib/richfaces-ui.jar" sourcepath="lib/src/richfaces-ui-sources.jar"/>
+    <classpathentry kind="lib" path="lib/testng.jar"/>
+    <classpathentry kind="lib" path="lib/xom.jar"/> 
+    <classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.jboss.ide.eclipse.as.core.server.runtime.runtimeTarget/JBoss AS 4.2.3"/>
+    <classpathentry kind="output" path="exploded-archives/flies.war/WEB-INF/classes"/>
 </classpath>
