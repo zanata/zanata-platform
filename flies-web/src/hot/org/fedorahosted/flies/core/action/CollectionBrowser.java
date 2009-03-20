@@ -2,13 +2,10 @@ package org.fedorahosted.flies.core.action;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
-
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.fedorahosted.flies.core.model.Collection;
-import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
@@ -22,74 +19,75 @@ import org.jboss.seam.log.Log;
 @Name("collectionBrowser")
 @Scope(ScopeType.EVENT)
 public class CollectionBrowser {
-	
+
 	private static final int DEFAULT_LIMIT = 20;
 	private static final String ORDERBY_NAME = "name";
 	private static final String ORDERBY_ID = "id";
 	private static final String ORDERBY_TIMESTAMP = "timestamp";
-	private static final List<String> ORDERBY_VALUES = Arrays.asList(ORDERBY_NAME, ORDERBY_TIMESTAMP, ORDERBY_ID);
-	
+	private static final List<String> ORDERBY_VALUES = Arrays.asList(
+			ORDERBY_NAME, ORDERBY_TIMESTAMP, ORDERBY_ID);
+
 	@RequestParameter
 	private Integer page;
 
 	@RequestParameter("q")
 	private String query;
-	
+
 	private Integer limit;
-	
+
 	@RequestParameter
 	private String orderBy;
-	
+
 	@Logger
 	private Log log;
-	
+
 	@In
 	private EntityManager entityManager;
 
-	@Out(required=false)
+	@Out(required = false)
 	private List<Collection> collections;
-	
-	@Out(required=false)
+
+	@Out(required = false)
 	private List<Collection> latestCollections;
-	
+
 	@SuppressWarnings("unchecked")
 	@Factory("latestCollections")
 	public void getLatestCollections() {
-		Query q = entityManager.createQuery("select c from Collection c order by :order");
-		q.setParameter("order",ORDERBY_NAME);
+		Query q = entityManager
+				.createQuery("select c from Collection c order by :order");
+		q.setParameter("order", ORDERBY_NAME);
 		q.setMaxResults(DEFAULT_LIMIT);
 		latestCollections = q.getResultList();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Factory("collections")
 	public void getCollections() {
 		String order;
 		Integer pageNumber;
-		if(orderBy == null || !ORDERBY_VALUES.contains(orderBy)){
+		if (orderBy == null || !ORDERBY_VALUES.contains(orderBy)) {
 			order = ORDERBY_ID;
-		}
-		else{
+		} else {
 			order = orderBy;
 		}
-		if(page == null || page < 1){
+		if (page == null || page < 1) {
 			pageNumber = 1;
-		}
-		else{
+		} else {
 			pageNumber = page;
 		}
 
-		Query q = entityManager.createQuery("select c from Collection c order by :order");
+		Query q = entityManager
+				.createQuery("select c from Collection c order by :order");
 		log.debug("setting order by to '{0}'", order);
 		q.setParameter("order", order);
-		q.setFirstResult( (pageNumber-1 )* DEFAULT_LIMIT );
+		q.setFirstResult((pageNumber - 1) * DEFAULT_LIMIT);
 		q.setMaxResults(DEFAULT_LIMIT);
 		collections = q.getResultList();
 	}
 
 	public Integer getSize() {
-		return (Integer) entityManager.createQuery("select count(*) from Collection c").getSingleResult();
+		return (Integer) entityManager.createQuery(
+				"select count(*) from Collection c").getSingleResult();
 	}
 
-	
 }

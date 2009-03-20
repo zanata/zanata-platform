@@ -1,25 +1,27 @@
 package org.fedorahosted.flies.validator.url;
+
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.hibernate.validator.Validator;
 
-public class UrlValidator  implements Validator<Url>, Serializable {
+public class UrlValidator implements Validator<Url>, Serializable {
 
 	public void initialize(Url parameters) {
 	}
 
 	public boolean isValid(Object value) {
-		if ( value == null ) return true;
-		if ( !( value instanceof String ) ) return false;
+		if (value == null)
+			return true;
+		if (!(value instanceof String))
+			return false;
 		String string = (String) value;
-	
-		try{
+
+		try {
 			new URL(string);
 			return true;
-		}
-		catch(MalformedURLException e){
+		} catch (MalformedURLException e) {
 			return false;
 		}
 	}

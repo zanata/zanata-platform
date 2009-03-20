@@ -19,31 +19,38 @@ import org.hibernate.type.LiteralType;
  */
 public class ULocaleType extends ImmutableType implements LiteralType {
 
-	public Object get(ResultSet rs, String name) throws HibernateException, SQLException {
-		return fromStringValue( (String) Hibernate.STRING.get(rs, name) );
+	@Override
+	public Object get(ResultSet rs, String name) throws HibernateException,
+			SQLException {
+		return fromStringValue((String) Hibernate.STRING.get(rs, name));
 	}
 
-	public void set(PreparedStatement st, Object value, int index) throws HibernateException, SQLException {
+	@Override
+	public void set(PreparedStatement st, Object value, int index)
+			throws HibernateException, SQLException {
 		Hibernate.STRING.set(st, value.toString(), index);
 	}
 
+	@Override
 	public Object fromStringValue(String string) {
 		if (string == null) {
 			return null;
-		}
-		else {
+		} else {
 			return new ULocale(string);
 		}
 	}
-	
+
+	@Override
 	public int compare(Object x, Object y, EntityMode entityMode) {
-		return x.toString().compareTo( y.toString() );
+		return x.toString().compareTo(y.toString());
 	}
 
+	@Override
 	public int sqlType() {
 		return Hibernate.STRING.sqlType();
 	}
 
+	@Override
 	public String toString(Object value) throws HibernateException {
 		return value.toString();
 	}
@@ -56,14 +63,10 @@ public class ULocaleType extends ImmutableType implements LiteralType {
 		return "locale";
 	}
 
-	public String objectToSQLString(Object value, Dialect dialect) throws Exception {
-		return ( (LiteralType) Hibernate.STRING ).objectToSQLString( value.toString(), dialect );
+	public String objectToSQLString(Object value, Dialect dialect)
+			throws Exception {
+		return ((LiteralType) Hibernate.STRING).objectToSQLString(value
+				.toString(), dialect);
 	}
 
 }
-
-
-
-
-
-

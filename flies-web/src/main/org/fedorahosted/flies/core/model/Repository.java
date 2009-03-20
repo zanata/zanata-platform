@@ -1,68 +1,59 @@
 package org.fedorahosted.flies.core.model;
-import java.io.Serializable;
-import java.util.List;
 
+import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-import javax.persistence.Version;
-
 import org.fedorahosted.flies.validator.url.Slug;
 import org.hibernate.validator.Length;
-import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
-import org.hibernate.validator.Pattern;
 
-	@Entity
-	@Table(name="repository")
-	public class Repository implements Serializable {
+@Entity
+@Table(name = "repository")
+public class Repository implements Serializable {
 
-	    private Long id;
-	    private String name;
-	    private String slug;
-	    private String url;
-	    
-	    @Id @GeneratedValue
-	    public Long getId() {
-	        return id;
-	    }
+	private Long id;
+	private String name;
+	private String slug;
+	private String url;
 
-	    public void setId(Long id) {
-	        this.id = id;
-	    }
-	    
-	    @Length(max = 80)
-	    public String getName() {
-	        return name;
-	    }
+	@Id
+	@GeneratedValue
+	public Long getId() {
+		return id;
+	}
 
-	    public void setName(String name) {
-	        this.name = name;
-	    }
-	    
-	    @Length(min = 2, max = 40)
-	    @NotNull
-	    @Slug
-	    public String getSlug() {
-	        return slug;
-	    }
-	    
-	    public void setSlug(String slug) {
-	        this.slug = slug;
-	    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-	    @Length(max = 80)
-	    public String getUrl() {
-	        return url;
-	    }
+	@Length(max = 80)
+	public String getName() {
+		return name;
+	}
 
-	    public void setUrl(String url) {
-	        this.url = url;
-	    }
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Length(min = 2, max = 40)
+	@NotNull
+	@Slug
+	public String getSlug() {
+		return slug;
+	}
+
+	public void setSlug(String slug) {
+		this.slug = slug;
+	}
+
+	@Length(max = 80)
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
 }

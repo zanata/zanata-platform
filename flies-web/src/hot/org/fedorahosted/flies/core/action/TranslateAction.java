@@ -25,45 +25,51 @@ public class TranslateAction {
 
 	@RequestParameter("dId")
 	private Long documentId;
-	
+
 	@RequestParameter("lId")
 	private String localeId;
 
 	@In
 	private EntityManager entityManager;
-	
+
 	@Logger
 	private Log log;
-	
+
 	private DocumentTarget documentTarget;
 
-	@Begin(join=true)
-	public boolean isValid(){
-		if(documentTarget == null)
-			if(documentId == null || localeId == null)
+	@Begin(join = true)
+	public boolean isValid() {
+		if (documentTarget == null)
+			if (documentId == null || localeId == null)
 				return false;
 		return getDocumentTarget() != null;
 	}
-	
+
 	public DocumentTarget getDocumentTarget() {
-		if(documentTarget == null){
+		if (documentTarget == null) {
 			Session session = (Session) entityManager.getDelegate();
-			try{
-				documentTarget = (DocumentTarget) session.createCriteria(DocumentTarget.class)
-					.add( Restrictions.naturalId()
-							.set("template", session.load(Document.class, documentId))
-							.set("locale", session.load(FliesLocale.class, localeId))).uniqueResult();
+			try {
+				documentTarget = (DocumentTarget) session.createCriteria(
+						DocumentTarget.class).add(
+						Restrictions.naturalId().set("template",
+								session.load(Document.class, documentId)).set(
+								"locale",
+								session.load(FliesLocale.class, localeId)))
+						.uniqueResult();
+			} catch (NoResultException e) {
+				log
+						.warn(
+								"Unable to find DocumentTarget with doc_id {0} and locale {1}",
+								documentId, localeId);
 			}
-			catch(NoResultException e){
-				log.warn("Unable to find DocumentTarget with doc_id {0} and locale {1}", documentId, localeId);
-			}
-			
+
 		}
 		return documentTarget;
 	}
-	
-	@End @Destroy
-	public void destroy(){
-		
+
+	@End
+	@Destroy
+	public void destroy() {
+
 	}
 }

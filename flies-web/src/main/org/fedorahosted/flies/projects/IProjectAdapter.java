@@ -21,33 +21,37 @@ public interface IProjectAdapter {
 	 * @return the version of this adapter
 	 */
 	public int getAdapterVersion();
-	
+
 	/**
 	 * Retrieves the base path of this adapter.
 	 * 
-	 * This path is the absolute file-system path of the adapter,
-	 * to which relative paths are resolved.
+	 * This path is the absolute file-system path of the adapter, to which
+	 * relative paths are resolved.
 	 * 
 	 * @return the base path of this adapter
 	 */
 	public File getBasePath();
 
 	/**
-	 * Retrieves the common relative path to the resource templates managed by this adapter.
+	 * Retrieves the common relative path to the resource templates managed by
+	 * this adapter.
 	 * 
-	 * @return the common relative path for all resources managed by this adapter
+	 * @return the common relative path for all resources managed by this
+	 *         adapter
 	 */
 	public String getResourceBasePath();
-	
+
 	/**
-	 * Retrieves the common relative path to the resource templates managed by this adapter.
+	 * Retrieves the common relative path to the resource templates managed by
+	 * this adapter.
 	 * 
-	 * @param language the language for which to resolve the path
-	 * @return the common relative path for target-language-specific resources 
+	 * @param language
+	 *            the language for which to resolve the path
+	 * @return the common relative path for target-language-specific resources
 	 *         managed by this adapter
 	 */
 	public String getResourceBasePath(String language);
-	
+
 	/**
 	 * Retrieves the list of languages managed by this adapter
 	 * 
@@ -67,18 +71,18 @@ public interface IProjectAdapter {
 	 * @return
 	 */
 	public List<String> getResources();
-	
+
 	/**
 	 * 
 	 * @param language
 	 * @return
 	 */
 	public List<String> getResources(String language);
-	
+
 	/**
 	 * 
 	 * @return
 	 */
 	public String getSourceLanguage();
-	
+
 }

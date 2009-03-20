@@ -17,38 +17,38 @@ public class AbstractFliesEntity {
 	protected Date creationDate;
 	protected Date timestamp;
 
-    @Id @GeneratedValue
-    public Long getId() {
-        return id;
-    }
+	@Id
+	@GeneratedValue
+	public Long getId() {
+		return id;
+	}
 
-    protected void setId(Long id) {
-        this.id = id;
-    }
+	protected void setId(Long id) {
+		this.id = id;
+	}
 
-    @Temporal(TemporalType.TIMESTAMP)
-    public Date getCreationDate() {
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date getCreationDate() {
 		return creationDate;
 	}
-    
-    public void setCreationDate(Date creationDate) {
+
+	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
 	}
 
-    @Version
-    @Temporal(TemporalType.TIMESTAMP)
-    public Date getTimestamp() {
+	@Version
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date getTimestamp() {
 		return timestamp;
 	}
-    
-    public void setTimestamp(Date timestamp) {
+
+	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
 	}
-    
-    @PrePersist
-    private void onPersist(){
-    	creationDate = new Date();
-    }
-    
-	
+
+	@PrePersist
+	private void onPersist() {
+		creationDate = new Date();
+	}
+
 }

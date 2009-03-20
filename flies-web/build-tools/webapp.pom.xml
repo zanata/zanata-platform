@@ -105,13 +105,13 @@
 		</dependency>
 
 		<!-- We use a newer version of hibernate -->
-<!-- 
+
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-search</artifactId>
 			<version>3.0.1.GA</version>
 		</dependency>
- -->
+
 		<!--  Other -->
 
 		<dependency>

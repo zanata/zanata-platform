@@ -18,10 +18,11 @@ public class AuthenticationEvents {
 
 	@In
 	EntityManager entityManager;
-	
+
 	@Observer(JpaIdentityStore.EVENT_USER_AUTHENTICATED)
 	public void loginSuccessful(Account account) {
-		log.info("Member {0} authenticated with person {1}", account.getUsername(), account.getPerson());
+		log.info("Member {0} authenticated with person {1}", account
+				.getUsername(), account.getPerson());
 
 		Contexts.getSessionContext().set("authenticatedPerson",
 				account.getPerson());
@@ -36,7 +37,8 @@ public class AuthenticationEvents {
 		entityManager.persist(p);
 		account.setPerson(p);
 		entityManager.persist(account);
-		log.info("Created person {1}  with for account {0}", account.getUsername(), p.getName());
+		log.info("Created person {1}  with for account {0}", account
+				.getUsername(), p.getName());
 	}
-	
+
 }

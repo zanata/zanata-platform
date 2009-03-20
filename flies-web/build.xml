@@ -32,7 +32,7 @@
 	<property name="deploy.dir" value="${jboss.home}/server/${jboss.domain}/deploy" />
 	<property name="war.deploy.dir" value="${deploy.dir}/${project.name}.war" />
 	<property name="packaged.archive" value="${dist.dir}/${project.name}.war" />
-	<property name="testng.jar" value="${lib.dir}/testng.jar" />
+	<property name="testng.jar" value="${test.lib.dir}/testng.jar" />
 	<property name="javac.debug" value="true" />
 	<property name="javac.deprecation" value="false" />
 	<property name="debug" value="false" />
