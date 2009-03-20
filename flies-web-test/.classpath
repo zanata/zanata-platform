@@ -9,60 +9,50 @@
     <classpathentry kind="lib" path="lib/testng.jar"/>
     <classpathentry kind="lib" path="lib/thirdparty-all.jar"/>
     <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/antlr-runtime.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/antlr.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/antlr-sources.jar"/>
+    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/antlr.jar"/>
     <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/asm-attrs.jar"/>
     <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/asm.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/cglib.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/cglib-sources.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/commons-beanutils.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/commons-beanutils-sources.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/commons-collections.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/commons-collections-sources.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/commons-digester.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/commons-digester-sources.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/commons-lang.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/commons-lang-sources.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/commons-logging.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/commons-logging-sources.jar"/>
+    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/cglib.jar"/>
+    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/commons-beanutils.jar"/>
+    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/commons-collections.jar"/>
+    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/commons-digester.jar"/>
+    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/commons-lang.jar"/>
+    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/commons-logging.jar"/>
     <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/core.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/dbunit.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/dbunit-sources.jar"/>
+    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/dbunit.jar"/>
     <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/dom4j.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/drools-compiler.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/drools-compiler-sources.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/drools-core.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/drools-core-sources.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/ehcache.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/ehcache-sources.jar"/>
+    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/drools-compiler.jar"/>
+    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/drools-core.jar"/>
+    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/ehcache.jar"/>
     <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/el-api.jar"/>
     <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/flies-richfaces-ui.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/groovy-all.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/groovy-all-sources.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/hibernate-annotations.jar"/>
+    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/groovy-all.jar"/>
     <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/hibernate-commons-annotations.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/hibernate-entitymanager.jar"/>
     <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/hibernate-search.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/hibernate-validator.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/hibernate.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/hibernate-sources.jar"/>
+    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/hibernate.jar"/>
     <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/icu4j.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/itext-rtf.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/itext.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/itext-sources.jar"/>
     <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/janino.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/javassist.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/jboss-el.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/jboss-el-sources.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/jboss-seam-debug.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/jboss-seam-debug-sources.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/jboss-seam-excel.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/jboss-seam-excel-sources.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/jboss-seam-ioc.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/jboss-seam-ioc-sources.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/jboss-seam-jul.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/jboss-seam-jul-sources.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/jboss-seam-mail.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/jboss-seam-mail-sources.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/jboss-seam-pdf.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/jboss-seam-pdf-sources.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/jboss-seam-remoting.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/jboss-seam-remoting-sources.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/jboss-seam-ui.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/jboss-seam-ui-sources.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/jboss-seam.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/jboss-seam-sources.jar"/>
+    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/jboss-el.jar"/>
+    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/jboss-seam-debug.jar"/>
+    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/jboss-seam-ioc.jar"/>
+    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/jboss-seam-jul.jar"/>
+    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/jboss-seam-mail.jar"/>
+    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/jboss-seam-remoting.jar"/>
+    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/jboss-seam-ui.jar"/>
+    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/jboss-seam.jar"/>
     <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/jgettext.jar"/>
     <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/jsf-api.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/jsf-facelets.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/jsf-facelets-sources.jar"/>
+    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/jsf-facelets.jar"/>
     <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/jsf-impl.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/jsr250-api.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/jsr250-api-sources.jar"/>
+    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/jsr250-api.jar"/>
     <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/jta.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/jxl.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/lucene-core.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/lucene-core-sources.jar"/>
+    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/lucene-core.jar"/>
     <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/mvel14.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/richfaces-api.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/richfaces-api-sources.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/richfaces-impl.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/richfaces-impl-sources.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/richfaces-ui.jar" sourcepath="/home/asgeirf/projects/flies/flies-web/lib/src/richfaces-ui-sources.jar"/>
-    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/testng.jar"/>
+    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/richfaces-api.jar"/>
+    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/richfaces-impl.jar"/>
+    <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/richfaces-ui.jar"/>
     <classpathentry kind="lib" path="/home/asgeirf/projects/flies/flies-web/lib/xom.jar"/> 
     <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-    <classpathentry combineaccessrules="false" kind="src" path="/flies-web"/> 
+    <classpathentry combineaccessrules="false" kind="src" path="/flies-web"/>
     <classpathentry kind="output" path="bin"/>
 </classpath>

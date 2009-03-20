@@ -47,12 +47,6 @@
 
 		<dependency>
 			<groupId>org.jboss.seam</groupId>
-			<artifactId>jboss-seam-excel</artifactId>
-			<version>${version.seam}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.seam</groupId>
 			<artifactId>jboss-seam-ioc</artifactId>
 			<version>${version.seam}</version>
 		</dependency>
@@ -65,17 +59,9 @@
 
 		<dependency>
 			<groupId>org.jboss.seam</groupId>
-			<artifactId>jboss-seam-pdf</artifactId>
-			<version>${version.seam}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.seam</groupId>
 			<artifactId>jboss-seam-remoting</artifactId>
 			<version>${version.seam}</version>
 		</dependency>
-
-
 
 		<!--
 			Available Seam artifacts as of 2.1.2-SNAPSHOT: jboss-seam-debug
