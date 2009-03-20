@@ -50,8 +50,13 @@
 	</target>
 
 	<target name="-init-deps">
-		<uptodate property="mavenuptodate" srcfile="${webapp.pom}"
+		<uptodate property="mavenuptodate" 
 			targetfile="${webapp.lib.dir}/.maven-deps-timestamp">
+			<srcfiles dir="${basedir}">
+				<include name="${webapp.pom}"/>
+				<include name="${test.pom}"/>
+				<include name="${jbossas.pom}"/>
+			</srcfiles>
 		</uptodate>
 	</target>
 
