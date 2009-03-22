@@ -20,7 +20,7 @@
 	<property name="test.lib.dir" value="${test.project.dir}/lib" />
 	<property name="test.tmp.dir" value="${test.project.dir}/build" />
 	<property name="test.output.dir" value="${test.tmp.dir}/test-output" />
-    <property name="test.war.dir"    value="${test.tmp.dir}/flies.war"/>
+    <property name="test.classes.dir"    value="${test.tmp.dir}/testclasses"/>
 	<property name="test.bootstrap.dir" value="${test.project.dir}/bootstrap" />
 	
 	<property name="testng.jar" value="${test.lib.dir}/testng.jar" />
@@ -79,7 +79,7 @@
 	
 	<path id="test.runtime.classpath">
         <!-- THE ORDER IS CRITICALLY IMPORTANT! -->
-        <pathelement path="${test.war.dir}"/>
+        <pathelement path="${test.classes.dir}"/>
         <pathelement path="${test.bootstrap.dir}"/>
 		<fileset refid="test.lib" />
 		<fileset refid="lib"/>
@@ -339,11 +339,11 @@
 	<target name="tests-compile" depends="compile" unless="eclipse.running"
 		description="Compile the Java source code for the tests">
 		
-		<mkdir dir="${test.war.dir}" />
+		<mkdir dir="${test.classes.dir}" />
 		
 		<javac 
 				classpathref="test.build.classpath" 
-				destdir="${test.war.dir}"
+				destdir="${test.classes.dir}"
 				debug="${javac.debug}" 
 				deprecation="${javac.deprecation}" 
 				nowarn="${javac.nowarn}">
@@ -355,7 +355,7 @@
 		</javac>
 		
         <!-- ###### Copy resources (XML files, properties, etc.) to classes ###### -->
-        <copy todir="${test.war.dir}">
+        <copy todir="${test.classes.dir}">
             <fileset dir="${test.src.dir}">
                 <patternset refid="meta.files"/>
                 <exclude name="*.tng.xml"/>
@@ -366,32 +366,51 @@
 	
 	<target name="tests-build" depends="-init,tests-compile"
 		description="Build the tests">
-		<copy todir="${test.output.dir}">
+		<copy todir="${test.classes.dir}">
 			<fileset dir="${basedir}/resources">
 				<exclude name="META-INF/persistence*.xml" />
+				<exclude name="META-INF/components*.xml" />
 				<exclude name="import*.sql" />
 				<exclude name="${project.name}-*-ds.xml" />
 				<exclude name="components-*.properties" />
 			</fileset>
-			<fileset dir="${basedir}/view" />
 		</copy>
-		<copy tofile="${test.output.dir}/META-INF/persistence.xml" file="${basedir}/resources/META-INF/persistence-test-war.xml"
+		<copy tofile="${test.classes.dir}/META-INF/components.xml" file="${basedir}/resources/META-INF/components-test.xml"
 			overwrite="true" />
-		<copy tofile="${test.output.dir}/import.sql" file="${basedir}/resources/import-test.sql"
+		<copy tofile="${test.classes.dir}/META-INF/persistence.xml" file="${basedir}/resources/META-INF/persistence-test-war.xml"
 			overwrite="true" />
-		<copy todir="${test.output.dir}" flatten="true">
+		<copy tofile="${test.classes.dir}/import.sql" file="${basedir}/resources/import-test.sql"
+			overwrite="true" />
+		<copy todir="${test.classes.dir}" flatten="true">
 			<fileset dir="${test.src.dir}">
 				<include name="**/*.tng.xml" />
 			</fileset>
 		</copy>
-		<copy todir="${test.output.dir}">
+		<copy todir="${test.classes.dir}">
 			<fileset dir="${test.src.dir}">
 				<include name="**/*.dbunit.xml" />
 			</fileset>
 		</copy>
+		<copy todir="${test.classes.dir}">
+			<fileset dir="${classes.hot.dir}"/>
+			<fileset dir="${classes.main.dir}"/>
+		</copy>
+		
+		<mkdir dir="${test.classes.dir}/META-INF/testbinaries"/>
+		<copy todir="${test.classes.dir}/META-INF/testbinaries" failonerror="no">
+			<fileset dir="${test.project.dir}/testbinaries"/>
+		</copy>
+
+		<copy tofile="${test.classes.dir}/${project.name}-ds.xml" file="${basedir}/resources/${project.name}-test-ds.xml"
+			overwrite="true" />
+		
 	</target>
 
 	<target name="test" depends="tests-build" description="Run the tests">
+		
+        <delete  dir="${test.output.dir}"/>
+        <mkdir dir="${test.output.dir}"/>
+		
 		<condition property="incompatible.jdk">
 			<and>
 				<equals arg1="${ant.java.version}" arg2="1.6" />
@@ -407,7 +426,7 @@
 			<jvmarg line="-Djava.endorsed.dirs=${endorsed.dir}" />
 			<jvmarg line="-Dsun.lang.ClassLoader.allowArraySyntax=true" />
 			<classpath refid="test.runtime.classpath" />
-			<xmlfileset dir="${test.war.dir}" includes="*.tng.xml" />
+			<xmlfileset dir="${test.classes.dir}" includes="*.tng.xml" />
 		</testng>
 	</target>
 

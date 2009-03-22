@@ -18,29 +18,6 @@
                  http://jboss.com/products/seam/web http://jboss.com/products/seam/web-2.1.xsd
                  http://jboss.com/products/seam/components http://jboss.com/products/seam/components-2.1.xsd">
 
-   <core:init debug="@debug@" jndi-pattern="@jndiPattern@"/>
-
-    <component name="fliesInit" class="org.fedorahosted.flies.FliesInit" precedence="30">
-        <property name="adminContact">@adminContact@</property>
-        <property name="debug">@debug@</property>
-        <property name="authenticatedSessionTimeoutMinutes">@authenticatedSessionTimeoutMinutes@</property>
-    </component>
-
-   <core:manager concurrent-request-timeout="500"
-                 conversation-timeout="120000"
-                 conversation-id-parameter="cid"
-                 parent-conversation-id-parameter="pid"/>
-
-   <web:hot-deploy-filter url-pattern="*.seam"/>
-
-   <persistence:entity-manager-factory name="entityManagerFactory"
-                      persistence-unit-name="flies"
-                                  installed="@seamBootstrapsPu@"/>
-
-   <persistence:managed-persistence-context name="entityManager" auto-create="true"
-                          entity-manager-factory="@seamEmfRef@"
-                      persistence-unit-jndi-name="@puJndiName@"/>
-
    <drools:rule-base name="securityRules">
       <drools:rule-files>
          <value>/security.drl</value>
@@ -72,5 +49,12 @@
       <bpm:pageflow-definitions></bpm:pageflow-definitions>
    </bpm:jbpm>
    -->
+
+    <persistence:managed-persistence-context
+            name="entityManager"
+            auto-create="true"
+            persistence-unit-jndi-name="java:/entityManagerFactories/flies">
+    </persistence:managed-persistence-context>
+
 
 </components>

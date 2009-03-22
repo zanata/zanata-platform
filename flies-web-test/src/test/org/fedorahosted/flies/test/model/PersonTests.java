@@ -25,10 +25,16 @@ public class PersonTests extends DBUnitSeamTest {
 
             protected void invokeApplication() throws Exception {
                 EntityManager em = (EntityManager) getInstance("entityManager");
-                Person p = (Person) em.createQuery("select p from Person p where p.id = :id")
+                Person p = new Person();
+                p.setName("Mr Bean");
+                p.setEmail("asgeirf@gmail.com");
+                em.persist(p);
+
+                p = (Person) em.createQuery("select p from Person p where p.id = :id")
                                 .setParameter("id", 1l)
                                 .getSingleResult();
-                assert p.getName().equals("Mr Bean");
+                assert p == null;
+                //assert p.getName().equals("Mr Bean");
             }
         }.run();
     }

@@ -20,9 +20,7 @@ syntax: regexp
 # flies-web-test
 ^flies-web-test/lib/
 ^flies-web-test/bin/
-^flies-web-test/test-report/
-^flies-web-test/test-build/
-^flies-web-test/test-output/
+^flies-web-test/build/
 ^flies-web-test/bootstrap/data/
 
 # flies-richfaces-ui
