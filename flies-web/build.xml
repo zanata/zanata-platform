@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="flies" default="deploy" basedir=".">
+<project name="flies" default="app-deploy" basedir=".">
 
 	<!--
 		Give user a chance to override without editing this file or typing -D
@@ -12,96 +12,100 @@
 	<!-- set global properties for this build -->
 	<property name="project.name" value="flies" />
 	<property name="project.war" value="true" />
-	
-	<property name="testproject.dir" value="../flies-web-test" />
-	<property name="test.src.dir" value="${testproject.dir}/src/test" />
-	<property name="test.lib.dir" value="${testproject.dir}/lib" />
-	<property name="test.tmp.dir" value="${testproject.dir}/test-build" />
-	<property name="test.output.dir" value="${test.tmp.dir}/test-output" />
-    <property name="testclasses.dir"    value="${test.tmp.dir}/testclasses"/>
-	<property name="bootstrap.dir" value="${testproject.dir}/bootstrap" />
-	<property name="testng.jar" value="${test.lib.dir}/testng.jar" />
 
+	<property name="tmp.dir" value="build"/>
+	
+	<property name="test.project.dir" value="../flies-web-test" />
+	<property name="test.src.dir" value="${test.project.dir}/src/test" />
+	<property name="test.lib.dir" value="${test.project.dir}/lib" />
+	<property name="test.tmp.dir" value="${test.project.dir}/build" />
+	<property name="test.output.dir" value="${test.tmp.dir}/test-output" />
+    <property name="test.war.dir"    value="${test.tmp.dir}/flies.war"/>
+	<property name="test.bootstrap.dir" value="${test.project.dir}/bootstrap" />
+	
+	<property name="testng.jar" value="${test.lib.dir}/testng.jar" />
 		
-	<property name="richfaces.present" value="true" />
 	<property name="dist.dir" value="dist" />
-	<property name="src.model.dir" value="src/main" />
-	<property name="src.action.dir" value="src/hot" />
+	<property name="src.main.dir" value="src/main" />
+	<property name="src.hot.dir" value="src/hot" />
+
 	<property name="lib.dir" value="lib" />
 	<property name="endorsed.dir" value="${lib.dir}/endorsed" />
-	<property name="war.dir" value="exploded-archives/${project.name}.war" />
-	<property name="exploded.archive.dir" value="${war.dir}" />
-	<property name="classes.model.dir" value="${war.dir}/WEB-INF/classes" />
-	<property name="action.dir" value="WEB-INF/classes" />
-	<property name="classes.action.dir" value="${war.dir}/${action.dir}" />
+	
+	<property name="war.dir" value="${tmp.dir}/${project.name}.war" />
+
+	<property name="classes.main.dir" value="${war.dir}/WEB-INF/classes" />
+	<property name="classes.hot.dir" value="${war.dir}/WEB-INF/classes" />
 	<property name="jboss.domain" value="default" />
 	<property name="deploy.dir" value="${jboss.home}/server/${jboss.domain}/deploy" />
 	<property name="war.deploy.dir" value="${deploy.dir}/${project.name}.war" />
 	<property name="packaged.archive" value="${dist.dir}/${project.name}.war" />
+
 	<property name="javac.debug" value="true" />
 	<property name="javac.deprecation" value="false" />
 	<property name="debug" value="false" />
 
 	<!--Properties for validating configuration files -->
-	<property name="validate.resources.dir" value="${basedir}/exploded-archives" />
-	<property name="schema.dir" value="${basedir}/exploded-archives/schemas" />
+	<property name="validate.resources.dir" value="${tmp.dir}" />
+	<property name="schema.dir" value="${tmp.dir}/schemas" />
 	<property name="src.schema.dir" value="${schema.dir}/org/jboss/seam" />
 	<property name="schema.version" value="2.1" />
 
 	<property name="deps.version" value="1" />
 	<property name="deps.filename" value="build-tools/lib/flies-deps-${deps.version}" />
 
-
 	<fileset id="lib" dir="${lib.dir}">
 		<include name="*.jar" />
 	</fileset>
 
-	<fileset id="jboss.client" dir="${jboss.home}/client">
+	<fileset id="test.lib" dir="${basedir}/../flies-web-test/lib">
 		<include name="*.jar" />
-	</fileset>
-
-	<fileset id="jboss.default.lib" dir="${jboss.home}/server/default/lib">
-		<include name="*.jar" />
-	</fileset>
-
-	<fileset id="test.deps" dir="${basedir}/../flies-web-test/lib">
-		<include name="testng.jar" />
 	</fileset>
 
 	<path id="build.classpath">
 		<fileset refid="lib" />
-		<fileset refid="jboss.client" />
-		<fileset refid="jboss.default.lib" />
+		<fileset id="jboss.client" dir="${jboss.home}/client">
+			<include name="*.jar" />
+		</fileset>
+		<fileset id="jboss.default.lib" dir="${jboss.home}/server/default/lib">
+			<include name="*.jar" />
+		</fileset>
 	</path>
 
-	<path id="test.compile.classpath">
+	<path id="test.build.classpath">
 		<path refid="build.classpath"/>
 		<pathelement path="${testng.jar}"/>
-	</path>	
-	<path id="test.classpath">
-<!-- OLD
-		<fileset refid="lib" />
-		<fileset refid="jboss.client" />
-		<fileset refid="jboss.default.lib" />
-		<fileset refid="test.deps" />
--->		
+	</path>
+	
+	<path id="test.runtime.classpath">
         <!-- THE ORDER IS CRITICALLY IMPORTANT! -->
-
-        <pathelement path="${testclasses.dir}"/>
-		
-        <pathelement path="${bootstrap.dir}"/>
-
-		<fileset refid="test.deps" />
-
+        <pathelement path="${test.war.dir}"/>
+        <pathelement path="${test.bootstrap.dir}"/>
+		<fileset refid="test.lib" />
 		<fileset refid="lib"/>
-		
         <fileset dir="${lib.dir}/jbossas">
             <!-- This has the Hibernate we want -->
             <include name="*.jar" />
         </fileset>
-		
 	</path>
 
+    <patternset id="meta.files">
+        <include name="**/*.xml"/>
+        <include name="**/*.properties"/>
+        <include name="**/*.sql"/>
+        <include name="**/*.drl"/>
+        <include name="**/*.MF"/>
+        <include name="**/*.dtd"/>
+        <include name="**/*.xsd"/>
+        <include name="**/*.gif"/>
+        <include name="**/*.jpg"/>
+        <include name="**/*.jpeg"/>
+        <include name="**/*.png"/>
+        <include name="**/*.css"/>
+        <include name="**/*.swf"/>
+        <include name="**/*.xhtml"/>
+    </patternset>
+	
 	<import file="build-tools/build-deps.xml" />
 
 	<target name="-deps-installed">
@@ -127,143 +131,33 @@
 
 	</target>
 
-
-	<target name="init" depends="download-deps" description="Initialize the build">
-
-		<taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc"
-			classpathref="build.classpath" /> <!-- really only the groovy jar is necessary -->
-
-		<mkdir dir="${classes.model.dir}" />
-		<mkdir dir="${classes.action.dir}" />
+	<target name="-init" depends="download-deps">
+		<mkdir dir="${classes.main.dir}" />
+		<mkdir dir="${classes.hot.dir}" />
 		<mkdir dir="${dist.dir}" />
-
-		<property name="transactionManagerLookupClass"
-			value="org.hibernate.transaction.JBossTransactionManagerLookup" />
-		<property name="ejbJndiPattern" value="${project.name}/#{ejbName}/local" />
-		<condition property="seamBootstrapsPu" value="false" else="true">
-			<available file="${jboss.home}/lib/jboss-vfs.jar" /> <!-- JBoss AS >= 5.0 -->
-		</condition>
-		<condition property="seamEmfRef" value="#{entityManagerFactory}"
-			else="#{null}">
-			<equals arg1="${seamBootstrapsPu}" arg2="true" />
-		</condition>
-		<condition property="puJndiName" value="#{null}"
-			else="java:comp/env/${project.name}/pu">
-			<equals arg1="${seamBootstrapsPu}" arg2="true" />
-		</condition>
-
-		<filterset id="persistence">
-			<filter token="transactionManagerLookupClass" value="${transactionManagerLookupClass}" />
-		</filterset>
-		<filterset id="seam">
-			<filter token="ejbJndiPattern" value="${ejbJndiPattern}" />
-			<filter token="seamBootstrapsPu" value="${seamBootstrapsPu}" />
-			<filter token="seamEmfRef" value="${seamEmfRef}" />
-			<filter token="puJndiName" value="${puJndiName}" />
-		</filterset>
-
-		<!-- if a .groovy file is in model or action, set groovy.present -->
-		<available property="groovy.present" value="true" file=""
-			searchparents="true">
-			<filepath>
-				<fileset dir="${src.action.dir}">
-					<include name="**/*.groovy" />
-				</fileset>
-				<fileset dir="${src.model.dir}">
-					<include name="**/*.groovy" />
-				</fileset>
-			</filepath>
-		</available>
-		<condition property="groovy.test.present" value="true">
-			<or>
-				<isset property="groovy.present" />
-				<available file="" searchparents="true">
-					<filepath>
-						<fileset dir="${test.src.dir}">
-							<include name="**/*.groovy" />
-						</fileset>
-					</filepath>
-				</available>
-			</or>
-		</condition>
-		<condition property="groovy.dynamic" value="true">
-			<and>
-				<isset property="groovy.present" />
-				<istrue value="${debug}" />
-			</and>
-		</condition>
-		<condition property="groovy.static" value="true">
-			<and>
-				<isset property="groovy.present" />
-				<isfalse value="${debug}" />
-			</and>
-		</condition>
 	</target>
 
-	<target name="compilemodel" depends="init,groovy.compilemodel"
+	<target name="compile.main" depends="-init"
 		description="Compile the Java source code" unless="eclipse.running">
-		<javac classpathref="build.classpath" destdir="${classes.model.dir}"
+		<javac classpathref="build.classpath" destdir="${classes.main.dir}"
 			debug="${javac.debug}" deprecation="${javac.deprecation}" nowarn="on">
-			<src path="${src.model.dir}" />
+			<src path="${src.main.dir}" />
 		</javac>
 	</target>
 
-	<target name="groovy.compilemodel" if="groovy.present">
-		<!-- model is always compiled -->
-		<groovyc classpathref="build.classpath" destdir="${classes.model.dir}"
-			srcdir="${src.model.dir}">
-		</groovyc>
-	</target>
-
-	<target name="compileactions" depends="init,groovy.compileactions,groovy.copyactions"
+	<target name="compile.hot" depends="-init"
 		description="Compile the Java source code" unless="eclipse.running">
-		<javac classpathref="build.classpath" destdir="${classes.action.dir}"
+		<javac classpathref="build.classpath" destdir="${classes.hot.dir}"
 			debug="${javac.debug}" deprecation="${javac.deprecation}" nowarn="on">
-			<classpath path="${classes.model.dir}" />
-			<src path="${src.action.dir}" />
+			<classpath path="${classes.main.dir}" />
+			<src path="${src.hot.dir}" />
 		</javac>
 	</target>
 
-	<target name="groovy.compileactions" if="groovy.static">
-		<path id="groovy.action.classpath">
-			<path refid="build.classpath" />
-			<dirset dir="${classes.model.dir}" />
-		</path>
-		<groovyc classpathref="groovy.action.classpath" destdir="${classes.action.dir}"
-			srcdir="${src.action.dir}">
-		</groovyc>
-	</target>
+	<target name="compile" depends="compile.main,compile.hot"
+		description="Compile all sources (excluding tests)" />
 
-	<target name="groovy.copyactions" if="groovy.dynamic">
-		<!-- copy the action groovy files into action if not compiled -->
-		<copy todir="${classes.action.dir}">
-			<fileset dir="${src.action.dir}">
-				<include name="**/*.groovy" />
-			</fileset>
-		</copy>
-	</target>
-
-	<target name="copyclasses" depends="init,groovy.copyactions"
-		description="Copy the classes that were compiled by eclipse" if="eclipse.running">
-		<!--
-			TODO check how the groovy eclipse plugin works, does it compile?
-		-->
-		<copy todir="${classes.model.dir}">
-			<fileset dir="classes/main">
-				<include name="**/*.class" />
-			</fileset>
-		</copy>
-		<copy todir="${classes.action.dir}">
-			<fileset dir="classes/hot">
-				<include name="**/*.class" />
-			</fileset>
-		</copy>
-	</target>
-
-	<target name="compile" depends="compilemodel,compileactions,copyclasses"
-		description="Compile the various source paths" />
-
-	<target name="war" depends="compile"
+	<target name="build" depends="compile"
 		description="Build the WAR structure in a staging directory">
 
 		<copy todir="${war.dir}/WEB-INF/classes">
@@ -271,21 +165,14 @@
 				<include name="seam.properties" />
 				<include name="*.drl" />
 			</fileset>
-			<fileset dir="${src.model.dir}">
+			<fileset dir="${src.main.dir}">
 				<include name="**/*.component.xml" />
 			</fileset>
 		</copy>
 
-		<copy tofile="${war.dir}/WEB-INF/classes/components.properties"
-			file="${basedir}/resources/components-${profile}.properties"
-			overwrite="true">
-			<filterset refid="seam" />
-		</copy>
-
 		<copy tofile="${war.dir}/WEB-INF/classes/META-INF/persistence.xml"
-			file="${basedir}/resources/META-INF/persistence-${profile}.xml"
+			file="${basedir}/resources/META-INF/persistence-${profile}-war.xml"
 			overwrite="true">
-			<filterset refid="persistence" />
 		</copy>
 
 		<copy tofile="${war.dir}/WEB-INF/classes/import.sql" file="${basedir}/resources/import-${profile}.sql"
@@ -300,7 +187,6 @@
 				<include name="*.*" />
 				<include name="classes/**/*.*" />
 				<exclude name="classes/**/*.class" />
-				<exclude name="classes/**/*.groovy" />
 			</fileset>
 		</copy>
 
@@ -313,34 +199,39 @@
 
 		<copy todir="${war.dir}/WEB-INF/lib">
 			<fileset dir="${lib.dir}">
+				<!-- TODO: we could do *.jar here -->
 				<includesfile name="deployed-jars.list" />
 				<exclude name="jboss-seam-gen.jar" />
 				<exclude name="icefaces-ahs.jar" if="icefaces.present" />
-				<include name="groovy-*.jar" if="groovy.present" />
 			</fileset>
 		</copy>
 
 		<copy todir="${war.dir}/WEB-INF/classes">
 			<fileset dir="${basedir}/resources">
-				<include name="**/*.xcss" if="richfaces.present" />
+				<include name="**/*.xcss"/>
 			</fileset>
 			<!--
 				move XCSS into classpath for now loading from web context only works
 				in JBoss AS 4
 			-->
 			<fileset dir="${basedir}/view">
-				<include name="**/*.xcss" if="richfaces.present" />
+				<include name="**/*.xcss"/>
 			</fileset>
 		</copy>
 
 		<copy todir="${war.dir}/WEB-INF/classes">
 			<fileset dir="${basedir}/resources">
-				<include name="i18n/*.properties" />
 				<include name="*.skin.properties" if="ricfaces.present" />
 				<include name="*_theme.properties" />
 			</fileset>
 		</copy>
 
+		<copy todir="${war.dir}/WEB-INF/classes">
+			<fileset dir="${basedir}/resources/i18n">
+				<include name="*.properties"/>
+			</fileset>
+		</copy>
+		
 		<copy todir="${war.dir}/WEB-INF/classes">
 			<fileset dir="${basedir}/resources">
 				<include name="*jpdl.xml" />
@@ -352,19 +243,19 @@
 
 	</target>
 
-	<target name="stage" depends="war" />
+	<target name="stage" depends="build" />
 
 	<target name="archive" depends="stage" description="Package the WAR archive">
 		<jar jarfile="${dist.dir}/${project.name}.war" basedir="${war.dir}" />
 	</target>
 
-	<target name="datasource">
+	<target name="app-datasource">
 		<fail unless="jboss.home">jboss.home not set</fail>
 		<copy file="${basedir}/resources/${project.name}-${profile}-ds.xml"
 			tofile="${deploy.dir}/${project.name}-ds.xml" />
 	</target>
 
-	<target name="explode" depends="stage,datasource" description="Deploy the exploded archive">
+	<target name="app-explode" depends="stage,app-datasource" description="Deploy the exploded archive">
 		<fail unless="jboss.home">jboss.home not set</fail>
 
 		<mkdir dir="${war.deploy.dir}" />
@@ -373,7 +264,7 @@
 		</copy>
 	</target>
 
-	<target name="unexplode" description="Undeploy the exploded archive">
+	<target name="app-unexplode" description="Undeploy the exploded archive">
 		<delete failonerror="no">
 			<fileset dir="${war.deploy.dir}">
 				<exclude name="**/*.jar" />
@@ -384,10 +275,10 @@
 		<delete dir="${war.deploy.dir}" failonerror="no" />
 	</target>
 
-	<target name="reexplode" depends="unexplode,clean,explode"
+	<target name="app-reexplode" depends="app-unexplode,clean,app-explode"
 		description="Undeploy the exploded archive, clean, then deploy the exploded archive" />
 
-	<target name="check-deployed"
+	<target name="app-check-deployed"
 		description="Check to see if packaged archive is currently deployed">
 		<fail unless="jboss.home">jboss.home not set</fail>
 		<condition property="archive.deployed" value="true">
@@ -395,186 +286,85 @@
 		</condition>
 	</target>
 
-	<target name="restart-exploded" unless="archive.deployed"
+	<target name="app-restart-exploded" unless="archive.deployed"
 		description="Deploy exploded archive if not deployed as packaged archive">
-		<antcall target="explode" />
+		<antcall target="app-explode" />
 		<touch file="${war.deploy.dir}/WEB-INF/web.xml" />
 	</target>
 
-	<target name="restart-deployed" if="archive.deployed"
+	<target name="app-restart-deployed" if="archive.deployed"
 		description="Deploy packaged archive if deployed as packaged archive">
 		<antcall target="deploy" />
 	</target>
 
-	<target name="restart" depends="check-deployed,restart-exploded,restart-deployed"
+	<target name="app-restart" depends="app-check-deployed,app-restart-exploded,app-restart-deployed"
 		description="Restart the exploded archive" />
 
-	<target name="deploy" depends="archive,datasource" description="Deploy the packaged archive">
+	<target name="app-deploy" depends="archive,app-datasource" description="Deploy the packaged archive">
 		<fail unless="jboss.home">jboss.home not set</fail>
 		<copy todir="${deploy.dir}" file="${dist.dir}/${project.name}.war" />
 	</target>
 
-	<target name="undeploy" description="Undeploy the packaged archive">
+	<target name="app-undeploy" description="Undeploy the packaged archive">
 		<delete file="${deploy.dir}/${project.name}.war" />
 		<delete file="${deploy.dir}/${project.name}-ds.xml" />
 	</target>
 
-	<target name="redeploy" depends="undeploy,clean,deploy"
+	<target name="app-redeploy" depends="app-undeploy,clean,app-deploy"
 		description="Undeploy the packaged archive, clean, then deploy the packaged archive" />
 
 	<target name="clean" description="Clean out the staging directory">
 		<delete dir="${dist.dir}" />
-		<delete dir="${basedir}/exploded-archives" />
-		<delete dir="${testproject.dir}/test-report" />
-		<delete dir="${basedir}/test-output" />
 		<delete failonerror="no" includeemptydirs="true">
 			<fileset dir="${test.output.dir}">
 				<exclude name="**/*.class" if="eclipse.running" />
 			</fileset>
 		</delete>
+		<delete failonerror="no" includeemptydirs="true">
+			<fileset dir="${tmp.dir}">
+				<exclude name="**/*.class" if="eclipse.running" />
+			</fileset>
+		</delete>
 	</target>
 
-	<target name="compiletest" depends="groovy.compiletest" unless="eclipse.running"
+	<target name="tests-clean" description="Clean out the staging directory">
+		<delete dir="${test.project.dir}/test-report" />
+		<delete failonerror="no" includeemptydirs="true">
+			<fileset dir="${test.tmp.dir}">
+				<exclude name="**/*.class" if="eclipse.running" />
+			</fileset>
+		</delete>
+	</target>
+
+	<target name="tests-compile" depends="compile" unless="eclipse.running"
 		description="Compile the Java source code for the tests">
-		<mkdir dir="${test.output.dir}" />
-		<javac classpathref="test.compile.classpath" destdir="${test.output.dir}"
-			debug="${javac.debug}" deprecation="${javac.deprecation}" nowarn="on">
-			<src path="${src.action.dir}" />
-			<src path="${src.model.dir}" />
+		
+		<mkdir dir="${test.war.dir}" />
+		
+		<javac 
+				classpathref="test.build.classpath" 
+				destdir="${test.war.dir}"
+				debug="${javac.debug}" 
+				deprecation="${javac.deprecation}" 
+				nowarn="${javac.nowarn}">
+			<classpath>
+				<path path="${classes.hot.dir}" />
+				<path path="${classes.main.dir}" />
+			</classpath>
 			<src path="${test.src.dir}" />
 		</javac>
-	</target>
-
-	<target name="groovy.compiletest" if="groovy.test.present"
-		description="Compile the Groovy source code for the tests">
-		<mkdir dir="${test.output.dir}" />
-		<groovyc classpathref="build.classpath" destdir="${test.output.dir}">
-			<src path="${src.action.dir}" />
-			<src path="${src.model.dir}" />
-			<src path="${test.src.dir}" />
-		</groovyc>
-	</target>
-
-	<!--from wiki  -->
-    <target name="wcompiletests" depends="clean, compile" 
-            description="Compile the test Java source code">
-
-        <javac classpathref="test.compile.classpath"
-                    destdir="${testclasses.dir}"
-                      debug="${javac.debug}"
-                deprecation="${javac.deprecation}"
-                     nowarn="${javac.nowarn}">
-        	<classpath>
-            	<path refid="test.classpath" />
-            	<path refid="runtime.emma.path" />
-        		<path path="${classes.dir}" />
-            </classpath>
-            <src path="${test.src.dir}" />
-        </javac>
-
+		
         <!-- ###### Copy resources (XML files, properties, etc.) to classes ###### -->
-        <copy todir="${testclasses.dir}">
+        <copy todir="${test.war.dir}">
             <fileset dir="${test.src.dir}">
                 <patternset refid="meta.files"/>
                 <exclude name="*.tng.xml"/>
             </fileset>
         </copy>
-
-    </target>
-
-	
-	<!--from wiki  -->
-	<target name="wconfiguretests" depends="wcompiletests"
-            description="Copy resources to test path (call from IDE before tests)">
-
-        <!-- ###### Test classes ###### -->
-        <copy todir="${testclasses.dir}">
-            <fileset dir="${classes.model.dir}">
-                <include name="**/*"/>
-            </fileset>
-            <fileset dir="${classes.action.dir}">
-                <include name="**/*"/>
-            </fileset>
-        </copy>
-
-        <!-- ######## Test config ######## -->
-        <copy todir="${testclasses.dir}">
-            <fileset dir="resources">
-                <include name="**/*"/>
-                <!-- Handle these below -->
-                <exclude name="META-INF/persistence*.xml"/>
-                <exclude name="META-INF/components*.xml"/>
-                <exclude name="*-ds.xml"/>
-                <exclude name="*.sql"/>
-            </fileset>
-        </copy>
-        	
-        <copy tofile="${testclasses.dir}/META-INF/persistence.xml"
-                file="${src.etc.dir}/META-INF/persistence-test-war.xml"
-           overwrite="true"/>
-        <copy tofile="${testclasses.dir}/META-INF/components.xml"
-                file="${src.etc.dir}/META-INF/components-test.xml"
-           overwrite="true"/>
-        <copy tofile="${testclasses.dir}/wiki-ds.xml"
-                file="${src.etc.dir}/wiki-test-ds.xml"
-           overwrite="true"/>
-
-        <!-- ######## Test data binaries ######## -->
-        <mkdir dir="${testclasses.dir}/META-INF/testbinaries"/>
-        <copy todir="${testclasses.dir}/META-INF/testbinaries">
-            <fileset dir="${basedir}/testbinaries">
-                <include name="**/*"/>
-            </fileset>
-        </copy>
-
-        <!-- ######## Test output ######## -->
-        <delete  dir="${test.output.dir}"/>
-        <mkdir dir="${test.output.dir}"/>
-
-    </target>
-	
-	<!-- From wiki -->
-    <target name="wtest" depends="wconfiguretests"
-            description="Run tests defined in *.tng.xml">
-    	<condition property="testng.file" value="AllTests-jdk6.tng.xml" else="AllTests.tng.xml">
-    		<equals arg1="${ant.java.version}" arg2="1.6"/>
-    	</condition>
-        <taskdef resource="testngtasks" classpathref="test.classpath"/>
-        <testng outputdir="${test.output.dir}">
-            <classpath>
-            	<path refid="test.classpath" />
-            	<path refid="runtime.emma.path" />
-            </classpath>
-            <xmlfileset dir="${test.src.dir}" includes="${testng.file}" />
-            <jvmarg line="${testng.jvmargs}"/>
-			<jvmarg line="-Demma.coverage.out.file=${coverage.ec}" />
-        	<!-- Needed for running Embedded JBoss under JDK 6 -->
-            <jvmarg line="-Dsun.lang.ClassLoader.allowArraySyntax=true"/>
-        </testng>
-        <echo message="Please read the test output in directory: ${test.output.dir}"/>
-    </target>	
-	
-	<target name="copytestclasses" if="eclipse.running"
-		description="Copy classes compiled by eclipse to the test dir">
-		<mkdir dir="${test.output.dir}" />
-		<copy todir="${test.output.dir}">
-			<fileset dir="classes/main">
-				<include name="**/*.class" />
-			</fileset>
-		</copy>
-		<copy todir="${test.output.dir}">
-			<fileset dir="classes/hot">
-				<include name="**/*.class" />
-			</fileset>
-		</copy>
-		<copy todir="${test.output.dir}">
-			<fileset dir="classes/test">
-				<include name="**/*.class" />
-			</fileset>
-		</copy>
+		
 	</target>
-
-	<target name="buildtest" depends="init,compiletest,copytestclasses"
+	
+	<target name="tests-build" depends="-init,tests-compile"
 		description="Build the tests">
 		<copy todir="${test.output.dir}">
 			<fileset dir="${basedir}/resources">
@@ -585,11 +375,9 @@
 			</fileset>
 			<fileset dir="${basedir}/view" />
 		</copy>
-		<copy tofile="${test.output.dir}/META-INF/persistence.xml" file="${basedir}/resources/META-INF/persistence-test.xml"
+		<copy tofile="${test.output.dir}/META-INF/persistence.xml" file="${basedir}/resources/META-INF/persistence-test-war.xml"
 			overwrite="true" />
 		<copy tofile="${test.output.dir}/import.sql" file="${basedir}/resources/import-test.sql"
-			overwrite="true" />
-		<copy tofile="${test.output.dir}/components.properties" file="${basedir}/resources/components-test.properties"
 			overwrite="true" />
 		<copy todir="${test.output.dir}" flatten="true">
 			<fileset dir="${test.src.dir}">
@@ -603,7 +391,7 @@
 		</copy>
 	</target>
 
-	<target name="test" depends="buildtest" description="Run the tests">
+	<target name="test" depends="tests-build" description="Run the tests">
 		<condition property="incompatible.jdk">
 			<and>
 				<equals arg1="${ant.java.version}" arg2="1.6" />
@@ -615,11 +403,11 @@
 		<fail if="incompatible.jdk">You are using an incompatible JDK 6. Please use Sun
 			JDK 6 Update 4 (1.6.0_04) or newer or use Open JDK 6.</fail>
 		<taskdef resource="testngtasks" classpath="${testng.jar}" />
-		<testng outputdir="${testproject.dir}/test-report">
+		<testng outputdir="${test.output.dir}">
 			<jvmarg line="-Djava.endorsed.dirs=${endorsed.dir}" />
 			<jvmarg line="-Dsun.lang.ClassLoader.allowArraySyntax=true" />
-			<classpath refid="test.classpath" />
-			<xmlfileset dir="${test.output.dir}" includes="*.tng.xml" />
+			<classpath refid="test.runtime.classpath" />
+			<xmlfileset dir="${test.war.dir}" includes="*.tng.xml" />
 		</testng>
 	</target>
 
@@ -630,11 +418,11 @@
 			windowtitle="${project.name} API Documentation" doctitle="${project.name} API Documentation"
 			link="http://java.sun.com/j2se/5.0/docs/api">
 
-			<packageset dir="${src.action.dir}" defaultexcludes="yes">
+			<packageset dir="${src.hot.dir}" defaultexcludes="yes">
 				<include name="*/**" />
 			</packageset>
 
-			<packageset dir="${src.model.dir}" defaultexcludes="yes">
+			<packageset dir="${src.main.dir}" defaultexcludes="yes">
 				<include name="*/**" />
 			</packageset>
 
@@ -653,7 +441,7 @@
 		<ant antfile="build-tools/validate.xml" target="validateConfiguration" />
 	</target>
 
-	<target name="purge" depends="undeploy"
+	<target name="app-purge" depends="app-undeploy"
 		description="Clean out JBoss AS temporary deployment files">
 		<delete dir="${jboss.home}/server/default/tmp/deploy" />
 		<mkdir dir="${jboss.home}/server/default/tmp/deploy/" />
@@ -663,8 +451,7 @@
 			dir="${jboss.home}/server/default/work/jboss.web/localhost/${project.name}" />
 	</target>
 
-
-	<import file="${build.dir}/eclipse-deps.xml" />
+	<import file="${build.dir}/eclipse-deps.xml"/>
 
 	<target name="update-eclipse-classpath" description="Update Eclipse Classpath for this project"
 		depends="eclipse-deps.-initialize-ant-task">
@@ -676,7 +463,7 @@
 		</f:update-eclipse-classpath>
 
 		<f:update-eclipse-classpath xmlns:f="urn:fedorahosted:flies:ant:eclipse"
-			classPathFile="${testproject.dir}/.classpath">
+			classPathFile="${test.project.dir}/.classpath">
 			<fileset dir="${test.lib.dir}">
 				<include name="*.jar" />
 			</fileset>
@@ -686,8 +473,11 @@
 		</f:update-eclipse-classpath>
 	</target>
 
-	<target name="update-jboss-deps" depends="download-deps" 
+	<target name="app-update-deps" depends="download-deps" 
 		description="Update JBoss AS dependencies such as Hibernate">
+		
+		<fail unless="jboss.home">jboss.home not set</fail>
+		
 		<delete>
 			<fileset dir="${jboss.home}/server/${jboss.domain}/lib">
 				<include name="hibernate*" />

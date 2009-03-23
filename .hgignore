@@ -14,11 +14,12 @@ syntax: regexp
 ^flies-web/target/
 ^flies-web/dist/
 ^flies-web/bootstrap/data/hypersonic/
+^flies-web/build-tools/lib/
+^flies-web/build/
 
 # flies-web-test
 ^flies-web-test/lib/
 ^flies-web-test/bin/
-^flies-web/build-tools/lib/
 ^flies-web-test/test-report/
 ^flies-web-test/test-build/
 ^flies-web-test/test-output/
