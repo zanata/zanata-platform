@@ -71,13 +71,17 @@
 			<scope>embedded</scope>
 		</dependency>
 
+		<!--
+		We use a newer version of hibernate
+		  
 		<dependency>
 			<groupId>org.jboss.embedded</groupId>
 			<artifactId>hibernate-all</artifactId>
 			<version>${version.jboss.embedded}</version>
 			<scope>embedded</scope>
 		</dependency>
-
+ 		-->
+ 		
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
