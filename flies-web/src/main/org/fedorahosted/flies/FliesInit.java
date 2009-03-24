@@ -38,7 +38,7 @@ public class FliesInit {
 
 	private ObjectName hibernateMBeanName;
 
-	// @Observer("org.jboss.seam.postInitialization")
+	@Observer("org.jboss.seam.postInitialization")
 	public void initFlies() throws Exception {
 		log.info(">>>>>>>>>>>> Starting Flies...");
 
