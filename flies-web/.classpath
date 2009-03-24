@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-    <classpathentry kind="src" output="exploded-archives/flies.war/WEB-INF/classes" path="src/main"/>
-    <classpathentry kind="src" output="exploded-archives/flies.war/WEB-INF/dev" path="src/hot"/>
+    <classpathentry kind="src" output="build/flies.war/WEB-INF/classes" path="src/main"/>
+    <classpathentry kind="src" output="build/flies.war/WEB-INF/dev" path="src/hot"/>
     <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
     <classpathentry kind="lib" path="lib/antlr-runtime.jar"/>
     <classpathentry kind="lib" path="lib/antlr.jar"/>
@@ -48,5 +48,5 @@
     <classpathentry kind="lib" path="lib/richfaces-ui.jar"/>
     <classpathentry kind="lib" path="lib/xom.jar"/> 
     <classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.jboss.ide.eclipse.as.core.server.runtime.runtimeTarget/JBoss AS 4.2.3"/>
-    <classpathentry kind="output" path="exploded-archives/flies.war/WEB-INF/classes"/>
+    <classpathentry kind="output" path="build/flies.war/WEB-INF/classes"/>
 </classpath>
