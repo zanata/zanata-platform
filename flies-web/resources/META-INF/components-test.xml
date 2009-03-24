@@ -7,6 +7,7 @@
             xmlns:security="http://jboss.com/products/seam/security"
             xmlns:mail="http://jboss.com/products/seam/mail"
             xmlns:web="http://jboss.com/products/seam/web"
+            xmlns:transaction="http://jboss.com/products/seam/transaction"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation=
                 "http://jboss.com/products/seam/core http://jboss.com/products/seam/core-2.1.xsd
@@ -18,6 +19,31 @@
                  http://jboss.com/products/seam/web http://jboss.com/products/seam/web-2.1.xsd
                  http://jboss.com/products/seam/components http://jboss.com/products/seam/components-2.1.xsd">
 
+    <!-- ################## WIKI USER CONFIGURATION ################## -->
 
+    <!-- Base settings -->
+    <component name="fliesInit" class="org.fedorahosted.flies.FliesInit" precedence="30">
+        <property name="adminContact">+41 123 123 123, admin@my.address</property>
+        <property name="debug">true</property>
+        <property name="authenticatedSessionTimeoutMinutes">180</property>
+    </component>
+
+    <!-- Mailserver for notification messages -->
+    <mail:mail-session host="localhost" port="25"/>
+
+    <!-- Maximum size of file uploads -->
+    <!-- If you are using MySQL, don't forget their magic stuff:
+         http://dev.mysql.com/doc/refman/5.0/en/packet-too-large.html
+    -->
+    <web:multipart-filter create-temp-files="true" max-request-size="10000000" url-pattern="*.seam"/>
+
+    <!-- ############## END OF WIKI USER CONFIGURATION ############## -->
+
+
+    <!-- Running tests in Embeddable JBoss -->
+    <core:init debug="false"
+               jndi-pattern="#{ejbName}/local"/>
+
+    <transaction:ejb-transaction/>
 
 </components>

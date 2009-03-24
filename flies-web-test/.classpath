@@ -53,5 +53,5 @@
     <classpathentry kind="lib" path="/flies-web/lib/xom.jar"/> 
     <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
     <classpathentry combineaccessrules="false" kind="src" path="/flies-web"/>
-    <classpathentry kind="output" path="bin"/>
+    <classpathentry kind="output" path="build/testclasses"/>
 </classpath>

@@ -1,15 +1,13 @@
 <?xml version="1.0"?>
 
 <dataset>
-<!-- 
-     <Person id="1" 
+     <Person id="1"
+     	personId="mrbean" 
     	creationDate="[NULL]"
     	timestamp="[NULL]" 
     	email="[NULL]" 
     	imageUrl="[NULL]"
     	ircNick="[NULL]"
     	name="Mr Bean"
-    	personId="[NULL]"
     	webpageUrl="[NULL]"/>
- -->
 </dataset>
