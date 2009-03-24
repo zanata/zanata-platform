@@ -178,6 +178,9 @@
 		<copy tofile="${war.dir}/WEB-INF/classes/import.sql" file="${basedir}/resources/import-${profile}.sql"
 			overwrite="true" />
 
+		<copy tofile="${war.dir}/WEB-INF/classes/META-INF/components.xml" file="${basedir}/resources/META-INF/components-${profile}.xml"
+			overwrite="true" />
+
 		<copy todir="${war.dir}">
 			<fileset dir="${basedir}/view" />
 		</copy>

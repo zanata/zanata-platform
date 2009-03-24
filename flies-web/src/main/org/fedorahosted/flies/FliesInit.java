@@ -31,6 +31,7 @@ public class FliesInit {
 	private boolean debug;
 	private boolean hibernateStatistics = true;
 	private int authenticatedSessionTimeoutMinutes = 0;
+	private String version;
 
 	@In(required = false)
 	DBUnitImporter dbunitImporter;
@@ -84,6 +85,14 @@ public class FliesInit {
 		this.adminContact = adminContact;
 	}
 
+	public String getVersion() {
+		return version;
+	}
+	
+	public void setVersion(String version) {
+		this.version = version;
+	}
+	
 	public boolean isDebug() {
 		return debug;
 	}

@@ -18,6 +18,38 @@
                  http://jboss.com/products/seam/web http://jboss.com/products/seam/web-2.1.xsd
                  http://jboss.com/products/seam/components http://jboss.com/products/seam/components-2.1.xsd">
 
+    <!-- Conversation timeout: 20 minutes -->
+    <core:manager concurrent-request-timeout="4000"
+                  conversation-timeout="1200000"
+                  conversation-id-parameter="cid"/>
+
+    <!-- Persistence stuff -->
+
+    <persistence:managed-persistence-context
+            name="entityManager"
+            auto-create="true"
+            entity-manager-factory="#{fliesEntityManagerFactory}"
+            persistence-unit-jndi-name="java:/entityManagerFactories/flies">
+    </persistence:managed-persistence-context>
+
+    <persistence:filter name="accessLevelFilter">
+        <persistence:name>accessLevelFilter</persistence:name>
+        <persistence:parameters>
+            <key>currentAccessLevel</key>
+            <value>#{currentAccessLevel}</value>
+        </persistence:parameters>
+    </persistence:filter>
+
+    <component name="restrictedEntityManager" auto-create="true" scope="CONVERSATION"
+               class="org.fedorahosted.flies.core.dao.FliesManagedPersistenceContext">
+        <property name="entityManagerFactory">#{fliesEntityManagerFactory}</property>
+        <property name="persistenceUnitJndiName">java:/entityManagerFactories/flies</property>
+        <property name="filters"><value>#{accessLevelFilter}</value></property>
+    </component>
+
+
+    <!-- Login and security -->
+	
    <drools:rule-base name="securityRules">
       <drools:rule-files>
          <value>/security.drl</value>
@@ -40,7 +72,80 @@
       <action execute="#{redirect.returnToCapturedView}"/>
    </event>
 
-   <mail:mail-session host="localhost" port="2525" username="test" password="test" />
+    <!-- Caching -->
+<!-- 
+    <component name="ehCacheManager"
+               class="org.fedorahosted.flies.core.cache.EHCacheManager"
+               startup="true"
+               scope="APPLICATION"/>
+
+    <component name="pageFragmentCache"
+               class="org.fedorahosted.flies.core.cache.PageFragmentCache"
+               startup="true" startupDepends="ehCacheManager pluginRegistry"
+               scope="APPLICATION">
+        <property name="cacheRegions">
+            <value>wiki.MainMenu</value>
+            <value>wiki.Breadcrumb</value>
+            <value>wiki.Comment</value>
+            <value>wiki.Signature</value>
+            <value>wiki.TagList</value>
+        </property>
+    </component>
+ -->
+
+    <!-- TODO: Disabled, see http://jira.jboss.com/jira/browse/JBSEAM-3070
+    <web:context-filter regex-url-pattern="/(service|servlets)/.+"/>
+    -->
+    <web:redirect-filter disabled="true"/> <!-- Messes up into-conversation-redirect and is not needed -->
+
+<!-- 
+    <component name="fliesUrlRewriteFilter" class="org.fedorahosted.flies.core.ui.WikiUrlRewriteFilter" precedence="30">
+        <property name="initParameters">
+            <key>logLevel</key><value>WARN</value>
+            <key>statusEnabled</key><value>false</value>
+        </property>
+    </component>
+ -->
+
+<!--  
+    <component name="themePreferenceValueTemplate"
+               class="org.fedorahosted.flies.core.preferences.template.ThemeTemplate"
+               scope="CONVERSATION">
+        <property name="templateValues">
+            <value>default</value>
+            <value>jbossdotorg</value>
+        </property>
+    </component>
+-->
+
+
+    <!-- Some convenience value factories -->
+
+<!-- 
+    <factory name="contextPath" scope="CONVERSATION"  auto-create="true"
+             value="#{facesContext.externalContext.request.contextPath}"/>
+
+    <factory name="themePathGetRequest" scope="CONVERSATION"  auto-create="true"
+             value="#{servletContexts.request.contextPath}/themes/#{currentTheme}"/>
+
+    <factory name="themePath" scope="CONVERSATION" auto-create="true"
+             value="#{facesContext.externalContext.request.contextPath}/themes/#{currentTheme}"/>
+
+    <factory name="imagePath" scope="CONVERSATION" auto-create="true"
+             value="/themes/#{currentTheme}/img"/>
+
+    <factory name="currentTheme" scope="CONVERSATION" auto-create="true"
+             value="#{preferences.get('Wiki').themeName}"/>
+
+    <factory name="skin" scope="SESSION" value="d"/>
+
+    <factory name="sessionTimeoutSeconds" scope="EVENT"
+             value="#{facesContext.externalContext.getSession(true).getMaxInactiveInterval()}"/>
+
+    <factory name="currentPreferencesUser" scope="EVENT"
+             value="#{currentUser}"/>
+
+-->
 
    <!-- For use with jBPM pageflow or process management -->
    <!--
@@ -49,12 +154,5 @@
       <bpm:pageflow-definitions></bpm:pageflow-definitions>
    </bpm:jbpm>
    -->
-
-    <persistence:managed-persistence-context
-            name="entityManager"
-            auto-create="true"
-            persistence-unit-jndi-name="java:/entityManagerFactories/flies">
-    </persistence:managed-persistence-context>
-
 
 </components>

@@ -10,19 +10,76 @@
       <jta-data-source>java:/fliesDatasource</jta-data-source>
       <properties>
          <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect"/>
-         <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
-         <property name="hibernate.show_sql" value="true"/>
-         <property name="hibernate.format_sql" value="true"/>
+         <!-- 
+         <property name="hibernate.dialect" value="org.jboss.seam.wiki.util.WikiMySQL5HibernateDialect"/>
+          -->
+          
          <property name="hibernate.connection.useUnicode" value="true" />
          <property name="hibernate.connection.characterEncoding" value="UTF-8"/>         
          
          <!-- Only relevant if Seam is loading the persistence unit (Java SE bootstrap) -->
-         <property name="hibernate.transaction.manager_lookup_class" value="@transactionManagerLookupClass@"/>
+         <property name="hibernate.transaction.manager_lookup_class"
+                   value="org.hibernate.transaction.JBossTransactionManagerLookup"/>
+
+         <!-- Automatic schema export and drop -->
+         <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+         <!--
+         -->
+
+         <!-- Logging -->
+         <property name="hibernate.show_sql" value="false"/>
+         <property name="hibernate.use_sql_comments" value="true"/>
+         <property name="hibernate.format_sql" value="false"/>
+
+         <!-- Search engine -->
+         <!-- 
+         <property name="hibernate.search.default.directory_provider"
+                   value="org.hibernate.search.store.FSDirectoryProvider"/>
+         <property name="hibernate.search.default.indexBase" value="fliesIndex"/>
+         <property name="hibernate.search.worker.batch_size" value="50"/>
+ 		 -->
+ 		 
+         <!-- Run the Hibernate bytecode instrumentation at deployment time, for lazy loading of @ToOne and byte[] properties -->
+         <!-- TODO: That doesn't work for me, using the enhancer in build.xml manually -->
+         <property name="hibernate.ejb.use_class_enhancer" value="true"/>
+         <property name="hibernate.max_fetch_depth" value="1"/>
+         <property name="hibernate.jdbc.batch_size" value="0"/>
 
          <!-- Enable Hibernate statistics, needs SessionFactory in JNDI for JMX monitoring -->
          <property name="hibernate.generate_statistics" value="true"/>
          <property name="hibernate.session_factory_name" value="SessionFactories/fliesSF"/>
-         
+
+         <!-- Enable EHCache -->
+         <!-- 
+         <property name="hibernate.cache.provider_class" value="org.fedorahosted.flies.core.cache.EHCacheProvider"/>
+         <property name="hibernate.cache.use_query_cache" value="true"/>
+         <property name="hibernate.cache.use_second_level_cache" value="true"/>
+
+         <property name="hibernate.ejb.classcache.org.jboss.seam.wiki.core.preferences.WikiPreferenceValue"
+                   value="read-write, WikiPreference"/>
+
+         <property name="hibernate.ejb.classcache.org.jboss.seam.wiki.core.model.LinkProtocol"
+                   value="nonstrict-read-write, WikiLinkProtocol"/>
+
+         <property name="hibernate.ejb.classcache.org.jboss.seam.wiki.core.model.User"
+                   value="read-write, WikiUser"/>
+
+         <property name="hibernate.ejb.classcache.org.jboss.seam.wiki.core.model.Role"
+                   value="read-write, WikiRole"/>
+
+         <property name="hibernate.ejb.collectioncache.org.jboss.seam.wiki.core.model.User.roles"
+                   value="read-write, WikiUserRoleCollection"/>
+
+         <property name="hibernate.ejb.classcache.org.jboss.seam.wiki.core.model.Feed"
+                   value="read-write, WikiFeed"/>
+
+         <property name="hibernate.ejb.classcache.org.jboss.seam.wiki.core.model.FeedEntry"
+                   value="read-write, WikiFeedEntry"/>
+
+         <property name="hibernate.ejb.collectioncache.org.jboss.seam.wiki.core.model.Feed.feedEntries"
+                   value="read-write, WikiFeedEntryCollection"/>
+          -->
+      
       </properties>
    </persistence-unit>
     

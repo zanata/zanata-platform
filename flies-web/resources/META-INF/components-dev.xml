@@ -2,22 +2,71 @@
 <components xmlns="http://jboss.com/products/seam/components"
             xmlns:core="http://jboss.com/products/seam/core"
             xmlns:persistence="http://jboss.com/products/seam/persistence"
-            xmlns:drools="http://jboss.com/products/seam/drools"
-            xmlns:bpm="http://jboss.com/products/seam/bpm"
             xmlns:security="http://jboss.com/products/seam/security"
-            xmlns:mail="http://jboss.com/products/seam/mail"
+            xmlns:drools="http://jboss.com/products/seam/drools"
             xmlns:web="http://jboss.com/products/seam/web"
+            xmlns:mail="http://jboss.com/products/seam/mail"
+            xmlns:transaction="http://jboss.com/products/seam/transaction"
+            xmlns:resteasy="http://jboss.com/products/seam/resteasy"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation=
                 "http://jboss.com/products/seam/core http://jboss.com/products/seam/core-2.1.xsd
                  http://jboss.com/products/seam/persistence http://jboss.com/products/seam/persistence-2.1.xsd
-                 http://jboss.com/products/seam/drools http://jboss.com/products/seam/drools-2.1.xsd
-                 http://jboss.com/products/seam/bpm http://jboss.com/products/seam/bpm-2.1.xsd
                  http://jboss.com/products/seam/security http://jboss.com/products/seam/security-2.1.xsd
-                 http://jboss.com/products/seam/mail http://jboss.com/products/seam/mail-2.1.xsd
                  http://jboss.com/products/seam/web http://jboss.com/products/seam/web-2.1.xsd
+                 http://jboss.com/products/seam/drools http://jboss.com/products/seam/drools-2.1.xsd
+                 http://jboss.com/products/seam/mail http://jboss.com/products/seam/mail-2.1.xsd
+                 http://jboss.com/products/seam/transaction http://jboss.com/products/seam/transaction-2.1.xsd
+                 http://jboss.com/products/seam/resteasy http://jboss.com/products/seam/resteasy-2.1.xsd
                  http://jboss.com/products/seam/components http://jboss.com/products/seam/components-2.1.xsd">
 
 
+    <!-- ################## FLIES SITE CONFIGURATION ################## -->
+
+    <!-- Base settings -->
+    <component name="fliesInit" class="org.fedorahosted.flies.FliesInit" precedence="30">
+        <property name="adminContact">+41 123 123 123, admin@my.address</property>
+        <property name="debug">true</property>
+        <property name="version">0.1-SNAPSHOT</property>
+        <property name="authenticatedSessionTimeoutMinutes">180</property>
+    </component>
+
+    <!-- Mailserver for notification messages -->
+    <mail:mail-session host="localhost" port="25" ssl="false" tls="false"/>
+
+    <!-- Maximum size of file uploads -->
+    <!-- If you are using MySQL, don't forget their magic stuff:
+         http://dev.mysql.com/doc/refman/5.0/en/packet-too-large.html
+    -->
+    <web:multipart-filter create-temp-files="true" max-request-size="10000000" url-pattern="*.seam"/>
+
+    <!-- ############## END OF FLIES SITE CONFIGURATION ############## -->
+
+    <!-- Running in regular JBoss AS, Seam starts the persistence unit -->
+    <core:init debug="false"/>
+
+    <!-- Flies persistence unit, relies on cache manager backend for Hibernate 2nd level cache -->
+    <persistence:entity-manager-factory name="fliesEntityManagerFactory"
+                                        persistence-unit-name="flies" />
+                                        <!--  startupDepends="ehCacheManager"/>  -->
+
+    <!-- Some DBUnit datasets we use in unit testing - let's also use them in dev mode when the app is deployed -->
+<!-- 
+    <component name="dbunitImporter" class="org.fedorahosted.flies.util.DBUnitImporter" scope="APPLICATION" auto-create="true">
+        <property name="database">mysql</property>
+        <property name="datasourceJndiName">java:/fliesDatasource</property>
+        <property name="binaryDir">META-INF/testbinaries</property>
+        <property name="datasets">
+            <value>META-INF/testdata/FliesBaseData.dbunit.xml</value>
+            <value>META-INF/testdata/HelpDocuments.dbunit.xml</value>
+            <value>META-INF/testdata/DocumentFeedEntries.dbunit.xml</value>
+            <value>META-INF/testdata/UploadData.dbunit.xml</value>
+            <value>META-INF/testdata/BlogData.dbunit.xml</value>
+            <value>META-INF/testdata/ForumData.dbunit.xml</value>
+            <value>META-INF/testdata/KnowledgeBase.dbunit.xml</value>
+            <value>META-INF/testdata/FAQData.dbunit.xml</value>
+        </property>
+    </component>
+ -->
 
 </components>

@@ -14,10 +14,7 @@
             <property name="hibernate.transaction.manager_lookup_class"
                       value="org.hibernate.transaction.JBossTransactionManagerLookup"/>
 
-            <!-- Required binding for Seam-managed persistence context in Embeddable JBoss -->
-            <property name="jboss.entity.manager.factory.jndi.name" value="java:/entityManagerFactories/flies"/>
-
-            <!-- Automatic schema export and drop -->
+\            <!-- Automatic schema export and drop -->
             <property name="hibernate.hbm2ddl.auto" value="create"/>
 
             <!-- Logging -->
