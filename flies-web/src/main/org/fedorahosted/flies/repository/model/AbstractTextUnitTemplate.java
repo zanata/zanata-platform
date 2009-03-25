@@ -5,6 +5,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
+import org.hibernate.annotations.Type;
+import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 
@@ -39,6 +41,7 @@ public abstract class AbstractTextUnitTemplate extends AbstractTextUnit {
 
 	@NotEmpty
 	@Column(name = "resource_id")
+	@Length(max=255)
 	// @NaturalId
 	public String getResourceId() {
 		return resourceId;

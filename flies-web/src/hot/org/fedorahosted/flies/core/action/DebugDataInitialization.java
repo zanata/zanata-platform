@@ -24,11 +24,15 @@ import org.fedorahosted.tennera.jgettext.Catalog;
 import org.fedorahosted.tennera.jgettext.Message;
 import org.fedorahosted.tennera.jgettext.catalog.parse.ExtendedCatalogParser;
 import org.fedorahosted.tennera.jgettext.catalog.parse.ParseException;
+import org.hibernate.validator.ClassValidator;
+import org.hibernate.validator.InvalidValue;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.log.Log;
+import org.jboss.serial.util.HashStringUtil;
 
 import com.ibm.icu.util.ULocale;
 
@@ -44,7 +48,7 @@ public class DebugDataInitialization {
 	@Logger
 	Log log;
 
-	// @Observer("org.jboss.seam.postInitialization")
+	@Observer("Flies.startup")
 	@Transactional
 	public void initializeDebugData() {
 		log.info("*************************** start observing!");
@@ -165,7 +169,12 @@ public class DebugDataInitialization {
 						if (!message.isHeader()) {
 							// create Template...
 							TextUnit tu = new TextUnit();
-							tu.setResourceId(message.getMsgid());
+							if(message.getMsgid() == null){
+								log.debug("skipping entry with empty msgid \n{0}", message);
+								return;
+							}
+							String rId = String.valueOf(HashStringUtil.hashName(message.getMsgid()));
+							tu.setResourceId(rId);
 							tu.setDocument(template);
 							tu.setContent(message.getMsgid());
 							tu.setDocumentRevision(template.getRevision());
@@ -186,7 +195,15 @@ public class DebugDataInitialization {
 								target.setStatus(status);
 								target.setTemplate(tu);
 								target.setContent(message.getMsgstr());
-								entityManager.persist(target);
+									
+								try{
+									validate(target);
+									entityManager.persist(target);
+								}
+								catch(MyValidationException e)
+								{
+									log.info("got exception. skipping....");
+								}
 							}
 						}
 					}
@@ -206,6 +223,20 @@ public class DebugDataInitialization {
 
 		entityManager.flush();
 		log.info("*************************** end observing!");
+	}
+
+	private void validate(TextUnitTarget instance){
+		ClassValidator<TextUnitTarget> v = new ClassValidator(TextUnitTarget.class);
+		InvalidValue[] iv = v.getInvalidValues(instance);
+		for (InvalidValue value : iv) {
+			log.info("Invalid value {0}: {1}", value.getPropertyName(), value.getMessage());
+		}
+		if(iv.length >0){
+			throw new MyValidationException();
+		}
+	}
+	
+	private static class MyValidationException extends RuntimeException{
 	}
 
 }

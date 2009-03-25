@@ -67,7 +67,7 @@ public abstract class AbstractTextUnit implements Serializable {
 		this.content = content;
 	}
 
-	@NotEmpty
+	//@NotEmpty
 	@Type(type = "text")
 	public String getContent() {
 		return content;
