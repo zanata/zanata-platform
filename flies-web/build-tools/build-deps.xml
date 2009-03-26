@@ -77,7 +77,7 @@
 		<artifact:localRepository id="local.repository"
 			path="${maven.repo.local}" />
 
-		<artifact:pom file="${webapp.pom}" id="maven.project" />
+		<artifact:pom file="${webapp.pom}" id="maven.project" settingsfile="${build.dir}/maven-settings.xml"/>
 
 		<artifact:dependencies filesetId="dependency.fileset"
 			pathId="dependency.classpath" versionsId="dependency.versions"
@@ -108,7 +108,7 @@
 		<artifact:localRepository id="local.repository"
 			path="${maven.repo.local}" />
 
-		<artifact:pom file="${webapp.pom}" id="maven.project" />
+		<artifact:pom file="${webapp.pom}" id="maven.project" settingsfile="${build.dir}/maven-settings.xml"/>
 
 		<artifact:dependencies sourcesfilesetId="dependencySources.fileset"
 			pathId="dependency.classpath" versionsId="dependency.versions"
@@ -139,7 +139,7 @@
 		<artifact:localRepository id="local.repository"
 			path="${maven.repo.local}" />
 
-		<artifact:pom file="${jbossas.pom}" id="maven.jbossas.project" />
+		<artifact:pom file="${jbossas.pom}" id="maven.jbossas.project" settingsfile="${build.dir}/maven-settings.xml"/>
 
 		<artifact:dependencies filesetId="dependency.jbossas.fileset"
 			pathId="dependency.jbossas.classpath" versionsId="dependency.jbossas.versions"
