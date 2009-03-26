@@ -43,7 +43,7 @@
     <!-- ############## END OF FLIES SITE CONFIGURATION ############## -->
 
     <!-- Running in regular JBoss AS, Seam starts the persistence unit -->
-    <core:init debug="false"/>
+    <core:init debug="true"/>
 
     <!-- Flies persistence unit, relies on cache manager backend for Hibernate 2nd level cache -->
     <persistence:entity-manager-factory name="fliesEntityManagerFactory"
