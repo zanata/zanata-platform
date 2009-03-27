@@ -29,6 +29,7 @@ public class AntClasspathTask extends Task{
 	private List<FileSet> filesets = new ArrayList<FileSet>();
 	private List<PathVariable> variables = new ArrayList<PathVariable>();
 	
+	private File baseDir;
 	
 	private Element rootElement;
 	private Document classpathDocument;
@@ -65,6 +66,14 @@ public class AntClasspathTask extends Task{
 	
 	public void setSourceDir(File sourceDir) {
 		this.sourceDir = sourceDir;
+	}
+	
+	public File getBaseDir() {
+		return baseDir;
+	}
+	
+	public void setBaseDir(File baseDir) {
+		this.baseDir = baseDir;
 	}
 	
 	public File getClassPathFile() {
@@ -245,10 +254,16 @@ public class AntClasspathTask extends Task{
 	private String resolveLibraryPath(File absFile){
 		String absFileStr = absFile.getAbsolutePath();
 		String absProjectPathStr = projectDir.getAbsolutePath();
-
+		String absBaseDirStr = null;
+		if(baseDir != null)
+			absBaseDirStr = baseDir.getAbsolutePath();
+		
 		if(absFileStr.startsWith(absProjectPathStr)){
 
 			return absFileStr.substring(absProjectPathStr.length()+1);
+		}
+		else if(absBaseDirStr != null && absFileStr.startsWith(absBaseDirStr)){
+			return absFileStr.substring(absBaseDirStr.length());
 		}
 		return absFileStr;
 	}

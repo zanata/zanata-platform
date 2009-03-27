@@ -2,7 +2,7 @@
 
     <property name="build.dir" value="build"/>
     <property name="lib.dir" value="lib"/>
-    <property name="build.version" value="0.1"/>
+    <property name="build.version" value="0.2"/>
     
     <property name="deps.filename" value="${ant.project.name}-${build.version}"/>
 
