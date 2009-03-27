@@ -485,7 +485,7 @@
 		</f:update-eclipse-classpath>
 
 		<f:update-eclipse-classpath xmlns:f="urn:fedorahosted:flies:ant:eclipse"
-			classPathFile="${test.project.dir}/.classpath">
+			classPathFile="${test.project.dir}/.classpath" baseDir="../">
 			<fileset dir="${test.lib.dir}">
 				<include name="*.jar" />
 			</fileset>
@@ -493,6 +493,7 @@
 				<include name="*.jar" />
 			</fileset>
 		</f:update-eclipse-classpath>
+		
 	</target>
 
 	<target name="app-update-deps" depends="download-deps" 

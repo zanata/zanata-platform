@@ -1,9 +1,10 @@
 <project name="eclipse-deps" xmlns:flies="urn:fedorahosted:flies:ant:eclipse"
 	basedir=".">
 
+	<property name="task.project.dir" value="../ant-eclipse-classpath" />
 	<property name="build.lib.dir" value="lib" />
 	<property name="artifact.name" value="flies-eclipse-task" />
-	<property name="artifact.version" value="0.1" />
+	<property name="artifact.version" value="0.2" />
 	<property name="artifact.filename" value="${artifact.name}-${artifact.version}.jar" />
 	<property name="artifact.file" value="${build.lib.dir}/${artifact.filename}" />
 	<property name="artifact.url"
@@ -16,7 +17,8 @@
 	<target name="-fetch-ant-task" depends="-check-task-initialized"
 		unless="-fetch-ant-task-done">
 		<mkdir dir="${build.lib.dir}" />
-		<get src="${artifact.url}" dest="${artifact.file}" usetimestamp="true" />
+		<ant antfile="${task.project.dir}/build.xml" target="package" inheritall="off"/>
+		<copy file="${task.project.dir}/${artifact.filename}" tofile="${artifact.file}"/>
 	</target>
 
 	<target name="-initialize-ant-task" depends="-fetch-ant-task">
