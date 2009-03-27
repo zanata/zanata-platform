@@ -11,12 +11,13 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
+
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.Email;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "personId"))
 public class Person extends AbstractFliesEntity implements Serializable {
 
 	private String name;
@@ -42,8 +43,8 @@ public class Person extends AbstractFliesEntity implements Serializable {
 		this.name = name;
 	}
 
-	@NotNull
-	@NotEmpty
+	
+	@NaturalId
 	public String getPersonId() {
 		return personId;
 	}

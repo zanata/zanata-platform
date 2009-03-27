@@ -10,6 +10,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 import org.fedorahosted.flies.core.model.FliesLocale;
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.NotNull;
 
 @MappedSuperclass
@@ -47,10 +48,9 @@ public class AbstractTextUnitTarget extends AbstractTextUnit {
 		this.locale = target.locale;
 	}
 
-	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "template_id")
-	// @NaturalId
+	@NaturalId
 	public TextUnit getTemplate() {
 		return template;
 	}
@@ -70,10 +70,9 @@ public class AbstractTextUnitTarget extends AbstractTextUnit {
 		this.document = document;
 	}
 
-	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "locale_id")
-	// @NaturalId
+	@NaturalId
 	public FliesLocale getLocale() {
 		return locale;
 	}

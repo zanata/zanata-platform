@@ -12,8 +12,6 @@ import javax.persistence.UniqueConstraint;
 import org.fedorahosted.flies.core.model.FliesLocale;
 
 @Entity
-@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "document_id",
-		"template_id", "locale_id", "document_revision" }) })
 public class TextUnitTarget extends AbstractTextUnitTarget {
 
 	private List<TextUnitTargetHistory> history;

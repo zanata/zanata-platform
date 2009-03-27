@@ -11,9 +11,9 @@ public class TextUnitTargetHistory extends AbstractTextUnitTarget {
 
 	public TextUnitTargetHistory() {
 	}
-
+	
 	public TextUnitTargetHistory(AbstractTextUnitTarget target) {
 		super(target);
 	}
-
+	
 }

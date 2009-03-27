@@ -10,8 +10,6 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "resource_id",
-		"document_id" }) })
 public class TextUnit extends AbstractTextUnitTemplate {
 
 	private List<TextUnitTarget> targets;

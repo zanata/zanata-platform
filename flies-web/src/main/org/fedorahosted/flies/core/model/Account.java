@@ -13,6 +13,7 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.JoinColumn;
 
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.NotNull;
 import org.jboss.seam.annotations.security.management.UserEnabled;
 import org.jboss.seam.annotations.security.management.UserFirstName;
@@ -22,8 +23,7 @@ import org.jboss.seam.annotations.security.management.UserRoles;
 import org.jboss.seam.security.management.PasswordHash;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "username",
-		"person_id" }))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"person_id"}))
 public class Account extends AbstractFliesEntity implements Serializable {
 
 	private String username;
@@ -45,7 +45,7 @@ public class Account extends AbstractFliesEntity implements Serializable {
 		this.person = person;
 	}
 
-	@NotNull
+	@NaturalId
 	@UserPrincipal
 	public String getUsername() {
 		return username;

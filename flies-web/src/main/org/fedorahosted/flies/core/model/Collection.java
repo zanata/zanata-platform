@@ -9,11 +9,11 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import org.fedorahosted.flies.validator.url.Slug;
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "slug"))
 public class Collection extends AbstractFliesEntity implements Serializable {
 
 	private String name;
@@ -32,9 +32,8 @@ public class Collection extends AbstractFliesEntity implements Serializable {
 		this.name = name;
 	}
 
-	// @NaturalId
+	@NaturalId
 	@Length(min = 2, max = 40)
-	@NotNull
 	@Slug
 	public String getSlug() {
 		return slug;
