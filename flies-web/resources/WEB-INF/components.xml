@@ -21,7 +21,7 @@
     <!-- Conversation timeout: 20 minutes -->
     <core:manager concurrent-request-timeout="4000"
                   conversation-timeout="1200000"
-                  conversation-id-parameter="cid"/>
+                  conversation-id-parameter="cid" parent-conversation-id-parameter="pid"/>
 
     <!-- Persistence stuff -->
 
