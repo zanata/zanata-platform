@@ -27,9 +27,9 @@
          -->
 
          <!-- Logging -->
-         <property name="hibernate.show_sql" value="false"/>
+         <property name="hibernate.show_sql" value="true"/>
          <property name="hibernate.use_sql_comments" value="true"/>
-         <property name="hibernate.format_sql" value="false"/>
+         <property name="hibernate.format_sql" value="true"/>
 
          <!-- Search engine -->
          <!-- 
