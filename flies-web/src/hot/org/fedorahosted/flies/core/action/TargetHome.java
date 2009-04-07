@@ -1,7 +1,9 @@
 package org.fedorahosted.flies.core.action;
 
 import java.util.List;
-import javax.persistence.EntityManager;
+
+import javax.persistence.EntityNotFoundException;
+
 import org.fedorahosted.flies.core.model.ProjectTarget;
 import org.fedorahosted.flies.core.model.ResourceCategory;
 import org.fedorahosted.flies.repository.model.Document;
@@ -9,69 +11,85 @@ import org.fedorahosted.flies.repository.model.AbstractTextUnitTarget.Status;
 import org.fedorahosted.flies.repository.util.TranslationStatistics;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.Factory;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.web.RequestParameter;
+import org.jboss.seam.framework.EntityHome;
 import org.jboss.seam.log.Log;
 
-@Name("projectTargetBrowser")
+@Name("targetHome")
 @Scope(ScopeType.CONVERSATION)
-public class ProjectTargetBrowser {
-
+public class TargetHome extends EntityHome<ProjectTarget> {
+	
 	@RequestParameter
 	private Long targetId;
-
-	@Out(required = false, scope = ScopeType.CONVERSATION)
-	private ProjectTarget selectedTarget;
-
-	@Out(required = false)
-	private List<ResourceCategory> selectedTargetCategories;
-
+	
 	@Logger
-	private Log log;
+	Log log;
+	
+	@Out(required = false)
+	private List<ResourceCategory> targetCategories;
 
-	@In
-	private EntityManager entityManager;
+	@Override
+	public Object getId() {
+		if(targetId != null)
+			return targetId;
+		return super.getId();
+	}
+	
+	@Override
+	@Begin
+	public void create() {
+		super.create();
+	}
+	
+	public String validateEntityFound() {
+		try {
+			this.getInstance();
+		} catch (EntityNotFoundException e) {
+			// TODO this exception will be caught earlier by Seam and a it will redirect to the error page.
+			return "invalid";
+		}
 
+		return this.isManaged() ? "valid" : "invalid";
+	}
+	
+	
 	@SuppressWarnings("unchecked")
-	@Factory("selectedTargetCategories")
+	@Factory("targetCategories")
 	public void getCategories() {
-		selectedTargetCategories = entityManager
+		log.debug("calling getCategories");
+		targetCategories = getEntityManager()
 				.createQuery(
 						"select distinct d.resourceCategory from Document d where d.projectTarget = :pt")
-				.setParameter("pt", selectedTarget).getResultList();
-	}
-
-	@Factory("selectedTarget")
-	public void getSelectedTarget() {
-		selectedTarget = entityManager.find(ProjectTarget.class, targetId);
+				.setParameter("pt", getInstance()).getResultList();
 	}
 
 	public TranslationStatistics getStatisticsForCategory(
 			ResourceCategory category) {
 
-		Session session = (Session) entityManager.getDelegate();
+		Session session = (Session) getEntityManager().getDelegate();
 		// ResourceCategory category = (ResourceCategory)
 		// session.load(ResourceCategory.class, 1l);
 
-		Long approved = (Long) entityManager
+		Long approved = (Long) getEntityManager()
 				.createQuery(
 						"select count(*) from TextUnitTarget tut where "
 								+ "tut.document.resourceCategory = :category and tut.document.projectTarget = :target"
 								+ " and tut.status = :status").setParameter(
 						"category", category).setParameter("status",
-						Status.Approved).setParameter("target", selectedTarget)
+						Status.Approved).setParameter("target", getInstance())
 				.getSingleResult();
-		Long total = (Long) entityManager
+		Long total = (Long) getEntityManager()
 				.createQuery(
 						"select count(*) from TextUnitTarget tut where "
 								+ "tut.document.resourceCategory = :category and tut.document.projectTarget = :target")
 				.setParameter("category", category).setParameter("target",
-						selectedTarget).getSingleResult();
+						getInstance()).getSingleResult();
 		int notApproved = (int) (total - approved);
 		int app = (int) (approved - 0);
 		TranslationStatistics stats = new TranslationStatistics(app,
@@ -83,17 +101,17 @@ public class ProjectTargetBrowser {
 	}
 
 	public TranslationStatistics getStatisticsForDocument(Document document) {
-		Session session = (Session) entityManager.getDelegate();
+		Session session = (Session) getEntityManager().getDelegate();
 		// ResourceCategory category = (ResourceCategory)
 		// session.load(ResourceCategory.class, 1l);
 
-		Long approved = (Long) entityManager.createQuery(
+		Long approved = (Long) getEntityManager().createQuery(
 				"select count(*) from TextUnitTarget tut where "
 						+ "tut.document = :document "
 						+ " and tut.status = :status").setParameter("document",
 				document).setParameter("status", Status.Approved)
 				.getSingleResult();
-		Long total = (Long) entityManager.createQuery(
+		Long total = (Long) getEntityManager().createQuery(
 				"select count(*) from TextUnitTarget tut where "
 						+ "tut.document = :document").setParameter("document",
 				document).getSingleResult();
@@ -109,13 +127,16 @@ public class ProjectTargetBrowser {
 
 	@SuppressWarnings("unchecked")
 	public List<Document> getDocumentsForCategory(ResourceCategory category) {
-		return entityManager
+		return getEntityManager()
 				.createQuery(
 						"select d from Document d "
 								+ "where "
 								+ "d.resourceCategory = :category and d.projectTarget = :target ")
 				.setParameter("category", category).setParameter("target",
-						selectedTarget).getResultList();
+						getInstance()).getResultList();
 	}
-
+	
+	
+	
+	
 }

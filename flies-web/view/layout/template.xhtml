@@ -43,7 +43,7 @@
   <ui:include src="menu.xhtml">
       <ui:param name="projectName" value="flies"/>
   </ui:include>
-  <div id="breadcrumbs"><a href="#">Projects</a> » <a href="#">My Project</a> » Blah</div>
+  <ui:include src="breadcrumbs.xhtml"/>
   <div class="colmask threecol">
     <div class="colmid">
       <div class="colleft">
@@ -52,6 +52,8 @@
               errorClass="errormsg" infoClass="infomsg" warnClass="warnmsg"
               rendered="#{showGlobalMessages != 'false'}"/>
           <ui:insert name="center_content"/>
+          
+  		  <a:log popup="false" rendered="#{fliesInit.debug}"/>          
         </div>
         <div class="col_left">
           <ui:insert name="left_content"/>

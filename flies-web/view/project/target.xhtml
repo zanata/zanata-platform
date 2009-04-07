@@ -12,17 +12,18 @@
 <ui:define name="center_content">
   <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
 
-  <h1>#{selectedTarget.project.name} : #{selectedTarget.name}</h1>
+  <h1>#{targetHome.instance.project.name} : #{targetHome.instance.name}</h1>
 
-  <s:formattedText id="project-long-description" value="#{selectedTarget.project.longDescription}"></s:formattedText>
-  <h:outputText value="#{selectedTarget.project.shortDescription}" rendered="#{empty selectedTarget.project.longDescription}"/>
-  <ui:repeat value="#{selectedTargetCategories}" var="category">
-    <h:form id="category_form">
+  <s:formattedText id="project-long-description" value="#{targetHome.instance.project.longDescription}"></s:formattedText>
+  <h:outputText value="#{targetHome.instance.project.shortDescription}" rendered="#{empty targetHome.instance.project.longDescription}"/>
+  <ui:repeat value="#{targetCategories}" var="category">
+    <h:form id="category_form_#{category.id}">
+      <s:conversationId/>
       <div class="resource-by-category-panel">
         <div class="header">
           <h2 class="cat-documentation">#{category.name}</h2>
           <div class="status-bar">
-            <ui:param name="status" value="#{projectTargetBrowser.getStatisticsForCategory(category)}" />
+            <ui:param name="status" value="#{targetHome.getStatisticsForCategory(category)}" />
             <flies:translation-status-bar
               translated="#{status.approved}" 
               fuzzy="0" 
@@ -32,7 +33,7 @@
         </div>
         <!-- 
         <s:div styleClass="summary" rendered="false">
-          #{selectedTarget.description}
+          #{targetHome.instance.description}
         </s:div>
          -->
         <div class="toolbar">
@@ -41,7 +42,7 @@
             <s:link view="/home.xhtml">Download Archive</s:link> &nbsp;|&nbsp; 
             <s:link view="/home.xhtml">More...</s:link>
           </div>
-          <ui:param name="catDocuments" value="#{projectTargetBrowser.getDocumentsForCategory(category)}" />
+          <ui:param name="catDocuments" value="#{targetHome.getDocumentsForCategory(category)}" />
           <div class="expand">
             #{catDocuments.size} File(s) 
              <rich:toggleControl for="eContent">
@@ -50,7 +51,7 @@
           </div>
           <div style="clear: both;"/>
         </div>
-      <rich:togglePanel id="eContent" switchType="client" stateOrder="closed,open" initialState="closed">
+      <rich:togglePanel id="eContent" switchType="server" stateOrder="closed,open" initialState="open">
        <f:facet name="closed">
         <!-- Invisible -->
        </f:facet>
@@ -80,7 +81,7 @@
               <f:facet name="header">
                 <h:outputText value="Status"/>
               </f:facet>
-              <ui:param name="tstatus" value="#{projectTargetBrowser.getStatisticsForDocument(document)}" />
+              <ui:param name="tstatus" value="#{targetHome.getStatisticsForDocument(document)}" />
               <flies:translation-status-bar
                 title="Total: #{tstatus.total}, Translated: #{tstatus.approved}, Fuzzy #{tstatus.fuzzyMatch}"
                 translated="#{tstatus.approved}" 
@@ -88,7 +89,7 @@
                 untranslated="#{tstatus.notApproved}"/>
             </rich:column>
             <f:facet name="footer">
-              <rich:datascroller id="ds" rendered="#{selectedTarget.documents.size > 50}"></rich:datascroller>
+              <rich:datascroller id="ds" rendered="#{targetHome.instance.documents.size > 50}"></rich:datascroller>
             </f:facet>
           </rich:dataTable>
        </f:facet>

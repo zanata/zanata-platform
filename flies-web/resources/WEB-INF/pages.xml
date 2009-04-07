@@ -6,10 +6,62 @@
        no-conversation-view-id="/home.xhtml"
        login-view-id="/login.xhtml">
 
+	<conversation name="TargetView"
+			parameter-name="targetId"
+			parameter-value="#{redirect.parameters.targetId != null ? redirect.parameters.targetId : (targetHome.instance.id != null ? targetHome.instance.id : '')}"
+			/>
+
+	<conversation name="ProjectView"
+			parameter-name="projectId"
+			parameter-value="#{redirect.parameters.projectId != null ? redirect.parameters.projectId : (projectHome.instance.id != null ? projectHome.instance.id : '')}" 
+			/>
+
     <page view-id="*">
         <navigation>
             <rule if-outcome="home">
                 <redirect view-id="/home.xhtml"/>
+            </rule>
+        </navigation>
+    </page>
+    
+    <page view-id="/project/project.xhtml" conversation="ProjectView">
+
+    	<description>#{projectHome.instance.name}</description>
+    	
+        <action execute="#{projectHome.validateEntityFound}"
+            if="#{view.viewId == '/project/project.xhtml' or
+                (view.viewId == '/project/edit.xhtml' and projectHome.projectId != null)}"/>
+                
+        <navigation from-action="#{projectHome.validateEntityFound}">
+            <rule if-outcome="invalid">
+                <redirect view-id="/project/home.xhtml" >
+                    <message severity="WARN">
+                        The project you requested does not exist.
+                    </message>
+                </redirect>
+            </rule>
+        </navigation>
+    	
+    </page>
+
+    <page view-id="/project/edit.xhtml" conversation="ProjectView">
+    </page>
+
+    <page view-id="/project/target.xhtml" conversation="TargetView">
+
+    	<description>#{targetHome.instance.name}</description>
+    	
+        <action execute="#{targetHome.validateEntityFound}"
+            if="#{view.viewId == '/project/target.xhtml' or
+                (view.viewId == '/project/edit.xhtml' and targetHome.targetId != null)}"/>
+                
+        <navigation from-action="#{targetHome.validateEntityFound}">
+            <rule if-outcome="invalid">
+                <redirect view-id="/project/home.xhtml" >
+                    <message severity="WARN">
+                        The project you requested does not exist.
+                    </message>
+                </redirect>
             </rule>
         </navigation>
     </page>
@@ -25,7 +77,7 @@
             <message severity="warn">Record not found</message>
         </redirect>
     </exception>
-    
+
     <exception class="javax.persistence.EntityExistsException">
         <redirect view-id="/error.xhtml">
             <message severity="warn">Duplicate record</message>

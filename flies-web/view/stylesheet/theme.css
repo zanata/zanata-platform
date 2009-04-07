@@ -216,7 +216,13 @@ td.action a {
 #breadcrumbs{
 	margin:5px 0 0 255px;
 	font-size: small;
-	color: grey;
+	color: #ddddef;
+}
+
+#breadcrumbs a{
+	text-decoration: none;
+	font-weight: bold;
+	color: #ddddef;
 }
 
 /* column container */

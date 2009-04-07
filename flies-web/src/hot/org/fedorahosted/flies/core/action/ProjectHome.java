@@ -1,52 +1,46 @@
 package org.fedorahosted.flies.core.action;
 
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Begin;
+import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.framework.EntityHome;
 
 import org.fedorahosted.flies.core.model.Project;
 
 @Name("projectHome")
+@Scope(ScopeType.CONVERSATION)
 public class ProjectHome extends EntityHome<Project> {
+
 	@RequestParameter
-	String slug;
-
-	private Long pid;
-
+	private Long projectId;
+	
 	@Override
 	public Object getId() {
-		if (slug == null) {
-			return super.getId();
-		} else if (pid == null) {
-			try {
-				// TODO calling a separate query to get the ID isn't very
-				// efficient.
-				pid = (Long) getEntityManager().createQuery(
-						"Select p.id from Project p where p.slug = :slug")
-						.setParameter("slug", slug).getSingleResult();
-			} catch (NoResultException nre) {
-				return super.getId();
-			}
-
-			getLog().info("found project with id {0}", pid);
-			return pid;
-		}
-
-		return pid;
+		if(projectId != null)
+			return projectId;
+		return super.getId();
 	}
-
-	@Override
-	protected Project loadInstance() {
-		return getEntityManager().find(getEntityClass(), getId());
-	}
-
+	
 	@Override
 	@Begin
 	public void create() {
 		super.create();
+	}
+	
+	public String validateEntityFound() {
+		try {
+			this.getInstance();
+		} catch (EntityNotFoundException e) {
+			// TODO this exception will be caught earlier by Seam and a it will redirect to the error page.
+			return "invalid";
+		}
+
+		return this.isManaged() ? "valid" : "invalid";
 	}
 
 }
