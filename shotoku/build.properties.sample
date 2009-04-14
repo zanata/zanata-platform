@@ -1,0 +1,9 @@
+# Path to where JBoss AS is to be copied.
+local.server.dir=
+
+# Path to where your portal extensions are to be deployed - you shouldn't
+# have to change that.
+local.deploy.dir=${local.server.dir}/server/default/deploy
+
+# Build directory home.
+shotoku.root.dir=

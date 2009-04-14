@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<project>
+    <pomVersion>3</pomVersion>
+    <id>shotoku-aop</id>
+    <name>Shotoku base aop</name>
+    <extends>../common.xml</extends>
+
+    <dependencies>
+        <dependency>
+            <groupId>shotoku</groupId>
+            <artifactId>shotoku-base</artifactId>
+            <jar>shotoku-base.jar</jar>
+        </dependency>
+
+        <dependency>
+            <groupId>jboss</groupId>
+            <artifactId>jboss-aop</artifactId>
+            <version>1.0</version>
+            <jar>jboss-aop.jar</jar>
+        </dependency>
+        
+        <dependency>
+            <groupId>shotoku-cache</groupId>
+            <artifactId>shotoku-cache</artifactId>
+            <jar>shotoku-cache.jar</jar>
+        </dependency>
+        
+        <dependency>
+            <groupId>jboss-cache</groupId>
+            <artifactId>jboss-cache</artifactId>
+            <jar>jboss-cache.jar</jar>
+        </dependency>
+        
+        <dependency>
+            <groupId>jgroups</groupId>
+            <artifactId>jgroups</artifactId>
+            <jar>jgroups.jar</jar>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <sourceDirectory>src/java</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>src/etc/</directory>
+                <include>**/*.xml</include>
+            </resource>
+        </resources>
+    </build>
+</project>

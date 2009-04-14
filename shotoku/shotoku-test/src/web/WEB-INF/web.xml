@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE web-app PUBLIC
+   "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+   "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+	<servlet>
+		<servlet-name>shotokuServlet</servlet-name>
+		<servlet-class>org.jboss.shotoku.test.servlet.ShotokuServlet</servlet-class>
+	</servlet>
+   
+	<servlet-mapping>
+		<servlet-name>shotokuServlet</servlet-name>
+		<url-pattern>/servlet/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>JUnitEETestServlet</servlet-name>
+		<description>JUnitEE test runner</description>
+		<servlet-class>org.junitee.servlet.JUnitEEThreadedServlet</servlet-class>
+		<init-param>
+			<param-name>searchResources</param-name>
+			<param-value>shotoku-test.jar</param-value>
+		</init-param>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>JUnitEETestServlet</servlet-name>
+		<url-pattern>/test/*</url-pattern>
+	</servlet-mapping>
+</web-app>

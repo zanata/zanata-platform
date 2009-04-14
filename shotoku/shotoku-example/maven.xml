@@ -1,0 +1,16 @@
+<project xmlns:j="jelly:core" xmlns:ant="jelly:ant" xmlns:u="jelly:util">
+	<goal name="build">
+	</goal>
+    
+	<goal name="deploy">
+	</goal>
+	
+	<goal name="clean">
+	</goal>
+
+    <goal name="all">
+        <attainGoal name="clean" />
+        <attainGoal name="build" />
+        <attainGoal name="deploy" />
+    </goal>
+</project>

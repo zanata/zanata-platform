@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<project name="Shotoku Cache Base">
+	<property name="jar.name" value="shotoku-cache.jar" />
+	
+    <!-- Classpath for building the application: includes all dependency jars -->
+    <path id="base.jars">
+        <fileset refid="jboss.lib.1" />
+        <fileset refid="jboss.lib.2" />
+    </path>
+	
+    <!-- BUILD TARGETS -->
+
+    <target name="init">
+
+    </target>
+
+    <target name="build">
+        <mkdir dir="${build}" />
+    	
+        <!-- Compiling the source -->
+        <javac srcdir="${src.java}" destdir="${build}" target="1.5" source="1.5">
+            <classpath refid="base.jars" />
+        </javac>
+    </target>
+
+    <target name="dist">
+        <mkdir dir="${dist}" />
+
+        <!-- Creating the jar with the classes -->
+        <jar destfile="${dist}/${jar.name}" basedir="${build}" />
+    </target>
+
+    <target name="clean">
+        <delete dir="${build}" />
+       	<delete dir="${dist}" />
+    </target>
+	
+	<target name="deploy">
+        <copy todir="${jboss.lib}">
+            <fileset dir="${dist}">
+                <include name="${jar.name}" />
+            </fileset>
+        </copy>
+	</target>
+	
+	<target name="undeploy">
+        <delete file="${jboss.lib}/${jar.name}" />
+	</target>
+	
+	<target name="docs">
+        <mkdir dir="${docs}" />
+        	
+		<javadoc destdir="${docs}">
+			<fileset dir="${src.java}" defaultexcludes="yes">
+				<include name="**/*"/>
+			</fileset>
+		</javadoc>
+	</target>
+	
+	<target name="release">
+		<copy todir="../${release}" file="${dist}/${jar.name}" />
+	</target>
+</project>

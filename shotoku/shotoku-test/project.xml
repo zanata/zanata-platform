@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<project>
+    <pomVersion>3</pomVersion>
+    <extend>../project.xml</extend>
+    <id>shotoku-test</id>
+    <name>Shotoku test</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>shotoku</groupId>
+            <artifactId>shotoku-base</artifactId>
+            <jar>shotoku-base.jar</jar>
+        </dependency>
+        <dependency>
+            <groupId>shotoku</groupId>
+            <artifactId>shotoku-aop</artifactId>
+            <jar>shotoku-aop.jar</jar>
+        </dependency>
+
+        <dependency>
+            <groupId>jboss</groupId>
+            <artifactId>javax.servlet</artifactId>
+            <version>1.0</version>
+            <jar>javax.servlet.jar</jar>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <!-- JCR Tests -->
+        <dependency>
+            <groupId>jsr170</groupId>
+            <artifactId>jcr</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+	    <dependency>
+            <groupId>jsr170</groupId>
+            <artifactId>jackrabbit</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <sourceDirectory>src/java</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>src/etc/</directory>
+                <include>**/*.xml</include>
+            </resource>
+        </resources>
+    </build>
+</project>

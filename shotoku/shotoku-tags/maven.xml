@@ -1,0 +1,27 @@
+<project xmlns:j="jelly:core" xmlns:ant="jelly:ant" xmlns:u="jelly:util">
+    <goal name="clean">
+        <attainGoal name="prj-clean" />
+    </goal>
+
+    <goal name="build">
+        <attainGoal name="java:compile" />
+        <attainGoal name="ejb" />
+        <attainGoal name="war" />
+    </goal>
+
+    <goal name="deploy">
+        <ant:copy
+                file="target/shotoku-tags.jar"
+                tofile="${local.deploy.dir}/shotoku-tags.ejb3"
+                overwrite="true" />
+        <ant:copy
+                file="target/shotoku-tags.war"
+                todir="${local.deploy.dir}" />
+    </goal>
+
+	<goal name="all">
+		<attainGoal name="clean" />
+		<attainGoal name="build" />
+		<attainGoal name="deploy" />
+	</goal>
+</project>

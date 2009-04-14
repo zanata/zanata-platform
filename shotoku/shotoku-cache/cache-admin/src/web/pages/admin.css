@@ -1,0 +1,95 @@
+.header {
+    font-weight: bold;
+    font-size: large;
+}
+
+.header_panel {
+    text-align: center;	
+    margin-bottom: 10px;
+	margin-top: 10px;
+}
+
+.header_messages {
+	font-size: x-small;
+	text-align: left;
+}
+
+.info_table {
+	width: 100%;
+}
+
+.info_table td {
+	width: 30%;
+	padding: 5px;
+	vertical-align: top;
+	font-size: small;
+}
+
+.cacheitem_table {
+	width: 100%;
+}
+
+.cacheitem_table table {
+	width: 100%;
+}
+
+.cacheitem_table table td {
+	padding: 5px;
+	width: 50%;
+}
+
+.info_table .left_text {
+	width: 70%;
+	text-align: right;	
+	font-weight: bold;
+}
+
+.info_table .right_text {
+	vertical-align: bottom;
+}
+
+.cacheitem_table td {
+	font-size: small;
+	vertical-align: top;
+}
+
+.cacheitem_table th {
+	font-size: small;
+	vertical-align: top;
+	text-align: left;
+}
+
+.cacheitem_table .left_text {
+	width: 20%;
+	text-align: right;	
+	font-weight: bold;
+}
+
+.cacheitem_table .right_text {
+	vertical-align: bottom;
+}
+
+.note_panel {
+	text-align: left;
+    margin-bottom: 10px;
+	margin-top: 10px;
+}
+
+.note_panel ul {
+	font-size: x-small;
+}
+
+.alert {
+	color: red;
+	font-weight: bold;
+}
+
+.alert_panel {
+	margin-top: 5px;
+}
+
+.plain_text {
+	font-weight: normal;
+	color: black;
+	font-size: x-small;
+}

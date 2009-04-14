@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# POST-COMMIT HOOK
+
+REPOS="$1"
+REV="$2"
+
+HOOK_PATH=/usr/svn/repo1/hooks
+export PATH=/usr/local/bin:/usr/bin
+
+$HOOK_PATH/shotoku-update.sh $REPOS $REV

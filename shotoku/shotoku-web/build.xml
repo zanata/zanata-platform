@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<project name="Shotoku Web" default="dist">
+	<property name="version" value="1.1" />
+	
+	<property name="jar.name" value="shotoku-web-${version}.jar" />
+	
+	<!-- Directories -->
+	<property name="src" value="src"/>
+	<property name="src.java" value="${src}/java"/>
+	<property name="lib" value="${basedir}/lib/" />
+	<property name="build" value="build"/>
+	<property name="dist" value="dist"/>
+
+	<fileset id="web.lib" dir="${lib}">
+			<include name="**/*.jar"/>
+	</fileset>
+	
+	<path id="base.jars">
+		<fileset refid="web.lib" />
+	</path>
+	
+	<target name="build" depends="clean">
+		<mkdir dir="${build}" />
+
+		<!-- Compiling the source -->
+		<javac srcdir="${src.java}" destdir="${build}" target="1.4" source="1.4">
+			<classpath refid="base.jars" />
+		</javac>
+	</target>
+
+	<target name="dist" depends="build">		
+		<mkdir dir="${dist}" />
+		<jar destfile="${dist}/${jar.name}" basedir="${build}" />
+	</target>
+
+	<target name="clean">
+		<delete dir="${build}" />
+		<delete dir="${dist}" />
+	</target>
+</project>

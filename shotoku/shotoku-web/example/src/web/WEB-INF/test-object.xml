@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployments>
+    <deployment>
+        <if-exists>overwrite</if-exists>
+        <parent-ref>default</parent-ref>
+        <page>
+            <page-name>test1</page-name>
+            <window>
+                <window-name>ResourcesFilterTestPortletWindow</window-name>
+                <instance-ref>ResourcesFilterTestPortletInstance</instance-ref>
+                <region>center</region>
+                <height>1</height>
+            </window>
+        </page>
+    </deployment>
+</deployments>

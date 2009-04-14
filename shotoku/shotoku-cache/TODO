@@ -1,0 +1,7 @@
+* investigate multiple ProjectConfigurationWatcher-s
+* refreshing of keys after a key reset
+* refreshing cachitem_info after alerts reset
+* check form-sending for cache item configuration
+* split RenewableCacheService into independent parts
+* generalize UpdateThreadData
+* cleanup with Tools

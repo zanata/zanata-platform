@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<project name="Shotoku Cache Service">
+	<property name="sar.name" value="shotoku-cache-service.sar" />
+	
+	<!-- Classpath for building the application: includes all dependency jars -->
+	<path id="base.jars">
+		<fileset refid="jboss.lib.1" />
+		<fileset refid="jboss.lib.2" />
+	</path>
+
+	<!-- BUILD TARGETS -->
+
+	<target name="init">
+
+	</target>
+
+	<target name="build">
+		<mkdir dir="${build}" />
+		
+		<!-- Compiling the source -->
+		<javac srcdir="${src.java}" destdir="${build}" target="1.5" source="1.5">
+			<classpath refid="base.jars" />
+			<!-- Dependency on the blog-common classes -->
+			<classpath path="../cache-base/${build}" />
+		</javac>
+	</target>
+	
+	<target name="dist">
+		<mkdir dir="${dist}" />
+
+		<!-- Copying the meta information -->
+		<mkdir dir="${dist}/${sar.name}" />
+		<copy todir="${dist}/${sar.name}">
+			<fileset dir="${src.meta}">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+
+		<!-- Creating the jar with the classes -->
+		<mkdir dir="${dist}/${sar.name}/lib" />
+		<jar destfile="${dist}/${sar.name}/lib/shotoku-cache-service.jar" basedir="${build}" />
+	</target>
+
+	<target name="clean">
+		<delete dir="${build}" />
+       	<delete dir="${dist}" />
+	</target>
+	
+	<target name="deploy">
+        <copy todir="${jboss.deploy}">
+            <fileset dir="${dist}">
+                <include name="${sar.name}/**" />
+            </fileset>
+        </copy>
+	</target>
+	
+	<target name="undeploy">
+        <delete dir="${jboss.deploy}/${sar.name}" />
+	</target>
+	
+	<target name="docs">
+	
+	</target>
+	
+	<target name="release">
+		<copy todir="../${release}">
+            <fileset dir="${dist}">
+                <include name="${sar.name}/**" />
+            </fileset>
+		</copy>
+	</target>
+</project>

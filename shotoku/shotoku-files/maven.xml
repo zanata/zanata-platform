@@ -1,0 +1,17 @@
+<project xmlns:j="jelly:core" xmlns:ant="jelly:ant" xmlns:u="jelly:util">
+    <goal name="clean">
+        <attainGoal name="prj-clean" />
+    </goal>
+
+    <goal name="build">
+        <attainGoal name="java:compile" />
+        <attainGoal name="ejb" />
+    </goal>
+
+    <goal name="deploy">
+        <ant:copy
+                file="target/shotoku-files.jar"
+                tofile="${local.deploy.dir}/shotoku-files.ejb3"
+                overwrite="true" />
+    </goal>
+</project>

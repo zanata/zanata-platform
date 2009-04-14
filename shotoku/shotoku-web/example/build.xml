@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<project name="Shotoku Web example" default="dist">
+	<property name="war.name" value="shotoku-web-example.war" />
+	
+	<!-- Directories -->
+	<property name="src" value="src"/>
+	<property name="src.java" value="${src}/java"/>
+	<property name="src.web" value="${src}/web"/>
+	<property name="lib" value="${basedir}/../lib/" />
+	<property name="build" value="build"/>
+	<property name="dist" value="dist"/>
+
+	<fileset id="web.lib" dir="${lib}">
+			<include name="**/*.jar"/>
+	</fileset>
+	
+	<path id="base.jars">
+		<fileset refid="web.lib" />
+	</path>
+	
+	<target name="dist" depends="clean">
+		<mkdir dir="${build}" />
+		<mkdir dir="${build}/WEB-INF" />
+		<mkdir dir="${build}/WEB-INF/classes" />
+
+		<!-- Compiling the source -->
+		<javac srcdir="${src.java}" destdir="${build}/WEB-INF/classes" target="1.4" source="1.4">
+			<classpath refid="base.jars" />
+		</javac>
+		
+		<copy todir="${build}">
+			<fileset dir="${src.web}">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+		
+		<!-- Compiling and copying the filter -->
+		<mkdir dir="${build}/WEB-INF/lib" />
+		<ant antfile="../build.xml" target="dist" inheritall="false" inheritrefs="false" />
+		<copy file="../dist/shotoku-web-1.1.jar" todir="${build}/WEB-INF/lib" />
+		
+		<mkdir dir="${dist}" />
+		<jar destfile="${dist}/${war.name}" basedir="${build}" />
+	</target>
+
+	<target name="clean">
+		<delete dir="${build}" />
+		<delete dir="${dist}" />
+	</target>
+</project>

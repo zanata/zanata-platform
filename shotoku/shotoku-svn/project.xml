@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<project>
+    <pomVersion>3</pomVersion>
+    <extend>../project.xml</extend>
+    <id>shotoku-svn</id>
+    <name>Shotoku svn</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>tmate</groupId>
+            <artifactId>javasvn</artifactId>
+            <version>1.0</version>
+            <jar>javasvn.jar</jar>
+        </dependency>
+
+        <dependency>
+            <groupId>shotoku</groupId>
+            <artifactId>shotoku-base</artifactId>
+            <jar>shotoku-base.jar</jar>
+        </dependency>
+        
+        <dependency>
+            <groupId>shotoku-cache</groupId>
+            <artifactId>shotoku-cache</artifactId>
+            <jar>shotoku-cache.jar</jar>
+        </dependency>
+        
+        <dependency>
+            <groupId>jboss-cache</groupId>
+            <artifactId>jboss-cache</artifactId>
+            <jar>jboss-cache.jar</jar>
+        </dependency>
+        
+        <dependency>
+            <groupId>jgroups</groupId>
+            <artifactId>jgroups</artifactId>
+            <jar>jgroups.jar</jar>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <sourceDirectory>src/java</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>src/etc/</directory>
+                <include>**/*.xml</include>
+            </resource>
+        </resources>
+    </build>
+</project>

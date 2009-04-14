@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<project>
+    <pomVersion>3</pomVersion>
+    <extends>common.xml</extends>
+    <id>shotoku</id>
+    <name>Shotoku</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xmlParserAPIs</artifactId>
+            <version>2.6.2</version>
+        </dependency>
+        <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+            <version>2.7.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.9</version>
+        </dependency>
+
+        <!-- Commons dependencies -->
+
+        <dependency>
+            <groupId>commons-configuration</groupId>
+            <artifactId>commons-configuration</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.1</version>
+        </dependency>
+
+        <!-- JBoss EJB3 dependencies -->
+
+        <dependency>
+            <groupId>jboss</groupId>
+            <artifactId>jboss-ejb3</artifactId>
+            <version>1.0</version>
+            <jar>jboss-ejb3.jar</jar>
+        </dependency>
+        <dependency>
+            <groupId>jboss</groupId>
+            <artifactId>jboss-ejb3x</artifactId>
+            <version>1.0</version>
+            <jar>jboss-ejb3x.jar</jar>
+        </dependency>
+        <dependency>
+            <groupId>jboss</groupId>
+            <artifactId>jboss-annotations-ejb3</artifactId>
+            <version>1.0</version>
+            <jar>jboss-annotations-ejb3.jar</jar>
+        </dependency>
+        <dependency>
+            <groupId>jboss</groupId>
+            <artifactId>jboss-jmx</artifactId>
+            <version>1.0</version>
+            <jar>jboss-jmx.jar</jar>
+        </dependency>
+        <dependency>
+            <groupId>jboss</groupId>
+            <artifactId>jboss-j2ee</artifactId>
+            <version>1.0</version>
+            <jar>jboss-j2ee.jar</jar>
+        </dependency>
+        <dependency>
+            <groupId>jboss</groupId>
+            <artifactId>activation</artifactId>
+            <version>1.0</version>
+            <jar>activation.jar</jar>
+        </dependency>
+    </dependencies>
+</project>

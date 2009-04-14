@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<project>
+    <pomVersion>3</pomVersion>
+    <id>shotoku-maven-base</id>
+    <organization>
+        <name>Adam Warski</name>
+        <url>http://mamut.net.pl</url>
+    </organization>
+    <currentVersion>1.0</currentVersion>
+
+    <build>
+        <sourceDirectory>src/java</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>src/etc/</directory>
+                <include>**/*.xml</include>
+            </resource>
+        </resources>
+    </build>
+</project>
