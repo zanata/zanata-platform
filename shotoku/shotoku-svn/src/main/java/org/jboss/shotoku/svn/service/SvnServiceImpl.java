@@ -32,8 +32,8 @@ import org.apache.log4j.Logger;
 import org.jboss.annotation.ejb.Management;
 import org.jboss.annotation.ejb.Service;
 import org.jboss.annotation.ejb.Depends;
-import org.jboss.shotoku.cache.CacheItem;
-import org.jboss.shotoku.cache.CacheItemUser;
+//import org.jboss.shotoku.cache.CacheItem;
+//import org.jboss.shotoku.cache.CacheItemUser;
 import org.jboss.shotoku.svn.SvnService;
 import org.jboss.shotoku.svn.SvnTools;
 import org.jboss.shotoku.svn.SvnContentManager;
@@ -58,7 +58,7 @@ public class SvnServiceImpl implements SvnService, SvnServiceLocal {
 
     private boolean firstUpdate;
 
-    private CacheItemUser<Object, Object> svnCacheItem;
+//    private CacheItemUser<Object, Object> svnCacheItem;
     
     /*
      * Service lifecycle management.
@@ -76,10 +76,10 @@ public class SvnServiceImpl implements SvnService, SvnServiceLocal {
 
         repositories = new ConcurrentHashMap<String, SvnRepository>();
 
-        svnCacheItem = CacheItem.create(new SvnCacheItemDataSource(this));
-        svnCacheItem.get(new Object());
-        svnCacheItem.setInterval(ContentManager.getProperty(
-                SvnTools.PROPERTY_INTERVAL, SvnTools.DEFAULT_TIMER_INTERVAL));
+//        svnCacheItem = CacheItem.create(new SvnCacheItemDataSource(this));
+//        svnCacheItem.get(new Object());
+//        svnCacheItem.setInterval(ContentManager.getProperty(
+//                SvnTools.PROPERTY_INTERVAL, SvnTools.DEFAULT_TIMER_INTERVAL));
         setFirstUpdate(ContentManager.getProperty(
                 SvnTools.FIRST_UPDATE, 1) != 0);
 
