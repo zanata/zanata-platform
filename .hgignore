@@ -29,3 +29,11 @@ syntax: regexp
 ^ant-eclipse-classpath/lib/
 ^ant-eclipse-classpath/build/
 ^ant-eclipse-classpath/*.jar
+
+# shotoku
+^shotoku/shotoku-base/.classpath
+^shotoku/shotoku-base/.project
+^shotoku/shotoku-base/.settings/
+^shotoku/shotoku-svn/.classpath
+^shotoku/shotoku-svn/.project
+^shotoku/shotoku-svn/.settings/
