@@ -2,6 +2,7 @@ syntax: glob
 *~
 */target/*
 syntax: regexp
+\.jar$
 
 ^\.pc/
 ^.ant-targets-build.xml
