@@ -27,6 +27,7 @@ import java.util.Set;
 import org.jboss.shotoku.svn.SvnService;
 import org.jboss.shotoku.tools.Tools;
 import org.tmatesoft.svn.core.SVNException;
+import org.tmatesoft.svn.core.SVNPropertyValue;
 import org.tmatesoft.svn.core.io.ISVNEditor;
 
 /**
@@ -50,7 +51,7 @@ public class ModifyDirectoryOperation  extends ResourceOperation {
 		ISVNEditor editor = stack.getEditor();
 
 		for (String key : properties.keySet()) {
-			editor.changeDirProperty(key, properties.get(key));
+			editor.changeDirProperty(key, SVNPropertyValue.create(properties.get(key)));
 		}
 		
 		for (String key : deletedProperties) {

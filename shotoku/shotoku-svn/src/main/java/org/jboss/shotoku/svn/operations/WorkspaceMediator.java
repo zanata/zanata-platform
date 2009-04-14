@@ -31,6 +31,7 @@ import org.jboss.shotoku.tools.Tools;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNErrorMessage;
 import org.tmatesoft.svn.core.SVNErrorCode;
+import org.tmatesoft.svn.core.SVNPropertyValue;
 import org.tmatesoft.svn.core.io.ISVNWorkspaceMediator;
 
 /**
@@ -49,12 +50,12 @@ public class WorkspaceMediator implements ISVNWorkspaceMediator {
 		this.largePaths = largePaths;
 	}
 	
-	public String getWorkspaceProperty(String path, String name)
+	public SVNPropertyValue getWorkspaceProperty(String path, String name)
 	throws SVNException {
 		return null;
 	}
 	
-	public void setWorkspaceProperty(String path, String name, String value)
+	public void setWorkspaceProperty(String path, String name, SVNPropertyValue value)
 	throws SVNException {
 		
 	}
@@ -124,4 +125,5 @@ public class WorkspaceMediator implements ISVNWorkspaceMediator {
 			tmpInMemory.remove(id);
 		}
 	}
+
 }

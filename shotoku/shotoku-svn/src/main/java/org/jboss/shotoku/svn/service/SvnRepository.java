@@ -35,6 +35,7 @@ import org.jboss.shotoku.ContentManager;
 import org.jboss.shotoku.exceptions.ResourceDoesNotExist;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNURL;
+import org.tmatesoft.svn.core.internal.wc.DefaultSVNOptions;
 import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
 import org.tmatesoft.svn.core.wc.ISVNOptions;
@@ -99,7 +100,7 @@ public class SvnRepository {
                 ", passwd: "+password+
                 ", url: "+url+
                 ", localpath: "+localpath);
-        ISVNOptions options = SVNWCUtil.createDefaultOptions(true);
+        DefaultSVNOptions options = SVNWCUtil.createDefaultOptions(true);
         ourClientManager =
                 SVNClientManager.newInstance(options, username, password);
         try {

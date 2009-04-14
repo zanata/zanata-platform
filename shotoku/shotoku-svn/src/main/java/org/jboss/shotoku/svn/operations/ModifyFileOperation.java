@@ -29,6 +29,7 @@ import org.jboss.shotoku.svn.SvnService;
 import org.jboss.shotoku.svn.SvnContentManager;
 import org.jboss.shotoku.common.content.NodeContent;
 import org.tmatesoft.svn.core.SVNException;
+import org.tmatesoft.svn.core.SVNPropertyValue;
 import org.tmatesoft.svn.core.io.ISVNEditor;
 import org.tmatesoft.svn.core.io.diff.SVNDeltaGenerator;
 
@@ -65,7 +66,7 @@ public class ModifyFileOperation extends ResourceOperation {
         }
 
         for (String key : properties.keySet()) {
-            editor.changeFileProperty(path, key, properties.get(key));
+            editor.changeFileProperty(path, key, SVNPropertyValue.create(properties.get(key)));
         }
 
         for (String key : deletedProperties) {

@@ -33,10 +33,13 @@ import org.jboss.shotoku.svn.service.SvnServiceImpl;
 import org.jboss.shotoku.tools.Constants;
 import org.jboss.shotoku.tools.Pair;
 import org.tmatesoft.svn.core.ISVNLogEntryHandler;
+import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNDirEntry;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNLogEntry;
 import org.tmatesoft.svn.core.SVNNodeKind;
+import org.tmatesoft.svn.core.SVNProperties;
+import org.tmatesoft.svn.core.SVNPropertyValue;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.io.ISVNLocationEntryHandler;
 import org.tmatesoft.svn.core.io.SVNLocationEntry;
@@ -125,10 +128,8 @@ public class SvnTools {
                                      String name) {
         try {
             SVNPropertyData data = svnCm.getClientManager().getWCClient().
-                    doGetProperty(file, name, SVNRevision.WORKING,
-                            SVNRevision.WORKING, false);
-
-            return data == null ? null : data.getValue();
+            	doGetProperty(file, name, SVNRevision.WORKING, SVNRevision.WORKING);
+            return data == null ? null : SVNPropertyValue.getPropertyAsString(data.getValue());
         } catch (SVNException e) {
             throw new RepositoryException(e);
         }
@@ -183,7 +184,7 @@ public class SvnTools {
 
             // For this operation the path cannot begin with a / - removing it.
             svnCm.getRepository().getFile(path[0], revision,
-                    properties, os);
+            		SVNProperties.wrap(properties), os);
         } catch (SVNException e) {
             throw new RepositoryException(e);
         }
@@ -196,7 +197,7 @@ public class SvnTools {
         try {
             // For this operation the path cannot begin with a / - removing it.
             svnCm.getRepository().getDir(fullPath.substring(1), revision,
-                    properties, entries);
+                    SVNProperties.wrap(properties), entries);
         } catch (SVNException e) {
             throw new RepositoryException(e);
         }
@@ -273,13 +274,15 @@ public class SvnTools {
                                                        SvnContentManager svnCm) {
         final Map<String, String> ret = new HashMap<String, String>();
         try {
-            svnCm.getClientManager().getWCClient().doGetProperty(file,
-                    null, SVNRevision.WORKING, SVNRevision.WORKING, true,
+            svnCm.getClientManager().getWCClient().doGetProperty(file, 
+            		null, 
+            		SVNRevision.WORKING, 
+            		SVNRevision.WORKING, SVNDepth.INFINITY, 
                     new ISVNPropertyHandler() {
                         public void handleProperty(File f, SVNPropertyData data) {
                             String name = data.getName();
                             if (!filterProperty(name)) {
-                                ret.put(name, data.getValue());
+                                ret.put(name, SVNPropertyValue.getPropertyAsString(data.getValue()));
                             }
                         }
 
@@ -288,7 +291,7 @@ public class SvnTools {
                         public void handleProperty(long revision,
                                                    SVNPropertyData data) { }
 
-                    });
+                    },null);
         } catch (SVNException e) {
             throw new RepositoryException(e);
         }
