@@ -170,7 +170,7 @@
 		<artifact:localRepository id="local.repository"
 			path="${maven.repo.local}" />
 
-		<artifact:pom file="${test.pom}" id="maven.test.project" />
+		<artifact:pom file="${test.pom}" id="maven.test.project" settingsfile="${build.dir}/maven-settings.xml"/>
 
 		<artifact:dependencies filesetId="dependency.test.fileset"
 			pathId="dependency.test.classpath" versionsId="dependency.test.versions"
