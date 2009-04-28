@@ -43,7 +43,7 @@ rg.fedorahosted.flies:jbossas:jar:1.0-SNAPSHOT
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate</artifactId>
-			<version>3.2.6.GA</version>
+			<version>3.2.6.ga</version>
 			<exclusions>
 				<exclusion>
 					<groupId>javax.transaction</groupId>
