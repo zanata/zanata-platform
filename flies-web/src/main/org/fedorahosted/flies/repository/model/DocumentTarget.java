@@ -41,7 +41,7 @@ public class DocumentTarget implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "document_id")
-	@NaturalId
+	//@NaturalId
 	public Document getTemplate() {
 		return template;
 	}
@@ -53,7 +53,7 @@ public class DocumentTarget implements Serializable {
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "locale_id")
-	@NaturalId
+	//@NaturalId
 	public FliesLocale getLocale() {
 		return locale;
 	}

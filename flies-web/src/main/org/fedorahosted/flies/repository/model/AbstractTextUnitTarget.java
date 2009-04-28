@@ -50,7 +50,7 @@ public class AbstractTextUnitTarget extends AbstractTextUnit {
 
 	@ManyToOne
 	@JoinColumn(name = "template_id")
-	@NaturalId
+	//@NaturalId
 	public TextUnit getTemplate() {
 		return template;
 	}
@@ -72,7 +72,7 @@ public class AbstractTextUnitTarget extends AbstractTextUnit {
 
 	@ManyToOne
 	@JoinColumn(name = "locale_id")
-	@NaturalId
+	//@NaturalId
 	public FliesLocale getLocale() {
 		return locale;
 	}
