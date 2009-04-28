@@ -20,3 +20,9 @@ icu4j.jar
 commons-lang.jar
 jgettext.jar
 xom.jar
+commons-beanutils-core.jar
+commons-configuration.jar
+shotoku-base.jar
+shotoku-svn.jar
+svnkit.jar
+

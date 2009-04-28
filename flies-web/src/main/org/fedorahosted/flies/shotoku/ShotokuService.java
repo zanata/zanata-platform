@@ -1,55 +1,34 @@
-/*
- * JBoss, Home of Professional Open Source
- * Copyright 2005, JBoss Inc., and individual contributors as indicated
- * by the @authors tag. See the copyright.txt in the distribution for a
- * full listing of individual contributors.
- *
- * This is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of
- * the License, or (at your option) any later version.
- *
- * This software is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this software; if not, write to the Free
- * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- */
-package org.jboss.shotoku.svn.service;
+package org.fedorahosted.flies.shotoku;
 
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.apache.commons.configuration.Configuration;
-import org.apache.log4j.Logger;
-//import org.jboss.shotoku.cache.CacheItem;
-//import org.jboss.shotoku.cache.CacheItemUser;
-import org.jboss.shotoku.svn.SvnService;
-import org.jboss.shotoku.svn.SvnTools;
-import org.jboss.shotoku.svn.SvnContentManager;
-import org.jboss.shotoku.svn.service.delayed.DelayedOperation;
-import org.jboss.shotoku.tools.Constants;
+import org.apache.commons.configuration.MapConfiguration;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Logger;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Observer;
+import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.log.Log;
 import org.jboss.shotoku.ContentManager;
+import org.jboss.shotoku.svn.SvnContentManager;
+import org.jboss.shotoku.svn.SvnTools;
+import org.jboss.shotoku.svn.service.SvnRepository;
+import org.jboss.shotoku.svn.service.delayed.DelayedOperation;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
 import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
 
-/**
- * @author Adam Warski (adamw@aster.pl)
- * @author Damon Sicore (damon@sicore.com)
- */
-//@Service(objectName=SvnTools.SVN_SERVICE_NAME)
-//@Local(SvnServiceLocal.class)
-//@Management(SvnService.class)
-//@Depends(Constants.SHOTOKU_SERVICE_NAME)
-public class SvnServiceImpl implements SvnService, SvnServiceLocal {
-    private static final Logger log = Logger.getLogger(SvnService.class);
+@Scope(ScopeType.APPLICATION)
+@Name("shotokuService")
+public class ShotokuService {
 
-    private ConcurrentMap<String, SvnRepository> repositories;
+	@Logger
+	Log log;
+	
+	private ConcurrentMap<String, SvnRepository> repositories;
 
     private boolean firstUpdate;
 
@@ -59,7 +38,10 @@ public class SvnServiceImpl implements SvnService, SvnServiceLocal {
      * Service lifecycle management.
      */
 
+    @Observer("Flies.startup")
     public void create() throws Exception {
+    	
+    	ContentManager.setup();
         // Set up connection protocols support:
         // for DAV (over http and https)
         DAVRepositoryFactory.setup();
@@ -79,17 +61,18 @@ public class SvnServiceImpl implements SvnService, SvnServiceLocal {
                 SvnTools.FIRST_UPDATE, 1) != 0);
 
         ContentManager.initializeContentManager(SvnContentManager.class.getName());
-    }
-
-    public void start() throws Exception {
-        log.info("Subversion Service started.");
-    }
-    
-    public void stop() {
-    	
-    }
-
-    public void destroy() {
+        
+        
+        log.info(getServiceInfo());
+        HashMap<String, String> repoConf = new HashMap<String, String>();
+        repoConf.put(SvnTools.PROPERTY_URL, "http://svn.fedorahosted.org/svn/tennera/trunk/jgettext/src/main/antlr/");
+        repoConf.put(SvnTools.PROPERTY_USERNAME, "");
+        repoConf.put(SvnTools.PROPERTY_PASSWORD, "");
+        repoConf.put(SvnTools.PROPERTY_LOCALPATH, "/tmp/shotoku-tennera");
+        registerRepository("tennera", new MapConfiguration(repoConf));
+        log.info(getServiceInfo());
+        
+        
     }
 
     /*

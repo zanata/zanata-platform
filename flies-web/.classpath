@@ -8,8 +8,10 @@
     <classpathentry kind="lib" path="lib/asm-attrs.jar"/>
     <classpathentry kind="lib" path="lib/asm.jar"/>
     <classpathentry kind="lib" path="lib/cglib.jar" sourcepath="lib/src/cglib-sources.jar"/>
+    <classpathentry kind="lib" path="lib/commons-beanutils-core.jar"/>
     <classpathentry kind="lib" path="lib/commons-beanutils.jar" sourcepath="lib/src/commons-beanutils-sources.jar"/>
     <classpathentry kind="lib" path="lib/commons-collections.jar" sourcepath="lib/src/commons-collections-sources.jar"/>
+    <classpathentry kind="lib" path="lib/commons-configuration.jar" sourcepath="lib/src/commons-configuration-sources.jar"/>
     <classpathentry kind="lib" path="lib/commons-digester.jar" sourcepath="lib/src/commons-digester-sources.jar"/>
     <classpathentry kind="lib" path="lib/commons-lang.jar" sourcepath="lib/src/commons-lang-sources.jar"/>
     <classpathentry kind="lib" path="lib/commons-logging.jar" sourcepath="lib/src/commons-logging-sources.jar"/>
@@ -41,11 +43,15 @@
     <classpathentry kind="lib" path="lib/jsf-impl.jar"/>
     <classpathentry kind="lib" path="lib/jsr250-api.jar" sourcepath="lib/src/jsr250-api-sources.jar"/>
     <classpathentry kind="lib" path="lib/jta.jar"/>
+    <classpathentry kind="lib" path="lib/log4j.jar" sourcepath="lib/src/log4j-sources.jar"/>
     <classpathentry kind="lib" path="lib/lucene-core.jar" sourcepath="lib/src/lucene-core-sources.jar"/>
     <classpathentry kind="lib" path="lib/mvel14.jar"/>
     <classpathentry kind="lib" path="lib/richfaces-api.jar" sourcepath="lib/src/richfaces-api-sources.jar"/>
     <classpathentry kind="lib" path="lib/richfaces-impl.jar" sourcepath="lib/src/richfaces-impl-sources.jar"/>
     <classpathentry kind="lib" path="lib/richfaces-ui.jar" sourcepath="lib/src/richfaces-ui-sources.jar"/>
+    <classpathentry kind="lib" path="lib/shotoku-base.jar" sourcepath="lib/src/shotoku-base-sources.jar"/>
+    <classpathentry kind="lib" path="lib/shotoku-svn.jar" sourcepath="lib/src/shotoku-svn-sources.jar"/>
+    <classpathentry kind="lib" path="lib/svnkit.jar" sourcepath="lib/src/svnkit-sources.jar"/>
     <classpathentry kind="lib" path="lib/xom.jar"/> 
     <classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.jboss.ide.eclipse.as.core.server.runtime.runtimeTarget/JBoss AS 4.2.3"/>
     <classpathentry kind="output" path="build/flies.war/WEB-INF/classes"/>

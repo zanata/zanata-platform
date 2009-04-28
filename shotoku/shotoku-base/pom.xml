@@ -11,6 +11,7 @@
   </parent>
   
   <dependencies>
+<!-- 
       <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>servlet-api</artifactId>
@@ -39,7 +40,7 @@
             <groupId>jboss</groupId>
             <artifactId>jboss-annotations-ejb3</artifactId>
         </dependency>
-<!-- 
+
         <dependency>
             <groupId>jboss-blog</groupId>
             <artifactId>jboss-blog-common</artifactId>
@@ -66,18 +67,18 @@
         <artifactId>log4j</artifactId>
         <version>1.2.14</version>
       </dependency>
-              
+<!--               
         <dependency>
             <groupId>jgroups</groupId>
             <artifactId>jgroups</artifactId>
             <version>2.7.0.GA</version>
         </dependency>
-        
         <dependency>
             <groupId>jboss</groupId>
             <artifactId>jboss-jmx</artifactId>
             <version>4.2.3.GA</version>
         </dependency>
+ -->        
         
   </dependencies>
 </project>

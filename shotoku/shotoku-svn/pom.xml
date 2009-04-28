@@ -15,20 +15,20 @@
       <artifactId>svnkit</artifactId>
       <version>1.2.3.5521</version>
     </dependency>
-      <dependency>
-          <groupId>shotoku</groupId>
-          <artifactId>shotoku-base</artifactId>
-          <version>${project.version}</version>
-      </dependency>
+
+    <dependency>
+      <groupId>shotoku</groupId>
+      <artifactId>shotoku-base</artifactId>
+      <version>${project.version}</version>
+    </dependency>
       
-      
+      <!-- 
       <dependency>
           <groupId>jgroups</groupId>
           <artifactId>jgroups</artifactId>
           <version>2.7.0.GA</version>
       </dependency>
-        
-        
+       -->
         
   </dependencies>
 </project>

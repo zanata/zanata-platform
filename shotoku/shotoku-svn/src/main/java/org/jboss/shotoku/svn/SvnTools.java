@@ -25,8 +25,6 @@ import java.io.File;
 import java.io.OutputStream;
 import java.util.*;
 
-import org.jboss.mx.util.MBeanProxyExt;
-import org.jboss.mx.util.MBeanServerLocator;
 import org.jboss.shotoku.ContentManager;
 import org.jboss.shotoku.exceptions.RepositoryException;
 import org.jboss.shotoku.svn.service.SvnServiceImpl;
@@ -107,10 +105,13 @@ public class SvnTools {
                     instance.start();
                 } else {
                     // Application server mode - creating a proxy to a mbean.
+                	throw new RuntimeException("Jboss/Jee deps removed!");
+                	/*
                     instance = (SvnService) MBeanProxyExt.create(
                             SvnService.class,
                             SVN_SERVICE_NAME,
                             MBeanServerLocator.locate());
+                    */
                 }
             }
 

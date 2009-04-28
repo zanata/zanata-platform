@@ -12,8 +12,10 @@
     <classpathentry kind="lib" path="/flies-web/lib/asm-attrs.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/asm.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/cglib.jar" sourcepath="/flies-web/lib/src/cglib-sources.jar"/>
+    <classpathentry kind="lib" path="/flies-web/lib/commons-beanutils-core.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/commons-beanutils.jar" sourcepath="/flies-web/lib/src/commons-beanutils-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/commons-collections.jar" sourcepath="/flies-web/lib/src/commons-collections-sources.jar"/>
+    <classpathentry kind="lib" path="/flies-web/lib/commons-configuration.jar" sourcepath="/flies-web/lib/src/commons-configuration-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/commons-digester.jar" sourcepath="/flies-web/lib/src/commons-digester-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/commons-lang.jar" sourcepath="/flies-web/lib/src/commons-lang-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/commons-logging.jar" sourcepath="/flies-web/lib/src/commons-logging-sources.jar"/>
@@ -45,11 +47,15 @@
     <classpathentry kind="lib" path="/flies-web/lib/jsf-impl.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/jsr250-api.jar" sourcepath="/flies-web/lib/src/jsr250-api-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/jta.jar"/>
+    <classpathentry kind="lib" path="/flies-web/lib/log4j.jar" sourcepath="/flies-web/lib/src/log4j-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/lucene-core.jar" sourcepath="/flies-web/lib/src/lucene-core-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/mvel14.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/richfaces-api.jar" sourcepath="/flies-web/lib/src/richfaces-api-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/richfaces-impl.jar" sourcepath="/flies-web/lib/src/richfaces-impl-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/richfaces-ui.jar" sourcepath="/flies-web/lib/src/richfaces-ui-sources.jar"/>
+    <classpathentry kind="lib" path="/flies-web/lib/shotoku-base.jar" sourcepath="/flies-web/lib/src/shotoku-base-sources.jar"/>
+    <classpathentry kind="lib" path="/flies-web/lib/shotoku-svn.jar" sourcepath="/flies-web/lib/src/shotoku-svn-sources.jar"/>
+    <classpathentry kind="lib" path="/flies-web/lib/svnkit.jar" sourcepath="/flies-web/lib/src/svnkit-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/xom.jar"/> 
     <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
     <classpathentry combineaccessrules="false" kind="src" path="/flies-web"/>

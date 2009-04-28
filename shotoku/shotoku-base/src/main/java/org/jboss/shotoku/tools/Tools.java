@@ -35,8 +35,6 @@ import org.jboss.shotoku.ContentManager;
 import org.jboss.shotoku.service.ShotokuService;
 import org.jboss.shotoku.exceptions.RepositoryException;
 import org.jboss.shotoku.exceptions.NameFormatException;
-import org.jboss.mx.util.MBeanProxyExt;
-import org.jboss.mx.util.MBeanServerLocator;
 import org.w3c.dom.Node;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
@@ -62,11 +60,14 @@ public class Tools {
                                 "org.jboss.shotoku.service.ShotokuServiceImpl").newInstance();
                         instance.create();
                     } else {
+                    	throw new RuntimeException("removed jboss/jee dependencies!");
+                    	/*
                         // Application server mode - creating a proxy to an mbean.
                         instance = (ShotokuService) MBeanProxyExt.create(
                                 ShotokuService.class,
                                 Constants.SHOTOKU_SERVICE_NAME,
                                 MBeanServerLocator.locate());
+                        */
                     }
                 }
             }
