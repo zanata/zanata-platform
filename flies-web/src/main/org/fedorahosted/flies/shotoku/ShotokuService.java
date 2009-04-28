@@ -38,7 +38,7 @@ public class ShotokuService {
      * Service lifecycle management.
      */
 
-    @Observer("Flies.startup")
+    //@Observer("Flies.startup")
     public void create() throws Exception {
     	
     	ContentManager.setup();

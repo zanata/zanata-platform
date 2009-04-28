@@ -34,7 +34,7 @@ public class ShotokuUpdateService {
 		return 4;
 	}
 	
-    @Observer("Flies.startup")
+    //@Observer("Flies.startup")
 	public void start(){
 		log.info("starting update service...");
 		executorService = Executors.newCachedThreadPool();
