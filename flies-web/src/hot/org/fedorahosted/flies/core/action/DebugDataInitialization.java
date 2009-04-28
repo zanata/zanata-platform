@@ -126,6 +126,10 @@ public class DebugDataInitialization {
 
 		File basePath = new File(
 				"/home/asgeirf/projects/gitsvn/Deployment_Guide");
+		if(!basePath.exists()){
+			log.error("Couldnt find test dir '{0}', skipping...", basePath.getAbsolutePath());
+			return;
+		}
 		PublicanProjectAdapter adapter = new PublicanProjectAdapter(basePath);
 		log.info(adapter.getBrandName());
 
