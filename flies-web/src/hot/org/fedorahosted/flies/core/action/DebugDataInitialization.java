@@ -22,7 +22,9 @@ import org.fedorahosted.flies.repository.model.TextUnitTarget;
 import org.fedorahosted.flies.repository.model.AbstractTextUnitTarget.Status;
 import org.fedorahosted.tennera.jgettext.Catalog;
 import org.fedorahosted.tennera.jgettext.Message;
+import org.fedorahosted.tennera.jgettext.PoParser;
 import org.fedorahosted.tennera.jgettext.catalog.parse.ExtendedCatalogParser;
+import org.fedorahosted.tennera.jgettext.catalog.parse.MessageStreamParser;
 import org.fedorahosted.tennera.jgettext.catalog.parse.ParseException;
 import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
@@ -116,11 +118,11 @@ public class DebugDataInitialization {
 		series.setProject(project);
 		entityManager.persist(series);
 
-		ProjectTarget target = new ProjectTarget();
-		target.setName("5.3");
-		target.setProject(project);
-		target.setProjectSeries(series);
-		entityManager.persist(target);
+		ProjectTarget projectTarget = new ProjectTarget();
+		projectTarget.setName("5.3");
+		projectTarget.setProject(project);
+		projectTarget.setProjectSeries(series);
+		entityManager.persist(projectTarget);
 
 		File basePath = new File(
 				"/home/asgeirf/projects/gitsvn/Deployment_Guide");
@@ -131,12 +133,13 @@ public class DebugDataInitialization {
 		log.info("gu-IN resources \n{0}", StringUtils.join(guResources, "\n"));
 		log.info("template resources \n{0}", StringUtils.join(adapter
 				.getResources(), "\n"));
+		
 		for (String resource : adapter.getResources()) {
 			final Document template = new Document();
 			template.setRevision(1);
 			template.setName(resource);
 			template.setProject(project);
-			template.setProjectTarget(target);
+			template.setProjectTarget(projectTarget);
 			template.setResourceCategory(category);
 			template.setContentType("pot");
 			entityManager.persist(template);
@@ -161,58 +164,53 @@ public class DebugDataInitialization {
 
 			log.info("Importing {0} from {1}", resource, poFile);
 			try {
-				ExtendedCatalogParser parser = new ExtendedCatalogParser(poFile);
-				parser.catalog();
-				Catalog catalog = parser.getCatalog();
-				catalog.processMessages(new Catalog.MessageProcessor() {
-					public void processMessage(Message message) {
-						if (!message.isHeader()) {
-							// create Template...
-							TextUnit tu = new TextUnit();
-							if(message.getMsgid() == null){
-								log.debug("skipping entry with empty msgid \n{0}", message);
-								return;
-							}
-							String rId = String.valueOf(HashStringUtil.hashName(message.getMsgid()));
-							tu.setResourceId(rId);
-							tu.setDocument(template);
-							tu.setContent(message.getMsgid());
-							tu.setDocumentRevision(template.getRevision());
-							tu.setObsolete(message.isObsolete());
-							entityManager.persist(tu);
+				
+				MessageStreamParser parser = new MessageStreamParser(poFile);
+				while(parser.hasNext()){
+					Message message = parser.next();
+					if (!message.isHeader()) {
+						// create Template...
+						TextUnit tu = new TextUnit();
+						if(message.getMsgid() == null){
+							log.debug("skipping entry with empty msgid \n{0}", message);
+							return;
+						}
+						String rId = String.valueOf(HashStringUtil.hashName(message.getMsgid()));
+						tu.setResourceId(rId);
+						tu.setDocument(template);
+						tu.setContent(message.getMsgid());
+						tu.setDocumentRevision(template.getRevision());
+						tu.setObsolete(message.isObsolete());
+						entityManager.persist(tu);
 
-							if (foundTargetLangResource) {
-								TextUnitTarget target = new TextUnitTarget();
-								target.setLocale(locale);
-								target.setDocument(template);
-								target.setDocumentRevision(template
-										.getRevision());
-								Status status = message.isFuzzy() ? Status.ForReview
-										: Status.Approved;
-								if (message.getMsgstr().isEmpty()) {
-									status = Status.New;
-								}
-								target.setStatus(status);
-								target.setTemplate(tu);
-								target.setContent(message.getMsgstr());
-									
-								try{
-									validate(target);
-									entityManager.persist(target);
-								}
-								catch(MyValidationException e)
-								{
-									log.info("got exception. skipping....");
-								}
+						if (foundTargetLangResource) {
+							TextUnitTarget target = new TextUnitTarget();
+							target.setLocale(locale);
+							target.setDocument(template);
+							target.setDocumentRevision(template
+									.getRevision());
+							Status status = message.isFuzzy() ? Status.ForReview
+									: Status.Approved;
+							if (message.getMsgstr().isEmpty()) {
+								status = Status.New;
+							}
+							target.setStatus(status);
+							target.setTemplate(tu);
+							target.setContent(message.getMsgstr());
+								
+							try{
+								validate(target);
+								entityManager.persist(target);
+							}
+							catch(MyValidationException e)
+							{
+								log.info("got exception. skipping....");
 							}
 						}
 					}
-				});
+				}
+
 			} catch (IOException e) {
-				log.error(e);
-			} catch (RecognitionException e) {
-				log.error(e);
-			} catch (TokenStreamException e) {
 				log.error(e);
 			} catch (ParseException e) {
 				log.error("ParseException in file {1}: {0}", e.getMessage(),
