@@ -8,6 +8,7 @@ import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
 import org.fedorahosted.flies.util.DBUnitImporter;
 
+import javax.management.InstanceAlreadyExistsException;
 import javax.management.ObjectName;
 import javax.naming.*;
 import java.lang.management.ManagementFactory;
@@ -49,12 +50,20 @@ public class FliesInit {
 
 		if (hibernateStatistics) {
 			log.info("registering Hibernate statistics MBean");
-			hibernateMBeanName = new ObjectName(
-					"Hibernate:type=statistics,application=flies");
-			StatisticsService mBean = new StatisticsService();
-			mBean.setSessionFactoryJNDIName("SessionFactories/fliesSF");
-			ManagementFactory.getPlatformMBeanServer().registerMBean(mBean,
-					hibernateMBeanName);
+			try{
+				hibernateMBeanName = new ObjectName(
+						"Hibernate:type=statistics,application=flies");
+				StatisticsService mBean = new StatisticsService();
+				mBean.setSessionFactoryJNDIName("SessionFactories/fliesSF");
+				ManagementFactory.getPlatformMBeanServer().registerMBean(mBean,
+						hibernateMBeanName);
+			}
+			catch(InstanceAlreadyExistsException e){
+				log.info("Hibernate statistics MBean is already started");
+			}
+			catch(Exception e){
+				log.error("Hibernate statistics MBean failed to start", e);
+			}
 		}
 
 		Events.instance().raiseEvent("Flies.startup");
@@ -70,8 +79,13 @@ public class FliesInit {
 
 		if (hibernateStatistics) {
 			log.info("unregistering Hibernate statistics MBean");
+			try{
 			ManagementFactory.getPlatformMBeanServer().unregisterMBean(
 					hibernateMBeanName);
+			}
+			catch(Exception e){
+				log.error("Failed to unregister Hibernate statistics MBean", e);
+			}
 		}
 
 		log.info("Stopped Flies...");
