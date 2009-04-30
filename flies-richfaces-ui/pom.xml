@@ -8,12 +8,18 @@
   <artifactId>flies-richfaces-ui</artifactId>
   <name>Flies Richfaces JSF Components</name>
   <url>http://flies.fedorahosted.org/ui</url>
+
+	<properties>
+		<version.richfaces>3.3.1-SNAPSHOT</version.richfaces>
+	</properties>
+
+
   <build>
     <plugins>
       <plugin>
         <groupId>org.richfaces.cdk</groupId>
         <artifactId>maven-cdk-plugin</artifactId>
-        <version>3.2.2.GA</version>
+        <version>${version.richfaces}</version>
         <executions>
           <execution>
             <phase>generate-sources</phase>
@@ -51,7 +57,7 @@
     <dependency>
       <groupId>org.richfaces.framework</groupId>
       <artifactId>richfaces-impl</artifactId>
-      <version>3.2.2.SR1</version>
+      <version>${version.richfaces}</version>
     </dependency>
     
     <!-- These are from the original parent-pom -->
@@ -103,7 +109,7 @@
         <dependency>            
         <groupId>org.richfaces.ui</groupId>
         <artifactId>richfaces-ui</artifactId>
-        <version>3.2.2.SR1</version>
+        <version>${version.richfaces}</version>
     </dependency>
         
   </dependencies>
