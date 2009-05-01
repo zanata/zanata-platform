@@ -25,6 +25,8 @@ import java.util.Properties;
 @Scope(ScopeType.APPLICATION)
 public class FliesInit {
 
+	public static final String EVENT_Flies_Startup = "Flies.startup";
+	
 	@Logger
 	static Log log;
 
@@ -66,7 +68,7 @@ public class FliesInit {
 			}
 		}
 
-		Events.instance().raiseEvent("Flies.startup");
+		Events.instance().raiseEvent(EVENT_Flies_Startup);
 
 		log.info("Started Flies...");
 

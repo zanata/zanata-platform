@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.MapConfiguration;
+import org.fedorahosted.flies.FliesInit;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -38,7 +39,7 @@ public class ShotokuService {
      * Service lifecycle management.
      */
 
-    //@Observer("Flies.startup")
+    //@Observer(FliesInit.EVENT_Flies_Startup)
     public void create() throws Exception {
     	
     	ContentManager.setup();

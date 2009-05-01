@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
 import org.apache.commons.lang.StringUtils;
+import org.fedorahosted.flies.FliesInit;
 import org.fedorahosted.flies.core.model.FliesLocale;
 import org.fedorahosted.flies.core.model.Project;
 import org.fedorahosted.flies.core.model.ProjectSeries;
@@ -50,7 +51,7 @@ public class DebugDataInitialization {
 	@Logger
 	Log log;
 
-	@Observer("Flies.startup")
+	@Observer(FliesInit.EVENT_Flies_Startup)
 	@Transactional
 	public void initializeDebugData() {
 		log.info("*************************** start observing!");
