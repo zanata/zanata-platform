@@ -16,6 +16,12 @@
 			parameter-value="#{redirect.parameters.projectId != null ? redirect.parameters.projectId : (projectHome.instance.id != null ? projectHome.instance.id : '')}" 
 			/>
 
+	<conversation name="TranslationWorkspaceView"
+			parameter-name="wid"
+			parameter-value="#{redirect.parameters.wid != null ? redirect.parameters.wid : (translateAction.workspaceId != null ? translateAction.workspaceId : '')}" 
+			/>
+
+
     <page view-id="*">
         <navigation>
             <rule if-outcome="home">
@@ -47,6 +53,12 @@
     <page view-id="/project/edit.xhtml" conversation="ProjectView">
     </page>
 
+    <page view-id="/translate.xhtml" conversation="TranslationWorkspaceView">
+    	<description>#{translateAction.workspaceId}</description>
+    	<begin-conversation conversation="TranslationWorkspaceView" join="true" if="#{not translateAction.conversationActive}"/>
+    	<action execute="#{translateAction.initialize()}" if="#{not translateAction.conversationActive}" />
+	</page>
+    
     <page view-id="/project/target.xhtml" conversation="TargetView">
 
     	<description>#{targetHome.instance.name}</description>

@@ -81,4 +81,6 @@
  </item>
  <item NAME="#xproject#xhome.xhtml" PATH="/project/home.xhtml"
   SHAPE="344,1057,0,0" TYPE="page" model-entity="SeamPagesDiagramItem"/>
+ <item ID="#translate.xhtml" NAME="#xtranslate.xhtml"
+  PATH="/translate.xhtml" SHAPE="1304,953,0,0" TYPE="page" model-entity="SeamPagesDiagramItem"/>
 </diagram>
