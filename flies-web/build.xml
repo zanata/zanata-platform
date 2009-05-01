@@ -51,7 +51,7 @@
 	<property name="src.schema.dir" value="${schema.dir}/org/jboss/seam" />
 	<property name="schema.version" value="2.1" />
 
-	<property name="deps.version" value="1" />
+	<property name="deps.version" value="2" />
 	<property name="deps.filename" value="build-tools/lib/flies-deps-${deps.version}" />
 
 	<fileset id="lib" dir="${lib.dir}">
@@ -122,7 +122,20 @@
 		<!-- non-Maven dependencies -->
 		<get src="http://www.cafeconleche.org/XOM/xom-1.2.1.jar" dest="${lib.dir}/xom.jar"
 			verbose="true" usetimestamp="true" />
+		
+		<!-- Google collections -->
+		
+		<property name="google-collect.version" value="1.0-rc1"/>
+		<property name="google-collect.id" value="google-collect-${google-collect.version}"/>
+		<get src="http://google-collections.googlecode.com/files/${google-collect.id}.zip" dest="${lib.dir}/${google-collect.id}.zip"
+			verbose="true" usetimestamp="true" />
 
+		<unzip src="${lib.dir}/${google-collect.id}.zip" dest="${lib.dir}" />
+		<copy file="${lib.dir}/${google-collect.id}/${google-collect.id}.jar" tofile="${lib.dir}/google-collect.jar" />
+		<copy file="${lib.dir}/${google-collect.id}/src-${google-collect.version}.zip" tofile="${lib.dir}/src/google-collect-sources.jar" />
+		<delete dir="${lib.dir}/${google-collect.id}" />
+		<delete file="${lib.dir}/${google-collect.id}.zip" />
+		
 		<!-- NB increment deps.version above if you add/update a jar! -->
 
 		<!-- apparently unused: nux.jar     1.6 -->

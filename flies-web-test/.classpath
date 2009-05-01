@@ -27,6 +27,7 @@
     <classpathentry kind="lib" path="/flies-web/lib/ehcache.jar" sourcepath="/flies-web/lib/src/ehcache-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/el-api.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/flies-richfaces-ui.jar"/>
+    <classpathentry kind="lib" path="/flies-web/lib/google-collect.jar" sourcepath="/flies-web/lib/src/google-collect-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/groovy-all.jar" sourcepath="/flies-web/lib/src/groovy-all-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/hibernate-commons-annotations.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/hibernate-search.jar"/>
