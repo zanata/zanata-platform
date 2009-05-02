@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.webtrans.action;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -21,13 +22,19 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.End;
+import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.datamodel.DataModel;
+import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.log.Log;
+
+import com.google.common.collect.Lists;
 
 @Name("translateAction")
 @Scope(ScopeType.CONVERSATION)
@@ -48,12 +55,6 @@ public class TranslateAction {
 	private FliesLocale locale;
 	private ProjectTarget projectTarget;
 
-	private DocumentTarget selectedDocument;
-	
-	private List<TextUnitTarget> preContext;
-	private TextUnitTarget selectedTextUnitTarget;
-	private List<TextUnitTarget> postContext;
-
 	public String getWorkspaceId() {
 		return workspaceId;
 	}
@@ -69,13 +70,54 @@ public class TranslateAction {
 	public void setProjectTarget(ProjectTarget projectTarget) {
 		this.projectTarget = projectTarget;
 	}
+
+	@DataModel
+	private List<DocumentTarget> documentTargets;
+
+	@DataModelSelection(value="documentTargets")
+	@Out(required=false)
+	private DocumentTarget selectedDocumentTarget;
+
+
+	@DataModel
+	private List<TextUnitTarget> textUnitTargets;
+	
+	@DataModelSelection(value="textUnitTargets")
+	@Out(required=false)
+	private TextUnitTarget selectedTextUnitTarget;
+	
+	public void selectDocumentTarget(){
+		log.info("selected {0}", selectedDocumentTarget.getTemplate().getName());
+		loadTextUnitTargets();
+	}
+	
+	@Factory("documentTargets")
+	public void loadDocumentTargets(){
+		documentTargets = entityManager.createQuery("select d from DocumentTarget d " +
+								"where d.locale = :locale and d.template.projectTarget = :target")
+					.setParameter("locale", locale)
+					.setParameter("target", projectTarget).getResultList();
+	}
+
+	@Factory("textUnitTargets")
+	public void loadTextUnitTargets(){
+		log.info("retrieving textUnitTargets...");
+		if(selectedDocumentTarget == null) {
+			log.info("none available...");
+			textUnitTargets =  Collections.EMPTY_LIST;
+		}
+		else {
+			log.info("retrieving entries. count: {0} ", selectedDocumentTarget.getEntries().size());
+			textUnitTargets = selectedDocumentTarget.getEntries();
+		}
+	}
+	
+	public void selectTextUnitTarget(){
+		log.info("selected {0}", selectedTextUnitTarget.getTemplate().getContent());
+	}
 	
 	public boolean isConversationActive(){
 		return projectTarget != null & locale != null; 
-	}
-	
-	public DocumentTarget getSelectedDocument() {
-		return selectedDocument;
 	}
 	
 	public void initialize() {

@@ -65,10 +65,9 @@
               <div class="resource-name">#{document.name}</div>
               <div style="clear:both"/>
               <div class="actions">
-                <s:link view="/translate.xhtml" propagation="begin">
+                <s:link view="/translate.xhtml" propagation="none">
                   Translate
-                  <f:param name="dId" value="#{document.id}"/>
-                  <f:param name="lId" value="gu-IN"/>
+                  <f:param name="wid" value="#{targetHome.instance.id}/gu-IN"/>
                 </s:link>
                  <a href="#">Download</a> <a href="#">Upload..</a> 
               </div>

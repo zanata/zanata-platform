@@ -7,16 +7,23 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
     xmlns:flies="http://flies.fedorahosted.org/ui"
+    xmlns:a4j="http://richfaces.org/a4j"
     template="layout/template.xhtml">
     <ui:define name="left_content">
 
       <rich:panel>
         <f:facet name="header">Project Tree</f:facet>
         <h:form>
-		    <rich:dataTable width="150px" value="#{translateAction.projectTarget.documents}" var="doc">
+		    <rich:dataTable width="150px" value="#{documentTargets}" var="doc" rows="15" reRender="ds">
 		      <rich:column>
-		      	#{doc.name}
+		      	<a4j:commandLink reRender="xxx,textUnitTable" action="#{translateAction.selectDocumentTarget}">
+		      		<s:conversationId name="wid"/>
+                	<h:outputText value="#{doc.template.name}" /> 
+            	</a4j:commandLink>
 		      </rich:column>
+              <f:facet name="footer">
+                <rich:datascroller id="ds" rendered="#{documentTargets.size > 50}"></rich:datascroller>
+              </f:facet>
 		    </rich:dataTable>
         </h:form>
       </rich:panel>
@@ -44,6 +51,28 @@
     
     <ui:define name="center_content">
       <rich:jQuery selector="#tab_home" query="addClass('ui-tabs-selected')" />
+      
+      <h1><s:span id="xxx">${selectedDocumentTarget.template.name}</s:span></h1>
+
+        <h:form>
+		    <rich:dataTable id="textUnitTable" width="100%" value="#{textUnitTargets}" var="tut" rows="50" reRender="tuds">
+		      <rich:column width="50%">
+		      <!-- 
+		      	<a4j:commandLink reRender="xxx" action="#{translateAction.selectDocumentTarget}">
+		      		<s:conversationId name="wid"/>
+                	<h:outputText value="#{doc.template.name}" /> 
+            	</a4j:commandLink>
+            	 -->
+            	 #{tut.template.content}
+		      </rich:column>
+		      <rich:column width="50%">
+            	 #{tut.content}
+		      </rich:column>
+              <f:facet name="footer">
+                <rich:datascroller id="tuds" rendered="#{textUnitTargets}.size > 50}"></rich:datascroller>
+              </f:facet>
+		    </rich:dataTable>
+        </h:form>
 
     </ui:define>
     
