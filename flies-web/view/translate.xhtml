@@ -45,7 +45,7 @@
         <ui:repeat value="#{translateAction.workspace.translators}" var="t">
          	#{t} 
         </ui:repeat>
-        
+        <s:span id="translationWidget" >#{selectedTextUnitTarget.content}</s:span>
       </rich:panel>
     </ui:define>    
     
@@ -57,13 +57,11 @@
         <h:form>
 		    <rich:dataTable id="textUnitTable" width="100%" value="#{textUnitTargets}" var="tut" rows="50" reRender="tuds">
 		      <rich:column width="50%">
-		      <!-- 
-		      	<a4j:commandLink reRender="xxx" action="#{translateAction.selectDocumentTarget}">
-		      		<s:conversationId name="wid"/>
-                	<h:outputText value="#{doc.template.name}" /> 
-            	</a4j:commandLink>
-            	 -->
-            	 #{tut.template.content}
+            	 
+			      	<a4j:commandLink reRender="translationWidget" action="#{translateAction.selectTextUnitTarget}">
+			      		<s:conversationId name="wid"/>
+	                	<h:outputText value="#{tut.template.content}" /> 
+	            	</a4j:commandLink>
 		      </rich:column>
 		      <rich:column width="50%">
             	 #{tut.content}

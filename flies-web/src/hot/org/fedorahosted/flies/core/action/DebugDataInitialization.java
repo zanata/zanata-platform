@@ -1,6 +1,8 @@
 package org.fedorahosted.flies.core.action;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
@@ -126,7 +128,7 @@ public class DebugDataInitialization {
 		entityManager.persist(projectTarget);
 
 		File basePath = new File(
-				"/home/asgeirf/projects/gitsvn/Deployment_Guide");
+				"/home/asgeirf/jdev/jboss-4.2.3.GA/server/default/data/Deployment_Guide");
 		if(!basePath.exists()){
 			log.error("Couldnt find test dir '{0}', skipping...", basePath.getAbsolutePath());
 			return;
@@ -168,6 +170,7 @@ public class DebugDataInitialization {
 			}
 
 			log.info("Importing {0} from {1}", resource, poFile);
+			
 			try {
 				
 				MessageStreamParser parser = new MessageStreamParser(poFile);

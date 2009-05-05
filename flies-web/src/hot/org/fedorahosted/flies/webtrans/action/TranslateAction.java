@@ -86,10 +86,12 @@ public class TranslateAction {
 	@Out(required=false)
 	private TextUnitTarget selectedTextUnitTarget;
 	
+	
 	public void selectDocumentTarget(){
 		log.info("selected {0}", selectedDocumentTarget.getTemplate().getName());
 		loadTextUnitTargets();
 	}
+	
 	
 	@Factory("documentTargets")
 	public void loadDocumentTargets(){
