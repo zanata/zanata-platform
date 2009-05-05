@@ -36,7 +36,7 @@
         <f:facet name="header">#{translateAction.workspace.translatorCount} translator(s) online</f:facet>
         <rich:dataTable id="translatorsTable" width="150px" value="#{translateAction.workspace.translators}" var="translator">
           <rich:column>
-            #{translator}
+            #{translator.name}
           </rich:column>
         </rich:dataTable>
       </rich:panel>
