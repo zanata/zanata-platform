@@ -14,14 +14,18 @@
       <rich:panel>
         <f:facet name="header">Project Tree</f:facet>
         <h:form>
-		    <rich:dataTable width="150px" value="#{documentTargets}" var="doc" rows="15" reRender="ds">
-		      <rich:column>
-		      	<a4j:commandLink reRender="xxx,textUnitTable" action="#{translateAction.selectDocumentTarget}">
+		    <rich:dataTable id="documentsTable" width="150px" value="#{documentTargets}" var="doc" rows="15" reRender="ds">
+		      <rich:column filterBy="#{doc.template.name}" filterEvent="onkeyup">
+   	            <a4j:commandLink reRender="documentsTable,titleofDocument,textUnitTable" action="#{translateAction.selectDocumentTarget}"
+		      	  rendered="#{selectedDocumentTarget != doc}">
 		      		<s:conversationId name="wid"/>
                 	<h:outputText value="#{doc.template.name}" /> 
-            	</a4j:commandLink>
+            	  </a4j:commandLink>
+               	  <strong>
+               	    <h:outputText value="#{doc.template.name}" rendered="#{selectedDocumentTarget == doc}"/>
+               	  </strong> 
 		      </rich:column>
-              <f:facet name="footer">
+              <f:facet name="header">
                 <rich:datascroller id="ds" rendered="#{documentTargets.size > 50}"></rich:datascroller>
               </f:facet>
 		    </rich:dataTable>
@@ -29,8 +33,12 @@
       </rich:panel>
 
       <rich:panel>
-        <f:facet name="header">Translators online</f:facet>
-        There are no translators in this workspace
+        <f:facet name="header">#{translateAction.workspace.translatorCount} translator(s) online</f:facet>
+        <rich:dataTable id="translatorsTable" width="150px" value="#{translateAction.workspace.translators}" var="translator">
+          <rich:column>
+            #{translator}
+          </rich:column>
+        </rich:dataTable>
       </rich:panel>
       
     </ui:define>
@@ -41,18 +49,25 @@
       </rich:panel>
       <rich:panel>
         <f:facet name="header">Chat</f:facet>
-        Chat..
-        <ui:repeat value="#{translateAction.workspace.translators}" var="t">
-         	#{t} 
-        </ui:repeat>
-        <s:span id="translationWidget" >#{selectedTextUnitTarget.content}</s:span>
+        <strong>Asgeir:</strong> hello world...<br/>
+        <strong>Admin:</strong> let them eat cake..
+        <h:inputTextarea value="hello world" style="width:100%; height:50px;"/>
       </rich:panel>
     </ui:define>    
+    <s:span id="translationWidget" >#{selectedTextUnitTarget.content}</s:span>
     
     <ui:define name="center_content">
       <rich:jQuery selector="#tab_home" query="addClass('ui-tabs-selected')" />
+
+	  <h:form>
+	  	<a4j:region>
+	  	  <a4j:poll id="poll" interval="20000"  enabled="#{translateAction.keepAlive}" />
+	  	</a4j:region>
+	  </h:form>
       
-      <h1><s:span id="xxx">${selectedDocumentTarget.template.name}</s:span></h1>
+      <s:div id="titleofDocument">
+      	<h1>${selectedDocumentTarget.template.name}</h1>
+      </s:div>
 
         <h:form>
 		    <rich:dataTable id="textUnitTable" width="100%" value="#{textUnitTargets}" var="tut" rows="50" reRender="tuds">

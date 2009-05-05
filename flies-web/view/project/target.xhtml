@@ -38,7 +38,10 @@
          -->
         <div class="toolbar">
           <div class="actions">
-            <s:link view="/translate.xhtml">Translate</s:link> &nbsp;|&nbsp; 
+            <s:link view="/translate.xhtml" propagation="none">
+              Translate
+              <f:param name="wid" value="#{targetHome.instance.id}/gu-IN"/>
+            </s:link> &nbsp;|&nbsp; 
             <s:link view="/home.xhtml">Download Archive</s:link> &nbsp;|&nbsp; 
             <s:link view="/home.xhtml">More...</s:link>
           </div>
@@ -65,10 +68,6 @@
               <div class="resource-name">#{document.name}</div>
               <div style="clear:both"/>
               <div class="actions">
-                <s:link view="/translate.xhtml" propagation="none">
-                  Translate
-                  <f:param name="wid" value="#{targetHome.instance.id}/gu-IN"/>
-                </s:link>
                  <a href="#">Download</a> <a href="#">Upload..</a> 
               </div>
               <s:div styleClass="translation-status" rendered="#{document.id % 5 lt 2}">

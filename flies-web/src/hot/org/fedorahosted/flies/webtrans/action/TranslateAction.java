@@ -92,7 +92,6 @@ public class TranslateAction {
 		loadTextUnitTargets();
 	}
 	
-	
 	@Factory("documentTargets")
 	public void loadDocumentTargets(){
 		documentTargets = entityManager.createQuery("select d from DocumentTarget d " +
@@ -154,6 +153,10 @@ public class TranslateAction {
 	@End
 	@Destroy
 	public void destroy() {
-
+	}
+	
+	public boolean isKeepAlive(){
+		log.info("keepAlive {0}:{1} - {2}", this.projectTarget.getProject().getName(), this.projectTarget.getName(), this.locale.getId());
+		return true;
 	}
 }
