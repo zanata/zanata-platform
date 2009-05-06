@@ -153,4 +153,10 @@ public class TranslateAction {
 		getWorkspace().registerTranslator(translator);
 		return true;
 	}
+	
+	public void persistChanges(){
+		if(selectedTextUnitTarget != null){
+			entityManager.flush();
+		}
+	}
 }

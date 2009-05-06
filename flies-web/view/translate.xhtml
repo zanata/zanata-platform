@@ -33,14 +33,18 @@
 		    </rich:dataTable>
         </h:form>
       </rich:panel>
-
+      <br/>
       <rich:panel>
         <f:facet name="header">#{translateAction.workspace.translatorCount} translator(s) online</f:facet>
         <rich:dataTable id="translatorsTable" width="150px" value="#{translateAction.workspace.translators}" var="translator">
           <rich:column>
-            #{translator.name}
+            <img src="#{request.contextPath}/img/silk/user.png"/>#{translator.name}
           </rich:column>
         </rich:dataTable>
+        <h3 style="border-bottom:1px solid;">Chat</h3>
+        <strong>Asgeir:</strong> hello world...<br/>
+        <strong>Admin:</strong> let them eat cake..
+        <h:inputTextarea value="hello world" style="width:100%; height:50px;"/>
       </rich:panel>
       
     </ui:define>
@@ -59,37 +63,57 @@
       </s:div>
 
       <h:form>
-	    <rich:dataTable id="textUnitTable" width="100%" value="#{textUnitTargets}" var="tut" rows="50" reRender="tuds">
-	      <rich:column width="50%">
-          	 
-		      	<a4j:commandLink reRender="translationWidget" action="#{translateAction.selectTextUnitTarget}">
-		      		<s:conversationId name="wid"/>
-                	<h:outputText value="#{tut.template.content}" /> 
-            	</a4j:commandLink>
+	    <rich:extendedDataTable id="textUnitTable" 
+          width="100%" value="#{textUnitTargets}" var="tut" rows="50" height="450px;" reRender="tuds">
+	      <rich:column width="48%">
+         	<f:facet name="header">
+              Source
+            </f:facet>
+            #{tut.template.content}" 
 	      </rich:column>
-	      <rich:column width="50%">
+	      <rich:column width="48%">
+            <f:facet name="header">
+              Target
+            </f:facet>
           	 #{tut.content}
 	      </rich:column>
-            <f:facet name="footer">
-              <rich:datascroller id="tuds" rendered="#{textUnitTargets.size > 50}"></rich:datascroller>
-            </f:facet>
-	    </rich:dataTable>
+          <rich:column width="4%">
+            <a4j:commandLink reRender="translationWidget,tuInfoPanel" action="#{translateAction.selectTextUnitTarget}">
+		      <s:conversationId name="wid"/>
+                <img src="#{request.contextPath}/img/silk/page_edit.png" alt="Translate"/>
+            </a4j:commandLink>
+          </rich:column>
+          <f:facet name="footer">
+            <rich:datascroller id="tuds" rendered="#{textUnitTargets.size > 50}"></rich:datascroller>
+          </f:facet>
+	    </rich:extendedDataTable>
       </h:form>
+      <rich:panel >
+       <h:form id="translationWidget" style="font-size:133%;">
+        <div style="width:100%">
+          <h:outputText value="#{selectedTextUnitTarget.template.content}" disabled="#{selectedDocumentTarget == null}"/>
+        </div>
+        <h:inputTextarea value="#{selectedTextUnitTarget.content}" 
+          disabled="#{selectedDocumentTarget == null}"
+          style="width:100%;" rows="6"/>
+          <a4j:commandButton action="#{translateAction.persistChanges}" reRender="textUnitTable"  value="save" />
+       </h:form>
+      </rich:panel>
     </ui:define>
 
     <ui:define name="right_content">
+      <rich:panel id="tuInfoPanel">
+        <f:facet name="header">Translation Unit Information</f:facet>
+        <s:div rendered="#{selectedTextUnitTarget == null}">No unit selected</s:div>
+        <s:div rendered="#{selectedTextUnitTarget != null}">
+          <strong>Last Translator: </strong>Asgeir Frimannsson <em>(25 Mar 2009 20:13:13)</em><br/>
+        </s:div>
+      </rich:panel>
+      <br/>
       <rich:panel>
         <f:facet name="header">Terminology</f:facet>
         (Show Relevant Terminology here)
       </rich:panel>
-      <rich:panel>
-        <f:facet name="header">Chat</f:facet>
-        <strong>Asgeir:</strong> hello world...<br/>
-        <strong>Admin:</strong> let them eat cake..
-        <h:inputTextarea value="hello world" style="width:100%; height:50px;"/>
-      </rich:panel>
-
-      <s:span id="translationWidget" >#{selectedTextUnitTarget.content}</s:span>
     </ui:define>
     
 </ui:composition>
