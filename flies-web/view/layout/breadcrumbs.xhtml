@@ -5,18 +5,17 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:s="http://jboss.com/products/seam/taglib"
     xmlns:rich="http://richfaces.org/rich">
-  
+  <h:form>  
    »&#xa0;<ui:insert name="breadcrumbs"/>
    <!-- 
    <s:link view="/home.xhtml" propagation="none">Home</s:link> » <a href="#">Projects</a> » <a href="#">My Project</a> » Blah
    -->
-	<h:form id="breadcrumbs">
-		<s:span rendered="#{not empty conversationStack}">Trail:
-			<ui:repeat value="#{conversationStack}" var="_entry">
-				<h:outputText value=" » " rendered="#{_entry.nested}"/>
-				<h:commandLink action="#{_entry.select}"
-							value="#{_entry.description}"/>
-			</ui:repeat>
-		</s:span>
-	</h:form> 
+	<s:span rendered="#{not empty conversationStack}">Trail:
+		<ui:repeat value="#{conversationStack}" var="_entry">
+			<h:outputText value=" » " rendered="#{_entry.nested}"/>
+			<h:commandLink action="#{_entry.select}"
+						value="#{_entry.description}"/>
+		</ui:repeat>
+	</s:span>
+  </h:form>
 </div>
