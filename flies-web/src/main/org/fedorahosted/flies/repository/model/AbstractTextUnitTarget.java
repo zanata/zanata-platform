@@ -93,7 +93,7 @@ public class AbstractTextUnitTarget extends AbstractTextUnit {
 		this.documentTarget = documentTarget;
 	}
 
-	@NotNull
+	//@NotNull
 	public Status getStatus() {
 		return status;
 	}

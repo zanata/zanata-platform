@@ -14,11 +14,11 @@
     <div class="results">
 
         <h:outputText value="No project exists"
-                   rendered="#{empty projectBrowser.projects}"/>
+                   rendered="#{empty projects}"/>
 
         <h:dataTable id="projectList" var="project"
-                  value="#{projectBrowser.projects}"
-               rendered="#{not empty projectBrowser.projects}">
+                  value="#{projects}"
+               rendered="#{not empty projects}">
             <h:column>
                 <f:facet name="header">Id</f:facet>
                 #{project.id}

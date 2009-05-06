@@ -120,9 +120,10 @@
 			<fileset dir="build-tools/lib" includes="flies-deps-*" />
 		</delete>
 		<!-- non-Maven dependencies -->
+		<!--
 		<get src="http://www.cafeconleche.org/XOM/xom-1.2.1.jar" dest="${lib.dir}/xom.jar"
 			verbose="true" usetimestamp="true" />
-		
+		-->
 		<!-- Google collections -->
 		
 		<property name="google-collect.version" value="1.0-rc1"/>
