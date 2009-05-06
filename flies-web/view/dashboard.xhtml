@@ -8,10 +8,6 @@
     xmlns:rich="http://richfaces.org/rich"
     template="layout/template.xhtml">
     
-    <ui:define name="right_content">
-
-    </ui:define>
-    
     <ui:define name="center_content">
         <rich:jQuery selector="#tab_home" query="addClass('ui-tabs-selected')" />
         <h1>#{authenticatedPerson.name}</h1>

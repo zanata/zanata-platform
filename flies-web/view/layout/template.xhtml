@@ -13,6 +13,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>flies</title>
     <link rel="shortcut icon" href="#{request.contextPath}/img/favicon.ico" type="image/x-icon"/>
+    <a:loadStyle src="/stylesheet/reset-fonts-grids.css"/>
     <a:loadStyle src="/stylesheet/theme.css"/>
     <a:loadStyle src="/stylesheet/layout.css"/>
     <a:loadStyle src="resource:///stylesheet/theme.xcss"/>
@@ -20,57 +21,60 @@
     <ui:insert name="head"/>
 </head>
 
-<body>
-  <div id="headerlogo">
-    <s:link view="/home.xhtml" propagation="none"><img src="#{request.contextPath}/img/flies_banner.png"/></s:link>
-  </div>
-    
-  <s:div id="language-chooser" rendered="#{identity.loggedIn}">
-    Selected Language: <em>Gujarati (India)</em> (<a href="#">change</a>)        
-  </s:div>
-  <div id="header_top_right">
-    <h:outputText rendered="#{identity.loggedIn}" value="signed in as: #{identity.username} "/>
-    <s:link view="/login.xhtml" value="Login" rendered="#{not identity.loggedIn}" propagation="none"/>
-    <s:link view="/home.xhtml" action="#{identity.logout}" value="Logout" rendered="#{identity.loggedIn}" propagation="none"/>
-  </div>
-  <div id="loading_top_right">
-    <a:status>
-        <f:facet name="start">
-            <h:graphicImage  value="/img/loading.gif"/>
-        </f:facet>
-    </a:status>
-  </div>
-  <ui:include src="menu.xhtml">
-      <ui:param name="projectName" value="flies"/>
-  </ui:include>
-  <ui:include src="breadcrumbs.xhtml"/>
-  <div class="colmask threecol">
-    <div class="colmid">
-      <div class="colleft">
-        <div class="col_center">
+<body style="min-width: 750px;">
+<!-- the id on the containing div determines the page width. -->
+<!-- #doc = 750px; #doc2 = 950px; #doc3 = 100%; #doc4 = 974px -->
+<div id="doc3" class="yui-t2">					
+	<div id="hd">
+      <div id="headerlogo">
+        <s:link view="/home.xhtml" propagation="none"><img src="#{request.contextPath}/img/flies_banner.png"/></s:link>
+      </div>
+        
+      <s:div id="language-chooser" rendered="#{identity.loggedIn}">
+        Selected Language: <em>Gujarati (India)</em> (<a href="#">change</a>)        
+      </s:div>
+      <div id="header_top_right">
+        <h:outputText rendered="#{identity.loggedIn}" value="signed in as: #{identity.username} "/>
+        <s:link view="/login.xhtml" value="Login" rendered="#{not identity.loggedIn}" propagation="none"/>
+        <s:link view="/home.xhtml" action="#{identity.logout}" value="Logout" rendered="#{identity.loggedIn}" propagation="none"/>
+      </div>
+      <div id="loading_top_right">
+        <a:status>
+            <f:facet name="start">
+                <h:graphicImage  value="/img/loading.gif"/>
+            </f:facet>
+        </a:status>
+      </div>
+      <ui:include src="menu.xhtml">
+          <ui:param name="projectName" value="flies"/>
+      </ui:include>
+      <ui:include src="breadcrumbs.xhtml"/>
+	</div>
+	<div id="bd">
+      
+      <div id="yui-main">
+        <div class="yui-b">
           <h:messages id="messages" globalOnly="true" styleClass="message"
               errorClass="errormsg" infoClass="infomsg" warnClass="warnmsg"
               rendered="#{showGlobalMessages != 'false'}"/>
           <ui:insert name="center_content"/>
-        </div>
-        <div class="col_left">
-          <ui:insert name="left_content"/>
-        </div>
-        <div class="col_right">
-          <ui:insert name="right_content"/>
-        </div>
+        </div> 
       </div>
+      <div class="yui-b">
+        <ui:insert name="left_content"/>
+      </div>  
     </div>
-  </div>
-  
-  <div id="footer">
-    Copyright 2008 <a href="http://www.redhat.com/">Red Hat</a> and Others. 
-    Powered by <a href="http://jboss.com/products/seam">Seam</a>. 
-    <s:fragment rendered="#{fliesInit.debug}">
-	    <br/>Running version #{fliesInit.version}.
-    </s:fragment>
-  </div>
 
+	<div id="ft">
+      <div id="footer">
+        Copyright 2008 <a href="http://www.redhat.com/">Red Hat</a> and Others. 
+        Powered by <a href="http://jboss.com/products/seam">Seam</a>. 
+        <s:fragment rendered="#{fliesInit.debug}">
+    	    <br/>Running version #{fliesInit.version}.
+        </s:fragment>
+      </div>
+	</div>
+  </div>
 </body>
 </html>
 </f:view>

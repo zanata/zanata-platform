@@ -8,8 +8,6 @@
     xmlns:rich="http://richfaces.org/rich"
     template="../layout/template.xhtml">
 
-<ui:define name="left_content">
-</ui:define>
 
 <ui:define name="center_content">
         <h:dataTable id="repository" value="#{repoBrowser.repos}" var="repo" rendered="#{not empty repoBrowser}">
@@ -33,7 +31,7 @@
 	</h:dataTable>
 </ui:define>
 
-<ui:define name="right_content">
+<ui:define name="left_content">
    <s:link id="create_repository" value="Create Repository" view="/project/createrepository.xtml" />
 </ui:define>
 

@@ -8,14 +8,13 @@
     xmlns:rich="http://richfaces.org/rich"
     template="../layout/template.xhtml">
 
-  <ui:define name="right_content">
+  <ui:define name="left_content">
     <rich:panel>
       <f:facet name="header">Actions</f:facet>
       <div> <s:link value="Create project" view="/project/edit.xhtml"/> </div>
       <div> <s:link value="Manage Repository" view="/project/repositorylist.xhtml"/> </div>
     </rich:panel>
-  </ui:define>
-  
+  </ui:define>  
   <ui:define name="center_content">
     <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
 
@@ -42,7 +41,8 @@
         rendered="#{not empty projects}"
         styleClass="projectList">
         <h:column>
-              <h3><s:link id="project"
+              <h3>
+              <s:link id="project"
                    value="#{project.name}"
                    propagation="none"
                    view="/project/project.xhtml">

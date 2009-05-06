@@ -7,7 +7,7 @@
     xmlns:s="http://jboss.com/products/seam/taglib">
 
   <ui:composition template="../layout/template.xhtml">
-    <ui:define name="right_content">
+    <ui:define name="left_content">
         <s:link action="#{userAction.createUser}"
           rendered="#{s:hasPermission('seam.account', 'create')}"
           value="Create new User"/>

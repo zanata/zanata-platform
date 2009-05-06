@@ -8,10 +8,6 @@
     xmlns:rich="http://richfaces.org/rich"
     template="../layout/template.xhtml">
 
-  <ui:define name="left_content">
-  MENU GOES HERE
-  </ui:define>
-  
   <ui:define name="center_content">
     <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
 
@@ -46,7 +42,7 @@
     </div>
   </ui:define>
   
-  <ui:define name="right_content">
+  <ui:define name="left_content">
       <s:link id="done" value="Create project" view="/project/project.xhtml"/>
   </ui:define>
 

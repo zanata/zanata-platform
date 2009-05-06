@@ -58,7 +58,6 @@
 	<!-- hack for IE to just get rid of border since it doubles the border if you use one -->
 	<u:selector name="* html input[type=submit], * html input[type=button], *+html input[type=submit], *+html input[type=button]">
 		<u:style name="border" value="0"/>
-		<u:style name="font-size" value="11px"/>
 	</u:selector>
 	<u:selector name=".rich-table-subheadercell">
 		<u:style name="background-image">

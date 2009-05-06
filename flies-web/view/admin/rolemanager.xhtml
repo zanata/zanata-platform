@@ -8,7 +8,7 @@
 
   <ui:composition template="../layout/template.xhtml">
    
-    <ui:define name="right_content">
+    <ui:define name="left_content">
         <s:link action="#{roleAction.createRole}" 
           rendered="#{s:hasPermission('seam.account', 'create', null)}"
           value="Create Role"

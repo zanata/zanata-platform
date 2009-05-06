@@ -13,10 +13,7 @@
 }
 
 /* Skin */
-.ui-tabs-nav, .ui-tabs-panel {
-    font-family: "Lucida Grande", "Lucida Sans", Arial, sans-serif;
-    font-size: 12px;
-}
+
 .ui-tabs-nav {
     list-style: none;
     margin: 0;
