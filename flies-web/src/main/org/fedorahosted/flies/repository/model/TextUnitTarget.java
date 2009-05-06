@@ -22,7 +22,6 @@ public class TextUnitTarget extends AbstractTextUnitTarget {
 	public TextUnitTarget(TextUnit template, FliesLocale locale) {
 		super(template.getDocument(), template, locale);
 	}
-
 	@OneToMany
 	@JoinColumns( {
 			@JoinColumn(name = "document_id", referencedColumnName = "document_id", insertable = false, updatable = false),

@@ -11,7 +11,7 @@
 <ui:define name="center_content">
 
     <h1>#{repoHome.instance.name}</h1>
-    <h:outputText value="#{repoHome.instance.url}" />
+    <h:outputText value="#{repoHome.getCurrentChangeset()}" />
 
 </ui:define>
 

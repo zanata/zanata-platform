@@ -48,6 +48,14 @@
    <filter>
       <filter-name>Seam Filter</filter-name>
       <filter-class>org.jboss.seam.servlet.SeamFilter</filter-class>
+      <init-param>
+         <param-name>createTempFiles</param-name>
+         <param-value>false</param-value>
+      </init-param>
+      <init-param>
+         <param-name>maxRequestSize</param-name>
+         <param-value>10000000</param-value>
+      </init-param>
    </filter>
 
    <filter-mapping>

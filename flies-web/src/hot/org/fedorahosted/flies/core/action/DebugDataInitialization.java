@@ -93,19 +93,19 @@ public class DebugDataInitialization {
 
 		Repository repo1 = new Repository();
 		repo1.setName("Flies");
-		repo1.setSlug("flies");
+		//repo1.setSlug("flies");
 		repo1.setUrl("ssh://hg.fedorahosted.org//hg/flies");
 		entityManager.persist(repo1);
 
 		Repository repo2 = new Repository();
 		repo2.setName("Transifex");
-		repo2.setSlug("transifex");
+		//repo2.setSlug("transifex");
 		repo2.setUrl("http://code.transifexhg.org/mainline");
 		entityManager.persist(repo2);
 
 		Repository repo3 = new Repository();
 		repo3.setName("Fedora git");
-		repo3.setSlug("fedora");
+		//repo3.setSlug("fedora");
 		repo3.setUrl("ssh://git.fedorahosted.org/git");
 		entityManager.persist(repo3);
 
