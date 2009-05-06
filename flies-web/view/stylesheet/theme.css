@@ -1,28 +1,10 @@
 /* <!-- */
-body {
-	background: #fff;
-}
 
-h1 {
-	border-bottom: 1px solid #eee;
-	font-size: 138.5%;
+a {
+	color: #2222BB;	
 }
-
-h2 {
-	font-size: 131%;
-}
-
-a img {
-	border: none;
-}
-
-input[type=submit],input[type=button] {
-	margin: 5px 5px 5px 0;
-	cursor: pointer;
-}
-
-input[type=text],input[type=password],textarea {
-	padding-left: 1px;
+th, td {
+	border-color: #f4f4f4;
 }
 
 .tableControl,.actionButtons {
@@ -121,10 +103,6 @@ img.errors {
 	padding: 2px 3px;
 }
 
-select {
-	
-}
-
 .rich-panel input[type=submit],.rich-panel input[type=button],.rich-tabpanel input[type=submit],.rich-tabpanel input[type=button]
 	{
 	margin-bottom: 0;
@@ -150,16 +128,6 @@ select {
 .actionButtons select {
 	margin: 5px 5px 5px 0;
 	vertical-align: bottom;
-}
-
-.rich-datalist {
-	list-style: square;
-	margin: 6px 0 1px 0;
-	padding-left: 18px;
-}
-
-.rich-list-item {
-	padding-bottom: 4px;
 }
 
 div.info {
@@ -387,10 +355,6 @@ table.fullwidth {
 	color: grey;
 }
 
-.dr-table {
-	border-collapse: separate;
-}
-
 .projectList td {
 	margin-top: 0px;
 	padding-bottom: 10px;
@@ -425,7 +389,6 @@ table.fullwidth {
 
 .dr-pnl {
 	background-color: inherit;
-	max-width: 700px;
 	border: none;
 }
 
@@ -447,4 +410,44 @@ table.fullwidth {
 	font-size: 100%;
 	font-weight: bold;
 }
+
+.dr-table{
+}
+.dr-table-cell{
+	border: 1px solid #f4f4f4;
+}
+.dr-table-header{
+	background-color: #f4f4f4;
+	background-image: none;
+	border-color: #f4f4f4;
+	color: #999999;
+	font-family: inherit;
+	font-size: 100%;
+	font-weight: bold;
+}
+
+.dr-table-footer{
+	background-color: #f4f4f4;
+}
+
+.datacsr-mini{
+	padding:0px;
+	margin:0px;
+	font-size: 77%;	
+}
+
+.rich-datalist {
+	list-style: square;
+	margin: 6px 0 1px 0;
+	padding-left: 18px;
+}
+
+.rich-list-item {
+	padding-bottom: 4px;
+}
+
+.dr-dscr{
+	background-color: #f4f4f4;
+}
+
 /* --> */

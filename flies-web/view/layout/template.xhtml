@@ -12,11 +12,12 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>flies</title>
+    
     <link rel="shortcut icon" href="#{request.contextPath}/img/favicon.ico" type="image/x-icon"/>
+    
     <a:loadStyle src="/stylesheet/reset-fonts-grids.css"/>
+    <a:loadStyle src="/stylesheet/base-min.css"/>
     <a:loadStyle src="/stylesheet/theme.css"/>
-    <a:loadStyle src="/stylesheet/layout.css"/>
-    <a:loadStyle src="resource:///stylesheet/theme.xcss"/>
     <a:loadStyle src="/stylesheet/tabs.css"/>
     <ui:insert name="head"/>
 </head>
@@ -55,10 +56,19 @@
       
       <div id="yui-main">
         <div class="yui-b">
-          <h:messages id="messages" globalOnly="true" styleClass="message"
-              errorClass="errormsg" infoClass="infomsg" warnClass="warnmsg"
-              rendered="#{showGlobalMessages != 'false'}"/>
-          <ui:insert name="center_content"/>
+          <div class="yui-gc"> <!-- the "special grid" --> 
+            <div class="yui-u first">
+        
+              <h:messages id="messages" globalOnly="true" styleClass="message"
+                  errorClass="errormsg" infoClass="infomsg" warnClass="warnmsg"
+                  rendered="#{showGlobalMessages != 'false'}"/>
+              <ui:insert name="center_content"/>
+            </div> 
+            
+            <div class="yui-u">
+              <ui:insert name="right_content"/>
+            </div>
+          </div> 
         </div> 
       </div>
       <div class="yui-b">

@@ -26,7 +26,9 @@
                	  </strong> 
 		      </rich:column>
               <f:facet name="header">
-                <rich:datascroller id="ds" rendered="#{documentTargets.size > 50}"></rich:datascroller>
+                <div style="display:none">
+                <rich:datascroller id="ds" rendered="#{documentTargets.size > 50}" styleClass="datacsr-mini"></rich:datascroller>
+                </div>
               </f:facet>
 		    </rich:dataTable>
         </h:form>
@@ -46,52 +48,48 @@
     <ui:define name="center_content">
       <rich:jQuery selector="#tab_home" query="addClass('ui-tabs-selected')" />
 
-      <div class="yui-gc"> <!-- the "special grid" --> 
-        <div class="yui-u first">
-    	  <h:form>
-    	  	<a4j:region>
-    	  	  <a4j:poll id="poll" interval="20000"  enabled="#{translateAction.keepAlive}" />
-    	  	</a4j:region>
-    	  </h:form>
-          
-          <s:div id="titleofDocument">
-          	<h1>${selectedDocumentTarget.template.name}</h1>
-          </s:div>
-    
-            <h:form>
-    		    <rich:dataTable id="textUnitTable" width="100%" value="#{textUnitTargets}" var="tut" rows="50" reRender="tuds">
-    		      <rich:column width="50%">
-                	 
-    			      	<a4j:commandLink reRender="translationWidget" action="#{translateAction.selectTextUnitTarget}">
-    			      		<s:conversationId name="wid"/>
-    	                	<h:outputText value="#{tut.template.content}" /> 
-    	            	</a4j:commandLink>
-    		      </rich:column>
-    		      <rich:column width="50%">
-                	 #{tut.content}
-    		      </rich:column>
-                  <f:facet name="footer">
-                    <rich:datascroller id="tuds" rendered="#{textUnitTargets.size > 50}"></rich:datascroller>
-                  </f:facet>
-    		    </rich:dataTable>
-            </h:form>
-        </div> 
-        
-        <div class="yui-u">
-          <rich:panel>
-            <f:facet name="header">Terminology</f:facet>
-            (Show Relevant Terminology here)
-          </rich:panel>
-          <rich:panel>
-            <f:facet name="header">Chat</f:facet>
-            <strong>Asgeir:</strong> hello world...<br/>
-            <strong>Admin:</strong> let them eat cake..
-            <h:inputTextarea value="hello world" style="width:100%; height:50px;"/>
-          </rich:panel>
-    
-          <s:span id="translationWidget" >#{selectedTextUnitTarget.content}</s:span>
-        </div> 
-      </div> 
+	  <h:form>
+	  	<a4j:region>
+	  	  <a4j:poll id="poll" interval="20000"  enabled="#{translateAction.keepAlive}" />
+	  	</a4j:region>
+	  </h:form>
+      
+      <s:div id="titleofDocument">
+      	<h1>${selectedDocumentTarget.template.name}</h1>
+      </s:div>
+
+      <h:form>
+	    <rich:dataTable id="textUnitTable" width="100%" value="#{textUnitTargets}" var="tut" rows="50" reRender="tuds">
+	      <rich:column width="50%">
+          	 
+		      	<a4j:commandLink reRender="translationWidget" action="#{translateAction.selectTextUnitTarget}">
+		      		<s:conversationId name="wid"/>
+                	<h:outputText value="#{tut.template.content}" /> 
+            	</a4j:commandLink>
+	      </rich:column>
+	      <rich:column width="50%">
+          	 #{tut.content}
+	      </rich:column>
+            <f:facet name="footer">
+              <rich:datascroller id="tuds" rendered="#{textUnitTargets.size > 50}"></rich:datascroller>
+            </f:facet>
+	    </rich:dataTable>
+      </h:form>
+    </ui:define>
+
+    <ui:define name="right_content">
+      <rich:panel>
+        <f:facet name="header">Terminology</f:facet>
+        (Show Relevant Terminology here)
+      </rich:panel>
+      <rich:panel>
+        <f:facet name="header">Chat</f:facet>
+        <strong>Asgeir:</strong> hello world...<br/>
+        <strong>Admin:</strong> let them eat cake..
+        <h:inputTextarea value="hello world" style="width:100%; height:50px;"/>
+      </rich:panel>
+
+      <s:span id="translationWidget" >#{selectedTextUnitTarget.content}</s:span>
     </ui:define>
     
 </ui:composition>
