@@ -451,4 +451,13 @@ table.fullwidth {
 	background-color: #f4f4f4;
 }
 
+.panel-body-no-padding{
+	padding: 0px;
+	overflow: hidden;
+}
+
+.docrow{
+	overflow: hidden;
+}
+
 /* --> */

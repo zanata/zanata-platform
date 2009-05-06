@@ -11,10 +11,10 @@
     template="layout/template.xhtml">
     <ui:define name="left_content">
 
-      <rich:panel>
+      <rich:panel bodyClass="panel-body-no-padding">
         <f:facet name="header">Project Tree</f:facet>
         <h:form>
-		    <rich:dataTable id="documentsTable" width="150px" value="#{documentTargets}" var="doc" rows="15" reRender="ds">
+		    <rich:dataTable id="documentsTable" value="#{documentTargets}" var="doc" rows="15" reRender="ds" rowClasses="docrow">
 		      <rich:column filterBy="#{doc.template.name}" filterEvent="onkeyup">
    	            <a4j:commandLink reRender="documentsTable,titleofDocument,textUnitTable" action="#{translateAction.selectDocumentTarget}"
 		      	  rendered="#{selectedDocumentTarget != doc}">
@@ -25,10 +25,8 @@
                	    <h:outputText value="#{doc.template.name}" rendered="#{selectedDocumentTarget == doc}"/>
                	  </strong> 
 		      </rich:column>
-              <f:facet name="header">
-                <div style="display:none">
+              <f:facet name="footer">
                 <rich:datascroller id="ds" rendered="#{documentTargets.size > 50}" styleClass="datacsr-mini"></rich:datascroller>
-                </div>
               </f:facet>
 		    </rich:dataTable>
         </h:form>
@@ -52,53 +50,48 @@
     <ui:define name="center_content">
       <rich:jQuery selector="#tab_home" query="addClass('ui-tabs-selected')" />
 
-	  <h:form>
-	  	<a4j:region>
-	  	  <a4j:poll id="poll" interval="20000"  enabled="#{translateAction.keepAlive}" />
-	  	</a4j:region>
-	  </h:form>
-      
-      <s:div id="titleofDocument">
-      	<h1>${selectedDocumentTarget.template.name}</h1>
-      </s:div>
-
-      <h:form>
-	    <rich:extendedDataTable id="textUnitTable" 
-          width="100%" value="#{textUnitTargets}" var="tut" rows="50" height="450px;" reRender="tuds">
-	      <rich:column width="48%">
-         	<f:facet name="header">
-              Source
-            </f:facet>
-            #{tut.template.content}" 
-	      </rich:column>
-	      <rich:column width="48%">
+      <rich:panel bodyClass="panel-body-no-padding">
+        <f:facet name="header">
+          <s:span id="titleofDocument">${selectedDocumentTarget.template.name}</s:span>
+        </f:facet>
+        
+        <h:form>
+        <rich:extendedDataTable id="textUnitTable" 
+            width="auto" value="#{textUnitTargets}" var="tut" rows="50" height="450px;" reRender="tuds">
+          <rich:column width="48%">
             <f:facet name="header">
-              Target
-            </f:facet>
-          	 #{tut.content}
-	      </rich:column>
-          <rich:column width="4%">
-            <a4j:commandLink reRender="translationWidget,tuInfoPanel" action="#{translateAction.selectTextUnitTarget}">
-		      <s:conversationId name="wid"/>
-                <img src="#{request.contextPath}/img/silk/page_edit.png" alt="Translate"/>
-            </a4j:commandLink>
+                Source
+              </f:facet>
+              #{tut.template.content}
           </rich:column>
-          <f:facet name="footer">
-            <rich:datascroller id="tuds" rendered="#{textUnitTargets.size > 50}"></rich:datascroller>
-          </f:facet>
-	    </rich:extendedDataTable>
-      </h:form>
-      <rich:panel >
-       <h:form id="translationWidget" style="font-size:133%;">
-        <div style="width:100%">
-          <h:outputText value="#{selectedTextUnitTarget.template.content}" disabled="#{selectedDocumentTarget == null}"/>
-        </div>
-        <h:inputTextarea value="#{selectedTextUnitTarget.content}" 
-          disabled="#{selectedDocumentTarget == null}"
-          style="width:100%;" rows="6"/>
+          <rich:column width="48%">
+              <f:facet name="header">
+                Target
+              </f:facet>
+               #{tut.content}
+          </rich:column>
+            <rich:column>
+              <a4j:commandLink reRender="translationWidget,tuInfoPanel" action="#{translateAction.selectTextUnitTarget}">
+            <s:conversationId name="wid"/>
+                  <img src="#{request.contextPath}/img/silk/page_edit.png" alt="Translate"/>
+              </a4j:commandLink>
+            </rich:column>
+            <f:facet name="footer">
+              <rich:datascroller id="tuds" rendered="#{textUnitTargets.size > 50}"></rich:datascroller>
+            </f:facet>
+        </rich:extendedDataTable>
+        </h:form>
+        <h:form id="translationWidget" style="font-size:133%;">
+          <div style="width:99%; padding:4px;">
+            <h:outputText value="#{selectedTextUnitTarget.template.content}" disabled="#{selectedDocumentTarget == null}"/>
+          </div>
+          <h:inputTextarea value="#{selectedTextUnitTarget.content}" 
+            disabled="#{selectedDocumentTarget == null}"
+            style="width:99%;" rows="6"/>
           <a4j:commandButton action="#{translateAction.persistChanges}" reRender="textUnitTable"  value="save" />
-       </h:form>
+        </h:form>
       </rich:panel>
+
     </ui:define>
 
     <ui:define name="right_content">
