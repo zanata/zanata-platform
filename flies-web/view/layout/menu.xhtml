@@ -6,9 +6,6 @@
     xmlns:s="http://jboss.com/products/seam/taglib"
     xmlns:rich="http://richfaces.org/rich">
   <ul class="ui-tabs-nav">
-    <li id="tab_home">
-      <s:link view="/home.xhtml" propagation="none"><span>Home</span></s:link>
-    </li>
     <li id="tab_projects" class="ui-tabs-nav-issues">
       <s:link view="/project/home.xhtml" propagation="none"><span>Projects</span></s:link>
       <s:fragment rendered="#{authenticatedPerson != null}">
