@@ -41,12 +41,12 @@
       </li>
     </s:fragment>
     <s:fragment rendered="#{s:hasRole('user')}">
-      <li id="tab_my_dashboard" class="tabs-right tabs-far-right">
+      <li id="tab_my_dashboard">
          <s:link view="/dashboard.xhtml" propagation="none"><span>My Dashboard</span></s:link>
       </li>
     </s:fragment>
     <s:fragment rendered="#{identity.loggedIn}">
-      <li id="tab_my_account" class="tabs-right">
+      <li id="tab_my_account">
         <s:link view="/account.xhtml" propagation="none"><span>My Account</span></s:link>
       </li>
     </s:fragment>

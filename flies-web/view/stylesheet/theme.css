@@ -239,18 +239,14 @@ table.fullwidth {
 }
 
 #search_panel {
-	margin: 0 auto 0.5em auto;
-	width: 80%;
-	border: 1px solid #efefff;
-	background-color: #f5f5ff;
-	padding: 20px;
-	-moz-border-radius: 15px;
-	font-size: 108%;
-}
-
-#search_panel_form,#search_panel_links {
-	text-align: center;
-	margin: 0.2em auto 0.2em auto;
+	position: absolute;
+	right: 0px;
+	top: 40px;
+	padding: 5px;
+	padding-right: 25px;
+	color: #999999;
+	-moz-border-radius: 10px;
+		
 }
 
 #projectList h3 {
