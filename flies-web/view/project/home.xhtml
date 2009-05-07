@@ -18,19 +18,6 @@
   <ui:define name="center_content">
     <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
 
-    <div id="search_panel">
-      <form id="search_panel_form" action="#" method="get">
-        Find project: <input name="q" type="text" value=""/>
-        <input type="submit" value="Search"/>
-      </form>
-      <div id="search_panel_links">
-        <s:link id="project_browse"
-                         value="Browse Projects"
-                   propagation="none"
-                         view="/project/browse.xhtml"></s:link>
-      </div>
-    </div>
-
     <h:outputText value="No project exists"
                rendered="#{empty latestProjects}"/>
 
