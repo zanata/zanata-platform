@@ -52,7 +52,7 @@
               <f:facet name="header">Script</f:facet>
               #{locale.locale.script}
           </rich:column>
-          <rich:column sortBy="#{locale.locale.nativeName}" dir="#{locale.locale.lineOrientation ? 'rtl' : 'ltr'}">
+          <rich:column sortBy="#{locale.locale.nativeName}" dir="#{locale.locale.characterOrientation == 'right-to-left' ? 'rtl' : 'ltr'}">
               <f:facet name="header">Native Name</f:facet>
               #{locale.nativeName}
           </rich:column>
