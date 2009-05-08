@@ -14,7 +14,7 @@ import javax.servlet.ServletOutputStream;
 import java.io.StringWriter;
 import java.io.IOException;
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.ByteArrayInputStream;
 import org.fedorahosted.tennera.jgettext.*;
 import org.fedorahosted.tennera.jgettext.catalog.parse.ParseException;
 
@@ -38,12 +38,12 @@ public class DownloadFile {
 	@RequestParameter
 	private Long pofileId;
 
-        private String ParseFile(File file) throws ParseException, IOException{
+        private String ParseFile(ByteArrayInputStream is) throws ParseException, IOException{
 		PoParser poParser = new PoParser();
 		PoWriter poWriter = new PoWriter();
-		Catalog fileCatalog = poParser.parseCatalog(file);
+		Catalog catalog = poParser.parseCatalog(is, false);
 		StringWriter outputWriter = new StringWriter();
-		poWriter.write(fileCatalog, outputWriter);
+		poWriter.write(catalog, outputWriter);
 		outputWriter.flush();
 		return outputWriter.toString();
 	}
@@ -56,10 +56,8 @@ public class DownloadFile {
 		try {
 			ServletOutputStream os = response.getOutputStream();
                         //Create a temp file for parsing in JGettext
-                        File temp = new File(pofile.getName());
-            		FileOutputStream f = new FileOutputStream(temp);
-            		f.write(pofile.getData());
-                        String result = ParseFile(temp);
+                        ByteArrayInputStream is = new ByteArrayInputStream(pofile.getData());
+            	        String result = ParseFile(is);
 			os.print(result);
 			os.flush();
 			os.close();
