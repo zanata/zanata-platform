@@ -41,6 +41,7 @@ public class DownloadFile {
         private String ParseFile(ByteArrayInputStream is) throws ParseException, IOException{
 		PoParser poParser = new PoParser();
 		PoWriter poWriter = new PoWriter();
+		
 		Catalog catalog = poParser.parseCatalog(is, false);
 		StringWriter outputWriter = new StringWriter();
 		poWriter.write(catalog, outputWriter);
