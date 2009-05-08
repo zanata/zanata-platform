@@ -7,7 +7,9 @@
     xmlns:rich="http://richfaces.org/rich">
   <ul class="ui-tabs-nav">
     <li id="tab_projects" class="ui-tabs-nav-issues">
-      <s:link view="/project/home.xhtml" propagation="none"><span>Projects</span></s:link>
+      <s:link view="/project/home.xhtml" propagation="none">
+        <span><img src="#{request.contextPath}/img/silk/photos.png"/>Projects</span>
+      </s:link>
       <s:fragment rendered="#{authenticatedPerson != null}">
         <ul>
           <ui:repeat value="#{authenticatedPerson.maintainerProjects}" var="project">
@@ -22,14 +24,20 @@
       </s:fragment>
     </li>
     <li id="tab_tribes">
-      <s:link view="/team/home.xhtml" propagation="none"><span>Tribes</span></s:link>
+      <s:link view="/team/home.xhtml" propagation="none">
+        <span><img src="#{request.contextPath}/img/silk/world.png"/>Tribes</span>
+      </s:link>
     </li>
     <li id="tab_communities">
-      <s:link view="/team/home.xhtml" propagation="none"><span>Communities</span></s:link>
+      <s:link view="/team/home.xhtml" propagation="none">
+        <span><img src="#{request.contextPath}/img/silk/group.png"/>Communities</span>
+      </s:link>
     </li>
     <s:fragment rendered="#{s:hasRole('admin')}">
       <li  id="tab_admin" class="ui-tabs-nav-issues">
-        <s:link view="/admin/home.xhtml" propagation="none"><span>Administration ↓</span></s:link>
+        <s:link view="/admin/home.xhtml" propagation="none">
+          <span><img src="#{request.contextPath}/img/silk/wrench.png"/>Administration ↓</span>
+        </s:link>
         <ul>
           <li><s:link view="/admin/usermanager.xhtml" propagation="none">Manage Users</s:link></li>
           <li><s:link view="/admin/rolemanager.xhtml" propagation="none">Manage Roles</s:link></li>
@@ -47,7 +55,9 @@
     </s:fragment>
     <s:fragment rendered="#{identity.loggedIn}">
       <li id="tab_my_account">
-        <s:link view="/account.xhtml" propagation="none"><span>My Account</span></s:link>
+        <s:link view="/account.xhtml" propagation="none">
+          <span><img src="#{request.contextPath}/img/silk/user.png"/>My Account</span>
+        </s:link>
       </li>
     </s:fragment>
   </ul>
