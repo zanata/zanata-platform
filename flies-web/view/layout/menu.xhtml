@@ -24,12 +24,12 @@
       </s:fragment>
     </li>
     <li id="tab_tribes">
-      <s:link view="/team/home.xhtml" propagation="none">
+      <s:link view="/tribe/home.xhtml" propagation="none">
         <span><img src="#{request.contextPath}/img/silk/world.png"/>Tribes</span>
       </s:link>
     </li>
     <li id="tab_communities">
-      <s:link view="/team/home.xhtml" propagation="none">
+      <s:link view="/community/home.xhtml" propagation="none">
         <span><img src="#{request.contextPath}/img/silk/group.png"/>Communities</span>
       </s:link>
     </li>
@@ -46,11 +46,6 @@
           <li><s:link view="/admin/dlImport.xhtml" propagation="begin">Import from Damned Lies</s:link></li>
           -->
         </ul>
-      </li>
-    </s:fragment>
-    <s:fragment rendered="#{s:hasRole('user')}">
-      <li id="tab_my_dashboard">
-         <s:link view="/dashboard.xhtml" propagation="none"><span>My Dashboard</span></s:link>
       </li>
     </s:fragment>
     <s:fragment rendered="#{identity.loggedIn}">

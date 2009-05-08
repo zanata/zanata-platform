@@ -45,7 +45,7 @@ public class AccountRole implements Serializable {
 
 	@RoleGroups
 	@ManyToMany(targetEntity = AccountRole.class)
-	@JoinTable(name = "AccountRoleGroup", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "member_of"))
+	@JoinTable(name = "AccountRoleGroup", joinColumns = @JoinColumn(name = "roleId"), inverseJoinColumns = @JoinColumn(name = "memberOf"))
 	public Set<AccountRole> getGroups() {
 		return groups;
 	}

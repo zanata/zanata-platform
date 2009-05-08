@@ -32,7 +32,6 @@ public class AuthenticationEvents {
 	public void createSuccessful(Account account) {
 		Person p = new Person();
 		p.setName(account.getName());
-		p.setPersonId(account.getUsername());
 		p.setAccount(account);
 		entityManager.persist(p);
 		account.setPerson(p);

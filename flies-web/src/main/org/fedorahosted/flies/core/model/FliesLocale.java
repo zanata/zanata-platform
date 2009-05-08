@@ -10,6 +10,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 import org.fedorahosted.flies.type.ULocaleType;
@@ -30,8 +31,9 @@ public class FliesLocale implements Serializable {
 	private FliesLocale parent;
 	private List<FliesLocale> children;
 
+	private Tribe tribe;
+	
 	private List<FliesLocale> friends; // e.g. nn, nb.
-	private List<TranslationTeam> translationTeams;
 
 	public FliesLocale() {
 	}
@@ -40,6 +42,15 @@ public class FliesLocale implements Serializable {
 		setLocale(locale);
 	}
 
+	@OneToOne(mappedBy="locale")
+	public Tribe getTribe() {
+		return tribe;
+	}
+	
+	public void setTribe(Tribe tribe) {
+		this.tribe = tribe;
+	}
+	
 	public static String getFliesId(ULocale locale) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(locale.getLanguage());
@@ -70,7 +81,7 @@ public class FliesLocale implements Serializable {
 	}
 
 	@NotNull
-	@Column(name = "icu_locale_id")
+	@Column(name = "icuLocaleId")
 	@Type(type = "ulocale")
 	public ULocale getLocale() {
 		return locale;
@@ -82,7 +93,7 @@ public class FliesLocale implements Serializable {
 	}
 
 	@ManyToMany
-	@JoinTable(name = "FliesLocale_Friends", joinColumns = @JoinColumn(name = "locale_id"), inverseJoinColumns = @JoinColumn(name = "friend_id"))
+	@JoinTable(name = "FliesLocale_Friends", joinColumns = @JoinColumn(name = "localeId"), inverseJoinColumns = @JoinColumn(name = "friendId"))
 	public List<FliesLocale> getFriends() {
 		return friends;
 	}
@@ -101,23 +112,13 @@ public class FliesLocale implements Serializable {
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "parent_id")
+	@JoinColumn(name = "parentId")
 	public FliesLocale getParent() {
 		return parent;
 	}
 
 	public void setParent(FliesLocale parent) {
 		this.parent = parent;
-	}
-
-	@ManyToMany
-	@JoinTable(name = "TranslationTeam_FliesLocale", joinColumns = @JoinColumn(name = "locale_id"), inverseJoinColumns = @JoinColumn(name = "team_id"))
-	public List<TranslationTeam> getTranslationTeams() {
-		return translationTeams;
-	}
-
-	public void setTranslationTeams(List<TranslationTeam> translationTeams) {
-		this.translationTeams = translationTeams;
 	}
 
 	private static int findLocId(ULocale fallback, ULocale[] locales) {
