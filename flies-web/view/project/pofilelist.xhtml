@@ -1,0 +1,60 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                             "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                template="../layout/template.xhtml">
+                       
+	<ui:define name="center_content">
+	    
+	    <h:messages globalOnly="true" styleClass="message"/>
+	    
+	    <rich:panel>
+	        <f:facet name="header">Files Uploaded</f:facet>
+	        
+	        <div class="results">
+	        
+	            <h:outputText value="No files exists" rendered="#{empty attachmentList.resultList}"/>
+	                   
+	            <rich:dataTable id="pofileList" 
+	            			 var="pofile"
+	                      	 value="#{pofileList.resultList}" 
+	                   		 rendered="#{not empty pofileList.resultList}">
+	                <rich:column>
+	                    <f:facet name="header">File Name</f:facet>
+	                    <s:link value="#{pofile.name}" view="/project/uploadfile.xhtml">
+	                        <f:param name="pofileId" value="#{pofile.id}" />
+	                    </s:link>
+	                </rich:column>
+	                <rich:column>
+	                    <f:facet name="header">Content Type</f:facet>
+	                    #{pofile.contentType}
+	                </rich:column>
+	                <rich:column>
+	                    <f:facet name="header">Size(bytes)</f:facet>
+	                    #{pofile.size}
+	                </rich:column>
+	                <rich:column>
+	                    <f:facet name="header">Action</f:facet>
+	                    <s:link value="Download" action="#{downloadfile.download}">
+				 <f:param name="pofileId" value="${pofile.id}" />
+		            </s:link>
+	                </rich:column>
+	            </rich:dataTable>
+	            
+	        </div>
+	        
+	    </rich:panel>
+	    
+	    <div class="actionButtons">
+	        <s:button id="done" 
+	               value="Upload PO File"
+	                view="/project/uploadfile.xhtml"/>			  
+	    </div>
+	    
+	</ui:define>
+
+</ui:composition>

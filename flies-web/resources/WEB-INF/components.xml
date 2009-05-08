@@ -46,7 +46,10 @@
         <property name="persistenceUnitJndiName">java:/entityManagerFactories/flies</property>
         <property name="filters"><value>#{accessLevelFilter}</value></property>
     </component>
-
+    
+    <web:multipart-filter create-temp-files="false" 
+                              max-request-size="5200000" 
+    url-pattern="/*"/>
 
     <!-- Login and security -->
 	
