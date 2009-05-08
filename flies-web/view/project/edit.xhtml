@@ -43,8 +43,15 @@
 
             <s:decorate id="longDescriptionField" template="../layout/edit.xhtml">
                 <ui:define name="label">Long Description</ui:define>
-                <h:inputTextarea id="longDescription" required="false" style="width:400px;"
-                             value="#{projectHome.instance.longDescription}" rows="10"/>
+                 <rich:editor id="longDescription" 
+                    width="400" height="300" style="width:400px;"
+                    required="false"
+                    value="#{projectHome.instance.longDescription}"
+                    viewMode="visual" 
+                    useSeamText="true"
+                    theme="advanced">
+                </rich:editor>
+                
             </s:decorate>
 
             <div style="clear:both"/>
