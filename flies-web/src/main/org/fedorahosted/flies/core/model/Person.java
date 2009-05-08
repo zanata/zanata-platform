@@ -2,11 +2,13 @@ package org.fedorahosted.flies.core.model;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -33,8 +35,15 @@ public class Person extends AbstractFliesEntity implements Serializable {
 	private String webpageUrl;
 
 	private List<Project> maintainerProjects;
-	private List<TranslationTeam> teamMemberships;
 
+	private Set<Tribe> tribeChiefs;
+	private Set<Tribe> tribeMemberships;
+	private Set<Tribe> tribeLeaderships;
+
+	private Set<Community> communityOwnerships;
+	private Set<Community> communityOfficerships;
+	private Set<Community> communityMemberships;
+	
 	public String getName() {
 		return name;
 	}
@@ -111,13 +120,61 @@ public class Person extends AbstractFliesEntity implements Serializable {
 	}
 
 	@ManyToMany
-	@JoinTable(name = "TranslationTeam_Member", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "translationTeamId"))
-	public List<TranslationTeam> getTeamMemberships() {
-		return teamMemberships;
+	@JoinTable(name = "Tribe_Member", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "tribeId"))
+	public Set<Tribe> getTribeMemberships() {
+		return tribeMemberships;
 	}
 
-	public void setTeamMemberships(List<TranslationTeam> teamMemberships) {
-		this.teamMemberships = teamMemberships;
+	public void setTribeMemberships(Set<Tribe> tribeMemberships) {
+		this.tribeMemberships = tribeMemberships;
+	}
+	
+	@ManyToMany
+	@JoinTable(name = "Tribe_Leader", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "tribeId"))
+	public Set<Tribe> getTribeLeaderships() {
+		return tribeLeaderships;
+	}
+	
+	public void setTribeLeaderships(Set<Tribe> tribeLeaderships) {
+		this.tribeLeaderships = tribeLeaderships;
+	}
+	
+	
+	@OneToMany(mappedBy = "chief")
+	public Set<Tribe> getTribeChiefs() {
+		return tribeChiefs;
+	}
+	
+	public void setTribeChiefs(Set<Tribe> tribeChiefs) {
+		this.tribeChiefs = tribeChiefs;
+	}
+	
+	@OneToMany(mappedBy = "owner")
+	public Set<Community> getCommunityOwnerships() {
+		return communityOwnerships;
+	}
+	
+	public void setCommunityOwnerships(Set<Community> communityOwnerships) {
+		this.communityOwnerships = communityOwnerships;
 	}
 
+	@ManyToMany
+	@JoinTable(name = "Community_Officer", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "communityId"))
+	public Set<Community> getCommunityOfficerships() {
+		return communityOfficerships;
+	}
+	
+	public void setCommunityOfficerships(Set<Community> communityOfficerships) {
+		this.communityOfficerships = communityOfficerships;
+	}
+	
+	@ManyToMany
+	@JoinTable(name = "Community_Member", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "communityId"))
+	public Set<Community> getCommunityMemberships() {
+		return communityMemberships;
+	}
+	
+	public void setCommunityMemberships(Set<Community> communityMemberships) {
+		this.communityMemberships = communityMemberships;
+	}
 }
