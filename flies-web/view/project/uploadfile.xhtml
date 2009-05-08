@@ -1,0 +1,66 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                             "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich" template="../layout/template.xhtml">
+
+	<ui:define name="center_content">
+
+		<h:messages globalOnly="true" styleClass="message" />
+
+		<h:form enctype="multipart/form-data">
+
+			<rich:panel>
+				<f:facet name="header">Upload Attachment</f:facet>
+
+				<s:decorate id="fileUploadDecoration" template="../layout/edit.xhtml">
+					<ui:define name="label">Attachment</ui:define>
+					<s:fileUpload id="file" 
+						      data="#{pofileHome.instance.data}"
+						      contentType="#{pofileHome.instance.contentType}"
+						      fileName="#{pofileHome.instance.name}"
+						      fileSize="#{pofileHome.instance.size}" />
+				</s:decorate>
+				
+				<s:decorate id="nameDecoration" template="../layout/display.xhtml">
+					<ui:define name="label">Name</ui:define>
+					<h:outputText value="#{pofileHome.instance.name}"/>
+				</s:decorate>
+				
+				<s:decorate id="contentTypeDecoration" template="../layout/display.xhtml">
+					<ui:define name="label">Content Type</ui:define>
+					<h:outputText value="#{pofileHome.instance.contentType}"/>
+				</s:decorate>
+				
+				<s:decorate id="sizeDecoration" template="../layout/display.xhtml">
+					<ui:define name="label">Size</ui:define>
+					<h:outputText value="#{pofileHome.instance.size}"/>
+				</s:decorate>
+				
+				<div style="clear: both" />
+			</rich:panel>
+			
+			<div class="actionButtons">
+				<h:commandButton value="Upload" 
+						 action="#{pofileHome.persist}"  
+						 rendered="#{!pofileHome.managed}"/>
+				<h:commandButton value="Delete" 
+						 action="#{pofileHome.remove}"
+						 immediate="true"  
+						 rendered="#{pofileHome.managed}">
+					<s:conversationPropagation type="end" />
+				</h:commandButton>
+				<s:button propagation="end" 
+                          id="done" 
+                          value="Done"
+                          view="/project/pofilelist.xhtml"/>
+			</div>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
