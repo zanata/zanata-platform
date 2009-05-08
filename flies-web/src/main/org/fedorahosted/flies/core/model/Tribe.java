@@ -28,7 +28,7 @@ public class Tribe extends AbstractFliesEntity{
 
 	
 	@OneToOne(optional = false, fetch = FetchType.EAGER)
-	@JoinColumn(name = "locale_id")
+	@JoinColumn(name = "localeId")
 	public FliesLocale getLocale() {
 		return locale;
 	}

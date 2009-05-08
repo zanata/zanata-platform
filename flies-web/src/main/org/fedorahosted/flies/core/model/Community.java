@@ -35,7 +35,7 @@ public class Community extends AbstractFliesEntity{
 	
 	@NotNull
 	@OneToOne(optional = false, fetch = FetchType.EAGER)
-	@JoinColumn(name = "owner_id")
+	@JoinColumn(name = "ownerId")
 	public Person getOwner() {
 		return owner;
 	}

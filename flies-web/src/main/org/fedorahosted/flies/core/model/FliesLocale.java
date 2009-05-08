@@ -81,7 +81,7 @@ public class FliesLocale implements Serializable {
 	}
 
 	@NotNull
-	@Column(name = "icu_locale_id")
+	@Column(name = "icuLocaleId")
 	@Type(type = "ulocale")
 	public ULocale getLocale() {
 		return locale;
@@ -93,7 +93,7 @@ public class FliesLocale implements Serializable {
 	}
 
 	@ManyToMany
-	@JoinTable(name = "FliesLocale_Friends", joinColumns = @JoinColumn(name = "locale_id"), inverseJoinColumns = @JoinColumn(name = "friend_id"))
+	@JoinTable(name = "FliesLocale_Friends", joinColumns = @JoinColumn(name = "localeId"), inverseJoinColumns = @JoinColumn(name = "friendId"))
 	public List<FliesLocale> getFriends() {
 		return friends;
 	}
@@ -112,7 +112,7 @@ public class FliesLocale implements Serializable {
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "parent_id")
+	@JoinColumn(name = "parentId")
 	public FliesLocale getParent() {
 		return parent;
 	}

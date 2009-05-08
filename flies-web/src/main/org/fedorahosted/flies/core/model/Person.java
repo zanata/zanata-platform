@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -27,13 +28,6 @@ public class Person extends AbstractFliesEntity implements Serializable {
 
 	private String email;
 
-	private String personId;
-
-	// from Damned Lies:
-	private String imageUrl;
-	private String ircNick;
-	private String webpageUrl;
-
 	private List<Project> maintainerProjects;
 
 	private Set<Tribe> tribeChiefs;
@@ -52,17 +46,8 @@ public class Person extends AbstractFliesEntity implements Serializable {
 		this.name = name;
 	}
 
-	
-	@NaturalId
-	public String getPersonId() {
-		return personId;
-	}
-
-	public void setPersonId(String personId) {
-		this.personId = personId;
-	}
-
-	@OneToOne(mappedBy = "person")
+	@OneToOne(optional = true, fetch = FetchType.EAGER)
+	@JoinColumn(name = "accountId")
 	public Account getAccount() {
 		return account;
 	}
@@ -74,30 +59,6 @@ public class Person extends AbstractFliesEntity implements Serializable {
 	@Transient
 	public boolean hasAccount() {
 		return account != null;
-	}
-
-	public String getImageUrl() {
-		return imageUrl;
-	}
-
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
-	}
-
-	public String getIrcNick() {
-		return ircNick;
-	}
-
-	public void setIrcNick(String ircNick) {
-		this.ircNick = ircNick;
-	}
-
-	public String getWebpageUrl() {
-		return webpageUrl;
-	}
-
-	public void setWebpageUrl(String webpageUrl) {
-		this.webpageUrl = webpageUrl;
 	}
 
 	public void setEmail(String email) {

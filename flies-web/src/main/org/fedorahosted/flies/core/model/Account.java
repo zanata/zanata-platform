@@ -23,7 +23,6 @@ import org.jboss.seam.annotations.security.management.UserRoles;
 import org.jboss.seam.security.management.PasswordHash;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"person_id"}))
 public class Account extends AbstractFliesEntity implements Serializable {
 
 	private String username;
@@ -35,8 +34,7 @@ public class Account extends AbstractFliesEntity implements Serializable {
 
 	private String name;
 
-	@OneToOne(optional = true, fetch = FetchType.EAGER)
-	@JoinColumn(name = "person_id")
+	@OneToOne(mappedBy = "account")
 	public Person getPerson() {
 		return person;
 	}
@@ -51,6 +49,11 @@ public class Account extends AbstractFliesEntity implements Serializable {
 		return username;
 	}
 
+	@Transient
+	public boolean isPerson(){
+		return person != null;
+	}
+	
 	public void setUsername(String username) {
 		this.username = username;
 	}
@@ -75,7 +78,7 @@ public class Account extends AbstractFliesEntity implements Serializable {
 
 	@UserRoles
 	@ManyToMany(targetEntity = AccountRole.class)
-	@JoinTable(name = "AccountMembership", joinColumns = @JoinColumn(name = "account_id"), inverseJoinColumns = @JoinColumn(name = "member_of"))
+	@JoinTable(name = "AccountMembership", joinColumns = @JoinColumn(name = "accountId"), inverseJoinColumns = @JoinColumn(name = "memberOf"))
 	public Set<AccountRole> getRoles() {
 		return roles;
 	}
