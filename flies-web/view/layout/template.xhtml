@@ -36,9 +36,9 @@
           Selected Language: <a href="#">Gujarati (India)</a>        
         </s:div>
                
-        <h:outputText rendered="#{identity.loggedIn}" value="#{identity.username} "/>
-        <s:link view="/login.xhtml" value="Login" rendered="#{not identity.loggedIn}" propagation="none"/>
-        <s:link view="/home.xhtml" action="#{identity.logout}" value="Logout" rendered="#{identity.loggedIn}" propagation="none"/>
+        <h:outputText rendered="#{identity.loggedIn}" value="#{authenticatedPerson == null ? identity.username : authenticatedPerson.name} "/>
+        <s:link view="/login.xhtml" value="Sign In" rendered="#{not identity.loggedIn}" propagation="none"/>
+        <s:link view="/home.xhtml" action="#{identity.logout}" value="Sign Out" rendered="#{identity.loggedIn}" propagation="none"/>
       </div>
       <div id="loading_top_right">
         <a:status>
