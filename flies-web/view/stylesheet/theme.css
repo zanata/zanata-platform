@@ -7,6 +7,38 @@ th, td {
 	border-color: #f4f4f4;
 }
 
+input, textarea {
+	-moz-border-radius-bottomleft: 3px;
+	-moz-border-radius-bottomright: 3px;
+	-moz-border-radius-topleft: 3px;
+	-moz-border-radius-topright: 3px;
+	border:1px solid #BBBBBB;
+	padding: 3px;
+	color: #222222;
+	font-weight: bold;
+}
+button, input[type="checkbox"], input[type="radio"], input[type="reset"], input[type="submit"], input[type="button"]  {
+	color: #222222;
+	padding:2px;
+	margin-left: 2px;
+	margin-right: 2px;
+}
+
+button, input[type="reset"], input[type="submit"], input[type="button"]  {
+	background-color: #fafafa;
+	
+}
+input.with_icon {
+	background-position:5px 50%;
+	background-repeat:no-repeat;
+	padding-left: 25px;
+}
+
+.search_icon{
+	background-image: url(../img/silk/zoom.png);
+}
+
+
 .tableControl,.actionButtons {
 	width: 100%;
 }
@@ -77,7 +109,7 @@ th, td {
 }
 
 .errors {
-	color: red;
+	color: #F00000;
 	vertical-align: middle;
 }
 
@@ -86,11 +118,12 @@ img.errors {
 }
 
 .errors input,.errors textarea {
-	border: 1px solid red !important;
+	border: 1px solid #F00000 !important;
+	background-color: #FFFAFA;
 }
 
 .required {
-	color: red;
+	color: #F00000;
 	padding-left: 2px;
 }
 
