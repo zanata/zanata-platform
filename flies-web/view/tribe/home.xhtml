@@ -11,6 +11,21 @@
     <ui:define name="center_content">
         <rich:jQuery selector="#tab_tribes" query="addClass('ui-tabs-selected')" />
         <h1>Tribes</h1>
-        <p>Blah</p>
+        <p>Tribes represents communities of translators for a specific language.</p>
+        <h2>Large Tribes</h2>
+        <h2>Most Active Tribes</h2>
+        <h2>New Arrivals</h2>
+        <h2>All tribes</h2>
+        <rich:dataTable value="#{tribesBean.latestTribes}" var="tribe">
+          <rich:column>
+            #{tribe.locale.id}
+          </rich:column>
+          <rich:column>
+            #{tribe.locale.nativeName}
+          </rich:column>
+          <rich:column>
+            #{tribe.locale.locale.displayName}
+          </rich:column>
+        </rich:dataTable>
     </ui:define>
 </ui:composition>

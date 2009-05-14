@@ -10,14 +10,8 @@
 
     <ui:define name="center_content">
         <rich:jQuery selector="#tab_communities" query="addClass('ui-tabs-selected')" />
-        <h1>Communities</h1>
-        <ui:repeat value="#{communitiesBean.latestCommunities}" var="community">
-          <s:link view="/community/community.xhtml" propagation="none">
-            #{community.name}
-            <f:param name="communityId" value="#{community.id}"/>
-          </s:link>
-          <br/>
-        </ui:repeat>
+        <h1>#{communityHome.instance.name}</h1>
+        
     </ui:define>
     
     <ui:define name="left_content">
@@ -26,7 +20,8 @@
           Actions
         </f:facet>
         <s:link view="/community/edit.xhtml" propagation="none">
-          Create a Community
+          Edit
+          <f:param name="communityId" value="#{communityHome.instance.id}"/>
         </s:link>
       </rich:panel>
     </ui:define>

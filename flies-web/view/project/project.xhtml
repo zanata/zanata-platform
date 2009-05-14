@@ -43,7 +43,9 @@
   
   <rich:panel>
     <f:facet name="header">Actions</f:facet>
-      <s:link value="Edit" view="/project/edit.xhtml"/>
+      <s:link value="Edit" view="/project/edit.xhtml" propagation="none">
+        <f:param name="projectId" value="#{projectHome.instance.id}"/>
+      </s:link>
       <br/>
       <s:link id="delete"
                     value="Delete"

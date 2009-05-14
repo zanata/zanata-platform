@@ -7,8 +7,12 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.Type;
+import org.hibernate.validator.Length;
+import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 
 /**
@@ -23,9 +27,43 @@ import org.hibernate.validator.NotNull;
 @Entity
 public class Community extends AbstractFliesEntity{
 	
+	private String name;
+
+	private String shortDescription;
+	private String longDescription;
+
 	private Person owner;
 	private Set<Person> officers;
 	private Set<Person> members;
+	
+	@NotEmpty
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Length(max = 100)
+	public String getShortDescription() {
+		return shortDescription;
+	}
+
+	public void setShortDescription(String shortDescription) {
+		this.shortDescription = shortDescription;
+	}
+
+	@Type(type = "text")
+	public String getLongDescription() {
+		return longDescription;
+	}
+
+	public void setLongDescription(String longDescription) {
+		this.longDescription = longDescription;
+	}
+	
+	
 	/*
 	private Set<Community> parentCommunities;
 	private Set<Community> childCommunities;
@@ -34,7 +72,7 @@ public class Community extends AbstractFliesEntity{
 	*/
 	
 	@NotNull
-	@OneToOne(optional = false, fetch = FetchType.EAGER)
+	@ManyToOne(optional = false, fetch = FetchType.EAGER)
 	@JoinColumn(name = "ownerId")
 	public Person getOwner() {
 		return owner;

@@ -73,7 +73,16 @@
  <item NAME="#xerror.xhtml" PATH="/error.xhtml" SHAPE="472,121,0,0"
   TYPE="page" model-entity="SeamPagesDiagramItem"/>
  <item ID="#project#edit.xhtml" NAME="#xproject#xedit.xhtml"
-  PATH="/project/edit.xhtml" SHAPE="984,953,0,0" TYPE="page" model-entity="SeamPagesDiagramItem"/>
+  PATH="/project/edit.xhtml" SHAPE="984,953,0,0" TYPE="page" model-entity="SeamPagesDiagramItem">
+  <output ID="/project/project.xhtml" NAME="output"
+   PATH="/project/project.xhtml" TARGET="#xproject#xproject.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
+  <output ID="/project/project.xhtml" NAME="output1"
+   PATH="/project/project.xhtml" TARGET="#xproject#xproject.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
+  <output ID="/project/home.xhtml" NAME="output2"
+   PATH="/project/home.xhtml" TARGET="#xproject#xhome.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
+  <output ID="/project/project.xhtml" NAME="output3"
+   PATH="/project/project.xhtml" TARGET="#xproject#xproject.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
+ </item>
  <item ID="#project#target.xhtml" NAME="#xproject#xtarget.xhtml"
   PATH="/project/target.xhtml" SHAPE="664,953,0,0" TYPE="page" model-entity="SeamPagesDiagramItem">
   <output ID="/project/home.xhtml" NAME="output"
@@ -83,4 +92,23 @@
   SHAPE="344,1057,0,0" TYPE="page" model-entity="SeamPagesDiagramItem"/>
  <item ID="#translate.xhtml" NAME="#xtranslate.xhtml"
   PATH="/translate.xhtml" SHAPE="1304,953,0,0" TYPE="page" model-entity="SeamPagesDiagramItem"/>
+ <item ID="#community#community.xhtml"
+  NAME="#xcommunity#xcommunity.xhtml" PATH="/community/community.xhtml"
+  SHAPE="1624,953,0,0" TYPE="page" model-entity="SeamPagesDiagramItem"/>
+ <item ID="#community#edit.xhtml" NAME="#xcommunity#xedit.xhtml"
+  PATH="/community/edit.xhtml" SHAPE="24,1057,0,0" TYPE="page" model-entity="SeamPagesDiagramItem">
+  <output ID="/community/community.xhtml" NAME="output"
+   PATH="/community/community.xhtml"
+   TARGET="#xcommunity#xcommunity.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
+  <output ID="/community/community.xhtml" NAME="output1"
+   PATH="/community/community.xhtml"
+   TARGET="#xcommunity#xcommunity.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
+  <output ID="/community/home.xhtml" NAME="output2"
+   PATH="/community/home.xhtml" TARGET="#xcommunity#xhome.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
+  <output ID="/community/community.xhtml" NAME="output3"
+   PATH="/community/community.xhtml"
+   TARGET="#xcommunity#xcommunity.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
+ </item>
+ <item NAME="#xcommunity#xhome.xhtml" PATH="/community/home.xhtml"
+  SHAPE="440,1233,0,0" TYPE="page" model-entity="SeamPagesDiagramItem"/>
 </diagram>

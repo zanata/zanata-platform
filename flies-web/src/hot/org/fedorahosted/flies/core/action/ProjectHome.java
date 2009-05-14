@@ -43,4 +43,6 @@ public class ProjectHome extends EntityHome<Project> {
 		return this.isManaged() ? "valid" : "invalid";
 	}
 
+	public void cancel(){}
+
 }

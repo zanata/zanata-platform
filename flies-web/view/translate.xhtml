@@ -85,9 +85,14 @@
           <div style="width:99%; padding:4px;">
             <h:outputText value="#{selectedTextUnitTarget.template.content}" disabled="#{selectedDocumentTarget == null}"/>
           </div>
-          <h:inputTextarea value="#{selectedTextUnitTarget.content}" 
+          <h:inputTextarea id="editorArea" value="#{selectedTextUnitTarget.content}" 
             disabled="#{selectedDocumentTarget == null}"
-            style="width:99%;" rows="6"/>
+            style="width:99%;" rows="6">
+          </h:inputTextarea>
+          <rich:contextMenu event="oncontextmenu" attachTo="editorArea" submitMode="none">
+              <rich:menuItem value="Zoom In" onclick="alert('a');" id="zin"></rich:menuItem>
+              <rich:menuItem value="Zoom Out" onclick="alert('b');" id="zout"></rich:menuItem>
+          </rich:contextMenu>          
           <a4j:commandButton action="#{translateAction.persistChanges}" reRender="textUnitTable"  value="save" />
         </h:form>
       </rich:panel>

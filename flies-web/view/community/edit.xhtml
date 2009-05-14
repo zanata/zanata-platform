@@ -9,36 +9,28 @@
     template="../layout/template.xhtml">
 
 <ui:define name="center_content">
-    <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
+    <rich:jQuery selector="#tab_communitys" query="addClass('ui-tabs-selected')" />
 
-    <s:fragment rendered="#{projectHome.managed}">
-      <h1>#{projectHome.instance.name}</h1>
+    <s:fragment rendered="#{communityHome.managed}">
+      <h1>#{communityHome.instance.name}</h1>
     </s:fragment>
-    <s:fragment rendered="#{not projectHome.managed}">
+    <s:fragment rendered="#{not communityHome.managed}">
       <h1>Create a New Project</h1>
     </s:fragment>
 
-    <s:formattedText id="project-long-description" value="#{projectHome.instance.longDescription}"></s:formattedText>
-
-    <h:form id="projectForm">
+    <h:form id="communityForm">
 
         <rich:panel>
             <s:decorate id="nameField" template="../layout/edit.xhtml">
                 <ui:define name="label">Name</ui:define>
                 <h:inputText id="name" required="true"
-                             value="#{projectHome.instance.name}"/>
-            </s:decorate>
-
-            <s:decorate id="slugField" template="../layout/edit.xhtml">
-                <ui:define name="label">Slug</ui:define>
-                <h:inputText id="slug" required="true"
-                             value="#{projectHome.instance.slug}" readonly="#{projectHome.managed}"/>
+                             value="#{communityHome.instance.name}"/>
             </s:decorate>
 
             <s:decorate id="shortDescriptionField" template="../layout/edit.xhtml">
                 <ui:define name="label">Short Description</ui:define>
                 <h:inputText id="shortDescription" required="true"
-                             value="#{projectHome.instance.shortDescription}" style="width:400px;"/>
+                             value="#{communityHome.instance.shortDescription}" style="width:400px;"/>
             </s:decorate>
 
             <s:decorate id="longDescriptionField" template="../layout/edit.xhtml">
@@ -46,7 +38,7 @@
                  <rich:editor id="longDescription" 
                     width="400" height="300" style="width:400px;"
                     required="false"
-                    value="#{projectHome.instance.longDescription}"
+                    value="#{communityHome.instance.longDescription}"
                     viewMode="visual" 
                     useSeamText="true"
                     theme="advanced">
@@ -60,15 +52,15 @@
         <div class="actionButtons">
             <h:commandButton id="save"
                           value="Save"
-                         action="#{projectHome.persist}"
-                       rendered="#{!projectHome.managed}"/>
+                         action="#{communityHome.persist}"
+                       rendered="#{!communityHome.managed}"/>
             <h:commandButton id="update"
                           value="Save"
-                         action="#{projectHome.update}"
-                       rendered="#{projectHome.managed}"/>
+                         action="#{communityHome.update}"
+                       rendered="#{communityHome.managed}"/>
             <s:button id="cancel"
-                            value="Cancel"
-                             action="#{projectHome.cancel}"/>
+                   value="Cancel"
+                  action="#{communityHome.cancel}"/>
         </div>
 
     </h:form>
