@@ -18,8 +18,6 @@
       <h1>Create a New Project</h1>
     </s:fragment>
 
-    <s:formattedText id="project-long-description" value="#{projectHome.instance.longDescription}"></s:formattedText>
-
     <h:form id="projectForm">
 
         <rich:panel>
@@ -35,18 +33,18 @@
                              value="#{projectHome.instance.slug}" readonly="#{projectHome.managed}"/>
             </s:decorate>
 
-            <s:decorate id="shortDescriptionField" template="../layout/edit.xhtml">
-                <ui:define name="label">Short Description</ui:define>
-                <h:inputText id="shortDescription" required="true"
-                             value="#{projectHome.instance.shortDescription}" style="width:400px;"/>
+            <s:decorate id="descriptionField" template="../layout/edit.xhtml">
+                <ui:define name="label">Description</ui:define>
+                <h:inputText id="description" required="true"
+                             value="#{projectHome.instance.description}" style="width:400px;"/>
             </s:decorate>
 
-            <s:decorate id="longDescriptionField" template="../layout/edit.xhtml">
-                <ui:define name="label">Long Description</ui:define>
-                 <rich:editor id="longDescription" 
+            <s:decorate id="homeContentField" template="../layout/edit.xhtml">
+                <ui:define name="label">Homepage Content</ui:define>
+                 <rich:editor id="homeContent" 
                     width="400" height="300" style="width:400px;"
                     required="false"
-                    value="#{projectHome.instance.longDescription}"
+                    value="#{projectHome.instance.homeContent}"
                     viewMode="visual" 
                     useSeamText="true"
                     theme="advanced">

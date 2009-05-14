@@ -37,10 +37,10 @@
                 <f:param name="projectId"
                          value="#{project.id}"/>
               </s:link></h3>
-              <h:outputText rendered="#{not empty project.shortDescription}">
-                <em class="description">#{project.shortDescription}</em>
+              <h:outputText rendered="#{not empty project.description}">
+                <em class="description">#{project.description}</em>
               </h:outputText>
-              <h:outputText rendered="#{empty project.shortDescription}">
+              <h:outputText rendered="#{empty project.description}">
                 <em class="no-description">(No description available)</em>
               </h:outputText>
               <div style="clear:both;"><ui:repeat value="#{project.projectSeries}" var="s">

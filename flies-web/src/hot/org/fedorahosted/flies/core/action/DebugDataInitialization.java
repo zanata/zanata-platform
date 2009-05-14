@@ -113,7 +113,7 @@ public class DebugDataInitialization {
 		project.setName("RHEL Deployment Guide");
 		project.setSlug("deploymentguide");
 		project
-				.setShortDescription("A comprehensive manual for Red Hat Enterprise Linux");
+				.setDescription("A comprehensive manual for Red Hat Enterprise Linux");
 		entityManager.persist(project);
 
 		ProjectSeries series = new ProjectSeries();

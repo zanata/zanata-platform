@@ -13,9 +13,9 @@
 
     <h1>#{projectHome.instance.name}</h1>
 
-    <s:formattedText id="project-long-description" value="#{projectHome.instance.longDescription}"></s:formattedText>
+    <s:formattedText id="project-home-content" value="#{projectHome.instance.homeContent}"></s:formattedText>
     
-    <h:outputText value="#{projectHome.instance.shortDescription}" rendered="#{empty projectHome.instance.longDescription}"/>
+    <h:outputText value="#{projectHome.instance.description}" rendered="#{empty projectHome.instance.homeContent}"/>
     
 </ui:define>
 

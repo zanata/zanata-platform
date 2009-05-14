@@ -29,8 +29,8 @@ public class Community extends AbstractFliesEntity{
 	
 	private String name;
 
-	private String shortDescription;
-	private String longDescription;
+	private String description;
+	private String homeContent;
 
 	private Person owner;
 	private Set<Person> officers;
@@ -46,23 +46,22 @@ public class Community extends AbstractFliesEntity{
 	}
 
 	@Length(max = 100)
-	public String getShortDescription() {
-		return shortDescription;
+	public String getDescription() {
+		return description;
 	}
-
-	public void setShortDescription(String shortDescription) {
-		this.shortDescription = shortDescription;
+	
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	@Type(type = "text")
-	public String getLongDescription() {
-		return longDescription;
+	public String getHomeContent() {
+		return homeContent;
 	}
 
-	public void setLongDescription(String longDescription) {
-		this.longDescription = longDescription;
+	public void setHomeContent(String homeContent) {
+		this.homeContent = homeContent;
 	}
-	
 	
 	/*
 	private Set<Community> parentCommunities;

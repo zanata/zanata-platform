@@ -14,8 +14,6 @@
 
   <h1>#{targetHome.instance.project.name} : #{targetHome.instance.name}</h1>
 
-  <s:formattedText id="project-long-description" value="#{targetHome.instance.project.longDescription}"></s:formattedText>
-  <h:outputText value="#{targetHome.instance.project.shortDescription}" rendered="#{empty targetHome.instance.project.longDescription}"/>
   <ui:repeat value="#{targetCategories}" var="category">
     <h:form id="category_form_#{category.id}">
       <s:conversationId/>

@@ -24,9 +24,9 @@ public class Project extends AbstractFliesEntity implements Serializable {
 
 	private String slug;
 
-	private String shortDescription;
+	private String description;
 
-	private String longDescription;
+	private String homeContent;
 
 	private List<ProjectSeries> projectSeries;
 	private List<ProjectTarget> projectTargets;
@@ -56,21 +56,21 @@ public class Project extends AbstractFliesEntity implements Serializable {
 	}
 
 	@Length(max = 100)
-	public String getShortDescription() {
-		return shortDescription;
+	public String getDescription() {
+		return description;
 	}
-
-	public void setShortDescription(String shortDescription) {
-		this.shortDescription = shortDescription;
+	
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	@Type(type = "text")
-	public String getLongDescription() {
-		return longDescription;
+	public String getHomeContent() {
+		return homeContent;
 	}
 
-	public void setLongDescription(String longDescription) {
-		this.longDescription = longDescription;
+	public void setHomeContent(String homeContent) {
+		this.homeContent = homeContent;
 	}
 
 	@OneToMany(mappedBy = "project")

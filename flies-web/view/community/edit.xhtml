@@ -27,18 +27,18 @@
                              value="#{communityHome.instance.name}"/>
             </s:decorate>
 
-            <s:decorate id="shortDescriptionField" template="../layout/edit.xhtml">
+            <s:decorate id="descriptionField" template="../layout/edit.xhtml">
                 <ui:define name="label">Short Description</ui:define>
-                <h:inputText id="shortDescription" required="true"
-                             value="#{communityHome.instance.shortDescription}" style="width:400px;"/>
+                <h:inputText id="description" required="true"
+                             value="#{communityHome.instance.description}" style="width:400px;"/>
             </s:decorate>
 
-            <s:decorate id="longDescriptionField" template="../layout/edit.xhtml">
-                <ui:define name="label">Long Description</ui:define>
-                 <rich:editor id="longDescription" 
+            <s:decorate id="homeContentField" template="../layout/edit.xhtml">
+                <ui:define name="label">Homepage Content</ui:define>
+                 <rich:editor id="homeContent" 
                     width="400" height="300" style="width:400px;"
                     required="false"
-                    value="#{communityHome.instance.longDescription}"
+                    value="#{communityHome.instance.homeContent}"
                     viewMode="visual" 
                     useSeamText="true"
                     theme="advanced">
