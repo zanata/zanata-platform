@@ -36,6 +36,8 @@
     
     <page view-id="/project/project.xhtml" conversation="ProjectView">
 
+		<param name="projectId" value="#{projectHome.id}" converterId="javax.faces.Long" />
+		
     	<description>#{projectHome.instance.name}</description>
     	
         <action execute="#{projectHome.validateEntityFound}"

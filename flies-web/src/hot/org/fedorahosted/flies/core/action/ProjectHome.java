@@ -16,16 +16,6 @@ import org.fedorahosted.flies.core.model.Project;
 @Scope(ScopeType.CONVERSATION)
 public class ProjectHome extends EntityHome<Project> {
 
-	@RequestParameter
-	private Long projectId;
-	
-	@Override
-	public Object getId() {
-		if(projectId != null)
-			return projectId;
-		return super.getId();
-	}
-	
 	@Override
 	@Begin
 	public void create() {
