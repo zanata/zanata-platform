@@ -87,12 +87,6 @@
 	   </navigation>
     </page>
 
-    <page view-id="/translate.xhtml" conversation="TranslationWorkspaceView">
-    	<description>#{translateAction.workspaceId}</description>
-    	<begin-conversation conversation="TranslationWorkspaceView" join="true" if="#{not translateAction.conversationActive}"/>
-    	<action execute="#{translateAction.initialize()}" if="#{not translateAction.conversationActive}" />
-	</page>
-    
     <page view-id="/project/target.xhtml" conversation="TargetView">
 
     	<description>#{targetHome.instance.name}</description>
@@ -111,6 +105,13 @@
             </rule>
         </navigation>
     </page>
+
+    <page view-id="/translate.xhtml" conversation="TranslationWorkspaceView">
+    	<description>#{translateAction.workspaceId}</description>
+    	<begin-conversation conversation="TranslationWorkspaceView" join="true" if="#{not translateAction.conversationActive}"/>
+    	<action execute="#{translateAction.initialize()}" if="#{not translateAction.conversationActive}" />
+	</page>
+
 
     <page view-id="/community/community.xhtml" conversation="CommunityView">
     	<description>#{communityHome.instance.id}</description>

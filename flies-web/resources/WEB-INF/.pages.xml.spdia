@@ -90,8 +90,6 @@
  </item>
  <item NAME="#xproject#xhome.xhtml" PATH="/project/home.xhtml"
   SHAPE="344,1057,0,0" TYPE="page" model-entity="SeamPagesDiagramItem"/>
- <item ID="#translate.xhtml" NAME="#xtranslate.xhtml"
-  PATH="/translate.xhtml" SHAPE="1304,953,0,0" TYPE="page" model-entity="SeamPagesDiagramItem"/>
  <item ID="#community#community.xhtml"
   NAME="#xcommunity#xcommunity.xhtml" PATH="/community/community.xhtml"
   SHAPE="1624,953,0,0" TYPE="page" model-entity="SeamPagesDiagramItem"/>
@@ -111,4 +109,6 @@
  </item>
  <item NAME="#xcommunity#xhome.xhtml" PATH="/community/home.xhtml"
   SHAPE="440,1233,0,0" TYPE="page" model-entity="SeamPagesDiagramItem"/>
+ <item ID="#translate.xhtml" NAME="#xtranslate.xhtml"
+  PATH="/translate.xhtml" SHAPE="344,1409,0,0" TYPE="page" model-entity="SeamPagesDiagramItem"/>
 </diagram>
