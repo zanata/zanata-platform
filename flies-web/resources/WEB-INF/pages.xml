@@ -62,6 +62,7 @@
 	</page>
 
     <page view-id="/project/edit.xhtml" conversation="ProjectView">
+	   <param name="projectId" value="#{projectHome.id}" converterId="javax.faces.Long" />
 
 	    <navigation from-action="#{projectHome.update}">
 	         <redirect view-id="/project/project.xhtml">
@@ -70,9 +71,7 @@
 	    </navigation>
 	
 	   <navigation from-action="#{projectHome.cancel}">
-         <redirect view-id="/project/project.xhtml">
-           <param name="projectId" value="#{projectHome.instance.id}"/>
-         </redirect>
+         <redirect view-id="/project/project.xhtml" include-page-params="true"/>
 	   </navigation>
 	   
     </page>
@@ -103,9 +102,7 @@
 	   </navigation>
 
 	   <navigation from-action="#{targetHome.cancel}">
-         <redirect view-id="/project/project.xhtml">
-           <param name="projectId" value="#{projectHome.instance.id}"/>
-         </redirect>
+         <redirect view-id="/project/project.xhtml" include-page-params="true" />
 	   </navigation>
 	</page>
 
