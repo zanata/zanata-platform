@@ -54,6 +54,8 @@
                            value="#{t.name}"
                            propagation="none"
                            view="/project/target.xhtml">
+                        <f:param name="projectId"
+                                 value="#{project.id}"/>
                         <f:param name="targetId"
                                  value="#{t.id}"/>
                       </s:link>

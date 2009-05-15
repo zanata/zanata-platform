@@ -78,22 +78,13 @@
     </page>
 
     <page view-id="/project/target.xhtml" conversation="TargetView">
+		<param name="projectId" value="#{projectHome.id}" converterId="javax.faces.Long" />
+		<param name="targetId" value="#{targetHome.id}" converterId="javax.faces.Long" />
 
-    	<description>#{targetHome.instance.name}</description>
-    	
-        <action execute="#{targetHome.validateEntityFound}"
-            if="#{view.viewId == '/project/target.xhtml' or
-                (view.viewId == '/project/edit.xhtml' and targetHome.targetId != null)}"/>
-                
-        <navigation from-action="#{targetHome.validateEntityFound}">
-            <rule if-outcome="invalid">
-                <redirect view-id="/project/home.xhtml" >
-                    <message severity="WARN">
-                        The project you requested does not exist.
-                    </message>
-                </redirect>
-            </rule>
-        </navigation>
+		<action execute="#{targetHome.validateSuppliedId}" />
+		<!-- We set the conversation description in validateSuppliedId
+    		<description>#{targetHome.instance.name}</description>
+    	 -->
     </page>
 
     <page view-id="/translate.xhtml" conversation="TranslationWorkspaceView">

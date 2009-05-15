@@ -13,11 +13,13 @@ import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.Factory;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.web.RequestParameter;
+import org.jboss.seam.core.Conversation;
 import org.jboss.seam.framework.EntityHome;
 import org.jboss.seam.log.Log;
 
@@ -25,8 +27,7 @@ import org.jboss.seam.log.Log;
 @Scope(ScopeType.CONVERSATION)
 public class TargetHome extends EntityHome<ProjectTarget> {
 	
-	@RequestParameter
-	private Long targetId;
+	@In ProjectHome projectHome;
 	
 	@Logger
 	Log log;
@@ -34,30 +35,16 @@ public class TargetHome extends EntityHome<ProjectTarget> {
 	@Out(required = false)
 	private List<ResourceCategory> targetCategories;
 
-	@Override
-	public Object getId() {
-		if(targetId != null)
-			return targetId;
-		return super.getId();
-	}
-	
-	@Override
-	@Begin
-	public void create() {
-		super.create();
-	}
-	
-	public String validateEntityFound() {
-		try {
-			this.getInstance();
-		} catch (EntityNotFoundException e) {
-			// TODO this exception will be caught earlier by Seam and a it will redirect to the error page.
-			return "invalid";
-		}
 
-		return this.isManaged() ? "valid" : "invalid";
+	@Begin(join = true)
+	public void validateSuppliedId(){
+		projectHome.validateSuppliedId();
+		getInstance(); // this will raise an EntityNotFound exception
+					   // when id is invalid and conversation will not
+		               // start
+		Conversation c = Conversation.instance();
+		c.setDescription(getInstance().getName());
 	}
-	
 	
 	@SuppressWarnings("unchecked")
 	@Factory("targetCategories")

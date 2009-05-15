@@ -77,10 +77,7 @@
    PATH="/project/project.xhtml" TARGET="#xproject#xproject.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
  </item>
  <item ID="#project#target.xhtml" NAME="#xproject#xtarget.xhtml"
-  PATH="/project/target.xhtml" SHAPE="664,953,0,0" TYPE="page" model-entity="SeamPagesDiagramItem">
-  <output ID="/project/home.xhtml" NAME="output"
-   PATH="/project/home.xhtml" TARGET="#xproject#xhome.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
- </item>
+  PATH="/project/target.xhtml" SHAPE="664,953,0,0" TYPE="page" model-entity="SeamPagesDiagramItem"/>
  <item NAME="#xproject#xhome.xhtml" PATH="/project/home.xhtml"
   SHAPE="344,1057,0,0" TYPE="page" model-entity="SeamPagesDiagramItem"/>
  <item ID="#community#community.xhtml"
