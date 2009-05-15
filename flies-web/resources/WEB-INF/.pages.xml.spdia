@@ -114,7 +114,7 @@
   PATH="/project/create_target.xhtml" SHAPE="120,1465,0,0" TYPE="page" model-entity="SeamPagesDiagramItem">
   <output ID="/project/target.xhtml" NAME="output"
    PATH="/project/target.xhtml" TARGET="#xproject#xtarget.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
-  <output ID="/project/home.xhtml" NAME="output1"
-   PATH="/project/home.xhtml" TARGET="#xproject#xhome.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
+  <output ID="/project/project.xhtml" NAME="output1"
+   PATH="/project/project.xhtml" TARGET="#xproject#xproject.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
  </item>
 </diagram>

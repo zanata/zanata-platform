@@ -148,6 +148,7 @@ public class TargetHome extends EntityHome<ProjectTarget> {
 						getInstance()).getResultList();
 	}
 	
+	public void cancel(){}
 	
 	
 	

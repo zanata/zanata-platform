@@ -88,7 +88,10 @@
     </page>
 
 	<page view-id="/project/create_target.xhtml" conversation="ProjectView" conversation-required="true">
+	   <param name="projectId" value="#{projectHome.id}" converterId="javax.faces.Long" />
+		
 	   <begin-conversation join="true"/>
+	   
 	   <navigation from-action="#{targetHome.persist}">
 	   	  <rule if="#{targetHome.managed}">
 		   	  <end-conversation before-redirect="true"/>
@@ -100,8 +103,8 @@
 	   </navigation>
 
 	   <navigation from-action="#{targetHome.cancel}">
-         <redirect view-id="/project/home.xhtml">
-            <param name="projectId" value="#{projectHome.instance.id}"/>
+         <redirect view-id="/project/project.xhtml">
+           <param name="projectId" value="#{projectHome.instance.id}"/>
          </redirect>
 	   </navigation>
 	</page>
