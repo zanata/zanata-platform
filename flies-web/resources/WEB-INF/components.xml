@@ -60,15 +60,6 @@
       </drools:rule-files>
    </drools:rule-base>
 
-	<component name="targetPrototype" 
-			class="org.fedorahosted.flies.core.model.ProjectTarget">
-  		<property name="project">#{projectHome.instance}</property>
-	</component>
-	
-	<framework:entity-home name="targetHome" 
-			class="org.fedorahosted.flies.core.action.TargetHome" 
-			new-instance="#{targetPrototype}" />
-
    <security:rule-based-permission-resolver security-rules="#{securityRules}"/> 
    
     <security:jpa-identity-store 

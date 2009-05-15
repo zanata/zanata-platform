@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.fedorahosted.flies.core.model.Project;
 import org.fedorahosted.flies.core.model.ProjectSeries;
 import org.fedorahosted.flies.core.model.ProjectTarget;
 import org.fedorahosted.flies.core.model.ResourceCategory;
@@ -34,11 +35,22 @@ public class TargetHome extends EntityHome<ProjectTarget> {
 	@Logger
 	Log log;
 	
+	
+	@In(value="#{projectHome.instance}", scope=ScopeType.CONVERSATION, required=false)
+	Project project;
+	
 	private Long projectId;
 	
 	@Out(required = false)
 	private List<ResourceCategory> targetCategories;
 
+	@Override
+	protected ProjectTarget createInstance() {
+		ProjectTarget target = new ProjectTarget();
+		target.setProject(project);
+		return target;
+	}
+	
 	public Long getProjectId() {
 		return projectId;
 	}
