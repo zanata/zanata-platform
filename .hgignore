@@ -6,7 +6,7 @@ syntax: regexp
 
 ^\.pc/
 ^.ant-targets-build.xml
-^.pages.xml.spdia
+\.pages.xml.spdia$
 
 # flies-web
 ^flies-web/lib/
