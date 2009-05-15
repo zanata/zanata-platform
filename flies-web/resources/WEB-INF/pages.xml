@@ -114,40 +114,43 @@
 
 
     <page view-id="/community/community.xhtml" conversation="CommunityView">
-    	<description>#{communityHome.instance.id}</description>
+		<param name="communityId" value="#{communityHome.id}" converterId="javax.faces.Long" />
+		<action execute="#{communityHome.validateSuppliedId}" />
 	</page>
 
     <page view-id="/community/edit.xhtml" conversation="CommunityView">
 	   
-	   <navigation from-action="#{communityHome.update}">
-	      <rule if="#{communityHome.managed}">
+	   <param name="communityId" value="#{communityHome.id}" converterId="javax.faces.Long" />
+
+	    <navigation from-action="#{communityHome.update}">
 	         <redirect view-id="/community/community.xhtml">
 	           <param name="communityId" value="#{communityHome.instance.id}"/>
 	         </redirect>
-	      </rule>
-	   </navigation>
+	    </navigation>
 	
-	   <navigation from-action="#{communityHome.persist}">
-	      <rule if="#{communityHome.managed}">
-	         <redirect view-id="/community/community.xhtml">
-	           <param name="communityId" value="#{communityHome.instance.id}"/>
-	         </redirect>
-	      </rule>
-	   </navigation>
-	   
 	   <navigation from-action="#{communityHome.cancel}">
-	   	  <end-conversation if="#{not communityHome.managed}" before-redirect="true"/>
-	      <rule if="#{not communityHome.managed}">
-	         <redirect view-id="/community/home.xhtml" />
-	      </rule>
-	      <rule if="#{communityHome.managed}">
-	         <redirect view-id="/community/community.xhtml">
-	           <param name="communityId" value="#{communityHome.instance.id}"/>
-	         </redirect>
-	      </rule>
+         <redirect view-id="/community/community.xhtml" include-page-params="true"/>
 	   </navigation>
 	   
     </page>
+
+	<page view-id="/community/create_community.xhtml">
+	   <begin-conversation join="true"/>
+	   <navigation from-action="#{communityHome.persist}">
+	   	  <rule if="#{communityHome.managed}">
+		   	  <end-conversation before-redirect="true"/>
+		      <redirect view-id="/community/community.xhtml">
+	            <param name="communityId" value="#{communityHome.instance.id}"/>
+	          </redirect>
+	   	  </rule>
+	   </navigation>
+
+	   <navigation from-action="#{communityHome.cancel}">
+	   	  <end-conversation before-redirect="true"/>
+         <redirect view-id="/community/home.xhtml" />
+	   </navigation>
+	</page>
+
 
     <exception class="org.jboss.seam.framework.EntityNotFoundException">
         <redirect view-id="/error.xhtml">
