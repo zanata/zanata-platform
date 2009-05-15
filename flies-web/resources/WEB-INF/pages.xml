@@ -86,10 +86,10 @@
     	 -->
     </page>
 
-	<page view-id="/project/create_target.xhtml" conversation="ProjectView" conversation-required="true">
+	<page view-id="/project/create_target.xhtml" conversation="ProjectView" >
 	   <param name="projectId" value="#{projectHome.id}" converterId="javax.faces.Long" />
 		
-	   <begin-conversation join="true"/>
+	   <action execute="#{projectHome.validateSuppliedId}" />
 	   
 	   <navigation from-action="#{targetHome.persist}">
 	   	  <rule if="#{targetHome.managed}">
@@ -105,7 +105,6 @@
          <redirect view-id="/project/project.xhtml" include-page-params="true" />
 	   </navigation>
 	</page>
-
 
     <page view-id="/translate.xhtml" conversation="TranslationWorkspaceView">
     	<description>#{translateAction.workspaceId}</description>
