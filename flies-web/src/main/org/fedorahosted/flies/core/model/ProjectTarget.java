@@ -13,7 +13,7 @@ import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;
 
 @Entity
-public class ProjectTarget extends AbstractFliesEntity implements Serializable {
+public class ProjectTarget extends AbstractSlugEntity implements Serializable {
 
 	private String name;
 

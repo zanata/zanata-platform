@@ -14,6 +14,12 @@
                          value="#{targetHome.instance.name}"/>
         </s:decorate>
 
+        <s:decorate id="slugField" template="../layout/edit.xhtml">
+            <ui:define name="label">Slug</ui:define>
+            <h:inputText id="slug" required="true"
+                         value="#{targetHome.instance.slug}" readonly="#{targetHome.managed}"/>
+        </s:decorate>
+
         <s:decorate id="descriptionField" template="../layout/edit.xhtml">
             <ui:define name="label">Description</ui:define>
             <h:inputText id="description" required="true"
