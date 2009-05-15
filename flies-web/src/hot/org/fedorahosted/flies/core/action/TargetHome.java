@@ -10,6 +10,8 @@ import org.fedorahosted.flies.repository.model.Document;
 import org.fedorahosted.flies.repository.model.AbstractTextUnitTarget.Status;
 import org.fedorahosted.flies.repository.util.TranslationStatistics;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.Factory;
@@ -20,6 +22,7 @@ import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.core.Conversation;
+import org.jboss.seam.core.Manager;
 import org.jboss.seam.framework.EntityHome;
 import org.jboss.seam.log.Log;
 
@@ -27,23 +30,38 @@ import org.jboss.seam.log.Log;
 @Scope(ScopeType.CONVERSATION)
 public class TargetHome extends EntityHome<ProjectTarget> {
 	
-	@In ProjectHome projectHome;
-	
 	@Logger
 	Log log;
+	
+	private Long projectId;
 	
 	@Out(required = false)
 	private List<ResourceCategory> targetCategories;
 
 
-	@Begin(join = true)
+	public Long getProjectId() {
+		return projectId;
+	}
+	
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
+	}
+	
+	@Begin(join=true)
 	public void validateSuppliedId(){
-		projectHome.validateSuppliedId();
 		getInstance(); // this will raise an EntityNotFound exception
 					   // when id is invalid and conversation will not
 		               // start
 		Conversation c = Conversation.instance();
 		c.setDescription(getInstance().getName());
+	}
+	
+	@Override
+	protected ProjectTarget loadInstance() {
+		Session session = (Session) getEntityManager().getDelegate();
+		return (ProjectTarget) session.createCriteria(ProjectTarget.class)
+			.add(Restrictions.idEq(getId()))
+			.add(Restrictions.eq("project.id", getProjectId())).uniqueResult();
 	}
 	
 	@SuppressWarnings("unchecked")

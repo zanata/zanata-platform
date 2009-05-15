@@ -78,9 +78,9 @@
     </page>
 
     <page view-id="/project/target.xhtml" conversation="TargetView">
-		<param name="projectId" value="#{projectHome.id}" converterId="javax.faces.Long" />
+		<param name="projectId" value="#{targetHome.projectId}" converterId="javax.faces.Long" />
 		<param name="targetId" value="#{targetHome.id}" converterId="javax.faces.Long" />
-
+		
 		<action execute="#{targetHome.validateSuppliedId}" />
 		<!-- We set the conversation description in validateSuppliedId
     		<description>#{targetHome.instance.name}</description>

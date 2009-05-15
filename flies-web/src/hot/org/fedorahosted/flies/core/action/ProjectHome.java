@@ -20,8 +20,9 @@ public class ProjectHome extends EntityHome<Project> {
 		Conversation c = Conversation.instance();
 		c.setDescription(getInstance().getName());
 	}
-
+	
 	public void cancel(){}
+
 	
 	
 }
