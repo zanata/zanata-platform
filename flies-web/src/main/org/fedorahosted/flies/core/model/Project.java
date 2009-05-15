@@ -18,11 +18,9 @@ import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;
 
 @Entity
-public class Project extends AbstractFliesEntity implements Serializable {
+public class Project extends AbstractSlugEntity implements Serializable {
 
 	private String name;
-
-	private String slug;
 
 	private String description;
 
@@ -42,17 +40,6 @@ public class Project extends AbstractFliesEntity implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	@NaturalId
-	@Length(min = 2, max = 40)
-	@Slug
-	public String getSlug() {
-		return slug;
-	}
-
-	public void setSlug(String slug) {
-		this.slug = slug;
 	}
 
 	@Length(max = 100)
