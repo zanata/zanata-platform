@@ -87,6 +87,26 @@
     	 -->
     </page>
 
+	<page view-id="/project/create_target.xhtml" conversation="ProjectView" conversation-required="true">
+	   <begin-conversation join="true"/>
+	   <navigation from-action="#{targetHome.persist}">
+	   	  <rule if="#{targetHome.managed}">
+		   	  <end-conversation before-redirect="true"/>
+		      <redirect view-id="/project/target.xhtml">
+	            <param name="projectId" value="#{projectHome.instance.id}"/>
+	            <param name="targetId" value="#{targetHome.instance.id}"/>
+	          </redirect>
+	   	  </rule>
+	   </navigation>
+
+	   <navigation from-action="#{targetHome.cancel}">
+         <redirect view-id="/project/home.xhtml">
+            <param name="projectId" value="#{projectHome.instance.id}"/>
+         </redirect>
+	   </navigation>
+	</page>
+
+
     <page view-id="/translate.xhtml" conversation="TranslationWorkspaceView">
     	<description>#{translateAction.workspaceId}</description>
     	<begin-conversation conversation="TranslationWorkspaceView" join="true" if="#{not translateAction.conversationActive}"/>

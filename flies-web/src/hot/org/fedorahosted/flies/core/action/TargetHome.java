@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.fedorahosted.flies.core.model.ProjectSeries;
 import org.fedorahosted.flies.core.model.ProjectTarget;
 import org.fedorahosted.flies.core.model.ResourceCategory;
 import org.fedorahosted.flies.repository.model.Document;
@@ -38,7 +39,6 @@ public class TargetHome extends EntityHome<ProjectTarget> {
 	@Out(required = false)
 	private List<ResourceCategory> targetCategories;
 
-
 	public Long getProjectId() {
 		return projectId;
 	}
@@ -55,6 +55,13 @@ public class TargetHome extends EntityHome<ProjectTarget> {
 		Conversation c = Conversation.instance();
 		c.setDescription(getInstance().getName());
 	}
+
+	public List<ProjectSeries> getAvailableProjectSeries(){
+		return getEntityManager().createQuery("from ProjectSeries where project = :project")
+			.setParameter("project", getInstance().getProject()).getResultList();
+		
+	}
+
 	
 	@Override
 	protected ProjectTarget loadInstance() {

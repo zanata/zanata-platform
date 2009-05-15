@@ -1,0 +1,49 @@
+<h:form id="projectForm"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+>
+
+    <rich:panel>
+        <s:decorate id="nameField" template="../layout/edit.xhtml">
+            <ui:define name="label">Name</ui:define>
+            <h:inputText id="name" required="true"
+                         value="#{targetHome.instance.name}"/>
+        </s:decorate>
+
+        <s:decorate id="descriptionField" template="../layout/edit.xhtml">
+            <ui:define name="label">Description</ui:define>
+            <h:inputText id="description" required="true"
+                         value="#{targetHome.instance.description}" style="width:400px;"/>
+        </s:decorate>
+
+        <s:decorate id="projectSeriesField" template="../layout/edit.xhtml">
+            <ui:define name="label">Project Series</ui:define>
+            <h:selectOneMenu id="projectSeries" value="#{targetHome.instance.projectSeries}" require="true">  
+              <s:selectItems value="#{targetHome.availableProjectSeries}" var="serie" label="#{serie.name}"/>  
+              <s:convertEntity/>  
+            </h:selectOneMenu>  
+        </s:decorate>
+
+        <div style="clear:both"/>
+
+    </rich:panel>
+
+    <div class="actionButtons">
+        <h:commandButton id="save"
+                      value="Save"
+                     action="#{targetHome.persist}"
+                   rendered="#{!targetHome.managed}"/>
+        <h:commandButton id="update"
+                      value="Save"
+                     action="#{targetHome.update}"
+                   rendered="#{targetHome.managed}"/>
+        <s:button id="cancel"
+                        value="Cancel"
+                         action="#{targetHome.cancel}"/>
+    </div>
+
+</h:form>
