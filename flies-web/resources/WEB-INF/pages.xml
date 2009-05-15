@@ -65,9 +65,7 @@
 	   <param name="projectId" value="#{projectHome.id}" converterId="javax.faces.Long" />
 
 	    <navigation from-action="#{projectHome.update}">
-	         <redirect view-id="/project/project.xhtml">
-	           <param name="projectId" value="#{projectHome.instance.id}"/>
-	         </redirect>
+	         <redirect view-id="/project/project.xhtml" include-page-params="true" />
 	    </navigation>
 	
 	   <navigation from-action="#{projectHome.cancel}">
@@ -118,22 +116,6 @@
 		<action execute="#{communityHome.validateSuppliedId}" />
 	</page>
 
-    <page view-id="/community/edit.xhtml" conversation="CommunityView">
-	   
-	   <param name="communityId" value="#{communityHome.id}" converterId="javax.faces.Long" />
-
-	    <navigation from-action="#{communityHome.update}">
-	         <redirect view-id="/community/community.xhtml">
-	           <param name="communityId" value="#{communityHome.instance.id}"/>
-	         </redirect>
-	    </navigation>
-	
-	   <navigation from-action="#{communityHome.cancel}">
-         <redirect view-id="/community/community.xhtml" include-page-params="true"/>
-	   </navigation>
-	   
-    </page>
-
 	<page view-id="/community/create_community.xhtml">
 	   <begin-conversation join="true"/>
 	   <navigation from-action="#{communityHome.persist}">
@@ -151,6 +133,19 @@
 	   </navigation>
 	</page>
 
+    <page view-id="/community/edit.xhtml" conversation="CommunityView">
+	   
+	   <param name="communityId" value="#{communityHome.id}" converterId="javax.faces.Long" />
+
+	    <navigation from-action="#{communityHome.update}">
+	         <redirect view-id="/community/community.xhtml" include-page-params="true"/>
+	    </navigation>
+	
+	   <navigation from-action="#{communityHome.cancel}">
+         <redirect view-id="/community/community.xhtml" include-page-params="true"/>
+	   </navigation>
+	   
+    </page>
 
     <exception class="org.jboss.seam.framework.EntityNotFoundException">
         <redirect view-id="/error.xhtml">
