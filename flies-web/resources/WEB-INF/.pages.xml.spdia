@@ -5,10 +5,7 @@
    TARGET="#xhome.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
  </item>
  <item ID="#project#project.xhtml" NAME="#xproject#xproject.xhtml"
-  PATH="/project/project.xhtml" SHAPE="24,953,0,0" TYPE="page" model-entity="SeamPagesDiagramItem">
-  <output ID="/project/home.xhtml" NAME="output"
-   PATH="/project/home.xhtml" TARGET="#xproject#xhome.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
- </item>
+  PATH="/project/project.xhtml" SHAPE="24,953,0,0" TYPE="page" model-entity="SeamPagesDiagramItem"/>
  <item ID="org.jboss.seam.framework.EntityNotFoundException"
   NAME="exception:org.jboss.seam.framework.EntityNotFoundException"
   PATH="org.jboss.seam.framework.EntityNotFoundException"
@@ -78,10 +75,6 @@
    PATH="/project/project.xhtml" TARGET="#xproject#xproject.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
   <output ID="/project/project.xhtml" NAME="output1"
    PATH="/project/project.xhtml" TARGET="#xproject#xproject.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
-  <output ID="/project/home.xhtml" NAME="output2"
-   PATH="/project/home.xhtml" TARGET="#xproject#xhome.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
-  <output ID="/project/project.xhtml" NAME="output3"
-   PATH="/project/project.xhtml" TARGET="#xproject#xproject.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
  </item>
  <item ID="#project#target.xhtml" NAME="#xproject#xtarget.xhtml"
   PATH="/project/target.xhtml" SHAPE="664,953,0,0" TYPE="page" model-entity="SeamPagesDiagramItem">
@@ -111,4 +104,12 @@
   SHAPE="440,1233,0,0" TYPE="page" model-entity="SeamPagesDiagramItem"/>
  <item ID="#translate.xhtml" NAME="#xtranslate.xhtml"
   PATH="/translate.xhtml" SHAPE="344,1409,0,0" TYPE="page" model-entity="SeamPagesDiagramItem"/>
+ <item ID="#project#create_project.xhtml"
+  NAME="#xproject#xcreate_project.xhtml"
+  PATH="/project/create_project.xhtml" SHAPE="88,1489,0,0" TYPE="page" model-entity="SeamPagesDiagramItem">
+  <output ID="/project/project.xhtml" NAME="output"
+   PATH="/project/project.xhtml" TARGET="#xproject#xproject.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
+  <output ID="/project/home.xhtml" NAME="output1"
+   PATH="/project/home.xhtml" TARGET="#xproject#xhome.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
+ </item>
 </diagram>

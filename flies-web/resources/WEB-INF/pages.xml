@@ -35,56 +35,46 @@
     </page>
     
     <page view-id="/project/project.xhtml" conversation="ProjectView">
-
 		<param name="projectId" value="#{projectHome.id}" converterId="javax.faces.Long" />
-		
-    	<description>#{projectHome.instance.name}</description>
-    	
-        <action execute="#{projectHome.validateEntityFound}"
-            if="#{view.viewId == '/project/project.xhtml' or
-                (view.viewId == '/project/edit.xhtml' and projectHome.projectId != null)}"/>
-                
-        <navigation from-action="#{projectHome.validateEntityFound}">
-            <rule if-outcome="invalid">
-                <redirect view-id="/project/home.xhtml" >
-                    <message severity="WARN">
-                        The project you requested does not exist.
-                    </message>
-                </redirect>
-            </rule>
-        </navigation>
-    	
+		<action execute="#{projectHome.validateSuppliedId}" />
+		<!--
+		TODO: We set the descirption in validateSuppliedId() as otherwise this will throw an exception
+		      trying to read instance.name when instance is null...  
+    	<description>#{projectHome.instance != null ? projectHome.instance.name : 'Invalid Project'}</description>
+    	 -->
     </page>
+
+	<page view-id="/project/create_project.xhtml">
+	   <begin-conversation join="true"/>
+	   <navigation from-action="#{projectHome.persist}">
+	   	  <rule if="#{projectHome.managed}">
+		   	  <end-conversation before-redirect="true"/>
+		      <redirect view-id="/project/project.xhtml">
+	            <param name="projectId" value="#{projectHome.instance.id}"/>
+	          </redirect>
+	   	  </rule>
+	   </navigation>
+
+	   <navigation from-action="#{projectHome.cancel}">
+	   	  <end-conversation before-redirect="true"/>
+         <redirect view-id="/project/home.xhtml" />
+	   </navigation>
+	</page>
 
     <page view-id="/project/edit.xhtml" conversation="ProjectView">
 
-	   <navigation from-action="#{projectHome.update}">
-	      <rule if="#{projectHome.managed}">
+	    <navigation from-action="#{projectHome.update}">
 	         <redirect view-id="/project/project.xhtml">
 	           <param name="projectId" value="#{projectHome.instance.id}"/>
 	         </redirect>
-	      </rule>
-	   </navigation>
-	
-	   <navigation from-action="#{projectHome.persist}">
-	      <rule if="#{projectHome.managed}">
-	         <redirect view-id="/project/project.xhtml">
-	           <param name="projectId" value="#{projectHome.instance.id}"/>
-	         </redirect>
-	      </rule>
-	   </navigation>
+	    </navigation>
 	
 	   <navigation from-action="#{projectHome.cancel}">
-	   	  <end-conversation if="#{not projectHome.managed}" before-redirect="true"/>
-	      <rule if="#{not projectHome.managed}">
-	         <redirect view-id="/project/home.xhtml" />
-	      </rule>
-	      <rule if="#{projectHome.managed}">
-	         <redirect view-id="/project/project.xhtml">
-	           <param name="projectId" value="#{projectHome.instance.id}"/>
-	         </redirect>
-	      </rule>
+         <redirect view-id="/project/project.xhtml">
+           <param name="projectId" value="#{projectHome.instance.id}"/>
+         </redirect>
 	   </navigation>
+	   
     </page>
 
     <page view-id="/project/target.xhtml" conversation="TargetView">
