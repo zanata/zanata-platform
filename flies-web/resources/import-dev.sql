@@ -34,15 +34,15 @@ insert into AccountMembership (accountId, memberOf)
 #	values ('gu-IN','gu_IN', NULL);
 	
 insert into Tribe (id, creationDate, timestamp, chiefId, localeId) 
-	values(1, NOW(), NOW(), 3, 'gu-IN')
+	values(1, NOW(), NOW(), 3, 'gu-IN');
 	
-insert into Community (id, name, shortDescription, longDescription, ownerId, creationDate, timestamp)
-	values (1, 'JBoss.org', 'best community since sliced bread', NULL, 1, NOW(), NOW());
-insert into Community (id, name, shortDescription, longDescription, ownerId, creationDate, timestamp)
-	values (2, 'Red Hat', 'best community since sliced bread', NULL, 1, NOW(), NOW());
-insert into Community (id, name, shortDescription, longDescription, ownerId, creationDate, timestamp)
-	values (3, 'Hibernate.org', 'best community since sliced bread', NULL, 1, NOW(), NOW());
-insert into Community (id, name, shortDescription, longDescription, ownerId, creationDate, timestamp)
-	values (4, 'Seam', 1, 'best community since sliced bread', NULL, 1, NOW(), NOW());
+insert into Community (id, slug, name, description, homeContent, ownerId, creationDate, timestamp)
+	values (1, 'jboss', 'JBoss.org', 'best community since sliced bread', NULL, 1, NOW(), NOW());
+insert into Community (id, slug, name, description, homeContent, ownerId, creationDate, timestamp)
+	values (2, 'redhat', 'Red Hat', 'best community since sliced bread', NULL, 1, NOW(), NOW());
+insert into Community (id, slug, name, description, homeContent, ownerId, creationDate, timestamp)
+	values (3, 'hibernate', 'Hibernate.org', 'best community since sliced bread', NULL, 1, NOW(), NOW());
+insert into Community (id, slug, name, description, homeContent, ownerId, creationDate, timestamp)
+	values (4, 'seam', 'Seam', 'best community since sliced bread', NULL, 1, NOW(), NOW());
 	
 	
