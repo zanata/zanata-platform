@@ -1,6 +1,5 @@
 jboss.home =/usr/share/jboss-4.2.3.GA
 jboss.domain=default
-seam.home =/usr/share/jboss-seam-2.1.1.GA
 
 # non-maven dependencies
 xom.jar.url = http://www.cafeconleche.org/XOM/xom-1.2.1.jar
