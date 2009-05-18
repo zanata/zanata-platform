@@ -123,6 +123,7 @@ public class DebugDataInitialization {
 
 		ProjectTarget projectTarget = new ProjectTarget();
 		projectTarget.setName("5.3");
+		projectTarget.setSlug("5dot3");
 		projectTarget.setProject(project);
 		projectTarget.setProjectSeries(series);
 		entityManager.persist(projectTarget);

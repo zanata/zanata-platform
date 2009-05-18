@@ -10,7 +10,7 @@ import org.jboss.seam.framework.EntityHome;
 
 @Name("projectHome")
 @Scope(ScopeType.CONVERSATION)
-public class ProjectHome extends EntityHome<Project> {
+public class ProjectHome extends SlugHome<Project> {
 
 	@Begin(join = true)
 	public void validateSuppliedId(){
@@ -18,7 +18,7 @@ public class ProjectHome extends EntityHome<Project> {
 					   // when id is invalid and conversation will not
 		               // start
 		Conversation c = Conversation.instance();
-		c.setDescription(getInstance().getName());
+		c.setDescription(getInstance().getSlug());
 	}
 	
 	public void cancel(){}

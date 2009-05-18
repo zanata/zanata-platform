@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.model.Project;
 import org.fedorahosted.flies.core.model.ProjectSeries;
 import org.fedorahosted.flies.core.model.ProjectTarget;
@@ -13,6 +14,7 @@ import org.fedorahosted.flies.repository.model.AbstractTextUnitTarget.Status;
 import org.fedorahosted.flies.repository.util.TranslationStatistics;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
@@ -30,16 +32,16 @@ import org.jboss.seam.log.Log;
 
 @Name("targetHome")
 @Scope(ScopeType.CONVERSATION)
-public class TargetHome extends EntityHome<ProjectTarget> {
+public class TargetHome extends MultiSlugHome<ProjectTarget>{
 	
 	@Logger
 	Log log;
 	
-	
 	@In(value="#{projectHome.instance}", scope=ScopeType.CONVERSATION, required=false)
 	Project project;
 	
-	private Long projectId;
+	@In(create=true)
+	ProjectDAO projectDAO;
 	
 	@Out(required = false)
 	private List<ResourceCategory> targetCategories;
@@ -50,39 +52,33 @@ public class TargetHome extends EntityHome<ProjectTarget> {
 		target.setProject(project);
 		return target;
 	}
-	
-	public Long getProjectId() {
-		return projectId;
-	}
-	
-	public void setProjectId(Long projectId) {
-		this.projectId = projectId;
-	}
-	
+
 	@Begin(join=true)
 	public void validateSuppliedId(){
 		getInstance(); // this will raise an EntityNotFound exception
 					   // when id is invalid and conversation will not
 		               // start
 		Conversation c = Conversation.instance();
-		c.setDescription(getInstance().getName());
+		c.setDescription(getMultiSlug());
 	}
 
+	@Override
+	protected ProjectTarget loadInstance() {
+		Session session = (Session) getEntityManager().getDelegate();
+		return (ProjectTarget) session.createCriteria(ProjectTarget.class)
+			.add( Restrictions.naturalId()
+		        .set("project", projectDAO.getBySlug( getSlug(0) ) )
+		        .set("slug", getId() )
+		    )
+			.setCacheable(true).uniqueResult();
+	}
+	
 	public List<ProjectSeries> getAvailableProjectSeries(){
 		return getEntityManager().createQuery("from ProjectSeries where project = :project")
 			.setParameter("project", getInstance().getProject()).getResultList();
 		
 	}
 
-	
-	@Override
-	protected ProjectTarget loadInstance() {
-		Session session = (Session) getEntityManager().getDelegate();
-		return (ProjectTarget) session.createCriteria(ProjectTarget.class)
-			.add(Restrictions.idEq(getId()))
-			.add(Restrictions.eq("project.id", getProjectId())).uniqueResult();
-	}
-	
 	@SuppressWarnings("unchecked")
 	@Factory("targetCategories")
 	public void getCategories() {

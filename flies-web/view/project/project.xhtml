@@ -27,8 +27,7 @@
       <!-- TODO: series can have children... -->
       <rich:dataList value="#{series.projectTargets}" var="_target">
         <s:link view="/project/target.xhtml" value="#{_target.name}" propagation="none">
-         <f:param name="projectId" value="#{projectHome.instance.id}"/>
-         <f:param name="targetId" value="#{_target.id}"/>
+         <f:param name="mslug" value="#{projectHome.instance.slug}/#{_target.slug}"/>
         </s:link>
       </rich:dataList>
     </rich:dataList>
@@ -46,7 +45,7 @@
   <rich:panel>
     <f:facet name="header">Actions</f:facet>
       <s:link value="Edit" view="/project/edit.xhtml" propagation="none">
-        <f:param name="projectId" value="#{projectHome.instance.id}"/>
+        <f:param name="slug" value="#{projectHome.instance.slug}"/>
       </s:link>
       <br/>
       <s:link id="delete"

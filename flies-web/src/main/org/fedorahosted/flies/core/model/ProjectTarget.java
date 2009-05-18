@@ -9,6 +9,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import org.fedorahosted.flies.repository.model.Document;
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;
 
@@ -58,7 +59,8 @@ public class ProjectTarget extends AbstractSlugEntity implements Serializable {
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "projectId")
+	@NotNull
+	@NaturalId
 	public Project getProject() {
 		return project;
 	}

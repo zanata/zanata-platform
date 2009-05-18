@@ -7,13 +7,13 @@
        login-view-id="/login.xhtml">
 
 	<conversation name="TargetView"
-			parameter-name="targetId"
-			parameter-value="#{redirect.parameters.targetId != null ? redirect.parameters.targetId : (targetHome.instance.id != null ? targetHome.instance.id : '')}"
+			parameter-name="mslug"
+			parameter-value="#{redirect.parameters.mslug != null ? redirect.parameters.mslug : (targetHome.multiSlug != null ? targetHome.multiSlug : '')}"
 			/>
 
 	<conversation name="ProjectView"
-			parameter-name="projectId"
-			parameter-value="#{redirect.parameters.projectId != null ? redirect.parameters.projectId : (projectHome.instance.id != null ? projectHome.instance.id : '')}" 
+			parameter-name="slug"
+			parameter-value="#{redirect.parameters.slug != null ? redirect.parameters.slug : (projectHome.instance.slug != null ? projectHome.instance.slug : '')}" 
 			/>
 
 	<conversation name="TranslationWorkspaceView"
@@ -35,7 +35,7 @@
     </page>
     
     <page view-id="/project/project.xhtml" conversation="ProjectView">
-		<param name="projectId" value="#{projectHome.id}" converterId="javax.faces.Long" />
+		<param name="slug" value="#{projectHome.id}"/>
 		<action execute="#{projectHome.validateSuppliedId}" />
 		<!--
 		TODO: We set the descirption in validateSuppliedId() as otherwise this will throw an exception
@@ -50,7 +50,7 @@
 	   	  <rule if="#{projectHome.managed}">
 		   	  <end-conversation before-redirect="true"/>
 		      <redirect view-id="/project/project.xhtml">
-	            <param name="projectId" value="#{projectHome.instance.id}"/>
+	            <param name="slug" value="#{projectHome.instance.slug}"/>
 	          </redirect>
 	   	  </rule>
 	   </navigation>
@@ -62,7 +62,7 @@
 	</page>
 
     <page view-id="/project/edit.xhtml" conversation="ProjectView">
-	   <param name="projectId" value="#{projectHome.id}" converterId="javax.faces.Long" />
+	   <param name="slug" value="#{projectHome.id}" />
 
 	    <navigation from-action="#{projectHome.update}">
 	         <redirect view-id="/project/project.xhtml" include-page-params="true" />
@@ -75,8 +75,7 @@
     </page>
 
     <page view-id="/project/target.xhtml" conversation="TargetView">
-		<param name="projectId" value="#{targetHome.projectId}" converterId="javax.faces.Long" />
-		<param name="targetId" value="#{targetHome.id}" converterId="javax.faces.Long" />
+		<param name="mslug" value="#{targetHome.multiSlug}" />
 		
 		<action execute="#{targetHome.validateSuppliedId}" />
 		<!-- We set the conversation description in validateSuppliedId
@@ -85,7 +84,7 @@
     </page>
 
 	<page view-id="/project/create_target.xhtml" conversation="ProjectView" >
-	   <param name="projectId" value="#{projectHome.id}" converterId="javax.faces.Long" />
+	   <param name="slug" value="#{projectHome.id}" />
 		
 	   <action execute="#{projectHome.validateSuppliedId}" />
 	   
@@ -93,8 +92,7 @@
 	   	  <rule if="#{targetHome.managed}">
 		   	  <end-conversation before-redirect="true"/>
 		      <redirect view-id="/project/target.xhtml">
-	            <param name="projectId" value="#{projectHome.instance.id}"/>
-	            <param name="targetId" value="#{targetHome.instance.id}"/>
+	            <param name="mslug" value="#{projectHome.instance.slug}/#{targetHome.instance.slug}"/>
 	          </redirect>
 	   	  </rule>
 	   </navigation>
