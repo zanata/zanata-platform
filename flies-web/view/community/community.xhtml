@@ -11,7 +11,8 @@
     <ui:define name="center_content">
         <rich:jQuery selector="#tab_communities" query="addClass('ui-tabs-selected')" />
         <h1>#{communityHome.instance.name}</h1>
-        
+        <p>#{communityHome.instance.description}</p>
+        <s:formattedText value="#{communityHome.instance.homeContent}"></s:formattedText>
     </ui:define>
     
     <ui:define name="left_content">

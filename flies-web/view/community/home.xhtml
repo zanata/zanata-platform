@@ -12,11 +12,13 @@
         <rich:jQuery selector="#tab_communities" query="addClass('ui-tabs-selected')" />
         <h1>Communities</h1>
         <ui:repeat value="#{communitiesBean.latestCommunities}" var="community">
+          <h2>
           <s:link view="/community/community.xhtml" propagation="none">
             #{community.name}
             <f:param name="communityId" value="#{community.id}"/>
           </s:link>
-          <br/>
+          </h2>
+          <p><em>#{community.description}</em> - #{community.members.size} members</p>
         </ui:repeat>
     </ui:define>
     
