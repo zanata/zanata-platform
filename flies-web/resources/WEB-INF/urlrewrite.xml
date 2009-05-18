@@ -62,6 +62,10 @@
         <from>^/$</from>
         <to>/home.seam</to>
     </rule>
+ 	<outbound-rule>
+  		<from>^(/.+)?/home.seam(.+)?$</from>
+  		<to>$1/$2</to>
+	</outbound-rule>
 
 </urlrewrite>
 
