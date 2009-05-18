@@ -55,6 +55,30 @@
       <url-pattern>/*</url-pattern>
    </filter-mapping>
 
+   <filter>
+      <filter-name>UrlRewriteFilter</filter-name>
+      <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
+        <init-param>
+            <param-name>logLevel</param-name>
+            <param-value>INFO</param-value>
+        </init-param>
+        <init-param>
+            <param-name>statusPath</param-name>
+            <param-value>/rwstatus</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>statusEnabled</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        
+   </filter>
+   
+   <filter-mapping>
+      <filter-name>UrlRewriteFilter</filter-name>
+      <url-pattern>/*</url-pattern>
+   </filter-mapping>
+
    <servlet>
       <servlet-name>Seam Resource Servlet</servlet-name>
       <servlet-class>org.jboss.seam.servlet.SeamResourceServlet</servlet-class>

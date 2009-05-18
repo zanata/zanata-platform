@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 3.0//EN" "http://tuckey.org/res/dtds/urlrewrite3.0.dtd">
+
+<urlrewrite>
+
+    <!-- Disable the Red Hat crawler -->
+    <rule>
+        <from>.*</from>
+        <condition name="remote-addr">66.187.233.202</condition>
+        <to last="true" type="temporary-redirect">/robots.txt</to>
+    </rule>
+
+    <!-- Disable anything that comes out of Microsoft -->
+    <rule>
+        <from>.*</from>
+        <condition name="remote-addr">65.55.210.81</condition>
+        <to last="true" type="temporary-redirect">/robots.txt</to>
+    </rule>
+
+    <!-- Project Rules -->
+    
+    <rule>
+        <from casesensitive="true">^/project/create(.+)$</from>
+        <to last="true">/project/create_project.seam?$1</to>
+    </rule>
+	<outbound-rule>
+  		<from>^(/.+)?/project/create_project.seam(.+)?$</from>
+  		<to>$1/project/create/$2</to>
+	</outbound-rule>
+
+    <rule>
+        <from casesensitive="true">^/project/view/(.+)$</from>
+        <to last="true">/project/project.seam\?slug=$1</to>
+    </rule>
+	<outbound-rule>
+  		<from>^(/.+)?/project/project.seam\?slug=(.+)$</from>
+  		<to>$1/project/view/$2</to>
+	</outbound-rule>
+
+    <rule>
+        <from casesensitive="true">^/project/list(.+)?$</from>
+        <to last="true">/project/home.seam$1</to>
+    </rule>
+	<outbound-rule>
+  		<from>^(/.+)?/project/home.seam(.+)?$</from>
+  		<to>$1/project/list$2</to>
+	</outbound-rule>
+
+    <!-- ProjectTarget Rules -->
+
+    <rule>
+        <from casesensitive="true">^/project/([^/]+)/(.+)?$</from>
+        <to last="true">/project/target.seam\?mslug=$1/$2</to>
+    </rule>
+ 	<outbound-rule>
+  		<from>^(/.+)?/project/target.seam\?mslug=([^/]+|^%2F+)(/|%2F)(.+)$</from>
+  		<to>$1/project/$2/$4</to>
+	</outbound-rule>
+    
+    <!-- ROOT / -->
+    <rule>
+        <from>^/$</from>
+        <to>/home.seam</to>
+    </rule>
+
+</urlrewrite>
+

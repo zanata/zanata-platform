@@ -126,6 +126,12 @@
 			<version>1.5.4</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.tuckey</groupId>
+			<artifactId>urlrewritefilter</artifactId>
+			<version>3.0.4</version>
+		</dependency>
+
 		<!-- Flies-specific dependencies -->
 
 		<dependency>

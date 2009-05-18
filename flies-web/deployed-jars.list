@@ -28,3 +28,4 @@ shotoku-base.jar
 shotoku-svn.jar
 svnkit.jar
 google-collect.jar
+urlrewritefilter.jar
