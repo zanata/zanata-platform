@@ -9,6 +9,17 @@
     xmlns:flies="http://flies.fedorahosted.org/ui"
     template="../layout/template.xhtml">
 
+<ui:define name="breadcrumbs">
+  »
+  <s:link view="/project/home.xhtml" propagation="none">Projects</s:link>
+  »
+  <s:link view="/project/project.xhtml" propagation="none">
+    <f:param name="slug" value="#{targetHome.instance.project.slug}"/>
+    #{targetHome.instance.project.name}
+  </s:link>
+  #{targetHome.instance.name}
+</ui:define>
+
 <ui:define name="center_content">
   <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
 

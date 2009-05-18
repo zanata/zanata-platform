@@ -8,6 +8,13 @@
     xmlns:rich="http://richfaces.org/rich"
     template="../layout/template.xhtml">
 
+<ui:define name="breadcrumbs">
+  »
+  <s:link view="/project/home.xhtml" propagation="none">Projects</s:link>
+  »
+  #{projectHome.instance.name}
+</ui:define>
+
 <ui:define name="center_content">
     <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
 
