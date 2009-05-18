@@ -7,15 +7,17 @@ import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.core.Conversation;
 import org.jboss.seam.framework.EntityHome;
 
 @Name("communityHome")
 @Scope(ScopeType.CONVERSATION)
-public class CommunityHome extends EntityHome<Community>{
+public class CommunityHome extends SlugHome<Community>{
 
 	@Override
+	@Restrict("#{identity.loggedIn}")
 	protected Community createInstance() {
 		Community instance = super.createInstance();
 		instance.setOwner(getEntityManager().find(Person.class, 1l));

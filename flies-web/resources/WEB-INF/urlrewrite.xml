@@ -17,6 +17,36 @@
         <to last="true" type="temporary-redirect">/robots.txt</to>
     </rule>
 
+    <!-- Community Rules -->
+    
+    <rule>
+        <from casesensitive="true">^/community/create(.+)$</from>
+        <to last="true">/community/create_community.seam?$1</to>
+    </rule>
+	<outbound-rule>
+  		<from>^(/.+)?/community/create_community.seam(.+)?$</from>
+  		<to>$1/community/create/$2</to>
+	</outbound-rule>
+
+    <rule>
+        <from casesensitive="true">^/community/view/(.+)$</from>
+        <to last="true">/community/community.seam\?slug=$1</to>
+    </rule>
+	<outbound-rule>
+  		<from>^(/.+)?/community/community.seam\?slug=(.+)$</from>
+  		<to>$1/community/view/$2</to>
+	</outbound-rule>
+	
+    <rule>
+        <from casesensitive="true">^/community/list(.+)?$</from>
+        <to last="true">/community/home.seam$1</to>
+    </rule>
+	<outbound-rule>
+  		<from>^(/.+)?/community/home.seam(.+)?$</from>
+  		<to>$1/community/list$2</to>
+	</outbound-rule>
+	
+
     <!-- Project Rules -->
     
     <rule>

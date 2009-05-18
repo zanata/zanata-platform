@@ -22,8 +22,8 @@
 			/>
 
 	<conversation name="CommunityView"
-			parameter-name="communityId"
-			parameter-value="#{redirect.parameters.communityId != null ? redirect.parameters.communityId : (communityHome.instance.id != null ? communityHome.instance.id : '')}" 
+			parameter-name="slug"
+			parameter-value="#{redirect.parameters.slug != null ? redirect.parameters.slug : (communityHome.instance.slug != null ? communityHome.instance.slug : '')}" 
 			/>
 
     <page view-id="*">
@@ -123,7 +123,7 @@
 
 
     <page view-id="/community/community.xhtml" conversation="CommunityView">
-		<param name="communityId" value="#{communityHome.id}" converterId="javax.faces.Long" />
+		<param name="slug" value="#{communityHome.id}"/>
 		<action execute="#{communityHome.validateSuppliedId}" />
 	</page>
 
@@ -133,7 +133,7 @@
 	   	  <rule if="#{communityHome.managed}">
 		   	  <end-conversation before-redirect="true"/>
 		      <redirect view-id="/community/community.xhtml">
-	            <param name="communityId" value="#{communityHome.instance.id}"/>
+	            <param name="slug" value="#{communityHome.instance.slug}"/>
 	          </redirect>
 	   	  </rule>
 	   </navigation>
@@ -146,7 +146,7 @@
 
     <page view-id="/community/edit.xhtml" conversation="CommunityView">
 	   
-	   <param name="communityId" value="#{communityHome.id}" converterId="javax.faces.Long" />
+		<param name="slug" value="#{communityHome.id}"/>
 
 	    <navigation from-action="#{communityHome.update}">
 	         <redirect view-id="/community/community.xhtml" include-page-params="true"/>

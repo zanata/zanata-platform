@@ -15,7 +15,7 @@
           <h2>
           <s:link view="/community/community.xhtml" propagation="none">
             #{community.name}
-            <f:param name="communityId" value="#{community.id}"/>
+            <f:param name="slug" value="#{community.slug}"/>
           </s:link>
           </h2>
           <p><em>#{community.description}</em> - #{community.members.size} members</p>
