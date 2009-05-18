@@ -102,6 +102,19 @@
 	   </navigation>
 	</page>
 
+    <page view-id="/project/target_edit.xhtml" conversation="TargetView">
+		<param name="mslug" value="#{targetHome.multiSlug}" />
+
+	    <navigation from-action="#{targetHome.update}">
+	         <redirect view-id="/project/target.xhtml" include-page-params="true" />
+	    </navigation>
+	
+	   <navigation from-action="#{targetHome.cancel}">
+         <redirect view-id="/project/target.xhtml" include-page-params="true"/>
+	   </navigation>
+	   
+    </page>
+
     <page view-id="/translate.xhtml" conversation="TranslationWorkspaceView">
     	<description>#{translateAction.workspaceId}</description>
     	<begin-conversation conversation="TranslationWorkspaceView" join="true" if="#{not translateAction.conversationActive}"/>
