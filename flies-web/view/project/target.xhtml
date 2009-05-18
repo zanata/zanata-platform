@@ -20,6 +20,16 @@
   #{targetHome.instance.name}
 </ui:define>
 
+<ui:define name="left_content">
+  <rich:panel>
+    <f:facet name="header">Actions</f:facet>
+    <s:link view="/project/target_edit.xhtml" propagation="none">
+      <f:param name="mslug" value="#{targetHome.multiSlug}"/>
+      Edit
+    </s:link>
+  </rich:panel>
+</ui:define>
+
 <ui:define name="center_content">
   <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
 
