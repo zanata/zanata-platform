@@ -51,11 +51,8 @@
     </component>
 
     <resteasy:application-config
-        resource-path-prefix="/restv1"
-       	strip-seam-resource-path="true"
-        scan-providers="false"
-       	scan-resources="false"
-       	use-builtin-providers="true">
+	    resource-path-prefix="/restv1">
+       	
     </resteasy:application-config>
    
     <web:multipart-filter create-temp-files="false" 
