@@ -45,7 +45,16 @@
   		<from>^(/.+)?/community/home.seam(.+)?$</from>
   		<to>$1/community/list$2</to>
 	</outbound-rule>
-	
+
+	<!-- Tribe rules -->	
+    <rule>
+        <from casesensitive="true">^/tribe/list(.+)?$</from>
+        <to last="true">/tribe/home.seam$1</to>
+    </rule>
+	<outbound-rule>
+  		<from>^(/.+)?/tribe/home.seam(.+)?$</from>
+  		<to>$1/tribe/list$2</to>
+	</outbound-rule>
 
     <!-- Project Rules -->
     
