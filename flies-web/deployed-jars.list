@@ -28,7 +28,6 @@ shotoku-base.jar
 shotoku-svn.jar
 svnkit.jar
 google-collect.jar
-jboss-seam-resteasy.jar
-jaxrs-api-1.0-beta-5.jar
-resteasy-jaxrs-1.0-beta-5.jar
+jaxrs-api.jar
+resteasy-jaxrs.jar
 urlrewritefilter.jar

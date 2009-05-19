@@ -64,6 +64,12 @@
 			<version>${version.seam}</version>
 		</dependency>
 
+                <dependency>
+                        <groupId>org.jboss.seam</groupId>
+                        <artifactId>jboss-seam-resteasy</artifactId>
+                        <version>${version.seam}</version>
+                </dependency>
+
 		<!--
 			Available Seam artifacts as of 2.1.2-SNAPSHOT: jboss-seam-debug
 			jboss-seam-excel jboss-seam-gen jboss-seam-ioc jboss-seam-jbas5
