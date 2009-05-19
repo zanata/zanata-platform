@@ -28,4 +28,10 @@ shotoku-base.jar
 shotoku-svn.jar
 svnkit.jar
 google-collect.jar
+<<<<<<< /home/jamesni/flies/flies-web/deployed-jars.list
+jboss-seam-resteasy.jar
+jaxrs-api-1.0-beta-5.jar
+resteasy-jaxrs-1.0-beta-5.jar
+=======
 urlrewritefilter.jar
+>>>>>>> /tmp/deployed-jars.list~other.WLsqcO
