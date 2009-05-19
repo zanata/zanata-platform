@@ -20,7 +20,7 @@ insert into AccountMembership (accountId, memberOf)
 	values (2, 2);
 
 insert into Account (id, creationDate, timestamp, enabled, passwordhash, username) 
-	values (3, NOW(), NOW(), 1, '/9Se/pfHeUH8FJ4asBD6jQ==', 'bob');
+	values (3, NOW(), NOW(), 1, 'pQRgEKG97HuyCfeoOR69Sg==', 'bob');
 insert into Person (id, creationDate, timestamp, email, name, accountId) 
 	values (3, NOW(), NOW(), 'asgeirf+flies@gmail.com', 'Bob Translator', 3);
 insert into AccountMembership (accountId, memberOf) 
