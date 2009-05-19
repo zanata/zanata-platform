@@ -56,9 +56,6 @@
         scan-providers="false"
        	scan-resources="false"
        	use-builtin-providers="true">
-   	<resteasy:resource-class-names>
-      		<value>org.fedorahosted.flies.core.action.ProjectResource</value>
-  	</resteasy:resource-class-names>
     </resteasy:application-config>
    
     <web:multipart-filter create-temp-files="false" 

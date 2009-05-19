@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.core.action;
+package org.fedorahosted.flies.core.rest;
 
 import javax.persistence.EntityManager;
 import javax.ws.rs.GET;
