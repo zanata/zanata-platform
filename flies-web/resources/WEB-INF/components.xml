@@ -9,6 +9,7 @@
             xmlns:web="http://jboss.com/products/seam/web"
             xmlns:framework="http://jboss.com/products/seam/framework"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns:resteasy="http://jboss.com/products/seam/resteasy"
             xsi:schemaLocation=
                 "http://jboss.com/products/seam/core http://jboss.com/products/seam/core-2.1.xsd
                  http://jboss.com/products/seam/persistence http://jboss.com/products/seam/persistence-2.1.xsd
@@ -17,8 +18,9 @@
                  http://jboss.com/products/seam/security http://jboss.com/products/seam/security-2.1.xsd
                  http://jboss.com/products/seam/mail http://jboss.com/products/seam/mail-2.1.xsd
                  http://jboss.com/products/seam/web http://jboss.com/products/seam/web-2.1.xsd
-                 http://jboss.com/products/seam/components http://jboss.com/products/seam/components-2.1.xsd">
-
+                 http://jboss.com/products/seam/components http://jboss.com/products/seam/components-2.1.xsd
+                 http://jboss.com/products/seam/resteasy http://jboss.com/products/seam/resteasy-2.1.xsd">
+ 
     <!-- Conversation timeout: 20 minutes -->
     <core:manager concurrent-request-timeout="4000"
                   conversation-timeout="1200000"
@@ -47,7 +49,18 @@
         <property name="persistenceUnitJndiName">java:/entityManagerFactories/flies</property>
         <property name="filters"><value>#{accessLevelFilter}</value></property>
     </component>
-    
+
+    <resteasy:application-config
+        resource-path-prefix="/restv1"
+       	strip-seam-resource-path="true"
+        scan-providers="false"
+       	scan-resources="false"
+       	use-builtin-providers="true">
+   	<resteasy:resource-class-names>
+      		<value>org.fedorahosted.flies.core.action.ProjectResource</value>
+  	</resteasy:resource-class-names>
+    </resteasy:application-config>
+   
     <web:multipart-filter create-temp-files="false" 
                               max-request-size="5200000" 
     url-pattern="/*"/>
