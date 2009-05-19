@@ -99,12 +99,12 @@
     <!-- login / -->
 
     <rule>
-        <from casesensitive="true">^/login(.+)?$</from>
+        <from casesensitive="true">^/sign_in(.+)?$</from>
         <to last="true">/login.seam$1</to>
     </rule>
 	<outbound-rule>
   		<from>^(/.+)?/login.seam(.+)?$</from>
-  		<to>$1/login$2</to>
+  		<to>$1/sign_in$2</to>
 	</outbound-rule>
 
     <!-- ROOT / -->
