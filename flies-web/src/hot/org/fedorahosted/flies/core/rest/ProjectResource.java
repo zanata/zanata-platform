@@ -4,7 +4,7 @@ import javax.persistence.EntityManager;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.ProduceMime;
+import javax.ws.rs.Produces;
 
 import org.fedorahosted.flies.core.model.Project;
 import org.fedorahosted.flies.core.model.ProjectSeries;
@@ -25,7 +25,7 @@ public class ProjectResource {
   
   @GET
   @Path("/{projectId}")
-  @ProduceMime("text/plain")
+  @Produces("text/plain")
   public Project getProject(@PathParam("projectId") long id) {
      return project = entityManager.find(Project.class, id);
   }

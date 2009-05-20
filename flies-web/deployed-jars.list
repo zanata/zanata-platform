@@ -29,5 +29,6 @@ shotoku-svn.jar
 svnkit.jar
 google-collect.jar
 jaxrs-api.jar
-resteasy-jaxrs.jar
+resteasy-*.jar
 urlrewritefilter.jar
+slf4j-*.jar
