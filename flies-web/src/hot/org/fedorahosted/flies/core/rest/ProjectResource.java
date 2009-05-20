@@ -5,6 +5,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import java.lang.String;
 
 import org.fedorahosted.flies.core.model.Project;
 import org.fedorahosted.flies.core.model.ProjectSeries;
@@ -20,14 +21,14 @@ public class ProjectResource {
   @In
   private EntityManager entityManager;
 
-  @Out(required = false)
   private Project project;
   
   @GET
   @Path("/{projectId}")
   @Produces("text/plain")
-  public Project getProject(@PathParam("projectId") long id) {
-     return project = entityManager.find(Project.class, id);
+  public String getProject(@PathParam("projectId") long id) {
+         project = entityManager.find(Project.class, id);
+	 return project.getName();
   }
 
 }
