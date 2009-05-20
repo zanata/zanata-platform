@@ -1,0 +1,38 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="./layout/template.xhtml">
+
+  <ui:define name="center_content">
+    <h:form>
+      <rich:panel>
+        <f:facet name="header">Sign Up</f:facet>
+
+        <s:decorate id="usernameField" template="layout/edit.xhtml">
+            <ui:define name="label">Username</ui:define>
+            <h:inputText id="username" required="true"
+                      value="#{register.username}"/>
+        </s:decorate>
+        <s:decorate id="passwordField" template="layout/edit.xhtml">
+            <ui:define name="label">Password</ui:define>
+            <h:inputSecret id="password" required="true"
+                        value="#{register.password}"/>
+        </s:decorate>
+        <s:decorate id="passwordConfirm" template="layout/edit.xhtml">
+            <ui:define name="label">Confirm Password</ui:define>
+            <h:inputSecret id="passwordConfirm"  required="true"
+                        value="#{register.passwordConfirm}"/>
+        </s:decorate>
+        <div style="clear:both"/>
+        <div class="actionButtons">
+            <h:commandButton value="Register" action="#{register.register}"/>
+        </div>
+      </rich:panel>
+    </h:form>
+  </ui:define>
+</ui:composition>
