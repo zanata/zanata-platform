@@ -38,7 +38,16 @@ input.with_icon {
 	background-image: url(../img/silk/zoom.png);
 }
 
+.input_help{
+	vertical-align: middle;
+	padding-left: 2px;
+	/* error img takes up 16px */
+	padding-right: 2px;
+}
 
+.input_nohelp{
+	display: inline;
+}
 .tableControl,.actionButtons {
 	width: 100%;
 }
@@ -98,6 +107,10 @@ input.with_icon {
 	clear: left;
 }
 
+.prop{
+	vertical-align: middle;
+}
+
 .value {
 	float: left;
 	padding: 5px;
@@ -114,6 +127,7 @@ input.with_icon {
 }
 
 img.errors {
+	padding-left: 5px;
 	padding-right: 5px;
 }
 
