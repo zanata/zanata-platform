@@ -1,43 +1,34 @@
 package org.fedorahosted.flies.core.model;
 
-import javax.persistence.EntityManager;
-
-import org.jboss.seam.annotations.In;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.annotations.Out;
+import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 
 @Name("authenticationEvents")
+@Scope(ScopeType.STATELESS)
 public class AuthenticationEvents {
 
 	@Logger
 	Log log;
 
-	@In
-	EntityManager entityManager;
-
+	@Out(required=false, scope=ScopeType.SESSION)
+	Person authenticatedPerson;
+	
 	@Observer(JpaIdentityStore.EVENT_USER_AUTHENTICATED)
 	public void loginSuccessful(Account account) {
-		log.info("Member {0} authenticated with person {1}", account
-				.getUsername(), account.getPerson());
+		log.info("Account {0} authenticated", account.getUsername());
 
-		Contexts.getSessionContext().set("authenticatedPerson",
-				account.getPerson());
+		authenticatedPerson = account.getPerson();
 	}
 
 	@Observer(JpaIdentityStore.EVENT_USER_CREATED)
 	public void createSuccessful(Account account) {
-		Person p = new Person();
-		p.setName(account.getName());
-		p.setAccount(account);
-		entityManager.persist(p);
-		account.setPerson(p);
-		entityManager.persist(account);
-		log.info("Created person {1}  with for account {0}", account
-				.getUsername(), p.getName());
+		log.info("Account {0} created", account.getUsername());
 	}
 
 }

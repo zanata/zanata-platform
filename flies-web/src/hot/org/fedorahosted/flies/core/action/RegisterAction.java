@@ -40,7 +40,6 @@ public class RegisterAction {
     private IdentityManager identityManager;
 	    
     private String username;
-    
     private String password;
     private String passwordConfirm;
     
@@ -113,7 +112,6 @@ public class RegisterAction {
     	
     	Account account = new Account();
     	account.setEnabled(false);
-    	account.setName(getUsername());
     	account.setUsername(getUsername());
     	account.setPasswordHash(PasswordHash.instance().generateSaltedHash(getPassword(), getUsername(),PasswordHash.ALGORITHM_MD5));
     	

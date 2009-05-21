@@ -31,9 +31,7 @@ public class Account extends AbstractFliesEntity implements Serializable {
 
 	private Person person;
 	private Set<AccountRole> roles;
-
-	private String name;
-
+	
 	@OneToOne(mappedBy = "account")
 	public Person getPerson() {
 		return person;
@@ -87,17 +85,4 @@ public class Account extends AbstractFliesEntity implements Serializable {
 		this.roles = roles;
 	}
 
-	@Transient
-	@UserFirstName
-	public String getName() {
-		return person == null ? name : person.getName();
-	}
-
-	public void setName(String name) {
-		if (person != null) {
-			person.setName(name);
-		} else {
-			this.name = name;
-		}
-	}
 }

@@ -12,12 +12,7 @@
         
       <h:form>
         <rich:panel>
-          <f:facet name="header">User Details</f:facet>
-
-          <s:decorate id="firstnameField" template="../layout/edit.xhtml">
-            <ui:define name="label">Name</ui:define>
-            <h:inputText id="firstname" value="#{userAction.firstname}" readonly="#{identityManager.userExists(userAction.username)}"/>
-          </s:decorate>
+          <f:facet name="header">Account Details</f:facet>
           
           <s:decorate id="usernameField" template="../layout/edit.xhtml">
             <ui:define name="label">Username</ui:define>
