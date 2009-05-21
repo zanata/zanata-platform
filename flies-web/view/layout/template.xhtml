@@ -37,7 +37,12 @@
         </s:div>
                
         <h:outputText rendered="#{identity.loggedIn}" value="#{authenticatedPerson == null ? identity.username : authenticatedPerson.name} "/>
-        <s:link view="/login.xhtml" value="Sign In" rendered="#{not identity.loggedIn}" propagation="none"/>
+        <s:fragment rendered="#{not identity.loggedIn}">
+          <s:link view="/login.xhtml" value="Sign In" propagation="none"/>
+          <rich:spacer width="10px"/>
+          <s:link view="/register.xhtml" value="Register" propagation="none"/>
+        </s:fragment>
+        
         <s:link view="/home.xhtml" action="#{identity.logout}" value="Sign Out" rendered="#{identity.loggedIn}" propagation="none"/>
       </div>
       <div id="loading_top_right">

@@ -107,6 +107,15 @@
   		<to>$1/sign_in$2</to>
 	</outbound-rule>
 
+    <rule>
+        <from casesensitive="true">^/register(.+)?$</from>
+        <to last="true">/register.seam$1</to>
+    </rule>
+	<outbound-rule>
+  		<from>^(/.+)?/register.seam(.+)?$</from>
+  		<to>$1/register$2</to>
+	</outbound-rule>
+
     <!-- ROOT / -->
     <rule>
         <from>^/$</from>
