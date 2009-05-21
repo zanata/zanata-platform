@@ -35,7 +35,7 @@
 	<property name="war.dir" value="${tmp.dir}/${project.name}.war" />
 
 	<property name="classes.main.dir" value="${war.dir}/WEB-INF/classes" />
-	<property name="classes.hot.dir" value="${war.dir}/WEB-INF/classes" />
+	<property name="classes.hot.dir" value="${war.dir}/WEB-INF/dev" />
 	<property name="jboss.domain" value="default" />
 	<property name="deploy.dir" value="${jboss.home}/server/${jboss.domain}/deploy" />
 	<property name="war.deploy.dir" value="${deploy.dir}/${project.name}.war" />
