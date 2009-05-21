@@ -43,6 +43,8 @@ public class RegisterAction {
     private String password;
     private String passwordConfirm;
     
+    private boolean agreedToTermsOfUse;
+    
     private boolean valid;
     
     @Begin(join=true)
@@ -78,6 +80,14 @@ public class RegisterAction {
 		return passwordConfirm;
 	}
     
+    public boolean isAgreedToTermsOfUse() {
+		return agreedToTermsOfUse;
+	}
+    
+    public void setAgreedToTermsOfUse(boolean agreedToTermsOfUse) {
+		this.agreedToTermsOfUse = agreedToTermsOfUse;
+	}
+    
     public void validateUsername(String username){
     	try{
     		entityManager.createQuery("from Account a where a.username = :username")
@@ -99,12 +109,20 @@ public class RegisterAction {
 		
     }
     
+    public void validateTermsOfUse(){
+    	if(!isAgreedToTermsOfUse()){
+    		valid = false;
+			FacesMessages.instance().addToControl("agreedToTerms", "You must accept the Terms of Use");
+    	}
+    }
+    
     @End
     public String register(){
     	valid = true;
     	validateUsername(getUsername());
     	validatePasswords(getPassword(), getPasswordConfirm());
-
+    	validateTermsOfUse();
+    	
     	if( !isValid()){
         	log.info("Attempted an invalid register...");
     		return null;

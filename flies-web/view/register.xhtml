@@ -45,11 +45,47 @@
             <h:inputText id="verifyCaptcha" value="#{captcha.response}" required="true"/>
         </s:decorate>
         
+        <s:decorate id="agreedToTerms" template="layout/edit.xhtml">
+          <h:selectBooleanCheckbox id="agreedToTerms" value="#{register.agreedToTermsOfUse}"/>
+          <label for="agreedToTerms">
+            <h:outputText value="I agree to the " escape="false"/>
+            <h:outputLink value="#" id="termsOfUseLink">
+              <h:outputText value="Terms of use"/>
+              <rich:componentControl for="termsOfUse" attachTo="termsOfUseLink" operation="show" event="onclick"/>
+            </h:outputLink>
+          </label>
+        </s:decorate>
+        
         <div style="clear:both"/>
         <div class="actionButtons">
             <h:commandButton value="Register" action="#{register.register}"/>
         </div>
       </rich:panel>
     </a4j:form>
+    
+    <rich:modalPanel id="termsOfUse" width="640" height="480" rendered="#{not identity.loggedIn}">
+      <f:facet name="header">
+        <h:panelGroup>
+          <h:outputText value="Terms of Use"/>
+        </h:panelGroup>
+      </f:facet>
+      <f:facet name="controls">
+        <h:panelGroup>
+          <h:graphicImage value="img/close.gif" styleClass="hidelink" id="hideTermsLink"/>
+          <rich:componentControl for="termsOfUse" attachTo="hideTermsLink" operation="hide" event="onclick"/>
+        </h:panelGroup>
+      </f:facet>
+      <a4j:include viewId="legal.html"/>
+      <h:panelGroup style="width: 600px; text-align: center;">
+        <a4j:form>
+          <rich:spacer height="40"/>
+          <a4j:commandButton value="Close" onclick="#{rich:component('termsOfUse')}.hide()"/>
+        </a4j:form>
+      </h:panelGroup>
+    </rich:modalPanel>
+    
   </ui:define>
+  
+  
+  
 </ui:composition>
