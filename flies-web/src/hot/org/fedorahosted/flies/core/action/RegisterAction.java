@@ -6,6 +6,8 @@ import javax.persistence.NoResultException;
 import javax.security.auth.callback.ConfirmationCallback;
 
 import org.fedorahosted.flies.core.model.Account;
+import org.fedorahosted.flies.core.model.Person;
+import org.hibernate.validator.Email;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Pattern;
@@ -46,8 +48,16 @@ public class RegisterAction {
     private boolean agreedToTermsOfUse;
     
     private boolean valid;
+
+    private Person person;
     
     @Begin(join=true)
+    public Person getPerson() {
+    	if(person == null)
+    		person = new Person();
+		return person;
+	}
+    
     public void setUsername(String username) {
     	validateUsername(username);
 		this.username = username;
@@ -132,10 +142,11 @@ public class RegisterAction {
     	account.setEnabled(false);
     	account.setUsername(getUsername());
     	account.setPasswordHash(PasswordHash.instance().generateSaltedHash(getPassword(), getUsername(),PasswordHash.ALGORITHM_MD5));
-    	
     	entityManager.persist(account);
+    	person.setAccount(account);
+    	entityManager.persist(person);
     	
-    	log.info("Created user {0}", getUsername());
+    	log.info("Created user {0} ({1})", person.getName(), getUsername());
     	
     	return "/home.xhtml";
     	

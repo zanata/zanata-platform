@@ -17,6 +17,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.Email;
+import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 
@@ -38,6 +39,8 @@ public class Person extends AbstractFliesEntity implements Serializable {
 	private Set<Community> communityOfficerships;
 	private Set<Community> communityMemberships;
 	
+	@NotEmpty
+	@Length(min=2, max=80)
 	public String getName() {
 		return name;
 	}
@@ -66,6 +69,7 @@ public class Person extends AbstractFliesEntity implements Serializable {
 	}
 
 	@Email
+	@NotEmpty
 	public String getEmail() {
 		return email;
 	}

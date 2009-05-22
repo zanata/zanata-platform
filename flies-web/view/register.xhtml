@@ -14,6 +14,32 @@
       <rich:panel>
         <f:facet name="header">Sign Up</f:facet>
 
+        <s:decorate id="nameField" template="layout/edit.xhtml">
+            <ui:define name="label">Name</ui:define>
+            <h:inputText id="name" required="true"
+                      value="#{register.person.name}">
+               <a4j:support event="onblur" reRender="nameField" ajaxSingle="true"/>
+            </h:inputText>
+            <h:graphicImage id="nameHelp" value="img/msginfo.png" styleClass="input_help">
+              <rich:toolTip>
+                Must be lowercase blah blah and so on...
+              </rich:toolTip>
+            </h:graphicImage>
+        </s:decorate>
+
+        <s:decorate id="emailField" template="layout/edit.xhtml">
+            <ui:define name="label">Email</ui:define>
+            <h:inputText id="email" required="true"
+                      value="#{register.person.email}">
+               <a4j:support event="onblur" reRender="emailField" ajaxSingle="true"/>
+            </h:inputText>
+            <h:graphicImage id="emailHelp" value="img/msginfo.png" styleClass="input_help">
+              <rich:toolTip>
+                Must be lowercase blah blah and so on...
+              </rich:toolTip>
+            </h:graphicImage>
+        </s:decorate>
+
         <s:decorate id="usernameField" template="layout/edit.xhtml">
             <ui:define name="label">Username</ui:define>
             <h:inputText id="username" required="true"
