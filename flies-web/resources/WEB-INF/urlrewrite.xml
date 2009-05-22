@@ -124,6 +124,14 @@
   		<from>^(/.+)?/activate.seam\?key=(.+)$</from>
   		<to>$1/activate/$2</to>
 	</outbound-rule>
+    <rule>
+        <from casesensitive="true">^/activate(.+)?$</from>
+        <to last="true">/activate.seam$1</to>
+    </rule>
+	<outbound-rule>
+  		<from>^(/.+)?/activate.seam(.+)?$</from>
+  		<to>$1/activate$2</to>
+	</outbound-rule>
 
 
     <!-- ROOT / -->

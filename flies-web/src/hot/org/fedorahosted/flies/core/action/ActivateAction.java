@@ -5,6 +5,7 @@ import javax.persistence.EntityManager;
 import org.fedorahosted.flies.core.model.AccountActivationKey;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.Size;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.End;
@@ -34,7 +35,7 @@ public class ActivateAction {
     
     private String activationKey;
 
-    @Length(min=32,max=32)
+    @Length(min=32,max=32, message="Activation key must be 32 characters long")
     @NotEmpty
     public String getActivationKey() {
 		return activationKey;
@@ -51,7 +52,7 @@ public class ActivateAction {
     	final AccountActivationKey key = entityManager.find(AccountActivationKey.class, getActivationKey());
     	
     	if(key == null){
-        	FacesMessages.instance().add(Severity.ERROR, "Invalid key.");
+    		FacesMessages.instance().addToControl("activationKey", "Invalid key");
         	return null;
     	}
     	

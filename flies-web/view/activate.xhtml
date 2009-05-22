@@ -19,7 +19,7 @@
           </p>
         <s:decorate id="activationKeyField" template="layout/edit.xhtml">
             <ui:define name="label">Activation Key</ui:define>
-            <h:inputText id="activationKey" required="true"
+            <h:inputText id="activationKey" required="true" size="32" maxlength="32"
                       value="#{activate.activationKey}">
             </h:inputText>
             <h:graphicImage id="activationKeyHelp" value="img/msginfo.png" styleClass="input_help">
