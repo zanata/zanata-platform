@@ -1,11 +1,15 @@
 package org.fedorahosted.flies.core.action;
 
+import java.security.MessageDigest;
+
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.security.auth.callback.ConfirmationCallback;
+import javax.servlet.http.HttpServletRequest;
 
 import org.fedorahosted.flies.core.model.Account;
+import org.fedorahosted.flies.core.model.AccountActivationKey;
 import org.fedorahosted.flies.core.model.Person;
 import org.hibernate.validator.Email;
 import org.hibernate.validator.Length;
@@ -19,10 +23,14 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.faces.Renderer;
+import org.jboss.seam.international.StatusMessage.Severity;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
+import org.jboss.seam.security.RunAsOperation;
 import org.jboss.seam.security.management.IdentityManager;
 import org.jboss.seam.security.management.PasswordHash;
+import org.jboss.seam.util.Hex;
 
 
 @Name("register")
@@ -40,7 +48,9 @@ public class RegisterAction {
    
     @In
     private IdentityManager identityManager;
-	    
+    
+    @In(create=true) private Renderer renderer;	    
+    
     private String username;
     private String password;
     private String passwordConfirm;
@@ -50,6 +60,8 @@ public class RegisterAction {
     private boolean valid;
 
     private Person person;
+    
+    private String activationKey;
     
     @Begin(join=true)
     public Person getPerson() {
@@ -76,7 +88,7 @@ public class RegisterAction {
     
     @NotEmpty
     @Length(min=6,max=20)
-    @Pattern(regex="(?=^.{6,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$", message="Password is not secure enough!")
+    //@Pattern(regex="(?=^.{6,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$", message="Password is not secure enough!")
     public String getPassword() {
 		return password;
 	}
@@ -146,10 +158,80 @@ public class RegisterAction {
     	person.setAccount(account);
     	entityManager.persist(person);
     	
+    	AccountActivationKey key = new AccountActivationKey();
+    	key.setAccount(account);
+    	key.setKeyHash(generateHash(getUsername() + getPassword() + getPerson().getEmail() + getPerson().getName() + System.currentTimeMillis()));
+    	entityManager.persist(key);
+    	
+    	generateActivationLink(key.getKeyHash());
+    	
+    	renderer.render("/WEB-INF/facelets/email/activation.xhtml");
+    	
     	log.info("Created user {0} ({1})", person.getName(), getUsername());
     	
-    	return "/home.xhtml";
+    	return "/activate.xhtml";
+    }
+
+    public static String generateHash(String key){
+        try {
+            MessageDigest md5 = MessageDigest.getInstance("MD5");
+            md5.reset();
+            return new String(Hex.encodeHex(md5.digest(key.getBytes("UTF-8"))));
+        } catch (Exception exc) {
+            throw new RuntimeException(exc);
+        }
+    }
+    
+    private String activationLink;
+    
+    public void setActivationLink(String activationLink) {
+		this.activationLink = activationLink;
+	}
+
+    public void generateActivationLink(String activationKey){
+    	HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        String baseLink = request.getRequestURL().toString();
+        this.activationLink = baseLink + "?key="+ activationKey; 
     	
+    }
+    public String getActivationLink(){
+    	return activationLink;
+    	
+    	
+    }
+    
+    public String getActivationKey() {
+		return activationKey;
+	}
+    
+    @Begin(join=true)
+    public void setActivationKey(String activationKey) {
+		this.activationKey = activationKey;
+	}
+
+    @End
+    public String activate(){
+    	
+    	final AccountActivationKey key = entityManager.find(AccountActivationKey.class, getActivationKey());
+    	
+    	if(key == null){
+        	FacesMessages.instance().add(Severity.ERROR, "Invalid key.");
+        	return null;
+    	}
+    	
+        new RunAsOperation() {
+            public void execute() {
+               identityManager.enableUser(key.getAccount().getUsername());
+               identityManager.grantRole(username, "user");            
+            }         
+         }.addRole("admin")
+          .run();
+
+         entityManager.remove(key);
+         
+         FacesMessages.instance().add("Your account was successfully activated. You can now sign in.");
+         
+    	return "/login.xhtml";
     }
 
     public boolean isValid() {
