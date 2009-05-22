@@ -25,10 +25,9 @@ public class ProjectResource {
   
   @GET
   @Path("/{projectId}")
-  @Produces("text/plain")
-  public String getProject(@PathParam("projectId") long id) {
-         project = entityManager.find(Project.class, id);
-	 return project.getName();
+  @Produces("application/json")
+  public Project getProject(@PathParam("projectId") long id) {
+         return entityManager.find(Project.class, id);
   }
 
 }
