@@ -19,6 +19,8 @@
             <ui:define name="label">Password</ui:define>
             <h:inputSecret id="password"
                         value="#{credentials.password}"/>
+                        <rich:spacer width="10px"/>
+                        <s:link view="/password_reset_request.xhtml" propagation="none">Forgot Your Password?</s:link>
         </s:decorate>
         <s:decorate id="rememberMeField" template="layout/edit.xhtml">
             <ui:define name="label">Remember Me</ui:define>

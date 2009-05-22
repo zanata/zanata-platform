@@ -48,7 +48,7 @@ public class Account extends AbstractFliesEntity implements Serializable {
 	}
 
 	@Transient
-	public boolean isPerson(){
+	public boolean isPersonAccount(){
 		return person != null;
 	}
 	

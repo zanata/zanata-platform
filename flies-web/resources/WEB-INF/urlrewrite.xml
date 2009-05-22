@@ -133,6 +133,23 @@
   		<to>$1/activate$2</to>
 	</outbound-rule>
 
+    <rule>
+        <from casesensitive="true">^/password_reset/(.+)$</from>
+        <to last="true">/password_reset.seam\?key=$1</to>
+    </rule>
+	<outbound-rule>
+  		<from>^(/.+)?/password_reset.seam\?key=(.+)$</from>
+  		<to>$1/password_reset/$2</to>
+	</outbound-rule>
+    <rule>
+        <from casesensitive="true">^/password_reset(.+)?$</from>
+        <to last="true">/password_reset.seam$1</to>
+    </rule>
+	<outbound-rule>
+  		<from>^(/.+)?/password_reset.seam(.+)?$</from>
+  		<to>$1/password_reset$2</to>
+	</outbound-rule>
+
 
     <!-- ROOT / -->
     <rule>

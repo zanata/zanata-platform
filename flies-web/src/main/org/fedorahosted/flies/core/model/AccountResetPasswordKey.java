@@ -14,7 +14,7 @@ import org.hibernate.validator.NotEmpty;
 import org.jboss.seam.security.management.PasswordHash;
 
 @Entity
-public class AccountActivationKey extends AbstractAccountKey implements Serializable{
+public class AccountResetPasswordKey extends AbstractAccountKey implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	

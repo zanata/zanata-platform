@@ -163,6 +163,10 @@
     	<action execute="#{activate.activate}" if="#{not empty activate.activationKey}"/>
     </page>
 
+    <page view-id="/password_reset.xhtml">
+    	<param name="key" value="#{passwordReset.activationKey}"/>
+    </page>
+
     <exception class="org.jboss.seam.framework.EntityNotFoundException">
         <redirect view-id="/error.xhtml">
             <message severity="warn">Record not found</message>

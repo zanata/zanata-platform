@@ -43,6 +43,12 @@ public class RegisterAction {
     @In
     private EntityManager entityManager;
    
+    @In
+    private Identity identity;
+   
+    @In
+    private IdentityManager identityManager;
+    
     @In(create=true) private Renderer renderer;	    
     
     private String username;
@@ -180,9 +186,11 @@ public class RegisterAction {
 		return activationKey;
 	}
     
+    @Begin(join=true)
     public void setActivationKey(String activationKey) {
 		this.activationKey = activationKey;
 	}
+
 
     public boolean isValid() {
 		return valid;
