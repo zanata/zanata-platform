@@ -22,7 +22,7 @@ public class AccountActivationKey implements Serializable{
 	private Account account;
 
 	@NotEmpty
-	@Length(max=64)
+	@Length(min=32, max=32)
 	@Id
 	public String getKeyHash() {
 		return keyHash;

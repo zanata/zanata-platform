@@ -13,7 +13,11 @@
     <body>
     <p>Dear #{register.person.name},</p>
     <p>Please click on the following link to activate your account:</p>
-    <p><a href="#{register.activationLink}">#{register.activationLink}</a></p>
+    <p>
+      <a href="#{fliesInit.serverPath}/activate/#{register.activationKey}">
+      #{fliesInit.serverPath}/activate/#{register.activationKey}
+      </a>
+    </p>
   </body>
   </html>
   </m:body>

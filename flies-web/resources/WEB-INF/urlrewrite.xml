@@ -116,6 +116,16 @@
   		<to>$1/register$2</to>
 	</outbound-rule>
 
+    <rule>
+        <from casesensitive="true">^/activate/(.+)$</from>
+        <to last="true">/activate.seam\?key=$1</to>
+    </rule>
+	<outbound-rule>
+  		<from>^(/.+)?/activate.seam\?key=(.+)$</from>
+  		<to>$1/activate/$2</to>
+	</outbound-rule>
+
+
     <!-- ROOT / -->
     <rule>
         <from>^/$</from>

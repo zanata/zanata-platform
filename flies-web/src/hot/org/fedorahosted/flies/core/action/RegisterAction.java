@@ -43,12 +43,6 @@ public class RegisterAction {
     @In
     private EntityManager entityManager;
    
-    @In
-    private Identity identity;
-   
-    @In
-    private IdentityManager identityManager;
-    
     @In(create=true) private Renderer renderer;	    
     
     private String username;
@@ -163,7 +157,7 @@ public class RegisterAction {
     	key.setKeyHash(generateHash(getUsername() + getPassword() + getPerson().getEmail() + getPerson().getName() + System.currentTimeMillis()));
     	entityManager.persist(key);
     	
-    	generateActivationLink(key.getKeyHash());
+    	setActivationKey(key.getKeyHash());
     	
     	renderer.render("/WEB-INF/facelets/email/activation.xhtml");
     	
@@ -182,57 +176,13 @@ public class RegisterAction {
         }
     }
     
-    private String activationLink;
-    
-    public void setActivationLink(String activationLink) {
-		this.activationLink = activationLink;
-	}
-
-    public void generateActivationLink(String activationKey){
-    	HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        String baseLink = request.getRequestURL().toString();
-        this.activationLink = baseLink + "?key="+ activationKey; 
-    	
-    }
-    public String getActivationLink(){
-    	return activationLink;
-    	
-    	
-    }
-    
     public String getActivationKey() {
 		return activationKey;
 	}
     
-    @Begin(join=true)
     public void setActivationKey(String activationKey) {
 		this.activationKey = activationKey;
 	}
-
-    @End
-    public String activate(){
-    	
-    	final AccountActivationKey key = entityManager.find(AccountActivationKey.class, getActivationKey());
-    	
-    	if(key == null){
-        	FacesMessages.instance().add(Severity.ERROR, "Invalid key.");
-        	return null;
-    	}
-    	
-        new RunAsOperation() {
-            public void execute() {
-               identityManager.enableUser(key.getAccount().getUsername());
-               identityManager.grantRole(username, "user");            
-            }         
-         }.addRole("admin")
-          .run();
-
-         entityManager.remove(key);
-         
-         FacesMessages.instance().add("Your account was successfully activated. You can now sign in.");
-         
-    	return "/login.xhtml";
-    }
 
     public boolean isValid() {
 		return valid;

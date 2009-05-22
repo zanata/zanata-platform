@@ -157,6 +157,11 @@
 	   </navigation>
 	   
     </page>
+    
+    <page view-id="/activate.xhtml">
+    	<param name="key" value="#{activate.activationKey}"/>
+    	<action execute="#{activate.activate}" if="#{not empty activate.activationKey}"/>
+    </page>
 
     <exception class="org.jboss.seam.framework.EntityNotFoundException">
         <redirect view-id="/error.xhtml">

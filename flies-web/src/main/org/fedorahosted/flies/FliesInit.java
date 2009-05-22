@@ -35,6 +35,8 @@ public class FliesInit {
 	private boolean hibernateStatistics = true;
 	private int authenticatedSessionTimeoutMinutes = 0;
 	private String version;
+	
+	private String serverPath;
 
 	@In(required = false)
 	DBUnitImporter dbunitImporter;
@@ -107,6 +109,14 @@ public class FliesInit {
 	
 	public void setVersion(String version) {
 		this.version = version;
+	}
+	
+	public String getServerPath() {
+		return serverPath;
+	}
+	
+	public void setServerPath(String serverPath) {
+		this.serverPath = serverPath;
 	}
 	
 	public boolean isDebug() {
