@@ -16,12 +16,18 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAccessType;
 
-@Entity
+@Entity  
+@XmlRootElement  
+@XmlAccessorType(XmlAccessType.NONE)
 public class Project extends AbstractSlugEntity implements Serializable {
-
+        @XmlElement
 	private String name;
-
+        @XmlElement
 	private String description;
 
 	private String homeContent;
@@ -34,7 +40,7 @@ public class Project extends AbstractSlugEntity implements Serializable {
 	private List<Person> maintainers;
 
 	@Length(max = 80)
-	public String getName() {
+        public String getName() {
 		return name;
 	}
 
