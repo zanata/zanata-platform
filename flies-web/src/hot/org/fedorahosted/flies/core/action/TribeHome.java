@@ -55,11 +55,12 @@ public class TribeHome extends EntityHome<Tribe>{
 		}
 		Person currentPerson = getEntityManager().find(Person.class, authenticatedAccount.getPerson().getId());
 		
-		getLog().info("attempting to join tribe {0}", getId());
-		getInstance().getMembers().add(currentPerson);
-		getEntityManager().flush();
-		Events.instance().raiseEvent("personJoinedTribe", currentPerson, getInstance());
-		getLog().info("{0} joined tribe {1}", authenticatedAccount.getUsername(), getId());
+		if(!getInstance().getMembers().contains(currentPerson)){
+			getInstance().getMembers().add(currentPerson);
+			getEntityManager().flush();
+			Events.instance().raiseEvent("personJoinedTribe", currentPerson, getInstance());
+			getLog().info("{0} joined tribe {1}", authenticatedAccount.getUsername(), getId());
+		}
 	}
 	
 	@Transactional
@@ -70,12 +71,13 @@ public class TribeHome extends EntityHome<Tribe>{
 			return;
 		}
 		Person currentPerson = getEntityManager().find(Person.class, authenticatedAccount.getPerson().getId());
-		
-		getLog().info("attempting to leave tribe {0}", getId());
-		getInstance().getMembers().remove(currentPerson);
-		getEntityManager().flush();
-		Events.instance().raiseEvent("personLeftTribe", currentPerson, getInstance());
-		getLog().info("{0} left tribe {1}", authenticatedAccount.getUsername(), getId());
+
+		if(getInstance().getMembers().contains(currentPerson)){
+			getInstance().getMembers().remove(currentPerson);
+			getEntityManager().flush();
+			Events.instance().raiseEvent("personLeftTribe", currentPerson, getInstance());
+			getLog().info("{0} left tribe {1}", authenticatedAccount.getUsername(), getId());
+		}
 	}
 	
 	public void cancel(){}
