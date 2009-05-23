@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.validator.url;
+package org.fedorahosted.flies.validators;
 
 import java.io.Serializable;
 import java.net.MalformedURLException;

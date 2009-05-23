@@ -11,7 +11,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import org.fedorahosted.flies.repository.model.Document;
-import org.fedorahosted.flies.validator.url.Slug;
+import org.fedorahosted.flies.validators.Slug;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.Length;

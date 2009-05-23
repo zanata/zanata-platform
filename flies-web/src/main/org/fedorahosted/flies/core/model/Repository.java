@@ -5,7 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Table;
-import org.fedorahosted.flies.validator.url.Slug;
+
+import org.fedorahosted.flies.validators.Slug;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;
 

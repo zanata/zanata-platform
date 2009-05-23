@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.validator.url;
+package org.fedorahosted.flies.validators;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.*;
