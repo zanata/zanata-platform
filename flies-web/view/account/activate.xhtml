@@ -10,32 +10,6 @@
     template="../layout/template.xhtml">
 
   <ui:define name="center_content">
-    <a4j:form id="registerForm">
-      <rich:panel>
-        <f:facet name="header">Activate your account</f:facet>
-          <p>
-            You will soon receive an email with a key to activate your account. Click on the link in
-            the email to activate, or enter the key below.
-          </p>
-        <s:decorate id="activationKeyField" template="../layout/edit.xhtml">
-            <ui:define name="label">Activation Key</ui:define>
-            <h:inputText id="activationKey" required="true" size="32" maxlength="32"
-                      value="#{activate.activationKey}">
-            </h:inputText>
-            <h:graphicImage id="activationKeyHelp" value="../img/msginfo.png" styleClass="input_help">
-              <rich:toolTip>
-                Must be lowercase blah blah and so on...
-              </rich:toolTip>
-            </h:graphicImage>
-        </s:decorate>
-        
-        <div style="clear:both"/>
-        <div class="actionButtons">
-            <h:commandButton value="Activate" action="#{activate.activate}"/>
-        </div>
-      </rich:panel>
-    </a4j:form>
-    
   </ui:define>
   
   

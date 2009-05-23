@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.accounts.action;
+package org.fedorahosted.flies.account.action;
 
 import java.security.MessageDigest;
 
@@ -82,7 +82,7 @@ public class PasswordResetRequestAction {
 		return email;
 	}
     
-    private void removeAnyExistingRequest(){
+    private void removeAnyExistingResetRequests(){
     	Session session = (Session) entityManager.getDelegate();
     	AccountResetPasswordKey key = (AccountResetPasswordKey) session.createCriteria(AccountResetPasswordKey.class).add( 
     			Restrictions.naturalId()
@@ -90,12 +90,13 @@ public class PasswordResetRequestAction {
 		     .uniqueResult();
     	if(key != null){
     		entityManager.remove(key);
+    		entityManager.flush();
     	}
     	
     }
     
     
-    
+    @End
     public String requestReset(){
     	Session session = (Session) entityManager.getDelegate();
     	account = (Account) session.createCriteria(Account.class).add( 
@@ -107,7 +108,7 @@ public class PasswordResetRequestAction {
     		return null;
     	}
     	
-    	removeAnyExistingRequest();
+    	removeAnyExistingResetRequests();
     	
     	AccountResetPasswordKey key = new AccountResetPasswordKey();
     	key.setAccount(account);
@@ -120,8 +121,9 @@ public class PasswordResetRequestAction {
 
     	log.info("Sent password reset key to {0} ({1})", account.getPerson().getName(), account.getUsername());
     	
-    	
-    	return "/account/password_reset.xhtml";
+		FacesMessages.instance().add("You will soon receive an email with a link to reset your password.");
+		
+    	return "/home.xhtml";
     }
 
     public String getActivationKey() {

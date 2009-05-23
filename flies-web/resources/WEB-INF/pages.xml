@@ -160,12 +160,20 @@
     
     <page view-id="/account/activate.xhtml">
     	<param name="key" value="#{activate.activationKey}"/>
-    	<action execute="#{activate.activate}" if="#{not empty activate.activationKey}"/>
+    	<action execute="#{activate.validateActivationKey}"/>
+    	<action execute="#{activate.activate}"/>
     </page>
 
     <page view-id="/account/password_reset.xhtml">
     	<param name="key" value="#{passwordReset.activationKey}"/>
+    	<action execute="#{passwordReset.validateActivationKey}"/>
     </page>
+
+    <exception class="org.fedorahosted.flies.KeyNotFoundException">
+        <redirect view-id="/error.xhtml">
+            <message severity="error">Invalid Activation Key</message>
+        </redirect>
+    </exception>
 
     <exception class="org.jboss.seam.framework.EntityNotFoundException">
         <redirect view-id="/error.xhtml">

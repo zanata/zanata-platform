@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.accounts.action;
+package org.fedorahosted.flies.account.action;
 
 import java.security.MessageDigest;
 
@@ -146,7 +146,6 @@ public class RegisterAction {
     	validateTermsOfUse();
     	
     	if( !isValid()){
-        	log.info("Attempted an invalid register...");
     		return null;
     	}
     	
@@ -169,7 +168,9 @@ public class RegisterAction {
     	
     	log.info("Created user {0} ({1})", person.getName(), getUsername());
     	
-    	return "/account/activate.xhtml";
+		FacesMessages.instance().add("You will soon receive an email with a link to activate your account.");
+    	
+    	return "/home.xhtml";
     }
 
     public static String generateHash(String key){

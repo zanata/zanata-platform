@@ -74,7 +74,7 @@
         <s:decorate id="agreedToTerms" template="../layout/edit.xhtml">
           <h:selectBooleanCheckbox id="agreedToTerms" value="#{register.agreedToTermsOfUse}"/>
           <label for="agreedToTerms">
-            <h:outputText value="I agree to the " escape="false"/>
+            I <strong>agree</strong> to the
             <h:outputLink value="#" id="termsOfUseLink">
               <h:outputText value="Terms of use"/>
               <rich:componentControl for="termsOfUse" attachTo="termsOfUseLink" operation="show" event="onclick"/>

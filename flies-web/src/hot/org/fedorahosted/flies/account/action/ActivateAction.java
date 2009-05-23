@@ -1,8 +1,10 @@
-package org.fedorahosted.flies.accounts.action;
+package org.fedorahosted.flies.account.action;
 
 import javax.persistence.EntityManager;
 
+import org.fedorahosted.flies.KeyNotFoundException;
 import org.fedorahosted.flies.core.model.AccountActivationKey;
+import org.fedorahosted.flies.core.model.AccountResetPasswordKey;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Size;
@@ -35,26 +37,31 @@ public class ActivateAction {
     
     private String activationKey;
 
-    @Length(min=32,max=32, message="Activation key must be 32 characters long")
-    @NotEmpty
     public String getActivationKey() {
 		return activationKey;
 	}
+
+    private AccountActivationKey key;
+
     
     @Begin(join=true)
+    public void validateActivationKey(){
+    	
+    	if(getActivationKey() == null)
+    		throw new KeyNotFoundException();
+    	
+		key = entityManager.find(AccountActivationKey.class, getActivationKey());
+		
+		if(key == null)
+			throw new KeyNotFoundException();
+    }
+    
     public void setActivationKey(String activationKey) {
 		this.activationKey = activationKey;
 	}
     
     @End
     public String activate(){
-    	
-    	final AccountActivationKey key = entityManager.find(AccountActivationKey.class, getActivationKey());
-    	
-    	if(key == null){
-    		FacesMessages.instance().addToControl("activationKey", "Invalid key");
-        	return null;
-    	}
     	
         new RunAsOperation() {
             public void execute() {
@@ -68,7 +75,7 @@ public class ActivateAction {
          
          FacesMessages.instance().add("Your account was successfully activated. You can now sign in.");
          
-    	return "/login.xhtml";
+    	return "/account/login.xhtml";
     }
 	
 }

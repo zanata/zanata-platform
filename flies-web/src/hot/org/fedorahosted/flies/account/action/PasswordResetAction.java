@@ -1,16 +1,19 @@
-package org.fedorahosted.flies.accounts.action;
+package org.fedorahosted.flies.account.action;
 
 import javax.persistence.EntityManager;
 
+import org.fedorahosted.flies.KeyNotFoundException;
 import org.fedorahosted.flies.core.model.AccountActivationKey;
 import org.fedorahosted.flies.core.model.AccountResetPasswordKey;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
@@ -18,6 +21,7 @@ import org.jboss.seam.security.RunAsOperation;
 import org.jboss.seam.security.management.IdentityManager;
 
 @Name("passwordReset")
+@Scope(ScopeType.CONVERSATION)
 public class PasswordResetAction {
 
 	@Logger
@@ -36,9 +40,9 @@ public class PasswordResetAction {
 
     private String password;
     private String passwordConfirm;
-    
-    private boolean valid;
 
+    private AccountResetPasswordKey key;
+    
     
     public void setPassword(String password) {
 		this.password = password;
@@ -52,57 +56,52 @@ public class PasswordResetAction {
 	}
     
     public void setPasswordConfirm(String passwordConfirm) {
-    	validatePasswords(getPassword(), passwordConfirm);
 		this.passwordConfirm = passwordConfirm;
+    	validatePasswordsMatch();
 	}
 
     public String getPasswordConfirm() {
 		return passwordConfirm;
 	}
 
-    public void validatePasswords(String p1, String p2){
-    	
-		if (p1 == null || !p1.equals(p2) ){
-			valid = false;
+    public boolean validatePasswordsMatch(){
+		if (password == null || !password.equals(passwordConfirm) ){
 			FacesMessages.instance().addToControl("passwordConfirm", "Passwords do not match");
+			return false;
 		}
-		
+		return true;
     }
     
-    @Length(min=32,max=32, message="Activation key must be 32 characters long")
-    @NotEmpty
     public String getActivationKey() {
 		return activationKey;
 	}
     
-    @Begin(join=true)
     public void setActivationKey(String activationKey) {
 		this.activationKey = activationKey;
 		key = entityManager.find(AccountResetPasswordKey.class, getActivationKey());		
 	}
     
-    private AccountResetPasswordKey key;
     private AccountResetPasswordKey getKey(){
     	return key;
     }
-    public boolean isKeyValid(){
-    	return key != null;
+    
+    @Begin(join=true)
+    public void validateActivationKey(){
+    	
+    	if(getActivationKey() == null)
+    		throw new KeyNotFoundException();
+    	
+		key = entityManager.find(AccountResetPasswordKey.class, getActivationKey());
+
+		if(key == null)
+			throw new KeyNotFoundException();
     }
     
     @End
     public String changePassword(){
-        valid=true;
-    	validatePasswords(getPassword(), getPasswordConfirm());
-    	
-    	if( !valid){
-        	log.info("Attempted an invalid password change...");
+
+    	if( !validatePasswordsMatch() )
     		return null;
-    	}    	
-    	
-    	if(!isKeyValid()){
-    		FacesMessages.instance().addToControl("activationKey", "Invalid key");
-        	return null;
-    	}
     	
         new RunAsOperation() {
             public void execute() {
@@ -116,7 +115,7 @@ public class PasswordResetAction {
         FacesMessages.instance().add("Your password has been successfully changed.");
 
         // Login the user
-        identity.getCredentials().setUsername(key.getAccount().getUsername());
+        identity.getCredentials().setUsername(getKey().getAccount().getUsername());
         identity.getCredentials().setPassword(getPassword());
         identity.login();         
          
