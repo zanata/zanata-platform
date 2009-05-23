@@ -142,4 +142,53 @@ public class Person extends AbstractFliesEntity implements Serializable {
 	public void setCommunityMemberships(Set<Community> communityMemberships) {
 		this.communityMemberships = communityMemberships;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((account == null) ? 0 : account.hashCode());
+		result = prime * result + ((email == null) ? 0 : email.hashCode());
+		result = prime
+				* result
+				+ ((maintainerProjects == null) ? 0 : maintainerProjects
+						.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Person other = (Person) obj;
+		if (account == null) {
+			if (other.account != null)
+				return false;
+		} else if (!account.equals(other.account))
+			return false;
+		if (email == null) {
+			if (other.email != null)
+				return false;
+		} else if (!email.equals(other.email))
+			return false;
+		if (maintainerProjects == null) {
+			if (other.maintainerProjects != null)
+				return false;
+		} else if (!maintainerProjects.equals(other.maintainerProjects))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
+	}
+
+	
+	
 }

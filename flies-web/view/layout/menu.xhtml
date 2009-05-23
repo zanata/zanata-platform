@@ -4,6 +4,7 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:a="http://richfaces.org/a4j"
     xmlns:rich="http://richfaces.org/rich">
   <ul class="ui-tabs-nav">
     <li id="tab_projects" class="ui-tabs-nav-issues">
@@ -27,6 +28,21 @@
       <s:link view="/tribe/home.xhtml" propagation="none">
         <span><img src="#{request.contextPath}/img/silk/world.png"/>Tribes</span>
       </s:link>
+      <s:div id="tribesTabDiv">
+        <s:fragment rendered="#{memberTribes.size != 0}">
+          <rich:jQuery selector="#tab_tribes" query="addClass('ui-tabs-nav-issues')" />
+          <ul>
+            <a:repeat value="#{memberTribes}" var="tribe">
+              <li>
+                <s:link view="/tribe/tribe.xhtml" propagation="none">
+                  #{tribe.locale.nativeName}
+                  <f:param name="id" value="#{tribe.locale.id}"/>
+                </s:link>
+              </li>
+            </a:repeat>
+          </ul>
+        </s:fragment>
+      </s:div>
     </li>
     <li id="tab_communities">
       <s:link view="/community/home.xhtml" propagation="none">

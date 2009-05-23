@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.core.action;
 
+import org.fedorahosted.flies.core.model.Account;
 import org.fedorahosted.flies.core.model.FliesLocale;
 import org.fedorahosted.flies.core.model.Person;
 import org.fedorahosted.flies.core.model.Tribe;
@@ -12,7 +13,10 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.core.Conversation;
+import org.jboss.seam.core.Events;
 import org.jboss.seam.framework.EntityHome;
+import org.jboss.seam.security.Identity;
+import org.jboss.seam.security.management.JpaIdentityStore;
 
 @Name("tribeHome")
 @Scope(ScopeType.CONVERSATION)
@@ -39,21 +43,40 @@ public class TribeHome extends EntityHome<Tribe>{
 		c.setDescription(getInstance().getLocale().getId());
 	}
 	
-	@In(required=false) Person authenticatedPerson;
+	@In(required=false, value=JpaIdentityStore.AUTHENTICATED_USER) 
+	Account authenticatedAccount;
 
 	@Transactional
 	public void joinTribe(){
-		if(authenticatedPerson == null){
+
+		if(authenticatedAccount == null){
 			getLog().error("failed to load auth person");
 			return;
 		}
+		Person currentPerson = getEntityManager().find(Person.class, authenticatedAccount.getPerson().getId());
 		
 		getLog().info("attempting to join tribe {0}", getId());
-		getInstance().getMembers().add(authenticatedPerson);
+		getInstance().getMembers().add(currentPerson);
 		getEntityManager().flush();
-		getLog().info("{0} joined tribe {1}", authenticatedPerson.getAccount().getUsername(), getId());
+		Events.instance().raiseEvent("personJoinedTribe", currentPerson, getInstance());
+		getLog().info("{0} joined tribe {1}", authenticatedAccount.getUsername(), getId());
 	}
 	
+	@Transactional
+	public void leaveTribe(){
+
+		if(authenticatedAccount == null){
+			getLog().error("failed to load auth person");
+			return;
+		}
+		Person currentPerson = getEntityManager().find(Person.class, authenticatedAccount.getPerson().getId());
+		
+		getLog().info("attempting to leave tribe {0}", getId());
+		getInstance().getMembers().remove(currentPerson);
+		getEntityManager().flush();
+		Events.instance().raiseEvent("personLeftTribe", currentPerson, getInstance());
+		getLog().info("{0} left tribe {1}", authenticatedAccount.getUsername(), getId());
+	}
 	
 	public void cancel(){}
 }
