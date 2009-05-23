@@ -4,7 +4,7 @@
        xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.1.xsd"
 
        no-conversation-view-id="/home.xhtml"
-       login-view-id="/login.xhtml">
+       login-view-id="/account/login.xhtml">
 
 	<conversation name="TargetView"
 			parameter-name="mslug"
@@ -158,12 +158,12 @@
 	   
     </page>
     
-    <page view-id="/activate.xhtml">
+    <page view-id="/account/activate.xhtml">
     	<param name="key" value="#{activate.activationKey}"/>
     	<action execute="#{activate.activate}" if="#{not empty activate.activationKey}"/>
     </page>
 
-    <page view-id="/password_reset.xhtml">
+    <page view-id="/account/password_reset.xhtml">
     	<param name="key" value="#{passwordReset.activationKey}"/>
     </page>
 
@@ -199,7 +199,7 @@
     </exception>
     
     <exception class="org.jboss.seam.security.NotLoggedInException">
-        <redirect view-id="/login.xhtml">
+        <redirect view-id="/account/login.xhtml">
             <message severity="warn">#{messages['org.jboss.seam.NotLoggedIn']}</message>
         </redirect>
     </exception>

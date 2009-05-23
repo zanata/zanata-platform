@@ -38,9 +38,9 @@
                
         <h:outputText rendered="#{identity.loggedIn}" value="#{authenticatedPerson == null ? identity.username : authenticatedPerson.name} "/>
         <s:fragment rendered="#{not identity.loggedIn}">
-          <s:link view="/login.xhtml" value="Sign In" propagation="none"/>
+          <s:link view="/account/login.xhtml" value="Sign In" propagation="none"/>
           <rich:spacer width="10px"/>
-          <s:link view="/register.xhtml" value="Register" propagation="none"/>
+          <s:link view="/account/register.xhtml" value="Register" propagation="none"/>
         </s:fragment>
         
         <s:link view="/home.xhtml" action="#{identity.logout}" value="Sign Out" rendered="#{identity.loggedIn}" propagation="none"/>

@@ -169,7 +169,7 @@ public class RegisterAction {
     	
     	log.info("Created user {0} ({1})", person.getName(), getUsername());
     	
-    	return "/activate.xhtml";
+    	return "/account/activate.xhtml";
     }
 
     public static String generateHash(String key){

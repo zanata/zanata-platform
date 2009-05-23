@@ -96,61 +96,61 @@
   		<to>$1/project/$2/$4</to>
 	</outbound-rule>
     
-    <!-- login / -->
+    <!-- account / -->
 
     <rule>
-        <from casesensitive="true">^/sign_in(.+)?$</from>
-        <to last="true">/login.seam$1</to>
+        <from casesensitive="true">^/account/sign_in(.+)?$</from>
+        <to last="true">/account/login.seam$1</to>
     </rule>
 	<outbound-rule>
-  		<from>^(/.+)?/login.seam(.+)?$</from>
-  		<to>$1/sign_in$2</to>
+  		<from>^(/.+)?/account/login.seam(.+)?$</from>
+  		<to>$1/account/sign_in$2</to>
 	</outbound-rule>
 
     <rule>
-        <from casesensitive="true">^/register(.+)?$</from>
-        <to last="true">/register.seam$1</to>
+        <from casesensitive="true">^/account/register(.+)?$</from>
+        <to last="true">/account/register.seam$1</to>
     </rule>
 	<outbound-rule>
-  		<from>^(/.+)?/register.seam(.+)?$</from>
-  		<to>$1/register$2</to>
+  		<from>^(/.+)?/account/register.seam(.+)?$</from>
+  		<to>$1/account/register$2</to>
 	</outbound-rule>
 
     <rule>
-        <from casesensitive="true">^/activate/(.+)$</from>
-        <to last="true">/activate.seam\?key=$1</to>
+        <from casesensitive="true">^/account/activate/(.+)$</from>
+        <to last="true">/account/activate.seam\?key=$1</to>
     </rule>
 	<outbound-rule>
-  		<from>^(/.+)?/activate.seam\?key=(.+)$</from>
-  		<to>$1/activate/$2</to>
+  		<from>^(/.+)?/account/activate.seam\?key=(.+)$</from>
+  		<to>$1/account/activate/$2</to>
 	</outbound-rule>
     <rule>
-        <from casesensitive="true">^/activate(.+)?$</from>
-        <to last="true">/activate.seam$1</to>
+        <from casesensitive="true">^/account/activate(.+)?$</from>
+        <to last="true">/account/activate.seam$1</to>
     </rule>
 	<outbound-rule>
-  		<from>^(/.+)?/activate.seam(.+)?$</from>
-  		<to>$1/activate$2</to>
+  		<from>^(/.+)?/account/activate.seam(.+)?$</from>
+  		<to>$1/account/activate$2</to>
 	</outbound-rule>
 
     <rule>
-        <from casesensitive="true">^/password_reset/(.+)$</from>
-        <to last="true">/password_reset.seam\?key=$1</to>
+        <from casesensitive="true">^/account/password_reset_request(.+)?$</from>
+        <to last="true">/account/password_reset_request.seam$1</to>
     </rule>
 	<outbound-rule>
-  		<from>^(/.+)?/password_reset.seam\?key=(.+)$</from>
-  		<to>$1/password_reset/$2</to>
+  		<from>^(/.+)?/account/password_reset_request.seam(.+)?$</from>
+  		<to>$1/account/password_reset_request$2</to>
 	</outbound-rule>
+
     <rule>
-        <from casesensitive="true">^/password_reset(.+)?$</from>
-        <to last="true">/password_reset.seam$1</to>
+        <from casesensitive="true">^/account/password_reset/(.+)$</from>
+        <to last="true">/account/password_reset.seam\?key=$1</to>
     </rule>
 	<outbound-rule>
-  		<from>^(/.+)?/password_reset.seam(.+)?$</from>
-  		<to>$1/password_reset$2</to>
+  		<from>^(/.+)?/account/password_reset.seam\?key=(.+)$</from>
+  		<to>$1/account/password_reset/$2</to>
 	</outbound-rule>
-
-
+	
     <!-- ROOT / -->
     <rule>
         <from>^/$</from>

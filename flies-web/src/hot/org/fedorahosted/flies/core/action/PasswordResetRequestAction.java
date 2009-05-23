@@ -121,7 +121,7 @@ public class PasswordResetRequestAction {
     	log.info("Sent password reset key to {0} ({1})", account.getPerson().getName(), account.getUsername());
     	
     	
-    	return "/password_reset.xhtml";
+    	return "/account/password_reset.xhtml";
     }
 
     public String getActivationKey() {

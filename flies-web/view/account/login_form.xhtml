@@ -10,19 +10,19 @@
     <rich:panel>
         <f:facet name="header">Sign In</f:facet>
 
-        <s:decorate id="usernameField" template="layout/edit.xhtml">
+        <s:decorate id="usernameField" template="../layout/edit.xhtml">
             <ui:define name="label">Username</ui:define>
             <h:inputText id="username"
                       value="#{credentials.username}"/>
         </s:decorate>
-        <s:decorate id="passwordField" template="layout/edit.xhtml">
+        <s:decorate id="passwordField" template="../layout/edit.xhtml">
             <ui:define name="label">Password</ui:define>
             <h:inputSecret id="password"
                         value="#{credentials.password}"/>
                         <rich:spacer width="10px"/>
-                        <s:link view="/password_reset_request.xhtml" propagation="none">Forgot Your Password?</s:link>
+                        <s:link view="/account/password_reset_request.xhtml" propagation="none">Forgot Your Password?</s:link>
         </s:decorate>
-        <s:decorate id="rememberMeField" template="layout/edit.xhtml">
+        <s:decorate id="rememberMeField" template="../layout/edit.xhtml">
             <ui:define name="label">Remember Me</ui:define>
             <h:selectBooleanCheckbox id="rememberMe"
                                   value="#{identity.rememberMe}"/>

@@ -7,7 +7,7 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
     xmlns:a4j="http://richfaces.org/a4j"
-    template="./layout/template.xhtml">
+    template="../layout/template.xhtml">
 
   <ui:define name="center_content">
     <a4j:form id="registerForm">
@@ -17,12 +17,12 @@
             You will soon receive an email with a key to activate your account. Click on the link in
             the email to activate, or enter the key below.
           </p>
-        <s:decorate id="activationKeyField" template="layout/edit.xhtml">
+        <s:decorate id="activationKeyField" template="../layout/edit.xhtml">
             <ui:define name="label">Activation Key</ui:define>
             <h:inputText id="activationKey" required="true" size="32" maxlength="32"
                       value="#{activate.activationKey}">
             </h:inputText>
-            <h:graphicImage id="activationKeyHelp" value="img/msginfo.png" styleClass="input_help">
+            <h:graphicImage id="activationKeyHelp" value="../img/msginfo.png" styleClass="input_help">
               <rich:toolTip>
                 Must be lowercase blah blah and so on...
               </rich:toolTip>
