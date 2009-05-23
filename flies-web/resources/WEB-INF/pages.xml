@@ -26,6 +26,11 @@
 			parameter-value="#{redirect.parameters.slug != null ? redirect.parameters.slug : (communityHome.instance.slug != null ? communityHome.instance.slug : '')}" 
 			/>
 
+	<conversation name="TribeView"
+			parameter-name="id"
+			parameter-value="#{redirect.parameters.id != null ? redirect.parameters.id : (tribeHome.id != null ? tribeHome.id : '')}" 
+			/>
+
     <page view-id="*">
         <navigation>
             <rule if-outcome="home">
@@ -157,6 +162,13 @@
 	   </navigation>
 	   
     </page>
+
+    <page view-id="/tribe/tribe.xhtml" conversation="TribeView">
+		<param name="id" value="#{tribeHome.id}"/>
+		<action execute="#{tribeHome.validateSuppliedId}" />
+	</page>
+
+
     
     <page view-id="/account/activate.xhtml">
     	<param name="key" value="#{activate.activationKey}"/>

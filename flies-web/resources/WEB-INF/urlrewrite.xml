@@ -47,6 +47,16 @@
 	</outbound-rule>
 
 	<!-- Tribe rules -->	
+
+    <rule>
+        <from casesensitive="true">^/tribe/view/(.+)$</from>
+        <to last="true">/tribe/tribe.seam\?id=$1</to>
+    </rule>
+	<outbound-rule>
+  		<from>^(/.+)?/tribe/tribe.seam\?id=(.+)$</from>
+  		<to>$1/tribe/view/$2</to>
+	</outbound-rule>
+
     <rule>
         <from casesensitive="true">^/tribe/list(.+)?$</from>
         <to last="true">/tribe/home.seam$1</to>
