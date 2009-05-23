@@ -30,11 +30,97 @@ insert into AccountMembership (accountId, memberOf)
 # insert into ResourceCategory (id, creationDate, timestamp, name) values(2, NOW(), NOW(), 'User Interface');
 # insert into ResourceCategory (id, creationDate, timestamp, name) values(3, NOW(), NOW(), 'Website');
 
-# insert into FliesLocale (id, icuLocaleId, parentId)
-#	values ('gu-IN','gu_IN', NULL);
-	
+insert into FliesLocale (id, icuLocaleId, parentId)
+	values ('as-IN','as_IN', NULL);
+insert into FliesLocale (id, icuLocaleId, parentId)
+	values ('de-DE','de_DE', NULL);
+insert into FliesLocale (id, icuLocaleId, parentId)
+	values ('es-ES','es_ES', NULL);
+insert into FliesLocale (id, icuLocaleId, parentId)
+	values ('gu-IN','gu_IN', NULL);
+insert into FliesLocale (id, icuLocaleId, parentId)
+	values ('it-IT','it_IT', NULL);
+insert into FliesLocale (id, icuLocaleId, parentId)
+	values ('kn-IN','kn_IN', NULL);
+insert into FliesLocale (id, icuLocaleId, parentId)
+	values ('ml-IN','ml_IN', NULL);
+insert into FliesLocale (id, icuLocaleId, parentId)
+	values ('or-IN','or_IN', NULL);
+insert into FliesLocale (id, icuLocaleId, parentId)
+	values ('ru-RU','ru_RU', NULL);
+insert into FliesLocale (id, icuLocaleId, parentId)
+	values ('ta-IN','ta-IN', NULL);
+insert into FliesLocale (id, icuLocaleId, parentId)
+	values ('zh-TW','zh_TW', NULL);
+insert into FliesLocale (id, icuLocaleId, parentId)
+	values ('bn-IN','bn_IN', NULL);
+insert into FliesLocale (id, icuLocaleId, parentId)
+	values ('en-US','en_US', NULL);
+insert into FliesLocale (id, icuLocaleId, parentId)
+	values ('fr-FR','fr_FR', NULL);
+insert into FliesLocale (id, icuLocaleId, parentId)
+	values ('hi-IN','hi_IN', NULL);
+insert into FliesLocale (id, icuLocaleId, parentId)
+	values ('ja-JP','ja_JP', NULL);
+insert into FliesLocale (id, icuLocaleId, parentId)
+	values ('ko-KR','ko_KR', NULL);
+insert into FliesLocale (id, icuLocaleId, parentId)
+	values ('mr-IN','mr_IN', NULL);
+insert into FliesLocale (id, icuLocaleId, parentId)
+	values ('pa-IN','pa_IN', NULL);
+insert into FliesLocale (id, icuLocaleId, parentId)
+	values ('pt-BR','pt_BR', NULL);
+insert into FliesLocale (id, icuLocaleId, parentId)
+	values ('si-LK','si_LK', NULL);
+insert into FliesLocale (id, icuLocaleId, parentId)
+	values ('te-IN','te_IN', NULL);
+insert into FliesLocale (id, icuLocaleId, parentId)
+	values ('zh-CN','zh_CN', NULL);
+
 insert into Tribe (id, creationDate, timestamp, chiefId, localeId) 
-	values(1, NOW(), NOW(), 3, 'gu-IN');
+	values(1, NOW(), NOW(), 3, 'as-IN');
+insert into Tribe (id, creationDate, timestamp, chiefId, localeId) 
+	values(2, NOW(), NOW(), 3, 'bn-IN');
+insert into Tribe (id, creationDate, timestamp, chiefId, localeId) 
+	values(3, NOW(), NOW(), 3, 'de-DE');
+insert into Tribe (id, creationDate, timestamp, chiefId, localeId) 
+	values(4, NOW(), NOW(), 3, 'en-US');
+insert into Tribe (id, creationDate, timestamp, chiefId, localeId) 
+	values(5, NOW(), NOW(), 3, 'es-ES');
+insert into Tribe (id, creationDate, timestamp, chiefId, localeId) 
+	values(6, NOW(), NOW(), 3, 'fr-FR');
+insert into Tribe (id, creationDate, timestamp, chiefId, localeId) 
+	values(7, NOW(), NOW(), 3, 'gu-IN');
+insert into Tribe (id, creationDate, timestamp, chiefId, localeId) 
+	values(8, NOW(), NOW(), 3, 'hi-IN');
+insert into Tribe (id, creationDate, timestamp, chiefId, localeId) 
+	values(9, NOW(), NOW(), 3, 'it-IT');
+insert into Tribe (id, creationDate, timestamp, chiefId, localeId) 
+	values(10, NOW(), NOW(), 3, 'ja-JP');
+insert into Tribe (id, creationDate, timestamp, chiefId, localeId) 
+	values(12, NOW(), NOW(), 3, 'ko-KR');
+insert into Tribe (id, creationDate, timestamp, chiefId, localeId) 
+	values(13, NOW(), NOW(), 3, 'ml-IN');
+insert into Tribe (id, creationDate, timestamp, chiefId, localeId) 
+	values(14, NOW(), NOW(), 3, 'mr-IN');
+insert into Tribe (id, creationDate, timestamp, chiefId, localeId) 
+	values(15, NOW(), NOW(), 3, 'or-IN');
+insert into Tribe (id, creationDate, timestamp, chiefId, localeId) 
+	values(16, NOW(), NOW(), 3, 'pa-IN');
+insert into Tribe (id, creationDate, timestamp, chiefId, localeId) 
+	values(17, NOW(), NOW(), 3, 'pt-BR');
+insert into Tribe (id, creationDate, timestamp, chiefId, localeId) 
+	values(18, NOW(), NOW(), 3, 'ru-RU');
+insert into Tribe (id, creationDate, timestamp, chiefId, localeId) 
+	values(19, NOW(), NOW(), 3, 'si-LK');
+insert into Tribe (id, creationDate, timestamp, chiefId, localeId) 
+	values(20, NOW(), NOW(), 3, 'ta-IN');
+insert into Tribe (id, creationDate, timestamp, chiefId, localeId) 
+	values(21, NOW(), NOW(), 3, 'te-IN');
+insert into Tribe (id, creationDate, timestamp, chiefId, localeId) 
+	values(22, NOW(), NOW(), 3, 'zh-CN');
+insert into Tribe (id, creationDate, timestamp, chiefId, localeId) 
+	values(23, NOW(), NOW(), 3, 'zh-TW');
 	
 insert into Community (id, slug, name, description, homeContent, ownerId, creationDate, timestamp)
 	values (1, 'jboss', 'JBoss.org', 'best community since sliced bread', NULL, 1, NOW(), NOW());

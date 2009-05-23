@@ -53,7 +53,7 @@ public class DebugDataInitialization {
 	@Logger
 	Log log;
 
-	@Observer(FliesInit.EVENT_Flies_Startup)
+	//@Observer(FliesInit.EVENT_Flies_Startup)
 	@Transactional
 	public void initializeDebugData() {
 		log.info("*************************** start observing!");
