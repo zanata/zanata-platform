@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.core.action;
+package org.fedorahosted.flies.accounts.action;
 
 import javax.persistence.EntityManager;
 
