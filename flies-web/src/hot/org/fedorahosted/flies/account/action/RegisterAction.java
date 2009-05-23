@@ -8,6 +8,7 @@ import javax.persistence.NoResultException;
 import javax.security.auth.callback.ConfirmationCallback;
 import javax.servlet.http.HttpServletRequest;
 
+import org.fedorahosted.flies.core.dao.AccountDAO;
 import org.fedorahosted.flies.core.model.Account;
 import org.fedorahosted.flies.core.model.AccountActivationKey;
 import org.fedorahosted.flies.core.model.Person;
@@ -46,6 +47,9 @@ public class RegisterAction {
     @In
     private Identity identity;
    
+    @In
+    private AccountDAO accountDAO;
+    
     @In
     private IdentityManager identityManager;
     
@@ -148,12 +152,17 @@ public class RegisterAction {
     	if( !isValid()){
     		return null;
     	}
+
+    	new RunAsOperation() {
+            public void execute() {
+            	identityManager.createUser(getUsername(), getPassword());
+            	identityManager.disableUser(getUsername());
+            }         
+        }.addRole("admin")
+         .run();
+        
+    	Account account = accountDAO.getByUsername(getUsername());
     	
-    	Account account = new Account();
-    	account.setEnabled(false);
-    	account.setUsername(getUsername());
-    	account.setPasswordHash(PasswordHash.instance().generateSaltedHash(getPassword(), getUsername(),PasswordHash.ALGORITHM_MD5));
-    	entityManager.persist(account);
     	person.setAccount(account);
     	entityManager.persist(person);
     	
@@ -165,8 +174,6 @@ public class RegisterAction {
     	setActivationKey(key.getKeyHash());
     	
     	renderer.render("/WEB-INF/facelets/email/activation.xhtml");
-    	
-    	log.info("Created user {0} ({1})", person.getName(), getUsername());
     	
 		FacesMessages.instance().add("You will soon receive an email with a link to activate your account.");
     	

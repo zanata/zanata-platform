@@ -2,6 +2,7 @@ package org.fedorahosted.flies.core.dao;
 
 import javax.persistence.EntityManager;
 
+import org.fedorahosted.flies.core.model.Account;
 import org.fedorahosted.flies.core.model.Project;
 import org.fedorahosted.flies.core.model.ProjectTarget;
 import org.hibernate.Session;
@@ -10,19 +11,18 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 
-@Name("projectDAO")
+@Name("accountDAO")
 @AutoCreate
-public class ProjectDAO {
+public class AccountDAO {
 
 	@In
 	EntityManager entityManager;
 	
-	public Project getBySlug(String slug){
+	public Account getByUsername(String username){
 		Session session = (Session) entityManager.getDelegate();
-		return (Project) session.createCriteria(Project.class)
+		return (Account) session.createCriteria(Account.class)
 			.add( Restrictions.naturalId()
-		        .set("slug", slug))
-		    .setCacheable(true)
+		        .set("username", username))
 		    .uniqueResult();
 	}
 }
