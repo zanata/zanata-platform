@@ -6,6 +6,7 @@ import javax.persistence.NoResultException;
 import org.fedorahosted.flies.core.model.Account;
 import org.fedorahosted.flies.core.model.Person;
 import org.fedorahosted.flies.core.model.Project;
+import org.fedorahosted.flies.core.model.ProjectSeries;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.In;
@@ -72,7 +73,18 @@ public class ProjectHome extends SlugHome<Project> {
 			if(currentPerson != null)
 				getInstance().getMaintainers().add(currentPerson);
 		}
-		return super.persist();
+		
+		String retValue = super.persist();
+
+		// add a default series as well..
+		if("persisted".equals(retValue)){
+			ProjectSeries defaultSeries = new ProjectSeries();
+			defaultSeries.setName(ProjectSeries.DEFAULT);
+			defaultSeries.setProject(getInstance());
+			getEntityManager().persist(defaultSeries);
+		}
+		
+		return retValue;
 	}
 
 	public void cancel(){}

@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
+
 import org.hibernate.validator.Length;
 
 @Entity
@@ -21,6 +23,8 @@ public class ProjectSeries extends AbstractFliesEntity implements Serializable {
 
 	private List<ProjectTarget> projectTargets;
 
+	public static final String DEFAULT = "default";
+	
 	@Length(max = 20)
 	public String getName() {
 		return name;
@@ -68,4 +72,8 @@ public class ProjectSeries extends AbstractFliesEntity implements Serializable {
 		this.projectTargets = projectTargets;
 	}
 
+	@Transient
+	public boolean isDefault(){
+		return DEFAULT.equals(getName());
+	}
 }
