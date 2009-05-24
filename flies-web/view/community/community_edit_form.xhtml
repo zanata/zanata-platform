@@ -1,10 +1,11 @@
-<h:form id="communityForm"
+<a4j:form id="communityForm"
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:s="http://jboss.com/products/seam/taglib"
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
+    xmlns:a4j="http://richfaces.org/a4j"
     template="../layout/template.xhtml">
 
   <rich:panel>
@@ -17,7 +18,11 @@
       <s:decorate id="slugField" template="../layout/edit.xhtml">
           <ui:define name="label">Slug</ui:define>
           <h:inputText id="slug" required="true"
-                       value="#{communityHome.instance.slug}" readonly="#{communityHome.managed}"/>
+                       value="#{communityHome.instance.slug}" 
+                       readonly="#{communityHome.managed}"
+                       valueChangeListener="#{communityHome.verifySlugAvailable}">
+              <a4j:support event="onblur" reRender="slugField" ajaxSingle="true"/>
+            </h:inputText>
       </s:decorate>
       
       <s:decorate id="descriptionField" template="../layout/edit.xhtml">
@@ -56,4 +61,4 @@
             action="#{communityHome.cancel}"/>
   </div>
 
-</h:form>
+</a4j:form>
