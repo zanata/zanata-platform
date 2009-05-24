@@ -32,37 +32,7 @@
     <s:fragment rendered="#{not empty projects}">
       <h1>Latest Projects</h1>
       <rich:dataGrid columns="3" value="#{latestProjects}" var="project" rendered="#{not empty projects}">
-        <div class="project_entry">
-          <h2>
-            <s:link id="project"
-                 value="#{project.name}"
-                 propagation="none"
-                 view="/project/project.xhtml">
-              <f:param name="slug"
-                       value="#{project.slug}"/>
-            </s:link>
-          </h2>
-          <div class="description">
-            #{project.description}
-          </div>
-          <div class="targets">
-            <ui:repeat value="#{project.projectSeries}" var="s">
-              <s:fragment rendered="#{s.name != 'default'}">#{s.name} ( </s:fragment>
-              <ui:repeat value="#{s.projectTargets}" var="t">
-                <span style="margin-right: 1pt; margin-left: 1pt;">
-                  <s:link id="project"
-                       value="#{t.name}"
-                       propagation="none"
-                       view="/project/target.xhtml">
-                    <f:param name="mslug"
-                             value="#{project.slug}/#{t.slug}"/>
-                  </s:link>
-                </span> 
-              </ui:repeat>
-              <s:fragment rendered="#{s.name != 'default'}"> ) </s:fragment>
-            </ui:repeat>
-          </div>
-        </div>
+        <ui:include src="./project_view_inline.xhtml" />
       </rich:dataGrid>
     </s:fragment>
   </ui:define>
