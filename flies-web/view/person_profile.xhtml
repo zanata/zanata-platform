@@ -14,19 +14,17 @@
     
     <ui:define name="center_content">
         <rich:jQuery selector="#tab_profile" query="addClass('ui-tabs-selected')" />
-        <h1>#{authenticatedPerson.name}</h1>
+        <h1>#{personHome.instance.name}</h1>
         <h2>My Projects</h2>
         <ul>
-          <ui:repeat value="#{authenticatedPerson.maintainerProjects}" var="project">
+          <ui:repeat value="#{personHome.instance.maintainerProjects}" var="project">
             <li>#{project.name}</li>          
           </ui:repeat>
         </ul>
-        <h2>My Teams</h2>
-        <ul>
-          <ui:repeat value="#{authenticatedPerson.maintainerProjects}" var="project">
-            <li>#{project.name}</li>          
-          </ui:repeat>
-        </ul>
+        <h2>My Tribes</h2>
+        <rich:dataGrid value="#{personHome.instance.tribeMemberships.toArray()}" var="tribe" columns="3">
+          <ui:include src="./tribe/tribe_view_inline.xhtml" />
+        </rich:dataGrid>
         
     </ui:define>
 </ui:composition>
