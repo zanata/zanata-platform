@@ -1,5 +1,4 @@
-<div class="project_entry"
-   id="project_list_view_item"  
+<div id="project_list_view_item"  
    xmlns="http://www.w3.org/1999/xhtml"
    xmlns:ui="http://java.sun.com/jsf/facelets"
    xmlns:h="http://java.sun.com/jsf/html"
@@ -15,10 +14,8 @@
                value="#{project.slug}"/>
     </s:link>
   </h2>
-  <div class="description">
-    #{project.description}
-  </div>
-  <div class="targets">
+  <p><em>#{project.description}</em></p>
+  <p>
     <ui:repeat value="#{project.projectSeries}" var="s">
       <s:fragment rendered="#{s.name != 'default'}">#{s.name} ( </s:fragment>
       <ui:repeat value="#{s.projectTargets}" var="t">
@@ -34,6 +31,6 @@
       </ui:repeat>
       <s:fragment rendered="#{s.name != 'default'}"> ) </s:fragment>
     </ui:repeat>
-  </div>
+  </p>
 
 </div>
