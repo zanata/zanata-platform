@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.core.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -32,12 +33,12 @@ public class Project extends AbstractSlugEntity implements Serializable {
 
 	private String homeContent;
 
-	private List<ProjectSeries> projectSeries;
-	private List<ProjectTarget> projectTargets;
+	private List<ProjectSeries> projectSeries = new ArrayList<ProjectSeries>();
+	private List<ProjectTarget> projectTargets = new ArrayList<ProjectTarget>();
 
-	private List<Document> documents;
+	private List<Document> documents = new ArrayList<Document>();
 
-	private List<Person> maintainers;
+	private List<Person> maintainers = new ArrayList<Person>();
 
 	@Length(max = 80)
         public String getName() {
