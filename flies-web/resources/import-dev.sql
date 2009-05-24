@@ -6,7 +6,8 @@ insert into Account (id, creationDate, timestamp, enabled, passwordhash, usernam
 	values (1, NOW(), NOW(), 1, 'Eyox7xbNQ09MkIfRyH+rjg==', 'admin');
 insert into Person (id, creationDate, timestamp, email, name, accountId) 
 	values (1, NOW(), NOW(), 'asgeirf@localhost', 'Administrator', 1);
-insert into AccountMembership (accountId, memberOf) values (1, 1);
+insert into AccountMembership (accountId, memberOf) 
+	values (1, 1);
 
 insert into Account (id, creationDate, timestamp, enabled, passwordhash, username) 
 	values (2, NOW(), NOW(), 1, '/9Se/pfHeUH8FJ4asBD6jQ==', 'demo');
@@ -20,7 +21,7 @@ insert into Account (id, creationDate, timestamp, enabled, passwordhash, usernam
 insert into Person (id, creationDate, timestamp, email, name, accountId) 
 	values (3, NOW(), NOW(), 'asgeirf@localhost', 'Bob Translator', 3);
 insert into AccountMembership (accountId, memberOf) 
-	values (3, 5);
+	values (3, 2);
 
 # insert into ResourceCategory (id, creationDate, timestamp, name) values(1, NOW(), NOW(), 'Documentation');
 # insert into ResourceCategory (id, creationDate, timestamp, name) values(2, NOW(), NOW(), 'User Interface');
