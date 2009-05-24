@@ -12,13 +12,7 @@
         <rich:jQuery selector="#tab_tribes" query="addClass('ui-tabs-selected')" />
         <h1>Tribes</h1>
         <rich:dataGrid value="#{tribesBean.latestTribes}" var="tribe" columns="3">
-          <h2>
-          <s:link view="/tribe/tribe.xhtml" propagation="none">
-            #{tribe.locale.nativeName}
-            <f:param name="id" value="#{tribe.locale.id}"/>
-          </s:link>
-          </h2>
-          <p><em>#{tribe.locale.locale.displayName}</em> - #{tribe.members.size} members</p>
+          <ui:include src="./tribe_view_inline.xhtml" />
         </rich:dataGrid>
     </ui:define>
 </ui:composition>
