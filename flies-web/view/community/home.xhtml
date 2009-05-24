@@ -11,7 +11,7 @@
     <ui:define name="center_content">
         <rich:jQuery selector="#tab_communities" query="addClass('ui-tabs-selected')" />
         <h1>Communities</h1>
-        <ui:repeat value="#{communitiesBean.latestCommunities}" var="community">
+        <rich:dataGrid columns="3" value="#{communitiesBean.latestCommunities}" var="community">
           <h2>
           <s:link view="/community/community.xhtml" propagation="none">
             #{community.name}
@@ -19,7 +19,7 @@
           </s:link>
           </h2>
           <p><em>#{community.description}</em> - #{community.members.size} members</p>
-        </ui:repeat>
+        </rich:dataGrid>
     </ui:define>
     
     <ui:define name="left_content">

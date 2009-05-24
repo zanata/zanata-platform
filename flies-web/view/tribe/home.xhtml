@@ -11,7 +11,7 @@
     <ui:define name="center_content">
         <rich:jQuery selector="#tab_tribes" query="addClass('ui-tabs-selected')" />
         <h1>Tribes</h1>
-        <ui:repeat value="#{tribesBean.latestTribes}" var="tribe">
+        <rich:dataGrid value="#{tribesBean.latestTribes}" var="tribe" columns="3">
           <h2>
           <s:link view="/tribe/tribe.xhtml" propagation="none">
             #{tribe.locale.nativeName}
@@ -19,6 +19,6 @@
           </s:link>
           </h2>
           <p><em>#{tribe.locale.locale.displayName}</em> - #{tribe.members.size} members</p>
-        </ui:repeat>
+        </rich:dataGrid>
     </ui:define>
 </ui:composition>

@@ -31,7 +31,7 @@
 
     <s:fragment rendered="#{not empty projects}">
       <h1>Latest Projects</h1>
-      <ui:repeat value="#{latestProjects}" var="project" rendered="#{not empty projects}">
+      <rich:dataGrid columns="3" value="#{latestProjects}" var="project" rendered="#{not empty projects}">
         <div class="project_entry">
           <h2>
             <s:link id="project"
@@ -63,7 +63,7 @@
             </ui:repeat>
           </div>
         </div>
-      </ui:repeat>
+      </rich:dataGrid>
     </s:fragment>
   </ui:define>
 
