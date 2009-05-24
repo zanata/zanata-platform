@@ -69,6 +69,15 @@
     <!-- Project Rules -->
     
     <rule>
+        <from casesensitive="true">^/project/add_target/(.+)$</from>
+        <to last="true">/project/add_target.seam\?slug=$1</to>
+    </rule>
+	<outbound-rule>
+  		<from>^(/.+)?/project/add_target.seam\?slug=(.+)$</from>
+  		<to>$1/project/add_target/$2</to>
+	</outbound-rule>
+	
+    <rule>
         <from casesensitive="true">^/project/create(.+)$</from>
         <to last="true">/project/create_project.seam?$1</to>
     </rule>

@@ -2,7 +2,9 @@ package org.fedorahosted.flies.core.action;
 
 import java.util.List;
 
+import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.NoResultException;
 
 import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.model.Project;
@@ -27,6 +29,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.core.Conversation;
 import org.jboss.seam.core.Manager;
+import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.framework.EntityHome;
 import org.jboss.seam.log.Log;
 
@@ -71,6 +74,40 @@ public class TargetHome extends MultiSlugHome<ProjectTarget>{
 		        .set("slug", getId() )
 		    )
 			.setCacheable(true).uniqueResult();
+	}
+
+	public void verifySlugAvailable(ValueChangeEvent e) {
+	    String slug = (String) e.getNewValue();
+	    validateSlug(slug, e.getComponent().getId());
+	}
+	
+	public boolean validateSlug(String slug, String componentId){
+	    if (!isSlugAvailable(slug)) {
+	    	FacesMessages.instance().addToControl(
+	    			componentId, "This slug is not available");
+	    	return false;
+	    }
+	    return true;
+	}
+	
+	public boolean isSlugAvailable(String slug) {
+    	try{
+    		getEntityManager().createQuery("from ProjectTarget t where t.slug = :slug and t.project = :project")
+    		.setParameter("slug", slug)
+    		.setParameter("project", getInstance().getProject()).getSingleResult();
+    		return false;
+    	}
+    	catch(NoResultException e){
+    		// pass
+    	}
+    	return true;
+	}
+	
+	@Override
+	public String persist() {
+		if(!validateSlug(getInstance().getSlug(), "slug"))
+			return null;
+		return super.persist();
 	}
 	
 	public List<ProjectSeries> getAvailableProjectSeries(){

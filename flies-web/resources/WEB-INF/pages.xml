@@ -88,7 +88,7 @@
     	 -->
     </page>
 
-	<page view-id="/project/create_target.xhtml" conversation="ProjectView" >
+	<page view-id="/project/add_target.xhtml" conversation="ProjectView" >
 	   <param name="slug" value="#{projectHome.id}" />
 		
 	   <action execute="#{projectHome.validateSuppliedId}" />

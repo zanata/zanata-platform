@@ -1,10 +1,12 @@
-<h:form id="targetForm"
+<a4j:form id="targetForm"
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:s="http://jboss.com/products/seam/taglib"
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
+    xmlns:a4j="http://richfaces.org/a4j"
+    
 >
 
     <rich:panel>
@@ -17,7 +19,11 @@
         <s:decorate id="slugField" template="../layout/edit.xhtml">
             <ui:define name="label">Slug</ui:define>
             <h:inputText id="slug" required="true"
-                         value="#{targetHome.instance.slug}" readonly="#{targetHome.managed}"/>
+                         value="#{targetHome.instance.slug}" 
+                         readonly="#{targetHome.managed}"
+                         valueChangeListener="#{targetHome.verifySlugAvailable}">
+              <a4j:support event="onblur" reRender="slugField" ajaxSingle="true"/>
+            </h:inputText>
         </s:decorate>
 
         <s:decorate id="descriptionField" template="../layout/edit.xhtml">
@@ -52,4 +58,4 @@
                          action="#{targetHome.cancel}"/>
     </div>
 
-</h:form>
+</a4j:form>
