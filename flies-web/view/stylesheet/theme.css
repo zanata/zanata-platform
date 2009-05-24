@@ -459,7 +459,9 @@ table.fullwidth {
 }
 .dr-table-cell{
 	border: 1px solid #f4f4f4;
+	font-size: inherit;
 }
+
 .dr-table-header{
 	background-color: #f4f4f4;
 	background-image: none;
