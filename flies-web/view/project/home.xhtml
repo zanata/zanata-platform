@@ -15,12 +15,11 @@
   <ui:define name="left_content">
     <rich:panel>
       <f:facet name="header">Actions</f:facet>
-      <div> <s:link value="Create project" 
+      <s:link styleClass="action_link" value="Create project" 
                     view="/project/create_project.xhtml"
                     propagation="none"/>
-      </div>
-      <div> <s:link value="Manage Repository" view="/project/repositorylist.xhtml"/> </div>
-      <div> <s:link value="Upload PO File" view="/project/uploadfile.xhtml"/> </div>
+      <s:link styleClass="action_link" value="Manage Repository" view="/project/repositorylist.xhtml"/>
+      <s:link styleClass="action_link" value="Upload PO File" view="/project/uploadfile.xhtml"/>
     </rich:panel>
   </ui:define>  
   <ui:define name="center_content">

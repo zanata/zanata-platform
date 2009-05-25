@@ -21,11 +21,11 @@
           Actions
         </f:facet>
         <a:form>
-          <a:commandLink action="#{tribeHome.joinTribe}" reRender="actionPanel,tribesTabDiv" rendered="#{not memberTribes.contains(tribeHome.instance)}">
+          <a:commandLink styleClass="action_link" action="#{tribeHome.joinTribe}" reRender="actionPanel,tribesTabDiv" rendered="#{not memberTribes.contains(tribeHome.instance)}">
             Join this tribe
             <s:conversationId name="id" value="#{tribeHome.id}"/>
           </a:commandLink>
-          <a:commandLink action="#{tribeHome.leaveTribe}" reRender="actionPanel,tribesTabDiv" rendered="#{memberTribes.contains(tribeHome.instance)}">
+          <a:commandLink styleClass="action_link" action="#{tribeHome.leaveTribe}" reRender="actionPanel,tribesTabDiv" rendered="#{memberTribes.contains(tribeHome.instance)}">
             Leave this tribe
             <s:conversationId name="id" value="#{tribeHome.id}"/>
           </a:commandLink>
