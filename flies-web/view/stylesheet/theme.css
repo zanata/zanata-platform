@@ -542,6 +542,7 @@ table.fullwidth {
 
 .list_view_header h2>a{
 	text-decoration: none;
+	float: left;
 }
 
 .list_view_header .series_name{
