@@ -463,9 +463,10 @@ table.fullwidth {
 }
 
 .dr-table{
+	border: none;
 }
 .dr-table-cell{
-	border: 1px solid #f4f4f4;
+	border: none; /*1px solid #f4f4f4;*/
 	font-size: inherit;
 	vertical-align: top;
 }
@@ -518,7 +519,11 @@ table.fullwidth {
 }
 
 .inline_cell_item{
-
+	background-color: #F5F8FF;
+	border: 2px solid #F6F9F7;
+	-moz-border-radius: 5px;
+	padding: 4px;
+	height: 100%;
 }
 
 .inline_cell_item h2{
