@@ -13,7 +13,8 @@
         <f:param name="mslug" value="#{projectHome.instance.slug}/#{_target.slug}"/>
       </s:link>
     </h2>
-    <span class="series_name">#{_target.projectSeries.name}</span>
+    <s:span rendered="#{_target.projectSeries.name != 'default'}" 
+            styleClass="series_name">#{_target.projectSeries.name}</s:span>
     <div class="menu_items">
       <s:link view="/project/target_edit.xhtml" propagation="none">
       <f:param name="mslug" value="#{projectHome.instance.slug}/#{_target.slug}"/>
