@@ -3,7 +3,9 @@
    xmlns="http://www.w3.org/1999/xhtml"
    xmlns:ui="http://java.sun.com/jsf/facelets"
    xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:rich="http://richfaces.org/rich"
    xmlns:f="http://java.sun.com/jsf/core"
+   xmlns:flies="http://flies.fedorahosted.org/ui"
    xmlns:s="http://jboss.com/products/seam/taglib">
 
   <h2>
@@ -11,5 +13,18 @@
       <f:param name="mslug" value="#{projectHome.instance.slug}/#{_target.slug}"/>
     </s:link>
   </h2>
-
+  <rich:dataTable width="100%" value="#{memberTribes}" var="tribe" styleClass="target_inline_tribes" >
+    <rich:column>#{tribe.locale.nativeName}</rich:column>
+    <rich:column><flies:translation-status-bar
+      translated="100" 
+      fuzzy="43" 
+      untranslated="23"/>
+    </rich:column>
+    <rich:column>
+      <s:link view="/translate.xhtml" propagation="none" target="_blank">
+        WebTr
+        <f:param name="wid" value="#{_target.id}/#{tribe.locale.id}"/>
+      </s:link>    
+    </rich:column>
+  </rich:dataTable>
 </div>
