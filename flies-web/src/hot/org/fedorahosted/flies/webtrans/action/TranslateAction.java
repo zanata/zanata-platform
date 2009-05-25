@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import org.fedorahosted.flies.core.model.Account;
 import org.fedorahosted.flies.core.model.FliesLocale;
 import org.fedorahosted.flies.core.model.Person;
 import org.fedorahosted.flies.core.model.ProjectTarget;
@@ -24,11 +25,14 @@ import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
+import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.security.management.JpaIdentityStore;
 
 @Name("translateAction")
 @Scope(ScopeType.CONVERSATION)
+@Restrict("#{identity.loggedIn}")
 public class TranslateAction {
 
 	@RequestParameter("wid")
@@ -42,6 +46,9 @@ public class TranslateAction {
 
 	@Logger
 	private Log log;
+
+	@In(required=false, value=JpaIdentityStore.AUTHENTICATED_USER) 
+	Account authenticatedAccount;
 
 	private FliesLocale locale;
 	private ProjectTarget projectTarget;
@@ -107,6 +114,7 @@ public class TranslateAction {
 			textUnitTargets = selectedDocumentTarget.getEntries();
 		}
 	}
+
 	
 	public void selectTextUnitTarget(){
 		log.info("selected {0}", selectedTextUnitTarget.getTemplate().getContent());
@@ -133,7 +141,7 @@ public class TranslateAction {
 				String localeId = ws[1];
 				projectTarget = entityManager.find(ProjectTarget.class, projectTargetId);
 				locale = entityManager.find(FliesLocale.class, localeId);
-				Person translator = entityManager.find(Person.class, 1l);
+				Person translator = entityManager.find(Person.class, authenticatedAccount.getPerson().getId());
 				getWorkspace().registerTranslator(translator);
 			}
 			catch(Exception e){
@@ -151,9 +159,13 @@ public class TranslateAction {
 	public void destroy() {
 	}
 	
-	public boolean isKeepAlive(){
-		log.info("keepAlive {0}:{1} - {2}", this.projectTarget.getProject().getName(), this.projectTarget.getName(), this.locale.getId());
-		Person translator = entityManager.find(Person.class, 1l);
+	public boolean ping(){
+		Person translator = entityManager.find(Person.class, authenticatedAccount.getPerson().getId());
+		log.info("ping {3} - {0}:{1} - {2}", 
+				this.projectTarget.getProject().getName(), 
+				this.projectTarget.getName(), 
+				this.locale.getId(),
+				translator.getAccount().getUsername());
 		getWorkspace().registerTranslator(translator);
 		return true;
 	}

@@ -582,4 +582,12 @@ a.action_link:hover {
 	
 }
 
+.translator_color_block{
+    width: 15px;
+    height: 15px;
+    background-color: #f2fbfb;
+    border: 2px solid #e2ebeb;  
+}
+
+
 /* --> */

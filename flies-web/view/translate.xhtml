@@ -15,6 +15,10 @@
     </ui:define>
     <ui:define name="left_content">
 
+      <a4j:form>
+        <a4j:poll action="#{translateAction.ping()}" interval="5000" reRender="translatorsPanel"/>
+      </a4j:form>
+      
       <rich:panel bodyClass="panel-body-no-padding">
         <f:facet name="header">Project Tree</f:facet>
         <h:form>
@@ -36,11 +40,17 @@
         </h:form>
       </rich:panel>
       <br/>
-      <rich:panel>
+      <rich:panel id="translatorsPanel">
         <f:facet name="header">#{translateAction.workspace.translatorCount} translator(s) online</f:facet>
-        <rich:dataTable id="translatorsTable" width="150px" value="#{translateAction.workspace.translators}" var="translator">
+        <rich:dataTable width="150px" value="#{translateAction.workspace.translators}" var="translator">
           <rich:column>
-            <img src="#{request.contextPath}/img/silk/user.png"/>#{translator.name}
+            <img src="#{request.contextPath}/img/silk/user.png"/>
+          </rich:column>
+          <rich:column>
+            #{translator.name}
+          </rich:column>
+          <rich:column>
+            <div class="translator_color_block translator_color_block_#{translator.id}"/>
           </rich:column>
         </rich:dataTable>
         <h3 style="border-bottom:1px solid;">Chat</h3>
