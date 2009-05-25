@@ -277,7 +277,7 @@ tr.odd {
 }
 
 tr.even {
-	background-color: #E9F5FF;
+	background-color: #fafaff;
 }
 
 td.enabled {
@@ -526,10 +526,32 @@ table.fullwidth {
 	height: 100%;
 }
 
-.inline_cell_item h2{
+.list_view_header{
+	width: 100%;
+	padding-bottom: 3px;
+}
+.list_view_header h2{
+	display: inline;
 	margin-top: 0px;
 	margin-bottom: 3px;
 }
+
+.list_view_header h2>a{
+	text-decoration: none;
+}
+
+.list_view_header .series_name{
+	font-style: italic;
+	font-size: 80%;
+	color: gray;
+}
+
+.list_view_header .menu_items{
+	float: right;
+	display: inline;
+	text-align: right;
+}
+
 
 a.action_link {
 	display: block;

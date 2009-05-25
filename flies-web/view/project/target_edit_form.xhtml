@@ -40,6 +40,12 @@
             </h:selectOneMenu>  
         </s:decorate>
 
+        <s:decorate id="activeField" template="../layout/edit.xhtml">
+            <ui:define name="label">Active</ui:define>
+            <h:selectBooleanCheckbox id="acvite"
+                         value="#{targetHome.instance.active}"/>
+        </s:decorate>
+
         <div style="clear:both"/>
 
     </rich:panel>

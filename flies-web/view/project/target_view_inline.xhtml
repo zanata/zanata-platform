@@ -1,4 +1,4 @@
-<div id="target_list_view_item"
+<div id="target_list_view_item_#{_target.id}"
    class="inline_cell_item"
    xmlns="http://www.w3.org/1999/xhtml"
    xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -7,13 +7,24 @@
    xmlns:f="http://java.sun.com/jsf/core"
    xmlns:flies="http://flies.fedorahosted.org/ui"
    xmlns:s="http://jboss.com/products/seam/taglib">
-
-  <h2>
-    <s:link view="/project/target.xhtml" value="#{_target.name}" propagation="none">
+  <div class="list_view_header">
+    <h2>
+      <s:link view="/project/target.xhtml" value="#{_target.name}" propagation="none">
+        <f:param name="mslug" value="#{projectHome.instance.slug}/#{_target.slug}"/>
+      </s:link>
+    </h2>
+    <span class="series_name">#{_target.projectSeries.name}</span>
+    <div class="menu_items">
+      <s:link view="/project/target_edit.xhtml" propagation="none">
       <f:param name="mslug" value="#{projectHome.instance.slug}/#{_target.slug}"/>
+      <h:graphicImage value="/img/silk/page_edit.png" />
     </s:link>
-  </h2>
-  <rich:dataTable width="100%" value="#{memberTribes}" var="tribe" styleClass="target_inline_tribes" >
+    </div>
+  </div>
+  <rich:dataTable width="100%" value="#{memberTribes}" 
+                  var="tribe" 
+                  styleClass="target_inline_tribes"
+                  rowClasses="odd,even">
     <rich:column>#{tribe.locale.nativeName}</rich:column>
     <rich:column><flies:translation-status-bar
       translated="100" 
