@@ -467,6 +467,7 @@ table.fullwidth {
 .dr-table-cell{
 	border: 1px solid #f4f4f4;
 	font-size: inherit;
+	vertical-align: top;
 }
 
 .dr-table-header{
@@ -515,5 +516,15 @@ table.fullwidth {
 .grid_col_one_third_width{
 	width: 33%;
 }
+
+.inline_cell_item{
+
+}
+
+.inline_cell_item h2{
+	margin-top: 0px;
+	margin-bottom: 3px;
+}
+
 
 /* --> */

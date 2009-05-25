@@ -1,4 +1,4 @@
-<div id="tribe_list_view_item" 
+<div id="target_list_view_item"
    class="inline_cell_item"
    xmlns="http://www.w3.org/1999/xhtml"
    xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -7,11 +7,9 @@
    xmlns:s="http://jboss.com/products/seam/taglib">
 
   <h2>
-    <s:link view="/tribe/tribe.xhtml" propagation="none">
-      #{tribe.locale.nativeName}
-      <f:param name="id" value="#{tribe.locale.id}"/>
+    <s:link view="/project/target.xhtml" value="#{_target.name}" propagation="none">
+      <f:param name="mslug" value="#{projectHome.instance.slug}/#{_target.slug}"/>
     </s:link>
   </h2>
-  <p><em>#{tribe.locale.locale.displayName}</em> - #{tribe.members.size} members</p>
 
 </div>
