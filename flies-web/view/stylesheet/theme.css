@@ -71,9 +71,6 @@ input.with_icon {
 .message {
 	padding: 5px;
 	list-style: none;
-	background-color: #fafafe;
-	-moz-border-radius: 5px;
-	padding: 5px;
 	color: #000000;
 	margin: 5px 0 8px 0;
 }
@@ -83,21 +80,28 @@ input.with_icon {
 	list-style-position: outside;
 	list-style-image: none;
 	background: no-repeat left center;
-	padding-top: 1px;
+	padding-top: 5px;
+	padding-bottom: 5px;
 	padding-left: 20px;
 	margin-left: 3px;
+	margin-top: 2px;
+	margin-bottom: 2px;
+	-moz-border-radius: 5px;
 }
 
 .message li.infomsg {
 	background-image: url(../img/msginfo.png);
+	background-color: #fafafe;
 }
 
 .message li.errormsg {
 	background-image: url(../img/msgerror.png);
+	background-color: #fefafa;
 }
 
 .message li.warnmsg {
 	background-image: url(../img/msgwarn.png);
+	background-color: #fefefa;
 }
 
 .name {
