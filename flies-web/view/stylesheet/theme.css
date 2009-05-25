@@ -7,6 +7,10 @@ th, td {
 	border-color: #f4f4f4;
 }
 
+#main_body_content>h1, #main_body_content>h2 {
+	border-bottom: 1px dotted #f4f4f4;
+}
+
 input, textarea {
 	-moz-border-radius-bottomleft: 3px;
 	-moz-border-radius-bottomright: 3px;
