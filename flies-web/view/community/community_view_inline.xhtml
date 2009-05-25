@@ -1,0 +1,17 @@
+<div id="community_list_view_item" 
+   class="inline_cell_item"
+   xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:f="http://java.sun.com/jsf/core"
+   xmlns:s="http://jboss.com/products/seam/taglib">
+
+  <h2>
+  <s:link view="/community/community.xhtml" propagation="none">
+    #{community.name}
+    <f:param name="slug" value="#{community.slug}"/>
+  </s:link>
+  </h2>
+  <p><em>#{community.description}</em> - #{community.members.size} members</p>
+
+</div>

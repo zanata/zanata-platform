@@ -15,13 +15,7 @@
                        value="#{communitiesBean.latestCommunities}"
                        columnClasses="grid_col_one_third_width" 
                        var="community">
-          <h2>
-          <s:link view="/community/community.xhtml" propagation="none">
-            #{community.name}
-            <f:param name="slug" value="#{community.slug}"/>
-          </s:link>
-          </h2>
-          <p><em>#{community.description}</em> - #{community.members.size} members</p>
+          <ui:include src="./community_view_inline.xhtml" />
         </rich:dataGrid>
     </ui:define>
     
