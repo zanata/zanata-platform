@@ -71,14 +71,17 @@ input.with_icon {
 .message {
 	padding: 5px;
 	list-style: none;
-	border: 0;
-	background: none;
-	padding: 0;
+	background-color: #fafafe;
+	-moz-border-radius: 5px;
+	padding: 5px;
 	color: #000000;
 	margin: 5px 0 8px 0;
 }
 
 .message li {
+	list-style-type: none;
+	list-style-position: outside;
+	list-style-image: none;
 	background: no-repeat left center;
 	padding-top: 1px;
 	padding-left: 20px;
@@ -503,6 +506,10 @@ table.fullwidth {
 
 .docrow{
 	overflow: hidden;
+}
+
+.grid_col_one_third_width{
+	width: 33%;
 }
 
 /* --> */
