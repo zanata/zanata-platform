@@ -24,6 +24,8 @@ public class ProjectTarget extends AbstractSlugEntity implements Serializable {
 
 	private Project project;
 
+	private Boolean active = true;
+	
 	private ProjectTarget parent;
 	private List<ProjectTarget> children;
 	private List<Document> documents;
@@ -47,6 +49,15 @@ public class ProjectTarget extends AbstractSlugEntity implements Serializable {
 		this.description = description;
 	}
 
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
+
+	@NotNull
+	public Boolean getActive() {
+		return active;
+	}
+	
 	@ManyToOne
 	@JoinColumn(name = "projectSeriesId")
 	@NotNull
