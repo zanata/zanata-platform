@@ -16,11 +16,17 @@
         <rich:jQuery selector="#tab_profile" query="addClass('ui-tabs-selected')" />
         <h1>#{personHome.instance.name}</h1>
         <h2>My Projects</h2>
-        <rich:dataGrid value="#{personHome.instance.maintainerProjects}" var="project" columns="3">
+        <rich:dataGrid value="#{personHome.instance.maintainerProjects}" 
+                       var="project" 
+                       columns="3"
+                       columnClasses="grid_col_one_third_width">
           <ui:include src="./project/project_view_inline.xhtml" />
         </rich:dataGrid>
         <h2>My Tribes</h2>
-        <rich:dataGrid value="#{personHome.instance.tribeMemberships.toArray()}" var="tribe" columns="3">
+        <rich:dataGrid value="#{personHome.instance.tribeMemberships.toArray()}" 
+                       var="tribe" 
+                       columns="3"
+                       columnClasses="grid_col_one_third_width">
           <ui:include src="./tribe/tribe_view_inline.xhtml" />
         </rich:dataGrid>
         
