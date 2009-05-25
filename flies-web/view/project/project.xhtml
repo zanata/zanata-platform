@@ -44,19 +44,6 @@
 </ui:define>
 
 <ui:define name="left_content">
-  <rich:panel>
-    <f:facet name="header">Targets</f:facet>
-    <rich:dataList value="#{projectHome.instance.projectSeries}" var="series">
-      <h:outputText value="#{series.name}"/> series
-      <!-- TODO: series can have children... -->
-      <rich:dataList value="#{series.projectTargets}" var="_target">
-        <s:link view="/project/target.xhtml" value="#{_target.name}" propagation="none">
-         <f:param name="mslug" value="#{projectHome.instance.slug}/#{_target.slug}"/>
-        </s:link>
-      </rich:dataList>
-    </rich:dataList>
-    <s:link styleClass="action_link" view="/project/add_target.xhtml" value="Add Target"/>
-  </rich:panel>
   
   <rich:panel>
     <f:facet name="header">Maintainers</f:facet>
@@ -68,15 +55,15 @@
   
   <rich:panel>
     <f:facet name="header">Actions</f:facet>
-      <s:link styleClass="action_link" value="Edit" view="/project/edit.xhtml" propagation="none">
-        <f:param name="slug" value="#{projectHome.instance.slug}"/>
-      </s:link>
-      <br/>
-      <s:link styleClass="action_link" id="delete"
-                    value="Delete"
-                   action="#{projectHome.remove}"
-                   view="/project/home.xhtml"
-                immediate="true" />
+    <s:link styleClass="action_link" value="Edit Project" view="/project/edit.xhtml" propagation="none">
+      <f:param name="slug" value="#{projectHome.instance.slug}"/>
+    </s:link>
+    <s:link styleClass="action_link" id="delete"
+                  value="Delete Project"
+                 action="#{projectHome.remove}"
+                 view="/project/home.xhtml"
+              immediate="true" />
+    <s:link styleClass="action_link" view="/project/add_target.xhtml" value="Add Target"/>
   </rich:panel>
   
 </ui:define>
