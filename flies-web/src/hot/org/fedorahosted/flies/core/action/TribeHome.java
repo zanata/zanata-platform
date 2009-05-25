@@ -14,6 +14,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.core.Conversation;
 import org.jboss.seam.core.Events;
+import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.framework.EntityHome;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
@@ -60,6 +61,7 @@ public class TribeHome extends EntityHome<Tribe>{
 			getEntityManager().flush();
 			Events.instance().raiseEvent("personJoinedTribe", currentPerson, getInstance());
 			getLog().info("{0} joined tribe {1}", authenticatedAccount.getUsername(), getId());
+			FacesMessages.instance().add("You are now a member of the {0} tribe", getInstance().getLocale().getNativeName());
 		}
 	}
 	
@@ -77,6 +79,7 @@ public class TribeHome extends EntityHome<Tribe>{
 			getEntityManager().flush();
 			Events.instance().raiseEvent("personLeftTribe", currentPerson, getInstance());
 			getLog().info("{0} left tribe {1}", authenticatedAccount.getUsername(), getId());
+			FacesMessages.instance().add("You have left the {0} tribe", getInstance().getLocale().getNativeName());
 		}
 	}
 	
