@@ -64,10 +64,11 @@
         <div class="yui-b">
           <div class="yui-gc"> <!-- the "special grid" --> 
             <div class="yui-u first">
-        
-              <h:messages id="messages" globalOnly="true" styleClass="message"
-                  errorClass="errormsg" infoClass="infomsg" warnClass="warnmsg"
-                  rendered="#{showGlobalMessages != 'false'}"/>
+              <a:outputPanel ajaxRendered="true">
+                <h:messages id="messages" globalOnly="true" styleClass="message"
+                    errorClass="errormsg" infoClass="infomsg" warnClass="warnmsg"
+                    rendered="#{showGlobalMessages != 'false'}"/>
+              </a:outputPanel>
               <ui:insert name="center_content"/>
             </div> 
             
