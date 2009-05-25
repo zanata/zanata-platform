@@ -61,6 +61,10 @@ public class TranslateAction {
 	public void setProjectTarget(ProjectTarget projectTarget) {
 		this.projectTarget = projectTarget;
 	}
+	
+	public FliesLocale getLocale() {
+		return locale;
+	}
 
 	@DataModel
 	private List<DocumentTarget> documentTargets;
