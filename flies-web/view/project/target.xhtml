@@ -23,7 +23,7 @@
 <ui:define name="left_content">
   <rich:panel>
     <f:facet name="header">Actions</f:facet>
-    <s:link view="/project/target_edit.xhtml" propagation="none">
+    <s:link styleClass="action_link" view="/project/target_edit.xhtml" propagation="none">
       <f:param name="mslug" value="#{targetHome.multiSlug}"/>
       Edit
     </s:link>
