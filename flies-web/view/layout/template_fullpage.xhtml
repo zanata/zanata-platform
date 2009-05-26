@@ -30,10 +30,6 @@
 <div id="doc3" class="yui-t2">					
 	<div id="hd">
       <div id="header_top_right">
-        <s:div rendered="#{identity.loggedIn}" style="margin-right: 15px; display: inline;">
-          Selected Language: <a href="#">Gujarati (India)</a>        
-        </s:div>
-               
         <h:outputText rendered="#{identity.loggedIn}" value="#{authenticatedPerson == null ? identity.username : authenticatedPerson.name} "/>
         <s:fragment rendered="#{not identity.loggedIn}">
           <s:link view="/account/login.xhtml" value="Sign In" propagation="none"/>
