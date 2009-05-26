@@ -4,7 +4,12 @@ a {
 	color: #2222BB;	
 }
 th, td {
-	border-color: #f4f4f4;
+    border: none;
+    padding: 0px;
+}
+
+table{
+    margin: 0px;
 }
 
 #main_body_content>h1, #main_body_content>h2 {
@@ -448,7 +453,34 @@ table.fullwidth {
 }
 
 .dr-pnl-b {
-	
+    font-family: inherit;
+    font-size: inherit;
+    background-color: white;
+}
+
+.dr-tbpnl-cntnt {
+    font-family: inherit;
+    font-size: inherit;
+    background-color: inherit;
+    padding: 10px;
+}
+
+.dr-tbpnl-tb{
+    font-family: inherit;
+    font-size: 100%;
+}
+
+.dr-tbpnl-tb-act{
+    font-weight: bold;
+    background-image: none;
+    background-color: #fbfbfb;
+    -moz-border-radius-topright: 8px;
+    -moz-border-radius-topleft: 8px;
+}
+
+.dr-tbpnl-tb-inact {
+    background-image: none;
+    background-color: #fbfbfb;
 }
 
 .rich-panel-body {
