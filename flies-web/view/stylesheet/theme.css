@@ -445,6 +445,7 @@ table.fullwidth {
 .rich-panel-header {
 	-moz-border-radius-topleft: 8px;
 	-moz-border-radius-topright: 8px;
+	text-align: center;
 }
 
 .dr-pnl {
