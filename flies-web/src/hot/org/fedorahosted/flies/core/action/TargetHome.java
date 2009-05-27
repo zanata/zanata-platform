@@ -56,6 +56,16 @@ public class TargetHome extends MultiSlugHome<ProjectTarget>{
 		return target;
 	}
 
+	private String managementType;
+	
+	public String getManagementType() {
+		return managementType;
+	}
+	
+	public void setManagementType(String managementType) {
+		this.managementType = managementType;
+	}
+	
 	@Begin(join=true)
 	public void validateSuppliedId(){
 		getInstance(); // this will raise an EntityNotFound exception
@@ -195,6 +205,16 @@ public class TargetHome extends MultiSlugHome<ProjectTarget>{
 	
 	public void cancel(){}
 	
+	@In PublicanImporter publicanImporter;
+	
+	@Override
+	public String update() {
+		String retValue = super.update();
+		if(ManagementTypes.TYPE_LOCAL.equals(getManagementType()) && !getInstance().getLocalDirectory().isEmpty()){
+			publicanImporter.process(getInstance().getLocalDirectory(), getInstance().getId());
+		}
+		return retValue;
+	}
 	
 	
 }

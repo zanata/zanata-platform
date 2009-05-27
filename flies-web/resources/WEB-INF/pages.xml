@@ -88,6 +88,20 @@
     	 -->
     </page>
 
+    <page view-id="/project/target_linkage.xhtml" conversation="TargetView">
+		<param name="mslug" value="#{targetHome.multiSlug}" />
+		
+		<action execute="#{targetHome.validateSuppliedId}" />
+
+	    <navigation from-action="#{targetHome.update}">
+	         <redirect view-id="/project/target.xhtml" include-page-params="true" />
+	    </navigation>
+	
+	   <navigation from-action="#{targetHome.cancel}">
+         <redirect view-id="/project/target.xhtml" include-page-params="true"/>
+	   </navigation>
+    </page>
+
 	<page view-id="/project/add_target.xhtml" conversation="ProjectView" >
 	   <param name="slug" value="#{projectHome.id}" />
 		

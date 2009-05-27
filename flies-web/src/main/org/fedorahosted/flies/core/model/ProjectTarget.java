@@ -32,6 +32,8 @@ public class ProjectTarget extends AbstractSlugEntity implements Serializable {
 
 	private List<Collection> collections;
 
+	private String localDirectory;
+	
 	@Length(max = 20)
 	public String getName() {
 		return name;
@@ -45,6 +47,14 @@ public class ProjectTarget extends AbstractSlugEntity implements Serializable {
 		return description;
 	}
 
+	public String getLocalDirectory() {
+		return localDirectory;
+	}
+	
+	public void setLocalDirectory(String localDirectory) {
+		this.localDirectory = localDirectory;
+	}
+	
 	public void setDescription(String description) {
 		this.description = description;
 	}

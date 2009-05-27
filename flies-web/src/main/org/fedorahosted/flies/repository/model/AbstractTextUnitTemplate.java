@@ -41,8 +41,9 @@ public abstract class AbstractTextUnitTemplate extends AbstractTextUnit {
 	}
 
 	@Column(name = "resource_id")
-	@Length(max=255)
-	//@NaturalId
+	@NotEmpty
+	@Length(min=32, max=32)
+	@NaturalId
 	public String getResourceId() {
 		return resourceId;
 	}
@@ -53,7 +54,7 @@ public abstract class AbstractTextUnitTemplate extends AbstractTextUnit {
 
 	@ManyToOne
 	@JoinColumn(name = "document_id")
-	//@NaturalId
+	@NaturalId
 	public Document getDocument() {
 		return document;
 	}

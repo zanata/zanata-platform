@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.repository.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -30,16 +31,16 @@ public class Document implements Serializable {
 
 	private String contentType;
 
-	private List<DocumentTarget> targets;
+	private List<DocumentTarget> targets = new ArrayList<DocumentTarget>();
 
-	private List<TextUnit> entries;
+	private List<TextUnit> entries = new ArrayList<TextUnit>();
 
 	private Integer revision = 1;
 
 	private Project project;
 	private ProjectTarget projectTarget;
 
-	private List<TextUnitTarget> targetEntries;
+	private List<TextUnitTarget> targetEntries = new ArrayList<TextUnitTarget>();
 
 	private ResourceCategory resourceCategory;
 
