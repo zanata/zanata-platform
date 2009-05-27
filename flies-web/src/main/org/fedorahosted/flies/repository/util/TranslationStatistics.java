@@ -4,20 +4,20 @@ import org.fedorahosted.flies.repository.model.AbstractTextUnitTarget.Status;
 
 public class TranslationStatistics {
 
-	private int approved;
-	private int forReview;
-	private int fuzzyMatch;
-	private int statNew;
+	private long approved;
+	private long forReview;
+	private long fuzzyMatch;
+	private long statNew;
 
-	public TranslationStatistics(int approved, int forReview, int fuzzyMatch,
-			int statNew) {
+	public TranslationStatistics(Long approved, Long forReview, Long fuzzyMatch,
+			Long statNew) {
 		this.approved = approved;
 		this.forReview = forReview;
 		this.fuzzyMatch = fuzzyMatch;
 		this.statNew = statNew;
 	}
 
-	public int get(Status status) {
+	public long get(Status status) {
 		switch (status) {
 		case Approved:
 			return getApproved();
@@ -31,27 +31,27 @@ public class TranslationStatistics {
 		}
 	}
 
-	public int getTotal() {
+	public long getTotal() {
 		return approved + forReview + fuzzyMatch + statNew;
 	}
 
-	public int getNotApproved() {
+	public long getNotApproved() {
 		return forReview + fuzzyMatch + statNew;
 	}
 
-	public int getApproved() {
+	public long getApproved() {
 		return approved;
 	}
 
-	public int getForReview() {
+	public long getForReview() {
 		return forReview;
 	}
 
-	public int getFuzzyMatch() {
+	public long getFuzzyMatch() {
 		return fuzzyMatch;
 	}
 
-	public int getNew() {
+	public long getNew() {
 		return statNew;
 	}
 

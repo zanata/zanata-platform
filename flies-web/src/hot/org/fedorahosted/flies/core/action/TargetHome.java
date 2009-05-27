@@ -157,10 +157,10 @@ public class TargetHome extends MultiSlugHome<ProjectTarget>{
 								+ "tut.document.resourceCategory = :category and tut.document.projectTarget = :target")
 				.setParameter("category", category).setParameter("target",
 						getInstance()).getSingleResult();
-		int notApproved = (int) (total - approved);
-		int app = (int) (approved - 0);
+		long notApproved = (total - approved);
+		long app = (approved - 0);
 		TranslationStatistics stats = new TranslationStatistics(app,
-				notApproved, 0, 0);
+				notApproved, 0l, 0l);
 		log
 				.info("Statistics for category: {0}, {1}", category.getName(),
 						stats);
@@ -182,10 +182,10 @@ public class TargetHome extends MultiSlugHome<ProjectTarget>{
 				"select count(*) from TextUnitTarget tut where "
 						+ "tut.document = :document").setParameter("document",
 				document).getSingleResult();
-		int notApproved = (int) (total - approved);
-		int app = (int) (approved - 0);
+		long notApproved = (total - approved);
+		long app = (approved - 0);
 		TranslationStatistics stats = new TranslationStatistics(app,
-				notApproved, 0, 0);
+				notApproved, 0l, 0l);
 		log
 				.info("Statistics for category: {0}, {1}", document.getName(),
 						stats);
