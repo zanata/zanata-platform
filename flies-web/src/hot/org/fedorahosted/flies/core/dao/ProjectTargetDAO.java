@@ -19,9 +19,10 @@ public class ProjectTargetDAO {
 	Log log;
 //Long targetId, String localeId
 	public TranslationStatistics getStatisticsForTarget(){
-		TranslationStatistics stats =  
-			(TranslationStatistics) 
-			session.createQuery("select new TranslationStatistics(1,2,3,4)").uniqueResult();
+		TranslationStatistics stats =  (TranslationStatistics) session.createQuery(
+				"select new TranslationStatistics(count(pt),2,3,4) " +
+				"from ProjectTarget pt"
+		).uniqueResult();
 		
 		log.info("stats {0}:{1}:", stats.getApproved(), stats.getNew());
 		return stats;
