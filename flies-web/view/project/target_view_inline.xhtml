@@ -27,11 +27,13 @@
                   styleClass="target_inline_tribes"
                   rowClasses="odd,even">
     <rich:column>#{tribe.locale.nativeName}</rich:column>
-    <rich:column><flies:translation-status-bar
-      translated="100" 
-      fuzzy="43" 
-      untranslated="23"/>
-    </rich:column>
+    <rich:column>
+      <ui:param name="tstatus" value="#{projectTargetDAO.getStatisticsForTarget(_target.id, tribe.locale.id)}" />
+      <flies:translation-status-bar
+        title="Total: #{tstatus.total}, Translated: #{tstatus.approved}, Fuzzy #{tstatus.fuzzyMatch}"
+        translated="#{tstatus.approved}" 
+        fuzzy="0" 
+        untranslated="#{tstatus.notApproved}"/>    </rich:column>
     <rich:column>
       <s:link view="/translate.xhtml" propagation="none" target="_blank">
         WebTr

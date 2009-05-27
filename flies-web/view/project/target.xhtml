@@ -90,26 +90,21 @@
                 <h:outputText value="Name"/>
               </f:facet>
               <div class="resource-name">#{document.name}</div>
-              <div style="clear:both"/>
-              <div class="actions">
-                 <a href="#">Download</a> <a href="#">Upload..</a> 
-              </div>
-              <s:div styleClass="translation-status" rendered="#{document.id % 5 lt 2}">
-                Asgeir Frimannsson is working on this file
-              </s:div>
-              
             </rich:column>
             <rich:column>
               <f:facet name="header">
                 <h:outputText value="Status"/>
               </f:facet>
+              <!-- 
               <ui:param name="tstatus" value="#{targetHome.getStatisticsForDocument(document)}" />
               <flies:translation-status-bar
                 title="Total: #{tstatus.total}, Translated: #{tstatus.approved}, Fuzzy #{tstatus.fuzzyMatch}"
                 translated="#{tstatus.approved}" 
                 fuzzy="0" 
                 untranslated="#{tstatus.notApproved}"/>
+                 -->
             </rich:column>
+            
             <f:facet name="footer">
               <rich:datascroller id="ds" rendered="#{targetHome.instance.documents.size > 50}"></rich:datascroller>
             </f:facet>

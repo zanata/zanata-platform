@@ -9,6 +9,27 @@ public class TranslationStatistics {
 	private long fuzzyMatch;
 	private long statNew;
 
+	public TranslationStatistics() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	public void set(Status status, long count){
+		switch(status){
+		case Approved:
+			approved = count;
+			break;
+		case ForReview:
+			forReview = count;
+			break;
+		case FuzzyMatch:
+			fuzzyMatch = count;
+			break;
+		case New:
+			statNew = count;
+			break;
+		}
+	}
+	
 	public TranslationStatistics(Long approved, Long forReview, Long fuzzyMatch,
 			Long statNew) {
 		this.approved = approved;

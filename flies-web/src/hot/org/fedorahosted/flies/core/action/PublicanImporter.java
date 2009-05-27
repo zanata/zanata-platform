@@ -178,9 +178,15 @@ public class PublicanImporter {
 	private void addNewDocumentTarget(Document document, String resource,
 			String lang) {
 
+		FliesLocale locale = getLocaleForId(lang); 
+		if(locale == null){
+			log.info("skipping locale {0}", lang);
+			return;
+		}
+			
 		DocumentTarget docTarget = new DocumentTarget();
 		docTarget.setTemplate(document);
-		docTarget.setLocale(getLocaleForId(lang));
+		docTarget.setLocale(locale);
 		session.save(docTarget);
 		addNewTextUnitTargets(docTarget, resource);
 		
