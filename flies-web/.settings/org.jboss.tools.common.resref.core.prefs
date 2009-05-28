@@ -1,0 +1,5 @@
+#Thu May 28 16:37:11 EST 2009
+eclipse.preferences.version=1
+org.jboss.tools.vpe.editor.css.AbsoluteFolder=%FE%FF%00%2Fhome%FE%FF%00%2Fasgeirf%FE%FF%00%2Fprojects%FE%FF%00%2Fflies%FE%FF%00%2Fflies-web%FE%FF%00%2Fview
+org.jboss.tools.vpe.editor.css.CSSList=%FE%FF%00%2Fhome%FE%FF%00%2Fasgeirf%FE%FF%00%2Fprojects%FE%FF%00%2Fflies%FE%FF%00%2Fflies-web%FE%FF%00%2Fview%FE%FF%00%2Fstylesheet%FE%FF%00%2Freset-fonts-grids.css;%FE%FF%00%2Fhome%FE%FF%00%2Fasgeirf%FE%FF%00%2Fprojects%FE%FF%00%2Fflies%FE%FF%00%2Fflies-web%FE%FF%00%2Fview%FE%FF%00%2Fstylesheet%FE%FF%00%2Fbase-min.css;%FE%FF%00%2Fhome%FE%FF%00%2Fasgeirf%FE%FF%00%2Fprojects%FE%FF%00%2Fflies%FE%FF%00%2Fflies-web%FE%FF%00%2Fview%FE%FF%00%2Fstylesheet%FE%FF%00%2Ftabs.css;%FE%FF%00%2Fhome%FE%FF%00%2Fasgeirf%FE%FF%00%2Fprojects%FE%FF%00%2Fflies%FE%FF%00%2Fflies-web%FE%FF%00%2Fview%FE%FF%00%2Fstylesheet%FE%FF%00%2Ftheme.css;%FE%FF%00%2Fhome%FE%FF%00%2Fasgeirf%FE%FF%00%2Fprojects%FE%FF%00%2Fflies%FE%FF%00%2Fflies-web%FE%FF%00%2Fview%FE%FF%00%2Fstylesheet%FE%FF%00%2Fjbosstools.css
+org.jboss.tools.vpe.editor.css.ELReference=request.contextPath
