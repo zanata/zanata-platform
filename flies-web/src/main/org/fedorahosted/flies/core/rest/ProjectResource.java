@@ -1,6 +1,8 @@
 package org.fedorahosted.flies.core.rest;
 
+import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -20,8 +22,6 @@ public class ProjectResource {
   
   @In
   private EntityManager entityManager;
-
-  private Project project;
   
   @GET
   @Path("/{projectId}")
@@ -29,6 +29,14 @@ public class ProjectResource {
   public Project getProject(@PathParam("projectId") long id) {
          return entityManager.find(Project.class, id);
   }
+
+  @GET
+  @Produces("application/json")
+  public List<Project> getProjects() {
+         Query q = entityManager.createQuery("select p from Project p");
+         return q.getResultList(); 
+  }
+  
 
 }
 
