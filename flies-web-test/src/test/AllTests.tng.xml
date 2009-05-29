@@ -17,10 +17,4 @@
         </packages>
     </test>
 
-    <test name="Shotoku">
-        <packages>
-            <package name="org.fedorahosted.flies.test.shotoku"/>
-        </packages>
-    </test>
-
 </suite>
