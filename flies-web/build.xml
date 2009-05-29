@@ -52,7 +52,7 @@
 	<property name="schema.version" value="2.1" />
 
 	<property name="deps.version" value="3" />
-	<property name="deps.filename" value="build-tools/lib/flies-deps-${deps.version}" />
+	<property name="deps.filename" value="lib/flies-deps-${deps.version}" />
 
 	<!-- Dependencies -->
 	<property name="xom.jar.url" value="http://www.cafeconleche.org/XOM/xom-1.2.1.jar" />
