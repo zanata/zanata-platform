@@ -14,10 +14,8 @@
     <classpathentry kind="lib" path="/flies-web/lib/asm-attrs.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/asm.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/cglib.jar" sourcepath="/flies-web/lib/src/cglib-sources.jar"/>
-    <classpathentry kind="lib" path="/flies-web/lib/commons-beanutils-core.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/commons-beanutils.jar" sourcepath="/flies-web/lib/src/commons-beanutils-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/commons-collections.jar" sourcepath="/flies-web/lib/src/commons-collections-sources.jar"/>
-    <classpathentry kind="lib" path="/flies-web/lib/commons-configuration.jar" sourcepath="/flies-web/lib/src/commons-configuration-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/commons-digester.jar" sourcepath="/flies-web/lib/src/commons-digester-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/commons-lang.jar" sourcepath="/flies-web/lib/src/commons-lang-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/commons-logging.jar"/>
@@ -63,13 +61,10 @@
     <classpathentry kind="lib" path="/flies-web/lib/richfaces-impl.jar" sourcepath="/flies-web/lib/src/richfaces-impl-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/richfaces-ui.jar" sourcepath="/flies-web/lib/src/richfaces-ui-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/servlet-api.jar" sourcepath="/flies-web/lib/src/servlet-api-sources.jar"/>
-    <classpathentry kind="lib" path="/flies-web/lib/shotoku-base.jar" sourcepath="/flies-web/lib/src/shotoku-base-sources.jar"/>
-    <classpathentry kind="lib" path="/flies-web/lib/shotoku-svn.jar" sourcepath="/flies-web/lib/src/shotoku-svn-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/sjsxp.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/slf4j-api.jar" sourcepath="/flies-web/lib/src/slf4j-api-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/slf4j-log4j12.jar" sourcepath="/flies-web/lib/src/slf4j-log4j12-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/stax-api.jar" sourcepath="/flies-web/lib/src/stax-api-sources.jar"/>
-    <classpathentry kind="lib" path="/flies-web/lib/svnkit.jar" sourcepath="/flies-web/lib/src/svnkit-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/urlrewritefilter.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/xom.jar"/> 
     <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
