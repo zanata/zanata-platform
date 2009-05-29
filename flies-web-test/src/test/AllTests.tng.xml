@@ -14,6 +14,7 @@
     <test name="Model">
         <packages>
             <package name="org.fedorahosted.flies.test.model"/>
+            <package name="org.fedorahosted.flies.repository.model"/>
         </packages>
     </test>
 

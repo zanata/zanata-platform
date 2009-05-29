@@ -1,0 +1,125 @@
+<?xml version="1.0"?>
+<dataset>
+	<!-- 
+	Project
+	+==============+==============+======+====-+========-+================+
+	| Field        | Type         | Null | Key | Default | Extra          |
+	+==============+==============+======+====-+========-+================+
+	| id           | bigint(20)   | NO   | PRI | NULL    | auto_increment |
+	| creationDate | datetime     | YES  |     | NULL    |                |
+	| timestamp    | datetime     | YES  |     | NULL    |                |
+	| slug         | varchar(40)  | NO   | UNI | NULL    |                |
+	| description  | varchar(100) | YES  |     | NULL    |                |
+	| homeContent  | text         | YES  |     | NULL    |                |
+	| name         | varchar(80)  | YES  |     | NULL    |                |
+	+==============+==============+======+====-+========-+================+
+	 -->
+	<Project id="1"
+		creationDate="[NULL]"
+		timestamp="[NULL]" 
+		slug="myproject"
+		description="My Sample Project"
+		homeContent= "[NULL]"
+		name="My Project"
+	/>
+
+	<!-- 
+	ProjectSeries
+	+==============+============-+======+====-+========-+================+
+	| Field        | Type        | Null | Key | Default | Extra          |
+	+==============+============-+======+====-+========-+================+
+	| id           | bigint(20)  | NO   | PRI | NULL    | auto_increment |
+	| creationDate | datetime    | YES  |     | NULL    |                |
+	| timestamp    | datetime    | YES  |     | NULL    |                |
+	| name         | varchar(20) | YES  |     | NULL    |                |
+	| parentId     | bigint(20)  | YES  | MUL | NULL    |                |
+	| projectId    | bigint(20)  | YES  | MUL | NULL    |                |
+	+==============+============-+======+====-+========-+================+
+	 -->	
+	<ProjectSeries id="1"
+		creationDate="[NULL]"
+		timestamp="[NULL]" 
+		name="default"
+		parentId="[NULL]"
+		projectId="1"
+	/>
+
+	<!--  
+	ProjectTarget;
+	+================-+==============+======+====-+========-+================+
+	| Field           | Type         | Null | Key | Default | Extra          |
+	+================-+==============+======+====-+========-+================+
+	| id              | bigint(20)   | NO   | PRI | NULL    | auto_increment |
+	| creationDate    | datetime     | YES  |     | NULL    |                |
+	| timestamp       | datetime     | YES  |     | NULL    |                |
+	| slug            | varchar(40)  | NO   | MUL | NULL    |                |
+	| active          | bit(1)       | NO   |     | NULL    |                |
+	| description     | varchar(255) | YES  |     | NULL    |                |
+	| localDirectory  | varchar(255) | YES  |     | NULL    |                |
+	| name            | varchar(20)  | YES  |     | NULL    |                |
+	| parentId        | bigint(20)   | YES  | MUL | NULL    |                |
+	| project_id      | bigint(20)   | NO   | MUL | NULL    |                |
+	| projectSeriesId | bigint(20)   | NO   | MUL | NULL    |                |
+	+================-+==============+======+====-+========-+================+
+	-->
+	<ProjectTarget id="1"
+		creationDate="[NULL]"
+		timestamp="[NULL]"
+		slug="mytarget"
+		active="1"
+		description="my target"
+		localDirectory="[NULL]"
+		name="default"
+		parentId="[NULL]"
+		project_id="1"
+		projectSeriesId="1"
+	/>
+
+	<!--  	
+	ResourceCategory;
+	+==============+============-+======+====-+========-+================+
+	| Field        | Type        | Null | Key | Default | Extra          |
+	+==============+============-+======+====-+========-+================+
+	| id           | bigint(20)  | NO   | PRI | NULL    | auto_increment |
+	| creationDate | datetime    | YES  |     | NULL    |                |
+	| timestamp    | datetime    | YES  |     | NULL    |                |
+	| name         | varchar(20) | YES  |     | NULL    |                |
+	| projectId    | bigint(20)  | YES  | MUL | NULL    |                |
+	+==============+============-+======+====-+========-+================+
+	-->
+	<ResourceCategory id="1"
+		creationDate="[NULL]"
+		timestamp="[NULL]"
+		name="My Document"
+		projectId="1"
+	/>
+
+	<!--
+	Document
+	+================-+==============+======+====-+========-+================+
+	| Field           | Type         | Null | Key | Default | Extra          |
+	+================-+==============+======+====-+========-+================+
+	| id              | bigint(20)   | NO   | PRI | NULL    | auto_increment |
+	| contentType     | varchar(20)  | NO   |     | NULL    |                |
+	| name            | varchar(255) | NO   |     | NULL    |                |
+	| revision        | int(11)      | NO   |     | NULL    |                |
+	| version         | int(11)      | YES  |     | NULL    |                |
+	| projectId       | bigint(20)   | NO   | MUL | NULL    |                |
+	| projectTargetId | bigint(20)   | NO   | MUL | NULL    |                |
+	| category_id     | bigint(20)   | NO   | MUL | NULL    |                |
+	+================-+==============+======+====-+========-+================+
+	 -->
+	<Document id="1"
+		contentType="po"
+		name="My Document"
+		revision="1"
+		version="1"
+		projectId="1"
+		projectTargetId="1"
+		category_id="1"
+	/>
+
+	
+</dataset>
+
+
