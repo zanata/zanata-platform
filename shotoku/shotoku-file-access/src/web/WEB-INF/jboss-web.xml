@@ -1,4 +1,0 @@
-<?xml version="1.0"?>
-<jboss-web>
-    <context-root>file-access</context-root>
-</jboss-web>

@@ -9,7 +9,6 @@
 		<version.drools>4.0.4</version.drools>
 		<version.richfaces>3.3.1-SNAPSHOT</version.richfaces>
 		<version.tennera>0.6-SNAPSHOT</version.tennera>
-		<version.shotoku>1.0-SNAPSHOT</version.shotoku>
 	</properties>
 
 	<dependencyManagement>
@@ -162,12 +161,6 @@
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 			<version>2.3</version>
-		</dependency>
-
-		<dependency>
-			<groupId>shotoku</groupId>
-			<artifactId>shotoku-svn</artifactId>
-			<version>${version.shotoku}</version>
 		</dependency>
 		
 		<dependency>

@@ -16,17 +16,11 @@ richfaces-api.jar
 richfaces-impl.jar
 richfaces-ui.jar
 flies-richfaces-ui.jar
-flies-vcs.jar
 joda-time.jar
 icu4j.jar
 commons-lang.jar
 jgettext.jar
 xom.jar
-commons-beanutils-core.jar
-commons-configuration.jar
-shotoku-base.jar
-shotoku-svn.jar
-svnkit.jar
 google-collect.jar
 jaxrs-api.jar
 resteasy-*.jar
