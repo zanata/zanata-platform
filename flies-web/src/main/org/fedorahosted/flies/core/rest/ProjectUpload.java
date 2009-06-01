@@ -1,12 +1,17 @@
 package org.fedorahosted.flies.core.rest;
 
+import org.fedorahosted.flies.core.rest.api.MetaProject;
 import org.jboss.resteasy.plugins.providers.atom.Content;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 
 import java.io.*;
+
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
 import java.lang.String;
 
 @Path("atom")
@@ -25,5 +30,7 @@ public class ProjectUpload
       out.close();
       return "success";
    }
+   
+   
 }
 
