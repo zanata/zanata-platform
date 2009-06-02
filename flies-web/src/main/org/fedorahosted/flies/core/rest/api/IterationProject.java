@@ -1,15 +1,19 @@
 package org.fedorahosted.flies.core.rest.api;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.core.model.Project;
+import org.fedorahosted.flies.core.model.ProjectTarget;
 
 @XmlRootElement(name="project", namespace="http://flies.fedorahosted.org/")
 public class IterationProject extends MetaProject{
 
-	private String myTestString = "hello world";
+	private List<ProjectIteration> iterations;
 	
 	public IterationProject() {
 		super();
@@ -19,14 +23,22 @@ public class IterationProject extends MetaProject{
 	public IterationProject(Project project) {
 		super(project);
 		setProjectType(ProjectType.IterationProject);
+		
+		for(ProjectTarget target: project.getProjectTargets()){
+			ProjectIteration iteration = new ProjectIteration(target);
+			getIterations().add(iteration);
+		}
 	}
 	
-	@XmlElement(namespace="urn:iteration:project")
-	public String getMyTestString() {
-		return myTestString;
+	@XmlElement(name="iterations", namespace="http://flies.fedorahosted.org/iterations/")
+	public List<ProjectIteration> getIterations() {
+		if(iterations == null)
+			iterations = new ArrayList<ProjectIteration>();
+		return iterations;
 	}
 	
-	public void setMyTestString(String myTestString) {
-		this.myTestString = myTestString;
+	public void setIterations(List<ProjectIteration> iterations) {
+		this.iterations = iterations;
 	}
+
 }
