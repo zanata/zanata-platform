@@ -28,6 +28,7 @@ import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.model.Project;
 import org.fedorahosted.flies.core.model.ProjectSeries;
 import org.fedorahosted.flies.core.model.ProjectTarget;
+import org.fedorahosted.flies.core.rest.api.IterationProject;
 import org.fedorahosted.flies.core.rest.api.MetaProject;
 import org.hibernate.Session;
 import org.jboss.resteasy.plugins.providers.atom.Content;
@@ -61,7 +62,7 @@ public class ProjectResource {
 		if(p == null)
 			throw new NotFoundException("Project not found: "+projectSlug);
 
-		MetaProject project = new MetaProject(p);
+		IterationProject project = new IterationProject(p);
 
 		Entry entry = create(project);
 		return entry;
