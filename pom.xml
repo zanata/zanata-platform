@@ -8,6 +8,8 @@
   <packaging>pom</packaging>
   <modules>
     <module>flies-richfaces-ui</module>
+    <module>flies-common-api</module>
+    <module>flies-rest-client</module>
   </modules>
     <repositories>
 

@@ -1,4 +1,5 @@
 syntax: glob
+
 *~
 */target/*
 syntax: regexp
@@ -31,10 +32,12 @@ syntax: regexp
 ^ant-eclipse-classpath/build/
 ^ant-eclipse-classpath/*.jar
 
-# shotoku
-^shotoku/shotoku-base/.classpath
-^shotoku/shotoku-base/.project
-^shotoku/shotoku-base/.settings/
-^shotoku/shotoku-svn/.classpath
-^shotoku/shotoku-svn/.project
-^shotoku/shotoku-svn/.settings/
+# flies-rest-client
+^flies-rest-client/.classpath
+^flies-rest-client/.project
+^flies-rest-client/.settings/
+
+# flies-common-api
+^flies-common-api/.classpath
+^flies-common-api/.project
+^flies-common-api/.settings/
