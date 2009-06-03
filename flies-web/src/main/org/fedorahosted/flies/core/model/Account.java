@@ -2,6 +2,7 @@ package org.fedorahosted.flies.core.model;
 
 import java.io.Serializable;
 import java.util.Set;
+import java.security.MessageDigest;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,12 +16,14 @@ import javax.persistence.JoinColumn;
 
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.NotNull;
+import org.hibernate.validator.Length;
 import org.jboss.seam.annotations.security.management.UserEnabled;
 import org.jboss.seam.annotations.security.management.UserFirstName;
 import org.jboss.seam.annotations.security.management.UserPassword;
 import org.jboss.seam.annotations.security.management.UserPrincipal;
 import org.jboss.seam.annotations.security.management.UserRoles;
 import org.jboss.seam.security.management.PasswordHash;
+import org.jboss.seam.util.Hex;
 
 @Entity
 public class Account extends AbstractFliesEntity implements Serializable {
@@ -28,10 +31,11 @@ public class Account extends AbstractFliesEntity implements Serializable {
 	private String username;
 	private String passwordHash;
 	private boolean enabled;
+        private String apiKey;
 
 	private Person person;
 	private Set<AccountRole> roles;
-	
+
 	@OneToOne(mappedBy = "account")
 	public Person getPerson() {
 		return person;
@@ -73,6 +77,21 @@ public class Account extends AbstractFliesEntity implements Serializable {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
+
+        @Length(min=32,max=32)
+        public String getApiKey() {
+        	return apiKey;
+        }
+
+        public void setApiKey(String key) {
+               	try {
+            		MessageDigest md5 = MessageDigest.getInstance("MD5");
+            		md5.reset();
+            		this.apiKey = new String(Hex.encodeHex(md5.digest(key.getBytes("UTF-8"))));
+        	} catch (Exception exc) {
+            	throw new RuntimeException(exc);
+        	}
+        }
 
 	@UserRoles
 	@ManyToMany(targetEntity = AccountRole.class)
