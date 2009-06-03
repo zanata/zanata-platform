@@ -32,7 +32,6 @@ public class Account extends AbstractFliesEntity implements Serializable {
 	private String passwordHash;
 	private boolean enabled;
         private String apiKey;
-
 	private Person person;
 	private Set<AccountRole> roles;
 
