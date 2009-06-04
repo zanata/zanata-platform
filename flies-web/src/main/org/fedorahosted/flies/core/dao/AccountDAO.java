@@ -48,7 +48,6 @@ public class AccountDAO {
                 try {
                 	byte[] salt = new byte[16];
                 	SecureRandom.getInstance("SHA1PRNG").nextBytes(salt);
-
         		MessageDigest md5 = MessageDigest.getInstance("MD5");
         		byte[] name = username.getBytes("UTF-8");
                 

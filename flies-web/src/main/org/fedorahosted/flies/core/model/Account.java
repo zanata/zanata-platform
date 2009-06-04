@@ -83,13 +83,7 @@ public class Account extends AbstractFliesEntity implements Serializable {
         }
 
         public void setApiKey(String key) {
-               	try {
-            		MessageDigest md5 = MessageDigest.getInstance("MD5");
-            		md5.reset();
-            		this.apiKey = new String(Hex.encodeHex(md5.digest(key.getBytes("UTF-8"))));
-        	} catch (Exception exc) {
-            	throw new RuntimeException(exc);
-        	}
+       		this.apiKey = key;
         }
 
 	@UserRoles
