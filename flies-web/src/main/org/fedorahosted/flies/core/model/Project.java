@@ -4,7 +4,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -22,19 +26,17 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAccessType;
 
-@Entity  
-@XmlRootElement  
-@XmlAccessorType(XmlAccessType.NONE)
-public class Project extends AbstractSlugEntity implements Serializable {
-        @XmlElement
+@Entity
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(
+    name="projecttype",
+    discriminatorType=DiscriminatorType.STRING
+)
+public abstract class Project extends AbstractSlugEntity implements Serializable {
+
 	private String name;
-        @XmlElement
 	private String description;
-
 	private String homeContent;
-
-	private List<ProjectSeries> projectSeries = new ArrayList<ProjectSeries>();
-	private List<ProjectTarget> projectTargets = new ArrayList<ProjectTarget>();
 
 	private List<Document> documents = new ArrayList<Document>();
 
@@ -68,30 +70,12 @@ public class Project extends AbstractSlugEntity implements Serializable {
 	}
 
 	@OneToMany(mappedBy = "project")
-	public List<ProjectSeries> getProjectSeries() {
-		return projectSeries;
-	}
-
-	public void setProjectSeries(List<ProjectSeries> projectSeries) {
-		this.projectSeries = projectSeries;
-	}
-
-	@OneToMany(mappedBy = "project")
 	public List<Document> getDocuments() {
 		return documents;
 	}
 
 	public void setDocuments(List<Document> documents) {
 		this.documents = documents;
-	}
-
-	@OneToMany(mappedBy = "project")
-	public List<ProjectTarget> getProjectTargets() {
-		return projectTargets;
-	}
-
-	public void setProjectTargets(List<ProjectTarget> projectTargets) {
-		this.projectTargets = projectTargets;
 	}
 
 	@ManyToMany

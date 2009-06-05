@@ -6,6 +6,7 @@ import javax.faces.event.ValueChangeEvent;
 import javax.persistence.NoResultException;
 
 import org.fedorahosted.flies.core.model.Account;
+import org.fedorahosted.flies.core.model.IterationProject;
 import org.fedorahosted.flies.core.model.Person;
 import org.fedorahosted.flies.core.model.Project;
 import org.fedorahosted.flies.core.model.ProjectSeries;
@@ -23,7 +24,7 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 
 @Name("projectHome")
 @Scope(ScopeType.CONVERSATION)
-public class ProjectHome extends SlugHome<Project> {
+public class ProjectHome extends SlugHome<IterationProject> {
 
 	@In(required=false, value=JpaIdentityStore.AUTHENTICATED_USER) 
 	Account authenticatedAccount;

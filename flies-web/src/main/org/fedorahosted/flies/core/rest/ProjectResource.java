@@ -74,10 +74,12 @@ public class ProjectResource {
 		Project p = projectDAO.getBySlug(projectSlug);
 		if(p == null)
 			throw new NotFoundException("Project not found: "+projectSlug);
+		Entry entry = null;
+		if( p instanceof org.fedorahosted.flies.core.model.IterationProject){
+			IterationProject project = new IterationProject((org.fedorahosted.flies.core.model.IterationProject) p);
+			entry = create(project);
+		}
 
-		IterationProject project = new IterationProject(p);
-
-		Entry entry = create(project);
 		return entry;
 	}
 

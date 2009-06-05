@@ -12,6 +12,7 @@ import javax.persistence.NoResultException;
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.FliesInit;
 import org.fedorahosted.flies.core.model.FliesLocale;
+import org.fedorahosted.flies.core.model.IterationProject;
 import org.fedorahosted.flies.core.model.Project;
 import org.fedorahosted.flies.core.model.ProjectSeries;
 import org.fedorahosted.flies.core.model.ProjectTarget;
@@ -109,7 +110,7 @@ public class DebugDataInitialization {
 		repo3.setUrl("ssh://git.fedorahosted.org/git");
 		entityManager.persist(repo3);
 
-		Project project = new Project();
+		IterationProject project = new IterationProject();
 		project.setName("RHEL Deployment Guide");
 		project.setSlug("deploymentguide");
 		project

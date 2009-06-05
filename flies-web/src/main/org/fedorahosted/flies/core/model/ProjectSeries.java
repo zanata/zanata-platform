@@ -16,7 +16,7 @@ public class ProjectSeries extends AbstractFliesEntity implements Serializable {
 
 	private String name;
 
-	private Project project;
+	private IterationProject project;
 
 	private ProjectSeries parent;
 	private List<ProjectSeries> children;
@@ -36,11 +36,11 @@ public class ProjectSeries extends AbstractFliesEntity implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "projectId")
-	public Project getProject() {
+	public IterationProject getProject() {
 		return project;
 	}
 
-	public void setProject(Project project) {
+	public void setProject(IterationProject project) {
 		this.project = project;
 	}
 
