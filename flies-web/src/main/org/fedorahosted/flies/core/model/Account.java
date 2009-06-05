@@ -26,6 +26,7 @@ import org.jboss.seam.security.management.PasswordHash;
 import org.jboss.seam.util.Hex;
 
 @Entity
+@UniqueConstraint(columnNames="apiKey")
 public class Account extends AbstractFliesEntity implements Serializable {
 
 	private String username;
@@ -106,6 +107,8 @@ public class Account extends AbstractFliesEntity implements Serializable {
 				+ ((passwordHash == null) ? 0 : passwordHash.hashCode());
 		result = prime * result
 				+ ((username == null) ? 0 : username.hashCode());
+		result = prime * result
+		        + ((apiKey == null) ? 0 : apiKey.hashCode());
 		return result;
 	}
 
@@ -129,6 +132,11 @@ public class Account extends AbstractFliesEntity implements Serializable {
 			if (other.username != null)
 				return false;
 		} else if (!username.equals(other.username))
+			return false;
+		if (apiKey == null) {
+			if (other.apiKey != null)
+				return false;
+		} else if (!apiKey.equals(other.apiKey))
 			return false;
 		return true;
 	}
