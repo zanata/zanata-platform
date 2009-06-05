@@ -12,7 +12,7 @@ import javax.persistence.OneToMany;
 public class IterationProject extends Project{
 
 	private List<ProjectSeries> projectSeries = new ArrayList<ProjectSeries>();
-	private List<ProjectTarget> projectTargets = new ArrayList<ProjectTarget>();
+	private List<ProjectIteration> projectIterations = new ArrayList<ProjectIteration>();
 
 	@OneToMany(mappedBy = "project")
 	public List<ProjectSeries> getProjectSeries() {
@@ -24,12 +24,12 @@ public class IterationProject extends Project{
 	}
 	
 	@OneToMany(mappedBy = "project")
-	public List<ProjectTarget> getProjectTargets() {
-		return projectTargets;
+	public List<ProjectIteration> getProjectIterations() {
+		return projectIterations;
 	}
 
-	public void setProjectTargets(List<ProjectTarget> projectTargets) {
-		this.projectTargets = projectTargets;
+	public void setProjectIterations(List<ProjectIteration> projectIterations) {
+		this.projectIterations = projectIterations;
 	}
 	
 }

@@ -9,7 +9,7 @@ import javax.persistence.NoResultException;
 import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.model.Project;
 import org.fedorahosted.flies.core.model.ProjectSeries;
-import org.fedorahosted.flies.core.model.ProjectTarget;
+import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.fedorahosted.flies.core.model.ResourceCategory;
 import org.fedorahosted.flies.repository.model.Document;
 import org.fedorahosted.flies.repository.model.AbstractTextUnitTarget.Status;
@@ -33,9 +33,9 @@ import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.framework.EntityHome;
 import org.jboss.seam.log.Log;
 
-@Name("targetHome")
+@Name("projectIterationHome")
 @Scope(ScopeType.CONVERSATION)
-public class TargetHome extends MultiSlugHome<ProjectTarget>{
+public class ProjectIterationHome extends MultiSlugHome<ProjectIteration>{
 	
 	@Logger
 	Log log;
@@ -47,13 +47,13 @@ public class TargetHome extends MultiSlugHome<ProjectTarget>{
 	ProjectDAO projectDAO;
 	
 	@Out(required = false)
-	private List<ResourceCategory> targetCategories;
+	private List<ResourceCategory> iterationCategories;
 
 	@Override
-	protected ProjectTarget createInstance() {
-		ProjectTarget target = new ProjectTarget();
-		target.setProject(project);
-		return target;
+	protected ProjectIteration createInstance() {
+		ProjectIteration iteration = new ProjectIteration();
+		iteration.setProject(project);
+		return iteration;
 	}
 
 	private String managementType;
@@ -76,9 +76,9 @@ public class TargetHome extends MultiSlugHome<ProjectTarget>{
 	}
 
 	@Override
-	protected ProjectTarget loadInstance() {
+	protected ProjectIteration loadInstance() {
 		Session session = (Session) getEntityManager().getDelegate();
-		return (ProjectTarget) session.createCriteria(ProjectTarget.class)
+		return (ProjectIteration) session.createCriteria(ProjectIteration.class)
 			.add( Restrictions.naturalId()
 		        .set("project", projectDAO.getBySlug( getSlug(0) ) )
 		        .set("slug", getId() )
@@ -102,7 +102,7 @@ public class TargetHome extends MultiSlugHome<ProjectTarget>{
 	
 	public boolean isSlugAvailable(String slug) {
     	try{
-    		getEntityManager().createQuery("from ProjectTarget t where t.slug = :slug and t.project = :project")
+    		getEntityManager().createQuery("from ProjectIteration t where t.slug = :slug and t.project = :project")
     		.setParameter("slug", slug)
     		.setParameter("project", getInstance().getProject()).getSingleResult();
     		return false;
@@ -127,12 +127,12 @@ public class TargetHome extends MultiSlugHome<ProjectTarget>{
 	}
 
 	@SuppressWarnings("unchecked")
-	@Factory("targetCategories")
+	@Factory("iterationCategories")
 	public void getCategories() {
 		log.debug("calling getCategories");
-		targetCategories = getEntityManager()
+		iterationCategories = getEntityManager()
 				.createQuery(
-						"select distinct d.resourceCategory from Document d where d.projectTarget = :pt")
+						"select distinct d.resourceCategory from Document d where d.projectIteration = :pt")
 				.setParameter("pt", getInstance()).getResultList();
 	}
 
@@ -146,16 +146,16 @@ public class TargetHome extends MultiSlugHome<ProjectTarget>{
 		Long approved = (Long) getEntityManager()
 				.createQuery(
 						"select count(*) from TextUnitTarget tut where "
-								+ "tut.document.resourceCategory = :category and tut.document.projectTarget = :target"
+								+ "tut.document.resourceCategory = :category and tut.document.projectIteration = :iteration"
 								+ " and tut.status = :status").setParameter(
 						"category", category).setParameter("status",
-						Status.Approved).setParameter("target", getInstance())
+						Status.Approved).setParameter("iteration", getInstance())
 				.getSingleResult();
 		Long total = (Long) getEntityManager()
 				.createQuery(
 						"select count(*) from TextUnitTarget tut where "
-								+ "tut.document.resourceCategory = :category and tut.document.projectTarget = :target")
-				.setParameter("category", category).setParameter("target",
+								+ "tut.document.resourceCategory = :category and tut.document.projectIteration = :iteration")
+				.setParameter("category", category).setParameter("iteration",
 						getInstance()).getSingleResult();
 		long notApproved = (total - approved);
 		long app = (approved - 0);
@@ -198,8 +198,8 @@ public class TargetHome extends MultiSlugHome<ProjectTarget>{
 				.createQuery(
 						"select d from Document d "
 								+ "where "
-								+ "d.resourceCategory = :category and d.projectTarget = :target ")
-				.setParameter("category", category).setParameter("target",
+								+ "d.resourceCategory = :category and d.projectIteration = :iteration ")
+				.setParameter("category", category).setParameter("iteration",
 						getInstance()).getResultList();
 	}
 	

@@ -28,7 +28,7 @@ import java.net.URISyntaxException;
 import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.model.Project;
 import org.fedorahosted.flies.core.model.ProjectSeries;
-import org.fedorahosted.flies.core.model.ProjectTarget;
+import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.fedorahosted.flies.core.rest.api.IterationProject;
 import org.fedorahosted.flies.core.rest.api.MetaProject;
 import org.fedorahosted.flies.core.rest.api.MetaProject.ProjectType;

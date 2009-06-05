@@ -1,4 +1,4 @@
-<a4j:form id="targetForm"
+<a4j:form id="iterationForm"
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:s="http://jboss.com/products/seam/taglib"
     xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -13,15 +13,15 @@
         <s:decorate id="nameField" template="../layout/edit.xhtml">
             <ui:define name="label">Name</ui:define>
             <h:inputText id="name" required="true"
-                         value="#{targetHome.instance.name}"/>
+                         value="#{projectIterationHome.instance.name}"/>
         </s:decorate>
 
         <s:decorate id="slugField" template="../layout/edit.xhtml">
             <ui:define name="label">Slug</ui:define>
             <h:inputText id="slug" required="true"
-                         value="#{targetHome.instance.slug}" 
-                         readonly="#{targetHome.managed}"
-                         valueChangeListener="#{targetHome.verifySlugAvailable}">
+                         value="#{projectIterationHome.instance.slug}" 
+                         readonly="#{projectIterationHome.managed}"
+                         valueChangeListener="#{projectIterationHome.verifySlugAvailable}">
               <a4j:support event="onblur" reRender="slugField" ajaxSingle="true"/>
             </h:inputText>
         </s:decorate>
@@ -29,13 +29,13 @@
         <s:decorate id="descriptionField" template="../layout/edit.xhtml">
             <ui:define name="label">Description</ui:define>
             <h:inputText id="description" required="true"
-                         value="#{targetHome.instance.description}" style="width:400px;"/>
+                         value="#{projectIterationHome.instance.description}" style="width:400px;"/>
         </s:decorate>
 
         <s:decorate id="projectSeriesField" template="../layout/edit.xhtml">
             <ui:define name="label">Project Series</ui:define>
-            <h:selectOneMenu id="projectSeries" value="#{targetHome.instance.projectSeries}" require="true">  
-              <s:selectItems value="#{targetHome.availableProjectSeries}" var="serie" label="#{serie.name}"/>  
+            <h:selectOneMenu id="projectSeries" value="#{projectIterationHome.instance.projectSeries}" require="true">  
+              <s:selectItems value="#{projectIterationHome.availableProjectSeries}" var="serie" label="#{serie.name}"/>  
               <s:convertEntity/>  
             </h:selectOneMenu>  
         </s:decorate>
@@ -43,7 +43,7 @@
         <s:decorate id="activeField" template="../layout/edit.xhtml">
             <ui:define name="label">Active</ui:define>
             <h:selectBooleanCheckbox id="acvite"
-                         value="#{targetHome.instance.active}"/>
+                         value="#{projectIterationHome.instance.active}"/>
         </s:decorate>
 
         <div style="clear:both"/>
@@ -53,15 +53,15 @@
     <div class="actionButtons">
         <h:commandButton id="save"
                       value="Save"
-                     action="#{targetHome.persist}"
-                   rendered="#{!targetHome.managed}"/>
+                     action="#{projectIterationHome.persist}"
+                   rendered="#{!projectIterationHome.managed}"/>
         <h:commandButton id="update"
                       value="Save"
-                     action="#{targetHome.update}"
-                   rendered="#{targetHome.managed}"/>
+                     action="#{projectIterationHome.update}"
+                   rendered="#{projectIterationHome.managed}"/>
         <s:button id="cancel"
                         value="Cancel"
-                         action="#{targetHome.cancel}"/>
+                         action="#{projectIterationHome.cancel}"/>
     </div>
 
 </a4j:form>

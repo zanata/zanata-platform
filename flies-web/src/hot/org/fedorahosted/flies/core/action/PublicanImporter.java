@@ -14,11 +14,10 @@ import javax.persistence.EntityManager;
 
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.core.model.FliesLocale;
-import org.fedorahosted.flies.core.model.ProjectTarget;
+import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.fedorahosted.flies.core.model.ResourceCategory;
 //import org.fedorahosted.flies.projects.AdapterException;
 //import org.fedorahosted.flies.projects.publican.PublicanProjectAdapter;
-import org.fedorahosted.flies.repository.action.TargetManager;
 import org.fedorahosted.flies.repository.dao.DocumentDAO;
 import org.fedorahosted.flies.repository.dao.TextUnitDAO;
 import org.fedorahosted.flies.repository.model.Document;
@@ -202,7 +201,7 @@ public class PublicanImporter {
 		document.setRevision(1);
 		document.setName(resource.substring(0, resource.length()-4)+".xml");
 		document.setProject(targetManager.getTarget().getProject());
-		document.setProjectTarget(targetManager.getTarget());
+		document.setProjectIteration(targetManager.getTarget());
 		document.setResourceCategory(cat);
 		document.setContentType("pot");
 		session.save(document);

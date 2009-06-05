@@ -15,7 +15,7 @@ import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import org.fedorahosted.flies.core.model.Project;
-import org.fedorahosted.flies.core.model.ProjectTarget;
+import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.fedorahosted.flies.core.model.ResourceCategory;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
@@ -38,7 +38,7 @@ public class Document implements Serializable {
 	private Integer revision = 1;
 
 	private Project project;
-	private ProjectTarget projectTarget;
+	private ProjectIteration projectIteration;
 
 	private List<TextUnitTarget> targetEntries = new ArrayList<TextUnitTarget>();
 
@@ -109,13 +109,13 @@ public class Document implements Serializable {
 
 	@NotNull
 	@ManyToOne
-	@JoinColumn(name = "projectTargetId")
-	public ProjectTarget getProjectTarget() {
-		return projectTarget;
+	@JoinColumn(name = "projectIterationId")
+	public ProjectIteration getProjectIteration() {
+		return projectIteration;
 	}
 
-	public void setProjectTarget(ProjectTarget projectTarget) {
-		this.projectTarget = projectTarget;
+	public void setProjectIteration(ProjectIteration projectIteration) {
+		this.projectIteration = projectIteration;
 	}
 
 	@OneToMany(mappedBy = "template")

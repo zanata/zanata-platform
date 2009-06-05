@@ -4,8 +4,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.fedorahosted.flies.core.model.ProjectTarget;
-
 @XmlType(name="project-iteration", namespace="http://flies.fedorahosted.org/iterations/")
 public class ProjectIteration {
 	
@@ -16,9 +14,9 @@ public class ProjectIteration {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public ProjectIteration(ProjectTarget target) {
-		setId(target.getSlug());
-		setName(target.getName());
+	public ProjectIteration(org.fedorahosted.flies.core.model.ProjectIteration iteration) {
+		setId(iteration.getSlug());
+		setName(iteration.getName());
 	}
 	
 	

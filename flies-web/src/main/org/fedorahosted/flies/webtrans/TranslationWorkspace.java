@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.fedorahosted.flies.core.model.FliesLocale;
 import org.fedorahosted.flies.core.model.Person;
-import org.fedorahosted.flies.core.model.ProjectTarget;
+import org.fedorahosted.flies.core.model.ProjectIteration;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -16,25 +16,25 @@ import com.google.common.collect.MapMaker;
 public class TranslationWorkspace {
 	
 	private final FliesLocale locale;
-	private final ProjectTarget projectTarget;
+	private final ProjectIteration projectIteration;
 	
 	private ConcurrentMap<Person, Date> translators = new MapMaker().expiration(60, TimeUnit.SECONDS).makeMap();
 
-	public TranslationWorkspace(ProjectTarget projectTarget, FliesLocale locale) {
-		if(projectTarget == null)
-			throw new NullPointerException("projectTarget cannot be null");
+	public TranslationWorkspace(ProjectIteration projectIteration, FliesLocale locale) {
+		if(projectIteration == null)
+			throw new NullPointerException("projectIteration cannot be null");
 		if(locale == null)
 			throw new NullPointerException("locale cannot be null");
 		this.locale = locale;
-		this.projectTarget = projectTarget;
+		this.projectIteration = projectIteration;
 	}
 	
 	public FliesLocale getLocale() {
 		return locale;
 	}
 
-	public ProjectTarget getProjectTarget() {
-		return projectTarget;
+	public ProjectIteration getProjectIteration() {
+		return projectIteration;
 	}
 	
 	public ImmutableList<Person> getTranslators(){
@@ -59,14 +59,14 @@ public class TranslationWorkspace {
 		if( !(obj instanceof TranslationWorkspace) ) return false;
 		TranslationWorkspace other = (TranslationWorkspace) obj;
 		return ( other.locale.equals(locale) 
-				&& other.projectTarget.equals(projectTarget));
+				&& other.projectIteration.equals(projectIteration));
 	}
 	
 	@Override
 	public int hashCode() {
 	    int hash = 1;
 	    hash = hash * 31 + locale.hashCode();
-	    hash = hash * 31 + projectTarget.hashCode();
+	    hash = hash * 31 + projectIteration.hashCode();
 	    return hash;
 	}
 }

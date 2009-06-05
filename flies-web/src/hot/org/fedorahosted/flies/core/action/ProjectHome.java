@@ -10,7 +10,7 @@ import org.fedorahosted.flies.core.model.IterationProject;
 import org.fedorahosted.flies.core.model.Person;
 import org.fedorahosted.flies.core.model.Project;
 import org.fedorahosted.flies.core.model.ProjectSeries;
-import org.fedorahosted.flies.core.model.ProjectTarget;
+import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.In;
@@ -91,16 +91,16 @@ public class ProjectHome extends SlugHome<IterationProject> {
 		return retValue;
 	}
 
-	public List<ProjectTarget> getActiveTargets(){
+	public List<ProjectIteration> getActiveIterations(){
 		return getEntityManager().createQuery(
-				"from ProjectTarget t where t.project = :project and t.active = true")
+				"from ProjectIteration t where t.project = :project and t.active = true")
 				.setParameter("project", getInstance())
 				.getResultList();
 	}
 
-	public List<ProjectTarget> getRetiredTargets(){
+	public List<ProjectIteration> getRetiredIterations(){
 		return getEntityManager().createQuery(
-				"from ProjectTarget t where t.project = :project and t.active = false")
+				"from ProjectIteration t where t.project = :project and t.active = false")
 				.setParameter("project", getInstance())
 				.getResultList();
 	}

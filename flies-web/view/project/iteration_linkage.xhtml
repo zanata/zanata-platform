@@ -11,31 +11,31 @@
 
 <ui:define name="center_content">
     <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
-    <h1>#{targetHome.instance.name}</h1>
+    <h1>#{projectIterationHome.instance.name}</h1>
 
-<a4j:form id="targetForm">
+<a4j:form id="iterationForm">
 
     <rich:panel>
         <s:decorate id="managementTypeField" template="../layout/edit.xhtml">
             <ui:define name="label">Resource Management Type</ui:define>
-            <h:selectOneMenu id="managementType" value="#{targetHome.managementType}" required="true">  
+            <h:selectOneMenu id="managementType" value="#{projectIterationHome.managementType}" required="true">  
               <s:selectItems value="#{managmentTypes}" var="serie" label="#{serie}"/>  
               <a4j:support event="onchange" reRender="mtPanels" ajaxSingle="true"/>  
             </h:selectOneMenu>  
         </s:decorate>
 
         <a4j:outputPanel id="mtPanels" layout="block">
-          <s:div id="settings_webclient" rendered="#{targetHome.managementType == 'REST Client'}"> 
+          <s:div id="settings_webclient" rendered="#{projectIterationHome.managementType == 'REST Client'}"> 
             <s:decorate id="keyField" template="../layout/edit.xhtml">
                 <ui:define name="label">API Key</ui:define>
                 <h:outputText value="ERWERSDFDFG" />
                 <s:button value="Regenerate"></s:button>  
             </s:decorate>
           </s:div>          
-          <s:div id="settings_localclient" rendered="#{targetHome.managementType == 'Local File System (Publican)'}"> 
+          <s:div id="settings_localclient" rendered="#{projectIterationHome.managementType == 'Local File System (Publican)'}"> 
             <s:decorate id="directoryField" template="../layout/edit.xhtml">
                 <ui:define name="label">Directory</ui:define>
-                <h:inputText value="#{targetHome.instance.localDirectory}" />
+                <h:inputText value="#{projectIterationHome.instance.localDirectory}" />
             </s:decorate>
           </s:div>          
         </a4j:outputPanel>
@@ -46,15 +46,15 @@
     <div class="actionButtons">
         <h:commandButton id="save"
                       value="Save"
-                     action="#{targetHome.persist}"
-                   rendered="#{!targetHome.managed}"/>
+                     action="#{projectIterationHome.persist}"
+                   rendered="#{!projectIterationHome.managed}"/>
         <h:commandButton id="update"
                       value="Save"
-                     action="#{targetHome.update}"
-                   rendered="#{targetHome.managed}"/>
+                     action="#{projectIterationHome.update}"
+                   rendered="#{projectIterationHome.managed}"/>
         <s:button id="cancel"
                         value="Cancel"
-                         action="#{targetHome.cancel}"/>
+                         action="#{projectIterationHome.cancel}"/>
     </div>
 
 </a4j:form>

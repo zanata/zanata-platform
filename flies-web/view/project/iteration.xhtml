@@ -14,21 +14,21 @@
   <s:link view="/project/home.xhtml" propagation="none">Projects</s:link>
   »
   <s:link view="/project/project.xhtml" propagation="none">
-    <f:param name="slug" value="#{targetHome.instance.project.slug}"/>
-    #{targetHome.instance.project.name}
+    <f:param name="slug" value="#{projectIterationHome.instance.project.slug}"/>
+    #{projectIterationHome.instance.project.name}
   </s:link>
-  #{targetHome.instance.name}
+  #{projectIterationHome.instance.name}
 </ui:define>
 
 <ui:define name="left_content">
   <rich:panel>
     <f:facet name="header">Actions</f:facet>
-    <s:link styleClass="action_link" view="/project/target_edit.xhtml" propagation="none">
-      <f:param name="mslug" value="#{targetHome.multiSlug}"/>
+    <s:link styleClass="action_link" view="/project/iteration_edit.xhtml" propagation="none">
+      <f:param name="mslug" value="#{projectIterationHome.multiSlug}"/>
       Edit
     </s:link>
-    <s:link styleClass="action_link" view="/project/target_linkage.xhtml" propagation="none">
-      <f:param name="mslug" value="#{targetHome.multiSlug}"/>
+    <s:link styleClass="action_link" view="/project/iteration_linkage.xhtml" propagation="none">
+      <f:param name="mslug" value="#{projectIterationHome.multiSlug}"/>
       Resource Management
     </s:link>
     
@@ -38,16 +38,16 @@
 <ui:define name="center_content">
   <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
 
-  <h1>#{targetHome.instance.project.name} : #{targetHome.instance.name}</h1>
+  <h1>#{projectIterationHome.instance.project.name} : #{projectIterationHome.instance.name}</h1>
 
-  <ui:repeat value="#{targetCategories}" var="category">
+  <ui:repeat value="#{iterationCategories}" var="category">
     <h:form id="category_form_#{category.id}">
       <s:conversationId/>
       <div class="resource-by-category-panel">
         <div class="header">
           <h2 class="cat-documentation">#{category.name}</h2>
           <div class="status-bar">
-            <ui:param name="status" value="#{targetHome.getStatisticsForCategory(category)}" />
+            <ui:param name="status" value="#{projectIterationHome.getStatisticsForCategory(category)}" />
             <flies:translation-status-bar
               translated="#{status.approved}" 
               fuzzy="0" 
@@ -57,19 +57,19 @@
         </div>
         <!-- 
         <s:div styleClass="summary" rendered="false">
-          #{targetHome.instance.description}
+          #{projectIterationHome.instance.description}
         </s:div>
          -->
         <div class="toolbar">
           <div class="actions">
             <s:link view="/translate.xhtml" propagation="none">
               Translate
-              <f:param name="wid" value="#{targetHome.instance.id}/gu-IN"/>
+              <f:param name="wid" value="#{projectIterationHome.instance.id}/gu-IN"/>
             </s:link> &nbsp;|&nbsp; 
             <s:link view="/home.xhtml">Download Archive</s:link> &nbsp;|&nbsp; 
             <s:link view="/home.xhtml">More...</s:link>
           </div>
-          <ui:param name="catDocuments" value="#{targetHome.getDocumentsForCategory(category)}" />
+          <ui:param name="catDocuments" value="#{projectIterationHome.getDocumentsForCategory(category)}" />
           <div class="expand">
             #{catDocuments.size} File(s) 
              <rich:toggleControl for="eContent">
@@ -96,7 +96,7 @@
                 <h:outputText value="Status"/>
               </f:facet>
               <!-- 
-              <ui:param name="tstatus" value="#{targetHome.getStatisticsForDocument(document)}" />
+              <ui:param name="tstatus" value="#{projectIterationHome.getStatisticsForDocument(document)}" />
               <flies:translation-status-bar
                 title="Total: #{tstatus.total}, Translated: #{tstatus.approved}, Fuzzy #{tstatus.fuzzyMatch}"
                 translated="#{tstatus.approved}" 
@@ -106,7 +106,7 @@
             </rich:column>
             
             <f:facet name="footer">
-              <rich:datascroller id="ds" rendered="#{targetHome.instance.documents.size > 50}"></rich:datascroller>
+              <rich:datascroller id="ds" rendered="#{projectIterationHome.instance.documents.size > 50}"></rich:datascroller>
             </f:facet>
           </rich:dataTable>
        </f:facet>

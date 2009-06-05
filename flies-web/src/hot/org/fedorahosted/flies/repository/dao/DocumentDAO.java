@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import org.fedorahosted.flies.core.model.ProjectTarget;
+import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.fedorahosted.flies.repository.model.Document;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -21,8 +21,8 @@ public class DocumentDAO {
 	EntityManager entityManager;
 	
 	public List<Document> getDocumentsForTarget(Long targetId){
-		return entityManager.createQuery("from Document d where d.projectTarget.id = :projectTargetId")
-			.setParameter("projectTargetId", targetId)
+		return entityManager.createQuery("from Document d where d.projectIteration.id = :projectIterationId")
+			.setParameter("projectIterationId", targetId)
 			.getResultList();
 	}
 	

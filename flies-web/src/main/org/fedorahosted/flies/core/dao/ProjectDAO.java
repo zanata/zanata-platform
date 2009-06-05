@@ -3,7 +3,7 @@ package org.fedorahosted.flies.core.dao;
 import javax.persistence.EntityManager;
 
 import org.fedorahosted.flies.core.model.Project;
-import org.fedorahosted.flies.core.model.ProjectTarget;
+import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.AutoCreate;

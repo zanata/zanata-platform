@@ -23,8 +23,8 @@ public class IterationProject extends MetaProject{
 		super(project);
 		setProjectType(ProjectType.IterationProject);
 		
-		for(ProjectTarget target: project.getProjectTargets()){
-			ProjectIteration iteration = new ProjectIteration(target);
+		for(org.fedorahosted.flies.core.model.ProjectIteration iter: project.getProjectIterations()){
+			ProjectIteration iteration = new ProjectIteration(iter);
 			getIterations().add(iteration);
 		}
 	}

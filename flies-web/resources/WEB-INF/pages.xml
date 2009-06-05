@@ -6,9 +6,9 @@
        no-conversation-view-id="/home.xhtml"
        login-view-id="/account/login.xhtml">
 
-	<conversation name="TargetView"
+	<conversation name="IterationView"
 			parameter-name="mslug"
-			parameter-value="#{redirect.parameters.mslug != null ? redirect.parameters.mslug : (targetHome.multiSlug != null ? targetHome.multiSlug : '')}"
+			parameter-value="#{redirect.parameters.mslug != null ? redirect.parameters.mslug : (projectIterationHome.multiSlug != null ? projectIterationHome.multiSlug : '')}"
 			/>
 
 	<conversation name="ProjectView"
@@ -79,57 +79,57 @@
 	   
     </page>
 
-    <page view-id="/project/target.xhtml" conversation="TargetView">
-		<param name="mslug" value="#{targetHome.multiSlug}" />
+    <page view-id="/project/iteration.xhtml" conversation="IterationView">
+		<param name="mslug" value="#{projectIterationHome.multiSlug}" />
 		
-		<action execute="#{targetHome.validateSuppliedId}" />
+		<action execute="#{projectIterationHome.validateSuppliedId}" />
 		<!-- We set the conversation description in validateSuppliedId
-    		<description>#{targetHome.instance.name}</description>
+    		<description>#{projectIterationHome.instance.name}</description>
     	 -->
     </page>
 
-    <page view-id="/project/target_linkage.xhtml" conversation="TargetView">
-		<param name="mslug" value="#{targetHome.multiSlug}" />
+    <page view-id="/project/iteration_linkage.xhtml" conversation="IterationView">
+		<param name="mslug" value="#{projectIterationHome.multiSlug}" />
 		
-		<action execute="#{targetHome.validateSuppliedId}" />
+		<action execute="#{projectIterationHome.validateSuppliedId}" />
 
-	    <navigation from-action="#{targetHome.update}">
-	         <redirect view-id="/project/target.xhtml" include-page-params="true" />
+	    <navigation from-action="#{projectIterationHome.update}">
+	         <redirect view-id="/project/iteration.xhtml" include-page-params="true" />
 	    </navigation>
 	
-	   <navigation from-action="#{targetHome.cancel}">
-         <redirect view-id="/project/target.xhtml" include-page-params="true"/>
+	   <navigation from-action="#{projectIterationHome.cancel}">
+         <redirect view-id="/project/iteration.xhtml" include-page-params="true"/>
 	   </navigation>
     </page>
 
-	<page view-id="/project/add_target.xhtml" conversation="ProjectView" >
+	<page view-id="/project/add_iteration.xhtml" conversation="ProjectView" >
 	   <param name="slug" value="#{projectHome.id}" />
 		
 	   <action execute="#{projectHome.validateSuppliedId}" />
 	   
-	   <navigation from-action="#{targetHome.persist}">
-	   	  <rule if="#{targetHome.managed}">
+	   <navigation from-action="#{projectIterationHome.persist}">
+	   	  <rule if="#{projectIterationHome.managed}">
 		   	  <end-conversation before-redirect="true"/>
-		      <redirect view-id="/project/target.xhtml">
-	            <param name="mslug" value="#{projectHome.instance.slug}/#{targetHome.instance.slug}"/>
+		      <redirect view-id="/project/iteration.xhtml">
+	            <param name="mslug" value="#{projectHome.instance.slug}/#{projectIterationHome.instance.slug}"/>
 	          </redirect>
 	   	  </rule>
 	   </navigation>
 
-	   <navigation from-action="#{targetHome.cancel}">
+	   <navigation from-action="#{projectIterationHome.cancel}">
          <redirect view-id="/project/project.xhtml" include-page-params="true" />
 	   </navigation>
 	</page>
 
-    <page view-id="/project/target_edit.xhtml" conversation="TargetView">
-		<param name="mslug" value="#{targetHome.multiSlug}" />
+    <page view-id="/project/iteration_edit.xhtml" conversation="IterationView">
+		<param name="mslug" value="#{projectIterationHome.multiSlug}" />
 
-	    <navigation from-action="#{targetHome.update}">
-	         <redirect view-id="/project/target.xhtml" include-page-params="true" />
+	    <navigation from-action="#{projectIterationHome.update}">
+	         <redirect view-id="/project/iteration.xhtml" include-page-params="true" />
 	    </navigation>
 	
-	   <navigation from-action="#{targetHome.cancel}">
-         <redirect view-id="/project/target.xhtml" include-page-params="true"/>
+	   <navigation from-action="#{projectIterationHome.cancel}">
+         <redirect view-id="/project/iteration.xhtml" include-page-params="true"/>
 	   </navigation>
 	   
     </page>

@@ -8,7 +8,7 @@ import javax.persistence.EntityManager;
 import org.fedorahosted.flies.core.model.Account;
 import org.fedorahosted.flies.core.model.FliesLocale;
 import org.fedorahosted.flies.core.model.Person;
-import org.fedorahosted.flies.core.model.ProjectTarget;
+import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.fedorahosted.flies.repository.model.DocumentTarget;
 import org.fedorahosted.flies.repository.model.TextUnitTarget;
 import org.fedorahosted.flies.webtrans.NoSuchWorkspaceException;
@@ -51,7 +51,7 @@ public class TranslateAction {
 	Account authenticatedAccount;
 
 	private FliesLocale locale;
-	private ProjectTarget projectTarget;
+	private ProjectIteration projectIteration;
 
 	public String getWorkspaceId() {
 		return workspaceId;
@@ -61,12 +61,12 @@ public class TranslateAction {
 		this.workspaceId = workspaceId;
 	}
 	
-	public ProjectTarget getProjectTarget() {
-		return projectTarget;
+	public ProjectIteration getProjectIteration() {
+		return projectIteration;
 	}
 	
-	public void setProjectTarget(ProjectTarget projectTarget) {
-		this.projectTarget = projectTarget;
+	public void setProjectIteration(ProjectIteration projectIteration) {
+		this.projectIteration = projectIteration;
 	}
 	
 	public FliesLocale getLocale() {
@@ -97,9 +97,9 @@ public class TranslateAction {
 	@Factory("documentTargets")
 	public void loadDocumentTargets(){
 		documentTargets = entityManager.createQuery("select d from DocumentTarget d " +
-								"where d.locale = :locale and d.template.projectTarget = :target")
+								"where d.locale = :locale and d.template.projectIteration = :iteration")
 					.setParameter("locale", locale)
-					.setParameter("target", projectTarget).getResultList();
+					.setParameter("iteration", projectIteration).getResultList();
 	}
 
 	@Factory("textUnitTargets")
@@ -121,7 +121,7 @@ public class TranslateAction {
 	}
 	
 	public boolean isConversationActive(){
-		return projectTarget != null & locale != null; 
+		return projectIteration != null & locale != null; 
 	}
 	
 	public void initialize() {
@@ -137,9 +137,9 @@ public class TranslateAction {
 				throw new NoSuchWorkspaceException(workspaceId);
 			}
 			try{
-				Long projectTargetId = Long.parseLong(ws[0]);
+				Long projectIterationId = Long.parseLong(ws[0]);
 				String localeId = ws[1];
-				projectTarget = entityManager.find(ProjectTarget.class, projectTargetId);
+				projectIteration = entityManager.find(ProjectIteration.class, projectIterationId);
 				locale = entityManager.find(FliesLocale.class, localeId);
 				Person translator = entityManager.find(Person.class, authenticatedAccount.getPerson().getId());
 				getWorkspace().registerTranslator(translator);
@@ -151,7 +151,7 @@ public class TranslateAction {
 	}
 
 	public TranslationWorkspace getWorkspace(){
-		return translationWorkspaceManager.getOrRegisterWorkspace(projectTarget, locale);
+		return translationWorkspaceManager.getOrRegisterWorkspace(projectIteration, locale);
 	}
 	
 	@End
@@ -162,8 +162,8 @@ public class TranslateAction {
 	public boolean ping(){
 		Person translator = entityManager.find(Person.class, authenticatedAccount.getPerson().getId());
 		log.info("ping {3} - {0}:{1} - {2}", 
-				this.projectTarget.getProject().getName(), 
-				this.projectTarget.getName(), 
+				this.projectIteration.getProject().getName(), 
+				this.projectIteration.getName(), 
 				this.locale.getId(),
 				translator.getAccount().getUsername());
 		getWorkspace().registerTranslator(translator);

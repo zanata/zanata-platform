@@ -12,27 +12,27 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.log.Log;
 
-@Name("projectTargetDAO")
+@Name("projectIterationDAO")
 @AutoCreate
-public class ProjectTargetDAO {
+public class ProjectIterationDAO {
 	
 	@In(value="#{entityManager.delegate}")
 	Session session;
 	
 	@Logger
 	Log log;
-//Long targetId, String localeId
+//Long iterationId, String localeId
 	
 	
-	public TranslationStatistics getStatisticsForTarget(Long targetId, String localeId){
+	public TranslationStatistics getStatisticsForIteration(Long iterationId, String localeId){
 		List<StatusCount> stats = session.createQuery(
 				"select new org.fedorahosted.flies.core.model.StatusCount(pt.status, count(pt)) " +
 				"from TextUnitTarget pt " +
-				"where pt.document.projectTarget.id = :id " +
+				"where pt.document.projectIteration.id = :id " +
 				"  and pt.locale.id = :localeId "+  
 				"group by pt.status"
 			)
-			.setParameter("id", targetId)
+			.setParameter("id", iterationId)
 			.setParameter("localeId", localeId)
 			.setCacheable(true)
 			.list();

@@ -7,7 +7,7 @@ import java.util.Set;
 
 import javax.persistence.EntityManager;
 
-import org.fedorahosted.flies.core.model.ProjectTarget;
+import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.fedorahosted.flies.repository.model.Document;
 import org.fedorahosted.flies.repository.model.TextUnit;
 import org.jboss.seam.ScopeType;
@@ -19,9 +19,9 @@ import org.jboss.seam.annotations.Scope;
 @Name("targetManager")
 @Scope(ScopeType.CONVERSATION)
 @AutoCreate
-public class TargetManager {
+public class IterationManager {
 
-	private ProjectTarget target;
+	private ProjectIteration target;
 	private Long id;;
 	
 	@In
@@ -42,11 +42,11 @@ public class TargetManager {
 	}
 	
 	private void initInstance(){
-		target = entityManager.find(ProjectTarget.class, getId()); 
+		target = entityManager.find(ProjectIteration.class, getId()); 
 	}
 	
 
-	public ProjectTarget getTarget() {
+	public ProjectIteration getIteration() {
 		return target;
 	}
 	
