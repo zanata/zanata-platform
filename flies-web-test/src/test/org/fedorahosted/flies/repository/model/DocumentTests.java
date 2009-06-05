@@ -3,6 +3,7 @@ package org.fedorahosted.flies.repository.model;
 
 
 import org.dbunit.operation.DatabaseOperation;
+import org.fedorahosted.flies.core.model.IterationProject;
 import org.fedorahosted.flies.core.model.Person;
 import org.fedorahosted.flies.core.model.Project;
 import org.fedorahosted.flies.core.model.ProjectSeries;
@@ -29,7 +30,7 @@ public class DocumentTests extends DBUnitSeamTest {
 
             protected void invokeApplication() throws Exception {
                 EntityManager em = (EntityManager) getInstance("entityManager");
-                Project project = em.find(Project.class, 1l);
+                IterationProject project = em.find(IterationProject.class, 1l);
                 assertNotNull(project, "Failed to find project by Id");
                 
                 List<ProjectSeries> projectSeries =  project.getProjectSeries();

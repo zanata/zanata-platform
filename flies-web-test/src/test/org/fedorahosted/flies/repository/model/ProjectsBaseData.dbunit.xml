@@ -15,6 +15,7 @@
 	+==============+==============+======+====-+========-+================+
 	 -->
 	<Project id="1"
+	    projecttype="iteration"
 		creationDate="[NULL]"
 		timestamp="[NULL]" 
 		slug="myproject"
