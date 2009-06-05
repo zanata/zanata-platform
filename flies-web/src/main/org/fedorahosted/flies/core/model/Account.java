@@ -26,7 +26,7 @@ import org.jboss.seam.security.management.PasswordHash;
 import org.jboss.seam.util.Hex;
 
 @Entity
-@UniqueConstraint(columnNames="apiKey")
+@Table(uniqueConstraints=@UniqueConstraint(columnNames="apiKey"))
 public class Account extends AbstractFliesEntity implements Serializable {
 
 	private String username;
