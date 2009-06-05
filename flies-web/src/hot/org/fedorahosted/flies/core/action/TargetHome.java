@@ -205,13 +205,13 @@ public class TargetHome extends MultiSlugHome<ProjectTarget>{
 	
 	public void cancel(){}
 	
-	@In PublicanImporter publicanImporter;
+	//@In PublicanImporter publicanImporter;
 	
 	@Override
 	public String update() {
 		String retValue = super.update();
 		if(ManagementTypes.TYPE_LOCAL.equals(getManagementType()) && !getInstance().getLocalDirectory().isEmpty()){
-			publicanImporter.process(getInstance().getLocalDirectory(), getInstance().getId());
+			//publicanImporter.process(getInstance().getLocalDirectory(), getInstance().getId());
 		}
 		return retValue;
 	}

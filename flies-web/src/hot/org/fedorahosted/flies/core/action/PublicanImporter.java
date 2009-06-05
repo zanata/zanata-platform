@@ -16,8 +16,8 @@ import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.core.model.FliesLocale;
 import org.fedorahosted.flies.core.model.ProjectTarget;
 import org.fedorahosted.flies.core.model.ResourceCategory;
-import org.fedorahosted.flies.projects.AdapterException;
-import org.fedorahosted.flies.projects.publican.PublicanProjectAdapter;
+//import org.fedorahosted.flies.projects.AdapterException;
+//import org.fedorahosted.flies.projects.publican.PublicanProjectAdapter;
 import org.fedorahosted.flies.repository.action.TargetManager;
 import org.fedorahosted.flies.repository.dao.DocumentDAO;
 import org.fedorahosted.flies.repository.dao.TextUnitDAO;
@@ -47,7 +47,7 @@ import org.jboss.serial.util.HashStringUtil;
 @Scope(ScopeType.CONVERSATION)
 @AutoCreate
 public class PublicanImporter {
-
+/*
 	@In 
 	EntityManager entityManager;
 	
@@ -66,7 +66,7 @@ public class PublicanImporter {
 	@Logger 
 	Log log;
 	
-	PublicanProjectAdapter adapter;
+//	PublicanProjectAdapter adapter;
 
 	ResourceCategory cat;
 	
@@ -118,15 +118,13 @@ public class PublicanImporter {
 				addDocumentTargets(document, resource);
 				
 				for(String lang : adapter.getTargetLanguages(resource)){
-					/*
-					DocumentTarget dTarget = new DocumentTarget();
-					dTarget.setTemplate(document);
-					dTarget.setLocale(getLocaleForId(lang));
-					session.save(dTarget);
-					
-					poFile = new File(adapter.getResourceBasePath(lang),resource + ".po");
-					importTranslations(dTarget, poFile, unitCache);
-					*/
+//					DocumentTarget dTarget = new DocumentTarget();
+//					dTarget.setTemplate(document);
+//					dTarget.setLocale(getLocaleForId(lang));
+//					session.save(dTarget);
+//					
+//					poFile = new File(adapter.getResourceBasePath(lang),resource + ".po");
+//					importTranslations(dTarget, poFile, unitCache);
 				}
 			}
 			
@@ -403,5 +401,5 @@ public class PublicanImporter {
 			log.error("Error opening document", e);
 		}
 	}
-	
+*/	
 }
