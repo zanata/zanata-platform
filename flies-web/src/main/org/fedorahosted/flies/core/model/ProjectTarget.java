@@ -30,8 +30,6 @@ public class ProjectTarget extends AbstractSlugEntity implements Serializable {
 	private List<ProjectTarget> children;
 	private List<Document> documents;
 
-	private List<Collection> collections;
-
 	private String localDirectory;
 	
 	@Length(max = 20)
@@ -117,14 +115,5 @@ public class ProjectTarget extends AbstractSlugEntity implements Serializable {
 	public void setDocuments(List<Document> documents) {
 		this.documents = documents;
 
-	}
-
-	@ManyToMany(mappedBy = "projectTargets")
-	public List<Collection> getCollections() {
-		return collections;
-	}
-
-	public void setCollections(List<Collection> collections) {
-		this.collections = collections;
 	}
 }
