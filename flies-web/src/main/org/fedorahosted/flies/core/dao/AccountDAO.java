@@ -33,7 +33,7 @@ public class AccountDAO {
 	public Account getByApiKey(String apikey) {
 		Session session = (Session) entityManager.getDelegate();
 		return (Account) session.createCriteria(Account.class).add(
-				Restrictions.naturalId().set("apiKey", apikey)).uniqueResult();
+				Restrictions.eq("apiKey", apikey)).uniqueResult();
 	}
 
 	public void createApiKey(Account account) {
