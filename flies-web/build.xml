@@ -532,6 +532,7 @@
 				<exclude name="hibernate-tools*" />
 				<!-- We also need EHCache there -->
 				<include name="ehcache*" />
+				<include name="slf4j-*" />
 				<!-- And Mysql -->
 				<include name="mysql*" />
 			</fileset>

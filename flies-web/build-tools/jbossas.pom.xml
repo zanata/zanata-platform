@@ -42,8 +42,8 @@ rg.fedorahosted.flies:jbossas:jar:1.0-SNAPSHOT
  -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate</artifactId>
-			<version>3.2.6.ga</version>
+			<artifactId>hibernate-core</artifactId>
+			<version>3.3.1.GA</version>
 			<exclusions>
 				<exclusion>
 					<groupId>javax.transaction</groupId>
@@ -76,20 +76,20 @@ rg.fedorahosted.flies:jbossas:jar:1.0-SNAPSHOT
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>3.0.0.GA</version>
+			<version>3.1.0.GA</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-annotations</artifactId>
-			<version>3.3.1.GA</version>
+			<version>3.4.0.GA</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager
 			</artifactId>
-			<version>3.3.2.GA</version>
+			<version>3.4.0.GA</version>
 			<exclusions>
 				<exclusion>
 					<groupId>javassist</groupId>
@@ -97,7 +97,13 @@ rg.fedorahosted.flies:jbossas:jar:1.0-SNAPSHOT
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-jmx</artifactId>
+			<version>3.3.1.GA</version>
+		</dependency>
+
+		<!-- 
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-commons-annotations
@@ -110,7 +116,7 @@ rg.fedorahosted.flies:jbossas:jar:1.0-SNAPSHOT
 				</exclusion>
 			</exclusions>
 		</dependency>
-
+		 -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>

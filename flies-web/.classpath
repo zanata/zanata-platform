@@ -7,9 +7,6 @@
     <classpathentry kind="lib" path="lib/activation.jar" sourcepath="lib/src/activation-sources.jar"/>
     <classpathentry kind="lib" path="lib/antlr-runtime.jar"/>
     <classpathentry kind="lib" path="lib/antlr.jar" sourcepath="lib/src/antlr-sources.jar"/>
-    <classpathentry kind="lib" path="lib/asm-attrs.jar"/>
-    <classpathentry kind="lib" path="lib/asm.jar"/>
-    <classpathentry kind="lib" path="lib/cglib.jar" sourcepath="lib/src/cglib-sources.jar"/>
     <classpathentry kind="lib" path="lib/commons-beanutils.jar" sourcepath="lib/src/commons-beanutils-sources.jar"/>
     <classpathentry kind="lib" path="lib/commons-collections.jar" sourcepath="lib/src/commons-collections-sources.jar"/>
     <classpathentry kind="lib" path="lib/commons-digester.jar" sourcepath="lib/src/commons-digester-sources.jar"/>
@@ -20,14 +17,15 @@
     <classpathentry kind="lib" path="lib/dom4j.jar"/>
     <classpathentry kind="lib" path="lib/drools-compiler.jar" sourcepath="lib/src/drools-compiler-sources.jar"/>
     <classpathentry kind="lib" path="lib/drools-core.jar" sourcepath="lib/src/drools-core-sources.jar"/>
-    <classpathentry kind="lib" path="lib/ehcache.jar" sourcepath="lib/src/ehcache-sources.jar"/>
+    <classpathentry kind="lib" path="lib/ejb3-persistence.jar" sourcepath="lib/src/ejb3-persistence-sources.jar"/>
     <classpathentry kind="lib" path="lib/el-api.jar"/>
     <classpathentry kind="lib" path="lib/flies-richfaces-ui.jar"/>
     <classpathentry kind="lib" path="lib/google-collect.jar" sourcepath="lib/src/google-collect-sources.jar"/>
     <classpathentry kind="lib" path="lib/groovy-all.jar" sourcepath="lib/src/groovy-all-sources.jar"/>
-    <classpathentry kind="lib" path="lib/hibernate-commons-annotations.jar"/>
-    <classpathentry kind="lib" path="lib/hibernate-search.jar"/>
-    <classpathentry kind="lib" path="lib/hibernate.jar" sourcepath="lib/src/hibernate-sources.jar"/>
+    <classpathentry kind="lib" path="lib/hibernate-commons-annotations.jar" sourcepath="lib/src/hibernate-commons-annotations-sources.jar"/>
+    <classpathentry kind="lib" path="lib/hibernate-core.jar" sourcepath="lib/src/hibernate-core-sources.jar"/>
+    <classpathentry kind="lib" path="lib/hibernate-search.jar" sourcepath="lib/src/hibernate-search-sources.jar"/>
+    <classpathentry kind="lib" path="lib/hsqldb.jar"/>
     <classpathentry kind="lib" path="lib/icu4j.jar"/>
     <classpathentry kind="lib" path="lib/janino.jar"/>
     <classpathentry kind="lib" path="lib/jaxrs-api.jar" sourcepath="lib/src/jaxrs-api-sources.jar"/>
@@ -46,7 +44,7 @@
     <classpathentry kind="lib" path="lib/jsf-facelets.jar" sourcepath="lib/src/jsf-facelets-sources.jar"/>
     <classpathentry kind="lib" path="lib/jsf-impl.jar"/>
     <classpathentry kind="lib" path="lib/jsr250-api.jar" sourcepath="lib/src/jsr250-api-sources.jar"/>
-    <classpathentry kind="lib" path="lib/jta.jar"/>
+    <classpathentry kind="lib" path="lib/jta.jar" sourcepath="lib/src/jta-sources.jar"/>
     <classpathentry kind="lib" path="lib/log4j.jar" sourcepath="lib/src/log4j-sources.jar"/>
     <classpathentry kind="lib" path="lib/lucene-core.jar" sourcepath="lib/src/lucene-core-sources.jar"/>
     <classpathentry kind="lib" path="lib/mvel14.jar"/>
