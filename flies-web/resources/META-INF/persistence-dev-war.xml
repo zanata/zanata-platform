@@ -79,6 +79,20 @@
          <property name="hibernate.ejb.collectioncache.org.jboss.seam.wiki.core.model.Feed.feedEntries"
                    value="read-write, WikiFeedEntryCollection"/>
           -->
+
+		<!-- Envers related configuration -->      
+		<property name="hibernate.ejb.event.post-insert"
+			value="org.hibernate.ejb.event.EJB3PostInsertEventListener,org.hibernate.envers.event.AuditEventListener" />
+		<property name="hibernate.ejb.event.post-update"
+			value="org.hibernate.ejb.event.EJB3PostUpdateEventListener,org.hibernate.envers.event.AuditEventListener" />
+		<property name="hibernate.ejb.event.post-delete"
+			value="org.hibernate.ejb.event.EJB3PostDeleteEventListener,org.hibernate.envers.event.AuditEventListener" />
+		<property name="hibernate.ejb.event.pre-collection-update"
+			value="org.hibernate.envers.event.AuditEventListener" />
+		<property name="hibernate.ejb.event.pre-collection-remove"
+			value="org.hibernate.envers.event.AuditEventListener" />
+		<property name="hibernate.ejb.event.post-collection-recreate"
+			value="org.hibernate.envers.event.AuditEventListener" />
       
       </properties>
    </persistence-unit>

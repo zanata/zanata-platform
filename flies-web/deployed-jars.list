@@ -26,3 +26,4 @@ jaxrs-api.jar
 resteasy-*.jar
 urlrewritefilter.jar
 slf4j-*.jar
+dbunit.jar

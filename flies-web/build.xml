@@ -85,8 +85,8 @@
         <pathelement path="${test.classes.dir}"/>
         <pathelement path="${test.bootstrap.dir}"/>
 		<fileset refid="test.lib" />
-		<fileset refid="lib"/>
-        <fileset dir="${lib.dir}/jbossas">
+		<fileset refid="lib" />
+		<fileset dir="${lib.dir}/jbossas">
             <!-- This has the Hibernate we want -->
             <include name="*.jar" />
         </fileset>
@@ -533,6 +533,7 @@
 				<!-- We also need EHCache there -->
 				<include name="ehcache*" />
 				<include name="slf4j-*" />
+				<include name="jboss-envers*" />
 				<!-- And Mysql -->
 				<include name="mysql*" />
 			</fileset>

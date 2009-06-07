@@ -102,7 +102,11 @@ rg.fedorahosted.flies:jbossas:jar:1.0-SNAPSHOT
 			<artifactId>hibernate-jmx</artifactId>
 			<version>3.3.1.GA</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.jboss.envers</groupId>
+			<artifactId>jboss-envers</artifactId>
+			<version>1.2.1.GA-hibernate-3.3</version>
+		</dependency>
 		<!-- 
 		<dependency>
 			<groupId>org.hibernate</groupId>
