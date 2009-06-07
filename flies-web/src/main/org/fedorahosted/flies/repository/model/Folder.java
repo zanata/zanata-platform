@@ -18,7 +18,7 @@ public class Folder extends ContainerItem{
 	private List<ContainerItem> children = new ArrayList<ContainerItem>();
 	
 	@OneToMany(mappedBy = "parent")
-	@IndexColumn(name="position")
+	@IndexColumn(name="pos")
 	@OnDelete(action=OnDeleteAction.CASCADE)
 	public List<ContainerItem> getChildren() {
 		return children;

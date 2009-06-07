@@ -21,7 +21,7 @@ public abstract class ParentResource extends Resource{
 	
 
 	@OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
-	@IndexColumn(name = "position", base=1)
+	@IndexColumn(name = "pos", base=1)
 	@OnDelete(action=OnDeleteAction.CASCADE)
 	public List<Resource> getChildren() {
 		return children;

@@ -3,6 +3,7 @@ package org.fedorahosted.flies.repository.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
@@ -16,8 +17,8 @@ public class ProjectContainer extends AbstractFliesEntity{
 
 	private List<ContainerItem> items = new ArrayList<ContainerItem>();
 	
-	@IndexColumn(name="position")
-	@OneToMany(mappedBy="container")
+	@IndexColumn(name="pos")
+	@OneToMany(mappedBy="container",cascade=CascadeType.ALL)
 	@OnDelete(action=OnDeleteAction.CASCADE)
 	public List<ContainerItem> getItems() {
 		return items;

@@ -79,7 +79,6 @@ public class Document extends ContainerItem{
 		this.targets = targets;
 	}
 
-	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "category_id")
 	public ResourceCategory getResourceCategory() {
@@ -92,7 +91,7 @@ public class Document extends ContainerItem{
 	
 	@OneToMany(mappedBy = "document")
 	@Where(clause="parent=NULL")
-	@IndexColumn(name="position")
+	@IndexColumn(name="pos")
 	@OnDelete(action=OnDeleteAction.CASCADE)
 	public List<Resource> getResourceTree() {
 		return resourceTree;
