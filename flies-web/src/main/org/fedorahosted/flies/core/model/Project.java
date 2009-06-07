@@ -69,15 +69,6 @@ public abstract class Project extends AbstractSlugEntity implements Serializable
 		this.homeContent = homeContent;
 	}
 
-	@OneToMany(mappedBy = "project")
-	public List<Document> getDocuments() {
-		return documents;
-	}
-
-	public void setDocuments(List<Document> documents) {
-		this.documents = documents;
-	}
-
 	@ManyToMany
 	@JoinTable(name = "Project_Maintainer", joinColumns = @JoinColumn(name = "projectId"), inverseJoinColumns = @JoinColumn(name = "personId"))
 	public List<Person> getMaintainers() {

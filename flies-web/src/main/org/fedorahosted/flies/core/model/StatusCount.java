@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.core.model;
 
-import org.fedorahosted.flies.repository.model.AbstractTextUnitTarget.Status;
+import org.fedorahosted.flies.repository.model.Status;
+
 
 public class StatusCount{
 		public final Status status;

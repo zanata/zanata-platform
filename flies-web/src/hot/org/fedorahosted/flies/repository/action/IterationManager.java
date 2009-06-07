@@ -9,7 +9,6 @@ import javax.persistence.EntityManager;
 
 import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.fedorahosted.flies.repository.model.Document;
-import org.fedorahosted.flies.repository.model.TextUnit;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -60,12 +59,13 @@ public class IterationManager {
 	private void clearCache(){
 		documentNamesMap = null;
 	}
+	
 	private void makeCache(){
 		if(documentNamesMap == null){
 			documentNamesMap = new HashMap<String, Document>();
-			for(Document doc : target.getDocuments()){
-				documentNamesMap.put(doc.getName(), doc);
-			}
+//			for(Document doc : target.getDocuments()){
+//				documentNamesMap.put(doc.getName(), doc);
+//			}
 		}
 	}
 	

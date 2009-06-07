@@ -12,7 +12,7 @@ import org.fedorahosted.flies.core.model.ProjectSeries;
 import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.fedorahosted.flies.core.model.ResourceCategory;
 import org.fedorahosted.flies.repository.model.Document;
-import org.fedorahosted.flies.repository.model.AbstractTextUnitTarget.Status;
+import org.fedorahosted.flies.repository.model.Status;
 import org.fedorahosted.flies.repository.util.TranslationStatistics;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
@@ -52,7 +52,7 @@ public class ProjectIterationHome extends MultiSlugHome<ProjectIteration>{
 	@Override
 	protected ProjectIteration createInstance() {
 		ProjectIteration iteration = new ProjectIteration();
-		iteration.setProject(project);
+		//iteration.setProject(project);
 		return iteration;
 	}
 
@@ -210,9 +210,9 @@ public class ProjectIterationHome extends MultiSlugHome<ProjectIteration>{
 	@Override
 	public String update() {
 		String retValue = super.update();
-		if(ManagementTypes.TYPE_LOCAL.equals(getManagementType()) && !getInstance().getLocalDirectory().isEmpty()){
-			//publicanImporter.process(getInstance().getLocalDirectory(), getInstance().getId());
-		}
+//		if(ManagementTypes.TYPE_LOCAL.equals(getManagementType()) && !getInstance().getLocalDirectory().isEmpty()){
+//			publicanImporter.process(getInstance().getLocalDirectory(), getInstance().getId());
+//		}
 		return retValue;
 	}
 	

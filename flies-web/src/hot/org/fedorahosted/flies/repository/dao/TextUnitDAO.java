@@ -3,7 +3,7 @@ package org.fedorahosted.flies.repository.dao;
 import javax.persistence.EntityManager;
 
 import org.fedorahosted.flies.repository.model.Document;
-import org.fedorahosted.flies.repository.model.TextUnit;
+//import org.fedorahosted.flies.repository.model.TextUnit;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
@@ -21,7 +21,7 @@ public class TextUnitDAO {
 	
 	@In(value="#{entityManager.delegate}")
 	Session session;
-	
+	/*
 	public TextUnit getTextUnitById(Long docId, String hashId){
 		return (TextUnit) session.createCriteria(TextUnit.class)
 			.add( Restrictions.naturalId()
@@ -30,5 +30,5 @@ public class TextUnitDAO {
 			        )
 			    .setCacheable(true)
 			    .uniqueResult();
-	}
+	}*/
 }

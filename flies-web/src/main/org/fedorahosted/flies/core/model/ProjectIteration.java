@@ -17,20 +17,15 @@ import org.hibernate.validator.NotNull;
 public class ProjectIteration extends AbstractSlugEntity implements Serializable {
 
 	private String name;
-
 	private String description;
 
 	private ProjectSeries projectSeries;
-
-	private Project project;
+	private IterationProject project;
 
 	private Boolean active = true;
 	
 	private ProjectIteration parent;
 	private List<ProjectIteration> children;
-	private List<Document> documents;
-
-	private String localDirectory;
 	
 	@Length(max = 20)
 	public String getName() {
@@ -45,14 +40,6 @@ public class ProjectIteration extends AbstractSlugEntity implements Serializable
 		return description;
 	}
 
-	public String getLocalDirectory() {
-		return localDirectory;
-	}
-	
-	public void setLocalDirectory(String localDirectory) {
-		this.localDirectory = localDirectory;
-	}
-	
 	public void setDescription(String description) {
 		this.description = description;
 	}
@@ -80,11 +67,11 @@ public class ProjectIteration extends AbstractSlugEntity implements Serializable
 	@ManyToOne
 	@NotNull
 	@NaturalId
-	public Project getProject() {
+	public IterationProject getProject() {
 		return project;
 	}
 
-	public void setProject(Project project) {
+	public void setProject(IterationProject project) {
 		this.project = project;
 	}
 
@@ -106,14 +93,5 @@ public class ProjectIteration extends AbstractSlugEntity implements Serializable
 	public void setParent(ProjectIteration parent) {
 		this.parent = parent;
 	}
-
-	@OneToMany(mappedBy = "projectIteration")
-	public List<Document> getDocuments() {
-		return documents;
-	}
-
-	public void setDocuments(List<Document> documents) {
-		this.documents = documents;
-
-	}
+	
 }

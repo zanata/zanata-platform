@@ -10,7 +10,7 @@ import org.fedorahosted.flies.core.model.FliesLocale;
 import org.fedorahosted.flies.core.model.Person;
 import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.fedorahosted.flies.repository.model.DocumentTarget;
-import org.fedorahosted.flies.repository.model.TextUnitTarget;
+//import org.fedorahosted.flies.repository.model.TextUnitTarget;
 import org.fedorahosted.flies.webtrans.NoSuchWorkspaceException;
 import org.fedorahosted.flies.webtrans.TranslationWorkspace;
 import org.fedorahosted.flies.webtrans.TranslationWorkspaceManager;
@@ -80,7 +80,7 @@ public class TranslateAction {
 	@Out(required=false)
 	private DocumentTarget selectedDocumentTarget;
 
-
+/*
 	@DataModel
 	private List<TextUnitTarget> textUnitTargets;
 	
@@ -88,11 +88,11 @@ public class TranslateAction {
 	@Out(required=false)
 	private TextUnitTarget selectedTextUnitTarget;
 	
-	
 	public void selectDocumentTarget(){
 		log.info("selected {0}", selectedDocumentTarget.getTemplate().getName());
 		loadTextUnitTargets();
 	}
+	*/
 	
 	@Factory("documentTargets")
 	public void loadDocumentTargets(){
@@ -101,7 +101,7 @@ public class TranslateAction {
 					.setParameter("locale", locale)
 					.setParameter("iteration", projectIteration).getResultList();
 	}
-
+/*
 	@Factory("textUnitTargets")
 	public void loadTextUnitTargets(){
 		log.info("retrieving textUnitTargets...");
@@ -114,11 +114,11 @@ public class TranslateAction {
 			textUnitTargets = selectedDocumentTarget.getEntries();
 		}
 	}
-
 	
 	public void selectTextUnitTarget(){
 		log.info("selected {0}", selectedTextUnitTarget.getTemplate().getContent());
 	}
+*/
 	
 	public boolean isConversationActive(){
 		return projectIteration != null & locale != null; 
@@ -169,10 +169,11 @@ public class TranslateAction {
 		getWorkspace().registerTranslator(translator);
 		return true;
 	}
-	
+	/*
 	public void persistChanges(){
 		if(selectedTextUnitTarget != null){
 			entityManager.flush();
 		}
 	}
+	*/
 }

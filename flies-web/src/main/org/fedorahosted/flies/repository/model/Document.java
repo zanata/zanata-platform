@@ -1,49 +1,39 @@
 package org.fedorahosted.flies.repository.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Transient;
-import javax.persistence.Version;
 
-import org.fedorahosted.flies.core.model.Project;
-import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.fedorahosted.flies.core.model.ResourceCategory;
+import org.hibernate.annotations.IndexColumn;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.Where;
+import org.hibernate.envers.NotAudited;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 
 @Entity
-public class Document implements Serializable {
-
-	private Long id;
-	private Integer version;
-
-	private String name;
+@DiscriminatorValue("doc")
+public class Document extends ContainerItem{
 
 	private String contentType;
-
-	private List<DocumentTarget> targets = new ArrayList<DocumentTarget>();
-
-	private List<TextUnit> entries = new ArrayList<TextUnit>();
-
 	private Integer revision = 1;
 
-	private Project project;
-	private ProjectIteration projectIteration;
-
-	private List<TextUnitTarget> targetEntries = new ArrayList<TextUnitTarget>();
-
+	private Set<Resource> resources;
+	private List<Resource> resourceTree;
+	
 	private ResourceCategory resourceCategory;
-
+	private List<DocumentTarget> targets = new ArrayList<DocumentTarget>();
+	
 	@NotNull
 	public Integer getRevision() {
 		return revision;
@@ -58,34 +48,6 @@ public class Document implements Serializable {
 		revision++;
 	}
 
-	@Id
-	@GeneratedValue
-	public Long getId() {
-		return id;
-	}
-
-	private void setId(Long id) {
-		this.id = id;
-	}
-
-	@Version
-	public Integer getVersion() {
-		return version;
-	}
-
-	private void setVersion(Integer version) {
-		this.version = version;
-	}
-
-	@NotEmpty
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	@Length(max = 20)
 	@NotEmpty
 	public String getContentType() {
@@ -96,55 +58,25 @@ public class Document implements Serializable {
 		this.contentType = contentType;
 	}
 
-	@NotNull
-	@ManyToOne
-	@JoinColumn(name = "projectId")
-	public Project getProject() {
-		return project;
+	@OneToMany(mappedBy = "document")
+	@OnDelete(action=OnDeleteAction.CASCADE)
+	public Set<Resource> getResources() {
+		return resources;
 	}
-
-	public void setProject(Project project) {
-		this.project = project;
+	
+	public void setResources(Set<Resource> resources) {
+		this.resources = resources;
 	}
-
-	@NotNull
-	@ManyToOne
-	@JoinColumn(name = "projectIterationId")
-	public ProjectIteration getProjectIteration() {
-		return projectIteration;
-	}
-
-	public void setProjectIteration(ProjectIteration projectIteration) {
-		this.projectIteration = projectIteration;
-	}
-
+	
 	@OneToMany(mappedBy = "template")
+	@NotAudited
+	@OnDelete(action=OnDeleteAction.CASCADE)
 	public List<DocumentTarget> getTargets() {
 		return targets;
 	}
 
 	public void setTargets(List<DocumentTarget> targets) {
 		this.targets = targets;
-	}
-
-	@OneToMany(mappedBy = "document")
-	@OrderBy("pos")
-	public List<TextUnit> getEntries() {
-		return entries;
-	}
-
-	public void setEntries(List<TextUnit> entries) {
-		this.entries = entries;
-	}
-
-	@OneToMany(mappedBy = "document")
-	public List<TextUnitTarget> getTargetEntries() {
-		return targetEntries;
-	}
-
-	@OneToMany(mappedBy = "document")
-	public void setTargetEntries(List<TextUnitTarget> targetEntries) {
-		this.targetEntries = targetEntries;
 	}
 
 	@NotNull
@@ -157,5 +89,16 @@ public class Document implements Serializable {
 	public void setResourceCategory(ResourceCategory resourceCategory) {
 		this.resourceCategory = resourceCategory;
 	}
-
+	
+	@OneToMany(mappedBy = "document")
+	@Where(clause="parent=NULL")
+	@IndexColumn(name="position")
+	@OnDelete(action=OnDeleteAction.CASCADE)
+	public List<Resource> getResourceTree() {
+		return resourceTree;
+	}
+	
+	public void setResourceTree(List<Resource> resourceTree) {
+		this.resourceTree = resourceTree;
+	}
 }

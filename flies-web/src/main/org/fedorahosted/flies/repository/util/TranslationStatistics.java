@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.repository.util;
 
-import org.fedorahosted.flies.repository.model.AbstractTextUnitTarget.Status;
+import org.fedorahosted.flies.repository.model.Status;
+
 
 public class TranslationStatistics {
 
