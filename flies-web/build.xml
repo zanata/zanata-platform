@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="flies" default="app-deploy" basedir=".">
+<project name="flies" default="build" basedir=".">
 
 	<!--
 		Give user a chance to override without editing this file or typing -D
@@ -13,33 +13,33 @@
 	<property name="project.name" value="flies" />
 	<property name="project.war" value="true" />
 
-	<property name="tmp.dir" value="build"/>
+	<property name="tmp.dir" location="build"/>
+
+	<property name="test.project.dir" location="../flies-web-test" />
+	<property name="test.src.dir" location="${test.project.dir}/src/test" />
+	<property name="test.lib.dir" location="${test.project.dir}/lib" />
+	<property name="test.tmp.dir" location="${test.project.dir}/build" />
+	<property name="test.output.dir" location="${test.project.dir}/test-output" />
+    <property name="test.classes.dir"    location="${test.tmp.dir}/testclasses"/>
+	<property name="test.bootstrap.dir" location="${test.project.dir}/bootstrap" />
 	
-	<property name="test.project.dir" value="../flies-web-test" />
-	<property name="test.src.dir" value="${test.project.dir}/src/test" />
-	<property name="test.lib.dir" value="${test.project.dir}/lib" />
-	<property name="test.tmp.dir" value="${test.project.dir}/build" />
-	<property name="test.output.dir" value="${test.tmp.dir}/test-output" />
-    <property name="test.classes.dir"    value="${test.tmp.dir}/testclasses"/>
-	<property name="test.bootstrap.dir" value="${test.project.dir}/bootstrap" />
-	
-	<property name="testng.jar" value="${test.lib.dir}/testng.jar" />
+	<property name="testng.jar" location="${test.lib.dir}/testng.jar" />
 		
-	<property name="dist.dir" value="dist" />
-	<property name="src.main.dir" value="src/main" />
-	<property name="src.hot.dir" value="src/hot" />
+	<property name="dist.dir" location="dist" />
+	<property name="src.main.dir" location="src/main" />
+	<property name="src.hot.dir" location="src/hot" />
 
-	<property name="lib.dir" value="lib" />
-	<property name="endorsed.dir" value="${lib.dir}/endorsed" />
+	<property name="lib.dir" location="lib" />
+	<property name="endorsed.dir" location="${lib.dir}/endorsed" />
 	
-	<property name="war.dir" value="${tmp.dir}/${project.name}.war" />
+	<property name="war.dir" location="${tmp.dir}/${project.name}.war" />
 
-	<property name="classes.main.dir" value="${war.dir}/WEB-INF/classes" />
-	<property name="classes.hot.dir" value="${war.dir}/WEB-INF/dev" />
+	<property name="classes.main.dir" location="${war.dir}/WEB-INF/classes" />
+	<property name="classes.hot.dir" location="${war.dir}/WEB-INF/dev" />
 	<property name="jboss.domain" value="default" />
-	<property name="deploy.dir" value="${jboss.home}/server/${jboss.domain}/deploy" />
-	<property name="war.deploy.dir" value="${deploy.dir}/${project.name}.war" />
-	<property name="packaged.archive" value="${dist.dir}/${project.name}.war" />
+	<property name="deploy.dir" location="${jboss.home}/server/${jboss.domain}/deploy" />
+	<property name="war.deploy.dir" location="${deploy.dir}/${project.name}.war" />
+	<property name="packaged.archive" location="${dist.dir}/${project.name}.war" />
 
 	<property name="javac.debug" value="true" />
 	<property name="javac.deprecation" value="false" />
@@ -47,12 +47,12 @@
 
 	<!--Properties for validating configuration files -->
 	<property name="validate.resources.dir" value="${tmp.dir}" />
-	<property name="schema.dir" value="${tmp.dir}/schemas" />
-	<property name="src.schema.dir" value="${schema.dir}/org/jboss/seam" />
+	<property name="schema.dir" location="${tmp.dir}/schemas" />
+	<property name="src.schema.dir" location="${schema.dir}/org/jboss/seam" />
 	<property name="schema.version" value="2.1" />
 
 	<property name="deps.version" value="3" />
-	<property name="deps.filename" value="lib/flies-deps-${deps.version}" />
+	<property name="deps.filename" location="lib/flies-deps-${deps.version}" />
 
 	<!-- Dependencies -->
 	<property name="xom.jar.url" value="http://www.cafeconleche.org/XOM/xom-1.2.1.jar" />
@@ -348,7 +348,7 @@
 	</target>
 
 	<target name="tests-clean" description="Clean out the staging directory">
-		<delete dir="${test.project.dir}/test-report" />
+		<delete dir="${test.output.dir}" failonerror="false"/>
 		<delete failonerror="no" includeemptydirs="true">
 			<fileset dir="${test.tmp.dir}">
 				<exclude name="**/*.class" if="eclipse.running" />
@@ -373,19 +373,19 @@
 			</classpath>
 			<src path="${test.src.dir}" />
 		</javac>
-		
-        <!-- ###### Copy resources (XML files, properties, etc.) to classes ###### -->
+	</target>
+	
+	<target name="tests-build" depends="-init,tests-compile"
+		description="Build the tests">
+        
+		<!-- ###### Copy resources (XML files, properties, etc.) to classes ###### -->
         <copy todir="${test.classes.dir}">
             <fileset dir="${test.src.dir}">
                 <patternset refid="meta.files"/>
                 <exclude name="*.tng.xml"/>
             </fileset>
         </copy>
-		
-	</target>
-	
-	<target name="tests-build" depends="-init,tests-compile"
-		description="Build the tests">
+
 		<copy todir="${test.classes.dir}">
 			<fileset dir="${basedir}/resources">
 				<exclude name="META-INF/persistence*.xml" />
@@ -395,12 +395,14 @@
 				<exclude name="components-*.properties" />
 			</fileset>
 		</copy>
+<!--
 		<copy tofile="${test.classes.dir}/META-INF/components.xml" file="${basedir}/resources/META-INF/components-test.xml"
 			overwrite="true" />
 		<copy tofile="${test.classes.dir}/META-INF/persistence.xml" file="${basedir}/resources/META-INF/persistence-test-war.xml"
 			overwrite="true" />
 		<copy tofile="${test.classes.dir}/import.sql" file="${basedir}/resources/import-test.sql"
 			overwrite="true" />
+-->
 		<copy todir="${test.classes.dir}" flatten="true">
 			<fileset dir="${test.src.dir}">
 				<include name="**/*.tng.xml" />
@@ -420,9 +422,10 @@
 		<copy todir="${test.classes.dir}/META-INF/testbinaries" failonerror="no">
 			<fileset dir="${test.project.dir}/testbinaries"/>
 		</copy>
-
+<!--
 		<copy tofile="${test.classes.dir}/${project.name}-ds.xml" file="${basedir}/resources/${project.name}-test-ds.xml"
 			overwrite="true" />
+-->
 		
 	</target>
 
@@ -507,6 +510,9 @@
 				<include name="*.jar" />
 			</fileset>
 			<fileset dir="${lib.dir}">
+				<includesfile name="deployed-jars.list" />
+			</fileset>
+			<fileset dir="${lib.dir}/jbossas">
 				<include name="*.jar" />
 			</fileset>
 		</f:update-eclipse-classpath>

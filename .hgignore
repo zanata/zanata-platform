@@ -19,7 +19,8 @@ syntax: regexp
 # flies-web-test
 ^flies-web-test/lib/
 ^flies-web-test/build/
-^flies-web-test/bootstrap/data/hypersonic/
+^flies-web-test/bootstrap/data/
+^flies-web-test/test-output/
 
 # flies-richfaces-ui
 ^flies-richfaces-ui/.classpath

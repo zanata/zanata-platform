@@ -45,4 +45,29 @@ public class DocumentTests extends DBUnitSeamTest {
             }
         }.run();
     }
+    
+    @Test
+    public void myTsets() throws Exception{
+        new FacesRequest() {
+
+            protected void invokeApplication() throws Exception {
+                EntityManager em = (EntityManager) getInstance("entityManager");
+                
+                ProjectContainer prCont = new ProjectContainer();
+                for(int i=0;i<10;i++){
+                	Document doc = new Document();
+                	doc.setContentType("po");
+                	doc.setName("mydoc "+i);
+                	doc.setRevision(1);
+                	prCont.getItems().add(doc);
+                }
+                em.persist(prCont);
+                
+                assertNotNull(prCont.getId());
+                assertNotNull(prCont.getItems().get(0).getId());
+                
+            	
+            }
+        }.run();
+    }
 }
