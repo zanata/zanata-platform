@@ -9,12 +9,13 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import org.fedorahosted.flies.repository.model.Document;
+import org.fedorahosted.flies.repository.model.ProjectContainer;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;
 
 @Entity
-public class ProjectIteration extends AbstractSlugEntity implements Serializable {
+public class ProjectIteration extends AbstractSlugEntity implements IProjectContainerProvider, Serializable {
 
 	private String name;
 	private String description;
@@ -23,7 +24,9 @@ public class ProjectIteration extends AbstractSlugEntity implements Serializable
 	private IterationProject project;
 
 	private Boolean active = true;
-	
+
+	private ProjectContainer container;
+
 	private ProjectIteration parent;
 	private List<ProjectIteration> children;
 	
@@ -51,6 +54,18 @@ public class ProjectIteration extends AbstractSlugEntity implements Serializable
 	@NotNull
 	public Boolean getActive() {
 		return active;
+	}
+
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "project_container_id")
+	@Override
+	public ProjectContainer getContainer() {
+		return container;
+	}
+	
+	public void setContainer(ProjectContainer container) {
+		this.container = container;
 	}
 	
 	@ManyToOne
