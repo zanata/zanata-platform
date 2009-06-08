@@ -27,3 +27,5 @@ resteasy-*.jar
 urlrewritefilter.jar
 slf4j-*.jar
 dbunit.jar
+lucene-core.jar
+hibernate-search.jar
