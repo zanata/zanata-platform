@@ -9,9 +9,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import org.fedorahosted.flies.core.model.AbstractFliesEntity;
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
+import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.NotNull;
 
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
@@ -22,9 +25,22 @@ import org.hibernate.validator.NotEmpty;
 @Audited
 public abstract class ContainerItem extends AbstractFliesEntity{
 	
+	private String resId;
 	private String name;
+	
 	private ContainerItem parent;
 	private ProjectContainer container;
+	
+	@NaturalId
+	@Length(max=255)
+	@NotEmpty
+	public String getResId() {
+		return resId;
+	}
+	
+	public void setResId(String resId) {
+		this.resId = resId;
+	}
 	
 	@NotEmpty
 	public String getName() {
@@ -47,6 +63,7 @@ public abstract class ContainerItem extends AbstractFliesEntity{
 	
 	@ManyToOne
 	@JoinColumn(name="container_id")
+	@NaturalId
 	@NotAudited
 	public ProjectContainer getContainer() {
 		return container;
