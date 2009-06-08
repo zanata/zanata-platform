@@ -16,6 +16,12 @@ import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 
+/**
+ * Represents an entity within a project tree
+ * 
+ * @author asgeirf
+ *
+ */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(
@@ -51,6 +57,12 @@ public abstract class ContainerItem extends AbstractFliesEntity{
 		this.name = name;
 	}
 	
+	/**
+	 * Return the parent of the item or null if this is a direct child
+	 * of the container.
+	 * 
+	 * @return parent item or null if this is a direct child of the container
+	 */
 	@ManyToOne
 	@JoinColumn(name="parent_id")
 	public ContainerItem getParent() {
