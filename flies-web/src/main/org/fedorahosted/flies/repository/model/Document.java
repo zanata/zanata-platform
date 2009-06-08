@@ -16,7 +16,6 @@ import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Where;
-import org.hibernate.envers.NotAudited;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
@@ -69,7 +68,6 @@ public class Document extends ContainerItem{
 	}
 	
 	@OneToMany(mappedBy = "template")
-	@NotAudited
 	@OnDelete(action=OnDeleteAction.CASCADE)
 	public List<DocumentTarget> getTargets() {
 		return targets;

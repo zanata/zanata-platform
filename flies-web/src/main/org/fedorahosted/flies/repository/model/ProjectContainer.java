@@ -12,7 +12,6 @@ import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Where;
-import org.hibernate.envers.Audited;
 
 @Entity
 public class ProjectContainer extends AbstractFliesEntity{
