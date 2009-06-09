@@ -7,11 +7,13 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 
 import org.fedorahosted.flies.core.dao.ProjectDAO;
+import org.fedorahosted.flies.core.model.IterationProject;
 import org.fedorahosted.flies.core.model.Project;
 import org.fedorahosted.flies.core.model.ProjectSeries;
 import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.fedorahosted.flies.core.model.ResourceCategory;
 import org.fedorahosted.flies.repository.model.Document;
+import org.fedorahosted.flies.repository.model.ProjectContainer;
 import org.fedorahosted.flies.repository.model.Status;
 import org.fedorahosted.flies.repository.util.TranslationStatistics;
 import org.hibernate.Session;
@@ -41,7 +43,7 @@ public class ProjectIterationHome extends MultiSlugHome<ProjectIteration>{
 	Log log;
 	
 	@In(value="#{projectHome.instance}", scope=ScopeType.CONVERSATION, required=false)
-	Project project;
+	IterationProject project;
 	
 	@In(create=true)
 	ProjectDAO projectDAO;
@@ -52,7 +54,7 @@ public class ProjectIterationHome extends MultiSlugHome<ProjectIteration>{
 	@Override
 	protected ProjectIteration createInstance() {
 		ProjectIteration iteration = new ProjectIteration();
-		//iteration.setProject(project);
+		iteration.setProject(project);
 		return iteration;
 	}
 
@@ -117,13 +119,17 @@ public class ProjectIterationHome extends MultiSlugHome<ProjectIteration>{
 	public String persist() {
 		if(!validateSlug(getInstance().getSlug(), "slug"))
 			return null;
+		if(getInstance().getContainer() == null){
+			ProjectContainer container = new ProjectContainer();
+			getEntityManager().persist(container);
+			getInstance().setContainer(container);
+		}
 		return super.persist();
 	}
 	
 	public List<ProjectSeries> getAvailableProjectSeries(){
 		return getEntityManager().createQuery("from ProjectSeries where project = :project")
 			.setParameter("project", getInstance().getProject()).getResultList();
-		
 	}
 
 	@SuppressWarnings("unchecked")
