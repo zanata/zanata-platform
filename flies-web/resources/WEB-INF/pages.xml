@@ -30,18 +30,20 @@
 			parameter-name="id"
 			parameter-value="#{redirect.parameters.id != null ? redirect.parameters.id : (tribeHome.id != null ? tribeHome.id : '')}" 
 			/>
-
+    
     <page view-id="*">
         <navigation>
             <rule if-outcome="home">
                 <redirect view-id="/home.xhtml"/>
             </rule>
-            <rule if-outcome="browse">
-                <redirect view-id="/results.xhtml"/>
-            </rule>
         </navigation>
     </page>
     
+    <page view-id="/results.xhtml">
+           <param name="q" value="#{search.searchQuery}"/>
+           <action execute="#{search.doSearch()}" />
+    </page>
+
     <page view-id="/project/project.xhtml" conversation="ProjectView">
 		<param name="slug" value="#{projectHome.id}"/>
 		<action execute="#{projectHome.validateSuppliedId}" />

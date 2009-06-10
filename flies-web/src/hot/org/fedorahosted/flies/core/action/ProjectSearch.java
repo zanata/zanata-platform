@@ -31,12 +31,11 @@ import org.hibernate.search.jpa.Search;
 import org.fedorahosted.flies.core.model.IterationProject;
 
 @Name("search")
-@Scope(ScopeType.CONVERSATION)
+@Scope(ScopeType.EVENT)
 public class ProjectSearch {
     @In
     private EntityManager entityManager;
 
-    //@RequestParameter
     Long id;
 
     int pageSize = 15;
@@ -44,18 +43,17 @@ public class ProjectSearch {
     boolean hasMore = false;
     int numberOfResults;
     
-    String searchQuery;
+    //@RequestParameter("q")
+    private String searchQuery;
 
     @DataModel
     List<IterationProject> searchResults;
 
-    //@DataModelSelection
     IterationProject selectedProject;
 
     @Out(required = false)
     IterationProject project;
 
-    @Out(scope=ScopeType.CONVERSATION, required=false)
     Map<IterationProject, Boolean> searchSelections;
 
 

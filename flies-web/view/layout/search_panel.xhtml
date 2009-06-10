@@ -5,8 +5,16 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:s="http://jboss.com/products/seam/taglib"
     xmlns:rich="http://richfaces.org/rich">
+  <!--
   <h:form>
   <h:inputText styleClass="with_icon search_icon"  value="#{search.searchQuery}"/>
-     <h:commandButton id="SearchButton" action="#{search.doSearch}"  value="Search"/>
+     <h:commandButton id="SearchButton" value="Search" action="/results.xhtml"/>
   </h:form>
+  -->
+  
+  <form method="GET" action="#{request.contextPath}/results.seam">
+     <h:inputText id="q" styleClass="with_icon search_icon"  value="#{search.searchQuery}"/>
+     <input type="submit" value="Search"/>
+  </form>
+  
 </div>
