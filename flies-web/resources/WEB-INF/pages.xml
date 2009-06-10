@@ -36,6 +36,9 @@
             <rule if-outcome="home">
                 <redirect view-id="/home.xhtml"/>
             </rule>
+            <rule if-outcome="browse">
+                <redirect view-id="/results.xhtml"/>
+            </rule>
         </navigation>
     </page>
     

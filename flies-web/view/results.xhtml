@@ -1,0 +1,37 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:flies="http://flies.fedorahosted.org/ui"
+    template="layout/template.xhtml">
+    
+    <ui:define name="breadcrumbs">
+     Search Result
+    </ui:define>
+    
+    <ui:define name="center_content">
+        <f:subview id="searchresults" rendered="#{searchResults.rowCount == 0}">
+                <h2>
+                    <h:outputText id="NoResultsMessage" value="No Results" />
+                </h2>
+        </f:subview>
+                
+        <h:form id="SearchResultsForm" rendered="#{searchResults.rowCount > 0}">
+                <h:dataTable id="SearchResultsTable" value="#{searchResults}" var="project"> 
+                    <h:column id="column1">
+                        <f:facet id="NameFacet" name="header">
+                            <h:outputText id="NameText" value="Name" />
+                        </f:facet>
+                        
+                        <s:link id="TitleLink" view="/project.xhtml" value="#{project.name}">
+                            
+                        </s:link>
+                    </h:column>                        
+                </h:dataTable> 
+        </h:form>
+    </ui:define>
+</ui:composition>

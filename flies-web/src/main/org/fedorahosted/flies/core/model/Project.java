@@ -25,6 +25,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAccessType;
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
 
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
@@ -43,6 +46,7 @@ public abstract class Project extends AbstractSlugEntity implements Serializable
 	private List<Person> maintainers = new ArrayList<Person>();
 
 	@Length(max = 80)
+        @Field(index=Index.TOKENIZED)
         public String getName() {
 		return name;
 	}
@@ -52,6 +56,7 @@ public abstract class Project extends AbstractSlugEntity implements Serializable
 	}
 
 	@Length(max = 100)
+        @Field(index=Index.TOKENIZED)
 	public String getDescription() {
 		return description;
 	}

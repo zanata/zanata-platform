@@ -32,12 +32,10 @@
          <property name="hibernate.format_sql" value="true"/>
 
          <!-- Search engine -->
-         <!-- 
          <property name="hibernate.search.default.directory_provider"
                    value="org.hibernate.search.store.FSDirectoryProvider"/>
-         <property name="hibernate.search.default.indexBase" value="fliesIndex"/>
+         <property name="hibernate.search.default.indexBase" value="fliessearchindex"/>
          <property name="hibernate.search.worker.batch_size" value="50"/>
- 		 -->
  		 
          <!-- Run the Hibernate bytecode instrumentation at deployment time, for lazy loading of @ToOne and byte[] properties -->
          <!-- TODO: That doesn't work for me, using the enhancer in build.xml manually -->
