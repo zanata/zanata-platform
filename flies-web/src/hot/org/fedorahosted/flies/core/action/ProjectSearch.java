@@ -70,7 +70,6 @@ public class ProjectSearch {
         return numberOfResults;
     }
     
-    @Begin(join = true)
     public String doSearch() {
         currentPage = 0;
         updateResults();
@@ -91,7 +90,6 @@ public class ProjectSearch {
         }
     }
     
-    @Begin(join = true)
     public void selectFromRequest() {
         if (id != null)  {
             project = entityManager.find(IterationProject.class, id);
@@ -166,11 +164,5 @@ public class ProjectSearch {
     public void setSelectedId(Long id) {
         this.id = id;
     }
-    
-    @End
-    public void reset() { }
 
-    @Destroy
-    @Remove
-    public void destroy() { }
 }

@@ -39,9 +39,8 @@
         </navigation>
     </page>
     
-    <page view-id="/results.xhtml">
+    <page view-id="/results.xhtml" action="#{search.doSearch()}">
            <param name="q" value="#{search.searchQuery}"/>
-           <action execute="#{search.doSearch()}" />
     </page>
 
     <page view-id="/project/project.xhtml" conversation="ProjectView">
