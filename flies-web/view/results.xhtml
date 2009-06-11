@@ -23,13 +23,8 @@
         <h:form id="SearchResultsForm" rendered="#{searchResults.rowCount > 0}">
                 <h:dataTable id="SearchResultsTable" value="#{searchResults}" var="project"> 
                     <h:column id="column1">
-                        <f:facet id="NameFacet" name="header">
-                            <h:outputText id="NameText" value="Name" />
-                        </f:facet>
-                        
-                        <s:link id="TitleLink" view="/project.xhtml" value="#{project.name}">
-                            
-                        </s:link>
+                        <h1>Search Results</h1>
+          				<ui:include src="./project/project_view_inline.xhtml" />               
                     </h:column>                        
                 </h:dataTable> 
         </h:form>
