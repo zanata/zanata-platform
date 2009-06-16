@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
 
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
@@ -35,6 +36,7 @@ import org.hibernate.search.annotations.Index;
     name="projecttype",
     discriminatorType=DiscriminatorType.STRING
 )
+@Indexed
 public abstract class Project extends AbstractSlugEntity implements Serializable {
 
 	private String name;

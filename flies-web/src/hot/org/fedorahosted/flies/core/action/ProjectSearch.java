@@ -28,7 +28,7 @@ import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 
-import org.fedorahosted.flies.core.model.IterationProject;
+import org.fedorahosted.flies.core.model.Project;
 
 @Name("search")
 @Scope(ScopeType.EVENT)
@@ -47,14 +47,14 @@ public class ProjectSearch {
     private String searchQuery;
 
     @DataModel
-    List<IterationProject> searchResults;
+    List<Project> searchResults;
 
-    IterationProject selectedProject;
+    Project selectedProject;
 
     @Out(required = false)
-    IterationProject project;
+    Project project;
 
-    Map<IterationProject, Boolean> searchSelections;
+    Map<Project, Boolean> searchSelections;
 
 
     public String getSearchQuery() {
@@ -92,7 +92,7 @@ public class ProjectSearch {
     
     public void selectFromRequest() {
         if (id != null)  {
-            project = entityManager.find(IterationProject.class, id);
+            project = entityManager.find(Project.class, id);
         } else if (selectedProject != null) {
             project = selectedProject;
         }
@@ -115,7 +115,7 @@ public class ProjectSearch {
             return; 
         }
       
-        List<IterationProject> items = query
+        List<Project> items = query
             .setMaxResults(pageSize + 1)
             .setFirstResult(pageSize * currentPage)
             .getResultList();
@@ -129,15 +129,15 @@ public class ProjectSearch {
             hasMore = false;
         }
 
-        searchSelections = new HashMap<IterationProject, Boolean>();
+        searchSelections = new HashMap<Project, Boolean>();
     }
 
     private FullTextQuery searchQuery(String searchQuery) throws ParseException
     {
         FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
     
-        List<IterationProject> projects = entityManager.createQuery("select project from IterationProject as project").getResultList();
-	for (IterationProject project : projects) {
+        List<Project> projects = entityManager.createQuery("select project from Project as project").getResultList();
+	for (Project project : projects) {
     		fullTextEntityManager.index(project);
 	} 
         
@@ -146,7 +146,7 @@ public class ProjectSearch {
         parser.setAllowLeadingWildcard(true);
         org.apache.lucene.search.Query luceneQuery;
         luceneQuery = parser.parse(searchQuery);
-        return ( (FullTextEntityManager) entityManager ).createFullTextQuery(luceneQuery, IterationProject.class);
+        return ( (FullTextEntityManager) entityManager ).createFullTextQuery(luceneQuery, Project.class);
     }
     
     public int getPageSize() {
