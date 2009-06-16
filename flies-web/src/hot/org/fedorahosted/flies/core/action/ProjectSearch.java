@@ -30,12 +30,7 @@ import org.hibernate.search.jpa.Search;
 
 import org.fedorahosted.flies.core.model.Project;
 
-@Name("search")
-@Scope(ScopeType.EVENT)
 public class ProjectSearch {
-    @In
-    private EntityManager entityManager;
-
     Long id;
 
     int pageSize = 15;
@@ -43,19 +38,21 @@ public class ProjectSearch {
     boolean hasMore = false;
     int numberOfResults;
     
-    //@RequestParameter("q")
     private String searchQuery;
 
-    @DataModel
-    List<Project> searchResults;
+    private List<Project> searchResults;
 
+    private EntityManager entityManager;
+    
     Project selectedProject;
 
-    @Out(required = false)
     Project project;
 
     Map<Project, Boolean> searchSelections;
-
+    
+    ProjectSearch(EntityManager em) {
+    	this.entityManager = em;
+    }
 
     public String getSearchQuery() {
         return searchQuery;
@@ -63,6 +60,14 @@ public class ProjectSearch {
     
     public void setSearchQuery(String searchQuery) {
         this.searchQuery = searchQuery;
+    }
+    
+    public List<Project> getSearchResults() {
+        return searchResults;
+    }
+    
+    public void setSearchResults(List<Project> projects) {
+        this.searchResults = projects;
     }
     
     

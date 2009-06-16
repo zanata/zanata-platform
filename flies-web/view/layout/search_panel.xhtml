@@ -12,8 +12,8 @@
   </h:form>
   -->
   
-  <form method="GET" action="#{request.contextPath}/results.seam">
-     <h:inputText id="q" styleClass="with_icon search_icon"  value="#{search.searchQuery}"/>
+  <form method="GET" action="#{request.contextPath}/search.seam">
+     <h:inputText id="q" styleClass="with_icon search_icon"  value="#{searchaction.searchQuery}"/>
      <input type="submit" value="Search"/>
   </form>
   
