@@ -11,6 +11,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.Type;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
@@ -25,6 +28,7 @@ import org.hibernate.validator.NotNull;
  *
  */
 @Entity
+@Indexed
 public class Community extends AbstractSlugEntity{
 	
 	private String name;
@@ -37,6 +41,7 @@ public class Community extends AbstractSlugEntity{
 	private Set<Person> members;
 	
 	@NotEmpty
+	@Field(index=Index.TOKENIZED)
 	public String getName() {
 		return name;
 	}
@@ -46,6 +51,7 @@ public class Community extends AbstractSlugEntity{
 	}
 
 	@Length(max = 100)
+	@Field(index=Index.TOKENIZED)
 	public String getDescription() {
 		return description;
 	}

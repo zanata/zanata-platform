@@ -6,7 +6,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.In;
-import javax.persistence.EntityManager;
 
 import org.fedorahosted.flies.core.model.Project;
 import org.fedorahosted.flies.core.model.Community;
@@ -15,8 +14,17 @@ import org.fedorahosted.flies.core.model.Tribe;
 @Name("searchaction")
 @Scope(ScopeType.EVENT)
 public class SearchAction {
-	@In
-	private EntityManager entityManager;
+	//@In
+	//private EntityManager entityManager;
+	
+	@In 
+	ProjectSearch projectSearch;
+	
+	@In 
+	CommunitySearch communitySearch;
+	
+	//@In 
+	//private TribeSearch tribeSearch;
 	
     private String searchQuery;
 	
@@ -38,16 +46,13 @@ public class SearchAction {
     }
 	
     public String search() {
-        ProjectSearch projectSearch = new ProjectSearch(entityManager);
-        //CommunitySearch communitySearch = new CommunitySearch()
-        //TribeSearch tribeSearch = new TribeSearch();
-        
         projectSearch.setSearchQuery(searchQuery);
         projectSearch.doSearch();
         projects = projectSearch.getSearchResults();
         
-        //communitySearch.setSearchQuery(searchQuery);
-        //communitySearch.doSearch();
+        communitySearch.setSearchQuery(searchQuery);
+        communitySearch.doSearch();
+        communities = communitySearch.getSearchResults();
         
         //tribeSearch.setSearchQuery(searchQuery);
         //tribeSearch.doSearch();

@@ -48,8 +48,8 @@ public abstract class Project extends AbstractSlugEntity implements Serializable
 	private List<Person> maintainers = new ArrayList<Person>();
 
 	@Length(max = 80)
-        @Field(index=Index.TOKENIZED)
-        public String getName() {
+    @Field(index=Index.TOKENIZED)
+    public String getName() {
 		return name;
 	}
 
@@ -58,7 +58,7 @@ public abstract class Project extends AbstractSlugEntity implements Serializable
 	}
 
 	@Length(max = 100)
-        @Field(index=Index.TOKENIZED)
+    @Field(index=Index.TOKENIZED)
 	public String getDescription() {
 		return description;
 	}

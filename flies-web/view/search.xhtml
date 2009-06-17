@@ -16,23 +16,36 @@
     <ui:define name="center_content">
         	<rich:tabPanel id="searchPanel" switchType="client">
 			<rich:tab label="Projects" styleClass="bold" >
-        		<f:subview id="searchresults" rendered="#{projects.rowCount == 0}">
+        		<f:subview id="projectResults" rendered="#{projects.rowCount == 0}">
                 	<h2>
                     		<h:outputText id="NoResultsMessage" value="No Results" />
                 	</h2>
         		</f:subview>
                 
-        		<h:form id="SearchResultsForm" rendered="#{projects.rowCount > 0}">
-                		<h:dataTable id="SearchResultsTable" value="#{projects}" var="project"> 
-                    		<h:column id="column1">
-                        		
-          				<ui:include src="./project/project_view_inline.xhtml" />               
+        		<h:form id="ProjectResultsForm" rendered="#{projects.rowCount > 0}">
+                		<h:dataTable id="projectResultsTable" value="#{projects}" var="project"> 
+                    		<h:column id="column">
+                        		<ui:include src="./project/project_view_inline.xhtml" />               
                     		</h:column>                        
                 		</h:dataTable> 
         		</h:form>
 			</rich:tab>
-                       <rich:tab label="Community" styleClass="bold" />
-
+            <rich:tab label="Community" styleClass="bold" >
+            	<f:subview id="communityResults" rendered="#{communities.rowCount == 0}">
+                	<h2>
+                    		<h:outputText id="NoResultsMessage" value="No Results" />
+                	</h2>
+        		</f:subview>
+                
+        		<h:form id="CommunityResultsForm" rendered="#{communities.rowCount > 0}">
+                		<h:dataTable id="CommunityResultsTable" value="#{communities}" var="community"> 
+                    		<h:column id="column1">
+                        		<ui:include src="./community/community_view_inline.xhtml" />               
+                    		</h:column>                        
+                		</h:dataTable> 
+        		</h:form>
+        	</rich:tab>
+            <rich:tab label="Tribe" styleClass="bold" />
 
 	</rich:tabPanel>
 
