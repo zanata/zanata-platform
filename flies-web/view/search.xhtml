@@ -16,34 +16,28 @@
     <ui:define name="center_content">
         	<rich:tabPanel id="searchPanel" switchType="client">
 			<rich:tab label="Projects" styleClass="bold" >
-        		<f:subview id="projectResults" rendered="#{projects.rowCount == 0}">
-                	<h2>
-                    		<h:outputText id="NoResultsMessage" value="No Results" />
-                	</h2>
-        		</f:subview>
-                
-        		<h:form id="ProjectResultsForm" rendered="#{projects.rowCount > 0}">
-                		<h:dataTable id="projectResultsTable" value="#{projects}" var="project"> 
-                    		<h:column id="column">
-                        		<ui:include src="./project/project_view_inline.xhtml" />               
-                    		</h:column>                        
-                		</h:dataTable> 
-        		</h:form>
+            	<h:outputText value="No Search Results"  rendered="#{empty projects}"/>
+                <s:fragment rendered="#{not empty projects}">
+      		      <rich:dataGrid columns="3" 
+                     value="#{projects}" 
+                     var="project" 
+                     columnClasses="grid_col_one_third_width"
+                     rendered="#{not empty projects}">
+        			<ui:include src="./project/project_view_inline.xhtml" />
+      			  </rich:dataGrid>
+    			</s:fragment>
 			</rich:tab>
             <rich:tab label="Community" styleClass="bold" >
-            	<f:subview id="communityResults" rendered="#{communities.rowCount == 0}">
-                	<h2>
-                    		<h:outputText id="NoResultsMessage" value="No Results" />
-                	</h2>
-        		</f:subview>
-                
-        		<h:form id="CommunityResultsForm" rendered="#{communities.rowCount > 0}">
-                		<h:dataTable id="CommunityResultsTable" value="#{communities}" var="community"> 
-                    		<h:column id="column1">
-                        		<ui:include src="./community/community_view_inline.xhtml" />               
-                    		</h:column>                        
-                		</h:dataTable> 
-        		</h:form>
+				<h:outputText value="No Search Results"  rendered="#{empty communities}"/>
+                <s:fragment rendered="#{not empty communities}">
+      		      <rich:dataGrid columns="3" 
+                     value="#{communities}" 
+                     var="community" 
+                     columnClasses="grid_col_one_third_width"
+                     rendered="#{not empty communities}">
+        			<ui:include src="./community/community_view_inline.xhtml" />
+      			  </rich:dataGrid>
+    			</s:fragment>
         	</rich:tab>
             <rich:tab label="Tribe" styleClass="bold" />
 

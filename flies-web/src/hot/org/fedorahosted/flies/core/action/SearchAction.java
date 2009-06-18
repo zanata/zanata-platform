@@ -6,6 +6,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Out;
 
 import org.fedorahosted.flies.core.model.Project;
 import org.fedorahosted.flies.core.model.Community;
@@ -28,13 +29,13 @@ public class SearchAction {
 	
     private String searchQuery;
 	
-    @DataModel
+    @Out(required= false)
     private List<Project> projects;
     
-    @DataModel
+    @Out(required= false)
     private List<Community> communities;
     
-    @DataModel
+    @Out(required= false)
     private List<Tribe> tribes;
     
     public String getSearchQuery() {
