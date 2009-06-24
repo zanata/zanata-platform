@@ -16,30 +16,17 @@ import org.hibernate.annotations.Where;
 @Entity
 public class ProjectContainer extends AbstractFliesEntity{
 
-	private List<ContainerItem> items = new ArrayList<ContainerItem>();
-	private List<ContainerItem> itemTree = new ArrayList<ContainerItem>();
+	private List<Document> documents = new ArrayList<Document>();
 	
 	@IndexColumn(name="pos")
 	@OneToMany(mappedBy="container",cascade=CascadeType.ALL)
 	@OnDelete(action=OnDeleteAction.CASCADE)
-	public List<ContainerItem> getItems() {
-		return items;
-	}
-	
-	public void setItems(List<ContainerItem> items) {
-		this.items = items;
+	public List<Document> getDocuments() {
+		return documents;
 	}
 
-	@OneToMany(mappedBy="container")
-	@Where(clause="parent=null")
-	@IndexColumn(name="pos")
-	@OnDelete(action=OnDeleteAction.CASCADE)
-	public List<ContainerItem> getItemTree() {
-		return itemTree;
-	}
-	
-	public void setItemTree(List<ContainerItem> itemTree) {
-		this.itemTree = itemTree;
+	public void setDocuments(List<Document> documents) {
+		this.documents = documents;
 	}
 
 }

@@ -11,8 +11,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
+import org.fedorahosted.flies.core.model.AbstractFliesEntity;
 import org.fedorahosted.flies.core.model.ResourceCategory;
 import org.hibernate.annotations.IndexColumn;
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Where;
@@ -21,9 +23,15 @@ import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 
 @Entity
-@DiscriminatorValue("doc")
-public class Document extends ContainerItem{
+public class Document extends AbstractFliesEntity{
 
+	private String resId;
+	
+	private String name;
+	private String path;
+	
+	private ProjectContainer container;
+	
 	private String contentType;
 	private Integer revision = 1;
 
@@ -32,6 +40,46 @@ public class Document extends ContainerItem{
 	
 	private ResourceCategory resourceCategory;
 	private List<DocumentTarget> targets = new ArrayList<DocumentTarget>();
+
+	@NaturalId
+	@Length(max=255)
+	@NotEmpty
+	public String getResId() {
+		return resId;
+	}
+	
+	public void setResId(String resId) {
+		this.resId = resId;
+	}
+	
+	@NotEmpty
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	@NotNull
+	public String getPath() {
+		return path;
+	}
+	
+	public void setPath(String path) {
+		this.path = path;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name="container_id")
+	@NaturalId
+	public ProjectContainer getContainer() {
+		return container;
+	}
+	
+	public void setContainer(ProjectContainer container) {
+		this.container = container;
+	}
 	
 	@NotNull
 	public Integer getRevision() {
