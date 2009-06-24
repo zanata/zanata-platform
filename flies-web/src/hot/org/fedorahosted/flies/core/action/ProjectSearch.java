@@ -26,14 +26,18 @@ import org.fedorahosted.flies.core.model.Project;
 @AutoCreate
 public class ProjectSearch {
     
-    int pageSize = 15;
-    int currentPage = 0;
+    int pageSize = 1;
+    
     boolean hasMore = false;
     
     private String searchQuery;
 
     private List<Project> searchResults;
 	
+    private int currentPage = 0;
+    
+    private int resultSize;
+    
     @In
 	EntityManager entityManager;
     
@@ -53,30 +57,43 @@ public class ProjectSearch {
         this.searchResults = projects;
     }
     
+    public int getResultSize () {
+    	return resultSize;
+    }
+    
+    public void setResultSize(int value) {
+    	this.resultSize = value;
+    }
+    
+    public int getCurrentPage() {
+    	return currentPage;
+    }
+    
+    public void setCurrentPage(int page) {
+    	this.currentPage = page;
+    }
+    
     public void doSearch() {
-        currentPage = 0;
         updateResults();
     }
     
     public void nextPage() {
-        if (!isLastPage()) {
+        if (!lastPage()) {
             currentPage++;
-            updateResults();
         }
     }
 
     public void prevPage() {
-        if (!isFirstPage()) {
+        if (!firstPage()) {
             currentPage--;
-            updateResults();
         }
     }
 
-    public boolean isLastPage() {
+    public boolean lastPage() {
         return ( searchResults != null ) && !hasMore;
     }
 
-    public boolean isFirstPage() {
+    public boolean firstPage() {
         return ( searchResults != null ) && ( currentPage == 0 );
     }
 
@@ -87,7 +104,7 @@ public class ProjectSearch {
         } catch (ParseException pe) { 
             return; 
         }
-      
+        resultSize = query.getResultSize();
         List<Project> items = query
             .setMaxResults(pageSize + 1)
             .setFirstResult(pageSize * currentPage)

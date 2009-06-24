@@ -26,13 +26,17 @@ import org.fedorahosted.flies.core.model.Community;
 @AutoCreate
 public class CommunitySearch {
     
-    int pageSize = 15;
-    int currentPage = 0;
+    int pageSize = 1;
+    
     boolean hasMore = false;
     
     private String searchQuery;
 
     private List<Community> searchResults;
+	
+    private int currentPage = 0;
+    
+    private int resultSize;
 	
     @In
 	EntityManager entityManager;
@@ -53,30 +57,43 @@ public class CommunitySearch {
         this.searchResults = communities;
     }
     
+    public int getResultSize () {
+    	return resultSize;
+    }
+    
+    public void setResultSize(int value) {
+    	this.resultSize = value;
+    }
+    
+    public int getCurrentPage() {
+    	return currentPage;
+    }
+    
+    public void setCurrentPage(int page) {
+    	this.currentPage = page;
+    }
+    
     public void doSearch() {
-        currentPage = 0;
         updateResults();
     }
     
     public void nextPage() {
-        if (!isLastPage()) {
+        if (!lastPage()) {
             currentPage++;
-            updateResults();
         }
     }
 
     public void prevPage() {
-        if (!isFirstPage()) {
+        if (!firstPage()) {
             currentPage--;
-            updateResults();
         }
     }
 
-    public boolean isLastPage() {
+    public boolean lastPage() {
         return ( searchResults != null ) && !hasMore;
     }
 
-    public boolean isFirstPage() {
+    public boolean firstPage() {
         return ( searchResults != null ) && ( currentPage == 0 );
     }
 
@@ -87,7 +104,7 @@ public class CommunitySearch {
         } catch (ParseException pe) { 
             return; 
         }
-      
+        resultSize = query.getResultSize();
         List<Community> items = query
             .setMaxResults(pageSize + 1)
             .setFirstResult(pageSize * currentPage)

@@ -1,0 +1,48 @@
+<a4j:form id="communityTableForm"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	template="/layout/template.xhtml"	>
+			
+	<div class="association" id="community">
+				
+  		<h:outputText value="No Results" 
+                   rendered="#{empty communitySearch.searchResults}"/>    
+ 
+  		<rich:dataTable id="communityList" var="community" value="#{communitySearch.searchResults}" 
+         		  rendered="#{not empty communitySearch.searchResults}">
+	        <h:column>
+                  <ui:include src="./community/community_view_inline.xhtml" /> 
+			</h:column>         		  
+  		</rich:dataTable>
+
+ 	</div>
+
+ 	<div class="tableControl">
+     
+		<s:link view="/search.xhtml" rendered="#{!communitySearch.firstPage()}" 
+			               value="First Page"
+			                  id="communityListFirstPage">
+			  <f:param name="page" value="0"/>
+		</s:link>
+			        
+		<s:link view="/search.xhtml" action="#{communitySearch.prevPage}"
+			            rendered="#{!communitySearch.firstPage()}" 
+			               value="Previous Page"
+			                  id="communityListPreviousPage">
+			  <f:param name="page" value="#{communitySearch.currentPage}"/>
+		</s:link>
+			        
+		<s:link view="/search.xhtml" action="#{communitySearch.nextPage}"
+			            rendered="#{!communitySearch.lastPage()}" 
+			               value="Next Page"
+			                  id="communityListNextPage">
+			  <f:param name="page" value="#{communitySearch.currentPage}"/>
+		</s:link>
+        
+	</div>
+</a4j:form>
