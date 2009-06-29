@@ -12,7 +12,6 @@ import org.apache.lucene.search.Query;
 
 import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.jpa.FullTextEntityManager;
-import org.hibernate.search.jpa.Search;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -26,7 +25,7 @@ import org.fedorahosted.flies.core.model.Project;
 @AutoCreate
 public class ProjectSearch {
     
-    int pageSize = 1;
+    int pageSize = 5;
     
     boolean hasMore = false;
     
@@ -122,13 +121,6 @@ public class ProjectSearch {
 
     private FullTextQuery searchQuery(String searchQuery) throws ParseException
     {
-        FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
-    
-        List<Project> projects = entityManager.createQuery("select project from Project as project").getResultList();
-	    for (Project project : projects) {
-    		fullTextEntityManager.index(project);
-	    } 
-        
         String[] projectFields = {"name", "description"};
         QueryParser parser = new MultiFieldQueryParser(projectFields, new StandardAnalyzer());
         parser.setAllowLeadingWildcard(true);

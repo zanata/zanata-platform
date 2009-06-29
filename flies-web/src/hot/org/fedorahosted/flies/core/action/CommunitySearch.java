@@ -12,7 +12,6 @@ import org.apache.lucene.search.Query;
 
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
-import org.hibernate.search.jpa.Search;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -26,7 +25,7 @@ import org.fedorahosted.flies.core.model.Community;
 @AutoCreate
 public class CommunitySearch {
     
-    int pageSize = 1;
+    int pageSize = 5;
     
     boolean hasMore = false;
     
@@ -122,13 +121,6 @@ public class CommunitySearch {
 
     private FullTextQuery searchQuery(String searchQuery) throws ParseException
     {
-        FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
-    
-        List<Community> communities = entityManager.createQuery("select community from Community as community").getResultList();
-	    for (Community community : communities) {
-    		fullTextEntityManager.index(community);
-	    } 
-        
         String[] communityFields = {"name", "description"};
         QueryParser parser = new MultiFieldQueryParser(communityFields, new StandardAnalyzer());
         parser.setAllowLeadingWildcard(true);
