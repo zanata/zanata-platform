@@ -21,7 +21,7 @@ icu4j.jar
 commons-lang.jar
 jgettext.jar
 xom.jar
-google-collect.jar
+google-collections.jar
 jaxrs-api.jar
 resteasy-*.jar
 urlrewritefilter.jar
@@ -29,3 +29,4 @@ slf4j-*.jar
 dbunit.jar
 lucene-core.jar
 hibernate-search.jar
+openl10n-*.jar

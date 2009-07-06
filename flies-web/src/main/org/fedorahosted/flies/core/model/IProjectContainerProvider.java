@@ -1,8 +1,8 @@
 package org.fedorahosted.flies.core.model;
 
-import org.fedorahosted.flies.repository.model.ProjectContainer;
+import net.openl10n.packaging.jpa.project.HProject;
 
 public interface IProjectContainerProvider {
 
-	public ProjectContainer getContainer();
+	public HProject getContainer();
 }

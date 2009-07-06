@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.repository.model;
+package net.openl10n.packaging.jpa.document;
 
 import java.io.Serializable;
 
@@ -19,13 +19,13 @@ import org.hibernate.validator.NotNull;
     name="type",
     discriminatorType=DiscriminatorType.STRING
 )
-public abstract class InlineMarker implements Serializable{
+public abstract class HInlineMarker implements Serializable{
 
 	private static final long serialVersionUID = -1805312081844909930L;
 
 	private Long id;
 
-	private TextFlow textFlow;
+	private HTextFlow textFlow;
 	
 	@Id
 	public Long getId() {
@@ -39,11 +39,11 @@ public abstract class InlineMarker implements Serializable{
 	@ManyToOne
 	@JoinColumn(name = "text_flow_id")
 	@NotNull
-	public TextFlow getTextFlow() {
+	public HTextFlow getTextFlow() {
 		return textFlow;
 	}
 	
-	public void setTextFlow(TextFlow textFlow) {
+	public void setTextFlow(HTextFlow textFlow) {
 		this.textFlow = textFlow;
 	}
 	

@@ -24,6 +24,8 @@ public class ProjectIterationDAO {
 	
 	
 	public TranslationStatistics getStatisticsForIteration(Long iterationId, String localeId){
+		if(true)
+			return new TranslationStatistics(1l, 1l, 1l, 1l);
 		List<StatusCount> stats = session.createQuery(
 				"select new org.fedorahosted.flies.core.model.StatusCount(pt.status, count(pt)) " +
 				"from TextUnitTarget pt " +

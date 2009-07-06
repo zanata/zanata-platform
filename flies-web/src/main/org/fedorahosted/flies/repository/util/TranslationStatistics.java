@@ -1,7 +1,6 @@
 package org.fedorahosted.flies.repository.util;
 
-import org.fedorahosted.flies.repository.model.Status;
-
+import net.openl10n.packaging.document.TextFlowTarget.ContentState;
 
 public class TranslationStatistics {
 
@@ -14,15 +13,15 @@ public class TranslationStatistics {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void set(Status status, long count){
+	public void set(ContentState status, long count){
 		switch(status){
-		case Approved:
+		case Final:
 			approved = count;
 			break;
 		case ForReview:
 			forReview = count;
 			break;
-		case FuzzyMatch:
+		case Leveraged:
 			fuzzyMatch = count;
 			break;
 		case New:
@@ -39,13 +38,13 @@ public class TranslationStatistics {
 		this.statNew = statNew;
 	}
 
-	public long get(Status status) {
+	public long get(ContentState status) {
 		switch (status) {
-		case Approved:
+		case Final:
 			return getApproved();
 		case ForReview:
 			return getForReview();
-		case FuzzyMatch:
+		case Leveraged:
 			return getFuzzyMatch();
 		case New:
 		default:

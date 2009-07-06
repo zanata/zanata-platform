@@ -127,22 +127,7 @@
 		<get src="${xom.jar.url}" dest="${lib.dir}/xom.jar"
 			verbose="true" usetimestamp="true" />
 		
-		<!-- Google collections -->
-		
-		<property name="google-collect.version" value="1.0-rc1"/>
-		<property name="google-collect.id" value="google-collect-${google-collect.version}"/>
-		<get src="http://google-collections.googlecode.com/files/${google-collect.id}.zip" dest="${lib.dir}/${google-collect.id}.zip"
-			verbose="true" usetimestamp="true" />
-
-		<unzip src="${lib.dir}/${google-collect.id}.zip" dest="${lib.dir}" />
-		<copy file="${lib.dir}/${google-collect.id}/${google-collect.id}.jar" tofile="${lib.dir}/google-collect.jar" />
-		<copy file="${lib.dir}/${google-collect.id}/src-${google-collect.version}.zip" tofile="${lib.dir}/src/google-collect-sources.jar" />
-		<delete dir="${lib.dir}/${google-collect.id}" />
-		<delete file="${lib.dir}/${google-collect.id}.zip" />
-		
 		<!-- NB increment deps.version above if you add/update a jar! -->
-
-		<!-- apparently unused: nux.jar     1.6 -->
 
 		<touch file="${deps.filename}" />
 

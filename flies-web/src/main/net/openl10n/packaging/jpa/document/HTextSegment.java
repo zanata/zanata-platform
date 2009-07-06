@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.repository.model;
+package net.openl10n.packaging.jpa.document;
 
 import java.io.Serializable;
 
@@ -6,25 +6,26 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Range;
 
 @Entity
-public class TextSegment implements Serializable{
+public class HTextSegment implements Serializable{
 
 	private static final long serialVersionUID = 8581001791457747994L;
 
 	private Long id;
-	private TextFlow textFlow;
+	private HTextFlow textFlow;
 	
 	private Integer startPos;
 	private Integer endPos;
 	
-	public TextSegment() {
+	public HTextSegment() {
 	}
 	
-	public TextSegment(TextFlow flow) {
+	public HTextSegment(HTextFlow flow) {
 		setTextFlow(flow);
 		String content = flow.getContent();
 		if(content != null){
@@ -45,11 +46,11 @@ public class TextSegment implements Serializable{
 	@ManyToOne
 	@JoinColumn(name = "text_flow_id")
 	@NotNull
-	public TextFlow getTextFlow() {
+	public HTextFlow getTextFlow() {
 		return textFlow;
 	}
 	
-	public void setTextFlow(TextFlow textFlow) {
+	public void setTextFlow(HTextFlow textFlow) {
 		this.textFlow = textFlow;
 	}
 
@@ -70,5 +71,10 @@ public class TextSegment implements Serializable{
 	
 	public void setEndPos(Integer endPos) {
 		this.endPos = endPos;
+	}
+	
+	@Transient
+	public String getContent(){
+		return getTextFlow().getContent().substring(getStartPos(), getEndPos());
 	}
 }

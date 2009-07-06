@@ -1,13 +1,16 @@
-package org.fedorahosted.flies.repository.model;
+package net.openl10n.packaging.jpa.document;
 
 import java.io.Serializable;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
+import net.openl10n.packaging.document.Resource;
 
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.Length;
@@ -22,19 +25,27 @@ import org.hibernate.validator.NotNull;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
-public abstract class Resource implements Serializable{
+public abstract class HResource implements Serializable{
 
 	private static final long serialVersionUID = 7639343235241588429L;
 
 	private Long id;
+	private Long revision = 1l;
 	private String resId;
-	private String name;
 	
-	private Document document;
+	private HDocument document;
+	private HResource parent;
+
+	public HResource() {
+	}
 	
-	private Resource parent;
+	public HResource(Resource res) {
+		this.resId = res.getId();
+		this.revision = res.getVersion();
+	}
 
 	@Id
+	@GeneratedValue	
 	public Long getId() {
 		return id;
 	}
@@ -54,33 +65,33 @@ public abstract class Resource implements Serializable{
 		this.resId = resId;
 	}
 
-	public String getName() {
-		return name;
+	@NotNull
+	public Long getRevision() {
+		return revision;
 	}
 	
-	public void setName(String name) {
-		this.name = name;
+	public void setRevision(Long revision) {
+		this.revision = revision;
 	}
 	
 	@ManyToOne
-	@JoinColumn(name = "document_id")
+	@JoinColumn(name="document_id",insertable=false, updatable=false, nullable=false)
 	@NaturalId
-	@NotNull
-	public Document getDocument() {
+	public HDocument getDocument() {
 		return document;
 	}
 	
-	public void setDocument(Document document) {
+	public void setDocument(HDocument document) {
 		this.document = document;
 	}
 
 	@ManyToOne
 	@JoinColumn(name = "parent_id")
-	public Resource getParent() {
+	public HResource getParent() {
 		return parent;
 	}
 	
-	public void setParent(Resource parent) {
+	public void setParent(HResource parent) {
 		this.parent = parent;
 	}
 }

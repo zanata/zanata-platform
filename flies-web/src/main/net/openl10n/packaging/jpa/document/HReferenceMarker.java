@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.repository.model;
+package net.openl10n.packaging.jpa.document;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -9,20 +9,20 @@ import org.hibernate.validator.NotNull;
 
 @Entity
 @DiscriminatorValue("ref")
-public class ReferenceMarker extends InlineMarker{
+public class HReferenceMarker extends HInlineMarker{
 
 	private static final long serialVersionUID = -7985022096809099291L;
 
-	private Resource resource;
+	private HResource resource;
 	
 	@ManyToOne
 	@JoinColumn(name = "resource_id")
 	@NotNull
-	public Resource getResource() {
+	public HResource getResource() {
 		return resource;
 	}
 	
-	public void setResource(Resource resource) {
+	public void setResource(HResource resource) {
 		this.resource = resource;
 	}
 }

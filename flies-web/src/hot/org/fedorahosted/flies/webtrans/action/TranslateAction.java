@@ -9,7 +9,6 @@ import org.fedorahosted.flies.core.model.Account;
 import org.fedorahosted.flies.core.model.FliesLocale;
 import org.fedorahosted.flies.core.model.Person;
 import org.fedorahosted.flies.core.model.ProjectIteration;
-import org.fedorahosted.flies.repository.model.DocumentTarget;
 //import org.fedorahosted.flies.repository.model.TextUnitTarget;
 import org.fedorahosted.flies.webtrans.NoSuchWorkspaceException;
 import org.fedorahosted.flies.webtrans.TranslationWorkspace;
@@ -73,12 +72,12 @@ public class TranslateAction {
 		return locale;
 	}
 
-	@DataModel
-	private List<DocumentTarget> documentTargets;
-
-	@DataModelSelection(value="documentTargets")
-	@Out(required=false)
-	private DocumentTarget selectedDocumentTarget;
+//	@DataModel
+//	private List<DocumentTarget> documentTargets;
+//
+//	@DataModelSelection(value="documentTargets")
+//	@Out(required=false)
+//	private DocumentTarget selectedDocumentTarget;
 
 /*
 	@DataModel
@@ -93,14 +92,14 @@ public class TranslateAction {
 		loadTextUnitTargets();
 	}
 	*/
-	
-	@Factory("documentTargets")
-	public void loadDocumentTargets(){
-		documentTargets = entityManager.createQuery("select d from DocumentTarget d " +
-								"where d.locale = :locale and d.template.projectIteration = :iteration")
-					.setParameter("locale", locale)
-					.setParameter("iteration", projectIteration).getResultList();
-	}
+//	
+//	@Factory("documentTargets")
+//	public void loadDocumentTargets(){
+//		documentTargets = entityManager.createQuery("select d from DocumentTarget d " +
+//								"where d.locale = :locale and d.template.projectIteration = :iteration")
+//					.setParameter("locale", locale)
+//					.setParameter("iteration", projectIteration).getResultList();
+//	}
 /*
 	@Factory("textUnitTargets")
 	public void loadTextUnitTargets(){

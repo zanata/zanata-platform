@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.repository.model;
+package net.openl10n.packaging.jpa.document;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,26 +7,35 @@ import javax.persistence.CascadeType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 
+import net.openl10n.packaging.document.Resource;
+import net.openl10n.packaging.document.TextFlow;
+
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @MappedSuperclass
-public abstract class ParentResource extends Resource{
+public abstract class HParentResource extends HResource{
 
 	private static final long serialVersionUID = 5832666152954738196L;
 
-	private List<Resource> children = new ArrayList<Resource>();
+	private List<HResource> children = new ArrayList<HResource>();
 	
+	public HParentResource() {
+	}
+	
+	public HParentResource(Resource res) {
+		super(res);
+	}
 
 	@OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
 	@IndexColumn(name = "pos", base=1)
 	@OnDelete(action=OnDeleteAction.CASCADE)
-	public List<Resource> getChildren() {
+	public List<HResource> getChildren() {
 		return children;
 	}
 	
-	public void setChildren(List<Resource> children) {
+	public void setChildren(List<HResource> children) {
 		this.children = children;
 	}
 	

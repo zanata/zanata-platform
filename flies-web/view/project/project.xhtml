@@ -48,7 +48,7 @@
   <rich:panel>
     <f:facet name="header">Maintainers</f:facet>
     <h:outputText rendered="#{empty projectHome.instance.maintainers}">(No maintainers defined)</h:outputText>
-    <rich:dataList value="#{projectHome.instance.maintainers}" var="maintainer">
+    <rich:dataList value="#{projectHome.instance.maintainers.toArray()}" var="maintainer">
       <h:outputText value="#{maintainer.name}"/>
     </rich:dataList>
   </rich:panel>

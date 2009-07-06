@@ -6,15 +6,13 @@ import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 
+import net.openl10n.packaging.jpa.project.HProject;
+
 import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.model.IterationProject;
 import org.fedorahosted.flies.core.model.Project;
 import org.fedorahosted.flies.core.model.ProjectSeries;
 import org.fedorahosted.flies.core.model.ProjectIteration;
-import org.fedorahosted.flies.core.model.ResourceCategory;
-import org.fedorahosted.flies.repository.model.Document;
-import org.fedorahosted.flies.repository.model.ProjectContainer;
-import org.fedorahosted.flies.repository.model.Status;
 import org.fedorahosted.flies.repository.util.TranslationStatistics;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
@@ -48,9 +46,6 @@ public class ProjectIterationHome extends MultiSlugHome<ProjectIteration>{
 	@In(create=true)
 	ProjectDAO projectDAO;
 	
-	@Out(required = false)
-	private List<ResourceCategory> iterationCategories;
-
 	@Override
 	protected ProjectIteration createInstance() {
 		ProjectIteration iteration = new ProjectIteration();
@@ -120,7 +115,9 @@ public class ProjectIterationHome extends MultiSlugHome<ProjectIteration>{
 		if(!validateSlug(getInstance().getSlug(), "slug"))
 			return null;
 		if(getInstance().getContainer() == null){
-			ProjectContainer container = new ProjectContainer();
+			HProject container = new HProject();
+			container.setProjectId(getInstance().getProject().getSlug() + "/" + getInstance().getSlug());
+			container.setName(getInstance().getName());
 			getEntityManager().persist(container);
 			getInstance().setContainer(container);
 		}
@@ -132,83 +129,6 @@ public class ProjectIterationHome extends MultiSlugHome<ProjectIteration>{
 			.setParameter("project", getInstance().getProject()).getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
-	@Factory("iterationCategories")
-	public void getCategories() {
-		log.debug("calling getCategories");
-		iterationCategories = getEntityManager()
-				.createQuery(
-						"select distinct d.resourceCategory from Document d where d.projectIteration = :pt")
-				.setParameter("pt", getInstance()).getResultList();
-	}
-
-	public TranslationStatistics getStatisticsForCategory(
-			ResourceCategory category) {
-
-		Session session = (Session) getEntityManager().getDelegate();
-		// ResourceCategory category = (ResourceCategory)
-		// session.load(ResourceCategory.class, 1l);
-
-		Long approved = (Long) getEntityManager()
-				.createQuery(
-						"select count(*) from TextUnitTarget tut where "
-								+ "tut.document.resourceCategory = :category and tut.document.projectIteration = :iteration"
-								+ " and tut.status = :status").setParameter(
-						"category", category).setParameter("status",
-						Status.Approved).setParameter("iteration", getInstance())
-				.getSingleResult();
-		Long total = (Long) getEntityManager()
-				.createQuery(
-						"select count(*) from TextUnitTarget tut where "
-								+ "tut.document.resourceCategory = :category and tut.document.projectIteration = :iteration")
-				.setParameter("category", category).setParameter("iteration",
-						getInstance()).getSingleResult();
-		long notApproved = (total - approved);
-		long app = (approved - 0);
-		TranslationStatistics stats = new TranslationStatistics(app,
-				notApproved, 0l, 0l);
-		log
-				.info("Statistics for category: {0}, {1}", category.getName(),
-						stats);
-		return stats;
-	}
-
-	public TranslationStatistics getStatisticsForDocument(Document document) {
-		Session session = (Session) getEntityManager().getDelegate();
-		// ResourceCategory category = (ResourceCategory)
-		// session.load(ResourceCategory.class, 1l);
-
-		Long approved = (Long) getEntityManager().createQuery(
-				"select count(*) from TextUnitTarget tut where "
-						+ "tut.document = :document "
-						+ " and tut.status = :status").setParameter("document",
-				document).setParameter("status", Status.Approved)
-				.getSingleResult();
-		Long total = (Long) getEntityManager().createQuery(
-				"select count(*) from TextUnitTarget tut where "
-						+ "tut.document = :document").setParameter("document",
-				document).getSingleResult();
-		long notApproved = (total - approved);
-		long app = (approved - 0);
-		TranslationStatistics stats = new TranslationStatistics(app,
-				notApproved, 0l, 0l);
-		log
-				.info("Statistics for category: {0}, {1}", document.getName(),
-						stats);
-		return stats;
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<Document> getDocumentsForCategory(ResourceCategory category) {
-		return getEntityManager()
-				.createQuery(
-						"select d from Document d "
-								+ "where "
-								+ "d.resourceCategory = :category and d.projectIteration = :iteration ")
-				.setParameter("category", category).setParameter("iteration",
-						getInstance()).getResultList();
-	}
-	
 	public void cancel(){}
 	
 	//@In PublicanImporter publicanImporter;

@@ -8,8 +8,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import org.fedorahosted.flies.repository.model.Document;
-import org.fedorahosted.flies.repository.model.ProjectContainer;
+
+import net.openl10n.packaging.jpa.project.HProject;
+
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;
@@ -25,7 +26,7 @@ public class ProjectIteration extends AbstractSlugEntity implements IProjectCont
 
 	private Boolean active = true;
 
-	private ProjectContainer container;
+	private HProject container;
 
 	private ProjectIteration parent;
 	private List<ProjectIteration> children;
@@ -60,11 +61,11 @@ public class ProjectIteration extends AbstractSlugEntity implements IProjectCont
 	@ManyToOne
 	@JoinColumn(name = "project_container_id")
 	@Override
-	public ProjectContainer getContainer() {
+	public HProject getContainer() {
 		return container;
 	}
 	
-	public void setContainer(ProjectContainer container) {
+	public void setContainer(HProject container) {
 		this.container = container;
 	}
 	
