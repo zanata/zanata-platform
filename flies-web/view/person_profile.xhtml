@@ -32,6 +32,35 @@
                        columnClasses="grid_col_one_third_width">
           <ui:include src="./tribe/tribe_view_inline.xhtml" />
         </rich:dataGrid>
+        <h2>My Communities</h2>
+        <h:outputText value="None Available" rendered="#{empty personHome.instance.communityOwnerships}"/>
+        <s:div rendered="#{not empty personHome.instance.communityOwnerships}">
+          <h3>Ownerships</h3>
+          <rich:dataGrid value="#{personHome.instance.communityOwnerships.toArray()}" 
+                         var="community" 
+                         columns="3"
+                         columnClasses="grid_col_one_third_width">
+            <ui:include src="./community/community_view_inline.xhtml" />
+          </rich:dataGrid>
+        </s:div>
+        <s:div rendered="#{not empty personHome.instance.communityOfficerships and not empty personHome.instance.communityOfficerships and not empty personHome.instance.communityOwnerships }">
+          <h3>Officerships</h3>
+          <rich:dataGrid value="#{personHome.instance.communityOfficerships.toArray()}" 
+                         var="community" 
+                         columns="3"
+                         columnClasses="grid_col_one_third_width">
+            <ui:include src="./community/community_view_inline.xhtml" />
+          </rich:dataGrid>
+        </s:div>
+        <s:div rendered="#{not empty personHome.instance.communityMemberships}">
+          <h3>Membership</h3>
+          <rich:dataGrid value="#{personHome.instance.communityMemberships.toArray()}" 
+                         var="community" 
+                         columns="3"
+                         columnClasses="grid_col_one_third_width">
+            <ui:include src="./community/community_view_inline.xhtml" />
+          </rich:dataGrid>
+        </s:div>
         <h2>API Key</h2>
         <a4j:form>
           <h:outputText value="(Not Generated)"  rendered="#{personHome.instance.account.apiKey == null}"/>
