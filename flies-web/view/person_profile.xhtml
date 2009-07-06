@@ -17,6 +17,7 @@
         <rich:jQuery selector="#tab_profile" query="addClass('ui-tabs-selected')" />
         <h1>#{personHome.instance.name}</h1>
         <h2>My Projects</h2>
+        <h:outputText value="None Available" rendered="#{empty personHome.instance.maintainerProjects}"/>
         <rich:dataGrid value="#{personHome.instance.maintainerProjects}" 
                        var="project" 
                        columns="3"
@@ -24,6 +25,7 @@
           <ui:include src="./project/project_view_inline.xhtml" />
         </rich:dataGrid>
         <h2>My Tribes</h2>
+        <h:outputText value="None Available" rendered="#{empty personHome.instance.tribeMemberships}"/>
         <rich:dataGrid value="#{personHome.instance.tribeMemberships.toArray()}" 
                        var="tribe" 
                        columns="3"
