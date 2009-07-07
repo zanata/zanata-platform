@@ -46,6 +46,9 @@ public class ProjectIterationHome extends MultiSlugHome<ProjectIteration>{
 	@In(create=true)
 	ProjectDAO projectDAO;
 	
+	@In(create=true)
+	HProjectHome hProjectHome;
+	
 	@Override
 	protected ProjectIteration createInstance() {
 		ProjectIteration iteration = new ProjectIteration();
@@ -70,6 +73,7 @@ public class ProjectIterationHome extends MultiSlugHome<ProjectIteration>{
 		               // start
 		Conversation c = Conversation.instance();
 		c.setDescription(getMultiSlug());
+		hProjectHome.setId(getInstance().getContainer().getId());
 	}
 
 	@Override

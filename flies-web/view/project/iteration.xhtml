@@ -7,7 +7,8 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
     xmlns:flies="http://flies.fedorahosted.org/ui"
-    template="../layout/template.xhtml">
+    template="../layout/template.xhtml"
+                xmlns:a4j="http://richfaces.org/a4j">
 
 <ui:define name="breadcrumbs">
   »
@@ -17,7 +18,7 @@
     <f:param name="slug" value="#{projectIterationHome.instance.project.slug}"/>
     #{projectIterationHome.instance.project.name}
   </s:link>
-  #{projectIterationHome.instance.name}
+  Version 1
 </ui:define>
 
 <ui:define name="left_content">
@@ -40,81 +41,59 @@
 
   <h1>#{projectIterationHome.instance.project.name} : #{projectIterationHome.instance.name}</h1>
 
-  <ui:repeat value="#{iterationCategories}" var="category">
-    <h:form id="category_form_#{category.id}">
-      <s:conversationId/>
-      <div class="resource-by-category-panel">
-        <div class="header">
-          <h2 class="cat-documentation">#{category.name}</h2>
-          <div class="status-bar">
-            <ui:param name="status" value="#{projectIterationHome.getStatisticsForCategory(category)}" />
-            <flies:translation-status-bar
-              translated="#{status.approved}" 
-              fuzzy="0" 
-              untranslated="#{status.notApproved}"/>
-          </div>
-          <div style="clear: both;"/>
-        </div>
-        <!-- 
-        <s:div styleClass="summary" rendered="false">
-          #{projectIterationHome.instance.description}
-        </s:div>
-         -->
-        <div class="toolbar">
-          <div class="actions">
-            <s:link view="/translate.xhtml" propagation="none">
-              Translate
-              <f:param name="wid" value="#{projectIterationHome.instance.id}/gu-IN"/>
-            </s:link> &nbsp;|&nbsp; 
-            <s:link view="/home.xhtml">Download Archive</s:link> &nbsp;|&nbsp; 
-            <s:link view="/home.xhtml">More...</s:link>
-          </div>
-          <ui:param name="catDocuments" value="#{projectIterationHome.getDocumentsForCategory(category)}" />
-          <div class="expand">
-            #{catDocuments.size} File(s) 
-             <rich:toggleControl for="eContent">
-               <h:graphicImage value="/img/expand.png" />
-             </rich:toggleControl>
-          </div>
-          <div style="clear: both;"/>
-        </div>
-      <rich:togglePanel id="eContent" switchType="server" stateOrder="closed,open" initialState="open">
-       <f:facet name="closed">
-        <!-- Invisible -->
-       </f:facet>
-       <f:facet name="open">
-          <rich:dataTable value="#{catDocuments}"
-            var="document" width="100%" rows="50" reRender="ds">
-            <rich:column width="100%" sortBy="#{document.name}">
-              <f:facet name="header">
-                <h:outputText value="Name"/>
-              </f:facet>
-              <div class="resource-name">#{document.name}</div>
-            </rich:column>
-            <rich:column>
-              <f:facet name="header">
-                <h:outputText value="Status"/>
-              </f:facet>
-              <!-- 
-              <ui:param name="tstatus" value="#{projectIterationHome.getStatisticsForDocument(document)}" />
-              <flies:translation-status-bar
-                title="Total: #{tstatus.total}, Translated: #{tstatus.approved}, Fuzzy #{tstatus.fuzzyMatch}"
-                translated="#{tstatus.approved}" 
-                fuzzy="0" 
-                untranslated="#{tstatus.notApproved}"/>
-                 -->
-            </rich:column>
-            
-            <f:facet name="footer">
-              <rich:datascroller id="ds" rendered="#{projectIterationHome.instance.documents.size > 50}"></rich:datascroller>
-            </f:facet>
-          </rich:dataTable>
-       </f:facet>
-        
-      </rich:togglePanel>
-      </div>
+  <p>#{projectIterationHome.instance.container.name}</p>
+
+  <h2>Content Manager</h2>
+  <rich:panel rendered="#{identity.hasRole('user')}">
+    <f:facet name="header">Upload Project</f:facet>
+    <p>This form allows you to upload an 
+      <a href="http://openl10n.googlecode.com/">Open Localisation Project</a>
+      to use as the base for your project. You can also do this via the 
+      <a href="#">REST API</a>.
+    </p>
+    
+    <h:form>
+      <rich:fileUpload fileUploadListener="#{olpUpload.listener}"
+          maxFilesQuantity="1"
+          listHeight="80px;" 
+          id="upload"
+          immediateUpload="true"
+          acceptedTypes="olp, zip" allowFlash="false">
+      </rich:fileUpload>    
     </h:form>
-  </ui:repeat>
+  </rich:panel>
+
+  <h2>Tree</h2>
+  
+  <h:panelGrid columns="2" width="100%">
+    <h:column>
+      <rich:panel>
+        <f:facet name="header">Document Tree</f:facet>
+        <h:form>
+          <rich:tree style="width:300px" nodeSelectListener="#{hProjectHome.processSelection}" 
+              reRender="selectedNode" ajaxSubmitSelection="true"  switchType="client"
+              value="#{hProjectHome.rootNode}" var="item" ajaxKeys="#{null}" 
+              treeNodeVar="treeNode" nodeFace="#{hProjectHome.getNodeFace(treeNode.data)}">
+            <rich:treeNode type="folder" icon="/img/iconFolder.gif" iconLeaf="/img/iconFolder.gif">  
+              <h:outputText value="#{item}"/> <strong><em> <strike>fol</strike>der</em></strong>
+            </rich:treeNode>        
+            <rich:treeNode type="doc"> 
+              <h:outputText value=" val: #{item}"/> 
+            </rich:treeNode>        
+          </rich:tree>
+        </h:form>
+      </rich:panel>
+    </h:column>
+    <h:column>
+      <rich:panel>
+        <f:facet name="header">Details</f:facet>
+        <h:outputText id="selectedNode"
+            escape="false" 
+            value="Selected Node: #{hProjectHome.nodeTitle}"  />
+      </rich:panel>
+    </h:column>
+  </h:panelGrid>
+
 </ui:define>
 
 </ui:composition>
