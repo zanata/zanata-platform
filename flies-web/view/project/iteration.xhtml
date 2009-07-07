@@ -28,10 +28,10 @@
       <f:param name="mslug" value="#{projectIterationHome.multiSlug}"/>
       Edit
     </s:link>
-    <s:link styleClass="action_link" view="/project/iteration_linkage.xhtml" propagation="none">
-      <f:param name="mslug" value="#{projectIterationHome.multiSlug}"/>
-      Resource Management
-    </s:link>
+    <h:outputLink styleClass="action_link" value="#" id="link">
+      Upload Project
+      <rich:componentControl for="panel" attachTo="link" operation="show" event="onclick"/>
+    </h:outputLink>
     
   </rich:panel>
 </ui:define>
@@ -44,7 +44,8 @@
   <p>#{projectIterationHome.instance.container.name}</p>
 
   <h2>Content Manager</h2>
-  <rich:panel rendered="#{identity.hasRole('user')}">
+  
+  <rich:modalPanel id="panel" width="420" height="220">
     <f:facet name="header">Upload Project</f:facet>
     <p>This form allows you to upload an 
       <a href="http://openl10n.googlecode.com/">Open Localisation Project</a>
@@ -60,8 +61,11 @@
           immediateUpload="true"
           acceptedTypes="olp, zip" allowFlash="false">
       </rich:fileUpload>    
+      <div class="actionButtons">
+        <h:commandButton value="Cancel"  onclick="#{rich:component('panel')}.hide()"/>
+      </div>
     </h:form>
-  </rich:panel>
+  </rich:modalPanel>
 
   <h2>Tree</h2>
   
