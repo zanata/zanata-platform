@@ -239,6 +239,11 @@ td.action a {
 	padding: 0px;
 	margin-bottom: 50px;
 }
+
+#hd.fullscreen{
+	margin-bottom: 20px;
+}
+
 #headerlogo {
 	position: absolute;
 	left: 10px;

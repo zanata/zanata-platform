@@ -28,7 +28,7 @@
 <!-- the id on the containing div determines the page width. -->
 <!-- #doc = 750px; #doc2 = 950px; #doc3 = 100%; #doc4 = 974px -->
 <div id="doc3" class="yui-t2">					
-	<div id="hd">
+	<div id="hd" class="fullscreen">
       <div id="header_top_right">
         <h:outputText rendered="#{identity.loggedIn}" value="#{authenticatedPerson == null ? identity.username : authenticatedPerson.name} "/>
         <s:fragment rendered="#{not identity.loggedIn}">
