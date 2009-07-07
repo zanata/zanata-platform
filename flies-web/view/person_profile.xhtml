@@ -63,13 +63,13 @@
         </s:div>
         <h2>API Key</h2>
         <a4j:form>
-          <h:outputText value="(Not Generated)"  rendered="#{personHome.instance.account.apiKey == null}"/>
-          <s:fragment rendered="#{personHome.instance.account.apiKey != null}"> 
+          <s:span id="no_api_key" rendered="#{personHome.instance.account.apiKey == null}">(Not Generated)</s:span>
+          <s:fragment id="api_key" rendered="#{personHome.instance.account.apiKey != null}"> 
             <p>Your current API Key is
-              <code><h:outputText id="output_key" value="#{personHome.instance.account.apiKey}" /></code> 
+              <code>#{personHome.instance.account.apiKey}</code> 
             </p>
-            <a4j:commandButton action="#{personHome.regenerateApiKey}" value="Reset API Key" reRender="output_key" />
           </s:fragment>
+          <a4j:commandButton action="#{personHome.regenerateApiKey}" value="Regenerate API Key" reRender="api_key,no_api_key" />
 	    </a4j:form>
     </ui:define>
 </ui:composition>
