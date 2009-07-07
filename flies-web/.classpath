@@ -3,69 +3,69 @@
     <classpathentry kind="src" output="build/flies.war/WEB-INF/classes" path="src/main"/>
     <classpathentry kind="src" output="build/flies.war/WEB-INF/dev" path="src/hot"/>
     <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-    <classpathentry kind="lib" path="lib\FastInfoset.jar"/>
-    <classpathentry kind="lib" path="lib\activation.jar" sourcepath="lib\src\activation-sources.jar"/>
-    <classpathentry kind="lib" path="lib\antlr-runtime.jar"/>
-    <classpathentry kind="lib" path="lib\antlr.jar" sourcepath="lib\src\antlr-sources.jar"/>
-    <classpathentry kind="lib" path="lib\commons-beanutils.jar" sourcepath="lib\src\commons-beanutils-sources.jar"/>
-    <classpathentry kind="lib" path="lib\commons-codec.jar"/>
-    <classpathentry kind="lib" path="lib\commons-collections.jar" sourcepath="lib\src\commons-collections-sources.jar"/>
-    <classpathentry kind="lib" path="lib\commons-digester.jar" sourcepath="lib\src\commons-digester-sources.jar"/>
-    <classpathentry kind="lib" path="lib\commons-lang.jar" sourcepath="lib\src\commons-lang-sources.jar"/>
-    <classpathentry kind="lib" path="lib\commons-logging.jar"/>
-    <classpathentry kind="lib" path="lib\core.jar"/>
-    <classpathentry kind="lib" path="lib\dbunit.jar" sourcepath="lib\src\dbunit-sources.jar"/>
-    <classpathentry kind="lib" path="lib\dom4j.jar"/>
-    <classpathentry kind="lib" path="lib\drools-compiler.jar" sourcepath="lib\src\drools-compiler-sources.jar"/>
-    <classpathentry kind="lib" path="lib\drools-core.jar" sourcepath="lib\src\drools-core-sources.jar"/>
-    <classpathentry kind="lib" path="lib\ejb3-persistence.jar" sourcepath="lib\src\ejb3-persistence-sources.jar"/>
-    <classpathentry kind="lib" path="lib\el-api.jar"/>
-    <classpathentry kind="lib" path="lib\flies-richfaces-ui.jar"/>
-    <classpathentry kind="lib" path="lib\google-collections.jar"/>
-    <classpathentry kind="lib" path="lib\groovy-all.jar" sourcepath="lib\src\groovy-all-sources.jar"/>
-    <classpathentry kind="lib" path="lib\hibernate-commons-annotations.jar" sourcepath="lib\src\hibernate-commons-annotations-sources.jar"/>
-    <classpathentry kind="lib" path="lib\hibernate-core.jar" sourcepath="lib\src\hibernate-core-sources.jar"/>
-    <classpathentry kind="lib" path="lib\hibernate-search.jar" sourcepath="lib\src\hibernate-search-sources.jar"/>
-    <classpathentry kind="lib" path="lib\hsqldb.jar"/>
-    <classpathentry kind="lib" path="lib\icu4j.jar"/>
-    <classpathentry kind="lib" path="lib\janino.jar"/>
-    <classpathentry kind="lib" path="lib\jaxrs-api.jar" sourcepath="lib\src\jaxrs-api-sources.jar"/>
-    <classpathentry kind="lib" path="lib\jboss-el.jar"/>
-    <classpathentry kind="lib" path="lib\jboss-seam-debug.jar" sourcepath="lib\src\jboss-seam-debug-sources.jar"/>
-    <classpathentry kind="lib" path="lib\jboss-seam-ioc.jar" sourcepath="lib\src\jboss-seam-ioc-sources.jar"/>
-    <classpathentry kind="lib" path="lib\jboss-seam-jul.jar" sourcepath="lib\src\jboss-seam-jul-sources.jar"/>
-    <classpathentry kind="lib" path="lib\jboss-seam-mail.jar" sourcepath="lib\src\jboss-seam-mail-sources.jar"/>
-    <classpathentry kind="lib" path="lib\jboss-seam-remoting.jar" sourcepath="lib\src\jboss-seam-remoting-sources.jar"/>
-    <classpathentry kind="lib" path="lib\jboss-seam-resteasy.jar" sourcepath="lib\src\jboss-seam-resteasy-sources.jar"/>
-    <classpathentry kind="lib" path="lib\jboss-seam-ui.jar" sourcepath="lib\src\jboss-seam-ui-sources.jar"/>
-    <classpathentry kind="lib" path="lib\jboss-seam.jar" sourcepath="lib\src\jboss-seam-sources.jar"/>
-    <classpathentry kind="lib" path="lib\jettison.jar" sourcepath="lib\src\jettison-sources.jar"/>
-    <classpathentry kind="lib" path="lib\jgettext.jar"/>
-    <classpathentry kind="lib" path="lib\jsf-api.jar"/>
-    <classpathentry kind="lib" path="lib\jsf-facelets.jar" sourcepath="lib\src\jsf-facelets-sources.jar"/>
-    <classpathentry kind="lib" path="lib\jsf-impl.jar"/>
-    <classpathentry kind="lib" path="lib\jsr250-api.jar" sourcepath="lib\src\jsr250-api-sources.jar"/>
-    <classpathentry kind="lib" path="lib\jta.jar" sourcepath="lib\src\jta-sources.jar"/>
-    <classpathentry kind="lib" path="lib\log4j.jar" sourcepath="lib\src\log4j-sources.jar"/>
-    <classpathentry kind="lib" path="lib\lucene-core.jar" sourcepath="lib\src\lucene-core-sources.jar"/>
-    <classpathentry kind="lib" path="lib\mvel14.jar"/>
-    <classpathentry kind="lib" path="lib\openl10n-adapter-po.jar"/>
-    <classpathentry kind="lib" path="lib\openl10n-api.jar"/>
-    <classpathentry kind="lib" path="lib\openl10n-opc4j.jar"/>
-    <classpathentry kind="lib" path="lib\openl10n-packaging.jar"/>
-    <classpathentry kind="lib" path="lib\resteasy-atom-provider.jar" sourcepath="lib\src\resteasy-atom-provider-sources.jar"/>
-    <classpathentry kind="lib" path="lib\resteasy-jaxb-provider.jar" sourcepath="lib\src\resteasy-jaxb-provider-sources.jar"/>
-    <classpathentry kind="lib" path="lib\resteasy-jaxrs.jar" sourcepath="lib\src\resteasy-jaxrs-sources.jar"/>
-    <classpathentry kind="lib" path="lib\richfaces-api.jar" sourcepath="lib\src\richfaces-api-sources.jar"/>
-    <classpathentry kind="lib" path="lib\richfaces-impl.jar" sourcepath="lib\src\richfaces-impl-sources.jar"/>
-    <classpathentry kind="lib" path="lib\richfaces-ui.jar" sourcepath="lib\src\richfaces-ui-sources.jar"/>
-    <classpathentry kind="lib" path="lib\servlet-api.jar" sourcepath="lib\src\servlet-api-sources.jar"/>
-    <classpathentry kind="lib" path="lib\sjsxp.jar"/>
-    <classpathentry kind="lib" path="lib\slf4j-api.jar" sourcepath="lib\src\slf4j-api-sources.jar"/>
-    <classpathentry kind="lib" path="lib\slf4j-log4j12.jar" sourcepath="lib\src\slf4j-log4j12-sources.jar"/>
-    <classpathentry kind="lib" path="lib\stax-api.jar" sourcepath="lib\src\stax-api-sources.jar"/>
-    <classpathentry kind="lib" path="lib\urlrewritefilter.jar"/>
-    <classpathentry kind="lib" path="lib\xom.jar"/> 
+    <classpathentry kind="lib" path="lib/FastInfoset.jar"/>
+    <classpathentry kind="lib" path="lib/activation.jar" sourcepath="lib/src/activation-sources.jar"/>
+    <classpathentry kind="lib" path="lib/antlr-runtime.jar"/>
+    <classpathentry kind="lib" path="lib/antlr.jar" sourcepath="lib/src/antlr-sources.jar"/>
+    <classpathentry kind="lib" path="lib/commons-beanutils.jar" sourcepath="lib/src/commons-beanutils-sources.jar"/>
+    <classpathentry kind="lib" path="lib/commons-codec.jar" sourcepath="lib/src/commons-codec-sources.jar"/>
+    <classpathentry kind="lib" path="lib/commons-collections.jar" sourcepath="lib/src/commons-collections-sources.jar"/>
+    <classpathentry kind="lib" path="lib/commons-digester.jar" sourcepath="lib/src/commons-digester-sources.jar"/>
+    <classpathentry kind="lib" path="lib/commons-lang.jar" sourcepath="lib/src/commons-lang-sources.jar"/>
+    <classpathentry kind="lib" path="lib/commons-logging.jar"/>
+    <classpathentry kind="lib" path="lib/core.jar"/>
+    <classpathentry kind="lib" path="lib/dbunit.jar" sourcepath="lib/src/dbunit-sources.jar"/>
+    <classpathentry kind="lib" path="lib/dom4j.jar"/>
+    <classpathentry kind="lib" path="lib/drools-compiler.jar" sourcepath="lib/src/drools-compiler-sources.jar"/>
+    <classpathentry kind="lib" path="lib/drools-core.jar" sourcepath="lib/src/drools-core-sources.jar"/>
+    <classpathentry kind="lib" path="lib/ejb3-persistence.jar" sourcepath="lib/src/ejb3-persistence-sources.jar"/>
+    <classpathentry kind="lib" path="lib/el-api.jar"/>
+    <classpathentry kind="lib" path="lib/flies-richfaces-ui.jar"/>
+    <classpathentry kind="lib" path="lib/google-collections.jar" sourcepath="lib/src/google-collections-sources.jar"/>
+    <classpathentry kind="lib" path="lib/groovy-all.jar" sourcepath="lib/src/groovy-all-sources.jar"/>
+    <classpathentry kind="lib" path="lib/hibernate-commons-annotations.jar" sourcepath="lib/src/hibernate-commons-annotations-sources.jar"/>
+    <classpathentry kind="lib" path="lib/hibernate-core.jar" sourcepath="lib/src/hibernate-core-sources.jar"/>
+    <classpathentry kind="lib" path="lib/hibernate-search.jar" sourcepath="lib/src/hibernate-search-sources.jar"/>
+    <classpathentry kind="lib" path="lib/hsqldb.jar"/>
+    <classpathentry kind="lib" path="lib/icu4j.jar"/>
+    <classpathentry kind="lib" path="lib/janino.jar"/>
+    <classpathentry kind="lib" path="lib/jaxrs-api.jar" sourcepath="lib/src/jaxrs-api-sources.jar"/>
+    <classpathentry kind="lib" path="lib/jboss-el.jar"/>
+    <classpathentry kind="lib" path="lib/jboss-seam-debug.jar" sourcepath="lib/src/jboss-seam-debug-sources.jar"/>
+    <classpathentry kind="lib" path="lib/jboss-seam-ioc.jar" sourcepath="lib/src/jboss-seam-ioc-sources.jar"/>
+    <classpathentry kind="lib" path="lib/jboss-seam-jul.jar" sourcepath="lib/src/jboss-seam-jul-sources.jar"/>
+    <classpathentry kind="lib" path="lib/jboss-seam-mail.jar" sourcepath="lib/src/jboss-seam-mail-sources.jar"/>
+    <classpathentry kind="lib" path="lib/jboss-seam-remoting.jar" sourcepath="lib/src/jboss-seam-remoting-sources.jar"/>
+    <classpathentry kind="lib" path="lib/jboss-seam-resteasy.jar" sourcepath="lib/src/jboss-seam-resteasy-sources.jar"/>
+    <classpathentry kind="lib" path="lib/jboss-seam-ui.jar" sourcepath="lib/src/jboss-seam-ui-sources.jar"/>
+    <classpathentry kind="lib" path="lib/jboss-seam.jar" sourcepath="lib/src/jboss-seam-sources.jar"/>
+    <classpathentry kind="lib" path="lib/jettison.jar" sourcepath="lib/src/jettison-sources.jar"/>
+    <classpathentry kind="lib" path="lib/jgettext.jar"/>
+    <classpathentry kind="lib" path="lib/jsf-api.jar"/>
+    <classpathentry kind="lib" path="lib/jsf-facelets.jar" sourcepath="lib/src/jsf-facelets-sources.jar"/>
+    <classpathentry kind="lib" path="lib/jsf-impl.jar"/>
+    <classpathentry kind="lib" path="lib/jsr250-api.jar" sourcepath="lib/src/jsr250-api-sources.jar"/>
+    <classpathentry kind="lib" path="lib/jta.jar" sourcepath="lib/src/jta-sources.jar"/>
+    <classpathentry kind="lib" path="lib/log4j.jar" sourcepath="lib/src/log4j-sources.jar"/>
+    <classpathentry kind="lib" path="lib/lucene-core.jar" sourcepath="lib/src/lucene-core-sources.jar"/>
+    <classpathentry kind="lib" path="lib/mvel14.jar"/>
+    <classpathentry kind="lib" path="lib/openl10n-adapter-po.jar"/>
+    <classpathentry kind="lib" path="lib/openl10n-api.jar"/>
+    <classpathentry kind="lib" path="lib/openl10n-opc4j.jar"/>
+    <classpathentry kind="lib" path="lib/openl10n-packaging.jar"/>
+    <classpathentry kind="lib" path="lib/resteasy-atom-provider.jar" sourcepath="lib/src/resteasy-atom-provider-sources.jar"/>
+    <classpathentry kind="lib" path="lib/resteasy-jaxb-provider.jar" sourcepath="lib/src/resteasy-jaxb-provider-sources.jar"/>
+    <classpathentry kind="lib" path="lib/resteasy-jaxrs.jar" sourcepath="lib/src/resteasy-jaxrs-sources.jar"/>
+    <classpathentry kind="lib" path="lib/richfaces-api.jar" sourcepath="lib/src/richfaces-api-sources.jar"/>
+    <classpathentry kind="lib" path="lib/richfaces-impl.jar" sourcepath="lib/src/richfaces-impl-sources.jar"/>
+    <classpathentry kind="lib" path="lib/richfaces-ui.jar" sourcepath="lib/src/richfaces-ui-sources.jar"/>
+    <classpathentry kind="lib" path="lib/servlet-api.jar" sourcepath="lib/src/servlet-api-sources.jar"/>
+    <classpathentry kind="lib" path="lib/sjsxp.jar"/>
+    <classpathentry kind="lib" path="lib/slf4j-api.jar" sourcepath="lib/src/slf4j-api-sources.jar"/>
+    <classpathentry kind="lib" path="lib/slf4j-log4j12.jar" sourcepath="lib/src/slf4j-log4j12-sources.jar"/>
+    <classpathentry kind="lib" path="lib/stax-api.jar" sourcepath="lib/src/stax-api-sources.jar"/>
+    <classpathentry kind="lib" path="lib/urlrewritefilter.jar"/>
+    <classpathentry kind="lib" path="lib/xom.jar"/> 
     <classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.jboss.ide.eclipse.as.core.server.runtime.runtimeTarget/JBoss AS 4.2.3"/>
     <classpathentry kind="output" path="build/flies.war/WEB-INF/classes"/>
 </classpath>
