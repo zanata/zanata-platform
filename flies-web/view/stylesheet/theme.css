@@ -9,12 +9,21 @@ th, td {
 }
 
 html{
-	background-color: #efefef;
+	background-color: #dddddd;
 }
 
-#doc4{
+body{
+	margin: 0px;
+}
+
+#doc3, #doc4{
 	background-color: white;
 }
+
+.yui-b{
+	padding: 4px;	
+}
+
 table{
     margin: 0px;
 }
