@@ -8,6 +8,11 @@ th, td {
     padding: 0px;
 }
 
+body{
+	margin-top: 0px;
+	padding-top: 0px;
+}
+
 table{
     margin: 0px;
 }
@@ -216,6 +221,13 @@ td.action a {
 	padding-right: 1px;
 }
 
+
+#hd{
+	position: relative;
+	margin: 0px;
+	padding: 0px;
+	margin-bottom: 50px;
+}
 #headerlogo {
 	position: absolute;
 	left: 10px;
@@ -227,7 +239,7 @@ td.action a {
 	right: 0px;
 	top: 0px;
 	padding: 5px;
-	padding-right: 25px;
+	margin: 0px;
 	font-size: 77%;
 	background-color: #f4f4f4;
 	border-bottom: 1px solid #f4f4f4;
@@ -305,8 +317,7 @@ table.fullwidth {
 	position: absolute;
 	right: 0px;
 	top: 40px;
-	padding: 5px;
-	padding-right: 25px;
+	padding: 0px;
 	color: #999999;
 	-moz-border-radius: 10px;
 		

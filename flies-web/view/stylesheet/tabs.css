@@ -12,13 +12,19 @@
     }
 }
 
+#tabs {
+	border-bottom: 1px solid #ddd;
+	margin: 0 auto;
+	position: static;
+}
+
+
 /* Skin */
 
 .ui-tabs-nav {
-    margin: 0;
-    margin-top: 50px;
-    margin-left: 250px;
     padding: 0 0 0 4px;
+    margin: 0px;
+    margin-left: 210px;
     padding-right: 10px;
     background: #ffffff;
 }
@@ -124,11 +130,6 @@
 	padding-right: 5px;
 }
 
-#tabs {
-	border-bottom: 1px solid #ddd;
-    /*width: 960px; <- ideal witdh if we don't use a 100% width layout*/ 
-	margin: 0 auto;
-}
 
 /* Issues tab dropdown */
 .ui-tabs-nav-issues {
