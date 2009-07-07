@@ -250,6 +250,10 @@ td.action a {
 	-moz-border-radius-bottomleft: 10px;
 }
 
+#tabs_menu_wrapper {
+	margin-bottom: 10px;
+}
+
 #loading_top_right {
 	position: fixed;
 	right: 2px;
@@ -257,15 +261,17 @@ td.action a {
 }
 
 #breadcrumbs {
-	margin: 5px 0 0 255px;
+	display: block;
+	margin: 5px;
+	padding: 3px;
 	font-size: 77%;
-	color: #ddddef;
+	color: #cdcddf;
 }
 
 #breadcrumbs a {
 	text-decoration: none;
 	font-weight: bold;
-	color: #ddddef;
+	color: #cdcddf;
 }
 
 /* Footer styles */
