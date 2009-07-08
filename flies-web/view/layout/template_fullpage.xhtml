@@ -21,6 +21,12 @@
     <a:loadStyle src="/stylesheet/reset-fonts-grids.css"/>
     <a:loadStyle src="/stylesheet/base-min.css"/>
     <a:loadStyle src="/stylesheet/theme.css"/>
+    <script type="text/javaScript" src="#{request.contextPath}/javascript/chili/jquery.chili-2.2.js"></script> 
+    <script id="setup" type="text/javascript"> 
+        ChiliBook.automatic = true;
+        ChiliBook.recipeFolder = "#{request.contextPath}/javascript/chili/";  
+     </script>  
+    
     <ui:insert name="head"/>
 </head>
 

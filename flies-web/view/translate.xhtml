@@ -70,19 +70,22 @@
         
         <h:form>
         <rich:dataTable id="textFlowTable" 
-            width="auto" value="#{textFlowTargets}" var="tut" rows="50" height="450px;" reRender="tuds"
+            width="auto" value="#{textFlowTargets}" var="tut" rows="50" height="450px;" reRender="tuds,tuds2"
             rowClasses="odd,even">
-          <rich:column width="48%">
+          <f:facet name="header">
+              <rich:datascroller id="tuds2" rendered="#{textFlowTargets.size > 50}"></rich:datascroller>
+          </f:facet>
+          <rich:column width="48%" filterBy="#{tut.textFlow.content}" filterEvent="onkeyup" >
             <f:facet name="header">
                 Source
               </f:facet>
-              #{tut.textFlow.content}
+              <p class="html">#{tut.textFlow.content}</p>
           </rich:column>
-          <rich:column width="48%">
+          <rich:column width="48%"  filterBy="#{tut.content}" filterEvent="onkeyup">
               <f:facet name="header">
                 Target
               </f:facet>
-               #{tut.content}
+               <p class="html">#{tut.content}</p>
           </rich:column>
             <rich:column>
               <a4j:commandLink reRender="translationWidget,tuInfoPanel" action="#{translateAction.selectTextFlowTarget}">
@@ -97,7 +100,9 @@
         </h:form>
         <h:form id="translationWidget" style="font-size:133%;">
           <div style="width:99%; padding:4px;">
-            <h:outputText value="#{selectedTextFlowTarget.textFlow.content}" disabled="#{selectedDocumentTarget == null}"/>
+            <p style="html">
+              <h:outputText value="#{selectedTextFlowTarget.textFlow.content}" disabled="#{selectedDocumentTarget == null}"/>
+            </p>
           </div>
           <h:inputTextarea id="editorArea" value="#{selectedTextFlowTarget.content}" 
             disabled="#{selectedDocumentTarget == null}"
