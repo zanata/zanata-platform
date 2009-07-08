@@ -18,7 +18,7 @@
     <f:param name="slug" value="#{projectIterationHome.instance.project.slug}"/>
     #{projectIterationHome.instance.project.name}
   </s:link>
-  Version 1
+  #{projectIterationHome.instance.name}
 </ui:define>
 
 <ui:define name="left_content">
@@ -38,13 +38,59 @@
 
 <ui:define name="center_content">
   <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
-
   <h1>#{projectIterationHome.instance.project.name} : #{projectIterationHome.instance.name}</h1>
 
-  <p>#{projectIterationHome.instance.container.name}</p>
+  <h:form>
+    <rich:tabPanel switchType="ajax">
+      <s:conversationId/>
+      <rich:tab>
+        <f:facet name="label">Statistics</f:facet>
+        Stats
+      </rich:tab>
+      <rich:tab>
+        <f:facet name="label">Content Manager</f:facet>
+        <rich:tree style="width:45%; float:left;" nodeSelectListener="#{hProjectHome.processSelection}" 
+            reRender="detailsPanel" ajaxSubmitSelection="true"  switchType="client"
+            value="#{hProjectHome.rootNode}" var="item" ajaxKeys="#{null}" 
+            treeNodeVar="treeNode" nodeFace="#{hProjectHome.getNodeFace(treeNode.data)}">
+          <rich:treeNode type="folder" icon="/img/iconFolder.gif" iconLeaf="/img/iconFolder.gif">  
+            <h:outputText value="#{item}"/>
+          </rich:treeNode>        
+          <rich:treeNode type="doc"> 
+            <h:outputText value="#{item.name}"/> 
+          </rich:treeNode>        
+        </rich:tree>
+        <s:div id="detailsPanel" style="float:left;">
+          <s:div rendered="#{hProjectHome.isDocSelection()}">
+            <s:decorate template="../layout/edit.xhtml">
+              <ui:define name="label">Name</ui:define>
+              #{hProjectHome.docNode.data.name}
+            </s:decorate>
+            
+            <s:decorate template="../layout/edit.xhtml">
+              <ui:define name="label">Content Type</ui:define>
+              #{hProjectHome.docNode.data.contentType}
+            </s:decorate>
+    
+            <s:decorate template="../layout/edit.xhtml">
+              <ui:define name="label">Base Language</ui:define>
+              #{hProjectHome.docNode.data.locale}
+            </s:decorate>
+    
+            <s:decorate template="../layout/edit.xhtml">
+              <ui:define name="label">Version</ui:define>
+              #{hProjectHome.docNode.data.revision}
+            </s:decorate>
+          </s:div>
+          <s:div rendered="#{not hProjectHome.isDocSelection()}">
+            <em>Select a Document to view Details</em>
+          </s:div>
+        </s:div>
+        <div style="clear:both;"/>
+      </rich:tab>
+    </rich:tabPanel>
+  </h:form>
 
-  <h2>Content Manager</h2>
-  
   <rich:modalPanel id="panel" width="420" height="220">
     <f:facet name="header">Upload Project</f:facet>
     <p>This form allows you to upload an 
@@ -54,7 +100,7 @@
     </p>
     
     <h:form>
-      <rich:fileUpload fileUploadListener="#{olpUpload.listener}"
+      <rich:fileUpload fileUploadListener="#{hProjectHome.listener}"
           maxFilesQuantity="1"
           listHeight="80px;" 
           id="upload"
@@ -66,37 +112,6 @@
       </div>
     </h:form>
   </rich:modalPanel>
-
-  <h2>Tree</h2>
-  
-  <h:panelGrid columns="2" width="100%">
-    <h:column>
-      <rich:panel>
-        <f:facet name="header">Document Tree</f:facet>
-        <h:form>
-          <rich:tree style="width:300px" nodeSelectListener="#{hProjectHome.processSelection}" 
-              reRender="selectedNode" ajaxSubmitSelection="true"  switchType="client"
-              value="#{hProjectHome.rootNode}" var="item" ajaxKeys="#{null}" 
-              treeNodeVar="treeNode" nodeFace="#{hProjectHome.getNodeFace(treeNode.data)}">
-            <rich:treeNode type="folder" icon="/img/iconFolder.gif" iconLeaf="/img/iconFolder.gif">  
-              <h:outputText value="#{item}"/> <strong><em> <strike>fol</strike>der</em></strong>
-            </rich:treeNode>        
-            <rich:treeNode type="doc"> 
-              <h:outputText value=" val: #{item}"/> 
-            </rich:treeNode>        
-          </rich:tree>
-        </h:form>
-      </rich:panel>
-    </h:column>
-    <h:column>
-      <rich:panel>
-        <f:facet name="header">Details</f:facet>
-        <h:outputText id="selectedNode"
-            escape="false" 
-            value="Selected Node: #{hProjectHome.nodeTitle}"  />
-      </rich:panel>
-    </h:column>
-  </h:panelGrid>
 
 </ui:define>
 

@@ -43,6 +43,16 @@ public class HProject extends AbstractEntity{
 		}
 	}
 	
+	public void copy(net.openl10n.packaging.project.Project project){
+		this.name = project.getName();
+		this.summary = project.getSummary();
+		for(Document d : project.getDocuments() ){
+			HDocument doc = new HDocument(d);
+			this.getDocuments().add(doc);
+		}
+	}
+	
+	
 	@IndexColumn(name="pos",base=0,nullable=false)
 	@JoinColumn(name="project_id",nullable=false)
 	@OneToMany(cascade=CascadeType.ALL)

@@ -1,7 +1,9 @@
 package net.openl10n.packaging.jpa.document;
 
 import java.util.ArrayList;
+
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -56,7 +58,7 @@ public class HDocument extends AbstractEntity{
 	private Map<String, HResource> resources;
 	private List<HResource> resourceTree;
 	
-	private List<HDocumentTarget> targets = new ArrayList<HDocumentTarget>();
+	private Set<HDocumentTarget> targets;
 
 	public HDocument(String fullPath, String contentType) {
 		this(fullPath, contentType, LocaleId.EN_US);
@@ -233,11 +235,13 @@ public class HDocument extends AbstractEntity{
 	
 	@OneToMany(mappedBy = "template")
 	@OnDelete(action=OnDeleteAction.CASCADE)
-	public List<HDocumentTarget> getTargets() {
+	public Set<HDocumentTarget> getTargets() {
+		if(targets == null)
+			targets = new HashSet<HDocumentTarget>();
 		return targets;
 	}
 
-	public void setTargets(List<HDocumentTarget> targets) {
+	public void setTargets(Set<HDocumentTarget> targets) {
 		this.targets = targets;
 	}
 

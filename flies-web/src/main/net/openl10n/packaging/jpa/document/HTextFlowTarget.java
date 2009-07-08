@@ -58,9 +58,10 @@ public class HTextFlowTarget implements Serializable{
 	}
 	
 	public HTextFlowTarget(HDocumentTarget docTarget, HTextFlow textFlow) {
-		if(docTarget.getTemplate() != textFlow.getDocument()){
+/*		if(docTarget.getTemplate() != textFlow.getDocument()){
 			throw new IllegalStateException("docTarget and textFlow must reference same Document");
 		}
+		*/
 		this.documentTarget = docTarget;
 		this.locale = docTarget.getLocale();
 		this.textFlow = textFlow;
