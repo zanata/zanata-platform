@@ -180,6 +180,7 @@ public class HProjectHome extends EntityHome<HProject> {
 				ContentTarget contentTarget = docTargetPart.getContentTarget();
 				
 				HDocumentTarget hDocTarget = new HDocumentTarget(hDoc, contentTarget);
+				getEntityManager().persist(hDocTarget);
 				Iterator<TextFlowTarget> tftIt = contentTarget.getTextFlowTargets().iterator();
 				Iterator<HResource> tfIt = hDoc.getResourceTree().iterator();
 				while(tftIt.hasNext()) {
@@ -187,6 +188,7 @@ public class HProjectHome extends EntityHome<HProject> {
 					HTextFlow hTf = (HTextFlow) tfIt.next();
 					HTextFlowTarget hTft = new HTextFlowTarget(hDocTarget, hTf);
 					hTft.copy(tft);
+					getEntityManager().persist(hTft);
 				}
 			}
 		}

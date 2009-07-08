@@ -1,9 +1,15 @@
 package org.fedorahosted.flies.webtrans.action;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+
+import net.openl10n.adapters.LocaleId;
+import net.openl10n.packaging.jpa.document.HDocumentTarget;
+import net.openl10n.packaging.jpa.document.HTextFlowTarget;
+import net.openl10n.packaging.jpa.project.HProject;
 
 import org.fedorahosted.flies.core.model.Account;
 import org.fedorahosted.flies.core.model.FliesLocale;
@@ -49,8 +55,8 @@ public class TranslateAction {
 	@In(required=false, value=JpaIdentityStore.AUTHENTICATED_USER) 
 	Account authenticatedAccount;
 
-	private FliesLocale locale;
-	private ProjectIteration projectIteration;
+	private LocaleId locale;
+	private HProject project;
 
 	public String getWorkspaceId() {
 		return workspaceId;
@@ -60,67 +66,65 @@ public class TranslateAction {
 		this.workspaceId = workspaceId;
 	}
 	
-	public ProjectIteration getProjectIteration() {
-		return projectIteration;
+	public HProject getProject() {
+		return project;
 	}
 	
-	public void setProjectIteration(ProjectIteration projectIteration) {
-		this.projectIteration = projectIteration;
+	public void setProject(HProject project) {
+		this.project = project;
 	}
 	
-	public FliesLocale getLocale() {
+	public LocaleId getLocale() {
 		return locale;
 	}
 
-//	@DataModel
-//	private List<DocumentTarget> documentTargets;
-//
-//	@DataModelSelection(value="documentTargets")
-//	@Out(required=false)
-//	private DocumentTarget selectedDocumentTarget;
-
-/*
 	@DataModel
-	private List<TextUnitTarget> textUnitTargets;
-	
-	@DataModelSelection(value="textUnitTargets")
+	private List<HDocumentTarget> documentTargets;
+
+	@DataModelSelection(value="documentTargets")
 	@Out(required=false)
-	private TextUnitTarget selectedTextUnitTarget;
+	private HDocumentTarget selectedDocumentTarget;
+
+	@DataModel
+	private List<HTextFlowTarget> textFlowTargets;
+	
+	@DataModelSelection(value="textFlowTargets")
+	@Out(required=false)
+	private HTextFlowTarget selectedTextFlowTarget;
 	
 	public void selectDocumentTarget(){
 		log.info("selected {0}", selectedDocumentTarget.getTemplate().getName());
-		loadTextUnitTargets();
+		loadTextFlowTargets();
 	}
-	*/
-//	
-//	@Factory("documentTargets")
-//	public void loadDocumentTargets(){
-//		documentTargets = entityManager.createQuery("select d from DocumentTarget d " +
-//								"where d.locale = :locale and d.template.projectIteration = :iteration")
-//					.setParameter("locale", locale)
-//					.setParameter("iteration", projectIteration).getResultList();
-//	}
-/*
-	@Factory("textUnitTargets")
-	public void loadTextUnitTargets(){
-		log.info("retrieving textUnitTargets...");
+	
+	@Factory("documentTargets")
+	public void loadDocumentTargets(){
+		documentTargets = entityManager.createQuery("select d from HDocumentTarget d " +
+								"where d.locale = :locale and d.template.project = :project")
+					.setParameter("locale", locale)
+					.setParameter("project", project).getResultList();
+	}
+
+	@Factory("textFlowTargets")
+	public void loadTextFlowTargets(){
+		log.info("retrieving textFlowTargets...");
 		if(selectedDocumentTarget == null) {
 			log.info("none available...");
-			textUnitTargets =  Collections.EMPTY_LIST;
+			textFlowTargets =  Collections.EMPTY_LIST;
 		}
 		else {
-			log.info("retrieving entries. count: {0} ", selectedDocumentTarget.getEntries().size());
-			textUnitTargets = selectedDocumentTarget.getEntries();
+			log.info("retrieving entries. count: {0} ", selectedDocumentTarget.getTargets().size());
+			textFlowTargets =  new ArrayList<HTextFlowTarget>(selectedDocumentTarget.getTargets() );
 		}
 	}
 	
-	public void selectTextUnitTarget(){
-		log.info("selected {0}", selectedTextUnitTarget.getTemplate().getContent());
+	public void selectTextFlowTarget(){
+		log.info("selected {0}", selectedTextFlowTarget.getId() );
 	}
-*/
+
 	
 	public boolean isConversationActive(){
-		return projectIteration != null & locale != null; 
+		return project != null && locale != null; 
 	}
 	
 	public void initialize() {
@@ -138,8 +142,8 @@ public class TranslateAction {
 			try{
 				Long projectIterationId = Long.parseLong(ws[0]);
 				String localeId = ws[1];
-				projectIteration = entityManager.find(ProjectIteration.class, projectIterationId);
-				locale = entityManager.find(FliesLocale.class, localeId);
+				project = entityManager.find(HProject.class, projectIterationId);
+				locale = new LocaleId(localeId);
 				Person translator = entityManager.find(Person.class, authenticatedAccount.getPerson().getId());
 				getWorkspace().registerTranslator(translator);
 			}
@@ -150,7 +154,7 @@ public class TranslateAction {
 	}
 
 	public TranslationWorkspace getWorkspace(){
-		return translationWorkspaceManager.getOrRegisterWorkspace(projectIteration, locale);
+		return translationWorkspaceManager.getOrRegisterWorkspace(project, locale);
 	}
 	
 	@End
@@ -160,19 +164,16 @@ public class TranslateAction {
 	
 	public boolean ping(){
 		Person translator = entityManager.find(Person.class, authenticatedAccount.getPerson().getId());
-		log.info("ping {3} - {0}:{1} - {2}", 
-				this.projectIteration.getProject().getName(), 
-				this.projectIteration.getName(), 
-				this.locale.getId(),
+		log.info("ping {3} - {0} - {2}", 
+				this.project.getProjectId(), 
+				this.locale,
 				translator.getAccount().getUsername());
 		getWorkspace().registerTranslator(translator);
 		return true;
 	}
-	/*
 	public void persistChanges(){
-		if(selectedTextUnitTarget != null){
+		if(selectedTextFlowTarget != null){
 			entityManager.flush();
 		}
 	}
-	*/
 }

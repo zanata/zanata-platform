@@ -1,20 +1,22 @@
 package org.fedorahosted.flies.webtrans;
 
-import org.fedorahosted.flies.core.model.FliesLocale;
+import net.openl10n.adapters.LocaleId;
+import net.openl10n.packaging.jpa.project.HProject;
+
 import org.fedorahosted.flies.core.model.ProjectIteration;
 
 final class WorkspaceKey{
 	
-	private final ProjectIteration projectIteration;
-	private final FliesLocale locale;
+	private final HProject project;
+	private final LocaleId locale;
 	
-	public WorkspaceKey(ProjectIteration projectIteration, FliesLocale locale){
-		if(projectIteration == null)
-			throw new NullPointerException("projectIteration cannot be null");
+	public WorkspaceKey(HProject project, LocaleId locale){
+		if(project == null)
+			throw new IllegalArgumentException("project");
 		if(locale == null)
-			throw new NullPointerException("locale cannot be null");
+			throw new IllegalArgumentException("locale");
 		
-		this.projectIteration = projectIteration;
+		this.project = project;
 		this.locale = locale;
 	}
 	
@@ -23,15 +25,15 @@ final class WorkspaceKey{
 		if(obj == null) return false;
 		if( !(obj instanceof WorkspaceKey) ) return false;
 		WorkspaceKey other = (WorkspaceKey) obj;
-		return ( other.locale.getId().equals(locale.getId()) 
-				&& other.projectIteration.getId().equals(projectIteration.getId()));
+		return ( other.locale.equals(locale) 
+				&& other.project.getId().equals(project.getId()));
 	}
 	
 	@Override
 	public int hashCode() {
 	    int hash = 1;
-	    hash = hash * 31 + locale.getId().hashCode();
-	    hash = hash * 31 + projectIteration.getId().hashCode();
+	    hash = hash * 31 + locale.hashCode();
+	    hash = hash * 31 + project.getId().hashCode();
 	    return hash;
 	}
 	

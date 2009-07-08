@@ -10,8 +10,8 @@
     xmlns:a4j="http://richfaces.org/a4j"
     template="layout/template_fullpage.xhtml">
     <ui:define name="page-title">
-      #{translateAction.projectIteration.project.name} (#{translateAction.projectIteration.name}) 
-      to #{translateAction.locale.nativeName} - 
+      #{translateAction.project.name} (#{translateAction.project.projectId}) 
+      to #{translateAction.locale} - 
     </ui:define>
     <ui:define name="left_content">
 
@@ -24,14 +24,11 @@
         <h:form>
 		    <rich:dataTable id="documentsTable" value="#{documentTargets}" var="doc" rows="15" reRender="ds" rowClasses="docrow">
 		      <rich:column filterBy="#{doc.template.name}" filterEvent="onkeyup">
-   	            <a4j:commandLink reRender="documentsTable,titleofDocument,textUnitTable" action="#{translateAction.selectDocumentTarget}"
-		      	  rendered="#{selectedDocumentTarget != doc}">
+   	            <a4j:commandLink reRender="documentsTable,titleofDocument,textFlowTable" action="#{translateAction.selectDocumentTarget}"
+		      	  >
 		      		<s:conversationId name="wid"/>
                 	<h:outputText value="#{doc.template.name}" /> 
             	  </a4j:commandLink>
-               	  <strong>
-               	    <h:outputText value="#{doc.template.name}" rendered="#{selectedDocumentTarget == doc}"/>
-               	  </strong> 
 		      </rich:column>
               <f:facet name="footer">
                 <rich:datascroller id="ds" rendered="#{documentTargets.size > 50}" styleClass="datacsr-mini"></rich:datascroller>
@@ -53,10 +50,12 @@
             <div class="translator_color_block translator_color_block_#{translator.id}"/>
           </rich:column>
         </rich:dataTable>
+        <!-- 
         <h3 style="border-bottom:1px solid;">Chat</h3>
         <strong>Asgeir:</strong> hello world...<br/>
         <strong>Admin:</strong> let them eat cake..
         <h:inputTextarea value="hello world" style="width:100%; height:50px;"/>
+         -->
       </rich:panel>
       
     </ui:define>
@@ -70,13 +69,14 @@
         </f:facet>
         
         <h:form>
-        <rich:extendedDataTable id="textUnitTable" 
-            width="auto" value="#{textUnitTargets}" var="tut" rows="50" height="450px;" reRender="tuds">
+        <rich:dataTable id="textFlowTable" 
+            width="auto" value="#{textFlowTargets}" var="tut" rows="50" height="450px;" reRender="tuds"
+            rowClasses="odd,even">
           <rich:column width="48%">
             <f:facet name="header">
                 Source
               </f:facet>
-              #{tut.template.content}
+              #{tut.textFlow.content}
           </rich:column>
           <rich:column width="48%">
               <f:facet name="header">
@@ -85,21 +85,21 @@
                #{tut.content}
           </rich:column>
             <rich:column>
-              <a4j:commandLink reRender="translationWidget,tuInfoPanel" action="#{translateAction.selectTextUnitTarget}">
+              <a4j:commandLink reRender="translationWidget,tuInfoPanel" action="#{translateAction.selectTextFlowTarget}">
             <s:conversationId name="wid"/>
                   <img src="#{request.contextPath}/img/silk/page_edit.png" alt="Translate"/>
               </a4j:commandLink>
             </rich:column>
             <f:facet name="footer">
-              <rich:datascroller id="tuds" rendered="#{textUnitTargets.size > 50}"></rich:datascroller>
+              <rich:datascroller id="tuds" rendered="#{textFlowTargets.size > 50}"></rich:datascroller>
             </f:facet>
-        </rich:extendedDataTable>
+        </rich:dataTable>
         </h:form>
         <h:form id="translationWidget" style="font-size:133%;">
           <div style="width:99%; padding:4px;">
-            <h:outputText value="#{selectedTextUnitTarget.template.content}" disabled="#{selectedDocumentTarget == null}"/>
+            <h:outputText value="#{selectedTextFlowTarget.textFlow.content}" disabled="#{selectedDocumentTarget == null}"/>
           </div>
-          <h:inputTextarea id="editorArea" value="#{selectedTextUnitTarget.content}" 
+          <h:inputTextarea id="editorArea" value="#{selectedTextFlowTarget.content}" 
             disabled="#{selectedDocumentTarget == null}"
             style="width:99%;" rows="6">
           </h:inputTextarea>
@@ -107,7 +107,7 @@
               <rich:menuItem value="Zoom In" onclick="alert('a');" id="zin"></rich:menuItem>
               <rich:menuItem value="Zoom Out" onclick="alert('b');" id="zout"></rich:menuItem>
           </rich:contextMenu>          
-          <a4j:commandButton action="#{translateAction.persistChanges}" reRender="textUnitTable"  value="save" />
+          <a4j:commandButton action="#{translateAction.persistChanges}" reRender="textFlowTable"  value="save" />
         </h:form>
       </rich:panel>
 
@@ -116,8 +116,8 @@
     <ui:define name="right_content">
       <rich:panel id="tuInfoPanel">
         <f:facet name="header">Translation Unit Information</f:facet>
-        <s:div rendered="#{selectedTextUnitTarget == null}">No unit selected</s:div>
-        <s:div rendered="#{selectedTextUnitTarget != null}">
+        <s:div rendered="#{selectedTextFlowTarget == null}">No unit selected</s:div>
+        <s:div rendered="#{selectedTextFlowTarget != null}">
           <strong>Last Translator: </strong>Asgeir Frimannsson <em>(25 Mar 2009 20:13:13)</em><br/>
         </s:div>
       </rich:panel>
