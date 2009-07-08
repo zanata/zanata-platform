@@ -19,7 +19,7 @@ ChiliBook = { //implied global
 // options --------------------------------------------------------------------
 
 	, automatic:          true
-	, automaticSelector:  "code"
+	, automaticSelector:  "p"
 
 	, lineNumbers:        !true
 
@@ -32,9 +32,9 @@ ChiliBook = { //implied global
 	, recipeFolder:       "" // used like: recipeFolder + recipeName + '.js'
 
 	// IE and FF convert &#160; to "&nbsp;", Safari and Opera do not
-	, replaceSpace:       "&#160;"
-	, replaceTab:         "&#160;&#160;&#160;&#160;"
-	, replaceNewLine:     "&#160;<br/>"
+	, replaceSpace:       " "
+	, replaceTab:         " "
+	, replaceNewLine:     " "
 
 	, selectionStyle:     [ "position:absolute; z-index:3000; overflow:scroll;"
 						  , "width:16em;"

@@ -61,11 +61,11 @@ WEBSITE: http://noteslog.com/chili/
 		// like "</div>"
 		, tag_end: { 
 			  _match: /<\/\w+\s*>|\/>/ 
-			, _style: "color: navy;"
+			, _style: "color: navy; font-weight: bold;"
 		}
 		, entity: { 
 			  _match: /&\w+?;/ 
-			, _style: "color: blue;"
+			, _style: "color: blue; font-weight: bold;"
 		}
 	}
 	, tag_attrs: {
