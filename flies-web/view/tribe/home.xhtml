@@ -8,6 +8,13 @@
     xmlns:rich="http://richfaces.org/rich"
     template="../layout/template.xhtml">
 
+    <ui:define name="left_content">
+      <rich:panel>
+        <f:facet name="header">Actions</f:facet>
+        <a href="#" class="action_link">Your Tribe Missing?</a>
+      </rich:panel>
+    </ui:define>
+
     <ui:define name="center_content">
         <rich:jQuery selector="#tab_tribes" query="addClass('ui-tabs-selected')" />
         <h1>Tribes</h1>

@@ -11,6 +11,11 @@
     >
     
     <ui:define name="left_content">
+      <rich:panel>
+        <f:facet name="header">Actions</f:facet>
+        <a href="#" class="action_link">Edit Profile</a>
+        <a href="#" class="action_link">Change Password</a>
+      </rich:panel>
     </ui:define>
     
     <ui:define name="center_content">
@@ -62,14 +67,14 @@
           </rich:dataGrid>
         </s:div>
         <h2>API Key</h2>
-        <a4j:form>
+        <h:form>
           <s:span id="no_api_key" rendered="#{personHome.instance.account.apiKey == null}">(Not Generated)</s:span>
           <s:fragment id="api_key" rendered="#{personHome.instance.account.apiKey != null}"> 
             <p>Your current API Key is
               <code>#{personHome.instance.account.apiKey}</code> 
             </p>
           </s:fragment>
-          <a4j:commandButton action="#{personHome.regenerateApiKey}" value="Regenerate API Key" reRender="api_key,no_api_key" />
-	    </a4j:form>
+          <h:commandButton action="#{personHome.regenerateApiKey}" value="Regenerate API Key" reRender="api_key,no_api_key" />
+	    </h:form>
     </ui:define>
 </ui:composition>
