@@ -323,6 +323,14 @@ tr.even {
 	background-color: #fafaff;
 }
 
+tr.active-row {
+	background-color: #FFEBDA;
+}
+
+.amh{
+	display: none;
+}
+
 td.enabled {
 	text-align: center;
 }

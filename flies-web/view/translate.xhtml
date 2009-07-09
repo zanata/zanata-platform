@@ -82,22 +82,41 @@
               <p class="html">#{tut.textFlow.content}</p>
           </rich:column>
           <rich:column width="48%"  filterBy="#{tut.content}" filterEvent="onkeyup">
-              <f:facet name="header">
-                Target
-              </f:facet>
-               <p class="html">#{tut.content}</p>
-          </rich:column>
-            <rich:column>
-              <a4j:commandLink reRender="translationWidget,tuInfoPanel" action="#{translateAction.selectTextFlowTarget}">
-            <s:conversationId name="wid"/>
-                  <img src="#{request.contextPath}/img/silk/page_edit.png" alt="Translate"/>
-              </a4j:commandLink>
-            </rich:column>
-            <f:facet name="footer">
-              <rich:datascroller id="tuds" rendered="#{textFlowTargets.size > 50}"></rich:datascroller>
+            <f:facet name="header">
+              Target
             </f:facet>
+            <div class="tuPane" style="position: relative;">
+              <div class="tuContent" style="float:left;background-color:yellow; %;margin-right:20px;">
+                <p class="html">#{tut.content}</p>  
+              </div>
+              <div class="actionButtons" style="position: absolute; right:0px; top:0px; width:20px;">
+                <a4j:commandLink id="edit_link" styleClass="amh" reRender="translationWidget,tuInfoPanel" action="#{translateAction.selectTextFlowTarget}" >            
+                  <s:conversationId name="wid"/>
+                  <img src="#{request.contextPath}/img/silk/page_edit.png" alt="Translate"/>
+                </a4j:commandLink>
+              </div>
+              
+            </div>
+          </rich:column>
+          <f:facet name="footer">
+            <rich:datascroller id="tuds" rendered="#{textFlowTargets.size > 50}"></rich:datascroller>
+          </f:facet>
         </rich:dataTable>
-        </h:form>
+        
+        <!-- The hover row coloring -->
+        <rich:jQuery selector="#textFlowTable tr" 
+            query="mouseover(function(){jQuery(this).addClass('active-row')})"/>
+        <rich:jQuery selector="#textFlowTable tr" 
+            query="mouseout(function(){jQuery(this).removeClass('active-row')})" />
+            
+        <!-- The hover row coloring -->
+        <rich:jQuery selector="#textFlowTable tr" 
+            query="mouseover(function(){jQuery(this).find('.amh').fadeIn('fast').removeClass('amh').addClass('amh-active')})"/>
+        <rich:jQuery selector="#textFlowTable tr" 
+            query="mouseout(function(){jQuery(this).find('.amh-active').fadeOut('fast').removeClass('amh-active').addClass('amh')})"/>
+                    
+      </h:form>
+        
         <h:form id="translationWidget" style="font-size:133%;">
           <div style="width:99%; padding:4px;">
             <p style="html">
