@@ -30,7 +30,7 @@
     </s:link>
     <h:outputLink styleClass="action_link" value="#" id="link">
       Upload Project
-      <rich:componentControl for="panel" attachTo="link" operation="show" event="onclick"/>
+      <rich:componentControl for="upload_panel" attachTo="link" operation="show" event="onclick"/>
     </h:outputLink>
     
   </rich:panel>
@@ -91,7 +91,7 @@
     </rich:tabPanel>
   </h:form>
 
-  <rich:modalPanel id="panel" width="420" height="220">
+  <rich:modalPanel id="upload_panel" width="420" height="220">
     <f:facet name="header">Upload Project</f:facet>
     <p>This form allows you to upload an 
       <a href="http://openl10n.googlecode.com/">Open Localisation Project</a>
@@ -105,10 +105,11 @@
           listHeight="80px;" 
           id="upload"
           immediateUpload="true"
+          onuploadcomplete="#{rich:component('upload_panel')}.hide()"
           acceptedTypes="olp, zip" allowFlash="false">
       </rich:fileUpload>    
       <div class="actionButtons">
-        <h:commandButton value="Cancel"  onclick="#{rich:component('panel')}.hide()"/>
+        <h:commandButton value="Close"  onclick="#{rich:component('upload_panel')}.hide()"/>
       </div>
     </h:form>
   </rich:modalPanel>
