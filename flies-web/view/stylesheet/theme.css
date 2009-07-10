@@ -327,9 +327,35 @@ tr.active-row {
 	background-color: #FFEBDA;
 }
 
-.amh{
+.tuEditMode{
 	display: none;
 }
+
+.tuViewMode{
+	
+}
+
+.tuSourceContent, .tuTargetContent{
+	padding: 3px;
+}
+.tuTargetContent .tuViewMode{
+	border: 2px solid grey;
+	-moz-border-radius: 5px;
+}
+
+.tuActionButtons {
+	position: absolute; 
+	right:17px; 
+	bottom:5px;
+	padding: 3px;
+	border: 1px solid #dadadf;
+	background-color: #fafaff;
+	margin: 0px;
+	width: auto;
+	display: inline;
+	-moz-border-radius: 3px;
+}
+
 
 td.enabled {
 	text-align: center;

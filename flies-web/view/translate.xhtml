@@ -75,65 +75,68 @@
           <f:facet name="header">
               <rich:datascroller id="tuds2" rendered="#{textFlowTargets.size > 50}"></rich:datascroller>
           </f:facet>
-          <rich:column width="48%" filterBy="#{tut.textFlow.content}" filterEvent="onkeyup" >
+          <rich:column width="50%" filterBy="#{tut.textFlow.content}" filterEvent="onkeyup" >
             <f:facet name="header">
                 Source
               </f:facet>
-              <p class="html">#{tut.textFlow.content}</p>
+              <div id="tuTargetContent" class="tuSourceContent">
+                <p class="html">#{tut.textFlow.content}</p>
+              </div>
           </rich:column>
-          <rich:column width="48%"  filterBy="#{tut.content}" filterEvent="onkeyup">
+          <rich:column width="50%"  filterBy="#{tut.content}" filterEvent="onkeyup">
             <f:facet name="header">
               Target
             </f:facet>
-            <div class="tuPane" style="position: relative;">
-              <div class="tuContent" style="float:left;background-color:yellow; %;margin-right:20px;">
-                <p class="html">#{tut.content}</p>  
+            <div class="tuPane" style="position: relative;" >
+              <h:inputTextarea id="tuTargetContentEdit" value="#{selectedTextFlowTarget.content}" styleClass="tuTargetContent tuEditMode"/>
+              <div id="tuTargetContentView" class="tuTargetContent tuViewMode">
+                <p class="html">#{tut.content}</p>
               </div>
-              <div class="actionButtons" style="position: absolute; right:0px; top:0px; width:20px;">
-                <a4j:commandLink id="edit_link" styleClass="amh" reRender="translationWidget,tuInfoPanel" action="#{translateAction.selectTextFlowTarget}" >            
+              <div class="tuActionButtons">
+                <a4j:commandLink id="edit_link" styleClass="tuViewMode" reRender="translationWidget,tuInfoPanel" action="#{translateAction.selectTextFlowTarget}" >            
                   <s:conversationId name="wid"/>
                   <img src="#{request.contextPath}/img/silk/page_edit.png" alt="Translate"/>
                 </a4j:commandLink>
+                <a4j:commandLink action="#{translateAction.persistChanges}" id="edit_save_link" styleClass="tuEditMode" reRender="tuTargetContentView">
+                  <s:conversationId name="wid"/>
+                  <img src="#{request.contextPath}/img/silk/tick.png"/>
+                </a4j:commandLink>
+                <h:outputLink id="edit_cancel_link" value="#" styleClass="tuEditMode">
+                  <img src="#{request.contextPath}/img/silk/cross.png"/>
+                </h:outputLink>
+                
+                <h:outputLink id="edit_prev_link" value="#" styleClass="tuEditMode">
+                  <img src="#{request.contextPath}/img/silk/resultset_previous.png"/>
+                </h:outputLink>
+                <h:outputLink id="edit_next_link" value="#" styleClass="tuEditMode">
+                  <img src="#{request.contextPath}/img/silk/resultset_next.png"/>
+                </h:outputLink>
+                
               </div>
               
             </div>
+            
+            <rich:jQuery selector="#edit_link" 
+                query="click(function(){ jQuery(this).closest('tr').find('.tuViewMode').hide(); jQuery(this).closest('tr').find('.tuEditMode').show(); })"/>
+            <rich:jQuery selector="#edit_cancel_link" 
+                query="click(function(){ jQuery(this).closest('tr').find('.tuEditMode').hide(); jQuery(this).closest('tr').find('.tuViewMode').show(); })"/>
+
           </rich:column>
           <f:facet name="footer">
             <rich:datascroller id="tuds" rendered="#{textFlowTargets.size > 50}"></rich:datascroller>
           </f:facet>
         </rich:dataTable>
         
-        <!-- The hover row coloring -->
-        <rich:jQuery selector="#textFlowTable tr" 
-            query="mouseover(function(){jQuery(this).addClass('active-row')})"/>
-        <rich:jQuery selector="#textFlowTable tr" 
-            query="mouseout(function(){jQuery(this).removeClass('active-row')})" />
+      </h:form>
+      </rich:panel>
             
         <!-- The hover row coloring -->
         <rich:jQuery selector="#textFlowTable tr" 
-            query="mouseover(function(){jQuery(this).find('.amh').fadeIn('fast').removeClass('amh').addClass('amh-active')})"/>
+            query="hover(function(){jQuery(this).addClass('active-row')}, function(){jQuery(this).removeClass('active-row')})"/>
         <rich:jQuery selector="#textFlowTable tr" 
-            query="mouseout(function(){jQuery(this).find('.amh-active').fadeOut('fast').removeClass('amh-active').addClass('amh')})"/>
-                    
-      </h:form>
-        
-        <h:form id="translationWidget" style="font-size:133%;">
-          <div style="width:99%; padding:4px;">
-            <p style="html">
-              <h:outputText value="#{selectedTextFlowTarget.textFlow.content}" disabled="#{selectedDocumentTarget == null}"/>
-            </p>
-          </div>
-          <h:inputTextarea id="editorArea" value="#{selectedTextFlowTarget.content}" 
-            disabled="#{selectedDocumentTarget == null}"
-            style="width:99%;" rows="6">
-          </h:inputTextarea>
-          <rich:contextMenu event="oncontextmenu" attachTo="editorArea" submitMode="none">
-              <rich:menuItem value="Zoom In" onclick="alert('a');" id="zin"></rich:menuItem>
-              <rich:menuItem value="Zoom Out" onclick="alert('b');" id="zout"></rich:menuItem>
-          </rich:contextMenu>          
-          <a4j:commandButton action="#{translateAction.persistChanges}" reRender="textFlowTable"  value="save" />
-        </h:form>
-      </rich:panel>
+            query="ready(function(){jQuery(this).find('.tuSourceContent, .tuTargetContent').equalizeCols()})"/>
+        <rich:jQuery selector="#textFlowTable tr" 
+            query="ready(function(){jQuery(this).find('.tuTargetContent, .tuPane').equalizeWidths()})"/>
 
     </ui:define>
 
@@ -142,13 +145,13 @@
         <f:facet name="header">Translation Unit Information</f:facet>
         <s:div rendered="#{selectedTextFlowTarget == null}">No unit selected</s:div>
         <s:div rendered="#{selectedTextFlowTarget != null}">
-          <strong>Last Translator: </strong>Asgeir Frimannsson <em>(25 Mar 2009 20:13:13)</em><br/>
+          <strong>Last Translator: </strong> <em>Unknown</em><br/>
         </s:div>
       </rich:panel>
       <br/>
       <rich:panel>
         <f:facet name="header">Terminology</f:facet>
-        (Show Relevant Terminology here)
+        <em>No Glossaries defined</em>
       </rich:panel>
     </ui:define>
     
