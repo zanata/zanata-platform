@@ -355,6 +355,10 @@ tr.active-row {
 	display: inline;
 	-moz-border-radius: 3px;
 }
+.extdt-cell-div {
+	overflow: inherit;
+	white-space: inherit;
+}
 
 
 td.enabled {
