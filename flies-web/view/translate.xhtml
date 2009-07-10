@@ -69,7 +69,7 @@
         </f:facet>
         
         <h:form>
-        <rich:dataTable id="textFlowTable" 
+        <rich:extendedDataTable id="textFlowTable" 
             width="auto"  value="#{textFlowTargets}" var="tut" rows="50" height="500px;" reRender="tuds"
             rowClasses="odd,even">
           <f:facet name="header">
@@ -123,9 +123,9 @@
 
           </rich:column>
           <f:facet name="footer">
-            Controls go here!
+            #{textFlowTargets.size} translation units. 
           </f:facet>
-        </rich:dataTable>
+        </rich:extendedDataTable>
         
       </h:form>
       </rich:panel>
