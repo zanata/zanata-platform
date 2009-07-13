@@ -47,7 +47,7 @@
 
 <ui:define name="left_content">
   
-  <rich:panel>
+  <rich:panel rendered="#{identity.loggedIn}">
     <f:facet name="header">Actions</f:facet>
     <s:link styleClass="action_link" value="Edit Project" view="/project/edit.xhtml" propagation="none">
       <f:param name="slug" value="#{projectHome.instance.slug}"/>

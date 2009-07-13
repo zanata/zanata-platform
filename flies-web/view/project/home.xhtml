@@ -13,13 +13,11 @@
   </ui:define>
 
   <ui:define name="left_content">
-    <rich:panel>
+    <rich:panel rendered="#{identity.loggedIn}">
       <f:facet name="header">Actions</f:facet>
       <s:link styleClass="action_link" value="Create project" 
                     view="/project/create_project.xhtml"
                     propagation="none"/>
-      <s:link styleClass="action_link" value="Manage Repository" view="/project/repositorylist.xhtml"/>
-      <s:link styleClass="action_link" value="Upload PO File" view="/project/uploadfile.xhtml"/>
     </rich:panel>
   </ui:define>  
   <ui:define name="center_content">

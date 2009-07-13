@@ -22,7 +22,7 @@
 </ui:define>
 
 <ui:define name="left_content">
-  <rich:panel>
+  <rich:panel rendered="#{identity.loggedIn}">
     <f:facet name="header">Actions</f:facet>
     <s:link styleClass="action_link" view="/project/iteration_edit.xhtml" propagation="none">
       <f:param name="mslug" value="#{projectIterationHome.multiSlug}"/>
