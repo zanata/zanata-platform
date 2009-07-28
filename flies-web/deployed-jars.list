@@ -15,7 +15,7 @@ mvel14.jar
 richfaces-api.jar
 richfaces-impl.jar
 richfaces-ui.jar
-flies-richfaces-ui.jar
+flies-ui.jar
 joda-time.jar
 icu4j.jar
 commons-lang.jar

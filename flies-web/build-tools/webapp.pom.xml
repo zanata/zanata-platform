@@ -146,8 +146,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.fedorahosted.flies</groupId>
-			<artifactId>flies-richfaces-ui</artifactId>
+			<groupId>org.fedorahosted.flies.ui</groupId>
+			<artifactId>flies-ui</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 

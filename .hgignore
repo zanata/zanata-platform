@@ -24,9 +24,9 @@ syntax: regexp
 ^flies-web-test/test-output/
 
 # flies-richfaces-ui
-^flies-richfaces-ui/.classpath
-^flies-richfaces-ui/.project
-^flies-richfaces-ui/.settings/
+^flies-richfaces-ui/(translation-status-bar|assembly)/.classpath
+^flies-richfaces-ui/(translation-status-bar|assembly)/.project
+^flies-richfaces-ui/(translation-status-bar|assembly)/.settings/
 
 
 # ant-eclipse-classpath
