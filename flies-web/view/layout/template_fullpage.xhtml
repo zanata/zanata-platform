@@ -22,8 +22,6 @@
     <a:loadStyle src="/stylesheet/base-min.css"/>
     <a:loadStyle src="/stylesheet/theme.css"/>
 
-
-    
     <script type="text/javaScript" src="#{request.contextPath}/javascript/chili/jquery.chili-2.2.js"></script> 
     <script type="text/javascript" src="#{request.contextPath}/javascript/splitter.js"></script>
     <script type="text/javascript" src="#{request.contextPath}/javascript/jquery.cookie.js"></script>
@@ -31,7 +29,6 @@
         ChiliBook.automatic = true;
         ChiliBook.recipeFolder = "#{request.contextPath}/javascript/chili/";  
      </script> 
-
 
 <style type="text/css" media="all">
 html, body
@@ -42,15 +39,14 @@ html, body
 }
 #header { padding: 1em; }
 
-#main {
+#LeftAndCenterSplitter {
 	/* Height is set to match window size in $().ready() below */
-	border: 3px solid #669;
 	min-width:  600px;
 	min-height: 600px;
 }
 .vsplitbar {
 	width: 6px;
-	background: #669 url(img/vgrabber.gif) no-repeat center;
+	background: url(img/vgrabber.gif) no-repeat center;
 }
 .vsplitbar.active, .vsplitbar:hover {
 	background-color: #c66;
@@ -85,43 +81,29 @@ html, body
       </div>
     </div>
   <div id="bd" style="margin-top: 20px;">
-    <div id="main">
+    <div id="LeftAndCenterSplitter">
       <div>
         <ui:insert name="left_content"/>
       </div><!--left_content-->    
-      <div id="cen">
-         <div> <!-- the "special grid" --> 
-            <div>
-              
+      <div id="CenterAndRightSplitter">
+         <div id="grid"> <!-- the "special grid" --> 
               <a:outputPanel ajaxRendered="true">
                 <h:messages id="messages" globalOnly="true" styleClass="message"
                     errorClass="errormsg" infoClass="infomsg" warnClass="warnmsg"
                     rendered="#{showGlobalMessages != 'false'}"/>
               </a:outputPanel>
-              
               <div id="main_body_content">
                <ui:insert name="center_content"/>
               </div>
-            </div> 
          </div> 
          <div>
               <ui:insert name="right_content"/>
          </div> 
-      </div><!--yui-cen-->
-    </div><!--yui-main-->
-    <rich:jQuery selector="#main" name="vertSplit" query="splitter({type: 'v',minLeft: '100', sizeLeft: '150', maxLeft: '250', cookie:'lsplitter'})" timing="onload"/>
-    <rich:jQuery selector="#cen" name="vertSplit" query="splitter({type: 'v',minRight: '100', sizeRight: '150', maxRight: '250',cookie:'rsplitter'})" timing="onload"/> 
-
- </div><!--bd-->
-    <div id="ft">
-      <div id="footer">
-        Copyright 2008 <a href="http://www.redhat.com/">Red Hat</a> and Others. 
-        Powered by <a href="http://jboss.com/products/seam">Seam</a>. 
-        <s:fragment rendered="#{fliesInit.debug}">
-    	    <br/>Running version #{fliesInit.version}.
-        </s:fragment>
-      </div>
-   </div>
+      </div><!--CenterAndRightSplitter-->
+    </div><!--LeftAndCenterSplitter-->
+    <rich:jQuery selector="#LeftAndCenterSplitter" name="lvertSplit" query="splitter({type: 'v',minLeft: '100', sizeLeft: '150', maxLeft: '250', cookie:'lsplitter',outline: 'true', anchorToWindow:'true'})" timing="onload"/>
+    <rich:jQuery selector="#CenterAndRightSplitter" name="rvertSplit" query="splitter({type: 'v',minRight: '100', sizeRight: '150', maxRight: '500',cookie:'rsplitter',outline: 'true'})" timing="onload"/> 
+    </div><!--bd-->
 </div><!--doc3-->
 </body>
 </html>
