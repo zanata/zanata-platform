@@ -18,11 +18,15 @@
     </title>
     
     <link rel="shortcut icon" href="#{request.contextPath}/img/favicon.ico" type="image/x-icon"/>
-    
+    <a:loadStyle src="/stylesheet/reset-fonts-grids.css"/>
+    <a:loadStyle src="/stylesheet/base-min.css"/>
+    <a:loadStyle src="/stylesheet/theme.css"/>
+
 
     
     <script type="text/javaScript" src="#{request.contextPath}/javascript/chili/jquery.chili-2.2.js"></script> 
     <script type="text/javascript" src="#{request.contextPath}/javascript/splitter.js"></script>
+    <script type="text/javascript" src="#{request.contextPath}/javascript/jquery.cookie.js"></script>
     <script id="setup" type="text/javascript"> 
         ChiliBook.automatic = true;
         ChiliBook.recipeFolder = "#{request.contextPath}/javascript/chili/";  
@@ -38,7 +42,7 @@ html, body
 }
 #header { padding: 1em; }
 
-#yui-main {
+#main {
 	/* Height is set to match window size in $().ready() below */
 	border: 3px solid #669;
 	min-width:  600px;
@@ -81,13 +85,13 @@ html, body
       </div>
     </div>
   <div id="bd" style="margin-top: 20px;">
-    <div id="yui-main">
-      <div class="yui-b">
+    <div id="main">
+      <div>
         <ui:insert name="left_content"/>
       </div><!--left_content-->    
-      <div id="yui-cen" class="yui-b">
-         <div class="yui-gc"> <!-- the "special grid" --> 
-            <div class="yui-u first">
+      <div id="cen">
+         <div> <!-- the "special grid" --> 
+            <div>
               
               <a:outputPanel ajaxRendered="true">
                 <h:messages id="messages" globalOnly="true" styleClass="message"
@@ -100,13 +104,13 @@ html, body
               </div>
             </div> 
          </div> 
-         <div class="yui-u">
+         <div>
               <ui:insert name="right_content"/>
          </div> 
       </div><!--yui-cen-->
     </div><!--yui-main-->
-    <rich:jQuery selector="#yui-main" name="vertSplit" query="splitter({type: 'v',minLeft: '100', sizeLeft: '150', maxLeft: '250'})" timing="onload"/>
-    <rich:jQuery selector="#yui-cen" name="vertSplit" query="splitter({type: 'v',minRight: '100', sizeRight: '150', maxRight: '250'})" timing="onload"/> 
+    <rich:jQuery selector="#main" name="vertSplit" query="splitter({type: 'v',minLeft: '100', sizeLeft: '150', maxLeft: '250', cookie:'lsplitter'})" timing="onload"/>
+    <rich:jQuery selector="#cen" name="vertSplit" query="splitter({type: 'v',minRight: '100', sizeRight: '150', maxRight: '250',cookie:'rsplitter'})" timing="onload"/> 
 
  </div><!--bd-->
     <div id="ft">
