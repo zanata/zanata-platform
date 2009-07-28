@@ -63,72 +63,64 @@
     <ui:define name="center_content">
       <rich:jQuery selector="#tab_home" query="addClass('ui-tabs-selected')" />
 
-      <rich:panel bodyClass="panel-body-no-padding">
+      <h:form>
+      <rich:panel bodyClass="panel-body-no-padding" style="height:100%;">
         <f:facet name="header">
           <s:span id="titleofDocument">${selectedDocumentTarget.template.name}</s:span>
+          <rich:datascroller for="textFlowTable" id="tuds" rendered="#{textFlowTargets.size > 50}"></rich:datascroller>
         </f:facet>
         
-        <h:form>
-        <rich:extendedDataTable id="textFlowTable" 
-            width="auto"  value="#{textFlowTargets}" var="tut" rows="50" height="500px;" reRender="tuds"
-            rowClasses="odd,even">
-          <f:facet name="header">
-              <rich:datascroller id="tuds" rendered="#{textFlowTargets.size > 50}"></rich:datascroller>
-          </f:facet>
-          <rich:column label="Source" width="50%" filterBy="#{tut.textFlow.content}" filterEvent="onkeyup" >
-            <f:facet name="header">
-                Source
-              </f:facet>
-              <div id="tuTargetContent" class="tuSourceContent">
-                <p class="html">#{tut.textFlow.content}</p>
-              </div>
-          </rich:column>
-          <rich:column label="Target"  width="50%" filterBy="#{tut.content}" filterEvent="onkeyup">
-            <f:facet name="header">
-              Target
-            </f:facet>
-            <div class="tuPane" style="position: relative;" >
-              <h:inputTextarea id="tuTargetContentEdit" value="#{tut.content}" styleClass="tuTargetContent tuEditMode" style="width:80%;"/>
-              <div id="tuTargetContentView" class="tuTargetContent tuViewMode">
-                <p class="html">#{tut.content}</p>
-              </div>
-              <div class="tuActionButtons">
-                <a4j:commandLink id="edit_link" styleClass="tuViewMode" reRender="translationWidget,tuInfoPanel" action="#{translateAction.selectTextFlowTarget}" >            
-                  <s:conversationId name="wid"/>
-                  <img src="#{request.contextPath}/img/silk/page_edit.png" alt="Translate"/>
-                </a4j:commandLink>
-                <a4j:commandLink action="#{translateAction.persistChanges}" id="edit_save_link" styleClass="tuEditMode" reRender="tuTargetContentView">
-                  <s:conversationId name="wid"/>
-                  <img src="#{request.contextPath}/img/silk/tick.png"/>
-                </a4j:commandLink>
-                <h:outputLink id="edit_cancel_link" value="#" styleClass="tuEditMode">
-                  <img src="#{request.contextPath}/img/silk/cross.png"/>
-                </h:outputLink>
-                
-                <h:outputLink id="edit_prev_link" value="#" styleClass="tuEditMode">
-                  <img src="#{request.contextPath}/img/silk/resultset_previous.png"/>
-                </h:outputLink>
-                <h:outputLink id="edit_next_link" value="#" styleClass="tuEditMode">
-                  <img src="#{request.contextPath}/img/silk/resultset_next.png"/>
-                </h:outputLink>
+        <div style="height: 500px; width: 100%; overflow:auto">
+          <rich:dataTable id="textFlowTable" 
+              width="auto"  value="#{textFlowTargets}" var="tut" rows="50" height="auto" reRender="tuds"
+              rowClasses="odd,even" selection="#{translateAction.selectedRow}" >
+            <rich:column label="Source" width="50%" style="overflow:hidden;">
+                <div id="tuTargetContent" class="tuSourceContent">
+                  <p class="html">#{tut.textFlow.content}</p>
+                </div>
+            </rich:column>
+            <rich:column label="Target" width="50%" style="overflow:hidden;">
+              <div class="tuPane" style="position: relative;">
+                <h:inputTextarea id="tuTargetContentEdit" value="#{tut.content}" styleClass="tuTargetContent tuEditMode" style="width:80%;"/>
+                <div id="tuTargetContentView" class="tuTargetContent tuViewMode">
+                  <p class="html">#{tut.content}</p>
+                </div>
+                <div class="tuActionButtons">
+                  <a4j:commandLink id="edit_link" styleClass="tuViewMode" reRender="translationWidget,tuInfoPanel" action="#{translateAction.selectTextFlowTarget}" >            
+                    <s:conversationId name="wid"/>
+                    <img src="#{request.contextPath}/img/silk/page_edit.png" alt="Translate"/>
+                  </a4j:commandLink>
+                  <a4j:commandLink action="#{translateAction.persistChanges}" id="edit_save_link" styleClass="tuEditMode" reRender="tuTargetContentView">
+                    <s:conversationId name="wid"/>
+                    <img src="#{request.contextPath}/img/silk/tick.png"/>
+                  </a4j:commandLink>
+                  <h:outputLink id="edit_cancel_link" value="#" styleClass="tuEditMode">
+                    <img src="#{request.contextPath}/img/silk/cross.png"/>
+                  </h:outputLink>
+                  
+                  <h:outputLink id="edit_prev_link" value="#" styleClass="tuEditMode">
+                    <img src="#{request.contextPath}/img/silk/resultset_previous.png"/>
+                  </h:outputLink>
+                  <h:outputLink id="edit_next_link" value="#" styleClass="tuEditMode">
+                    <img src="#{request.contextPath}/img/silk/resultset_next.png"/>
+                  </h:outputLink>
+                  
+                </div>
                 
               </div>
               
-            </div>
-            
-            <rich:jQuery selector="#edit_link" 
-                query="click(function(){ jQuery(this).closest('tr').find('.tuViewMode').hide(); jQuery(this).closest('tr').find('.tuEditMode').show(); })"/>
-            <rich:jQuery selector="#edit_cancel_link" 
-                query="click(function(){ jQuery(this).closest('tr').find('.tuEditMode').hide(); jQuery(this).closest('tr').find('.tuViewMode').show(); })"/>
-
-          </rich:column>
-          <f:facet name="footer">
-            #{textFlowTargets.size} translation units. 
-          </f:facet>
-        </rich:extendedDataTable>
+              <rich:jQuery selector="#edit_link" 
+                  query="click(function(){ jQuery(this).closest('tr').find('.tuViewMode').hide(); jQuery(this).closest('tr').find('.tuEditMode').show(); })"/>
+              <rich:jQuery selector="#edit_cancel_link" 
+                  query="click(function(){ jQuery(this).closest('tr').find('.tuEditMode').hide(); jQuery(this).closest('tr').find('.tuViewMode').show(); })"/>
+  
+            </rich:column>
+          </rich:dataTable>
+        </div>
         
-      </h:form>
+        <em>#{textFlowTargets.size} translation units.</em>
       </rich:panel>
+    </h:form>
             
         <!-- The hover row coloring -->
         <rich:jQuery selector="#textFlowTable tr" 

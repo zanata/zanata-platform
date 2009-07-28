@@ -34,6 +34,7 @@ import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
+import org.richfaces.model.selection.SimpleSelection;
 
 @Name("translateAction")
 @Scope(ScopeType.CONVERSATION)
@@ -85,16 +86,35 @@ public class TranslateAction {
 	@Out(required=false)
 	private HDocumentTarget selectedDocumentTarget;
 
-	@DataModel
-	private List<HTextFlowTarget> textFlowTargets;
+	@In(value="flies.tftDataModel")
+	@MyDataModel
+	private TextFlowTargetDataModel textFlowTargets;
 	
-	@DataModelSelection(value="textFlowTargets")
-	@Out(required=false)
 	private HTextFlowTarget selectedTextFlowTarget;
+	
+	public HTextFlowTarget getSelectedTextFlowTarget() {
+		return selectedTextFlowTarget;
+	}
+	
+	private SimpleSelection selectedRow;
+	
+	public SimpleSelection getSelectedRow() {
+		return selectedRow;
+	}
+	
+	public void setSelectedRow(SimpleSelection selectedRow) {
+		this.selectedRow = selectedRow;
+		setSelectedTextFlowTarget((HTextFlowTarget) selectedRow.getKeys().next() );
+	}
+	
+	public void setSelectedTextFlowTarget(HTextFlowTarget selectedTextFlowTarget) {
+		this.selectedTextFlowTarget = selectedTextFlowTarget;
+		log.info("set selected {0}", selectedTextFlowTarget.getId() );
+	}
 	
 	public void selectDocumentTarget(){
 		log.info("selected {0}", selectedDocumentTarget.getTemplate().getName());
-		loadTextFlowTargets();
+		//loadTextFlowTargets();
 	}
 	
 	@Factory("documentTargets")
@@ -105,9 +125,11 @@ public class TranslateAction {
 					.setParameter("project", project).getResultList();
 	}
 
-	@Factory("textFlowTargets")
+	//@Factory("textFlowTargets")
 	public void loadTextFlowTargets(){
 		log.info("retrieving textFlowTargets...");
+		textFlowTargets = new TextFlowTargetDataModel();
+		/*
 		if(selectedDocumentTarget == null) {
 			log.info("none available...");
 			textFlowTargets =  Collections.EMPTY_LIST;
@@ -116,6 +138,7 @@ public class TranslateAction {
 			log.info("retrieving entries. count: {0} ", selectedDocumentTarget.getTargets().size());
 			textFlowTargets =  new ArrayList<HTextFlowTarget>(selectedDocumentTarget.getTargets() );
 		}
+		*/
 	}
 	
 	public void selectTextFlowTarget(){
