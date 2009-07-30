@@ -7,16 +7,16 @@ import org.fedorahosted.flies.core.model.ProjectIteration;
 
 final class WorkspaceKey{
 	
-	private final HProject project;
+	private final Long projectId;
 	private final LocaleId locale;
 	
-	public WorkspaceKey(HProject project, LocaleId locale){
-		if(project == null)
-			throw new IllegalArgumentException("project");
+	public WorkspaceKey(Long projectId, LocaleId locale){
+		if(projectId == null)
+			throw new IllegalArgumentException("projectId");
 		if(locale == null)
 			throw new IllegalArgumentException("locale");
 		
-		this.project = project;
+		this.projectId = projectId;
 		this.locale = locale;
 	}
 	
@@ -26,14 +26,14 @@ final class WorkspaceKey{
 		if( !(obj instanceof WorkspaceKey) ) return false;
 		WorkspaceKey other = (WorkspaceKey) obj;
 		return ( other.locale.equals(locale) 
-				&& other.project.getId().equals(project.getId()));
+				&& other.projectId.equals(projectId));
 	}
 	
 	@Override
 	public int hashCode() {
 	    int hash = 1;
 	    hash = hash * 31 + locale.hashCode();
-	    hash = hash * 31 + project.getId().hashCode();
+	    hash = hash * 31 + projectId.hashCode();
 	    return hash;
 	}
 	

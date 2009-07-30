@@ -18,25 +18,25 @@ import com.google.common.collect.MapMaker;
 public class TranslationWorkspace {
 	
 	private final LocaleId locale;
-	private final HProject project;
+	private final Long projectId;
 	
 	private ConcurrentMap<Person, Date> translators = new MapMaker().expiration(60, TimeUnit.SECONDS).makeMap();
 
-	public TranslationWorkspace(HProject project, LocaleId locale) {
-		if(project == null)
-			throw new IllegalArgumentException("project");
+	public TranslationWorkspace(Long projectId, LocaleId locale) {
+		if(projectId == null)
+			throw new IllegalArgumentException("projectId");
 		if(locale == null)
 			throw new IllegalArgumentException("locale");
 		this.locale = locale;
-		this.project = project;
+		this.projectId = projectId;
 	}
 	
 	public LocaleId getLocale() {
 		return locale;
 	}
 
-	public HProject getProject() {
-		return project;
+	public Long getProjectId() {
+		return projectId;
 	}
 	
 	public ImmutableList<Person> getTranslators(){
@@ -51,8 +51,11 @@ public class TranslationWorkspace {
 		Date timestamp = translators.get(translator);
 		if(timestamp == null){
 			timestamp = new Date();
+			translators.put(translator, timestamp);	
 		}
-		translators.put(translator, timestamp);	
+		else{
+			translators.replace(translator, timestamp);	
+		}
 	}
 	
 	@Override
@@ -61,14 +64,14 @@ public class TranslationWorkspace {
 		if( !(obj instanceof TranslationWorkspace) ) return false;
 		TranslationWorkspace other = (TranslationWorkspace) obj;
 		return ( other.locale.equals(locale) 
-				&& other.project.equals(project));
+				&& other.projectId.equals(projectId));
 	}
 	
 	@Override
 	public int hashCode() {
 	    int hash = 1;
 	    hash = hash * 31 + locale.hashCode();
-	    hash = hash * 31 + project.hashCode();
+	    hash = hash * 31 + projectId.hashCode();
 	    return hash;
 	}
 }

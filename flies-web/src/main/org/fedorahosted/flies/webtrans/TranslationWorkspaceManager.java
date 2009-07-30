@@ -3,10 +3,8 @@ package org.fedorahosted.flies.webtrans;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.openl10n.adapters.LocaleId;
-import net.openl10n.packaging.jpa.project.HProject;
 
 import org.fedorahosted.flies.FliesInit;
-import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Logger;
@@ -28,13 +26,13 @@ public class TranslationWorkspaceManager {
 	private Log log;
 
 	private final ConcurrentHashMap<WorkspaceKey, TranslationWorkspace> workspaceMap;
-	private final Multimap<HProject, LocaleId> projectIterationLocaleMap;
+	private final Multimap<Long, LocaleId> projectIterationLocaleMap;
 	private final Multimap<LocaleId, TranslationWorkspace> localeWorkspaceMap;
 
 	public TranslationWorkspaceManager() {
 		this.workspaceMap = new ConcurrentHashMap<WorkspaceKey, TranslationWorkspace>();
 
-		Multimap<HProject, LocaleId> projectIterationLocaleMap = HashMultimap.create();
+		Multimap<Long, LocaleId> projectIterationLocaleMap = HashMultimap.create();
 		this.projectIterationLocaleMap = Multimaps.synchronizedMultimap(projectIterationLocaleMap);
 
 		Multimap<LocaleId, TranslationWorkspace> localeWorkspaceMap = HashMultimap.create();
@@ -53,7 +51,7 @@ public class TranslationWorkspaceManager {
 		log.info("closing down {0} workspaces: ", workspaceMap.size());
 	}
 	
-	public ImmutableSet<LocaleId> getLocales(HProject project){
+	public ImmutableSet<LocaleId> getLocales(Long project){
 		return ImmutableSet.copyOf(projectIterationLocaleMap.get(project));
 	}
 
@@ -65,15 +63,15 @@ public class TranslationWorkspaceManager {
 		return workspaceMap.size();
 	}
 
-	public TranslationWorkspace getOrRegisterWorkspace(HProject project, LocaleId locale){
-		WorkspaceKey key = new WorkspaceKey(project, locale);
+	public TranslationWorkspace getOrRegisterWorkspace(Long projectId, LocaleId locale){
+		WorkspaceKey key = new WorkspaceKey(projectId, locale);
 		TranslationWorkspace workspace = workspaceMap.get(key);
 		if(workspace == null){
-			workspace = new TranslationWorkspace(project, locale);
+			workspace = new TranslationWorkspace(projectId, locale);
 			TranslationWorkspace prev = workspaceMap.putIfAbsent(key, workspace);
 			
 			if(prev == null){
-				projectIterationLocaleMap.put(project, locale);
+				projectIterationLocaleMap.put(projectId, locale);
 				localeWorkspaceMap.put(locale, workspace);
 			}
 			
@@ -86,7 +84,7 @@ public class TranslationWorkspaceManager {
 		return ImmutableSet.copyOf(localeWorkspaceMap.get(locale));
 	}
 	
-	public ImmutableSet<HProject> getProjects(){
+	public ImmutableSet<Long> getProjects(){
 		return ImmutableSet.copyOf(projectIterationLocaleMap.keySet());
 	}
 	

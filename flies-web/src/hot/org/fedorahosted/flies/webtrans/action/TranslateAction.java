@@ -177,7 +177,7 @@ public class TranslateAction {
 	}
 
 	public TranslationWorkspace getWorkspace(){
-		return translationWorkspaceManager.getOrRegisterWorkspace(project, locale);
+		return translationWorkspaceManager.getOrRegisterWorkspace(project.getId(), locale);
 	}
 	
 	@End
