@@ -26,10 +26,9 @@
     <script type="text/javascript" src="#{request.contextPath}/javascript/splitter.js"></script>
     <script type="text/javascript" src="#{request.contextPath}/javascript/jquery.cookie.js"></script>
     <script id="setup" type="text/javascript"> 
-        ChiliBook.automatic = true;
-        ChiliBook.recipeFolder = "#{request.contextPath}/javascript/chili/";  
-     </script> 
-
+        ChiliBook.automatic = false;
+        ChiliBook.recipeFolder = "#{request.contextPath}/javascript/chili/";
+    </script> 
 <style type="text/css" media="all">
 html, body
 {
@@ -61,6 +60,9 @@ html, body
 <body style="min-width: 750px;">
 <!-- the id on the containing div determines the page width. -->
 <!-- #doc = 750px; #doc2 = 950px; #doc3 = 100%; #doc4 = 974px -->
+<!--jQuery splitter-->
+    <rich:jQuery selector="#LeftAndCenterSplitter" name="lvertSplit" query="splitter({type: 'v',minLeft: '100', sizeLeft: '150', maxLeft: '250', cookie:'lsplitter',outline: 'true', anchorToWindow:'true'})" timing="onload"/>
+    <rich:jQuery selector="#CenterAndRightSplitter" name="rvertSplit" query="splitter({type: 'v',minRight: '100', sizeRight: '150', maxRight: '500',cookie:'rsplitter',outline: 'true'})" timing="onload"/>
 <div id="doc3" class="yui-t2">					
     <div id="hd" class="fullscreen">
       <div id="header_top_right">
@@ -101,8 +103,6 @@ html, body
          </div> 
       </div><!--CenterAndRightSplitter-->
     </div><!--LeftAndCenterSplitter-->
-    <rich:jQuery selector="#LeftAndCenterSplitter" name="lvertSplit" query="splitter({type: 'v',minLeft: '100', sizeLeft: '150', maxLeft: '250', cookie:'lsplitter',outline: 'true', anchorToWindow:'true'})" timing="onload"/>
-    <rich:jQuery selector="#CenterAndRightSplitter" name="rvertSplit" query="splitter({type: 'v',minRight: '100', sizeRight: '150', maxRight: '500',cookie:'rsplitter',outline: 'true'})" timing="onload"/> 
     </div><!--bd-->
 </div><!--doc3-->
 </body>

@@ -23,13 +23,14 @@
         <f:facet name="header">Project Tree</f:facet>
         <h:form>
 		    <rich:dataTable id="documentsTable" value="#{documentTargets}" var="doc" rows="15" reRender="ds" rowClasses="docrow">
-		      <rich:column filterBy="#{doc.template.name}" filterEvent="onkeyup">
-   	            <a4j:commandLink reRender="documentsTable,titleofDocument,textFlowTable" action="#{translateAction.selectDocumentTarget}"
-		      	  >
-		      		<s:conversationId name="wid"/>
+		    <rich:column filterBy="#{doc.template.name}" filterEvent="onkeyup">
+   	            <a4j:commandLink reRender="documentsTable,titleofDocument,textFlowTable" action="#{translateAction.selectDocumentTarget}">
+		      	<s:conversationId name="wid"/>
                 	<h:outputText value="#{doc.template.name}" /> 
-            	  </a4j:commandLink>
-		      </rich:column>
+                        <!--chili-->
+                        <rich:jQuery selector="#{textFlowTable}" query="ready(function(){ jQuery(ChiliBook.automaticSelector).chili();})"/>
+            	    </a4j:commandLink>
+		    </rich:column>
               <f:facet name="footer">
                 <rich:datascroller id="ds" rendered="#{documentTargets.size > 50}" styleClass="datacsr-mini"></rich:datascroller>
               </f:facet>
@@ -67,11 +68,14 @@
       <rich:panel bodyClass="panel-body-no-padding" style="height:100%;">
         <f:facet name="header">
           <s:span id="titleofDocument">${selectedDocumentTarget.template.name}</s:span>
-          <rich:datascroller for="textFlowTable" id="tuds" rendered="#{textFlowTargets.size > 50}"></rich:datascroller>
+          <rich:datascroller for="textFlowTable" id="tuds" oncomplete="reRender(this)" reRender="textFlowTable" rendered="#{textFlowTargets.size > 50}">
+          </rich:datascroller>
         </f:facet>
-        
+        <!--chili-->
+        <rich:jQuery name="reRender" selector="#{textFlowTable}" 
+            query="ready(function(){ jQuery(ChiliBook.automaticSelector).chili();})" timing="onJScall"/>
         <div style="height: 500px; width: 100%; overflow:auto">
-          <rich:dataTable id="textFlowTable" 
+            <rich:dataTable id="textFlowTable" 
               width="auto"  value="#{textFlowTargets}" var="tut" rows="50" height="auto" reRender="tuds"
               rowClasses="odd,even" selection="#{translateAction.selectedRow}" >
             <rich:column label="Source" width="50%" style="overflow:hidden;">
@@ -104,18 +108,20 @@
                   <h:outputLink id="edit_next_link" value="#" styleClass="tuEditMode">
                     <img src="#{request.contextPath}/img/silk/resultset_next.png"/>
                   </h:outputLink>
-                  
-                </div>
-                
+               </div>
               </div>
-              
+              <a4j:support event="onclick" oncomplete="reRender(this)" />               
               <rich:jQuery selector="#edit_link" 
                   query="click(function(){ jQuery(this).closest('tr').find('.tuViewMode').hide(); jQuery(this).closest('tr').find('.tuEditMode').show(); })"/>
               <rich:jQuery selector="#edit_cancel_link" 
                   query="click(function(){ jQuery(this).closest('tr').find('.tuEditMode').hide(); jQuery(this).closest('tr').find('.tuViewMode').show(); })"/>
-  
             </rich:column>
           </rich:dataTable>
+          <rich:jQuery selector="#edit_link" 
+                  query="click(function(){ jQuery(this).closest('tr').find('.tuViewMode').hide(); jQuery(this).closest('tr').find('.tuEditMode').show(); })"/>
+          <!--chili-->
+          <rich:jQuery selector="#{textFlowTable}" 
+            query="ready(function(){ jQuery(ChiliBook.automaticSelector).chili();})"/>          
         </div>
         
         <em>#{textFlowTargets.size} translation units.</em>
@@ -131,6 +137,7 @@
         <rich:jQuery selector="#textFlowTable tr" 
             query="ready(function(){jQuery(this).find('.tuTargetContent, .tuPane').equalizeWidths()})"/>
  -->
+        
     </ui:define>
 
     <ui:define name="right_content">
