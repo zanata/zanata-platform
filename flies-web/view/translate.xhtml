@@ -9,79 +9,90 @@
     xmlns:flies="http://flies.fedorahosted.org/ui"
     xmlns:a4j="http://richfaces.org/a4j"
     template="layout/template_fullpage.xhtml">
-    <ui:define name="page-title">
-      #{translateAction.project.name} (#{translateAction.project.projectId}) 
-      to #{translateAction.locale} - 
-    </ui:define>
-    <ui:define name="left_content">
 
-      <a4j:form>
-        <a4j:poll action="#{translateAction.ping()}" interval="5000" reRender="translatorsPanel"/>
-      </a4j:form>
-      
-      <rich:panel bodyClass="panel-body-no-padding">
-        <f:facet name="header">Project Tree</f:facet>
-        <h:form>
-		    <rich:dataTable id="documentsTable" value="#{documentTargets}" var="doc" rows="15" reRender="ds" rowClasses="docrow">
-		    <rich:column filterBy="#{doc.template.name}" filterEvent="onkeyup">
-   	            <a4j:commandLink reRender="documentsTable,titleofDocument,textFlowTable" action="#{translateAction.selectDocumentTarget}">
-		      	<s:conversationId name="wid"/>
-                	<h:outputText value="#{doc.template.name}" /> 
-                        <!--chili-->
-                        <rich:jQuery selector="#{textFlowTable}" query="ready(function(){ jQuery(ChiliBook.automaticSelector).chili();})"/>
-            	    </a4j:commandLink>
-		    </rich:column>
-              <f:facet name="footer">
-                <rich:datascroller id="ds" rendered="#{documentTargets.size > 50}" styleClass="datacsr-mini"></rich:datascroller>
-              </f:facet>
-		    </rich:dataTable>
-        </h:form>
-      </rich:panel>
-      <br/>
-      <rich:panel id="translatorsPanel">
-        <f:facet name="header">#{translateAction.workspace.translatorCount} translator(s) online</f:facet>
-        <rich:dataTable width="150px" value="#{translateAction.workspace.translators}" var="translator">
-          <rich:column>
-            <img src="#{request.contextPath}/img/silk/user.png"/>
-          </rich:column>
-          <rich:column>
-            #{translator.name}
-          </rich:column>
-          <rich:column>
-            <div class="translator_color_block translator_color_block_#{translator.id}"/>
-          </rich:column>
-        </rich:dataTable>
-        <!-- 
-        <h3 style="border-bottom:1px solid;">Chat</h3>
-        <strong>Asgeir:</strong> hello world...<br/>
-        <strong>Admin:</strong> let them eat cake..
-        <h:inputTextarea value="hello world" style="width:100%; height:50px;"/>
-         -->
-      </rich:panel>
-      
-    </ui:define>
+  <ui:define name="head">
+    <script type="text/javascript">
+      //<![CDATA[
+      jQuery(document).ready(function() {
+
+    	  jQuery("#LeftAndCenterSplitter").trigger("resize");
+          
+          // make translation table column stretch vertically
+          var leftHeight = jQuery("#LeftContent").height();
+          var headFootHeight = jQuery("#TransAreaHeader").height() + jQuery("#TransAreaFooter").height();
+          jQuery("#TransAreaContent").height(leftHeight - headFootHeight);
+      });
+      //]]>
+    </script>  
+  </ui:define>
+
+  <ui:define name="page-title">
+    #{translateAction.project.name} (#{translateAction.project.projectId}) 
+    to #{translateAction.locale} - 
+  </ui:define>
+
+  <ui:define name="left_content">
+
+    <a4j:form>
+      <a4j:poll action="#{translateAction.ping()}" interval="5000" reRender="translatorsPanel"/>
+    </a4j:form>
     
-    <ui:define name="center_content">
-      <rich:jQuery selector="#tab_home" query="addClass('ui-tabs-selected')" />
-
+    <rich:panel bodyClass="panel-body-no-padding">
+      <f:facet name="header">Project Tree</f:facet>
       <h:form>
-      <rich:panel bodyClass="panel-body-no-padding" style="height:100%;">
-        <f:facet name="header">
-          <s:span id="titleofDocument">${selectedDocumentTarget.template.name}</s:span>
-          <rich:datascroller for="textFlowTable" id="tuds" oncomplete="reRender(this)" reRender="textFlowTable" rendered="#{textFlowTargets.size > 50}">
-          </rich:datascroller>
-        </f:facet>
-        <!--chili-->
-        <rich:jQuery name="reRender" selector="#{textFlowTable}" 
-            query="ready(function(){ jQuery(ChiliBook.automaticSelector).chili();})" timing="onJScall"/>
-        <div style="height: 500px; width: 100%; overflow:auto">
-            <rich:dataTable id="textFlowTable" 
+        <rich:dataTable id="documentsTable" value="#{documentTargets}" var="doc" rows="15" reRender="ds" rowClasses="docrow">
+          <rich:column filterBy="#{doc.template.name}" filterEvent="onkeyup">
+            <a4j:commandLink reRender="documentsTable,titleofDocument,textFlowTable" action="#{translateAction.selectDocumentTarget}">
+              <s:conversationId name="wid"/>
+              <h:outputText value="#{doc.template.name}" /> 
+              <!--chili-->
+              <rich:jQuery selector="#{textFlowTable}" query="ready(function(){ jQuery(ChiliBook.automaticSelector).chili();})"/>
+            </a4j:commandLink>
+          </rich:column>
+          <f:facet name="footer">
+            <rich:datascroller id="ds" rendered="#{documentTargets.size > 50}" styleClass="datacsr-mini"></rich:datascroller>
+          </f:facet>
+        </rich:dataTable>
+      </h:form>
+    </rich:panel>
+    <br/>
+    <rich:panel id="translatorsPanel">
+      <f:facet name="header">#{translateAction.workspace.translatorCount} translator(s) online</f:facet>
+      <rich:dataTable width="150px" value="#{translateAction.workspace.translators}" var="translator">
+        <rich:column>
+          <img src="#{request.contextPath}/img/silk/user.png"/>
+        </rich:column>
+        <rich:column>
+          #{translator.name}
+        </rich:column>
+        <rich:column>
+          <div class="translator_color_block translator_color_block_#{translator.id}"/>
+        </rich:column>
+      </rich:dataTable>
+      <!-- 
+      <h3 style="border-bottom:1px solid;">Chat</h3>
+      <strong>Asgeir:</strong> hello world...<br/>
+      <strong>Admin:</strong> let them eat cake..
+      <h:inputTextarea value="hello world" style="width:100%; height:50px;"/>
+       -->
+    </rich:panel>
+  </ui:define>
+  
+  <ui:define name="center_content">
+    <rich:jQuery selector="#tab_home" query="addClass('ui-tabs-selected')" />
+    <h:form>
+      <div id="TransArea">
+        <div id="TransAreaHeader">
+          <em>#{textFlowTargets.size} translation units.</em>
+        </div>
+        <div id="TransAreaContent" style="height: 100%; width: 100%; overflow-y:scroll">
+          <rich:dataTable id="textFlowTable" 
               width="auto"  value="#{textFlowTargets}" var="tut" rows="50" height="auto" reRender="tuds"
               rowClasses="odd,even" selection="#{translateAction.selectedRow}" >
             <rich:column label="Source" width="50%" style="overflow:hidden;">
-                <div id="tuTargetContent" class="tuSourceContent">
-                  <p class="html">#{tut.textFlow.content}</p>
-                </div>
+              <div id="tuTargetContent" class="tuSourceContent">
+                <p class="html">#{tut.textFlow.content}</p>
+              </div>
             </rich:column>
             <rich:column label="Target" width="50%" style="overflow:hidden;">
               <div class="tuPane" style="position: relative;">
@@ -101,16 +112,15 @@
                   <h:outputLink id="edit_cancel_link" value="#" styleClass="tuEditMode">
                     <img src="#{request.contextPath}/img/silk/cross.png"/>
                   </h:outputLink>
-                  
                   <h:outputLink id="edit_prev_link" value="#" styleClass="tuEditMode">
                     <img src="#{request.contextPath}/img/silk/resultset_previous.png"/>
                   </h:outputLink>
                   <h:outputLink id="edit_next_link" value="#" styleClass="tuEditMode">
                     <img src="#{request.contextPath}/img/silk/resultset_next.png"/>
                   </h:outputLink>
-               </div>
+                </div>
               </div>
-              <a4j:support event="onclick" oncomplete="reRender(this)" />               
+              <a4j:support event="onclick" oncomplete="jQuery(ChiliBook.automaticSelector).chili()" />               
               <rich:jQuery selector="#edit_link" 
                   query="click(function(){ jQuery(this).closest('tr').find('.tuViewMode').hide(); jQuery(this).closest('tr').find('.tuEditMode').show(); })"/>
               <rich:jQuery selector="#edit_cancel_link" 
@@ -123,36 +133,38 @@
           <rich:jQuery selector="#{textFlowTable}" 
             query="ready(function(){ jQuery(ChiliBook.automaticSelector).chili();})"/>          
         </div>
-        
-        <em>#{textFlowTargets.size} translation units.</em>
-      </rich:panel>
+        <div id="TransAreaFooter">
+          <rich:datascroller for="textFlowTable" id="tuds" oncomplete="jQuery(ChiliBook.automaticSelector).chili()" reRender="textFlowTable" rendered="#{textFlowTargets.size > 50}"/>
+        </div>        
+      </div> <!-- TransArea -->
     </h:form>
-            
-        <!-- The hover row coloring -->
-        <rich:jQuery selector="#textFlowTable tr" 
-            query="hover(function(){jQuery(this).addClass('active-row')}, function(){jQuery(this).removeClass('active-row')})"/>
-        <!-- 
-        <rich:jQuery selector="#textFlowTable tr" 
-            query="ready(function(){jQuery(this).find('.tuSourceContent, .tuTargetContent').equalizeCols()})"/>
-        <rich:jQuery selector="#textFlowTable tr" 
-            query="ready(function(){jQuery(this).find('.tuTargetContent, .tuPane').equalizeWidths()})"/>
- -->
-        
-    </ui:define>
+    <rich:jQuery selector="#TransArea" 
+      query="ready(function(){ jQuery(ChiliBook.automaticSelector).chili();})"/>          
 
-    <ui:define name="right_content">
-      <rich:panel id="tuInfoPanel">
-        <f:facet name="header">Translation Unit Information</f:facet>
-        <s:div rendered="#{selectedTextFlowTarget == null}">No unit selected</s:div>
-        <s:div rendered="#{selectedTextFlowTarget != null}">
-          <strong>Last Translator: </strong> <em>Unknown</em><br/>
-        </s:div>
-      </rich:panel>
-      <br/>
-      <rich:panel>
-        <f:facet name="header">Terminology</f:facet>
-        <em>No Glossaries defined</em>
-      </rich:panel>
-    </ui:define>
-    
+    <!-- The hover row coloring -->
+    <rich:jQuery selector="#textFlowTable tr" 
+        query="hover(function(){jQuery(this).addClass('active-row')}, function(){jQuery(this).removeClass('active-row')})"/>
+    <!-- 
+    <rich:jQuery selector="#textFlowTable tr" 
+        query="ready(function(){jQuery(this).find('.tuSourceContent, .tuTargetContent').equalizeCols()})"/>
+    <rich:jQuery selector="#textFlowTable tr" 
+        query="ready(function(){jQuery(this).find('.tuTargetContent, .tuPane').equalizeWidths()})"/>
+-->
+  </ui:define>
+
+  <ui:define name="right_content">
+    <rich:panel id="tuInfoPanel">
+      <f:facet name="header">Translation Unit Information</f:facet>
+      <s:div rendered="#{selectedTextFlowTarget == null}">No unit selected</s:div>
+      <s:div rendered="#{selectedTextFlowTarget != null}">
+        <strong>Last Translator: </strong> <em>Unknown</em><br/>
+      </s:div>
+    </rich:panel>
+    <br/>
+    <rich:panel>
+      <f:facet name="header">Terminology</f:facet>
+      <em>No Glossaries defined</em>
+    </rich:panel>
+  </ui:define>
+  
 </ui:composition>

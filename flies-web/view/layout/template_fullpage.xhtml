@@ -9,9 +9,9 @@
         xmlns:s="http://jboss.com/products/seam/taglib"
         xmlns:rich="http://richfaces.org/rich">
 <html>
-<head>
-<meta http-equiv="Content-Language" content="en" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <head>
+    <meta http-equiv="Content-Language" content="en" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>
       <ui:insert name="page-title"/>
       flies
@@ -21,90 +21,110 @@
     <a:loadStyle src="/stylesheet/reset-fonts-grids.css"/>
     <a:loadStyle src="/stylesheet/base-min.css"/>
     <a:loadStyle src="/stylesheet/theme.css"/>
+    <style type="text/css" media="all">
+      html, body
+      {
+        margin: 0;
+        padding: 0;
+        overflow: hidden; /* Remove scroll bars on browser window */
+      }
+      #header { padding: 1em; }
+      
+      #LeftAndCenterSplitter {
+        /* Height is set to match window size in $().ready() below */
+        min-width:  600px;
+        min-height: 600px;
+      }
+      .vsplitbar {
+        width: 6px;
+        background: url(img/vgrabber.gif) no-repeat center;
+      }
+      .vsplitbar.active, .vsplitbar:hover {
+        background-color: #c66;
+        width: 6px;
+        opacity: 0.5;
+        filter: alpha(opacity=50); /* IE */
+      }
+    </style>
 
     <script type="text/javaScript" src="#{request.contextPath}/javascript/chili/jquery.chili-2.2.js"></script> 
     <script type="text/javascript" src="#{request.contextPath}/javascript/splitter.js"></script>
     <script type="text/javascript" src="#{request.contextPath}/javascript/jquery.cookie.js"></script>
-    <script id="setup" type="text/javascript"> 
+    <script type="text/javaScript" src="#{request.contextPath}/javascript/jquery.equalizecols.js"></script> 
+    <script type="text/javascript"> 
         ChiliBook.automatic = false;
         ChiliBook.recipeFolder = "#{request.contextPath}/javascript/chili/";
-    </script> 
-<style type="text/css" media="all">
-html, body
-{
-	margin: 0;
-	padding: 0;
-	overflow: hidden;	/* Remove scroll bars on browser window */
-}
-#header { padding: 1em; }
 
-#LeftAndCenterSplitter {
-	/* Height is set to match window size in $().ready() below */
-	min-width:  600px;
-	min-height: 600px;
-}
-.vsplitbar {
-	width: 6px;
-	background: url(img/vgrabber.gif) no-repeat center;
-}
-.vsplitbar.active, .vsplitbar:hover {
-	background-color: #c66;
-	width: 6px;
-	opacity: 0.5;
-	filter: alpha(opacity=50); /* IE */
-}
-</style>
-<ui:insert name="head"/>
-    <script type="text/javaScript" src="#{request.contextPath}/javascript/jquery.equalizecols.js"></script> 
-</head>
-<body style="min-width: 750px;">
-<!-- the id on the containing div determines the page width. -->
-<!-- #doc = 750px; #doc2 = 950px; #doc3 = 100%; #doc4 = 974px -->
-<!--jQuery splitter-->
-    <rich:jQuery selector="#LeftAndCenterSplitter" name="lvertSplit" query="splitter({type: 'v',minLeft: '100', sizeLeft: '150', maxLeft: '250', cookie:'lsplitter',outline: 'true', anchorToWindow:'true'})" timing="onload"/>
-    <rich:jQuery selector="#CenterAndRightSplitter" name="rvertSplit" query="splitter({type: 'v',minRight: '100', sizeRight: '150', maxRight: '500',cookie:'rsplitter',outline: 'true'})" timing="onload"/>
-<div id="doc3" class="yui-t2">					
-    <div id="hd" class="fullscreen">
-      <div id="header_top_right">
-        <h:outputText rendered="#{identity.loggedIn}" value="#{authenticatedPerson == null ? identity.username : authenticatedPerson.name} "/>
-        <s:fragment rendered="#{not identity.loggedIn}">
-          <s:link view="/account/login.xhtml" value="Sign In" propagation="none"/>
-          <rich:spacer width="10px"/>
-          <s:link view="/account/register.xhtml" value="Register" propagation="none"/>
-        </s:fragment>
-        <s:link view="/home.xhtml" action="#{identity.logout}" value="Sign Out" rendered="#{identity.loggedIn}" propagation="none"/>
+        jQuery(document).ready(function() {
+            // splitter
+            jQuery("#LeftAndCenterSplitter")
+              .splitter({
+                  type: 'v',
+                  minLeft: '100', 
+                  sizeLeft: '150', 
+                  maxLeft: '250', 
+                  cookie:'lsplitter',
+                  outline: 'true',
+                  anchorToWindow: true
+              });
+            jQuery("#CenterAndRightSplitter")
+              .splitter({
+                  type: 'v',
+                  minRight: '100', 
+                  sizeRight: '150', 
+                  maxRight: '500',
+                  cookie:'rsplitter',
+                  outline: 'true'
+              });
+        });
+    </script> 
+    <ui:insert name="head"/>
+  </head>
+  <body style="min-width: 750px;">
+    <!-- the id on the containing div determines the page width. -->
+    <!-- #doc = 750px; #doc2 = 950px; #doc3 = 100%; #doc4 = 974px -->
+    <div id="doc3" class="yui-t2">					
+      <div id="hd" class="fullscreen">
+        <div id="header_top_right">
+          <h:outputText rendered="#{identity.loggedIn}" value="#{authenticatedPerson == null ? identity.username : authenticatedPerson.name} "/>
+          <s:fragment rendered="#{not identity.loggedIn}">
+            <s:link view="/account/login.xhtml" value="Sign In" propagation="none"/>
+            <rich:spacer width="10px"/>
+            <s:link view="/account/register.xhtml" value="Register" propagation="none"/>
+          </s:fragment>
+          <s:link view="/home.xhtml" action="#{identity.logout}" value="Sign Out" rendered="#{identity.loggedIn}" propagation="none"/>
+        </div>
+        <div id="loading_top_right">
+          <a:status>
+              <f:facet name="start">
+                  <h:graphicImage  value="/img/loading.gif"/>
+              </f:facet>
+          </a:status>
+        </div>
       </div>
-      <div id="loading_top_right">
-        <a:status>
-            <f:facet name="start">
-                <h:graphicImage  value="/img/loading.gif"/>
-            </f:facet>
-        </a:status>
-      </div>
-    </div>
-  <div id="bd" style="margin-top: 20px;">
-    <div id="LeftAndCenterSplitter">
-      <div>
-        <ui:insert name="left_content"/>
-      </div><!--left_content-->    
-      <div id="CenterAndRightSplitter">
-         <div id="grid"> <!-- the "special grid" --> 
-              <a:outputPanel ajaxRendered="true">
-                <h:messages id="messages" globalOnly="true" styleClass="message"
-                    errorClass="errormsg" infoClass="infomsg" warnClass="warnmsg"
-                    rendered="#{showGlobalMessages != 'false'}"/>
-              </a:outputPanel>
-              <div id="main_body_content">
-               <ui:insert name="center_content"/>
-              </div>
-         </div> 
-         <div>
-              <ui:insert name="right_content"/>
-         </div> 
-      </div><!--CenterAndRightSplitter-->
-    </div><!--LeftAndCenterSplitter-->
-    </div><!--bd-->
-</div><!--doc3-->
-</body>
+    <div id="bd" style="margin-top: 20px;">
+      <div id="LeftAndCenterSplitter">
+        <div id="LeftContent">
+          <ui:insert name="left_content"/>
+        </div><!--left_content-->    
+        <div id="CenterAndRightSplitter">
+           <div id="MainContent"> <!-- the "special grid" --> 
+                <a:outputPanel ajaxRendered="true">
+                  <h:messages id="messages" globalOnly="true" styleClass="message"
+                      errorClass="errormsg" infoClass="infomsg" warnClass="warnmsg"
+                      rendered="#{showGlobalMessages != 'false'}"/>
+                </a:outputPanel>
+                <div id="main_body_content">
+                 <ui:insert name="center_content"/>
+                </div>
+           </div> 
+           <div id="RightContent">
+                <ui:insert name="right_content"/>
+           </div> 
+        </div><!--CenterAndRightSplitter-->
+      </div><!--LeftAndCenterSplitter-->
+      </div><!--bd-->
+  </div><!--doc3-->
+  </body>
 </html>
 </f:view>
