@@ -14,9 +14,12 @@
     <script type="text/javascript">
       //<![CDATA[
       jQuery(document).ready(function() {
-
-    	  jQuery("#LeftAndCenterSplitter").trigger("resize");
-          
+          // make translation table column stretch vertically
+          var leftHeight = jQuery("#LeftContent").height();
+          var headFootHeight = jQuery("#TransAreaHeader").height() + jQuery("#TransAreaFooter").height();
+          jQuery("#TransAreaContent").height(leftHeight - headFootHeight);
+      });
+      jQuery("#LeftAndCenterSplitter").bind("resize", function(e, size) {
           // make translation table column stretch vertically
           var leftHeight = jQuery("#LeftContent").height();
           var headFootHeight = jQuery("#TransAreaHeader").height() + jQuery("#TransAreaFooter").height();
@@ -40,19 +43,21 @@
     <rich:panel bodyClass="panel-body-no-padding">
       <f:facet name="header">Project Tree</f:facet>
       <h:form>
-        <rich:dataTable id="documentsTable" value="#{documentTargets}" var="doc" rows="15" reRender="ds" rowClasses="docrow">
-          <rich:column filterBy="#{doc.template.name}" filterEvent="onkeyup">
-            <a4j:commandLink reRender="documentsTable,titleofDocument,textFlowTable" action="#{translateAction.selectDocumentTarget}">
-              <s:conversationId name="wid"/>
-              <h:outputText value="#{doc.template.name}" /> 
-              <!--chili-->
-              <rich:jQuery selector="#{textFlowTable}" query="ready(function(){ jQuery(ChiliBook.automaticSelector).chili();})"/>
-            </a4j:commandLink>
-          </rich:column>
-          <f:facet name="footer">
-            <rich:datascroller id="ds" rendered="#{documentTargets.size > 50}" styleClass="datacsr-mini"></rich:datascroller>
-          </f:facet>
-        </rich:dataTable>
+        <a4j:region id="ProjectTreeRegion">
+          <rich:dataTable id="documentsTable" value="#{documentTargets}" var="doc" rows="15" reRender="ds" rowClasses="docrow">
+            <rich:column filterBy="#{doc.template.name}" filterEvent="onkeyup">
+              <a4j:commandLink reRender="documentsTable,textFlowTable" action="#{translateAction.selectDocumentTarget}">
+                <s:conversationId name="wid"/>
+                <h:outputText value="#{doc.template.name}" /> 
+                <!--chili-->
+                <rich:jQuery selector="#{textFlowTable}" query="ready(function(){ jQuery(ChiliBook.automaticSelector).chili();})"/>
+              </a4j:commandLink>
+            </rich:column>
+            <f:facet name="footer">
+              <rich:datascroller id="ds" rendered="#{documentTargets.size > 50}" styleClass="datacsr-mini"></rich:datascroller>
+            </f:facet>
+          </rich:dataTable>
+        </a4j:region>
       </h:form>
     </rich:panel>
     <br/>
@@ -81,62 +86,77 @@
   <ui:define name="center_content">
     <rich:jQuery selector="#tab_home" query="addClass('ui-tabs-selected')" />
     <h:form>
-      <div id="TransArea">
-        <div id="TransAreaHeader">
-          <em>#{textFlowTargets.size} translation units.</em>
-        </div>
-        <div id="TransAreaContent" style="height: 100%; width: 100%; overflow-y:scroll">
-          <rich:dataTable id="textFlowTable" 
-              width="auto"  value="#{textFlowTargets}" var="tut" rows="50" height="auto" reRender="tuds"
-              rowClasses="odd,even" selection="#{translateAction.selectedRow}" >
-            <rich:column label="Source" width="50%" style="overflow:hidden;">
-              <div id="tuTargetContent" class="tuSourceContent">
-                <p class="html">#{tut.textFlow.content}</p>
-              </div>
-            </rich:column>
-            <rich:column label="Target" width="50%" style="overflow:hidden;">
-              <div class="tuPane" style="position: relative;">
-                <h:inputTextarea id="tuTargetContentEdit" value="#{tut.content}" styleClass="tuTargetContent tuEditMode" style="width:80%;"/>
-                <div id="tuTargetContentView" class="tuTargetContent tuViewMode">
-                  <p class="html">#{tut.content}</p>
+      <a4j:region id="TransAreaRegion">
+        <div id="TransArea">
+          <div id="TransAreaLoadingStatus" style="position:absolute; left:50%; top:50%;">
+            <a4j:status for="TransAreaRegion" >
+                <f:facet name="start">
+                    <h:graphicImage  value="/img/spinner2-greenie.gif" style="position: relative; left:-24px; top:-24px;"/>
+                </f:facet>
+            </a4j:status>
+            <a4j:status for="ProjectTreeRegion" >
+                <f:facet name="start">
+                    <h:graphicImage  value="/img/spinner2-greenie.gif" style="position: relative; left:-24px; top:-24px;"/>
+                </f:facet>
+            </a4j:status>
+          </div>
+        
+          <div id="TransAreaHeader">
+            <em>#{textFlowTargets.size} translation units.</em>
+          </div>
+          <div id="TransAreaContent" style="height: 100%; width: 100%; overflow-y:scroll">
+            <rich:dataTable id="textFlowTable" 
+                width="auto"  value="#{textFlowTargets}" var="tut" rows="50" height="auto" reRender="tuds"
+                rowClasses="odd,even" selection="#{translateAction.selectedRow}" >
+              <rich:column label="Source" width="50%" style="overflow:hidden;">
+                <div id="tuTargetContent" class="tuSourceContent">
+                  <p class="html">#{tut.textFlow.content}</p>
                 </div>
-                <div class="tuActionButtons">
-                  <a4j:commandLink id="edit_link" styleClass="tuViewMode" reRender="translationWidget,tuInfoPanel" action="#{translateAction.selectTextFlowTarget}" >            
-                    <s:conversationId name="wid"/>
-                    <img src="#{request.contextPath}/img/silk/page_edit.png" alt="Translate"/>
-                  </a4j:commandLink>
-                  <a4j:commandLink action="#{translateAction.persistChanges}" id="edit_save_link" styleClass="tuEditMode" reRender="tuTargetContentView">
-                    <s:conversationId name="wid"/>
-                    <img src="#{request.contextPath}/img/silk/tick.png"/>
-                  </a4j:commandLink>
-                  <h:outputLink id="edit_cancel_link" value="#" styleClass="tuEditMode">
-                    <img src="#{request.contextPath}/img/silk/cross.png"/>
-                  </h:outputLink>
-                  <h:outputLink id="edit_prev_link" value="#" styleClass="tuEditMode">
-                    <img src="#{request.contextPath}/img/silk/resultset_previous.png"/>
-                  </h:outputLink>
-                  <h:outputLink id="edit_next_link" value="#" styleClass="tuEditMode">
-                    <img src="#{request.contextPath}/img/silk/resultset_next.png"/>
-                  </h:outputLink>
+              </rich:column>
+              <rich:column label="Target" width="50%" style="overflow:hidden;">
+                <div class="tuPane" style="position: relative;">
+                  <h:inputTextarea id="tuTargetContentEdit" value="#{tut.content}" styleClass="tuTargetContent tuEditMode" style="width:80%;"/>
+                  <div id="tuTargetContentView" class="tuTargetContent tuViewMode">
+                    <p class="html">#{tut.content}</p>
+                  </div>
+                  <div class="tuActionButtons">
+                    <a4j:commandLink id="edit_link" styleClass="tuViewMode" reRender="translationWidget,tuInfoPanel" action="#{translateAction.selectTextFlowTarget}" >            
+                      <s:conversationId name="wid"/>
+                      <img src="#{request.contextPath}/img/silk/page_edit.png" alt="Translate"/>
+                    </a4j:commandLink>
+                    <a4j:commandLink action="#{translateAction.persistChanges}" id="edit_save_link" styleClass="tuEditMode" reRender="tuTargetContentView">
+                      <s:conversationId name="wid"/>
+                      <img src="#{request.contextPath}/img/silk/tick.png"/>
+                    </a4j:commandLink>
+                    <h:outputLink id="edit_cancel_link" value="#" styleClass="tuEditMode">
+                      <img src="#{request.contextPath}/img/silk/cross.png"/>
+                    </h:outputLink>
+                    <h:outputLink id="edit_prev_link" value="#" styleClass="tuEditMode">
+                      <img src="#{request.contextPath}/img/silk/resultset_previous.png"/>
+                    </h:outputLink>
+                    <h:outputLink id="edit_next_link" value="#" styleClass="tuEditMode">
+                      <img src="#{request.contextPath}/img/silk/resultset_next.png"/>
+                    </h:outputLink>
+                  </div>
                 </div>
-              </div>
-              <a4j:support event="onclick" oncomplete="jQuery(ChiliBook.automaticSelector).chili()" />               
-              <rich:jQuery selector="#edit_link" 
-                  query="click(function(){ jQuery(this).closest('tr').find('.tuViewMode').hide(); jQuery(this).closest('tr').find('.tuEditMode').show(); })"/>
-              <rich:jQuery selector="#edit_cancel_link" 
-                  query="click(function(){ jQuery(this).closest('tr').find('.tuEditMode').hide(); jQuery(this).closest('tr').find('.tuViewMode').show(); })"/>
-            </rich:column>
-          </rich:dataTable>
-          <rich:jQuery selector="#edit_link" 
-                  query="click(function(){ jQuery(this).closest('tr').find('.tuViewMode').hide(); jQuery(this).closest('tr').find('.tuEditMode').show(); })"/>
-          <!--chili-->
-          <rich:jQuery selector="#{textFlowTable}" 
-            query="ready(function(){ jQuery(ChiliBook.automaticSelector).chili();})"/>          
-        </div>
-        <div id="TransAreaFooter">
-          <rich:datascroller for="textFlowTable" id="tuds" oncomplete="jQuery(ChiliBook.automaticSelector).chili()" reRender="textFlowTable" rendered="#{textFlowTargets.size > 50}"/>
-        </div>        
-      </div> <!-- TransArea -->
+                <a4j:support event="onclick" oncomplete="jQuery(ChiliBook.automaticSelector).chili()" />               
+                <rich:jQuery selector="#edit_link" 
+                    query="click(function(){ jQuery(this).closest('tr').find('.tuViewMode').hide(); jQuery(this).closest('tr').find('.tuEditMode').show(); })"/>
+                <rich:jQuery selector="#edit_cancel_link" 
+                    query="click(function(){ jQuery(this).closest('tr').find('.tuEditMode').hide(); jQuery(this).closest('tr').find('.tuViewMode').show(); })"/>
+              </rich:column>
+            </rich:dataTable>
+            <rich:jQuery selector="#edit_link" 
+                    query="click(function(){ jQuery(this).closest('tr').find('.tuViewMode').hide(); jQuery(this).closest('tr').find('.tuEditMode').show(); })"/>
+            <!--chili-->
+            <rich:jQuery selector="#{textFlowTable}" 
+              query="ready(function(){ jQuery(ChiliBook.automaticSelector).chili();})"/>          
+          </div>
+          <div id="TransAreaFooter">
+            <rich:datascroller for="textFlowTable" id="tuds" oncomplete="jQuery(ChiliBook.automaticSelector).chili()" reRender="textFlowTable" rendered="#{textFlowTargets.size > 50}"/>
+          </div>        
+        </div> <!-- TransArea -->
+      </a4j:region>
     </h:form>
     <rich:jQuery selector="#TransArea" 
       query="ready(function(){ jQuery(ChiliBook.automaticSelector).chili();})"/>          
@@ -165,6 +185,7 @@
       <f:facet name="header">Terminology</f:facet>
       <em>No Glossaries defined</em>
     </rich:panel>
+    <br/>
   </ui:define>
   
 </ui:composition>
