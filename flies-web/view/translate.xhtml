@@ -129,9 +129,6 @@
           </rich:dataTable>
           <rich:jQuery selector="#edit_link" 
                   query="click(function(){ jQuery(this).closest('tr').find('.tuViewMode').hide(); jQuery(this).closest('tr').find('.tuEditMode').show(); })"/>
-          <!--chili-->
-          <rich:jQuery selector="#{textFlowTable}" 
-            query="ready(function(){ jQuery(ChiliBook.automaticSelector).chili();})"/>          
         </div>
         <div id="TransAreaFooter">
           <rich:datascroller for="textFlowTable" id="tuds" oncomplete="jQuery(ChiliBook.automaticSelector).chili()" reRender="textFlowTable" rendered="#{textFlowTargets.size > 50}"/>
