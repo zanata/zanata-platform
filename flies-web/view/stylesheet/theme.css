@@ -255,6 +255,7 @@ td.action a {
 	right: 0px;
 	top: 0px;
 	padding: 5px;
+	padding-right: 20px;
 	margin: 0px;
 	font-size: 77%;
 	background-color: #f4f4f4;
@@ -337,6 +338,7 @@ tr.active-row {
 
 .tuSourceContent, .tuTargetContent{
 	padding: 3px;
+	text-align: left;
 }
 .tuTargetContent .tuViewMode{
 	border: 2px solid grey;
@@ -691,6 +693,64 @@ a.action_link:hover {
     height: 15px;
     background-color: #f2fbfb;
     border: 2px solid #e2ebeb;  
+}
+
+#TransArea{
+	border: 2px solid #F4F4F4;
+	-moz-border-radius: 5px;
+	
+}
+
+#TransAreaHeader{
+	background-color: #F4F4F4;
+	padding: 2px;
+}
+#TransAreaContent{
+	padding: 10px;
+	height: 100%; 
+	width: auto; 
+	overflow-y:scroll;
+	overflow-x:hidden;
+}
+#TransAreaFooter{
+	position: relative;
+	background-color: #F4F4F4;
+	padding-top: 2px;
+}
+
+#TransAreaFooterLeft{
+	position: absolute; 
+	left:0px; 
+	top:0px;
+}
+#TransAreaFooterCenter{
+}
+
+#TransAreaFooterRight{
+	position: absolute; 
+	right:0px; 
+	top:0px;
+}
+
+.TransAreaDataScroller{
+	background-color: inherit;
+	clear: none;
+}
+
+#LeftAndCenterSplitter {
+	/* Height is set to match window size in $().ready() below */
+	min-width:	600px;
+	min-height: 400px;
+}
+.vsplitbar {
+	width: 6px;
+	background: url(img/vgrabber.gif) no-repeat center;
+}
+.vsplitbar.active, .vsplitbar:hover {
+	background-color: #c66;
+	width: 6px;
+	opacity: 0.5;
+	filter: alpha(opacity=50); /* IE */
 }
 
 

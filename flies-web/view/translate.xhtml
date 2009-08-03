@@ -14,17 +14,26 @@
     <script type="text/javascript">
       //<![CDATA[
       jQuery(document).ready(function() {
-          // make translation table column stretch vertically
-          var leftHeight = jQuery("#LeftContent").height();
-          var headFootHeight = jQuery("#TransAreaHeader").height() + jQuery("#TransAreaFooter").height();
-          jQuery("#TransAreaContent").height(leftHeight - headFootHeight);
+
+          jQuery(ChiliBook.automaticSelector).chili();
       });
-      jQuery("#LeftAndCenterSplitter").bind("resize", function(e, size) {
-          // make translation table column stretch vertically
-          var leftHeight = jQuery("#LeftContent").height();
-          var headFootHeight = jQuery("#TransAreaHeader").height() + jQuery("#TransAreaFooter").height();
-          jQuery("#TransAreaContent").height(leftHeight - headFootHeight);
+
+      jQuery(window).resize(function() {
+
+    	  var areaDiv = jQuery("#TransArea");
+          var headerDiv = jQuery("#TransAreaHeader");
+          var footerDiv = jQuery("#TransAreaFooter");
+          var contentDiv = jQuery("#TransAreaContent");
+          
+          var height = jQuery(window).height();
+          height -= areaDiv.outerHeight(true) - areaDiv.height();
+          height -= headerDiv.outerHeight(true);
+          height -= footerDiv.outerHeight(true);
+          height -= contentDiv.outerHeight(true) - contentDiv.height();
+          contentDiv.height( height);
+          
       });
+                
       //]]>
     </script>  
   </ui:define>
@@ -50,7 +59,6 @@
                 <s:conversationId name="wid"/>
                 <h:outputText value="#{doc.template.name}" /> 
                 <!--chili-->
-                <rich:jQuery selector="#{textFlowTable}" query="ready(function(){ jQuery(ChiliBook.automaticSelector).chili();})"/>
               </a4j:commandLink>
             </rich:column>
             <f:facet name="footer">
@@ -59,6 +67,11 @@
           </rich:dataTable>
         </a4j:region>
       </h:form>
+    </rich:panel>
+    <br/>
+    <rich:panel id="filterPanel">
+      <f:facet name="header">Search and Filter</f:facet>
+      No content
     </rich:panel>
     <br/>
     <rich:panel id="translatorsPanel">
@@ -102,11 +115,11 @@
           </div>
         
           <div id="TransAreaHeader">
-            <em>#{textFlowTargets.size} translation units.</em>
+            Header goes here...
           </div>
-          <div id="TransAreaContent" style="height: 100%; width: 100%; overflow-y:scroll">
+          <div id="TransAreaContent">
             <rich:dataTable id="textFlowTable" 
-                width="auto"  value="#{textFlowTargets}" var="tut" rows="50" height="auto" reRender="tuds"
+                width="auto"  value="#{textFlowTargets}" var="tut" rows="20" height="auto" reRender="tuds"
                 rowClasses="odd,even" selection="#{translateAction.selectedRow}" >
               <rich:column label="Source" width="50%" style="overflow:hidden;">
                 <div id="tuTargetContent" class="tuSourceContent">
@@ -139,7 +152,6 @@
                     </h:outputLink>
                   </div>
                 </div>
-                <a4j:support event="onclick" oncomplete="jQuery(ChiliBook.automaticSelector).chili()" />               
                 <rich:jQuery selector="#edit_link" 
                     query="click(function(){ jQuery(this).closest('tr').find('.tuViewMode').hide(); jQuery(this).closest('tr').find('.tuEditMode').show(); })"/>
                 <rich:jQuery selector="#edit_cancel_link" 
@@ -148,12 +160,26 @@
             </rich:dataTable>
             <rich:jQuery selector="#edit_link" 
                     query="click(function(){ jQuery(this).closest('tr').find('.tuViewMode').hide(); jQuery(this).closest('tr').find('.tuEditMode').show(); })"/>
-            <!--chili-->
-            <rich:jQuery selector="#{textFlowTable}" 
-              query="ready(function(){ jQuery(ChiliBook.automaticSelector).chili();})"/>          
           </div>
           <div id="TransAreaFooter">
-            <rich:datascroller for="textFlowTable" id="tuds" oncomplete="jQuery(ChiliBook.automaticSelector).chili()" reRender="textFlowTable" rendered="#{textFlowTargets.size > 50}"/>
+            <div id="TransAreaFooterLeft">
+              <em>#{textFlowTargets.size} translation units.</em>
+            </div>
+            <div id="TransAreaFooterCenter">
+              <rich:datascroller for="textFlowTable" 
+                  styleClass="TransAreaDataScroller"
+                  id="tuds" 
+                  oncomplete="jQuery(ChiliBook.automaticSelector).chili()" 
+                  reRender="textFlowTable" 
+                  rendered="#{textFlowTargets.size > 50}"/>
+            </div>
+            <div id="TransAreaFooterRight">
+              <flies:translation-status-bar
+                title="Blah"
+                translated="34" 
+                fuzzy="1" 
+                untranslated="45"/>
+            </div>
           </div>        
         </div> <!-- TransArea -->
       </a4j:region>
