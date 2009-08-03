@@ -744,7 +744,7 @@ a.action_link:hover {
 }
 .vsplitbar {
 	width: 6px;
-	background: url(img/vgrabber.gif) no-repeat center;
+	background: url(../img/vgrabber.gif) no-repeat center;
 }
 .vsplitbar.active, .vsplitbar:hover {
 	background-color: #c66;
