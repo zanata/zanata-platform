@@ -753,5 +753,14 @@ a.action_link:hover {
 	filter: alpha(opacity=50); /* IE */
 }
 
+#LeftContent{
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+#RightContent{
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
 
 /* --> */
