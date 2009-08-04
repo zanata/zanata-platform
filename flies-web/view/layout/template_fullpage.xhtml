@@ -21,17 +21,6 @@
     <a:loadStyle src="/stylesheet/reset-fonts-grids.css"/>
     <a:loadStyle src="/stylesheet/base-min.css"/>
     <a:loadStyle src="/stylesheet/theme.css"/>
-    <style type="text/css" media="all">
-      html, body
-      {
-        margin: 0;
-        padding: 0;
-        overflow: hidden; /* Remove scroll bars on browser window */
-      }
-      #header { padding: 1em; }
-      
-    </style>
-
     <script type="text/javaScript" src="#{request.contextPath}/javascript/chili/jquery.chili-2.2.js"></script> 
     <script type="text/javascript" src="#{request.contextPath}/javascript/splitter.js"></script>
     <script type="text/javascript" src="#{request.contextPath}/javascript/jquery.cookie.js"></script>
@@ -47,7 +36,7 @@
                   type: 'v',
                   minLeft: '0', 
                   sizeLeft: '200', 
-                  maxLeft: '250', 
+                  maxLeft: '300', 
                   cookie:'lsplitter',
                   outline: 'true',
                   anchorToWindow: true
@@ -56,8 +45,8 @@
               .splitter({
                   type: 'v',
                   minRight: '0', 
-                  sizeRight: '150', 
-                  maxRight: '500',
+                  sizeRight: '250', 
+                  maxRight: '600',
                   cookie:'rsplitter',
                   outline: 'true'
               });
