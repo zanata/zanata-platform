@@ -324,9 +324,18 @@ tr.even {
 	background-color: #fafaff;
 }
 
-tr.active-row {
-	background-color: #FFEBDA;
+tr.hover-row {
+	/* background-color: #FFEBDA;*/
+	cursor: pointer;
 }
+
+tr.active-row {
+	background-color: #FFEEEE;
+	cursor: inherit;
+	border: 2px solid #FFCCCC;
+	-moz-border-radius: 5px;
+}
+
 
 .tuEditMode{
 	display: none;
@@ -761,6 +770,5 @@ a.action_link:hover {
 	overflow-x: hidden;
 	overflow-y: auto;
 }
-
 
 /* --> */
