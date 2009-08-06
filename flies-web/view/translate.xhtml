@@ -33,6 +33,51 @@
           contentDiv.height( height);
           
       });
+
+      function tuSelect(tr){
+          // hide the current active row
+          var activeRow = jQuery(tr).parent().find(".active-row");
+          activeRow.removeClass('active-row');
+          activeRow.find('.tuEditMode').hide();
+          activeRow.find('.tuViewMode').show();
+
+          // set the ideal size for the textarea
+          var editArea = jQuery(tr).find('textarea');
+          var td = editArea.parent().parent();
+          
+          var h = td.innerHeight();
+          h -= parseInt(td.css('paddingTop'));
+          h -= parseInt(td.css('paddingBottom'));
+          h -= editArea.outerHeight(true) - editArea.height()
+          
+          var w = td.innerWidth();
+          w -= parseInt(td.css('paddingLeft'));
+          w -= parseInt(td.css('paddingRight'));
+          w -= editArea.outerWidth(true) - editArea.width()
+          
+          editArea.height(h);
+          editArea.width(w);
+
+          jQuery(tr).find('.tuViewMode').hide();
+          jQuery(tr).addClass('active-row'); 
+          jQuery(tr).find('.tuEditMode').show();
+      }
+
+      function tuNext(){
+          alert('next');
+      }
+
+      function tuPrevious(){
+          alert('prev');
+      }
+
+      function tuCancel(){
+          var activeRow = jQuery("#TransAreaContent").find(".active-row");
+          activeRow.removeClass('active-row');
+          activeRow.find('.tuEditMode').hide();
+          activeRow.find('.tuViewMode').show();
+          return false;
+      }
                 
       //]]>
     </script>  
@@ -145,60 +190,41 @@
                   <div id="TargetContentView_#{tut.id}" class="tuTargetContent tuViewMode">
                     <p id="TargetContentHtml_#{tut.id}" class="html">#{tut.content}</p>
                   </div>
-                  <div id="TargetContentActions_#{tut.id}" class="tuActionButtons">
-                    <h:outputLink 
-                      id="TargetContentActions_Edit_#{tut.id}" 
-                      styleClass="tuViewMode" 
-                      value="#" >            
-                      <img src="#{request.contextPath}/img/silk/page_edit.png" alt="Translate"/>
-                    </h:outputLink>
+                  <div id="TargetContentActions_#{tut.id}" class="tuEditMode tuActionButtons" style="display: none">
                     <a4j:commandLink
                       id="TargetContentActions_Save_#{tut.id}" 
                       action="#{translateAction.persistChanges}" 
-                      styleClass="tuEditMode" 
                       reRender="tuTargetContentView">
                       <s:conversationId name="wid"/>
                       <img src="#{request.contextPath}/img/silk/tick.png"/>
                     </a4j:commandLink>
-                    <h:outputLink 
-                      id="TargetContentActions_Cancel_#{tut.id}" 
-                      value="#" 
-                      styleClass="tuEditMode">
+                    <a 
+                      id="TargetContentActions_Cancel_#{tut.id}"
+                      href="#"> 
                       <img src="#{request.contextPath}/img/silk/cross.png"/>
-                    </h:outputLink>
+                    </a>
                     <h:outputLink 
                       id="TargetContentActions_Prev_#{tut.id}" 
-                      value="#" 
-                      styleClass="tuEditMode">
+                      value="#"
+                      onclick="tuPrevious()">
                       <img src="#{request.contextPath}/img/silk/resultset_previous.png"/>
                     </h:outputLink>
                     <h:outputLink 
                       id="TargetContentActions_Next_#{tut.id}" 
-                      value="#" 
-                      styleClass="tuEditMode">
+                      value="#"
+                      onclick="tuNext()">
                       <img src="#{request.contextPath}/img/silk/resultset_next.png"/>
                     </h:outputLink>
                   </div>
                 </div>
                 <script type="text/javascript">
                   //<![CDATA[
+                  
+                  
                   var targetDiv = jQuery('#TargetContent_#{tut.id}');
                   var trElem = targetDiv.parent().parent();
-
                   // highlight target content
                   jQuery('#TargetContentHtml_#{tut.id}').chili();
-
-                  /*
-                  jQuery('#edit_link').click( function(){ 
-                    jQuery(this).closest('tr').find('.tuViewMode').hide(); 
-                    jQuery(this).closest('tr').find('.tuEditMode').show(); 
-                  });
-
-                  jQuery('#edit_cancel_link').click( function(){ 
-                    jQuery(this).closest('tr').find('.tuEditMode').hide(); 
-                    jQuery(this).closest('tr').find('.tuViewMode').show();
-                  });
-                  */
 
                   // row hover coloring
                   
@@ -212,42 +238,22 @@
                    ); 
 
                    trElem.click( function(){
-                      var activeRow = jQuery(this).parent().find(".active-row");
-                      activeRow.removeClass('active-row');
-                      activeRow.find('.tuEditMode').hide();
-                      activeRow.find('.tuViewMode').show();
                       
-                      jQuery(this).find('.tuViewMode').hide();
-                      jQuery(this).addClass('active-row'); 
-
-                      var editArea = jQuery(this).find('textarea');
-                      var td = editArea.parent().parent();
+                	  if( jQuery(this).hasClass('active-row') ) 
+                        return false;
+                      tuSelect(this);
                       
-                      var h = td.innerHeight();
-                      h -= parseInt(td.css('paddingTop'));
-                      h -= parseInt(td.css('paddingBottom'));
-                      h -= editArea.outerHeight(true) - editArea.height()
-                      editArea.height(h);
-                      
-                      var w = td.innerWidth();
-                      w -= parseInt(td.css('paddingLeft'));
-                      w -= parseInt(td.css('paddingRight'));
-                      w -= editArea.outerWidth(true) - editArea.width()
-                      
-                      editArea.width(w);
-                       
-                       jQuery(this).find('.tuEditMode').show();
                    });
-                  
-                  //<rich:jQuery selector="#TransAreaTable tr" 
-                  //    query="ready(function(){jQuery(this).find('.tuSourceContent, .tuTargetContent').equalizeCols()})"/>
-                  //<rich:jQuery selector="#TransAreaTable tr" 
-                  //    query="ready(function(){jQuery(this).find('.tuTargetContent, .tuPane').equalizeWidths()})"/>
-                  
+
+                   var cancelA = jQuery('#TargetContentActions_Cancel_#{tut.id}');
+                   cancelA.click( function(e) {
+                       tuCancel();
+                       return false;
+                   });
+                   
                   //]]>
                 </script>                     
               </rich:column>
-              <!-- This would hopefully be included XXXXXXXXXXX -->
             </rich:dataTable>
 
           </div>
