@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import net.openl10n.adapters.LocaleId;
+import net.openl10n.api.LocaleId;
 import net.openl10n.packaging.jpa.document.HDocumentTarget;
 import net.openl10n.packaging.jpa.document.HTextFlowTarget;
 import net.openl10n.packaging.jpa.project.HProject;

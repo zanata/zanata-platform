@@ -2,7 +2,7 @@ package org.fedorahosted.flies.webtrans;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.openl10n.adapters.LocaleId;
+import net.openl10n.api.LocaleId;
 
 import org.fedorahosted.flies.FliesInit;
 import org.jboss.seam.ScopeType;

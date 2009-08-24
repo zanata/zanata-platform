@@ -1,6 +1,6 @@
 package org.fedorahosted.flies.webtrans;
 
-import net.openl10n.adapters.LocaleId;
+import net.openl10n.api.LocaleId;
 import net.openl10n.packaging.jpa.project.HProject;
 
 import org.fedorahosted.flies.core.model.ProjectIteration;

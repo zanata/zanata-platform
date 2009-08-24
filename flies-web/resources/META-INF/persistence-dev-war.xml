@@ -8,6 +8,30 @@
    <persistence-unit name="flies" transaction-type="JTA">
       <provider>org.hibernate.ejb.HibernatePersistence</provider>
       <jta-data-source>java:/fliesDatasource</jta-data-source>
+      
+      <!-- Need to list openl10n explicitly as they are in a different jar -->
+	<class>net.openl10n.packaging.jpa.project.HProject</class>
+<!-- 	
+	<class>net.openl10n.packaging.jpa.AbstractEntity</class>
+	<class>net.openl10n.packaging.jpa.LocaleIdType</class>
+	<class>net.openl10n.packaging.jpa.ContentTypeType</class>
+  -->
+  	<class>net.openl10n.packaging.jpa.document.HInlineMarker</class>
+	<class>net.openl10n.packaging.jpa.document.HReferenceMarker</class>
+	<class>net.openl10n.packaging.jpa.document.HDataHook</class>
+	<class>net.openl10n.packaging.jpa.document.HDocument</class>
+	<class>net.openl10n.packaging.jpa.document.HParentResource</class>
+	<class>net.openl10n.packaging.jpa.document.HTextSegmentTarget</class>
+	<class>net.openl10n.packaging.jpa.document.HTextFlow</class>
+	<class>net.openl10n.packaging.jpa.document.HTextSegment</class>
+	<class>net.openl10n.packaging.jpa.document.HContainer</class>
+	<class>net.openl10n.packaging.jpa.document.HReference</class>
+	<class>net.openl10n.packaging.jpa.document.HResource</class>
+	<class>net.openl10n.packaging.jpa.document.HContainerMarker</class>
+	<class>net.openl10n.packaging.jpa.document.HDocumentTarget</class>
+	<class>net.openl10n.packaging.jpa.document.HTextFlowTarget</class>
+	<class>net.openl10n.packaging.jpa.comments.HSimpleComment</class>
+      
       <properties>
          <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect"/>
          <!-- 

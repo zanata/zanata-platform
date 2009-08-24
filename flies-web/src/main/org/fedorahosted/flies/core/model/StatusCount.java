@@ -1,6 +1,6 @@
 package org.fedorahosted.flies.core.model;
 
-import net.openl10n.packaging.document.TextFlowTarget.ContentState;
+import net.openl10n.api.rest.document.TextFlowTarget.ContentState;
 
 public class StatusCount{
 		public final ContentState status;
