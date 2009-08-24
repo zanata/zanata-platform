@@ -15,10 +15,9 @@ import org.jboss.seam.annotations.Name;
 public class ProjectDAO {
 
 	@In
-	EntityManager entityManager;
+	Session session;
 	
 	public Project getBySlug(String slug){
-		Session session = (Session) entityManager.getDelegate();
 		return (Project) session.createCriteria(Project.class)
 			.add( Restrictions.naturalId()
 		        .set("slug", slug))

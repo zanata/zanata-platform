@@ -163,4 +163,6 @@
    </bpm:jbpm>
    -->
 
+	<factory name="session" value="#{entityManager.delegate}" scope="STATELESS" auto-create="true"/>
+
 </components>
