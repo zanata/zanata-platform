@@ -21,4 +21,17 @@ public class ProjectIterationResourceImpl implements ProjectIterationResource{
 		return projectIteration.getName();
 	}
 	
+	
+	// hack to allow sub-resource in resteasy
+	public static ProjectIterationResource getProxyWrapper(final ProjectIterationResource instance){
+		return new ProjectIterationResource(){
+
+			@Override
+			public String get() {
+				return instance.get();
+			}
+			
+		};
+	}	
+	
 }

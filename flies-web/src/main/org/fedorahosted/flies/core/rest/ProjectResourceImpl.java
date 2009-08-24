@@ -65,10 +65,10 @@ public class ProjectResourceImpl implements ProjectResource{
 		
 		if( p instanceof IterationProject){
 			IterationProjectResourceImpl itPrRes = 
-				(IterationProjectResourceImpl) Component.getInstance("iterationProjectResource",ScopeType.STATELESS, true);
+				(IterationProjectResourceImpl) Component.getInstance(IterationProjectResourceImpl.class, true);
 			itPrRes.setProject((IterationProject) p);
 			
-			return itPrRes.getProxyWrapper();
+			return IterationProjectResourceImpl.getProxyWrapper(itPrRes);
 		}
 		else {//else if (p instanceof ContentProject){
 			throw new UnauthorizedException("not implemented");

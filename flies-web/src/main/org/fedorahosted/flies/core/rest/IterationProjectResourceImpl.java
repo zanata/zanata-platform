@@ -32,24 +32,19 @@ public class IterationProjectResourceImpl implements IterationProjectResource{
 	}
 	
 	// hack to allow sub-resource in resteasy
-	private IterationProjectResource proxy; 
-	public IterationProjectResource getProxyWrapper(){
-		if(proxy == null){
-			final IterationProjectResourceImpl instance = this;
-			proxy = new IterationProjectResource(){
-				
-				@Override
-				public Object getProjectIteration(String iterationSlug) {
-					return instance.getProjectIteration(iterationSlug);
-				}
-				
-				@Override
-				public String get() {
-					return instance.get();
-				}
-			};
-		}
-		return proxy;
+	public static IterationProjectResource getProxyWrapper(final IterationProjectResource instance){
+		return new IterationProjectResource(){
+			
+			@Override
+			public Object getProjectIteration(String iterationSlug) {
+				return instance.getProjectIteration(iterationSlug);
+			}
+			
+			@Override
+			public String get() {
+				return instance.get();
+			}
+		};
 	}
 
 	@Override
@@ -63,7 +58,7 @@ public class IterationProjectResourceImpl implements IterationProjectResource{
 		ProjectIterationResourceImpl piRes = 
 			(ProjectIterationResourceImpl) Component.getInstance(ProjectIterationResourceImpl.class, true);
 		piRes.setProjectIteration(projectIteration);
-		return piRes;
+		return ProjectIterationResourceImpl.getProxyWrapper(piRes);
 
 	}
 
