@@ -5,8 +5,8 @@
 	<version>1.0-SNAPSHOT</version>
 
 	<properties>
-		<version.seam>2.1.2</version.seam>
-		<version.jboss.embedded>beta3</version.jboss.embedded>
+		<version.seam>2.2.0.GA</version.seam>
+		<version.jboss.embedded>beta3.SP9</version.jboss.embedded>
 	</properties>
 
 	<dependencyManagement>

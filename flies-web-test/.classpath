@@ -64,6 +64,6 @@
     <classpathentry kind="lib" path="/flies-web/lib/jbossas/slf4j-log4j12.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/jbossas/xml-apis.jar"/> 
     <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-    <classpathentry combineaccessrules="false" kind="src" path="/flies-web"/> 
+    <classpathentry combineaccessrules="false" kind="src" path="/flies-web"/>
     <classpathentry kind="output" path="build/testclasses"/>
 </classpath>

@@ -69,7 +69,9 @@
     <classpathentry kind="lib" path="lib/slf4j-log4j12.jar" sourcepath="lib/src/slf4j-log4j12-sources.jar"/>
     <classpathentry kind="lib" path="lib/stax-api.jar" sourcepath="lib/src/stax-api-sources.jar"/>
     <classpathentry kind="lib" path="lib/urlrewritefilter.jar"/>
-    <classpathentry kind="lib" path="lib/xom.jar"/> 
+    <classpathentry kind="lib" path="lib/xom.jar"/>
+    <classpathentry kind="lib" path="lib/xpp3_min.jar"/>
+    <classpathentry kind="lib" path="lib/xstream.jar" sourcepath="lib/src/xstream-sources.jar"/> 
     <classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.generic.runtimeTarget/JBoss v4.2"/>
     <classpathentry kind="output" path="build/flies.war/WEB-INF/classes"/>
 </classpath>
