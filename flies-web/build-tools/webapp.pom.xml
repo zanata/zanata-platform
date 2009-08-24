@@ -6,6 +6,7 @@
 
 	<properties>
 		<version.seam>2.2.0.GA</version.seam>
+		<version.resteasy>1.1.GA</version.resteasy>
 		<version.drools>4.0.4</version.drools>
 		<version.richfaces>3.3.1.GA</version.richfaces>
 		<version.tennera>0.6-SNAPSHOT</version.tennera>
@@ -62,13 +63,28 @@
 			<artifactId>jboss-seam-remoting</artifactId>
 			<version>${version.seam}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.jboss.seam</groupId>
+			<artifactId>jboss-seam-resteasy</artifactId>
+			<version>${version.seam}</version>
+		</dependency>
 
-                <dependency>
-                        <groupId>org.jboss.seam</groupId>
-                        <artifactId>jboss-seam-resteasy</artifactId>
-                        <version>${version.seam}</version>
-                </dependency>
-
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxrs</artifactId>
+			<version>${version.resteasy}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxb-provider</artifactId>
+			<version>${version.resteasy}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-atom-provider</artifactId>
+			<version>${version.resteasy}</version>
+		</dependency>
 		<!--
 			Available Seam artifacts as of 2.1.2-SNAPSHOT: jboss-seam-debug
 			jboss-seam-excel jboss-seam-gen jboss-seam-ioc jboss-seam-jbas5
