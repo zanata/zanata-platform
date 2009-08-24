@@ -39,7 +39,7 @@ import org.jboss.seam.log.Log;
 
 @Name("projectResource")
 @Path("/project/")
-public class ProjectResource {
+public class ProjectResourceImpl implements ProjectResource{
 
 	@Logger
 	Log log;
@@ -56,19 +56,19 @@ public class ProjectResource {
 	@Context 
 	HttpServletRequest request;
 	
-	@Path("/{projectSlug}")
-	public Object getProject(@PathParam("projectSlug") String projectSlug) {
+	@Override
+	public Object getProject(String projectSlug) {
 		checkPermissions();
 		Project p = projectDAO.getBySlug(projectSlug);
 		if(p == null)
 			throw new NotFoundException("Project not found: "+projectSlug);
 		
 		if( p instanceof IterationProject){
-			IterationProjectResource itPrRes = 
-				(IterationProjectResource) Component.getInstance("iterationProjectResource",ScopeType.STATELESS, true);
+			IterationProjectResourceImpl itPrRes = 
+				(IterationProjectResourceImpl) Component.getInstance("iterationProjectResource",ScopeType.STATELESS, true);
 			itPrRes.setProject((IterationProject) p);
 			
-			return itPrRes.unwrap();
+			return itPrRes.getProxyWrapper();
 		}
 		else {//else if (p instanceof ContentProject){
 			throw new UnauthorizedException("not implemented");
@@ -100,8 +100,7 @@ public class ProjectResource {
 		return entry;
 	}
 
-	@GET
-	@Produces("application/atom+xml")
+	@Override
 	public Feed get() {
 		
 		List<MetaProject> projects = session.createQuery("select new org.fedorahosted.flies.core.rest.api.MetaProject(p) from Project p")
