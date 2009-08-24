@@ -44,6 +44,7 @@
     <classpathentry kind="lib" path="lib/jboss-seam-resteasy.jar" sourcepath="lib/src/jboss-seam-resteasy-sources.jar"/>
     <classpathentry kind="lib" path="lib/jboss-seam-ui.jar" sourcepath="lib/src/jboss-seam-ui-sources.jar"/>
     <classpathentry kind="lib" path="lib/jboss-seam.jar" sourcepath="lib/src/jboss-seam-sources.jar"/>
+    <classpathentry kind="lib" path="lib/jcl-over-slf4j.jar" sourcepath="lib/src/jcl-over-slf4j-sources.jar"/>
     <classpathentry kind="lib" path="lib/jettison.jar" sourcepath="lib/src/jettison-sources.jar"/>
     <classpathentry kind="lib" path="lib/jgettext.jar"/>
     <classpathentry kind="lib" path="lib/jsf-api.jar"/>
