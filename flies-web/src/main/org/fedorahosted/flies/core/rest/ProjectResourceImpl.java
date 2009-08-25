@@ -95,7 +95,7 @@ public class ProjectResourceImpl implements ProjectResource{
 		}
 		Content content = new Content();
 		entry.setContent(content);
-		content.setType(MediaType.APPLICATION_XML);
+		content.setType(MediaType.APPLICATION_XML_TYPE);
 		content.setJAXBObject(project);
 		return entry;
 	}
