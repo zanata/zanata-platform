@@ -17,11 +17,10 @@
             <package name="org.fedorahosted.flies.repository.model"/>
         </packages>
     </test>
-<!-- 
+
     <test name="REST">
         <packages>
             <package name="org.fedorahosted.flies.core.rest"/>
         </packages>
     </test>
- -->
 </suite>
