@@ -334,6 +334,8 @@
 
 	<target name="tests-clean" description="Clean out the staging directory">
 		<delete dir="${test.output.dir}" failonerror="false"/>
+		<delete dir="../flies-web-test/build" failonerror="false"/>
+		<delete dir="../flies-web-test/hibernate-search-data" failonerror="false"/>
 		<delete failonerror="no" includeemptydirs="true">
 			<fileset dir="${test.tmp.dir}">
 				<exclude name="**/*.class" if="eclipse.running" />

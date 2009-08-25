@@ -68,6 +68,7 @@
 		<property name="hibernate.ejb.event.post-collection-recreate"
 			value="org.hibernate.envers.event.AuditEventListener" />
          
+        <property name="hibernate.search.default.indexBase" value="../flies-web-test/hibernate-search-data"/>         
       </properties>
    </persistence-unit>
     

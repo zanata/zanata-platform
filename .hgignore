@@ -22,7 +22,7 @@ syntax: regexp
 ^flies-web-test/build/
 ^flies-web-test/bootstrap/data/
 ^flies-web-test/test-output/
-
+^flies-web-test/hibernate-search-data/
 # flies-richfaces-ui
 ^flies-richfaces-ui/(translation-status-bar|assembly)/.classpath
 ^flies-richfaces-ui/(translation-status-bar|assembly)/.project
