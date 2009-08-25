@@ -1,14 +1,17 @@
 package org.fedorahosted.flies.core.rest;
 
+import java.net.URI;
 import java.util.Set;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 
 import net.openl10n.api.ContentType;
 import net.openl10n.api.rest.document.Document;
 import net.openl10n.api.rest.project.Project;
+import net.openl10n.packaging.jpa.project.HProject;
 
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.core.model.ProjectIteration;
@@ -37,6 +40,17 @@ public class ProjectIterationResourceImpl implements ProjectIterationResource{
 	}
 	
 	@Override
+	public Response post(Project project) {
+		return Response.created( URI.create("http://example.com/project") ).build();
+	}
+	
+	@Override
+	public Response put(Project project) {
+		return Response.created( URI.create("http://example.com/project") ).build();
+	}
+	
+	
+	@Override
 	public DocumentResource getDocument(String documentId) {
 		DocumentResourceImpl docRes = (DocumentResourceImpl) Component.getInstance(DocumentResourceImpl.class, true);
 		//docRes.setProject();
@@ -51,6 +65,16 @@ public class ProjectIterationResourceImpl implements ProjectIterationResource{
 			@Override
 			public Project get(String extensions) {
 				return instance.get(extensions);
+			}
+			
+			@Override
+			public Response post(Project project) {
+				return instance.post(project);
+			}
+			
+			@Override
+			public Response put(Project project) {
+				return instance.put(project);
 			}
 			
 			@Override
