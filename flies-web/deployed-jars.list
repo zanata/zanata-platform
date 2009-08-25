@@ -2,8 +2,8 @@ antlr-runtime.jar
 commons-beanutils.jar
 commons-digester.jar
 core.jar
-drools-compiler.jar
-drools-core.jar
+drools-*.jar
+mvel*.jar
 janino.jar
 jboss-el.jar
 jboss-seam.jar
@@ -11,7 +11,6 @@ jboss-seam-*.jar
 jbpm-jpdl.jar
 jsf-facelets.jar
 jxl.jar
-mvel14.jar
 richfaces-api.jar
 richfaces-impl.jar
 richfaces-ui.jar

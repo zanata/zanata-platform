@@ -7,7 +7,7 @@
 	<properties>
 		<version.seam>2.2.0.GA</version.seam>
 		<version.resteasy>1.1.GA</version.resteasy>
-		<version.drools>4.0.4</version.drools>
+		<version.drools>5.0.1</version.drools>
 		<version.richfaces>3.3.1.GA</version.richfaces>
 		<version.tennera>0.6-SNAPSHOT</version.tennera>
 	</properties>

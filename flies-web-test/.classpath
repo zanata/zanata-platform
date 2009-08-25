@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
     <classpathentry kind="src" path="src/test"/>
+    <classpathentry kind="src" path="bootstrap"/>
     <classpathentry kind="lib" path="lib/core.jar"/>
     <classpathentry kind="lib" path="lib/dbunit.jar"/>
     <classpathentry kind="lib" path="lib/jboss-embedded-all.jar"/>
@@ -13,6 +14,7 @@
     <classpathentry kind="lib" path="/flies-web/lib/commons-lang.jar" sourcepath="/flies-web/lib/src/commons-lang-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/core.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/dbunit.jar" sourcepath="/flies-web/lib/src/dbunit-sources.jar"/>
+    <classpathentry kind="lib" path="/flies-web/lib/drools-api.jar" sourcepath="/flies-web/lib/src/drools-api-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/drools-compiler.jar" sourcepath="/flies-web/lib/src/drools-compiler-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/drools-core.jar" sourcepath="/flies-web/lib/src/drools-core-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/flies-ui.jar" sourcepath="/flies-web/lib/src/flies-ui-sources.jar"/>
@@ -31,9 +33,10 @@
     <classpathentry kind="lib" path="/flies-web/lib/jboss-seam-ui.jar" sourcepath="/flies-web/lib/src/jboss-seam-ui-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/jboss-seam.jar" sourcepath="/flies-web/lib/src/jboss-seam-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/jgettext.jar"/>
+    <classpathentry kind="lib" path="/flies-web/lib/joda-time.jar" sourcepath="/flies-web/lib/src/joda-time-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/jsf-facelets.jar" sourcepath="/flies-web/lib/src/jsf-facelets-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/lucene-core.jar" sourcepath="/flies-web/lib/src/lucene-core-sources.jar"/>
-    <classpathentry kind="lib" path="/flies-web/lib/mvel14.jar"/>
+    <classpathentry kind="lib" path="/flies-web/lib/mvel2.jar" sourcepath="/flies-web/lib/src/mvel2-sources.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/openl10n-adapter-po.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/openl10n-packaging-hibernate.jar"/>
     <classpathentry kind="lib" path="/flies-web/lib/openl10n-rest-api.jar"/>

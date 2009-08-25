@@ -16,6 +16,7 @@
     <classpathentry kind="lib" path="lib/core.jar"/>
     <classpathentry kind="lib" path="lib/dbunit.jar" sourcepath="lib/src/dbunit-sources.jar"/>
     <classpathentry kind="lib" path="lib/dom4j.jar"/>
+    <classpathentry kind="lib" path="lib/drools-api.jar" sourcepath="lib/src/drools-api-sources.jar"/>
     <classpathentry kind="lib" path="lib/drools-compiler.jar" sourcepath="lib/src/drools-compiler-sources.jar"/>
     <classpathentry kind="lib" path="lib/drools-core.jar" sourcepath="lib/src/drools-core-sources.jar"/>
     <classpathentry kind="lib" path="lib/ejb3-persistence.jar" sourcepath="lib/src/ejb3-persistence-sources.jar"/>
@@ -47,6 +48,7 @@
     <classpathentry kind="lib" path="lib/jcl-over-slf4j.jar" sourcepath="lib/src/jcl-over-slf4j-sources.jar"/>
     <classpathentry kind="lib" path="lib/jettison.jar" sourcepath="lib/src/jettison-sources.jar"/>
     <classpathentry kind="lib" path="lib/jgettext.jar"/>
+    <classpathentry kind="lib" path="lib/joda-time.jar" sourcepath="lib/src/joda-time-sources.jar"/>
     <classpathentry kind="lib" path="lib/jsf-api.jar"/>
     <classpathentry kind="lib" path="lib/jsf-facelets.jar" sourcepath="lib/src/jsf-facelets-sources.jar"/>
     <classpathentry kind="lib" path="lib/jsf-impl.jar"/>
@@ -54,7 +56,7 @@
     <classpathentry kind="lib" path="lib/jta.jar" sourcepath="lib/src/jta-sources.jar"/>
     <classpathentry kind="lib" path="lib/log4j.jar" sourcepath="lib/src/log4j-sources.jar"/>
     <classpathentry kind="lib" path="lib/lucene-core.jar" sourcepath="lib/src/lucene-core-sources.jar"/>
-    <classpathentry kind="lib" path="lib/mvel14.jar"/>
+    <classpathentry kind="lib" path="lib/mvel2.jar" sourcepath="lib/src/mvel2-sources.jar"/>
     <classpathentry kind="lib" path="lib/openl10n-adapter-po.jar"/>
     <classpathentry kind="lib" path="lib/openl10n-packaging-hibernate.jar"/>
     <classpathentry kind="lib" path="lib/openl10n-rest-api.jar"/>
@@ -73,6 +75,6 @@
     <classpathentry kind="lib" path="lib/xom.jar"/>
     <classpathentry kind="lib" path="lib/xpp3_min.jar"/>
     <classpathentry kind="lib" path="lib/xstream.jar" sourcepath="lib/src/xstream-sources.jar"/> 
-    <classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.generic.runtimeTarget/JBoss v4.2"/>
+    <classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.jboss.ide.eclipse.as.core.server.runtime.runtimeTarget/JBoss AS 4.2.3"/>
     <classpathentry kind="output" path="build/flies.war/WEB-INF/classes"/>
 </classpath>
