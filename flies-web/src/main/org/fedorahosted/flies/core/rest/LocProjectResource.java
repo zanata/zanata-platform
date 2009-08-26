@@ -10,24 +10,29 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
+import org.jboss.resteasy.annotations.providers.jaxb.json.Mapped;
+import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
+
+import net.openl10n.api.Namespaces;
 import net.openl10n.api.rest.project.Project;
-import net.openl10n.packaging.jpa.project.HProject;
 
 public interface LocProjectResource {
-	
+
 	@GET
-	@Produces({"application/openl10n.project+xml", "application/json"})
-	public Project get(@QueryParam("ext") @DefaultValue("") String extensions);
+	@Produces( { "application/openl10n.project+xml", "application/json" })
+	public Project get(
+			@QueryParam("ext") @DefaultValue("") String extensions
+			);
 
 	@POST
-	@Consumes({"application/openl10n.project+xml"})
+	@Consumes( { "application/openl10n.project+xml", "application/json" })
 	public Response post(Project project);
-	
+
 	@PUT
-	@Consumes({"application/openl10n.project+xml"})
+	@Consumes( { "application/openl10n.project+xml", "application/json" })
 	public Response put(Project project);
-	
+
 	@Path("documents/{documentId}")
 	public DocumentResource getDocument(String documentId);
-	
+
 }

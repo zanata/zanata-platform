@@ -1,6 +1,5 @@
 package org.fedorahosted.flies.core.rest;
 
-import org.fedorahosted.flies.core.rest.api.MetaProject;
 import org.jboss.resteasy.plugins.providers.atom.Content;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 

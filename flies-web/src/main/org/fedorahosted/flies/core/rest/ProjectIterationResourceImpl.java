@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response;
 
 import net.openl10n.api.ContentType;
 import net.openl10n.api.rest.document.Document;
+import net.openl10n.api.rest.document.DocumentRef;
 import net.openl10n.api.rest.project.Project;
 import net.openl10n.packaging.jpa.project.HProject;
 
@@ -31,11 +32,20 @@ public class ProjectIterationResourceImpl implements ProjectIterationResource{
 
 	@Override
 	public Project get(String ext) {
-		Project p = new Project("id", "name", "summary");
-		Set<String> extensions = ImmutableSet.of( StringUtils.split(ext, ',') );
-		if(extensions != null && extensions.contains("docs")){
-			p.getDocuments().add( new Document("/path/to/doc.txt", ContentType.TextPlain ) );
-		}
+		Project p = load();
+		//Set<String> extensions = ImmutableSet.of( StringUtils.split(ext, ',') );
+		//if(extensions != null && extensions.contains("docs")){
+			Document d = new Document("123", "name", "/full/path", ContentType.TextPlain, 1);
+			p.getDocuments().add( new DocumentRef(d) );
+		//}
+		return p;
+	}
+	
+	private Project load(){
+		Project p = new Project();
+		p.setId( projectIteration.getProject().getSlug() + '/' + projectIteration.getSlug());
+		p.setName(projectIteration.getProject().getName() + " - " + projectIteration.getName());
+		p.setSummary( projectIteration.getDescription() );
 		return p;
 	}
 	

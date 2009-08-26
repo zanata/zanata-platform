@@ -17,11 +17,13 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBException;
 
+import net.openl10n.api.rest.project.ProjectRef;
+import net.openl10n.api.rest.project.ProjectRefs;
+
 import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.model.ContentProject;
 import org.fedorahosted.flies.core.model.IterationProject;
 import org.fedorahosted.flies.core.model.Project;
-import org.fedorahosted.flies.core.rest.api.MetaProject;
 import org.hibernate.Session;
 import org.jboss.resteasy.plugins.providers.atom.Content;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
@@ -83,37 +85,21 @@ public class ProjectResourceImpl implements ProjectResource{
 			throw new UnauthorizedException();
 		}
 	}
-	
-	private static Entry create(MetaProject project){
-		Entry entry = new Entry();
-		entry.setTitle(project.getName());
-		entry.setSummary(project.getDescription());
-		entry.setUpdated(new Date());
-		try {
-			entry.setId(new URI(project.getId()));
-		} catch (URISyntaxException e) {
-		}
-		Content content = new Content();
-		entry.setContent(content);
-		content.setType(MediaType.APPLICATION_XML_TYPE);
-		content.setJAXBObject(project);
-		return entry;
-	}
 
 	@Override
-	public Feed get() {
+	public ProjectRefs get() {
+		ProjectRefs projectRefs = new ProjectRefs();
 		
-		List<MetaProject> projects = session.createQuery("select new org.fedorahosted.flies.core.rest.api.MetaProject(p) from Project p")
-			.list();
+		List<Project> projects = session.createQuery("select p from Project p").list();
 		
-		Feed projectFeed = new Feed();
-		projectFeed.setTitle("projects");
-		projectFeed.setUpdated(new Date());
-		for(MetaProject p: projects){
-			Entry entry = create(p);
-			projectFeed.getEntries().add(entry);
+		for(Project p : projects){
+			net.openl10n.api.rest.project.Project restProj = 
+				new net.openl10n.api.rest.project.Project(p.getSlug(), p.getName(), p.getDescription());
+			projectRefs.getProjects().add( new ProjectRef( restProj ));
 		}
-		return projectFeed;
+		
+		return projectRefs;
+		
 	}
 	
 
