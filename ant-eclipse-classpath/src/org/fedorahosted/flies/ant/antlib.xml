@@ -1,4 +1,0 @@
-<antlib>
-  <typedef name="update-eclipse-classpath" classname="org.fedorahosted.flies.ant.AntClasspathTask"/>
-  <typedef name="path-variable" classname="org.fedorahosted.flies.ant.PathVariable"/>
-</antlib>
