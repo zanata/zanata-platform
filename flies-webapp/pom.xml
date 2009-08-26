@@ -28,7 +28,7 @@
 		<!-- jar versions, for dependency management -->
 		<version.seam>2.2.0.GA</version.seam> <!-- MUST correspond w. seam version in parent tag --> 
 		<version.richfaces>3.3.1.GA</version.richfaces>
-		<version.drools>4.0.4</version.drools>
+		<version.drools>5.0.1</version.drools>
 		<version.resteasy>1.1.GA</version.resteasy>
 		<version.jboss.embedded>beta3.SP9</version.jboss.embedded>
 		<version.junit>4.7</version.junit>
@@ -64,8 +64,8 @@
 		<env.hibernate.default_batch_size>16</env.hibernate.default_batch_size>
 		<jdk.debug>${env.debug}</jdk.debug>
 		<jdk.optimize>true</jdk.optimize>
-		<jdk.source>1.5</jdk.source>
-		<jdk.target>1.5</jdk.target>
+		<jdk.source>1.6</jdk.source>
+		<jdk.target>1.6</jdk.target>
 		<as>jboss423</as>
 		<as.version>4.2</as.version>
 		<ds>hsqldb</ds>
@@ -656,8 +656,8 @@
 
 			<dependency>
 				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate</artifactId>
-				<version>3.2.4.sp1</version>
+				<artifactId>hibernate-core</artifactId>
+				<version>3.3.1.GA</version>
 				<exclusions>
 					<exclusion>
 						<groupId>commons-collections</groupId>
@@ -674,6 +674,10 @@
 					<exclusion>
 						<groupId>junit</groupId>
 						<artifactId>junit</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.slf4j</groupId>
+						<artifactId>slf4j-api</artifactId>					
 					</exclusion>
 					<!-- ** -->
 					<exclusion>
@@ -706,13 +710,19 @@
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-search</artifactId>
-				<version>3.0.1.GA</version>
+				<version>3.1.1.GA</version>
 				<exclusions>
 					<!-- ** -->
 					<exclusion>
 						<groupId>org.hibernate</groupId>
-						<artifactId>hibernate</artifactId>
+						<artifactId>ejb3-persistence</artifactId>
 					</exclusion>
+					
+					<exclusion>
+						<groupId>org.hibernate</groupId>
+						<artifactId>hibernate-core</artifactId>
+					</exclusion>
+					
 				</exclusions>
 			</dependency>
 
@@ -949,7 +959,7 @@
 			<dependency>
 				<groupId>org.antlr</groupId>
 				<artifactId>antlr-runtime</artifactId>
-				<version>3.0</version>
+				<version>3.1.1</version>
 			</dependency>
 
 			
@@ -1276,7 +1286,7 @@
 		<!-- hibernate -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate</artifactId>
+			<artifactId>hibernate-core</artifactId>
 			<scope>provided</scope>
 		</dependency>
 

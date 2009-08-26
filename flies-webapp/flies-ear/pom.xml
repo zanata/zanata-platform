@@ -39,7 +39,7 @@
 								<phase>package</phase>
 								<configuration>
 									<tasks>
-										<property name="deploy-path" value="${as.deploy}/${app.context}-ear.ear" />
+										<property name="deploy-path" value="${as.deploy}/${app.context}.ear" />
 										<echo>Exploding to ${deploy-path}</echo>
 										<delete	file="${deploy-path}" quiet="true" />
 										<mkdir dir="${deploy-path}" />
@@ -78,7 +78,7 @@
 								<phase>clean</phase>
 								<configuration>
 									<tasks>
-										<property name="deploy-path" value="${as.deploy}/${app.context}-ear.ear" />
+										<property name="deploy-path" value="${as.deploy}/${app.context}.ear" />
 										<delete	file="${deploy-path}"	quiet="true" />
 										<delete	dir="${deploy-path}" quiet="true" />
 										<!--
@@ -157,7 +157,7 @@
 				<artifactId>maven-ear-plugin</artifactId>
 				<configuration>
 					<generateApplicationXml>true</generateApplicationXml>
-					<finalName>${app.context}-ear</finalName>
+					<finalName>${app.context}</finalName>
 					<displayName>${app.display.name}</displayName>
 					<description>${app.description}</description>
 					<version>5</version>
@@ -181,7 +181,7 @@
 								general lib directory). The classloader i referenced in
 								jboss-app.xml and jboss-web.xml
 							-->
-							seam.jboss.org:loader=${app.context}-ear.ear
+							seam.jboss.org:loader=${app.context}.ear
 						</loader-repository>
 
 						<!--
