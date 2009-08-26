@@ -11,14 +11,14 @@
   <packaging>jar</packaging>
   
   <properties>
-    <version.resteasy>1.1-RC2</version.resteasy>
+    <version.resteasy>1.1.GA</version.resteasy>
   </properties>
   
   <dependencies>
 
     <dependency>
       <groupId>org.fedorahosted.flies</groupId>
-      <artifactId>flies-common-api</artifactId>
+      <artifactId>flies-rest-api</artifactId>
       <version>${project.version}</version>
     </dependency>
 

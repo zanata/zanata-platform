@@ -160,6 +160,12 @@
 			<artifactId>jgettext</artifactId>
 			<version>${version.tennera}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.fedorahosted.flies</groupId>
+			<artifactId>flies-rest-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>		
 
 		<dependency>
 			<groupId>org.fedorahosted.flies.ui</groupId>
