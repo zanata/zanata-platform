@@ -8,7 +8,7 @@ import javax.ws.rs.Produces;
 import org.fedorahosted.flies.core.dao.ProjectIterationDAO;
 import org.fedorahosted.flies.core.model.IterationProject;
 import org.fedorahosted.flies.core.model.ProjectIteration;
-import org.fedorahosted.flies.rest.api.IterationProjectResource;
+import org.fedorahosted.flies.rest.IterationProjectResource;
 import org.hibernate.Session;
 import org.jboss.resteasy.spi.NotFoundException;
 import org.jboss.seam.Component;

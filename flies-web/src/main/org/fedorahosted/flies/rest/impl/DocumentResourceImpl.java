@@ -2,7 +2,7 @@ package org.fedorahosted.flies.rest.impl;
 
 import javax.ws.rs.Path;
 
-import org.fedorahosted.flies.rest.api.DocumentResource;
+import org.fedorahosted.flies.rest.DocumentResource;
 import org.jboss.seam.annotations.Name;
 
 import net.openl10n.api.rest.document.Document;

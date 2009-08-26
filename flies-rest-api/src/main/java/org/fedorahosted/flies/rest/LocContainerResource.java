@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.rest.api;
+package org.fedorahosted.flies.rest;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;

@@ -16,8 +16,8 @@ import net.openl10n.packaging.jpa.project.HProject;
 
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.core.model.ProjectIteration;
-import org.fedorahosted.flies.rest.api.DocumentResource;
-import org.fedorahosted.flies.rest.api.ProjectIterationResource;
+import org.fedorahosted.flies.rest.DocumentResource;
+import org.fedorahosted.flies.rest.ProjectIterationResource;
 import org.jboss.seam.Component;
 import org.jboss.seam.annotations.Name;
 

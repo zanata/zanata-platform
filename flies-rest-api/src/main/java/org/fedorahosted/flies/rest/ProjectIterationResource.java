@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.rest.api;
+package org.fedorahosted.flies.rest;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
