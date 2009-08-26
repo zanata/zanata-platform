@@ -39,7 +39,7 @@ syntax: regexp
 ^flies-rest-client/.project
 ^flies-rest-client/.settings/
 
-# flies-common-api
-^flies-common-api/.classpath
-^flies-common-api/.project
-^flies-common-api/.settings/
+# flies-rest-api
+^flies-rest-api/.classpath
+^flies-rest-api/.project
+^flies-rest-api/.settings/

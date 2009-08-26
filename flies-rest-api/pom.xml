@@ -7,10 +7,8 @@
     <groupId>org.fedorahosted.flies</groupId>
     <version>1.0-SNAPSHOT</version>
   </parent>
-  <url>http://flies.fedorahosted.org/ui</url>
   <packaging>jar</packaging>
   <dependencies>
 
   </dependencies>
-  
 </project>
