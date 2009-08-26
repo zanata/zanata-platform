@@ -14,7 +14,6 @@ jxl.jar
 richfaces-api.jar
 richfaces-impl.jar
 richfaces-ui.jar
-flies-ui.jar
 joda-time.jar
 icu4j.jar
 commons-lang.jar
@@ -29,3 +28,4 @@ dbunit.jar
 lucene-core.jar
 hibernate-search.jar
 openl10n-*.jar
+flies-*.jar
