@@ -68,10 +68,11 @@
          <property name="hibernate.max_fetch_depth" value="1"/>
          <property name="hibernate.jdbc.batch_size" value="0"/>
 
-         <!-- Enable Hibernate statistics, needs SessionFactory in JNDI for JMX monitoring -->
+         <!-- Enable Hibernate statistics, needs SessionFactory in JNDI for JMX monitoring 
          <property name="hibernate.generate_statistics" value="true"/>
          <property name="hibernate.session_factory_name" value="SessionFactories/fliesSF"/>
-
+		-->
+			
          <!-- These are the default for JBoss EJB3, but not for HEM: -->
          <property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider"/>
          <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.JBossTransactionManagerLookup"/>

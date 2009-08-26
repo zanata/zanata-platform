@@ -40,7 +40,7 @@
 									<tasks>
 										<property 
 											name="deploy-path" 
-											value="${as.deploy}/${app.context}-ear.ear" />
+											value="${as.deploy}/${app.context}.ear" />
 										<copy	
 											todir="${deploy-path}/${project.build.finalName}.war" 
 											verbose="true">

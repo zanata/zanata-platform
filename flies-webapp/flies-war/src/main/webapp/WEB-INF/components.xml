@@ -199,7 +199,8 @@
   <property name="adminContact">+41 123 123 123, admin@my.address</property>
   <property name="debug">true</property>
   <property name="version">0.1-SNAPSHOT</property>
-  <property name="serverPath">http://flies-devel.englab.bne.redhat.com/flies</property>
+  <property name="hibernateStatistics">false</property>
+  <property name="serverPath">http://localhost:8080/flies</property>
   <property name="authenticatedSessionTimeoutMinutes">180</property>
  </component>
 
