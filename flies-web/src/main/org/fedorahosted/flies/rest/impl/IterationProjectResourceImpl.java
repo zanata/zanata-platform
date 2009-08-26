@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.core.rest;
+package org.fedorahosted.flies.rest.impl;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -8,6 +8,7 @@ import javax.ws.rs.Produces;
 import org.fedorahosted.flies.core.dao.ProjectIterationDAO;
 import org.fedorahosted.flies.core.model.IterationProject;
 import org.fedorahosted.flies.core.model.ProjectIteration;
+import org.fedorahosted.flies.rest.api.IterationProjectResource;
 import org.hibernate.Session;
 import org.jboss.resteasy.spi.NotFoundException;
 import org.jboss.seam.Component;

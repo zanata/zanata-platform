@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.core.rest;
+package org.fedorahosted.flies.rest.api;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -19,7 +19,7 @@ import net.openl10n.api.rest.project.Project;
 public interface LocProjectResource {
 
 	@GET
-	@Produces( { "application/openl10n.project+xml", "application/json" })
+	@Produces({ "application/openl10n.project+xml", "application/json" })
 	public Project get(
 			@QueryParam("ext") @DefaultValue("") String extensions
 			);

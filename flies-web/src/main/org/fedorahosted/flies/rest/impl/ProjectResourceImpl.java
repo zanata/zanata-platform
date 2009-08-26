@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.core.rest;
+package org.fedorahosted.flies.rest.impl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -24,6 +24,7 @@ import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.model.ContentProject;
 import org.fedorahosted.flies.core.model.IterationProject;
 import org.fedorahosted.flies.core.model.Project;
+import org.fedorahosted.flies.rest.api.ProjectResource;
 import org.hibernate.Session;
 import org.jboss.resteasy.plugins.providers.atom.Content;
 import org.jboss.resteasy.plugins.providers.atom.Entry;

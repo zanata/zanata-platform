@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.core.rest;
+package org.fedorahosted.flies.rest.impl;
 
 import org.jboss.resteasy.plugins.providers.atom.Content;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
