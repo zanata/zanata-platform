@@ -16,7 +16,7 @@ import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
 import net.openl10n.api.Namespaces;
 import net.openl10n.api.rest.project.Project;
 
-public interface LocProjectResource {
+public interface LocContainerResource {
 
 	@GET
 	@Produces({ "application/openl10n.project+xml", "application/json" })
