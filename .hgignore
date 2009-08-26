@@ -9,6 +9,12 @@ syntax: regexp
 ^.ant-targets-build.xml
 \.pages.xml.spdia$
 
+# eclipse and maven stuff
+\.classpath$
+\.project$
+\.settings/
+
+
 # flies-web
 ^flies-web/lib/
 ^flies-web/build.properties
@@ -35,9 +41,6 @@ syntax: regexp
 ^ant-eclipse-classpath/*.jar
 
 # flies-rest-client
-^flies-rest-client/.classpath
-^flies-rest-client/.project
-^flies-rest-client/.settings/
 
 # flies-rest-api
 ^flies-rest-api/.classpath
