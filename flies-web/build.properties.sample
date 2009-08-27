@@ -1,5 +1,0 @@
-jboss.home =/usr/share/jboss-4.2.3.GA
-jboss.domain=default
-
-# non-maven dependencies
-xom.jar.url = http://www.cafeconleche.org/XOM/xom-1.2.1.jar
