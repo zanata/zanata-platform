@@ -1,293 +1,291 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
-	xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.fedorahosted.flies</groupId>
-		<artifactId>flies-webapp</artifactId>
-		<version>1.0-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.fedorahosted.flies</groupId>
+    <artifactId>flies-webapp</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
 
-	<artifactId>flies-ejb</artifactId> <!-- m2eclipse does not like: ${app.context}-ear -->
-	<name>${project.artifactId} : ${project.version}</name>
-	<packaging>ejb</packaging>
+  <artifactId>flies-ejb</artifactId> <!-- m2eclipse does not like: ${app.context}-ear -->
+  <name>${project.artifactId} : ${project.version}</name>
+  <packaging>ejb</packaging>
 
-	<profiles>
-		<profile>
-			<id>explode</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>dev</value>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>ejb-process-classes</id>
-								<phase>process-classes</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<tasks>
-										<property
-											name="deploy-path"
-											value="${as.deploy}/${app.context}.ear" />
-										<copy
-											todir="${deploy-path}/${project.build.finalName}.jar"
-											verbose="true">
-											<fileset dir="${project.build.outputDirectory}"	>
-												<include name="**/*.class" />
-											</fileset>
-										</copy>
-									</tasks>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+  <profiles>
+    <profile>
+      <id>explode</id>
+      <activation>
+        <property>
+          <name>env</name>
+          <value>dev</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>ejb-process-classes</id>
+                <phase>process-classes</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <property
+                      name="deploy-path"
+                      value="${as.deploy}/${app.context}.ear" />
+                    <copy
+                      todir="${deploy-path}/${project.build.finalName}.jar"
+                      verbose="true">
+                      <fileset dir="${project.build.outputDirectory}"  >
+                        <include name="**/*.class" />
+                      </fileset>
+                    </copy>
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
-	<build>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering> <!-- filtering persistence.xml -->
-			</resource>
-		</resources>
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering> <!-- filtering persistence.xml -->
+      </resource>
+    </resources>
 
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-ejb-plugin</artifactId>
-				<configuration>
-					<ejbVersion>3.0</ejbVersion>
-					<generateClient>false</generateClient>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-ejb-plugin</artifactId>
+        <configuration>
+          <ejbVersion>3.0</ejbVersion>
+          <generateClient>false</generateClient>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
-	<properties>
-		<version.resteasy>1.1.GA</version.resteasy>
-		<version.drools>5.0.1</version.drools>
-		<version.richfaces>3.3.1.GA</version.richfaces>
-		<version.tennera>0.6-SNAPSHOT</version.tennera>
-	</properties>
+  <properties>
+    <version.resteasy>1.1.GA</version.resteasy>
+    <version.drools>5.0.1</version.drools>
+    <version.richfaces>3.3.1.GA</version.richfaces>
+    <version.tennera>0.6-SNAPSHOT</version.tennera>
+  </properties>
 
 
-	<dependencies>
-	
-		<!-- drools -->
-		<dependency>
-			<groupId>org.drools</groupId>
-			<artifactId>drools-core</artifactId>
-		</dependency>
+  <dependencies>
+  
+    <!-- drools -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.drools</groupId>
-			<artifactId>drools-compiler</artifactId>
-		</dependency>
-		
-		
-		<!-- Seam Dependencies -->
-
-		<dependency>
-			<groupId>org.jboss.seam</groupId>
-			<artifactId>jboss-seam</artifactId>
-			<version>${version.seam}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.seam</groupId>
-			<artifactId>jboss-seam-ui</artifactId>
-			<version>${version.seam}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.seam</groupId>
-			<artifactId>jboss-seam-debug</artifactId>
-			<version>${version.seam}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.seam</groupId>
-			<artifactId>jboss-seam-ioc</artifactId>
-			<version>${version.seam}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.seam</groupId>
-			<artifactId>jboss-seam-mail</artifactId>
-			<version>${version.seam}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.seam</groupId>
-			<artifactId>jboss-seam-remoting</artifactId>
-			<version>${version.seam}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.jboss.seam</groupId>
-			<artifactId>jboss-seam-resteasy</artifactId>
-			<version>${version.seam}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jaxrs</artifactId>
-			<version>${version.resteasy}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jaxb-provider</artifactId>
-			<version>${version.resteasy}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-atom-provider</artifactId>
-			<version>${version.resteasy}</version>
-		</dependency>
-
-		<!-- Richfaces -->
-
-		<dependency>
-			<groupId>org.richfaces.framework</groupId>
-			<artifactId>richfaces-api</artifactId>
-			<version>${version.richfaces}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.richfaces.framework</groupId>
-			<artifactId>richfaces-impl</artifactId>
-			<version>${version.richfaces}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.richfaces.ui</groupId>
-			<artifactId>richfaces-ui</artifactId>
-			<version>${version.richfaces}</version>
-		</dependency>
-
-		<!-- We use a newer version of hibernate -->
-
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-search</artifactId>
-			<version>3.1.1.GA</version>
-		</dependency>
-
-		<!--  Other -->
-
-		<dependency>
-			<groupId>org.dbunit</groupId>
-			<artifactId>dbunit</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.codehaus.groovy</groupId>
-			<artifactId>groovy-all</artifactId>
-			<version>1.5.4</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.tuckey</groupId>
-			<artifactId>urlrewritefilter</artifactId>
-			<version>3.0.4</version>
-		</dependency>
-
-		<!-- Flies-specific dependencies -->
-
-		<dependency>
-			<groupId>org.fedorahosted.tennera</groupId>
-			<artifactId>jgettext</artifactId>
-			<version>${version.tennera}</version>
-		    <exclusions>
-		    	<!-- Use org.antlr:antlr-runtime:jar from drools -->
-				<exclusion>
-					<groupId>antlr</groupId>
-					<artifactId>antlr</artifactId>
-				</exclusion>
-			</exclusions>			
-		</dependency>
-		
-		<dependency>
-			<groupId>org.fedorahosted.flies</groupId>
-			<artifactId>flies-rest-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>		
-
-		<dependency>
-			<groupId>org.fedorahosted.flies.ui</groupId>
-			<artifactId>flies-ui</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.ibm.icu</groupId>
-			<artifactId>icu4j</artifactId>
-			<version>4.0.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.3</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.5.6</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.5.0</version>
-		</dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+    </dependency>
     
-		<dependency>
-			<groupId>net.openl10n</groupId>
-			<artifactId>openl10n-rest-api</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
     
-        <dependency>
-          <groupId>net.openl10n</groupId>
-          <artifactId>openl10n-packaging-hibernate</artifactId>
-          <version>1.0-SNAPSHOT</version>
-        </dependency>
-        
-        <dependency>
-          <groupId>net.openl10n</groupId>
-          <artifactId>openl10n-adapter-po</artifactId>
-          <version>1.0-SNAPSHOT</version>
-        </dependency>
-    
-        <dependency>
-          <groupId>com.google.collections</groupId>
-          <artifactId>google-collections</artifactId>
-          <version>1.0-rc2</version>
-        </dependency>
-		
-		
-	</dependencies>
+    <!-- Seam Dependencies -->
 
+    <dependency>
+      <groupId>org.jboss.seam</groupId>
+      <artifactId>jboss-seam</artifactId>
+      <version>${version.seam}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.seam</groupId>
+      <artifactId>jboss-seam-ui</artifactId>
+      <version>${version.seam}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.seam</groupId>
+      <artifactId>jboss-seam-debug</artifactId>
+      <version>${version.seam}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.seam</groupId>
+      <artifactId>jboss-seam-ioc</artifactId>
+      <version>${version.seam}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.seam</groupId>
+      <artifactId>jboss-seam-mail</artifactId>
+      <version>${version.seam}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.seam</groupId>
+      <artifactId>jboss-seam-remoting</artifactId>
+      <version>${version.seam}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.jboss.seam</groupId>
+      <artifactId>jboss-seam-resteasy</artifactId>
+      <version>${version.seam}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jaxrs</artifactId>
+      <version>${version.resteasy}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jaxb-provider</artifactId>
+      <version>${version.resteasy}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-atom-provider</artifactId>
+      <version>${version.resteasy}</version>
+    </dependency>
+
+    <!-- Richfaces -->
+
+    <dependency>
+      <groupId>org.richfaces.framework</groupId>
+      <artifactId>richfaces-api</artifactId>
+      <version>${version.richfaces}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.richfaces.framework</groupId>
+      <artifactId>richfaces-impl</artifactId>
+      <version>${version.richfaces}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.richfaces.ui</groupId>
+      <artifactId>richfaces-ui</artifactId>
+      <version>${version.richfaces}</version>
+    </dependency>
+
+    <!-- We use a newer version of hibernate -->
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-search</artifactId>
+      <version>3.1.1.GA</version>
+    </dependency>
+
+    <!--  Other -->
+
+    <dependency>
+      <groupId>org.dbunit</groupId>
+      <artifactId>dbunit</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-all</artifactId>
+      <version>1.5.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.tuckey</groupId>
+      <artifactId>urlrewritefilter</artifactId>
+      <version>3.0.4</version>
+    </dependency>
+
+    <!-- Flies-specific dependencies -->
+
+    <dependency>
+      <groupId>org.fedorahosted.tennera</groupId>
+      <artifactId>jgettext</artifactId>
+      <version>${version.tennera}</version>
+        <exclusions>
+          <!-- Use org.antlr:antlr-runtime:jar from drools -->
+        <exclusion>
+          <groupId>antlr</groupId>
+          <artifactId>antlr</artifactId>
+        </exclusion>
+      </exclusions>      
+    </dependency>
+    
+    <dependency>
+      <groupId>org.fedorahosted.flies</groupId>
+      <artifactId>flies-rest-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>    
+
+    <dependency>
+      <groupId>org.fedorahosted.flies.ui</groupId>
+      <artifactId>flies-ui</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.ibm.icu</groupId>
+      <artifactId>icu4j</artifactId>
+      <version>4.0.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.3</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.5.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>1.5.0</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>net.openl10n</groupId>
+      <artifactId>openl10n-rest-api</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>net.openl10n</groupId>
+      <artifactId>openl10n-packaging-hibernate</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>net.openl10n</groupId>
+      <artifactId>openl10n-adapter-po</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.collections</groupId>
+      <artifactId>google-collections</artifactId>
+      <version>1.0-rc2</version>
+    </dependency>
+
+</dependencies>
 </project>

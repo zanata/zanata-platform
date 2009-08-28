@@ -1,155 +1,155 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
-	xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.fedorahosted.flies</groupId>
-		<artifactId>flies-webapp</artifactId>
-		<version>1.0-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.fedorahosted.flies</groupId>
+    <artifactId>flies-webapp</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
 
-	<artifactId>flies-war</artifactId> <!-- m2eclipse does not like: ${app.context}-ear -->
-	<name>${project.artifactId} : ${project.version}</name>
-	<packaging>war</packaging>
+  <artifactId>flies-war</artifactId> <!-- m2eclipse does not like: ${app.context}-ear -->
+  <name>${project.artifactId} : ${project.version}</name>
+  <packaging>war</packaging>
 
-	<profiles>
-		<profile>
-			<id>explode</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>dev</value>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>war-process-classes</id>
-								<phase>process-classes</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<tasks>
-										<property 
-											name="deploy-path" 
-											value="${as.deploy}/${app.context}.ear" />
-										<copy	
-											todir="${deploy-path}/${project.build.finalName}.war" 
-											verbose="true">
-											<fileset dir="src/main/webapp">
-												<include name="**/*" />
-												<exclude name="WEB-INF/*" />
-												<exclude name="META-INF/context.xml" />
-											</fileset>
-										</copy>
-										<copy 
-											todir="${deploy-path}/${project.build.finalName}.war/WEB-INF/classes"	
-											verbose="true">
-											<fileset dir="${project.build.outputDirectory}"	>
-												<include name="**/*.class" />
-											</fileset>
-										</copy>
-									</tasks>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+  <profiles>
+    <profile>
+      <id>explode</id>
+      <activation>
+        <property>
+          <name>env</name>
+          <value>dev</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>war-process-classes</id>
+                <phase>process-classes</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <property 
+                      name="deploy-path" 
+                      value="${as.deploy}/${app.context}.ear" />
+                    <copy  
+                      todir="${deploy-path}/${project.build.finalName}.war" 
+                      verbose="true">
+                      <fileset dir="src/main/webapp">
+                        <include name="**/*" />
+                        <exclude name="WEB-INF/*" />
+                        <exclude name="META-INF/context.xml" />
+                      </fileset>
+                    </copy>
+                    <copy 
+                      todir="${deploy-path}/${project.build.finalName}.war/WEB-INF/classes"  
+                      verbose="true">
+                      <fileset dir="${project.build.outputDirectory}"  >
+                        <include name="**/*.class" />
+                      </fileset>
+                    </copy>
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<configuration>
-					<webResources>
-						<webResource>
-							<directory>${basedir}/src/main/webapp/WEB-INF</directory>
-							<targetPath>WEB-INF</targetPath>
-							<filtering>true</filtering>
-							<includes>
-								<include>components.xml</include>
-								<include>jboss-web.xml</include>
-								<include>web.xml</include>
-							</includes>
-						</webResource>
-					</webResources>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <webResources>
+            <webResource>
+              <directory>${basedir}/src/main/webapp/WEB-INF</directory>
+              <targetPath>WEB-INF</targetPath>
+              <filtering>true</filtering>
+              <includes>
+                <include>components.xml</include>
+                <include>jboss-web.xml</include>
+                <include>web.xml</include>
+              </includes>
+            </webResource>
+          </webResources>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
-	<dependencies>
+  <dependencies>
 
-		<!-- seam -->
-		<dependency>
-			<groupId>org.jboss.seam</groupId>
-			<artifactId>jboss-seam-ui</artifactId>
-		</dependency>
+    <!-- seam -->
+    <dependency>
+      <groupId>org.jboss.seam</groupId>
+      <artifactId>jboss-seam-ui</artifactId>
+    </dependency>
 
-		<!-- optional, but a reasonable requirement for a newly created project -->
-		<dependency>
-			<groupId>org.jboss.seam</groupId>
-			<artifactId>jboss-seam-debug</artifactId>
-		</dependency>
+    <!-- optional, but a reasonable requirement for a newly created project -->
+    <dependency>
+      <groupId>org.jboss.seam</groupId>
+      <artifactId>jboss-seam-debug</artifactId>
+    </dependency>
 
-		<!-- add more seam modules as needed 
-		<dependency>
-			<groupId>org.jboss.seam</groupId>
-			<artifactId>jboss-seam-remoting</artifactId>
-		</dependency>
+    <!-- add more seam modules as needed 
+    <dependency>
+      <groupId>org.jboss.seam</groupId>
+      <artifactId>jboss-seam-remoting</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.jboss.seam</groupId>
-			<artifactId>jboss-seam-mail</artifactId>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.jboss.seam</groupId>
-			<artifactId>jboss-seam-pdf</artifactId>
-		</dependency>
-		-->
-		
-		<!-- richfaces -->
-		<dependency>
-			<groupId>org.richfaces.framework</groupId>
-			<artifactId>richfaces-impl</artifactId>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.richfaces.ui</groupId>
-			<artifactId>richfaces-ui</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.jboss.seam</groupId>
+      <artifactId>jboss-seam-mail</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.jboss.seam</groupId>
+      <artifactId>jboss-seam-pdf</artifactId>
+    </dependency>
+    -->
+    
+    <!-- richfaces -->
+    <dependency>
+      <groupId>org.richfaces.framework</groupId>
+      <artifactId>richfaces-impl</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.richfaces.ui</groupId>
+      <artifactId>richfaces-ui</artifactId>
+    </dependency>
 
-		<!--  jee -->
-		<dependency>
-			<groupId>com.sun.facelets</groupId>
-			<artifactId>jsf-facelets</artifactId>
-		</dependency>
-		
-		<!-- url rewrite filter, uncomment if you do not use the native Seam url rewrite filter 
-		<dependency>
-			<groupId>org.tuckey</groupId>
-			<artifactId>urlrewritefilter</artifactId>
-		</dependency>
-		-->
-		
-	</dependencies>
+    <!--  jee -->
+    <dependency>
+      <groupId>com.sun.facelets</groupId>
+      <artifactId>jsf-facelets</artifactId>
+    </dependency>
+    
+    <!-- url rewrite filter, uncomment if you do not use the native Seam url rewrite filter 
+    <dependency>
+      <groupId>org.tuckey</groupId>
+      <artifactId>urlrewritefilter</artifactId>
+    </dependency>
+    -->
+    
+  </dependencies>
 
 </project>
