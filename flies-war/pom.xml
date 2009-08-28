@@ -19,7 +19,6 @@
     <version.richfaces>3.3.1.GA</version.richfaces>
     <version.tennera>0.6-SNAPSHOT</version.tennera>
     <version.jboss.embedded>beta3.SP9</version.jboss.embedded>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <dependencyManagement>
@@ -36,26 +35,8 @@
 
   <build>
     <finalName>flies</finalName>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
-      </plugin>
-    </plugins>
   </build>
   
-  <repositories>
-    <repository>
-      <id>jboss-snapshot</id>
-      <name>The JBoss maven repo</name>
-      <url>http://snapshots.jboss.org/maven2</url>
-    </repository>
-  </repositories>
- 
   <dependencies>
 
     <!-- Seam Dependencies -->
@@ -327,12 +308,6 @@
           <artifactId>junit</artifactId>
         </exclusion>
       </exclusions>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.dbunit</groupId>
-      <artifactId>dbunit</artifactId>
       <scope>test</scope>
     </dependency>
 
