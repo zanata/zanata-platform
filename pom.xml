@@ -4,7 +4,8 @@
   <groupId>org.fedorahosted.flies</groupId>
   <artifactId>root</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <url>http://flies.fedorahosted.org/ui</url>
+  <name>Flies Root POM</name>
+  <url>http://flies.fedorahosted.org/</url>
   <packaging>pom</packaging>
   <modules>
     <module>flies-richfaces-ui</module>
