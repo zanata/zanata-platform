@@ -21,6 +21,7 @@ import net.openl10n.api.rest.project.ProjectRef;
 import net.openl10n.api.rest.project.ProjectRefs;
 
 import org.fedorahosted.flies.core.dao.ProjectDAO;
+import org.fedorahosted.flies.core.dao.AccountDAO;
 import org.fedorahosted.flies.core.model.ContentProject;
 import org.fedorahosted.flies.core.model.IterationProject;
 import org.fedorahosted.flies.core.model.Project;
@@ -49,6 +50,9 @@ public class ProjectResourceImpl implements ProjectResource{
 	
 	@In
 	ProjectDAO projectDAO;
+
+	@In
+	AccoundDAO accountDAO;
 	
 	@In
 	Session session;
@@ -82,9 +86,13 @@ public class ProjectResourceImpl implements ProjectResource{
 	private void checkPermissions(){
 		String authToken = request.getHeader("X-Auth-Token");
 		log.info("Attempted to authenticate with token {0}", authToken);
-		if(!"bob".equals(authToken)){
-			throw new UnauthorizedException();
-		}
+           	//if(!"bob".equals(authToken)){
+		//	throw new UnauthorizedException();
+		//}
+	        Account account = accountDAO.getByApiKey(authToken);
+		if(account == null)
+                   throw new NotFoundException("Account not authenticate");
+
 	}
 
 	@Override

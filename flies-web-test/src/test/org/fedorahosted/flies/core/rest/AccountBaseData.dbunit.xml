@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<dataset>
+	<Account id="1"
+		creationDate="[NULL]"
+		timestamp="[NULL]" 
+		apiKey="63747f65a588e642ef480c0b1698c413"
+		enabled="1"
+		passwordHash="[NULL]" 
+		username="Mr Bean"
+	/>
+</dataset>
