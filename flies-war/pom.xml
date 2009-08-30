@@ -30,7 +30,10 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+
     </dependencies>
+  
+    
   </dependencyManagement>
 
   <build>
@@ -87,6 +90,49 @@
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxrs</artifactId>
       <version>${version.resteasy}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-codec</groupId>
+          <artifactId>commons-codec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.xml.bind</groupId>
+          <artifactId>jaxb-impl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.annotation</groupId>
+          <artifactId>jsr250-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commons-httpclient</groupId>
+          <artifactId>commons-httpclient</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>tjws</groupId>
+          <artifactId>webserver</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.scannotation</groupId>
+          <artifactId>scannotation</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-simple</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>jcl-over-slf4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.activation</groupId>
+          <artifactId>activation</artifactId>
+        </exclusion>
+      </exclusions>
+      
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -144,6 +190,24 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-search</artifactId>
       <version>3.1.1.GA</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-commons-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.hibernate</groupId>
+          <artifactId>ejb3-persistence</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.transaction</groupId>
+          <artifactId>jta</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!--  Other -->
@@ -238,6 +302,79 @@
       <version>3.3.1.GA</version>
       <scope>provided</scope>
     </dependency>    
+
+    <!--  JBoss AS deps -->
+    
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>3.3.1.GA</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.transaction</groupId>
+          <artifactId>jta</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>asm</groupId>
+          <artifactId>asm-attrs</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>antlr</groupId>
+          <artifactId>antlr</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>cglib</groupId>
+          <artifactId>cglib</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>asm</groupId>
+          <artifactId>asm</artifactId>
+        </exclusion>
+      </exclusions>
+      
+    </dependency>
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <version>3.1.0.GA</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-annotations</artifactId>
+      <version>3.4.0.GA</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>3.4.0.GA</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javassist</groupId>
+          <artifactId>javassist</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-jmx</artifactId>
+      <version>3.3.1.GA</version>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.jboss.envers</groupId>
+      <artifactId>jboss-envers</artifactId>
+      <version>1.2.1.GA-hibernate-3.3</version>
+      <scope>provided</scope>
+    </dependency>
     
     <!--  Testing dependencies -->
 
@@ -248,8 +385,7 @@
       <exclusions>
         <exclusion>
           <groupId>org.jboss.microcontainer</groupId>
-          <artifactId>jboss-deployers-client-spi
-          </artifactId>
+          <artifactId>jboss-deployers-client-spi</artifactId>
         </exclusion>
         <exclusion>
           <groupId>org.jboss.embedded</groupId>
@@ -273,20 +409,19 @@
       <exclusions>
         <exclusion>
           <groupId>org.jboss.microcontainer</groupId>
-          <artifactId>jboss-deployers-client-spi
-          </artifactId>
+          <artifactId>jboss-deployers-client-spi</artifactId>
         </exclusion>
       </exclusions>
       <scope>test</scope>
     </dependency>
-
+<!-- 
     <dependency>
       <groupId>org.eclipse.jdt</groupId>
       <artifactId>core</artifactId>
       <version>3.2.3.v_686_R32x</version>
       <scope>test</scope>
     </dependency>
-
+ -->
     <!--
     We use a newer version of hibernate
 
@@ -311,6 +446,113 @@
       <scope>test</scope>
     </dependency>
 
-</dependencies>
+    <!-- Dependencies provided by JBoss As 4.2.3 -->
+    
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.3</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <version>3.2</version>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.1.1</version>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>javax.el</groupId>
+      <artifactId>el-api</artifactId>
+      <version>1.0</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>javax.persistence</groupId>
+      <artifactId>persistence-api</artifactId>
+      <version>1.0</version>
+      <scope>provided</scope>
+    </dependency>
+        
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.14</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <version>3.8.0.GA</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+      <version>1.8.0.8-brew</version>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>javax.faces</groupId>
+      <artifactId>jsf-api</artifactId>
+      <version>1.2_12</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.faces</groupId>
+      <artifactId>jsf-impl</artifactId>
+      <version>1.2_12</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>jsr250-api</artifactId>
+      <version>1.0</version>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>javax.xml.stream</groupId>
+      <artifactId>stax-api</artifactId>
+      <version>1.0</version>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>xstream</groupId>
+      <artifactId>xstream</artifactId>
+      <version>1.1.3</version>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>xpp3</groupId>
+      <artifactId>xpp3_min</artifactId>
+      <version>1.1.3.4.O</version>
+      <scope>provided</scope>
+    </dependency>
+    
+  </dependencies>
   
 </project>
