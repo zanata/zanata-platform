@@ -12,6 +12,9 @@ public class HReference extends HResource{
 
 	private String ref;
 	
+	public HReference() {
+	}
+	
 	public HReference(Reference reference) {
 		super(reference);
 		// TODO
