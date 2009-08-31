@@ -1,34 +1,43 @@
 package org.fedorahosted.flies.rest;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 
+import org.fedorahosted.flies.rest.dto.Project;
+import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.fedorahosted.flies.rest.dto.ProjectIterationRefs;
+import org.fedorahosted.flies.rest.dto.ProjectRefs;
 
-
+@Path("project")
 public interface ProjectResource {
 
-	/**
-	 * This method will pass control on to the specific type of project
-	 * being queried for. e.g. for an IterationProject, it will pass control
-	 * on to IterationProjectResource
-	 *  
-	 * @param projectSlug textual id of project
-	 * 
-	 * @return a SubResource based on the type of project 
-	 */
-	@Path("/{projectSlug}")
-	public Object getProject(@PathParam("projectSlug") String projectSlug);
-
-	/**
-	 * Retrieve a list of projects
-	 *  
-	 * @return list of Project references
-	 */
 	@GET
-	@Produces("application/xml")
-	public ProjectIterationRefs get();
+	@Path("/{projectSlug}")
+	@Produces({ "application/flies.project+xml", "application/json" })
+	public Project getProject(@PathParam("projectSlug") String projectSlug);
+
+	@POST
+	@Path("/{projectSlug}")
+	@Consumes( { "application/flies.project+xml", "application/json" })
+	public Response updateProject(@PathParam("projectSlug") String projectSlug, Project project);
+
+	@PUT
+	@Path("/{projectSlug}")
+	@Consumes( { "application/flies.project+xml", "application/json" })
+	public Response addProject(@PathParam("projectSlug") String projectSlug, Project project);
+	
+	@Path("/{projectSlug}/iteration")
+	public ProjectIterationResource getIteration(@PathParam("projectSlug") String projectSlug);
+
+	@GET
+	@Path("")
+	@Produces({ "application/flies.projects+xml", "application/json" })
+	public ProjectRefs getProjects();
 	
 }

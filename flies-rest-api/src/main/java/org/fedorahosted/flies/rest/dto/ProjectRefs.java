@@ -17,17 +17,17 @@ import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
 		@XmlNsMap(namespace = Namespaces.DOCUMENT, jsonName = Namespaces.DOCUMENT_JSON), 
 		@XmlNsMap(namespace = Namespaces.XML, jsonName = Namespaces.XML_JSON) 
 	})
-	@XmlRootElement(name="project-iterations", namespace=Namespaces.PROJECT)
-	@XmlType(name="projectIterationsRefsType", namespace=Namespaces.PROJECT)
-public class ProjectIterationRefs {
+	@XmlRootElement(name="projects", namespace=Namespaces.PROJECT)
+	@XmlType(name="projectsRefsType", namespace=Namespaces.PROJECT)
+public class ProjectRefs {
 
-	private List<ProjectIterationRef> projectIterations;
+	private List<ProjectRef> projects;
 	
-	@XmlElement(name="project-iteration", namespace=Namespaces.PROJECT)
-	public List<ProjectIterationRef> getProjectIterations() {
-		if(projectIterations == null){
-			projectIterations = new ArrayList<ProjectIterationRef>();
+	@XmlElement(name="project", namespace=Namespaces.PROJECT)
+	public List<ProjectRef> getProjects() {
+		if(projects == null){
+			projects = new ArrayList<ProjectRef>();
 		}
-		return projectIterations;
+		return projects;
 	}
 }
