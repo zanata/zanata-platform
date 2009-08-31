@@ -17,25 +17,12 @@ import org.hibernate.validator.NotEmpty;
 @Entity
 public class HProjectContainer extends AbstractEntity{
 
-	private String projectId;
-	private String name;
-	private String summary;
-	
 	private List<HDocument> documents;
 
 	public HProjectContainer() {
 	}
 
-	public HProjectContainer(String projectId, String name, String summary) {
-		this.projectId = projectId;
-		this.name = name;
-		this.summary = summary;
-	}
-
 	public HProjectContainer(org.fedorahosted.flies.rest.dto.ProjectIteration project) {
-		this.projectId = project.getId();
-		this.name = project.getName();
-		this.summary = project.getSummary();
 		for(DocumentRef d : project.getDocuments() ){
 			HDocument doc = new HDocument(d);
 			this.getDocuments().add(doc);
@@ -54,32 +41,6 @@ public class HProjectContainer extends AbstractEntity{
 
 	public void setDocuments(List<HDocument> documents) {
 		this.documents = documents;
-	}
-	
-	@NotEmpty
-	public String getProjectId() {
-		return projectId;
-	}
-	
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
-	}
-	
-	@NotEmpty
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	public String getSummary() {
-		return summary;
-	}
-	
-	public void setSummary(String summary) {
-		this.summary = summary;
 	}
 	
 }

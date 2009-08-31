@@ -14,7 +14,6 @@ import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.fedorahosted.flies.rest.dto.ProjectIterationRefs;
 import org.fedorahosted.flies.rest.dto.ProjectRefs;
 
-@Path("project")
 public interface ProjectResource {
 
 	@GET

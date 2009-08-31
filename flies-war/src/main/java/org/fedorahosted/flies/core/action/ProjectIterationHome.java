@@ -109,8 +109,6 @@ public class ProjectIterationHome extends MultiSlugHome<ProjectIteration>{
 			return null;
 		if(getInstance().getContainer() == null){
 			HProjectContainer container = new HProjectContainer();
-			container.setProjectId(getInstance().getProject().getSlug() + "/" + getInstance().getSlug());
-			container.setName(getInstance().getName());
 			getEntityManager().persist(container);
 			getInstance().setContainer(container);
 		}

@@ -10,12 +10,13 @@ import javax.ws.rs.core.Response;
 
 import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.model.IterationProject;
-import org.fedorahosted.flies.core.model.Project;
+import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.fedorahosted.flies.rest.ProjectIterationResource;
 import org.fedorahosted.flies.rest.ProjectResource;
 import org.fedorahosted.flies.rest.dto.ProjectIterationRef;
 import org.fedorahosted.flies.rest.dto.ProjectIterationRefs;
 import org.fedorahosted.flies.rest.dto.ProjectRef;
+import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.ProjectRefs;
 import org.hibernate.Session;
 import org.jboss.resteasy.spi.NotFoundException;
@@ -57,15 +58,34 @@ public class ProjectResourceImpl implements ProjectResource{
 	public org.fedorahosted.flies.rest.dto.Project getProject(String projectSlug) {
 		checkPermissions();
 
-		Project p = projectDAO.getBySlug(projectSlug);
+		org.fedorahosted.flies.core.model.Project p = projectDAO.getBySlug(projectSlug);
 		if(p == null)
 			throw new NotFoundException("Project not found: "+projectSlug);
 		
 		return toMini(p);
 	}
 
-	private org.fedorahosted.flies.rest.dto.Project toMini(Project p){
-		return new org.fedorahosted.flies.rest.dto.Project();
+	private Project toMini(org.fedorahosted.flies.core.model.Project p){
+		Project proj = new Project();
+		proj.setId(p.getSlug());
+		proj.setName(p.getName());
+		proj.setDescription(p.getDescription());
+		if(p instanceof IterationProject){
+			IterationProject itProject = (IterationProject) p;
+			for(ProjectIteration pIt : itProject.getProjectIterations()){
+				proj.getIterations().add(
+						new ProjectIterationRef(
+								new org.fedorahosted.flies.rest.dto.ProjectIteration(
+										pIt.getSlug(),
+										pIt.getName(), 
+										pIt.getDescription()
+								)
+						)
+					);
+			}
+		}
+		
+		return proj;
 	}
 	
 	@Override
@@ -81,9 +101,9 @@ public class ProjectResourceImpl implements ProjectResource{
 		checkPermissions();
 		ProjectRefs projectRefs = new ProjectRefs();
 		
-		List<Project> projects = session.createQuery("select p from Project p").list();
+		List<org.fedorahosted.flies.core.model.Project> projects = session.createQuery("select p from Project p").list();
 		
-		for(Project p : projects){
+		for(org.fedorahosted.flies.core.model.Project p : projects){
 			org.fedorahosted.flies.rest.dto.Project proj = 
 				new org.fedorahosted.flies.rest.dto.Project(p.getSlug(), p.getName(), p.getDescription());
 			projectRefs.getProjects().add( new ProjectRef( proj ));

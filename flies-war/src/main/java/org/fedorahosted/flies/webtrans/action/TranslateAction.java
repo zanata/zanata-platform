@@ -51,7 +51,7 @@ public class TranslateAction {
 	Account authenticatedAccount;
 
 	private LocaleId locale;
-	private HProjectContainer project;
+	private HProjectContainer projectContainer;
 
 	public String getWorkspaceId() {
 		return workspaceId;
@@ -62,11 +62,11 @@ public class TranslateAction {
 	}
 	
 	public HProjectContainer getProject() {
-		return project;
+		return projectContainer;
 	}
 	
 	public void setProject(HProjectContainer project) {
-		this.project = project;
+		this.projectContainer = project;
 	}
 	
 	public LocaleId getLocale() {
@@ -116,7 +116,7 @@ public class TranslateAction {
 		documentTargets = entityManager.createQuery("select d from HDocumentTarget d " +
 								"where d.locale = :locale and d.template.project = :project")
 					.setParameter("locale", locale)
-					.setParameter("project", project).getResultList();
+					.setParameter("project", projectContainer).getResultList();
 	}
 
 	//@Factory("textFlowTargets")
@@ -141,7 +141,7 @@ public class TranslateAction {
 
 	
 	public boolean isConversationActive(){
-		return project != null && locale != null; 
+		return projectContainer != null && locale != null; 
 	}
 	
 	public void initialize() {
@@ -159,7 +159,7 @@ public class TranslateAction {
 			try{
 				Long projectIterationId = Long.parseLong(ws[0]);
 				String localeId = ws[1];
-				project = entityManager.find(HProjectContainer.class, projectIterationId);
+				projectContainer = entityManager.find(HProjectContainer.class, projectIterationId);
 				locale = new LocaleId(localeId);
 				Person translator = entityManager.find(Person.class, authenticatedAccount.getPerson().getId());
 				getWorkspace().registerTranslator(translator);
@@ -171,7 +171,7 @@ public class TranslateAction {
 	}
 
 	public TranslationWorkspace getWorkspace(){
-		return translationWorkspaceManager.getOrRegisterWorkspace(project.getId(), locale);
+		return translationWorkspaceManager.getOrRegisterWorkspace(projectContainer.getId(), locale);
 	}
 	
 	@End
@@ -182,7 +182,7 @@ public class TranslateAction {
 	public boolean ping(){
 		Person translator = entityManager.find(Person.class, authenticatedAccount.getPerson().getId());
 		log.info("ping {3} - {0} - {2}", 
-				this.project.getProjectId(), 
+				"n/a", 
 				this.locale,
 				translator.getAccount().getUsername());
 		getWorkspace().registerTranslator(translator);

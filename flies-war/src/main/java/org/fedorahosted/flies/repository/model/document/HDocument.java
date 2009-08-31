@@ -151,8 +151,8 @@ public class HDocument extends AbstractEntity{
 		}
 	}
 	
-	@NaturalId
-	@Length(max=512)
+	//@NaturalId
+	@Length(max=256)
 	@NotEmpty
 	public String getDocId() {
 		return docId;
