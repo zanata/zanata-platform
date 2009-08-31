@@ -8,9 +8,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-import net.openl10n.api.rest.document.Document;
-import net.openl10n.api.rest.document.DocumentRef;
-import net.openl10n.api.rest.project.Project;
 import net.openl10n.packaging.jpa.project.HProject;
 
 import org.apache.commons.lang.StringUtils;
@@ -18,6 +15,9 @@ import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.fedorahosted.flies.rest.DocumentResource;
 import org.fedorahosted.flies.rest.ProjectIterationResource;
+import org.fedorahosted.flies.rest.dto.Document;
+import org.fedorahosted.flies.rest.dto.DocumentRef;
+import org.fedorahosted.flies.rest.dto.Project;
 import org.jboss.seam.Component;
 import org.jboss.seam.annotations.Name;
 

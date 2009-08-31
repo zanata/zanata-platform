@@ -7,8 +7,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 
-import net.openl10n.api.rest.document.Resource;
 
+import org.fedorahosted.flies.rest.dto.Resource;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;

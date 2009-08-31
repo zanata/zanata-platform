@@ -1,4 +1,4 @@
-package net.openl10n.api.rest.project;
+package org.fedorahosted.flies.rest.dto;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -6,8 +6,8 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.fedorahosted.flies.Namespaces;
+import org.fedorahosted.flies.UriAdapter;
 
-import net.openl10n.api.rest.UriAdapter;
 
 @XmlRootElement(name="project", namespace=Namespaces.DOCUMENT)
 @XmlType(name="projectRefType", namespace=Namespaces.DOCUMENT)

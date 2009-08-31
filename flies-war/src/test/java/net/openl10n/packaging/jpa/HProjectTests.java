@@ -12,11 +12,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
-import net.openl10n.api.rest.document.ContentTarget;
-import net.openl10n.api.rest.document.Document;
-import net.openl10n.api.rest.document.DocumentRef;
-import net.openl10n.api.rest.document.TextFlowTarget;
-import net.openl10n.api.rest.project.Project;
 import net.openl10n.packaging.jpa.document.HDocument;
 import net.openl10n.packaging.jpa.document.HDocumentTarget;
 import net.openl10n.packaging.jpa.document.HResource;
@@ -26,6 +21,11 @@ import net.openl10n.packaging.jpa.project.HProject;
 
 import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.rest.dto.ContentTarget;
+import org.fedorahosted.flies.rest.dto.Document;
+import org.fedorahosted.flies.rest.dto.DocumentRef;
+import org.fedorahosted.flies.rest.dto.Project;
+import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,7 +35,7 @@ public class HProjectTests extends DbTest{
 	
 	@Before
 	public void initialize(){
-		project = new net.openl10n.api.rest.project.Project();
+		project = new org.fedorahosted.flies.rest.dto.Project();
 		project.setId("myid");
 		project.setName("myname");
 		project.setSummary("mysummary");

@@ -14,13 +14,6 @@ import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
-import net.openl10n.api.rest.document.Container;
-import net.openl10n.api.rest.document.DataHook;
-import net.openl10n.api.rest.document.Document;
-import net.openl10n.api.rest.document.DocumentRef;
-import net.openl10n.api.rest.document.Reference;
-import net.openl10n.api.rest.document.Resource;
-import net.openl10n.api.rest.document.TextFlow;
 import net.openl10n.packaging.jpa.AbstractEntity;
 import net.openl10n.packaging.jpa.ContentTypeType;
 import net.openl10n.packaging.jpa.LocaleIdType;
@@ -28,6 +21,13 @@ import net.openl10n.packaging.jpa.project.HProject;
 
 import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.rest.dto.Container;
+import org.fedorahosted.flies.rest.dto.DataHook;
+import org.fedorahosted.flies.rest.dto.Document;
+import org.fedorahosted.flies.rest.dto.DocumentRef;
+import org.fedorahosted.flies.rest.dto.Reference;
+import org.fedorahosted.flies.rest.dto.Resource;
+import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.OnDelete;

@@ -1,4 +1,4 @@
-package net.openl10n.api.rest.project;
+package org.fedorahosted.flies.rest.dto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,6 @@ import org.jboss.resteasy.annotations.providers.jaxb.json.Mapped;
 import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
 import org.jboss.resteasy.spi.touri.URITemplate;
 
-import net.openl10n.api.rest.document.DocumentRef;
 
 @URITemplate("project/{id}")
 @Mapped(namespaceMap = {

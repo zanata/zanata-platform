@@ -17,14 +17,14 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBException;
 
-import net.openl10n.api.rest.project.ProjectRef;
-import net.openl10n.api.rest.project.ProjectRefs;
 
 import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.model.ContentProject;
 import org.fedorahosted.flies.core.model.IterationProject;
 import org.fedorahosted.flies.core.model.Project;
 import org.fedorahosted.flies.rest.ProjectResource;
+import org.fedorahosted.flies.rest.dto.ProjectRef;
+import org.fedorahosted.flies.rest.dto.ProjectRefs;
 import org.hibernate.Session;
 import org.jboss.resteasy.plugins.providers.atom.Content;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
@@ -94,8 +94,8 @@ public class ProjectResourceImpl implements ProjectResource{
 		List<Project> projects = session.createQuery("select p from Project p").list();
 		
 		for(Project p : projects){
-			net.openl10n.api.rest.project.Project restProj = 
-				new net.openl10n.api.rest.project.Project(p.getSlug(), p.getName(), p.getDescription());
+			org.fedorahosted.flies.rest.dto.Project restProj = 
+				new org.fedorahosted.flies.rest.dto.Project(p.getSlug(), p.getName(), p.getDescription());
 			projectRefs.getProjects().add( new ProjectRef( restProj ));
 		}
 		

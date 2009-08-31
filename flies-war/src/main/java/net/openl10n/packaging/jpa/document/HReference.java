@@ -2,8 +2,8 @@ package net.openl10n.packaging.jpa.document;
 
 import javax.persistence.Entity;
 
-import net.openl10n.api.rest.document.Reference;
 
+import org.fedorahosted.flies.rest.dto.Reference;
 import org.hibernate.validator.NotEmpty;
 
 @Entity

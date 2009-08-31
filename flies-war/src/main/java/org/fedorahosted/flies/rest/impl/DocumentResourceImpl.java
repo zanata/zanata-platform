@@ -3,11 +3,11 @@ package org.fedorahosted.flies.rest.impl;
 import javax.ws.rs.Path;
 
 import org.fedorahosted.flies.rest.DocumentResource;
+import org.fedorahosted.flies.rest.dto.Document;
+import org.fedorahosted.flies.rest.dto.Project;
+import org.fedorahosted.flies.rest.dto.Resource;
 import org.jboss.seam.annotations.Name;
 
-import net.openl10n.api.rest.document.Document;
-import net.openl10n.api.rest.document.Resource;
-import net.openl10n.api.rest.project.Project;
 import net.openl10n.packaging.jpa.project.HProject;
 
 @Path("/documents")

@@ -11,10 +11,10 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import org.fedorahosted.flies.Namespaces;
+import org.fedorahosted.flies.rest.dto.Project;
 import org.jboss.resteasy.annotations.providers.jaxb.json.Mapped;
 import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
 
-import net.openl10n.api.rest.project.Project;
 
 public interface LocContainerResource {
 

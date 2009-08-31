@@ -2,8 +2,9 @@ package net.openl10n.packaging.jpa.document;
 
 import javax.persistence.Entity;
 
-import net.openl10n.api.rest.document.Container;
-import net.openl10n.api.rest.document.Resource;
+import org.fedorahosted.flies.rest.dto.Container;
+import org.fedorahosted.flies.rest.dto.Resource;
+
 
 @Entity
 public class HContainer extends HParentResource{

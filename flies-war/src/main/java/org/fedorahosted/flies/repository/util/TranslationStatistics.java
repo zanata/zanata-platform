@@ -1,6 +1,6 @@
 package org.fedorahosted.flies.repository.util;
 
-import net.openl10n.api.rest.document.TextFlowTarget.ContentState;
+import org.fedorahosted.flies.rest.dto.TextFlowTarget.ContentState;
 
 public class TranslationStatistics {
 

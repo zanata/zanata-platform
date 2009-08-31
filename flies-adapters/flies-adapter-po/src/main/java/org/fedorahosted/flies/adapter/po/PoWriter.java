@@ -9,17 +9,17 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
 
-import net.openl10n.api.rest.document.Resource;
-import net.openl10n.api.rest.document.TextFlow;
-import net.openl10n.api.rest.document.TextFlowTarget;
-import net.openl10n.api.rest.document.TextFlowTargets;
-import net.openl10n.api.rest.ext.comments.SimpleComment;
-import net.openl10n.api.rest.document.Document;
 
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.LocaleOutputSourcePair;
 import org.fedorahosted.flies.OutputSource;
+import org.fedorahosted.flies.rest.dto.Document;
+import org.fedorahosted.flies.rest.dto.Resource;
+import org.fedorahosted.flies.rest.dto.SimpleComment;
+import org.fedorahosted.flies.rest.dto.TextFlow;
+import org.fedorahosted.flies.rest.dto.TextFlowTarget;
+import org.fedorahosted.flies.rest.dto.TextFlowTargets;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
 import org.fedorahosted.tennera.jgettext.Message;
 

@@ -10,8 +10,8 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import net.openl10n.api.rest.document.Resource;
 
+import org.fedorahosted.flies.rest.dto.Resource;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;

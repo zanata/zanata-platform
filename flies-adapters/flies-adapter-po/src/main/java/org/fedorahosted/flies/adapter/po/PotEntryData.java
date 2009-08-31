@@ -9,9 +9,9 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import net.openl10n.api.rest.ext.comments.SimpleComment;
 
 import org.apache.commons.lang.StringUtils;
+import org.fedorahosted.flies.rest.dto.SimpleComment;
 import org.fedorahosted.tennera.jgettext.Message;
 
 @XmlRootElement(name="po-entry", namespace=PoHeader.NAMESPACE)

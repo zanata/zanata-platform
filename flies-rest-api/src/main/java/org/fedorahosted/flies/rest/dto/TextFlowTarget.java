@@ -1,4 +1,4 @@
-package net.openl10n.api.rest.document;
+package org.fedorahosted.flies.rest.dto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,6 @@ import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.LocaleIdAdapter;
 import org.fedorahosted.flies.Namespaces;
 
-import net.openl10n.api.rest.IExtensible;
 
 @XmlType(name="textFlowTargetType", namespace=TextFlowTargets.NAMESPACE, propOrder={"content", "extensions"})
 public class TextFlowTarget implements IExtensible{

@@ -2,7 +2,8 @@ package net.openl10n.packaging.jpa.document;
 
 import javax.persistence.Entity;
 
-import net.openl10n.api.rest.document.DataHook;
+import org.fedorahosted.flies.rest.dto.DataHook;
+
 
 @Entity
 public class HDataHook extends HParentResource{

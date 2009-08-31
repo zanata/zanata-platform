@@ -1,4 +1,4 @@
-package net.openl10n.api.rest.project;
+package org.fedorahosted.flies.rest.dto;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -6,8 +6,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-import net.openl10n.api.rest.document.Document;
-import net.openl10n.api.rest.document.DocumentRef;
 
 import org.fedorahosted.flies.Namespaces;
 import org.jboss.resteasy.annotations.providers.jaxb.json.Mapped;

@@ -6,8 +6,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
-import net.openl10n.api.rest.document.Document;
-import net.openl10n.api.rest.document.Resource;
+import org.fedorahosted.flies.rest.dto.Document;
+import org.fedorahosted.flies.rest.dto.Resource;
+
 
 public interface DocumentResource {
 

@@ -1,4 +1,4 @@
-package net.openl10n.api.rest;
+package org.fedorahosted.flies.rest.dto;
 
 import java.util.List;
 

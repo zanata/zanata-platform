@@ -8,11 +8,11 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
-import net.openl10n.api.rest.document.Document;
-import net.openl10n.api.rest.document.DocumentRef;
 import net.openl10n.packaging.jpa.AbstractEntity;
 import net.openl10n.packaging.jpa.document.HDocument;
 
+import org.fedorahosted.flies.rest.dto.Document;
+import org.fedorahosted.flies.rest.dto.DocumentRef;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.validator.NotEmpty;
 
@@ -34,7 +34,7 @@ public class HProject extends AbstractEntity{
 		this.summary = summary;
 	}
 
-	public HProject(net.openl10n.api.rest.project.Project project) {
+	public HProject(org.fedorahosted.flies.rest.dto.Project project) {
 		this.projectId = project.getId();
 		this.name = project.getName();
 		this.summary = project.getSummary();

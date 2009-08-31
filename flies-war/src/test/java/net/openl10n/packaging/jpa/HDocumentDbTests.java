@@ -7,7 +7,6 @@ import static org.junit.Assert.assertThat;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
-import net.openl10n.api.rest.document.TextFlowTarget.ContentState;
 import net.openl10n.packaging.jpa.document.HDocument;
 import net.openl10n.packaging.jpa.document.HDocumentTarget;
 import net.openl10n.packaging.jpa.document.HResource;
@@ -17,6 +16,7 @@ import net.openl10n.packaging.jpa.project.HProject;
 
 import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.rest.dto.TextFlowTarget.ContentState;
 import org.junit.Before;
 import org.junit.Test;
 

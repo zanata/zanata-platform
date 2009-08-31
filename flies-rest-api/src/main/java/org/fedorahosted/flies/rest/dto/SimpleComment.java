@@ -1,4 +1,4 @@
-package net.openl10n.api.rest.ext.comments;
+package org.fedorahosted.flies.rest.dto;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
