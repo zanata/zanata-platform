@@ -7,7 +7,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 
-
 import org.fedorahosted.flies.rest.dto.Resource;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.OnDelete;

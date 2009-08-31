@@ -2,6 +2,7 @@ package org.fedorahosted.flies.core.action;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.persistence.EntityManager;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -9,16 +10,14 @@ import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Query;
-
-import org.hibernate.search.jpa.FullTextQuery;
+import org.fedorahosted.flies.core.model.Project;
 import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.FullTextQuery;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Name;
-
-import org.fedorahosted.flies.core.model.Project;
+import org.jboss.seam.annotations.Scope;
 
 @Name("projectSearch")
 @Scope(ScopeType.EVENT)

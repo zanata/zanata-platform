@@ -3,7 +3,6 @@ package org.fedorahosted.flies.type;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import com.ibm.icu.util.ULocale;
 
 import org.hibernate.EntityMode;
 import org.hibernate.Hibernate;
@@ -11,6 +10,8 @@ import org.hibernate.HibernateException;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.type.ImmutableType;
 import org.hibernate.type.LiteralType;
+
+import com.ibm.icu.util.ULocale;
 
 /**
  * <tt>ulocale</tt>: A type that maps an SQL VARCHAR to a ICU ULocale.

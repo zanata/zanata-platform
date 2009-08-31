@@ -1,19 +1,29 @@
 package org.fedorahosted.flies;
 
-import org.hibernate.jmx.StatisticsService;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.*;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.core.Events;
-import org.jboss.seam.log.Log;
-import org.fedorahosted.flies.util.DBUnitImporter;
-
-import javax.management.InstanceAlreadyExistsException;
-import javax.management.ObjectName;
-import javax.naming.*;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Proxy;
 import java.util.Properties;
+
+import javax.management.InstanceAlreadyExistsException;
+import javax.management.ObjectName;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.LinkRef;
+import javax.naming.NameClassPair;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+
+import org.fedorahosted.flies.util.DBUnitImporter;
+import org.hibernate.jmx.StatisticsService;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Destroy;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Observer;
+import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.core.Events;
+import org.jboss.seam.log.Log;
 
 /**
  * Doesn't do much useful stuff except printing a log message and firing the

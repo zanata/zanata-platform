@@ -14,7 +14,6 @@ import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
-
 import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.repository.model.AbstractEntity;

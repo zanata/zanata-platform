@@ -1,27 +1,16 @@
 package org.fedorahosted.flies.account.action;
 
-import java.security.MessageDigest;
-
-import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.security.auth.callback.ConfirmationCallback;
-import javax.servlet.http.HttpServletRequest;
 
 import org.fedorahosted.flies.core.model.Account;
-import org.fedorahosted.flies.core.model.AccountActivationKey;
 import org.fedorahosted.flies.core.model.AccountResetPasswordKey;
-import org.fedorahosted.flies.core.model.Person;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.validator.Email;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Pattern;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -29,13 +18,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.faces.Renderer;
-import org.jboss.seam.international.StatusMessage.Severity;
 import org.jboss.seam.log.Log;
-import org.jboss.seam.security.Identity;
-import org.jboss.seam.security.RunAsOperation;
-import org.jboss.seam.security.management.IdentityManager;
-import org.jboss.seam.security.management.PasswordHash;
-import org.jboss.seam.util.Hex;
 
 
 @Name("passwordResetRequest")

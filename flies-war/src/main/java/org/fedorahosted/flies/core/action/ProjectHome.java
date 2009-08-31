@@ -8,9 +8,8 @@ import javax.persistence.NoResultException;
 import org.fedorahosted.flies.core.model.Account;
 import org.fedorahosted.flies.core.model.IterationProject;
 import org.fedorahosted.flies.core.model.Person;
-import org.fedorahosted.flies.core.model.Project;
-import org.fedorahosted.flies.core.model.ProjectSeries;
 import org.fedorahosted.flies.core.model.ProjectIteration;
+import org.fedorahosted.flies.core.model.ProjectSeries;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.In;
@@ -19,7 +18,6 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.core.Conversation;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.framework.EntityHome;
 import org.jboss.seam.security.management.JpaIdentityStore;
 
 @Name("projectHome")

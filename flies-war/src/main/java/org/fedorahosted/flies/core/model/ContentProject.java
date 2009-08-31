@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-
 import org.fedorahosted.flies.repository.model.project.HProject;
 import org.hibernate.validator.NotNull;
 

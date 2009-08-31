@@ -1,19 +1,17 @@
 package org.fedorahosted.flies.core.dao;
 
+import java.security.MessageDigest;
+import java.security.SecureRandom;
+
 import javax.persistence.EntityManager;
 
 import org.fedorahosted.flies.core.model.Account;
-import org.fedorahosted.flies.core.model.Project;
-import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.util.Hex;
-
-import java.security.MessageDigest;
-import java.security.SecureRandom;
 
 @Name("accountDAO")
 @AutoCreate

@@ -11,15 +11,11 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
 
-import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.Email;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
 
 @Entity
 public class Person extends AbstractFliesEntity implements Serializable {

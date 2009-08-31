@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 
-
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.hibernate.annotations.IndexColumn;

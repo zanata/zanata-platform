@@ -1,12 +1,12 @@
 package org.fedorahosted.flies.core.dao;
 
-import org.jboss.seam.persistence.ManagedPersistenceContext;
-import org.jboss.seam.persistence.Filter;
-import org.jboss.seam.persistence.PersistenceProvider;
-import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Logger;
-import org.jboss.seam.log.Log;
+import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.core.Events;
+import org.jboss.seam.log.Log;
+import org.jboss.seam.persistence.Filter;
+import org.jboss.seam.persistence.ManagedPersistenceContext;
+import org.jboss.seam.persistence.PersistenceProvider;
 
 /**
  * Forces re-evaluation of filter parameter for managed persistence contexts.

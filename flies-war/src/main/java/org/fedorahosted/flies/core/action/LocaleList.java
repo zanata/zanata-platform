@@ -3,10 +3,10 @@ package org.fedorahosted.flies.core.action;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.framework.EntityQuery;
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.core.model.FliesLocale;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.framework.EntityQuery;
 
 import com.ibm.icu.util.ULocale;
 

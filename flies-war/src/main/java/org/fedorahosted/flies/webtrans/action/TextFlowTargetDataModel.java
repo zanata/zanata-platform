@@ -4,7 +4,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
-
 import org.fedorahosted.flies.repository.model.document.HTextFlowTarget;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;

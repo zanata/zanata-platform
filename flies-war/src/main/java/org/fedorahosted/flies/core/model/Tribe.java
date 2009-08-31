@@ -1,6 +1,5 @@
 package org.fedorahosted.flies.core.model;
 
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;

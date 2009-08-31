@@ -1,5 +1,15 @@
 package org.fedorahosted.flies.util;
 
+import java.io.InputStream;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
@@ -10,15 +20,6 @@ import org.dbunit.dataset.datatype.DataTypeException;
 import org.dbunit.dataset.datatype.DefaultDataTypeFactory;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.operation.DatabaseOperation;
-
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
-import java.io.InputStream;
-import java.net.URL;
-import java.sql.Connection;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Imports some data into the database with the help of DBUnit. This allows us

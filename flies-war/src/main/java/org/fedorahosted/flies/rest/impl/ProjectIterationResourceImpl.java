@@ -1,18 +1,11 @@
 package org.fedorahosted.flies.rest.impl;
 
 import java.net.URI;
-import java.util.Set;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-
-import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.core.model.ProjectIteration;
-import org.fedorahosted.flies.repository.model.project.HProject;
 import org.fedorahosted.flies.rest.DocumentResource;
 import org.fedorahosted.flies.rest.ProjectIterationResource;
 import org.fedorahosted.flies.rest.dto.Document;
@@ -20,8 +13,6 @@ import org.fedorahosted.flies.rest.dto.DocumentRef;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.jboss.seam.Component;
 import org.jboss.seam.annotations.Name;
-
-import com.google.common.collect.ImmutableSet;
 
 @Name("projectIterationResource")
 public class ProjectIterationResourceImpl implements ProjectIterationResource{

@@ -10,7 +10,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import org.jboss.seam.annotations.DataSelectorClass;
-import org.jboss.seam.databinding.DataModelSelector;
 
 /**
  * Injects the selected row data of a DataModel. 

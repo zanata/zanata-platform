@@ -2,19 +2,19 @@ package org.fedorahosted.flies.repository.model;
 
 
 
-import org.dbunit.operation.DatabaseOperation;
-import org.fedorahosted.flies.core.model.IterationProject;
-import org.fedorahosted.flies.core.model.Person;
-import org.fedorahosted.flies.core.model.Project;
-import org.fedorahosted.flies.core.model.ProjectSeries;
-import org.fedorahosted.flies.core.model.ProjectIteration;
-import org.jboss.seam.mock.DBUnitSeamTest;
-import org.testng.annotations.Test;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+
+import java.util.List;
 
 import javax.persistence.EntityManager;
-import java.util.List;
-import java.util.Date;
-import static org.testng.Assert.*;
+
+import org.dbunit.operation.DatabaseOperation;
+import org.fedorahosted.flies.core.model.IterationProject;
+import org.fedorahosted.flies.core.model.ProjectIteration;
+import org.fedorahosted.flies.core.model.ProjectSeries;
+import org.jboss.seam.mock.DBUnitSeamTest;
+import org.testng.annotations.Test;
 
 public class DocumentTests extends DBUnitSeamTest {
 

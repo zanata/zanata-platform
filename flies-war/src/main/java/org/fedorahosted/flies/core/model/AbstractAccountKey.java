@@ -1,7 +1,5 @@
 package org.fedorahosted.flies.core.model;
 
-import java.io.Serializable;
-
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;

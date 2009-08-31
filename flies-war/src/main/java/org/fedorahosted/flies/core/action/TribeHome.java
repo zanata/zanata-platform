@@ -17,7 +17,6 @@ import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.framework.EntityHome;
 import org.jboss.seam.international.StatusMessage.Severity;
-import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
 
 @Name("tribeHome")

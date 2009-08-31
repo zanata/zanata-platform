@@ -1,17 +1,16 @@
 package org.fedorahosted.flies.rest.impl;
 
-import org.jboss.resteasy.plugins.providers.atom.Content;
-import org.jboss.resteasy.plugins.providers.atom.Entry;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 
-import java.io.*;
-
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 
-import java.lang.String;
+import org.jboss.resteasy.plugins.providers.atom.Content;
+import org.jboss.resteasy.plugins.providers.atom.Entry;
 
 @Path("atom")
 public class ProjectUpload

@@ -2,28 +2,23 @@ package org.fedorahosted.flies.core.model;
 
 import java.io.Serializable;
 import java.util.Set;
-import java.security.MessageDigest;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
-import javax.persistence.JoinColumn;
 
 import org.hibernate.annotations.NaturalId;
-import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Length;
 import org.jboss.seam.annotations.security.management.UserEnabled;
-import org.jboss.seam.annotations.security.management.UserFirstName;
 import org.jboss.seam.annotations.security.management.UserPassword;
 import org.jboss.seam.annotations.security.management.UserPrincipal;
 import org.jboss.seam.annotations.security.management.UserRoles;
 import org.jboss.seam.security.management.PasswordHash;
-import org.jboss.seam.util.Hex;
 
 @Entity
 @Table(uniqueConstraints=@UniqueConstraint(columnNames="apiKey"))

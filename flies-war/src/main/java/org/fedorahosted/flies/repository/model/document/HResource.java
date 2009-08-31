@@ -10,7 +10,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-
 import org.fedorahosted.flies.rest.dto.Resource;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.Length;

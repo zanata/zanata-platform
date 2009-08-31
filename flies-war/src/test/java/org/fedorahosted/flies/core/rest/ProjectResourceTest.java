@@ -3,15 +3,14 @@ package org.fedorahosted.flies.core.rest;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jboss.seam.mock.ResourceRequestEnvironment;
 import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
 import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
+import org.jboss.seam.mock.ResourceRequestEnvironment;
 import org.jboss.seam.mock.SeamTest;
+import org.jboss.seam.mock.ResourceRequestEnvironment.Method;
+import org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import static org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
-import static org.jboss.seam.mock.ResourceRequestEnvironment.Method;
 
 public class ProjectResourceTest extends SeamTest {
 

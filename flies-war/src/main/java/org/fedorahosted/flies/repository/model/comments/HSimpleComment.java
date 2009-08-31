@@ -6,7 +6,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
-
 import org.fedorahosted.flies.repository.model.document.HTextFlowTarget;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;

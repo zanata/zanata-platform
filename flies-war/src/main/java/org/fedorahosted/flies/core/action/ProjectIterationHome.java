@@ -3,34 +3,23 @@ package org.fedorahosted.flies.core.action;
 import java.util.List;
 
 import javax.faces.event.ValueChangeEvent;
-import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
-
 
 import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.model.IterationProject;
-import org.fedorahosted.flies.core.model.Project;
-import org.fedorahosted.flies.core.model.ProjectSeries;
 import org.fedorahosted.flies.core.model.ProjectIteration;
+import org.fedorahosted.flies.core.model.ProjectSeries;
 import org.fedorahosted.flies.repository.model.project.HProject;
-import org.fedorahosted.flies.repository.util.TranslationStatistics;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
-import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.core.Conversation;
-import org.jboss.seam.core.Manager;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.framework.EntityHome;
 import org.jboss.seam.log.Log;
 
 @Name("projectIterationHome")

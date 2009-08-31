@@ -2,7 +2,6 @@ package org.fedorahosted.flies.repository.model.document;
 
 import javax.persistence.Entity;
 
-
 import org.fedorahosted.flies.rest.dto.Reference;
 import org.hibernate.validator.NotEmpty;
 

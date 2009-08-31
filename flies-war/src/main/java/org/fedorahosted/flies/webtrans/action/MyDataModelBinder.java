@@ -3,7 +3,6 @@ package org.fedorahosted.flies.webtrans.action;
 import java.util.Map;
 
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.databinding.DataBinder;
 import org.jboss.seam.faces.DataModels;
 import org.richfaces.model.ExtendedTableDataModel;

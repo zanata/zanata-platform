@@ -6,8 +6,8 @@ import javax.persistence.EntityManager;
 
 import org.fedorahosted.flies.core.model.Community;
 import org.fedorahosted.flies.core.model.Project;
-import org.hibernate.search.jpa.Search; 
 import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.Search;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;

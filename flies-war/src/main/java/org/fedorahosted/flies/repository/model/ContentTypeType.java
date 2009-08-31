@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
 import org.fedorahosted.flies.ContentType;
 import org.hibernate.EntityMode;
 import org.hibernate.Hibernate;

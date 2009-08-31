@@ -2,12 +2,11 @@ package org.fedorahosted.flies.core.action;
 
 import javax.persistence.NoResultException;
 
-import org.jboss.seam.annotations.Name;
+import org.fedorahosted.flies.core.model.Repository;
 import org.jboss.seam.annotations.Begin;
+import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.framework.EntityHome;
-
-import org.fedorahosted.flies.core.model.Repository;
 
 @Name("repoHome")
 public class RepositoryHome extends EntityHome<Repository> {

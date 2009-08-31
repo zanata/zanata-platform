@@ -7,14 +7,11 @@ import org.fedorahosted.flies.core.model.Community;
 import org.fedorahosted.flies.core.model.Person;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.core.Conversation;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.framework.EntityHome;
 
 @Name("communityHome")
 @Scope(ScopeType.CONVERSATION)

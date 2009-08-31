@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.validators;
 
 import java.io.Serializable;
+
 import org.hibernate.validator.Validator;
 
 public class SlugValidator implements Validator<Slug>, Serializable {

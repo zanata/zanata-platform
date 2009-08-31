@@ -1,18 +1,13 @@
 package org.fedorahosted.flies.webtrans;
 
 import java.util.Date;
-import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
-
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.core.model.Person;
-import org.fedorahosted.flies.core.model.ProjectIteration;
-import org.fedorahosted.flies.repository.model.project.HProject;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MapMaker;
 
 public class TranslationWorkspace {

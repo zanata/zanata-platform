@@ -1,14 +1,13 @@
 package org.fedorahosted.flies.core.model;
 
 import java.io.Serializable;
+
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.fedorahosted.flies.validators.Slug;
 import org.hibernate.validator.Length;
-import org.hibernate.validator.NotNull;
 
 	@Entity
 	@Table(name="repository")

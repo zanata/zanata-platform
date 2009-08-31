@@ -10,7 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
-
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.repository.model.LocaleIdType;
 import org.fedorahosted.flies.repository.model.comments.HSimpleComment;

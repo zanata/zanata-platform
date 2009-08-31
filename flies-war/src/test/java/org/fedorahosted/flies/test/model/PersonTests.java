@@ -2,14 +2,12 @@ package org.fedorahosted.flies.test.model;
 
 
 
+import javax.persistence.EntityManager;
+
 import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.flies.core.model.Person;
 import org.jboss.seam.mock.DBUnitSeamTest;
 import org.testng.annotations.Test;
-
-import javax.persistence.EntityManager;
-import java.util.List;
-import java.util.Date;
 
 public class PersonTests extends DBUnitSeamTest {
 

@@ -2,8 +2,6 @@ package org.fedorahosted.flies.webtrans;
 
 
 import org.fedorahosted.flies.LocaleId;
-import org.fedorahosted.flies.core.model.ProjectIteration;
-import org.fedorahosted.flies.repository.model.project.HProject;
 
 final class WorkspaceKey{
 	
