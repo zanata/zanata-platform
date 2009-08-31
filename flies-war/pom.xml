@@ -582,6 +582,12 @@
       <artifactId>google-collections</artifactId>
       <version>1.0-rc2</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.fedorahosted.flies</groupId>
+      <artifactId>flies-rest-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
     
     <dependency>
       <groupId>org.hibernate</groupId>

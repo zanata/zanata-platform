@@ -10,6 +10,7 @@
   <modules>
     <module>flies-richfaces-ui</module>
     <module>flies-rest-api</module>
+    <module>flies-adapters</module>
     <module>flies-rest-client</module>
     <module>flies-war</module>
   </modules>
