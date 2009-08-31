@@ -9,13 +9,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import net.openl10n.api.LocaleId;
-import net.openl10n.api.rest.document.Document;
-import net.openl10n.api.rest.document.Resource;
-import net.openl10n.api.rest.document.TextFlow;
-import net.openl10n.api.rest.document.TextFlowTarget;
-import net.openl10n.api.rest.document.TextFlowTargets;
-
+import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.rest.dto.Document;
+import org.fedorahosted.flies.rest.dto.Resource;
+import org.fedorahosted.flies.rest.dto.TextFlow;
+import org.fedorahosted.flies.rest.dto.TextFlowTarget;
+import org.fedorahosted.flies.rest.dto.TextFlowTargets;
 import org.fedorahosted.openprops.Properties;
 
 public class PropWriter {

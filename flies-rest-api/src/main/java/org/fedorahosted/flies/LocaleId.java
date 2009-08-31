@@ -40,4 +40,13 @@ public final class LocaleId implements Serializable{
 		return id;
 	}
 	
+    public static LocaleId fromJavaName(String localeName) {
+        return new LocaleId(localeName.replace('_', '-'));
+    }
+
+    public String toJavaName() {
+        return id.replace('-', '_');
+    }
+	
+	
 }

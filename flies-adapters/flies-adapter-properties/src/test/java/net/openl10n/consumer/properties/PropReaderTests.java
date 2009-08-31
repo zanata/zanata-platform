@@ -8,11 +8,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
 import net.openl10n.adapter.properties.PropReader;
-import net.openl10n.api.ContentType;
-import net.openl10n.api.LocaleId;
-import net.openl10n.api.rest.document.Document;
-import net.openl10n.api.rest.document.TextFlowTargets;
 
+import org.fedorahosted.flies.ContentType;
+import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.rest.dto.Document;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;

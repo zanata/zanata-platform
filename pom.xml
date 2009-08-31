@@ -65,6 +65,23 @@
       </snapshots>
     </repository>
 
+    <repository>
+      <name>Tennera release repository on fedorahosted.org</name>
+      <id>fhosted.tennera.svn</id>
+      <url>http://svn.fedorahosted.org/svn/tennera/m2repo/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <name>Tennera snapshot repository on fedorapeople.org</name>
+      <id>fpeople.tennera.snap</id>
+      <url>http://seanf.fedorapeople.org/maven2/snapshot/</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+
   </repositories>
 
   <pluginRepositories>

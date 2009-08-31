@@ -9,30 +9,7 @@
     <version>1.0-SNAPSHOT</version>
   </parent>
   <packaging>jar</packaging>
-  <repositories>
-    <repository>
-      <name>Tennera release repository on fedorahosted.org</name>
-      <id>fhosted.tennera.svn</id>
-      <url>http://svn.fedorahosted.org/svn/tennera/m2repo/</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <name>Tennera snapshot repository on fedorapeople.org</name>
-      <id>fpeople.tennera.snap</id>
-      <url>http://seanf.fedorapeople.org/maven2/snapshot/</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
   <dependencies>
-    <dependency>
-      <groupId>org.fedorahosted.flies</groupId>
-      <artifactId>flies-rest-api</artifactId>
-      <version>${project.version}</version>
-    </dependency>
     <dependency>
       <groupId>org.fedorahosted.tennera</groupId>
       <artifactId>jgettext</artifactId>

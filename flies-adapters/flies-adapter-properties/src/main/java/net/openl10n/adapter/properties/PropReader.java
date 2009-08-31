@@ -12,13 +12,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import net.openl10n.api.LocaleId;
-import net.openl10n.api.rest.document.Document;
-import net.openl10n.api.rest.document.Resource;
-import net.openl10n.api.rest.document.TextFlow;
-import net.openl10n.api.rest.document.TextFlowTarget;
-import net.openl10n.api.rest.document.TextFlowTarget.ContentState;
-
+import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.rest.dto.Document;
+import org.fedorahosted.flies.rest.dto.Resource;
+import org.fedorahosted.flies.rest.dto.TextFlow;
+import org.fedorahosted.flies.rest.dto.TextFlowTarget;
+import org.fedorahosted.flies.rest.dto.TextFlowTarget.ContentState;
 import org.fedorahosted.openprops.Properties;
 import org.xml.sax.InputSource;
 

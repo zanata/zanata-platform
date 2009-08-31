@@ -11,5 +11,13 @@
   </parent>
   <modules>
     <module>flies-adapter-po</module>
+    <module>flies-adapter-properties</module>
   </modules>
+  <dependencies>
+    <dependency>
+      <groupId>org.fedorahosted.flies</groupId>
+      <artifactId>flies-rest-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
 </project>
