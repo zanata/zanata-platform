@@ -16,7 +16,7 @@ import javax.persistence.Transient;
 
 import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.LocaleId;
-import org.fedorahosted.flies.repository.model.AbstractEntity;
+import org.fedorahosted.flies.core.model.AbstractFliesEntity;
 import org.fedorahosted.flies.repository.model.ContentTypeType;
 import org.fedorahosted.flies.repository.model.LocaleIdType;
 import org.fedorahosted.flies.repository.model.project.HProjectContainer;
@@ -44,7 +44,7 @@ import org.hibernate.validator.NotNull;
 	@TypeDef(name="localeId", typeClass=LocaleIdType.class),
 	@TypeDef(name = "contentType", typeClass = ContentTypeType.class)
 })
-public class HDocument extends AbstractEntity{
+public class HDocument extends AbstractFliesEntity{
 
 	private String docId;
 	private String name;

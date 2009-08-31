@@ -8,14 +8,14 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
-import org.fedorahosted.flies.repository.model.AbstractEntity;
+import org.fedorahosted.flies.core.model.AbstractFliesEntity;
 import org.fedorahosted.flies.repository.model.document.HDocument;
 import org.fedorahosted.flies.rest.dto.DocumentRef;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.validator.NotEmpty;
 
 @Entity
-public class HProjectContainer extends AbstractEntity{
+public class HProjectContainer extends AbstractFliesEntity{
 
 	private List<HDocument> documents;
 

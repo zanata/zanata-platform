@@ -15,7 +15,7 @@ public class AbstractFliesEntity {
 
 	protected Long id;
 	protected Date creationDate;
-	protected Date timestamp;
+	protected Date lastChanged;
 
 	@Id
 	@GeneratedValue
@@ -38,12 +38,12 @@ public class AbstractFliesEntity {
 
 	@Version
 	@Temporal(TemporalType.TIMESTAMP)
-	public Date getTimestamp() {
-		return timestamp;
+	public Date getLastChanged() {
+		return lastChanged;
 	}
 
-	public void setTimestamp(Date timestamp) {
-		this.timestamp = timestamp;
+	public void setLastChanged(Date lastChanged) {
+		this.lastChanged = lastChanged;
 	}
 
 	@PrePersist
@@ -59,7 +59,7 @@ public class AbstractFliesEntity {
 				+ ((creationDate == null) ? 0 : creationDate.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result
-				+ ((timestamp == null) ? 0 : timestamp.hashCode());
+				+ ((lastChanged == null) ? 0 : lastChanged.hashCode());
 		return result;
 	}
 
@@ -82,10 +82,10 @@ public class AbstractFliesEntity {
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
-		if (timestamp == null) {
-			if (other.timestamp != null)
+		if (lastChanged == null) {
+			if (other.lastChanged != null)
 				return false;
-		} else if (!timestamp.equals(other.timestamp))
+		} else if (!lastChanged.equals(other.lastChanged))
 			return false;
 		return true;
 	}
