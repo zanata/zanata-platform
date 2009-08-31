@@ -14,35 +14,5 @@ syntax: regexp
 \.project$
 \.settings/
 ^target
+^flies-war/profiles.xml
 
-# flies-web
-^flies-web/lib/
-^flies-web/build.properties
-^flies-web/dist/
-^flies-web/build-tools/lib/
-^flies-web/build/
-^flies-web/.settings/org.jboss.tools.common.resref.core.prefs
-
-# flies-web-test
-^flies-web-test/lib/
-^flies-web-test/build/
-^flies-web-test/bootstrap/data/
-^flies-web-test/test-output/
-^flies-web-test/hibernate-search-data/
-# flies-richfaces-ui
-^flies-richfaces-ui/(translation-status-bar|assembly)/.classpath
-^flies-richfaces-ui/(translation-status-bar|assembly)/.project
-^flies-richfaces-ui/(translation-status-bar|assembly)/.settings/
-
-
-# ant-eclipse-classpath
-^ant-eclipse-classpath/lib/
-^ant-eclipse-classpath/build/
-^ant-eclipse-classpath/*.jar
-
-# flies-rest-client
-
-# flies-rest-api
-^flies-rest-api/.classpath
-^flies-rest-api/.project
-^flies-rest-api/.settings/
