@@ -42,7 +42,7 @@ public class FliesInit {
 
 	private String adminContact;
 	private boolean debug;
-	private boolean hibernateStatistics = true;
+	private boolean hibernateStatistics = false;
 	private int authenticatedSessionTimeoutMinutes = 0;
 	private String version;
 	
