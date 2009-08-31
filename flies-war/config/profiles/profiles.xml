@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<profilesXml>
+  <profiles>
+    <!-- 
+    Note 1:
+      There is a naming convention for profiles. The naming convention helps us to "group" 
+      the profiles, e.g. ds-hsqldb and ds-mysql5 belongs to the same "group" (see code).
+      see: http://maven.apache.org/guides/introduction/introduction-to-profiles.html
+      
+    Note 2:
+      More than one profile can be active at once. Since profiles can contain the same 
+      types of configuration there can be clashes. If two profiles clash the last to be activated 
+      will override those activated earlier.   
+      
+    Important:
+      We can not use <activeByDefault>true</...> in combination with <activeProfile> in profiles.xml. 
+      The risk is that we unexpectedly activates more than one profile in the same "group" and the 
+      result is unpredicted property values if that profile "group" defines property values. 
+      As an alternative we can use the file tag to check if  profiles.xml is present an activate a 
+      profile based on that. But be aware that any <activeByDefault> tags will be disabled if you 
+      use the <file> tag on any profile!
+      
+    Maven-2.1.0 bug:
+      profiles.xml settings are not propagated using Maven 2.1.0
+      see bug description here: "etc/maven-2.1.0-bug".
+    -->
+
+
+    <!-- development environment -->
+    <profile>
+      <id>env-dev</id>
+      <activation>
+        <property>
+          <name>env</name>
+          <value>dev</value>
+        </property>
+      </activation>
+      <properties>
+        <env>dev</env>
+        <env.debug>true</env.debug>
+        <env.unpack.modules>true</env.unpack.modules>
+        <env.hibernate.hbm2ddl.auto>create-drop</env.hibernate.hbm2ddl.auto>
+        <env.hibernate.show_sql>true</env.hibernate.show_sql>
+        <env.hibernate.format_sql>true</env.hibernate.format_sql>
+        <env.hibernate.default_batch_size>16</env.hibernate.default_batch_size>
+        <jdk.debug>${env.debug}</jdk.debug>
+        <jdk.optimize>false</jdk.optimize>
+        <jdk.source>1.5</jdk.source>
+        <jdk.target>1.5</jdk.target>
+      </properties>
+    </profile>
+    
+    <!-- production environment @TODO: move away from profiles.xml -->
+    <profile>
+      <id>env-prod</id>
+      <activation>
+        <property>
+          <name>env</name>
+          <value>prod</value>
+        </property>
+      </activation>
+      <properties>
+        <env>prod</env>
+        <env.debug>false</env.debug>
+        <env.unpack.modules>false</env.unpack.modules>
+        <env.hibernate.hbm2ddl.auto>update</env.hibernate.hbm2ddl.auto>
+        <env.hibernate.show_sql>false</env.hibernate.show_sql>
+        <env.hibernate.format_sql>false</env.hibernate.format_sql>
+        <env.hibernate.default_batch_size>16</env.hibernate.default_batch_size>
+        <jdk.debug>${env.debug}</jdk.debug>
+        <jdk.optimize>true</jdk.optimize>
+        <jdk.source>1.5</jdk.source>
+        <jdk.target>1.5</jdk.target>
+      </properties>
+    </profile>
+    
+    
+    <!-- databases -->
+    <!-- HSQL -->
+    <profile>
+      <id>ds-hsqldb</id>
+      <activation>
+        <property>
+          <name>ds</name>
+          <value>hsqldb</value>
+        </property>
+      </activation>
+      <properties>
+        <ds>hsqldb</ds>
+        <ds.hibernate.dialect>org.hibernate.dialect.HSQLDialect</ds.hibernate.dialect>
+        <ds.driver.class>org.hsqldb.jdbcDriver</ds.driver.class>
+        <ds.server.name></ds.server.name>
+        <ds.database.name></ds.database.name>
+        <ds.connection.url>jdbc:hsqldb:.</ds.connection.url>
+        <ds.user.name>sa</ds.user.name>
+        <ds.password></ds.password>
+      </properties>
+    </profile>
+    
+    <!-- MySql5 -->
+    <profile>
+      <id>ds-mysql5</id>
+      <activation>
+        <property>
+          <name>ds</name>
+          <value>mysql5</value>
+        </property>
+      </activation>
+      <properties>
+        <ds>mysql5</ds>
+        <ds.hibernate.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</ds.hibernate.dialect>
+        <ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
+        <ds.server.name>localhost:3306</ds.server.name>
+        <ds.database.name>${app.database.name}</ds.database.name>
+        <ds.connection.url>jdbc:mysql://${ds.server.name}/${ds.database.name}?characterEncoding=UTF-8</ds.connection.url>
+        <ds.user.name>root</ds.user.name>
+        <ds.password></ds.password>
+      </properties>
+    </profile>
+
+    <!-- postgre sql -->
+    <profile>
+      <id>ds-postgresql</id>
+      <activation>
+        <property>
+          <name>ds</name>
+          <value>postgresql</value>
+        </property>
+      </activation>
+      <properties>
+        <ds>postgresql</ds>
+        <ds.hibernate.dialect>org.hibernate.dialect.PostgreSQLDialect</ds.hibernate.dialect>
+        <ds.driver.class>org.postgresql.Driver</ds.driver.class>
+        <ds.server.name>localhost:5432</ds.server.name>
+        <ds.database.name>${app.database.name}</ds.database.name>
+        <ds.connection.url>jdbc:postgresql://${ds.server.name}/${ds.database.name}?charSet=UTF8</ds.connection.url>
+        <ds.user.name>username</ds.user.name>
+        <ds.password>password</ds.password>
+      </properties>
+    </profile>
+    
+    <!-- Ms SqlServer -->
+    <profile>
+      <id>ds-sqlserver</id>
+      <activation>
+        <property>
+          <name>ds</name>
+          <value>sqlserver</value>
+        </property>
+      </activation>
+      <properties>
+        <ds>sqlserver</ds>
+        <ds.hibernate.dialect>org.hibernate.dialect.SQLServerDialect</ds.hibernate.dialect>
+        <ds.driver.class>net.sourceforge.jtds.jdbc.Driver</ds.driver.class>
+        <ds.server.name>192.168.106.9</ds.server.name>
+        <ds.database.name>${app.database.name}</ds.database.name>
+        <ds.connection.url>jdbc:jtds:sqlserver://${ds.server.name}/${ds.database.name};tds=8.0;lastupdatecount=true</ds.connection.url>
+        <ds.user.name>username</ds.user.name>
+        <ds.password>password</ds.password>
+      </properties>
+    </profile>
+
+
+    <!-- application servers -->
+    <!-- jboss-4.2.3 -->
+    <profile>
+      <id>as-jboss423</id>
+      <activation>
+        <property>
+          <name>as</name>
+          <value>jboss423</value>
+        </property>
+      </activation>
+      <properties>
+        <as>jboss423</as>
+        <as.version>4.2</as.version>
+        <as.home>/opt/jboss-4.2.3.GA-jdk6</as.home>
+        <as.deploy>${as.home}/server/default/deploy</as.deploy>
+      </properties>
+    </profile>
+    
+    <!-- jboss-5 -->
+    <profile>
+      <id>as-jboss5</id>
+      <activation>
+        <property>
+          <name>as</name>
+          <value>jboss5</value>
+        </property>
+      </activation>
+      <properties>
+        <as>jboss5</as>
+        <as.version>5</as.version>
+        <as.home>/opt/jboss-5.1.0.GA-jdk6</as.home>
+        <as.deploy>${as.home}/server/default/deploy</as.deploy>
+      </properties>
+    </profile>
+    
+  </profiles>
+
+  <activeProfiles>
+    <activeProfile>env-dev</activeProfile>
+    <!--
+    <activeProfile>env-dev</activeProfile>
+    <activeProfile>env-prod</activeProfile>
+    -->
+    
+    <activeProfile>ds-hsqldb</activeProfile>
+    <!-- 
+    <activeProfile>ds-hsqldb</activeProfile>
+    <activeProfile>ds-mysql5</activeProfile>  
+    <activeProfile>ds-postgresql</activeProfile>
+    <activeProfile>ds-sqlserver</activeProfile>
+    -->
+    
+    <activeProfile>as-jboss423</activeProfile>
+    <!--
+    <activeProfile>as-jboss423</activeProfile>
+    <activeProfile>as-jboss5</activeProfile>
+    -->
+  </activeProfiles>
+</profilesXml>

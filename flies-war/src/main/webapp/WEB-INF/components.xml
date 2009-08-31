@@ -1,168 +1,231 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <components xmlns="http://jboss.com/products/seam/components"
-            xmlns:core="http://jboss.com/products/seam/core"
-            xmlns:persistence="http://jboss.com/products/seam/persistence"
-            xmlns:drools="http://jboss.com/products/seam/drools"
-            xmlns:bpm="http://jboss.com/products/seam/bpm"
-            xmlns:security="http://jboss.com/products/seam/security"
-            xmlns:mail="http://jboss.com/products/seam/mail"
-            xmlns:web="http://jboss.com/products/seam/web"
-            xmlns:framework="http://jboss.com/products/seam/framework"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xmlns:resteasy="http://jboss.com/products/seam/resteasy"
-            xsi:schemaLocation=
-                "http://jboss.com/products/seam/core http://jboss.com/products/seam/core-2.1.xsd
-                 http://jboss.com/products/seam/persistence http://jboss.com/products/seam/persistence-2.1.xsd
-                 http://jboss.com/products/seam/drools http://jboss.com/products/seam/drools-2.1.xsd
-                 http://jboss.com/products/seam/bpm http://jboss.com/products/seam/bpm-2.1.xsd
-                 http://jboss.com/products/seam/security http://jboss.com/products/seam/security-2.1.xsd
-                 http://jboss.com/products/seam/mail http://jboss.com/products/seam/mail-2.1.xsd
-                 http://jboss.com/products/seam/web http://jboss.com/products/seam/web-2.1.xsd
-                 http://jboss.com/products/seam/components http://jboss.com/products/seam/components-2.1.xsd
-                 http://jboss.com/products/seam/resteasy http://jboss.com/products/seam/resteasy-2.1.xsd">
+    xmlns:core="http://jboss.com/products/seam/core"
+    xmlns:persistence="http://jboss.com/products/seam/persistence"
+    xmlns:drools="http://jboss.com/products/seam/drools"
+    xmlns:bpm="http://jboss.com/products/seam/bpm"
+    xmlns:security="http://jboss.com/products/seam/security"
+    xmlns:mail="http://jboss.com/products/seam/mail"
+    xmlns:web="http://jboss.com/products/seam/web"
+    xmlns:framework="http://jboss.com/products/seam/framework"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:resteasy="http://jboss.com/products/seam/resteasy"
+    xsi:schemaLocation=
+        "http://jboss.com/products/seam/core http://jboss.com/products/seam/core-2.1.xsd
+         http://jboss.com/products/seam/persistence http://jboss.com/products/seam/persistence-2.1.xsd
+         http://jboss.com/products/seam/drools http://jboss.com/products/seam/drools-2.1.xsd
+         http://jboss.com/products/seam/bpm http://jboss.com/products/seam/bpm-2.1.xsd
+         http://jboss.com/products/seam/security http://jboss.com/products/seam/security-2.1.xsd
+         http://jboss.com/products/seam/mail http://jboss.com/products/seam/mail-2.1.xsd
+         http://jboss.com/products/seam/web http://jboss.com/products/seam/web-2.1.xsd
+         http://jboss.com/products/seam/components http://jboss.com/products/seam/components-2.1.xsd
+         http://jboss.com/products/seam/resteasy http://jboss.com/products/seam/resteasy-2.1.xsd">
  
-    <!-- Conversation timeout: 20 minutes -->
-    <core:manager concurrent-request-timeout="4000"
-                  conversation-timeout="1200000"
-                  conversation-id-parameter="cid" parent-conversation-id-parameter="pid"/>
+  <core:init
+      debug="${env.debug}"
+      transaction-management-enabled="true"
+      jndi-pattern="${app.jndi.pattern}" 
+      distributable="${app.distributable}"/>
+ 
+  <!-- Conversation timeout: 20 minutes -->
+  <core:manager concurrent-request-timeout="4000"
+      conversation-timeout="1200000"
+      conversation-id-parameter="cid" parent-conversation-id-parameter="pid"/>
 
-    <!-- Persistence stuff -->
+  <!-- Persistence stuff -->
 
-    <persistence:managed-persistence-context
-            name="entityManager"
-            auto-create="true"
-            entity-manager-factory="#{fliesEntityManagerFactory}"
-            persistence-unit-jndi-name="java:/entityManagerFactories/flies">
-    </persistence:managed-persistence-context>
+  <!-- 
+      BOOTSTRAPPING A JPA ENTITYMANAGERFACTORY, SiA-9.3.1-p362
+      installed=true for JBoss 4.2.3 or newer
+      To have Seam defer loading of the persistence unit until it's needed, perhaps for a quicker 
+      deployment turnaround, you can  disable the startup behavior of this component, SiA-9.3.1-p363
+      
+      entity-manager-factory name is also referenced in in persistence.xml: 
+      persistence-unit name="${app.persistence.unit.name}"
+  -->
+  <persistence:entity-manager-factory
+      name="${app.entity.manager.factory.name}"
+      persistence-unit-name="${app.persistence.unit.name}"
+      installed="${app.persistence.emf.installed}"
+      startup="${app.persistence.emf.startup}" />
 
-    <persistence:filter name="accessLevelFilter">
-        <persistence:name>accessLevelFilter</persistence:name>
-        <persistence:parameters>
-            <key>currentAccessLevel</key>
-            <value>#{currentAccessLevel}</value>
-        </persistence:parameters>
-    </persistence:filter>
+  <!--
+      If Seam loads the persistence unit (JBoss 4.x), the
+      EntityManagerFactory will be resolved from #{${app.entity.manager.factory.name}}. 
+      On JBoss AS 5, the EntityManagerFactory is retrieved from JNDI (the
+      binding occurs during application deployment), SiA-9.3.1-p362.
+      
+      By default, the Seam-managed persistence context components are defined with the autocreate 
+      feature disabled. By enabling this feature, you can inject these components using an 
+      @In annotation without having to supply the create attribute, SiA-9.3.2-p366.
+  -->
+  <persistence:managed-persistence-context
+      name="entityManager"
+      auto-create="${app.persistence.mpc.auto.create}"
+      entity-manager-factory="#{${app.entity.manager.factory.name}}"
+      persistence-unit-jndi-name="${app.persistence.unit.jndi.name}" />
 
-    <component name="restrictedEntityManager" auto-create="true" scope="CONVERSATION"
-               class="org.fedorahosted.flies.core.dao.FliesManagedPersistenceContext">
-        <property name="entityManagerFactory">#{fliesEntityManagerFactory}</property>
-        <property name="persistenceUnitJndiName">java:/entityManagerFactories/flies</property>
-        <property name="filters"><value>#{accessLevelFilter}</value></property>
-    </component>
+  <persistence:filter name="accessLevelFilter">
+    <persistence:name>accessLevelFilter</persistence:name>
+    <persistence:parameters>
+      <key>currentAccessLevel</key>
+      <value>#{currentAccessLevel}</value>
+    </persistence:parameters>
+  </persistence:filter>
 
-    <resteasy:application resource-path-prefix="/restv1" />
-    
-    <web:multipart-filter create-temp-files="false" 
-                              max-request-size="5200000" 
-    url-pattern="/*"/>
+  <component name="restrictedEntityManager" auto-create="true" scope="CONVERSATION"
+      class="org.fedorahosted.flies.core.dao.FliesManagedPersistenceContext">
+    <property name="entityManagerFactory">#{fliesEntityManagerFactory}</property>
+    <property name="persistenceUnitJndiName">java:/entityManagerFactories/flies</property>
+    <property name="filters"><value>#{accessLevelFilter}</value></property>
+  </component>
 
-    <!-- Login and security -->
+  <resteasy:application resource-path-prefix="/restv1" />
+  
+  <web:multipart-filter create-temp-files="false" 
+      max-request-size="5200000" 
+      url-pattern="/*"/>
+
+  <!-- Login and security -->
 	
-   <drools:rule-base name="securityRules">
-      <drools:rule-files>
-         <value>/security.drl</value>
-      </drools:rule-files>
-   </drools:rule-base>
+  <drools:rule-base name="securityRules">
+    <drools:rule-files>
+      <value>/security.drl</value>
+    </drools:rule-files>
+  </drools:rule-base>
 
-   <security:rule-based-permission-resolver security-rules="#{securityRules}"/> 
+  <security:rule-based-permission-resolver security-rules="#{securityRules}"/> 
    
-    <security:jpa-identity-store 
-       user-class="org.fedorahosted.flies.core.model.Account"
-       role-class="org.fedorahosted.flies.core.model.AccountRole"
-       />
+  <security:jpa-identity-store 
+      user-class="org.fedorahosted.flies.core.model.Account"
+      role-class="org.fedorahosted.flies.core.model.AccountRole" />
 
-    <security:jpa-permission-store user-permission-class="org.fedorahosted.flies.core.model.AccountPermission"/>
+  <security:jpa-permission-store user-permission-class="org.fedorahosted.flies.core.model.AccountPermission"/>
 
-   <event type="org.jboss.seam.security.notLoggedIn">
-      <action execute="#{redirect.captureCurrentView}"/>
-   </event>
-   <event type="org.jboss.seam.security.loginSuccessful">
-      <action execute="#{redirect.returnToCapturedView}"/>
-   </event>
+  <event type="org.jboss.seam.security.notLoggedIn">
+    <action execute="#{redirect.captureCurrentView}"/>
+  </event>
+  <event type="org.jboss.seam.security.loginSuccessful">
+    <action execute="#{redirect.returnToCapturedView}"/>
+  </event>
 
-    <!-- Caching -->
-<!-- 
-    <component name="ehCacheManager"
-               class="org.fedorahosted.flies.core.cache.EHCacheManager"
-               startup="true"
-               scope="APPLICATION"/>
+  <!-- Caching -->
+  <!-- 
+  <component name="ehCacheManager"
+      class="org.fedorahosted.flies.core.cache.EHCacheManager"
+      startup="true"
+      scope="APPLICATION"/>
 
-    <component name="pageFragmentCache"
-               class="org.fedorahosted.flies.core.cache.PageFragmentCache"
-               startup="true" startupDepends="ehCacheManager pluginRegistry"
-               scope="APPLICATION">
-        <property name="cacheRegions">
-            <value>wiki.MainMenu</value>
-            <value>wiki.Breadcrumb</value>
-            <value>wiki.Comment</value>
-            <value>wiki.Signature</value>
-            <value>wiki.TagList</value>
-        </property>
-    </component>
- -->
+  <component name="pageFragmentCache"
+      class="org.fedorahosted.flies.core.cache.PageFragmentCache"
+      startup="true" startupDepends="ehCacheManager pluginRegistry"
+      scope="APPLICATION">
+    <property name="cacheRegions">
+      <value>wiki.MainMenu</value>
+      <value>wiki.Breadcrumb</value>
+      <value>wiki.Comment</value>
+      <value>wiki.Signature</value>
+      <value>wiki.TagList</value>
+    </property>
+  </component>
+  -->
 
-    <!-- TODO: Disabled, see http://jira.jboss.com/jira/browse/JBSEAM-3070
-    <web:context-filter regex-url-pattern="/(service|servlets)/.+"/>
-    -->
-    <web:redirect-filter disabled="true"/> <!-- Messes up into-conversation-redirect and is not needed -->
+  <web:redirect-filter disabled="true"/> <!-- Messes up into-conversation-redirect and is not needed -->
 
-<!-- 
-    <component name="fliesUrlRewriteFilter" class="org.fedorahosted.flies.core.ui.WikiUrlRewriteFilter" precedence="30">
-        <property name="initParameters">
-            <key>logLevel</key><value>WARN</value>
-            <key>statusEnabled</key><value>false</value>
-        </property>
-    </component>
- -->
+  <!-- 
+  <component name="fliesUrlRewriteFilter" class="org.fedorahosted.flies.core.ui.WikiUrlRewriteFilter" precedence="30">
+    <property name="initParameters">
+      <key>logLevel</key><value>WARN</value>
+      <key>statusEnabled</key><value>false</value>
+    </property>
+  </component>
+  -->
 
-<!--  
-    <component name="themePreferenceValueTemplate"
-               class="org.fedorahosted.flies.core.preferences.template.ThemeTemplate"
-               scope="CONVERSATION">
-        <property name="templateValues">
-            <value>default</value>
-            <value>jbossdotorg</value>
-        </property>
-    </component>
--->
+  <!--  
+  <component name="themePreferenceValueTemplate"
+      class="org.fedorahosted.flies.core.preferences.template.ThemeTemplate"
+      scope="CONVERSATION">
+    <property name="templateValues">
+      <value>default</value>
+      <value>jbossdotorg</value>
+    </property>
+  </component>
+  -->
 
 
-    <!-- Some convenience value factories -->
+  <!-- Some convenience value factories -->
 
-<!-- 
-    <factory name="contextPath" scope="CONVERSATION"  auto-create="true"
-             value="#{facesContext.externalContext.request.contextPath}"/>
+  <!-- 
+  <factory name="contextPath" scope="CONVERSATION"  auto-create="true"
+      value="#{facesContext.externalContext.request.contextPath}"/>
 
-    <factory name="themePathGetRequest" scope="CONVERSATION"  auto-create="true"
-             value="#{servletContexts.request.contextPath}/themes/#{currentTheme}"/>
+  <factory name="themePathGetRequest" scope="CONVERSATION"  auto-create="true"
+      value="#{servletContexts.request.contextPath}/themes/#{currentTheme}"/>
 
-    <factory name="themePath" scope="CONVERSATION" auto-create="true"
-             value="#{facesContext.externalContext.request.contextPath}/themes/#{currentTheme}"/>
+  <factory name="themePath" scope="CONVERSATION" auto-create="true"
+      value="#{facesContext.externalContext.request.contextPath}/themes/#{currentTheme}"/>
 
-    <factory name="imagePath" scope="CONVERSATION" auto-create="true"
-             value="/themes/#{currentTheme}/img"/>
+  <factory name="imagePath" scope="CONVERSATION" auto-create="true"
+      value="/themes/#{currentTheme}/img"/>
 
-    <factory name="currentTheme" scope="CONVERSATION" auto-create="true"
-             value="#{preferences.get('Wiki').themeName}"/>
+  <factory name="currentTheme" scope="CONVERSATION" auto-create="true"
+      value="#{preferences.get('Wiki').themeName}"/>
 
-    <factory name="skin" scope="SESSION" value="d"/>
+  <factory name="skin" scope="SESSION" value="d"/>
 
-    <factory name="sessionTimeoutSeconds" scope="EVENT"
-             value="#{facesContext.externalContext.getSession(true).getMaxInactiveInterval()}"/>
+  <factory name="sessionTimeoutSeconds" scope="EVENT"
+      value="#{facesContext.externalContext.getSession(true).getMaxInactiveInterval()}"/>
 
-    <factory name="currentPreferencesUser" scope="EVENT"
-             value="#{currentUser}"/>
+  <factory name="currentPreferencesUser" scope="EVENT"
+      value="#{currentUser}"/>
+  -->
 
--->
+  <!-- For use with jBPM pageflow or process management -->
+  <!--
+  <bpm:jbpm>
+    <bpm:process-definitions></bpm:process-definitions>
+    <bpm:pageflow-definitions></bpm:pageflow-definitions>
+  </bpm:jbpm>
+  -->
 
-   <!-- For use with jBPM pageflow or process management -->
-   <!--
-   <bpm:jbpm>
-      <bpm:process-definitions></bpm:process-definitions>
-      <bpm:pageflow-definitions></bpm:pageflow-definitions>
-   </bpm:jbpm>
-   -->
+  <factory name="session" value="#{entityManager.delegate}" scope="STATELESS" auto-create="true"/>
 
-	<factory name="session" value="#{entityManager.delegate}" scope="STATELESS" auto-create="true"/>
+  <component class="org.fedorahosted.flies.FliesInit" name="fliesInit" precedence="30">
+    <property name="adminContact">+41 123 123 123, admin@my.address</property>
+    <property name="debug">true</property>
+    <property name="version">0.1-SNAPSHOT</property>
+    <property name="hibernateStatistics">false</property>
+    <property name="serverPath">http://localhost:8080/flies</property>
+    <property name="authenticatedSessionTimeoutMinutes">180</property>
+  </component>
 
+  <!-- Mailserver for notification messages -->
+  <mail:mail-session host="localhost" port="25" ssl="false" tls="false"/>
+
+  <!-- Maximum size of file uploads 
+      If you are using MySQL, don't forget their magic stuff:
+      http://dev.mysql.com/doc/refman/5.0/en/packet-too-large.html
+  -->
+  <web:multipart-filter create-temp-files="true"
+      max-request-size="10000000" url-pattern="*.seam"/>
+
+  <!--  startupDepends="ehCacheManager"/>  
+      Some DBUnit datasets we use in unit testing - let's also use them in dev mode when the app is deployed 
+ 
+  <component name="dbunitImporter" class="org.fedorahosted.flies.util.DBUnitImporter" scope="APPLICATION" auto-create="true">
+    <property name="database">mysql</property>
+    <property name="datasourceJndiName">java:/fliesDatasource</property>
+    <property name="binaryDir">META-INF/testbinaries</property>
+    <property name="datasets">
+      <value>META-INF/testdata/FliesBaseData.dbunit.xml</value>
+      <value>META-INF/testdata/HelpDocuments.dbunit.xml</value>
+      <value>META-INF/testdata/DocumentFeedEntries.dbunit.xml</value>
+      <value>META-INF/testdata/UploadData.dbunit.xml</value>
+      <value>META-INF/testdata/BlogData.dbunit.xml</value>
+      <value>META-INF/testdata/ForumData.dbunit.xml</value>
+      <value>META-INF/testdata/KnowledgeBase.dbunit.xml</value>
+      <value>META-INF/testdata/FAQData.dbunit.xml</value>
+    </property>
+  </component>
+  -->
 </components>

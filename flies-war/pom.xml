@@ -19,6 +19,50 @@
     <version.richfaces>3.3.1.GA</version.richfaces>
     <version.tennera>0.6-SNAPSHOT</version.tennera>
     <version.jboss.embedded>beta3.SP9</version.jboss.embedded>
+    
+    <!-- application properties -->
+    <app.context>flies</app.context>  <!-- hint: same value as artifactId -->
+    <app.web.context>${app.context}</app.web.context>
+    <app.display.name>Flies Web Application</app.display.name>
+    <app.description>Flies is like Bread and Butter - only better</app.description>
+    <app.database.name>flies</app.database.name>
+
+    <!--  -->
+    <app.ds.xml>${app.context}-ds.xml</app.ds.xml>
+    <app.jndi.name>${app.context}Datasource</app.jndi.name>
+    <app.jndi.pattern>#{ejbName}/local</app.jndi.pattern>
+    <app.jta.data.source>java:/${app.jndi.name}</app.jta.data.source>
+    <app.entity.manager.factory.name>entityManagerFactory</app.entity.manager.factory.name>
+    <app.persistence.unit.name>${app.context}Database</app.persistence.unit.name>
+    <app.persistence.unit.jndi.name>java:/${app.context}EntityManagerFactory</app.persistence.unit.jndi.name>
+    <app.persistence.emf.installed>true</app.persistence.emf.installed> <!-- true for JBoss 4.2.3 or newer -->
+    <app.persistence.emf.startup>true</app.persistence.emf.startup> <!-- SiA-9.3.1-p363 -->
+    <app.persistence.mpc.auto.create>true</app.persistence.mpc.auto.create> <!-- SiA-9.3.2-p366 -->
+    <app.distributable>false</app.distributable> <!-- see: WEB-INF/components.xml and ejb/../resources/META-INF/jboss.xml -->
+
+    <!-- Developer environment properties. Can be modified by developer in "profiles.xml" -->
+    <env>prod</env>
+    <env.debug>false</env.debug>
+    <env.unpack.modules>false</env.unpack.modules>
+    <env.hibernate.hbm2ddl.auto>create-drop</env.hibernate.hbm2ddl.auto>
+    <env.hibernate.show_sql>true</env.hibernate.show_sql>
+    <env.hibernate.format_sql>true</env.hibernate.format_sql>
+    <env.hibernate.default_batch_size>16</env.hibernate.default_batch_size>
+    <jdk.debug>${env.debug}</jdk.debug>
+    <jdk.optimize>true</jdk.optimize>
+    <jdk.source>1.6</jdk.source>
+    <jdk.target>1.6</jdk.target>
+    <as>jboss423</as>
+    <as.version>4.2</as.version>
+    <ds>hsqldb</ds>
+    <ds.hibernate.dialect>org.hibernate.dialect.HSQLDialect</ds.hibernate.dialect> <!-- persistence.xml -->
+    <ds.driver.class>org.hsqldb.jdbcDriver</ds.driver.class> <!-- *-ds.xml -->
+    <ds.server.name></ds.server.name> <!-- *-ds.xml (if xa) -->
+    <ds.database.name>${app.database.name}</ds.database.name> <!-- *-ds.xml (if xa) -->
+    <ds.connection.url>jdbc:hsqldb:.</ds.connection.url> <!-- *-ds.xml -->
+    <ds.user.name>sa</ds.user.name> <!-- *-ds.xml -->
+    <ds.password></ds.password> <!-- *-ds.xml -->    
+    
   </properties>
 
   <dependencyManagement>
@@ -33,11 +77,207 @@
     </dependencies>
   </dependencyManagement>
 
+  <profiles>
+  
+    <profile>
+      <id>explode</id>
+      <activation>
+        <property>
+          <name>env</name>
+          <value>dev</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>war-process-classes</id>
+                <phase>process-classes</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <property 
+                      name="deploy-path" 
+                      value="${as.deploy}/${app.context}.war" />
+                    <copy  
+                      todir="${deploy-path}" 
+                      verbose="true">
+                      <fileset dir="src/main/webapp">
+                        <include name="**/*" />
+                        <exclude name="WEB-INF/*" />
+                        <exclude name="META-INF/context.xml" />
+                      </fileset>
+                    </copy>
+                    <copy 
+                      todir="${deploy-path}/WEB-INF/classes"  
+                      verbose="true">
+                      <fileset dir="${project.build.outputDirectory}"  >
+                        <include name="**/*.class" />
+                      </fileset>
+                    </copy>
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>package</id>
+                <phase>package</phase>
+                <configuration>
+                  <tasks>
+                    <property name="deploy-path" value="${as.deploy}/${app.context}.war" />
+                    <echo>Exploding to ${deploy-path}</echo>
+                    <delete  file="${deploy-path}" quiet="true" />
+                    <mkdir dir="${deploy-path}" />
+                    <sync todir="${deploy-path}" verbose="true" >
+                      <fileset dir="${project.build.directory}/${project.build.finalName}" />
+                    </sync>
+                    <!--
+                      Uncomment this tag if you want to deploy the *-ds.xml file to the appserver's deploy folder
+                    -->
+                      <copy todir="${as.deploy}" file="${project.build.directory}/${app.ds.xml}" verbose="true" />
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
+
+    <profile>
+      <!--
+        Unexplode ear. Remove project from appserver deploy folder. execute e.g. 
+        "mvn clean -Punexplode"
+      -->
+      <id>unexplode</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>clean</id>
+                <phase>clean</phase>
+                <configuration>
+                  <tasks>
+                    <property name="deploy-path" value="${as.deploy}/${app.context}.war" />
+                    <delete  file="${deploy-path}"  quiet="true" />
+                    <delete  dir="${deploy-path}" quiet="true" />
+                    <!--
+                      Uncomment this tag if you have deployed the *-ds.xml file to the appserver's deploy folder
+                    -->
+                      <delete file="${as.deploy}/${app.ds.xml}"  quiet="true" />
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
+  </profiles>
+
   <build>
-
     <finalName>flies</finalName>
-
+    
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering> <!-- filtering persistence.xml -->
+      </resource>
+    </resources>
+        
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <webResources>
+            <webResource>
+              <directory>${basedir}/src/main/webapp/WEB-INF</directory>
+              <targetPath>WEB-INF</targetPath>
+              <filtering>true</filtering>
+              <includes>
+                <include>components.xml</include>
+                <include>jboss-web.xml</include>
+                <include>web.xml</include>
+              </includes>
+            </webResource>
+          </webResources>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+      
+      <!--
+        Maven resources plugin The default resources folder for ear is the
+        src/main/application folder. Stuff in this folder will go into the
+        target ear folder. The projects *-ds.xml file is placed in the
+        src/main/resources folder, so we'll have to use the
+        maven-resources-plugin to copy the *-ds.xml file. The reason for
+        this is that we need to control where to copy the *-ds.xml is in
+        the target build. If we want to deploy the *-ds.xml file embedded
+        into the ear project then the file is located in the target/ear root
+        folder. If the *-ds.xml file should be deployed as a separate service,
+        then the file is located the target folder. The explode profile
+        will then copy the *-ds.xml file to the application server's deploy
+        folder.
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-app-ds-xml</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+
+              <!--
+                Comment out this tag if you have deployed the *-ds.xml file to the appserver's deploy folder
+              <outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
+              -->
+
+              <!--
+                Uncomment this tag if you have deployed the *-ds.xml file to the appserver's deploy folder
+              -->
+              <outputDirectory>${project.build.directory}</outputDirectory>
+	      
+              <resources>
+                <resource>
+                  <directory>src/main/resources</directory>
+                  <filtering>true</filtering>
+                  <includes>
+                    <include>${app.ds.xml}</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
 
       <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
