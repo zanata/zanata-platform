@@ -9,30 +9,28 @@ import org.fedorahosted.flies.Namespaces;
 import org.fedorahosted.flies.UriAdapter;
 
 
-@XmlRootElement(name="project-iteration", namespace=Namespaces.DOCUMENT)
-@XmlType(name="projectIterationRefType", namespace=Namespaces.DOCUMENT)
-public class ProjectIterationRef extends AbstractProjectIteration{
+@XmlRootElement(name="project", namespace=Namespaces.DOCUMENT)
+@XmlType(name="projectRefType", namespace=Namespaces.DOCUMENT)
+public class ProjectRef extends AbstractProject{
 	
-	private ProjectIteration ref;
+	private Project ref;
 	
-	// private enum ProjecType type; 
-	
-	private ProjectIterationRef(){
+	private ProjectRef(){
 		super();
 	}
 	
-	public ProjectIterationRef(ProjectIteration project) {
+	public ProjectRef(Project project) {
 		super(project);
 		this.ref = project;
 	}
 	
 	@XmlJavaTypeAdapter(value = UriAdapter.class)
 	@XmlAttribute
-	public ProjectIteration getRef() {
+	public Project getRef() {
 		return ref;
 	}
 	
-	public void setRef(ProjectIteration ref) {
+	public void setRef(Project ref) {
 		this.ref = ref;
 	}
 }

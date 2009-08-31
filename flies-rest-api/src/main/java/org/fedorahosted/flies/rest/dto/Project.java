@@ -21,28 +21,28 @@ import org.jboss.resteasy.spi.touri.URITemplate;
 		@XmlNsMap(namespace = Namespaces.DOCUMENT, jsonName = Namespaces.DOCUMENT_JSON), 
 		@XmlNsMap(namespace = Namespaces.XML, jsonName = Namespaces.XML_JSON) 
 	})
-@XmlType(name="projectIterationType", namespace=Namespaces.PROJECT)
-@XmlRootElement(name="project-iteration", namespace=Namespaces.PROJECT)
-public class ProjectIteration extends AbstractProjectIteration{
+@XmlType(name="projectType", namespace=Namespaces.PROJECT)
+@XmlRootElement(name="project", namespace=Namespaces.PROJECT)
+public class Project extends AbstractProject{
 
 	private String id;
 	
-	private List<DocumentRef> documents;
+	private List<ProjectIterationRef> iterations;
 	
-	public ProjectIteration() {
+	public Project() {
 	}
 	
-	public ProjectIteration(String id, String name) {
+	public Project(String id, String name) {
 		super(name);
 		this.id = id;
 	}
 	
-	public ProjectIteration(String id, String name, String summary) {
+	public Project(String id, String name, String summary) {
 		super(name, summary);
 		this.id = id;
 	}
 	
-	public ProjectIteration(String id, String name, String summary, Integer version) {
+	public Project(String id, String name, String summary, Integer version) {
 		super(name, summary, version);
 		this.id = id;
 	}
@@ -55,11 +55,11 @@ public class ProjectIteration extends AbstractProjectIteration{
 		this.id = id;
 	}
 	
-	@XmlElementWrapper(name="documents", namespace=Namespaces.PROJECT, required=true)
-	@XmlElement(name="document", namespace=Namespaces.DOCUMENT)
-	public List<DocumentRef> getDocuments() {
-		if(documents == null)
-			documents = new ArrayList<DocumentRef>();
-		return documents;
+	@XmlElementWrapper(name="project-iterations", namespace=Namespaces.PROJECT, required=true)
+	@XmlElement(name="project-iteration", namespace=Namespaces.PROJECT)
+	public List<ProjectIterationRef> getIterations() {
+		if(iterations == null)
+			iterations = new ArrayList<ProjectIterationRef>();
+		return iterations;
 	}
 }

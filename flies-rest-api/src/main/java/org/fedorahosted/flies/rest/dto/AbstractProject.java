@@ -11,34 +11,34 @@ import org.fedorahosted.flies.Namespaces;
 import org.jboss.resteasy.annotations.providers.jaxb.json.Mapped;
 import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
 
-@XmlType(name="abstractProjectIterationType", namespace=Namespaces.PROJECT,propOrder={"name", "summary"})
+@XmlType(name="abstractProjectType", namespace=Namespaces.PROJECT,propOrder={"name", "description"})
 @XmlSeeAlso({ProjectIteration.class, ProjectIterationRef.class})
-abstract class AbstractProjectIteration {
+abstract class AbstractProject {
 	
 	private String name;
-	private String summary;
+	private String description;
 	private Integer version = 1;
 	
-	protected AbstractProjectIteration() {
+	protected AbstractProject() {
 	}
 	
-	public AbstractProjectIteration(AbstractProjectIteration other){
+	public AbstractProject(AbstractProject other){
 		this.name = other.name;
-		this.summary = other.summary;
+		this.description = other.description;
 		this.version = other.version;
 	}
 	
-	public AbstractProjectIteration(String name) {
+	public AbstractProject(String name) {
 		this.name = name;
 	}
 	
-	public AbstractProjectIteration(String name, String summary) {
+	public AbstractProject(String name, String description) {
 		this(name);
-		this.summary = summary;
+		this.description = description;
 	}
 	
-	public AbstractProjectIteration(String name, String summary, Integer version) {
-		this(name, summary);
+	public AbstractProject(String name, String description, Integer version) {
+		this(name, description);
 		this.version = version;
 	}
 	
@@ -50,13 +50,13 @@ abstract class AbstractProjectIteration {
 		this.name = name;
 	}
 
-	@XmlElement(name="summary", namespace=Namespaces.PROJECT, required=false)
-	public String getSummary() {
-		return summary;
+	@XmlElement(name="description", namespace=Namespaces.PROJECT, required=false)
+	public String getDescription() {
+		return description;
 	}
 	
-	public void setSummary(String summary) {
-		this.summary = summary;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	@XmlAttribute(name="version", required=true)
