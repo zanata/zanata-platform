@@ -1,4 +1,4 @@
-package net.openl10n.api.document;
+package org.fedorahosted.flies.rest.dto;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
