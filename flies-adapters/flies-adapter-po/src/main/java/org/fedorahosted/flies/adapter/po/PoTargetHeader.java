@@ -5,8 +5,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import net.openl10n.api.LocaleId;
-import net.openl10n.api.LocaleIdAdapter;
+import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.LocaleIdAdapter;
+
 
 @XmlType(name="poTargetHeaderType", namespace=PoHeader.NAMESPACE)
 @XmlRootElement(name="po-target-header", namespace=PoHeader.NAMESPACE)

@@ -5,9 +5,9 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
-import net.openl10n.api.LocaleId;
 import net.openl10n.packaging.jpa.project.HProject;
 
+import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.core.model.Person;
 import org.fedorahosted.flies.core.model.ProjectIteration;
 

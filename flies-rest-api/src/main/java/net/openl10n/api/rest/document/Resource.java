@@ -5,7 +5,8 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-import net.openl10n.api.Namespaces;
+import org.fedorahosted.flies.Namespaces;
+
 import net.openl10n.api.rest.IExtensible;
 
 @XmlType(name="resourceType", namespace=Namespaces.DOCUMENT)

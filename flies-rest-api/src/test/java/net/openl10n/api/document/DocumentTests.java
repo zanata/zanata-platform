@@ -4,13 +4,13 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import net.openl10n.api.ContentType;
-import net.openl10n.api.LocaleId;
 import net.openl10n.api.rest.document.Document;
 import net.openl10n.api.rest.document.TextFlow;
 import net.openl10n.api.rest.document.TextFlowTarget;
 import net.openl10n.api.rest.document.TextFlowTargets;
 
+import org.fedorahosted.flies.ContentType;
+import org.fedorahosted.flies.LocaleId;
 import org.junit.Test;
 
 public class DocumentTests {

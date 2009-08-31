@@ -1,10 +1,10 @@
 package net.openl10n.packaging.jpa;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import net.openl10n.api.ContentType;
-import net.openl10n.api.LocaleId;
 import net.openl10n.packaging.jpa.document.HDocument;
 
+import org.fedorahosted.flies.ContentType;
+import org.fedorahosted.flies.LocaleId;
 import org.junit.Test;
 
 public class HDocumentTests {

@@ -1,4 +1,4 @@
-package net.openl10n.api;
+package org.fedorahosted.flies;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 

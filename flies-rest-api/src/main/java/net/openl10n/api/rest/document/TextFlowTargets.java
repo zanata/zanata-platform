@@ -7,7 +7,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import net.openl10n.api.LocaleId;
+import org.fedorahosted.flies.LocaleId;
+
 /**
  * Represents a list of target-language translations for a single TextFlow
  * 

@@ -1,4 +1,4 @@
-package net.openl10n.api;
+package org.fedorahosted.flies;
 
 import java.io.File;
 import java.io.OutputStream;

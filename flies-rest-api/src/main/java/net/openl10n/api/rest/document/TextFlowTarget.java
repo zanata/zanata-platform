@@ -11,9 +11,10 @@ import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import net.openl10n.api.LocaleId;
-import net.openl10n.api.LocaleIdAdapter;
-import net.openl10n.api.Namespaces;
+import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.LocaleIdAdapter;
+import org.fedorahosted.flies.Namespaces;
+
 import net.openl10n.api.rest.IExtensible;
 
 @XmlType(name="textFlowTargetType", namespace=TextFlowTargets.NAMESPACE, propOrder={"content", "extensions"})

@@ -8,11 +8,12 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import net.openl10n.api.ContentType;
-import net.openl10n.api.ContentTypeAdapter;
-import net.openl10n.api.LocaleId;
-import net.openl10n.api.LocaleIdAdapter;
-import net.openl10n.api.Namespaces;
+import org.fedorahosted.flies.ContentType;
+import org.fedorahosted.flies.ContentTypeAdapter;
+import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.LocaleIdAdapter;
+import org.fedorahosted.flies.Namespaces;
+
 
 @XmlType(name="abstractDocumentType", namespace=Namespaces.DOCUMENT)
 @XmlSeeAlso({Document.class, DocumentRef.class})

@@ -7,9 +7,6 @@ import java.security.MessageDigest;
 import java.util.Iterator;
 import java.util.List;
 
-import net.openl10n.api.ContentType;
-import net.openl10n.api.LocaleId;
-import net.openl10n.api.LocaleInputSourcePair;
 import net.openl10n.api.rest.document.Document;
 import net.openl10n.api.rest.document.Resource;
 import net.openl10n.api.rest.document.TextFlow;
@@ -20,6 +17,9 @@ import net.openl10n.api.rest.ext.comments.SimpleComments;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.StringUtils;
+import org.fedorahosted.flies.ContentType;
+import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.LocaleInputSourcePair;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
 import org.fedorahosted.tennera.jgettext.Message;
 import org.fedorahosted.tennera.jgettext.catalog.parse.MessageStreamParser;

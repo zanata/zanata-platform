@@ -9,9 +9,6 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
 
-import net.openl10n.api.LocaleId;
-import net.openl10n.api.LocaleOutputSourcePair;
-import net.openl10n.api.OutputSource;
 import net.openl10n.api.rest.document.Resource;
 import net.openl10n.api.rest.document.TextFlow;
 import net.openl10n.api.rest.document.TextFlowTarget;
@@ -20,6 +17,9 @@ import net.openl10n.api.rest.ext.comments.SimpleComment;
 import net.openl10n.api.rest.document.Document;
 
 import org.apache.commons.lang.StringUtils;
+import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.LocaleOutputSourcePair;
+import org.fedorahosted.flies.OutputSource;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
 import org.fedorahosted.tennera.jgettext.Message;
 

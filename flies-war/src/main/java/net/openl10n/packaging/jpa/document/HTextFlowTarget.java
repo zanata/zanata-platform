@@ -10,12 +10,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
-import net.openl10n.api.LocaleId;
 import net.openl10n.api.rest.document.TextFlowTarget;
 import net.openl10n.api.rest.document.TextFlowTarget.ContentState;
 import net.openl10n.packaging.jpa.LocaleIdType;
 import net.openl10n.packaging.jpa.comments.HSimpleComment;
 
+import org.fedorahosted.flies.LocaleId;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;

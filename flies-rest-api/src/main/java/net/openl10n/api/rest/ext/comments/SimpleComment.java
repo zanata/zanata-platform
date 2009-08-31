@@ -5,7 +5,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
-import net.openl10n.api.Namespaces;
+import org.fedorahosted.flies.Namespaces;
+
 
 @XmlRootElement(name="comment", namespace=SimpleComment.NAMESPACE)
 @XmlType(name="simpleCommentType", namespace=SimpleComment.NAMESPACE)

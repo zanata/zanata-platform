@@ -7,10 +7,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import net.openl10n.api.LocaleId;
 import net.openl10n.api.rest.document.Document;
 import net.openl10n.api.rest.document.TextFlowTargets;
 
+import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.adapter.po.PoHeader;
 import org.fedorahosted.flies.adapter.po.PoReader;
 import org.fedorahosted.flies.adapter.po.PotEntriesData;

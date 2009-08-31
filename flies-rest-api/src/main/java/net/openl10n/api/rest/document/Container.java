@@ -11,9 +11,10 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import net.openl10n.api.LocaleId;
-import net.openl10n.api.LocaleIdAdapter;
-import net.openl10n.api.Namespaces;
+import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.LocaleIdAdapter;
+import org.fedorahosted.flies.Namespaces;
+
 
 @XmlType(name="containerType", namespace=Namespaces.DOCUMENT, propOrder={"content", "extensions"})
 public class Container implements Resource {

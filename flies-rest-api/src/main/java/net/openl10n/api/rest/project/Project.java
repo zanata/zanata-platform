@@ -9,11 +9,11 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.fedorahosted.flies.Namespaces;
 import org.jboss.resteasy.annotations.providers.jaxb.json.Mapped;
 import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
 import org.jboss.resteasy.spi.touri.URITemplate;
 
-import net.openl10n.api.Namespaces;
 import net.openl10n.api.rest.document.DocumentRef;
 
 @URITemplate("project/{id}")

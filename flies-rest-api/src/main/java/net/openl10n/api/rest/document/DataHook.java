@@ -7,7 +7,8 @@ import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
-import net.openl10n.api.Namespaces;
+import org.fedorahosted.flies.Namespaces;
+
 
 @XmlType(name="dataHookType", namespace=Namespaces.DOCUMENT)
 public class DataHook implements Resource {

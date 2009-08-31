@@ -1,8 +1,8 @@
 package org.fedorahosted.flies.webtrans;
 
-import net.openl10n.api.LocaleId;
 import net.openl10n.packaging.jpa.project.HProject;
 
+import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.core.model.ProjectIteration;
 
 final class WorkspaceKey{

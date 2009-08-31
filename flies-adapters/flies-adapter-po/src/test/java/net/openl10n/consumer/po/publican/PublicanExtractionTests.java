@@ -3,11 +3,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import net.openl10n.api.LocaleId;
 import net.openl10n.api.rest.document.Document;
 import net.openl10n.api.rest.document.DocumentRef;
 import net.openl10n.api.rest.project.Project;
 
+import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.adapter.po.PoReader;
 import org.junit.Before;
 import org.junit.BeforeClass;

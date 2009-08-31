@@ -6,11 +6,11 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import net.openl10n.api.LocaleId;
 import net.openl10n.packaging.jpa.document.HDocumentTarget;
 import net.openl10n.packaging.jpa.document.HTextFlowTarget;
 import net.openl10n.packaging.jpa.project.HProject;
 
+import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.core.model.Account;
 import org.fedorahosted.flies.core.model.FliesLocale;
 import org.fedorahosted.flies.core.model.Person;

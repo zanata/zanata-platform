@@ -5,7 +5,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import net.openl10n.api.Namespaces;
+import org.fedorahosted.flies.Namespaces;
+
 import net.openl10n.api.rest.UriAdapter;
 
 @XmlRootElement(name="document", namespace=Namespaces.DOCUMENT)
