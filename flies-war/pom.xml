@@ -519,12 +519,6 @@
     <!-- Flies-specific dependencies -->
 
     <dependency>
-      <groupId>org.fedorahosted.tennera</groupId>
-      <artifactId>jgettext</artifactId>
-      <version>${version.tennera}</version>
-    </dependency>
-
-    <dependency>
       <groupId>org.fedorahosted.flies</groupId>
       <artifactId>flies-rest-api</artifactId>
       <version>${project.version}</version>
