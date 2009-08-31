@@ -13,31 +13,31 @@ import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
 
 @XmlType(name="abstractProjectType", namespace=Namespaces.PROJECT,propOrder={"name", "summary"})
 @XmlSeeAlso({ProjectIteration.class, ProjectIterationRef.class})
-abstract class AbstractProject {
+abstract class AbstractProjectIteration {
 	
 	private String name;
 	private String summary;
 	private Integer version = 1;
 	
-	protected AbstractProject() {
+	protected AbstractProjectIteration() {
 	}
 	
-	public AbstractProject(AbstractProject other){
+	public AbstractProjectIteration(AbstractProjectIteration other){
 		this.name = other.name;
 		this.summary = other.summary;
 		this.version = other.version;
 	}
 	
-	public AbstractProject(String name) {
+	public AbstractProjectIteration(String name) {
 		this.name = name;
 	}
 	
-	public AbstractProject(String name, String summary) {
+	public AbstractProjectIteration(String name, String summary) {
 		this(name);
 		this.summary = summary;
 	}
 	
-	public AbstractProject(String name, String summary, Integer version) {
+	public AbstractProjectIteration(String name, String summary, Integer version) {
 		this(name, summary);
 		this.version = version;
 	}

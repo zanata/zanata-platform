@@ -11,7 +11,7 @@ import org.fedorahosted.flies.UriAdapter;
 
 @XmlRootElement(name="project", namespace=Namespaces.DOCUMENT)
 @XmlType(name="projectRefType", namespace=Namespaces.DOCUMENT)
-public class ProjectIterationRef extends AbstractProject{
+public class ProjectIterationRef extends AbstractProjectIteration{
 	
 	private ProjectIteration ref;
 	
