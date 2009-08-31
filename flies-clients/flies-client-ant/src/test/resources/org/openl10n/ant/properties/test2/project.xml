@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<project xmlns="urn:openl10n:project:1.0" xmlns:ns2="urn:openl10n:document:1.0" xmlns:ns3="urn:extensions:target" version="1" id="test1">
+    <documents>
+        <ns2:document version="1" target-languages="" path="foo/" name="foo.properties" xml:lang="en-US" id="foo/foo.properties" content-type="text/plain">
+            <ns2:document-content>
+                <ns2:text-flow version="1" id="FOOD">
+                    <ns2:content>Slime Mould</ns2:content>
+                    <ns3:targets>
+                        <ns3:target version="1" state="new" xml:lang="de" id="FOOD">
+                            <ns2:content>Sauerkraut</ns2:content>
+                        </ns3:target>
+                    </ns3:targets>
+                </ns2:text-flow>
+            </ns2:document-content>
+        </ns2:document>
+        <ns2:document version="1" target-languages="" path="" name="test.properties" xml:lang="en-US" id="test.properties" content-type="text/plain">
+            <ns2:document-content>
+                <ns2:text-flow version="1" id="HELLO">
+                    <ns2:content>Hello World</ns2:content>
+                    <ns3:targets>
+                        <ns3:target version="1" state="new" xml:lang="fr" id="HELLO">
+                            <ns2:content>Bonjour le Monde</ns2:content>
+                        </ns3:target>
+                    </ns3:targets>
+                </ns2:text-flow>
+            </ns2:document-content>
+        </ns2:document>
+    </documents>
+</project>

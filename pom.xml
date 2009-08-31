@@ -12,6 +12,7 @@
     <module>flies-rest-api</module>
     <module>flies-adapters</module>
     <module>flies-rest-client</module>
+    <module>flies-clients</module>
     <module>flies-war</module>
   </modules>
 
