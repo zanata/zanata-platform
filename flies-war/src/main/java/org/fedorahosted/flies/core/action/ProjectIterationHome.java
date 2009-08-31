@@ -9,7 +9,7 @@ import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.model.IterationProject;
 import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.fedorahosted.flies.core.model.ProjectSeries;
-import org.fedorahosted.flies.repository.model.project.HProject;
+import org.fedorahosted.flies.repository.model.project.HProjectContainer;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
@@ -108,7 +108,7 @@ public class ProjectIterationHome extends MultiSlugHome<ProjectIteration>{
 		if(!validateSlug(getInstance().getSlug(), "slug"))
 			return null;
 		if(getInstance().getContainer() == null){
-			HProject container = new HProject();
+			HProjectContainer container = new HProjectContainer();
 			container.setProjectId(getInstance().getProject().getSlug() + "/" + getInstance().getSlug());
 			container.setName(getInstance().getName());
 			getEntityManager().persist(container);

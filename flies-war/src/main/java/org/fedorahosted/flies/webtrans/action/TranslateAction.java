@@ -9,7 +9,7 @@ import org.fedorahosted.flies.core.model.Account;
 import org.fedorahosted.flies.core.model.Person;
 import org.fedorahosted.flies.repository.model.document.HDocumentTarget;
 import org.fedorahosted.flies.repository.model.document.HTextFlowTarget;
-import org.fedorahosted.flies.repository.model.project.HProject;
+import org.fedorahosted.flies.repository.model.project.HProjectContainer;
 import org.fedorahosted.flies.webtrans.NoSuchWorkspaceException;
 import org.fedorahosted.flies.webtrans.TranslationWorkspace;
 import org.fedorahosted.flies.webtrans.TranslationWorkspaceManager;
@@ -51,7 +51,7 @@ public class TranslateAction {
 	Account authenticatedAccount;
 
 	private LocaleId locale;
-	private HProject project;
+	private HProjectContainer project;
 
 	public String getWorkspaceId() {
 		return workspaceId;
@@ -61,11 +61,11 @@ public class TranslateAction {
 		this.workspaceId = workspaceId;
 	}
 	
-	public HProject getProject() {
+	public HProjectContainer getProject() {
 		return project;
 	}
 	
-	public void setProject(HProject project) {
+	public void setProject(HProjectContainer project) {
 		this.project = project;
 	}
 	
@@ -159,7 +159,7 @@ public class TranslateAction {
 			try{
 				Long projectIterationId = Long.parseLong(ws[0]);
 				String localeId = ws[1];
-				project = entityManager.find(HProject.class, projectIterationId);
+				project = entityManager.find(HProjectContainer.class, projectIterationId);
 				locale = new LocaleId(localeId);
 				Person translator = entityManager.find(Person.class, authenticatedAccount.getPerson().getId());
 				getWorkspace().registerTranslator(translator);

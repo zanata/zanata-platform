@@ -19,7 +19,7 @@ import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.repository.model.AbstractEntity;
 import org.fedorahosted.flies.repository.model.ContentTypeType;
 import org.fedorahosted.flies.repository.model.LocaleIdType;
-import org.fedorahosted.flies.repository.model.project.HProject;
+import org.fedorahosted.flies.repository.model.project.HProjectContainer;
 import org.fedorahosted.flies.rest.dto.Container;
 import org.fedorahosted.flies.rest.dto.DataHook;
 import org.fedorahosted.flies.rest.dto.Document;
@@ -53,7 +53,7 @@ public class HDocument extends AbstractEntity{
 	private Integer revision = 1;
 	private LocaleId locale;
 	
-	private HProject project;
+	private HProjectContainer project;
 	private Integer pos;
 
 	private Map<String, HResource> resources;
@@ -193,11 +193,11 @@ public class HDocument extends AbstractEntity{
 	@ManyToOne
 	@JoinColumn(name="project_id",insertable=false, updatable=false, nullable=false)
 	@NaturalId
-	public HProject getProject() {
+	public HProjectContainer getProject() {
 		return project;
 	}
 	
-	public void setProject(HProject project) {
+	public void setProject(HProjectContainer project) {
 		this.project = project;
 	}
 

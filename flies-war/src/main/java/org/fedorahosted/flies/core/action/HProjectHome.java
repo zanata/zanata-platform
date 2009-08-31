@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import javax.persistence.EntityManager;
 
 import org.fedorahosted.flies.repository.model.document.HDocument;
-import org.fedorahosted.flies.repository.model.project.HProject;
+import org.fedorahosted.flies.repository.model.project.HProjectContainer;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -18,7 +18,7 @@ import org.richfaces.event.NodeSelectedEvent;
 import org.richfaces.model.TreeNode;
 
 @Name("hProjectHome")
-public class HProjectHome extends EntityHome<HProject> {
+public class HProjectHome extends EntityHome<HProjectContainer> {
 
 	@Logger
 	private Log log;

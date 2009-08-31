@@ -15,7 +15,7 @@ import org.hibernate.annotations.IndexColumn;
 import org.hibernate.validator.NotEmpty;
 
 @Entity
-public class HProject extends AbstractEntity{
+public class HProjectContainer extends AbstractEntity{
 
 	private String projectId;
 	private String name;
@@ -23,16 +23,16 @@ public class HProject extends AbstractEntity{
 	
 	private List<HDocument> documents;
 
-	public HProject() {
+	public HProjectContainer() {
 	}
 
-	public HProject(String projectId, String name, String summary) {
+	public HProjectContainer(String projectId, String name, String summary) {
 		this.projectId = projectId;
 		this.name = name;
 		this.summary = summary;
 	}
 
-	public HProject(org.fedorahosted.flies.rest.dto.ProjectIteration project) {
+	public HProjectContainer(org.fedorahosted.flies.rest.dto.ProjectIteration project) {
 		this.projectId = project.getId();
 		this.name = project.getName();
 		this.summary = project.getSummary();

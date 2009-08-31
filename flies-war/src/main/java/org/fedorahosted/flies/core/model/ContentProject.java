@@ -5,24 +5,24 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import org.fedorahosted.flies.repository.model.project.HProject;
+import org.fedorahosted.flies.repository.model.project.HProjectContainer;
 import org.hibernate.validator.NotNull;
 
 @Entity
 @DiscriminatorValue("content")
 public class ContentProject extends Project implements IProjectContainerProvider{
 
-	private HProject container;
+	private HProjectContainer container;
 	
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "project_container_id")
 	@Override
-	public HProject getContainer() {
+	public HProjectContainer getContainer() {
 		return container;
 	}
 	
-	public void setContainer(HProject container) {
+	public void setContainer(HProjectContainer container) {
 		this.container = container;
 	}
 
