@@ -2,6 +2,7 @@ syntax: glob
 
 *~
 */target/*
+*/fliessearchindex/*
 syntax: regexp
 \.jar$
 
@@ -15,4 +16,3 @@ syntax: regexp
 \.settings/
 ^target
 ^flies-war/profiles.xml
-
