@@ -1,6 +1,7 @@
-package org.openl10n.ant.properties;
+package org.fedorahosted.flies.client.ant.properties;
 
 import org.apache.tools.ant.BuildFileTest;
+import org.fedorahosted.flies.client.ant.properties.Props2ProjectTask;
 
 @SuppressWarnings("nls")
 public class BuildTest extends BuildFileTest {

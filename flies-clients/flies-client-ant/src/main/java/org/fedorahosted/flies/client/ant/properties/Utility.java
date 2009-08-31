@@ -1,4 +1,4 @@
-package org.openl10n.ant.properties;
+package org.fedorahosted.flies.client.ant.properties;
 
 import java.io.File;
 import java.net.MalformedURLException;
