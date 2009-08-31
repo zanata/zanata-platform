@@ -33,7 +33,8 @@ public interface ProjectResource {
 	public Response addProject(@PathParam("projectSlug") String projectSlug, Project project);
 	
 	@Path("/{projectSlug}/iteration")
-	public ProjectIterationResource getIteration(@PathParam("projectSlug") String projectSlug);
+	public ProjectIterationResource getProjectIterationResource(
+			@PathParam("projectSlug") String projectSlug);
 
 	@GET
 	@Path("")

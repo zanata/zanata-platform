@@ -6,13 +6,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
 
 import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.model.IterationProject;
 import org.fedorahosted.flies.core.model.Project;
+import org.fedorahosted.flies.rest.ProjectIterationResource;
 import org.fedorahosted.flies.rest.ProjectResource;
 import org.fedorahosted.flies.rest.dto.ProjectIterationRef;
 import org.fedorahosted.flies.rest.dto.ProjectIterationRefs;
+import org.fedorahosted.flies.rest.dto.ProjectRef;
+import org.fedorahosted.flies.rest.dto.ProjectRefs;
 import org.hibernate.Session;
 import org.jboss.resteasy.spi.NotFoundException;
 import org.jboss.resteasy.spi.UnauthorizedException;
@@ -40,25 +44,60 @@ public class ProjectResourceImpl implements ProjectResource{
 
 	@Context 
 	HttpServletRequest request;
-	
+
 	@Override
-	public Object getProject(String projectSlug) {
+	public Response addProject(String projectSlug,
+			org.fedorahosted.flies.rest.dto.Project project) {
 		checkPermissions();
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public org.fedorahosted.flies.rest.dto.Project getProject(String projectSlug) {
+		checkPermissions();
+
 		Project p = projectDAO.getBySlug(projectSlug);
 		if(p == null)
 			throw new NotFoundException("Project not found: "+projectSlug);
 		
-		if( p instanceof IterationProject){
-			IterationProjectResourceImpl itPrRes = 
-				(IterationProjectResourceImpl) Component.getInstance(IterationProjectResourceImpl.class, true);
-			itPrRes.setProject((IterationProject) p);
-			
-			return IterationProjectResourceImpl.getProxyWrapper(itPrRes);
-		}
-		else {//else if (p instanceof ContentProject){
-			throw new UnauthorizedException("not implemented");
+		return toMini(p);
+	}
+
+	private org.fedorahosted.flies.rest.dto.Project toMini(Project p){
+		return new org.fedorahosted.flies.rest.dto.Project();
+	}
+	
+	@Override
+	public ProjectIterationResource getProjectIterationResource(
+			String projectSlug) {
+		checkPermissions();
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ProjectRefs getProjects() {
+		checkPermissions();
+		ProjectRefs projectRefs = new ProjectRefs();
+		
+		List<Project> projects = session.createQuery("select p from Project p").list();
+		
+		for(Project p : projects){
+			org.fedorahosted.flies.rest.dto.Project proj = 
+				new org.fedorahosted.flies.rest.dto.Project(p.getSlug(), p.getName(), p.getDescription());
+			projectRefs.getProjects().add( new ProjectRef( proj ));
 		}
 		
+		return projectRefs;
+	}
+
+	@Override
+	public Response updateProject(String projectSlug,
+			org.fedorahosted.flies.rest.dto.Project project) {
+		checkPermissions();
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	private void checkPermissions(){
@@ -67,23 +106,7 @@ public class ProjectResourceImpl implements ProjectResource{
 		if(!"bob".equals(authToken)){
 			throw new UnauthorizedException();
 		}
-	}
-
-	@Override
-	public ProjectIterationRefs get() {
-		ProjectIterationRefs projectRefs = new ProjectIterationRefs();
-		
-		List<Project> projects = session.createQuery("select p from Project p").list();
-		
-		for(Project p : projects){
-			org.fedorahosted.flies.rest.dto.ProjectIteration restProj = 
-				new org.fedorahosted.flies.rest.dto.ProjectIteration(p.getSlug(), p.getName(), p.getDescription());
-			projectRefs.getProjects().add( new ProjectIterationRef( restProj ));
-		}
-		
-		return projectRefs;
-		
-	}
+	}	
 	
-
+	
 }

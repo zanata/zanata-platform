@@ -36,7 +36,7 @@ public interface ProjectIterationResource{
 			ProjectIteration project);
 
 	@Path("/{iterationSlug}/document")
-	public DocumentResource getDocument(
+	public DocumentResource getDocumentResource(
 			@PathParam("iterationSlug") String iterationSlug);
 
 }
