@@ -7,14 +7,14 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import net.openl10n.adapter.po.PoHeader;
-import net.openl10n.adapter.po.PoReader;
-import net.openl10n.adapter.po.PotEntriesData;
-import net.openl10n.adapter.po.PotEntryData;
 import net.openl10n.api.LocaleId;
 import net.openl10n.api.rest.document.Document;
 import net.openl10n.api.rest.document.TextFlowTargets;
 
+import org.fedorahosted.flies.adapter.po.PoHeader;
+import org.fedorahosted.flies.adapter.po.PoReader;
+import org.fedorahosted.flies.adapter.po.PotEntriesData;
+import org.fedorahosted.flies.adapter.po.PotEntryData;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;

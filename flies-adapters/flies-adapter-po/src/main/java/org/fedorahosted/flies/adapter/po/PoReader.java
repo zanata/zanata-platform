@@ -1,4 +1,4 @@
-package net.openl10n.adapter.po;
+package org.fedorahosted.flies.adapter.po;
 
 import java.io.IOException;
 import java.net.URL;
