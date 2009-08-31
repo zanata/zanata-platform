@@ -1,4 +1,4 @@
-package net.openl10n.adapter.properties;
+package org.fedorahosted.flies.adapter.properties;
 
 import java.io.File;
 import java.io.FileOutputStream;

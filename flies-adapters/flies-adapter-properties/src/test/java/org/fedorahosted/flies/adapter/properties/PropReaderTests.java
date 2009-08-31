@@ -1,4 +1,4 @@
-package net.openl10n.consumer.properties;
+package org.fedorahosted.flies.adapter.properties;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -7,10 +7,10 @@ import java.io.InputStream;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
-import net.openl10n.adapter.properties.PropReader;
 
 import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.adapter.properties.PropReader;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.junit.Before;
 import org.junit.BeforeClass;
