@@ -15,7 +15,7 @@ import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
 import org.jboss.resteasy.spi.touri.URITemplate;
 
 
-@URITemplate("project/{id}")
+@URITemplate("iteration/{id}")
 @Mapped(namespaceMap = {
 		@XmlNsMap(namespace = Namespaces.PROJECT, jsonName = Namespaces.PROJECT_JSON),
 		@XmlNsMap(namespace = Namespaces.DOCUMENT, jsonName = Namespaces.DOCUMENT_JSON), 
