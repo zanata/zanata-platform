@@ -5,27 +5,26 @@ import java.net.URI;
 import javax.ws.rs.core.Response;
 
 import org.fedorahosted.flies.ContentType;
-import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.fedorahosted.flies.rest.DocumentResource;
 import org.fedorahosted.flies.rest.ProjectIterationResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.DocumentRef;
-import org.fedorahosted.flies.rest.dto.Project;
+import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.jboss.seam.Component;
 import org.jboss.seam.annotations.Name;
 
 @Name("projectIterationResource")
 public class ProjectIterationResourceImpl implements ProjectIterationResource{
 
-	private ProjectIteration projectIteration;
+	private org.fedorahosted.flies.core.model.ProjectIteration projectIteration;
 	
-	public void setProjectIteration(ProjectIteration projectIteration) {
+	public void setProjectIteration(org.fedorahosted.flies.core.model.ProjectIteration projectIteration) {
 		this.projectIteration = projectIteration;
 	}
 
 	@Override
-	public Project get(String ext) {
-		Project p = load();
+	public ProjectIteration get(String ext) {
+		ProjectIteration p = load();
 		//Set<String> extensions = ImmutableSet.of( StringUtils.split(ext, ',') );
 		//if(extensions != null && extensions.contains("docs")){
 			Document d = new Document("123", "name", "/full/path", ContentType.TextPlain, 1);
@@ -34,8 +33,8 @@ public class ProjectIterationResourceImpl implements ProjectIterationResource{
 		return p;
 	}
 	
-	private Project load(){
-		Project p = new Project();
+	private ProjectIteration load(){
+		ProjectIteration p = new ProjectIteration();
 		p.setId( projectIteration.getProject().getSlug() + '/' + projectIteration.getSlug());
 		p.setName(projectIteration.getProject().getName() + " - " + projectIteration.getName());
 		p.setSummary( projectIteration.getDescription() );
@@ -43,12 +42,12 @@ public class ProjectIterationResourceImpl implements ProjectIterationResource{
 	}
 	
 	@Override
-	public Response post(Project project) {
+	public Response post(ProjectIteration project) {
 		return Response.created( URI.create("http://example.com/project") ).build();
 	}
 	
 	@Override
-	public Response put(Project project) {
+	public Response put(ProjectIteration project) {
 		return Response.created( URI.create("http://example.com/project") ).build();
 	}
 	
@@ -66,17 +65,17 @@ public class ProjectIterationResourceImpl implements ProjectIterationResource{
 		return new ProjectIterationResource(){
 
 			@Override
-			public Project get(String extensions) {
+			public ProjectIteration get(String extensions) {
 				return instance.get(extensions);
 			}
 			
 			@Override
-			public Response post(Project project) {
+			public Response post(ProjectIteration project) {
 				return instance.post(project);
 			}
 			
 			@Override
-			public Response put(Project project) {
+			public Response put(ProjectIteration project) {
 				return instance.put(project);
 			}
 			

@@ -10,23 +10,23 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
-import org.fedorahosted.flies.rest.dto.Project;
+import org.fedorahosted.flies.rest.dto.ProjectIteration;
 
 public interface ProjectIterationResource{
 
 	@GET
-	@Produces({ "application/flies.project+xml", "application/json" })
-	public Project get(
+	@Produces({ "application/flies.project.iteration+xml", "application/json" })
+	public ProjectIteration get(
 			@QueryParam("ext") @DefaultValue("") String extensions
 			);
 
 	@POST
-	@Consumes( { "application/flies.project+xml", "application/json" })
-	public Response post(Project project);
+	@Consumes( { "application/flies.project.iteration+xml", "application/json" })
+	public Response post(ProjectIteration project);
 
 	@PUT
-	@Consumes( { "application/flies.project+xml", "application/json" })
-	public Response put(Project project);
+	@Consumes( { "application/flies.project.iteration+xml", "application/json" })
+	public Response put(ProjectIteration project);
 
 	@Path("documents/{documentId}")
 	public DocumentResource getDocument(String documentId);

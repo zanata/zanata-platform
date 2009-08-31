@@ -11,8 +11,8 @@ import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.model.IterationProject;
 import org.fedorahosted.flies.core.model.Project;
 import org.fedorahosted.flies.rest.ProjectResource;
-import org.fedorahosted.flies.rest.dto.ProjectRef;
-import org.fedorahosted.flies.rest.dto.ProjectRefs;
+import org.fedorahosted.flies.rest.dto.ProjectIterationRef;
+import org.fedorahosted.flies.rest.dto.ProjectIterationRefs;
 import org.hibernate.Session;
 import org.jboss.resteasy.spi.NotFoundException;
 import org.jboss.resteasy.spi.UnauthorizedException;
@@ -70,15 +70,15 @@ public class ProjectResourceImpl implements ProjectResource{
 	}
 
 	@Override
-	public ProjectRefs get() {
-		ProjectRefs projectRefs = new ProjectRefs();
+	public ProjectIterationRefs get() {
+		ProjectIterationRefs projectRefs = new ProjectIterationRefs();
 		
 		List<Project> projects = session.createQuery("select p from Project p").list();
 		
 		for(Project p : projects){
-			org.fedorahosted.flies.rest.dto.Project restProj = 
-				new org.fedorahosted.flies.rest.dto.Project(p.getSlug(), p.getName(), p.getDescription());
-			projectRefs.getProjects().add( new ProjectRef( restProj ));
+			org.fedorahosted.flies.rest.dto.ProjectIteration restProj = 
+				new org.fedorahosted.flies.rest.dto.ProjectIteration(p.getSlug(), p.getName(), p.getDescription());
+			projectRefs.getProjects().add( new ProjectIterationRef( restProj ));
 		}
 		
 		return projectRefs;

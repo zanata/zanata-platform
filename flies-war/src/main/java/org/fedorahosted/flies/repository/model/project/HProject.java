@@ -32,7 +32,7 @@ public class HProject extends AbstractEntity{
 		this.summary = summary;
 	}
 
-	public HProject(org.fedorahosted.flies.rest.dto.Project project) {
+	public HProject(org.fedorahosted.flies.rest.dto.ProjectIteration project) {
 		this.projectId = project.getId();
 		this.name = project.getName();
 		this.summary = project.getSummary();

@@ -5,7 +5,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import org.fedorahosted.flies.rest.dto.ProjectRefs;
+import org.fedorahosted.flies.rest.dto.ProjectIterationRefs;
 
 
 public interface ProjectResource {
@@ -29,6 +29,6 @@ public interface ProjectResource {
 	 */
 	@GET
 	@Produces("application/xml")
-	public ProjectRefs get();
+	public ProjectIterationRefs get();
 	
 }

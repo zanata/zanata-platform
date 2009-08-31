@@ -8,7 +8,7 @@ import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.adapter.po.PoReader;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.DocumentRef;
-import org.fedorahosted.flies.rest.dto.Project;
+import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -30,7 +30,7 @@ public class PublicanExtractionTests {
 		File projectDir = new File("d:/projects/SELinux_User_Guide/");
 		PublicanProjectAdapter adapter = new PublicanProjectAdapter(projectDir);
 		
-		Project project = new Project(adapter.getBookName(), adapter.getBookName());
+		ProjectIteration project = new ProjectIteration(adapter.getBookName(), adapter.getBookName());
 
 		PoReader poReader = new PoReader();
 

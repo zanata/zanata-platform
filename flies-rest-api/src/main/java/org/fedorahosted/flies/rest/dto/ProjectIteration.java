@@ -23,26 +23,26 @@ import org.jboss.resteasy.spi.touri.URITemplate;
 	})
 @XmlType(name="projectType", namespace=Namespaces.PROJECT)
 @XmlRootElement(name="project", namespace=Namespaces.PROJECT)
-public class Project extends AbstractProject{
+public class ProjectIteration extends AbstractProject{
 
 	private String id;
 	
 	private List<DocumentRef> documents;
 	
-	public Project() {
+	public ProjectIteration() {
 	}
 	
-	public Project(String id, String name) {
+	public ProjectIteration(String id, String name) {
 		super(name);
 		this.id = id;
 	}
 	
-	public Project(String id, String name, String summary) {
+	public ProjectIteration(String id, String name, String summary) {
 		super(name, summary);
 		this.id = id;
 	}
 	
-	public Project(String id, String name, String summary, Integer version) {
+	public ProjectIteration(String id, String name, String summary, Integer version) {
 		super(name, summary, version);
 		this.id = id;
 	}

@@ -19,14 +19,14 @@ import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
 	})
 	@XmlRootElement(name="projects", namespace=Namespaces.PROJECT)
 	@XmlType(name="projectsRefsType", namespace=Namespaces.PROJECT)
-public class ProjectRefs {
+public class ProjectIterationRefs {
 
-	private List<ProjectRef> projects;
+	private List<ProjectIterationRef> projects;
 	
 	@XmlElement(name="project", namespace=Namespaces.PROJECT)
-	public List<ProjectRef> getProjects() {
+	public List<ProjectIterationRef> getProjects() {
 		if(projects == null){
-			projects = new ArrayList<ProjectRef>();
+			projects = new ArrayList<ProjectIterationRef>();
 		}
 		return projects;
 	}
