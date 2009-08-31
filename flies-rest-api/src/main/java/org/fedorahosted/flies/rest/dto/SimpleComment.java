@@ -12,7 +12,8 @@ import org.fedorahosted.flies.Namespaces;
 @XmlType(name="simpleCommentType", namespace=SimpleComment.NAMESPACE)
 public class SimpleComment {
 	
-	public static final String NAMESPACE = "http://openl10n.net/simplecomment/";
+	public static final String NAMESPACE = "http://flies.fedorahosted.org/api/simplecomment/";
+	public static final String NAMESPACE_JSON = "simplecomment";
 	
 	private String id;
 	private String value;

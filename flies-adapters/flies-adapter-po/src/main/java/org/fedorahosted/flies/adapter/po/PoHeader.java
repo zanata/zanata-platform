@@ -15,7 +15,8 @@ import org.fedorahosted.flies.rest.dto.SimpleComment;
 @XmlRootElement(name="header", namespace=PoHeader.NAMESPACE)
 public class PoHeader {
 	
-	public static final String NAMESPACE = "http://openl10n.net/namespaces/gettext/header";
+	public static final String NAMESPACE = "http://flies.fedorahosted.org/api/gettext/header";
+	public static final String NAMESPACE_JSON = "poheader";
 	
 	private SimpleComment comment;
 	private List<HeaderEntry> entries;

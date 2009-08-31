@@ -19,17 +19,17 @@ import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
 public interface LocContainerResource {
 
 	@GET
-	@Produces({ "application/openl10n.project+xml", "application/json" })
+	@Produces({ "application/flies.project+xml", "application/json" })
 	public Project get(
 			@QueryParam("ext") @DefaultValue("") String extensions
 			);
 
 	@POST
-	@Consumes( { "application/openl10n.project+xml", "application/json" })
+	@Consumes( { "application/flies.project+xml", "application/json" })
 	public Response post(Project project);
 
 	@PUT
-	@Consumes( { "application/openl10n.project+xml", "application/json" })
+	@Consumes( { "application/flies.project+xml", "application/json" })
 	public Response put(Project project);
 
 	@Path("documents/{documentId}")

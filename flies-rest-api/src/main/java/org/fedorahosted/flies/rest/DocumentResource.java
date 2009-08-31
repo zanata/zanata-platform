@@ -13,11 +13,11 @@ import org.fedorahosted.flies.rest.dto.Resource;
 public interface DocumentResource {
 
 	@GET
-	@Produces("application/openl10n.document+xml")
+	@Produces("application/flies.document+xml")
 	public Document get(@QueryParam("includeTargets") String includeTargets);
 
 	@GET
-	@Produces("application/openl10n.document.resource+xml")
+	@Produces("application/flies.document.resource+xml")
 	@Path("resources/{resId}")
 	public Resource getResource(@PathParam("resId") String resId);
 }
