@@ -9,7 +9,7 @@ import org.fedorahosted.flies.core.model.Person;
 import org.jboss.seam.mock.DBUnitSeamTest;
 import org.testng.annotations.Test;
 
-public class PersonTests extends DBUnitSeamTest {
+public class PersonSeamTest extends DBUnitSeamTest {
 
     protected void prepareDBUnitOperations() {
         beforeTestOperations.add(
