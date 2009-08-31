@@ -1,4 +1,4 @@
-package net.openl10n.packaging.jpa.document;
+package org.fedorahosted.flies.repository.model.document;
 
 import javax.persistence.Entity;
 

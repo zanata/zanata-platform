@@ -6,9 +6,9 @@ import java.util.Map.Entry;
 
 import javax.persistence.EntityManager;
 
-import net.openl10n.packaging.jpa.document.HDocument;
-import net.openl10n.packaging.jpa.project.HProject;
 
+import org.fedorahosted.flies.repository.model.document.HDocument;
+import org.fedorahosted.flies.repository.model.project.HProject;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;

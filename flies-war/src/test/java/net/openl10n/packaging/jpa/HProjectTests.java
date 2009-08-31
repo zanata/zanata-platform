@@ -12,15 +12,15 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
-import net.openl10n.packaging.jpa.document.HDocument;
-import net.openl10n.packaging.jpa.document.HDocumentTarget;
-import net.openl10n.packaging.jpa.document.HResource;
-import net.openl10n.packaging.jpa.document.HTextFlow;
-import net.openl10n.packaging.jpa.document.HTextFlowTarget;
-import net.openl10n.packaging.jpa.project.HProject;
 
 import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.repository.model.document.HDocument;
+import org.fedorahosted.flies.repository.model.document.HDocumentTarget;
+import org.fedorahosted.flies.repository.model.document.HResource;
+import org.fedorahosted.flies.repository.model.document.HTextFlow;
+import org.fedorahosted.flies.repository.model.document.HTextFlowTarget;
+import org.fedorahosted.flies.repository.model.project.HProject;
 import org.fedorahosted.flies.rest.dto.ContentTarget;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.DocumentRef;

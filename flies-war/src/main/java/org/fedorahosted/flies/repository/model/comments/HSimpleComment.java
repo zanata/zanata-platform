@@ -1,4 +1,4 @@
-package net.openl10n.packaging.jpa.comments;
+package org.fedorahosted.flies.repository.model.comments;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -6,8 +6,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
-import net.openl10n.packaging.jpa.document.HTextFlowTarget;
 
+import org.fedorahosted.flies.repository.model.document.HTextFlowTarget;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.NotNull;

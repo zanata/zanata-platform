@@ -8,11 +8,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-import net.openl10n.packaging.jpa.project.HProject;
 
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.core.model.ProjectIteration;
+import org.fedorahosted.flies.repository.model.project.HProject;
 import org.fedorahosted.flies.rest.DocumentResource;
 import org.fedorahosted.flies.rest.ProjectIterationResource;
 import org.fedorahosted.flies.rest.dto.Document;

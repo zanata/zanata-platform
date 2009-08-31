@@ -9,8 +9,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import net.openl10n.packaging.jpa.project.HProject;
 
+import org.fedorahosted.flies.repository.model.project.HProject;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;

@@ -5,11 +5,11 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
-import net.openl10n.packaging.jpa.project.HProject;
 
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.core.model.Person;
 import org.fedorahosted.flies.core.model.ProjectIteration;
+import org.fedorahosted.flies.repository.model.project.HProject;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;

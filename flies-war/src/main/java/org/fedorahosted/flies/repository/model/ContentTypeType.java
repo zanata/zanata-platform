@@ -1,11 +1,11 @@
-package net.openl10n.packaging.jpa;
+package org.fedorahosted.flies.repository.model;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
-import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.ContentType;
 import org.hibernate.EntityMode;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
@@ -13,7 +13,7 @@ import org.hibernate.dialect.Dialect;
 import org.hibernate.type.ImmutableType;
 import org.hibernate.type.LiteralType;
 
-public class LocaleIdType extends ImmutableType implements LiteralType {
+public class ContentTypeType extends ImmutableType implements LiteralType {
 
 	private static final long serialVersionUID = 1251881884197592346L;
 
@@ -34,7 +34,7 @@ public class LocaleIdType extends ImmutableType implements LiteralType {
 		if (string == null) {
 			return null;
 		} else {
-			return new LocaleId(string);
+			return new ContentType(string);
 		}
 	}
 
@@ -55,12 +55,12 @@ public class LocaleIdType extends ImmutableType implements LiteralType {
 
 	@Override
 	public Class<?> getReturnedClass() {
-		return LocaleId.class;
+		return ContentType.class;
 	}
 
 	@Override
 	public String getName() {
-		return "localeId";
+		return "contentType";
 	}
 
 	@Override

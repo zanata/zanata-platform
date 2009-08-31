@@ -1,4 +1,4 @@
-package net.openl10n.packaging.jpa.document;
+package org.fedorahosted.flies.repository.model.document;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,13 +14,13 @@ import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
-import net.openl10n.packaging.jpa.AbstractEntity;
-import net.openl10n.packaging.jpa.ContentTypeType;
-import net.openl10n.packaging.jpa.LocaleIdType;
-import net.openl10n.packaging.jpa.project.HProject;
 
 import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.repository.model.AbstractEntity;
+import org.fedorahosted.flies.repository.model.ContentTypeType;
+import org.fedorahosted.flies.repository.model.LocaleIdType;
+import org.fedorahosted.flies.repository.model.project.HProject;
 import org.fedorahosted.flies.rest.dto.Container;
 import org.fedorahosted.flies.rest.dto.DataHook;
 import org.fedorahosted.flies.rest.dto.Document;

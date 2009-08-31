@@ -5,8 +5,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
-import net.openl10n.packaging.jpa.project.HProject;
 
+import org.fedorahosted.flies.repository.model.project.HProject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

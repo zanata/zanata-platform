@@ -1,4 +1,4 @@
-package net.openl10n.packaging.jpa.document;
+package org.fedorahosted.flies.repository.model.document;
 
 import java.io.Serializable;
 
@@ -10,10 +10,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
-import net.openl10n.packaging.jpa.LocaleIdType;
-import net.openl10n.packaging.jpa.comments.HSimpleComment;
 
 import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.repository.model.LocaleIdType;
+import org.fedorahosted.flies.repository.model.comments.HSimpleComment;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget.ContentState;
 import org.hibernate.annotations.NaturalId;

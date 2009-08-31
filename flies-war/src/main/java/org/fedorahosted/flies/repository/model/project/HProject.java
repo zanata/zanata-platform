@@ -1,4 +1,4 @@
-package net.openl10n.packaging.jpa.project;
+package org.fedorahosted.flies.repository.model.project;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,9 +8,9 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
-import net.openl10n.packaging.jpa.AbstractEntity;
-import net.openl10n.packaging.jpa.document.HDocument;
 
+import org.fedorahosted.flies.repository.model.AbstractEntity;
+import org.fedorahosted.flies.repository.model.document.HDocument;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.DocumentRef;
 import org.hibernate.annotations.IndexColumn;

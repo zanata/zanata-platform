@@ -1,4 +1,4 @@
-package net.openl10n.packaging.jpa;
+package org.fedorahosted.flies.repository.model;
 
 
 import java.util.Date;

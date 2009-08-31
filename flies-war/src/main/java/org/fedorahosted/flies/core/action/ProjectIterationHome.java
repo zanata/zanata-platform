@@ -6,13 +6,13 @@ import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 
-import net.openl10n.packaging.jpa.project.HProject;
 
 import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.model.IterationProject;
 import org.fedorahosted.flies.core.model.Project;
 import org.fedorahosted.flies.core.model.ProjectSeries;
 import org.fedorahosted.flies.core.model.ProjectIteration;
+import org.fedorahosted.flies.repository.model.project.HProject;
 import org.fedorahosted.flies.repository.util.TranslationStatistics;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;

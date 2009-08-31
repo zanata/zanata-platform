@@ -6,9 +6,6 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import net.openl10n.packaging.jpa.document.HDocumentTarget;
-import net.openl10n.packaging.jpa.document.HTextFlowTarget;
-import net.openl10n.packaging.jpa.project.HProject;
 
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.core.model.Account;
@@ -16,6 +13,9 @@ import org.fedorahosted.flies.core.model.FliesLocale;
 import org.fedorahosted.flies.core.model.Person;
 import org.fedorahosted.flies.core.model.ProjectIteration;
 //import org.fedorahosted.flies.repository.model.TextUnitTarget;
+import org.fedorahosted.flies.repository.model.document.HDocumentTarget;
+import org.fedorahosted.flies.repository.model.document.HTextFlowTarget;
+import org.fedorahosted.flies.repository.model.project.HProject;
 import org.fedorahosted.flies.webtrans.NoSuchWorkspaceException;
 import org.fedorahosted.flies.webtrans.TranslationWorkspace;
 import org.fedorahosted.flies.webtrans.TranslationWorkspaceManager;
