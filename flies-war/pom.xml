@@ -135,8 +135,9 @@
                   <tasks>
                     <property name="deploy-path" value="${as.deploy}/${app.context}.war" />
                     <echo>Exploding to ${deploy-path}</echo>
-                    <delete  dir="${deploy-path}" quiet="false" />
-                    <delete  file="${as.deploy}/${app.ds.xml}" quiet="false" />
+                    <delete dir="${deploy-path}" quiet="true" />
+                    <delete file="${deploy-path}" quiet="true" />
+                    <delete file="${as.deploy}/${app.ds.xml}" quiet="true" />
                     <copy todir="${as.deploy}" file="${project.build.directory}/${app.ds.xml}" verbose="true" />
                     <mkdir dir="${deploy-path}" />
                     <sync todir="${deploy-path}" verbose="true" >
