@@ -1,4 +1,4 @@
-package net.openl10n.consumer.po.publican;
+package org.fedorahosted.flies.adapter.po.publican;
 
 import java.io.File;
 

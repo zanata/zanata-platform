@@ -1,4 +1,4 @@
-package net.openl10n.consumer.po.publican;
+package org.fedorahosted.flies.adapter.po.publican;
 
 public class MakefileReadException extends RuntimeException {
 	public MakefileReadException() {

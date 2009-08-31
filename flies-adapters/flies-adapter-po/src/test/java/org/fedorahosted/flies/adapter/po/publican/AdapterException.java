@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.openl10n.consumer.po.publican;
+package org.fedorahosted.flies.adapter.po.publican;
 
 public final class AdapterException extends RuntimeException {
 	public AdapterException() {

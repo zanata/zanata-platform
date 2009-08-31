@@ -1,4 +1,4 @@
-package net.openl10n.consumer.po;
+package org.fedorahosted.flies.adapter.po;
 
 import java.io.File;
 import java.io.IOException;
