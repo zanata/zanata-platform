@@ -13,9 +13,12 @@ import org.apache.tools.ant.types.selectors.FileSelector;
 import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.adapter.properties.PropReader;
+import org.fedorahosted.flies.rest.FliesClient;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.DocumentRef;
+import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
+import org.jboss.resteasy.client.ClientResponse;
 
 public class Props2ProjectTask extends MatchingTask {
 
@@ -71,8 +74,11 @@ public class Props2ProjectTask extends MatchingTask {
 		m.marshal(projectIteration, new File(dstURL.getFile()));
 	    }
 	    
-//	    FliesClient client = new FliesClient(url, apiKey);
-//	    ProjectIteration iter = client.getProjectIteration(project+"/"+iteration);
+	    FliesClient client = new FliesClient(url, apiKey);
+	    ClientResponse<Project> projResp = client.getProjectResource().getProject("FIXME");
+	    if (projResp.getResponseStatus().getStatusCode() >= 399)
+		throw new BuildException(projResp.getResponseStatus().toString());
+//	    ProjectIteration iter = projResp.getEntity(). project+"/"+iteration);
 //	    iter.getDocuments().addAll(docs);
 		
 
