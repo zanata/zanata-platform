@@ -22,8 +22,8 @@ public class TextFlowTargetDataModel extends
 
 	private static final long serialVersionUID = 8997820110607899775L;
 
-	@In(value = "#{entityManager.delegate}")
-	private Session hibernateSession;
+	@In
+	private Session session;
 
 	private Converter rowKeyConverter = new Converter() {
 
@@ -45,7 +45,7 @@ public class TextFlowTargetDataModel extends
 			if (value == null) {
 				return null;
 			}
-			return hibernateSession.get(HTextFlowTarget.class, Long.valueOf(value));
+			return session.get(HTextFlowTarget.class, Long.valueOf(value));
 		}
 	};
 
@@ -55,7 +55,7 @@ public class TextFlowTargetDataModel extends
 
 	@Override
 	protected Session getSession() {
-		return hibernateSession;
+		return session;
 	}
 
 	public Converter getRowKeyConverter() {

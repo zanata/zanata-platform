@@ -10,8 +10,11 @@ import org.fedorahosted.flies.core.model.Account;
 import org.fedorahosted.flies.core.model.IterationProject;
 import org.fedorahosted.flies.core.model.Person;
 import org.fedorahosted.flies.core.model.ProjectIteration;
+import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HDocumentTarget;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
+import org.fedorahosted.flies.repository.model.HResource;
+import org.fedorahosted.flies.repository.model.HTextFlow;
 import org.fedorahosted.flies.repository.model.HTextFlowTarget;
 import org.fedorahosted.flies.webtrans.NoSuchWorkspaceException;
 import org.fedorahosted.flies.webtrans.TranslationWorkspace;
@@ -175,7 +178,24 @@ public class TranslateAction implements Serializable {
 				String localeId = ws[1];
 				projectIteration = entityManager.find(ProjectIteration.class, projectIterationId);
 				projectContainer = projectIteration.getContainer();
+				
+				log.info("Initializing targets");
 				locale = new LocaleId(localeId);
+
+				for(HDocument doc : projectContainer.getDocuments() ){
+					if(!doc.getTargets().containsKey(locale)){
+						HDocumentTarget docTarget = new HDocumentTarget(doc, locale);
+						entityManager.persist(docTarget);
+						for (HResource res : doc.getResources().values() ){
+							if(res instanceof HTextFlow){
+								HTextFlowTarget target = new HTextFlowTarget(docTarget, (HTextFlow) res);
+								target.setContent("");
+								entityManager.persist(target);
+							}
+								
+						}
+					}
+				}
 				Person translator = entityManager.find(Person.class, authenticatedAccount.getPerson().getId());
 				getWorkspace().registerTranslator(translator);
 			}
