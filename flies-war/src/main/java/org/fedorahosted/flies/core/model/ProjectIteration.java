@@ -8,7 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import org.fedorahosted.flies.repository.model.project.HProjectContainer;
+import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;

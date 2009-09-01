@@ -1,7 +1,7 @@
 package org.fedorahosted.flies.core.action;
 
 
-import org.fedorahosted.flies.repository.model.document.HDocument;
+import org.fedorahosted.flies.repository.model.HDocument;
 import org.richfaces.model.TreeNodeImpl;
 
 public class DocNode extends TreeNodeImpl<HDocument>{

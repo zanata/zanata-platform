@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.repository.model.document;
+package org.fedorahosted.flies.repository.model;
 
 import java.io.Serializable;
 
@@ -11,8 +11,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 import org.fedorahosted.flies.LocaleId;
-import org.fedorahosted.flies.repository.model.LocaleIdType;
-import org.fedorahosted.flies.repository.model.comments.HSimpleComment;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget.ContentState;
 import org.hibernate.annotations.NaturalId;

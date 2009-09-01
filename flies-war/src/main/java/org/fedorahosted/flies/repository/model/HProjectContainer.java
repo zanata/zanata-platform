@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.repository.model.project;
+package org.fedorahosted.flies.repository.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import org.fedorahosted.flies.core.model.AbstractFliesEntity;
-import org.fedorahosted.flies.repository.model.document.HDocument;
 import org.fedorahosted.flies.rest.dto.DocumentRef;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.validator.NotEmpty;

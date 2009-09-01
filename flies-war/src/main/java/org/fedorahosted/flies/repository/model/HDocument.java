@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.repository.model.document;
+package org.fedorahosted.flies.repository.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,9 +17,6 @@ import javax.persistence.Transient;
 import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.core.model.AbstractFliesEntity;
-import org.fedorahosted.flies.repository.model.ContentTypeType;
-import org.fedorahosted.flies.repository.model.LocaleIdType;
-import org.fedorahosted.flies.repository.model.project.HProjectContainer;
 import org.fedorahosted.flies.rest.dto.Container;
 import org.fedorahosted.flies.rest.dto.DataHook;
 import org.fedorahosted.flies.rest.dto.Document;

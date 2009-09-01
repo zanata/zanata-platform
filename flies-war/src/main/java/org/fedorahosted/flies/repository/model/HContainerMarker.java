@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.repository.model.document;
+package org.fedorahosted.flies.repository.model;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;

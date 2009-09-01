@@ -9,7 +9,7 @@ import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.model.IterationProject;
 import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.fedorahosted.flies.core.model.ProjectSeries;
-import org.fedorahosted.flies.repository.model.project.HProjectContainer;
+import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
