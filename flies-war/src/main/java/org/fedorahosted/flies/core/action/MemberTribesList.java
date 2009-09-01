@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.core.action;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,9 +22,11 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 
 @Name("memberTribes")
 @Scope(ScopeType.SESSION) 
-public class MemberTribesList {
+public class MemberTribesList implements Serializable{
 
-    @In protected EntityManager entityManager;
+	private static final long serialVersionUID = -1879925862165479255L;
+
+	@In protected EntityManager entityManager;
     
     @Logger Log log;
     

@@ -1,5 +1,7 @@
 package org.fedorahosted.flies.account.action;
 
+import java.io.Serializable;
+
 import javax.persistence.EntityManager;
 
 import org.fedorahosted.flies.KeyNotFoundException;
@@ -21,7 +23,9 @@ import org.jboss.seam.security.management.IdentityManager;
 
 @Name("passwordReset")
 @Scope(ScopeType.CONVERSATION)
-public class PasswordResetAction {
+public class PasswordResetAction implements Serializable{
+
+	private static final long serialVersionUID = -3966625589007754411L;
 
 	@Logger
 	Log log;

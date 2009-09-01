@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.account.action;
 
+import java.io.Serializable;
 import java.security.MessageDigest;
 
 import javax.persistence.EntityManager;
@@ -30,7 +31,9 @@ import org.jboss.seam.util.Hex;
 
 @Name("register")
 @Scope(ScopeType.CONVERSATION)
-public class RegisterAction {
+public class RegisterAction implements Serializable {
+
+	private static final long serialVersionUID = -7883627570614588182L;
 
 	@Logger
 	Log log;

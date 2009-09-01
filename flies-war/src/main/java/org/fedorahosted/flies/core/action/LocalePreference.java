@@ -1,5 +1,7 @@
 package org.fedorahosted.flies.core.action;
 
+import java.io.Serializable;
+
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.servlet.http.Cookie;
@@ -14,7 +16,10 @@ import org.jboss.seam.annotations.Scope;
 
 @Scope(ScopeType.SESSION)
 @Name("localePreference")
-public class LocalePreference {
+public class LocalePreference implements Serializable{
+
+	
+	private static final long serialVersionUID = 1611775611052433060L;
 
 	@In
 	EntityManager entityManager;

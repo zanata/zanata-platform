@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.webtrans.action;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -33,7 +34,9 @@ import org.richfaces.model.selection.SimpleSelection;
 @Name("translateAction")
 @Scope(ScopeType.CONVERSATION)
 @Restrict("#{identity.loggedIn}")
-public class TranslateAction {
+public class TranslateAction implements Serializable {
+
+	private static final long serialVersionUID = -6246244099116248138L;
 
 	@RequestParameter("wid")
 	private String workspaceId;
