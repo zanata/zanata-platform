@@ -32,10 +32,8 @@ public interface ProjectIterationResource{
 			ProjectIteration project);
 
 	@PUT
-	@Path("/i/{iterationSlug}")
 	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML, MediaType.APPLICATION_JSON })
 	public Response addIteration(
-			@PathParam("iterationSlug") String iterationSlug,
 			ProjectIteration project);
 /*
 	@Path("/i/{iterationSlug}/documents")

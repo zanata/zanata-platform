@@ -32,9 +32,8 @@ public interface ProjectResource {
 	public Response updateProject(@PathParam("projectSlug") String projectSlug, Project project);
 
 	@PUT
-	@Path("/p/{projectSlug}")
 	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
-	public Response addProject(@PathParam("projectSlug") String projectSlug, Project project);
+	public Response addProject(Project project);
 	
 	/*
 	@Path("/p/{projectSlug}/iterations")

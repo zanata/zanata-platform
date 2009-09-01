@@ -17,8 +17,10 @@ public class ProjectDAO {
 	public Project getBySlug(String slug){
 		return (Project) session.createCriteria(Project.class)
 			.add( Restrictions.naturalId()
-		        .set("slug", slug))
+		        .set("slug", slug)
+		    	)
 		    .setCacheable(true)
+		    .setComment("ProjectDAO.getBySlug")
 		    .uniqueResult();
 	}
 }

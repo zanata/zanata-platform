@@ -11,6 +11,7 @@ import org.fedorahosted.flies.rest.client.DocumentResource;
 import org.fedorahosted.flies.rest.client.ProjectIterationResource;
 import org.fedorahosted.flies.rest.client.ProjectResource;
 import org.fedorahosted.flies.rest.dto.Project;
+import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.client.ProxyFactory;
@@ -47,7 +48,8 @@ public class FliesClient {
 	}
 	
 	public ProjectIterationResource getProjectIterationResource(String projectSlug){
-		return clientRequestFactory.createProxy(ProjectIterationResource.class, baseUri.toString() + "projects/p/" + projectSlug + "/iterations");
+		String resolvedUri = baseUri.toString() + "/projects/p/" + projectSlug + "/iterations";
+		return clientRequestFactory.createProxy(ProjectIterationResource.class, resolvedUri);
 	}
 	
 	public DocumentResource getDocumentResource(String projectSlug, String iterationSlug){
@@ -68,14 +70,45 @@ public class FliesClient {
 		
 		ProjectResource projectResource = client.getProjectResource();
 		
-		ClientResponse<Project> projectResponse = projectResource.getProject("myproject");
+		ClientResponse<Project> projectResponse = projectResource.getProject("sample-project");
 		
 		if (projectResponse.getResponseStatus().getStatusCode() < 399) {
 			Project p = projectResponse.getEntity();
 			System.out.println( p.getName() );
+			p.getIterations().clear();
 			p.setName( "replaced "+ p.getName());
 			Response r = projectResource.updateProject("myproject", p);
 			System.out.println("Completed with status: " + r.getStatus());
+			
+			for (int i = 1; i < 100; i++) {
+				p = new Project("myxproject-"+i, "Project #"+i, "Sample Description #"+i);
+				r = projectResource.addProject(p);
+				Status s = Status.fromStatusCode(r.getStatus());
+				if(Status.CREATED == s ) {
+					System.out.println("Created project " + i);
+				}
+				else{
+					System.err.println(i + "Failed with status: " + s);
+				}
+				
+				ProjectIterationResource projectIterationResource = 
+					client.getProjectIterationResource(p.getId());
+				for (int j = 1; j < 6; j++) {
+					ProjectIteration pIt = new ProjectIteration();
+					pIt.setId("iteration-"+j);
+					pIt.setName("Project Iteration #"+j);
+					pIt.setSummary("A sample Iteration #"+j);
+					r = projectIterationResource.addIteration(pIt);
+					s = Status.fromStatusCode(r.getStatus());
+					if(Status.CREATED == s ) {
+						System.out.println("  Iteration Created: " + j);
+					}
+					else{
+						System.err.println("  " + j + " Iteration Creation Failed with status: " + s);
+					}
+					
+				}
+			}
 		}
 		
 		DocumentResource documentResource = client.getDocumentResource("myproject", "myiteration");

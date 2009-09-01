@@ -1,11 +1,16 @@
 package org.fedorahosted.flies.rest.service;
 
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -22,6 +27,7 @@ import org.fedorahosted.flies.rest.dto.ProjectIterationRefs;
 import org.fedorahosted.flies.rest.dto.ProjectRef;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.ProjectRefs;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.jboss.resteasy.spi.NotFoundException;
 import org.jboss.resteasy.spi.UnauthorizedException;
@@ -50,12 +56,6 @@ public class ProjectService{
 	@Context 
 	HttpServletRequest request;
 
-	public Response addProject(String projectSlug,
-			org.fedorahosted.flies.rest.dto.Project project) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	@GET
 	@Path("/p/{projectSlug}")
 	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
@@ -69,7 +69,7 @@ public class ProjectService{
 		return toMini(p);
 	}
 
-	private Project toMini(org.fedorahosted.flies.core.model.Project p){
+	private static Project toMini(org.fedorahosted.flies.core.model.Project p){
 		Project proj = new Project();
 		proj.setId(p.getSlug());
 		proj.setName(p.getName());
@@ -108,10 +108,47 @@ public class ProjectService{
 		return projectRefs;
 	}
 
-	public Response updateProject(String projectSlug,
-			org.fedorahosted.flies.rest.dto.Project project) {
-		// TODO Auto-generated method stub
-		return null;
+	@POST
+	@Path("/p/{projectSlug}")
+	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
+	public Response updateProject(@PathParam("projectSlug") String projectSlug, org.fedorahosted.flies.rest.dto.Project project){
+			
+		org.fedorahosted.flies.core.model.Project p = projectDAO.getBySlug(projectSlug);
+
+		if(p == null)
+			throw new NotFoundException("Project not found: "+projectSlug);
+
+		p.setName(project.getName());
+		p.setDescription(project.getDescription());
+		try{
+			session.flush();
+			return Response.ok().build();
+		}
+		catch(HibernateException e){
+			return Response.notAcceptable(null).build();
+		}
 	}
+	
+	@PUT
+	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
+	public Response addProject(org.fedorahosted.flies.rest.dto.Project project) throws URISyntaxException{
+		
+		org.fedorahosted.flies.core.model.Project p = projectDAO.getBySlug(project.getId());
+		if(p != null){
+			return Response.status(409).build();
+		}
+		p = new org.fedorahosted.flies.core.model.IterationProject();
+		p.setSlug(project.getId());
+		p.setName(project.getName());
+		p.setDescription(project.getDescription());
+		try{
+			session.save(p);
+			return Response.created( new URI("/p/"+p.getSlug()) ).build();
+		}
+		catch(HibernateException e){
+			return Response.notAcceptable(null).build();
+		}
+	}
+	
 	
 }
