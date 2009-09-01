@@ -7,7 +7,6 @@ import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
-import org.fedorahosted.flies.Namespaces;
 
 
 @XmlType(name="referenceType", namespace=Namespaces.DOCUMENT)

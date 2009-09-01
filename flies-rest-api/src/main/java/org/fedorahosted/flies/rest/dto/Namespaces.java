@@ -1,4 +1,4 @@
-package org.fedorahosted.flies;
+package org.fedorahosted.flies.rest.dto;
 
 public final class Namespaces {
 

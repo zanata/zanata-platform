@@ -5,8 +5,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.fedorahosted.flies.Namespaces;
-import org.fedorahosted.flies.UriAdapter;
 
 
 @XmlRootElement(name="project", namespace=Namespaces.DOCUMENT)

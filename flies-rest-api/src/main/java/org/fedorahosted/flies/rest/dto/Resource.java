@@ -5,7 +5,6 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-import org.fedorahosted.flies.Namespaces;
 
 
 @XmlType(name="resourceType", namespace=Namespaces.DOCUMENT)

@@ -9,8 +9,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.fedorahosted.flies.LocaleId;
-import org.fedorahosted.flies.LocaleIdAdapter;
-import org.fedorahosted.flies.Namespaces;
 
 
 @XmlJavaTypeAdapter(type=LocaleId.class, value=LocaleIdAdapter.class)

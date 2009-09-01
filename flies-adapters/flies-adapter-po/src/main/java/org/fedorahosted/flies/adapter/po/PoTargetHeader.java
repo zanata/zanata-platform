@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.fedorahosted.flies.LocaleId;
-import org.fedorahosted.flies.LocaleIdAdapter;
+import org.fedorahosted.flies.rest.dto.LocaleIdAdapter;
 
 
 @XmlType(name="poTargetHeaderType", namespace=PoHeader.NAMESPACE)

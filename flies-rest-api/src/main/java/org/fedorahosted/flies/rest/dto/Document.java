@@ -14,7 +14,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.LocaleId;
-import org.fedorahosted.flies.Namespaces;
 import org.jboss.resteasy.annotations.providers.jaxb.json.Mapped;
 import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
 import org.jboss.resteasy.spi.touri.URITemplate;
