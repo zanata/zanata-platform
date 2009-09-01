@@ -36,11 +36,12 @@ public interface ProjectResource {
 	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
 	public Response addProject(@PathParam("projectSlug") String projectSlug, Project project);
 	
-	@Path("/p/{projectSlug}/iterations/i/{iterationSlug}")
+	/*
+	@Path("/p/{projectSlug}/iterations")
 	public ProjectIterationResource getProjectIterationResource(
-			@PathParam("projectSlug") String projectSlug,
-			@PathParam("iterationSlug") String iterationSlug);
-
+			@PathParam("projectSlug") String projectSlug);
+	*/
+	
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECTS_XML, MediaType.APPLICATION_JSON })
 	public ClientResponse<ProjectRefs> getProjects();

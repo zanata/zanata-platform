@@ -12,31 +12,32 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
+import org.jboss.resteasy.client.ClientResponse;
 
 public interface ProjectIterationResource{
 
 	@GET
-	@Path("/{iterationSlug}")
+	@Path("/i/{iterationSlug}")
 	@Produces({ "application/flies.project.iteration+xml", "application/json" })
-	public ProjectIteration getIteration(
+	public ClientResponse<ProjectIteration> getIteration(
 			@PathParam("iterationSlug") String iterationSlug);
 
 	@POST
-	@Path("/{iterationSlug}")
+	@Path("/i/{iterationSlug}")
 	@Consumes( { "application/flies.project.iteration+xml", "application/json" })
 	public Response updateIteration(
 			@PathParam("iterationSlug") String iterationSlug,
 			ProjectIteration project);
 
 	@PUT
-	@Path("/{iterationSlug}")
+	@Path("/i/{iterationSlug}")
 	@Consumes( { "application/flies.project.iteration+xml", "application/json" })
 	public Response addIteration(
 			@PathParam("iterationSlug") String iterationSlug,
 			ProjectIteration project);
-
-	@Path("/{iterationSlug}/document")
+/*
+	@Path("/i/{iterationSlug}/documents")
 	public DocumentResource getDocumentResource(
 			@PathParam("iterationSlug") String iterationSlug);
-
+*/
 }

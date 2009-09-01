@@ -8,41 +8,46 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Documents;
 import org.fedorahosted.flies.rest.dto.Resource;
+import org.jboss.resteasy.client.ClientResponse;
 
 public interface DocumentResource {
 
 	@GET
-	@Path("{documentId}")
-	@Produces({ "application/flies.document+xml", "application/json" })
-	public Document getDocument(@PathParam("documentId") String documentId,
+	@Path("/d/{documentId}")
+	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
+	public ClientResponse<Document> getDocument(@PathParam("documentId") String documentId,
 			@QueryParam("includeTargets") String includeTargets);
 
 	@POST
-	@Path("{documentId}")
-	@Consumes({ "application/flies.document+xml", "application/json" })
+	@Path("/d/{documentId}")
+	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
 	public Response updateDocument(@PathParam("documentId") String documentId,
 			Document document);
 	
 	@PUT
-	@Path("{documentId}")
-	@Consumes({ "application/flies.document+xml", "application/json" })
+	@Path("/d/{documentId}")
+	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
 	public Response addDocument(@PathParam("documentId") String documentId,
 			Document document);
 
+	/*
 	@GET
-	@Path("")
-	@Produces({ "application/flies.documents+xml", "application/json" })
-	public Documents getDocuments();
-	
-	@GET
-	@Path("{documentId}/resources/{resId}")
-	@Produces({ "application/flies.document.resource+xml", "application/json" })
+	@Path("/d/{documentId}/resources")
+	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENT_RESOURCE_XML, MediaType.APPLICATION_JSON })
 	public Resource getResource(
 			@PathParam("documentId") String documentId,
 			@PathParam("resId") String resId);
+	 */
+	
+	@GET
+	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
+	public ClientResponse<Documents> getDocuments();
+	
 }
