@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.rest.impl;
+package org.fedorahosted.flies.rest.service;
 
 import java.util.List;
 
