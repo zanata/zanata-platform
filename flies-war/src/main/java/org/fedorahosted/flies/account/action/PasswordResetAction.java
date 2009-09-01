@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import javax.persistence.EntityManager;
 
-import org.fedorahosted.flies.KeyNotFoundException;
 import org.fedorahosted.flies.core.model.AccountResetPasswordKey;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;

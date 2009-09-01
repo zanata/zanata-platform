@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import javax.persistence.EntityManager;
 
-import org.fedorahosted.flies.KeyNotFoundException;
 import org.fedorahosted.flies.core.model.AccountActivationKey;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
