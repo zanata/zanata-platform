@@ -66,3 +66,12 @@ INSERT INTO Tribe (id, creationDate, lastChanged, chiefId, localeId) VALUES (20,
 INSERT INTO Tribe (id, creationDate, lastChanged, chiefId, localeId) VALUES (21,'2009-01-14 11:39:00','2009-01-14 11:39:00',3,'te-IN');
 INSERT INTO Tribe (id, creationDate, lastChanged, chiefId, localeId) VALUES (22,'2009-01-14 11:39:00','2009-01-14 11:39:00',3,'zh-CN');
 INSERT INTO Tribe (id, creationDate, lastChanged, chiefId, localeId) VALUES (23,'2009-01-14 11:39:00','2009-01-14 11:39:00',3,'zh-TW');
+
+INSERT INTO HProjectContainer (id, creationDate, lastChanged) VALUES (1,'2009-09-01 20:30:46','2009-09-01 20:30:46');
+INSERT INTO HProjectContainer (id, creationDate, lastChanged) VALUES (2,'2009-09-01 20:31:32','2009-09-01 20:31:32');
+INSERT INTO Project (projecttype, id, creationDate, lastChanged, slug, description, homeContent, name, project_container_id) VALUES ('iteration',1,'2009-09-01 20:30:16','2009-09-01 20:30:16','sample-project','An example Project','','Sample Project',NULL);
+INSERT INTO ProjectSeries (id, creationDate, lastChanged, name, parentId, projectId) VALUES (1,'2009-09-01 20:30:16','2009-09-01 20:30:16','default',NULL,1);
+INSERT INTO ProjectIteration (id, creationDate, lastChanged, slug, active, description, name, project_container_id, parentId, project_id, projectSeriesId) VALUES (1,'2009-09-01 20:30:46','2009-09-01 20:30:46','1.0','','Initial Release','Version 1.0',1,NULL,1,1);
+INSERT INTO ProjectIteration (id, creationDate, lastChanged, slug, active, description, name, project_container_id, parentId, project_id, projectSeriesId) VALUES (2,'2009-09-01 20:31:32','2009-09-01 20:31:32','1.1','','Next Release','Version 1.1',2,NULL,1,1);
+INSERT INTO Project_Maintainer (personId, projectId) VALUES (3,1);
+
