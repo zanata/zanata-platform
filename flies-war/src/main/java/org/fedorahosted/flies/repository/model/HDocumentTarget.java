@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.hibernate.type.LocaleIdType;
 import org.fedorahosted.flies.rest.dto.ContentTarget;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;

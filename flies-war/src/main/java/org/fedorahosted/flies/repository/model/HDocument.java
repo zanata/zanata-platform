@@ -17,6 +17,8 @@ import javax.persistence.Transient;
 import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.core.model.AbstractFliesEntity;
+import org.fedorahosted.flies.hibernate.type.ContentTypeType;
+import org.fedorahosted.flies.hibernate.type.LocaleIdType;
 import org.fedorahosted.flies.rest.dto.Container;
 import org.fedorahosted.flies.rest.dto.DataHook;
 import org.fedorahosted.flies.rest.dto.Document;
