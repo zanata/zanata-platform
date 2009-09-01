@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <antlib>
     <taskdef name="project2props" 
-        classname="org.openl10n.ant.properties.Project2PropsTask" />
+        classname="org.fedorahosted.flies.client.ant.properties.Project2PropsTask" />
     <taskdef name="props2project" 
-        classname="org.openl10n.ant.properties.Props2ProjectTask" />
+        classname="org.fedorahosted.flies.client.ant.properties.Props2ProjectTask" />
 </antlib>
