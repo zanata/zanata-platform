@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.type;
+package org.fedorahosted.flies.hibernate.type;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
