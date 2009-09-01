@@ -20,7 +20,7 @@ public class BuildTest extends BuildFileTest {
     protected void setUp() throws Exception {
 	// work around maven bug: http://jira.codehaus.org/browse/SUREFIRE-184
 	System.getProperties().remove("basedir");
-	configureProject("src/test/resources/org/openl10n/ant/properties/build.xml");
+	configureProject("src/test/resources/org/fedorahosted/flies/client/ant/properties/build.xml");
     }
 
     @Override
