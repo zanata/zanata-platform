@@ -1,6 +1,6 @@
-INSERT INTO Account (id, creationDate, lastChanged, apiKey, enabled, passwordHash, username) VALUES (1,'2009-01-14 11:39:00','2009-01-14 11:39:00',NULL,'','Eyox7xbNQ09MkIfRyH+rjg==','admin');
-INSERT INTO Account (id, creationDate, lastChanged, apiKey, enabled, passwordHash, username) VALUES (2,'2009-01-14 11:39:00','2009-01-14 11:39:00',NULL,'','/9Se/pfHeUH8FJ4asBD6jQ==','demo');
-INSERT INTO Account (id, creationDate, lastChanged, apiKey, enabled, passwordHash, username) VALUES (3,'2009-01-14 11:39:00','2009-01-14 11:39:00',NULL,'','pQRgEKG97HuyCfeoOR69Sg==','bob');
+INSERT INTO Account (id, creationDate, lastChanged, apiKey, enabled, passwordHash, username) VALUES (1,'2009-01-14 11:39:00','2009-01-14 11:39:00','12345678901234567890123456789012',TRUE,'Eyox7xbNQ09MkIfRyH+rjg==','admin');
+INSERT INTO Account (id, creationDate, lastChanged, apiKey, enabled, passwordHash, username) VALUES (2,'2009-01-14 11:39:00','2009-01-14 11:39:00','23456789012345678901234567890123',TRUE,'/9Se/pfHeUH8FJ4asBD6jQ==','demo');
+INSERT INTO Account (id, creationDate, lastChanged, apiKey, enabled, passwordHash, username) VALUES (3,'2009-01-14 11:39:00','2009-01-14 11:39:00','34567890123456789012345678901234',TRUE,'pQRgEKG97HuyCfeoOR69Sg==','bob');
 	
 INSERT INTO AccountRole (id, conditional, name) VALUES (1,'\0','admin');
 INSERT INTO AccountRole (id, conditional, name) VALUES (2,'\0','user');
