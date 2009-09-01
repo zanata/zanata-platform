@@ -25,7 +25,6 @@ import org.hibernate.validator.Length;
     name="projecttype",
     discriminatorType=DiscriminatorType.STRING
 )
-@Indexed
 public abstract class Project extends AbstractSlugEntity implements Serializable {
 
 	private String name;
