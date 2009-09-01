@@ -70,6 +70,10 @@ public class Props2ProjectTask extends MatchingTask {
 	    if("file".equals(dstURL.getProtocol())) {
 		m.marshal(projectIteration, new File(dstURL.getFile()));
 	    }
+	    
+//	    FliesClient client = new FliesClient(url, apiKey);
+//	    ProjectIteration iter = client.getProjectIteration(project+"/"+iteration);
+//	    iter.getDocuments().addAll(docs);
 		
 
 	} catch (Exception e) {
