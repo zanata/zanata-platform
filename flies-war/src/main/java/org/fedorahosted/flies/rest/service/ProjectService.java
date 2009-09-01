@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.rest.service;
 
+
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,8 +12,6 @@ import javax.ws.rs.core.Response;
 import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.model.IterationProject;
 import org.fedorahosted.flies.core.model.ProjectIteration;
-import org.fedorahosted.flies.rest.ProjectIterationResource;
-import org.fedorahosted.flies.rest.ProjectResource;
 import org.fedorahosted.flies.rest.dto.ProjectIterationRef;
 import org.fedorahosted.flies.rest.dto.ProjectIterationRefs;
 import org.fedorahosted.flies.rest.dto.ProjectRef;
@@ -29,7 +28,7 @@ import org.jboss.seam.log.Log;
 
 @Name("projectResource")
 @Path("/project/")
-public class ProjectResourceImpl implements ProjectResource{
+public class ProjectService{
 
 	@Logger
 	Log log;
@@ -46,7 +45,6 @@ public class ProjectResourceImpl implements ProjectResource{
 	@Context 
 	HttpServletRequest request;
 
-	@Override
 	public Response addProject(String projectSlug,
 			org.fedorahosted.flies.rest.dto.Project project) {
 		checkPermissions();
@@ -54,7 +52,6 @@ public class ProjectResourceImpl implements ProjectResource{
 		return null;
 	}
 
-	@Override
 	public org.fedorahosted.flies.rest.dto.Project getProject(String projectSlug) {
 		checkPermissions();
 
@@ -88,15 +85,6 @@ public class ProjectResourceImpl implements ProjectResource{
 		return proj;
 	}
 	
-	@Override
-	public ProjectIterationResource getProjectIterationResource(
-			String projectSlug) {
-		checkPermissions();
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public ProjectRefs getProjects() {
 		checkPermissions();
 		ProjectRefs projectRefs = new ProjectRefs();
@@ -112,7 +100,6 @@ public class ProjectResourceImpl implements ProjectResource{
 		return projectRefs;
 	}
 
-	@Override
 	public Response updateProject(String projectSlug,
 			org.fedorahosted.flies.rest.dto.Project project) {
 		checkPermissions();

@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.rest;
 
 
+import org.fedorahosted.flies.rest.client.ProjectResource;
 import org.jboss.resteasy.client.ProxyFactory;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
