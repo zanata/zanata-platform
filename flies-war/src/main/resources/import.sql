@@ -1,131 +1,68 @@
-insert into AccountRole (id, name, conditional) values (1, 'admin', false);
-insert into AccountRole (id, name, conditional) values (2, 'user', false);
-insert into AccountRoleGroup (roleId, memberOf) values (1, 2);
-
-insert into Account (id, creationDate, lastChanged, enabled, passwordhash, username) 
-	values (1, NOW(), NOW(), 1, 'Eyox7xbNQ09MkIfRyH+rjg==', 'admin');
-insert into Person (id, creationDate, lastChanged, email, name, accountId) 
-	values (1, NOW(), NOW(), 'asgeirf@localhost', 'Administrator', 1);
-insert into AccountMembership (accountId, memberOf) 
-	values (1, 1);
-
-insert into Account (id, creationDate, lastChanged, enabled, passwordhash, username) 
-	values (2, NOW(), NOW(), 1, '/9Se/pfHeUH8FJ4asBD6jQ==', 'demo');
-insert into Person (id, creationDate, lastChanged, email, name, accountId) 
-	values (2, NOW(), NOW(), 'asgeirf@localhost', 'Sample User', 2);
-insert into AccountMembership (accountId, memberOf) 
-	values (2, 2);
-
-insert into Account (id, creationDate, lastChanged, enabled, passwordhash, username) 
-	values (3, NOW(), NOW(), 1, 'pQRgEKG97HuyCfeoOR69Sg==', 'bob');
-insert into Person (id, creationDate, lastChanged, email, name, accountId) 
-	values (3, NOW(), NOW(), 'asgeirf@localhost', 'Bob Translator', 3);
-insert into AccountMembership (accountId, memberOf) 
-	values (3, 2);
-
-# insert into ResourceCategory (id, creationDate, lastChanged, name) values(1, NOW(), NOW(), 'Documentation');
-# insert into ResourceCategory (id, creationDate, lastChanged, name) values(2, NOW(), NOW(), 'User Interface');
-# insert into ResourceCategory (id, creationDate, lastChanged, name) values(3, NOW(), NOW(), 'Website');
-
-insert into FliesLocale (id, icuLocaleId, parentId)
-	values ('as-IN','as_IN', NULL);
-insert into FliesLocale (id, icuLocaleId, parentId)
-	values ('de-DE','de_DE', NULL);
-insert into FliesLocale (id, icuLocaleId, parentId)
-	values ('es-ES','es_ES', NULL);
-insert into FliesLocale (id, icuLocaleId, parentId)
-	values ('gu-IN','gu_IN', NULL);
-insert into FliesLocale (id, icuLocaleId, parentId)
-	values ('it-IT','it_IT', NULL);
-insert into FliesLocale (id, icuLocaleId, parentId)
-	values ('kn-IN','kn_IN', NULL);
-insert into FliesLocale (id, icuLocaleId, parentId)
-	values ('ml-IN','ml_IN', NULL);
-insert into FliesLocale (id, icuLocaleId, parentId)
-	values ('or-IN','or_IN', NULL);
-insert into FliesLocale (id, icuLocaleId, parentId)
-	values ('ru-RU','ru_RU', NULL);
-insert into FliesLocale (id, icuLocaleId, parentId)
-	values ('ta-IN','ta-IN', NULL);
-insert into FliesLocale (id, icuLocaleId, parentId)
-	values ('zh-TW','zh_TW', NULL);
-insert into FliesLocale (id, icuLocaleId, parentId)
-	values ('bn-IN','bn_IN', NULL);
-insert into FliesLocale (id, icuLocaleId, parentId)
-	values ('en-US','en_US', NULL);
-insert into FliesLocale (id, icuLocaleId, parentId)
-	values ('fr-FR','fr_FR', NULL);
-insert into FliesLocale (id, icuLocaleId, parentId)
-	values ('hi-IN','hi_IN', NULL);
-insert into FliesLocale (id, icuLocaleId, parentId)
-	values ('ja-JP','ja_JP', NULL);
-insert into FliesLocale (id, icuLocaleId, parentId)
-	values ('ko-KR','ko_KR', NULL);
-insert into FliesLocale (id, icuLocaleId, parentId)
-	values ('mr-IN','mr_IN', NULL);
-insert into FliesLocale (id, icuLocaleId, parentId)
-	values ('pa-IN','pa_IN', NULL);
-insert into FliesLocale (id, icuLocaleId, parentId)
-	values ('pt-BR','pt_BR', NULL);
-insert into FliesLocale (id, icuLocaleId, parentId)
-	values ('si-LK','si_LK', NULL);
-insert into FliesLocale (id, icuLocaleId, parentId)
-	values ('te-IN','te_IN', NULL);
-insert into FliesLocale (id, icuLocaleId, parentId)
-	values ('zh-CN','zh_CN', NULL);
-
-insert into Tribe (id, creationDate, lastChanged, chiefId, localeId) 
-	values(1, NOW(), NOW(), 3, 'as-IN');
-insert into Tribe (id, creationDate, lastChanged, chiefId, localeId) 
-	values(2, NOW(), NOW(), 3, 'bn-IN');
-insert into Tribe (id, creationDate, lastChanged, chiefId, localeId) 
-	values(3, NOW(), NOW(), 3, 'de-DE');
-insert into Tribe (id, creationDate, lastChanged, chiefId, localeId) 
-	values(4, NOW(), NOW(), 3, 'en-US');
-insert into Tribe (id, creationDate, lastChanged, chiefId, localeId) 
-	values(5, NOW(), NOW(), 3, 'es-ES');
-insert into Tribe (id, creationDate, lastChanged, chiefId, localeId) 
-	values(6, NOW(), NOW(), 3, 'fr-FR');
-insert into Tribe (id, creationDate, lastChanged, chiefId, localeId) 
-	values(7, NOW(), NOW(), 3, 'gu-IN');
-insert into Tribe (id, creationDate, lastChanged, chiefId, localeId) 
-	values(8, NOW(), NOW(), 3, 'hi-IN');
-insert into Tribe (id, creationDate, lastChanged, chiefId, localeId) 
-	values(9, NOW(), NOW(), 3, 'it-IT');
-insert into Tribe (id, creationDate, lastChanged, chiefId, localeId) 
-	values(10, NOW(), NOW(), 3, 'ja-JP');
-insert into Tribe (id, creationDate, lastChanged, chiefId, localeId) 
-	values(12, NOW(), NOW(), 3, 'ko-KR');
-insert into Tribe (id, creationDate, lastChanged, chiefId, localeId) 
-	values(13, NOW(), NOW(), 3, 'ml-IN');
-insert into Tribe (id, creationDate, lastChanged, chiefId, localeId) 
-	values(14, NOW(), NOW(), 3, 'mr-IN');
-insert into Tribe (id, creationDate, lastChanged, chiefId, localeId) 
-	values(15, NOW(), NOW(), 3, 'or-IN');
-insert into Tribe (id, creationDate, lastChanged, chiefId, localeId) 
-	values(16, NOW(), NOW(), 3, 'pa-IN');
-insert into Tribe (id, creationDate, lastChanged, chiefId, localeId) 
-	values(17, NOW(), NOW(), 3, 'pt-BR');
-insert into Tribe (id, creationDate, lastChanged, chiefId, localeId) 
-	values(18, NOW(), NOW(), 3, 'ru-RU');
-insert into Tribe (id, creationDate, lastChanged, chiefId, localeId) 
-	values(19, NOW(), NOW(), 3, 'si-LK');
-insert into Tribe (id, creationDate, lastChanged, chiefId, localeId) 
-	values(20, NOW(), NOW(), 3, 'ta-IN');
-insert into Tribe (id, creationDate, lastChanged, chiefId, localeId) 
-	values(21, NOW(), NOW(), 3, 'te-IN');
-insert into Tribe (id, creationDate, lastChanged, chiefId, localeId) 
-	values(22, NOW(), NOW(), 3, 'zh-CN');
-insert into Tribe (id, creationDate, lastChanged, chiefId, localeId) 
-	values(23, NOW(), NOW(), 3, 'zh-TW');
+INSERT INTO Account (id, creationDate, lastChanged, apiKey, enabled, passwordHash, username) VALUES (1,'2009-01-14 11:39:00','2009-01-14 11:39:00',NULL,'','Eyox7xbNQ09MkIfRyH+rjg==','admin');
+INSERT INTO Account (id, creationDate, lastChanged, apiKey, enabled, passwordHash, username) VALUES (2,'2009-01-14 11:39:00','2009-01-14 11:39:00',NULL,'','/9Se/pfHeUH8FJ4asBD6jQ==','demo');
+INSERT INTO Account (id, creationDate, lastChanged, apiKey, enabled, passwordHash, username) VALUES (3,'2009-01-14 11:39:00','2009-01-14 11:39:00',NULL,'','pQRgEKG97HuyCfeoOR69Sg==','bob');
 	
-insert into Community (id, slug, name, description, homeContent, ownerId, creationDate, lastChanged)
-	values (1, 'jboss', 'JBoss.org', 'best community since sliced bread', NULL, 1, NOW(), NOW());
-insert into Community (id, slug, name, description, homeContent, ownerId, creationDate, lastChanged)
-	values (2, 'redhat', 'Red Hat', 'best community since sliced bread', NULL, 1, NOW(), NOW());
-insert into Community (id, slug, name, description, homeContent, ownerId, creationDate, lastChanged)
-	values (3, 'hibernate', 'Hibernate.org', 'best community since sliced bread', NULL, 1, NOW(), NOW());
-insert into Community (id, slug, name, description, homeContent, ownerId, creationDate, lastChanged)
-	values (4, 'seam', 'Seam', 'best community since sliced bread', NULL, 1, NOW(), NOW());
+INSERT INTO AccountRole (id, conditional, name) VALUES (1,'\0','admin');
+INSERT INTO AccountRole (id, conditional, name) VALUES (2,'\0','user');
+
+INSERT INTO AccountMembership (accountId, memberOf) VALUES (1,1);
+INSERT INTO AccountMembership (accountId, memberOf) VALUES (2,2);
+INSERT INTO AccountMembership (accountId, memberOf) VALUES (3,2);
 	
+INSERT INTO AccountRoleGroup (roleId, memberOf) VALUES  (1,2);
+
+INSERT INTO Person (id, creationDate, lastChanged, email, name, accountId) VALUES (1,'2009-01-14 11:39:00','2009-01-14 11:39:00','asgeirf@localhost','Administrator',1);
+INSERT INTO Person (id, creationDate, lastChanged, email, name, accountId) VALUES (2,'2009-01-14 11:39:00','2009-01-14 11:39:00','asgeirf@localhost','Sample User',2);
+INSERT INTO Person (id, creationDate, lastChanged, email, name, accountId) VALUES (3,'2009-01-14 11:39:00','2009-01-14 11:39:00','asgeirf@localhost','Bob Translator',3);
 	
+INSERT INTO Community (id, creationDate, lastChanged, slug, description, homeContent, name, ownerId) VALUES (1,'2009-01-14 11:39:00','2009-01-14 11:39:00','jboss','best community since sliced bread',NULL,'JBoss.org',1);
+INSERT INTO Community (id, creationDate, lastChanged, slug, description, homeContent, name, ownerId) VALUES (2,'2009-01-14 11:39:00','2009-01-14 11:39:00','redhat','best community since sliced bread',NULL,'Red Hat',1);
+INSERT INTO Community (id, creationDate, lastChanged, slug, description, homeContent, name, ownerId) VALUES (3,'2009-01-14 11:39:00','2009-01-14 11:39:00','hibernate','best community since sliced bread',NULL,'Hibernate.org',1);
+INSERT INTO Community (id, creationDate, lastChanged, slug, description, homeContent, name, ownerId) VALUES (4,'2009-01-14 11:39:00','2009-01-14 11:39:00','seam','best community since sliced bread',NULL,'Seam',1);
+	
+INSERT INTO FliesLocale (id, icuLocaleId, parentId) VALUES ('as-IN','as_IN',NULL);
+INSERT INTO FliesLocale (id, icuLocaleId, parentId) VALUES ('bn-IN','bn_IN',NULL);
+INSERT INTO FliesLocale (id, icuLocaleId, parentId) VALUES ('de-DE','de_DE',NULL);
+INSERT INTO FliesLocale (id, icuLocaleId, parentId) VALUES ('en-US','en_US',NULL);
+INSERT INTO FliesLocale (id, icuLocaleId, parentId) VALUES ('es-ES','es_ES',NULL);
+INSERT INTO FliesLocale (id, icuLocaleId, parentId) VALUES ('fr-FR','fr_FR',NULL);
+INSERT INTO FliesLocale (id, icuLocaleId, parentId) VALUES ('gu-IN','gu_IN',NULL);
+INSERT INTO FliesLocale (id, icuLocaleId, parentId) VALUES ('hi-IN','hi_IN',NULL);
+INSERT INTO FliesLocale (id, icuLocaleId, parentId) VALUES ('it-IT','it_IT',NULL);
+INSERT INTO FliesLocale (id, icuLocaleId, parentId) VALUES ('ja-JP','ja_JP',NULL);
+INSERT INTO FliesLocale (id, icuLocaleId, parentId) VALUES ('kn-IN','kn_IN',NULL);
+INSERT INTO FliesLocale (id, icuLocaleId, parentId) VALUES ('ko-KR','ko_KR',NULL);
+INSERT INTO FliesLocale (id, icuLocaleId, parentId) VALUES ('ml-IN','ml_IN',NULL);
+INSERT INTO FliesLocale (id, icuLocaleId, parentId) VALUES ('mr-IN','mr_IN',NULL);
+INSERT INTO FliesLocale (id, icuLocaleId, parentId) VALUES ('or-IN','or_IN',NULL);
+INSERT INTO FliesLocale (id, icuLocaleId, parentId) VALUES ('pa-IN','pa_IN',NULL);
+INSERT INTO FliesLocale (id, icuLocaleId, parentId) VALUES ('pt-BR','pt_BR',NULL);
+INSERT INTO FliesLocale (id, icuLocaleId, parentId) VALUES ('ru-RU','ru_RU',NULL);
+INSERT INTO FliesLocale (id, icuLocaleId, parentId) VALUES ('si-LK','si_LK',NULL);
+INSERT INTO FliesLocale (id, icuLocaleId, parentId) VALUES ('ta-IN','ta-IN',NULL);
+INSERT INTO FliesLocale (id, icuLocaleId, parentId) VALUES ('te-IN','te_IN',NULL);
+INSERT INTO FliesLocale (id, icuLocaleId, parentId) VALUES ('zh-CN','zh_CN',NULL);
+INSERT INTO FliesLocale (id, icuLocaleId, parentId) VALUES ('zh-TW','zh_TW',NULL);
+	
+INSERT INTO Tribe (id, creationDate, lastChanged, chiefId, localeId) VALUES (1,'2009-01-14 11:39:00','2009-01-14 11:39:00',3,'as-IN');
+INSERT INTO Tribe (id, creationDate, lastChanged, chiefId, localeId) VALUES (2,'2009-01-14 11:39:00','2009-01-14 11:39:00',3,'bn-IN');
+INSERT INTO Tribe (id, creationDate, lastChanged, chiefId, localeId) VALUES (3,'2009-01-14 11:39:00','2009-01-14 11:39:00',3,'de-DE');
+INSERT INTO Tribe (id, creationDate, lastChanged, chiefId, localeId) VALUES (4,'2009-01-14 11:39:00','2009-01-14 11:39:00',3,'en-US');
+INSERT INTO Tribe (id, creationDate, lastChanged, chiefId, localeId) VALUES (5,'2009-01-14 11:39:00','2009-01-14 11:39:00',3,'es-ES');
+INSERT INTO Tribe (id, creationDate, lastChanged, chiefId, localeId) VALUES (6,'2009-01-14 11:39:00','2009-01-14 11:39:00',3,'fr-FR');
+INSERT INTO Tribe (id, creationDate, lastChanged, chiefId, localeId) VALUES (7,'2009-01-14 11:39:00','2009-01-14 11:39:00',3,'gu-IN');
+INSERT INTO Tribe (id, creationDate, lastChanged, chiefId, localeId) VALUES (8,'2009-01-14 11:39:00','2009-01-14 11:39:00',3,'hi-IN');
+INSERT INTO Tribe (id, creationDate, lastChanged, chiefId, localeId) VALUES (9,'2009-01-14 11:39:00','2009-01-14 11:39:00',3,'it-IT');
+INSERT INTO Tribe (id, creationDate, lastChanged, chiefId, localeId) VALUES (10,'2009-01-14 11:39:00','2009-01-14 11:39:00',3,'ja-JP');
+INSERT INTO Tribe (id, creationDate, lastChanged, chiefId, localeId) VALUES (12,'2009-01-14 11:39:00','2009-01-14 11:39:00',3,'ko-KR');
+INSERT INTO Tribe (id, creationDate, lastChanged, chiefId, localeId) VALUES (13,'2009-01-14 11:39:00','2009-01-14 11:39:00',3,'ml-IN');
+INSERT INTO Tribe (id, creationDate, lastChanged, chiefId, localeId) VALUES (14,'2009-01-14 11:39:00','2009-01-14 11:39:00',3,'mr-IN');
+INSERT INTO Tribe (id, creationDate, lastChanged, chiefId, localeId) VALUES (15,'2009-01-14 11:39:00','2009-01-14 11:39:00',3,'or-IN');
+INSERT INTO Tribe (id, creationDate, lastChanged, chiefId, localeId) VALUES (16,'2009-01-14 11:39:00','2009-01-14 11:39:00',3,'pa-IN');
+INSERT INTO Tribe (id, creationDate, lastChanged, chiefId, localeId) VALUES (17,'2009-01-14 11:39:00','2009-01-14 11:39:00',3,'pt-BR');
+INSERT INTO Tribe (id, creationDate, lastChanged, chiefId, localeId) VALUES (18,'2009-01-14 11:39:00','2009-01-14 11:39:00',3,'ru-RU');
+INSERT INTO Tribe (id, creationDate, lastChanged, chiefId, localeId) VALUES (19,'2009-01-14 11:39:00','2009-01-14 11:39:00',3,'si-LK');
+INSERT INTO Tribe (id, creationDate, lastChanged, chiefId, localeId) VALUES (20,'2009-01-14 11:39:00','2009-01-14 11:39:00',3,'ta-IN');
+INSERT INTO Tribe (id, creationDate, lastChanged, chiefId, localeId) VALUES (21,'2009-01-14 11:39:00','2009-01-14 11:39:00',3,'te-IN');
+INSERT INTO Tribe (id, creationDate, lastChanged, chiefId, localeId) VALUES (22,'2009-01-14 11:39:00','2009-01-14 11:39:00',3,'zh-CN');
+INSERT INTO Tribe (id, creationDate, lastChanged, chiefId, localeId) VALUES (23,'2009-01-14 11:39:00','2009-01-14 11:39:00',3,'zh-TW');
