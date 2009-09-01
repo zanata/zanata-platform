@@ -2,10 +2,12 @@ package org.fedorahosted.flies.core.dao;
 
 import java.util.List;
 
+import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.core.model.IterationProject;
 import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.fedorahosted.flies.core.model.StatusCount;
 import org.fedorahosted.flies.repository.util.TranslationStatistics;
+import org.fedorahosted.flies.rest.dto.TextFlowTarget.ContentState;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.AutoCreate;
@@ -45,25 +47,31 @@ public class ProjectIterationDAO {
 		.setCacheable(true).uniqueResult();
 	}
 	
-	public TranslationStatistics getStatisticsForIteration(Long iterationId, String localeId){
-		if(true)
-			return new TranslationStatistics(1l, 1l, 1l, 1l);
+	public TranslationStatistics getStatisticsForContainer(Long containerId, LocaleId localeId){
+		
 		List<StatusCount> stats = session.createQuery(
-				"select new org.fedorahosted.flies.core.model.StatusCount(pt.status, count(pt)) " +
-				"from TextUnitTarget pt " +
-				"where pt.document.projectIteration.id = :id " +
-				"  and pt.locale.id = :localeId "+  
-				"group by pt.status"
+				"select new org.fedorahosted.flies.core.model.StatusCount(tft.state, count(tft)) " +
+				"from HTextFlowTarget tft " +
+				"where tft.textFlow.document.project.id = :id " +
+				"  and tft.locale = :locale "+  
+				"group by tft.state"
 			)
-			.setParameter("id", iterationId)
-			.setParameter("localeId", localeId)
+			.setParameter("id", containerId)
+			.setParameter("locale", localeId)
 			.setCacheable(true)
 			.list();
+		
+		
+		Long totalCount = (Long) session.createQuery("select count(tf) from HTextFlow tf where tf.document.project.id = :id")
+			.setParameter("id", containerId)
+			.setCacheable(true).uniqueResult();
 		
 		TranslationStatistics stat = new TranslationStatistics();
 		for(StatusCount count: stats){
 			stat.set(count.status, count.count);
 		}
+		
+		stat.set(ContentState.New, totalCount - stat.getNotApproved());
 		
 		return stat;
 	}

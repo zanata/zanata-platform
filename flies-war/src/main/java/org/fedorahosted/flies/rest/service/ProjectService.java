@@ -18,7 +18,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.fedorahosted.flies.core.dao.AccountDAO;
 import org.fedorahosted.flies.core.dao.ProjectDAO;
+import org.fedorahosted.flies.core.model.Account;
 import org.fedorahosted.flies.core.model.IterationProject;
 import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.fedorahosted.flies.rest.MediaTypes;
@@ -46,6 +48,9 @@ public class ProjectService{
 	
 	@In
 	ProjectDAO projectDAO;
+	
+	@In 
+	AccountDAO accountDAO;
 	
 	@In
 	Session session;
@@ -141,6 +146,13 @@ public class ProjectService{
 		p.setSlug(project.getId());
 		p.setName(project.getName());
 		p.setDescription(project.getDescription());
+		String apiKey = request.getHeader(FliesRestSecurityInterceptor.X_AUTH_TOKEN_HEADER);
+		if(apiKey != null) {
+			Account account = accountDAO.getByApiKey(apiKey);
+			if(account != null && account.getPerson() != null) {
+				p.getMaintainers().add(account.getPerson());
+			}
+		}
 		try{
 			session.save(p);
 			return Response.created( new URI("/p/"+p.getSlug()) ).build();

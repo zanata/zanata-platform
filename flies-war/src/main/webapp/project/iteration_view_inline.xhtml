@@ -28,7 +28,7 @@
                   rowClasses="odd,even">
     <rich:column>#{tribe.locale.nativeName}</rich:column>
     <rich:column>
-      <ui:param name="tstatus" value="#{projectIterationDAO.getStatisticsForIteration(_iteration.id, tribe.locale.id)}" />
+      <ui:param name="tstatus" value="#{projectIterationDAO.getStatisticsForContainer(_iteration.container.id, tribe.locale.localeId)}" />
       <flies:translation-status-bar
         title="Total: #{tstatus.total}, Translated: #{tstatus.approved}, Fuzzy #{tstatus.fuzzyMatch}"
         translated="#{tstatus.approved}" 

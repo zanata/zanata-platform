@@ -7,7 +7,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
 
-@XmlRootElement(name="document", namespace=Namespaces.DOCUMENT)
 @XmlType(name="documentRefType", namespace=Namespaces.DOCUMENT)
 public class DocumentRef extends AbstractDocument{
 

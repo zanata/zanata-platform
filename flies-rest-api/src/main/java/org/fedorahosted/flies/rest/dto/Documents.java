@@ -21,12 +21,12 @@ import org.jboss.resteasy.spi.touri.URITemplate;
 @XmlType(name="documentsType", namespace=Namespaces.DOCUMENT)
 public class Documents {
 	
-	private List<Document> documents;
+	private List<DocumentRef> documents;
 	
 	@XmlElement(name="document", namespace=Namespaces.DOCUMENT)
-	public List<Document> getDocuments() {
+	public List<DocumentRef> getDocuments() {
 		if(documents == null)
-			documents = new ArrayList<Document>();
+			documents = new ArrayList<DocumentRef>();
 		return documents;
 	}
 	

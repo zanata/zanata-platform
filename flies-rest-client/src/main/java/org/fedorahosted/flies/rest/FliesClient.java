@@ -7,11 +7,14 @@ import java.net.URISyntaxException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.rest.client.DocumentResource;
 import org.fedorahosted.flies.rest.client.ProjectIterationResource;
 import org.fedorahosted.flies.rest.client.ProjectResource;
+import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
+import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.client.ProxyFactory;
@@ -54,7 +57,7 @@ public class FliesClient {
 	
 	public DocumentResource getDocumentResource(String projectSlug, String iterationSlug){
 		return clientRequestFactory.createProxy(DocumentResource.class, 
-				baseUri.toString() + "projects/p/" + projectSlug + "/iterations/i/" + iterationSlug + "/documents");
+				baseUri.toString() + "/projects/p/" + projectSlug + "/iterations/i/" + iterationSlug + "/documents");
 	}
 	
 	public URI getBaseUri() {
@@ -80,7 +83,7 @@ public class FliesClient {
 			Response r = projectResource.updateProject("myproject", p);
 			System.out.println("Completed with status: " + r.getStatus());
 			
-			for (int i = 1; i < 100; i++) {
+			for (int i = 1; i < 2; i++) {
 				p = new Project("myxproject-"+i, "Project #"+i, "Sample Description #"+i);
 				r = projectResource.addProject(p);
 				Status s = Status.fromStatusCode(r.getStatus());
@@ -93,7 +96,7 @@ public class FliesClient {
 				
 				ProjectIterationResource projectIterationResource = 
 					client.getProjectIterationResource(p.getId());
-				for (int j = 1; j < 6; j++) {
+				for (int j = 1; j < 3; j++) {
 					ProjectIteration pIt = new ProjectIteration();
 					pIt.setId("iteration-"+j);
 					pIt.setName("Project Iteration #"+j);
@@ -105,6 +108,29 @@ public class FliesClient {
 					}
 					else{
 						System.err.println("  " + j + " Iteration Creation Failed with status: " + s);
+					}
+					
+					String [] documentIds = {
+							"my/document/doc1.txt", 
+							"my/document/other.txt"};
+					
+					DocumentResource documentResource = client.getDocumentResource(p.getId(), pIt.getId());
+					for (int k = 0; k < documentIds.length; k++) {
+						Document doc = new Document(documentIds[k], ContentType.TextPlain);
+						
+						TextFlow tf = new TextFlow("tf1");
+						tf.setContent("Hello World");
+						doc.getResources().add(tf);
+						
+						r = documentResource.addDocument(doc);
+						s = Status.fromStatusCode(r.getStatus());
+						if(Status.CREATED == s ) {
+							System.out.println("    Document Created: " + documentIds[k]);
+						}
+						else{
+							System.err.println("    " + documentIds[k] + " Creation Failed with status: " + s);
+						}
+						
 					}
 					
 				}

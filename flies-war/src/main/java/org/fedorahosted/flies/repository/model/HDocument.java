@@ -146,12 +146,13 @@ public class HDocument extends AbstractFliesEntity{
 	public void copy(List<Resource> content){
 		for(Resource res :content){
 			HResource hRes = create(res);
+			hRes.setDocument(this);
 			getResourceTree().add(hRes);
 		}
 	}
 	
 	@NaturalId
-	@Length(max=256)
+	@Length(max=128)
 	@NotEmpty
 	public String getDocId() {
 		return docId;

@@ -32,20 +32,9 @@ public interface DocumentResource {
 			Document document);
 	
 	@PUT
-	@Path("/d/{documentId}")
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
-	public Response addDocument(@PathParam("documentId") String documentId,
-			Document document);
+	public Response addDocument(Document document);
 
-	/*
-	@GET
-	@Path("/d/{documentId}/resources")
-	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENT_RESOURCE_XML, MediaType.APPLICATION_JSON })
-	public Resource getResource(
-			@PathParam("documentId") String documentId,
-			@PathParam("resId") String resId);
-	 */
-	
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
 	public ClientResponse<Documents> getDocuments();

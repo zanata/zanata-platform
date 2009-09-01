@@ -81,6 +81,10 @@
               <ui:define name="label">Version</ui:define>
               #{hProjectHome.docNode.data.revision}
             </s:decorate>
+            <s:decorate template="../layout/edit.xhtml">
+              <ui:define name="label">Number of TUs</ui:define>
+              #{hProjectHome.docNode.data.resourceTree.size}
+            </s:decorate>
           </s:div>
           <s:div rendered="#{not hProjectHome.isDocSelection()}">
             <em>Select a Document to view Details</em>
