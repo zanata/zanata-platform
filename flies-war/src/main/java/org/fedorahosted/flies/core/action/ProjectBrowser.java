@@ -7,6 +7,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.fedorahosted.flies.core.model.Project;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
@@ -24,7 +27,7 @@ public class ProjectBrowser {
 	private static final int DEFAULT_LIMIT = 20;
 	private static final String ORDERBY_NAME = "name";
 	private static final String ORDERBY_ID = "id";
-	private static final String ORDERBY_TIMESTAMP = "timestamp";
+	private static final String ORDERBY_TIMESTAMP = "creationDate";
 	private static final List<String> ORDERBY_VALUES = Arrays.asList(
 			ORDERBY_NAME, ORDERBY_TIMESTAMP, ORDERBY_ID);
 
@@ -43,8 +46,8 @@ public class ProjectBrowser {
 	private Log log;
 
 	@In
-	private EntityManager entityManager;
-
+	private Session session;
+	
 	@Out(required = false)
 	private List<Project> projects;
 
@@ -54,11 +57,11 @@ public class ProjectBrowser {
 	@SuppressWarnings("unchecked")
 	@Factory("latestProjects")
 	public void getLatestProjects() {
-		Query q = entityManager
-				.createQuery("select p from Project p order by :order");
-		q.setParameter("order", ORDERBY_NAME);
-		q.setMaxResults(DEFAULT_LIMIT);
-		latestProjects = q.getResultList();
+		latestProjects = session.createCriteria(Project.class)
+			.addOrder(Order.asc(ORDERBY_NAME))
+			.setMaxResults(DEFAULT_LIMIT)
+			.setComment("ProjectBrowser.getLatestProjects()")
+			.list();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -77,18 +80,18 @@ public class ProjectBrowser {
 			pageNumber = page;
 		}
 
-		Query q = entityManager
-				.createQuery("select p from Project p order by :order");
-		log.debug("setting order by to '{0}'", order);
-		q.setParameter("order", order);
-		q.setFirstResult((pageNumber - 1) * DEFAULT_LIMIT);
-		q.setMaxResults(DEFAULT_LIMIT);
-		projects = q.getResultList();
+		projects = session.createCriteria(Project.class)
+			.addOrder(Order.asc(order))
+			.setMaxResults(DEFAULT_LIMIT)
+			.setFirstResult((pageNumber - 1) * DEFAULT_LIMIT)
+			.setComment("ProjectBrowser.getProjects()")
+			.list();
 	}
 
 	public Integer getSize() {
-		return (Integer) entityManager.createQuery(
-				"select count(*) from Project p").getSingleResult();
+		return session.createCriteria(Project.class)
+			.setComment("ProjectBrowser.getSize()")
+			.list().size();
 	}
 
 }
