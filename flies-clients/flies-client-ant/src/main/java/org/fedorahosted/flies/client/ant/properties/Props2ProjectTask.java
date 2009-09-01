@@ -15,17 +15,18 @@ import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.adapter.properties.PropReader;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.DocumentRef;
-import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
 
 public class Props2ProjectTask extends MatchingTask {
 
+    private String apiKey;
     private boolean debug;
     private String dst;
     private String[] locales;
     private String projectID;
     private String sourceLang;
     private File srcDir;
+    private String url;
 
     @Override
     public void execute() throws BuildException {
@@ -92,6 +93,10 @@ public class Props2ProjectTask extends MatchingTask {
 	super.log(msg, org.apache.tools.ant.Project.MSG_VERBOSE);
     }
     
+    public void setApiKey(String apiKey) {
+	this.apiKey = apiKey;
+    }
+    
     public void setDebug(boolean debug) {
 	this.debug = debug;
     }
@@ -117,4 +122,7 @@ public class Props2ProjectTask extends MatchingTask {
 	logVerbose("srcDir=" + srcDir);
     }
 
+    public void setUrl(String url) {
+	this.url = url;
+    }
 }
