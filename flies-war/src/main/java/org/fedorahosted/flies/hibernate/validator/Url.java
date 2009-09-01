@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.validators;
+package org.fedorahosted.flies.hibernate.validator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

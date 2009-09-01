@@ -2,7 +2,7 @@ package org.fedorahosted.flies.core.model;
 
 import javax.persistence.MappedSuperclass;
 
-import org.fedorahosted.flies.validators.Slug;
+import org.fedorahosted.flies.hibernate.validator.Slug;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;
