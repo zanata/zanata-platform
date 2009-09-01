@@ -13,8 +13,11 @@ import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
+import org.fedorahosted.flies.rest.service.FliesRestSecurityInterceptor;
 import org.fedorahosted.flies.util.DBUnitImporter;
 import org.hibernate.jmx.StatisticsService;
+import org.jboss.resteasy.core.Dispatcher;
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
@@ -24,6 +27,7 @@ import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.resteasy.SeamResteasyProviderFactory;
 
 /**
  * Doesn't do much useful stuff except printing a log message and firing the
@@ -80,8 +84,16 @@ public class FliesInit {
 			}
 		}
 
+		log.info("Starting REST security context");
+		Dispatcher dispatcher = (Dispatcher) Component.getInstance("org.jboss.seam.resteasy.dispatcher");
+		if(dispatcher == null){
+			log.error("Failed to initialize REST security context");
+		}
+		else{
+			dispatcher.getProviderFactory().getServerPreProcessInterceptorRegistry().register(FliesRestSecurityInterceptor.class);
+		}
 		Events.instance().raiseEvent(EVENT_Flies_Startup);
-
+	
 		log.info("Started Flies...");
 
 		// System.out.println(listJNDITree("java:"));

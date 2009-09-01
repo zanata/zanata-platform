@@ -52,7 +52,6 @@ public class ProjectService{
 
 	public Response addProject(String projectSlug,
 			org.fedorahosted.flies.rest.dto.Project project) {
-		checkPermissions();
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -62,7 +61,6 @@ public class ProjectService{
 	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
 	public org.fedorahosted.flies.rest.dto.Project getProject(
 			@PathParam("projectSlug") String projectSlug) {
-		checkPermissions();
 
 		org.fedorahosted.flies.core.model.Project p = projectDAO.getBySlug(projectSlug);
 		if(p == null)
@@ -97,7 +95,6 @@ public class ProjectService{
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECTS_XML, MediaType.APPLICATION_JSON })
 	public ProjectRefs getProjects() {
-		checkPermissions();
 		ProjectRefs projectRefs = new ProjectRefs();
 		
 		List<org.fedorahosted.flies.core.model.Project> projects = session.createQuery("select p from Project p").list();
@@ -113,18 +110,8 @@ public class ProjectService{
 
 	public Response updateProject(String projectSlug,
 			org.fedorahosted.flies.rest.dto.Project project) {
-		checkPermissions();
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	private void checkPermissions(){
-		String authToken = request.getHeader("X-Auth-Token");
-		log.info("Attempted to authenticate with token {0}", authToken);
-		if(!"bob".equals(authToken)){
-			throw new UnauthorizedException();
-		}
-	}	
-	
 	
 }

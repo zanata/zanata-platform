@@ -51,7 +51,8 @@ public class FliesClient {
 	}
 	
 	public DocumentResource getDocumentResource(String projectSlug, String iterationSlug){
-		return clientRequestFactory.createProxy(DocumentResource.class, baseUri.toString() + "projects/p/" + projectSlug + "/iterations/i/" + iterationSlug + "/documents");
+		return clientRequestFactory.createProxy(DocumentResource.class, 
+				baseUri.toString() + "projects/p/" + projectSlug + "/iterations/i/" + iterationSlug + "/documents");
 	}
 	
 	public URI getBaseUri() {
@@ -65,15 +66,20 @@ public class FliesClient {
 	public static void main(String[] args) throws URISyntaxException {
 		FliesClient client = new FliesClient("http://localhost:8080/flies/seam/resource/restv1", "bob");
 		
-		ClientResponse<Project> projectResponse = client.getProjectResource().getProject("myproject");
+		ProjectResource projectResource = client.getProjectResource();
+		
+		ClientResponse<Project> projectResponse = projectResource.getProject("myproject");
 		
 		if (projectResponse.getResponseStatus().getStatusCode() < 399) {
 			Project p = projectResponse.getEntity();
 			System.out.println( p.getName() );
 			p.setName( "replaced "+ p.getName());
-			Response r = client.getProjectResource().updateProject("myproject", p);
+			Response r = projectResource.updateProject("myproject", p);
 			System.out.println("Completed with status: " + r.getStatus());
 		}
+		
+		DocumentResource documentResource = client.getDocumentResource("myproject", "myiteration");
+		//r = documentResource.addDocument("myid", document);
 		
 	}
 }
