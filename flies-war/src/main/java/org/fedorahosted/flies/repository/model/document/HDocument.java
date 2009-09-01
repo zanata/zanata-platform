@@ -147,12 +147,12 @@ public class HDocument extends AbstractFliesEntity{
 	public void copy(List<Resource> content){
 		for(Resource res :content){
 			HResource hRes = create(res);
-			//getResourceTree().add(hRes);
+			getResourceTree().add(hRes);
 		}
 	}
 	
 	@NaturalId
-	@Length(max=128)
+	@Length(max=256)
 	@NotEmpty
 	public String getDocId() {
 		return docId;
@@ -254,7 +254,7 @@ public class HDocument extends AbstractFliesEntity{
 	public void setTargets(List<HDocumentTarget> targets) {
 		this.targets = targets;
 	}
-/*
+
 	@OneToMany(cascade=CascadeType.ALL)
 	@Where(clause="parent_id=NULL")
 	@IndexColumn(name="pos",base=0,nullable=false)
@@ -267,5 +267,5 @@ public class HDocument extends AbstractFliesEntity{
 	
 	public void setResourceTree(List<HResource> resourceTree) {
 		this.resourceTree = resourceTree;
-	}*/
+	}
 }
