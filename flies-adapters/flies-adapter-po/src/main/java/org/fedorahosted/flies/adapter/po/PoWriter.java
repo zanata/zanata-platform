@@ -20,6 +20,11 @@ import org.fedorahosted.flies.rest.dto.SimpleComment;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.TextFlowTargets;
+import org.fedorahosted.flies.rest.dto.po.HeaderEntry;
+import org.fedorahosted.flies.rest.dto.po.PoHeader;
+import org.fedorahosted.flies.rest.dto.po.PoTargetHeader;
+import org.fedorahosted.flies.rest.dto.po.PoTargetHeaders;
+import org.fedorahosted.flies.rest.dto.po.PotEntryData;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
 import org.fedorahosted.tennera.jgettext.Message;
 

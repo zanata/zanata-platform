@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.adapter.po;
+package org.fedorahosted.flies.rest.dto.po;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
-import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.rest.dto.SimpleComment;
-import org.fedorahosted.tennera.jgettext.Message;
 
 @XmlRootElement(name="po-entry", namespace=PoHeader.NAMESPACE)
 @XmlType(name="poEntryType", namespace=PoHeader.NAMESPACE, propOrder={"context", "extractedComment", "references", "flags"})
@@ -29,16 +27,6 @@ public class PotEntryData {
 	
 	public PotEntryData(String id) {
 		this.id = id;
-	}
-	
-	public PotEntryData(String id, Message message) {
-		this.id = id;
-		if(message.getMsgctxt() != null){
-			setContext(message.getMsgctxt());
-		}
-		getExtractedComment().setValue(StringUtils.join(message.getExtractedComments(),"\n"));
-		getFlags().addAll(message.getFormats());
-		getReferences().addAll(message.getSourceReferences());
 	}
 	
 	

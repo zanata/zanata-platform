@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.adapter.po;
+package org.fedorahosted.flies.rest.dto.po;
 
 import java.util.HashSet;
 import java.util.Set;

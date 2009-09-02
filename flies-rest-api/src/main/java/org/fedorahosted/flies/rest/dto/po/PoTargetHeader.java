@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.adapter.po;
+package org.fedorahosted.flies.rest.dto.po;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;

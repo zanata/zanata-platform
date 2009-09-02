@@ -20,6 +20,11 @@ import org.fedorahosted.flies.rest.dto.SimpleComments;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget.ContentState;
+import org.fedorahosted.flies.rest.dto.po.HeaderEntry;
+import org.fedorahosted.flies.rest.dto.po.PoHeader;
+import org.fedorahosted.flies.rest.dto.po.PoTargetHeader;
+import org.fedorahosted.flies.rest.dto.po.PoTargetHeaders;
+import org.fedorahosted.flies.rest.dto.po.PotEntryData;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
 import org.fedorahosted.tennera.jgettext.Message;
 import org.fedorahosted.tennera.jgettext.catalog.parse.MessageStreamParser;
@@ -176,10 +181,21 @@ public class PoReader {
 				resources.add(tf);
 
 				// add the entry header POT fields
-				tf.getExtensions().add(new PotEntryData(id, message));
+				tf.getExtensions().add( createFromMessage(id, message));
 			}
 
 		}
+	}
+	
+	private static PotEntryData createFromMessage(String id, Message message){
+		PotEntryData data = new PotEntryData(id);
+			if(message.getMsgctxt() != null){
+				data.setContext(message.getMsgctxt());
+			}
+			data.getExtractedComment().setValue(StringUtils.join(message.getExtractedComments(),"\n"));
+			data.getFlags().addAll(message.getFormats());
+			data.getReferences().addAll(message.getSourceReferences());
+			return data;
 	}
 
 	public void extractTemplate(Document document, InputSource inputSource) {
@@ -235,7 +251,7 @@ public class PoReader {
 				resources.add(tf);
 
 				// add the entry header POT fields
-				tf.getExtensions().add(new PotEntryData(id, message));
+				tf.getExtensions().add( createFromMessage(id, message));
 				
 				// add the target content (msgstr) 
 				TextFlowTarget tfTarget = new TextFlowTarget(tf, targetLocaleId);

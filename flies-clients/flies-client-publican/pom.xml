@@ -14,5 +14,10 @@
       <artifactId>flies-adapter-po</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.fedorahosted.flies</groupId>
+      <artifactId>flies-rest-client</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 </project>
