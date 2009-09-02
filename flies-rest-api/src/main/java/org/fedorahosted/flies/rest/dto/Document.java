@@ -9,11 +9,17 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 
 import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.rest.dto.po.HeaderEntry;
+import org.fedorahosted.flies.rest.dto.po.PoHeader;
+import org.fedorahosted.flies.rest.dto.po.PoTargetHeader;
+import org.fedorahosted.flies.rest.dto.po.PoTargetHeaders;
+import org.fedorahosted.flies.rest.dto.po.PotEntryData;
 import org.jboss.resteasy.annotations.providers.jaxb.json.Mapped;
 import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
 import org.jboss.resteasy.spi.touri.URITemplate;
@@ -26,6 +32,14 @@ import org.jboss.resteasy.spi.touri.URITemplate;
 })
 @XmlRootElement(name="document", namespace=Namespaces.DOCUMENT)
 @XmlType(name="documentType", namespace=Namespaces.DOCUMENT, propOrder={"resources", "extensions"})
+@XmlSeeAlso({
+	HeaderEntry.class,
+	PoHeader.class,
+	PoTargetHeader.class,
+	PoTargetHeaders.class,
+	PotEntryData.class,
+	PotEntryData.class
+})
 public class Document extends AbstractDocument implements IExtensible{
 
 	private String id;

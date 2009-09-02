@@ -1,4 +1,5 @@
 
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +27,7 @@ import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.internal.runners.statements.Fail;
 import org.xml.sax.InputSource;
 
 public class PublishPoFileTest {
@@ -33,10 +35,9 @@ public class PublishPoFileTest {
 	@Test
 	public void publishASinglePOfile() throws IOException, JAXBException, URISyntaxException {
 
-		Document doc = new Document("doc1","mydoc.doc", "/", PoReader.PO_CONTENT_TYPE);
+		Document doc = new Document("mydoc.po","mydoc.po", "/", PoReader.PO_CONTENT_TYPE);
 		
 		InputSource inputSource = new InputSource(
-				//new File("/home/asgeirf/projects/gitsvn/Deployment_Guide/pt-BR/SELinux_Background.po").toURI().toString()
 				"http://svn.fedorahosted.org/svn/Deployment_Guide/community/fc10/de-DE/Apache.po"
 		);
 		inputSource.setEncoding("utf8");
@@ -46,22 +47,21 @@ public class PublishPoFileTest {
 		System.out.println("parsing template");
 		poReader.extractTemplate(doc, inputSource);
 		
+		System.out.println("starting REST client");
 		FliesClient client = new FliesClient("http://localhost:8080/flies/seam/resource/restv1", "bob");
-		
-		ProjectResource projectResource = client.getProjectResource();
-		
 		DocumentResource docResource = client.getDocumentResource("sample-project", "1.0");
+
+		System.out.println("Publishing document");
 		Response response = docResource.addDocument(doc);
+		
 		Status s = Status.fromStatusCode(response.getStatus());
 		if(Status.CREATED == s ) {
 			System.out.println("Document Created: " + doc.getId());
 		}
 		else{
-			System.err.println("Creation Failed with status: " + s);
+			fail("Creation Failed with status: " + s);
 		}
 		
-		ClientResponse<Project> projectResponse = projectResource.getProject("sample-project");
-		
-		
 	}
+	
 }
