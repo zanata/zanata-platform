@@ -16,20 +16,16 @@
   </h2>
   <p><em>#{project.description}</em></p>
   <p>
-    <ui:repeat value="#{project.projectSeries}" var="s">
-      <s:fragment rendered="#{s.name != 'default'}">#{s.name} ( </s:fragment>
-      <ui:repeat value="#{s.projectIterations}" var="t">
-        <span style="margin-right: 1pt; margin-left: 1pt;">
-          <s:link id="project"
-               value="#{t.name}"
-               propagation="none"
-               view="/project/iteration.xhtml">
-            <f:param name="mslug"
-                     value="#{project.slug}/#{t.slug}"/>
-          </s:link>
-        </span> 
-      </ui:repeat>
-      <s:fragment rendered="#{s.name != 'default'}"> ) </s:fragment>
+    <ui:repeat value="#{project.projectIterations}" var="t">
+      <span style="margin-right: 1pt; margin-left: 1pt;">
+        <s:link id="project"
+             value="#{t.name}"
+             propagation="none"
+             view="/project/iteration.xhtml">
+          <f:param name="mslug"
+                   value="#{project.slug}/#{t.slug}"/>
+        </s:link>
+      </span> 
     </ui:repeat>
   </p>
 
