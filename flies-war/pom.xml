@@ -675,14 +675,14 @@
       <version>3.3.1.GA</version>
       <scope>provided</scope>
     </dependency>
-    
+    <!--
     <dependency>
       <groupId>org.jboss.envers</groupId>
       <artifactId>jboss-envers</artifactId>
       <version>1.2.1.GA-hibernate-3.3</version>
       <scope>provided</scope>
     </dependency>
-    
+    -->
     <!--  Testing dependencies -->
 
     <dependency>
