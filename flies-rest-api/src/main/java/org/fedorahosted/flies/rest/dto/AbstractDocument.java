@@ -42,6 +42,7 @@ abstract class AbstractDocument {
 		switch(lastSepChar){
 		case -1:
 			this.path = "";
+			this.name = fullPath;
 			break;
 		case 0:
 			this.path = "/";

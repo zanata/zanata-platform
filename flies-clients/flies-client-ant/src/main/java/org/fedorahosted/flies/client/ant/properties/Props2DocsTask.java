@@ -2,6 +2,7 @@ package org.fedorahosted.flies.client.ant.properties;
 
 import java.io.File;
 import java.net.URL;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -15,12 +16,9 @@ import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.adapter.properties.PropReader;
 import org.fedorahosted.flies.rest.FliesClient;
 import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.DocumentRef;
-import org.fedorahosted.flies.rest.dto.Project;
-import org.fedorahosted.flies.rest.dto.ProjectIteration;
-import org.jboss.resteasy.client.ClientResponse;
+import org.fedorahosted.flies.rest.dto.Documents;
 
-public class Props2ProjectTask extends MatchingTask {
+public class Props2DocsTask extends MatchingTask {
 
     private String apiKey;
     private boolean debug;
@@ -50,7 +48,8 @@ public class Props2ProjectTask extends MatchingTask {
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 	    }
 	    
-	    ProjectIteration projectIteration = new ProjectIteration(projectID, null);
+	    Documents docs = new Documents();
+	    List<Document> docList = docs.getDocuments();
 	    PropReader propReader = new PropReader();
 	    // for each of the base props files under srcdir:
 	    for (String filename : files) {
@@ -58,10 +57,10 @@ public class Props2ProjectTask extends MatchingTask {
 		doc.setLang(LocaleId.fromJavaName(sourceLang));
 		File f = new File(srcDir, filename);
 		propReader.extractAll(doc, f, locales);
-		projectIteration.getDocuments().add(new DocumentRef(doc));
+		docList.add(doc);
 	    }
 	    if (debug) {
-		m.marshal(projectIteration, System.out);
+		m.marshal(docs, System.out);
 	    }
 	    // TODO send project to rest api
 
@@ -69,18 +68,16 @@ public class Props2ProjectTask extends MatchingTask {
 		return;
 	    
 	    URL dstURL = Utility.createURL(dst, getProject());
-//	    m.marshall(project, dstURL.openConnection().getOutputStream());
 	    if("file".equals(dstURL.getProtocol())) {
-		m.marshal(projectIteration, new File(dstURL.getFile()));
+		m.marshal(docs, new File(dstURL.getFile()));
+	    } else {
+		FliesClient client = new FliesClient(url, apiKey);
+//		ClientResponse<Project> projResp = client.getProjectResource().getProject("FIXME");
+//		if (projResp.getResponseStatus().getStatusCode() >= 399)
+//		    throw new BuildException(projResp.getResponseStatus().toString());
+//		ProjectIteration iter = projResp.getEntity(). project+"/"+iteration);
+//		iter.getDocuments().addAll(docs);
 	    }
-	    
-	    FliesClient client = new FliesClient(url, apiKey);
-	    ClientResponse<Project> projResp = client.getProjectResource().getProject("FIXME");
-	    if (projResp.getResponseStatus().getStatusCode() >= 399)
-		throw new BuildException(projResp.getResponseStatus().toString());
-//	    ProjectIteration iter = projResp.getEntity(). project+"/"+iteration);
-//	    iter.getDocuments().addAll(docs);
-		
 
 	} catch (Exception e) {
 	    throw new BuildException(e);

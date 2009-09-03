@@ -9,10 +9,10 @@ import javax.xml.bind.Unmarshaller;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.taskdefs.MatchingTask;
 import org.fedorahosted.flies.adapter.properties.PropWriter;
-import org.fedorahosted.flies.rest.dto.DocumentRef;
-import org.fedorahosted.flies.rest.dto.ProjectIteration;
+import org.fedorahosted.flies.rest.dto.Document;
+import org.fedorahosted.flies.rest.dto.Documents;
 
-public class Project2PropsTask extends MatchingTask {
+public class Docs2PropsTask extends MatchingTask {
 
     private String apiKey;
     private boolean debug;
@@ -31,11 +31,11 @@ public class Project2PropsTask extends MatchingTask {
 	    
 	    URL srcURL = Utility.createURL(src, getProject());
 	    
-	    // TODO use rest api to fetch project
-	    ProjectIteration projectIteration = (ProjectIteration) m.unmarshal(srcURL);
+	    // TODO use rest api to fetch Documents
+	    Documents docs = (Documents) m.unmarshal(srcURL);
 	    
-	    for (DocumentRef doc : projectIteration.getDocuments()) {
-		PropWriter.write(doc.getRef(), dstDir);
+	    for (Document doc : docs.getDocuments()) {
+		PropWriter.write(doc, dstDir);
 	    }
 	} catch (Exception e) {
 	    throw new BuildException(e);
