@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.List;
 
+import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
@@ -15,6 +16,7 @@ import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.adapter.properties.PropReader;
 import org.fedorahosted.flies.rest.FliesClient;
+import org.fedorahosted.flies.rest.client.DocumentResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Documents;
 
@@ -72,11 +74,10 @@ public class Props2DocsTask extends MatchingTask {
 		m.marshal(docs, new File(dstURL.getFile()));
 	    } else {
 		FliesClient client = new FliesClient(url, apiKey);
-//		ClientResponse<Project> projResp = client.getProjectResource().getProject("FIXME");
-//		if (projResp.getResponseStatus().getStatusCode() >= 399)
-//		    throw new BuildException(projResp.getResponseStatus().toString());
-//		ProjectIteration iter = projResp.getEntity(). project+"/"+iteration);
-//		iter.getDocuments().addAll(docs);
+		DocumentResource documentResource = client.getDocumentResource("FIXME", "METOO");
+		Response response = documentResource.replace(docs);
+		if (response.getStatus() >= 399)
+		    throw new BuildException(response.toString());
 	    }
 
 	} catch (Exception e) {
