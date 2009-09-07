@@ -302,12 +302,7 @@
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <includes>
-            <include>**/*Test.java</include>
-          </includes>
-          <excludes>
-            <exclude>**/*SeamTest.java</exclude>
-          </excludes>
+          <groups>unit-tests</groups>
         </configuration>
       </plugin>
       
