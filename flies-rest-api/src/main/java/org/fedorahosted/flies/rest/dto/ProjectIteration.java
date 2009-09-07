@@ -1,7 +1,10 @@
 package org.fedorahosted.flies.rest.dto;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+
+import javassist.expr.NewArray;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -27,6 +30,10 @@ public class ProjectIteration extends AbstractProjectIteration{
 	private String id;
 	
 	private List<DocumentRef> documents;
+	
+//	private URI documents__ = new URI("documents");
+	
+//	private String documents_ = "documents";
 	
 	public ProjectIteration() {
 	}

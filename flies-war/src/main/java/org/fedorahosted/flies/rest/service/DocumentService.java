@@ -18,16 +18,13 @@ import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.dao.ProjectIterationDAO;
 import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.fedorahosted.flies.repository.model.HDocument;
-import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.repository.model.HResource;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.DocumentRef;
-import org.fedorahosted.flies.rest.dto.Documents;
+import org.fedorahosted.flies.rest.dto.DocumentRefs;
 import org.fedorahosted.flies.rest.dto.Resource;
-import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.spi.NotFoundException;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -99,13 +96,13 @@ public class DocumentService {
 
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
-	public Documents getDocuments() {
+	public DocumentRefs getDocuments() {
 		ProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
 		
 		if(hProjectIteration == null)
 			throw new NotFoundException("No such Project Iteration");
 		
-		Documents documents = new Documents();
+		DocumentRefs documents = new DocumentRefs();
 
 		for(HDocument doc : hProjectIteration.getContainer().getDocuments() ){
 			documents.getDocuments().add( 

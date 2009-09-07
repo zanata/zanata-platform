@@ -13,8 +13,8 @@ import javax.ws.rs.core.Response;
 
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Document;
+import org.fedorahosted.flies.rest.dto.DocumentRefs;
 import org.fedorahosted.flies.rest.dto.Documents;
-import org.fedorahosted.flies.rest.dto.Resource;
 import org.jboss.resteasy.client.ClientResponse;
 
 public interface DocumentResource {
@@ -35,8 +35,13 @@ public interface DocumentResource {
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
 	public Response addDocument(Document document);
 
+	@POST
+	@Path("/replace")
+	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
+	public Response replace(Documents documents);
+
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
-	public ClientResponse<Documents> getDocuments();
+	public ClientResponse<DocumentRefs> getDocuments();
 	
 }
