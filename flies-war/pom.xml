@@ -327,6 +327,7 @@
           </suiteXmlFiles>        
           <additionalClasspathElements>
             <additionalClasspathElement>${project.build.testOutputDirectory}/bootstrap</additionalClasspathElement>
+            <additionalClasspathElement>${project.build.directory}/flies</additionalClasspathElement>
           </additionalClasspathElements>
           <childDelegation>true</childDelegation>
           <useSystemClassLoader>true</useSystemClassLoader>
