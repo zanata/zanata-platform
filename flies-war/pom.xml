@@ -323,7 +323,7 @@
             <include>**/*SeamTest.java</include>
           </includes>
           <suiteXmlFiles>
-            <suiteXmlFile>src/test/resources/AllTests.tng.xml</suiteXmlFile>
+            <suiteXmlFile>src/test/resources/AllIntegrationTests.tng.xml</suiteXmlFile>
           </suiteXmlFiles>        
           <additionalClasspathElements>
             <additionalClasspathElement>${project.build.testOutputDirectory}/bootstrap</additionalClasspathElement>
