@@ -13,6 +13,7 @@ import org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+@Test(groups={"seam-tests"})
 public class ProjectServiceSeamTest extends SeamTest {
 
 	ResourceRequestEnvironment sharedEnvironment;

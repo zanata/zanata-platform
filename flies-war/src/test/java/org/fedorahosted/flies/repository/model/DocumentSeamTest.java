@@ -14,6 +14,7 @@ import org.fedorahosted.flies.core.model.ProjectSeries;
 import org.jboss.seam.mock.DBUnitSeamTest;
 import org.testng.annotations.Test;
 
+@Test(groups={"seam-tests"})
 public class DocumentSeamTest extends DBUnitSeamTest {
 
     protected void prepareDBUnitOperations() {
