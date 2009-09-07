@@ -2,7 +2,7 @@
 <dataset>
 	<Person id="1"
 		creationDate="[NULL]"
-		timestamp="[NULL]" 
+		lastChanged="[NULL]" 
 		email="bean@mr.com" 
 		name="Mr Bean"
 	/>

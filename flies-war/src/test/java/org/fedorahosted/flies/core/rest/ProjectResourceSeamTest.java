@@ -3,6 +3,7 @@ package org.fedorahosted.flies.core.rest;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.fedorahosted.flies.rest.MediaTypes;
 import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
 import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
 import org.jboss.seam.mock.ResourceRequestEnvironment;
@@ -23,7 +24,7 @@ public class ProjectResourceSeamTest extends SeamTest {
 			public Map<String, Object> getDefaultHeaders() {
 				return new HashMap<String, Object>() {
 					{
-						put("Accept", "application/atom+xml");
+						put("Accept", MediaTypes.APPLICATION_FLIES_PROJECTS_XML);
 					}
 				};
 			}

@@ -2,7 +2,7 @@
 
 <suite name="Flies - All" verbose="1">
 
-    <parameter name="database" value="mysql"/>
+    <parameter name="database" value="hsql"/>
 
     <!-- MySQL also requires changes to persistence-test.xml and wiki-test-ds.xml
     <parameter name="database" value="mysql"/>

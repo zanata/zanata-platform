@@ -1,9 +1,7 @@
 package org.fedorahosted.flies.repository.model;
 
-
-
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.*;
 
 import java.util.List;
 
@@ -31,16 +29,16 @@ public class DocumentSeamTest extends DBUnitSeamTest {
             protected void invokeApplication() throws Exception {
                 EntityManager em = (EntityManager) getInstance("entityManager");
                 IterationProject project = em.find(IterationProject.class, 1l);
-                assertNotNull(project, "Failed to find project by Id");
+                assertThat( project, notNullValue() );
                 
                 List<ProjectSeries> projectSeries =  project.getProjectSeries();
-                assertEquals(projectSeries.size(), 1, "Project should have n series");
+                assertThat ("Project should have 1 series", projectSeries.size(), is(1));
                 
                 List<ProjectIteration> projectTargets = project.getProjectIterations();
-                assertEquals(projectTargets.size(), 1, "Project should have n targets");
+                assertThat ("Project should have 2 targets", projectTargets.size(), is(2));
                 
                 ProjectIteration target = projectTargets.get(0);
-                assertEquals(target.getId(), Long.valueOf(1l), "expected target with id 1");
+                assertThat ("Expect target with id 1", target.getId(), is(1l));
                 
             }
         }.run();
