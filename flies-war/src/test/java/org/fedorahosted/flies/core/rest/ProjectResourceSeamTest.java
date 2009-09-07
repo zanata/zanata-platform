@@ -34,7 +34,7 @@ public class ProjectResourceSeamTest extends SeamTest {
 	@Test
 	public void retrieveListOfProjects() throws Exception {
 
-		new ResourceRequest(sharedEnvironment, Method.GET, "/restv1/project") {
+		new ResourceRequest(sharedEnvironment, Method.GET, "/restv1/projects") {
 			@Override
 			protected void prepareRequest(EnhancedMockHttpServletRequest request) {
 				//request.addHeader("Accept-Language", "en_US, de");
