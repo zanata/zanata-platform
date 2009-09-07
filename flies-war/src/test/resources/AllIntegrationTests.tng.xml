@@ -1,27 +1,25 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Flies Integration Tests" verbose="1">
 
-<suite name="Flies - All" verbose="1">
+  <parameter name="database" value="hsql"/>
+  <!-- 
+  <parameter name="database" value="mysql"/>
+  -->
 
-    <parameter name="database" value="hsql"/>
+  <parameter name="datasourceJndiName" value="java:/fliesDatasource"/>
 
-    <!-- MySQL also requires changes to persistence-test.xml and wiki-test-ds.xml
-    <parameter name="database" value="mysql"/>
-    -->
+  <parameter name="binaryDir" value=""/>
 
-    <parameter name="datasourceJndiName" value="java:/fliesDatasource"/>
+  <test name="Model">
+    <packages>
+      <package name="org.fedorahosted.flies.test.model"/>
+      <package name="org.fedorahosted.flies.repository.model"/>
+    </packages>
+  </test>
 
-    <parameter name="binaryDir" value=""/>
-
-    <test name="Model">
-        <packages>
-            <package name="org.fedorahosted.flies.test.model"/>
-            <package name="org.fedorahosted.flies.repository.model"/>
-        </packages>
-    </test>
-
-    <test name="REST">
-        <packages>
-            <package name="org.fedorahosted.flies.core.rest"/>
-        </packages>
-    </test>
+  <test name="REST">
+    <packages>
+      <package name="org.fedorahosted.flies.core.rest"/>
+    </packages>
+  </test>
 </suite>
