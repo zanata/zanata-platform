@@ -3,6 +3,7 @@ syntax: glob
 *~
 */target/*
 */fliessearchindex/*
+*/test-output/*
 syntax: regexp
 \.jar$
 
