@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.core.rest;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -51,21 +52,11 @@ public class SeamMockClientExecutor implements ClientExecutor {
 		
 		@Override
 		protected void prepareRequest(EnhancedMockHttpServletRequest request) {
-			MultivaluedMap<String, String> headers = clientRequest.getHeaders();
-			for (String hVal : headers.keySet()) {
-				request.addHeader(hVal, StringUtils.join(headers.get(hVal),
-						" "));
-			}
-	
 		      if (clientRequest.getHeaders() != null)
 		      {
 		         for (Map.Entry<String, List<String>> header : clientRequest.getHeaders().entrySet())
 		         {
-		            List<String> values = header.getValue();
-		            for (String value : values)
-		            {
-		               request.addHeader(header.getKey(), value);
-		            }
+		        	 request.addHeader(header.getKey(), header.getValue());
 		         }
 		      }
 		      if (clientRequest.getBody() != null && !clientRequest.getFormParameters().isEmpty())
@@ -86,8 +77,33 @@ public class SeamMockClientExecutor implements ClientExecutor {
 		      {
 		         if (clientRequest.getHttpMethod().equals("GET")) 
 		        	 throw new RuntimeException("A GET request cannot have a body.");
+		         
+	         	ByteArrayOutputStream bos = new ByteArrayOutputStream();
+	         	try{
+	         		clientRequest.getProviderFactory().getMessageBodyWriter(
+	         			clientRequest.getBodyType(), 
+	         			clientRequest.getBodyGenericType(), 
+	         			clientRequest.getBodyAnnotations(), 
+	         			clientRequest.getBodyContentType()).writeTo(
+	         					clientRequest.getBody(), 
+	         					clientRequest.getBodyType(),
+	         					clientRequest.getBodyGenericType(),
+	         					clientRequest.getBodyAnnotations(),
+	         					clientRequest.getBodyContentType(),
+	         					clientRequest.getHeaders(), 
+	         					bos);
+	         		bos.flush();
+	         		request.setContent(bos.toByteArray() );
+	         	}
+	         	catch(IOException e){
+	         		throw new RuntimeException(e);
+	         	}
+		         	
 		      }
-			
+		      if(clientRequest.getBodyContentType() != null){
+		    	  request.setContentType(clientRequest.getBodyContentType().toString());
+		      }
+
 		}
 		
 		@Override

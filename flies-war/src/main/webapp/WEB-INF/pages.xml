@@ -200,7 +200,7 @@
     	<action execute="#{passwordReset.validateActivationKey}"/>
     </page>
 
-    <exception class="org.fedorahosted.flies.KeyNotFoundException">
+    <exception class="org.fedorahosted.flies.account.action.KeyNotFoundException">
         <redirect view-id="/error.xhtml">
             <message severity="error">Invalid Activation Key</message>
         </redirect>
