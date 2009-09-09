@@ -103,8 +103,12 @@ public class ProjectServiceSeamTest extends SeamTest {
 	
 	public void retrieveProjectRefsUsingClientFramework() throws Exception{
 
-		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(new SeamMockClientExecutor(this), new URI("/restv1/"));
-		ClientResponse<ProjectRefs> response = clientRequestFactory.createProxy(ProjectResource.class).getProjects();
+		ClientRequestFactory clientRequestFactory = 
+			new ClientRequestFactory(
+					new SeamMockClientExecutor(this), new URI("/restv1/"));
+		ProjectResource projectService = clientRequestFactory.createProxy(ProjectResource.class);
+
+		ClientResponse<ProjectRefs> response = projectService.getProjects();
 		
 		assertThat( response.getStatus(), is(200) );
 		assertThat( response.getEntity(), notNullValue() );
