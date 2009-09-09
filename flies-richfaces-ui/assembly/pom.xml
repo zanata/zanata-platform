@@ -38,9 +38,10 @@
         </configuration>
         <executions>
           <execution>
-            <goals>
-              <goal>assembly</goal>
-            </goals>
+              <phase>generate-sources</phase>
+              <goals>
+                  <goal>generate</goal>
+              </goals>
           </execution>
         </executions>
       </plugin>
