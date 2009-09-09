@@ -48,6 +48,9 @@ public class ProjectServiceSeamTest extends SeamTest {
 				};
 			}
 		};
+		
+		ResteasyProviderFactory instance = ResteasyProviderFactory.getInstance();
+		RegisterBuiltin.register(instance);
 	}
 
 	public void retrieveListOfProjectsAsJson() throws Exception {
@@ -98,19 +101,14 @@ public class ProjectServiceSeamTest extends SeamTest {
 		}.run();
 	}
 	
+	public void retrieveProjectRefsUsingClientFramework() throws Exception{
 
-	@Test
-	public void doAnotherTry() throws Exception{
-		  ResteasyProviderFactory instance = ResteasyProviderFactory.getInstance();
-		  RegisterBuiltin.register(instance);
-
-		  ClientRequestFactory clientRequestFactory = new ClientRequestFactory(new SeamMockClientExecutor(this), new URI("/restv1/"));
-		  ClientResponse<ProjectRefs> response = clientRequestFactory.createProxy(ProjectResource.class).getProjects();
-
-		  assert response.getStatus() == 200;
-		  
-		  assert response.getEntity() != null;
-		  assert response.getEntity().getProjects().size() == 1;
+		ClientRequestFactory clientRequestFactory = new ClientRequestFactory(new SeamMockClientExecutor(this), new URI("/restv1/"));
+		ClientResponse<ProjectRefs> response = clientRequestFactory.createProxy(ProjectResource.class).getProjects();
+		
+		assertThat( response.getStatus(), is(200) );
+		assertThat( response.getEntity(), notNullValue() );
+		assertThat( response.getEntity().getProjects().size(), is(1) );
 
 	}	
 }
