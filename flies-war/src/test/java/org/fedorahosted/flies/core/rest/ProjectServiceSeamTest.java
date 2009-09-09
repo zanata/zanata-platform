@@ -63,31 +63,31 @@ public class ProjectServiceSeamTest extends SeamTest {
 		assertThat( response.getStatus(), lessThan(400) );
 	}
 	
-	public void createValidNewProject(){
+	public void createProject(){
 		fail("Not implemented");
 	}
 	
-	public void createInvalidNewProject(){
+	public void createProjectThatAlreadyExists(){
 		fail("Not implemented");
 	}
 
-	public void createExistingProject(){
+	public void createProjectWithInvalidData(){
 		fail("Not implemented");
 	}
 
-	public void updateExistingProjectWithInvalidData() {
+	public void updateProjectWithInvalidData() {
 		fail("Not implemented");
 	}
 
-	public void updateExistingProject() {
+	public void updateProject() {
 		fail("Not implemented");
 	}
 	
-	public void deleteExistingProject(){
+	public void deleteProject(){
 		fail("Not implemented");
 	}
 	
-	public void deleteNonExistingProject(){
+	public void deleteProjectThatDoesNotExist(){
 		fail("Not implemented");
 	}
 }
