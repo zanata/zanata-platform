@@ -114,7 +114,7 @@ public class ProjectService{
 	}
 
 	@POST
-	@Path("/p/{projectSlug}")
+	@Path("/projects/p/{projectSlug}")
 	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
 	public Response updateProject(@PathParam("projectSlug") String projectSlug, org.fedorahosted.flies.rest.dto.Project project){
 			
@@ -155,7 +155,7 @@ public class ProjectService{
 		}
 		try{
 			session.save(p);
-			return Response.created( new URI("/p/"+p.getSlug()) ).build();
+			return Response.created( new URI("/projects/p/"+p.getSlug()) ).build();
 		}
 		catch(HibernateException e){
 			return Response.notAcceptable(null).build();
