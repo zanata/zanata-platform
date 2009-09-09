@@ -1,9 +1,7 @@
 package org.fedorahosted.flies.core.rest;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThan;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.fail;
 
 import java.net.URI;
@@ -70,7 +68,22 @@ public class ProjectServiceSeamTest extends SeamTest {
 		Project project = new Project("my-new-project", "My New Project", "Another test project");
 		Response response = projectService.addProject(project);
 		
-		assertThat( response.getStatus(), is( Status.CREATED.getStatusCode()));	}
+		assertThat( response.getStatus(), is( Status.CREATED.getStatusCode()));
+		
+		String location = (String) response.getMetadata().getFirst("Location");
+		
+		assertThat( location, endsWith("/projects/p/my-new-project"));
+		
+		ClientResponse<Project> projectResponse = projectService.getProject("my-new-project");
+		
+		assertThat( projectResponse.getStatus(), is( Status.OK.getStatusCode()));
+		
+		project = projectResponse.getEntity();
+		
+		assertThat( project.getName(), is("My New Project"));
+		assertThat( project.getDescription(), is("Another test project"));
+		
+	}
 	
 	public void createProjectThatAlreadyExists(){
 		fail("Not implemented");
