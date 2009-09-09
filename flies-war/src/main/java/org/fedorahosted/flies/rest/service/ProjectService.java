@@ -114,7 +114,7 @@ public class ProjectService{
 	}
 
 	@POST
-	@Path("/projects/p/{projectSlug}")
+	@Path("/p/{projectSlug}")
 	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
 	public Response updateProject(@PathParam("projectSlug") String projectSlug, org.fedorahosted.flies.rest.dto.Project project){
 			
