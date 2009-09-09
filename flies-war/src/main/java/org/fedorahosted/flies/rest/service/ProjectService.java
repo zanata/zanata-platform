@@ -14,9 +14,11 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.fedorahosted.flies.core.dao.AccountDAO;
 import org.fedorahosted.flies.core.dao.ProjectDAO;
@@ -31,8 +33,6 @@ import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.ProjectRefs;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.jboss.resteasy.spi.NotFoundException;
-import org.jboss.resteasy.spi.UnauthorizedException;
 import org.jboss.seam.Component;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -69,7 +69,7 @@ public class ProjectService{
 
 		org.fedorahosted.flies.core.model.Project p = projectDAO.getBySlug(projectSlug);
 		if(p == null)
-			throw new NotFoundException("Project not found: "+projectSlug);
+			throw new WebApplicationException(Status.NOT_FOUND);
 		
 		return toMini(p);
 	}
@@ -121,7 +121,7 @@ public class ProjectService{
 		org.fedorahosted.flies.core.model.Project p = projectDAO.getBySlug(projectSlug);
 
 		if(p == null)
-			throw new NotFoundException("Project not found: "+projectSlug);
+			throw new WebApplicationException(Status.NOT_FOUND);
 
 		p.setName(project.getName());
 		p.setDescription(project.getDescription());

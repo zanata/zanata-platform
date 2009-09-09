@@ -12,6 +12,7 @@ import javax.xml.bind.Unmarshaller;
 
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.client.ProjectResource;
+import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.ProjectRef;
 import org.fedorahosted.flies.rest.dto.ProjectRefs;
 import org.jboss.resteasy.client.ClientRequestFactory;
@@ -27,7 +28,7 @@ import org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.testng.Assert.*;
 
@@ -35,7 +36,9 @@ import static org.testng.Assert.*;
 public class ProjectServiceSeamTest extends SeamTest {
 
 	ResourceRequestEnvironment sharedEnvironment;
-
+	ClientRequestFactory clientRequestFactory;
+	ProjectResource projectService;
+	
 	@BeforeClass
 	public void prepareSharedEnvironment() throws Exception {
 		sharedEnvironment = new ResourceRequestEnvironment(this) {
@@ -51,6 +54,13 @@ public class ProjectServiceSeamTest extends SeamTest {
 		
 		ResteasyProviderFactory instance = ResteasyProviderFactory.getInstance();
 		RegisterBuiltin.register(instance);
+
+		clientRequestFactory = 
+			new ClientRequestFactory(
+					new SeamMockClientExecutor(this), new URI("/restv1/"));
+
+		projectService = clientRequestFactory.createProxy(ProjectResource.class);
+	
 	}
 
 	public void retrieveListOfProjectsAsJson() throws Exception {
@@ -103,16 +113,24 @@ public class ProjectServiceSeamTest extends SeamTest {
 	
 	public void retrieveProjectRefsUsingClientFramework() throws Exception{
 
-		ClientRequestFactory clientRequestFactory = 
-			new ClientRequestFactory(
-					new SeamMockClientExecutor(this), new URI("/restv1/"));
-		ProjectResource projectService = clientRequestFactory.createProxy(ProjectResource.class);
-
 		ClientResponse<ProjectRefs> response = projectService.getProjects();
 		
 		assertThat( response.getStatus(), is(200) );
 		assertThat( response.getEntity(), notNullValue() );
 		assertThat( response.getEntity().getProjects().size(), is(1) );
 
-	}	
+	}
+	
+	public void retrieveNonExistingProject(){
+
+		ClientResponse<Project> response = projectService.getProject("invalid-project");
+		assertThat( response.getStatus(), is(404) );
+	}
+
+	public void retrieveExistingProject(){
+
+		ClientResponse<Project> response = projectService.getProject("sample-project");
+		assertThat( response.getStatus(), lessThan(400) );
+	}
+	
 }
