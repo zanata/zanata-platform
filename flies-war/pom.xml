@@ -560,12 +560,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.fedorahosted.flies</groupId>
-      <artifactId>flies-rest-api</artifactId>
-      <version>${project.version}</version>
-    </dependency>    
-
-    <dependency>
       <groupId>org.fedorahosted.flies.ui</groupId>
       <artifactId>flies-ui</artifactId>
       <version>${project.version}</version>
@@ -672,12 +666,6 @@
       </exclusions>
     </dependency>
     
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-jmx</artifactId>
-      <version>3.3.1.GA</version>
-      <scope>provided</scope>
-    </dependency>
     <!--
     <dependency>
       <groupId>org.jboss.envers</groupId>
