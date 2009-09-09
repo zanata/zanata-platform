@@ -31,10 +31,25 @@ public interface DocumentResource {
 	public Response updateDocument(@PathParam("documentId") String documentId,
 			Document document);
 	
+	/**
+	 * Adds one Document.  Shouldn't this be POST?  (it's not creating the item /documents, it's creating a sub item)
+	 */
 	@PUT
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
 	public Response addDocument(Document document);
 
+	/**
+	 * Adds multiple Documents
+	 */
+	@PUT
+	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })  // TODO JSON is same as above!?
+	public Response addDocuments(Documents documents);
+
+	/**
+	 * Replaces the existing set of documents (possibly should be POST to ., not ./replace)
+	 * @param documents
+	 * @return
+	 */
 	@POST
 	@Path("/replace")
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
