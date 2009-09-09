@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.core.rest;
 
 import java.io.ByteArrayInputStream;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,8 +11,13 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.fedorahosted.flies.rest.MediaTypes;
+import org.fedorahosted.flies.rest.client.ProjectResource;
 import org.fedorahosted.flies.rest.dto.ProjectRef;
 import org.fedorahosted.flies.rest.dto.ProjectRefs;
+import org.jboss.resteasy.client.ClientRequestFactory;
+import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
+import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
 import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
 import org.jboss.seam.mock.ResourceRequestEnvironment;
@@ -91,4 +97,20 @@ public class ProjectServiceSeamTest extends SeamTest {
 
 		}.run();
 	}
+	
+
+	@Test
+	public void doAnotherTry() throws Exception{
+		  ResteasyProviderFactory instance = ResteasyProviderFactory.getInstance();
+		  RegisterBuiltin.register(instance);
+
+		  ClientRequestFactory clientRequestFactory = new ClientRequestFactory(new SeamMockClientExecutor(this), new URI("/restv1/"));
+		  ClientResponse<ProjectRefs> response = clientRequestFactory.createProxy(ProjectResource.class).getProjects();
+
+		  assert response.getStatus() == 200;
+		  
+		  assert response.getEntity() != null;
+		  assert response.getEntity().getProjects().size() == 1;
+
+	}	
 }
