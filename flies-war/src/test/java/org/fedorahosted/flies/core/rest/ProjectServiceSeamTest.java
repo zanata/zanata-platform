@@ -39,6 +39,7 @@ public class ProjectServiceSeamTest extends SeamTest {
 	
 	}
 	
+
 	public void retrieveListofProjects() throws Exception{
 
 		ClientResponse<ProjectRefs> response = projectService.getProjects();
@@ -48,7 +49,8 @@ public class ProjectServiceSeamTest extends SeamTest {
 		assertThat( response.getEntity().getProjects().size(), is(1) );
 
 	}
-	
+
+
 	public void retrieveNonExistingProject(){
 
 		ClientResponse<Project> response = projectService.getProject("invalid-project");
@@ -61,7 +63,23 @@ public class ProjectServiceSeamTest extends SeamTest {
 		assertThat( response.getStatus(), lessThan(400) );
 	}
 	
-	public void createNewProject(){
+	public void createValidNewProject(){
+		fail("Not implemented");
+	}
+	
+	public void createInvalidNewProject(){
+		fail("Not implemented");
+	}
+
+	public void createExistingProject(){
+		fail("Not implemented");
+	}
+
+	public void updateExistingProjectWithInvalidData() {
+		fail("Not implemented");
+	}
+
+	public void updateExistingProject() {
 		fail("Not implemented");
 	}
 	
