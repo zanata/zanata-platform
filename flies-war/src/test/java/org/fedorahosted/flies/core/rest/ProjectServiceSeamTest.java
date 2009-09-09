@@ -8,6 +8,9 @@ import static org.testng.Assert.fail;
 
 import java.net.URI;
 
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import org.fedorahosted.flies.rest.client.ProjectResource;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.ProjectRefs;
@@ -62,10 +65,12 @@ public class ProjectServiceSeamTest extends SeamTest {
 		ClientResponse<Project> response = projectService.getProject("sample-project");
 		assertThat( response.getStatus(), lessThan(400) );
 	}
-	
+
 	public void createProject(){
-		fail("Not implemented");
-	}
+		Project project = new Project("my-new-project", "My New Project", "Another test project");
+		Response response = projectService.addProject(project);
+		
+		assertThat( response.getStatus(), is( Status.CREATED.getStatusCode()));	}
 	
 	public void createProjectThatAlreadyExists(){
 		fail("Not implemented");
