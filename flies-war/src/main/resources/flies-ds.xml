@@ -4,7 +4,7 @@
     "http://www.jboss.org/j2ee/dtd/jboss-ds_1_5.dtd">
 <datasources>
   <local-tx-datasource>
-	<jndi-name>${app.jndi.name}</jndi-name>
+	<jndi-name>fliesDatasource</jndi-name>
 	<connection-url>${ds.connection.url}</connection-url>
     <driver-class>${ds.driver.class}</driver-class>
     <user-name>${ds.user.name}</user-name>

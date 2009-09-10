@@ -38,15 +38,10 @@
       <properties>
         <env>dev</env>
         <env.debug>true</env.debug>
-        <env.unpack.modules>true</env.unpack.modules>
         <env.hibernate.hbm2ddl.auto>create-drop</env.hibernate.hbm2ddl.auto>
         <env.hibernate.show_sql>true</env.hibernate.show_sql>
         <env.hibernate.format_sql>true</env.hibernate.format_sql>
         <env.hibernate.default_batch_size>16</env.hibernate.default_batch_size>
-        <jdk.debug>${env.debug}</jdk.debug>
-        <jdk.optimize>false</jdk.optimize>
-        <jdk.source>1.5</jdk.source>
-        <jdk.target>1.5</jdk.target>
       </properties>
     </profile>
     
@@ -62,15 +57,10 @@
       <properties>
         <env>prod</env>
         <env.debug>false</env.debug>
-        <env.unpack.modules>false</env.unpack.modules>
         <env.hibernate.hbm2ddl.auto>update</env.hibernate.hbm2ddl.auto>
         <env.hibernate.show_sql>false</env.hibernate.show_sql>
         <env.hibernate.format_sql>false</env.hibernate.format_sql>
         <env.hibernate.default_batch_size>16</env.hibernate.default_batch_size>
-        <jdk.debug>${env.debug}</jdk.debug>
-        <jdk.optimize>true</jdk.optimize>
-        <jdk.source>1.5</jdk.source>
-        <jdk.target>1.5</jdk.target>
       </properties>
     </profile>
     

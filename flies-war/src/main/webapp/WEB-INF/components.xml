@@ -24,8 +24,8 @@
   <core:init
       debug="@env.debug@"
       transaction-management-enabled="true"
-      jndi-pattern="@jndi.pattern@" 
-      distributable="@distributable@"/>
+      jndi-pattern="#{ejbName}/local" 
+      distributable="false"/>
  
   <!-- Conversation timeout: 20 minutes -->
   <core:manager concurrent-request-timeout="4000"
@@ -40,14 +40,13 @@
       To have Seam defer loading of the persistence unit until it's needed, perhaps for a quicker 
       deployment turnaround, you can  disable the startup behavior of this component, SiA-9.3.1-p363
       
-      entity-manager-factory name is also referenced in in persistence.xml: 
-      persistence-unit name="${app.persistence.unit.name}"
+      entity-manager-factory name is also referenced in in persistence.xml 
   -->
   <persistence:entity-manager-factory
-      name="@persitence.emf.name@"
-      persistence-unit-name="@persistence.unit.name@"
-      installed="@persistence.emf.installed@"
-      startup="@persistence.emf.startup@" />
+      name="entityManagerFactory"
+      persistence-unit-name="fliesDatabase"
+      installed="true"
+      startup="true" />
 
   <!--
       If Seam loads the persistence unit (JBoss 4.x), the
@@ -61,9 +60,9 @@
   -->
   <persistence:managed-persistence-context
       name="entityManager"
-      auto-create="@persistence.mpc.auto.create@"
-      entity-manager-factory="#{@persistence.emf.name@}"
-      persistence-unit-jndi-name="@persistence.unit.jndi.name@" />
+      auto-create="true"
+      entity-manager-factory="#{entityManagerFactory}"
+      persistence-unit-jndi-name="java:/fliesEntityManagerFactory" />
 
   <persistence:filter name="accessLevelFilter">
     <persistence:name>accessLevelFilter</persistence:name>
@@ -192,7 +191,7 @@
 
   <component class="org.fedorahosted.flies.FliesInit" name="fliesInit" precedence="30">
     <property name="adminContact">+41 123 123 123, admin@my.address</property>
-    <property name="debug">true</property>
+    <property name="debug">false</property>
     <property name="version">0.1-SNAPSHOT</property>
     <property name="hibernateStatistics">false</property>
     <property name="serverPath">http://localhost:8080/flies</property>

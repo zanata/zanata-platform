@@ -22,36 +22,16 @@
     
     <!-- application properties -->
     <app.context>flies</app.context>  <!-- hint: same value as artifactId -->
-    <app.web.context>${app.context}</app.web.context>
-    <app.display.name>Flies Web Application</app.display.name>
-    <app.description>Flies is like Bread and Butter - only better</app.description>
     <app.database.name>flies</app.database.name>
-
-    <!--  -->
     <app.ds.xml>${app.context}-ds.xml</app.ds.xml>
-    <app.jndi.name>${app.context}Datasource</app.jndi.name>
-    <app.jndi.pattern>#{ejbName}/local</app.jndi.pattern>
-    <app.jta.data.source>java:/${app.jndi.name}</app.jta.data.source>
-    <app.entity.manager.factory.name>entityManagerFactory</app.entity.manager.factory.name>
-    <app.persistence.unit.name>${app.context}Database</app.persistence.unit.name>
-    <app.persistence.unit.jndi.name>java:/${app.context}EntityManagerFactory</app.persistence.unit.jndi.name>
-    <app.persistence.emf.installed>true</app.persistence.emf.installed> <!-- true for JBoss 4.2.3 or newer -->
-    <app.persistence.emf.startup>true</app.persistence.emf.startup> <!-- SiA-9.3.1-p363 -->
-    <app.persistence.mpc.auto.create>true</app.persistence.mpc.auto.create> <!-- SiA-9.3.2-p366 -->
-    <app.distributable>false</app.distributable> <!-- see: WEB-INF/components.xml and ejb/../resources/META-INF/jboss.xml -->
 
     <!-- Developer environment properties. Can be modified by developer in "profiles.xml" -->
     <env>prod</env>
     <env.debug>false</env.debug>
-    <env.unpack.modules>false</env.unpack.modules>
     <env.hibernate.hbm2ddl.auto>create-drop</env.hibernate.hbm2ddl.auto>
     <env.hibernate.show_sql>true</env.hibernate.show_sql>
     <env.hibernate.format_sql>true</env.hibernate.format_sql>
     <env.hibernate.default_batch_size>16</env.hibernate.default_batch_size>
-    <jdk.debug>${env.debug}</jdk.debug>
-    <jdk.optimize>true</jdk.optimize>
-    <jdk.source>1.6</jdk.source>
-    <jdk.target>1.6</jdk.target>
     <as>jboss423</as>
     <as.version>4.2</as.version>
     <ds>hsqldb</ds>
