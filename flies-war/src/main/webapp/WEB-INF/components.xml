@@ -22,10 +22,10 @@
          http://jboss.com/products/seam/resteasy http://jboss.com/products/seam/resteasy-2.1.xsd">
  
   <core:init
-      debug="${env.debug}"
+      debug="@env.debug@"
       transaction-management-enabled="true"
-      jndi-pattern="${app.jndi.pattern}" 
-      distributable="${app.distributable}"/>
+      jndi-pattern="@jndi.pattern@" 
+      distributable="@distributable@"/>
  
   <!-- Conversation timeout: 20 minutes -->
   <core:manager concurrent-request-timeout="4000"
@@ -44,10 +44,10 @@
       persistence-unit name="${app.persistence.unit.name}"
   -->
   <persistence:entity-manager-factory
-      name="${app.entity.manager.factory.name}"
-      persistence-unit-name="${app.persistence.unit.name}"
-      installed="${app.persistence.emf.installed}"
-      startup="${app.persistence.emf.startup}" />
+      name="@persitence.emf.name@"
+      persistence-unit-name="@persistence.unit.name@"
+      installed="@persistence.emf.installed@"
+      startup="@persistence.emf.startup@" />
 
   <!--
       If Seam loads the persistence unit (JBoss 4.x), the
@@ -61,9 +61,9 @@
   -->
   <persistence:managed-persistence-context
       name="entityManager"
-      auto-create="${app.persistence.mpc.auto.create}"
-      entity-manager-factory="#{${app.entity.manager.factory.name}}"
-      persistence-unit-jndi-name="${app.persistence.unit.jndi.name}" />
+      auto-create="@persistence.mpc.auto.create@"
+      entity-manager-factory="#{@persistence.emf.name@}"
+      persistence-unit-jndi-name="@persistence.unit.jndi.name@" />
 
   <persistence:filter name="accessLevelFilter">
     <persistence:name>accessLevelFilter</persistence:name>
