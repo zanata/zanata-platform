@@ -3,182 +3,186 @@
 
 <urlrewrite>
 
-    <!-- Disable the Red Hat crawler -->
-    <rule>
-        <from>.*</from>
-        <condition name="remote-addr">66.187.233.202</condition>
-        <to last="true" type="temporary-redirect">/robots.txt</to>
-    </rule>
+  <!-- Disable the Red Hat crawler -->
+  <rule>
+    <condition name="remote-addr">66.187.233.202</condition>
+    <from>.*</from>
+    <to last="true" type="temporary-redirect">/robots.txt</to>
+  </rule>
 
-    <!-- Disable anything that comes out of Microsoft -->
-    <rule>
-        <from>.*</from>
-        <condition name="remote-addr">65.55.210.81</condition>
-        <to last="true" type="temporary-redirect">/robots.txt</to>
-    </rule>
+  <!-- Disable anything that comes out of Microsoft -->
+  <rule>
+    <condition name="remote-addr">65.55.210.81</condition>
+    <from>.*</from>
+    <to last="true" type="temporary-redirect">/robots.txt</to>
+  </rule>
 
-    <!-- Community Rules -->
-    
-    <rule>
-        <from casesensitive="true">^/community/create(.+)$</from>
-        <to last="true">/community/create_community.seam?$1</to>
-    </rule>
-	<outbound-rule>
-  		<from>^(/.+)?/community/create_community.seam(.+)?$</from>
-  		<to>$1/community/create/$2</to>
-	</outbound-rule>
+  <!-- Community Rules -->
 
-    <rule>
-        <from casesensitive="true">^/community/view/(.+)$</from>
-        <to last="true">/community/community.seam\?slug=$1</to>
-    </rule>
-	<outbound-rule>
-  		<from>^(/.+)?/community/community.seam\?slug=(.+)$</from>
-  		<to>$1/community/view/$2</to>
-	</outbound-rule>
-	
-    <rule>
-        <from casesensitive="true">^/community/list(.+)?$</from>
-        <to last="true">/community/home.seam$1</to>
-    </rule>
-	<outbound-rule>
-  		<from>^(/.+)?/community/home.seam(.+)?$</from>
-  		<to>$1/community/list$2</to>
-	</outbound-rule>
+  <rule>
+    <from casesensitive="true">^/community/create(.+)$</from>
+    <to last="true">/community/create_community.seam?$1</to>
+  </rule>
 
-	<!-- Tribe rules -->	
+  <rule>
+    <from casesensitive="true">^/community/view/(.+)$</from>
+    <to last="true">/community/community.seam\?slug=$1</to>
+  </rule>
 
-    <rule>
-        <from casesensitive="true">^/tribe/view/(.+)$</from>
-        <to last="true">/tribe/tribe.seam\?id=$1</to>
-    </rule>
-	<outbound-rule>
-  		<from>^(/.+)?/tribe/tribe.seam\?id=(.+)$</from>
-  		<to>$1/tribe/view/$2</to>
-	</outbound-rule>
+  <rule>
+    <from casesensitive="true">^/community/list(.+)?$</from>
+    <to last="true">/community/home.seam$1</to>
+  </rule>
 
-    <rule>
-        <from casesensitive="true">^/tribe/list(.+)?$</from>
-        <to last="true">/tribe/home.seam$1</to>
-    </rule>
-	<outbound-rule>
-  		<from>^(/.+)?/tribe/home.seam(.+)?$</from>
-  		<to>$1/tribe/list$2</to>
-	</outbound-rule>
+  <!-- Tribe rules -->
 
-    <!-- Project Rules -->
-    
-    <rule>
-        <from casesensitive="true">^/project/add_iteration/(.+)$</from>
-        <to last="true">/project/add_iteration.seam\?slug=$1</to>
-    </rule>
-	<outbound-rule>
-  		<from>^(/.+)?/project/add_iteration.seam\?slug=(.+)$</from>
-  		<to>$1/project/add_iteration/$2</to>
-	</outbound-rule>
-	
-    <rule>
-        <from casesensitive="true">^/project/create(.+)$</from>
-        <to last="true">/project/create_project.seam?$1</to>
-    </rule>
-	<outbound-rule>
-  		<from>^(/.+)?/project/create_project.seam(.+)?$</from>
-  		<to>$1/project/create/$2</to>
-	</outbound-rule>
+  <rule>
+    <from casesensitive="true">^/tribe/view/(.+)$</from>
+    <to last="true">/tribe/tribe.seam\?id=$1</to>
+  </rule>
 
-    <rule>
-        <from casesensitive="true">^/project/view/(.+)$</from>
-        <to last="true">/project/project.seam\?slug=$1</to>
-    </rule>
-	<outbound-rule>
-  		<from>^(/.+)?/project/project.seam\?slug=(.+)$</from>
-  		<to>$1/project/view/$2</to>
-	</outbound-rule>
+  <rule>
+    <from casesensitive="true">^/tribe/list(.+)?$</from>
+    <to last="true">/tribe/home.seam$1</to>
+  </rule>
 
-    <rule>
-        <from casesensitive="true">^/project/list(.+)?$</from>
-        <to last="true">/project/home.seam$1</to>
-    </rule>
-	<outbound-rule>
-  		<from>^(/.+)?/project/home.seam(.+)?$</from>
-  		<to>$1/project/list$2</to>
-	</outbound-rule>
+  <!-- Project Rules -->
 
-    <!-- ProjectIteration Rules -->
+  <rule>
+    <from casesensitive="true">^/project/add_iteration/(.+)$</from>
+    <to last="true">/project/add_iteration.seam\?slug=$1</to>
+  </rule>
 
-    <rule>
-        <from casesensitive="true">^/project/([^/]+)/(.+)?$</from>
-        <to last="true">/project/iteration.seam\?mslug=$1/$2</to>
-    </rule>
- 	<outbound-rule>
-  		<from>^(/.+)?/project/iteration.seam\?mslug=([^/]+|^%2F+)(/|%2F)(.+)$</from>
-  		<to>$1/project/$2/$4</to>
-	</outbound-rule>
-    
-    <!-- account / -->
+  <rule>
+    <from casesensitive="true">^/project/create(.+)$</from>
+    <to last="true">/project/create_project.seam?$1</to>
+  </rule>
 
-    <rule>
-        <from casesensitive="true">^/account/sign_in(.+)?$</from>
-        <to last="true">/account/login.seam$1</to>
-    </rule>
-	<outbound-rule>
-  		<from>^(/.+)?/account/login.seam(.+)?$</from>
-  		<to>$1/account/sign_in$2</to>
-	</outbound-rule>
+  <rule>
+    <from casesensitive="true">^/project/view/(.+)$</from>
+    <to last="true">/project/project.seam\?slug=$1</to>
+  </rule>
 
-    <rule>
-        <from casesensitive="true">^/account/register(.+)?$</from>
-        <to last="true">/account/register.seam$1</to>
-    </rule>
-	<outbound-rule>
-  		<from>^(/.+)?/account/register.seam(.+)?$</from>
-  		<to>$1/account/register$2</to>
-	</outbound-rule>
+  <rule>
+    <from casesensitive="true">^/project/list(.+)?$</from>
+    <to last="true">/project/home.seam$1</to>
+  </rule>
 
-    <rule>
-        <from casesensitive="true">^/account/activate/(.+)$</from>
-        <to last="true">/account/activate.seam\?key=$1</to>
-    </rule>
-	<outbound-rule>
-  		<from>^(/.+)?/account/activate.seam\?key=(.+)$</from>
-  		<to>$1/account/activate/$2</to>
-	</outbound-rule>
-    <rule>
-        <from casesensitive="true">^/account/activate(.+)?$</from>
-        <to last="true">/account/activate.seam$1</to>
-    </rule>
-	<outbound-rule>
-  		<from>^(/.+)?/account/activate.seam(.+)?$</from>
-  		<to>$1/account/activate$2</to>
-	</outbound-rule>
+  <!-- ProjectIteration Rules -->
 
-    <rule>
-        <from casesensitive="true">^/account/password_reset_request(.+)?$</from>
-        <to last="true">/account/password_reset_request.seam$1</to>
-    </rule>
-	<outbound-rule>
-  		<from>^(/.+)?/account/password_reset_request.seam(.+)?$</from>
-  		<to>$1/account/password_reset_request$2</to>
-	</outbound-rule>
+  <rule>
+    <from casesensitive="true">^/project/([^/]+)/(.+)?$</from>
+    <to last="true">/project/iteration.seam\?mslug=$1/$2</to>
+  </rule>
 
-    <rule>
-        <from casesensitive="true">^/account/password_reset/(.+)$</from>
-        <to last="true">/account/password_reset.seam\?key=$1</to>
-    </rule>
-	<outbound-rule>
-  		<from>^(/.+)?/account/password_reset.seam\?key=(.+)$</from>
-  		<to>$1/account/password_reset/$2</to>
-	</outbound-rule>
-	
-    <!-- ROOT / -->
-    <rule>
-        <from>^/$</from>
-        <to>/home.seam</to>
-    </rule>
- 	<outbound-rule>
-  		<from>^(/.+)?/home.seam(.+)?$</from>
-  		<to>$1/$2</to>
-	</outbound-rule>
+  <!-- account / -->
+
+  <rule>
+    <from casesensitive="true">^/account/sign_in(.+)?$</from>
+    <to last="true">/account/login.seam$1</to>
+  </rule>
+
+  <rule>
+    <from casesensitive="true">^/account/register(.+)?$</from>
+    <to last="true">/account/register.seam$1</to>
+  </rule>
+
+  <rule>
+    <from casesensitive="true">^/account/activate/(.+)$</from>
+    <to last="true">/account/activate.seam\?key=$1</to>
+  </rule>
+  <rule>
+    <from casesensitive="true">^/account/activate(.+)?$</from>
+    <to last="true">/account/activate.seam$1</to>
+  </rule>
+
+  <rule>
+    <from casesensitive="true">^/account/password_reset_request(.+)?$</from>
+    <to last="true">/account/password_reset_request.seam$1</to>
+  </rule>
+
+  <rule>
+    <from casesensitive="true">^/account/password_reset/(.+)$</from>
+    <to last="true">/account/password_reset.seam\?key=$1</to>
+  </rule>
+
+  <!-- ROOT / -->
+  <rule>
+    <from>^/$</from>
+    <to>/home.seam</to>
+  </rule>
+
+  <outbound-rule>
+    <from>^(/.+)?/community/create_community.seam(.+)?$</from>
+    <to>$1/community/create/$2</to>
+  </outbound-rule>
+
+  <outbound-rule>
+    <from>^(/.+)?/community/community.seam\?slug=(.+)$</from>
+    <to>$1/community/view/$2</to>
+  </outbound-rule>
+
+  <outbound-rule>
+    <from>^(/.+)?/community/home.seam(.+)?$</from>
+    <to>$1/community/list$2</to>
+  </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/tribe/tribe.seam\?id=(.+)$</from>
+    <to>$1/tribe/view/$2</to>
+  </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/tribe/home.seam(.+)?$</from>
+    <to>$1/tribe/list$2</to>
+  </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/project/add_iteration.seam\?slug=(.+)$</from>
+    <to>$1/project/add_iteration/$2</to>
+  </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/project/create_project.seam(.+)?$</from>
+    <to>$1/project/create/$2</to>
+  </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/project/project.seam\?slug=(.+)$</from>
+    <to>$1/project/view/$2</to>
+  </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/project/home.seam(.+)?$</from>
+    <to>$1/project/list$2</to>
+  </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/project/iteration.seam\?mslug=([^/]+|^%2F+)(/|%2F)(.+)$</from>
+    <to>$1/project/$2/$4</to>
+  </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/account/login.seam(.+)?$</from>
+    <to>$1/account/sign_in$2</to>
+  </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/account/register.seam(.+)?$</from>
+    <to>$1/account/register$2</to>
+  </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/account/activate.seam\?key=(.+)$</from>
+    <to>$1/account/activate/$2</to>
+  </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/account/activate.seam(.+)?$</from>
+    <to>$1/account/activate$2</to>
+  </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/account/password_reset_request.seam(.+)?$</from>
+    <to>$1/account/password_reset_request$2</to>
+  </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/account/password_reset.seam\?key=(.+)$</from>
+    <to>$1/account/password_reset/$2</to>
+  </outbound-rule>
+
+  <outbound-rule>
+    <from>^(/.+)?/home.seam(.+)?$</from>
+    <to>$1/$2</to>
+  </outbound-rule>
 
 </urlrewrite>
 
