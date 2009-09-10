@@ -24,6 +24,7 @@
   <build>
     <pluginManagement>
       <plugins>
+      <!--
         <plugin>
           <artifactId>maven-resources-plugin</artifactId>
           <version>2.3</version>
@@ -33,6 +34,7 @@
           <artifactId>build-helper-maven-plugin</artifactId>
           <version>1.4</version>
         </plugin>         
+        -->
       </plugins>
     </pluginManagement>
     <plugins>
@@ -127,7 +129,13 @@
         <updatePolicy>never</updatePolicy>
       </snapshots>
     </pluginRepository>
-    
+   
+    <pluginRepository>
+      <id>repository.codehaus</id>
+      <name>Codehaus Repository</name>
+      <url>http://repository.codehaus.org</url>
+    </pluginRepository>
+ 
   </pluginRepositories>
   
   
