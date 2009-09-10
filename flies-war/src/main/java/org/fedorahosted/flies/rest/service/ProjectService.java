@@ -32,6 +32,7 @@ import org.fedorahosted.flies.rest.dto.ProjectRef;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.ProjectRefs;
 import org.hibernate.HibernateException;
+import org.hibernate.validator.InvalidStateException;
 import org.hibernate.Session;
 import org.jboss.seam.Component;
 import org.jboss.seam.annotations.In;
@@ -157,8 +158,11 @@ public class ProjectService{
 			session.save(p);
 			return Response.created( new URI("/projects/p/"+p.getSlug()) ).build();
 		}
-		catch(HibernateException e){
-			return Response.notAcceptable(null).build();
+        catch(InvalidStateException e){
+        	return Response.status(Status.BAD_REQUEST).build();
+        }
+        catch(HibernateException e){
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
 	}
 	

@@ -86,11 +86,23 @@ public class ProjectServiceSeamTest extends SeamTest {
 	}
 	
 	public void createProjectThatAlreadyExists(){
-		fail("Not implemented");
+		Project project = new Project("my-new-project", "My New Project", "Another test project");
+		Response response = projectService.addProject(project);
+	
+        assertThat( response.getStatus(), is( Status.CONFLICT.getStatusCode()));
 	}
 
 	public void createProjectWithInvalidData(){
-		fail("Not implemented");
+		Project project = new Project("#my$new%project", "My New Project", "Another test project");
+		Response response = projectService.addProject(project);
+		
+        assertThat( response.getStatus(), is( Status.BAD_REQUEST.getStatusCode()));
+        
+        Project project1 = new Project("my-test-project","My test ProjectMy test ProjectMy test ProjectMy test ProjectMy test ProjectMy test Project", "Length of Project name beyond 80");
+        Response response1 = projectService.addProject(project1);
+        
+        assertThat(response1.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
+        
 	}
 
 	public void updateProjectWithInvalidData() {
