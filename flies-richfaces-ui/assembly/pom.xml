@@ -34,13 +34,12 @@
             </taglibs>
           </library>
           <excludeXcss></excludeXcss>
-          <commonStyle>org/richfaces/skin.xcss</commonStyle>
+          <commonStyle>org/fedorahosted/flies/skin.xcss</commonStyle>
         </configuration>
         <executions>
           <execution>
-              <phase>generate-sources</phase>
               <goals>
-                  <goal>generate</goal>
+                  <goal>assembly</goal>
               </goals>
           </execution>
         </executions>
