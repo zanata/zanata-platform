@@ -512,23 +512,11 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-search</artifactId>
       <version>3.1.1.GA</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.hibernate</groupId>
-          <artifactId>hibernate-core</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.hibernate</groupId>
-          <artifactId>hibernate-commons-annotations</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.hibernate</groupId>
-          <artifactId>ejb3-persistence</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>javax.transaction</groupId>
-          <artifactId>jta</artifactId>
-        </exclusion>
+      <exclusions>                                              
+        <exclusion>                                             
+          <groupId>javax.transaction</groupId>                  
+          <artifactId>jta</artifactId>                          
+        </exclusion>   
       </exclusions>
     </dependency>
 
@@ -605,13 +593,6 @@
       <artifactId>flies-rest-api</artifactId>
       <version>${project.version}</version>
     </dependency>
-    
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-jmx</artifactId>
-      <version>3.3.1.GA</version>
-      <scope>provided</scope>
-    </dependency>    
 
     <!--  JBoss AS deps -->
     
@@ -619,51 +600,24 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
       <version>3.3.1.GA</version>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.transaction</groupId>
-          <artifactId>jta</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>asm</groupId>
-          <artifactId>asm-attrs</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>antlr</groupId>
-          <artifactId>antlr</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>cglib</groupId>
-          <artifactId>cglib</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>asm</groupId>
-          <artifactId>asm</artifactId>
-        </exclusion>
-      </exclusions>
-      
     </dependency>
 
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
       <version>3.1.0.GA</version>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-annotations</artifactId>
       <version>3.4.0.GA</version>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
       <version>3.4.0.GA</version>
-      <scope>provided</scope>
       <exclusions>
         <exclusion>
           <groupId>javassist</groupId>
@@ -676,8 +630,14 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-jmx</artifactId>
       <version>3.3.1.GA</version>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.transaction</groupId>                  
+      <artifactId>jta</artifactId>         
       <scope>provided</scope>
     </dependency>
+    
     <!--
     <dependency>
       <groupId>org.jboss.envers</groupId>
@@ -687,7 +647,7 @@
     </dependency>
     -->
     <!--  Testing dependencies -->
-
+    
     <dependency>
       <groupId>org.jboss.embedded</groupId>
       <artifactId>jboss-embedded-all</artifactId>
