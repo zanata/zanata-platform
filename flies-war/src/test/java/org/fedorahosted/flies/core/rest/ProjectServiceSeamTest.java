@@ -94,11 +94,8 @@ public class ProjectServiceSeamTest extends DBUnitSeamTest {
 	}
 	
 	public void createProjectThatAlreadyExists(){
-		Project project = new Project("my-new-project", "My New Project", "Another test project");
-		projectService.addProject(project);
-		
-		Project exproject = new Project("my-new-project", "My New Project", "Another test project");
-		Response response = projectService.addProject(exproject);
+		Project project = new Project("sample-project", "Sample Project", "An example Project");
+		Response response = projectService.addProject(project);
 	
         assertThat( response.getStatus(), is( Status.CONFLICT.getStatusCode()));
 	}
