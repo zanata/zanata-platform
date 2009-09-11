@@ -4,24 +4,12 @@ package org.fedorahosted.flies.rest;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.rest.client.DocumentResource;
 import org.fedorahosted.flies.rest.client.ProjectIterationResource;
 import org.fedorahosted.flies.rest.client.ProjectResource;
-import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.Project;
-import org.fedorahosted.flies.rest.dto.ProjectIteration;
-import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.jboss.resteasy.client.ClientRequestFactory;
-import org.jboss.resteasy.client.ClientResponse;
-import org.jboss.resteasy.client.ProxyFactory;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
-
-import com.sun.jndi.toolkit.url.Uri;
 
 public class FliesClient {
 

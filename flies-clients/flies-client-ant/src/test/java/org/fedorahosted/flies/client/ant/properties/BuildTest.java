@@ -41,9 +41,9 @@ public class BuildTest extends BuildFileTest {
     
     public static Test suite() {
 	TestSuite suite = new TestSuite(BuildTest.class.getName());
-	suite.addTest(new BuildTest("test1"));
-	suite.addTest(new BuildTest("test2"));
-	suite.addTest(new BuildTest("test3"));
+	suite.addTest(new BuildTest("props2docs"));
+	suite.addTest(new BuildTest("docs2props"));
+	suite.addTest(new BuildTest("roundtriplocal"));
 	return suite;
     }
 
