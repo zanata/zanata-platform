@@ -3,6 +3,8 @@ package org.fedorahosted.flies.rest.service;
 import java.util.List;
 
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.fedorahosted.flies.core.dao.AccountDAO;
 import org.fedorahosted.flies.core.model.HAccount;
@@ -42,11 +44,11 @@ public class FliesRestSecurityInterceptor implements PreProcessInterceptor{
 		Log log =  Logging.getLog(FliesRestSecurityInterceptor.class);
 		log.info("Authenticating a REST request...");
 		List<String> tokenHeaders = request.getHttpHeaders().getRequestHeader(X_AUTH_TOKEN_HEADER);
-		if(!tokenHeaders.isEmpty()){
+		if(tokenHeaders != null && tokenHeaders.isEmpty()){
 			String apiKey = tokenHeaders.get(0);
 			HAccount account = accountDAO.getByApiKey(apiKey);
 			if(account != null) {
-				// TODO set up identity
+				// TODO set up seam identity framework here
 				return null;
 			}
 		}

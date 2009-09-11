@@ -84,14 +84,6 @@ public class FliesInit {
 			}
 		}
 
-		log.info("Starting REST security context");
-		Dispatcher dispatcher = (Dispatcher) Component.getInstance("org.jboss.seam.resteasy.dispatcher");
-		if(dispatcher == null){
-			log.error("Failed to initialize REST security context");
-		}
-		else{
-			dispatcher.getProviderFactory().getServerPreProcessInterceptorRegistry().register(FliesRestSecurityInterceptor.class);
-		}
 		Events.instance().raiseEvent(EVENT_Flies_Startup);
 	
 		log.info("Started Flies...");
