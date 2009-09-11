@@ -44,7 +44,7 @@ public class FliesRestSecurityInterceptor implements PreProcessInterceptor{
 		Log log =  Logging.getLog(FliesRestSecurityInterceptor.class);
 		log.info("Authenticating a REST request...");
 		List<String> tokenHeaders = request.getHttpHeaders().getRequestHeader(X_AUTH_TOKEN_HEADER);
-		if(tokenHeaders != null && tokenHeaders.isEmpty()){
+		if(tokenHeaders != null && !tokenHeaders.isEmpty()){
 			String apiKey = tokenHeaders.get(0);
 			HAccount account = accountDAO.getByApiKey(apiKey);
 			if(account != null) {
