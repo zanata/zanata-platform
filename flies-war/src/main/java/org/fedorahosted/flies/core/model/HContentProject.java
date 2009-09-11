@@ -10,7 +10,7 @@ import org.hibernate.validator.NotNull;
 
 @Entity
 @DiscriminatorValue("content")
-public class ContentProject extends HProject implements IProjectContainerProvider{
+public class HContentProject extends HProject implements IProjectContainerProvider{
 
 	private HProjectContainer container;
 	
