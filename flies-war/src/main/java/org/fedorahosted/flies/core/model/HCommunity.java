@@ -87,7 +87,7 @@ public class HCommunity extends AbstractSlugEntity{
 	}
 	
 	@ManyToMany
-	@JoinTable(name = "Community_Officer", joinColumns = @JoinColumn(name = "communityId"), inverseJoinColumns = @JoinColumn(name = "personId"))
+	@JoinTable(name = "HCommunity_Officer", joinColumns = @JoinColumn(name = "communityId"), inverseJoinColumns = @JoinColumn(name = "personId"))
 	public Set<HPerson> getOfficers() {
 		return officers;
 	}
@@ -97,7 +97,7 @@ public class HCommunity extends AbstractSlugEntity{
 	}
 	
 	@ManyToMany
-	@JoinTable(name = "Community_Member", joinColumns = @JoinColumn(name = "communityId"), inverseJoinColumns = @JoinColumn(name = "personId"))
+	@JoinTable(name = "HCommunity_Member", joinColumns = @JoinColumn(name = "communityId"), inverseJoinColumns = @JoinColumn(name = "personId"))
 	public Set<HPerson> getMembers() {
 		return members;
 	}

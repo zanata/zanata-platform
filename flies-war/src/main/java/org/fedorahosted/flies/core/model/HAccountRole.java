@@ -45,7 +45,7 @@ public class HAccountRole implements Serializable {
 
 	@RoleGroups
 	@ManyToMany(targetEntity = HAccountRole.class)
-	@JoinTable(name = "AccountRoleGroup", joinColumns = @JoinColumn(name = "roleId"), inverseJoinColumns = @JoinColumn(name = "memberOf"))
+	@JoinTable(name = "HAccountRoleGroup", joinColumns = @JoinColumn(name = "roleId"), inverseJoinColumns = @JoinColumn(name = "memberOf"))
 	public Set<HAccountRole> getGroups() {
 		return groups;
 	}

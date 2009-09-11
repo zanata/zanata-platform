@@ -47,7 +47,7 @@ public class HTribe extends AbstractFliesEntity{
 	}
 	
 	@ManyToMany
-	@JoinTable(name = "Tribe_Leader", joinColumns = @JoinColumn(name = "tribeId"), inverseJoinColumns = @JoinColumn(name = "personId"))
+	@JoinTable(name = "HTribe_Leader", joinColumns = @JoinColumn(name = "tribeId"), inverseJoinColumns = @JoinColumn(name = "personId"))
 	public Set<HPerson> getTribalLeaders() {
 		return tribalLeaders;
 	}
@@ -57,7 +57,7 @@ public class HTribe extends AbstractFliesEntity{
 	}
 	
 	@ManyToMany
-	@JoinTable(name = "Tribe_Member", joinColumns = @JoinColumn(name = "tribeId"), inverseJoinColumns = @JoinColumn(name = "personId"))
+	@JoinTable(name = "HTribe_Member", joinColumns = @JoinColumn(name = "tribeId"), inverseJoinColumns = @JoinColumn(name = "personId"))
 	public Set<HPerson> getMembers() {
 		return members;
 	}

@@ -92,7 +92,7 @@ public class ProjectIterationHome extends MultiSlugHome<HProjectIteration>{
 	
 	public boolean isSlugAvailable(String slug) {
     	try{
-    		getEntityManager().createQuery("from ProjectIteration t where t.slug = :slug and t.project = :project")
+    		getEntityManager().createQuery("from HProjectIteration t where t.slug = :slug and t.project = :project")
     		.setParameter("slug", slug)
     		.setParameter("project", getInstance().getProject()).getSingleResult();
     		return false;
@@ -116,7 +116,7 @@ public class ProjectIterationHome extends MultiSlugHome<HProjectIteration>{
 	}
 	
 	public List<HProjectSeries> getAvailableProjectSeries(){
-		return getEntityManager().createQuery("from ProjectSeries where project = :project")
+		return getEntityManager().createQuery("from HProjectSeries where project = :project")
 			.setParameter("project", getInstance().getProject()).getResultList();
 	}
 

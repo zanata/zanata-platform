@@ -113,7 +113,7 @@ public class RegisterAction implements Serializable {
     
     public void validateUsername(String username){
     	try{
-    		entityManager.createQuery("from Account a where a.username = :username")
+    		entityManager.createQuery("from HAccount a where a.username = :username")
     		.setParameter("username", username).getSingleResult();
     		valid = false;
     		FacesMessages.instance().addToControl("username", "This username is not available");

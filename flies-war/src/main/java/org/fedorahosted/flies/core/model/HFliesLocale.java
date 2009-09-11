@@ -95,7 +95,7 @@ public class HFliesLocale implements Serializable {
 	}
 
 	@ManyToMany
-	@JoinTable(name = "FliesLocale_Friends", joinColumns = @JoinColumn(name = "localeId"), inverseJoinColumns = @JoinColumn(name = "friendId"))
+	@JoinTable(name = "HFliesLocale_Friends", joinColumns = @JoinColumn(name = "localeId"), inverseJoinColumns = @JoinColumn(name = "friendId"))
 	public List<HFliesLocale> getFriends() {
 		return friends;
 	}

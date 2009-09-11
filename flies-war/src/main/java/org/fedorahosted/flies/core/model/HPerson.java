@@ -71,7 +71,7 @@ public class HPerson extends AbstractFliesEntity implements Serializable {
 	}
 
 	@ManyToMany
-	@JoinTable(name = "Project_Maintainer", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "projectId"))
+	@JoinTable(name = "HProject_Maintainer", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "projectId"))
 	public List<HProject> getMaintainerProjects() {
 		return maintainerProjects;
 	}
@@ -81,7 +81,7 @@ public class HPerson extends AbstractFliesEntity implements Serializable {
 	}
 
 	@ManyToMany
-	@JoinTable(name = "Tribe_Member", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "tribeId"))
+	@JoinTable(name = "HTribe_Member", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "tribeId"))
 	public Set<HTribe> getTribeMemberships() {
 		return tribeMemberships;
 	}
@@ -91,7 +91,7 @@ public class HPerson extends AbstractFliesEntity implements Serializable {
 	}
 	
 	@ManyToMany
-	@JoinTable(name = "Tribe_Leader", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "tribeId"))
+	@JoinTable(name = "HTribe_Leader", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "tribeId"))
 	public Set<HTribe> getTribeLeaderships() {
 		return tribeLeaderships;
 	}
@@ -120,7 +120,7 @@ public class HPerson extends AbstractFliesEntity implements Serializable {
 	}
 
 	@ManyToMany
-	@JoinTable(name = "Community_Officer", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "communityId"))
+	@JoinTable(name = "HCommunity_Officer", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "communityId"))
 	public Set<HCommunity> getCommunityOfficerships() {
 		return communityOfficerships;
 	}
@@ -130,7 +130,7 @@ public class HPerson extends AbstractFliesEntity implements Serializable {
 	}
 	
 	@ManyToMany
-	@JoinTable(name = "Community_Member", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "communityId"))
+	@JoinTable(name = "HCommunity_Member", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "communityId"))
 	public Set<HCommunity> getCommunityMemberships() {
 		return communityMemberships;
 	}

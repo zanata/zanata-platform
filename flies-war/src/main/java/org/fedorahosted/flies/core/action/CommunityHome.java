@@ -50,7 +50,7 @@ public class CommunityHome extends SlugHome<HCommunity>{
 	
 	public boolean isSlugAvailable(String slug) {
     	try{
-    		getEntityManager().createQuery("from Community c where c.slug = :slug")
+    		getEntityManager().createQuery("from HCommunity c where c.slug = :slug")
     		.setParameter("slug", slug).getSingleResult();
     		return false;
     	}

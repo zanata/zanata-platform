@@ -53,7 +53,7 @@ public class ProjectHome extends SlugHome<HIterationProject> {
 	
 	public boolean isSlugAvailable(String slug) {
     	try{
-    		getEntityManager().createQuery("from Project p where p.slug = :slug")
+    		getEntityManager().createQuery("from HProject p where p.slug = :slug")
     		.setParameter("slug", slug).getSingleResult();
     		return false;
     	}
@@ -91,14 +91,14 @@ public class ProjectHome extends SlugHome<HIterationProject> {
 
 	public List<HProjectIteration> getActiveIterations(){
 		return getEntityManager().createQuery(
-				"from ProjectIteration t where t.project = :project and t.active = true")
+				"from HProjectIteration t where t.project = :project and t.active = true")
 				.setParameter("project", getInstance())
 				.getResultList();
 	}
 
 	public List<HProjectIteration> getRetiredIterations(){
 		return getEntityManager().createQuery(
-				"from ProjectIteration t where t.project = :project and t.active = false")
+				"from HProjectIteration t where t.project = :project and t.active = false")
 				.setParameter("project", getInstance())
 				.getResultList();
 	}

@@ -63,7 +63,7 @@ public abstract class HProject extends AbstractSlugEntity implements Serializabl
 	}
 
 	@ManyToMany
-	@JoinTable(name = "Project_Maintainer", joinColumns = @JoinColumn(name = "projectId"), inverseJoinColumns = @JoinColumn(name = "personId"))
+	@JoinTable(name = "HProject_Maintainer", joinColumns = @JoinColumn(name = "projectId"), inverseJoinColumns = @JoinColumn(name = "personId"))
 	public Set<HPerson> getMaintainers() {
 		if(maintainers == null)
 			maintainers = new HashSet<HPerson>();
