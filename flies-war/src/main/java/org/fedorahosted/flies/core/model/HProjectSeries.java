@@ -12,14 +12,14 @@ import javax.persistence.Transient;
 import org.hibernate.validator.Length;
 
 @Entity
-public class ProjectSeries extends AbstractFliesEntity implements Serializable {
+public class HProjectSeries extends AbstractFliesEntity implements Serializable {
 
 	private String name;
 
 	private HIterationProject project;
 
-	private ProjectSeries parent;
-	private List<ProjectSeries> children;
+	private HProjectSeries parent;
+	private List<HProjectSeries> children;
 
 	private List<HProjectIteration> projectIterations;
 
@@ -45,21 +45,21 @@ public class ProjectSeries extends AbstractFliesEntity implements Serializable {
 	}
 
 	@OneToMany(mappedBy = "parent")
-	public List<ProjectSeries> getChildren() {
+	public List<HProjectSeries> getChildren() {
 		return children;
 	}
 
-	public void setChildren(List<ProjectSeries> children) {
+	public void setChildren(List<HProjectSeries> children) {
 		this.children = children;
 	}
 
 	@ManyToOne
 	@JoinColumn(name = "parentId")
-	public ProjectSeries getParent() {
+	public HProjectSeries getParent() {
 		return parent;
 	}
 
-	public void setParent(ProjectSeries parent) {
+	public void setParent(HProjectSeries parent) {
 		this.parent = parent;
 	}
 

@@ -17,7 +17,7 @@ import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.dao.ProjectIterationDAO;
 import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.HProject;
-import org.fedorahosted.flies.core.model.ProjectSeries;
+import org.fedorahosted.flies.core.model.HProjectSeries;
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.rest.MediaTypes;
@@ -137,7 +137,7 @@ public class ProjectIterationService {
 			HProjectContainer container = new HProjectContainer();
 			session.save(container);
 			hProjectIteration.setContainer(container);
-			hProjectIteration.setProjectSeries( (ProjectSeries) session.load(ProjectSeries.class, 1l));
+			hProjectIteration.setProjectSeries( (HProjectSeries) session.load(HProjectSeries.class, 1l));
 			session.save(hProjectIteration);
 			return Response.created( new URI("/i/"+hProjectIteration.getSlug()) ).build();
 		}

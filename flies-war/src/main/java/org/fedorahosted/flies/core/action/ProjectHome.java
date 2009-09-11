@@ -9,7 +9,7 @@ import org.fedorahosted.flies.core.model.HAccount;
 import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.HPerson;
 import org.fedorahosted.flies.core.model.HProjectIteration;
-import org.fedorahosted.flies.core.model.ProjectSeries;
+import org.fedorahosted.flies.core.model.HProjectSeries;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.In;
@@ -80,8 +80,8 @@ public class ProjectHome extends SlugHome<HIterationProject> {
 
 		// add a default series as well..
 		if("persisted".equals(retValue)){
-			ProjectSeries defaultSeries = new ProjectSeries();
-			defaultSeries.setName(ProjectSeries.DEFAULT);
+			HProjectSeries defaultSeries = new HProjectSeries();
+			defaultSeries.setName(HProjectSeries.DEFAULT);
 			defaultSeries.setProject(getInstance());
 			getEntityManager().persist(defaultSeries);
 		}

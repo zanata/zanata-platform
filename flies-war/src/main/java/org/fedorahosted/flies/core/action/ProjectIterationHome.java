@@ -8,7 +8,7 @@ import javax.persistence.NoResultException;
 import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.HProjectIteration;
-import org.fedorahosted.flies.core.model.ProjectSeries;
+import org.fedorahosted.flies.core.model.HProjectSeries;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -115,7 +115,7 @@ public class ProjectIterationHome extends MultiSlugHome<HProjectIteration>{
 		return super.persist();
 	}
 	
-	public List<ProjectSeries> getAvailableProjectSeries(){
+	public List<HProjectSeries> getAvailableProjectSeries(){
 		return getEntityManager().createQuery("from ProjectSeries where project = :project")
 			.setParameter("project", getInstance().getProject()).getResultList();
 	}

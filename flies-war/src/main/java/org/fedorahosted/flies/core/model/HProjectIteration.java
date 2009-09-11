@@ -19,7 +19,7 @@ public class HProjectIteration extends AbstractSlugEntity implements IProjectCon
 	private String name;
 	private String description;
 
-	private ProjectSeries projectSeries;
+	private HProjectSeries projectSeries;
 	private HIterationProject project;
 
 	private Boolean active = true;
@@ -70,11 +70,11 @@ public class HProjectIteration extends AbstractSlugEntity implements IProjectCon
 	@ManyToOne
 	@JoinColumn(name = "projectSeriesId")
 	@NotNull
-	public ProjectSeries getProjectSeries() {
+	public HProjectSeries getProjectSeries() {
 		return projectSeries;
 	}
 
-	public void setProjectSeries(ProjectSeries projectSeries) {
+	public void setProjectSeries(HProjectSeries projectSeries) {
 		this.projectSeries = projectSeries;
 	}
 

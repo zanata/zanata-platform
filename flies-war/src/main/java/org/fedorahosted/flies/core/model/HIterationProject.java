@@ -14,15 +14,15 @@ import org.hibernate.search.annotations.Indexed;
 @Indexed
 public class HIterationProject extends HProject{
 
-	private List<ProjectSeries> projectSeries = new ArrayList<ProjectSeries>();
+	private List<HProjectSeries> projectSeries = new ArrayList<HProjectSeries>();
 	private List<HProjectIteration> projectIterations = new ArrayList<HProjectIteration>();
 
 	@OneToMany(mappedBy = "project")
-	public List<ProjectSeries> getProjectSeries() {
+	public List<HProjectSeries> getProjectSeries() {
 		return projectSeries;
 	}
 
-	public void setProjectSeries(List<ProjectSeries> projectSeries) {
+	public void setProjectSeries(List<HProjectSeries> projectSeries) {
 		this.projectSeries = projectSeries;
 	}
 	
