@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <dataset>
-	<Person id="1"
+	<HPerson id="1"
 		creationDate="[NULL]"
 		lastChanged="[NULL]" 
 		email="bean@mr.com" 
