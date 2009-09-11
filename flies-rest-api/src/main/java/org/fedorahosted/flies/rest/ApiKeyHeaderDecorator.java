@@ -14,7 +14,7 @@ import org.jboss.resteasy.spi.interception.MessageBodyWriterInterceptor;
 
 @Provider
 @ClientInterceptor
-class ApiKeyHeaderDecorator implements ClientExecutionInterceptor {
+public class ApiKeyHeaderDecorator implements ClientExecutionInterceptor {
 
 	private String apiKey;
 	
