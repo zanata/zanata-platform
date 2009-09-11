@@ -59,4 +59,8 @@ public interface DocumentResource {
 	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
 	public ClientResponse<DocumentRefs> getDocuments();
 	
+	@GET
+	@Path("/all")
+	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
+	public ClientResponse<Documents> getAllDocuments();
 }

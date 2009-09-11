@@ -4,32 +4,39 @@
 	<import file="taskdefs.xml" />
 	<property name="out.dir" value="${user.dir}/target/test-output" />
 
-	<target name="test1">
+	<target name="props2docs">
 		<props2docs 
 			url="http://localhost:8080/flies/seam/resource/restv1" 
 			apiKey="bob"
 			projectID="test1" srcDir="test1" sourceLang="en_US" locales="de,fr" debug="true" />
 	</target>
 
-	<target name="test2">
+	<target name="docs2props">
 		<docs2props 
 			url="http://localhost:8080/flies/seam/resource/restv1" 
 			apiKey="bob"
 			src="test2/documents.xml" dstDir="${out.dir}/test2" debug="true" />
 	</target>
 
-	<target name="test3">
+	<target name="roundtriplocal">
 		<delete dir="${out.dir}/test3a"/>
 		<delete dir="${out.dir}/test3b"/>
 		<mkdir dir="${out.dir}/test3a"/>
 		<props2docs 
 			url="http://localhost:8080/flies/seam/resource/restv1" 
 			apiKey="bob"
-			dst="${out.dir}/test3a/project.xml" projectID="test1" srcDir="test1" sourceLang="en_US" locales="de,fr" debug="false" />
+			dst="${out.dir}/test3a/project.xml" 
+			projectID="test1" 
+			srcDir="test1" 
+			sourceLang="en_US" 
+			locales="de,fr" 
+			debug="false" />
 		<docs2props 
 			url="http://localhost:8080/flies/seam/resource/restv1" 
 			apiKey="bob"
-			src="${out.dir}/test3a/project.xml" dstDir="${out.dir}/test3b" debug="true" />
+			src="${out.dir}/test3a/project.xml" 
+			dstDir="${out.dir}/test3b" 
+			debug="true" />
 		<verifyprop dir1="test1" dir2="${out.dir}/test3b" />
 	</target>
 

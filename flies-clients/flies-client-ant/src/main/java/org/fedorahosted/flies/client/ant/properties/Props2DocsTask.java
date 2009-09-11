@@ -16,6 +16,7 @@ import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.adapter.properties.PropReader;
 import org.fedorahosted.flies.rest.FliesClient;
+import org.fedorahosted.flies.rest.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.DocumentResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Documents;
@@ -64,7 +65,6 @@ public class Props2DocsTask extends MatchingTask {
 	    if (debug) {
 		m.marshal(docs, System.out);
 	    }
-	    // TODO send project to rest api
 
 	    if(dst == null)
 		return;
@@ -73,8 +73,8 @@ public class Props2DocsTask extends MatchingTask {
 	    if("file".equals(dstURL.getProtocol())) {
 		m.marshal(docs, new File(dstURL.getFile()));
 	    } else {
-		FliesClient client = new FliesClient(url, apiKey);
-		DocumentResource documentResource = client.getDocumentResource("FIXME", "METOO");
+		// send project to rest api
+		DocumentResource documentResource = new FliesClientRequestFactory(apiKey).getDocumentResource(dstURL.toURI());
 		Response response = documentResource.replace(docs);
 		if (response.getStatus() >= 399)
 		    throw new BuildException(response.toString());

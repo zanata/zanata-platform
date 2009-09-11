@@ -2,6 +2,7 @@ package org.fedorahosted.flies.client.ant.properties;
 
 import java.io.File;
 import java.net.URL;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -9,8 +10,11 @@ import javax.xml.bind.Unmarshaller;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.taskdefs.MatchingTask;
 import org.fedorahosted.flies.adapter.properties.PropWriter;
+import org.fedorahosted.flies.rest.FliesClient;
+import org.fedorahosted.flies.rest.client.DocumentResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Documents;
+import org.jboss.resteasy.client.ClientResponse;
 
 public class Docs2PropsTask extends MatchingTask {
 
@@ -30,11 +34,25 @@ public class Docs2PropsTask extends MatchingTask {
 	    }
 	    
 	    URL srcURL = Utility.createURL(src, getProject());
+
+	    List<Document> docList;
+	    if("file".equals(srcURL.getProtocol())) {
+		Documents docs = (Documents) m.unmarshal(new File(srcURL.getFile()));
+		docList = docs.getDocuments();
+	    } else {
+		// use rest api to fetch Documents
+		FliesClient client = new FliesClient(url, apiKey);
+		DocumentResource documentResource = client.getDocumentResource("FIXME", "METOO");
+		ClientResponse<Documents> response  = documentResource.getAllDocuments();
+		
+		if (response.getStatus() >= 399) {
+		    throw new BuildException(response.toString());
+		} else {
+		    docList = response.getEntity().getDocuments();
+		}
+	    }
 	    
-	    // TODO use rest api to fetch Documents
-	    Documents docs = (Documents) m.unmarshal(srcURL);
-	    
-	    for (Document doc : docs.getDocuments()) {
+	    for (Document doc : docList) {
 		PropWriter.write(doc, dstDir);
 	    }
 	} catch (Exception e) {
