@@ -7,7 +7,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import org.fedorahosted.flies.core.model.HAccount;
-import org.fedorahosted.flies.core.model.Tribe;
+import org.fedorahosted.flies.core.model.HTribe;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
@@ -30,7 +30,7 @@ public class MemberTribesList implements Serializable{
     
     @Logger Log log;
     
-    protected List<Tribe> memberTribes;
+    protected List<HTribe> memberTribes;
     
     @Create
     public void onCreate() {
@@ -38,7 +38,7 @@ public class MemberTribesList implements Serializable{
     }
 
     @Unwrap
-    public List<Tribe> getMemberTribes() {
+    public List<HTribe> getMemberTribes() {
         return memberTribes;
     }
 

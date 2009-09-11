@@ -3,7 +3,7 @@ package org.fedorahosted.flies.core.action;
 import org.fedorahosted.flies.core.model.HAccount;
 import org.fedorahosted.flies.core.model.HFliesLocale;
 import org.fedorahosted.flies.core.model.HPerson;
-import org.fedorahosted.flies.core.model.Tribe;
+import org.fedorahosted.flies.core.model.HTribe;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
@@ -21,16 +21,16 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 
 @Name("tribeHome")
 @Scope(ScopeType.CONVERSATION)
-public class TribeHome extends EntityHome<Tribe>{
+public class TribeHome extends EntityHome<HTribe>{
 
 	private static final long serialVersionUID = 5139154491040234980L;
 
 	private int maxNumberOfTribeMemberships = 5;
 	
 	@Override
-	protected Tribe loadInstance() {
+	protected HTribe loadInstance() {
 		Session session = (Session) getEntityManager().getDelegate();
-		return (Tribe) session.createCriteria(getEntityClass())
+		return (HTribe) session.createCriteria(getEntityClass())
 		.add( Restrictions.naturalId()
 		        .set("locale", getEntityManager().find(HFliesLocale.class, getId()))
 		    ).setCacheable(true)

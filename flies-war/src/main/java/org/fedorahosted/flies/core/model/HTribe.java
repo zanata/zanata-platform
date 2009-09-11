@@ -17,7 +17,7 @@ import javax.persistence.OneToOne;
  *
  */
 @Entity
-public class Tribe extends AbstractFliesEntity{
+public class HTribe extends AbstractFliesEntity{
 
 	private HFliesLocale locale;
 	

@@ -27,9 +27,9 @@ public class HPerson extends AbstractFliesEntity implements Serializable {
 
 	private List<HProject> maintainerProjects;
 
-	private Set<Tribe> tribeChiefs;
-	private Set<Tribe> tribeMemberships;
-	private Set<Tribe> tribeLeaderships;
+	private Set<HTribe> tribeChiefs;
+	private Set<HTribe> tribeMemberships;
+	private Set<HTribe> tribeLeaderships;
 
 	private Set<Community> communityOwnerships;
 	private Set<Community> communityOfficerships;
@@ -82,31 +82,31 @@ public class HPerson extends AbstractFliesEntity implements Serializable {
 
 	@ManyToMany
 	@JoinTable(name = "Tribe_Member", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "tribeId"))
-	public Set<Tribe> getTribeMemberships() {
+	public Set<HTribe> getTribeMemberships() {
 		return tribeMemberships;
 	}
 
-	public void setTribeMemberships(Set<Tribe> tribeMemberships) {
+	public void setTribeMemberships(Set<HTribe> tribeMemberships) {
 		this.tribeMemberships = tribeMemberships;
 	}
 	
 	@ManyToMany
 	@JoinTable(name = "Tribe_Leader", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "tribeId"))
-	public Set<Tribe> getTribeLeaderships() {
+	public Set<HTribe> getTribeLeaderships() {
 		return tribeLeaderships;
 	}
 	
-	public void setTribeLeaderships(Set<Tribe> tribeLeaderships) {
+	public void setTribeLeaderships(Set<HTribe> tribeLeaderships) {
 		this.tribeLeaderships = tribeLeaderships;
 	}
 	
 	
 	@OneToMany(mappedBy = "chief")
-	public Set<Tribe> getTribeChiefs() {
+	public Set<HTribe> getTribeChiefs() {
 		return tribeChiefs;
 	}
 	
-	public void setTribeChiefs(Set<Tribe> tribeChiefs) {
+	public void setTribeChiefs(Set<HTribe> tribeChiefs) {
 		this.tribeChiefs = tribeChiefs;
 	}
 	

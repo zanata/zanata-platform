@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import org.fedorahosted.flies.core.model.Tribe;
+import org.fedorahosted.flies.core.model.HTribe;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -16,7 +16,7 @@ public class TribesBean {
 
 	@In EntityManager entityManager;
 	
-	public List<Tribe> getLatestTribes(){
+	public List<HTribe> getLatestTribes(){
 		return entityManager.createQuery("select t from Tribe t").getResultList();
 	}
 	

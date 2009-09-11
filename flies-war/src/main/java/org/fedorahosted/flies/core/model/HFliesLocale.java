@@ -33,7 +33,7 @@ public class HFliesLocale implements Serializable {
 	private HFliesLocale parent;
 	private List<HFliesLocale> children;
 
-	private Tribe tribe;
+	private HTribe tribe;
 	
 	private List<HFliesLocale> friends; // e.g. nn, nb.
 
@@ -45,11 +45,11 @@ public class HFliesLocale implements Serializable {
 	}
 
 	@OneToOne(mappedBy="locale")
-	public Tribe getTribe() {
+	public HTribe getTribe() {
 		return tribe;
 	}
 	
-	public void setTribe(Tribe tribe) {
+	public void setTribe(HTribe tribe) {
 		this.tribe = tribe;
 	}
 	
