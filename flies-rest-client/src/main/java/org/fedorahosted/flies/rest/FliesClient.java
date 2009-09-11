@@ -25,9 +25,6 @@ public class FliesClient {
 		
 	private static FliesClientRequestFactory initializeRequests(String apiKey)
 	{
-	  ResteasyProviderFactory instance = ResteasyProviderFactory.getInstance();
-	  RegisterBuiltin.register(instance);
-
 	  FliesClientRequestFactory clientRequestFactory = new FliesClientRequestFactory(apiKey);
 	  return clientRequestFactory;
 	}
