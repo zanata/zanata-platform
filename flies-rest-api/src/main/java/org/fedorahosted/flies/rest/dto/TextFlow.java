@@ -6,6 +6,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -13,6 +14,9 @@ import org.fedorahosted.flies.LocaleId;
 
 
 @XmlType(name="textFlowType", namespace=Namespaces.DOCUMENT, propOrder={"content", "extensions"})
+@XmlSeeAlso({
+	TextFlowTargets.class
+})
 public class TextFlow implements Resource{
 
 	private String id;

@@ -24,6 +24,7 @@ public class BuildTest extends BuildFileTest {
     @Override
     protected void runTest() throws Throwable {
 	try {
+	    System.out.println("Executing build target '"+getName()+"'");
 	    executeTarget(getName());
 	} finally {
 	    System.out.print(getLog());
@@ -44,6 +45,7 @@ public class BuildTest extends BuildFileTest {
 	suite.addTest(new BuildTest("props2docs"));
 	suite.addTest(new BuildTest("docs2props"));
 	suite.addTest(new BuildTest("roundtriplocal"));
+//	suite.addTest(new BuildTest("roundtripremote"));
 	return suite;
     }
 

@@ -1,15 +1,13 @@
 package org.fedorahosted.flies.rest.dto;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-
-import javassist.expr.NewArray;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 import org.jboss.resteasy.annotations.providers.jaxb.json.Mapped;
@@ -25,6 +23,9 @@ import org.jboss.resteasy.spi.touri.URITemplate;
 	})
 @XmlType(name="projectIterationType", namespace=Namespaces.PROJECT)
 @XmlRootElement(name="project-iteration", namespace=Namespaces.PROJECT)
+@XmlSeeAlso({
+	Documents.class
+})
 public class ProjectIteration extends AbstractProjectIteration{
 
 	private String id;
