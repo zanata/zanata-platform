@@ -15,14 +15,14 @@ import org.jboss.seam.annotations.security.management.RoleGroups;
 import org.jboss.seam.annotations.security.management.RoleName;
 
 @Entity
-public class AccountRole implements Serializable {
+public class HAccountRole implements Serializable {
 	private static final long serialVersionUID = 9177366120789064801L;
 
 	private Integer id;
 	private String name;
 	private boolean conditional;
 
-	private Set<AccountRole> groups;
+	private Set<HAccountRole> groups;
 
 	@Id
 	@GeneratedValue
@@ -44,13 +44,13 @@ public class AccountRole implements Serializable {
 	}
 
 	@RoleGroups
-	@ManyToMany(targetEntity = AccountRole.class)
+	@ManyToMany(targetEntity = HAccountRole.class)
 	@JoinTable(name = "AccountRoleGroup", joinColumns = @JoinColumn(name = "roleId"), inverseJoinColumns = @JoinColumn(name = "memberOf"))
-	public Set<AccountRole> getGroups() {
+	public Set<HAccountRole> getGroups() {
 		return groups;
 	}
 
-	public void setGroups(Set<AccountRole> groups) {
+	public void setGroups(Set<HAccountRole> groups) {
 		this.groups = groups;
 	}
 

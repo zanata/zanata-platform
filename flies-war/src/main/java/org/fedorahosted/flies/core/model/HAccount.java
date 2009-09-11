@@ -29,7 +29,7 @@ public class HAccount extends AbstractFliesEntity implements Serializable {
 	private boolean enabled;
         private String apiKey;
 	private HPerson person;
-	private Set<AccountRole> roles;
+	private Set<HAccountRole> roles;
 
 	@OneToOne(mappedBy = "account")
 	public HPerson getPerson() {
@@ -83,13 +83,13 @@ public class HAccount extends AbstractFliesEntity implements Serializable {
         }
 
 	@UserRoles
-	@ManyToMany(targetEntity = AccountRole.class)
+	@ManyToMany(targetEntity = HAccountRole.class)
 	@JoinTable(name = "AccountMembership", joinColumns = @JoinColumn(name = "accountId"), inverseJoinColumns = @JoinColumn(name = "memberOf"))
-	public Set<AccountRole> getRoles() {
+	public Set<HAccountRole> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(Set<AccountRole> roles) {
+	public void setRoles(Set<HAccountRole> roles) {
 		this.roles = roles;
 	}
 
