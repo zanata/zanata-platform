@@ -17,7 +17,7 @@ public class TribesBean {
 	@In EntityManager entityManager;
 	
 	public List<HTribe> getLatestTribes(){
-		return entityManager.createQuery("select t from Tribe t").getResultList();
+		return entityManager.createQuery("select t from HTribe t").getResultList();
 	}
 	
 	

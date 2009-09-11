@@ -13,7 +13,7 @@ import com.ibm.icu.util.ULocale;
 @Name("localeList")
 public class LocaleList extends EntityQuery<HFliesLocale> {
 	public LocaleList() {
-		setEjbql("select locale from FliesLocale locale");
+		setEjbql("select locale from HFliesLocale locale");
 	}
 
 	

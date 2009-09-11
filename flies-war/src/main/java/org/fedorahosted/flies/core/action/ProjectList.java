@@ -7,6 +7,6 @@ import org.jboss.seam.framework.EntityQuery;
 @Name("projectList")
 public class ProjectList extends EntityQuery<HProject> {
 	public ProjectList() {
-		setEjbql("select project from Project project");
+		setEjbql("select project from HProject project");
 	}
 }

@@ -54,7 +54,7 @@ public class MemberTribesList implements Serializable{
     	}
     	
         memberTribes = entityManager.createQuery(
-            "select p.tribeMemberships from Person p where p.account = :account")
+            "select p.tribeMemberships from HPerson p where p.account = :account")
             .setParameter("account", authenticatedAccount)
             .getResultList();
     	log.info("now listing {0} tribes", memberTribes.size());

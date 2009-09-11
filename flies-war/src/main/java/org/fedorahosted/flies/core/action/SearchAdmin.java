@@ -22,7 +22,7 @@ public class SearchAdmin {
     public void resetProjectIndex() throws Exception {
     	FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager); 
 
-    	List<HProject> projects = entityManager.createQuery("select project from Project as project").getResultList(); 
+    	List<HProject> projects = entityManager.createQuery("select project from HProject as project").getResultList(); 
 	 	            for (HProject project : projects) { 
 	                fullTextEntityManager.index(project); 
 	 	            }  
@@ -33,7 +33,7 @@ public class SearchAdmin {
     public void resetCommunityIndex() throws Exception {
     	FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager); 
 
-    	List<HCommunity> communities = entityManager.createQuery("select community from Community as community").getResultList(); 
+    	List<HCommunity> communities = entityManager.createQuery("select community from HCommunity as community").getResultList(); 
 	 	            for (HCommunity community : communities) { 
 	                fullTextEntityManager.index(community); 
 	 	            }  

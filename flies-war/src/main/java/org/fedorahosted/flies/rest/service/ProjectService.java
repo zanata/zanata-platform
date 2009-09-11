@@ -103,7 +103,7 @@ public class ProjectService{
 	public ProjectRefs getProjects() {
 		ProjectRefs projectRefs = new ProjectRefs();
 		
-		List<org.fedorahosted.flies.core.model.HProject> projects = session.createQuery("select p from Project p").list();
+		List<org.fedorahosted.flies.core.model.HProject> projects = session.createQuery("select p from HProject p").list();
 		
 		for(org.fedorahosted.flies.core.model.HProject p : projects){
 			org.fedorahosted.flies.rest.dto.Project proj = 

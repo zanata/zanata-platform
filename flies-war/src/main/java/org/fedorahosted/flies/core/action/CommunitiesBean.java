@@ -18,7 +18,7 @@ public class CommunitiesBean {
 	
 
 	public List<HCommunity> getLatestCommunities(){
-		return entityManager.createQuery("select c from Community c").getResultList();
+		return entityManager.createQuery("select c from HCommunity c").getResultList();
 	}
 	
 	
