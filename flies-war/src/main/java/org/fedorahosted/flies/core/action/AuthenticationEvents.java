@@ -1,5 +1,7 @@
-package org.fedorahosted.flies.core.model;
+package org.fedorahosted.flies.core.action;
 
+import org.fedorahosted.flies.core.model.HAccount;
+import org.fedorahosted.flies.core.model.HPerson;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
