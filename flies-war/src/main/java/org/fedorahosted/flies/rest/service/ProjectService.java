@@ -24,17 +24,17 @@ import org.fedorahosted.flies.core.dao.AccountDAO;
 import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.model.HAccount;
 import org.fedorahosted.flies.core.model.HIterationProject;
+import org.fedorahosted.flies.core.model.HProject;
 import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.rest.MediaTypes;
-import org.fedorahosted.flies.rest.dto.ProjectIterationRef;
-import org.fedorahosted.flies.rest.dto.ProjectIterationRefs;
-import org.fedorahosted.flies.rest.dto.ProjectRef;
 import org.fedorahosted.flies.rest.dto.Project;
+import org.fedorahosted.flies.rest.dto.ProjectIteration;
+import org.fedorahosted.flies.rest.dto.ProjectIterationRef;
+import org.fedorahosted.flies.rest.dto.ProjectRef;
 import org.fedorahosted.flies.rest.dto.ProjectRefs;
 import org.hibernate.HibernateException;
-import org.hibernate.validator.InvalidStateException;
 import org.hibernate.Session;
-import org.jboss.seam.Component;
+import org.hibernate.validator.InvalidStateException;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -65,27 +65,27 @@ public class ProjectService{
 	@GET
 	@Path("/p/{projectSlug}")
 	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
-	public org.fedorahosted.flies.rest.dto.Project getProject(
+	public Project getProject(
 			@PathParam("projectSlug") String projectSlug) {
 
-		org.fedorahosted.flies.core.model.HProject p = projectDAO.getBySlug(projectSlug);
-		if(p == null)
+		HProject hProject = projectDAO.getBySlug(projectSlug);
+		if(hProject == null)
 			throw new WebApplicationException(Status.NOT_FOUND);
 		
-		return toMini(p);
+		return toMini(hProject);
 	}
 
-	private static Project toMini(org.fedorahosted.flies.core.model.HProject p){
-		Project proj = new Project();
-		proj.setId(p.getSlug());
-		proj.setName(p.getName());
-		proj.setDescription(p.getDescription());
-		if(p instanceof HIterationProject){
-			HIterationProject itProject = (HIterationProject) p;
+	private static Project toMini(HProject hProject){
+		Project project = new Project();
+		project.setId(hProject.getSlug());
+		project.setName(hProject.getName());
+		project.setDescription(hProject.getDescription());
+		if(hProject instanceof HIterationProject){
+			HIterationProject itProject = (HIterationProject) hProject;
 			for(HProjectIteration pIt : itProject.getProjectIterations()){
-				proj.getIterations().add(
+				project.getIterations().add(
 						new ProjectIterationRef(
-								new org.fedorahosted.flies.rest.dto.ProjectIteration(
+								new ProjectIteration(
 										pIt.getSlug(),
 										pIt.getName(), 
 										pIt.getDescription()
@@ -95,7 +95,7 @@ public class ProjectService{
 			}
 		}
 		
-		return proj;
+		return project;
 	}
 	
 	@GET
@@ -103,12 +103,12 @@ public class ProjectService{
 	public ProjectRefs getProjects() {
 		ProjectRefs projectRefs = new ProjectRefs();
 		
-		List<org.fedorahosted.flies.core.model.HProject> projects = session.createQuery("select p from HProject p").list();
+		List<HProject> projects = session.createQuery("from HProject p").list();
 		
-		for(org.fedorahosted.flies.core.model.HProject p : projects){
-			org.fedorahosted.flies.rest.dto.Project proj = 
-				new org.fedorahosted.flies.rest.dto.Project(p.getSlug(), p.getName(), p.getDescription());
-			projectRefs.getProjects().add( new ProjectRef( proj ));
+		for(HProject hProject : projects){
+			Project project = 
+				new Project(hProject.getSlug(), hProject.getName(), hProject.getDescription());
+			projectRefs.getProjects().add( new ProjectRef( project ));
 		}
 		
 		return projectRefs;
@@ -117,15 +117,15 @@ public class ProjectService{
 	@POST
 	@Path("/p/{projectSlug}")
 	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
-	public Response updateProject(@PathParam("projectSlug") String projectSlug, org.fedorahosted.flies.rest.dto.Project project){
+	public Response updateProject(@PathParam("projectSlug") String projectSlug, Project project){
 			
-		org.fedorahosted.flies.core.model.HProject p = projectDAO.getBySlug(projectSlug);
+		HProject hProject = projectDAO.getBySlug(projectSlug);
 
-		if(p == null)
+		if(hProject == null)
 			throw new WebApplicationException(Status.NOT_FOUND);
 
-		p.setName(project.getName());
-		p.setDescription(project.getDescription());
+		hProject.setName(project.getName());
+		hProject.setDescription(project.getDescription());
 		try{
 			session.flush();
 			return Response.ok().build();
@@ -137,26 +137,26 @@ public class ProjectService{
 	
 	@PUT
 	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
-	public Response addProject(org.fedorahosted.flies.rest.dto.Project project) throws URISyntaxException{
+	public Response addProject(Project project) throws URISyntaxException{
 		
-		org.fedorahosted.flies.core.model.HProject p = projectDAO.getBySlug(project.getId());
-		if(p != null){
+		HProject hProject = projectDAO.getBySlug(project.getId());
+		if(hProject != null){
 			return Response.status(409).build();
 		}
-		p = new org.fedorahosted.flies.core.model.HIterationProject();
-		p.setSlug(project.getId());
-		p.setName(project.getName());
-		p.setDescription(project.getDescription());
+		hProject = new org.fedorahosted.flies.core.model.HIterationProject();
+		hProject.setSlug(project.getId());
+		hProject.setName(project.getName());
+		hProject.setDescription(project.getDescription());
 		String apiKey = request.getHeader(FliesRestSecurityInterceptor.X_AUTH_TOKEN_HEADER);
 		if(apiKey != null) {
-			HAccount account = accountDAO.getByApiKey(apiKey);
-			if(account != null && account.getPerson() != null) {
-				p.getMaintainers().add(account.getPerson());
+			HAccount hAccount = accountDAO.getByApiKey(apiKey);
+			if(hAccount != null && hAccount.getPerson() != null) {
+				hProject.getMaintainers().add(hAccount.getPerson());
 			}
 		}
 		try{
-			session.save(p);
-			return Response.created( new URI("/projects/p/"+p.getSlug()) ).build();
+			session.save(hProject);
+			return Response.created( new URI("/projects/p/"+hProject.getSlug()) ).build();
 		}
         catch(InvalidStateException e){
         	return Response.status(Status.BAD_REQUEST).build();
