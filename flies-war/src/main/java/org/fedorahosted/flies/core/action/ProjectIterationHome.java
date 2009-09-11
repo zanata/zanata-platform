@@ -6,7 +6,7 @@ import javax.faces.event.ValueChangeEvent;
 import javax.persistence.NoResultException;
 
 import org.fedorahosted.flies.core.dao.ProjectDAO;
-import org.fedorahosted.flies.core.model.IterationProject;
+import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.fedorahosted.flies.core.model.ProjectSeries;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
@@ -30,7 +30,7 @@ public class ProjectIterationHome extends MultiSlugHome<ProjectIteration>{
 	Log log;
 	
 	@In(value="#{projectHome.instance}", scope=ScopeType.CONVERSATION, required=false)
-	IterationProject project;
+	HIterationProject project;
 	
 	@In(create=true)
 	ProjectDAO projectDAO;

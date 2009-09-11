@@ -20,7 +20,7 @@ public class ProjectIteration extends AbstractSlugEntity implements IProjectCont
 	private String description;
 
 	private ProjectSeries projectSeries;
-	private IterationProject project;
+	private HIterationProject project;
 
 	private Boolean active = true;
 
@@ -81,11 +81,11 @@ public class ProjectIteration extends AbstractSlugEntity implements IProjectCont
 	@ManyToOne
 	@NotNull
 	@NaturalId
-	public IterationProject getProject() {
+	public HIterationProject getProject() {
 		return project;
 	}
 
-	public void setProject(IterationProject project) {
+	public void setProject(HIterationProject project) {
 		this.project = project;
 	}
 

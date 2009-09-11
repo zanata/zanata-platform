@@ -23,7 +23,7 @@ import javax.ws.rs.core.Response.Status;
 import org.fedorahosted.flies.core.dao.AccountDAO;
 import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.model.HAccount;
-import org.fedorahosted.flies.core.model.IterationProject;
+import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.ProjectIterationRef;
@@ -80,8 +80,8 @@ public class ProjectService{
 		proj.setId(p.getSlug());
 		proj.setName(p.getName());
 		proj.setDescription(p.getDescription());
-		if(p instanceof IterationProject){
-			IterationProject itProject = (IterationProject) p;
+		if(p instanceof HIterationProject){
+			HIterationProject itProject = (HIterationProject) p;
 			for(ProjectIteration pIt : itProject.getProjectIterations()){
 				proj.getIterations().add(
 						new ProjectIterationRef(
@@ -143,7 +143,7 @@ public class ProjectService{
 		if(p != null){
 			return Response.status(409).build();
 		}
-		p = new org.fedorahosted.flies.core.model.IterationProject();
+		p = new org.fedorahosted.flies.core.model.HIterationProject();
 		p.setSlug(project.getId());
 		p.setName(project.getName());
 		p.setDescription(project.getDescription());

@@ -15,7 +15,7 @@ import javax.ws.rs.core.Response;
 
 import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.dao.ProjectIterationDAO;
-import org.fedorahosted.flies.core.model.IterationProject;
+import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.Project;
 import org.fedorahosted.flies.core.model.ProjectSeries;
 import org.fedorahosted.flies.repository.model.HDocument;
@@ -128,7 +128,7 @@ public class ProjectIterationService {
 		}
 
 		hProjectIteration = new org.fedorahosted.flies.core.model.ProjectIteration();
-		hProjectIteration.setProject((IterationProject) hProject);
+		hProjectIteration.setProject((HIterationProject) hProject);
 		hProjectIteration.setName(projectIteration.getName());
 		hProjectIteration.setSlug(projectIteration.getId());
 		hProjectIteration.setDescription(projectIteration.getSummary());

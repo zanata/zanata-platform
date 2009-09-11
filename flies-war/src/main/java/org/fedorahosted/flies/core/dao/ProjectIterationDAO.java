@@ -3,7 +3,7 @@ package org.fedorahosted.flies.core.dao;
 import java.util.List;
 
 import org.fedorahosted.flies.LocaleId;
-import org.fedorahosted.flies.core.model.IterationProject;
+import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.fedorahosted.flies.core.model.StatusCount;
 import org.fedorahosted.flies.repository.util.TranslationStatistics;
@@ -38,7 +38,7 @@ public class ProjectIterationDAO {
 		.setCacheable(true).uniqueResult();
 	}
 
-	public ProjectIteration getBySlug(IterationProject project, String iterationSlug){
+	public ProjectIteration getBySlug(HIterationProject project, String iterationSlug){
 		return (ProjectIteration) session.createCriteria(ProjectIteration.class)
 		.add( Restrictions.naturalId()
 	        .set("project", project )

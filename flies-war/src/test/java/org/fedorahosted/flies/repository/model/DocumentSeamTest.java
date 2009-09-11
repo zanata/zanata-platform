@@ -8,7 +8,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.fedorahosted.flies.core.model.IterationProject;
+import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.fedorahosted.flies.core.model.ProjectSeries;
 import org.jboss.seam.mock.DBUnitSeamTest;
@@ -29,7 +29,7 @@ public class DocumentSeamTest extends DBUnitSeamTest {
 
             protected void invokeApplication() throws Exception {
                 EntityManager em = (EntityManager) getInstance("entityManager");
-                IterationProject project = em.find(IterationProject.class, 1l);
+                HIterationProject project = em.find(HIterationProject.class, 1l);
                 assertThat( project, notNullValue() );
                 
                 List<ProjectSeries> projectSeries =  project.getProjectSeries();

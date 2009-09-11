@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.core.model.HAccount;
-import org.fedorahosted.flies.core.model.IterationProject;
+import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.Person;
 import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.fedorahosted.flies.repository.model.HDocument;
