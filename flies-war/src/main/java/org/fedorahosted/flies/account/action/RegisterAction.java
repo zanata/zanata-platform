@@ -8,7 +8,7 @@ import javax.persistence.NoResultException;
 
 import org.fedorahosted.flies.core.dao.AccountDAO;
 import org.fedorahosted.flies.core.model.HAccount;
-import org.fedorahosted.flies.core.model.AccountActivationKey;
+import org.fedorahosted.flies.core.model.HAccountActivationKey;
 import org.fedorahosted.flies.core.model.HPerson;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
@@ -163,7 +163,7 @@ public class RegisterAction implements Serializable {
     	person.setAccount(account);
     	entityManager.persist(person);
     	
-    	AccountActivationKey key = new AccountActivationKey();
+    	HAccountActivationKey key = new HAccountActivationKey();
     	key.setAccount(account);
     	key.setKeyHash(generateHash(getUsername() + getPassword() + getPerson().getEmail() + getPerson().getName() + System.currentTimeMillis()));
     	entityManager.persist(key);

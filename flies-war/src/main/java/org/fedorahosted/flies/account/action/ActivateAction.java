@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.EntityManager;
 
-import org.fedorahosted.flies.core.model.AccountActivationKey;
+import org.fedorahosted.flies.core.model.HAccountActivationKey;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.End;
@@ -38,7 +38,7 @@ public class ActivateAction implements Serializable{
 		return activationKey;
 	}
 
-    private AccountActivationKey key;
+    private HAccountActivationKey key;
 
     
     @Begin(join=true)
@@ -47,7 +47,7 @@ public class ActivateAction implements Serializable{
     	if(getActivationKey() == null)
     		throw new KeyNotFoundException();
     	
-		key = entityManager.find(AccountActivationKey.class, getActivationKey());
+		key = entityManager.find(HAccountActivationKey.class, getActivationKey());
 		
 		if(key == null)
 			throw new KeyNotFoundException();
