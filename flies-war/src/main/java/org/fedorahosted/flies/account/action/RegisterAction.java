@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
 import org.fedorahosted.flies.core.dao.AccountDAO;
-import org.fedorahosted.flies.core.model.Account;
+import org.fedorahosted.flies.core.model.HAccount;
 import org.fedorahosted.flies.core.model.AccountActivationKey;
 import org.fedorahosted.flies.core.model.Person;
 import org.hibernate.validator.Length;
@@ -158,7 +158,7 @@ public class RegisterAction implements Serializable {
         }.addRole("admin")
          .run();
         
-    	Account account = accountDAO.getByUsername(getUsername());
+    	HAccount account = accountDAO.getByUsername(getUsername());
     	
     	person.setAccount(account);
     	entityManager.persist(person);

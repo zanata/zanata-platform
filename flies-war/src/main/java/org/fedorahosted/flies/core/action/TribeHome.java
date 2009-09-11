@@ -1,6 +1,6 @@
 package org.fedorahosted.flies.core.action;
 
-import org.fedorahosted.flies.core.model.Account;
+import org.fedorahosted.flies.core.model.HAccount;
 import org.fedorahosted.flies.core.model.FliesLocale;
 import org.fedorahosted.flies.core.model.Person;
 import org.fedorahosted.flies.core.model.Tribe;
@@ -47,7 +47,7 @@ public class TribeHome extends EntityHome<Tribe>{
 	}
 	
 	@In(required=false, value=JpaIdentityStore.AUTHENTICATED_USER) 
-	Account authenticatedAccount;
+	HAccount authenticatedAccount;
 
 	@Transactional
 	public void joinTribe(){

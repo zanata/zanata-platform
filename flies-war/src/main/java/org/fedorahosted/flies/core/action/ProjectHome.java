@@ -5,7 +5,7 @@ import java.util.List;
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.NoResultException;
 
-import org.fedorahosted.flies.core.model.Account;
+import org.fedorahosted.flies.core.model.HAccount;
 import org.fedorahosted.flies.core.model.IterationProject;
 import org.fedorahosted.flies.core.model.Person;
 import org.fedorahosted.flies.core.model.ProjectIteration;
@@ -25,7 +25,7 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 public class ProjectHome extends SlugHome<IterationProject> {
 
 	@In(required=false, value=JpaIdentityStore.AUTHENTICATED_USER) 
-	Account authenticatedAccount;
+	HAccount authenticatedAccount;
 	
 	
 	@Begin(join = true)

@@ -21,7 +21,7 @@ import org.hibernate.validator.NotEmpty;
 public class Person extends AbstractFliesEntity implements Serializable {
 
 	private String name;
-	private Account account;
+	private HAccount account;
 
 	private String email;
 
@@ -47,11 +47,11 @@ public class Person extends AbstractFliesEntity implements Serializable {
 
 	@OneToOne(optional = true, fetch = FetchType.EAGER)
 	@JoinColumn(name = "accountId")
-	public Account getAccount() {
+	public HAccount getAccount() {
 		return account;
 	}
 
-	public void setAccount(Account account) {
+	public void setAccount(HAccount account) {
 		this.account = account;
 	}
 

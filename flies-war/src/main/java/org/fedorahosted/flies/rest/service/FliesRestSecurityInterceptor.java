@@ -5,7 +5,7 @@ import java.util.List;
 import javax.ws.rs.WebApplicationException;
 
 import org.fedorahosted.flies.core.dao.AccountDAO;
-import org.fedorahosted.flies.core.model.Account;
+import org.fedorahosted.flies.core.model.HAccount;
 import org.hibernate.Session;
 import org.jboss.resteasy.annotations.interception.SecurityPrecedence;
 import org.jboss.resteasy.annotations.interception.ServerInterceptor;
@@ -44,7 +44,7 @@ public class FliesRestSecurityInterceptor implements PreProcessInterceptor{
 		List<String> tokenHeaders = request.getHttpHeaders().getRequestHeader(X_AUTH_TOKEN_HEADER);
 		if(!tokenHeaders.isEmpty()){
 			String apiKey = tokenHeaders.get(0);
-			Account account = accountDAO.getByApiKey(apiKey);
+			HAccount account = accountDAO.getByApiKey(apiKey);
 			if(account != null) {
 				// TODO set up identity
 				return null;

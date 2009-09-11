@@ -1,7 +1,7 @@
 package org.fedorahosted.flies.core.action;
 
 import org.fedorahosted.flies.core.dao.AccountDAO;
-import org.fedorahosted.flies.core.model.Account;
+import org.fedorahosted.flies.core.model.HAccount;
 import org.fedorahosted.flies.core.model.Person;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -17,7 +17,7 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 public class PersonHome extends EntityHome<Person>{
 	
 	@In(required=false, value=JpaIdentityStore.AUTHENTICATED_USER) 
-	Account authenticatedAccount;
+	HAccount authenticatedAccount;
 	
 	@In
 	AccountDAO accountDAO;

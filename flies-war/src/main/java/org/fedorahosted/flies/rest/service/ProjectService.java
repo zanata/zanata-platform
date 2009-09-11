@@ -22,7 +22,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.fedorahosted.flies.core.dao.AccountDAO;
 import org.fedorahosted.flies.core.dao.ProjectDAO;
-import org.fedorahosted.flies.core.model.Account;
+import org.fedorahosted.flies.core.model.HAccount;
 import org.fedorahosted.flies.core.model.IterationProject;
 import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.fedorahosted.flies.rest.MediaTypes;
@@ -149,7 +149,7 @@ public class ProjectService{
 		p.setDescription(project.getDescription());
 		String apiKey = request.getHeader(FliesRestSecurityInterceptor.X_AUTH_TOKEN_HEADER);
 		if(apiKey != null) {
-			Account account = accountDAO.getByApiKey(apiKey);
+			HAccount account = accountDAO.getByApiKey(apiKey);
 			if(account != null && account.getPerson() != null) {
 				p.getMaintainers().add(account.getPerson());
 			}

@@ -20,14 +20,14 @@ public class AuthenticationEvents {
 	Person authenticatedPerson;
 	
 	@Observer(JpaIdentityStore.EVENT_USER_AUTHENTICATED)
-	public void loginSuccessful(Account account) {
+	public void loginSuccessful(HAccount account) {
 		log.info("Account {0} authenticated", account.getUsername());
 
 		authenticatedPerson = account.getPerson();
 	}
 
 	@Observer(JpaIdentityStore.EVENT_USER_CREATED)
-	public void createSuccessful(Account account) {
+	public void createSuccessful(HAccount account) {
 		log.info("Account {0} created", account.getUsername());
 	}
 

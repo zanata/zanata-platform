@@ -22,7 +22,7 @@ import org.jboss.seam.security.management.PasswordHash;
 
 @Entity
 @Table(uniqueConstraints=@UniqueConstraint(columnNames="apiKey"))
-public class Account extends AbstractFliesEntity implements Serializable {
+public class HAccount extends AbstractFliesEntity implements Serializable {
 
 	private String username;
 	private String passwordHash;
@@ -115,7 +115,7 @@ public class Account extends AbstractFliesEntity implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Account other = (Account) obj;
+		HAccount other = (HAccount) obj;
 		if (enabled != other.enabled)
 			return false;
 		if (passwordHash == null) {

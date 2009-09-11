@@ -6,7 +6,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import org.fedorahosted.flies.LocaleId;
-import org.fedorahosted.flies.core.model.Account;
+import org.fedorahosted.flies.core.model.HAccount;
 import org.fedorahosted.flies.core.model.IterationProject;
 import org.fedorahosted.flies.core.model.Person;
 import org.fedorahosted.flies.core.model.ProjectIteration;
@@ -56,7 +56,7 @@ public class TranslateAction implements Serializable {
 	private Log log;
 
 	@In(required=false, value=JpaIdentityStore.AUTHENTICATED_USER) 
-	Account authenticatedAccount;
+	HAccount authenticatedAccount;
 
 	private LocaleId locale;
 	private HProjectContainer projectContainer;

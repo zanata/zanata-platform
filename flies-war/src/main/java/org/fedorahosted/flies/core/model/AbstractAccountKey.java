@@ -14,7 +14,7 @@ import org.hibernate.validator.NotEmpty;
 public class AbstractAccountKey{
 	
 	private String keyHash;
-	private Account account;
+	private HAccount account;
 
 	@NotEmpty
 	@Length(min=32, max=32)
@@ -30,11 +30,11 @@ public class AbstractAccountKey{
 	@NaturalId
 	@OneToOne(optional=false, fetch=FetchType.EAGER)
 	@JoinColumn(name = "accountId")
-	public Account getAccount() {
+	public HAccount getAccount() {
 		return account;
 	}
 	
-	public void setAccount(Account account) {
+	public void setAccount(HAccount account) {
 		this.account = account;
 	}
 

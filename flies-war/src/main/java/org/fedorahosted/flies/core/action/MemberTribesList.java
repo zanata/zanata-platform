@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import org.fedorahosted.flies.core.model.Account;
+import org.fedorahosted.flies.core.model.HAccount;
 import org.fedorahosted.flies.core.model.Tribe;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
@@ -43,7 +43,7 @@ public class MemberTribesList implements Serializable{
     }
 
 	@In(required=false, value=JpaIdentityStore.AUTHENTICATED_USER) 
-	Account authenticatedAccount;
+	HAccount authenticatedAccount;
     
     @Observer(create = false, value = {"personJoinedTribe","personLeftTribe",Identity.EVENT_POST_AUTHENTICATE})
     synchronized public void fetchMemberTribes() {

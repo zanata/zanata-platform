@@ -5,7 +5,7 @@ import java.security.SecureRandom;
 
 import javax.persistence.EntityManager;
 
-import org.fedorahosted.flies.core.model.Account;
+import org.fedorahosted.flies.core.model.HAccount;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.AutoCreate;
@@ -20,21 +20,21 @@ public class AccountDAO {
 	@In
 	EntityManager entityManager;
 	
-	public Account getByUsername(String username){
+	public HAccount getByUsername(String username){
 		Session session = (Session) entityManager.getDelegate();
-		return (Account) session.createCriteria(Account.class)
+		return (HAccount) session.createCriteria(HAccount.class)
 			.add( Restrictions.naturalId()
 		        .set("username", username))
 		    .uniqueResult();
 	}
 
-	public Account getByApiKey(String apikey) {
+	public HAccount getByApiKey(String apikey) {
 		Session session = (Session) entityManager.getDelegate();
-		return (Account) session.createCriteria(Account.class).add(
+		return (HAccount) session.createCriteria(HAccount.class).add(
 				Restrictions.eq("apiKey", apikey)).uniqueResult();
 	}
 
-	public void createApiKey(Account account) {
+	public void createApiKey(HAccount account) {
 		String username = account.getUsername();
 		String apikey = createSaltedApiKey(username);
 		account.setApiKey(apikey);
