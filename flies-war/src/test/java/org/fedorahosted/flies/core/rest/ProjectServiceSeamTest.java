@@ -1,9 +1,7 @@
 package org.fedorahosted.flies.core.rest;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThan;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.fail;
 
 import java.net.URI;
@@ -82,7 +80,7 @@ public class ProjectServiceSeamTest extends DBUnitSeamTest {
 		
 		String location = (String) response.getMetadata().getFirst("Location");
 		
-		assertThat( location.endsWith("/projects/p/my-new-project"), is (true));
+		assertThat( location, endsWith("/projects/p/my-new-project"));
 		
 		ClientResponse<Project> projectResponse = projectService.getProject("my-new-project");
 		
