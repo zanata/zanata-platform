@@ -15,7 +15,7 @@ import org.hibernate.search.annotations.Indexed;
 public class HIterationProject extends HProject{
 
 	private List<ProjectSeries> projectSeries = new ArrayList<ProjectSeries>();
-	private List<ProjectIteration> projectIterations = new ArrayList<ProjectIteration>();
+	private List<HProjectIteration> projectIterations = new ArrayList<HProjectIteration>();
 
 	@OneToMany(mappedBy = "project")
 	public List<ProjectSeries> getProjectSeries() {
@@ -27,11 +27,11 @@ public class HIterationProject extends HProject{
 	}
 	
 	@OneToMany(mappedBy = "project")
-	public List<ProjectIteration> getProjectIterations() {
+	public List<HProjectIteration> getProjectIterations() {
 		return projectIterations;
 	}
 
-	public void setProjectIterations(List<ProjectIteration> projectIterations) {
+	public void setProjectIterations(List<HProjectIteration> projectIterations) {
 		this.projectIterations = projectIterations;
 	}
 	

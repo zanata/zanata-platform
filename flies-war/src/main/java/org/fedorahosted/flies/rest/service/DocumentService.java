@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response;
 
 import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.dao.ProjectIterationDAO;
-import org.fedorahosted.flies.core.model.ProjectIteration;
+import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HResource;
 import org.fedorahosted.flies.rest.MediaTypes;
@@ -71,7 +71,7 @@ public class DocumentService {
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
 	public Response addDocument(Document document) throws URISyntaxException {
 		
-		ProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
 		
 		if(hProjectIteration == null)
 			throw new NotFoundException("Project Iteration not found");
@@ -97,7 +97,7 @@ public class DocumentService {
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
 	public DocumentRefs getDocuments() {
-		ProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
 		
 		if(hProjectIteration == null)
 			throw new NotFoundException("No such Project Iteration");

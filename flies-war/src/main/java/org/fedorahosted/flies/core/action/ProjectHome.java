@@ -8,7 +8,7 @@ import javax.persistence.NoResultException;
 import org.fedorahosted.flies.core.model.HAccount;
 import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.HPerson;
-import org.fedorahosted.flies.core.model.ProjectIteration;
+import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.core.model.ProjectSeries;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
@@ -89,14 +89,14 @@ public class ProjectHome extends SlugHome<HIterationProject> {
 		return retValue;
 	}
 
-	public List<ProjectIteration> getActiveIterations(){
+	public List<HProjectIteration> getActiveIterations(){
 		return getEntityManager().createQuery(
 				"from ProjectIteration t where t.project = :project and t.active = true")
 				.setParameter("project", getInstance())
 				.getResultList();
 	}
 
-	public List<ProjectIteration> getRetiredIterations(){
+	public List<HProjectIteration> getRetiredIterations(){
 		return getEntityManager().createQuery(
 				"from ProjectIteration t where t.project = :project and t.active = false")
 				.setParameter("project", getInstance())

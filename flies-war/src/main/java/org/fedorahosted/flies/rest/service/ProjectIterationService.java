@@ -53,7 +53,7 @@ public class ProjectIterationService {
 	public ProjectIteration getIteration (
 			@PathParam("iterationSlug") String iterationSlug){
 
-		org.fedorahosted.flies.core.model.ProjectIteration hProjectIteration = 
+		org.fedorahosted.flies.core.model.HProjectIteration hProjectIteration = 
 			projectIterationDAO.getBySlug(projectSlug, iterationSlug);
 		
 		if(hProjectIteration == null)
@@ -62,7 +62,7 @@ public class ProjectIterationService {
 		return toMini(hProjectIteration);
 	}
 	
-	private static ProjectIteration toMini(org.fedorahosted.flies.core.model.ProjectIteration hibIt){
+	private static ProjectIteration toMini(org.fedorahosted.flies.core.model.HProjectIteration hibIt){
 		ProjectIteration it = new ProjectIteration();
 		it.setId(hibIt.getSlug());
 		it.setName(hibIt.getName());
@@ -95,7 +95,7 @@ public class ProjectIterationService {
 	public Response updateIteration(
 			@PathParam("iterationSlug") String iterationSlug,
 			ProjectIteration projectIteraton){
-		org.fedorahosted.flies.core.model.ProjectIteration hProjectIteration = 
+		org.fedorahosted.flies.core.model.HProjectIteration hProjectIteration = 
 			projectIterationDAO.getBySlug(projectSlug, iterationSlug);
 		
 		if(hProjectIteration == null)
@@ -118,7 +118,7 @@ public class ProjectIterationService {
 	public Response addIteration(
 			ProjectIteration projectIteration) throws URISyntaxException{
 
-		org.fedorahosted.flies.core.model.ProjectIteration hProjectIteration = 
+		org.fedorahosted.flies.core.model.HProjectIteration hProjectIteration = 
 			projectIterationDAO.getBySlug(projectSlug, projectIteration.getId());
 	
 		HProject hProject = projectDAO.getBySlug(projectSlug);
@@ -127,7 +127,7 @@ public class ProjectIterationService {
 			return Response.status(409).build();
 		}
 
-		hProjectIteration = new org.fedorahosted.flies.core.model.ProjectIteration();
+		hProjectIteration = new org.fedorahosted.flies.core.model.HProjectIteration();
 		hProjectIteration.setProject((HIterationProject) hProject);
 		hProjectIteration.setName(projectIteration.getName());
 		hProjectIteration.setSlug(projectIteration.getId());

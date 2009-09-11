@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.core.model.HIterationProject;
-import org.fedorahosted.flies.core.model.ProjectIteration;
+import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.core.model.StatusCount;
 import org.fedorahosted.flies.repository.util.TranslationStatistics;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget.ContentState;
@@ -29,8 +29,8 @@ public class ProjectIterationDAO {
 	@In
 	ProjectDAO projectDAO;
 	
-	public ProjectIteration getBySlug(String projectSlug, String iterationSlug){
-		return (ProjectIteration) session.createCriteria(ProjectIteration.class)
+	public HProjectIteration getBySlug(String projectSlug, String iterationSlug){
+		return (HProjectIteration) session.createCriteria(HProjectIteration.class)
 		.add( Restrictions.naturalId()
 	        .set("project", projectDAO.getBySlug( projectSlug ) )
 	        .set("slug", iterationSlug )
@@ -38,8 +38,8 @@ public class ProjectIterationDAO {
 		.setCacheable(true).uniqueResult();
 	}
 
-	public ProjectIteration getBySlug(HIterationProject project, String iterationSlug){
-		return (ProjectIteration) session.createCriteria(ProjectIteration.class)
+	public HProjectIteration getBySlug(HIterationProject project, String iterationSlug){
+		return (HProjectIteration) session.createCriteria(HProjectIteration.class)
 		.add( Restrictions.naturalId()
 	        .set("project", project )
 	        .set("slug", iterationSlug )

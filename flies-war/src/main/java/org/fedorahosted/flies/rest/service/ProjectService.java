@@ -24,7 +24,7 @@ import org.fedorahosted.flies.core.dao.AccountDAO;
 import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.model.HAccount;
 import org.fedorahosted.flies.core.model.HIterationProject;
-import org.fedorahosted.flies.core.model.ProjectIteration;
+import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.ProjectIterationRef;
 import org.fedorahosted.flies.rest.dto.ProjectIterationRefs;
@@ -82,7 +82,7 @@ public class ProjectService{
 		proj.setDescription(p.getDescription());
 		if(p instanceof HIterationProject){
 			HIterationProject itProject = (HIterationProject) p;
-			for(ProjectIteration pIt : itProject.getProjectIterations()){
+			for(HProjectIteration pIt : itProject.getProjectIterations()){
 				proj.getIterations().add(
 						new ProjectIterationRef(
 								new org.fedorahosted.flies.rest.dto.ProjectIteration(

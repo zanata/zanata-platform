@@ -9,7 +9,7 @@ import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.core.model.HAccount;
 import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.HPerson;
-import org.fedorahosted.flies.core.model.ProjectIteration;
+import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HDocumentTarget;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
@@ -60,7 +60,7 @@ public class TranslateAction implements Serializable {
 
 	private LocaleId locale;
 	private HProjectContainer projectContainer;
-	private ProjectIteration projectIteration;
+	private HProjectIteration projectIteration;
 
 	public String getWorkspaceId() {
 		return workspaceId;
@@ -78,11 +78,11 @@ public class TranslateAction implements Serializable {
 		this.projectContainer = project;
 	}
 
-	public ProjectIteration getProjectIteration() {
+	public HProjectIteration getProjectIteration() {
 		return projectIteration;
 	}
 	
-	public void setProjectIteration(ProjectIteration projectIteration) {
+	public void setProjectIteration(HProjectIteration projectIteration) {
 		this.projectIteration = projectIteration;
 	}
 	
@@ -176,7 +176,7 @@ public class TranslateAction implements Serializable {
 			try{
 				Long projectIterationId = Long.parseLong(ws[0]);
 				String localeId = ws[1];
-				projectIteration = entityManager.find(ProjectIteration.class, projectIterationId);
+				projectIteration = entityManager.find(HProjectIteration.class, projectIterationId);
 				projectContainer = projectIteration.getContainer();
 				
 				log.info("Initializing targets");

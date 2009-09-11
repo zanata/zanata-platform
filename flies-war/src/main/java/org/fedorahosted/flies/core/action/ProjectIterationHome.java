@@ -7,7 +7,7 @@ import javax.persistence.NoResultException;
 
 import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.model.HIterationProject;
-import org.fedorahosted.flies.core.model.ProjectIteration;
+import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.core.model.ProjectSeries;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.hibernate.Session;
@@ -24,7 +24,7 @@ import org.jboss.seam.log.Log;
 
 @Name("projectIterationHome")
 @Scope(ScopeType.CONVERSATION)
-public class ProjectIterationHome extends MultiSlugHome<ProjectIteration>{
+public class ProjectIterationHome extends MultiSlugHome<HProjectIteration>{
 	
 	@Logger
 	Log log;
@@ -39,8 +39,8 @@ public class ProjectIterationHome extends MultiSlugHome<ProjectIteration>{
 	HProjectHome hProjectHome;
 	
 	@Override
-	protected ProjectIteration createInstance() {
-		ProjectIteration iteration = new ProjectIteration();
+	protected HProjectIteration createInstance() {
+		HProjectIteration iteration = new HProjectIteration();
 		iteration.setProject(project);
 		return iteration;
 	}
@@ -66,9 +66,9 @@ public class ProjectIterationHome extends MultiSlugHome<ProjectIteration>{
 	}
 
 	@Override
-	protected ProjectIteration loadInstance() {
+	protected HProjectIteration loadInstance() {
 		Session session = (Session) getEntityManager().getDelegate();
-		return (ProjectIteration) session.createCriteria(ProjectIteration.class)
+		return (HProjectIteration) session.createCriteria(HProjectIteration.class)
 			.add( Restrictions.naturalId()
 		        .set("project", projectDAO.getBySlug( getSlug(0) ) )
 		        .set("slug", getId() )

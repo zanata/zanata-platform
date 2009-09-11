@@ -14,7 +14,7 @@ import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;
 
 @Entity
-public class ProjectIteration extends AbstractSlugEntity implements IProjectContainerProvider, Serializable {
+public class HProjectIteration extends AbstractSlugEntity implements IProjectContainerProvider, Serializable {
 
 	private String name;
 	private String description;
@@ -26,8 +26,8 @@ public class ProjectIteration extends AbstractSlugEntity implements IProjectCont
 
 	private HProjectContainer container;
 
-	private ProjectIteration parent;
-	private List<ProjectIteration> children;
+	private HProjectIteration parent;
+	private List<HProjectIteration> children;
 	
 	@Length(max = 20)
 	public String getName() {
@@ -90,21 +90,21 @@ public class ProjectIteration extends AbstractSlugEntity implements IProjectCont
 	}
 
 	@OneToMany(mappedBy = "parent")
-	public List<ProjectIteration> getChildren() {
+	public List<HProjectIteration> getChildren() {
 		return children;
 	}
 
-	public void setChildren(List<ProjectIteration> children) {
+	public void setChildren(List<HProjectIteration> children) {
 		this.children = children;
 	}
 
 	@ManyToOne
 	@JoinColumn(name = "parentId")
-	public ProjectIteration getParent() {
+	public HProjectIteration getParent() {
 		return parent;
 	}
 
-	public void setParent(ProjectIteration parent) {
+	public void setParent(HProjectIteration parent) {
 		this.parent = parent;
 	}
 	

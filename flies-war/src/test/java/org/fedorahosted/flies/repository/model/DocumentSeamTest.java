@@ -9,7 +9,7 @@ import javax.persistence.EntityManager;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.flies.core.model.HIterationProject;
-import org.fedorahosted.flies.core.model.ProjectIteration;
+import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.core.model.ProjectSeries;
 import org.jboss.seam.mock.DBUnitSeamTest;
 import org.testng.annotations.Test;
@@ -35,10 +35,10 @@ public class DocumentSeamTest extends DBUnitSeamTest {
                 List<ProjectSeries> projectSeries =  project.getProjectSeries();
                 assertThat ("Project should have 1 series", projectSeries.size(), is(1));
                 
-                List<ProjectIteration> projectTargets = project.getProjectIterations();
+                List<HProjectIteration> projectTargets = project.getProjectIterations();
                 assertThat ("Project should have 2 targets", projectTargets.size(), is(2));
                 
-                ProjectIteration target = projectTargets.get(0);
+                HProjectIteration target = projectTargets.get(0);
                 assertThat ("Expect target with id 1", target.getId(), is(1l));
                 
             }
