@@ -1,7 +1,9 @@
 package org.fedorahosted.flies.core.rest;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.testng.Assert.fail;
 
 import java.net.URI;
@@ -9,6 +11,8 @@ import java.net.URI;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.dbunit.operation.DatabaseOperation;
+import org.fedorahosted.flies.rest.ApiKeyHeaderDecorator;
 import org.fedorahosted.flies.rest.client.ProjectResource;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.ProjectRefs;
@@ -16,12 +20,12 @@ import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
-import org.jboss.seam.mock.SeamTest;
+import org.jboss.seam.mock.DBUnitSeamTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 @Test(groups={"seam-tests"})
-public class ProjectServiceSeamTest extends SeamTest {
+public class ProjectServiceSeamTest extends DBUnitSeamTest {
 
 	ClientRequestFactory clientRequestFactory;
 	ProjectResource projectService;
@@ -35,15 +39,21 @@ public class ProjectServiceSeamTest extends SeamTest {
 		clientRequestFactory = 
 			new ClientRequestFactory(
 					new SeamMockClientExecutor(this), new URI("/restv1/"));
+		
+		clientRequestFactory.getPrefixInterceptors().registerInterceptor(new ApiKeyHeaderDecorator("12345678901234567890123456789012"));
 
 		projectService = clientRequestFactory.createProxy(ProjectResource.class);
-	
+		
 	}
 	
-
+    protected void prepareDBUnitOperations() {
+        beforeTestOperations.add(
+                new DataSetOperation("org/fedorahosted/flies/test/model/ProjectData.dbunit.xml", DatabaseOperation.CLEAN_INSERT)
+        );
+    }
+    
 	public void retrieveListofProjects() throws Exception{
-
-		ClientResponse<ProjectRefs> response = projectService.getProjects();
+    	ClientResponse<ProjectRefs> response = projectService.getProjects();
 		
 		assertThat( response.getStatus(), is(200) );
 		assertThat( response.getEntity(), notNullValue() );
@@ -72,7 +82,7 @@ public class ProjectServiceSeamTest extends SeamTest {
 		
 		String location = (String) response.getMetadata().getFirst("Location");
 		
-		assertThat( location, endsWith("/projects/p/my-new-project"));
+		assertThat( location.endsWith("/projects/p/my-new-project"), is (true));
 		
 		ClientResponse<Project> projectResponse = projectService.getProject("my-new-project");
 		
@@ -87,7 +97,10 @@ public class ProjectServiceSeamTest extends SeamTest {
 	
 	public void createProjectThatAlreadyExists(){
 		Project project = new Project("my-new-project", "My New Project", "Another test project");
-		Response response = projectService.addProject(project);
+		projectService.addProject(project);
+		
+		Project exproject = new Project("my-new-project", "My New Project", "Another test project");
+		Response response = projectService.addProject(exproject);
 	
         assertThat( response.getStatus(), is( Status.CONFLICT.getStatusCode()));
 	}

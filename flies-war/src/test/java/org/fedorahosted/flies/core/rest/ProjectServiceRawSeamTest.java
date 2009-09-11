@@ -38,7 +38,7 @@ public class ProjectServiceRawSeamTest extends SeamTest{
 			public Map<String, Object> getDefaultHeaders() {
 				return new HashMap<String, Object>() {
 					{
-						put("X-Auth-Token", "bob");
+						put("X-Auth-Token", "12345678901234567890123456789012");
 					}
 				};
 			}
