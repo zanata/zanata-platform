@@ -8,7 +8,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.fedorahosted.flies.core.model.FliesLocale;
+import org.fedorahosted.flies.core.model.HFliesLocale;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -24,12 +24,12 @@ public class LocalePreference implements Serializable{
 	@In
 	EntityManager entityManager;
 
-	public FliesLocale getPreference() {
+	public HFliesLocale getPreference() {
 		Cookie cookie = getCookie();
-		return entityManager.find(FliesLocale.class, cookie.getValue());
+		return entityManager.find(HFliesLocale.class, cookie.getValue());
 	}
 
-	public void setPreference(FliesLocale locale) {
+	public void setPreference(HFliesLocale locale) {
 		Cookie cookie = new Cookie("selectedLocale", locale.getId());
 		HttpServletResponse response = (HttpServletResponse) FacesContext
 				.getCurrentInstance().getExternalContext().getResponse();

@@ -25,22 +25,22 @@ import com.ibm.icu.util.ULocale;
 
 @Entity
 @TypeDef(name = "ulocale", typeClass = ULocaleType.class)
-public class FliesLocale implements Serializable {
+public class HFliesLocale implements Serializable {
 
 	private String id;
 	private ULocale locale;
 
-	private FliesLocale parent;
-	private List<FliesLocale> children;
+	private HFliesLocale parent;
+	private List<HFliesLocale> children;
 
 	private Tribe tribe;
 	
-	private List<FliesLocale> friends; // e.g. nn, nb.
+	private List<HFliesLocale> friends; // e.g. nn, nb.
 
-	public FliesLocale() {
+	public HFliesLocale() {
 	}
 
-	public FliesLocale(ULocale locale) {
+	public HFliesLocale(ULocale locale) {
 		setLocale(locale);
 	}
 
@@ -96,30 +96,30 @@ public class FliesLocale implements Serializable {
 
 	@ManyToMany
 	@JoinTable(name = "FliesLocale_Friends", joinColumns = @JoinColumn(name = "localeId"), inverseJoinColumns = @JoinColumn(name = "friendId"))
-	public List<FliesLocale> getFriends() {
+	public List<HFliesLocale> getFriends() {
 		return friends;
 	}
 
-	public void setFriends(List<FliesLocale> friends) {
+	public void setFriends(List<HFliesLocale> friends) {
 		this.friends = friends;
 	}
 
 	@OneToMany(mappedBy = "parent")
-	public List<FliesLocale> getChildren() {
+	public List<HFliesLocale> getChildren() {
 		return children;
 	}
 
-	public void setChildren(List<FliesLocale> children) {
+	public void setChildren(List<HFliesLocale> children) {
 		this.children = children;
 	}
 
 	@ManyToOne
 	@JoinColumn(name = "parentId")
-	public FliesLocale getParent() {
+	public HFliesLocale getParent() {
 		return parent;
 	}
 
-	public void setParent(FliesLocale parent) {
+	public void setParent(HFliesLocale parent) {
 		this.parent = parent;
 	}
 

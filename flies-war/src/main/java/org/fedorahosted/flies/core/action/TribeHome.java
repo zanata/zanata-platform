@@ -1,7 +1,7 @@
 package org.fedorahosted.flies.core.action;
 
 import org.fedorahosted.flies.core.model.HAccount;
-import org.fedorahosted.flies.core.model.FliesLocale;
+import org.fedorahosted.flies.core.model.HFliesLocale;
 import org.fedorahosted.flies.core.model.Person;
 import org.fedorahosted.flies.core.model.Tribe;
 import org.hibernate.Session;
@@ -32,7 +32,7 @@ public class TribeHome extends EntityHome<Tribe>{
 		Session session = (Session) getEntityManager().getDelegate();
 		return (Tribe) session.createCriteria(getEntityClass())
 		.add( Restrictions.naturalId()
-		        .set("locale", getEntityManager().find(FliesLocale.class, getId()))
+		        .set("locale", getEntityManager().find(HFliesLocale.class, getId()))
 		    ).setCacheable(true)
 		    .uniqueResult();
 	}

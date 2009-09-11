@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.fedorahosted.flies.core.model.FliesLocale;
+import org.fedorahosted.flies.core.model.HFliesLocale;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.framework.EntityQuery;
 
 import com.ibm.icu.util.ULocale;
 
 @Name("localeList")
-public class LocaleList extends EntityQuery<FliesLocale> {
+public class LocaleList extends EntityQuery<HFliesLocale> {
 	public LocaleList() {
 		setEjbql("select locale from FliesLocale locale");
 	}
@@ -21,9 +21,9 @@ public class LocaleList extends EntityQuery<FliesLocale> {
 		ULocale [] locales = ULocale.getAvailableLocales();
 		List<String> addedLocales = new ArrayList<String>();
 		for(ULocale locale : locales){
-			FliesLocale fliesLocale = getEntityManager().find(FliesLocale.class, FliesLocale.getFliesId(locale));
+			HFliesLocale fliesLocale = getEntityManager().find(HFliesLocale.class, HFliesLocale.getFliesId(locale));
 			if(fliesLocale == null){
-				fliesLocale = new FliesLocale(locale);
+				fliesLocale = new HFliesLocale(locale);
 				getEntityManager().persist(fliesLocale);
 				addedLocales.add(fliesLocale.getId());
 			}

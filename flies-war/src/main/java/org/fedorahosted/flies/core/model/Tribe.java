@@ -19,7 +19,7 @@ import javax.persistence.OneToOne;
 @Entity
 public class Tribe extends AbstractFliesEntity{
 
-	private FliesLocale locale;
+	private HFliesLocale locale;
 	
 	private Person chief;
 	private Set<Person> tribalLeaders;
@@ -28,11 +28,11 @@ public class Tribe extends AbstractFliesEntity{
 	
 	@OneToOne(optional = false, fetch = FetchType.EAGER)
 	@JoinColumn(name = "localeId")
-	public FliesLocale getLocale() {
+	public HFliesLocale getLocale() {
 		return locale;
 	}
 	
-	public void setLocale(FliesLocale locale) {
+	public void setLocale(HFliesLocale locale) {
 		this.locale = locale;
 	}
 	
