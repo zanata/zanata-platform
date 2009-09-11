@@ -25,7 +25,7 @@ public class HPerson extends AbstractFliesEntity implements Serializable {
 
 	private String email;
 
-	private List<Project> maintainerProjects;
+	private List<HProject> maintainerProjects;
 
 	private Set<Tribe> tribeChiefs;
 	private Set<Tribe> tribeMemberships;
@@ -72,11 +72,11 @@ public class HPerson extends AbstractFliesEntity implements Serializable {
 
 	@ManyToMany
 	@JoinTable(name = "Project_Maintainer", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "projectId"))
-	public List<Project> getMaintainerProjects() {
+	public List<HProject> getMaintainerProjects() {
 		return maintainerProjects;
 	}
 
-	public void setMaintainerProjects(List<Project> maintainerProjects) {
+	public void setMaintainerProjects(List<HProject> maintainerProjects) {
 		this.maintainerProjects = maintainerProjects;
 	}
 

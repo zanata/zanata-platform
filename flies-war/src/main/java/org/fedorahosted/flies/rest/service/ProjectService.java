@@ -68,14 +68,14 @@ public class ProjectService{
 	public org.fedorahosted.flies.rest.dto.Project getProject(
 			@PathParam("projectSlug") String projectSlug) {
 
-		org.fedorahosted.flies.core.model.Project p = projectDAO.getBySlug(projectSlug);
+		org.fedorahosted.flies.core.model.HProject p = projectDAO.getBySlug(projectSlug);
 		if(p == null)
 			throw new WebApplicationException(Status.NOT_FOUND);
 		
 		return toMini(p);
 	}
 
-	private static Project toMini(org.fedorahosted.flies.core.model.Project p){
+	private static Project toMini(org.fedorahosted.flies.core.model.HProject p){
 		Project proj = new Project();
 		proj.setId(p.getSlug());
 		proj.setName(p.getName());
@@ -103,9 +103,9 @@ public class ProjectService{
 	public ProjectRefs getProjects() {
 		ProjectRefs projectRefs = new ProjectRefs();
 		
-		List<org.fedorahosted.flies.core.model.Project> projects = session.createQuery("select p from Project p").list();
+		List<org.fedorahosted.flies.core.model.HProject> projects = session.createQuery("select p from Project p").list();
 		
-		for(org.fedorahosted.flies.core.model.Project p : projects){
+		for(org.fedorahosted.flies.core.model.HProject p : projects){
 			org.fedorahosted.flies.rest.dto.Project proj = 
 				new org.fedorahosted.flies.rest.dto.Project(p.getSlug(), p.getName(), p.getDescription());
 			projectRefs.getProjects().add( new ProjectRef( proj ));
@@ -119,7 +119,7 @@ public class ProjectService{
 	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
 	public Response updateProject(@PathParam("projectSlug") String projectSlug, org.fedorahosted.flies.rest.dto.Project project){
 			
-		org.fedorahosted.flies.core.model.Project p = projectDAO.getBySlug(projectSlug);
+		org.fedorahosted.flies.core.model.HProject p = projectDAO.getBySlug(projectSlug);
 
 		if(p == null)
 			throw new WebApplicationException(Status.NOT_FOUND);
@@ -139,7 +139,7 @@ public class ProjectService{
 	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
 	public Response addProject(org.fedorahosted.flies.rest.dto.Project project) throws URISyntaxException{
 		
-		org.fedorahosted.flies.core.model.Project p = projectDAO.getBySlug(project.getId());
+		org.fedorahosted.flies.core.model.HProject p = projectDAO.getBySlug(project.getId());
 		if(p != null){
 			return Response.status(409).build();
 		}

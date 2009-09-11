@@ -5,7 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import org.fedorahosted.flies.core.model.Community;
-import org.fedorahosted.flies.core.model.Project;
+import org.fedorahosted.flies.core.model.HProject;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 import org.jboss.seam.ScopeType;
@@ -22,8 +22,8 @@ public class SearchAdmin {
     public void resetProjectIndex() throws Exception {
     	FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager); 
 
-    	List<Project> projects = entityManager.createQuery("select project from Project as project").getResultList(); 
-	 	            for (Project project : projects) { 
+    	List<HProject> projects = entityManager.createQuery("select project from Project as project").getResultList(); 
+	 	            for (HProject project : projects) { 
 	                fullTextEntityManager.index(project); 
 	 	            }  
 

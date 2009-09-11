@@ -6,7 +6,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.fedorahosted.flies.core.model.Project;
+import org.fedorahosted.flies.core.model.HProject;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
@@ -49,15 +49,15 @@ public class ProjectBrowser {
 	private Session session;
 	
 	@Out(required = false)
-	private List<Project> projects;
+	private List<HProject> projects;
 
 	@Out(required = false)
-	private List<Project> latestProjects;
+	private List<HProject> latestProjects;
 
 	@SuppressWarnings("unchecked")
 	@Factory("latestProjects")
 	public void getLatestProjects() {
-		latestProjects = session.createCriteria(Project.class)
+		latestProjects = session.createCriteria(HProject.class)
 			.addOrder(Order.asc(ORDERBY_NAME))
 			.setMaxResults(DEFAULT_LIMIT)
 			.setComment("ProjectBrowser.getLatestProjects()")
@@ -80,7 +80,7 @@ public class ProjectBrowser {
 			pageNumber = page;
 		}
 
-		projects = session.createCriteria(Project.class)
+		projects = session.createCriteria(HProject.class)
 			.addOrder(Order.asc(order))
 			.setMaxResults(DEFAULT_LIMIT)
 			.setFirstResult((pageNumber - 1) * DEFAULT_LIMIT)
@@ -89,7 +89,7 @@ public class ProjectBrowser {
 	}
 
 	public Integer getSize() {
-		return session.createCriteria(Project.class)
+		return session.createCriteria(HProject.class)
 			.setComment("ProjectBrowser.getSize()")
 			.list().size();
 	}

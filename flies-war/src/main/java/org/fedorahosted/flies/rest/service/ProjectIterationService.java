@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response;
 import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.dao.ProjectIterationDAO;
 import org.fedorahosted.flies.core.model.HIterationProject;
-import org.fedorahosted.flies.core.model.Project;
+import org.fedorahosted.flies.core.model.HProject;
 import org.fedorahosted.flies.core.model.ProjectSeries;
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
@@ -121,7 +121,7 @@ public class ProjectIterationService {
 		org.fedorahosted.flies.core.model.ProjectIteration hProjectIteration = 
 			projectIterationDAO.getBySlug(projectSlug, projectIteration.getId());
 	
-		Project hProject = projectDAO.getBySlug(projectSlug);
+		HProject hProject = projectDAO.getBySlug(projectSlug);
 		
 		if(hProjectIteration != null || hProject == null){
 			return Response.status(409).build();

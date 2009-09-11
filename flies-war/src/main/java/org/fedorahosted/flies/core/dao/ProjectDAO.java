@@ -1,6 +1,6 @@
 package org.fedorahosted.flies.core.dao;
 
-import org.fedorahosted.flies.core.model.Project;
+import org.fedorahosted.flies.core.model.HProject;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.AutoCreate;
@@ -14,8 +14,8 @@ public class ProjectDAO {
 	@In
 	Session session;
 	
-	public Project getBySlug(String slug){
-		return (Project) session.createCriteria(Project.class)
+	public HProject getBySlug(String slug){
+		return (HProject) session.createCriteria(HProject.class)
 			.add( Restrictions.naturalId()
 		        .set("slug", slug)
 		    	)
