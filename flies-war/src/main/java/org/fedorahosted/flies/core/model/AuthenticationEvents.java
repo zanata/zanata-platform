@@ -17,7 +17,7 @@ public class AuthenticationEvents {
 	Log log;
 
 	@Out(required=false, scope=ScopeType.SESSION)
-	Person authenticatedPerson;
+	HPerson authenticatedPerson;
 	
 	@Observer(JpaIdentityStore.EVENT_USER_AUTHENTICATED)
 	public void loginSuccessful(HAccount account) {

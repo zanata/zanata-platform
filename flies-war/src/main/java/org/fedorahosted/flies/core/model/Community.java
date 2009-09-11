@@ -35,9 +35,9 @@ public class Community extends AbstractSlugEntity{
 	private String description;
 	private String homeContent;
 
-	private Person owner;
-	private Set<Person> officers;
-	private Set<Person> members;
+	private HPerson owner;
+	private Set<HPerson> officers;
+	private Set<HPerson> members;
 	
 	@NotEmpty
 	@Field(index=Index.TOKENIZED)
@@ -78,31 +78,31 @@ public class Community extends AbstractSlugEntity{
 	@NotNull
 	@ManyToOne(optional = false, fetch = FetchType.EAGER)
 	@JoinColumn(name = "ownerId")
-	public Person getOwner() {
+	public HPerson getOwner() {
 		return owner;
 	}
 	
-	public void setOwner(Person owner) {
+	public void setOwner(HPerson owner) {
 		this.owner = owner;
 	}
 	
 	@ManyToMany
 	@JoinTable(name = "Community_Officer", joinColumns = @JoinColumn(name = "communityId"), inverseJoinColumns = @JoinColumn(name = "personId"))
-	public Set<Person> getOfficers() {
+	public Set<HPerson> getOfficers() {
 		return officers;
 	}
 	
-	public void setOfficers(Set<Person> officers) {
+	public void setOfficers(Set<HPerson> officers) {
 		this.officers = officers;
 	}
 	
 	@ManyToMany
 	@JoinTable(name = "Community_Member", joinColumns = @JoinColumn(name = "communityId"), inverseJoinColumns = @JoinColumn(name = "personId"))
-	public Set<Person> getMembers() {
+	public Set<HPerson> getMembers() {
 		return members;
 	}
 	
-	public void setMembers(Set<Person> members) {
+	public void setMembers(Set<HPerson> members) {
 		this.members = members;
 	}
 /*	

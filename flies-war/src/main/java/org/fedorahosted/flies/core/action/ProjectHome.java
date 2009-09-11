@@ -7,7 +7,7 @@ import javax.persistence.NoResultException;
 
 import org.fedorahosted.flies.core.model.HAccount;
 import org.fedorahosted.flies.core.model.HIterationProject;
-import org.fedorahosted.flies.core.model.Person;
+import org.fedorahosted.flies.core.model.HPerson;
 import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.fedorahosted.flies.core.model.ProjectSeries;
 import org.jboss.seam.ScopeType;
@@ -71,7 +71,7 @@ public class ProjectHome extends SlugHome<HIterationProject> {
 			return null;
 		
 		if(authenticatedAccount != null){
-			Person currentPerson = getEntityManager().find(Person.class, authenticatedAccount.getPerson().getId());
+			HPerson currentPerson = getEntityManager().find(HPerson.class, authenticatedAccount.getPerson().getId());
 			if(currentPerson != null)
 				getInstance().getMaintainers().add(currentPerson);
 		}

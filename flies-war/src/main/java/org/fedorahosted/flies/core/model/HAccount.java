@@ -28,15 +28,15 @@ public class HAccount extends AbstractFliesEntity implements Serializable {
 	private String passwordHash;
 	private boolean enabled;
         private String apiKey;
-	private Person person;
+	private HPerson person;
 	private Set<AccountRole> roles;
 
 	@OneToOne(mappedBy = "account")
-	public Person getPerson() {
+	public HPerson getPerson() {
 		return person;
 	}
 
-	public void setPerson(Person person) {
+	public void setPerson(HPerson person) {
 		this.person = person;
 	}
 

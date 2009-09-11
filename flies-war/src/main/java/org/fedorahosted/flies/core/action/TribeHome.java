@@ -2,7 +2,7 @@ package org.fedorahosted.flies.core.action;
 
 import org.fedorahosted.flies.core.model.HAccount;
 import org.fedorahosted.flies.core.model.HFliesLocale;
-import org.fedorahosted.flies.core.model.Person;
+import org.fedorahosted.flies.core.model.HPerson;
 import org.fedorahosted.flies.core.model.Tribe;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -56,7 +56,7 @@ public class TribeHome extends EntityHome<Tribe>{
 			getLog().error("failed to load auth person");
 			return;
 		}
-		Person currentPerson = getEntityManager().find(Person.class, authenticatedAccount.getPerson().getId());
+		HPerson currentPerson = getEntityManager().find(HPerson.class, authenticatedAccount.getPerson().getId());
 		
 		if(!getInstance().getMembers().contains(currentPerson)){
 			if(currentPerson.getTribeMemberships().size() >= getMaxNumberOfTribeMemberships()){
@@ -79,7 +79,7 @@ public class TribeHome extends EntityHome<Tribe>{
 			getLog().error("failed to load auth person");
 			return;
 		}
-		Person currentPerson = getEntityManager().find(Person.class, authenticatedAccount.getPerson().getId());
+		HPerson currentPerson = getEntityManager().find(HPerson.class, authenticatedAccount.getPerson().getId());
 
 		if(getInstance().getMembers().contains(currentPerson)){
 			getInstance().getMembers().remove(currentPerson);

@@ -4,7 +4,7 @@ import javax.faces.event.ValueChangeEvent;
 import javax.persistence.NoResultException;
 
 import org.fedorahosted.flies.core.model.Community;
-import org.fedorahosted.flies.core.model.Person;
+import org.fedorahosted.flies.core.model.HPerson;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.Name;
@@ -21,7 +21,7 @@ public class CommunityHome extends SlugHome<Community>{
 	@Restrict("#{identity.loggedIn}")
 	protected Community createInstance() {
 		Community instance = super.createInstance();
-		instance.setOwner(getEntityManager().find(Person.class, 1l));
+		instance.setOwner(getEntityManager().find(HPerson.class, 1l));
 		return instance;
 	}
 

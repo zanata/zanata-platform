@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 import org.fedorahosted.flies.LocaleId;
-import org.fedorahosted.flies.core.model.Person;
+import org.fedorahosted.flies.core.model.HPerson;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.MapMaker;
@@ -15,7 +15,7 @@ public class TranslationWorkspace {
 	private final LocaleId locale;
 	private final Long projectId;
 	
-	private ConcurrentMap<Person, Date> translators = new MapMaker().expiration(60, TimeUnit.SECONDS).makeMap();
+	private ConcurrentMap<HPerson, Date> translators = new MapMaker().expiration(60, TimeUnit.SECONDS).makeMap();
 
 	public TranslationWorkspace(Long projectId, LocaleId locale) {
 		if(projectId == null)
@@ -34,7 +34,7 @@ public class TranslationWorkspace {
 		return projectId;
 	}
 	
-	public ImmutableList<Person> getTranslators(){
+	public ImmutableList<HPerson> getTranslators(){
 		return ImmutableList.copyOf(translators.keySet());
 	}
 	
@@ -42,7 +42,7 @@ public class TranslationWorkspace {
 		return translators.size();
 	}
 	
-	public void registerTranslator(Person translator){
+	public void registerTranslator(HPerson translator){
 		Date timestamp = translators.get(translator);
 		if(timestamp == null){
 			timestamp = new Date();

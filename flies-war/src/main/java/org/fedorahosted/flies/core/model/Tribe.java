@@ -21,9 +21,9 @@ public class Tribe extends AbstractFliesEntity{
 
 	private HFliesLocale locale;
 	
-	private Person chief;
-	private Set<Person> tribalLeaders;
-	private Set<Person> members;
+	private HPerson chief;
+	private Set<HPerson> tribalLeaders;
+	private Set<HPerson> members;
 
 	
 	@OneToOne(optional = false, fetch = FetchType.EAGER)
@@ -38,31 +38,31 @@ public class Tribe extends AbstractFliesEntity{
 	
 	@ManyToOne
 	@JoinColumn(name = "chiefId")
-	public Person getChief() {
+	public HPerson getChief() {
 		return chief;
 	}
 
-	public void setChief(Person chief) {
+	public void setChief(HPerson chief) {
 		this.chief = chief;
 	}
 	
 	@ManyToMany
 	@JoinTable(name = "Tribe_Leader", joinColumns = @JoinColumn(name = "tribeId"), inverseJoinColumns = @JoinColumn(name = "personId"))
-	public Set<Person> getTribalLeaders() {
+	public Set<HPerson> getTribalLeaders() {
 		return tribalLeaders;
 	}
 	
-	public void setTribalLeaders(Set<Person> tribalLeaders) {
+	public void setTribalLeaders(Set<HPerson> tribalLeaders) {
 		this.tribalLeaders = tribalLeaders;
 	}
 	
 	@ManyToMany
 	@JoinTable(name = "Tribe_Member", joinColumns = @JoinColumn(name = "tribeId"), inverseJoinColumns = @JoinColumn(name = "personId"))
-	public Set<Person> getMembers() {
+	public Set<HPerson> getMembers() {
 		return members;
 	}
 	
-	public void setMembers(Set<Person> members) {
+	public void setMembers(Set<HPerson> members) {
 		this.members = members;
 	}
 	

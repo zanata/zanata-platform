@@ -18,7 +18,7 @@ import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 
 @Entity
-public class Person extends AbstractFliesEntity implements Serializable {
+public class HPerson extends AbstractFliesEntity implements Serializable {
 
 	private String name;
 	private HAccount account;
@@ -161,7 +161,7 @@ public class Person extends AbstractFliesEntity implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Person other = (Person) obj;
+		HPerson other = (HPerson) obj;
 		if (account == null) {
 			if (other.account != null)
 				return false;

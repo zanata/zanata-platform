@@ -31,7 +31,7 @@ public abstract class Project extends AbstractSlugEntity implements Serializable
 	private String description;
 	private String homeContent;
 
-	private Set<Person> maintainers;
+	private Set<HPerson> maintainers;
 
 	@Length(max = 80)
     @Field(index=Index.TOKENIZED)
@@ -64,13 +64,13 @@ public abstract class Project extends AbstractSlugEntity implements Serializable
 
 	@ManyToMany
 	@JoinTable(name = "Project_Maintainer", joinColumns = @JoinColumn(name = "projectId"), inverseJoinColumns = @JoinColumn(name = "personId"))
-	public Set<Person> getMaintainers() {
+	public Set<HPerson> getMaintainers() {
 		if(maintainers == null)
-			maintainers = new HashSet<Person>();
+			maintainers = new HashSet<HPerson>();
 		return maintainers;
 	}
 
-	public void setMaintainers(Set<Person> maintainers) {
+	public void setMaintainers(Set<HPerson> maintainers) {
 		this.maintainers = maintainers;
 	}
 

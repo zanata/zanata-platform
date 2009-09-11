@@ -5,7 +5,7 @@ package org.fedorahosted.flies.test.model;
 import javax.persistence.EntityManager;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.fedorahosted.flies.core.model.Person;
+import org.fedorahosted.flies.core.model.HPerson;
 import org.jboss.seam.mock.DBUnitSeamTest;
 import org.testng.annotations.Test;
 
@@ -24,7 +24,7 @@ public class PersonSeamTest extends DBUnitSeamTest {
 
             protected void invokeApplication() throws Exception {
                 EntityManager em = (EntityManager) getInstance("entityManager");
-                Person p = (Person) em.createQuery("select p from Person p where p.id = :id")
+                HPerson p = (HPerson) em.createQuery("select p from Person p where p.id = :id")
                                 .setParameter("id", 1l)
                                 .getSingleResult();
                 assert p.getName().equals("Mr Bean");

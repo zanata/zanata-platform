@@ -9,7 +9,7 @@ import javax.persistence.NoResultException;
 import org.fedorahosted.flies.core.dao.AccountDAO;
 import org.fedorahosted.flies.core.model.HAccount;
 import org.fedorahosted.flies.core.model.AccountActivationKey;
-import org.fedorahosted.flies.core.model.Person;
+import org.fedorahosted.flies.core.model.HPerson;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Pattern;
@@ -60,14 +60,14 @@ public class RegisterAction implements Serializable {
     
     private boolean valid;
 
-    private Person person;
+    private HPerson person;
     
     private String activationKey;
     
     @Begin(join=true)
-    public Person getPerson() {
+    public HPerson getPerson() {
     	if(person == null)
-    		person = new Person();
+    		person = new HPerson();
 		return person;
 	}
     

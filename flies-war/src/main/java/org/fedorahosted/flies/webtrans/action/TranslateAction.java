@@ -8,7 +8,7 @@ import javax.persistence.EntityManager;
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.core.model.HAccount;
 import org.fedorahosted.flies.core.model.HIterationProject;
-import org.fedorahosted.flies.core.model.Person;
+import org.fedorahosted.flies.core.model.HPerson;
 import org.fedorahosted.flies.core.model.ProjectIteration;
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HDocumentTarget;
@@ -196,7 +196,7 @@ public class TranslateAction implements Serializable {
 						}
 					}
 				}
-				Person translator = entityManager.find(Person.class, authenticatedAccount.getPerson().getId());
+				HPerson translator = entityManager.find(HPerson.class, authenticatedAccount.getPerson().getId());
 				getWorkspace().registerTranslator(translator);
 			}
 			catch(Exception e){
@@ -215,7 +215,7 @@ public class TranslateAction implements Serializable {
 	}
 	
 	public boolean ping(){
-		Person translator = entityManager.find(Person.class, authenticatedAccount.getPerson().getId());
+		HPerson translator = entityManager.find(HPerson.class, authenticatedAccount.getPerson().getId());
 		log.info("ping {0}:{1} - {2} - {3}", 
 				projectIteration.getProject().getSlug(),
 				projectIteration.getSlug(), 
