@@ -13,7 +13,7 @@ import org.jboss.seam.annotations.security.permission.PermissionTarget;
 import org.jboss.seam.annotations.security.permission.PermissionUser;
 
 @Entity
-public class AccountPermission implements Serializable {
+public class HAccountPermission implements Serializable {
 	private static final long serialVersionUID = -5628863031792429938L;
 
 	private Integer permissionId;
