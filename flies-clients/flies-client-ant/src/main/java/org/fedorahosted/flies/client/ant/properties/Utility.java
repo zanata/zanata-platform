@@ -4,6 +4,9 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import javax.ws.rs.core.Response;
+
+import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
 class Utility {
@@ -29,6 +32,11 @@ class Utility {
             srcURL = srcFile.toURI().toURL();
         }
         return srcURL;
+    }
+    
+    public static void checkResult(int status) {
+	if (status >= 399)
+	    throw new BuildException("operation returned "+status+": "+Response.Status.fromStatusCode(status));
     }
 
 }

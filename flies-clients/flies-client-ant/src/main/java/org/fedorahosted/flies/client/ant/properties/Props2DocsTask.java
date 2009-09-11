@@ -15,7 +15,6 @@ import org.apache.tools.ant.types.selectors.FileSelector;
 import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.adapter.properties.PropReader;
-import org.fedorahosted.flies.rest.FliesClient;
 import org.fedorahosted.flies.rest.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.DocumentResource;
 import org.fedorahosted.flies.rest.dto.Document;
@@ -27,10 +26,8 @@ public class Props2DocsTask extends MatchingTask {
     private boolean debug;
     private String dst;
     private String[] locales;
-    private String projectID;
     private String sourceLang;
     private File srcDir;
-    private String url;
 
     @Override
     public void execute() throws BuildException {
@@ -45,7 +42,7 @@ public class Props2DocsTask extends MatchingTask {
 	    String[] files = ds.getIncludedFiles();
 
 	    Marshaller m = null;
-	    JAXBContext jc = Context.newJAXBContext();
+	    JAXBContext jc = JAXBContext.newInstance(Documents.class);
 	    m = jc.createMarshaller();
 	    if (debug) {
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
@@ -74,10 +71,10 @@ public class Props2DocsTask extends MatchingTask {
 		m.marshal(docs, new File(dstURL.getFile()));
 	    } else {
 		// send project to rest api
-		DocumentResource documentResource = new FliesClientRequestFactory(apiKey).getDocumentResource(dstURL.toURI());
+		FliesClientRequestFactory factory = new FliesClientRequestFactory(apiKey);
+		DocumentResource documentResource = factory.getDocumentResource(dstURL.toURI());
 		Response response = documentResource.replace(docs);
-		if (response.getStatus() >= 399)
-		    throw new BuildException(response.toString());
+		Utility.checkResult(response.getStatus());
 	    }
 
 	} catch (Exception e) {
@@ -117,10 +114,6 @@ public class Props2DocsTask extends MatchingTask {
 	this.locales = locales.split(","); //$NON-NLS-1$
     }
 
-    public void setProjectID(String projectID) {
-	this.projectID = projectID;
-    }
-
     public void setSourceLang(String sourceLang) {
 	this.sourceLang = sourceLang;
     }
@@ -130,7 +123,4 @@ public class Props2DocsTask extends MatchingTask {
 	logVerbose("srcDir=" + srcDir);
     }
 
-    public void setUrl(String url) {
-	this.url = url;
-    }
 }

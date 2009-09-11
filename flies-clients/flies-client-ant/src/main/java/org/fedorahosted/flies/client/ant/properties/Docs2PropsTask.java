@@ -10,7 +10,7 @@ import javax.xml.bind.Unmarshaller;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.taskdefs.MatchingTask;
 import org.fedorahosted.flies.adapter.properties.PropWriter;
-import org.fedorahosted.flies.rest.FliesClient;
+import org.fedorahosted.flies.rest.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.DocumentResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Documents;
@@ -22,14 +22,13 @@ public class Docs2PropsTask extends MatchingTask {
     private boolean debug;
     private File dstDir;
     private String src;
-    private String url;
     
     @Override
     public void execute() throws BuildException {
 	try {
 	    Unmarshaller m = null;
 	    if (debug) {
-		JAXBContext jc = Context.newJAXBContext();
+		JAXBContext jc = JAXBContext.newInstance(Documents.class);
 		m = jc.createUnmarshaller();
 	    }
 	    
@@ -41,8 +40,8 @@ public class Docs2PropsTask extends MatchingTask {
 		docList = docs.getDocuments();
 	    } else {
 		// use rest api to fetch Documents
-		FliesClient client = new FliesClient(url, apiKey);
-		DocumentResource documentResource = client.getDocumentResource("FIXME", "METOO");
+		FliesClientRequestFactory factory = new FliesClientRequestFactory(apiKey);
+		DocumentResource documentResource = factory.getDocumentResource(srcURL.toURI());
 		ClientResponse<Documents> response  = documentResource.getAllDocuments();
 		
 		if (response.getStatus() >= 399) {
@@ -85,8 +84,4 @@ public class Docs2PropsTask extends MatchingTask {
 	this.src = src;
     }
     
-    public void setUrl(String url) {
-	this.url = url;
-    }
-
 }
