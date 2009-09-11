@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import org.fedorahosted.flies.core.model.Community;
+import org.fedorahosted.flies.core.model.HCommunity;
 import org.fedorahosted.flies.core.model.HProject;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
@@ -33,8 +33,8 @@ public class SearchAdmin {
     public void resetCommunityIndex() throws Exception {
     	FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager); 
 
-    	List<Community> communities = entityManager.createQuery("select community from Community as community").getResultList(); 
-	 	            for (Community community : communities) { 
+    	List<HCommunity> communities = entityManager.createQuery("select community from Community as community").getResultList(); 
+	 	            for (HCommunity community : communities) { 
 	                fullTextEntityManager.index(community); 
 	 	            }  
 

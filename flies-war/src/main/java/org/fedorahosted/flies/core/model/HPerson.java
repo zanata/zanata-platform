@@ -31,9 +31,9 @@ public class HPerson extends AbstractFliesEntity implements Serializable {
 	private Set<HTribe> tribeMemberships;
 	private Set<HTribe> tribeLeaderships;
 
-	private Set<Community> communityOwnerships;
-	private Set<Community> communityOfficerships;
-	private Set<Community> communityMemberships;
+	private Set<HCommunity> communityOwnerships;
+	private Set<HCommunity> communityOfficerships;
+	private Set<HCommunity> communityMemberships;
 	
 	@NotEmpty
 	@Length(min=2, max=80)
@@ -111,31 +111,31 @@ public class HPerson extends AbstractFliesEntity implements Serializable {
 	}
 	
 	@OneToMany(mappedBy = "owner")
-	public Set<Community> getCommunityOwnerships() {
+	public Set<HCommunity> getCommunityOwnerships() {
 		return communityOwnerships;
 	}
 	
-	public void setCommunityOwnerships(Set<Community> communityOwnerships) {
+	public void setCommunityOwnerships(Set<HCommunity> communityOwnerships) {
 		this.communityOwnerships = communityOwnerships;
 	}
 
 	@ManyToMany
 	@JoinTable(name = "Community_Officer", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "communityId"))
-	public Set<Community> getCommunityOfficerships() {
+	public Set<HCommunity> getCommunityOfficerships() {
 		return communityOfficerships;
 	}
 	
-	public void setCommunityOfficerships(Set<Community> communityOfficerships) {
+	public void setCommunityOfficerships(Set<HCommunity> communityOfficerships) {
 		this.communityOfficerships = communityOfficerships;
 	}
 	
 	@ManyToMany
 	@JoinTable(name = "Community_Member", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "communityId"))
-	public Set<Community> getCommunityMemberships() {
+	public Set<HCommunity> getCommunityMemberships() {
 		return communityMemberships;
 	}
 	
-	public void setCommunityMemberships(Set<Community> communityMemberships) {
+	public void setCommunityMemberships(Set<HCommunity> communityMemberships) {
 		this.communityMemberships = communityMemberships;
 	}
 

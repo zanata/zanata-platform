@@ -10,7 +10,7 @@ import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Query;
-import org.fedorahosted.flies.core.model.Community;
+import org.fedorahosted.flies.core.model.HCommunity;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.jboss.seam.ScopeType;
@@ -30,7 +30,7 @@ public class CommunitySearch {
     
     private String searchQuery;
 
-    private List<Community> searchResults;
+    private List<HCommunity> searchResults;
 	
     private int currentPage = 0;
     
@@ -47,11 +47,11 @@ public class CommunitySearch {
         this.searchQuery = searchQuery;
     }
     
-    public List<Community> getSearchResults() {
+    public List<HCommunity> getSearchResults() {
         return searchResults;
     }
     
-    public void setSearchResults(List<Community> communities) {
+    public void setSearchResults(List<HCommunity> communities) {
         this.searchResults = communities;
     }
     
@@ -103,7 +103,7 @@ public class CommunitySearch {
             return; 
         }
         resultSize = query.getResultSize();
-        List<Community> items = query
+        List<HCommunity> items = query
             .setMaxResults(pageSize + 1)
             .setFirstResult(pageSize * currentPage)
             .getResultList();
@@ -124,7 +124,7 @@ public class CommunitySearch {
         QueryParser parser = new MultiFieldQueryParser(communityFields, new StandardAnalyzer());
         parser.setAllowLeadingWildcard(true);
         Query luceneQuery = parser.parse(searchQuery);
-        return ( (FullTextEntityManager) entityManager ).createFullTextQuery(luceneQuery, Community.class);
+        return ( (FullTextEntityManager) entityManager ).createFullTextQuery(luceneQuery, HCommunity.class);
     }
     
     public int getPageSize() {

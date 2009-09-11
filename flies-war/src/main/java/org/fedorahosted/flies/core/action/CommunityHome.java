@@ -3,7 +3,7 @@ package org.fedorahosted.flies.core.action;
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.NoResultException;
 
-import org.fedorahosted.flies.core.model.Community;
+import org.fedorahosted.flies.core.model.HCommunity;
 import org.fedorahosted.flies.core.model.HPerson;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
@@ -15,12 +15,12 @@ import org.jboss.seam.faces.FacesMessages;
 
 @Name("communityHome")
 @Scope(ScopeType.CONVERSATION)
-public class CommunityHome extends SlugHome<Community>{
+public class CommunityHome extends SlugHome<HCommunity>{
 
 	@Override
 	@Restrict("#{identity.loggedIn}")
-	protected Community createInstance() {
-		Community instance = super.createInstance();
+	protected HCommunity createInstance() {
+		HCommunity instance = super.createInstance();
 		instance.setOwner(getEntityManager().find(HPerson.class, 1l));
 		return instance;
 	}

@@ -28,7 +28,7 @@ import org.hibernate.validator.NotNull;
  */
 @Entity
 @Indexed
-public class Community extends AbstractSlugEntity{
+public class HCommunity extends AbstractSlugEntity{
 	
 	private String name;
 
