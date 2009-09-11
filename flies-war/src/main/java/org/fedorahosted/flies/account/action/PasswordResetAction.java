@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.EntityManager;
 
-import org.fedorahosted.flies.core.model.AccountResetPasswordKey;
+import org.fedorahosted.flies.core.model.HAccountResetPasswordKey;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.jboss.seam.ScopeType;
@@ -43,7 +43,7 @@ public class PasswordResetAction implements Serializable{
     private String password;
     private String passwordConfirm;
 
-    private AccountResetPasswordKey key;
+    private HAccountResetPasswordKey key;
     
     
     public void setPassword(String password) {
@@ -80,10 +80,10 @@ public class PasswordResetAction implements Serializable{
     
     public void setActivationKey(String activationKey) {
 		this.activationKey = activationKey;
-		key = entityManager.find(AccountResetPasswordKey.class, getActivationKey());		
+		key = entityManager.find(HAccountResetPasswordKey.class, getActivationKey());		
 	}
     
-    private AccountResetPasswordKey getKey(){
+    private HAccountResetPasswordKey getKey(){
     	return key;
     }
     
@@ -93,7 +93,7 @@ public class PasswordResetAction implements Serializable{
     	if(getActivationKey() == null)
     		throw new KeyNotFoundException();
     	
-		key = entityManager.find(AccountResetPasswordKey.class, getActivationKey());
+		key = entityManager.find(HAccountResetPasswordKey.class, getActivationKey());
 
 		if(key == null)
 			throw new KeyNotFoundException();

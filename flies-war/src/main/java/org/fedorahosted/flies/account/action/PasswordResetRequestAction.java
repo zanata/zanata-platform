@@ -3,7 +3,7 @@ package org.fedorahosted.flies.account.action;
 import javax.persistence.EntityManager;
 
 import org.fedorahosted.flies.core.model.HAccount;
-import org.fedorahosted.flies.core.model.AccountResetPasswordKey;
+import org.fedorahosted.flies.core.model.HAccountResetPasswordKey;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.validator.Email;
@@ -67,7 +67,7 @@ public class PasswordResetRequestAction {
     
     private void removeAnyExistingResetRequests(){
     	Session session = (Session) entityManager.getDelegate();
-    	AccountResetPasswordKey key = (AccountResetPasswordKey) session.createCriteria(AccountResetPasswordKey.class).add( 
+    	HAccountResetPasswordKey key = (HAccountResetPasswordKey) session.createCriteria(HAccountResetPasswordKey.class).add( 
     			Restrictions.naturalId()
 		        .set("account", account))
 		     .uniqueResult();
@@ -93,7 +93,7 @@ public class PasswordResetRequestAction {
     	
     	removeAnyExistingResetRequests();
     	
-    	AccountResetPasswordKey key = new AccountResetPasswordKey();
+    	HAccountResetPasswordKey key = new HAccountResetPasswordKey();
     	key.setAccount(account);
     	key.setKeyHash(RegisterAction.generateHash(account.getUsername() + account.getPasswordHash() + account.getPerson().getEmail() + account.getPerson().getName() + System.currentTimeMillis()));
     	entityManager.persist(key);
