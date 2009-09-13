@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 /**
  * Flags an entity field or method as representing the API key for a user
  *  
- * @author Shane Bryzak
+ * @author Asgeir Frimannsson
  */
 @Target({METHOD,FIELD})
 @Documented
