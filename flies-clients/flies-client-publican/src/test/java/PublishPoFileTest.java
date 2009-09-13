@@ -48,7 +48,7 @@ public class PublishPoFileTest {
 		poReader.extractTemplate(doc, inputSource);
 		
 		System.out.println("starting REST client");
-		FliesClient client = new FliesClient("http://localhost:8080/flies/seam/resource/restv1", "bob");
+		FliesClient client = new FliesClient("http://localhost:8080/flies/seam/resource/restv1", "admin", "apikeyvalue");
 		DocumentResource docResource = client.getDocumentResource("sample-project", "1.0");
 
 		System.out.println("Publishing document");

@@ -17,16 +17,17 @@ import org.jboss.resteasy.spi.interception.MessageBodyWriterInterceptor;
 public class ApiKeyHeaderDecorator implements ClientExecutionInterceptor {
 
 	private String apiKey;
-	
-	public ApiKeyHeaderDecorator() {
+	private String username;
+
+	public ApiKeyHeaderDecorator(){}
+	public ApiKeyHeaderDecorator(String username, String apiKey) {
+		this.username = username;
+		this.apiKey = apiKey;
 	}
 
-	public ApiKeyHeaderDecorator(String key) {
-		this.apiKey = key;
-	}
-	
 	@Override
 	public ClientResponse execute(ClientExecutionContext ctx) throws Exception {
+		ctx.getRequest().getHeaders().add("X-Auth-User", username);
 		ctx.getRequest().getHeaders().add("X-Auth-Token", apiKey);
 		return ctx.proceed();
 	}
@@ -37,5 +38,13 @@ public class ApiKeyHeaderDecorator implements ClientExecutionInterceptor {
 	
 	public void setApiKey(String apiKey) {
 		this.apiKey = apiKey;
+	}
+	
+	public String getUsername() {
+		return username;
+	}
+	
+	public void setUsername(String username) {
+		this.username = username;
 	}
 }

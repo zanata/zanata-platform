@@ -22,6 +22,7 @@ import org.fedorahosted.flies.rest.dto.Documents;
 
 public class Props2DocsTask extends MatchingTask {
 
+	private String user;
     private String apiKey;
     private boolean debug;
     private String dst;
@@ -71,7 +72,7 @@ public class Props2DocsTask extends MatchingTask {
 		m.marshal(docs, new File(dstURL.getFile()));
 	    } else {
 		// send project to rest api
-		FliesClientRequestFactory factory = new FliesClientRequestFactory(apiKey);
+		FliesClientRequestFactory factory = new FliesClientRequestFactory(user, apiKey);
 		DocumentResource documentResource = factory.getDocumentResource(dstURL.toURI());
 		Response response = documentResource.replace(docs);
 		Utility.checkResult(response.getStatus());
@@ -97,6 +98,10 @@ public class Props2DocsTask extends MatchingTask {
     private void logVerbose(String msg) {
 	super.log(msg, org.apache.tools.ant.Project.MSG_VERBOSE);
     }
+    
+    public void setUser(String user) {
+		this.user = user;
+	}
     
     public void setApiKey(String apiKey) {
 	this.apiKey = apiKey;

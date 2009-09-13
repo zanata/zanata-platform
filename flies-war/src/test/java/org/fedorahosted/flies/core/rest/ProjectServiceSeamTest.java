@@ -38,7 +38,7 @@ public class ProjectServiceSeamTest extends DBUnitSeamTest {
 			new ClientRequestFactory(
 					new SeamMockClientExecutor(this), new URI("/restv1/"));
 		
-		clientRequestFactory.getPrefixInterceptors().registerInterceptor(new ApiKeyHeaderDecorator("12345678901234567890123456789012"));
+		clientRequestFactory.getPrefixInterceptors().registerInterceptor(new ApiKeyHeaderDecorator("admin", "12345678901234567890123456789012"));
 
 		projectService = clientRequestFactory.createProxy(ProjectResource.class);
 		

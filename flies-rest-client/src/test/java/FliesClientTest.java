@@ -19,7 +19,7 @@ public class FliesClientTest {
 	
 	@Test
 	public void create20SampleProjects() throws URISyntaxException {
-		FliesClient client = new FliesClient("http://localhost:8080/flies/seam/resource/restv1", "34567890123456789012345678901234");
+		FliesClient client = new FliesClient("http://localhost:8080/flies/seam/resource/restv1", "admin", "34567890123456789012345678901234");
 		
 		ProjectResource projectResource = client.getProjectResource();
 		

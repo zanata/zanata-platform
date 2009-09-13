@@ -17,18 +17,12 @@ public class FliesClient {
 	private final String apiKey;
 	private final FliesClientRequestFactory clientRequestFactory;
 	
-	public FliesClient(String baseUrl, String apiKey) throws URISyntaxException{
+	public FliesClient(String baseUrl, String username, String apiKey) throws URISyntaxException{
 		this.baseUri = new URI(baseUrl);
 		this.apiKey = apiKey;
-		clientRequestFactory = initializeRequests(apiKey);
+		clientRequestFactory = new FliesClientRequestFactory(username, apiKey);
 	}
 		
-	private static FliesClientRequestFactory initializeRequests(String apiKey)
-	{
-	  FliesClientRequestFactory clientRequestFactory = new FliesClientRequestFactory(apiKey);
-	  return clientRequestFactory;
-	}
-	
 	public ProjectResource getProjectResource(){
 		return clientRequestFactory.getProjectResource(baseUri);
 	}

@@ -38,6 +38,7 @@ import org.hibernate.validator.InvalidStateException;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.log.Log;
 
 @Name("projectResource")
@@ -65,6 +66,7 @@ public class ProjectService{
 	@GET
 	@Path("/p/{projectSlug}")
 	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
+	@Restrict("#{identity.loggedIn}")
 	public Project getProject(
 			@PathParam("projectSlug") String projectSlug) {
 
@@ -100,6 +102,7 @@ public class ProjectService{
 	
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECTS_XML, MediaType.APPLICATION_JSON })
+	@Restrict("#{s:hasRole('admin')}")
 	public ProjectRefs getProjects() {
 		ProjectRefs projectRefs = new ProjectRefs();
 		

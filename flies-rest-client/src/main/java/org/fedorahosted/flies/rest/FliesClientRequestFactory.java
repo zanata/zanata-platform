@@ -15,8 +15,8 @@ public class FliesClientRequestFactory extends ClientRequestFactory {
 	RegisterBuiltin.register(instance);
     }
     
-    public FliesClientRequestFactory(String apiKey) {
-	getPrefixInterceptors().registerInterceptor(new ApiKeyHeaderDecorator(apiKey));
+    public FliesClientRequestFactory(String username, String apiKey) {
+	getPrefixInterceptors().registerInterceptor(new ApiKeyHeaderDecorator(username, apiKey));
     }
 
     public DocumentResource getDocumentResource(URI uri) {

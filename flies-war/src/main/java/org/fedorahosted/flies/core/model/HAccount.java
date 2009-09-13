@@ -12,6 +12,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
+import org.fedorahosted.flies.security.UserApiKey;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.Length;
 import org.jboss.seam.annotations.security.management.UserEnabled;
@@ -21,13 +22,13 @@ import org.jboss.seam.annotations.security.management.UserRoles;
 import org.jboss.seam.security.management.PasswordHash;
 
 @Entity
-@Table(uniqueConstraints=@UniqueConstraint(columnNames="apiKey"))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = "apiKey"))
 public class HAccount extends AbstractFliesEntity implements Serializable {
 
 	private String username;
 	private String passwordHash;
 	private boolean enabled;
-        private String apiKey;
+	private String apiKey;
 	private HPerson person;
 	private Set<HAccountRole> roles;
 
@@ -47,10 +48,10 @@ public class HAccount extends AbstractFliesEntity implements Serializable {
 	}
 
 	@Transient
-	public boolean isPersonAccount(){
+	public boolean isPersonAccount() {
 		return person != null;
 	}
-	
+
 	public void setUsername(String username) {
 		this.username = username;
 	}
@@ -73,14 +74,15 @@ public class HAccount extends AbstractFliesEntity implements Serializable {
 		this.enabled = enabled;
 	}
 
-        @Length(min=32,max=32)
-        public String getApiKey() {
-        	return apiKey;
-        }
+	@UserApiKey
+	@Length(min = 32, max = 32)
+	public String getApiKey() {
+		return apiKey;
+	}
 
-        public void setApiKey(String key) {
-       		this.apiKey = key;
-        }
+	public void setApiKey(String key) {
+		this.apiKey = key;
+	}
 
 	@UserRoles
 	@ManyToMany(targetEntity = HAccountRole.class)
@@ -102,8 +104,7 @@ public class HAccount extends AbstractFliesEntity implements Serializable {
 				+ ((passwordHash == null) ? 0 : passwordHash.hashCode());
 		result = prime * result
 				+ ((username == null) ? 0 : username.hashCode());
-		result = prime * result
-		        + ((apiKey == null) ? 0 : apiKey.hashCode());
+		result = prime * result + ((apiKey == null) ? 0 : apiKey.hashCode());
 		return result;
 	}
 
@@ -136,6 +137,4 @@ public class HAccount extends AbstractFliesEntity implements Serializable {
 		return true;
 	}
 
-	
-	
 }
