@@ -55,57 +55,6 @@ public class DocumentsService {
 	
 	@In
 	Session session;
-	
-	@GET
-	@Path("/d/{documentId}")
-	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
-	public Document getDocument(
-			@PathParam("documentId") String documentId,
-			@QueryParam("includeTargets") String includeTargets) {
-		
-		HProjectIteration hProjectIteration = getIterationOrFail();
-		String docId = convertToRealDocumentId(documentId);
-		
-		HDocument hDoc = documentDAO.getByDocId(hProjectIteration.getContainer(), docId);
-		
-		if(hDoc == null) {
-			throw new WebApplicationException(Status.NOT_FOUND);
-		}
-		
-		return null;
-	}
-
-	@PUT
-	@Path("/d/{documentId}")
-	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
-	@Restrict("#{identity.loggedIn}")
-	public Response putDocument(Document document) throws URISyntaxException {
-		
-		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-		
-		if(hProjectIteration == null)
-			throw new NotFoundException("Project Iteration not found");
-		
-		HDocument hDoc = new HDocument(document);
-		
-		// TODO check if it's a update or create operation
-		
-		hProjectIteration.getContainer().getDocuments().add(hDoc);
-		try{
-			session.flush();
-			for(Resource res : document.getResources()) {
-				HResource hRes = HDocument.create(res);
-				hRes.setDocument(hDoc);
-				hDoc.getResourceTree().add(hRes);
-				session.flush();
-			}
-			return Response.created( new URI("/d/"+hDoc.getDocId())).build();
-		}
-		catch(Exception e){
-			return Response.notAcceptable(null).build();
-		}
-		
-	}
 
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENTREFS_XML, MediaType.APPLICATION_JSON })
@@ -154,18 +103,5 @@ public class DocumentsService {
 	@Restrict("#{identity.loggedIn}")
 	public Response replace(Documents documents) {
 	    return Response.ok().build();
-	}
-	
-	private HProjectIteration getIterationOrFail(){
-		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-		
-		if(hProjectIteration == null)
-			throw new NotFoundException("Project Iteration not found");
-		
-		return hProjectIteration;
-	}
-
-	private String convertToRealDocumentId(String uriId){
-		return uriId.replace(',', '/');
 	}
 }
