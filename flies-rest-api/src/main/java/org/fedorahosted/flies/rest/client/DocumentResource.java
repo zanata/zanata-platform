@@ -56,7 +56,7 @@ public interface DocumentResource {
 	public Response replace(Documents documents);
 
 	@GET
-	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
+	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENTREFS_XML, MediaType.APPLICATION_JSON })
 	public ClientResponse<DocumentRefs> getDocuments();
 	
 	@GET
