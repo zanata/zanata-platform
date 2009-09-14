@@ -25,42 +25,42 @@ public interface DocumentResource {
 	public ClientResponse<Document> getDocument(@PathParam("documentId") String documentId,
 			@QueryParam("includeTargets") String includeTargets);
 
-	@POST
-	@Path("/d/{documentId}")
-	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
-	public Response updateDocument(@PathParam("documentId") String documentId,
-			Document document);
+//	@POST
+//	@Path("/d/{documentId}")
+//	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
+//	public Response updateDocument(@PathParam("documentId") String documentId,
+//			Document document);
 	
 	/**
-	 * Adds one Document.  Shouldn't this be POST?  (it's not creating the item /documents, it's creating a sub item)
+	 * Adds one Document.
 	 */
 	@PUT
+	@Path("/d/{documentId}")
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
 	public Response addDocument(Document document);
 
+	@GET
+	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENTREFS_XML, MediaType.APPLICATION_JSON })
+	public ClientResponse<DocumentRefs> getDocumentRefs();
+	
 	/**
 	 * Adds multiple Documents
 	 */
-	@PUT
-	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })  // TODO JSON is same as above!?
+	@POST
+	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
 	public Response addDocuments(Documents documents);
-
+	
 	/**
 	 * Replaces the existing set of documents (possibly should be POST to ., not ./replace)
 	 * @param documents
 	 * @return
 	 */
-	@POST
-	@Path("/replace")
+	@PUT
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
 	public Response replace(Documents documents);
 
 	@GET
-	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENTREFS_XML, MediaType.APPLICATION_JSON })
-	public ClientResponse<DocumentRefs> getDocuments();
-	
-	@GET
 	@Path("/all")
 	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
-	public ClientResponse<Documents> getAllDocuments();
+	public ClientResponse<Documents> getDocuments();
 }

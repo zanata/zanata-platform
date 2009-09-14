@@ -43,13 +43,10 @@ public class Docs2PropsTask extends MatchingTask {
 		// use rest api to fetch Documents
 		FliesClientRequestFactory factory = new FliesClientRequestFactory(user, apiKey);
 		DocumentResource documentResource = factory.getDocumentResource(srcURL.toURI());
-		ClientResponse<Documents> response  = documentResource.getAllDocuments();
+		ClientResponse<Documents> response  = documentResource.getDocuments();
 		
-		if (response.getStatus() >= 399) {
-		    throw new BuildException(response.toString());
-		} else {
-		    docList = response.getEntity().getDocuments();
-		}
+		Utility.checkResult(response, srcURL);
+		docList = response.getEntity().getDocuments();
 	    }
 	    
 	    for (Document doc : docList) {
