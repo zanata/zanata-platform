@@ -24,7 +24,7 @@ public class PersonSeamTest extends DBUnitSeamTest {
 
             protected void invokeApplication() throws Exception {
                 EntityManager em = (EntityManager) getInstance("entityManager");
-                HPerson p = (HPerson) em.createQuery("select p from Person p where p.id = :id")
+                HPerson p = (HPerson) em.createQuery("select p from HPerson p where p.id = :id")
                                 .setParameter("id", 1l)
                                 .getSingleResult();
                 assert p.getName().equals("Mr Bean");
