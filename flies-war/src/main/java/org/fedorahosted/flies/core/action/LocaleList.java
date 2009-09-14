@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.core.model.HFliesLocale;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.framework.EntityQuery;
 
 import com.ibm.icu.util.ULocale;
@@ -29,8 +30,8 @@ public class LocaleList extends EntityQuery<HFliesLocale> {
 			}
 		}
 		if(addedLocales.size() > 0)
-			getFacesMessages().add("Added {0} locales: {1}", addedLocales.size(), StringUtils.join(addedLocales, ", "));
+			FacesMessages.instance().add("Added {0} locales: {1}", addedLocales.size(), StringUtils.join(addedLocales, ", "));
 		else
-			getFacesMessages().add("No locales added");
+			FacesMessages.instance().add("No locales added");
 	}
 }
