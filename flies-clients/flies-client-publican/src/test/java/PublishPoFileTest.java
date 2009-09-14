@@ -52,7 +52,7 @@ public class PublishPoFileTest {
 		DocumentResource docResource = client.getDocumentResource("sample-project", "1.0");
 
 		System.out.println("Publishing document");
-		Response response = docResource.addDocument(doc);
+		Response response = docResource.putDocument(doc);
 		
 		Status s = Status.fromStatusCode(response.getStatus());
 		if(Status.CREATED == s ) {

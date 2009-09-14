@@ -75,21 +75,11 @@ public class DocumentService {
 		return null;
 	}
 
-//	@POST
-//	@Path("/d/{documentId}")
-//	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
-//	@Restrict("#{identity.loggedIn}")
-//	public Response updateDocument(
-//			@PathParam("documentId") String documentId,
-//			Document document) {
-//		return null;
-//	}
-
 	@PUT
 	@Path("/d/{documentId}")
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
 	@Restrict("#{identity.loggedIn}")
-	public Response addDocument(Document document) throws URISyntaxException {
+	public Response putDocument(Document document) throws URISyntaxException {
 		
 		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
 		
@@ -97,6 +87,9 @@ public class DocumentService {
 			throw new NotFoundException("Project Iteration not found");
 		
 		HDocument hDoc = new HDocument(document);
+		
+		// TODO check if it's a update or create operation
+		
 		hProjectIteration.getContainer().getDocuments().add(hDoc);
 		try{
 			session.flush();

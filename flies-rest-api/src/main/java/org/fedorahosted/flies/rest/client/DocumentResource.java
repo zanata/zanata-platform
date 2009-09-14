@@ -25,19 +25,13 @@ public interface DocumentResource {
 	public ClientResponse<Document> getDocument(@PathParam("documentId") String documentId,
 			@QueryParam("includeTargets") String includeTargets);
 
-//	@POST
-//	@Path("/d/{documentId}")
-//	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
-//	public Response updateDocument(@PathParam("documentId") String documentId,
-//			Document document);
-	
 	/**
-	 * Adds one Document.
+	 * Add/Update one Document.
 	 */
 	@PUT
 	@Path("/d/{documentId}")
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
-	public Response addDocument(Document document);
+	public Response putDocument(Document document);
 
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENTREFS_XML, MediaType.APPLICATION_JSON })

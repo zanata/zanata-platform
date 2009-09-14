@@ -72,7 +72,7 @@ public class FliesClientTest {
 						tf.setContent("Hello World");
 						doc.getResources().add(tf);
 						
-						r = documentResource.addDocument(doc);
+						r = documentResource.putDocument(doc);
 						s = Status.fromStatusCode(r.getStatus());
 						if(Status.CREATED == s ) {
 							System.out.println("    Document Created: " + documentIds[k]);
