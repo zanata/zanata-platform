@@ -42,7 +42,7 @@ import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.log.Log;
 
 @Name("projectService")
-@Path("/projects/{projectSlug}")
+@Path("/projects/p/{projectSlug}")
 public class ProjectService{
 
 	@PathParam("projectSlug")
