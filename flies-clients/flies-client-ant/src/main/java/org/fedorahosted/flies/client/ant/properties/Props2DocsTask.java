@@ -22,7 +22,7 @@ import org.fedorahosted.flies.rest.dto.Documents;
 
 public class Props2DocsTask extends MatchingTask {
 
-	private String user;
+    private String user;
     private String apiKey;
     private boolean debug;
     private String dst;
@@ -99,10 +99,6 @@ public class Props2DocsTask extends MatchingTask {
 	super.log(msg, org.apache.tools.ant.Project.MSG_VERBOSE);
     }
     
-    public void setUser(String user) {
-		this.user = user;
-	}
-    
     public void setApiKey(String apiKey) {
 	this.apiKey = apiKey;
     }
@@ -128,4 +124,8 @@ public class Props2DocsTask extends MatchingTask {
 	logVerbose("srcDir=" + srcDir);
     }
 
+    public void setUser(String user) {
+	this.user = user;
+    }
+    
 }

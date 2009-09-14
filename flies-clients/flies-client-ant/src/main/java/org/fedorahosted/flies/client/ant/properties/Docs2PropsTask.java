@@ -18,7 +18,7 @@ import org.jboss.resteasy.client.ClientResponse;
 
 public class Docs2PropsTask extends MatchingTask {
 
-	private String user;
+    private String user;
     private String apiKey;
     private boolean debug;
     private File dstDir;
@@ -70,10 +70,6 @@ public class Docs2PropsTask extends MatchingTask {
 //    }
     
     
-    public void setUser(String user) {
-		this.user = user;
-	}
-    
     public void setApiKey(String apiKey) {
 	this.apiKey = apiKey;
     }
@@ -88,6 +84,10 @@ public class Docs2PropsTask extends MatchingTask {
 
     public void setSrc(String src) {
 	this.src = src;
+    }
+    
+    public void setUser(String user) {
+	this.user = user;
     }
     
 }
