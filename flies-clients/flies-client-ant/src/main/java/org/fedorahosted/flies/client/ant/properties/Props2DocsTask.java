@@ -75,7 +75,7 @@ public class Props2DocsTask extends MatchingTask {
 		FliesClientRequestFactory factory = new FliesClientRequestFactory(user, apiKey);
 		DocumentResource documentResource = factory.getDocumentResource(dstURL.toURI());
 		Response response = documentResource.replace(docs);
-		Utility.checkResult(response.getStatus());
+		Utility.checkResult(response, dstURL);
 	    }
 
 	} catch (Exception e) {

@@ -3,6 +3,7 @@
 <project basedir=".">
 	<import file="taskdefs.xml" />
 	<property name="out.dir" value="${user.dir}/target/test-output" />
+	<property name="bob.key" value="34567890123456789012345678901234" />
 
 	<target name="props2docs">
 		<props2docs 
@@ -20,7 +21,7 @@
 		<mkdir dir="${out.dir}/test3a"/>
 		<props2docs 
 			user="bob"
-			apiKey="bob"
+			apiKey="${bob.key}"
 			dst="${docsUrl}" 
 			srcDir="test1" 
 			sourceLang="en_US" 
@@ -28,7 +29,7 @@
 			debug="false" />
 		<docs2props 
 			user="bob"
-			apiKey="bob"
+			apiKey="${bob.key}"
 			src="${docsUrl}" 
 			dstDir="${out.dir}/test3b" 
 			debug="true" />

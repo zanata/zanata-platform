@@ -43,7 +43,7 @@ public class BuildTest extends BuildFileTest {
 	suite.addTest(new BuildTest("props2docs"));
 	suite.addTest(new BuildTest("docs2props"));
 	suite.addTest(new BuildTest("roundtriplocal"));
-//	suite.addTest(new BuildTest("roundtripremote"));
+	suite.addTest(new BuildTest("roundtripremote"));
 	return suite;
     }
 

@@ -60,17 +60,18 @@ public class DocumentService {
 		return null;
 	}
 
-	@POST
-	@Path("/d/{documentId}")
-	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
-	@Restrict("#{identity.loggedIn}")
-	public Response updateDocument(
-			@PathParam("documentId") String documentId,
-			Document document) {
-		return null;
-	}
+//	@POST
+//	@Path("/d/{documentId}")
+//	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
+//	@Restrict("#{identity.loggedIn}")
+//	public Response updateDocument(
+//			@PathParam("documentId") String documentId,
+//			Document document) {
+//		return null;
+//	}
 	
 	@PUT
+	@Path("/d/{documentId}")
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
 	@Restrict("#{identity.loggedIn}")
 	public Response addDocument(Document document) throws URISyntaxException {
@@ -100,7 +101,7 @@ public class DocumentService {
 
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENTREFS_XML, MediaType.APPLICATION_JSON })
-	public DocumentRefs getDocuments() {
+	public DocumentRefs getDocumentRefs() {
 		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
 		
 		if(hProjectIteration == null)
@@ -126,25 +127,28 @@ public class DocumentService {
 		return documents;
 	}
 
-	@PUT
+	@POST
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
+	@Restrict("#{identity.loggedIn}")
 	public Response addDocuments(Documents documents) {
 	    // TODO
-	    return null;
+	    return Response.ok().build();
 	}
 
 	@GET
+	@Path("/all")
 	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
-	public Documents getAllDocuments() {
+	public Documents getDocuments() {
 	    // TODO
-	    return null;
+	    return new Documents();
 	}
 
-	@POST
+	@PUT
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
+	@Restrict("#{identity.loggedIn}")
 	public Response replace(Documents documents) {
 	    // TODO
-	    return null;
+	    return Response.ok().build();
 	}
 
 }

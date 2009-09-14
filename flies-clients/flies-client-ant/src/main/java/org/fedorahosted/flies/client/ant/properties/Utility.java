@@ -3,11 +3,16 @@ package org.fedorahosted.flies.client.ant.properties;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.ws.rs.core.Response;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
+import org.jboss.resteasy.client.core.BaseClientResponse;
+
+import com.google.common.collect.Lists;
 
 class Utility {
 
@@ -34,9 +39,15 @@ class Utility {
         return srcURL;
     }
     
-    public static void checkResult(int status) {
-	if (status >= 399)
-	    throw new BuildException("operation returned "+status+": "+Response.Status.fromStatusCode(status));
+    public static void checkResult(Response response, URL url) {
+	if (response.getStatus() >= 399) {
+	    String annots = "";
+	    if (response instanceof BaseClientResponse) {
+		BaseClientResponse resp = (BaseClientResponse) response;
+		annots = Arrays.asList(resp.getAnnotations()).toString();
+	    }
+	    throw new BuildException("operation returned "+response.getStatus()+": "+Response.Status.fromStatusCode(response.getStatus())+", url: "+url+", annotations: "+annots);
+	}
     }
 
 }
