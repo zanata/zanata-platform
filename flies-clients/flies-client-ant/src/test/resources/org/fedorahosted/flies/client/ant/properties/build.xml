@@ -19,6 +19,7 @@
 		<delete dir="${out.dir}/test3b"/>
 		<mkdir dir="${out.dir}/test3a"/>
 		<props2docs 
+			user="bob"
 			apiKey="bob"
 			dst="${docsUrl}" 
 			srcDir="test1" 
@@ -26,6 +27,7 @@
 			locales="de,fr" 
 			debug="false" />
 		<docs2props 
+			user="bob"
 			apiKey="bob"
 			src="${docsUrl}" 
 			dstDir="${out.dir}/test3b" 
