@@ -17,8 +17,7 @@ public interface IProjectsResource {
 	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECTS_XML, MediaType.APPLICATION_JSON })
 	public ClientResponse<ProjectRefs> getProjects();
 	
-    	
-//    	@Path("/p/{projectSlug}")
-	public IProjectResource getProject(
-		/*@PathParam("projectSlug")*/ String projectSlug);
+//  @Path("/p/{projectSlug}")
+//	public IProjectResource getProject(
+//		@PathParam("projectSlug") String projectSlug);
 }

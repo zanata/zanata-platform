@@ -25,6 +25,6 @@ public interface IProjectResource {
 	public Response put(Project project);
 
 //	@Path("/iterations/i/{iterationSlug}")
-	public IProjectIterationResource getIteration(
-			/*@PathParam("iterationSlug")*/ String iterationSlug);
+//	public IProjectIterationResource getIteration(
+//			@PathParam("iterationSlug") String iterationSlug);
 }
