@@ -4,11 +4,11 @@ import java.net.URI;
 
 import javax.ws.rs.core.Response;
 
-import org.fedorahosted.flies.rest.client.DocumentResource;
-import org.fedorahosted.flies.rest.client.DocumentsResource;
-import org.fedorahosted.flies.rest.client.ProjectIterationResource;
-import org.fedorahosted.flies.rest.client.ProjectResource;
-import org.fedorahosted.flies.rest.client.ProjectsResource;
+import org.fedorahosted.flies.rest.client.IDocumentResource;
+import org.fedorahosted.flies.rest.client.IDocumentsResource;
+import org.fedorahosted.flies.rest.client.IProjectIterationResource;
+import org.fedorahosted.flies.rest.client.IProjectResource;
+import org.fedorahosted.flies.rest.client.IProjectsResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Documents;
 import org.fedorahosted.flies.rest.dto.Project;
@@ -31,23 +31,23 @@ public class FliesClientRequestFactory extends ClientRequestFactory {
 				new ApiKeyHeaderDecorator(username, apiKey));
 	}
 	
-	public DocumentResource getDocumentResource(URI uri) {
-		return createProxy(DocumentResource.class, uri);
+	public IDocumentResource getDocumentResource(URI uri) {
+		return createProxy(IDocumentResource.class, uri);
 	}
 
-	public DocumentsResource getDocumentsResource(final URI uri) {
-		return createProxy(DocumentsResource.class, uri);
+	public IDocumentsResource getDocumentsResource(final URI uri) {
+		return createProxy(IDocumentsResource.class, uri);
 	}
 
-	public ProjectIterationResource getProjectIterationResource(final URI uri) {
-		return  createProxy(ProjectIterationResource.class, uri);
+	public IProjectIterationResource getProjectIterationResource(final URI uri) {
+		return  createProxy(IProjectIterationResource.class, uri);
 	}
 
-	public ProjectResource getProjectResource(final URI uri) {
-		return createProxy(ProjectResource.class, uri);
+	public IProjectResource getProjectResource(final URI uri) {
+		return createProxy(IProjectResource.class, uri);
 	}
 
-	public ProjectsResource getProjectsResource(final URI uri) {
-		return createProxy(ProjectsResource.class, uri);
+	public IProjectsResource getProjectsResource(final URI uri) {
+		return createProxy(IProjectsResource.class, uri);
 	}
 }

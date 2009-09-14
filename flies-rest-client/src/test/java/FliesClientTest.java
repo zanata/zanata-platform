@@ -5,9 +5,9 @@ import javax.ws.rs.core.Response.Status;
 
 import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.rest.FliesClient;
-import org.fedorahosted.flies.rest.client.DocumentsResource;
-import org.fedorahosted.flies.rest.client.ProjectResource;
-import org.fedorahosted.flies.rest.client.ProjectsResource;
+import org.fedorahosted.flies.rest.client.IDocumentsResource;
+import org.fedorahosted.flies.rest.client.IProjectResource;
+import org.fedorahosted.flies.rest.client.IProjectsResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
@@ -21,7 +21,7 @@ public class FliesClientTest {
 	public void create20SampleProjects() throws URISyntaxException {
 		FliesClient client = new FliesClient("http://localhost:8080/flies/seam/resource/restv1", "admin", "34567890123456789012345678901234");
 		
-		ProjectsResource projectsResource = client.getProjectsResource();
+		IProjectsResource projectsResource = client.getProjectsResource();
 		
 		ClientResponse<Project> projectResponse = projectsResource.getProject("sample-project").get();
 		
@@ -44,7 +44,7 @@ public class FliesClientTest {
 					System.err.println(i + "Failed with status: " + s);
 				}
 				
-				ProjectResource projectResource = 
+				IProjectResource projectResource = 
 				    client.getProjectsResource().
 				    getProject(p.getId());
 				for (int j = 1; j < 3; j++) {
@@ -65,7 +65,7 @@ public class FliesClientTest {
 							"my/document/doc1.txt", 
 							"my/document/other.txt"};
 					
-					DocumentsResource documentResource = 
+					IDocumentsResource documentResource = 
 					    client.getProjectsResource().
 					    getProject(p.getId()).
 					    getIteration(pIt.getId()).

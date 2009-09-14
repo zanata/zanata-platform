@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.flies.rest.ApiKeyHeaderDecorator;
-import org.fedorahosted.flies.rest.client.ProjectsResource;
+import org.fedorahosted.flies.rest.client.IProjectsResource;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
@@ -27,7 +27,7 @@ import org.testng.annotations.Test;
 public class ProjectServiceSeamTest extends DBUnitSeamTest {
 
 	ClientRequestFactory clientRequestFactory;
-	ProjectsResource projectService;
+	IProjectsResource projectService;
 	
 	@BeforeClass
 	public void prepareRestEasyClientFramework() throws Exception {
@@ -41,7 +41,7 @@ public class ProjectServiceSeamTest extends DBUnitSeamTest {
 		
 		clientRequestFactory.getPrefixInterceptors().registerInterceptor(new ApiKeyHeaderDecorator("admin", "12345678901234567890123456789012"));
 
-		projectService = clientRequestFactory.createProxy(ProjectsResource.class);
+		projectService = clientRequestFactory.createProxy(IProjectsResource.class);
 		
 	}
 	

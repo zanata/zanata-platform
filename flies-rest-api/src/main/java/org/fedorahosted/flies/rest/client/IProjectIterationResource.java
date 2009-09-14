@@ -15,7 +15,7 @@ import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.jboss.resteasy.client.ClientResponse;
 
 //@Path("/i/{iterationSlug}")
-public interface ProjectIterationResource{
+public interface IProjectIterationResource{
 
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML, MediaType.APPLICATION_JSON })
@@ -27,5 +27,5 @@ public interface ProjectIterationResource{
 			ProjectIteration project);
 	
 	//@Path("/documents")
-	public DocumentsResource getDocuments();
+	public IDocumentsResource getDocuments();
 }

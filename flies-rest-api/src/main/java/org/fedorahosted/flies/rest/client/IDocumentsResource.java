@@ -14,10 +14,10 @@ import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Documents;
 import org.jboss.resteasy.client.ClientResponse;
 
-public interface DocumentsResource {
+public interface IDocumentsResource {
 
 	//@Path("/d/{documentId}")
-	public DocumentResource getDocument(@PathParam("documentId") String documentId);
+	public IDocumentResource getDocument(@PathParam("documentId") String documentId);
 
 
 	/**

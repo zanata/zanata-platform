@@ -4,10 +4,10 @@ package org.fedorahosted.flies.rest;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.fedorahosted.flies.rest.client.DocumentsResource;
-import org.fedorahosted.flies.rest.client.ProjectIterationResource;
-import org.fedorahosted.flies.rest.client.ProjectResource;
-import org.fedorahosted.flies.rest.client.ProjectsResource;
+import org.fedorahosted.flies.rest.client.IDocumentsResource;
+import org.fedorahosted.flies.rest.client.IProjectIterationResource;
+import org.fedorahosted.flies.rest.client.IProjectResource;
+import org.fedorahosted.flies.rest.client.IProjectsResource;
 
 public class FliesClient {
 
@@ -21,7 +21,7 @@ public class FliesClient {
 		clientRequestFactory = new FliesClientRequestFactory(username, apiKey);
 	}
 	
-	public ProjectsResource getProjectsResource() {
+	public IProjectsResource getProjectsResource() {
 	    return clientRequestFactory.getProjectsResource(baseUri);
 	}
 //		

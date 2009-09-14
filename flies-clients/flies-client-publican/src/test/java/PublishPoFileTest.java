@@ -15,8 +15,8 @@ import javax.xml.bind.Marshaller;
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.adapter.po.PoReader;
 import org.fedorahosted.flies.rest.FliesClient;
-import org.fedorahosted.flies.rest.client.DocumentResource;
-import org.fedorahosted.flies.rest.client.ProjectResource;
+import org.fedorahosted.flies.rest.client.IDocumentResource;
+import org.fedorahosted.flies.rest.client.IProjectResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.TextFlowTargets;
@@ -49,7 +49,7 @@ public class PublishPoFileTest {
 		
 		System.out.println("starting REST client");
 		FliesClient client = new FliesClient("http://localhost:8080/flies/seam/resource/restv1", "admin", "apikeyvalue");
-		DocumentResource docResource = client.getProjectsResource().
+		IDocumentResource docResource = client.getProjectsResource().
 		getProject("sample-project").
 		getIteration("1.0").
 		getDocuments().

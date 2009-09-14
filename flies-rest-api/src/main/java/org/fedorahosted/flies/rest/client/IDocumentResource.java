@@ -13,7 +13,7 @@ import org.fedorahosted.flies.rest.dto.Document;
 import org.jboss.resteasy.client.ClientResponse;
 
 //@Path("/d/{documentId}")
-public interface DocumentResource {
+public interface IDocumentResource {
 
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })

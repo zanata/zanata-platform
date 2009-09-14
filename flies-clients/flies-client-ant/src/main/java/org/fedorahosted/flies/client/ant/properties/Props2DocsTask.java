@@ -16,7 +16,7 @@ import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.adapter.properties.PropReader;
 import org.fedorahosted.flies.rest.FliesClientRequestFactory;
-import org.fedorahosted.flies.rest.client.DocumentsResource;
+import org.fedorahosted.flies.rest.client.IDocumentsResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Documents;
 
@@ -73,7 +73,7 @@ public class Props2DocsTask extends MatchingTask {
 	    } else {
 		// send project to rest api
 		FliesClientRequestFactory factory = new FliesClientRequestFactory(user, apiKey);
-		DocumentsResource documentsResource = factory.getDocumentsResource(dstURL.toURI());
+		IDocumentsResource documentsResource = factory.getDocumentsResource(dstURL.toURI());
 		Response response = documentsResource.put(docs);
 		Utility.checkResult(response, dstURL);
 	    }
