@@ -14,7 +14,6 @@ import javax.ws.rs.core.Response.Status;
 import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.flies.rest.ApiKeyHeaderDecorator;
 import org.fedorahosted.flies.rest.client.IProjectResource;
-import org.fedorahosted.flies.rest.client.IProjectsResource;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;

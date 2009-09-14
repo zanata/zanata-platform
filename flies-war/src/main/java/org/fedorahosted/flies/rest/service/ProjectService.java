@@ -41,21 +41,25 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.log.Log;
 
-@Name("projectResource")
-@Path("/projects")
+@Name("projectService")
+@Path("/projects/{projectSlug}")
 public class ProjectService{
 
+	@PathParam("projectSlug")
+	String projectSlug;
+	
 	@Logger
 	Log log;
 	
 	@In
 	ProjectDAO projectDAO;
 	
+	@In
+	Session session;
+	
 	@In 
 	AccountDAO accountDAO;
 	
-	@In
-	Session session;
 	
 	@Context
 	HttpServletResponse response;
@@ -64,10 +68,8 @@ public class ProjectService{
 	HttpServletRequest request;
 
 	@GET
-	@Path("/p/{projectSlug}")
 	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
-	public Project getProject(
-			@PathParam("projectSlug") String projectSlug) {
+	public Project get() {
 
 		HProject hProject = projectDAO.getBySlug(projectSlug);
 		if(hProject == null)
@@ -99,48 +101,10 @@ public class ProjectService{
 		return project;
 	}
 	
-	@GET
-	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECTS_XML, MediaType.APPLICATION_JSON })
-	public ProjectRefs getProjects() {
-		ProjectRefs projectRefs = new ProjectRefs();
-		
-		List<HProject> projects = session.createQuery("from HProject p").list();
-		
-		for(HProject hProject : projects){
-			Project project = 
-				new Project(hProject.getSlug(), hProject.getName(), hProject.getDescription());
-			projectRefs.getProjects().add( new ProjectRef( project ));
-		}
-		
-		return projectRefs;
-	}
-
-	@POST
-	@Path("/p/{projectSlug}")
-	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
-	@Restrict("#{identity.loggedIn}")
-	public Response updateProject(@PathParam("projectSlug") String projectSlug, Project project){
-			
-		HProject hProject = projectDAO.getBySlug(projectSlug);
-
-		if(hProject == null)
-			throw new WebApplicationException(Status.NOT_FOUND);
-
-		hProject.setName(project.getName());
-		hProject.setDescription(project.getDescription());
-		try{
-			session.flush();
-			return Response.ok().build();
-		}
-		catch(HibernateException e){
-			return Response.notAcceptable(null).build();
-		}
-	}
-	
 	@PUT
 	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
 	@Restrict("#{identity.loggedIn}")
-	public Response addProject(Project project) throws URISyntaxException{
+	public Response put(Project project) throws URISyntaxException{
 		
 		HProject hProject = projectDAO.getBySlug(project.getId());
 		if(hProject != null){
