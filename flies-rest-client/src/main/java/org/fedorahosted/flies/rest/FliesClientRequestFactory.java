@@ -32,104 +32,22 @@ public class FliesClientRequestFactory extends ClientRequestFactory {
 	}
 	
 	public DocumentResource getDocumentResource(URI uri) {
-		final DocumentResource documentResource = createProxy(DocumentResource.class);
-		return new DocumentResource() {
-			
-			@Override
-			public Response put(Document document) {
-				return documentResource.put(document);
-			}
-			
-			@Override
-			public ClientResponse<Document> get(String includeTargets) {
-				return documentResource.get(includeTargets);
-			}
-		};
+		return createProxy(DocumentResource.class, uri);
 	}
 
 	public DocumentsResource getDocumentsResource(final URI uri) {
-		final DocumentsResource documentsResource = createProxy(DocumentsResource.class, uri);
-		return new DocumentsResource() {
-			
-			@Override
-			public Response put(Documents documents) {
-				return documentsResource.put(documents);
-			}
-			
-			@Override
-			public Response post(Documents documents) {
-				return documentsResource.post(documents);
-			}
-			
-			@Override
-			public ClientResponse<Documents> getDocuments() {
-				return documentsResource.getDocuments();
-			}
-			
-			@Override
-			public DocumentResource getDocument(String documentId) {
-				return getDocumentResource(uri.resolve("d/"+documentId));
-			}
-		};
+		return createProxy(DocumentsResource.class, uri);
 	}
 
 	public ProjectIterationResource getProjectIterationResource(final URI uri) {
-		final ProjectIterationResource projectIterationResource =  createProxy(ProjectIterationResource.class, uri);
-		return new ProjectIterationResource() {
-			
-			@Override
-			public Response put(ProjectIteration project) {
-				return projectIterationResource.put(project);
-			}
-			
-			@Override
-			public DocumentsResource getDocuments() {
-				return getDocumentsResource(uri.resolve("documents"));
-			}
-			
-			@Override
-			public ClientResponse<ProjectIteration> get() {
-				return projectIterationResource.get();
-			}
-		};
+		return  createProxy(ProjectIterationResource.class, uri);
 	}
 
 	public ProjectResource getProjectResource(final URI uri) {
-		final ProjectResource projectResource =  createProxy(ProjectResource.class, uri);
-		return new ProjectResource() {
-			
-			@Override
-			public Response put(Project project) {
-				return projectResource.put(project);
-			}
-			
-			@Override
-			public ProjectIterationResource getIteration(String iterationSlug) {
-				return getProjectIterationResource(uri.resolve("iterations/i/"+iterationSlug));
-			}
-			
-			@Override
-			public ClientResponse<Project> get() {
-				return projectResource.get();
-			}
-		};
+		return createProxy(ProjectResource.class, uri);
 	}
 
 	public ProjectsResource getProjectsResource(final URI uri) {
-		final ProjectsResource projectsResource = createProxy(ProjectsResource.class, uri);
-		
-		return new ProjectsResource() {
-			
-			@Override
-			public ClientResponse<ProjectRefs> getProjects() {
-				return projectsResource.getProjects();
-			}
-			
-			@Override
-			public ProjectResource getProject(String projectSlug) {
-				return getProjectResource(uri.resolve("p/"+projectSlug));
-			}
-		};
-		
+		return createProxy(ProjectsResource.class, uri);
 	}
 }
