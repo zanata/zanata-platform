@@ -71,6 +71,7 @@ public class DocumentService {
 	}
 	
 	@PUT
+	@Path("/d/{documentId}")
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
 	@Restrict("#{identity.loggedIn}")
 	public Response addDocument(Document document) throws URISyntaxException {
