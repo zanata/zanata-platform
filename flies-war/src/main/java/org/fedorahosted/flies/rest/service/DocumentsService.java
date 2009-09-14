@@ -36,7 +36,7 @@ import org.jboss.seam.annotations.security.Restrict;
 
 @Name("documentService")
 @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/documents")
-public class DocumentService {
+public class DocumentsService {
 	
 	@PathParam("projectSlug")
 	private String projectSlug;
