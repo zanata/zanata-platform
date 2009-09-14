@@ -11,13 +11,17 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
+import org.fedorahosted.flies.core.dao.DocumentDAO;
 import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.dao.ProjectIterationDAO;
 import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.repository.model.HDocument;
+import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.repository.model.HResource;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Document;
@@ -48,6 +52,9 @@ public class DocumentService {
 	ProjectIterationDAO projectIterationDAO;
 	
 	@In
+	DocumentDAO documentDAO;
+	
+	@In
 	Session session;
 	
 	@GET
@@ -57,19 +64,18 @@ public class DocumentService {
 			@PathParam("documentId") String documentId,
 			@QueryParam("includeTargets") String includeTargets) {
 		
+		HProjectIteration hProjectIteration = getIterationOrFail();
+		String docId = convertToRealDocumentId(documentId);
+		
+		HDocument hDoc = documentDAO.getByDocId(hProjectIteration.getContainer(), docId);
+		
+		if(hDoc == null) {
+			throw new WebApplicationException(Status.NOT_FOUND);
+		}
+		
 		return null;
 	}
 
-	@POST
-	@Path("/d/{documentId}")
-	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
-	@Restrict("#{identity.loggedIn}")
-	public Response updateDocument(
-			@PathParam("documentId") String documentId,
-			Document document) {
-		return null;
-	}
-	
 	@PUT
 	@Path("/d/{documentId}")
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
@@ -130,22 +136,33 @@ public class DocumentService {
 	@PUT
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
 	public Response addDocuments(Documents documents) {
-	    // TODO
-	    return null;
+	    return Response.ok().build();
 	}
 
 	@GET
+	@Path("/all")
 	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
 	public Documents getAllDocuments() {
-	    // TODO
-	    return null;
+	    return new Documents();
 	}
 
-	@POST
+	@PUT
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
-	public Response replace(Documents documents) {
-	    // TODO
-	    return null;
+	public Response replaceDocuments(Documents documents) {
+	    return Response.ok().build();
 	}
 
+	
+	private HProjectIteration getIterationOrFail(){
+		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+		
+		if(hProjectIteration == null)
+			throw new NotFoundException("Project Iteration not found");
+		
+		return hProjectIteration;
+	}
+
+	private String convertToRealDocumentId(String uriId){
+		return uriId.replace(',', '/');
+	}
 }
