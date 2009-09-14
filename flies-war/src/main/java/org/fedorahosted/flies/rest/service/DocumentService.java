@@ -23,6 +23,7 @@ import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.DocumentRef;
 import org.fedorahosted.flies.rest.dto.DocumentRefs;
+import org.fedorahosted.flies.rest.dto.Documents;
 import org.fedorahosted.flies.rest.dto.Resource;
 import org.hibernate.Session;
 import org.jboss.resteasy.spi.NotFoundException;
@@ -98,7 +99,7 @@ public class DocumentService {
 	}
 
 	@GET
-	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
+	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENTREFS_XML, MediaType.APPLICATION_JSON })
 	public DocumentRefs getDocuments() {
 		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
 		
@@ -124,5 +125,26 @@ public class DocumentService {
 		
 		return documents;
 	}
-	
+
+	@PUT
+	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
+	public Response addDocuments(Documents documents) {
+	    // TODO
+	    return null;
+	}
+
+	@GET
+	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
+	public Documents getAllDocuments() {
+	    // TODO
+	    return null;
+	}
+
+	@POST
+	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
+	public Response replace(Documents documents) {
+	    // TODO
+	    return null;
+	}
+
 }
