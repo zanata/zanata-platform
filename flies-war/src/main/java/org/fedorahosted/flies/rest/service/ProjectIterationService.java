@@ -17,6 +17,7 @@ import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.dao.ProjectIterationDAO;
 import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.HProject;
+import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.core.model.HProjectSeries;
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
@@ -33,11 +34,14 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
 
 @Name("projectIterationService")
-@Path("/projects/p/{projectSlug}/iterations")
+@Path("/projects/p/{projectSlug}/iterations/{iterationSlug}")
 public class ProjectIterationService {
 
 	@PathParam("projectSlug")
 	private String projectSlug;
+
+	@PathParam("iterationSlug")
+	private String iterationSlug;
 
 	@In
 	ProjectDAO projectDAO;
@@ -49,11 +53,9 @@ public class ProjectIterationService {
 	Session session;
 	
 	@GET
-	@Path("/i/{iterationSlug}")
 	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML, MediaType.APPLICATION_JSON })
 	@Restrict("#{identity.loggedIn}")
-	public ProjectIteration getIteration (
-			@PathParam("iterationSlug") String iterationSlug){
+	public ProjectIteration get(){
 
 		org.fedorahosted.flies.core.model.HProjectIteration hProjectIteration = 
 			projectIterationDAO.getBySlug(projectSlug, iterationSlug);
@@ -91,36 +93,10 @@ public class ProjectIterationService {
 	}
 	
 
-	@POST
-	@Path("/i/{iterationSlug}")
-	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML, MediaType.APPLICATION_JSON })
-	@Restrict("#{identity.loggedIn}")
-	public Response updateIteration(
-			@PathParam("iterationSlug") String iterationSlug,
-			ProjectIteration projectIteraton){
-		org.fedorahosted.flies.core.model.HProjectIteration hProjectIteration = 
-			projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-		
-		if(hProjectIteration == null)
-			throw new NotFoundException("No such Project Iteration");
-		
-		hProjectIteration.setName(projectIteraton.getName());
-		hProjectIteration.setDescription(projectIteraton.getSummary());
-		
-		try{
-			session.flush();
-			return Response.ok().build();
-		}
-		catch(HibernateException e){
-			return Response.notAcceptable(null).build();
-		}		
-	}
-
 	@PUT
 	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML, MediaType.APPLICATION_JSON })
 	@Restrict("#{identity.loggedIn}")
-	public Response addIteration(
-			ProjectIteration projectIteration) throws URISyntaxException{
+	public Response put(ProjectIteration projectIteration){
 
 		org.fedorahosted.flies.core.model.HProjectIteration hProjectIteration = 
 			projectIterationDAO.getBySlug(projectSlug, projectIteration.getId());
@@ -143,7 +119,7 @@ public class ProjectIterationService {
 			hProjectIteration.setContainer(container);
 			hProjectIteration.setProjectSeries( (HProjectSeries) session.load(HProjectSeries.class, 1l));
 			session.save(hProjectIteration);
-			return Response.created( new URI("/i/"+hProjectIteration.getSlug()) ).build();
+			return Response.created( URI.create("/i/"+hProjectIteration.getSlug()) ).build();
 		}
 		catch(HibernateException e){
 			return Response.notAcceptable(null).build();
