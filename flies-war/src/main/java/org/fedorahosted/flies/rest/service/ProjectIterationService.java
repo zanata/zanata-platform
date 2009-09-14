@@ -30,6 +30,7 @@ import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.spi.NotFoundException;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.security.Restrict;
 
 @Name("projectIterationService")
 @Path("/projects/p/{projectSlug}/iterations")
@@ -50,6 +51,7 @@ public class ProjectIterationService {
 	@GET
 	@Path("/i/{iterationSlug}")
 	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML, MediaType.APPLICATION_JSON })
+	@Restrict("#{identity.loggedIn}")
 	public ProjectIteration getIteration (
 			@PathParam("iterationSlug") String iterationSlug){
 
@@ -92,6 +94,7 @@ public class ProjectIterationService {
 	@POST
 	@Path("/i/{iterationSlug}")
 	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML, MediaType.APPLICATION_JSON })
+	@Restrict("#{identity.loggedIn}")
 	public Response updateIteration(
 			@PathParam("iterationSlug") String iterationSlug,
 			ProjectIteration projectIteraton){
@@ -115,6 +118,7 @@ public class ProjectIterationService {
 
 	@PUT
 	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML, MediaType.APPLICATION_JSON })
+	@Restrict("#{identity.loggedIn}")
 	public Response addIteration(
 			ProjectIteration projectIteration) throws URISyntaxException{
 

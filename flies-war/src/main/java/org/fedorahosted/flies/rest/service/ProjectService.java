@@ -66,7 +66,6 @@ public class ProjectService{
 	@GET
 	@Path("/p/{projectSlug}")
 	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
-	@Restrict("#{identity.loggedIn}")
 	public Project getProject(
 			@PathParam("projectSlug") String projectSlug) {
 
@@ -102,7 +101,6 @@ public class ProjectService{
 	
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECTS_XML, MediaType.APPLICATION_JSON })
-	@Restrict("#{s:hasRole('admin')}")
 	public ProjectRefs getProjects() {
 		ProjectRefs projectRefs = new ProjectRefs();
 		
@@ -120,6 +118,7 @@ public class ProjectService{
 	@POST
 	@Path("/p/{projectSlug}")
 	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
+	@Restrict("#{identity.loggedIn}")
 	public Response updateProject(@PathParam("projectSlug") String projectSlug, Project project){
 			
 		HProject hProject = projectDAO.getBySlug(projectSlug);
@@ -140,6 +139,7 @@ public class ProjectService{
 	
 	@PUT
 	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
+	@Restrict("#{identity.loggedIn}")
 	public Response addProject(Project project) throws URISyntaxException{
 		
 		HProject hProject = projectDAO.getBySlug(project.getId());

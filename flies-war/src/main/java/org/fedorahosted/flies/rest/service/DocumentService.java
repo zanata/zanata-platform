@@ -28,6 +28,7 @@ import org.hibernate.Session;
 import org.jboss.resteasy.spi.NotFoundException;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.security.Restrict;
 
 @Name("documentService")
 @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/documents")
@@ -61,6 +62,7 @@ public class DocumentService {
 	@POST
 	@Path("/d/{documentId}")
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
+	@Restrict("#{identity.loggedIn}")
 	public Response updateDocument(
 			@PathParam("documentId") String documentId,
 			Document document) {
@@ -69,6 +71,7 @@ public class DocumentService {
 	
 	@PUT
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
+	@Restrict("#{identity.loggedIn}")
 	public Response addDocument(Document document) throws URISyntaxException {
 		
 		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
