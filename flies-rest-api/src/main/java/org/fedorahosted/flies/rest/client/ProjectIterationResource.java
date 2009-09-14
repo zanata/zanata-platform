@@ -26,6 +26,6 @@ public interface ProjectIterationResource{
 	public Response put(
 			ProjectIteration project);
 	
-	@Path("/documents")
+	//@Path("/documents")
 	public DocumentsResource getDocuments();
 }

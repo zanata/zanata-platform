@@ -13,12 +13,12 @@ import org.jboss.resteasy.client.ClientResponse;
 @Path("/projects")
 public interface ProjectsResource {
 
-    	@GET
+	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECTS_XML, MediaType.APPLICATION_JSON })
 	public ClientResponse<ProjectRefs> getProjects();
 	
     	
 //    	@Path("/p/{projectSlug}")
 	public ProjectResource getProject(
-		@PathParam("projectSlug") String projectSlug);
+		/*@PathParam("projectSlug")*/ String projectSlug);
 }

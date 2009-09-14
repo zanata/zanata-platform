@@ -16,7 +16,7 @@ import org.jboss.resteasy.client.ClientResponse;
 
 public interface DocumentsResource {
 
-	@Path("/d/{documentId}")
+	//@Path("/d/{documentId}")
 	public DocumentResource getDocument(@PathParam("documentId") String documentId);
 
 
