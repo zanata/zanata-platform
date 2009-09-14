@@ -1,8 +1,5 @@
 package org.fedorahosted.flies.rest.service;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -10,31 +7,20 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
 import org.fedorahosted.flies.core.dao.DocumentDAO;
 import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.dao.ProjectIterationDAO;
-import org.fedorahosted.flies.core.model.HProjectIteration;
-import org.fedorahosted.flies.repository.model.HDocument;
-import org.fedorahosted.flies.repository.model.HResource;
 import org.fedorahosted.flies.rest.MediaTypes;
-import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.DocumentRef;
-import org.fedorahosted.flies.rest.dto.DocumentRefs;
 import org.fedorahosted.flies.rest.dto.Documents;
-import org.fedorahosted.flies.rest.dto.Resource;
 import org.hibernate.Session;
-import org.jboss.resteasy.spi.NotFoundException;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
 
-@Name("documentService")
+@Name("documentsService")
 @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/documents")
 public class DocumentsService {
 	
@@ -56,52 +42,23 @@ public class DocumentsService {
 	@In
 	Session session;
 
-	@GET
-	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENTREFS_XML, MediaType.APPLICATION_JSON })
-	public DocumentRefs getDocumentRefs() {
-		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-		
-		if(hProjectIteration == null)
-			throw new NotFoundException("No such Project Iteration");
-		
-		DocumentRefs documents = new DocumentRefs();
-
-		for(HDocument doc : hProjectIteration.getContainer().getDocuments() ){
-			documents.getDocuments().add( 
-					new DocumentRef(
-							new Document(
-									doc.getDocId(),
-									doc.getName(),
-									doc.getPath(),
-									doc.getContentType(),
-									doc.getRevision(),
-									doc.getLocale()
-									)
-							)
-					);
-		}
-		
-		return documents;
-	}
-
 	@POST
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
 	@Restrict("#{identity.loggedIn}")
-	public Response addDocuments(Documents documents) {
+	public Response post(Documents documents) {
 	    return Response.ok().build();
 	}
 
 	@GET
-	@Path("/all")
 	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
-	public Documents getDocuments() {
+	public Documents get() {
 	    return new Documents();
 	}
 
 	@PUT
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
 	@Restrict("#{identity.loggedIn}")
-	public Response replace(Documents documents) {
+	public Response put(Documents documents) {
 	    return Response.ok().build();
 	}
 }

@@ -5,7 +5,6 @@ import java.net.URISyntaxException;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -24,9 +23,6 @@ import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HResource;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.DocumentRef;
-import org.fedorahosted.flies.rest.dto.DocumentRefs;
-import org.fedorahosted.flies.rest.dto.Documents;
 import org.fedorahosted.flies.rest.dto.Resource;
 import org.hibernate.Session;
 import org.jboss.resteasy.spi.NotFoundException;

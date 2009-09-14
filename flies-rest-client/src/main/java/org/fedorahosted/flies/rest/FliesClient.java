@@ -4,12 +4,10 @@ package org.fedorahosted.flies.rest;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.fedorahosted.flies.rest.client.DocumentResource;
+import org.fedorahosted.flies.rest.client.DocumentsResource;
 import org.fedorahosted.flies.rest.client.ProjectIterationResource;
 import org.fedorahosted.flies.rest.client.ProjectResource;
-import org.jboss.resteasy.client.ProxyFactory;
-import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
-import org.jboss.resteasy.spi.ResteasyProviderFactory;
+import org.fedorahosted.flies.rest.client.ProjectsResource;
 
 public class FliesClient {
 
@@ -22,21 +20,28 @@ public class FliesClient {
 		this.apiKey = apiKey;
 		clientRequestFactory = new FliesClientRequestFactory(username, apiKey);
 	}
-		
-	public ProjectResource getProjectResource(){
-		return clientRequestFactory.getProjectResource(baseUri);
-	}
 	
-	public ProjectIterationResource getProjectIterationResource(String projectSlug){
-		URI resolvedUri = ProxyFactory.createUri(baseUri.toString() + "/projects/p/" + projectSlug + "/iterations");
-		return clientRequestFactory.getProjectIterationResource(resolvedUri);
+	public ProjectsResource getProjectsResource() {
+	    return clientRequestFactory.getProjectsResource(baseUri);
 	}
-	
-	public DocumentResource getDocumentResource(String projectSlug, String iterationSlug){
-		URI resolvedUri = ProxyFactory.createUri(baseUri.toString() + "/projects/p/" + projectSlug + "/iterations/i/" + iterationSlug + "/documents");
-		return clientRequestFactory.getDocumentResource(resolvedUri); 
-	}
-	
+//		
+//	public ProjectResource getProjectResource(String projectSlug) {
+////		return clientRequestFactory.getProjectResource(baseUri);
+//	    return getProjectsResource().getProject(projectSlug);
+//	}
+////	
+//	public ProjectIterationResource getProjectIterationResource(String projectSlug, String iterationSlug){
+////		URI resolvedUri = ProxyFactory.createUri(baseUri.toString() + "/projects/p/" + projectSlug + "/iterations");
+////		return clientRequestFactory.getProjectIterationResource(resolvedUri);
+//	    return getProjectResource(projectSlug).getIteration(iterationSlug);
+//	}
+////	
+//	public DocumentsResource getDocumentResource(String projectSlug, String iterationSlug){
+////		URI resolvedUri = ProxyFactory.createUri(baseUri.toString() + "/projects/p/" + projectSlug + "/iterations/i/" + iterationSlug + "/documents");
+////		return clientRequestFactory.getDocumentResource(resolvedUri); 
+//	    return getProjectIterationResource(projectSlug, iterationSlug).getDocuments();
+//	}
+//	
 	public URI getBaseUri() {
 		return baseUri;
 	}

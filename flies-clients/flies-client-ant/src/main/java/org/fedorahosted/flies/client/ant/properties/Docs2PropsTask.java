@@ -11,7 +11,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.taskdefs.MatchingTask;
 import org.fedorahosted.flies.adapter.properties.PropWriter;
 import org.fedorahosted.flies.rest.FliesClientRequestFactory;
-import org.fedorahosted.flies.rest.client.DocumentResource;
+import org.fedorahosted.flies.rest.client.DocumentsResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Documents;
 import org.jboss.resteasy.client.ClientResponse;
@@ -42,8 +42,8 @@ public class Docs2PropsTask extends MatchingTask {
 	    } else {
 		// use rest api to fetch Documents
 		FliesClientRequestFactory factory = new FliesClientRequestFactory(user, apiKey);
-		DocumentResource documentResource = factory.getDocumentResource(srcURL.toURI());
-		ClientResponse<Documents> response  = documentResource.getDocuments();
+		DocumentsResource documentsResource = factory.getDocumentsResource(srcURL.toURI());
+		ClientResponse<Documents> response  = documentsResource.getDocuments();
 		
 		Utility.checkResult(response, srcURL);
 		docList = response.getEntity().getDocuments();
