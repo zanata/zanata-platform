@@ -33,7 +33,7 @@ public class ProjectsServiceSeamTest extends DBUnitSeamTest {
 		RegisterBuiltin.register(instance);
 
 		clientRequestFactory = new ClientRequestFactory(
-				new SeamMockClientExecutor(this), new URI("/restv1/projects"));
+				new SeamMockClientExecutor(this), new URI("/restv1/"));
 
 		clientRequestFactory.getPrefixInterceptors().registerInterceptor(
 				new ApiKeyHeaderDecorator("admin",
