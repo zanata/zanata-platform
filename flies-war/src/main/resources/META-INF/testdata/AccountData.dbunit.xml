@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<dataset>
+	<HAccount id="1"
+          	  creationDate="2009-01-14 11:39:00"
+                  lastChanged="2009-01-14 11:39:00"
+                  apiKey="12345678901234567890123456789012"
+                  enabled="TRUE"
+                  passwordHash="Eyox7xbNQ09MkIfRyH+rjg=="
+                  username="admin"
+        />
+        <HAccount id="2" 
+                  creationDate="2009-01-14 11:39:00"
+                  lastChanged="2009-01-14 11:39:00"
+                  apiKey="23456789012345678901234567890123"
+                  enabled="TRUE"
+                  passwordHash="/9Se/pfHeUH8FJ4asBD6jQ=="
+                  username="demo"
+        />
+        <HAccount id="3"
+                  creationDate="2009-01-14 11:39:00"
+                  lastChanged="2009-01-14 11:39:00"
+                  apiKey="34567890123456789012345678901234"
+                  enabled="TRUE"
+                  passwordHash="pQRgEKG97HuyCfeoOR69Sg=="
+                  username="bob"
+        />
+        
+        <HAccountRole id="1"
+                      conditional="FALSE"
+                      name="admin"
+        />
+        <HAccountRole id="2"
+                      conditional="FALSE" 
+                      name="user"
+        />
+
+        <HAccountMembership accountId="1" 
+                            memberOf="1"
+        />
+        <HAccountMembership accountId="2" 
+                            memberOf="2"
+        />
+        <HAccountMembership accountId="3"
+                            memberOf="2"
+        />
+	
+        <HAccountRoleGroup roleId="1" 
+                           memberOf="2"
+        />
+
+        <HPerson id="1"
+                 creationDate="2009-01-14 11:39:00"
+                 lastChanged="2009-01-14 11:39:00"
+                 email="asgeirf@localhost"
+                 name="Administrator"
+                 accountId="1"
+        />
+        <HPerson id="2"
+                 creationDate="2009-01-14 11:39:00"
+                 lastChanged="2009-01-14 11:39:00"
+                 email="asgeirf@localhost"
+                 name="Sample User"
+                 accountId="2"
+        />
+        <HPerson id="3"
+                 creationDate="2009-01-14 11:39:00"
+                 lastChanged="2009-01-14 11:39:00"
+                 email="asgeirf@localhost"
+                 name="Bob Translator"
+                 accountId="3"
+	/>
+</dataset>
