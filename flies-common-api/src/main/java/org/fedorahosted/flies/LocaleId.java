@@ -20,6 +20,8 @@ public final class LocaleId implements Serializable{
 	public LocaleId(String localeId) {
 		if(localeId == null)
 			throw new IllegalArgumentException("localeId");
+		if(localeId.indexOf('_') != -1)
+			throw new IllegalArgumentException("expected lang[-country[-modifier]], got " + localeId);
 		this.id = localeId.intern();
 	}
 	
