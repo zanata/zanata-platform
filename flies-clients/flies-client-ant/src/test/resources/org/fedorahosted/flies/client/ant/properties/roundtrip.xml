@@ -1,0 +1,23 @@
+<project>
+	<target name="_roundtrip">
+		<delete dir="${out.dir}/test3a"/>
+		<delete dir="${out.dir}/test3b"/>
+		<mkdir dir="${out.dir}/test3a"/>
+		<props2docs 
+			user="bob"
+			apiKey="${bob.key}"
+			dst="${docsUrl}" 
+			srcDir="test1" 
+			sourceLang="en_US" 
+			locales="de,fr" 
+			debug="false" />
+		<docs2props 
+			user="bob"
+			apiKey="${bob.key}"
+			src="${docsUrl}" 
+			dstDir="${out.dir}/test3b" 
+			debug="true" />
+		<verifyprop dir1="test1" dir2="${out.dir}/test3b" />
+	</target>
+	
+</project>
