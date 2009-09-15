@@ -112,43 +112,43 @@
                       parentId="[NULL]"
         />
 	<HFliesLocale id="bn-IN"
-                      icuLocaleId="bn-IN"
+                      icuLocaleId="bn_IN"
                       parentId="[NULL]"
         />
 	<HFliesLocale id="de-DE"
-                      icuLocaleId="de-DE"
+                      icuLocaleId="de_DE"
                       parentId="[NULL]"
         />
-	<HFliesLocale id="en_US"
+	<HFliesLocale id="en-US"
                       icuLocaleId="en_US"
                       parentId="[NULL]"
         />	
 	<HFliesLocale id="es-ES"
-                      icuLocaleId="es-ES"
+                      icuLocaleId="es_ES"
                       parentId="[NULL]"
         />
         <HFliesLocale id="fr-FR"
-                      icuLocaleId="fr-FR"
+                      icuLocaleId="fr_FR"
                       parentId="[NULL]"
         />
         <HFliesLocale id="gu-IN"
-                      icuLocaleId="gu-IN"
+                      icuLocaleId="gu_IN"
                       parentId="[NULL]"
         />
         <HFliesLocale id="hi-IN" 
                       icuLocaleId="hi_IN"
                       parentId="[NULL]"
         />
-        <HFliesLocale id="it_IT"
+        <HFliesLocale id="it-IT"
                       icuLocaleId="it_IT"
                       parentId="[NULL]" 
         />
         <HFliesLocale id="ja-JP"
-                      icuLocaleId="ja-JP"
+                      icuLocaleId="ja_JP"
                       parentId="[NULL]"
         />
         <HFliesLocale id="kn-IN"
-                      icuLocaleId="kn-IN"
+                      icuLocaleId="kn_IN"
                       parentId="[NULL]"
         />
         <HFliesLocale id="ko-KR"
@@ -180,15 +180,15 @@
                       parentId="[NULL]"
         />
         <HFliesLocale id="si-LK"
-                      icuLocaleId="si-LK"
+                      icuLocaleId="si_LK"
                       parentId="[NULL]"
         />
         <HFliesLocale id="ta-IN"
-                      icuLocaleId="ta-IN"
+                      icuLocaleId="ta_IN"
                       parentId="[NULL]"
         />
         <HFliesLocale id="te-IN" 
-                       icuLocaleId="te-IN" 
+                       icuLocaleId="te_IN" 
                        parentId="[NULL]"
 	/>
         <HFliesLocale id="zh-CN" 
