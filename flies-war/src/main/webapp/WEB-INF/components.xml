@@ -231,7 +231,7 @@
   <component class="org.fedorahosted.flies.util.DBUnitImporter" installed="true">
     <property name="database">hsql</property>
     <property name="datasourceJndiName">java:/fliesDatasource</property>
-    <property name="binaryDir">META-INF/testfiles</property>
+    <property name="binaryDir">META-INF/testdata</property>
     <property name="datasets">
         <value>META-INF/testdata/DemoData.dbunit.xml</value>
     </property>
