@@ -26,8 +26,8 @@ public class ProjectsResource implements IProjectsResource{
 	}
 
 	@Override
-	public ClientResponse<ProjectRefs> getProjects() {
-		return projectsResource.getProjects();
+	public ClientResponse<ProjectRefs> get() {
+		return projectsResource.get();
 	}
 	
 

@@ -52,7 +52,7 @@ public class ProjectsServiceSeamTest extends DBUnitSeamTest {
 	}
 
 	public void retrieveListofProjects() throws Exception {
-		ClientResponse<ProjectRefs> response = projectService.getProjects();
+		ClientResponse<ProjectRefs> response = projectService.get();
 
 		assertThat(response.getStatus(), is(200));
 		assertThat(response.getEntity(), notNullValue());
