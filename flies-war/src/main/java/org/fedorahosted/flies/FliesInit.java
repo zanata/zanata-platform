@@ -61,10 +61,10 @@ public class FliesInit {
 	public void initFlies() throws Exception {
 		log.info(">>>>>>>>>>>> Starting Flies...");
 
-		if (dbunitImporter != null) {
-			log.info("Importing development test data");
-			dbunitImporter.importDatasets();
-		}
+//		if (dbunitImporter != null) {
+//			log.info("Importing development test data");
+//			dbunitImporter.importDatasets();
+//		}
 
 		if (hibernateStatistics) {
 			log.info("registering Hibernate statistics MBean");
