@@ -15,31 +15,10 @@
 			src="test2/documents.xml" dstDir="${out.dir}/test2" debug="true" />
 	</target>
 
-	<target name="_roundtrip">
-		<delete dir="${out.dir}/test3a"/>
-		<delete dir="${out.dir}/test3b"/>
-		<mkdir dir="${out.dir}/test3a"/>
-		<props2docs 
-			user="bob"
-			apiKey="${bob.key}"
-			dst="${docsUrl}" 
-			srcDir="test1" 
-			sourceLang="en_US" 
-			locales="de,fr" 
-			debug="false" />
-		<docs2props 
-			user="bob"
-			apiKey="${bob.key}"
-			src="${docsUrl}" 
-			dstDir="${out.dir}/test3b" 
-			debug="true" />
-		<verifyprop dir1="test1" dir2="${out.dir}/test3b" />
-	</target>
-	
 	<target name="roundtriplocal">
-		<antcall target="_roundtrip">
-			<param name="docsUrl" value="${out.dir}/test3a/project.xml" />
-		</antcall>
+		<ant antfile="roundtrip.xml" target="_roundtrip">
+			<property name="docsUrl" value="${out.dir}/test3a/project.xml" />
+		</ant>
 	</target>
 	
 	<property name="fliesUrl" value="http://localhost:8080/flies"/>
@@ -47,11 +26,11 @@
 	<property name="iter" value="1.1"/>
 
 	<target name="roundtripremote">
-		<antcall target="_roundtrip">
-			<param 
+		<ant antfile="roundtrip.xml" target="_roundtrip">
+			<property 
 				name="docsUrl" 
 				value="${fliesUrl}/seam/resource/restv1/projects/p/${proj}/iterations/i/${iter}/documents" />
-		</antcall>
+		</ant>
 	</target>
 
 
