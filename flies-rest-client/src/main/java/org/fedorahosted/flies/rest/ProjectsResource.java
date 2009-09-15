@@ -19,7 +19,7 @@ public class ProjectsResource implements IProjectsResource{
 		this.uri = uri;
 	}
 	
-	public ProjectResource getProject(String projectSlug) {
+	public ProjectResource getProjectResource(String projectSlug) {
 		URI uri = this.uri.resolve("projects/p/"+projectSlug);
 		IProjectResource projectResource = requestFactory.getProjectResource(uri);
 		return new ProjectResource(requestFactory, projectResource, uri);

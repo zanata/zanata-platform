@@ -50,10 +50,10 @@ public class PublishPoFileTest {
 		System.out.println("starting REST client");
 		FliesClient client = new FliesClient("http://localhost:8080/flies/seam/resource/restv1", "admin", "apikeyvalue");
 		IDocumentResource docResource = client.getProjectsResource().
-		getProject("sample-project").
-		getIteration("1.0").
-		getDocuments().
-		getDocument(doc.getId());
+		getProjectResource("sample-project").
+		getIterationResource("1.0").
+		getDocumentsResource().
+		getDocumentResource(doc.getId());
 
 		System.out.println("Publishing document");
 		Response response = docResource.put(doc);

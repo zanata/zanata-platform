@@ -22,7 +22,7 @@ public class DocumentsResource implements IDocumentsResource{
 		this.uri = uri;
 	}
 	
-	public DocumentResource getDocument(String documentId) {
+	public DocumentResource getDocumentResource(String documentId) {
 		URI uri = this.uri.resolve("d/"+documentId);
 		IDocumentResource documentResource = requestFactory.getDocumentResource(uri);
 		return new DocumentResource(requestFactory, documentResource, uri);

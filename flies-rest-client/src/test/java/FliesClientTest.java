@@ -26,19 +26,19 @@ public class FliesClientTest {
 		
 		ProjectsResource projectsResource = client.getProjectsResource();
 		
-		ClientResponse<Project> projectResponse = projectsResource.getProject("sample-project").get();
+		ClientResponse<Project> projectResponse = projectsResource.getProjectResource("sample-project").get();
 		
 		if (projectResponse.getResponseStatus().getStatusCode() < 399) {
 			Project p = projectResponse.getEntity();
 			System.out.println( p.getName() );
 			p.getIterations().clear();
 			p.setName( "replaced "+ p.getName());
-			Response r = projectsResource.getProject("myproject").put(p);
+			Response r = projectsResource.getProjectResource("myproject").put(p);
 			System.out.println("Completed with status: " + r.getStatus());
 			
 			for (int i = 1; i < 21; i++) {
 				p = new Project("myxproject-"+i, "Project #"+i, "Sample Description #"+i);
-				r = projectsResource.getProject(p.getId()).put(p);
+				r = projectsResource.getProjectResource(p.getId()).put(p);
 				Status s = Status.fromStatusCode(r.getStatus());
 				if(Status.CREATED == s ) {
 					System.out.println("Created project " + i);
@@ -49,13 +49,13 @@ public class FliesClientTest {
 				
 				ProjectResource projectResource = 
 				    client.getProjectsResource().
-				    getProject(p.getId());
+				    getProjectResource(p.getId());
 				for (int j = 1; j < 3; j++) {
 					ProjectIteration pIt = new ProjectIteration();
 					pIt.setId("iteration-"+j);
 					pIt.setName("Project Iteration #"+j);
 					pIt.setSummary("A sample Iteration #"+j);
-					r = projectResource.getIteration(pIt.getId()).put(pIt);
+					r = projectResource.getIterationResource(pIt.getId()).put(pIt);
 					s = Status.fromStatusCode(r.getStatus());
 					if(Status.CREATED == s ) {
 						System.out.println("  Iteration Created: " + j);
@@ -70,9 +70,9 @@ public class FliesClientTest {
 					
 					DocumentsResource documentResource = 
 					    client.getProjectsResource().
-					    getProject(p.getId()).
-					    getIteration(pIt.getId()).
-					    getDocuments();
+					    getProjectResource(p.getId()).
+					    getIterationResource(pIt.getId()).
+					    getDocumentsResource();
 					
 					for (int k = 0; k < documentIds.length; k++) {
 						Document doc = new Document(documentIds[k], ContentType.TextPlain);
@@ -81,7 +81,7 @@ public class FliesClientTest {
 						tf.setContent("Hello World");
 						doc.getResources().add(tf);
 						
-						r = documentResource.getDocument(doc.getId()).put(doc);
+						r = documentResource.getDocumentResource(doc.getId()).put(doc);
 						s = Status.fromStatusCode(r.getStatus());
 						if(Status.CREATED == s ) {
 							System.out.println("    Document Created: " + documentIds[k]);

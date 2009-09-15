@@ -27,7 +27,7 @@ public class ProjectIterationResource implements IProjectIterationResource{
 		return projectIterationResource.get();
 	}
 
-	public DocumentsResource getDocuments() {
+	public DocumentsResource getDocumentsResource() {
 		URI uri = this.uri.resolve("documents");
 		IDocumentsResource documentsResource = requestFactory.getDocumentsResource(uri);
 		return new DocumentsResource(requestFactory, documentsResource, uri);
