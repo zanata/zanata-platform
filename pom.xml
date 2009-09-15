@@ -36,7 +36,7 @@
         <artifactId>maven-eclipse-plugin</artifactId>
         <configuration>
           <downloadSources>true</downloadSources>
-          <downloadJavadocs>true</downloadJavadocs>
+          <downloadJavadocs>false</downloadJavadocs>
         </configuration>
       </plugin>
     </plugins>
