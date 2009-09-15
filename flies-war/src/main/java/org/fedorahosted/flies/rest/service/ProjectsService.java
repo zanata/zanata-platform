@@ -8,18 +8,19 @@ import javax.ws.rs.core.MediaType;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.ProjectRefs;
 import org.jboss.seam.Component;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 
 @Name("projectsService")
 @Path("/projects")
 public class ProjectsService {
 
+	@In ProjectsServiceAction projectsServiceAction;
+	
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECTS_XML, MediaType.APPLICATION_JSON })
 	public ProjectRefs get() {
 
-		// Delegate to hot deployed component
-		ProjectsServiceAction impl = (ProjectsServiceAction) Component.getInstance("projectsServiceAction");
-		return impl.get();
+		return projectsServiceAction.get();
 	}
 }
