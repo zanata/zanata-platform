@@ -26,7 +26,7 @@
     <app.ds.xml>${app.context}-ds.xml</app.ds.xml>
 
     <!-- Developer environment properties. Can be modified by developer in "profiles.xml" -->
-    <env>prod</env>
+    <env>dev</env>
     <env.debug>true</env.debug>
     <env.hibernate.hbm2ddl.auto>create-drop</env.hibernate.hbm2ddl.auto>
     <env.hibernate.show_sql>true</env.hibernate.show_sql>
@@ -190,6 +190,9 @@
       <resource>
         <directory>src/main/resources</directory>
         <filtering>true</filtering> <!-- filtering persistence.xml -->
+      </resource>
+      <resource>
+        <directory>src/main/webapp</directory>
       </resource>
     </resources>
         

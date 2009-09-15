@@ -1,1 +1,7 @@
+# By default, we hot deploy all Action classes
 **/action/*.class
+
+# RestEasy doesn't support hot deployment, so leaving this out for now
+# **/rest/service/*Service.class
+
+**/rest/service/*ActionImpl.class
