@@ -41,24 +41,37 @@ public class DocumentsService {
 	
 	@In
 	Session session;
+	
+	@In("DocumentsServiceActionImpl")
+	DocumentsServiceAction impl;
 
 	@POST
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
 	@Restrict("#{identity.loggedIn}")
 	public Response post(Documents documents) {
+	    impl.post(documents);
 	    return Response.ok().build();
 	}
 
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
 	public Documents get() {
-	    return new Documents();
+	    return impl.get();
 	}
 
 	@PUT
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
 	@Restrict("#{identity.loggedIn}")
 	public Response put(Documents documents) {
+	    impl.put(documents);
 	    return Response.ok().build();
+	}
+	
+	public String getProjectSlug() {
+	    return projectSlug;
+	}
+	
+	public String getIterationSlug() {
+	    return iterationSlug;
 	}
 }
