@@ -18,7 +18,7 @@ import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
 	})
 	@XmlRootElement(name="projects", namespace=Namespaces.PROJECT)
 	@XmlType(name="projectsRefsType", namespace=Namespaces.PROJECT)
-public class ProjectRefs {
+public class ProjectInlineList {
 
 	private List<ProjectInline> projects;
 	
