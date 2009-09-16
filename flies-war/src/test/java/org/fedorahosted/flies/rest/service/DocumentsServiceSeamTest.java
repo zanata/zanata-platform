@@ -90,6 +90,7 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 	}
 	
 	public void putGet() throws Exception {
+	    getZero();
 	    putDoc1();
 	    expectDocs(1);
 	}
@@ -97,6 +98,7 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 
 	
 	public void putPostGet() throws Exception {
+	    getZero();
 	    putDoc1();
 	    expectDocs(1);
 	    postDoc2();
