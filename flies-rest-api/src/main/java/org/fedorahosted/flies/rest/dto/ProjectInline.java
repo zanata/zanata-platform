@@ -9,15 +9,15 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlRootElement(name="project", namespace=Namespaces.DOCUMENT)
 @XmlType(name="projectRefType", namespace=Namespaces.DOCUMENT)
-public class ProjectRef extends AbstractProject{
+public class ProjectInline extends AbstractProject{
 	
 	private Project ref;
 	
-	private ProjectRef(){
+	private ProjectInline(){
 		super();
 	}
 	
-	public ProjectRef(Project project) {
+	public ProjectInline(Project project) {
 		super(project);
 		this.ref = project;
 	}

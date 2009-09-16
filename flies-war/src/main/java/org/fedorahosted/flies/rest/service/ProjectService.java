@@ -31,7 +31,7 @@ import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.fedorahosted.flies.rest.dto.ProjectIterationInline;
-import org.fedorahosted.flies.rest.dto.ProjectRef;
+import org.fedorahosted.flies.rest.dto.ProjectInline;
 import org.fedorahosted.flies.rest.dto.ProjectRefs;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;

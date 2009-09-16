@@ -15,7 +15,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.fedorahosted.flies.rest.MediaTypes;
-import org.fedorahosted.flies.rest.dto.ProjectRef;
+import org.fedorahosted.flies.rest.dto.ProjectInline;
 import org.fedorahosted.flies.rest.dto.ProjectRefs;
 import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
 import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
@@ -86,7 +86,7 @@ public class ProjectServiceRawSeamTest extends SeamTest{
 				
 				assertThat( projectRefs.getProjects().size(), is(1) );
 				
-				ProjectRef projectRef = projectRefs.getProjects().get(0);
+				ProjectInline projectRef = projectRefs.getProjects().get(0);
 				assertThat( projectRef.getName(), is("Sample Project"));
 			}
 

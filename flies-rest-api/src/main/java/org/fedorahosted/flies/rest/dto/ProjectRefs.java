@@ -20,12 +20,12 @@ import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
 	@XmlType(name="projectsRefsType", namespace=Namespaces.PROJECT)
 public class ProjectRefs {
 
-	private List<ProjectRef> projects;
+	private List<ProjectInline> projects;
 	
 	@XmlElement(name="project", namespace=Namespaces.PROJECT)
-	public List<ProjectRef> getProjects() {
+	public List<ProjectInline> getProjects() {
 		if(projects == null){
-			projects = new ArrayList<ProjectRef>();
+			projects = new ArrayList<ProjectInline>();
 		}
 		return projects;
 	}
