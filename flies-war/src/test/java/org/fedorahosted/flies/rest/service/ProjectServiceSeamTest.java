@@ -122,7 +122,23 @@ public class ProjectServiceSeamTest extends DBUnitSeamTest {
 	}
 
 	public void updateProject() {
-		fail("Not implemented");
+		Project project = new Project("sample-project", "My Project Update", "Update project");
+		
+		URI uri = baseUri.resolve("sample-project");
+		projectService = clientRequestFactory.createProxy(IProjectResource.class, uri);
+		
+		Response response = projectService.post(project);
+				
+		assertThat( response.getStatus(), is( Status.ACCEPTED.getStatusCode()));
+		
+		ClientResponse<Project> projectResponse = projectService.get();
+		
+		assertThat( projectResponse.getStatus(), is( Status.OK.getStatusCode()));
+		
+		project = projectResponse.getEntity();
+		
+		assertThat( project.getName(), is("My Project Update"));
+		assertThat( project.getDescription(), is("Update project"));
 	}
 	
 	public void deleteProject(){

@@ -2,6 +2,7 @@ package org.fedorahosted.flies.rest.client;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -23,6 +24,10 @@ public interface IProjectResource {
 	@PUT
 	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
 	public Response put(Project project);
+	
+	@POST
+	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
+	public Response post(Project project);
 
 //	@Path("/iterations/i/{iterationSlug}")
 //	public IProjectIterationResource getIteration(
