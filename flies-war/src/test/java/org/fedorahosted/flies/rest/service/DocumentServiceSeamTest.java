@@ -22,7 +22,7 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
 
-@Test(groups={"seam-tests"},suiteName="DocumentService", sequential=true)
+@Test(groups={"seam-tests"},suiteName="DocumentService")
 public class DocumentServiceSeamTest extends DBUnitSeamTest{
 	
 	ClientRequestFactory clientRequestFactory;
