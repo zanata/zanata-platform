@@ -13,7 +13,7 @@ import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
-import org.fedorahosted.flies.rest.service.FliesRestSecurityInterceptor;
+import org.fedorahosted.flies.rest.FliesRestSecurityInterceptor;
 import org.fedorahosted.flies.util.DBUnitImporter;
 import org.hibernate.jmx.StatisticsService;
 import org.jboss.resteasy.core.Dispatcher;
