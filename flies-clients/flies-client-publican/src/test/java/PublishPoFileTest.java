@@ -26,6 +26,7 @@ import org.fedorahosted.flies.rest.dto.po.PotEntryData;
 import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.internal.runners.statements.Fail;
 import org.xml.sax.InputSource;
@@ -33,6 +34,7 @@ import org.xml.sax.InputSource;
 public class PublishPoFileTest {
 	
 	@Test
+	@Ignore("relies on a server and should really be an integration test...")
 	public void publishASinglePOfile() throws IOException, JAXBException, URISyntaxException {
 
 		Document doc = new Document("mydoc.po","mydoc.po", "/", PoReader.PO_CONTENT_TYPE);
