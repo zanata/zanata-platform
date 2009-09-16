@@ -11,7 +11,7 @@ import org.jboss.resteasy.annotations.providers.jaxb.json.Mapped;
 import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
 
 @XmlType(name="abstractProjectType", namespace=Namespaces.PROJECT,propOrder={"name", "description"})
-@XmlSeeAlso({ProjectIteration.class, ProjectIterationRef.class})
+@XmlSeeAlso({ProjectIteration.class, ProjectIterationInline.class})
 abstract class AbstractProject {
 	
 	private String name;

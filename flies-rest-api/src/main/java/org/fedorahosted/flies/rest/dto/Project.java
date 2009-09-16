@@ -26,7 +26,7 @@ public class Project extends AbstractProject{
 
 	private String id;
 	
-	private List<ProjectIterationRef> iterations;
+	private List<ProjectIterationInline> iterations;
 	
 	public Project() {
 	}
@@ -56,9 +56,9 @@ public class Project extends AbstractProject{
 	
 	@XmlElementWrapper(name="project-iterations", namespace=Namespaces.PROJECT, required=true)
 	@XmlElement(name="project-iteration", namespace=Namespaces.PROJECT)
-	public List<ProjectIterationRef> getIterations() {
+	public List<ProjectIterationInline> getIterations() {
 		if(iterations == null)
-			iterations = new ArrayList<ProjectIterationRef>();
+			iterations = new ArrayList<ProjectIterationInline>();
 		return iterations;
 	}
 }

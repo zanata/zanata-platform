@@ -30,7 +30,7 @@ import org.fedorahosted.flies.rest.FliesRestSecurityInterceptor;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
-import org.fedorahosted.flies.rest.dto.ProjectIterationRef;
+import org.fedorahosted.flies.rest.dto.ProjectIterationInline;
 import org.fedorahosted.flies.rest.dto.ProjectRef;
 import org.fedorahosted.flies.rest.dto.ProjectRefs;
 import org.hibernate.HibernateException;
@@ -89,7 +89,7 @@ public class ProjectService{
 			HIterationProject itProject = (HIterationProject) hProject;
 			for(HProjectIteration pIt : itProject.getProjectIterations()){
 				project.getIterations().add(
-						new ProjectIterationRef(
+						new ProjectIterationInline(
 								new ProjectIteration(
 										pIt.getSlug(),
 										pIt.getName(), 
