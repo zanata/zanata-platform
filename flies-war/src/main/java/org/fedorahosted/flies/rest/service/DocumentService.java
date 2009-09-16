@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.fedorahosted.flies.core.dao.DocumentDAO;
+import org.fedorahosted.flies.core.dao.ProjectContainerDAO;
 import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.dao.ProjectIterationDAO;
 import org.fedorahosted.flies.core.model.HProjectIteration;
@@ -46,13 +47,10 @@ public class DocumentService {
 	private String documentId;
 	
 	@In
-	ProjectDAO projectDAO;
-	
-	@In
-	ProjectIterationDAO projectIterationDAO;
-	
-	@In
 	DocumentDAO documentDAO;
+	
+	@In
+	ProjectContainerDAO projectContainerDAO;
 	
 	@In
 	Session session;
@@ -61,10 +59,11 @@ public class DocumentService {
 	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
 	public Document get(@QueryParam("includeTargets") String includeTargets) {
 		
-		HProjectIteration hProjectIteration = getIterationOrFail();
+		HProjectContainer hProjectContainer = getContainerOrFail();
+		
 		String docId = convertToRealDocumentId(documentId);
 		
-		HDocument hDoc = documentDAO.getByDocId(hProjectIteration.getContainer(), docId);
+		HDocument hDoc = documentDAO.getByDocId(hProjectContainer, docId);
 		
 		if(hDoc == null) {
 			throw new WebApplicationException(Status.NOT_FOUND);
@@ -78,22 +77,19 @@ public class DocumentService {
 	@Restrict("#{identity.loggedIn}")
 	public Response put(Document document) throws URISyntaxException {
 		
-		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-		
-		if(hProjectIteration == null)
-			throw new NotFoundException("Project Iteration not found");
-		
 		String hDocId = convertToRealDocumentId(documentId);
 
 		if(!document.getId().equals(hDocId)){
 			Response.notAcceptable(null).build();
 		}
 
-		HDocument hDoc = documentDAO.getByDocId(hProjectIteration.getContainer(), hDocId);
+		HProjectContainer hProjectContainer = getContainerOrFail();
+
+		HDocument hDoc = documentDAO.getByDocId(hProjectContainer, hDocId);
 		
 		if(hDoc == null) { // it's a create operation
 			hDoc = new HDocument(document);
-			hProjectIteration.getContainer().getDocuments().add(hDoc);
+			hProjectContainer.getDocuments().add(hDoc);
 			try{
 				session.flush();
 				for(Resource res : document.getResources()) {
@@ -123,16 +119,17 @@ public class DocumentService {
 		
 	}
 	
-	private HProjectIteration getIterationOrFail(){
-		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+	private HProjectContainer getContainerOrFail(){
+		HProjectContainer hProjectContainer = projectContainerDAO.getBySlug(projectSlug, iterationSlug); 
 		
-		if(hProjectIteration == null)
-			throw new NotFoundException("Project Iteration not found");
+		if(hProjectContainer == null)
+			throw new NotFoundException("Project Container not found");
 		
-		return hProjectIteration;
+		return hProjectContainer;
 	}
 
 	private String convertToRealDocumentId(String uriId){
 		return uriId.replace(',', '/');
 	}
+	
 }
