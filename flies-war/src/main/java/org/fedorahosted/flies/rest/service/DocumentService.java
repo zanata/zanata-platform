@@ -4,6 +4,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -49,6 +50,10 @@ public class DocumentService {
 	@In
 	DocumentDAO documentDAO;
 	
+	@QueryParam("includeTargets")
+	@DefaultValue("")
+	String includeTargets;
+	
 	@In
 	ProjectContainerDAO projectContainerDAO;
 	
@@ -57,7 +62,7 @@ public class DocumentService {
 	
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
-	public Document get(@QueryParam("includeTargets") String includeTargets) {
+	public Document get() {
 		
 		HProjectContainer hProjectContainer = getContainerOrFail();
 		
