@@ -54,7 +54,6 @@ public class ProjectIterationService {
 	
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML, MediaType.APPLICATION_JSON })
-	@Restrict("#{identity.loggedIn}")
 	public ProjectIteration get(){
 
 		org.fedorahosted.flies.core.model.HProjectIteration hProjectIteration = 
