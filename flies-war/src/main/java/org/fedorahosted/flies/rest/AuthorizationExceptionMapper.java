@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.rest.service;
+package org.fedorahosted.flies.rest;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;

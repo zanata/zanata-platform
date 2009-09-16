@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.rest.service;
 
+import org.fedorahosted.flies.rest.AuthorizationExceptionMapper;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Create;
