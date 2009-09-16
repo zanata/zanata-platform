@@ -41,6 +41,7 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.security.Identity;
 
 @Name("projectService")
 @Path("/projects/p/{projectSlug}")
@@ -115,13 +116,11 @@ public class ProjectService{
 		hProject.setSlug(project.getId());
 		hProject.setName(project.getName());
 		hProject.setDescription(project.getDescription());
-		String apiKey = request.getHeader(FliesRestSecurityInterceptor.X_AUTH_TOKEN_HEADER);
-		if(apiKey != null) {
-			HAccount hAccount = accountDAO.getByApiKey(apiKey);
-			if(hAccount != null && hAccount.getPerson() != null) {
-				hProject.getMaintainers().add(hAccount.getPerson());
-			}
+		HAccount hAccount = accountDAO.getByUsername(Identity.instance().getCredentials().getUsername());
+		if(hAccount != null && hAccount.getPerson() != null) {
+			hProject.getMaintainers().add(hAccount.getPerson());
 		}
+		
 		try{
 			session.save(hProject);
 			return Response.created( new URI("/projects/p/"+hProject.getSlug()) ).build();
