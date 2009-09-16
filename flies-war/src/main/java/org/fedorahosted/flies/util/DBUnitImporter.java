@@ -20,7 +20,7 @@ import java.util.List;
  */
 @Name("dbunitImporter")
 @Scope(ScopeType.APPLICATION)
-@Install(value = false)
+@Install(false)
 public class DBUnitImporter extends DBUnitSeamTest {
 
     // You can listen to this event during startup, e.g. to index the imported data
@@ -55,7 +55,6 @@ public class DBUnitImporter extends DBUnitSeamTest {
     @Override
     public void prepareDataBeforeTest() {
         log.info("Importing DBUnit datasets using datasource JNDI name: " + getDatasourceJndiName());
-        prepareDBUnitOperations();
         super.prepareDataBeforeTest();
         Events.instance().raiseEvent(IMPORT_COMPLETE_EVENT);
     }
