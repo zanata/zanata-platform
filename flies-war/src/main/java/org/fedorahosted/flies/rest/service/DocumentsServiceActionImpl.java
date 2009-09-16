@@ -3,11 +3,12 @@ package org.fedorahosted.flies.rest.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fedorahosted.flies.core.dao.ProjectIterationDAO;
+import org.fedorahosted.flies.core.dao.ProjectContainerDAO;
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Documents;
+import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -24,26 +25,17 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     @Logger Log log;
     @In DocumentsService documentsService;
     
-    @In
-    ProjectIterationDAO projectIterationDAO;
+    @In ProjectContainerDAO projectContainerDAO;
 
+    @In
+    Session session;
+	
     private HProjectContainer getContainer() {
-	return projectIterationDAO.getBySlug(documentsService.getProjectSlug(), documentsService.getIterationSlug()).
-	getContainer();
+	return projectContainerDAO.getBySlug(documentsService.getProjectSlug(), documentsService.getIterationSlug());
     }
     
     public Documents get() {
 	log.info("get");
-//	Query query = session.createQuery("TODO");
-//	documentsService.documentDAO.
-//	query.set
-//	List<HDocument> docs = query.list();
-//	Documents result = new Documents();
-//	for (HDocument hDocument : docs) {
-//	    result.getDocuments().add(hDocument.toDocument());
-//	    
-//	}
-//	return result;
 	List<HDocument> hdocs = getContainer().getDocuments();
 	Documents result = new Documents();
 	
@@ -55,12 +47,10 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     
     public void post(Documents docs) {
 	log.info("post");
-	List<HDocument> hdocs = new ArrayList<HDocument>();
-
 	for (Document doc: docs.getDocuments()) {
-	    hdocs.add(new HDocument(doc));
+	    getContainer().getDocuments().add(new HDocument(doc));
 	}
-	getContainer().getDocuments().addAll(hdocs);
+	session.flush();
     }
     
     
@@ -69,10 +59,11 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
 	List<HDocument> hdocs = new ArrayList<HDocument>();
 
 	for (Document doc: docs.getDocuments()) {
-	    // FIXME if doc already exists, load it, don't create it
+	    // FIXME if doc already exists, load it and update it, but don't create it
 	    hdocs.add(new HDocument(doc));
 	}
 	getContainer().setDocuments(hdocs);
+	session.flush();
     }
 
 }
