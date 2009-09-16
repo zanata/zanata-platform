@@ -15,13 +15,14 @@ import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.seam.mock.DBUnitSeamTest;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
 
-@Test(groups={"seam-tests"},suiteName="DocumentService")
+@Test(groups={"seam-tests"},suiteName="DocumentService", sequential=true)
 public class DocumentServiceSeamTest extends DBUnitSeamTest{
 	
 	ClientRequestFactory clientRequestFactory;
@@ -47,7 +48,7 @@ public class DocumentServiceSeamTest extends DBUnitSeamTest{
 	@Override
     protected void prepareDBUnitOperations() {
         beforeTestOperations.add(
-                new DataSetOperation("org/fedorahosted/flies/test/model/ProjectData.dbunit.xml", DatabaseOperation.CLEAN_INSERT)
+                new DataSetOperation("org/fedorahosted/flies/rest/service/DocumentTestData.dbunit.xml", DatabaseOperation.CLEAN_INSERT)
         );
     }
 
