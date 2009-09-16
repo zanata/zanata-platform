@@ -19,7 +19,7 @@
 
   <test name="REST">
     <packages>
-      <package name="org.fedorahosted.flies.core.rest"/>
+      <package name="org.fedorahosted.flies.rest"/>
     </packages>
   </test>
 </suite>
