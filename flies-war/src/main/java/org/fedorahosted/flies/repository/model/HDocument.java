@@ -103,16 +103,6 @@ public class HDocument extends AbstractFliesEntity{
 	
 	public HDocument() {
 	}
-
-	public HDocument(DocumentInline docRef) {
-		this.docId = docRef.getRef().getId();
-		this.name = docRef.getName();
-		this.path = docRef.getPath();
-		this.contentType = docRef.getContentType();
-		this.locale = docRef.getLang();
-		this.revision = docRef.getVersion();
-	}
-
 	
 	public HDocument(Document docInfo) {
 		this.docId = docInfo.getId();
