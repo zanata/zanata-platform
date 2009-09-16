@@ -271,4 +271,8 @@ public class HDocument extends AbstractFliesEntity{
 	public void setResourceTree(List<HResource> resourceTree) {
 		this.resourceTree = resourceTree;
 	}
+	
+	public Document toDocument() {
+	    return new Document(docId, name, path, contentType, revision, locale);
+	}
 }
