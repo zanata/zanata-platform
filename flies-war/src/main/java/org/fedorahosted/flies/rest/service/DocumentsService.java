@@ -63,7 +63,15 @@ public class DocumentsService {
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
 	@Restrict("#{identity.loggedIn}")
 	public Response put(Documents documents) {
-	    impl.post(documents);
+	    impl.put(documents);
 	    return Response.ok().build();
+	}
+	
+	public String getProjectSlug() {
+	    return projectSlug;
+	}
+	
+	public String getIterationSlug() {
+	    return iterationSlug;
 	}
 }

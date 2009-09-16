@@ -2,7 +2,7 @@ package org.fedorahosted.flies.rest.service;
 
 import org.fedorahosted.flies.rest.dto.Documents;
 
-interface DocumentsServiceAction {
+public interface DocumentsServiceAction {
 
     public Documents get();
 
