@@ -37,6 +37,12 @@ public class ProjectResource implements IProjectResource{
 	public Response put(Project project) {
 		return projectResource.put(project);
 	}
+
+	@Override
+	public Response post(Project project) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 
 }
