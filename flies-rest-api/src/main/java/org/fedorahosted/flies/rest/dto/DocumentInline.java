@@ -8,15 +8,15 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
 @XmlType(name="documentRefType", namespace=Namespaces.DOCUMENT)
-public class DocumentRef extends AbstractDocument{
+public class DocumentInline extends AbstractDocument{
 
 	private Document ref;
 
-	private DocumentRef(){
+	private DocumentInline(){
 		super();
 	}
 	
-	public DocumentRef(Document doc) {
+	public DocumentInline(Document doc) {
 		super(doc);
 		this.ref = doc;
 	}

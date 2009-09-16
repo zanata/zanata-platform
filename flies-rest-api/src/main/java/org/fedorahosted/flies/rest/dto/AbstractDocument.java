@@ -13,7 +13,7 @@ import org.fedorahosted.flies.LocaleId;
 
 
 @XmlType(name="abstractDocumentType", namespace=Namespaces.DOCUMENT)
-@XmlSeeAlso({Document.class, DocumentRef.class})
+@XmlSeeAlso({Document.class, DocumentInline.class})
 abstract class AbstractDocument {
 
 	private String name;

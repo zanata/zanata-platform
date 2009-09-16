@@ -9,7 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import org.fedorahosted.flies.core.model.AbstractFliesEntity;
-import org.fedorahosted.flies.rest.dto.DocumentRef;
+import org.fedorahosted.flies.rest.dto.DocumentInline;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.validator.NotEmpty;
 
@@ -22,7 +22,7 @@ public class HProjectContainer extends AbstractFliesEntity{
 	}
 
 	public HProjectContainer(org.fedorahosted.flies.rest.dto.ProjectIteration project) {
-		for(DocumentRef d : project.getDocuments() ){
+		for(DocumentInline d : project.getDocuments() ){
 			HDocument doc = new HDocument(d);
 			this.getDocuments().add(doc);
 		}
