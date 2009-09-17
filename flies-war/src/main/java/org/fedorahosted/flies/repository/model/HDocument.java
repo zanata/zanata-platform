@@ -111,6 +111,12 @@ public class HDocument extends AbstractFliesEntity{
 		this.contentType = docInfo.getContentType();
 		this.locale = docInfo.getLang();
 		this.revision = docInfo.getVersion();
+//		for (LocaleId localeId : docInfo.getTargetLanguages()) {
+//			this.targets.put(localeId, new HDocumentTarget(this, localeId));
+//		}
+		for (Resource res : docInfo.getResources()) {
+			this.getResourceTree().add(create(res));
+		}
 	}
 
 	public static HResource create(Resource res){
