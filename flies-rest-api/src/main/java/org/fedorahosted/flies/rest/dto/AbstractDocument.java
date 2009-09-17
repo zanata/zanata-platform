@@ -19,7 +19,7 @@ abstract class AbstractDocument {
 	private String name;
 	private String path;
 	private ContentType contentType;
-	private Integer version = 1;
+	private Integer version = null;
 	private LocaleId lang = LocaleId.EN_US;
 	private Set<LocaleId> targetLanguages;
 
@@ -101,7 +101,16 @@ abstract class AbstractDocument {
 		this.path = path;
 	}
 
-	@XmlAttribute(name="version", required=true)
+	/**
+	 * Holds the current version in GET requests
+	 * 
+	 * If used in add/update operations, this field should
+	 * hold the the value of (current version + 1) or
+	 * the operation will fail.
+	 * 
+	 * @return
+	 */
+	@XmlAttribute(name="version", required=false)
 	public Integer getVersion() {
 		return version;
 	}
@@ -131,6 +140,11 @@ abstract class AbstractDocument {
 		this.lang = lang;
 	}
 	
+	/**
+	 * This field is only used in GET requests, and is ignored in other operation
+	 * 
+	 * @return Set of available target-language translations for this Document
+	 */
 	@XmlAttribute(name="target-languages", required=false)
 	@XmlJavaTypeAdapter(type=LocaleId.class, value=LocaleIdAdapter.class)
 	public Set<LocaleId> getTargetLanguages() {
