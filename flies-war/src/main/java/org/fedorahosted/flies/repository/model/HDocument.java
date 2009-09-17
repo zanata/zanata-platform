@@ -22,7 +22,6 @@ import org.fedorahosted.flies.hibernate.type.LocaleIdType;
 import org.fedorahosted.flies.rest.dto.Container;
 import org.fedorahosted.flies.rest.dto.DataHook;
 import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.DocumentRef;
 import org.fedorahosted.flies.rest.dto.Reference;
 import org.fedorahosted.flies.rest.dto.Resource;
 import org.fedorahosted.flies.rest.dto.TextFlow;
@@ -104,16 +103,6 @@ public class HDocument extends AbstractFliesEntity{
 	public HDocument() {
 	}
 
-	public HDocument(DocumentRef docRef) {
-		this.docId = docRef.getRef().getId();
-		this.name = docRef.getName();
-		this.path = docRef.getPath();
-		this.contentType = docRef.getContentType();
-		this.locale = docRef.getLang();
-		this.revision = docRef.getVersion();
-	}
-
-	
 	public HDocument(Document docInfo) {
 		this.docId = docInfo.getId();
 		this.name = docInfo.getName();
@@ -121,6 +110,12 @@ public class HDocument extends AbstractFliesEntity{
 		this.contentType = docInfo.getContentType();
 		this.locale = docInfo.getLang();
 		this.revision = docInfo.getVersion();
+//		for (LocaleId localeId : docInfo.getTargetLanguages()) {
+//			this.targets.put(localeId, new HDocumentTarget(this, localeId));
+//		}
+		for (Resource res : docInfo.getResources()) {
+			this.getResourceTree().add(create(res));
+		}
 	}
 
 	public static HResource create(Resource res){
