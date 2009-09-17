@@ -34,4 +34,10 @@ public class ContentTarget {
 			textFlowTargets = new ArrayList<TextFlowTarget>();
 		return textFlowTargets;
 	}
+
+	@Override
+	public String toString() {
+		return Utility.toXML(this);
+	}
+	
 }

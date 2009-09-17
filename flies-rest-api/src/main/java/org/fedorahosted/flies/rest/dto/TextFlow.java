@@ -137,4 +137,9 @@ public class TextFlow implements Resource{
 
 	}
 	
+	@Override
+	public String toString() {
+		return Utility.toXML(this);
+	}
+	
 }

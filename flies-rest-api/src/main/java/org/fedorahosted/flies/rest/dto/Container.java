@@ -109,4 +109,9 @@ public class Container implements Resource {
 		return content;
 	}
 	
+	@Override
+	public String toString() {
+		return Utility.toXML(this);
+	}
+	
 }

@@ -68,4 +68,9 @@ abstract class AbstractProjectIteration {
 	}
 	
 
+	@Override
+	public String toString() {
+		return Utility.toXML(this);
+	}
+	
 }

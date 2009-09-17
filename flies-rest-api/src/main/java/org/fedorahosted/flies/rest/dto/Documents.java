@@ -28,4 +28,9 @@ public class Documents {
 		return documents;
 	}
 	
+	@Override
+	public String toString() {
+		return Utility.toXML(this);
+	}
+	
 }

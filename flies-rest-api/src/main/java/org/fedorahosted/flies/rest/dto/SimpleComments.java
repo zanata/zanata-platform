@@ -18,4 +18,9 @@ public class SimpleComments {
 		return comments;
 	}
 	
+	@Override
+	public String toString() {
+		return Utility.toXML(this);
+	}
+	
 }

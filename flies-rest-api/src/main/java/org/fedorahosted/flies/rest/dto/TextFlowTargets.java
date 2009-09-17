@@ -38,4 +38,10 @@ public class TextFlowTargets {
 		}
 		return null;
 	}
+
+	@Override
+	public String toString() {
+		return Utility.toXML(this);
+	}
+	
 }

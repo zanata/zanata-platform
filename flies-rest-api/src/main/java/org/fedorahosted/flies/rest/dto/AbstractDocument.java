@@ -152,7 +152,10 @@ abstract class AbstractDocument {
 			targetLanguages = new HashSet<LocaleId>();
 		return targetLanguages;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return Utility.toXML(this);
+	}
 	
 }

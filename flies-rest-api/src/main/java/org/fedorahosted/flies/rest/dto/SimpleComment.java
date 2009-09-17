@@ -49,4 +49,9 @@ public class SimpleComment {
 	public void setSpace(String space) {
 	}
 	
+	@Override
+	public String toString() {
+		return Utility.toXML(this);
+	}
+	
 }

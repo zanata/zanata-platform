@@ -88,4 +88,10 @@ public class Reference implements Resource{
 	public void setRelationshipId(String relationshipId) {
 		this.relationshipId = relationshipId;
 	}
+
+	@Override
+	public String toString() {
+		return Utility.toXML(this);
+	}
+	
 }

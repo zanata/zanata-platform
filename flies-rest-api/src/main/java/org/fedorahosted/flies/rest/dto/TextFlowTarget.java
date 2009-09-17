@@ -125,4 +125,10 @@ public class TextFlowTarget implements IExtensible{
 		}
 		return ext;
 	}
+
+	@Override
+	public String toString() {
+		return Utility.toXML(this);
+	}
+	
 }

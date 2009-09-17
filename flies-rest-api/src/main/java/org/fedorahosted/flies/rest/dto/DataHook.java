@@ -72,4 +72,10 @@ public class DataHook implements Resource {
 		}
 		return ext;
 	}
+
+	@Override
+	public String toString() {
+		return Utility.toXML(this);
+	}
+	
 }
