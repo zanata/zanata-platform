@@ -13,7 +13,7 @@ import org.fedorahosted.flies.LocaleId;
 
 
 @XmlType(name="abstractDocumentType", namespace=Namespaces.DOCUMENT)
-@XmlSeeAlso({Document.class, DocumentInline.class})
+@XmlSeeAlso({Document.class, DocumentView.class})
 abstract class AbstractDocument {
 
 	private String name;
@@ -21,7 +21,6 @@ abstract class AbstractDocument {
 	private ContentType contentType;
 	private Integer version = null;
 	private LocaleId lang = LocaleId.EN_US;
-	private Set<LocaleId> targetLanguages;
 
 	protected AbstractDocument() {
 	}
@@ -32,9 +31,6 @@ abstract class AbstractDocument {
 		this.contentType = other.contentType;
 		this.version = other.version;
 		this.lang = other.lang;
-		if(other.targetLanguages != null) {
-			this.targetLanguages = new HashSet<LocaleId>(other.targetLanguages);
-		}
 	}
 
 	public AbstractDocument(String fullPath, ContentType contentType){
@@ -140,19 +136,6 @@ abstract class AbstractDocument {
 		this.lang = lang;
 	}
 	
-	/**
-	 * This field is only used in GET requests, and is ignored in other operation
-	 * 
-	 * @return Set of available target-language translations for this Document
-	 */
-	@XmlAttribute(name="target-languages", required=false)
-	@XmlJavaTypeAdapter(type=LocaleId.class, value=LocaleIdAdapter.class)
-	public Set<LocaleId> getTargetLanguages() {
-		if(targetLanguages == null)
-			targetLanguages = new HashSet<LocaleId>();
-		return targetLanguages;
-	}
-
 	@Override
 	public String toString() {
 		return Utility.toXML(this);

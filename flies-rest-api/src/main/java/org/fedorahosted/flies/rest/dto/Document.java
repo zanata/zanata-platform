@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.rest.dto;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +34,7 @@ import org.jboss.resteasy.spi.touri.URITemplate;
 @XmlRootElement(name="document", namespace=Namespaces.DOCUMENT)
 @XmlType(name="documentType", namespace=Namespaces.DOCUMENT, propOrder={"resources", "extensions"})
 @XmlSeeAlso({
+	DocumentView.class,
 	HeaderEntry.class,
 	PoHeader.class,
 	PoTargetHeader.class,
@@ -46,11 +48,18 @@ public class Document extends AbstractDocument implements IExtensible{
 	
 	private List<Resource> resources;
 	private List<Object> extensions;
-	
-	private Document() {
+
+	protected Document() {
 		super();
 	}
 
+	public Document(Document other){
+		this.id = other.id;
+		// TODO deep copy
+		this.resources = other.resources;
+		this.extensions = other.extensions;
+	}
+	
 	public Document(String fullPath, ContentType contentType){
 		super(fullPath, contentType);
 		this.id = fullPath;
@@ -88,7 +97,7 @@ public class Document extends AbstractDocument implements IExtensible{
 	public void setId(String id) {
 		this.id = id;
 	}
-	
+
 	@XmlElementWrapper(name="document-content", namespace=Namespaces.DOCUMENT, required=false)
 	@XmlElements({
 		@XmlElement(name="text-flow", type=TextFlow.class, namespace=Namespaces.DOCUMENT),

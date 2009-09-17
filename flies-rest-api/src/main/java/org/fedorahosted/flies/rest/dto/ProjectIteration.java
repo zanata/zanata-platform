@@ -30,7 +30,7 @@ public class ProjectIteration extends AbstractProjectIteration{
 
 	private String id;
 	
-	private List<DocumentInline> documents;
+	private List<DocumentView> documents;
 	
 //	private URI documents__ = new URI("documents");
 	
@@ -64,9 +64,9 @@ public class ProjectIteration extends AbstractProjectIteration{
 	
 	@XmlElementWrapper(name="documents", namespace=Namespaces.PROJECT, required=true)
 	@XmlElement(name="document", namespace=Namespaces.DOCUMENT)
-	public List<DocumentInline> getDocuments() {
+	public List<DocumentView> getDocuments() {
 		if(documents == null)
-			documents = new ArrayList<DocumentInline>();
+			documents = new ArrayList<DocumentView>();
 		return documents;
 	}
 }

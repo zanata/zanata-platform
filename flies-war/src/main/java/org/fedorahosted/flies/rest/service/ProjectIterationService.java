@@ -23,7 +23,7 @@ import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.DocumentInline;
+import org.fedorahosted.flies.rest.dto.DocumentView;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -73,7 +73,7 @@ public class ProjectIterationService {
 		
 		for(HDocument doc : hibIt.getContainer().getDocuments() ){
 			it.getDocuments().add( 
-					new DocumentInline(
+					new DocumentView(
 							new Document(
 									doc.getDocId(),
 									doc.getName(),
