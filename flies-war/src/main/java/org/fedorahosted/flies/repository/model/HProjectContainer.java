@@ -12,7 +12,6 @@ import org.fedorahosted.flies.core.model.AbstractFliesEntity;
 import org.fedorahosted.flies.rest.dto.DocumentInline;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.hibernate.annotations.IndexColumn;
-import org.hibernate.validator.NotEmpty;
 
 @Entity
 public class HProjectContainer extends AbstractFliesEntity{
@@ -22,9 +21,6 @@ public class HProjectContainer extends AbstractFliesEntity{
 	public HProjectContainer() {
 	}
 
-	public HProjectContainer(ProjectIteration project) {
-	}
-	
 	@IndexColumn(name="pos",base=0,nullable=false)
 	@JoinColumn(name="project_id",nullable=false)
 	@OneToMany(cascade=CascadeType.ALL)

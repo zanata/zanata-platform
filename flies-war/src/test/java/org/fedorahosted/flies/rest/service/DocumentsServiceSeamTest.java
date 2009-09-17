@@ -55,6 +55,9 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 	    beforeTestOperations.add(new DataSetOperation(
 		    "org/fedorahosted/flies/test/model/DocumentsData.dbunit.xml",
 		    DatabaseOperation.CLEAN_INSERT));
+	    afterTestOperations.add(new DataSetOperation(
+			    "org/fedorahosted/flies/test/model/DocumentsData.dbunit.xml",
+			    DatabaseOperation.DELETE_ALL));
 	}
 
 	public void getZero() throws Exception {
