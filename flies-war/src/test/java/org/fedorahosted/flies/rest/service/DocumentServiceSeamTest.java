@@ -11,6 +11,7 @@ import org.fedorahosted.flies.rest.ApiKeyHeaderDecorator;
 import org.fedorahosted.flies.rest.client.IDocumentResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.jboss.resteasy.client.ClientRequestFactory;
+import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.seam.mock.DBUnitSeamTest;
@@ -60,8 +61,14 @@ public class DocumentServiceSeamTest extends DBUnitSeamTest{
 	public void putNewDocument() {
 		Document doc = new Document("my/fancy/document.txt", ContentType.TextPlain);
 		Response response = documentResource.put(doc);
+
 		assertThat( response.getStatus(), is(Status.CREATED.getStatusCode()) );
-		assertThat ( documentResource.get(null).getResponseStatus(), is(Status.OK) ); 
+		
+		ClientResponse<Document> documentResponse = documentResource.get(null);
+		
+		assertThat( documentResponse.getResponseStatus(), is(Status.OK) );
+		assertThat( documentResponse.getEntity().getVersion(), is(1) );
+		
 	}
 	
 }

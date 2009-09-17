@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -25,9 +26,11 @@ import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.repository.model.HResource;
 import org.fedorahosted.flies.rest.MediaTypes;
+import org.fedorahosted.flies.rest.dto.Container;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.DocumentView;
 import org.fedorahosted.flies.rest.dto.Resource;
+import org.fedorahosted.flies.rest.dto.ResourceList;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.jboss.resteasy.spi.NotFoundException;
@@ -51,10 +54,6 @@ public class DocumentService {
 	@In
 	DocumentDAO documentDAO;
 	
-	@QueryParam("includeTargets")
-	@DefaultValue("")
-	String includeTargets;
-	
 	@In
 	ProjectContainerDAO projectContainerDAO;
 	
@@ -63,7 +62,8 @@ public class DocumentService {
 	
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
-	public DocumentView get() {
+	public DocumentView get(
+			final @QueryParam("languages") @DefaultValue("") ContentQualifier languages) {
 		
 		HProjectContainer hProjectContainer = getContainerOrFail();
 		
@@ -123,6 +123,53 @@ public class DocumentService {
 			}
 		}
 		
+	}
+
+	@GET
+	@Path("content/{qualifier}")
+	public ResourceList getContent(
+			@PathParam("qualifier") ContentQualifier qualifier,
+			@QueryParam("levels") @DefaultValue("1") int levels){
+		return null;
+	}
+
+	@POST
+	@Path("content/{qualifier}")
+	@Restrict("#{identity.loggedIn}")
+	public Response postContent(
+			ResourceList content,
+			@PathParam("qualifier") ContentQualifier qualifier) {
+		
+		return Response.ok().build();
+	}
+	
+	@PUT
+	@Path("content/{qualifier}")
+	public Response putContent(
+			ResourceList content,
+			@PathParam("qualifier") ContentQualifier qualifier) {
+		
+		return Response.ok().build();
+	}
+
+	@POST
+	@Path("content/{qualifier}/{resourceId}")
+	@Restrict("#{identity.loggedIn}")
+	public Response postContentByResourceId(
+			Resource resource,
+			@PathParam("qualifier") ContentQualifier qualifier,
+			@PathParam("resourceId") String resourceId) {
+		
+		return Response.ok().build();
+	}
+	
+	@GET
+	@Path("content/{qualifier}/{resourceId}")
+	public Resource getContentByResourceId(
+			@PathParam("qualifier") ContentQualifier qualifier,
+			@PathParam("resourceId") String resourceId,
+			@QueryParam("levels") @DefaultValue("1") int levels){
+		return new Container("id");
 	}
 	
 	private HProjectContainer getContainerOrFail(){
