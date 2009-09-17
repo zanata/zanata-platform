@@ -127,7 +127,7 @@ public class ProjectServiceSeamTest extends DBUnitSeamTest {
 		URI uri = baseUri.resolve("sample-project");
 		projectService = clientRequestFactory.createProxy(IProjectResource.class, uri);
 		
-		Response response = projectService.post(project);
+		Response response = projectService.put(project);
 				
 		assertThat( response.getStatus(), is( Status.ACCEPTED.getStatusCode()));
 		

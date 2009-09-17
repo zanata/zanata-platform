@@ -24,10 +24,6 @@ public interface IProjectResource {
 	@PUT
 	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
 	public Response put(Project project);
-	
-	@POST
-	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
-	public Response post(Project project);
 
 //	@Path("/iterations/i/{iterationSlug}")
 //	public IProjectIterationResource getIteration(

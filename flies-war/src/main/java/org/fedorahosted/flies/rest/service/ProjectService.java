@@ -132,36 +132,5 @@ public class ProjectService{
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
 	}
-	
-	@POST
-	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
-	@Restrict("#{identity.loggedIn}")
-	public Response post(Project project) throws URISyntaxException{
-		
-		HProject hProject = projectDAO.getBySlug(project.getId());
-		if(hProject == null){
-			return Response.status(404).build();
-		}
-		hProject = new org.fedorahosted.flies.core.model.HIterationProject();
-		hProject.setSlug(project.getId());
-		hProject.setName(project.getName());
-		hProject.setDescription(project.getDescription());
-		HAccount hAccount = accountDAO.getByUsername(Identity.instance().getCredentials().getUsername());
-		if(hAccount != null && hAccount.getPerson() != null) {
-			hProject.getMaintainers().add(hAccount.getPerson());
-		}
-		
-		try{
-			session.update(hProject);
-			return Response.status(Status.ACCEPTED).build();
-		}
-        catch(InvalidStateException e){
-        	return Response.status(Status.BAD_REQUEST).build();
-        }
-        catch(HibernateException e){
-			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-		}
-	}
-	
-	
+
 }
