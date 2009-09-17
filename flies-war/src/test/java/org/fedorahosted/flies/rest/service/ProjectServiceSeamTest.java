@@ -73,7 +73,7 @@ public class ProjectServiceSeamTest extends DBUnitSeamTest {
 		URI uri = baseUri.resolve("my-new-project");
 		projectService = clientRequestFactory.createProxy(IProjectResource.class, uri);
 		
-		Response response = projectService.put(project);
+		Response response = projectService.post(project);
 		
 		assertThat( response.getStatus(), is( Status.CREATED.getStatusCode()));
 		
@@ -93,10 +93,10 @@ public class ProjectServiceSeamTest extends DBUnitSeamTest {
 	}
 	
 	public void createProjectThatAlreadyExists(){
-		projectService = clientRequestFactory.createProxy(IProjectResource.class, baseUri.resolve("sample-project"));
+		//projectService = clientRequestFactory.createProxy(IProjectResource.class, baseUri.resolve("sample-project"));
 
 		Project project = new Project("sample-project", "Sample Project", "An example Project");
-		Response response = projectService.put(project);
+		Response response = projectService.post(project);
 	
         assertThat( response.getStatus(), is( Status.CONFLICT.getStatusCode()));
 	}
@@ -105,13 +105,13 @@ public class ProjectServiceSeamTest extends DBUnitSeamTest {
 		projectService = clientRequestFactory.createProxy(IProjectResource.class, baseUri.resolve("my,new,project"));
 
 		Project project = new Project("my,new,project", "My New Project", "Another test project");
-		Response response = projectService.put(project);
+		Response response = projectService.post(project);
 		
         assertThat( response.getStatus(), is( Status.BAD_REQUEST.getStatusCode()));
         
 		projectService = clientRequestFactory.createProxy(IProjectResource.class, baseUri.resolve("my-test-project"));
         Project project1 = new Project("my-test-project","My test ProjectMy test ProjectMy test ProjectMy test ProjectMy test ProjectMy test Project", "Length of Project name beyond 80");
-        Response response1 = projectService.put(project1);
+        Response response1 = projectService.post(project1);
         
         assertThat(response1.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
         
@@ -123,13 +123,12 @@ public class ProjectServiceSeamTest extends DBUnitSeamTest {
 
 	public void updateProject() {
 		Project project = new Project("sample-project", "My Project Update", "Update project");
-		
-		URI uri = baseUri.resolve("sample-project");
-		projectService = clientRequestFactory.createProxy(IProjectResource.class, uri);
+
+		projectService = clientRequestFactory.createProxy(IProjectResource.class, baseUri.resolve("sample-project"));
 		
 		Response response = projectService.put(project);
 				
-		assertThat( response.getStatus(), is( Status.ACCEPTED.getStatusCode()));
+		assertThat( response.getStatus(), is( Status.CREATED.getStatusCode()));
 		
 		ClientResponse<Project> projectResponse = projectService.get();
 		

@@ -37,5 +37,10 @@ public class ProjectResource implements IProjectResource{
 	public Response put(Project project) {
 		return projectResource.put(project);
 	}
+	
+	@Override
+	public Response post(Project project) {
+		return projectResource.post(project);
+	}
 
 }
