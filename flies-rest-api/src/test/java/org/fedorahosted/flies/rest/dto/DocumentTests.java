@@ -18,8 +18,6 @@ public class DocumentTests {
 	@Test
 	public void createAFullDocument() throws JAXBException{
 		Document doc = new Document("id","name", "/my/path", ContentType.TextPlain, 1, LocaleId.EN);
-		doc.getTargetLanguages().add(new LocaleId("de-DE"));
-		doc.getTargetLanguages().add(new LocaleId("fr-FR"));
 		
 		TextFlow tf = new TextFlow("id");
 		tf.setContent("hello world!");

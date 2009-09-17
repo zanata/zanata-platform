@@ -214,8 +214,6 @@ public class PoReader {
 		
 		List<Resource> resources = document.getResources();
 
-		document.getTargetLanguages().add(targetLocaleId);
-		
 		boolean headerFound = false;
 		while(messageParser.hasNext()) {
 			Message message = messageParser.next();

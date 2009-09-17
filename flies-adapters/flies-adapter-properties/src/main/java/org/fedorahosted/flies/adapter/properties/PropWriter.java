@@ -74,7 +74,7 @@ public class PropWriter {
 	}
 	
     }
-    
+    /*
     private static Set<LocaleId> buildTargetLangs(Document doc) {
 	Set<LocaleId> targetLangs = doc.getTargetLanguages();
 	if(targetLangs.isEmpty()) {
@@ -86,6 +86,7 @@ public class PropWriter {
 	}
 	return targetLangs;
     }
+    */
     
     private static Set<TextFlowTarget> getTargets(Resource resource) {
 	TextFlowTargets targets = resource.getExtension(TextFlowTargets.class);

@@ -15,6 +15,7 @@ import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.LocaleOutputSourcePair;
 import org.fedorahosted.flies.OutputSource;
 import org.fedorahosted.flies.rest.dto.Document;
+import org.fedorahosted.flies.rest.dto.DocumentView;
 import org.fedorahosted.flies.rest.dto.Resource;
 import org.fedorahosted.flies.rest.dto.SimpleComment;
 import org.fedorahosted.flies.rest.dto.TextFlow;
@@ -35,7 +36,7 @@ public class PoWriter {
 	public PoWriter() {
 	}
 	
-	public void write(final Document document, final LocaleOutputSourcePair localeOutputSourcePair) throws IOException{
+	public void write(final DocumentView document, final LocaleOutputSourcePair localeOutputSourcePair) throws IOException{
 
 		final Writer writer;
 		final LocaleId locale;

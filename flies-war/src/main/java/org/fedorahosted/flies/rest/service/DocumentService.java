@@ -26,6 +26,7 @@ import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.repository.model.HResource;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Document;
+import org.fedorahosted.flies.rest.dto.DocumentView;
 import org.fedorahosted.flies.rest.dto.Resource;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
@@ -62,7 +63,7 @@ public class DocumentService {
 	
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
-	public Document get() {
+	public DocumentView get() {
 		
 		HProjectContainer hProjectContainer = getContainerOrFail();
 		
@@ -74,7 +75,7 @@ public class DocumentService {
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
 		
-		return new Document(hDoc.getDocId(), hDoc.getContentType());
+		return new DocumentView(null);
 	}
 
 	@PUT
