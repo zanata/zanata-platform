@@ -2,17 +2,42 @@ package org.fedorahosted.flies.rest;
 
 public class MediaTypes {
 
-	public static final String APPLICATION_FLIES_PROJECT_XML = "application/flies.project+xml";
-	public static final String APPLICATION_FLIES_PROJECTS_XML = "application/flies.projects+xml";
-
-	public static final String APPLICATION_FLIES_PROJECT_ITERATION_XML = "application/flies.project.iteration+xml";
-	public static final String APPLICATION_FLIES_PROJECT_ITERATIONS_XML = "application/flies.project.iterations+xml";
+	private static final String XML = "+xml";
+	private static final String JSON = "+json";
 	
-	public static final String APPLICATION_FLIES_DOCUMENT_XML = "application/flies.document+xml";
-	public static final String APPLICATION_FLIES_DOCUMENTS_XML = "application/flies.documents+xml";
-	public static final String APPLICATION_FLIES_DOCUMENTREFS_XML = "application/flies.documentrefs+xml";
+	private static final String APPLICATION_VND_FLIES = "application/vnd.flies";
+	
+	public static final String APPLICATION_FLIES_PROJECT = APPLICATION_VND_FLIES + ".project";
+	public static final String APPLICATION_FLIES_PROJECT_XML = APPLICATION_FLIES_PROJECT + XML;
+	public static final String APPLICATION_FLIES_PROJECT_JSON = APPLICATION_FLIES_PROJECT + JSON;
 
-	public static final String APPLICATION_FLIES_DOCUMENT_RESOURCE_XML = "application/flies.document.resource+xml";
-	public static final String APPLICATION_FLIES_DOCUMENT_RESOURCES_XML = "application/flies.document.resources+xml";
+	public static final String APPLICATION_FLIES_PROJECTS = APPLICATION_VND_FLIES + ".projects";
+	public static final String APPLICATION_FLIES_PROJECTS_XML = APPLICATION_FLIES_PROJECTS + XML;
+	public static final String APPLICATION_FLIES_PROJECTS_JSON = APPLICATION_FLIES_PROJECTS + JSON;
 
+	public static final String APPLICATION_FLIES_PROJECT_ITERATION = APPLICATION_VND_FLIES + ".project.iteration";
+	public static final String APPLICATION_FLIES_PROJECT_ITERATION_XML = APPLICATION_FLIES_PROJECT_ITERATION + XML;
+	public static final String APPLICATION_FLIES_PROJECT_ITERATION_JSON = APPLICATION_FLIES_PROJECT_ITERATION + JSON;
+
+	public static final String APPLICATION_FLIES_PROJECT_ITERATIONS = APPLICATION_VND_FLIES + ".project.iterations";
+	public static final String APPLICATION_FLIES_PROJECT_ITERATIONS_XML = APPLICATION_FLIES_PROJECT_ITERATIONS + XML;
+	public static final String APPLICATION_FLIES_PROJECT_ITERATIONS_JSON = APPLICATION_FLIES_PROJECT_ITERATIONS + JSON;
+	
+	public static final String APPLICATION_FLIES_DOCUMENT = APPLICATION_VND_FLIES + ".document";
+	public static final String APPLICATION_FLIES_DOCUMENT_XML = APPLICATION_FLIES_DOCUMENT + XML;
+	public static final String APPLICATION_FLIES_DOCUMENT_JSON = APPLICATION_FLIES_DOCUMENT + JSON;
+
+	public static final String APPLICATION_FLIES_DOCUMENTS = APPLICATION_VND_FLIES + ".documents";
+	public static final String APPLICATION_FLIES_DOCUMENTS_XML = APPLICATION_FLIES_DOCUMENTS + XML;
+	public static final String APPLICATION_FLIES_DOCUMENTS_JSON = APPLICATION_FLIES_DOCUMENTS + JSON;
+
+	public static final String APPLICATION_FLIES_DOCUMENT_RESOURCE = APPLICATION_VND_FLIES + ".document.resource";
+	public static final String APPLICATION_FLIES_DOCUMENT_RESOURCE_XML = APPLICATION_FLIES_DOCUMENT_RESOURCE + XML;
+	public static final String APPLICATION_FLIES_DOCUMENT_RESOURCE_JSON = APPLICATION_FLIES_DOCUMENT_RESOURCE + JSON;
+
+	public static final String APPLICATION_FLIES_DOCUMENT_RESOURCES = APPLICATION_VND_FLIES + ".document.resources";
+	public static final String APPLICATION_FLIES_DOCUMENT_RESOURCES_XML = APPLICATION_FLIES_DOCUMENT_RESOURCES + XML;
+	public static final String APPLICATION_FLIES_DOCUMENT_RESOURCES_JSON = APPLICATION_FLIES_DOCUMENT_RESOURCES + JSON;
+
+	
 }
