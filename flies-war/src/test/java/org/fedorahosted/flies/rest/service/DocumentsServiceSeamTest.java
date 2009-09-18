@@ -15,6 +15,9 @@ import org.fedorahosted.flies.rest.ApiKeyHeaderDecorator;
 import org.fedorahosted.flies.rest.client.IDocumentsResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Documents;
+import org.fedorahosted.flies.rest.dto.Resource;
+import org.fedorahosted.flies.rest.dto.TextFlow;
+import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
@@ -72,23 +75,38 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 	    assertThat(response.getEntity().getDocuments().size(), is(expectDocs));
 	}
 	
+	private Document newDoc(String id, Resource... resources) {
+		ContentType contentType = ContentType.TextPlain;
+		Integer version = 1;
+		Document doc = new Document(id, id+"name", id+"path", contentType, version, LocaleId.EN);
+		for (Resource textFlow : resources) {
+			doc.getResources().add(textFlow);
+		}
+		return doc;
+	}
+	
+	private TextFlow newTextFlow(String id, String sourceContent, String targetLocale, String targetContent) {
+		TextFlow textFlow = new TextFlow(id, LocaleId.EN);
+	    textFlow.setContent(sourceContent);
+	    TextFlowTarget target = new TextFlowTarget(textFlow, LocaleId.fromJavaName(targetLocale));
+	    target.setContent(targetContent);
+		textFlow.addTarget(target);
+		return textFlow;
+	}
+
 	private void putDoc1() {
-	    Documents docs = new Documents();
-	    ContentType contentType = ContentType.TextPlain;
-	    Integer version = 1;
-	    LocaleId lang = LocaleId.fromJavaName("es_ES");
-	    Document doc = new Document("doc1", "doc1name", "path", contentType, version, lang);
+		Documents docs = new Documents();
+		Document doc = newDoc("foo.properties", 
+				newTextFlow("FOOD", "Slime Mould", "de_DE", "Sauerkraut"));
 		docs.getDocuments().add(doc);
-	    Response response = docsService.put(docs);
-	    assertThat(response.getStatus(), is(200));
+		Response response = docsService.put(docs);
+		assertThat(response.getStatus(), is(200));
 	}
 	
 	private void postDoc2() {
 	    Documents docs = new Documents();
-	    ContentType contentType = ContentType.TextPlain;
-	    Integer version = 1;
-	    LocaleId lang = LocaleId.fromJavaName("es_ES");
-	    docs.getDocuments().add(new Document("doc2", "doc2name", "path", contentType, version, lang));
+	    docs.getDocuments().add(newDoc("test.properties",
+	    		newTextFlow("HELLO", "Hello World", "fr", "Bonjour le Monde")));
 	    Response response = docsService.post(docs);
 	    assertThat(response.getStatus(), is(200));
 	}
