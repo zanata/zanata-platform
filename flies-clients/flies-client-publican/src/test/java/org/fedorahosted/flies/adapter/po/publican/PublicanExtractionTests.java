@@ -7,7 +7,6 @@ import java.util.List;
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.adapter.po.PoReader;
 import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.DocumentView;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -40,7 +39,7 @@ public class PublicanExtractionTests {
 			System.out.println(resource);
 			File potFile = new File(potPath, resource);
 			Document doc = new Document(resource,resource, "/", PoReader.PO_CONTENT_TYPE);
-			project.getDocuments().add( new DocumentView(doc) );
+			project.getDocuments().add( doc );
 			InputSource inputSource = new InputSource( potFile.toURI().toString() );
 			inputSource.setEncoding("utf8");
 			poReader.extractTemplate(doc, inputSource);

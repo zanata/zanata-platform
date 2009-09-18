@@ -28,7 +28,6 @@ import org.fedorahosted.flies.repository.model.HResource;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Container;
 import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.DocumentView;
 import org.fedorahosted.flies.rest.dto.Resource;
 import org.fedorahosted.flies.rest.dto.ResourceList;
 import org.hibernate.Session;
@@ -62,7 +61,7 @@ public class DocumentService {
 	
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
-	public DocumentView get(
+	public Document get(
 			final @QueryParam("languages") @DefaultValue("") ContentQualifier languages) {
 		
 		HProjectContainer hProjectContainer = getContainerOrFail();
@@ -75,7 +74,7 @@ public class DocumentService {
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
 		
-		return new DocumentView(null);
+		return new Document(null);
 	}
 
 	@PUT

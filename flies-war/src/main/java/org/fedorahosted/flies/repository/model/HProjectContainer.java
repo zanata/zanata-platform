@@ -9,7 +9,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import org.fedorahosted.flies.core.model.AbstractFliesEntity;
-import org.fedorahosted.flies.rest.dto.DocumentView;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.hibernate.annotations.IndexColumn;
 

@@ -32,7 +32,7 @@ public class ProjectIteration extends AbstractBaseResource{
 	private String summary;
 	private Integer version = 1;
 	
-	private List<DocumentView> documents;
+	private List<Document> documents;
 	
 //	private URI documents__ = new URI("documents");
 	
@@ -87,9 +87,9 @@ public class ProjectIteration extends AbstractBaseResource{
 	
 	@XmlElementWrapper(name="documents", namespace=Namespaces.FLIES, required=true)
 	@XmlElement(name="document", namespace=Namespaces.FLIES)
-	public List<DocumentView> getDocuments() {
+	public List<Document> getDocuments() {
 		if(documents == null)
-			documents = new ArrayList<DocumentView>();
+			documents = new ArrayList<Document>();
 		return documents;
 	}
 }

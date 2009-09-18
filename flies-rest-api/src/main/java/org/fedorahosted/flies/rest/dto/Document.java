@@ -34,7 +34,6 @@ import org.jboss.resteasy.spi.touri.URITemplate;
 @XmlRootElement(name="document", namespace=Namespaces.FLIES)
 @XmlType(name="documentType", namespace=Namespaces.FLIES, propOrder={"resources", "extensions"})
 @XmlSeeAlso({
-	DocumentView.class,
 	HeaderEntry.class,
 	PoHeader.class,
 	PoTargetHeader.class,
