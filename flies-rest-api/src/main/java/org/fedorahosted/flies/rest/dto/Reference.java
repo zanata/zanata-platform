@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlType;
 
 
 
-@XmlType(name="referenceType", namespace=Namespaces.FLIES)
+@XmlType(name="referenceType", namespace=Namespaces.FLIES, propOrder={"extensions"})
 public class Reference extends AbstractBaseResource implements Resource{
 	
 	private String id;

@@ -1,15 +1,17 @@
 package org.fedorahosted.flies.rest.dto;
 
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlType(name="abstractBaseResource", namespace=Namespaces.FLIES)
-abstract class AbstractBaseResource {
+@XmlType(name="abstractBaseResource", namespace=Namespaces.FLIES, propOrder={"links"})
+public abstract class AbstractBaseResource {
 	
 	private List<Link> links;
 

@@ -20,7 +20,7 @@ import org.jboss.resteasy.spi.touri.URITemplate;
 		@XmlNsMap(namespace = Namespaces.FLIES, jsonName = Namespaces.FLIES_JSON), 
 		@XmlNsMap(namespace = Namespaces.XML, jsonName = Namespaces.XML_JSON) 
 	})
-@XmlType(name="projectIterationType", namespace=Namespaces.FLIES)
+@XmlType(name="projectIterationType", namespace=Namespaces.FLIES, propOrder={"name", "summary", "documents"})
 @XmlRootElement(name="project-iteration", namespace=Namespaces.FLIES)
 @XmlSeeAlso({
 	Documents.class

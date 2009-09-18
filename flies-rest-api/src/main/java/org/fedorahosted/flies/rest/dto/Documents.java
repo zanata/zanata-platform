@@ -15,7 +15,7 @@ import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
 	@XmlNsMap(namespace = Namespaces.XML, jsonName = Namespaces.XML_JSON) 
 })
 @XmlRootElement(name="documents", namespace=Namespaces.FLIES)
-@XmlType(name="documentsType", namespace=Namespaces.FLIES)
+@XmlType(name="documentsType", namespace=Namespaces.FLIES )
 public class Documents {
 	
 	private List<Document> documents;

@@ -1,5 +1,7 @@
 package org.fedorahosted.flies.rest.dto;
 
+import java.net.URI;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -18,7 +20,7 @@ public class DocumentTests {
 	@Test
 	public void createAFullDocument() throws JAXBException{
 		Document doc = new Document("/my/path/document.txt", ContentType.TextPlain);
-		
+		doc.getLinks().add(new Link(URI.create("http://example.com")));
 		TextFlow tf = new TextFlow("id");
 		tf.setContent("hello world!");
 		doc.getResources().add(tf);

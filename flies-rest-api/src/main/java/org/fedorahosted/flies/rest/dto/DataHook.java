@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlType;
 
 
 
-@XmlType(name="dataHookType", namespace=Namespaces.FLIES)
+@XmlType(name="dataHookType", namespace=Namespaces.FLIES, propOrder={"extensions"})
 public class DataHook extends AbstractBaseResource implements Resource {
 
 	private String id;

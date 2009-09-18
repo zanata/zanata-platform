@@ -19,7 +19,7 @@ import org.jboss.resteasy.spi.touri.URITemplate;
 		@XmlNsMap(namespace = Namespaces.FLIES, jsonName = Namespaces.FLIES_JSON), 
 		@XmlNsMap(namespace = Namespaces.XML, jsonName = Namespaces.XML_JSON) 
 	})
-@XmlType(name="projectType", namespace=Namespaces.FLIES)
+@XmlType(name="projectType", namespace=Namespaces.FLIES, propOrder={"name", "description", "iterations"})
 @XmlRootElement(name="project", namespace=Namespaces.FLIES)
 public class Project extends AbstractBaseResource{
 
