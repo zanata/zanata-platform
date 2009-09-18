@@ -11,11 +11,7 @@ import javax.persistence.OneToMany;
 
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.rest.dto.TextFlow;
-import org.fedorahosted.flies.rest.dto.TextFlowTarget;
-import org.fedorahosted.flies.rest.dto.TextFlowTargets;
 import org.hibernate.annotations.IndexColumn;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.NotNull;
 
@@ -43,20 +39,6 @@ public class HTextFlow extends HParentResource {
 	public HTextFlow(TextFlow tf) {
 		super(tf);
 		this.content = tf.getContent();
-		for (Object ext : tf.getExtensions()) {
-			if (ext instanceof TextFlowTargets) {
-				TextFlowTargets targets = (TextFlowTargets) ext;
-				for (TextFlowTarget target : targets.getTargets()) {
-					HTextFlowTarget hTarget = new HTextFlowTarget();
-					hTarget.setContent(target.getContent());
-					hTarget.setLocale(target.getLang());
-					hTarget.setRevision(target.getVersion());
-					hTarget.setState(target.getState());
-					hTarget.setTextFlow(this);
-					this.targets.put(target.getLang(), hTarget);
-				}
-			} //TODO else?
-		}
 	}
 
 	@NotNull

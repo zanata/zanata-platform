@@ -1,8 +1,10 @@
 package org.fedorahosted.flies.repository.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -27,7 +29,7 @@ public class HDocumentTarget implements Serializable {
 	private HDocument template;
 	private LocaleId locale;
 	
-	private Set<HTextFlowTarget> targets;
+	private Set<HTextFlowTarget> targets = new HashSet<HTextFlowTarget>();
 
 	public HDocumentTarget() {
 	}
@@ -53,7 +55,7 @@ public class HDocumentTarget implements Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.PERSIST)
 	@JoinColumn(name = "document_id")
 	@NaturalId
 	public HDocument getTemplate() {
@@ -74,7 +76,7 @@ public class HDocumentTarget implements Serializable {
 		this.locale = locale;
 	}
 
-	@OneToMany(mappedBy="documentTarget")
+	@OneToMany(mappedBy="documentTarget", cascade=CascadeType.ALL)
 	public Set<HTextFlowTarget> getTargets() {
 		return targets;
 	}
