@@ -17,7 +17,7 @@ import org.fedorahosted.flies.LocaleId;
 @XmlSeeAlso({
 	TextFlowTargets.class
 })
-public class TextFlow implements Resource{
+public class TextFlow extends AbstractBaseResource implements Resource{
 
 	private String id;
 	private LocaleId lang;

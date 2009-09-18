@@ -26,9 +26,12 @@ import org.jboss.resteasy.spi.touri.URITemplate;
 @XmlSeeAlso({
 	Documents.class
 })
-public class ProjectIteration extends AbstractProjectIteration{
+public class ProjectIteration extends AbstractBaseResource{
 
 	private String id;
+	private String name;
+	private String summary;
+	private Integer version = 1;
 	
 	private List<DocumentView> documents;
 	
@@ -40,18 +43,13 @@ public class ProjectIteration extends AbstractProjectIteration{
 	}
 	
 	public ProjectIteration(String id, String name) {
-		super(name);
 		this.id = id;
+		this.name = name;
 	}
 	
 	public ProjectIteration(String id, String name, String summary) {
-		super(name, summary);
-		this.id = id;
-	}
-	
-	public ProjectIteration(String id, String name, String summary, Integer version) {
-		super(name, summary, version);
-		this.id = id;
+		this(id, name);
+		this.summary = summary;
 	}
 	
 	@XmlAttribute(name="id", required=true)
@@ -60,6 +58,32 @@ public class ProjectIteration extends AbstractProjectIteration{
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	@XmlElement(name="name", namespace=Namespaces.PROJECT, required=true)
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@XmlElement(name="summary", namespace=Namespaces.PROJECT, required=false)
+	public String getSummary() {
+		return summary;
+	}
+	
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+
+	@XmlAttribute(name="version", required=true)
+	public Integer getVersion() {
+		return version;
+	}
+	
+	public void setVersion(Integer version) {
+		this.version = version;
 	}
 	
 	@XmlElementWrapper(name="documents", namespace=Namespaces.PROJECT, required=true)

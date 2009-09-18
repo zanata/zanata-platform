@@ -15,8 +15,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.fedorahosted.flies.rest.MediaTypes;
-import org.fedorahosted.flies.rest.dto.ProjectInline;
-import org.fedorahosted.flies.rest.dto.ProjectInlineList;
+import org.fedorahosted.flies.rest.dto.Project;
+import org.fedorahosted.flies.rest.dto.ProjectList;
 import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
 import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
 import org.jboss.seam.mock.ResourceRequestEnvironment;
@@ -72,11 +72,11 @@ public class ProjectServiceRawSeamTest extends SeamTest{
 				// check that the content we get back is XML
 				byte [] xmlVal = response.getContentAsByteArray();
 				JAXBContext context;
-				ProjectInlineList projectRefs = null;
+				ProjectList projectRefs = null;
 				try {
-					context = JAXBContext.newInstance(ProjectInlineList.class);
+					context = JAXBContext.newInstance(ProjectList.class);
 					Unmarshaller unmarshaller = context.createUnmarshaller();
-					projectRefs = (ProjectInlineList) unmarshaller.unmarshal(new ByteArrayInputStream(xmlVal));
+					projectRefs = (ProjectList) unmarshaller.unmarshal(new ByteArrayInputStream(xmlVal));
 					
 				} catch (JAXBException e) {
 					fail("Failed to initialize Jaxb", e);
@@ -86,7 +86,7 @@ public class ProjectServiceRawSeamTest extends SeamTest{
 				
 				assertThat( projectRefs.getProjects().size(), is(1) );
 				
-				ProjectInline projectRef = projectRefs.getProjects().get(0);
+				Project projectRef = projectRefs.getProjects().get(0);
 				assertThat( projectRef.getName(), is("Sample Project"));
 			}
 

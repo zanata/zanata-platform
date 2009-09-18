@@ -16,16 +16,16 @@ import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
 		@XmlNsMap(namespace = Namespaces.DOCUMENT, jsonName = Namespaces.DOCUMENT_JSON), 
 		@XmlNsMap(namespace = Namespaces.XML, jsonName = Namespaces.XML_JSON) 
 	})
-	@XmlRootElement(name="projects", namespace=Namespaces.PROJECT)
-	@XmlType(name="projectsRefsType", namespace=Namespaces.PROJECT)
-public class ProjectInlineList {
+@XmlRootElement(name="projects", namespace=Namespaces.PROJECT)
+@XmlType(name="projectsRefsType", namespace=Namespaces.PROJECT)
+public class ProjectList {
 
-	private List<ProjectInline> projects;
+	private List<Project> projects;
 	
 	@XmlElement(name="project", namespace=Namespaces.PROJECT)
-	public List<ProjectInline> getProjects() {
+	public List<Project> getProjects() {
 		if(projects == null){
-			projects = new ArrayList<ProjectInline>();
+			projects = new ArrayList<Project>();
 		}
 		return projects;
 	}

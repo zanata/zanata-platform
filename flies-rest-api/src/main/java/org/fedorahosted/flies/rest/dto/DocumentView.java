@@ -1,23 +1,25 @@
 package org.fedorahosted.flies.rest.dto;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.rest.MediaTypes;
 
 
-@XmlType(name="documentViewType", namespace=Namespaces.DOCUMENT)
+@XmlType(name="documentViewType", namespace=Namespaces.DOCUMENT, propOrder={"links", "resources", "extensions"})
 @XmlRootElement(name="document", namespace=Namespaces.DOCUMENT)
 public class DocumentView extends Document{
 
-	private URI ref;
-	private URI containerRef;
 	private Set<LocaleId> targetLanguages;
 	
 	private DocumentView(){
@@ -30,31 +32,11 @@ public class DocumentView extends Document{
 
 	public DocumentView(DocumentView other) {
 		super(other);
-		this.ref = other.ref;
-		this.containerRef = other.containerRef;
 		if(other.targetLanguages != null) {
 			this.targetLanguages = new HashSet<LocaleId>(other.targetLanguages);
 		}
 	}
-	
-	@XmlAttribute(name="ref", required=false)
-	public URI getRef() {
-		return ref;
-	}
-	
-	public void setRef(URI ref) {
-		this.ref = ref;
-	}
 
-	@XmlAttribute(name="container-ref", required=false)
-	public URI getContainerRef() {
-		return containerRef;
-	}
-	
-	public void setContainerRef(URI containerRef) {
-		this.containerRef = containerRef;
-	}
-	
 	/**
 	 * This field is only used in GET requests, and is ignored in other operation
 	 * 
@@ -66,6 +48,29 @@ public class DocumentView extends Document{
 		if(targetLanguages == null)
 			targetLanguages = new HashSet<LocaleId>();
 		return targetLanguages;
+	}
+	
+	
+	public void setSelfRef(URI self){
+		Link link = findLinkByType(Relationships.SELF);
+		if(link == null){
+			link = new Link(self, Relationships.SELF, MediaTypes.APPLICATION_FLIES_DOCUMENT_RESOURCE_XML);
+			getLinks().add(link);
+		}
+		else{
+			link.setHref(self);
+		}
+	}
+	
+	public void setContainerRef(URI container){
+		Link link = findLinkByType(Relationships.DOCUMENT_CONTAINER);
+		if(link == null){
+			link = new Link(container, Relationships.DOCUMENT_CONTAINER, MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML);
+			getLinks().add(link);
+		}
+		else{
+			link.setHref(container);
+		}
 	}
 	
 }

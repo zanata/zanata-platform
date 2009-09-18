@@ -22,28 +22,26 @@ import org.jboss.resteasy.spi.touri.URITemplate;
 	})
 @XmlType(name="projectType", namespace=Namespaces.PROJECT)
 @XmlRootElement(name="project", namespace=Namespaces.PROJECT)
-public class Project extends AbstractProject{
+public class Project extends AbstractBaseResource{
 
 	private String id;
+	private String name;
+	private String description;
+	private Integer version = 1;
 	
-	private List<ProjectIterationInline> iterations;
+	private List<ProjectIteration> iterations;
 	
 	public Project() {
 	}
 	
 	public Project(String id, String name) {
-		super(name);
 		this.id = id;
+		this.name = name;
 	}
 	
-	public Project(String id, String name, String summary) {
-		super(name, summary);
-		this.id = id;
-	}
-	
-	public Project(String id, String name, String summary, Integer version) {
-		super(name, summary, version);
-		this.id = id;
+	public Project(String id, String name, String description) {
+		this(id,name);
+		this.description = description;
 	}
 	
 	@XmlAttribute(name="id", required=true)
@@ -54,11 +52,37 @@ public class Project extends AbstractProject{
 		this.id = id;
 	}
 	
+	@XmlElement(name="name", namespace=Namespaces.PROJECT, required=true)
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@XmlElement(name="description", namespace=Namespaces.PROJECT, required=false)
+	public String getDescription() {
+		return description;
+	}
+	
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	@XmlAttribute(name="version", required=true)
+	public Integer getVersion() {
+		return version;
+	}
+	
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+	
 	@XmlElementWrapper(name="project-iterations", namespace=Namespaces.PROJECT, required=true)
 	@XmlElement(name="project-iteration", namespace=Namespaces.PROJECT)
-	public List<ProjectIterationInline> getIterations() {
+	public List<ProjectIteration> getIterations() {
 		if(iterations == null)
-			iterations = new ArrayList<ProjectIterationInline>();
+			iterations = new ArrayList<ProjectIteration>();
 		return iterations;
 	}
 }

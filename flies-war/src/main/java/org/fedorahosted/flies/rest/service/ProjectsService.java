@@ -20,7 +20,7 @@ import org.fedorahosted.flies.core.model.HAccount;
 import org.fedorahosted.flies.core.model.HProject;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Project;
-import org.fedorahosted.flies.rest.dto.ProjectInlineList;
+import org.fedorahosted.flies.rest.dto.ProjectList;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.validator.InvalidStateException;
@@ -51,7 +51,7 @@ public class ProjectsService {
 	
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECTS_XML, MediaType.APPLICATION_JSON })
-	public ProjectInlineList get() {
+	public ProjectList get() {
 
 		return projectsServiceAction.get();
 	}

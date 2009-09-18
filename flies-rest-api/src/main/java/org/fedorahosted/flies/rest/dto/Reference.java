@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlType;
 
 
 @XmlType(name="referenceType", namespace=Namespaces.DOCUMENT)
-public class Reference implements Resource{
+public class Reference extends AbstractBaseResource implements Resource{
 	
 	private String id;
 	private long version = 1;

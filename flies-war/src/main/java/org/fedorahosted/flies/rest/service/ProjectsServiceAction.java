@@ -1,9 +1,9 @@
 package org.fedorahosted.flies.rest.service;
 
-import org.fedorahosted.flies.rest.dto.ProjectInlineList;
+import org.fedorahosted.flies.rest.dto.ProjectList;
 
 public interface ProjectsServiceAction {
 	
-	public ProjectInlineList get();
+	public ProjectList get();
 
 }

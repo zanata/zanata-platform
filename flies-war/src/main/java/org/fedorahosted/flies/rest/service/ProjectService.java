@@ -30,9 +30,7 @@ import org.fedorahosted.flies.rest.FliesRestSecurityInterceptor;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
-import org.fedorahosted.flies.rest.dto.ProjectIterationInline;
-import org.fedorahosted.flies.rest.dto.ProjectInline;
-import org.fedorahosted.flies.rest.dto.ProjectInlineList;
+import org.fedorahosted.flies.rest.dto.ProjectList;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.validator.InvalidStateException;
@@ -90,13 +88,11 @@ public class ProjectService{
 			HIterationProject itProject = (HIterationProject) hProject;
 			for(HProjectIteration pIt : itProject.getProjectIterations()){
 				project.getIterations().add(
-						new ProjectIterationInline(
 								new ProjectIteration(
 										pIt.getSlug(),
 										pIt.getName(), 
 										pIt.getDescription()
 								)
-						)
 					);
 			}
 		}

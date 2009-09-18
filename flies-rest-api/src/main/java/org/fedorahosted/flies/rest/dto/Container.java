@@ -14,8 +14,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.fedorahosted.flies.LocaleId;
 
 
-@XmlType(name="containerType", namespace=Namespaces.DOCUMENT, propOrder={"content", "extensions"})
-public class Container implements Resource {
+@XmlType(name="containerType", namespace=Namespaces.DOCUMENT, propOrder={"links", "content", "extensions"})
+public class Container extends AbstractBaseResource implements Resource {
 
 	private String id;
 	private LocaleId lang;

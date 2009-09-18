@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlType;
 
 
 @XmlType(name="dataHookType", namespace=Namespaces.DOCUMENT)
-public class DataHook implements Resource {
+public class DataHook extends AbstractBaseResource implements Resource {
 
 	private String id;
 	private long version = 1;

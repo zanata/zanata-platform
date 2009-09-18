@@ -17,7 +17,7 @@ public class DocumentTests {
 	
 	@Test
 	public void createAFullDocument() throws JAXBException{
-		Document doc = new Document("id","name", "/my/path", ContentType.TextPlain, 1, LocaleId.EN);
+		Document doc = new Document("/my/path/document.txt", ContentType.TextPlain);
 		
 		TextFlow tf = new TextFlow("id");
 		tf.setContent("hello world!");
