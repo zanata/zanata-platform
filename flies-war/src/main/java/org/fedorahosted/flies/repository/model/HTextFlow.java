@@ -4,17 +4,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.rest.dto.TextFlow;
-import org.fedorahosted.flies.rest.dto.TextFlowTarget;
-import org.fedorahosted.flies.rest.dto.TextFlowTargets;
 import org.hibernate.annotations.IndexColumn;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.NotNull;
 
@@ -42,20 +39,6 @@ public class HTextFlow extends HParentResource {
 	public HTextFlow(TextFlow tf) {
 		super(tf);
 		this.content = tf.getContent();
-		for (Object ext : tf.getExtensions()) {
-			if (ext instanceof TextFlowTargets) {
-				TextFlowTargets targets = (TextFlowTargets) ext;
-				for (TextFlowTarget target : targets.getTargets()) {
-					HTextFlowTarget hTarget = new HTextFlowTarget();
-					hTarget.setContent(target.getContent());
-					hTarget.setLocale(target.getLang());
-					hTarget.setRevision(target.getVersion());
-					hTarget.setState(target.getState());
-					hTarget.setTextFlow(this);
-					this.targets.put(target.getLang(), hTarget);
-				}
-			} //TODO else?
-		}
 	}
 
 	@NotNull
@@ -68,8 +51,7 @@ public class HTextFlow extends HParentResource {
 		this.content = content;
 	}
 	
-	@OneToMany(mappedBy = "textFlow")
-	@OnDelete(action=OnDeleteAction.CASCADE)
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="textFlow")
 	@IndexColumn(name="pos")
 	public List<HInlineMarker> getMarkers() {
 		return markers;
@@ -79,8 +61,7 @@ public class HTextFlow extends HParentResource {
 		this.markers = markers;
 	}
 	
-	@OneToMany(mappedBy = "textFlow")
-	@OnDelete(action=OnDeleteAction.CASCADE)
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="textFlow")
 	@IndexColumn(name="start")
 	public List<HTextSegment> getSegments() {
 		return segments;
@@ -90,7 +71,7 @@ public class HTextFlow extends HParentResource {
 		this.segments = segments;
 	}
 	
-	@OneToMany(mappedBy="textFlow")
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="textFlow")
 	@MapKey(name="locale")
 	public Map<LocaleId, HTextFlowTarget> getTargets() {
 		if(targets == null) 

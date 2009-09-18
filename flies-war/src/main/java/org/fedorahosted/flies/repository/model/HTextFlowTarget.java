@@ -58,6 +58,16 @@ public class HTextFlowTarget implements Serializable{
 		this.revision = textFlow.getRevision();
 	}
 	
+	public HTextFlowTarget(TextFlowTarget target) {
+		this.content = target.getContent();
+		this.locale = target.getLang();
+		this.revision = target.getVersion();
+		this.state = target.getState();
+//		setTextFlow(target.getTextFlow);
+//		setComment(target.comment);
+//		setDocumentTarget(target.documentTarget);
+	}
+	
 	@Id
 	@GeneratedValue
 	public Long getId() {

@@ -110,12 +110,6 @@ public class HDocument extends AbstractFliesEntity{
 		this.contentType = docInfo.getContentType();
 		this.locale = docInfo.getLang();
 		this.revision = docInfo.getVersion();
-//		for (LocaleId localeId : docInfo.getTargetLanguages()) {
-//			this.targets.put(localeId, new HDocumentTarget(this, localeId));
-//		}
-		for (Resource res : docInfo.getResources()) {
-			this.getResourceTree().add(create(res));
-		}
 	}
 
 	public static HResource create(Resource res){
@@ -185,7 +179,7 @@ public class HDocument extends AbstractFliesEntity{
 		this.locale = locale;
 	}
 	
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.PERSIST)
 	@JoinColumn(name="project_id",insertable=false, updatable=false, nullable=false)
 	@NaturalId
 	public HProjectContainer getProject() {
@@ -228,7 +222,7 @@ public class HDocument extends AbstractFliesEntity{
 		this.contentType = contentType;
 	}
 
-	@OneToMany(mappedBy="document")
+	@OneToMany(mappedBy="document", cascade=CascadeType.ALL)
 	@MapKey(name="resId")
 	public Map<String,HResource> getResources() {
 		if(resources == null)
@@ -240,7 +234,7 @@ public class HDocument extends AbstractFliesEntity{
 		this.resources = resources;
 	}
 	
-	@OneToMany(mappedBy = "template")
+	@OneToMany(mappedBy = "template", cascade=CascadeType.ALL)
 	@OnDelete(action=OnDeleteAction.CASCADE)
 	@MapKey(name="locale")
 	public Map<LocaleId, HDocumentTarget> getTargets() {

@@ -2,7 +2,6 @@ package org.fedorahosted.flies.rest;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -22,5 +21,6 @@ public class FliesResteasyBootstrap extends ResteasyBootstrap {
 		getDispatcher().getProviderFactory().getServerPreProcessInterceptorRegistry().register(FliesRestSecurityInterceptor.class);
 		getDispatcher().getProviderFactory().addExceptionMapper(AuthorizationExceptionMapper.class);
 		getDispatcher().getProviderFactory().addExceptionMapper(NotLoggedInExceptionMapper.class);
+		getDispatcher().getProviderFactory().addExceptionMapper(RuntimeExceptionMapper.class);
 	}
 }
