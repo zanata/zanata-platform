@@ -77,7 +77,8 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 	    ContentType contentType = ContentType.TextPlain;
 	    Integer version = 1;
 	    LocaleId lang = LocaleId.fromJavaName("es_ES");
-	    docs.getDocuments().add(new Document("doc1", "doc1name", "path", contentType, version, lang));
+	    Document doc = new Document("doc1", "doc1name", "path", contentType, version, lang);
+		docs.getDocuments().add(doc);
 	    Response response = docsService.put(docs);
 	    assertThat(response.getStatus(), is(200));
 	}
