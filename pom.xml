@@ -101,6 +101,9 @@
       <name>Tennera release repository on fedorahosted.org</name>
       <id>fhosted.tennera.svn</id>
       <url>http://svn.fedorahosted.org/svn/tennera/m2repo/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
@@ -109,6 +112,9 @@
       <name>Tennera snapshot repository on fedorapeople.org</name>
       <id>fpeople.tennera.snap</id>
       <url>http://seanf.fedorapeople.org/maven2/snapshot/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
