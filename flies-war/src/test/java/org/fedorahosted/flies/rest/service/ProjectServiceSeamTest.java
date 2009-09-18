@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response.Status;
 import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.flies.rest.ApiKeyHeaderDecorator;
 import org.fedorahosted.flies.rest.client.IProjectResource;
+import org.fedorahosted.flies.rest.client.IProjectsResource;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
@@ -28,6 +29,7 @@ public class ProjectServiceSeamTest extends DBUnitSeamTest {
 
 	ClientRequestFactory clientRequestFactory;
 	IProjectResource projectService;
+	IProjectsResource projectsService;
 	URI baseUri = URI.create("/restv1/projects/p/");
 	
 	@BeforeClass
@@ -43,6 +45,7 @@ public class ProjectServiceSeamTest extends DBUnitSeamTest {
 		clientRequestFactory.getPrefixInterceptors().registerInterceptor(new ApiKeyHeaderDecorator("admin", "12345678901234567890123456789012"));
 
 		projectService = clientRequestFactory.createProxy(IProjectResource.class);
+		projectsService = clientRequestFactory.createProxy(IProjectsResource.class);
 		
 	}
 	
@@ -67,55 +70,7 @@ public class ProjectServiceSeamTest extends DBUnitSeamTest {
 		assertThat( response.getStatus(), lessThan(400) );
 	}
 
-	public void createProject(){
-		Project project = new Project("my-new-project", "My New Project", "Another test project");
-
-		URI uri = baseUri.resolve("my-new-project");
-		projectService = clientRequestFactory.createProxy(IProjectResource.class, uri);
-		
-		Response response = projectService.post(project);
-		
-		assertThat( response.getStatus(), is( Status.CREATED.getStatusCode()));
-		
-		String location = (String) response.getMetadata().getFirst("Location");
-		
-		assertThat( location, endsWith("/projects/p/my-new-project"));
-		
-		ClientResponse<Project> projectResponse = projectService.get();
-		
-		assertThat( projectResponse.getStatus(), is( Status.OK.getStatusCode()));
-		
-		project = projectResponse.getEntity();
-		
-		assertThat( project.getName(), is("My New Project"));
-		assertThat( project.getDescription(), is("Another test project"));
-		
-	}
 	
-	public void createProjectThatAlreadyExists(){
-		//projectService = clientRequestFactory.createProxy(IProjectResource.class, baseUri.resolve("sample-project"));
-
-		Project project = new Project("sample-project", "Sample Project", "An example Project");
-		Response response = projectService.post(project);
-	
-        assertThat( response.getStatus(), is( Status.CONFLICT.getStatusCode()));
-	}
-
-	public void createProjectWithInvalidData(){
-		projectService = clientRequestFactory.createProxy(IProjectResource.class, baseUri.resolve("my,new,project"));
-
-		Project project = new Project("my,new,project", "My New Project", "Another test project");
-		Response response = projectService.post(project);
-		
-        assertThat( response.getStatus(), is( Status.BAD_REQUEST.getStatusCode()));
-        
-		projectService = clientRequestFactory.createProxy(IProjectResource.class, baseUri.resolve("my-test-project"));
-        Project project1 = new Project("my-test-project","My test ProjectMy test ProjectMy test ProjectMy test ProjectMy test ProjectMy test Project", "Length of Project name beyond 80");
-        Response response1 = projectService.post(project1);
-        
-        assertThat(response1.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
-        
-	}
 
 	public void updateProjectWithInvalidData() {
 		fail("Not implemented");
