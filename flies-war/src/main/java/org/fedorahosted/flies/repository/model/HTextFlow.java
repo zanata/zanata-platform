@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
@@ -68,8 +69,7 @@ public class HTextFlow extends HParentResource {
 		this.content = content;
 	}
 	
-	@OneToMany(mappedBy = "textFlow")
-	@OnDelete(action=OnDeleteAction.CASCADE)
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="textFlow")
 	@IndexColumn(name="pos")
 	public List<HInlineMarker> getMarkers() {
 		return markers;
@@ -79,8 +79,7 @@ public class HTextFlow extends HParentResource {
 		this.markers = markers;
 	}
 	
-	@OneToMany(mappedBy = "textFlow")
-	@OnDelete(action=OnDeleteAction.CASCADE)
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="textFlow")
 	@IndexColumn(name="start")
 	public List<HTextSegment> getSegments() {
 		return segments;
@@ -90,7 +89,7 @@ public class HTextFlow extends HParentResource {
 		this.segments = segments;
 	}
 	
-	@OneToMany(mappedBy="textFlow")
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="textFlow")
 	@MapKey(name="locale")
 	public Map<LocaleId, HTextFlowTarget> getTargets() {
 		if(targets == null) 
