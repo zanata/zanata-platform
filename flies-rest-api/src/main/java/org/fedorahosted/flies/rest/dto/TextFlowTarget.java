@@ -84,7 +84,7 @@ public class TextFlowTarget implements IExtensible{
 		this.state = state;
 	}
 	
-	@XmlElement(name="content",namespace=Namespaces.DOCUMENT, required=true)
+	@XmlElement(name="content",namespace=Namespaces.FLIES, required=true)
 	public String getContent() {
 		if(content == null)
 			return "";

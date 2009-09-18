@@ -8,7 +8,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlType(name="abstractBaseResource", namespace=Namespaces.DOCUMENT)
+@XmlType(name="abstractBaseResource", namespace=Namespaces.FLIES)
 abstract class AbstractBaseResource {
 	
 	private List<Link> links;
@@ -20,7 +20,7 @@ abstract class AbstractBaseResource {
 	 * 
 	 * @return set of Links managed by this resource
 	 */
-	@XmlElement(name="link", namespace=Namespaces.DOCUMENT, required=false)
+	@XmlElement(name="link", namespace=Namespaces.FLIES, required=false)
 	public List<Link> getLinks() {
 		if(links == null)
 			links = new ArrayList<Link>();

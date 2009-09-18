@@ -11,17 +11,16 @@ import org.jboss.resteasy.annotations.providers.jaxb.json.Mapped;
 import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
 
 @Mapped(namespaceMap = {
-	@XmlNsMap(namespace = Namespaces.PROJECT, jsonName = Namespaces.PROJECT_JSON),
-	@XmlNsMap(namespace = Namespaces.DOCUMENT, jsonName = Namespaces.DOCUMENT_JSON), 
+	@XmlNsMap(namespace = Namespaces.FLIES, jsonName = Namespaces.FLIES_JSON), 
 	@XmlNsMap(namespace = Namespaces.XML, jsonName = Namespaces.XML_JSON) 
 })
-@XmlRootElement(name="documents", namespace=Namespaces.DOCUMENT)
-@XmlType(name="documentsType", namespace=Namespaces.DOCUMENT)
+@XmlRootElement(name="documents", namespace=Namespaces.FLIES)
+@XmlType(name="documentsType", namespace=Namespaces.FLIES)
 public class Documents {
 	
 	private List<Document> documents;
 	
-	@XmlElement(name="document", namespace=Namespaces.DOCUMENT)
+	@XmlElement(name="document", namespace=Namespaces.FLIES)
 	public List<Document> getDocuments() {
 		if(documents == null)
 			documents = new ArrayList<Document>();

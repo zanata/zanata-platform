@@ -12,7 +12,7 @@ import org.fedorahosted.flies.LocaleId;
 
 
 @XmlJavaTypeAdapter(type=LocaleId.class, value=LocaleIdAdapter.class)
-@XmlRootElement(name="document-target", namespace=Namespaces.DOCUMENT)
+@XmlRootElement(name="document-target", namespace=Namespaces.FLIES)
 public class ContentTarget {
 	
 	private LocaleId targetLanguage;
@@ -28,7 +28,7 @@ public class ContentTarget {
 		this.targetLanguage = targetLanguage;
 	}
 	
-	@XmlElement(name="text-flow-target", namespace=Namespaces.DOCUMENT)
+	@XmlElement(name="text-flow-target", namespace=Namespaces.FLIES)
 	public List<TextFlowTarget> getTextFlowTargets() {
 		if(textFlowTargets == null)
 			textFlowTargets = new ArrayList<TextFlowTarget>();

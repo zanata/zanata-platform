@@ -17,12 +17,11 @@ import org.jboss.resteasy.spi.touri.URITemplate;
 
 @URITemplate("iteration/{id}")
 @Mapped(namespaceMap = {
-		@XmlNsMap(namespace = Namespaces.PROJECT, jsonName = Namespaces.PROJECT_JSON),
-		@XmlNsMap(namespace = Namespaces.DOCUMENT, jsonName = Namespaces.DOCUMENT_JSON), 
+		@XmlNsMap(namespace = Namespaces.FLIES, jsonName = Namespaces.FLIES_JSON), 
 		@XmlNsMap(namespace = Namespaces.XML, jsonName = Namespaces.XML_JSON) 
 	})
-@XmlType(name="projectIterationType", namespace=Namespaces.PROJECT)
-@XmlRootElement(name="project-iteration", namespace=Namespaces.PROJECT)
+@XmlType(name="projectIterationType", namespace=Namespaces.FLIES)
+@XmlRootElement(name="project-iteration", namespace=Namespaces.FLIES)
 @XmlSeeAlso({
 	Documents.class
 })
@@ -60,7 +59,7 @@ public class ProjectIteration extends AbstractBaseResource{
 		this.id = id;
 	}
 
-	@XmlElement(name="name", namespace=Namespaces.PROJECT, required=true)
+	@XmlElement(name="name", namespace=Namespaces.FLIES, required=true)
 	public String getName() {
 		return name;
 	}
@@ -68,7 +67,7 @@ public class ProjectIteration extends AbstractBaseResource{
 		this.name = name;
 	}
 
-	@XmlElement(name="summary", namespace=Namespaces.PROJECT, required=false)
+	@XmlElement(name="summary", namespace=Namespaces.FLIES, required=false)
 	public String getSummary() {
 		return summary;
 	}
@@ -86,8 +85,8 @@ public class ProjectIteration extends AbstractBaseResource{
 		this.version = version;
 	}
 	
-	@XmlElementWrapper(name="documents", namespace=Namespaces.PROJECT, required=true)
-	@XmlElement(name="document", namespace=Namespaces.DOCUMENT)
+	@XmlElementWrapper(name="documents", namespace=Namespaces.FLIES, required=true)
+	@XmlElement(name="document", namespace=Namespaces.FLIES)
 	public List<DocumentView> getDocuments() {
 		if(documents == null)
 			documents = new ArrayList<DocumentView>();

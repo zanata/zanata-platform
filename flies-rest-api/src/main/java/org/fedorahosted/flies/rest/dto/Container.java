@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.fedorahosted.flies.LocaleId;
 
 
-@XmlType(name="containerType", namespace=Namespaces.DOCUMENT, propOrder={"links", "content", "extensions"})
+@XmlType(name="containerType", namespace=Namespaces.FLIES, propOrder={"links", "content", "extensions"})
 public class Container extends AbstractBaseResource implements Resource {
 
 	private String id;
@@ -96,12 +96,12 @@ public class Container extends AbstractBaseResource implements Resource {
 		this.lang = lang;
 	}
 	
-	@XmlElementWrapper(name="content", namespace=Namespaces.DOCUMENT, required=true)
+	@XmlElementWrapper(name="content", namespace=Namespaces.FLIES, required=true)
 	@XmlElements({
-		@XmlElement(name="text-flow", type=TextFlow.class, namespace=Namespaces.DOCUMENT),
-		@XmlElement(name="container", type=Container.class, namespace=Namespaces.DOCUMENT),
-		@XmlElement(name="reference", type=Reference.class, namespace=Namespaces.DOCUMENT),
-		@XmlElement(name="data-hook", type=DataHook.class, namespace=Namespaces.DOCUMENT)
+		@XmlElement(name="text-flow", type=TextFlow.class, namespace=Namespaces.FLIES),
+		@XmlElement(name="container", type=Container.class, namespace=Namespaces.FLIES),
+		@XmlElement(name="reference", type=Reference.class, namespace=Namespaces.FLIES),
+		@XmlElement(name="data-hook", type=DataHook.class, namespace=Namespaces.FLIES)
 		})
 	public List<Resource> getContent() {
 		if(content == null)

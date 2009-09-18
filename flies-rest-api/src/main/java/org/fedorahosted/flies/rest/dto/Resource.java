@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlType;
 
 
 
-@XmlType(name="resourceType", namespace=Namespaces.DOCUMENT)
+@XmlType(name="resourceType", namespace=Namespaces.FLIES)
 @XmlSeeAlso({TextFlow.class, Container.class, Reference.class})
 public interface Resource extends IExtensible{
 

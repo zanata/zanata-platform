@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.fedorahosted.flies.LocaleId;
 
 
-@XmlType(name="textFlowType", namespace=Namespaces.DOCUMENT, propOrder={"content", "extensions"})
+@XmlType(name="textFlowType", namespace=Namespaces.FLIES, propOrder={"content", "extensions"})
 @XmlSeeAlso({
 	TextFlowTargets.class
 })
@@ -97,7 +97,7 @@ public class TextFlow extends AbstractBaseResource implements Resource{
 		this.lang = lang;
 	}
 
-	@XmlElement(name="content",namespace=Namespaces.DOCUMENT, required=true)
+	@XmlElement(name="content",namespace=Namespaces.FLIES, required=true)
 	public String getContent() {
 		if(content == null)
 			return "";

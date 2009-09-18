@@ -13,22 +13,21 @@ import org.jboss.resteasy.annotations.providers.jaxb.json.Mapped;
 import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
 
 @Mapped(namespaceMap = {
-		@XmlNsMap(namespace = Namespaces.PROJECT, jsonName = Namespaces.PROJECT_JSON),
-		@XmlNsMap(namespace = Namespaces.DOCUMENT, jsonName = Namespaces.DOCUMENT_JSON), 
+		@XmlNsMap(namespace = Namespaces.FLIES, jsonName = Namespaces.FLIES_JSON), 
 		@XmlNsMap(namespace = Namespaces.XML, jsonName = Namespaces.XML_JSON) 
 	})
-@XmlRootElement(name="document-content", namespace=Namespaces.DOCUMENT)
-@XmlType(name="resourcesType", namespace=Namespaces.DOCUMENT)
+@XmlRootElement(name="document-content", namespace=Namespaces.FLIES)
+@XmlType(name="resourcesType", namespace=Namespaces.FLIES)
 public class ResourceList {
 
 	private List<Resource> resources;
 
-	@XmlElementWrapper(name="document-content", namespace=Namespaces.DOCUMENT, required=false)
+	@XmlElementWrapper(name="document-content", namespace=Namespaces.FLIES, required=false)
 	@XmlElements({
-		@XmlElement(name="text-flow", type=TextFlow.class, namespace=Namespaces.DOCUMENT),
-		@XmlElement(name="container", type=Container.class, namespace=Namespaces.DOCUMENT),
-		@XmlElement(name="reference", type=Reference.class, namespace=Namespaces.DOCUMENT),
-		@XmlElement(name="data-hook", type=DataHook.class, namespace=Namespaces.DOCUMENT)
+		@XmlElement(name="text-flow", type=TextFlow.class, namespace=Namespaces.FLIES),
+		@XmlElement(name="container", type=Container.class, namespace=Namespaces.FLIES),
+		@XmlElement(name="reference", type=Reference.class, namespace=Namespaces.FLIES),
+		@XmlElement(name="data-hook", type=DataHook.class, namespace=Namespaces.FLIES)
 		})
 	public List<Resource> getResources() {
 		if(resources == null)

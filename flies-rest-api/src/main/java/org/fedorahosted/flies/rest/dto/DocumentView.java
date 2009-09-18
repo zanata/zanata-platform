@@ -16,8 +16,8 @@ import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.rest.MediaTypes;
 
 
-@XmlType(name="documentViewType", namespace=Namespaces.DOCUMENT, propOrder={"links", "resources", "extensions"})
-@XmlRootElement(name="document", namespace=Namespaces.DOCUMENT)
+@XmlType(name="documentViewType", namespace=Namespaces.FLIES, propOrder={"links", "resources", "extensions"})
+@XmlRootElement(name="document", namespace=Namespaces.FLIES)
 public class DocumentView extends Document{
 
 	private Set<LocaleId> targetLanguages;

@@ -16,12 +16,11 @@ import org.jboss.resteasy.spi.touri.URITemplate;
 
 @URITemplate("project/{id}")
 @Mapped(namespaceMap = {
-		@XmlNsMap(namespace = Namespaces.PROJECT, jsonName = Namespaces.PROJECT_JSON),
-		@XmlNsMap(namespace = Namespaces.DOCUMENT, jsonName = Namespaces.DOCUMENT_JSON), 
+		@XmlNsMap(namespace = Namespaces.FLIES, jsonName = Namespaces.FLIES_JSON), 
 		@XmlNsMap(namespace = Namespaces.XML, jsonName = Namespaces.XML_JSON) 
 	})
-@XmlType(name="projectType", namespace=Namespaces.PROJECT)
-@XmlRootElement(name="project", namespace=Namespaces.PROJECT)
+@XmlType(name="projectType", namespace=Namespaces.FLIES)
+@XmlRootElement(name="project", namespace=Namespaces.FLIES)
 public class Project extends AbstractBaseResource{
 
 	private String id;
@@ -52,7 +51,7 @@ public class Project extends AbstractBaseResource{
 		this.id = id;
 	}
 	
-	@XmlElement(name="name", namespace=Namespaces.PROJECT, required=true)
+	@XmlElement(name="name", namespace=Namespaces.FLIES, required=true)
 	public String getName() {
 		return name;
 	}
@@ -60,7 +59,7 @@ public class Project extends AbstractBaseResource{
 		this.name = name;
 	}
 
-	@XmlElement(name="description", namespace=Namespaces.PROJECT, required=false)
+	@XmlElement(name="description", namespace=Namespaces.FLIES, required=false)
 	public String getDescription() {
 		return description;
 	}
@@ -78,8 +77,8 @@ public class Project extends AbstractBaseResource{
 		this.version = version;
 	}
 	
-	@XmlElementWrapper(name="project-iterations", namespace=Namespaces.PROJECT, required=true)
-	@XmlElement(name="project-iteration", namespace=Namespaces.PROJECT)
+	@XmlElementWrapper(name="project-iterations", namespace=Namespaces.FLIES, required=true)
+	@XmlElement(name="project-iteration", namespace=Namespaces.FLIES)
 	public List<ProjectIteration> getIterations() {
 		if(iterations == null)
 			iterations = new ArrayList<ProjectIteration>();
