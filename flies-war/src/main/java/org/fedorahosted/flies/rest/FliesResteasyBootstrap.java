@@ -19,6 +19,8 @@ public class FliesResteasyBootstrap extends ResteasyBootstrap {
 	protected void initDispatcher() {
 		super.initDispatcher();
 		getDispatcher().getProviderFactory().getServerPreProcessInterceptorRegistry().register(FliesRestSecurityInterceptor.class);
+//      not sure why this one is automatically registered, but not the others
+//		getDispatcher().getProviderFactory().getServerMessageBodyWriterInterceptorRegistry().register(JsonPWriterInterceptor.class);
 		getDispatcher().getProviderFactory().addExceptionMapper(AuthorizationExceptionMapper.class);
 		getDispatcher().getProviderFactory().addExceptionMapper(NotLoggedInExceptionMapper.class);
 		getDispatcher().getProviderFactory().addExceptionMapper(RuntimeExceptionMapper.class);
