@@ -8,7 +8,8 @@ import javax.ws.rs.ext.Provider;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 
-@Provider
+// Disabled this as it catches e.g. 406 errors for some reason
+//@Provider
 public class RuntimeExceptionMapper implements ExceptionMapper<RuntimeException> {
 
 	private static final Log log = Logging.getLog(RuntimeExceptionMapper.class);
