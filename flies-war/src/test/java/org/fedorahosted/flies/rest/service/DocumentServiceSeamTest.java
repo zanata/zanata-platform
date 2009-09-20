@@ -8,8 +8,11 @@ import javax.ws.rs.core.Response.Status;
 import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.rest.ApiKeyHeaderDecorator;
+import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.client.IDocumentResource;
 import org.fedorahosted.flies.rest.dto.Document;
+import org.fedorahosted.flies.rest.dto.Link;
+import org.fedorahosted.flies.rest.dto.Relationships;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
@@ -30,6 +33,8 @@ public class DocumentServiceSeamTest extends DBUnitSeamTest{
 	URI baseUri = URI.create("/restv1/");
 	IDocumentResource documentResource;
 	
+	private static final String url = "projects/p/sample-project/iterations/i/1.0/documents/d/my,fancy,document.txt";
+	
 	@BeforeClass
 	public void prepareRestEasyClientFramework() throws Exception {
 
@@ -42,7 +47,7 @@ public class DocumentServiceSeamTest extends DBUnitSeamTest{
 		
 		clientRequestFactory.getPrefixInterceptors().registerInterceptor(new ApiKeyHeaderDecorator("admin", "12345678901234567890123456789012"));
 
-		documentResource = clientRequestFactory.createProxy(IDocumentResource.class, baseUri.resolve("projects/p/sample-project/iterations/i/1.0/documents/d/my,fancy,document.txt"));
+		documentResource = clientRequestFactory.createProxy(IDocumentResource.class, baseUri.resolve(url));
 		
 	}
 	
@@ -67,7 +72,17 @@ public class DocumentServiceSeamTest extends DBUnitSeamTest{
 		ClientResponse<Document> documentResponse = documentResource.get(null);
 		
 		assertThat( documentResponse.getResponseStatus(), is(Status.OK) );
-		assertThat( documentResponse.getEntity().getVersion(), is(1) );
+		
+		doc = documentResponse.getEntity(); 
+		assertThat( doc.getVersion(), is(1) );
+		Link link = doc.findLinkByRel(Relationships.SELF); 
+		assertThat( link, notNullValue() );
+		assertThat( link.getHref().toString(), endsWith(url) );
+		
+		link = doc.findLinkByRel(Relationships.DOCUMENT_CONTAINER); 
+		assertThat( link, notNullValue() );
+		assertThat( link.getType(), is( MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML) );
+		
 		
 	}
 	
