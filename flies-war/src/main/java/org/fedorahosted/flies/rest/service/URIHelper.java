@@ -9,7 +9,7 @@ public final class URIHelper{
 	}
 	
 	public static String getIteration(String projectSlug, String iterationSlug) {
-		return getProject(projectSlug) + "/iterations/i" + iterationSlug;
+		return getProject(projectSlug) + "/iterations/i/" + iterationSlug;
 	}
 	
 	public static String getDocument(String projectSlug, String iterationSlug, String documentId) {
@@ -17,10 +17,14 @@ public final class URIHelper{
 	}
 	
 	public static String convertFromDocumentURIId(String uriId){
-		return uriId.replace(',', '/');
+		
+		return "/" + uriId.replace(',', '/');
 	}
-	public static String convertToDocumentURIId(String uriId){
-		return uriId.replace('/', ',');
+	public static String convertToDocumentURIId(String id){
+		if(id.startsWith("/")){
+			return id.substring(1).replace('/', ',');
+		}
+		return id.replace('/', ',');
 	}
 
 	

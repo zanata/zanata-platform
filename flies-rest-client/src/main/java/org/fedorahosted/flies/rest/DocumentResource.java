@@ -4,6 +4,7 @@ import java.net.URI;
 
 import javax.ws.rs.core.Response;
 
+import org.fedorahosted.flies.rest.client.ContentQualifier;
 import org.fedorahosted.flies.rest.client.IDocumentResource;
 import org.fedorahosted.flies.rest.client.IDocumentsResource;
 import org.fedorahosted.flies.rest.dto.Document;
@@ -23,8 +24,8 @@ public class DocumentResource implements IDocumentResource{
 	
 	
 	@Override
-	public ClientResponse<Document> get(String includeTargets) {
-		return documentResource.get(includeTargets);
+	public ClientResponse<Document> get(ContentQualifier resources) {
+		return documentResource.get(resources);
 	}
 
 	@Override

@@ -15,10 +15,15 @@ import org.jboss.resteasy.client.ClientResponse;
 //@Path("/d/{documentId}")
 public interface IDocumentResource {
 
+	/**
+	 * 
+	 * @param resources  
+	 * @return
+	 */
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
 	public ClientResponse<Document> get(
-			@QueryParam("includeTargets") String includeTargets);
+			@QueryParam("resources") ContentQualifier resources);
 
 	/**
 	 * Add/Update one Document.

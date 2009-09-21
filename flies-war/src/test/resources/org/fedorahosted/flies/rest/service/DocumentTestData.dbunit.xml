@@ -1,4 +1,42 @@
 <?xml version="1.0"?>
 <dataset>
-  <HDocument/>
+  <HDocument
+    id="1"
+    creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16" 
+    contentType="text/plain"
+    docId="/my/path/document.txt"
+    locale="en-US"
+    name="document.txt"
+    path="/my/path"
+    pos="1"
+    project_id="1"
+    revision="1"
+  />
+  <HResource
+  	id="1"
+  	document_id="1"
+  	parent_id="[NULL]"
+  	resId="tf1"
+  	revision="1"
+  	pos="1"
+  />
+  <HTextFlow 
+  	id="1"
+  	content="hello world"
+  />
+  <HDocumentTarget
+  	id="1"
+  	document_id="1"
+  	locale="nb-NO"
+  />
+  <HTextFlowTarget 
+  	id="1"
+  	content="hei verden"
+  	locale="nb-NO"
+  	revision="1"
+  	state="1"
+  	resource_id="1"
+  	document_target_id="1"
+  />
 </dataset>
