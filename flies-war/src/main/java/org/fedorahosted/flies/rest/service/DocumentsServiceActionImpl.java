@@ -81,7 +81,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     public void put(Documents docs) {
     	log.info("HTTP PUT "+documentsService.getRequest().getRequestURL()+" :\n"+docs);
     	HProjectContainer hContainer = getContainer();
-    	List<HDocument> hdocs = new ArrayList<HDocument>();
+    	List<HDocument> hDocs = new ArrayList<HDocument>();
     	for (Document doc: docs.getDocuments()) {
 			// if doc already exists, load it and update it, but don't create it
     		HDocument hDoc = documentDAO.getByDocId(hContainer, doc.getId());
@@ -89,9 +89,10 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     			hDoc = new HDocument();
     		}
     		copy(doc, hDoc, true);
+    		hDocs.add(hDoc);
     	}
     	// TODO ensure omitted docs get deleted by Hibernate
-    	getContainer().setDocuments(hdocs);
+    	getContainer().setDocuments(hDocs);
     	session.flush();
     }
     
@@ -101,7 +102,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
 		hDoc.setPath(docInfo.getPath());
 		hDoc.setContentType(docInfo.getContentType());
 		hDoc.setLocale(docInfo.getLang());
-		hDoc.setRevision(docInfo.getVersion());
+		hDoc.setRevision(docInfo.getVersion());  // TODO check this!
 		Map<LocaleId, HDocumentTarget> docTargets = hDoc.getTargets();
 		List<HResource> hResources;
 		if (put) {
