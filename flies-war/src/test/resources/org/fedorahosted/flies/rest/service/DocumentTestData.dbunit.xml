@@ -9,7 +9,7 @@
     locale="en-US"
     name="document.txt"
     path="/my/path"
-    pos="1"
+    pos="0"
     project_id="1"
     revision="1"
   />
@@ -19,7 +19,7 @@
   	parent_id="[NULL]"
   	resId="tf1"
   	revision="1"
-  	pos="1"
+  	pos="0"
   />
   <HTextFlow 
   	id="1"
