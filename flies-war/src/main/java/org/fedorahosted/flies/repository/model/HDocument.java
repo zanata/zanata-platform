@@ -247,7 +247,7 @@ public class HDocument extends AbstractFliesEntity{
 	}
 
 	@OneToMany(cascade=CascadeType.ALL)
-	@Where(clause="parent_id=NULL")
+	@Where(clause="parent_id is null")
 	@IndexColumn(name="pos",base=0,nullable=false)
 	@JoinColumn(name="document_id",nullable=false)
 	public List<HResource> getResourceTree() {
