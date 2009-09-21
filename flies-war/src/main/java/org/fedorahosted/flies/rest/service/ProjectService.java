@@ -101,7 +101,6 @@ public class ProjectService{
 	}
 	
 	@PUT
-	@Transactional 
 	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
 	@Restrict("#{identity.loggedIn}")
 	public Response put(Project project) throws URISyntaxException{
@@ -120,7 +119,7 @@ public class ProjectService{
 		}
 		
 		try{
-			session.saveOrUpdate(hProject);
+			session.flush();
 			return Response.created( new URI("/projects/p/"+hProject.getSlug()) ).build();
 		}
         catch(InvalidStateException e){

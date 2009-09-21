@@ -73,7 +73,14 @@ public class ProjectServiceSeamTest extends DBUnitSeamTest {
 	
 
 	public void updateProjectWithInvalidData() {
-		fail("Not implemented");
+		Project project = new Project("sample-project", "ProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdate", "Project Name exceeds 80");
+
+		projectService = clientRequestFactory.createProxy(IProjectResource.class, baseUri.resolve("sample-project"));
+		
+		Response response = projectService.put(project);
+				
+		assertThat( response.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
+
 	}
 
 	public void updateProject() {
