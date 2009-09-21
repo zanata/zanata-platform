@@ -69,10 +69,12 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
 			// if doc already exists, load it and update it, but don't create it
     		HDocument hDoc = documentDAO.getByDocId(hContainer, doc.getId());
     		if (hDoc == null) {
-    			hDoc = new HDocument();
+    			hDoc = new HDocument(doc);
+    			hDoc.setProject(hContainer);
     		}
+    		getContainer().getDocuments().add(hDoc);
+    		session.save(hDoc);
     		copy(doc, hDoc, false);
-			getContainer().getDocuments().add(hDoc);
     	}
     	session.flush();
     }
@@ -82,17 +84,19 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     	log.info("HTTP PUT "+documentsService.getRequest().getRequestURL()+" :\n"+docs);
     	HProjectContainer hContainer = getContainer();
     	List<HDocument> hDocs = new ArrayList<HDocument>();
+    	getContainer().setDocuments(hDocs);
     	for (Document doc: docs.getDocuments()) {
 			// if doc already exists, load it and update it, but don't create it
     		HDocument hDoc = documentDAO.getByDocId(hContainer, doc.getId());
     		if (hDoc == null) {
-    			hDoc = new HDocument();
+    			hDoc = new HDocument(doc);
+    			hDoc.setProject(hContainer);
     		}
-    		copy(doc, hDoc, true);
     		hDocs.add(hDoc);
+    		session.save(hDoc);
+    		copy(doc, hDoc, true);
     	}
     	// TODO ensure omitted docs get deleted by Hibernate
-    	getContainer().setDocuments(hDocs);
     	session.flush();
     }
     
@@ -107,6 +111,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
 		List<HResource> hResources;
 		if (put) {
 			hResources = new ArrayList<HResource>(docInfo.getResources().size());
+			hDoc.setResourceTree(hResources);
 		} else {
 			hResources = hDoc.getResourceTree();
 		}
@@ -116,12 +121,13 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
 				hRes = resourceDAO.getById(hDoc, res.getId());
 			if (hRes == null)
 				hRes = HDocument.create(res);
+			hResources.add(hRes);
+			hRes.setDocument(hDoc);
+			hRes.setResId(res.getId());
+			session.save(hRes);
 			// TODO copy res to hRes recursively, maintaining docTargets
 			copy(res, hRes, hDoc, docTargets);
-			hResources.add(hRes);
 		}
-		if (put)
-			hDoc.setResourceTree(hResources);
     }
     
     private void copy(Resource res, HResource hRes,
@@ -144,7 +150,20 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
 					}
 					if (hTarget == null) {
 						hTarget = new HTextFlowTarget();
-//						session.save(hTarget);
+						hTarget.setLocale(target.getLang());
+						hTarget.setTextFlow(htf);
+						hTarget.setState(target.getState());
+//						hTarget.setRevision(revision);
+						hTarget.setContent(target.getContent());
+						HDocumentTarget docTarget = docTargets.get(target.getLang());
+						if (docTarget == null) {
+							docTarget = new HDocumentTarget(htf.getDocument(), target.getLang());
+							docTargets.put(target.getLang(), docTarget);
+							session.save(docTarget);
+						}
+						hTarget.setDocumentTarget(docTarget);
+						docTarget.getTargets().add(hTarget);
+						session.save(hTarget);
 					}
 					copy(target, hTarget, htf, docTargets);
 					htf.getTargets().put(target.getLang(), hTarget);
@@ -160,13 +179,6 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
 		hTarget.setRevision(target.getVersion());
 		hTarget.setState(target.getState());
 		hTarget.setTextFlow(htf);
-		HDocumentTarget docTarget = docTargets.get(target.getLang());
-		if (docTarget == null) {
-			docTarget = new HDocumentTarget(htf.getDocument(), target.getLang());
-			docTargets.put(target.getLang(), docTarget);
-		}
-		hTarget.setDocumentTarget(docTarget);
-		docTarget.getTargets().add(hTarget);
 	}
 
 }
