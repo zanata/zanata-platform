@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +59,15 @@ public class SeamMockClientExecutor implements ClientExecutor {
 		         {
 		        	 request.addHeader(header.getKey(), header.getValue());
 		         }
+		      }
+		      if(!clientRequest.getQueryParameters().isEmpty()){
+		    	  try{
+			    	  URI uri = URI.create(clientRequest.getUri());
+			    	  request.setQueryString(uri.getQuery());
+		    	  }
+		    	  catch(Exception e) {
+		    		  throw new RuntimeException("Error getting query string", e);
+		    	  }
 		      }
 		      if (clientRequest.getBody() != null && !clientRequest.getFormParameters().isEmpty())
 		         throw new RuntimeException("You cannot send both form parameters and an entity body");
