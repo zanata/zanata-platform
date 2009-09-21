@@ -14,20 +14,21 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.ProjectList;
+import org.jboss.seam.mock.DBUnitSeamTest;
 import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
 import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
 import org.jboss.seam.mock.ResourceRequestEnvironment;
-import org.jboss.seam.mock.SeamTest;
 import org.jboss.seam.mock.ResourceRequestEnvironment.Method;
 import org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 @Test(groups={"seam-tests"})
-public class ProjectServiceRawSeamTest extends SeamTest{
+public class ProjectServiceRawSeamTest extends DBUnitSeamTest{
 
 	ResourceRequestEnvironment sharedEnvironment;
 	
@@ -44,6 +45,13 @@ public class ProjectServiceRawSeamTest extends SeamTest{
 			}
 		};
 	}
+	
+	@Override
+	protected void prepareDBUnitOperations() {
+        beforeTestOperations.add(
+                new DataSetOperation("org/fedorahosted/flies/test/model/ProjectData.dbunit.xml", DatabaseOperation.CLEAN_INSERT)
+        );
+    }
 	
 	public void retrieveListOfProjectsAsJson() throws Exception {
 		new ResourceRequest(sharedEnvironment, Method.GET, "/restv1/projects") {
@@ -71,6 +79,7 @@ public class ProjectServiceRawSeamTest extends SeamTest{
 				
 				// check that the content we get back is XML
 				byte [] xmlVal = response.getContentAsByteArray();
+				System.out.println("Content:"+response.getContentAsString()); 
 				JAXBContext context;
 				ProjectList projectRefs = null;
 				try {
