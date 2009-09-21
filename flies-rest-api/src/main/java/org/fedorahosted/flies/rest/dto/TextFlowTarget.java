@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -15,6 +16,7 @@ import org.fedorahosted.flies.LocaleId;
 
 
 @XmlType(name="textFlowTargetType", namespace=TextFlowTargets.NAMESPACE, propOrder={"content", "extensions"})
+@XmlRootElement(name="text-flow-target", namespace=Namespaces.FLIES)
 public class TextFlowTarget implements IExtensible{
 	
 	private LocaleId lang;

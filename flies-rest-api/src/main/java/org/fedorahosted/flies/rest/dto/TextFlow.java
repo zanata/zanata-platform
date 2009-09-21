@@ -6,6 +6,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -14,6 +15,7 @@ import org.fedorahosted.flies.LocaleId;
 
 
 @XmlType(name="textFlowType", namespace=Namespaces.FLIES, propOrder={"content", "extensions"})
+@XmlRootElement(name="text-flow", namespace=Namespaces.FLIES)
 @XmlSeeAlso({
 	TextFlowTargets.class
 })
@@ -135,11 +137,6 @@ public class TextFlow extends AbstractBaseResource implements Resource{
 		}
 		targets.getTargets().add(target);
 
-	}
-	
-	@Override
-	public String toString() {
-		return Utility.toXML(this);
 	}
 	
 }

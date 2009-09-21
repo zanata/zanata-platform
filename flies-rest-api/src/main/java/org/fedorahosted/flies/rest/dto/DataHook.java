@@ -5,11 +5,13 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 
 @XmlType(name="dataHookType", namespace=Namespaces.FLIES, propOrder={"extensions"})
+@XmlRootElement(name="data-hook", namespace=Namespaces.FLIES)
 public class DataHook extends AbstractBaseResource implements Resource {
 
 	private String id;
@@ -73,9 +75,4 @@ public class DataHook extends AbstractBaseResource implements Resource {
 		return ext;
 	}
 
-	@Override
-	public String toString() {
-		return Utility.toXML(this);
-	}
-	
 }

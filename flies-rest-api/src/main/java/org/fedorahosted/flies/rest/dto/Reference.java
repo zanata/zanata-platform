@@ -5,11 +5,13 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 
 @XmlType(name="referenceType", namespace=Namespaces.FLIES, propOrder={"extensions"})
+@XmlRootElement(name="reference", namespace=Namespaces.FLIES)
 public class Reference extends AbstractBaseResource implements Resource{
 	
 	private String id;
@@ -87,11 +89,6 @@ public class Reference extends AbstractBaseResource implements Resource{
 	
 	public void setRelationshipId(String relationshipId) {
 		this.relationshipId = relationshipId;
-	}
-
-	@Override
-	public String toString() {
-		return Utility.toXML(this);
 	}
 	
 }

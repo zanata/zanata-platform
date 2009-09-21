@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -15,6 +16,7 @@ import org.fedorahosted.flies.LocaleId;
 
 
 @XmlType(name="containerType", namespace=Namespaces.FLIES, propOrder={"content", "extensions"})
+@XmlRootElement(name="container", namespace=Namespaces.FLIES)
 public class Container extends AbstractBaseResource implements Resource {
 
 	private String id;
@@ -107,11 +109,6 @@ public class Container extends AbstractBaseResource implements Resource {
 		if(content == null)
 			content = new ArrayList<Resource>();
 		return content;
-	}
-	
-	@Override
-	public String toString() {
-		return Utility.toXML(this);
 	}
 	
 }

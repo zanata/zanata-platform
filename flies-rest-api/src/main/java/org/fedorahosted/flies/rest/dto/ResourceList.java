@@ -35,4 +35,9 @@ public class ResourceList {
 		return resources;
 	}	
 	
+	@Override
+	public String toString() {
+		return Utility.toXML(this);
+	}
+	
 }

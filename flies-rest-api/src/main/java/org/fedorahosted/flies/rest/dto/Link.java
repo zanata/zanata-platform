@@ -3,9 +3,11 @@ package org.fedorahosted.flies.rest.dto;
 import java.net.URI;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType(name="linkType")
+@XmlRootElement(name="link", namespace=Namespaces.FLIES)
 public class Link {
 
 	private URI href;
@@ -54,6 +56,11 @@ public class Link {
 	}
 	public void setType(String type) {
 		this.type = type;
+	}
+	
+	@Override
+	public String toString() {
+		return Utility.toXML(this);
 	}
 	
 	

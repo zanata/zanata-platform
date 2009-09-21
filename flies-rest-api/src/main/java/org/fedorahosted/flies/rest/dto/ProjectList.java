@@ -28,4 +28,10 @@ public class ProjectList {
 		}
 		return projects;
 	}
+
+	@Override
+	public String toString() {
+		return Utility.toXML(this);
+	}
+	
 }

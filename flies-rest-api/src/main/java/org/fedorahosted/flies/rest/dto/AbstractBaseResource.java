@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType(name="abstractBaseResource", namespace=Namespaces.FLIES, propOrder={"links"})
@@ -120,6 +119,11 @@ public abstract class AbstractBaseResource {
 				foundLinks.add(link); 
 		}
 		return foundLinks;
+	}
+	
+	@Override
+	public String toString() {
+		return Utility.toXML(this);
 	}
 	
 }
