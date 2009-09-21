@@ -26,7 +26,7 @@ public class ContentQualifier{
 			languages = ImmutableSet.of(locales);
 		}
 		
-		public ContentQualifier(String qualifier) {
+		private ContentQualifier(String qualifier) {
 			if("all".equals(qualifier) ){
 				all = true;
 				source = none = false;
@@ -76,9 +76,14 @@ public class ContentQualifier{
 		
 		public static final ContentQualifier ALL = new ContentQualifier("all");
 		public static final ContentQualifier SOURCE = new ContentQualifier("source");
-
+		public static final ContentQualifier NONE = new ContentQualifier("");
+		
 		public static final ContentQualifier fromLocales(LocaleId ... locales){
 			return new ContentQualifier(locales);
+		}
+		
+		public static ContentQualifier valueOf(String str) {
+			return new ContentQualifier(str);
 		}
 		
 		@Override
