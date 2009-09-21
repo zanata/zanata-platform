@@ -127,6 +127,8 @@ public class HTextFlowTarget implements Serializable{
 	@ManyToOne
 	@JoinColumn(name="document_target_id", nullable=false)
 	public HDocumentTarget getDocumentTarget() {
+		// (should be the same as textFlow.getDocument().getTargets().get(getLocale());)
+		// in other words, this value should never change
 		return documentTarget;
 	}
 

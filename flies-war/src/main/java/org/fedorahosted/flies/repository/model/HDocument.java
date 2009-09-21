@@ -235,7 +235,6 @@ public class HDocument extends AbstractFliesEntity{
 	}
 	
 	@OneToMany(mappedBy = "template", cascade=CascadeType.ALL)
-	@OnDelete(action=OnDeleteAction.CASCADE)
 	@MapKey(name="locale")
 	public Map<LocaleId, HDocumentTarget> getTargets() {
 		if(targets == null)
