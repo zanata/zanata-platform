@@ -182,7 +182,8 @@ public class TranslateAction implements Serializable {
 				log.info("Initializing targets");
 				locale = new LocaleId(localeId);
 
-				for(HDocument doc : projectContainer.getDocuments() ){
+				for(String docId : projectContainer.getDocuments().keySet() ){
+					HDocument doc = projectContainer.getDocuments().get(docId);
 					if(!doc.getTargets().containsKey(locale)){
 						HDocumentTarget docTarget = new HDocumentTarget(doc, locale);
 						entityManager.persist(docTarget);

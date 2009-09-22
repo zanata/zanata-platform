@@ -70,7 +70,7 @@ public class ProjectIterationService {
 		it.setName(hibIt.getName());
 		it.setSummary(hibIt.getDescription());
 		
-		for(HDocument doc : hibIt.getContainer().getDocuments() ){
+		for(HDocument doc : hibIt.getContainer().getDocuments().values() ){
 			it.getDocuments().add( 
 					new Document(
 							doc.getDocId(),

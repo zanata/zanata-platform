@@ -37,8 +37,7 @@ public class HProjectHome extends EntityHome<HProjectContainer> {
 	private void loadTree() {
 		rootNode = new FolderNode("/");
 		
-		List<HDocument> documents = getInstance().getDocuments();
-		for(HDocument doc : documents){
+		for(HDocument doc : getInstance().getDocuments().values()){
 			addNode(doc);
 		}
 	}

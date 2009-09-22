@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.rest.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +53,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     
     public Documents get() {
     	log.info("HTTP GET "+documentsService.getRequest().getRequestURL());
-    	List<HDocument> hdocs = getContainer().getDocuments();
+    	Collection<HDocument> hdocs = getContainer().getDocuments().values();
     	Documents result = new Documents();
 	
     	for (HDocument hDocument : hdocs) {
@@ -72,7 +73,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     			hDoc = new HDocument(doc);
     			hDoc.setProject(hContainer);
     		}
-    		getContainer().getDocuments().add(hDoc);
+    		getContainer().getDocuments().put(hDoc.getDocId(), hDoc);
     		session.save(hDoc);
     		copy(doc, hDoc, false);
     	}
@@ -83,8 +84,6 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     public void put(Documents docs) {
     	log.info("HTTP PUT "+documentsService.getRequest().getRequestURL()+" :\n"+docs);
     	HProjectContainer hContainer = getContainer();
-    	List<HDocument> hDocs = new ArrayList<HDocument>();
-    	getContainer().setDocuments(hDocs);
     	for (Document doc: docs.getDocuments()) {
 			// if doc already exists, load it and update it, but don't create it
     		HDocument hDoc = documentDAO.getByDocId(hContainer, doc.getId());
@@ -92,7 +91,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     			hDoc = new HDocument(doc);
     			hDoc.setProject(hContainer);
     		}
-    		hDocs.add(hDoc);
+    		hContainer.getDocuments().put(hDoc.getDocId(), hDoc);
     		session.save(hDoc);
     		copy(doc, hDoc, true);
     	}

@@ -199,7 +199,7 @@ public class DocumentService {
 		if(hDoc == null) { // it's a create operation
 			hDoc = new HDocument(document);
 			hDoc.setRevision(1);
-			hProjectContainer.getDocuments().add(hDoc);
+			hProjectContainer.getDocuments().put(hDoc.getDocId(), hDoc);
 			try{
 				session.flush();
 				for(Resource res : document.getResources()) {
