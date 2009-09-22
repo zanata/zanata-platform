@@ -30,11 +30,19 @@ public class ContentTarget {
 	
 	@XmlElement(name="text-flow-target", namespace=Namespaces.FLIES)
 	public List<TextFlowTarget> getTextFlowTargets() {
-		if(textFlowTargets == null)
+		return textFlowTargets;
+	}
+
+	public List<TextFlowTarget> getTextFlowTargets(boolean create) {
+		if(textFlowTargets == null && create)
 			textFlowTargets = new ArrayList<TextFlowTarget>();
 		return textFlowTargets;
 	}
 
+	public boolean hasTextFlowTargets() {
+		return textFlowTargets != null;
+	}
+	
 	@Override
 	public String toString() {
 		return Utility.toXML(this);
