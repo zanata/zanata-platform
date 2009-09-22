@@ -110,6 +110,13 @@ public class TextFlow extends AbstractBaseResource implements Resource{
 		this.content = content;
 	}
 	
+	public boolean hasTargets() {
+		return getExtension(TextFlowTargets.class) != null;
+	}
+	public TextFlowTargets getTargets(){
+		return getExtension(TextFlowTargets.class);
+	}
+	
 	public TextFlowTarget getTarget(LocaleId localeId){
 		for(Object obj : getExtensions()){
 			if(obj instanceof TextFlowTargets){
