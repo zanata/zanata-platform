@@ -75,6 +75,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     		HDocument hDoc = documentDAO.getByDocId(hContainer, doc.getId());
     		if (hDoc == null) {
     			hDoc = new HDocument(doc);
+    			hDoc.setRevision(1);
     			hDoc.setProject(hContainer);
     		}
 			docMap.put(hDoc.getDocId(), hDoc);
@@ -96,6 +97,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     		HDocument hDoc = documentDAO.getByDocId(hContainer, doc.getId());
     		if (hDoc == null) {
     			hDoc = new HDocument(doc);
+    			hDoc.setRevision(1);
     			hDoc.setProject(hContainer);
     		}
     		docMap.put(hDoc.getDocId(), hDoc);

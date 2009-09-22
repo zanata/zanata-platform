@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.rest.service;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,10 @@ import org.fedorahosted.flies.repository.model.HDocumentTarget;
 import org.fedorahosted.flies.repository.model.HResource;
 import org.fedorahosted.flies.repository.model.HTextFlow;
 import org.fedorahosted.flies.repository.model.HTextFlowTarget;
+import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Document;
+import org.fedorahosted.flies.rest.dto.Link;
+import org.fedorahosted.flies.rest.dto.Relationships;
 import org.fedorahosted.flies.rest.dto.Resource;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
@@ -36,16 +40,23 @@ public class DocumentConverter {
     @In 
     private Session session;
 
+    /**
+     * Recursively copies from the source Document to the destination HDocument
+     * @param fromDoc source Document
+     * @param toHDoc destination HDocument
+     * @param replaceResourceTree should probably always be true
+     */
 	public void copy(Document fromDoc, HDocument toHDoc, boolean replaceResourceTree) {
+//		copyMetaData(fromDoc, toHDoc);
 		toHDoc.setDocId(fromDoc.getId());
 		toHDoc.setName(fromDoc.getName());
 		toHDoc.setPath(fromDoc.getPath());
 		toHDoc.setContentType(fromDoc.getContentType());
 		toHDoc.setLocale(fromDoc.getLang());
-		toHDoc.setRevision(fromDoc.getVersion());  // TODO check version/revision!
+//		toHDoc.setRevision(fromDoc.getVersion());  // TODO check version/revision!
 		// TODO handle doc extensions
-		List<Resource> docResources = fromDoc.getResources();
-		if (docResources != null) {
+		if (fromDoc.hasResources()) {
+			List<Resource> docResources = fromDoc.getResources();
 			Map<LocaleId, HDocumentTarget> docTargets = toHDoc.getTargets();
 			List<HResource> hResources;
 			if (replaceResourceTree) {
@@ -133,5 +144,20 @@ public class DocumentConverter {
 		hTarget.setState(target.getState());
 		hTarget.setTextFlow(htf);
 	}
+	
+	public void addLinks(Document doc, URI docUri, URI iterationUri) {
+		// add self relation
+		Link link = new Link(docUri, Relationships.SELF); 
+		doc.getLinks().add(link);
+
+		// add container relation
+		link = new Link(
+				iterationUri, 
+				Relationships.DOCUMENT_CONTAINER, 
+				MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML);
+		doc.getLinks().add(link);
+	}
+	
+
 	
 }
