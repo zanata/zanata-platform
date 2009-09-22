@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.repository.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -251,17 +252,22 @@ public class HDocument extends AbstractFliesEntity{
 	}
 	
 	public Document toDocument(boolean deep) {
-		return toDocument(getTargets().keySet(), Integer.MAX_VALUE);
+		if (deep)
+			return toDocument(getTargets().keySet(), Integer.MAX_VALUE);
+		else
+			return toDocument(Collections.EMPTY_SET, 0);
 	}
 	
 	public Document toDocument(Set<LocaleId> includedTargets, int levels) {
 	    Document doc = new Document(docId, name, path, contentType, revision, locale);
-	    List<Resource> docResources = doc.getResources(true);
-	    for (HResource hRes : resourceTree) {
-			docResources.add(hRes.toResource(includedTargets, levels));
-		}
-	    // TODO
-//	    List<Object> docExtensions = doc.getExtensions();
+	    if (levels != 0) {
+		    List<Resource> docResources = doc.getResources(true);
+		    for (HResource hRes : resourceTree) {
+				docResources.add(hRes.toResource(includedTargets, levels));
+			}
+		    // TODO handle extensions
+	//	    List<Object> docExtensions = doc.getExtensions();
+	    }
 		return doc;
 	}
 }
