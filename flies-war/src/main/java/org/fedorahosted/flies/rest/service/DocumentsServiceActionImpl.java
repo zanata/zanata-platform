@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.fedorahosted.flies.LocaleId;
@@ -54,7 +55,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
 				documentsService.getProjectSlug(), 
 				documentsService.getIterationSlug());
 		if (result == null) {
-			throw new WebApplicationException(Status.NOT_FOUND);
+			throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Container not found").build());
 		}
 		return result;
 	}
