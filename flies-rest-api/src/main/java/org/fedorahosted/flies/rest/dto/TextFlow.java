@@ -121,6 +121,8 @@ public class TextFlow extends AbstractBaseResource implements Resource{
 	}
 	
 	public TextFlowTarget getTarget(LocaleId localeId){
+		if(extensions == null) return null;
+		
 		for(Object obj : getExtensions()){
 			if(obj instanceof TextFlowTargets){
 				TextFlowTargets tft = (TextFlowTargets) obj;
@@ -135,15 +137,17 @@ public class TextFlow extends AbstractBaseResource implements Resource{
 	
 	public void addTarget(TextFlowTarget target) {
 		TextFlowTargets targets = null;
-		for(Object obj : getExtensions()){
-			if(obj instanceof TextFlowTargets){
-				targets = (TextFlowTargets) obj;
-				break;
+		if(extensions != null) {
+			for(Object obj : getExtensions()){
+				if(obj instanceof TextFlowTargets){
+					targets = (TextFlowTargets) obj;
+					break;
+				}
 			}
 		}
 		if(targets == null){
 			targets = new TextFlowTargets();
-			getExtensions().add(targets);
+			getExtensions(true).add(targets);
 		}
 		targets.getTargets().add(target);
 

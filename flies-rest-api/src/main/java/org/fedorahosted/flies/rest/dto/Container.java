@@ -65,12 +65,12 @@ public class Container extends AbstractBaseResource implements Resource {
 		return extensions != null;
 	}
 	
-	@XmlAnyElement(lax=true)
 	public List<Object> getExtensions(boolean create) {
 		if(extensions == null && create)
 			extensions = new ArrayList<Object>();
 		return extensions;
 	}
+	
 	@Override
 	public <T> T getExtension(Class<T> clz){
 		if(extensions == null)
