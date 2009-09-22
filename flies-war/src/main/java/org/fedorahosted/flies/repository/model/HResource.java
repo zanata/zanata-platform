@@ -33,7 +33,6 @@ public abstract class HResource implements Serializable{
 	private Long id;
 	private Integer revision = 1;
 	private String resId;
-	private Boolean obsolete = false;
 	
 	private HDocument document;
 	private HResource parent;
@@ -67,15 +66,6 @@ public abstract class HResource implements Serializable{
 		this.resId = resId;
 	}
 
-	@NotNull
-	public void setObsolete(Boolean obsolete) {
-		this.obsolete = obsolete;
-	}
-	
-	public Boolean isObsolete(){
-		return obsolete;
-	}
-	
 	@NotNull
 	public Integer getRevision() {
 		return revision;
