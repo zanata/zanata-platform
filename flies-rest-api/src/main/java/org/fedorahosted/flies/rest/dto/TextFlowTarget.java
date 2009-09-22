@@ -32,7 +32,7 @@ public class TextFlowTarget implements IExtensible{
 	}
 	
 	private String id;
-	private long version = 1;
+	private Integer version = 1;
 	private ContentState state = ContentState.New;
 	private String content;
 	
@@ -70,11 +70,11 @@ public class TextFlowTarget implements IExtensible{
 	}
 	
 	@XmlAttribute(name="version", required=true)
-	public long getVersion() {
+	public Integer getVersion() {
 		return version;
 	}
 	
-	public void setVersion(long version) {
+	public void setVersion(Integer version) {
 		this.version = version;
 	}
 	

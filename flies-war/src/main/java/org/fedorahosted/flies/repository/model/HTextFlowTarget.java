@@ -39,7 +39,7 @@ public class HTextFlowTarget implements Serializable{
 	
 	private String content;
 	private ContentState state = ContentState.New;
-	private Long revision = 1l;
+	private Integer revision = 1;
 	
 	private HSimpleComment comment;
 	
@@ -105,11 +105,11 @@ public class HTextFlowTarget implements Serializable{
 	}
 
 	@NotNull
-	public Long getRevision() {
+	public Integer getRevision() {
 		return revision;
 	}
 	
-	public void setRevision(Long revision) {
+	public void setRevision(Integer revision) {
 		this.revision = revision;
 	}
 	

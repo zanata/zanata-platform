@@ -23,7 +23,7 @@ public class TextFlow extends AbstractBaseResource implements Resource{
 
 	private String id;
 	private LocaleId lang;
-	private long version = 1;
+	private Integer version = 1;
 	
 	private String content;
 	private List<Object> extensions;
@@ -50,11 +50,11 @@ public class TextFlow extends AbstractBaseResource implements Resource{
 	}
 
 	@XmlAttribute(name="version", required=true)
-	public long getVersion() {
+	public Integer getVersion() {
 		return version;
 	}
 	
-	public void setVersion(long version) {
+	public void setVersion(Integer version) {
 		this.version = version;
 	}
 

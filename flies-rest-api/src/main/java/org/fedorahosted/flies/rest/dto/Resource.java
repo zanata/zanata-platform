@@ -13,7 +13,7 @@ public interface Resource extends IExtensible{
 
 	public String getId();
 	
-	public long getVersion();
+	public Integer getVersion();
 
 	public List<Object> getExtensions();
 

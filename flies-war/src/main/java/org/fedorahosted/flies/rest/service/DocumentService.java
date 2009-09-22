@@ -125,7 +125,12 @@ public class DocumentService {
 			}
 		}
 		else{ // it's an update operation
+			if(hDoc.getRevision() != document.getVersion()) {
+				return Response.status(Status.CONFLICT).entity("Version conflict").build();
+			}
+			int rev = hDoc.getRevision() + 1;
 			documentConverter.copy(document, hDoc, true);
+			hDoc.setRevision(rev);
 			try{
 				session.flush();
 				return Response.ok().build();

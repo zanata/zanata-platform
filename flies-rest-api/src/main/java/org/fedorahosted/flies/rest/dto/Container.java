@@ -21,7 +21,7 @@ public class Container extends AbstractBaseResource implements Resource {
 
 	private String id;
 	private LocaleId lang;
-	private long version = 1;
+	private Integer version = 1;
 	
 	private List<Object> extensions;
 	private List<Resource> content;
@@ -48,11 +48,11 @@ public class Container extends AbstractBaseResource implements Resource {
 	}
 
 	@XmlAttribute(name="version", required=true)
-	public long getVersion() {
+	public Integer getVersion() {
 		return version;
 	}
 	
-	public void setVersion(long version) {
+	public void setVersion(Integer version) {
 		this.version = version;
 	}
 

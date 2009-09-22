@@ -31,8 +31,9 @@ public abstract class HResource implements Serializable{
 	private static final long serialVersionUID = 7639343235241588429L;
 
 	private Long id;
-	private Long revision = 1l;
+	private Integer revision = 1;
 	private String resId;
+	private Boolean obsolete = false;
 	
 	private HDocument document;
 	private HResource parent;
@@ -67,13 +68,24 @@ public abstract class HResource implements Serializable{
 	}
 
 	@NotNull
-	public Long getRevision() {
+	public void setObsolete(Boolean obsolete) {
+		this.obsolete = obsolete;
+	}
+	
+	public Boolean isObsolete(){
+		return obsolete;
+	}
+	
+	@NotNull
+	public Integer getRevision() {
 		return revision;
 	}
 	
-	public void setRevision(Long revision) {
+	public void setRevision(Integer revision) {
 		this.revision = revision;
 	}
+	
+	
 	
 	@ManyToOne
 	@JoinColumn(name="document_id",insertable=false, updatable=false, nullable=false)
