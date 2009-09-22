@@ -19,3 +19,4 @@ temp-testng-customsuite.xml$
 ^target
 ^flies-war/profiles.xml
 ^flies-war/src/test/resources/DocumentsServiceSeamTest.tng.xml$
+\.orig$
