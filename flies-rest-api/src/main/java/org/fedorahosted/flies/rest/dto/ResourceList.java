@@ -22,7 +22,6 @@ public class ResourceList {
 
 	private List<Resource> resources;
 
-	@XmlElementWrapper(name="document-content", namespace=Namespaces.FLIES, required=false)
 	@XmlElements({
 		@XmlElement(name="text-flow", type=TextFlow.class, namespace=Namespaces.FLIES),
 		@XmlElement(name="container", type=Container.class, namespace=Namespaces.FLIES),
