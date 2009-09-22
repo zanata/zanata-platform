@@ -3,13 +3,11 @@ package org.fedorahosted.flies.rest.service;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.core.dao.DocumentDAO;
 import org.fedorahosted.flies.core.dao.ProjectContainerDAO;
 import org.fedorahosted.flies.repository.model.HDocument;
@@ -62,14 +60,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     	Documents result = new Documents();
 	
     	for (HDocument hDocument : hdocs) {
-    		Document doc = hDocument.toDocument();
-    		Set<LocaleId> includedTargets = hDocument.getTargets().keySet();
-			DocumentService.populateResources(
-    				doc.getResources(true), 
-    				hDocument.getResourceTree(), 
-    				includedTargets , 
-    				Integer.MAX_VALUE);
-			result.getDocuments().add(doc);
+    		result.getDocuments().add(hDocument.toDocument(true));
     	}
     	log.info("HTTP GET result :\n"+result);
     	return result;

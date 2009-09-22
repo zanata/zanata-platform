@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.repository.model;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,6 +11,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.rest.dto.Resource;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.Length;
@@ -93,4 +95,6 @@ public abstract class HResource implements Serializable{
 	public void setParent(HResource parent) {
 		this.parent = parent;
 	}
+
+	public abstract Resource toResource(Set<LocaleId> includedTargets, int levels);
 }

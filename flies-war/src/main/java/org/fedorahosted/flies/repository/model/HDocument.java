@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -249,15 +250,18 @@ public class HDocument extends AbstractFliesEntity{
 		this.resourceTree = resourceTree;
 	}
 	
-	public Document toDocument() {
-		// FIXME copy resources/resourceTree/targets as well
+	public Document toDocument(boolean deep) {
+		return toDocument(getTargets().keySet(), Integer.MAX_VALUE);
+	}
+	
+	public Document toDocument(Set<LocaleId> includedTargets, int levels) {
 	    Document doc = new Document(docId, name, path, contentType, revision, locale);
-	    List<Resource> docResources = doc.getResources();
-	    // TODO move from DocumentService.populateResources
-//	    for (HResource hRes : resourceTree) {
-//			docResources.add(hRes.toResource());
-//		}
-	    List<Object> docExtensions = doc.getExtensions();
+	    List<Resource> docResources = doc.getResources(true);
+	    for (HResource hRes : resourceTree) {
+			docResources.add(hRes.toResource(includedTargets, levels));
+		}
+	    // TODO
+//	    List<Object> docExtensions = doc.getExtensions();
 		return doc;
 	}
 }
