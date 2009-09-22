@@ -190,17 +190,26 @@ public class DocumentServiceSeamTest extends DBUnitSeamTest{
 		doc = documentResponse.getEntity(); 
 
 		assertThat( doc.getVersion(), is(1) );
-		Link link = doc.findLinkByRel(Relationships.SELF); 
-		assertThat( link, notNullValue() );
-		assertThat( link.getHref().toString(), containsString(url+Encode.encodeQueryString(docUrl)) );
-		
-		link = doc.findLinkByRel(Relationships.DOCUMENT_CONTAINER); 
-		assertThat( link, notNullValue() );
-		assertThat( link.getType(), is( MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML) );
 		
 		assertThat("Should have resources", doc.getResources(), notNullValue() );
 		assertThat("Should have one resource", doc.getResources().size(), is(1) );
+		assertThat("Should have one resource", doc.getResources().get(0).getId(), is("tf1") );
 		assertThat("No targets should be included", ((TextFlow)doc.getResources().get(0)).getExtension(TextFlowTargets.class), nullValue() );
+		
+		textFlow = (TextFlow) doc.getResources().get(0);
+		textFlow.setId("tf2");
+		
+		response = documentResource.put(doc);
+		assertThat( response.getStatus(), is(205) );
+		documentResponse = documentResource.get(ContentQualifier.SOURCE);
+		assertThat( documentResponse.getResponseStatus(), is(Status.OK) );
+		doc = documentResponse.getEntity(); 
+		assertThat( doc.getVersion(), is(2) );
+		assertThat("Should have resources", doc.getResources(), notNullValue() );
+		assertThat("Should have one resource", doc.getResources().size(), is(1) );
+		assertThat("Should have one resource", doc.getResources().get(0).getId(), is("tf2") );
+		
+		
 		
 	}
 

@@ -171,7 +171,7 @@ public class DocumentConverter {
 			
 			
 			// finally insert
-			finalHResources.add( create(resource, hResource.getDocument(), null));
+			finalHResources.add( create(resource, hDocument, null));
 		}
 
 		// clean up resources we didn't process in this 

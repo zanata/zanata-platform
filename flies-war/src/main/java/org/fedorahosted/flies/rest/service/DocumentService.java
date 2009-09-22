@@ -123,19 +123,12 @@ public class DocumentService {
 			}
 		}
 		else{ // it's an update operation
-			if(hDoc.getRevision() != document.getVersion()) {
+			if(!hDoc.getRevision().equals(document.getVersion())) {
 				return Response.status(Status.CONFLICT).entity("Version conflict").build();
 			}
 			documentConverter.merge(document, hDoc);
-			try{
-				session.flush();
-				return Response.ok().build();
-			}
-			catch(Exception e){
-				// TODO validation on the input data
-				// this could also be a server error
-				return Response.status(Status.BAD_REQUEST).entity("Invalid document content").build();
-			}
+			session.flush();
+			return Response.status(205).build();
 		}
 		
 	}
