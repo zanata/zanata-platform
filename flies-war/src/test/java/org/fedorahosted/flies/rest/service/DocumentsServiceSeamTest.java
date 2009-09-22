@@ -105,7 +105,7 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 		Integer version = 1;
 		Document doc = new Document(id, id+"name", id+"path", contentType, version, LocaleId.EN);
 		for (Resource textFlow : resources) {
-			doc.getResources().add(textFlow);
+			doc.getResources(true).add(textFlow);
 		}
 		return doc;
 	}

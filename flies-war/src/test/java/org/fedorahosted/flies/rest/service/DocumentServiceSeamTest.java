@@ -96,7 +96,7 @@ public class DocumentServiceSeamTest extends DBUnitSeamTest{
 		assertThat( doc.getContentType(), is(ContentType.TextPlain) );
 		assertThat( doc.getLang(), is(LocaleId.EN_US) );
 		assertThat( doc.getVersion(), is(1) );
-		assertThat( doc.getResources().isEmpty(), is(true) );
+		assertThat( doc.getResources(), nullValue() );
 
 		Link link = doc.findLinkByRel(Relationships.SELF);
 		assertThat( link, notNullValue() );

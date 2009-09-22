@@ -63,7 +63,7 @@ public class PropReader {
     // pre: template already extracted
     public void extractTarget(Document doc, InputSource inputSource, LocaleId localeId) throws IOException {
 	Map<String, TextFlow> textFlowMap = new HashMap<String, TextFlow>();
-	for(Resource resource : doc.getResources()) {
+	for(Resource resource : doc.getResources(true)) {
 	    if (resource instanceof TextFlow) {
 		TextFlow textFlow = (TextFlow) resource;
 		textFlowMap.put(textFlow.getId(), textFlow);
@@ -91,7 +91,7 @@ public class PropReader {
     // TODO allowing Readers (via InputSource) might be a bad idea
     public void extractTemplate(Document doc, InputSource inputSource) 
     	throws IOException {
-	List<Resource> resources = doc.getResources();
+	List<Resource> resources = doc.getResources(true);
 	Properties props = loadProps(inputSource);
 	for (String key : props.keySet()) {
 	    String val = props.getProperty(key);

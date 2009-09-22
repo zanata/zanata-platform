@@ -162,7 +162,6 @@ public class Document extends AbstractBaseResource implements IExtensible{
 		this.lang = lang;
 	}
 	
-	
 	@XmlElementWrapper(name="document-content", namespace=Namespaces.FLIES, required=false)
 	@XmlElements({
 		@XmlElement(name="text-flow", type=TextFlow.class, namespace=Namespaces.FLIES),
@@ -171,17 +170,41 @@ public class Document extends AbstractBaseResource implements IExtensible{
 		@XmlElement(name="data-hook", type=DataHook.class, namespace=Namespaces.FLIES)
 		})
 	public List<Resource> getResources() {
-		if(resources == null)
+		return resources;
+	}	
+
+	public List<Resource> getResources(boolean create) {
+		if(resources == null && create)
 			resources = new ArrayList<Resource>();
 		return resources;
 	}	
 
+	public void setResources(List<Resource> resources) {
+		this.resources = resources;
+	}
+	
+	public boolean hasResources() {
+		return resources != null;
+	}
+	
 	@Override
 	@XmlAnyElement(lax=true)
 	public List<Object> getExtensions() {
+		return extensions;
+	}
+	
+	public List<Object> getExtensions(boolean create) {
 		if(extensions == null)
 			extensions = new ArrayList<Object>();
 		return extensions;
+	}
+	
+	public void setExtensions(List<Object> extensions) {
+		this.extensions = extensions;
+	}
+	
+	public boolean hasExtensions() {
+		return extensions != null;
 	}
 	
 	@Override

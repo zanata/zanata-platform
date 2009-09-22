@@ -23,13 +23,13 @@ public class DocumentTests {
 		doc.getLinks().add(new Link(URI.create("http://example.com")));
 		TextFlow tf = new TextFlow("id");
 		tf.setContent("hello world!");
-		doc.getResources().add(tf);
+		doc.getResources(true).add(tf);
 		
 		TextFlowTarget tft = new TextFlowTarget(tf);
 		tft.setLang(LocaleId.EN_US);
 		tf.addTarget(tft);
 		
-		doc.getExtensions().addAll(tf.getExtensions());
+		doc.getExtensions(true).addAll(tf.getExtensions());
 	
 		JAXBContext jaxbContext = JAXBContext.newInstance(Document.class, TextFlowTargets.class);
 		Marshaller m = jaxbContext.createMarshaller();

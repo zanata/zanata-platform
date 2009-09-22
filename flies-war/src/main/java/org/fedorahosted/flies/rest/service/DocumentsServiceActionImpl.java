@@ -109,7 +109,8 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
 		Map<LocaleId, HDocumentTarget> docTargets = hDoc.getTargets();
 		List<HResource> hResources;
 		if (put) {
-			hResources = new ArrayList<HResource>(docInfo.getResources().size());
+			int size = docInfo.hasResources() ? docInfo.getResources().size() : 0;
+			hResources = new ArrayList<HResource>(size);
 			// this should cause any unreferenced HResources to be deleted when we save
 			hDoc.setResourceTree(hResources);
 		} else {

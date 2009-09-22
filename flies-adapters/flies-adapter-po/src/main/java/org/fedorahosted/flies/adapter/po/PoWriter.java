@@ -104,7 +104,8 @@ public class PoWriter {
 		writer.write("\n");
 
 		// first write header
-
+		if(!document.hasResources())
+			return;
 		for(Resource resource : document.getResources()){
 			TextFlow textFlow = (TextFlow) resource;
 

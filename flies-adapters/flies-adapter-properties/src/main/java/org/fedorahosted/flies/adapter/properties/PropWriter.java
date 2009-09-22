@@ -36,7 +36,7 @@ public class PropWriter {
 	
 	logVerbose("Creating base file "+baseFile);
 	Properties props = new Properties();
-	for (Resource resource : doc.getResources()) {
+	for (Resource resource : doc.getResources(true)) {
 	    if (!(resource instanceof TextFlow)) {
 		throw new RuntimeException("Unhandled Resource: "+resource.getClass()+ " with id "+resource.getId());
 	    }
@@ -52,15 +52,17 @@ public class PropWriter {
 	String bundleName = baseName.substring(0, baseName.length() - ".properties".length());
 	
 	Map<LocaleId, Properties> targetProps = new HashMap<LocaleId, Properties>();
-	for (Resource resource : doc.getResources()) {
-	    for (TextFlowTarget target : getTargets(resource)) {
-		Properties targetProp = targetProps.get(target.getLang());
-		if (targetProp == null) {
-		    targetProp = new Properties();
-		    targetProps.put(target.getLang(), targetProp);
+	if(doc.hasResources()){
+		for (Resource resource : doc.getResources()) {
+		    for (TextFlowTarget target : getTargets(resource)) {
+			Properties targetProp = targetProps.get(target.getLang());
+			if (targetProp == null) {
+			    targetProp = new Properties();
+			    targetProps.put(target.getLang(), targetProp);
+			}
+			targetProp.setProperty(resource.getId(), target.getContent());
+		    }
 		}
-		targetProp.setProperty(resource.getId(), target.getContent());
-	    }
 	}
 	Set<LocaleId> targetLangs = targetProps.keySet(); 
 	

@@ -62,7 +62,7 @@ public class PoReader {
 	public void extractTarget(Document document, InputSource inputSource, LocaleId targetLocaleId) {
 		MessageStreamParser messageParser = createParser(inputSource);
 
-		Iterator<Resource> documentContentIt = document.getResources().iterator();
+		Iterator<Resource> documentContentIt = document.getResources(true).iterator();
 		
 		while(messageParser.hasNext()) {
 			Message message = messageParser.next();
@@ -150,7 +150,7 @@ public class PoReader {
 		
 		document.setLang(sourceLocaleId);
 		document.setContentType(PO_CONTENT_TYPE);
-		List<Resource> resources = document.getResources();
+		List<Resource> resources = document.getResources(true);
 
 		boolean headerFound = false;
 		while(messageParser.hasNext()) {
@@ -164,7 +164,7 @@ public class PoReader {
 				// store POT data
 				PoHeader potHeader = new PoHeader();
 				extractPotHeader(message, potHeader);
-				document.getExtensions().add(potHeader);
+				document.getExtensions(true).add(potHeader);
 				
 			} 
 			else if (message.isObsolete()) {
@@ -212,7 +212,7 @@ public class PoReader {
 		document.setLang(sourceLocaleId);
 		document.setContentType(PO_CONTENT_TYPE);
 		
-		List<Resource> resources = document.getResources();
+		List<Resource> resources = document.getResources(true);
 
 		boolean headerFound = false;
 		while(messageParser.hasNext()) {
@@ -226,12 +226,12 @@ public class PoReader {
 				// store POT data
 				PoHeader potHeader = new PoHeader();
 				extractPotHeader(message, potHeader);
-				document.getExtensions().add(potHeader);
+				document.getExtensions(true).add(potHeader);
 
 				// store PO data
 				PoHeader poHeader = new PoHeader();
 				extractPoHeader(message, poHeader);
-				document.getExtensions().add(poHeader);
+				document.getExtensions(true).add(poHeader);
 				
 				
 			} 
