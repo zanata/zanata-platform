@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.rest.service;
 
+import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +9,6 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.fedorahosted.flies.core.dao.DocumentDAO;
 import org.fedorahosted.flies.core.dao.ProjectContainerDAO;
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
@@ -44,10 +44,22 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     @In 
     private Session session;
 	
+	private String getIterationSlug() {
+		return documentsService.getIterationSlug();
+	}
+
+	private String getProjectSlug() {
+		return documentsService.getProjectSlug();
+	}
+
+	private URI getBaseUri() {
+		return documentsService.getUri().getBaseUri();
+	}
+    
 	private HProjectContainer getContainer() {
 		HProjectContainer result = projectContainerDAO.getBySlug(
-				documentsService.getProjectSlug(), 
-				documentsService.getIterationSlug());
+				getProjectSlug(), 
+				getIterationSlug());
 		if (result == null) {
 			throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Container not found").build());
 		}
@@ -60,12 +72,19 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     	Documents result = new Documents();
 	
     	for (HDocument hDocument : hdocs) {
-    		result.getDocuments().add(hDocument.toDocument(true));
+    		Document doc = hDocument.toDocument(true);
+			result.getDocuments().add(doc);
+			
+			URI docUri = getBaseUri().resolve(URIHelper.getDocument(
+					getProjectSlug(), getIterationSlug(), doc.getId()));
+			URI iterationUri = getBaseUri().resolve(URIHelper.getIteration(
+					getProjectSlug(), getIterationSlug()));
+			documentConverter.addLinks(doc, docUri, iterationUri );
     	}
     	log.info("HTTP GET result :\n"+result);
     	return result;
     }
-    
+
     public void post(Documents docs) {
     	log.debug("HTTP POST {0} : \n{1}",documentsService.getRequest().getRequestURL(), docs);
     	HProjectContainer hContainer = getContainer();
@@ -116,7 +135,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     		documentConverter.copy(doc, hDoc, true);
     	}
     	
-    	// why aren't implicit deletes working?
+    	// why aren't implicit deletes working?  we already cleared docMap
     	// ensure omitted docs get deleted by Hibernate
     	for (HDocument hDoc : oldMap.values()) {
 			session.delete(hDoc);

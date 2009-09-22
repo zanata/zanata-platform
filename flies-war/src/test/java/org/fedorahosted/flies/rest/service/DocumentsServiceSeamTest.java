@@ -118,6 +118,16 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 		return doc;
 	}
 	
+	private Document putDoc1a() {
+		Documents docs = new Documents();
+		Document doc = newDoc("foo.properties", 
+	    		newTextFlow("HELLO", "Hello World", "fr", "Bonjour le Monde"));
+		docs.getDocuments().add(doc);
+		Response response = docsService.put(docs);
+		assertThat(response.getStatus(), is(200));
+		return doc;
+	}
+	
 	private Document postDoc2() {
 	    Documents docs = new Documents();
 	    Document doc = newDoc("test.properties",
@@ -154,7 +164,17 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 		putDoc1();
 	    expectDocs(doc1);
 	}
+
+	public void put1Then1a() throws Exception {
+	    getZero();
+	    Document doc1 = putDoc1();
+	    expectDocs(doc1);
+	    // this should completely replace doc1's textflow FOOD with HELLO
+		Document doc1a = putDoc1a();
+	    expectDocs(doc1a);
+	}
 	
+
 	// TODO expect 404 for non-existent project
 //	public void getBadProject() {
 //		

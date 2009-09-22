@@ -11,6 +11,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import org.fedorahosted.flies.core.dao.DocumentDAO;
 import org.fedorahosted.flies.core.dao.ProjectDAO;
@@ -35,6 +36,9 @@ public class DocumentsService {
 	@Context 
 	private HttpServletRequest request;
 
+	@Context
+	UriInfo uri;
+	
 	@In
 	ProjectDAO projectDAO;
 	
@@ -46,7 +50,7 @@ public class DocumentsService {
 	
 	@In
 	Session session;
-	
+
 	@In("DocumentsServiceActionImpl")
 	DocumentsServiceAction impl;
 
@@ -82,5 +86,9 @@ public class DocumentsService {
 	
 	public HttpServletRequest getRequest() {
 		return request;
+	}
+	
+	public UriInfo getUri() {
+		return uri;
 	}
 }
