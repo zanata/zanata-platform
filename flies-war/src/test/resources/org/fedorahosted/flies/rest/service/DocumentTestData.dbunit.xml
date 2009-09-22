@@ -19,6 +19,7 @@
   	resId="tf1"
   	revision="1"
   	pos="0"
+    obsolete="0"
   />
   <HTextFlow 
   	id="1"

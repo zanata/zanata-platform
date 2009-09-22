@@ -36,7 +36,8 @@ public abstract class HResource implements Serializable{
 	
 	private HDocument document;
 	private HResource parent;
-
+	private boolean obsolete = false;
+	
 	public HResource() {
 	}
 	
@@ -74,8 +75,14 @@ public abstract class HResource implements Serializable{
 	public void setRevision(Integer revision) {
 		this.revision = revision;
 	}
+
+	public boolean isObsolete() {
+		return obsolete;
+	}
 	
-	
+	public void setObsolete(boolean obsolete) {
+		this.obsolete = obsolete;
+	}
 	
 	@ManyToOne
 	@JoinColumn(name="document_id",insertable=false, updatable=false, nullable=false)

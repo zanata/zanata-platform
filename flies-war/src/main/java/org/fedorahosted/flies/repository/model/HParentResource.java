@@ -11,6 +11,7 @@ import org.fedorahosted.flies.rest.dto.Resource;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.Where;
 
 @MappedSuperclass
 public abstract class HParentResource extends HResource{
@@ -27,7 +28,8 @@ public abstract class HParentResource extends HResource{
 	}
 
 	@OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
-	@IndexColumn(name = "pos", base=1)
+	@IndexColumn(name = "pos", base=0)
+	@Where(clause="obsolete=0")
 	@OnDelete(action=OnDeleteAction.CASCADE)
 	public List<HResource> getChildren() {
 		return children;

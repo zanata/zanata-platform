@@ -26,6 +26,7 @@ import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Reference;
 import org.fedorahosted.flies.rest.dto.Resource;
 import org.fedorahosted.flies.rest.dto.TextFlow;
+import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
@@ -53,6 +54,7 @@ public class HDocument extends AbstractFliesEntity{
 	private HProjectContainer project;
 
 	private Map<String, HResource> resources;
+	private Map<String, HResource> obsoletes;
 	private List<HResource> resourceTree;
 	
 	private Map<LocaleId, HDocumentTarget> targets;
@@ -238,7 +240,7 @@ public class HDocument extends AbstractFliesEntity{
 	}
 
 	@OneToMany(cascade=CascadeType.ALL)
-	@Where(clause="parent_id is null")
+	@Where(clause="parent_id is null and obsolete=0")
 	@IndexColumn(name="pos",base=0,nullable=false)
 	@JoinColumn(name="document_id",nullable=false)
 	public List<HResource> getResourceTree() {
@@ -250,7 +252,19 @@ public class HDocument extends AbstractFliesEntity{
 	public void setResourceTree(List<HResource> resourceTree) {
 		this.resourceTree = resourceTree;
 	}
+
+	@OneToMany(cascade=CascadeType.ALL)
+	@Where(clause="obsolete=1")
+	@MapKey(name="resId")
+	public Map<String, HResource> getObsoletes() {
+		if(obsoletes == null)
+			obsoletes = new HashMap<String, HResource>();
+		return obsoletes;
+	}
 	
+	public void setObsoletes(Map<String, HResource> obsoletes) {
+		this.obsoletes = obsoletes;
+	}
 	public Document toDocument(boolean deep) {
 		if (deep)
 			return toDocument(getTargets().keySet(), Integer.MAX_VALUE);
