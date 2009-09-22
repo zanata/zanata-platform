@@ -65,7 +65,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     		Document doc = hDocument.toDocument();
     		Set<LocaleId> includedTargets = hDocument.getTargets().keySet();
 			DocumentService.populateResources(
-    				doc.getResources(), 
+    				doc.getResources(true), 
     				hDocument.getResourceTree(), 
     				includedTargets , 
     				Integer.MAX_VALUE);

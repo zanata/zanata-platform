@@ -87,37 +87,40 @@ public class DocumentConverter {
 
 	private void copy(TextFlow tf, HTextFlow htf, Map<LocaleId, HDocumentTarget> docTargets) {
 			htf.setContent(tf.getContent());
-			for (Object ext : tf.getExtensions()) {
-				if (ext instanceof TextFlowTargets) {
-					TextFlowTargets targets = (TextFlowTargets) ext;
-					for (TextFlowTarget target : targets.getTargets()) {
-						HTextFlowTarget hTarget = null;
-						if (session.contains(htf)) {
-							hTarget = textFlowTargetDAO.getByNaturalId(htf, target.getLang());
-						}
-						if (hTarget == null) {
-							hTarget = new HTextFlowTarget();
-							hTarget.setLocale(target.getLang());
-							hTarget.setTextFlow(htf);
-							hTarget.setState(target.getState());
-	//						hTarget.setRevision(revision);
-							hTarget.setContent(target.getContent());
-							HDocumentTarget docTarget = docTargets.get(target.getLang());
-							if (docTarget == null) {
-								docTarget = new HDocumentTarget(htf.getDocument(), target.getLang());
-								docTargets.put(target.getLang(), docTarget);
-								session.save(docTarget);
+			List<Object> extensions = tf.getExtensions();
+			if (extensions != null) {
+				for (Object ext : extensions) {
+					if (ext instanceof TextFlowTargets) {
+						TextFlowTargets targets = (TextFlowTargets) ext;
+						for (TextFlowTarget target : targets.getTargets()) {
+							HTextFlowTarget hTarget = null;
+							if (session.contains(htf)) {
+								hTarget = textFlowTargetDAO.getByNaturalId(htf, target.getLang());
 							}
-							hTarget.setDocumentTarget(docTarget);
-							docTarget.getTargets().add(hTarget);
+							if (hTarget == null) {
+								hTarget = new HTextFlowTarget();
+								hTarget.setLocale(target.getLang());
+								hTarget.setTextFlow(htf);
+								hTarget.setState(target.getState());
+//						hTarget.setRevision(revision);
+								hTarget.setContent(target.getContent());
+								HDocumentTarget docTarget = docTargets.get(target.getLang());
+								if (docTarget == null) {
+									docTarget = new HDocumentTarget(htf.getDocument(), target.getLang());
+									docTargets.put(target.getLang(), docTarget);
+									session.save(docTarget);
+								}
+								hTarget.setDocumentTarget(docTarget);
+								docTarget.getTargets().add(hTarget);
+								session.save(hTarget);
+							}
+							copy(target, hTarget, htf, docTargets);
+							htf.getTargets().put(target.getLang(), hTarget);
 							session.save(hTarget);
 						}
-						copy(target, hTarget, htf, docTargets);
-						htf.getTargets().put(target.getLang(), hTarget);
-						session.save(hTarget);
+					} else {
+						throw new RuntimeException("Unknown TextFlow extension "+ext.getClass());
 					}
-				} else {
-					throw new RuntimeException("Unknown TextFlow extension "+ext.getClass());
 				}
 			}
 	    }
