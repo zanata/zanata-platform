@@ -110,6 +110,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
 		List<HResource> hResources;
 		if (put) {
 			hResources = new ArrayList<HResource>(docInfo.getResources().size());
+			// this should cause any unreferenced HResources to be deleted when we save
 			hDoc.setResourceTree(hResources);
 		} else {
 			hResources = hDoc.getResourceTree();
@@ -117,6 +118,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
 		for (Resource res : docInfo.getResources()) {
 			HResource hRes = null;
 			if (session.contains(hDoc))
+				// FIXME test this! (we broke the link from HDoc to its HResources above)
 				hRes = resourceDAO.getById(hDoc, res.getId());
 			if (hRes == null)
 				hRes = HDocument.create(res);

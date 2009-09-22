@@ -2,7 +2,7 @@ package org.fedorahosted.flies.client.ant.properties;
 
 import java.io.File;
 import java.net.URL;
-import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -35,7 +35,7 @@ public class Docs2PropsTask extends MatchingTask {
 	    
 	    URL srcURL = Utility.createURL(src, getProject());
 
-	    List<Document> docList;
+	    Set<Document> docList;
 	    if("file".equals(srcURL.getProtocol())) {
 		Documents docs = (Documents) m.unmarshal(new File(srcURL.getFile()));
 		docList = docs.getDocuments();
