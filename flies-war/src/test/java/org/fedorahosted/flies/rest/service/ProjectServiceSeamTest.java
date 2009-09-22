@@ -102,11 +102,4 @@ public class ProjectServiceSeamTest extends DBUnitSeamTest {
 		assertThat( project.getDescription(), is("Update project"));
 	}
 	
-	public void deleteProject(){
-		fail("Not implemented");
-	}
-	
-	public void deleteProjectThatDoesNotExist(){
-		fail("Not implemented");
-	}
 }
