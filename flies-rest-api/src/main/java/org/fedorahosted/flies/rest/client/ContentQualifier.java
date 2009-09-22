@@ -44,7 +44,7 @@ public class ContentQualifier{
 			}
 			else{
 				all = source = none = false;
-				String [] langs = qualifier.split(",");
+				String [] langs = qualifier.split(";");
 				languages = new HashSet<LocaleId>();
 				for (int i = 0; i < langs.length; i++) {
 					LocaleId locale = new LocaleId(langs[i]);
@@ -91,6 +91,6 @@ public class ContentQualifier{
 			if(all) return "all";
 			if(none) return "";
 			if(source) return "source";
-			return StringUtils.join(languages, ',');
+			return StringUtils.join(languages, ';');
 		}
 	}
