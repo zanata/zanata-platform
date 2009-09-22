@@ -1,6 +1,5 @@
 package org.fedorahosted.flies.rest.dto;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +13,6 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
 import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.rest.dto.po.HeaderEntry;
@@ -24,7 +22,6 @@ import org.fedorahosted.flies.rest.dto.po.PoTargetHeaders;
 import org.fedorahosted.flies.rest.dto.po.PotEntryData;
 import org.jboss.resteasy.annotations.providers.jaxb.json.Mapped;
 import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
-import org.jboss.resteasy.spi.touri.URITemplate;
 
 @Mapped(namespaceMap = {
 	@XmlNsMap(namespace = Namespaces.FLIES, jsonName = Namespaces.FLIES_JSON), 
@@ -230,5 +227,4 @@ public class Document extends AbstractBaseResource implements IExtensible{
 		}
 		return ext;
 	}
-	
 }
