@@ -109,13 +109,11 @@ public class DocumentService {
 		HDocument hDoc = documentDAO.getByDocId(hProjectContainer, hDocId);
 		
 		if(hDoc == null) { // it's a create operation
-			hDoc = new HDocument(document);
-			hDoc.setRevision(1);
+			hDoc = documentConverter.create(document, hProjectContainer);
 			hProjectContainer.getDocuments().put(hDoc.getDocId(), hDoc);
-			hDoc.setProject(hProjectContainer);
+			session.save(hDoc);
 			try{
 				session.flush();
-				documentConverter.copy(document, hDoc, true);
 				return Response.created( uri.getBaseUri().resolve(URIHelper.getDocument(projectSlug, iterationSlug, documentId))).build();
 			}
 			catch(Exception e){
@@ -128,9 +126,7 @@ public class DocumentService {
 			if(hDoc.getRevision() != document.getVersion()) {
 				return Response.status(Status.CONFLICT).entity("Version conflict").build();
 			}
-			int rev = hDoc.getRevision() + 1;
-			documentConverter.copy(document, hDoc, true);
-			hDoc.setRevision(rev);
+			documentConverter.merge(document, hDoc);
 			try{
 				session.flush();
 				return Response.ok().build();

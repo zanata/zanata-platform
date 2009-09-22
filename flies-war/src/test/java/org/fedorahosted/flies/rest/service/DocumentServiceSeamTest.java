@@ -168,4 +168,40 @@ public class DocumentServiceSeamTest extends DBUnitSeamTest{
 		assertThat( link, notNullValue() );
 		assertThat( link.getType(), is( MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML) );
 	}
+
+	public void putNewDocumentWithResources() {
+		String docUrl = "my,fancy,document.txt";
+		IDocumentResource documentResource = getDocumentService(docUrl);
+		Document doc = new Document("/my/fancy/document.txt", ContentType.TextPlain);
+		
+		TextFlow textFlow = new TextFlow("tf1");
+		textFlow.setContent("hello world!");
+		doc.getResources(true).add(textFlow);
+		
+		Response response = documentResource.put(doc);
+
+		assertThat( response.getStatus(), is(Status.CREATED.getStatusCode()) );
+		assertThat( response.getMetadata().getFirst("Location").toString() , endsWith(url+docUrl) );
+
+		ClientResponse<Document> documentResponse = documentResource.get(ContentQualifier.SOURCE);
+		
+		assertThat( documentResponse.getResponseStatus(), is(Status.OK) );
+		
+		doc = documentResponse.getEntity(); 
+
+		assertThat( doc.getVersion(), is(1) );
+		Link link = doc.findLinkByRel(Relationships.SELF); 
+		assertThat( link, notNullValue() );
+		assertThat( link.getHref().toString(), containsString(url+Encode.encodeQueryString(docUrl)) );
+		
+		link = doc.findLinkByRel(Relationships.DOCUMENT_CONTAINER); 
+		assertThat( link, notNullValue() );
+		assertThat( link.getType(), is( MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML) );
+		
+		assertThat("Should have resources", doc.getResources(), notNullValue() );
+		assertThat("Should have one resource", doc.getResources().size(), is(1) );
+		assertThat("No targets should be included", ((TextFlow)doc.getResources().get(0)).getExtension(TextFlowTargets.class), nullValue() );
+		
+	}
+
 }

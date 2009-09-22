@@ -30,4 +30,16 @@ public class ResourceDAO {
 		    .setComment("ResourceDAO.getById")
 		    .uniqueResult();
 	}
+	
+	public HResource getObsoleteById(HDocument document, String id) {
+		return (HResource) session.createCriteria(HResource.class)
+		.add( Restrictions.naturalId()
+	        .set("resId", id)
+	        .set("document", document)
+	    	)
+	    .add( Restrictions.eq("obsolete", true))
+	    .setCacheable(true)
+	    .setComment("ResourceDAO.getById")
+	    .uniqueResult();
+	}
 }
