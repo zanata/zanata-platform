@@ -180,7 +180,7 @@ public class HDocument extends AbstractFliesEntity{
 	}
 	
 	@ManyToOne(cascade=CascadeType.PERSIST)
-	@JoinColumn(name="project_id",insertable=false, updatable=false, nullable=false)
+	@JoinColumn(name="project_id", nullable=false)
 	@NaturalId
 	public HProjectContainer getProject() {
 		return project;
