@@ -132,7 +132,8 @@ public class DocumentService {
 		return Response.ok().entity(doc).tag("v-" + doc.getVersion()).build();
 	}
 	
-	private void populateResources(List<Resource> resources, List<HResource> hResources, Set<LocaleId> includedTargets, int levels){
+	// temporarily left here to minimize diffs.  Should move this to DocumentConverter or similar
+	public static void populateResources(List<Resource> resources, List<HResource> hResources, Set<LocaleId> includedTargets, int levels){
 		for(HResource hResource : hResources) {
 			if(hResource instanceof HContainer) {
 				HContainer hContainer = (HContainer) hResource;

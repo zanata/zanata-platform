@@ -21,10 +21,8 @@ import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
 
 @AutoCreate
 @Scope(ScopeType.STATELESS)
@@ -45,6 +43,7 @@ public class DocumentConverter {
 		toHDoc.setContentType(fromDoc.getContentType());
 		toHDoc.setLocale(fromDoc.getLang());
 		toHDoc.setRevision(fromDoc.getVersion());  // TODO check version/revision!
+		// TODO handle doc extensions
 		List<Resource> docResources = fromDoc.getResources();
 		if (docResources != null) {
 			Map<LocaleId, HDocumentTarget> docTargets = toHDoc.getTargets();
