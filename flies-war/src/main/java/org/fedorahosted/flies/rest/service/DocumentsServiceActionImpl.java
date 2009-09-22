@@ -35,8 +35,8 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     @In 
     private DocumentsService documentsService; 
     
-    @In 
-    private DocumentDAO documentDAO;
+//    @In 
+//    private DocumentDAO documentDAO;
     @In 
     private ProjectContainerDAO projectContainerDAO;
     @In 
@@ -55,7 +55,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
 	}
     
     public Documents get() {
-    	log.info("HTTP GET "+documentsService.getRequest().getRequestURL());
+    	log.debug("HTTP GET {0}", documentsService.getRequest().getRequestURL());
     	Collection<HDocument> hdocs = getContainer().getDocuments().values();
     	Documents result = new Documents();
 	
@@ -67,17 +67,21 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     }
     
     public void post(Documents docs) {
-    	log.info("HTTP POST "+documentsService.getRequest().getRequestURL()+" :\n"+docs);
+    	log.debug("HTTP POST {0} : \n{1}",documentsService.getRequest().getRequestURL(), docs);
     	HProjectContainer hContainer = getContainer();
     	Map<String, HDocument> docMap = hContainer.getDocuments();
     	for (Document doc: docs.getDocuments()) {
 			// if doc already exists, load it and update it, but don't create it
-    		HDocument hDoc = documentDAO.getByDocId(hContainer, doc.getId());
+    		HDocument hDoc = docMap.get(doc.getId());
     		if (hDoc == null) {
+    			log.info("POST creating new HDocument with id {0}", doc.getId());
     			hDoc = new HDocument(doc);
     			hDoc.setRevision(1);
     			hDoc.setProject(hContainer);
+    		} else {
+    			log.info("POST updating HDocument with id {0}", doc.getId());
     		}
+    		
 			docMap.put(hDoc.getDocId(), hDoc);
     		session.save(hDoc);
     		documentConverter.copy(doc, hDoc, true);
@@ -87,25 +91,38 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     
     
     public void put(Documents docs) {
-    	log.info("HTTP PUT "+documentsService.getRequest().getRequestURL()+" :\n"+docs);
+    	log.debug("HTTP PUT {0} : \n{1}",documentsService.getRequest().getRequestURL(), docs);
     	HProjectContainer hContainer = getContainer();
-    	Map<String, HDocument> docMap = new HashMap<String, HDocument>(); 
-    	hContainer.setDocuments(docMap);
+//    	Map<String, HDocument> docMap = new HashMap<String, HDocument>(); 
+//    	hContainer.setDocuments(docMap);
+    	Map<String, HDocument> docMap = hContainer.getDocuments();
+    	Map<String, HDocument> oldMap = new HashMap<String, HDocument>(docMap); 
+    	docMap.clear();
 
     	for (Document doc: docs.getDocuments()) {
 			// if doc already exists, load it and update it, but don't create it
-    		HDocument hDoc = documentDAO.getByDocId(hContainer, doc.getId());
+//    		HDocument hDoc = oldMap.get(doc.getId());
+    		HDocument hDoc = oldMap.remove(doc.getId());
     		if (hDoc == null) {
+    			log.debug("PUT creating new HDocument with id {0}", doc.getId());
     			hDoc = new HDocument(doc);
     			hDoc.setRevision(1);
     			hDoc.setProject(hContainer);
+    		} else {
+    			log.debug("PUT updating HDocument with id {0}", doc.getId());
     		}
     		docMap.put(hDoc.getDocId(), hDoc);
     		session.save(hDoc);
     		documentConverter.copy(doc, hDoc, true);
     	}
-    	// TODO ensure omitted docs get deleted by Hibernate
+    	
+    	// why aren't implicit deletes working?
+    	// ensure omitted docs get deleted by Hibernate
+    	for (HDocument hDoc : oldMap.values()) {
+			session.delete(hDoc);
+		}
     	session.flush();
+    	log.debug("final state :\n{0}", docs);
     }
 
 }
