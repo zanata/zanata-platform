@@ -9,6 +9,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.fedorahosted.flies.core.dao.DocumentDAO;
 import org.fedorahosted.flies.core.dao.ProjectContainerDAO;
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
@@ -35,8 +36,9 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     @In 
     private DocumentsService documentsService; 
     
-//    @In 
-//    private DocumentDAO documentDAO;
+    @In 
+    private DocumentDAO documentDAO;
+    
     @In 
     private ProjectContainerDAO projectContainerDAO;
     @In 
@@ -112,16 +114,12 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     public void put(Documents docs) {
     	log.debug("HTTP PUT {0} : \n{1}",documentsService.getRequest().getRequestURL(), docs);
     	HProjectContainer hContainer = getContainer();
-//    	Map<String, HDocument> docMap = new HashMap<String, HDocument>(); 
-//    	hContainer.setDocuments(docMap);
     	Map<String, HDocument> docMap = hContainer.getDocuments();
-    	Map<String, HDocument> oldMap = new HashMap<String, HDocument>(docMap); 
     	docMap.clear();
 
     	for (Document doc: docs.getDocuments()) {
 			// if doc already exists, load it and update it, but don't create it
-//    		HDocument hDoc = oldMap.get(doc.getId());
-    		HDocument hDoc = oldMap.remove(doc.getId());
+    		HDocument hDoc = documentDAO.getByDocId(hContainer, doc.getId()); 
     		if (hDoc == null) {
     			log.debug("PUT creating new HDocument with id {0}", doc.getId());
     			hDoc = new HDocument(doc);
@@ -134,14 +132,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     		session.save(hDoc);
     		documentConverter.copy(doc, hDoc, true);
     	}
-    	
-    	// why aren't implicit deletes working?  we already cleared docMap
-    	// ensure omitted docs get deleted by Hibernate
-//    	for (HDocument hDoc : oldMap.values()) {
-//			session.delete(hDoc);
-//		}
     	session.flush();
-    	log.debug("final state :\n{0}", docs);
     }
 
 }
