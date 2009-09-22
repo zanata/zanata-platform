@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.webtrans.action;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -11,7 +12,6 @@ import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.HPerson;
 import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.repository.model.HDocument;
-import org.fedorahosted.flies.repository.model.HDocumentTarget;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.repository.model.HResource;
 import org.fedorahosted.flies.repository.model.HTextFlow;
@@ -91,11 +91,11 @@ public class TranslateAction implements Serializable {
 	}
 
 	@DataModel
-	private List<HDocumentTarget> documentTargets;
+	private List<HDocument> documentTargets;
 
 	@DataModelSelection(value="documentTargets")
 	@Out(required=false)
-	private HDocumentTarget selectedDocumentTarget;
+	private HDocument selectedDocumentTarget;
 
 	@In(value="flies.tftDataModel")
 	@MyDataModel
@@ -124,16 +124,13 @@ public class TranslateAction implements Serializable {
 	}
 	
 	public void selectDocumentTarget(){
-		log.info("selected {0}", selectedDocumentTarget.getTemplate().getName());
+		log.info("selected {0}", selectedDocumentTarget.getName());
 		//loadTextFlowTargets();
 	}
 	
 	@Factory("documentTargets")
 	public void loadDocumentTargets(){
-		documentTargets = entityManager.createQuery("select d from HDocumentTarget d " +
-								"where d.locale = :locale and d.template.project = :project")
-					.setParameter("locale", locale)
-					.setParameter("project", projectContainer).getResultList();
+		documentTargets = new ArrayList<HDocument>(projectContainer.getDocuments().values());
 	}
 
 	//@Factory("textFlowTargets")
@@ -182,21 +179,6 @@ public class TranslateAction implements Serializable {
 				log.info("Initializing targets");
 				locale = new LocaleId(localeId);
 
-				for(String docId : projectContainer.getDocuments().keySet() ){
-					HDocument doc = projectContainer.getDocuments().get(docId);
-					if(!doc.getTargets().containsKey(locale)){
-						HDocumentTarget docTarget = new HDocumentTarget(doc, locale);
-						entityManager.persist(docTarget);
-						for (HResource res : doc.getResources().values() ){
-							if(res instanceof HTextFlow){
-								HTextFlowTarget target = new HTextFlowTarget(docTarget, (HTextFlow) res);
-								target.setContent("");
-								entityManager.persist(target);
-							}
-								
-						}
-					}
-				}
 				HPerson translator = entityManager.find(HPerson.class, authenticatedAccount.getPerson().getId());
 				getWorkspace().registerTranslator(translator);
 			}

@@ -99,10 +99,10 @@
       <h:form>
         <a4j:region id="ProjectTreeRegion">
           <rich:dataTable id="documentsTable" value="#{documentTargets}" var="doc" rows="15" reRender="ds" rowClasses="docrow">
-            <rich:column filterBy="#{doc.template.name}" filterEvent="onkeyup">
+            <rich:column filterBy="#{doc.name}" filterEvent="onkeyup">
               <a4j:commandLink reRender="documentsTable,TransAreaTable" action="#{translateAction.selectDocumentTarget}">
                 <s:conversationId name="wid"/>
-                <h:outputText value="#{doc.template.name}" /> 
+                <h:outputText value="#{doc.name}" /> 
               </a4j:commandLink>
             </rich:column>
             <f:facet name="footer">

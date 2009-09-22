@@ -82,10 +82,10 @@ public class DocumentService {
 		int requestedLevels = resources.isNone() ? 0 : Integer.MAX_VALUE;
 		Set<LocaleId> requestedLanguages = resources.getLanguages();
 		if (resources.isAll()) {
-			requestedLanguages = hDoc.getTargets().keySet(); 
+			requestedLanguages = documentDAO.getTargetLocales(hDoc); 
 		}
 		
-		Document doc = hDoc.toDocument(requestedLanguages, requestedLevels); 
+		Document doc = hDoc.toDocument(requestedLevels); 
 		documentConverter.addLinks(doc,uri.getRequestUri(), 
 				uri.getBaseUri().resolve(URIHelper.getIteration(projectSlug, iterationSlug)));
 		

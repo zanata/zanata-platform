@@ -21,7 +21,7 @@ public class HDataHook extends HResource{
 	private static final long serialVersionUID = -555978165911935456L;
 
 	@Override
-	public DataHook toResource(Set<LocaleId> includedTargets, int levels) {
+	public DataHook toResource(int levels) {
 		DataHook dataHook = new DataHook(this.getResId());
 		return dataHook;
 	}

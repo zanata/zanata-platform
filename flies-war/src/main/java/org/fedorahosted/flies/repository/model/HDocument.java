@@ -57,8 +57,6 @@ public class HDocument extends AbstractFliesEntity{
 	private Map<String, HResource> obsoletes;
 	private List<HResource> resourceTree;
 	
-	private Map<LocaleId, HDocumentTarget> targets;
-
 	public HDocument(String fullPath, ContentType contentType) {
 		this(fullPath, contentType, LocaleId.EN_US);
 	}
@@ -227,18 +225,6 @@ public class HDocument extends AbstractFliesEntity{
 		this.resources = resources;
 	}
 	
-	@OneToMany(mappedBy = "template", cascade=CascadeType.ALL)
-	@MapKey(name="locale")
-	public Map<LocaleId, HDocumentTarget> getTargets() {
-		if(targets == null)
-			targets = new HashMap<LocaleId, HDocumentTarget>();
-		return targets;
-	}
-
-	public void setTargets(Map<LocaleId, HDocumentTarget> targets) {
-		this.targets = targets;
-	}
-
 	@OneToMany(cascade=CascadeType.ALL)
 	@Where(clause="parent_id is null and obsolete=0")
 	@IndexColumn(name="pos",base=0,nullable=false)
@@ -267,17 +253,17 @@ public class HDocument extends AbstractFliesEntity{
 	}
 	public Document toDocument(boolean deep) {
 		if (deep)
-			return toDocument(getTargets().keySet(), Integer.MAX_VALUE);
+			return toDocument(Integer.MAX_VALUE);
 		else
-			return toDocument(Collections.EMPTY_SET, 0);
+			return toDocument(0);
 	}
 	
-	public Document toDocument(Set<LocaleId> includedTargets, int levels) {
+	public Document toDocument(int levels) {
 	    Document doc = new Document(docId, name, path, contentType, revision, locale);
 	    if (levels != 0) {
 		    List<Resource> docResources = doc.getResources(true);
 		    for (HResource hRes : resourceTree) {
-				docResources.add(hRes.toResource(includedTargets, levels));
+				docResources.add(hRes.toResource(levels));
 			}
 		    // TODO handle extensions
 	//	    List<Object> docExtensions = doc.getExtensions();

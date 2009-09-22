@@ -105,5 +105,5 @@ public abstract class HResource implements Serializable{
 		this.parent = parent;
 	}
 
-	public abstract Resource toResource(Set<LocaleId> includedTargets, int levels);
+	public abstract Resource toResource(int levels);
 }

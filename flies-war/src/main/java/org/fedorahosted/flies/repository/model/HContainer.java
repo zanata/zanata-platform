@@ -28,11 +28,11 @@ public class HContainer extends HParentResource{
 	private static final long serialVersionUID = 6475033994256762703L;
 
 	@Override
-	public Container toResource(Set<LocaleId> includedTargets, int levels) {
+	public Container toResource(int levels) {
 		Container container = new Container(this.getResId());
 		if (levels != 0) {
 			for (HResource res : getChildren()) {
-				container.getContent().add(res.toResource(includedTargets, levels-1));
+				container.getContent().add(res.toResource(levels-1));
 			}
 		}
 		return container;

@@ -1,5 +1,10 @@
 package org.fedorahosted.flies.core.dao;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.core.model.HProject;
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
@@ -25,5 +30,12 @@ public class DocumentDAO {
 		    .setCacheable(true)
 		    .setComment("DocumentDAO.getById")
 		    .uniqueResult();
+	}
+
+	public Set<LocaleId> getTargetLocales(HDocument hDoc) {
+		List<LocaleId> locales = (List<LocaleId>) session.createQuery(
+				"select tft.locale from HTextFlowTarget tft where tft.textFlow.document = :document")
+			.setParameter("document", hDoc).list();
+		return new HashSet<LocaleId>(locales);
 	}
 }

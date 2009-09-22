@@ -43,17 +43,11 @@ public class HTextFlowTarget implements Serializable{
 	
 	private HSimpleComment comment;
 	
-	private HDocumentTarget documentTarget; 
-	
 	public HTextFlowTarget() {
 	}
 	
-	public HTextFlowTarget(HDocumentTarget docTarget, HTextFlow textFlow) {
-		if(docTarget.getTemplate() != textFlow.getDocument()){
-			throw new IllegalStateException("docTarget and textFlow must reference same Document");
-		}
-		this.documentTarget = docTarget;
-		this.locale = docTarget.getLocale();
+	public HTextFlowTarget(HTextFlow textFlow, LocaleId locale) {
+		this.locale = locale;
 		this.textFlow = textFlow;
 		this.revision = textFlow.getRevision();
 	}
@@ -124,18 +118,6 @@ public class HTextFlowTarget implements Serializable{
 		this.textFlow = textFlow;
 	}
 
-	@ManyToOne
-	@JoinColumn(name="document_target_id", nullable=false)
-	public HDocumentTarget getDocumentTarget() {
-		// (should be the same as textFlow.getDocument().getTargets().get(getLocale());)
-		// in other words, this value should never change
-		return documentTarget;
-	}
-
-	public void setDocumentTarget(HDocumentTarget documentTarget) {
-		this.documentTarget = documentTarget;
-	}
-	
 	@NotNull
 	@Type(type = "text")
 	public String getContent() {

@@ -25,16 +25,6 @@
   	id="1"
   	content="hello world"
   />
-  <HDocumentTarget
-  	id="1"
-  	document_id="1"
-  	locale="nb-NO"
-  />
-  <HDocumentTarget
-  	id="2"
-  	document_id="1"
-  	locale="de-DE"
-  />
   <HTextFlowTarget 
   	id="1"
   	content="hei verden"
@@ -42,7 +32,6 @@
   	revision="1"
   	state="1"
   	resource_id="1"
-  	document_target_id="1"
   />
   <HTextFlowTarget 
   	id="2"
@@ -51,6 +40,5 @@
   	revision="1"
   	state="1"
   	resource_id="1"
-  	document_target_id="2"
   />
 </dataset>

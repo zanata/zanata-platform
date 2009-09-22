@@ -34,7 +34,7 @@ public class HReference extends HResource{
 	}
 	
 	@Override
-	public Reference toResource(Set<LocaleId> includedTargets, int levels) {
+	public Reference toResource(int levels) {
 		Reference reference = new Reference(this.getResId());
 		reference.setRelationshipId(this.getRef());
 		return reference;

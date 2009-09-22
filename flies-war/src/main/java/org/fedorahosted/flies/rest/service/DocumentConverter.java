@@ -15,7 +15,6 @@ import org.fedorahosted.flies.core.dao.TextFlowTargetDAO;
 import org.fedorahosted.flies.repository.model.HContainer;
 import org.fedorahosted.flies.repository.model.HDataHook;
 import org.fedorahosted.flies.repository.model.HDocument;
-import org.fedorahosted.flies.repository.model.HDocumentTarget;
 import org.fedorahosted.flies.repository.model.HParentResource;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.repository.model.HReference;
@@ -72,7 +71,6 @@ public class DocumentConverter {
 		// TODO handle doc extensions
 		if (fromDoc.hasResources()) {
 			List<Resource> docResources = fromDoc.getResources();
-			Map<LocaleId, HDocumentTarget> docTargets = toHDoc.getTargets();
 			List<HResource> hResources;
 			if (replaceResourceTree) {
 				hResources = new ArrayList<HResource>(docResources.size());
@@ -93,7 +91,7 @@ public class DocumentConverter {
 				hRes.setDocument(toHDoc);
 				hRes.setResId(res.getId());
 				session.save(hRes);
-				copy(res, hRes, toHDoc, docTargets);
+				copy(res, hRes, toHDoc);
 			}
 		}
 		session.save(toHDoc);
@@ -262,9 +260,32 @@ public class DocumentConverter {
 			
 			hTextFlow.setRevision(newRevision);
 			hTextFlow.setContent(textFlow.getContent());
-			
+		}
+		
+		TextFlowTargets targets = textFlow.getTargets();
+		if(targets != null) {
+			for(TextFlowTarget textFlowTarget : targets.getTargets()) {
+				if(hTextFlow.getTargets().containsKey(textFlowTarget.getLang())){
+					merge(textFlowTarget, hTextFlow.getTargets().get(textFlowTarget.getLang()), newRevision);
+				}
+				else{
+					HTextFlowTarget hTextFlowTarget = create(textFlowTarget, newRevision);
+					hTextFlow.getTargets().put(textFlowTarget.getLang(), hTextFlowTarget);
+				}
+			}
 		}
 	}	
+	
+	public void merge(TextFlowTarget textFlowTarget, HTextFlowTarget hTextFlowTarget, int newRevision) {
+		if( !hTextFlowTarget.getContent().equals(textFlowTarget.getContent())){
+			
+		}
+	}
+	
+	public HTextFlowTarget create(TextFlowTarget textFlowTarget, int newRevision){
+		return null;
+	}
+	
 	public void merge(Container container, HContainer hContainer, int newRevision){
 		mergeChildren(container, hContainer, newRevision);
 		// if a child is updated, we update the container version as well
@@ -373,17 +394,17 @@ public class DocumentConverter {
 	
 	// copy res to hRes recursively, maintaining docTargets
 	private void copy(Resource res, HResource hRes,
-			HDocument hDoc, Map<LocaleId, HDocumentTarget> docTargets) {
+			HDocument hDoc) {
 		hRes.setDocument(hDoc);
 		if (res instanceof TextFlow) {
-			copy((TextFlow)res, (HTextFlow)hRes, docTargets);
+			copy((TextFlow)res, (HTextFlow)hRes);
 		} else {
 			// FIXME handle other Resource types
 			throw new RuntimeException("Unknown Resource type "+res.getClass());
 		}
 	}
 
-	private void copy(TextFlow tf, HTextFlow htf, Map<LocaleId, HDocumentTarget> docTargets) {
+	private void copy(TextFlow tf, HTextFlow htf) {
 			htf.setContent(tf.getContent());
 			List<Object> extensions = tf.getExtensions();
 			if (extensions != null) {
@@ -402,17 +423,9 @@ public class DocumentConverter {
 								hTarget.setState(target.getState());
 //						hTarget.setRevision(revision);
 								hTarget.setContent(target.getContent());
-								HDocumentTarget docTarget = docTargets.get(target.getLang());
-								if (docTarget == null) {
-									docTarget = new HDocumentTarget(htf.getDocument(), target.getLang());
-									docTargets.put(target.getLang(), docTarget);
-									session.save(docTarget);
-								}
-								hTarget.setDocumentTarget(docTarget);
-								docTarget.getTargets().add(hTarget);
 								session.save(hTarget);
 							}
-							copy(target, hTarget, htf, docTargets);
+							copy(target, hTarget, htf);
 							htf.getTargets().put(target.getLang(), hTarget);
 							session.save(hTarget);
 						}
@@ -424,7 +437,7 @@ public class DocumentConverter {
 	    }
 
 	private void copy(TextFlowTarget target, HTextFlowTarget hTarget,
-			HTextFlow htf, Map<LocaleId, HDocumentTarget> docTargets) {
+			HTextFlow htf) {
 		hTarget.setContent(target.getContent());
 		hTarget.setLocale(target.getLang());
 		hTarget.setRevision(target.getVersion());

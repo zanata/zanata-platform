@@ -98,12 +98,12 @@ public class HTextFlow extends HResource {
 	}
 	
 	@Override
-	public TextFlow toResource(Set<LocaleId> includedTargets, int levels) {
+	public TextFlow toResource(int levels) {
 		TextFlow textFlow = new TextFlow(this.getResId());
 		textFlow.setContent(this.getContent());
 		textFlow.setLang(this.getDocument().getLocale());
 		
-		for (LocaleId locale : includedTargets) {
+		for (LocaleId locale : getTargets().keySet()) {
 			HTextFlowTarget hTextFlowTarget = this.getTargets().get(locale);
 			if(hTextFlowTarget != null) {
 				TextFlowTarget textFlowTarget = new TextFlowTarget(textFlow, locale);
