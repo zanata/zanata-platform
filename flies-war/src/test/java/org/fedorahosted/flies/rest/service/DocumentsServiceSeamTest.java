@@ -5,8 +5,11 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 import java.net.URI;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.core.Response;
 
@@ -20,6 +23,7 @@ import org.fedorahosted.flies.rest.dto.Documents;
 import org.fedorahosted.flies.rest.dto.Resource;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
+import org.hamcrest.MatcherAssert;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
@@ -87,13 +91,13 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 //			actual.add(doc.toString());
 //		}
 //	    assertThat(actual, is(docStrings));
-//	    assertThat(response.getEntity().getDocuments(), is(Arrays.asList(docs)));
+	    assertThat(response.getEntity().getDocuments(), is(Arrays.asList(docs)));
 
-	    Set<Document> expected = new HashSet<Document>();
-	    for (Document doc : docs) {
-			expected.add(doc);
-		}
-	    assertThat(response.getEntity().getDocuments(), is(expected));
+//	    Map<String, Document> expected = new HashMap<String, Document>();
+//	    for (Document doc : docs) {
+//			expected.put(doc.getId(), doc);
+//		}
+//	    assertThat(response.getEntity().getDocuments(), is(expected));
 	}
 	
 	private Document newDoc(String id, Resource... resources) {

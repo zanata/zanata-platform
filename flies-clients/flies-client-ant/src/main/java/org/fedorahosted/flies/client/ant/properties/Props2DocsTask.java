@@ -2,7 +2,7 @@ package org.fedorahosted.flies.client.ant.properties;
 
 import java.io.File;
 import java.net.URL;
-import java.util.Set;
+import java.util.List;
 
 import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
@@ -50,7 +50,7 @@ public class Props2DocsTask extends MatchingTask {
 	    }
 	    
 	    Documents docs = new Documents();
-	    Set<Document> docList = docs.getDocuments();
+	    List<Document> docList = docs.getDocuments();
 	    PropReader propReader = new PropReader();
 	    // for each of the base props files under srcdir:
 	    for (String filename : files) {
