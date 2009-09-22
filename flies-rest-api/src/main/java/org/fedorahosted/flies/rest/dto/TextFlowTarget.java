@@ -100,9 +100,19 @@ public class TextFlowTarget implements IExtensible{
 	
 	@XmlAnyElement(lax=true)
 	public List<Object> getExtensions() {
-		if(extensions == null)
+		return extensions;
+	}
+	
+	@Override
+	public List<Object> getExtensions(boolean create) {
+		if(extensions == null && create)
 			extensions = new ArrayList<Object>();
 		return extensions;
+	}
+	
+	@Override
+	public boolean hasExtensions() {
+		return extensions != null;
 	}
 	
 	@Override

@@ -5,6 +5,8 @@ import java.util.List;
 public interface IExtensible {
 
 	public List<Object> getExtensions();
+	public List<Object> getExtensions(boolean create);
+	public boolean hasExtensions();
 	
 	public <T> T getExtension(Class<T> clz);
 	
