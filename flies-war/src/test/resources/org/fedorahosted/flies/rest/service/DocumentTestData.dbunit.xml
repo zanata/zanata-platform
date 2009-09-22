@@ -9,7 +9,6 @@
     locale="en-US"
     name="document.txt"
     path="/my/path"
-    pos="0"
     project_id="1"
     revision="1"
   />

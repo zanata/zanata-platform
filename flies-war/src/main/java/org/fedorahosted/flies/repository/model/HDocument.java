@@ -190,14 +190,6 @@ public class HDocument extends AbstractFliesEntity{
 		this.project = project;
 	}
 
-	@Column(insertable=false, updatable=false, nullable=false)
-	public Integer getPos() {
-		return pos;
-	}
-	
-	public void setPos(Integer pos) {
-		this.pos = pos;
-	}
 	@NotNull
 	public Integer getRevision() {
 		return revision;
