@@ -2,7 +2,6 @@ package org.fedorahosted.flies.rest.service;
 
 import java.net.URISyntaxException;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 import javax.ws.rs.Consumes;
@@ -26,13 +25,10 @@ import org.fedorahosted.flies.core.dao.DocumentDAO;
 import org.fedorahosted.flies.core.dao.ProjectContainerDAO;
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
-import org.fedorahosted.flies.repository.model.HResource;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.client.ContentQualifier;
 import org.fedorahosted.flies.rest.dto.Container;
 import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.Link;
-import org.fedorahosted.flies.rest.dto.Relationships;
 import org.fedorahosted.flies.rest.dto.Resource;
 import org.fedorahosted.flies.rest.dto.ResourceList;
 import org.hibernate.Session;
@@ -53,7 +49,10 @@ public class DocumentService {
 	@PathParam("documentId")
 	private String documentId;
 	
-	@In
+    @In 
+    private DocumentConverter documentConverter;
+
+    @In
 	DocumentDAO documentDAO;
 	
 	@In
@@ -80,43 +79,19 @@ public class DocumentService {
 			return Response.status(Status.NOT_FOUND).entity("Document not found").build();
 		}
 		
-		Document doc = new Document(hDoc.getDocId(), hDoc.getName(), hDoc.getPath(), hDoc.getContentType(), hDoc.getRevision(), hDoc.getLocale());
-		
-		// add self relation
-		Link link = new Link(uri.getRequestUri(), Relationships.SELF); 
-		doc.getLinks().add(link);
-
-		// add container relation
-		link = new Link(
-				uri.getBaseUri().resolve(URIHelper.getIteration(projectSlug, iterationSlug)), 
-				Relationships.DOCUMENT_CONTAINER, 
-				MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML);
-		doc.getLinks().add(link);
-
-		// add content if requested
-		if( !resources.isNone()){
-			Set<LocaleId> requestedLanguages = resources.getLanguages();
-			if(resources.isAll()) {
-				requestedLanguages = hDoc.getTargets().keySet(); 
-			}
-
-			List<HResource> hResources = hDoc.getResourceTree();
-			List<Resource> rootResources = doc.getResources(true);
-			populateResources(rootResources, hResources, requestedLanguages, true);
+		int requestedLevels = resources.isNone() ? 0 : Integer.MAX_VALUE;
+		Set<LocaleId> requestedLanguages = resources.getLanguages();
+		if (resources.isAll()) {
+			requestedLanguages = hDoc.getTargets().keySet(); 
 		}
+		
+		Document doc = hDoc.toDocument(requestedLanguages, requestedLevels); 
+		documentConverter.addLinks(doc,uri.getRequestUri(), 
+				uri.getBaseUri().resolve(URIHelper.getIteration(projectSlug, iterationSlug)));
 		
 		return Response.ok().entity(doc).tag("v-" + doc.getVersion()).build();
 	}
 	
-	private void populateResources(List<Resource> resources, List<HResource> hResources, Set<LocaleId> includedTargets, int levels){
-		for(HResource hResource : hResources) {
-			resources.add(hResource.toResource(includedTargets, levels));
-		}
-	}	
-	private void populateResources(List<Resource> resources, List<HResource> hResources, Set<LocaleId> includedTargets, boolean recursive){
-		populateResources(resources, hResources, includedTargets, recursive ? -1 : 0);
-	}
-
 	@PUT
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaTypes.APPLICATION_FLIES_DOCUMENT_JSON,
 				MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -140,14 +115,7 @@ public class DocumentService {
 			hDoc.setProject(hProjectContainer);
 			try{
 				session.flush();
-				if(document.hasResources()){
-					for(Resource res : document.getResources()) {
-						HResource hRes = HDocument.create(res);
-						hRes.setDocument(hDoc);
-						hDoc.getResourceTree().add(hRes);
-						session.flush();
-					}
-				}
+				documentConverter.copy(document, hDoc, true);
 				return Response.created( uri.getBaseUri().resolve(URIHelper.getDocument(projectSlug, iterationSlug, documentId))).build();
 			}
 			catch(Exception e){
@@ -155,10 +123,7 @@ public class DocumentService {
 			}
 		}
 		else{ // it's an update operation
-			copyMetaData(document, hDoc);
-			if(!document.getResources().isEmpty()){
-				
-			}
+			documentConverter.copy(document, hDoc, true);
 			try{
 				session.flush();
 				return Response.ok().build();
@@ -168,17 +133,6 @@ public class DocumentService {
 			}
 		}
 		
-	}
-
-	private void copyMetaData(Document from, HDocument to){
-		final String fromName = from.getName();
-		if(fromName == null && to.getName() != null || !fromName.equals(to.getName())) {
-			to.setName(fromName);
-		}
-		final String fromPath = from.getPath();
-		if(fromPath == null && to.getPath() != null || !fromPath.equals(to.getPath())) {
-			to.setPath(from.getPath());
-		}
 	}
 	
 	@GET
