@@ -7,12 +7,9 @@ import javax.xml.bind.annotation.XmlValue;
 
 
 
-@XmlRootElement(name="comment", namespace=SimpleComment.NAMESPACE)
-@XmlType(name="simpleCommentType", namespace=SimpleComment.NAMESPACE)
+@XmlRootElement(name="comment", namespace=Namespaces.FLIES)
+@XmlType(name="simpleCommentType", namespace=Namespaces.FLIES)
 public class SimpleComment {
-	
-	public static final String NAMESPACE = "http://flies.fedorahosted.org/api/simplecomment/";
-	public static final String NAMESPACE_JSON = "simplecomment";
 	
 	private String id;
 	private String value;

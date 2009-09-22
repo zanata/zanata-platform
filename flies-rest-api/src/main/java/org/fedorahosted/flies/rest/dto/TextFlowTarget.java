@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.fedorahosted.flies.LocaleId;
 
 
-@XmlType(name="textFlowTargetType", namespace=TextFlowTargets.NAMESPACE, propOrder={"content", "extensions"})
+@XmlType(name="textFlowTargetType", namespace=Namespaces.FLIES, propOrder={"content", "extensions"})
 @XmlRootElement(name="text-flow-target", namespace=Namespaces.FLIES)
 public class TextFlowTarget implements IExtensible{
 	
@@ -23,6 +23,7 @@ public class TextFlowTarget implements IExtensible{
 	private List<Object> extensions;
 	
 	@XmlEnum(String.class)
+	@XmlType(name="contentStateType", namespace=Namespaces.FLIES)
 	public static enum ContentState{
 		@XmlEnumValue("new") New,
 		@XmlEnumValue("leveraged") Leveraged,

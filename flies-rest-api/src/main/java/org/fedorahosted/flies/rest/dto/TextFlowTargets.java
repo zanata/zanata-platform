@@ -15,15 +15,13 @@ import org.fedorahosted.flies.LocaleId;
  * @author asgeirf
  *
  */
-@XmlType(name="textFlowTargetsType", namespace=TextFlowTargets.NAMESPACE)
-@XmlRootElement(name="targets", namespace=TextFlowTargets.NAMESPACE)
+@XmlType(name="textFlowTargetsType", namespace=Namespaces.FLIES)
+@XmlRootElement(name="targets", namespace=Namespaces.FLIES)
 public class TextFlowTargets {
-	
-	public static final String NAMESPACE = "urn:extensions:target";
 	
 	private Set<TextFlowTarget> targets;
 	
-	@XmlElement(name="target", namespace=NAMESPACE)
+	@XmlElement(name="target", namespace=Namespaces.FLIES)
 	public Set<TextFlowTarget> getTargets() {
 		if(targets == null)
 			targets = new HashSet<TextFlowTarget>();
