@@ -46,19 +46,9 @@ public class DataHook extends AbstractBaseResource implements Resource {
 
 	@XmlAnyElement(lax=true)
 	public List<Object> getExtensions() {
-		return extensions;
-	}
-
-	@Override
-	public List<Object> getExtensions(boolean create) {
-		if(extensions == null && create)
+		if(extensions == null)
 			extensions = new ArrayList<Object>();
 		return extensions;
-	}
-	
-	@Override
-	public boolean hasExtensions() {
-		return extensions != null;
 	}
 	
 	@Override

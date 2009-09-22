@@ -60,21 +60,11 @@ public class TextFlow extends AbstractBaseResource implements Resource{
 
 	@XmlAnyElement(lax=true)
 	public List<Object> getExtensions() {
-		return extensions;
-	}
-
-	@Override
-	public List<Object> getExtensions(boolean create) {
-		if(extensions == null && create)
+		if(extensions == null)
 			extensions = new ArrayList<Object>();
 		return extensions;
 	}
-	
-	@Override
-	public boolean hasExtensions() {
-		return extensions != null;
-	}
-	
+
 	@Override
 	public <T> T getExtension(Class<T> clz){
 		if(extensions == null)
@@ -121,8 +111,6 @@ public class TextFlow extends AbstractBaseResource implements Resource{
 	}
 	
 	public TextFlowTarget getTarget(LocaleId localeId){
-		if(extensions == null) return null;
-		
 		for(Object obj : getExtensions()){
 			if(obj instanceof TextFlowTargets){
 				TextFlowTargets tft = (TextFlowTargets) obj;
@@ -137,17 +125,15 @@ public class TextFlow extends AbstractBaseResource implements Resource{
 	
 	public void addTarget(TextFlowTarget target) {
 		TextFlowTargets targets = null;
-		if(extensions != null) {
-			for(Object obj : getExtensions()){
-				if(obj instanceof TextFlowTargets){
-					targets = (TextFlowTargets) obj;
-					break;
-				}
+		for(Object obj : getExtensions()){
+			if(obj instanceof TextFlowTargets){
+				targets = (TextFlowTargets) obj;
+				break;
 			}
 		}
 		if(targets == null){
 			targets = new TextFlowTargets();
-			getExtensions(true).add(targets);
+			getExtensions().add(targets);
 		}
 		targets.getTargets().add(target);
 
