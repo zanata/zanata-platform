@@ -77,15 +77,12 @@ public class ProjectsServiceSeamTest extends DBUnitSeamTest {
 		
 		assertThat( location, endsWith("/projects/p/my-new-project"));
 		
-//		ClientResponse<ProjectInlineList> response = projectService.get();
-//		
-//		assertThat( response.getStatus(), is( Status.OK.getStatusCode()));
-//		
-//		project = response.getEntity();
-//		
-//		assertThat( project.getName(), is("My New Project"));
-//		assertThat( project.getDescription(), is("Another test project"));
-		
+		ClientResponse<ProjectList> response1 = projectService.get();
+		assertThat(response1.getStatus(), is(Status.OK.getStatusCode()));
+		assertThat(response1.getEntity(), notNullValue());
+		assertThat(response1.getEntity().getProjects().size(), is(2)); 
+		Project projectRef = response1.getEntity().getProjects().get(1);
+		assertThat( projectRef.getName(), is("My New Project"));
 	}
 	
 	public void createProjectThatAlreadyExists(){
