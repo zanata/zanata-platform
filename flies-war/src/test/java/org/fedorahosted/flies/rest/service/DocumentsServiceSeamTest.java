@@ -82,6 +82,8 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 	    assertThat(response.getEntity().getDocuments().size(), is(Arrays.asList(docs).size()));
 	    Set<String> actual = new TreeSet<String>();
 	    for (Document doc : response.getEntity().getDocuments()) {
+	    	// leave links out of the XML
+	    	doc.getLinks().clear();
 			actual.add(doc.toString());
 		}
 	    assertThat(actual, is(expected));
