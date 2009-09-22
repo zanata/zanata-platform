@@ -39,7 +39,7 @@ public class PublicanExtractionTests {
 			System.out.println(resource);
 			File potFile = new File(potPath, resource);
 			Document doc = new Document(resource,resource, "/", PoReader.PO_CONTENT_TYPE);
-			project.getDocuments().add( doc );
+			project.getDocuments(true).add( doc );
 			InputSource inputSource = new InputSource( potFile.toURI().toString() );
 			inputSource.setEncoding("utf8");
 			poReader.extractTemplate(doc, inputSource);

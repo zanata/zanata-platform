@@ -87,8 +87,17 @@ public class ProjectIteration extends AbstractBaseResource{
 	@XmlElementWrapper(name="documents", namespace=Namespaces.FLIES, required=true)
 	@XmlElement(name="document", namespace=Namespaces.FLIES)
 	public List<Document> getDocuments() {
-		if(documents == null)
+		return documents;
+	}
+	
+	public List<Document> getDocuments(boolean create) {
+		if(documents == null && create)
 			documents = new ArrayList<Document>();
 		return documents;
 	}
+	
+	public boolean hasDocuments() {
+		return documents != null;
+	}
+
 }
