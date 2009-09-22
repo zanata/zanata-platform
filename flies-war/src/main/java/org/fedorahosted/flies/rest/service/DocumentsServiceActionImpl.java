@@ -5,6 +5,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response.Status;
+
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.core.dao.DocumentDAO;
 import org.fedorahosted.flies.core.dao.ProjectContainerDAO;
@@ -44,12 +47,17 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     @In ResourceDAO resourceDAO;
     @In TextFlowTargetDAO textFlowTargetDAO;
 
-    @In
-    Session session;
+    @In Session session;
 	
-    private HProjectContainer getContainer() {
-	return projectContainerDAO.getBySlug(documentsService.getProjectSlug(), documentsService.getIterationSlug());
-    }
+	private HProjectContainer getContainer() {
+		HProjectContainer result = projectContainerDAO.getBySlug(
+				documentsService.getProjectSlug(), 
+				documentsService.getIterationSlug());
+		if (result == null) {
+			throw new WebApplicationException(Status.NOT_FOUND);
+		}
+		return result;
+	}
     
     public Documents get() {
     	log.info("HTTP GET "+documentsService.getRequest().getRequestURL());
