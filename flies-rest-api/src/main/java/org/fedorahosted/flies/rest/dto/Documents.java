@@ -1,7 +1,7 @@
 package org.fedorahosted.flies.rest.dto;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -18,12 +18,12 @@ import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
 @XmlType(name="documentsType", namespace=Namespaces.FLIES )
 public class Documents {
 	
-	private List<Document> documents;
+	private Set<Document> documents;
 	
 	@XmlElement(name="document", namespace=Namespaces.FLIES)
-	public List<Document> getDocuments() {
+	public Set<Document> getDocuments() {
 		if(documents == null)
-			documents = new ArrayList<Document>();
+			documents = new HashSet<Document>();
 		return documents;
 	}
 	
