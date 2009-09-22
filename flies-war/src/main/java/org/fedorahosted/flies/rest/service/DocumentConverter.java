@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.spi.Constraint.ConstraintType;
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.core.dao.ResourceDAO;
 import org.fedorahosted.flies.core.dao.TextFlowTargetDAO;
@@ -20,6 +21,7 @@ import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.repository.model.HReference;
 import org.fedorahosted.flies.repository.model.HResource;
 import org.fedorahosted.flies.repository.model.HTextFlow;
+import org.fedorahosted.flies.repository.model.HTextFlowHistory;
 import org.fedorahosted.flies.repository.model.HTextFlowTarget;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Container;
@@ -32,6 +34,7 @@ import org.fedorahosted.flies.rest.dto.Resource;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.TextFlowTargets;
+import org.fedorahosted.flies.rest.dto.TextFlowTarget.ContentState;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -246,8 +249,20 @@ public class DocumentConverter {
 	}
 	public void merge(TextFlow textFlow, HTextFlow hTextFlow, int newRevision){
 		if(!hTextFlow.getContent().equals(textFlow.getContent())){
+			
+			// save old version to history
+			HTextFlowHistory history = new HTextFlowHistory(hTextFlow);
+			hTextFlow.getHistory().put(hTextFlow.getRevision(), history);
+			
+			// make sure to set the status of any targets to NeedReview
+			for(HTextFlowTarget target :hTextFlow.getTargets().values()){
+				// TODO not sure if this is the correct state
+				target.setState(ContentState.ForReview);
+			}
+			
 			hTextFlow.setRevision(newRevision);
 			hTextFlow.setContent(textFlow.getContent());
+			
 		}
 	}	
 	public void merge(Container container, HContainer hContainer, int newRevision){

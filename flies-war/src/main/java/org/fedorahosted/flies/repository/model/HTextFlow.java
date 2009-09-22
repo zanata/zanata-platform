@@ -34,6 +34,8 @@ public class HTextFlow extends HResource {
 	private List<HTextSegment> segments;
 	
 	private Map<LocaleId, HTextFlowTarget> targets;
+
+	public Map<Integer, HTextFlowHistory> history;
 	
 	public HTextFlow() {
 	}
@@ -71,6 +73,16 @@ public class HTextFlow extends HResource {
 	
 	public void setSegments(List<HTextSegment> segments) {
 		this.segments = segments;
+	}
+	
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="textFlow")
+	@MapKey(name="revision")
+	public Map<Integer, HTextFlowHistory> getHistory() {
+		return history;
+	}
+	
+	public void setHistory(Map<Integer, HTextFlowHistory> history) {
+		this.history = history;
 	}
 	
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="textFlow")

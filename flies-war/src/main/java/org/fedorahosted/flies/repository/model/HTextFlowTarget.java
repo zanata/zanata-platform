@@ -114,7 +114,7 @@ public class HTextFlowTarget implements Serializable{
 	}
 	
 	@NaturalId
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name="resource_id")
 	public HTextFlow getTextFlow() {
 		return textFlow;
