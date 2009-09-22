@@ -25,7 +25,7 @@ import org.hibernate.validator.NotNull;
  *
  */
 @Entity
-public class HTextFlow extends HParentResource {
+public class HTextFlow extends HResource {
 
 	private static final long serialVersionUID = 3023080107971905435L;
 

@@ -9,7 +9,7 @@ import org.fedorahosted.flies.rest.dto.DataHook;
 
 
 @Entity
-public class HDataHook extends HParentResource{
+public class HDataHook extends HResource{
 
 	public HDataHook() {
 	}
