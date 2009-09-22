@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.rest.service;
 
 import java.net.URI;
+import java.util.List;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -17,6 +18,9 @@ import org.fedorahosted.flies.rest.client.IDocumentResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Link;
 import org.fedorahosted.flies.rest.dto.Relationships;
+import org.fedorahosted.flies.rest.dto.Resource;
+import org.fedorahosted.flies.rest.dto.TextFlow;
+import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
@@ -35,9 +39,8 @@ public class DocumentServiceSeamTest extends DBUnitSeamTest{
 	
 	ClientRequestFactory clientRequestFactory;
 	URI baseUri = URI.create("/restv1/");
-	IDocumentResource documentResource;
 	
-	private static final String url = "projects/p/sample-project/iterations/i/1.0/documents/d/my,path,document.txt";
+	private static final String url = "projects/p/sample-project/iterations/i/1.0/documents/d/";
 	
 	@BeforeClass
 	public void prepareRestEasyClientFramework() throws Exception {
@@ -51,7 +54,11 @@ public class DocumentServiceSeamTest extends DBUnitSeamTest{
 		
 		clientRequestFactory.getPrefixInterceptors().registerInterceptor(new ApiKeyHeaderDecorator("admin", "12345678901234567890123456789012"));
 
-		documentResource = clientRequestFactory.createProxy(IDocumentResource.class, baseUri.resolve(url));
+		
+	}
+	
+	private IDocumentResource getDocumentService(String docId){
+		return clientRequestFactory.createProxy(IDocumentResource.class, baseUri.resolve(url).resolve(docId));
 		
 	}
 	
@@ -71,10 +78,13 @@ public class DocumentServiceSeamTest extends DBUnitSeamTest{
 
 
 	public void getDocumentThatDoesntExist(){
+		IDocumentResource documentResource = getDocumentService("my,doc,does,not,exist.txt");
 		assertThat ( documentResource.get(null).getResponseStatus(), is(Status.NOT_FOUND) ); 
 	}
 
 	public void getDocument() throws URIException {
+		String docUri = "my,path,document.txt";
+		IDocumentResource documentResource = getDocumentService(docUri);
 		ClientResponse<Document> response = documentResource.get(null);
 		assertThat( response.getResponseStatus(), is(Status.OK) ) ;
 		Document doc = response.getEntity();
@@ -87,7 +97,7 @@ public class DocumentServiceSeamTest extends DBUnitSeamTest{
 
 		Link link = doc.findLinkByRel(Relationships.SELF);
 		assertThat( link, notNullValue() );
-		assertThat( URIUtil.decode(link.getHref().toString()), endsWith(url) );
+		assertThat( URIUtil.decode(link.getHref().toString()), endsWith(url+docUri) );
 		
 		link = doc.findLinkByRel(Relationships.DOCUMENT_CONTAINER);
 		assertThat( link, notNullValue() );
@@ -95,6 +105,7 @@ public class DocumentServiceSeamTest extends DBUnitSeamTest{
 	}
 	
 	public void getDocumentWithResources() throws URIException {
+		IDocumentResource documentResource = getDocumentService("my,path,document.txt");
 		ClientResponse<Document> response = documentResource.get( ContentQualifier.ALL );
 		assertThat( response.getResponseStatus(), is(Status.OK) ) ;
 		Document doc = response.getEntity();
@@ -105,14 +116,33 @@ public class DocumentServiceSeamTest extends DBUnitSeamTest{
 		doc = response.getEntity();
 		assertThat( doc.getResources().size(), is(1) );
 
-		response = documentResource.get( ContentQualifier.fromLocales(new LocaleId("nb-NO")));
+		LocaleId nbLocale = new LocaleId("nb-NO");
+		response = documentResource.get( ContentQualifier.fromLocales(nbLocale));
 		assertThat( response.getResponseStatus(), is(Status.OK) ) ;
 		doc = response.getEntity();
 		assertThat( doc.getResources().size(), is(1) );
+		
+		LocaleId deLocale = new LocaleId("de-DE");
+		response = documentResource.get( ContentQualifier.fromLocales( nbLocale, deLocale));
+		assertThat( response.getResponseStatus(), is(Status.OK) ) ;
+		doc = response.getEntity();
+		List<Resource> resources = doc.getResources(); 
+		assertThat( resources.size(), is(1) );
+		TextFlow tf = (TextFlow) resources.get(0);
+		assertThat( tf, notNullValue());
+		assertThat( tf.getId(), is("tf1") );
 
+		TextFlowTarget tfTarget = tf.getTarget(nbLocale);
+		assertThat( tfTarget, notNullValue());
+		assertThat( tfTarget.getContent(), is("hei verden"));
+		
+		tfTarget = tf.getTarget(deLocale);
+		assertThat( tfTarget, notNullValue());
+		assertThat( tfTarget.getContent(), is("hello welt"));
 	}
 	
 	public void putNewDocument() {
+		IDocumentResource documentResource = getDocumentService("my,fancy,document.txt");
 		Document doc = new Document("my/fancy/document.txt", ContentType.TextPlain);
 		Response response = documentResource.put(doc);
 
@@ -132,5 +162,4 @@ public class DocumentServiceSeamTest extends DBUnitSeamTest{
 		assertThat( link, notNullValue() );
 		assertThat( link.getType(), is( MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML) );
 	}
-	
 }
