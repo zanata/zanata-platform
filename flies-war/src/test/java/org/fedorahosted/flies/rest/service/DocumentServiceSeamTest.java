@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.rest.service;
 
 import java.net.URI;
+import java.net.URLEncoder;
 import java.util.List;
 
 import javax.ws.rs.core.Response;
@@ -26,6 +27,7 @@ import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
+import org.jboss.resteasy.util.Encode;
 import org.jboss.seam.mock.DBUnitSeamTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
@@ -150,7 +152,8 @@ public class DocumentServiceSeamTest extends DBUnitSeamTest{
 		Response response = documentResource.put(doc);
 
 		assertThat( response.getStatus(), is(Status.CREATED.getStatusCode()) );
-		// todo, change to clientresponse<string>
+		assertThat( response.getMetadata().getFirst("Location").toString() , endsWith(url+docUrl) );
+
 		ClientResponse<Document> documentResponse = documentResource.get(null);
 		
 		assertThat( documentResponse.getResponseStatus(), is(Status.OK) );
@@ -159,7 +162,7 @@ public class DocumentServiceSeamTest extends DBUnitSeamTest{
 		assertThat( doc.getVersion(), is(1) );
 		Link link = doc.findLinkByRel(Relationships.SELF); 
 		assertThat( link, notNullValue() );
-		assertThat( link.getHref().toString(), endsWith(url+docUrl) );
+		assertThat( link.getHref().toString(), endsWith(url+Encode.encodeQueryString(docUrl)) );
 		
 		link = doc.findLinkByRel(Relationships.DOCUMENT_CONTAINER); 
 		assertThat( link, notNullValue() );

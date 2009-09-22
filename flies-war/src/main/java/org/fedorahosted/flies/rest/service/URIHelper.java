@@ -5,7 +5,7 @@ public final class URIHelper{
 	private URIHelper(){}
 	
 	public static String getProject(String projectSlug) {
-		return "projects/p"+projectSlug;
+		return "projects/p/"+projectSlug;
 	}
 	
 	public static String getIteration(String projectSlug, String iterationSlug) {

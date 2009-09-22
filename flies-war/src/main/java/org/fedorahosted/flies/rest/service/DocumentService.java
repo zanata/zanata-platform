@@ -200,6 +200,7 @@ public class DocumentService {
 			hDoc = new HDocument(document);
 			hDoc.setRevision(1);
 			hProjectContainer.getDocuments().put(hDoc.getDocId(), hDoc);
+			hDoc.setProject(hProjectContainer);
 			try{
 				session.flush();
 				for(Resource res : document.getResources()) {
@@ -208,7 +209,7 @@ public class DocumentService {
 					hDoc.getResourceTree().add(hRes);
 					session.flush();
 				}
-				return Response.created( new URI("/d/"+hDoc.getDocId())).build();
+				return Response.created( uri.getBaseUri().resolve(URIHelper.getDocument(projectSlug, iterationSlug, documentId))).build();
 			}
 			catch(Exception e){
 				return Response.notAcceptable(Collections.EMPTY_LIST).build();
