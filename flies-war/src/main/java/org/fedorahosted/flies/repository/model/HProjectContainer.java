@@ -1,20 +1,15 @@
 package org.fedorahosted.flies.repository.model;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 
-import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.core.model.AbstractFliesEntity;
-import org.fedorahosted.flies.rest.dto.ProjectIteration;
-import org.hibernate.annotations.IndexColumn;
+import org.hibernate.annotations.Cascade;
 
 @Entity
 public class HProjectContainer extends AbstractFliesEntity{
@@ -25,6 +20,7 @@ public class HProjectContainer extends AbstractFliesEntity{
 	}
 
 	@OneToMany(mappedBy = "project", cascade=CascadeType.ALL)
+	@Cascade({ org.hibernate.annotations.CascadeType.ALL, org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
 	@MapKey(name="docId")
 	public Map<String, HDocument> getDocuments() {
 		if(documents == null)

@@ -137,9 +137,9 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     	
     	// why aren't implicit deletes working?  we already cleared docMap
     	// ensure omitted docs get deleted by Hibernate
-    	for (HDocument hDoc : oldMap.values()) {
-			session.delete(hDoc);
-		}
+//    	for (HDocument hDoc : oldMap.values()) {
+//			session.delete(hDoc);
+//		}
     	session.flush();
     	log.debug("final state :\n{0}", docs);
     }
