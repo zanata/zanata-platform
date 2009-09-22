@@ -79,7 +79,7 @@ public class ProjectServiceRawSeamTest extends DBUnitSeamTest{
 				
 				// check that the content we get back is XML
 				byte [] xmlVal = response.getContentAsByteArray();
-				System.out.println("Content:"+response.getContentAsString()); 
+				
 				JAXBContext context;
 				ProjectList projectRefs = null;
 				try {
