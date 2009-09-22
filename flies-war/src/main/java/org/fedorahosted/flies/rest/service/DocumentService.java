@@ -101,7 +101,7 @@ public class DocumentService {
 		String hDocId = URIHelper.convertFromDocumentURIId(documentId);
 
 		if(!document.getId().equals(hDocId)){
-			Response.notAcceptable(Collections.EMPTY_LIST).build();
+			return Response.status(Status.BAD_REQUEST).entity("Invalid document Id").build();
 		}
 
 		HProjectContainer hProjectContainer = getContainerOrFail();
@@ -119,7 +119,9 @@ public class DocumentService {
 				return Response.created( uri.getBaseUri().resolve(URIHelper.getDocument(projectSlug, iterationSlug, documentId))).build();
 			}
 			catch(Exception e){
-				return Response.notAcceptable(Collections.EMPTY_LIST).build();
+				// TODO validation on the input data
+				// this could also be a server error
+				return Response.status(Status.BAD_REQUEST).entity("Invalid document content").build();
 			}
 		}
 		else{ // it's an update operation
@@ -129,7 +131,9 @@ public class DocumentService {
 				return Response.ok().build();
 			}
 			catch(Exception e){
-				return Response.notAcceptable(Collections.EMPTY_LIST).build();
+				// TODO validation on the input data
+				// this could also be a server error
+				return Response.status(Status.BAD_REQUEST).entity("Invalid document content").build();
 			}
 		}
 		
