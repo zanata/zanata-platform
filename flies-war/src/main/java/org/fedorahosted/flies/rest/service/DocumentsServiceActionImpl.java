@@ -105,38 +105,46 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
 		hDoc.setPath(docInfo.getPath());
 		hDoc.setContentType(docInfo.getContentType());
 		hDoc.setLocale(docInfo.getLang());
-		hDoc.setRevision(docInfo.getVersion());  // TODO check this!
-		Map<LocaleId, HDocumentTarget> docTargets = hDoc.getTargets();
-		List<HResource> hResources;
-		if (put) {
-			hResources = new ArrayList<HResource>(docInfo.getResources().size());
-			// this should cause any unreferenced HResources to be deleted when we save
-			hDoc.setResourceTree(hResources);
-		} else {
-			hResources = hDoc.getResourceTree();
+		hDoc.setRevision(docInfo.getVersion());  // TODO check version/revision!
+		List<Resource> docResources = docInfo.getResources();
+		if (docResources != null) {
+			Map<LocaleId, HDocumentTarget> docTargets = hDoc.getTargets();
+			List<HResource> hResources;
+			if (put) {
+				hResources = new ArrayList<HResource>(docResources.size());
+				// this should cause any obsolete HResources (and their 
+				// children) to be deleted when we save
+				hDoc.setResourceTree(hResources);
+			} else {
+				hResources = hDoc.getResourceTree();
+			}
+			for (Resource res : docResources) {
+				HResource hRes = null;
+				if (session.contains(hDoc))
+					// FIXME make sure getById can find pre-existing docs (we broke the link from HDoc to its HResources above)
+					hRes = resourceDAO.getById(hDoc, res.getId());
+				if (hRes == null)
+					hRes = HDocument.create(res);
+				hResources.add(hRes);
+				hRes.setDocument(hDoc);
+				hRes.setResId(res.getId());
+				session.save(hRes);
+				copy(res, hRes, hDoc, docTargets);
+			}
 		}
-		for (Resource res : docInfo.getResources()) {
-			HResource hRes = null;
-			if (session.contains(hDoc))
-				// FIXME test this! (we broke the link from HDoc to its HResources above)
-				hRes = resourceDAO.getById(hDoc, res.getId());
-			if (hRes == null)
-				hRes = HDocument.create(res);
-			hResources.add(hRes);
-			hRes.setDocument(hDoc);
-			hRes.setResId(res.getId());
-			session.save(hRes);
-			// TODO copy res to hRes recursively, maintaining docTargets
-			copy(res, hRes, hDoc, docTargets);
-		}
+		session.save(hDoc);
     }
     
+    // copy res to hRes recursively, maintaining docTargets
     private void copy(Resource res, HResource hRes,
     		HDocument hDoc, Map<LocaleId, HDocumentTarget> docTargets) {
     	hRes.setDocument(hDoc);
 		if (res instanceof TextFlow) {
 			copy((TextFlow)res, (HTextFlow)hRes, docTargets);
-		} // TODO else?
+		} else {
+			// FIXME handle other Resource types
+			throw new RuntimeException("Unknown Resource type "+res.getClass());
+		}
 	}
 
 	private void copy(TextFlow tf, HTextFlow htf, Map<LocaleId, HDocumentTarget> docTargets) {
@@ -168,8 +176,11 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
 					}
 					copy(target, hTarget, htf, docTargets);
 					htf.getTargets().put(target.getLang(), hTarget);
+					session.save(hTarget);
 				}
-			} //TODO else?
+			} else {
+				throw new RuntimeException("Unknown TextFlow extension "+ext.getClass());
+			}
 		}
     }
 
