@@ -138,7 +138,7 @@ public class DocumentService {
 				HContainer hContainer = (HContainer) hResource;
 				Container container = new Container(hContainer.getResId());
 				resources.add(container);
-				if(levels != 0) {
+				if(levels != 0 && container.hasContent()) {
 					populateResources(container.getContent(), hContainer.getChildren(), includedTargets, --levels);
 				}
 			}

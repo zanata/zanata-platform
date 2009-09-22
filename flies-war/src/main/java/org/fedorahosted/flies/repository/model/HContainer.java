@@ -14,9 +14,11 @@ public class HContainer extends HParentResource{
 	
 	public HContainer(Container cont) {
 		super(cont);
-		for(Resource res : cont.getContent()){
-			HResource hRes = HDocument.create(res);
-			getChildren().add(hRes);
+		if(cont.hasContent()) {
+			for(Resource res : cont.getContent()){
+				HResource hRes = HDocument.create(res);
+				getChildren().add(hRes);
+			}
 		}
 	}
 
