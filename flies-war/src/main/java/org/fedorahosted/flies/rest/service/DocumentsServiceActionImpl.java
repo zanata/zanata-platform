@@ -10,8 +10,6 @@ import javax.ws.rs.core.Response.Status;
 
 import org.fedorahosted.flies.core.dao.DocumentDAO;
 import org.fedorahosted.flies.core.dao.ProjectContainerDAO;
-import org.fedorahosted.flies.core.dao.ResourceDAO;
-import org.fedorahosted.flies.core.dao.TextFlowTargetDAO;
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.rest.dto.Document;
@@ -30,16 +28,21 @@ import org.jboss.seam.log.Log;
 @Name("DocumentsServiceActionImpl")
 public class DocumentsServiceActionImpl implements DocumentsServiceAction {
 
-    @Logger Log log;
-    @In DocumentsService documentsService;
+    @Logger 
+    private Log log;
     
-    @In DocumentDAO documentDAO;
-    @In ProjectContainerDAO projectContainerDAO;
-    @In ResourceDAO resourceDAO;
-    @In TextFlowTargetDAO textFlowTargetDAO;
-    @In DocumentConverter documentConverter;
-
-    @In Session session;
+    // To access properties projectSlug, iterationSlug and request
+    @In 
+    private DocumentsService documentsService; 
+    
+    @In 
+    private DocumentDAO documentDAO;
+    @In 
+    private ProjectContainerDAO projectContainerDAO;
+    @In 
+    private DocumentConverter documentConverter;
+    @In 
+    private Session session;
 	
 	private HProjectContainer getContainer() {
 		HProjectContainer result = projectContainerDAO.getBySlug(

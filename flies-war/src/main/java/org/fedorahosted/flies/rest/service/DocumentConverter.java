@@ -31,14 +31,12 @@ import org.jboss.seam.log.Log;
 @Name("documentConverter")
 public class DocumentConverter {
 
-    @Logger Log log;
-    
-    @In ResourceDAO resourceDAO;
-    @In TextFlowTargetDAO textFlowTargetDAO;
-
-    @In Session session;
-
-	
+    @In 
+    private ResourceDAO resourceDAO;
+    @In 
+    private TextFlowTargetDAO textFlowTargetDAO;
+    @In 
+    private Session session;
 
 	public void copy(Document fromDoc, HDocument toHDoc, boolean replaceResourceTree) {
 		toHDoc.setDocId(fromDoc.getId());
