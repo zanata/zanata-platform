@@ -144,12 +144,13 @@ public class DocumentServiceSeamTest extends DBUnitSeamTest{
 	}
 	
 	public void putNewDocument() {
-		IDocumentResource documentResource = getDocumentService("my,fancy,document.txt");
-		Document doc = new Document("my/fancy/document.txt", ContentType.TextPlain);
+		String docUrl = "my,fancy,document.txt";
+		IDocumentResource documentResource = getDocumentService(docUrl);
+		Document doc = new Document("/my/fancy/document.txt", ContentType.TextPlain);
 		Response response = documentResource.put(doc);
 
 		assertThat( response.getStatus(), is(Status.CREATED.getStatusCode()) );
-		
+		// todo, change to clientresponse<string>
 		ClientResponse<Document> documentResponse = documentResource.get(null);
 		
 		assertThat( documentResponse.getResponseStatus(), is(Status.OK) );
@@ -158,7 +159,7 @@ public class DocumentServiceSeamTest extends DBUnitSeamTest{
 		assertThat( doc.getVersion(), is(1) );
 		Link link = doc.findLinkByRel(Relationships.SELF); 
 		assertThat( link, notNullValue() );
-		assertThat( link.getHref().toString(), endsWith(url) );
+		assertThat( link.getHref().toString(), endsWith(url+docUrl) );
 		
 		link = doc.findLinkByRel(Relationships.DOCUMENT_CONTAINER); 
 		assertThat( link, notNullValue() );
