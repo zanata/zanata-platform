@@ -1,7 +1,10 @@
 package org.fedorahosted.flies.repository.model;
 
+import java.util.Set;
+
 import javax.persistence.Entity;
 
+import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.rest.dto.DataHook;
 
 
@@ -17,4 +20,9 @@ public class HDataHook extends HParentResource{
 
 	private static final long serialVersionUID = -555978165911935456L;
 
+	@Override
+	public DataHook toResource(Set<LocaleId> includedTargets, int levels) {
+		DataHook dataHook = new DataHook(this.getResId());
+		return dataHook;
+	}
 }

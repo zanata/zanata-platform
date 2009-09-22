@@ -17,7 +17,6 @@ public class TextFlowTargetDAO {
 	Session session;
 	
 	/**
-	 * totally untested!!!
 	 * @param textFlow
 	 * @param localeId
 	 * @return

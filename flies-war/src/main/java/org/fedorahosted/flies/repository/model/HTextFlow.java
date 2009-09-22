@@ -3,6 +3,7 @@ package org.fedorahosted.flies.repository.model;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -11,6 +12,7 @@ import javax.persistence.OneToMany;
 
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.rest.dto.TextFlow;
+import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.NotNull;
@@ -82,4 +84,23 @@ public class HTextFlow extends HParentResource {
 	public void setTargets(Map<LocaleId, HTextFlowTarget> targets) {
 		this.targets = targets;
 	}
+	
+	@Override
+	public TextFlow toResource(Set<LocaleId> includedTargets, int levels) {
+		TextFlow textFlow = new TextFlow(this.getResId());
+		textFlow.setContent(this.getContent());
+		textFlow.setLang(this.getDocument().getLocale());
+		
+		for (LocaleId locale : includedTargets) {
+			HTextFlowTarget hTextFlowTarget = this.getTargets().get(locale);
+			if(hTextFlowTarget != null) {
+				TextFlowTarget textFlowTarget = new TextFlowTarget(textFlow, locale);
+				textFlowTarget.setContent(hTextFlowTarget.getContent());
+				textFlowTarget.setState(hTextFlowTarget.getState());
+				textFlow.addTarget(textFlowTarget);
+			}
+		}
+		return textFlow;
+	}
+	
 }

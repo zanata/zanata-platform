@@ -1,7 +1,10 @@
 package org.fedorahosted.flies.repository.model;
 
+import java.util.Set;
+
 import javax.persistence.Entity;
 
+import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.rest.dto.Reference;
 import org.hibernate.validator.NotEmpty;
 
@@ -28,5 +31,12 @@ public class HReference extends HResource{
 	
 	public void setRef(String ref) {
 		this.ref = ref;
+	}
+	
+	@Override
+	public Reference toResource(Set<LocaleId> includedTargets, int levels) {
+		Reference reference = new Reference(this.getResId());
+		reference.setRelationshipId(this.getRef());
+		return reference;
 	}
 }

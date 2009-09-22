@@ -5,11 +5,9 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.ws.rs.core.Response;
 
@@ -23,7 +21,6 @@ import org.fedorahosted.flies.rest.dto.Documents;
 import org.fedorahosted.flies.rest.dto.Resource;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
-import org.hamcrest.MatcherAssert;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
@@ -72,32 +69,22 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 	public void getZero() throws Exception {
 		expectDocs();
 	}
-
-//	private void expectDocs(int expectDocs) {
-//	    ClientResponse<Documents> response = docsService.getDocuments();
-//
-//	    assertThat(response.getStatus(), is(200));
-//	    assertThat(response.getEntity(), notNullValue());
-//	    assertThat(response.getEntity().getDocuments().size(), is(expectDocs));
-//	}
 	
 	private void expectDocs(Document... docs) {
 	    ClientResponse<Documents> response = docsService.getDocuments();
 	    
 	    assertThat(response.getStatus(), is(200));
 	    assertThat(response.getEntity(), notNullValue());
-//	    List<String> actual = new ArrayList<String>();
-//	    for (Document doc : response.getEntity().getDocuments()) {
-//			actual.add(doc.toString());
-//		}
-//	    assertThat(actual, is(docStrings));
-	    assertThat(response.getEntity().getDocuments(), is(Arrays.asList(docs)));
-
-//	    Map<String, Document> expected = new HashMap<String, Document>();
-//	    for (Document doc : docs) {
-//			expected.put(doc.getId(), doc);
-//		}
-//	    assertThat(response.getEntity().getDocuments(), is(expected));
+	    Set<String> expected = new TreeSet<String>();
+	    for (Document doc : docs) {
+			expected.add(doc.toString());
+		}
+	    assertThat(response.getEntity().getDocuments().size(), is(Arrays.asList(docs).size()));
+	    Set<String> actual = new TreeSet<String>();
+	    for (Document doc : response.getEntity().getDocuments()) {
+			actual.add(doc.toString());
+		}
+	    assertThat(actual, is(expected));
 	}
 	
 	private Document newDoc(String id, Resource... resources) {
@@ -142,7 +129,6 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 	public void putGet() throws Exception {
 	    getZero();
 	    Document doc1 = putDoc1();
-//	    expectDocs(1);
 	    expectDocs(doc1);
 	}
 
@@ -151,10 +137,8 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 	public void putPostGet() throws Exception {
 	    getZero();
 	    Document doc1 = putDoc1();
-//	    expectDocs(1);
 	    expectDocs(doc1);
 	    Document doc2 = postDoc2();
-//	    expectDocs(2);
 	    expectDocs(doc1, doc2);
 	}
 	

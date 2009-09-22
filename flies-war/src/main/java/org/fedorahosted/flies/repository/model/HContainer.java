@@ -1,7 +1,10 @@
 package org.fedorahosted.flies.repository.model;
 
+import java.util.Set;
+
 import javax.persistence.Entity;
 
+import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.rest.dto.Container;
 import org.fedorahosted.flies.rest.dto.Resource;
 
@@ -24,4 +27,14 @@ public class HContainer extends HParentResource{
 
 	private static final long serialVersionUID = 6475033994256762703L;
 
+	@Override
+	public Container toResource(Set<LocaleId> includedTargets, int levels) {
+		Container container = new Container(this.getResId());
+		if (levels != 0) {
+			for (HResource res : getChildren()) {
+				container.getContent().add(res.toResource(includedTargets, levels-1));
+			}
+		}
+		return container;
+	}
 }

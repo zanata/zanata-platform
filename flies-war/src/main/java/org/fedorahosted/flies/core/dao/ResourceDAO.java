@@ -16,7 +16,6 @@ public class ResourceDAO {
 	Session session;
 	
 	/**
-	 * totally untested!!!
 	 * @param document
 	 * @param id
 	 * @return
