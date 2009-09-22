@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -27,8 +26,6 @@ import org.fedorahosted.flies.rest.dto.Resource;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
@@ -52,7 +49,6 @@ public class HDocument extends AbstractFliesEntity{
 	private LocaleId locale;
 	
 	private HProjectContainer project;
-	private Integer pos;
 
 	private Map<String, HResource> resources;
 	private List<HResource> resourceTree;
@@ -132,6 +128,7 @@ public class HDocument extends AbstractFliesEntity{
 		throw new IllegalStateException("could not find subclass of Resource: " + res.getClass().toString());
 	}
 	
+	// seems to be obsolete
 	public void copy(List<Resource> content){
 		for(Resource res :content){
 			HResource hRes = create(res);
@@ -253,6 +250,14 @@ public class HDocument extends AbstractFliesEntity{
 	}
 	
 	public Document toDocument() {
-	    return new Document(docId, name, path, contentType, revision, locale);
+		// FIXME copy resources/resourceTree/targets as well
+	    Document doc = new Document(docId, name, path, contentType, revision, locale);
+	    List<Resource> docResources = doc.getResources();
+	    // TODO move from DocumentService.populateResources
+//	    for (HResource hRes : resourceTree) {
+//			docResources.add(hRes.toResource());
+//		}
+	    List<Object> docExtensions = doc.getExtensions();
+		return doc;
 	}
 }

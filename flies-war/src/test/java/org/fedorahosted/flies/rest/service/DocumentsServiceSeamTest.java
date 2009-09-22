@@ -157,5 +157,10 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 //	    expectDocs(2);
 	    expectDocs(doc1, doc2);
 	}
+	
+	// TODO expect 404 for non-existent project
+//	public void getBadProject() {
+//		
+//	}
 
 }
