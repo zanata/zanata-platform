@@ -18,5 +18,6 @@
 <listEntry value="org.fedorahosted.flies.SampleTest"/>
 </listAttribute>
 <stringAttribute key="org.testng.eclipse.LOG_LEVEL" value="2"/>
+<listAttribute key="org.testng.eclipse.PACKAGE_TEST_LIST"/>
 <intAttribute key="org.testng.eclipse.TYPE" value="2"/>
 </launchConfiguration>
