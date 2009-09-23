@@ -15,8 +15,8 @@ public class FliesClient {
 	private final String apiKey;
 	private final FliesClientRequestFactory clientRequestFactory;
 	
-	public FliesClient(String baseUrl, String username, String apiKey) throws URISyntaxException{
-		this.baseUri = new URI(baseUrl);
+	public FliesClient(String baseUrl, String username, String apiKey){
+		this.baseUri = URI.create(baseUrl);
 		this.apiKey = apiKey;
 		clientRequestFactory = new FliesClientRequestFactory(username, apiKey);
 	}

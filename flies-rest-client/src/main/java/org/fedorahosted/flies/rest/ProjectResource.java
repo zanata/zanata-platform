@@ -28,7 +28,7 @@ public class ProjectResource implements IProjectResource{
 	}
 
 	public ProjectIterationResource getIterationResource(String iterationSlug) {
-		URI uri = this.uri.resolve("/iterations/i/"+iterationSlug);
+		URI uri = this.uri.resolve("iterations/i/"+iterationSlug);
 		IProjectIterationResource projectIterationResource = requestFactory.getProjectIterationResource(uri);
 		return new ProjectIterationResource(requestFactory, projectIterationResource, uri);
 	}
