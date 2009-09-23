@@ -7,6 +7,10 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Properties;
 
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import org.fedorahosted.flies.adapter.po.PoReader;
 import org.fedorahosted.flies.rest.FliesClient;
 import org.fedorahosted.flies.rest.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.ProjectIterationResource;
@@ -16,6 +20,7 @@ import org.fedorahosted.flies.rest.client.IProjectIterationResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.jboss.resteasy.client.ClientResponse;
+import org.xml.sax.InputSource;
 
 public class FliesCommand {
 
@@ -80,12 +85,21 @@ public class FliesCommand {
 	public void putPO(File poFile){
 		System.out.println("Attempting to publish " + poFile.getName());
 		IDocumentResource docResource = getDocumentResource(poFile.getName());
+		Document newDocument = new Document("/" + poFile.getName(),ContentType.TextPlain);
+		PoReader poReader = new PoReader();
+		poReader.extract(newDocument, new LocaleInputSourcePair(new InputSource(poFile.toURI().toString()), LocaleId.EN));
 		ClientResponse<Document> response = docResource.get(ContentQualifier.NONE);
-		if(response.getStatus() == 404){
-			// we're inserting
+
+		if(response.getStatus() == Status.OK.getStatusCode()){
+			Document oldDocument = response.getEntity();
+			newDocument.setVersion(oldDocument.getVersion());
+			Response res = docResource.put(newDocument);
+			System.out.println(res.getStatus());
 		}
 		else{
-			// we're updating
+			docResource.put(newDocument);
+			Response res = docResource.put(newDocument);
+			System.out.println(res.getStatus());
 		}
 		
 	}
