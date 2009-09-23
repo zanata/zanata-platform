@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Properties;
 
-import javax.swing.text.StyledEditorKit.ItalicAction;
-
 import org.fedorahosted.flies.rest.FliesClient;
 import org.fedorahosted.flies.rest.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.ProjectIterationResource;
@@ -18,8 +16,6 @@ import org.fedorahosted.flies.rest.client.IProjectIterationResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.jboss.resteasy.client.ClientResponse;
-
-import com.sun.xml.internal.ws.api.server.ContainerResolver;
 
 public class FliesCommand {
 
