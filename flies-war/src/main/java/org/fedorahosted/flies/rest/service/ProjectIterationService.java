@@ -33,7 +33,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
 
 @Name("projectIterationService")
-@Path("/projects/p/{projectSlug}/iterations/{iterationSlug}")
+@Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}")
 public class ProjectIterationService {
 
 	@PathParam("projectSlug")
