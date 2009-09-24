@@ -3,7 +3,7 @@ package org.fedorahosted.flies.client.ant.properties;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
+import java.net.URLClassLoader;
 import java.util.Arrays;
 
 import javax.ws.rs.core.Response;
@@ -11,8 +11,6 @@ import javax.ws.rs.core.Response;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.jboss.resteasy.client.core.BaseClientResponse;
-
-import com.google.common.collect.Lists;
 
 class Utility {
 
@@ -48,6 +46,14 @@ class Utility {
 	    }
 	    throw new BuildException("operation returned "+response.getStatus()+": "+Response.Status.fromStatusCode(response.getStatus())+", url: "+url+", annotations: "+annots);
 	}
+    }
+    
+    public static String toString(ClassLoader loader) {
+    	if (loader instanceof URLClassLoader) {
+			URLClassLoader ul = (URLClassLoader) loader;
+			return "URLClassLoader"+Arrays.asList(ul.getURLs()).toString();
+		}
+    	return String.valueOf(loader);
     }
 
 }

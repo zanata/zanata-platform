@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<documents xmlns="http://flies.fedorahosted.org/api/document" xmlns:ns2="http://flies.fedorahosted.org/api/project" xmlns:ns3="urn:extensions:target">
-    <document id="foo/foo.properties" version="1" target-languages="" path="foo/" name="foo.properties" xml:lang="en-US" content-type="text/plain">
+<documents xmlns="http://flies.fedorahosted.org/api/v1/" xmlns:ns2="http://flies.fedorahosted.org/api/gettext/header">
+    <document path="foo/" name="foo.properties" xml:lang="en-US" id="foo/foo.properties" content-type="text/plain">
         <document-content>
             <text-flow version="1" id="FOOD">
                 <content>Slime Mould</content>
-                <ns3:targets>
-                    <ns3:target version="1" state="new" xml:lang="de" id="FOOD">
+                <targets>
+                    <target version="1" state="new" xml:lang="de" id="FOOD">
                         <content>Sauerkraut</content>
-                    </ns3:target>
-                </ns3:targets>
+                    </target>
+                </targets>
             </text-flow>
         </document-content>
     </document>
-    <document id="test.properties" version="1" target-languages="" path="" name="test.properties" xml:lang="en-US" content-type="text/plain">
+    <document path="" name="test.properties" xml:lang="en-US" id="test.properties" content-type="text/plain">
         <document-content>
             <text-flow version="1" id="HELLO">
                 <content>Hello World</content>
-                <ns3:targets>
-                    <ns3:target version="1" state="new" xml:lang="fr" id="HELLO">
+                <targets>
+                    <target version="1" state="new" xml:lang="fr" id="HELLO">
                         <content>Bonjour le Monde</content>
-                    </ns3:target>
-                </ns3:targets>
+                    </target>
+                </targets>
             </text-flow>
         </document-content>
     </document>
