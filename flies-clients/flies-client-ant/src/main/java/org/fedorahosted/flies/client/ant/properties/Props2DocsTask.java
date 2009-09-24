@@ -22,115 +22,115 @@ import org.fedorahosted.flies.rest.dto.Documents;
 
 public class Props2DocsTask extends MatchingTask {
 
-    private String user;
-    private String apiKey;
-    private boolean debug;
-    private String dst;
-    private String[] locales;
-    private String sourceLang;
-    private File srcDir;
+	private String user;
+	private String apiKey;
+	private boolean debug;
+	private String dst;
+	private String[] locales;
+	private String sourceLang;
+	private File srcDir;
 
-    @Override
-    public void execute() throws BuildException {
+	@Override
+	public void execute() throws BuildException {
 		ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
 		try {
 			// make sure RESTEasy classes will be found:
 			Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-	    DirectoryScanner ds = getDirectoryScanner(srcDir);
-	    // use default includes if unset:
-	    if (!getImplicitFileSet().hasPatterns()) {
-		ds.setIncludes(new String[] { "**/*.properties" }); //$NON-NLS-1$
-	    }
-	    ds.setSelectors(getSelectors());
-	    ds.scan();
-	    String[] files = ds.getIncludedFiles();
+			DirectoryScanner ds = getDirectoryScanner(srcDir);
+			// use default includes if unset:
+			if (!getImplicitFileSet().hasPatterns()) {
+				ds.setIncludes(new String[] { "**/*.properties" }); //$NON-NLS-1$
+			}
+			ds.setSelectors(getSelectors());
+			ds.scan();
+			String[] files = ds.getIncludedFiles();
 
-	    Marshaller m = null;
-	    JAXBContext jc = JAXBContext.newInstance(Documents.class);
-	    m = jc.createMarshaller();
-	    if (debug) {
-		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-	    }
-	    
-	    Documents docs = new Documents();
-	    List<Document> docList = docs.getDocuments();
-	    PropReader propReader = new PropReader();
-	    // for each of the base props files under srcdir:
-	    for (String filename : files) {
-		Document doc = new Document(filename, ContentType.TextPlain);
-		doc.setLang(LocaleId.fromJavaName(sourceLang));
-		File f = new File(srcDir, filename);
-		propReader.extractAll(doc, f, locales);
-		docList.add(doc);
-	    }
-	    if (debug) {
-		m.marshal(docs, System.out);
-	    }
+			Marshaller m = null;
+			JAXBContext jc = JAXBContext.newInstance(Documents.class);
+			m = jc.createMarshaller();
+			if (debug) {
+				m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+			}
 
-	    if(dst == null)
-		return;
-	    
-	    URL dstURL = Utility.createURL(dst, getProject());
-	    if("file".equals(dstURL.getProtocol())) {
-		m.marshal(docs, new File(dstURL.getFile()));
-	    } else {
-		// send project to rest api
-		FliesClientRequestFactory factory = new FliesClientRequestFactory(user, apiKey);
-		IDocumentsResource documentsResource = factory.getDocumentsResource(dstURL.toURI());
-		Response response = documentsResource.put(docs);
-		Utility.checkResult(response, dstURL);
-	    }
+			Documents docs = new Documents();
+			List<Document> docList = docs.getDocuments();
+			PropReader propReader = new PropReader();
+			// for each of the base props files under srcdir:
+			for (String filename : files) {
+				Document doc = new Document(filename, ContentType.TextPlain);
+				doc.setLang(LocaleId.fromJavaName(sourceLang));
+				File f = new File(srcDir, filename);
+				propReader.extractAll(doc, f, locales);
+				docList.add(doc);
+			}
+			if (debug) {
+				m.marshal(docs, System.out);
+			}
 
-	} catch (Exception e) {
-	    throw new BuildException(e);
-	} finally {
-		Thread.currentThread().setContextClassLoader(oldLoader);
+			if(dst == null)
+				return;
+
+			URL dstURL = Utility.createURL(dst, getProject());
+			if("file".equals(dstURL.getProtocol())) {
+				m.marshal(docs, new File(dstURL.getFile()));
+			} else {
+				// send project to rest api
+				FliesClientRequestFactory factory = new FliesClientRequestFactory(user, apiKey);
+				IDocumentsResource documentsResource = factory.getDocumentsResource(dstURL.toURI());
+				Response response = documentsResource.put(docs);
+				Utility.checkResult(response, dstURL);
+			}
+
+		} catch (Exception e) {
+			throw new BuildException(e);
+		} finally {
+			Thread.currentThread().setContextClassLoader(oldLoader);
+		}
 	}
-    }
-    
-    FileSelector[] getSelectors() {
-	if (locales != null)
-	    return new FileSelector[] { new BasePropertiesSelector(locales) };
-	else
-	    return new FileSelector[0];
-    }
-    
-    @Override
-    public void log(String msg) {
-        super.log(msg+"\n\n");
-    }
 
-    private void logVerbose(String msg) {
-	super.log(msg, org.apache.tools.ant.Project.MSG_VERBOSE);
-    }
-    
-    public void setApiKey(String apiKey) {
-	this.apiKey = apiKey;
-    }
-    
-    public void setDebug(boolean debug) {
-	this.debug = debug;
-    }
-    
-    public void setDst(String dst) {
-	this.dst = dst;
-    }
-    
-    public void setLocales(String locales) {
-	this.locales = locales.split(","); //$NON-NLS-1$
-    }
+	FileSelector[] getSelectors() {
+		if (locales != null)
+			return new FileSelector[] { new BasePropertiesSelector(locales) };
+		else
+			return new FileSelector[0];
+	}
 
-    public void setSourceLang(String sourceLang) {
-	this.sourceLang = sourceLang;
-    }
+	@Override
+	public void log(String msg) {
+		super.log(msg+"\n\n");
+	}
 
-    public void setSrcDir(File srcDir) {
-	this.srcDir = srcDir;
-	logVerbose("srcDir=" + srcDir);
-    }
+	private void logVerbose(String msg) {
+		super.log(msg, org.apache.tools.ant.Project.MSG_VERBOSE);
+	}
 
-    public void setUser(String user) {
-	this.user = user;
-    }
-    
+	public void setApiKey(String apiKey) {
+		this.apiKey = apiKey;
+	}
+
+	public void setDebug(boolean debug) {
+		this.debug = debug;
+	}
+
+	public void setDst(String dst) {
+		this.dst = dst;
+	}
+
+	public void setLocales(String locales) {
+		this.locales = locales.split(","); //$NON-NLS-1$
+	}
+
+	public void setSourceLang(String sourceLang) {
+		this.sourceLang = sourceLang;
+	}
+
+	public void setSrcDir(File srcDir) {
+		this.srcDir = srcDir;
+		logVerbose("srcDir=" + srcDir);
+	}
+
+	public void setUser(String user) {
+		this.user = user;
+	}
+
 }
