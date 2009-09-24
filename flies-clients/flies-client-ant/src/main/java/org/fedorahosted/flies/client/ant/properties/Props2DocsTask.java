@@ -32,7 +32,10 @@ public class Props2DocsTask extends MatchingTask {
 
     @Override
     public void execute() throws BuildException {
-	try {
+		ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+		try {
+			// make sure RESTEasy classes will be found:
+			Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 	    DirectoryScanner ds = getDirectoryScanner(srcDir);
 	    // use default includes if unset:
 	    if (!getImplicitFileSet().hasPatterns()) {
@@ -80,6 +83,8 @@ public class Props2DocsTask extends MatchingTask {
 
 	} catch (Exception e) {
 	    throw new BuildException(e);
+	} finally {
+		Thread.currentThread().setContextClassLoader(oldLoader);
 	}
     }
     

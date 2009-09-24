@@ -26,7 +26,10 @@ public class Docs2PropsTask extends MatchingTask {
     
     @Override
     public void execute() throws BuildException {
-	try {
+		ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+		try {
+			// make sure RESTEasy classes will be found:
+			Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 	    Unmarshaller m = null;
 	    if (debug) {
 		JAXBContext jc = JAXBContext.newInstance(Documents.class);
@@ -54,6 +57,8 @@ public class Docs2PropsTask extends MatchingTask {
 	    }
 	} catch (Exception e) {
 	    throw new BuildException(e);
+	} finally {
+		Thread.currentThread().setContextClassLoader(oldLoader);
 	}
     }
     
