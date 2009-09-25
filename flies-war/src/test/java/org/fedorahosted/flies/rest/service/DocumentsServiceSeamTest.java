@@ -5,7 +5,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 import java.net.URI;
-import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -14,17 +13,14 @@ import javax.ws.rs.core.Response;
 import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.LocaleId;
-import org.fedorahosted.flies.rest.ApiKeyHeaderDecorator;
+import org.fedorahosted.flies.rest.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.IDocumentsResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Documents;
 import org.fedorahosted.flies.rest.dto.Resource;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
-import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
-import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
-import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.seam.mock.DBUnitSeamTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -33,27 +29,16 @@ import org.testng.annotations.Test;
 @Test(groups = { "seam-tests" })
 public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 
-	ClientRequestFactory clientRequestFactory;
 	IDocumentsResource docsService;
 
 	@BeforeClass
 	public void prepareRestEasyClientFramework() throws Exception {
-
-		ResteasyProviderFactory instance = ResteasyProviderFactory
-				.getInstance();
-		RegisterBuiltin.register(instance);
-
-		clientRequestFactory = new ClientRequestFactory(
-				new SeamMockClientExecutor(this), (URI)null);
-
-		clientRequestFactory.getPrefixInterceptors().registerInterceptor(
-				new ApiKeyHeaderDecorator("admin",
-						"12345678901234567890123456789012"));
-
-		docsService = clientRequestFactory
-				.createProxy(IDocumentsResource.class, 
-					"/restv1/projects/p/sample-project/iterations/i/1.1/documents");
-
+		FliesClientRequestFactory clientRequestFactory = 
+			new FliesClientRequestFactory("admin",
+					"12345678901234567890123456789012", 
+					new SeamMockClientExecutor(this));
+		docsService = clientRequestFactory.getDocumentsResource(
+				new URI("/restv1/projects/p/sample-project/iterations/i/1.1/documents"));
 	}
 
 	@Override

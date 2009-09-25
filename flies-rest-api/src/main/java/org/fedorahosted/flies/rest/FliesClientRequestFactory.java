@@ -2,20 +2,13 @@ package org.fedorahosted.flies.rest;
 
 import java.net.URI;
 
-import javax.ws.rs.core.Response;
-
 import org.fedorahosted.flies.rest.client.IDocumentResource;
 import org.fedorahosted.flies.rest.client.IDocumentsResource;
 import org.fedorahosted.flies.rest.client.IProjectIterationResource;
 import org.fedorahosted.flies.rest.client.IProjectResource;
 import org.fedorahosted.flies.rest.client.IProjectsResource;
-import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.Documents;
-import org.fedorahosted.flies.rest.dto.Project;
-import org.fedorahosted.flies.rest.dto.ProjectIteration;
-import org.fedorahosted.flies.rest.dto.ProjectList;
+import org.jboss.resteasy.client.ClientExecutor;
 import org.jboss.resteasy.client.ClientRequestFactory;
-import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 
@@ -27,10 +20,17 @@ public class FliesClientRequestFactory extends ClientRequestFactory {
 	}
 
 	public FliesClientRequestFactory(String username, String apiKey) {
+		super();
 		getPrefixInterceptors().registerInterceptor(
 				new ApiKeyHeaderDecorator(username, apiKey));
 	}
 	
+	public FliesClientRequestFactory(String username, String apiKey, ClientExecutor executor) {
+		super(executor, null, null);
+		getPrefixInterceptors().registerInterceptor(
+				new ApiKeyHeaderDecorator(username, apiKey));
+	}
+
 	public IDocumentResource getDocumentResource(URI uri) {
 		return createProxy(IDocumentResource.class, uri);
 	}
