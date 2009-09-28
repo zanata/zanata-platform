@@ -42,6 +42,7 @@
   </dependencies>
 
   <build>
+    <finalName>webtrans</finalName>
     <outputDirectory>war/WEB-INF/classes</outputDirectory>
     <plugins>
       <plugin>
@@ -59,7 +60,7 @@
         </executions>
         <configuration>
           <runTarget>org.fedorahosted.flies.webtrans.Application/Application.html</runTarget>
-          <inplace>true</inplace>
+          <inplace>false</inplace>
         </configuration>
       </plugin>
       <!--
