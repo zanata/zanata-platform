@@ -10,7 +10,7 @@ public class GwtTestSample
 
    public String getModuleName()
    {
-      return "org.fedorahosted.flies.Application";
+      return "org.fedorahosted.flies.webtrans.Application";
    }
 
    public void testSomething()
