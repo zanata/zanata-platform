@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>flies-gwt-api</artifactId>
+  <name>Flies GWT API</name>
+  <parent>
+    <artifactId>root</artifactId>
+    <groupId>org.fedorahosted.flies</groupId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <packaging>jar</packaging>
+
+  <build>
+      <!--
+        sources need to be bundled with the jar,
+        so they are visible to GWT's compiler
+      -->
+
+      <!--
+        You can either setup a resource to point to your java sources ...
+
+    <resources>
+      <resource>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>**/*.java</include>
+          <include>**/*.gwt.xml</include>
+        </includes>
+      </resource>
+    </resources>
+      -->
+
+    <plugins>
+      <!--
+        ... or ask the plugin to detect them based on gwt modules files and copy the required java sources
+        -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>gwt-maven-plugin</artifactId>
+        <executions>
+          <!-- GWT version detected from dependencyManagement -->
+          <execution>
+            <goals>
+              <goal>resources</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+
+</project>

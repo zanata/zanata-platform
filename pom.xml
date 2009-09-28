@@ -14,6 +14,8 @@
     <module>flies-adapters</module>
     <module>flies-rest-client</module>
     <module>flies-clients</module>
+    <module>flies-gwt-api</module>
+    <module>flies-webtrans</module>
     <module>flies-war</module>
   </modules>
   <properties>
@@ -156,7 +158,20 @@
       <name>Codehaus Repository</name>
       <url>http://repository.codehaus.org</url>
     </pluginRepository>
- 
+
+    <pluginRepository>
+      <id>repository.codehaus</id>
+      <name>Codehaus Repository</name>
+      <url>http://snapshots.repository.codehaus.org</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>weekly</updatePolicy>
+      </snapshots>
+    </pluginRepository>
+
   </pluginRepositories>
   
 </project>
