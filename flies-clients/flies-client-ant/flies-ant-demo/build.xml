@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project basedir=".">
+<project basedir="." default="roundtripremote">
 	<import file="taskdefs.xml" />
 	<property name="out.dir" value="${user.dir}/target/test-output" />
 	<property name="bob.key" value="34567890123456789012345678901234" />
