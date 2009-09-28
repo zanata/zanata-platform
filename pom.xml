@@ -20,6 +20,7 @@
   </modules>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <version.gwt>1.7.0</version.gwt>
   </properties>
   
   <build>
@@ -66,7 +67,21 @@
         <artifactId>hamcrest-all</artifactId>
         <version>1.1</version>
       </dependency>
+      
+      <dependency>
+        <groupId>com.google.gwt</groupId>
+        <artifactId>gwt-servlet</artifactId>
+        <version>${version.gwt}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.gwt</groupId>
+        <artifactId>gwt-user</artifactId>
+        <version>${version.gwt}</version>
+      </dependency>
+      
     </dependencies>
+    
+    
   </dependencyManagement>
 
   <repositories>

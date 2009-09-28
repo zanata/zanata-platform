@@ -559,6 +559,12 @@
       <artifactId>flies-gwt-api</artifactId>
       <version>${project.version}</version>
     </dependency>
+    
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-servlet</artifactId>
+      <scope>runtime</scope>
+    </dependency>
 
     <dependency>
       <groupId>com.ibm.icu</groupId>

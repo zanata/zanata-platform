@@ -18,7 +18,7 @@
 
       <!--
         You can either setup a resource to point to your java sources ...
-
+-->
     <resources>
       <resource>
         <directory>src/main/java</directory>
@@ -28,17 +28,14 @@
         </includes>
       </resource>
     </resources>
-      -->
 
-    <plugins>
       <!--
         ... or ask the plugin to detect them based on gwt modules files and copy the required java sources
-        -->
+    <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
         <executions>
-          <!-- GWT version detected from dependencyManagement -->
           <execution>
             <goals>
               <goal>resources</goal>
@@ -47,7 +44,16 @@
         </executions>
       </plugin>
     </plugins>
+    
+    -->
   </build>
 
+  <dependencies>
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 
 </project>

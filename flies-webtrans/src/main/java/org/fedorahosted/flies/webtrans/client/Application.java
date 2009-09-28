@@ -19,5 +19,8 @@ public class Application
   {
      final Label label = new Label ( "gwt-maven-plugin Archetype :: Project org.fedorahosted.flies.flies" );
      RootPanel.get().add( label );
+     
+     final AskQuestionWidget qWidget = new AskQuestionWidget();
+     RootPanel.get().add( qWidget );
   }
 }
