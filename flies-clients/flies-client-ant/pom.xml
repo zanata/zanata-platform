@@ -52,6 +52,44 @@
       <version>${project.version}</version>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+        <id>runant</id>
+        <activation>
+          <property>
+            <name>runant</name>
+          </property>
+        </activation>
+        <build>
+          <plugins>
+            <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>exec-maven-plugin</artifactId>
+              <version>1.1.1</version>
+              <configuration>
+                <executable>ant</executable>
+                <workingDirectory>flies-ant-demo</workingDirectory>
+                <arguments>
+                    <argument>roundtripremote</argument>
+                </arguments>
+              </configuration>
+              <executions>
+                  <execution>
+                    <id>runant</id>
+                    <phase>install</phase>
+                    <goals>
+                      <goal>exec</goal>
+                    </goals>
+                  </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </build>
+    </profile>
+  </profiles>
+
+
   <build>
     <plugins>
       <plugin>
@@ -64,6 +102,20 @@
           </excludes>
         </configuration>
       </plugin>
+<!--
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.1.1</version>
+        <configuration>
+            <executable>ant</executable>
+            <workingDirectory>flies-ant-demo</workingDirectory>
+            <arguments>
+                <argument>roundtripremote</argument>
+            </arguments>
+        </configuration>
+      </plugin>
+-->
     </plugins>
   </build>
 </project>
