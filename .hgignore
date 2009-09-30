@@ -23,3 +23,4 @@ temp-testng-customsuite.xml$
 
 #gwt related
 ^flies-webtrans/war/WEB-INF/classes/
+^flies-webtrans/war/

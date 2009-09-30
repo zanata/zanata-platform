@@ -25,43 +25,23 @@ public class Application implements EntryPoint, ResizeHandler {
 		return singleton;
 	}
 
-	private RightPanel rightPanel = new RightPanel();
-	private LeftPanel leftPanel = new LeftPanel();
-	private TranslationPanel translationPanel = new TranslationPanel();
-
+	private WebTransLayoutContainer appContainer;
+	
 	/**
 	 * This method constructs the application user interface by instantiating
 	 * controls and hooking up event handler.
 	 */
 	public void onModuleLoad() {
 		singleton = this;
-		leftPanel.setWidth("250px");
-		rightPanel.setWidth("250px");
 		
-		translationPanel.setWidth("100%");
-		
-		// Create a dock panel that will contain the menu bar at the top,
-		// the shortcuts to the left, and the mail list & details taking the
-		// rest.
-		DockPanel outer = new DockPanel();
-		outer.add(leftPanel, DockPanel.WEST);
-		outer.add(rightPanel, DockPanel.EAST);
-		outer.add(translationPanel, DockPanel.CENTER);
-		outer.setWidth("100%");
-		outer.setSpacing(4);
-		outer.setBorderWidth(2);
-
 		// Hook the window resize event, so that we can adjust the UI.
 		Window.addResizeHandler(this);
 
-		// Get rid of scrollbars, and clear out the window's built-in margin,
-		// because we want to take advantage of the entire client area.
-		Window.enableScrolling(false);
+		//Window.enableScrolling(false);
 		Window.setMargin("0px");
 
-		// Finally, add the outer panel to the RootPanel, so that it will be
-		// displayed.
-		RootPanel.get().add(outer);
+		appContainer = new WebTransLayoutContainer();
+		RootPanel.get().add(appContainer);
 
 		// Call the window resized handler to get the initial sizes setup. Doing
 		// this in a deferred command causes it to occur after all widgets'
@@ -82,19 +62,7 @@ public class Application implements EntryPoint, ResizeHandler {
 	}
 
 	public void onWindowResized(int width, int height) {
-	    // Adjust the shortcut panel and detail area to take up the available room
-	    // in the window.
-	    int shortcutHeight = height - leftPanel.getAbsoluteTop() - 8;
-	    if (shortcutHeight < 1) {
-	      shortcutHeight = 1;
-	    }
-	    leftPanel.setHeight(shortcutHeight + "px");
-	    translationPanel.setHeight(shortcutHeight + "px");
-	    leftPanel.setWidth("200px");
-	    rightPanel.setWidth("200px");
-	    translationPanel.setWidth(width - 400 + "px");
-	    rightPanel.setHeight(shortcutHeight + "px");
-	    // Give the mail detail widget a chance to resize itself as well.
-//	    mailDetail.adjustSize(width, height);
+	    appContainer.setWidth(width < 800 ? 800 : width) ;
+	    appContainer.setHeight(height < 600 ? 600 : height);
 	}
 }
