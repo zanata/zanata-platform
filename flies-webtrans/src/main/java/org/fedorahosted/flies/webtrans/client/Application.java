@@ -37,7 +37,7 @@ public class Application implements EntryPoint, ResizeHandler {
 		// Hook the window resize event, so that we can adjust the UI.
 		Window.addResizeHandler(this);
 
-		//Window.enableScrolling(false);
+		Window.enableScrolling(false);
 		Window.setMargin("0px");
 
 		appContainer = new WebTransLayoutContainer();
