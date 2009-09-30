@@ -20,3 +20,6 @@ temp-testng-customsuite.xml$
 ^flies-war/profiles.xml
 ^flies-war/src/test/resources/DocumentsServiceSeamTest.tng.xml$
 \.orig$
+
+#gwt related
+^flies-webtrans/war/WEB-INF/classes/
