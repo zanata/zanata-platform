@@ -1,8 +1,8 @@
 package org.fedorahosted.flies.rest.service;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.ws.rs.WebApplicationException;
@@ -16,6 +16,9 @@ import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Documents;
 import org.hibernate.Session;
+import org.hibernate.validator.ClassValidator;
+import org.hibernate.validator.InvalidStateException;
+import org.hibernate.validator.InvalidValue;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -54,10 +57,6 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
 		return documentsService.getProjectSlug();
 	}
 
-	private URI getBaseUri() {
-		return documentsService.getUri().getBaseUri();
-	}
-    
 	private HProjectContainer getContainer() {
 		HProjectContainer result = projectContainerDAO.getBySlug(
 				getProjectSlug(), 
@@ -70,6 +69,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     
     public Documents get() {
     	log.debug("HTTP GET {0}", documentsService.getRequest().getRequestURL());
+//    	URI baseUri = documentsService.getUri().getBaseUri();
     	Collection<HDocument> hdocs = getContainer().getDocuments().values();
     	Documents result = new Documents();
 	
@@ -77,11 +77,11 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     		Document doc = hDocument.toDocument(true);
 			result.getDocuments().add(doc);
 			
-			URI docUri = getBaseUri().resolve(URIHelper.getDocument(
-					getProjectSlug(), getIterationSlug(), doc.getId()));
-			URI iterationUri = getBaseUri().resolve(URIHelper.getIteration(
-					getProjectSlug(), getIterationSlug()));
-			documentConverter.addLinks(doc, docUri, iterationUri );
+//			URI docUri = baseUri.resolve(URIHelper.getDocument(
+//					getProjectSlug(), getIterationSlug(), doc.getId()));
+//			URI iterationUri = baseUri.resolve(URIHelper.getIteration(
+//					getProjectSlug(), getIterationSlug()));
+//			documentConverter.addLinks(doc, docUri, iterationUri );
     	}
     	log.info("HTTP GET result :\n"+result);
     	return result;
@@ -104,6 +104,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     		}
     		
 			docMap.put(hDoc.getDocId(), hDoc);
+			// TODO handle invalid data.  See put()
     		session.save(hDoc);
     		documentConverter.copy(doc, hDoc, true);
     	}
@@ -116,6 +117,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     	HProjectContainer hContainer = getContainer();
     	Map<String, HDocument> docMap = hContainer.getDocuments();
     	docMap.clear();
+    	ClassValidator<HDocument> docValidator = new ClassValidator<HDocument>(HDocument.class);
 
     	for (Document doc: docs.getDocuments()) {
 			// if doc already exists, load it and update it, but don't create it
@@ -129,8 +131,23 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     			log.debug("PUT updating HDocument with id {0}", doc.getId());
     		}
     		docMap.put(hDoc.getDocId(), hDoc);
-    		session.save(hDoc);
-    		documentConverter.copy(doc, hDoc, true);
+    		try {
+				documentConverter.copy(doc, hDoc, true);
+				InvalidValue[] invalidValues = docValidator.getInvalidValues(hDoc);
+				if (invalidValues.length != 0) {
+					String message = "Document with id '"+doc.getId()+"' is invalid: "+Arrays.asList(invalidValues);
+					docMap.remove(hDoc.getDocId()); 
+					log.error(message);
+				} else {
+					session.save(hDoc);
+				}
+			} catch (InvalidStateException e) {
+				String message = "Document with id '"+doc.getId()+"' is invalid: "+Arrays.asList(e.getInvalidValues());
+				log.error(message+'\n'+doc, e);
+				throw new WebApplicationException(
+						Response.status(Status.BAD_REQUEST).entity(message).build());
+			}
+//			session.save(hDoc);
     	}
     	session.flush();
     }

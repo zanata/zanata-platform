@@ -2,14 +2,10 @@ package org.fedorahosted.flies.rest.service;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.spi.Constraint.ConstraintType;
-import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.core.dao.ResourceDAO;
 import org.fedorahosted.flies.core.dao.TextFlowTargetDAO;
 import org.fedorahosted.flies.repository.model.HContainer;
@@ -61,13 +57,12 @@ public class DocumentConverter {
      * @param replaceResourceTree should probably always be true
      */
 	public void copy(Document fromDoc, HDocument toHDoc, boolean replaceResourceTree) {
-//		copyMetaData(fromDoc, toHDoc);
 		toHDoc.setDocId(fromDoc.getId());
 		toHDoc.setName(fromDoc.getName());
 		toHDoc.setPath(fromDoc.getPath());
 		toHDoc.setContentType(fromDoc.getContentType());
 		toHDoc.setLocale(fromDoc.getLang());
-//		toHDoc.setRevision(fromDoc.getVersion());  // TODO check version/revision!
+//		toHDoc.setRevision(fromDoc.getVersion());  // TODO increment revision on modify only
 		// TODO handle doc extensions
 		if (fromDoc.hasResources()) {
 			List<Resource> docResources = fromDoc.getResources();
@@ -90,11 +85,9 @@ public class DocumentConverter {
 				hResources.add(hRes);
 				hRes.setDocument(toHDoc);
 				hRes.setResId(res.getId());
-				session.save(hRes);
 				copy(res, hRes, toHDoc);
 			}
 		}
-		session.save(toHDoc);
 	}
 
 	public HDocument create(Document document, HProjectContainer container){
@@ -421,13 +414,11 @@ public class DocumentConverter {
 								hTarget.setLocale(target.getLang());
 								hTarget.setTextFlow(htf);
 								hTarget.setState(target.getState());
-//						hTarget.setRevision(revision);
+//						hTarget.setRevision(revision); // TODO
 								hTarget.setContent(target.getContent());
-								session.save(hTarget);
 							}
 							copy(target, hTarget, htf);
 							htf.getTargets().put(target.getLang(), hTarget);
-							session.save(hTarget);
 						}
 					} else {
 						throw new RuntimeException("Unknown TextFlow extension "+ext.getClass());
