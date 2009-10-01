@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.adapter.properties;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -8,6 +9,7 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.rest.dto.Document;
@@ -15,7 +17,8 @@ import org.fedorahosted.flies.rest.dto.Resource;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget.ContentState;
-import org.fedorahosted.openprops.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 
 /**
@@ -27,6 +30,8 @@ import org.xml.sax.InputSource;
 public class PropReader {
 
 	public static final String PROP_CONTENT_TYPE = "text/plain";
+	
+	private static final Logger log = LoggerFactory.getLogger(PropReader.class);
 
 	// private final MessageDigest md5;
 	//
@@ -40,20 +45,28 @@ public class PropReader {
 
 	public void extractAll(Document doc, File basePropertiesFile,
 			String[] locales) throws IOException {
-		InputSource baseInput = new InputSource(new FileInputStream(
-				basePropertiesFile));
-		// System.out.println("processing base " + basePropertiesFile);
-		extractTemplate(doc, baseInput);
-		for (String locale : locales) {
-			File localeFile = new File(dropExtension(basePropertiesFile
-					.toString())
-					+ "_" + locale + ".properties");
-			if (!localeFile.exists())
-				continue;
-			// System.out.println("processing " + localeFile);
-			InputStream localeInput = new FileInputStream(localeFile);
-			extractTarget(doc, new InputSource(localeInput), new LocaleId(
-					locale));
+		InputStream baseInput = new BufferedInputStream(
+				new FileInputStream(basePropertiesFile));
+		try {
+			// System.out.println("processing base " + basePropertiesFile);
+			extractTemplate(doc, new InputSource(baseInput));
+			for (String locale : locales) {
+				File localeFile = new File(dropExtension(basePropertiesFile
+						.toString())
+						+ "_" + locale + ".properties");
+				if (!localeFile.exists())
+					continue;
+				// System.out.println("processing " + localeFile);
+				InputStream localeInput = new BufferedInputStream(new FileInputStream(localeFile));
+				try {
+					extractTarget(doc, new InputSource(localeInput), new LocaleId(
+						locale));
+				} finally {
+					localeInput.close();
+				}
+			}
+		} finally {
+			baseInput.close();
 		}
 	}
 
@@ -73,13 +86,16 @@ public class PropReader {
 		}
 
 		Properties props = loadProps(inputSource);
-		for (String key : props.keySet()) {
+		for (String key : props.stringPropertyNames()) {
 			String val = props.getProperty(key);
 			String id = getID(key, val);
 
 			TextFlow textFlow = textFlowMap.get(id);
-			if (textFlow == null)
-				throw new RuntimeException();
+			if (textFlow == null) {
+				log.warn("Property with key {} in locale {} has no corresponding source in {}", 
+						new Object[]{key, localeId, doc.getId()});
+				continue;
+			}
 			TextFlowTarget textFlowTarget = new TextFlowTarget(); // TODO might
 																	// need id,
 																	// version
@@ -97,7 +113,7 @@ public class PropReader {
 			throws IOException {
 		List<Resource> resources = doc.getResources(true);
 		Properties props = loadProps(inputSource);
-		for (String key : props.keySet()) {
+		for (String key : props.stringPropertyNames()) {
 			String val = props.getProperty(key);
 			String id = getID(key, val);
 			TextFlow textFlow = new TextFlow(id);
