@@ -40,11 +40,20 @@ class Utility {
     public static void checkResult(Response response, URL url) {
 	if (response.getStatus() >= 399) {
 	    String annots = "";
+	    String entity = "";
 	    if (response instanceof BaseClientResponse) {
 		BaseClientResponse resp = (BaseClientResponse) response;
 		annots = Arrays.asList(resp.getAnnotations()).toString();
+		try {
+			entity = ", entity: "+resp.getEntity(String.class);
+		} catch (Exception e) {
+			entity = "";
+		}
 	    }
-	    throw new BuildException("operation returned "+response.getStatus()+": "+Response.Status.fromStatusCode(response.getStatus())+", url: "+url+", annotations: "+annots);
+	    throw new BuildException(
+	    		"operation returned "+response.getStatus()+": "+
+	    		Response.Status.fromStatusCode(response.getStatus())+
+	    		entity+", url: "+url+", annotations: "+annots);
 	}
     }
     

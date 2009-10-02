@@ -1,7 +1,12 @@
 package org.fedorahosted.flies.rest.service;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+
 import java.net.URI;
-import java.net.URLEncoder;
 import java.util.List;
 
 import javax.ws.rs.core.Response;
@@ -30,11 +35,7 @@ import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.util.Encode;
 import org.jboss.seam.mock.DBUnitSeamTest;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
-
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
 
 
 @Test(groups={"seam-tests"},suiteName="DocumentService")
@@ -82,7 +83,9 @@ public class DocumentServiceSeamTest extends DBUnitSeamTest{
 
 	public void getDocumentThatDoesntExist(){
 		IDocumentResource documentResource = getDocumentService("my,doc,does,not,exist.txt");
-		assertThat ( documentResource.get(null).getResponseStatus(), is(Status.NOT_FOUND) ); 
+		ClientResponse<Document> clientResponse = documentResource.get(null);
+		assertThat ( clientResponse.getResponseStatus(), is(Status.NOT_FOUND) );
+		assertThat ( clientResponse.getEntity(String.class), is("Document not found"));
 	}
 
 	public void getDocument() throws URIException {

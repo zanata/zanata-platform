@@ -10,7 +10,6 @@ import javax.xml.bind.Marshaller;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
-import org.apache.tools.ant.taskdefs.MatchingTask;
 import org.apache.tools.ant.types.selectors.FileSelector;
 import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.LocaleId;
@@ -20,7 +19,7 @@ import org.fedorahosted.flies.rest.client.IDocumentsResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Documents;
 
-public class Props2DocsTask extends MatchingTask {
+public class Props2DocsTask extends BaseTask {
 
 	private String user;
 	private String apiKey;
@@ -56,13 +55,16 @@ public class Props2DocsTask extends MatchingTask {
 			List<Document> docList = docs.getDocuments();
 			PropReader propReader = new PropReader();
 			// for each of the base props files under srcdir:
+			int i = 0;
 			for (String filename : files) {
+				progress.update(i++, files.length);
 				Document doc = new Document(filename, ContentType.TextPlain);
 				doc.setLang(LocaleId.fromJavaName(sourceLang));
 				File f = new File(srcDir, filename);
 				propReader.extractAll(doc, f, locales);
 				docList.add(doc);
 			}
+			progress.finished();
 			if (debug) {
 				m.marshal(docs, System.out);
 			}
