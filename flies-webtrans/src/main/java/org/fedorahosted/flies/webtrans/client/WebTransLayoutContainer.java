@@ -11,6 +11,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -26,18 +27,18 @@ public class WebTransLayoutContainer extends LayoutContainer {
 		final BorderLayout layout = new BorderLayout();
 
 		setLayout(layout);
-		setBorders(false);
 
 		west = new ContentPanel();
 		west.setHeaderVisible(false);
 		west.setLayout(new RowLayout(Orientation.VERTICAL));
 		west.add(new DocumentListPanel(), new RowData(1, -1, new Margins(4)));
+		west.add(new FilterPanel(), new RowData(1, -1, new Margins(4)));
 		west.add(new TranslatorsPanel(), new RowData(1, -1, new Margins(4)));
 
-		center = new ContentPanel();
+		center = new WebTransPanel();
+		center.setLayout(new FillLayout());
 		center.setHeaderVisible(false);
-		center.setScrollMode(Scroll.AUTOX);
-
+		center.setScrollMode(Scroll.AUTOY);
 		east = new ContentPanel();
 		east.setHeaderVisible(false);
 

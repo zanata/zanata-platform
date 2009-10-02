@@ -21,8 +21,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class TranslatorsPanel extends ContentPanel {
 
 	public TranslatorsPanel() {
-		setHeading("Translators");
-		// setLayout(new RowLayout(Orientation.VERTICAL));
+		setHeading("Participants");
 		setFrame(false);
 		setCollapsible(true);
 

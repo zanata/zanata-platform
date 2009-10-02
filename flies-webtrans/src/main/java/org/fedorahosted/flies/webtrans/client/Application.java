@@ -62,7 +62,7 @@ public class Application implements EntryPoint, ResizeHandler {
 	}
 
 	public void onWindowResized(int width, int height) {
-	    appContainer.setWidth(width < 800 ? 800 : width) ;
-	    appContainer.setHeight(height < 600 ? 600 : height);
+	    appContainer.setWidth(width < 600 ? 600 : width) ;
+	    appContainer.setHeight(height < 400 ? 400 : height);
 	}
 }
