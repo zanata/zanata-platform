@@ -1,7 +1,6 @@
 package org.fedorahosted.flies.rest.service;
 
 import java.net.URISyntaxException;
-import java.util.Collections;
 import java.util.Set;
 
 import javax.ws.rs.Consumes;
