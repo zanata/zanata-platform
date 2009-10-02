@@ -6,14 +6,19 @@ import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.util.Margins;
+import com.extjs.gxt.ui.client.util.Padding;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
 
@@ -30,10 +35,18 @@ public class WebTransLayoutContainer extends LayoutContainer {
 
 		west = new ContentPanel();
 		west.setHeaderVisible(false);
-		west.setLayout(new RowLayout(Orientation.VERTICAL));
-		west.add(new DocumentListPanel(), new RowData(1, -1, new Margins(4)));
-		west.add(new FilterPanel(), new RowData(1, -1, new Margins(4)));
-		west.add(new TranslatorsPanel(), new RowData(1, -1, new Margins(4)));
+		VBoxLayout westLayout = new VBoxLayout();  
+		westLayout.setPadding(new Padding(5));  
+		westLayout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);  
+		west.setLayout(westLayout);
+		
+		west.add(new DocumentListPanel(), new VBoxLayoutData(new Margins(0, 0, 5, 0)));
+		west.add(new FilterPanel(), new VBoxLayoutData(new Margins(0, 0, 5, 0)));
+		
+		VBoxLayoutData flex = new VBoxLayoutData(new Margins(0, 0, 5, 0));
+		flex.setFlex(1);
+		west.add(new Text(), flex);
+		west.add(new TranslatorsPanel(), new VBoxLayoutData(new Margins(0)));
 
 		center = new WebTransPanel();
 		center.setLayout(new FillLayout());

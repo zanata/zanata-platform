@@ -22,7 +22,7 @@ public class TranslatorsPanel extends ContentPanel {
 
 	public TranslatorsPanel() {
 		setHeading("Participants");
-		setFrame(false);
+		setFrame(true);
 		setCollapsible(true);
 
 		TabPanel innerTab = new TabPanel();
