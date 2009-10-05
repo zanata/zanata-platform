@@ -14,7 +14,7 @@ public class CodeMirrorEditorWidget extends Composite implements Constants {
 	
 	TextArea textArea;
 	CodeMirrorConfiguration configuration;
-	CodeMirrorJSNI codeMirrorJSNI;
+	ICodeMirrorJSNI codeMirrorJSNI = new DummyCodeMirrorJSNI();
 	HorizontalPanel toolbar;
 
 	public CodeMirrorEditorWidget() {
@@ -50,10 +50,11 @@ public class CodeMirrorEditorWidget extends Composite implements Constants {
 
 
 	protected void onLoad() {
+		String text = codeMirrorJSNI.getEditorCode();
 		if (configuration != null) {
-			codeMirrorJSNI = new CodeMirrorJSNI(configuration);
+			codeMirrorJSNI = new CodeMirrorJSNI(configuration, text);
 		} else {
-			codeMirrorJSNI = new CodeMirrorJSNI();
+			codeMirrorJSNI = new CodeMirrorJSNI(text);
 		}
 		
 		toolbar.add(new CodeMirrorToolbar(this));
@@ -91,11 +92,11 @@ public class CodeMirrorEditorWidget extends Composite implements Constants {
 		this.configuration = configuration;
 	}
 
-	public CodeMirrorJSNI getCodeMirrorJSNI() {
+	public ICodeMirrorJSNI getCodeMirrorJSNI() {
 		return codeMirrorJSNI;
 	}
 
-	public void setCodeMirrorJSNI(CodeMirrorJSNI codeMirrorJSNI) {
+	public void setCodeMirrorJSNI(ICodeMirrorJSNI codeMirrorJSNI) {
 		this.codeMirrorJSNI = codeMirrorJSNI;
 	}
 }

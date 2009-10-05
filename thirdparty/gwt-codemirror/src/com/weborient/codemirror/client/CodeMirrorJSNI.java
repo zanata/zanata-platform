@@ -7,18 +7,27 @@ import com.google.gwt.core.client.JavaScriptObject;
  * @author samangiahi
  *
  */
-public class CodeMirrorJSNI {
+public class CodeMirrorJSNI implements ICodeMirrorJSNI {
 	private JavaScriptObject editorObject;
+	@SuppressWarnings("unused") // used by js in initCodeMirror()
 	private String jsDirectory = GWT.getModuleBaseURL() + "js/";
 	public CodeMirrorJSNI() {
-		this(new CodeMirrorConfiguration());
+		this(new CodeMirrorConfiguration(), " ");
 	}
 
 	public CodeMirrorJSNI(CodeMirrorConfiguration configuration) {
-		editorObject = initCodeMirror(configuration);
+		this(configuration, " ");
 	}
 
-	public native JavaScriptObject initCodeMirror(CodeMirrorConfiguration conf) /*-{
+	public CodeMirrorJSNI(String initialText) {
+		this(new CodeMirrorConfiguration(), " ");
+	}
+
+	public CodeMirrorJSNI(CodeMirrorConfiguration configuration, String initialText) {
+		editorObject = initCodeMirror(configuration, initialText);
+	}
+
+	public native JavaScriptObject initCodeMirror(CodeMirrorConfiguration conf, String initialText) /*-{
 	            
 	            var id = conf.@com.weborient.codemirror.client.CodeMirrorConfiguration::getId()();
 	            var h = conf.@com.weborient.codemirror.client.CodeMirrorConfiguration::getHeight()();
@@ -38,7 +47,7 @@ public class CodeMirrorJSNI {
 	                readOnly: ro,
 	                textWrapping: tr,
 	                tabMode: "spaces",
-	                content: ' '
+	                content: initialText
 	              });
 	              
 	              return editor;
@@ -57,6 +66,7 @@ public class CodeMirrorJSNI {
 	     }-*/;
 
 	public native void undoEditor()/*-{
+			// FIXME this condition needs refining
 			if (this.@com.weborient.codemirror.client.CodeMirrorJSNI::getEditorCode()() != ' ') {
 		         var ed = this.@com.weborient.codemirror.client.CodeMirrorJSNI::editorObject;
 		         ed.undo();
@@ -64,6 +74,7 @@ public class CodeMirrorJSNI {
 	}-*/;
 
 	public native void redoEditor()/*-{
+			// FIXME this condition needs refining
 			if (this.@com.weborient.codemirror.client.CodeMirrorJSNI::getEditorCode()() != ' ') {
 	             var ed = this.@com.weborient.codemirror.client.CodeMirrorJSNI::editorObject;
 	             ed.redo();
@@ -71,6 +82,7 @@ public class CodeMirrorJSNI {
      }-*/;
 
 	public native void reindentEditor()/*-{
+			// FIXME this condition needs refining
 			if (this.@com.weborient.codemirror.client.CodeMirrorJSNI::getEditorCode()() != ' ') {
 	             var ed = this.@com.weborient.codemirror.client.CodeMirrorJSNI::editorObject;
 	             ed.reindent();

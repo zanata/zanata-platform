@@ -41,7 +41,6 @@ public class Application implements EntryPoint, ResizeHandler {
 
 		appContainer = new WebTransLayoutContainer();
 		RootPanel.get().add(appContainer);
-		appContainer.init();
 
 		// Call the window resized handler to get the initial sizes setup. Doing
 		// this in a deferred command causes it to occur after all widgets'

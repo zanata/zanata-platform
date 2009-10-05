@@ -56,9 +56,11 @@ public class WebTransLayoutContainer extends LayoutContainer {
 		east.setHeaderVisible(false);
 		
 		sourceWidget = getEditorWidget(true);
+		sourceWidget.setText("Original/source text (text flow)");
 		center.add(sourceWidget);
 
 		targetWidget = getEditorWidget(false);
+		targetWidget.setText("Translation text (text flow target)");
 		east.add(targetWidget);
 
 		BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 200);
@@ -99,12 +101,4 @@ public class WebTransLayoutContainer extends LayoutContainer {
         return new CodeMirrorEditorWidget(configuration);
    }
 
-	// this should be called after container is added to RootPanel
-	public void init() {
-		// NB: These editor widget methods currently can't be called until
-		// the JSNI is initialized by onLoad() 
-		targetWidget.setText("Target text");
-		sourceWidget.setText("This is the source text (text flow)");
-	}	
-	
 }
