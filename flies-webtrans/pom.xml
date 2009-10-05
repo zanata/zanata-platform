@@ -34,6 +34,13 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>com.weborient.codemirror</groupId>
+      <artifactId>gwt-codemirror</artifactId>
+      <version>0.5-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+
 	<dependency>
 	  <groupId>org.fedorahosted.flies</groupId>
 	  <artifactId>flies-gwt-api</artifactId>

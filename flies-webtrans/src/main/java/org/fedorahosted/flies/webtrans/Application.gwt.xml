@@ -5,6 +5,8 @@
       <inherits name='com.google.gwt.user.User'/>
       
       <inherits name='com.extjs.gxt.ui.GXT'/>
+      
+      <inherits name="com.weborient.codemirror.CodemirrorGwt"/>
        
       <inherits name="org.fedorahosted.flies.gwt.Common"/>
       
