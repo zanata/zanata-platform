@@ -1,6 +1,10 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import org.fedorahosted.flies.webtrans.client.gin.WebTransGinjector;
+import org.fedorahosted.flies.webtrans.client.mvp.AppPresenter;
+
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Command;
@@ -25,13 +29,25 @@ public class Application implements EntryPoint, ResizeHandler {
 		return singleton;
 	}
 
+	private final WebTransGinjector injector = GWT.create(WebTransGinjector.class);
+
+	public void onModuleLoad() {
+		singleton = this;
+
+		final AppPresenter appPresenter = injector.getAppPresenter();
+		appPresenter.go(RootPanel.get());
+
+		injector.getPlaceManager().fireCurrentPlace();
+	}
+	
+	
 	private WebTransLayoutContainer appContainer;
 	
 	/**
 	 * This method constructs the application user interface by instantiating
 	 * controls and hooking up event handler.
 	 */
-	public void onModuleLoad() {
+	public void onModuleLoadX() {
 		singleton = this;
 		
 		// Hook the window resize event, so that we can adjust the UI.

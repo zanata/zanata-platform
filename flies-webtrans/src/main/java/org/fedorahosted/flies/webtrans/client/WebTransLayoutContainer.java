@@ -30,7 +30,7 @@ public class WebTransLayoutContainer extends LayoutContainer {
 
 	public WebTransLayoutContainer() {
 		final BorderLayout layout = new BorderLayout();
-
+		
 		setLayout(layout);
 
 		west = new ContentPanel();

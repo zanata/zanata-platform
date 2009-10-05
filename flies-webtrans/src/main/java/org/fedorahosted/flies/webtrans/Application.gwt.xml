@@ -9,7 +9,9 @@
       <inherits name='net.customware.gwt.presenter.Presenter' />
       
       <inherits name='com.extjs.gxt.ui.GXT'/>
-       
+      
+      <inherits name='com.google.gwt.gen2.table.Table'/>
+             
       <inherits name="org.fedorahosted.flies.gwt.Common"/>
       
       <!--  inherit css based theme -->
@@ -31,5 +33,7 @@
       
       <!-- Turn off the floating logger - output will be shown in the hosted mode console -->
       <set-property name="log_DivLogger" value="DISABLED" />
+    
+      <source path="client" />
 
 </module>
