@@ -9,6 +9,8 @@
       <inherits name='net.customware.gwt.presenter.Presenter' />
       
       <inherits name='com.extjs.gxt.ui.GXT'/>
+      
+      <inherits name="com.weborient.codemirror.CodemirrorGwt"/>
        
       <inherits name="org.fedorahosted.flies.gwt.Common"/>
       

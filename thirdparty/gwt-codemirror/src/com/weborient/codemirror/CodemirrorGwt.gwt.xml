@@ -1,0 +1,11 @@
+<module>
+
+	<inherits name='com.google.gwt.user.User' />
+
+	<inherits name='com.google.gwt.user.theme.standard.Standard' />
+
+	<stylesheet src='CodemirrorGwt.css' />
+	<stylesheet src='css/editor.css' />
+	<script src="js/codemirror.js" />
+
+</module>

@@ -6,10 +6,9 @@ import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.DockPanel;
-import com.google.gwt.user.client.ui.HorizontalSplitPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.weborient.codemirror.client.CodeMirrorConfiguration;
+import com.weborient.codemirror.client.CodeMirrorEditorWidget;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -26,14 +25,14 @@ public class Application implements EntryPoint, ResizeHandler {
 	}
 
 	private WebTransLayoutContainer appContainer;
-	
+
 	/**
 	 * This method constructs the application user interface by instantiating
 	 * controls and hooking up event handler.
 	 */
 	public void onModuleLoad() {
 		singleton = this;
-		
+
 		// Hook the window resize event, so that we can adjust the UI.
 		Window.addResizeHandler(this);
 
@@ -42,6 +41,7 @@ public class Application implements EntryPoint, ResizeHandler {
 
 		appContainer = new WebTransLayoutContainer();
 		RootPanel.get().add(appContainer);
+		appContainer.init();
 
 		// Call the window resized handler to get the initial sizes setup. Doing
 		// this in a deferred command causes it to occur after all widgets'
