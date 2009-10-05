@@ -48,7 +48,7 @@ public class WebTransLayoutContainer extends LayoutContainer {
 		west.add(new Text(), flex);
 		west.add(new TranslatorsPanel(), new VBoxLayoutData(new Margins(0)));
 
-		center = new WebTransPanel();
+		center = new ContentPanel();//WebTransPanel();
 		center.setLayout(new FillLayout());
 		center.setHeaderVisible(false);
 		center.setScrollMode(Scroll.AUTOY);
