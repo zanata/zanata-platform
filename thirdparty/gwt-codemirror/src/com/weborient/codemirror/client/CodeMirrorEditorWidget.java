@@ -56,8 +56,8 @@ public class CodeMirrorEditorWidget extends Composite implements Constants {
 		} else {
 			codeMirrorJSNI = new CodeMirrorJSNI(text);
 		}
-		
-		toolbar.add(new CodeMirrorToolbar(this));
+		if (configuration == null || configuration.isToolbar())
+			toolbar.add(new CodeMirrorToolbar(this));
 	}
 
 	public TextArea getTextArea() {
@@ -99,4 +99,9 @@ public class CodeMirrorEditorWidget extends Composite implements Constants {
 	public void setCodeMirrorJSNI(ICodeMirrorJSNI codeMirrorJSNI) {
 		this.codeMirrorJSNI = codeMirrorJSNI;
 	}
+
+	public void setLanguage(SyntaxLanguage lang) {
+		codeMirrorJSNI.setLanguage(lang);
+	}
+	
 }

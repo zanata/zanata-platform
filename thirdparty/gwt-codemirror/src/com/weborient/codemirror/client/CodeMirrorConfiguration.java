@@ -19,6 +19,7 @@ public class CodeMirrorConfiguration {
 	private String styleUrl = GWT.getModuleBaseURL() + "css/xmlcolors.css";
 	private String[] listBoxPreSets;
 	private String tagSelectorLabel;
+	private boolean toolbar = true;
 
 	/**
 	 * @return String 
@@ -136,5 +137,13 @@ public class CodeMirrorConfiguration {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+	
+	public void setToolbar(boolean toolbar) {
+		this.toolbar = toolbar;
+	}
+	
+	public boolean isToolbar() {
+		return toolbar;
 	}
 }

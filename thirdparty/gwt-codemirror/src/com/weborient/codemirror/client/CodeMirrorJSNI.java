@@ -28,6 +28,11 @@ public class CodeMirrorJSNI implements ICodeMirrorJSNI {
 	}
 
 	public native JavaScriptObject initCodeMirror(CodeMirrorConfiguration conf, String initialText) /*-{
+		var log = function (msg) { 
+			@com.google.gwt.core.client.GWT::log(Ljava/lang/String;Ljava/lang/Throwable;) 
+				(msg, null)
+		};
+		log("initCodeMirror");
 	            
 	            var id = conf.@com.weborient.codemirror.client.CodeMirrorConfiguration::getId()();
 	            var h = conf.@com.weborient.codemirror.client.CodeMirrorConfiguration::getHeight()();
@@ -35,12 +40,16 @@ public class CodeMirrorJSNI implements ICodeMirrorJSNI {
 	            var cs = conf.@com.weborient.codemirror.client.CodeMirrorConfiguration::getContinuousScanning()();
 	            var ln = conf.@com.weborient.codemirror.client.CodeMirrorConfiguration::isLineNumbers()();
 	            var tr = conf.@com.weborient.codemirror.client.CodeMirrorConfiguration::isTextWrapping()();
-	            var su = conf.@com.weborient.codemirror.client.CodeMirrorConfiguration::getStyleUrl()();
+//	            var su = conf.@com.weborient.codemirror.client.CodeMirrorConfiguration::getStyleUrl()();
 
 	            var editor = $wnd.CodeMirror.fromTextArea(id, {
 	                height:             h,
-	                parserfile: "parsexml.js",
-	                stylesheet: su,
+//	                parserfile: "parsexml.js",
+//	                stylesheet: su,
+	                parserfile: ["parsexml.js", "parsecss.js", 
+	                	"tokenizejavascript.js", "parsejavascript.js", 
+	                	"parsehtmlmixed.js", "parsedummy.js"],
+ 					stylesheet: ["css/xmlcolors.css", "css/jscolors.css", "css/csscolors.css"],
 	                path: this.@com.weborient.codemirror.client.CodeMirrorJSNI::jsDirectory,
 	                continuousScanning: cs,
 	                lineNumbers: ln,
@@ -101,4 +110,20 @@ public class CodeMirrorJSNI implements ICodeMirrorJSNI {
 	public void setEditorObject(JavaScriptObject editorObject) {
 		this.editorObject = editorObject;
 	}
+	
+	public void setLanguage(SyntaxLanguage lang) {
+		setParser(lang.getParserName());
+	}
+
+	private native void setParser(String parserName)/*-{
+		var log = function (msg) { 
+			@com.google.gwt.core.client.GWT::log(Ljava/lang/String;Ljava/lang/Throwable;) 
+				(msg, null)
+		};
+		log("setParser");
+  		var ed = this.@com.weborient.codemirror.client.CodeMirrorJSNI::editorObject;
+		log("setParser: ed="+ed);
+  		ed.setParser(parserName);
+	}-*/;
+
 }

@@ -1,6 +1,6 @@
 package com.weborient.codemirror.client;
 
-public interface ICodeMirrorJSNI {
+public interface ICodeMirrorJSNI extends LangSupport {
 
 	String getEditorCode();
 	void redoEditor();

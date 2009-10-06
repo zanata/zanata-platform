@@ -6,6 +6,19 @@
 
 	<stylesheet src='CodemirrorGwt.css' />
 	<stylesheet src='css/editor.css' />
+	
+	<stylesheet src='css/xmlcolors.css' />
+	<stylesheet src='css/jscolors.css' />
+	<stylesheet src='css/csscolors.css' />
+	
 	<script src="js/codemirror.js" />
-
+	<script src="js/highlight.js" />
+	<script src="js/tokenize.js" />
+	<script src="js/stringstream.js" />
+	<script src="js/parsedummy.js" />
+	<script src="js/parsecss.js" />
+	<script src="js/tokenizejavascript.js" />
+	<script src="js/parsejavascript.js" />
+	<script src="js/parsexml.js" />
+	<script src="js/parsehtmlmixed.js" />
 </module>
