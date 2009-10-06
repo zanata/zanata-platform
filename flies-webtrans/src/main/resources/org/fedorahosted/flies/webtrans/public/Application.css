@@ -13,41 +13,6 @@ img {
   margin-top: 20px;
 }
 
-
-/**
-Default styling for CollapsiblePanel code.
-*/
-.gwt-CollapsiblePanel div:focus {
-  border: 0px;
-  -moz-outline: none !important
-}
-
-.gwt-CollapsiblePanel {
-  margin: 0px;
-  margin-right: 10px;
-  float: left;
-  height: 500px;
-  width: 200px;
-}
-
-.gwt-CollapsiblePanel .hover-bar {
-  position: relative;
-  background-color: gray;
-  width: 4px;  height: 100%;
-}
-
-.gwt-CollapsiblePanel .container {
-  border-right: 1px solid #59d;
-  border-bottom: 1px solid #59d;
-  background-color: white;
-  height: 100%;
-  position: relative;
-  z-index: 100;
-  position: relative;
-  background-color: white;
-	width:199px;
-}
-
 .LeftContentNavBar {
-  background-color: green;
+  background-color: #f8f8fb;
 }

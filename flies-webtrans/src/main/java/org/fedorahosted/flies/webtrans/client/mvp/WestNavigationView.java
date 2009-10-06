@@ -3,21 +3,28 @@ package org.fedorahosted.flies.webtrans.client.mvp;
 import java.util.ArrayList;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.gen2.complexpanel.client.CollapsiblePanel;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.Location;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.ImageBundle;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.StackPanel;
 import com.google.gwt.user.client.ui.ToggleButton;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.widgetideas.client.FastTree;
 import com.google.gwt.widgetideas.client.FastTreeItem;
@@ -28,13 +35,33 @@ public class WestNavigationView extends Composite implements
 	ToggleButton controlButton;
 	final Panel contents;
 	final CollapsiblePanel panel;
-	
+
+	public interface Images extends ImageBundle {
+
+		/**
+		 * @gwt.resource org/fedorahosted/flies/webtrans/images/pin.gif
+		 */
+		AbstractImagePrototype pin();
+
+		/**
+		 * @gwt.resource org/fedorahosted/flies/webtrans/images/unpin.gif
+		 */
+		AbstractImagePrototype unpin();
+		
+		/**
+		 * @gwt.resource org/fedorahosted/flies/webtrans/images/unpin.gif
+		 */
+		AbstractImagePrototype expand();
+		
+	}
+
+	private Images images = (Images) GWT.create(Images.class);
+
 	public WestNavigationView() {
 		Log.info("setting up LeftNavigationView");
 
 		// Some random contents to make the tree interesting.
-		contents = createSchoolNavBar();
-		FastTree.addDefaultCSS();
+		contents = createNavBar();
 
 		// The panel.
 		panel = new CollapsiblePanel();
@@ -51,64 +78,50 @@ public class WestNavigationView extends Composite implements
 			}
 		}
 		initWidget(panel);
+
 		panel.add(contents);
 		panel.setWidth("220px");
 
-		Label lbl = new Label("x");
-		lbl.setWidth("50px");
-		panel.setHoverBarContents(lbl);
+		VerticalPanel hoverPanel = new VerticalPanel();
+		hoverPanel.setStylePrimaryName("LeftContentNavBar");
+		//Image expand = images.expand().createImage();
+		Label expand = new Label(">");
+		hoverPanel.add(expand);
+		hoverPanel.setHeight("100%");
+		hoverPanel.setCellVerticalAlignment(expand, VerticalPanel.ALIGN_MIDDLE);
+		
+		panel.setHoverBarContents(hoverPanel);
+		panel.setHoverBarWidth("2px");
 		panel.hookupControlToggle(controlButton);
 
 	}
-	
-	private Panel createSchoolNavBar() {
-		ToggleButton toggler = new ToggleButton("Directory (click to pin)",
-				"Directory (click to collapse)");
-		toggler.setStyleName("CollapsibleToggle");
-		controlButton = toggler;
 
-		MyStackPanel wrapper = new MyStackPanel();
-		FlowPanel navBar = new FlowPanel();
+	private Panel createNavBar() {
+		controlButton = new ToggleButton(images.pin().createImage(),
+				images.unpin().createImage());
+		controlButton.setStyleName("CollapsibleToggle");
+
+		VerticalPanel navBar = new VerticalPanel();
 		navBar.setStylePrimaryName("LeftContentNavBar");
 		navBar.setSize("100%", "100%");
 
 		HorizontalPanel panel = new HorizontalPanel();
 		panel.setWidth("100%");
 
-		panel.setCellHorizontalAlignment(controlButton,
-				HasHorizontalAlignment.ALIGN_LEFT);
-
 		panel.add(controlButton);
-		panel.setCellWidth(controlButton, "1px");
+		//panel.setCellWidth(controlButton, "1px");
 		panel.setCellHorizontalAlignment(controlButton,
-				HorizontalPanel.ALIGN_CENTER);
+				HorizontalPanel.ALIGN_RIGHT);
 
 		navBar.add(panel);
 
 		panel.setStyleName("nav-Tree-title");
-		wrapper = new MyStackPanel();
-		wrapper.setHeight("250px");
-
-		final FastTree contents = new FastTree();
-		wrapper.add(contents, "<b>People</b>", true);
-
-		wrapper.add(new Label("None"), "<b>Academics</b>", true);
-		navBar.add(wrapper);
-
-		FastTreeItem students = contents.addItem("Students");
-		students.addItem("Jill");
-		students.addItem("Jack");
-		students.addItem("Molly");
-		students.addItem("Ms. Muffat");
-
-		FastTreeItem teachers = contents.addItem("Teachers");
-		teachers.addItem("Mrs Black");
-		teachers.addItem("Mr White");
-
-		FastTreeItem admin = contents.addItem("Administrators");
-		admin.addItem("The Soup Nazi");
-		admin.addItem("The Grand High Supreme Master Pubba");
-		navBar.add(new Label("heelo"));
+		
+		DecoratorPanel translators = new DecoratorPanel();
+		translators.add(new Label("Translators"));
+		navBar.add(translators);
+		navBar.setCellVerticalAlignment(translators, VerticalPanel.ALIGN_TOP);
+		//translators.setWidth("80%");
 		return navBar;
 	}
 
@@ -116,7 +129,7 @@ public class WestNavigationView extends Composite implements
 	public void setHeight(String height) {
 		panel.setHeight(height);
 	}
-	
+
 	@Override
 	public Widget asWidget() {
 		return this;
@@ -171,10 +184,10 @@ public class WestNavigationView extends Composite implements
 			}
 		}
 	}
-	
+
 	@Override
 	public HasWidgets getWidgets() {
 		return contents;
 	}
-	
+
 }
