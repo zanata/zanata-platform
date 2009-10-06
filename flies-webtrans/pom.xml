@@ -116,7 +116,11 @@
             <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
             <classpathContainer>com.google.gwt.eclipse.core.GWT_CONTAINER</classpathContainer>
           </classpathContainers>
-
+          <excludes>
+            <!-- These are provided by the GWT container -->
+          	<exclude>com.google.gwt:gwt-servlet</exclude>
+          	<exclude>com.google.gwt:gwt-user</exclude>
+          </excludes>
         </configuration>
       </plugin>
     </plugins>
