@@ -30,8 +30,9 @@ var CodeMirror = (function(){
     path: "",
     parserfile: [],
     basefiles: ["util.js", "stringstream.js", "select.js", "undo.js", "editor.js", "tokenize.js"],
-    linesPerPass: 30,
+    iframeClass: null,
     passDelay: 200,
+    passTime: 50,
     continuousScanning: false,
     saveFunction: null,
     onChange: null,
@@ -45,6 +46,7 @@ var CodeMirror = (function(){
     autoMatchParens: false,
     parserConfig: null,
     tabMode: "indent", // or "spaces", "default", "shift"
+    reindentOnLoad: false,
     activeTokens: null,
     cursorActivity: null,
     lineNumbers: false,
@@ -59,8 +61,10 @@ var CodeMirror = (function(){
       container.style.position = "relative";
       nums.style.position = "absolute";
       nums.style.height = "100%";
-      if (nums.style.setExpression)
-        nums.style.setExpression("height", "this.previousSibling.offsetHeight + 'px'");
+      if (nums.style.setExpression) {
+        try {nums.style.setExpression("height", "this.previousSibling.offsetHeight + 'px'");}
+        catch(e) {} // Seems to throw 'Not Implemented' on some IE8 versions
+      }
       nums.style.top = "0px";
       nums.style.overflow = "hidden";
       place(container);
@@ -77,6 +81,15 @@ var CodeMirror = (function(){
 
     var nextNum = 1, barWidth = null;
     function sizeBar() {
+      if (!frame.offsetWidth || !win.Editor) {
+        for (var cur = frame; cur.parentNode; cur = cur.parentNode) {
+          if (cur != document) {
+            clearInterval(sizeInterval);
+            return;
+          }
+        }
+      }
+
       if (nums.offsetWidth != barWidth) {
         barWidth = nums.offsetWidth;
         nums.style.left = "-" + (frame.parentNode.style.marginLeft = barWidth + "px");
@@ -85,15 +98,17 @@ var CodeMirror = (function(){
     function update() {
       var diff = 20 + Math.max(doc.body.offsetHeight, frame.offsetHeight) - scroller.offsetHeight;
       for (var n = Math.ceil(diff / 10); n > 0; n--) {
-        scroller.appendChild(document.createTextNode(nextNum++));
-        scroller.appendChild(document.createElement("BR"));
+        var div = document.createElement("DIV");
+        div.appendChild(document.createTextNode(nextNum++));
+        scroller.appendChild(div);
       }
       nums.scrollTop = doc.body.scrollTop || doc.documentElement.scrollTop || 0;
     }
     sizeBar();
     update();
     win.addEventHandler(win, "scroll", update);
-    setInterval(sizeBar, 500);
+    win.addEventHandler(win, "resize", update);
+    var sizeInterval = setInterval(sizeBar, 500);
   }
 
   function CodeMirror(place, options) {
@@ -106,6 +121,7 @@ var CodeMirror = (function(){
     setDefaults(options, CodeMirrorConfig);
 
     var frame = this.frame = document.createElement("IFRAME");
+    if (options.iframeClass) frame.className = options.iframeClass;
     frame.frameBorder = 0;
     frame.src = "javascript:false;";
     frame.style.border = "0";
@@ -133,6 +149,8 @@ var CodeMirror = (function(){
       options.stylesheet = [options.stylesheet];
 
     var html = ["<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\"><html><head>"];
+    // Hack to work around a bunch of IE8-specific problems.
+    html.push("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=EmulateIE7\"/>");
     forEach(options.stylesheet, function(file) {
       html.push("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + file + "\"/>");
     });
@@ -152,12 +170,14 @@ var CodeMirror = (function(){
     init: function() {
       if (this.options.initCallback) this.options.initCallback(this);
       if (this.options.lineNumbers) applyLineNumbers(this.frame);
+      if (this.options.reindentOnLoad) this.reindent();
     },
 
     getCode: function() {return this.editor.getCode();},
     setCode: function(code) {this.editor.importCode(code);},
     selection: function() {return this.editor.selectedText();},
     reindent: function() {this.editor.reindent();},
+    reindentSelection: function() {this.editor.reindentSelection(null);},
 
     focus: function() {
       this.win.focus();
@@ -179,9 +199,12 @@ var CodeMirror = (function(){
     undo: function() {this.editor.history.undo();},
     redo: function() {this.editor.history.redo();},
     historySize: function() {return this.editor.history.historySize();},
+    clearHistory: function() {this.editor.history.clear();},
 
     grabKeys: function(callback, filter) {this.editor.grabKeys(callback, filter);},
     ungrabKeys: function() {this.editor.ungrabKeys();},
+
+    setParser: function(name) {this.editor.setParser(name);},
 
     cursorPosition: function(start) {
       if (this.win.select.ie_selection) this.focus();
@@ -238,8 +261,10 @@ var CodeMirror = (function(){
       area = document.getElementById(area);
 
     options = options || {};
-    if (area.style.width) options.width = area.style.width;
-    if (area.style.height) options.height = area.style.height;
+    if (area.style.width && options.width == null)
+      options.width = area.style.width;
+    if (area.style.height && options.height == null)
+      options.height = area.style.height;
     if (options.content == null) options.content = area.value;
 
     if (area.form) {

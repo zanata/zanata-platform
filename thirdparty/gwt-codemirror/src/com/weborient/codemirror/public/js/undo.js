@@ -52,8 +52,9 @@ History.prototype = {
   // Schedule a commit (if no other touches come in for commitDelay
   // milliseconds).
   scheduleCommit: function() {
+    var self = this;
     this.parent.clearTimeout(this.commitTimeout);
-    this.commitTimeout = this.parent.setTimeout(method(this, "tryCommit"), this.commitDelay);
+    this.commitTimeout = this.parent.setTimeout(function(){self.tryCommit();}, this.commitDelay);
   },
 
   // Mark a node as touched. Null is a valid argument.
@@ -87,6 +88,11 @@ History.prototype = {
       if (this.onChange) this.onChange();
       return this.chainNode(item);
     }
+  },
+
+  clear: function() {
+    this.history = [];
+    this.redoHistory = [];
   },
 
   // Ask for the size of the un/redo histories.
@@ -139,7 +145,8 @@ History.prototype = {
 
   // Commit unless there are pending dirty nodes.
   tryCommit: function() {
-    if (this.editor.highlightDirty()) this.commit();
+    if (!window.History) return; // Stop when frame has been unloaded
+    if (this.editor.highlightDirty()) this.commit(true);
     else this.scheduleCommit();
   },
 

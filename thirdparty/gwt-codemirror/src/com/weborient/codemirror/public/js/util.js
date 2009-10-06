@@ -2,6 +2,7 @@
 
 var internetExplorer = document.selection && window.ActiveXObject && /MSIE/.test(navigator.userAgent);
 var webkit = /AppleWebKit/.test(navigator.userAgent);
+var safari = /Apple Computers, Inc/.test(navigator.vendor);
 
 // Capture a method on an object.
 function method(obj, name) {
@@ -10,19 +11,6 @@ function method(obj, name) {
 
 // The value used to signal the end of a sequence in iterators.
 var StopIteration = {toString: function() {return "StopIteration"}};
-
-// Checks whether the argument is an iterator or a regular sequence,
-// turns it into an iterator.
-function iter(seq) {
-  var i = 0;
-  if (seq.next) return seq;
-  else return {
-    next: function() {
-      if (i >= seq.length) throw StopIteration;
-      else return seq[i++];
-    }
-  };
-}
 
 // Apply a function to each element in a sequence.
 function forEach(iter, f) {
@@ -44,7 +32,8 @@ function map(iter, f) {
 }
 
 // Create a predicate function that tests a string againsts a given
-// regular expression.
+// regular expression. No longer used but might be used by 3rd party
+// parsers.
 function matcher(regexp){
   return function(value){return regexp.test(value);};
 }
@@ -124,4 +113,13 @@ function addEventHandler(node, type, handler, removeFunc) {
 
 function nodeText(node) {
   return node.innerText || node.textContent || node.nodeValue || "";
+}
+
+function nodeTop(node) {
+  var top = 0;
+  while (node.offsetParent) {
+    top += node.offsetTop;
+    node = node.offsetParent;
+  }
+  return top;
 }
