@@ -19,17 +19,17 @@ import com.google.gwt.user.client.ui.Widget;
 public class TransUnitListView extends Composite implements
 		TransUnitListPresenter.Display {
 
-	final FlowPanel panel = new FlowPanel();
+	//final FlowPanel panel = new FlowPanel();
 	
 	public TransUnitListView() {
 		Log.info("setting up TransUnitListView");
 		setupScrollTable();
-		initWidget(panel);
+		initWidget(pagingScrollTable);
 		setSize("100%", "100%");
 
-		panel.add( pagingScrollTable );
+		//panel.add( pagingScrollTable );
 		
-		panel.add(new Label("hello world"));
+		//panel.add(new Label("hello world"));
 
 	}
 	
@@ -86,8 +86,10 @@ public class TransUnitListView extends Composite implements
 		pagingScrollTable.setCellPadding(3);
 		pagingScrollTable.setCellSpacing(0);
 		pagingScrollTable.setResizePolicy(ScrollTable.ResizePolicy.FILL_WIDTH);
-		pagingScrollTable.setHeaderGenerated(true);
+		//pagingScrollTable.setHeaderGenerated(true);
 		pagingScrollTable.setSize("200px", "200px");
+		pagingScrollTable.gotoFirstPage();
+		pagingScrollTable.setVisible(true);
 	}
 
 	private TableDefinition<TransUnit> createTableDefinition() {
