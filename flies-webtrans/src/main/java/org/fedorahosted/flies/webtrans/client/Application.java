@@ -15,7 +15,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
-public class Application implements EntryPoint, ResizeHandler {
+public class Application implements EntryPoint{
 
 	private static Application singleton;
 
@@ -26,10 +26,14 @@ public class Application implements EntryPoint, ResizeHandler {
 		appPresenter.go(RootPanel.get());
 
 		injector.getPlaceManager().fireCurrentPlace();
-	
 		
 		// Hook the window resize event, so that we can adjust the UI.
-		Window.addResizeHandler(this);
+		Window.addResizeHandler( new ResizeHandler() {
+			@Override
+			public void onResize(ResizeEvent event) {
+				injector.getEventBus().fireEvent( new WindowResizeEvent(event));
+			}
+		});
 
 		Window.enableScrolling(false);
 		Window.setMargin("0px");
@@ -40,20 +44,22 @@ public class Application implements EntryPoint, ResizeHandler {
 		// have been computed by the browser.
 		DeferredCommand.addCommand(new Command() {
 			public void execute() {
-				onWindowResized(Window.getClientWidth(), Window
-						.getClientHeight());
+				injector.getEventBus().fireEvent( new WindowResizeEvent(Window.getClientWidth(), Window
+						.getClientHeight()));
 			}
 		});
 
-		onWindowResized(Window.getClientWidth(), Window.getClientHeight());
 	}
 
-	public void onResize(ResizeEvent event) {
-		onWindowResized(event.getWidth(), event.getHeight());
-	}
-
-	public void onWindowResized(int width, int height) {
-	    //appContainer.setWidth(width < 600 ? 600 : width) ;
-	    //appContainer.setHeight(height < 400 ? 400 : height);
+	// we reuse the logic of the generic ResizeEvent here
+	// the only ResizeEvent allowed on the EventBus is the
+	// window resize event
+	public static class WindowResizeEvent extends ResizeEvent{
+		WindowResizeEvent(int width, int height) {
+			super(width, height);
+		}
+		public WindowResizeEvent(ResizeEvent event) {
+			super(event.getWidth(), event.getHeight());
+		}
 	}
 }

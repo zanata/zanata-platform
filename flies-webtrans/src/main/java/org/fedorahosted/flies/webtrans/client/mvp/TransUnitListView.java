@@ -1,20 +1,15 @@
 package org.fedorahosted.flies.webtrans.client.mvp;
 
-import java.util.ArrayList;
-
 import org.fedorahosted.flies.webtrans.client.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.gen2.table.client.CachedTableModel;
-import com.google.gwt.gen2.table.client.CellRenderer;
-import com.google.gwt.gen2.table.client.ColumnDefinition;
 import com.google.gwt.gen2.table.client.DefaultRowRenderer;
 import com.google.gwt.gen2.table.client.DefaultTableDefinition;
 import com.google.gwt.gen2.table.client.FixedWidthGridBulkRenderer;
 import com.google.gwt.gen2.table.client.PagingScrollTable;
 import com.google.gwt.gen2.table.client.ScrollTable;
 import com.google.gwt.gen2.table.client.TableDefinition;
-import com.google.gwt.gen2.table.client.TableDefinition.AbstractCellView;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -24,18 +19,20 @@ import com.google.gwt.user.client.ui.Widget;
 public class TransUnitListView extends Composite implements
 		TransUnitListPresenter.Display {
 
+	final FlowPanel panel = new FlowPanel();
+	
 	public TransUnitListView() {
 		Log.info("setting up TransUnitListView");
 		setupScrollTable();
-		final FlowPanel panel = new FlowPanel();
 		initWidget(panel);
+		setSize("100%", "100%");
 
 		panel.add( pagingScrollTable );
 		
 		panel.add(new Label("hello world"));
 
 	}
-
+	
 	@Override
 	public Widget asWidget() {
 		return this;

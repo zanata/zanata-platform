@@ -1,12 +1,12 @@
 package org.fedorahosted.flies.webtrans.client.mvp;
 
-import com.google.inject.Inject;
-
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+
+import com.google.inject.Inject;
 
 public class TransUnitListPresenter  extends WidgetPresenter<TransUnitListPresenter.Display> {
 	
