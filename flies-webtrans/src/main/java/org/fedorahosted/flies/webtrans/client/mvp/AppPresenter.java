@@ -1,8 +1,5 @@
 package org.fedorahosted.flies.webtrans.client.mvp;
 
-
-import net.customware.gwt.dispatch.client.DispatchAsync;
-
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.inject.Inject;
 

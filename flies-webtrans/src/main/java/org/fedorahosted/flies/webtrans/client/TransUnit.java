@@ -1,6 +1,5 @@
 package org.fedorahosted.flies.webtrans.client;
 
-import com.extjs.gxt.ui.client.data.BaseModel;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class TransUnit implements IsSerializable {

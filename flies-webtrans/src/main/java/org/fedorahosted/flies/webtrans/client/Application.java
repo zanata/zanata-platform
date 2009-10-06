@@ -10,9 +10,6 @@ import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.DockPanel;
-import com.google.gwt.user.client.ui.HorizontalSplitPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -22,42 +19,20 @@ public class Application implements EntryPoint, ResizeHandler {
 
 	private static Application singleton;
 
-	/**
-	 * Gets the singleton Application instance.
-	 */
-	public static Application get() {
-		return singleton;
-	}
-
 	private final WebTransGinjector injector = GWT.create(WebTransGinjector.class);
 
 	public void onModuleLoad() {
-		singleton = this;
-
 		final AppPresenter appPresenter = injector.getAppPresenter();
 		appPresenter.go(RootPanel.get());
 
 		injector.getPlaceManager().fireCurrentPlace();
-	}
 	
-	
-	private WebTransLayoutContainer appContainer;
-	
-	/**
-	 * This method constructs the application user interface by instantiating
-	 * controls and hooking up event handler.
-	 */
-	public void onModuleLoadX() {
-		singleton = this;
 		
 		// Hook the window resize event, so that we can adjust the UI.
 		Window.addResizeHandler(this);
 
 		Window.enableScrolling(false);
 		Window.setMargin("0px");
-
-		appContainer = new WebTransLayoutContainer();
-		RootPanel.get().add(appContainer);
 
 		// Call the window resized handler to get the initial sizes setup. Doing
 		// this in a deferred command causes it to occur after all widgets'
@@ -78,7 +53,7 @@ public class Application implements EntryPoint, ResizeHandler {
 	}
 
 	public void onWindowResized(int width, int height) {
-	    appContainer.setWidth(width < 600 ? 600 : width) ;
-	    appContainer.setHeight(height < 400 ? 400 : height);
+	    //appContainer.setWidth(width < 600 ? 600 : width) ;
+	    //appContainer.setHeight(height < 400 ? 400 : height);
 	}
 }
