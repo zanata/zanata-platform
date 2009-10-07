@@ -7,10 +7,12 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.gen2.table.client.CachedTableModel;
 import com.google.gwt.gen2.table.client.DefaultRowRenderer;
 import com.google.gwt.gen2.table.client.DefaultTableDefinition;
+import com.google.gwt.gen2.table.client.FixedWidthFlexTable;
 import com.google.gwt.gen2.table.client.FixedWidthGridBulkRenderer;
 import com.google.gwt.gen2.table.client.PagingScrollTable;
 import com.google.gwt.gen2.table.client.ScrollTable;
 import com.google.gwt.gen2.table.client.TableDefinition;
+import com.google.gwt.gen2.table.override.client.FlexTable.FlexCellFormatter;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -84,11 +86,27 @@ public class TransUnitListView extends Composite implements
 		pagingScrollTable.setCellPadding(3);
 		pagingScrollTable.setCellSpacing(0);
 		pagingScrollTable.setResizePolicy(ScrollTable.ResizePolicy.FILL_WIDTH);
-		//pagingScrollTable.setHeaderGenerated(true);
+		pagingScrollTable.setFooterTable( createFooterTable() );
 		pagingScrollTable.setSize("100%", "100%");
+		
+	}
+	
+	@Override
+	protected void onLoad() {
+		super.onLoad();
 		pagingScrollTable.gotoFirstPage();
 	}
 
+	private FixedWidthFlexTable createFooterTable() {
+		FixedWidthFlexTable footerTable = new FixedWidthFlexTable();
+
+		FlexCellFormatter headerFormatter = footerTable.getFlexCellFormatter();
+		footerTable.setHTML(0, 0, "Navigation toolbar goes here");
+		headerFormatter.setColSpan(0, 0, 2);
+		
+		return footerTable;
+	}
+	
 	private TableDefinition<TransUnit> createTableDefinition() {
 
 		// Create the table definition
