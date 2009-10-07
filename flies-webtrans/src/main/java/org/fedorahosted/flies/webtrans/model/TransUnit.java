@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.webtrans.client;
+package org.fedorahosted.flies.webtrans.model;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 

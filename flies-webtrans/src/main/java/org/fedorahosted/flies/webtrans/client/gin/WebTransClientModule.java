@@ -5,11 +5,11 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.gin.AbstractPresenterModule;
 import net.customware.gwt.presenter.client.place.PlaceManager;
 
-import org.fedorahosted.flies.webtrans.client.mvp.AppPresenter;
-import org.fedorahosted.flies.webtrans.client.mvp.TransUnitListPresenter;
-import org.fedorahosted.flies.webtrans.client.mvp.TransUnitListView;
-import org.fedorahosted.flies.webtrans.client.mvp.WestNavigationPresenter;
-import org.fedorahosted.flies.webtrans.client.mvp.WestNavigationView;
+import org.fedorahosted.flies.webtrans.client.AppPresenter;
+import org.fedorahosted.flies.webtrans.client.TransUnitListPresenter;
+import org.fedorahosted.flies.webtrans.client.TransUnitListView;
+import org.fedorahosted.flies.webtrans.client.WestNavigationPresenter;
+import org.fedorahosted.flies.webtrans.client.WestNavigationView;
 
 import com.google.inject.Singleton;
 

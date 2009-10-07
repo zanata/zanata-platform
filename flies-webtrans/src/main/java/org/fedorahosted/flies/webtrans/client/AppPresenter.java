@@ -1,8 +1,9 @@
-package org.fedorahosted.flies.webtrans.client.mvp;
+package org.fedorahosted.flies.webtrans.client;
+
+import org.fedorahosted.flies.webtrans.client.Application.WindowResizeEvent;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.fedorahosted.flies.webtrans.client.Application.WindowResizeEvent;
 
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
