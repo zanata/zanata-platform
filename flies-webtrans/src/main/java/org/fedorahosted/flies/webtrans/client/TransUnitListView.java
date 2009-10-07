@@ -4,6 +4,10 @@ package org.fedorahosted.flies.webtrans.client;
 import org.fedorahosted.flies.webtrans.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.logical.shared.HasSelectionHandlers;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.gen2.table.client.CachedTableModel;
 import com.google.gwt.gen2.table.client.DefaultRowRenderer;
 import com.google.gwt.gen2.table.client.DefaultTableDefinition;
@@ -12,15 +16,17 @@ import com.google.gwt.gen2.table.client.FixedWidthGridBulkRenderer;
 import com.google.gwt.gen2.table.client.PagingScrollTable;
 import com.google.gwt.gen2.table.client.ScrollTable;
 import com.google.gwt.gen2.table.client.TableDefinition;
+import com.google.gwt.gen2.table.event.client.RowSelectionEvent;
+import com.google.gwt.gen2.table.event.client.RowSelectionHandler;
+import com.google.gwt.gen2.table.event.client.TableEvent.Row;
 import com.google.gwt.gen2.table.override.client.FlexTable.FlexCellFormatter;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TransUnitListView extends Composite implements
-		TransUnitListPresenter.Display {
+		TransUnitListPresenter.Display, HasSelectionHandlers<TransUnit>{
 
 	final FlowPanel panel = new FlowPanel();
 	
@@ -89,6 +95,17 @@ public class TransUnitListView extends Composite implements
 		pagingScrollTable.setFooterTable( createFooterTable() );
 		pagingScrollTable.setSize("100%", "100%");
 		
+		pagingScrollTable.getDataTable().addRowSelectionHandler(new RowSelectionHandler() {
+			@Override
+			public void onRowSelection(RowSelectionEvent event) {
+				if(!event.getSelectedRows().isEmpty()){
+					Row row = event.getSelectedRows().iterator().next();
+					TransUnit tu = pagingScrollTable.getRowValue(row.getRowIndex());
+					SelectionEvent.fire(TransUnitListView.this, tu);
+				}
+			}
+		});
+		
 	}
 	
 	@Override
@@ -153,4 +170,14 @@ public class TransUnitListView extends Composite implements
 		return tableDefinition;
 	}
 
+	@Override
+	public HandlerRegistration addSelectionHandler(
+			SelectionHandler<TransUnit> handler) {
+		return addHandler(handler, SelectionEvent.getType());
+	}
+
+	@Override
+	public HasSelectionHandlers<TransUnit> getSelectionHandlers() {
+		return this;
+	}
 }
