@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.webtrans.client;
 
 
+import org.fedorahosted.flies.webtrans.client.mvp.TextAreaCellEditor;
 import org.fedorahosted.flies.webtrans.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -9,6 +10,8 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.gen2.table.client.CachedTableModel;
+import com.google.gwt.gen2.table.client.CellRenderer;
+import com.google.gwt.gen2.table.client.ColumnDefinition;
 import com.google.gwt.gen2.table.client.DefaultRowRenderer;
 import com.google.gwt.gen2.table.client.DefaultTableDefinition;
 import com.google.gwt.gen2.table.client.FixedWidthFlexTable;
@@ -17,6 +20,7 @@ import com.google.gwt.gen2.table.client.PagingScrollTable;
 import com.google.gwt.gen2.table.client.ScrollTable;
 import com.google.gwt.gen2.table.client.TableDefinition;
 import com.google.gwt.gen2.table.event.client.RowSelectionEvent;
+import com.google.gwt.gen2.table.client.TableDefinition.AbstractCellView;
 import com.google.gwt.gen2.table.event.client.RowSelectionHandler;
 import com.google.gwt.gen2.table.event.client.TableEvent.Row;
 import com.google.gwt.gen2.table.override.client.FlexTable.FlexCellFormatter;
@@ -24,6 +28,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import com.weborient.codemirror.client.HighlightingLabel;
+import com.weborient.codemirror.client.SyntaxLanguage;
 
 public class TransUnitListView extends Composite implements
 		TransUnitListPresenter.Display, HasSelectionHandlers<TransUnit>{
@@ -62,6 +68,8 @@ public class TransUnitListView extends Composite implements
 	 */
 	private PagingScrollTable<TransUnit> pagingScrollTable = null;
 
+	private SyntaxLanguageWidget syntaxSelectionWidget;
+
 
 	protected void setupScrollTable() {
 		// Setup the controller
@@ -73,6 +81,8 @@ public class TransUnitListView extends Composite implements
 		Log.info("Row count: "+ tableModel.getRowCount() );
 		Log.info("Row count: "+ cachedTableModel.getRowCount() );
 
+		syntaxSelectionWidget = new SyntaxLanguageWidget(SyntaxLanguage.MIXED);
+		
 		// Create a TableCellRenderer
 		TableDefinition<TransUnit> tableDef = createTableDefinition();
 
@@ -118,7 +128,10 @@ public class TransUnitListView extends Composite implements
 		FixedWidthFlexTable footerTable = new FixedWidthFlexTable();
 
 		FlexCellFormatter headerFormatter = footerTable.getFlexCellFormatter();
-		footerTable.setHTML(0, 0, "Navigation toolbar goes here");
+		FlowPanel panel = new FlowPanel();
+		panel.add(new Label("Navigation toolbar goes here"));
+		panel.add(syntaxSelectionWidget);
+		footerTable.setWidget(0, 0, panel);
 		headerFormatter.setColSpan(0, 0, 2);
 		
 		return footerTable;
@@ -147,6 +160,16 @@ public class TransUnitListView extends Composite implements
 					return rowValue.getSource();
 				}
 			};
+			columnDef.setCellRenderer(new CellRenderer<TransUnit, String>() {
+				@Override
+				public void renderRowValue(TransUnit rowValue,
+						ColumnDefinition<TransUnit, String> columnDef,
+						AbstractCellView<TransUnit> view) {
+					HighlightingLabel widget = new HighlightingLabel(rowValue.getSource());
+					widget.observe(syntaxSelectionWidget);
+					view.setWidget(widget);
+				}
+			});
 			tableDefinition.addColumnDefinition(columnDef);
 
 		}
@@ -164,6 +187,20 @@ public class TransUnitListView extends Composite implements
 					return rowValue.getTarget();
 				}
 			};
+			columnDef.setCellRenderer(new CellRenderer<TransUnit, String>() {
+				@Override
+				public void renderRowValue(TransUnit rowValue,
+						ColumnDefinition<TransUnit, String> columnDef,
+						AbstractCellView<TransUnit> view) {
+					HighlightingLabel widget = new HighlightingLabel(rowValue.getTarget());
+					widget.observe(syntaxSelectionWidget);
+					view.setWidget(widget);
+				}
+			});
+			columnDef.setCellEditor(new TextAreaCellEditor());
+//			CodeMirrorEditorWidget editorWidget = HighlightingCellEditor.createWidget();
+//			editorWidget.observe(syntaxSelectionWidget);
+//			columnDef.setCellEditor(new HighlightingCellEditor(editorWidget));
 			tableDefinition.addColumnDefinition(columnDef);
 		}
 
