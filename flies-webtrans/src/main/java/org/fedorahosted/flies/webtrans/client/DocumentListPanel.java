@@ -1,7 +1,5 @@
 package org.fedorahosted.flies.webtrans.client;
 
-import java.util.Arrays;
-
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;

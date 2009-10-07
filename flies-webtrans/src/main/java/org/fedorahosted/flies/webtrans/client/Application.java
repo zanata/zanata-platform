@@ -16,8 +16,6 @@ import com.google.gwt.user.client.ui.RootPanel;
  */
 public class Application implements EntryPoint{
 
-	private static Application singleton;
-
 	private final WebTransGinjector injector = GWT.create(WebTransGinjector.class);
 
 	public void onModuleLoad() {
