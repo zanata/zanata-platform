@@ -32,12 +32,12 @@ import com.google.gwt.widgetideas.client.FastTreeItem;
 public class WestNavigationView extends Composite implements
 		WestNavigationPresenter.Display {
 
+	/*
 	ToggleButton controlButton;
 	final Panel contents;
 	final CollapsiblePanel panel;
-
+	 */
 	public interface Images extends ImageBundle {
-
 		@Resource("org/fedorahosted/flies/webtrans/images/pin.gif")
 		AbstractImagePrototype pin();
 
@@ -46,14 +46,20 @@ public class WestNavigationView extends Composite implements
 		
 		@Resource("org/fedorahosted/flies/webtrans/images/unpin.gif")
 		AbstractImagePrototype expand();
-		
 	}
 
 	private Images images = (Images) GWT.create(Images.class);
 
+	final VerticalPanel panel;
+	
 	public WestNavigationView() {
 		Log.info("setting up LeftNavigationView");
 
+		panel = new VerticalPanel();
+		panel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
+		panel.setVerticalAlignment(VerticalPanel.ALIGN_TOP);
+		initWidget(panel);
+/*		
 		// Some random contents to make the tree interesting.
 		contents = createNavBar();
 
@@ -74,8 +80,9 @@ public class WestNavigationView extends Composite implements
 		initWidget(panel);
 
 		panel.add(contents);
+*/		
 		panel.setWidth("220px");
-
+/*
 		VerticalPanel hoverPanel = new VerticalPanel();
 		hoverPanel.setStylePrimaryName("LeftContentNavBar");
 		//Image expand = images.expand().createImage();
@@ -87,9 +94,10 @@ public class WestNavigationView extends Composite implements
 		panel.setHoverBarContents(hoverPanel);
 		panel.setHoverBarWidth("2px");
 		panel.hookupControlToggle(controlButton);
-
+*/
 	}
 
+/*	
 	private Panel createNavBar() {
 		controlButton = new ToggleButton(images.pin().createImage(),
 				images.unpin().createImage());
@@ -118,7 +126,7 @@ public class WestNavigationView extends Composite implements
 		//translators.setWidth("80%");
 		return navBar;
 	}
-
+*/
 	@Override
 	public void setHeight(String height) {
 		panel.setHeight(height);
@@ -140,7 +148,6 @@ public class WestNavigationView extends Composite implements
 		// TODO Auto-generated method stub
 
 	}
-
 	/**
 	 * A special purpose widget to allow scrollable stack panels.
 	 */
@@ -181,7 +188,7 @@ public class WestNavigationView extends Composite implements
 
 	@Override
 	public HasWidgets getWidgets() {
-		return contents;
+		return panel;
 	}
 
 }

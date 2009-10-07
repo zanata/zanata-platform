@@ -88,7 +88,7 @@ public class TransUnitListView extends Composite implements
 		pagingScrollTable.setCellSpacing(0);
 		pagingScrollTable.setResizePolicy(ScrollTable.ResizePolicy.FILL_WIDTH);
 		//pagingScrollTable.setHeaderGenerated(true);
-		pagingScrollTable.setSize("200px", "200px");
+		pagingScrollTable.setSize("100%", "400px");
 		pagingScrollTable.gotoFirstPage();
 		pagingScrollTable.setVisible(true);
 	}
