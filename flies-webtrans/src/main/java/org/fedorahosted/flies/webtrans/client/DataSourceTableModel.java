@@ -1,8 +1,9 @@
-package org.fedorahosted.flies.webtrans.client.mvp;
+package org.fedorahosted.flies.webtrans.client;
 
 import java.util.ArrayList;
 
-import org.fedorahosted.flies.webtrans.client.TransUnit;
+import org.fedorahosted.flies.webtrans.model.TransUnit;
+
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.gen2.table.client.MutableTableModel;

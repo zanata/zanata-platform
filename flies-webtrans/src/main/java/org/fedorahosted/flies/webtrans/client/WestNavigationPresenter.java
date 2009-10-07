@@ -1,4 +1,6 @@
-package org.fedorahosted.flies.webtrans.client.mvp;
+package org.fedorahosted.flies.webtrans.client;
+
+import org.fedorahosted.flies.webtrans.client.Application.WindowResizeEvent;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
@@ -6,7 +8,6 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.fedorahosted.flies.webtrans.client.Application.WindowResizeEvent;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -24,11 +25,14 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 	public interface Display extends WidgetDisplay {
 		HasWidgets getWidgets();
 	}
+
+	private final WorkspaceUsersPresenter workspaceUsersPresenter;
 	
 	@Inject
-	public WestNavigationPresenter(final Display display, final EventBus eventBus){//, final DispatchAsync dispatcher) {
+	public WestNavigationPresenter(final Display display, final EventBus eventBus, WorkspaceUsersPresenter workspaceUsersPresenter){//, final DispatchAsync dispatcher) {
 		super(display, eventBus);
 		//this.dispatcher = dispatcher;
+		this.workspaceUsersPresenter = workspaceUsersPresenter;
 		bind();
 	}
 
@@ -47,6 +51,7 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 				display.asWidget().setHeight(event.getHeight() + "px");
 			}
 		});
+		display.getWidgets().add(workspaceUsersPresenter.getDisplay().asWidget());
 	}
 
 	@Override

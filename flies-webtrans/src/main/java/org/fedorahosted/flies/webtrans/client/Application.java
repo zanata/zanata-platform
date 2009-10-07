@@ -1,7 +1,6 @@
 package org.fedorahosted.flies.webtrans.client;
 
 import org.fedorahosted.flies.webtrans.client.gin.WebTransGinjector;
-import org.fedorahosted.flies.webtrans.client.mvp.AppPresenter;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;

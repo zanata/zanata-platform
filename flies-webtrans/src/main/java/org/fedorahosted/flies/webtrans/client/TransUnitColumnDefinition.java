@@ -1,6 +1,7 @@
-package org.fedorahosted.flies.webtrans.client.mvp;
+package org.fedorahosted.flies.webtrans.client;
 
-import org.fedorahosted.flies.webtrans.client.TransUnit;
+
+import org.fedorahosted.flies.webtrans.model.TransUnit;
 
 import com.google.gwt.gen2.table.client.AbstractColumnDefinition;
 

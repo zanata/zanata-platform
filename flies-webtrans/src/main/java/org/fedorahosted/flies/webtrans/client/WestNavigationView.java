@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.webtrans.client.mvp;
+package org.fedorahosted.flies.webtrans.client;
 
 import java.util.ArrayList;
 
