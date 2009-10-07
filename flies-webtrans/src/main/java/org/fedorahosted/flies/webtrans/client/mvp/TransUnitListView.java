@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.webtrans.client.mvp;
 
 import org.fedorahosted.flies.webtrans.client.TransUnit;
+import org.fedorahosted.flies.webtrans.client.WebTransLayoutContainer;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.gen2.table.client.CachedTableModel;
@@ -19,17 +20,17 @@ import com.google.gwt.user.client.ui.Widget;
 public class TransUnitListView extends Composite implements
 		TransUnitListPresenter.Display {
 
-	//final FlowPanel panel = new FlowPanel();
+	final FlowPanel panel = new FlowPanel();
 	
 	public TransUnitListView() {
 		Log.info("setting up TransUnitListView");
 		setupScrollTable();
-		initWidget(pagingScrollTable);
+		initWidget(panel);
 		setSize("100%", "100%");
 
-		//panel.add( pagingScrollTable );
+		panel.add( pagingScrollTable );
 		
-		//panel.add(new Label("hello world"));
+		panel.add(new WebTransLayoutContainer());
 
 	}
 	
