@@ -11,7 +11,8 @@
       <inherits name='com.google.gwt.gen2.table.Table'/>
       <inherits name='com.google.gwt.gen2.complexpanel.ComplexPanel'/>
       
-             
+      <inherits name="com.weborient.codemirror.CodemirrorGwt"/>
+       
       <inherits name="org.fedorahosted.flies.gwt.Common"/>
       
       <!--  inherit css based theme -->

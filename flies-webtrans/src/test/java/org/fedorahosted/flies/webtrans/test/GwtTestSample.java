@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.webtrans.client;
+package org.fedorahosted.flies.webtrans.test;
 
 import junit.framework.Assert;
 
@@ -8,9 +8,10 @@ public class GwtTestSample
     extends GWTTestCase
 {
 
+   @Override
    public String getModuleName()
    {
-      return "org.fedorahosted.flies.webtrans.Application";
+      return "org.fedorahosted.flies.webtrans.ApplicationTest";
    }
 
    public void testSomething()

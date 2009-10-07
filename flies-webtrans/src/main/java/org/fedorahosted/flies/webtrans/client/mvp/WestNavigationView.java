@@ -38,19 +38,13 @@ public class WestNavigationView extends Composite implements
 
 	public interface Images extends ImageBundle {
 
-		/**
-		 * @gwt.resource org/fedorahosted/flies/webtrans/images/pin.gif
-		 */
+		@Resource("org/fedorahosted/flies/webtrans/images/pin.gif")
 		AbstractImagePrototype pin();
 
-		/**
-		 * @gwt.resource org/fedorahosted/flies/webtrans/images/unpin.gif
-		 */
+		@Resource("org/fedorahosted/flies/webtrans/images/unpin.gif")
 		AbstractImagePrototype unpin();
 		
-		/**
-		 * @gwt.resource org/fedorahosted/flies/webtrans/images/unpin.gif
-		 */
+		@Resource("org/fedorahosted/flies/webtrans/images/unpin.gif")
 		AbstractImagePrototype expand();
 		
 	}
