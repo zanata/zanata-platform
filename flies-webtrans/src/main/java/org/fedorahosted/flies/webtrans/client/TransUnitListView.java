@@ -5,6 +5,8 @@ import org.fedorahosted.flies.webtrans.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.gen2.table.client.CachedTableModel;
+import com.google.gwt.gen2.table.client.CellRenderer;
+import com.google.gwt.gen2.table.client.ColumnDefinition;
 import com.google.gwt.gen2.table.client.DefaultRowRenderer;
 import com.google.gwt.gen2.table.client.DefaultTableDefinition;
 import com.google.gwt.gen2.table.client.FixedWidthFlexTable;
@@ -12,12 +14,14 @@ import com.google.gwt.gen2.table.client.FixedWidthGridBulkRenderer;
 import com.google.gwt.gen2.table.client.PagingScrollTable;
 import com.google.gwt.gen2.table.client.ScrollTable;
 import com.google.gwt.gen2.table.client.TableDefinition;
+import com.google.gwt.gen2.table.client.TableDefinition.AbstractCellView;
 import com.google.gwt.gen2.table.override.client.FlexTable.FlexCellFormatter;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import com.weborient.codemirror.client.HighlightingLabel;
+import com.weborient.codemirror.client.SyntaxLanguage;
 
 public class TransUnitListView extends Composite implements
 		TransUnitListPresenter.Display {
@@ -130,6 +134,16 @@ public class TransUnitListView extends Composite implements
 					return rowValue.getSource();
 				}
 			};
+			columnDef.setCellRenderer(new CellRenderer<TransUnit, String>() {
+				@Override
+				public void renderRowValue(TransUnit rowValue,
+						ColumnDefinition<TransUnit, String> columnDef,
+						AbstractCellView<TransUnit> view) {
+					HighlightingLabel widget = new HighlightingLabel(rowValue.getSource());
+					widget.setSyntax(SyntaxLanguage.MIXED);
+					view.setWidget(widget);
+				}
+			});
 			tableDefinition.addColumnDefinition(columnDef);
 
 		}
@@ -147,6 +161,19 @@ public class TransUnitListView extends Composite implements
 					return rowValue.getTarget();
 				}
 			};
+			columnDef.setCellRenderer(new CellRenderer<TransUnit, String>() {
+				@Override
+				public void renderRowValue(TransUnit rowValue,
+						ColumnDefinition<TransUnit, String> columnDef,
+						AbstractCellView<TransUnit> view) {
+					HighlightingLabel widget = new HighlightingLabel(rowValue.getTarget());
+					widget.setSyntax(SyntaxLanguage.MIXED);
+					view.setWidget(widget);
+				}
+			});
+			columnDef.setCellEditor(new TextAreaCellEditor());
+//			CodeMirrorEditorWidget editorWidget = HighlightingCellEditor.createWidget();
+//			columnDef.setCellEditor(new HighlightingCellEditor(editorWidget));
 			tableDefinition.addColumnDefinition(columnDef);
 		}
 

@@ -10,7 +10,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * @author samangiahi
  *
  */
-public class CodeMirrorEditorWidget extends Composite implements Constants {
+public class CodeMirrorEditorWidget extends Composite implements Constants, SyntaxSelection {
 	
 	TextArea textArea;
 	CodeMirrorConfiguration configuration;
@@ -51,10 +51,11 @@ public class CodeMirrorEditorWidget extends Composite implements Constants {
 
 	protected void onLoad() {
 		String text = codeMirrorJSNI.getEditorCode();
+		SyntaxLanguage syntax = codeMirrorJSNI.getSyntax();
 		if (configuration != null) {
-			codeMirrorJSNI = new CodeMirrorJSNI(configuration, text);
+			codeMirrorJSNI = new CodeMirrorJSNI(configuration, text, syntax);
 		} else {
-			codeMirrorJSNI = new CodeMirrorJSNI(text);
+			codeMirrorJSNI = new CodeMirrorJSNI(new CodeMirrorConfiguration(), text, syntax);
 		}
 		if (configuration == null || configuration.isToolbar())
 			toolbar.add(new CodeMirrorToolbar(this));
@@ -100,8 +101,8 @@ public class CodeMirrorEditorWidget extends Composite implements Constants {
 		this.codeMirrorJSNI = codeMirrorJSNI;
 	}
 
-	public void setLanguage(SyntaxLanguage lang) {
-		codeMirrorJSNI.setLanguage(lang);
+	public void setSyntax(SyntaxLanguage syntax) {
+		codeMirrorJSNI.setSyntax(syntax);
 	}
 	
 }
