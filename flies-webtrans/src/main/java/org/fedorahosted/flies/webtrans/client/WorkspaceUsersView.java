@@ -1,8 +1,10 @@
 package org.fedorahosted.flies.webtrans.client;
 
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DecoratedStackPanel;
 import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.StackPanel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalSplitPanel;
@@ -10,12 +12,12 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class WorkspaceUsersView extends Composite implements WorkspaceUsersPresenter.Display {
 
-	private final DecoratorPanel panel;
+	private final StackPanel panel;
 	
 	public WorkspaceUsersView() {
-		panel = new DecoratorPanel();
+		panel = new DecoratedStackPanel();
 		initWidget( panel );
-		panel.add(getChatAllPanel());
+		panel.add(getChatAllPanel(), "Translators");
 	}
 	
 	private static Tree createLocaleTranslatorsTree() {

@@ -58,6 +58,7 @@ public class WestNavigationView extends Composite implements
 		panel = new VerticalPanel();
 		panel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
 		panel.setVerticalAlignment(VerticalPanel.ALIGN_TOP);
+		panel.setSpacing(5);
 		initWidget(panel);
 /*		
 		// Some random contents to make the tree interesting.

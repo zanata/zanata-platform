@@ -9,6 +9,7 @@ import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 public class AppPresenter {
@@ -31,8 +32,12 @@ public class AppPresenter {
 		container.clear();
 		
 		final DockPanel dockPanel = new DockPanel();
-		dockPanel.add(transUnitListPresenter.getDisplay().asWidget(), DockPanel.CENTER );
-		dockPanel.add(westNavigationPresenter.getDisplay().asWidget(), DockPanel.WEST );
+		Widget center = transUnitListPresenter.getDisplay().asWidget();
+		Widget west = westNavigationPresenter.getDisplay().asWidget();
+		dockPanel.add(center, DockPanel.CENTER );
+		dockPanel.add(west, DockPanel.WEST );
+		dockPanel.setCellWidth(center, "100%");
+		dockPanel.setCellWidth(west, "220px");
 		eventBus.addHandler(WindowResizeEvent.getType(), new ResizeHandler() {
 			@Override
 			public void onResize(ResizeEvent event) {

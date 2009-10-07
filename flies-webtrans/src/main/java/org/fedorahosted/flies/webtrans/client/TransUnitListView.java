@@ -27,11 +27,8 @@ public class TransUnitListView extends Composite implements
 		setupScrollTable();
 		initWidget(panel);
 		setSize("100%", "100%");
-
+		panel.setSize("100%", "100%");
 		panel.add( pagingScrollTable );
-		
-		panel.add(new WebTransLayoutContainer());
-
 	}
 	
 	@Override
@@ -88,9 +85,8 @@ public class TransUnitListView extends Composite implements
 		pagingScrollTable.setCellSpacing(0);
 		pagingScrollTable.setResizePolicy(ScrollTable.ResizePolicy.FILL_WIDTH);
 		//pagingScrollTable.setHeaderGenerated(true);
-		pagingScrollTable.setSize("100%", "400px");
+		pagingScrollTable.setSize("100%", "100%");
 		pagingScrollTable.gotoFirstPage();
-		pagingScrollTable.setVisible(true);
 	}
 
 	private TableDefinition<TransUnit> createTableDefinition() {
