@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.webtrans.client;
 
 
+import org.fedorahosted.flies.webtrans.client.mvp.TextAreaCellEditor;
 import org.fedorahosted.flies.webtrans.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
