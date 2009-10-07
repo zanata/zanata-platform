@@ -49,12 +49,18 @@ public class TransUnitListPresenter  extends WidgetPresenter<TransUnitListPresen
 		display.getSelectionHandlers().addSelectionHandler(new SelectionHandler<TransUnit>() {
 			@Override
 			public void onSelection(SelectionEvent<TransUnit> event) {
-				eventBus.fireEvent(event);
+				if(event.getSelectedItem() != currentSelection) {
+					currentSelection = event.getSelectedItem();
+					eventBus.fireEvent(event);
+				}
 			}
 		});
-		
 	}
 
+	public TransUnit getCurrentSelection() {
+		return currentSelection;
+	}
+	
 	@Override
 	protected void onPlaceRequest(PlaceRequest request) {
 	}
