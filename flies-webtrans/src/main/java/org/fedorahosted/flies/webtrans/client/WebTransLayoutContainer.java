@@ -11,7 +11,6 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.weborient.codemirror.client.CodeMirrorEditorWidget;
-import com.weborient.codemirror.client.HighlightingLabel;
 import com.weborient.codemirror.client.SyntaxLanguage;
 
 public class WebTransLayoutContainer extends Composite {
@@ -34,54 +33,32 @@ public class WebTransLayoutContainer extends Composite {
 		syntaxBar.add(mixedButton);
 		
 		vPanel.add(syntaxBar);
-		final HighlightingLabel sourceWidget = new HighlightingLabel("Source text (\"text flow\"/<text-flow>)");
-		vPanel.add(sourceWidget);
+
+		final CodeMirrorEditorWidget targetWidget;
+		targetWidget = HighlightingCellEditor.createWidget();
+		targetWidget.setText("Translation text (\"text flow target\"/<text-flow-target>)");
 		noneButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent ce) {
-				sourceWidget.setSyntax(SyntaxLanguage.NONE);
+				targetWidget.setSyntax(SyntaxLanguage.NONE);
 			}});
 		jsButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent ce) {
-				sourceWidget.setSyntax(SyntaxLanguage.JAVASCRIPT);
+				targetWidget.setSyntax(SyntaxLanguage.JAVASCRIPT);
 			}});
 		xmlButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent ce) {
-				sourceWidget.setSyntax(SyntaxLanguage.XML);
+				targetWidget.setSyntax(SyntaxLanguage.XML);
 			}});
 		mixedButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent ce) {
-				sourceWidget.setSyntax(SyntaxLanguage.MIXED);
+				targetWidget.setSyntax(SyntaxLanguage.MIXED);
 			}});
 
-//		final CodeMirrorEditorWidget targetWidget;
-//		targetWidget = HighlightingCellEditor.createWidget();
-//		targetWidget.setText("Translation text (\"text flow target\"/<text-flow-target>)");
-//		noneButton.addClickHandler(new ClickHandler() {
-//			@Override
-//			public void onClick(ClickEvent ce) {
-//				targetWidget.setSyntax(SyntaxLanguage.NONE);
-//			}});
-//		jsButton.addClickHandler(new ClickHandler() {
-//			@Override
-//			public void onClick(ClickEvent ce) {
-//				targetWidget.setSyntax(SyntaxLanguage.JAVASCRIPT);
-//			}});
-//		xmlButton.addClickHandler(new ClickHandler() {
-//			@Override
-//			public void onClick(ClickEvent ce) {
-//				targetWidget.setSyntax(SyntaxLanguage.XML);
-//			}});
-//		mixedButton.addClickHandler(new ClickHandler() {
-//			@Override
-//			public void onClick(ClickEvent ce) {
-//				targetWidget.setSyntax(SyntaxLanguage.MIXED);
-//			}});
-//
-//		vPanel.add(targetWidget);
+		vPanel.add(targetWidget);
 	}
 
 }

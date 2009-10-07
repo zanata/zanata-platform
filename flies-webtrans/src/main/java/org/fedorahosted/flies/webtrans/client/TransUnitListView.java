@@ -20,6 +20,7 @@ import com.google.gwt.gen2.table.override.client.FlexTable.FlexCellFormatter;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.weborient.codemirror.client.HighlightingLabel;
 import com.weborient.codemirror.client.SyntaxLanguage;
@@ -61,6 +62,8 @@ public class TransUnitListView extends Composite implements
 	 */
 	private PagingScrollTable<TransUnit> pagingScrollTable = null;
 
+	private SyntaxLanguageWidget syntaxSelectionWidget;
+
 
 	protected void setupScrollTable() {
 		// Setup the controller
@@ -72,6 +75,8 @@ public class TransUnitListView extends Composite implements
 		Log.info("Row count: "+ tableModel.getRowCount() );
 		Log.info("Row count: "+ cachedTableModel.getRowCount() );
 
+		syntaxSelectionWidget = new SyntaxLanguageWidget();
+		
 		// Create a TableCellRenderer
 		TableDefinition<TransUnit> tableDef = createTableDefinition();
 
@@ -106,7 +111,10 @@ public class TransUnitListView extends Composite implements
 		FixedWidthFlexTable footerTable = new FixedWidthFlexTable();
 
 		FlexCellFormatter headerFormatter = footerTable.getFlexCellFormatter();
-		footerTable.setHTML(0, 0, "Navigation toolbar goes here");
+		FlowPanel panel = new FlowPanel();
+		panel.add(new Label("Navigation toolbar goes here"));
+		panel.add(syntaxSelectionWidget);
+		footerTable.setWidget(0, 0, panel);
 		headerFormatter.setColSpan(0, 0, 2);
 		
 		return footerTable;
@@ -141,6 +149,7 @@ public class TransUnitListView extends Composite implements
 						ColumnDefinition<TransUnit, String> columnDef,
 						AbstractCellView<TransUnit> view) {
 					HighlightingLabel widget = new HighlightingLabel(rowValue.getSource());
+					widget.observe(syntaxSelectionWidget);
 					widget.setSyntax(SyntaxLanguage.MIXED);
 					view.setWidget(widget);
 				}
@@ -168,12 +177,14 @@ public class TransUnitListView extends Composite implements
 						ColumnDefinition<TransUnit, String> columnDef,
 						AbstractCellView<TransUnit> view) {
 					HighlightingLabel widget = new HighlightingLabel(rowValue.getTarget());
+					widget.observe(syntaxSelectionWidget);
 					widget.setSyntax(SyntaxLanguage.MIXED);
 					view.setWidget(widget);
 				}
 			});
 			columnDef.setCellEditor(new TextAreaCellEditor());
 //			CodeMirrorEditorWidget editorWidget = HighlightingCellEditor.createWidget();
+//			editorWidget.observe(syntaxSelectionWidget);
 //			columnDef.setCellEditor(new HighlightingCellEditor(editorWidget));
 			tableDefinition.addColumnDefinition(columnDef);
 		}

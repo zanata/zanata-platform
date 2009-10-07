@@ -7,6 +7,7 @@ import com.google.gwt.user.client.ui.Label;
 public class HighlightingLabel extends Label implements SyntaxSelection {
 	private String plainText;
 	private SyntaxLanguage syntax;
+	private SyntaxObservable observable;
 	
 	public HighlightingLabel() {
 		this("");
@@ -54,9 +55,20 @@ public class HighlightingLabel extends Label implements SyntaxSelection {
 		highlight();
 	}
 	
+	public void observe(SyntaxObservable observable) {
+		observable.addObserver(this);
+		this.observable = observable;
+		setSyntax(observable.getSyntax());
+	}
+	
 	@Override
 	protected void onLoad() {
 		highlight();
+	}
+	
+	@Override
+	protected void onUnload() {
+		observable.removeObserver(this);
 	}
 }
 
