@@ -25,11 +25,14 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 	public interface Display extends WidgetDisplay {
 		HasWidgets getWidgets();
 	}
+
+	private final WorkspaceUsersPresenter workspaceUsersPresenter;
 	
 	@Inject
-	public WestNavigationPresenter(final Display display, final EventBus eventBus){//, final DispatchAsync dispatcher) {
+	public WestNavigationPresenter(final Display display, final EventBus eventBus, WorkspaceUsersPresenter workspaceUsersPresenter){//, final DispatchAsync dispatcher) {
 		super(display, eventBus);
 		//this.dispatcher = dispatcher;
+		this.workspaceUsersPresenter = workspaceUsersPresenter;
 		bind();
 	}
 
@@ -48,6 +51,7 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 				display.asWidget().setHeight(event.getHeight() + "px");
 			}
 		});
+		display.getWidgets().add(workspaceUsersPresenter.getDisplay().asWidget());
 	}
 
 	@Override
