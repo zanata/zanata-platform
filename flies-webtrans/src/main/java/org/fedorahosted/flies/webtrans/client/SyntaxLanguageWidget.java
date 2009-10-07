@@ -16,8 +16,13 @@ import com.weborient.codemirror.client.SyntaxSelection;
 
 public class SyntaxLanguageWidget extends Composite implements SyntaxObservable {
 	Collection<SyntaxSelection> observers = new HashSet<SyntaxSelection>();
-	private SyntaxLanguage syntax = SyntaxLanguage.NONE; 
+	private SyntaxLanguage syntax; 
 	public SyntaxLanguageWidget() {
+		this(SyntaxLanguage.NONE);
+	}
+
+	public SyntaxLanguageWidget(SyntaxLanguage syntax) {
+		this.syntax = syntax;
 		Panel syntaxBar = new HorizontalPanel();
 		syntaxBar.add(new Label("Highlighting: "));
 		String groupName = "syntaxBar"+System.identityHashCode(this);
@@ -30,6 +35,24 @@ public class SyntaxLanguageWidget extends Composite implements SyntaxObservable 
 		syntaxBar.add(xmlButton);
 		RadioButton mixedButton = new RadioButton(groupName, "HTML");
 		syntaxBar.add(mixedButton);
+		
+		switch(syntax) {
+		case JAVASCRIPT:
+			jsButton.setValue(true, false);
+			break;
+		case MIXED:
+			mixedButton.setValue(true, false);
+			break;
+		case NONE:
+			noneButton.setValue(true, false);
+			break;
+		case XML:
+			xmlButton.setValue(true, false);
+			break;
+		default:
+			throw new IllegalArgumentException();
+		}
+		
 		noneButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent ce) {
@@ -66,10 +89,12 @@ public class SyntaxLanguageWidget extends Composite implements SyntaxObservable 
 		return syntax;
 	}
 	
+	@Override
 	public void addObserver(SyntaxSelection observer) {
 		observers.add(observer);
 	}
 
+	@Override
 	public void removeObserver(SyntaxSelection observer) {
 		observers.remove(observer);
 	}

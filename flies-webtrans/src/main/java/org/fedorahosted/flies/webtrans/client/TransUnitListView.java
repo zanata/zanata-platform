@@ -75,7 +75,7 @@ public class TransUnitListView extends Composite implements
 		Log.info("Row count: "+ tableModel.getRowCount() );
 		Log.info("Row count: "+ cachedTableModel.getRowCount() );
 
-		syntaxSelectionWidget = new SyntaxLanguageWidget();
+		syntaxSelectionWidget = new SyntaxLanguageWidget(SyntaxLanguage.MIXED);
 		
 		// Create a TableCellRenderer
 		TableDefinition<TransUnit> tableDef = createTableDefinition();
@@ -150,7 +150,6 @@ public class TransUnitListView extends Composite implements
 						AbstractCellView<TransUnit> view) {
 					HighlightingLabel widget = new HighlightingLabel(rowValue.getSource());
 					widget.observe(syntaxSelectionWidget);
-					widget.setSyntax(SyntaxLanguage.MIXED);
 					view.setWidget(widget);
 				}
 			});
@@ -178,7 +177,6 @@ public class TransUnitListView extends Composite implements
 						AbstractCellView<TransUnit> view) {
 					HighlightingLabel widget = new HighlightingLabel(rowValue.getTarget());
 					widget.observe(syntaxSelectionWidget);
-					widget.setSyntax(SyntaxLanguage.MIXED);
 					view.setWidget(widget);
 				}
 			});
