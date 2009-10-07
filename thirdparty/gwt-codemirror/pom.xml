@@ -32,12 +32,6 @@
         <configuration>
           <downloadSources>true</downloadSources>
           <downloadJavadocs>false</downloadJavadocs>
-        </configuration>
-      </plugin>  	
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-eclipse-plugin</artifactId>
-        <configuration>
           <additionalProjectnatures>
             <projectnature>com.google.gwt.eclipse.core.gwtNature</projectnature>
           </additionalProjectnatures>
@@ -48,7 +42,10 @@
             <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
             <classpathContainer>com.google.gwt.eclipse.core.GWT_CONTAINER</classpathContainer>
           </classpathContainers>
-          
+          <excludes>
+            <!-- These are provided by the GWT container -->
+          	<exclude>com.google.gwt:gwt-servlet</exclude>
+          </excludes>
         </configuration>
       </plugin>            
     </plugins>

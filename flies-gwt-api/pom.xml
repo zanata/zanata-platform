@@ -29,9 +29,9 @@
       </resource>
     </resources>
 
+    <plugins>
       <!--
         ... or ask the plugin to detect them based on gwt modules files and copy the required java sources
-    <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
@@ -43,9 +43,30 @@
           </execution>
         </executions>
       </plugin>
-    </plugins>
     
     -->
+    
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <configuration>
+          <additionalProjectnatures>
+            <projectnature>com.google.gwt.eclipse.core.gwtNature</projectnature>
+          </additionalProjectnatures>
+          <additionalBuildcommands>
+            <buildcommand>com.google.gwt.eclipse.core.gwtProjectValidator</buildcommand>
+          </additionalBuildcommands>
+          <classpathContainers>
+            <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
+            <classpathContainer>com.google.gwt.eclipse.core.GWT_CONTAINER</classpathContainer>
+          </classpathContainers>
+          <excludes>
+            <!-- These are provided by the GWT container -->
+          	<exclude>com.google.gwt:gwt-servlet</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+	</plugins>    
   </build>
 
   <dependencies>
