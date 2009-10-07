@@ -140,7 +140,7 @@ public class HDocument extends AbstractFliesEntity{
 	}
 	
 	@NaturalId
-	@Length(max=128)
+	@Length(max=255)
 	@NotEmpty
 	public String getDocId() {
 		return docId;

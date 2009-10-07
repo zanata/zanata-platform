@@ -1,47 +1,42 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import org.fedorahosted.flies.webtrans.client.gin.WebTransGinjector;
+import org.fedorahosted.flies.webtrans.client.mvp.AppPresenter;
+
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.DockPanel;
-import com.google.gwt.user.client.ui.HorizontalSplitPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
-public class Application implements EntryPoint, ResizeHandler {
+public class Application implements EntryPoint{
 
 	private static Application singleton;
 
-	/**
-	 * Gets the singleton Application instance.
-	 */
-	public static Application get() {
-		return singleton;
-	}
+	private final WebTransGinjector injector = GWT.create(WebTransGinjector.class);
 
-	private WebTransLayoutContainer appContainer;
-	
-	/**
-	 * This method constructs the application user interface by instantiating
-	 * controls and hooking up event handler.
-	 */
 	public void onModuleLoad() {
-		singleton = this;
+		final AppPresenter appPresenter = injector.getAppPresenter();
+		appPresenter.go(RootPanel.get());
+
+		injector.getPlaceManager().fireCurrentPlace();
 		
 		// Hook the window resize event, so that we can adjust the UI.
-		Window.addResizeHandler(this);
+		Window.addResizeHandler( new ResizeHandler() {
+			@Override
+			public void onResize(ResizeEvent event) {
+				injector.getEventBus().fireEvent( new WindowResizeEvent(event));
+			}
+		});
 
 		Window.enableScrolling(false);
 		Window.setMargin("0px");
-
-		appContainer = new WebTransLayoutContainer();
-		RootPanel.get().add(appContainer);
 
 		// Call the window resized handler to get the initial sizes setup. Doing
 		// this in a deferred command causes it to occur after all widgets'
@@ -49,20 +44,22 @@ public class Application implements EntryPoint, ResizeHandler {
 		// have been computed by the browser.
 		DeferredCommand.addCommand(new Command() {
 			public void execute() {
-				onWindowResized(Window.getClientWidth(), Window
-						.getClientHeight());
+				injector.getEventBus().fireEvent( new WindowResizeEvent(Window.getClientWidth(), Window
+						.getClientHeight()));
 			}
 		});
 
-		onWindowResized(Window.getClientWidth(), Window.getClientHeight());
 	}
 
-	public void onResize(ResizeEvent event) {
-		onWindowResized(event.getWidth(), event.getHeight());
-	}
-
-	public void onWindowResized(int width, int height) {
-	    appContainer.setWidth(width < 800 ? 800 : width) ;
-	    appContainer.setHeight(height < 600 ? 600 : height);
+	// we reuse the logic of the generic ResizeEvent here
+	// the only ResizeEvent allowed on the EventBus is the
+	// window resize event
+	public static class WindowResizeEvent extends ResizeEvent{
+		WindowResizeEvent(int width, int height) {
+			super(width, height);
+		}
+		public WindowResizeEvent(ResizeEvent event) {
+			super(event.getWidth(), event.getHeight());
+		}
 	}
 }

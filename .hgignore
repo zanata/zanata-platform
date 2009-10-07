@@ -24,3 +24,6 @@ temp-testng-customsuite.xml$
 #gwt related
 ^flies-webtrans/war/WEB-INF/classes/
 ^flies-webtrans/war/
+^flies-webtrans/tomcat
+^flies-webtrans/.gwt-tmp
+^flies-webtrans/org.fedorahosted.flies.webtrans.Application

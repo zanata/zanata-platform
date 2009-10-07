@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <!--
     GWT-Maven archetype generated POM
   -->
@@ -12,7 +13,7 @@
   <artifactId>flies-webtrans</artifactId>
   <name>Flies WebTrans GWT client</name>
   <packaging>war</packaging>
-  
+
   <dependencies>
 
     <!--  GWT dependencies (from central repo) -->
@@ -28,17 +29,45 @@
     </dependency>
 
     <dependency>
-      <groupId>com.extjs</groupId>
-      <artifactId>gxt</artifactId>
-      <version>2.0.1</version>
+      <groupId>org.codehaus.sonar</groupId>
+      <artifactId>gwt-incubator</artifactId>
+      <version>july-14-2009</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>net.customware.gwt.dispatch</groupId>
+      <artifactId>gwt-dispatch</artifactId>
+      <version>1.0.0</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>net.customware.gwt.presenter</groupId>
+      <artifactId>gwt-presenter</artifactId>
+      <version>1.0.0</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.code.gwt-log</groupId>
+      <artifactId>gwt-log</artifactId>
+      <version>2.6.2</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.weborient.codemirror</groupId>
+      <artifactId>gwt-codemirror</artifactId>
+      <version>0.5-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 
 	<dependency>
-	  <groupId>org.fedorahosted.flies</groupId>
-	  <artifactId>flies-gwt-api</artifactId>
-	  <version>${project.version}</version>
-	</dependency>
+      <groupId>org.fedorahosted.flies</groupId>
+      <artifactId>flies-gwt-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
     <!-- test -->
     <dependency>
@@ -70,19 +99,16 @@
         </configuration>
       </plugin>
       <!--
-          If you want to use the target/web.xml file mergewebxml produces,
-          tell the war plugin to use it.
-          Also, exclude what you want from the final artifact here.
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <webXml>target/web.xml</webXml>
-                    <warSourceExcludes>.gwt-tmp/**</warSourceExcludes>
-                </configuration>
-            </plugin>
-            -->
-            
+        If you want to use the target/web.xml file mergewebxml produces,
+        tell the war plugin to use it. Also, exclude what you want from
+        the final artifact here. <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId> <configuration>
+        <webXml>target/web.xml</webXml>
+        <warSourceExcludes>.gwt-tmp/**</warSourceExcludes>
+        </configuration> </plugin>
+      -->
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-eclipse-plugin</artifactId>
@@ -97,10 +123,59 @@
             <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
             <classpathContainer>com.google.gwt.eclipse.core.GWT_CONTAINER</classpathContainer>
           </classpathContainers>
-          
+          <excludes>
+            <!-- These are provided by the GWT container -->
+          	<exclude>com.google.gwt:gwt-servlet</exclude>
+          	<exclude>com.google.gwt:gwt-user</exclude>
+          </excludes>
         </configuration>
-      </plugin>            
+      </plugin>
     </plugins>
   </build>
+
+  <repositories>
+  
+    <repository>
+      <id>gwt-presenter-repo</id>
+      <name>gwt-presenter-repo</name>
+      <url>http://gwt-presenter.googlecode.com/svn/maven2/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  
+    <repository>
+      <id>gwt-dispatch-repo</id>
+      <name>gwt-dispatch-repo</name>
+      <url>http://gwt-dispatch.googlecode.com/svn/maven2/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  
+    <repository>
+      <id>gwt-dispatch-deps-repo</id>
+      <name>gwt-dispatch-deps-repo</name>
+      <url>http://gwt-dispatch.googlecode.com/svn/tags/gwt-dispatch-1.0.0/lib</url>
+      <layout>legacy</layout>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <checksumPolicy>ignore</checksumPolicy>
+      </releases>
+    </repository>
+    
+    <!--  for gwt-incubator -->
+    <repository>
+      <id>repository.codehaus</id>
+      <name>Codehaus Repository</name>
+      <url>http://repository.codehaus.org</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+        
+  </repositories>
 
 </project>

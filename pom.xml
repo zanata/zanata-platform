@@ -17,6 +17,7 @@
     <module>flies-gwt-api</module>
     <module>flies-webtrans</module>
     <module>flies-war</module>
+    <module>thirdparty/gwt-codemirror</module>
   </modules>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
