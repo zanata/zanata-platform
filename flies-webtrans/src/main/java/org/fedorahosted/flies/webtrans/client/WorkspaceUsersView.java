@@ -24,10 +24,10 @@ public class WorkspaceUsersView extends Composite implements
 
 	public interface Images extends ImageBundle, TreeImages {
 
-		@Resource("org/fedorahosted/flies/webtrans/images/silk/group.png")
+		@Resource("org/fedorahosted/flies/webtrans/images/silk/world.png")
 		AbstractImagePrototype treeOpen();
 
-		@Resource("org/fedorahosted/flies/webtrans/images/silk/group.png")
+		@Resource("org/fedorahosted/flies/webtrans/images/silk/world.png")
 		AbstractImagePrototype treeClosed();
 
 		@Resource("org/fedorahosted/flies/webtrans/images/silk/user.png")
