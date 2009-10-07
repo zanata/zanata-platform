@@ -27,6 +27,7 @@ import com.google.gwt.gen2.table.override.client.FlexTable.FlexCellFormatter;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.weborient.codemirror.client.HighlightingLabel;
@@ -125,14 +126,16 @@ public class TransUnitListView extends Composite implements
 		pagingScrollTable.gotoFirstPage();
 	}
 
+	private FlowPanel toolbar;
+	
 	private FixedWidthFlexTable createFooterTable() {
 		FixedWidthFlexTable footerTable = new FixedWidthFlexTable();
 
 		FlexCellFormatter headerFormatter = footerTable.getFlexCellFormatter();
-		FlowPanel panel = new FlowPanel();
-		panel.add(new Label("Navigation toolbar goes here"));
-		panel.add(syntaxSelectionWidget);
-		footerTable.setWidget(0, 0, panel);
+		toolbar = new FlowPanel();
+		toolbar.add(new Label("Navigation toolbar goes here"));
+		toolbar.add(syntaxSelectionWidget);
+		footerTable.setWidget(0, 0, toolbar);
 		headerFormatter.setColSpan(0, 0, 2);
 		
 		return footerTable;
@@ -217,5 +220,10 @@ public class TransUnitListView extends Composite implements
 	@Override
 	public HasSelectionHandlers<TransUnit> getSelectionHandlers() {
 		return this;
+	}
+	
+	@Override
+	public HasWidgets getToolbar() {
+		return toolbar;
 	}
 }

@@ -11,6 +11,7 @@ import org.fedorahosted.flies.webtrans.model.TransUnit;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.inject.Inject;
 
 public class TransUnitListPresenter  extends WidgetPresenter<TransUnitListPresenter.Display> {
@@ -21,12 +22,16 @@ public class TransUnitListPresenter  extends WidgetPresenter<TransUnitListPresen
 	
 	public interface Display extends WidgetDisplay {
 		HasSelectionHandlers<TransUnit> getSelectionHandlers();
+		HasWidgets getToolbar();
 	}
 
+	private final PagerPresenter pagerPresenter;
+	
 	@Inject
-	public TransUnitListPresenter(final Display display, final EventBus eventBus) {
+	public TransUnitListPresenter(final Display display, final EventBus eventBus, PagerPresenter pagerPresenter) {
 		super(display, eventBus);
 		//this.dispatcher = dispatcher;
+		this.pagerPresenter = pagerPresenter;
 		bind();
 	}
 	
@@ -39,6 +44,8 @@ public class TransUnitListPresenter  extends WidgetPresenter<TransUnitListPresen
 	
 	@Override
 	protected void onBind() {
+		display.getToolbar().add(pagerPresenter.getDisplay().asWidget());
+		
 		display.getSelectionHandlers().addSelectionHandler(new SelectionHandler<TransUnit>() {
 			@Override
 			public void onSelection(SelectionEvent<TransUnit> event) {
