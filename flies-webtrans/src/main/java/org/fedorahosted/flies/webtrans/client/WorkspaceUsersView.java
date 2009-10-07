@@ -7,9 +7,9 @@ import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalSplitPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class TranslatorsPanel extends Composite {
+public class WorkspaceUsersView extends Composite {
 
-	public TranslatorsPanel() {
+	public WorkspaceUsersView() {
 		initWidget( getChatAllPanel() );
 	}
 	
