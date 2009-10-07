@@ -21,6 +21,9 @@ temp-testng-customsuite.xml$
 ^flies-war/src/test/resources/DocumentsServiceSeamTest.tng.xml$
 \.orig$
 
+# kde related
+\.directory$
+
 #gwt related
 ^flies-webtrans/war/WEB-INF/classes/
 ^flies-webtrans/war/
