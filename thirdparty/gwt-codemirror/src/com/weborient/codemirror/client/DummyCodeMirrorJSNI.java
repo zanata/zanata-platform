@@ -3,7 +3,7 @@ package com.weborient.codemirror.client;
 public class DummyCodeMirrorJSNI implements ICodeMirrorJSNI {
 
 	private String text;
-	private SyntaxLanguage language;
+	private SyntaxLanguage syntax = SyntaxLanguage.NONE;
 	
 	public DummyCodeMirrorJSNI() {
 		this(" ");
@@ -16,6 +16,10 @@ public class DummyCodeMirrorJSNI implements ICodeMirrorJSNI {
 
 	public String getEditorCode() {
 		return text;
+	}
+	
+	public SyntaxLanguage getSyntax() {
+		return syntax;
 	}
 
 	public void redoEditor() {
@@ -34,8 +38,8 @@ public class DummyCodeMirrorJSNI implements ICodeMirrorJSNI {
 		this.text = text;
 	}
 
-	public void setLanguage(SyntaxLanguage lang) {
-		language = lang;
+	public void setSyntax(SyntaxLanguage syntax) {
+		this.syntax = syntax;
 	}
 	
 	public void undoEditor() {

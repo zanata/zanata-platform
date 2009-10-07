@@ -11,20 +11,22 @@ public class CodeMirrorJSNI implements ICodeMirrorJSNI {
 	private JavaScriptObject editorObject;
 	@SuppressWarnings("unused") // used by js in initCodeMirror()
 	private String jsDirectory = GWT.getModuleBaseURL() + "js/";
+	private String parserName;
 	public CodeMirrorJSNI() {
-		this(new CodeMirrorConfiguration(), " ");
+		this(new CodeMirrorConfiguration(), " ", SyntaxLanguage.MIXED);
 	}
 
 	public CodeMirrorJSNI(CodeMirrorConfiguration configuration) {
-		this(configuration, " ");
+		this(configuration, " ", SyntaxLanguage.MIXED);
 	}
 
 	public CodeMirrorJSNI(String initialText) {
-		this(new CodeMirrorConfiguration(), " ");
+		this(new CodeMirrorConfiguration(), initialText, SyntaxLanguage.MIXED);
 	}
 
-	public CodeMirrorJSNI(CodeMirrorConfiguration configuration, String initialText) {
-		editorObject = initCodeMirror(configuration, initialText);
+	public CodeMirrorJSNI(CodeMirrorConfiguration configuration, String initialText, SyntaxLanguage syntax) {
+		this.parserName = syntax.getParserName();
+		this.editorObject = initCodeMirror(configuration, initialText);
 	}
 
 	public native JavaScriptObject initCodeMirror(CodeMirrorConfiguration conf, String initialText) /*-{
@@ -33,7 +35,8 @@ public class CodeMirrorJSNI implements ICodeMirrorJSNI {
 				(msg, null)
 		};
 		log("initCodeMirror");
-	            
+				var parserName = this.@com.weborient.codemirror.client.CodeMirrorJSNI::parserName;
+//				$wnd.Editor.Parser = eval("$wnd."+parserName);
 	            var id = conf.@com.weborient.codemirror.client.CodeMirrorConfiguration::getId()();
 	            var h = conf.@com.weborient.codemirror.client.CodeMirrorConfiguration::getHeight()();
 	            var ro = conf.@com.weborient.codemirror.client.CodeMirrorConfiguration::isReadOnly()();
@@ -106,13 +109,18 @@ public class CodeMirrorJSNI implements ICodeMirrorJSNI {
 	public JavaScriptObject getEditorObject() {
 		return editorObject;
 	}
+	
+	public SyntaxLanguage getSyntax() {
+		return SyntaxLanguage.valueOf(parserName);
+	}
 
 	public void setEditorObject(JavaScriptObject editorObject) {
 		this.editorObject = editorObject;
 	}
 	
-	public void setLanguage(SyntaxLanguage lang) {
-		setParser(lang.getParserName());
+	public void setSyntax(SyntaxLanguage syntax) {
+		this.parserName = syntax.getParserName();
+		setParser(parserName);
 	}
 
 	private native void setParser(String parserName)/*-{

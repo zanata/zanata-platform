@@ -1,22 +1,21 @@
 package com.weborient.codemirror.client;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Label;
 
-public class HighlightingLabel extends Label implements LangSupport {
+public class HighlightingLabel extends Label implements SyntaxSelection {
 	private String plainText;
-	@SuppressWarnings("unused") // used in JS
-	private String parserName;
+	private SyntaxLanguage syntax;
 	
 	public HighlightingLabel() {
 		this("");
 	}	
 	
 	public HighlightingLabel(String text) {
+		super();
 		plainText = text;
-		setLanguage(SyntaxLanguage.NONE);
+		setSyntax(SyntaxLanguage.NONE);
 	}
 	
 	@Override
@@ -36,20 +35,22 @@ public class HighlightingLabel extends Label implements LangSupport {
 		Node child;
 		while ((child = element.getFirstChild()) != null)
 			element.removeChild(child);
-		if (isAttached())
-			doHighlight();
+		if (isAttached()) {
+			if (syntax == SyntaxLanguage.NONE) {
+				super.setText(plainText);
+			} else {
+				doHighlight(plainText, element, syntax.getParserName());
+			}
+		}
 	}
 
-	private native void doHighlight()/*-{
-		var text = this.@com.weborient.codemirror.client.HighlightingLabel::plainText;
-		var node = this.@com.weborient.codemirror.client.HighlightingLabel::getElement()();
-		var parserName = this.@com.weborient.codemirror.client.HighlightingLabel::parserName;
+	private native void doHighlight(String text, Element node, String parserName)/*-{
 		var parser = eval("$wnd."+parserName);
 		$wnd.highlightText(text, node, parser);
 	}-*/;
 
-	public void setLanguage(SyntaxLanguage lang) {
-		parserName = lang.getParserName();
+	public void setSyntax(SyntaxLanguage syntax) {
+		this.syntax = syntax;
 		highlight();
 	}
 	

@@ -11,11 +11,7 @@ public enum SyntaxLanguage {
 		this.parserName = parserName;
 	}
 	
-	public static SyntaxLanguage[] all() {
-		return new SyntaxLanguage[] {JAVASCRIPT, MIXED, NONE, XML};
-	}
-
-	public String getParserName() {
+	String getParserName() {
 		return parserName;
 	}
 }
