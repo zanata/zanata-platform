@@ -20,6 +20,10 @@ import com.google.gwt.gen2.table.client.PagingScrollTable;
 import com.google.gwt.gen2.table.client.ScrollTable;
 import com.google.gwt.gen2.table.client.TableDefinition;
 import com.google.gwt.gen2.table.client.TableDefinition.AbstractCellView;
+import com.google.gwt.gen2.table.event.client.HasPageChangeHandlers;
+import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
+import com.google.gwt.gen2.table.event.client.PageChangeHandler;
+import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
 import com.google.gwt.gen2.table.event.client.RowSelectionEvent;
 import com.google.gwt.gen2.table.event.client.RowSelectionHandler;
 import com.google.gwt.gen2.table.event.client.TableEvent.Row;
@@ -34,7 +38,7 @@ import com.weborient.codemirror.client.HighlightingLabel;
 import com.weborient.codemirror.client.SyntaxLanguage;
 
 public class TransUnitListView extends Composite implements
-		TransUnitListPresenter.Display, HasSelectionHandlers<TransUnit>{
+		TransUnitListPresenter.Display, HasSelectionHandlers<TransUnit>, HasPageNavigation{
 
 	final FlowPanel panel = new FlowPanel();
 	
@@ -226,4 +230,45 @@ public class TransUnitListView extends Composite implements
 	public HasWidgets getToolbar() {
 		return toolbar;
 	}
+
+	@Override
+	public HasPageNavigation getPageNavigation() {
+		return this;
+	}
+
+	@Override
+	public void gotoFirstPage() {
+		pagingScrollTable.gotoFirstPage();
+	}
+
+	@Override
+	public void gotoLastPage() {
+		pagingScrollTable.gotoLastPage();
+	}
+
+	@Override
+	public void gotoNextPage() {
+		pagingScrollTable.gotoNextPage();
+	}
+
+	@Override
+	public void gotoPage(int page, boolean forced) {
+		pagingScrollTable.gotoPage(page, forced);
+	}
+
+	@Override
+	public void gotoPreviousPage() {
+		pagingScrollTable.gotoPreviousPage();
+	}
+
+	@Override
+	public HasPageChangeHandlers getPageChangeHandlers() {
+		return pagingScrollTable;
+	}
+
+	@Override
+	public HasPageCountChangeHandlers getPageCountChangeHandlers() {
+		return pagingScrollTable;
+	}
+
 }

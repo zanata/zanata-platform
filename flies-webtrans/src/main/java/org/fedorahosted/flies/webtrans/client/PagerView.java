@@ -1,6 +1,10 @@
 package org.fedorahosted.flies.webtrans.client;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -11,7 +15,7 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class PagerView extends Composite implements PagerPresenter.Display {
+public class PagerView extends Composite implements PagerPresenter.Display, HasPageCount{
 
 	private final Button firstPage;
 	private final TextBox gotoPage;
@@ -19,9 +23,8 @@ public class PagerView extends Composite implements PagerPresenter.Display {
 	private final Button nextPage;
 	private final Button previousPage;
 	private final Label pageCountLabel;
-	
 	private int pageCount;
-	
+
 	public PagerView() {
 		HorizontalPanel panel = new HorizontalPanel();
 		initWidget(panel);
@@ -30,9 +33,8 @@ public class PagerView extends Composite implements PagerPresenter.Display {
 		nextPage = new Button(">");
 		previousPage = new Button("&lt;");
 		gotoPage = new TextBox();
-		gotoPage.setText(String.valueOf(pageCount) );
 		gotoPage.setMaxLength(8);
-		pageCountLabel = new Label("of " + pageCount);
+		pageCountLabel = new Label(" of 0");
 		
 		panel.add(firstPage);
 		panel.add(previousPage);
@@ -40,6 +42,11 @@ public class PagerView extends Composite implements PagerPresenter.Display {
 		panel.add(pageCountLabel);
 		panel.add(nextPage);
 		panel.add(lastPage);
+	}
+	
+	@Override
+	protected void onUnload() {
+		super.onUnload();
 	}
 	
 	@Override
@@ -55,15 +62,6 @@ public class PagerView extends Composite implements PagerPresenter.Display {
 	public void stopProcessing() {
 	}
 
-	@Override
-	public int getPageCount() {
-		return pageCount;
-	}
-	
-	public void setPageCount(int pageCount) {
-		this.pageCount = pageCount;
-	}
-	
 	@Override
 	public HasClickHandlers getFirstPage() {
 		return firstPage;
@@ -88,7 +86,24 @@ public class PagerView extends Composite implements PagerPresenter.Display {
 	public HasClickHandlers getPreviousPage() {
 		return previousPage;
 	}
+
+	private void refreshLabel(){
+		pageCountLabel.setText("of "+ pageCount);
+	}
+	@Override
+	public void setPageCount(int pageCount) {
+		this.pageCount = pageCount;
+		refreshLabel();
+	}
 	
+	@Override
+	public int getPageCount() {
+		return pageCount;
+	}
 	
+	@Override
+	public HasPageCount getHasPageCount() {
+		return this;
+	}
 
 }

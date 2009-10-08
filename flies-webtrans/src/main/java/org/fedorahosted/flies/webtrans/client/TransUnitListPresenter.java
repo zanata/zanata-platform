@@ -8,9 +8,17 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.fedorahosted.flies.webtrans.model.TransUnit;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.gen2.table.event.client.HasPageChangeHandlers;
+import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
+import com.google.gwt.gen2.table.event.client.PageChangeEvent;
+import com.google.gwt.gen2.table.event.client.PageChangeHandler;
+import com.google.gwt.gen2.table.event.client.PageCountChangeEvent;
+import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.inject.Inject;
 
@@ -23,6 +31,9 @@ public class TransUnitListPresenter  extends WidgetPresenter<TransUnitListPresen
 	public interface Display extends WidgetDisplay {
 		HasSelectionHandlers<TransUnit> getSelectionHandlers();
 		HasWidgets getToolbar();
+		HasPageNavigation getPageNavigation();
+		HasPageChangeHandlers getPageChangeHandlers();
+		HasPageCountChangeHandlers getPageCountChangeHandlers();
 	}
 
 	private final PagerPresenter pagerPresenter;
@@ -55,6 +66,10 @@ public class TransUnitListPresenter  extends WidgetPresenter<TransUnitListPresen
 				}
 			}
 		});
+		
+		display.getPageChangeHandlers().addPageChangeHandler(pagerPresenter);
+		display.getPageCountChangeHandlers().addPageCountChangeHandler(pagerPresenter);
+		
 	}
 
 	public TransUnit getCurrentSelection() {
