@@ -186,8 +186,8 @@
     </pluginRepository>
 
     <pluginRepository>
-      <id>repository.codehaus</id>
-      <name>Codehaus Repository</name>
+      <id>snapshots.repository.codehaus</id>
+      <name>Codehaus Snapshots Repository</name>
       <url>http://snapshots.repository.codehaus.org</url>
       <releases>
         <enabled>false</enabled>
