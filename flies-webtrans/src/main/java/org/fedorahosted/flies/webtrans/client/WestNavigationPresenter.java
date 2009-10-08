@@ -27,12 +27,15 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 	}
 
 	private final WorkspaceUsersPresenter workspaceUsersPresenter;
+	private final DocumentListPresenter documentListPresenter;
+
 	
 	@Inject
-	public WestNavigationPresenter(final Display display, final EventBus eventBus, WorkspaceUsersPresenter workspaceUsersPresenter){//, final DispatchAsync dispatcher) {
+	public WestNavigationPresenter(final Display display, final EventBus eventBus, WorkspaceUsersPresenter workspaceUsersPresenter, DocumentListPresenter documentListPresenter){//, final DispatchAsync dispatcher) {
 		super(display, eventBus);
 		//this.dispatcher = dispatcher;
 		this.workspaceUsersPresenter = workspaceUsersPresenter;
+		this.documentListPresenter = documentListPresenter;
 		bind();
 	}
 
@@ -51,6 +54,7 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 				display.asWidget().setHeight(event.getHeight() + "px");
 			}
 		});
+		display.getWidgets().add(documentListPresenter.getDisplay().asWidget());
 		display.getWidgets().add(workspaceUsersPresenter.getDisplay().asWidget());
 	}
 

@@ -6,6 +6,8 @@ import net.customware.gwt.presenter.client.gin.AbstractPresenterModule;
 import net.customware.gwt.presenter.client.place.PlaceManager;
 
 import org.fedorahosted.flies.webtrans.client.AppPresenter;
+import org.fedorahosted.flies.webtrans.client.DocumentListPresenter;
+import org.fedorahosted.flies.webtrans.client.DocumentListView;
 import org.fedorahosted.flies.webtrans.client.PagerPresenter;
 import org.fedorahosted.flies.webtrans.client.PagerView;
 import org.fedorahosted.flies.webtrans.client.TransUnitListPresenter;
@@ -24,6 +26,7 @@ public class WebTransClientModule extends AbstractPresenterModule {
 		bind(EventBus.class).to(DefaultEventBus.class).in(Singleton.class);
 		bind(PlaceManager.class).in(Singleton.class);
 		
+		bindPresenter(DocumentListPresenter.class, DocumentListPresenter.Display.class, DocumentListView.class);
 		bindPresenter(TransUnitListPresenter.class, TransUnitListPresenter.Display.class, TransUnitListView.class);
 		bindPresenter(WestNavigationPresenter.class, WestNavigationPresenter.Display.class, WestNavigationView.class);
 		bindPresenter(WorkspaceUsersPresenter.class, WorkspaceUsersPresenter.Display.class, WorkspaceUsersView.class);
