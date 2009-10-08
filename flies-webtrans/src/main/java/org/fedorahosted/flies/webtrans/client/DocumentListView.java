@@ -12,7 +12,7 @@ import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.ImageBundle.Resource;
 
-public class DocumentListView extends CaptionPanel implements DocumentListPresenter.Display {
+public class DocumentListView extends Composite implements DocumentListPresenter.Display {
 
 	public interface Images extends ImageBundle, TreeImages {
 
@@ -56,7 +56,7 @@ public class DocumentListView extends CaptionPanel implements DocumentListPresen
 	    
 	    root.addItem(new TreeItem("item3"));
 
-	    add(root);
+	    initWidget(root);
 
 	}
 
