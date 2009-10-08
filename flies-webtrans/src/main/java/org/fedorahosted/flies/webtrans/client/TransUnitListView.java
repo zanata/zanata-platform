@@ -169,8 +169,8 @@ public class TransUnitListView extends Composite implements
 				public void renderRowValue(TransUnit rowValue,
 						ColumnDefinition<TransUnit, String> columnDef,
 						AbstractCellView<TransUnit> view) {
-					HighlightingLabel widget = new HighlightingLabel(rowValue.getSource());
-					widget.observe(syntaxSelectionWidget);
+					HighlightingLabel widget = new HighlightingLabel(
+							rowValue.getSource(), syntaxSelectionWidget);
 					view.setWidget(widget);
 				}
 			});
@@ -196,8 +196,8 @@ public class TransUnitListView extends Composite implements
 				public void renderRowValue(TransUnit rowValue,
 						ColumnDefinition<TransUnit, String> columnDef,
 						AbstractCellView<TransUnit> view) {
-					HighlightingLabel widget = new HighlightingLabel(rowValue.getTarget());
-					widget.observe(syntaxSelectionWidget);
+					HighlightingLabel widget = new HighlightingLabel(
+							rowValue.getTarget(), syntaxSelectionWidget);
 					view.setWidget(widget);
 				}
 			});

@@ -10,7 +10,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * @author samangiahi
  *
  */
-public class CodeMirrorEditorWidget extends Composite implements Constants, SyntaxSelection {
+public class CodeMirrorEditorWidget extends Composite implements Constants {
 	
 	TextArea textArea;
 	CodeMirrorConfiguration configuration;
