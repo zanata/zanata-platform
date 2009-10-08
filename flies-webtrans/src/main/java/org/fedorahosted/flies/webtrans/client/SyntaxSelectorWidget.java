@@ -13,14 +13,14 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
 import com.weborient.codemirror.client.SyntaxLanguage;
 
-public class SyntaxLanguageWidget extends Composite implements HasValue<SyntaxLanguage> {
+public class SyntaxSelectorWidget extends Composite implements HasValue<SyntaxLanguage> {
 	private SyntaxLanguage syntax; 
 	ListBox listBox = new ListBox();
-	public SyntaxLanguageWidget() {
+	public SyntaxSelectorWidget() {
 		this(SyntaxLanguage.NONE);
 	}
 
-	public SyntaxLanguageWidget(SyntaxLanguage syntax) {
+	public SyntaxSelectorWidget(SyntaxLanguage syntax) {
 		this.syntax = syntax;
 
 		Panel panel = new HorizontalPanel();

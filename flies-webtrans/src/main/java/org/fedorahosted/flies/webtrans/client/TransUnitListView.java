@@ -8,6 +8,8 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.gen2.table.client.CachedTableModel;
 import com.google.gwt.gen2.table.client.CellRenderer;
@@ -24,12 +26,14 @@ import com.google.gwt.gen2.table.event.client.RowSelectionEvent;
 import com.google.gwt.gen2.table.event.client.RowSelectionHandler;
 import com.google.gwt.gen2.table.event.client.TableEvent.Row;
 import com.google.gwt.gen2.table.override.client.FlexTable.FlexCellFormatter;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import com.weborient.codemirror.client.HiddenSyntaxValue;
 import com.weborient.codemirror.client.HighlightingLabel;
 import com.weborient.codemirror.client.SyntaxLanguage;
 
@@ -70,7 +74,7 @@ public class TransUnitListView extends Composite implements
 	 */
 	private PagingScrollTable<TransUnit> pagingScrollTable = null;
 
-	private SyntaxLanguageWidget syntaxSelectionWidget;
+	private SyntaxSelectorWidget syntaxSelectionWidget;
 
 
 	protected void setupScrollTable() {
@@ -83,7 +87,7 @@ public class TransUnitListView extends Composite implements
 		Log.info("Row count: "+ tableModel.getRowCount() );
 		Log.info("Row count: "+ cachedTableModel.getRowCount() );
 
-		syntaxSelectionWidget = new SyntaxLanguageWidget(SyntaxLanguage.MIXED);
+		syntaxSelectionWidget = new SyntaxSelectorWidget(SyntaxLanguage.MIXED);
 		
 		// Create a TableCellRenderer
 		TableDefinition<TransUnit> tableDef = createTableDefinition();
@@ -135,6 +139,22 @@ public class TransUnitListView extends Composite implements
 		toolbar = new FlowPanel();
 		toolbar.add(new Label("Navigation toolbar goes here"));
 		toolbar.add(syntaxSelectionWidget);
+//		final HiddenSyntaxValue syntax = new HiddenSyntaxValue(SyntaxLanguage.NONE);
+//		CheckBox highlighting = new CheckBox("HTML");
+//		highlighting.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+//			@Override
+//			public void onValueChange(ValueChangeEvent<Boolean> event) {
+//				if (event.getValue())
+//					syntax.setValue(SyntaxLanguage.MIXED, true);
+//				else
+//					syntax.setValue(SyntaxLanguage.NONE, true);
+//			}
+//		});
+//		toolbar.add(highlighting);
+		SyntaxToggleWidget syntax = new SyntaxToggleWidget("HTML", SyntaxLanguage.MIXED, true);
+		toolbar.add(syntax);
+		HighlightingLabel label = new HighlightingLabel("<some attr=\"123\"/>", syntax);
+		toolbar.add(label);
 		footerTable.setWidget(0, 0, toolbar);
 		headerFormatter.setColSpan(0, 0, 2);
 		
