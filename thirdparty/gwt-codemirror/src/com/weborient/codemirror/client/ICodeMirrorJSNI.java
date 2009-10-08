@@ -1,9 +1,10 @@
 package com.weborient.codemirror.client;
 
-public interface ICodeMirrorJSNI extends SyntaxSelection {
+public interface ICodeMirrorJSNI {
 
 	String getEditorCode();
-	SyntaxLanguage getSyntax();
+	ParserSyntax getSyntax();
+	void setSyntax(ParserSyntax syntax);
 	void redoEditor();
 	void reindentEditor();
 	void replaceText(String text);

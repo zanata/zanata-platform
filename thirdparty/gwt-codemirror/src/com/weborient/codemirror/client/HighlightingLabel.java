@@ -1,24 +1,35 @@
 package com.weborient.codemirror.client;
 
 import com.google.gwt.dom.client.Node;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 
-public class HighlightingLabel extends Label implements SyntaxSelection {
+public class HighlightingLabel extends Label {
 	private String plainText;
-	private SyntaxLanguage syntax;
-	private SyntaxObservable observable;
+	private HasValue<ParserSyntax> syntaxValue;
+	private HandlerRegistration handlerRegistration;
 	
 	public HighlightingLabel() {
-		this("");
+		this("", new HiddenSyntaxValue(ParserSyntax.NONE));
 	}	
 	
 	public HighlightingLabel(String text) {
-		super();
-		plainText = text;
-		setSyntax(SyntaxLanguage.NONE);
+		this(text, new HiddenSyntaxValue(ParserSyntax.NONE));
 	}
 	
+	public HighlightingLabel(String text, ParserSyntax syntax) {
+		this(text, new HiddenSyntaxValue(syntax));
+	}
+
+	public HighlightingLabel(String text, HasValue<ParserSyntax> syntaxValue) {
+		plainText = text;
+		this.syntaxValue = syntaxValue;
+	}
+
 	@Override
 	public String getText() {
 		return plainText;
@@ -37,7 +48,8 @@ public class HighlightingLabel extends Label implements SyntaxSelection {
 		while ((child = element.getFirstChild()) != null)
 			element.removeChild(child);
 		if (isAttached()) {
-			if (syntax == SyntaxLanguage.NONE) {
+			ParserSyntax syntax = syntaxValue.getValue();
+			if (syntax == ParserSyntax.NONE) {
 				super.setText(plainText);
 			} else {
 				doHighlight(plainText, element, syntax.getParserName());
@@ -50,26 +62,24 @@ public class HighlightingLabel extends Label implements SyntaxSelection {
 		$wnd.highlightText(text, node, parser);
 	}-*/;
 
-	public void setSyntax(SyntaxLanguage syntax) {
-		this.syntax = syntax;
-		highlight();
-	}
-	
-	public void observe(SyntaxObservable observable) {
-		this.observable = observable;
-		setSyntax(observable.getSyntax());
-	}
 	
 	@Override
 	protected void onLoad() {
+		super.onLoad();
+		handlerRegistration = syntaxValue.addValueChangeHandler(new ValueChangeHandler<ParserSyntax>() {
+			public void onValueChange(ValueChangeEvent<ParserSyntax> event) {
+				highlight();
+			}
+		});
 		highlight();
-		if (observable != null)
-			observable.addObserver(this);
 	}
 	
 	@Override
 	protected void onUnload() {
-		observable.removeObserver(this);
+		handlerRegistration.removeHandler();
+		handlerRegistration = null;
+		super.onUnload();
 	}
+
 }
 

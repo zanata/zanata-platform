@@ -31,7 +31,8 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.weborient.codemirror.client.HighlightingLabel;
-import com.weborient.codemirror.client.SyntaxLanguage;
+import com.weborient.codemirror.client.ParserSyntax;
+import com.weborient.codemirror.client.SyntaxToggleWidget;
 
 public class TransUnitListView extends Composite implements
 		TransUnitListPresenter.Display, HasSelectionHandlers<TransUnit>{
@@ -70,7 +71,7 @@ public class TransUnitListView extends Composite implements
 	 */
 	private PagingScrollTable<TransUnit> pagingScrollTable = null;
 
-	private SyntaxLanguageWidget syntaxSelectionWidget;
+	private SyntaxToggleWidget syntaxWidget;
 
 
 	protected void setupScrollTable() {
@@ -83,7 +84,7 @@ public class TransUnitListView extends Composite implements
 		Log.info("Row count: "+ tableModel.getRowCount() );
 		Log.info("Row count: "+ cachedTableModel.getRowCount() );
 
-		syntaxSelectionWidget = new SyntaxLanguageWidget(SyntaxLanguage.MIXED);
+		syntaxWidget = new SyntaxToggleWidget(ParserSyntax.MIXED, true);
 		
 		// Create a TableCellRenderer
 		TableDefinition<TransUnit> tableDef = createTableDefinition();
@@ -134,7 +135,7 @@ public class TransUnitListView extends Composite implements
 		FlexCellFormatter headerFormatter = footerTable.getFlexCellFormatter();
 		toolbar = new FlowPanel();
 		toolbar.add(new Label("Navigation toolbar goes here"));
-		toolbar.add(syntaxSelectionWidget);
+		toolbar.add(syntaxWidget);
 		footerTable.setWidget(0, 0, toolbar);
 		headerFormatter.setColSpan(0, 0, 2);
 		
@@ -169,8 +170,8 @@ public class TransUnitListView extends Composite implements
 				public void renderRowValue(TransUnit rowValue,
 						ColumnDefinition<TransUnit, String> columnDef,
 						AbstractCellView<TransUnit> view) {
-					HighlightingLabel widget = new HighlightingLabel(rowValue.getSource());
-					widget.observe(syntaxSelectionWidget);
+					HighlightingLabel widget = new HighlightingLabel(
+							rowValue.getSource(), syntaxWidget);
 					view.setWidget(widget);
 				}
 			});
@@ -196,8 +197,8 @@ public class TransUnitListView extends Composite implements
 				public void renderRowValue(TransUnit rowValue,
 						ColumnDefinition<TransUnit, String> columnDef,
 						AbstractCellView<TransUnit> view) {
-					HighlightingLabel widget = new HighlightingLabel(rowValue.getTarget());
-					widget.observe(syntaxSelectionWidget);
+					HighlightingLabel widget = new HighlightingLabel(
+							rowValue.getTarget(), syntaxWidget);
 					view.setWidget(widget);
 				}
 			});

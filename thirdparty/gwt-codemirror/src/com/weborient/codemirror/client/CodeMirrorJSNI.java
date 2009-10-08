@@ -13,18 +13,18 @@ public class CodeMirrorJSNI implements ICodeMirrorJSNI {
 	private String jsDirectory = GWT.getModuleBaseURL() + "js/";
 	private String parserName;
 	public CodeMirrorJSNI() {
-		this(new CodeMirrorConfiguration(), " ", SyntaxLanguage.MIXED);
+		this(new CodeMirrorConfiguration(), " ", ParserSyntax.MIXED);
 	}
 
 	public CodeMirrorJSNI(CodeMirrorConfiguration configuration) {
-		this(configuration, " ", SyntaxLanguage.MIXED);
+		this(configuration, " ", ParserSyntax.MIXED);
 	}
 
 	public CodeMirrorJSNI(String initialText) {
-		this(new CodeMirrorConfiguration(), initialText, SyntaxLanguage.MIXED);
+		this(new CodeMirrorConfiguration(), initialText, ParserSyntax.MIXED);
 	}
 
-	public CodeMirrorJSNI(CodeMirrorConfiguration configuration, String initialText, SyntaxLanguage syntax) {
+	public CodeMirrorJSNI(CodeMirrorConfiguration configuration, String initialText, ParserSyntax syntax) {
 		this.parserName = syntax.getParserName();
 		this.editorObject = initCodeMirror(configuration, initialText);
 	}
@@ -110,15 +110,15 @@ public class CodeMirrorJSNI implements ICodeMirrorJSNI {
 		return editorObject;
 	}
 	
-	public SyntaxLanguage getSyntax() {
-		return SyntaxLanguage.valueOf(parserName);
+	public ParserSyntax getSyntax() {
+		return ParserSyntax.valueOf(parserName);
 	}
 
 	public void setEditorObject(JavaScriptObject editorObject) {
 		this.editorObject = editorObject;
 	}
 	
-	public void setSyntax(SyntaxLanguage syntax) {
+	public void setSyntax(ParserSyntax syntax) {
 		this.parserName = syntax.getParserName();
 		setParser(parserName);
 	}

@@ -3,7 +3,7 @@ package com.weborient.codemirror.client;
 public class DummyCodeMirrorJSNI implements ICodeMirrorJSNI {
 
 	private String text;
-	private SyntaxLanguage syntax = SyntaxLanguage.NONE;
+	private ParserSyntax syntax = ParserSyntax.NONE;
 	
 	public DummyCodeMirrorJSNI() {
 		this(" ");
@@ -18,7 +18,7 @@ public class DummyCodeMirrorJSNI implements ICodeMirrorJSNI {
 		return text;
 	}
 	
-	public SyntaxLanguage getSyntax() {
+	public ParserSyntax getSyntax() {
 		return syntax;
 	}
 
@@ -38,7 +38,7 @@ public class DummyCodeMirrorJSNI implements ICodeMirrorJSNI {
 		this.text = text;
 	}
 
-	public void setSyntax(SyntaxLanguage syntax) {
+	public void setSyntax(ParserSyntax syntax) {
 		this.syntax = syntax;
 	}
 	
