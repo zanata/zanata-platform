@@ -3,3 +3,19 @@
 .LeftContentNavBar {
   background-color: #f8f8fb;
 }
+
+
+.gwt-HeadingPanel .topLeftInner, .gwt-HeadingPanel .topRightInner {
+	height:40px;
+	width:5px;
+	background-color: d0e4f6;
+}
+.gwt-HeadingPanel .topCenterInner{
+	height: 40px;
+	background-color: d0e4f6;
+}
+
+.gwt-HeadingPanelTitle {
+	font-size: 15px;
+	color: grey;
+}

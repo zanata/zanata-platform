@@ -1,11 +1,15 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import org.fedorahosted.flies.webtrans.client.ui.HeadingPanel;
+import org.fedorahosted.flies.webtrans.client.ui.HeadingWidget;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DecoratedStackPanel;
 import com.google.gwt.user.client.ui.ImageBundle;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.StackPanel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeImages;
@@ -16,7 +20,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class WorkspaceUsersView extends Composite implements
 		WorkspaceUsersPresenter.Display {
 
-	private final StackPanel panel;
+	private final HeadingPanel panel;
 
 	public interface Images extends ImageBundle, TreeImages {
 
@@ -34,9 +38,13 @@ public class WorkspaceUsersView extends Composite implements
 	private static Images images = (Images) GWT.create(Images.class);
 
 	public WorkspaceUsersView() {
-		panel = new DecoratedStackPanel();
+		panel = new HeadingPanel();
 		initWidget(panel);
-		panel.add(getChatAllPanel(), "Translators");
+		panel.add(getChatAllPanel());
+		
+		HeadingWidget heading = new HeadingWidget("Translators");
+		heading.setCollapsible(false);
+		panel.setHeadingWidget(heading);
 	}
 
 	private static Tree createLocaleTranslatorsTree() {
