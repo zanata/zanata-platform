@@ -3,12 +3,13 @@ package org.fedorahosted.flies.webtrans.client;
 import java.util.Collection;
 import java.util.HashSet;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DisclosurePanel;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Panel;
 import com.weborient.codemirror.client.SyntaxLanguage;
 import com.weborient.codemirror.client.SyntaxObservable;
 import com.weborient.codemirror.client.SyntaxSelection;
@@ -16,35 +17,34 @@ import com.weborient.codemirror.client.SyntaxSelection;
 public class SyntaxLanguageWidget extends Composite implements SyntaxObservable {
 	Collection<SyntaxSelection> observers = new HashSet<SyntaxSelection>();
 	private SyntaxLanguage syntax; 
+	ListBox listBox = new ListBox();
 	public SyntaxLanguageWidget() {
 		this(SyntaxLanguage.NONE);
 	}
 
 	public SyntaxLanguageWidget(SyntaxLanguage syntax) {
 		this.syntax = syntax;
-		DisclosurePanel discPanel = new DisclosurePanel("Highlighting");
-		FlowPanel panel = new FlowPanel();
-		
-		panel.add(createButton("None", SyntaxLanguage.NONE));
-		panel.add(createButton("JavaScript", SyntaxLanguage.JAVASCRIPT));
-		panel.add(createButton("XML", SyntaxLanguage.XML));
-		panel.add(createButton("HTML+", SyntaxLanguage.MIXED));
-		
-		discPanel.add(panel);
-		initWidget(discPanel);
-	}
 
-	private RadioButton createButton(String name, final SyntaxLanguage buttonSyntax) {
-		RadioButton radioButton = new RadioButton("syntax"+System.identityHashCode(this), name);
-		radioButton.addClickHandler(new ClickHandler() {
+		Panel panel = new HorizontalPanel();
+		panel.add(new Label("Highlighting: "));
+		addItem("Plain text", SyntaxLanguage.NONE);
+		addItem("JavaScript", SyntaxLanguage.JAVASCRIPT);
+		addItem("XML", SyntaxLanguage.XML);
+		addItem("HTML+", SyntaxLanguage.MIXED);
+		listBox.addChangeHandler(new ChangeHandler() {
 			@Override
-			public void onClick(ClickEvent event) {
-				setSyntax(buttonSyntax);
+			public void onChange(ChangeEvent event) {
+				setSyntax(SyntaxLanguage.valueOf(listBox.getValue(listBox.getSelectedIndex())));
 			}
 		});
-		if(syntax == buttonSyntax)
-			radioButton.setValue(true, false);
-		return radioButton;
+		panel.add(listBox);
+		initWidget(panel);
+	}
+
+	private void addItem(String name, final SyntaxLanguage buttonSyntax) {
+		listBox.addItem(name, buttonSyntax.name());
+		if (syntax == buttonSyntax)
+			listBox.setSelectedIndex(listBox.getItemCount()-1);
 	}
 	
 	public void setSyntax(SyntaxLanguage syntax) {
