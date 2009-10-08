@@ -14,15 +14,15 @@ public class HighlightingLabel extends Label {
 	private HandlerRegistration handlerRegistration;
 	
 	public HighlightingLabel() {
-		this("", new StaticSyntaxValue(SyntaxLanguage.NONE));
+		this("", new HiddenSyntaxValue(SyntaxLanguage.NONE));
 	}	
 	
 	public HighlightingLabel(String text) {
-		this(text, new StaticSyntaxValue(SyntaxLanguage.NONE));
+		this(text, new HiddenSyntaxValue(SyntaxLanguage.NONE));
 	}
 	
 	public HighlightingLabel(String text, SyntaxLanguage syntax) {
-		this(text, new StaticSyntaxValue(syntax));
+		this(text, new HiddenSyntaxValue(syntax));
 	}
 
 	public HighlightingLabel(String text, HasValue<SyntaxLanguage> syntaxValue) {
