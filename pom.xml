@@ -44,6 +44,16 @@
         </configuration>
       </plugin>
     </plugins>
+    
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>gwt-maven-plugin</artifactId>
+          <version>1.2-20090921.215557-4</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
   
   <dependencyManagement>
@@ -78,12 +88,6 @@
         <groupId>com.google.gwt</groupId>
         <artifactId>gwt-user</artifactId>
         <version>${version.gwt}</version>
-      </dependency>
-      
-      <dependency>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>gwt-maven-plugin</artifactId>
-        <version>1.2-20090921.215557-4</version>
       </dependency>
       
     </dependencies>
