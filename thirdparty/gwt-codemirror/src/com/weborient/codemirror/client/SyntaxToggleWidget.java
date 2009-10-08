@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.webtrans.client;
+package com.weborient.codemirror.client;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -6,7 +6,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
-import com.weborient.codemirror.client.SyntaxLanguage;
 
 public class SyntaxToggleWidget extends Composite implements HasValue<SyntaxLanguage> {
 	private SyntaxLanguage syntax, syntaxWhenOn; 
@@ -19,7 +18,6 @@ public class SyntaxToggleWidget extends Composite implements HasValue<SyntaxLang
 		checkbox.setValue(initialValue);
 
 		checkbox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
 				if (event.getValue())
 					setValue(syntaxWhenOn, true);
@@ -30,23 +28,19 @@ public class SyntaxToggleWidget extends Composite implements HasValue<SyntaxLang
 		initWidget(checkbox);
 	}
 	
-	@Override
 	public SyntaxLanguage getValue() {
 		return syntax;
 	}
 
-	@Override
 	public HandlerRegistration addValueChangeHandler(
 			ValueChangeHandler<SyntaxLanguage> handler) {
 		return addHandler(handler, ValueChangeEvent.getType());
 	}
 
-	@Override
 	public void setValue(SyntaxLanguage value) {
 		setValue(value, false);
 	}
 
-	@Override
 	public void setValue(SyntaxLanguage value, boolean fireEvents) {
 		assert(value == SyntaxLanguage.NONE || value == syntaxWhenOn);
 		SyntaxLanguage oldValue = this.syntax;

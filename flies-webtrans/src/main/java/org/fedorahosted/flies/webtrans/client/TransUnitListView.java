@@ -36,6 +36,8 @@ import com.google.gwt.user.client.ui.Widget;
 import com.weborient.codemirror.client.HiddenSyntaxValue;
 import com.weborient.codemirror.client.HighlightingLabel;
 import com.weborient.codemirror.client.SyntaxLanguage;
+import com.weborient.codemirror.client.SyntaxSelectorWidget;
+import com.weborient.codemirror.client.SyntaxToggleWidget;
 
 public class TransUnitListView extends Composite implements
 		TransUnitListPresenter.Display, HasSelectionHandlers<TransUnit>{

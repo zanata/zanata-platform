@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.webtrans.client;
+package com.weborient.codemirror.client;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -11,7 +11,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
-import com.weborient.codemirror.client.SyntaxLanguage;
 
 public class SyntaxSelectorWidget extends Composite implements HasValue<SyntaxLanguage> {
 	private SyntaxLanguage syntax; 
@@ -30,7 +29,6 @@ public class SyntaxSelectorWidget extends Composite implements HasValue<SyntaxLa
 		addItem("XML", SyntaxLanguage.XML);
 		addItem("HTML+", SyntaxLanguage.MIXED);
 		listBox.addChangeHandler(new ChangeHandler() {
-			@Override
 			public void onChange(ChangeEvent event) {
 				String syntaxName = listBox.getValue(listBox.getSelectedIndex());
 				SyntaxLanguage syntax = SyntaxLanguage.valueOf(syntaxName);
@@ -47,23 +45,19 @@ public class SyntaxSelectorWidget extends Composite implements HasValue<SyntaxLa
 			listBox.setSelectedIndex(listBox.getItemCount()-1);
 	}
 	
-	@Override
 	public SyntaxLanguage getValue() {
 		return syntax;
 	}
 
-	@Override
 	public HandlerRegistration addValueChangeHandler(
 			ValueChangeHandler<SyntaxLanguage> handler) {
 		return addHandler(handler, ValueChangeEvent.getType());
 	}
 
-	@Override
 	public void setValue(SyntaxLanguage value) {
 		setValue(value, false);
 	}
 
-	@Override
 	public void setValue(SyntaxLanguage value, boolean fireEvents) {
 		SyntaxLanguage oldValue = this.syntax;
 		this.syntax = value;
