@@ -56,7 +56,6 @@ public class HighlightingLabel extends Label implements SyntaxSelection {
 	}
 	
 	public void observe(SyntaxObservable observable) {
-		observable.addObserver(this);
 		this.observable = observable;
 		setSyntax(observable.getSyntax());
 	}
@@ -64,6 +63,8 @@ public class HighlightingLabel extends Label implements SyntaxSelection {
 	@Override
 	protected void onLoad() {
 		highlight();
+		if (observable != null)
+			observable.addObserver(this);
 	}
 	
 	@Override

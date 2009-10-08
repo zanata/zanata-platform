@@ -3,10 +3,13 @@ package org.fedorahosted.flies.webtrans.client;
 import java.util.Collection;
 import java.util.HashSet;
 
-import com.google.gwt.user.client.Command;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.MenuBar;
-import com.google.gwt.user.client.ui.MenuItem;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Panel;
 import com.weborient.codemirror.client.SyntaxLanguage;
 import com.weborient.codemirror.client.SyntaxObservable;
 import com.weborient.codemirror.client.SyntaxSelection;
@@ -14,52 +17,37 @@ import com.weborient.codemirror.client.SyntaxSelection;
 public class SyntaxLanguageWidget extends Composite implements SyntaxObservable {
 	Collection<SyntaxSelection> observers = new HashSet<SyntaxSelection>();
 	private SyntaxLanguage syntax; 
+	ListBox listBox = new ListBox();
 	public SyntaxLanguageWidget() {
 		this(SyntaxLanguage.NONE);
 	}
 
 	public SyntaxLanguageWidget(SyntaxLanguage syntax) {
 		this.syntax = syntax;
-		
-//	    MenuBar menu = new MenuBar();
-//	    menu.setAutoOpen(true);
-//	    menu.setWidth("500px");
-//	    menu.setAnimationEnabled(true);
-//	    MenuBar syntaxMenu = new MenuBar(true);
-//	    menu.addItem(new MenuItem("Highlighting", syntaxMenu));
-		MenuBar syntaxMenu = new MenuBar();
-	    
-		syntaxMenu.addItem(new MenuItem("None", new Command() {
-			@Override
-			public void execute() {
-				setSyntax(SyntaxLanguage.NONE);
-			}
-		}));
-		syntaxMenu.addItem(new MenuItem("JavaScript", new Command() {
-			@Override
-			public void execute() {
-				setSyntax(SyntaxLanguage.JAVASCRIPT);
-			}
-		}));
-		syntaxMenu.addItem(new MenuItem("XML", new Command() {
-			@Override
-			public void execute() {
-				setSyntax(SyntaxLanguage.XML);
-			}
-		}));
-		syntaxMenu.addItem(new MenuItem("HTML", new Command() {
-			@Override
-			public void execute() {
-				setSyntax(SyntaxLanguage.MIXED);
-			}
-		}));
-		
-//		initWidget(menu);
-		initWidget(syntaxMenu);
 
+		Panel panel = new HorizontalPanel();
+		panel.add(new Label("Highlighting: "));
+		addItem("Plain text", SyntaxLanguage.NONE);
+		addItem("JavaScript", SyntaxLanguage.JAVASCRIPT);
+		addItem("XML", SyntaxLanguage.XML);
+		addItem("HTML+", SyntaxLanguage.MIXED);
+		listBox.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent event) {
+				setSyntax(SyntaxLanguage.valueOf(listBox.getValue(listBox.getSelectedIndex())));
+			}
+		});
+		panel.add(listBox);
+		initWidget(panel);
+	}
+
+	private void addItem(String name, final SyntaxLanguage buttonSyntax) {
+		listBox.addItem(name, buttonSyntax.name());
+		if (syntax == buttonSyntax)
+			listBox.setSelectedIndex(listBox.getItemCount()-1);
 	}
 	
-	void setSyntax(SyntaxLanguage syntax) {
+	public void setSyntax(SyntaxLanguage syntax) {
 		this.syntax = syntax;
 		for (SyntaxSelection observer : observers) {
 			observer.setSyntax(syntax);
