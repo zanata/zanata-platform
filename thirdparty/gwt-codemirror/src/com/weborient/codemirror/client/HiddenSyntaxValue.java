@@ -8,16 +8,16 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HasValue;
 
 
-public class HiddenSyntaxValue implements HasValue<SyntaxLanguage> {
+public class HiddenSyntaxValue implements HasValue<ParserSyntax> {
 	private HandlerManager handlerManager;
 
-	private SyntaxLanguage value;
+	private ParserSyntax value;
 	
 	public HiddenSyntaxValue() {
-		this(SyntaxLanguage.NONE);
+		this(ParserSyntax.NONE);
 	}
 	
-	public HiddenSyntaxValue(SyntaxLanguage value) {
+	public HiddenSyntaxValue(ParserSyntax value) {
 		this.value = value;
 	}
 	
@@ -26,23 +26,23 @@ public class HiddenSyntaxValue implements HasValue<SyntaxLanguage> {
 				handlerManager = new HandlerManager(this) : handlerManager;
 	}
 
-	public SyntaxLanguage getValue() {
+	public ParserSyntax getValue() {
 		return value;
 	}
 
-	public void setValue(SyntaxLanguage value) {
+	public void setValue(ParserSyntax value) {
 		setValue(value, false);
 	}
 
-	public void setValue(SyntaxLanguage value, boolean fireEvents) {
-		SyntaxLanguage oldValue = this.value;
+	public void setValue(ParserSyntax value, boolean fireEvents) {
+		ParserSyntax oldValue = this.value;
 		this.value = value;
 		if (fireEvents)
 			ValueChangeEvent.fireIfNotEqual(this, oldValue, value);
 	}
 	
 	public HandlerRegistration addValueChangeHandler(
-			ValueChangeHandler<SyntaxLanguage> handler) {
+			ValueChangeHandler<ParserSyntax> handler) {
 		return getHandlerManager().addHandler(ValueChangeEvent.getType(), handler);
 	}
 

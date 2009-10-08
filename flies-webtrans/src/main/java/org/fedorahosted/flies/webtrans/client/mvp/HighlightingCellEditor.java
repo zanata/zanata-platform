@@ -3,7 +3,7 @@ package org.fedorahosted.flies.webtrans.client.mvp;
 import com.google.gwt.gen2.table.client.InlineCellEditor;
 import com.weborient.codemirror.client.CodeMirrorConfiguration;
 import com.weborient.codemirror.client.CodeMirrorEditorWidget;
-import com.weborient.codemirror.client.SyntaxLanguage;
+import com.weborient.codemirror.client.ParserSyntax;
 
 public class HighlightingCellEditor extends InlineCellEditor<String> {
 
@@ -11,7 +11,7 @@ public class HighlightingCellEditor extends InlineCellEditor<String> {
 	
 	public HighlightingCellEditor() {
 		this(createWidget());
-		editor.setSyntax(SyntaxLanguage.MIXED);
+		editor.setSyntax(ParserSyntax.MIXED);
 	}
 	
 	public HighlightingCellEditor(CodeMirrorEditorWidget widget) {

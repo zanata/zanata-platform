@@ -10,22 +10,22 @@ import com.google.gwt.user.client.ui.Label;
 
 public class HighlightingLabel extends Label {
 	private String plainText;
-	private HasValue<SyntaxLanguage> syntaxValue;
+	private HasValue<ParserSyntax> syntaxValue;
 	private HandlerRegistration handlerRegistration;
 	
 	public HighlightingLabel() {
-		this("", new HiddenSyntaxValue(SyntaxLanguage.NONE));
+		this("", new HiddenSyntaxValue(ParserSyntax.NONE));
 	}	
 	
 	public HighlightingLabel(String text) {
-		this(text, new HiddenSyntaxValue(SyntaxLanguage.NONE));
+		this(text, new HiddenSyntaxValue(ParserSyntax.NONE));
 	}
 	
-	public HighlightingLabel(String text, SyntaxLanguage syntax) {
+	public HighlightingLabel(String text, ParserSyntax syntax) {
 		this(text, new HiddenSyntaxValue(syntax));
 	}
 
-	public HighlightingLabel(String text, HasValue<SyntaxLanguage> syntaxValue) {
+	public HighlightingLabel(String text, HasValue<ParserSyntax> syntaxValue) {
 		plainText = text;
 		this.syntaxValue = syntaxValue;
 	}
@@ -48,8 +48,8 @@ public class HighlightingLabel extends Label {
 		while ((child = element.getFirstChild()) != null)
 			element.removeChild(child);
 		if (isAttached()) {
-			SyntaxLanguage syntax = syntaxValue.getValue();
-			if (syntax == SyntaxLanguage.NONE) {
+			ParserSyntax syntax = syntaxValue.getValue();
+			if (syntax == ParserSyntax.NONE) {
 				super.setText(plainText);
 			} else {
 				doHighlight(plainText, element, syntax.getParserName());
@@ -66,8 +66,8 @@ public class HighlightingLabel extends Label {
 	@Override
 	protected void onLoad() {
 		super.onLoad();
-		handlerRegistration = syntaxValue.addValueChangeHandler(new ValueChangeHandler<SyntaxLanguage>() {
-			public void onValueChange(ValueChangeEvent<SyntaxLanguage> event) {
+		handlerRegistration = syntaxValue.addValueChangeHandler(new ValueChangeHandler<ParserSyntax>() {
+			public void onValueChange(ValueChangeEvent<ParserSyntax> event) {
 				highlight();
 			}
 		});

@@ -3,8 +3,8 @@ package com.weborient.codemirror.client;
 public interface ICodeMirrorJSNI {
 
 	String getEditorCode();
-	SyntaxLanguage getSyntax();
-	void setSyntax(SyntaxLanguage syntax);
+	ParserSyntax getSyntax();
+	void setSyntax(ParserSyntax syntax);
 	void redoEditor();
 	void reindentEditor();
 	void replaceText(String text);

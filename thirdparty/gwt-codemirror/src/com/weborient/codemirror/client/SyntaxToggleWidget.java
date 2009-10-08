@@ -7,12 +7,16 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
 
-public class SyntaxToggleWidget extends Composite implements HasValue<SyntaxLanguage> {
-	private SyntaxLanguage syntax, syntaxWhenOn; 
+public class SyntaxToggleWidget extends Composite implements HasValue<ParserSyntax> {
+	private ParserSyntax syntax, syntaxWhenOn; 
 	private CheckBox checkbox = new CheckBox(); 
 
-	public SyntaxToggleWidget(String label, final SyntaxLanguage syntaxWhenOn, boolean initialValue) {
-		this.syntax = initialValue ? syntaxWhenOn : SyntaxLanguage.NONE;
+	public SyntaxToggleWidget(final ParserSyntax syntaxWhenOn, boolean initialValue) {
+		this(syntaxWhenOn.getShortDesc(), syntaxWhenOn, initialValue);
+	}
+	
+	public SyntaxToggleWidget(String label, final ParserSyntax syntaxWhenOn, boolean initialValue) {
+		this.syntax = initialValue ? syntaxWhenOn : ParserSyntax.NONE;
 		this.syntaxWhenOn = syntaxWhenOn;
 		checkbox = new CheckBox(label);
 		checkbox.setValue(initialValue);
@@ -22,28 +26,28 @@ public class SyntaxToggleWidget extends Composite implements HasValue<SyntaxLang
 				if (event.getValue())
 					setValue(syntaxWhenOn, true);
 				else
-					setValue(SyntaxLanguage.NONE, true);
+					setValue(ParserSyntax.NONE, true);
 			}
 		});
 		initWidget(checkbox);
 	}
 	
-	public SyntaxLanguage getValue() {
+	public ParserSyntax getValue() {
 		return syntax;
 	}
 
 	public HandlerRegistration addValueChangeHandler(
-			ValueChangeHandler<SyntaxLanguage> handler) {
+			ValueChangeHandler<ParserSyntax> handler) {
 		return addHandler(handler, ValueChangeEvent.getType());
 	}
 
-	public void setValue(SyntaxLanguage value) {
+	public void setValue(ParserSyntax value) {
 		setValue(value, false);
 	}
 
-	public void setValue(SyntaxLanguage value, boolean fireEvents) {
-		assert(value == SyntaxLanguage.NONE || value == syntaxWhenOn);
-		SyntaxLanguage oldValue = this.syntax;
+	public void setValue(ParserSyntax value, boolean fireEvents) {
+		assert(value == ParserSyntax.NONE || value == syntaxWhenOn);
+		ParserSyntax oldValue = this.syntax;
 		this.syntax = value;
 		if (fireEvents)
 			ValueChangeEvent.fireIfNotEqual(this, oldValue, value);

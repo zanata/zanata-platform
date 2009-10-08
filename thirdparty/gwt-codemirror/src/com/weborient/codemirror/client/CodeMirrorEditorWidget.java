@@ -51,7 +51,7 @@ public class CodeMirrorEditorWidget extends Composite implements Constants {
 
 	protected void onLoad() {
 		String text = codeMirrorJSNI.getEditorCode();
-		SyntaxLanguage syntax = codeMirrorJSNI.getSyntax();
+		ParserSyntax syntax = codeMirrorJSNI.getSyntax();
 		if (configuration != null) {
 			codeMirrorJSNI = new CodeMirrorJSNI(configuration, text, syntax);
 		} else {
@@ -101,7 +101,7 @@ public class CodeMirrorEditorWidget extends Composite implements Constants {
 		this.codeMirrorJSNI = codeMirrorJSNI;
 	}
 
-	public void setSyntax(SyntaxLanguage syntax) {
+	public void setSyntax(ParserSyntax syntax) {
 		codeMirrorJSNI.setSyntax(syntax);
 	}
 	

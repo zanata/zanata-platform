@@ -12,26 +12,26 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
 
-public class SyntaxSelectorWidget extends Composite implements HasValue<SyntaxLanguage> {
-	private SyntaxLanguage syntax; 
+public class SyntaxSelectorWidget extends Composite implements HasValue<ParserSyntax> {
+	private ParserSyntax syntax; 
 	ListBox listBox = new ListBox();
 	public SyntaxSelectorWidget() {
-		this(SyntaxLanguage.NONE);
+		this(ParserSyntax.NONE);
 	}
 
-	public SyntaxSelectorWidget(SyntaxLanguage syntax) {
-		this.syntax = syntax;
+	public SyntaxSelectorWidget(ParserSyntax initialSyntax) {
+		this.syntax = initialSyntax;
 
 		Panel panel = new HorizontalPanel();
 		panel.add(new Label("Highlighting: "));
-		addItem("Plain text", SyntaxLanguage.NONE);
-		addItem("JavaScript", SyntaxLanguage.JAVASCRIPT);
-		addItem("XML", SyntaxLanguage.XML);
-		addItem("HTML+", SyntaxLanguage.MIXED);
+		addItem(ParserSyntax.NONE);
+		addItem(ParserSyntax.JAVASCRIPT);
+		addItem(ParserSyntax.XML);
+		addItem(ParserSyntax.MIXED);
 		listBox.addChangeHandler(new ChangeHandler() {
 			public void onChange(ChangeEvent event) {
 				String syntaxName = listBox.getValue(listBox.getSelectedIndex());
-				SyntaxLanguage syntax = SyntaxLanguage.valueOf(syntaxName);
+				ParserSyntax syntax = ParserSyntax.valueOf(syntaxName);
 				setValue(syntax, true);
 			}
 		});
@@ -39,27 +39,27 @@ public class SyntaxSelectorWidget extends Composite implements HasValue<SyntaxLa
 		initWidget(panel);
 	}
 
-	private void addItem(String name, final SyntaxLanguage buttonSyntax) {
-		listBox.addItem(name, buttonSyntax.name());
+	private void addItem(final ParserSyntax buttonSyntax) {
+		listBox.addItem(buttonSyntax.getShortDesc(), buttonSyntax.name());
 		if (syntax == buttonSyntax)
 			listBox.setSelectedIndex(listBox.getItemCount()-1);
 	}
 	
-	public SyntaxLanguage getValue() {
+	public ParserSyntax getValue() {
 		return syntax;
 	}
 
 	public HandlerRegistration addValueChangeHandler(
-			ValueChangeHandler<SyntaxLanguage> handler) {
+			ValueChangeHandler<ParserSyntax> handler) {
 		return addHandler(handler, ValueChangeEvent.getType());
 	}
 
-	public void setValue(SyntaxLanguage value) {
+	public void setValue(ParserSyntax value) {
 		setValue(value, false);
 	}
 
-	public void setValue(SyntaxLanguage value, boolean fireEvents) {
-		SyntaxLanguage oldValue = this.syntax;
+	public void setValue(ParserSyntax value, boolean fireEvents) {
+		ParserSyntax oldValue = this.syntax;
 		this.syntax = value;
 		if (fireEvents)
 			ValueChangeEvent.fireIfNotEqual(this, oldValue, value);
