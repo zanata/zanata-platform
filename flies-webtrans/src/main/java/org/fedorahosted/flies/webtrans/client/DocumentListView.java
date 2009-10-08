@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.ImageBundle;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeImages;
 import com.google.gwt.user.client.ui.TreeItem;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.ImageBundle.Resource;
 
@@ -31,6 +32,8 @@ public class DocumentListView extends CaptionPanel implements DocumentListPresen
 	
 	public DocumentListView() {		
 
+		super();
+		
 	    // Create a tree with a few items in it.
 	    Tree root = new Tree(images);
 	    
@@ -57,7 +60,6 @@ public class DocumentListView extends CaptionPanel implements DocumentListPresen
 	    root.addItem(new TreeItem("item3"));
 
 	    add(root);
-
 	}
 
 	@Override
