@@ -11,7 +11,7 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.weborient.codemirror.client.CodeMirrorEditorWidget;
-import com.weborient.codemirror.client.SyntaxLanguage;
+import com.weborient.codemirror.client.ParserSyntax;
 
 public class WebTransLayoutContainer extends Composite {
 
@@ -40,22 +40,22 @@ public class WebTransLayoutContainer extends Composite {
 		noneButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent ce) {
-				targetWidget.setSyntax(SyntaxLanguage.NONE);
+				targetWidget.setSyntax(ParserSyntax.NONE);
 			}});
 		jsButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent ce) {
-				targetWidget.setSyntax(SyntaxLanguage.JAVASCRIPT);
+				targetWidget.setSyntax(ParserSyntax.JAVASCRIPT);
 			}});
 		xmlButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent ce) {
-				targetWidget.setSyntax(SyntaxLanguage.XML);
+				targetWidget.setSyntax(ParserSyntax.XML);
 			}});
 		mixedButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent ce) {
-				targetWidget.setSyntax(SyntaxLanguage.MIXED);
+				targetWidget.setSyntax(ParserSyntax.MIXED);
 			}});
 
 		vPanel.add(targetWidget);
