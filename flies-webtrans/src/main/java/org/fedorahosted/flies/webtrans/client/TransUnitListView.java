@@ -30,6 +30,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 import com.weborient.codemirror.client.HighlightingLabel;
 import com.weborient.codemirror.client.ParserSyntax;
@@ -135,6 +137,14 @@ public class TransUnitListView extends Composite implements
 
 		FlexCellFormatter headerFormatter = footerTable.getFlexCellFormatter();
 		toolbar = new FlowPanel();
+		HighlightingLabel source = new HighlightingLabel("Source view goes <location alias=\"here\"/>", syntaxWidget);
+		source.setWidth("45%");
+		toolbar.add(source);
+		final TextArea editor = new TextArea();
+		editor.setText("Editor goes here");
+		editor.setWidth("45%");
+		toolbar.add(editor);
+		syntaxWidget.setWidth("10%");
 		toolbar.add(syntaxWidget);
 		footerTable.setWidget(0, 0, toolbar);
 		headerFormatter.setColSpan(0, 0, 2);
