@@ -21,7 +21,10 @@ import org.fedorahosted.flies.webtrans.client.WorkspaceUsersView;
 import com.google.inject.Singleton;
 
 public class WebTransClientModule extends AbstractPresenterModule {
-	
+
+	/**
+	 * The Binding EDSL is described in {@link com.google.inject.Binder}
+	 */
 	@Override
 	protected void configure() {		
 		bind(EventBus.class).to(DefaultEventBus.class).in(Singleton.class);
