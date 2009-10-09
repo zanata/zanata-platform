@@ -46,14 +46,16 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 
 	@Override
 	protected void onBind() {
-		eventBus.addHandler(WindowResizeEvent.getType(), new ResizeHandler() {
-			
-			@Override
-			public void onResize(ResizeEvent event) {
-				Log.info("handling resize in LeftNavigationPresenter");
-				display.asWidget().setHeight(event.getHeight() + "px");
-			}
-		});
+		// Disabled: This pushes the footer (DockPanel.SOUTH) off the bottom of the visible window
+//		eventBus.addHandler(WindowResizeEvent.getType(), new ResizeHandler() {
+//			
+//			@Override
+//			public void onResize(ResizeEvent event) {
+//				Log.info("handling resize in LeftNavigationPresenter");
+//				display.asWidget().setHeight(event.getHeight() + "px");
+//			}
+//		});
+		display.asWidget().setHeight("100%");
 		display.getWidgets().add(documentListPresenter.getDisplay().asWidget());
 		display.getWidgets().add(workspaceUsersPresenter.getDisplay().asWidget());
 	}
