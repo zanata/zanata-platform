@@ -4,6 +4,10 @@ syntax: glob
 */target/*
 */fliessearchindex/*
 */test-output/*
+
+hs_err_pid*.log
+tomcat
+
 syntax: regexp
 \.jar$
 
