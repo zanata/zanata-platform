@@ -17,13 +17,13 @@ public class DocumentListView extends CaptionPanel implements DocumentListPresen
 
 	public interface Images extends ImageBundle, TreeImages {
 
-		@Resource("org/fedorahosted/flies/webtrans/images/silk/world.png")
+		@Resource("org/fedorahosted/flies/webtrans/images/silk/folder_page_white.png")
 		AbstractImagePrototype treeOpen();
 
-		@Resource("org/fedorahosted/flies/webtrans/images/silk/world.png")
+		@Resource("org/fedorahosted/flies/webtrans/images/silk/folder_page_white.png")
 		AbstractImagePrototype treeClosed();
 
-		@Resource("org/fedorahosted/flies/webtrans/images/silk/user.png")
+		@Resource("org/fedorahosted/flies/webtrans/images/silk/page_white_text.png")
 		AbstractImagePrototype treeLeaf();
 
 	}
