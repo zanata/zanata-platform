@@ -13,6 +13,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.table.event.client.HasPageChangeHandlers;
 import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
 import com.google.gwt.gen2.table.event.client.PageChangeEvent;
@@ -36,13 +38,10 @@ public class TransUnitListPresenter  extends WidgetPresenter<TransUnitListPresen
 		HasPageCountChangeHandlers getPageCountChangeHandlers();
 	}
 
-	private final PagerPresenter pagerPresenter;
-	
 	@Inject
-	public TransUnitListPresenter(final Display display, final EventBus eventBus, PagerPresenter pagerPresenter) {
+	public TransUnitListPresenter(final Display display, final EventBus eventBus) {
 		super(display, eventBus);
 		//this.dispatcher = dispatcher;
-		this.pagerPresenter = pagerPresenter;
 		bind();
 	}
 	
@@ -55,7 +54,30 @@ public class TransUnitListPresenter  extends WidgetPresenter<TransUnitListPresen
 	
 	@Override
 	protected void onBind() {
-		display.getToolbar().add(pagerPresenter.getDisplay().asWidget());
+		final Pager pager = new Pager();
+		
+		pager.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Integer> event) {
+				display.getPageNavigation().gotoPage(event.getValue(), false);
+			}
+		});
+		
+		display.getPageCountChangeHandlers().addPageCountChangeHandler(new PageCountChangeHandler() {
+			@Override
+			public void onPageCountChange(PageCountChangeEvent event) {
+				pager.setPageCount(event.getNewPageCount());
+			}
+		});
+		
+		display.getPageChangeHandlers().addPageChangeHandler(new PageChangeHandler() {
+			@Override
+			public void onPageChange(PageChangeEvent event) {
+				pager.setValue(event.getNewPage());
+			}
+		});
+		
+		display.getToolbar().add(pager);
 		
 		display.getSelectionHandlers().addSelectionHandler(new SelectionHandler<TransUnit>() {
 			@Override
@@ -66,9 +88,6 @@ public class TransUnitListPresenter  extends WidgetPresenter<TransUnitListPresen
 				}
 			}
 		});
-		
-		display.getPageChangeHandlers().addPageChangeHandler(pagerPresenter);
-		display.getPageCountChangeHandlers().addPageCountChangeHandler(pagerPresenter);
 		
 	}
 

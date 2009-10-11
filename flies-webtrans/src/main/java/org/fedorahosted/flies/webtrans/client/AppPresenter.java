@@ -34,9 +34,9 @@ public class AppPresenter {
 		container.clear();
 		
 		final DockPanel dockPanel = new DockPanel();
-		final Label appFooter = new HTML("<span style=\"float: left\">Flies page footer goes here</span><span style=\"float: right\">Flies page footer goes here</span>");
-		appFooter.setHeight("1em");
-		dockPanel.add(appFooter, DockPanel.SOUTH);
+		//final Label appFooter = new HTML("<span style=\"float: left\">Flies page footer goes here</span><span style=\"float: right\">Flies page footer goes here</span>");
+		//appFooter.setHeight("1em");
+		//dockPanel.add(appFooter, DockPanel.SOUTH);
 		Widget center = transUnitListPresenter.getDisplay().asWidget();
 		Widget west = westNavigationPresenter.getDisplay().asWidget();
 		dockPanel.add(center, DockPanel.CENTER );
