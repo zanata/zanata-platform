@@ -33,4 +33,4 @@ temp-testng-customsuite.xml$
 ^flies-webtrans/war/
 ^flies-webtrans/tomcat
 ^flies-webtrans/.gwt-tmp
-^flies-webtrans/org.fedorahosted.flies.webtrans.Application
+^flies-webtrans/org.fedorahosted.flies.webtrans.Application.launch$
