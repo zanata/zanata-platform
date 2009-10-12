@@ -10,7 +10,7 @@ import com.google.gwt.gen2.table.client.MutableTableModel;
 import com.google.gwt.gen2.table.client.TableModelHelper.Request;
 import com.google.gwt.gen2.table.client.TableModelHelper.SerializableResponse;
 
-public class DataSourceTableModel extends MutableTableModel<TransUnit> {
+public class TransUnitTableModel extends MutableTableModel<TransUnit> {
 
 	@Override
 	protected boolean onRowInserted(int beforeRow) {

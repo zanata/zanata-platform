@@ -19,3 +19,24 @@
 	font-size: 15px;
 	color: grey;
 }
+
+.gwt-ScrollTable .dataTable tr.highlighted td{
+  background: #C3D9FF;
+  cursor: hand;
+}
+
+.gwt-ScrollTable .dataTable tr.highlighted{
+}
+
+/*
+.gwt-ScrollTable .dataTable td.highlighted {
+  background: inherit;
+}
+*/
+
+.gwt-ScrollTable .dataTable tr.selected td {
+  background: #7AA5ff;
+}
+.gwt-ScrollTable .dataTable tr.selected {
+	border: 2px solid red;
+}

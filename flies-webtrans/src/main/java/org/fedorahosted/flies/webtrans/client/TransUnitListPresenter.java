@@ -77,7 +77,7 @@ public class TransUnitListPresenter  extends WidgetPresenter<TransUnitListPresen
 			}
 		});
 		
-		display.getToolbar().add(pager);
+		//display.getToolbar().add(pager);
 		
 		display.getSelectionHandlers().addSelectionHandler(new SelectionHandler<TransUnit>() {
 			@Override
