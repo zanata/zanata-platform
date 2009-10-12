@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.webtrans.editor;
+package org.fedorahosted.flies.webtrans.client.ui;
 
 public interface HasPageCount {
 	public void setPageCount(int pageCount);
