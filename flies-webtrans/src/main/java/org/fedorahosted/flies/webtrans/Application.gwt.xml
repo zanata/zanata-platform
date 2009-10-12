@@ -37,5 +37,6 @@
     
       <source path="client" />
       <source path="model" />
+      <source path="editor" />
 
 </module>
