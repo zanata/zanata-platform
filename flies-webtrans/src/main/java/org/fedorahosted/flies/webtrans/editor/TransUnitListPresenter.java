@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.webtrans.client;
+package org.fedorahosted.flies.webtrans.editor;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
@@ -6,6 +6,7 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.fedorahosted.flies.webtrans.client.ui.Pager;
 import org.fedorahosted.flies.webtrans.model.TransUnit;
 
 import com.google.gwt.event.dom.client.ClickEvent;

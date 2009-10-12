@@ -1,4 +1,6 @@
-package org.fedorahosted.flies.webtrans.client;
+package org.fedorahosted.flies.webtrans.client.ui;
+
+import org.fedorahosted.flies.webtrans.editor.HasPageCount;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;

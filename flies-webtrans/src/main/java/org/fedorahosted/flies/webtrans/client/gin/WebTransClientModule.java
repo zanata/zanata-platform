@@ -6,19 +6,19 @@ import net.customware.gwt.presenter.client.gin.AbstractPresenterModule;
 import net.customware.gwt.presenter.client.place.PlaceManager;
 
 import org.fedorahosted.flies.webtrans.client.AppPresenter;
-import org.fedorahosted.flies.webtrans.client.CachedTransUnitTableModel;
 import org.fedorahosted.flies.webtrans.client.DocumentListPresenter;
 import org.fedorahosted.flies.webtrans.client.DocumentListView;
-import org.fedorahosted.flies.webtrans.client.HasPageNavigation;
-import org.fedorahosted.flies.webtrans.client.Pager;
-import org.fedorahosted.flies.webtrans.client.TransUnitListPresenter;
-import org.fedorahosted.flies.webtrans.client.TransUnitListView;
-import org.fedorahosted.flies.webtrans.client.TransUnitTableDefinition;
-import org.fedorahosted.flies.webtrans.client.TransUnitTableModel;
 import org.fedorahosted.flies.webtrans.client.WestNavigationPresenter;
 import org.fedorahosted.flies.webtrans.client.WestNavigationView;
 import org.fedorahosted.flies.webtrans.client.WorkspaceUsersPresenter;
 import org.fedorahosted.flies.webtrans.client.WorkspaceUsersView;
+import org.fedorahosted.flies.webtrans.client.ui.Pager;
+import org.fedorahosted.flies.webtrans.editor.CachedTransUnitTableModel;
+import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
+import org.fedorahosted.flies.webtrans.editor.TransUnitListPresenter;
+import org.fedorahosted.flies.webtrans.editor.TransUnitListView;
+import org.fedorahosted.flies.webtrans.editor.TransUnitTableDefinition;
+import org.fedorahosted.flies.webtrans.editor.TransUnitTableModel;
 
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Singleton;

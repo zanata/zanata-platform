@@ -3,6 +3,7 @@ package org.fedorahosted.flies.webtrans.client;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.fedorahosted.flies.webtrans.client.Application.WindowResizeEvent;
+import org.fedorahosted.flies.webtrans.editor.TransUnitListPresenter;
 
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;

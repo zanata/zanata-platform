@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.webtrans.client;
+package org.fedorahosted.flies.webtrans.editor;
 
 import java.util.ArrayList;
 
