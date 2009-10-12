@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.webtrans.client.ui;
 
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -24,9 +25,14 @@ public class CaptionPanel extends DecoratorPanel {
 		headPanel = new HeadingPanel();
 		bodyPanel = new VerticalPanel();
 	}
-		
-	public void addHeading(Widget widget) {
+	
+	public void addHead(String title) {
+		this.addHead(new Label(title));
+	}
+	
+	public void addHead(Widget widget) {
 		headPanel.add(widget);
+		headPanel.add(new Button("^"));
 	}
 	
 	public void addBody(Widget widget) {

@@ -19,3 +19,10 @@
 	font-size: 15px;
 	color: grey;
 }
+
+.gwt-HeadingPanel{
+    font-style: bold;
+    text-align: center;
+    width: 100%;
+    background-color: d0e4f6;
+}

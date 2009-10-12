@@ -19,7 +19,7 @@ public class DocumentListView extends CaptionPanel implements DocumentListPresen
 
 	public interface Images extends ImageBundle, TreeImages {
 
-		@Resource("org/fedorahosted/flies/webtrans/images/silk/folder_page_white.png")
+		@Resource("org/fedorahosted/flies/webtrans/images/silk/folder.png")
 		AbstractImagePrototype treeOpen();
 
 		@Resource("org/fedorahosted/flies/webtrans/images/silk/folder_page_white.png")
@@ -61,7 +61,7 @@ public class DocumentListView extends CaptionPanel implements DocumentListPresen
 	    
 	    root.addItem(new TreeItem("item3"));
 
-	    addHeading(new Label("Documents"));
+	    addHead("Documents");
 	    addBody(root);
 	    initPanel();
 	}
