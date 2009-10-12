@@ -20,6 +20,12 @@
 	color: grey;
 }
 
+.gwt-HeadingPanel{
+    font-style: bold;
+    width: 100%;
+    background-color: d0e4f6;
+}
+
 .gwt-ScrollTable .dataTable tr.highlighted td{
   background: #C3D9FF;
   cursor: hand;

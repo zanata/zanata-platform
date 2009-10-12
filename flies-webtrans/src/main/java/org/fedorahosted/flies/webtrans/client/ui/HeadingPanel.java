@@ -3,23 +3,33 @@ package org.fedorahosted.flies.webtrans.client.ui;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DecoratorPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class HeadingPanel extends DecoratorPanel {
+public class HeadingPanel extends HorizontalPanel {
 
-	private Widget heading;
+	private Widget mainWidget;
+	private Button collapseButton;
 
 	public HeadingPanel() {
-		addStyleName("gwt-HeadingPanel");
+		setStyleName("gwt-HeadingPanel");
 	}
 	
-	public void setHeadingWidget(Widget heading) {
-		this.heading = heading;
-		getCellElement(0, 1).appendChild(heading.getElement());
-		adopt(heading);
+	public HeadingPanel(Widget widget) {
+		this();
 	}
-
+	
+	public void setHeadingWidget(Widget widget) {
+		
+		//add(collapseButton);
+		//getCellElement(0, 1).appendChild(heading.getElement());
+		//adopt(this.heading);
+	}
+/*
 	public Iterator<Widget> iterator() {
 		final Iterator<Widget> superIterator = super.iterator();
 		return new Iterator<Widget>() {
@@ -44,5 +54,10 @@ public class HeadingPanel extends DecoratorPanel {
 				throw new UnsupportedOperationException();
 			}
 		};
+	}
+	*/
+	
+	public Widget getWidget() {
+		return this;
 	}
 }

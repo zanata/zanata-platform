@@ -4,7 +4,12 @@
   <groupId>com.weborient.codemirror</groupId>
   <artifactId>gwt-codemirror</artifactId>
   <name>gwt-codemirror</name>
-  <description>source code editor with syntax highlighting</description>
+  <description>
+  	A GWT wrapper for CodeMirror, a source code editor with syntax highlighting.
+  	
+  	CodeMirror's web site is http://marijn.haverbeke.nl/codemirror/.
+  	gwt-codemirror's web site is http://code.google.com/p/gwt-codemirror/.
+  </description>
   <version>0.5-SNAPSHOT</version>
   <packaging>jar</packaging>
   
