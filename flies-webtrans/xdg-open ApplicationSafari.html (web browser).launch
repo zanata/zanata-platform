@@ -3,5 +3,5 @@
 <booleanAttribute key="org.eclipse.debug.core.capture_output" value="false"/>
 <booleanAttribute key="org.eclipse.debug.ui.ATTR_CONSOLE_OUTPUT_ON" value="false"/>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="/usr/bin/xdg-open"/>
-<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="${resource_loc:/flies-webtrans/src/test/resources/org/fedorahosted/flies/webtrans/public/ApplicationSafari.html}"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="${resource_loc:/flies-webtrans/target/webtrans/org.fedorahosted.flies.webtrans.ApplicationSafari/ApplicationSafari.html}"/>
 </launchConfiguration>
