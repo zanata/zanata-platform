@@ -1,11 +1,13 @@
 package org.fedorahosted.flies.webtrans.client;
 
 import org.fedorahosted.flies.webtrans.client.WorkspaceUsersView.Images;
+import org.fedorahosted.flies.webtrans.client.ui.CaptionPanel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ImageBundle;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeImages;
 import com.google.gwt.user.client.ui.TreeItem;
@@ -59,7 +61,9 @@ public class DocumentListView extends CaptionPanel implements DocumentListPresen
 	    
 	    root.addItem(new TreeItem("item3"));
 
-	    add(root);
+	    addHeading(new Label("Documents"));
+	    addBody(root);
+	    initPanel();
 	}
 
 	@Override

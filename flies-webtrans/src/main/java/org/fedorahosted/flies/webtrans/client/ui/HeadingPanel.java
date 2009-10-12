@@ -4,9 +4,12 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import com.google.gwt.user.client.ui.DecoratorPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class HeadingPanel extends DecoratorPanel {
+public class HeadingPanel extends HorizontalPanel {
 
 	private Widget heading;
 
@@ -14,10 +17,15 @@ public class HeadingPanel extends DecoratorPanel {
 		addStyleName("gwt-HeadingPanel");
 	}
 	
+	public HeadingPanel(Widget heading) {
+		this();
+		setHeadingWidget(heading);
+	}
+	
 	public void setHeadingWidget(Widget heading) {
 		this.heading = heading;
-		getCellElement(0, 1).appendChild(heading.getElement());
-		adopt(heading);
+		//getCellElement(0, 1).appendChild(heading.getElement());
+		//adopt(this.heading);
 	}
 
 	public Iterator<Widget> iterator() {
@@ -44,5 +52,9 @@ public class HeadingPanel extends DecoratorPanel {
 				throw new UnsupportedOperationException();
 			}
 		};
+	}
+	
+	public Widget getWidget() {
+		return this;
 	}
 }
