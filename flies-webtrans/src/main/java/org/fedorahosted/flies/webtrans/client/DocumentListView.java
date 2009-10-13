@@ -1,19 +1,15 @@
 package org.fedorahosted.flies.webtrans.client;
 
-import org.fedorahosted.flies.webtrans.client.WorkspaceUsersView.Images;
 import org.fedorahosted.flies.webtrans.client.ui.CaptionPanel;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ImageBundle;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeImages;
 import com.google.gwt.user.client.ui.TreeItem;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.ImageBundle.Resource;
 
 public class DocumentListView extends CaptionPanel implements DocumentListPresenter.Display {
 
@@ -31,21 +27,21 @@ public class DocumentListView extends CaptionPanel implements DocumentListPresen
 	}
 
 	private static Images images = (Images) GWT.create(Images.class);
+	private Tree tree;
 	
 	public DocumentListView() {		
 
 		super();
 		
-	    // Create a tree with a few items in it.
-	    Tree root = new Tree(images);
+	    tree = new Tree(images);
 	    
 	    TreeItem item0 = new TreeItem("item0");
 	    TreeItem item1 = new TreeItem("item1");
 	    TreeItem item2 = new TreeItem("item2");
 	    
-	    root.addItem(item0);
-	    root.addItem(item1);
-	    root.addItem(item2);
+	    tree.addItem(item0);
+	    tree.addItem(item1);
+	    tree.addItem(item2);
 	    
 	    item0.addItem(new TreeItem("item0.1"));
 	    item0.addItem(new TreeItem("item0.2"));
@@ -59,10 +55,10 @@ public class DocumentListView extends CaptionPanel implements DocumentListPresen
 	    item2.addItem(new TreeItem("item2.3"));
 	    item2.addItem(new TreeItem("item2.4"));
 	    
-	    root.addItem(new TreeItem("item3"));
+	    tree.addItem(new TreeItem("item3"));
 
 	    addHead("Documents");
-	    addBody(root);
+	    addBody(tree);
 	    initPanel();
 	}
 
@@ -81,6 +77,11 @@ public class DocumentListView extends CaptionPanel implements DocumentListPresen
 	public void stopProcessing() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public HasSelectionHandlers<TreeItem> getTree() {
+		return tree;
 	}
 
 }
