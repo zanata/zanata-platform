@@ -9,6 +9,7 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apache.tools.ant.BuildException;
 import org.fedorahosted.flies.adapter.properties.PropWriter;
+import org.fedorahosted.flies.rest.ClientUtility;
 import org.fedorahosted.flies.rest.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.IDocumentsResource;
 import org.fedorahosted.flies.rest.dto.Document;
@@ -47,7 +48,7 @@ public class Docs2PropsTask extends BaseTask {
 				IDocumentsResource documentsResource = factory.getDocumentsResource(srcURL.toURI());
 				ClientResponse<Documents> response  = documentsResource.getDocuments();
 
-				Utility.checkResult(response, srcURL);
+				ClientUtility.checkResult(response, srcURL);
 				docList = response.getEntity().getDocuments();
 			}
 

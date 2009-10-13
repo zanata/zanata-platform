@@ -6,11 +6,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Arrays;
 
-import javax.ws.rs.core.Response;
-
-import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
-import org.jboss.resteasy.client.core.BaseClientResponse;
 
 class Utility {
 
@@ -35,26 +31,6 @@ class Utility {
             srcURL = srcFile.toURI().toURL();
         }
         return srcURL;
-    }
-    
-    public static void checkResult(Response response, URL url) {
-	if (response.getStatus() >= 399) {
-	    String annots = "";
-	    String entity = "";
-	    if (response instanceof BaseClientResponse) {
-		BaseClientResponse resp = (BaseClientResponse) response;
-		annots = Arrays.asList(resp.getAnnotations()).toString();
-		try {
-			entity = ", entity: "+resp.getEntity(String.class);
-		} catch (Exception e) {
-			entity = "";
-		}
-	    }
-	    throw new BuildException(
-	    		"operation returned "+response.getStatus()+": "+
-	    		Response.Status.fromStatusCode(response.getStatus())+
-	    		entity+", url: "+url+", annotations: "+annots);
-	}
     }
     
     public static String toString(ClassLoader loader) {

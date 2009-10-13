@@ -4,7 +4,6 @@ import java.io.File;
 import java.net.URL;
 import java.util.List;
 
-import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
@@ -14,10 +13,12 @@ import org.apache.tools.ant.types.selectors.FileSelector;
 import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.adapter.properties.PropReader;
+import org.fedorahosted.flies.rest.ClientUtility;
 import org.fedorahosted.flies.rest.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.IDocumentsResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Documents;
+import org.jboss.resteasy.client.ClientResponse;
 
 public class Props2DocsTask extends BaseTask {
 
@@ -79,8 +80,8 @@ public class Props2DocsTask extends BaseTask {
 				// send project to rest api
 				FliesClientRequestFactory factory = new FliesClientRequestFactory(user, apiKey);
 				IDocumentsResource documentsResource = factory.getDocumentsResource(dstURL.toURI());
-				Response response = documentsResource.put(docs);
-				Utility.checkResult(response, dstURL);
+				ClientResponse response = documentsResource.put(docs);
+				ClientUtility.checkResult(response, dstURL);
 			}
 
 		} catch (Exception e) {

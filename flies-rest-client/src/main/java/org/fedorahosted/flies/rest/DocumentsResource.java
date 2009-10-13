@@ -6,7 +6,6 @@ import javax.ws.rs.core.Response;
 
 import org.fedorahosted.flies.rest.client.IDocumentResource;
 import org.fedorahosted.flies.rest.client.IDocumentsResource;
-import org.fedorahosted.flies.rest.client.IProjectIterationResource;
 import org.fedorahosted.flies.rest.dto.Documents;
 import org.jboss.resteasy.client.ClientResponse;
 
@@ -34,12 +33,12 @@ public class DocumentsResource implements IDocumentsResource{
 	}
 
 	@Override
-	public Response post(Documents documents) {
+	public ClientResponse post(Documents documents) {
 		return documentsResource.post(documents);
 	}
 
 	@Override
-	public Response put(Documents documents) {
+	public ClientResponse put(Documents documents) {
 		return documentsResource.put(documents);
 	}
 	
