@@ -34,17 +34,16 @@ public class WebTransTableModel extends MutableTableModel<TransUnit> {
 		int numRows = request.getNumRows();
 		
 		Log.info("Requesting " + numRows + " rows");
-		
-		ArrayList<TransUnit> units = generateSampleData(numRows);
+		ArrayList<TransUnit> units = generateSampleData(numRows, request.getStartRow());
 		SerializableResponse<TransUnit> response = new SerializableResponse<TransUnit>(
 				units);
 		callback.onRowsReady(request, response);
 	}
 
-	private ArrayList<TransUnit> generateSampleData(int numRows) {
+	private ArrayList<TransUnit> generateSampleData(int numRows, int start) {
 		ArrayList<TransUnit> units = new ArrayList<TransUnit>();
 		for(int i=0;i<numRows; i++) {
-			TransUnit unit = new TransUnit("<hellow num=\"" + i+"\" />", "<world> \"" + i+"\"</world>");
+			TransUnit unit = new TransUnit("<hellow num=\"" + (i+start) + "\" />", "<world> \"" + (i+start) +"\"</world>");
 			unit.setFuzzy(Math.random() > 0.7);
 			units.add(unit);
 		}

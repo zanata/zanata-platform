@@ -36,8 +36,10 @@ public class WebTransEditorFooter extends HorizontalPanel{
 		status = new Label("[Status goes here]");
 		add(status);
 		setCellHorizontalAlignment(status, HorizontalPanel.ALIGN_RIGHT);
-		
-		
-		
 	}
+	
+	public Pager getPager() {
+		return pager;
+	}
+	
 }
