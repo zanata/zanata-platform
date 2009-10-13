@@ -27,11 +27,17 @@
 }
 
 .gwt-ScrollTable .dataTable tr.highlighted td{
-  background: #C3D9FF;
+  background: #DFEFFF;
   cursor: hand;
 }
 
 .gwt-ScrollTable .dataTable tr.highlighted{
+}
+
+.gwt-ScrollTable .dataTable tr.even-row{
+	background-color: #fafaff;
+}
+.gwt-ScrollTable .dataTable tr.odd-row{
 }
 
 /*
@@ -41,8 +47,6 @@
 */
 
 .gwt-ScrollTable .dataTable tr.selected td {
-  background: #7AA5ff;
+  background: #C3D9FF;
 }
-.gwt-ScrollTable .dataTable tr.selected {
-	border: 2px solid red;
-}
+
