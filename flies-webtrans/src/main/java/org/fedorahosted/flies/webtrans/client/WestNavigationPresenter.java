@@ -65,13 +65,6 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 		display.getWidgets().add(transUnitInfoPresenter.getDisplay().asWidget());
 		display.getWidgets().add(workspaceUsersPresenter.getDisplay().asWidget());
 
-		documentListPresenter.addValueChangeHandler(new ValueChangeHandler<String>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<String> event) {
-				Log.info("selected document: "+event.getValue());
-			}
-		});
-
 	}
 
 	@Override
@@ -82,8 +75,8 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 
 	@Override
 	protected void onUnbind() {
-		// TODO Auto-generated method stub
-		
+		documentListPresenter.unbind();
+		workspaceUsersPresenter.unbind();
 	}
 
 	@Override
