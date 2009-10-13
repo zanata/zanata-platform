@@ -31,14 +31,16 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 
 	private final WorkspaceUsersPresenter workspaceUsersPresenter;
 	private final DocumentListPresenter documentListPresenter;
+	private final TransUnitInfoPresenter transUnitInfoPresenter;
 
 	
 	@Inject
-	public WestNavigationPresenter(final Display display, final EventBus eventBus, WorkspaceUsersPresenter workspaceUsersPresenter, DocumentListPresenter documentListPresenter){//, final DispatchAsync dispatcher) {
+	public WestNavigationPresenter(final Display display, final EventBus eventBus, WorkspaceUsersPresenter workspaceUsersPresenter, DocumentListPresenter documentListPresenter,TransUnitInfoPresenter transUnitInfoPresenter){//, final DispatchAsync dispatcher) {
 		super(display, eventBus);
 		//this.dispatcher = dispatcher;
 		this.workspaceUsersPresenter = workspaceUsersPresenter;
 		this.documentListPresenter = documentListPresenter;
+		this.transUnitInfoPresenter = transUnitInfoPresenter;
 		bind();
 	}
 
@@ -60,6 +62,7 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 //		});
 		display.asWidget().setHeight("100%");
 		display.getWidgets().add(documentListPresenter.getDisplay().asWidget());
+		display.getWidgets().add(transUnitInfoPresenter.getDisplay().asWidget());
 		display.getWidgets().add(workspaceUsersPresenter.getDisplay().asWidget());
 
 		documentListPresenter.addValueChangeHandler(new ValueChangeHandler<String>() {
