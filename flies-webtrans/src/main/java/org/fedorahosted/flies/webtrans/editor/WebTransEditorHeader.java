@@ -15,10 +15,10 @@ public class WebTransEditorHeader extends HorizontalPanel{
 
 	public WebTransEditorHeader() {
 		setHeight("20px");
-		add(new Label("[Hello World]"));
-		add(new Pager());
+		setWidth("100%");
+		add(new Label("[]"));
 		add(new Label("[Filter]"));
-		add(new Label("[View]"));
+		add(new Label("[Additional Toolbar items]"));
 		
 	}
 }
