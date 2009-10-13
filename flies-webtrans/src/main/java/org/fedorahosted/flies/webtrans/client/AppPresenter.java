@@ -3,6 +3,7 @@ package org.fedorahosted.flies.webtrans.client;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.fedorahosted.flies.webtrans.client.Application.WindowResizeEvent;
+import org.fedorahosted.flies.webtrans.client.ui.Pager;
 import org.fedorahosted.flies.webtrans.editor.TransUnitListPresenter;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorFooter;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorHeader;
@@ -40,7 +41,7 @@ public class AppPresenter {
 		//dockPanel.add(appFooter, DockPanel.SOUTH);
 		
 		WebTransEditorHeader webTransHeader = new WebTransEditorHeader();
-		WebTransEditorFooter webTransFooter = new WebTransEditorFooter();
+		WebTransEditorFooter webTransFooter = new WebTransEditorFooter(new Pager());
 
 		VerticalPanel editorPanel = new VerticalPanel();
 		editorPanel.setSize("100%", "100%");

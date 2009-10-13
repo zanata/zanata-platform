@@ -13,12 +13,28 @@ import com.google.gwt.user.client.ui.MenuItem;
 
 public class WebTransEditorFooter extends HorizontalPanel{
 
-	public WebTransEditorFooter() {
+	private final Pager pager;
+	private final Label status;
+	private final Label messages;
+	public WebTransEditorFooter(Pager pager) {
+		this.pager = pager;
+		
 		setHeight("20px");
-		add(new Label("[Hello World]"));
-		add(new Pager());
-		add(new Label("[Filter]"));
-		add(new Label("[View]"));
+		setWidth("100%");
+		setVerticalAlignment(HorizontalPanel.ALIGN_MIDDLE);
+		
+		messages = new Label("[Messages goes here]");
+		add(messages);
+		setCellHorizontalAlignment(messages, HorizontalPanel.ALIGN_LEFT);
+
+		add(pager);
+		setCellHorizontalAlignment(pager, HorizontalPanel.ALIGN_CENTER);
+		
+		status = new Label("[Status goes here]");
+		add(status);
+		setCellHorizontalAlignment(status, HorizontalPanel.ALIGN_RIGHT);
+		
+		
 		
 	}
 }
