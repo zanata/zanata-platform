@@ -10,8 +10,8 @@ public class CachedWebTransTableModel extends CachedTableModel<TransUnit>{
 	@Inject
 	public CachedWebTransTableModel(WebTransTableModel tableModel) {
 		super(tableModel);
-		setPreCachedRowCount(50);
-		setPostCachedRowCount(50);
+		setPreCachedRowCount(200);
+		setPostCachedRowCount(200);
 		setRowCount(1000);
 	}
 
