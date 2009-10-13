@@ -10,10 +10,7 @@ import org.fedorahosted.flies.webtrans.editor.WebTransEditorHeader;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.ui.DockPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -49,11 +46,13 @@ public class AppPresenter {
 		editorPanel.setSize("100%", "100%");
 		editorPanel.add(webTransHeader);
 		editorPanel.setCellHeight(webTransHeader, "20px");
+		transUnitListPresenter.bind();
 		editorPanel.add(transUnitListPresenter.getDisplay().asWidget());
 		editorPanel.add(webTransFooter);
 		editorPanel.setCellHeight(webTransFooter, "20px");
 		
 		Widget center = editorPanel;
+		westNavigationPresenter.bind();
 		Widget west = westNavigationPresenter.getDisplay().asWidget();
 		dockPanel.add(center, DockPanel.CENTER );
 		dockPanel.add(west, DockPanel.WEST );

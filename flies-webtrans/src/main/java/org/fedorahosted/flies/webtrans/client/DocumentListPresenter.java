@@ -1,5 +1,11 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.place.Place;
+import net.customware.gwt.presenter.client.place.PlaceRequest;
+import net.customware.gwt.presenter.client.widget.WidgetDisplay;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -10,12 +16,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.inject.Inject;
-
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.place.Place;
-import net.customware.gwt.presenter.client.place.PlaceRequest;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter.Display> implements HasValue<String> {
 
@@ -33,7 +33,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 	}
 	
 	private String currentDoc;
-	private HandlerRegistration handlerRegistration;
 	
 	@Override
 	public Place getPlace() {
@@ -42,13 +41,13 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
 	@Override
 	protected void onBind() {
-		handlerRegistration = getDisplay().getTree().addSelectionHandler(new SelectionHandler<TreeItem>() {
+		registerHandler(getDisplay().getTree().addSelectionHandler(new SelectionHandler<TreeItem>() {
 			@Override
 			public void onSelection(SelectionEvent<TreeItem> event) {
 //				event.getSelectedItem().getUserObject();
 				setValue(event.getSelectedItem().getText(), true);
 			}
-		});
+		}));
 	}
 
 	@Override
@@ -59,7 +58,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
 	@Override
 	protected void onUnbind() {
-		handlerRegistration.removeHandler();
 	}
 
 	@Override
