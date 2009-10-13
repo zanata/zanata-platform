@@ -13,15 +13,20 @@
 	<servlet>
 		<servlet-name>proxy</servlet-name>
 		<servlet-class>org.fedorahosted.flies.webtrans.server.ProxyServlet</servlet-class>
+		<init-param>
+			<param-name>proxyHost</param-name>
+			<param-value>localhost</param-value>
+		</init-param>
+		<init-param>
+			<param-name>proxyPort</param-name>
+			<param-value>8080</param-value>
+		</init-param>
+		<!-- proxyPath, proxyPort, maxFileUploadSize -->
 	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>proxy</servlet-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/proxy/*</url-pattern>
 	</servlet-mapping>
 
-	<servlet-mapping>
-		<servlet-name>shell</servlet-name>
-		<url-pattern>/servlet/*</url-pattern>
-	</servlet-mapping>
 </web-app>
