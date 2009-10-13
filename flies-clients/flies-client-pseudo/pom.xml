@@ -31,42 +31,33 @@
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
             <version>1.1.1</version>
-            <executions>
-              <execution>
-              	<id>exec1</id>
-              	<phase>integration-test</phase>
-	            <configuration>
-	              <mainClass>org.fedorahosted.flies.client.pseudo.Pseudo</mainClass>
-	              <arguments>
-	              </arguments>
-		          <systemProperties>
-		            <systemProperty>
-		              <key>flies.project</key>
-		              <value>sample-project</value>
-		            </systemProperty>
-		            <systemProperty>
-		              <key>flies.iteration</key>
-		              <value>1.1</value>
-		            </systemProperty>
-		            <systemProperty>
-		              <key>flies.baseUri</key>
-		              <value>http://localhost:8080/flies/seam/resource/restv1/</value>
-		            </systemProperty>
-		            <systemProperty>
-		              <key>flies.user</key>
-		              <value>bob</value>
-		            </systemProperty>
-		            <systemProperty>
-		              <key>flies.apiKey</key>
-		              <value>34567890123456789012345678901234</value>
-		            </systemProperty>
-		          </systemProperties>	              
-	            </configuration>
-                <goals>
-                  <goal>java</goal>
-                </goals>
-              </execution>
-            </executions>
+            <configuration>
+              <mainClass>org.fedorahosted.flies.client.pseudo.Pseudo</mainClass>
+              <arguments>
+              </arguments>
+	          <systemProperties>
+	            <systemProperty>
+	              <key>flies.project</key>
+	              <value>sample-project</value>
+	            </systemProperty>
+	            <systemProperty>
+	              <key>flies.iteration</key>
+	              <value>1.1</value>
+	            </systemProperty>
+	            <systemProperty>
+	              <key>flies.baseUri</key>
+	              <value>http://localhost:8080/flies/seam/resource/restv1/</value>
+	            </systemProperty>
+	            <systemProperty>
+	              <key>flies.user</key>
+	              <value>bob</value>
+	            </systemProperty>
+	            <systemProperty>
+	              <key>flies.apiKey</key>
+	              <value>34567890123456789012345678901234</value>
+	            </systemProperty>
+	          </systemProperties>	              
+            </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

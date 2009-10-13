@@ -4,11 +4,8 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Documents;
@@ -25,7 +22,7 @@ public interface IDocumentsResource {
 	 */
 	@POST
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
-	public Response post(Documents documents);
+	public ClientResponse post(Documents documents);
 	
 	/**
 	 * Replaces the existing set of documents (possibly should be POST to ., not ./replace)
@@ -34,7 +31,7 @@ public interface IDocumentsResource {
 	 */
 	@PUT
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
-	public Response put(Documents documents);
+	public ClientResponse put(Documents documents);
 
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
