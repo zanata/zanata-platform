@@ -44,7 +44,7 @@ public class TransUnitTableDefinition extends DefaultTableDefinition<TransUnit> 
 						TransUnit rowValue,
 						ColumnDefinition<TransUnit, TransUnit> columnDef,
 						AbstractCellView<TransUnit> view) {
-						Label label = new Label(rowValue.getSource());
+					Label label = new HighlightingLabel(rowValue.getSource(), ParserSyntax.MIXED);
 						label.setStylePrimaryName("webtrans-editor-content");
 						label.addStyleName("webtrans-editor-content-source");
 						view.setWidget( label );
@@ -75,7 +75,7 @@ public class TransUnitTableDefinition extends DefaultTableDefinition<TransUnit> 
 						ColumnDefinition<TransUnit, TransUnit> columnDef,
 						AbstractCellView<TransUnit> view) {
 
-					Label label = new Label(rowValue.getTarget());
+					Label label = new HighlightingLabel(rowValue.getTarget(), ParserSyntax.MIXED);
 					label.setStylePrimaryName("webtrans-editor-content");
 					label.addStyleName("webtrans-editor-content-target");
 					view.setWidget( label );
