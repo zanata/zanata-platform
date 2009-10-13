@@ -5,6 +5,9 @@ import org.fedorahosted.flies.webtrans.model.TransUnit;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.client.InlineCellEditor.InlineCellEditorImages;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
@@ -74,10 +77,11 @@ public class InlineTransUnitCellEditor implements CellEditor<TransUnit> {
 	 */
 	private FlexTable layoutTable;
 
-	private Widget cellWidget;
+	private Widget cellViewWidget;
 
 	private TransUnit cellValue;
 	
+	private final TextArea textArea;
 	/**
 	 * Construct a new {@link InlineTransUnitCellEditor}.
 	 * 
@@ -103,12 +107,23 @@ public class InlineTransUnitCellEditor implements CellEditor<TransUnit> {
 		FlexCellFormatter formatter = layoutTable.getFlexCellFormatter();
 		layoutTable.setCellSpacing(0);
 
-		// Add a label
-		setLabel("");
 		formatter.setColSpan(0, 0, 3);
 
+		textArea = new TextArea();
+		textArea.addKeyUpHandler(new KeyUpHandler() {
+			
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				if(event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					accept();
+				}
+				else if(event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE) {
+					cancel();
+				}
+			}
+		});
 		// Add content widget
-		layoutTable.setWidget(1, 0, new TextArea());
+		layoutTable.setWidget(0, 0, textArea);
 
 		// Add accept and cancel buttons
 		setAcceptWidget(images.cellEditorAccept().createImage());
@@ -118,14 +133,30 @@ public class InlineTransUnitCellEditor implements CellEditor<TransUnit> {
 	int row;
 	int col;
 
+	private void restoreView() {
+		if(curCellEditInfo != null && cellViewWidget != null) {
+			curCellEditInfo.getTable().setWidget(row, col, cellViewWidget);
+			cellViewWidget.getParent().setHeight(cellViewWidget.getOffsetHeight()+"px");
+		}
+	}
+	
+	private boolean isDirty(){
+		if(cellValue == null) return false;
+		return !textArea.getText().equals(cellValue.getTarget());
+	}
+	
 	public void editCell(CellEditInfo cellEditInfo, TransUnit cellValue,
 			Callback<TransUnit> callback) {
 
 		// don't allow edits of two cells at once
-	    if(cellWidget != null) {
+		if( isDirty() ) {
 	    	callback.onCancel(cellEditInfo);
 	    	return;
 	    }
+		else{
+			restoreView();
+		}
+		
 		
 		// Save the current values
 		curCallback = callback;
@@ -134,35 +165,17 @@ public class InlineTransUnitCellEditor implements CellEditor<TransUnit> {
 		// Get the info about the cell
 		HTMLTable table = curCellEditInfo.getTable();
 
-		if (cellWidget != null && layoutTable.getParent() != null) {
-			table.setWidget(row, col, cellWidget);
-		}
-
 		row = curCellEditInfo.getRowIndex();
 		col = curCellEditInfo.getCellIndex();
 
-		cellWidget = table.getWidget(row, col);
+		cellViewWidget = table.getWidget(row, col);
 
 		table.setWidget(row, col, layoutTable);
 
+		textArea.setText(cellValue.getTarget());
 		this.cellValue = cellValue;
-	}
-
-	/**
-	 * @return the label text
-	 */
-	public String getLabel() {
-		return layoutTable.getHTML(0, 0);
-	}
-
-	/**
-	 * Set the label for this cell editor.
-	 * 
-	 * @param label
-	 *            the new label
-	 */
-	public void setLabel(String label) {
-		layoutTable.setHTML(0, 0, label);
+		textArea.setFocus(true);
+		
 	}
 
 	/**
@@ -173,15 +186,20 @@ public class InlineTransUnitCellEditor implements CellEditor<TransUnit> {
 		if (!onAccept()) {
 			return;
 		}
-
-
+		cellValue.setTarget(textArea.getText());
+		restoreView();
+		
 		// Send the new cell value to the callback
 		curCallback.onComplete(curCellEditInfo, cellValue);
+		
+		clearSelection();
+	}
+	
+	private void clearSelection() {
 		curCallback = null;
 		curCellEditInfo = null;
-		if (cellWidget != null)
-			cellWidget.setVisible(true);
-		cellWidget = null;
+		cellViewWidget = null;
+		cellValue = null;
 	}
 
 	/**
@@ -193,14 +211,14 @@ public class InlineTransUnitCellEditor implements CellEditor<TransUnit> {
 			return;
 		}
 
+		restoreView();
+		
 		// Call the callback
 		if (curCallback != null) {
 			curCallback.onCancel(curCellEditInfo);
-			curCellEditInfo = null;
-			curCallback = null;
 		}
-		cellWidget = null;
 
+		clearSelection();
 	}
 
 	/**
