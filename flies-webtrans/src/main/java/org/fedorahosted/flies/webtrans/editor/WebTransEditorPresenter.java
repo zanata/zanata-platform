@@ -18,6 +18,7 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 	@Inject
 	public WebTransEditorPresenter(Display display, EventBus eventBus) {
 		super(display, eventBus);
+		bind();
 	}
 
 	@Override
