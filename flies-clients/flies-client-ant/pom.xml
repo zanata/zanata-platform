@@ -74,6 +74,12 @@
               <executions>
                   <execution>
                     <id>runant</id>
+                    <!--
+                      We hook into the install phase so that flies' artifacts
+                      will be available in the m2 repo.  This lets the
+                      maven ant tasks generate a classpath which includes
+                      the just-built artifacts. 
+                     -->
                     <phase>install</phase>
                     <goals>
                       <goal>exec</goal>
