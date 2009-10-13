@@ -59,15 +59,17 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 //			}
 //		});
 		display.asWidget().setHeight("100%");
+		documentListPresenter.bind();
 		display.getWidgets().add(documentListPresenter.getDisplay().asWidget());
+		workspaceUsersPresenter.bind();
 		display.getWidgets().add(workspaceUsersPresenter.getDisplay().asWidget());
 
-		documentListPresenter.addValueChangeHandler(new ValueChangeHandler<String>() {
+		registerHandler(documentListPresenter.addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				Log.info("selected document: "+event.getValue());
 			}
-		});
+		}));
 
 	}
 
@@ -79,8 +81,8 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 
 	@Override
 	protected void onUnbind() {
-		// TODO Auto-generated method stub
-		
+		documentListPresenter.unbind();
+		workspaceUsersPresenter.unbind();
 	}
 
 	@Override
