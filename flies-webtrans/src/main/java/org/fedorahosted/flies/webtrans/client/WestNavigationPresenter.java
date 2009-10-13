@@ -1,18 +1,12 @@
 package org.fedorahosted.flies.webtrans.client;
 
-import org.fedorahosted.flies.webtrans.client.Application.WindowResizeEvent;
-
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -39,7 +33,6 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 		//this.dispatcher = dispatcher;
 		this.workspaceUsersPresenter = workspaceUsersPresenter;
 		this.documentListPresenter = documentListPresenter;
-		bind();
 	}
 
 	@Override

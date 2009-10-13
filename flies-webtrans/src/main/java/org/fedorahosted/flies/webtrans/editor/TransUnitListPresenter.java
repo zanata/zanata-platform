@@ -9,8 +9,6 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.fedorahosted.flies.webtrans.client.ui.Pager;
 import org.fedorahosted.flies.webtrans.model.TransUnit;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -43,7 +41,6 @@ public class TransUnitListPresenter  extends WidgetPresenter<TransUnitListPresen
 	public TransUnitListPresenter(final Display display, final EventBus eventBus) {
 		super(display, eventBus);
 		//this.dispatcher = dispatcher;
-		bind();
 	}
 	
 	@Override
