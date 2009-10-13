@@ -51,16 +51,20 @@ public class Pager extends Composite implements HasPageCount, HasValue<Integer>,
 	public Pager() {
 		HorizontalPanel panel = new HorizontalPanel();
 		initWidget(panel);
+		panel.setVerticalAlignment(HorizontalPanel.ALIGN_MIDDLE);
+		panel.setSpacing(2);
 		firstPage = new Button("&lt;&lt;");
 		lastPage = new Button(">>");
 		nextPage = new Button(">");
 		previousPage = new Button("&lt;");
 		gotoPage = new TextBox();
 		gotoPage.setMaxLength(8);
+		gotoPage.setWidth("40px");
 		pageCountLabel = new Label(" of 0");
 		
 		panel.add(firstPage);
 		panel.add(previousPage);
+		panel.add(new Label("Page "));
 		panel.add(gotoPage);
 		panel.add(pageCountLabel);
 		panel.add(nextPage);
