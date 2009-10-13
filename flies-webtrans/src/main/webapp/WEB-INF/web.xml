@@ -3,9 +3,25 @@
  "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
-	<display-name>Flies WebTrans GWT Application</display-name>	
-	
+	<display-name>Flies WebTrans GWT Application</display-name>
+
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
+
+
+	<servlet>
+		<servlet-name>proxy</servlet-name>
+		<servlet-class>org.fedorahosted.flies.webtrans.server.ProxyServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>proxy</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>shell</servlet-name>
+		<url-pattern>/servlet/*</url-pattern>
+	</servlet-mapping>
 </web-app>
