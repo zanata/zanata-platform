@@ -2,6 +2,7 @@ package org.fedorahosted.flies.webtrans.editor;
 
 import org.fedorahosted.flies.webtrans.model.TransUnit;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -110,6 +111,7 @@ public class InlineTransUnitCellEditor implements CellEditor<TransUnit> {
 		formatter.setColSpan(0, 0, 3);
 
 		textArea = new TextArea();
+		textArea.setWidth("100%");
 		textArea.addKeyUpHandler(new KeyUpHandler() {
 			
 			@Override
@@ -124,6 +126,7 @@ public class InlineTransUnitCellEditor implements CellEditor<TransUnit> {
 		});
 		// Add content widget
 		layoutTable.setWidget(0, 0, textArea);
+		layoutTable.setWidth("100%");
 
 		// Add accept and cancel buttons
 		setAcceptWidget(images.cellEditorAccept().createImage());
@@ -169,7 +172,6 @@ public class InlineTransUnitCellEditor implements CellEditor<TransUnit> {
 		col = curCellEditInfo.getCellIndex();
 
 		cellViewWidget = table.getWidget(row, col);
-
 		table.setWidget(row, col, layoutTable);
 
 		textArea.setText(cellValue.getTarget());
