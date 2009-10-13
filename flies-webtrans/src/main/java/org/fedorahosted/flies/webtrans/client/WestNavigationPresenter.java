@@ -10,8 +10,11 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.inject.Inject;
 
@@ -58,6 +61,14 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 		display.asWidget().setHeight("100%");
 		display.getWidgets().add(documentListPresenter.getDisplay().asWidget());
 		display.getWidgets().add(workspaceUsersPresenter.getDisplay().asWidget());
+
+		documentListPresenter.addValueChangeHandler(new ValueChangeHandler<String>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				Log.info("selected document: "+event.getValue());
+			}
+		});
+
 	}
 
 	@Override
