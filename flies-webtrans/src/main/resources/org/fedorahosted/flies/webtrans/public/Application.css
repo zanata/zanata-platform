@@ -54,6 +54,9 @@
   background: #C3D9FF;
 }
 
+.webtrans-editor-status{
+	background-color: yellow;
+}
 .webtrans-editor-content{
 	font-size: 14px;
 	font-family: sans-serif;

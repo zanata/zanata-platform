@@ -31,41 +31,11 @@ public class TransUnitTableDefinition extends DefaultTableDefinition<TransUnit> 
 		});
 		//this.parserSyntax = parserSyntax;
 
-		addColumnDefinition(new StatusColumnDefinition());
 		addColumnDefinition(new SourceColumnDefinition());
 		addColumnDefinition(new TargetColumnDefinition());
 	}
 
 	
-	private static class StatusColumnDefinition extends AbstractColumnDefinition<TransUnit, TransUnit> {
-		
-		public StatusColumnDefinition() {
-			setCellRenderer(new CellRenderer<TransUnit, TransUnit>() {
-				@Override
-				public void renderRowValue(
-						TransUnit rowValue,
-						ColumnDefinition<TransUnit, TransUnit> columnDef,
-						AbstractCellView<TransUnit> view) {
-					VerticalPanel vPanel = new VerticalPanel();
-					vPanel.add(new Label("F"));
-					vPanel.add(new Label("X"));
-					view.setWidget( vPanel );
-				}
-			});
-		}
-		
-		@Override
-		public TransUnit getCellValue(TransUnit rowValue) {
-			return rowValue;
-		}
-		
-		@Override
-		public void setCellValue(TransUnit rowValue, TransUnit cellValue) {
-			cellValue.setSource(rowValue.getSource());
-		}
-	
-	}
-
 	private static class SourceColumnDefinition extends AbstractColumnDefinition<TransUnit, TransUnit> {
 		
 		public SourceColumnDefinition() {
@@ -75,10 +45,8 @@ public class TransUnitTableDefinition extends DefaultTableDefinition<TransUnit> 
 						TransUnit rowValue,
 						ColumnDefinition<TransUnit, TransUnit> columnDef,
 						AbstractCellView<TransUnit> view) {
-					Label label = new HighlightingLabel(rowValue.getSource(), ParserSyntax.MIXED);
-						label.setStylePrimaryName("webtrans-editor-content");
-						label.addStyleName("webtrans-editor-content-source");
-						view.setWidget( label );
+					SourcePanel sourcePanel = new SourcePanel(rowValue);
+					view.setWidget( sourcePanel );
 				}
 			});
 		}

@@ -4,6 +4,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class TransUnit implements IsSerializable {
 	
+	private boolean fuzzy;
+	
 	private String source;
 	private String target;
 	
@@ -26,5 +28,13 @@ public class TransUnit implements IsSerializable {
 	
 	public void setTarget(String target) {
 		this.target = target;
+	}
+	
+	public boolean isFuzzy() {
+		return fuzzy;
+	}
+	
+	public void setFuzzy(boolean fuzzy) {
+		this.fuzzy = fuzzy;
 	}
 }
