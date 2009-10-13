@@ -25,11 +25,11 @@ import com.google.inject.Inject;
 import com.weborient.codemirror.client.ParserSyntax;
 import com.weborient.codemirror.client.SyntaxToggleWidget;
 
-public class TransUnitListView extends PagingScrollTable<TransUnit> implements
+public class WebTransScrollTable extends PagingScrollTable<TransUnit> implements
 		TransUnitListPresenter.Display, HasSelectionHandlers<TransUnit>, HasPageNavigation{
 
 	@Inject
-	public TransUnitListView(CachedTransUnitTableModel tableModel, TransUnitTableDefinition tableDefinition) {
+	public WebTransScrollTable(CachedWebTransTableModel tableModel, TransUnitTableDefinition tableDefinition) {
 		super(tableModel,tableDefinition);
 		Log.info("setting up TransUnitListView");
 		setupScrollTable();
@@ -82,7 +82,7 @@ public class TransUnitListView extends PagingScrollTable<TransUnit> implements
 				if(!event.getSelectedRows().isEmpty()){
 					Row row = event.getSelectedRows().iterator().next();
 					TransUnit tu = getRowValue(row.getRowIndex());
-					SelectionEvent.fire(TransUnitListView.this, tu);
+					SelectionEvent.fire(WebTransScrollTable.this, tu);
 				}
 			}
 		});

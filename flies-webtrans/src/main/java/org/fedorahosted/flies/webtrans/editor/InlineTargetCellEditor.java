@@ -19,10 +19,10 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
-public class InlineTransUnitCellEditor implements CellEditor<TransUnit> {
+public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 
 	/**
-	 * An {@link ImageBundle} that provides images for {@link InlineTransUnitCellEditor}.
+	 * An {@link ImageBundle} that provides images for {@link InlineTargetCellEditor}.
 	 */
 	public static interface TargetCellEditorImages extends
 			InlineCellEditorImages {
@@ -84,24 +84,24 @@ public class InlineTransUnitCellEditor implements CellEditor<TransUnit> {
 	
 	private final TextArea textArea;
 	/**
-	 * Construct a new {@link InlineTransUnitCellEditor}.
+	 * Construct a new {@link InlineTargetCellEditor}.
 	 * 
 	 * @param content
 	 *            the {@link Widget} used to edit
 	 */
-	public InlineTransUnitCellEditor() {
+	public InlineTargetCellEditor() {
 		this(GWT.<TargetCellEditorImages> create(TargetCellEditorImages.class));
 	}
 
 	/**
-	 * Construct a new {@link InlineTransUnitCellEditor} with the specified images.
+	 * Construct a new {@link InlineTargetCellEditor} with the specified images.
 	 * 
 	 * @param content
 	 *            the {@link Widget} used to edit
 	 * @param images
 	 *            the images to use for the accept/cancel buttons
 	 */
-	public InlineTransUnitCellEditor(TargetCellEditorImages images) {
+	public InlineTargetCellEditor(TargetCellEditorImages images) {
 
 		// Wrap contents in a table
 		layoutTable = new FlexTable();

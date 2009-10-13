@@ -12,6 +12,7 @@ import com.google.gwt.gen2.table.client.RowRenderer;
 import com.google.gwt.gen2.table.client.TableDefinition.AbstractRowView;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.weborient.codemirror.client.HighlightingLabel;
 import com.weborient.codemirror.client.ParserSyntax;
 
@@ -30,11 +31,41 @@ public class TransUnitTableDefinition extends DefaultTableDefinition<TransUnit> 
 		});
 		//this.parserSyntax = parserSyntax;
 
+		addColumnDefinition(new StatusColumnDefinition());
 		addColumnDefinition(new SourceColumnDefinition());
 		addColumnDefinition(new TargetColumnDefinition());
 	}
 
 	
+	private static class StatusColumnDefinition extends AbstractColumnDefinition<TransUnit, TransUnit> {
+		
+		public StatusColumnDefinition() {
+			setCellRenderer(new CellRenderer<TransUnit, TransUnit>() {
+				@Override
+				public void renderRowValue(
+						TransUnit rowValue,
+						ColumnDefinition<TransUnit, TransUnit> columnDef,
+						AbstractCellView<TransUnit> view) {
+					VerticalPanel vPanel = new VerticalPanel();
+					vPanel.add(new Label("F"));
+					vPanel.add(new Label("X"));
+					view.setWidget( vPanel );
+				}
+			});
+		}
+		
+		@Override
+		public TransUnit getCellValue(TransUnit rowValue) {
+			return rowValue;
+		}
+		
+		@Override
+		public void setCellValue(TransUnit rowValue, TransUnit cellValue) {
+			cellValue.setSource(rowValue.getSource());
+		}
+	
+	}
+
 	private static class SourceColumnDefinition extends AbstractColumnDefinition<TransUnit, TransUnit> {
 		
 		public SourceColumnDefinition() {
@@ -81,7 +112,7 @@ public class TransUnitTableDefinition extends DefaultTableDefinition<TransUnit> 
 					view.setWidget( label );
 				}
 			});
-			setCellEditor(new InlineTransUnitCellEditor());
+			setCellEditor(new InlineTargetCellEditor());
 		}
 		
 		@Override

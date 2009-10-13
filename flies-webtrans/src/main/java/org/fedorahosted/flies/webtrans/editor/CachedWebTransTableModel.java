@@ -5,10 +5,10 @@ import org.fedorahosted.flies.webtrans.model.TransUnit;
 import com.google.gwt.gen2.table.client.CachedTableModel;
 import com.google.inject.Inject;
 
-public class CachedTransUnitTableModel extends CachedTableModel<TransUnit>{
+public class CachedWebTransTableModel extends CachedTableModel<TransUnit>{
 	
 	@Inject
-	public CachedTransUnitTableModel(TransUnitTableModel tableModel) {
+	public CachedWebTransTableModel(WebTransTableModel tableModel) {
 		super(tableModel);
 		setPreCachedRowCount(50);
 		setPostCachedRowCount(50);
