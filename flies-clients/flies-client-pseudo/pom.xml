@@ -22,6 +22,11 @@
       <artifactId>flies-rest-client</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+	  <groupId>org.fedorahosted.tennera</groupId>
+	  <artifactId>ant-gettext</artifactId>
+	  <version>0.6</version>
+    </dependency>
   </dependencies>
 
 
