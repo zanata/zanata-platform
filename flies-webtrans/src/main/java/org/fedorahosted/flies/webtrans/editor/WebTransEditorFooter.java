@@ -10,12 +10,15 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
+import com.google.inject.Inject;
 
 public class WebTransEditorFooter extends HorizontalPanel{
 
 	private final Pager pager;
 	private final Label status;
 	private final Label messages;
+	
+	@Inject
 	public WebTransEditorFooter(Pager pager) {
 		this.pager = pager;
 		

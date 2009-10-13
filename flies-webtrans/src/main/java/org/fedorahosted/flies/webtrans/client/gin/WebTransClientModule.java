@@ -18,6 +18,10 @@ import org.fedorahosted.flies.webtrans.client.ui.Pager;
 import org.fedorahosted.flies.webtrans.editor.CachedWebTransTableModel;
 import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
 import org.fedorahosted.flies.webtrans.editor.TransUnitListPresenter;
+import org.fedorahosted.flies.webtrans.editor.WebTransEditorFooter;
+import org.fedorahosted.flies.webtrans.editor.WebTransEditorHeader;
+import org.fedorahosted.flies.webtrans.editor.WebTransEditorPresenter;
+import org.fedorahosted.flies.webtrans.editor.WebTransEditorView;
 import org.fedorahosted.flies.webtrans.editor.WebTransScrollTable;
 import org.fedorahosted.flies.webtrans.editor.TransUnitTableDefinition;
 import org.fedorahosted.flies.webtrans.editor.WebTransTableModel;
@@ -39,14 +43,21 @@ public class WebTransClientModule extends AbstractPresenterModule {
 		bind(CachedWebTransTableModel.class).in(Singleton.class);
 		bind(TransUnitTableDefinition.class).in(Singleton.class);
 		bind(WebTransScrollTable.class).in(Singleton.class);
+		bind(WebTransEditorHeader.class).in(Singleton.class);
+		bind(WebTransEditorFooter.class).in(Singleton.class);
+		bind(Pager.class).in(Singleton.class);
 		
 		bindPresenter(DocumentListPresenter.class, DocumentListPresenter.Display.class, DocumentListView.class);
 		bindPresenter(TransUnitInfoPresenter.class, TransUnitInfoPresenter.Display.class, TransUnitInfoView.class);
 		bindPresenter(TransUnitListPresenter.class, TransUnitListPresenter.Display.class, WebTransScrollTable.class);
 		bindPresenter(WestNavigationPresenter.class, WestNavigationPresenter.Display.class, WestNavigationView.class);
 		bindPresenter(WorkspaceUsersPresenter.class, WorkspaceUsersPresenter.Display.class, WorkspaceUsersView.class);
+		bindPresenter(WebTransEditorPresenter.class, WebTransEditorPresenter.Display.class, WebTransEditorView.class);
+
+		
 		bind(HasPageNavigation.class).to(WebTransScrollTable.class).in(Singleton.class);
 		bind(AppPresenter.class).in(Singleton.class);
+		
 		//bind(DispatchAsync.class);
 		
 	}
