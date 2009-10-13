@@ -112,6 +112,8 @@ public class InlineTransUnitCellEditor implements CellEditor<TransUnit> {
 
 		textArea = new TextArea();
 		textArea.setWidth("100%");
+		textArea.setStyleName("webtrans-editor-content");
+		textArea.addStyleName("webtrans-editor-content-editor");
 		textArea.addKeyUpHandler(new KeyUpHandler() {
 			
 			@Override
@@ -172,6 +174,7 @@ public class InlineTransUnitCellEditor implements CellEditor<TransUnit> {
 		col = curCellEditInfo.getCellIndex();
 
 		cellViewWidget = table.getWidget(row, col);
+		textArea.setHeight(cellViewWidget.getOffsetHeight() + "px");
 		table.setWidget(row, col, layoutTable);
 
 		textArea.setText(cellValue.getTarget());
