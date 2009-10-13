@@ -192,6 +192,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 			return;
 		}
 		cellValue.setTarget(textArea.getText());
+		cellValue.setFuzzy(false);
 		restoreView();
 		
 		// Send the new cell value to the callback
