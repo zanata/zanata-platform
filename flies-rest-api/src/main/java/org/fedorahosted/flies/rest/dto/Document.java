@@ -39,9 +39,19 @@ import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
 })
 public class Document extends AbstractBaseResource implements IExtensible{
 
+	/**
+	 * An opaque id, which is the canonical id of the Document
+	 */
 	private String id;
 	
+	/**
+	 * Just the filename without the path
+	 */
 	private String name;
+	/**
+	 * Pathname (slash-separated) for the parent folder, which may be empty
+	 * for files which are in the root
+	 */
 	private String path;
 	private ContentType contentType;
 	private Integer version = null;

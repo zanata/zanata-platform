@@ -1,12 +1,12 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import org.fedorahosted.flies.webtrans.client.ui.HasTreeNodes;
+import org.fedorahosted.flies.webtrans.client.ui.TreeImpl;
 import org.fedorahosted.flies.webtrans.client.ui.CaptionPanel;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.ImageBundle;
-import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeImages;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
@@ -27,13 +27,13 @@ public class DocumentListView extends CaptionPanel implements DocumentListPresen
 	}
 
 	private static Images images = (Images) GWT.create(Images.class);
-	private Tree tree;
+	private TreeImpl tree;
 	
 	public DocumentListView() {		
 
 		super();
 		
-	    tree = new Tree(images);
+	    tree = new TreeImpl(images);
 	    
 	    TreeItem item0 = new TreeItem("item0");
 	    TreeItem item1 = new TreeItem("item1");
@@ -80,7 +80,7 @@ public class DocumentListView extends CaptionPanel implements DocumentListPresen
 	}
 
 	@Override
-	public HasSelectionHandlers<TreeItem> getTree() {
+	public HasTreeNodes getTree() {
 		return tree;
 	}
 

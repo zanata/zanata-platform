@@ -1,14 +1,18 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import java.util.ArrayList;
+
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import org.fedorahosted.flies.webtrans.model.DocName;
+
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.inject.Inject;
 
@@ -57,6 +61,22 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 		display.getWidgets().add(documentListPresenter.getDisplay().asWidget());
 		display.getWidgets().add(transUnitInfoPresenter.getDisplay().asWidget());
 		display.getWidgets().add(workspaceUsersPresenter.getDisplay().asWidget());
+//		Button button = new Button("replaceList");
+//		display.getWidgets().add(button);
+//		button.addClickHandler(new ClickHandler() {
+//			
+//			@Override
+//			public void onClick(ClickEvent event) {
+//				ArrayList<DocName> names = new ArrayList<DocName>();
+//				names.add(new DocName("id1", "name1", "path1"));
+//				names.add(new DocName("id2", "name2", "path1"));
+//				names.add(new DocName("id3", "name1", "path2"));
+//				names.add(new DocName("id4", "name2", "path2"));
+//				names.add(new DocName("id5", "name2", ""));
+//				names.add(new DocName("id6", "name1", null));
+//				documentListPresenter.setDocNameList(names);
+//			}
+//		});
 	}
 
 	@Override
