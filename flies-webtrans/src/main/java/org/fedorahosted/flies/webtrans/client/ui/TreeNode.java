@@ -1,7 +1,8 @@
 package org.fedorahosted.flies.webtrans.client.ui;
 
-public interface TreeNode {
+public interface TreeNode<T> {
 
-	public TreeNode addItem(String name);
-	public void setUserObject(Object userObj);
+	public TreeNode<T> addItem(String name);
+	public T getObject();
+	public void setObject(T userObj);
 }

@@ -8,15 +8,15 @@ import org.fedorahosted.flies.webtrans.client.ui.HasTreeNodes;
 import org.fedorahosted.flies.webtrans.client.ui.TreeNode;
 
 public class FlatFolderDocNameMapper implements DocNameMapper {
-	public void addToTree(HasTreeNodes tree, ArrayList<DocName> docNames) {
-		HashMap<String, TreeNode> folderNodes = new HashMap<String, TreeNode>();
+	public void addToTree(HasTreeNodes<DocName> tree, ArrayList<DocName> docNames) {
+		HashMap<String, TreeNode<DocName>> folderNodes = new HashMap<String, TreeNode<DocName>>();
 		for (DocName docName : docNames) {
 			String path = docName.getPath();
-			TreeNode item;
+			TreeNode<DocName> item;
 			if (path == null || path.length() == 0) {
 				item = tree.addItem(docName.getName());
 			} else {
-				TreeNode folder = folderNodes.get(path);
+				TreeNode<DocName> folder = folderNodes.get(path);
 				if (folder == null) {
 					// TODO create intervening folders for a hierarchical impl
 					folder = tree.addItem(path);
@@ -24,7 +24,7 @@ public class FlatFolderDocNameMapper implements DocNameMapper {
 				}
 				item = folder.addItem(docName.getName());
 			}
-			item.setUserObject(docName.getId());
+			item.setObject(docName);
 		}
 	}
 
