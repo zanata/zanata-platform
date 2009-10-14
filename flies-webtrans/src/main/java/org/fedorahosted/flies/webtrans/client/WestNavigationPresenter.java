@@ -22,7 +22,6 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 
 	private final WorkspaceUsersPresenter workspaceUsersPresenter;
 	private final FilterDocListPresenter filterDocListPresenter;
-	private final DocumentListPresenter documentListPresenter;
 	private final TransUnitInfoPresenter transUnitInfoPresenter;
 
 	
@@ -30,13 +29,11 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 	public WestNavigationPresenter(Display display, EventBus eventBus, 
 			WorkspaceUsersPresenter workspaceUsersPresenter, 
 			FilterDocListPresenter filterDocListPresenter,
-			DocumentListPresenter documentListPresenter,
 			TransUnitInfoPresenter transUnitInfoPresenter){//, final DispatchAsync dispatcher) {
 		super(display, eventBus);
 		//this.dispatcher = dispatcher;
 		this.workspaceUsersPresenter = workspaceUsersPresenter;
 		this.filterDocListPresenter = filterDocListPresenter;
-		this.documentListPresenter = documentListPresenter;
 		this.transUnitInfoPresenter = transUnitInfoPresenter;
 	}
 
@@ -59,28 +56,11 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 		display.asWidget().setHeight("100%");
 		filterDocListPresenter.bind();
 		display.getWidgets().add(filterDocListPresenter.getDisplay().asWidget());
-		documentListPresenter.bind();
-		display.getWidgets().add(documentListPresenter.getDisplay().asWidget());
 		transUnitInfoPresenter.bind();
 		display.getWidgets().add(transUnitInfoPresenter.getDisplay().asWidget());
 		workspaceUsersPresenter.bind();
 		display.getWidgets().add(workspaceUsersPresenter.getDisplay().asWidget());
-//		Button button = new Button("replaceList");
-//		display.getWidgets().add(button);
-//		button.addClickHandler(new ClickHandler() {
-//			
-//			@Override
-//			public void onClick(ClickEvent event) {
-//				ArrayList<DocName> names = new ArrayList<DocName>();
-//				names.add(new DocName("id1", "name1", "path1"));
-//				names.add(new DocName("id2", "name2", "path1"));
-//				names.add(new DocName("id3", "name1", "path2"));
-//				names.add(new DocName("id4", "name2", "path2"));
-//				names.add(new DocName("id5", "name2", ""));
-//				names.add(new DocName("id6", "name1", null));
-//				documentListPresenter.setDocNameList(names);
-//			}
-//		});
+
 	}
 
 	@Override
@@ -92,7 +72,6 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 	@Override
 	protected void onUnbind() {
 		filterDocListPresenter.unbind();
-		documentListPresenter.unbind();
 		transUnitInfoPresenter.unbind();
 		workspaceUsersPresenter.unbind();
 	}
