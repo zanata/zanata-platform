@@ -11,9 +11,6 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.fedorahosted.flies.gwt.model.DocName;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.HasKeyUpHandlers;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
@@ -39,8 +36,6 @@ public class FilterDocListPresenter extends
 	}
 
 	public interface Display extends WidgetDisplay {
-		HasClickHandlers getClearButton();
-		HasClickHandlers getFilterButton();
 		HasValueChangeHandlers<String> getFilterChangeSource();
 		HasKeyUpHandlers getFilterKeyUpSource();
 		HasText getFilterText();
@@ -88,30 +83,10 @@ public class FilterDocListPresenter extends
 
 	@Override
 	protected void onBind() {
-//		registerHandler(display.getFilterChangeSource().addValueChangeHandler(new ValueChangeHandler<String>() {
-//			@Override
-//			public void onValueChange(ValueChangeEvent<String> event) {
-//				docListPresenter.filterBy(event.getValue());
-//			}
-//		}));
 		registerHandler(display.getFilterKeyUpSource().addKeyUpHandler(new KeyUpHandler() {
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
-//				if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
-					docListPresenter.filterBy(display.getFilterText().getText());
-			}
-		}));
-		registerHandler(display.getFilterButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
 				docListPresenter.filterBy(display.getFilterText().getText());
-			}
-		}));
-		registerHandler(display.getClearButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				display.getFilterText().setText("");
-				docListPresenter.filterBy("");
 			}
 		}));
 	}
