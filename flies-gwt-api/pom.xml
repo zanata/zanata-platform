@@ -75,6 +75,39 @@
       <artifactId>gwt-servlet</artifactId>
       <scope>provided</scope>
     </dependency>
+  
+    <dependency>
+      <groupId>net.customware.gwt.dispatch</groupId>
+      <artifactId>gwt-dispatch</artifactId>
+      <version>1.0.0</version>
+      <scope>compile</scope>
+    </dependency>
+  
   </dependencies>
+
+  <repositories>
+    <repository>
+      <id>gwt-dispatch-repo</id>
+      <name>gwt-dispatch-repo</name>
+      <url>http://gwt-dispatch.googlecode.com/svn/maven2/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  
+    <repository>
+      <id>gwt-dispatch-deps-repo</id>
+      <name>gwt-dispatch-deps-repo</name>
+      <url>http://gwt-dispatch.googlecode.com/svn/tags/gwt-dispatch-1.0.0/lib</url>
+      <layout>legacy</layout>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <checksumPolicy>ignore</checksumPolicy>
+      </releases>
+    </repository>
+  </repositories>
+  
 
 </project>
