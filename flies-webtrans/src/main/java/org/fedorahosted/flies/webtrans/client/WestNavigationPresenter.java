@@ -21,19 +21,19 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 	}
 
 	private final WorkspaceUsersPresenter workspaceUsersPresenter;
-	private final FilterDocListPresenter filterDocListPresenter;
+	private final DocumentListPresenter docListPresenter;
 	private final TransUnitInfoPresenter transUnitInfoPresenter;
 
 	
 	@Inject
 	public WestNavigationPresenter(Display display, EventBus eventBus, 
 			WorkspaceUsersPresenter workspaceUsersPresenter, 
-			FilterDocListPresenter filterDocListPresenter,
+			DocumentListPresenter docListPresenter,
 			TransUnitInfoPresenter transUnitInfoPresenter){//, final DispatchAsync dispatcher) {
 		super(display, eventBus);
 		//this.dispatcher = dispatcher;
 		this.workspaceUsersPresenter = workspaceUsersPresenter;
-		this.filterDocListPresenter = filterDocListPresenter;
+		this.docListPresenter = docListPresenter;
 		this.transUnitInfoPresenter = transUnitInfoPresenter;
 	}
 
@@ -54,8 +54,8 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 //			}
 //		});
 		display.asWidget().setHeight("100%");
-		filterDocListPresenter.bind();
-		display.getWidgets().add(filterDocListPresenter.getDisplay().asWidget());
+		docListPresenter.bind();
+		display.getWidgets().add(docListPresenter.getDisplay().asWidget());
 		transUnitInfoPresenter.bind();
 		display.getWidgets().add(transUnitInfoPresenter.getDisplay().asWidget());
 		workspaceUsersPresenter.bind();
@@ -71,7 +71,7 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 
 	@Override
 	protected void onUnbind() {
-		filterDocListPresenter.unbind();
+		docListPresenter.unbind();
 		transUnitInfoPresenter.unbind();
 		workspaceUsersPresenter.unbind();
 	}

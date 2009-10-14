@@ -12,12 +12,17 @@ import org.fedorahosted.flies.gwt.model.DocName;
 import org.fedorahosted.flies.webtrans.client.ui.HasTreeNodes;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.HasKeyUpHandlers;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.inject.Inject;
@@ -45,6 +50,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 	public static final Place PLACE = new Place("DocumentListList");
 	
 	public interface Display extends WidgetDisplay {
+		HasValueChangeHandlers<String> getFilterChangeSource();
+		HasKeyUpHandlers getFilterKeyUpSource();
+		HasText getFilterText();
 		HasTreeNodes<DocName> getTree();
 	}
 	
@@ -58,6 +66,12 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
 	@Override
 	protected void onBind() {
+		registerHandler(display.getFilterKeyUpSource().addKeyUpHandler(new KeyUpHandler() {
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				filterBy(display.getFilterText().getText());
+			}
+		}));
 		registerHandler(getDisplay().getTree().addSelectionHandler(new SelectionHandler<TreeItem>() {
 			@Override
 			public void onSelection(SelectionEvent<TreeItem> event) {
@@ -66,6 +80,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 			}
 		}));
 	}
+
 
 	@Override
 	protected void onPlaceRequest(PlaceRequest request) {
