@@ -1,12 +1,16 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import java.util.ArrayList;
+
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
+import org.fedorahosted.flies.webtrans.client.ui.HasTreeNodes;
+import org.fedorahosted.flies.webtrans.model.DocName;
+
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -19,17 +23,18 @@ import com.google.inject.Inject;
 
 public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter.Display> implements HasValue<String> {
 
+	private final DocNameMapper docNameMapper;
+
 	@Inject
-	public DocumentListPresenter(Display display, EventBus eventBus) {
+	public DocumentListPresenter(Display display, EventBus eventBus, DocNameMapper docNameMapper) {
 		super(display, eventBus);
-		
+		this.docNameMapper = docNameMapper;
 	}
 
 	public static final Place PLACE = new Place("DocumentListList");
 	
 	public interface Display extends WidgetDisplay {
-		HasSelectionHandlers<TreeItem> getTree();
-		
+		HasTreeNodes getTree();
 	}
 	
 	private String currentDoc;
@@ -70,6 +75,11 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 	public void revealDisplay() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void setDocNameList(ArrayList<DocName> docNames) {
+		display.getTree().clear();
+		docNameMapper.addToTree(display.getTree(), docNames);
 	}
 
 	@Override

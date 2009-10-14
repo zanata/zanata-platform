@@ -6,15 +6,16 @@ import net.customware.gwt.presenter.client.gin.AbstractPresenterModule;
 import net.customware.gwt.presenter.client.place.PlaceManager;
 
 import org.fedorahosted.flies.webtrans.client.AppPresenter;
+import org.fedorahosted.flies.webtrans.client.DocNameMapper;
 import org.fedorahosted.flies.webtrans.client.DocumentListPresenter;
 import org.fedorahosted.flies.webtrans.client.DocumentListView;
+import org.fedorahosted.flies.webtrans.client.FlatFolderDocNameMapper;
 import org.fedorahosted.flies.webtrans.client.TransUnitInfoPresenter;
 import org.fedorahosted.flies.webtrans.client.TransUnitInfoView;
 import org.fedorahosted.flies.webtrans.client.WestNavigationPresenter;
 import org.fedorahosted.flies.webtrans.client.WestNavigationView;
 import org.fedorahosted.flies.webtrans.client.WorkspaceUsersPresenter;
 import org.fedorahosted.flies.webtrans.client.WorkspaceUsersView;
-import org.fedorahosted.flies.webtrans.client.ui.Pager;
 import org.fedorahosted.flies.webtrans.editor.CachedWebTransTableModel;
 import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
 import org.fedorahosted.flies.webtrans.editor.TransUnitListPresenter;
@@ -22,11 +23,10 @@ import org.fedorahosted.flies.webtrans.editor.WebTransEditorFooter;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorHeader;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorPresenter;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorView;
-import org.fedorahosted.flies.webtrans.editor.WebTransScrollTable;
 import org.fedorahosted.flies.webtrans.editor.TransUnitTableDefinition;
+import org.fedorahosted.flies.webtrans.editor.WebTransScrollTable;
 import org.fedorahosted.flies.webtrans.editor.WebTransTableModel;
 
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Singleton;
 
 public class WebTransClientModule extends AbstractPresenterModule {
@@ -59,7 +59,7 @@ public class WebTransClientModule extends AbstractPresenterModule {
 		bind(AppPresenter.class).in(Singleton.class);
 		
 		//bind(DispatchAsync.class);
-		
+		bind(DocNameMapper.class).to(FlatFolderDocNameMapper.class).in(Singleton.class);
 	}
 
 }
