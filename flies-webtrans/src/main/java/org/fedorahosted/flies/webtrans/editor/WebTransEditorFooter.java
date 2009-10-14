@@ -10,12 +10,13 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
+import com.google.gwt.widgetideas.client.ProgressBar;
 import com.google.inject.Inject;
 
 public class WebTransEditorFooter extends HorizontalPanel{
 
 	private final Pager pager;
-	private final Label status;
+	//private final Label status;
 	private final Label messages;
 	
 	@Inject
@@ -33,9 +34,11 @@ public class WebTransEditorFooter extends HorizontalPanel{
 		add(pager);
 		setCellHorizontalAlignment(pager, HorizontalPanel.ALIGN_CENTER);
 		
-		status = new Label("[Status goes here]");
-		add(status);
-		setCellHorizontalAlignment(status, HorizontalPanel.ALIGN_RIGHT);
+		//status = new Label("[Status goes here]");
+		StatusBar bar = new StatusBar();
+		bar.setWidth("200px");
+		add(bar);
+		setCellHorizontalAlignment(bar, HorizontalPanel.ALIGN_LEFT);
 	}
 	
 	public Pager getPager() {

@@ -30,11 +30,11 @@ public class TransUnitInfoView extends Composite implements TransUnitInfoPresent
 		vpanel.setHorizontalAlignment(VerticalPanel.ALIGN_LEFT);
 		vpanel.setVerticalAlignment(VerticalPanel.ALIGN_TOP);
 				
-		ProgressBar bar = new ProgressBar(0.0, 2000.0,0.0);
-		bar.setProgress(1500.0);
-		bar.setTitle("Complete");
+		//ProgressBar bar = new ProgressBar(0.0, 2000.0,0.0);
+		//bar.setProgress(1500.0);
+		//bar.setTitle("Complete");
 		vpanel.add(new Label("Translation Unit Info"));
-		vpanel.add(bar);
+		//vpanel.add(bar);
 		return vpanel;
 	}
 
