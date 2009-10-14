@@ -21,15 +21,21 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 	}
 
 	private final WorkspaceUsersPresenter workspaceUsersPresenter;
+	private final FilterDocListPresenter filterDocListPresenter;
 	private final DocumentListPresenter documentListPresenter;
 	private final TransUnitInfoPresenter transUnitInfoPresenter;
 
 	
 	@Inject
-	public WestNavigationPresenter(final Display display, final EventBus eventBus, WorkspaceUsersPresenter workspaceUsersPresenter, DocumentListPresenter documentListPresenter,TransUnitInfoPresenter transUnitInfoPresenter){//, final DispatchAsync dispatcher) {
+	public WestNavigationPresenter(Display display, EventBus eventBus, 
+			WorkspaceUsersPresenter workspaceUsersPresenter, 
+			FilterDocListPresenter filterDocListPresenter,
+			DocumentListPresenter documentListPresenter,
+			TransUnitInfoPresenter transUnitInfoPresenter){//, final DispatchAsync dispatcher) {
 		super(display, eventBus);
 		//this.dispatcher = dispatcher;
 		this.workspaceUsersPresenter = workspaceUsersPresenter;
+		this.filterDocListPresenter = filterDocListPresenter;
 		this.documentListPresenter = documentListPresenter;
 		this.transUnitInfoPresenter = transUnitInfoPresenter;
 	}
@@ -51,8 +57,13 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 //			}
 //		});
 		display.asWidget().setHeight("100%");
+		filterDocListPresenter.bind();
+		display.getWidgets().add(filterDocListPresenter.getDisplay().asWidget());
+		documentListPresenter.bind();
 		display.getWidgets().add(documentListPresenter.getDisplay().asWidget());
+		transUnitInfoPresenter.bind();
 		display.getWidgets().add(transUnitInfoPresenter.getDisplay().asWidget());
+		workspaceUsersPresenter.bind();
 		display.getWidgets().add(workspaceUsersPresenter.getDisplay().asWidget());
 //		Button button = new Button("replaceList");
 //		display.getWidgets().add(button);
@@ -80,7 +91,9 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 
 	@Override
 	protected void onUnbind() {
+		filterDocListPresenter.unbind();
 		documentListPresenter.unbind();
+		transUnitInfoPresenter.unbind();
 		workspaceUsersPresenter.unbind();
 	}
 
