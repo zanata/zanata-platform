@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import org.fedorahosted.flies.webtrans.client.ui.CaptionPanel;
 import org.fedorahosted.flies.webtrans.client.ui.HeadingPanel;
 import org.fedorahosted.flies.webtrans.client.ui.HeadingWidget;
 
@@ -9,18 +10,12 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.widgetideas.client.ProgressBar;
 
-public class TransUnitInfoView extends Composite implements TransUnitInfoPresenter.Display {
-
-	private final HeadingPanel panel;
+public class TransUnitInfoView extends CaptionPanel implements TransUnitInfoPresenter.Display {
 
 	public TransUnitInfoView() {
-		panel = new HeadingPanel();
-		initWidget(panel);
-		panel.add(getStatusPanel());
-		
-		HeadingWidget heading = new HeadingWidget("Translation Unit Info");
-		heading.setCollapsible(false);
-		panel.setHeadingWidget(heading);
+		addHead("Translation Unit Info");
+		addBody(getStatusPanel());
+		initPanel();
 	}
 
 	public static Widget getStatusPanel() {

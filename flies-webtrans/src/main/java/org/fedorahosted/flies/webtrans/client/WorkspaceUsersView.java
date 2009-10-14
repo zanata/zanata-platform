@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import org.fedorahosted.flies.webtrans.client.ui.CaptionPanel;
 import org.fedorahosted.flies.webtrans.client.ui.HeadingPanel;
 import org.fedorahosted.flies.webtrans.client.ui.HeadingWidget;
 
@@ -14,13 +15,12 @@ import com.google.gwt.user.client.ui.StackPanel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeImages;
 import com.google.gwt.user.client.ui.TreeItem;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.VerticalSplitPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class WorkspaceUsersView extends Composite implements
+public class WorkspaceUsersView extends CaptionPanel implements
 		WorkspaceUsersPresenter.Display {
-
-	private final HeadingPanel panel;
 
 	public interface Images extends ImageBundle, TreeImages {
 
@@ -38,13 +38,15 @@ public class WorkspaceUsersView extends Composite implements
 	private static Images images = (Images) GWT.create(Images.class);
 
 	public WorkspaceUsersView() {
-		panel = new HeadingPanel();
-		initWidget(panel);
-		panel.add(getChatAllPanel());
-		
+		super();
+		addHead("Translators");
+		addBody(getChatAllPanel());
+		initPanel();
+		/*
 		HeadingWidget heading = new HeadingWidget("Translators");
 		heading.setCollapsible(false);
 		panel.setHeadingWidget(heading);
+		*/
 	}
 
 	private static Tree createLocaleTranslatorsTree() {
