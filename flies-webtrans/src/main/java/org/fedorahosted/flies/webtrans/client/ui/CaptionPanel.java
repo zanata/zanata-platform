@@ -31,7 +31,6 @@ public class CaptionPanel extends DecoratorPanel {
 	
 	public void addHead(Widget widget) {
 		headPanel.add(widget);
-		headPanel.add(new Button("^"));
 	}
 	
 	public void addBody(Widget widget) {
