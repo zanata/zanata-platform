@@ -1,4 +1,5 @@
 <module>
   <inherits name="com.google.gwt.user.User"/>
   <source path="common"/>
+  <source path="model"/>
 </module>
