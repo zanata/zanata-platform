@@ -4,6 +4,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -11,6 +13,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.widgetideas.client.ProgressBar;
 
 public class StatusBar extends Composite implements ClickHandler,HasClickHandlers {
+	private final ProgressBar bar;
+	
 	private static class PopupWindow extends DecoratedPopupPanel {
 		    public PopupWindow() {
 		      super(true);
@@ -23,18 +27,23 @@ public class StatusBar extends Composite implements ClickHandler,HasClickHandler
 		HorizontalPanel panel = new HorizontalPanel();
 		initWidget(panel);
 		
-		ProgressBar bar = new ProgressBar(0.0, 100.0,0.0);
+		bar = new ProgressBar(0.0, 100.0,0.0);
 		bar.setProgress(75.0);
 		bar.setWidth("200px");
 		
 		panel.add(bar);
+		
 		addClickHandler(this);
 	}
 	
 	@Override
 	public void onClick(ClickEvent event) {
 		// TODO Auto-generated method stub
-		new PopupWindow().show();
+		PopupWindow popupWindow = new PopupWindow();
+		int top = bar.getAbsoluteTop();
+	    int left = bar.getAbsoluteLeft();
+		popupWindow.setPopupPosition(left, top-bar.getOffsetHeight());
+		popupWindow.show();
 	}
 
 	@Override
