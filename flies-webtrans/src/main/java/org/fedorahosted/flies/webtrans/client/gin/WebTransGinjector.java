@@ -10,7 +10,7 @@ import org.fedorahosted.flies.webtrans.client.AppPresenter;
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
 
-@GinModules({ ClientDispatchModule.class, WebTransClientModule.class })
+@GinModules({ WebTransClientModule.class })
 public interface WebTransGinjector extends Ginjector {
 
 	AppPresenter getAppPresenter();

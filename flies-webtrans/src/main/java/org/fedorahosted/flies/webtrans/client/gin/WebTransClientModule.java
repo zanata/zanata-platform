@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.webtrans.client.gin;
 
+import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.DefaultEventBus;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.gin.AbstractPresenterModule;
@@ -18,6 +19,7 @@ import org.fedorahosted.flies.webtrans.client.WestNavigationPresenter;
 import org.fedorahosted.flies.webtrans.client.WestNavigationView;
 import org.fedorahosted.flies.webtrans.client.WorkspaceUsersPresenter;
 import org.fedorahosted.flies.webtrans.client.WorkspaceUsersView;
+import org.fedorahosted.flies.webtrans.client.rpc.SeamDispatchAsync;
 import org.fedorahosted.flies.webtrans.client.ui.Pager;
 import org.fedorahosted.flies.webtrans.editor.CachedWebTransTableModel;
 import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
@@ -62,7 +64,7 @@ public class WebTransClientModule extends AbstractPresenterModule {
 		bind(HasPageNavigation.class).to(WebTransScrollTable.class).in(Singleton.class);
 		bind(AppPresenter.class).in(Singleton.class);
 		
-		//bind(DispatchAsync.class);
+		bind(DispatchAsync.class).to(SeamDispatchAsync.class).in(Singleton.class);
 		bind(DocNameMapper.class).to(FlatFolderDocNameMapper.class).in(Singleton.class);
 	}
 

@@ -2,16 +2,29 @@ package org.fedorahosted.flies.webtrans.editor;
 
 import java.util.ArrayList;
 
+import net.customware.gwt.dispatch.client.DispatchAsync;
+
 import org.fedorahosted.flies.gwt.model.TransUnit;
+import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
+import org.fedorahosted.flies.gwt.rpc.GotTransUnits;
 
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.gen2.table.client.MutableTableModel;
 import com.google.gwt.gen2.table.client.TableModelHelper.Request;
 import com.google.gwt.gen2.table.client.TableModelHelper.SerializableResponse;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
 
 public class WebTransTableModel extends MutableTableModel<TransUnit> {
 
+	private final DispatchAsync dispatcher;
+	
+	@Inject
+	public WebTransTableModel(DispatchAsync dispatcher) {
+		this.dispatcher = dispatcher;
+	}
+	
 	@Override
 	protected boolean onRowInserted(int beforeRow) {
 		return false;
@@ -29,15 +42,31 @@ public class WebTransTableModel extends MutableTableModel<TransUnit> {
 
 	@Override
 	public void requestRows(
-			Request request,
-			com.google.gwt.gen2.table.client.TableModel.Callback<TransUnit> callback) {
+			final Request request,
+			final Callback<TransUnit> callback) {
 		int numRows = request.getNumRows();
+		int startRow = request.getStartRow();
 		
 		Log.info("Requesting " + numRows + " rows");
-		ArrayList<TransUnit> units = generateSampleData(numRows, request.getStartRow());
-		SerializableResponse<TransUnit> response = new SerializableResponse<TransUnit>(
-				units);
-		callback.onRowsReady(request, response);
+		
+		dispatcher.execute(new GetTransUnits(1, startRow, numRows), new AsyncCallback<GotTransUnits>() {
+
+			@Override
+			public void onSuccess(GotTransUnits result) {
+				SerializableResponse<TransUnit> response = new SerializableResponse<TransUnit>(
+						result.getUnits());
+				callback.onRowsReady(request, response);
+				Log.info("got rows");
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				callback.onFailure(caught);
+				Log.info("got failure: ",caught);
+			}
+
+			
+		});
 	}
 
 	private ArrayList<TransUnit> generateSampleData(int numRows, int start) {

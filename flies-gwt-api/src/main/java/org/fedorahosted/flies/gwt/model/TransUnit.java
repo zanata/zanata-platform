@@ -1,13 +1,20 @@
 package org.fedorahosted.flies.gwt.model;
 
+import java.io.Serializable;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class TransUnit implements IsSerializable {
+public class TransUnit implements IsSerializable, Serializable{
 	
+	private static final long serialVersionUID = -8247442475446266600L;
+
 	private boolean fuzzy;
 	
 	private String source;
 	private String target;
+	
+	private TransUnit(){
+	}
 	
 	public TransUnit(String source, String target) {
 		this.source = source;

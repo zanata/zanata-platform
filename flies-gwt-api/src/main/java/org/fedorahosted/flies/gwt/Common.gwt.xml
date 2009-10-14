@@ -2,4 +2,5 @@
   <inherits name="com.google.gwt.user.User"/>
   <source path="common"/>
   <source path="model"/>
+  <source path="rpc"/>
 </module>
