@@ -6,13 +6,18 @@ import org.fedorahosted.flies.webtrans.client.ui.HasTreeNodes;
 import org.fedorahosted.flies.webtrans.client.ui.TreeImpl;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.HasKeyUpHandlers;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.ImageBundle;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.TreeImages;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class DocumentListView extends CaptionPanel implements DocumentListPresenter.Display {
+public class DocumentListView extends CaptionPanel 
+	implements DocumentListPresenter.Display {
 
 	public interface Images extends ImageBundle, TreeImages {
 
@@ -29,6 +34,7 @@ public class DocumentListView extends CaptionPanel implements DocumentListPresen
 
 	private static Images images = (Images) GWT.create(Images.class);
 	private TreeImpl<DocName> tree;
+	private TextBox filterTextBox = new TextBox();
 	
 	public DocumentListView() {		
 
@@ -41,6 +47,7 @@ public class DocumentListView extends CaptionPanel implements DocumentListPresen
 	    treePanel.add(tree);
 	    
 	    addHead("Documents");
+	    addBody(filterTextBox);
 	    addBody(treePanel);
 	    initPanel();
 	}
@@ -65,6 +72,21 @@ public class DocumentListView extends CaptionPanel implements DocumentListPresen
 	@Override
 	public HasTreeNodes<DocName> getTree() {
 		return tree;
+	}
+
+	@Override
+	public HasValueChangeHandlers<String> getFilterChangeSource() {
+		return filterTextBox;
+	}
+
+	@Override
+	public HasKeyUpHandlers getFilterKeyUpSource() {
+		return filterTextBox;
+	}
+
+	@Override
+	public HasText getFilterText() {
+		return filterTextBox;
 	}
 
 }
