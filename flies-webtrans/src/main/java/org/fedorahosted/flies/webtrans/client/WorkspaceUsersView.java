@@ -5,13 +5,20 @@ import org.fedorahosted.flies.webtrans.client.ui.HeadingPanel;
 import org.fedorahosted.flies.webtrans.client.ui.HeadingWidget;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DecoratedStackPanel;
 import com.google.gwt.user.client.ui.ImageBundle;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.StackPanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeImages;
 import com.google.gwt.user.client.ui.TreeItem;
@@ -49,11 +56,28 @@ public class WorkspaceUsersView extends CaptionPanel implements
 		*/
 	}
 
-	private static Tree createLocaleTranslatorsTree() {
-		Tree tree = new Tree(images);
+	private static Panel createLocaleTranslatorsTree() {
+		VerticalPanel panel = new VerticalPanel();
+		panel.setWidth("100%");
+		final Tree tree = new Tree(images);
 		tree.setWidth("100%");
-		addLocaleData(tree, "German");
-		return tree;
+		addLocaleData(tree, "German", "");
+		
+		final TextBox tb = new TextBox();
+		tb.addKeyUpHandler(new KeyUpHandler() {
+			
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					tree.clear();
+					addLocaleData(tree, "German", tb.getText());
+				}
+			}
+		});
+		panel.add(tb);
+		panel.add(tree);
+		
+		return panel;
 	}
 
 	private static TreeItem createTranslator(String name) {
@@ -62,13 +86,18 @@ public class WorkspaceUsersView extends CaptionPanel implements
 		return item;
 	}
 
-	private static void addLocaleData(Tree tree, String locale) {
+	private static void addLocaleData(Tree tree, String locale, String filter) {
 		TreeItem item = new TreeItem();
 		item.setText(locale);
 		tree.addItem(item);
-		item.addItem(createTranslator("Bob"));
-		item.addItem(createTranslator("Jane"));
+		for(String translator : translators){
+			if(filter.isEmpty() || translator.contains(filter)){
+				item.addItem(createTranslator(translator));
+			}
+		}
 	}
+	
+	private static final String [] translators = {"Bob", "Jane", "Bill", "George", "Susan", "Ahmed"};
 
 	public static Widget getChatAllPanel() {
 
