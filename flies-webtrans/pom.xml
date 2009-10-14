@@ -82,6 +82,7 @@
       <groupId>org.fedorahosted.flies</groupId>
       <artifactId>flies-gwt-api</artifactId>
       <version>${project.version}</version>
+      <scope>provided</scope>
     </dependency>
 
     <!-- test -->
@@ -112,7 +113,7 @@
         </executions>
         <configuration>
           <runTarget>org.fedorahosted.flies.webtrans.Application/Application.html</runTarget>
-          <inplace>true</inplace>
+          <inplace>false</inplace>
         </configuration>
       </plugin>
 
@@ -121,8 +122,8 @@
         <artifactId>maven-war-plugin</artifactId> 
         <configuration>
           <warSourceDirectory>${basedir}/war</warSourceDirectory>
-          <webXml>target/web.xml</webXml>
-          <warSourceExcludes>.gwt-tmp/**,tomcat/**</warSourceExcludes>
+          <webXml>${basedir}/src/main/webapp/WEB-INF/web.xml</webXml>
+          <warSourceExcludes>.gwt-tmp/**,tomcat/**, WEB-INF/lib/**</warSourceExcludes>
         </configuration> 
       </plugin>
 
