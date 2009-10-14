@@ -1,14 +1,14 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import org.fedorahosted.flies.gwt.model.DocName;
+import org.fedorahosted.flies.webtrans.client.ui.CaptionPanel;
 import org.fedorahosted.flies.webtrans.client.ui.HasTreeNodes;
 import org.fedorahosted.flies.webtrans.client.ui.TreeImpl;
-import org.fedorahosted.flies.webtrans.client.ui.CaptionPanel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.ImageBundle;
 import com.google.gwt.user.client.ui.TreeImages;
-import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -28,36 +28,13 @@ public class DocumentListView extends CaptionPanel implements DocumentListPresen
 	}
 
 	private static Images images = (Images) GWT.create(Images.class);
-	private TreeImpl tree;
+	private TreeImpl<DocName> tree;
 	
 	public DocumentListView() {		
 
 		super();
 		
-	    tree = new TreeImpl(images);
-	    
-	    TreeItem item0 = new TreeItem("item0");
-	    TreeItem item1 = new TreeItem("item1");
-	    TreeItem item2 = new TreeItem("item2");
-	    
-	    tree.addItem(item0);
-	    tree.addItem(item1);
-	    tree.addItem(item2);
-	    
-	    item0.addItem(new TreeItem("item0.1"));
-	    item0.addItem(new TreeItem("item0.2"));
-	    item0.addItem(new TreeItem("item0.3"));
-	    
-	    item1.addItem(new TreeItem("item1.1"));
-	    item1.addItem(new TreeItem("item1.2"));
-	    
-	    item2.addItem(new TreeItem("item2.1"));
-	    item2.addItem(new TreeItem("item2.2"));
-	    item2.addItem(new TreeItem("item2.3"));
-	    item2.addItem(new TreeItem("item2.4"));
-	    
-	    tree.addItem(new TreeItem("item3"));
-
+	    tree = new TreeImpl<DocName>(images);
 	    VerticalPanel treePanel = new VerticalPanel();
 	    treePanel.setWidth("200px");
 	    treePanel.setHeight("150pn");
@@ -86,7 +63,7 @@ public class DocumentListView extends CaptionPanel implements DocumentListPresen
 	}
 
 	@Override
-	public HasTreeNodes getTree() {
+	public HasTreeNodes<DocName> getTree() {
 		return tree;
 	}
 

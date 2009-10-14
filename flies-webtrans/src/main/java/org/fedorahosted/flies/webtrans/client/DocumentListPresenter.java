@@ -10,6 +10,7 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.fedorahosted.flies.gwt.model.DocName;
 import org.fedorahosted.flies.webtrans.client.ui.HasTreeNodes;
+import org.fedorahosted.flies.webtrans.client.ui.TreeImpl;
 
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -29,15 +30,25 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 	public DocumentListPresenter(Display display, EventBus eventBus, DocNameMapper docNameMapper) {
 		super(display, eventBus);
 		this.docNameMapper = docNameMapper;
+		ArrayList<DocName> names = new ArrayList<DocName>();
+		names.add(new DocName("id1", "name1", "path1"));
+		names.add(new DocName("id2", "name2", "path1"));
+		names.add(new DocName("id3", "name1", "path2"));
+		names.add(new DocName("id4", "name2", "path2"));
+		names.add(new DocName("id5", "name2", ""));
+		names.add(new DocName("id6", "name1", null));
+		setDocNameList(names);
+
 	}
 
 	public static final Place PLACE = new Place("DocumentListList");
 	
 	public interface Display extends WidgetDisplay {
-		HasTreeNodes getTree();
+		HasTreeNodes<DocName> getTree();
 	}
 	
 	private String currentDoc;
+	private ArrayList<DocName> docNames = new ArrayList<DocName>();
 	
 	@Override
 	public Place getPlace() {
@@ -78,6 +89,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 	}
 	
 	public void setDocNameList(ArrayList<DocName> docNames) {
+		this.docNames = docNames;
 		display.getTree().clear();
 		docNameMapper.addToTree(display.getTree(), docNames);
 	}
@@ -108,5 +120,32 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 	@Override
 	public void fireEvent(GwtEvent<?> event) {
 		eventBus.fireEvent(event);
+	}
+
+	public void filterBy(String value) {
+		HasTreeNodes<DocName> tree = display.getTree();
+		TreeImpl treeImpl = (TreeImpl) tree;
+		treeImpl.setVisible(false);
+//		TreeNode<DocName> selected = tree.getSelectedNode();
+//		tree.clear();
+//		tree.removeItems();
+//		for (DocName docName : docNames) {
+//			if (docName.getName().contains(value)) {
+//				TreeNode<DocName> node = tree.addItem(docName.getName());
+//				node.setObject(docName);
+//				if (selected != null && selected.getObject() == docName)
+//					tree.setSelectedNode(node);
+//			}
+//		}
+		ArrayList<DocName> filteredNames = new ArrayList<DocName>();
+		for (DocName docName : docNames) {
+			if (docName.getName().contains(value)) {
+				filteredNames.add(docName);
+			}
+		}
+		
+		tree.clear();
+		docNameMapper.addToTree(tree, filteredNames);
+
 	}
 }
