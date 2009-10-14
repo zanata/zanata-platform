@@ -10,8 +10,8 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.fedorahosted.flies.gwt.model.DocName;
 import org.fedorahosted.flies.webtrans.client.ui.HasTreeNodes;
-import org.fedorahosted.flies.webtrans.client.ui.TreeImpl;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -29,12 +29,13 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 	@Inject
 	public DocumentListPresenter(Display display, EventBus eventBus, DocNameMapper docNameMapper) {
 		super(display, eventBus);
+		GWT.log("DocumentListPresenter()", null);
 		this.docNameMapper = docNameMapper;
 		ArrayList<DocName> names = new ArrayList<DocName>();
-		names.add(new DocName("id1", "name1", "path1"));
-		names.add(new DocName("id2", "name2", "path1"));
-		names.add(new DocName("id3", "name1", "path2"));
-		names.add(new DocName("id4", "name2", "path2"));
+		names.add(new DocName("id1", "path1name1", "path/1"));
+		names.add(new DocName("id2", "path1name2", "path/1"));
+		names.add(new DocName("id3", "path2name1", "path/2"));
+		names.add(new DocName("id4", "path2name2", "path/2"));
 		names.add(new DocName("id5", "name2", ""));
 		names.add(new DocName("id6", "name1", null));
 		setDocNameList(names);
@@ -88,12 +89,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 		
 	}
 	
-	public void setDocNameList(ArrayList<DocName> docNames) {
-		this.docNames = docNames;
-		display.getTree().clear();
-		docNameMapper.addToTree(display.getTree(), docNames);
-	}
-
 	@Override
 	public String getValue() {
 		return currentDoc;
@@ -124,19 +119,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
 	public void filterBy(String value) {
 		HasTreeNodes<DocName> tree = display.getTree();
-		TreeImpl treeImpl = (TreeImpl) tree;
-		treeImpl.setVisible(false);
-//		TreeNode<DocName> selected = tree.getSelectedNode();
-//		tree.clear();
-//		tree.removeItems();
-//		for (DocName docName : docNames) {
-//			if (docName.getName().contains(value)) {
-//				TreeNode<DocName> node = tree.addItem(docName.getName());
-//				node.setObject(docName);
-//				if (selected != null && selected.getObject() == docName)
-//					tree.setSelectedNode(node);
-//			}
-//		}
+
 		ArrayList<DocName> filteredNames = new ArrayList<DocName>();
 		for (DocName docName : docNames) {
 			if (docName.getName().contains(value)) {
@@ -148,4 +131,11 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 		docNameMapper.addToTree(tree, filteredNames);
 
 	}
+
+	public void setDocNameList(ArrayList<DocName> docNames) {
+		this.docNames = docNames;
+		display.getTree().clear();
+		docNameMapper.addToTree(display.getTree(), docNames);
+	}
+
 }
