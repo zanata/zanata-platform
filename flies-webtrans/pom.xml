@@ -20,21 +20,21 @@
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-servlet</artifactId>
-      <scope>runtime</scope>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>commons-httpclient</groupId>
       <artifactId>commons-httpclient</artifactId>
       <version>3.1</version>
-      <scope>compile</scope>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
       <version>1.2.1</version>
-      <scope>compile</scope>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -112,19 +112,19 @@
         </executions>
         <configuration>
           <runTarget>org.fedorahosted.flies.webtrans.Application/Application.html</runTarget>
-          <inplace>false</inplace>
+          <inplace>true</inplace>
         </configuration>
       </plugin>
-      <!--
-        If you want to use the target/web.xml file mergewebxml produces,
-        tell the war plugin to use it. Also, exclude what you want from
-        the final artifact here. <plugin>
+
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId> <configuration>
-        <webXml>target/web.xml</webXml>
-        <warSourceExcludes>.gwt-tmp/**</warSourceExcludes>
-        </configuration> </plugin>
-      -->
+        <artifactId>maven-war-plugin</artifactId> 
+        <configuration>
+          <warSourceDirectory>${basedir}/war</warSourceDirectory>
+          <webXml>target/web.xml</webXml>
+          <warSourceExcludes>.gwt-tmp/**,tomcat/**</warSourceExcludes>
+        </configuration> 
+      </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
