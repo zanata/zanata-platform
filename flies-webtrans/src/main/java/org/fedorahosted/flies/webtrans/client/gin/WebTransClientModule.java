@@ -16,14 +16,15 @@ import org.fedorahosted.flies.webtrans.client.WestNavigationPresenter;
 import org.fedorahosted.flies.webtrans.client.WestNavigationView;
 import org.fedorahosted.flies.webtrans.client.WorkspaceUsersPresenter;
 import org.fedorahosted.flies.webtrans.client.WorkspaceUsersView;
+import org.fedorahosted.flies.webtrans.client.ui.Pager;
 import org.fedorahosted.flies.webtrans.editor.CachedWebTransTableModel;
 import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
 import org.fedorahosted.flies.webtrans.editor.TransUnitListPresenter;
+import org.fedorahosted.flies.webtrans.editor.TransUnitTableDefinition;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorFooter;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorHeader;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorPresenter;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorView;
-import org.fedorahosted.flies.webtrans.editor.TransUnitTableDefinition;
 import org.fedorahosted.flies.webtrans.editor.WebTransScrollTable;
 import org.fedorahosted.flies.webtrans.editor.WebTransTableModel;
 

@@ -8,8 +8,8 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.fedorahosted.flies.gwt.model.DocName;
 import org.fedorahosted.flies.webtrans.client.ui.HasTreeNodes;
-import org.fedorahosted.flies.webtrans.model.DocName;
 
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;

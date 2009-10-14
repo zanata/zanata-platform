@@ -3,9 +3,9 @@ package org.fedorahosted.flies.webtrans.client;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.fedorahosted.flies.gwt.model.DocName;
 import org.fedorahosted.flies.webtrans.client.ui.HasTreeNodes;
 import org.fedorahosted.flies.webtrans.client.ui.TreeNode;
-import org.fedorahosted.flies.webtrans.model.DocName;
 
 public class FlatFolderDocNameMapper implements DocNameMapper {
 	public void addToTree(HasTreeNodes tree, ArrayList<DocName> docNames) {
