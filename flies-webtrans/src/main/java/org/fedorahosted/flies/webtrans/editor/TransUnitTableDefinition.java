@@ -1,7 +1,7 @@
 package org.fedorahosted.flies.webtrans.editor;
 
+import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.webtrans.client.mvp.TextAreaCellEditor;
-import org.fedorahosted.flies.webtrans.model.TransUnit;
 
 import com.google.gwt.gen2.table.client.AbstractColumnDefinition;
 import com.google.gwt.gen2.table.client.CellRenderer;

@@ -2,7 +2,7 @@ package org.fedorahosted.flies.webtrans.editor;
 
 import java.util.ArrayList;
 
-import org.fedorahosted.flies.webtrans.model.TransUnit;
+import org.fedorahosted.flies.gwt.model.TransUnit;
 
 
 import com.allen_sauer.gwt.log.client.Log;
