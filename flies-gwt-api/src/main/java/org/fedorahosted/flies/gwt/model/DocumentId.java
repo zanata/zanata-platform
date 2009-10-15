@@ -2,7 +2,9 @@ package org.fedorahosted.flies.gwt.model;
 
 import java.io.Serializable;
 
-public class DocumentId implements Serializable{
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+public class DocumentId implements Serializable, IsSerializable{
 
 	private static final long serialVersionUID = 6291339842619640513L;
 

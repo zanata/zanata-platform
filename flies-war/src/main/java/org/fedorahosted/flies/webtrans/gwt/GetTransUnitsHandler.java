@@ -29,7 +29,7 @@ public class GetTransUnitsHandler implements ActionHandler<GetTransUnits, GotTra
 		log.info("Fetching Transunits for {0}", action.getDocumentId());
 		int rows = action.getCount() + action.getOffset() > TOTAL ? action.getCount() : TOTAL-action.getOffset();
 		ArrayList<TransUnit> units = generateSampleData(rows, action.getOffset()); 
-		return new GotTransUnits( units, TOTAL );
+		return new GotTransUnits(action.getDocumentId(), units, TOTAL );
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package org.fedorahosted.flies.gwt.rpc;
 
 import java.util.ArrayList;
 
+import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -12,6 +13,7 @@ public class GotTransUnits implements Result, IsSerializable {
 
 	private static final long serialVersionUID = 3481107839585398632L;
 
+	private DocumentId documentId;
 	private int totalCount;
 	private ArrayList<TransUnit> units;
 
@@ -19,7 +21,8 @@ public class GotTransUnits implements Result, IsSerializable {
 		
 	}
 	
-	public GotTransUnits(ArrayList<TransUnit> units, int totalCount) {
+	public GotTransUnits(DocumentId documentId, ArrayList<TransUnit> units, int totalCount) {
+		this.documentId = documentId;
 		this.units = units;
 		this.totalCount = totalCount;
 	}
@@ -30,6 +33,10 @@ public class GotTransUnits implements Result, IsSerializable {
 	
 	public int getTotalCount() {
 		return totalCount;
+	}
+	
+	public DocumentId getDocumentId() {
+		return documentId;
 	}
 	
 	
