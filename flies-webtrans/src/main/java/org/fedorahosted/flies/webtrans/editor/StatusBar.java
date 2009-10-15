@@ -17,28 +17,37 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.widgetideas.client.ProgressBar;
 import com.google.gwt.widgetideas.client.ProgressBar.TextFormatter;
 
-public class StatusBar extends Composite implements ClickHandler, MouseOverHandler, MouseOutHandler, HasClickHandlers, HasMouseOverHandlers, HasMouseOutHandlers {
+public class StatusBar extends Composite implements HasTransUnitCount, ClickHandler, MouseOverHandler, MouseOutHandler, HasClickHandlers, HasMouseOverHandlers, HasMouseOutHandlers {
 	
+	public int fuzzy;
+	public int untranslated;
+	public int translated;
 	private final static int popupoffset = 35;
 	private final ProgressBar bar = new ProgressBar();
+	private double curprogress;
 	private PopupWindow popupWindow;
 	
-	private static class PopupWindow extends DecoratedPopupPanel {
+	private class PopupWindow extends DecoratedPopupPanel {
 		    public PopupWindow() {
 		      super(true);
-		      setWidget(new Label("Status of Translation Unit"));
+		      this.setWidget(new Label("Status of Translation Unit"));
 		    }
 	}
 
 	
 	public StatusBar() {
+		setFuzzy(20);
+		setUntranslated(50);
+		setTranslated(30);
+		calcCurrentProgress();
+		
 		HorizontalPanel panel = new HorizontalPanel();
 		initWidget(panel);
-	
+	    		
 		bar.setTextVisible(true); 
 		bar.setMaxProgress(100.0);
 		bar.setWidth("200px");
-		bar.setProgress(30.0);
+		bar.setProgress(curprogress);
 		
 		panel.add(bar);
 		addClickHandler(this);
@@ -46,6 +55,18 @@ public class StatusBar extends Composite implements ClickHandler, MouseOverHandl
 		addMouseOutHandler(this);
 	}
 	
+	private void calcCurrentProgress() {
+		// TODO Auto-generated method stub
+		int fuzzy = getFuzzy();
+		int untrans = getUntranslated();
+		int trans = getTranslated();
+		if( translated < 0 || untranslated < 0 || fuzzy < 0 || (translated+untranslated+fuzzy) == 0) {
+			curprogress = 0.0;
+		} else {
+			curprogress = ((double) trans)/(fuzzy+untrans+trans)*100;
+		}
+	}
+
 	@Override
 	public void onMouseOver(MouseOverEvent event) {
 		// TODO Auto-generated method stub
@@ -81,14 +102,14 @@ public class StatusBar extends Composite implements ClickHandler, MouseOverHandl
 			TextFormatter formatter = new TextFormatter() {
 				protected String getText(ProgressBar
 				bar, double curProgress) {
-				return "[50/30/20] ";
+				return "["+untranslated+"/"+translated+"/"+fuzzy+"] ";
 				}
 				};
 			bar.setTextFormatter(formatter);
-			bar.setProgress(30.0);
+			bar.setProgress(curprogress);
 		} else {
 			bar.setTextFormatter(null);
-			bar.setProgress(30.0);
+			bar.setProgress(curprogress);
 		}
 	}
 
@@ -96,6 +117,50 @@ public class StatusBar extends Composite implements ClickHandler, MouseOverHandl
 	public HandlerRegistration addClickHandler(ClickHandler handler) {
 		// TODO Auto-generated method stub
 		return addDomHandler(handler, ClickEvent.getType());
+	}
+
+	@Override
+	public int getFuzzy() {
+		// TODO Auto-generated method stub
+		return fuzzy;
+	}
+
+	@Override
+	public int getTranslated() {
+		// TODO Auto-generated method stub
+		return translated;
+	}
+
+	@Override
+	public int getUntranslated() {
+		// TODO Auto-generated method stub
+		return untranslated;
+	}
+
+	@Override
+	public void setFuzzy(int fuzzy) {
+		// TODO Auto-generated method stub
+		this.fuzzy = fuzzy;
+	}
+
+	@Override
+	public void setStatus(int fuzzy, int translated, int untranslated) {
+		// TODO Auto-generated method stub
+		this.fuzzy = fuzzy;
+		this.translated = translated;
+		this.untranslated = untranslated;
+	}
+
+	@Override
+	public void setTranslated(int translated) {
+		// TODO Auto-generated method stub
+		this.translated = translated;
+	}
+
+	@Override
+	public void setUntranslated(int untranslated) {
+		// TODO Auto-generated method stub
+		this.untranslated = untranslated;
 	}
 
 }
