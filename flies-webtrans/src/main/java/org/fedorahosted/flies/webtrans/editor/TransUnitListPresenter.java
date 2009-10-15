@@ -7,6 +7,8 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.fedorahosted.flies.gwt.model.TransUnit;
+import org.fedorahosted.flies.webtrans.client.DocumentSelectionEvent;
+import org.fedorahosted.flies.webtrans.client.DocumentSelectionHandler;
 
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -46,7 +48,7 @@ public class TransUnitListPresenter  extends WidgetPresenter<TransUnitListPresen
 	@Override
 	protected void onBind() {
 		
-		display.getSelectionHandlers().addSelectionHandler(new SelectionHandler<TransUnit>() {
+		registerHandler(display.getSelectionHandlers().addSelectionHandler(new SelectionHandler<TransUnit>() {
 			@Override
 			public void onSelection(SelectionEvent<TransUnit> event) {
 				if(event.getSelectedItem() != currentSelection) {
@@ -54,13 +56,13 @@ public class TransUnitListPresenter  extends WidgetPresenter<TransUnitListPresen
 					eventBus.fireEvent(event);
 				}
 			}
-		});
-//		eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {
-//			@Override
-//			public void onValueChange(DocumentSelectionEvent event) {
-//				// TODO switch WebTransTableModel to the new document
-//			}
-//		});
+		}));
+		registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {
+			@Override
+			public void onDocumentSelected(DocumentSelectionEvent event) {
+				// TODO switch WebTransTableModel to the new document
+			}
+		}));
 		
 		display.getPageNavigation().gotoFirstPage();
 		

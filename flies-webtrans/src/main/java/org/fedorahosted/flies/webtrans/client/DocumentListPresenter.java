@@ -24,17 +24,15 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.inject.Inject;
 
-public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter.Display> implements HasValue<DocumentId> {
+public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter.Display> 
+		implements HasDocumentSelectionHandlers {
 
 	private final DocNameMapper docNameMapper;
 	private final DispatchAsync dispatcher;
@@ -84,7 +82,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 		}));
 	}
 
-
 	@Override
 	protected void onPlaceRequest(PlaceRequest request) {
 		// TODO Auto-generated method stub
@@ -107,27 +104,19 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 		
 	}
 
-	@Override
-	public DocumentId getValue() {
-		return currentDoc;
-	}
 
-	@Override
-	public void setValue(DocumentId value) {
-		currentDoc = value;
-	}
-
-	@Override
 	public void setValue(DocumentId value, boolean fireEvents) {
 		DocumentId oldValue = currentDoc;
 		currentDoc = value;
-		ValueChangeEvent.fireIfNotEqual(this, oldValue, value);
+		if (oldValue != currentDoc) {
+			fireEvent(new DocumentSelectionEvent(currentDoc));
+		}
 	}
 
 	@Override
-	public HandlerRegistration addValueChangeHandler(
-			ValueChangeHandler<DocumentId> handler) {
-		return eventBus.addHandler(ValueChangeEvent.getType(), handler);
+	public HandlerRegistration addDocumentSelectionHandler(
+			DocumentSelectionHandler handler) {
+		return eventBus.addHandler(DocumentSelectionEvent.getType(), handler);
 	}
 
 	@Override
