@@ -19,6 +19,12 @@ public class Application implements EntryPoint{
 	private final WebTransGinjector injector = GWT.create(WebTransGinjector.class);
 
 	public void onModuleLoad() {
+		WorkspaceContext context = injector.getWorkspaceContext();
+		if (!context.isValid()) {
+			// TODO better error message
+			Window.alert("Invalid workspace context");
+			return;
+		}
 		final AppPresenter appPresenter = injector.getAppPresenter();
 		appPresenter.go(RootPanel.get());
 

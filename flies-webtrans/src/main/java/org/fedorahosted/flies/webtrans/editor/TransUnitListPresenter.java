@@ -7,19 +7,14 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.fedorahosted.flies.gwt.model.TransUnit;
-import org.fedorahosted.flies.webtrans.client.ui.Pager;
+import org.fedorahosted.flies.webtrans.client.DocumentSelectionEvent;
+import org.fedorahosted.flies.webtrans.client.DocumentSelectionHandler;
 
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.table.event.client.HasPageChangeHandlers;
 import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
-import com.google.gwt.gen2.table.event.client.PageChangeEvent;
-import com.google.gwt.gen2.table.event.client.PageChangeHandler;
-import com.google.gwt.gen2.table.event.client.PageCountChangeEvent;
-import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.inject.Inject;
 
@@ -53,7 +48,7 @@ public class TransUnitListPresenter  extends WidgetPresenter<TransUnitListPresen
 	@Override
 	protected void onBind() {
 		
-		display.getSelectionHandlers().addSelectionHandler(new SelectionHandler<TransUnit>() {
+		registerHandler(display.getSelectionHandlers().addSelectionHandler(new SelectionHandler<TransUnit>() {
 			@Override
 			public void onSelection(SelectionEvent<TransUnit> event) {
 				if(event.getSelectedItem() != currentSelection) {
@@ -61,7 +56,13 @@ public class TransUnitListPresenter  extends WidgetPresenter<TransUnitListPresen
 					eventBus.fireEvent(event);
 				}
 			}
-		});
+		}));
+		registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {
+			@Override
+			public void onDocumentSelected(DocumentSelectionEvent event) {
+				// TODO switch WebTransTableModel to the new document
+			}
+		}));
 		
 		display.getPageNavigation().gotoFirstPage();
 		

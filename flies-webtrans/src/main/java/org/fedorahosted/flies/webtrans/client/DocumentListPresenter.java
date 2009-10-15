@@ -2,6 +2,7 @@ package org.fedorahosted.flies.webtrans.client;
 
 import java.util.ArrayList;
 
+import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
@@ -9,8 +10,13 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.fedorahosted.flies.gwt.model.DocName;
+import org.fedorahosted.flies.gwt.model.DocumentId;
+import org.fedorahosted.flies.gwt.model.ProjectIterationId;
+import org.fedorahosted.flies.gwt.rpc.GetDocsList;
+import org.fedorahosted.flies.gwt.rpc.GetDocsListResult;
 import org.fedorahosted.flies.webtrans.client.ui.HasTreeNodes;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasKeyUpHandlers;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -18,33 +24,28 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.inject.Inject;
 
-public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter.Display> implements HasValue<String> {
+public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter.Display> 
+		implements HasDocumentSelectionHandlers {
 
 	private final DocNameMapper docNameMapper;
+	private final DispatchAsync dispatcher;
 
 	@Inject
-	public DocumentListPresenter(Display display, EventBus eventBus, DocNameMapper docNameMapper) {
+	public DocumentListPresenter(Display display, EventBus eventBus,
+			WorkspaceContext workspaceContext,
+			DocNameMapper docNameMapper, DispatchAsync dispatcher) {
 		super(display, eventBus);
+		this.dispatcher = dispatcher;
 		GWT.log("DocumentListPresenter()", null);
 		this.docNameMapper = docNameMapper;
-		ArrayList<DocName> names = new ArrayList<DocName>();
-		names.add(new DocName("id1", "path1name1", "path/1"));
-		names.add(new DocName("id2", "path1name2", "path/1"));
-		names.add(new DocName("id3", "path2name1", "path/2"));
-		names.add(new DocName("id4", "path2name2", "path/2"));
-		names.add(new DocName("id5", "name2", ""));
-		names.add(new DocName("id6", "name1", null));
-		setDocNameList(names);
-
+		loadDocsList(workspaceContext.getProjectIterationId());
 	}
 
 	public static final Place PLACE = new Place("DocumentListList");
@@ -56,7 +57,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 		HasTreeNodes<DocName> getTree();
 	}
 	
-	private String currentDoc;
+	private DocumentId currentDoc;
 	private ArrayList<DocName> docNames = new ArrayList<DocName>();
 	
 	@Override
@@ -75,12 +76,11 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 		registerHandler(getDisplay().getTree().addSelectionHandler(new SelectionHandler<TreeItem>() {
 			@Override
 			public void onSelection(SelectionEvent<TreeItem> event) {
-//				event.getSelectedItem().getUserObject();
-				setValue(event.getSelectedItem().getText(), true);
+				DocName selectedDocName = (DocName) event.getSelectedItem().getUserObject();
+				setValue(selectedDocName.getId(), true);
 			}
 		}));
 	}
-
 
 	@Override
 	protected void onPlaceRequest(PlaceRequest request) {
@@ -103,28 +103,20 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 		// TODO Auto-generated method stub
 		
 	}
-	
-	@Override
-	public String getValue() {
-		return currentDoc;
-	}
 
-	@Override
-	public void setValue(String value) {
+
+	public void setValue(DocumentId value, boolean fireEvents) {
+		DocumentId oldValue = currentDoc;
 		currentDoc = value;
+		if (oldValue != currentDoc) {
+			fireEvent(new DocumentSelectionEvent(currentDoc));
+		}
 	}
 
 	@Override
-	public void setValue(String value, boolean fireEvents) {
-		String oldValue = currentDoc;
-		currentDoc = value;
-		ValueChangeEvent.fireIfNotEqual(this, oldValue, value);
-	}
-
-	@Override
-	public HandlerRegistration addValueChangeHandler(
-			ValueChangeHandler<String> handler) {
-		return eventBus.addHandler(ValueChangeEvent.getType(), handler);
+	public HandlerRegistration addDocumentSelectionHandler(
+			DocumentSelectionHandler handler) {
+		return eventBus.addHandler(DocumentSelectionEvent.getType(), handler);
 	}
 
 	@Override
@@ -151,6 +143,20 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 		this.docNames = docNames;
 		display.getTree().clear();
 		docNameMapper.addToTree(display.getTree(), docNames);
+	}
+
+	private void loadDocsList(ProjectIterationId id) {
+		// switch doc list to the new project
+		dispatcher.execute(new GetDocsList(id), new AsyncCallback<GetDocsListResult>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Log.error(caught.toString());
+			}
+			@Override
+			public void onSuccess(GetDocsListResult result) {
+				setDocNameList(result.getDocNames());
+			}
+		});
 	}
 
 }

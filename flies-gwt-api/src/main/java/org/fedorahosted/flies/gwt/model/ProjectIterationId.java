@@ -4,17 +4,18 @@ import java.io.Serializable;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class DocumentId implements Serializable, IsSerializable{
+public class ProjectIterationId implements Serializable, IsSerializable{
 
-	private static final long serialVersionUID = 6291339842619640513L;
+	private static final long serialVersionUID = 1L;
 
+	// TODO
 	private int id;
 	
 	@SuppressWarnings("unused")
-	private DocumentId() {
+	private ProjectIterationId() {
 	}
 	
-	public DocumentId(int id) {
+	public ProjectIterationId(int id) {
 		this.id = id;
 	}
 	
@@ -32,8 +33,8 @@ public class DocumentId implements Serializable, IsSerializable{
 	public boolean equals(Object obj) {
 		if(obj == this) return true;
 		if(obj == null) return false;
-		if(obj instanceof DocumentId) {
-			return ((DocumentId) obj).id == id;
+		if(obj instanceof ProjectIterationId) {
+			return ((ProjectIterationId) obj).id == id;
 		}
 		return false;
 	}
