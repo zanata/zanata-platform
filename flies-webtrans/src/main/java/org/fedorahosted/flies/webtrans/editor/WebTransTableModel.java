@@ -10,6 +10,7 @@ import org.fedorahosted.flies.gwt.rpc.GetTransUnitsResult;
 import org.fedorahosted.flies.webtrans.client.DocumentSelectionEvent;
 import org.fedorahosted.flies.webtrans.client.DocumentSelectionHandler;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent;
+import org.fedorahosted.flies.webtrans.client.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent.Severity;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -24,10 +25,13 @@ public class WebTransTableModel extends MutableTableModel<TransUnit> {
 	private final DispatchAsync dispatcher;
 	private final EventBus eventBus;
 	private DocumentId currentDocumentId;
+	private final WorkspaceContext workspaceContext;
+	
 	@Inject
-	public WebTransTableModel(DispatchAsync dispatcher, EventBus eventBus) {
+	public WebTransTableModel(WorkspaceContext workspaceContext, DispatchAsync dispatcher, EventBus eventBus) {
 		this.dispatcher = dispatcher;
 		this.eventBus = eventBus;
+		this.workspaceContext = workspaceContext;
 	}
 	
 	@Override
@@ -58,7 +62,7 @@ public class WebTransTableModel extends MutableTableModel<TransUnit> {
 			return;
 		}
 		
-		dispatcher.execute(new GetTransUnits(currentDocumentId, startRow, numRows), new AsyncCallback<GetTransUnitsResult>() {
+		dispatcher.execute(new GetTransUnits(currentDocumentId, workspaceContext.getLocaleId(), startRow, numRows), new AsyncCallback<GetTransUnitsResult>() {
 			@Override
 			public void onSuccess(GetTransUnitsResult result) {
 				SerializableResponse<TransUnit> response = new SerializableResponse<TransUnit>(

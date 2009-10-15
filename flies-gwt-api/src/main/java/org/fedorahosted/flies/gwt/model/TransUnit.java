@@ -10,6 +10,10 @@ public class TransUnit implements IsSerializable, Serializable{
 
 	private boolean fuzzy;
 	
+	private TransUnitId id;
+	
+	private LocaleId localeId;
+	
 	private String source;
 	private String target;
 	
@@ -17,9 +21,24 @@ public class TransUnit implements IsSerializable, Serializable{
 	private TransUnit(){
 	}
 	
-	public TransUnit(String source, String target) {
+	public TransUnit(TransUnitId id, LocaleId localeId) {
+		this.id = id;
+		this.localeId = localeId;
+		this.source = "";
+		this.target = "";
+	}
+	public TransUnit(TransUnitId id, LocaleId localeId, String source, String target) {
+		this.id = id;
 		this.source = source;
 		this.target = target;
+	}
+	
+	public TransUnitId getId() {
+		return id;
+	}
+	
+	public LocaleId getLocaleId() {
+		return localeId;
 	}
 	
 	public String getSource() {

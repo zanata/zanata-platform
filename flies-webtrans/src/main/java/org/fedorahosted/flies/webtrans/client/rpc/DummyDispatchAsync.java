@@ -8,8 +8,10 @@ import net.customware.gwt.dispatch.shared.Result;
 
 import org.fedorahosted.flies.gwt.model.DocName;
 import org.fedorahosted.flies.gwt.model.DocumentId;
+import org.fedorahosted.flies.gwt.model.LocaleId;
 import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 import org.fedorahosted.flies.gwt.model.TransUnit;
+import org.fedorahosted.flies.gwt.model.TransUnitId;
 import org.fedorahosted.flies.gwt.rpc.GetDocsList;
 import org.fedorahosted.flies.gwt.rpc.GetDocsListResult;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
@@ -90,15 +92,15 @@ public class DummyDispatchAsync extends SeamDispatchAsync {
 			int totalCount = count * 5;
 			GetTransUnitsResult result = new GetTransUnitsResult(
 					documentId, 
-					generateTransUnitSampleData(count, offset), 
+					generateTransUnitSampleData(gtuAction.getLocaleId(), count, offset), 
 					totalCount);
 			callback.onSuccess(result);
 		}
 
-		private ArrayList<TransUnit> generateTransUnitSampleData(int numRows, int start) {
+		private ArrayList<TransUnit> generateTransUnitSampleData(LocaleId localeId, int numRows, int start) {
 			ArrayList<TransUnit> units = new ArrayList<TransUnit>();
 			for(int i=start;i<start+numRows; i++) {
-				TransUnit unit = new TransUnit("<hellow num=\"" + (i+1) + "\" />", "<world> \"" + (i+1) +"\"</world>");
+				TransUnit unit = new TransUnit( new TransUnitId(i+1), localeId, "<hellow num=\"" + (i+1) + "\" />", "<world> \"" + (i+1) +"\"</world>");
 				unit.setFuzzy(Math.random() > 0.7);
 				units.add(unit);
 			}

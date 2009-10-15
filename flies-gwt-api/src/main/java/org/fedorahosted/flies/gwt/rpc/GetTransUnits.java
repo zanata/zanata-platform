@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.gwt.rpc;
 
 import org.fedorahosted.flies.gwt.model.DocumentId;
+import org.fedorahosted.flies.gwt.model.LocaleId;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -13,13 +14,15 @@ public class GetTransUnits implements Action<GetTransUnitsResult>, IsSerializabl
 	private int offset;
 	private int count;
 	private DocumentId documentId;
+	private LocaleId localeId;
 
 	@SuppressWarnings("unused")
 	private GetTransUnits(){
 	}
 	
-	public GetTransUnits(DocumentId id, int offset, int count) {
+	public GetTransUnits(DocumentId id, LocaleId localeId, int offset, int count) {
 		this.documentId = id;
+		this.localeId = localeId;
 		this.offset = offset;
 		this.count = count;
 	}
@@ -48,4 +51,11 @@ public class GetTransUnits implements Action<GetTransUnitsResult>, IsSerializabl
 		this.documentId = documentId;
 	}
 	
+	public LocaleId getLocaleId() {
+		return localeId;
+	}
+	
+	public void setLocaleId(LocaleId localeId) {
+		this.localeId = localeId;
+	}
 }
