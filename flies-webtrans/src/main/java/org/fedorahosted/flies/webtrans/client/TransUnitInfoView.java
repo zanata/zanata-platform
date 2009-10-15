@@ -2,8 +2,6 @@ package org.fedorahosted.flies.webtrans.client;
 
 import org.fedorahosted.flies.webtrans.client.ui.CaptionPanel;
 import org.fedorahosted.flies.webtrans.client.ui.HeadingPanel;
-import org.fedorahosted.flies.webtrans.client.ui.HeadingWidget;
-
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -20,7 +18,7 @@ public class TransUnitInfoView extends CaptionPanel implements TransUnitInfoPres
 
 	public static Widget getStatusPanel() {
 		VerticalPanel vpanel = new VerticalPanel();
-		vpanel.setWidth("200px");
+		vpanel.setWidth("100%");
 		vpanel.setHeight("100px");
 		vpanel.setHorizontalAlignment(VerticalPanel.ALIGN_LEFT);
 		vpanel.setVerticalAlignment(VerticalPanel.ALIGN_TOP);

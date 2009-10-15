@@ -2,8 +2,6 @@ package org.fedorahosted.flies.webtrans.client;
 
 import org.fedorahosted.flies.webtrans.client.ui.CaptionPanel;
 import org.fedorahosted.flies.webtrans.client.ui.HeadingPanel;
-import org.fedorahosted.flies.webtrans.client.ui.HeadingWidget;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -49,11 +47,6 @@ public class WorkspaceUsersView extends CaptionPanel implements
 		addHead("Translators");
 		addBody(getChatAllPanel());
 		initPanel();
-		/*
-		HeadingWidget heading = new HeadingWidget("Translators");
-		heading.setCollapsible(false);
-		panel.setHeadingWidget(heading);
-		*/
 	}
 
 	private static Panel createLocaleTranslatorsTree() {

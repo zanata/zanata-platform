@@ -42,8 +42,8 @@ public class DocumentListView extends CaptionPanel
 		GWT.log("DocumentListView()", null);
 	    tree = new TreeImpl<DocName>(images);
 	    VerticalPanel treePanel = new VerticalPanel();
-	    treePanel.setWidth("200px");
-	    treePanel.setHeight("150pn");
+	    treePanel.setWidth("100%");
+	    treePanel.setHeight("150px");
 	    treePanel.add(tree);
 	    
 	    addHead("Documents");

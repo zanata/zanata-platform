@@ -7,28 +7,29 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class HeadingPanel extends HorizontalPanel {
 
+	private final Label title;
+	private final Button collapseButton;
+	
 	public HeadingPanel() {
 		setStyleName("gwt-HeadingPanel");
+		title = new Label();
+		collapseButton = new Button("v");
+		
+		add(title);
+		add(collapseButton);
+		
+		setWidth("100%");
+		setCellVerticalAlignment(title, HorizontalPanel.ALIGN_MIDDLE);
+		
+		setCellHorizontalAlignment(collapseButton, HorizontalPanel.ALIGN_RIGHT);
 	}
 	
-	public HeadingPanel(Widget widget) {
-		this();
+	public void setTitle(String title) {
+		this.title.setText(title);
 	}
 	
-	public void add(String title) {
-		this.add(new Label(title));
-		addCollapser(); 
+	public void setCollapser(boolean collapser) {
+		collapseButton.setVisible(collapser);
 	}
 	
-	private void addCollapser() {
-		add(new Button("V"));
-	}
-
-	public void setHeadingWidget(Widget widget) {
-		// going to be removed
-	}
-	
-	public Widget getWidget() {
-		return this;
-	}
 }

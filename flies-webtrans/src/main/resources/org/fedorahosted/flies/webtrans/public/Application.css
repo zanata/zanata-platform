@@ -20,11 +20,15 @@
 	color: grey;
 }
 
-.gwt-HeadingPanel{
+.gwt-CaptionPanel-Heading {
     font-style: bold;
     width: 100%;
     background-color: d0e4f6;
 
+}
+
+.gwt-CaptionPanel tr.middle td.middleCenter {
+    width: 100%;
 }
 
 .gwt-ProgressBar-shell {
