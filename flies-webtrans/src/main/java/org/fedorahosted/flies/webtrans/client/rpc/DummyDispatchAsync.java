@@ -3,12 +3,12 @@ package org.fedorahosted.flies.webtrans.client.rpc;
 
 import java.util.ArrayList;
 
-import org.fedorahosted.flies.gwt.model.TransUnit;
-import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
-import org.fedorahosted.flies.gwt.rpc.GotTransUnits;
-
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;
+
+import org.fedorahosted.flies.gwt.model.TransUnit;
+import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
+import org.fedorahosted.flies.gwt.rpc.GetTransUnitsResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -27,7 +27,7 @@ public class DummyDispatchAsync extends SeamDispatchAsync {
 			int count = gtuAction.getCount();
 			int offset = gtuAction.getOffset();
 			int totalCount = count * 5;
-			GotTransUnits result = new GotTransUnits(generateTransUnitSampleData(count, offset), totalCount);
+			GetTransUnitsResult result = new GetTransUnitsResult(((GetTransUnits) action).getDocumentId(), generateTransUnitSampleData(count, offset), totalCount);
 			callback.onSuccess((R) result);
 		}
 	}

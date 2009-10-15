@@ -2,6 +2,10 @@ package org.fedorahosted.flies.webtrans.gwt;
 
 import java.util.ArrayList;
 
+import net.customware.gwt.dispatch.server.ActionHandler;
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
+
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnitsResult;
@@ -10,10 +14,6 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
-
-import net.customware.gwt.dispatch.server.ActionHandler;
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
 
 @Name("webtrans.gwt.GetTransUnitHandler")
 @Scope(ScopeType.STATELESS)
