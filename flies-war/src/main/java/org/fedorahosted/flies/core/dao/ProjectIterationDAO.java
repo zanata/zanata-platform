@@ -2,6 +2,8 @@ package org.fedorahosted.flies.core.dao;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.HProjectIteration;
@@ -21,6 +23,9 @@ import org.jboss.seam.log.Log;
 public class ProjectIterationDAO {
 	
 	@In
+	EntityManager entityManager;
+
+	@In
 	Session session;
 	
 	@Logger
@@ -28,6 +33,10 @@ public class ProjectIterationDAO {
 
 	@In
 	ProjectDAO projectDAO;
+	
+	public HProjectIteration getById(long projectIterationId){
+		return entityManager.find(HProjectIteration.class, projectIterationId);
+	}
 	
 	public HProjectIteration getBySlug(String projectSlug, String iterationSlug){
 		return (HProjectIteration) session.createCriteria(HProjectIteration.class)
