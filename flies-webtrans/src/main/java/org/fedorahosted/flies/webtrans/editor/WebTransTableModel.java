@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import net.customware.gwt.dispatch.client.DispatchAsync;
 
+import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
 import org.fedorahosted.flies.gwt.rpc.GotTransUnits;
@@ -49,7 +50,7 @@ public class WebTransTableModel extends MutableTableModel<TransUnit> {
 		
 		Log.info("Requesting " + numRows + " rows");
 		
-		dispatcher.execute(new GetTransUnits(1, startRow, numRows), new AsyncCallback<GotTransUnits>() {
+		dispatcher.execute(new GetTransUnits(new DocumentId(1), startRow, numRows), new AsyncCallback<GotTransUnits>() {
 
 			@Override
 			public void onSuccess(GotTransUnits result) {
