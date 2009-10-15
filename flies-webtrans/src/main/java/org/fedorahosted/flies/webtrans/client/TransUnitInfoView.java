@@ -1,7 +1,6 @@
 package org.fedorahosted.flies.webtrans.client;
 
 import org.fedorahosted.flies.webtrans.client.ui.CaptionPanel;
-import org.fedorahosted.flies.webtrans.client.ui.HeadingPanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
