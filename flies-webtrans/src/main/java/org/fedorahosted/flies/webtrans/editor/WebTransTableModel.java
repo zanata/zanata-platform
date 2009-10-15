@@ -1,7 +1,5 @@
 package org.fedorahosted.flies.webtrans.editor;
 
-import java.util.ArrayList;
-
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 
@@ -12,12 +10,10 @@ import org.fedorahosted.flies.gwt.rpc.GetTransUnitsResult;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent.Severity;
 
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.gen2.table.client.MutableTableModel;
 import com.google.gwt.gen2.table.client.TableModelHelper.Request;
 import com.google.gwt.gen2.table.client.TableModelHelper.SerializableResponse;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 public class WebTransTableModel extends MutableTableModel<TransUnit> {
