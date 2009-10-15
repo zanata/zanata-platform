@@ -18,7 +18,7 @@ public class GetTransUnits implements Action<GetTransUnitsResult>, IsSerializabl
 	}
 	
 	public GetTransUnits(DocumentId id, int offset, int count) {
-		this.documentId = documentId;
+		this.documentId = id;
 		this.offset = offset;
 		this.count = count;
 	}
