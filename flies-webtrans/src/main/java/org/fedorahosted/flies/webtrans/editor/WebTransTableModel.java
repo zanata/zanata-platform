@@ -14,6 +14,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.gen2.table.client.MutableTableModel;
 import com.google.gwt.gen2.table.client.TableModelHelper.Request;
 import com.google.gwt.gen2.table.client.TableModelHelper.SerializableResponse;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 public class WebTransTableModel extends MutableTableModel<TransUnit> {
