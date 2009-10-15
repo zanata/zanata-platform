@@ -10,9 +10,8 @@ import com.google.gwt.widgetideas.client.ProgressBar;
 public class TransUnitInfoView extends CaptionPanel implements TransUnitInfoPresenter.Display {
 
 	public TransUnitInfoView() {
-		addHead("Translation Unit Info");
+		setTitle("Translation Unit Info");
 		addBody(getStatusPanel());
-		initPanel();
 	}
 
 	public static Widget getStatusPanel() {

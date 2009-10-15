@@ -15,6 +15,7 @@ public class CaptionPanel extends DecoratorPanel {
 	private HorizontalPanel headPanel;
 	private VerticalPanel bodyPanel;
 	
+	Label titleWidget;
 	private Button collapseButton;
 	private boolean collapseButtonVisible;
 	
@@ -33,6 +34,7 @@ public class CaptionPanel extends DecoratorPanel {
 		headPanel = new HorizontalPanel();
 		bodyPanel = new VerticalPanel();
 		
+		titleWidget = new Label();
 		collapseButtonVisible = true;
 		collapseButton = new Button("v");
 		collapseButton.addClickHandler(new ClickHandler() {
@@ -45,28 +47,25 @@ public class CaptionPanel extends DecoratorPanel {
 			}
 		});
 		
-	}
-	
-	public void addHead(String title) {
 		headPanel.addStyleName("gwt-CaptionPanel-Heading");
 		headPanel.setWidth("100%");
-		
-		Label titleWidget = new Label(title);
 		
 		headPanel.add(titleWidget);
 		headPanel.add(collapseButton);
 		
 		headPanel.setCellVerticalAlignment(titleWidget, HorizontalPanel.ALIGN_MIDDLE);
 		headPanel.setCellHorizontalAlignment(collapseButton, HorizontalPanel.ALIGN_RIGHT);
+		
+		mainPanel.add(headPanel);
+		mainPanel.add(bodyPanel);
+		add(mainPanel);
 	}
 	
 	public void addBody(Widget widget) {
 		bodyPanel.add(widget);
 	}
 	
-	public void initPanel() {
-		mainPanel.add(headPanel);
-		mainPanel.add(bodyPanel);
-		add(mainPanel);
+	public void setTitle(String title) {
+		titleWidget.setText(title);
 	}
 }
