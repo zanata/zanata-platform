@@ -24,7 +24,6 @@ public class StatusBar extends Composite implements HasTransUnitCount, ClickHand
 	public int translated;
 	private final static int popupoffset = 35;
 	private final ProgressBar bar = new ProgressBar();
-	private double curprogress;
 	private PopupWindow popupWindow;
 	
 	private class PopupWindow extends DecoratedPopupPanel {
@@ -39,7 +38,6 @@ public class StatusBar extends Composite implements HasTransUnitCount, ClickHand
 		setFuzzy(20);
 		setUntranslated(50);
 		setTranslated(30);
-		calcCurrentProgress();
 		
 		HorizontalPanel panel = new HorizontalPanel();
 		initWidget(panel);
@@ -47,7 +45,7 @@ public class StatusBar extends Composite implements HasTransUnitCount, ClickHand
 		bar.setTextVisible(true); 
 		bar.setMaxProgress(100.0);
 		bar.setWidth("200px");
-		bar.setProgress(curprogress);
+		bar.setProgress(calcCurrentProgress());
 		
 		panel.add(bar);
 		addClickHandler(this);
@@ -55,15 +53,15 @@ public class StatusBar extends Composite implements HasTransUnitCount, ClickHand
 		addMouseOutHandler(this);
 	}
 	
-	private void calcCurrentProgress() {
+	private double calcCurrentProgress() {
 		// TODO Auto-generated method stub
 		int fuzzy = getFuzzy();
 		int untrans = getUntranslated();
 		int trans = getTranslated();
-		if( translated < 0 || untranslated < 0 || fuzzy < 0 || (translated+untranslated+fuzzy) == 0) {
-			curprogress = 0.0;
+		if( trans < 0 || untrans < 0 || fuzzy < 0 || (trans+untrans+fuzzy) == 0) {
+			return 0.0;
 		} else {
-			curprogress = ((double) trans)/(fuzzy+untrans+trans)*100;
+			return ((double) trans)/(fuzzy+untrans+trans)*100;
 		}
 	}
 
@@ -102,14 +100,14 @@ public class StatusBar extends Composite implements HasTransUnitCount, ClickHand
 			TextFormatter formatter = new TextFormatter() {
 				protected String getText(ProgressBar
 				bar, double curProgress) {
-				return "["+untranslated+"/"+translated+"/"+fuzzy+"] ";
+				return "["+getUntranslated()+"/"+getTranslated()+"/"+getFuzzy()+"] ";
 				}
 				};
 			bar.setTextFormatter(formatter);
-			bar.setProgress(curprogress);
+			bar.setProgress(calcCurrentProgress());
 		} else {
 			bar.setTextFormatter(null);
-			bar.setProgress(curprogress);
+			bar.setProgress(calcCurrentProgress());
 		}
 	}
 
