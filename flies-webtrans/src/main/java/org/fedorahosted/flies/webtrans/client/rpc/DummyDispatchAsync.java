@@ -1,6 +1,12 @@
 package org.fedorahosted.flies.webtrans.client.rpc;
 
 
+import java.util.ArrayList;
+
+import org.fedorahosted.flies.gwt.model.TransUnit;
+import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
+import org.fedorahosted.flies.gwt.rpc.GotTransUnits;
+
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;
 
@@ -16,6 +22,24 @@ public class DummyDispatchAsync extends SeamDispatchAsync {
 	public <A extends Action<R>, R extends Result> void execute(A action,
 			AsyncCallback<R> callback) {
 
+		if (action instanceof GetTransUnits) {
+			GetTransUnits gtuAction = (GetTransUnits) action;
+			int count = gtuAction.getCount();
+			int offset = gtuAction.getOffset();
+			int totalCount = count * 5;
+			GotTransUnits result = new GotTransUnits(generateTransUnitSampleData(count, offset), totalCount);
+			callback.onSuccess((R) result);
+		}
+	}
+	
+	private ArrayList<TransUnit> generateTransUnitSampleData(int numRows, int start) {
+		ArrayList<TransUnit> units = new ArrayList<TransUnit>();
+		for(int i=start;i<start+numRows; i++) {
+			TransUnit unit = new TransUnit("<hellow num=\"" + (i+1) + "\" />", "<world> \"" + (i+1) +"\"</world>");
+			unit.setFuzzy(Math.random() > 0.7);
+			units.add(unit);
+		}
+		return units;
 	}
 
 }
