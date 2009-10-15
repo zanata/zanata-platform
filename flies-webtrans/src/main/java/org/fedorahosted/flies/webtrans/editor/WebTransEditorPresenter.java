@@ -49,8 +49,8 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 			public void onDocumentSelected(DocumentSelectionEvent event) {
 				if(!event.getDocumentId().equals(display.getCachedTableModel().getTableModel().getCurrentDocumentId())) {
 					Log.info("Requested document "+ event.getDocumentId());
-					display.getCachedTableModel().clearCache();
 					display.getCachedTableModel().getTableModel().setCurrentDocumentId(event.getDocumentId());
+					display.getCachedTableModel().clearCache();
 					display.getScrollTable().gotoPage(0, true);
 				}
 			}

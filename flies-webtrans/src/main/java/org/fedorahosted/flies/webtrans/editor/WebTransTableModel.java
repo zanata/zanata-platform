@@ -58,7 +58,7 @@ public class WebTransTableModel extends MutableTableModel<TransUnit> {
 			return;
 		}
 		
-		dispatcher.execute(new GetTransUnits(new DocumentId(1), startRow, numRows), new AsyncCallback<GetTransUnitsResult>() {
+		dispatcher.execute(new GetTransUnits(currentDocumentId, startRow, numRows), new AsyncCallback<GetTransUnitsResult>() {
 			@Override
 			public void onSuccess(GetTransUnitsResult result) {
 				SerializableResponse<TransUnit> response = new SerializableResponse<TransUnit>(
