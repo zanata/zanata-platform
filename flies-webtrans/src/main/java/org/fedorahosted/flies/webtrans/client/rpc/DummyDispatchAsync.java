@@ -27,18 +27,19 @@ public class DummyDispatchAsync extends SeamDispatchAsync {
 
 		if (action instanceof GetTransUnits) {
 			final GetTransUnits gtuAction = (GetTransUnits) action;
-			DeferredCommand.addCommand(new GetTransUnitCommand<R>(gtuAction, callback));
+			AsyncCallback<GetTransUnitsResult> gtuCallback = (AsyncCallback<GetTransUnitsResult>) callback;
+			DeferredCommand.addCommand(new GetTransUnitCommand(gtuAction, gtuCallback));
 //		} else if (action instanceof GetDocList) {
 //			
 		}
 	}
 	
-	private static final class GetTransUnitCommand<R> implements Command {
+	private static final class GetTransUnitCommand implements Command {
 		private final GetTransUnits gtuAction;
-		private final AsyncCallback<R> callback;
+		private final AsyncCallback<GetTransUnitsResult> callback;
 
 		private GetTransUnitCommand(GetTransUnits gtuAction,
-				AsyncCallback<R> callback) {
+				AsyncCallback<GetTransUnitsResult> callback) {
 			this.gtuAction = gtuAction;
 			this.callback = callback;
 		}
@@ -53,7 +54,7 @@ public class DummyDispatchAsync extends SeamDispatchAsync {
 					documentId, 
 					generateTransUnitSampleData(count, offset), 
 					totalCount);
-			callback.onSuccess((R) result);
+			callback.onSuccess(result);
 		}
 
 		private ArrayList<TransUnit> generateTransUnitSampleData(int numRows, int start) {
