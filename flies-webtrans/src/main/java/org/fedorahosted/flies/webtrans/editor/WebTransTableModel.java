@@ -56,6 +56,7 @@ public class WebTransTableModel extends MutableTableModel<TransUnit> {
 				SerializableResponse<TransUnit> response = new SerializableResponse<TransUnit>(
 						result.getUnits());
 				callback.onRowsReady(request, response);
+				setRowCount(result.getTotalCount());
 				Log.info("got rows");
 			}
 
@@ -68,15 +69,5 @@ public class WebTransTableModel extends MutableTableModel<TransUnit> {
 			
 		});
 	}
-
-	private ArrayList<TransUnit> generateSampleData(int numRows, int start) {
-		ArrayList<TransUnit> units = new ArrayList<TransUnit>();
-		for(int i=0;i<numRows; i++) {
-			TransUnit unit = new TransUnit("<hellow num=\"" + (i+start) + "\" />", "<world> \"" + (i+start) +"\"</world>");
-			unit.setFuzzy(Math.random() > 0.7);
-			units.add(unit);
-		}
-		return units;
-	}
-
+	
 }

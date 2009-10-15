@@ -12,18 +12,24 @@ public class GotTransUnits implements Result, IsSerializable {
 
 	private static final long serialVersionUID = 3481107839585398632L;
 
+	private int totalCount;
 	private ArrayList<TransUnit> units;
 
 	private GotTransUnits()	{
 		
 	}
 	
-	public GotTransUnits(ArrayList<TransUnit> units) {
+	public GotTransUnits(ArrayList<TransUnit> units, int totalCount) {
 		this.units = units;
+		this.totalCount = totalCount;
 	}
 	
 	public ArrayList<TransUnit> getUnits() {
 		return units;
+	}
+	
+	public int getTotalCount() {
+		return totalCount;
 	}
 	
 	

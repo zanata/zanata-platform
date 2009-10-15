@@ -21,11 +21,15 @@ public class GetTransUnitsHandler implements ActionHandler<GetTransUnits, GotTra
 
 	@Logger Log log;
 	
+	private static final int TOTAL = 1240;
+	
 	@Override
 	public GotTransUnits execute(GetTransUnits action, ExecutionContext context)
 			throws ActionException {
 		log.info("Fetching Transunits for {0}", action.getDocumentId());
-		return new GotTransUnits( generateSampleData(action.getCount(), action.getOffset()) );
+		int rows = action.getCount() + action.getOffset() > TOTAL ? action.getCount() : TOTAL-action.getOffset();
+		ArrayList<TransUnit> units = generateSampleData(rows, action.getOffset()); 
+		return new GotTransUnits( units, TOTAL );
 	}
 
 	@Override
@@ -40,8 +44,8 @@ public class GetTransUnitsHandler implements ActionHandler<GetTransUnits, GotTra
 
 	private ArrayList<TransUnit> generateSampleData(int numRows, int start) {
 		ArrayList<TransUnit> units = new ArrayList<TransUnit>();
-		for(int i=0;i<numRows; i++) {
-			TransUnit unit = new TransUnit("<hellow num=\"" + (i+start) + "\" />", "<world> \"" + (i+start) +"\"</world>");
+		for(int i=start;i<start+numRows; i++) {
+			TransUnit unit = new TransUnit("<hellow num=\"" + (i+1) + "\" />", "<world> \"" + (i+1) +"\"</world>");
 			unit.setFuzzy(Math.random() > 0.7);
 			units.add(unit);
 		}

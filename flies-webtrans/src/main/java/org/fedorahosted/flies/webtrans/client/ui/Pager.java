@@ -26,8 +26,10 @@ public class Pager extends Composite implements HasPageCount, HasValue<Integer>,
 	private final Button previousPage;
 	private final Label pageCountLabel;
 	
-	private int pageCount;
+	private int pageCount = PAGECOUNT_UNKNOWN;
 	private int currentPage;
+	
+	public static final int PAGECOUNT_UNKNOWN = -1;
 	
 	private final ClickHandler clickHandler = new ClickHandler() {
 		
@@ -95,11 +97,13 @@ public class Pager extends Composite implements HasPageCount, HasValue<Integer>,
 	}
 	
 	private void refresh(){
-		pageCountLabel.setText("of "+ pageCount);
+		String page = pageCount == PAGECOUNT_UNKNOWN ? "" : "of " + pageCount;
+		pageCountLabel.setText(page);
 		firstPage.setEnabled( currentPage != 1);
 		previousPage.setEnabled( currentPage != 1);
 		nextPage.setEnabled( currentPage != pageCount );
-		lastPage.setEnabled( currentPage != pageCount);
+		lastPage.setEnabled( currentPage != pageCount && pageCount != PAGECOUNT_UNKNOWN );
+		lastPage.setVisible(pageCount != PAGECOUNT_UNKNOWN);
 		gotoPage.setText( String.valueOf(currentPage) );
 	}
 	
