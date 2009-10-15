@@ -183,7 +183,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 		col = curCellEditInfo.getCellIndex();
 
 		cellViewWidget = table.getWidget(row, col);
-		textArea.setHeight(cellViewWidget.getOffsetHeight() + "px");
+		textArea.setHeight( table.getWidget(row, col-1).getOffsetHeight() + "px");
 		table.setWidget(row, col, layoutTable);
 
 		textArea.setText(cellValue.getTarget());
