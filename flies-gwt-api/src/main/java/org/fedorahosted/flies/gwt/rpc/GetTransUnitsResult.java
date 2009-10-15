@@ -9,7 +9,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 import net.customware.gwt.dispatch.shared.Result;
 
-public class GotTransUnits implements Result, IsSerializable {
+public class GetTransUnitsResult implements Result, IsSerializable {
 
 	private static final long serialVersionUID = 3481107839585398632L;
 
@@ -17,11 +17,11 @@ public class GotTransUnits implements Result, IsSerializable {
 	private int totalCount;
 	private ArrayList<TransUnit> units;
 
-	private GotTransUnits()	{
+	private GetTransUnitsResult()	{
 		
 	}
 	
-	public GotTransUnits(DocumentId documentId, ArrayList<TransUnit> units, int totalCount) {
+	public GetTransUnitsResult(DocumentId documentId, ArrayList<TransUnit> units, int totalCount) {
 		this.documentId = documentId;
 		this.units = units;
 		this.totalCount = totalCount;

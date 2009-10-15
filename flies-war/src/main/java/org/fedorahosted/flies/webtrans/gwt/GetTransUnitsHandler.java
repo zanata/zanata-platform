@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
-import org.fedorahosted.flies.gwt.rpc.GotTransUnits;
+import org.fedorahosted.flies.gwt.rpc.GetTransUnitsResult;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -17,19 +17,19 @@ import net.customware.gwt.dispatch.shared.ActionException;
 
 @Name("webtrans.gwt.GetTransUnitHandler")
 @Scope(ScopeType.STATELESS)
-public class GetTransUnitsHandler implements ActionHandler<GetTransUnits, GotTransUnits> {
+public class GetTransUnitsHandler implements ActionHandler<GetTransUnits, GetTransUnitsResult> {
 
 	@Logger Log log;
 	
 	private static final int TOTAL = 1240;
 	
 	@Override
-	public GotTransUnits execute(GetTransUnits action, ExecutionContext context)
+	public GetTransUnitsResult execute(GetTransUnits action, ExecutionContext context)
 			throws ActionException {
 		log.info("Fetching Transunits for {0}", action.getDocumentId());
 		int rows = action.getCount() + action.getOffset() > TOTAL ? action.getCount() : TOTAL-action.getOffset();
 		ArrayList<TransUnit> units = generateSampleData(rows, action.getOffset()); 
-		return new GotTransUnits(action.getDocumentId(), units, TOTAL );
+		return new GetTransUnitsResult(action.getDocumentId(), units, TOTAL );
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class GetTransUnitsHandler implements ActionHandler<GetTransUnits, GotTra
 	}
 
 	@Override
-	public void rollback(GetTransUnits action, GotTransUnits result,
+	public void rollback(GetTransUnits action, GetTransUnitsResult result,
 			ExecutionContext context) throws ActionException {
 	}
 
