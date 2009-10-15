@@ -64,7 +64,7 @@ public class WebTransTableModel extends MutableTableModel<TransUnit> {
 			}
 			@Override
 			public void onFailure(Throwable caught) {
-				eventBus.fireEvent( new NotificationEvent(Severity.Error, "Failed to load data from Server"));
+				eventBus.fireEvent( new NotificationEvent(Severity.Warning, "Failed to load data from Server"));
 			}
 		});
 	}

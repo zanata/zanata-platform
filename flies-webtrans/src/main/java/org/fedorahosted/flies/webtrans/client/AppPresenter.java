@@ -69,9 +69,11 @@ public class AppPresenter {
 			@Override
 			public void onNotification(NotificationEvent event) {
 				PopupPanel popup = new PopupPanel(true);
-				popup.setWidth("500px");
+				popup.addStyleDependentName("Notification");
+				popup.addStyleName("Severity-"+ event.getSeverity().name());
+				popup.setWidth(center.getOffsetWidth()-40 + "px");
 				popup.setWidget(new Label(event.getMessage()));
-				popup.setPopupPosition(center.getAbsoluteLeft()+ center.getOffsetWidth()/2-250, center.getAbsoluteTop()+30);
+				popup.setPopupPosition(center.getAbsoluteLeft()+20, center.getAbsoluteTop()+30);
 				popup.show();
 			}
 		});
