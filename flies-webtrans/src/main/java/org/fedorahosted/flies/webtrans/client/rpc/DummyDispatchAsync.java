@@ -6,8 +6,12 @@ import java.util.ArrayList;
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;
 
+import org.fedorahosted.flies.gwt.model.DocName;
 import org.fedorahosted.flies.gwt.model.DocumentId;
+import org.fedorahosted.flies.gwt.model.ProjectIterationId;
 import org.fedorahosted.flies.gwt.model.TransUnit;
+import org.fedorahosted.flies.gwt.rpc.GetDocsList;
+import org.fedorahosted.flies.gwt.rpc.GetDocsListResult;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnitsResult;
 
@@ -22,16 +26,50 @@ public class DummyDispatchAsync extends SeamDispatchAsync {
 	}
 
 	@Override
-	public <A extends Action<R>, R extends Result> void execute(final A action,
-			final AsyncCallback<R> callback) {
-
+	public <A extends Action<R>, R extends Result> void execute(A action,
+			AsyncCallback<R> callback) {
 		if (action instanceof GetTransUnits) {
-			final GetTransUnits gtuAction = (GetTransUnits) action;
+			GetTransUnits gtuAction = (GetTransUnits) action;
 			AsyncCallback<GetTransUnitsResult> gtuCallback = (AsyncCallback<GetTransUnitsResult>) callback;
 			DeferredCommand.addCommand(new GetTransUnitCommand(gtuAction, gtuCallback));
-//		} else if (action instanceof GetDocList) {
-//			
+		} else if (action instanceof GetDocsList) {
+			final GetDocsList gdlAction = (GetDocsList) action;
+			AsyncCallback<GetDocsListResult> gdlCallback = (AsyncCallback<GetDocsListResult>) callback;
+			DeferredCommand.addCommand(new GetDocsListCommand(gdlAction, gdlCallback));
+		} else {
+			Log.info("DummyDispatchAsync: ignoring action of "+action.getClass());
+//			callback.onFailure(new RuntimeException());
 		}
+	}
+	
+	private static final class GetDocsListCommand implements Command {
+		private final GetDocsList gtuAction;
+		private final AsyncCallback<GetDocsListResult> callback;
+
+		private GetDocsListCommand(GetDocsList gtuAction,
+				AsyncCallback<GetDocsListResult> callback) {
+			this.gtuAction = gtuAction;
+			this.callback = callback;
+		}
+
+		@Override
+		public void execute() {
+			ProjectIterationId documentId = gtuAction.getProjectIterationId();
+			GetDocsListResult result = new GetDocsListResult(documentId, generateTransUnitSampleData()); 
+			callback.onSuccess(result);
+		}
+
+		private ArrayList<DocName> generateTransUnitSampleData() {
+			ArrayList<DocName> names = new ArrayList<DocName>();
+			names.add(new DocName(new DocumentId(1), "path1name1", "path/1"));
+			names.add(new DocName(new DocumentId(2), "path1name2", "path/1"));
+			names.add(new DocName(new DocumentId(3), "path2name1", "path/2"));
+			names.add(new DocName(new DocumentId(4), "path2name2", "path/2"));
+			names.add(new DocName(new DocumentId(5), "name2", ""));
+			names.add(new DocName(new DocumentId(6), "name1", null));
+			return names;
+		}
+		
 	}
 	
 	private static final class GetTransUnitCommand implements Command {

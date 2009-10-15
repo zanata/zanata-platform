@@ -13,6 +13,7 @@ public class TransUnit implements IsSerializable, Serializable{
 	private String source;
 	private String target;
 	
+	@SuppressWarnings("unused")
 	private TransUnit(){
 	}
 	
