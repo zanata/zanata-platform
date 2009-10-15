@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class CaptionPanel extends DecoratorPanel implements ClickHandler {
+public class CaptionPanel extends DecoratorPanel {
 
 	private VerticalPanel mainPanel;
 	private HorizontalPanel headPanel;
@@ -33,9 +33,18 @@ public class CaptionPanel extends DecoratorPanel implements ClickHandler {
 		headPanel = new HorizontalPanel();
 		bodyPanel = new VerticalPanel();
 		
-		collapseButton = new Button("v");
-		collapseButton.addClickHandler(this);
 		collapseButtonVisible = true;
+		collapseButton = new Button("v");
+		collapseButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				collapseButtonVisible = !collapseButtonVisible;
+				String collapseButtonIcon = collapseButtonVisible ? "v" : ">";
+				collapseButton.setText(collapseButtonIcon);
+				mainPanel.getWidget(1).setVisible(collapseButtonVisible);
+			}
+		});
+		
 	}
 	
 	public void addHead(String title) {
@@ -59,14 +68,5 @@ public class CaptionPanel extends DecoratorPanel implements ClickHandler {
 		mainPanel.add(headPanel);
 		mainPanel.add(bodyPanel);
 		add(mainPanel);
-	}
-		
-	public void onClick(ClickEvent event) {
-		Widget sender = (Widget) event.getSource();
-
-		if (sender == collapseButton) {
-			mainPanel.getWidget(1).setVisible(!collapseButtonVisible);
-			collapseButtonVisible = !collapseButtonVisible;
-		}
 	}
 }
