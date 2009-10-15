@@ -1,22 +1,24 @@
 package org.fedorahosted.flies.gwt.rpc;
 
+import org.fedorahosted.flies.gwt.model.DocumentId;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import net.customware.gwt.dispatch.shared.Action;
 
-public class GetTransUnits implements Action<GotTransUnits>, IsSerializable {
+public class GetTransUnits implements Action<GetTransUnitsResult>, IsSerializable {
 
 	private static final long serialVersionUID = -6560254574690557950L;
 
 	private int offset;
 	private int count;
-	private int documentId;
+	private DocumentId documentId;
 
 	private GetTransUnits(){
 	}
 	
-	public GetTransUnits(int documentId, int offset, int count) {
-		this.documentId = documentId;
+	public GetTransUnits(DocumentId id, int offset, int count) {
+		this.documentId = id;
 		this.offset = offset;
 		this.count = count;
 	}
@@ -37,13 +39,12 @@ public class GetTransUnits implements Action<GotTransUnits>, IsSerializable {
 		this.count = count;
 	}
 
-	public int getDocumentId() {
+	public DocumentId getDocumentId() {
 		return documentId;
 	}
-
-	public void setDocumentId(int documentId) {
+	
+	public void setDocumentId(DocumentId documentId) {
 		this.documentId = documentId;
 	}
-
 	
 }

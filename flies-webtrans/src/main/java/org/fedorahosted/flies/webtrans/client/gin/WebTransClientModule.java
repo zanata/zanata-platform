@@ -17,7 +17,7 @@ import org.fedorahosted.flies.webtrans.client.WestNavigationPresenter;
 import org.fedorahosted.flies.webtrans.client.WestNavigationView;
 import org.fedorahosted.flies.webtrans.client.WorkspaceUsersPresenter;
 import org.fedorahosted.flies.webtrans.client.WorkspaceUsersView;
-import org.fedorahosted.flies.webtrans.client.rpc.SeamDispatchAsync;
+import org.fedorahosted.flies.webtrans.client.rpc.DelegatingDispatchAsync;
 import org.fedorahosted.flies.webtrans.client.ui.Pager;
 import org.fedorahosted.flies.webtrans.editor.CachedWebTransTableModel;
 import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
@@ -60,8 +60,10 @@ public class WebTransClientModule extends AbstractPresenterModule {
 		
 		bind(HasPageNavigation.class).to(WebTransScrollTable.class).in(Singleton.class);
 		bind(AppPresenter.class).in(Singleton.class);
-		
-		bind(DispatchAsync.class).to(SeamDispatchAsync.class).in(Singleton.class);
+
+		// NB: if we bind directly to SeamDispatchAsync, we can't use replace-class in
+		// the module definition unless the replacement extends SeamDispatchAsync
+		bind(DispatchAsync.class).to(DelegatingDispatchAsync.class).in(Singleton.class);
 		bind(DocNameMapper.class).to(FlatFolderDocNameMapper.class).in(Singleton.class);
 	}
 

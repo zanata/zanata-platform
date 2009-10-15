@@ -98,5 +98,12 @@
 	border: none;
 }
 
-
-
+.Severity-Error {
+	background-color: #ffcccc; 
+}
+.Severity-Info {
+	background-color: #eeeeff; 
+}
+.Severity-Warning {
+	background-color: #ffffcc; 
+}

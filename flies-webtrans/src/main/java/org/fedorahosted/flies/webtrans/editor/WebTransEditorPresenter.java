@@ -39,9 +39,6 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 	@Override
 	protected void onBind() {
 		
-		display.getPager().setPageCount(display.getScrollTable().getPageCount());
-		display.getPager().setValue( display.getScrollTable().getCurrentPage()+1);
-
 		display.getPager().addValueChangeHandler( new ValueChangeHandler<Integer>() {
 			
 			@Override
@@ -63,6 +60,9 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 				display.getPager().setPageCount(event.getNewPageCount());
 			}
 		});
+		
+		display.getScrollTable().gotoFirstPage();
+
 	}
 
 	@Override

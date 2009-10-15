@@ -13,6 +13,8 @@ import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -44,7 +46,7 @@ public class AppPresenter {
 
 		westNavigationPresenter.bind();
 		
-		Widget center = webTransEditorPresenter.getDisplay().asWidget();
+		final Widget center = webTransEditorPresenter.getDisplay().asWidget();
 		Widget west = westNavigationPresenter.getDisplay().asWidget();
 		dockPanel.add(center, DockPanel.CENTER );
 		dockPanel.add(west, DockPanel.WEST );
@@ -60,6 +62,21 @@ public class AppPresenter {
 		});
 		
 		container.add(dockPanel);
+		
+		
+		eventBus.addHandler(NotificationEvent.getType(), new NotificationEventHandler() {
+			
+			@Override
+			public void onNotification(NotificationEvent event) {
+				PopupPanel popup = new PopupPanel(true);
+				popup.addStyleDependentName("Notification");
+				popup.addStyleName("Severity-"+ event.getSeverity().name());
+				popup.setWidth(center.getOffsetWidth()-40 + "px");
+				popup.setWidget(new Label(event.getMessage()));
+				popup.setPopupPosition(center.getAbsoluteLeft()+20, center.getAbsoluteTop()+30);
+				popup.show();
+			}
+		});
 	}
 
 	public void go(final HasWidgets container) {

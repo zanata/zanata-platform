@@ -52,30 +52,6 @@ public class TransUnitListPresenter  extends WidgetPresenter<TransUnitListPresen
 	
 	@Override
 	protected void onBind() {
-		final Pager pager = new Pager();
-		
-		pager.addValueChangeHandler(new ValueChangeHandler<Integer>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<Integer> event) {
-				display.getPageNavigation().gotoPage(event.getValue(), false);
-			}
-		});
-		
-		display.getPageCountChangeHandlers().addPageCountChangeHandler(new PageCountChangeHandler() {
-			@Override
-			public void onPageCountChange(PageCountChangeEvent event) {
-				pager.setPageCount(event.getNewPageCount());
-			}
-		});
-		
-		display.getPageChangeHandlers().addPageChangeHandler(new PageChangeHandler() {
-			@Override
-			public void onPageChange(PageChangeEvent event) {
-				pager.setValue(event.getNewPage());
-			}
-		});
-		
-		//display.getToolbar().add(pager);
 		
 		display.getSelectionHandlers().addSelectionHandler(new SelectionHandler<TransUnit>() {
 			@Override
@@ -87,11 +63,14 @@ public class TransUnitListPresenter  extends WidgetPresenter<TransUnitListPresen
 			}
 		});
 		
+		display.getPageNavigation().gotoFirstPage();
+		
 	}
 
 	public TransUnit getCurrentSelection() {
 		return currentSelection;
 	}
+	
 	
 	@Override
 	protected void onPlaceRequest(PlaceRequest request) {

@@ -89,12 +89,6 @@ public class WebTransScrollTable extends PagingScrollTable<TransUnit> implements
 		
 	}
 	
-	@Override
-	protected void onLoad() {
-		super.onLoad();
-		gotoFirstPage();
-	}
-
 	private FlowPanel toolbar;
 	
 	@Override
