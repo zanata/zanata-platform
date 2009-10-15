@@ -122,10 +122,10 @@ public class FliesCommand {
 		if(args.length != 2){
 			System.err.println("Usage: flies publish POFILE");
 			return;
-		}
+		}/*
 		if(!command.printInfo()){
 			return;
-		}
+		}*/
 		if("publish".equals(args[0])){
 			File poFile = new File(args[1]);
 			if(!poFile.exists()){

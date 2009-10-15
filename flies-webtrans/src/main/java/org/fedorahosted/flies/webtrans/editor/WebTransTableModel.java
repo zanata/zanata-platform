@@ -7,6 +7,8 @@ import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnitsResult;
+import org.fedorahosted.flies.webtrans.client.DocumentSelectionEvent;
+import org.fedorahosted.flies.webtrans.client.DocumentSelectionHandler;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent.Severity;
 
@@ -21,7 +23,7 @@ public class WebTransTableModel extends MutableTableModel<TransUnit> {
 
 	private final DispatchAsync dispatcher;
 	private final EventBus eventBus;
-	
+	private DocumentId currentDocumentId;
 	@Inject
 	public WebTransTableModel(DispatchAsync dispatcher, EventBus eventBus) {
 		this.dispatcher = dispatcher;
@@ -50,6 +52,12 @@ public class WebTransTableModel extends MutableTableModel<TransUnit> {
 		int numRows = request.getNumRows();
 		int startRow = request.getStartRow();
 		Log.debug("Table requesting" + numRows + " starting from "+ startRow);
+		
+		if(currentDocumentId == null){
+			callback.onFailure(new RuntimeException("No DocumentId"));
+			return;
+		}
+		
 		dispatcher.execute(new GetTransUnits(new DocumentId(1), startRow, numRows), new AsyncCallback<GetTransUnitsResult>() {
 			@Override
 			public void onSuccess(GetTransUnitsResult result) {
@@ -66,4 +74,12 @@ public class WebTransTableModel extends MutableTableModel<TransUnit> {
 		});
 	}
 	
+	
+	public DocumentId getCurrentDocumentId() {
+		return currentDocumentId;
+	}
+
+	public void setCurrentDocumentId(DocumentId currentDocumentId) {
+		this.currentDocumentId = currentDocumentId;
+	}
 }

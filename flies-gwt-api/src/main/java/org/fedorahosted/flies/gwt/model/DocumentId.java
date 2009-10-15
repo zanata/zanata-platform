@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class DocumentId implements Serializable, IsSerializable{
+public class DocumentId implements Identifier<Long>, Serializable, IsSerializable{
 
 	private static final long serialVersionUID = 6291339842619640513L;
 
@@ -26,6 +26,11 @@ public class DocumentId implements Serializable, IsSerializable{
 	@Override
 	public int hashCode() {
 		return (int) id;
+	}
+	
+	@Override
+	public Long getValue(){
+		return id;
 	}
 
 	@Override

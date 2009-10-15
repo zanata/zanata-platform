@@ -1,7 +1,10 @@
 package org.fedorahosted.flies.webtrans.editor;
 
+import org.fedorahosted.flies.webtrans.client.DocumentSelectionEvent;
+import org.fedorahosted.flies.webtrans.client.DocumentSelectionHandler;
 import org.fedorahosted.flies.webtrans.client.ui.Pager;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.table.event.client.PageChangeEvent;
@@ -23,6 +26,7 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 	public interface Display extends WidgetDisplay{
 		Pager getPager();
 		WebTransScrollTable getScrollTable();
+		CachedWebTransTableModel getCachedTableModel();
 	}
 
 	@Inject
@@ -38,6 +42,19 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 
 	@Override
 	protected void onBind() {
+
+		eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {
+			
+			@Override
+			public void onDocumentSelected(DocumentSelectionEvent event) {
+				if(!event.getDocumentId().equals(display.getCachedTableModel().getTableModel().getCurrentDocumentId())) {
+					Log.info("Requested document "+ event.getDocumentId());
+					display.getCachedTableModel().clearCache();
+					display.getCachedTableModel().getTableModel().setCurrentDocumentId(event.getDocumentId());
+					display.getScrollTable().gotoPage(0, true);
+				}
+			}
+		});
 		
 		display.getPager().addValueChangeHandler( new ValueChangeHandler<Integer>() {
 			

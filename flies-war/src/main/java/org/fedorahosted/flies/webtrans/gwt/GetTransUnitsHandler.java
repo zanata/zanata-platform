@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.webtrans.gwt;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -9,7 +10,16 @@ import net.customware.gwt.dispatch.shared.ActionException;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnitsResult;
+import org.fedorahosted.flies.repository.model.HDocument;
+import org.fedorahosted.flies.repository.model.HTextFlow;
+import org.fedorahosted.flies.repository.model.HTextFlowTarget;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -21,15 +31,29 @@ public class GetTransUnitsHandler implements ActionHandler<GetTransUnits, GetTra
 
 	@Logger Log log;
 	
-	private static final int TOTAL = 1240;
+	@In Session session;
 	
 	@Override
 	public GetTransUnitsResult execute(GetTransUnits action, ExecutionContext context)
 			throws ActionException {
 		log.info("Fetching Transunits for {0}", action.getDocumentId());
-		int rows = action.getCount() + action.getOffset() > TOTAL ? action.getCount() : TOTAL-action.getOffset();
-		ArrayList<TransUnit> units = generateSampleData(rows, action.getOffset()); 
-		return new GetTransUnitsResult(action.getDocumentId(), units, TOTAL );
+		
+		Query query = session.createQuery(
+			"from HTextFlow tf where tf.document.id = :id")
+			.setParameter("id", action.getDocumentId().getValue());
+		
+		List<HTextFlow> textFlows = query 
+				.setFirstResult(action.getOffset())
+				.setMaxResults(action.getCount())
+				.list();
+
+		ArrayList<TransUnit> units = new ArrayList<TransUnit>();
+		for(HTextFlow textFlow : textFlows) {
+			TransUnit tu = new TransUnit(textFlow.getContent(), "");
+			units.add(tu);
+		}
+
+		return new GetTransUnitsResult(action.getDocumentId(), units, query.list().size() );
 	}
 
 	@Override

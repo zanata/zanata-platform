@@ -53,4 +53,10 @@ public class WebTransEditorView extends VerticalPanel implements WebTransEditorP
 	public WebTransScrollTable getScrollTable() {
 		return scrollTable;
 	}
+	
+	@Override
+	public CachedWebTransTableModel getCachedTableModel() {
+		return scrollTable.getCachedTableModel();
+	}
+	
 }

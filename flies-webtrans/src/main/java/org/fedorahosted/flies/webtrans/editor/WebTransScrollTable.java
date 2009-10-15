@@ -28,9 +28,12 @@ import com.weborient.codemirror.client.SyntaxToggleWidget;
 public class WebTransScrollTable extends PagingScrollTable<TransUnit> implements
 		TransUnitListPresenter.Display, HasSelectionHandlers<TransUnit>, HasPageNavigation{
 
+	private final CachedWebTransTableModel cachedTableModel;
+	
 	@Inject
 	public WebTransScrollTable(CachedWebTransTableModel tableModel, TransUnitTableDefinition tableDefinition) {
 		super(tableModel,tableDefinition);
+		this.cachedTableModel = tableModel;
 		Log.info("setting up TransUnitListView");
 		setupScrollTable();
 	}
@@ -120,6 +123,10 @@ public class WebTransScrollTable extends PagingScrollTable<TransUnit> implements
 	@Override
 	public HasPageCountChangeHandlers getPageCountChangeHandlers() {
 		return this;
+	}
+	
+	public CachedWebTransTableModel getCachedTableModel() {
+		return cachedTableModel;
 	}
 
 }
