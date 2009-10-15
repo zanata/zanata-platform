@@ -25,6 +25,7 @@ public class GwtActionDispatcher {
 
 	private void addHandlers() {
 		actionHandlerRegistry.addHandler( new GetTransUnitsHandler());
+		actionHandlerRegistry.addHandler( new GetDocsListHandler());
 	}
 
 	public Result execute(final Action<? extends Result> action)

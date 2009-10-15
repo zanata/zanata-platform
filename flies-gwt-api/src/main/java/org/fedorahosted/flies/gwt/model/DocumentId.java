@@ -8,13 +8,13 @@ public class DocumentId implements Serializable, IsSerializable{
 
 	private static final long serialVersionUID = 6291339842619640513L;
 
-	private int id;
+	private long id;
 	
 	@SuppressWarnings("unused")
 	private DocumentId() {
 	}
 	
-	public DocumentId(int id) {
+	public DocumentId(long id) {
 		this.id = id;
 	}
 	
@@ -25,7 +25,7 @@ public class DocumentId implements Serializable, IsSerializable{
 
 	@Override
 	public int hashCode() {
-		return id;
+		return (int) id;
 	}
 
 	@Override

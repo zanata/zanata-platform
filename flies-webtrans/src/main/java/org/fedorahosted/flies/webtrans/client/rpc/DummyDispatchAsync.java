@@ -8,7 +8,7 @@ import net.customware.gwt.dispatch.shared.Result;
 
 import org.fedorahosted.flies.gwt.model.DocName;
 import org.fedorahosted.flies.gwt.model.DocumentId;
-import org.fedorahosted.flies.gwt.model.ProjectIterationId;
+import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.gwt.rpc.GetDocsList;
 import org.fedorahosted.flies.gwt.rpc.GetDocsListResult;
@@ -43,19 +43,19 @@ public class DummyDispatchAsync extends SeamDispatchAsync {
 	}
 	
 	private static final class GetDocsListCommand implements Command {
-		private final GetDocsList gtuAction;
+		private final GetDocsList gdlAction;
 		private final AsyncCallback<GetDocsListResult> callback;
 
 		private GetDocsListCommand(GetDocsList gtuAction,
 				AsyncCallback<GetDocsListResult> callback) {
-			this.gtuAction = gtuAction;
+			this.gdlAction = gtuAction;
 			this.callback = callback;
 		}
 
 		@Override
 		public void execute() {
-			ProjectIterationId documentId = gtuAction.getProjectIterationId();
-			GetDocsListResult result = new GetDocsListResult(documentId, generateTransUnitSampleData()); 
+			ProjectContainerId projectContainerId = gdlAction.getProjectContainerId();
+			GetDocsListResult result = new GetDocsListResult(projectContainerId, generateTransUnitSampleData()); 
 			callback.onSuccess(result);
 		}
 

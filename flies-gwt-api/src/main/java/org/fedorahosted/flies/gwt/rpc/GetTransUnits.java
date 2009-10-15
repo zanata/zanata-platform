@@ -14,6 +14,7 @@ public class GetTransUnits implements Action<GetTransUnitsResult>, IsSerializabl
 	private int count;
 	private DocumentId documentId;
 
+	@SuppressWarnings("unused")
 	private GetTransUnits(){
 	}
 	

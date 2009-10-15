@@ -1,21 +1,25 @@
 package org.fedorahosted.flies.webtrans.client;
 
-import org.fedorahosted.flies.gwt.model.ProjectIterationId;
+import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 
 import com.google.gwt.user.client.Window;
 
 public class WorkspaceContext {
-	private ProjectIterationId projectIterationId;
+	private ProjectContainerId projectContainerId;
 	private String localeId;
 
 	public WorkspaceContext() {
-		String projIterId = Window.Location.getParameter("projIterId");
-		projectIterationId = new ProjectIterationId(Integer.valueOf(projIterId));
-		localeId = Window.Location.getParameter("localeId"); 
+		try {
+			String projContainerId = Window.Location.getParameter("projContainerId");
+			projectContainerId = new ProjectContainerId(Integer.valueOf(projContainerId));
+			localeId = Window.Location.getParameter("localeId");
+		} catch (Exception e) {
+			// leave them as null
+		} 
 	}
 	
-	public ProjectIterationId getProjectIterationId() {
-		return projectIterationId;
+	public ProjectContainerId getProjectContainerId() {
+		return projectContainerId;
 	}
 
 	public String getLocaleId() {
@@ -23,7 +27,7 @@ public class WorkspaceContext {
 	}
 	
 	public boolean isValid() {
-		// TODO login/enter the workspace context
-		return true;
+		// TODO login/enter the workspace context, validate these ids
+		return projectContainerId != null && localeId != null;
 	}
 }

@@ -1,5 +1,7 @@
 package org.fedorahosted.flies.core.dao;
 
+import javax.persistence.EntityManager;
+
 import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
@@ -13,7 +15,14 @@ import org.jboss.seam.annotations.Scope;
 @Scope(ScopeType.STATELESS)
 public class ProjectContainerDAO {
 
+	@In
+	EntityManager entityManager;
+
 	@In Session session;
+	
+	public HProjectContainer getById(long projectContainerId){
+		return entityManager.find(HProjectContainer.class, projectContainerId);
+	}
 	
 	public HProjectContainer getBySlug(String projectSlug, String iterationSlug){
 		return (HProjectContainer) session.createQuery(

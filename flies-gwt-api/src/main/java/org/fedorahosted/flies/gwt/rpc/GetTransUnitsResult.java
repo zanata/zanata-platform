@@ -17,8 +17,8 @@ public class GetTransUnitsResult implements Result, IsSerializable {
 	private int totalCount;
 	private ArrayList<TransUnit> units;
 
+	@SuppressWarnings("unused")
 	private GetTransUnitsResult()	{
-		
 	}
 	
 	public GetTransUnitsResult(DocumentId documentId, ArrayList<TransUnit> units, int totalCount) {

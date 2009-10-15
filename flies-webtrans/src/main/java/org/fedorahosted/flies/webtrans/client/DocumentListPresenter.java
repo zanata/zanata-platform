@@ -11,12 +11,12 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.fedorahosted.flies.gwt.model.DocName;
 import org.fedorahosted.flies.gwt.model.DocumentId;
-import org.fedorahosted.flies.gwt.model.ProjectIterationId;
+import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 import org.fedorahosted.flies.gwt.rpc.GetDocsList;
 import org.fedorahosted.flies.gwt.rpc.GetDocsListResult;
+import org.fedorahosted.flies.webtrans.client.NotificationEvent.Severity;
 import org.fedorahosted.flies.webtrans.client.ui.HasTreeNodes;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasKeyUpHandlers;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -45,7 +45,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 		this.dispatcher = dispatcher;
 		GWT.log("DocumentListPresenter()", null);
 		this.docNameMapper = docNameMapper;
-		loadDocsList(workspaceContext.getProjectIterationId());
+		loadDocsList(workspaceContext.getProjectContainerId());
 	}
 
 	public static final Place PLACE = new Place("DocumentListList");
@@ -77,7 +77,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 			@Override
 			public void onSelection(SelectionEvent<TreeItem> event) {
 				DocName selectedDocName = (DocName) event.getSelectedItem().getUserObject();
-				setValue(selectedDocName.getId(), true);
+				if (selectedDocName != null) // folders have null names
+					setValue(selectedDocName.getId(), true);
 			}
 		}));
 	}
@@ -145,12 +146,12 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 		docNameMapper.addToTree(display.getTree(), docNames);
 	}
 
-	private void loadDocsList(ProjectIterationId id) {
+	private void loadDocsList(ProjectContainerId id) {
 		// switch doc list to the new project
 		dispatcher.execute(new GetDocsList(id), new AsyncCallback<GetDocsListResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				Log.error(caught.toString());
+				eventBus.fireEvent( new NotificationEvent(Severity.Error, "Failed to load data from Server"));
 			}
 			@Override
 			public void onSuccess(GetDocsListResult result) {
