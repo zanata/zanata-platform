@@ -1,6 +1,8 @@
 package org.fedorahosted.flies.webtrans.client;
 
 import org.fedorahosted.flies.webtrans.client.ui.CaptionPanel;
+import org.fedorahosted.flies.webtrans.client.ui.FilterBox;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -54,7 +56,7 @@ public class WorkspaceUsersView extends CaptionPanel implements
 		tree.setWidth("100%");
 		addLocaleData(tree, "German", "");
 		
-		final TextBox tb = new TextBox();
+		final FilterBox tb = new FilterBox();
 		tb.addKeyUpHandler(new KeyUpHandler() {
 			
 			@Override
