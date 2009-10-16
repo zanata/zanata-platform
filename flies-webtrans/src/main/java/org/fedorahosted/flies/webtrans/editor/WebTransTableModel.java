@@ -7,6 +7,8 @@ import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnitsResult;
+import org.fedorahosted.flies.gwt.rpc.UpdateTransUnit;
+import org.fedorahosted.flies.gwt.rpc.UpdateTransUnitResult;
 import org.fedorahosted.flies.webtrans.client.DocumentSelectionEvent;
 import org.fedorahosted.flies.webtrans.client.DocumentSelectionHandler;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent;
@@ -46,6 +48,18 @@ public class WebTransTableModel extends MutableTableModel<TransUnit> {
 
 	@Override
 	protected boolean onSetRowValue(int row, TransUnit rowValue) {
+		dispatcher.execute(
+				new UpdateTransUnit(rowValue.getId(), workspaceContext.getLocaleId(), rowValue.getTarget()), 
+				new AsyncCallback<UpdateTransUnitResult>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						eventBus.fireEvent(new NotificationEvent(Severity.Error, "Failed to update TransUnit"));
+					}
+					
+					@Override
+					public void onSuccess(UpdateTransUnitResult result) {
+					}
+				});
 		return true;
 	}
 
