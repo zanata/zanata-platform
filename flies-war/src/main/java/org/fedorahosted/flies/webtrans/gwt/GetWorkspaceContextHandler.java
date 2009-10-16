@@ -14,7 +14,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 
-@Name("webtrans.gwt.GeWorkspaceContextHandler")
+@Name("webtrans.gwt.GetWorkspaceContextHandler")
 @Scope(ScopeType.STATELESS)
 public class GetWorkspaceContextHandler implements ActionHandler<GetWorkspaceContext, GetWorkspaceContextResult> {
 
