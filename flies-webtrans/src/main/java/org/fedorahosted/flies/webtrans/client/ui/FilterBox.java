@@ -13,7 +13,7 @@ public class FilterBox extends TextBox {
 	public FilterBox() {
 		addStyleName("gwt-FilterBox");
 		
-		text = " filter ";
+		text = " enter to filter ";
 		
 	    setText(text);
 	    
