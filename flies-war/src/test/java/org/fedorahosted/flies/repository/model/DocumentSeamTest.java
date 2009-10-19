@@ -19,7 +19,7 @@ public class DocumentSeamTest extends DBUnitSeamTest {
 
     protected void prepareDBUnitOperations() {
         beforeTestOperations.add(
-                new DataSetOperation("org/fedorahosted/flies/repository/model/ProjectsBaseData.dbunit.xml", DatabaseOperation.CLEAN_INSERT)
+                new DataSetOperation("META-INF/testdata/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT)
         );
     }
 
