@@ -12,6 +12,7 @@ import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.ImageBundle;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TreeImages;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -44,7 +45,7 @@ public class DocumentListView extends CaptionPanel
 	    VerticalPanel treePanel = new VerticalPanel();
 	    treePanel.setWidth("100%");
 	    treePanel.setHeight("150px");
-	    treePanel.add(tree);
+	    treePanel.add(new ScrollPanel(tree));
 	    
 	    setTitle("Documents");
 	    addBody(filterBox);
