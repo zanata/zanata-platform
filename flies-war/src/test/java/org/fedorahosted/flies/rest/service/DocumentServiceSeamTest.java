@@ -110,7 +110,8 @@ public class DocumentServiceSeamTest extends DBUnitSeamTest{
 		assertThat( link.getHref().toString(), endsWith("iterations/i/1.0") );
 	}
 	
-	public void getDocumentWithResources() throws URIException {
+	
+	private void getDocumentWithResources() throws URIException {
 		IDocumentResource documentResource = getDocumentService("my,path,document.txt");
 		ClientResponse<Document> response = documentResource.get( ContentQualifier.ALL );
 		assertThat( response.getResponseStatus(), is(Status.OK) ) ;
