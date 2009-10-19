@@ -1,14 +1,18 @@
 package org.fedorahosted.flies.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.*;
+import org.jboss.seam.annotations.Install;
+import org.jboss.seam.annotations.Logger;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Observer;
+import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.mock.DBUnitSeamTest;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Imports some data into the database with the help of DBUnit. This allows us to
@@ -28,6 +32,8 @@ public class DBUnitImporter extends DBUnitSeamTest {
 
     @Logger
     static Log log;
+    
+    private boolean prepared;
 
     protected List<String> datasets = new ArrayList<String>();
 
@@ -38,16 +44,22 @@ public class DBUnitImporter extends DBUnitSeamTest {
     public void setDatasets(List<String> datasets) {
         this.datasets = datasets;
     }
+    
+    private void prepare() {
+        if (!prepared) {
+        	if (datasets == null) return;
+	        for (String dataset : datasets) {
+	            log.info("Adding DBUnit dataset to import: " + dataset);
+	            beforeTestOperations.add(
+	                new DataSetOperation(dataset, DatabaseOperation.CLEAN_INSERT)
+	            );
+	        }
+	        prepared = true;
+        } 
+    }
 
     protected void prepareDBUnitOperations() {
-        if (datasets == null) return;
-
-        for (String dataset : datasets) {
-            log.info("Adding DBUnit dataset to import: " + dataset);
-            beforeTestOperations.add(
-                new DataSetOperation(dataset, DatabaseOperation.CLEAN_INSERT)
-            );
-        }
+        prepare();
     }
 
     // Do it when the application starts (but after everything else has been loaded)
@@ -55,6 +67,8 @@ public class DBUnitImporter extends DBUnitSeamTest {
     @Override
     public void prepareDataBeforeTest() {
         log.info("Importing DBUnit datasets using datasource JNDI name: " + datasourceJndiName);
+        // make sure prepare() gets called, whether using seam 2.2.0 or 2.2.1
+        prepare();
         super.prepareDataBeforeTest();
         Events.instance().raiseEvent(IMPORT_COMPLETE_EVENT);
     }
