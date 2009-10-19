@@ -36,12 +36,12 @@ public class CaptionPanel extends DecoratorPanel {
 		
 		titleWidget = new Label();
 		collapseButtonVisible = true;
-		collapseButton = new Button("v");
+		collapseButton = new Button("-");
 		collapseButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				collapseButtonVisible = !collapseButtonVisible;
-				String collapseButtonIcon = collapseButtonVisible ? "v" : ">";
+				String collapseButtonIcon = collapseButtonVisible ? "-" : "+";
 				collapseButton.setText(collapseButtonIcon);
 				mainPanel.getWidget(1).setVisible(collapseButtonVisible);
 			}
