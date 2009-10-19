@@ -54,7 +54,7 @@ public class DBUnitImporter extends DBUnitSeamTest {
     @Observer("org.jboss.seam.postInitialization")
     @Override
     public void prepareDataBeforeTest() {
-        log.info("Importing DBUnit datasets using datasource JNDI name: " + getDatasourceJndiName());
+        log.info("Importing DBUnit datasets using datasource JNDI name: " + datasourceJndiName);
         super.prepareDataBeforeTest();
         Events.instance().raiseEvent(IMPORT_COMPLETE_EVENT);
     }
