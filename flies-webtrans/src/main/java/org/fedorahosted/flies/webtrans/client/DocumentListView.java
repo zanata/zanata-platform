@@ -2,20 +2,16 @@ package org.fedorahosted.flies.webtrans.client;
 
 import org.fedorahosted.flies.gwt.model.DocName;
 import org.fedorahosted.flies.webtrans.client.ui.CaptionPanel;
+import org.fedorahosted.flies.webtrans.client.ui.FilterBox;
 import org.fedorahosted.flies.webtrans.client.ui.HasTreeNodes;
 import org.fedorahosted.flies.webtrans.client.ui.TreeImpl;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasKeyUpHandlers;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.ImageBundle;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.TreeImages;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -38,7 +34,7 @@ public class DocumentListView extends CaptionPanel
 
 	private static Images images = (Images) GWT.create(Images.class);
 	private TreeImpl<DocName> tree;
-	private TextBox filterTextBox = new TextBox();
+	private FilterBox filterBox = new FilterBox();
 	
 	public DocumentListView() {		
 
@@ -51,28 +47,8 @@ public class DocumentListView extends CaptionPanel
 	    treePanel.add(tree);
 	    
 	    setTitle("Documents");
-	    filterTextBox.setText("search");
-	    filterTextBox.setWidth("100%");
-	    addBody(filterTextBox);
+	    addBody(filterBox);
 	    addBody(treePanel);
-	    
-	    filterTextBox.addFocusHandler(new FocusHandler() {
-
-			@Override
-			public void onFocus(FocusEvent event) {
-				filterTextBox.setText("");
-			}
-	    	
-	    });
-	    
-	    filterTextBox.addBlurHandler(new BlurHandler() {
-
-			@Override
-			public void onBlur(BlurEvent event) {
-				filterTextBox.setText("search");
-			}
-	    	
-	    });
 	}
 
 	@Override
@@ -99,17 +75,17 @@ public class DocumentListView extends CaptionPanel
 
 	@Override
 	public HasValueChangeHandlers<String> getFilterChangeSource() {
-		return filterTextBox;
+		return filterBox;
 	}
 
 	@Override
 	public HasKeyUpHandlers getFilterKeyUpSource() {
-		return filterTextBox;
+		return filterBox;
 	}
 
 	@Override
 	public HasText getFilterText() {
-		return filterTextBox;
+		return filterBox;
 	}
 
 }

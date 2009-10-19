@@ -1,7 +1,7 @@
 /** Add css rules here for your application. */
 
 .LeftContentNavBar {
-  background-color: #f8f8fb;
+    background-color: #f8f8fb;
 }
 
 
@@ -20,8 +20,15 @@
 	color: grey;
 }
 
+.gwt-FilterBox {
+    font-size: 12px;
+    font-style: italic;
+    color: grey;
+    width: 100%;
+}
+
 .gwt-CaptionPanel-Heading {
-    font-style: bold;
+    font-weight: bold;
     width: 100%;
     background-color: d0e4f6;
     padding-bottom: 5px;
