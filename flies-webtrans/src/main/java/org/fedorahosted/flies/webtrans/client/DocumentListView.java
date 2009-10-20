@@ -59,14 +59,10 @@ public class DocumentListView extends CaptionPanel
 
 	@Override
 	public void startProcessing() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void stopProcessing() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

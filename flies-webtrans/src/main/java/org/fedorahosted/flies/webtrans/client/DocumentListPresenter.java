@@ -1,6 +1,8 @@
 package org.fedorahosted.flies.webtrans.client;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
@@ -127,23 +129,42 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
 	public void filterBy(String value) {
 		HasTreeNodes<DocName> tree = display.getTree();
-
-		ArrayList<DocName> filteredNames = new ArrayList<DocName>();
-		for (DocName docName : docNames) {
-			if (docName.getName().contains(value)) {
-				filteredNames.add(docName);
-			}
-		}
-		
 		tree.clear();
-		docNameMapper.addToTree(tree, filteredNames);
 
+		if (value != null && value.length() != 0) {
+			ArrayList<DocName> filteredNames = new ArrayList<DocName>();
+			for (DocName docName : docNames) {
+				if (docName.getName().contains(value)) {
+					filteredNames.add(docName);
+				}
+			}
+			docNameMapper.addToTree(tree, filteredNames, true);
+		} else {
+			docNameMapper.addToTree(tree, docNames, false);
+		}
 	}
 
 	public void setDocNameList(ArrayList<DocName> docNames) {
-		this.docNames = docNames;
-		display.getTree().clear();
-		docNameMapper.addToTree(display.getTree(), docNames);
+		this.docNames.clear();
+		this.docNames.addAll(docNames);
+		
+		Collections.sort(this.docNames, new Comparator<DocName>() {
+			@Override
+			public int compare(DocName o1, DocName o2) {
+				String path1 = o1.getPath();
+				if(path1 == null)
+					path1 = "";
+				String path2 = o2.getPath();
+				if(path2 == null)
+					path2 = "";
+				int pathCompare = path1.compareTo(path2);
+				if(pathCompare == 0)
+					return o1.getName().compareTo(o2.getName());
+				return pathCompare;
+			}});
+		
+		display.getFilterText().setText("");
+		filterBy("");
 	}
 
 	private void loadDocsList(ProjectContainerId id) {
