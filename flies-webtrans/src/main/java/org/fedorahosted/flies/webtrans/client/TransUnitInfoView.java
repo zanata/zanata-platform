@@ -11,7 +11,7 @@ public class TransUnitInfoView extends CaptionPanel implements TransUnitInfoPres
 
 	public TransUnitInfoView() {
 		setTitle("Translation Unit Info");
-		addBody(getStatusPanel());
+		setBody(getStatusPanel());
 	}
 
 	public static Widget getStatusPanel() {

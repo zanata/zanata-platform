@@ -48,7 +48,7 @@ public class WorkspaceUsersView extends CaptionPanel implements
 	public WorkspaceUsersView() {
 		super();
 		setTitle("Translators");
-		addBody(getChatAllPanel());
+		setBody(getChatAllPanel());
 	}
 
 	private static Panel createLocaleTranslatorsTree() {
