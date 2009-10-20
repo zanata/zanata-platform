@@ -28,6 +28,7 @@ public class GwtActionDispatcher {
 		actionHandlerRegistry.addHandler( new GetDocsListHandler());
 		actionHandlerRegistry.addHandler(new GetWorkspaceContextHandler());
 		actionHandlerRegistry.addHandler(new UpdateTransUnitHandler());
+		actionHandlerRegistry.addHandler(new AuthenticateHandler());
 	}
 
 	public Result execute(final Action<? extends Result> action)

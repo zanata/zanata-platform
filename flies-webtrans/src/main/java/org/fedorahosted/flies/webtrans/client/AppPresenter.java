@@ -15,8 +15,10 @@ import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.widgetideas.client.GlassPanel;
 import com.google.inject.Inject;
 
 public class AppPresenter {
@@ -25,15 +27,17 @@ public class AppPresenter {
 	private final WestNavigationPresenter westNavigationPresenter;
 	private final EventBus eventBus;
 	private final WebTransEditorPresenter webTransEditorPresenter;
-	
+	private final LoginPresenter loginPresenter;
 	@Inject
 	public AppPresenter(final EventBus eventBus, 
 				final WestNavigationPresenter leftNavigationPresenter,
-				final WebTransEditorPresenter webTransEditorPresenter) {
+				final WebTransEditorPresenter webTransEditorPresenter,
+				final LoginPresenter loginPresenter) {
 		
 		this.westNavigationPresenter = leftNavigationPresenter;
 		this.webTransEditorPresenter = webTransEditorPresenter;
 		this.eventBus = eventBus;
+		this.loginPresenter = loginPresenter;
 	}
 	
 	private void showMain() {
@@ -43,6 +47,8 @@ public class AppPresenter {
 		//final Label appFooter = new HTML("<span style=\"float: left\">Flies page footer goes here</span><span style=\"float: right\">Flies page footer goes here</span>");
 		//appFooter.setHeight("1em");
 		//dockPanel.add(appFooter, DockPanel.SOUTH);
+		
+		loginPresenter.bind();
 
 		westNavigationPresenter.bind();
 		

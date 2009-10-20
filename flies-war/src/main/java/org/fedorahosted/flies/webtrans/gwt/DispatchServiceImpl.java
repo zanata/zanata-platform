@@ -1,9 +1,13 @@
 package org.fedorahosted.flies.webtrans.gwt;
 
+
 import org.fedorahosted.flies.gwt.common.DispatchService;
+import org.fedorahosted.flies.gwt.rpc.FliesSecurityException;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.remoting.WebRemote;
+import org.jboss.seam.annotations.security.Restrict;
+import org.jboss.seam.security.Identity;
 
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;

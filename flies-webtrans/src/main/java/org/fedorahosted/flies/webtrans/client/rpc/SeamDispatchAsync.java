@@ -21,17 +21,6 @@ public class SeamDispatchAsync implements DispatchAsync {
 		((ServiceDefTarget) realService).setServiceEntryPoint(endpointURL);
 	}
 
-	public static String getModuleBaseURL() {
-		// Make sure that communication is with the server that served the
-		// containing
-		// web page and not where the GWT resources came from (which is the case
-		// with
-		// GWT.getHostPageBaseURL)
-		final String url = GWT.getModuleBaseURL();//GWT.getHostPageBaseURL();
-
-		return url;
-	}
-
 	public SeamDispatchAsync() {
 	}
 

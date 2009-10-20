@@ -5,6 +5,7 @@ import net.customware.gwt.presenter.client.EventBus;
 
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.TransUnit;
+import org.fedorahosted.flies.gwt.rpc.FliesSecurityException;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnitsResult;
 import org.fedorahosted.flies.gwt.rpc.UpdateTransUnit;
@@ -19,6 +20,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.gen2.table.client.MutableTableModel;
 import com.google.gwt.gen2.table.client.TableModelHelper.Request;
 import com.google.gwt.gen2.table.client.TableModelHelper.SerializableResponse;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -87,7 +89,12 @@ public class WebTransTableModel extends MutableTableModel<TransUnit> {
 			}
 			@Override
 			public void onFailure(Throwable caught) {
-				eventBus.fireEvent( new NotificationEvent(Severity.Error, "Failed to load data from Server"));
+				if(caught instanceof FliesSecurityException) {
+					eventBus.fireEvent( new NotificationEvent(Severity.Error, "Not logged in!"));
+				}
+				else{
+					eventBus.fireEvent( new NotificationEvent(Severity.Error, "Failed to load data from Serverx"));
+				}
 			}
 		});
 	}
