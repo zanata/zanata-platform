@@ -1,5 +1,7 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import org.fedorahosted.flies.gwt.model.Person;
+import org.fedorahosted.flies.gwt.model.PersonId;
 import org.fedorahosted.flies.webtrans.client.ui.CaptionPanel;
 import org.fedorahosted.flies.webtrans.client.ui.FilterBox;
 
@@ -73,9 +75,9 @@ public class WorkspaceUsersView extends CaptionPanel implements
 		return panel;
 	}
 
-	private static TreeItem createTranslator(String name) {
+	private static TreeItem createTranslator(Person person) {
 		TreeItem item = new TreeItem();
-		item.setText(name);
+		item.setText(person.getName());
 		return item;
 	}
 
@@ -83,14 +85,18 @@ public class WorkspaceUsersView extends CaptionPanel implements
 		TreeItem item = new TreeItem();
 		item.setText(locale);
 		tree.addItem(item);
-		for(String translator : translators){
-			if(filter.isEmpty() || translator.contains(filter)){
+		for(Person translator : translators){
+			if(filter.isEmpty() || translator.getName().contains(filter)){
 				item.addItem(createTranslator(translator));
 			}
 		}
 	}
 	
-	private static final String [] translators = {"Bob", "Jane", "Bill", "George", "Susan", "Ahmed"};
+	private static final Person [] translators = new Person[]{
+		new Person( new PersonId("bob"), "Bob"),
+		new Person( new PersonId("jane"), "Jane"),
+		new Person( new PersonId("Bill"), "Bill")
+		};
 
 	public static Widget getChatAllPanel() {
 
