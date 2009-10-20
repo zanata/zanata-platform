@@ -14,6 +14,7 @@ import java.util.Properties;
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Resource;
+import org.fedorahosted.flies.rest.dto.SimpleComment;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget.ContentState;
@@ -118,6 +119,8 @@ public class PropReader {
 			String id = getID(key, val);
 			TextFlow textFlow = new TextFlow(id);
 			textFlow.setContent(val);
+			// FIXME fix OpenProps, then put this in:
+//			textFlow.getComments().getComments().add(new SimpleComment(null, props.getComment(key)));
 			// textFlow.setLang(LocaleId.EN);
 			resources.add(textFlow);
 		}

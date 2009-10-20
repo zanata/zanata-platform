@@ -17,7 +17,8 @@ import org.fedorahosted.flies.LocaleId;
 @XmlType(name="textFlowType", namespace=Namespaces.FLIES, propOrder={"content", "extensions"})
 @XmlRootElement(name="text-flow", namespace=Namespaces.FLIES)
 @XmlSeeAlso({
-	TextFlowTargets.class
+	TextFlowTargets.class,
+	SimpleComments.class
 })
 public class TextFlow extends AbstractBaseResource implements Resource{
 
@@ -113,37 +114,37 @@ public class TextFlow extends AbstractBaseResource implements Resource{
 	public boolean hasTargets() {
 		return getExtension(TextFlowTargets.class) != null;
 	}
+	
 	public TextFlowTargets getTargets(){
 		return getExtension(TextFlowTargets.class);
 	}
 	
-	public TextFlowTarget getTarget(LocaleId localeId){
-		for(Object obj : getExtensions()){
-			if(obj instanceof TextFlowTargets){
-				TextFlowTargets tft = (TextFlowTargets) obj;
-				for(TextFlowTarget t : tft.getTargets()){
-					if(localeId.equals(t.getLang()))
-						return t;
-				}
-			}
+	public boolean hasComments() {
+		return getExtension(SimpleComments.class) != null;
+	}
+	
+	public SimpleComments getComments(){
+		return getExtension(SimpleComments.class);
+	}
+	
+	public TextFlowTarget getTarget(LocaleId localeId) {
+		TextFlowTargets targets = getTargets();
+		if(targets == null)
+			return null;
+		for(TextFlowTarget t : targets.getTargets()) {
+			if(localeId.equals(t.getLang()))
+				return t;
 		}
 		return null;
 	}
 	
 	public void addTarget(TextFlowTarget target) {
-		TextFlowTargets targets = null;
-		for(Object obj : getExtensions()){
-			if(obj instanceof TextFlowTargets){
-				targets = (TextFlowTargets) obj;
-				break;
-			}
-		}
+		TextFlowTargets targets = getTargets();
 		if(targets == null){
 			targets = new TextFlowTargets();
 			getExtensions().add(targets);
 		}
 		targets.getTargets().add(target);
-
 	}
 	
 }

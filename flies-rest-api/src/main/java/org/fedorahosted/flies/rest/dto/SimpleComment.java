@@ -11,25 +11,15 @@ import javax.xml.bind.annotation.XmlValue;
 @XmlType(name="simpleCommentType", namespace=Namespaces.FLIES)
 public class SimpleComment {
 	
-	private String id;
 	private String value;
 
 	public SimpleComment() {
 	}
 	
-	public SimpleComment(String id, String value) {
-		this.id = id;
+	public SimpleComment(String value) {
 		this.value = value;
 	}
 	
-	@XmlAttribute(name="id", required=true)
-	public String getId() {
-		return id;
-	}
-	
-	public void setId(String id) {
-		this.id = id;
-	}
 	@XmlValue
 	public String getValue() {
 		return value;

@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -17,6 +18,9 @@ import org.fedorahosted.flies.LocaleId;
 
 @XmlType(name="textFlowTargetType", namespace=Namespaces.FLIES, propOrder={"content", "extensions"})
 @XmlRootElement(name="text-flow-target", namespace=Namespaces.FLIES)
+@XmlSeeAlso({
+	SimpleComments.class
+})
 public class TextFlowTarget implements IExtensible{
 	
 	private LocaleId lang;
@@ -50,6 +54,14 @@ public class TextFlowTarget implements IExtensible{
 		this.lang = lang;
 	}
 
+	public boolean hasComments() {
+		return getExtension(SimpleComments.class) != null;
+	}
+	
+	public SimpleComments getComments() {
+		return getExtension(SimpleComments.class);
+	}
+	
 	@XmlJavaTypeAdapter(type=LocaleId.class, value=LocaleIdAdapter.class)
 	@XmlAttribute(name="lang", namespace=Namespaces.XML, required=true)
 	public LocaleId getLang() {
