@@ -32,4 +32,9 @@ public class DocName implements Serializable, IsSerializable {
 		return path;
 	}
 	
+	@Override
+	public String toString() {
+		return "DocName(name="+name+",path="+path+",id="+id+")";
+	}
+	
 }
