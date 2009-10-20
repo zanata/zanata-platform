@@ -96,7 +96,7 @@ public class PoReader {
 				
 				// add the PO comment
 				tfTarget.getExtensions().add(
-					new SimpleComment(id, StringUtils.join(message.getComments(),"\n")));
+					new SimpleComment(StringUtils.join(message.getComments(),"\n")));
 			}
 		}
 		
@@ -259,7 +259,7 @@ public class PoReader {
 				
 				// add the PO comment
 				tfTarget.getExtensions().add(
-					new SimpleComment(id, StringUtils.join(message.getComments(),"\n")));
+					new SimpleComment(StringUtils.join(message.getComments(),"\n")));
 				
 			}
 
