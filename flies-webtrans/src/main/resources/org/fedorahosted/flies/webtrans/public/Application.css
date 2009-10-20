@@ -20,10 +20,17 @@
 	color: grey;
 }
 
-.gwt-FilterBox {
+.gwt-FilterBox-Vacant {
     font-size: 12px;
     font-style: italic;
     color: grey;
+    width: 100%;
+}
+
+.gwt-FilterBox-Occupied {
+    font-size: 12px;
+    font-style: plain;
+    color: black;
     width: 100%;
 }
 

@@ -11,7 +11,7 @@ public class FilterBox extends TextBox {
 	private String text;
 	
 	public FilterBox() {
-		addStyleName("gwt-FilterBox");
+		addStyleName("gwt-FilterBox-Vacant");
 		
 		text = " Type to Filter ";
 		
@@ -21,7 +21,12 @@ public class FilterBox extends TextBox {
 
 			@Override
 			public void onFocus(FocusEvent event) {
-				setText("");
+				
+				if (getText().equals(text)) {
+					setText("");
+					setStyleName("gwt-FilterBox-Occupied");
+				}
+				
 			}
 	    	
 	    });
@@ -30,7 +35,12 @@ public class FilterBox extends TextBox {
 
 			@Override
 			public void onBlur(BlurEvent event) {
-				setText(text);
+				
+				if (getText().equals("")) {
+					setText(text);
+					setStyleName("gwt-FilterBox-Vacant");
+				}
+				
 			}
 	    	
 	    });
