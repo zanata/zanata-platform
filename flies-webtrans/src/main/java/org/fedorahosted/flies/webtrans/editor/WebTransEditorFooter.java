@@ -38,7 +38,7 @@ public class WebTransEditorFooter extends HorizontalPanel{
 		StatusBar bar = new StatusBar();
 		bar.setWidth("200px");
 		add(bar);
-		setCellHorizontalAlignment(bar, HorizontalPanel.ALIGN_LEFT);
+		setCellHorizontalAlignment(bar, HorizontalPanel.ALIGN_RIGHT);
 	}
 	
 	public Pager getPager() {
