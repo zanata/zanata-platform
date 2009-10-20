@@ -37,6 +37,7 @@ public class CaptionPanel extends DecoratorPanel {
 		titleWidget = new Label();
 		collapseButtonVisible = true;
 		collapseButton = new Button("-");
+		collapseButton.setStylePrimaryName("gwt-CaptionPanel-Collapse");
 		collapseButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
