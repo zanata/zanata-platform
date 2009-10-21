@@ -1,10 +1,13 @@
 package org.fedorahosted.flies.webtrans.client.ui;
 
 import java.util.ArrayList;
+import java.util.List;
 
-
+import com.google.gwt.event.dom.client.HasMouseOverHandlers;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
@@ -14,7 +17,7 @@ import com.google.gwt.user.client.ui.TreeImages;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class FilterTree<T> extends Composite implements HasTreeNodes<T>, HasFilter<T> {
+public class FilterTree<T> extends Composite implements HasTreeNodes<T>, HasFilter<T>/*, HasMouseOverHandlers*/ {
 	private final TreeNodeMapper<T> mapper;
 	private final Panel panel = new VerticalPanel();
 	private final FilterBox filterBox = new FilterBox();
@@ -56,7 +59,7 @@ public class FilterTree<T> extends Composite implements HasTreeNodes<T>, HasFilt
 	
 	
 	@Override
-	public void setList(ArrayList<T> list) {
+	public void setList(List<T> list) {
 		this.list.clear();
 		this.list.addAll(list);
 		filterBox.setText("");
@@ -82,13 +85,8 @@ public class FilterTree<T> extends Composite implements HasTreeNodes<T>, HasFilt
 			mapper.addToTree(tree, list, false);
 		}
 //		for (int i = 0; i < tree.getNodeCount(); i++) {
-//			final TreeNode<DocName> node = tree.getNode(i);
-//			node.addMouseOverHandler(new MouseOverHandler() {
-//				@Override
-//				public void onMouseOver(MouseOverEvent event) {
-//					System.out.println("onMouseOver "+node.getObject().getName());
-//				}
-//			});
+//			final TreeNode<T> node = tree.getNode(i);
+//			node.addMouseOverHandler(mouseOverHandler);
 //		}
 	}
 

@@ -1,7 +1,7 @@
 package org.fedorahosted.flies.webtrans.client.ui;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface HasFilter<T> {
-	public void setList(ArrayList<T> elements);
+	public void setList(List<T> list);
 }
