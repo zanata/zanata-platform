@@ -5,8 +5,13 @@ import java.io.StringWriter;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
-class Utility {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+class Utility {
+	
+	final static Logger logger = LoggerFactory.getLogger(Utility.class);
+	
 	public static String toXML(Object obj) {
 		try {
 			Marshaller m = null;
@@ -17,7 +22,8 @@ class Utility {
 			m.marshal(obj, writer);
 			return writer.toString();
 		} catch (Exception e) {
-			return String.valueOf(obj);
+			logger.error("toXML failed", e);
+			return obj.getClass().getName() + "@" + Integer.toHexString(obj.hashCode());
 		}
 	}
 
