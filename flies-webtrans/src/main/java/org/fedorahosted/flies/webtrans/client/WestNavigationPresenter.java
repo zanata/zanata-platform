@@ -53,7 +53,6 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 //				display.asWidget().setHeight(event.getHeight() + "px");
 //			}
 //		});
-		display.asWidget().setHeight("100%");
 		docListPresenter.bind();
 		display.getWidgets().add(docListPresenter.getDisplay().asWidget());
 		transUnitInfoPresenter.bind();

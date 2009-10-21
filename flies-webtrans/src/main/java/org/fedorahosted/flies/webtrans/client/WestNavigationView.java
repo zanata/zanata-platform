@@ -4,25 +4,26 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class WestNavigationView extends Composite implements
+public class WestNavigationView extends SimplePanel implements
 		WestNavigationPresenter.Display {
 
-	final FlowPanel panel;
+	final VerticalPanel panel;
 	
 	public WestNavigationView() {
 		Log.info("setting up LeftNavigationView");
-		panel = new FlowPanel();
-		panel.setStylePrimaryName("LeftContentNavBar");
-		initWidget(panel);
+		panel = new VerticalPanel();
+		panel.setSpacing(5);
+		panel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
+		panel.setVerticalAlignment(VerticalPanel.ALIGN_TOP);
+		
+		setStylePrimaryName("LeftContentNavBar");
+		add(panel);
 		panel.setWidth("220px");
-	}
-
-	@Override
-	public void setHeight(String height) {
-		panel.setHeight(height);
+		setHeight("100%");
 	}
 
 	@Override
