@@ -2,20 +2,14 @@ package org.fedorahosted.flies.webtrans.client;
 
 import org.fedorahosted.flies.gwt.model.DocName;
 import org.fedorahosted.flies.webtrans.client.ui.CaptionPanel;
-import org.fedorahosted.flies.webtrans.client.ui.FilterBox;
+import org.fedorahosted.flies.webtrans.client.ui.FilterTree;
+import org.fedorahosted.flies.webtrans.client.ui.HasFilter;
 import org.fedorahosted.flies.webtrans.client.ui.HasTreeNodes;
-import org.fedorahosted.flies.webtrans.client.ui.TreeImpl;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.HasKeyUpHandlers;
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.ImageBundle;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TreeImages;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class DocumentListView extends CaptionPanel 
@@ -35,26 +29,14 @@ public class DocumentListView extends CaptionPanel
 	}
 
 	private static Images images = (Images) GWT.create(Images.class);
-	private TreeImpl<DocName> tree;
-	private FilterBox filterBox = new FilterBox();
+	private FilterTree<DocName> tree;
 	
-	public DocumentListView() {		
-
+	public DocumentListView() {
 		super();
 		GWT.log("DocumentListView()", null);
-	    tree = new TreeImpl<DocName>(images);
-	    Panel treePanel = new ScrollPanel();
-	    treePanel.setWidth("100%");
-	    treePanel.setHeight("150px");
-	    treePanel.add(tree);
-	    
-	    setTitle("Documents");
-	    
-	    VerticalPanel body = new VerticalPanel(); 
-	    body.add(filterBox);
-	    body.add(treePanel);
-	    
-	    setBody(body);
+		setTitle("Documents");
+	    tree = new FilterTree<DocName>(new FlatFolderDocNameMapper(), images);
+	    setBody(tree);
 	}
 
 	@Override
@@ -76,18 +58,8 @@ public class DocumentListView extends CaptionPanel
 	}
 
 	@Override
-	public HasValueChangeHandlers<String> getFilterChangeSource() {
-		return filterBox;
-	}
-
-	@Override
-	public HasKeyUpHandlers getFilterKeyUpSource() {
-		return filterBox;
-	}
-
-	@Override
-	public HasText getFilterText() {
-		return filterBox;
+	public HasFilter<DocName> getFilter() {
+		return tree;
 	}
 
 }
