@@ -15,6 +15,7 @@ import org.fedorahosted.flies.repository.model.HParentResource;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.repository.model.HReference;
 import org.fedorahosted.flies.repository.model.HResource;
+import org.fedorahosted.flies.repository.model.HSimpleComment;
 import org.fedorahosted.flies.repository.model.HTextFlow;
 import org.fedorahosted.flies.repository.model.HTextFlowHistory;
 import org.fedorahosted.flies.repository.model.HTextFlowTarget;
@@ -26,6 +27,7 @@ import org.fedorahosted.flies.rest.dto.Link;
 import org.fedorahosted.flies.rest.dto.Reference;
 import org.fedorahosted.flies.rest.dto.Relationships;
 import org.fedorahosted.flies.rest.dto.Resource;
+import org.fedorahosted.flies.rest.dto.SimpleComment;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.TextFlowTargets;
@@ -420,6 +422,12 @@ public class DocumentConverter {
 							copy(target, hTarget, htf);
 							htf.getTargets().put(target.getLang(), hTarget);
 						}
+					} else if (ext instanceof SimpleComment) {
+						SimpleComment simpleComment = (SimpleComment) ext;
+						HSimpleComment hComment = htf.getComment();
+						if (hComment == null)
+							hComment = new HSimpleComment();
+						hComment.setComment(simpleComment.getValue());
 					} else {
 						throw new RuntimeException("Unknown TextFlow extension "+ext.getClass());
 					}
@@ -434,6 +442,9 @@ public class DocumentConverter {
 		hTarget.setRevision(target.getVersion());
 		hTarget.setState(target.getState());
 		hTarget.setTextFlow(htf);
+		if(target.hasComment()) {
+			hTarget.setComment(new HSimpleComment(target.getComment().getValue()));
+		}
 	}
 	
 	public void addLinks(Document doc, URI docUri, URI iterationUri) {

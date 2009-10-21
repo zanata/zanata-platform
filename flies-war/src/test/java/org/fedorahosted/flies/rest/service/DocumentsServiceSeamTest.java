@@ -71,6 +71,7 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 	    	doc.getLinks().clear();
 			actual.add(doc.toString());
 		}
+//System.out.println("actual docs: "+docs);
 	    assertThat(actual, is(expected));
 	}
 	
@@ -84,11 +85,17 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 		return doc;
 	}
 	
-	private TextFlow newTextFlow(String id, String sourceContent, String targetLocale, String targetContent) {
+	private TextFlow newTextFlow(String id, String sourceContent, String sourceComment, String targetLocale, String targetContent, String targetComment) {
 		TextFlow textFlow = new TextFlow(id, LocaleId.EN);
 	    textFlow.setContent(sourceContent);
+	    // FIXME disabled until we get comment persistence working
+//	    if (sourceComment != null)
+//	    	textFlow.getOrAddComment().setValue(sourceComment);
 	    TextFlowTarget target = new TextFlowTarget(textFlow, LocaleId.fromJavaName(targetLocale));
 	    target.setContent(targetContent);
+	    // FIXME disabled until we get comment persistence working
+//	    if (targetComment != null)
+//	    	target.getOrAddComment().setValue(targetComment);
 		textFlow.addTarget(target);
 		return textFlow;
 	}
@@ -96,7 +103,7 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 	private Document putDoc1() {
 		Documents docs = new Documents();
 		Document doc = newDoc("foo.properties", 
-				newTextFlow("FOOD", "Slime Mould", "de_DE", "Sauerkraut"));
+				newTextFlow("FOOD", "Slime Mould", "slime mould comment", "de_DE", "Sauerkraut", null));
 		docs.getDocuments().add(doc);
 		Response response = docsService.put(docs);
 		assertThat(response.getStatus(), is(200));
@@ -106,7 +113,7 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 	private Document putDoc1a() {
 		Documents docs = new Documents();
 		Document doc = newDoc("foo.properties", 
-	    		newTextFlow("HELLO", "Hello World", "fr", "Bonjour le Monde"));
+	    		newTextFlow("HELLO", "Hello World", null, "fr", "Bonjour le Monde", "bon jour comment"));
 		docs.getDocuments().add(doc);
 		Response response = docsService.put(docs);
 		assertThat(response.getStatus(), is(200));
@@ -116,7 +123,7 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 	private Document postDoc2() {
 	    Documents docs = new Documents();
 	    Document doc = newDoc("test.properties",
-	    		newTextFlow("HELLO", "Hello World", "fr", "Bonjour le Monde"));
+	    		newTextFlow("HELLO", "Hello World", "hello comment", "fr", "Bonjour le Monde", null));
 		docs.getDocuments().add(doc);
 	    Response response = docsService.post(docs);
 	    assertThat(response.getStatus(), is(200));
