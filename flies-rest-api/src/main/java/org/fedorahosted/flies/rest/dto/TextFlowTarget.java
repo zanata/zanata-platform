@@ -19,7 +19,7 @@ import org.fedorahosted.flies.LocaleId;
 @XmlType(name="textFlowTargetType", namespace=Namespaces.FLIES, propOrder={"content", "extensions"})
 @XmlRootElement(name="text-flow-target", namespace=Namespaces.FLIES)
 @XmlSeeAlso({
-	SimpleComments.class
+	SimpleComment.class
 })
 public class TextFlowTarget implements IExtensible{
 	
@@ -54,12 +54,16 @@ public class TextFlowTarget implements IExtensible{
 		this.lang = lang;
 	}
 
-	public boolean hasComments() {
-		return getExtension(SimpleComments.class) != null;
+	public boolean hasComment() {
+		return getExtension(SimpleComment.class) != null;
 	}
 	
-	public SimpleComments getComments() {
-		return getExtension(SimpleComments.class);
+	public SimpleComment getComment() {
+		return getExtension(SimpleComment.class);
+	}
+	
+	public SimpleComment getOrAddComment(){
+		return getOrAddExtension(SimpleComment.class);
 	}
 	
 	@XmlJavaTypeAdapter(type=LocaleId.class, value=LocaleIdAdapter.class)
@@ -134,6 +138,7 @@ public class TextFlowTarget implements IExtensible{
 		if(ext == null){
 			try {
 				ext = clz.newInstance();
+				getExtensions().add(ext);
 			} catch (Throwable e) {
 				throw new RuntimeException("unable to create instance", e);
 			}
