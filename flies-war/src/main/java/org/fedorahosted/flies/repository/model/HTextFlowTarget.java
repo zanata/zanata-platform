@@ -128,7 +128,8 @@ public class HTextFlowTarget implements Serializable{
 		this.content = content;
 	}
 	
-	@OneToOne(mappedBy="target", optional=true, cascade=CascadeType.ALL)
+	@OneToOne(optional=true, cascade=CascadeType.ALL)
+	@JoinColumn(name="comment_id")
 	public HSimpleComment getComment() {
 		return comment;
 	}
@@ -136,6 +137,5 @@ public class HTextFlowTarget implements Serializable{
 	public void setComment(HSimpleComment comment) {
 		this.comment = comment;
 	}
-
 	
 }
