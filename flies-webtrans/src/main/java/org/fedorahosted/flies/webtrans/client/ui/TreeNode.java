@@ -1,7 +1,8 @@
 package org.fedorahosted.flies.webtrans.client.ui;
 
-public interface TreeNode<T> {
+import com.google.gwt.event.dom.client.HasMouseOverHandlers;
 
+public interface TreeNode<T> extends HasMouseOverHandlers {
 	public TreeNode<T> addItem(String name);
 	public T getObject();
 	public void setObject(T userObj);

@@ -3,12 +3,13 @@ package org.fedorahosted.flies.repository.model;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.rest.dto.TextFlow;
@@ -37,6 +38,8 @@ public class HTextFlow extends HResource {
 
 	public Map<Integer, HTextFlowHistory> history;
 	
+	private HSimpleComment comment;
+	
 	public HTextFlow() {
 	}
 	
@@ -45,6 +48,16 @@ public class HTextFlow extends HResource {
 		this.content = tf.getContent();
 	}
 
+	@OneToOne(optional=true, cascade=CascadeType.ALL)
+	@JoinColumn(name="comment_id")
+	public HSimpleComment getComment() {
+		return comment;
+	}
+	
+	public void setComment(HSimpleComment comment) {
+		this.comment = comment;
+	}
+	
 	@NotNull
 	@Type(type = "text")
 	public String getContent() {
@@ -100,6 +113,10 @@ public class HTextFlow extends HResource {
 	@Override
 	public TextFlow toResource(int levels) {
 		TextFlow textFlow = new TextFlow(this.getResId());
+		HSimpleComment comment = this.getComment();
+		if(comment != null) {
+			textFlow.getOrAddComment().setValue(comment.getComment());
+		}
 		textFlow.setContent(this.getContent());
 		textFlow.setLang(this.getDocument().getLocale());
 		
@@ -107,6 +124,10 @@ public class HTextFlow extends HResource {
 			HTextFlowTarget hTextFlowTarget = this.getTargets().get(locale);
 			if(hTextFlowTarget != null) {
 				TextFlowTarget textFlowTarget = new TextFlowTarget(textFlow, locale);
+				HSimpleComment tftComment = hTextFlowTarget.getComment();
+				if(tftComment != null) {
+					textFlowTarget.getOrAddComment().setValue(tftComment.getComment());
+				}
 				textFlowTarget.setContent(hTextFlowTarget.getContent());
 				textFlowTarget.setState(hTextFlowTarget.getState());
 				textFlow.addTarget(textFlowTarget);

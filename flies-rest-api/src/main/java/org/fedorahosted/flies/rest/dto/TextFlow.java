@@ -18,7 +18,7 @@ import org.fedorahosted.flies.LocaleId;
 @XmlRootElement(name="text-flow", namespace=Namespaces.FLIES)
 @XmlSeeAlso({
 	TextFlowTargets.class,
-	SimpleComments.class
+	SimpleComment.class
 })
 public class TextFlow extends AbstractBaseResource implements Resource{
 
@@ -83,6 +83,7 @@ public class TextFlow extends AbstractBaseResource implements Resource{
 		if(ext == null){
 			try {
 				ext = clz.newInstance();
+				getExtensions().add(ext);
 			} catch (Throwable e) {
 				throw new RuntimeException("unable to create instance", e);
 			}
@@ -119,12 +120,16 @@ public class TextFlow extends AbstractBaseResource implements Resource{
 		return getExtension(TextFlowTargets.class);
 	}
 	
-	public boolean hasComments() {
-		return getExtension(SimpleComments.class) != null;
+	public boolean hasComment() {
+		return getExtension(SimpleComment.class) != null;
 	}
 	
-	public SimpleComments getComments(){
-		return getExtension(SimpleComments.class);
+	public SimpleComment getComment(){
+		return getExtension(SimpleComment.class);
+	}
+	
+	public SimpleComment getOrAddComment(){
+		return getOrAddExtension(SimpleComment.class);
 	}
 	
 	public TextFlowTarget getTarget(LocaleId localeId) {

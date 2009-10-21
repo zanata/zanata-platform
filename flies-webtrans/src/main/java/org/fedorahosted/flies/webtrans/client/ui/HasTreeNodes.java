@@ -11,4 +11,6 @@ public interface HasTreeNodes<T> extends HasSelectionHandlers<TreeItem> {
 	public void removeItems();
 	public TreeNode<T> getSelectedNode();
 	public void setSelectedNode(TreeNode<DocName> node);
+	public TreeNode<T> getNode(int index);
+	public int getNodeCount();
 }
