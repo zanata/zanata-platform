@@ -1,26 +1,26 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import org.fedorahosted.flies.gwt.model.DocName;
 import org.fedorahosted.flies.gwt.model.Person;
 import org.fedorahosted.flies.gwt.model.PersonId;
 import org.fedorahosted.flies.webtrans.client.ui.CaptionPanel;
 import org.fedorahosted.flies.webtrans.client.ui.FilterBox;
+import org.fedorahosted.flies.webtrans.client.ui.HasTreeNodes;
+import org.fedorahosted.flies.webtrans.client.ui.TreeImpl;
+import org.fedorahosted.flies.webtrans.client.ui.TreeNode;
+import org.fedorahosted.flies.webtrans.client.ui.TreeNodeImpl;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DecoratedStackPanel;
 import com.google.gwt.user.client.ui.ImageBundle;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.StackPanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeImages;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -44,18 +44,20 @@ public class WorkspaceUsersView extends CaptionPanel implements
 	}
 
 	private static Images images = (Images) GWT.create(Images.class);
+	private TreeImpl<Object> tree;
 
+	
 	public WorkspaceUsersView() {
 		super();
+		tree = new TreeImpl<Object>(images);	
 		setTitle("Translators");
 		setBody(getChatAllPanel());
 	}
 
-	private static Panel createLocaleTranslatorsTree() {
+	private Panel createLocaleTranslatorsTree() {
 		VerticalPanel panel = new VerticalPanel();
 		panel.setWidth("100%");
-		final Tree tree = new Tree(images);
-		tree.setWidth("100%");
+//		tree.setWidth("100%");
 		addLocaleData(tree, "German", "");
 		
 		final FilterBox tb = new FilterBox();
@@ -75,19 +77,23 @@ public class WorkspaceUsersView extends CaptionPanel implements
 		return panel;
 	}
 
-	private static TreeItem createTranslator(Person person) {
-		TreeItem item = new TreeItem();
-		item.setText(person.getName());
-		return item;
-	}
 
-	private static void addLocaleData(Tree tree, String locale, String filter) {
-		TreeItem item = new TreeItem();
-		item.setText(locale);
-		tree.addItem(item);
+	private static void addLocaleData(TreeImpl<Object> tree, String locale, String filter) {
+		TreeNode localeNode = tree.addItem(locale);
+		
 		for(Person translator : translators){
 			if(filter.isEmpty() || translator.getName().contains(filter)){
-				item.addItem(createTranslator(translator));
+				TreeNode node = localeNode.addItem(translator.getName());
+				node.setObject(translator);
+				node.addMouseOverHandler(new MouseOverHandler() {
+					
+					@Override
+					public void onMouseOver(MouseOverEvent event) {
+//						label.setText("selected");
+						Log.info("");
+					}
+					
+				});
 			}
 		}
 	}
@@ -98,7 +104,7 @@ public class WorkspaceUsersView extends CaptionPanel implements
 		new Person( new PersonId("Bill"), "Bill")
 		};
 
-	public static Widget getChatAllPanel() {
+	public Widget getChatAllPanel() {
 
 		VerticalSplitPanel vSplit = new VerticalSplitPanel();
 		vSplit.setBottomWidget(new Label("Chat"));
@@ -123,6 +129,11 @@ public class WorkspaceUsersView extends CaptionPanel implements
 	public void stopProcessing() {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public HasTreeNodes<Object> getTree() {
+		return tree;
 	}
 
 }

@@ -1,5 +1,8 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import org.fedorahosted.flies.gwt.model.DocName;
+import org.fedorahosted.flies.webtrans.client.ui.HasTreeNodes;
+
 import com.google.inject.Inject;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -13,7 +16,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 	public static final Place PLACE = new Place("WorkspaceUsersPresenter");
 	
 	public interface Display extends WidgetDisplay{
-		
+		HasTreeNodes<Object> getTree();
 	}
 	
 	@Inject
