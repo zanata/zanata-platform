@@ -36,4 +36,14 @@ public class TreeImpl<T> extends Tree implements HasTreeNodes<T> {
 		setSelectedItem((TreeItem) node, false);
 	}
 
+	@Override
+	public TreeNode<T> getNode(int index) {
+		return (TreeNode<T>) getItem(index);
+	}
+
+	@Override
+	public int getNodeCount() {
+		return getItemCount();
+	}
+	
 }
