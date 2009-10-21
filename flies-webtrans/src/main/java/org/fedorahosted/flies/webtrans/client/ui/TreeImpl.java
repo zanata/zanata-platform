@@ -1,7 +1,5 @@
 package org.fedorahosted.flies.webtrans.client.ui;
 
-import org.fedorahosted.flies.gwt.model.DocName;
-
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeImages;
 import com.google.gwt.user.client.ui.TreeItem;
@@ -9,6 +7,7 @@ import com.google.gwt.user.client.ui.TreeItem;
 public class TreeImpl<T> extends Tree implements HasTreeNodes<T> {
 	
 	public TreeImpl() {
+		super();
 	}
 
 	public TreeImpl(TreeImages images) {
@@ -32,7 +31,7 @@ public class TreeImpl<T> extends Tree implements HasTreeNodes<T> {
 	}
 	
 	@Override
-	public void setSelectedNode(TreeNode<DocName> node) {
+	public void setSelectedNode(TreeNode<T> node) {
 		setSelectedItem((TreeItem) node, false);
 	}
 

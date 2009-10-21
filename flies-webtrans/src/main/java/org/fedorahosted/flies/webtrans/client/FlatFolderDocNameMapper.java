@@ -6,8 +6,9 @@ import java.util.HashMap;
 import org.fedorahosted.flies.gwt.model.DocName;
 import org.fedorahosted.flies.webtrans.client.ui.HasTreeNodes;
 import org.fedorahosted.flies.webtrans.client.ui.TreeNode;
+import org.fedorahosted.flies.webtrans.client.ui.TreeNodeMapper;
 
-public class FlatFolderDocNameMapper implements DocNameMapper {
+public class FlatFolderDocNameMapper implements TreeNodeMapper<DocName> {
 	public void addToTree(HasTreeNodes<DocName> tree, ArrayList<DocName> docNames, boolean openFolderNodes) {
 		HashMap<String, TreeNode<DocName>> folderNodes = new HashMap<String, TreeNode<DocName>>();
 		for (DocName docName : docNames) {
@@ -27,6 +28,11 @@ public class FlatFolderDocNameMapper implements DocNameMapper {
 			}
 			item.setObject(docName);
 		}
+	}
+
+	@Override
+	public boolean passFilter(DocName docName, String filter) {
+		return docName.getName().contains(filter);
 	}
 
 }

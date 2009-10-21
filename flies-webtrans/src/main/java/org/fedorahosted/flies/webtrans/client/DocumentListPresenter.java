@@ -17,53 +17,41 @@ import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 import org.fedorahosted.flies.gwt.rpc.GetDocsList;
 import org.fedorahosted.flies.gwt.rpc.GetDocsListResult;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent.Severity;
+import org.fedorahosted.flies.webtrans.client.ui.HasFilter;
 import org.fedorahosted.flies.webtrans.client.ui.HasTreeNodes;
-import org.fedorahosted.flies.webtrans.client.ui.TreeNode;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.HasKeyUpHandlers;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.inject.Inject;
 
 public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter.Display> 
 		implements HasDocumentSelectionHandlers {
 
-	private final DocNameMapper docNameMapper;
 	private final DispatchAsync dispatcher;
 
 	@Inject
 	public DocumentListPresenter(Display display, EventBus eventBus,
 			WorkspaceContext workspaceContext,
-			DocNameMapper docNameMapper, DispatchAsync dispatcher) {
+			DispatchAsync dispatcher) {
 		super(display, eventBus);
 		this.dispatcher = dispatcher;
 		GWT.log("DocumentListPresenter()", null);
-		this.docNameMapper = docNameMapper;
 		loadDocsList(workspaceContext.getProjectContainerId());
 	}
 
 	public static final Place PLACE = new Place("DocumentListList");
 	
 	public interface Display extends WidgetDisplay {
-		HasValueChangeHandlers<String> getFilterChangeSource();
-		HasKeyUpHandlers getFilterKeyUpSource();
-		HasText getFilterText();
 		HasTreeNodes<DocName> getTree();
+		HasFilter<DocName> getFilter();
 	}
 	
 	private DocumentId currentDoc;
-	private ArrayList<DocName> docNames = new ArrayList<DocName>();
 	
 	@Override
 	public Place getPlace() {
@@ -72,12 +60,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
 	@Override
 	protected void onBind() {
-		registerHandler(display.getFilterKeyUpSource().addKeyUpHandler(new KeyUpHandler() {
-			@Override
-			public void onKeyUp(KeyUpEvent event) {
-				filterBy(display.getFilterText().getText());
-			}
-		}));
 		registerHandler(getDisplay().getTree().addSelectionHandler(new SelectionHandler<TreeItem>() {
 			@Override
 			public void onSelection(SelectionEvent<TreeItem> event) {
@@ -130,37 +112,10 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 		eventBus.fireEvent(event);
 	}
 
-	public void filterBy(String value) {
-		HasTreeNodes<DocName> tree = display.getTree();
-		tree.clear();
-
-		if (value != null && value.length() != 0) {
-			ArrayList<DocName> filteredNames = new ArrayList<DocName>();
-			for (DocName docName : docNames) {
-				if (docName.getName().contains(value)) {
-					filteredNames.add(docName);
-				}
-			}
-			docNameMapper.addToTree(tree, filteredNames, true);
-		} else {
-			docNameMapper.addToTree(tree, docNames, false);
-		}
-//		for (int i = 0; i < tree.getNodeCount(); i++) {
-//			final TreeNode<DocName> node = tree.getNode(i);
-//			node.addMouseOverHandler(new MouseOverHandler() {
-//				@Override
-//				public void onMouseOver(MouseOverEvent event) {
-//					System.out.println("onMouseOver "+node.getObject().getName());
-//				}
-//			});
-//		}
-	}
-
 	public void setDocNameList(ArrayList<DocName> docNames) {
-		this.docNames.clear();
-		this.docNames.addAll(docNames);
+		ArrayList<DocName> sortedList = new ArrayList<DocName>(docNames);
 		
-		Collections.sort(this.docNames, new Comparator<DocName>() {
+		Collections.sort(sortedList, new Comparator<DocName>() {
 			@Override
 			public int compare(DocName o1, DocName o2) {
 				String path1 = o1.getPath();
@@ -174,9 +129,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 					return o1.getName().compareTo(o2.getName());
 				return pathCompare;
 			}});
-		
-		display.getFilterText().setText("");
-		filterBy("");
+		display.getFilter().setList(sortedList);
 	}
 
 	private void loadDocsList(ProjectContainerId id) {
