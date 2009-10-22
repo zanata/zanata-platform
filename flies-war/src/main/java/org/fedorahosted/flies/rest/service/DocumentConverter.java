@@ -425,8 +425,10 @@ public class DocumentConverter {
 					} else if (ext instanceof SimpleComment) {
 						SimpleComment simpleComment = (SimpleComment) ext;
 						HSimpleComment hComment = htf.getComment();
-						if (hComment == null)
+						if (hComment == null) {
 							hComment = new HSimpleComment();
+							htf.setComment(hComment);
+						}
 						hComment.setComment(simpleComment.getValue());
 					} else {
 						throw new RuntimeException("Unknown TextFlow extension "+ext.getClass());
@@ -443,7 +445,12 @@ public class DocumentConverter {
 		hTarget.setState(target.getState());
 		hTarget.setTextFlow(htf);
 		if(target.hasComment()) {
-			hTarget.setComment(new HSimpleComment(target.getComment().getValue()));
+			HSimpleComment hComment = hTarget.getComment();
+			if (hComment == null) {
+				hComment = new HSimpleComment();
+				hTarget.setComment(hComment);
+			}
+			hComment.setComment(target.getComment().getValue());
 		}
 	}
 	
