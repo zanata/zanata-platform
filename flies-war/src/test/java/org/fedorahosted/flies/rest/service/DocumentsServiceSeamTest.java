@@ -89,13 +89,13 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 		TextFlow textFlow = new TextFlow(id, LocaleId.EN);
 	    textFlow.setContent(sourceContent);
 	    // FIXME disabled until we get comment persistence working
-//	    if (sourceComment != null)
-//	    	textFlow.getOrAddComment().setValue(sourceComment);
+	    if (sourceComment != null)
+	    	textFlow.getOrAddComment().setValue(sourceComment);
 	    TextFlowTarget target = new TextFlowTarget(textFlow, LocaleId.fromJavaName(targetLocale));
 	    target.setContent(targetContent);
 	    // FIXME disabled until we get comment persistence working
-//	    if (targetComment != null)
-//	    	target.getOrAddComment().setValue(targetComment);
+	    if (targetComment != null)
+	    	target.getOrAddComment().setValue(targetComment);
 		textFlow.addTarget(target);
 		return textFlow;
 	}
