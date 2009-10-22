@@ -36,13 +36,17 @@ public class FilterBox extends TextBox {
 			@Override
 			public void onBlur(BlurEvent event) {
 				
-				if (getText().equals("")) {
-					setText(text);
-					setStyleName("gwt-FilterBox-Vacant");
-				}
+				if (getText().equals(""))
+					clearFilter();
 				
 			}
 	    	
 	    });
+	}
+
+	public void clearFilter() {
+		// TODO Auto-generated method stub
+		setText(text);
+		setStyleName("gwt-FilterBox-Vacant");
 	}
 }

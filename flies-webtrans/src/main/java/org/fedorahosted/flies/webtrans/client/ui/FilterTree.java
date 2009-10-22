@@ -62,7 +62,7 @@ public class FilterTree<T> extends Composite implements HasTreeNodes<T>, HasFilt
 	public void setList(List<T> list) {
 		this.list.clear();
 		this.list.addAll(list);
-		filterBox.setText("");
+		filterBox.clearFilter();
 		filterBy("");
 	}
 
