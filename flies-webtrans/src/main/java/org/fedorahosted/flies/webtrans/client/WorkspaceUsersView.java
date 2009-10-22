@@ -5,7 +5,7 @@ import org.fedorahosted.flies.webtrans.client.ui.CaptionPanel;
 import org.fedorahosted.flies.webtrans.client.ui.FilterTree;
 import org.fedorahosted.flies.webtrans.client.ui.HasChildTreeNodes;
 import org.fedorahosted.flies.webtrans.client.ui.HasFilter;
-import org.fedorahosted.flies.webtrans.client.HasNodeMouseOverHandlers;
+import org.fedorahosted.flies.webtrans.client.ui.HasNodeMouseOverHandlers;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
