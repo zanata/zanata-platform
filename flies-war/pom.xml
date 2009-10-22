@@ -300,6 +300,28 @@
               <goal>copy</goal>
             </goals>
           </execution>
+          
+          <execution>
+            <id>copy-gwt-resources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>flies-webtrans</artifactId>
+                  <version>${project.version}</version>
+                  <type>war</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
+                  <includes>org.fedorahosted.flies.*</includes>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          
         </executions>
       </plugin>
   
