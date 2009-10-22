@@ -3,4 +3,5 @@
   <source path="common"/>
   <source path="model"/>
   <source path="rpc"/>
+  <source path="auth"/>
 </module>

@@ -3,6 +3,8 @@ package org.fedorahosted.flies.webtrans.client;
 import org.fedorahosted.flies.gwt.rpc.AuthenticateAction;
 import org.fedorahosted.flies.gwt.rpc.AuthenticateResult;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent.Severity;
+import org.fedorahosted.flies.webtrans.client.auth.Identity;
+import org.fedorahosted.flies.webtrans.client.auth.LoginResult;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -33,14 +35,15 @@ public class LoginPresenter extends WidgetPresenter<LoginPresenter.Display> {
 		PasswordTextBox getPasswordField();
 		void show();
 		void hide();
+		void showError();
 	}
 
-	private final DispatchAsync dispatcher;
+	private final Identity identity;
 	
 	@Inject
-	public LoginPresenter(DispatchAsync dispatcher, Display display, EventBus eventBus) {
+	public LoginPresenter(Identity identity, Display display, EventBus eventBus) {
 		super(display, eventBus);
-		this.dispatcher = dispatcher;
+		this.identity = identity;
 	}
 
 	@Override
@@ -59,7 +62,7 @@ public class LoginPresenter extends WidgetPresenter<LoginPresenter.Display> {
 			@Override
 			public void onNotification(NotificationEvent event) {
 				if (event.getSeverity() == Severity.Error) {
-					//display.show();
+					display.show();
 				}
 			}
 		});
@@ -88,21 +91,19 @@ public class LoginPresenter extends WidgetPresenter<LoginPresenter.Display> {
 
 	private void tryLogin() {
 		display.startProcessing();
-
-		dispatcher.execute(new AuthenticateAction(display.getUsernameField().getText(), display.getPasswordField().getText()), new AsyncCallback<AuthenticateResult>() {
-			
+		identity.login(display.getUsernameField().getText(), display.getPasswordField().getText(), new LoginResult() {
 			@Override
-			public void onSuccess(AuthenticateResult result) {
+			public void onSuccess() {
+				display.stopProcessing();
 				display.hide();
-				Cookies.setCookie("JSESSIONID", result.getSessionId());
 			}
 			
 			@Override
-			public void onFailure(Throwable caught) {
+			public void onFailure() {
+				display.stopProcessing();
+				display.showError();
 			}
 		});
-		
-		display.stopProcessing();
 	}
 	
 	@Override

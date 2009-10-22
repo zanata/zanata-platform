@@ -3,6 +3,7 @@ package org.fedorahosted.flies.webtrans.client;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -14,6 +15,7 @@ public class LoginPanel extends DecoratedPopupPanel implements LoginPresenter.Di
 	private final TextBox username;
 	private final PasswordTextBox password;
 	private final Button loginButton;
+	private final Label errorLabel;
 
 	private final GlassPanel glassPanel;
 	
@@ -27,19 +29,23 @@ public class LoginPanel extends DecoratedPopupPanel implements LoginPresenter.Di
 		password = new PasswordTextBox();
 		loginButton = new Button("Login");
 		glassPanel = new GlassPanel(false);
-		
+		errorLabel = new Label("Bloddy Error!");
+		//errorLabel.setVisible(false);
+		layout.setWidget(0, 0, errorLabel);
 		layout.setHTML(1, 0, "Username");
 		layout.setWidget(1, 1, username);
 		layout.setHTML(2, 0, "Password");
 		layout.setWidget(2, 1, password);
-		
-		layout.setWidget(3, 1, loginButton);
+		layout.setWidget(3, 2, loginButton);
 
 		setAnimationEnabled(true);
 		setModal(true);
-		//setWidget(layout);
 		add(layout);
-		
+	}
+	
+	@Override
+	public void showError() {
+		errorLabel.setVisible(true);
 	}
 
 	@Override
