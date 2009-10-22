@@ -3,6 +3,9 @@ package org.fedorahosted.flies.gwt.rpc;
 import net.customware.gwt.dispatch.shared.Action;
 
 import org.fedorahosted.flies.gwt.model.DocumentId;
+import org.fedorahosted.flies.gwt.model.LocaleId;
+import org.fedorahosted.flies.gwt.model.TransUnitId;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class GetStatusCount implements Action<GetStatusCountResult>, IsSerializable{
@@ -10,10 +13,10 @@ public class GetStatusCount implements Action<GetStatusCountResult>, IsSerializa
 	private static final long serialVersionUID = -1218943735746130251L;
 
 	private DocumentId documentId;
-	
+	private LocaleId localeId;
 
 	@SuppressWarnings("unused")
-	private GetStatusCount(){
+	public GetStatusCount(){
 	}
 	
 	public GetStatusCount(DocumentId id) {
@@ -26,5 +29,10 @@ public class GetStatusCount implements Action<GetStatusCountResult>, IsSerializa
 	
 	public void setDocumentId(DocumentId documentId) {
 		this.documentId = documentId;
+	}
+
+	public LocaleId getLocaleId() {
+		// TODO Auto-generated method stub
+		return localeId;
 	}
 }

@@ -35,9 +35,9 @@ public class StatusBar extends Composite implements HasTransUnitCount, ClickHand
 
 	
 	public StatusBar() {
-		setFuzzy(20);
-		setUntranslated(50);
-		setTranslated(30);
+		//setFuzzy(20);
+		//setUntranslated(50);
+		//setTranslated(30);
 		
 		HorizontalPanel panel = new HorizontalPanel();
 		initWidget(panel);

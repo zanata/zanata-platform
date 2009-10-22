@@ -9,29 +9,31 @@ public class GetStatusCountResult implements Result, IsSerializable {
 
 	private static final long serialVersionUID = 5021443732856834627L;
 	
-	private int untranslated;
-	private int fuzzy;
-	private int translated;
+	private DocumentId documentId;
+	private long untranslated;
+	private long fuzzy;
+	private long translated;
 
 	@SuppressWarnings("unused")
 	private GetStatusCountResult()	{
 	}
 	
-	public GetStatusCountResult(DocumentId documentId, int untranslated, int fuzzy, int translated) {
+	public GetStatusCountResult(DocumentId documentId, long untranslated, long fuzzy, long translated) {
+		this.documentId = documentId;
 		this.untranslated = untranslated;
 		this.fuzzy = fuzzy;
 		this.translated = translated;
 	}
 	
-	public int getUntranslated() {
+	public long getUntranslated() {
 		return untranslated;
 	}
 	
-	public int getFuzzy() {
+	public long getFuzzy() {
 		return fuzzy;
 	}
 	
-	public int getTranslated() {
+	public long getTranslated() {
 		return translated;
 	}
 	
