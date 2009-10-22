@@ -13,7 +13,6 @@ public class GetStatusCount implements Action<GetStatusCountResult>, IsSerializa
 	private static final long serialVersionUID = -1218943735746130251L;
 
 	private DocumentId documentId;
-	private LocaleId localeId;
 
 	@SuppressWarnings("unused")
 	public GetStatusCount(){
@@ -31,8 +30,4 @@ public class GetStatusCount implements Action<GetStatusCountResult>, IsSerializa
 		this.documentId = documentId;
 	}
 
-	public LocaleId getLocaleId() {
-		// TODO Auto-generated method stub
-		return localeId;
-	}
 }

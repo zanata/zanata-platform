@@ -7,6 +7,7 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.rpc.GetStatusCount;
 import org.fedorahosted.flies.gwt.rpc.GetStatusCountResult;
 import org.fedorahosted.flies.webtrans.client.DocumentSelectionEvent;
@@ -28,7 +29,6 @@ public class StatusBarPresenter extends WidgetPresenter<StatusBarPresenter.Displ
 	public StatusBarPresenter(final Display display, final EventBus eventBus, DispatchAsync dispatcher) {
 		super(display, eventBus);
 		this.dispatcher = dispatcher;
-		requestStatusCount();
 	}
 	
 	@Override
@@ -43,7 +43,7 @@ public class StatusBarPresenter extends WidgetPresenter<StatusBarPresenter.Displ
 			@Override
 			public void onDocumentSelected(DocumentSelectionEvent event) {
 				// TODO switch WebTransTableModel to the new document
-				requestStatusCount();
+				requestStatusCount(event.getDocumentId());
 			}
 		}));
 	}
@@ -72,8 +72,8 @@ public class StatusBarPresenter extends WidgetPresenter<StatusBarPresenter.Displ
 		
 	}
 	
-	private void requestStatusCount() {
-		dispatcher.execute(new GetStatusCount(), new AsyncCallback<GetStatusCountResult>() {
+	private void requestStatusCount(DocumentId id) {
+		dispatcher.execute(new GetStatusCount(id), new AsyncCallback<GetStatusCountResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				
