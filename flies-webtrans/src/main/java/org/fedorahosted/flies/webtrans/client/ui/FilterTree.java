@@ -3,10 +3,8 @@ package org.fedorahosted.flies.webtrans.client.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.event.dom.client.HasMouseOverHandlers;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -17,12 +15,14 @@ import com.google.gwt.user.client.ui.TreeImages;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class FilterTree<T> extends Composite implements HasTreeNodes<T>, HasFilter<T>/*, HasMouseOverHandlers*/ {
+public class FilterTree<T> extends Composite implements HasTreeNodes<T>, HasFilter<T>, HasNodeMouseOverHandlers {
 	private final TreeNodeMapper<T> mapper;
 	private final Panel panel = new VerticalPanel();
 	private final FilterBox filterBox = new FilterBox();
 	private final TreeImpl<T> tree;
 	private final ArrayList<T> list = new ArrayList<T>();
+	private final ArrayList<MouseOverHandler> mouseOverHandlers = new ArrayList<MouseOverHandler>();
+	
 	
 	public FilterTree(TreeNodeMapper<T> mapper) {
 		this.mapper = mapper;
@@ -84,14 +84,26 @@ public class FilterTree<T> extends Composite implements HasTreeNodes<T>, HasFilt
 		} else {
 			mapper.addToTree(tree, list, false);
 		}
-//		for (int i = 0; i < tree.getNodeCount(); i++) {
-//			final TreeNode<T> node = tree.getNode(i);
-//			node.addMouseOverHandler(mouseOverHandler);
-//		}
+		for (MouseOverHandler handler : mouseOverHandlers)
+			addMouseOverHandlerToTreeNodes(handler);
 	}
 
+	private void addMouseOverHandlerToTreeNodes(MouseOverHandler handler) {
+		addMouseOverHandlerToChildNodes(tree, handler);
+	}
 
-
+	private void addMouseOverHandlerToChildNodes(HasChildTreeNodes<T> subtree, MouseOverHandler handler) {
+		// TODO recursive
+		for (int i = 0; i < subtree.getNodeCount(); i++) {
+			final TreeNode<T> node = subtree.getNode(i);
+			if (node.getObject() == null) {
+				addMouseOverHandlerToChildNodes(node, handler);
+			} else {
+				node.addMouseOverHandler(handler);
+			}
+		}
+	}
+	
 	public TreeNode<T> getNode(int index) {
 		return tree.getNode(index);
 	}
@@ -124,6 +136,18 @@ public class FilterTree<T> extends Composite implements HasTreeNodes<T>, HasFilt
 	public HandlerRegistration addSelectionHandler(
 			SelectionHandler<TreeItem> handler) {
 		return tree.addSelectionHandler(handler);
+	}
+
+	@Override
+	public HandlerRegistration addNodeMouseOverHandler(final MouseOverHandler handler) {
+		addMouseOverHandlerToTreeNodes(handler);
+		mouseOverHandlers.add(handler);
+		return new HandlerRegistration() {
+			@Override
+			public void removeHandler() {
+				mouseOverHandlers.remove(handler);
+			}
+		};
 	}
 	
 }

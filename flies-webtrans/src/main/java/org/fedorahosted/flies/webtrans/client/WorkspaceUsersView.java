@@ -1,14 +1,13 @@
 package org.fedorahosted.flies.webtrans.client;
 
 import org.fedorahosted.flies.gwt.model.Person;
-import org.fedorahosted.flies.gwt.model.PersonId;
 import org.fedorahosted.flies.webtrans.client.ui.CaptionPanel;
 import org.fedorahosted.flies.webtrans.client.ui.FilterTree;
+import org.fedorahosted.flies.webtrans.client.ui.HasChildTreeNodes;
 import org.fedorahosted.flies.webtrans.client.ui.HasFilter;
-import org.fedorahosted.flies.webtrans.client.ui.HasTreeNodes;
+import org.fedorahosted.flies.webtrans.client.ui.HasNodeMouseOverHandlers;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.HasMouseOverHandlers;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.ImageBundle;
 import com.google.gwt.user.client.ui.Label;
@@ -38,6 +37,7 @@ public class WorkspaceUsersView extends CaptionPanel implements
 	
 	public WorkspaceUsersView() {
 		super();
+//		tree = new FilterTree<Person>(new PersonLocaleTreeNodeMapper(), images);	
 		tree = new FilterTree<Person>(new PersonTreeNodeMapper(), images);	
 //		tree.setWidth("100%");
 		setTitle("Translators");
@@ -72,7 +72,7 @@ public class WorkspaceUsersView extends CaptionPanel implements
 	}
 
 	@Override
-	public HasTreeNodes<Person> getTree() {
+	public HasChildTreeNodes<Person> getTree() {
 		return tree;
 	}
 
@@ -82,9 +82,8 @@ public class WorkspaceUsersView extends CaptionPanel implements
 	}
 	
 	@Override
-	public HasMouseOverHandlers getTreeMouseOver() {
-		// TODO Auto-generated method stub
-		return null;
+	public HasNodeMouseOverHandlers getNodeMouseOver() {
+		return tree;
 	}
 
 }
