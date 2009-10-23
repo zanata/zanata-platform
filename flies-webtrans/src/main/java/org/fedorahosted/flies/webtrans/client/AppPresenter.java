@@ -48,6 +48,7 @@ public class AppPresenter {
 		container.clear();
 		
 		final DockPanel dockPanel = new DockPanel();
+		dockPanel.setSpacing(3);
 		//final Label appFooter = new HTML("<span style=\"float: left\">Flies page footer goes here</span><span style=\"float: right\">Flies page footer goes here</span>");
 		//appFooter.setHeight("1em");
 		//dockPanel.add(appFooter, DockPanel.SOUTH);
@@ -63,6 +64,7 @@ public class AppPresenter {
 		dockPanel.add(west, DockPanel.WEST );
 		dockPanel.setCellWidth(center, "100%");
 		dockPanel.setCellWidth(west, "220px");
+		dockPanel.setCellHeight(northPanel, "20px");
 		eventBus.addHandler(WindowResizeEvent.getType(), new ResizeHandler() {
 			@Override
 			public void onResize(ResizeEvent event) {

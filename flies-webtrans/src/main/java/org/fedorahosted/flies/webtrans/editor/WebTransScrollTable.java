@@ -74,8 +74,6 @@ public class WebTransScrollTable extends PagingScrollTable<TransUnit> implements
 		setCellSpacing(0);
 		setResizePolicy(ScrollTable.ResizePolicy.FILL_WIDTH);
 		
-		setSize("100%", "100%");
-
 		getDataTable().setSelectionPolicy(SelectionPolicy.ONE_ROW);
 		getDataTable().setCellPadding(3);
 		

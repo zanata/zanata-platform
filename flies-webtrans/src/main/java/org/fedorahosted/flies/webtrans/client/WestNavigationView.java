@@ -16,10 +16,8 @@ public class WestNavigationView extends SimplePanel implements
 	public WestNavigationView() {
 		Log.info("setting up LeftNavigationView");
 		panel = new VerticalPanel();
-		panel.setSpacing(5);
 		panel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
 		panel.setVerticalAlignment(VerticalPanel.ALIGN_TOP);
-		
 		setStylePrimaryName("LeftContentNavBar");
 		add(panel);
 		panel.setWidth("220px");

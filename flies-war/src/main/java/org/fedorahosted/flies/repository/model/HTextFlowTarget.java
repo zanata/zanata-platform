@@ -39,6 +39,7 @@ public class HTextFlowTarget implements Serializable{
 	
 	private String content;
 	private ContentState state = ContentState.New;
+	
 	private Integer revision = 1;
 	
 	private HSimpleComment comment;

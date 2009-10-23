@@ -1,7 +1,10 @@
 /** Add css rules here for your application. */
 
 .LeftContentNavBar {
-    background-color: #f8f8fb;
+}
+
+.LeftContentNavBar .gwt-CaptionPanel {
+	margin-bottom:3px;
 }
 
 
@@ -60,6 +63,20 @@
     width: 100%;
 }
 
+.gwt-DecoratorPanel.TransPanel-Outer tr.middle td.middleCenter {
+  height: 100%;
+  width: 100%;
+}
+.gwt-DecoratorPanel.TransPanel-Outer tr.middle td.middleCenter div.middleCenterInner {
+  height: 100%;
+  width: 100%;
+}
+
+.TransPanel {
+  height: 100%;
+  width: 100%;
+}
+
 .gwt-ProgressBar-shell {
   border: 2px solid #faf9f7;
   border-right: 2px solid #848280;
@@ -104,6 +121,14 @@
 
 .gwt-ScrollTable .dataTable tr.selected td {
   background: #C3D9FF;
+}
+
+.WebTransEditor {
+	background-color: #D0E4F6;
+}
+
+.WebTransEditor-footer {
+	padding-top: 5px;
 }
 
 .webtrans-editor-status{

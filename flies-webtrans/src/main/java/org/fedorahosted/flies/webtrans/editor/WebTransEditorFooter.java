@@ -21,6 +21,8 @@ public class WebTransEditorFooter extends HorizontalPanel{
 	
 	@Inject
 	public WebTransEditorFooter(Pager pager) {
+		setStylePrimaryName("WebTransEditor");
+		addStyleDependentName("footer");
 		this.pager = pager;
 		
 		setHeight("20px");

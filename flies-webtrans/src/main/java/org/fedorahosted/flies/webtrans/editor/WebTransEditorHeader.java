@@ -14,6 +14,8 @@ import com.google.gwt.user.client.ui.MenuItem;
 public class WebTransEditorHeader extends HorizontalPanel{
 
 	public WebTransEditorHeader() {
+		setStylePrimaryName("WebTransEditor");
+		addStyleDependentName("header");
 		setHeight("20px");
 		setWidth("100%");
 		add(new Label("[]"));
