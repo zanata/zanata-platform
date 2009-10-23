@@ -43,6 +43,8 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 	@Override
 	protected void onBind() {
 
+		display.getPager().setVisible(false);
+		
 		eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {
 			
 			@Override
@@ -75,6 +77,7 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 			@Override
 			public void onPageCountChange(PageCountChangeEvent event) {
 				display.getPager().setPageCount(event.getNewPageCount());
+				display.getPager().setVisible(true);
 			}
 		});
 		
