@@ -1,5 +1,7 @@
 package org.fedorahosted.flies.webtrans.client.ui;
 
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -12,6 +14,7 @@ public class TreeNodeImpl<T> extends TreeItem implements TreeNode<T> {
 
 	private HandlerManager handlerManager;
 	private HandlerRegistration labelMouseOverReg;
+	private HandlerRegistration labelMouseOutReg;
 
 	public TreeNodeImpl(String name) {
 		super(new Label(name));
@@ -66,6 +69,20 @@ public class TreeNodeImpl<T> extends TreeItem implements TreeNode<T> {
 			});
 		}
 		return getHandlerManager().addHandler(MouseOverEvent.getType(), handler);
+	}
+	
+	@Override
+	public HandlerRegistration addMouseOutHandler(final MouseOutHandler handler) {
+		if (labelMouseOutReg == null) {
+			labelMouseOutReg = getLabel().addMouseOutHandler(new MouseOutHandler() {				
+				@Override
+				public void onMouseOut(MouseOutEvent event) {
+					// refire the event *using this TreeNode as source*
+					fireEvent(event);
+				}
+			});
+		}
+		return getHandlerManager().addHandler(MouseOutEvent.getType(), handler);
 	}
 
 	@Override

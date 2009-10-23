@@ -5,6 +5,7 @@ import org.fedorahosted.flies.webtrans.client.ui.CaptionPanel;
 import org.fedorahosted.flies.webtrans.client.ui.FilterTree;
 import org.fedorahosted.flies.webtrans.client.ui.HasChildTreeNodes;
 import org.fedorahosted.flies.webtrans.client.ui.HasFilter;
+import org.fedorahosted.flies.webtrans.client.ui.HasNodeMouseOutHandlers;
 import org.fedorahosted.flies.webtrans.client.ui.HasNodeMouseOverHandlers;
 
 import com.google.gwt.core.client.GWT;
@@ -83,6 +84,11 @@ public class WorkspaceUsersView extends CaptionPanel implements
 	
 	@Override
 	public HasNodeMouseOverHandlers getNodeMouseOver() {
+		return tree;
+	}
+
+	@Override
+	public HasNodeMouseOutHandlers getNodeMouseOut() {
 		return tree;
 	}
 
