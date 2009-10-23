@@ -29,7 +29,7 @@ public class ProjectIteration extends AbstractBaseResource{
 	private String id;
 	private String name;
 	private String summary;
-	private Integer version = 1;
+	private Integer revision = 1;
 	
 	private List<Document> documents;
 	
@@ -75,13 +75,13 @@ public class ProjectIteration extends AbstractBaseResource{
 		this.summary = summary;
 	}
 
-	@XmlAttribute(name="version", required=true)
-	public Integer getVersion() {
-		return version;
+	@XmlAttribute(name="revision", required=true)
+	public Integer getRevision() {
+		return revision;
 	}
 	
-	public void setVersion(Integer version) {
-		this.version = version;
+	public void setRevision(Integer revision) {
+		this.revision = revision;
 	}
 	
 	@XmlElementWrapper(name="documents", namespace=Namespaces.FLIES, required=true)

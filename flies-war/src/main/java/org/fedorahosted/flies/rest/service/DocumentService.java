@@ -88,7 +88,7 @@ public class DocumentService {
 		documentConverter.addLinks(doc,uri.getRequestUri(), 
 				uri.getBaseUri().resolve(URIHelper.getIteration(projectSlug, iterationSlug)));
 		
-		return Response.ok().entity(doc).tag("v-" + doc.getVersion()).build();
+		return Response.ok().entity(doc).tag("v-" + doc.getRevision()).build();
 	}
 	
 	@PUT
@@ -122,7 +122,7 @@ public class DocumentService {
 			}
 		}
 		else{ // it's an update operation
-			if(!hDoc.getRevision().equals(document.getVersion())) {
+			if(!hDoc.getRevision().equals(document.getRevision())) {
 				return Response.status(Status.CONFLICT).entity("Version conflict").build();
 			}
 			documentConverter.merge(document, hDoc);

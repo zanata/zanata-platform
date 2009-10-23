@@ -92,7 +92,7 @@ public class FliesCommand {
 
 		if(response.getStatus() == Status.OK.getStatusCode()){
 			Document oldDocument = response.getEntity();
-			newDocument.setVersion(oldDocument.getVersion());
+			newDocument.setRevision(oldDocument.getRevision());
 			Response res = docResource.put(newDocument);
 			System.out.println(res.getStatus());
 		}

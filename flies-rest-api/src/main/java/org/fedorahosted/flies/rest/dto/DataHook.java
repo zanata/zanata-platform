@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.XmlType;
 public class DataHook extends AbstractBaseResource implements Resource {
 
 	private String id;
-	private Integer version = 1;
+	private Integer revision = 1;
 	
 	private List<Object> extensions;
 	
@@ -35,13 +35,14 @@ public class DataHook extends AbstractBaseResource implements Resource {
 		this.id = id;
 	}
 
-	@XmlAttribute(name="version", required=true)
-	public Integer getVersion() {
-		return version;
+	@XmlAttribute(name="revision", required=true)
+	@Override
+	public Integer getRevision() {
+		return revision;
 	}
 	
-	public void setVersion(Integer version) {
-		this.version = version;
+	public void setRevision(Integer revision) {
+		this.revision = revision;
 	}
 
 	@XmlAnyElement(lax=true)

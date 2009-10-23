@@ -3,6 +3,7 @@ package org.fedorahosted.flies.repository.model;
 import java.io.Serializable;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -39,7 +40,7 @@ public class HTextFlowTarget implements Serializable{
 	
 	private String content;
 	private ContentState state = ContentState.New;
-	
+	private Integer resourceRevision;
 	private Integer revision = 1;
 	
 	private HSimpleComment comment;
@@ -50,13 +51,14 @@ public class HTextFlowTarget implements Serializable{
 	public HTextFlowTarget(HTextFlow textFlow, LocaleId locale) {
 		this.locale = locale;
 		this.textFlow = textFlow;
-		this.revision = textFlow.getRevision();
+		this.resourceRevision = textFlow.getRevision();
 	}
 	
 	public HTextFlowTarget(TextFlowTarget target) {
 		this.content = target.getContent();
 		this.locale = target.getLang();
-		this.revision = target.getVersion();
+		this.resourceRevision = target.getResourceRevision();
+		this.revision = target.getRevision();
 		this.state = target.getState();
 //		setTextFlow(target.getTextFlow);
 //		setComment(target.comment);
@@ -76,7 +78,7 @@ public class HTextFlowTarget implements Serializable{
 	public void copy(TextFlowTarget tfTarget){
 		this.content = tfTarget.getContent();
 		this.state = tfTarget.getState();
-		this.revision = tfTarget.getVersion();
+		this.revision = tfTarget.getRevision();
 	}
 	
 	@NaturalId
@@ -100,6 +102,16 @@ public class HTextFlowTarget implements Serializable{
 	}
 
 	@NotNull
+	@Column(name="resource_revision")
+	public Integer getResourceRevision() {
+		return resourceRevision;
+	}
+	
+	public void setResourceRevision(Integer resourceRevision) {
+		this.resourceRevision = resourceRevision;
+	}
+	
+	@NotNull
 	public Integer getRevision() {
 		return revision;
 	}
@@ -117,6 +129,7 @@ public class HTextFlowTarget implements Serializable{
 	
 	public void setTextFlow(HTextFlow textFlow) {
 		this.textFlow = textFlow;
+//		setResourceRevision(textFlow.getRevision());
 	}
 
 	@NotNull

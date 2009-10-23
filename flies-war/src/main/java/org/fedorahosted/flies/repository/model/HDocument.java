@@ -1,11 +1,9 @@
 package org.fedorahosted.flies.repository.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -26,7 +24,6 @@ import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Reference;
 import org.fedorahosted.flies.rest.dto.Resource;
 import org.fedorahosted.flies.rest.dto.TextFlow;
-import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
@@ -107,7 +104,7 @@ public class HDocument extends AbstractFliesEntity{
 		this.path = docInfo.getPath();
 		this.contentType = docInfo.getContentType();
 		this.locale = docInfo.getLang();
-		this.revision = docInfo.getVersion();
+		this.revision = docInfo.getRevision();
 	}
 
 	public static HResource create(Resource res){

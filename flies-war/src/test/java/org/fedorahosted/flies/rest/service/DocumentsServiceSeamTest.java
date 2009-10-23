@@ -77,8 +77,8 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 	
 	private Document newDoc(String id, Resource... resources) {
 		ContentType contentType = ContentType.TextPlain;
-		Integer version = 1;
-		Document doc = new Document(id, id+"name", id+"path", contentType, version, LocaleId.EN);
+		Integer revision = 1;
+		Document doc = new Document(id, id+"name", id+"path", contentType, revision, LocaleId.EN);
 		for (Resource textFlow : resources) {
 			doc.getResources(true).add(textFlow);
 		}

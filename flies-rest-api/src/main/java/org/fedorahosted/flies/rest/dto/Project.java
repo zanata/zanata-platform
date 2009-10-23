@@ -25,7 +25,7 @@ public class Project extends AbstractBaseResource{
 	private String id;
 	private String name;
 	private String description;
-	private Integer version = 1;
+	private Integer revision = 1;
 	
 	private List<ProjectIteration> iterations;
 	
@@ -67,13 +67,13 @@ public class Project extends AbstractBaseResource{
 		this.description = description;
 	}
 
-	@XmlAttribute(name="version", required=true)
-	public Integer getVersion() {
-		return version;
+	@XmlAttribute(name="revision", required=true)
+	public Integer getRevision() {
+		return revision;
 	}
 	
-	public void setVersion(Integer version) {
-		this.version = version;
+	public void setRevision(Integer revision) {
+		this.revision = revision;
 	}
 	
 	@XmlElementWrapper(name="project-iterations", namespace=Namespaces.FLIES, required=true)

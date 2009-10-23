@@ -32,6 +32,7 @@
   	revision="1"
   	state="1"
   	resource_id="1"
+  	resource_revision="1"
   />
   <HTextFlowTarget 
   	id="2"
@@ -40,5 +41,6 @@
   	revision="1"
   	state="1"
   	resource_id="1"
+  	resource_revision="1"
   />
 </dataset>
