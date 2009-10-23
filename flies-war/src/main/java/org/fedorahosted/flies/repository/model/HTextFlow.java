@@ -129,6 +129,8 @@ public class HTextFlow extends HResource {
 					textFlowTarget.getOrAddComment().setValue(tftComment.getComment());
 				}
 				textFlowTarget.setContent(hTextFlowTarget.getContent());
+				textFlowTarget.setResourceRevision(hTextFlowTarget.getResourceRevision());
+				textFlowTarget.setRevision(hTextFlowTarget.getRevision());
 				textFlowTarget.setState(hTextFlowTarget.getState());
 				textFlow.addTarget(textFlowTarget);
 			}

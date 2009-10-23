@@ -36,6 +36,7 @@ public class TextFlowTarget implements IExtensible{
 	}
 	
 	private String id;
+	private Integer resourceRevision;
 	private Integer revision = 1;
 	private ContentState state = ContentState.New;
 	private String content;
@@ -46,7 +47,7 @@ public class TextFlowTarget implements IExtensible{
 	
 	public TextFlowTarget(Resource resource) {
 		this.id = resource.getId();
-		this.revision = resource.getRevision();
+		this.resourceRevision = resource.getRevision();
 	}
 
 	public TextFlowTarget(Resource resource, LocaleId lang) {
@@ -85,7 +86,16 @@ public class TextFlowTarget implements IExtensible{
 		this.id = id;
 	}
 	
-	@XmlAttribute(name="revision", required=true)
+	@XmlAttribute(name="resourceRevision", required=false)
+	public Integer getResourceRevision() {
+		return resourceRevision;
+	}
+	
+	public void setResourceRevision(Integer resourceRevision) {
+		this.resourceRevision = resourceRevision;
+	}
+	
+	@XmlAttribute(name="revision", required=false)
 	public Integer getRevision() {
 		return revision;
 	}
@@ -150,5 +160,5 @@ public class TextFlowTarget implements IExtensible{
 	public String toString() {
 		return Utility.toXML(this);
 	}
-	
+
 }

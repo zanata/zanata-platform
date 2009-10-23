@@ -101,6 +101,7 @@ public class PropReader {
 																	// version
 			textFlowTarget.setContent(val);
 			textFlowTarget.setId(id);
+			textFlowTarget.setResourceRevision(textFlow.getRevision());
 			textFlowTarget.setLang(localeId);
 			textFlowTarget.setState(ContentState.New);
 			// textFlowTarget.setVersion(version)

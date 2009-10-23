@@ -415,6 +415,7 @@ public class DocumentConverter {
 								hTarget = new HTextFlowTarget();
 								hTarget.setLocale(target.getLang());
 								hTarget.setTextFlow(htf);
+								hTarget.setResourceRevision(htf.getRevision());
 								hTarget.setState(target.getState());
 //						hTarget.setRevision(revision); // TODO
 								hTarget.setContent(target.getContent());
@@ -441,6 +442,7 @@ public class DocumentConverter {
 			HTextFlow htf) {
 		hTarget.setContent(target.getContent());
 		hTarget.setLocale(target.getLang());
+		hTarget.setResourceRevision(htf.getRevision());
 		hTarget.setRevision(target.getRevision());
 		hTarget.setState(target.getState());
 		hTarget.setTextFlow(htf);
