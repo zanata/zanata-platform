@@ -71,15 +71,22 @@ public class Identity {
 		person = null;
 		roles.add(Role.Anonymous);
 		Cookies.removeCookie("JSESSIONID");
+		eventBus.fireEvent( new UserLogoutEvent());
 	}
 
 	public void login(String username, String password, final LoginResult callback) {
+		
+		if(isLoggedIn()) {
+			callback.onSuccess();
+			return;
+		}
+		
 		dispatcher.execute(new AuthenticateAction(username, password), new AsyncCallback<AuthenticateResult>() {
 			
 			@Override
 			public void onSuccess(AuthenticateResult result) {
 				Cookies.setCookie("JSESSIONID", result.getSessionId());
-				eventBus.fireEvent( new UserLoginEvent() );
+				eventBus.fireEvent( new UserLoginEvent(result.getPerson()) );
 				callback.onSuccess();
 			}
 			

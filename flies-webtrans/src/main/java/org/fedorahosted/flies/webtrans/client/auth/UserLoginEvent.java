@@ -1,9 +1,17 @@
 package org.fedorahosted.flies.webtrans.client.auth;
 
+import org.fedorahosted.flies.gwt.model.Person;
+
 import com.google.gwt.event.shared.GwtEvent;
 
 public class UserLoginEvent extends GwtEvent<UserLoginEventHandler> {
 
+	private final Person person;
+	
+	public UserLoginEvent(Person person) {
+		this.person = person;
+	}
+	
 	/**
 	 * Handler type.
 	 */
@@ -31,5 +39,8 @@ public class UserLoginEvent extends GwtEvent<UserLoginEventHandler> {
 		return TYPE;
 	}
 
+	public Person getPerson() {
+		return person;
+	}
 	
 }
