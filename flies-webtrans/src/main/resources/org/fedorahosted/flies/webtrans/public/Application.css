@@ -41,6 +41,13 @@
     padding-bottom: 5px;
 }
 
+.gwt-TreeItem-selected .gwt-Label{
+	background-color: #C3D9FF;;
+}
+.gwt-TreeItem-selected {
+	background-color: #C3D9FF;;
+}
+
 .gwt-CaptionPanel-Collapse {
     background-color: #d5e9fa;
     border: 1px solid #c8dbec;
