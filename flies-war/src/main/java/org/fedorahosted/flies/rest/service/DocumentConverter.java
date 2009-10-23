@@ -82,8 +82,12 @@ public class DocumentConverter {
 				if (session.contains(toHDoc))
 					// FIXME make sure getById can find pre-existing docs (we broke the link from HDoc to its HResources above)
 					hRes = resourceDAO.getById(toHDoc, res.getId());
-				if (hRes == null)
+				if (hRes == null) {
 					hRes = HDocument.create(res);
+				} else {
+					// resurrect the resource
+					hRes.setObsolete(false);
+				}
 				hResources.add(hRes);
 				hRes.setDocument(toHDoc);
 				hRes.setResId(res.getId());

@@ -1,6 +1,5 @@
 package org.fedorahosted.flies.rest.service;
 
-import java.net.URI;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -116,6 +115,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     	log.debug("HTTP PUT {0} : \n{1}",documentsService.getRequest().getRequestURL(), docs);
     	HProjectContainer hContainer = getContainer();
     	Map<String, HDocument> docMap = hContainer.getDocuments();
+    	// FIXME any deleted Docs should have their resources marked obsolete
     	docMap.clear();
     	ClassValidator<HDocument> docValidator = new ClassValidator<HDocument>(HDocument.class);
 
