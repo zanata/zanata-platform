@@ -61,15 +61,6 @@ public class LoginPresenter extends WidgetPresenter<LoginPresenter.Display> {
 		display.getCancelButton().addClickHandler(clickHandler);
 		display.getUsernameField().addKeyUpHandler(keyHandler);
 		display.getPasswordField().addKeyUpHandler(keyHandler);
-		eventBus.addHandler(NotificationEvent.getType(), new NotificationEventHandler() {
-			
-			@Override
-			public void onNotification(NotificationEvent event) {
-				if (event.getSeverity() == Severity.Error) {
-					display.show();
-				}
-			}
-		});
 	}
 
 	@Override
