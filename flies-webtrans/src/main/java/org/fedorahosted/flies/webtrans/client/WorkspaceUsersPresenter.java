@@ -10,16 +10,17 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.fedorahosted.flies.gwt.model.Person;
 import org.fedorahosted.flies.gwt.model.PersonId;
+import org.fedorahosted.flies.webtrans.client.ui.HasChildTreeNodes;
 import org.fedorahosted.flies.webtrans.client.ui.HasFilter;
+import org.fedorahosted.flies.webtrans.client.ui.HasNodeMouseOverHandlers;
 import org.fedorahosted.flies.webtrans.client.ui.TreeNode;
-import org.fedorahosted.flies.webtrans.client.HasNodeMouseOverHandlers;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.inject.Inject;
 
-public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPresenter.Display> implements HasNodeMouseOverHandlers {
+public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPresenter.Display> {
 
 	public static final Place PLACE = new Place("WorkspaceUsersPresenter");
 	
@@ -83,19 +84,4 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 		
 	}
 
-
-	@Override
-	public HandlerRegistration addDocumentSelectionHandler(
-			DocumentSelectionHandler handler) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public void fireEvent(GwtEvent<?> event) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 }
