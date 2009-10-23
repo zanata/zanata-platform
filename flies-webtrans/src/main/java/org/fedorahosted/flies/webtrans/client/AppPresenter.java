@@ -28,6 +28,8 @@ public class AppPresenter {
 	private final EventBus eventBus;
 	private final WebTransEditorPresenter webTransEditorPresenter;
 	private final LoginPresenter loginPresenter;
+	private final NorthPanel northPanel;
+	
 	@Inject
 	public AppPresenter(final EventBus eventBus, 
 				final WestNavigationPresenter leftNavigationPresenter,
@@ -38,6 +40,8 @@ public class AppPresenter {
 		this.webTransEditorPresenter = webTransEditorPresenter;
 		this.eventBus = eventBus;
 		this.loginPresenter = loginPresenter;
+		
+		northPanel = new NorthPanel();
 	}
 	
 	private void showMain() {
@@ -54,6 +58,7 @@ public class AppPresenter {
 		
 		final Widget center = webTransEditorPresenter.getDisplay().asWidget();
 		Widget west = westNavigationPresenter.getDisplay().asWidget();
+		dockPanel.add(northPanel, DockPanel.NORTH);
 		dockPanel.add(center, DockPanel.CENTER );
 		dockPanel.add(west, DockPanel.WEST );
 		dockPanel.setCellWidth(center, "100%");

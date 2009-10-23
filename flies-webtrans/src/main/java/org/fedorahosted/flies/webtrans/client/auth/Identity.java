@@ -70,8 +70,9 @@ public class Identity {
 		roles.clear();
 		person = null;
 		roles.add(Role.Anonymous);
+		Cookies.removeCookie("JSESSIONID");
 	}
-	
+
 	public void login(String username, String password, final LoginResult callback) {
 		dispatcher.execute(new AuthenticateAction(username, password), new AsyncCallback<AuthenticateResult>() {
 			

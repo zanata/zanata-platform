@@ -5,6 +5,9 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.apache.commons.lang.StringUtils;
+import org.fedorahosted.flies.core.model.HPerson;
+import org.fedorahosted.flies.gwt.model.Person;
+import org.fedorahosted.flies.gwt.model.PersonId;
 import org.fedorahosted.flies.gwt.rpc.AuthenticateAction;
 import org.fedorahosted.flies.gwt.rpc.AuthenticateResult;
 import org.hibernate.Session;
@@ -36,7 +39,14 @@ public class AuthenticateHandler implements ActionHandler<AuthenticateAction, Au
 		Identity.instance().tryLogin();
 		
 		if(Identity.instance().isLoggedIn()) {
-			return new AuthenticateResult(ServletContexts.instance().getRequest().getSession().getId());
+			String sessionId = ServletContexts.instance().getRequest().getSession().getId();
+			
+			HPerson authenticatedPerson = (HPerson) Contexts.getSessionContext().get("authenticatedPerson");
+			Person person = new Person( new PersonId(action.getUsername()), authenticatedPerson.getName());
+			
+			// TODO pass along permissions and roles
+			
+			return new AuthenticateResult(sessionId, person);
 		}
 		else {
 			return AuthenticateResult.FAILED;

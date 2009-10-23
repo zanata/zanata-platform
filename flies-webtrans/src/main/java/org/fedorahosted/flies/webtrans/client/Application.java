@@ -27,6 +27,7 @@ public class Application implements EntryPoint{
 		}
 		final AppPresenter appPresenter = injector.getAppPresenter();
 		appPresenter.go(RootPanel.get());
+		
 
 		injector.getPlaceManager().fireCurrentPlace();
 		

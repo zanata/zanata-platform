@@ -29,8 +29,11 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 public class LoginPresenter extends WidgetPresenter<LoginPresenter.Display> {
 
+	public static final Place PLACE = new Place("LoginPanel");
+	
 	public interface Display extends WidgetDisplay {
 		Button getLoginButton();
+		Button getCancelButton();
 		TextBox getUsernameField();
 		PasswordTextBox getPasswordField();
 		void show();
@@ -48,13 +51,14 @@ public class LoginPresenter extends WidgetPresenter<LoginPresenter.Display> {
 
 	@Override
 	public Place getPlace() {
-		return null;
+		return PLACE;
 	}
 
 	@Override
 	protected void onBind() {
 		
 		display.getLoginButton().addClickHandler(clickHandler);
+		display.getCancelButton().addClickHandler(clickHandler);
 		display.getUsernameField().addKeyUpHandler(keyHandler);
 		display.getPasswordField().addKeyUpHandler(keyHandler);
 		eventBus.addHandler(NotificationEvent.getType(), new NotificationEventHandler() {
@@ -75,7 +79,12 @@ public class LoginPresenter extends WidgetPresenter<LoginPresenter.Display> {
 	private final ClickHandler clickHandler = new ClickHandler() {
 		@Override
 		public void onClick(ClickEvent event) {
-			tryLogin();
+			if(event.getSource() == display.getLoginButton()) {
+				tryLogin();
+			}
+			else{
+				display.hide();
+			}
 		}
 	};
 	
