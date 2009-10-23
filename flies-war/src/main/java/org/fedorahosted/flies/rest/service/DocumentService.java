@@ -129,6 +129,8 @@ public class DocumentService {
 		
 	}
 	
+	// FIXME implement DELETE
+	
 	@GET
 	@Path("content/{qualifier}")
 	public Response getContent(
