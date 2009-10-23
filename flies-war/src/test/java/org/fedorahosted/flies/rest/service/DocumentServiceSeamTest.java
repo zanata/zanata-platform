@@ -98,7 +98,7 @@ public class DocumentServiceSeamTest extends DBUnitSeamTest{
 		assertThat( doc.getName(), is("document.txt") );
 		assertThat( doc.getContentType(), is(ContentType.TextPlain) );
 		assertThat( doc.getLang(), is(LocaleId.EN_US) );
-		assertThat( doc.getVersion(), is(1) );
+		assertThat( doc.getRevision(), is(1) );
 		assertThat( doc.getResources(), nullValue() );
 
 		Link link = doc.findLinkByRel(Relationships.SELF);
@@ -163,7 +163,7 @@ public class DocumentServiceSeamTest extends DBUnitSeamTest{
 		assertThat( documentResponse.getResponseStatus(), is(Status.OK) );
 		
 		doc = documentResponse.getEntity(); 
-		assertThat( doc.getVersion(), is(1) );
+		assertThat( doc.getRevision(), is(1) );
 		Link link = doc.findLinkByRel(Relationships.SELF); 
 		assertThat( link, notNullValue() );
 		assertThat( link.getHref().toString(), endsWith(url+Encode.encodeQueryString(docUrl)) );
@@ -193,7 +193,7 @@ public class DocumentServiceSeamTest extends DBUnitSeamTest{
 		
 		doc = documentResponse.getEntity(); 
 
-		assertThat( doc.getVersion(), is(1) );
+		assertThat( doc.getRevision(), is(1) );
 		
 		assertThat("Should have resources", doc.getResources(), notNullValue() );
 		assertThat("Should have one resource", doc.getResources().size(), is(1) );
@@ -208,7 +208,7 @@ public class DocumentServiceSeamTest extends DBUnitSeamTest{
 		documentResponse = documentResource.get(ContentQualifier.SOURCE);
 		assertThat( documentResponse.getResponseStatus(), is(Status.OK) );
 		doc = documentResponse.getEntity(); 
-		assertThat( doc.getVersion(), is(2) );
+		assertThat( doc.getRevision(), is(2) );
 		assertThat("Should have resources", doc.getResources(), notNullValue() );
 		assertThat("Should have one resource", doc.getResources().size(), is(1) );
 		assertThat("Should have one resource", doc.getResources().get(0).getId(), is("tf2") );

@@ -36,7 +36,7 @@ public class TextFlowTarget implements IExtensible{
 	}
 	
 	private String id;
-	private Integer version = 1;
+	private Integer revision = 1;
 	private ContentState state = ContentState.New;
 	private String content;
 	
@@ -46,7 +46,7 @@ public class TextFlowTarget implements IExtensible{
 	
 	public TextFlowTarget(Resource resource) {
 		this.id = resource.getId();
-		this.version = resource.getVersion();
+		this.revision = resource.getRevision();
 	}
 
 	public TextFlowTarget(Resource resource, LocaleId lang) {
@@ -85,13 +85,13 @@ public class TextFlowTarget implements IExtensible{
 		this.id = id;
 	}
 	
-	@XmlAttribute(name="version", required=true)
-	public Integer getVersion() {
-		return version;
+	@XmlAttribute(name="revision", required=true)
+	public Integer getRevision() {
+		return revision;
 	}
 	
-	public void setVersion(Integer version) {
-		this.version = version;
+	public void setRevision(Integer revision) {
+		this.revision = revision;
 	}
 	
 	@XmlAttribute(name="state", required=true)

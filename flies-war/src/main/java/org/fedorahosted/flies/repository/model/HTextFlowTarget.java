@@ -55,7 +55,7 @@ public class HTextFlowTarget implements Serializable{
 	public HTextFlowTarget(TextFlowTarget target) {
 		this.content = target.getContent();
 		this.locale = target.getLang();
-		this.revision = target.getVersion();
+		this.revision = target.getRevision();
 		this.state = target.getState();
 //		setTextFlow(target.getTextFlow);
 //		setComment(target.comment);
@@ -75,7 +75,7 @@ public class HTextFlowTarget implements Serializable{
 	public void copy(TextFlowTarget tfTarget){
 		this.content = tfTarget.getContent();
 		this.state = tfTarget.getState();
-		this.revision = tfTarget.getVersion();
+		this.revision = tfTarget.getRevision();
 	}
 	
 	@NaturalId

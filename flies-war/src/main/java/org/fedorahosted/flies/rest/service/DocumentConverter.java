@@ -64,7 +64,7 @@ public class DocumentConverter {
 		toHDoc.setPath(fromDoc.getPath());
 		toHDoc.setContentType(fromDoc.getContentType());
 		toHDoc.setLocale(fromDoc.getLang());
-//		toHDoc.setRevision(fromDoc.getVersion());  // TODO increment revision on modify only
+//		toHDoc.setRevision(fromDoc.getRevision());  // TODO increment revision on modify only
 		// TODO handle doc extensions
 		if (fromDoc.hasResources()) {
 			List<Resource> docResources = fromDoc.getResources();
@@ -441,7 +441,7 @@ public class DocumentConverter {
 			HTextFlow htf) {
 		hTarget.setContent(target.getContent());
 		hTarget.setLocale(target.getLang());
-		hTarget.setRevision(target.getVersion());
+		hTarget.setRevision(target.getRevision());
 		hTarget.setState(target.getState());
 		hTarget.setTextFlow(htf);
 		if(target.hasComment()) {

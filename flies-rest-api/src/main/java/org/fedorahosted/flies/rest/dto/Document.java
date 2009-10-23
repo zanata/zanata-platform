@@ -54,7 +54,7 @@ public class Document extends AbstractBaseResource implements IExtensible{
 	 */
 	private String path;
 	private ContentType contentType;
-	private Integer version = null;
+	private Integer revision = null;
 	private LocaleId lang = LocaleId.EN_US;
 	
 	private List<Resource> resources;
@@ -97,9 +97,9 @@ public class Document extends AbstractBaseResource implements IExtensible{
 		this.contentType = contentType;
 	}
 	
-	public Document(String id, String name, String path, ContentType contentType, Integer version, LocaleId lang){
+	public Document(String id, String name, String path, ContentType contentType, Integer revision, LocaleId lang){
 		this(id, name, path, contentType);
-		this.version = version;
+		this.revision = revision;
 		this.lang = lang;
 	}
 
@@ -139,13 +139,13 @@ public class Document extends AbstractBaseResource implements IExtensible{
 	 * 
 	 * @return
 	 */
-	@XmlAttribute(name="version", required=false)
-	public Integer getVersion() {
-		return version;
+	@XmlAttribute(name="revision", required=false)
+	public Integer getRevision() {
+		return revision;
 	}
 	
-	public void setVersion(Integer version) {
-		this.version = version;
+	public void setRevision(Integer revision) {
+		this.revision = revision;
 	}
 
 	@XmlJavaTypeAdapter(type=ContentType.class, value=ContentTypeAdapter.class)
