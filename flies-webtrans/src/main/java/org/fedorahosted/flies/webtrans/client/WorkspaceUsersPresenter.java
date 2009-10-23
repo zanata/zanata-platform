@@ -23,6 +23,7 @@ import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.inject.Inject;
 
 public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPresenter.Display> {
@@ -50,13 +51,13 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 	@Override
 	protected void onBind() {
 		Person [] translators = new Person[]{
-			new Person( new PersonId("bob"), "Bob"),
-			new Person( new PersonId("jane"), "Jane"),
-			new Person( new PersonId("bill"), "Bill")
+			new Person( new PersonId("bob"), "Bob Smith"),
+			new Person( new PersonId("jane"), "Jane English"),
+			new Person( new PersonId("bill"), "Bill Martin")
 			};	
 		getDisplay().getFilter().setList(Arrays.asList(translators));
 		
-		final DecoratedPopupPanel dpp = new DecoratedPopupPanel(true);
+		final DecoratedPopupPanel userPopupPanel = new DecoratedPopupPanel(true);
 		
 		getDisplay().getNodeMouseOver().addNodeMouseOverHandler(new MouseOverHandler() {
 
@@ -65,9 +66,20 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 				if (event.getSource() instanceof TreeNodeImpl<?>) {
 					TreeNodeImpl<Person> source = (TreeNodeImpl<Person>) event.getSource();	
 					System.out.println("popup for person with id "+source.getObject().getId().toString());
-					dpp.setWidget(new Label(source.getObject().getId().toString()));
-					dpp.setPopupPosition(source.getAbsoluteLeft(), source.getAbsoluteTop());
-					dpp.show();
+					
+					VerticalPanel popupMainPanel = new VerticalPanel();
+					Person overPerson = source.getObject();
+					Label popupTitle = new Label ("User Profile");
+					Label userID = new Label("User ID: " + overPerson.getId().toString());
+					Label userName = new Label ("User Name: " + overPerson.getName().toString());
+					
+					popupMainPanel.add(popupTitle);
+					popupMainPanel.add(userID);
+					popupMainPanel.add(userName);
+					
+					userPopupPanel.setWidget(popupMainPanel);
+					userPopupPanel.setPopupPosition(source.getAbsoluteLeft() + 125, source.getAbsoluteTop() - 5);
+					userPopupPanel.show();
 				}
 			}
 			
@@ -77,8 +89,8 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 		
 			@Override
 			public void onMouseOut(MouseOutEvent event) {
-				dpp.clear();
-				dpp.hide();
+				userPopupPanel.clear();
+				userPopupPanel.hide();
 			}
 			
 		});
