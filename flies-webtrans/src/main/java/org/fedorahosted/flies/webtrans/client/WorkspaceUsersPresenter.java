@@ -14,10 +14,11 @@ import org.fedorahosted.flies.webtrans.client.ui.HasChildTreeNodes;
 import org.fedorahosted.flies.webtrans.client.ui.HasFilter;
 import org.fedorahosted.flies.webtrans.client.ui.HasNodeMouseOverHandlers;
 import org.fedorahosted.flies.webtrans.client.ui.TreeNode;
+
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.DecoratedPopupPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.inject.Inject;
 
 public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPresenter.Display> {
@@ -55,6 +56,10 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 				if (event.getSource() instanceof TreeNode<?>) {
 					TreeNode<Person> source = (TreeNode<Person>) event.getSource();	
 					System.out.println("popup for person with id "+source.getObject().getId().toString());
+					DecoratedPopupPanel dpp = new DecoratedPopupPanel(true);
+					dpp.setWidget(new Label(source.getObject().getId().toString()));
+					dpp.center();
+					dpp.show();
 				}
 			}
 		});
