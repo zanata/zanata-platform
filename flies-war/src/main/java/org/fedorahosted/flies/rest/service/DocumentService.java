@@ -122,9 +122,6 @@ public class DocumentService {
 			}
 		}
 		else{ // it's an update operation
-			if(!hDoc.getRevision().equals(document.getRevision())) {
-				return Response.status(Status.CONFLICT).entity("Version conflict").build();
-			}
 			documentConverter.merge(document, hDoc);
 			session.flush();
 			return Response.status(205).build();
