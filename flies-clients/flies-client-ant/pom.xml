@@ -36,12 +36,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.fedorahosted.openprops</groupId>
-      <artifactId>openprops</artifactId>
-      <version>0.4</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
       <groupId>org.fedorahosted.flies</groupId>
       <artifactId>flies-adapter-properties</artifactId>
       <version>${project.version}</version>
