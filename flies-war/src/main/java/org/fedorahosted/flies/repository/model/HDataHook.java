@@ -1,15 +1,13 @@
 package org.fedorahosted.flies.repository.model;
 
-import java.util.Set;
 
 import javax.persistence.Entity;
 
-import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.rest.dto.DataHook;
 
 
 @Entity
-public class HDataHook extends HResource{
+public class HDataHook extends HDocumentResource {
 
 	public HDataHook() {
 	}

@@ -22,7 +22,7 @@ import org.fedorahosted.flies.rest.dto.Container;
 import org.fedorahosted.flies.rest.dto.DataHook;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Reference;
-import org.fedorahosted.flies.rest.dto.Resource;
+import org.fedorahosted.flies.rest.dto.DocumentResource;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
@@ -50,9 +50,10 @@ public class HDocument extends AbstractFliesEntity{
 	
 	private HProjectContainer project;
 
-	private Map<String, HResource> resources;
-	private Map<String, HResource> obsoletes;
-	private List<HResource> resourceTree;
+	private Map<String, HDocumentResource> allResources;
+	private Map<String, HDocumentResource> obsoletes;
+	private List<HDocumentResource> resources;
+	private boolean obsolete = false;
 	
 	public HDocument(String fullPath, ContentType contentType) {
 		this(fullPath, contentType, LocaleId.EN_US);
@@ -107,7 +108,7 @@ public class HDocument extends AbstractFliesEntity{
 		this.revision = docInfo.getRevision();
 	}
 
-	public static HResource create(Resource res){
+	public static HDocumentResource create(DocumentResource res){
 		if(res instanceof TextFlow){
 			TextFlow tf = (TextFlow) res;
 			return new HTextFlow( tf );
@@ -128,11 +129,11 @@ public class HDocument extends AbstractFliesEntity{
 	}
 	
 	// seems to be obsolete
-	public void copy(List<Resource> content){
-		for(Resource res :content){
-			HResource hRes = create(res);
+	public void copy(List<DocumentResource> content){
+		for(DocumentResource res :content){
+			HDocumentResource hRes = create(res);
 			hRes.setDocument(this);
-			getResourceTree().add(hRes);
+			getResources().add(hRes);
 		}
 	}
 	
@@ -212,40 +213,53 @@ public class HDocument extends AbstractFliesEntity{
 
 	@OneToMany(mappedBy="document", cascade=CascadeType.ALL)
 	@MapKey(name="resId")
-	public Map<String,HResource> getResources() {
-		if(resources == null)
-			resources = new HashMap<String, HResource>();
-		return resources;
+	// all resources, obsolete or not, inside containers or not
+	public Map<String,HDocumentResource> getAllResources() {
+		if(allResources == null)
+			allResources = new HashMap<String, HDocumentResource>();
+		return allResources;
 	}
 	
-	public void setResources(Map<String, HResource> resources) {
-		this.resources = resources;
+	public void setAllResources(Map<String, HDocumentResource> resources) {
+		this.allResources = resources;
 	}
 	
 	@OneToMany(cascade=CascadeType.ALL)
 	@Where(clause="parent_id is null and obsolete=0")
 	@IndexColumn(name="pos",base=0,nullable=false)
 	@JoinColumn(name="document_id",nullable=false)
-	public List<HResource> getResourceTree() {
-		if(resourceTree == null)
-			resourceTree = new ArrayList<HResource>();
-		return resourceTree;
+	/**
+	 * Returns the <b>top-level</b> resources contained in the document.  Some 
+	 * of these resources may be containers containing other resources.
+	 */
+	public List<HDocumentResource> getResources() {
+		if(resources == null)
+			resources = new ArrayList<HDocumentResource>();
+		return resources;
 	}
 	
-	public void setResourceTree(List<HResource> resourceTree) {
-		this.resourceTree = resourceTree;
+	public void setResources(List<HDocumentResource> resources) {
+		this.resources = resources;
 	}
 
+	public boolean isObsolete() {
+		return obsolete;
+	}
+	
+	public void setObsolete(boolean obsolete) {
+		this.obsolete = obsolete;
+	}
+	
 	@OneToMany(cascade=CascadeType.ALL)
 	@Where(clause="obsolete=1")
 	@MapKey(name="resId")
-	public Map<String, HResource> getObsoletes() {
+	public Map<String, HDocumentResource> getObsoletes() {
 		if(obsoletes == null)
-			obsoletes = new HashMap<String, HResource>();
+			obsoletes = new HashMap<String, HDocumentResource>();
 		return obsoletes;
 	}
 	
-	public void setObsoletes(Map<String, HResource> obsoletes) {
+	public void setObsoletes(Map<String, HDocumentResource> obsoletes) {
 		this.obsoletes = obsoletes;
 	}
 	public Document toDocument(boolean deep) {
@@ -258,8 +272,8 @@ public class HDocument extends AbstractFliesEntity{
 	public Document toDocument(int levels) {
 	    Document doc = new Document(docId, name, path, contentType, revision, locale);
 	    if (levels != 0) {
-		    List<Resource> docResources = doc.getResources(true);
-		    for (HResource hRes : resourceTree) {
+		    List<DocumentResource> docResources = doc.getResources(true);
+		    for (HDocumentResource hRes : resources) {
 				docResources.add(hRes.toResource(levels));
 			}
 		    // TODO handle extensions

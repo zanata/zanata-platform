@@ -28,7 +28,7 @@ import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.client.ContentQualifier;
 import org.fedorahosted.flies.rest.dto.Container;
 import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.Resource;
+import org.fedorahosted.flies.rest.dto.DocumentResource;
 import org.fedorahosted.flies.rest.dto.ResourceList;
 import org.hibernate.Session;
 import org.jboss.seam.annotations.In;
@@ -163,7 +163,7 @@ public class DocumentService {
 	@Path("content/{qualifier}/{resourceId}")
 	@Restrict("#{identity.loggedIn}")
 	public Response postContentByResourceId(
-			Resource resource,
+			DocumentResource resource,
 			@PathParam("qualifier") ContentQualifier qualifier,
 			@PathParam("resourceId") String resourceId) {
 		

@@ -17,14 +17,14 @@ import org.fedorahosted.flies.LocaleId;
 
 @XmlType(name="containerType", namespace=Namespaces.FLIES, propOrder={"content", "extensions"})
 @XmlRootElement(name="container", namespace=Namespaces.FLIES)
-public class Container extends AbstractBaseResource implements Resource {
+public class Container extends AbstractBaseResource implements DocumentResource {
 
 	private String id;
 	private LocaleId lang;
 	private Integer revision = 1;
 	
 	private List<Object> extensions;
-	private List<Resource> content;
+	private List<DocumentResource> content;
 	
 	public Container() {
 	}
@@ -114,7 +114,7 @@ public class Container extends AbstractBaseResource implements Resource {
 		@XmlElement(name="reference", type=Reference.class, namespace=Namespaces.FLIES),
 		@XmlElement(name="data-hook", type=DataHook.class, namespace=Namespaces.FLIES)
 		})
-	public List<Resource> getContent() {
+	public List<DocumentResource> getContent() {
 		return content;
 	}
 	
@@ -122,9 +122,9 @@ public class Container extends AbstractBaseResource implements Resource {
 		return content != null;
 	}
 	
-	public List<Resource> getContent(boolean create) {
+	public List<DocumentResource> getContent(boolean create) {
 		if(content == null && create)
-			content = new ArrayList<Resource>();
+			content = new ArrayList<DocumentResource>();
 		return content;
 	}
 	

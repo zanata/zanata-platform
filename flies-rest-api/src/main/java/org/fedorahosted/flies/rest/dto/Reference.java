@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlType(name="referenceType", namespace=Namespaces.FLIES, propOrder={"extensions"})
 @XmlRootElement(name="reference", namespace=Namespaces.FLIES)
-public class Reference extends AbstractBaseResource implements Resource{
+public class Reference extends AbstractBaseResource implements DocumentResource{
 	
 	private String id;
 	private Integer revision = 1;

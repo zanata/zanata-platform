@@ -7,23 +7,23 @@ import javax.persistence.CascadeType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 
-import org.fedorahosted.flies.rest.dto.Resource;
+import org.fedorahosted.flies.rest.dto.DocumentResource;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Where;
 
 @MappedSuperclass
-public abstract class HParentResource extends HResource{
+public abstract class HParentResource extends HDocumentResource{
 
 	private static final long serialVersionUID = 5832666152954738196L;
 
-	private List<HResource> children = new ArrayList<HResource>();
+	private List<HDocumentResource> resources = new ArrayList<HDocumentResource>();
 	
 	public HParentResource() {
 	}
 	
-	public HParentResource(Resource res) {
+	public HParentResource(DocumentResource res) {
 		super(res);
 	}
 
@@ -31,12 +31,12 @@ public abstract class HParentResource extends HResource{
 	@IndexColumn(name = "pos", base=0)
 	@Where(clause="obsolete=0")
 	@OnDelete(action=OnDeleteAction.CASCADE)
-	public List<HResource> getChildren() {
-		return children;
+	public List<HDocumentResource> getResources() {
+		return resources;
 	}
 	
-	public void setChildren(List<HResource> children) {
-		this.children = children;
+	public void setResources(List<HDocumentResource> children) {
+		this.resources = children;
 	}
 	
 }

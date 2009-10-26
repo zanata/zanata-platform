@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.fedorahosted.flies.LocaleId;
-import org.fedorahosted.flies.core.model.HProject;
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.hibernate.Session;

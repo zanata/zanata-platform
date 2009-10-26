@@ -2,7 +2,9 @@ package org.fedorahosted.flies.rest.service;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -111,13 +113,14 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     }
     
     
-    public void put(Documents docs) {
+    public Response put(Documents docs) {
     	log.debug("HTTP PUT {0} : \n{1}",documentsService.getRequest().getRequestURL(), docs);
     	HProjectContainer hContainer = getContainer();
     	Map<String, HDocument> docMap = hContainer.getDocuments();
-    	// FIXME any deleted Docs should have their resources marked obsolete
-    	docMap.clear();
+    	// any Docs still in this set at the end will be marked obsolete
+    	Set<HDocument> obsoleteDocs = new HashSet<HDocument>(docMap.values());
     	ClassValidator<HDocument> docValidator = new ClassValidator<HDocument>(HDocument.class);
+    	StringBuilder sb = new StringBuilder();
 
     	for (Document doc: docs.getDocuments()) {
 			// if doc already exists, load it and update it, but don't create it
@@ -129,6 +132,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     			hDoc.setProject(hContainer);
     		} else {
     			log.debug("PUT updating HDocument with id {0}", doc.getId());
+    			obsoleteDocs.remove(hDoc);
     		}
     		docMap.put(hDoc.getDocId(), hDoc);
     		try {
@@ -136,8 +140,10 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
 				InvalidValue[] invalidValues = docValidator.getInvalidValues(hDoc);
 				if (invalidValues.length != 0) {
 					String message = "Document with id '"+doc.getId()+"' is invalid: "+Arrays.asList(invalidValues);
-					docMap.remove(hDoc.getDocId()); 
+					obsoleteDocs.add(hDoc);
 					log.error(message);
+					sb.append(message);
+					sb.append('\n');
 				} else {
 					session.save(hDoc);
 				}
@@ -149,7 +155,12 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
 			}
 //			session.save(hDoc);
     	}
+    	for (HDocument hDoc: obsoleteDocs) {
+    		hDoc.setObsolete(true);
+    		docMap.remove(hDoc.getId());
+    	}
     	session.flush();
+    	return Response.status(Status.OK).entity(sb.toString()).build();
     }
 
 }
