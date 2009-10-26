@@ -22,6 +22,7 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPresenter.Display>{
 
 	public static final Place PLACE = new Place("WebTransEditor");
+	private final StatusBarPresenter statusbarpresenter;
 
 	public interface Display extends WidgetDisplay{
 		Pager getPager();
@@ -30,8 +31,9 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 	}
 
 	@Inject
-	public WebTransEditorPresenter(Display display, EventBus eventBus) {
+	public WebTransEditorPresenter(Display display, EventBus eventBus, final StatusBarPresenter statusbarpresenter) {
 		super(display, eventBus);
+		this.statusbarpresenter = statusbarpresenter;
 		bind();
 	}
 
@@ -42,7 +44,7 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 
 	@Override
 	protected void onBind() {
-
+        statusbarpresenter.bind();
 		display.getPager().setVisible(false);
 		
 		eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {

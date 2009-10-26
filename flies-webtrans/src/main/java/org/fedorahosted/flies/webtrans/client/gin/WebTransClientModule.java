@@ -25,6 +25,8 @@ import org.fedorahosted.flies.webtrans.client.ui.Pager;
 import org.fedorahosted.flies.webtrans.client.ui.TreeNodeMapper;
 import org.fedorahosted.flies.webtrans.editor.CachedWebTransTableModel;
 import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
+import org.fedorahosted.flies.webtrans.editor.StatusBar;
+import org.fedorahosted.flies.webtrans.editor.StatusBarPresenter;
 import org.fedorahosted.flies.webtrans.editor.TransUnitListPresenter;
 import org.fedorahosted.flies.webtrans.editor.TransUnitTableDefinition;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorFooter;
@@ -61,6 +63,7 @@ public class WebTransClientModule extends AbstractPresenterModule {
 		bindPresenter(WorkspaceUsersPresenter.class, WorkspaceUsersPresenter.Display.class, WorkspaceUsersView.class);
 		bindPresenter(WebTransEditorPresenter.class, WebTransEditorPresenter.Display.class, WebTransEditorView.class);
 		bindPresenter(LoginPresenter.class, LoginPresenter.Display.class, LoginPanel.class);
+		bindPresenter(StatusBarPresenter.class, StatusBarPresenter.Display.class, StatusBar.class);
 
 		
 		bind(HasPageNavigation.class).to(WebTransScrollTable.class).in(Singleton.class);

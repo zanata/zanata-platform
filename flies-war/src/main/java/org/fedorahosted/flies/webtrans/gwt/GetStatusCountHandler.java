@@ -33,7 +33,7 @@ public class GetStatusCountHandler implements ActionHandler<GetStatusCount, GetS
 		
 		List<StatusCount> stats = session.createQuery(
 				"select new org.fedorahosted.flies.core.model.StatusCount(tft.state, count(tft)) " +
-		        "from HTextFlowTarget tft where tft.document.id = :id" +
+		        "from HTextFlowTarget tft where tft.textFlow.document.id = :id " +
 				"group by tft.state"
 			).setParameter("id", action.getDocumentId().getValue())
 			 .list();

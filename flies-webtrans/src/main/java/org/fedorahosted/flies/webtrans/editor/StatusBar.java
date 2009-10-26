@@ -14,10 +14,11 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.widgetideas.client.ProgressBar;
 import com.google.gwt.widgetideas.client.ProgressBar.TextFormatter;
 
-public class StatusBar extends Composite implements HasTransUnitCount, ClickHandler, MouseOverHandler, MouseOutHandler, HasClickHandlers, HasMouseOverHandlers, HasMouseOutHandlers {
+public class StatusBar extends Composite implements StatusBarPresenter.Display, HasTransUnitCount, ClickHandler, MouseOverHandler, MouseOutHandler, HasClickHandlers, HasMouseOverHandlers, HasMouseOutHandlers {
 	
 	public int fuzzy;
 	public int untranslated;
@@ -159,6 +160,28 @@ public class StatusBar extends Composite implements HasTransUnitCount, ClickHand
 	public void setUntranslated(int untranslated) {
 		// TODO Auto-generated method stub
 		this.untranslated = untranslated;
+	}
+
+	@Override
+	public StatusBar getStatusBar() {
+		return this;
+	}
+
+	@Override
+	public Widget asWidget() {
+		return this;
+	}
+
+	@Override
+	public void startProcessing() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void stopProcessing() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
