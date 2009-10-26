@@ -20,6 +20,7 @@ public class Application implements EntryPoint{
 
 	public void onModuleLoad() {
 		WorkspaceContext context = injector.getWorkspaceContext();
+		
 		if (!context.isValid()) {
 			// TODO better error message
 			Window.alert("Invalid workspace context");

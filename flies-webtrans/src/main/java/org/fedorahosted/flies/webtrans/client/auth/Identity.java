@@ -18,8 +18,6 @@ import com.google.inject.Inject;
 
 public class Identity {
 
-	private static Identity instance;
-	
 	private String sessionId;
 	
 	private Set<Permission> permissions = new HashSet<Permission>();
@@ -33,7 +31,6 @@ public class Identity {
 	public Identity(DispatchAsync dispatcher, EventBus eventBus) {
 		this.dispatcher = dispatcher;
 		this.eventBus = eventBus;
-		instance = this;
 		roles.add(Role.Anonymous);
 	}
 	
@@ -60,10 +57,6 @@ public class Identity {
 		return sessionId;
 	}
 	
-	public static Identity instance() {
-		return instance;
-	}
-
 	public void invalidate() {
 		sessionId = null;
 		permissions.clear();
