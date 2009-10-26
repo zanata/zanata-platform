@@ -19,6 +19,7 @@ import org.fedorahosted.flies.webtrans.client.WestNavigationView;
 import org.fedorahosted.flies.webtrans.client.WorkspaceUsersPresenter;
 import org.fedorahosted.flies.webtrans.client.WorkspaceUsersView;
 import org.fedorahosted.flies.webtrans.client.auth.Identity;
+import org.fedorahosted.flies.webtrans.client.auth.IdentityImpl;
 import org.fedorahosted.flies.webtrans.client.rpc.DelegatingDispatchAsync;
 import org.fedorahosted.flies.webtrans.client.ui.Pager;
 import org.fedorahosted.flies.webtrans.client.ui.TreeNodeMapper;
@@ -69,7 +70,7 @@ public class WebTransClientModule extends AbstractPresenterModule {
 		// the module definition unless the replacement extends SeamDispatchAsync
 		bind(DispatchAsync.class).to(DelegatingDispatchAsync.class).in(Singleton.class);
 		
-		bind(Identity.class).in(Singleton.class);
+		bind(Identity.class).to(IdentityImpl.class).in(Singleton.class);
 	}
 
 }

@@ -4,6 +4,7 @@ import org.fedorahosted.flies.gwt.rpc.AuthenticateAction;
 import org.fedorahosted.flies.gwt.rpc.AuthenticateResult;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent.Severity;
 import org.fedorahosted.flies.webtrans.client.auth.Identity;
+import org.fedorahosted.flies.webtrans.client.auth.IdentityImpl;
 import org.fedorahosted.flies.webtrans.client.auth.LoginResult;
 
 import com.google.gwt.event.dom.client.ClickEvent;
