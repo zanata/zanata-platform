@@ -11,7 +11,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.jboss.resteasy.annotations.providers.jaxb.json.Mapped;
 import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
-import org.jboss.resteasy.spi.touri.URITemplate;
 
 
 @Mapped(namespaceMap = {

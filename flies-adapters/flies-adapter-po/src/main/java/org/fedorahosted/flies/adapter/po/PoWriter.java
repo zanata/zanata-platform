@@ -15,7 +15,7 @@ import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.LocaleOutputSourcePair;
 import org.fedorahosted.flies.OutputSource;
 import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.Resource;
+import org.fedorahosted.flies.rest.dto.DocumentResource;
 import org.fedorahosted.flies.rest.dto.SimpleComment;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
@@ -106,7 +106,7 @@ public class PoWriter {
 		// first write header
 		if(!document.hasResources())
 			return;
-		for(Resource resource : document.getResources()){
+		for(DocumentResource resource : document.getResources()){
 			TextFlow textFlow = (TextFlow) resource;
 
 			PotEntryData entryData = textFlow.getExtension(PotEntryData.class);

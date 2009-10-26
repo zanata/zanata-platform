@@ -20,7 +20,7 @@ import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
 @XmlType(name="resourcesType", namespace=Namespaces.FLIES)
 public class ResourceList {
 
-	private List<Resource> resources;
+	private List<DocumentResource> resources;
 
 	@XmlElements({
 		@XmlElement(name="text-flow", type=TextFlow.class, namespace=Namespaces.FLIES),
@@ -28,9 +28,9 @@ public class ResourceList {
 		@XmlElement(name="reference", type=Reference.class, namespace=Namespaces.FLIES),
 		@XmlElement(name="data-hook", type=DataHook.class, namespace=Namespaces.FLIES)
 		})
-	public List<Resource> getResources() {
+	public List<DocumentResource> getResources() {
 		if(resources == null)
-			resources = new ArrayList<Resource>();
+			resources = new ArrayList<DocumentResource>();
 		return resources;
 	}	
 	

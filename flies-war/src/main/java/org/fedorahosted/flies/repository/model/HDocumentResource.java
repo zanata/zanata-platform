@@ -10,7 +10,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import org.fedorahosted.flies.rest.dto.Resource;
+import org.fedorahosted.flies.rest.dto.DocumentResource;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
@@ -24,7 +24,7 @@ import org.hibernate.validator.NotNull;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
-public abstract class HResource implements Serializable{
+public abstract class HDocumentResource implements Serializable{
 
 	private static final long serialVersionUID = 7639343235241588429L;
 
@@ -33,13 +33,13 @@ public abstract class HResource implements Serializable{
 	private String resId;
 	
 	private HDocument document;
-	private HResource parent;
+	private HDocumentResource parent;
 	private boolean obsolete = false;
 	
-	public HResource() {
+	public HDocumentResource() {
 	}
 	
-	public HResource(Resource res) {
+	public HDocumentResource(DocumentResource res) {
 		this.resId = res.getId();
 		this.revision = res.getRevision();
 	}
@@ -95,13 +95,13 @@ public abstract class HResource implements Serializable{
 
 	@ManyToOne
 	@JoinColumn(name = "parent_id")
-	public HResource getParent() {
+	public HDocumentResource getParent() {
 		return parent;
 	}
 	
-	public void setParent(HResource parent) {
+	public void setParent(HDocumentResource parent) {
 		this.parent = parent;
 	}
 
-	public abstract Resource toResource(int levels);
+	public abstract DocumentResource toResource(int levels);
 }

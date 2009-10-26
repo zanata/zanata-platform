@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlType(name="resourceType", namespace=Namespaces.FLIES)
 @XmlSeeAlso({TextFlow.class, Container.class, Reference.class})
-public interface Resource extends IExtensible{
+public interface DocumentResource extends IExtensible{
 
 	public String getId();
 	

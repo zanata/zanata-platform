@@ -20,7 +20,7 @@ import org.fedorahosted.flies.LocaleId;
 	TextFlowTargets.class,
 	SimpleComment.class
 })
-public class TextFlow extends AbstractBaseResource implements Resource{
+public class TextFlow extends AbstractBaseResource implements DocumentResource{
 
 	private String id;
 	private LocaleId lang;

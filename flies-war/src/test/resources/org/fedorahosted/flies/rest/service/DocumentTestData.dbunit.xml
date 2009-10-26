@@ -11,8 +11,9 @@
     path="/my/path"
     project_id="1"
     revision="1"
+    obsolete="0"
   />
-  <HResource
+  <HDocumentResource
   	id="1"
   	document_id="1"
   	parent_id="[NULL]"

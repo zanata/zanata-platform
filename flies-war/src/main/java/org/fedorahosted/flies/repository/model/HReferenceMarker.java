@@ -13,16 +13,16 @@ public class HReferenceMarker extends HInlineMarker{
 
 	private static final long serialVersionUID = -7985022096809099291L;
 
-	private HResource resource;
+	private HDocumentResource resource;
 	
 	@ManyToOne
 	@JoinColumn(name = "resource_id")
 	@NotNull
-	public HResource getResource() {
+	public HDocumentResource getResource() {
 		return resource;
 	}
 	
-	public void setResource(HResource resource) {
+	public void setResource(HDocumentResource resource) {
 		this.resource = resource;
 	}
 }

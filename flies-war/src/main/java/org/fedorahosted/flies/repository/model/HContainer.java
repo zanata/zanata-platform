@@ -1,12 +1,10 @@
 package org.fedorahosted.flies.repository.model;
 
-import java.util.Set;
 
 import javax.persistence.Entity;
 
-import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.rest.dto.Container;
-import org.fedorahosted.flies.rest.dto.Resource;
+import org.fedorahosted.flies.rest.dto.DocumentResource;
 
 
 @Entity
@@ -18,9 +16,9 @@ public class HContainer extends HParentResource{
 	public HContainer(Container cont) {
 		super(cont);
 		if(cont.hasContent()) {
-			for(Resource res : cont.getContent()){
-				HResource hRes = HDocument.create(res);
-				getChildren().add(hRes);
+			for(DocumentResource res : cont.getContent()){
+				HDocumentResource hRes = HDocument.create(res);
+				getResources().add(hRes);
 			}
 		}
 	}
@@ -31,7 +29,7 @@ public class HContainer extends HParentResource{
 	public Container toResource(int levels) {
 		Container container = new Container(this.getResId());
 		if (levels != 0) {
-			for (HResource res : getChildren()) {
+			for (HDocumentResource res : getResources()) {
 				container.getContent().add(res.toResource(levels-1));
 			}
 		}

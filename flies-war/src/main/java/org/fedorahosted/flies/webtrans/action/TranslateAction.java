@@ -13,7 +13,7 @@ import org.fedorahosted.flies.core.model.HPerson;
 import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
-import org.fedorahosted.flies.repository.model.HResource;
+import org.fedorahosted.flies.repository.model.HDocumentResource;
 import org.fedorahosted.flies.repository.model.HTextFlow;
 import org.fedorahosted.flies.repository.model.HTextFlowTarget;
 import org.fedorahosted.flies.webtrans.NoSuchWorkspaceException;

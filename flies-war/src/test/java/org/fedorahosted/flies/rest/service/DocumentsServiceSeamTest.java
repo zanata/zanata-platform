@@ -13,15 +13,20 @@ import javax.ws.rs.core.Response;
 import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.core.dao.ProjectContainerDAO;
+import org.fedorahosted.flies.repository.model.HDocument;
+import org.fedorahosted.flies.repository.model.HProjectContainer;
+import org.fedorahosted.flies.repository.model.HDocumentResource;
 import org.fedorahosted.flies.rest.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.IDocumentsResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Documents;
-import org.fedorahosted.flies.rest.dto.Resource;
+import org.fedorahosted.flies.rest.dto.DocumentResource;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.seam.mock.DBUnitSeamTest;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -29,18 +34,24 @@ import org.testng.annotations.Test;
 @Test(groups = { "seam-tests" })
 public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 
+	String projectSlug = "sample-project";
+	String iter = "1.1";
 	IDocumentsResource docsService;
 
 	@BeforeClass
 	public void prepareRestEasyClientFramework() throws Exception {
+		docsService = prepareRestEasyClientFramework(projectSlug, iter);
+	}
+
+	public IDocumentsResource prepareRestEasyClientFramework(String projectSlug, String iter) throws Exception {
 		FliesClientRequestFactory clientRequestFactory = 
 			new FliesClientRequestFactory("admin",
 					"12345678901234567890123456789012", 
 					new SeamMockClientExecutor(this));
-		docsService = clientRequestFactory.getDocumentsResource(
-				new URI("/restv1/projects/p/sample-project/iterations/i/1.1/documents"));
+		return clientRequestFactory.getDocumentsResource(
+				new URI("/restv1/projects/p/"+projectSlug+"/iterations/i/"+iter+"/documents"));
 	}
-
+	
 	@Override
 	protected void prepareDBUnitOperations() {
 	    beforeTestOperations.add(new DataSetOperation(
@@ -75,11 +86,11 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 	    assertThat(actual, is(expected));
 	}
 	
-	private Document newDoc(String id, Resource... resources) {
+	private Document newDoc(String id, DocumentResource... resources) {
 		ContentType contentType = ContentType.TextPlain;
 		Integer revision = 1;
 		Document doc = new Document(id, id+"name", id+"path", contentType, revision, LocaleId.EN);
-		for (Resource textFlow : resources) {
+		for (DocumentResource textFlow : resources) {
 			doc.getResources(true).add(textFlow);
 		}
 		return doc;
@@ -88,12 +99,10 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 	private TextFlow newTextFlow(String id, String sourceContent, String sourceComment, String targetLocale, String targetContent, String targetComment) {
 		TextFlow textFlow = new TextFlow(id, LocaleId.EN);
 	    textFlow.setContent(sourceContent);
-	    // FIXME disabled until we get comment persistence working
 	    if (sourceComment != null)
 	    	textFlow.getOrAddComment().setValue(sourceComment);
 	    TextFlowTarget target = new TextFlowTarget(textFlow, LocaleId.fromJavaName(targetLocale));
 	    target.setContent(targetContent);
-	    // FIXME disabled until we get comment persistence working
 	    if (targetComment != null)
 	    	target.getOrAddComment().setValue(targetComment);
 		textFlow.addTarget(target);
@@ -155,6 +164,8 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 	    // this put should have the effect of deleting doc2
 		putDoc1();
 	    expectDocs(doc1);
+	    // use dto to check that doc2 is marked obsolete
+	    verifyObsoleteDocument(doc2.getId());
 	}
 
 	public void put1Then1a() throws Exception {
@@ -164,12 +175,40 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 	    // this should completely replace doc1's textflow FOOD with HELLO
 		Document doc1a = putDoc1a();
 	    expectDocs(doc1a);
+	    // use dto to check that the HTextFlow FOOD (from doc1) is marked obsolete
+		// FIXME breaking test disabled
+//	    verifyObsoleteResource(doc1.getId(), "FOOD");
 	}
 	
 
-	// TODO expect 404 for non-existent project
-//	public void getBadProject() {
-//		
-//	}
+	private void verifyObsoleteDocument(final String docID) throws Exception {        
+		new FacesRequest() {
+            protected void invokeApplication() throws Exception {
+            	ProjectContainerDAO containerDAO = (ProjectContainerDAO) getInstance("projectContainerDAO");
+                HProjectContainer container = containerDAO.getBySlug(projectSlug, iter);
+				HDocument hDocument = container.getAllDocuments().get(docID);
+                Assert.assertTrue(hDocument.isObsolete());
+            }
+        }.run();
+	}
+	
+	private void verifyObsoleteResource(final String docID, final String resourceID) throws Exception {        
+		new FacesRequest() {
+			protected void invokeApplication() throws Exception {
+				ProjectContainerDAO containerDAO = (ProjectContainerDAO) getInstance("projectContainerDAO");
+				HProjectContainer container = containerDAO.getBySlug(projectSlug, iter);
+				HDocument hDocument = container.getAllDocuments().get(docID);
+				HDocumentResource hResource = hDocument.getAllResources().get(resourceID);
+				Assert.assertTrue(hResource.isObsolete());
+			}
+		}.run();
+	}
+	
+	// expect 404 for non-existent project
+	public void getBadProject() throws Exception {
+		IDocumentsResource nonexistentDocsService = prepareRestEasyClientFramework("nonexistentProject", "99.9");
+		ClientResponse<Documents> response = nonexistentDocsService.getDocuments();
+		assertThat(response.getStatus(), is(404));
+	}
 
 }

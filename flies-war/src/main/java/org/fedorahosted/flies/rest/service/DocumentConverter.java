@@ -14,7 +14,7 @@ import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HParentResource;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.repository.model.HReference;
-import org.fedorahosted.flies.repository.model.HResource;
+import org.fedorahosted.flies.repository.model.HDocumentResource;
 import org.fedorahosted.flies.repository.model.HSimpleComment;
 import org.fedorahosted.flies.repository.model.HTextFlow;
 import org.fedorahosted.flies.repository.model.HTextFlowHistory;
@@ -26,7 +26,7 @@ import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Link;
 import org.fedorahosted.flies.rest.dto.Reference;
 import org.fedorahosted.flies.rest.dto.Relationships;
-import org.fedorahosted.flies.rest.dto.Resource;
+import org.fedorahosted.flies.rest.dto.DocumentResource;
 import org.fedorahosted.flies.rest.dto.SimpleComment;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
@@ -65,20 +65,21 @@ public class DocumentConverter {
 		toHDoc.setContentType(fromDoc.getContentType());
 		toHDoc.setLocale(fromDoc.getLang());
 //		toHDoc.setRevision(fromDoc.getRevision());  // TODO increment revision on modify only
-		// TODO handle doc extensions
+		// TODO handle doc extensions, especially containers
 		if (fromDoc.hasResources()) {
-			List<Resource> docResources = fromDoc.getResources();
-			List<HResource> hResources;
+			List<DocumentResource> docResources = fromDoc.getResources();
+			List<HDocumentResource> hResources;
 			if (replaceResourceTree) {
-				hResources = new ArrayList<HResource>(docResources.size());
+				hResources = new ArrayList<HDocumentResource>(docResources.size());
 				// this should cause any obsolete HResources (and their 
 				// children) to be deleted when we save
-				toHDoc.setResourceTree(hResources);
+				// TODO mark them obsolete instead
+				toHDoc.setResources(hResources);
 			} else {
-				hResources = toHDoc.getResourceTree();
+				hResources = toHDoc.getResources();
 			}
-			for (Resource res : docResources) {
-				HResource hRes = null;
+			for (DocumentResource res : docResources) {
+				HDocumentResource hRes = null;
 				if (session.contains(toHDoc))
 					// FIXME make sure getById can find pre-existing docs (we broke the link from HDoc to its HResources above)
 					hRes = resourceDAO.getById(toHDoc, res.getId());
@@ -115,9 +116,9 @@ public class DocumentConverter {
 	}
 	
 	public void createChildren(Document document, HDocument hDocument, int newRevision) {
-		for(Resource resource : document.getResources()) {
-			HResource hResource = create(resource, hDocument, null);
-			hDocument.getResourceTree().add(hResource);
+		for(DocumentResource resource : document.getResources()) {
+			HDocumentResource hResource = create(resource, hDocument, null);
+			hDocument.getResources().add(hResource);
 		}
 		session.update(hDocument);
 	}
@@ -140,15 +141,15 @@ public class DocumentConverter {
 
 	public void mergeChildren(Document document, HDocument hDocument){
 
-		Map<String, HResource> existingResources = toMap(hDocument.getResourceTree());
+		Map<String, HDocumentResource> existingResources = toMap(hDocument.getResources());
 		
-		List<HResource> finalHResources = hDocument.getResourceTree();
+		List<HDocumentResource> finalHResources = hDocument.getResources();
 		finalHResources.clear();
 		
-		for(Resource resource: document.getResources()){
+		for(DocumentResource resource: document.getResources()){
 			
 			// check existing resources first
-			HResource hResource = existingResources.remove(resource.getId());
+			HDocumentResource hResource = existingResources.remove(resource.getId());
 			if(hResource == null) {
 				hResource = resourceDAO.getObsoleteById(hDocument, resource.getId());	
 			}
@@ -175,21 +176,21 @@ public class DocumentConverter {
 		}
 
 		// clean up resources we didn't process in this 
-		for(HResource hResource : existingResources.values()) {
+		for(HDocumentResource hResource : existingResources.values()) {
 			deleteOrObsolete(hResource);
 		}
 	}
 	
 	public void mergeChildren(Container container, HParentResource hParentResource, int newRevision){
-		Map<String, HResource> existingResources = toMap(hParentResource.getChildren());
+		Map<String, HDocumentResource> existingResources = toMap(hParentResource.getResources());
 		
-		List<HResource> finalHResources = hParentResource.getChildren();
+		List<HDocumentResource> finalHResources = hParentResource.getResources();
 		finalHResources.clear();
 		
-		for(Resource resource: container.getContent()){
+		for(DocumentResource resource: container.getContent()){
 			
 			// check existing resources first
-			HResource hResource = existingResources.remove(resource.getId());
+			HDocumentResource hResource = existingResources.remove(resource.getId());
 			if(hResource == null) {
 				hResource = resourceDAO.getObsoleteById(hParentResource.getDocument(), resource.getId());	
 			}
@@ -216,20 +217,20 @@ public class DocumentConverter {
 		}
 
 		// clean up resources we didn't process in this 
-		for(HResource hResource : existingResources.values()) {
+		for(HDocumentResource hResource : existingResources.values()) {
 			deleteOrObsolete(hResource);
 		}
 		
 	}
 	
-	private boolean areOfSameType(Resource resource, HResource hResource){
+	private boolean areOfSameType(DocumentResource resource, HDocumentResource hResource){
 		return 
 		(resource instanceof TextFlow && hResource instanceof HTextFlow) ||
 		(resource instanceof Container && hResource instanceof HContainer) ||
 		(resource instanceof DataHook && hResource instanceof HDataHook) ||
 		(resource instanceof Reference && hResource instanceof HReference);
 	}
-	public void merge(Resource resource, HResource hResource, int newRevision){
+	public void merge(DocumentResource resource, HDocumentResource hResource, int newRevision){
 		if(!areOfSameType(resource, hResource))
 			throw new IllegalArgumentException("Resource and HResource must be of same type");
 		if(resource instanceof TextFlow) 
@@ -288,7 +289,7 @@ public class DocumentConverter {
 	public void merge(Container container, HContainer hContainer, int newRevision){
 		mergeChildren(container, hContainer, newRevision);
 		// if a child is updated, we update the container version as well
-		for(HResource child: hContainer.getChildren()) {
+		for(HDocumentResource child: hContainer.getResources()) {
 			if(newRevision == child.getRevision()){
 				hContainer.setRevision(newRevision);
 			}
@@ -305,7 +306,7 @@ public class DocumentConverter {
 		}
 	}	
 	
-	public HResource create(Resource resource, HDocument hDocument, HParentResource parent){
+	public HDocumentResource create(DocumentResource resource, HDocument hDocument, HParentResource parent){
 		if(resource instanceof TextFlow) 
 			return create( (TextFlow) resource, hDocument, parent);
 		else if(resource instanceof Container) 
@@ -339,9 +340,9 @@ public class DocumentConverter {
 	}
 	
 	public void createChildren(Container container, HDocument hDocument, HParentResource parent) {
-		for(Resource resource : container.getContent()) {
-			HResource hResource = create(resource, hDocument, parent);
-			parent.getChildren().add(hResource);
+		for(DocumentResource resource : container.getContent()) {
+			HDocumentResource hResource = create(resource, hDocument, parent);
+			parent.getResources().add(hResource);
 		}
 	}
 	
@@ -363,14 +364,14 @@ public class DocumentConverter {
 		return hReference;
 	}
 	
-	public void deleteOrObsolete(HResource hResource) {
+	public void deleteOrObsolete(HDocumentResource hResource) {
 		// process leafs first
 		if(hResource instanceof HParentResource) {
 			HParentResource hParentResource = (HParentResource) hResource;
-			for(HResource hChildResource : hParentResource.getChildren()) {
+			for(HDocumentResource hChildResource : hParentResource.getResources()) {
 				deleteOrObsolete(hChildResource);
 			}
-			hParentResource.getChildren().clear();
+			hParentResource.getResources().clear();
 		}
 			
 		if(hResource instanceof HTextFlow) {
@@ -383,16 +384,16 @@ public class DocumentConverter {
 		}
 	}
 	
-	private static Map<String, HResource> toMap(List<HResource> resources) {
-		Map<String, HResource> map = new HashMap<String, HResource>(resources.size());
-		for(HResource res : resources) {
+	private static Map<String, HDocumentResource> toMap(List<HDocumentResource> resources) {
+		Map<String, HDocumentResource> map = new HashMap<String, HDocumentResource>(resources.size());
+		for(HDocumentResource res : resources) {
 			map.put(res.getResId(), res);
 		}
 		return map;
 	}
 	
 	// copy res to hRes recursively, maintaining docTargets
-	private void copy(Resource res, HResource hRes,
+	private void copy(DocumentResource res, HDocumentResource hRes,
 			HDocument hDoc) {
 		hRes.setDocument(hDoc);
 		if (res instanceof TextFlow) {

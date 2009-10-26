@@ -11,7 +11,7 @@ import java.util.Set;
 
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.Resource;
+import org.fedorahosted.flies.rest.dto.DocumentResource;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.TextFlowTargets;
@@ -37,7 +37,7 @@ public class PropWriter {
 
 		logVerbose("Creating base file " + baseFile);
 		Properties props = new Properties();
-		for (Resource resource : doc.getResources(true)) {
+		for (DocumentResource resource : doc.getResources(true)) {
 			if (!(resource instanceof TextFlow)) {
 				throw new RuntimeException("Unhandled Resource: "
 						+ resource.getClass() + " with id " + resource.getId());
@@ -55,7 +55,7 @@ public class PropWriter {
 
 		Map<LocaleId, Properties> targetProps = new HashMap<LocaleId, Properties>();
 		if (doc.hasResources()) {
-			for (Resource resource : doc.getResources()) {
+			for (DocumentResource resource : doc.getResources()) {
 				for (TextFlowTarget target : getTargets(resource)) {
 					Properties targetProp = targetProps.get(target.getLang());
 					if (targetProp == null) {
@@ -89,7 +89,7 @@ public class PropWriter {
 	 * targetLangs.add(target.getLang()); } } } return targetLangs; }
 	 */
 
-	private static Set<TextFlowTarget> getTargets(Resource resource) {
+	private static Set<TextFlowTarget> getTargets(DocumentResource resource) {
 		TextFlowTargets targets = resource.getExtension(TextFlowTargets.class);
 		if (targets != null) {
 			return targets.getTargets();
