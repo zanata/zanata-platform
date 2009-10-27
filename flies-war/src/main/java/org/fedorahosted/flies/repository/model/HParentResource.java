@@ -29,7 +29,7 @@ public abstract class HParentResource extends HDocumentResource{
 
 //	@OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
 	@OneToMany(cascade = CascadeType.ALL)
-	@IndexColumn(name = "pos", base=0, nullable=true)
+	@IndexColumn(name = "pos", base=0, nullable=true)// see http://opensource.atlassian.com/projects/hibernate/browse/HHH-4390?focusedCommentId=30964&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#action_30964
 	@Where(clause="obsolete=0")
 //	@OnDelete(action=OnDeleteAction.CASCADE)
 	public List<HDocumentResource> getResources() {
