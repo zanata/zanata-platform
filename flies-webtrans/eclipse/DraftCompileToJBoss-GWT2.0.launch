@@ -14,6 +14,6 @@
 </listAttribute>
 <booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.google.gwt.dev.Compiler"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-draftCompile -war /opt/jboss-4.2.3.GA-jdk6/server/default/deploy/flies.war  org.fedorahosted.flies.webtrans.Application"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-draftCompile -war ${jboss42home}/server/default/deploy/flies.war  org.fedorahosted.flies.webtrans.Application"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="flies-webtrans"/>
 </launchConfiguration>
