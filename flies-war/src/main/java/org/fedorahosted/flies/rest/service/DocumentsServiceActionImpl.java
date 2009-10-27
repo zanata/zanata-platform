@@ -63,6 +63,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
 				getProjectSlug(), 
 				getIterationSlug());
 		if (result == null) {
+			// TODO use a Response, not an exception
 			throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Container not found").build());
 		}
 		return result;

@@ -19,7 +19,7 @@
   	parent_id="[NULL]"
   	resId="tf1"
   	revision="1"
-  	pos="0"
+  	document_pos="0"
     obsolete="0"
   />
   <HTextFlow 

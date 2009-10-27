@@ -32,8 +32,10 @@ import org.fedorahosted.flies.rest.dto.DocumentResource;
 import org.fedorahosted.flies.rest.dto.ResourceList;
 import org.hibernate.Session;
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
+import org.jboss.seam.log.Log;
 
 @Name("documentService")
 @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/documents/d/{documentId}")
@@ -63,6 +65,10 @@ public class DocumentService {
 	@Context
 	UriInfo uri;
 	
+    @Logger 
+    private Log log;
+    
+	
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaTypes.APPLICATION_FLIES_DOCUMENT_JSON, 
 				MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -78,12 +84,12 @@ public class DocumentService {
 			return Response.status(Status.NOT_FOUND).entity("Document not found").build();
 		}
 		
-		int requestedLevels = resources.isNone() ? 0 : Integer.MAX_VALUE;
 		Set<LocaleId> requestedLanguages = resources.getLanguages();
 		if (resources.isAll()) {
 			requestedLanguages = documentDAO.getTargetLocales(hDoc); 
 		}
 		
+		int requestedLevels = resources.isNone() ? 0 : Integer.MAX_VALUE;
 		Document doc = hDoc.toDocument(requestedLevels); 
 		documentConverter.addLinks(doc,uri.getRequestUri(), 
 				uri.getBaseUri().resolve(URIHelper.getIteration(projectSlug, iterationSlug)));
@@ -116,6 +122,7 @@ public class DocumentService {
 				return Response.created( uri.getBaseUri().resolve(URIHelper.getDocument(projectSlug, iterationSlug, documentId))).build();
 			}
 			catch(Exception e){
+				log.error("Invalid document content", e);
 				// TODO validation on the input data
 				// this could also be a server error
 				return Response.status(Status.BAD_REQUEST).entity("Invalid document content").build();
@@ -123,6 +130,7 @@ public class DocumentService {
 		}
 		else{ // it's an update operation
 			documentConverter.merge(document, hDoc);
+			session.save(hDoc);
 			session.flush();
 			return Response.status(205).build();
 		}

@@ -97,6 +97,13 @@ public class DocumentConverter {
 		}
 	}
 
+	/**
+	 * Creates an HDocument from the Document, with the field 'project' 
+	 * pointing to container 
+	 * @param document
+	 * @param container
+	 * @return
+	 */
 	public HDocument create(Document document, HProjectContainer container){
 		HDocument hDocument = new HDocument();
 		hDocument.setDocId(document.getId());
@@ -115,12 +122,18 @@ public class DocumentConverter {
 		return hDocument;
 	}
 	
+	/**
+	 * Creates the children of the Document in the HDocument
+	 * @param document
+	 * @param hDocument
+	 * @param newRevision
+	 */
 	public void createChildren(Document document, HDocument hDocument, int newRevision) {
 		for(DocumentResource resource : document.getResources()) {
 			HDocumentResource hResource = create(resource, hDocument, null);
 			hDocument.getResources().add(hResource);
 		}
-		session.update(hDocument);
+//		session.update(hDocument);
 	}
 	
 	public void merge(Document document, HDocument hDocument){
@@ -131,7 +144,7 @@ public class DocumentConverter {
 		hDocument.setPath(document.getPath());
 		hDocument.setContentType(document.getContentType());
 		hDocument.setLocale(document.getLang());
-		session.update(hDocument);
+		session.save(hDocument);
 		
 		if(document.hasResources() ) {
 			mergeChildren(document, hDocument);
@@ -169,10 +182,10 @@ public class DocumentConverter {
 				finalHResources.add(hResource);
 				continue;
 			}
-			
-			
+			hResource = create(resource, hDocument, null);
+			session.save(hResource);
 			// finally insert
-			finalHResources.add( create(resource, hDocument, null));
+			finalHResources.add(hResource);
 		}
 
 		// clean up resources we didn't process in this 
@@ -187,7 +200,7 @@ public class DocumentConverter {
 		List<HDocumentResource> finalHResources = hParentResource.getResources();
 		finalHResources.clear();
 		
-		for(DocumentResource resource: container.getContent()){
+		for(DocumentResource resource: container.getResources()){
 			
 			// check existing resources first
 			HDocumentResource hResource = existingResources.remove(resource.getId());
@@ -306,6 +319,15 @@ public class DocumentConverter {
 		}
 	}	
 	
+	/**
+	 * Creates the Hibernate equivalent of the DocumentResource 'resource', 
+	 * setting parent to 'parent', setting document to hDocument, 
+	 * inheriting hDocument's revision.
+	 * @param resource
+	 * @param hDocument
+	 * @param parent
+	 * @return
+	 */
 	public HDocumentResource create(DocumentResource resource, HDocument hDocument, HParentResource parent){
 		if(resource instanceof TextFlow) 
 			return create( (TextFlow) resource, hDocument, parent);
@@ -318,6 +340,12 @@ public class DocumentConverter {
 		else
 			throw new RuntimeException("missing type - programming error");
 	}
+	
+	/**
+	 * Creates the Hibernate equivalent of the TextFlow, 
+	 * setting parent to 'parent', setting document to hDocument, 
+	 * inheriting hDocument's revision.
+	 */
 	public HTextFlow create(TextFlow textFlow, HDocument hDocument, HParentResource parent){
 		HTextFlow hTextFlow =  new HTextFlow();
 		hTextFlow.setDocument(hDocument);
@@ -327,6 +355,17 @@ public class DocumentConverter {
 		hTextFlow.setContent(textFlow.getContent());
 		return hTextFlow;
 	}
+	
+	/**
+	 * Creates an HContainer for the Container, creates child 
+	 * HDocumentResources for the Container's DocumentResources, and
+	 * sets the HContainer's parent to 'parent', setting document to hDocument, 
+	 * inheriting hDocument's revision.
+	 * @param container
+	 * @param hDocument
+	 * @param parent
+	 * @return
+	 */
 	public HContainer create(Container container, HDocument hDocument, HParentResource parent){
 		HContainer hContainer = new HContainer();
 		hContainer.setDocument(hDocument);
@@ -334,18 +373,30 @@ public class DocumentConverter {
 		hContainer.setResId(container.getId());
 		hContainer.setRevision(hDocument.getRevision());
 
-		createChildren(container, hDocument, parent);
+		createChildren(container, hDocument, hContainer);
 		
 		return hContainer;
 	}
 	
+	/**
+	 * creates child HDocumentResources for the Container's DocumentResources,
+	 * and adds them to the parent (HContainer)
+	 * @param container
+	 * @param hDocument
+	 * @param parent
+	 */
 	public void createChildren(Container container, HDocument hDocument, HParentResource parent) {
-		for(DocumentResource resource : container.getContent()) {
+		for(DocumentResource resource : container.getResources()) {
 			HDocumentResource hResource = create(resource, hDocument, parent);
 			parent.getResources().add(hResource);
 		}
 	}
 	
+	/**
+	 * Creates the Hibernate equivalent of the DataHook, 
+	 * setting parent to 'parent', setting document to hDocument, 
+	 * inheriting hDocument's revision.
+	 */
 	public HDataHook create(DataHook dataHook, HDocument hDocument, HParentResource parent){
 		HDataHook hDataHook = new HDataHook();
 		hDataHook.setDocument(hDocument);
@@ -354,6 +405,12 @@ public class DocumentConverter {
 		hDataHook.setRevision(hDocument.getRevision());
 		return hDataHook;
 	}
+
+	/**
+	 * Creates the Hibernate equivalent of the Reference, 
+	 * setting parent to 'parent', setting document to hDocument, 
+	 * inheriting hDocument's revision.
+	 */
 	public HReference create(Reference reference, HDocument hDocument, HParentResource parent){
 		HReference hReference = new HReference();
 		hReference.setDocument(hDocument);
@@ -377,7 +434,8 @@ public class DocumentConverter {
 		if(hResource instanceof HTextFlow) {
 			// we only keep TextFlow obsoletes
 			hResource.setObsolete(true);
-			session.update(hResource);
+			hResource.setParent(null);
+//			session.update(hResource);
 		}
 		else{
 			session.delete(hResource);

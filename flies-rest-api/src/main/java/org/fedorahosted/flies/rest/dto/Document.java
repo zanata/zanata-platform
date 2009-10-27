@@ -169,7 +169,7 @@ public class Document extends AbstractBaseResource implements IExtensible{
 		this.lang = lang;
 	}
 	
-	@XmlElementWrapper(name="document-content", namespace=Namespaces.FLIES, required=false)
+	@XmlElementWrapper(name="resources", namespace=Namespaces.FLIES, required=false)
 	@XmlElements({
 		@XmlElement(name="text-flow", type=TextFlow.class, namespace=Namespaces.FLIES),
 		@XmlElement(name="container", type=Container.class, namespace=Namespaces.FLIES),

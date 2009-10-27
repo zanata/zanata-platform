@@ -15,10 +15,11 @@ public class HContainer extends HParentResource{
 	
 	public HContainer(Container cont) {
 		super(cont);
-		if(cont.hasContent()) {
-			for(DocumentResource res : cont.getContent()){
+		if (cont.hasResources()) {
+			for (DocumentResource res : cont.getResources()){
 				HDocumentResource hRes = HDocument.create(res);
 				getResources().add(hRes);
+				hRes.setParent(this);
 			}
 		}
 	}
@@ -30,7 +31,7 @@ public class HContainer extends HParentResource{
 		Container container = new Container(this.getResId());
 		if (levels != 0) {
 			for (HDocumentResource res : getResources()) {
-				container.getContent().add(res.toResource(levels-1));
+				container.getResources().add(res.toResource(levels-1));
 			}
 		}
 		return container;

@@ -74,6 +74,7 @@ public class ProjectService{
 
 		HProject hProject = projectDAO.getBySlug(projectSlug);
 		if(hProject == null)
+			// TODO use a Response, not an exception
 			throw new WebApplicationException(Status.NOT_FOUND);
 		
 		return toMini(hProject);
