@@ -83,7 +83,7 @@ public abstract class HDocumentResource implements Serializable{
 	}
 	
 	@ManyToOne
-	@JoinColumn(name="document_id",insertable=false, updatable=false, nullable=false)
+	@JoinColumn(name="document_id",insertable=true, updatable=false, nullable=true)
 	@NaturalId
 	public HDocument getDocument() {
 		return document;
@@ -94,7 +94,7 @@ public abstract class HDocumentResource implements Serializable{
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "parent_id")
+	@JoinColumn(name = "parent_id", insertable=true)
 	public HDocumentResource getParent() {
 		return parent;
 	}

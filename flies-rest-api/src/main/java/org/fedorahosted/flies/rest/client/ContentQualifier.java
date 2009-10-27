@@ -83,6 +83,7 @@ public class ContentQualifier{
 		}
 		
 		public static ContentQualifier valueOf(String str) {
+			// TODO look up the instance
 			return new ContentQualifier(str);
 		}
 		

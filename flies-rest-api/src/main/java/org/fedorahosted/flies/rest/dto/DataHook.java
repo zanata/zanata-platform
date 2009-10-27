@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlType(name="dataHookType", namespace=Namespaces.FLIES, propOrder={"extensions"})
 @XmlRootElement(name="data-hook", namespace=Namespaces.FLIES)
-public class DataHook extends AbstractBaseResource implements DocumentResource {
+public class DataHook extends AbstractBaseResource implements DocumentResource, IExtensible {
 
 	private String id;
 	private Integer revision = 1;

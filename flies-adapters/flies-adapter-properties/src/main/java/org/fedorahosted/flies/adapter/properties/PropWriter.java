@@ -12,6 +12,7 @@ import java.util.Set;
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.DocumentResource;
+import org.fedorahosted.flies.rest.dto.IExtensible;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.TextFlowTargets;
@@ -56,14 +57,19 @@ public class PropWriter {
 		Map<LocaleId, Properties> targetProps = new HashMap<LocaleId, Properties>();
 		if (doc.hasResources()) {
 			for (DocumentResource resource : doc.getResources()) {
-				for (TextFlowTarget target : getTargets(resource)) {
-					Properties targetProp = targetProps.get(target.getLang());
-					if (targetProp == null) {
-						targetProp = new Properties();
-						targetProps.put(target.getLang(), targetProp);
+				if (resource instanceof TextFlow) {
+					TextFlow textflow = (TextFlow) resource;
+					for (TextFlowTarget target : getTargets(textflow)) {
+						Properties targetProp = targetProps.get(target.getLang());
+						if (targetProp == null) {
+							targetProp = new Properties();
+							targetProps.put(target.getLang(), targetProp);
+						}
+						targetProp.setProperty(resource.getId(), target
+								.getContent());
 					}
-					targetProp.setProperty(resource.getId(), target
-							.getContent());
+				} else {
+					throw new RuntimeException("unsupported Document element: "+resource.getClass());
 				}
 			}
 		}
@@ -89,7 +95,7 @@ public class PropWriter {
 	 * targetLangs.add(target.getLang()); } } } return targetLangs; }
 	 */
 
-	private static Set<TextFlowTarget> getTargets(DocumentResource resource) {
+	private static Set<TextFlowTarget> getTargets(IExtensible resource) {
 		TextFlowTargets targets = resource.getExtension(TextFlowTargets.class);
 		if (targets != null) {
 			return targets.getTargets();

@@ -15,16 +15,16 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.fedorahosted.flies.LocaleId;
 
 
-@XmlType(name="containerType", namespace=Namespaces.FLIES, propOrder={"content", "extensions"})
+@XmlType(name="containerType", namespace=Namespaces.FLIES, propOrder={"resources", "extensions"})
 @XmlRootElement(name="container", namespace=Namespaces.FLIES)
-public class Container extends AbstractBaseResource implements DocumentResource {
+public class Container extends AbstractBaseResource implements DocumentResource, IExtensible {
 
 	private String id;
 	private LocaleId lang;
 	private Integer revision = 1;
 	
 	private List<Object> extensions;
-	private List<DocumentResource> content;
+	private List<DocumentResource> resources = new ArrayList<DocumentResource>();
 	
 	public Container() {
 	}
@@ -107,25 +107,19 @@ public class Container extends AbstractBaseResource implements DocumentResource 
 		this.lang = lang;
 	}
 	
-	@XmlElementWrapper(name="content", namespace=Namespaces.FLIES, required=true)
+	@XmlElementWrapper(name="resources", namespace=Namespaces.FLIES, required=true)
 	@XmlElements({
 		@XmlElement(name="text-flow", type=TextFlow.class, namespace=Namespaces.FLIES),
 		@XmlElement(name="container", type=Container.class, namespace=Namespaces.FLIES),
 		@XmlElement(name="reference", type=Reference.class, namespace=Namespaces.FLIES),
 		@XmlElement(name="data-hook", type=DataHook.class, namespace=Namespaces.FLIES)
 		})
-	public List<DocumentResource> getContent() {
-		return content;
+	public List<DocumentResource> getResources() {
+		return resources;
 	}
 	
-	public boolean hasContent() {
-		return content != null;
-	}
-	
-	public List<DocumentResource> getContent(boolean create) {
-		if(content == null && create)
-			content = new ArrayList<DocumentResource>();
-		return content;
+	public boolean hasResources() {
+		return resources != null;
 	}
 	
 }
