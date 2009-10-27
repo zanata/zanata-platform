@@ -12,15 +12,14 @@ import org.fedorahosted.flies.gwt.model.Person;
 import org.fedorahosted.flies.gwt.model.PersonId;
 import org.fedorahosted.flies.webtrans.client.ui.HasChildTreeNodes;
 import org.fedorahosted.flies.webtrans.client.ui.HasFilter;
-import org.fedorahosted.flies.webtrans.client.ui.HasNodeMouseOverHandlers;
 import org.fedorahosted.flies.webtrans.client.ui.HasNodeMouseOutHandlers;
-import org.fedorahosted.flies.webtrans.client.ui.TreeNode;
+import org.fedorahosted.flies.webtrans.client.ui.HasNodeMouseOverHandlers;
 import org.fedorahosted.flies.webtrans.client.ui.TreeNodeImpl;
 
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -65,7 +64,6 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 			public void onMouseOver(MouseOverEvent event) {
 				if (event.getSource() instanceof TreeNodeImpl<?>) {
 					TreeNodeImpl<Person> source = (TreeNodeImpl<Person>) event.getSource();	
-					System.out.println("popup for person with id "+source.getObject().getId().toString());
 					
 					VerticalPanel popupMainPanel = new VerticalPanel();
 					Person overPerson = source.getObject();
