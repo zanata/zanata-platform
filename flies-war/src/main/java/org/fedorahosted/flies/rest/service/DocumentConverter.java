@@ -114,7 +114,6 @@ public class DocumentConverter {
 		hDocument.setLocale(document.getLang());
 		hDocument.setRevision(1);
 		hDocument.setProject(container);
-		session.save(hDocument);
 		
 		if(document.hasResources()) {
 			createChildren(document, hDocument, 1);
@@ -133,7 +132,6 @@ public class DocumentConverter {
 			HDocumentResource hResource = create(resource, hDocument, null);
 			hDocument.getResources().add(hResource);
 		}
-//		session.update(hDocument);
 	}
 	
 	public void merge(Document document, HDocument hDocument){
@@ -144,7 +142,6 @@ public class DocumentConverter {
 		hDocument.setPath(document.getPath());
 		hDocument.setContentType(document.getContentType());
 		hDocument.setLocale(document.getLang());
-		session.save(hDocument);
 		
 		if(document.hasResources() ) {
 			mergeChildren(document, hDocument);
@@ -183,7 +180,6 @@ public class DocumentConverter {
 				continue;
 			}
 			hResource = create(resource, hDocument, null);
-			session.save(hResource);
 			// finally insert
 			finalHResources.add(hResource);
 		}
@@ -435,7 +431,6 @@ public class DocumentConverter {
 			// we only keep TextFlow obsoletes
 			hResource.setObsolete(true);
 			hResource.setParent(null);
-//			session.update(hResource);
 		}
 		else{
 			session.delete(hResource);
