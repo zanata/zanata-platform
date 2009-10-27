@@ -154,6 +154,38 @@
       </build>
     </profile>
     
+    <profile>
+      <id>deploy-webtrans</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy-gwt-resources</id>
+                <phase>process-resources</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>${project.groupId}</groupId>
+                      <artifactId>flies-webtrans</artifactId>
+                      <version>${project.version}</version>
+                      <type>war</type>
+                      <overWrite>true</overWrite>
+                      <outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
+                      <includes>org.fedorahosted.flies.*</includes>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
 
     <profile>
       <!--
