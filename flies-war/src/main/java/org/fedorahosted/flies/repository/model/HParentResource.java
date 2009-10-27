@@ -29,7 +29,7 @@ public abstract class HParentResource extends HDocumentResource{
 
 //	@OneToMany(mappedBy="parent", cascade = CascadeType.ALL)
 	@OneToMany(cascade = CascadeType.ALL)
-	@IndexColumn(name = "parent_pos", base=0, nullable=true)
+	@IndexColumn(name = "pos", base=0, nullable=true)
 	@Where(clause="obsolete=0")
 //	@OnDelete(action=OnDeleteAction.CASCADE)
 	public List<HDocumentResource> getResources() {

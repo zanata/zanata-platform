@@ -226,7 +226,7 @@ public class HDocument extends AbstractFliesEntity{
 	
 	@OneToMany(cascade=CascadeType.ALL/*, mappedBy="document"*/)
 	@Where(clause="parent_id is null and obsolete=0")
-	@IndexColumn(name="document_pos", base=0, nullable=true)// see http://opensource.atlassian.com/projects/hibernate/browse/HHH-4390?focusedCommentId=30964&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#action_30964
+	@IndexColumn(name="pos", base=0, nullable=true)// see http://opensource.atlassian.com/projects/hibernate/browse/HHH-4390?focusedCommentId=30964&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#action_30964
 	@JoinColumn(name="document_id",nullable=true)
 	/**
 	 * Returns the <b>top-level</b> resources contained in the document.  Some 
