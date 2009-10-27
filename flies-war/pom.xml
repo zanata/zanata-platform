@@ -141,7 +141,7 @@
                       </fileset>
                     </sync>
                     <echo>Moving to ${deploy-path}</echo>
-                    <move file="${temp-deploy-path}" tofile="${deploy-path}" />
+                    <move file="${temp-deploy-path}" tofile="${deploy-path}" verbose="true"/>
                   </tasks>
                 </configuration>
                 <goals>
