@@ -45,6 +45,8 @@ public class PropWriter {
 			}
 			TextFlow textFlow = (TextFlow) resource;
 			props.setProperty(textFlow.getId(), textFlow.getContent());
+			if (textFlow.hasComment())
+				props.setComment(textFlow.getId(), textFlow.getComment().getValue());
 		}
 		// props.store(System.out, null);
 		PrintStream out = new PrintStream(new FileOutputStream(baseFile));

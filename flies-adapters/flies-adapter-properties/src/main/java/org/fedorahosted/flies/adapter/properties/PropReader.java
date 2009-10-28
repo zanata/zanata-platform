@@ -33,16 +33,6 @@ public class PropReader {
 	
 	private static final Logger log = LoggerFactory.getLogger(PropReader.class);
 
-	// private final MessageDigest md5;
-	//
-	// public PropReader() {
-	// try {
-	// this.md5 = MessageDigest.getInstance("MD5");
-	// } catch (NoSuchAlgorithmException e) {
-	// throw new RuntimeException(e);
-	// }
-	// }
-
 	public void extractAll(Document doc, File basePropertiesFile,
 			String[] locales) throws IOException {
 		InputStream baseInput = new BufferedInputStream(
@@ -96,15 +86,12 @@ public class PropReader {
 						new Object[]{key, localeId, doc.getId()});
 				continue;
 			}
-			TextFlowTarget textFlowTarget = new TextFlowTarget(); // TODO might
-																	// need id,
-																	// version
+			TextFlowTarget textFlowTarget = new TextFlowTarget();
 			textFlowTarget.setContent(val);
 			textFlowTarget.setId(id);
 			textFlowTarget.setResourceRevision(textFlow.getRevision());
 			textFlowTarget.setLang(localeId);
 			textFlowTarget.setState(ContentState.New);
-			// textFlowTarget.setVersion(version)
 			textFlow.addTarget(textFlowTarget);
 		}
 	}
@@ -119,24 +106,15 @@ public class PropReader {
 			String id = getID(key, val);
 			TextFlow textFlow = new TextFlow(id);
 			textFlow.setContent(val);
-			// FIXME fix OpenProps, then put this in:
-//			textFlow.getComments().getComments().add(new SimpleComment(null, props.getComment(key)));
+			String comment = props.getComment(key);
+			if (comment != null && comment.length() != 0)
+				textFlow.getOrAddComment().setValue(comment);
 			// textFlow.setLang(LocaleId.EN);
 			resources.add(textFlow);
 		}
 	}
 
-	// private String generateHash(String key){
-	// try {
-	// md5.reset();
-	// return new String(Hex.encodeHex(md5.digest(key.getBytes("UTF-8"))));
-	// } catch (Exception exc) {
-	// throw new RuntimeException(exc);
-	// }
-	// }
-
 	private String getID(String key, String val) {
-		// return generateHash(val); // TODO or just use key??
 		return key;
 	}
 
