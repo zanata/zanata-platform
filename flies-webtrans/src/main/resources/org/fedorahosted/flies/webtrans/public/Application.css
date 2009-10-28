@@ -113,6 +113,17 @@
 .gwt-ScrollTable .dataTable tr.odd-row{
 }
 
+.gwt-ScrollTable .dataTable tr.content-filter{
+}
+
+.gwt-ScrollTable .dataTable tr.content-filter-match{
+	background-color: light-green;
+}
+
+.gwt-ScrollTable .dataTable tr.content-filter-nomatch{
+	background-color: yellow;
+}
+
 /*
 .gwt-ScrollTable .dataTable td.highlighted {
   background: inherit;
