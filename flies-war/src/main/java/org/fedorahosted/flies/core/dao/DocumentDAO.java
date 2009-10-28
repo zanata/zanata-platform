@@ -5,8 +5,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.core.model.StatusCount;
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
+import org.fedorahosted.flies.repository.util.TranslationStatistics;
+import org.fedorahosted.flies.rest.dto.TextFlowTarget.ContentState;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.AutoCreate;
@@ -36,5 +39,32 @@ public class DocumentDAO {
 				"select tft.locale from HTextFlowTarget tft where tft.textFlow.document = :document")
 			.setParameter("document", hDoc).list();
 		return new HashSet<LocaleId>(locales);
+	}
+	
+	public TranslationStatistics getStatistics(long docId, LocaleId localeId) {
+		List<StatusCount> stats = session.createQuery(
+				"select new org.fedorahosted.flies.core.model.StatusCount(tft.state, count(tft)) " +
+				"from HTextFlowTarget tft " +
+				"where tft.textFlow.document.id = :id " +
+				"  and tft.locale = :locale "+  
+				"group by tft.state"
+			).setParameter("id", docId)
+			.setParameter("locale", localeId)
+			.setCacheable(true)
+			.list();
+		
+		
+		Long totalCount = (Long) session.createQuery("select count(tf) from HTextFlow tf where tf.document.id = :id")
+			.setParameter("id", docId)
+			.setCacheable(true).uniqueResult();
+		
+		TranslationStatistics stat = new TranslationStatistics();
+		for(StatusCount count: stats){
+			stat.set(count.status, count.count);
+		}
+		
+		stat.set(ContentState.New, totalCount - stat.getNotApproved());
+		
+		return stat;
 	}
 }
