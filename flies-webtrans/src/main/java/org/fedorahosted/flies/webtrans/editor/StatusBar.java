@@ -18,13 +18,14 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.widgetideas.client.ProgressBar;
 import com.google.gwt.widgetideas.client.ProgressBar.TextFormatter;
 
-public class StatusBar extends Composite implements StatusBarPresenter.Display, HasTransUnitCount, ClickHandler, MouseOverHandler, MouseOutHandler, HasClickHandlers, HasMouseOverHandlers, HasMouseOutHandlers {
+public class StatusBar extends Composite implements StatusBarPresenter.Display, ClickHandler, MouseOverHandler, MouseOutHandler,HasTransUnitCount,HasClickHandlers, HasMouseOverHandlers, HasMouseOutHandlers {
 	
 	public int fuzzy;
 	public int untranslated;
 	public int translated;
 	private final static int popupoffset = 35;
-	private final ProgressBar bar = new ProgressBar();
+	private final HorizontalPanel panel;
+	private final ProgressBar bar;
 	private PopupWindow popupWindow;
 	
 	private class PopupWindow extends DecoratedPopupPanel {
@@ -36,17 +37,14 @@ public class StatusBar extends Composite implements StatusBarPresenter.Display, 
 
 	
 	public StatusBar() {
-		//setFuzzy(20);
-		//setUntranslated(50);
-		//setTranslated(30);
 		
-		HorizontalPanel panel = new HorizontalPanel();
+		panel = new HorizontalPanel();
 		initWidget(panel);
-	    		
+	    bar = new ProgressBar();		
 		bar.setTextVisible(true); 
 		bar.setMaxProgress(100.0);
 		bar.setWidth("200px");
-		bar.setProgress(calcCurrentProgress());
+		setProgressBar();
 		
 		panel.add(bar);
 		addClickHandler(this);
@@ -54,7 +52,7 @@ public class StatusBar extends Composite implements StatusBarPresenter.Display, 
 		addMouseOutHandler(this);
 	}
 	
-	private double calcCurrentProgress() {
+	public double calcCurrentProgress() {
 		// TODO Auto-generated method stub
 		int fuzzy = getFuzzy();
 		int untrans = getUntranslated();
@@ -65,10 +63,15 @@ public class StatusBar extends Composite implements StatusBarPresenter.Display, 
 			return ((double) trans)/(fuzzy+untrans+trans)*100;
 		}
 	}
+	
+	public void setProgressBar() {
+		bar.setProgress(calcCurrentProgress());
+	}
 
 	@Override
 	public void onMouseOver(MouseOverEvent event) {
 		// TODO Auto-generated method stub
+		//setProgressBar();
 		popupWindow = new PopupWindow();
 		int top = bar.getAbsoluteTop();
 	    int left = bar.getAbsoluteLeft();
@@ -98,6 +101,7 @@ public class StatusBar extends Composite implements StatusBarPresenter.Display, 
 	public void onClick(ClickEvent event) {
 		// TODO Auto-generated method stub
 		if(bar.getTextFormatter()==null) {
+			 
 			TextFormatter formatter = new TextFormatter() {
 				protected String getText(ProgressBar
 				bar, double curProgress) {
@@ -105,10 +109,10 @@ public class StatusBar extends Composite implements StatusBarPresenter.Display, 
 				}
 				};
 			bar.setTextFormatter(formatter);
-			bar.setProgress(calcCurrentProgress());
+			setProgressBar();
 		} else {
 			bar.setTextFormatter(null);
-			bar.setProgress(calcCurrentProgress());
+			setProgressBar();
 		}
 	}
 
@@ -161,7 +165,7 @@ public class StatusBar extends Composite implements StatusBarPresenter.Display, 
 		// TODO Auto-generated method stub
 		this.untranslated = untranslated;
 	}
-
+	
 	@Override
 	public StatusBar getStatusBar() {
 		return this;
