@@ -22,6 +22,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <version.gwt>1.7.0</version.gwt>
+    <version.tennera>0.6</version.tennera>
   </properties>
   
   <build>
@@ -50,7 +51,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>gwt-maven-plugin</artifactId>
-          <version>1.2-SNAPSHOT</version>
+          <version>1.2-20091017.220620-9</version>
         </plugin>
       </plugins>
     </pluginManagement>
