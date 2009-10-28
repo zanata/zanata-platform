@@ -16,7 +16,7 @@ public class OrFilter<T> implements ContentFilter<T>{
 	
 	@Override
 	public boolean accept(T value) {
-		return filter1.accept(value) && filter2.accept(value);
+		return filter1.accept(value) || filter2.accept(value);
 	}
 	
 }
