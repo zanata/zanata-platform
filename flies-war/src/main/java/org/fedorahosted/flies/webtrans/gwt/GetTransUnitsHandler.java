@@ -40,12 +40,11 @@ public class GetTransUnitsHandler implements ActionHandler<GetTransUnits, GetTra
 	@In Session session;
 	
 	@Override
-	@Restrict("#{identity.loggedIn}")
 	public GetTransUnitsResult execute(GetTransUnits action, ExecutionContext context)
 			throws ActionException {
 
 		// restrict to logged in users
-		FliesIdentity.instance().checkLoggedIn();
+		//FliesIdentity.instance().checkLoggedIn();
 		
 		log.info("Fetching Transunits for {0}", action.getDocumentId());
 		
