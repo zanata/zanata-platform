@@ -30,12 +30,15 @@ public class GetStatusCountHandler implements ActionHandler<GetStatusCount, GetS
 	@Override
 	public GetStatusCountResult execute(GetStatusCount action,
 			ExecutionContext context) throws ActionException {
+		org.fedorahosted.flies.LocaleId fliesLocaleId = new org.fedorahosted.flies.LocaleId(action.getLocaleId().getValue());		
 		
 		List<StatusCount> stats = session.createQuery(
 				"select new org.fedorahosted.flies.core.model.StatusCount(tft.state, count(tft)) " +
 		        "from HTextFlowTarget tft where tft.textFlow.document.id = :id " +
+		        "  and tft.locale = :locale "+ 
 				"group by tft.state"
 			).setParameter("id", action.getDocumentId().getValue())
+			 .setParameter("locale", action.getLocaleId().getValue())
 			 .list();
 		
 		

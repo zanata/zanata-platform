@@ -1,5 +1,7 @@
 package org.fedorahosted.flies.webtrans.editor;
 
+import java.util.Locale;
+
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
@@ -8,10 +10,12 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.fedorahosted.flies.gwt.model.DocumentId;
+import org.fedorahosted.flies.gwt.model.LocaleId;
 import org.fedorahosted.flies.gwt.rpc.GetStatusCount;
 import org.fedorahosted.flies.gwt.rpc.GetStatusCountResult;
 import org.fedorahosted.flies.webtrans.client.DocumentSelectionEvent;
 import org.fedorahosted.flies.webtrans.client.DocumentSelectionHandler;
+import org.fedorahosted.flies.webtrans.client.WorkspaceContext;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -25,18 +29,20 @@ public class StatusBarPresenter extends WidgetPresenter<StatusBarPresenter.Displ
 
 	public static final Place PLACE = new Place("StatusBar");
 	private final DispatchAsync dispatcher;	
+	private final WorkspaceContext workspaceContext;
 	int translated;
 	int fuzzy;
 	int untranslated;
-	
+		
 	public interface Display extends WidgetDisplay {
 		StatusBar getStatusBar();
 	}
 
 	@Inject
-	public StatusBarPresenter(final Display display, final EventBus eventBus, DispatchAsync dispatcher) {
+	public StatusBarPresenter(WorkspaceContext workspaceContext, final Display display, final EventBus eventBus, DispatchAsync dispatcher) {
 		super(display, eventBus);
 		this.dispatcher = dispatcher;
+		this.workspaceContext = workspaceContext;
 	}
 	
 	@Override
@@ -50,7 +56,7 @@ public class StatusBarPresenter extends WidgetPresenter<StatusBarPresenter.Displ
 			@Override
 			public void onDocumentSelected(DocumentSelectionEvent event) {
 				// TODO switch WebTransTableModel to the new document
-				requestStatusCount(event.getDocumentId());
+				requestStatusCount(event.getDocumentId(), workspaceContext.getLocaleId());
 			}
 		}));
 	}
@@ -79,11 +85,10 @@ public class StatusBarPresenter extends WidgetPresenter<StatusBarPresenter.Displ
 		
 	}
 	
-	private void requestStatusCount(DocumentId id) {
-		dispatcher.execute(new GetStatusCount(id), new AsyncCallback<GetStatusCountResult>() {
+	private void requestStatusCount(DocumentId id, LocaleId localeid) {
+		dispatcher.execute(new GetStatusCount(id, localeid), new AsyncCallback<GetStatusCountResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				
 			}
 			@Override
 			public void onSuccess(GetStatusCountResult result) {
