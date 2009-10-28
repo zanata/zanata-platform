@@ -36,9 +36,6 @@
 			<pom refid="maven.project" />
 		</artifact:dependencies>
 
-		<!-- pick up the "for" task from ant-contrib -->
-		<taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="dependency.classpath" />
-
 		<!-- ant-gettext tasks -->
         <taskdef resource="org/fedorahosted/flies/client/ant/properties/antlib.xml"
             classpathref="dependency.classpath" />
