@@ -1,30 +1,27 @@
 package org.fedorahosted.flies.webtrans.editor.filter;
 
-public class OrFilter<T> implements ContentFilter<T>{
+import java.util.ArrayList;
 
-	private final ContentFilter<T> filter1;
-	private final ContentFilter<T> filter2;
-	
-	public OrFilter(ContentFilter<T> filter1, ContentFilter<T> filter2) {
-		this.filter1 = filter1;
-		this.filter2 = filter2;
+public class OrFilter<T> extends ArrayList<ContentFilter<T>> implements ContentFilter<T> {
+
+	private static final long serialVersionUID = 1L;
+
+	public OrFilter(ContentFilter<T> ... filters) {
+		for(ContentFilter<T> filter : filters) {
+			add(filter);
+		}
 	}
 	
-	public static <T> OrFilter<T> of(ContentFilter<T> filter1, ContentFilter<T> filter2){
-		return new OrFilter<T>(filter1, filter2); 
+	public static <T> OrFilter<T> of(ContentFilter<T> ... filters){
+		return new OrFilter<T>(filters); 
 	}
 	
 	@Override
 	public boolean accept(T value) {
-		return filter1.accept(value) || filter2.accept(value);
+		for (ContentFilter<T> filter : this) {
+			if(filter.accept(value)) return true;
+		}
+		return false;
 	}
-	
-	public ContentFilter<T> getFilter1() {
-		return filter1;
-	}
-	
-	public ContentFilter<T> getFilter2() {
-		return filter2;
-	}
-	
+
 }
