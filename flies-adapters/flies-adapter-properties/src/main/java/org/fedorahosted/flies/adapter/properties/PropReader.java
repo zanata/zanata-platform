@@ -92,6 +92,9 @@ public class PropReader {
 			textFlowTarget.setResourceRevision(textFlow.getRevision());
 			textFlowTarget.setLang(localeId);
 			textFlowTarget.setState(ContentState.New);
+			String comment = props.getComment(key);
+			if (comment != null && comment.length() != 0)
+				textFlowTarget.getOrAddComment().setValue(comment);
 			textFlow.addTarget(textFlowTarget);
 		}
 	}
