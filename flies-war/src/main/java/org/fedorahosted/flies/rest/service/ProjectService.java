@@ -70,14 +70,13 @@ public class ProjectService{
 
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
-	public Project get() {
+	public Response get() {
 
 		HProject hProject = projectDAO.getBySlug(projectSlug);
 		if(hProject == null)
-			// TODO use a Response, not an exception
-			throw new WebApplicationException(Status.NOT_FOUND);
+			return Response.status(Status.NOT_FOUND).build();
 		
-		return toMini(hProject);
+		return Response.ok(toMini(hProject)).build();
 	}
 
 	private static Project toMini(HProject hProject){
@@ -121,7 +120,7 @@ public class ProjectService{
 		
 		try{
 			session.flush();
-			return Response.created( new URI("/projects/p/"+hProject.getSlug()) ).build();
+			return Response.ok().build();
 		}
         catch(InvalidStateException e){
         	return Response.status(Status.BAD_REQUEST).build();
