@@ -12,10 +12,6 @@ import org.fedorahosted.flies.webtrans.client.DocumentListView;
 import org.fedorahosted.flies.webtrans.client.FlatFolderDocNameMapper;
 import org.fedorahosted.flies.webtrans.client.LoginPanel;
 import org.fedorahosted.flies.webtrans.client.LoginPresenter;
-import org.fedorahosted.flies.webtrans.client.FilterPresenter;
-import org.fedorahosted.flies.webtrans.client.FilterView;
-import org.fedorahosted.flies.webtrans.client.PhraseFilterPresenter;
-import org.fedorahosted.flies.webtrans.client.PhraseFilterWidget;
 import org.fedorahosted.flies.webtrans.client.WestNavigationPresenter;
 import org.fedorahosted.flies.webtrans.client.WestNavigationView;
 import org.fedorahosted.flies.webtrans.client.WorkspaceUsersPresenter;
@@ -37,6 +33,10 @@ import org.fedorahosted.flies.webtrans.editor.WebTransEditorPresenter;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorView;
 import org.fedorahosted.flies.webtrans.editor.WebTransScrollTable;
 import org.fedorahosted.flies.webtrans.editor.WebTransTableModel;
+import org.fedorahosted.flies.webtrans.editor.filter.FilterPresenter;
+import org.fedorahosted.flies.webtrans.editor.filter.FilterView;
+import org.fedorahosted.flies.webtrans.editor.filter.PhraseFilterPresenter;
+import org.fedorahosted.flies.webtrans.editor.filter.PhraseFilterWidget;
 
 import com.google.inject.Singleton;
 
