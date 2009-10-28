@@ -1,11 +1,15 @@
 package org.fedorahosted.flies.adapter.properties;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.LocaleId;
@@ -23,32 +27,40 @@ public class PropReaderTests {
 		// ProjectPackage.registerPartFactory(PotHeaderPart.FACTORY);
 		// ProjectPackage.registerPartFactory(PotEntriesDataPart.FACTORY);
 	}
+	
+	PropReader propReader = new PropReader();
 
 	@Before
 	public void setup() throws IOException {
 	}
 
 	@Test
-	public void extractTemplateThenAddATarget() throws Exception {
-		Document doc = new Document("test.properties", ContentType.TextPlain);
+	public void roundtripPropsToDocXmlToProps() throws Exception {
+		Document docOut = new Document("test.properties", ContentType.TextPlain);
 		InputStream testStream = getResourceAsStream("test.properties");
 
-		PropReader PropReader = new PropReader();
-
-		PropReader.extractTemplate(doc, new InputSource(testStream));
+		propReader.extractTemplate(docOut, new InputSource(testStream));
 		String[] locales = new String[] { "fr" };
 		for (String locale : locales) {
-			InputStream testFRStream = getResourceAsStream("test_fr.properties");
-			PropReader.extractTarget(doc, new InputSource(testFRStream),
+			InputStream targetStream = getResourceAsStream("test_"+locale+".properties");
+			propReader.extractTarget(docOut, new InputSource(targetStream),
 					new LocaleId(locale));
 		}
-		JAXBContext jc = JAXBContext.newInstance(Document.class.getPackage()
-				.getName());
-		// JAXBContext jc = JAXBContext.newInstance(Document.class,
-		// TextFlowTargets.class);
-		Marshaller m = jc.createMarshaller();
-		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-		m.marshal(doc, System.out);
+		JAXBContext jc = JAXBContext.newInstance(Document.class);
+//		JAXBContext jc = JAXBContext.newInstance(Document.class.getPackage()
+//				.getName());
+		Marshaller marshal = jc.createMarshaller();
+		StringWriter sw = new StringWriter();
+		marshal.marshal(docOut, sw);
+		marshal.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+		marshal.marshal(docOut, System.out);
+		
+		Unmarshaller unmarshal = jc.createUnmarshaller();
+		Document docIn = (Document) unmarshal.unmarshal(new StringReader(sw.toString()));
+		
+		PropWriter.write(docIn, new File("target/test-output"));
+		
+		// TODO check output files against input
 	}
 
 	private InputStream getResourceAsStream(String relativeResourceName)
