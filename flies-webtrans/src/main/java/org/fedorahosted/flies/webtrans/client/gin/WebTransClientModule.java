@@ -12,8 +12,10 @@ import org.fedorahosted.flies.webtrans.client.DocumentListView;
 import org.fedorahosted.flies.webtrans.client.FlatFolderDocNameMapper;
 import org.fedorahosted.flies.webtrans.client.LoginPanel;
 import org.fedorahosted.flies.webtrans.client.LoginPresenter;
-import org.fedorahosted.flies.webtrans.client.TransUnitInfoPresenter;
-import org.fedorahosted.flies.webtrans.client.TransUnitInfoView;
+import org.fedorahosted.flies.webtrans.client.FilterPresenter;
+import org.fedorahosted.flies.webtrans.client.FilterView;
+import org.fedorahosted.flies.webtrans.client.PhraseFilterPresenter;
+import org.fedorahosted.flies.webtrans.client.PhraseFilterWidget;
 import org.fedorahosted.flies.webtrans.client.WestNavigationPresenter;
 import org.fedorahosted.flies.webtrans.client.WestNavigationView;
 import org.fedorahosted.flies.webtrans.client.WorkspaceUsersPresenter;
@@ -57,7 +59,8 @@ public class WebTransClientModule extends AbstractPresenterModule {
 		bind(Pager.class).in(Singleton.class);
 		
 		bindPresenter(DocumentListPresenter.class, DocumentListPresenter.Display.class, DocumentListView.class);
-		bindPresenter(TransUnitInfoPresenter.class, TransUnitInfoPresenter.Display.class, TransUnitInfoView.class);
+		bindPresenter(FilterPresenter.class, FilterPresenter.Display.class, FilterView.class);
+		bindPresenter(PhraseFilterPresenter.class, PhraseFilterPresenter.Display.class, PhraseFilterWidget.class);
 		bindPresenter(TransUnitListPresenter.class, TransUnitListPresenter.Display.class, WebTransScrollTable.class);
 		bindPresenter(WestNavigationPresenter.class, WestNavigationPresenter.Display.class, WestNavigationView.class);
 		bindPresenter(WorkspaceUsersPresenter.class, WorkspaceUsersPresenter.Display.class, WorkspaceUsersView.class);

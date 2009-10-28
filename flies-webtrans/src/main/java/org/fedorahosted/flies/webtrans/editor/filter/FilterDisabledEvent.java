@@ -23,7 +23,7 @@ public class FilterDisabledEvent extends GwtEvent<FilterDisabledEventHandler>{
 	
 	@Override
 	protected void dispatch(FilterDisabledEventHandler handler) {
-		handler.onUserLogout(this);
+		handler.onFilterDisabled(this);
 	}
 
 	@Override

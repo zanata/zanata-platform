@@ -1,6 +1,5 @@
 package org.fedorahosted.flies.webtrans.editor.filter;
 
-import org.fedorahosted.flies.gwt.model.Person;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 
 import com.google.gwt.event.shared.GwtEvent;

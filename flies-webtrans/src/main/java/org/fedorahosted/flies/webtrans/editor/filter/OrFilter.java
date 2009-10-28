@@ -19,4 +19,12 @@ public class OrFilter<T> implements ContentFilter<T>{
 		return filter1.accept(value) || filter2.accept(value);
 	}
 	
+	public ContentFilter<T> getFilter1() {
+		return filter1;
+	}
+	
+	public ContentFilter<T> getFilter2() {
+		return filter2;
+	}
+	
 }

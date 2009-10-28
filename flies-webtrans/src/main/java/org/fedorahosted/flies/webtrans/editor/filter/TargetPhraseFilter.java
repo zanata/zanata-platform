@@ -4,7 +4,7 @@ import org.fedorahosted.flies.gwt.model.TransUnit;
 
 public class TargetPhraseFilter implements ContentFilter<TransUnit> {
 
-	private final String phrase;
+	private String phrase;
 	
 	public TargetPhraseFilter(String phrase) {
 		this.phrase = phrase;
@@ -19,4 +19,11 @@ public class TargetPhraseFilter implements ContentFilter<TransUnit> {
 		return new TargetPhraseFilter(phrase);
 	}
 
+	public String getPhrase() {
+		return phrase;
+	}
+	
+	public void setPhrase(String phrase) {
+		this.phrase = phrase;
+	}
 }
