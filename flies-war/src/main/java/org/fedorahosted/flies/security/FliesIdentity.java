@@ -21,6 +21,7 @@ import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.log.LogProvider;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
+import org.jboss.seam.security.NotLoggedInException;
 
 @Name("org.jboss.seam.security.identity")
 @Scope(SESSION)
@@ -60,6 +61,11 @@ public class FliesIdentity extends Identity {
 		}
 
 		return instance;
+	}
+	
+	public void checkLoggedIn(){
+		if(!isLoggedIn())
+			throw new NotLoggedInException();
 	}
 
 }

@@ -3,6 +3,8 @@ package org.fedorahosted.flies.webtrans.editor;
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.fedorahosted.flies.gwt.auth.AuthenticationError;
+import org.fedorahosted.flies.gwt.auth.AuthorizationError;
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.gwt.rpc.FliesSecurityException;
@@ -89,11 +91,14 @@ public class WebTransTableModel extends MutableTableModel<TransUnit> {
 			}
 			@Override
 			public void onFailure(Throwable caught) {
-				if(caught instanceof FliesSecurityException) {
+				if(caught instanceof AuthenticationError) {
 					eventBus.fireEvent( new NotificationEvent(Severity.Error, "Not logged in!"));
 				}
-				else{
-					eventBus.fireEvent( new NotificationEvent(Severity.Error, "Failed to load data from Serverx"));
+				else if(caught instanceof AuthorizationError) {
+					eventBus.fireEvent( new NotificationEvent(Severity.Error, "Failed to load data from Server"));
+				}
+				else {
+					eventBus.fireEvent( new NotificationEvent(Severity.Error, "An unknown error occured"));
 				}
 			}
 		});

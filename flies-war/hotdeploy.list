@@ -5,3 +5,6 @@
 # **/rest/service/*Service.class
 
 **/rest/service/*ActionImpl.class
+
+# GWT action handlers
+**webtrans/gwt/*Handler.class
