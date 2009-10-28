@@ -16,11 +16,12 @@ import com.google.inject.Inject;
 public class WebTransEditorFooter extends HorizontalPanel{
 
 	private final Pager pager;
+	private final StatusBar bar;
 	//private final Label status;
 	private final Label messages;
 	
 	@Inject
-	public WebTransEditorFooter(Pager pager) {
+	public WebTransEditorFooter(Pager pager, StatusBar statusBar) {
 		setStylePrimaryName("WebTransEditor");
 		addStyleDependentName("footer");
 		this.pager = pager;
@@ -37,7 +38,7 @@ public class WebTransEditorFooter extends HorizontalPanel{
 		setCellHorizontalAlignment(pager, HorizontalPanel.ALIGN_CENTER);
 		
 		//status = new Label("[Status goes here]");
-		StatusBar bar = new StatusBar();
+		bar = statusBar;
 		bar.setWidth("200px");
 		add(bar);
 		setCellHorizontalAlignment(bar, HorizontalPanel.ALIGN_RIGHT);

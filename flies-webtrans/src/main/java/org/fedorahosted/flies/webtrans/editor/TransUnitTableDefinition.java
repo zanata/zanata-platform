@@ -13,22 +13,17 @@ import com.google.gwt.gen2.table.client.TableDefinition.AbstractRowView;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.inject.Inject;
 import com.weborient.codemirror.client.HighlightingLabel;
 import com.weborient.codemirror.client.ParserSyntax;
 
 public class TransUnitTableDefinition extends DefaultTableDefinition<TransUnit> {
 	
 	//private final HasValue<ParserSyntax> parserSyntax;
-	
-	public TransUnitTableDefinition() {//(HasValue<ParserSyntax> parserSyntax) {
-		// Set the row renderer
-		setRowRenderer( new RowRenderer<TransUnit>() {
-			@Override
-			public void renderRowValue(TransUnit rowValue,
-					AbstractRowView<TransUnit> view) {
-			      view.setStyleName( view.getRowIndex() % 2 == 0 ? "odd-row" : "even-row");
-			}
-		});
+
+	@Inject
+	public TransUnitTableDefinition(TransUnitRowRenderer rowRenderer) {//(HasValue<ParserSyntax> parserSyntax) {
+		setRowRenderer(rowRenderer);
 		//this.parserSyntax = parserSyntax;
 
 		addColumnDefinition(new SourceColumnDefinition());

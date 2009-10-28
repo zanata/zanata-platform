@@ -13,13 +13,21 @@ import org.fedorahosted.flies.gwt.rpc.GetStatusCountResult;
 import org.fedorahosted.flies.webtrans.client.DocumentSelectionEvent;
 import org.fedorahosted.flies.webtrans.client.DocumentSelectionHandler;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.widgetideas.client.ProgressBar;
+import com.google.gwt.widgetideas.client.ProgressBar.TextFormatter;
 import com.google.inject.Inject;
 
 public class StatusBarPresenter extends WidgetPresenter<StatusBarPresenter.Display>{
 
 	public static final Place PLACE = new Place("StatusBar");
 	private final DispatchAsync dispatcher;	
+	int translated;
+	int fuzzy;
+	int untranslated;
 	
 	public interface Display extends WidgetDisplay {
 		StatusBar getStatusBar();
@@ -38,7 +46,6 @@ public class StatusBarPresenter extends WidgetPresenter<StatusBarPresenter.Displ
 
 	@Override
 	protected void onBind() {
-		// TODO Auto-generated method stub
 		registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {
 			@Override
 			public void onDocumentSelected(DocumentSelectionEvent event) {
@@ -81,9 +88,8 @@ public class StatusBarPresenter extends WidgetPresenter<StatusBarPresenter.Displ
 			@Override
 			public void onSuccess(GetStatusCountResult result) {
 				// TODO Auto-generated method stub
-				display.getStatusBar().setFuzzy((int)result.getFuzzy());
-				display.getStatusBar().setTranslated((int)result.getTranslated());
-				display.getStatusBar().setUntranslated((int)result.getUntranslated());
+				display.getStatusBar().setStatus((int) result.getFuzzy(), (int)result.getTranslated(), (int)result.getUntranslated());
+				display.getStatusBar().setProgressBar();
 			}
 		});
 	}

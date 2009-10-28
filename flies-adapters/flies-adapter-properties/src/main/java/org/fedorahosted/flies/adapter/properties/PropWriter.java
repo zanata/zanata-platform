@@ -45,7 +45,7 @@ public class PropWriter {
 			}
 			TextFlow textFlow = (TextFlow) resource;
 			props.setProperty(textFlow.getId(), textFlow.getContent());
-			if (textFlow.hasComment())
+			if (textFlow.hasComment() && textFlow.getComment().getValue() != null)
 				props.setComment(textFlow.getId(), textFlow.getComment().getValue());
 		}
 		// props.store(System.out, null);
@@ -69,6 +69,8 @@ public class PropWriter {
 						}
 						targetProp.setProperty(resource.getId(), target
 								.getContent());
+						if (target.hasComment() && target.getComment().getValue() != null)
+							targetProp.setComment(resource.getId(), target.getComment().getValue());
 					}
 				} else {
 					throw new RuntimeException("unsupported Document element: "+resource.getClass());

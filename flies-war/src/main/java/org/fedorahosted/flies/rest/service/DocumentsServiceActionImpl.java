@@ -85,7 +85,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
 //					getProjectSlug(), getIterationSlug()));
 //			documentConverter.addLinks(doc, docUri, iterationUri );
     	}
-    	log.info("HTTP GET result :\n"+result);
+    	log.debug("HTTP GET result :\n"+result);
     	return result;
     }
 

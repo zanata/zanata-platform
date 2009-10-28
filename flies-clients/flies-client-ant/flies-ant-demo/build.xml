@@ -32,14 +32,14 @@
 		<verifyprop dir1="test1" dir2="${out.dir}/test3b" />
 		<!-- If we get this far, the output files are considered equivalent
 		     to the source files by java.util.Properties (ignoring comments).
-		     This will test for identical text as well.
+		     This will test for identical text/comments as well.
+        -->
 		<exec executable="diff">
-			<arg value="- -unified"/>
-			<arg value="- -recursive"/>
+			<arg value="--unified"/>
+			<arg value="--recursive"/>
 			<arg value="test1"/>
 			<arg value="${out.dir}/test3b"/>
 		</exec>
-        -->
 	</target>
 	
 </project>

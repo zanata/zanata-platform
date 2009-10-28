@@ -25,7 +25,7 @@
     <dependency>
 	  <groupId>org.fedorahosted.tennera</groupId>
 	  <artifactId>ant-gettext</artifactId>
-	  <version>0.6</version>
+	  <version>${version.tennera}</version>
     </dependency>
   </dependencies>
 

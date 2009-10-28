@@ -91,7 +91,10 @@ public class PropReader {
 			textFlowTarget.setId(id);
 			textFlowTarget.setResourceRevision(textFlow.getRevision());
 			textFlowTarget.setLang(localeId);
-			textFlowTarget.setState(ContentState.New);
+			textFlowTarget.setState(ContentState.New); // FIXME
+			String comment = props.getComment(key);
+			if (comment != null && comment.length() != 0)
+				textFlowTarget.getOrAddComment().setValue(comment);
 			textFlow.addTarget(textFlowTarget);
 		}
 	}
