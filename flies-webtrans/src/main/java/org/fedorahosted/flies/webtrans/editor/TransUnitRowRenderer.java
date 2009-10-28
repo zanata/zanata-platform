@@ -12,7 +12,7 @@ import com.google.inject.Inject;
 
 public class TransUnitRowRenderer implements RowRenderer<TransUnit>{
 	
-	private ContentFilter<TransUnit> contentFilter = PhraseFilter.from("ur it");
+	private ContentFilter<TransUnit> contentFilter = null;
 	
 	@Override
 	public void renderRowValue(TransUnit rowValue,

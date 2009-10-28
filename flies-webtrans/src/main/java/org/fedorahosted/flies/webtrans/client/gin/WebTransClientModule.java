@@ -54,9 +54,6 @@ public class WebTransClientModule extends AbstractPresenterModule {
 		bind(CachedWebTransTableModel.class).in(Singleton.class);
 		bind(TransUnitTableDefinition.class).in(Singleton.class);
 		bind(WebTransScrollTable.class).in(Singleton.class);
-		bind(WebTransEditorHeader.class).in(Singleton.class);
-		bind(WebTransEditorFooter.class).in(Singleton.class);
-		bind(Pager.class).in(Singleton.class);
 		
 		bind(StatusBar.class).in(Singleton.class);
 		

@@ -13,13 +13,17 @@ public class WebTransEditorView extends DecoratorPanel implements WebTransEditor
 	private final WebTransEditorHeader header;
 	private final WebTransEditorFooter footer;
 	private final WebTransScrollTable scrollTable;
+	private final Pager pager;
+	private final StatusBar statusBar;
 
 	@Inject
-	public WebTransEditorView(WebTransEditorHeader header, WebTransEditorFooter footer, WebTransScrollTable table) {
+	public WebTransEditorView(WebTransScrollTable table, Pager pager, StatusBar statusBar) {
 		addStyleName("TransPanel-Outer");
-		this.header = header;
-		this.footer = footer;
 		this.scrollTable = table;
+		this.pager = pager;
+		this.statusBar = statusBar;
+		this.header = new WebTransEditorHeader();
+		this.footer = new WebTransEditorFooter(pager, statusBar);
 	
 		VerticalPanel verticalPanel = new VerticalPanel();
 		verticalPanel.addStyleName("TransPanel");
@@ -50,12 +54,6 @@ public class WebTransEditorView extends DecoratorPanel implements WebTransEditor
 	@Override
 	public void stopProcessing() {
 	}
-	
-	// will refactor when we have a presenter for header..
-	@Override
-	public Pager getPager() {
-		return footer.getPager();
-	}
 
 	@Override
 	public WebTransScrollTable getScrollTable() {
@@ -65,6 +63,16 @@ public class WebTransEditorView extends DecoratorPanel implements WebTransEditor
 	@Override
 	public CachedWebTransTableModel getCachedTableModel() {
 		return scrollTable.getCachedTableModel();
+	}
+	
+	@Override
+	public Pager getPager() {
+		return pager;
+	}
+	
+	@Override
+	public StatusBar getStatusBar() {
+		return statusBar;
 	}
 	
 }

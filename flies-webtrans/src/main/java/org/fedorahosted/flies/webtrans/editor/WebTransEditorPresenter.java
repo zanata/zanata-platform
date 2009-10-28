@@ -26,6 +26,7 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 
 	public interface Display extends WidgetDisplay{
 		Pager getPager();
+		StatusBar getStatusBar();
 		WebTransScrollTable getScrollTable();
 		CachedWebTransTableModel getCachedTableModel();
 	}
