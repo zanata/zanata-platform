@@ -69,13 +69,38 @@ public class DocumentService {
     private Log log;
     
 	
+    private HProjectContainer projectContainer;
+	
+	private String getIterationSlug() {
+		return iterationSlug;
+	}
+
+	private String getProjectSlug() {
+		return projectSlug;
+	}
+
+	private HProjectContainer getContainer() {
+		if (projectContainer != null)
+			return projectContainer;
+		projectContainer = projectContainerDAO.getBySlug(
+				getProjectSlug(), 
+				getIterationSlug());
+		return projectContainer;
+	}
+
+	private Response containerNotFound() {
+		return Response.status(Status.NOT_FOUND).entity("Project Container not found").build();
+	}
+    
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaTypes.APPLICATION_FLIES_DOCUMENT_JSON, 
 				MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response get(
 			@QueryParam("resources") @DefaultValue("") ContentQualifier resources) {
 		
-		HProjectContainer hProjectContainer = getContainerOrFail();
+		HProjectContainer hProjectContainer = getContainer();
+		if(hProjectContainer == null)
+			return containerNotFound();
 		String docId = URIHelper.convertFromDocumentURIId(documentId);
 		
 		HDocument hDoc = documentDAO.getByDocId(hProjectContainer, docId);
@@ -109,7 +134,9 @@ public class DocumentService {
 			return Response.status(Status.BAD_REQUEST).entity("Invalid document Id").build();
 		}
 
-		HProjectContainer hProjectContainer = getContainerOrFail();
+		HProjectContainer hProjectContainer = getContainer();
+		if(hProjectContainer == null)
+			return containerNotFound();
 
 		HDocument hDoc = documentDAO.getByDocId(hProjectContainer, hDocId);
 		
@@ -187,14 +214,5 @@ public class DocumentService {
 		return Response.ok().entity(new Container("id")).build();
 	}
 	
-	private HProjectContainer getContainerOrFail(){
-		HProjectContainer hProjectContainer = projectContainerDAO.getBySlug(projectSlug, iterationSlug); 
-		
-		if(hProjectContainer == null)
-			throw new WebApplicationException(
-					Response.status(Status.NOT_FOUND).entity("Project Container not found").build());
-		
-		return hProjectContainer;
-	}
 
 }

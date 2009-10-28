@@ -58,13 +58,12 @@ public class DocumentsService {
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
 	@Restrict("#{identity.loggedIn}")
 	public Response post(Documents documents) {
-	    impl.post(documents);
-	    return Response.ok().build();
+	    return impl.post(documents);
 	}
 
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
-	public Documents get() {
+	public Response get() {
 	    return impl.get();
 	}
 

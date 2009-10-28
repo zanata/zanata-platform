@@ -90,7 +90,7 @@ public class ProjectServiceSeamTest extends DBUnitSeamTest {
 		
 		Response response = projectService.put(project);
 				
-		assertThat( response.getStatus(), is( Status.CREATED.getStatusCode()));
+		assertThat( response.getStatus(), is( Status.OK.getStatusCode()));
 		
 		ClientResponse<Project> projectResponse = projectService.get();
 		

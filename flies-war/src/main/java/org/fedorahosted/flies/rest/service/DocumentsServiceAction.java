@@ -6,9 +6,9 @@ import org.fedorahosted.flies.rest.dto.Documents;
 
 public interface DocumentsServiceAction {
 
-    public Documents get();
+    public Response get();
 
-    public void post(Documents docs);
+    public Response post(Documents docs);
 
     public Response put(Documents docs);
 

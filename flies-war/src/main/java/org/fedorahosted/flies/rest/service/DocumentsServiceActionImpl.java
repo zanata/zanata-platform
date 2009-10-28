@@ -49,6 +49,8 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     private DocumentConverter documentConverter;
     @In 
     private Session session;
+    
+    private HProjectContainer projectContainer;
 	
 	private String getIterationSlug() {
 		return documentsService.getIterationSlug();
@@ -59,19 +61,24 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
 	}
 
 	private HProjectContainer getContainer() {
-		HProjectContainer result = projectContainerDAO.getBySlug(
+		if (projectContainer != null)
+			return projectContainer;
+		projectContainer = projectContainerDAO.getBySlug(
 				getProjectSlug(), 
 				getIterationSlug());
-		if (result == null) {
-			// TODO use a Response, not an exception
-			throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Container not found").build());
-		}
-		return result;
+		return projectContainer;
+	}
+
+	private Response containerNotFound() {
+		return Response.status(Status.NOT_FOUND).entity("Project Container not found").build();
 	}
     
-    public Documents get() {
+	@Override
+    public Response get() {
     	log.debug("HTTP GET {0}", documentsService.getRequest().getRequestURL());
 //    	URI baseUri = documentsService.getUri().getBaseUri();
+    	if (getContainer() == null)
+    		return containerNotFound();
     	Collection<HDocument> hdocs = getContainer().getDocuments().values();
     	Documents result = new Documents();
 	
@@ -86,12 +93,15 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
 //			documentConverter.addLinks(doc, docUri, iterationUri );
     	}
     	log.debug("HTTP GET result :\n"+result);
-    	return result;
+    	return Response.ok(result).build();
     }
 
-    public void post(Documents docs) {
+	@Override
+    public Response post(Documents docs) {
     	log.debug("HTTP POST {0} : \n{1}",documentsService.getRequest().getRequestURL(), docs);
     	HProjectContainer hContainer = getContainer();
+    	if (hContainer == null)
+    		return containerNotFound();
     	Map<String, HDocument> docMap = hContainer.getDocuments();
     	for (Document doc: docs.getDocuments()) {
 			// if doc already exists, load it and update it, but don't create it
@@ -111,12 +121,15 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     		documentConverter.copy(doc, hDoc, true);
     	}
     	session.flush();
+    	return Response.ok().build();
     }
     
-    
+	@Override
     public Response put(Documents docs) {
     	log.debug("HTTP PUT {0} : \n{1}",documentsService.getRequest().getRequestURL(), docs);
     	HProjectContainer hContainer = getContainer();
+    	if (hContainer == null)
+    		return containerNotFound();
     	Map<String, HDocument> docMap = hContainer.getDocuments();
     	// any Docs still in this set at the end will be marked obsolete
     	Set<HDocument> obsoleteDocs = new HashSet<HDocument>(docMap.values());
@@ -151,8 +164,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
 			} catch (InvalidStateException e) {
 				String message = "Document with id '"+doc.getId()+"' is invalid: "+Arrays.asList(e.getInvalidValues());
 				log.error(message+'\n'+doc, e);
-				throw new WebApplicationException(
-						Response.status(Status.BAD_REQUEST).entity(message).build());
+				return Response.status(Status.BAD_REQUEST).entity(message).build();
 			}
 //			session.save(hDoc);
     	}
