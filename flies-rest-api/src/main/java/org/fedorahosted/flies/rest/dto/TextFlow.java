@@ -125,6 +125,11 @@ public class TextFlow extends AbstractBaseResource implements DocumentResource, 
 		return getExtension(SimpleComment.class) != null;
 	}
 	
+	/**
+	 * This represents a comment provided by the source (eg an extracted 
+	 * programmer comment, or a comment in a Properties file for the default 
+	 * locale).  It is not expected to be modified by flies.
+	 */
 	public SimpleComment getComment(){
 		return getExtension(SimpleComment.class);
 	}

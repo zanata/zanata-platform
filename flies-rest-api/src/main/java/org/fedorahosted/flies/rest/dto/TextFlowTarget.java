@@ -59,6 +59,10 @@ public class TextFlowTarget implements IExtensible{
 		return getExtension(SimpleComment.class) != null;
 	}
 	
+	/**
+	 * This represents a comment entered by a translator, whether in flies
+	 * or imported from a PO/Properties file.
+	 */
 	public SimpleComment getComment() {
 		return getExtension(SimpleComment.class);
 	}
