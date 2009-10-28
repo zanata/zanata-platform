@@ -17,7 +17,6 @@
     <version.resteasy>1.1.GA</version.resteasy>
     <version.drools>5.0.1</version.drools>
     <version.richfaces>3.3.1.GA</version.richfaces>
-    <version.tennera>0.6-SNAPSHOT</version.tennera>
     <version.jboss.embedded>beta3.SP10</version.jboss.embedded>
     
     <!-- application properties -->
