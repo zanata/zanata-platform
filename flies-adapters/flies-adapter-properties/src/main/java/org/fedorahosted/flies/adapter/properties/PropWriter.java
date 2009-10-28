@@ -70,7 +70,7 @@ public class PropWriter {
 						targetProp.setProperty(resource.getId(), target
 								.getContent());
 						if (target.hasComment() && target.getComment().getValue() != null)
-							props.setComment(resource.getId(), target.getComment().getValue());
+							targetProp.setComment(resource.getId(), target.getComment().getValue());
 					}
 				} else {
 					throw new RuntimeException("unsupported Document element: "+resource.getClass());
