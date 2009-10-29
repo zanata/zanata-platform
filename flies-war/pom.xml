@@ -178,7 +178,7 @@
                       <type>war</type>
                       <overWrite>true</overWrite>
                       <outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
-                      <includes>org.fedorahosted.flies.*</includes>
+                      <includes>org.fedorahosted.flies.*/**</includes>
                     </artifactItem>
                   </artifactItems>
                 </configuration>
