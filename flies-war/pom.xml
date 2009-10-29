@@ -155,6 +155,9 @@
     
     <profile>
       <id>deploy-webtrans</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
       <build>
         <plugins>
           <plugin>
