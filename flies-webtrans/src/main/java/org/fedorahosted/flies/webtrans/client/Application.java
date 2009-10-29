@@ -1,5 +1,8 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import net.customware.gwt.presenter.client.place.PlaceManager;
+import net.customware.gwt.presenter.client.place.PlaceRequestEvent;
+
 import org.fedorahosted.flies.webtrans.client.gin.WebTransGinjector;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -27,8 +30,13 @@ public class Application implements EntryPoint{
 			return;
 		}
 		final AppPresenter appPresenter = injector.getAppPresenter();
-		appPresenter.go(RootPanel.get());
+		appPresenter.bind();
+		RootPanel.get().add( appPresenter.getDisplay().asWidget() );
 		
+        // Needed because of this bug:
+        // http://code.google.com/p/gwt-presenter/issues/detail?id=6
+        PlaceManager placeManager = injector.getPlaceManager();
+        injector.getEventBus().addHandler( PlaceRequestEvent.getType(), placeManager );
 
 		injector.getPlaceManager().fireCurrentPlace();
 		

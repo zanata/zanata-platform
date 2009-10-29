@@ -7,6 +7,7 @@ import net.customware.gwt.presenter.client.gin.AbstractPresenterModule;
 import net.customware.gwt.presenter.client.place.PlaceManager;
 
 import org.fedorahosted.flies.webtrans.client.AppPresenter;
+import org.fedorahosted.flies.webtrans.client.AppView;
 import org.fedorahosted.flies.webtrans.client.DocumentListPresenter;
 import org.fedorahosted.flies.webtrans.client.DocumentListView;
 import org.fedorahosted.flies.webtrans.client.FlatFolderDocNameMapper;
@@ -57,6 +58,8 @@ public class WebTransClientModule extends AbstractPresenterModule {
 		
 		bind(StatusBar.class).in(Singleton.class);
 		
+		bindPresenter(AppPresenter.class, AppPresenter.Display.class, AppView.class);
+		
 		bindPresenter(DocumentListPresenter.class, DocumentListPresenter.Display.class, DocumentListView.class);
 		bindPresenter(FilterPresenter.class, FilterPresenter.Display.class, FilterView.class);
 		bindPresenter(PhraseFilterPresenter.class, PhraseFilterPresenter.Display.class, PhraseFilterWidget.class);
@@ -66,10 +69,8 @@ public class WebTransClientModule extends AbstractPresenterModule {
 		bindPresenter(WebTransEditorPresenter.class, WebTransEditorPresenter.Display.class, WebTransEditorView.class);
 		bindPresenter(LoginPresenter.class, LoginPresenter.Display.class, LoginPanel.class);
 		bindPresenter(StatusBarPresenter.class, StatusBarPresenter.Display.class, StatusBar.class);
-
 		
 		bind(HasPageNavigation.class).to(WebTransScrollTable.class).in(Singleton.class);
-		bind(AppPresenter.class).in(Singleton.class);
 
 		// NB: if we bind directly to SeamDispatchAsync, we can't use replace-class in
 		// the module definition unless the replacement extends SeamDispatchAsync
