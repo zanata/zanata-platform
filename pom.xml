@@ -15,6 +15,9 @@
     <module>flies-rest-client</module>
     <module>flies-clients</module>
     <module>flies-gwt-api</module>
+    <!-- NB: flies-webtrans should be compiled *and installed to the local repo* before compiling flies-war.
+         This might change if we use maven-war-plugin's overlay support.
+     -->
     <module>flies-webtrans</module>
     <module>flies-war</module>
     <module>thirdparty/gwt-codemirror</module>
