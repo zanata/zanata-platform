@@ -17,9 +17,9 @@ import com.google.inject.Inject;
 import com.weborient.codemirror.client.HighlightingLabel;
 import com.weborient.codemirror.client.ParserSyntax;
 
-public class WebTransTableDefinition extends DefaultTableDefinition<TransUnit> {
+public class TransUnitListEditorTableDefinition extends DefaultTableDefinition<TransUnit> {
 	
-	public WebTransTableDefinition() {
+	public TransUnitListEditorTableDefinition() {
 		addColumnDefinition(new SourceColumnDefinition());
 		addColumnDefinition(new TargetColumnDefinition());
 	}

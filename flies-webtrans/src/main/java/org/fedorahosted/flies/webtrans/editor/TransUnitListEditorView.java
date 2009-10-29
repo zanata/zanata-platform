@@ -26,18 +26,18 @@ import com.google.inject.Inject;
 import com.weborient.codemirror.client.ParserSyntax;
 import com.weborient.codemirror.client.SyntaxToggleWidget;
 
-public class WebTransTableView extends PagingScrollTable<TransUnit> implements
-		WebTransTablePresenter.Display, HasSelectionHandlers<TransUnit>, HasPageNavigation{
+public class TransUnitListEditorView extends PagingScrollTable<TransUnit> implements
+		TransUnitListEditorPresenter.Display, HasSelectionHandlers<TransUnit>, HasPageNavigation{
 
-	public WebTransTableView(MutableTableModel<TransUnit> tableModel, WebTransTableDefinition tableDefinition) {
+	public TransUnitListEditorView(MutableTableModel<TransUnit> tableModel, TransUnitListEditorTableDefinition tableDefinition) {
 		super(tableModel,tableDefinition);
-		tableDefinition.setRowRenderer( new WebTransFilterRowRenderer());
+		tableDefinition.setRowRenderer( new TransUnitFilterRowRenderer());
 		setupScrollTable();
 	}
 
 	@Inject
-	public WebTransTableView(WebTransTableModel tableModel) {
-		this(new CachedWebTransTableModel(tableModel), new WebTransTableDefinition());
+	public TransUnitListEditorView(TransUnitListEditorTableModel tableModel) {
+		this(new CachedTransUnitListTableModel(tableModel), new TransUnitListEditorTableDefinition());
 	}
 	
 	@Override
@@ -85,7 +85,7 @@ public class WebTransTableView extends PagingScrollTable<TransUnit> implements
 				if(!event.getSelectedRows().isEmpty()){
 					Row row = event.getSelectedRows().iterator().next();
 					TransUnit tu = getRowValue(row.getRowIndex());
-					SelectionEvent.fire(WebTransTableView.this, tu);
+					SelectionEvent.fire(TransUnitListEditorView.this, tu);
 				}
 			}
 		});

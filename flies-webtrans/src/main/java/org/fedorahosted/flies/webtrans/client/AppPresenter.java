@@ -7,20 +7,13 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.fedorahosted.flies.webtrans.client.Application.WindowResizeEvent;
-import org.fedorahosted.flies.webtrans.client.ui.Pager;
-import org.fedorahosted.flies.webtrans.editor.WebTransTablePresenter;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorPresenter;
 
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
-import com.google.gwt.user.client.ui.DockPanel;
-import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.widgetideas.client.GlassPanel;
 import com.google.inject.Inject;
 
 public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {

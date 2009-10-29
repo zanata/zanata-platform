@@ -27,7 +27,7 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 
 	public static final Place PLACE = new Place("WebTransEditor");
 	private final StatusBarPresenter statusbarpresenter;
-	private final WebTransTablePresenter webTransTablePresenter;
+	private final TransUnitListEditorPresenter webTransTablePresenter;
 	private final Pager pager;
 	
 	private DocumentId currentDocumentId;
@@ -40,7 +40,7 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 	}
 
 	@Inject
-	public WebTransEditorPresenter(Display display, EventBus eventBus, final WebTransTablePresenter webTransTablePresenter, final StatusBarPresenter statusbarpresenter) {
+	public WebTransEditorPresenter(Display display, EventBus eventBus, final TransUnitListEditorPresenter webTransTablePresenter, final StatusBarPresenter statusbarpresenter) {
 		super(display, eventBus);
 		this.webTransTablePresenter = webTransTablePresenter;
 		this.statusbarpresenter = statusbarpresenter;

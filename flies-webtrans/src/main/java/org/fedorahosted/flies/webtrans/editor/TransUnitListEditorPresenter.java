@@ -22,7 +22,7 @@ import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.inject.Inject;
 
-public class WebTransTablePresenter extends DocumentEditorPresenter<WebTransTablePresenter.Display> 
+public class TransUnitListEditorPresenter extends DocumentEditorPresenter<TransUnitListEditorPresenter.Display> 
 	implements HasPageNavigation, HasPageChangeHandlers, HasPageCountChangeHandlers {
 	
 	public static final Place PLACE = new Place("TransUnitList");
@@ -35,7 +35,7 @@ public class WebTransTablePresenter extends DocumentEditorPresenter<WebTransTabl
 	}
 
 	@Inject
-	public WebTransTablePresenter(final Display display, final EventBus eventBus) {
+	public TransUnitListEditorPresenter(final Display display, final EventBus eventBus) {
 		super(display, eventBus);
 	}
 	

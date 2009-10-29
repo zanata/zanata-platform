@@ -7,11 +7,11 @@ import com.google.gwt.gen2.table.event.client.RowCountChangeEvent;
 import com.google.gwt.gen2.table.event.client.RowCountChangeHandler;
 import com.google.inject.Inject;
 
-public class CachedWebTransTableModel extends CachedTableModel<TransUnit>{
+public class CachedTransUnitListTableModel extends CachedTableModel<TransUnit>{
 
-	private final WebTransTableModel tableModel;
+	private final TransUnitListEditorTableModel tableModel;
 
-	public CachedWebTransTableModel(WebTransTableModel tableModel) {
+	public CachedTransUnitListTableModel(TransUnitListEditorTableModel tableModel) {
 		super(tableModel);
 		this.tableModel = tableModel;
 		setPreCachedRowCount(200);
@@ -25,7 +25,7 @@ public class CachedWebTransTableModel extends CachedTableModel<TransUnit>{
 		});
 	}
 	
-	public WebTransTableModel getTableModel() {
+	public TransUnitListEditorTableModel getTableModel() {
 		return tableModel;
 	}
 

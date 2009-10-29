@@ -22,16 +22,16 @@ import org.fedorahosted.flies.webtrans.client.auth.IdentityImpl;
 import org.fedorahosted.flies.webtrans.client.rpc.DelegatingDispatchAsync;
 import org.fedorahosted.flies.webtrans.client.ui.Pager;
 import org.fedorahosted.flies.webtrans.client.ui.TreeNodeMapper;
-import org.fedorahosted.flies.webtrans.editor.CachedWebTransTableModel;
+import org.fedorahosted.flies.webtrans.editor.CachedTransUnitListTableModel;
 import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
 import org.fedorahosted.flies.webtrans.editor.StatusBar;
 import org.fedorahosted.flies.webtrans.editor.StatusBarPresenter;
-import org.fedorahosted.flies.webtrans.editor.WebTransTableView;
-import org.fedorahosted.flies.webtrans.editor.WebTransTablePresenter;
-import org.fedorahosted.flies.webtrans.editor.WebTransTableDefinition;
+import org.fedorahosted.flies.webtrans.editor.TransUnitListEditorView;
+import org.fedorahosted.flies.webtrans.editor.TransUnitListEditorPresenter;
+import org.fedorahosted.flies.webtrans.editor.TransUnitListEditorTableDefinition;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorPresenter;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorView;
-import org.fedorahosted.flies.webtrans.editor.WebTransTableModel;
+import org.fedorahosted.flies.webtrans.editor.TransUnitListEditorTableModel;
 import org.fedorahosted.flies.webtrans.editor.filter.FilterPresenter;
 import org.fedorahosted.flies.webtrans.editor.filter.FilterView;
 import org.fedorahosted.flies.webtrans.editor.filter.PhraseFilterPresenter;
@@ -53,14 +53,14 @@ public class WebTransClientModule extends AbstractPresenterModule {
 		bindPresenter(DocumentListPresenter.class, DocumentListPresenter.Display.class, DocumentListView.class);
 		bindPresenter(FilterPresenter.class, FilterPresenter.Display.class, FilterView.class);
 		bindPresenter(PhraseFilterPresenter.class, PhraseFilterPresenter.Display.class, PhraseFilterWidget.class);
-		bindPresenter(WebTransTablePresenter.class, WebTransTablePresenter.Display.class, WebTransTableView.class);
+		bindPresenter(TransUnitListEditorPresenter.class, TransUnitListEditorPresenter.Display.class, TransUnitListEditorView.class);
 		bindPresenter(WestNavigationPresenter.class, WestNavigationPresenter.Display.class, WestNavigationView.class);
 		bindPresenter(WorkspaceUsersPresenter.class, WorkspaceUsersPresenter.Display.class, WorkspaceUsersView.class);
 		bindPresenter(WebTransEditorPresenter.class, WebTransEditorPresenter.Display.class, WebTransEditorView.class);
 		bindPresenter(LoginPresenter.class, LoginPresenter.Display.class, LoginPanel.class);
 		bindPresenter(StatusBarPresenter.class, StatusBarPresenter.Display.class, StatusBar.class);
 		
-		bind(HasPageNavigation.class).to(WebTransTableView.class).in(Singleton.class);
+		bind(HasPageNavigation.class).to(TransUnitListEditorView.class).in(Singleton.class);
 
 		// NB: if we bind directly to SeamDispatchAsync, we can't use replace-class in
 		// the module definition unless the replacement extends SeamDispatchAsync
