@@ -93,30 +93,46 @@
     </dependency>
   </dependencies>
 
+  <profiles>
+    <profile>
+      <id>compile-gwt</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>gwt-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>compile</goal>
+                  <!--  
+                  <goal>generateAsync</goal>
+                  <goal>test</goal>
+                  -->
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <runTarget>org.fedorahosted.flies.webtrans.Application/Application.html<!--?projContainerId=1&amp;localeId=de--></runTarget>
+              <inplace>false</inplace>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
   <build>
     <finalName>webtrans</finalName>
     <outputDirectory>war/WEB-INF/classes</outputDirectory>
     <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>gwt-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>compile</goal>
-              <!--  
-              <goal>generateAsync</goal>
-              <goal>test</goal>
-              -->
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <runTarget>org.fedorahosted.flies.webtrans.Application/Application.html</runTarget>
-          <inplace>false</inplace>
-        </configuration>
-      </plugin>
 
+      <!-- Specify a non-standard root dir for our war file, since the 
+           Eclipse GWT plugin prefers it this way 
+      -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId> 
@@ -127,6 +143,9 @@
         </configuration> 
       </plugin>
 
+      <!-- tell mvn eclipse:eclipse to include config for the GWT Eclipse 
+           plugin 
+      -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-eclipse-plugin</artifactId>
