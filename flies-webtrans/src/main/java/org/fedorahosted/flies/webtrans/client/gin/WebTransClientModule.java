@@ -22,7 +22,7 @@ import org.fedorahosted.flies.webtrans.client.auth.IdentityImpl;
 import org.fedorahosted.flies.webtrans.client.rpc.DelegatingDispatchAsync;
 import org.fedorahosted.flies.webtrans.client.ui.Pager;
 import org.fedorahosted.flies.webtrans.client.ui.TreeNodeMapper;
-import org.fedorahosted.flies.webtrans.editor.CachedTransUnitListTableModel;
+import org.fedorahosted.flies.webtrans.editor.TransUnitListCachedTableModel;
 import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
 import org.fedorahosted.flies.webtrans.editor.TranslationStatsBar;
 import org.fedorahosted.flies.webtrans.editor.TranslationStatsBarPresenter;

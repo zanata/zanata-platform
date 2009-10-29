@@ -65,7 +65,7 @@ public class TransUnitListEditorView extends PagingScrollTable<TransUnit> implem
 
 	@Inject
 	public TransUnitListEditorView(TransUnitListEditorTableModel tableModel) {
-		this(new CachedTransUnitListTableModel(tableModel), new TransUnitListEditorTableDefinition());
+		this(new TransUnitListCachedTableModel(tableModel), new TransUnitListEditorTableDefinition());
 	}
 	
 	@Override

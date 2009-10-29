@@ -7,11 +7,16 @@ import com.google.gwt.gen2.table.event.client.RowCountChangeEvent;
 import com.google.gwt.gen2.table.event.client.RowCountChangeHandler;
 import com.google.inject.Inject;
 
-public class CachedTransUnitListTableModel extends CachedTableModel<TransUnit>{
+/**
+ * A TableModel that caches 200 rows pre and post the current page.
+ * @author asgeirf
+ *
+ */
+public class TransUnitListCachedTableModel extends CachedTableModel<TransUnit>{
 
 	private final TransUnitListEditorTableModel tableModel;
 
-	public CachedTransUnitListTableModel(TransUnitListEditorTableModel tableModel) {
+	public TransUnitListCachedTableModel(TransUnitListEditorTableModel tableModel) {
 		super(tableModel);
 		this.tableModel = tableModel;
 		setPreCachedRowCount(200);
