@@ -31,38 +31,9 @@ public class TransUnitListEditorView extends PagingScrollTable<TransUnit> implem
 
 	public TransUnitListEditorView(MutableTableModel<TransUnit> tableModel, TransUnitListEditorTableDefinition tableDefinition) {
 		super(tableModel,tableDefinition);
-		tableDefinition.setRowRenderer( new TransUnitFilterRowRenderer());
-		setupScrollTable();
-	}
-
-	@Inject
-	public TransUnitListEditorView(TransUnitListEditorTableModel tableModel) {
-		this(new CachedTransUnitListTableModel(tableModel), new TransUnitListEditorTableDefinition());
-	}
-	
-	@Override
-	public Widget asWidget() {
-		return this;
-	}
-
-	@Override
-	public void startProcessing() {
-	}
-
-	@Override
-	public void stopProcessing() {
-	}
-
-	private SyntaxToggleWidget syntaxWidget;
-
-	protected void setupScrollTable() {
 		setSize("100%", "100%");
-
-		syntaxWidget = new SyntaxToggleWidget(ParserSyntax.MIXED, true);
-		
-		// Create the scroll table
+		tableDefinition.setRowRenderer( new TransUnitFilterRowRenderer());
 		setPageSize(50);
-		
 		setEmptyTableWidget(new HTML(
 				"There is no data to display"));
 
@@ -91,7 +62,25 @@ public class TransUnitListEditorView extends PagingScrollTable<TransUnit> implem
 		});
 		
 	}
+
+	@Inject
+	public TransUnitListEditorView(TransUnitListEditorTableModel tableModel) {
+		this(new CachedTransUnitListTableModel(tableModel), new TransUnitListEditorTableDefinition());
+	}
 	
+	@Override
+	public Widget asWidget() {
+		return this;
+	}
+
+	@Override
+	public void startProcessing() {
+	}
+
+	@Override
+	public void stopProcessing() {
+	}
+
 	@Override
 	public HandlerRegistration addSelectionHandler(
 			SelectionHandler<TransUnit> handler) {
