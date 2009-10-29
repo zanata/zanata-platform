@@ -4,6 +4,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 
 public class FilterPack extends HorizontalPanel {
 
@@ -15,19 +16,27 @@ public class FilterPack extends HorizontalPanel {
 		this.titleLabel = new Label();
 		this.inputBox = new TextBox();
 		this.deleteButton = new Button("X");
+		initPack();
 	}
 	
 	public FilterPack(String title, TextBox inputBox) {
 		this.titleLabel = new Label(title);
 		this.inputBox = inputBox;
 		this.deleteButton = new Button("X");
+		initPack();
 	}
 	
-	public void setTitle(String title) {
+	public void initPack() {
+		add(titleLabel);
+		add(inputBox);
+		add(deleteButton);
+	}
+	
+	public void setTitleLabel(String title) {
 		this.titleLabel.setText(title);
 	}
 	
-	public String getTitle() {
+	public String getLabelTitle() {
 		return this.titleLabel.getText();
 	}
 
@@ -39,7 +48,7 @@ public class FilterPack extends HorizontalPanel {
 		return this.inputBox;
 	}
 	
-	public HorizontalPanel getPack() {
+	public Widget asWidget() {
 		return this;
 	}
 	

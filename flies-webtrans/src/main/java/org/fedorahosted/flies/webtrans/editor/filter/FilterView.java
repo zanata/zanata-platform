@@ -1,11 +1,10 @@
 package org.fedorahosted.flies.webtrans.editor.filter;
 
 import org.fedorahosted.flies.webtrans.client.ui.CaptionPanel;
+import org.fedorahosted.flies.webtrans.client.ui.FilterPack;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -32,6 +31,11 @@ public class FilterView extends CaptionPanel implements FilterPresenter.Display 
 		filterButtonBar.add(filterDisableButton);
 				
 		vpanel.add(filterButtonBar);
+		
+		FilterPack filterPack = new FilterPack();
+		filterPack.setTitleLabel("Filter: ");
+		filterPack.setInputBox(new TextBox());
+		vpanel.add(new FilterPack());
 
 		setBody(vpanel);
 	}
