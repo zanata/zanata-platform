@@ -14,10 +14,6 @@ import com.google.inject.Inject;
 
 public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPresenter.Display>{
 	
-	public static final Place PLACE = new Place("WestNavigationPresenter");
-	
-	//private final DispatchAsync dispatcher;	
-
 	public interface Display extends WidgetDisplay {
 		HasWidgets getWidgets();
 	}
@@ -41,24 +37,17 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 
 	@Override
 	public Place getPlace() {
-		return PLACE;
+		return null;
 	}
 
 	@Override
 	protected void onBind() {
-		// Disabled: This pushes the footer (DockPanel.SOUTH) off the bottom of the visible window
-//		eventBus.addHandler(WindowResizeEvent.getType(), new ResizeHandler() {
-//			
-//			@Override
-//			public void onResize(ResizeEvent event) {
-//				Log.info("handling resize in LeftNavigationPresenter");
-//				display.asWidget().setHeight(event.getHeight() + "px");
-//			}
-//		});
 		docListPresenter.bind();
 		display.getWidgets().add(docListPresenter.getDisplay().asWidget());
+
 		transUnitInfoPresenter.bind();
 		display.getWidgets().add(transUnitInfoPresenter.getDisplay().asWidget());
+		
 		workspaceUsersPresenter.bind();
 		display.getWidgets().add(workspaceUsersPresenter.getDisplay().asWidget());
 
@@ -66,8 +55,6 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 
 	@Override
 	protected void onPlaceRequest(PlaceRequest request) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -79,14 +66,10 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 
 	@Override
 	public void refreshDisplay() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void revealDisplay() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	

@@ -57,11 +57,10 @@ public class LoginPresenter extends WidgetPresenter<LoginPresenter.Display> {
 
 	@Override
 	protected void onBind() {
-		
-		display.getLoginButton().addClickHandler(clickHandler);
-		display.getCancelButton().addClickHandler(clickHandler);
-		display.getUsernameField().addKeyUpHandler(keyHandler);
-		display.getPasswordField().addKeyUpHandler(keyHandler);
+		registerHandler( display.getLoginButton().addClickHandler(clickHandler) );
+		registerHandler( display.getCancelButton().addClickHandler(clickHandler) );
+		registerHandler( display.getUsernameField().addKeyUpHandler(keyHandler) );
+		registerHandler( display.getPasswordField().addKeyUpHandler(keyHandler) );
 	}
 
 	@Override

@@ -47,36 +47,41 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 	protected void onBind() {
         statusbarpresenter.bind();
 		display.getPager().setVisible(false);
-		
-		eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {
-			
-			@Override
-			public void onDocumentSelected(DocumentSelectionEvent event) {
-				if(!event.getDocumentId().equals(display.getCachedTableModel().getTableModel().getCurrentDocumentId())) {
-					Log.info("Requested document "+ event.getDocumentId());
-					display.getCachedTableModel().getTableModel().setCurrentDocumentId(event.getDocumentId());
-					display.getCachedTableModel().clearCache();
-					display.getScrollTable().gotoPage(0, true);
+
+		registerHandler(
+			eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {
+				@Override
+				public void onDocumentSelected(DocumentSelectionEvent event) {
+					if(!event.getDocumentId().equals(display.getCachedTableModel().getTableModel().getCurrentDocumentId())) {
+						Log.info("Requested document "+ event.getDocumentId());
+						display.getCachedTableModel().getTableModel().setCurrentDocumentId(event.getDocumentId());
+						display.getCachedTableModel().clearCache();
+						display.getScrollTable().gotoPage(0, true);
+					}
 				}
-			}
-		});
+			})
+		);
+	
+		registerHandler(
+			display.getPager().addValueChangeHandler( new ValueChangeHandler<Integer>() {
+				
+				@Override
+				public void onValueChange(ValueChangeEvent<Integer> event) {
+					display.getScrollTable().gotoPage(event.getValue()-1, false);
+				}
+			})
+		);
 		
-		display.getPager().addValueChangeHandler( new ValueChangeHandler<Integer>() {
-			
-			@Override
-			public void onValueChange(ValueChangeEvent<Integer> event) {
-				display.getScrollTable().gotoPage(event.getValue()-1, false);
-			}
-		});
-		
+		// TODO this uses incubator's HandlerRegistration
 		display.getScrollTable().addPageChangeHandler( new PageChangeHandler() {
 			@Override
 			public void onPageChange(PageChangeEvent event) {
 				display.getPager().setValue(event.getNewPage()+1);
 			}
 		});
+
+		// TODO this uses incubator's HandlerRegistration
 		display.getScrollTable().addPageCountChangeHandler(new PageCountChangeHandler() {
-			
 			@Override
 			public void onPageCountChange(PageCountChangeEvent event) {
 				display.getPager().setPageCount(event.getNewPageCount());
