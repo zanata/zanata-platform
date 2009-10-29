@@ -17,15 +17,9 @@ import com.google.inject.Inject;
 import com.weborient.codemirror.client.HighlightingLabel;
 import com.weborient.codemirror.client.ParserSyntax;
 
-public class TransUnitTableDefinition extends DefaultTableDefinition<TransUnit> {
+public class WebTransTableDefinition extends DefaultTableDefinition<TransUnit> {
 	
-	//private final HasValue<ParserSyntax> parserSyntax;
-
-	@Inject
-	public TransUnitTableDefinition(TransUnitRowRenderer rowRenderer) {//(HasValue<ParserSyntax> parserSyntax) {
-		setRowRenderer(rowRenderer);
-		//this.parserSyntax = parserSyntax;
-
+	public WebTransTableDefinition() {
 		addColumnDefinition(new SourceColumnDefinition());
 		addColumnDefinition(new TargetColumnDefinition());
 	}

@@ -9,6 +9,7 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.gen2.table.client.FixedWidthGridBulkRenderer;
+import com.google.gwt.gen2.table.client.MutableTableModel;
 import com.google.gwt.gen2.table.client.PagingScrollTable;
 import com.google.gwt.gen2.table.client.ScrollTable;
 import com.google.gwt.gen2.table.client.SelectionGrid.SelectionPolicy;
@@ -25,17 +26,18 @@ import com.google.inject.Inject;
 import com.weborient.codemirror.client.ParserSyntax;
 import com.weborient.codemirror.client.SyntaxToggleWidget;
 
-public class WebTransScrollTable extends PagingScrollTable<TransUnit> implements
-		TransUnitListPresenter.Display, HasSelectionHandlers<TransUnit>, HasPageNavigation{
+public class WebTransTableView extends PagingScrollTable<TransUnit> implements
+		WebTransTablePresenter.Display, HasSelectionHandlers<TransUnit>, HasPageNavigation{
 
-	private final CachedWebTransTableModel cachedTableModel;
-	
-	@Inject
-	public WebTransScrollTable(CachedWebTransTableModel tableModel, TransUnitTableDefinition tableDefinition) {
+	public WebTransTableView(MutableTableModel<TransUnit> tableModel, WebTransTableDefinition tableDefinition) {
 		super(tableModel,tableDefinition);
-		this.cachedTableModel = tableModel;
-		Log.info("setting up TransUnitListView");
+		tableDefinition.setRowRenderer( new WebTransFilterRowRenderer());
 		setupScrollTable();
+	}
+
+	@Inject
+	public WebTransTableView(WebTransTableModel tableModel) {
+		this(new CachedWebTransTableModel(tableModel), new WebTransTableDefinition());
 	}
 	
 	@Override
@@ -83,14 +85,12 @@ public class WebTransScrollTable extends PagingScrollTable<TransUnit> implements
 				if(!event.getSelectedRows().isEmpty()){
 					Row row = event.getSelectedRows().iterator().next();
 					TransUnit tu = getRowValue(row.getRowIndex());
-					SelectionEvent.fire(WebTransScrollTable.this, tu);
+					SelectionEvent.fire(WebTransTableView.this, tu);
 				}
 			}
 		});
 		
 	}
-	
-	private FlowPanel toolbar;
 	
 	@Override
 	public HandlerRegistration addSelectionHandler(
@@ -103,11 +103,6 @@ public class WebTransScrollTable extends PagingScrollTable<TransUnit> implements
 		return this;
 	}
 	
-	@Override
-	public HasWidgets getToolbar() {
-		return toolbar;
-	}
-
 	@Override
 	public HasPageNavigation getPageNavigation() {
 		return this;
@@ -123,8 +118,5 @@ public class WebTransScrollTable extends PagingScrollTable<TransUnit> implements
 		return this;
 	}
 	
-	public CachedWebTransTableModel getCachedTableModel() {
-		return cachedTableModel;
-	}
 
 }

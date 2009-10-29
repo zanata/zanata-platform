@@ -8,9 +8,7 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.fedorahosted.flies.webtrans.client.Application.WindowResizeEvent;
 import org.fedorahosted.flies.webtrans.client.ui.Pager;
-import org.fedorahosted.flies.webtrans.editor.TransUnitListPresenter;
-import org.fedorahosted.flies.webtrans.editor.WebTransEditorFooter;
-import org.fedorahosted.flies.webtrans.editor.WebTransEditorHeader;
+import org.fedorahosted.flies.webtrans.editor.WebTransTablePresenter;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorPresenter;
 
 import com.google.gwt.event.logical.shared.ResizeEvent;

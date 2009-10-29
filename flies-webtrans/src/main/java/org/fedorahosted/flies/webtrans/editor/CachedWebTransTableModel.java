@@ -11,7 +11,6 @@ public class CachedWebTransTableModel extends CachedTableModel<TransUnit>{
 
 	private final WebTransTableModel tableModel;
 
-	@Inject
 	public CachedWebTransTableModel(WebTransTableModel tableModel) {
 		super(tableModel);
 		this.tableModel = tableModel;

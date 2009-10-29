@@ -1,45 +1,50 @@
 package org.fedorahosted.flies.webtrans.editor;
 
+import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.webtrans.client.ui.Pager;
 
+import com.google.gwt.gen2.table.client.MutableTableModel;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.DecoratorPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 public class WebTransEditorView extends DecoratorPanel implements WebTransEditorPresenter.Display {
 	
-	private final WebTransEditorHeader header;
-	private final WebTransEditorFooter footer;
-	private final WebTransScrollTable scrollTable;
-	private final Pager pager;
-	private final StatusBar statusBar;
-
-	@Inject
-	public WebTransEditorView(WebTransScrollTable table, Pager pager, StatusBar statusBar) {
-		addStyleName("TransPanel-Outer");
-		this.scrollTable = table;
-		this.pager = pager;
-		this.statusBar = statusBar;
-		this.header = new WebTransEditorHeader();
-		this.footer = new WebTransEditorFooter(pager, statusBar);
+	private final WebTransEditorMenubar header;
+	private final WebTransEditorMenubar footer;
+	private final Label statusLabel;
 	
-		VerticalPanel verticalPanel = new VerticalPanel();
-		verticalPanel.addStyleName("TransPanel");
-		verticalPanel.add(header);
-		verticalPanel.setCellHeight(header, "20px");
+	private Widget editor;
+
+	private final VerticalPanel mainPanel;
+	
+	public WebTransEditorView() {
+		addStyleName("TransPanel-Outer");
+		this.header = new WebTransEditorMenubar();
+		this.footer = new WebTransEditorMenubar();
+	
+		mainPanel = new VerticalPanel();
+		mainPanel.addStyleName("TransPanel");
+		mainPanel.add(header);
+		mainPanel.setCellHeight(header, "20px");
 		
-		verticalPanel.add(table);
+		editor = new Label("editor");
+		mainPanel.add(editor);
 		
-		verticalPanel.add(footer);
-		verticalPanel.setCellHeight(footer, "20px");
+		mainPanel.add(footer);
+		mainPanel.setCellHeight(footer, "20px");
 		
 		setWidth("100%");
 		setHeight("100%");
-		setWidget(verticalPanel);
+		setWidget(mainPanel);
 	
-		verticalPanel.setSize("100%", "100%");
+		mainPanel.setSize("100%", "100%");
+		
+		statusLabel = new Label();
+		footer.setLeftWidget(statusLabel);
 	}
 	
 	@Override
@@ -54,25 +59,26 @@ public class WebTransEditorView extends DecoratorPanel implements WebTransEditor
 	@Override
 	public void stopProcessing() {
 	}
+	
+	@Override
+	public void setEditor(Widget editor) {
+		this.editor = editor;
+		mainPanel.remove(1);
+		mainPanel.insert(editor, 1);
+	}
 
 	@Override
-	public WebTransScrollTable getScrollTable() {
-		return scrollTable;
+	public HasThreeColWidgets getHeader() {
+		return header;
 	}
 	
 	@Override
-	public CachedWebTransTableModel getCachedTableModel() {
-		return scrollTable.getCachedTableModel();
+	public HasThreeColWidgets getFooter() {
+		return footer;
 	}
 	
 	@Override
-	public Pager getPager() {
-		return pager;
+	public void setStatus(String status) {
+		statusLabel.setText(status);
 	}
-	
-	@Override
-	public StatusBar getStatusBar() {
-		return statusBar;
-	}
-	
 }
