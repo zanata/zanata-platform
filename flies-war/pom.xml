@@ -133,7 +133,7 @@
                     <echo>Exploding to ${temp-deploy-path}</echo>
                     <copy todir="${as.deploy}" file="${project.build.directory}/${app.ds.xml}" verbose="true" />
                     <move file="${deploy-path}" tofile="${temp-deploy-path}" verbose="true"/>
-                    <sync todir="${temp-deploy-path}" verbose="true" >
+                    <sync todir="${temp-deploy-path}" verbose="false" >
                       <fileset dir="${project.build.directory}/${project.build.finalName}">
                         <excludesfile name="hotdeploy.list"/>
                         <exclude name="${gwt.filepattern}" />
@@ -144,7 +144,7 @@
                       </preserveintarget>
                     </sync>
                     <mkdir dir="${temp-deploy-path}/WEB-INF/dev" />
-                    <sync todir="${temp-deploy-path}/WEB-INF/dev" verbose="true" >
+                    <sync todir="${temp-deploy-path}/WEB-INF/dev" verbose="false" >
                       <fileset dir="${project.build.directory}/${project.build.finalName}/WEB-INF/classes">
                         <includesfile name="hotdeploy.list"/>
                       </fileset>
