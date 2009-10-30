@@ -22,20 +22,20 @@ import org.fedorahosted.flies.webtrans.client.auth.IdentityImpl;
 import org.fedorahosted.flies.webtrans.client.rpc.DelegatingDispatchAsync;
 import org.fedorahosted.flies.webtrans.client.ui.Pager;
 import org.fedorahosted.flies.webtrans.client.ui.TreeNodeMapper;
-import org.fedorahosted.flies.webtrans.editor.TransUnitListEditorCachedTableModel;
 import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
 import org.fedorahosted.flies.webtrans.editor.TranslationStatsBar;
 import org.fedorahosted.flies.webtrans.editor.TranslationStatsBarPresenter;
-import org.fedorahosted.flies.webtrans.editor.TransUnitListEditorView;
-import org.fedorahosted.flies.webtrans.editor.TransUnitListEditorPresenter;
-import org.fedorahosted.flies.webtrans.editor.TransUnitListEditorTableDefinition;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorPresenter;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorView;
-import org.fedorahosted.flies.webtrans.editor.TransUnitListEditorTableModel;
 import org.fedorahosted.flies.webtrans.editor.filter.FilterPresenter;
 import org.fedorahosted.flies.webtrans.editor.filter.FilterView;
 import org.fedorahosted.flies.webtrans.editor.filter.PhraseFilterPresenter;
 import org.fedorahosted.flies.webtrans.editor.filter.PhraseFilterWidget;
+import org.fedorahosted.flies.webtrans.editor.table.TransUnitListEditorCachedTableModel;
+import org.fedorahosted.flies.webtrans.editor.table.TransUnitListEditorPresenter;
+import org.fedorahosted.flies.webtrans.editor.table.TransUnitListEditorTableDefinition;
+import org.fedorahosted.flies.webtrans.editor.table.TransUnitListEditorTableModel;
+import org.fedorahosted.flies.webtrans.editor.table.TransUnitListEditorView;
 
 import com.google.inject.Singleton;
 

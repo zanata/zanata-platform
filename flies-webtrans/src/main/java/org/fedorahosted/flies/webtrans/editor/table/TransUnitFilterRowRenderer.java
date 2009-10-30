@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.webtrans.editor;
+package org.fedorahosted.flies.webtrans.editor.table;
 
 import net.customware.gwt.presenter.client.EventBus;
 
