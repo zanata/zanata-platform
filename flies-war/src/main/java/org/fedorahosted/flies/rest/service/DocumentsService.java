@@ -13,19 +13,15 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.fedorahosted.flies.core.dao.DocumentDAO;
-import org.fedorahosted.flies.core.dao.ProjectDAO;
-import org.fedorahosted.flies.core.dao.ProjectIterationDAO;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Documents;
-import org.hibernate.Session;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
 
 @Name("documentsService")
 @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/documents")
-public class DocumentsService {
+public class DocumentsService implements DocumentsServiceAction {
 	
 	@PathParam("projectSlug")
 	private String projectSlug;
@@ -37,22 +33,10 @@ public class DocumentsService {
 	private HttpServletRequest request;
 
 	@Context
-	UriInfo uri;
-	
-	@In
-	ProjectDAO projectDAO;
-	
-	@In
-	ProjectIterationDAO projectIterationDAO;
-	
-	@In
-	DocumentDAO documentDAO;
-	
-	@In
-	Session session;
+	private UriInfo uri;
 
 	@In("DocumentsServiceActionImpl")
-	DocumentsServiceAction impl;
+	private DocumentsServiceAction impl;
 
 	@POST
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
@@ -71,8 +55,7 @@ public class DocumentsService {
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
 	@Restrict("#{identity.loggedIn}")
 	public Response put(Documents documents) {
-	    impl.put(documents);
-	    return Response.ok().build();
+	    return impl.put(documents);
 	}
 	
 	public String getProjectSlug() {

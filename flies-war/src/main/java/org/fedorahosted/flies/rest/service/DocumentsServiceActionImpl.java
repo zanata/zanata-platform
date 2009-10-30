@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -173,7 +172,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     		docMap.remove(hDoc.getId());
     	}
     	session.flush();
-    	return Response.status(Status.OK).entity(sb.toString()).build();
+    	return Response.ok(sb.toString()).build();
     }
 
 }
