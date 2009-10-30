@@ -253,6 +253,7 @@
         
     <plugins>
 		<plugin>
+		  <!-- See http://portals.apache.org/jetspeed-2/buildguide/jetspeed-mvn-plugin.html -->
 		  <groupId>org.apache.portals.jetspeed-2</groupId>
 		  <artifactId>jetspeed-mvn-maven-plugin</artifactId>
 		  <version>2.2.0</version>
