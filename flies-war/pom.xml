@@ -24,13 +24,13 @@
     <app.database.name>flies</app.database.name>
     <app.ds.xml>${app.context}-ds.xml</app.ds.xml>
 
-    <!-- Developer environment properties. Can be modified by developer in "profiles.xml" -->
-    <env>dev</env>
-    <env.debug>true</env.debug>
-    <env.hibernate.hbm2ddl.auto>create-drop</env.hibernate.hbm2ddl.auto>
-    <env.hibernate.show_sql>true</env.hibernate.show_sql>
-    <env.hibernate.format_sql>true</env.hibernate.format_sql>
+    <!-- Production environment properties. Can be modified by developer in "profiles.xml" -->
+    <env.debug>false</env.debug>
+    <env.hibernate.hbm2ddl.auto>update</env.hibernate.hbm2ddl.auto>
+    <env.hibernate.show_sql>false</env.hibernate.show_sql>
+    <env.hibernate.format_sql>false</env.hibernate.format_sql>
     <env.hibernate.default_batch_size>16</env.hibernate.default_batch_size>
+    
     <as>jboss423</as>
     <as.version>4.2</as.version>
     <ds>hsqldb</ds>
@@ -41,6 +41,7 @@
     <ds.connection.url>jdbc:hsqldb:.</ds.connection.url> <!-- *-ds.xml -->
     <ds.user.name>sa</ds.user.name> <!-- *-ds.xml -->
     <ds.password></ds.password> <!-- *-ds.xml -->    
+   
     <gwt.filepattern>org.fedorahosted.flies.*/**</gwt.filepattern>
   </properties>
 
@@ -59,21 +60,50 @@
   <profiles>
   
     <profile>
-      <id>explode</id>
+      <id>env-dev</id>
       <activation>
         <property>
           <name>env</name>
           <value>dev</value>
         </property>
       </activation>
+      <properties>
+    	<!-- Developer environment properties. 
+    		 Can be modified by developer in "profiles.xml" 
+    	-->
+    	<env>dev</env>
+        <env.debug>true</env.debug>
+        <env.hibernate.hbm2ddl.auto>create-drop</env.hibernate.hbm2ddl.auto>
+        <env.hibernate.show_sql>false</env.hibernate.show_sql>
+        <env.hibernate.format_sql>true</env.hibernate.format_sql>
+        <env.hibernate.default_batch_size>16</env.hibernate.default_batch_size>
+        <!-- Should GWT files be processed in exploded deployment?
+             If false, GWT's hosted mode is expected to handle these files. 
+        -->
+	    <env.deploy.gwt>false</env.deploy.gwt>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>hotdeploy</id>
+<!-- 
+      <activation>
+        <property>
+          <name>env</name>
+          <value>dev</value>
+        </property>
+      </activation>
+ -->
       <build>
         <plugins>
+<!--  
           <plugin>
             <artifactId>maven-assembly-plugin</artifactId>
             <configuration>
               <skip>true</skip>
             </configuration>
           </plugin>
+-->
           <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
@@ -110,6 +140,20 @@
               </execution>
             </executions>
           </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
+    <profile>
+      <id>explode</id>
+      <activation>
+        <property>
+          <name>env</name>
+          <value>dev</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
 
           <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
@@ -119,6 +163,12 @@
                 <phase>package</phase>
                 <configuration>
                   <tasks>
+                  	<!-- Set the Ant property deploy.gwt if
+                  		 Maven property env.deploy.gwt=true/yes/on
+                  	  -->
+                    <condition property="deploy.gwt">
+                    	<istrue value="${env.deploy.gwt}"/>
+                    </condition>
                     <property name="deploy-path" value="${as.deploy}/${app.context}.war" />
                     <property name="temp-deploy-path" value="target/disabled.${app.context}.war" />
                     <echo>Removing old version at ${deploy-path}</echo>
@@ -126,21 +176,22 @@
                     <delete quiet="true">
                     	<fileset dir="${deploy-path}">
                             <!-- GWT hosted mode is responsible for keeping these files updated  -->
-                            <exclude name="${gwt.filepattern}" />
+                            <exclude name="${gwt.filepattern}" unless="deploy.gwt" />
                        	</fileset>
                     </delete>
                     <delete file="${as.deploy}/${app.ds.xml}" quiet="true" />
                     <echo>Exploding to ${temp-deploy-path}</echo>
                     <copy todir="${as.deploy}" file="${project.build.directory}/${app.ds.xml}" verbose="true" />
-                    <move file="${deploy-path}" tofile="${temp-deploy-path}" verbose="true"/>
+                    <move file="${deploy-path}" tofile="${temp-deploy-path}" 
+                    	  failonerror="false" verbose="true"/>
                     <sync todir="${temp-deploy-path}" verbose="false" >
                       <fileset dir="${project.build.directory}/${project.build.finalName}">
                         <excludesfile name="hotdeploy.list"/>
-                        <exclude name="${gwt.filepattern}" />
+                        <exclude name="${gwt.filepattern}" unless="deploy.gwt" />
                       </fileset>
                       <preserveintarget>
                         <!-- GWT hosted mode is responsible for keeping these files updated  -->
-                          <include name="${gwt.filepattern}"/>
+                          <include name="${gwt.filepattern}" unless="deploy.gwt" />
                       </preserveintarget>
                     </sync>
                     <mkdir dir="${temp-deploy-path}/WEB-INF/dev" />
@@ -164,7 +215,7 @@
     </profile>
     
     <profile>
-      <id>deploy-webtrans</id>
+      <id>include-webtrans</id>
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>
@@ -175,7 +226,7 @@
             <executions>
               <execution>
                 <id>copy-gwt-resources</id>
-                <phase>process-resources</phase>
+                <phase>prepare-package</phase>
                 <goals>
                   <goal>unpack</goal>
                 </goals>
@@ -262,8 +313,17 @@
 		      <target>
 		        <id>explode</id>
 		        <profiles>explode</profiles>
+		        <properties>
+		        	<skipTests>true</skipTests>
+		        </properties>
 		        <dir>./</dir>
 		        <goals>package</goals>
+		      </target>
+		      <target>
+		        <id>hotdeploy</id>
+		        <profiles>hotdeploy</profiles>
+		        <dir>./</dir>
+		        <goals>process-classes</goals>
 		      </target>
 		      <target>
 		        <id>unexplode</id>
