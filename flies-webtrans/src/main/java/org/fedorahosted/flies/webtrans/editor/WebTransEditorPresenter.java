@@ -30,9 +30,7 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 	private final TranslationStatsBarPresenter statusbarpresenter;
 	private final TableEditorPresenter webTransTablePresenter;
 	private final Pager pager;
-	
-	private DocumentId currentDocumentId;
-	
+
 	public interface Display extends WidgetDisplay{
 		HasThreeColWidgets getHeader();
 		HasThreeColWidgets getFooter();
