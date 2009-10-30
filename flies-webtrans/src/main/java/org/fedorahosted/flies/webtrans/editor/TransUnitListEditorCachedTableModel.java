@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.webtrans.editor;
 
+import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 
 import com.google.gwt.gen2.table.client.CachedTableModel;
@@ -12,11 +13,11 @@ import com.google.inject.Inject;
  * @author asgeirf
  *
  */
-public class TransUnitListCachedTableModel extends CachedTableModel<TransUnit>{
+public class TransUnitListEditorCachedTableModel extends CachedTableModel<TransUnit>{
 
 	private final TransUnitListEditorTableModel tableModel;
 
-	public TransUnitListCachedTableModel(TransUnitListEditorTableModel tableModel) {
+	public TransUnitListEditorCachedTableModel(TransUnitListEditorTableModel tableModel) {
 		super(tableModel);
 		this.tableModel = tableModel;
 		setPreCachedRowCount(200);
@@ -33,5 +34,15 @@ public class TransUnitListCachedTableModel extends CachedTableModel<TransUnit>{
 	public TransUnitListEditorTableModel getTableModel() {
 		return tableModel;
 	}
+	
+	public DocumentId getCurrentDocumentId() {
+		return tableModel.getCurrentDocumentId();
+	}
+
+	public void setCurrentDocumentId(DocumentId currentDocumentId) {
+		tableModel.setCurrentDocumentId(currentDocumentId);
+		clearCache();
+	}
+	
 
 }

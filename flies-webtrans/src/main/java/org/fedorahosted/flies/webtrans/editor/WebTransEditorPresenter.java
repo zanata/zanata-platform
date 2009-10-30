@@ -65,20 +65,6 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 		display.setEditor(webTransTablePresenter.getDisplay().asWidget());
 		
 		registerHandler(
-			eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {
-				@Override
-				public void onDocumentSelected(DocumentSelectionEvent event) {
-					if(!event.getDocumentId().equals(currentDocumentId)) {
-						Log.debug("Requested document "+ event.getDocumentId());
-						//display.getTableModel().setCurrentDocumentId(event.getDocumentId());
-						//display.clearCache();
-						webTransTablePresenter.getDisplay().getPageNavigation().gotoPage(0, true);
-					}
-				}
-			})
-		);
-	
-		registerHandler(
 			pager.addValueChangeHandler( new ValueChangeHandler<Integer>() {
 				
 				@Override

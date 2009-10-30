@@ -6,15 +6,18 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.webtrans.client.DocumentSelectionEvent;
 import org.fedorahosted.flies.webtrans.client.DocumentSelectionHandler;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.gen2.event.shared.HandlerRegistration;
+import com.google.gwt.gen2.table.client.CachedTableModel;
 import com.google.gwt.gen2.table.event.client.HasPageChangeHandlers;
 import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
 import com.google.gwt.gen2.table.event.client.PageChangeHandler;
@@ -27,11 +30,14 @@ public class TransUnitListEditorPresenter extends DocumentEditorPresenter<TransU
 	
 	public static final Place PLACE = new Place("TransUnitList");
 	
+	private DocumentId currentDocumentId;
+	
 	public interface Display extends WidgetDisplay {
 		HasSelectionHandlers<TransUnit> getSelectionHandlers();
 		HasPageNavigation getPageNavigation();
 		HasPageChangeHandlers getPageChangeHandlers();
 		HasPageCountChangeHandlers getPageCountChangeHandlers();
+		TransUnitListEditorCachedTableModel getCachedTableModel();
 	}
 
 	@Inject
@@ -58,12 +64,18 @@ public class TransUnitListEditorPresenter extends DocumentEditorPresenter<TransU
 				}
 			}
 		}));
-		registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {
-			@Override
-			public void onDocumentSelected(DocumentSelectionEvent event) {
-				// TODO switch WebTransTableModel to the new document
-			}
-		}));
+
+		registerHandler(
+				eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {
+					@Override
+					public void onDocumentSelected(DocumentSelectionEvent event) {
+						if(!event.getDocumentId().equals(currentDocumentId)) {
+							display.getCachedTableModel().setCurrentDocumentId(event.getDocumentId());
+							getDisplay().getPageNavigation().gotoPage(0, true);
+						}
+					}
+				})
+			);
 		
 		display.getPageNavigation().gotoFirstPage();
 		

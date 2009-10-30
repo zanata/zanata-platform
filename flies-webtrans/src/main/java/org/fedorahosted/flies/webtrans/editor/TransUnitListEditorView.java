@@ -8,13 +8,17 @@ import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.gen2.table.client.CachedTableModel;
 import com.google.gwt.gen2.table.client.FixedWidthGridBulkRenderer;
 import com.google.gwt.gen2.table.client.MutableTableModel;
 import com.google.gwt.gen2.table.client.PagingScrollTable;
 import com.google.gwt.gen2.table.client.ScrollTable;
+import com.google.gwt.gen2.table.client.TableModel;
 import com.google.gwt.gen2.table.client.SelectionGrid.SelectionPolicy;
 import com.google.gwt.gen2.table.event.client.HasPageChangeHandlers;
 import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
+import com.google.gwt.gen2.table.event.client.RowCountChangeEvent;
+import com.google.gwt.gen2.table.event.client.RowCountChangeHandler;
 import com.google.gwt.gen2.table.event.client.RowSelectionEvent;
 import com.google.gwt.gen2.table.event.client.RowSelectionHandler;
 import com.google.gwt.gen2.table.event.client.TableEvent.Row;
@@ -29,8 +33,15 @@ import com.weborient.codemirror.client.SyntaxToggleWidget;
 public class TransUnitListEditorView extends PagingScrollTable<TransUnit> implements
 		TransUnitListEditorPresenter.Display, HasSelectionHandlers<TransUnit>, HasPageNavigation{
 
-	public TransUnitListEditorView(MutableTableModel<TransUnit> tableModel, TransUnitListEditorTableDefinition tableDefinition) {
+	private final TransUnitListEditorCachedTableModel cachedTableModel;
+	private final TransUnitListEditorTableModel tableModel;
+	
+	public TransUnitListEditorView(TransUnitListEditorTableModel tableModel, TransUnitListEditorTableDefinition tableDefinition) {
 		super(tableModel,tableDefinition);
+		
+		this.tableModel = tableModel;
+		cachedTableModel = new TransUnitListEditorCachedTableModel(tableModel);
+		
 		setSize("100%", "100%");
 		tableDefinition.setRowRenderer( new TransUnitFilterRowRenderer());
 		setPageSize(50);
@@ -65,9 +76,19 @@ public class TransUnitListEditorView extends PagingScrollTable<TransUnit> implem
 
 	@Inject
 	public TransUnitListEditorView(TransUnitListEditorTableModel tableModel) {
-		this(new TransUnitListCachedTableModel(tableModel), new TransUnitListEditorTableDefinition());
+		this(tableModel, new TransUnitListEditorTableDefinition());
 	}
 	
+	@Override
+	public TransUnitListEditorTableModel getTableModel() {
+		return tableModel;
+	}
+	
+
+	@Override
+	public TransUnitListEditorCachedTableModel getCachedTableModel() {
+		return cachedTableModel;
+	}
 	@Override
 	public Widget asWidget() {
 		return this;
