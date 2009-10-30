@@ -31,20 +31,20 @@ import com.google.inject.Inject;
 import com.weborient.codemirror.client.ParserSyntax;
 import com.weborient.codemirror.client.SyntaxToggleWidget;
 
-public class TransUnitListEditorView extends PagingScrollTable<TransUnit> implements
-		TransUnitListEditorPresenter.Display, HasSelectionHandlers<TransUnit>, HasPageNavigation{
+public class TableEditorView extends PagingScrollTable<TransUnit> implements
+		TableEditorPresenter.Display, HasSelectionHandlers<TransUnit>, HasPageNavigation{
 
-	private final TransUnitListEditorCachedTableModel cachedTableModel;
-	private final TransUnitListEditorTableModel tableModel;
+	private final TableEditorCachedTableModel cachedTableModel;
+	private final TableEditorTableModel tableModel;
 	
-	public TransUnitListEditorView(TransUnitListEditorTableModel tableModel, TransUnitListEditorTableDefinition tableDefinition) {
+	public TableEditorView(TableEditorTableModel tableModel, TableEditorTableDefinition tableDefinition) {
 		super(tableModel,tableDefinition);
 		
 		this.tableModel = tableModel;
-		cachedTableModel = new TransUnitListEditorCachedTableModel(tableModel);
+		cachedTableModel = new TableEditorCachedTableModel(tableModel);
 		
 		setSize("100%", "100%");
-		tableDefinition.setRowRenderer( new TransUnitFilterRowRenderer());
+		tableDefinition.setRowRenderer( new TableEditorRowRenderer());
 		setPageSize(50);
 		setEmptyTableWidget(new HTML(
 				"There is no data to display"));
@@ -68,7 +68,7 @@ public class TransUnitListEditorView extends PagingScrollTable<TransUnit> implem
 				if(!event.getSelectedRows().isEmpty()){
 					Row row = event.getSelectedRows().iterator().next();
 					TransUnit tu = getRowValue(row.getRowIndex());
-					SelectionEvent.fire(TransUnitListEditorView.this, tu);
+					SelectionEvent.fire(TableEditorView.this, tu);
 				}
 			}
 		});
@@ -76,18 +76,18 @@ public class TransUnitListEditorView extends PagingScrollTable<TransUnit> implem
 	}
 
 	@Inject
-	public TransUnitListEditorView(TransUnitListEditorTableModel tableModel) {
-		this(tableModel, new TransUnitListEditorTableDefinition());
+	public TableEditorView(TableEditorTableModel tableModel) {
+		this(tableModel, new TableEditorTableDefinition());
 	}
 	
 	@Override
-	public TransUnitListEditorTableModel getTableModel() {
+	public TableEditorTableModel getTableModel() {
 		return tableModel;
 	}
 	
 
 	@Override
-	public TransUnitListEditorCachedTableModel getCachedTableModel() {
+	public TableEditorCachedTableModel getCachedTableModel() {
 		return cachedTableModel;
 	}
 	@Override

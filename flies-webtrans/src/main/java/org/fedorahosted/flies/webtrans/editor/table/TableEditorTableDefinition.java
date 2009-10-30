@@ -19,9 +19,9 @@ import com.google.inject.Inject;
 import com.weborient.codemirror.client.HighlightingLabel;
 import com.weborient.codemirror.client.ParserSyntax;
 
-public class TransUnitListEditorTableDefinition extends DefaultTableDefinition<TransUnit> {
+public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit> {
 	
-	public TransUnitListEditorTableDefinition() {
+	public TableEditorTableDefinition() {
 		addColumnDefinition(new SourceColumnDefinition());
 		addColumnDefinition(new TargetColumnDefinition());
 	}

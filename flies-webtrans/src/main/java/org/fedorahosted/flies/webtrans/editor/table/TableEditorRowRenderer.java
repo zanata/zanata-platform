@@ -10,7 +10,7 @@ import com.google.gwt.gen2.table.client.RowRenderer;
 import com.google.gwt.gen2.table.client.TableDefinition.AbstractRowView;
 import com.google.inject.Inject;
 
-public class TransUnitFilterRowRenderer implements RowRenderer<TransUnit>{
+public class TableEditorRowRenderer implements RowRenderer<TransUnit>{
 	
 	private ContentFilter<TransUnit> contentFilter = null;
 	

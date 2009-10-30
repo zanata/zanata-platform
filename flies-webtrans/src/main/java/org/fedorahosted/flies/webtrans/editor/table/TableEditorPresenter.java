@@ -27,7 +27,7 @@ import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.inject.Inject;
 
-public class TransUnitListEditorPresenter extends DocumentEditorPresenter<TransUnitListEditorPresenter.Display> 
+public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPresenter.Display> 
 	implements HasPageNavigation, HasPageChangeHandlers, HasPageCountChangeHandlers {
 	
 	public static final Place PLACE = new Place("TransUnitList");
@@ -39,11 +39,11 @@ public class TransUnitListEditorPresenter extends DocumentEditorPresenter<TransU
 		HasPageNavigation getPageNavigation();
 		HasPageChangeHandlers getPageChangeHandlers();
 		HasPageCountChangeHandlers getPageCountChangeHandlers();
-		TransUnitListEditorCachedTableModel getCachedTableModel();
+		TableEditorCachedTableModel getCachedTableModel();
 	}
 
 	@Inject
-	public TransUnitListEditorPresenter(final Display display, final EventBus eventBus) {
+	public TableEditorPresenter(final Display display, final EventBus eventBus) {
 		super(display, eventBus);
 	}
 	

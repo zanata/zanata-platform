@@ -5,7 +5,7 @@ import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.webtrans.client.DocumentSelectionEvent;
 import org.fedorahosted.flies.webtrans.client.DocumentSelectionHandler;
 import org.fedorahosted.flies.webtrans.client.ui.Pager;
-import org.fedorahosted.flies.webtrans.editor.table.TransUnitListEditorPresenter;
+import org.fedorahosted.flies.webtrans.editor.table.TableEditorPresenter;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -28,7 +28,7 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 
 	public static final Place PLACE = new Place("WebTransEditor");
 	private final TranslationStatsBarPresenter statusbarpresenter;
-	private final TransUnitListEditorPresenter webTransTablePresenter;
+	private final TableEditorPresenter webTransTablePresenter;
 	private final Pager pager;
 	
 	private DocumentId currentDocumentId;
@@ -41,7 +41,7 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 	}
 
 	@Inject
-	public WebTransEditorPresenter(Display display, EventBus eventBus, final TransUnitListEditorPresenter webTransTablePresenter, final TranslationStatsBarPresenter statusbarpresenter) {
+	public WebTransEditorPresenter(Display display, EventBus eventBus, final TableEditorPresenter webTransTablePresenter, final TranslationStatsBarPresenter statusbarpresenter) {
 		super(display, eventBus);
 		this.webTransTablePresenter = webTransTablePresenter;
 		this.statusbarpresenter = statusbarpresenter;

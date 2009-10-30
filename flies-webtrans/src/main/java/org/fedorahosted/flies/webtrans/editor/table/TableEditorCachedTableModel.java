@@ -13,11 +13,11 @@ import com.google.inject.Inject;
  * @author asgeirf
  *
  */
-public class TransUnitListEditorCachedTableModel extends CachedTableModel<TransUnit>{
+public class TableEditorCachedTableModel extends CachedTableModel<TransUnit>{
 
-	private final TransUnitListEditorTableModel tableModel;
+	private final TableEditorTableModel tableModel;
 
-	public TransUnitListEditorCachedTableModel(TransUnitListEditorTableModel tableModel) {
+	public TableEditorCachedTableModel(TableEditorTableModel tableModel) {
 		super(tableModel);
 		this.tableModel = tableModel;
 		setPreCachedRowCount(200);
@@ -31,7 +31,7 @@ public class TransUnitListEditorCachedTableModel extends CachedTableModel<TransU
 		});
 	}
 	
-	public TransUnitListEditorTableModel getTableModel() {
+	public TableEditorTableModel getTableModel() {
 		return tableModel;
 	}
 	
