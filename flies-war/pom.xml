@@ -41,7 +41,7 @@
     <ds.connection.url>jdbc:hsqldb:.</ds.connection.url> <!-- *-ds.xml -->
     <ds.user.name>sa</ds.user.name> <!-- *-ds.xml -->
     <ds.password></ds.password> <!-- *-ds.xml -->    
-    
+    <gwt.filepattern>org.fedorahosted.flies.*/**</gwt.filepattern>
   </properties>
 
   <dependencyManagement>
@@ -122,16 +122,26 @@
                     <property name="deploy-path" value="${as.deploy}/${app.context}.war" />
                     <property name="temp-deploy-path" value="target/disabled.${app.context}.war" />
                     <echo>Removing old version at ${deploy-path}</echo>
-                    <delete dir="${deploy-path}" quiet="true" />
                     <delete file="${deploy-path}" quiet="true" />
+                    <delete quiet="true">
+                    	<fileset dir="${deploy-path}">
+                            <!-- GWT hosted mode is responsible for keeping these files updated  -->
+                            <exclude name="${gwt.filepattern}" />
+                       	</fileset>
+                    </delete>
                     <delete file="${as.deploy}/${app.ds.xml}" quiet="true" />
                     <echo>Exploding to ${temp-deploy-path}</echo>
                     <copy todir="${as.deploy}" file="${project.build.directory}/${app.ds.xml}" verbose="true" />
-                    <mkdir dir="${temp-deploy-path}" />
+                    <move file="${deploy-path}" tofile="${temp-deploy-path}" verbose="true"/>
                     <sync todir="${temp-deploy-path}" verbose="true" >
                       <fileset dir="${project.build.directory}/${project.build.finalName}">
                         <excludesfile name="hotdeploy.list"/>
+                        <exclude name="${gwt.filepattern}" />
                       </fileset>
+                      <preserveintarget>
+                        <!-- GWT hosted mode is responsible for keeping these files updated  -->
+                          <include name="${gwt.filepattern}"/>
+                      </preserveintarget>
                     </sync>
                     <mkdir dir="${temp-deploy-path}/WEB-INF/dev" />
                     <sync todir="${temp-deploy-path}/WEB-INF/dev" verbose="true" >
