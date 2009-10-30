@@ -54,6 +54,8 @@ public class GetTransUnitsHandler implements ActionHandler<GetTransUnits, GetTra
 			"from HTextFlow tf where tf.document.id = :id")
 			.setParameter("id", action.getDocumentId().getValue());
 		
+		int size = query.list().size();
+		
 		List<HTextFlow> textFlows = query 
 				.setFirstResult(action.getOffset())
 				.setMaxResults(action.getCount())
@@ -69,7 +71,7 @@ public class GetTransUnitsHandler implements ActionHandler<GetTransUnits, GetTra
 			units.add(tu);
 		}
 
-		return new GetTransUnitsResult(action.getDocumentId(), units, query.list().size() );
+		return new GetTransUnitsResult(action.getDocumentId(), units, size );
 	}
 
 	@Override

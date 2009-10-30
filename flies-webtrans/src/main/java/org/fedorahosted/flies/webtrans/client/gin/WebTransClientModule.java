@@ -10,7 +10,6 @@ import org.fedorahosted.flies.webtrans.client.AppPresenter;
 import org.fedorahosted.flies.webtrans.client.AppView;
 import org.fedorahosted.flies.webtrans.client.DocumentListPresenter;
 import org.fedorahosted.flies.webtrans.client.DocumentListView;
-import org.fedorahosted.flies.webtrans.client.FlatFolderDocNameMapper;
 import org.fedorahosted.flies.webtrans.client.LoginPanel;
 import org.fedorahosted.flies.webtrans.client.LoginPresenter;
 import org.fedorahosted.flies.webtrans.client.WestNavigationPresenter;
@@ -20,8 +19,6 @@ import org.fedorahosted.flies.webtrans.client.WorkspaceUsersView;
 import org.fedorahosted.flies.webtrans.client.auth.Identity;
 import org.fedorahosted.flies.webtrans.client.auth.IdentityImpl;
 import org.fedorahosted.flies.webtrans.client.rpc.DelegatingDispatchAsync;
-import org.fedorahosted.flies.webtrans.client.ui.Pager;
-import org.fedorahosted.flies.webtrans.client.ui.TreeNodeMapper;
 import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
 import org.fedorahosted.flies.webtrans.editor.TranslationStatsBar;
 import org.fedorahosted.flies.webtrans.editor.TranslationStatsBarPresenter;
@@ -31,10 +28,7 @@ import org.fedorahosted.flies.webtrans.editor.filter.FilterPresenter;
 import org.fedorahosted.flies.webtrans.editor.filter.FilterView;
 import org.fedorahosted.flies.webtrans.editor.filter.PhraseFilterPresenter;
 import org.fedorahosted.flies.webtrans.editor.filter.PhraseFilterWidget;
-import org.fedorahosted.flies.webtrans.editor.table.TableEditorCachedTableModel;
 import org.fedorahosted.flies.webtrans.editor.table.TableEditorPresenter;
-import org.fedorahosted.flies.webtrans.editor.table.TableEditorTableDefinition;
-import org.fedorahosted.flies.webtrans.editor.table.TableEditorTableModel;
 import org.fedorahosted.flies.webtrans.editor.table.TableEditorView;
 
 import com.google.inject.Singleton;
@@ -48,8 +42,6 @@ public class WebTransClientModule extends AbstractPresenterModule {
 	protected void configure() {		
 		bind(EventBus.class).to(DefaultEventBus.class).in(Singleton.class);
 		bind(PlaceManager.class).in(Singleton.class);
-		
-		bind(TableEditorCachedTableModel.class).in(Singleton.class);
 		
 		bindPresenter(AppPresenter.class, AppPresenter.Display.class, AppView.class);
 		bindPresenter(DocumentListPresenter.class, DocumentListPresenter.Display.class, DocumentListView.class);
