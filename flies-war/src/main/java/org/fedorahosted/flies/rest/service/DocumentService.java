@@ -12,7 +12,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -39,7 +38,7 @@ import org.jboss.seam.log.Log;
 
 @Name("documentService")
 @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/documents/d/{documentId}")
-public class DocumentService {
+public class DocumentService implements DocumentServiceAction {
 	
 	@PathParam("projectSlug")
 	private String projectSlug;
@@ -54,16 +53,16 @@ public class DocumentService {
     private DocumentConverter documentConverter;
 
     @In
-	DocumentDAO documentDAO;
+    private DocumentDAO documentDAO;
 	
 	@In
-	ProjectContainerDAO projectContainerDAO;
+	private ProjectContainerDAO projectContainerDAO;
 	
 	@In
-	Session session;
+	private Session session;
 	
 	@Context
-	UriInfo uri;
+	private UriInfo uri;
 	
     @Logger 
     private Log log;
@@ -92,6 +91,9 @@ public class DocumentService {
 		return Response.status(Status.NOT_FOUND).entity("Project Container not found").build();
 	}
     
+	/* (non-Javadoc)
+	 * @see org.fedorahosted.flies.rest.service.DocumentServiceAction#get(org.fedorahosted.flies.rest.client.ContentQualifier)
+	 */
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaTypes.APPLICATION_FLIES_DOCUMENT_JSON, 
 				MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -122,6 +124,9 @@ public class DocumentService {
 		return Response.ok().entity(doc).tag("v-" + doc.getRevision()).build();
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.fedorahosted.flies.rest.service.DocumentServiceAction#put(org.fedorahosted.flies.rest.dto.Document)
+	 */
 	@PUT
 	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaTypes.APPLICATION_FLIES_DOCUMENT_JSON,
 				MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -166,6 +171,9 @@ public class DocumentService {
 	
 	// FIXME implement DELETE
 	
+	/* (non-Javadoc)
+	 * @see org.fedorahosted.flies.rest.service.DocumentServiceAction#getContent(org.fedorahosted.flies.rest.client.ContentQualifier, int)
+	 */
 	@GET
 	@Path("content/{qualifier}")
 	public Response getContent(
@@ -175,6 +183,9 @@ public class DocumentService {
 		return Response.ok().entity(resources).build();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.fedorahosted.flies.rest.service.DocumentServiceAction#postContent(org.fedorahosted.flies.rest.dto.ResourceList, org.fedorahosted.flies.rest.client.ContentQualifier)
+	 */
 	@POST
 	@Path("content/{qualifier}")
 	@Restrict("#{identity.loggedIn}")
@@ -185,6 +196,9 @@ public class DocumentService {
 		return Response.ok().build();
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.fedorahosted.flies.rest.service.DocumentServiceAction#putContent(org.fedorahosted.flies.rest.dto.ResourceList, org.fedorahosted.flies.rest.client.ContentQualifier)
+	 */
 	@PUT
 	@Path("content/{qualifier}")
 	public Response putContent(
@@ -194,6 +208,9 @@ public class DocumentService {
 		return Response.ok().build();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.fedorahosted.flies.rest.service.DocumentServiceAction#postContentByResourceId(org.fedorahosted.flies.rest.dto.DocumentResource, org.fedorahosted.flies.rest.client.ContentQualifier, java.lang.String)
+	 */
 	@POST
 	@Path("content/{qualifier}/{resourceId}")
 	@Restrict("#{identity.loggedIn}")
@@ -205,6 +222,9 @@ public class DocumentService {
 		return Response.ok().build();
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.fedorahosted.flies.rest.service.DocumentServiceAction#getContentByResourceId(org.fedorahosted.flies.rest.client.ContentQualifier, java.lang.String, int)
+	 */
 	@GET
 	@Path("content/{qualifier}/{resourceId}")
 	public Response getContentByResourceId(
