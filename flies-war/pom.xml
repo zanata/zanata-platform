@@ -252,6 +252,28 @@
     </resources>
         
     <plugins>
+		<plugin>
+		  <groupId>org.apache.portals.jetspeed-2</groupId>
+		  <artifactId>jetspeed-mvn-maven-plugin</artifactId>
+		  <version>2.2.0</version>
+		  <configuration>
+		    <targets combine.children="append">
+		      <target>
+		        <id>explode</id>
+		        <profiles>explode</profiles>
+		        <dir>./</dir>
+		        <goals>package</goals>
+		      </target>
+		      <target>
+		        <id>unexplode</id>
+		        <profiles>unexplode</profiles>
+		        <dir>./</dir>
+		        <goals>clean</goals>
+		      </target>
+		    </targets>
+		    <defaultTarget>explode</defaultTarget>
+		  </configuration>
+		</plugin>
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
