@@ -25,46 +25,6 @@
       see bug description here: "etc/maven-2.1.0-bug".
     -->
 
-
-    <!-- development environment -->
-    <profile>
-      <id>env-dev</id>
-      <activation>
-        <property>
-          <name>env</name>
-          <value>dev</value>
-        </property>
-      </activation>
-      <properties>
-        <env>dev</env>
-        <env.debug>true</env.debug>
-        <env.hibernate.hbm2ddl.auto>create-drop</env.hibernate.hbm2ddl.auto>
-        <env.hibernate.show_sql>true</env.hibernate.show_sql>
-        <env.hibernate.format_sql>true</env.hibernate.format_sql>
-        <env.hibernate.default_batch_size>16</env.hibernate.default_batch_size>
-      </properties>
-    </profile>
-    
-    <!-- production environment @TODO: move away from profiles.xml -->
-    <profile>
-      <id>env-prod</id>
-      <activation>
-        <property>
-          <name>env</name>
-          <value>prod</value>
-        </property>
-      </activation>
-      <properties>
-        <env>prod</env>
-        <env.debug>false</env.debug>
-        <env.hibernate.hbm2ddl.auto>update</env.hibernate.hbm2ddl.auto>
-        <env.hibernate.show_sql>false</env.hibernate.show_sql>
-        <env.hibernate.format_sql>false</env.hibernate.format_sql>
-        <env.hibernate.default_batch_size>16</env.hibernate.default_batch_size>
-      </properties>
-    </profile>
-    
-    
     <!-- databases -->
     <!-- HSQL -->
     <profile>
@@ -189,10 +149,8 @@
   </profiles>
 
   <activeProfiles>
-    <activeProfile>env-dev</activeProfile>
     <!--
     <activeProfile>env-dev</activeProfile>
-    <activeProfile>env-prod</activeProfile>
     -->
     
     <activeProfile>ds-hsqldb</activeProfile>
