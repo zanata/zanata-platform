@@ -49,6 +49,8 @@ public class WebTransClientModule extends AbstractPresenterModule {
 		bind(EventBus.class).to(DefaultEventBus.class).in(Singleton.class);
 		bind(PlaceManager.class).in(Singleton.class);
 		
+		bind(TableEditorCachedTableModel.class).in(Singleton.class);
+		
 		bindPresenter(AppPresenter.class, AppPresenter.Display.class, AppView.class);
 		bindPresenter(DocumentListPresenter.class, DocumentListPresenter.Display.class, DocumentListView.class);
 		bindPresenter(FilterPresenter.class, FilterPresenter.Display.class, FilterView.class);

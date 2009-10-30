@@ -34,14 +34,8 @@ import com.weborient.codemirror.client.SyntaxToggleWidget;
 public class TableEditorView extends PagingScrollTable<TransUnit> implements
 		TableEditorPresenter.Display, HasSelectionHandlers<TransUnit>, HasPageNavigation{
 
-	private final TableEditorCachedTableModel cachedTableModel;
-	private final TableEditorTableModel tableModel;
-	
-	public TableEditorView(TableEditorTableModel tableModel, TableEditorTableDefinition tableDefinition) {
+	public TableEditorView(TableEditorCachedTableModel tableModel, TableEditorTableDefinition tableDefinition) {
 		super(tableModel,tableDefinition);
-		
-		this.tableModel = tableModel;
-		cachedTableModel = new TableEditorCachedTableModel(tableModel);
 		
 		setSize("100%", "100%");
 		tableDefinition.setRowRenderer( new TableEditorRowRenderer());
@@ -61,7 +55,6 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements
 		
 		getDataTable().setSelectionPolicy(SelectionPolicy.ONE_ROW);
 		getDataTable().setCellPadding(3);
-		
 		getDataTable().addRowSelectionHandler(new RowSelectionHandler() {
 			@Override
 			public void onRowSelection(RowSelectionEvent event) {
@@ -72,24 +65,13 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements
 				}
 			}
 		});
-		
 	}
 
 	@Inject
-	public TableEditorView(TableEditorTableModel tableModel) {
+	public TableEditorView(TableEditorCachedTableModel tableModel) {
 		this(tableModel, new TableEditorTableDefinition());
 	}
 	
-	@Override
-	public TableEditorTableModel getTableModel() {
-		return tableModel;
-	}
-	
-
-	@Override
-	public TableEditorCachedTableModel getCachedTableModel() {
-		return cachedTableModel;
-	}
 	@Override
 	public Widget asWidget() {
 		return this;
@@ -97,10 +79,12 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements
 
 	@Override
 	public void startProcessing() {
+		setVisible(false);
 	}
 
 	@Override
 	public void stopProcessing() {
+		setVisible(true);
 	}
 
 	@Override

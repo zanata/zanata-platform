@@ -39,7 +39,9 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 	}
 
 	@Inject
-	public WebTransEditorPresenter(Display display, EventBus eventBus, final TableEditorPresenter webTransTablePresenter, final TranslationStatsBarPresenter statusbarpresenter) {
+	public WebTransEditorPresenter(Display display, EventBus eventBus, 
+			final TableEditorPresenter webTransTablePresenter, 
+			final TranslationStatsBarPresenter statusbarpresenter) {
 		super(display, eventBus);
 		this.webTransTablePresenter = webTransTablePresenter;
 		this.statusbarpresenter = statusbarpresenter;

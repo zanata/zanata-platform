@@ -6,6 +6,7 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.apache.catalina.loader.Reloader;
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.webtrans.client.DocumentSelectionEvent;
@@ -32,19 +33,22 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	
 	public static final Place PLACE = new Place("TransUnitList");
 	
-	private DocumentId currentDocumentId;
+	private DocumentId documentId;
+	
+	private final TableEditorCachedTableModel tableModel;
 	
 	public interface Display extends WidgetDisplay {
 		HasSelectionHandlers<TransUnit> getSelectionHandlers();
 		HasPageNavigation getPageNavigation();
 		HasPageChangeHandlers getPageChangeHandlers();
 		HasPageCountChangeHandlers getPageCountChangeHandlers();
-		TableEditorCachedTableModel getCachedTableModel();
+		void reloadPage();
 	}
 
 	@Inject
-	public TableEditorPresenter(final Display display, final EventBus eventBus) {
+	public TableEditorPresenter(final Display display, final EventBus eventBus, final TableEditorCachedTableModel tableModel) {
 		super(display, eventBus);
+		this.tableModel = tableModel;
 	}
 	
 	@Override
@@ -71,9 +75,10 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 				eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {
 					@Override
 					public void onDocumentSelected(DocumentSelectionEvent event) {
-						if(!event.getDocumentId().equals(currentDocumentId)) {
-							display.getCachedTableModel().setCurrentDocumentId(event.getDocumentId());
-							getDisplay().getPageNavigation().gotoPage(0, true);
+						if(!event.getDocumentId().equals(documentId)) {
+							tableModel.setDocumentId(event.getDocumentId());
+							display.getPageNavigation().gotoPage(0, true);
+							
 						}
 					}
 				})

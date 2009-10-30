@@ -13,17 +13,17 @@ import com.google.inject.Inject;
  * @author asgeirf
  *
  */
-public class TableEditorCachedTableModel extends CachedTableModel<TransUnit>{
+public class TableEditorCachedTableModel extends CachedTableModel<TransUnit> implements HasDocumentId{
 
 	private final TableEditorTableModel tableModel;
 
+	@Inject
 	public TableEditorCachedTableModel(TableEditorTableModel tableModel) {
 		super(tableModel);
 		this.tableModel = tableModel;
 		setPreCachedRowCount(200);
 		setPostCachedRowCount(200);
 		tableModel.addRowCountChangeHandler(new RowCountChangeHandler() {
-			
 			@Override
 			public void onRowCountChange(RowCountChangeEvent event) {
 				setRowCount(event.getNewRowCount());
@@ -35,13 +35,13 @@ public class TableEditorCachedTableModel extends CachedTableModel<TransUnit>{
 		return tableModel;
 	}
 	
-	public DocumentId getCurrentDocumentId() {
-		return tableModel.getCurrentDocumentId();
+	public DocumentId getDocumentId() {
+		return tableModel.getDocumentId();
 	}
 
-	public void setCurrentDocumentId(DocumentId currentDocumentId) {
-		tableModel.setCurrentDocumentId(currentDocumentId);
+	public void setDocumentId(DocumentId documentId) {
 		clearCache();
+		tableModel.setDocumentId(documentId);
 	}
 	
 

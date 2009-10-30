@@ -30,7 +30,8 @@ public class TableEditorTableModel extends MutableTableModel<TransUnit> {
 
 	private final DispatchAsync dispatcher;
 	private final EventBus eventBus;
-	private DocumentId currentDocumentId;
+	
+	private DocumentId documentId;
 	private final WorkspaceContext workspaceContext;
 	
 	@Inject
@@ -75,12 +76,12 @@ public class TableEditorTableModel extends MutableTableModel<TransUnit> {
 		int startRow = request.getStartRow();
 		Log.debug("Table requesting" + numRows + " starting from "+ startRow);
 		
-		if(currentDocumentId == null){
+		if(documentId == null){
 			callback.onFailure(new RuntimeException("No DocumentId"));
 			return;
 		}
 		
-		dispatcher.execute(new GetTransUnits(currentDocumentId, workspaceContext.getLocaleId(), startRow, numRows), new AsyncCallback<GetTransUnitsResult>() {
+		dispatcher.execute(new GetTransUnits(documentId, workspaceContext.getLocaleId(), startRow, numRows), new AsyncCallback<GetTransUnitsResult>() {
 			@Override
 			public void onSuccess(GetTransUnitsResult result) {
 				SerializableResponse<TransUnit> response = new SerializableResponse<TransUnit>(
@@ -104,12 +105,12 @@ public class TableEditorTableModel extends MutableTableModel<TransUnit> {
 		});
 	}
 	
-	
-	public DocumentId getCurrentDocumentId() {
-		return currentDocumentId;
+	public DocumentId getDocumentId() {
+		return documentId;
 	}
 
-	public void setCurrentDocumentId(DocumentId currentDocumentId) {
-		this.currentDocumentId = currentDocumentId;
+	public void setDocumentId(DocumentId documentId) {
+		this.documentId = documentId;
+		this.setRowCount(UNKNOWN_ROW_COUNT);
 	}
 }
