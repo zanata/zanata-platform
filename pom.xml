@@ -64,6 +64,16 @@
 		        <goals>package</goals>
 		      </target>
 		      <target>
+		      	<id>explodeall</id>
+		      	<profiles>explode,include-webtrans</profiles>
+		      	<properties>
+		      		<env.deploy.gwt>true</env.deploy.gwt>
+		        	<skipTests>true</skipTests>
+		      	</properties>
+		        <dir>@rootdir@/flies-war</dir>
+		        <goals>package</goals>
+		      </target>
+		      <target>
 		        <id>hotdeploy</id>
 		        <profiles>hotdeploy</profiles>
 		        <dir>@rootdir@/flies-war</dir>
