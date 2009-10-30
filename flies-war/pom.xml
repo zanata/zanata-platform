@@ -303,38 +303,6 @@
     </resources>
         
     <plugins>
-		<plugin>
-		  <!-- See http://portals.apache.org/jetspeed-2/buildguide/jetspeed-mvn-plugin.html -->
-		  <groupId>org.apache.portals.jetspeed-2</groupId>
-		  <artifactId>jetspeed-mvn-maven-plugin</artifactId>
-		  <version>2.2.0</version>
-		  <configuration>
-		    <targets combine.children="append">
-		      <target>
-		        <id>explode</id>
-		        <profiles>explode</profiles>
-		        <properties>
-		        	<skipTests>true</skipTests>
-		        </properties>
-		        <dir>./</dir>
-		        <goals>package</goals>
-		      </target>
-		      <target>
-		        <id>hotdeploy</id>
-		        <profiles>hotdeploy</profiles>
-		        <dir>./</dir>
-		        <goals>process-classes</goals>
-		      </target>
-		      <target>
-		        <id>unexplode</id>
-		        <profiles>unexplode</profiles>
-		        <dir>./</dir>
-		        <goals>clean</goals>
-		      </target>
-		    </targets>
-		    <defaultTarget>explode</defaultTarget>
-		  </configuration>
-		</plugin>
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
