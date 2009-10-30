@@ -85,21 +85,25 @@
     </profile>
 
     <profile>
-      <id>explode</id>
+      <id>hotdeploy</id>
+<!-- 
       <activation>
         <property>
           <name>env</name>
           <value>dev</value>
         </property>
       </activation>
+ -->
       <build>
         <plugins>
+<!--  
           <plugin>
             <artifactId>maven-assembly-plugin</artifactId>
             <configuration>
               <skip>true</skip>
             </configuration>
           </plugin>
+-->
           <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
@@ -136,6 +140,20 @@
               </execution>
             </executions>
           </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
+    <profile>
+      <id>explode</id>
+      <activation>
+        <property>
+          <name>env</name>
+          <value>dev</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
 
           <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
@@ -164,7 +182,8 @@
                     <delete file="${as.deploy}/${app.ds.xml}" quiet="true" />
                     <echo>Exploding to ${temp-deploy-path}</echo>
                     <copy todir="${as.deploy}" file="${project.build.directory}/${app.ds.xml}" verbose="true" />
-                    <move file="${deploy-path}" tofile="${temp-deploy-path}" verbose="true"/>
+                    <move file="${deploy-path}" tofile="${temp-deploy-path}" 
+                    	  failonerror="false" verbose="true"/>
                     <sync todir="${temp-deploy-path}" verbose="false" >
                       <fileset dir="${project.build.directory}/${project.build.finalName}">
                         <excludesfile name="hotdeploy.list"/>
@@ -195,9 +214,6 @@
       </build>
     </profile>
     
-    <!-- TODO consider attaching this permanently to the package phase, and
-		 do exploded deployment in an earlier phase    
-     -->
     <profile>
       <id>include-webtrans</id>
       <activation>
@@ -210,7 +226,7 @@
             <executions>
               <execution>
                 <id>copy-gwt-resources</id>
-                <phase>process-resources</phase>
+                <phase>prepare-package</phase>
                 <goals>
                   <goal>unpack</goal>
                 </goals>
@@ -297,12 +313,15 @@
 		      <target>
 		        <id>explode</id>
 		        <profiles>explode</profiles>
+		        <properties>
+		        	<skipTests>true</skipTests>
+		        </properties>
 		        <dir>./</dir>
 		        <goals>package</goals>
 		      </target>
 		      <target>
 		        <id>hotdeploy</id>
-		        <profiles>explode</profiles>
+		        <profiles>hotdeploy</profiles>
 		        <dir>./</dir>
 		        <goals>process-classes</goals>
 		      </target>
