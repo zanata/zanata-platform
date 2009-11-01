@@ -21,6 +21,7 @@ import org.fedorahosted.flies.webtrans.client.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent.Severity;
 import org.fedorahosted.flies.webtrans.editor.DocumentEditorPresenter;
 import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
+import org.fedorahosted.flies.webtrans.editor.filter.ContentFilter;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
@@ -52,6 +53,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		void setTableModelHandler(TableModelHandler<TransUnit> hadler);
 		void reloadPage();
 		void setPageSize(int size);
+		void setContentFilter(ContentFilter<TransUnit> filter);
+		void clearContentFilter();
 	}
 
 	private DocumentId documentId;

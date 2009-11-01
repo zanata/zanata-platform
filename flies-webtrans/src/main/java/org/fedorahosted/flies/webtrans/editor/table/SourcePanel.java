@@ -18,34 +18,22 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>{
 
 	private final FlowPanel panel;
 	private final Label sourceLabel;
-	private final Label fuzzyLabel;
 	private TransUnit value;
 	
 	public SourcePanel(TransUnit value) {
 		this.value = value;
 		panel = new FlowPanel();
 		panel.setSize("100%", "100%");
-
 		initWidget(panel);
+		setStylePrimaryName("TableEditorSource");
 
 		sourceLabel = new HighlightingLabel(value.getSource(), ParserSyntax.MIXED);
-		sourceLabel.setStylePrimaryName("webtrans-editor-content");
-		sourceLabel.addStyleName("webtrans-editor-content-source");
-
-		VerticalPanel vPanel = new VerticalPanel();
-		vPanel.setStylePrimaryName("webtrans-editor-status");
-		fuzzyLabel = new Label("F");
-		vPanel.add(fuzzyLabel);
-		vPanel.setWidth("10px");
-		
-		panel.add(vPanel);
-
+		sourceLabel.setStylePrimaryName("TableEditorContent");
 		panel.add(sourceLabel);
 		refresh();
 	}
 	
 	public void refresh() {
-		fuzzyLabel.setVisible(value.isFuzzy());
 	}
 	
 	@Override

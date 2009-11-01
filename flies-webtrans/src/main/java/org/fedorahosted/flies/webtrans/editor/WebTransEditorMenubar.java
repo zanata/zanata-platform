@@ -11,8 +11,7 @@ public class WebTransEditorMenubar extends HorizontalPanel implements HasThreeCo
 	private Widget rightWidget;
 	
 	public WebTransEditorMenubar() {
-		setStylePrimaryName("WebTransEditor");
-		addStyleDependentName("MenuBar");
+		setStylePrimaryName("WebTransEditorMenu");
 		setHeight("20px");
 		setWidth("100%");
 		setVerticalAlignment(HorizontalPanel.ALIGN_MIDDLE);

@@ -22,12 +22,12 @@ public class WebTransEditorView extends DecoratorPanel implements WebTransEditor
 	private final VerticalPanel mainPanel;
 	
 	public WebTransEditorView() {
-		addStyleName("TransPanel-Outer");
+		addStyleName("WebTransEditor-Outer");
 		this.header = new WebTransEditorMenubar();
 		this.footer = new WebTransEditorMenubar();
 	
 		mainPanel = new VerticalPanel();
-		mainPanel.addStyleName("TransPanel");
+		mainPanel.addStyleName("WebTransEditor");
 		mainPanel.add(header);
 		mainPanel.setCellHeight(header, "20px");
 		

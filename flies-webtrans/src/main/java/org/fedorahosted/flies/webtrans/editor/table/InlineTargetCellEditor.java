@@ -16,6 +16,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.ImageBundle;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
@@ -54,6 +55,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 		}
 	};
 
+	private final ToggleButton toggleFuzzy;
+	
 	/**
 	 * The click listener used to accept.
 	 */
@@ -62,7 +65,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 			accept();
 		}
 	};
-
+	
 	/**
 	 * The current {@link CellEditor.Callback}.
 	 */
@@ -112,8 +115,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 
 		textArea = new TextArea();
 		textArea.setWidth("100%");
-		textArea.setStyleName("webtrans-editor-content");
-		textArea.addStyleName("webtrans-editor-content-editor");
+		textArea.setStyleName("TableEditorContent-Edit");
 		textArea.addKeyUpHandler(new KeyUpHandler() {
 			
 			@Override
@@ -133,6 +135,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 		// Add accept and cancel buttons
 		setAcceptWidget(images.cellEditorAccept().createImage());
 		setCancelWidget(images.cellEditorCancel().createImage());
+		
+		toggleFuzzy = new ToggleButton("Translated", "Fuzzy");
+		layoutTable.setWidget(1, 0, toggleFuzzy);
+
 	}
 
 	int row;
@@ -147,7 +153,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 	
 	private boolean isDirty(){
 		if(cellValue == null) return false;
-		return !textArea.getText().equals(cellValue.getTarget());
+		return !textArea.getText().equals(cellValue.getTarget()) || cellValue.isFuzzy() != toggleFuzzy.isDown();
 	}
 	
 	private boolean inEditMode() {
@@ -189,6 +195,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 		textArea.setText(cellValue.getTarget());
 		this.cellValue = cellValue;
 		textArea.setFocus(true);
+		toggleFuzzy.setDown(cellValue.isFuzzy());
 		
 	}
 
@@ -201,7 +208,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 			return;
 		}
 		cellValue.setTarget(textArea.getText());
-		cellValue.setFuzzy(false);
+		cellValue.setFuzzy(toggleFuzzy.isDown());
 		restoreView();
 		
 		// Send the new cell value to the callback

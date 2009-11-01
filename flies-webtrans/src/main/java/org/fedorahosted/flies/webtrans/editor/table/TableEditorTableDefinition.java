@@ -2,6 +2,7 @@ package org.fedorahosted.flies.webtrans.editor.table;
 
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.webtrans.client.mvp.TextAreaCellEditor;
+import org.fedorahosted.flies.webtrans.editor.filter.ContentFilter;
 
 import com.google.gwt.gen2.table.client.AbstractColumnDefinition;
 import com.google.gwt.gen2.table.client.CellRenderer;
@@ -18,59 +19,55 @@ import com.weborient.codemirror.client.HighlightingLabel;
 import com.weborient.codemirror.client.ParserSyntax;
 
 public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit> {
-	
-	public TableEditorTableDefinition() {
-		addColumnDefinition(new SourceColumnDefinition());
-		addColumnDefinition(new TargetColumnDefinition());
-	}
 
+	private ContentFilter<TransUnit> contentFilter = null;
 	
-	private static class SourceColumnDefinition extends AbstractColumnDefinition<TransUnit, TransUnit> {
-		
-		public SourceColumnDefinition() {
-			setCellRenderer(new CellRenderer<TransUnit, TransUnit>() {
-				@Override
-				public void renderRowValue(
-						TransUnit rowValue,
-						ColumnDefinition<TransUnit, TransUnit> columnDef,
-						AbstractCellView<TransUnit> view) {
-					SourcePanel sourcePanel = new SourcePanel(rowValue);
-					view.setWidget( sourcePanel );
-				}
-			});
+	private final RowRenderer<TransUnit> rowRenderer = new RowRenderer<TransUnit>() {
+		@Override
+		public void renderRowValue(TransUnit rowValue,
+				AbstractRowView<TransUnit> view) {
+			String styles = "TableEditorRow ";
+			styles += view.getRowIndex() % 2 == 0 ? "odd-row" : "even-row";
+			
+			if(contentFilter != null) {
+				styles += " content-filter";
+				styles += contentFilter.accept(rowValue) ? " content-filter-match" : " content-filter-nomatch";
+			}
+			
+			String state = rowValue.isFuzzy() ? " Fuzzy" : rowValue.getTarget().isEmpty() ? " New" : " Approved";
+			styles += state + "StateDecoration";
+			
+		    view.setStyleName( styles);
 		}
-		
+	};
+	
+	private final AbstractColumnDefinition<TransUnit, TransUnit> sourceColumnDefinition = 
+			new AbstractColumnDefinition<TransUnit, TransUnit>() {
 		@Override
 		public TransUnit getCellValue(TransUnit rowValue) {
 			return rowValue;
 		}
-		
+
 		@Override
 		public void setCellValue(TransUnit rowValue, TransUnit cellValue) {
 			cellValue.setSource(rowValue.getSource());
 		}
+	};
 	
-	}
-
-	
-	private static class TargetColumnDefinition extends AbstractColumnDefinition<TransUnit, TransUnit> {
-		
-		public TargetColumnDefinition() {
-			setCellRenderer(new CellRenderer<TransUnit, TransUnit>() {
-				@Override
-				public void renderRowValue(
-						TransUnit rowValue,
-						ColumnDefinition<TransUnit, TransUnit> columnDef,
-						AbstractCellView<TransUnit> view) {
-
-					Label label = new HighlightingLabel(rowValue.getTarget(), ParserSyntax.MIXED);
-					label.setStylePrimaryName("webtrans-editor-content");
-					label.addStyleName("webtrans-editor-content-target");
-					view.setWidget( label );
-				}
-			});
-			setCellEditor(new InlineTargetCellEditor());
+	private final CellRenderer<TransUnit, TransUnit> sourceCellRenderer = new CellRenderer<TransUnit, TransUnit>() {
+		@Override
+		public void renderRowValue(
+				TransUnit rowValue,
+				ColumnDefinition<TransUnit, TransUnit> columnDef,
+				com.google.gwt.gen2.table.client.TableDefinition.AbstractCellView<TransUnit> view) {
+			view.setStyleName("TableEditorCell TableEditorCell-Source");
+			SourcePanel sourcePanel = new SourcePanel(rowValue);
+			view.setWidget( sourcePanel );
 		}
+	};
+	
+	private final AbstractColumnDefinition<TransUnit, TransUnit> targetColumnDefinition = 
+		new AbstractColumnDefinition<TransUnit, TransUnit>() {
 		
 		@Override
 		public TransUnit getCellValue(TransUnit rowValue) {
@@ -82,5 +79,43 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 			cellValue.setTarget(rowValue.getTarget());
 		}
 	
+	};
+	
+	private final CellRenderer<TransUnit, TransUnit> targetCellRenderer = new CellRenderer<TransUnit, TransUnit>() {
+		@Override
+		public void renderRowValue(
+				TransUnit rowValue,
+				ColumnDefinition<TransUnit, TransUnit> columnDef,
+				AbstractCellView<TransUnit> view) {
+			view.setStyleName("TableEditorCell TableEditorCell-Target");
+			Label label = new HighlightingLabel(rowValue.getTarget(), ParserSyntax.MIXED);
+			label.setStylePrimaryName("TableEditorContent");
+			view.setWidget( label );
+		}
+	};
+
+	public TableEditorTableDefinition() {
+		setRowRenderer(rowRenderer);
+
+		sourceColumnDefinition.setCellRenderer(sourceCellRenderer);
+		targetColumnDefinition.setCellRenderer(targetCellRenderer);
+		targetColumnDefinition.setCellEditor(new InlineTargetCellEditor());
+		
+		addColumnDefinition(sourceColumnDefinition);
+		addColumnDefinition(targetColumnDefinition);
 	}
+	
+	public void clearContentFilter() {
+		this.contentFilter = null;
+	}
+	
+	public void setContentFilter(ContentFilter<TransUnit> contentFilter) {
+		this.contentFilter = contentFilter;
+	}
+	
+	public ContentFilter<TransUnit> getContentFilter() {
+		return contentFilter;
+	}
+	
+
 }

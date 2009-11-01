@@ -3,6 +3,7 @@ package org.fedorahosted.flies.webtrans.editor.table;
 
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
+import org.fedorahosted.flies.webtrans.editor.filter.ContentFilter;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
@@ -35,6 +36,7 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements
 		TableEditorPresenter.Display, HasSelectionHandlers<TransUnit>, HasPageNavigation{
 
 	private final RedirectingCachedTableModel<TransUnit> cachedTableModel;
+	private final TableEditorTableDefinition tableDefinition;
 	private int cachedPages = 2;
 	
 	public TableEditorView() {
@@ -49,8 +51,9 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements
 	public TableEditorView(RedirectingCachedTableModel<TransUnit> tableModel, TableEditorTableDefinition tableDefinition) {
 		super(tableModel,tableDefinition);
 		this.cachedTableModel = tableModel;
+		this.tableDefinition = tableDefinition;
+		setStylePrimaryName("TableEditorWrapper");
 		setSize("100%", "100%");
-		tableDefinition.setRowRenderer( new TableEditorRowRenderer());
 		setPageSize(10);
 		setEmptyTableWidget(new HTML(
 				"There is no data to display"));
@@ -64,7 +67,8 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements
 		setCellPadding(3);
 		setCellSpacing(0);
 		setResizePolicy(ScrollTable.ResizePolicy.FILL_WIDTH);
-		
+
+		getDataTable().setStylePrimaryName("TableEditor");
 		getDataTable().setSelectionPolicy(SelectionPolicy.ONE_ROW);
 		getDataTable().setCellPadding(3);
 		getDataTable().addRowSelectionHandler(new RowSelectionHandler() {
@@ -141,4 +145,13 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements
 		cachedTableModel.getTableModel().setTableModelHandler(handler);
 	}
 
+	@Override
+	public void clearContentFilter() {
+		tableDefinition.clearContentFilter();
+	}
+	
+	@Override
+	public void setContentFilter(ContentFilter<TransUnit> filter) {
+		tableDefinition.setContentFilter(filter);
+	}
 }

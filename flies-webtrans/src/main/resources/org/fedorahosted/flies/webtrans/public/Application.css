@@ -63,20 +63,6 @@
     width: 100%;
 }
 
-.gwt-DecoratorPanel.TransPanel-Outer tr.middle td.middleCenter {
-  height: 100%;
-  width: 100%;
-}
-.gwt-DecoratorPanel.TransPanel-Outer tr.middle td.middleCenter div.middleCenterInner {
-  height: 100%;
-  width: 100%;
-}
-
-.TransPanel {
-  height: 100%;
-  width: 100%;
-}
-
 .gwt-ProgressBar-shell {
   border: 2px solid #faf9f7;
   border-right: 2px solid #848280;
@@ -95,72 +81,95 @@
 
 }
 
-.gwt-ScrollTable .dataTable tr td{
-	vertical-align: top;
+.WebTransEditor-Outer tr.middle td.middleCenter {
+  height: 100%;
+  width: 100%;
 }
-
-.gwt-ScrollTable .dataTable tr.highlighted td{
-  background: #DFEFFF;
-  cursor: hand;
-}
-
-.gwt-ScrollTable .dataTable tr.highlighted{
-}
-
-.gwt-ScrollTable .dataTable tr.even-row{
-	background-color: #fafaff;
-}
-.gwt-ScrollTable .dataTable tr.odd-row{
-}
-
-.gwt-ScrollTable .dataTable tr.content-filter{
-}
-
-.gwt-ScrollTable .dataTable tr.content-filter-match{
-	background-color: light-green;
-}
-
-.gwt-ScrollTable .dataTable tr.content-filter-nomatch{
-	background-color: yellow;
-}
-
-/*
-.gwt-ScrollTable .dataTable td.highlighted {
-  background: inherit;
-}
-*/
-
-.gwt-ScrollTable .dataTable tr.selected td {
-  background: #C3D9FF;
+.WebTransEditor-Outer tr.middle td.middleCenter div.middleCenterInner {
+  height: 100%;
+  width: 100%;
 }
 
 .WebTransEditor {
+  height: 100%;
+  width: 100%;
+}
+
+.WebTransEditorMenu {
 	background-color: #D0E4F6;
 }
 
-.WebTransEditor-footer {
-	padding-top: 5px;
+.TableEditor tr td{
+	vertical-align: top;
 }
 
-.webtrans-editor-status{
+.TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Source{
+	background: url(tu_bg_fuzzy_left.png) repeat-y left;
+}
+.TableEditor tr.NewStateDecoration td.TableEditorCell-Source{
+	background: url(tu_bg_new_left.png) repeat-y left;
+}
+.TableEditor tr.ApprovedStateDecoration td.TableEditorCell-Source{
+	background: url(tu_bg_approved_left.png) repeat-y left;
+}
+.TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Target{
+	background: url(tu_bg_fuzzy_right.png) repeat-y right;
+}
+.TableEditor tr.NewStateDecoration td.TableEditorCell-Target{
+	background: url(tu_bg_new_right.png) repeat-y right;
+}
+.TableEditor tr.ApprovedStateDecoration td.TableEditorCell-Target{
+	background: url(tu_bg_approved_right.png) repeat-y right;
+}
+
+td.TableEditorCell {
+}
+
+td.TableEditorCell-Source {
+}
+
+td.TableEditorCell-Target {
+}
+
+
+tr.TableEditorRow.highlighted td.TableEditorCell {
+  background-color: #f1f2f6;
+}
+
+tr.TableEditorRow.highlighted td.TableEditorCell-Source {  
+}
+tr.TableEditorRow.highlighted td.TableEditorCell-Target {
+	cursor: hand;
+}
+
+tr.TableEditorRow.even-row {
+	background-color: #fafaff;
+}
+tr.TableEditorRow.odd-row {
+	background-color: #ffffff;
+}
+
+
+tr.TableEditorRow.content-filter{
+}
+
+tr.TableEditorRow.content-filter-match{
+	background-color: light-green;
+}
+
+tr.TableEditorRow.content-filter-nomatch{
 	background-color: yellow;
 }
 
-.webtrans-editor-content{
+tr.TableEditorRow.selected td {
+  background: #C3D9FF;
+}
+
+.TableEditorContent, .TableEditorContent-Edit {
 	font-size: 14px;
 	font-family: sans-serif;
 	padding: 3px;
 	margin: 2px;	
-}
-.webtrans-editor-content-source{
-	
-}
-.webtrans-editor-content-target{
-	
-}
-
-.webtrans-editor-content-editor{
-	border: none;
 }
 
 .Severity-Error {
