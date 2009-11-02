@@ -1,7 +1,6 @@
 package org.fedorahosted.flies.webtrans.editor.filter;
 
 import org.fedorahosted.flies.webtrans.client.ui.CaptionPanel;
-import org.fedorahosted.flies.webtrans.client.ui.FilterPack;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -9,19 +8,18 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class FilterView extends CaptionPanel implements FilterPresenter.Display {
+public class TransFilterView extends CaptionPanel implements TransFilterPresenter.Display {
 
 	private final Button filterEnableButton, filterDisableButton;
 	private final VerticalPanel vpanel = new VerticalPanel();
 
 	private PhraseFilterWidget filter;
 	
-	public FilterView() {
+	public TransFilterView() {
 		setTitle("Translation Unit Info");
 		filterEnableButton = new Button("Filter");
 		filterDisableButton = new Button("Reset");
 		vpanel.setWidth("100%");
-		vpanel.setHeight("150px");
 		vpanel.setSpacing(10);
 		vpanel.setHorizontalAlignment(VerticalPanel.ALIGN_LEFT);
 		vpanel.setVerticalAlignment(VerticalPanel.ALIGN_TOP);
@@ -32,11 +30,6 @@ public class FilterView extends CaptionPanel implements FilterPresenter.Display 
 				
 		vpanel.add(filterButtonBar);
 		
-		FilterPack filterPack = new FilterPack();
-		filterPack.setTitleLabel("Filter: ");
-		filterPack.setInputBox(new TextBox());
-		vpanel.add(new FilterPack());
-
 		setBody(vpanel);
 	}
 
