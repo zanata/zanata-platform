@@ -39,10 +39,13 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 			switch(rowValue.getStatus()) {
 			case Approved:
 				state = " Approved";
+				break;
 			case NeedReview:
 				state = " Fuzzy";
+				break;
 			case New:
 				state = " New";
+				break;
 			}
 			styles += state + "StateDecoration";
 			
