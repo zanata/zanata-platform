@@ -17,16 +17,17 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
 	public static final Place PLACE = new Place("TransUnitInfoPresenter");
 	
 	public interface Display extends WidgetDisplay{
-		void setFilter(PhraseFilterWidget filter);
+		void addFilterUnitView(FilterUnitView filterUnitView);
 		Button getEnableFilterButton();
 		Button getDisableFilterButton();
 	}
 	
-	private final PhraseFilterPresenter phraseFilterPresenter;
+	private final OperatorFilterPresenter operatorFilterPresenter;
+	
 	@Inject
-	public TransFilterPresenter(final Display display, final EventBus eventBus, PhraseFilterPresenter phraseFilterPresenter) {
+	public TransFilterPresenter(final Display display, final EventBus eventBus, OperatorFilterPresenter operatorFilterPresenter) {
 		super(display, eventBus);
-		this.phraseFilterPresenter = phraseFilterPresenter;
+		this.operatorFilterPresenter = operatorFilterPresenter;
 	}
 	
 	
@@ -38,19 +39,21 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
 
 	@Override
 	protected void onBind() {
-		phraseFilterPresenter.bind(PhraseFilter.from(""));
-		display.setFilter((PhraseFilterWidget) phraseFilterPresenter.getDisplay().asWidget());
+		operatorFilterPresenter.bind(PhraseFilter.from(""));
+		display.addFilterUnitView((FilterUnitView) operatorFilterPresenter.getDisplay().asWidget());
+		
 		display.getEnableFilterButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				Log.info("filter");
-				eventBus.fireEvent( new FilterEnabledEvent(phraseFilterPresenter.getFilter()));
+				Log.info("FilterEnabledEvent");
+				eventBus.fireEvent( new FilterEnabledEvent(operatorFilterPresenter.getFilter()));
 			}
 		});
+		
 		display.getDisableFilterButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				Log.info("filter");
+				Log.info("FilterDisableEvent");
 				eventBus.fireEvent( new FilterDisabledEvent());
 			}
 		});

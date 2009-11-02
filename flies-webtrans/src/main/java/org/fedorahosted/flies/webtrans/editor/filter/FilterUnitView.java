@@ -7,30 +7,30 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class PhraseFilterWidget extends HorizontalPanel implements PhraseFilterPresenter.Display {
+public class FilterUnitView extends HorizontalPanel implements OperatorFilterPresenter.Display {
 	
 	private final Label filterLabel;
 	private final TextBox filterTextBox;
-	private final Button deleteButton;
+	private final Button removeButton;
 	
-	public PhraseFilterWidget() {	
+	public FilterUnitView() {	
 		filterLabel = new Label("Filter: ");
 		filterLabel.setWordWrap(false);
 		filterTextBox = new TextBox();
-		this.deleteButton = new Button("X");
+		this.removeButton = new Button("X");
 		add(filterLabel);
 		add(filterTextBox);
-		add(deleteButton);
+		add(removeButton);
 	}
 	
-	public PhraseFilterWidget(String title, TextBox inputBox) {
+	public FilterUnitView(String title, TextBox inputBox) {
 		filterLabel = new Label("Filter: ");
 		filterLabel.setWordWrap(false);
 		filterTextBox = new TextBox();
-		this.deleteButton = new Button("X");
+		this.removeButton = new Button("X");
 		add(filterLabel);
 		add(filterTextBox);
-		add(deleteButton);
+		add(removeButton);
 	}
 	
 	@Override
@@ -55,4 +55,9 @@ public class PhraseFilterWidget extends HorizontalPanel implements PhraseFilterP
 		return filterTextBox;
 	}
 
+	@Override
+	public Button getRemoveButton () {
+		return removeButton;
+	}
+	
 }

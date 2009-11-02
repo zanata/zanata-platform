@@ -11,7 +11,6 @@ public class TransFilterView extends CaptionPanel implements TransFilterPresente
 
 	private VerticalPanel vpanel;
 	private Button filterEnableButton, filterDisableButton;
-	private PhraseFilterWidget filter;
 	
 	public TransFilterView() {
 		vpanel = new VerticalPanel();
@@ -32,9 +31,8 @@ public class TransFilterView extends CaptionPanel implements TransFilterPresente
 	}
 
 	@Override
-	public void setFilter(PhraseFilterWidget filter) {
-		this.filter = filter;
-		vpanel.add(filter);
+	public void addFilterUnitView(FilterUnitView filterUnitView) {
+		vpanel.add(filterUnitView);
 	}
 
 	@Override
