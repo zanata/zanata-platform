@@ -26,6 +26,7 @@
 
     <!-- Production environment properties. Can be modified by developer in "profiles.xml" -->
     <env.debug>false</env.debug>
+    <env.import.testdata>false</env.import.testdata>
     <env.hibernate.hbm2ddl.auto>validate</env.hibernate.hbm2ddl.auto>
     <env.hibernate.show_sql>false</env.hibernate.show_sql>
     <env.hibernate.format_sql>false</env.hibernate.format_sql>
@@ -73,6 +74,7 @@
     	-->
     	<env>dev</env>
         <env.debug>true</env.debug>
+        <env.import.testdata>true</env.import.testdata>
         <env.hibernate.hbm2ddl.auto>create-drop</env.hibernate.hbm2ddl.auto>
         <env.hibernate.show_sql>false</env.hibernate.show_sql>
         <env.hibernate.format_sql>true</env.hibernate.format_sql>
@@ -293,7 +295,7 @@
     <resources>
       <resource>
         <directory>src/main/resources</directory>
-        <filtering>true</filtering> <!-- filtering persistence.xml -->
+        <filtering>true</filtering> <!-- filtering persistence.xml and components.properties -->
       </resource>
 <!--
       <resource>
