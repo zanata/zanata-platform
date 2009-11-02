@@ -4,10 +4,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 import net.customware.gwt.dispatch.shared.Result;
 
-public class UpdateTransUnitResult implements Result, IsSerializable {
+public class UpdateTransUnitResult implements Result {
 
-
-	private static final long serialVersionUID = -5110777165188058021L;
+	private static final long serialVersionUID = 1L;
 
 	private boolean success;
 	

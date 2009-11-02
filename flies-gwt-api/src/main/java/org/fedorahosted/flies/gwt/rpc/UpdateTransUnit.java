@@ -7,9 +7,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 import net.customware.gwt.dispatch.shared.Action;
 
-public class UpdateTransUnit implements Action<UpdateTransUnitResult>, IsSerializable {
+public class UpdateTransUnit implements Action<UpdateTransUnitResult> {
 	
-	private static final long serialVersionUID = -3400992459393494862L;
+	private static final long serialVersionUID = 1L;
 
 	private TransUnitId transUnitId;
 	private String content;

@@ -1,43 +1,39 @@
 package org.fedorahosted.flies.gwt.rpc;
 
-import net.customware.gwt.dispatch.shared.Action;
-
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.LocaleId;
-import org.fedorahosted.flies.gwt.model.TransUnitId;
+import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
-public class GetStatusCount implements Action<GetStatusCountResult> {
+public class GetStatusCount implements WorkspaceAction<GetStatusCountResult> {
 
 	private static final long serialVersionUID = -1218943735746130251L;
 
 	private DocumentId documentId;
 	private LocaleId localeId;
+	private ProjectContainerId projectContainerId;
 
 	@SuppressWarnings("unused")
-	public GetStatusCount(){
+	private GetStatusCount(){
 	}
 	
-	public GetStatusCount(DocumentId id, LocaleId localeId) {
+	public GetStatusCount(DocumentId id, ProjectContainerId projectContainerId, LocaleId localeId) {
 		this.documentId = id;
 		this.localeId = localeId;
+		this.projectContainerId = projectContainerId;
 	}
 
 	public DocumentId getDocumentId() {
 		return documentId;
 	}
-	
-	public void setDocumentId(DocumentId documentId) {
-		this.documentId = documentId;
-	}
-	
+
+	@Override
 	public LocaleId getLocaleId() {
 		return localeId;
 	}
 	
-	public void setLocaleId(LocaleId localeId) {
-		this.localeId = localeId;
+	@Override
+	public ProjectContainerId getProjectContainerId() {
+		return projectContainerId;
 	}
 
 }

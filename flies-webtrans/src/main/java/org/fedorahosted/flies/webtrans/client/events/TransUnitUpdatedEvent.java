@@ -4,7 +4,7 @@ import org.fedorahosted.flies.gwt.rpc.TransUnitUpdated;
 
 import com.google.gwt.event.shared.GwtEvent;
 
-public class TransUnitUpdatedEvent extends GwtEvent<TransUnitUpdatedEventHandler>{
+public class TransUnitUpdatedEvent extends OffsetEvent<TransUnitUpdatedEventHandler>{
 	
 	/**
 	 * Handler type.
@@ -25,7 +25,8 @@ public class TransUnitUpdatedEvent extends GwtEvent<TransUnitUpdatedEventHandler
 	
 	private final TransUnitUpdated data;
 	
-	public TransUnitUpdatedEvent(TransUnitUpdated data) {
+	public TransUnitUpdatedEvent(TransUnitUpdated data, int offset) {
+		super(offset);
 		this.data = data;
 	}
 	

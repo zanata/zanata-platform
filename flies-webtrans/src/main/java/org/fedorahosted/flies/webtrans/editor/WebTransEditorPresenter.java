@@ -2,6 +2,7 @@ package org.fedorahosted.flies.webtrans.editor;
 
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.LocaleId;
+import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.gwt.rpc.GetStatusCount;
 import org.fedorahosted.flies.gwt.rpc.GetStatusCountResult;
@@ -40,7 +41,8 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 	private final WorkspaceContext workspaceContext;
 	private final Pager pager;
 	private final DispatchAsync dispatcher;
-
+	private int latestStatusCountOffset = -1;
+	
 	public interface Display extends WidgetDisplay{
 		HasThreeColWidgets getHeader();
 		HasThreeColWidgets getFooter();
@@ -108,7 +110,7 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 		registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {
 			@Override
 			public void onDocumentSelected(DocumentSelectionEvent event) {
-				requestStatusCount(event.getDocumentId(), workspaceContext.getLocaleId());
+				requestStatusCount(event.getDocumentId(), workspaceContext.getProjectContainerId(), workspaceContext.getLocaleId());
 			}
 		}));
 		
@@ -117,6 +119,9 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 			@Override
 			public void onTransUnitUpdated(TransUnitUpdatedEvent event) {
 				if(!event.getData().getDocumentId().equals(webTransTablePresenter.getDocumentId())){
+					return;
+				}
+				else if( event.getOffset() < latestStatusCountOffset){
 					return;
 				}
 				
@@ -157,14 +162,15 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 		
 	}
 
-	private void requestStatusCount(DocumentId id, LocaleId localeid) {
-		dispatcher.execute(new GetStatusCount(id, localeid), new AsyncCallback<GetStatusCountResult>() {
+	private void requestStatusCount(DocumentId documentId, ProjectContainerId projectContainerId, LocaleId localeid) {
+		dispatcher.execute(new GetStatusCount(documentId, projectContainerId, localeid), new AsyncCallback<GetStatusCountResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
 			}
 			@Override
 			public void onSuccess(GetStatusCountResult result) {
 				statusbarPresenter.getDisplay().setStatus((int) result.getFuzzy(), (int)result.getTranslated(), (int)result.getUntranslated());
+				latestStatusCountOffset = result.getOffset();
 			}
 		});
 	}	

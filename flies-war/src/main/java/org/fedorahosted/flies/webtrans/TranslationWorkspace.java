@@ -73,6 +73,10 @@ public class TranslationWorkspace {
 		return eventsSince;
 	}
 	
+	public int getLatestEventOffset() {
+		return events.size();
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if(obj == null) return false;

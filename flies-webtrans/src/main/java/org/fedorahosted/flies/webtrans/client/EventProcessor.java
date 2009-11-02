@@ -42,19 +42,19 @@ public class EventProcessor extends Timer{
 					workspaceContext.getProjectContainerId().getId(), workspaceContext.getLocaleId(), lastOffset), 
 						new AsyncCallback<GetEventsResult>() {
 							public void onSuccess(GetEventsResult result) {
-								lastOffset += result.getEvents().size();
 								for(SessionEvent e : result.getEvents()) {
+									++lastOffset;
 									Log.info("firing event");
-									eventBus.fireEvent( getEvent(e));
+									eventBus.fireEvent( getEvent(e, lastOffset));
 								}
 								
 								running = false;
 								Log.info("Got "+ result.getEvents().size() + " events");
 							};
 							
-							private GwtEvent<?> getEvent(SessionEvent e) {
+							private GwtEvent<?> getEvent(SessionEvent e, int offset) {
 								if(e instanceof TransUnitUpdated) {
-									return new TransUnitUpdatedEvent( (TransUnitUpdated) e);
+									return new TransUnitUpdatedEvent( (TransUnitUpdated) e, offset);
 								}
 								throw new RuntimeException("Cannot handle event");
 							}

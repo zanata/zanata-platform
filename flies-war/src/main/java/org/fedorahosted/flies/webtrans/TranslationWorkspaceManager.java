@@ -77,9 +77,19 @@ public class TranslationWorkspaceManager {
 		}
 		return workspace;
 	}
+	
 	public TranslationWorkspace getOrRegisterWorkspace(Long projectContainerId, LocaleId localeId){
 		WorkspaceKey key = new WorkspaceKey(projectContainerId, localeId);
 		return getOrRegisterWorkspace(key);
+	}
+
+	public TranslationWorkspace getWorkspace(Long projectContainerId, LocaleId localeId) {
+		WorkspaceKey key = new WorkspaceKey(projectContainerId, localeId);
+		return getWorkspace(key);
+	}
+	
+	public TranslationWorkspace getWorkspace(WorkspaceKey key) {
+		return workspaceMap.get(key);
 	}
 	
 	public ImmutableSet<TranslationWorkspace> getWorkspaces(LocaleId locale){

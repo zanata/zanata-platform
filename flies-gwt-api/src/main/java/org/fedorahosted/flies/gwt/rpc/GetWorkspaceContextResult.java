@@ -4,9 +4,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 import net.customware.gwt.dispatch.shared.Result;
 
-public class GetWorkspaceContextResult implements Result, IsSerializable {
+public class GetWorkspaceContextResult implements Result {
 
-	private static final long serialVersionUID = -5095148310845805532L;
+	private static final long serialVersionUID = 1L;
 
 	private String workspaceName;
 	private String localeName;

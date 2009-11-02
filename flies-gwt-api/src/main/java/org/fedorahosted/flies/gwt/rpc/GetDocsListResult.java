@@ -9,7 +9,7 @@ import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class GetDocsListResult implements Result, IsSerializable {
+public class GetDocsListResult implements Result {
 
 	private static final long serialVersionUID = 1L;
 

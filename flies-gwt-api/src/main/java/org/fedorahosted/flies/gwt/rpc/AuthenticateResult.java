@@ -6,7 +6,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 import net.customware.gwt.dispatch.shared.Result;
 
-public class AuthenticateResult implements Result, IsSerializable {
+public class AuthenticateResult implements Result {
 
 	private static final long serialVersionUID = 1L;
 	

@@ -7,9 +7,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 import net.customware.gwt.dispatch.shared.Action;
 
-public class GetWorkspaceContext implements Action<GetWorkspaceContextResult>, IsSerializable{
+public class GetWorkspaceContext implements Action<GetWorkspaceContextResult> {
 	
-	private static final long serialVersionUID = 1647105522769097523L;
+	private static final long serialVersionUID = 1L;
 
 	private LocaleId localeId;
 	private ProjectContainerId projectContainerId;

@@ -6,11 +6,14 @@ import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
+import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.core.model.StatusCount;
 import org.fedorahosted.flies.gwt.rpc.GetStatusCount;
 import org.fedorahosted.flies.gwt.rpc.GetStatusCountResult;
 import org.fedorahosted.flies.repository.util.TranslationStatistics;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget.ContentState;
+import org.fedorahosted.flies.webtrans.TranslationWorkspace;
+import org.fedorahosted.flies.webtrans.TranslationWorkspaceManager;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -27,6 +30,8 @@ public class GetStatusCountHandler implements ActionHandler<GetStatusCount, GetS
 	
 	@In Session session;
 
+	@In TranslationWorkspaceManager translationWorkspaceManager;
+	
 	@Override
 	public GetStatusCountResult execute(GetStatusCount action,
 			ExecutionContext context) throws ActionException {
@@ -52,8 +57,10 @@ public class GetStatusCountHandler implements ActionHandler<GetStatusCount, GetS
 		}
 		
 		stat.set(ContentState.New, totalCount - stat.getNotApproved());
+		LocaleId localeId = new LocaleId(action.getLocaleId().getValue());
+		TranslationWorkspace workspace = translationWorkspaceManager.getWorkspace(action.getProjectContainerId().getId(), localeId);
 		
-		return new GetStatusCountResult(action.getDocumentId(), stat.getNew(),stat.getFuzzyMatch()+stat.getForReview(), stat.getApproved());
+		return new GetStatusCountResult(action.getDocumentId(), stat.getNew(),stat.getFuzzyMatch()+stat.getForReview(), stat.getApproved(), workspace.getLatestEventOffset());
 
 	}
 

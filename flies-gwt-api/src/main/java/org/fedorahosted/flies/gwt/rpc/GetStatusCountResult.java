@@ -1,28 +1,31 @@
 package org.fedorahosted.flies.gwt.rpc;
 
-import net.customware.gwt.dispatch.shared.Result;
-
 import org.fedorahosted.flies.gwt.model.DocumentId;
-import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class GetStatusCountResult implements Result, IsSerializable {
+public class GetStatusCountResult implements OffsetResult {
 
-	private static final long serialVersionUID = 5021443732856834627L;
+	private static final long serialVersionUID = 1L;
 	
 	private DocumentId documentId;
 	private long untranslated;
 	private long fuzzy;
 	private long translated;
-
+	private int offset;
+	
 	@SuppressWarnings("unused")
 	private GetStatusCountResult()	{
 	}
 	
-	public GetStatusCountResult(DocumentId documentId, long untranslated, long fuzzy, long translated) {
+	public GetStatusCountResult(DocumentId documentId, long untranslated, long fuzzy, long translated, int offset) {
 		this.documentId = documentId;
 		this.untranslated = untranslated;
 		this.fuzzy = fuzzy;
 		this.translated = translated;
+		this.offset = offset;
+	}
+	
+	public DocumentId getDocumentId() {
+		return documentId;
 	}
 	
 	public long getUntranslated() {
@@ -35,6 +38,11 @@ public class GetStatusCountResult implements Result, IsSerializable {
 	
 	public long getTranslated() {
 		return translated;
+	}
+	
+	@Override
+	public int getOffset() {
+		return offset;
 	}
 	
 }
