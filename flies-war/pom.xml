@@ -27,7 +27,7 @@
     <!-- Production environment properties. Can be modified by developer in "profiles.xml" -->
     <env.debug>false</env.debug>
     <env.import.testdata>false</env.import.testdata>
-    <env.hibernate.hbm2ddl.auto>validate</env.hibernate.hbm2ddl.auto>
+    <env.hibernate.hbm2ddl.auto>update</env.hibernate.hbm2ddl.auto>
     <env.hibernate.show_sql>false</env.hibernate.show_sql>
     <env.hibernate.format_sql>false</env.hibernate.format_sql>
     <env.hibernate.default_batch_size>16</env.hibernate.default_batch_size>
