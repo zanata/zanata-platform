@@ -15,7 +15,7 @@ import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.inject.Inject;
 
-public class FilterPresenter extends WidgetPresenter<FilterPresenter.Display> {
+public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.Display> {
 	
 	public static final Place PLACE = new Place("TransUnitInfoPresenter");
 	
@@ -26,7 +26,7 @@ public class FilterPresenter extends WidgetPresenter<FilterPresenter.Display> {
 	
 	private final PhraseFilterPresenter phraseFilterPresenter;
 	@Inject
-	public FilterPresenter(final Display display, final EventBus eventBus, PhraseFilterPresenter phraseFilterPresenter) {
+	public TransFilterPresenter(final Display display, final EventBus eventBus, PhraseFilterPresenter phraseFilterPresenter) {
 		super(display, eventBus);
 		this.phraseFilterPresenter = phraseFilterPresenter;
 	}

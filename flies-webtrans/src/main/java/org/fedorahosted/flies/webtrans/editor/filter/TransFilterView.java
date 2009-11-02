@@ -8,14 +8,14 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class FilterView extends CaptionPanel implements FilterPresenter.Display {
+public class TransFilterView extends CaptionPanel implements TransFilterPresenter.Display {
 
 	private final Button filterEnableButton, filterDisableButton;
 	private final VerticalPanel vpanel = new VerticalPanel();
 
 	private PhraseFilterWidget filter;
 	
-	public FilterView() {
+	public TransFilterView() {
 		setTitle("Translation Unit Info");
 		filterEnableButton = new Button("Filter");
 		filterDisableButton = new Button("Reset");
