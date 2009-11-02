@@ -59,5 +59,11 @@ public class FilterUnitView extends HorizontalPanel implements OperatorFilterPre
 	public Button getRemoveButton () {
 		return removeButton;
 	}
+
+	@Override
+	public void addFilterUnit() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

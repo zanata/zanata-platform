@@ -32,6 +32,7 @@ public class OperatorFilterPresenter extends WidgetPresenter<OperatorFilterPrese
 	public interface Display extends WidgetDisplay{
 		HasValue<String> getFilterText();
 		Button getRemoveButton();
+		void addFilterUnit();
 	}
 
 	public void bind(PhraseFilter filter) {
@@ -81,6 +82,10 @@ public class OperatorFilterPresenter extends WidgetPresenter<OperatorFilterPrese
 
 	@Override
 	public void revealDisplay() {
+	}
+
+	public void addFilterUnit() {
+//
 	}
 	
 	

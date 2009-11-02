@@ -20,6 +20,7 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
 		void addFilterUnitView(FilterUnitView filterUnitView);
 		Button getEnableFilterButton();
 		Button getDisableFilterButton();
+		Button getAddFilterButton();
 	}
 	
 	private final OperatorFilterPresenter operatorFilterPresenter;
@@ -55,6 +56,14 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
 			public void onClick(ClickEvent event) {
 				Log.info("FilterDisableEvent");
 				eventBus.fireEvent( new FilterDisabledEvent());
+			}
+		});
+		
+		display.getAddFilterButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				Log.info("");
+				operatorFilterPresenter.addFilterUnit();
 			}
 		});
 	}

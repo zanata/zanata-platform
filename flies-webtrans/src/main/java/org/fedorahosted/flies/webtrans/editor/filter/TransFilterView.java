@@ -10,7 +10,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class TransFilterView extends CaptionPanel implements TransFilterPresenter.Display {
 
 	private VerticalPanel vpanel;
-	private Button filterEnableButton, filterDisableButton;
+	private Button filterEnableButton, filterDisableButton, addFilterButton;
 	
 	public TransFilterView() {
 		vpanel = new VerticalPanel();
@@ -21,9 +21,11 @@ public class TransFilterView extends CaptionPanel implements TransFilterPresente
 
 		filterEnableButton = new Button("Filter");
 		filterDisableButton = new Button("Reset");
+		addFilterButton = new Button("+");
 		HorizontalPanel filterButtonBar = new HorizontalPanel();
 		filterButtonBar.add(filterEnableButton);
 		filterButtonBar.add(filterDisableButton);
+		filterButtonBar.add(addFilterButton);
 		vpanel.add(filterButtonBar);
 
 		setTitle("Translation Unit Info");
@@ -60,5 +62,10 @@ public class TransFilterView extends CaptionPanel implements TransFilterPresente
 	@Override
 	public Button getEnableFilterButton() {
 		return filterEnableButton;
+	}
+	
+	@Override
+	public Button getAddFilterButton() {
+		return addFilterButton;
 	}
 }
