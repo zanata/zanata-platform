@@ -1,9 +1,15 @@
 package org.fedorahosted.flies.webtrans.editor;
 
 import org.fedorahosted.flies.gwt.model.DocumentId;
+import org.fedorahosted.flies.gwt.model.LocaleId;
 import org.fedorahosted.flies.gwt.model.TransUnit;
+import org.fedorahosted.flies.gwt.rpc.GetStatusCount;
+import org.fedorahosted.flies.gwt.rpc.GetStatusCountResult;
 import org.fedorahosted.flies.webtrans.client.DocumentSelectionEvent;
 import org.fedorahosted.flies.webtrans.client.DocumentSelectionHandler;
+import org.fedorahosted.flies.webtrans.client.WorkspaceContext;
+import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
+import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.fedorahosted.flies.webtrans.client.ui.Pager;
 import org.fedorahosted.flies.webtrans.editor.table.TableEditorPresenter;
 
@@ -15,9 +21,11 @@ import com.google.gwt.gen2.table.event.client.PageChangeEvent;
 import com.google.gwt.gen2.table.event.client.PageChangeHandler;
 import com.google.gwt.gen2.table.event.client.PageCountChangeEvent;
 import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
+import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
@@ -27,9 +35,11 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPresenter.Display>{
 
 	public static final Place PLACE = new Place("WebTransEditor");
-	private final TranslationStatsBarPresenter statusbarpresenter;
+	private final TranslationStatsBarPresenter statusbarPresenter;
 	private final TableEditorPresenter webTransTablePresenter;
+	private final WorkspaceContext workspaceContext;
 	private final Pager pager;
+	private final DispatchAsync dispatcher;
 
 	public interface Display extends WidgetDisplay{
 		HasThreeColWidgets getHeader();
@@ -39,13 +49,17 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 	}
 
 	@Inject
-	public WebTransEditorPresenter(Display display, EventBus eventBus, 
-			final TableEditorPresenter webTransTablePresenter, 
-			final TranslationStatsBarPresenter statusbarpresenter) {
+	public WebTransEditorPresenter(Display display, EventBus eventBus,
+			final DispatchAsync dispatcher,
+			final TableEditorPresenter webTransTablePresenter,
+			final TranslationStatsBarPresenter translationStatsBarPresenter,
+			final WorkspaceContext workspaceContext) {
 		super(display, eventBus);
+		this.dispatcher = dispatcher;
 		this.webTransTablePresenter = webTransTablePresenter;
-		this.statusbarpresenter = statusbarpresenter;
+		this.workspaceContext = workspaceContext;
 		this.pager = new Pager();
+		this.statusbarPresenter = translationStatsBarPresenter;
 	}
 
 	@Override
@@ -56,12 +70,11 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 	@Override
 	protected void onBind() {
 		webTransTablePresenter.bind();
-        statusbarpresenter.bind();
         
         display.getFooter().setMiddleWidget(pager);
         pager.setVisible(false);
 
-        display.getFooter().setRightWidget(statusbarpresenter.getDisplay().asWidget());
+        display.getFooter().setRightWidget(statusbarPresenter.getDisplay().asWidget());
         
 		display.setEditor(webTransTablePresenter.getDisplay().asWidget());
 		
@@ -91,11 +104,70 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 				pager.setVisible(true);
 			}
 		});
+	
+		registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {
+			@Override
+			public void onDocumentSelected(DocumentSelectionEvent event) {
+				requestStatusCount(event.getDocumentId(), workspaceContext.getLocaleId());
+			}
+		}));
+		
+		registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler() {
+			
+			@Override
+			public void onTransUnitUpdated(TransUnitUpdatedEvent event) {
+				if(!event.getData().getDocumentId().equals(webTransTablePresenter.getDocumentId())){
+					return;
+				}
+				
+				int fuzzyCount = statusbarPresenter.getDisplay().getFuzzy();
+				int translatedCount = statusbarPresenter.getDisplay().getTranslated();
+				int untranslatedCount = statusbarPresenter.getDisplay().getUntranslated();
+				
+				switch (event.getData().getPreviousStatus() ) {
+				case Approved:
+					translatedCount--;
+					break;
+				case NeedReview:
+					fuzzyCount--;
+					break;
+				case New:
+					untranslatedCount--;
+					break;
+				}
+				
+				switch (event.getData().getNewStatus() ) {
+				case Approved:
+					translatedCount++;
+					break;
+				case NeedReview:
+					fuzzyCount++;
+					break;
+				case New:
+					untranslatedCount++;
+					break;
+				}
+				
+				statusbarPresenter.getDisplay().setStatus(fuzzyCount, translatedCount, untranslatedCount);
+				
+			}
+		}));
 		
 		webTransTablePresenter.gotoFirstPage();
-
+		
 	}
 
+	private void requestStatusCount(DocumentId id, LocaleId localeid) {
+		dispatcher.execute(new GetStatusCount(id, localeid), new AsyncCallback<GetStatusCountResult>() {
+			@Override
+			public void onFailure(Throwable caught) {
+			}
+			@Override
+			public void onSuccess(GetStatusCountResult result) {
+				statusbarPresenter.getDisplay().setStatus((int) result.getFuzzy(), (int)result.getTranslated(), (int)result.getUntranslated());
+			}
+		});
+	}	
 	@Override
 	protected void onPlaceRequest(PlaceRequest request) {
 	}

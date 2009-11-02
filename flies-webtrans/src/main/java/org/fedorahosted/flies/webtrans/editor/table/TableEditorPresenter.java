@@ -235,4 +235,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	public void fireEvent(GwtEvent<?> event) {
 		display.getSelectionHandlers().fireEvent(event);
 	}
+	
+	public DocumentId getDocumentId() {
+		return documentId;
+	}
 }
