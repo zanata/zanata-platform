@@ -40,6 +40,7 @@ public class GwtActionDispatcher {
 		actionHandlerRegistry.addHandler(new UpdateTransUnitHandler());
 		actionHandlerRegistry.addHandler(new AuthenticateHandler());
 		actionHandlerRegistry.addHandler(new GetStatusCountHandler());
+		actionHandlerRegistry.addHandler(new GetEventsActionHandler());
 	}
 
 	public Result execute(final Action<? extends Result> action)

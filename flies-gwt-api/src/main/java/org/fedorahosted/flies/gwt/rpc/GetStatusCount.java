@@ -8,7 +8,7 @@ import org.fedorahosted.flies.gwt.model.TransUnitId;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class GetStatusCount implements Action<GetStatusCountResult>, IsSerializable{
+public class GetStatusCount implements Action<GetStatusCountResult> {
 
 	private static final long serialVersionUID = -1218943735746130251L;
 

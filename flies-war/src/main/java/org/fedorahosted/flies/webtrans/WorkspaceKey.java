@@ -5,17 +5,17 @@ import org.fedorahosted.flies.LocaleId;
 
 final class WorkspaceKey{
 	
-	private final Long projectId;
-	private final LocaleId locale;
+	private final Long projectContainerId;
+	private final LocaleId localeId;
 	
-	public WorkspaceKey(Long projectId, LocaleId locale){
-		if(projectId == null)
-			throw new IllegalArgumentException("projectId");
-		if(locale == null)
-			throw new IllegalArgumentException("locale");
+	public WorkspaceKey(Long projectContainerId, LocaleId localeId){
+		if(projectContainerId == null)
+			throw new IllegalArgumentException("projectContainerId");
+		if(localeId == null)
+			throw new IllegalArgumentException("localeId");
 		
-		this.projectId = projectId;
-		this.locale = locale;
+		this.projectContainerId = projectContainerId;
+		this.localeId = localeId;
 	}
 	
 	@Override
@@ -23,16 +23,24 @@ final class WorkspaceKey{
 		if(obj == null) return false;
 		if( !(obj instanceof WorkspaceKey) ) return false;
 		WorkspaceKey other = (WorkspaceKey) obj;
-		return ( other.locale.equals(locale) 
-				&& other.projectId.equals(projectId));
+		return ( other.localeId.equals(localeId) 
+				&& other.projectContainerId.equals(projectContainerId));
 	}
 	
 	@Override
 	public int hashCode() {
 	    int hash = 1;
-	    hash = hash * 31 + locale.hashCode();
-	    hash = hash * 31 + projectId.hashCode();
+	    hash = hash * 31 + localeId.hashCode();
+	    hash = hash * 31 + projectContainerId.hashCode();
 	    return hash;
+	}
+	
+	public LocaleId getLocaleId() {
+		return localeId;
+	}
+	
+	public Long getProjectContainerId() {
+		return projectContainerId;
 	}
 	
 }

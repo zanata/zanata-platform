@@ -2,13 +2,15 @@ package org.fedorahosted.flies.gwt.model;
 
 import java.io.Serializable;
 
+import org.fedorahosted.flies.gwt.rpc.TransUnitStatus;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class TransUnit implements IsSerializable, Serializable{
 	
 	private static final long serialVersionUID = -8247442475446266600L;
 
-	private boolean fuzzy;
+	private TransUnitStatus status;
 	
 	private TransUnitId id;
 	
@@ -27,10 +29,12 @@ public class TransUnit implements IsSerializable, Serializable{
 		this.source = "";
 		this.target = "";
 	}
-	public TransUnit(TransUnitId id, LocaleId localeId, String source, String target) {
+	public TransUnit(TransUnitId id, LocaleId localeId, String source, String target, TransUnitStatus status) {
 		this.id = id;
+		this.localeId = localeId;
 		this.source = source;
 		this.target = target;
+		this.status = status;
 	}
 	
 	public TransUnitId getId() {
@@ -56,12 +60,13 @@ public class TransUnit implements IsSerializable, Serializable{
 	public void setTarget(String target) {
 		this.target = target;
 	}
-	
-	public boolean isFuzzy() {
-		return fuzzy;
+
+	public TransUnitStatus getStatus() {
+		return status;
 	}
 	
-	public void setFuzzy(boolean fuzzy) {
-		this.fuzzy = fuzzy;
+	public void setStatus(TransUnitStatus status) {
+		this.status = status;
 	}
+
 }

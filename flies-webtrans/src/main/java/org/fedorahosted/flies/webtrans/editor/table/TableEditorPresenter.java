@@ -12,6 +12,7 @@ import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnitsResult;
+import org.fedorahosted.flies.gwt.rpc.TransUnitStatus;
 import org.fedorahosted.flies.gwt.rpc.UpdateTransUnit;
 import org.fedorahosted.flies.gwt.rpc.UpdateTransUnitResult;
 import org.fedorahosted.flies.webtrans.client.DocumentSelectionEvent;
@@ -151,7 +152,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		@Override
 		public boolean onSetRowValue(int row, TransUnit rowValue) {
 			dispatcher.execute(
-					new UpdateTransUnit(rowValue.getId(), workspaceContext.getLocaleId(), rowValue.getTarget()), 
+					new UpdateTransUnit(rowValue.getId(), workspaceContext.getLocaleId(), rowValue.getTarget(),rowValue.getStatus()), 
 					new AsyncCallback<UpdateTransUnitResult>() {
 						@Override
 						public void onFailure(Throwable caught) {

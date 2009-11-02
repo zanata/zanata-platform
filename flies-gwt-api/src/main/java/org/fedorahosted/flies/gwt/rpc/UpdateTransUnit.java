@@ -14,15 +14,17 @@ public class UpdateTransUnit implements Action<UpdateTransUnitResult>, IsSeriali
 	private TransUnitId transUnitId;
 	private String content;
 	private LocaleId localeId;
+	private TransUnitStatus status;
 	
 	@SuppressWarnings("unused")
 	private UpdateTransUnit() {
 	}
 	
-	public UpdateTransUnit(TransUnitId transUnitId, LocaleId localeId, String content) {
+	public UpdateTransUnit(TransUnitId transUnitId, LocaleId localeId, String content, TransUnitStatus status) {
 		this.transUnitId = transUnitId;
 		this.localeId = localeId;
 		this.content = content;
+		this.status = status;
 	}
 	
 	public String getContent() {
@@ -35,6 +37,10 @@ public class UpdateTransUnit implements Action<UpdateTransUnitResult>, IsSeriali
 	
 	public LocaleId getLocaleId() {
 		return localeId;
+	}
+
+	public TransUnitStatus getStatus() {
+		return status;
 	}
 
 }

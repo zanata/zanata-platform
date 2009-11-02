@@ -13,10 +13,12 @@ import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.gwt.model.TransUnitId;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnitsResult;
+import org.fedorahosted.flies.gwt.rpc.TransUnitStatus;
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HTextFlow;
 import org.fedorahosted.flies.repository.model.HTextFlowTarget;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
+import org.fedorahosted.flies.rest.dto.TextFlowTarget.ContentState;
 import org.fedorahosted.flies.security.FliesIdentity;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -63,15 +65,30 @@ public class GetTransUnitsHandler implements ActionHandler<GetTransUnits, GetTra
 
 		ArrayList<TransUnit> units = new ArrayList<TransUnit>();
 		for(HTextFlow textFlow : textFlows) {
-			TransUnit tu = new TransUnit(new TransUnitId(textFlow.getId()), action.getLocaleId(), textFlow.getContent(), "");
+			TransUnit tu = new TransUnit(new TransUnitId(textFlow.getId()), action.getLocaleId(), textFlow.getContent(), "", TransUnitStatus.New);
 			HTextFlowTarget target = textFlow.getTargets().get(fliesLocaleId);
 			if(target != null) {
 				tu.setTarget(target.getContent());
+				tu.setStatus( toStatus(target.getState()) );
 			}
 			units.add(tu);
 		}
 
 		return new GetTransUnitsResult(action.getDocumentId(), units, size );
+	}
+
+	private static TransUnitStatus toStatus(ContentState state) {
+		switch(state){
+		case Final:
+			return TransUnitStatus.Approved;
+		case ForReview:
+			return TransUnitStatus.NeedReview;
+		case Leveraged:
+			return TransUnitStatus.NeedReview;
+		case New:
+			return TransUnitStatus.New;
+		}
+		return null;
 	}
 
 	@Override

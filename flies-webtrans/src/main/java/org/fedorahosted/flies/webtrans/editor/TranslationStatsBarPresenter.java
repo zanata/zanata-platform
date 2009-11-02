@@ -14,6 +14,8 @@ import org.fedorahosted.flies.gwt.rpc.GetStatusCountResult;
 import org.fedorahosted.flies.webtrans.client.DocumentSelectionEvent;
 import org.fedorahosted.flies.webtrans.client.DocumentSelectionHandler;
 import org.fedorahosted.flies.webtrans.client.WorkspaceContext;
+import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
+import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -46,6 +48,45 @@ public class TranslationStatsBarPresenter extends WidgetPresenter<TranslationSta
 				requestStatusCount(event.getDocumentId(), workspaceContext.getLocaleId());
 			}
 		}));
+		
+		registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler() {
+			
+			@Override
+			public void onTransUnitUpdated(TransUnitUpdatedEvent event) {
+				
+				int fuzzyCount = display.getFuzzy();
+				int translatedCount = display.getTranslated();
+				int untranslatedCount = display.getUntranslated();
+				
+				switch (event.getData().getPreviousStatus() ) {
+				case Approved:
+					translatedCount--;
+					break;
+				case NeedReview:
+					fuzzyCount--;
+					break;
+				case New:
+					untranslatedCount--;
+					break;
+				}
+				
+				switch (event.getData().getNewStatus() ) {
+				case Approved:
+					translatedCount++;
+					break;
+				case NeedReview:
+					fuzzyCount++;
+					break;
+				case New:
+					untranslatedCount++;
+					break;
+				}
+				
+				display.setStatus(fuzzyCount, translatedCount, untranslatedCount);
+				
+			}
+		}));
+		
 	}
 
 	@Override

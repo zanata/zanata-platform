@@ -11,6 +11,7 @@ import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.gwt.model.TransUnitId;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnitsResult;
+import org.fedorahosted.flies.gwt.rpc.TransUnitStatus;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -41,8 +42,7 @@ final class DummyGetTransUnitCommand implements Command {
 	private ArrayList<TransUnit> generateTransUnitSampleData(LocaleId localeId, int numRows, int start) {
 		ArrayList<TransUnit> units = new ArrayList<TransUnit>();
 		for(int i=start;i<start+numRows; i++) {
-			TransUnit unit = new TransUnit( new TransUnitId(i+1), localeId, "<hellow num=\"" + (i+1) + "\" />", "<world> \"" + (i+1) +"\"</world>");
-			unit.setFuzzy(Math.random() > 0.7);
+			TransUnit unit = new TransUnit( new TransUnitId(i+1), localeId, "<hellow num=\"" + (i+1) + "\" />", "<world> \"" + (i+1) +"\"</world>", TransUnitStatus.NeedReview);
 			units.add(unit);
 		}
 		return units;

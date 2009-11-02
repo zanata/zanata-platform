@@ -50,8 +50,8 @@ public class TranslationWorkspaceManager {
 		log.info("closing down {0} workspaces: ", workspaceMap.size());
 	}
 	
-	public ImmutableSet<LocaleId> getLocales(Long project){
-		return ImmutableSet.copyOf(projectIterationLocaleMap.get(project));
+	public ImmutableSet<LocaleId> getLocales(Long projectContainerId){
+		return ImmutableSet.copyOf(projectIterationLocaleMap.get(projectContainerId));
 	}
 
 	public ImmutableSet<LocaleId> getLocales(){
@@ -62,21 +62,24 @@ public class TranslationWorkspaceManager {
 		return workspaceMap.size();
 	}
 
-	public TranslationWorkspace getOrRegisterWorkspace(Long projectId, LocaleId locale){
-		WorkspaceKey key = new WorkspaceKey(projectId, locale);
-		TranslationWorkspace workspace = workspaceMap.get(key);
+	public TranslationWorkspace getOrRegisterWorkspace(WorkspaceKey workspaceKey) {
+		TranslationWorkspace workspace = workspaceMap.get(workspaceKey);
 		if(workspace == null){
-			workspace = new TranslationWorkspace(projectId, locale);
-			TranslationWorkspace prev = workspaceMap.putIfAbsent(key, workspace);
+			workspace = new TranslationWorkspace(workspaceKey.getProjectContainerId(), workspaceKey.getLocaleId());
+			TranslationWorkspace prev = workspaceMap.putIfAbsent(workspaceKey, workspace);
 			
 			if(prev == null){
-				projectIterationLocaleMap.put(projectId, locale);
-				localeWorkspaceMap.put(locale, workspace);
+				projectIterationLocaleMap.put(workspaceKey.getProjectContainerId(), workspaceKey.getLocaleId());
+				localeWorkspaceMap.put(workspaceKey.getLocaleId(), workspace);
 			}
 			
 			return prev == null ? workspace : prev;
 		}
 		return workspace;
+	}
+	public TranslationWorkspace getOrRegisterWorkspace(Long projectContainerId, LocaleId localeId){
+		WorkspaceKey key = new WorkspaceKey(projectContainerId, localeId);
+		return getOrRegisterWorkspace(key);
 	}
 	
 	public ImmutableSet<TranslationWorkspace> getWorkspaces(LocaleId locale){

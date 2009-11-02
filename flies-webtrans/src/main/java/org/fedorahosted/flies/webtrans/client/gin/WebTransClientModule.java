@@ -10,6 +10,7 @@ import org.fedorahosted.flies.webtrans.client.AppPresenter;
 import org.fedorahosted.flies.webtrans.client.AppView;
 import org.fedorahosted.flies.webtrans.client.DocumentListPresenter;
 import org.fedorahosted.flies.webtrans.client.DocumentListView;
+import org.fedorahosted.flies.webtrans.client.EventProcessor;
 import org.fedorahosted.flies.webtrans.client.LoginPanel;
 import org.fedorahosted.flies.webtrans.client.LoginPresenter;
 import org.fedorahosted.flies.webtrans.client.WestNavigationPresenter;
@@ -42,6 +43,7 @@ public class WebTransClientModule extends AbstractPresenterModule {
 	protected void configure() {		
 		bind(EventBus.class).to(DefaultEventBus.class).in(Singleton.class);
 		bind(PlaceManager.class).in(Singleton.class);
+		bind(EventProcessor.class).in(Singleton.class);
 		
 		bindPresenter(AppPresenter.class, AppPresenter.Display.class, AppView.class);
 		bindPresenter(DocumentListPresenter.class, DocumentListPresenter.Display.class, DocumentListView.class);

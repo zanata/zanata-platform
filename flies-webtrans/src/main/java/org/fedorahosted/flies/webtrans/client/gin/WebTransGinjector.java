@@ -5,6 +5,7 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.PlaceManager;
 
 import org.fedorahosted.flies.webtrans.client.AppPresenter;
+import org.fedorahosted.flies.webtrans.client.EventProcessor;
 import org.fedorahosted.flies.webtrans.client.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.client.auth.Identity;
 import org.fedorahosted.flies.webtrans.client.auth.IdentityImpl;
@@ -24,5 +25,7 @@ public interface WebTransGinjector extends Ginjector {
 	WorkspaceContext getWorkspaceContext();
 	
 	Identity getIdentity();
+	
+	EventProcessor getEventProcessor();
 
 }

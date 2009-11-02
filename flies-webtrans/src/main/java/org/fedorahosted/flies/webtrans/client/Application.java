@@ -33,6 +33,8 @@ public class Application implements EntryPoint{
 		appPresenter.bind();
 		RootPanel.get().add( appPresenter.getDisplay().asWidget() );
 		
+		injector.getEventProcessor();
+		
         // Needed because of this bug:
         // http://code.google.com/p/gwt-presenter/issues/detail?id=6
         PlaceManager placeManager = injector.getPlaceManager();
