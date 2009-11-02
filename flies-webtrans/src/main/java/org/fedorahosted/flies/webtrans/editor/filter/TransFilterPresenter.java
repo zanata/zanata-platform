@@ -6,12 +6,9 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.fedorahosted.flies.gwt.model.TransUnit;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.inject.Inject;
 
@@ -43,13 +40,20 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
 	protected void onBind() {
 		phraseFilterPresenter.bind(PhraseFilter.from(""));
 		display.setFilter((PhraseFilterWidget) phraseFilterPresenter.getDisplay().asWidget());
-		display.getFilterButton().addClickHandler(new ClickHandler() {
+		display.getEnableFilterButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				Log.info("filter");
 				eventBus.fireEvent( new FilterEnabledEvent(phraseFilterPresenter.getFilter()));
 			}
 		});
+//		display.getDisableFilterButton().addClickHandler(new ClickHandler() {
+//			@Override
+//			public void onClick(ClickEvent event) {
+//				Log.info("filter");
+//				eventBus.fireEvent( new FilterDisabledEvent(phraseFilterPresenter.getFilter()));
+//			}
+//		});
 	}
 
 

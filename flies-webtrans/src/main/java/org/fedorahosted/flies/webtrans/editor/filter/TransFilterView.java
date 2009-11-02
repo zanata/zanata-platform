@@ -55,12 +55,12 @@ public class TransFilterView extends CaptionPanel implements TransFilterPresente
 	}
 	
 	@Override
-	public Button getFilterEnableButton() {
-		return filterEnableButton;
+	public Button getDisableFilterButton() {
+		return filterDisableButton;
 	}
 	
 	@Override
-	public Button getFilterEnableButton() {
-		return filterDisableButton;
+	public Button getEnableFilterButton() {
+		return filterEnableButton;
 	}
 }
