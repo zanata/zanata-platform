@@ -26,6 +26,7 @@
 
     <!-- Production environment properties. Can be modified by developer in "profiles.xml" -->
     <env.debug>false</env.debug>
+    <env.server.path>http://localhost:8080/flies</env.server.path>
     <env.import.testdata>false</env.import.testdata>
     <env.hibernate.hbm2ddl.auto>update</env.hibernate.hbm2ddl.auto>
     <env.hibernate.show_sql>false</env.hibernate.show_sql>
