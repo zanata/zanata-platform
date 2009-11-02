@@ -47,13 +47,13 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
 				eventBus.fireEvent( new FilterEnabledEvent(phraseFilterPresenter.getFilter()));
 			}
 		});
-//		display.getDisableFilterButton().addClickHandler(new ClickHandler() {
-//			@Override
-//			public void onClick(ClickEvent event) {
-//				Log.info("filter");
-//				eventBus.fireEvent( new FilterDisabledEvent(phraseFilterPresenter.getFilter()));
-//			}
-//		});
+		display.getDisableFilterButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				Log.info("filter");
+				eventBus.fireEvent( new FilterDisabledEvent());
+			}
+		});
 	}
 
 
