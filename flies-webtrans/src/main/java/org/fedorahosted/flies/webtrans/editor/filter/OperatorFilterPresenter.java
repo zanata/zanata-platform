@@ -6,8 +6,11 @@ import org.fedorahosted.flies.webtrans.client.ui.HasFilter;
 import org.fedorahosted.flies.webtrans.client.ui.HasNodeMouseOutHandlers;
 import org.fedorahosted.flies.webtrans.client.ui.HasNodeMouseOverHandlers;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
 
@@ -17,17 +20,18 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-public class PhraseFilterPresenter extends WidgetPresenter<PhraseFilterPresenter.Display> {
+public class OperatorFilterPresenter extends WidgetPresenter<OperatorFilterPresenter.Display> {
 	
 	private PhraseFilter filter;
 	
 	@Inject
-	public PhraseFilterPresenter(Display display, EventBus eventBus) {
+	public OperatorFilterPresenter(Display display, EventBus eventBus) {
 		super(display, eventBus);
 	}
 
 	public interface Display extends WidgetDisplay{
 		HasValue<String> getFilterText();
+		Button getRemoveButton();
 	}
 
 	public void bind(PhraseFilter filter) {
@@ -53,6 +57,13 @@ public class PhraseFilterPresenter extends WidgetPresenter<PhraseFilterPresenter
 			}
 		});
 		refreshDisplay();
+		
+		display.getRemoveButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				display.asWidget().removeFromParent();
+			}
+		});
 	}
 
 	@Override
@@ -71,4 +82,6 @@ public class PhraseFilterPresenter extends WidgetPresenter<PhraseFilterPresenter
 	@Override
 	public void revealDisplay() {
 	}
+	
+	
 }

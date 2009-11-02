@@ -1,6 +1,6 @@
 package org.fedorahosted.flies.webtrans.client;
 
-import org.fedorahosted.flies.webtrans.editor.filter.FilterPresenter;
+import org.fedorahosted.flies.webtrans.editor.filter.TransFilterPresenter;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
@@ -20,14 +20,14 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 
 	private final WorkspaceUsersPresenter workspaceUsersPresenter;
 	private final DocumentListPresenter docListPresenter;
-	private final FilterPresenter transUnitInfoPresenter;
+	private final TransFilterPresenter transUnitInfoPresenter;
 
 	
 	@Inject
 	public WestNavigationPresenter(Display display, EventBus eventBus, 
 			WorkspaceUsersPresenter workspaceUsersPresenter, 
 			DocumentListPresenter docListPresenter,
-			FilterPresenter transUnitInfoPresenter){//, final DispatchAsync dispatcher) {
+			TransFilterPresenter transUnitInfoPresenter){//, final DispatchAsync dispatcher) {
 		super(display, eventBus);
 		//this.dispatcher = dispatcher;
 		this.workspaceUsersPresenter = workspaceUsersPresenter;

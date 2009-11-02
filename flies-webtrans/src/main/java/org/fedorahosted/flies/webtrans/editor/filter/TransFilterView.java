@@ -1,49 +1,38 @@
 package org.fedorahosted.flies.webtrans.editor.filter;
 
 import org.fedorahosted.flies.webtrans.client.ui.CaptionPanel;
-import org.fedorahosted.flies.webtrans.client.ui.FilterPack;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class FilterView extends CaptionPanel implements FilterPresenter.Display {
+public class TransFilterView extends CaptionPanel implements TransFilterPresenter.Display {
 
-	private final Button filterEnableButton, filterDisableButton;
-	private final VerticalPanel vpanel = new VerticalPanel();
-
-	private PhraseFilterWidget filter;
+	private VerticalPanel vpanel;
+	private Button filterEnableButton, filterDisableButton;
 	
-	public FilterView() {
-		setTitle("Translation Unit Info");
-		filterEnableButton = new Button("Filter");
-		filterDisableButton = new Button("Reset");
+	public TransFilterView() {
+		vpanel = new VerticalPanel();
 		vpanel.setWidth("100%");
-		vpanel.setHeight("150px");
 		vpanel.setSpacing(10);
 		vpanel.setHorizontalAlignment(VerticalPanel.ALIGN_LEFT);
 		vpanel.setVerticalAlignment(VerticalPanel.ALIGN_TOP);
-		
+
+		filterEnableButton = new Button("Filter");
+		filterDisableButton = new Button("Reset");
 		HorizontalPanel filterButtonBar = new HorizontalPanel();
 		filterButtonBar.add(filterEnableButton);
 		filterButtonBar.add(filterDisableButton);
-				
 		vpanel.add(filterButtonBar);
-		
-		FilterPack filterPack = new FilterPack();
-		filterPack.setTitleLabel("Filter: ");
-		filterPack.setInputBox(new TextBox());
-		vpanel.add(new FilterPack());
 
+		setTitle("Translation Unit Info");
 		setBody(vpanel);
 	}
 
 	@Override
-	public void setFilter(PhraseFilterWidget filter) {
-		this.filter = filter;
-		vpanel.add(filter);
+	public void addFilterUnitView(FilterUnitView filterUnitView) {
+		vpanel.add(filterUnitView);
 	}
 
 	@Override
@@ -64,7 +53,12 @@ public class FilterView extends CaptionPanel implements FilterPresenter.Display 
 	}
 	
 	@Override
-	public Button getFilterButton() {
+	public Button getDisableFilterButton() {
+		return filterDisableButton;
+	}
+	
+	@Override
+	public Button getEnableFilterButton() {
 		return filterEnableButton;
 	}
 }

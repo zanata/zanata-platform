@@ -228,7 +228,7 @@
   </component>
   -->
   
-  <component name="dbunitImporter" class="org.fedorahosted.flies.util.DBUnitImporter" installed="true">
+  <component name="dbunitImporter" class="org.fedorahosted.flies.util.DBUnitImporter" installed="@testDataImport@">
     <property name="database">hsql</property>
     <property name="datasourceJndiName">java:/fliesDatasource</property>
     <property name="binaryDir">META-INF/testdata</property>
