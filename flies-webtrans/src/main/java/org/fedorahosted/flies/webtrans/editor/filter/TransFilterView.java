@@ -4,32 +4,30 @@ import org.fedorahosted.flies.webtrans.client.ui.CaptionPanel;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TransFilterView extends CaptionPanel implements TransFilterPresenter.Display {
 
-	private final Button filterEnableButton, filterDisableButton;
-	private final VerticalPanel vpanel = new VerticalPanel();
-
+	private VerticalPanel vpanel;
+	private Button filterEnableButton, filterDisableButton;
 	private PhraseFilterWidget filter;
 	
 	public TransFilterView() {
-		setTitle("Translation Unit Info");
-		filterEnableButton = new Button("Filter");
-		filterDisableButton = new Button("Reset");
+		vpanel = new VerticalPanel();
 		vpanel.setWidth("100%");
 		vpanel.setSpacing(10);
 		vpanel.setHorizontalAlignment(VerticalPanel.ALIGN_LEFT);
 		vpanel.setVerticalAlignment(VerticalPanel.ALIGN_TOP);
-		
+
+		filterEnableButton = new Button("Filter");
+		filterDisableButton = new Button("Reset");
 		HorizontalPanel filterButtonBar = new HorizontalPanel();
 		filterButtonBar.add(filterEnableButton);
 		filterButtonBar.add(filterDisableButton);
-				
 		vpanel.add(filterButtonBar);
-		
+
+		setTitle("Translation Unit Info");
 		setBody(vpanel);
 	}
 
@@ -57,7 +55,12 @@ public class TransFilterView extends CaptionPanel implements TransFilterPresente
 	}
 	
 	@Override
-	public Button getFilterButton() {
+	public Button getFilterEnableButton() {
 		return filterEnableButton;
+	}
+	
+	@Override
+	public Button getFilterEnableButton() {
+		return filterDisableButton;
 	}
 }

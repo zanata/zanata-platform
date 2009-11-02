@@ -21,7 +21,8 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
 	
 	public interface Display extends WidgetDisplay{
 		void setFilter(PhraseFilterWidget filter);
-		Button getFilterButton();
+		Button getEnableFilterButton();
+		Button getDisableFilterButton();
 	}
 	
 	private final PhraseFilterPresenter phraseFilterPresenter;
