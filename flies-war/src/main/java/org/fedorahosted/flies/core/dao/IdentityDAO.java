@@ -36,16 +36,6 @@ public class IdentityDAO {
 	}
 
 	public List<HAccount> listMembers(String role) {
-		// FIXME
-//		Session session = (Session) entityManager.getDelegate();
-//		return session.createCriteria(HAccount.class)
-//			.add( Restrictions.naturalId()
-//		        .set("name", role))
-//		    .list();
-//		return Collections.emptyList();
-
-	
-	
 		Session session = (Session) entityManager.getDelegate();
 		return session.createQuery("from HAccount account where :role member of account.roles")
 			.setParameter("role", getRole(role))
@@ -62,6 +52,7 @@ public class IdentityDAO {
 		return true;
 	}
 
+	@SuppressWarnings("deprecation")
 	public boolean createUser(String username, String password) {
 		HAccount account = new HAccount();
 		account.setUsername(username);
