@@ -17,7 +17,7 @@ public class FilterUnitView extends HorizontalPanel implements OperatorFilterPre
 		filterLabel = new Label("Filter: ");
 		filterLabel.setWordWrap(false);
 		filterTextBox = new TextBox();
-		this.removeButton = new Button("X");
+		this.removeButton = new Button("-");
 		add(filterLabel);
 		add(filterTextBox);
 		add(removeButton);
@@ -27,7 +27,7 @@ public class FilterUnitView extends HorizontalPanel implements OperatorFilterPre
 		filterLabel = new Label("Filter: ");
 		filterLabel.setWordWrap(false);
 		filterTextBox = new TextBox();
-		this.removeButton = new Button("X");
+		this.removeButton = new Button("-");
 		add(filterLabel);
 		add(filterTextBox);
 		add(removeButton);
@@ -50,20 +50,5 @@ public class FilterUnitView extends HorizontalPanel implements OperatorFilterPre
 		
 	}
 
-	@Override
-	public HasValue<String> getFilterText() {
-		return filterTextBox;
-	}
-
-	@Override
-	public Button getRemoveButton () {
-		return removeButton;
-	}
-
-	@Override
-	public void addFilterUnit() {
-		// TODO Auto-generated method stub
-		
-	}
 	
 }

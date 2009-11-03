@@ -12,6 +12,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.Display> {
@@ -20,6 +21,7 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
 	
 	public interface Display extends WidgetDisplay{
 		void addFilterUnitView(FilterUnitView filterUnitView);
+		void addBody(Widget widget);
 		Button getEnableFilterButton();
 		Button getDisableFilterButton();
 		Button getAddFilterButton();
@@ -43,7 +45,9 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
 	@Override
 	protected void onBind() {
 		operatorFilterPresenter.bind(PhraseFilter.from(""));
-		display.addFilterUnitView((FilterUnitView) operatorFilterPresenter.getDisplay().asWidget());
+		
+//		display.addFilterUnitView((FilterUnitView) operatorFilterPresenter.getDisplay().asWidget());
+		display.addBody(operatorFilterPresenter.getDisplay().asWidget());
 		
 		display.getEnableFilterButton().addClickHandler(new ClickHandler() {
 			@Override
