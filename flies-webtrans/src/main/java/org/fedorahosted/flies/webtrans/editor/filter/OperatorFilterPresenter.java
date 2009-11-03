@@ -30,9 +30,7 @@ public class OperatorFilterPresenter extends WidgetPresenter<OperatorFilterPrese
 	}
 
 	public interface Display extends WidgetDisplay{
-		HasValue<String> getFilterText();
-		Button getRemoveButton();
-		void addFilterUnit();
+//
 	}
 
 	public void bind(PhraseFilter filter) {
@@ -51,20 +49,20 @@ public class OperatorFilterPresenter extends WidgetPresenter<OperatorFilterPrese
 	
 	@Override
 	protected void onBind() {
-		display.getFilterText().addValueChangeHandler(new ValueChangeHandler<String>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<String> event) {
-				filter.setPhrase(event.getValue());
-			}
-		});
-		refreshDisplay();
-		
-		display.getRemoveButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				display.asWidget().removeFromParent();
-			}
-		});
+//		display.getFilterText().addValueChangeHandler(new ValueChangeHandler<String>() {
+//			@Override
+//			public void onValueChange(ValueChangeEvent<String> event) {
+//				filter.setPhrase(event.getValue());
+//			}
+//		});
+//		refreshDisplay();
+//		
+//		display.getRemoveButton().addClickHandler(new ClickHandler() {
+//			@Override
+//			public void onClick(ClickEvent event) {
+//				display.asWidget().removeFromParent();
+//			}
+//		});
 	}
 
 	@Override
@@ -77,7 +75,7 @@ public class OperatorFilterPresenter extends WidgetPresenter<OperatorFilterPrese
 
 	@Override
 	public void refreshDisplay() {
-		display.getFilterText().setValue(filter.getPhrase());
+//		display.getFilterText().setValue(filter.getPhrase());
 	}
 
 	@Override

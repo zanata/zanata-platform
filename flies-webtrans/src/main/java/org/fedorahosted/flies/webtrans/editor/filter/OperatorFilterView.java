@@ -4,33 +4,34 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class OperatorFilterView extends HorizontalPanel implements OperatorFilterPresenter.Display {
+public class OperatorFilterView extends VerticalPanel implements OperatorFilterPresenter.Display {
 	
-	private final Label filterLabel;
-	private final TextBox filterTextBox;
-	private final Button removeButton;
+	private final VerticalPanel topPanel;
+	private final HorizontalPanel bottomPanel;
+	private final RadioButton andButton, orButton;
+	private final Button addButton;
 	
 	public OperatorFilterView() {	
-		filterLabel = new Label("Filter: ");
-		filterLabel.setWordWrap(false);
-		filterTextBox = new TextBox();
-		this.removeButton = new Button("X");
-		add(filterLabel);
-		add(filterTextBox);
-		add(removeButton);
-	}
-	
-	public OperatorFilterView(String title, TextBox inputBox) {
-		filterLabel = new Label("Filter: ");
-		filterLabel.setWordWrap(false);
-		filterTextBox = new TextBox();
-		this.removeButton = new Button("X");
-		add(filterLabel);
-		add(filterTextBox);
-		add(removeButton);
+		topPanel = new VerticalPanel();
+		bottomPanel = new HorizontalPanel();
+		
+		orButton = new RadioButton("andor", "OR");
+		andButton = new RadioButton("andor", "AND");
+		addButton = new Button("+");
+		
+		orButton.setValue(true);
+		
+		bottomPanel.add(orButton);
+		bottomPanel.add(andButton);
+		bottomPanel.add(addButton);
+		
+		add(topPanel);
+		add(bottomPanel);
 	}
 	
 	@Override
@@ -50,20 +51,6 @@ public class OperatorFilterView extends HorizontalPanel implements OperatorFilte
 		
 	}
 
-	@Override
-	public HasValue<String> getFilterText() {
-		return filterTextBox;
-	}
 
-	@Override
-	public Button getRemoveButton () {
-		return removeButton;
-	}
-
-	@Override
-	public void addFilterUnit() {
-		// TODO Auto-generated method stub
-		
-	}
 	
 }
