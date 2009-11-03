@@ -20,7 +20,9 @@ import org.fedorahosted.flies.webtrans.client.WorkspaceUsersView;
 import org.fedorahosted.flies.webtrans.client.auth.Identity;
 import org.fedorahosted.flies.webtrans.client.auth.IdentityImpl;
 import org.fedorahosted.flies.webtrans.client.rpc.DelegatingDispatchAsync;
+import org.fedorahosted.flies.webtrans.editor.DocumentStatusPresenter;
 import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
+import org.fedorahosted.flies.webtrans.editor.ProjectStatusPresenter;
 import org.fedorahosted.flies.webtrans.editor.TranslationStatsBar;
 import org.fedorahosted.flies.webtrans.editor.TranslationStatsBarPresenter;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorPresenter;
@@ -55,7 +57,10 @@ public class WebTransClientModule extends AbstractPresenterModule {
 		bindPresenter(WorkspaceUsersPresenter.class, WorkspaceUsersPresenter.Display.class, WorkspaceUsersView.class);
 		bindPresenter(WebTransEditorPresenter.class, WebTransEditorPresenter.Display.class, WebTransEditorView.class);
 		bindPresenter(LoginPresenter.class, LoginPresenter.Display.class, LoginPanel.class);
-		bindPresenter(TranslationStatsBarPresenter.class, TranslationStatsBarPresenter.Display.class, TranslationStatsBar.class);
+		bind(DocumentStatusPresenter.class);
+		
+		bind(ProjectStatusPresenter.class);
+		bindDisplay(TranslationStatsBarPresenter.Display.class, TranslationStatsBar.class);
 		
 		bind(HasPageNavigation.class).to(TableEditorView.class).in(Singleton.class);
 

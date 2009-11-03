@@ -19,6 +19,7 @@ import org.fedorahosted.flies.gwt.rpc.GetDocsListResult;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent.Severity;
 import org.fedorahosted.flies.webtrans.client.ui.HasFilter;
 import org.fedorahosted.flies.webtrans.client.ui.HasTreeNodes;
+import org.fedorahosted.flies.webtrans.editor.ProjectStatusPresenter;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -27,19 +28,22 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.TreeItem;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter.Display> 
 		implements HasDocumentSelectionHandlers {
 
 	private final DispatchAsync dispatcher;
-
+    private final ProjectStatusPresenter prStatusPresenter;
 	@Inject
 	public DocumentListPresenter(Display display, EventBus eventBus,
 			WorkspaceContext workspaceContext,
-			DispatchAsync dispatcher) {
+			DispatchAsync dispatcher,
+			ProjectStatusPresenter prStatusPresenter) {
 		super(display, eventBus);
 		this.dispatcher = dispatcher;
+		this.prStatusPresenter = prStatusPresenter;
 		GWT.log("DocumentListPresenter()", null);
 		loadDocsList(workspaceContext.getProjectContainerId());
 	}
@@ -49,6 +53,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 	public interface Display extends WidgetDisplay {
 		HasTreeNodes<DocName> getTree();
 		HasFilter<DocName> getFilter();
+		void setProjectStatusBar(Widget widget);
 	}
 	
 	private DocumentId currentDoc;
@@ -60,6 +65,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
 	@Override
 	protected void onBind() {
+		prStatusPresenter.bind();
+		display.setProjectStatusBar(prStatusPresenter.getDisplay().asWidget());
+		
 		registerHandler(getDisplay().getTree().addSelectionHandler(new SelectionHandler<TreeItem>() {
 			@Override
 			public void onSelection(SelectionEvent<TreeItem> event) {
@@ -68,6 +76,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 					setValue(selectedDocName.getId(), true);
 			}
 		}));
+		
 	}
 
 	@Override

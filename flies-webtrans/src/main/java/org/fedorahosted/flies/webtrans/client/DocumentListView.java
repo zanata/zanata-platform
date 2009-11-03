@@ -10,6 +10,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.ImageBundle;
 import com.google.gwt.user.client.ui.TreeImages;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class DocumentListView extends CaptionPanel 
@@ -30,13 +31,19 @@ public class DocumentListView extends CaptionPanel
 
 	private static Images images = (Images) GWT.create(Images.class);
 	private FilterTree<DocName> tree;
+	private VerticalPanel mainpanel;
+	private VerticalPanel bottompanel;
 	
 	public DocumentListView() {
 		super();
 		GWT.log("DocumentListView()", null);
 		setTitle("Documents");
 	    tree = new FilterTree<DocName>(new FlatFolderDocNameMapper(), images);
-	    setBody(tree);
+	    mainpanel = new VerticalPanel();
+	    setBody(mainpanel);
+	    mainpanel.add(tree);
+	    bottompanel = new VerticalPanel();
+	    mainpanel.add(bottompanel);
 	}
 
 	@Override
@@ -60,6 +67,11 @@ public class DocumentListView extends CaptionPanel
 	@Override
 	public HasFilter<DocName> getFilter() {
 		return tree;
+	}
+
+	@Override
+	public void setProjectStatusBar(Widget widget) {
+		bottompanel.add(widget);		
 	}
 
 }
