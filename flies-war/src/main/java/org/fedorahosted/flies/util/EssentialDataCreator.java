@@ -1,11 +1,11 @@
 package org.fedorahosted.flies.util;
 
-import java.security.Principal;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 
 import org.fedorahosted.flies.core.dao.AccountDAO;
+import org.fedorahosted.flies.core.dao.IdentityDAO;
 import org.fedorahosted.flies.core.model.HAccount;
 import org.fedorahosted.flies.core.model.HPerson;
 import org.jboss.seam.ScopeType;
@@ -17,8 +17,6 @@ import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.log.Log;
-import org.jboss.seam.security.RunAsOperation;
-import org.jboss.seam.security.management.IdentityManager;
 
 /**
  * Ensures that flies has at least one admin user
@@ -39,10 +37,13 @@ public class EssentialDataCreator {
     @In
     private AccountDAO accountDAO;
     
-    @In
-    private IdentityManager identityManager;
+    @In("identityDAO")
+    private IdentityDAO identityManager;
     
     private boolean prepared;
+    
+//    @In
+//    private IdentityManager identityManager;
     
     public String username;
     public String password;
@@ -54,45 +55,40 @@ public class EssentialDataCreator {
     @Transactional
     public void prepare() {
         if (!prepared) {
-        	new RunAsOperation() {
-                public void execute() {
-                	boolean adminExists;
-                	if (identityManager.roleExists("admin")) {
-                		List<Principal> adminUsers = identityManager.listMembers("admin");
-                		adminExists = !adminUsers.isEmpty();
-                	} else {
-                		log.info("Creating 'admin' role");
-                		if (!identityManager.createRole("admin")) {
-                			throw new RuntimeException("Couldn't create 'admin' role");
-                		}
-                		adminExists = false;
-                	}
-                	if (!identityManager.roleExists("user")) {
-                		log.info("Creating 'user' role");
-                		if (!identityManager.createRole("user")) {
-                			throw new RuntimeException("Couldn't create 'user' role");
-                		}
-                	}
-                	if (!adminExists) {
-                		log.info("No admin users found: creating default user 'admin'");
-                		
-                		if (!identityManager.createUser(username, password)) {
-                			throw new RuntimeException("Couldn't create 'admin' user");
-                		}
-                		identityManager.grantRole(username, "admin");            
-                        identityManager.grantRole(username, "user");            
-                    	HAccount account = accountDAO.getByUsername(username);
-                    	HPerson person = new HPerson();
-                    	
-                    	person.setAccount(account);
-                    	person.setEmail(email);
-                    	person.setName(name);
-                    	entityManager.persist(person);
-                	}
-                }         
-            }//.addRole("admin")
-             .run();
-
+        	boolean adminExists;
+        	if (identityManager.roleExists("admin")) {
+        		List<?> adminUsers = identityManager.listMembers("admin");
+        		adminExists = !adminUsers.isEmpty();
+        	} else {
+        		log.info("Creating 'admin' role");
+        		if (!identityManager.createRole("admin")) {
+        			throw new RuntimeException("Couldn't create 'admin' role");
+        		}
+        		adminExists = false;
+        	}
+        	if (!identityManager.roleExists("user")) {
+        		log.info("Creating 'user' role");
+        		if (!identityManager.createRole("user")) {
+        			throw new RuntimeException("Couldn't create 'user' role");
+        		}
+        	}
+        	if (!adminExists) {
+        		log.info("No admin users found: creating default user 'admin'");
+        		
+        		if (!identityManager.createUser(username, password)) {
+        			throw new RuntimeException("Couldn't create 'admin' user");
+        		}
+        		identityManager.grantRole(username, "admin");            
+                identityManager.grantRole(username, "user");            
+            	HAccount account = accountDAO.getByUsername(username);
+            	HPerson person = new HPerson();
+            	
+            	person.setAccount(account);
+            	person.setEmail(email);
+            	person.setName(name);
+            	entityManager.persist(person);
+        	}
+        	
 	        prepared = true;
         } 
 //        Events.instance().raiseEvent(IMPORT_COMPLETE_EVENT);
