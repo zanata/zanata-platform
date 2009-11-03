@@ -1,6 +1,8 @@
 package org.fedorahosted.flies.webtrans.editor.filter;
 
+import net.customware.gwt.presenter.client.BasicPresenter;
 import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.Presenter;
 import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
@@ -24,7 +26,7 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
 	}
 	
 	private final OperatorFilterPresenter operatorFilterPresenter;
-	
+
 	@Inject
 	public TransFilterPresenter(final Display display, final EventBus eventBus, OperatorFilterPresenter operatorFilterPresenter) {
 		super(display, eventBus);
@@ -62,8 +64,8 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
 		display.getAddFilterButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				Log.info("");
-				operatorFilterPresenter.addFilterUnit();
+				Log.info("Add FilterUnit");
+				display.addFilterUnitView(new FilterUnitView());
 			}
 		});
 	}
