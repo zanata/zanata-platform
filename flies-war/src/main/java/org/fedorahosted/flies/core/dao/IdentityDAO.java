@@ -48,7 +48,12 @@ public class IdentityDAO {
 		HAccountRole role = new HAccountRole();
 		role.setName(roleName);
 		for (String includeRole : includesRoles) {
-			role.getGroups().add(getRole(includeRole));
+			Set<HAccountRole> groups = role.getGroups();
+			if(groups == null) {
+				groups = new HashSet<HAccountRole>();
+				role.setGroups(groups);
+			}
+			groups.add(getRole(includeRole));
 		}
 		entityManager.persist(role);
 		return true;
