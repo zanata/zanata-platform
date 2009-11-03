@@ -2,7 +2,7 @@ package org.fedorahosted.flies.gwt.rpc;
 
 import java.io.Serializable;
 
-public class SessionEvent<T extends SessionEventData> implements Serializable {
+public class SessionEvent<T extends SessionEventData> implements Serializable, HasSequence {
 
 	private static final long serialVersionUID = 1L;
 	private T data;
@@ -21,6 +21,7 @@ public class SessionEvent<T extends SessionEventData> implements Serializable {
 		return data;
 	}
 	
+	@Override
 	public int getSequence() {
 		return sequence;
 	}

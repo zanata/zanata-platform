@@ -52,7 +52,7 @@ public class DocumentStatusPresenter extends TranslationStatsBarPresenter {
 			
 			@Override
 			public void onTransUnitUpdated(TransUnitUpdatedEvent event) {
-				if(!event.getData().getDocumentId().equals(documentid)){
+				if(!event.getDocumentId().equals(documentid)){
 					return;
 				}
 				else if( event.getOffset() < latestStatusCountOffset){
@@ -63,7 +63,7 @@ public class DocumentStatusPresenter extends TranslationStatsBarPresenter {
 				int translatedCount = getDisplay().getTranslated();
 				int untranslatedCount = getDisplay().getUntranslated();
 				
-				switch (event.getData().getPreviousStatus() ) {
+				switch (event.getPreviousStatus() ) {
 				case Approved:
 					translatedCount--;
 					break;
@@ -75,7 +75,7 @@ public class DocumentStatusPresenter extends TranslationStatsBarPresenter {
 					break;
 				}
 				
-				switch (event.getData().getNewStatus() ) {
+				switch (event.getNewStatus() ) {
 				case Approved:
 					translatedCount++;
 					break;
@@ -121,7 +121,7 @@ public class DocumentStatusPresenter extends TranslationStatsBarPresenter {
 			@Override
 			public void onSuccess(GetStatusCountResult result) {
 				getDisplay().setStatus((int) result.getFuzzy(), (int)result.getTranslated(), (int)result.getUntranslated());
-				latestStatusCountOffset = result.getOffset();
+				latestStatusCountOffset = result.getSequence();
 			}
 	});
 	}	

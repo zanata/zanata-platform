@@ -3,7 +3,7 @@ package org.fedorahosted.flies.gwt.rpc;
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.TransUnitId;
 
-public class TransUnitUpdated implements SessionEventData {
+public class TransUnitUpdated implements SessionEventData, HasTransUnitUpdatedData {
 
 	private static final long serialVersionUID = 1L;
 
@@ -11,7 +11,6 @@ public class TransUnitUpdated implements SessionEventData {
 	private DocumentId documentId;
 	private TransUnitStatus previousStatus;
 	private TransUnitStatus newStatus;
-	private int sequence;
 	
 	@SuppressWarnings("unused")
 	private TransUnitUpdated() {
@@ -23,19 +22,23 @@ public class TransUnitUpdated implements SessionEventData {
 		this.previousStatus = previousStatus;
 		this.newStatus = newStatus;
 	}
-	
+
+	@Override
 	public DocumentId getDocumentId() {
 		return documentId;
 	}
 	
+	@Override
 	public TransUnitStatus getNewStatus() {
 		return newStatus;
 	}
 	
+	@Override
 	public TransUnitStatus getPreviousStatus() {
 		return previousStatus;
 	}
 	
+	@Override
 	public TransUnitId getTransUnitId() {
 		return transUnitId;
 	}

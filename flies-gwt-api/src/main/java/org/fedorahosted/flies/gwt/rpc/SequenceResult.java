@@ -8,7 +8,7 @@ import net.customware.gwt.dispatch.shared.Result;
  * 
  * @author asgeirf
  */
-public interface OffsetResult extends Result{
+public interface SequenceResult extends Result{
 
-	public int getOffset();
+	public int getSequence();
 }

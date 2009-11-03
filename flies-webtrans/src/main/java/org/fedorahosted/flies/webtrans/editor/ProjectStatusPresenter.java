@@ -52,7 +52,7 @@ public class ProjectStatusPresenter extends TranslationStatsBarPresenter{
 				int translatedCount = getDisplay().getTranslated();
 				int untranslatedCount = getDisplay().getUntranslated();
 				
-				switch (event.getData().getPreviousStatus() ) {
+				switch (event.getPreviousStatus() ) {
 				case Approved:
 					translatedCount--;
 					break;
@@ -64,7 +64,7 @@ public class ProjectStatusPresenter extends TranslationStatsBarPresenter{
 					break;
 				}
 				
-				switch (event.getData().getNewStatus() ) {
+				switch (event.getNewStatus() ) {
 				case Approved:
 					translatedCount++;
 					break;
@@ -120,7 +120,7 @@ public class ProjectStatusPresenter extends TranslationStatsBarPresenter{
 			public void onSuccess(GetProjectStatusCountResult result) {
 				Log.info("Project Status:"+(int)result.getUntranslated());
 				getDisplay().setStatus((int) result.getFuzzy(), (int)result.getTranslated(), (int)result.getUntranslated());
-				latestStatusCountOffset = result.getOffset();
+				latestStatusCountOffset = result.getSequence();
 			}
 	});
 	}	

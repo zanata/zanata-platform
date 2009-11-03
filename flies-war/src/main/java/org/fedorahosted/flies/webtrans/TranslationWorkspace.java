@@ -75,14 +75,14 @@ public class TranslationWorkspace {
 	public <T extends SessionEventData> SessionEvent<T> publish(T eventData) {
 		synchronized (events) {
 			SessionEvent<T> event = new SessionEvent<T>(eventData, ++sequence );
-			events.offer(event);
+			events.add(event);
 			return event;
 		}
 	}
 	
 	public ArrayList<SessionEvent<?>> getEventsSince(int latestSequence) {
 		ArrayList<SessionEvent<?>> eventsSince = new ArrayList<SessionEvent<?>>();
-		for (Iterator<SessionEvent<?>> it = events.iterator(); it.hasNext();) {
+		for (Iterator<SessionEvent<?>> it = events.descendingIterator(); it.hasNext();) {
 			SessionEvent<?> event = (SessionEvent<?>) it.next();
 			if(event.getSequence() == latestSequence) {
 				break;

@@ -1,10 +1,19 @@
 package org.fedorahosted.flies.webtrans.client.events;
 
+import org.fedorahosted.flies.gwt.model.DocumentId;
+import org.fedorahosted.flies.gwt.model.TransUnitId;
+import org.fedorahosted.flies.gwt.rpc.HasTransUnitUpdatedData;
+import org.fedorahosted.flies.gwt.rpc.TransUnitStatus;
 import org.fedorahosted.flies.gwt.rpc.TransUnitUpdated;
 
 import com.google.gwt.event.shared.GwtEvent;
 
-public class TransUnitUpdatedEvent extends OffsetEvent<TransUnitUpdatedEventHandler>{
+public class TransUnitUpdatedEvent extends SequenceEvent<TransUnitUpdatedEventHandler> implements HasTransUnitUpdatedData{
+
+	private final TransUnitId transUnitId;
+	private final DocumentId documentId;
+	private final TransUnitStatus previousStatus;
+	private final TransUnitStatus newStatus;
 	
 	/**
 	 * Handler type.
@@ -23,15 +32,12 @@ public class TransUnitUpdatedEvent extends OffsetEvent<TransUnitUpdatedEventHand
 		return TYPE;
 	}
 	
-	private final TransUnitUpdated data;
-	
-	public TransUnitUpdatedEvent(TransUnitUpdated data, int offset) {
-		super(offset);
-		this.data = data;
-	}
-	
-	public TransUnitUpdated getData() {
-		return data;
+	public TransUnitUpdatedEvent(HasTransUnitUpdatedData data, int sequence) {
+		super(sequence);
+		this.documentId = data.getDocumentId();
+		this.newStatus = data.getNewStatus();
+		this.previousStatus = data.getPreviousStatus();
+		this.transUnitId = data.getTransUnitId();
 	}
 	
 	@Override
@@ -44,4 +50,24 @@ public class TransUnitUpdatedEvent extends OffsetEvent<TransUnitUpdatedEventHand
 		return getType();
 	}
 
+	@Override
+	public DocumentId getDocumentId() {
+		return documentId;
+	}
+
+	@Override
+	public TransUnitStatus getNewStatus() {
+		return newStatus;
+	};
+	
+	@Override
+	public TransUnitStatus getPreviousStatus() {
+		return previousStatus;
+	}
+	
+	@Override
+	public TransUnitId getTransUnitId() {
+		return transUnitId;
+	}
+	
 }

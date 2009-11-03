@@ -2,7 +2,7 @@ package org.fedorahosted.flies.gwt.rpc;
 
 import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 
-public class GetProjectStatusCountResult implements OffsetResult {
+public class GetProjectStatusCountResult implements SequenceResult {
 	private static final long serialVersionUID = 1L;
 	
 	private ProjectContainerId projectContainerId;
@@ -40,7 +40,7 @@ public class GetProjectStatusCountResult implements OffsetResult {
 	}
 	
 	@Override
-	public int getOffset() {
+	public int getSequence() {
 		return offset;
 	}
 	

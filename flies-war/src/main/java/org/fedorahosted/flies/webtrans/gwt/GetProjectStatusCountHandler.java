@@ -60,7 +60,7 @@ public class GetProjectStatusCountHandler implements ActionHandler<GetProjectSta
 			//LocaleId localeId = new LocaleId(action.getLocaleId().getValue());
 			TranslationWorkspace workspace = translationWorkspaceManager.getWorkspace(action.getProjectContainerId().getId(), fliesLocaleId);
 			
-			return new GetProjectStatusCountResult(action.getProjectContainerId(), stat.getNew(),stat.getFuzzyMatch()+stat.getForReview(), stat.getApproved(), workspace.getLatestEventOffset());
+			return new GetProjectStatusCountResult(action.getProjectContainerId(), stat.getNew(),stat.getFuzzyMatch()+stat.getForReview(), stat.getApproved(), workspace.getSequence());
 
 		}
 
