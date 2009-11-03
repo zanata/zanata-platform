@@ -1,6 +1,8 @@
 package org.fedorahosted.flies.core.dao;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 
@@ -62,9 +64,15 @@ public class IdentityDAO {
 		return true;
 	}
 
-	public void grantRole(String username, String role) {
+	public void grantRole(String username, String roleName) {
 		HAccount account = accountDAO.getByUsername(username);
-		account.getRoles().add(getRole(role));
+		HAccountRole role = getRole(roleName);
+		Set<HAccountRole> roles = account.getRoles();
+		if (roles == null) {
+			roles = new HashSet<HAccountRole>();
+			account.setRoles(roles);
+		}
+		roles.add(role);
 	}
 
 }
