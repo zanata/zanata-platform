@@ -63,7 +63,10 @@ public class IdentityDAO {
 	public boolean createUser(String username, String password) {
 		HAccount account = new HAccount();
 		account.setUsername(username);
-		String passwordHash = PasswordHash.instance().generateHash(password);
+		// TODO add a @PasswordSalt field to HAccount
+		// otherwise, Seam uses the @UserPrincipal field as salt
+		String saltPhrase = username;
+		String passwordHash = PasswordHash.instance().generateSaltedHash(password, saltPhrase, PasswordHash.ALGORITHM_MD5);
 		account.setPasswordHash(passwordHash);
 		entityManager.persist(account);
 		return true;
