@@ -28,6 +28,7 @@ import org.fedorahosted.flies.webtrans.editor.TranslationStatsBarPresenter;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorPresenter;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorView;
 import org.fedorahosted.flies.webtrans.editor.filter.OperatorFilter;
+import org.fedorahosted.flies.webtrans.editor.filter.OperatorFilterView;
 import org.fedorahosted.flies.webtrans.editor.filter.TransFilterPresenter;
 import org.fedorahosted.flies.webtrans.editor.filter.TransFilterView;
 import org.fedorahosted.flies.webtrans.editor.filter.OperatorFilterPresenter;
@@ -50,7 +51,7 @@ public class WebTransClientModule extends AbstractPresenterModule {
 		
 		bindPresenter(AppPresenter.class, AppPresenter.Display.class, AppView.class);
 		bindPresenter(DocumentListPresenter.class, DocumentListPresenter.Display.class, DocumentListView.class);
-		bindPresenter(OperatorFilterPresenter.class, OperatorFilterPresenter.Display.class, FilterUnitView.class);
+		bindPresenter(OperatorFilterPresenter.class, OperatorFilterPresenter.Display.class, OperatorFilterView.class);
 		bindPresenter(TransFilterPresenter.class, TransFilterPresenter.Display.class, TransFilterView.class);
 		bindPresenter(TableEditorPresenter.class, TableEditorPresenter.Display.class, TableEditorView.class);
 		bindPresenter(WestNavigationPresenter.class, WestNavigationPresenter.Display.class, WestNavigationView.class);

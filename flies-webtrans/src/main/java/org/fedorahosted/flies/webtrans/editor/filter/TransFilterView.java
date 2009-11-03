@@ -36,6 +36,10 @@ public class TransFilterView extends CaptionPanel implements TransFilterPresente
 	public void addFilterUnitView(FilterUnitView filterUnitView) {
 		vpanel.add(filterUnitView);
 	}
+	
+	public void addBody(Widget widget) {
+		vpanel.add(widget);
+	}
 
 	@Override
 	public Widget asWidget() {

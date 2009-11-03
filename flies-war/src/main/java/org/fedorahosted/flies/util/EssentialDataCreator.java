@@ -56,21 +56,21 @@ public class EssentialDataCreator {
     public void prepare() {
         if (!prepared) {
         	boolean adminExists;
-        	if (identityManager.roleExists("admin")) {
-        		List<?> adminUsers = identityManager.listMembers("admin");
-        		adminExists = !adminUsers.isEmpty();
-        	} else {
-        		log.info("Creating 'admin' role");
-        		if (!identityManager.createRole("admin")) {
-        			throw new RuntimeException("Couldn't create 'admin' role");
-        		}
-        		adminExists = false;
-        	}
         	if (!identityManager.roleExists("user")) {
         		log.info("Creating 'user' role");
         		if (!identityManager.createRole("user")) {
         			throw new RuntimeException("Couldn't create 'user' role");
         		}
+        	}
+        	if (identityManager.roleExists("admin")) {
+        		List<?> adminUsers = identityManager.listMembers("admin");
+        		adminExists = !adminUsers.isEmpty();
+        	} else {
+        		log.info("Creating 'admin' role");
+        		if (!identityManager.createRole("admin", "user")) {
+        			throw new RuntimeException("Couldn't create 'admin' role");
+        		}
+        		adminExists = false;
         	}
         	if (!adminExists) {
         		log.info("No admin users found: creating default user 'admin'");
