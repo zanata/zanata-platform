@@ -1,8 +1,11 @@
 package org.fedorahosted.flies.webtrans;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Deque;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -14,7 +17,10 @@ import org.fedorahosted.flies.core.model.HPerson;
 import org.fedorahosted.flies.gwt.auth.SessionId;
 import org.fedorahosted.flies.gwt.model.PersonId;
 import org.fedorahosted.flies.gwt.rpc.SessionEvent;
+import org.fedorahosted.flies.gwt.rpc.SessionEventData;
+import org.richfaces.model.LastElementAware;
 
+import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MapMaker;
@@ -26,7 +32,12 @@ public class TranslationWorkspace {
 	
 	private final ConcurrentMap<SessionId, PersonId> sessions = new MapMaker().makeMap();
 	
-	private final List<SessionEvent> events = Collections.synchronizedList( new ArrayList<SessionEvent>());
+	private final Deque<SessionEvent<?>> events = new ArrayDeque<SessionEvent<?>>();
+	
+	//private final ConcurrentLinkedQueue<SessionEvent<?>> events = 
+	//	new ConcurrentLinkedQueue<SessionEvent<?>>();
+	private int sequence;
+	
 	
 	public TranslationWorkspace(Long projectContainerId, LocaleId locale) {
 		if(projectContainerId == null)
@@ -60,21 +71,29 @@ public class TranslationWorkspace {
 	public void registerTranslator(SessionId sessionId, PersonId personId){
 		sessions.putIfAbsent(sessionId, personId);
 	}
-	
-	public void publishEvent(SessionEvent event) {
-		events.add(event);
+
+	public <T extends SessionEventData> SessionEvent<T> publish(T eventData) {
+		synchronized (events) {
+			SessionEvent<T> event = new SessionEvent<T>(eventData, ++sequence );
+			events.offer(event);
+			return event;
+		}
 	}
 	
-	public ArrayList<SessionEvent> getEventsSince(int lastOffset) {
-		ArrayList<SessionEvent> eventsSince = new ArrayList<SessionEvent>();
-		for(SessionEvent e : events.subList(lastOffset, events.size()) ) {
-			eventsSince.add(e);
+	public ArrayList<SessionEvent<?>> getEventsSince(int latestSequence) {
+		ArrayList<SessionEvent<?>> eventsSince = new ArrayList<SessionEvent<?>>();
+		for (Iterator<SessionEvent<?>> it = events.iterator(); it.hasNext();) {
+			SessionEvent<?> event = (SessionEvent<?>) it.next();
+			if(event.getSequence() == latestSequence) {
+				break;
+			}
+			eventsSince.add(event);
 		}
 		return eventsSince;
 	}
 	
-	public int getLatestEventOffset() {
-		return events.size();
+	public int getSequence() {
+		return sequence;
 	}
 	
 	@Override

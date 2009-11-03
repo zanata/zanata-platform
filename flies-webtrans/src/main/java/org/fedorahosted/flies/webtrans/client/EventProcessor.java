@@ -53,8 +53,8 @@ public class EventProcessor extends Timer{
 							};
 							
 							private GwtEvent<?> getEvent(SessionEvent e, int offset) {
-								if(e instanceof TransUnitUpdated) {
-									return new TransUnitUpdatedEvent( (TransUnitUpdated) e, offset);
+								if(e.getData() instanceof TransUnitUpdated) {
+									return new TransUnitUpdatedEvent( (SessionEvent<TransUnitUpdated>) e, offset);
 								}
 								throw new RuntimeException("Cannot handle event");
 							}

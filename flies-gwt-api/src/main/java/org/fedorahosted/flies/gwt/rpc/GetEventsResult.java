@@ -7,17 +7,17 @@ import net.customware.gwt.dispatch.shared.Result;
 public class GetEventsResult implements Result {
 	
 	private static final long serialVersionUID = 1L;
-	private ArrayList<SessionEvent> events;
+	private ArrayList<SessionEvent<?>> events;
 	
 	@SuppressWarnings("unused")
 	private GetEventsResult() {
 	}
 	
-	public GetEventsResult(ArrayList<SessionEvent> events) {
+	public GetEventsResult(ArrayList<SessionEvent<?>> events) {
 		this.events = events;
 	}
 	
-	public ArrayList<SessionEvent> getEvents() {
+	public ArrayList<SessionEvent<?>> getEvents() {
 		return events;
 	}
 

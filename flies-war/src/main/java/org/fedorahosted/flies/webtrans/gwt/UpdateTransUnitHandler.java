@@ -66,7 +66,7 @@ public class UpdateTransUnitHandler implements ActionHandler<UpdateTransUnit, Up
 		
 		TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(
 				hTextFlow.getDocument().getProject().getId(), new LocaleId(action.getLocaleId().getValue()));
-		workspace.publishEvent(event);
+		workspace.publish(event);
 		
 		return new UpdateTransUnitResult(true);
 	}
