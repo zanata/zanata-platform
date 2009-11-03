@@ -228,6 +228,13 @@
   </component>
   -->
   
+  <component name="essentialDataCreator" class="org.fedorahosted.flies.util.EssentialDataCreator" installed="true">
+  	<property name="username">admin</property>
+  	<property name="password">admin</property>
+  	<property name="email">admin@example.com</property>
+  	<property name="name">Administrator</property>
+  </component>
+  
   <component name="dbunitImporter" class="org.fedorahosted.flies.util.DBUnitImporter" installed="@testDataImport@">
     <property name="database">hsql</property>
     <property name="datasourceJndiName">java:/fliesDatasource</property>

@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.webtrans.gwt;
 
+import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.DefaultDispatch;
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.ActionException;
@@ -40,6 +41,7 @@ public class GwtActionDispatcher {
 		actionHandlerRegistry.addHandler(new UpdateTransUnitHandler());
 		actionHandlerRegistry.addHandler(new AuthenticateHandler());
 		actionHandlerRegistry.addHandler(new GetStatusCountHandler());
+		actionHandlerRegistry.addHandler(new GetProjectStatusCountHandler());
 		actionHandlerRegistry.addHandler(new GetEventsActionHandler());
 	}
 
