@@ -48,8 +48,9 @@ public class EventProcessor extends Timer{
 		public GwtEvent<?> getEvent(SessionEvent<?> sessionEvent) {
 			EventFactory<?> factory = factories.get(sessionEvent.getData().getClass());
 			if(factories == null) {
-				throw new RuntimeException("Could not find factory for class " +
+				Log.warn("Could not find factory for class " +
 						sessionEvent.getData().getClass());
+				return null;
 			}
 			return factory.create(sessionEvent);
 		}
@@ -80,7 +81,8 @@ public class EventProcessor extends Timer{
 								for(SessionEvent<?> e : result.getEvents()) {
 									lastSequence = e.getSequence();
 									Log.info("firing event");
-									eventBus.fireEvent( eventRegistry.getEvent(e));
+									GwtEvent<?> event = eventRegistry.getEvent(e);
+									if( event != null) eventBus.fireEvent( event );
 								}
 								
 								running = false;
