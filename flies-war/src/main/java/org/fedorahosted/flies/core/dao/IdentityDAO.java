@@ -60,7 +60,7 @@ public class IdentityDAO {
 	}
 
 	@SuppressWarnings("deprecation")
-	public boolean createUser(String username, String password) {
+	public boolean createUser(String username, String password, boolean enabled) {
 		HAccount account = new HAccount();
 		account.setUsername(username);
 		// TODO add a @PasswordSalt field to HAccount
@@ -68,6 +68,7 @@ public class IdentityDAO {
 		String saltPhrase = username;
 		String passwordHash = PasswordHash.instance().generateSaltedHash(password, saltPhrase, PasswordHash.ALGORITHM_MD5);
 		account.setPasswordHash(passwordHash);
+		account.setEnabled(enabled);
 		entityManager.persist(account);
 		return true;
 	}

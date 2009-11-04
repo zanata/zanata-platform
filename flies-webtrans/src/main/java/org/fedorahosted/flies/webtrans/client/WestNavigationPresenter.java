@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import org.fedorahosted.flies.webtrans.editor.filter.FilterUnitView;
 import org.fedorahosted.flies.webtrans.editor.filter.TransFilterPresenter;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -8,6 +9,10 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.inject.Inject;
 
@@ -16,6 +21,10 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 	
 	public interface Display extends WidgetDisplay {
 		HasWidgets getWidgets();
+		void showThis();
+		void hideThis();
+		Button getHideButton();
+		boolean isHidden();
 	}
 
 	private final WorkspaceUsersPresenter workspaceUsersPresenter;
@@ -50,7 +59,22 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 		
 		workspaceUsersPresenter.bind();
 		display.getWidgets().add(workspaceUsersPresenter.getDisplay().asWidget());
+		
+		display.getHideButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
 
+				if (!display.isHidden()) {
+					Log.info("Hide WestNavigationView");
+					display.hideThis();
+				}
+				else {
+					Log.info("Show WestNavigationView");
+					display.showThis();
+				}
+
+			}
+		});
 	}
 
 	@Override

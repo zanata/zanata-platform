@@ -7,6 +7,10 @@
 	margin-bottom:3px;
 }
 
+.gwt-CollapsiblePanel {
+    hweight: 
+    width: 220px;
+}
 
 .gwt-HeadingPanel .topLeftInner, .gwt-HeadingPanel .topRightInner {
 	height:40px;
@@ -62,7 +66,6 @@
 .gwt-CaptionPanel tr.middle td.middleCenter {
     width: 100%;
 }
-
 .gwt-ProgressBar-shell {
   border: 2px solid #faf9f7;
   border-right: 2px solid #848280;
