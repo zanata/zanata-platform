@@ -72,7 +72,6 @@ public class EventProcessor extends Timer{
 	@Override
 	public void run() {
 		if(!running) {
-			Log.info("Running timer");
 			running = true;
 			dispatcher.execute( new GetEventsAction(
 					workspaceContext.getProjectContainerId().getId(), workspaceContext.getLocaleId(), lastSequence), 
@@ -80,25 +79,18 @@ public class EventProcessor extends Timer{
 							public void onSuccess(GetEventsResult result) {
 								for(SessionEvent<?> e : result.getEvents()) {
 									lastSequence = e.getSequence();
-									Log.info("firing event");
 									GwtEvent<?> event = eventRegistry.getEvent(e);
 									if( event != null) eventBus.fireEvent( event );
 								}
 								
 								running = false;
-								Log.info("Got "+ result.getEvents().size() + " events");
 							};
 							
 							public void onFailure(Throwable caught) {
-								Log.info("failed");
 								running = false;
 							};
 						}
 			);
-		}
-		else{
-			Log.info("Skipping timer");
-
 		}
 	}
 	

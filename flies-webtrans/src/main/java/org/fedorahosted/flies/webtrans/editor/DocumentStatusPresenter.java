@@ -14,6 +14,7 @@ import org.fedorahosted.flies.webtrans.client.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -43,8 +44,8 @@ public class DocumentStatusPresenter extends TranslationStatsBarPresenter {
 		registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {
 			@Override
 			public void onDocumentSelected(DocumentSelectionEvent event) {
-				documentid=event.getDocumentId();
-				requestStatusCount();
+				documentid=null;
+				requestStatusCount(event.getDocumentId());
 			}
 		}));
 		
@@ -52,6 +53,10 @@ public class DocumentStatusPresenter extends TranslationStatsBarPresenter {
 			
 			@Override
 			public void onTransUnitUpdated(TransUnitUpdatedEvent event) {
+				Log.info("trans unit updated. updating stats.");
+				if(documentid == null){
+					return;
+				}
 				if(!event.getDocumentId().equals(documentid)){
 					return;
 				}
@@ -113,8 +118,9 @@ public class DocumentStatusPresenter extends TranslationStatsBarPresenter {
 		
 	}
 	
-	private void requestStatusCount() {
-		dispatcher.execute(new GetStatusCount(documentid, workspaceContext.getProjectContainerId(), workspaceContext.getLocaleId()), new AsyncCallback<GetStatusCountResult>() {
+	private void requestStatusCount(final DocumentId newDocumentId) {
+		Log.info("requesting stats");
+		dispatcher.execute(new GetStatusCount(newDocumentId, workspaceContext.getProjectContainerId(), workspaceContext.getLocaleId()), new AsyncCallback<GetStatusCountResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
 			}
@@ -122,6 +128,7 @@ public class DocumentStatusPresenter extends TranslationStatsBarPresenter {
 			public void onSuccess(GetStatusCountResult result) {
 				getDisplay().setStatus((int) result.getFuzzy(), (int)result.getTranslated(), (int)result.getUntranslated());
 				latestStatusCountOffset = result.getSequence();
+				documentid = newDocumentId;
 			}
 	});
 	}	
