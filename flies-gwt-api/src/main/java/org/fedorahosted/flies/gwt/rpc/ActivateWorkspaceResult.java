@@ -4,7 +4,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 import net.customware.gwt.dispatch.shared.Result;
 
-public class GetWorkspaceContextResult implements Result {
+public class ActivateWorkspaceResult implements Result {
 
 	private static final long serialVersionUID = 1L;
 
@@ -12,10 +12,10 @@ public class GetWorkspaceContextResult implements Result {
 	private String localeName;
 	
 	@SuppressWarnings("unused")
-	private GetWorkspaceContextResult() {
+	private ActivateWorkspaceResult() {
 	}
 	
-	public GetWorkspaceContextResult(String workspaceName, String localeName) {
+	public ActivateWorkspaceResult(String workspaceName, String localeName) {
 		this.workspaceName = workspaceName;
 		this.localeName = localeName;
 	}

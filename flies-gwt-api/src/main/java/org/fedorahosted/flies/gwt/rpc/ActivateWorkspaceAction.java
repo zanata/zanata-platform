@@ -7,7 +7,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 import net.customware.gwt.dispatch.shared.Action;
 
-public class GetWorkspaceContext implements Action<GetWorkspaceContextResult> {
+public class ActivateWorkspaceAction implements Action<ActivateWorkspaceResult> {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -15,10 +15,10 @@ public class GetWorkspaceContext implements Action<GetWorkspaceContextResult> {
 	private ProjectContainerId projectContainerId;
 	
 	@SuppressWarnings("unused")
-	private GetWorkspaceContext() {
+	private ActivateWorkspaceAction() {
 	}
 
-	public GetWorkspaceContext(ProjectContainerId projectContainerId, LocaleId localeId) {
+	public ActivateWorkspaceAction(ProjectContainerId projectContainerId, LocaleId localeId) {
 		this.localeId = localeId;
 		this.projectContainerId = projectContainerId;
 	}

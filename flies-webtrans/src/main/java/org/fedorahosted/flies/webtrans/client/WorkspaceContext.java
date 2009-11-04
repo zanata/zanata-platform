@@ -4,8 +4,8 @@ import net.customware.gwt.dispatch.client.DispatchAsync;
 
 import org.fedorahosted.flies.gwt.model.LocaleId;
 import org.fedorahosted.flies.gwt.model.ProjectContainerId;
-import org.fedorahosted.flies.gwt.rpc.GetWorkspaceContext;
-import org.fedorahosted.flies.gwt.rpc.GetWorkspaceContextResult;
+import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
+import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceResult;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -47,12 +47,12 @@ public class WorkspaceContext {
 	}
 	
 	private void validateWorkspace() {
-		dispatcher.execute(new GetWorkspaceContext(projectContainerId, localeId), new AsyncCallback<GetWorkspaceContextResult>() {
+		dispatcher.execute(new ActivateWorkspaceAction(projectContainerId, localeId), new AsyncCallback<ActivateWorkspaceResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
 			}
 			@Override
-			public void onSuccess(GetWorkspaceContextResult result) {
+			public void onSuccess(ActivateWorkspaceResult result) {
 				setWorkspaceName(result.getWorkspaceName());
 				setLocaleName(result.getLocaleName());
 			}

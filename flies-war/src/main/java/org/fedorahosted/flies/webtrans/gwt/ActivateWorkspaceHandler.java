@@ -4,8 +4,8 @@ import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.fedorahosted.flies.gwt.rpc.GetWorkspaceContext;
-import org.fedorahosted.flies.gwt.rpc.GetWorkspaceContextResult;
+import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
+import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceResult;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -14,28 +14,28 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 
-@Name("webtrans.gwt.GetWorkspaceContextHandler")
+@Name("webtrans.gwt.ActivateWorkspaceHandler")
 @Scope(ScopeType.STATELESS)
-public class GetWorkspaceContextHandler implements ActionHandler<GetWorkspaceContext, GetWorkspaceContextResult> {
+public class ActivateWorkspaceHandler implements ActionHandler<ActivateWorkspaceAction, ActivateWorkspaceResult> {
 
 	@Logger Log log;
 	
 	@In Session session;
 	
 	@Override
-	public GetWorkspaceContextResult execute(GetWorkspaceContext action, ExecutionContext context)
+	public ActivateWorkspaceResult execute(ActivateWorkspaceAction action, ExecutionContext context)
 			throws ActionException {
 //		HProjectContainer hProjectContainer = (HProjectContainer) session.get(HProjectContainer.class, action.getProjectContainerId().getId());
-		return new GetWorkspaceContextResult("My Project v 1.0", "My Language");
+		return new ActivateWorkspaceResult("My Project v 1.0", "My Language");
 	}
 
 	@Override
-	public Class<GetWorkspaceContext> getActionType() {
-		return GetWorkspaceContext.class;
+	public Class<ActivateWorkspaceAction> getActionType() {
+		return ActivateWorkspaceAction.class;
 	}
 
 	@Override
-	public void rollback(GetWorkspaceContext action, GetWorkspaceContextResult result,
+	public void rollback(ActivateWorkspaceAction action, ActivateWorkspaceResult result,
 			ExecutionContext context) throws ActionException {
 	}
 	

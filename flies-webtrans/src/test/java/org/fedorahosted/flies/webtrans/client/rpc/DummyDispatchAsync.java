@@ -9,8 +9,8 @@ import org.fedorahosted.flies.gwt.rpc.GetDocsList;
 import org.fedorahosted.flies.gwt.rpc.GetDocsListResult;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnitsResult;
-import org.fedorahosted.flies.gwt.rpc.GetWorkspaceContext;
-import org.fedorahosted.flies.gwt.rpc.GetWorkspaceContextResult;
+import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
+import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.DeferredCommand;
@@ -32,10 +32,10 @@ public class DummyDispatchAsync extends SeamDispatchAsync {
 			final GetDocsList gdlAction = (GetDocsList) action;
 			AsyncCallback<GetDocsListResult> gdlCallback = (AsyncCallback<GetDocsListResult>) callback;
 			DeferredCommand.addCommand(new DummyGetDocsListCommand(gdlAction, gdlCallback));
-		} else if (action instanceof GetWorkspaceContext) {
-			final GetWorkspaceContext gwcAction = (GetWorkspaceContext) action;
-			AsyncCallback<GetWorkspaceContextResult> gwcCallback = (AsyncCallback<GetWorkspaceContextResult>) callback;
-			DeferredCommand.addCommand(new DummyGetWorkspaceContextCommand(gwcAction, gwcCallback));
+		} else if (action instanceof ActivateWorkspaceAction) {
+			final ActivateWorkspaceAction gwcAction = (ActivateWorkspaceAction) action;
+			AsyncCallback<ActivateWorkspaceResult> gwcCallback = (AsyncCallback<ActivateWorkspaceResult>) callback;
+			DeferredCommand.addCommand(new DummyActivateWorkspaceCommand(gwcAction, gwcCallback));
 		} else {
 			Log.info("DummyDispatchAsync: ignoring action of "+action.getClass());
 //			callback.onFailure(new RuntimeException());
