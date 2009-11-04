@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.webtrans.client;
 
 import org.fedorahosted.flies.gwt.model.Person;
+import org.fedorahosted.flies.gwt.model.PersonId;
 import org.fedorahosted.flies.webtrans.client.ui.CaptionPanel;
 import org.fedorahosted.flies.webtrans.client.ui.FilterTree;
 import org.fedorahosted.flies.webtrans.client.ui.HasChildTreeNodes;
@@ -33,13 +34,13 @@ public class WorkspaceUsersView extends CaptionPanel implements
 	}
 
 	private static Images images = (Images) GWT.create(Images.class);
-	private FilterTree<Person> tree;
+	private FilterTree<PersonId, Person> tree;
 
 	
 	public WorkspaceUsersView() {
 		super();
 //		tree = new FilterTree<Person>(new PersonLocaleTreeNodeMapper(), images);	
-		tree = new FilterTree<Person>(new PersonTreeNodeMapper(), images);	
+		tree = new FilterTree<PersonId, Person>(new PersonTreeNodeMapper(), images);	
 //		tree.setWidth("100%");
 		setTitle("Translators");
 		setBody(getChatAllPanel());

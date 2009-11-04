@@ -1,10 +1,13 @@
 package org.fedorahosted.flies.webtrans.editor;
 
+import java.util.ArrayList;
+
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
 
+import org.fedorahosted.flies.gwt.model.DocumentStatus;
 import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCount;
 import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCountResult;
 import org.fedorahosted.flies.webtrans.client.WorkspaceContext;
@@ -118,8 +121,17 @@ public class ProjectStatusPresenter extends TranslationStatsBarPresenter{
 			}
 			@Override
 			public void onSuccess(GetProjectStatusCountResult result) {
-				Log.info("Project Status:"+(int)result.getUntranslated());
-				getDisplay().setStatus((int) result.getFuzzy(), (int)result.getTranslated(), (int)result.getUntranslated());
+				//Log.info("Project Status:"+(int)result.getUntranslated());
+				long fuzzy = 0;
+				long translated = 0;
+				long untranslated = 0;
+				ArrayList<DocumentStatus> liststatus = result.getStatus();
+				for(DocumentStatus doc : liststatus) {
+					fuzzy =fuzzy+ doc.getFuzzy();
+					translated = translated + doc.getTranslated();
+					untranslated = untranslated + doc.getUntranslated();
+				}
+				getDisplay().setStatus((int) fuzzy, (int)translated, (int)untranslated);
 				latestStatusCountOffset = result.getSequence();
 			}
 	});

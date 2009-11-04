@@ -2,7 +2,7 @@ package org.fedorahosted.flies.gwt.model;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class Person implements IsSerializable {
+public class Person implements HasIdentifier<PersonId>, IsSerializable {
 
 	private PersonId id;
 	private String name;

@@ -1,25 +1,24 @@
 package org.fedorahosted.flies.gwt.rpc;
 
+import java.util.ArrayList;
+
 import org.fedorahosted.flies.gwt.model.ProjectContainerId;
+import org.fedorahosted.flies.gwt.model.DocumentStatus;
 
 public class GetProjectStatusCountResult implements SequenceResult {
 	private static final long serialVersionUID = 1L;
 	
 	private ProjectContainerId projectContainerId;
-	private long untranslated;
-	private long fuzzy;
-	private long translated;
+	private ArrayList<DocumentStatus> status;
 	private int offset;
 	
 	@SuppressWarnings("unused")
 	private GetProjectStatusCountResult() {
 	}
 	
-	public GetProjectStatusCountResult(ProjectContainerId projectContainerId, long untranslated, long fuzzy, long translated, int offset) {
+	public GetProjectStatusCountResult(ProjectContainerId projectContainerId, ArrayList<DocumentStatus> status, int offset) {
 		this.projectContainerId = projectContainerId;
-		this.untranslated = untranslated;
-		this.fuzzy = fuzzy;
-		this.translated = translated;
+		this.status = status;
 		this.offset = offset;
 	}
 	
@@ -27,16 +26,8 @@ public class GetProjectStatusCountResult implements SequenceResult {
 		return projectContainerId;
 	}
 	
-	public long getUntranslated() {
-		return untranslated;
-	}
-	
-	public long getFuzzy() {
-		return fuzzy;
-	}
-	
-	public long getTranslated() {
-		return translated;
+	public ArrayList<DocumentStatus> getStatus() {
+		return status;
 	}
 	
 	@Override

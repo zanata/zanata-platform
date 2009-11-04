@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.fedorahosted.flies.gwt.model.DocName;
+import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.webtrans.client.ui.HasTreeNodes;
 import org.fedorahosted.flies.webtrans.client.ui.TreeNode;
 import org.fedorahosted.flies.webtrans.client.ui.TreeNodeMapper;
 
-public class FlatFolderDocNameMapper implements TreeNodeMapper<DocName> {
-	public void addToTree(HasTreeNodes<DocName> tree, ArrayList<DocName> docNames, boolean openFolderNodes) {
+public class FlatFolderDocNameMapper implements TreeNodeMapper<DocumentId, DocName> {
+	public void addToTree(HasTreeNodes<DocumentId, DocName> tree, ArrayList<DocName> docNames, boolean openFolderNodes) {
 		HashMap<String, TreeNode<DocName>> folderNodes = new HashMap<String, TreeNode<DocName>>();
 		for (DocName docName : docNames) {
 			String path = docName.getPath();
@@ -26,6 +27,7 @@ public class FlatFolderDocNameMapper implements TreeNodeMapper<DocName> {
 				item = folder.addItem(docName.getName());
 				folder.setState(openFolderNodes); // TreeItem can't open a node until it has children
 			}
+			tree.nodeAdded(docName.getId(), item);
 			item.setObject(docName);
 		}
 	}

@@ -62,8 +62,8 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 
 			@Override
 			public void onMouseOver(MouseOverEvent event) {
-				if (event.getSource() instanceof TreeNodeImpl<?>) {
-					TreeNodeImpl<Person> source = (TreeNodeImpl<Person>) event.getSource();	
+				if (event.getSource() instanceof TreeNodeImpl<?, ?>) {
+					TreeNodeImpl<PersonId, Person> source = (TreeNodeImpl<PersonId, Person>) event.getSource();	
 					
 					VerticalPanel popupMainPanel = new VerticalPanel();
 					Person overPerson = source.getObject();
