@@ -6,6 +6,7 @@ import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.core.model.HPerson;
+import org.fedorahosted.flies.gwt.auth.SessionId;
 import org.fedorahosted.flies.gwt.model.Person;
 import org.fedorahosted.flies.gwt.model.PersonId;
 import org.fedorahosted.flies.gwt.rpc.AuthenticateAction;
@@ -39,8 +40,7 @@ public class AuthenticateHandler implements ActionHandler<AuthenticateAction, Au
 		Identity.instance().tryLogin();
 		
 		if(Identity.instance().isLoggedIn()) {
-			String sessionId = ServletContexts.instance().getRequest().getSession().getId();
-			
+			SessionId sessionId = retrieveSessionId();
 			HPerson authenticatedPerson = (HPerson) Contexts.getSessionContext().get("authenticatedPerson");
 			Person person = new Person( new PersonId(action.getUsername()), authenticatedPerson.getName());
 			
@@ -52,6 +52,11 @@ public class AuthenticateHandler implements ActionHandler<AuthenticateAction, Au
 			return AuthenticateResult.FAILED;
 		}
 	}
+	
+	public static SessionId retrieveSessionId() {
+		return new SessionId(ServletContexts.instance().getRequest().getSession().getId());
+	}
+	
 
 	@Override
 	public Class<AuthenticateAction> getActionType() {
