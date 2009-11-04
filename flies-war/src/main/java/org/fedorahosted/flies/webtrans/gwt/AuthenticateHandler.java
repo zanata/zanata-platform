@@ -11,6 +11,7 @@ import org.fedorahosted.flies.gwt.model.Person;
 import org.fedorahosted.flies.gwt.model.PersonId;
 import org.fedorahosted.flies.gwt.rpc.AuthenticateAction;
 import org.fedorahosted.flies.gwt.rpc.AuthenticateResult;
+import org.fedorahosted.flies.webtrans.TranslationWorkspaceManager;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -35,14 +36,16 @@ public class AuthenticateHandler implements ActionHandler<AuthenticateAction, Au
 			throws ActionException {
 		log.info("Authenticating {0}", action.getUsername());
 		
-		Identity.instance().getCredentials().setUsername(action.getUsername());
-		Identity.instance().getCredentials().setPassword(action.getPassword());
-		Identity.instance().tryLogin();
+		if(!Identity.instance().isLoggedIn()) {
+			Identity.instance().getCredentials().setUsername(action.getUsername());
+			Identity.instance().getCredentials().setPassword(action.getPassword());
+			Identity.instance().tryLogin();
+		}
 		
 		if(Identity.instance().isLoggedIn()) {
+			
 			SessionId sessionId = retrieveSessionId();
-			HPerson authenticatedPerson = (HPerson) Contexts.getSessionContext().get("authenticatedPerson");
-			Person person = new Person( new PersonId(action.getUsername()), authenticatedPerson.getName());
+			Person person = retrievePerson();
 			
 			// TODO pass along permissions and roles
 			
@@ -66,6 +69,15 @@ public class AuthenticateHandler implements ActionHandler<AuthenticateAction, Au
 	@Override
 	public void rollback(AuthenticateAction action, AuthenticateResult result,
 			ExecutionContext context) throws ActionException {
+	}
+	
+	public static PersonId retrievePersonId(){
+		HPerson authenticatedPerson = (HPerson) Contexts.getSessionContext().get("authenticatedPerson");
+		return new PersonId(authenticatedPerson.getAccount().getUsername());
+	}
+	public static Person retrievePerson(){
+		HPerson authenticatedPerson = (HPerson) Contexts.getSessionContext().get("authenticatedPerson");
+		return new Person( new PersonId(authenticatedPerson.getAccount().getUsername()), authenticatedPerson.getName());
 	}
 	
 }
