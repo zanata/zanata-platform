@@ -13,21 +13,14 @@ public class OperatorFilterView extends VerticalPanel implements OperatorFilterP
 	
 	private final VerticalPanel topPanel;
 	private final HorizontalPanel bottomPanel;
-	private final RadioButton andButton, orButton;
 	private final Button addButton;
 	
 	public OperatorFilterView() {	
 		topPanel = new VerticalPanel();
 		bottomPanel = new HorizontalPanel();
 		
-		orButton = new RadioButton("andor", "OR");
-		andButton = new RadioButton("andor", "AND");
+
 		addButton = new Button("+");
-		
-		orButton.setValue(true);
-		
-		bottomPanel.add(orButton);
-		bottomPanel.add(andButton);
 		bottomPanel.add(addButton);
 		
 		add(topPanel);
@@ -51,6 +44,18 @@ public class OperatorFilterView extends VerticalPanel implements OperatorFilterP
 		
 	}
 
-
+	@Override
+	public void addFilterUnit(Widget widget) {
+		topPanel.add(widget);
+	}
 	
+	@Override
+	public void removeFilterUnit() {
+		topPanel.remove(topPanel.getWidgetCount() - 1);
+	}
+	
+	@Override
+	public Button getAddButton() {
+		return addButton;
+	}
 }
