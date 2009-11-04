@@ -137,6 +137,7 @@ public class HDocument extends AbstractFliesEntity{
 		}
 	}
 	
+	// TODO make this case sensitive
 	@NaturalId
 	@Length(max=255)
 	@NotEmpty
