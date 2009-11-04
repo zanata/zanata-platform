@@ -2,9 +2,10 @@ package org.fedorahosted.flies.gwt.auth;
 
 import java.io.Serializable;
 
+import org.fedorahosted.flies.gwt.model.Identifier;
 import org.fedorahosted.flies.gwt.model.PersonId;
 
-public final class SessionId implements Serializable {
+public final class SessionId implements Identifier<String>, Serializable {
 	private String id;
 	
 	
@@ -35,6 +36,11 @@ public final class SessionId implements Serializable {
 
 	@Override
 	public String toString() {
+		return id;
+	}
+	
+	@Override
+	public String getValue() {
 		return id;
 	}
 }

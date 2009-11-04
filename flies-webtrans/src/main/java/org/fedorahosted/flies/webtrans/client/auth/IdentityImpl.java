@@ -82,7 +82,7 @@ public class IdentityImpl implements Identity {
 			
 			@Override
 			public void onSuccess(AuthenticateResult result) {
-				Cookies.setCookie("JSESSIONID", result.getSessionId());
+				Cookies.setCookie("JSESSIONID", result.getSessionId().getValue());
 				eventBus.fireEvent( new UserLoginEvent(result.getPerson()) );
 				callback.onSuccess();
 			}
