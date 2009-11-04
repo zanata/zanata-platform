@@ -10,7 +10,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class TransFilterView extends CaptionPanel implements TransFilterPresenter.Display {
 
 	private VerticalPanel vpanel;
-	private Button filterEnableButton, filterDisableButton, addFilterButton;
+	private Button filterEnableButton, filterDisableButton;
 	
 	public TransFilterView() {
 		vpanel = new VerticalPanel();
@@ -21,24 +21,24 @@ public class TransFilterView extends CaptionPanel implements TransFilterPresente
 
 		filterEnableButton = new Button("Filter");
 		filterDisableButton = new Button("Reset");
-		addFilterButton = new Button("+");
+		
 		HorizontalPanel filterButtonBar = new HorizontalPanel();
+		filterButtonBar.setHorizontalAlignment(HorizontalPanel.ALIGN_CENTER);
 		filterButtonBar.add(filterEnableButton);
 		filterButtonBar.add(filterDisableButton);
-		filterButtonBar.add(addFilterButton);
+		
 		vpanel.add(filterButtonBar);
 
-		setTitle("Translation Unit Info");
+		setTitle("Filter");
 		setBody(vpanel);
 	}
 
 	@Override
-	public void addFilterUnitView(FilterUnitView filterUnitView) {
-		vpanel.add(filterUnitView);
-	}
-	
-	public void addBody(Widget widget) {
-		vpanel.add(widget);
+	public void setFilterUnitPanel (Widget widget) {
+		if (vpanel.getWidgetCount() == 2)
+			vpanel.remove(1);
+		else
+			vpanel.add(widget);
 	}
 
 	@Override
@@ -66,10 +66,5 @@ public class TransFilterView extends CaptionPanel implements TransFilterPresente
 	@Override
 	public Button getEnableFilterButton() {
 		return filterEnableButton;
-	}
-	
-	@Override
-	public Button getAddFilterButton() {
-		return addFilterButton;
 	}
 }
