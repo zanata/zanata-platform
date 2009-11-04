@@ -3,6 +3,8 @@ package org.fedorahosted.flies.webtrans.client;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
@@ -13,14 +15,22 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.fedorahosted.flies.gwt.model.DocName;
 import org.fedorahosted.flies.gwt.model.DocumentId;
+import org.fedorahosted.flies.gwt.model.DocumentStatus;
 import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 import org.fedorahosted.flies.gwt.rpc.GetDocsList;
 import org.fedorahosted.flies.gwt.rpc.GetDocsListResult;
+import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCount;
+import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCountResult;
+import org.fedorahosted.flies.gwt.rpc.TransUnitStatus;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent.Severity;
+import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
+import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.fedorahosted.flies.webtrans.client.ui.HasFilter;
 import org.fedorahosted.flies.webtrans.client.ui.HasTreeNodes;
+import org.fedorahosted.flies.webtrans.client.ui.TreeNode;
 import org.fedorahosted.flies.webtrans.editor.ProjectStatusPresenter;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -36,12 +46,16 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
 	private final DispatchAsync dispatcher;
     private final ProjectStatusPresenter prStatusPresenter;
+    private final WorkspaceContext workspaceContext;
+    private int latestStatusCountOffset = -1;
+    
 	@Inject
 	public DocumentListPresenter(Display display, EventBus eventBus,
 			WorkspaceContext workspaceContext,
 			DispatchAsync dispatcher,
 			ProjectStatusPresenter prStatusPresenter) {
 		super(display, eventBus);
+		this.workspaceContext = workspaceContext;
 		this.dispatcher = dispatcher;
 		this.prStatusPresenter = prStatusPresenter;
 		GWT.log("DocumentListPresenter()", null);
@@ -51,7 +65,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 	public static final Place PLACE = new Place("DocumentListList");
 	
 	public interface Display extends WidgetDisplay {
-		HasTreeNodes<DocName> getTree();
+		HasTreeNodes<DocumentId, DocName> getTree();
 		HasFilter<DocName> getFilter();
 		void setProjectStatusBar(Widget widget);
 	}
@@ -66,7 +80,29 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 	@Override
 	protected void onBind() {
 		prStatusPresenter.bind();
+		
+		
 		display.setProjectStatusBar(prStatusPresenter.getDisplay().asWidget());
+		
+		registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler() {
+			@Override
+			public void onTransUnitUpdated(TransUnitUpdatedEvent event) {
+				
+				if( event.getOffset() < latestStatusCountOffset){
+					return;
+				}
+
+				DocumentStatus doc = statuscache.get(event.getDocumentId());
+				TransUnitStatus status = event.getPreviousStatus();
+				doc.setStatus(status, doc.getStatus(status)-1);
+				status = event.getNewStatus();
+				doc.setStatus(status, doc.getStatus(status)+1);
+				TreeNode<DocName> node = display.getTree().getNodeByKey(doc.getDocumentid());
+				node.setName(node.getObject().getName() + " ("+ doc.getUntranslated() +")");
+			}
+
+
+		}));
 		
 		registerHandler(getDisplay().getTree().addSelectionHandler(new SelectionHandler<TreeItem>() {
 			@Override
@@ -151,8 +187,34 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 			@Override
 			public void onSuccess(GetDocsListResult result) {
 				setDocNameList(result.getDocNames());
+				loadDocsStatus();
 			}
 		});
+		
+		
+	}
+	
+	private Map<DocumentId, DocumentStatus> statuscache = new HashMap<DocumentId, DocumentStatus>();
+	
+	private void loadDocsStatus() {
+		dispatcher.execute(new GetProjectStatusCount(workspaceContext.getProjectContainerId(), workspaceContext.getLocaleId()), new AsyncCallback<GetProjectStatusCountResult>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Log.info("load Doc Status failure "+caught.getMessage());
+			}
+			@Override
+			public void onSuccess(GetProjectStatusCountResult result) {
+				Log.info("load Doc Status");
+				ArrayList<DocumentStatus> liststatus = result.getStatus();
+				for(DocumentStatus doc : liststatus) {
+					statuscache.put(doc.getDocumentid(), doc);
+					TreeNode<DocName> node = display.getTree().getNodeByKey(doc.getDocumentid());
+					node.setName(node.getObject().getName() + " ("+ doc.getUntranslated() +")");
+				}
+			
+				latestStatusCountOffset = result.getSequence();
+			}
+	});
 	}
 
 }

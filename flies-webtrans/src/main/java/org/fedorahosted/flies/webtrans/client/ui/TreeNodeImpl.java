@@ -9,15 +9,28 @@ import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TreeItem;
+import com.google.gwt.user.client.ui.Widget;
 
-public class TreeNodeImpl<T> extends TreeItem implements TreeNode<T> {
+public class TreeNodeImpl<K, T> extends TreeItem implements TreeNode<T> {
 
 	private HandlerManager handlerManager;
 	private HandlerRegistration labelMouseOverReg;
 	private HandlerRegistration labelMouseOutReg;
+	private Label label;
 
 	public TreeNodeImpl(String name) {
 		super(new Label(name));
+		this.label = (Label) getWidget();
+	}
+	
+	@Override
+	public String getName() {
+		return label.getText();
+	}
+	
+	@Override
+	public void setName(String name) {
+		label.setText(name);
 	}
 	
 	private HandlerManager getHandlerManager() {
@@ -30,8 +43,9 @@ public class TreeNodeImpl<T> extends TreeItem implements TreeNode<T> {
 	}
 
 	@Override
-	public TreeNodeImpl<T> addItem(String itemText) {
-		TreeNodeImpl<T> item = new TreeNodeImpl<T>(itemText);
+	public TreeNodeImpl<K, T> addItem(String itemText) {
+		TreeNodeImpl<K, T> item = new TreeNodeImpl<K, T>(itemText);
+		// TODO add to the hashmap in the tree
 		addItem(item);
 		return item;
 	}

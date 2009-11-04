@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.webtrans.client;
 
 import org.fedorahosted.flies.gwt.model.DocName;
+import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.webtrans.client.ui.CaptionPanel;
 import org.fedorahosted.flies.webtrans.client.ui.FilterTree;
 import org.fedorahosted.flies.webtrans.client.ui.HasFilter;
@@ -30,7 +31,7 @@ public class DocumentListView extends CaptionPanel
 	}
 
 	private static Images images = (Images) GWT.create(Images.class);
-	private FilterTree<DocName> tree;
+	private FilterTree<DocumentId, DocName> tree;
 	private VerticalPanel mainpanel;
 	private VerticalPanel bottompanel;
 	
@@ -38,7 +39,7 @@ public class DocumentListView extends CaptionPanel
 		super();
 		GWT.log("DocumentListView()", null);
 		setTitle("Documents");
-	    tree = new FilterTree<DocName>(new FlatFolderDocNameMapper(), images);
+	    tree = new FilterTree<DocumentId, DocName>(new FlatFolderDocNameMapper(), images);
 	    mainpanel = new VerticalPanel();
 	    setBody(mainpanel);
 	    mainpanel.add(tree);
@@ -60,7 +61,7 @@ public class DocumentListView extends CaptionPanel
 	}
 
 	@Override
-	public HasTreeNodes<DocName> getTree() {
+	public HasTreeNodes<DocumentId, DocName> getTree() {
 		return tree;
 	}
 

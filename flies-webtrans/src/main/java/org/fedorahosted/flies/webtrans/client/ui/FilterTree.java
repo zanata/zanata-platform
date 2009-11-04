@@ -16,25 +16,27 @@ import com.google.gwt.user.client.ui.TreeImages;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class FilterTree<T> extends Composite implements HasTreeNodes<T>, HasFilter<T>, HasNodeMouseOverHandlers, HasNodeMouseOutHandlers {
-	private final TreeNodeMapper<T> mapper;
+public class FilterTree<K, T> extends Composite 
+		implements HasTreeNodes<K, T>, HasFilter<T>, 
+		HasNodeMouseOverHandlers, HasNodeMouseOutHandlers {
+	private final TreeNodeMapper<K, T> mapper;
 	private final Panel panel = new VerticalPanel();
 	private final FilterBox filterBox = new FilterBox();
-	private final TreeImpl<T> tree;
+	private final TreeImpl<K, T> tree;
 	private final ArrayList<T> list = new ArrayList<T>();
 	private final ArrayList<MouseOverHandler> mouseOverHandlers = new ArrayList<MouseOverHandler>();
 	private final ArrayList<MouseOutHandler> mouseOutHandlers = new ArrayList<MouseOutHandler>();
 	
 	
-	public FilterTree(TreeNodeMapper<T> mapper) {
+	public FilterTree(TreeNodeMapper<K, T> mapper) {
 		this.mapper = mapper;
-		tree = new TreeImpl<T>();
+		tree = new TreeImpl<K, T>();
 		initWidgets();
 	}
 
-	public FilterTree(TreeNodeMapper<T> mapper, TreeImages images) {
+	public FilterTree(TreeNodeMapper<K, T> mapper, TreeImages images) {
 		this.mapper = mapper;
-		tree = new TreeImpl<T>(images);
+		tree = new TreeImpl<K, T>(images);
 		initWidgets();
 	}
 	
@@ -136,7 +138,7 @@ public class FilterTree<T> extends Composite implements HasTreeNodes<T>, HasFilt
 	}
 
 	@Override
-	public TreeNodeImpl<T> getSelectedNode() {
+	public TreeNodeImpl<K, T> getSelectedNode() {
 		return tree.getSelectedNode();
 	}
 
@@ -178,6 +180,16 @@ public class FilterTree<T> extends Composite implements HasTreeNodes<T>, HasFilt
 				mouseOutHandlers.remove(handler);
 			}
 		};
+	}
+
+	@Override
+	public TreeNode<T> getNodeByKey(K key) {
+		return tree.getNodeByKey(key);
+	}
+
+	@Override
+	public void nodeAdded(K key, TreeNode<T> node) {
+		tree.nodeAdded(key, node);
 	}
 	
 }
