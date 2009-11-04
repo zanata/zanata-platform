@@ -35,14 +35,16 @@
         fuzzy="0" 
         untranslated="#{tstatus.notApproved}"/>    </rich:column>
     <rich:column>
+<!--
       <s:link view="/translate.xhtml" propagation="none" target="_blank">
         Translate
         <f:param name="wid" value="#{_iteration.id}/#{tribe.locale.id}"/>
       </s:link>  
       <br/>
-      <h:outputLink target="_blank" value="/webtrans/org.fedorahosted.flies.webtrans.Application/Application.html">
+-->
+      <h:outputLink target="_blank" value="/flies/org.fedorahosted.flies.webtrans.Application/Application.html">
 		<f:param name="projContainerId" value="#{_iteration.container.id}"/>
-		<f:param name="localeId" value="de"/>
+		<f:param name="localeId" value="#{tribe.locale.id}"/>
 		WebTrans    	
    	</h:outputLink>
         
