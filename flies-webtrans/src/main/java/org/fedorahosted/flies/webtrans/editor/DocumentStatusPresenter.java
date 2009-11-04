@@ -15,6 +15,7 @@ import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -24,6 +25,7 @@ public class DocumentStatusPresenter extends TranslationStatsBarPresenter {
 	private final DispatchAsync dispatcher;
 	private int latestStatusCountOffset = -1;
 	private DocumentId documentid;
+	private HandlerRegistration updateHandlerRegistration;
 	
 	@Inject
 	public DocumentStatusPresenter(Display display, EventBus eventBus,
@@ -44,56 +46,7 @@ public class DocumentStatusPresenter extends TranslationStatsBarPresenter {
 		registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {
 			@Override
 			public void onDocumentSelected(DocumentSelectionEvent event) {
-				documentid=null;
 				requestStatusCount(event.getDocumentId());
-			}
-		}));
-		
-		registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler() {
-			
-			@Override
-			public void onTransUnitUpdated(TransUnitUpdatedEvent event) {
-				Log.info("trans unit updated. updating stats.");
-				if(documentid == null){
-					return;
-				}
-				if(!event.getDocumentId().equals(documentid)){
-					return;
-				}
-				else if( event.getOffset() < latestStatusCountOffset){
-					return;
-				}
-				
-				int fuzzyCount = getDisplay().getFuzzy();
-				int translatedCount = getDisplay().getTranslated();
-				int untranslatedCount = getDisplay().getUntranslated();
-				
-				switch (event.getPreviousStatus() ) {
-				case Approved:
-					translatedCount--;
-					break;
-				case NeedReview:
-					fuzzyCount--;
-					break;
-				case New:
-					untranslatedCount--;
-					break;
-				}
-				
-				switch (event.getNewStatus() ) {
-				case Approved:
-					translatedCount++;
-					break;
-				case NeedReview:
-					fuzzyCount++;
-					break;
-				case New:
-					untranslatedCount++;
-					break;
-				}
-				
-				getDisplay().setStatus(fuzzyCount, translatedCount, untranslatedCount);
-				
 			}
 		}));
 	}
@@ -105,7 +58,8 @@ public class DocumentStatusPresenter extends TranslationStatsBarPresenter {
 
 	@Override
 	protected void onUnbind() {
-		
+		if(updateHandlerRegistration != null)
+			updateHandlerRegistration.removeHandler();
 	}
 
 	@Override
@@ -119,18 +73,70 @@ public class DocumentStatusPresenter extends TranslationStatsBarPresenter {
 	}
 	
 	private void requestStatusCount(final DocumentId newDocumentId) {
-		Log.info("requesting stats");
+		if(updateHandlerRegistration != null) {
+			updateHandlerRegistration.removeHandler();
+		}
+		documentid  = newDocumentId;
 		dispatcher.execute(new GetStatusCount(newDocumentId, workspaceContext.getProjectContainerId(), workspaceContext.getLocaleId()), new AsyncCallback<GetStatusCountResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
+				Log.error("error");
 			}
 			@Override
 			public void onSuccess(GetStatusCountResult result) {
 				getDisplay().setStatus((int) result.getFuzzy(), (int)result.getTranslated(), (int)result.getUntranslated());
 				latestStatusCountOffset = result.getSequence();
-				documentid = newDocumentId;
+				updateHandlerRegistration = eventBus.addHandler(TransUnitUpdatedEvent.getType(), updateHandler);
 			}
 	});
 	}	
 
+	private final TransUnitUpdatedEventHandler updateHandler = new TransUnitUpdatedEventHandler() {
+		
+		@Override
+		public void onTransUnitUpdated(TransUnitUpdatedEvent event) {
+			Log.info("trans unit updated. updating stats.");
+			if(documentid == null){
+				return;
+			}
+			if(!event.getDocumentId().equals(documentid)){
+				return;
+			}
+			else if( event.getOffset() < latestStatusCountOffset){
+				return;
+			}
+			
+			int fuzzyCount = getDisplay().getFuzzy();
+			int translatedCount = getDisplay().getTranslated();
+			int untranslatedCount = getDisplay().getUntranslated();
+			
+			switch (event.getPreviousStatus() ) {
+			case Approved:
+				translatedCount--;
+				break;
+			case NeedReview:
+				fuzzyCount--;
+				break;
+			case New:
+				untranslatedCount--;
+				break;
+			}
+			
+			switch (event.getNewStatus() ) {
+			case Approved:
+				translatedCount++;
+				break;
+			case NeedReview:
+				fuzzyCount++;
+				break;
+			case New:
+				untranslatedCount++;
+				break;
+			}
+			
+			getDisplay().setStatus(fuzzyCount, translatedCount, untranslatedCount);
+			
+		}
+	};	
+	
 }
