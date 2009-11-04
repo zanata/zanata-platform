@@ -81,6 +81,7 @@ public class EssentialDataCreator {
         		identityManager.grantRole(username, "admin");            
                 identityManager.grantRole(username, "user");            
             	HAccount account = accountDAO.getByUsername(username);
+            	account.setEnabled(true);
             	HPerson person = new HPerson();
             	
             	person.setAccount(account);
