@@ -54,6 +54,7 @@ public abstract class HDocumentResource implements Serializable{
 		this.id = id;
 	}
 	
+	// TODO make this case sensitive
 	@NaturalId
 	@Length(max=255)
 	@NotEmpty
