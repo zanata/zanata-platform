@@ -7,7 +7,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class FilterUnitView extends HorizontalPanel implements OperatorFilterPresenter.Display {
+public class FilterUnitView extends HorizontalPanel {
 	
 	private final Label filterLabel;
 	private final TextBox filterTextBox;
@@ -33,18 +33,18 @@ public class FilterUnitView extends HorizontalPanel implements OperatorFilterPre
 		add(removeButton);
 	}
 	
-	@Override
+//	@Override
 	public Widget asWidget() {
 		return this;
 	}
 
-	@Override
+//	@Override
 	public void startProcessing() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+//	@Override
 	public void stopProcessing() {
 		// TODO Auto-generated method stub
 		
