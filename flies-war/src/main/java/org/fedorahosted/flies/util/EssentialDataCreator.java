@@ -75,13 +75,12 @@ public class EssentialDataCreator {
         	if (!adminExists) {
         		log.info("No admin users found: creating default user 'admin'");
         		
-        		if (!identityManager.createUser(username, password)) {
+        		if (!identityManager.createUser(username, password, true)) {
         			throw new RuntimeException("Couldn't create 'admin' user");
         		}
         		identityManager.grantRole(username, "admin");            
                 identityManager.grantRole(username, "user");            
             	HAccount account = accountDAO.getByUsername(username);
-            	account.setEnabled(true);
             	HPerson person = new HPerson();
             	
             	person.setAccount(account);
