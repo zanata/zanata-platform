@@ -9,10 +9,14 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.fedorahosted.flies.webtrans.client.Application.WindowResizeEvent;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorPresenter;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -50,6 +54,20 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		loginPresenter.bind();
 		westNavigationPresenter.bind();
 		webTransEditorPresenter.bind();
+		
+		final Button showHide = new Button();
+		showHide.setText("<<");
+		registerHandler(showHide.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				boolean visible = westNavigationPresenter.getDisplay().asWidget().isVisible();
+				westNavigationPresenter.getDisplay().asWidget().setVisible(!visible);
+				showHide.setText( visible ? ">>" : "<<");
+			}
+		}));
+		
+		webTransEditorPresenter.getDisplay().getHeader().setLeftWidget(showHide);
+		
 		
 		display.setNorth(new NorthPanel());
 		display.setWest(westNavigationPresenter.getDisplay().asWidget());

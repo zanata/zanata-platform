@@ -15,14 +15,12 @@
        
       <inherits name="org.fedorahosted.flies.gwt.Common"/>
       
-      <!--  inherit css based theme -->
-      <inherits name='com.google.gwt.user.theme.standard.Standard'/>
-
       <!-- Specify the app entry point class.                         -->
       <entry-point class='org.fedorahosted.flies.webtrans.client.Application'/>
 
       <!-- Specify the application specific style sheet.              -->
       <stylesheet src='Application.css' />
+      <stylesheet src='roundedContainerWithHeader.css' />
 
       <!-- Add gwt-log support, default level `OFF` - check for
            extended property 'log_level' to see if this is overridden -->

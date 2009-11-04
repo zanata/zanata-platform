@@ -21,10 +21,6 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 	
 	public interface Display extends WidgetDisplay {
 		HasWidgets getWidgets();
-		void showThis();
-		void hideThis();
-		Button getHideButton();
-		boolean isHidden();
 	}
 
 	private final WorkspaceUsersPresenter workspaceUsersPresenter;
@@ -59,22 +55,6 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 		
 		workspaceUsersPresenter.bind();
 		display.getWidgets().add(workspaceUsersPresenter.getDisplay().asWidget());
-		
-		display.getHideButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-
-				if (!display.isHidden()) {
-					Log.info("Hide WestNavigationView");
-					display.hideThis();
-				}
-				else {
-					Log.info("Show WestNavigationView");
-					display.showThis();
-				}
-
-			}
-		});
 	}
 
 	@Override
