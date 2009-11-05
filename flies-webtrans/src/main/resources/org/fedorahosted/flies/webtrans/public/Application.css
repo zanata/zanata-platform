@@ -127,10 +127,21 @@ body {
 }
 
 .WebTransEditorMenu-left {
-	float: left;	
+	left: 0px;
+	display: inline;	
 }
-.WebTransEditorMenu-right {
+.float-right-div {
 	float: right;
+}
+
+.FilterView {
+	padding-top: 2px;
+	padding-bottom: 2px;	
+}
+
+.WebTransEditorMenu-right {
+	right: 0px;
+	display: inline;
 }
 
 .TableEditor tr td{

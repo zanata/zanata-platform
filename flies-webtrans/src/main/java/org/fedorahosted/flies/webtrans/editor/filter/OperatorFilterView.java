@@ -2,16 +2,10 @@ package org.fedorahosted.flies.webtrans.editor.filter;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -22,15 +16,16 @@ public class OperatorFilterView extends VerticalPanel implements OperatorFilterP
 	private final Button addButton;
 	private final ListBox filterTypeBox;
 	
-	public class FilterWidgetWrapper extends HorizontalPanel {
+	public class FilterWidgetWrapper extends FlowPanel {
 		private final Widget filter;
 		private final Button removeButton;
 		
 		public FilterWidgetWrapper(Widget filter, ClickHandler removeHandler) {
+			setStyleName("FilterView");
 			this.filter = filter;
 			this.removeButton = new Button("-");
 			add(filter);
-			add(removeButton);
+			//add(removeButton);
 			removeButton.addClickHandler(removeHandler);
 		}
 	}
@@ -49,7 +44,7 @@ public class OperatorFilterView extends VerticalPanel implements OperatorFilterP
 		bottomPanel.add(filterTypeBox);
 		
 		add(topPanel);
-		add(bottomPanel);
+		//add(bottomPanel);
 	}
 	
 	@Override
@@ -76,7 +71,7 @@ public class OperatorFilterView extends VerticalPanel implements OperatorFilterP
 			public void onClick(ClickEvent event) {
 			}
 		});
-		topPanel.add(widget);
+		topPanel.add(filterWrapper);
 	}
 	
 	@Override
