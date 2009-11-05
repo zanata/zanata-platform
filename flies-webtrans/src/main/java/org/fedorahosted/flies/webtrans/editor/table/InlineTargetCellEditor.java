@@ -13,8 +13,12 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.client.InlineCellEditor.InlineCellEditorImages;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ImageBundle;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.ToggleButton;
@@ -29,17 +33,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 	public static interface TargetCellEditorImages extends
 			InlineCellEditorImages {
 
-	}
-
-	/**
-	 * <code>ClickDecoratorPanel</code> decorates any widget with the minimal
-	 * amount of machinery to receive clicks for delegation to the parent.
-	 */
-	private static final class ClickDecoratorPanel extends SimplePanel {
-		public ClickDecoratorPanel(Widget child, ClickHandler delegate) {
-			setWidget(child);
-			addDomHandler(delegate, ClickEvent.getType());
-		}
 	}
 
 	/**
@@ -80,7 +73,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 	/**
 	 * The main grid used for layout.
 	 */
-	private FlexTable layoutTable;
+	private FlowPanel layoutTable;
 
 	private Widget cellViewWidget;
 
@@ -108,11 +101,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 	public InlineTargetCellEditor(TargetCellEditorImages images) {
 
 		// Wrap contents in a table
-		layoutTable = new FlexTable();
-		FlexCellFormatter formatter = layoutTable.getFlexCellFormatter();
-		layoutTable.setCellSpacing(0);
-
-		formatter.setColSpan(0, 0, 3);
+		layoutTable = new FlowPanel();
 
 		textArea = new TextArea();
 		textArea.setWidth("100%");
@@ -129,17 +118,26 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 				}
 			}
 		});
-		// Add content widget
-		layoutTable.setWidget(0, 0, textArea);
-		layoutTable.setWidth("100%");
-
-		// Add accept and cancel buttons
-		setAcceptWidget(images.cellEditorAccept().createImage());
-		setCancelWidget(images.cellEditorCancel().createImage());
+		layoutTable.add(textArea);
 		
-		toggleFuzzy = new ToggleButton("Translated", "Fuzzy");
-		layoutTable.setWidget(1, 0, toggleFuzzy);
+		HorizontalPanel operationsPanel = new HorizontalPanel();
+		operationsPanel.addStyleName("float-right-div");
+		operationsPanel.setSpacing(4);
+		layoutTable.add(operationsPanel);
+		
+		// Add content widget
+		toggleFuzzy = new ToggleButton("Approved", "Fuzzy");
+		operationsPanel.add(toggleFuzzy);
+		
 
+		PushButton cancelButton = new PushButton(images.cellEditorCancel().createImage(),cancelHandler);
+		//cancelButton.setText("Cancel");
+		operationsPanel.add(cancelButton);
+
+		PushButton acceptButton = new PushButton(images.cellEditorAccept().createImage(),acceptHandler);
+		//acceptButton.setText("Accept");
+		operationsPanel.add(acceptButton);
+		
 	}
 
 	int row;
@@ -245,54 +243,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 	}
 
 	/**
-	 * @return the Widget that is used to accept the current value.
-	 */
-	protected Widget getAcceptWidget() {
-		ClickDecoratorPanel clickPanel = (ClickDecoratorPanel) layoutTable
-				.getWidget(1, 1);
-		return clickPanel.getWidget();
-	}
-
-	/**
-	 * @return the Widget that is used to cancel editing.
-	 */
-	protected Widget getCancelWidget() {
-		ClickDecoratorPanel clickPanel = (ClickDecoratorPanel) layoutTable
-				.getWidget(1, 2);
-		return clickPanel.getWidget();
-	}
-
-	/**
-	 * @return the content widget
-	 */
-	protected Widget getContentWidget() {
-		return layoutTable.getWidget(1, 0);
-	}
-
-	/**
-	 * Get the additional number of pixels to offset this cell editor from the
-	 * top left corner of the cell. Override this method to shift the editor
-	 * left or right.
-	 * 
-	 * @return the additional left offset in pixels
-	 */
-	protected int getOffsetLeft() {
-		return 0;
-	}
-
-	/**
-	 * Get the additional number of pixels to offset this cell editor from the
-	 * top left corner of the cell. Override this method to shift the editor up
-	 * or down.
-	 * 
-	 * @return the additional top offset in pixels
-	 */
-	protected int getOffsetTop() {
-		return 0;
-	}
-
-
-	/**
 	 * Called before an accept takes place.
 	 * 
 	 * @return true to allow the accept, false to prevent it
@@ -308,32 +258,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 	 */
 	protected boolean onCancel() {
 		return true;
-	}
-
-	/**
-	 * Set the Widget that is used to accept the current value.
-	 * 
-	 * @param w
-	 *            the widget
-	 */
-	protected void setAcceptWidget(Widget w) {
-		ClickDecoratorPanel clickPanel = new ClickDecoratorPanel(w,
-				acceptHandler);
-		clickPanel.setStyleName("accept");
-		layoutTable.setWidget(1, 1, clickPanel);
-	}
-
-	/**
-	 * Set the Widget that is used to cancel editing.
-	 * 
-	 * @param w
-	 *            the widget
-	 */
-	protected void setCancelWidget(Widget w) {
-		ClickDecoratorPanel clickPanel = new ClickDecoratorPanel(w,
-				cancelHandler);
-		clickPanel.setStyleName("cancel");
-		layoutTable.setWidget(1, 2, clickPanel);
 	}
 
 }
