@@ -35,7 +35,6 @@ import com.google.inject.Inject;
 
 public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPresenter.Display> {
 
-	public static final Place PLACE = new Place("WorkspaceUsersPresenter");
 	private final DispatchAsync dispatcher;
 	private final WorkspaceContext workspaceContext;
 		
@@ -59,7 +58,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 	
 	@Override
 	public Place getPlace() {
-		return PLACE;
+		return null;
 	}
 
 	@Override

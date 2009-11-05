@@ -4,6 +4,16 @@ body {
 	background-color: #f6f6f6;
 }
 
+.CenterDiv {
+	margin-right:auto;
+	margin-left:auto;
+	width: auto;
+}
+
+#DocumentListView, #TransFilterView, #WorskpaceUsersView {
+	padding-bottom: 5px;
+}
+
 #WestNavigationView {
 	padding-left: 3px;
 	padding-right: 3px;
@@ -121,10 +131,21 @@ body {
 }
 
 .WebTransEditorMenu-left {
-	float: left;	
+	left: 0px;
+	display: inline;	
 }
-.WebTransEditorMenu-right {
+.float-right-div {
 	float: right;
+}
+
+.FilterView {
+	padding-top: 2px;
+	padding-bottom: 2px;	
+}
+
+.WebTransEditorMenu-right {
+	right: 0px;
+	display: inline;
 }
 
 .TableEditor tr td{
@@ -182,11 +203,13 @@ tr.TableEditorRow.content-filter{
 }
 
 tr.TableEditorRow.content-filter-match{
-	background-color: light-green;
 }
 
 tr.TableEditorRow.content-filter-nomatch{
-	background-color: yellow;
+	filter:alpha(opacity=25);
+	-moz-opacity:0.25;
+	-khtml-opacity: 0.25;
+	opacity: 0.25;
 }
 
 tr.TableEditorRow.selected td {

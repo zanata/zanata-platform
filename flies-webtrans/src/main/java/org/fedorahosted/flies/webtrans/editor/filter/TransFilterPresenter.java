@@ -23,8 +23,7 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
 	public static final Place PLACE = new Place("TransUnitInfoPresenter");
 	
 	public interface Display extends WidgetDisplay{
-		Button getEnableFilterButton();
-		Button getDisableFilterButton();
+		Button getApplyButton();
 		void setFilterUnitPanel(Widget widget);
 	}
 	
@@ -45,26 +44,18 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
 
 	@Override
 	protected void onBind() {
-		OperatorFilter<TransUnit> filter = new OperatorFilter<TransUnit>(Operator.Or);
+		OperatorFilter<TransUnit> filter = new OperatorFilter<TransUnit>(Operator.And);
 		operatorFilterPresenter.bind(filter);
 		
 		display.setFilterUnitPanel(operatorFilterPresenter.getDisplay().asWidget());
 		
-		display.getEnableFilterButton().addClickHandler(new ClickHandler() {
+		display.getApplyButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				Log.info("FilterEnabledEvent");
 				eventBus.fireEvent( new FilterEnabledEvent(operatorFilterPresenter.getFilter()));
 			}
 		});
 		
-		display.getDisableFilterButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				Log.info("FilterDisableEvent");
-				eventBus.fireEvent( new FilterDisabledEvent());
-			}
-		});
 	}
 
 

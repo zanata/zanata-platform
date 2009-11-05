@@ -23,6 +23,10 @@ import org.fedorahosted.flies.webtrans.client.NotificationEvent.Severity;
 import org.fedorahosted.flies.webtrans.editor.DocumentEditorPresenter;
 import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
 import org.fedorahosted.flies.webtrans.editor.filter.ContentFilter;
+import org.fedorahosted.flies.webtrans.editor.filter.FilterDisabledEvent;
+import org.fedorahosted.flies.webtrans.editor.filter.FilterDisabledEventHandler;
+import org.fedorahosted.flies.webtrans.editor.filter.FilterEnabledEvent;
+import org.fedorahosted.flies.webtrans.editor.filter.FilterEnabledEventHandler;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
@@ -105,6 +109,21 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 					}
 				})
 			);
+		
+		registerHandler(eventBus.addHandler(FilterEnabledEvent.getType(), new FilterEnabledEventHandler() {
+			@Override
+			public void onFilterEnabled(FilterEnabledEvent event) {
+				display.setContentFilter(event.getContentFilter());
+			}
+		}));
+		
+		registerHandler(eventBus.addHandler(FilterDisabledEvent.getType(), new FilterDisabledEventHandler() {
+			
+			@Override
+			public void onFilterDisabled(FilterDisabledEvent event) {
+				display.clearContentFilter();
+			}
+		}));
 		
 		display.gotoFirstPage();
 

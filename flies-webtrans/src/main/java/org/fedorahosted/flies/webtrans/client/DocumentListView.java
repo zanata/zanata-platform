@@ -9,6 +9,7 @@ import org.fedorahosted.flies.webtrans.client.ui.HasTreeNodes;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.ImageBundle;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TreeImages;
@@ -33,19 +34,24 @@ public class DocumentListView extends Composite
 
 	private static Images images = (Images) GWT.create(Images.class);
 	private FilterTree<DocumentId, DocName> tree;
-	private VerticalPanel mainpanel;
-	private VerticalPanel bottompanel;
+	private FlowPanel mainpanel;
+	private FlowPanel bottompanel;
 	
 	public DocumentListView() {
 	    tree = new FilterTree<DocumentId, DocName>(new FlatFolderDocNameMapper(), images);
-	    mainpanel = new VerticalPanel();
+	    mainpanel = new FlowPanel();
+	    mainpanel.setWidth("100%");
 	    mainpanel.add(tree);
-	    bottompanel = new VerticalPanel();
+	    tree.setWidth("100%");
+	    bottompanel = new FlowPanel();
+	    bottompanel.setWidth("100%");
+	    
 	    mainpanel.add(bottompanel);
 
 		RoundedContainerWithHeader container = new RoundedContainerWithHeader(new Label("Documents"), mainpanel);
 		initWidget(container);
 		setWidth("100%");
+		getElement().setId("DocumentListView");
 	}
 
 	@Override
@@ -74,6 +80,7 @@ public class DocumentListView extends Composite
 	@Override
 	public void setProjectStatusBar(Widget widget) {
 		bottompanel.add(widget);		
+		widget.addStyleName("CenterDiv");
 	}
 
 }

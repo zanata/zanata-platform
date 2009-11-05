@@ -148,10 +148,12 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements
 	@Override
 	public void clearContentFilter() {
 		tableDefinition.clearContentFilter();
+		reloadPage();
 	}
 	
 	@Override
 	public void setContentFilter(ContentFilter<TransUnit> filter) {
 		tableDefinition.setContentFilter(filter);
+		reloadPage();
 	}
 }

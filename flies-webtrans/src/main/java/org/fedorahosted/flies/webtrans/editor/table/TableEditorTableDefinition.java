@@ -5,6 +5,7 @@ import org.fedorahosted.flies.gwt.rpc.TransUnitStatus;
 import org.fedorahosted.flies.webtrans.client.mvp.TextAreaCellEditor;
 import org.fedorahosted.flies.webtrans.editor.filter.ContentFilter;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.gen2.table.client.AbstractColumnDefinition;
 import com.google.gwt.gen2.table.client.CellRenderer;
 import com.google.gwt.gen2.table.client.ColumnDefinition;
