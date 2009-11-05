@@ -39,7 +39,7 @@ public class ResourceDAO {
 	    	)
 	    .add( Restrictions.eq("obsolete", true))
 	    .setCacheable(true)
-	    .setComment("ResourceDAO.getById")
+	    .setComment("ResourceDAO.getObsoleteById")
 	    .uniqueResult();
 	}
 }

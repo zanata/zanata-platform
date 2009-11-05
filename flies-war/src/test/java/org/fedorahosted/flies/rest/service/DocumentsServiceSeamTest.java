@@ -15,17 +15,19 @@ import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.core.dao.ProjectContainerDAO;
 import org.fedorahosted.flies.repository.model.HDocument;
-import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.repository.model.HDocumentResource;
+import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.rest.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.IDocumentsResource;
 import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.Documents;
 import org.fedorahosted.flies.rest.dto.DocumentResource;
+import org.fedorahosted.flies.rest.dto.Documents;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.seam.mock.DBUnitSeamTest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -34,6 +36,8 @@ import org.testng.annotations.Test;
 @Test(groups = { "seam-tests" })
 public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 
+    private final Logger log = LoggerFactory.getLogger(DocumentsServiceSeamTest.class);
+    
 	String projectSlug = "sample-project";
 	String iter = "1.1";
 	IDocumentsResource docsService;
@@ -63,6 +67,7 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 	}
 
 	public void getZero() throws Exception {
+//		log.info("getZero()");
 		expectDocs();
 	}
 	
@@ -71,24 +76,24 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 	    
 	    assertThat(response.getStatus(), is(200));
 	    assertThat(response.getEntity(), notNullValue());
-	    Set<String> expected = new TreeSet<String>();
+	    Set<String> expectedDocs = new TreeSet<String>();
 	    for (Document doc : docs) {
-			expected.add(doc.toString());
+			expectedDocs.add(doc.toString());
 		}
 //	    assertThat(response.getEntity().getDocuments().size(), is(Arrays.asList(docs).size()));
-	    Set<String> actual = new TreeSet<String>();
+	    Set<String> actualDocs = new TreeSet<String>();
 	    for (Document doc : response.getEntity().getDocuments()) {
 	    	// leave links out of the XML
 	    	doc.getLinks().clear();
-			actual.add(doc.toString());
+			actualDocs.add(doc.toString());
 		}
 //System.out.println("actual docs: "+docs);
-	    assertThat(actual, is(expected));
+	    assertThat(actualDocs, is(expectedDocs));
 	}
 	
 	private Document newDoc(String id, DocumentResource... resources) {
 		ContentType contentType = ContentType.TextPlain;
-		Integer revision = 1;
+		Integer revision = null;
 		Document doc = new Document(id, id+"name", id+"path", contentType, revision, LocaleId.EN);
 		for (DocumentResource textFlow : resources) {
 			doc.getResources(true).add(textFlow);
@@ -140,44 +145,68 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 	}
 	
 	public void putGet() throws Exception {
+		log.info("putGet()");
 	    getZero();
 	    Document doc1 = putDoc1();
+	    doc1.setRevision(1);
 	    expectDocs(doc1);
 	}
 
 
 	
 	public void putPostGet() throws Exception {
+		log.info("putPostGet()");
 	    getZero();
 	    Document doc1 = putDoc1();
+	    doc1.setRevision(1);
 	    expectDocs(doc1);
 	    Document doc2 = postDoc2();
+	    doc2.setRevision(1);
 	    expectDocs(doc1, doc2);
 	}
 	
 	
 	public void put2Then1() throws Exception {
+		log.info("put2Then1()");
 	    getZero();
 	    Document doc1 = putDoc1();
+	    doc1.setRevision(1);
 	    Document doc2 = postDoc2();
+	    doc2.setRevision(1);
 	    expectDocs(doc1, doc2);
 	    // this put should have the effect of deleting doc2
-		putDoc1();
-	    expectDocs(doc1);
+		Document doc1again = putDoc1();
+		// should be identical to doc1 from before, so rev still equals 1
+		doc1again.setRevision(1);
+	    expectDocs(doc1again);
 	    // use dto to check that doc2 is marked obsolete
 	    verifyObsoleteDocument(doc2.getId());
 	}
 
 	public void put1Then1a() throws Exception {
+		log.info("TEST: put1Then1a()");
+		log.info("getZero()");
 	    getZero();
+	    log.info("putDoc1()");
 	    Document doc1 = putDoc1();
+	    doc1.setRevision(1);
+	    log.info("expect doc1");
 	    expectDocs(doc1);
 	    // this should completely replace doc1's textflow FOOD with HELLO
+	    log.info("putDoc1a()");
 		Document doc1a = putDoc1a();
+		doc1a.setRevision(2);
+		log.info("expect doc1a");
 	    expectDocs(doc1a);
 	    // use dto to check that the HTextFlow FOOD (from doc1) is marked obsolete
 		// FIXME breaking test disabled
-//	    verifyObsoleteResource(doc1.getId(), "FOOD");
+	    log.info("verifyObsoleteResource");
+	    verifyObsoleteResource(doc1.getId(), "FOOD");
+	    log.info("putDoc1() again");
+	    Document doc1again = putDoc1();
+	    doc1again.setRevision(3);
+	    log.info("expect doc1again");
+	    expectDocs(doc1again);
 	}
 	
 
@@ -199,6 +228,7 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 				HProjectContainer container = containerDAO.getBySlug(projectSlug, iter);
 				HDocument hDocument = container.getAllDocuments().get(docID);
 				HDocumentResource hResource = hDocument.getAllResources().get(resourceID);
+				Assert.assertNotNull(hResource);
 				Assert.assertTrue(hResource.isObsolete());
 			}
 		}.run();
@@ -206,6 +236,7 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 	
 	// expect 404 for non-existent project
 	public void getBadProject() throws Exception {
+		log.info("getBadProject()");
 		IDocumentsResource nonexistentDocsService = prepareRestEasyClientFramework("nonexistentProject", "99.9");
 		ClientResponse<Documents> response = nonexistentDocsService.getDocuments();
 		assertThat(response.getStatus(), is(404));

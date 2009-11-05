@@ -2,6 +2,7 @@ package org.fedorahosted.flies.rest.service;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,10 +12,10 @@ import org.fedorahosted.flies.core.dao.TextFlowTargetDAO;
 import org.fedorahosted.flies.repository.model.HContainer;
 import org.fedorahosted.flies.repository.model.HDataHook;
 import org.fedorahosted.flies.repository.model.HDocument;
+import org.fedorahosted.flies.repository.model.HDocumentResource;
 import org.fedorahosted.flies.repository.model.HParentResource;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.repository.model.HReference;
-import org.fedorahosted.flies.repository.model.HDocumentResource;
 import org.fedorahosted.flies.repository.model.HSimpleComment;
 import org.fedorahosted.flies.repository.model.HTextFlow;
 import org.fedorahosted.flies.repository.model.HTextFlowHistory;
@@ -23,10 +24,10 @@ import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Container;
 import org.fedorahosted.flies.rest.dto.DataHook;
 import org.fedorahosted.flies.rest.dto.Document;
+import org.fedorahosted.flies.rest.dto.DocumentResource;
 import org.fedorahosted.flies.rest.dto.Link;
 import org.fedorahosted.flies.rest.dto.Reference;
 import org.fedorahosted.flies.rest.dto.Relationships;
-import org.fedorahosted.flies.rest.dto.DocumentResource;
 import org.fedorahosted.flies.rest.dto.SimpleComment;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
@@ -36,8 +37,10 @@ import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.log.Log;
 
 
 @AutoCreate
@@ -45,6 +48,9 @@ import org.jboss.seam.annotations.Scope;
 @Name("documentConverter")
 public class DocumentConverter {
 
+    @Logger 
+    private Log log;
+    
     @In 
     private ResourceDAO resourceDAO;
     @In 
@@ -53,48 +59,72 @@ public class DocumentConverter {
     private Session session;
 
     /**
-     * Recursively copies from the source Document to the destination HDocument
+     * Recursively copies from the source Document to the destination HDocument.
+     * Increments toHDoc's revision number if any resources were changed
      * @param fromDoc source Document
      * @param toHDoc destination HDocument
-     * @param replaceResourceTree should probably always be true
      */
-	public void copy(Document fromDoc, HDocument toHDoc, boolean replaceResourceTree) {
+	public void copy(Document fromDoc, HDocument toHDoc) {
+		boolean changed = false;
+		if (!session.contains(toHDoc)) {
+			// new document
+			changed = true;
+			toHDoc.setRevision(0);
+			log.debug("CHANGED: Document {0} is new", toHDoc.getDocId());
+		}
+		// changing these attributes probably shouldn't 
+		// invalidate existing translations, so we don't
+		// bother incrementing the doc rev
 		toHDoc.setDocId(fromDoc.getId());
 		toHDoc.setName(fromDoc.getName());
 		toHDoc.setPath(fromDoc.getPath());
 		toHDoc.setContentType(fromDoc.getContentType());
 		toHDoc.setLocale(fromDoc.getLang());
+		// don't copy revision; we don't accept revision from the client
 //		toHDoc.setRevision(fromDoc.getRevision());  // TODO increment revision on modify only
 		// TODO handle doc extensions, especially containers
+		List<DocumentResource> docResources = Collections.emptyList();
 		if (fromDoc.hasResources()) {
-			List<DocumentResource> docResources = fromDoc.getResources();
+			docResources = fromDoc.getResources();
+		}
 			List<HDocumentResource> hResources;
-			if (replaceResourceTree) {
-				hResources = new ArrayList<HDocumentResource>(docResources.size());
-				// this should cause any obsolete HResources (and their 
-				// children) to be deleted when we save
-				// TODO mark them obsolete instead
-				toHDoc.setResources(hResources);
-			} else {
-				hResources = toHDoc.getResources();
+			Map<String, HDocumentResource> oldResourceMap = new HashMap<String, HDocumentResource>();
+			for(HDocumentResource oldResource : toHDoc.getResources()) {
+				oldResourceMap.put(oldResource.getResId(), oldResource);
 			}
+			hResources = new ArrayList<HDocumentResource>(docResources.size());
+			toHDoc.setResources(hResources);
 			for (DocumentResource res : docResources) {
 				HDocumentResource hRes = null;
 				if (session.contains(toHDoc))
-					// FIXME make sure getById can find pre-existing docs (we broke the link from HDoc to its HResources above)
 					hRes = resourceDAO.getById(toHDoc, res.getId());
+				boolean resChanged = false;
 				if (hRes == null) {
 					hRes = HDocument.create(res);
+					resChanged = true;
 				} else {
 					// resurrect the resource
 					hRes.setObsolete(false);
 				}
 				hResources.add(hRes);
 				hRes.setDocument(toHDoc);
-				hRes.setResId(res.getId());
-				copy(res, hRes, toHDoc);
+				resChanged |= copy(res, hRes, toHDoc);
+				if (resChanged)
+					hRes.setResId(res.getId());
+				changed |= resChanged;
+				if (oldResourceMap.remove(res.getId()) == null) {
+					changed = true;
+					log.debug("CHANGED: Resource {0}:{1} was added", toHDoc.getDocId(), hRes.getResId());
+				}
 			}
-		}
+			// mark any removed resources as obsolete
+			for(HDocumentResource oldResource : oldResourceMap.values()) {
+				oldResource.setObsolete(true);
+				changed = true;
+				log.debug("CHANGED: Resource {0}:{1} was removed", toHDoc.getDocId(), oldResource.getResId());
+			}
+		if (changed)
+			toHDoc.setRevision(toHDoc.getRevision()+1);
 	}
 
 	/**
@@ -446,55 +476,73 @@ public class DocumentConverter {
 	}
 	
 	// copy res to hRes recursively, maintaining docTargets
-	private void copy(DocumentResource res, HDocumentResource hRes,
+	/**
+	 * Returns true if hRes was changed
+	 */
+	private boolean copy(DocumentResource res, HDocumentResource hRes,
 			HDocument hDoc) {
 		hRes.setDocument(hDoc);
 		if (res instanceof TextFlow) {
-			copy((TextFlow)res, (HTextFlow)hRes);
+			return copy((TextFlow)res, (HTextFlow)hRes);
 		} else {
 			// FIXME handle other Resource types
 			throw new RuntimeException("Unknown Resource type "+res.getClass());
 		}
 	}
 
-	private void copy(TextFlow tf, HTextFlow htf) {
-			htf.setContent(tf.getContent());
-			List<Object> extensions = tf.getExtensions();
-			if (extensions != null) {
-				for (Object ext : extensions) {
-					if (ext instanceof TextFlowTargets) {
-						TextFlowTargets targets = (TextFlowTargets) ext;
-						for (TextFlowTarget target : targets.getTargets()) {
-							HTextFlowTarget hTarget = null;
-							if (session.contains(htf)) {
-								hTarget = textFlowTargetDAO.getByNaturalId(htf, target.getLang());
-							}
-							if (hTarget == null) {
-								hTarget = new HTextFlowTarget();
-								hTarget.setLocale(target.getLang());
-								hTarget.setTextFlow(htf);
-								hTarget.setResourceRevision(htf.getRevision());
-								hTarget.setState(target.getState());
+	/**
+	 * Returns true if the content (or a comment) of htf was changed
+	 */
+	private boolean copy(TextFlow tf, HTextFlow htf) {
+		boolean changed = false;
+		if (!tf.getContent().equals(htf.getContent())) {
+			changed = true;
+			log.debug("CHANGED: TextFlow {0}:{1} content changed", htf.getDocument().getDocId(), htf.getResId());
+		}
+	
+		htf.setContent(tf.getContent());
+		List<Object> extensions = tf.getExtensions();
+		if (extensions != null) {
+			for (Object ext : extensions) {
+				if (ext instanceof TextFlowTargets) {
+					TextFlowTargets targets = (TextFlowTargets) ext;
+					for (TextFlowTarget target : targets.getTargets()) {
+						HTextFlowTarget hTarget = null;
+						if (session.contains(htf)) {
+							hTarget = textFlowTargetDAO.getByNaturalId(htf, target.getLang());
+						}
+						if (hTarget == null) {
+							hTarget = new HTextFlowTarget();
+							hTarget.setLocale(target.getLang());
+							hTarget.setTextFlow(htf);
+							hTarget.setResourceRevision(htf.getRevision());
+							hTarget.setState(target.getState());
 //						hTarget.setRevision(revision); // TODO
-								hTarget.setContent(target.getContent());
-							}
-							copy(target, hTarget, htf);
-							htf.getTargets().put(target.getLang(), hTarget);
+							hTarget.setContent(target.getContent());
 						}
-					} else if (ext instanceof SimpleComment) {
-						SimpleComment simpleComment = (SimpleComment) ext;
-						HSimpleComment hComment = htf.getComment();
-						if (hComment == null) {
-							hComment = new HSimpleComment();
-							htf.setComment(hComment);
-						}
-						hComment.setComment(simpleComment.getValue());
-					} else {
-						throw new RuntimeException("Unknown TextFlow extension "+ext.getClass());
+						copy(target, hTarget, htf);
+						htf.getTargets().put(target.getLang(), hTarget);
 					}
+				} else if (ext instanceof SimpleComment) {
+					SimpleComment simpleComment = (SimpleComment) ext;
+					HSimpleComment hComment = htf.getComment();
+					if (hComment == null) {
+						changed = true;
+						log.debug("CHANGED: TextFlow {0}:{1} comment changed", htf.getDocument().getDocId(), htf.getResId());
+						hComment = new HSimpleComment();
+						htf.setComment(hComment);
+					} else {
+						if (!hComment.getComment().equals(simpleComment.getValue()))
+							changed = true;
+					}
+					hComment.setComment(simpleComment.getValue());
+				} else {
+					throw new RuntimeException("Unknown TextFlow extension "+ext.getClass());
 				}
 			}
-	    }
+		}
+		return changed;
+    }
 
 	private void copy(TextFlowTarget target, HTextFlowTarget hTarget,
 			HTextFlow htf) {
