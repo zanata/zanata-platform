@@ -14,6 +14,9 @@
       <inherits name="com.weborient.codemirror.CodemirrorGwt"/>
        
       <inherits name="org.fedorahosted.flies.gwt.Common"/>
+
+      <inherits name='com.google.gwt.user.theme.standard.Standard' />
+
       
       <!-- Specify the app entry point class.                         -->
       <entry-point class='org.fedorahosted.flies.webtrans.client.Application'/>

@@ -8,14 +8,11 @@ import com.google.gwt.user.client.ui.TextBox;
 
 public class FilterBox extends TextBox {
 
-	private String text;
+	private final String text = " Type to Filter ";
 	
 	public FilterBox() {
-		addStyleName("gwt-FilterBox-Vacant");
-		
-		text = " Type to Filter ";
-		
-	    setText(text);
+		setStylePrimaryName("gwt-FilterBox");
+		clearFilter();
 	    
 	    addFocusHandler(new FocusHandler() {
 
@@ -24,7 +21,8 @@ public class FilterBox extends TextBox {
 				
 				if (getText().equals(text)) {
 					setText("");
-					setStyleName("gwt-FilterBox-Occupied");
+					removeStyleDependentName("Vacant");
+					addStyleDependentName("Occupied");
 				}
 				
 			}
@@ -38,15 +36,14 @@ public class FilterBox extends TextBox {
 				
 				if (getText().equals(""))
 					clearFilter();
-				
 			}
 	    	
 	    });
 	}
 
 	public void clearFilter() {
-		// TODO Auto-generated method stub
 		setText(text);
-		setStyleName("gwt-FilterBox-Vacant");
+		removeStyleDependentName("Occupied");
+		addStyleDependentName("Vacant");
 	}
 }
