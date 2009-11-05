@@ -65,6 +65,14 @@ public class OperatorFilterPresenter extends FilterPresenter<OperatorFilter<Tran
 				display.addFilterUnit(presenter.getDisplay().asWidget());
 			}
 		});
+		
+		PhraseFilter filter = new PhraseFilter("");
+		PhraseFilterView view = new PhraseFilterView();
+		PhraseFilterPresenter presenter = new PhraseFilterPresenter(view, eventBus);
+		presenter.bind(filter);
+		filterUnitPresenters.add(presenter);
+		getFilter().add(presenter.getFilter());
+		display.addFilterUnit(presenter.getDisplay().asWidget());
 	}
 
 	@Override
@@ -77,16 +85,13 @@ public class OperatorFilterPresenter extends FilterPresenter<OperatorFilter<Tran
 
 	@Override
 	public void refreshDisplay() {
-//		display.getFilterText().setValue(filter.getPhrase());
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public void revealDisplay() {
+		// TODO Auto-generated method stub
+		
 	}
-
-	public void addFilterUnit() {
-
-	}
-	
-	
 }

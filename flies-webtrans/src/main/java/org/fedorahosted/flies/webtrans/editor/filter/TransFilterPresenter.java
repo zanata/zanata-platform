@@ -47,6 +47,7 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
 	protected void onBind() {
 		OperatorFilter<TransUnit> filter = new OperatorFilter<TransUnit>(Operator.Or);
 		operatorFilterPresenter.bind(filter);
+		
 		display.setFilterUnitPanel(operatorFilterPresenter.getDisplay().asWidget());
 		
 		display.getEnableFilterButton().addClickHandler(new ClickHandler() {
