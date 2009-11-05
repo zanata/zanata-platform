@@ -4,6 +4,12 @@ body {
 	background-color: #f6f6f6;
 }
 
+.CenterDiv {
+	margin-right:auto;
+	margin-left:auto;
+	width: auto;
+}
+
 #WestNavigationView {
 	padding-left: 3px;
 	padding-right: 3px;
