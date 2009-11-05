@@ -40,22 +40,12 @@ public class WorkspaceUsersView extends Composite implements
 	
 	public WorkspaceUsersView() {
 		tree = new FilterTree<PersonId, Person>(new PersonTreeNodeMapper(), images);	
-
-		RoundedContainerWithHeader container = new RoundedContainerWithHeader(new Label("Translators"), getChatAllPanel() );
+		tree.setWidth("100%");
+		RoundedContainerWithHeader container = new RoundedContainerWithHeader(new Label("Translators"), tree );
 		initWidget(container);
 		setWidth("100%");
 		getElement().setId("WorskpaceUsersView");
 		
-	}
-
-	public Widget getChatAllPanel() {
-
-		VerticalSplitPanel vSplit = new VerticalSplitPanel();
-		vSplit.setBottomWidget(new Label("Chat"));
-		vSplit.setWidth("200px");
-		vSplit.setHeight("300px");
-		vSplit.setTopWidget(tree);
-		return vSplit;
 	}
 
 	@Override

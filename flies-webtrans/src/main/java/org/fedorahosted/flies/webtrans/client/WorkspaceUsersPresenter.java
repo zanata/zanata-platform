@@ -27,8 +27,6 @@ import com.google.inject.Inject;
 
 public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPresenter.Display> {
 
-	public static final Place PLACE = new Place("WorkspaceUsersPresenter");
-	
 	public interface Display extends WidgetDisplay{
 		HasChildTreeNodes<Person> getTree();
 		HasFilter<Person> getFilter();
@@ -44,7 +42,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 	
 	@Override
 	public Place getPlace() {
-		return PLACE;
+		return null;
 	}
 
 	@Override
