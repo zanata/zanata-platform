@@ -19,4 +19,6 @@ public interface Identity {
 	void invalidate();
 
 	void login(String username, String password, LoginResult callback);
+
+	public void trySilentLogin(LoginResult loginResult);
 }

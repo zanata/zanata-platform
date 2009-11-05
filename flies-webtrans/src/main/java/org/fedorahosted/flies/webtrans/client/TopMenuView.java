@@ -15,7 +15,6 @@ public class TopMenuView extends HorizontalPanel implements TopMenuPresenter.Dis
 
 	private final Label userLabel;
 	private final Label workspaceLabel;
-	private final Label notLoggedInLabel;
 	private final Hyperlink logoutLink;
 
 	private final HorizontalPanel rightMenu;
@@ -28,13 +27,9 @@ public class TopMenuView extends HorizontalPanel implements TopMenuPresenter.Dis
 		rightMenu.setSpacing(5);
 		userLabel = new Label("<Username>");
 		workspaceLabel = new Label("Workspace");
-		userLabel.setVisible(false);
-
-		notLoggedInLabel = new Label("Not Logged In");
 
 		logoutLink = new Hyperlink("Logout", "Logout");
 
-		rightMenu.add(notLoggedInLabel);
 		rightMenu.add(userLabel);
 		rightMenu.add(logoutLink);
 
@@ -43,17 +38,6 @@ public class TopMenuView extends HorizontalPanel implements TopMenuPresenter.Dis
 		
 		add(rightMenu);
 		setCellHorizontalAlignment(rightMenu, HorizontalPanel.ALIGN_RIGHT);
-	}
-
-	public void setUser(Person person) {
-		userLabel.setText(person.getName());
-		notLoggedInLabel.setVisible(false);
-		userLabel.setVisible(true);
-	}
-
-	public void clearUser() {
-		userLabel.setVisible(false);
-		notLoggedInLabel.setVisible(true);
 	}
 
 	@Override

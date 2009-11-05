@@ -8,9 +8,12 @@ import net.customware.gwt.presenter.client.EventBus;
 
 import org.fedorahosted.flies.gwt.auth.Permission;
 import org.fedorahosted.flies.gwt.auth.Role;
+import org.fedorahosted.flies.gwt.auth.SessionId;
 import org.fedorahosted.flies.gwt.model.Person;
 import org.fedorahosted.flies.gwt.rpc.AuthenticateAction;
 import org.fedorahosted.flies.gwt.rpc.AuthenticateResult;
+import org.fedorahosted.flies.gwt.rpc.EnsureLoggedInAction;
+import org.fedorahosted.flies.gwt.rpc.EnsureLoggedInResult;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 
 import com.google.gwt.user.client.Cookies;
@@ -83,8 +86,7 @@ public class IdentityImpl implements Identity {
 			
 			@Override
 			public void onSuccess(AuthenticateResult result) {
-				Cookies.setCookie("JSESSIONID", result.getSessionId().getValue());
-				eventBus.fireEvent( new UserLoginEvent(result.getPerson()) );
+				storeLogin(result.getSessionId(), result.getPerson());
 				callback.onSuccess();
 			}
 			
@@ -92,6 +94,34 @@ public class IdentityImpl implements Identity {
 			public void onFailure(Throwable caught) {
 				invalidateQuiet();
 				callback.onFailure();
+			}
+		});
+	}
+	
+	private void storeLogin(SessionId sessionId, Person person) {
+		Cookies.setCookie("JSESSIONID", sessionId.getValue());
+		eventBus.fireEvent( new UserLoginEvent(person) );
+		this.person = person;
+		this.sessionId = sessionId.getValue();
+	}
+	
+	@Override
+	public void trySilentLogin(final LoginResult loginResult) {
+		dispatcher.execute(new EnsureLoggedInAction(), new AsyncCallback<EnsureLoggedInResult>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				loginResult.onFailure();
+			}
+			
+			@Override
+			public void onSuccess(EnsureLoggedInResult result) {
+				if(result.isSuccess()) {
+					storeLogin(result.getSessionId(), result.getPerson());
+					loginResult.onSuccess();
+				}
+				else{
+					loginResult.onFailure();
+				}
 			}
 		});
 	}

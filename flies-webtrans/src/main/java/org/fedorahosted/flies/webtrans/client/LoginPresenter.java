@@ -36,8 +36,6 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 public class LoginPresenter extends WidgetPresenter<LoginPresenter.Display> {
 
-	public static final Place PLACE = new Place("LoginPanel");
-	
 	public interface Display extends WidgetDisplay {
 		Button getLoginButton();
 		TextBox getUsernameField();
@@ -59,46 +57,16 @@ public class LoginPresenter extends WidgetPresenter<LoginPresenter.Display> {
 
 	@Override
 	public Place getPlace() {
-		return PLACE;
+		return null;
 	}
 
 	@Override
 	protected void onBind() {
-		
-		dispatcher.setErrorHandler(new ErrorHandler() {
-			@Override
-			public <A extends Action<R>, R extends Result> void onFailure(final A action,
-					final AsyncCallback<R> callback, Throwable caught) {
-				if(caught instanceof AuthenticationError) {
-					doLogin(new LoginResult() {
-						@Override
-						public void onSuccess() {
-							dispatcher.execute(action, callback);
-						}
-						
-						@Override
-						public void onFailure() {
-						}
-					});
-				}
-				else{
-					callback.onFailure(caught);
-				}
-			}
-		});
-		
-		
 		registerHandler( display.getLoginButton().addClickHandler(clickHandler) );
 		registerHandler( display.getUsernameField().addKeyUpHandler(keyHandler) );
 		registerHandler( display.getPasswordField().addKeyUpHandler(keyHandler) );
 	}
 
-	private LoginResult callback;
-	public void doLogin(final LoginResult callback) {
-		this.callback = callback;
-		display.show();
-	}
-	
 	@Override
 	protected void onPlaceRequest(PlaceRequest request) {
 	}
@@ -119,6 +87,7 @@ public class LoginPresenter extends WidgetPresenter<LoginPresenter.Display> {
 			}
 		}
 	};
+	private LoggedIn callback;
 
 	private void tryLogin() {
 		display.startProcessing();
@@ -137,6 +106,29 @@ public class LoginPresenter extends WidgetPresenter<LoginPresenter.Display> {
 				display.showError();
 			}
 		});
+	}
+	
+	public interface LoggedIn {
+		void onSuccess();
+	}
+	public void ensureLoggedIn(final LoggedIn callback) {
+		identity.trySilentLogin(new LoginResult() {
+			@Override
+			public void onSuccess() {
+				callback.onSuccess();
+			}
+			
+			@Override
+			public void onFailure() {
+				setCallback(callback);
+				revealDisplay();
+			}
+		});
+	}
+	
+	private void setCallback(LoggedIn callback){
+		this.callback = callback;
+		
 	}
 	
 	@Override

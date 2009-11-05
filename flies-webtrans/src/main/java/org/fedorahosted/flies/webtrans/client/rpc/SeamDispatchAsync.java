@@ -54,12 +54,13 @@ public class SeamDispatchAsync implements CachingDispatchAsync {
 	private <A extends Action<R>, R extends Result> void handleError(final A action,
 			final AsyncCallback<R> callback, final Throwable caught) {
 
-		if(errorHandler != null ){
-			errorHandler.onFailure(action, callback, caught);
-		}
-		else{
-			callback.onFailure(caught);
-		}
+//		if(errorHandler != null){
+//			errorHandler.onFailure(action, callback, caught);
+//		}
+//		else{
+//			callback.onFailure(caught);
+//		}
+		callback.onFailure(caught);
 
 	}
 	

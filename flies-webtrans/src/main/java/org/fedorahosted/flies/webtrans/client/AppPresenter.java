@@ -7,6 +7,9 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.fedorahosted.flies.webtrans.client.Application.WindowResizeEvent;
+import org.fedorahosted.flies.webtrans.client.LoginPresenter.LoggedIn;
+import org.fedorahosted.flies.webtrans.client.auth.Identity;
+import org.fedorahosted.flies.webtrans.client.auth.LoginResult;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorPresenter;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -16,6 +19,7 @@ import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -31,17 +35,23 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 	private final WestNavigationPresenter westNavigationPresenter;
 	private final WebTransEditorPresenter webTransEditorPresenter;
 	private final TopMenuPresenter topMenuPresenter;
+	private final EventProcessor eventProcessor;
+	private final LoginPresenter loginPresenter;
 	
 	@Inject
 	public AppPresenter(Display display, EventBus eventBus,
 				final WestNavigationPresenter leftNavigationPresenter,
 				final WebTransEditorPresenter webTransEditorPresenter,
-				final TopMenuPresenter topMenuPresenter) {
+				final TopMenuPresenter topMenuPresenter,
+				final EventProcessor eventProcessor,
+				final LoginPresenter loginPresenter) {
 		super(display, eventBus);
 		
 		this.westNavigationPresenter = leftNavigationPresenter;
 		this.webTransEditorPresenter = webTransEditorPresenter;
 		this.topMenuPresenter = topMenuPresenter;
+		this.eventProcessor = eventProcessor;
+		this.loginPresenter = loginPresenter;
 	}
 
 	@Override
@@ -49,25 +59,12 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		return null;
 	}
 
-	@Override
-	protected void onBind() {
+	protected void bindApp() {
 		westNavigationPresenter.bind();
 		webTransEditorPresenter.bind();
 		topMenuPresenter.bind();
 		
-		final Button showHide = new Button();
-		showHide.setText("<<");
-		registerHandler(showHide.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				boolean visible = westNavigationPresenter.getDisplay().asWidget().isVisible();
-				westNavigationPresenter.getDisplay().asWidget().setVisible(!visible);
-				showHide.setText( visible ? ">>" : "<<");
-			}
-		}));
-		
-		webTransEditorPresenter.getDisplay().getHeader().setLeftWidget(showHide);
-		
+		eventProcessor.scheduleRepeating(3000);
 		
 		display.setNorth(topMenuPresenter.getDisplay().asWidget());
 		display.setWest(westNavigationPresenter.getDisplay().asWidget());
@@ -100,6 +97,18 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 				}
 			})
 		);
+		
+	}
+	
+	@Override
+	protected void onBind() {
+		loginPresenter.bind();
+		loginPresenter.ensureLoggedIn(new LoggedIn() {
+			@Override
+			public void onSuccess() {
+				bindApp();
+			}
+		});
 		
 	}
 

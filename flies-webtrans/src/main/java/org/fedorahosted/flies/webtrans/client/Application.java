@@ -12,6 +12,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -25,32 +26,9 @@ public class Application implements EntryPoint{
 
 	public void onModuleLoad() {
 
-		final LoginPresenter loginPresenter = injector.getLoginPresenter();
-		loginPresenter.bind();
-		injector.getWorkspaceContext().validateWorkspace(new LoginResult() {
-			
-			@Override
-			public void onSuccess() {
-				showMainApp();
-			}
-			
-			@Override
-			public void onFailure() {
-				// will launch login
-				Log.info("failed to validate context. should launch login");
-			}
-		});
-		
-		
-	}
-
-	private void showMainApp() {
 		final AppPresenter appPresenter = injector.getAppPresenter();
 		appPresenter.bind();
-		
 		RootPanel.get().add( appPresenter.getDisplay().asWidget() );
-		
-		injector.getEventProcessor().scheduleRepeating(3000);
 		
         // Needed because of this bug:
         // http://code.google.com/p/gwt-presenter/issues/detail?id=6
