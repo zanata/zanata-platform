@@ -15,7 +15,7 @@ public class FlatFolderDocNameMapper implements TreeNodeMapper<DocumentId, DocNa
 		for (DocName docName : docNames) {
 			String path = docName.getPath();
 			TreeNode<DocName> item;
-			if (path == null || path.length() == 0) {
+			if (path == null || path.length() == 0 || "/".equals(path)) {
 				item = tree.addItem(docName.getName());
 			} else {
 				TreeNode<DocName> folder = folderNodes.get(path);
