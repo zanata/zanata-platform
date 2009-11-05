@@ -36,7 +36,7 @@
                       icuLocaleId="it_IT"
                       parentId="[NULL]" 
         />
-        <HFliesLocale id="ja-JP"
+        <HFliesLocale id="ja"
                       icuLocaleId="ja_JP"
                       parentId="[NULL]"
         />
