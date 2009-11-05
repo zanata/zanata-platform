@@ -33,7 +33,7 @@ public class TranslationStatsBar extends Composite implements TranslationStatsBa
 	private class PopupWindow extends DecoratedPopupPanel {
 		public PopupWindow() {
 			super(true);
-			this.setWidget(new Label("Status of Translation Unit"));
+			this.setWidget(new Label("Status"));
 		}
 	}
 

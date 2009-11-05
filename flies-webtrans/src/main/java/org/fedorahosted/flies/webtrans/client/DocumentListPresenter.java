@@ -98,7 +98,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 				status = event.getNewStatus();
 				doc.setStatus(status, doc.getStatus(status)+1);
 				TreeNode<DocName> node = display.getTree().getNodeByKey(doc.getDocumentid());
-				node.setName(node.getObject().getName() + " ("+ doc.getUntranslated() +")");
+				node.setName(node.getObject().getName() + " ("+ calPercentage(doc.getUntranslated(), doc.getFuzzy(), doc.getTranslated()) +"%)");
 			}
 
 
@@ -112,6 +112,17 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 					setValue(selectedDocName.getId(), true);
 			}
 		}));
+		
+	}
+	
+	private long calPercentage (long untranslated, long fuzzy, long translated) {
+		
+		if (translated < 0 || untranslated < 0 || fuzzy < 0
+				|| (translated + untranslated + fuzzy) == 0) {
+			return 0;
+		} else {
+			return ((long) translated) / (fuzzy + untranslated + translated) * 100;
+		}
 		
 	}
 
@@ -209,7 +220,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 				for(DocumentStatus doc : liststatus) {
 					statuscache.put(doc.getDocumentid(), doc);
 					TreeNode<DocName> node = display.getTree().getNodeByKey(doc.getDocumentid());
-					node.setName(node.getObject().getName() + " ("+ doc.getUntranslated() +")");
+					node.setName(node.getObject().getName() + " ("+ calPercentage(doc.getUntranslated(), doc.getFuzzy(), doc.getTranslated()) +"%)");
 				}
 			
 				latestStatusCountOffset = result.getSequence();

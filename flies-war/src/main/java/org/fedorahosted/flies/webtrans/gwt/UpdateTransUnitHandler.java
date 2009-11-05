@@ -42,19 +42,33 @@ public class UpdateTransUnitHandler implements ActionHandler<UpdateTransUnit, Up
 		TransUnitStatus prevStatus = TransUnitStatus.New;
 		if(target == null) {
 			target = new HTextFlowTarget(hTextFlow, localeId);
-			target.setState(ContentState.Final);
+			switch(action.getStatus()) {
+			case NeedReview:
+				target.setState(ContentState.ForReview);
+				break;
+			case New:
+				target.setState(ContentState.New);
+				break;
+			case Approved:
+				target.setState(ContentState.Final);
+				break;
+			}
 			hTextFlow.getTargets().put(localeId, target);
 		}
 		else{
 			switch(target.getState()) {
 			case Final:
 				prevStatus = TransUnitStatus.Approved;
+				break;
 			case ForReview:
 				prevStatus = TransUnitStatus.NeedReview;
+				break;
 			case Leveraged:
 				prevStatus = TransUnitStatus.NeedReview;
+				break;
 			case New:
 				prevStatus = TransUnitStatus.New;
+				break;
 			}
 		}
 		target.setContent(action.getContent());

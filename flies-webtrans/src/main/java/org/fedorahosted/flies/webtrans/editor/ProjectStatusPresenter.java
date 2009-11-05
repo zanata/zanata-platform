@@ -81,6 +81,7 @@ public class ProjectStatusPresenter extends TranslationStatsBarPresenter{
 				
 				getDisplay().setStatus(fuzzyCount, translatedCount, untranslatedCount);
 				
+				
 			}
 
 
