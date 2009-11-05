@@ -92,4 +92,8 @@
                        icuLocaleId="zh_TW" 
                        parentId="[NULL]"
 		/>
+        <HFliesLocale id="ja"
+                      icuLocaleId="ja"
+                      parentId="[NULL]"
+        />
 </dataset>

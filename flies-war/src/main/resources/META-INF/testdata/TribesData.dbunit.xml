@@ -132,4 +132,10 @@
                 chiefId="1" 
                 localeId="zh-TW"
         />
+		<HTribe id="24"
+                creationDate="2009-01-14 11:39:00"
+                lastChanged="2009-01-14 11:39:00"
+                chiefId="1" 
+                localeId="ja"
+		/>
 </dataset>
