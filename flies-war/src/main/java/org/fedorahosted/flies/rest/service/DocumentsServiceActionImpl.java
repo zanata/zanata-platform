@@ -108,7 +108,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     		if (hDoc == null) {
     			log.info("POST creating new HDocument with id {0}", doc.getId());
     			hDoc = new HDocument(doc);
-    			hDoc.setRevision(1);
+    			hDoc.setRevision(0);
     			hDoc.setProject(hContainer);
     		} else {
     			log.info("POST updating HDocument with id {0}", doc.getId());
@@ -117,7 +117,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
 			docMap.put(hDoc.getDocId(), hDoc);
 			// TODO handle invalid data.  See put()
     		session.save(hDoc);
-    		documentConverter.copy(doc, hDoc, true);
+    		documentConverter.copy(doc, hDoc);
     	}
     	session.flush();
     	return Response.ok().build();
@@ -141,7 +141,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     		if (hDoc == null) {
     			log.debug("PUT creating new HDocument with id {0}", doc.getId());
     			hDoc = new HDocument(doc);
-    			hDoc.setRevision(1);
+    			hDoc.setRevision(0);
     			hDoc.setProject(hContainer);
     		} else {
     			log.debug("PUT updating HDocument with id {0}", doc.getId());
@@ -149,7 +149,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     		}
     		docMap.put(hDoc.getDocId(), hDoc);
     		try {
-				documentConverter.copy(doc, hDoc, true);
+				documentConverter.copy(doc, hDoc);
 				InvalidValue[] invalidValues = docValidator.getInvalidValues(hDoc);
 				if (invalidValues.length != 0) {
 					String message = "Document with id '"+doc.getId()+"' is invalid: "+Arrays.asList(invalidValues);
