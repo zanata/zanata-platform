@@ -11,27 +11,13 @@ public class PhraseFilterView extends HorizontalPanel implements PhraseFilterPre
 	
 	private final Label filterLabel;
 	private final TextBox filterTextBox;
-
-	//temp removeButton, delete this when proper coding is done :)
-	private final Button removeButton;
 	
 	public PhraseFilterView() {	
 		filterLabel = new Label("Filter: ");
 		filterLabel.setWordWrap(false);
 		filterTextBox = new TextBox();
-		filterTextBox.setWidth("75px");
 		add(filterLabel);
 		add(filterTextBox);
-		
-		//temp removeButton, delete this when proper coding is done :)
-		removeButton = new Button("-");
-		add(removeButton);
-	}
-	
-	//temp removeButton, delete this when proper coding is done :)
-	@Override
-	public Button getRemoveButton() {
-		return removeButton;
 	}
 	
 	@Override
