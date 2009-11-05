@@ -25,6 +25,8 @@ public class PhraseFilterPresenter extends FilterPresenter<PhraseFilter,PhraseFi
 
 	public interface Display extends WidgetDisplay{
 		HasValue<String> getFilterText();
+
+		Button getRemoveButton();
 	}
 	
 	@Override
@@ -38,6 +40,14 @@ public class PhraseFilterPresenter extends FilterPresenter<PhraseFilter,PhraseFi
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				getFilter().setPhrase(event.getValue());
+			}
+		});
+		
+		//temp removeButton, delete this when proper coding is done :)
+		display.getRemoveButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				display.asWidget().removeFromParent();
 			}
 		});
 	}
