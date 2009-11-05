@@ -199,11 +199,13 @@ tr.TableEditorRow.content-filter{
 }
 
 tr.TableEditorRow.content-filter-match{
-	background-color: light-green;
 }
 
 tr.TableEditorRow.content-filter-nomatch{
-	background-color: yellow;
+	filter:alpha(opacity=25);
+	-moz-opacity:0.25;
+	-khtml-opacity: 0.25;
+	opacity: 0.25;
 }
 
 tr.TableEditorRow.selected td {

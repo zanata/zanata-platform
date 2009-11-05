@@ -44,7 +44,7 @@ public class OperatorFilter<T> extends ArrayList<ContentFilter<T>> implements Co
 	}
 	
 	private boolean acceptAnd(T value) {
-		boolean accept = false;
+		boolean accept = true;
 		for (ContentFilter<T> filter : this) {
 			accept &= filter.accept(value);
 		}

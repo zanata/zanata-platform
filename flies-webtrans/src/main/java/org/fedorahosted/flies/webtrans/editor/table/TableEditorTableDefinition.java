@@ -5,6 +5,7 @@ import org.fedorahosted.flies.gwt.rpc.TransUnitStatus;
 import org.fedorahosted.flies.webtrans.client.mvp.TextAreaCellEditor;
 import org.fedorahosted.flies.webtrans.editor.filter.ContentFilter;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.gen2.table.client.AbstractColumnDefinition;
 import com.google.gwt.gen2.table.client.CellRenderer;
 import com.google.gwt.gen2.table.client.ColumnDefinition;
@@ -31,6 +32,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 			styles += view.getRowIndex() % 2 == 0 ? "odd-row" : "even-row";
 			
 			if(contentFilter != null) {
+				Log.info("setting filter ste");
 				styles += " content-filter";
 				styles += contentFilter.accept(rowValue) ? " content-filter-match" : " content-filter-nomatch";
 			}
