@@ -13,6 +13,10 @@ public class OperatorFilter<T> extends ArrayList<ContentFilter<T>> implements Co
 	
 	private Operator operator;
 	
+	public OperatorFilter(Operator operator) {
+		this.operator = operator;
+	}
+	
 	public OperatorFilter(Operator operator, ContentFilter<T> ... filters) {
 		for(ContentFilter<T> filter : filters) {
 			add(filter);
