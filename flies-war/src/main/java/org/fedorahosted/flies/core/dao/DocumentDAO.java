@@ -47,8 +47,10 @@ public class DocumentDAO {
 				"from HTextFlowTarget tft " +
 				"where tft.textFlow.document.id = :id " +
 				"  and tft.locale = :locale "+  
+				"  and tft.textFlow.obsolete = :obsolete "+
 				"group by tft.state"
 			).setParameter("id", docId)
+			.setParameter("obsolete", false)
 			.setParameter("locale", localeId)
 			.setCacheable(true)
 			.list();

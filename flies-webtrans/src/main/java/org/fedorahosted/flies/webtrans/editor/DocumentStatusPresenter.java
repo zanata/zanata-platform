@@ -102,7 +102,7 @@ public class DocumentStatusPresenter extends TranslationStatsBarPresenter {
 			if(!event.getDocumentId().equals(documentid)){
 				return;
 			}
-			else if( event.getOffset() < latestStatusCountOffset){
+			else if( event.getOffset() <= latestStatusCountOffset){
 				return;
 			}
 			
