@@ -17,6 +17,7 @@ public class PhraseFilterView extends FlowPanel implements PhraseFilterPresenter
 		filterLabel = new Label("Filter by phrase");
 		filterLabel.setWordWrap(false);
 		filterTextBox = new TextBox();
+		filterTextBox.setWidth("100%");
 		add(filterLabel);
 		add(filterTextBox);
 	}
