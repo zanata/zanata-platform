@@ -129,7 +129,21 @@
     <finalName>webtrans</finalName>
     <outputDirectory>war/WEB-INF/classes</outputDirectory>
     <plugins>
-
+	  <plugin>
+	    <artifactId>maven-clean-plugin</artifactId>
+	    <version>2.2</version>
+	    <configuration>
+	      <filesets>
+	        <fileset>
+	          <directory>war</directory>
+	          <includes>
+	            <include>org.fedorahosted.flies.*/**</include>
+	          </includes>
+	          <followSymlinks>false</followSymlinks>
+	        </fileset>
+	      </filesets>
+	    </configuration>
+	  </plugin>
       <!-- Specify a non-standard root dir for our war file, since the 
            Eclipse GWT plugin prefers it this way 
       -->
