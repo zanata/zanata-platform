@@ -32,7 +32,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 			styles += view.getRowIndex() % 2 == 0 ? "odd-row" : "even-row";
 			
 			if(contentFilter != null) {
-				Log.info("setting filter ste");
 				styles += " content-filter";
 				styles += contentFilter.accept(rowValue) ? " content-filter-match" : " content-filter-nomatch";
 			}

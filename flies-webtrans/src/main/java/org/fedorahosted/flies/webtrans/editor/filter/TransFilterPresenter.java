@@ -53,7 +53,6 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
 		display.getApplyButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				Log.info("FilterEnabledEvent");
 				eventBus.fireEvent( new FilterEnabledEvent(operatorFilterPresenter.getFilter()));
 			}
 		});
@@ -61,7 +60,6 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
 		display.getDisableButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				Log.info("FilterDisableEvent");
 				eventBus.fireEvent( new FilterDisabledEvent());
 			}
 		});

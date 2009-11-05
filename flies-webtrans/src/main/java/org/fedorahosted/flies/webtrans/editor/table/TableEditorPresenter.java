@@ -114,7 +114,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 			@Override
 			public void onFilterEnabled(FilterEnabledEvent event) {
 				display.setContentFilter(event.getContentFilter());
-				Log.info("setting filter" + event.getContentFilter());
 			}
 		}));
 		
@@ -123,7 +122,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 			@Override
 			public void onFilterDisabled(FilterDisabledEvent event) {
 				display.clearContentFilter();
-				Log.info("Disabling filter");
 			}
 		}));
 		
