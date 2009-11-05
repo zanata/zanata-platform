@@ -10,6 +10,7 @@ import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TreeImages;
@@ -20,8 +21,8 @@ public class FilterTree<K, T> extends Composite
 		implements HasTreeNodes<K, T>, HasFilter<T>, 
 		HasNodeMouseOverHandlers, HasNodeMouseOutHandlers {
 	private final TreeNodeMapper<K, T> mapper;
-	private final Panel panel = new VerticalPanel();
-	private final FilterBox filterBox = new FilterBox();
+	private FlowPanel panel;
+	private FilterBox filterBox;
 	private final TreeImpl<K, T> tree;
 	private final ArrayList<T> list = new ArrayList<T>();
 	private final ArrayList<MouseOverHandler> mouseOverHandlers = new ArrayList<MouseOverHandler>();
@@ -41,6 +42,11 @@ public class FilterTree<K, T> extends Composite
 	}
 	
 	private void initWidgets() {
+		panel = new FlowPanel();
+		panel.setStyleName("FilterTree");
+		filterBox = new FilterBox();
+		tree.setWidth("100%");
+		filterBox.setWidth("100%");
 		panel.add(filterBox);
 	    Panel scrollPanel = new ScrollPanel();
 	    scrollPanel.setWidth("100%");

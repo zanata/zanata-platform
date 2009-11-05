@@ -39,18 +39,24 @@ body {
 	color: grey;
 }
 
-.gwt-FilterBox-Vacant {
+.FilterTree {
+	width: 100%;
+		
+}
+
+.gwt-FilterBox {
     font-size: 12px;
-    font-style: italic;
-    color: grey;
     width: 100%;
 }
 
+.gwt-FilterBox-Vacant {
+    font-style: italic;
+    color: grey;
+}
+
 .gwt-FilterBox-Occupied {
-    font-size: 12px;
     font-style: plain;
     color: black;
-    width: 100%;
 }
 
 .gwt-CaptionPanel-Heading {
@@ -79,10 +85,8 @@ body {
     width: 100%;
 }
 .gwt-ProgressBar-shell {
-  border: 2px solid #faf9f7;
-  border-right: 2px solid #848280;
-  border-bottom: 2px solid #848280;
-  background-color: #AAAAAA;
+  border: 2px solid #d5d5d5;
+  background-color: #dddddd;
   height: 14pt;
   width: 100%;
 }
@@ -113,6 +117,7 @@ body {
 .WebTransEditorMenu {
 	background-color: #D0E4F6;
 	width: 100%;
+	height:25px;
 }
 
 .WebTransEditorMenu-left {
