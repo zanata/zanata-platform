@@ -1,6 +1,6 @@
 package org.fedorahosted.flies.webtrans.client;
 
-import org.fedorahosted.flies.webtrans.editor.filter.FilterUnitView;
+import org.fedorahosted.flies.webtrans.editor.filter.PhraseFilterView;
 import org.fedorahosted.flies.webtrans.editor.filter.TransFilterPresenter;
 
 import net.customware.gwt.presenter.client.EventBus;

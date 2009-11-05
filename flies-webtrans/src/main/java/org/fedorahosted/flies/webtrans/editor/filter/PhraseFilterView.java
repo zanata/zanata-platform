@@ -7,48 +7,42 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class FilterUnitView extends HorizontalPanel {
+public class PhraseFilterView extends HorizontalPanel implements PhraseFilterPresenter.Display {
 	
 	private final Label filterLabel;
 	private final TextBox filterTextBox;
-	private final Button removeButton;
 	
-	public FilterUnitView() {	
+	public PhraseFilterView() {	
 		filterLabel = new Label("Filter: ");
 		filterLabel.setWordWrap(false);
 		filterTextBox = new TextBox();
-		this.removeButton = new Button("-");
 		add(filterLabel);
 		add(filterTextBox);
-		add(removeButton);
 	}
 	
-	public FilterUnitView(String title, TextBox inputBox) {
-		filterLabel = new Label("Filter: ");
-		filterLabel.setWordWrap(false);
-		filterTextBox = new TextBox();
-		this.removeButton = new Button("-");
-		add(filterLabel);
-		add(filterTextBox);
-		add(removeButton);
-	}
-	
-//	@Override
+	@Override
 	public Widget asWidget() {
 		return this;
 	}
 
-//	@Override
+	@Override
 	public void startProcessing() {
 		// TODO Auto-generated method stub
 		
 	}
 
-//	@Override
+	@Override
 	public void stopProcessing() {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public HasValue<String> getFilterText() {
+		return filterTextBox;
+	}
+
+	
 
 	
 }
