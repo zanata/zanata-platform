@@ -55,11 +55,9 @@ public class GwtActionDispatcher {
 		// TODO we should probably implement our own dispatcher
 		// this messes with rollback
 		catch(NotLoggedInException e) {
-			log.info("rethrowing authentication exception to RPC", e);
 			throw new AuthenticationError();
 		}
 		catch(AuthorizationException e) {
-			log.info("rethrowing authorization exception to RPC", e);
 			throw new AuthorizationError();
 		}
 	}

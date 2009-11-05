@@ -3,8 +3,10 @@ package org.fedorahosted.flies.webtrans.client;
 import net.customware.gwt.presenter.client.place.PlaceManager;
 import net.customware.gwt.presenter.client.place.PlaceRequestEvent;
 
+import org.fedorahosted.flies.webtrans.client.auth.LoginResult;
 import org.fedorahosted.flies.webtrans.client.gin.WebTransGinjector;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -22,18 +24,33 @@ public class Application implements EntryPoint{
 	private final WebTransGinjector injector = GWT.create(WebTransGinjector.class);
 
 	public void onModuleLoad() {
-		WorkspaceContext context = injector.getWorkspaceContext();
+
+		final LoginPresenter loginPresenter = injector.getLoginPresenter();
+		loginPresenter.bind();
+		injector.getWorkspaceContext().validateWorkspace(new LoginResult() {
+			
+			@Override
+			public void onSuccess() {
+				showMainApp();
+			}
+			
+			@Override
+			public void onFailure() {
+				// will launch login
+				Log.info("failed to validate context. should launch login");
+			}
+		});
 		
-		if (!context.isValid()) {
-			// TODO better error message
-			Window.alert("Invalid workspace context");
-			return;
-		}
+		
+	}
+
+	private void showMainApp() {
 		final AppPresenter appPresenter = injector.getAppPresenter();
 		appPresenter.bind();
+		
 		RootPanel.get().add( appPresenter.getDisplay().asWidget() );
 		
-		injector.getEventProcessor();
+		injector.getEventProcessor().scheduleRepeating(3000);
 		
         // Needed because of this bug:
         // http://code.google.com/p/gwt-presenter/issues/detail?id=6
@@ -63,9 +80,8 @@ public class Application implements EntryPoint{
 						.getClientHeight()));
 			}
 		});
-
 	}
-
+	
 	// we reuse the logic of the generic ResizeEvent here
 	// the only ResizeEvent allowed on the EventBus is the
 	// window resize event

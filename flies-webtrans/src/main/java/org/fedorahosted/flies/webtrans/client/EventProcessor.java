@@ -12,6 +12,7 @@ import org.fedorahosted.flies.gwt.rpc.SessionEvent;
 import org.fedorahosted.flies.gwt.rpc.SessionEventData;
 import org.fedorahosted.flies.gwt.rpc.TransUnitUpdated;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
+import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.GwtEvent;
@@ -59,12 +60,11 @@ public class EventProcessor extends Timer{
 	private final EventRegistry eventRegistry;
 	
 	@Inject
-	public EventProcessor(EventBus eventBus, DispatchAsync dispatcher, WorkspaceContext workspaceContext) {
+	public EventProcessor(EventBus eventBus, CachingDispatchAsync dispatcher, WorkspaceContext workspaceContext) {
 		this.eventBus = eventBus;
 		this.dispatcher = dispatcher;
 		this.workspaceContext = workspaceContext;
 		this.eventRegistry = new EventRegistry();
-		scheduleRepeating(3000);
 	}
 	
 	private int lastSequence = 0;

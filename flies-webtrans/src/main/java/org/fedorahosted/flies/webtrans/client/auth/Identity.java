@@ -19,6 +19,4 @@ public interface Identity {
 	void invalidate();
 
 	void login(String username, String password, LoginResult callback);
-	
-
 }

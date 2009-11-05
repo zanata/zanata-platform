@@ -15,7 +15,6 @@ public class LoginPanel extends DecoratedPopupPanel implements LoginPresenter.Di
 	private final TextBox username;
 	private final PasswordTextBox password;
 	private final Button loginButton;
-	private final Button cancelButton;
 	private final Label errorLabel;
 
 	private final GlassPanel glassPanel;
@@ -29,7 +28,6 @@ public class LoginPanel extends DecoratedPopupPanel implements LoginPresenter.Di
 		username = new TextBox();
 		password = new PasswordTextBox();
 		loginButton = new Button("Login");
-		cancelButton = new Button("Cancel");
 		glassPanel = new GlassPanel(false);
 		errorLabel = new Label("Invalid Username / Password combination.");
 		errorLabel.setVisible(false);
@@ -39,7 +37,6 @@ public class LoginPanel extends DecoratedPopupPanel implements LoginPresenter.Di
 		layout.setHTML(2, 0, "Password");
 		layout.setWidget(2, 1, password);
 		layout.setWidget(3, 2, loginButton);
-		layout.setWidget(3, 1, cancelButton);
 
 		setAnimationEnabled(true);
 		setModal(true);
@@ -53,6 +50,7 @@ public class LoginPanel extends DecoratedPopupPanel implements LoginPresenter.Di
 
 	@Override
 	public void show() {
+		RootPanel.get().setSize("100%", "100%");
 		RootPanel.get().add( glassPanel, 0, 0);
 		int w = RootPanel.get().getOffsetWidth();
 		int h = RootPanel.get().getOffsetHeight();
@@ -70,11 +68,6 @@ public class LoginPanel extends DecoratedPopupPanel implements LoginPresenter.Di
 	@Override
 	public Button getLoginButton() {
 		return loginButton;
-	}
-
-	@Override
-	public Button getCancelButton() {
-		return cancelButton;
 	}
 
 	@Override

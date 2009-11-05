@@ -20,6 +20,7 @@ import org.fedorahosted.flies.webtrans.client.DocumentSelectionHandler;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent;
 import org.fedorahosted.flies.webtrans.client.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent.Severity;
+import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.editor.DocumentEditorPresenter;
 import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
 import org.fedorahosted.flies.webtrans.editor.filter.ContentFilter;
@@ -69,7 +70,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	
 
 	@Inject
-	public TableEditorPresenter(final Display display, final EventBus eventBus, final DispatchAsync dispatcher, final WorkspaceContext workspaceContext) {
+	public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final WorkspaceContext workspaceContext) {
 		super(display, eventBus);
 		this.dispatcher = dispatcher;
 		this.workspaceContext = workspaceContext;

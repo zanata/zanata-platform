@@ -8,6 +8,7 @@ import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.gwt.auth.AuthenticationError;
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceResult;
+import org.fedorahosted.flies.security.FliesIdentity;
 import org.fedorahosted.flies.webtrans.TranslationWorkspace;
 import org.fedorahosted.flies.webtrans.TranslationWorkspaceManager;
 import org.hibernate.Session;
@@ -32,9 +33,8 @@ public class ActivateWorkspaceHandler implements ActionHandler<ActivateWorkspace
 	@Override
 	public ActivateWorkspaceResult execute(ActivateWorkspaceAction action, ExecutionContext context)
 			throws ActionException {
-		if(!Identity.instance().isLoggedIn()) {
-			throw new AuthenticationError();
-		}
+		
+		FliesIdentity.instance().checkLoggedIn();
 
 		LocaleId localeId = new LocaleId(action.getLocaleId().getValue());
 		TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getProjectContainerId().getId(), localeId);

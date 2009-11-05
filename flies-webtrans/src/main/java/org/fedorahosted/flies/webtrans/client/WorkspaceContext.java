@@ -6,6 +6,8 @@ import org.fedorahosted.flies.gwt.model.LocaleId;
 import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceResult;
+import org.fedorahosted.flies.webtrans.client.auth.LoginResult;
+import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -21,11 +23,10 @@ public class WorkspaceContext {
 	private final DispatchAsync dispatcher;
 	
 	@Inject
-	public WorkspaceContext(DispatchAsync dispatcher) {
+	public WorkspaceContext(CachingDispatchAsync dispatcher) {
 		this.projectContainerId = findProjectContainerId();
 		this.localeId = findLocaleId();
 		this.dispatcher = dispatcher;
-		validateWorkspace();
 	}
 
 	private static LocaleId findLocaleId() {
@@ -46,15 +47,17 @@ public class WorkspaceContext {
 		}
 	}
 	
-	private void validateWorkspace() {
+	public void validateWorkspace(final LoginResult callback) {
 		dispatcher.execute(new ActivateWorkspaceAction(projectContainerId, localeId), new AsyncCallback<ActivateWorkspaceResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
+				callback.onFailure();
 			}
 			@Override
 			public void onSuccess(ActivateWorkspaceResult result) {
 				setWorkspaceName(result.getWorkspaceName());
 				setLocaleName(result.getLocaleName());
+				callback.onSuccess();
 			}
 		});
 	}

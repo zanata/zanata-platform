@@ -25,6 +25,7 @@ import org.fedorahosted.flies.gwt.rpc.TransUnitStatus;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent.Severity;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
+import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.client.ui.HasFilter;
 import org.fedorahosted.flies.webtrans.client.ui.HasTreeNodes;
 import org.fedorahosted.flies.webtrans.client.ui.TreeNode;
@@ -52,7 +53,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 	@Inject
 	public DocumentListPresenter(Display display, EventBus eventBus,
 			WorkspaceContext workspaceContext,
-			DispatchAsync dispatcher,
+			CachingDispatchAsync dispatcher,
 			ProjectStatusPresenter prStatusPresenter) {
 		super(display, eventBus);
 		this.workspaceContext = workspaceContext;

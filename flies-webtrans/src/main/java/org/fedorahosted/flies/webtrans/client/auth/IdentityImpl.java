@@ -11,6 +11,7 @@ import org.fedorahosted.flies.gwt.auth.Role;
 import org.fedorahosted.flies.gwt.model.Person;
 import org.fedorahosted.flies.gwt.rpc.AuthenticateAction;
 import org.fedorahosted.flies.gwt.rpc.AuthenticateResult;
+import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -28,10 +29,11 @@ public class IdentityImpl implements Identity {
 	private final EventBus eventBus;
 	
 	@Inject
-	public IdentityImpl(DispatchAsync dispatcher, EventBus eventBus) {
+	public IdentityImpl(CachingDispatchAsync dispatcher, EventBus eventBus) {
 		this.dispatcher = dispatcher;
 		this.eventBus = eventBus;
 		roles.add(Role.Anonymous);
+		this.sessionId = Cookies.getCookie("JSESSIONID");
 	}
 	
 	@Override
@@ -61,22 +63,21 @@ public class IdentityImpl implements Identity {
 	
 	@Override
 	public void invalidate() {
+		invalidateQuiet();
+		eventBus.fireEvent( new UserLogoutEvent());
+	}
+
+	private void invalidateQuiet() {
 		sessionId = null;
 		permissions.clear();
 		roles.clear();
 		person = null;
 		roles.add(Role.Anonymous);
 		Cookies.removeCookie("JSESSIONID");
-		eventBus.fireEvent( new UserLogoutEvent());
 	}
-
+	
 	@Override
 	public void login(String username, String password, final LoginResult callback) {
-		
-		if(isLoggedIn()) {
-			callback.onSuccess();
-			return;
-		}
 		
 		dispatcher.execute(new AuthenticateAction(username, password), new AsyncCallback<AuthenticateResult>() {
 			
@@ -89,6 +90,7 @@ public class IdentityImpl implements Identity {
 			
 			@Override
 			public void onFailure(Throwable caught) {
+				invalidateQuiet();
 				callback.onFailure();
 			}
 		});

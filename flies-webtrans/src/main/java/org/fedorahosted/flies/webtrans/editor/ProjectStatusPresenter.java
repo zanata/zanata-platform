@@ -13,6 +13,7 @@ import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCountResult;
 import org.fedorahosted.flies.webtrans.client.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
+import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -26,7 +27,7 @@ public class ProjectStatusPresenter extends TranslationStatsBarPresenter{
 
 	@Inject
 	public ProjectStatusPresenter (Display display, EventBus eventBus,
-			DispatchAsync dispatcher,
+			CachingDispatchAsync dispatcher,
 			WorkspaceContext workspaceContext) {
 		super(display, eventBus);
 		this.dispatcher = dispatcher;

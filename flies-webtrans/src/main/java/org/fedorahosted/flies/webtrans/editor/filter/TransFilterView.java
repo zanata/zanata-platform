@@ -32,7 +32,6 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
 
 		RoundedContainerWithHeader container = new RoundedContainerWithHeader(new Label("Filtering"), bodyPanel);
 		initWidget(container);
-		setWidth("100%");
 		getElement().setId("TransFilterView");
 	}
 	

@@ -11,6 +11,7 @@ import org.fedorahosted.flies.gwt.model.Person;
 import org.fedorahosted.flies.gwt.model.PersonId;
 import org.fedorahosted.flies.gwt.rpc.GetTranslatorList;
 import org.fedorahosted.flies.gwt.rpc.GetTranslatorListResult;
+import org.fedorahosted.flies.security.FliesIdentity;
 import org.fedorahosted.flies.webtrans.TranslationWorkspace;
 import org.fedorahosted.flies.webtrans.TranslationWorkspaceManager;
 import org.hibernate.Session;
@@ -39,6 +40,8 @@ public class GetTranslatorListHandler implements ActionHandler<GetTranslatorList
 	public GetTranslatorListResult execute(GetTranslatorList action, 
 			ExecutionContext context) throws ActionException {
 
+		FliesIdentity.instance().checkLoggedIn();
+		
 		TranslationWorkspace translationWorkspace = 
 			translationWorkspaceManager.getOrRegisterWorkspace(action.getProjectContainerId().getId(), 
 					new LocaleId(action.getLocaleId().getValue()));

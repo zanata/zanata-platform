@@ -45,8 +45,7 @@ public class GetTransUnitsHandler implements ActionHandler<GetTransUnits, GetTra
 	public GetTransUnitsResult execute(GetTransUnits action, ExecutionContext context)
 			throws ActionException {
 
-		// restrict to logged in users
-		//FliesIdentity.instance().checkLoggedIn();
+		FliesIdentity.instance().checkLoggedIn();
 		
 		log.info("Fetching Transunits for {0}", action.getDocumentId());
 		

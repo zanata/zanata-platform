@@ -7,8 +7,8 @@ import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;
 
-public class DelegatingDispatchAsync implements DispatchAsync {
-	private DispatchAsync delegate;
+public class DelegatingDispatchAsync implements CachingDispatchAsync {
+	private CachingDispatchAsync delegate;
 
 	public DelegatingDispatchAsync() {
 		delegate = GWT.create(SeamDispatchAsync.class);
@@ -18,6 +18,12 @@ public class DelegatingDispatchAsync implements DispatchAsync {
 	public <A extends Action<R>, R extends Result> void execute(A action,
 			AsyncCallback<R> callback) {
 		delegate.execute(action, callback);
+	}
+	
+	@Override
+	public void setErrorHandler(ErrorHandler errorHandler) {
+		delegate.setErrorHandler(errorHandler);
+		
 	}
 
 }

@@ -50,7 +50,6 @@ public class DocumentListView extends Composite
 
 		RoundedContainerWithHeader container = new RoundedContainerWithHeader(new Label("Documents"), mainpanel);
 		initWidget(container);
-		setWidth("100%");
 		getElement().setId("DocumentListView");
 	}
 

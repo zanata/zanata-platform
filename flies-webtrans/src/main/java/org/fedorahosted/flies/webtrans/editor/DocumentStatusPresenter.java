@@ -13,6 +13,7 @@ import org.fedorahosted.flies.webtrans.client.DocumentSelectionHandler;
 import org.fedorahosted.flies.webtrans.client.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
+import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -29,7 +30,7 @@ public class DocumentStatusPresenter extends TranslationStatsBarPresenter {
 	
 	@Inject
 	public DocumentStatusPresenter(Display display, EventBus eventBus,
-			DispatchAsync dispatcher,
+			CachingDispatchAsync dispatcher,
 			WorkspaceContext workspaceContext) {
 		super(display, eventBus);
 		this.dispatcher = dispatcher;

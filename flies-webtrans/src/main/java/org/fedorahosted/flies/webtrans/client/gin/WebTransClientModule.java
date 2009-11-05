@@ -13,12 +13,15 @@ import org.fedorahosted.flies.webtrans.client.DocumentListView;
 import org.fedorahosted.flies.webtrans.client.EventProcessor;
 import org.fedorahosted.flies.webtrans.client.LoginPanel;
 import org.fedorahosted.flies.webtrans.client.LoginPresenter;
+import org.fedorahosted.flies.webtrans.client.TopMenuPresenter;
+import org.fedorahosted.flies.webtrans.client.TopMenuView;
 import org.fedorahosted.flies.webtrans.client.WestNavigationPresenter;
 import org.fedorahosted.flies.webtrans.client.WestNavigationView;
 import org.fedorahosted.flies.webtrans.client.WorkspaceUsersPresenter;
 import org.fedorahosted.flies.webtrans.client.WorkspaceUsersView;
 import org.fedorahosted.flies.webtrans.client.auth.Identity;
 import org.fedorahosted.flies.webtrans.client.auth.IdentityImpl;
+import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.client.rpc.DelegatingDispatchAsync;
 import org.fedorahosted.flies.webtrans.editor.DocumentStatusPresenter;
 import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
@@ -59,6 +62,8 @@ public class WebTransClientModule extends AbstractPresenterModule {
 		bindPresenter(WorkspaceUsersPresenter.class, WorkspaceUsersPresenter.Display.class, WorkspaceUsersView.class);
 		bindPresenter(WebTransEditorPresenter.class, WebTransEditorPresenter.Display.class, WebTransEditorView.class);
 		bindPresenter(LoginPresenter.class, LoginPresenter.Display.class, LoginPanel.class);
+		bindPresenter(TopMenuPresenter.class, TopMenuPresenter.Display.class, TopMenuView.class);
+		
 		bind(DocumentStatusPresenter.class);
 		
 		bind(ProjectStatusPresenter.class);
@@ -68,7 +73,7 @@ public class WebTransClientModule extends AbstractPresenterModule {
 
 		// NB: if we bind directly to SeamDispatchAsync, we can't use replace-class in
 		// the module definition unless the replacement extends SeamDispatchAsync
-		bind(DispatchAsync.class).to(DelegatingDispatchAsync.class).in(Singleton.class);
+		bind(CachingDispatchAsync.class).to(DelegatingDispatchAsync.class).in(Singleton.class);
 		
 		bind(Identity.class).to(IdentityImpl.class).in(Singleton.class);
 	}

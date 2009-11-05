@@ -16,6 +16,7 @@ import org.fedorahosted.flies.gwt.rpc.GetStatusCountResult;
 import org.fedorahosted.flies.gwt.rpc.GetTranslatorList;
 import org.fedorahosted.flies.gwt.rpc.GetTranslatorListResult;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
+import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.client.ui.HasChildTreeNodes;
 import org.fedorahosted.flies.webtrans.client.ui.HasFilter;
 import org.fedorahosted.flies.webtrans.client.ui.HasNodeMouseOutHandlers;
@@ -47,7 +48,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 	
 	@Inject
 	public WorkspaceUsersPresenter(final Display display, final EventBus eventBus,
-		   DispatchAsync dispatcher,
+			CachingDispatchAsync dispatcher,
 		   WorkspaceContext workspaceContext) {
 		super(display, eventBus);
 		this.workspaceContext = workspaceContext;

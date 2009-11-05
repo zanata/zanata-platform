@@ -12,6 +12,7 @@ import org.fedorahosted.flies.gwt.rpc.GetStatusCount;
 import org.fedorahosted.flies.gwt.rpc.GetStatusCountResult;
 import org.fedorahosted.flies.repository.util.TranslationStatistics;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget.ContentState;
+import org.fedorahosted.flies.security.FliesIdentity;
 import org.fedorahosted.flies.webtrans.TranslationWorkspace;
 import org.fedorahosted.flies.webtrans.TranslationWorkspaceManager;
 import org.hibernate.Session;
@@ -35,6 +36,9 @@ public class GetStatusCountHandler implements ActionHandler<GetStatusCount, GetS
 	@Override
 	public GetStatusCountResult execute(GetStatusCount action,
 			ExecutionContext context) throws ActionException {
+		
+		FliesIdentity.instance().checkLoggedIn();
+		
 		org.fedorahosted.flies.LocaleId fliesLocaleId = new org.fedorahosted.flies.LocaleId(action.getLocaleId().getValue());		
 		
 		List<StatusCount> stats = session.createQuery(

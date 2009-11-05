@@ -12,6 +12,7 @@ body {
 
 #DocumentListView, #TransFilterView, #WorskpaceUsersView {
 	padding-bottom: 5px;
+	width: 100%;
 }
 
 #WestNavigationView {

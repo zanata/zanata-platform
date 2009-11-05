@@ -11,6 +11,7 @@ import org.fedorahosted.flies.webtrans.client.DocumentSelectionHandler;
 import org.fedorahosted.flies.webtrans.client.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
+import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.client.ui.Pager;
 import org.fedorahosted.flies.webtrans.editor.table.TableEditorPresenter;
 
@@ -52,7 +53,7 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 
 	@Inject
 	public WebTransEditorPresenter(Display display, EventBus eventBus,
-			final DispatchAsync dispatcher,
+			final CachingDispatchAsync dispatcher,
 			final TableEditorPresenter webTransTablePresenter,
 			final DocumentStatusPresenter documentStatsBarPresenter,
 			final ProjectStatusPresenter projectStatusPresenter) {

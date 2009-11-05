@@ -18,6 +18,7 @@ import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCountResult;
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.repository.util.TranslationStatistics;
+import org.fedorahosted.flies.security.FliesIdentity;
 import org.fedorahosted.flies.webtrans.TranslationWorkspace;
 import org.fedorahosted.flies.webtrans.TranslationWorkspaceManager;
 import org.hibernate.Session;
@@ -46,6 +47,9 @@ public class GetProjectStatusCountHandler implements ActionHandler<GetProjectSta
 		@Override
 		public GetProjectStatusCountResult execute(GetProjectStatusCount action,
 				ExecutionContext context) throws ActionException {
+			
+			FliesIdentity.instance().checkLoggedIn();
+			
 			LocaleId fliesLocaleId = new LocaleId(action.getLocaleId().getValue());		
 			
 			ProjectContainerId containerId = action.getProjectContainerId();

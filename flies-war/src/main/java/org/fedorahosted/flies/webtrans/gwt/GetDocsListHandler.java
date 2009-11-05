@@ -15,6 +15,7 @@ import org.fedorahosted.flies.gwt.rpc.GetDocsList;
 import org.fedorahosted.flies.gwt.rpc.GetDocsListResult;
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
+import org.fedorahosted.flies.security.FliesIdentity;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -35,8 +36,10 @@ public class GetDocsListHandler implements ActionHandler<GetDocsList, GetDocsLis
 	@Override
 	public GetDocsListResult execute(GetDocsList action, ExecutionContext context)
 			throws ActionException {
+		
+		FliesIdentity.instance().checkLoggedIn();
+		
 		ProjectContainerId containerId = action.getProjectContainerId();
-		log.info("Fetching Docs List for {0}", containerId);
 		ArrayList<DocName> docs = new ArrayList<DocName>(); 
 		HProjectContainer hProjectContainer = projectContainerDAO.getById(containerId.getId());
 		Collection<HDocument> hDocs = hProjectContainer.getDocuments().values();

@@ -13,6 +13,7 @@ import org.fedorahosted.flies.gwt.rpc.UpdateTransUnitResult;
 import org.fedorahosted.flies.repository.model.HTextFlow;
 import org.fedorahosted.flies.repository.model.HTextFlowTarget;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget.ContentState;
+import org.fedorahosted.flies.security.FliesIdentity;
 import org.fedorahosted.flies.webtrans.TranslationWorkspace;
 import org.fedorahosted.flies.webtrans.TranslationWorkspaceManager;
 import org.hibernate.Session;
@@ -36,6 +37,9 @@ public class UpdateTransUnitHandler implements ActionHandler<UpdateTransUnit, Up
 	@Override
 	public UpdateTransUnitResult execute(UpdateTransUnit action, ExecutionContext context)
 			throws ActionException {
+		
+		FliesIdentity.instance().checkLoggedIn();
+		
 		HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, action.getTransUnitId().getValue());
 		LocaleId localeId = new LocaleId( action.getLocaleId().getValue());
 		HTextFlowTarget target = hTextFlow.getTargets().get(localeId);

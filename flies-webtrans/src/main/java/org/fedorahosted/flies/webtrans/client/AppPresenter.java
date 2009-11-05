@@ -30,18 +30,18 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 	
 	private final WestNavigationPresenter westNavigationPresenter;
 	private final WebTransEditorPresenter webTransEditorPresenter;
-	private final LoginPresenter loginPresenter;
-
+	private final TopMenuPresenter topMenuPresenter;
+	
 	@Inject
 	public AppPresenter(Display display, EventBus eventBus,
 				final WestNavigationPresenter leftNavigationPresenter,
 				final WebTransEditorPresenter webTransEditorPresenter,
-				final LoginPresenter loginPresenter) {
+				final TopMenuPresenter topMenuPresenter) {
 		super(display, eventBus);
 		
 		this.westNavigationPresenter = leftNavigationPresenter;
 		this.webTransEditorPresenter = webTransEditorPresenter;
-		this.loginPresenter = loginPresenter;
+		this.topMenuPresenter = topMenuPresenter;
 	}
 
 	@Override
@@ -51,9 +51,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 
 	@Override
 	protected void onBind() {
-		loginPresenter.bind();
 		westNavigationPresenter.bind();
 		webTransEditorPresenter.bind();
+		topMenuPresenter.bind();
 		
 		final Button showHide = new Button();
 		showHide.setText("<<");
@@ -69,7 +69,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		webTransEditorPresenter.getDisplay().getHeader().setLeftWidget(showHide);
 		
 		
-		display.setNorth(new NorthPanel());
+		display.setNorth(topMenuPresenter.getDisplay().asWidget());
 		display.setWest(westNavigationPresenter.getDisplay().asWidget());
 		display.setMain(webTransEditorPresenter.getDisplay().asWidget());
 		// TODO refactor to presenter
@@ -111,7 +111,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 	protected void onUnbind() {
 		westNavigationPresenter.unbind();
 		webTransEditorPresenter.unbind();
-		loginPresenter.unbind();
 	}
 
 	@Override
