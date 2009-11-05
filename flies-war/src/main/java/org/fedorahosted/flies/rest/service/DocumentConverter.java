@@ -98,16 +98,20 @@ public class DocumentConverter {
 				HDocumentResource hRes = null;
 				if (session.contains(toHDoc))
 					hRes = resourceDAO.getById(toHDoc, res.getId());
+				boolean resChanged = false;
 				if (hRes == null) {
 					hRes = HDocument.create(res);
+					resChanged = true;
 				} else {
 					// resurrect the resource
 					hRes.setObsolete(false);
 				}
 				hResources.add(hRes);
 				hRes.setDocument(toHDoc);
-				hRes.setResId(res.getId());
-				changed |= copy(res, hRes, toHDoc);
+				resChanged |= copy(res, hRes, toHDoc);
+				if (resChanged)
+					hRes.setResId(res.getId());
+				changed |= resChanged;
 				if (oldResourceMap.remove(res.getId()) == null) {
 					changed = true;
 					log.debug("CHANGED: Resource {0}:{1} was added", toHDoc.getDocId(), hRes.getResId());
