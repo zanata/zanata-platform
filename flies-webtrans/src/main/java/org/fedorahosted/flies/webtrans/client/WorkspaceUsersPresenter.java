@@ -1,7 +1,9 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
+import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
@@ -10,16 +12,22 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.fedorahosted.flies.gwt.model.Person;
 import org.fedorahosted.flies.gwt.model.PersonId;
+import org.fedorahosted.flies.gwt.rpc.GetStatusCountResult;
+import org.fedorahosted.flies.gwt.rpc.GetTranslatorList;
+import org.fedorahosted.flies.gwt.rpc.GetTranslatorListResult;
+import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import org.fedorahosted.flies.webtrans.client.ui.HasChildTreeNodes;
 import org.fedorahosted.flies.webtrans.client.ui.HasFilter;
 import org.fedorahosted.flies.webtrans.client.ui.HasNodeMouseOutHandlers;
 import org.fedorahosted.flies.webtrans.client.ui.HasNodeMouseOverHandlers;
 import org.fedorahosted.flies.webtrans.client.ui.TreeNodeImpl;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -28,7 +36,9 @@ import com.google.inject.Inject;
 public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPresenter.Display> {
 
 	public static final Place PLACE = new Place("WorkspaceUsersPresenter");
-	
+	private final DispatchAsync dispatcher;
+	private final WorkspaceContext workspaceContext;
+		
 	public interface Display extends WidgetDisplay{
 		HasChildTreeNodes<Person> getTree();
 		HasFilter<Person> getFilter();
@@ -37,8 +47,13 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 	}
 	
 	@Inject
-	public WorkspaceUsersPresenter(final Display display, final EventBus eventBus) {
+	public WorkspaceUsersPresenter(final Display display, final EventBus eventBus,
+		   DispatchAsync dispatcher,
+		   WorkspaceContext workspaceContext) {
 		super(display, eventBus);
+		this.workspaceContext = workspaceContext;
+		this.dispatcher = dispatcher;
+		loadTranslatorList();
 	}
 	
 	
@@ -49,12 +64,14 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 
 	@Override
 	protected void onBind() {
-		Person [] translators = new Person[]{
-			new Person( new PersonId("bob"), "Bob Smith"),
-			new Person( new PersonId("jane"), "Jane English"),
-			new Person( new PersonId("bill"), "Bill Martin")
-			};	
-		getDisplay().getFilter().setList(Arrays.asList(translators));
+//		Person [] translators = new Person[]{
+//			new Person( new PersonId("bob"), "Bob Smith"),
+//			new Person( new PersonId("jane"), "Jane English"),
+//			new Person( new PersonId("bill"), "Bill Martin")
+//			};	
+		
+	
+		
 		
 		final DecoratedPopupPanel userPopupPanel = new DecoratedPopupPanel(true);
 		
@@ -94,6 +111,21 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 		});
 		
 	}
+
+	private void loadTranslatorList() {
+		dispatcher.execute(new GetTranslatorList(workspaceContext.getProjectContainerId(), workspaceContext.getLocaleId()), new AsyncCallback<GetTranslatorListResult>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Log.error("error");
+			}
+			@Override
+			public void onSuccess(GetTranslatorListResult result) {
+				
+				getDisplay().getFilter().setList(Arrays.asList(result.getTranslatorList()));
+			}
+	});		
+	}
+
 
 	@Override
 	protected void onPlaceRequest(PlaceRequest request) {

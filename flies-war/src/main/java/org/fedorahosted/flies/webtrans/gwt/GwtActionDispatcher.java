@@ -42,6 +42,7 @@ public class GwtActionDispatcher {
 		actionHandlerRegistry.addHandler(new AuthenticateHandler());
 		actionHandlerRegistry.addHandler(new GetStatusCountHandler());
 		actionHandlerRegistry.addHandler(new GetProjectStatusCountHandler());
+		actionHandlerRegistry.addHandler(new GetTranslatorListHandler());
 		actionHandlerRegistry.addHandler(new GetEventsActionHandler());
 	}
 
