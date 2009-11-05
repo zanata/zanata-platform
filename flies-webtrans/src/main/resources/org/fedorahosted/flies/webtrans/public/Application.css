@@ -10,6 +10,10 @@ body {
 	width: auto;
 }
 
+#DocumentListView, #TransFilterView, #WorskpaceUsersView {
+	padding-bottom: 5px;
+}
+
 #WestNavigationView {
 	padding-left: 3px;
 	padding-right: 3px;

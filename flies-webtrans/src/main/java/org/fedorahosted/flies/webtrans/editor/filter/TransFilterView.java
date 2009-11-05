@@ -17,7 +17,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class TransFilterView extends Composite implements TransFilterPresenter.Display {
 
 	private FlowPanel bodyPanel;
-	private Button applyButton, disableButton;
+	private Button applyButton;
 	
 	public TransFilterView() {
 		bodyPanel = new FlowPanel();
@@ -26,29 +26,15 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
 		FlowPanel filterButtonBar = new FlowPanel();
 		filterButtonBar.setStyleName("float-right-div");
 		applyButton = new Button("Apply");
-		applyButton.addClickHandler(clickHandler);
-		disableButton = new Button("Disable");
-		disableButton.addClickHandler(clickHandler);
-		disableButton.setVisible(false);
 		filterButtonBar.add(applyButton);
-		filterButtonBar.add(disableButton);
 		
 		bodyPanel.add(filterButtonBar);
 
 		RoundedContainerWithHeader container = new RoundedContainerWithHeader(new Label("Filtering"), bodyPanel);
 		initWidget(container);
-		setWidth("100%");	
+		setWidth("100%");
+		getElement().setId("TransFilterView");
 	}
-
-	private final ClickHandler clickHandler = new ClickHandler() {
-		
-		@Override
-		public void onClick(ClickEvent event) {
-			boolean wasApply = event.getSource() == applyButton;
-			applyButton.setVisible(!wasApply);
-			disableButton.setVisible(wasApply);
-		}
-	};
 	
 	@Override
 	public void setFilterUnitPanel (Widget widget) {
@@ -73,11 +59,6 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
 	public void stopProcessing() {
 		// TODO Auto-generated method stub
 
-	}
-	
-	@Override
-	public Button getDisableButton() {
-		return disableButton;
 	}
 	
 	@Override

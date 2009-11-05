@@ -24,7 +24,6 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
 	
 	public interface Display extends WidgetDisplay{
 		Button getApplyButton();
-		Button getDisableButton();
 		void setFilterUnitPanel(Widget widget);
 	}
 	
@@ -57,12 +56,6 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
 			}
 		});
 		
-		display.getDisableButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				eventBus.fireEvent( new FilterDisabledEvent());
-			}
-		});
 	}
 
 

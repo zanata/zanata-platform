@@ -11,13 +11,14 @@ import org.fedorahosted.flies.webtrans.client.ui.HasNodeMouseOverHandlers;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ImageBundle;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TreeImages;
 import com.google.gwt.user.client.ui.VerticalSplitPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class WorkspaceUsersView extends CaptionPanel implements
+public class WorkspaceUsersView extends Composite implements
 		WorkspaceUsersPresenter.Display {
 
 	public interface Images extends ImageBundle, TreeImages {
@@ -38,12 +39,13 @@ public class WorkspaceUsersView extends CaptionPanel implements
 
 	
 	public WorkspaceUsersView() {
-		super();
-//		tree = new FilterTree<Person>(new PersonLocaleTreeNodeMapper(), images);	
 		tree = new FilterTree<PersonId, Person>(new PersonTreeNodeMapper(), images);	
-//		tree.setWidth("100%");
-		setTitle("Translators");
-		setBody(getChatAllPanel());
+
+		RoundedContainerWithHeader container = new RoundedContainerWithHeader(new Label("Translators"), getChatAllPanel() );
+		initWidget(container);
+		setWidth("100%");
+		getElement().setId("WorskpaceUsersView");
+		
 	}
 
 	public Widget getChatAllPanel() {
