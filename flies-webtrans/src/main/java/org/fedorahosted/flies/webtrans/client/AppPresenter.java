@@ -16,6 +16,9 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -97,6 +100,31 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 				}
 			})
 		);
+		
+		// Hook the window resize event, so that we can adjust the UI.
+		Window.addResizeHandler( new ResizeHandler() {
+			@Override
+			public void onResize(ResizeEvent event) {
+				eventBus.fireEvent( new WindowResizeEvent(event));
+			}
+		});
+
+		Window.enableScrolling(false);
+		Window.setMargin("0px");
+		
+		
+		
+		// Call the window resized handler to get the initial sizes setup. Doing
+		// this in a deferred command causes it to occur after all widgets'
+		// sizes
+		// have been computed by the browser.
+		DeferredCommand.addCommand(new Command() {
+			public void execute() {
+				eventBus.fireEvent( new WindowResizeEvent(Window.getClientWidth(), Window
+						.getClientHeight()));
+			}
+		});
+		
 		
 	}
 	

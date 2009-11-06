@@ -1,9 +1,10 @@
 package org.fedorahosted.flies.webtrans.editor;
 
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class WebTransEditorMenubar extends FlowPanel implements HasThreeColWidgets {
+public class WebTransEditorMenubar extends HorizontalPanel implements HasThreeColWidgets {
 	
 	private final FlowPanel leftWidget;
 	private final FlowPanel middleWidget;

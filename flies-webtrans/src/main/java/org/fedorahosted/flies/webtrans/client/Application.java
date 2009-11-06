@@ -37,27 +37,6 @@ public class Application implements EntryPoint{
 
 		injector.getPlaceManager().fireCurrentPlace();
 		
-		// Hook the window resize event, so that we can adjust the UI.
-		Window.addResizeHandler( new ResizeHandler() {
-			@Override
-			public void onResize(ResizeEvent event) {
-				injector.getEventBus().fireEvent( new WindowResizeEvent(event));
-			}
-		});
-
-		Window.enableScrolling(false);
-		Window.setMargin("0px");
-
-		// Call the window resized handler to get the initial sizes setup. Doing
-		// this in a deferred command causes it to occur after all widgets'
-		// sizes
-		// have been computed by the browser.
-		DeferredCommand.addCommand(new Command() {
-			public void execute() {
-				injector.getEventBus().fireEvent( new WindowResizeEvent(Window.getClientWidth(), Window
-						.getClientHeight()));
-			}
-		});
 	}
 	
 	// we reuse the logic of the generic ResizeEvent here
