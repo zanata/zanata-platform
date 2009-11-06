@@ -2,9 +2,11 @@ package org.fedorahosted.flies.gwt.rpc;
 
 import org.fedorahosted.flies.gwt.model.LocaleId;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import net.customware.gwt.dispatch.shared.Action;
 
-public class GetEventsAction implements Action<GetEventsResult> {
+public class GetEventsAction implements Action<GetEventsResult>, IsSerializable {
 	
 	private static final long serialVersionUID = 1L;
 
