@@ -50,7 +50,7 @@ public class LoginPanel extends DecoratedPopupPanel implements LoginPresenter.Di
 
 	@Override
 	public void show() {
-		//RootPanel.get().setSize("100%", "100%");
+		RootPanel.get().setSize("100%", "100%");
 		RootPanel.get().add( glassPanel, 0, 0);
 		int w = RootPanel.get().getOffsetWidth();
 		int h = RootPanel.get().getOffsetHeight();

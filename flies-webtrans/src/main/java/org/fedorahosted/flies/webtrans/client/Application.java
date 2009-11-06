@@ -27,8 +27,8 @@ public class Application implements EntryPoint{
 	public void onModuleLoad() {
 
 		final AppPresenter appPresenter = injector.getAppPresenter();
-		appPresenter.bind();
 		RootPanel.get().add( appPresenter.getDisplay().asWidget() );
+		appPresenter.bind();
 		
         // Needed because of this bug:
         // http://code.google.com/p/gwt-presenter/issues/detail?id=6
