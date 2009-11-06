@@ -14,6 +14,7 @@ import javax.xml.bind.Unmarshaller;
 import org.fedorahosted.flies.ContentType;
 import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.rest.dto.Document;
+import org.fedorahosted.flies.rest.dto.TextFlowTarget.ContentState;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -44,7 +45,7 @@ public class PropReaderTests {
 		for (String locale : locales) {
 			InputStream targetStream = getResourceAsStream("test_"+locale+".properties");
 			propReader.extractTarget(docOut, new InputSource(targetStream),
-					new LocaleId(locale));
+					new LocaleId(locale), ContentState.New);
 		}
 		JAXBContext jc = JAXBContext.newInstance(Document.class);
 //		JAXBContext jc = JAXBContext.newInstance(Document.class.getPackage()

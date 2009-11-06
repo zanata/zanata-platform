@@ -18,6 +18,7 @@ import org.fedorahosted.flies.rest.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.IDocumentsResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Documents;
+import org.fedorahosted.flies.rest.dto.TextFlowTarget.ContentState;
 import org.jboss.resteasy.client.ClientResponse;
 
 public class Props2DocsTask extends BaseTask {
@@ -29,6 +30,7 @@ public class Props2DocsTask extends BaseTask {
 	private String[] locales;
 	private String sourceLang;
 	private File srcDir;
+	private ContentState contentState = ContentState.Final;
 
 	@Override
 	public void execute() throws BuildException {
@@ -62,7 +64,7 @@ public class Props2DocsTask extends BaseTask {
 				Document doc = new Document(filename, ContentType.TextPlain);
 				doc.setLang(LocaleId.fromJavaName(sourceLang));
 				File f = new File(srcDir, filename);
-				propReader.extractAll(doc, f, locales);
+				propReader.extractAll(doc, f, locales, contentState);
 				docList.add(doc);
 			}
 			progress.finished();
@@ -109,6 +111,10 @@ public class Props2DocsTask extends BaseTask {
 
 	public void setApiKey(String apiKey) {
 		this.apiKey = apiKey;
+	}
+	
+	public void setContentState(String contentState) {
+		this.contentState = ContentState.valueOf(contentState);
 	}
 
 	public void setDebug(boolean debug) {

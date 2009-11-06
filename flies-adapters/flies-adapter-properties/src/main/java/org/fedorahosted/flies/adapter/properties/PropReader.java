@@ -34,7 +34,7 @@ public class PropReader {
 	private static final Logger log = LoggerFactory.getLogger(PropReader.class);
 
 	public void extractAll(Document doc, File basePropertiesFile,
-			String[] locales) throws IOException {
+			String[] locales, ContentState contentState) throws IOException {
 		InputStream baseInput = new BufferedInputStream(
 				new FileInputStream(basePropertiesFile));
 		try {
@@ -50,7 +50,7 @@ public class PropReader {
 				InputStream localeInput = new BufferedInputStream(new FileInputStream(localeFile));
 				try {
 					extractTarget(doc, new InputSource(localeInput), new LocaleId(
-						locale));
+						locale), contentState);
 				} finally {
 					localeInput.close();
 				}
@@ -66,7 +66,7 @@ public class PropReader {
 
 	// pre: template already extracted
 	public void extractTarget(Document doc, InputSource inputSource,
-			LocaleId localeId) throws IOException {
+			LocaleId localeId, ContentState contentState) throws IOException {
 		Map<String, TextFlow> textFlowMap = new HashMap<String, TextFlow>();
 		for (DocumentResource resource : doc.getResources(true)) {
 			if (resource instanceof TextFlow) {
@@ -91,7 +91,7 @@ public class PropReader {
 			textFlowTarget.setId(id);
 			textFlowTarget.setResourceRevision(textFlow.getRevision());
 			textFlowTarget.setLang(localeId);
-			textFlowTarget.setState(ContentState.New); // FIXME
+			textFlowTarget.setState(contentState);
 			String comment = props.getComment(key);
 			if (comment != null && comment.length() != 0)
 				textFlowTarget.getOrAddComment().setValue(comment);
