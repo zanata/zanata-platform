@@ -34,7 +34,7 @@ public class FlatFolderDocNameMapper implements TreeNodeMapper<DocumentId, DocNa
 
 	@Override
 	public boolean passFilter(DocName docName, String filter) {
-		return docName.getName().contains(filter);
+		return docName.getName().toLowerCase().contains(filter.toLowerCase());
 	}
 
 }
