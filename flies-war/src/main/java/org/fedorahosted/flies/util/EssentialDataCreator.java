@@ -15,7 +15,6 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.log.Log;
 
 /**
@@ -52,7 +51,6 @@ public class EssentialDataCreator {
 
     // Do it when the application starts (but after everything else has been loaded)
     @Observer("org.jboss.seam.postInitialization")
-    @Transactional
     public void prepare() {
         if (!prepared) {
         	boolean adminExists;
