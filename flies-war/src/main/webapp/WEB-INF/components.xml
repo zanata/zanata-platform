@@ -243,6 +243,7 @@
         <value>META-INF/testdata/AccountData.dbunit.xml</value>
         <value>META-INF/testdata/CommunitiesData.dbunit.xml</value>
         <value>META-INF/testdata/ProjectsData.dbunit.xml</value>
+        <value>META-INF/testdata/GlossaryData.dbunit.xml</value>
     </property>
   </component>
   <component name="dbunitImporterTribes" class="org.fedorahosted.flies.util.DBUnitImporter" installed="true">

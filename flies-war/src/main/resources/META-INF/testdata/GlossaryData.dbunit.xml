@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<dataset>
+  <HGlossary id="1" 
+    creationDate="2009-09-01 20:30:46"
+    lastChanged="2009-09-01 20:30:46"
+  />
+  <HConcept id="1"
+	creationDate="2009-09-01 20:30:46"
+    lastChanged="2009-09-01 20:30:46"
+    glossary_id="1"
+	term="directory"	
+	comment="Have different name in different environment"
+	desc="An entity in a file system which contains a group of files and other directories."
+  />
+  <HTermEntry id="1"
+	creationDate="2009-09-01 20:30:46"
+	lastChanged="2009-09-01 20:30:46"
+	concept_id="1"
+	localeId="zh-CN" 
+	term="目录"
+	comment=""
+  />
+</dataset>

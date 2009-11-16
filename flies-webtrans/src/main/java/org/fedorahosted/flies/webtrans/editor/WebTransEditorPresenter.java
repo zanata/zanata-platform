@@ -40,6 +40,7 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 	private final DocumentStatusPresenter documentStatusPresenter;
 	private final ProjectStatusPresenter projectStatusPresenter;
 	private final TableEditorPresenter webTransTablePresenter;
+	private final ToolBoxPresenter toolBoxPresenter;
 	private final Pager pager;
 	private final DispatchAsync dispatcher;
 
@@ -48,6 +49,7 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 		HasThreeColWidgets getHeader();
 		HasThreeColWidgets getFooter();
 		void setEditor(Widget widget);
+		void setToolBox(Widget toolbox);
 		void setStatus(String status);
 	}
 
@@ -56,6 +58,7 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 			final CachingDispatchAsync dispatcher,
 			final TableEditorPresenter webTransTablePresenter,
 			final DocumentStatusPresenter documentStatsBarPresenter,
+			final ToolBoxPresenter toolBoxPresenter,
 			final ProjectStatusPresenter projectStatusPresenter) {
 		super(display, eventBus);
 		this.dispatcher = dispatcher;
@@ -63,6 +66,7 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 		this.pager = new Pager();
 		this.documentStatusPresenter = documentStatsBarPresenter;
 		this.projectStatusPresenter = projectStatusPresenter;
+		this.toolBoxPresenter = toolBoxPresenter;
 	}
 
 	@Override
@@ -75,7 +79,8 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 		webTransTablePresenter.bind();
 		projectStatusPresenter.bind();
 		documentStatusPresenter.bind();
-        
+		toolBoxPresenter.bind();
+        display.setToolBox(toolBoxPresenter.getDisplay().asWidget());
         display.getFooter().setMiddleWidget(pager);
         pager.setVisible(false);
 

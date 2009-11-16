@@ -6,6 +6,7 @@ import org.fedorahosted.flies.webtrans.client.ui.Pager;
 import com.google.gwt.gen2.table.client.MutableTableModel;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.DecoratorPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -18,8 +19,10 @@ public class WebTransEditorView extends DecoratorPanel implements WebTransEditor
 	private final Label statusLabel;
 	
 	private Widget editor;
-
+	private Widget toolbox;
+	
 	private final VerticalPanel mainPanel;
+	private final FlowPanel editorPanel;
 	
 	public WebTransEditorView() {
 		addStyleName("WebTransEditor-Outer");
@@ -30,9 +33,14 @@ public class WebTransEditorView extends DecoratorPanel implements WebTransEditor
 		mainPanel.addStyleName("WebTransEditor");
 		mainPanel.add(header);
 		mainPanel.setCellHeight(header, "20px");
-		
+
+		editorPanel = new FlowPanel();
+		editorPanel.setStyleName("WebTransEditor-Editor");
+		mainPanel.add(editorPanel);
 		editor = new Label("editor");
-		mainPanel.add(editor);
+		editorPanel.add(editor);
+		toolbox = new Label("toolbox");
+		editorPanel.add(toolbox);
 		
 		mainPanel.add(footer);
 		mainPanel.setCellHeight(footer, "20px");
@@ -63,8 +71,8 @@ public class WebTransEditorView extends DecoratorPanel implements WebTransEditor
 	@Override
 	public void setEditor(Widget editor) {
 		this.editor = editor;
-		mainPanel.remove(1);
-		mainPanel.insert(editor, 1);
+		editorPanel.remove(0);
+		editorPanel.insert(editor, 0);
 	}
 
 	@Override
@@ -80,5 +88,13 @@ public class WebTransEditorView extends DecoratorPanel implements WebTransEditor
 	@Override
 	public void setStatus(String status) {
 		statusLabel.setText(status);
+	}
+
+	@Override
+	public void setToolBox(Widget toolbox) {
+		this.toolbox = toolbox;
+		editorPanel.remove(1);
+		editorPanel.insert(toolbox, 1);
+		
 	}
 }

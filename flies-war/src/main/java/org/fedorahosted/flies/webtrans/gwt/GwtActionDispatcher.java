@@ -45,6 +45,7 @@ public class GwtActionDispatcher {
 		actionHandlerRegistry.addHandler(new GetProjectStatusCountHandler());
 		actionHandlerRegistry.addHandler(new GetTranslatorListHandler());
 		actionHandlerRegistry.addHandler(new GetEventsActionHandler());
+		actionHandlerRegistry.addHandler(new GetGlossaryConceptHandler());
 	}
 
 	public Result execute(final Action<? extends Result> action)
