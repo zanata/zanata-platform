@@ -1,5 +1,6 @@
 <module>
   <inherits name="com.google.gwt.user.User"/>
+  <inherits name="org.fedorahosted.flies.gwt.Common"/>
   <source path="common"/>
   <source path="model"/>
   <source path="rpc"/>
