@@ -39,11 +39,11 @@ public class AuthenticateHandler implements ActionHandler<AuthenticateAction, Au
 		if(!Identity.instance().isLoggedIn()) {
 			Identity.instance().getCredentials().setUsername(action.getUsername());
 			Identity.instance().getCredentials().setPassword(action.getPassword());
-			Identity.instance().tryLogin();
-		}
-		
-		if(Identity.instance().isLoggedIn()) {
 			
+		}
+		String loggedIn = Identity.instance().login();
+		
+		if("loggedIn".equals(loggedIn)) {
 			SessionId sessionId = retrieveSessionId();
 			Person person = retrievePerson();
 			
@@ -51,9 +51,10 @@ public class AuthenticateHandler implements ActionHandler<AuthenticateAction, Au
 			
 			return new AuthenticateResult(sessionId, person);
 		}
-		else {
+		else{
 			return AuthenticateResult.FAILED;
 		}
+		
 	}
 	
 	public static SessionId retrieveSessionId() {

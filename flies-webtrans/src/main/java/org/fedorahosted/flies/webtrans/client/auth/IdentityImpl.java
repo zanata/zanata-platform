@@ -86,8 +86,14 @@ public class IdentityImpl implements Identity {
 			
 			@Override
 			public void onSuccess(AuthenticateResult result) {
-				storeLogin(result.getSessionId(), result.getPerson());
-				callback.onSuccess();
+				if(result.isSuccess()) {
+					storeLogin(result.getSessionId(), result.getPerson());
+					callback.onSuccess();
+				}
+				else{
+					invalidateQuiet();
+					callback.onFailure();
+				}
 			}
 			
 			@Override
