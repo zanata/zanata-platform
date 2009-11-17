@@ -2,7 +2,8 @@ package org.fedorahosted.flies.gwt.model;
 
 import java.io.Serializable;
 
-import org.fedorahosted.flies.gwt.rpc.TransUnitStatus;
+import org.fedorahosted.flies.common.ContentState;
+
 
 public class DocumentStatus implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -35,7 +36,7 @@ public class DocumentStatus implements Serializable{
 		return translated;
 	}
 	
-	public long getStatus(TransUnitStatus status) {
+	public long getStatus(ContentState status) {
 		switch(status) {
 		case Approved:
 			return translated;
@@ -47,7 +48,7 @@ public class DocumentStatus implements Serializable{
 		throw new RuntimeException("missing enum in switch statement");
 	}
 	
-	public void setStatus(TransUnitStatus status, long value) {
+	public void setStatus(ContentState status, long value) {
 		switch(status) {
 		case Approved:
 			translated = value;

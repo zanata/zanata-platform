@@ -1,7 +1,7 @@
 package org.fedorahosted.flies.webtrans.editor.filter;
 
+import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.gwt.model.TransUnit;
-import org.fedorahosted.flies.gwt.rpc.TransUnitStatus;
 
 public class FuzzyFilter implements ContentFilter<TransUnit>{
 	private final boolean fuzzy;
@@ -12,7 +12,7 @@ public class FuzzyFilter implements ContentFilter<TransUnit>{
 	
 	@Override
 	public boolean accept(TransUnit value) {
-		return value.getStatus() == TransUnitStatus.NeedReview;
+		return value.getStatus() == ContentState.NeedReview;
 	}
 
 	private static final FuzzyFilter FUZZY = new FuzzyFilter(true);

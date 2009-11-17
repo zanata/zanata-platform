@@ -1,7 +1,7 @@
 package org.fedorahosted.flies.webtrans.editor.table;
 
+import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.gwt.model.TransUnit;
-import org.fedorahosted.flies.gwt.rpc.TransUnitStatus;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
@@ -194,7 +194,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 		textArea.setText(cellValue.getTarget());
 		this.cellValue = cellValue;
 		textArea.setFocus(true);
-		toggleFuzzy.setDown(cellValue.getStatus() == TransUnitStatus.NeedReview);
+		toggleFuzzy.setDown(cellValue.getStatus() == ContentState.NeedReview);
 		
 	}
 
@@ -207,7 +207,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 			return;
 		}
 		cellValue.setTarget(textArea.getText());
-		cellValue.setStatus(toggleFuzzy.isDown() ? TransUnitStatus.NeedReview : TransUnitStatus.Approved );
+		cellValue.setStatus(toggleFuzzy.isDown() ? ContentState.NeedReview : ContentState.Approved );
 		restoreView();
 		
 		// Send the new cell value to the callback

@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.gwt.rpc;
 
+import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.gwt.model.TransUnitId;
 
@@ -14,17 +15,17 @@ public class UpdateTransUnit implements Action<UpdateTransUnitResult> {
 	private TransUnitId transUnitId;
 	private String content;
 	private LocaleId localeId;
-	private TransUnitStatus status;
+	private ContentState contentState;
 	
 	@SuppressWarnings("unused")
 	private UpdateTransUnit() {
 	}
 	
-	public UpdateTransUnit(TransUnitId transUnitId, LocaleId localeId, String content, TransUnitStatus status) {
+	public UpdateTransUnit(TransUnitId transUnitId, LocaleId localeId, String content, ContentState contentState) {
 		this.transUnitId = transUnitId;
 		this.localeId = localeId;
 		this.content = content;
-		this.status = status;
+		this.contentState = contentState;
 	}
 	
 	public String getContent() {
@@ -39,8 +40,7 @@ public class UpdateTransUnit implements Action<UpdateTransUnitResult> {
 		return localeId;
 	}
 
-	public TransUnitStatus getStatus() {
-		return status;
+	public ContentState getContentState() {
+		return contentState;
 	}
-
 }

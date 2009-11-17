@@ -6,6 +6,8 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.fedorahosted.flies.common.Namespaces;
+
 @XmlRootElement(name="simple-comments", namespace=Namespaces.FLIES)
 public class SimpleComments {
 

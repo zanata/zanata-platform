@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.gwt.rpc;
 
+import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.TransUnitId;
 
@@ -7,9 +8,9 @@ public interface HasTransUnitUpdatedData {
 
 	DocumentId getDocumentId();
 
-	TransUnitStatus getNewStatus();
+	ContentState getNewStatus();
 
-	TransUnitStatus getPreviousStatus();
+	ContentState getPreviousStatus();
 
 	TransUnitId getTransUnitId();
 

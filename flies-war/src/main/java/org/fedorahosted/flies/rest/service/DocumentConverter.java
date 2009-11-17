@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.core.dao.ResourceDAO;
 import org.fedorahosted.flies.core.dao.TextFlowTargetDAO;
 import org.fedorahosted.flies.repository.model.HContainer;
@@ -32,7 +33,6 @@ import org.fedorahosted.flies.rest.dto.SimpleComment;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.TextFlowTargets;
-import org.fedorahosted.flies.rest.dto.TextFlowTarget.ContentState;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -294,7 +294,7 @@ public class DocumentConverter {
 			// make sure to set the status of any targets to NeedReview
 			for(HTextFlowTarget target :hTextFlow.getTargets().values()){
 				// TODO not sure if this is the correct state
-				target.setState(ContentState.ForReview);
+				target.setState(ContentState.NeedReview);
 			}
 			
 			hTextFlow.setRevision(newRevision);

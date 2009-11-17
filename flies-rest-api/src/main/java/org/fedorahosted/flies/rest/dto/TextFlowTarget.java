@@ -6,14 +6,14 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.common.Namespaces;
 
 
 @XmlType(name="textFlowTargetType", namespace=Namespaces.FLIES, propOrder={"content", "extensions"})
@@ -25,15 +25,6 @@ public class TextFlowTarget implements IExtensible{
 	
 	private LocaleId lang;
 	private List<Object> extensions;
-	
-	@XmlEnum(String.class)
-	@XmlType(name="contentStateType", namespace=Namespaces.FLIES)
-	public static enum ContentState{
-		@XmlEnumValue("new") New,
-		@XmlEnumValue("leveraged") Leveraged,
-		@XmlEnumValue("for-review") ForReview,
-		@XmlEnumValue("approved") Final
-	}
 	
 	private String id;
 	private Integer resourceRevision;

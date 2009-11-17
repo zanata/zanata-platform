@@ -2,8 +2,8 @@ package org.fedorahosted.flies.gwt.model;
 
 import java.io.Serializable;
 
+import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.gwt.rpc.TransUnitStatus;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -11,7 +11,7 @@ public class TransUnit implements IsSerializable, Serializable{
 	
 	private static final long serialVersionUID = -8247442475446266600L;
 
-	private TransUnitStatus status;
+	private ContentState status;
 	
 	private TransUnitId id;
 	
@@ -30,7 +30,7 @@ public class TransUnit implements IsSerializable, Serializable{
 		this.source = "";
 		this.target = "";
 	}
-	public TransUnit(TransUnitId id, LocaleId localeId, String source, String target, TransUnitStatus status) {
+	public TransUnit(TransUnitId id, LocaleId localeId, String source, String target, ContentState status) {
 		this.id = id;
 		this.localeId = localeId;
 		this.source = source;
@@ -62,11 +62,11 @@ public class TransUnit implements IsSerializable, Serializable{
 		this.target = target;
 	}
 
-	public TransUnitStatus getStatus() {
+	public ContentState getStatus() {
 		return status;
 	}
 	
-	public void setStatus(TransUnitStatus status) {
+	public void setStatus(ContentState status) {
 		this.status = status;
 	}
 

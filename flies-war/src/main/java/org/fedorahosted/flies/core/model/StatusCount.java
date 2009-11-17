@@ -1,6 +1,6 @@
 package org.fedorahosted.flies.core.model;
 
-import org.fedorahosted.flies.rest.dto.TextFlowTarget.ContentState;
+import org.fedorahosted.flies.common.ContentState;
 
 public class StatusCount{
 		public final ContentState status;

@@ -1,9 +1,9 @@
 package org.fedorahosted.flies.webtrans.client.events;
 
+import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.TransUnitId;
 import org.fedorahosted.flies.gwt.rpc.HasTransUnitUpdatedData;
-import org.fedorahosted.flies.gwt.rpc.TransUnitStatus;
 import org.fedorahosted.flies.gwt.rpc.TransUnitUpdated;
 
 import com.google.gwt.event.shared.GwtEvent;
@@ -12,8 +12,8 @@ public class TransUnitUpdatedEvent extends SequenceEvent<TransUnitUpdatedEventHa
 
 	private final TransUnitId transUnitId;
 	private final DocumentId documentId;
-	private final TransUnitStatus previousStatus;
-	private final TransUnitStatus newStatus;
+	private final ContentState previousStatus;
+	private final ContentState newStatus;
 	
 	/**
 	 * Handler type.
@@ -56,12 +56,12 @@ public class TransUnitUpdatedEvent extends SequenceEvent<TransUnitUpdatedEventHa
 	}
 
 	@Override
-	public TransUnitStatus getNewStatus() {
+	public ContentState getNewStatus() {
 		return newStatus;
 	};
 	
 	@Override
-	public TransUnitStatus getPreviousStatus() {
+	public ContentState getPreviousStatus() {
 		return previousStatus;
 	}
 	

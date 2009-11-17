@@ -13,6 +13,7 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.gwt.model.DocName;
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.DocumentStatus;
@@ -21,7 +22,6 @@ import org.fedorahosted.flies.gwt.rpc.GetDocsList;
 import org.fedorahosted.flies.gwt.rpc.GetDocsListResult;
 import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCount;
 import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCountResult;
-import org.fedorahosted.flies.gwt.rpc.TransUnitStatus;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent.Severity;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
@@ -94,7 +94,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 				}
 
 				DocumentStatus doc = statuscache.get(event.getDocumentId());
-				TransUnitStatus status = event.getPreviousStatus();
+				ContentState status = event.getPreviousStatus();
 				doc.setStatus(status, doc.getStatus(status)-1);
 				status = event.getNewStatus();
 				doc.setStatus(status, doc.getStatus(status)+1);

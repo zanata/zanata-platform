@@ -61,7 +61,7 @@ public class GetProjectStatusCountHandler implements ActionHandler<GetProjectSta
 								
 				TranslationStatistics stat = documentDAO.getStatistics(docId.getValue(), action.getLocaleId() );
 				
-				DocumentStatus docstatus = new DocumentStatus(docId, stat.getNew(),stat.getFuzzyMatch()+stat.getForReview(), stat.getApproved());
+				DocumentStatus docstatus = new DocumentStatus(docId, stat.getNew(),stat.getNeedReview(), stat.getApproved());
 				docliststatus.add(docstatus);
 			}
 						

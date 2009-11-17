@@ -4,12 +4,12 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.core.model.StatusCount;
 import org.fedorahosted.flies.repository.util.TranslationStatistics;
-import org.fedorahosted.flies.rest.dto.TextFlowTarget.ContentState;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.AutoCreate;

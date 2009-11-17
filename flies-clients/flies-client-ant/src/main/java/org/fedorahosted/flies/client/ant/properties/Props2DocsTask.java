@@ -11,6 +11,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.types.selectors.FileSelector;
 import org.fedorahosted.flies.adapter.properties.PropReader;
+import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.rest.ClientUtility;
@@ -18,7 +19,6 @@ import org.fedorahosted.flies.rest.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.IDocumentsResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Documents;
-import org.fedorahosted.flies.rest.dto.TextFlowTarget.ContentState;
 import org.jboss.resteasy.client.ClientResponse;
 
 public class Props2DocsTask extends BaseTask {
@@ -30,7 +30,7 @@ public class Props2DocsTask extends BaseTask {
 	private String[] locales;
 	private String sourceLang;
 	private File srcDir;
-	private ContentState contentState = ContentState.Final;
+	private ContentState contentState = ContentState.Approved;
 
 	@Override
 	public void execute() throws BuildException {

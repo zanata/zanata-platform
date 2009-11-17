@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.common.Namespaces;
 
 /**
  * Represents a list of target-language translations for a single TextFlow

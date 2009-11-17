@@ -9,6 +9,8 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.fedorahosted.flies.common.Namespaces;
+
 @XmlType(name="abstractBaseResource", namespace=Namespaces.FLIES, propOrder={"links"})
 public abstract class AbstractBaseResource {
 	

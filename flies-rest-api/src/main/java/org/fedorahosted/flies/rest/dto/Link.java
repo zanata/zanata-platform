@@ -6,6 +6,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.fedorahosted.flies.common.Namespaces;
+
 @XmlType(name="linkType", namespace=Namespaces.FLIES)
 @XmlRootElement(name="link", namespace=Namespaces.FLIES)
 public class Link {

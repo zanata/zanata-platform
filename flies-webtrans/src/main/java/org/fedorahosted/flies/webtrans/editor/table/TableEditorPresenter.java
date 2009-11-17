@@ -12,7 +12,6 @@ import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnitsResult;
-import org.fedorahosted.flies.gwt.rpc.TransUnitStatus;
 import org.fedorahosted.flies.gwt.rpc.UpdateTransUnit;
 import org.fedorahosted.flies.gwt.rpc.UpdateTransUnitResult;
 import org.fedorahosted.flies.webtrans.client.DocumentSelectionEvent;

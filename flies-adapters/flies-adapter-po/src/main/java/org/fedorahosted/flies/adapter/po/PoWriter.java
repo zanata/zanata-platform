@@ -12,8 +12,8 @@ import java.nio.charset.Charset;
 
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.common.LocaleOutputSourcePair;
-import org.fedorahosted.flies.common.OutputSource;
+import org.fedorahosted.flies.resources.LocaleOutputSourcePair;
+import org.fedorahosted.flies.resources.OutputSource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.DocumentResource;
 import org.fedorahosted.flies.rest.dto.SimpleComment;
@@ -133,11 +133,10 @@ public class PoWriter {
 			}
 			
 			switch(contentData.getState()){
-			case Final:
+			case Approved:
 				message.setFuzzy(false);
 				break;
-			case ForReview:
-			case Leveraged:
+			case NeedReview:
 			case New:
 				message.setFuzzy(true);
 				break;

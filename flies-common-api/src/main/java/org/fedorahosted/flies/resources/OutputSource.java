@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.common;
+package org.fedorahosted.flies.resources;
 
 import java.io.File;
 import java.io.OutputStream;

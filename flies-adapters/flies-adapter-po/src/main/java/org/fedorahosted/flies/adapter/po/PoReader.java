@@ -10,16 +10,16 @@ import java.util.List;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.StringUtils;
+import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.common.LocaleInputSourcePair;
+import org.fedorahosted.flies.resources.LocaleInputSourcePair;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.DocumentResource;
 import org.fedorahosted.flies.rest.dto.SimpleComment;
 import org.fedorahosted.flies.rest.dto.SimpleComments;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
-import org.fedorahosted.flies.rest.dto.TextFlowTarget.ContentState;
 import org.fedorahosted.flies.rest.dto.po.HeaderEntry;
 import org.fedorahosted.flies.rest.dto.po.PoHeader;
 import org.fedorahosted.flies.rest.dto.po.PoTargetHeader;
@@ -314,9 +314,9 @@ public class PoReader {
 		if(message.getMsgstr() == null || message.getMsgstr().isEmpty())
 			return ContentState.New;
 		else if(message.isFuzzy())
-			return ContentState.Leveraged;
+			return ContentState.NeedReview;
 		else
-			return ContentState.Final;
+			return ContentState.Approved;
 	}
 
 	private static String createId(Message message){

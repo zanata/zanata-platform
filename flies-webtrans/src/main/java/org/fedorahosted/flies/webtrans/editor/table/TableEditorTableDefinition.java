@@ -1,7 +1,6 @@
 package org.fedorahosted.flies.webtrans.editor.table;
 
 import org.fedorahosted.flies.gwt.model.TransUnit;
-import org.fedorahosted.flies.gwt.rpc.TransUnitStatus;
 import org.fedorahosted.flies.webtrans.client.mvp.TextAreaCellEditor;
 import org.fedorahosted.flies.webtrans.editor.filter.ContentFilter;
 

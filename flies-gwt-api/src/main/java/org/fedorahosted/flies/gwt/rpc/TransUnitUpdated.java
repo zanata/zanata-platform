@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.gwt.rpc;
 
+import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.TransUnitId;
 
@@ -9,14 +10,14 @@ public class TransUnitUpdated implements SessionEventData, HasTransUnitUpdatedDa
 
 	private TransUnitId transUnitId;
 	private DocumentId documentId;
-	private TransUnitStatus previousStatus;
-	private TransUnitStatus newStatus;
+	private ContentState previousStatus;
+	private ContentState newStatus;
 	
 	@SuppressWarnings("unused")
 	private TransUnitUpdated() {
 	}
 	
-	public TransUnitUpdated(DocumentId documentId, TransUnitId transUnitId, TransUnitStatus previousStatus, TransUnitStatus newStatus) {
+	public TransUnitUpdated(DocumentId documentId, TransUnitId transUnitId, ContentState previousStatus, ContentState newStatus) {
 		this.documentId = documentId;
 		this.transUnitId = transUnitId;
 		this.previousStatus = previousStatus;
@@ -29,12 +30,12 @@ public class TransUnitUpdated implements SessionEventData, HasTransUnitUpdatedDa
 	}
 	
 	@Override
-	public TransUnitStatus getNewStatus() {
+	public ContentState getNewStatus() {
 		return newStatus;
 	}
 	
 	@Override
-	public TransUnitStatus getPreviousStatus() {
+	public ContentState getPreviousStatus() {
 		return previousStatus;
 	}
 	

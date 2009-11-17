@@ -15,6 +15,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.common.Namespaces;
 import org.fedorahosted.flies.rest.dto.po.HeaderEntry;
 import org.fedorahosted.flies.rest.dto.po.PoHeader;
 import org.fedorahosted.flies.rest.dto.po.PoTargetHeader;

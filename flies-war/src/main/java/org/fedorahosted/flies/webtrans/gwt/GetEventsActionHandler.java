@@ -10,7 +10,6 @@ import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.gwt.rpc.GetEventsAction;
 import org.fedorahosted.flies.gwt.rpc.GetEventsResult;
 import org.fedorahosted.flies.repository.util.TranslationStatistics;
-import org.fedorahosted.flies.rest.dto.TextFlowTarget.ContentState;
 import org.fedorahosted.flies.webtrans.TranslationWorkspace;
 import org.fedorahosted.flies.webtrans.TranslationWorkspaceManager;
 import org.hibernate.Session;

@@ -1,4 +1,6 @@
-package org.fedorahosted.flies.common;
+package org.fedorahosted.flies.resources;
+
+import org.fedorahosted.flies.common.LocaleId;
 
 
 

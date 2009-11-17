@@ -1,12 +1,11 @@
 package org.fedorahosted.flies.repository.util;
 
-import org.fedorahosted.flies.rest.dto.TextFlowTarget.ContentState;
+import org.fedorahosted.flies.common.ContentState;
 
 public class TranslationStatistics {
 
 	private long approved;
-	private long forReview;
-	private long fuzzyMatch;
+	private long needReview;
 	private long statNew;
 
 	public TranslationStatistics() {
@@ -15,14 +14,11 @@ public class TranslationStatistics {
 	
 	public void set(ContentState status, long count){
 		switch(status){
-		case Final:
+		case Approved:
 			approved = count;
 			break;
-		case ForReview:
-			forReview = count;
-			break;
-		case Leveraged:
-			fuzzyMatch = count;
+		case NeedReview:
+			needReview = count;
 			break;
 		case New:
 			statNew = count;
@@ -30,22 +26,18 @@ public class TranslationStatistics {
 		}
 	}
 	
-	public TranslationStatistics(Long approved, Long forReview, Long fuzzyMatch,
-			Long statNew) {
+	public TranslationStatistics(Long approved, Long needReview, Long statNew) {
 		this.approved = approved;
-		this.forReview = forReview;
-		this.fuzzyMatch = fuzzyMatch;
+		this.needReview = needReview;
 		this.statNew = statNew;
 	}
 
 	public long get(ContentState status) {
 		switch (status) {
-		case Final:
+		case Approved:
 			return getApproved();
-		case ForReview:
-			return getForReview();
-		case Leveraged:
-			return getFuzzyMatch();
+		case NeedReview:
+			return getNeedReview();
 		case New:
 		default:
 			return getNew();
@@ -53,23 +45,19 @@ public class TranslationStatistics {
 	}
 
 	public long getTotal() {
-		return approved + forReview + fuzzyMatch + statNew;
+		return approved + needReview + statNew;
 	}
 
 	public long getNotApproved() {
-		return forReview + fuzzyMatch + statNew;
+		return needReview + statNew;
 	}
 
 	public long getApproved() {
 		return approved;
 	}
 
-	public long getForReview() {
-		return forReview;
-	}
-
-	public long getFuzzyMatch() {
-		return fuzzyMatch;
+	public long getNeedReview() {
+		return needReview;
 	}
 
 	public long getNew() {
@@ -78,7 +66,6 @@ public class TranslationStatistics {
 
 	@Override
 	public String toString() {
-		return "{a:" + approved + ",r:" + forReview + ",f:" + fuzzyMatch
-				+ ",n:" + statNew + "}";
+		return "{a:" + approved + ",r:" + needReview + ",n:" + statNew + "}";
 	}
 }

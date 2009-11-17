@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.common.Namespaces;
 
 
 @XmlType(name="textFlowType", namespace=Namespaces.FLIES, propOrder={"content", "extensions"})
