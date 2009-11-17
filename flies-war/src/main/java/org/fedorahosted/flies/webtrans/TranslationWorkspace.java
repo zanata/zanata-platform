@@ -18,6 +18,7 @@ import org.fedorahosted.flies.gwt.auth.SessionId;
 import org.fedorahosted.flies.gwt.model.PersonId;
 import org.fedorahosted.flies.gwt.rpc.SessionEvent;
 import org.fedorahosted.flies.gwt.rpc.SessionEventData;
+import org.jboss.seam.core.Events;
 import org.richfaces.model.LastElementAware;
 
 import com.google.common.collect.Collections2;
@@ -27,33 +28,29 @@ import com.google.common.collect.MapMaker;
 
 public class TranslationWorkspace {
 	
-	private final LocaleId locale;
-	private final Long projectContainerId;
+	private static final String EVENT_TRANSLATOR_ENTER_WORKSPACE = "webtrans.TranslatorEnterWorkspace"; 
+
+	private final WorkspaceKey workspaceKey;
 	
 	private final ConcurrentMap<SessionId, PersonId> sessions = new MapMaker().makeMap();
 	
 	private final Deque<SessionEvent<?>> events = new ArrayDeque<SessionEvent<?>>();
 	
-	//private final ConcurrentLinkedQueue<SessionEvent<?>> events = 
-	//	new ConcurrentLinkedQueue<SessionEvent<?>>();
 	private int sequence;
 	
 	
-	public TranslationWorkspace(Long projectContainerId, LocaleId locale) {
-		if(projectContainerId == null)
-			throw new IllegalArgumentException("projectId");
-		if(locale == null)
-			throw new IllegalArgumentException("locale");
-		this.locale = locale;
-		this.projectContainerId = projectContainerId;
+	public TranslationWorkspace(WorkspaceKey workspaceKey) {
+		if(workspaceKey == null)
+			throw new IllegalArgumentException("workspaceKey");
+		this.workspaceKey = workspaceKey;
 	}
 	
 	public LocaleId getLocale() {
-		return locale;
+		return workspaceKey.getLocaleId();
 	}
 
 	public Long getProjectContainerId() {
-		return projectContainerId;
+		return workspaceKey.getProjectContainerId();
 	}
 	
 	public ImmutableSet<SessionId> getSessions(){
@@ -69,7 +66,8 @@ public class TranslationWorkspace {
 	}
 	
 	public void registerTranslator(SessionId sessionId, PersonId personId){
-		sessions.putIfAbsent(sessionId, personId);
+		PersonId pId = sessions.putIfAbsent(sessionId, personId);
+		if(pId == null && Events.exists()) Events.instance().raiseEvent(EVENT_TRANSLATOR_ENTER_WORKSPACE, workspaceKey, personId);
 	}
 
 	public <T extends SessionEventData> SessionEvent<T> publish(T eventData) {
@@ -101,15 +99,13 @@ public class TranslationWorkspace {
 		if(obj == null) return false;
 		if( !(obj instanceof TranslationWorkspace) ) return false;
 		TranslationWorkspace other = (TranslationWorkspace) obj;
-		return ( other.locale.equals(locale) 
-				&& other.projectContainerId.equals(projectContainerId));
+		return other.workspaceKey.equals(workspaceKey);
 	}
 	
 	@Override
 	public int hashCode() {
 	    int hash = 1;
-	    hash = hash * 31 + locale.hashCode();
-	    hash = hash * 31 + projectContainerId.hashCode();
+	    hash = hash * 31 + workspaceKey.hashCode();
 	    return hash;
 	}
 }

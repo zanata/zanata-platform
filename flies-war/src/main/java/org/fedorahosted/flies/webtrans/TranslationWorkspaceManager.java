@@ -10,6 +10,7 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
 
 import com.google.common.collect.HashMultimap;
@@ -21,6 +22,8 @@ import com.google.common.collect.Multimaps;
 @Name("translationWorkspaceManager")
 public class TranslationWorkspaceManager {
 
+	public static final String EVENT_WORKSPACE_CREATED = "webtrans.WorkspaceCreated";
+	
 	@Logger
 	private Log log;
 
@@ -65,12 +68,13 @@ public class TranslationWorkspaceManager {
 	public TranslationWorkspace getOrRegisterWorkspace(WorkspaceKey workspaceKey) {
 		TranslationWorkspace workspace = workspaceMap.get(workspaceKey);
 		if(workspace == null){
-			workspace = new TranslationWorkspace(workspaceKey.getProjectContainerId(), workspaceKey.getLocaleId());
+			workspace = new TranslationWorkspace(workspaceKey);
 			TranslationWorkspace prev = workspaceMap.putIfAbsent(workspaceKey, workspace);
 			
 			if(prev == null){
 				projectIterationLocaleMap.put(workspaceKey.getProjectContainerId(), workspaceKey.getLocaleId());
 				localeWorkspaceMap.put(workspaceKey.getLocaleId(), workspace);
+				if(Events.exists()) Events.instance().raiseEvent(EVENT_WORKSPACE_CREATED, workspaceKey);
 			}
 			
 			return prev == null ? workspace : prev;
