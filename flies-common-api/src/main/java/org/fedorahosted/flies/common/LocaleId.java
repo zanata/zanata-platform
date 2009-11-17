@@ -6,7 +6,7 @@ public final class LocaleId implements Serializable{
 
 	private static final long serialVersionUID = -7977805381672178179L;
 
-	private final String id;
+	private String id;
 	// TODO split up to language code, country code, qualifier etc..
 
 	public static final LocaleId EN = new LocaleId("en");

@@ -37,7 +37,7 @@ public class GetEventsActionHandler implements ActionHandler<GetEventsAction, Ge
 
 		TranslationWorkspace translationWorkspace = 
 			translationWorkspaceManager.getOrRegisterWorkspace(action.getProjectContainerId(), 
-					new LocaleId(action.getLocaleId().getValue()));
+					action.getLocaleId());
 		
 		return new GetEventsResult( translationWorkspace.getEventsSince(action.getOffset()));
 	}

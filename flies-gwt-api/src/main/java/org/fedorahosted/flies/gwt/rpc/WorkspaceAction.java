@@ -1,6 +1,6 @@
 package org.fedorahosted.flies.gwt.rpc;
 
-import org.fedorahosted.flies.gwt.model.LocaleId;
+import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 
 import net.customware.gwt.dispatch.shared.Action;

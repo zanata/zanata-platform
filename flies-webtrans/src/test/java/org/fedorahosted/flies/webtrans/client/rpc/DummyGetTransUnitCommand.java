@@ -6,7 +6,7 @@ package org.fedorahosted.flies.webtrans.client.rpc;
 import java.util.ArrayList;
 
 import org.fedorahosted.flies.gwt.model.DocumentId;
-import org.fedorahosted.flies.gwt.model.LocaleId;
+import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.gwt.model.TransUnitId;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnits;

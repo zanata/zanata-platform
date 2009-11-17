@@ -49,8 +49,6 @@ public class GetGlossaryConceptHandler implements ActionHandler<GetGlossaryConce
 			
 			FliesIdentity.instance().checkLoggedIn();
 			
-			LocaleId fliesLocaleId = new LocaleId(action.getLocaleId().getValue());		
-			
 			List<HTermEntry> entries = session.createQuery(
 					"select e "+
 					"from HTermEntry e "+
@@ -58,7 +56,7 @@ public class GetGlossaryConceptHandler implements ActionHandler<GetGlossaryConce
 			        "  and e.localeId =:localeId "+
 			        "  and e.concept.glossary.id =:glossaryId"
 				).setParameter("term", action.getTerm())
-				 .setParameter("localeId", action.getLocaleId().getValue())
+				 .setParameter("localeId", action.getLocaleId())
 				 .setParameter("glossaryId", action.getGlossaryId()).list();
 			
 			

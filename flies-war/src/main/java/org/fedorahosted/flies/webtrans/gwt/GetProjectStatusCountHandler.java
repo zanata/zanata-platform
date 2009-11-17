@@ -50,8 +50,6 @@ public class GetProjectStatusCountHandler implements ActionHandler<GetProjectSta
 			
 			FliesIdentity.instance().checkLoggedIn();
 			
-			LocaleId fliesLocaleId = new LocaleId(action.getLocaleId().getValue());		
-			
 			ProjectContainerId containerId = action.getProjectContainerId();
 			log.info("Fetching Docs List for {0}", containerId);
 			ArrayList<DocumentStatus> docliststatus = new ArrayList<DocumentStatus>(); 
@@ -61,13 +59,13 @@ public class GetProjectStatusCountHandler implements ActionHandler<GetProjectSta
 			for (HDocument hDoc : hDocs) {
 				DocumentId docId = new DocumentId(hDoc.getId());
 								
-				TranslationStatistics stat = documentDAO.getStatistics(docId.getValue(), fliesLocaleId);
+				TranslationStatistics stat = documentDAO.getStatistics(docId.getValue(), action.getLocaleId() );
 				
 				DocumentStatus docstatus = new DocumentStatus(docId, stat.getNew(),stat.getFuzzyMatch()+stat.getForReview(), stat.getApproved());
 				docliststatus.add(docstatus);
 			}
 						
-			TranslationWorkspace workspace = translationWorkspaceManager.getWorkspace(action.getProjectContainerId().getId(), fliesLocaleId);
+			TranslationWorkspace workspace = translationWorkspaceManager.getWorkspace(action.getProjectContainerId().getId(), action.getLocaleId() );
 			
 			return new GetProjectStatusCountResult(action.getProjectContainerId(), docliststatus, workspace.getSequence());
 

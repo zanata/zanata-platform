@@ -8,7 +8,6 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.fedorahosted.flies.FliesInit;
-import org.fedorahosted.flies.gwt.model.LocaleId;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.gwt.model.TransUnitId;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
@@ -49,8 +48,6 @@ public class GetTransUnitsHandler implements ActionHandler<GetTransUnits, GetTra
 		
 		log.info("Fetching Transunits for {0}", action.getDocumentId());
 		
-		org.fedorahosted.flies.common.LocaleId fliesLocaleId = new org.fedorahosted.flies.common.LocaleId(action.getLocaleId().getValue());
-		
 		Query query = session.createQuery(
 			"from HTextFlow tf where tf.document.id = :id")
 			.setParameter("id", action.getDocumentId().getValue());
@@ -65,7 +62,7 @@ public class GetTransUnitsHandler implements ActionHandler<GetTransUnits, GetTra
 		ArrayList<TransUnit> units = new ArrayList<TransUnit>();
 		for(HTextFlow textFlow : textFlows) {
 			TransUnit tu = new TransUnit(new TransUnitId(textFlow.getId()), action.getLocaleId(), textFlow.getContent(), "", TransUnitStatus.New);
-			HTextFlowTarget target = textFlow.getTargets().get(fliesLocaleId);
+			HTextFlowTarget target = textFlow.getTargets().get(action.getLocaleId());
 			if(target != null) {
 				tu.setTarget(target.getContent());
 				tu.setStatus( toStatus(target.getState()) );

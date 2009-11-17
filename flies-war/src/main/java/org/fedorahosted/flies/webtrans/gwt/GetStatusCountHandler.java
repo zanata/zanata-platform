@@ -39,15 +39,13 @@ public class GetStatusCountHandler implements ActionHandler<GetStatusCount, GetS
 		
 		FliesIdentity.instance().checkLoggedIn();
 		
-		org.fedorahosted.flies.common.LocaleId fliesLocaleId = new org.fedorahosted.flies.common.LocaleId(action.getLocaleId().getValue());		
-		
 		List<StatusCount> stats = session.createQuery(
 				"select new org.fedorahosted.flies.core.model.StatusCount(tft.state, count(tft)) " +
 		        "from HTextFlowTarget tft where tft.textFlow.document.id = :id " +
 		        "  and tft.locale = :locale "+ 
 				"group by tft.state"
 			).setParameter("id", action.getDocumentId().getValue())
-			 .setParameter("locale", action.getLocaleId().getValue())
+			 .setParameter("locale", action.getLocaleId() )
 			 .list();
 		
 		
@@ -61,8 +59,7 @@ public class GetStatusCountHandler implements ActionHandler<GetStatusCount, GetS
 		}
 		
 		stat.set(ContentState.New, totalCount - stat.getNotApproved());
-		LocaleId localeId = new LocaleId(action.getLocaleId().getValue());
-		TranslationWorkspace workspace = translationWorkspaceManager.getWorkspace(action.getProjectContainerId().getId(), localeId);
+		TranslationWorkspace workspace = translationWorkspaceManager.getWorkspace(action.getProjectContainerId().getId(), action.getLocaleId() );
 		
 		return new GetStatusCountResult(
 				action.getDocumentId(), 

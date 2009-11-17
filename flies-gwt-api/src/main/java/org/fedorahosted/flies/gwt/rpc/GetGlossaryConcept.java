@@ -2,7 +2,7 @@ package org.fedorahosted.flies.gwt.rpc;
 
 import net.customware.gwt.dispatch.shared.Action;
 
-import org.fedorahosted.flies.gwt.model.LocaleId;
+import org.fedorahosted.flies.common.LocaleId;
 
 
 public class GetGlossaryConcept  implements Action<GetGlossaryConceptResult> {

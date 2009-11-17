@@ -36,8 +36,7 @@ public class ActivateWorkspaceHandler implements ActionHandler<ActivateWorkspace
 		
 		FliesIdentity.instance().checkLoggedIn();
 
-		LocaleId localeId = new LocaleId(action.getLocaleId().getValue());
-		TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getProjectContainerId().getId(), localeId);
+		TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getProjectContainerId().getId(), action.getLocaleId());
 		
 		workspace.registerTranslator(AuthenticateHandler.retrieveSessionId(), AuthenticateHandler.retrievePersonId());
 		

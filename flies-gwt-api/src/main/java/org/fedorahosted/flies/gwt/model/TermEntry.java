@@ -2,6 +2,8 @@ package org.fedorahosted.flies.gwt.model;
 
 import java.io.Serializable;
 
+import org.fedorahosted.flies.common.LocaleId;
+
 public class TermEntry implements Serializable{
 
 	private static final long serialVersionUID = -5265338285568364303L;

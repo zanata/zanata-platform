@@ -13,6 +13,7 @@
       
       <inherits name="com.weborient.codemirror.CodemirrorGwt"/>
        
+      <inherits name="org.fedorahosted.flies.Common"/>
       <inherits name="org.fedorahosted.flies.gwt.Common"/>
 
       <inherits name='com.google.gwt.user.theme.standard.Standard' />

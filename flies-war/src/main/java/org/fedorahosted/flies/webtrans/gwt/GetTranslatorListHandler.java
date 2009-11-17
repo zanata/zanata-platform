@@ -44,7 +44,7 @@ public class GetTranslatorListHandler implements ActionHandler<GetTranslatorList
 		
 		TranslationWorkspace translationWorkspace = 
 			translationWorkspaceManager.getOrRegisterWorkspace(action.getProjectContainerId().getId(), 
-					new LocaleId(action.getLocaleId().getValue()));
+					action.getLocaleId() );
 		
 		ImmutableSet<PersonId> personIdlist = translationWorkspace.getUsers();
 

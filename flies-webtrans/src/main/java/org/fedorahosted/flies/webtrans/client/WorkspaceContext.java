@@ -2,7 +2,7 @@ package org.fedorahosted.flies.webtrans.client;
 
 import net.customware.gwt.dispatch.client.DispatchAsync;
 
-import org.fedorahosted.flies.gwt.model.LocaleId;
+import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceResult;

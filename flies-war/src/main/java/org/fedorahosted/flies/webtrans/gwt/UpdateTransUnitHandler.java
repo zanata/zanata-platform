@@ -41,11 +41,10 @@ public class UpdateTransUnitHandler implements ActionHandler<UpdateTransUnit, Up
 		FliesIdentity.instance().checkLoggedIn();
 		
 		HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, action.getTransUnitId().getValue());
-		LocaleId localeId = new LocaleId( action.getLocaleId().getValue());
-		HTextFlowTarget target = hTextFlow.getTargets().get(localeId);
+		HTextFlowTarget target = hTextFlow.getTargets().get( action.getLocaleId() );
 		TransUnitStatus prevStatus = TransUnitStatus.New;
 		if(target == null) {
-			target = new HTextFlowTarget(hTextFlow, localeId);
+			target = new HTextFlowTarget(hTextFlow, action.getLocaleId() );
 			switch(action.getStatus()) {
 			case NeedReview:
 				target.setState(ContentState.ForReview);
@@ -57,7 +56,7 @@ public class UpdateTransUnitHandler implements ActionHandler<UpdateTransUnit, Up
 				target.setState(ContentState.Final);
 				break;
 			}
-			hTextFlow.getTargets().put(localeId, target);
+			hTextFlow.getTargets().put(action.getLocaleId() , target);
 		}
 		else{
 			switch(target.getState()) {
@@ -83,7 +82,7 @@ public class UpdateTransUnitHandler implements ActionHandler<UpdateTransUnit, Up
 		
 		
 		TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(
-				hTextFlow.getDocument().getProject().getId(), new LocaleId(action.getLocaleId().getValue()));
+				hTextFlow.getDocument().getProject().getId(), action.getLocaleId() );
 		workspace.publish(event);
 		
 		return new UpdateTransUnitResult(true);
