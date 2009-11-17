@@ -29,7 +29,7 @@ public class IdentityDAO {
 		return getRole(role) != null;
 	}
 	
-	private HAccountRole getRole(String roleName) {
+	public HAccountRole getRole(String roleName) {
 		Session session = (Session) entityManager.getDelegate();
 		return (HAccountRole) session.createCriteria(HAccountRole.class)
 			.add( Restrictions.naturalId()
@@ -60,7 +60,7 @@ public class IdentityDAO {
 	}
 
 	@SuppressWarnings("deprecation")
-	public boolean createUser(String username, String password, boolean enabled) {
+	public HAccount createUser(String username, String password, boolean enabled) {
 		HAccount account = new HAccount();
 		account.setUsername(username);
 		// TODO add a @PasswordSalt field to HAccount
@@ -70,18 +70,13 @@ public class IdentityDAO {
 		account.setPasswordHash(passwordHash);
 		account.setEnabled(enabled);
 		entityManager.persist(account);
-		return true;
+		return account;
 	}
 
 	public void grantRole(String username, String roleName) {
 		HAccount account = accountDAO.getByUsername(username);
 		HAccountRole role = getRole(roleName);
-		Set<HAccountRole> roles = account.getRoles();
-		if (roles == null) {
-			roles = new HashSet<HAccountRole>();
-			account.setRoles(roles);
-		}
-		roles.add(role);
+		account.getRoles().add(role);
 	}
 
 }
