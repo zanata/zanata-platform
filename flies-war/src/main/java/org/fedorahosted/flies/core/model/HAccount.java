@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.core.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -88,6 +89,10 @@ public class HAccount extends AbstractFliesEntity implements Serializable {
 	@ManyToMany(targetEntity = HAccountRole.class)
 	@JoinTable(name = "HAccountMembership", joinColumns = @JoinColumn(name = "accountId"), inverseJoinColumns = @JoinColumn(name = "memberOf"))
 	public Set<HAccountRole> getRoles() {
+		if (roles == null) {
+			roles = new HashSet<HAccountRole>();
+			setRoles(roles);
+		}
 		return roles;
 	}
 
