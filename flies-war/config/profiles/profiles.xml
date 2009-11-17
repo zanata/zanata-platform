@@ -37,6 +37,7 @@
       </activation>
       <properties>
         <ds>hsqldb</ds>
+        <env.dbunit.type>HSQL</env.dbunit.type>
         <ds.hibernate.dialect>org.hibernate.dialect.HSQLDialect</ds.hibernate.dialect>
         <ds.driver.class>org.hsqldb.jdbcDriver</ds.driver.class>
         <ds.server.name></ds.server.name>
@@ -58,6 +59,7 @@
       </activation>
       <properties>
         <ds>mysql5</ds>
+        <env.dbunit.type>MYSQL</env.dbunit.type>
         <ds.hibernate.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</ds.hibernate.dialect>
         <ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
         <ds.server.name>localhost:3306</ds.server.name>
