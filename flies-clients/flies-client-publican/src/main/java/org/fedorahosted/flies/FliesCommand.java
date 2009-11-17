@@ -11,6 +11,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.fedorahosted.flies.adapter.po.PoReader;
+import org.fedorahosted.flies.common.ContentType;
+import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.common.LocaleInputSourcePair;
 import org.fedorahosted.flies.rest.FliesClient;
 import org.fedorahosted.flies.rest.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.ProjectIterationResource;

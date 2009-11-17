@@ -2,7 +2,7 @@ package org.fedorahosted.flies.rest.dto;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import org.fedorahosted.flies.ContentType;
+import org.fedorahosted.flies.common.ContentType;
 
 public class ContentTypeAdapter extends XmlAdapter<String, ContentType>
 {

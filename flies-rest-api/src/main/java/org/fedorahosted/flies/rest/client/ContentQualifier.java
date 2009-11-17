@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.common.LocaleId;
 
 import com.google.common.collect.ImmutableSet;
 /**

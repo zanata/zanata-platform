@@ -14,7 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
-import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.hibernate.type.ULocaleType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;

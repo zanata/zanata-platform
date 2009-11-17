@@ -13,8 +13,8 @@ import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
-import org.fedorahosted.flies.ContentType;
-import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.common.ContentType;
+import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.core.model.AbstractFliesEntity;
 import org.fedorahosted.flies.hibernate.type.ContentTypeType;
 import org.fedorahosted.flies.hibernate.type.LocaleIdType;

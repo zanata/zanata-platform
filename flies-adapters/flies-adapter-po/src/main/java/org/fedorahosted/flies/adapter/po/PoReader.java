@@ -10,9 +10,9 @@ import java.util.List;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.StringUtils;
-import org.fedorahosted.flies.ContentType;
-import org.fedorahosted.flies.LocaleId;
-import org.fedorahosted.flies.LocaleInputSourcePair;
+import org.fedorahosted.flies.common.ContentType;
+import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.common.LocaleInputSourcePair;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.DocumentResource;
 import org.fedorahosted.flies.rest.dto.SimpleComment;

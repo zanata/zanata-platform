@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.List;
 
 
-import org.fedorahosted.flies.LocaleId;
 import org.fedorahosted.flies.adapter.po.PoReader;
+import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.junit.Before;

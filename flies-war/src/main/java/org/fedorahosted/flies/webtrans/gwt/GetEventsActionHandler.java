@@ -6,7 +6,7 @@ import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.gwt.rpc.GetEventsAction;
 import org.fedorahosted.flies.gwt.rpc.GetEventsResult;
 import org.fedorahosted.flies.repository.util.TranslationStatistics;

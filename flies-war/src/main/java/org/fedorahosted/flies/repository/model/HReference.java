@@ -4,7 +4,7 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 
-import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.rest.dto.Reference;
 import org.hibernate.validator.NotEmpty;
 

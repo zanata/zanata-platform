@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.core.model.AbstractFliesEntity;
 import org.fedorahosted.flies.hibernate.type.LocaleIdType;
 import org.hibernate.annotations.NaturalId;

@@ -2,7 +2,7 @@ package org.fedorahosted.flies.rest.dto;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.common.LocaleId;
 
 
 public class LocaleIdAdapter extends XmlAdapter<String, LocaleId>

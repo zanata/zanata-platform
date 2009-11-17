@@ -6,7 +6,7 @@ import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.core.model.StatusCount;
 import org.fedorahosted.flies.gwt.rpc.GetStatusCount;
 import org.fedorahosted.flies.gwt.rpc.GetStatusCountResult;
@@ -39,7 +39,7 @@ public class GetStatusCountHandler implements ActionHandler<GetStatusCount, GetS
 		
 		FliesIdentity.instance().checkLoggedIn();
 		
-		org.fedorahosted.flies.LocaleId fliesLocaleId = new org.fedorahosted.flies.LocaleId(action.getLocaleId().getValue());		
+		org.fedorahosted.flies.common.LocaleId fliesLocaleId = new org.fedorahosted.flies.common.LocaleId(action.getLocaleId().getValue());		
 		
 		List<StatusCount> stats = session.createQuery(
 				"select new org.fedorahosted.flies.core.model.StatusCount(tft.state, count(tft)) " +

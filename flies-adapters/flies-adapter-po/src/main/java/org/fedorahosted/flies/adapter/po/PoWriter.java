@@ -11,9 +11,9 @@ import java.nio.charset.Charset;
 
 
 import org.apache.commons.lang.StringUtils;
-import org.fedorahosted.flies.LocaleId;
-import org.fedorahosted.flies.LocaleOutputSourcePair;
-import org.fedorahosted.flies.OutputSource;
+import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.common.LocaleOutputSourcePair;
+import org.fedorahosted.flies.common.OutputSource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.DocumentResource;
 import org.fedorahosted.flies.rest.dto.SimpleComment;

@@ -3,7 +3,7 @@ package org.fedorahosted.flies.webtrans;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.fedorahosted.flies.FliesInit;
-import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.common.LocaleId;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Logger;

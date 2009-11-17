@@ -3,7 +3,7 @@ import java.net.URISyntaxException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.fedorahosted.flies.ContentType;
+import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.rest.DocumentsResource;
 import org.fedorahosted.flies.rest.FliesClient;
 import org.fedorahosted.flies.rest.ProjectResource;

@@ -4,7 +4,7 @@ import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.core.dao.PersonDAO;
 import org.fedorahosted.flies.core.model.HPerson;
 import org.fedorahosted.flies.gwt.model.Person;

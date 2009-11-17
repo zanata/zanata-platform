@@ -49,7 +49,7 @@ public class GetTransUnitsHandler implements ActionHandler<GetTransUnits, GetTra
 		
 		log.info("Fetching Transunits for {0}", action.getDocumentId());
 		
-		org.fedorahosted.flies.LocaleId fliesLocaleId = new org.fedorahosted.flies.LocaleId(action.getLocaleId().getValue());
+		org.fedorahosted.flies.common.LocaleId fliesLocaleId = new org.fedorahosted.flies.common.LocaleId(action.getLocaleId().getValue());
 		
 		Query query = session.createQuery(
 			"from HTextFlow tf where tf.document.id = :id")

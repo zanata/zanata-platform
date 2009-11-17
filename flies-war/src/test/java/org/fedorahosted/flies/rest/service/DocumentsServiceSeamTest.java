@@ -11,8 +11,8 @@ import java.util.TreeSet;
 import javax.ws.rs.core.Response;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.fedorahosted.flies.ContentType;
-import org.fedorahosted.flies.LocaleId;
+import org.fedorahosted.flies.common.ContentType;
+import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.core.dao.ProjectContainerDAO;
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HDocumentResource;
