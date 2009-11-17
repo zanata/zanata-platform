@@ -71,10 +71,10 @@
         </property>
       </activation>
       <properties>
-    	<!-- Developer environment properties. 
-    		 Can be modified by developer in "profiles.xml" 
-    	-->
-    	<env>dev</env>
+        <!-- Developer environment properties. 
+             Can be modified by developer in "profiles.xml" 
+        -->
+        <env>dev</env>
         <env.debug>true</env.debug>
         <env.import.testdata>true</env.import.testdata>
         <env.hibernate.hbm2ddl.auto>create-drop</env.hibernate.hbm2ddl.auto>
@@ -84,7 +84,7 @@
         <!-- Should GWT files be processed in exploded deployment?
              If false, GWT's hosted mode is expected to handle these files. 
         -->
-	    <env.deploy.gwt>false</env.deploy.gwt>
+        <env.deploy.gwt>false</env.deploy.gwt>
       </properties>
     </profile>
 
@@ -167,27 +167,27 @@
                 <phase>package</phase>
                 <configuration>
                   <tasks>
-                  	<!-- Set the Ant property deploy.gwt if
-                  		 Maven property env.deploy.gwt=true/yes/on
-                  	  -->
+                      <!-- Set the Ant property deploy.gwt if
+                           Maven property env.deploy.gwt=true/yes/on
+                        -->
                     <condition property="deploy.gwt">
-                    	<istrue value="${env.deploy.gwt}"/>
+                        <istrue value="${env.deploy.gwt}"/>
                     </condition>
                     <property name="deploy-path" value="${as.deploy}/${app.context}.war" />
                     <property name="temp-deploy-path" value="target/disabled.${app.context}.war" />
                     <echo>Removing old version at ${deploy-path}</echo>
                     <delete file="${deploy-path}" quiet="true" />
                     <delete quiet="true">
-                    	<fileset dir="${deploy-path}">
+                        <fileset dir="${deploy-path}">
                             <!-- GWT hosted mode is responsible for keeping these files updated  -->
                             <exclude name="${gwt.filepattern}" unless="deploy.gwt" />
-                       	</fileset>
+                        </fileset>
                     </delete>
                     <delete file="${as.deploy}/${app.ds.xml}" quiet="true" />
                     <echo>Exploding to ${temp-deploy-path}</echo>
                     <copy todir="${as.deploy}" file="${project.build.directory}/${app.ds.xml}" verbose="true" />
                     <move file="${deploy-path}" tofile="${temp-deploy-path}" 
-                    	  failonerror="false" verbose="true"/>
+                          failonerror="false" verbose="true"/>
                     <sync todir="${temp-deploy-path}" verbose="false" >
                       <fileset dir="${project.build.directory}/${project.build.finalName}">
                         <excludesfile name="hotdeploy.list"/>
@@ -364,7 +364,7 @@
                 Uncomment this tag if you have deployed the *-ds.xml file to the appserver's deploy folder
               -->
               <outputDirectory>${project.build.directory}</outputDirectory>
-	      
+          
               <resources>
                 <resource>
                   <directory>src/main/resources</directory>
@@ -415,13 +415,22 @@
             <buildcommand>com.google.gwt.eclipse.core.gwtProjectValidator</buildcommand>
           </additionalBuildcommands>
          -->
+        <additionalBuildcommands>
+            <buildCommand>
+                <name>org.eclipse.ui.externaltools.ExternalToolBuilder</name>
+                <triggers>auto,full,incremental,</triggers>
+                <arguments>
+                    <LaunchConfigHandle>&lt;project&gt;/.externalToolBuilders/mvn-resources.launch</LaunchConfigHandle>
+                </arguments>
+            </buildCommand>
+        </additionalBuildcommands>
           <classpathContainers>
             <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
             <classpathContainer>com.google.gwt.eclipse.core.GWT_CONTAINER</classpathContainer>
           </classpathContainers>
           <excludes>
             <!-- These are provided by the GWT container -->
-          	<exclude>com.google.gwt:gwt-servlet</exclude>
+              <exclude>com.google.gwt:gwt-servlet</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -515,10 +524,10 @@
       <artifactId>jboss-seam-remoting</artifactId>
       <version>${version.seam}</version>
       <exclusions>
-      	<exclusion>
-      	  <groupId>dom4j</groupId>
-      	  <artifactId>dom4j</artifactId>
-      	</exclusion>
+          <exclusion>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+          </exclusion>
       </exclusions>
     </dependency>
 
