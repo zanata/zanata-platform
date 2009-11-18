@@ -18,7 +18,6 @@ import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.ProjectList;
-import org.jboss.seam.mock.DBUnitSeamTest;
 import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
 import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
 import org.jboss.seam.mock.ResourceRequestEnvironment;
@@ -28,7 +27,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 @Test(groups={"seam-tests"})
-public class ProjectServiceRawSeamTest extends DBUnitSeamTest{
+public class ProjectServiceRawSeamTest extends FliesDBUnitSeamTest {
 
 	ResourceRequestEnvironment sharedEnvironment;
 	

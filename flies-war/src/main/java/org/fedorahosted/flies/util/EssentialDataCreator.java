@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import org.fedorahosted.flies.core.dao.AccountDAO;
 import org.fedorahosted.flies.core.dao.IdentityDAO;
 import org.fedorahosted.flies.core.model.HAccount;
 import org.fedorahosted.flies.core.model.HPerson;
@@ -16,6 +15,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
+import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
 
 /**
@@ -28,22 +28,19 @@ import org.jboss.seam.log.Log;
 @Install(false)
 public class EssentialDataCreator {
 
+    // You can listen to this event during startup
+    public static final String ESSENTIAL_DATA_CREATED_EVENT = "EssentialDataCreator.complete";
+
     @Logger
     private static Log log;
     
     @In
     private EntityManager entityManager;
-   
-    @In
-    private AccountDAO accountDAO;
     
     @In("identityDAO")
     private IdentityDAO identityManager;
     
     private boolean prepared;
-    
-//    @In
-//    private IdentityManager identityManager;
     
     public String username;
     public String password;
@@ -87,54 +84,7 @@ public class EssentialDataCreator {
         	
 	        prepared = true;
         } 
-//        Events.instance().raiseEvent(IMPORT_COMPLETE_EVENT);
+        Events.instance().raiseEvent(ESSENTIAL_DATA_CREATED_EVENT);
     }
-
-/*
- * Create the following data:
-    create admin user:
-	<HAccount id="1"
-          	  creationDate="2009-01-14 11:39:00"
-                  lastChanged="2009-01-14 11:39:00"
-                  apiKey="12345678901234567890123456789012"
-                  enabled="TRUE"
-                  passwordHash="Eyox7xbNQ09MkIfRyH+rjg=="
-                  username="admin"
-        />
-        
-        create admin role:
-        <HAccountRole id="1"
-                      conditional="FALSE"
-                      name="admin"
-        />
-        create user role:
-        <HAccountRole id="2"
-                      conditional="FALSE" 
-                      name="user"
-        />
-
-		admin user is in role admin:
-
-        <HAccountMembership accountId="1" 
-                            memberOf="1"
-        />
-         
-        admin role includes user role:
-	
-        <HAccountRoleGroup roleId="1" 
-                           memberOf="2"
-        />
-
-		create admin person, related to admin account
-        <HPerson id="1"
-                 creationDate="2009-01-14 11:39:00"
-                 lastChanged="2009-01-14 11:39:00"
-                 email="asgeirf@localhost"
-                 name="Administrator"
-                 accountId="1"
-        />
-    
- */
-    
     
 }

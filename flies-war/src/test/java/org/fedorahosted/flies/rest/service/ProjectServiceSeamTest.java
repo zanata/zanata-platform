@@ -1,10 +1,8 @@
 package org.fedorahosted.flies.rest.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
-import static org.testng.Assert.fail;
 
 import java.net.URI;
 
@@ -20,12 +18,11 @@ import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
-import org.jboss.seam.mock.DBUnitSeamTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 @Test(groups={"seam-tests"})
-public class ProjectServiceSeamTest extends DBUnitSeamTest {
+public class ProjectServiceSeamTest extends FliesDBUnitSeamTest {
 
 	ClientRequestFactory clientRequestFactory;
 	IProjectResource projectService;
@@ -34,7 +31,6 @@ public class ProjectServiceSeamTest extends DBUnitSeamTest {
 	
 	@BeforeClass
 	public void prepareRestEasyClientFramework() throws Exception {
-
 		ResteasyProviderFactory instance = ResteasyProviderFactory.getInstance();
 		RegisterBuiltin.register(instance);
 
