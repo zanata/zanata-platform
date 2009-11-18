@@ -19,15 +19,15 @@ public class GlossaryView extends VerticalPanel implements GlossaryPresenter.Dis
 	
 	public GlossaryView() {
 		glossaryLabel = new Label("Input the term");
-		
 		glossaryTextBox = new TextBox();
 		searchButton = new Button("Search");
-		
+	
 		add(glossaryLabel);
 		add(glossaryTextBox);
 		add(searchButton);
 		resultsPanel = new FlowPanel();
 		add(resultsPanel);
+
 	}
 	
 	@Override
