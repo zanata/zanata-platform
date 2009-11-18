@@ -12,7 +12,6 @@ import java.util.List;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import org.apache.commons.httpclient.URIException;
@@ -27,11 +26,11 @@ import org.fedorahosted.flies.rest.client.IDocumentResource;
 import org.fedorahosted.flies.rest.dto.Container;
 import org.fedorahosted.flies.rest.dto.DataHook;
 import org.fedorahosted.flies.rest.dto.Document;
+import org.fedorahosted.flies.rest.dto.DocumentResource;
 import org.fedorahosted.flies.rest.dto.Documents;
 import org.fedorahosted.flies.rest.dto.Link;
 import org.fedorahosted.flies.rest.dto.Reference;
 import org.fedorahosted.flies.rest.dto.Relationships;
-import org.fedorahosted.flies.rest.dto.DocumentResource;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.TextFlowTargets;
@@ -40,13 +39,12 @@ import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.util.Encode;
-import org.jboss.seam.mock.DBUnitSeamTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 
 @Test(groups={"seam-tests"},suiteName="DocumentService")
-public class DocumentServiceSeamTest extends DBUnitSeamTest{
+public class DocumentServiceSeamTest extends FliesDBUnitSeamTest {
 	
 	ClientRequestFactory clientRequestFactory;
 	URI baseUri = URI.create("/restv1/");
@@ -55,7 +53,6 @@ public class DocumentServiceSeamTest extends DBUnitSeamTest{
 	
 	@BeforeClass
 	public void prepareRestEasyClientFramework() throws Exception {
-
 		ResteasyProviderFactory instance = ResteasyProviderFactory.getInstance();
 		RegisterBuiltin.register(instance);
 

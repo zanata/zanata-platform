@@ -25,7 +25,6 @@ import org.fedorahosted.flies.rest.dto.Documents;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.jboss.resteasy.client.ClientResponse;
-import org.jboss.seam.mock.DBUnitSeamTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
@@ -34,7 +33,7 @@ import org.testng.annotations.Test;
 
 
 @Test(groups = { "seam-tests" })
-public class DocumentsServiceSeamTest extends DBUnitSeamTest {
+public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 
     private static final LocaleId DE_DE = LocaleId.fromJavaName("de_DE");
     private static final LocaleId FR = LocaleId.fromJavaName("fr");
@@ -44,12 +43,6 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 	String projectSlug = "sample-project";
 	String iter = "1.1";
 	IDocumentsResource docsService;
-	
-//	public DocumentsServiceSeamTest() {
-//		setDatabase("hsql");
-//		setDatasourceJndiName("java:/fliesDatasource");
-//		setBinaryDir("bootstrap");
-//	}
 
 	@BeforeClass
 	public void prepareRestEasyClientFramework() throws Exception {

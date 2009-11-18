@@ -423,6 +423,13 @@
                     <LaunchConfigHandle>&lt;project&gt;/.externalToolBuilders/mvn-resources.launch</LaunchConfigHandle>
                 </arguments>
             </buildCommand>
+			<buildCommand>
+				<name>org.eclipse.ui.externaltools.ExternalToolBuilder</name>
+				<triggers>auto,full,incremental,</triggers>
+				<arguments>
+                    <LaunchConfigHandle>&lt;project&gt;/.externalToolBuilders/copy-test-resources.launch</LaunchConfigHandle>
+				</arguments>
+			</buildCommand>
         </additionalBuildcommands>
           <classpathContainers>
             <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
