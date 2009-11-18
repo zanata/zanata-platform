@@ -119,6 +119,7 @@ public class HTextFlow extends HDocumentResource {
 		}
 		textFlow.setContent(this.getContent());
 		textFlow.setLang(this.getDocument().getLocale());
+		textFlow.setRevision(this.getRevision());
 		
 		for (LocaleId locale : getTargets().keySet()) {
 			HTextFlowTarget hTextFlowTarget = this.getTargets().get(locale);

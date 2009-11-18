@@ -25,7 +25,7 @@ public class TextFlow extends AbstractBaseResource implements DocumentResource, 
 
 	private String id;
 	private LocaleId lang;
-	private Integer revision = 1;
+	private Integer revision = null;
 	
 	private String content;
 	private List<Object> extensions;
@@ -51,7 +51,7 @@ public class TextFlow extends AbstractBaseResource implements DocumentResource, 
 		this.id = id;
 	}
 
-	@XmlAttribute(name="revision", required=true)
+	@XmlAttribute(name="revision", required=false)
 	@Override
 	public Integer getRevision() {
 		return revision;

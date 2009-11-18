@@ -65,12 +65,14 @@ public class DocumentConverter {
      * @param toHDoc destination HDocument
      */
 	public void copy(Document fromDoc, HDocument toHDoc) {
-		boolean changed = false;
+		boolean docChanged = false;
+		int nextDocRev = 1;
 		if (!session.contains(toHDoc)) {
 			// new document
-			changed = true;
-			toHDoc.setRevision(0);
+			docChanged = true;
 			log.debug("CHANGED: Document {0} is new", toHDoc.getDocId());
+		} else {
+			nextDocRev = toHDoc.getRevision()+1;
 		}
 		// changing these attributes probably shouldn't 
 		// invalidate existing translations, so we don't
@@ -101,30 +103,31 @@ public class DocumentConverter {
 				boolean resChanged = false;
 				if (hRes == null) {
 					hRes = HDocument.create(res);
-					resChanged = true;
+					resChanged = true; // this will cause res.revision to be set below
 				} else {
 					// resurrect the resource
 					hRes.setObsolete(false);
 				}
 				hResources.add(hRes);
 				hRes.setDocument(toHDoc);
-				resChanged |= copy(res, hRes, toHDoc);
-				if (resChanged)
-					hRes.setResId(res.getId());
-				changed |= resChanged;
+				resChanged |= copy(res, hRes, toHDoc, nextDocRev);
+				if (resChanged) {
+					hRes.setRevision(nextDocRev);
+					docChanged = true;
+				}
 				if (oldResourceMap.remove(res.getId()) == null) {
-					changed = true;
+					docChanged = true;
 					log.debug("CHANGED: Resource {0}:{1} was added", toHDoc.getDocId(), hRes.getResId());
 				}
 			}
 			// mark any removed resources as obsolete
 			for(HDocumentResource oldResource : oldResourceMap.values()) {
 				oldResource.setObsolete(true);
-				changed = true;
+				docChanged = true;
 				log.debug("CHANGED: Resource {0}:{1} was removed", toHDoc.getDocId(), oldResource.getResId());
 			}
-		if (changed)
-			toHDoc.setRevision(toHDoc.getRevision()+1);
+		if (docChanged)
+			toHDoc.setRevision(nextDocRev);
 	}
 
 	/**
@@ -478,22 +481,25 @@ public class DocumentConverter {
 	// copy res to hRes recursively, maintaining docTargets
 	/**
 	 * Returns true if hRes was changed
+	 * @param nextDocRev 
 	 */
 	private boolean copy(DocumentResource res, HDocumentResource hRes,
-			HDocument hDoc) {
+			HDocument hDoc, int nextDocRev) {
 		hRes.setDocument(hDoc);
+		boolean resChanged;
 		if (res instanceof TextFlow) {
-			return copy((TextFlow)res, (HTextFlow)hRes);
+			resChanged = copy((TextFlow)res, (HTextFlow)hRes, nextDocRev);
 		} else {
 			// FIXME handle other Resource types
 			throw new RuntimeException("Unknown Resource type "+res.getClass());
 		}
+		return resChanged;
 	}
 
 	/**
 	 * Returns true if the content (or a comment) of htf was changed
 	 */
-	private boolean copy(TextFlow tf, HTextFlow htf) {
+	private boolean copy(TextFlow tf, HTextFlow htf, int nextDocRev) {
 		boolean changed = false;
 		if (!tf.getContent().equals(htf.getContent())) {
 			changed = true;
@@ -505,24 +511,7 @@ public class DocumentConverter {
 		if (extensions != null) {
 			for (Object ext : extensions) {
 				if (ext instanceof TextFlowTargets) {
-					TextFlowTargets targets = (TextFlowTargets) ext;
-					for (TextFlowTarget target : targets.getTargets()) {
-						HTextFlowTarget hTarget = null;
-						if (session.contains(htf)) {
-							hTarget = textFlowTargetDAO.getByNaturalId(htf, target.getLang());
-						}
-						if (hTarget == null) {
-							hTarget = new HTextFlowTarget();
-							hTarget.setLocale(target.getLang());
-							hTarget.setTextFlow(htf);
-							hTarget.setResourceRevision(htf.getRevision());
-							hTarget.setState(target.getState());
-//						hTarget.setRevision(revision); // TODO
-							hTarget.setContent(target.getContent());
-						}
-						copy(target, hTarget, htf);
-						htf.getTargets().put(target.getLang(), hTarget);
-					}
+					// do targets last: if the comment changes, the resourceRev will have to be incremented
 				} else if (ext instanceof SimpleComment) {
 					SimpleComment simpleComment = (SimpleComment) ext;
 					HSimpleComment hComment = htf.getComment();
@@ -540,16 +529,49 @@ public class DocumentConverter {
 					throw new RuntimeException("Unknown TextFlow extension "+ext.getClass());
 				}
 			}
+			TextFlowTargets targets = tf.getTargets();
+			if (targets != null) {
+				for (TextFlowTarget target : targets.getTargets()) {
+					HTextFlowTarget hTarget = null;
+					if (session.contains(htf)) {
+						hTarget = textFlowTargetDAO.getByNaturalId(htf, target.getLang());
+					}
+					if (hTarget == null) {
+						hTarget = new HTextFlowTarget();
+						hTarget.setLocale(target.getLang());
+						hTarget.setTextFlow(htf);
+						Integer resourceRev;
+						
+						if (changed || htf.getRevision() == null)
+							resourceRev = nextDocRev;
+						else
+							resourceRev = htf.getRevision();
+							
+						hTarget.setState(target.getState());
+	//				hTarget.setRevision(revision); // TODO
+						hTarget.setContent(target.getContent());
+						copy(target, hTarget, htf);
+						hTarget.setResourceRevision(resourceRev);
+						hTarget.setRevision(1);
+					} else {
+						copy(target, hTarget, htf);
+					}
+					htf.getTargets().put(target.getLang(), hTarget);
+				}
+			}
 		}
 		return changed;
     }
 
 	private void copy(TextFlowTarget target, HTextFlowTarget hTarget,
 			HTextFlow htf) {
+		boolean changed = false;
+		changed |= !target.getContent().equals(hTarget.getContent());
 		hTarget.setContent(target.getContent());
+		changed |= !target.getLang().equals(hTarget.getLocale());
 		hTarget.setLocale(target.getLang());
 		hTarget.setResourceRevision(htf.getRevision());
-		hTarget.setRevision(target.getRevision());
+		changed |= !target.getState().equals(hTarget.getState());
 		hTarget.setState(target.getState());
 		hTarget.setTextFlow(htf);
 		if(target.hasComment()) {
@@ -558,8 +580,13 @@ public class DocumentConverter {
 				hComment = new HSimpleComment();
 				hTarget.setComment(hComment);
 			}
+			changed |= !target.getComment().equals(hComment.getComment());
 			hComment.setComment(target.getComment().getValue());
+		} else {
+			changed |= (hTarget.getComment() != null);
 		}
+		if (changed)
+			hTarget.setRevision(hTarget.getRevision()+1);
 	}
 	
 	public void addLinks(Document doc, URI docUri, URI iterationUri) {

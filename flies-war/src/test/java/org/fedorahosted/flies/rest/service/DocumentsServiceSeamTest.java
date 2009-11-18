@@ -36,11 +36,20 @@ import org.testng.annotations.Test;
 @Test(groups = { "seam-tests" })
 public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 
-    private final Logger log = LoggerFactory.getLogger(DocumentsServiceSeamTest.class);
+    private static final LocaleId DE_DE = LocaleId.fromJavaName("de_DE");
+    private static final LocaleId FR = LocaleId.fromJavaName("fr");
+
+	private final Logger log = LoggerFactory.getLogger(DocumentsServiceSeamTest.class);
     
 	String projectSlug = "sample-project";
 	String iter = "1.1";
 	IDocumentsResource docsService;
+	
+//	public DocumentsServiceSeamTest() {
+//		setDatabase("hsql");
+//		setDatasourceJndiName("java:/fliesDatasource");
+//		setBinaryDir("bootstrap");
+//	}
 
 	@BeforeClass
 	public void prepareRestEasyClientFramework() throws Exception {
@@ -66,6 +75,7 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 			    DatabaseOperation.DELETE_ALL));
 	}
 
+//	@Test(enabled = false)
 	public void getZero() throws Exception {
 //		log.info("getZero()");
 		expectDocs();
@@ -86,8 +96,8 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 	    	// leave links out of the XML
 	    	doc.getLinks().clear();
 			actualDocs.add(doc.toString());
+			System.out.println("actual doc: "+doc);
 		}
-//System.out.println("actual docs: "+docs);
 	    assertThat(actualDocs, is(expectedDocs));
 	}
 	
@@ -101,12 +111,12 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 		return doc;
 	}
 	
-	private TextFlow newTextFlow(String id, String sourceContent, String sourceComment, String targetLocale, String targetContent, String targetComment) {
+	private TextFlow newTextFlow(String id, String sourceContent, String sourceComment, LocaleId targetLocale, String targetContent, String targetComment) {
 		TextFlow textFlow = new TextFlow(id, LocaleId.EN);
 	    textFlow.setContent(sourceContent);
 	    if (sourceComment != null)
 	    	textFlow.getOrAddComment().setValue(sourceComment);
-	    TextFlowTarget target = new TextFlowTarget(textFlow, LocaleId.fromJavaName(targetLocale));
+	    TextFlowTarget target = new TextFlowTarget(textFlow, targetLocale);
 	    target.setContent(targetContent);
 	    if (targetComment != null)
 	    	target.getOrAddComment().setValue(targetComment);
@@ -117,7 +127,7 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 	private Document putDoc1() {
 		Documents docs = new Documents();
 		Document doc = newDoc("foo.properties", 
-				newTextFlow("FOOD", "Slime Mould", "slime mould comment", "de_DE", "Sauerkraut", null));
+				newTextFlow("FOOD", "Slime Mould", "slime mould comment", DE_DE, "Sauerkraut", null));
 		docs.getDocuments().add(doc);
 		Response response = docsService.put(docs);
 		assertThat(response.getStatus(), is(200));
@@ -127,7 +137,7 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 	private Document putDoc1a() {
 		Documents docs = new Documents();
 		Document doc = newDoc("foo.properties", 
-	    		newTextFlow("HELLO", "Hello World", null, "fr", "Bonjour le Monde", "bon jour comment"));
+	    		newTextFlow("HELLO", "Hello World", null, FR, "Bonjour le Monde", "bon jour comment"));
 		docs.getDocuments().add(doc);
 		Response response = docsService.put(docs);
 		assertThat(response.getStatus(), is(200));
@@ -137,48 +147,72 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 	private Document postDoc2() {
 	    Documents docs = new Documents();
 	    Document doc = newDoc("test.properties",
-	    		newTextFlow("HELLO", "Hello World", "hello comment", "fr", "Bonjour le Monde", null));
+	    		newTextFlow("HELLO", "Hello World", "hello comment", FR, "Bonjour le Monde", null));
 		docs.getDocuments().add(doc);
 	    Response response = docsService.post(docs);
 	    assertThat(response.getStatus(), is(200));
 		return doc;
 	}
 	
+//	@Test(enabled = false)
 	public void putGet() throws Exception {
 		log.info("putGet()");
 	    getZero();
 	    Document doc1 = putDoc1();
 	    doc1.setRevision(1);
+	    TextFlow tf1 = (TextFlow) doc1.getResources().get(0);
+	    tf1.setRevision(1);
+	    TextFlowTarget tft1 = tf1.getTarget(DE_DE);
+	    tft1.setRevision(1);
+		tft1.setResourceRevision(1);
 	    expectDocs(doc1);
 	}
 
-
-	
+//	@Test(enabled = false)
 	public void putPostGet() throws Exception {
 		log.info("putPostGet()");
 	    getZero();
 	    Document doc1 = putDoc1();
 	    doc1.setRevision(1);
+	    TextFlow tf1 = (TextFlow) doc1.getResources().get(0);
+	    tf1.setRevision(1);
+	    TextFlowTarget tft1 = tf1.getTarget(DE_DE);
+	    tft1.setRevision(1);
+		tft1.setResourceRevision(1);
 	    expectDocs(doc1);
 	    Document doc2 = postDoc2();
 	    doc2.setRevision(1);
+	    TextFlow tf2 = (TextFlow) doc2.getResources().get(0);
+	    tf2.setRevision(1);
+	    TextFlowTarget tft2 = tf2.getTarget(FR);
+	    tft2.setRevision(1);
+		tft2.setResourceRevision(1);
 	    expectDocs(doc1, doc2);
 	}
 	
-	
+//	@Test(enabled = false)
 	public void put2Then1() throws Exception {
 		log.info("put2Then1()");
 	    getZero();
 	    Document doc1 = putDoc1();
 	    doc1.setRevision(1);
+	    TextFlow tf1 = (TextFlow) doc1.getResources().get(0);
+	    tf1.setRevision(1);
+	    TextFlowTarget tft1 = tf1.getTarget(DE_DE);
+	    tft1.setRevision(1);
+		tft1.setResourceRevision(1);
 	    Document doc2 = postDoc2();
 	    doc2.setRevision(1);
+	    TextFlow tf2 = (TextFlow) doc2.getResources().get(0);
+	    tf2.setRevision(1);
+	    TextFlowTarget tft2 = tf2.getTarget(FR);
+	    tft2.setRevision(1);
+		tft2.setResourceRevision(1);
 	    expectDocs(doc1, doc2);
 	    // this put should have the effect of deleting doc2
-		Document doc1again = putDoc1();
-		// should be identical to doc1 from before, so rev still equals 1
-		doc1again.setRevision(1);
-	    expectDocs(doc1again);
+		putDoc1();
+		// should be identical to doc1 from before, including revisions
+	    expectDocs(doc1);
 	    // use dto to check that doc2 is marked obsolete
 	    verifyObsoleteDocument(doc2.getId());
 	}
@@ -190,26 +224,34 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 	    log.info("putDoc1()");
 	    Document doc1 = putDoc1();
 	    doc1.setRevision(1);
+	    TextFlow tf1 = (TextFlow) doc1.getResources().get(0);
+	    tf1.setRevision(1);
+	    TextFlowTarget tft1 = tf1.getTarget(DE_DE);
+	    tft1.setRevision(1);
+		tft1.setResourceRevision(1);
 	    log.info("expect doc1");
 	    expectDocs(doc1);
 	    // this should completely replace doc1's textflow FOOD with HELLO
 	    log.info("putDoc1a()");
 		Document doc1a = putDoc1a();
 		doc1a.setRevision(2);
+	    TextFlow tf1a = (TextFlow) doc1a.getResources().get(0);
+	    tf1a.setRevision(2);
+	    TextFlowTarget tft1a = tf1a.getTarget(FR);
+	    tft1a.setRevision(1);
+		tft1a.setResourceRevision(2);
 		log.info("expect doc1a");
 	    expectDocs(doc1a);
 	    // use dto to check that the HTextFlow FOOD (from doc1) is marked obsolete
-		// FIXME breaking test disabled
 	    log.info("verifyObsoleteResource");
 	    verifyObsoleteResource(doc1.getId(), "FOOD");
 	    log.info("putDoc1() again");
-	    Document doc1again = putDoc1();
-	    doc1again.setRevision(3);
-	    log.info("expect doc1again");
-	    expectDocs(doc1again);
+	    putDoc1(); // same as original doc1, but different doc rev
+	    doc1.setRevision(3);
+	    log.info("expect doc1b");
+	    expectDocs(doc1);
 	}
 	
-
 	private void verifyObsoleteDocument(final String docID) throws Exception {        
 		new FacesRequest() {
             protected void invokeApplication() throws Exception {
@@ -234,7 +276,7 @@ public class DocumentsServiceSeamTest extends DBUnitSeamTest {
 		}.run();
 	}
 	
-	// expect 404 for non-existent project
+//	@Test(enabled = false)
 	public void getBadProject() throws Exception {
 		log.info("getBadProject()");
 		IDocumentsResource nonexistentDocsService = prepareRestEasyClientFramework("nonexistentProject", "99.9");

@@ -28,7 +28,7 @@ public class TextFlowTarget implements IExtensible{
 	
 	private String id;
 	private Integer resourceRevision;
-	private Integer revision = 1;
+	private Integer revision = null;
 	private ContentState state = ContentState.New;
 	private String content;
 	
