@@ -128,7 +128,6 @@
                       verbose="true">
                       <fileset dir="src/main/webapp">
                         <include name="**/*" />
-                        <exclude name="WEB-INF/*" />
                         <exclude name="META-INF/context.xml" />
                       </fileset>
                     </copy>
