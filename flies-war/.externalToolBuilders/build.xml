@@ -1,6 +1,6 @@
-<project default="copy-test-resources">
+<project basedir=".." default="copy-test-resources">
     <target name="copy-test-resources">
-    	<copy todir="../target/test-classes"><fileset dir="../src/test/resources/bootstrap"/></copy>
-    	<copy todir="../target/test-classes"><fileset dir="../src/main/webapp"/></copy>
+    	<copy todir="target/test-classes"><fileset dir="src/test/resources/bootstrap"/></copy>
+    	<copy todir="target/test-classes"><fileset dir="src/main/webapp"/></copy>
     </target>
 </project>

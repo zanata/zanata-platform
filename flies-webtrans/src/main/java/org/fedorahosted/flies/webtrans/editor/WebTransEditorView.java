@@ -7,6 +7,7 @@ import com.google.gwt.gen2.table.client.MutableTableModel;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -41,6 +42,7 @@ public class WebTransEditorView extends DecoratorPanel implements WebTransEditor
 		editorPanel.add(editor);
 		toolbox = new Label("toolbox");
 		editorPanel.add(toolbox);
+		editorPanel.setSize("100%", "100%");
 		
 		mainPanel.add(footer);
 		mainPanel.setCellHeight(footer, "20px");
@@ -73,6 +75,7 @@ public class WebTransEditorView extends DecoratorPanel implements WebTransEditor
 		this.editor = editor;
 		editorPanel.remove(0);
 		editorPanel.insert(editor, 0);
+		editor.setSize("100%", "80%");
 	}
 
 	@Override
@@ -95,6 +98,6 @@ public class WebTransEditorView extends DecoratorPanel implements WebTransEditor
 		this.toolbox = toolbox;
 		editorPanel.remove(1);
 		editorPanel.insert(toolbox, 1);
-		
+		toolbox.setSize("100%", "20%");
 	}
 }
