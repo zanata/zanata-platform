@@ -58,7 +58,8 @@
                    rendered="#{projectHome.managed}"/>
         <s:button id="cancel"
                         value="Cancel"
-                         action="#{projectHome.cancel}"/>
+                        propagation="none"
+                       action="#{projectHome.cancel}"/>
     </div>
 
 </a4j:form>

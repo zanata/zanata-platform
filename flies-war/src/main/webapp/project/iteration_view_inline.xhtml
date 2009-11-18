@@ -8,16 +8,13 @@
    xmlns:flies="http://flies.fedorahosted.org/ui"
    xmlns:s="http://jboss.com/products/seam/taglib">
   <div class="list_view_header">
-    <h2>
-      <s:link view="/project/iteration.xhtml" value="#{_iteration.name}" propagation="none">
-        <f:param name="mslug" value="#{projectHome.instance.slug}/#{_iteration.slug}"/>
-      </s:link>
-    </h2>
+    <h2>#{_iteration.name}</h2>
     <s:span rendered="#{_iteration.projectSeries.name != 'default'}" 
             styleClass="series_name">#{_iteration.projectSeries.name}</s:span>
     <div class="menu_items">
       <s:link view="/project/iteration_edit.xhtml" propagation="none" rendered="#{identity.loggedIn}">
-        <f:param name="mslug" value="#{projectHome.instance.slug}/#{_iteration.slug}"/>
+        <f:param name="slug" value="#{_iteration.slug}"/>
+        <f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
         <h:graphicImage value="/img/silk/page_edit.png" />
       </s:link>
     </div>
@@ -30,7 +27,7 @@
     <rich:column>
       <ui:param name="tstatus" value="#{projectIterationDAO.getStatisticsForContainer(_iteration.container.id, tribe.locale.localeId)}" />
       <flies:translation-status-bar
-        title="Total: #{tstatus.total}, Translated: #{tstatus.approved}, Fuzzy #{tstatus.fuzzyMatch}"
+        title="Total: #{tstatus.total}, Translated: #{tstatus.approved}, Need Review #{tstatus.needReview}"
         translated="#{tstatus.approved}" 
         fuzzy="0" 
         untranslated="#{tstatus.notApproved}"/>    </rich:column>

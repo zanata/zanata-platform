@@ -3,6 +3,7 @@ package org.fedorahosted.flies.core.action;
 import java.util.List;
 
 import javax.faces.event.ValueChangeEvent;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 
 import org.fedorahosted.flies.core.dao.ProjectDAO;
@@ -11,6 +12,7 @@ import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.core.model.HProjectSeries;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.hibernate.Session;
+import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
@@ -20,62 +22,57 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.core.Conversation;
 import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.framework.EntityHome;
 import org.jboss.seam.log.Log;
 
 @Name("projectIterationHome")
-@Scope(ScopeType.CONVERSATION)
-public class ProjectIterationHome extends MultiSlugHome<HProjectIteration>{
+@Scope(ScopeType.EVENT)
+public class ProjectIterationHome extends SlugHome<HProjectIteration>{
+	
+	private String slug;
+	private String projectSlug;
 	
 	@Logger
 	Log log;
 	
-	@In(value="#{projectHome.instance}", scope=ScopeType.CONVERSATION, required=false)
-	HIterationProject project;
-	
 	@In(create=true)
 	ProjectDAO projectDAO;
-	
-	@In(create=true)
-	HProjectHome hProjectHome;
 	
 	@Override
 	protected HProjectIteration createInstance() {
 		HProjectIteration iteration = new HProjectIteration();
-		iteration.setProject(project);
+		iteration.setProject((HIterationProject) projectDAO.getBySlug(projectSlug));
 		return iteration;
 	}
 
-	private String managementType;
-	
-	public String getManagementType() {
-		return managementType;
+	public void setSlug(String slug) {
+		this.slug = slug;
+	}
+
+	public String getSlug() {
+		return slug;
 	}
 	
-	public void setManagementType(String managementType) {
-		this.managementType = managementType;
+	public String getProjectSlug() {
+		return projectSlug;
 	}
 	
-	@Begin(join=true)
+	public void setProjectSlug(String projectSlug) {
+		this.projectSlug = projectSlug;
+	}
+	
 	public void validateSuppliedId(){
 		getInstance(); // this will raise an EntityNotFound exception
 					   // when id is invalid and conversation will not
 		               // start
-		Conversation c = Conversation.instance();
-		c.setDescription(getMultiSlug());
-		hProjectHome.setId(getInstance().getContainer().getId());
 	}
 
-	@Override
-	protected HProjectIteration loadInstance() {
-		Session session = (Session) getEntityManager().getDelegate();
-		return (HProjectIteration) session.createCriteria(HProjectIteration.class)
-			.add( Restrictions.naturalId()
-		        .set("project", projectDAO.getBySlug( getSlug(0) ) )
-		        .set("slug", getId() )
-		    )
-			.setCacheable(true).uniqueResult();
+	public void validateProjectSlug() {
+		if(projectDAO.getBySlug(projectSlug) == null) {
+			throw new EntityNotFoundException("no entity with slug " + projectSlug);
+		}
 	}
-
+	
 	public void verifySlugAvailable(ValueChangeEvent e) {
 	    String slug = (String) e.getNewValue();
 	    validateSlug(slug, e.getComponent().getId());
@@ -92,9 +89,9 @@ public class ProjectIterationHome extends MultiSlugHome<HProjectIteration>{
 	
 	public boolean isSlugAvailable(String slug) {
     	try{
-    		getEntityManager().createQuery("from HProjectIteration t where t.slug = :slug and t.project = :project")
+    		getEntityManager().createQuery("from HProjectIteration t where t.slug = :slug and t.project.slug = :projectSlug")
     		.setParameter("slug", slug)
-    		.setParameter("project", getInstance().getProject()).getSingleResult();
+    		.setParameter("projectSlug", projectSlug).getSingleResult();
     		return false;
     	}
     	catch(NoResultException e){
@@ -116,22 +113,27 @@ public class ProjectIterationHome extends MultiSlugHome<HProjectIteration>{
 	}
 	
 	public List<HProjectSeries> getAvailableProjectSeries(){
-		return getEntityManager().createQuery("from HProjectSeries where project = :project")
-			.setParameter("project", getInstance().getProject()).getResultList();
+		return getEntityManager().createQuery("from HProjectSeries where project.slug = :projectSlug")
+			.setParameter("projectSlug", projectSlug).getResultList();
 	}
 
 	public void cancel(){}
-	
-	//@In PublicanImporter publicanImporter;
-	
+
 	@Override
-	public String update() {
-		String retValue = super.update();
-//		if(ManagementTypes.TYPE_LOCAL.equals(getManagementType()) && !getInstance().getLocalDirectory().isEmpty()){
-//			publicanImporter.process(getInstance().getLocalDirectory(), getInstance().getId());
-//		}
-		return retValue;
+	public Object getId() {
+		return projectSlug+"/"+slug;
+	}
+
+	@Override
+	public NaturalIdentifier getNaturalId() {
+		return Restrictions.naturalId()
+			.set("slug", slug)
+			.set("project", projectDAO.getBySlug(projectSlug));
 	}
 	
+	@Override
+	public boolean isIdDefined() {
+		return slug != null && projectSlug != null;
+	}
 	
 }

@@ -10,6 +10,10 @@ import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.HPerson;
 import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.core.model.HProjectSeries;
+import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.NaturalIdentifier;
+import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.In;
@@ -18,23 +22,32 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.core.Conversation;
 import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.framework.EntityHome;
 import org.jboss.seam.security.management.JpaIdentityStore;
 
 @Name("projectHome")
-@Scope(ScopeType.CONVERSATION)
+@Scope(ScopeType.EVENT)
 public class ProjectHome extends SlugHome<HIterationProject> {
 
+	private String slug;
+	
 	@In(required=false, value=JpaIdentityStore.AUTHENTICATED_USER) 
 	HAccount authenticatedAccount;
 	
+	@Override
+	protected HIterationProject loadInstance() {
+		Session session = (Session) getEntityManager().getDelegate();
+		return (HIterationProject) session.createCriteria(getEntityClass())
+		.add( Restrictions.naturalId()
+		        .set("slug", getSlug())
+		    ).setCacheable(true)
+		    .uniqueResult();
+	}
 	
-	@Begin(join = true)
 	public void validateSuppliedId(){
 		getInstance(); // this will raise an EntityNotFound exception
 					   // when id is invalid and conversation will not
 		               // start
-		Conversation c = Conversation.instance();
-		c.setDescription(getInstance().getSlug());
 	}
 
 	public void verifySlugAvailable(ValueChangeEvent e) {
@@ -91,17 +104,41 @@ public class ProjectHome extends SlugHome<HIterationProject> {
 
 	public List<HProjectIteration> getActiveIterations(){
 		return getEntityManager().createQuery(
-				"from HProjectIteration t where t.project = :project and t.active = true")
-				.setParameter("project", getInstance())
+				"from HProjectIteration t where t.project.slug = :projectSlug and t.active = true")
+				.setParameter("projectSlug", slug)
 				.getResultList();
 	}
 
 	public List<HProjectIteration> getRetiredIterations(){
 		return getEntityManager().createQuery(
-				"from HProjectIteration t where t.project = :project and t.active = false")
-				.setParameter("project", getInstance())
+				"from HProjectIteration t where t.project.slug = :projectSlug and t.active = false")
+				.setParameter("projectSlug", slug)
 				.getResultList();
 	}
 	
 	public void cancel(){}
+	
+	public String getSlug() {
+		return slug;
+	}
+	
+	public void setSlug(String slug) {
+		this.slug = slug;
+	}
+	
+	@Override
+	public boolean isIdDefined() {
+		return slug != null;
+	}
+
+	@Override
+	public NaturalIdentifier getNaturalId() {
+		return Restrictions.naturalId().set("slug", slug);
+	}
+	
+	@Override
+	public Object getId() {
+		return slug;
+	}
+	
 }

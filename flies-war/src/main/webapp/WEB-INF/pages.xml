@@ -1,262 +1,202 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pages xmlns="http://jboss.com/products/seam/pages"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.1.xsd"
+<pages xmlns="http://jboss.com/products/seam/pages" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.1.xsd"
+  no-conversation-view-id="/home.xhtml" login-view-id="/account/login.xhtml">
 
-       no-conversation-view-id="/home.xhtml"
-       login-view-id="/account/login.xhtml">
+  <page view-id="*">
+    <navigation>
+      <rule if-outcome="home">
+        <redirect view-id="/home.xhtml" />
+      </rule>
+    </navigation>
+  </page>
 
-	<conversation name="IterationView"
-			parameter-name="mslug"
-			parameter-value="#{redirect.parameters.mslug != null ? redirect.parameters.mslug : (projectIterationHome.multiSlug != null ? projectIterationHome.multiSlug : '')}"
-			/>
+  <page view-id="/search.xhtml" action="#{searchaction.search()}">
+    <param name="q" value="#{searchaction.searchQuery}" />
+    <param name="page" value="#{searchaction.currentPage}" />
+  </page>
 
-	<conversation name="ProjectView"
-			parameter-name="slug"
-			parameter-value="#{redirect.parameters.slug != null ? redirect.parameters.slug : (projectHome.instance.slug != null ? projectHome.instance.slug : '')}" 
-			/>
+  <page view-id="/project/project.xhtml">
+    <param name="slug" value="#{projectHome.slug}" />
+    <action execute="#{projectHome.validateSuppliedId}" />
+  </page>
 
-	<conversation name="TranslationWorkspaceView"
-			parameter-name="wid"
-			parameter-value="#{redirect.parameters.wid != null ? redirect.parameters.wid : (translateAction.workspaceId != null ? translateAction.workspaceId : '')}" 
-			/>
-
-	<conversation name="CommunityView"
-			parameter-name="slug"
-			parameter-value="#{redirect.parameters.slug != null ? redirect.parameters.slug : (communityHome.instance.slug != null ? communityHome.instance.slug : '')}" 
-			/>
-
-	<conversation name="TribeView"
-			parameter-name="id"
-			parameter-value="#{redirect.parameters.id != null ? redirect.parameters.id : (tribeHome.id != null ? tribeHome.id : '')}" 
-			/>
-    
-    <page view-id="*">
-        <navigation>
-            <rule if-outcome="home">
-                <redirect view-id="/home.xhtml"/>
-            </rule>
-        </navigation>
-    </page>
-    
-    <page view-id="/search.xhtml" action="#{searchaction.search()}">
-           <param name="q" value="#{searchaction.searchQuery}"/>
-           <param name="page" value="#{searchaction.currentPage}"/>
-    </page>
-
-    <page view-id="/project/project.xhtml" conversation="ProjectView">
-		<param name="slug" value="#{projectHome.id}"/>
-		<action execute="#{projectHome.validateSuppliedId}" />
-		<!--
-		TODO: We set the descirption in validateSuppliedId() as otherwise this will throw an exception
-		      trying to read instance.name when instance is null...  
-    	<description>#{projectHome.instance != null ? projectHome.instance.name : 'Invalid Project'}</description>
-    	 -->
-    </page>
-
-	<page view-id="/project/create_project.xhtml">
-	   <begin-conversation join="true"/>
-	   <navigation from-action="#{projectHome.persist}">
-	   	  <rule if="#{projectHome.managed}">
-		   	  <end-conversation before-redirect="true"/>
-		      <redirect view-id="/project/project.xhtml">
-	            <param name="slug" value="#{projectHome.instance.slug}"/>
-	          </redirect>
-	   	  </rule>
-	   </navigation>
-
-	   <navigation from-action="#{projectHome.cancel}">
-	   	  <end-conversation before-redirect="true"/>
-         <redirect view-id="/project/home.xhtml" />
-	   </navigation>
-	</page>
-
-    <page view-id="/project/edit.xhtml" conversation="ProjectView">
-	   <param name="slug" value="#{projectHome.id}" />
-
-	    <navigation from-action="#{projectHome.update}">
-	         <redirect view-id="/project/project.xhtml" include-page-params="true" />
-	    </navigation>
-	
-	   <navigation from-action="#{projectHome.cancel}">
-         <redirect view-id="/project/project.xhtml" include-page-params="true"/>
-	   </navigation>
-	   
-    </page>
-
-    <page view-id="/project/iteration.xhtml" conversation="IterationView">
-		<param name="mslug" value="#{projectIterationHome.multiSlug}" />
-		
-		<action execute="#{projectIterationHome.validateSuppliedId}" />
-		<!-- We set the conversation description in validateSuppliedId
-    		<description>#{projectIterationHome.instance.name}</description>
-    	 -->
-    </page>
-
-    <page view-id="/project/iteration_linkage.xhtml" conversation="IterationView">
-		<param name="mslug" value="#{projectIterationHome.multiSlug}" />
-		
-		<action execute="#{projectIterationHome.validateSuppliedId}" />
-
-	    <navigation from-action="#{projectIterationHome.update}">
-	         <redirect view-id="/project/iteration.xhtml" include-page-params="true" />
-	    </navigation>
-	
-	   <navigation from-action="#{projectIterationHome.cancel}">
-         <redirect view-id="/project/iteration.xhtml" include-page-params="true"/>
-	   </navigation>
-    </page>
-
-	<page view-id="/project/add_iteration.xhtml" conversation="ProjectView" >
-	   <param name="slug" value="#{projectHome.id}" />
-		
-	   <action execute="#{projectHome.validateSuppliedId}" />
-	   
-	   <navigation from-action="#{projectIterationHome.persist}">
-	   	  <rule if="#{projectIterationHome.managed}">
-		   	  <end-conversation before-redirect="true"/>
-		      <redirect view-id="/project/iteration.xhtml">
-	            <param name="mslug" value="#{projectHome.instance.slug}/#{projectIterationHome.instance.slug}"/>
-	          </redirect>
-	   	  </rule>
-	   </navigation>
-
-	   <navigation from-action="#{projectIterationHome.cancel}">
-         <redirect view-id="/project/project.xhtml" include-page-params="true" />
-	   </navigation>
-	</page>
-
-    <page view-id="/project/iteration_edit.xhtml" conversation="IterationView">
-		<param name="mslug" value="#{projectIterationHome.multiSlug}" />
-
-	    <navigation from-action="#{projectIterationHome.update}">
-	         <redirect view-id="/project/iteration.xhtml" include-page-params="true" />
-	    </navigation>
-	
-	   <navigation from-action="#{projectIterationHome.cancel}">
-         <redirect view-id="/project/iteration.xhtml" include-page-params="true"/>
-	   </navigation>
-	   
-    </page>
-
-    <page view-id="/translate.xhtml" conversation="TranslationWorkspaceView">
-    	<description>#{translateAction.workspaceId}</description>
-    	<begin-conversation conversation="TranslationWorkspaceView" join="true" if="#{not translateAction.conversationActive}"/>
-    	<action execute="#{translateAction.initialize()}" if="#{not translateAction.conversationActive}" />
-	</page>
-
-
-    <page view-id="/community/community.xhtml" conversation="CommunityView">
-		<param name="slug" value="#{communityHome.id}"/>
-		<action execute="#{communityHome.validateSuppliedId}" />
-	</page>
-
-	<page view-id="/community/create_community.xhtml">
-	   <begin-conversation join="true"/>
-	   <navigation from-action="#{communityHome.persist}">
-	   	  <rule if="#{communityHome.managed}">
-		   	  <end-conversation before-redirect="true"/>
-		      <redirect view-id="/community/community.xhtml">
-	            <param name="slug" value="#{communityHome.instance.slug}"/>
-	          </redirect>
-	   	  </rule>
-	   </navigation>
-
-	   <navigation from-action="#{communityHome.cancel}">
-	   	  <end-conversation before-redirect="true"/>
-         <redirect view-id="/community/home.xhtml" />
-	   </navigation>
-	</page>
-
-    <page view-id="/community/edit.xhtml" conversation="CommunityView">
-	   
-		<param name="slug" value="#{communityHome.id}"/>
-
-	    <navigation from-action="#{communityHome.update}">
-	         <redirect view-id="/community/community.xhtml" include-page-params="true"/>
-	    </navigation>
-	
-	   <navigation from-action="#{communityHome.cancel}">
-         <redirect view-id="/community/community.xhtml" include-page-params="true"/>
-	   </navigation>
-	   
-    </page>
-
-    <page view-id="/tribe/tribe.xhtml" conversation="TribeView">
-		<param name="id" value="#{tribeHome.id}"/>
-		<action execute="#{tribeHome.validateSuppliedId}" />
-	</page>
-
-
-    
-    <page view-id="/account/activate.xhtml">
-    	<param name="key" value="#{activate.activationKey}"/>
-    	<action execute="#{activate.validateActivationKey}"/>
-    	<action execute="#{activate.activate}"/>
-    </page>
-
-    <page view-id="/account/password_reset.xhtml">
-    	<param name="key" value="#{passwordReset.activationKey}"/>
-    	<action execute="#{passwordReset.validateActivationKey}"/>
-    </page>
-
-    <exception class="org.fedorahosted.flies.account.action.KeyNotFoundException">
-        <redirect view-id="/error.xhtml">
-            <message severity="error">Invalid Activation Key</message>
+  <page view-id="/project/create_project.xhtml">
+    <navigation from-action="#{projectHome.persist}">
+      <rule if="#{projectHome.managed}">
+        <redirect view-id="/project/project.xhtml">
+          <param name="slug" value="#{projectHome.instance.slug}" />
         </redirect>
-    </exception>
+      </rule>
+    </navigation>
 
-    <exception class="org.jboss.seam.framework.EntityNotFoundException">
-        <redirect view-id="/error.xhtml">
-            <message severity="warn">Record not found</message>
-        </redirect>
-    </exception>
-    
-    <exception class="javax.persistence.EntityNotFoundException">
-        <redirect view-id="/error.xhtml">
-            <message severity="warn">Record not found</message>
-        </redirect>
-    </exception>
+    <navigation from-action="#{projectHome.cancel}">
+      <redirect view-id="/project/home.xhtml" />
+    </navigation>
+  </page>
 
-    <exception class="javax.persistence.EntityExistsException">
-        <redirect view-id="/error.xhtml">
-            <message severity="warn">Duplicate record</message>
+  <page view-id="/project/edit.xhtml">
+    <param name="slug" value="#{projectHome.slug}" />
+
+    <navigation from-action="#{projectHome.update}">
+      <redirect view-id="/project/project.xhtml">
+        <param name="slug" value="#{projectHome.slug}" />
+      </redirect>
+    </navigation>
+
+    <navigation from-action="#{projectHome.cancel}">
+      <redirect view-id="/project/project.xhtml">
+        <param name="slug" value="#{projectHome.slug}" />
+      </redirect>
+    </navigation>
+
+  </page>
+
+  <page view-id="/project/add_iteration.xhtml">
+    <param name="projectSlug" value="#{projectIterationHome.projectSlug}" />
+    <action execute="#{projectIterationHome.validateProjectSlug}" />
+
+    <navigation from-action="#{projectIterationHome.persist}">
+      <rule if="#{projectIterationHome.managed}">
+        <redirect view-id="/project/project.xhtml">
+          <param name="slug" value="#{projectIterationHome.projectSlug}" />
         </redirect>
-    </exception>
-    
-    <exception class="javax.persistence.OptimisticLockException">
-        <end-conversation/>
-        <redirect view-id="/error.xhtml">
-            <message severity="warn">Another user changed the same data, please try again</message>
+      </rule>
+    </navigation>
+
+    <navigation from-action="#{projectIterationHome.cancel}">
+      <redirect view-id="/project/project.xhtml">
+        <param name="slug" value="#{projectIterationHome.projectSlug}" />
+      </redirect>
+    </navigation>
+  </page>
+
+  <page view-id="/project/iteration_edit.xhtml">
+    <param name="slug" value="#{projectIterationHome.slug}" />
+    <param name="projectSlug" value="#{projectIterationHome.projectSlug}" />
+
+    <action execute="#{projectIterationHome.validateSuppliedId}" />
+
+    <navigation from-action="#{projectIterationHome.update}">
+      <redirect view-id="/project/project.xhtml">
+        <param name="slug" value="#{projectIterationHome.projectSlug}" />
+      </redirect>
+    </navigation>
+
+    <navigation from-action="#{projectIterationHome.cancel}">
+      <redirect view-id="/project/project.xhtml">
+        <param name="slug" value="#{projectIterationHome.projectSlug}" />
+      </redirect>
+    </navigation>
+  </page>
+
+  <page view-id="/community/community.xhtml">
+    <param name="slug" value="#{communityHome.id}" />
+    <action execute="#{communityHome.validateSuppliedId}" />
+  </page>
+
+  <page view-id="/community/create_community.xhtml">
+    <navigation from-action="#{communityHome.persist}">
+      <rule if="#{communityHome.managed}">
+        <redirect view-id="/community/community.xhtml">
+          <param name="slug" value="#{communityHome.instance.slug}" />
         </redirect>
-    </exception>
-    
-    <exception class="org.jboss.seam.security.AuthorizationException">
-        <redirect view-id="/error.xhtml">
-            <message severity="error">You don't have permission to access this resource</message>
-        </redirect>
-    </exception>
-    
-    <exception class="org.jboss.seam.security.NotLoggedInException">
-        <redirect view-id="/account/login.xhtml">
-            <message severity="warn">#{messages['org.jboss.seam.NotLoggedIn']}</message>
-        </redirect>
-    </exception>
-    
-    <exception class="javax.faces.application.ViewExpiredException">
-        <redirect view-id="/error.xhtml">
-            <message severity="warn">Your session has timed out, please try again</message>
-        </redirect>
-    </exception>
-    
-    <exception class="org.jboss.seam.ConcurrentRequestTimeoutException" log-level="trace">
-      <http-error error-code="503" />
-    </exception>
-     
-    <exception>
-        <redirect view-id="/error.xhtml">
-            <message severity="error">Unexpected error, please try again</message>
-        </redirect>
-    </exception>
-    
+      </rule>
+    </navigation>
+    <navigation from-action="#{communityHome.cancel}">
+      <redirect view-id="/community/home.xhtml" />
+    </navigation>
+  </page>
+
+  <page view-id="/community/edit.xhtml">
+    <param name="slug" value="#{communityHome.id}" />
+
+    <navigation from-action="#{communityHome.update}">
+      <redirect view-id="/community/community.xhtml"
+        include-page-params="true" />
+    </navigation>
+
+    <navigation from-action="#{communityHome.cancel}">
+      <redirect view-id="/community/community.xhtml"
+        include-page-params="true" />
+    </navigation>
+  </page>
+
+  <page view-id="/tribe/tribe.xhtml">
+    <param name="id" value="#{tribeHome.id}" />
+    <action execute="#{tribeHome.validateSuppliedId}" />
+  </page>
+
+  <page view-id="/account/activate.xhtml">
+    <param name="key" value="#{activate.activationKey}" />
+    <action execute="#{activate.validateActivationKey}" />
+    <action execute="#{activate.activate}" />
+  </page>
+
+  <page view-id="/account/password_reset.xhtml">
+    <param name="key" value="#{passwordReset.activationKey}" />
+    <action execute="#{passwordReset.validateActivationKey}" />
+  </page>
+
+  <exception
+    class="org.fedorahosted.flies.account.action.KeyNotFoundException">
+    <redirect view-id="/error.xhtml">
+      <message severity="error">Invalid Activation Key</message>
+    </redirect>
+  </exception>
+
+  <exception class="org.jboss.seam.framework.EntityNotFoundException">
+    <redirect view-id="/error.xhtml">
+      <message severity="warn">Record not found</message>
+    </redirect>
+  </exception>
+
+  <exception class="javax.persistence.EntityNotFoundException">
+    <redirect view-id="/error.xhtml">
+      <message severity="warn">Record not found</message>
+    </redirect>
+  </exception>
+
+  <exception class="javax.persistence.EntityExistsException">
+    <redirect view-id="/error.xhtml">
+      <message severity="warn">Duplicate record</message>
+    </redirect>
+  </exception>
+
+  <exception class="javax.persistence.OptimisticLockException">
+    <end-conversation />
+    <redirect view-id="/error.xhtml">
+      <message severity="warn">Another user changed the same data, please try again</message>
+    </redirect>
+  </exception>
+
+  <exception class="org.jboss.seam.security.AuthorizationException">
+    <redirect view-id="/error.xhtml">
+      <message severity="error">You don't have permission to access this resource</message>
+    </redirect>
+  </exception>
+
+  <exception class="org.jboss.seam.security.NotLoggedInException">
+    <redirect view-id="/account/login.xhtml">
+      <message severity="warn">#{messages['org.jboss.seam.NotLoggedIn']}</message>
+    </redirect>
+  </exception>
+
+  <exception class="javax.faces.application.ViewExpiredException">
+    <redirect view-id="/error.xhtml">
+      <message severity="warn">Your session has timed out, please try again</message>
+    </redirect>
+  </exception>
+
+  <exception class="org.jboss.seam.ConcurrentRequestTimeoutException"
+    log-level="trace">
+    <http-error error-code="503" />
+  </exception>
+
+  <exception>
+    <redirect view-id="/error.xhtml">
+      <message severity="error">Unexpected error, please try again</message>
+    </redirect>
+  </exception>
+
 </pages>

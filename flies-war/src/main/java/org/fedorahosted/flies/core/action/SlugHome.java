@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.core.action;
 
 import org.hibernate.Session;
+import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.framework.EntityHome;
 
@@ -9,7 +10,7 @@ import org.jboss.seam.framework.EntityHome;
  * 
  * @author asgeirf
  */
-public class SlugHome<E> extends EntityHome<E>{
+public abstract class SlugHome<E> extends EntityHome<E>{
 	
 	private static final long serialVersionUID = -992545184963409194L;
 	
@@ -17,10 +18,15 @@ public class SlugHome<E> extends EntityHome<E>{
 	protected E loadInstance() {
 		Session session = (Session) getEntityManager().getDelegate();
 		return (E) session.createCriteria(getEntityClass())
-		.add( Restrictions.naturalId()
-		        .set("slug", getId())
-		    ).setCacheable(true)
-		    .uniqueResult();
+		.add( getNaturalId() ).uniqueResult();
 	}
+	
+	public abstract NaturalIdentifier getNaturalId();
+	
+	@Override
+	public abstract boolean isIdDefined();
+	
+	@Override
+	public abstract Object getId();
 	
 }

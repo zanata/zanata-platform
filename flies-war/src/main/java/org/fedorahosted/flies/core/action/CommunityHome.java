@@ -5,6 +5,8 @@ import javax.persistence.NoResultException;
 
 import org.fedorahosted.flies.core.model.HCommunity;
 import org.fedorahosted.flies.core.model.HPerson;
+import org.hibernate.criterion.NaturalIdentifier;
+import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.Name;
@@ -17,6 +19,8 @@ import org.jboss.seam.faces.FacesMessages;
 @Scope(ScopeType.CONVERSATION)
 public class CommunityHome extends SlugHome<HCommunity>{
 
+	private String slug;
+	
 	@Override
 	@Restrict("#{identity.loggedIn}")
 	protected HCommunity createInstance() {
@@ -25,13 +29,10 @@ public class CommunityHome extends SlugHome<HCommunity>{
 		return instance;
 	}
 
-	@Begin(join = true)
 	public void validateSuppliedId(){
 		getInstance(); // this will raise an EntityNotFound exception
 					   // when id is invalid and conversation will not
 		               // start
-		Conversation c = Conversation.instance();
-		c.setDescription(getInstance().getName());
 	}
 	
 	public void verifySlugAvailable(ValueChangeEvent e) {
@@ -69,4 +70,28 @@ public class CommunityHome extends SlugHome<HCommunity>{
 	}
 	
 	public void cancel(){}
+	
+	
+	@Override
+	public NaturalIdentifier getNaturalId() {
+		return Restrictions.naturalId().set("slug", slug);
+	}
+	
+	@Override
+	public boolean isIdDefined() {
+		return slug != null;
+	}
+	
+	public String getSlug() {
+		return slug;
+	}
+	
+	public void setSlug(String slug) {
+		this.slug = slug;
+	}
+	
+	@Override
+	public Object getId() {
+		return slug;
+	}
 }

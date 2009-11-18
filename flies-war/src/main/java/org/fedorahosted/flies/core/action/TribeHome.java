@@ -20,7 +20,7 @@ import org.jboss.seam.international.StatusMessage.Severity;
 import org.jboss.seam.security.management.JpaIdentityStore;
 
 @Name("tribeHome")
-@Scope(ScopeType.CONVERSATION)
+@Scope(ScopeType.EVENT)
 public class TribeHome extends EntityHome<HTribe>{
 
 	private static final long serialVersionUID = 5139154491040234980L;
@@ -37,13 +37,10 @@ public class TribeHome extends EntityHome<HTribe>{
 		    .uniqueResult();
 	}
 	
-	@Begin(join = true)
 	public void validateSuppliedId(){
 		getInstance(); // this will raise an EntityNotFound exception
 					   // when id is invalid and conversation will not
 		               // start
-		Conversation c = Conversation.instance();
-		c.setDescription(getInstance().getLocale().getId());
 	}
 	
 	@In(required=false, value=JpaIdentityStore.AUTHENTICATED_USER) 
