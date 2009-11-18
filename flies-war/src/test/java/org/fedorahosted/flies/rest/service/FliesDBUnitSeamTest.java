@@ -1,21 +1,27 @@
 package org.fedorahosted.flies.rest.service;
 
 import org.jboss.seam.mock.DBUnitSeamTest;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 
 public abstract class FliesDBUnitSeamTest extends DBUnitSeamTest {
 
 	private boolean databaseSet;
 	private boolean jndiNameSet;
 	private boolean binaryDirSet;
+	
+	@Override
+	@BeforeMethod
+	public void prepareDataBeforeTest() {
+		setDatabaseParameters();
+		super.prepareDataBeforeTest();
+	}
 
-	@BeforeClass
-	public void setDatabaseParameters() throws Exception {
+	public void setDatabaseParameters() {
 		if(!binaryDirSet)
 			setBinaryDir("");
 		if (!databaseSet)
 			setDatabase("hsql");
-		if (jndiNameSet)
+		if (!jndiNameSet)
 			setDatasourceJndiName("java:/fliesDatasource");
 	}
 	
