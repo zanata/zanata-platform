@@ -235,8 +235,8 @@
   	<property name="name">Administrator</property>
   </component>
   
-  <component name="dbunitImporter" class="org.fedorahosted.flies.util.DBUnitImporter" installed="@testDataImport@">
-    <property name="database">${env.dbunit.type}</property>
+  <component name="dbunitImporter" class="org.fedorahosted.flies.util.DBUnitImporter" installed="@env.import.testdata@">
+    <property name="database">@env.dbunit.type@</property>
     <property name="datasourceJndiName">java:/fliesDatasource</property>
     <property name="binaryDir">META-INF/testdata</property>
     <property name="datasets">
@@ -247,7 +247,7 @@
     </property>
   </component>
   <component name="dbunitImporterTribes" class="org.fedorahosted.flies.util.DBUnitImporter" installed="true">
-    <property name="database">${env.dbunit.type}</property>
+    <property name="database">@env.dbunit.type@</property>
     <property name="datasourceJndiName">java:/fliesDatasource</property>
     <property name="binaryDir">META-INF/testdata</property>
     <property name="datasets">
