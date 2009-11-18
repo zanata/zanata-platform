@@ -68,12 +68,6 @@
     <to last="true">/project/home.seam$1</to>
   </rule>
 
-  <!-- ProjectIteration Rules -->
-
-  <rule>
-    <from casesensitive="true">^/project/([^/]+)/(.+)?$</from>
-    <to last="true">/project/iteration.seam\?mslug=$1/$2</to>
-  </rule>
 
   <!-- account / -->
 
@@ -149,10 +143,6 @@
   <outbound-rule>
     <from>^(/.+)?/project/home.seam(.+)?$</from>
     <to>$1/project/list$2</to>
-  </outbound-rule>
-  <outbound-rule>
-    <from>^(/.+)?/project/iteration.seam\?mslug=([^/]+|^%2F+)(/|%2F)(.+)$</from>
-    <to>$1/project/$2/$4</to>
   </outbound-rule>
   <outbound-rule>
     <from>^(/.+)?/account/login.seam(.+)?$</from>
