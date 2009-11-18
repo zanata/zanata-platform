@@ -31,7 +31,7 @@ public class DBUnitImporter extends DBUnitSeamTest {
     public static final String IMPORT_COMPLETE_EVENT = "DBUnitImporter.importComplete";
 
     @Logger
-    static Log log;
+    private static Log log;
     
     private boolean prepared;
 
@@ -70,7 +70,7 @@ public class DBUnitImporter extends DBUnitSeamTest {
         // make sure prepare() gets called, whether using seam 2.2.0 or 2.2.1
         prepare();
         super.prepareDataBeforeTest();
-        Events.instance().raiseEvent(IMPORT_COMPLETE_EVENT);
+        Events.instance().raiseEvent(IMPORT_COMPLETE_EVENT); // TODO include component name of this instance
     }
 
 }
