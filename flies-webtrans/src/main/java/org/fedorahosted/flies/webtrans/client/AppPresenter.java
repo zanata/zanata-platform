@@ -1,15 +1,21 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.gwt.model.ProjectContainerId;
+import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
+import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceResult;
 import org.fedorahosted.flies.webtrans.client.Application.WindowResizeEvent;
 import org.fedorahosted.flies.webtrans.client.LoginPresenter.LoggedIn;
 import org.fedorahosted.flies.webtrans.client.auth.Identity;
 import org.fedorahosted.flies.webtrans.client.auth.LoginResult;
+import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorPresenter;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -19,6 +25,7 @@ import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -40,16 +47,20 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 	private final TopMenuPresenter topMenuPresenter;
 	private final EventProcessor eventProcessor;
 	private final LoginPresenter loginPresenter;
+	private final DispatchAsync dispatcher;
+	private String workspaceName;
+	private String localeName;
 	
 	@Inject
 	public AppPresenter(Display display, EventBus eventBus,
+			    CachingDispatchAsync dispatcher,
 				final WestNavigationPresenter leftNavigationPresenter,
 				final WebTransEditorPresenter webTransEditorPresenter,
 				final TopMenuPresenter topMenuPresenter,
 				final EventProcessor eventProcessor,
 				final LoginPresenter loginPresenter) {
 		super(display, eventBus);
-		
+		this.dispatcher = dispatcher;
 		this.westNavigationPresenter = leftNavigationPresenter;
 		this.webTransEditorPresenter = webTransEditorPresenter;
 		this.topMenuPresenter = topMenuPresenter;
@@ -128,16 +139,77 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		
 	}
 	
+	private static LocaleId findLocaleId() {
+		String localeId = Window.Location.getParameter("localeId");
+		return localeId == null ? null : new LocaleId(localeId);
+	}
+	
+	private static ProjectContainerId findProjectContainerId() {
+		String projContainerId = Window.Location.getParameter("projContainerId");
+		if(projContainerId == null)
+			return null;
+		try{
+			int id = Integer.parseInt(projContainerId);
+			return new ProjectContainerId(id);
+		}
+		catch(NumberFormatException nfe){
+			return null;
+		}
+	}
+	
 	@Override
 	protected void onBind() {
 		loginPresenter.bind();
 		loginPresenter.ensureLoggedIn(new LoggedIn() {
 			@Override
 			public void onSuccess() {
-				bindApp();
+				dispatcher.execute(new ActivateWorkspaceAction(findProjectContainerId(), findLocaleId()), new AsyncCallback<ActivateWorkspaceResult>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						loginPresenter.bind();
+						loginPresenter.ensureLoggedIn(new LoggedIn() {
+							@Override
+							public void onSuccess() {
+//								dispatcher.execute(new ActivateWorkspaceAction(findProjectContainerId(), findLocaleId()), new AsyncCallback<ActivateWorkspaceResult>() {
+//									@Override
+//									public void onFailure(Throwable caught) {
+//									}
+//									@Override
+//									public void onSuccess(ActivateWorkspaceResult result) {
+//										setWorkspaceName(result.getWorkspaceName());
+//										setLocaleName(result.getLocaleName());
+										bindApp();
+//									}
+//								});
+								}
+							});
+						}
+					@Override
+					public void onSuccess(ActivateWorkspaceResult result) {
+						setWorkspaceName(result.getWorkspaceName());
+						setLocaleName(result.getLocaleName());
+						bindApp();
+					}
+				});
 			}
 		});
 		
+	}
+
+	private void setWorkspaceName(String workspaceName) {
+		this.workspaceName = workspaceName;
+	}
+	
+	public String getWorkspaceName() {
+		return workspaceName;
+	}
+	
+	private void setLocaleName(String localeName) {
+		this.localeName = localeName;
+	}
+	
+	public String getLocaleName() {
+		return localeName;
 	}
 
 	@Override

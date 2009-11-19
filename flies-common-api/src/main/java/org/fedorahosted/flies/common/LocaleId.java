@@ -29,7 +29,7 @@ public final class LocaleId implements Serializable{
 	public boolean equals(Object obj) {
 		if(obj == this) return true;
 		if (!(obj instanceof LocaleId) ) return false;
-		return this.id == ((LocaleId)obj).id;
+		return this.id.equals(((LocaleId)obj).id);
 	}
 	
 	@Override

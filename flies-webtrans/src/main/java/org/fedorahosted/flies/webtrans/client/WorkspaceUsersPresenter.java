@@ -53,7 +53,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 		super(display, eventBus);
 		this.workspaceContext = workspaceContext;
 		this.dispatcher = dispatcher;
-		loadTranslatorList();
+		
 	}
 	
 	
@@ -64,15 +64,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 
 	@Override
 	protected void onBind() {
-//		Person [] translators = new Person[]{
-//			new Person( new PersonId("bob"), "Bob Smith"),
-//			new Person( new PersonId("jane"), "Jane English"),
-//			new Person( new PersonId("bill"), "Bill Martin")
-//			};	
-		
-	
-		
-		
+		loadTranslatorList();
 		final DecoratedPopupPanel userPopupPanel = new DecoratedPopupPanel(true);
 		
 		getDisplay().getNodeMouseOver().addNodeMouseOverHandler(new MouseOverHandler() {
@@ -120,8 +112,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 			}
 			@Override
 			public void onSuccess(GetTranslatorListResult result) {
-				
-				getDisplay().getFilter().setList(Arrays.asList(result.getTranslatorList()));
+				getDisplay().getFilter().setList(result.getTranslatorList());
 			}
 	});		
 	}

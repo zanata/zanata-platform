@@ -1,12 +1,12 @@
 package org.fedorahosted.flies.webtrans.gwt;
 
+import java.util.ArrayList;
+
 import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.core.dao.PersonDAO;
-import org.fedorahosted.flies.core.model.HPerson;
+import org.fedorahosted.flies.core.dao.AccountDAO;
 import org.fedorahosted.flies.gwt.model.Person;
 import org.fedorahosted.flies.gwt.model.PersonId;
 import org.fedorahosted.flies.gwt.rpc.GetTranslatorList;
@@ -34,7 +34,7 @@ public class GetTranslatorListHandler implements ActionHandler<GetTranslatorList
 	
 	@In TranslationWorkspaceManager translationWorkspaceManager;
 	
-	@In PersonDAO personDAO;
+	@In AccountDAO accountDAO;
 
 	@Override
 	public GetTranslatorListResult execute(GetTranslatorList action, 
@@ -48,13 +48,12 @@ public class GetTranslatorListHandler implements ActionHandler<GetTranslatorList
 		
 		ImmutableSet<PersonId> personIdlist = translationWorkspace.getUsers();
 
-		//Need to change the PersonIdlist to Person list
-		
-		Person[] translators = new Person[]{
-				new Person( new PersonId("bob"), "Bob Smith"),
-				new Person( new PersonId("jane"), "Jane English"),
-				new Person( new PersonId("bill"), "Bill Martin")
-		};	
+		//Use AccountDAO to convert the PersonId to Person
+		ArrayList<Person> translators = new ArrayList<Person>();
+		for(PersonId personId:personIdlist) {
+			Person translator = new Person(personId, accountDAO.getByUsername(personId.toString()).getPerson().getName());
+			translators.add(translator);
+		}
 		
 		return new GetTranslatorListResult(translators);
 	}
