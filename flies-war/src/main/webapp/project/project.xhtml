@@ -45,11 +45,6 @@
     <s:link styleClass="action_link" value="Edit Project" view="/project/edit.xhtml" propagation="none">
       <f:param name="slug" value="#{projectHome.instance.slug}"/>
     </s:link>
-    <s:link styleClass="action_link" id="delete"
-                  value="Delete Project"
-                 action="#{projectHome.remove}"
-                 view="/project/home.xhtml"
-              immediate="true" />
     <s:link styleClass="action_link" view="/project/add_iteration.xhtml" value="Add Iteration" propagation="none">
     	<f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
     </s:link>
