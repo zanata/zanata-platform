@@ -19,6 +19,8 @@ import org.fedorahosted.flies.webtrans.client.DocumentSelectionHandler;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent;
 import org.fedorahosted.flies.webtrans.client.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent.Severity;
+import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
+import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.editor.DocumentEditorPresenter;
 import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
@@ -122,6 +124,25 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 			@Override
 			public void onFilterDisabled(FilterDisabledEvent event) {
 				display.clearContentFilter();
+			}
+		}));
+		
+		registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler() {
+			@Override
+			public void onTransUnitUpdated(TransUnitUpdatedEvent event) {
+				if(documentId != null && documentId.equals(event.getDocumentId())) {
+					if(currentSelection != null && currentSelection.getId().equals(event.getTransUnitId())) {
+						// handle change in current selection
+						eventBus.fireEvent(new NotificationEvent(Severity.Warning, "Someone else updated this translation unit. you're in trouble..."));
+						//display.getTableModel().setRowValue(row, rowValue);
+					}
+					display.getTableModel().clearCache();
+					// TODO add model with methods such as
+					// getRowIndex(TransUnitId) 
+					// - add TU index to model
+					display.reloadPage();
+					//dispatcher.execute(new GetTransUnits(documentId, localeId, page*pageSize+rowOffset, 1, count), callback)
+				}
 			}
 		}));
 		

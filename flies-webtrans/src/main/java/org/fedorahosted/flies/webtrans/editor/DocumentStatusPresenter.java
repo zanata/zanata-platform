@@ -88,6 +88,7 @@ public class DocumentStatusPresenter extends TranslationStatsBarPresenter {
 				getDisplay().setStatus((int) result.getFuzzy(), (int)result.getTranslated(), (int)result.getUntranslated());
 				latestStatusCountOffset = result.getSequence();
 				updateHandlerRegistration = eventBus.addHandler(TransUnitUpdatedEvent.getType(), updateHandler);
+				// TODO move this registration to before getting the count
 			}
 	});
 	}	
