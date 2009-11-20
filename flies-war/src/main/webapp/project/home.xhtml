@@ -11,7 +11,9 @@
   <ui:define name="left_content">
     <rich:panel rendered="#{identity.loggedIn}">
       <f:facet name="header">Actions</f:facet>
-      <s:link styleClass="action_link" value="Create project" 
+      <s:link styleClass="action_link"
+      				rendered="#{s:hasRole('admin')}" 
+      				value="Create project" 
                     view="/project/create_project.xhtml"
                     propagation="none"/>
     </rich:panel>

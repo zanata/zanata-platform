@@ -36,6 +36,7 @@
   </page>
 
   <page view-id="/project/edit.xhtml">
+    <restrict>#{s:hasRole('admin')}</restrict>
     <param name="slug" value="#{projectHome.slug}" />
 
     <navigation from-action="#{projectHome.update}">

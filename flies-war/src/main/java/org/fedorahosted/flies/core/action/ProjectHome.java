@@ -77,7 +77,7 @@ public class ProjectHome extends SlugHome<HIterationProject> {
 	}
 	
 	@Override
-	@Restrict("#{identity.loggedIn}")
+	@Restrict("#{s:hasRole('admin')}")
 	public String persist() {
 		
 		if(!validateSlug(getInstance().getSlug(), "slug"))

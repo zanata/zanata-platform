@@ -42,10 +42,10 @@
   
   <rich:panel rendered="#{identity.loggedIn}">
     <f:facet name="header">Actions</f:facet>
-    <s:link styleClass="action_link" value="Edit Project" view="/project/edit.xhtml" propagation="none">
+    <s:link styleClass="action_link" rendered="#{s:hasRole('admin')}" value="Edit Project" view="/project/edit.xhtml" propagation="none">
       <f:param name="slug" value="#{projectHome.instance.slug}"/>
     </s:link>
-    <s:link styleClass="action_link" view="/project/add_iteration.xhtml" value="Add Iteration" propagation="none">
+    <s:link styleClass="action_link" rendered="#{s:hasRole('admin')}" view="/project/add_iteration.xhtml" value="Add Iteration" propagation="none">
     	<f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
     </s:link>
   </rich:panel>
