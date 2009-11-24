@@ -8,6 +8,7 @@ import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.gwt.auth.AuthenticationError;
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceResult;
+import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.security.FliesIdentity;
 import org.fedorahosted.flies.webtrans.TranslationWorkspace;
 import org.fedorahosted.flies.webtrans.TranslationWorkspaceManager;
@@ -40,9 +41,25 @@ public class ActivateWorkspaceHandler implements ActionHandler<ActivateWorkspace
 		
 		workspace.registerTranslator(AuthenticateHandler.retrieveSessionId(), AuthenticateHandler.retrievePersonId());
 		
-//		HProjectContainer hProjectContainer = (HProjectContainer) session.get(HProjectContainer.class, action.getProjectContainerId().getId());
+		HProjectContainer hProjectContainer = (HProjectContainer) session.get(HProjectContainer.class, action.getProjectContainerId().getId());
 		
-		return new ActivateWorkspaceResult("My Project v 1.0", "My Language");
+		String iterationName = (String)session.createQuery(
+				"select it.name " +
+				"from HProjectIteration it " +
+				"where it.container.id = :containerId "
+				)
+				.setParameter("containerId", hProjectContainer.getId())
+				.uniqueResult();
+		
+		String projectName = (String)session.createQuery(
+				"select it.project.name " +
+				"from HProjectIteration it " +
+				"where it.container.id = :containerId "
+				)
+				.setParameter("containerId", hProjectContainer.getId())
+				.uniqueResult();
+
+		return new ActivateWorkspaceResult(projectName+" "+iterationName, workspace.getLocale().toString());
 	}
 
 	@Override
