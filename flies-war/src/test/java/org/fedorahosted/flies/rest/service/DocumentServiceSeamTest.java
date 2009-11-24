@@ -170,7 +170,7 @@ public class DocumentServiceSeamTest extends FliesDBUnitSeamTest {
 		assertThat( doc.getRevision(), is(1) );
 		Link link = doc.findLinkByRel(Relationships.SELF); 
 		assertThat( link, notNullValue() );
-		assertThat( link.getHref().toString(), endsWith(url+Encode.encodeQueryString(docUrl)) );
+		assertThat( link.getHref().toString(), endsWith(url+docUrl) );
 		
 		link = doc.findLinkByRel(Relationships.DOCUMENT_CONTAINER); 
 		assertThat( link, notNullValue() );

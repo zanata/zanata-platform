@@ -1,5 +1,7 @@
 package org.fedorahosted.flies.rest.service;
 
+import org.jboss.resteasy.util.Encode;
+
 public final class URIHelper{
 
 	private URIHelper(){}
