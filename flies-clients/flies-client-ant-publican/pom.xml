@@ -2,7 +2,7 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>flies-client-ant-publican</artifactId>
-  <name>Flies Ant-Rest Client for Publican</name>
+  <name>Flies Ant-REST Client for Publican</name>
   <parent>
     <groupId>org.fedorahosted.flies</groupId>
     <artifactId>flies-clients</artifactId>
