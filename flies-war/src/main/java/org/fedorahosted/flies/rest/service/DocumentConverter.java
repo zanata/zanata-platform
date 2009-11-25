@@ -160,7 +160,7 @@ public class DocumentConverter {
 	 * @param hDocument
 	 * @param newRevision
 	 */
-	public void createChildren(Document document, HDocument hDocument, int newRevision) {
+	private void createChildren(Document document, HDocument hDocument, int newRevision) {
 		for(DocumentResource resource : document.getResources()) {
 			HDocumentResource hResource = create(resource, hDocument, null);
 			hDocument.getResources().add(hResource);
@@ -182,7 +182,7 @@ public class DocumentConverter {
 		
 	}
 
-	public void mergeChildren(Document document, HDocument hDocument){
+	private void mergeChildren(Document document, HDocument hDocument){
 
 		Map<String, HDocumentResource> existingResources = toMap(hDocument.getResources());
 		
@@ -223,7 +223,7 @@ public class DocumentConverter {
 		}
 	}
 	
-	public void mergeChildren(Container container, HParentResource hParentResource, int newRevision){
+	private void mergeChildren(Container container, HParentResource hParentResource, int newRevision){
 		Map<String, HDocumentResource> existingResources = toMap(hParentResource.getResources());
 		
 		List<HDocumentResource> finalHResources = hParentResource.getResources();
@@ -272,7 +272,7 @@ public class DocumentConverter {
 		(resource instanceof DataHook && hResource instanceof HDataHook) ||
 		(resource instanceof Reference && hResource instanceof HReference);
 	}
-	public void merge(DocumentResource resource, HDocumentResource hResource, int newRevision){
+	private void merge(DocumentResource resource, HDocumentResource hResource, int newRevision){
 		if(!areOfSameType(resource, hResource))
 			throw new IllegalArgumentException("Resource and HResource must be of same type");
 		if(resource instanceof TextFlow) 
@@ -287,7 +287,7 @@ public class DocumentConverter {
 			throw new RuntimeException("missing type - programming error");
 		
 	}
-	public void merge(TextFlow textFlow, HTextFlow hTextFlow, int newRevision){
+	private void merge(TextFlow textFlow, HTextFlow hTextFlow, int newRevision){
 		if(!hTextFlow.getContent().equals(textFlow.getContent())){
 			
 			// save old version to history
@@ -318,17 +318,17 @@ public class DocumentConverter {
 		}
 	}	
 	
-	public void merge(TextFlowTarget textFlowTarget, HTextFlowTarget hTextFlowTarget, int newRevision) {
+	private void merge(TextFlowTarget textFlowTarget, HTextFlowTarget hTextFlowTarget, int newRevision) {
 		if( !hTextFlowTarget.getContent().equals(textFlowTarget.getContent())){
 			
 		}
 	}
 	
-	public HTextFlowTarget create(TextFlowTarget textFlowTarget, int newRevision){
+	private HTextFlowTarget create(TextFlowTarget textFlowTarget, int newRevision){
 		return null;
 	}
 	
-	public void merge(Container container, HContainer hContainer, int newRevision){
+	private void merge(Container container, HContainer hContainer, int newRevision){
 		mergeChildren(container, hContainer, newRevision);
 		// if a child is updated, we update the container version as well
 		for(HDocumentResource child: hContainer.getResources()) {
@@ -338,10 +338,10 @@ public class DocumentConverter {
 		}
 	}
 	
-	public void merge(DataHook dataHook, HDataHook hDataHook, int newRevision){
+	private void merge(DataHook dataHook, HDataHook hDataHook, int newRevision){
 	}	
 	
-	public void merge(Reference reference, HReference hReference, int newRevision){
+	private void merge(Reference reference, HReference hReference, int newRevision){
 		if(!hReference.getRef().equals(reference.getRelationshipId())){
 			hReference.setRevision(newRevision);
 			hReference.setRef(reference.getRelationshipId());
@@ -357,7 +357,7 @@ public class DocumentConverter {
 	 * @param parent
 	 * @return
 	 */
-	public HDocumentResource create(DocumentResource resource, HDocument hDocument, HParentResource parent){
+	private HDocumentResource create(DocumentResource resource, HDocument hDocument, HParentResource parent){
 		if(resource instanceof TextFlow) 
 			return create( (TextFlow) resource, hDocument, parent);
 		else if(resource instanceof Container) 
@@ -375,7 +375,7 @@ public class DocumentConverter {
 	 * setting parent to 'parent', setting document to hDocument, 
 	 * inheriting hDocument's revision.
 	 */
-	public HTextFlow create(TextFlow textFlow, HDocument hDocument, HParentResource parent){
+	private HTextFlow create(TextFlow textFlow, HDocument hDocument, HParentResource parent){
 		HTextFlow hTextFlow =  new HTextFlow();
 		hTextFlow.setDocument(hDocument);
 		hTextFlow.setParent(parent);
@@ -395,7 +395,7 @@ public class DocumentConverter {
 	 * @param parent
 	 * @return
 	 */
-	public HContainer create(Container container, HDocument hDocument, HParentResource parent){
+	private HContainer create(Container container, HDocument hDocument, HParentResource parent){
 		HContainer hContainer = new HContainer();
 		hContainer.setDocument(hDocument);
 		hContainer.setParent(parent);
@@ -414,7 +414,7 @@ public class DocumentConverter {
 	 * @param hDocument
 	 * @param parent
 	 */
-	public void createChildren(Container container, HDocument hDocument, HParentResource parent) {
+	private void createChildren(Container container, HDocument hDocument, HParentResource parent) {
 		for(DocumentResource resource : container.getResources()) {
 			HDocumentResource hResource = create(resource, hDocument, parent);
 			parent.getResources().add(hResource);
@@ -426,7 +426,7 @@ public class DocumentConverter {
 	 * setting parent to 'parent', setting document to hDocument, 
 	 * inheriting hDocument's revision.
 	 */
-	public HDataHook create(DataHook dataHook, HDocument hDocument, HParentResource parent){
+	private HDataHook create(DataHook dataHook, HDocument hDocument, HParentResource parent){
 		HDataHook hDataHook = new HDataHook();
 		hDataHook.setDocument(hDocument);
 		hDataHook.setParent(parent);
@@ -440,7 +440,7 @@ public class DocumentConverter {
 	 * setting parent to 'parent', setting document to hDocument, 
 	 * inheriting hDocument's revision.
 	 */
-	public HReference create(Reference reference, HDocument hDocument, HParentResource parent){
+	private HReference create(Reference reference, HDocument hDocument, HParentResource parent){
 		HReference hReference = new HReference();
 		hReference.setDocument(hDocument);
 		hReference.setParent(parent);
@@ -450,7 +450,7 @@ public class DocumentConverter {
 		return hReference;
 	}
 	
-	public void deleteOrObsolete(HDocumentResource hResource) {
+	private void deleteOrObsolete(HDocumentResource hResource) {
 		// process leafs first
 		if(hResource instanceof HParentResource) {
 			HParentResource hParentResource = (HParentResource) hResource;

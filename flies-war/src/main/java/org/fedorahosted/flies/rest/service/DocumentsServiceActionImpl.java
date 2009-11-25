@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.rest.service;
 
+import java.net.URI;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -7,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 
 import org.fedorahosted.flies.core.dao.DocumentDAO;
@@ -58,6 +60,10 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
 	private String getProjectSlug() {
 		return documentsService.getProjectSlug();
 	}
+	
+	private URI getBaseUri() {
+		return documentsService.getUri().getBaseUri();
+	}
 
 	private HProjectContainer getContainer() {
 		if (projectContainer != null)
@@ -75,7 +81,9 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
 	@Override
     public Response get() {
     	log.debug("HTTP GET {0}", documentsService.getRequest().getRequestURL());
-//    	URI baseUri = documentsService.getUri().getBaseUri();
+    	URI baseUri = getBaseUri();
+    	URI iterationUri = baseUri.resolve(URIHelper.getIteration(
+    			getProjectSlug(), getIterationSlug()));
     	if (getContainer() == null)
     		return containerNotFound();
     	Collection<HDocument> hdocs = getContainer().getDocuments().values();
@@ -83,13 +91,12 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
 	
     	for (HDocument hDocument : hdocs) {
     		Document doc = hDocument.toDocument(true);
-			result.getDocuments().add(doc);
 			
-//			URI docUri = baseUri.resolve(URIHelper.getDocument(
-//					getProjectSlug(), getIterationSlug(), doc.getId()));
-//			URI iterationUri = baseUri.resolve(URIHelper.getIteration(
-//					getProjectSlug(), getIterationSlug()));
-//			documentConverter.addLinks(doc, docUri, iterationUri );
+			URI docUri = baseUri.resolve(URIHelper.getDocument(
+					getProjectSlug(), getIterationSlug(), doc.getId()));
+			documentConverter.addLinks(doc, docUri, iterationUri);
+			
+			result.getDocuments().add(doc);
     	}
     	log.debug("HTTP GET result :\n"+result);
     	return Response.ok(result).build();

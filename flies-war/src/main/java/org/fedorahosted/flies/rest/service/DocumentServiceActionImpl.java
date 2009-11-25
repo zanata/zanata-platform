@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.rest.service;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Set;
 
@@ -64,8 +65,8 @@ public class DocumentServiceActionImpl implements DocumentServiceAction {
 		return documentService.getProjectSlug();
 	}
 
-	public UriInfo getUri() {
-		return documentService.getUri();
+	private URI getBaseUri() {
+		return documentService.getUri().getBaseUri();
 	}
 	
 	private HProjectContainer getContainer() {
@@ -102,8 +103,13 @@ public class DocumentServiceActionImpl implements DocumentServiceAction {
 		
 		int requestedLevels = resources.isNone() ? 0 : Integer.MAX_VALUE;
 		Document doc = hDoc.toDocument(requestedLevels); 
-		documentConverter.addLinks(doc, getUri().getRequestUri(), 
-				getUri().getBaseUri().resolve(URIHelper.getIteration(getProjectSlug(), getIterationSlug())));
+		
+    	URI baseUri = getBaseUri();
+    	URI iterationUri = baseUri.resolve(URIHelper.getIteration(
+    			getProjectSlug(), getIterationSlug()));
+		URI docUri = baseUri.resolve(URIHelper.getDocument(
+				getProjectSlug(), getIterationSlug(), doc.getId()));
+		documentConverter.addLinks(doc, docUri, iterationUri);
 		
 		return Response.ok().entity(doc).tag("v-" + doc.getRevision()).build();
 	}
@@ -128,7 +134,7 @@ public class DocumentServiceActionImpl implements DocumentServiceAction {
 			session.save(hDoc);
 			try{
 				session.flush();
-				return Response.created(getUri().getBaseUri().resolve(
+				return Response.created(getBaseUri().resolve(
 						URIHelper.getDocument(
 								getProjectSlug(), getIterationSlug(), getDocumentId()))).build();
 			}
