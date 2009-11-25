@@ -59,18 +59,18 @@ public class DownloadPoTask extends MatchingTask {
 
 			Documents docs = new Documents();
 			List<Document> docList = docs.getDocuments();
-			PropReader propReader = new PropReader();
-			// for each of the base props files under srcdir:
+			PoReader PoReader = new PoReader();
+			// for each of the base Pos files under srcdir:
 			int i = 0;
 			for (String filename : files) {
-				progress.update(i++, files.length);
+//				progress.update(i++, files.length);
 				Document doc = new Document(filename, ContentType.TextPlain);
 				doc.setLang(LocaleId.fromJavaName(sourceLang));
 				File f = new File(srcDir, filename);
-				propReader.extractAll(doc, f, locales, contentState);
+//				PoReader.extractAll(doc, f, locales, contentState);
 				docList.add(doc);
 			}
-			progress.finished();
+//			progress.finished();
 			if (debug) {
 				m.marshal(docs, System.out);
 			}
