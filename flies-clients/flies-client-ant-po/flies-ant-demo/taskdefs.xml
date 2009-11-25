@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+
+<project basedir="." xmlns:artifact="urn:maven-artifact-ant">
+
+	<!-- Fetch Maven Ant Tasks jar: -->
+    <property name="lib.dir" value="lib" />
+	<property name="maven.version" value="2.0.9" />
+	<property name="maven-artifact-ant.bootstrap.jar" location="${lib.dir}/maven-ant-tasks-${maven.version}.jar" />
+	<property name="remoteRepo" value="" />
+
+	<target name="-check-get-maven-artifact-ant">
+		<available property="-get-maven-artifact-ant-done" file="${maven-artifact-ant.bootstrap.jar}" />
+	</target>
+
+	<target name="-get-maven-artifact-ant" depends="-check-get-maven-artifact-ant" unless="-get-maven-artifact-ant-done">
+		<mkdir dir="${lib.dir}" />
+		<get src="http://repository.jboss.com/maven2/org/apache/maven/maven-ant-tasks/${maven.version}/maven-ant-tasks-${maven.version}.jar" dest="${maven-artifact-ant.bootstrap.jar}" />
+	</target>
+
+	<!-- Define the Ant-Contrib and Tennera Ant Gettext tasks, using Maven 
+	to resolve dependencies: -->
+	<target name="-initTaskDefs" depends="-get-maven-artifact-ant">
+		<path id="maven-ant-tasks.classpath" path="${maven-artifact-ant.bootstrap.jar}" />
+		<typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant" classpathref="maven-ant-tasks.classpath" />
+
+		<!-- This would be used if we wanted to keep maven's repo out of ${user.home}
+	    <artifact:localRepository id="local.repository" path="${basedir}/target/local-repo" layout="default"/>
+
+    	<property name="deploy.repository.url" value="${basedir}/target/deployment-repo" />
+    	<artifact:remoteRepository id="deploy.repository" url="file://localhost/${deploy.repository.url}" layout="default"/>
+		-->
+
+		<!-- Maven dependencies  -->
+		<artifact:pom file="pom.xml" id="maven.project" />
+		<artifact:dependencies pathId="dependency.classpath" useScope="compile" type="jar">
+			<pom refid="maven.project" />
+		</artifact:dependencies>
+
+		<!-- ant-gettext tasks -->
+        <taskdef resource="org/fedorahosted/flies/client/ant/po/antlib.xml"
+            classpathref="dependency.classpath" />
+
+	</target>
+
+
+	<target name="-init" depends="-checkver,-initTaskDefs">
+	</target>
+
+	<target name="debug" depends="-init" description="Outputs some debugging information">
+		<!-- get the source compile classpath in a printable form -->
+		<pathconvert pathsep="${line.separator}|   |__ " property="echo.dependency.classpath" refid="dependency.classpath">
+		</pathconvert>
+		<echo message="|__ dependency.classpath path" />
+		<echo message="|   |" />
+		<echo message="|   |__ ${echo.dependency.classpath}" />
+	</target>
+
+<!--
+  <property name="root" value="../../../../../../../../.."/>
+  <property name="m2repo" value="${user.home}/.m2/repository"/>
+  <taskdef resource="org/fedorahosted/flies/client/ant/properties/antlib.xml"
+    classpath="${root}/target/classes" />
+  <taskdef resource="org/fedorahosted/tennera/antgettext/antlib.xml"
+    classpath="${m2repo}/org/fedorahosted/tennera/ant-gettext/0.6/ant-gettext-0.6.jar;${m2repo}/org/fedorahosted/tennera/jgettext/0.6/jgettext-0.6.jar" />
+-->
+
+
+	<!-- Test for a class from Ant 1.7.1 (needed for the jar task's erroronmissingdir feature --> 
+	<available property="Ant-1.7.1-or-later"
+	               classname="org.apache.tools.ant.input.SecureInputHandler"/>
+
+	<target name="-checkver" unless="Ant-1.7.1-or-later">
+		<fail message="Incorrect version of ant: ${ant.version} but required: 1.7.1"/>
+	</target>
+
+</project>

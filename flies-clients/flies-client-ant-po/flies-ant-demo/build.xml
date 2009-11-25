@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+
+<project basedir="." default="roundtripremote">
+	<import file="taskdefs.xml" />
+	<property name="out.dir" value="target/test-output" />
+	<property name="bob.key" value="34567890123456789012345678901234" />
+
+	<property name="fliesUrl" value="http://localhost:8080/flies"/>
+	<property name="proj" value="sample-project"/>
+	<property name="iter" value="1.1"/>
+	<property name="docsUrl" 
+		value="${fliesUrl}/seam/resource/restv1/projects/p/${proj}/iterations/i/${iter}/documents" />
+
+	<target name="roundtripremote" depends="-init">
+		<delete dir="${out.dir}/test3a"/>
+		<delete dir="${out.dir}/test3b"/>
+		<mkdir dir="${out.dir}/test3a"/>
+		<uploadpo
+        user="bob"
+          apiKey="${bob.key}"
+          dst="${docsUrl}" 
+          srcDir="test1" 
+          sourceLang="en_US" 
+          locales="de,fr" 
+          debug="false" />
+		<downloadpo 
+			user="bob"
+			apiKey="${bob.key}"
+			src="${docsUrl}" 
+			dstDir="${out.dir}/test3b" 
+			debug="true" />
+		<exec executable="diff">
+			<arg value="--unified"/>
+			<arg value="--recursive"/>
+			<arg value="test1"/>
+			<arg value="${out.dir}/test3b"/>
+		</exec>
+	</target>
+	
+</project>

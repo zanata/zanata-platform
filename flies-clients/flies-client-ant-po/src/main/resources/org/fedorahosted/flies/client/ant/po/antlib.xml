@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<antlib>
+    <taskdef name="uploadpo" 
+        classname="org.fedorahosted.flies.client.ant.po.UploadPoTask" />
+    <taskdef name="downloadpo" 
+        classname="org.fedorahosted.flies.client.ant.po.DownloadPoTask" />
+</antlib>

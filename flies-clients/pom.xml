@@ -11,9 +11,9 @@
   </parent>
   <modules>
     <module>flies-client-ant-properties</module>
+    <module>flies-client-ant-po</module>
     <module>flies-client-pseudo</module>
     <module>flies-client-publican</module>
-    <module>flies-client-ant-publican</module>
   </modules>
   <dependencies>
     <dependency>
