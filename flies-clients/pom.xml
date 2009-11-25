@@ -10,7 +10,7 @@
     <version>1.0-SNAPSHOT</version>
   </parent>
   <modules>
-    <module>flies-client-ant</module>
+    <module>flies-client-ant-properties</module>
     <module>flies-client-pseudo</module>
     <module>flies-client-publican</module>
     <module>flies-client-ant-publican</module>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>flies-client-ant</artifactId>
-  <name>Flies Rest Client for Ant and Java Properties</name>
+  <artifactId>flies-client-ant-properties</artifactId>
+  <name>Flies/REST Ant task for Java Properties</name>
   <parent>
     <groupId>org.fedorahosted.flies</groupId>
     <artifactId>flies-clients</artifactId>
