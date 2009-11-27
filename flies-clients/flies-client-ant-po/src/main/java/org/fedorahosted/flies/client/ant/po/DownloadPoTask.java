@@ -23,6 +23,7 @@ import org.fedorahosted.flies.rest.client.IDocumentsResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Documents;
 import org.jboss.resteasy.client.ClientResponse;
+import org.xml.sax.InputSource;
 
 public class DownloadPoTask extends MatchingTask {
 
@@ -44,7 +45,7 @@ public class DownloadPoTask extends MatchingTask {
 			DirectoryScanner ds = getDirectoryScanner(srcDir);
 			// use default includes if unset:
 			if (!getImplicitFileSet().hasPatterns()) {
-				ds.setIncludes(new String[] { "**/*.properties" }); //$NON-NLS-1$
+				ds.setIncludes(new String[] { "**/*.po" }); //$NON-NLS-1$
 			}
 			ds.setSelectors(getSelectors());
 			ds.scan();
@@ -56,10 +57,16 @@ public class DownloadPoTask extends MatchingTask {
 			if (debug) {
 				m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 			}
+			
+			InputSource inputSource = new InputSource(
+					//new File("/home/asgeirf/projects/gitsvn/Deployment_Guide/pt-BR/SELinux_Background.po").toURI().toString()
+					"http://svn.fedorahosted.org/svn/Deployment_Guide/community/fc10/de-DE/Apache.po"
+			);
+			inputSource.setEncoding("utf8");
 
 			Documents docs = new Documents();
 			List<Document> docList = docs.getDocuments();
-			PoReader PoReader = new PoReader();
+			PoReader poReader = new PoReader();
 			// for each of the base Pos files under srcdir:
 			int i = 0;
 			for (String filename : files) {
@@ -67,7 +74,17 @@ public class DownloadPoTask extends MatchingTask {
 				Document doc = new Document(filename, ContentType.TextPlain);
 				doc.setLang(LocaleId.fromJavaName(sourceLang));
 				File f = new File(srcDir, filename);
-//				PoReader.extractAll(doc, f, locales, contentState);
+				
+				for (String locale : locales){
+					inputSource = new InputSource(
+							//new File("/home/asgeirf/projects/gitsvn/Deployment_Guide/" + locale + "/SELinux_Background.po").toURI().toString()
+							"http://svn.fedorahosted.org/svn/Deployment_Guide/community/fc10/fr-FR/Apache.po"
+					);
+					inputSource.setEncoding("utf8");
+					System.out.println("extracting target: " + locale);
+					poReader.extractTarget(doc, inputSource, new LocaleId(locale));
+				}
+				
 				docList.add(doc);
 			}
 //			progress.finished();
