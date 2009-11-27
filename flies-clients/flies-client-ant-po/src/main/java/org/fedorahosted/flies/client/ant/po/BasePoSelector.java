@@ -16,7 +16,7 @@ class BasePoSelector implements FileSelector {
     public boolean isSelected(File basedir, String filename, File file)
 	    throws BuildException {
 	for (String loc : locales) {
-	    if (filename.endsWith("_" + loc + ".properties")) { //$NON-NLS-1$ //$NON-NLS-2$
+	    if (filename.endsWith(loc + ".po")) { //$NON-NLS-1$ //$NON-NLS-2$
 	    // log("skipping translated property file for now: "+filename);
 		return false;
 	    }
