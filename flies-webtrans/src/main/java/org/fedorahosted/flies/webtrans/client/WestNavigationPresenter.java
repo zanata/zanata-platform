@@ -1,30 +1,25 @@
 package org.fedorahosted.flies.webtrans.client;
 
-import org.fedorahosted.flies.webtrans.editor.filter.PhraseFilterView;
-import org.fedorahosted.flies.webtrans.editor.filter.TransFilterPresenter;
-
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
+import org.fedorahosted.flies.webtrans.editor.filter.TransFilterPresenter;
+
 import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 
 public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPresenter.Display>{
 	
 	public interface Display extends WidgetDisplay {
+		/**
+		 * Container for widgets to be displayed in the west navigation panel
+		 * @return
+		 */
 		HasWidgets getWidgets();
-		Button getMinimizeButton();
-		void clickedMinimizeButton();
 	}
 
 	private final WorkspaceUsersPresenter workspaceUsersPresenter;
@@ -60,13 +55,6 @@ public class WestNavigationPresenter extends WidgetPresenter<WestNavigationPrese
 		workspaceUsersPresenter.bind();
 		display.getWidgets().add(workspaceUsersPresenter.getDisplay().asWidget());
 		
-		display.getMinimizeButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				display.clickedMinimizeButton();
-			}
-		});
 	}
 
 	@Override

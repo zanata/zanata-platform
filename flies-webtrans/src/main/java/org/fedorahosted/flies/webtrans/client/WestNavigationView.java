@@ -1,5 +1,7 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -10,8 +12,9 @@ import com.google.gwt.user.client.ui.Widget;
 public class WestNavigationView extends FlowPanel implements
 		WestNavigationPresenter.Display {
 
-	private Button minimizeButton;
 	private HorizontalPanel controllerPanel;
+	private Button minimizeButton;
+	private FlowPanel widgetPanel = new FlowPanel();
 	
 	public WestNavigationView() {
 		getElement().setId("WestNavigationView");
@@ -21,7 +24,15 @@ public class WestNavigationView extends FlowPanel implements
 		controllerPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		controllerPanel.setWidth("100%");
 		controllerPanel.add(minimizeButton);
+//		add(minimizeButton);
 		add(controllerPanel);
+		add(widgetPanel);
+		minimizeButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				clickedMinimizeButton();
+			}
+		});
 	}
 
 	@Override
@@ -42,20 +53,16 @@ public class WestNavigationView extends FlowPanel implements
 
 	@Override
 	public HasWidgets getWidgets() {
-		return this;
+		return widgetPanel;
 	}
 	
-	@Override
-	public Button getMinimizeButton() {
-		return minimizeButton;
-	}
-	
-	@Override
-	public void clickedMinimizeButton() {
+	private void clickedMinimizeButton() {
 		if (minimizeButton.getText().equals("-")) {
 			this.setWidth("25px");
+			widgetPanel.setVisible(false);
 			minimizeButton.setText("+");
 		} else if (minimizeButton.getText().equals("+")) {
+			widgetPanel.setVisible(true);
 			this.setWidth("220px");
 			minimizeButton.setText("-");
 		}
