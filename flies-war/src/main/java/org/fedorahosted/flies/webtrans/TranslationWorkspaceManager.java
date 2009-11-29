@@ -4,14 +4,18 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.fedorahosted.flies.FliesInit;
 import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.gwt.model.PersonId;
+import org.fedorahosted.flies.security.FliesIdentity;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.security.Identity;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
@@ -26,7 +30,7 @@ public class TranslationWorkspaceManager {
 	
 	@Logger
 	private Log log;
-
+	
 	private final ConcurrentHashMap<WorkspaceKey, TranslationWorkspace> workspaceMap;
 	private final Multimap<Long, LocaleId> projectIterationLocaleMap;
 	private final Multimap<LocaleId, TranslationWorkspace> localeWorkspaceMap;
@@ -45,6 +49,19 @@ public class TranslationWorkspaceManager {
 	@Observer(FliesInit.EVENT_Flies_Startup)
 	public void start(){
 		log.info("starting...");
+	}
+	
+	@Observer(FliesIdentity.USER_LOGOUT_EVENT)
+	public void exitWorkspace(String username){
+		ImmutableSet<TranslationWorkspace> workspaceSet=ImmutableSet.copyOf(workspaceMap.values());
+		for(TranslationWorkspace workspace : workspaceSet) {
+			ImmutableSet<PersonId> personIdSet= workspace.getUsers();
+			for(PersonId personId : personIdSet) {
+				if (personId.equals(new PersonId(username))) {
+					//Send GWT Event to client to update the userlist
+				}
+			}
+		}
 	}
 	
 	@Destroy

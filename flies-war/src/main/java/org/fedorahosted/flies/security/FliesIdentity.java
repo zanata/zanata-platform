@@ -18,6 +18,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.core.Events;
 import org.jboss.seam.log.LogProvider;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
@@ -29,6 +30,9 @@ import org.jboss.seam.security.NotLoggedInException;
 @BypassInterceptors
 @Startup
 public class FliesIdentity extends Identity {
+	
+	public static final String USER_LOGOUT_EVENT = "user.logout";
+	private String username;
 
 	private static final LogProvider log = Logging
 			.getLogProvider(FliesIdentity.class);
@@ -66,6 +70,11 @@ public class FliesIdentity extends Identity {
 	public void checkLoggedIn(){
 		if(!isLoggedIn())
 			throw new NotLoggedInException();
+	}
+	
+	public void logout() {
+		if (Events.exists()) Events.instance().raiseEvent(USER_LOGOUT_EVENT, getPrincipal().getName());
+		super.logout();
 	}
 
 }

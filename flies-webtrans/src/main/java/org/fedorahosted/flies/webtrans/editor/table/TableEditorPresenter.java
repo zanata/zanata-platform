@@ -95,6 +95,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 					currentSelection = event.getSelectedItem();
 					eventBus.fireEvent(event);
 				}
+				//Send a START_EDIT event
+				
 			}
 		}));
 
