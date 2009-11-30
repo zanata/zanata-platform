@@ -38,7 +38,6 @@ import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
-import org.jboss.resteasy.util.Encode;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -242,9 +241,6 @@ public class DocumentServiceSeamTest extends FliesDBUnitSeamTest {
 		assertThat("Should have resources", doc.getResources(), notNullValue() );
 		assertThat("Should have one resource", doc.getResources().size(), is(4) );
 		assertThat("Should have one resource", doc.getResources().get(0).getId(), is("tf2") );
-		
-		
-		
 	}
 
 }

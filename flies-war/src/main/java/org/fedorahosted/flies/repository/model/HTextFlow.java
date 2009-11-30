@@ -43,8 +43,8 @@ public class HTextFlow extends HDocumentResource {
 	public HTextFlow() {
 	}
 	
-	public HTextFlow(TextFlow tf) {
-		super(tf);
+	public HTextFlow(TextFlow tf, int nextDocRev) {
+		super(tf, nextDocRev);
 		this.content = tf.getContent();
 	}
 

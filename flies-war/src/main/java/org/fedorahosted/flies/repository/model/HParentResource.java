@@ -23,8 +23,8 @@ public abstract class HParentResource extends HDocumentResource{
 	public HParentResource() {
 	}
 	
-	public HParentResource(DocumentResource res) {
-		super(res);
+	public HParentResource(DocumentResource res, int nextDocRev) {
+		super(res, nextDocRev);
 	}
 
 //	@OneToMany(mappedBy="parent", cascade = CascadeType.ALL)

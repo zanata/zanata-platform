@@ -12,8 +12,8 @@ public class HDataHook extends HDocumentResource {
 	public HDataHook() {
 	}
 	
-	public HDataHook(DataHook hook) {
-		super(hook);
+	public HDataHook(DataHook hook, int nextDocRev) {
+		super(hook, nextDocRev);
 	}
 
 	private static final long serialVersionUID = -555978165911935456L;
