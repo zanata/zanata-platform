@@ -85,44 +85,52 @@ public class DocumentConverter {
 		// don't copy revision; we don't accept revision from the client
 //		toHDoc.setRevision(fromDoc.getRevision());  // TODO increment revision on modify only
 		// TODO handle doc extensions, especially containers
-		List<DocumentResource> docResources = Collections.emptyList();
+		List<DocumentResource> fromDocResources = Collections.emptyList();
 		if (fromDoc.hasResources()) {
-			docResources = fromDoc.getResources();
+			fromDocResources = fromDoc.getResources();
 		}
 			List<HDocumentResource> hResources;
 			Map<String, HDocumentResource> oldResourceMap = new HashMap<String, HDocumentResource>();
-			for(HDocumentResource oldResource : toHDoc.getResources()) {
+			List<HDocumentResource> oldResources = toHDoc.getResources();
+			for(HDocumentResource oldResource : oldResources) {
 				oldResourceMap.put(oldResource.getResId(), oldResource);
 			}
-			hResources = new ArrayList<HDocumentResource>(docResources.size());
+			hResources = new ArrayList<HDocumentResource>(fromDocResources.size());
+			// We create an empty list for HDocument.resources, and build it up
+			// in the order of fromDoc's resources.  This ensures that we preserve
+			// the order of the list.
 			toHDoc.setResources(hResources);
-			for (DocumentResource res : docResources) {
+			for (DocumentResource fromRes : fromDocResources) {
 				HDocumentResource hRes = null;
 				if (session.contains(toHDoc))
-					hRes = resourceDAO.getById(toHDoc, res.getId());
+					hRes = resourceDAO.getById(toHDoc, fromRes.getId());
 				boolean resChanged = false;
 				if (hRes == null) {
-					hRes = HDocument.create(res);
 					resChanged = true; // this will cause res.revision to be set below
+					hRes = toHDoc.create(fromRes, nextDocRev); // 
 				} else {
 					// resurrect the resource
 					hRes.setObsolete(false);
 				}
 				hResources.add(hRes);
-				hRes.setDocument(toHDoc);
-				resChanged |= copy(res, hRes, toHDoc, nextDocRev);
+				
+				resChanged |= copy(fromRes, hRes, toHDoc, nextDocRev);
 				if (resChanged) {
 					hRes.setRevision(nextDocRev);
 					docChanged = true;
 				}
-				if (oldResourceMap.remove(res.getId()) == null) {
+				if (oldResourceMap.remove(fromRes.getId()) == null) {
 					docChanged = true;
 					log.debug("CHANGED: Resource {0}:{1} was added", toHDoc.getDocId(), hRes.getResId());
 				}
 			}
+			// even if we just move around resources without changing them,
+			// the document is considered changed
+			if(!oldResources.equals(hResources))
+				docChanged = true;
 			// mark any removed resources as obsolete
 			for(HDocumentResource oldResource : oldResourceMap.values()) {
-				oldResource.setObsolete(true);
+				deleteOrObsolete(oldResource);
 				docChanged = true;
 				log.debug("CHANGED: Resource {0}:{1} was removed", toHDoc.getDocId(), oldResource.getResId());
 			}
@@ -133,86 +141,86 @@ public class DocumentConverter {
 	/**
 	 * Creates an HDocument from the Document, with the field 'project' 
 	 * pointing to container 
-	 * @param document
+	 * @param fromDocument
 	 * @param container
 	 * @return
 	 */
-	public HDocument create(Document document, HProjectContainer container){
+	public HDocument _create(Document fromDocument, HProjectContainer container){
 		HDocument hDocument = new HDocument();
-		hDocument.setDocId(document.getId());
-		hDocument.setDocId(document.getId());
-		hDocument.setName(document.getName());
-		hDocument.setPath(document.getPath());
-		hDocument.setContentType(document.getContentType());
-		hDocument.setLocale(document.getLang());
+		hDocument.setDocId(fromDocument.getId());
+		hDocument.setDocId(fromDocument.getId());
+		hDocument.setName(fromDocument.getName());
+		hDocument.setPath(fromDocument.getPath());
+		hDocument.setContentType(fromDocument.getContentType());
+		hDocument.setLocale(fromDocument.getLang());
 		hDocument.setRevision(1);
 		hDocument.setProject(container);
 		
-		if(document.hasResources()) {
-			createChildren(document, hDocument, 1);
+		if(fromDocument.hasResources()) {
+			createChildren(fromDocument, hDocument, 1);
 		}
 		return hDocument;
 	}
 	
 	/**
 	 * Creates the children of the Document in the HDocument
-	 * @param document
+	 * @param fromDocument
 	 * @param hDocument
 	 * @param newRevision
 	 */
-	private void createChildren(Document document, HDocument hDocument, int newRevision) {
-		for(DocumentResource resource : document.getResources()) {
-			HDocumentResource hResource = create(resource, hDocument, null);
+	private void createChildren(Document fromDocument, HDocument hDocument, int newRevision) {
+		for(DocumentResource resource : fromDocument.getResources()) {
+			HDocumentResource hResource = create(resource, hDocument, null, newRevision);
 			hDocument.getResources().add(hResource);
 		}
 	}
 	
-	public void merge(Document document, HDocument hDocument){
+	public void _merge(Document fromDocument, HDocument hDocument){
 		int newRevision = hDocument.getRevision() +1;
 		hDocument.setRevision(newRevision);
-		hDocument.setDocId(document.getId());
-		hDocument.setName(document.getName());
-		hDocument.setPath(document.getPath());
-		hDocument.setContentType(document.getContentType());
-		hDocument.setLocale(document.getLang());
+		hDocument.setDocId(fromDocument.getId());
+		hDocument.setName(fromDocument.getName());
+		hDocument.setPath(fromDocument.getPath());
+		hDocument.setContentType(fromDocument.getContentType());
+		hDocument.setLocale(fromDocument.getLang());
 		
-		if(document.hasResources() ) {
-			mergeChildren(document, hDocument);
+		if(fromDocument.hasResources() ) {
+			mergeChildren(fromDocument, hDocument, newRevision);
 		}
 		
 	}
 
-	private void mergeChildren(Document document, HDocument hDocument){
+	private void mergeChildren(Document fromDocument, HDocument hDocument, int nextDocRev){
 
 		Map<String, HDocumentResource> existingResources = toMap(hDocument.getResources());
 		
 		List<HDocumentResource> finalHResources = hDocument.getResources();
 		finalHResources.clear();
 		
-		for(DocumentResource resource: document.getResources()){
+		for(DocumentResource fromResource: fromDocument.getResources()){
 			
 			// check existing resources first
-			HDocumentResource hResource = existingResources.remove(resource.getId());
+			HDocumentResource hResource = existingResources.remove(fromResource.getId());
 			if(hResource == null) {
-				hResource = resourceDAO.getObsoleteById(hDocument, resource.getId());	
+				hResource = resourceDAO.getObsoleteById(hDocument, fromResource.getId());	
 			}
 			if(hResource != null) {
 				// need to delete and recreate if same ids but conflicting types
-				if(!areOfSameType(resource, hResource)){
+				if(!areOfSameType(fromResource, hResource)){
 					if(hResource instanceof HTextFlow){
 						session.delete(hResource);
 					}
 					else{
 						deleteOrObsolete(hResource);
 					}
-					hResource = create(resource, hResource.getDocument(), null);
+					hResource = create(fromResource, hResource.getDocument(), null, nextDocRev);
 				}
 				hResource.setObsolete(false);
-				merge(resource, hResource, hDocument.getRevision());
+				merge(fromResource, hResource, nextDocRev);
 				finalHResources.add(hResource);
 				continue;
 			}
-			hResource = create(resource, hDocument, null);
+			hResource = create(fromResource, hDocument, null, nextDocRev);
 			// finally insert
 			finalHResources.add(hResource);
 		}
@@ -223,39 +231,39 @@ public class DocumentConverter {
 		}
 	}
 	
-	private void mergeChildren(Container container, HParentResource hParentResource, int newRevision){
+	private void mergeChildren(Container fromContainer, HParentResource hParentResource, int newRevision){
 		Map<String, HDocumentResource> existingResources = toMap(hParentResource.getResources());
 		
 		List<HDocumentResource> finalHResources = hParentResource.getResources();
 		finalHResources.clear();
 		
-		for(DocumentResource resource: container.getResources()){
+		for(DocumentResource fromResource: fromContainer.getResources()){
 			
 			// check existing resources first
-			HDocumentResource hResource = existingResources.remove(resource.getId());
+			HDocumentResource hResource = existingResources.remove(fromResource.getId());
 			if(hResource == null) {
-				hResource = resourceDAO.getObsoleteById(hParentResource.getDocument(), resource.getId());	
+				hResource = resourceDAO.getObsoleteById(hParentResource.getDocument(), fromResource.getId());	
 			}
 			if(hResource != null) {
 				// need to delete and recreate if same ids but conflicting types
-				if(!areOfSameType(resource, hResource)){
+				if(!areOfSameType(fromResource, hResource)){
 					if(hResource instanceof HTextFlow){
 						session.delete(hResource);
 					}
 					else{
 						deleteOrObsolete(hResource);
 					}
-					hResource = create(resource, hResource.getDocument(), hParentResource);
+					hResource = create(fromResource, hResource.getDocument(), hParentResource, newRevision);
 				}
 				hResource.setObsolete(false);
-				merge(resource, hResource, newRevision);
+				merge(fromResource, hResource, newRevision);
 				finalHResources.add(hResource);
 				continue;
 			}
 			
 			
 			// finally insert
-			finalHResources.add( create(resource, hResource.getDocument(), hParentResource));
+			finalHResources.add( create(fromResource, hParentResource.getDocument(), hParentResource, newRevision));
 		}
 
 		// clean up resources we didn't process in this 
@@ -272,23 +280,23 @@ public class DocumentConverter {
 		(resource instanceof DataHook && hResource instanceof HDataHook) ||
 		(resource instanceof Reference && hResource instanceof HReference);
 	}
-	private void merge(DocumentResource resource, HDocumentResource hResource, int newRevision){
-		if(!areOfSameType(resource, hResource))
+	private void merge(DocumentResource fromResource, HDocumentResource hResource, int newRevision){
+		if(!areOfSameType(fromResource, hResource))
 			throw new IllegalArgumentException("Resource and HResource must be of same type");
-		if(resource instanceof TextFlow) 
-			merge( (TextFlow) resource, (HTextFlow) hResource, newRevision);
-		else if(resource instanceof Container) 
-			merge( (Container) resource, (HContainer) hResource, newRevision);
-		else if(resource instanceof DataHook) 
-			merge( (DataHook) resource, (HDataHook) hResource, newRevision);
-		else if(resource instanceof Reference) 
-			merge( (Reference) resource, (HReference) hResource, newRevision);
+		if(fromResource instanceof TextFlow) 
+			merge((TextFlow) fromResource, (HTextFlow) hResource, newRevision);
+		else if(fromResource instanceof Container) 
+			merge((Container) fromResource, (HContainer) hResource, newRevision);
+		else if(fromResource instanceof DataHook) 
+			merge((DataHook) fromResource, (HDataHook) hResource, newRevision);
+		else if(fromResource instanceof Reference) 
+			merge((Reference) fromResource, (HReference) hResource, newRevision);
 		else
 			throw new RuntimeException("missing type - programming error");
 		
 	}
-	private void merge(TextFlow textFlow, HTextFlow hTextFlow, int newRevision){
-		if(!hTextFlow.getContent().equals(textFlow.getContent())){
+	private void merge(TextFlow fromTextFlow, HTextFlow hTextFlow, int newRevision){
+		if(!hTextFlow.getContent().equals(fromTextFlow.getContent())){
 			
 			// save old version to history
 			HTextFlowHistory history = new HTextFlowHistory(hTextFlow);
@@ -301,10 +309,10 @@ public class DocumentConverter {
 			}
 			
 			hTextFlow.setRevision(newRevision);
-			hTextFlow.setContent(textFlow.getContent());
+			hTextFlow.setContent(fromTextFlow.getContent());
 		}
 		
-		TextFlowTargets targets = textFlow.getTargets();
+		TextFlowTargets targets = fromTextFlow.getTargets();
 		if(targets != null) {
 			for(TextFlowTarget textFlowTarget : targets.getTargets()) {
 				if(hTextFlow.getTargets().containsKey(textFlowTarget.getLang())){
@@ -328,23 +336,23 @@ public class DocumentConverter {
 		return null;
 	}
 	
-	private void merge(Container container, HContainer hContainer, int newRevision){
-		mergeChildren(container, hContainer, newRevision);
+	private void merge(Container fromContainer, HContainer hContainer, int newRevision){
+		mergeChildren(fromContainer, hContainer, newRevision);
 		// if a child is updated, we update the container version as well
 		for(HDocumentResource child: hContainer.getResources()) {
-			if(newRevision == child.getRevision()){
+			if(newRevision == child.getRevision()){//FIXME
 				hContainer.setRevision(newRevision);
 			}
 		}
 	}
 	
-	private void merge(DataHook dataHook, HDataHook hDataHook, int newRevision){
+	private void merge(DataHook fromDataHook, HDataHook hDataHook, int newRevision){
 	}	
 	
-	private void merge(Reference reference, HReference hReference, int newRevision){
-		if(!hReference.getRef().equals(reference.getRelationshipId())){
+	private void merge(Reference fromReference, HReference hReference, int newRevision){
+		if(!hReference.getRef().equals(fromReference.getRelationshipId())){
 			hReference.setRevision(newRevision);
-			hReference.setRef(reference.getRelationshipId());
+			hReference.setRef(fromReference.getRelationshipId());
 		}
 	}	
 	
@@ -352,20 +360,20 @@ public class DocumentConverter {
 	 * Creates the Hibernate equivalent of the DocumentResource 'resource', 
 	 * setting parent to 'parent', setting document to hDocument, 
 	 * inheriting hDocument's revision.
-	 * @param resource
+	 * @param fromResource
 	 * @param hDocument
 	 * @param parent
 	 * @return
 	 */
-	private HDocumentResource create(DocumentResource resource, HDocument hDocument, HParentResource parent){
-		if(resource instanceof TextFlow) 
-			return create( (TextFlow) resource, hDocument, parent);
-		else if(resource instanceof Container) 
-			return create( (Container) resource, hDocument, parent);
-		else if(resource instanceof DataHook) 
-			return create( (DataHook) resource, hDocument, parent);
-		else if(resource instanceof Reference) 
-			return create( (Reference) resource, hDocument, parent);
+	private HDocumentResource create(DocumentResource fromResource, HDocument hDocument, HParentResource parent, int nextDocRev){
+		if(fromResource instanceof TextFlow) 
+			return create( (TextFlow) fromResource, hDocument, parent, nextDocRev);
+		else if(fromResource instanceof Container) 
+			return create( (Container) fromResource, hDocument, parent, nextDocRev);
+		else if(fromResource instanceof DataHook) 
+			return create( (DataHook) fromResource, hDocument, parent, nextDocRev);
+		else if(fromResource instanceof Reference) 
+			return create( (Reference) fromResource, hDocument, parent, nextDocRev);
 		else
 			throw new RuntimeException("missing type - programming error");
 	}
@@ -375,13 +383,13 @@ public class DocumentConverter {
 	 * setting parent to 'parent', setting document to hDocument, 
 	 * inheriting hDocument's revision.
 	 */
-	private HTextFlow create(TextFlow textFlow, HDocument hDocument, HParentResource parent){
+	private HTextFlow create(TextFlow fromTextFlow, HDocument hDocument, HParentResource parent, int nextDocRev){
 		HTextFlow hTextFlow =  new HTextFlow();
 		hTextFlow.setDocument(hDocument);
 		hTextFlow.setParent(parent);
-		hTextFlow.setResId(textFlow.getId());
-		hTextFlow.setRevision(hDocument.getRevision());
-		hTextFlow.setContent(textFlow.getContent());
+		hTextFlow.setResId(fromTextFlow.getId());
+		hTextFlow.setRevision(nextDocRev);
+		hTextFlow.setContent(fromTextFlow.getContent());
 		return hTextFlow;
 	}
 	
@@ -390,19 +398,19 @@ public class DocumentConverter {
 	 * HDocumentResources for the Container's DocumentResources, and
 	 * sets the HContainer's parent to 'parent', setting document to hDocument, 
 	 * inheriting hDocument's revision.
-	 * @param container
+	 * @param fromContainer
 	 * @param hDocument
 	 * @param parent
 	 * @return
 	 */
-	private HContainer create(Container container, HDocument hDocument, HParentResource parent){
+	private HContainer create(Container fromContainer, HDocument hDocument, HParentResource parent, int nextDocRev){
 		HContainer hContainer = new HContainer();
 		hContainer.setDocument(hDocument);
 		hContainer.setParent(parent);
-		hContainer.setResId(container.getId());
-		hContainer.setRevision(hDocument.getRevision());
+		hContainer.setResId(fromContainer.getId());
+		hContainer.setRevision(nextDocRev);
 
-		createChildren(container, hDocument, hContainer);
+		createChildren(fromContainer, hDocument, hContainer, nextDocRev);
 		
 		return hContainer;
 	}
@@ -410,13 +418,13 @@ public class DocumentConverter {
 	/**
 	 * creates child HDocumentResources for the Container's DocumentResources,
 	 * and adds them to the parent (HContainer)
-	 * @param container
+	 * @param fromContainer
 	 * @param hDocument
 	 * @param parent
 	 */
-	private void createChildren(Container container, HDocument hDocument, HParentResource parent) {
-		for(DocumentResource resource : container.getResources()) {
-			HDocumentResource hResource = create(resource, hDocument, parent);
+	private void createChildren(Container fromContainer, HDocument hDocument, HParentResource parent, int nextDocRev) {
+		for(DocumentResource resource : fromContainer.getResources()) {
+			HDocumentResource hResource = create(resource, hDocument, parent, nextDocRev);
 			parent.getResources().add(hResource);
 		}
 	}
@@ -426,12 +434,12 @@ public class DocumentConverter {
 	 * setting parent to 'parent', setting document to hDocument, 
 	 * inheriting hDocument's revision.
 	 */
-	private HDataHook create(DataHook dataHook, HDocument hDocument, HParentResource parent){
+	private HDataHook create(DataHook fromDataHook, HDocument hDocument, HParentResource parent, int nextDocRev){
 		HDataHook hDataHook = new HDataHook();
 		hDataHook.setDocument(hDocument);
 		hDataHook.setParent(parent);
-		hDataHook.setResId(dataHook.getId());
-		hDataHook.setRevision(hDocument.getRevision());
+		hDataHook.setResId(fromDataHook.getId());
+		hDataHook.setRevision(nextDocRev);
 		return hDataHook;
 	}
 
@@ -440,13 +448,13 @@ public class DocumentConverter {
 	 * setting parent to 'parent', setting document to hDocument, 
 	 * inheriting hDocument's revision.
 	 */
-	private HReference create(Reference reference, HDocument hDocument, HParentResource parent){
+	private HReference create(Reference fromReference, HDocument hDocument, HParentResource parent, int nextDocRev){
 		HReference hReference = new HReference();
 		hReference.setDocument(hDocument);
 		hReference.setParent(parent);
-		hReference.setResId(reference.getId());
-		hReference.setRevision(hDocument.getRevision());
-		hReference.setRef(reference.getRelationshipId());
+		hReference.setResId(fromReference.getId());
+		hReference.setRevision(nextDocRev);
+		hReference.setRef(fromReference.getRelationshipId());
 		return hReference;
 	}
 	
@@ -478,36 +486,58 @@ public class DocumentConverter {
 		return map;
 	}
 	
-	// copy res to hRes recursively, maintaining docTargets
 	/**
-	 * Returns true if hRes was changed
+	 * Copies fromRes to hRes recursively, maintaining docTargets.
+	 * Returns true if hRes was changed.
 	 * @param nextDocRev 
 	 */
-	private boolean copy(DocumentResource res, HDocumentResource hRes,
+	private boolean copy(DocumentResource fromRes, HDocumentResource hRes,
 			HDocument hDoc, int nextDocRev) {
 		hRes.setDocument(hDoc);
 		boolean resChanged;
-		if (res instanceof TextFlow) {
-			resChanged = copy((TextFlow)res, (HTextFlow)hRes, nextDocRev);
+		if (fromRes instanceof TextFlow) {
+			resChanged = copy((TextFlow)fromRes, (HTextFlow)hRes, nextDocRev);
+		} else if (fromRes instanceof DataHook) {
+			resChanged = copy((DataHook)fromRes, (HDataHook)hRes, nextDocRev);
+		} else if (fromRes instanceof Reference) {
+			resChanged = copy((Reference)fromRes, (HReference)hRes, nextDocRev);
+		} else if (fromRes instanceof Container) {
+			resChanged = copy((Container)fromRes, (HContainer)hRes, nextDocRev);
 		} else {
 			// FIXME handle other Resource types
-			throw new RuntimeException("Unknown Resource type "+res.getClass());
+			throw new RuntimeException("Unknown Resource type "+fromRes.getClass());
 		}
 		return resChanged;
+	}
+
+	private boolean copy(Container fromContainer, HContainer hContainer, int nextDocRev) {
+		merge(fromContainer, hContainer, nextDocRev);
+		return true; // TODO
+	}
+
+	private boolean copy(Reference fromRef, HReference hRef, int nextDocRev) {
+		merge(fromRef, hRef, nextDocRev);
+		return true; // TODO
+	}
+
+	private boolean copy(DataHook fromDH, HDataHook hDH, int nextDocRev) {
+		merge(fromDH, hDH, nextDocRev);
+		return true; // TODO
 	}
 
 	/**
 	 * Returns true if the content (or a comment) of htf was changed
 	 */
-	private boolean copy(TextFlow tf, HTextFlow htf, int nextDocRev) {
+	private boolean copy(TextFlow fromTf, HTextFlow htf, int nextDocRev) {
+		// TODO record in history table: see merge(TextFlow, HTextFlow, int)
 		boolean changed = false;
-		if (!tf.getContent().equals(htf.getContent())) {
+		if (!fromTf.getContent().equals(htf.getContent())) {
 			changed = true;
 			log.debug("CHANGED: TextFlow {0}:{1} content changed", htf.getDocument().getDocId(), htf.getResId());
 		}
 	
-		htf.setContent(tf.getContent());
-		List<Object> extensions = tf.getExtensions();
+		htf.setContent(fromTf.getContent());
+		List<Object> extensions = fromTf.getExtensions();
 		if (extensions != null) {
 			for (Object ext : extensions) {
 				if (ext instanceof TextFlowTargets) {
@@ -529,7 +559,7 @@ public class DocumentConverter {
 					throw new RuntimeException("Unknown TextFlow extension "+ext.getClass());
 				}
 			}
-			TextFlowTargets targets = tf.getTargets();
+			TextFlowTargets targets = fromTf.getTargets();
 			if (targets != null) {
 				for (TextFlowTarget target : targets.getTargets()) {
 					HTextFlowTarget hTarget = null;
@@ -601,7 +631,5 @@ public class DocumentConverter {
 				MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML);
 		doc.getLinks().add(link);
 	}
-	
-
 	
 }

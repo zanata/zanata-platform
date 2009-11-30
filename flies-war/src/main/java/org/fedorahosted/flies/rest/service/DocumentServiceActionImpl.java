@@ -129,7 +129,15 @@ public class DocumentServiceActionImpl implements DocumentServiceAction {
 		HDocument hDoc = documentDAO.getByDocId(hProjectContainer, hDocId);
 		
 		if(hDoc == null) { // it's a create operation
-			hDoc = documentConverter.create(document, hProjectContainer);
+//			hDoc = documentConverter.create(document, hProjectContainer);
+			// FIXME create hDoc, set its hProjectContainer
+			log.debug("PUT creating new HDocument with id {0}", document.getId());
+			hDoc = new HDocument(document);
+			hDoc.setRevision(0);
+			hDoc.setProject(hProjectContainer);
+
+			
+			documentConverter.copy(document, hDoc);
 			hProjectContainer.getDocuments().put(hDoc.getDocId(), hDoc);
 			session.save(hDoc);
 			try{
@@ -146,7 +154,8 @@ public class DocumentServiceActionImpl implements DocumentServiceAction {
 			}
 		}
 		else{ // it's an update operation
-			documentConverter.merge(document, hDoc);
+//			documentConverter.merge(document, hDoc);
+			documentConverter.copy(document, hDoc);
 			session.save(hDoc);
 			session.flush();
 			return Response.status(205).build();

@@ -18,8 +18,8 @@ public class HReference extends HDocumentResource{
 	public HReference() {
 	}
 	
-	public HReference(Reference reference) {
-		super(reference);
+	public HReference(Reference reference, int nextDocRev) {
+		super(reference, nextDocRev);
 		// TODO
 		this.ref = reference.getRelationshipId();
 	}

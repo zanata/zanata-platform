@@ -13,11 +13,12 @@ public class HContainer extends HParentResource{
 	public HContainer() {
 	}
 	
-	public HContainer(Container cont) {
-		super(cont);
+	public HContainer(Container cont, HDocument hDoc, int nextDocRev) {
+		super(cont, nextDocRev);
+		setDocument(hDoc);
 		if (cont.hasResources()) {
 			for (DocumentResource res : cont.getResources()){
-				HDocumentResource hRes = HDocument.create(res);
+				HDocumentResource hRes = hDoc.create(res, nextDocRev);
 				getResources().add(hRes);
 				hRes.setParent(this);
 			}
