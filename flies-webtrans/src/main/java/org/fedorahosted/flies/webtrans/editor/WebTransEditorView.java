@@ -40,8 +40,8 @@ public class WebTransEditorView extends DecoratorPanel implements WebTransEditor
 		mainPanel.add(editorPanel);
 		editor = new Label("editor");
 		editorPanel.add(editor);
-		toolbox = new Label("toolbox");
-		editorPanel.add(toolbox);
+		//toolbox = new Label("toolbox");
+		//editorPanel.add(toolbox);
 		editorPanel.setSize("100%", "100%");
 		
 		mainPanel.add(footer);

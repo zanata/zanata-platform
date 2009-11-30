@@ -97,7 +97,7 @@ body {
 }
 .gwt-ProgressBar-shell {
   border: 2px solid #d5d5d5;
-  background-color: #dddddd;
+  background-color: #7F7F7F;
   height: 14pt;
   width: 100%;
 }
@@ -107,7 +107,7 @@ body {
 .gwt-ProgressBar-shell .gwt-ProgressBar-text {
   padding: 0px;
   margin: 0px;
-  color: white;
+  color: black;
 
 }
 
