@@ -75,7 +75,7 @@ public class WebTransEditorView extends DecoratorPanel implements WebTransEditor
 		this.editor = editor;
 		editorPanel.remove(0);
 		editorPanel.insert(editor, 0);
-		editor.setSize("100%", "80%");
+		editor.setSize("100%", "100%");
 	}
 
 	@Override
