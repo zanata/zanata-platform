@@ -249,8 +249,7 @@ public class DocumentConverter {
 		} else if (fromRes instanceof Container) {
 			resChanged = copy((Container)fromRes, (HContainer)hRes, nextDocRev);
 		} else {
-			// FIXME handle other Resource types
-			throw new RuntimeException("Unknown Resource type "+fromRes.getClass());
+			throw new RuntimeException("Unknown type of DocumentResource: "+fromRes.getClass());
 		}
 		return resChanged;
 	}
@@ -296,7 +295,7 @@ public class DocumentConverter {
 	 * Returns true if the content (or a comment) of htf was changed
 	 */
 	private boolean copy(TextFlow fromTf, HTextFlow htf, int nextDocRev) {
-		// TODO record in history table: see merge(TextFlow, HTextFlow, int)
+		// FIXME record in history table: see merge(TextFlow, HTextFlow, int)
 		boolean changed = false;
 		if (!fromTf.getContent().equals(htf.getContent())) {
 			changed = true;
@@ -345,7 +344,6 @@ public class DocumentConverter {
 							resourceRev = htf.getRevision();
 							
 						hTarget.setState(target.getState());
-	//				hTarget.setRevision(revision); // TODO
 						hTarget.setContent(target.getContent());
 						copy(target, hTarget, htf);
 						hTarget.setResourceRevision(resourceRev);
@@ -434,18 +432,19 @@ public class DocumentConverter {
 	}
 	
 	private HTextFlowTarget create(TextFlowTarget textFlowTarget, int newRevision){
+		// FIXME
 		return null;
 	}
 	
 	private void merge(TextFlowTarget textFlowTarget, HTextFlowTarget hTextFlowTarget, int newRevision) {
 		if( !hTextFlowTarget.getContent().equals(textFlowTarget.getContent())){
-			
+			// FIXME
 		}
 	}
 	
 	private boolean copy(Container fromContainer, HContainer hContainer, int nextDocRev) {
 		merge(fromContainer, hContainer, nextDocRev);
-		return true; // TODO
+		return true; // TODO only bump docrev if container changes
 	}
 
 	/**
@@ -485,10 +484,11 @@ public class DocumentConverter {
 	}
 	
 	private void merge(Container fromContainer, HContainer hContainer, int newRevision){
+		// FIXME merge should copy fields of Container.  See create()
 		mergeChildren(fromContainer, hContainer, newRevision);
 		// if a child is updated, we update the container version as well
 		for(HDocumentResource child: hContainer.getResources()) {
-			if(newRevision == child.getRevision()){//FIXME
+			if(newRevision == child.getRevision()){
 				hContainer.setRevision(newRevision);
 			}
 		}
@@ -539,7 +539,7 @@ public class DocumentConverter {
 	
 	private boolean copy(DataHook fromDH, HDataHook hDH, int nextDocRev) {
 		merge(fromDH, hDH, nextDocRev);
-		return true; // TODO
+		return true; // TODO only bump docrev if datahook changes
 	}
 	
 	/**
@@ -557,12 +557,13 @@ public class DocumentConverter {
 	}
 	
 	private void merge(DataHook fromDataHook, HDataHook hDataHook, int newRevision){
+		// FIXME copy values
 	}	
 	
 
 	private boolean copy(Reference fromRef, HReference hRef, int nextDocRev) {
 		merge(fromRef, hRef, nextDocRev);
-		return true; // TODO
+		return true; // TODO only bump docrev if reference changes
 	}
 	
 	/**
@@ -581,6 +582,7 @@ public class DocumentConverter {
 	}
 	
 	private void merge(Reference fromReference, HReference hReference, int newRevision){
+		// FIXME copy more values
 		if(!hReference.getRef().equals(fromReference.getRelationshipId())){
 			hReference.setRevision(newRevision);
 			hReference.setRef(fromReference.getRelationshipId());
