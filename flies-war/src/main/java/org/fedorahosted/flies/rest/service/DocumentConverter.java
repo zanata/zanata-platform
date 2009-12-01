@@ -15,7 +15,6 @@ import org.fedorahosted.flies.repository.model.HDataHook;
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HDocumentResource;
 import org.fedorahosted.flies.repository.model.HParentResource;
-import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.repository.model.HReference;
 import org.fedorahosted.flies.repository.model.HSimpleComment;
 import org.fedorahosted.flies.repository.model.HTextFlow;
@@ -82,6 +81,8 @@ public class DocumentConverter {
     	toHDoc.setPath(fromDoc.getPath());
     	toHDoc.setContentType(fromDoc.getContentType());
     	toHDoc.setLocale(fromDoc.getLang());
+//    	toHDoc.setProject(container);  // this must be done by the caller
+    	
     	// don't copy revision; we don't accept revision from the client
     	List<DocumentResource> fromDocResources = Collections.emptyList();
     	if (fromDoc.hasResources()) {
@@ -100,14 +101,26 @@ public class DocumentConverter {
     	toHDoc.setResources(hResources);
     	for (DocumentResource fromRes : fromDocResources) {
     		HDocumentResource hRes = null;
-    		if (session.contains(toHDoc))
-    			hRes = resourceDAO.getById(toHDoc, fromRes.getId());
+    		if (session.contains(toHDoc)) {
+    			// document already exists, see if the resource does too
+				hRes = resourceDAO.getById(toHDoc, fromRes.getId());
+			}
     		boolean resChanged = false;
     		if (hRes == null) {
     			resChanged = true; // this will cause res.revision to be set below
-    			hRes = toHDoc.create(fromRes, nextDocRev); // 
+    			hRes = toHDoc.create(fromRes, nextDocRev);
     		} else {
-    			// resurrect the resource
+				// need to delete and recreate if same ids but conflicting types
+				if(!areOfSameType(fromRes, hRes)) {
+					resChanged = true;
+					if(hRes instanceof HTextFlow){
+						session.delete(hRes);
+					} else {
+						deleteOrObsolete(hRes);
+					}
+					hRes = toHDoc.create(fromRes, nextDocRev);
+				}
+				// resurrect the resource (if it was obsolete)
     			hRes.setObsolete(false);
     		}
     		hResources.add(hRes);
@@ -136,100 +149,6 @@ public class DocumentConverter {
     		toHDoc.setRevision(nextDocRev);
     }
 
-	/**
-	 * Creates an HDocument from the Document, with the field 'project' 
-	 * pointing to container 
-	 * @param fromDocument
-	 * @param container
-	 * @return
-	 */
-	public HDocument _create(Document fromDocument, HProjectContainer container){
-		HDocument hDocument = new HDocument();
-		hDocument.setDocId(fromDocument.getId());
-		hDocument.setDocId(fromDocument.getId());
-		hDocument.setName(fromDocument.getName());
-		hDocument.setPath(fromDocument.getPath());
-		hDocument.setContentType(fromDocument.getContentType());
-		hDocument.setLocale(fromDocument.getLang());
-		hDocument.setRevision(1);
-		hDocument.setProject(container);
-		
-		if(fromDocument.hasResources()) {
-			createChildren(fromDocument, hDocument, 1);
-		}
-		return hDocument;
-	}
-
-	public void _merge(Document fromDocument, HDocument hDocument){
-		int newRevision = hDocument.getRevision() +1;
-		hDocument.setRevision(newRevision);
-		hDocument.setDocId(fromDocument.getId());
-		hDocument.setName(fromDocument.getName());
-		hDocument.setPath(fromDocument.getPath());
-		hDocument.setContentType(fromDocument.getContentType());
-		hDocument.setLocale(fromDocument.getLang());
-		
-		if(fromDocument.hasResources() ) {
-			mergeChildren(fromDocument, hDocument, newRevision);
-		}
-		
-	}
-
-	
-	/**
-	 * Creates the children of the Document in the HDocument
-	 * @param fromDocument
-	 * @param hDocument
-	 * @param newRevision
-	 */
-	private void createChildren(Document fromDocument, HDocument hDocument, int newRevision) {
-		for(DocumentResource resource : fromDocument.getResources()) {
-			HDocumentResource hResource = create(resource, hDocument, null, newRevision);
-			hDocument.getResources().add(hResource);
-		}
-	}
-	
-	private void mergeChildren(Document fromDocument, HDocument hDocument, int nextDocRev){
-
-		Map<String, HDocumentResource> existingResources = toMap(hDocument.getResources());
-		
-		List<HDocumentResource> finalHResources = hDocument.getResources();
-		finalHResources.clear();
-		
-		for(DocumentResource fromResource: fromDocument.getResources()){
-			
-			// check existing resources first
-			HDocumentResource hResource = existingResources.remove(fromResource.getId());
-			if(hResource == null) {
-				hResource = resourceDAO.getObsoleteById(hDocument, fromResource.getId());	
-			}
-			if(hResource != null) {
-				// need to delete and recreate if same ids but conflicting types
-				if(!areOfSameType(fromResource, hResource)){
-					if(hResource instanceof HTextFlow){
-						session.delete(hResource);
-					}
-					else{
-						deleteOrObsolete(hResource);
-					}
-					hResource = create(fromResource, hResource.getDocument(), null, nextDocRev);
-				}
-				hResource.setObsolete(false);
-				merge(fromResource, hResource, nextDocRev);
-				finalHResources.add(hResource);
-				continue;
-			}
-			hResource = create(fromResource, hDocument, null, nextDocRev);
-			// finally insert
-			finalHResources.add(hResource);
-		}
-
-		// clean up resources we didn't process in this 
-		for(HDocumentResource hResource : existingResources.values()) {
-			deleteOrObsolete(hResource);
-		}
-	}
-	
 
 	/**
 	 * Copies fromRes to hRes recursively, maintaining docTargets.
