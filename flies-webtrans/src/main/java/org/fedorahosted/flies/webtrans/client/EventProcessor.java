@@ -5,12 +5,18 @@ import java.util.HashMap;
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.fedorahosted.flies.gwt.rpc.EnterWorkspace;
+import org.fedorahosted.flies.gwt.rpc.ExitWorkspace;
 import org.fedorahosted.flies.gwt.rpc.GetEventsAction;
 import org.fedorahosted.flies.gwt.rpc.GetEventsResult;
+import org.fedorahosted.flies.gwt.rpc.HasEnterWorkspaceData;
+import org.fedorahosted.flies.gwt.rpc.HasExitWorkspaceData;
 import org.fedorahosted.flies.gwt.rpc.HasTransUnitUpdatedData;
 import org.fedorahosted.flies.gwt.rpc.SessionEvent;
 import org.fedorahosted.flies.gwt.rpc.SessionEventData;
 import org.fedorahosted.flies.gwt.rpc.TransUnitUpdated;
+import org.fedorahosted.flies.webtrans.client.events.EnterWorkspaceEvent;
+import org.fedorahosted.flies.webtrans.client.events.ExitWorkspaceEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 
@@ -42,6 +48,22 @@ public class EventProcessor extends Timer{
 				public TransUnitUpdatedEvent create(SessionEvent<?> event) {
 					return new TransUnitUpdatedEvent(
 							(HasTransUnitUpdatedData) event.getData(), event.getSequence());
+				}
+			});
+			
+			factories.put(ExitWorkspace.class, new EventFactory<ExitWorkspaceEvent>() {
+				@Override
+				public ExitWorkspaceEvent create(SessionEvent<?> event) {
+					return new ExitWorkspaceEvent(
+							(HasExitWorkspaceData) event.getData(), event.getSequence());
+				}
+			});
+			
+			factories.put(EnterWorkspace.class, new EventFactory<EnterWorkspaceEvent>() {
+				@Override
+				public EnterWorkspaceEvent create(SessionEvent<?> event) {
+					return new EnterWorkspaceEvent(
+							(HasEnterWorkspaceData) event.getData(), event.getSequence());
 				}
 			});
 		}

@@ -4,7 +4,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.fedorahosted.flies.FliesInit;
 import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.gwt.auth.SessionId;
+import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.PersonId;
+import org.fedorahosted.flies.gwt.rpc.EnterWorkspace;
+import org.fedorahosted.flies.gwt.rpc.ExitWorkspace;
+import org.fedorahosted.flies.gwt.rpc.ExitWorkspaceAction;
+import org.fedorahosted.flies.gwt.rpc.TransUnitUpdated;
 import org.fedorahosted.flies.security.FliesIdentity;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
@@ -55,11 +61,22 @@ public class TranslationWorkspaceManager {
 	public void exitWorkspace(String username){
 		ImmutableSet<TranslationWorkspace> workspaceSet=ImmutableSet.copyOf(workspaceMap.values());
 		for(TranslationWorkspace workspace : workspaceSet) {
-			ImmutableSet<PersonId> personIdSet= workspace.getUsers();
-			for(PersonId personId : personIdSet) {
-				if (personId.equals(new PersonId(username))) {
-					//Send GWT Event to client to update the userlist
-				}
+			if(workspace.removeTranslator(new PersonId(username))) {
+			//Send GWT Event to client to update the userlist
+			ExitWorkspace event = new ExitWorkspace(new PersonId(username));
+			workspace.publish(event);
+			}
+		}
+	}
+	
+	@Observer(FliesIdentity.USER_ENTER_WORKSPACE)
+	public void enterWorkspace(String username){
+		ImmutableSet<TranslationWorkspace> workspaceSet=ImmutableSet.copyOf(workspaceMap.values());
+		for(TranslationWorkspace workspace : workspaceSet) {
+			if(workspace.getUsers().contains(new PersonId(username))) {
+				//Send GWT Event to client to update the userlist
+				EnterWorkspace event = new EnterWorkspace(new PersonId(username));
+				workspace.publish(event);
 			}
 		}
 	}

@@ -1,8 +1,5 @@
 package org.fedorahosted.flies.webtrans.client;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
@@ -12,10 +9,13 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.fedorahosted.flies.gwt.model.Person;
 import org.fedorahosted.flies.gwt.model.PersonId;
-import org.fedorahosted.flies.gwt.rpc.GetStatusCountResult;
+import org.fedorahosted.flies.gwt.rpc.EnterWorkspace;
 import org.fedorahosted.flies.gwt.rpc.GetTranslatorList;
 import org.fedorahosted.flies.gwt.rpc.GetTranslatorListResult;
-import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
+import org.fedorahosted.flies.webtrans.client.events.EnterWorkspaceEvent;
+import org.fedorahosted.flies.webtrans.client.events.EnterWorkspaceEventHandler;
+import org.fedorahosted.flies.webtrans.client.events.ExitWorkspaceEvent;
+import org.fedorahosted.flies.webtrans.client.events.ExitWorkspaceEventHandler;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.client.ui.HasChildTreeNodes;
 import org.fedorahosted.flies.webtrans.client.ui.HasFilter;
@@ -38,6 +38,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 
 	private final DispatchAsync dispatcher;
 	private final WorkspaceContext workspaceContext;
+	private int latestStatusCountOffset = -1;
 		
 	public interface Display extends WidgetDisplay{
 		HasChildTreeNodes<Person> getTree();
@@ -53,7 +54,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 		super(display, eventBus);
 		this.workspaceContext = workspaceContext;
 		this.dispatcher = dispatcher;
-		
+		loadTranslatorList();
 	}
 	
 	
@@ -64,7 +65,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 
 	@Override
 	protected void onBind() {
-		loadTranslatorList();
+		
 		final DecoratedPopupPanel userPopupPanel = new DecoratedPopupPanel(true);
 		
 		getDisplay().getNodeMouseOver().addNodeMouseOverHandler(new MouseOverHandler() {
@@ -102,6 +103,25 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 			
 		});
 		
+		registerHandler(eventBus.addHandler(ExitWorkspaceEvent.getType(), new ExitWorkspaceEventHandler() {
+			@Override
+			public void onExitWorkspace(ExitWorkspaceEvent event) {
+				if( event.getOffset() < latestStatusCountOffset){
+					return;
+				}
+				loadTranslatorList();
+			}
+		}));
+		
+		registerHandler(eventBus.addHandler(EnterWorkspaceEvent.getType(), new EnterWorkspaceEventHandler() {
+			@Override
+			public void onEnterWorkspace(EnterWorkspaceEvent event) {
+				if( event.getOffset() < latestStatusCountOffset){
+					return;
+				}
+				loadTranslatorList();
+			}
+		}));
 	}
 
 	private void loadTranslatorList() {

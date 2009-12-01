@@ -32,6 +32,7 @@ import org.jboss.seam.security.NotLoggedInException;
 public class FliesIdentity extends Identity {
 	
 	public static final String USER_LOGOUT_EVENT = "user.logout";
+	public static final String USER_ENTER_WORKSPACE = "user.enter";
 	private String username;
 
 	private static final LogProvider log = Logging
@@ -75,6 +76,13 @@ public class FliesIdentity extends Identity {
 	public void logout() {
 		if (Events.exists()) Events.instance().raiseEvent(USER_LOGOUT_EVENT, getPrincipal().getName());
 		super.logout();
+	}
+	
+	public String login() {
+		String value = super.login();
+		if(value!=null)
+				if (Events.exists()) Events.instance().raiseEvent(USER_ENTER_WORKSPACE, getPrincipal().getName());
+		return value;
 	}
 
 }

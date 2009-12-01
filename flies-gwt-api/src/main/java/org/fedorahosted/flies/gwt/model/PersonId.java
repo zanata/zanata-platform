@@ -20,7 +20,7 @@ public final class PersonId implements IsSerializable{
 	public boolean equals(Object obj) {
 		if(obj == null) return false;
 		if(obj instanceof PersonId){
-			return ((PersonId)obj).id == id;
+			return ((PersonId)obj).id.equals(id);
 		}
 		return super.equals(obj);
 	}

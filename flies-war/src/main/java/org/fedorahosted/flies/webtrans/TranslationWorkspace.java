@@ -65,6 +65,15 @@ public class TranslationWorkspace {
 		return ImmutableSet.copyOf(sessions.values());
 	}
 	
+	public boolean removeTranslator(PersonId personId) {
+		ImmutableSet<SessionId> sessionIdSet = getSessions();
+		for(SessionId sessionId:sessionIdSet) {
+			if(sessions.get(sessionId).equals(personId))
+				return sessions.remove(sessionId, personId);
+		}
+		return false;
+	}
+	
 	public void registerTranslator(SessionId sessionId, PersonId personId){
 		PersonId pId = sessions.putIfAbsent(sessionId, personId);
 		if(pId == null && Events.exists()) Events.instance().raiseEvent(EVENT_TRANSLATOR_ENTER_WORKSPACE, workspaceKey, personId);
