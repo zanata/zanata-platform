@@ -3,8 +3,8 @@
 	<target name="_roundtrip">
 
 		<!-- setup roundtrip input and output dir -->
-		<property name="roundtrip-in-dir" value="${out.dir}/roundtrip-results" />
-		<property name="roundtrip-out-dir" value="sample/po" />
+		<property name="roundtrip-in-dir" value="sample/po" />
+		<property name="roundtrip-out-dir" value="${out.dir}/roundtrip-results" />
 		<delete dir="${roundtrip-out-dir}" />
 		<mkdir dir="${roundtrip-out-dir}" />
 
