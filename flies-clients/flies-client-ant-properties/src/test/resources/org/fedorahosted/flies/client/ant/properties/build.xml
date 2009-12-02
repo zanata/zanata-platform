@@ -5,12 +5,12 @@
 	<property name="out.dir" value="${user.dir}/target/test-output" />
 	<property name="bob.key" value="34567890123456789012345678901234" />
 
-	<target name="downloadpo">
+	<target name="props2docs">
 		<props2docs 
 			srcDir="test1" sourceLang="en_US" locales="de,fr" debug="true" />
 	</target>
 
-	<target name="uploadpo">
+	<target name="docs2props">
 		<docs2props 
 			src="test2/documents.xml" dstDir="${out.dir}/test2" debug="true" />
 	</target>
