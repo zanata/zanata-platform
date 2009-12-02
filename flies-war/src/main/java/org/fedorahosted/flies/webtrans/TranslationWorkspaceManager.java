@@ -4,24 +4,18 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.fedorahosted.flies.FliesInit;
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.gwt.auth.SessionId;
-import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.PersonId;
 import org.fedorahosted.flies.gwt.rpc.EnterWorkspace;
 import org.fedorahosted.flies.gwt.rpc.ExitWorkspace;
-import org.fedorahosted.flies.gwt.rpc.ExitWorkspaceAction;
-import org.fedorahosted.flies.gwt.rpc.TransUnitUpdated;
 import org.fedorahosted.flies.security.FliesIdentity;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
-import org.jboss.seam.security.Identity;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
