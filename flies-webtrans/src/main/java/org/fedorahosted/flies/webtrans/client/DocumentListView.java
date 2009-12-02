@@ -37,7 +37,7 @@ public class DocumentListView extends Composite
 	private FlowPanel bottompanel;
 	
 	public DocumentListView() {
-	    tree = new FilterTree<DocumentId, DocName>(new FlatDocNameMapper(), images);
+	    tree = new FilterTree<DocumentId, DocName>(new FlatFolderDocNameMapper(), images);
 	    mainpanel = new FlowPanel();
 	    mainpanel.setWidth("100%");
 	    mainpanel.add(tree);
