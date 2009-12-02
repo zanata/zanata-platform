@@ -198,27 +198,41 @@ public class DocumentConverter {
 	private void merge(DocumentResource fromResource, HDocumentResource hResource, int newRevision){
 		if(!areOfSameType(fromResource, hResource))
 			throw new IllegalArgumentException("Resource and HResource must be of same type");
-		if(fromResource instanceof TextFlow) 
-			merge((TextFlow) fromResource, (HTextFlow) hResource, newRevision);
-		else if(fromResource instanceof Container) 
+		if(fromResource instanceof TextFlow) {
+//			merge((TextFlow) fromResource, (HTextFlow) hResource, newRevision);
+			copy((TextFlow)fromResource, (HTextFlow)hResource, newRevision);
+		} else if(fromResource instanceof Container) {
 			merge((Container) fromResource, (HContainer) hResource, newRevision);
-		else if(fromResource instanceof DataHook) 
+		} else if(fromResource instanceof DataHook) {
 			merge((DataHook) fromResource, (HDataHook) hResource, newRevision);
-		else if(fromResource instanceof Reference) 
+		} else if(fromResource instanceof Reference) {
 			merge((Reference) fromResource, (HReference) hResource, newRevision);
-		else
+		} else {
 			throw new RuntimeException("missing type - programming error");
+		}
 	}
 	
 	/**
 	 * Returns true if the content (or a comment) of htf was changed
 	 */
 	private boolean copy(TextFlow fromTf, HTextFlow htf, int nextDocRev) {
-		// FIXME record in history table: see merge(TextFlow, HTextFlow, int)
 		boolean changed = false;
 		if (!fromTf.getContent().equals(htf.getContent())) {
 			changed = true;
 			log.debug("CHANGED: TextFlow {0}:{1} content changed", htf.getDocument().getDocId(), htf.getResId());
+			
+			// save old version to history
+			HTextFlowHistory history = new HTextFlowHistory(htf);
+			htf.getHistory().put(htf.getRevision(), history);
+			
+			// make sure to set the status of any targets to NeedReview
+			for (HTextFlowTarget target : htf.getTargets().values()) {
+				// TODO not sure if this is the correct state
+				target.setState(ContentState.NeedReview);
+			}
+			
+			htf.setRevision(nextDocRev);
+			htf.setContent(fromTf.getContent());
 		}
 	
 		htf.setContent(fromTf.getContent());
@@ -226,13 +240,15 @@ public class DocumentConverter {
 		if (extensions != null) {
 			for (Object ext : extensions) {
 				if (ext instanceof TextFlowTargets) {
-					// do targets last: if the comment changes, the resourceRev will have to be incremented
+					// do nothing here, we want to do targets last: 
+					// if the comment changes, the resourceRev will have to be incremented
 				} else if (ext instanceof SimpleComment) {
 					SimpleComment simpleComment = (SimpleComment) ext;
 					HSimpleComment hComment = htf.getComment();
 					if (hComment == null) {
 						changed = true;
 						log.debug("CHANGED: TextFlow {0}:{1} comment changed", htf.getDocument().getDocId(), htf.getResId());
+						// NB HTextFlowHistory doesn't record comments
 						hComment = new HSimpleComment();
 						htf.setComment(hComment);
 					} else {
@@ -289,39 +305,10 @@ public class DocumentConverter {
 		hTextFlow.setResId(fromTextFlow.getId());
 		hTextFlow.setRevision(nextDocRev);
 		hTextFlow.setContent(fromTextFlow.getContent());
+		// copy TextFlowTargets to HTextFlowTargets:
+		copy(fromTextFlow, hTextFlow, nextDocRev);
 		return hTextFlow;
 	}
-
-	private void merge(TextFlow fromTextFlow, HTextFlow hTextFlow, int newRevision){
-		if(!hTextFlow.getContent().equals(fromTextFlow.getContent())){
-			
-			// save old version to history
-			HTextFlowHistory history = new HTextFlowHistory(hTextFlow);
-			hTextFlow.getHistory().put(hTextFlow.getRevision(), history);
-			
-			// make sure to set the status of any targets to NeedReview
-			for(HTextFlowTarget target :hTextFlow.getTargets().values()){
-				// TODO not sure if this is the correct state
-				target.setState(ContentState.NeedReview);
-			}
-			
-			hTextFlow.setRevision(newRevision);
-			hTextFlow.setContent(fromTextFlow.getContent());
-		}
-		
-		TextFlowTargets targets = fromTextFlow.getTargets();
-		if(targets != null) {
-			for(TextFlowTarget textFlowTarget : targets.getTargets()) {
-				if(hTextFlow.getTargets().containsKey(textFlowTarget.getLang())){
-					merge(textFlowTarget, hTextFlow.getTargets().get(textFlowTarget.getLang()), newRevision);
-				}
-				else{
-					HTextFlowTarget hTextFlowTarget = create(textFlowTarget, newRevision);
-					hTextFlow.getTargets().put(textFlowTarget.getLang(), hTextFlowTarget);
-				}
-			}
-		}
-	}	
 
 	
 	private void copy(TextFlowTarget target, HTextFlowTarget hTarget,
@@ -350,16 +337,6 @@ public class DocumentConverter {
 			hTarget.setRevision(hTarget.getRevision()+1);
 	}
 	
-	private HTextFlowTarget create(TextFlowTarget textFlowTarget, int newRevision){
-		// FIXME
-		return null;
-	}
-	
-	private void merge(TextFlowTarget textFlowTarget, HTextFlowTarget hTextFlowTarget, int newRevision) {
-		if( !hTextFlowTarget.getContent().equals(textFlowTarget.getContent())){
-			// FIXME
-		}
-	}
 	
 	private boolean copy(Container fromContainer, HContainer hContainer, int nextDocRev) {
 		merge(fromContainer, hContainer, nextDocRev);
@@ -402,8 +379,8 @@ public class DocumentConverter {
 		}
 	}
 	
-	private void merge(Container fromContainer, HContainer hContainer, int newRevision){
-		// FIXME merge should copy fields of Container.  See create()
+	private void merge(Container fromContainer, HContainer hContainer, int newRevision) {
+		// ideally merge would copy fields of Container and we could eliminate create()
 		mergeChildren(fromContainer, hContainer, newRevision);
 		// if a child is updated, we update the container version as well
 		for(HDocumentResource child: hContainer.getResources()) {
@@ -476,7 +453,10 @@ public class DocumentConverter {
 	}
 	
 	private void merge(DataHook fromDataHook, HDataHook hDataHook, int newRevision){
-		// FIXME copy values
+//		hDataHook.setDocument(hDocument);
+//		hDataHook.setParent(parent);
+		hDataHook.setResId(fromDataHook.getId());
+		hDataHook.setRevision(newRevision);
 	}	
 	
 
@@ -501,7 +481,7 @@ public class DocumentConverter {
 	}
 	
 	private void merge(Reference fromReference, HReference hReference, int newRevision){
-		// FIXME copy more values
+		// meld this method with create() ?
 		if(!hReference.getRef().equals(fromReference.getRelationshipId())){
 			hReference.setRevision(newRevision);
 			hReference.setRef(fromReference.getRelationshipId());
