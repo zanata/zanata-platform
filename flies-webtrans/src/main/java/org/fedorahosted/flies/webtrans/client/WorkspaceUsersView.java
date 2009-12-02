@@ -43,7 +43,7 @@ public class WorkspaceUsersView extends Composite implements
 		tree.setWidth("100%");
 		RoundedContainerWithHeader container = new RoundedContainerWithHeader(new Label("Translators"), tree );
 		initWidget(container);
-		getElement().setId("WorskpaceUsersView");
+		getElement().setId("WorkspaceUsersView");
 		
 	}
 
