@@ -11,7 +11,7 @@ public class RemoteTest extends AbstractBuildTest {
      */
     @SuppressWarnings("unchecked")
     static Class[] testedClasses = { 
-	DownloadPoTask.class, UploadPoTask.class };
+	UploadPoTask.class, DownloadPoTask.class };
 
     public RemoteTest(String name) {
 	super(name);

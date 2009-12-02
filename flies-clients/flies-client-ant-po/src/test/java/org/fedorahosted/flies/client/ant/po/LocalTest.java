@@ -11,7 +11,7 @@ public class LocalTest extends AbstractBuildTest {
      */
     @SuppressWarnings("unchecked")
     static Class[] testedClasses = { 
-	DownloadPoTask.class, UploadPoTask.class };
+	UploadPoTask.class, DownloadPoTask.class };
 
     public LocalTest(String name) {
 	super(name);
@@ -25,8 +25,8 @@ public class LocalTest extends AbstractBuildTest {
     public static Test suite() {
 	TestSuite suite = new TestSuite(LocalTest.class.getName());
 	
-	suite.addTest(new LocalTest("downloadpo"));
-	suite.addTest(new LocalTest("uploadpo"));
+//	suite.addTest(new LocalTest("downloadpo"));
+//	suite.addTest(new LocalTest("uploadpo"));
 	suite.addTest(new LocalTest("roundtriplocal"));
 	return suite;
     }

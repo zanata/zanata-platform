@@ -8,16 +8,19 @@
 			apiKey="${bob.key}"
 			dst="${docsUrl}" 
 			srcDir="test1" 
-			sourceLang="en_US" 
-			locales="de,fr" 
-			debug="false" />
+			debug="true" />
 		<downloadpo 
 			user="bob"
 			apiKey="${bob.key}"
 			src="${docsUrl}" 
 			dstDir="${out.dir}/test3b" 
 			debug="true" />
-		<verifyprop dir1="test1" dir2="${out.dir}/test3b" />
+	      <exec executable="diff" failonerror="true">
+	            <arg value="--unified"/>
+	            <arg value="--recursive"/>
+	            <arg value="test1"/>
+	            <arg value="${out.dir}/test3b"/>
+	        </exec>
 	</target>
 	
 </project>

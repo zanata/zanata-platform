@@ -5,53 +5,106 @@ import java.net.URL;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.Marshaller;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.taskdefs.MatchingTask;
-import org.fedorahosted.flies.adapter.po.PoWriter;
+import org.apache.tools.ant.types.selectors.FileSelector;
+import org.fedorahosted.flies.adapter.po.PoReader;
+import org.fedorahosted.flies.client.ant.po.BasePoSelector;
 import org.fedorahosted.flies.client.ant.po.Utility;
+import org.fedorahosted.flies.common.ContentState;
+import org.fedorahosted.flies.common.ContentType;
+import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.rest.ClientUtility;
 import org.fedorahosted.flies.rest.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.IDocumentsResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Documents;
 import org.jboss.resteasy.client.ClientResponse;
+import org.xml.sax.InputSource;
 
 public class UploadPoTask extends MatchingTask {
 
 	private String user;
 	private String apiKey;
+	private String dst;
+	private File srcDir;
+	private String[] locales = new String[0];
+	private String sourceLang;
 	private boolean debug;
-	private File dstDir;
-	private String src;
-
+	private ContentState contentState = ContentState.Approved;
+	
 	@Override
 	public void execute() throws BuildException {
 		ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
 		try {
 			// make sure RESTEasy classes will be found:
 			Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-			Unmarshaller m = null;
+			
+			// TODO we should run publican update po command before reading po files
+			
+			DirectoryScanner ds = getDirectoryScanner(srcDir);
+			// use default includes if unset:
+			
+			if (!getImplicitFileSet().hasPatterns()) {
+				ds.setIncludes(new String[] { "pot/*.pot" }); //$NON-NLS-1$
+			}
+			ds.setSelectors(getSelectors());
+			ds.scan();
+			String[] potFilenames = ds.getIncludedFiles();
+
+			Marshaller m = null;
+			JAXBContext jc = JAXBContext.newInstance(Documents.class);
+			m = jc.createMarshaller();
 			if (debug) {
-				JAXBContext jc = JAXBContext.newInstance(Documents.class);
-				m = jc.createUnmarshaller();
+				m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+			}
+			
+
+			Documents docs = new Documents();
+			List<Document> docList = docs.getDocuments();
+			PoReader poReader = new PoReader();
+			// for each of the base Pos files under srcdir:
+			int i = 0;
+			for (String potFilename : potFilenames) {
+//				progress.update(i++, files.length);
+				Document doc = new Document(potFilename, ContentType.TextPlain);
+//				doc.setLang(LocaleId.fromJavaName(sourceLang));
+				doc.setLang(LocaleId.EN_US);
+				File potFile = new File(srcDir, potFilename);
+				
+				for (String locale : locales) {
+					File localeDir = new File(srcDir, locale);
+					File poFile = new File(localeDir, potFile.getName()); // TODO convert .pot into .po
+					InputSource inputSource = new InputSource(
+							poFile.toURI().toString()
+					);
+					inputSource.setEncoding("utf8");
+					System.out.println("extracting target: " + locale);
+					poReader.extractTarget(doc, inputSource, new LocaleId(locale));
+				}
+				
+				docList.add(doc);
+			}
+//			progress.finished();
+			if (debug) {
+				m.marshal(docs, System.out);
 			}
 
-			URL srcURL = Utility.createURL(src, getProject());
+			if(dst == null)
+				return;
 
-			List<Document> docList;
-			if("file".equals(srcURL.getProtocol())) {
-				Documents docs = (Documents) m.unmarshal(new File(srcURL.getFile()));
-				docList = docs.getDocuments();
+			URL dstURL = Utility.createURL(dst, getProject());
+			if("file".equals(dstURL.getProtocol())) {
+				m.marshal(docs, new File(dstURL.getFile()));
 			} else {
-				// use rest api to fetch Documents
+				// send project to rest api
 				FliesClientRequestFactory factory = new FliesClientRequestFactory(user, apiKey);
-				IDocumentsResource documentsResource = factory.getDocumentsResource(srcURL.toURI());
-				ClientResponse<Documents> response  = documentsResource.getDocuments();
-
-				ClientUtility.checkResult(response, srcURL);
-				docList = response.getEntity().getDocuments();
+				IDocumentsResource documentsResource = factory.getDocumentsResource(dstURL.toURI());
+				ClientResponse response = documentsResource.put(docs);
+				ClientUtility.checkResult(response, dstURL);
 			}
 
 		} catch (Exception e) {
@@ -61,34 +114,43 @@ public class UploadPoTask extends MatchingTask {
 		}
 	}
 
+	FileSelector[] getSelectors() {
+		if (locales != null)
+			return new FileSelector[] { new BasePoSelector(locales) };
+		else
+			return new FileSelector[0];
+	}
+	
 	@Override
 	public void log(String msg) {
 		super.log(msg+"\n\n");
 	}
-
-	//    private void logVerbose(String msg) {
-	//	super.log(msg, org.apache.tools.ant.Project.MSG_VERBOSE);
-	//    }
-
+	
+	public void setUser(String user) {
+		this.user = user;
+	}
 
 	public void setApiKey(String apiKey) {
 		this.apiKey = apiKey;
 	}
 
+	public void setDst(String dst) {
+		this.dst = dst;
+	}
+
+	public void setSrcDir(File srcDir) {
+		this.srcDir = srcDir;
+	}
+
+	public void setSourceLang(String sourceLang) {
+		this.sourceLang = sourceLang;
+	}
+
+	public void setLocales(String[] locales) {
+		this.locales = locales;
+	}
+
 	public void setDebug(boolean debug) {
 		this.debug = debug;
 	}
-
-	public void setDstDir(File dstDir) {
-		this.dstDir = dstDir;
-	}
-
-	public void setSrc(String src) {
-		this.src = src;
-	}
-
-	public void setUser(String user) {
-		this.user = user;
-	}
-
 }
