@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<documents xmlns="http://flies.fedorahosted.org/api/v1/" xmlns:ns2="http://flies.fedorahosted.org/api/gettext/header">
+    <document path="foo/" name="foo.properties" xml:lang="en-US" id="foo/foo.properties" content-type="text/plain">
+        <document-content>
+            <text-flow version="1" id="FOOD">
+                <content>Slime Mould</content>
+                <targets>
+                    <target version="1" state="new" xml:lang="de" id="FOOD">
+                        <content>Sauerkraut</content>
+                    </target>
+                </targets>
+            </text-flow>
+        </document-content>
+    </document>
+    <document path="" name="test.properties" xml:lang="en-US" id="test.properties" content-type="text/plain">
+        <document-content>
+            <text-flow version="1" id="HELLO">
+                <content>Hello World</content>
+                <targets>
+                    <target version="1" state="new" xml:lang="fr" id="HELLO">
+                        <content>Bonjour le Monde</content>
+                    </target>
+                </targets>
+            </text-flow>
+        </document-content>
+    </document>
+</documents>
