@@ -1,10 +1,8 @@
 <?xml version="1.0"?>
 
-<project basedir="." >
-  <property name="root" value="../../../../../.."/>
-  <property name="m2repo" value="${user.home}/.m2/repository"/>
-  <taskdef resource="org/fedorahosted/flies/client/ant/po/antlib.xml"
-    classpath="${root}/target/classes" />
-  <taskdef resource="org/fedorahosted/tennera/antgettext/antlib.xml"
-    classpath="${m2repo}/org/fedorahosted/tennera/jgettext/0.6/jgettext-0.6.jar" />
+<project basedir=".">
+	<property name="root" value="../../../../../.." />
+	<property name="m2repo" value="${user.home}/.m2/repository" />
+	<taskdef resource="org/fedorahosted/flies/client/ant/po/antlib.xml" classpath="${root}/target/classes" />
+	<taskdef resource="org/fedorahosted/tennera/antgettext/antlib.xml" classpath="${m2repo}/org/fedorahosted/tennera/jgettext/0.6/jgettext-0.6.jar" />
 </project>

@@ -4,12 +4,11 @@
 	<import file="taskdefs.xml" />
 	<property name="out.dir" value="${user.dir}/target/test-output" />
 	<property name="bob.key" value="34567890123456789012345678901234" />
-	<property name="fliesUrl" value="http://localhost:8080/flies"/>
-	<property name="proj" value="sample-project"/>
-	<property name="iter" value="1.1"/>
+	<property name="fliesUrl" value="http://localhost:8080/flies" />
+	<property name="proj" value="sample-project" />
+	<property name="iter" value="1.1" />
 
-	
-<!--
+	<!--
     <target name="uploadpo">
         <ant antfile="uploadpo.xml" target="_uploadpo"/>
     </target>
@@ -24,12 +23,10 @@
 			<property name="docsUrl" value="${out.dir}/test3a/project.xml" />
 		</ant>
 	</target>
-	
+
 	<target name="roundtripremote">
 		<ant antfile="roundtrip.xml" target="_roundtrip">
-			<property 
-				name="docsUrl" 
-				value="${fliesUrl}/seam/resource/restv1/projects/p/${proj}/iterations/i/${iter}/documents" />
+			<property name="docsUrl" value="${fliesUrl}/seam/resource/restv1/projects/p/${proj}/iterations/i/${iter}/documents" />
 		</ant>
 	</target>
 </project>
