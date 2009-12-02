@@ -13,7 +13,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.ImageBundle;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TreeImages;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class DocumentListView extends Composite 
@@ -38,7 +37,7 @@ public class DocumentListView extends Composite
 	private FlowPanel bottompanel;
 	
 	public DocumentListView() {
-	    tree = new FilterTree<DocumentId, DocName>(new FlatFolderDocNameMapper(), images);
+	    tree = new FilterTree<DocumentId, DocName>(new FlatDocNameMapper(), images);
 	    mainpanel = new FlowPanel();
 	    mainpanel.setWidth("100%");
 	    mainpanel.add(tree);

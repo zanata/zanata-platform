@@ -39,9 +39,9 @@ public abstract class HDocumentResource implements Serializable{
 	public HDocumentResource() {
 	}
 	
-	public HDocumentResource(DocumentResource res) {
+	public HDocumentResource(DocumentResource res, int nextDocRev) {
 		this.resId = res.getId();
-		this.revision = res.getRevision();
+		this.revision = nextDocRev;
 	}
 
 	@Id

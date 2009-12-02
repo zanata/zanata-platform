@@ -108,34 +108,40 @@ public class HDocument extends AbstractFliesEntity{
 		this.revision = docInfo.getRevision();
 	}
 
-	public static HDocumentResource create(DocumentResource res){
+	public HDocumentResource create(DocumentResource res, int nextDocRev){
+		HDocumentResource result;
 		if(res instanceof TextFlow){
 			TextFlow tf = (TextFlow) res;
-			return new HTextFlow( tf );
+			result = new HTextFlow(tf, nextDocRev);
 		}
 		else if (res instanceof Container){
 			Container cont = (Container) res;
-			return new HContainer(cont);
+			result = new HContainer(cont, this, nextDocRev);
 		}
 		else if (res instanceof DataHook){
 			DataHook hook = (DataHook) res;
-			return new HDataHook(hook);
+			result = new HDataHook(hook, nextDocRev);
 		}
 		else if (res instanceof Reference){
 			Reference ref = (Reference) res;
-			return new HReference(ref);
+			result = new HReference(ref, nextDocRev);
+		} else {
+			throw new IllegalStateException("could not find subclass of Resource: " + res.getClass().toString());
 		}
-		throw new IllegalStateException("could not find subclass of Resource: " + res.getClass().toString());
+		// don't add to this.resources, we could be in a subcontainer
+		getAllResources().put(result.getResId(), result);
+		result.setDocument(this);
+		return result;
 	}
 	
 	// seems to be obsolete
-	public void copy(List<DocumentResource> content){
-		for(DocumentResource res :content){
-			HDocumentResource hRes = create(res);
-			hRes.setDocument(this);
-			getResources().add(hRes);
-		}
-	}
+//	public void copy(List<DocumentResource> content, int nextDocRev){
+//		for(DocumentResource res :content){
+//			HDocumentResource hRes = create(res, nextDocRev);
+//			hRes.setDocument(this);
+//			getResources().add(hRes);
+//		}
+//	}
 	
 	// TODO make this case sensitive
 	@NaturalId

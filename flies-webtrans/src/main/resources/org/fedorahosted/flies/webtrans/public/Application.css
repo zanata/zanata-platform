@@ -10,7 +10,7 @@ body {
 	width: auto;
 }
 
-#DocumentListView, #TransFilterView, #WorskpaceUsersView {
+#DocumentListView, #TransFilterView, #WorkspaceUsersView {
 	padding-bottom: 5px;
 	width: 100%;
 }
