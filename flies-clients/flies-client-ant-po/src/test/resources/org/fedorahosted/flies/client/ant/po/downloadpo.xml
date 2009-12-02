@@ -1,0 +1,10 @@
+<project>
+    <target name="_downloadpo">
+     <downloadpo 
+         user="bob"
+         apiKey="${bob.key}"
+         src="test2/documents.xml" 
+         dstDir="${out.dir}/test2" 
+         debug="true" />
+    </target>
+</project>

@@ -1,0 +1,26 @@
+<project>
+	<target name="_roundtrip">
+		<delete dir="${out.dir}/test3a"/>
+		<delete dir="${out.dir}/test3b"/>
+		<mkdir dir="${out.dir}/test3a"/>
+		<uploadpo 
+			user="bob"
+			apiKey="${bob.key}"
+			dst="${docsUrl}" 
+			srcDir="test1" 
+			debug="true" />
+		<downloadpo 
+			user="bob"
+			apiKey="${bob.key}"
+			src="${docsUrl}" 
+			dstDir="${out.dir}/test3b" 
+			debug="true" />
+	      <exec executable="diff" failonerror="true">
+	            <arg value="--unified"/>
+	            <arg value="--recursive"/>
+	            <arg value="test1"/>
+	            <arg value="${out.dir}/test3b"/>
+	        </exec>
+	</target>
+	
+</project>
