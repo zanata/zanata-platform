@@ -78,11 +78,4 @@ public class FliesIdentity extends Identity {
 		super.logout();
 	}
 	
-	public String login() {
-		String value = super.login();
-		if(value!=null)
-				if (Events.exists()) Events.instance().raiseEvent(USER_ENTER_WORKSPACE, getPrincipal().getName());
-		return value;
-	}
-
 }

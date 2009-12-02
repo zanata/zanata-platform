@@ -63,18 +63,6 @@ public class TranslationWorkspaceManager {
 		}
 	}
 	
-	@Observer(FliesIdentity.USER_ENTER_WORKSPACE)
-	public void enterWorkspace(String username){
-		ImmutableSet<TranslationWorkspace> workspaceSet=ImmutableSet.copyOf(workspaceMap.values());
-		for(TranslationWorkspace workspace : workspaceSet) {
-			if(workspace.getUsers().contains(new PersonId(username))) {
-				//Send GWT Event to client to update the userlist
-				EnterWorkspace event = new EnterWorkspace(new PersonId(username));
-				workspace.publish(event);
-			}
-		}
-	}
-	
 	@Destroy
 	public void stop(){
 		log.info("stopping...");

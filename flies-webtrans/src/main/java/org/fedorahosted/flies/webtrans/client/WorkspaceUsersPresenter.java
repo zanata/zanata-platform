@@ -9,7 +9,6 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.fedorahosted.flies.gwt.model.Person;
 import org.fedorahosted.flies.gwt.model.PersonId;
-import org.fedorahosted.flies.gwt.rpc.EnterWorkspace;
 import org.fedorahosted.flies.gwt.rpc.GetTranslatorList;
 import org.fedorahosted.flies.gwt.rpc.GetTranslatorListResult;
 import org.fedorahosted.flies.webtrans.client.events.EnterWorkspaceEvent;
@@ -54,7 +53,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 		super(display, eventBus);
 		this.workspaceContext = workspaceContext;
 		this.dispatcher = dispatcher;
-		loadTranslatorList();
+		//loadTranslatorList();
 	}
 	
 	

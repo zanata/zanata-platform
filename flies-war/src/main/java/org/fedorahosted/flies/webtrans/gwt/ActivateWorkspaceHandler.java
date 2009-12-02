@@ -6,8 +6,10 @@ import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.gwt.auth.AuthenticationError;
+import org.fedorahosted.flies.gwt.model.PersonId;
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceResult;
+import org.fedorahosted.flies.gwt.rpc.EnterWorkspace;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.security.FliesIdentity;
 import org.fedorahosted.flies.webtrans.TranslationWorkspace;
@@ -42,6 +44,10 @@ public class ActivateWorkspaceHandler implements ActionHandler<ActivateWorkspace
 		workspace.registerTranslator(AuthenticateHandler.retrieveSessionId(), AuthenticateHandler.retrievePersonId());
 		
 		HProjectContainer hProjectContainer = (HProjectContainer) session.get(HProjectContainer.class, action.getProjectContainerId().getId());
+		
+		//Send EnterWorkspace event to client 
+		EnterWorkspace event = new EnterWorkspace(new PersonId(FliesIdentity.instance().getPrincipal().getName()));
+		workspace.publish(event);
 		
 		String iterationName = (String)session.createQuery(
 				"select it.name " +
