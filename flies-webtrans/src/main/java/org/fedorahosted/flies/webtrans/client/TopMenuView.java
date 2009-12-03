@@ -15,7 +15,7 @@ public class TopMenuView extends HorizontalPanel implements TopMenuPresenter.Dis
 
 	private final Label userLabel;
 	private final Label workspaceLabel;
-	private final Hyperlink logoutLink;
+	//private final Hyperlink logoutLink;
 
 	private final HorizontalPanel rightMenu;
 
@@ -28,10 +28,10 @@ public class TopMenuView extends HorizontalPanel implements TopMenuPresenter.Dis
 		userLabel = new Label("<Username>");
 		workspaceLabel = new Label("Workspace");
 
-		logoutLink = new Hyperlink("Logout", "Logout");
+		//logoutLink = new Hyperlink("Logout", "Logout");
 
 		rightMenu.add(userLabel);
-		rightMenu.add(logoutLink);
+		//rightMenu.add(logoutLink);
 
 		add(workspaceLabel);
 		setCellHorizontalAlignment(workspaceLabel, HorizontalPanel.ALIGN_LEFT);
@@ -40,10 +40,10 @@ public class TopMenuView extends HorizontalPanel implements TopMenuPresenter.Dis
 		setCellHorizontalAlignment(rightMenu, HorizontalPanel.ALIGN_RIGHT);
 	}
 
-	@Override
-	public HasClickHandlers getLogoutLink() {
-		return logoutLink;
-	}
+	//@Override
+	//public HasClickHandlers getLogoutLink() {
+	//	return logoutLink;
+	//}
 
 	@Override
 	public HasText getProjectName() {

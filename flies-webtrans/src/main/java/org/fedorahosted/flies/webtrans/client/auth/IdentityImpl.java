@@ -67,7 +67,7 @@ public class IdentityImpl implements Identity {
 	@Override
 	public void invalidate() {
 		invalidateQuiet();
-		eventBus.fireEvent( new UserLogoutEvent());
+		//eventBus.fireEvent( new UserLogoutEvent());
 	}
 
 	private void invalidateQuiet() {

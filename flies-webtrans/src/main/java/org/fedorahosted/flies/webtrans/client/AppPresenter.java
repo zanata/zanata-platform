@@ -8,23 +8,33 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.gwt.model.PersonId;
 import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceResult;
+import org.fedorahosted.flies.gwt.rpc.ExitWorkspaceAction;
+import org.fedorahosted.flies.gwt.rpc.ExitWorkspaceResult;
+import org.fedorahosted.flies.gwt.rpc.GetTranslatorList;
+import org.fedorahosted.flies.gwt.rpc.GetTranslatorListResult;
 import org.fedorahosted.flies.webtrans.client.Application.WindowResizeEvent;
 import org.fedorahosted.flies.webtrans.client.LoginPresenter.LoggedIn;
 import org.fedorahosted.flies.webtrans.client.auth.Identity;
 import org.fedorahosted.flies.webtrans.client.auth.LoginResult;
+import org.fedorahosted.flies.webtrans.client.auth.UserLogoutEvent;
+import org.fedorahosted.flies.webtrans.client.auth.UserLogoutEventHandler;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorPresenter;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
@@ -50,6 +60,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 	private final DispatchAsync dispatcher;
 	private String workspaceName;
 	private String localeName;
+	private final Identity identity;
 	
 	@Inject
 	public AppPresenter(Display display, EventBus eventBus,
@@ -58,8 +69,10 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 				final WebTransEditorPresenter webTransEditorPresenter,
 				final TopMenuPresenter topMenuPresenter,
 				final EventProcessor eventProcessor,
-				final LoginPresenter loginPresenter) {
+				final LoginPresenter loginPresenter,
+				final Identity identity) {
 		super(display, eventBus);
+		this.identity = identity;
 		this.dispatcher = dispatcher;
 		this.westNavigationPresenter = leftNavigationPresenter;
 		this.webTransEditorPresenter = webTransEditorPresenter;
@@ -112,6 +125,24 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 			})
 		);
 		
+		//When user close the workspace, send ExitWorkSpaceAction
+		Window.addCloseHandler(new CloseHandler<Window>() {
+			@Override
+			public void onClose(CloseEvent<Window> event) {
+				dispatcher.execute(new ExitWorkspaceAction(findProjectContainerId(),findLocaleId(),identity.getPerson().getId()), new AsyncCallback<ExitWorkspaceResult>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						
+					}
+					@Override
+					public void onSuccess(ExitWorkspaceResult result) {
+							identity.invalidate();
+					}
+	
+			});	
+			}
+		});
+
 		// Hook the window resize event, so that we can adjust the UI.
 		Window.addResizeHandler( new ResizeHandler() {
 			@Override

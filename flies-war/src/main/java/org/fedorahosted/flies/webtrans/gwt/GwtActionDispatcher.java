@@ -47,6 +47,7 @@ public class GwtActionDispatcher {
 		actionHandlerRegistry.addHandler(new GetEventsActionHandler());
 		actionHandlerRegistry.addHandler(new GetGlossaryConceptHandler());
 		actionHandlerRegistry.addHandler(new GetCommentsActionHandler());
+		actionHandlerRegistry.addHandler(new ExitWorkspaceHandler());
 	}
 
 	public Result execute(final Action<? extends Result> action)

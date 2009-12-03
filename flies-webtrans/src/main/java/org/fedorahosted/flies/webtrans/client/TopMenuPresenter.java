@@ -6,6 +6,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.inject.Inject;
 
@@ -18,7 +19,7 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 public class TopMenuPresenter extends WidgetPresenter<TopMenuPresenter.Display> {
 	
 	public interface Display extends WidgetDisplay {
-		HasClickHandlers getLogoutLink();
+		//HasClickHandlers getLogoutLink();
 		HasText getUsername();
 		HasText getProjectName();
 	}
@@ -40,13 +41,13 @@ public class TopMenuPresenter extends WidgetPresenter<TopMenuPresenter.Display> 
 
 	@Override
 	protected void onBind() {
-		display.getLogoutLink().addClickHandler(new ClickHandler() {
+		//display.getLogoutLink().addClickHandler(new ClickHandler() {
 			
-			@Override
-			public void onClick(ClickEvent event) {
-				identity.invalidate();
-			}
-		});
+		//	@Override
+		//	public void onClick(ClickEvent event) {
+		//		identity.invalidate();
+		//	}
+		//});
 		
 		refreshDisplay();
 		
