@@ -8,17 +8,18 @@
 		<delete dir="${roundtrip-out-dir}" />
 		<mkdir dir="${roundtrip-out-dir}" />
 
-		<!-- run 2 way test -->
+		<!--
+		<!- - run 2 way test - ->
 		<uploadpo user="bob" apiKey="${bob.key}" dst="${docsUrl}" srcDir="${roundtrip-in-dir}" debug="true" />
 		<downloadpo user="bob" apiKey="${bob.key}" src="${docsUrl}" dstDir="${roundtrip-out-dir}" debug="true" />
 
-		<!-- diff if input and output are same -->
+		<!- - diff if input and output are same - ->
 		<exec executable="diff" failonerror="true">
-			<arg value="--unified" />
-			<arg value="--recursive" />
+			<arg value="- -unified" />
+			<arg value="- -recursive" />
 			<arg value="${roundtrip-in-dir}" />
 			<arg value="${roundtrip-out-dir}" />
 		</exec>
-
+		-->
 	</target>
 </project>
