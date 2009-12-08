@@ -34,18 +34,14 @@ public class DocumentListView extends Composite
 	private static Images images = (Images) GWT.create(Images.class);
 	private FilterTree<DocumentId, DocName> tree;
 	private FlowPanel mainpanel;
-	private FlowPanel bottompanel;
 	
 	public DocumentListView() {
 	    tree = new FilterTree<DocumentId, DocName>(new FlatFolderDocNameMapper(), images);
-	    mainpanel = new FlowPanel();
-	    mainpanel.setWidth("100%");
-	    mainpanel.add(tree);
 	    tree.setWidth("100%");
-	    bottompanel = new FlowPanel();
-	    bottompanel.setWidth("100%");
 	    
-	    mainpanel.add(bottompanel);
+	    mainpanel = new FlowPanel();
+	    mainpanel.setStylePrimaryName("DocumentListViewMainPanel");
+	    mainpanel.add(tree);
 
 		RoundedContainerWithHeader container = new RoundedContainerWithHeader(new Label("Documents"), mainpanel);
 		initWidget(container);
@@ -77,7 +73,7 @@ public class DocumentListView extends Composite
 
 	@Override
 	public void setProjectStatusBar(Widget widget) {
-		bottompanel.add(widget);		
+		mainpanel.add(widget);		
 		widget.addStyleName("CenterDiv");
 	}
 

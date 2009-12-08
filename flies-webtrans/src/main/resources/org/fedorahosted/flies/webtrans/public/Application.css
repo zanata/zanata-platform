@@ -1,5 +1,9 @@
 /** Add css rules here for your application. */
 
+.DocumentListViewMainPanel {
+	width: 200px;
+}
+
 body {
 	background-color: #f6f6f6;
 }
@@ -12,7 +16,7 @@ body {
 
 #DocumentListView, #TransFilterView, #WorkspaceUsersView {
 	padding-bottom: 5px;
-	width: 100%;
+	width: 220px;
 }
 
 #WestNavigationView {
