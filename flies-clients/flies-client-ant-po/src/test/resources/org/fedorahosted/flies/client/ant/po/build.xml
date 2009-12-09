@@ -2,25 +2,35 @@
 
 <project basedir=".">
 	<import file="taskdefs.xml" />
-	<property name="out.dir" value="${user.dir}/target/test-output" />
+
+	<!-- local def -->
+	<property name="test.dir" value="${user.dir}/target" />
+	<property name="in.dir" value="${test.dir}/test-input" />
+	<property name="docs.dir" value="${test.dir}/test-docs" />
+	<property name="out.dir" value="${test.dir}/test-output" />
+
+	<!-- remote def -->
 	<property name="bob.key" value="34567890123456789012345678901234" />
 	<property name="fliesUrl" value="http://localhost:8080/flies" />
 	<property name="proj" value="sample-project" />
 	<property name="iter" value="1.1" />
 
-	<!--
-    <target name="uploadpo">
-        <ant antfile="uploadpo.xml" target="_uploadpo"/>
-    </target>
 
+	<target name="uploadpo">
+		<ant antfile="uploadpo.xml" target="_uploadpo">
+			<property name="docsUrl" value="${docs.dir}/project.xml" />
+		</ant>
+	</target>
+
+	<!--
     <target name="downloadpo">
         <ant antfile="downloadpo.xml" target="_downloadpo"/>
     </target>
--->
+	-->
 
 	<target name="roundtriplocal">
 		<ant antfile="roundtrip.xml" target="_roundtrip">
-			<property name="docsUrl" value="${out.dir}/test3a/project.xml" />
+			<property name="docsUrl" value="${docs.dir}/project.xml" />
 		</ant>
 	</target>
 

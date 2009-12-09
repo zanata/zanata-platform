@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<documents xmlns="http://flies.fedorahosted.org/api/v1/" xmlns:ns2="http://flies.fedorahosted.org/api/gettext/header">
+    <document path="pot/" name="Accounts_And_Subscriptions.pot" xml:lang="en-US" id="pot/Accounts_And_Subscriptions.pot" content-type="text/plain"/>
+    <document path="pot/" name="Article_Info.pot" xml:lang="en-US" id="pot/Article_Info.pot" content-type="text/plain"/>
+    <document path="pot/" name="Author_Group.pot" xml:lang="en-US" id="pot/Author_Group.pot" content-type="text/plain"/>
+    <document path="pot/" name="Contributors.pot" xml:lang="en-US" id="pot/Contributors.pot" content-type="text/plain"/>
+    <document path="pot/" name="Introduction.pot" xml:lang="en-US" id="pot/Introduction.pot" content-type="text/plain"/>
+    <document path="pot/" name="Revision_History.pot" xml:lang="en-US" id="pot/Revision_History.pot" content-type="text/plain"/>
+    <document path="pot/" name="Translating_Documentation.pot" xml:lang="en-US" id="pot/Translating_Documentation.pot" content-type="text/plain"/>
+    <document path="pot/" name="Translating_Software.pot" xml:lang="en-US" id="pot/Translating_Software.pot" content-type="text/plain"/>
+    <document path="pot/" name="Translation_Quick_Start_Guide.pot" xml:lang="en-US" id="pot/Translation_Quick_Start_Guide.pot" content-type="text/plain"/>
+</documents>

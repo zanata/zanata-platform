@@ -1,10 +1,5 @@
- <project>
-    <target name="_uploadpo">
-      <uploadpo
-         user="bob"
-           apiKey="${bob.key}"
-           dst="${docsUrl}" 
-           srcDir="test1" 
-           debug="true" />
-    </target>
- </project>
+<project>
+	<target name="_uploadpo">
+		<uploadpo user="bob" apiKey="${bob.key}" dst="${docsUrl}" srcDir="${in.dir}" debug="true" />
+	</target>
+</project>
