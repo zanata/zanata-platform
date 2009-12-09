@@ -1,0 +1,29 @@
+# 
+# AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0\n"
+"POT-Creation-Date: 2009-11-24T08:04:00\n"
+"PO-Revision-Date: 2009-11-24T08:04:00\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: None\n"
+"MIME-Version: 1.0\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#, no-c-format
+msgid "Translation Quick Start Guide"
+msgstr ""
+
+#. Tag: subtitle
+#, no-c-format
+msgid "Quick start guide to providing translations on the Fedora Project"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This guide is a fast, simple, step-by-step set of instructions for translating Fedora Project software and documents."
+msgstr ""
+

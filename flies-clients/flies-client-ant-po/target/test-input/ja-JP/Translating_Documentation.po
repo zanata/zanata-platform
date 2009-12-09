@@ -1,0 +1,208 @@
+# translation of ja.po to Japanese
+# Noriko Mizumoto <noriko@redhat.com>, 2006.
+# Hyu_gabaru Ryu_ichi <hyu_gabaru@yahoo.co.jp>, 2007, 2008, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: ja\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2009-08-10 03:19+0000\n"
+"PO-Revision-Date: 2009-08-01 20:14+0900\n"
+"Last-Translator: Hyu_gabaru Ryu_ichi <hyu_gabaru@yahoo.co.jp>\n"
+"Language-Team: Japanese <doc-i18n-list@redhat.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#: Translating_Documentation.xml:6
+#, no-c-format
+msgid "Translating Documentation"
+msgstr "ドキュメントを翻訳する"
+
+#. Tag: title
+#: Translating_Documentation.xml:8
+#, no-c-format
+msgid "Some Fedora Documentation Has Moved"
+msgstr "いくつかの Fedora ドキュメントを移動しました"
+
+#. Tag: para
+#: Translating_Documentation.xml:9
+#, no-c-format
+msgid ""
+"Current Fedora Documentation material is now maintained in the Fedora Hosted "
+"system as <command>git</command> repositories. This includes the latest "
+"versions of the common documentation build tools. You do not need to install "
+"<command>git</command> to translate these materials. Instead, use Transifex, "
+"as described in previous sections, to translate these documentation "
+"materials."
+msgstr ""
+"現在の Fedora のドキュメント資材は <command>git</command> リポジトリーという"
+"Fedora がホストするシステムで保守されています。これには共通のドキュメント構築"
+"ツールの最新バージョンを含んでいます。これらの資材を翻訳するのに"
+"<command>git</command> をインストールする必要はありません。これらのドキュメン"
+"トを翻訳するには、その代わりに、以前の節で説明された Transifex を使用してくだ"
+"さい。"
+
+#. Tag: title
+#: Translating_Documentation.xml:15
+#, no-c-format
+msgid "Creating Common Files"
+msgstr "共通エンティティーのファイルを作成"
+
+#. Tag: para
+#: Translating_Documentation.xml:16
+#, no-c-format
+msgid ""
+"If you are creating the first-ever translation for a locale, you must first "
+"translate some common files used in all documents for your locale. The "
+"common files are located in the Fedora Hosted repository for the "
+"<package>fedora-doc-utils</package> package."
+msgstr ""
+"そのロケールではじめて翻訳を行う場合のみ、最初に該当ロケールのすべてのドキュ"
+"メントで使用される共通ファイルをいくつか翻訳しなければなりません。共通ファイ"
+"ルは <package>fedora-doc-utils</package> パッケージ用の Fedora がホストしてい"
+"るリポジトリーにあります。"
+
+#. Tag: title
+#: Translating_Documentation.xml:20
+#, no-c-format
+msgid "Example Locale is <replaceable>pt_BR</replaceable>"
+msgstr "ロケールの例は <replaceable>pt_BR</replaceable> です"
+
+#. Tag: para
+#: Translating_Documentation.xml:21
+#, no-c-format
+msgid ""
+"The following examples use the locale code <replaceable>pt_BR</replaceable>. "
+"Substitute your locale code in these commands as necessary."
+msgstr ""
+"以下の例ではロケールコードとして <replaceable>pt_BR</replaceable> を使ってい"
+"ます。必要に応じてこれらのコマンドであなたのロケールに置き換えてください。"
+
+#. Tag: para
+#: Translating_Documentation.xml:27
+#, no-c-format
+msgid ""
+"Visit Transifex at <ulink url=\"http://translate.fedoraproject.org\"></"
+"ulink>, and translate the project <guilabel>Docs :: Common entities</"
+"guilabel>, using the same procedure shown in <xref linkend=\"sect-"
+"Translation_Quick_Start_Guide-Translating_Software\"/>."
+msgstr ""
+"<ulink url=\"http://translate.fedoraproject.org\"></ulink> の Transifex へ行"
+"き、<xref linkend=\"sect-Translation_Quick_Start_Guide-Translating_Software"
+"\"/> で示されるのと同じ手続きを使ってプロジェクト <guilabel>Docs :: Common "
+"entities</guilabel> を翻訳します。"
+
+#. Tag: para
+#: Translating_Documentation.xml:32
+#, no-c-format
+msgid ""
+"Visit the <package>fedora-doc-utils</package> hosted project at <ulink url="
+"\"https://fedorahosted.org/fedora-doc-utils\"></ulink>. Select the "
+"<guilabel>Login</guilabel> link and use your Fedora Account System login and "
+"password to login."
+msgstr ""
+"<ulink url=\"https://fedorahosted.org/fedora-doc-utils\"></ulink> にある"
+"<package>fedora-doc-utils</package> が主催するプロジェクトに行きます。"
+"<guilabel>Login</guilabel> リンクを選択し、あなたの Fedora アカウントシステム"
+"のログインパスワードを使用してログインします。"
+
+#. Tag: para
+#: Translating_Documentation.xml:37
+#, no-c-format
+msgid ""
+"Select the <guilabel>New ticket</guilabel> link to file a new ticket. Use "
+"the following information to fill in the ticket:"
+msgstr ""
+"新しいチケットのために <guilabel>New ticket</guilabel> リンクを選択します。チ"
+"ケットを埋めるために以下の情報を使用してください:"
+
+#. Tag: para
+#: Translating_Documentation.xml:42
+#, no-c-format
+msgid "Summary: New language support request: <replaceable>pt_BR</replaceable>"
+msgstr "概要: 新言語サポート要求: <replaceable>pt_BR</replaceable> "
+
+#. Tag: para
+#: Translating_Documentation.xml:47
+#, no-c-format
+msgid "Priority: minor"
+msgstr "優先度: 小"
+
+#. Tag: para
+#: Translating_Documentation.xml:52
+#, no-c-format
+msgid "Component: language support"
+msgstr "コンポーネント: 言語サポート"
+
+#. Tag: para
+#: Translating_Documentation.xml:57
+#, no-c-format
+msgid "You may leave the details blank or fill in information as desired."
+msgstr "詳細は空白のままでもいいし、情報を記述してもかまいません。"
+
+#. Tag: title
+#: Translating_Documentation.xml:61
+#, no-c-format
+msgid "Attach Files if Necessary"
+msgstr "必要ならばファイルを添付してください"
+
+#. Tag: para
+#: Translating_Documentation.xml:62
+#, no-c-format
+msgid ""
+"If you have any problems submitting PO files using above instructions, you "
+"can attach them to the Trac ticket."
+msgstr ""
+"上記の指示を使用して PO ファイルを送ろうとして問題が発生したら、それをTrac チ"
+"ケットに添付することができます。"
+
+#. Tag: title
+#: Translating_Documentation.xml:71
+#, no-c-format
+msgid "What to Translate"
+msgstr "何を翻訳するのか"
+
+#. Tag: para
+#: Translating_Documentation.xml:72
+#, no-c-format
+msgid ""
+"The most important documentation for each release of Fedora are the "
+"following:"
+msgstr "各リリースで最も重要なドキュメントは以下です:"
+
+#. Tag: guilabel
+#: Translating_Documentation.xml:78
+#, no-c-format
+msgid "Docs :: Common entities"
+msgstr "Docs :: 共通エントリー"
+
+#. Tag: guilabel
+#: Translating_Documentation.xml:83
+#, no-c-format
+msgid "Docs :: Release Notes"
+msgstr "Docs :: Release Notes"
+
+#. Tag: guilabel
+#: Translating_Documentation.xml:88
+#, no-c-format
+msgid "Docs :: About Fedora"
+msgstr "Docs :: About Fedora"
+
+#. Tag: guilabel
+#: Translating_Documentation.xml:93
+#, no-c-format
+msgid "Docs :: Readme"
+msgstr "Docs :: Readme"
+
+#. Tag: guilabel
+#: Translating_Documentation.xml:98
+#, no-c-format
+msgid "Docs :: Readme Burning ISOs"
+msgstr "Docs :: Readme Burning ISOs"
+
+#. Tag: guilabel
+#: Translating_Documentation.xml:103
+#, no-c-format
+msgid "Docs :: Readme Live Image"
+msgstr "Docs :: Readme Live Image"

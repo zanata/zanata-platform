@@ -1,0 +1,510 @@
+# translation of ja.po to Japanese
+# Noriko Mizumoto <noriko@redhat.com>, 2006.
+# Hyu_gabaru Ryu_ichi <hyu_gabaru@yahoo.co.jp>, 2007, 2008, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: ja\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2009-08-10 03:19+0000\n"
+"PO-Revision-Date: 2009-08-01 20:14+0900\n"
+"Last-Translator: Hyu_gabaru Ryu_ichi <hyu_gabaru@yahoo.co.jp>\n"
+"Language-Team: Japanese <doc-i18n-list@redhat.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#: Translating_Software.xml:6
+#, no-c-format
+msgid "Translating Software"
+msgstr "ソフトウェアを翻訳する"
+
+#. Tag: para
+#: Translating_Software.xml:7
+#, no-c-format
+msgid ""
+"The translatable part of a software package is available in one or more "
+"<filename class=\"extension\">po</filename> files. These files may be "
+"maintained in any of a number of version control systems (VCSs) depending on "
+"the project, such as CVS, Subversion, Mercurial, and git. They may be hosted "
+"on either <systemitem class=\"domainname\">fedorahosted.org</systemitem> or "
+"other systems."
+msgstr ""
+"ソフトウェアパッケージの翻訳できる部分は 1 つ以上の <filename class="
+"\"extension\">po</filename> ファイルにあります。これらのファイルはプロジェク"
+"トにより CVS や、Subversion、Mercurial、git といった多くのバージョン制御シス"
+"テム (VCS) のどれかで保守されています。これらは <systemitem class="
+"\"domainname\">fedoraproject.org</systemitem> か、他のシステムをホストとして"
+"います。"
+
+#. Tag: para
+#: Translating_Software.xml:10
+#, no-c-format
+msgid ""
+"This chapter explains how to translate the projects hosted on <systemitem "
+"class=\"domainname\">fedorahosted.org</systemitem>. Translators work on "
+"interface to obtaining and committing <filename class=\"extension\">po</"
+"filename> files. Before you start, you must first prepare the directories "
+"which hold your <filename class=\"extension\">po</filename> files."
+msgstr ""
+"この章では <systemitem class=\"domainname\">fedorahosted.org</systemitem> を"
+"ホストとするモジュールの翻訳方法を説明します。翻訳者は、<filename class="
+"\"extension\">po</filename>ファイルを入手するためのインターフェースと、書き出"
+"すためのインターフェースの 2つのインターフェースで作業します。開始する前に、"
+"<filename class=\"extension\">po</filename> ファイルを保持するディレクトリー"
+"を用意しなければなりません。"
+
+#. Tag: title
+#: Translating_Software.xml:14
+#, no-c-format
+msgid "File Structure"
+msgstr "ファイル構造"
+
+#. Tag: para
+#: Translating_Software.xml:15
+#, no-c-format
+msgid ""
+"To find which projects are translatable, visit the project list at <ulink "
+"url=\"http://translate.fedoraproject.org/projects\"></ulink>."
+msgstr ""
+"どのプロジェクトが翻訳可能かを見つけるには、<ulink url=\"http://translate."
+"fedoraproject.org/projects\"></ulink> にあるプロジェクトリストを見ます。"
+
+#. Tag: para
+#: Translating_Software.xml:18
+#, no-c-format
+msgid ""
+"Before you download any files, prepare the structure holding those files. "
+"The described structure below is an example, and your structure can be "
+"formed differently. For example, if you want to download the "
+"<systemitem>comps</systemitem> project for translation, make the following "
+"directories:"
+msgstr ""
+"ファイルをダウンロードする前に、これらのファイルを保持する構造を用意します。"
+"以下に記述されている構造は例であり、異なる構造でもかまいません。例えば、"
+"<systemitem>comps</systemitem> プロジェクトを翻訳のためにダウンロードしたいの"
+"ならば、以下のディレクトリーを作成します:"
+
+#. Tag: screen
+#: Translating_Software.xml:22
+#, no-c-format
+msgid "<command>mkdir -p ~/myproject/comps/</command>"
+msgstr "<command>mkdir -p ~/myproject/comps/</command>"
+
+#. Tag: para
+#: Translating_Software.xml:23
+#, no-c-format
+msgid ""
+"To work on another project later, make a directory with the project name "
+"under the parent directory such as <filename class=\"directory\">~/myproject/"
+"system-config-printer/</filename>."
+msgstr ""
+"後に他のプロジェクトを作業できるように、<filename class=\"directory\">~/"
+"myproject/system-config-printer/</filename> のように親ディレクトリーの下に、"
+"プロジェクト名でディレクトリーを作成します。"
+
+#. Tag: title
+#: Translating_Software.xml:29
+#, no-c-format
+msgid "Obtaining and Translating Projects"
+msgstr "プロジェクトの入手と翻訳"
+
+#. Tag: para
+#: Translating_Software.xml:30
+#, no-c-format
+msgid ""
+"Now that you have prepared a directory structure, you can download a file to "
+"translate. You may need to communicate with other translators in your "
+"language team to avoid conflict. If you are not sure, please contact your "
+"language coordinator."
+msgstr ""
+"ディレクトリー構造の準備ができたので、翻訳するファイルをダウンロードできま"
+"す。衝突を避けるためにあなたの言語チームの他の翻訳者と連絡を取る必要があるか"
+"もしれません。よく分からなかったら、あなたの言語の調整者に連絡してください。"
+
+#. Tag: para
+#: Translating_Software.xml:35
+#, no-c-format
+msgid ""
+"Visit your language page such as <ulink url=\"http://translate.fedoraproject."
+"org/languages/ja/\"></ulink>, and select a target release. The interface "
+"will redirect you to a page for that release, such as <ulink url=\"http://"
+"translate.fedoraproject.org/languages/ja/collection/fedora/fedora-12/\"></"
+"ulink>."
+msgstr ""
+"<ulink url=\"http://translate.fedoraproject.org/languages/ja/\"></ulink> のよ"
+"うなあなたの言語のページへ行き、対象リリースを選択します。インターフェースが "
+"<ulink url=\"http://translate.fedoraproject.org/languages/ja/collection/"
+"fedora/fedora-12/\"></ulink> のような、そのリリースのためのページにリダイレク"
+"トします。"
+
+#. Tag: para
+#: Translating_Software.xml:40
+#, no-c-format
+msgid ""
+"Scroll down the page to find the table of all projects available for that "
+"release. Use the arrow download icon labeled <guibutton>Download ja.po</"
+"guibutton> or similar next to each project to download the <filename class="
+"\"extension\">po</filename> file to the directory you created in the "
+"previous section."
+msgstr ""
+"そのリリースで利用可能な全プロジェクトの表を探してページをスクロールダウンし"
+"ます。前の節で作成したディレクトリーに <filename class=\"extension\">po</"
+"filename>ファイルをダウンロードするために個々のプロジェクトの横にある"
+"<guibutton>Download ja.po</guibutton>のようなラベルの矢印のダウンロードアイコ"
+"ンを使用します。"
+
+#. Tag: para
+#: Translating_Software.xml:45
+#, no-c-format
+msgid ""
+"Since the file name to commit follows the name convention of <filename>lang."
+"po</filename>, change the name of the downloaded file. The following example "
+"uses the Japanese locale for the <filename class=\"extension\">po</filename> "
+"file:"
+msgstr ""
+"書き出すファイルの名前は <filename>言語.po</filename> という命名規約に従う必"
+"要があるので、ダウンロードしたファイルの名前を変更します。以下の例では "
+"<filename class=\"extension\">po</filename> ファイルのために日本語ロケールを"
+"使用しています:"
+
+#. Tag: screen
+#: Translating_Software.xml:54
+#, no-c-format
+msgid ""
+"<userinput>ls ~/myproject/comps/</userinput>\n"
+"<computeroutput>comps.HEAD.ja.po</computeroutput>\n"
+"<userinput>mv ~/myproject/comps/comps.HEAD.ja.po ja.po</userinput>\n"
+"<userinput>ls ~/myproject/comps/</userinput>\n"
+"<computeroutput>ja.po</computeroutput>"
+msgstr ""
+"<userinput>ls ~/myproject/comps/</userinput>\n"
+"<computeroutput>comps.HEAD.ja.po</computeroutput>\n"
+"<userinput>mv ~/myproject/comps/comps.HEAD.ja.po ja.po</userinput>\n"
+"<userinput>ls ~/myproject/comps/</userinput>\n"
+"<computeroutput>ja.po</computeroutput>"
+
+#. Tag: para
+#: Translating_Software.xml:57
+#, no-c-format
+msgid ""
+"Now the file is ready for translation. Translate the <filename class="
+"\"extension\">po</filename> file for your language in a <filename class="
+"\"extension\">po</filename> editor such as <application>Lokalize</"
+"application> or <application>gtranslator</application>."
+msgstr ""
+"ファイルは翻訳の準備が整いました。<application>Lokalize</application> や "
+"<application>gtranslator</application> などの <filename class=\"extension"
+"\">po</filename> エディターで自分の言語の <filename class=\"extension\">po</"
+"filename> ファイルを翻訳します。"
+
+#. Tag: para
+#: Translating_Software.xml:62
+#, no-c-format
+msgid "Check the integrity of your file before you commit it."
+msgstr "書き出す前にファイルの完全性をチェックします。"
+
+#. Tag: screen
+#: Translating_Software.xml:66
+#, no-c-format
+msgid "<command>msgfmt -cvo /dev/null ja.po</command>"
+msgstr "<command>msgfmt -cvo /dev/null ja.po</command>"
+
+#. Tag: para
+#: Translating_Software.xml:71
+#, no-c-format
+msgid "If any error message appears, correct it before commit."
+msgstr "エラーメッセージが出たら、書き出す前に訂正してください。"
+
+#. Tag: title
+#: Translating_Software.xml:78
+#, no-c-format
+msgid "Committing Projects"
+msgstr "プロジェクトの書き出し"
+
+#. Tag: para
+#: Translating_Software.xml:79
+#, no-c-format
+msgid ""
+"Once you finish translation work, commit the file using the same interface."
+msgstr "翻訳作業が終わったら同じインターフェースを使ってファイルを送ります。"
+
+#. Tag: para
+#: Translating_Software.xml:84
+#, no-c-format
+msgid ""
+"Go back to your language page such as <ulink url=\"http://translate."
+"fedoraproject.org/languages/ja/\"></ulink>, and select a target release. The "
+"interface will redirect you to a page for that release, such as <ulink url="
+"\"http://translate.fedoraproject.org/languages/ja/collection/fedora/fedora-"
+"12/\"></ulink>."
+msgstr ""
+"<ulink url=\"http://translate.fedoraproject.org/languages/ja/\"></ulink> のよ"
+"うなあなたの言語のページへ行き、対象リリースを選択します。インターフェースが "
+"<ulink url=\"http://translate.fedoraproject.org/languages/ja/collection/"
+"fedora/fedora-12/\"></ulink> のような、そのリリースのためのページにリダイレク"
+"トします。"
+
+#. Tag: title
+#: Translating_Software.xml:89
+#, no-c-format
+msgid "Login"
+msgstr "ログイン"
+
+#. Tag: para
+#: Translating_Software.xml:90
+#, no-c-format
+msgid ""
+"At the top of the page, select <guilabel>Sign in</guilabel> to visit the "
+"<guilabel>Sign in</guilabel> page. Authenticate with your Fedora Account "
+"System user name and password."
+msgstr ""
+"ページの先頭で <guilabel>Sign in</guilabel> を選択して <guilabel>Sign in</"
+"guilabel> ページを訪れます。Fedora Account System のユーザー名とパスワードで"
+"認証を受けます。"
+
+#. Tag: title
+#: Translating_Software.xml:95
+#, no-c-format
+msgid "Submit"
+msgstr "送出"
+
+#. Tag: para
+#: Translating_Software.xml:96
+#, no-c-format
+msgid ""
+"Use the pencil icon labeled <guibutton>Send a translation for this language</"
+"guibutton> next to each project, then click the browse button to locate your "
+"translated file."
+msgstr ""
+"個々のプロジェクトの横にある<guilabel>Send a translation for this langguage</"
+"guilabel> というラベルの鉛筆アイコンを使用し、翻訳したファイルに位置づけるた"
+"めにブラウズボタンをクリックします。"
+
+#. Tag: para
+#: Translating_Software.xml:99
+#, no-c-format
+msgid "Select the <guibutton>Send</guibutton> to commit your translated file."
+msgstr "<guibutton>Send</guibutton>を選択して翻訳したファイルを送ります。"
+
+#. Tag: para
+#: Translating_Software.xml:102
+#, no-c-format
+msgid ""
+"Interface displays the message <guilabel>File submitted successfully</"
+"guilabel>. If you receive an error or some other success message, please "
+"post it to the Fedora Localization Project mailing list so it can be "
+"addressed."
+msgstr ""
+"インターフェースが<guilabel>File submitted successfully</guilabel> というメッ"
+"セージを表示します。エラーや他の成功メッセージが出たら Fedora Localization "
+"Project のメーリングリストにポストして伝えて下さい。"
+
+#. Tag: title
+#: Translating_Software.xml:111
+#, no-c-format
+msgid "Adding New .po File"
+msgstr "新しい .po ファイルの追加"
+
+#. Tag: para
+#: Translating_Software.xml:112
+#, no-c-format
+msgid ""
+"If there is no <filename class=\"extension\">po</filename> file for your "
+"language, add it."
+msgstr ""
+"自分の言語用の <filename class=\"extension\">po</filename> ファイルがなけれ"
+"ば、それを追加します。"
+
+#. Tag: para
+#: Translating_Software.xml:117
+#, no-c-format
+msgid ""
+"Download the <filename class=\"extension\">pot</filename> file and copy it "
+"as your own language's <filename class=\"extension\">po</filename> file."
+msgstr ""
+"<filename class=\"extension\">pot</filename> ファイルをダウンロードし、それを"
+"あなたの言語の <filename class=\"extension\">po</filename> ファイルとしてコ"
+"ピーします。"
+
+#. Tag: screen
+#: Translating_Software.xml:121
+#, no-c-format
+msgid ""
+"<command>cp ~/myproject/comps/comps.HEAD.pot ja.po</command> "
+"<command>lokalize ja.po</command> <command>msgfmt -cvo /dev/null ja.po</"
+"command>"
+msgstr ""
+"<command>cp ~/myproject/comps/comps.HEAD.pot ja.po</command> "
+"<command>lokalize ja.po</command> <command>msgfmt -cvo /dev/null ja.po</"
+"command>"
+
+#. Tag: para
+#: Translating_Software.xml:124
+#, no-c-format
+msgid ""
+"Once you finish the translation, click on the <guilabel>Add a new "
+"translation</guilabel> button at project page."
+msgstr ""
+"翻訳が終わったら、プロジェクトページの<guilabel>Add a new translation</"
+"guilabel>をクリックしてください。"
+
+#. Tag: para
+#: Translating_Software.xml:129
+#, no-c-format
+msgid ""
+"Type your new file name in the field marked <guilabel>or enter it here:</"
+"guilabel>, replacing the file name with your locale:"
+msgstr ""
+"<guilabel>or enter it here:</guilabel> とマークをつけられた領域に、自分の新し"
+"いファイル名をタイプし、ファイル名をあなたのロケールに置き換えます:"
+
+#. Tag: screen
+#: Translating_Software.xml:133
+#, no-c-format
+msgid "<userinput>po/ja.po</userinput>"
+msgstr "<userinput>po/ja.po</userinput>"
+
+#. Tag: title
+#: Translating_Software.xml:140
+#, no-c-format
+msgid "Proofreading"
+msgstr "査読"
+
+#. Tag: para
+#: Translating_Software.xml:141
+#, no-c-format
+msgid ""
+"To proofread your translation as part of the software, follow these steps:"
+msgstr ""
+"ソフトウェアの一部の形で自分が作業した翻訳を査読したい場合は、次の手順に従い"
+"ます:"
+
+#. Tag: para
+#: Translating_Software.xml:146
+#, no-c-format
+msgid "Change directory to the package you want to proofread. For example,"
+msgstr "査読を行いたいパッケージのディレクトリに移動します。例えば、"
+
+#. Tag: screen
+#: Translating_Software.xml:150
+#, no-c-format
+msgid ""
+"<command>cd ~/myproject/<replaceable>system-config-printer/</replaceable></"
+"command>"
+msgstr ""
+"<command>cd ~/myproject/<replaceable>system-config-printer/</replaceable></"
+"command>"
+
+#. Tag: para
+#: Translating_Software.xml:153
+#, no-c-format
+msgid ""
+"Convert the <filename class=\"extension\">.po</filename> file to a <filename "
+"class=\"extension\">.mo</filename> file using <command>msgfmt</command> with "
+"<option>-o</option> option:"
+msgstr ""
+"<option>-o</option> オプションを付けて <command>msgfmt</command> を使い、"
+"<filename class=\"extension\">.po</filename> ファイルを <filename class="
+"\"extension\">.mo</filename> ファイルに変換します:"
+
+#. Tag: screen
+#: Translating_Software.xml:157
+#, no-c-format
+msgid ""
+"<command>msgfmt -o system-config-printer.mo <replaceable>ja</replaceable>."
+"po</command>"
+msgstr ""
+"<command>msgfmt -o system-config-printer.mo <replaceable>ja</replaceable>."
+"po</command>"
+
+#. Tag: para
+#: Translating_Software.xml:160
+#, no-c-format
+msgid ""
+"As a root user, overwrite the existing <filename class=\"extension\">.mo</"
+"filename> file in <filename>/usr/share/locale/<replaceable>lang</"
+"replaceable>/LC_MESSAGES/</filename>."
+msgstr ""
+"root ユーザーで <filename>/usr/share/locale/<replaceable>lang</replaceable>/"
+"LC_MESSAGES/</filename> にある既存の <filename class=\"extension\">.mo</"
+"filename> ファイルを上書きします。"
+
+#. Tag: para
+#: Translating_Software.xml:163
+#, no-c-format
+msgid "First, back up the existing file:"
+msgstr "先に、既存ファイルをバックアップします:"
+
+#. Tag: screen
+#: Translating_Software.xml:167
+#, no-c-format
+msgid "<command>su -</command>"
+msgstr "<command>su -</command>"
+
+#. Tag: screen
+#: Translating_Software.xml:169
+#, no-c-format
+msgid ""
+"<command>cp /usr/share/locale/<replaceable>ja</replaceable>/LC_MESSAGES/"
+"<replaceable>system-config-printer</replaceable>.mo <replaceable>system-"
+"config-printer</replaceable>.mo-backup</command>"
+msgstr ""
+"<command>cp /usr/share/locale/<replaceable>ja</replaceable>/LC_MESSAGES/"
+"<replaceable>system-config-printer</replaceable>.mo <replaceable>system-"
+"config-printer</replaceable>.mo-backup</command>"
+
+#. Tag: para
+#: Translating_Software.xml:170
+#, no-c-format
+msgid "Now move the file converted for proofreading."
+msgstr "査読用に変換されたファイルを移動します。"
+
+#. Tag: screen
+#: Translating_Software.xml:174
+#, no-c-format
+msgid ""
+"<command>mv <replaceable>system-config-printer</replaceable>.mo /usr/share/"
+"locale/<replaceable>ja</replaceable>/LC_MESSAGES/</command>"
+msgstr ""
+"<command>mv <replaceable>system-config-printer</replaceable>.mo /usr/share/"
+"locale/<replaceable>ja</replaceable>/LC_MESSAGES/</command>"
+
+#. Tag: para
+#: Translating_Software.xml:175
+#, no-c-format
+msgid "Exit root user."
+msgstr "root ユーザーから抜け出します。"
+
+#. Tag: screen
+#: Translating_Software.xml:179
+#, no-c-format
+msgid "<command>exit</command>"
+msgstr "<command>exit</command>"
+
+#. Tag: para
+#: Translating_Software.xml:182
+#, no-c-format
+msgid ""
+"Proofread the package with the translated strings as part of the application:"
+msgstr "アプリケーションの一部の形で翻訳された文字列とパッケージを査読します:"
+
+#. Tag: screen
+#: Translating_Software.xml:186
+#, no-c-format
+msgid ""
+"<command>LANG=<replaceable>ja_JP.UTF-8</replaceable> <replaceable>system-"
+"config-printer</replaceable></command>"
+msgstr ""
+"<command>LANG=<replaceable>ja_JP.UTF-8</replaceable> <replaceable>system-"
+"config-printer</replaceable></command>"
+
+#. Tag: para
+#: Translating_Software.xml:190
+#, no-c-format
+msgid ""
+"The application related to the translated package runs with the translated "
+"strings."
+msgstr ""
+"翻訳されたパッケージに関連するアプリケーションが翻訳文字列を使用して実行され"
+"ます。"

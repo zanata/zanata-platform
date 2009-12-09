@@ -1,0 +1,189 @@
+# 
+# AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0\n"
+"POT-Creation-Date: 2009-11-24T08:04:00\n"
+"PO-Revision-Date: 2009-11-24T08:04:00\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: None\n"
+"MIME-Version: 1.0\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#, no-c-format
+msgid "Contributors"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<ulink url=\"http://fedoraproject.org/wiki/User:Fab\">Fabian Affolter</ulink> (translator &mdash; German, 2007&ndash;2009)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<ulink url=\"http://fedoraproject.org/wiki/AmanAlam\">Amanpreet Singh Alam</ulink> (translator &mdash; Punjabi, 2007)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<ulink url=\"http://fedoraproject.org/wiki/User:Tetonio\">Teta Bilianou</ulink> (translator &mdash; Greek, 2007)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<ulink url=\"http://fedoraproject.org/wiki/User:Dapidc\">Dapid Candra</ulink> (translator &mdash; Indonesian, 2008)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<ulink url=\"http://fedoraproject.org/wiki/User:Mrtom\">Thomas Canniot</ulink> (translator &mdash; French, 2006)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Glaucia Cintra (translator &mdash; Brazilian Portuguese, 2007&ndash;2008)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<ulink url=\"http://fedoraproject.org/wiki/User:Couf\">Bart Couvreur</ulink> (translator &mdash; Dutch, 2006&ndash;2007)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<ulink url=\"http://fedoraproject.org/wiki/User:Raven\">Piotr Drąg</ulink> (translator &mdash; Polish, 2006; editor, 2008)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<ulink url=\"http://fedoraproject.org/wiki/User:Splinux\">Damien Durand</ulink> (translator &mdash; French, 2006)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<ulink url=\"http://fedoraproject.org/wiki/User:Pfrields\">Paul W. Frields</ulink> (editor, 2006&ndash;2008)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<ulink url=\"http://fedoraproject.org/wiki/User:Glezos\">Dmitris Glezos</ulink> (Translator &mdash; Greek, 2006&ndash;2007; editor, 2008)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<ulink url=\"http://fedoraproject.org/wiki/User:Rafaelgomes\">Rafael Gomes</ulink> (translator &mdash; Brazilian Portuguese, 2008)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<ulink url=\"http://fedoraproject.org/wiki/User:Ruigo\">Rui Gouveia</ulink> (translator &mdash; Portuguese, 2009)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Han Guokai (translator &mdash; Simplified Chinese, 2008)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Ryuichi Hyugabaru (translator &mdash; Japanese, 2007&ndash;2008)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<ulink url=\"http://fedoraproject.org/wiki/ValeriyKruchko\">Valeriy Kruchko</ulink> (translator &mdash; Russian, 2009)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<ulink url=\"http://fedoraproject.org/wiki/User:Rlandmann\">Rüdiger Landmann</ulink> (editor, 2009)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<ulink url=\"http://fedoraproject.org/wiki/MagnusLarsson\">Magnus Larsson</ulink> (translator &mdash; Swedish, 2006)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Gladys Guerrero Lozano (translator &mdash; Spanish, 2009)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<ulink url=\"http://fedoraproject.org/wiki/User:AndrMart\">Andrew Martynov</ulink> (translator &mdash; Russian, 2006&ndash;2007)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<ulink url=\"http://fedoraproject.org/wiki/User:Noriko\">Noriko Mizumoto</ulink> (translator &mdash; Japanese, 2006; editor, 2007&ndash;2009)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<ulink url=\"http://fedoraproject.org/wiki/User:Izhar\">Mohd Izhar Firdaus Ismail</ulink> (translator &mdash; Malay, 2008)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Manuel Ospina (writer, 2006&ndash;2007; translator &mdash; Spanish, 2006&ndash;2007)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Nikola Pajtic (translator &mdash; Serbian, 2008)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<ulink url=\"http://fedoraproject.org/wiki/RobertPereira\">Robert Pereira</ulink> (translator &mdash; Brazilian Portuguese, 2008)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<ulink url=\"http://fedoraproject.org/wiki/User:Perplex\">Silvio Pierro</ulink> (translator &mdash; Italian, 2008)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<ulink url=\"http://fedoraproject.org/wiki/AlainPortal\">Alain Portal</ulink> (translator &mdash; French, 2007)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<ulink url=\"http://fedoraproject.org/wiki/User:Marionline\">Mario Santagiuliana</ulink> (translator &mdash; Italian, 2009)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<ulink url=\"http://fedoraproject.org/wiki/User:Jassy\">Jaswinder Singh Phulewala</ulink> (translator &mdash; Punjabi, 2007)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<ulink url=\"http://fedoraproject.org/wiki/User:Peti\">Sulyok Péter</ulink> (translator &mdash; Hungarian, 2009)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<ulink url=\"http://fedoraproject.org/wiki/User:Tombo\">Francesco Tombolini</ulink> (translator &mdash; Italian, 2006&ndash;2008)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<ulink url=\"http://fedoraproject.org/wiki/VmlinzQi\">Vmlinz Qi</ulink> (translator &mdash; Simplified Chinese, 2007)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Thomas Wehrle (translator &mdash; German, 2008)"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<ulink url=\"http://fedoraproject.org/wiki/User:Diegobz\">Diego Búrigo Zacarão</ulink> (translator &mdash; Brazilian Portuguese, 2007&ndash;2008; editor, 2007)"
+msgstr ""
+

@@ -1,0 +1,334 @@
+# translation of ja.po to Japanese
+# Noriko Mizumoto <noriko@redhat.com>, 2006.
+# Hyu_gabaru Ryu_ichi <hyu_gabaru@yahoo.co.jp>, 2007, 2008, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: ja\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2009-08-10 03:19+0000\n"
+"PO-Revision-Date: 2009-08-01 20:14+0900\n"
+"Last-Translator: Hyu_gabaru Ryu_ichi <hyu_gabaru@yahoo.co.jp>\n"
+"Language-Team: Japanese <doc-i18n-list@redhat.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#: Revision_History.xml:6
+#, no-c-format
+msgid "Revision History"
+msgstr "改訂履歴"
+
+#. Tag: author
+#: Revision_History.xml:12 Revision_History.xml:56
+#, no-c-format
+msgid ""
+"<firstname>Piotr</firstname> <surname>Drąg</surname> <email>piotrdrag@gmail."
+"com</email>"
+msgstr ""
+"<firstname>ピオー</firstname> <surname>ドラグ</surname> "
+"<email>piotrdrag@gmail.com</email>"
+
+#. Tag: member
+#: Revision_History.xml:19
+#, no-c-format
+msgid "Removed deprecated content"
+msgstr "廃止予定の内容を削減"
+
+#. Tag: member
+#: Revision_History.xml:20
+#, no-c-format
+msgid "Updated links and instructions"
+msgstr "リンクと指示を更新"
+
+#. Tag: member
+#: Revision_History.xml:21
+#, no-c-format
+msgid "Fixed bugs #505480, #492255, #477566, #475632"
+msgstr "バグ #505480, #492255, #477566, #475632 を修正"
+
+#. Tag: author
+#: Revision_History.xml:28
+#, no-c-format
+msgid ""
+"<firstname>Rüdiger</firstname> <surname>Landmann</surname> <email>r."
+"landmann@redhat.com</email>"
+msgstr ""
+"<firstname>ルディガー</firstname> <surname>ランドマン</surname> <email>r."
+"landmann@redhat.com</email>"
+
+#. Tag: member
+#: Revision_History.xml:35
+#, no-c-format
+msgid "Convert document to Publican"
+msgstr "ドキュメントを Publican に転換"
+
+#. Tag: author
+#: Revision_History.xml:42 Revision_History.xml:70 Revision_History.xml:85
+#: Revision_History.xml:158 Revision_History.xml:187
+#, no-c-format
+msgid ""
+"<firstname>Noriko</firstname> <surname>Mizumoto</surname> "
+"<email>noriko@redhat.com</email>"
+msgstr ""
+"<firstname>紀子</firstname> <surname>水本</surname> <email>noriko@redhat."
+"com</email>"
+
+#. Tag: member
+#: Revision_History.xml:49
+#, no-c-format
+msgid "Bug #479346 fixed"
+msgstr "バグ #479346 修正"
+
+#. Tag: member
+#: Revision_History.xml:63
+#, no-c-format
+msgid "General bug fixes"
+msgstr "雑多なバグ修正"
+
+#. Tag: member
+#: Revision_History.xml:77
+#, no-c-format
+msgid "Updated Accounts and Subscriptions chapter to conform the current FAS2"
+msgstr "現在の FAS2 に合うように アカウントと登録の章を更新しました。"
+
+#. Tag: member
+#: Revision_History.xml:78
+#, no-c-format
+msgid "Some minor changes made to other chapters along with bugs filed"
+msgstr "指摘されたバグに対処する小さな修正を他の章に行いました。"
+
+#. Tag: member
+#: Revision_History.xml:92
+#, no-c-format
+msgid "Replaced the links in the section 3.2"
+msgstr "3.2 節のリンクを置き換えました。"
+
+#. Tag: author
+#: Revision_History.xml:99
+#, no-c-format
+msgid ""
+"<firstname>Dmitris</firstname> <surname>Glezos</surname> "
+"<email>dmitris@glezos.com</email>"
+msgstr ""
+"<firstname>ドミトリス</firstname> <surname>グレゾス</surname> "
+"<email>dmitris@glezos.com</email>"
+
+#. Tag: member
+#: Revision_History.xml:106
+#, no-c-format
+msgid "Removed references to i18n.redhat.com (elvis)"
+msgstr "i18n.redhat.com (elvis) への参照を削除しました"
+
+#. Tag: author
+#: Revision_History.xml:113 Revision_History.xml:128 Revision_History.xml:143
+#: Revision_History.xml:201 Revision_History.xml:216 Revision_History.xml:231
+#: Revision_History.xml:261 Revision_History.xml:276 Revision_History.xml:305
+#: Revision_History.xml:334 Revision_History.xml:349 Revision_History.xml:364
+#: Revision_History.xml:379 Revision_History.xml:394 Revision_History.xml:409
+#: Revision_History.xml:424 Revision_History.xml:439 Revision_History.xml:454
+#: Revision_History.xml:469
+#, no-c-format
+msgid ""
+"<firstname>Paul</firstname> <othername>W.</othername> <surname>Frields</"
+"surname> <email>stickster@gmail.com</email>"
+msgstr ""
+"<firstname>ポール</firstname> <othername>W.</othername> <surname>フリールズ</"
+"surname> <email>stickster@gmail.com</email>"
+
+#. Tag: member
+#: Revision_History.xml:121
+#, no-c-format
+msgid "Fix GPG key URL"
+msgstr "GPG キーの URL を修正"
+
+#. Tag: member
+#: Revision_History.xml:136
+#, no-c-format
+msgid "Fix links to Transifex system"
+msgstr "Transifex システムへのリンクを修正"
+
+#. Tag: member
+#: Revision_History.xml:151
+#, no-c-format
+msgid "Editing for style, grammar, and clarity"
+msgstr "スタイルや文法、明快さのための編集"
+
+#. Tag: member
+#: Revision_History.xml:165
+#, no-c-format
+msgid ""
+"Modified and updated all chapters to reflect latest information including "
+"usage of Transifex, moved repository etc."
+msgstr ""
+"Transifex の使用方法やリポジトリーの移動を含む最新情報を反映するために全章の"
+"変更と更新"
+
+#. Tag: author
+#: Revision_History.xml:172
+#, no-c-format
+msgid ""
+"<firstname>Diego</firstname> <othername>Búrigo</othername> <surname>Zacarão</"
+"surname> <email>diegobz@projetofedora.org</email>"
+msgstr ""
+"<firstname>ディエゴ</firstname> <othername>ブリゴ</othername> <surname>ザカラ"
+"オ</surname> <email>diegobz@projetofedora.org</email>"
+
+#. Tag: member
+#: Revision_History.xml:180
+#, no-c-format
+msgid "Add information on using an existing SSH key"
+msgstr "既存の SSH キーを使用するための情報を追加"
+
+#. Tag: member
+#: Revision_History.xml:194
+#, no-c-format
+msgid "Brokeup main file into multiple files based on chapters"
+msgstr "メインファイルを章に基づき複数のファイルに分割"
+
+#. Tag: member
+#: Revision_History.xml:209
+#, no-c-format
+msgid "Add information about LINGUAS and remove unnecessary admonitions"
+msgstr "LINGUAS に関する情報を追加し、不要な勧告を削除"
+
+#. Tag: member
+#: Revision_History.xml:224
+#, no-c-format
+msgid "Add information on branch modules and testing changes"
+msgstr "分岐モジュールへの情報の追加と変更のテスト"
+
+#. Tag: member
+#: Revision_History.xml:239
+#, no-c-format
+msgid "Make admonition against manual POT changes"
+msgstr "手作業で POT を更新することに対する警告を追加"
+
+#. Tag: author
+#: Revision_History.xml:246 Revision_History.xml:291 Revision_History.xml:320
+#: Revision_History.xml:484
+#, fuzzy, no-c-format
+msgid ""
+"<firstname>Manuel</firstname> <surname>Ospina</surname> "
+"<email>mospina@redhat.com</email>"
+msgstr ""
+"<firstname>紀子</firstname> <surname>水本</surname> <email>noriko@redhat."
+"com</email>"
+
+#. Tag: member
+#: Revision_History.xml:253
+#, no-c-format
+msgid "Fix CVS group membership details"
+msgstr "CVS グループ会員資格詳細の修正"
+
+#. Tag: member
+#: Revision_History.xml:254
+#, no-c-format
+msgid "Shorten copyright holders list"
+msgstr "著作権保持者リストの短縮"
+
+#. Tag: member
+#: Revision_History.xml:269
+#, no-c-format
+msgid "Generate new POT and PO keeping general entities"
+msgstr "全体の統一性を保持して新しい POT と PO を生成する"
+
+#. Tag: member
+#: Revision_History.xml:284
+#, no-c-format
+msgid "Fix erroneous URL (#209900)"
+msgstr "間違った URL の修正 (#209900)"
+
+#. Tag: member
+#: Revision_History.xml:298
+#, no-c-format
+msgid "Bug fixes (#198726, #204266, #205167)"
+msgstr "バグ修正 (#198726、#204266、#205167)"
+
+#. Tag: member
+#: Revision_History.xml:313
+#, no-c-format
+msgid "Editorial pass, revising procedure to match proper ordering"
+msgstr "正しい手順にあうように編集上のパス、手続きの訂正"
+
+#. Tag: member
+#: Revision_History.xml:327
+#, no-c-format
+msgid "Additional information about joining the Docs Project and GPG."
+msgstr "Docs プロジェクトに参加するための追加情報と GPG。"
+
+#. Tag: member
+#: Revision_History.xml:342
+#, no-c-format
+msgid ""
+"Remove step for translating rpm-info since this is now part of document POT"
+msgstr ""
+"rpm-info はドキュメント POT の一部となるため、これに関する翻訳手順は削除され"
+"ています。"
+
+#. Tag: member
+#: Revision_History.xml:357
+#, no-c-format
+msgid ""
+"Fix docs translation procedure to include other common files translations"
+msgstr ""
+"その他の共通ファイルに関する翻訳手順を含むようにドキュメント翻訳の手順を修正"
+
+#. Tag: member
+#: Revision_History.xml:372
+#, no-c-format
+msgid "Add information on common entities and admonition for disabled locales"
+msgstr ""
+"無効ロケールに関する注意及び共通エンティティーに関する説明が加えられていま"
+"す。"
+
+#. Tag: member
+#: Revision_History.xml:387
+#, no-c-format
+msgid "Fix procedural guide and include document-specific entities"
+msgstr ""
+"手順に修正が加えられ、ドキュメント固有のエンティティーが含まれるようになりま"
+"す。"
+
+#. Tag: member
+#: Revision_History.xml:402
+#, no-c-format
+msgid "Move to DocBook XML 4.4 and use XInclude"
+msgstr "DocBook XML 4.4 に移行するため XInclude を使用するようになります。"
+
+#. Tag: member
+#: Revision_History.xml:417
+#, no-c-format
+msgid "Fix spelling (#179717)"
+msgstr "スペリング修正が行われています (#179717)。"
+
+#. Tag: member
+#: Revision_History.xml:432
+#, no-c-format
+msgid "Add entity for bug reporting"
+msgstr "バグレポート用のエンティティーが加えられています。"
+
+#. Tag: member
+#: Revision_History.xml:447
+#, no-c-format
+msgid "Fix hostname error"
+msgstr "ホスト名エラーが修正されています。"
+
+#. Tag: member
+#: Revision_History.xml:462
+#, no-c-format
+msgid ""
+"Additional style editing, division of procedures into more readable sections"
+msgstr "読みやすいように手順を区分けしたスタイル変更が行われています。"
+
+#. Tag: member
+#: Revision_History.xml:477
+#, no-c-format
+msgid "First round of editing"
+msgstr "編集の第 1 回目"
+
+#. Tag: member
+#: Revision_History.xml:491
+#, no-c-format
+msgid "First draft"
+msgstr "第 1 ドラフト"
