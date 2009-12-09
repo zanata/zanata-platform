@@ -32,6 +32,7 @@ import org.fedorahosted.flies.rest.dto.SimpleComment;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.TextFlowTargets;
+import org.fedorahosted.flies.rest.dto.po.PotEntryData;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -239,7 +240,10 @@ public class DocumentConverter {
 		List<Object> extensions = fromTf.getExtensions();
 		if (extensions != null) {
 			for (Object ext : extensions) {
-				if (ext instanceof TextFlowTargets) {
+				if (ext instanceof PotEntryData) {
+					
+				}
+				else if(ext instanceof TextFlowTargets) {
 					// do nothing here, we want to do targets last: 
 					// if the comment changes, the resourceRev will have to be incremented
 				} else if (ext instanceof SimpleComment) {
