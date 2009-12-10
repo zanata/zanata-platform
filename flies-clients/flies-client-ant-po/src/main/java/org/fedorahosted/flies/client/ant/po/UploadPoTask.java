@@ -45,29 +45,34 @@ public class UploadPoTask extends MatchingTask {
 			
 			// TODO we should run publican update po command before reading po files
 			
+			// scan the directory for po files
 			DirectoryScanner ds = getDirectoryScanner(srcDir);
-			// use default includes if unset:
-			
-			if (!getImplicitFileSet().hasPatterns()) {
+			if (!getImplicitFileSet().hasPatterns())
 				ds.setIncludes(new String[] { "pot/*.pot" }); //$NON-NLS-1$
-			}
 			ds.setSelectors(getSelectors());
 			ds.scan();
 			String[] potFilenames = ds.getIncludedFiles();
-
-			Marshaller m = null;
-			JAXBContext jc = JAXBContext.newInstance(Documents.class);
-			m = jc.createMarshaller();
-			if (debug) {
-				m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-			}
 			
+			// debug: print scanned files
+			if (debug) {
+				System.out.println("Here are scanned files: ");
+				for (String potFilename : potFilenames)
+					System.out.println(potFilename);
+			}
 
+			JAXBContext jc = JAXBContext.newInstance(Documents.class);
+			Marshaller m = jc.createMarshaller();
+			
+			// debug
+			if (debug)
+				m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+			// TODO what is this Documents?
 			Documents docs = new Documents();
 			List<Document> docList = docs.getDocuments();
 			PoReader poReader = new PoReader();
-			// for each of the base Pos files under srcdir:
-			int i = 0;
+			
+			// for each of the base po files under srcdir:
 			for (String potFilename : potFilenames) {
 //				progress.update(i++, files.length);
 				Document doc = new Document(potFilename, ContentType.TextPlain);
@@ -89,6 +94,7 @@ public class UploadPoTask extends MatchingTask {
 				docList.add(doc);
 			}
 //			progress.finished();
+			
 			if (debug) {
 				m.marshal(docs, System.out);
 			}
@@ -96,6 +102,7 @@ public class UploadPoTask extends MatchingTask {
 			if(dst == null)
 				return;
 
+			// check if local or remote: write to file if local, put to server if remote
 			URL dstURL = Utility.createURL(dst, getProject());
 			if("file".equals(dstURL.getProtocol())) {
 				m.marshal(docs, new File(dstURL.getFile()));
@@ -114,6 +121,7 @@ public class UploadPoTask extends MatchingTask {
 		}
 	}
 
+	// create po filenames in locale
 	FileSelector[] getSelectors() {
 		if (locales != null)
 			return new FileSelector[] { new BasePoSelector(locales) };
