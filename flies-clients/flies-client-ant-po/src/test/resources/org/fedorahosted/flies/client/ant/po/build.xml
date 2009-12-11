@@ -4,10 +4,9 @@
 	<import file="taskdefs.xml" />
 
 	<!-- local def -->
-	<property name="test.dir" value="${user.dir}/target" />
-	<property name="in.dir" value="${test.dir}/test-input" />
-	<property name="docs.dir" value="${test.dir}/test-docs" />
-	<property name="out.dir" value="${test.dir}/test-output" />
+	<property name="in.dir" value="${root}/test-input" />
+	<property name="docs.dir" value="${root}/test-docs" />
+	<property name="out.dir" value="${root}/test-output" />
 
 	<!-- remote def -->
 	<property name="bob.key" value="34567890123456789012345678901234" />
