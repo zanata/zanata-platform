@@ -82,7 +82,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 				TransUnit rowValue,
 				ColumnDefinition<TransUnit, TransUnit> columnDef,
 				com.google.gwt.gen2.table.client.TableDefinition.AbstractCellView<TransUnit> view) {
-			view.setStyleName("TableEditorCell TableEditorCell-Source");
+			//view.setStyleName("TableEditorCell TableEditorCell-Source");
 			Image image = new Image("../img/silk/user.png");
 			view.setWidget(image);
 		}
@@ -135,19 +135,17 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 				ColumnDefinition<TransUnit, TransUnit> columnDef,
 				AbstractCellView<TransUnit> view) {
 			view.setStyleName("TableEditorCell TableEditorCell-Target");
-			//Label label = new HighlightingLabel(rowValue.getTarget(), ParserSyntax.MIXED);
-			//label.setStylePrimaryName("TableEditorContent");
-			//userImg.s();  
-			Label label = new Label();
-			//label.setWidget();
+			Label label = new HighlightingLabel(rowValue.getTarget(), ParserSyntax.MIXED);
+			label.setStylePrimaryName("TableEditorContent");
 			view.setWidget( label );
-			//view.setWidget(userImg);
 		}
 	};
 
 	public TableEditorTableDefinition() {
 		setRowRenderer(rowRenderer);
-		indicatorColumnDefinition.setPreferredColumnWidth(5);
+		indicatorColumnDefinition.setMaximumColumnWidth(15);
+		indicatorColumnDefinition.setPreferredColumnWidth(15);
+		indicatorColumnDefinition.setMinimumColumnWidth(15);
 		indicatorColumnDefinition.setCellRenderer(indicatorCellRenderer);
 		sourceColumnDefinition.setCellRenderer(sourceCellRenderer);
 		targetColumnDefinition.setCellRenderer(targetCellRenderer);
