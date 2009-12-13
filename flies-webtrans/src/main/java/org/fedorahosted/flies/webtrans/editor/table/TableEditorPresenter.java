@@ -6,10 +6,14 @@ import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
+import org.fedorahosted.flies.common.EditState;
 import org.fedorahosted.flies.gwt.auth.AuthenticationError;
 import org.fedorahosted.flies.gwt.auth.AuthorizationError;
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.TransUnit;
+import org.fedorahosted.flies.gwt.model.TransUnitId;
+import org.fedorahosted.flies.gwt.rpc.EditingTranslationAction;
+import org.fedorahosted.flies.gwt.rpc.EditingTranslationResult;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnitsResult;
 import org.fedorahosted.flies.gwt.rpc.UpdateTransUnit;
@@ -19,6 +23,8 @@ import org.fedorahosted.flies.webtrans.client.DocumentSelectionHandler;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent;
 import org.fedorahosted.flies.webtrans.client.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent.Severity;
+import org.fedorahosted.flies.webtrans.client.events.TransUnitEditEvent;
+import org.fedorahosted.flies.webtrans.client.events.TransUnitEditEventHandler;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
@@ -93,10 +99,21 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 			public void onSelection(SelectionEvent<TransUnit> event) {
 				if(event.getSelectedItem() != currentSelection) {
 					currentSelection = event.getSelectedItem();
+					//Send a START_EDIT event
+					dispatcher.execute(
+							new EditingTranslationAction(event.getSelectedItem().getId(), workspaceContext.getLocaleId(), EditState.Lock), 
+							new AsyncCallback<EditingTranslationResult>() {
+								@Override
+								public void onFailure(Throwable caught) {
+									eventBus.fireEvent(new NotificationEvent(Severity.Error, "Failed to Lock TransUnit"));
+								}
+								
+								@Override
+								public void onSuccess(EditingTranslationResult result) {
+								}
+					});
 					eventBus.fireEvent(event);
 				}
-				//Send a START_EDIT event
-				
 			}
 		}));
 
@@ -144,6 +161,19 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 					// - add TU index to model
 					display.reloadPage();
 					//dispatcher.execute(new GetTransUnits(documentId, localeId, page*pageSize+rowOffset, 1, count), callback)
+				}
+			}
+		}));
+		
+		registerHandler(eventBus.addHandler(TransUnitEditEvent.getType(), new TransUnitEditEventHandler() {
+			@Override
+			public void onTransUnitEdit(TransUnitEditEvent event) {
+				if(documentId != null && documentId.equals(event.getDocumentId())) {
+					if(currentSelection != null && currentSelection.getId().equals(event.getTransUnitId())) {
+						// handle change in current selection
+					}
+					display.getTableModel().clearCache();
+					display.reloadPage();
 				}
 			}
 		}));

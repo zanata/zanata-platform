@@ -9,6 +9,7 @@ import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.fedorahosted.flies.FliesInit;
 import org.fedorahosted.flies.common.ContentState;
+import org.fedorahosted.flies.common.EditState;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.gwt.model.TransUnitId;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
@@ -18,6 +19,8 @@ import org.fedorahosted.flies.repository.model.HTextFlow;
 import org.fedorahosted.flies.repository.model.HTextFlowTarget;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.fedorahosted.flies.security.FliesIdentity;
+import org.fedorahosted.flies.webtrans.TranslationWorkspace;
+import org.fedorahosted.flies.webtrans.TranslationWorkspaceManager;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -39,6 +42,8 @@ public class GetTransUnitsHandler implements ActionHandler<GetTransUnits, GetTra
 	@Logger Log log;
 	@In Session session;
 	
+	@In TranslationWorkspaceManager translationWorkspaceManager;
+	
 	@Override
 	public GetTransUnitsResult execute(GetTransUnits action, ExecutionContext context)
 			throws ActionException {
@@ -57,10 +62,20 @@ public class GetTransUnitsHandler implements ActionHandler<GetTransUnits, GetTra
 				.setFirstResult(action.getOffset())
 				.setMaxResults(action.getCount())
 				.list();
-
+		
+		
+		
 		ArrayList<TransUnit> units = new ArrayList<TransUnit>();
 		for(HTextFlow textFlow : textFlows) {
-			TransUnit tu = new TransUnit(new TransUnitId(textFlow.getId()), action.getLocaleId(), textFlow.getContent(), "", ContentState.New);
+			
+			TransUnitId tuId = new TransUnitId(textFlow.getId());
+			TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(
+					textFlow.getDocument().getProject().getId(), action.getLocaleId() );
+			if(!workspace.containTransUnit(tuId)) {
+				workspace.addTransUnit(tuId);
+			}
+			EditState editstate = workspace.getTransUnitStatus(tuId);
+			TransUnit tu = new TransUnit(tuId, action.getLocaleId(), textFlow.getContent(), "", ContentState.New, editstate);
 			HTextFlowTarget target = textFlow.getTargets().get(action.getLocaleId());
 			if(target != null) {
 				tu.setTarget(target.getContent());

@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.webtrans.editor.table;
 
+import org.fedorahosted.flies.common.EditState;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.webtrans.client.WorkspaceUsersView.Images;
 import org.fedorahosted.flies.webtrans.client.mvp.TextAreaCellEditor;
@@ -82,9 +83,11 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 				TransUnit rowValue,
 				ColumnDefinition<TransUnit, TransUnit> columnDef,
 				com.google.gwt.gen2.table.client.TableDefinition.AbstractCellView<TransUnit> view) {
-			//view.setStyleName("TableEditorCell TableEditorCell-Source");
-			Image image = new Image("../img/silk/user.png");
-			view.setWidget(image);
+			view.setStyleName("TableEditorCell TableEditorCell-Source");
+			if(rowValue.getEditStatus().equals(EditState.Lock)) {
+				Image image = new Image("../img/silk/user.png");
+				view.setWidget(image);
+			}
 		}
 	};
 	

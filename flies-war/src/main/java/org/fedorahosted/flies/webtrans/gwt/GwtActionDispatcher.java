@@ -47,6 +47,7 @@ public class GwtActionDispatcher {
 		actionHandlerRegistry.addHandler(new GetEventsActionHandler());
 		actionHandlerRegistry.addHandler(new GetGlossaryConceptHandler());
 		actionHandlerRegistry.addHandler(new GetCommentsActionHandler());
+		actionHandlerRegistry.addHandler(new EditTransUnitHandler());
 		actionHandlerRegistry.addHandler(new ExitWorkspaceHandler());
 	}
 

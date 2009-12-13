@@ -12,10 +12,12 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
+import org.fedorahosted.flies.common.EditState;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.core.model.HPerson;
 import org.fedorahosted.flies.gwt.auth.SessionId;
 import org.fedorahosted.flies.gwt.model.PersonId;
+import org.fedorahosted.flies.gwt.model.TransUnitId;
 import org.fedorahosted.flies.gwt.rpc.SessionEvent;
 import org.fedorahosted.flies.gwt.rpc.SessionEventData;
 import org.jboss.seam.core.Events;
@@ -33,7 +35,7 @@ public class TranslationWorkspace {
 	private final WorkspaceKey workspaceKey;
 	
 	private final ConcurrentMap<SessionId, PersonId> sessions = new MapMaker().makeMap();
-	
+	private final ConcurrentMap<TransUnitId, EditState> editstatus = new MapMaker().makeMap();
 	private final Deque<SessionEvent<?>> events = new ArrayDeque<SessionEvent<?>>();
 	
 	private int sequence;
@@ -57,12 +59,40 @@ public class TranslationWorkspace {
 		return ImmutableSet.copyOf(sessions.keySet());
 	}
 	
+	public EditState getTransUnitStatus(TransUnitId unitId) {
+		return editstatus.get(unitId);
+	}
+	
+	public void addTransUnit(TransUnitId unitId) {
+		if(!editstatus.containsKey(unitId)) {
+			editstatus.put(unitId, EditState.UnLock);
+		}
+	}
+	
+	public boolean containTransUnit(TransUnitId unitId) {
+		return editstatus.containsKey(unitId);
+	}
+	
+	public ImmutableSet<EditState> getEditStatus() {
+		return ImmutableSet.copyOf(editstatus.values());
+	}
+	
 	public int getUserCount(){
 		return sessions.size();
 	}
 	
 	public ImmutableSet<PersonId> getUsers() {
 		return ImmutableSet.copyOf(sessions.values());
+	}
+	
+	public void lockTransUnit(TransUnitId transUnitId) {
+		if(editstatus.containsKey(transUnitId)) {
+			editstatus.replace(transUnitId, EditState.Lock);
+		}
+	}
+	
+	public void unlockTransUnit(TransUnitId transUnitId) {
+		editstatus.replace(transUnitId, EditState.UnLock);
 	}
 	
 	public boolean removeTranslator(PersonId personId) {

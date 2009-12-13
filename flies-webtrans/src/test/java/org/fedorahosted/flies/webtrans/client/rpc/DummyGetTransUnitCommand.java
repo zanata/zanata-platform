@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.common.ContentState;
+import org.fedorahosted.flies.common.EditState;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.gwt.model.TransUnitId;
@@ -42,7 +43,7 @@ final class DummyGetTransUnitCommand implements Command {
 	private ArrayList<TransUnit> generateTransUnitSampleData(LocaleId localeId, int numRows, int start) {
 		ArrayList<TransUnit> units = new ArrayList<TransUnit>();
 		for(int i=start;i<start+numRows; i++) {
-			TransUnit unit = new TransUnit( new TransUnitId(i+1), localeId, "<hellow num=\"" + (i+1) + "\" />", "<world> \"" + (i+1) +"\"</world>", ContentState.NeedReview);
+			TransUnit unit = new TransUnit( new TransUnitId(i+1), localeId, "<hellow num=\"" + (i+1) + "\" />", "<world> \"" + (i+1) +"\"</world>", ContentState.NeedReview, EditState.UnLock);
 			units.add(unit);
 		}
 		return units;
