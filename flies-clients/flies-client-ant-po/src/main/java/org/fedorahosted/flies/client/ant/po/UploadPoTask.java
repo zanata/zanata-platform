@@ -31,7 +31,8 @@ public class UploadPoTask extends MatchingTask {
 	private String apiKey;
 	private String dst;
 	private File srcDir;
-	private String[] locales = new String[0];
+	//private String[] locales = new String[0];
+	private String[] locales = {"ja-JP"};
 	private String sourceLang;
 	private boolean debug;
 	private ContentState contentState = ContentState.Approved;
@@ -67,7 +68,6 @@ public class UploadPoTask extends MatchingTask {
 			if (debug)
 				m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-			// TODO what is this Documents?
 			Documents docs = new Documents();
 			List<Document> docList = docs.getDocuments();
 			PoReader poReader = new PoReader();
@@ -83,6 +83,7 @@ public class UploadPoTask extends MatchingTask {
 				for (String locale : locales) {
 					File localeDir = new File(srcDir, locale);
 					File poFile = new File(localeDir, potFile.getName()); // TODO convert .pot into .po
+					System.out.println(poFile.toURI().toString());
 					InputSource inputSource = new InputSource(
 							poFile.toURI().toString()
 					);
