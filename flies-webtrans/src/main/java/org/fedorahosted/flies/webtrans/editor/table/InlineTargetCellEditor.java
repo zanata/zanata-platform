@@ -13,17 +13,13 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.client.InlineCellEditor.InlineCellEditorImages;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ImageBundle;
 import com.google.gwt.user.client.ui.PushButton;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
 public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 
@@ -49,7 +45,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 		}
 	};
 
-	private final ToggleButton toggleFuzzy;
+	private final CheckBox toggleFuzzy;
 	
 	/**
 	 * The click listener used to accept.
@@ -126,7 +122,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 		layoutTable.add(operationsPanel);
 		
 		// Add content widget
-		toggleFuzzy = new ToggleButton("Approved", "Fuzzy");
+		toggleFuzzy = new CheckBox("Fuzzy");
 		operationsPanel.add(toggleFuzzy);
 		
 
@@ -194,7 +190,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 		textArea.setText(cellValue.getTarget());
 		this.cellValue = cellValue;
 		textArea.setFocus(true);
-		toggleFuzzy.setDown(cellValue.getStatus() == ContentState.NeedReview);
+		toggleFuzzy.setValue(cellValue.getStatus() == ContentState.NeedReview);
 		
 	}
 
@@ -207,7 +203,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 			return;
 		}
 		cellValue.setTarget(textArea.getText());
-		cellValue.setStatus(toggleFuzzy.isDown() ? ContentState.NeedReview : ContentState.Approved );
+		cellValue.setStatus(toggleFuzzy.getValue() ? ContentState.NeedReview : ContentState.Approved );
 		restoreView();
 		
 		// Send the new cell value to the callback
