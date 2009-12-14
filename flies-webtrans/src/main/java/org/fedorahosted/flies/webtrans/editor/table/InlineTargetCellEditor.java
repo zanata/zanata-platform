@@ -131,11 +131,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 		
 
 		PushButton cancelButton = new PushButton(images.cellEditorCancel().createImage(),cancelHandler);
-		//cancelButton.setText("Cancel");
+		cancelButton.setText("Cancel");
 		operationsPanel.add(cancelButton);
 
 		PushButton acceptButton = new PushButton(images.cellEditorAccept().createImage(),acceptHandler);
-		//acceptButton.setText("Accept");
+		acceptButton.setText("Save");
 		operationsPanel.add(acceptButton);
 		
 	}
