@@ -27,7 +27,7 @@ public class LocalTest extends AbstractBuildTest {
 	
 	suite.addTest(new LocalTest("uploadpo"));
 //	suite.addTest(new LocalTest("downloadpo"));
-	suite.addTest(new LocalTest("roundtriplocal"));
+//	suite.addTest(new LocalTest("roundtriplocal"));
 	return suite;
     }
 

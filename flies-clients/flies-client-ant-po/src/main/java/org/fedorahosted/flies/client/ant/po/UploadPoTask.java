@@ -1,8 +1,11 @@
 package org.fedorahosted.flies.client.ant.po;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -10,10 +13,7 @@ import javax.xml.bind.Marshaller;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.taskdefs.MatchingTask;
-import org.apache.tools.ant.types.selectors.FileSelector;
 import org.fedorahosted.flies.adapter.po.PoReader;
-import org.fedorahosted.flies.client.ant.po.BasePoSelector;
-import org.fedorahosted.flies.client.ant.po.Utility;
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
@@ -31,25 +31,39 @@ public class UploadPoTask extends MatchingTask {
 	private String apiKey;
 	private String dst;
 	private File srcDir;
-	private String[] locales = new String[0];
-	private String sourceLang;
+	private String sourceLang = "en_US";
 	private boolean debug;
 	private ContentState contentState = ContentState.Approved;
 	
-	@Override
-	public void execute() throws BuildException {
+	File file;
+	public void setup() throws IOException{
+		file = File.createTempFile("poReaderTests", ".xml");
+		System.out.println("creating file: " + file);
+		if(file.exists())
+			file.delete();
+	}
+	
+	public void execute() throws BuildException, NoSuchElementException {
 		ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+//		Document doc = new Document("doc1","mydoc.doc", "/", PoReader.PO_CONTENT_TYPE);
+		
 		try {
 			// make sure RESTEasy classes will be found:
 			Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 			
-			// TODO we should run publican update po command before reading po files
+//			InputSource inputSource = new InputSource("file:/home/cchance/src/fedorahosted/flies/flies-client/flies-client-ant-po/src/test/resources/test-input/ja-JP/Accounts_And_Subscriptions.po");
+//			
+//			inputSource.setEncoding("utf8");
+//			
+			PoReader poReader = new PoReader();
+//
+//			System.out.println("parsing template");
+//			poReader.extractTemplate(doc, inputSource);
 			
-			// scan the directory for po files
+			// scan the directory for pot files
 			DirectoryScanner ds = getDirectoryScanner(srcDir);
 			if (!getImplicitFileSet().hasPatterns())
 				ds.setIncludes(new String[] { "pot/*.pot" }); //$NON-NLS-1$
-			ds.setSelectors(getSelectors());
 			ds.scan();
 			String[] potFilenames = ds.getIncludedFiles();
 			
@@ -67,32 +81,45 @@ public class UploadPoTask extends MatchingTask {
 			if (debug)
 				m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-			// TODO what is this Documents?
 			Documents docs = new Documents();
 			List<Document> docList = docs.getDocuments();
-			PoReader poReader = new PoReader();
 			
-			// for each of the base po files under srcdir:
+			File[] localeDirs = srcDir.listFiles(new FileFilter() {
+				@Override
+				public boolean accept(File f) {
+					return f.isDirectory() && !f.getName().equals("pot");
+				}
+			});
+			
+			// for each of the base pot files under srcdir/pot:
 			for (String potFilename : potFilenames) {
 //				progress.update(i++, files.length);
-				Document doc = new Document(potFilename, ContentType.TextPlain);
-//				doc.setLang(LocaleId.fromJavaName(sourceLang));
-				doc.setLang(LocaleId.EN_US);
 				File potFile = new File(srcDir, potFilename);
-				
-				for (String locale : locales) {
-					File localeDir = new File(srcDir, locale);
-					File poFile = new File(localeDir, potFile.getName()); // TODO convert .pot into .po
-					InputSource inputSource = new InputSource(
-							poFile.toURI().toString()
-					);
-					inputSource.setEncoding("utf8");
-					System.out.println("extracting target: " + locale);
-					poReader.extractTarget(doc, inputSource, new LocaleId(locale));
-				}
-				
+//				File sourceLang = new File(srcDir, locale);
+				Document doc = new Document(potFilename, ContentType.TextPlain);
+				InputSource potInputSource = new InputSource(potFile.toURI().toString());
+				System.out.println(potFile.toURI().toString());
+				potInputSource.setEncoding("utf8");
+				poReader.extractTemplate(doc, potInputSource, LocaleId.fromJavaName(sourceLang));
 				docList.add(doc);
-			}
+				
+				String basename = StringUtil.removeFileExtension(potFile.getName(), ".pot");
+				String poName = basename + ".po";
+				
+				// for each of the corresponding po files in the locale subdirs:
+				for (int i = 0; i < localeDirs.length; i++) {
+					File localeDir = localeDirs[i];
+					File poFile = new File(localeDir, poName);
+					if (poFile.exists()) {
+	//					progress.update(i++, files.length);
+						InputSource inputSource = new InputSource(poFile.toURI().toString());
+						System.out.println(poFile.toURI().toString());
+						inputSource.setEncoding("utf8");
+						poReader.extractTarget(doc, inputSource, new LocaleId(localeDir.getName()));
+						docList.add(doc);
+					}
+				}
+			}		
 //			progress.finished();
 			
 			if (debug) {
@@ -120,14 +147,6 @@ public class UploadPoTask extends MatchingTask {
 			Thread.currentThread().setContextClassLoader(oldLoader);
 		}
 	}
-
-	// create po filenames in locale
-	FileSelector[] getSelectors() {
-		if (locales != null)
-			return new FileSelector[] { new BasePoSelector(locales) };
-		else
-			return new FileSelector[0];
-	}
 	
 	@Override
 	public void log(String msg) {
@@ -152,10 +171,6 @@ public class UploadPoTask extends MatchingTask {
 
 	public void setSourceLang(String sourceLang) {
 		this.sourceLang = sourceLang;
-	}
-
-	public void setLocales(String[] locales) {
-		this.locales = locales;
 	}
 
 	public void setDebug(boolean debug) {

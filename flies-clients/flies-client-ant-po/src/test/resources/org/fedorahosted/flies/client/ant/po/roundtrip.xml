@@ -10,15 +10,15 @@
 		<uploadpo user="bob" apiKey="${bob.key}" dst="${docsUrl}" srcDir="${in.dir}" debug="true" />
 		<downloadpo user="bob" apiKey="${bob.key}" src="${docsUrl}" dstDir="${out.dir}" debug="true" />
 
-		<!--
-		<!- - diff if input and output are same - ->
+		
+		<!-- diff if input and output are same -->
 		<exec executable="diff" failonerror="true">
-			<arg value="- -unified" />
-			<arg value="- -recursive" />
-			<arg value="${roundtrip-in-dir}" />
-			<arg value="${roundtrip-out-dir}" />
+			<arg value="--unified" />
+			<arg value="--recursive" />
+			<arg value="${in.dir}" />
+			<arg value="${out.dir}" />
 		</exec>
-		-->
+		
 
 	</target>
 </project>

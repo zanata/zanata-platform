@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 
 import org.apache.commons.codec.binary.Hex;
@@ -62,7 +64,14 @@ public class PoReader {
 	public void extractTarget(Document document, InputSource inputSource, LocaleId targetLocaleId) {
 		MessageStreamParser messageParser = createParser(inputSource);
 
-		Iterator<DocumentResource> documentContentIt = document.getResources(true).iterator();
+		List<DocumentResource> resources = document.getResources(true);
+		Map<String, DocumentResource> resourceMap = new HashMap<String, DocumentResource>(resources.size());
+		for (DocumentResource res : resources) {
+			if (res instanceof TextFlow) {
+				TextFlow tf = (TextFlow) res;
+				resourceMap.put(tf.getContent(), tf);
+			}
+		}
 		
 		while(messageParser.hasNext()) {
 			Message message = messageParser.next();
@@ -77,26 +86,31 @@ public class PoReader {
 				targetHeaders.getHeaders().add(poHeader);
 			} 
 			else if (message.isObsolete()) {
-				// append obsolete
+				// TODO append obsolete
 			}
 			else if (message.isPlural()) {
-				// skip for now
+				// TODO skip for now
 			}
 			else{
-				TextFlow tf = (TextFlow) documentContentIt.next();
-				String id = createId(message);
-				
-				matchIdOrFail( tf.getId(), id);
-				
-				// add the target content (msgstr) 
-				TextFlowTarget tfTarget = new TextFlowTarget(tf, targetLocaleId);
-				tfTarget.setContent(message.getMsgstr());
-				tfTarget.setState( getContentState(message) );
-				tf.addTarget(tfTarget);
-				
-				// add the PO comment
-				tfTarget.getExtensions().add(
-					new SimpleComment(StringUtils.join(message.getComments(),"\n")));
+				TextFlow tf = (TextFlow) resourceMap.get(message.getMsgid());
+				if (tf != null) {
+					String id = createId(message);
+					
+					matchIdOrFail( tf.getId(), id);
+					
+					// add the target content (msgstr) 
+					TextFlowTarget tfTarget = new TextFlowTarget(tf, targetLocaleId);
+					tfTarget.setContent(message.getMsgstr());
+					tfTarget.setState( getContentState(message) );
+					tf.addTarget(tfTarget);
+					
+					// add the PO comment
+					tfTarget.getExtensions().add(
+						new SimpleComment(StringUtils.join(message.getComments(),"\n")));
+				} else {
+					// TODO append obsolete
+					
+				}
 			}
 		}
 		
@@ -168,10 +182,10 @@ public class PoReader {
 				
 			} 
 			else if (message.isObsolete()) {
-				// append obsolete
+				// TODO append obsolete
 			}
 			else if (message.isPlural()) {
-				// skip for now
+				// TODO skip for now
 			}
 			else{
 				String id = createId(message);

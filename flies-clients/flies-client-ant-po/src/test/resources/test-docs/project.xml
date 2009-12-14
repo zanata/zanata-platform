@@ -1,12 +1,3070 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <documents xmlns="http://flies.fedorahosted.org/api/v1/" xmlns:ns2="http://flies.fedorahosted.org/api/gettext/header">
-    <document path="pot/" name="Accounts_And_Subscriptions.pot" xml:lang="en-US" id="pot/Accounts_And_Subscriptions.pot" content-type="text/plain"/>
-    <document path="pot/" name="Article_Info.pot" xml:lang="en-US" id="pot/Article_Info.pot" content-type="text/plain"/>
-    <document path="pot/" name="Author_Group.pot" xml:lang="en-US" id="pot/Author_Group.pot" content-type="text/plain"/>
-    <document path="pot/" name="Contributors.pot" xml:lang="en-US" id="pot/Contributors.pot" content-type="text/plain"/>
-    <document path="pot/" name="Introduction.pot" xml:lang="en-US" id="pot/Introduction.pot" content-type="text/plain"/>
-    <document path="pot/" name="Revision_History.pot" xml:lang="en-US" id="pot/Revision_History.pot" content-type="text/plain"/>
-    <document path="pot/" name="Translating_Documentation.pot" xml:lang="en-US" id="pot/Translating_Documentation.pot" content-type="text/plain"/>
-    <document path="pot/" name="Translating_Software.pot" xml:lang="en-US" id="pot/Translating_Software.pot" content-type="text/plain"/>
-    <document path="pot/" name="Translation_Quick_Start_Guide.pot" xml:lang="en-US" id="pot/Translation_Quick_Start_Guide.pot" content-type="text/plain"/>
+    <document path="pot/" name="Accounts_And_Subscriptions.pot" xml:lang="en-US" id="pot/Accounts_And_Subscriptions.pot" content-type="application/x-gettext">
+        <resources>
+            <text-flow xml:lang="en-US" id="a2984974ffc7ea59ef550bd8d80fd007">
+                <content>Accounts and Subscriptions</content>
+                <ns2:po-entry id="a2984974ffc7ea59ef550bd8d80fd007">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="a2984974ffc7ea59ef550bd8d80fd007">
+                        <content>アカウントと登録</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="7f4830ba2132dc59cd94ffe2e437a225">
+                <content>To become a Fedora Translator, you must sign up for accounts and subscriptions as described in this chapter. If you have questions, post them on the fedora-trans-list, or ask for help via Internet Relay Chat, or &lt;acronym&gt;IRC&lt;/acronym&gt;, at &lt;systemitem class=&quot;fqdomainname&quot;&gt;irc.freenode.org&lt;/systemitem&gt; on channel &lt;systemitem&gt;#fedora-l10n&lt;/systemitem&gt;.</content>
+                <ns2:po-entry id="7f4830ba2132dc59cd94ffe2e437a225">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="7f4830ba2132dc59cd94ffe2e437a225">
+                        <content>Fedora の翻訳者になるには、この章に記載されているようにしてアカウントと登録を求めて署名しなければなりません。質問があれば fedora-trans-list にポストするか、&lt;systemitem class=&quot;fqdomainname&quot;&gt;irc.freenode.org&lt;/systemitem&gt; の &lt;systemitem&gt;#fedora-l10n&lt;/systemitem&gt; チャネルの Internet Relay Chat いわゆる &lt;acronym&gt;IRC&lt;/acronym&gt; 経由で助けを求めてください。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="4422f6325302e696f8f6361b87e2dd46">
+                <content>Subscribing to the Mailing List</content>
+                <ns2:po-entry id="4422f6325302e696f8f6361b87e2dd46">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="4422f6325302e696f8f6361b87e2dd46">
+                        <content>メーリングリストへの登録</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="f963fc95ace6b211cf51dd9b7ca7a156">
+                <content>Visit &lt;ulink url=&quot;http://listman.redhat.com/mailman/listinfo/fedora-trans-list&quot; /&gt; and subscribe to the main translation mailing list.</content>
+                <ns2:po-entry id="f963fc95ace6b211cf51dd9b7ca7a156">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="3e95ae82c234343115bff2473fbfa1ec">
+                <content>Wait for the confirmation email which contains a link to confirm your subscription. Click the link to confirm your subscription.</content>
+                <ns2:po-entry id="3e95ae82c234343115bff2473fbfa1ec">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="3e95ae82c234343115bff2473fbfa1ec">
+                        <content>あなたの登録を確認するためのリンクを含んだ確認メールが届くのを待ちます。登録を確認するリンクをクリックします。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="f9040dc019ce9ec2b66e25f5798f62e3">
+                <content>Check &lt;ulink url=&quot;http://fedoraproject.org/wiki/L10N/Teams&quot; /&gt; to see if there is a special mailing list for your language. If so, subscribe to that list too.</content>
+                <ns2:po-entry id="f9040dc019ce9ec2b66e25f5798f62e3">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="3b1d20c1eb48c064911cad9ccc8150c2">
+                <content>Making a SSH Key</content>
+                <ns2:po-entry id="3b1d20c1eb48c064911cad9ccc8150c2">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="3b1d20c1eb48c064911cad9ccc8150c2">
+                        <content>SSH キーの作成</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="9b8f347485f1f46f641bc1df3b0d83a5">
+                <content>If you already have an existing SSH key, you can use it for Fedora work. In that case, proceed to &lt;xref linkend=&quot;st-change-permissions&quot; /&gt; in the following procedure. If you do not have a SSH key yet, start with the first step below:</content>
+                <ns2:po-entry id="9b8f347485f1f46f641bc1df3b0d83a5">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="6dcd1ebf4390170868ab9bcdfd967581">
+                <content>Enter the following command:</content>
+                <ns2:po-entry id="6dcd1ebf4390170868ab9bcdfd967581">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="6dcd1ebf4390170868ab9bcdfd967581">
+                        <content>次のコマンドを入力します:</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="d8c647b75b65cdf967b0de804ba7b5bf">
+                <content>Accept the default location (&lt;filename&gt;~/.ssh/id_rsa&lt;/filename&gt;) and enter a passphrase.</content>
+                <ns2:po-entry id="d8c647b75b65cdf967b0de804ba7b5bf">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="d8c647b75b65cdf967b0de804ba7b5bf">
+                        <content>デフォルトの場所 (&lt;filename&gt;~/.ssh/id_rsa&lt;/filename&gt;) を容認し、 パスフレーズを入力します。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="bdaf5953dc4ae2008c84bac94eb4e8cd">
+                <content>Remember Your Passphrase</content>
+                <ns2:po-entry id="bdaf5953dc4ae2008c84bac94eb4e8cd">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="bdaf5953dc4ae2008c84bac94eb4e8cd">
+                        <content>パスフレーズを覚えておいてください</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="0cdb2694743c60c8777eb6bb802d9a19">
+                <content>You must have your passphrase to commit translations. It cannot be recovered if you forget it.</content>
+                <ns2:po-entry id="0cdb2694743c60c8777eb6bb802d9a19">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="0cdb2694743c60c8777eb6bb802d9a19">
+                        <content>翻訳を送信するにはパスフレーズが必要になります。パスフレーズを忘れてしまうと回復できません。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="fdd957e3507d3712e01c8f9ab950dffc">
+                <content>Change permissions to your key and &lt;filename&gt;.ssh&lt;/filename&gt; directory:</content>
+                <ns2:po-entry id="fdd957e3507d3712e01c8f9ab950dffc">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="fdd957e3507d3712e01c8f9ab950dffc">
+                        <content>キーと &lt;filename&gt;.ssh&lt;/filename&gt; ディレクトリーのパーミッションを変更します:</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="0bfc2e5eda95a22174820edd33ed8d60">
+                <content>This public key (~/.ssh/id_rsa.pub) will be used for your Fedora account creation described in &lt;xref linkend=&quot;sect-Translation_Quick_Start_Guide-Accounts_and_Subscriptions-Applying_for_an_Account&quot; /&gt;.</content>
+                <ns2:po-entry id="0bfc2e5eda95a22174820edd33ed8d60">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="49fd11a969cbc455823bc6669031c388">
+                <content>Making a GPG Key</content>
+                <ns2:po-entry id="49fd11a969cbc455823bc6669031c388">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="49fd11a969cbc455823bc6669031c388">
+                        <content>GPG キーの作成</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="3cfaf246b53aebf68c94fb91996c12fd">
+                <content>Generate a key by typing in a command line:</content>
+                <ns2:po-entry id="3cfaf246b53aebf68c94fb91996c12fd">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="3cfaf246b53aebf68c94fb91996c12fd">
+                        <content>コマンドラインに次を入力してキーを作成します:</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="6cf865bf598749da00a35c81d7b544f2">
+                <content>A series of prompts guides you through the process. The default values suffice in almost all cases. Remember to choose a good password.</content>
+                <ns2:po-entry id="6cf865bf598749da00a35c81d7b544f2">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="6cf865bf598749da00a35c81d7b544f2">
+                        <content>処理の間、一連のプロンプトがあなたを導きます。たいていの場合、省略値で十分です。よいパスワードを選択するのを忘れないようにしてください。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="ded9de0241b4e34666ccea25deb9316a">
+                <content>Choosing a Good Password</content>
+                <ns2:po-entry id="ded9de0241b4e34666ccea25deb9316a">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="ded9de0241b4e34666ccea25deb9316a">
+                        <content>よいパスワードの選択</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="8069bc6435ada1e818ae726d3f6b18e4">
+                <content>A good password:</content>
+                <ns2:po-entry id="8069bc6435ada1e818ae726d3f6b18e4">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="8069bc6435ada1e818ae726d3f6b18e4">
+                        <content>よいパスワードは:</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="fc8f150288fbbcfbb68729bcf71daea7">
+                <content>consists of uppercase and lowercase letters, numbers, punctuation, and other characters</content>
+                <ns2:po-entry id="fc8f150288fbbcfbb68729bcf71daea7">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="fc8f150288fbbcfbb68729bcf71daea7">
+                        <content>大文字や、小文字、数字、区切り記号、その他の文字からなっている</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="84fc7ed67950c53da48ebd71a777497c">
+                <content>does not include any words or names, with or without substitutions</content>
+                <ns2:po-entry id="84fc7ed67950c53da48ebd71a777497c">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="84fc7ed67950c53da48ebd71a777497c">
+                        <content>置換の有無に関わらず、単語や名前を含んでいない</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="dfde6764575a8e05e4439349443c3235">
+                <content>is not the same as any other password used for other systems</content>
+                <ns2:po-entry id="dfde6764575a8e05e4439349443c3235">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="dfde6764575a8e05e4439349443c3235">
+                        <content>他のシステムで使った他のパスワードと同じではない</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="9e6ac2d5308cb4dccda12136644e8628">
+                <content>In the resulting text, find your key ID in the statement that resembles 'pub 1024D/1B2AFA1C'. Your key ID is the 8 character 'word' after the slash (&lt;literal&gt;/&lt;/literal&gt;). In the previous example, the GPG Key ID is &lt;literal&gt;1B2AFA1C&lt;/literal&gt;. Write down your key ID.</content>
+                <ns2:po-entry id="9e6ac2d5308cb4dccda12136644e8628">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="9e6ac2d5308cb4dccda12136644e8628">
+                        <content>結果のテキストの中で &quot;pub 1024D/1B2AFA1C&quot; に似た文の中であなたのキー ID を探してください。あなたのキー ID はスラッシュ (&lt;literal&gt;/&lt;/literal&gt;) の後の 8 文字の '単語' です。前の例の GPG キー ID は &lt;literal&gt;1B2AFA1C&lt;/literal&gt; です。あなたのキー ID を書き留めてください。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="9d730332027bc23b07ae3f0fc60ee63d">
+                <content>Export your public key to a public server so that others can find it with the following command, substituting your key ID:</content>
+                <ns2:po-entry id="9d730332027bc23b07ae3f0fc60ee63d">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="9d730332027bc23b07ae3f0fc60ee63d">
+                        <content>他の人が見つけられるよう、以下のコマンドであなたの公開キーを公開サーバーに書き出してください。キー ID は置き換えてください:</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="19a7e7bba46a300f45bd6f162a1de3ce">
+                <content>This GPG key ID will be used for your Fedora account creation described in &lt;xref linkend=&quot;sect-Translation_Quick_Start_Guide-Accounts_and_Subscriptions-Applying_for_an_Account&quot; /&gt;.</content>
+                <ns2:po-entry id="19a7e7bba46a300f45bd6f162a1de3ce">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="6e18e1a2a115f812fcd82110b27b4e70">
+                <content>Applying for an Account</content>
+                <ns2:po-entry id="6e18e1a2a115f812fcd82110b27b4e70">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="6e18e1a2a115f812fcd82110b27b4e70">
+                        <content>アカウントの適用</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="a8f42bdc5ab2d89d6b0246b706d8f418">
+                <content>To sign up for a Fedora account, first visit &lt;ulink url=&quot;http://admin.fedoraproject.org/accounts&quot; /&gt; and select &lt;guilabel&gt;New Account&lt;/guilabel&gt;.</content>
+                <ns2:po-entry id="a8f42bdc5ab2d89d6b0246b706d8f418">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="4a826f7cb27b63d36abd26ba8ee1541d">
+                <content>Fill in &lt;guilabel&gt;Username&lt;/guilabel&gt;, &lt;guilabel&gt;Full Name&lt;/guilabel&gt; and &lt;guilabel&gt;Email&lt;/guilabel&gt;, and click &lt;guibutton&gt;Sign up!&lt;/guibutton&gt;. Your password will be emailed to you.</content>
+                <ns2:po-entry id="4a826f7cb27b63d36abd26ba8ee1541d">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="4a826f7cb27b63d36abd26ba8ee1541d">
+                        <content>&lt;guilabel&gt;Username&lt;/guilabel&gt; と、&lt;guilabel&gt;Full Name&lt;/guilabel&gt;、&lt;guilabel&gt;Email&lt;/guilabel&gt; を埋め、&lt;guibutton&gt;Sign up!&lt;/guibutton&gt; をクリックします。パスワードがメールされます。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="867037f3dd0c809ae967915697941a67">
+                <content>Go back to &lt;ulink url=&quot;http://admin.fedoraproject.org/accounts&quot; /&gt; and log in with your password. The welcome page will be displayed, and it reminds you that CLA is not completed and that an SSH key is not submitted.</content>
+                <ns2:po-entry id="867037f3dd0c809ae967915697941a67">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="e35a28cbbce9cab373e5565a37a832e8">
+                <content>To submit public SSH key and GPG key ID, click &lt;guilabel&gt;My Account&lt;/guilabel&gt; or go to &lt;ulink url=&quot;http://admin.fedoraproject.org/accounts/user/edit&quot; /&gt;.</content>
+                <ns2:po-entry id="e35a28cbbce9cab373e5565a37a832e8">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="dc65f4f5247d6bf5d885a07686980c30">
+                <content>In the Edit Account (user_name) page, enter your GPG key ID in &lt;guilabel&gt;GPG Key ID:&lt;/guilabel&gt; field. For the public SSH key, click &lt;guilabel&gt;Browse...&lt;/guilabel&gt; button located next to &lt;guilabel&gt;Public SSH Key:&lt;/guilabel&gt; field and specify your public SSH key.</content>
+                <ns2:po-entry id="dc65f4f5247d6bf5d885a07686980c30">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="dc65f4f5247d6bf5d885a07686980c30">
+                        <content>Edit Account (user_name) ページでは、あなたの GPG キー ID を &lt;guilabel&gt;GPG Key ID:&lt;/guilabel&gt; 域に入れてください。パブリック SSH キーについては、&lt;guilabel&gt;Public SSH Key:&lt;/guilabel&gt; 域の次にある &lt;guilabel&gt;Browse...&lt;/guilabel&gt; ボタンをクリックし、あなたのパブリック SSH キーを指定してください。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="194d54fe6cf6ff7991017a1a025b0384">
+                <content>&lt;guilabel&gt;Telephone Number&lt;/guilabel&gt; and &lt;guilabel&gt;Postal Address&lt;/guilabel&gt; fields are also required to fill in for signing the CLA. These information is NOT accessible by others except admin groups. Please refer to Fedora Privacy Policy at &lt;ulink url=&quot;http://fedoraproject.org/wiki/Legal/PrivacyPolicy&quot; /&gt;.</content>
+                <ns2:po-entry id="194d54fe6cf6ff7991017a1a025b0384">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="ce4b20912a5bf68c04afafa5c5a7df17">
+                <content>Other fields will be displayed by any other member by visiting the user's view page.</content>
+                <ns2:po-entry id="ce4b20912a5bf68c04afafa5c5a7df17">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="ce4b20912a5bf68c04afafa5c5a7df17">
+                        <content>他の領域はユーザーの表示ページを訪れると他のメンバーに表示されます。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="04e21a720f70716c9ed694dc485981d9">
+                <content>Now click &lt;guilabel&gt;Save!&lt;/guilabel&gt; located at the bottom of this page to save your information.</content>
+                <ns2:po-entry id="04e21a720f70716c9ed694dc485981d9">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="04e21a720f70716c9ed694dc485981d9">
+                        <content>ではあなたの情報を保存するためにこのページの末尾にある &lt;guilabel&gt;Save!&lt;/guilabel&gt; をクリックしてください。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="c246a82cf4842b24c7997c55f9e66078">
+                <content>Signing the CLA</content>
+                <ns2:po-entry id="c246a82cf4842b24c7997c55f9e66078">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="c246a82cf4842b24c7997c55f9e66078">
+                        <content>CLA へのサイン</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="e11f4ee27c8280f2f82b5408db71d558">
+                <content>You must complete the Contributors License Agreement, or &lt;acronym&gt;CLA&lt;/acronym&gt;.</content>
+                <ns2:po-entry id="e11f4ee27c8280f2f82b5408db71d558">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="e11f4ee27c8280f2f82b5408db71d558">
+                        <content>あなたは貢献者のライセンス同意 &lt;acronym&gt;CLA&lt;/acronym&gt; を仕上げなければなりません</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="1f8071f05e37c9baf18f59f232abb544">
+                <content>Visit &lt;ulink url=&quot;http://admin.fedoraproject.org/accounts&quot; /&gt; and login your account using your user name and password obtained from the previous process.</content>
+                <ns2:po-entry id="1f8071f05e37c9baf18f59f232abb544">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="ada1be8e91d705716ec3b75fe13fbfba">
+                <content>In the Welcome page, click &lt;guilabel&gt;complete the CLA&lt;/guilabel&gt; or go to &lt;ulink url=&quot;http://admin.fedoraproject.org/accounts/user/edit&quot; /&gt;.</content>
+                <ns2:po-entry id="ada1be8e91d705716ec3b75fe13fbfba">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="1dc523b3f541748c7e2caa79fa4e0553">
+                <content>If the information of telephone number and postal address have not been provided yet, the Edit Account (user_name) page will be appeared. Otherwise Fedora Contributor License Agreement page will be displayed. Read through the agreement carefully and click &lt;guibutton&gt;I agree&lt;/guibutton&gt; if you are happy to do so.</content>
+                <ns2:po-entry id="1dc523b3f541748c7e2caa79fa4e0553">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="1dc523b3f541748c7e2caa79fa4e0553">
+                        <content>電話番号と郵便番号の情報をまだ提供していなければ、Edit Account (user_name) ページが現れます。そうでなければ Fedora Contributor License Agreement ページが表示されます。同意書をよく読んでいいと思えば &lt;guibutton&gt;I agree&lt;/guibutton&gt; をクリックしてください。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="583562021dd3953eacd25629ea04a45e">
+                <content>The user-view page is appeared and shows the &lt;guilabel&gt;CLA:&lt;/guilabel&gt; field as &lt;guilabel&gt;CLA Done&lt;/guilabel&gt;.</content>
+                <ns2:po-entry id="583562021dd3953eacd25629ea04a45e">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="583562021dd3953eacd25629ea04a45e">
+                        <content>user-view ページが現れ、&lt;guilabel&gt;CLA:&lt;/guilabel&gt; 域が &lt;guilabel&gt;CLA Done&lt;/guilabel&gt; と表示されます。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="145d94fe46329b43d302eaffe8694c46">
+                <content>Introducing Yourself</content>
+                <ns2:po-entry id="145d94fe46329b43d302eaffe8694c46">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="145d94fe46329b43d302eaffe8694c46">
+                        <content>自己紹介</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="49c3d588f4891dcdb10a35beb6062614">
+                <content>Create a personal page at &lt;ulink url=&quot;http://fedoraproject.org/wiki/User:Username&quot; /&gt;. This is very useful for Fedora contributors to get to know and contact each other.</content>
+                <ns2:po-entry id="49c3d588f4891dcdb10a35beb6062614">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="5326064eea17ef97782107ea3febbfc5">
+                <content>Post a short self introduction to the &lt;systemitem&gt;fedora-trans-list&lt;/systemitem&gt; mailing list and to the list of your local team with instructions from &lt;ulink url=&quot;http://fedoraproject.org/wiki/L10N/SelfIntroduction&quot; /&gt;. Please remember to include your FAS user name and your language. With this information, sponsor can identify you for 'cvsl10n' group joining approval.</content>
+                <ns2:po-entry id="5326064eea17ef97782107ea3febbfc5">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="e68b4b367835438c66627e2f4628e175">
+                <content>Joining the &lt;systemitem&gt;cvsl10n&lt;/systemitem&gt; Group</content>
+                <ns2:po-entry id="e68b4b367835438c66627e2f4628e175">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="e68b4b367835438c66627e2f4628e175">
+                        <content>&lt;systemitem&gt;cvsl10n&lt;/systemitem&gt; グループへの参加</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="0ec777f9fe5356babbb73c094d51d0b2">
+                <content>In the user-view page, click &lt;guilabel&gt;Apply for a New Group&lt;/guilabel&gt; located in the left side bar. If you like to do this step sometime later, your user-view page can be reached at &lt;ulink url=&quot;http://admin.fedoraproject.org/accounts/user/view/user_name&quot; /&gt;.</content>
+                <ns2:po-entry id="0ec777f9fe5356babbb73c094d51d0b2">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="5710dacbb6ef86c7373cbc8ee6238c65">
+                <content>Click &lt;guilabel&gt;C&lt;/guilabel&gt; of the alphabet, it returns the list of the groups starting with 'c'.</content>
+                <ns2:po-entry id="5710dacbb6ef86c7373cbc8ee6238c65">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="5710dacbb6ef86c7373cbc8ee6238c65">
+                        <content>アルファベットの &lt;guilabel&gt;C&lt;/guilabel&gt; をクリックすると、左側のグループが 'c' から始まります。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="d1ed1895fee6cc5c70d8eef8bd9056eb">
+                <content>Find the group name &lt;guilabel&gt;cvsl10n&lt;/guilabel&gt; in the list and click &lt;guilabel&gt;Apply&lt;/guilabel&gt;.</content>
+                <ns2:po-entry id="d1ed1895fee6cc5c70d8eef8bd9056eb">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="d1ed1895fee6cc5c70d8eef8bd9056eb">
+                        <content>一覧からグループ名 &lt;guilabel&gt;cvsl10n&lt;/guilabel&gt; を探し、&lt;guilabel&gt;Apply&lt;/guilabel&gt; をクリックします。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="8fba3f65bd29cdb9714e260d477313b4">
+                <content>All sponsors and administrators are notified of your application. Introduce yourself by following &lt;xref linkend=&quot;sect-Translation_Quick_Start_Guide-Accounts_and_Subscriptions-Introducing_Yourself&quot; /&gt;. Then your language sponsor offers to sponsor you. This may take between an hour and a few days. The membership notification will be emailed to you once sponsored.</content>
+                <ns2:po-entry id="8fba3f65bd29cdb9714e260d477313b4">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="0b9baddd17952b72bcf9f3230d98e08c">
+                <content>The rest of the steps help you test your access and grant you privileges to all the Fedora infrastructure you might need in the near future. Language maintainers and people starting new languages should follow them. Although they are optional for translations, everyone is encouraged to follow them.</content>
+                <ns2:po-entry id="0b9baddd17952b72bcf9f3230d98e08c">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="0b9baddd17952b72bcf9f3230d98e08c">
+                        <content>残りのステップは、アクセスのテストと、近いうちに必要となるかもしれない Fedora の基盤の全てへの権利を与えることです。言語の保守を行う人と新しい言語を始める人はこれに従ってください。翻訳者にとっては任意ですが、できるだけ従うようにしてください。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="1db2f0e1836eea7244e6bf5bebf3dfbb">
+                <content>Create a Bugzilla account</content>
+                <ns2:po-entry id="1db2f0e1836eea7244e6bf5bebf3dfbb">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="1db2f0e1836eea7244e6bf5bebf3dfbb">
+                        <content>Bugzilla アカウントの作成</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="ff0a1a7839b42da2db90939c22367f03">
+                <content>Visit &lt;ulink url=&quot;http://bugzilla.redhat.com/bugzilla/createaccount.cgi&quot; /&gt; to create a Bugzilla account.</content>
+                <ns2:po-entry id="ff0a1a7839b42da2db90939c22367f03">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="2e781e46cd473612f108b29a62e711ab">
+                <content>Congratulations</content>
+                <ns2:po-entry id="2e781e46cd473612f108b29a62e711ab">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="2e781e46cd473612f108b29a62e711ab">
+                        <content>おめでとうございます</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="e297e4d5a0da83f3c55324795c53b995">
+                <content>Sit back and enjoy your achievement. You are now a fully recognized member of the Fedora community, capable of digitally signing documents and emails, submitting contributions, publishing content on the wiki, submitting bugs, following the discussions of our groups and joining other Fedora teams.</content>
+                <ns2:po-entry id="e297e4d5a0da83f3c55324795c53b995">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="e297e4d5a0da83f3c55324795c53b995">
+                        <content>気楽にあなたの成果を楽しんでください。あなたは Fedora コミュニティーの一員として完全に認識され、デジタル署名されたドキュメントやメールができ、成果を投稿し、wiki にコンテンツを出し、バグを投稿し、我々のグループで議論し、他の Fedora チームに参加できます。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+        </resources>
+        <ns2:header>
+            <ns2:comment xml:space="preserve">
+AUTHOR &lt;EMAIL@ADDRESS&gt;, YEAR.
+</ns2:comment>
+            <ns2:entries>
+                <ns2:entry value="0" key="Project-Id-Version"/>
+                <ns2:entry value="2009-11-24T08:04:00" key="POT-Creation-Date"/>
+                <ns2:entry value="1.0" key="MIME-Version"/>
+                <ns2:entry value="application/x-publican; charset=UTF-8" key="Content-Type"/>
+                <ns2:entry value="8bit" key="Content-Transfer-Encoding"/>
+            </ns2:entries>
+        </ns2:header>
+    </document>
+    <document path="pot/" name="Accounts_And_Subscriptions.pot" xml:lang="en-US" id="pot/Accounts_And_Subscriptions.pot" content-type="application/x-gettext">
+        <resources>
+            <text-flow xml:lang="en-US" id="a2984974ffc7ea59ef550bd8d80fd007">
+                <content>Accounts and Subscriptions</content>
+                <ns2:po-entry id="a2984974ffc7ea59ef550bd8d80fd007">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="a2984974ffc7ea59ef550bd8d80fd007">
+                        <content>アカウントと登録</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="7f4830ba2132dc59cd94ffe2e437a225">
+                <content>To become a Fedora Translator, you must sign up for accounts and subscriptions as described in this chapter. If you have questions, post them on the fedora-trans-list, or ask for help via Internet Relay Chat, or &lt;acronym&gt;IRC&lt;/acronym&gt;, at &lt;systemitem class=&quot;fqdomainname&quot;&gt;irc.freenode.org&lt;/systemitem&gt; on channel &lt;systemitem&gt;#fedora-l10n&lt;/systemitem&gt;.</content>
+                <ns2:po-entry id="7f4830ba2132dc59cd94ffe2e437a225">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="7f4830ba2132dc59cd94ffe2e437a225">
+                        <content>Fedora の翻訳者になるには、この章に記載されているようにしてアカウントと登録を求めて署名しなければなりません。質問があれば fedora-trans-list にポストするか、&lt;systemitem class=&quot;fqdomainname&quot;&gt;irc.freenode.org&lt;/systemitem&gt; の &lt;systemitem&gt;#fedora-l10n&lt;/systemitem&gt; チャネルの Internet Relay Chat いわゆる &lt;acronym&gt;IRC&lt;/acronym&gt; 経由で助けを求めてください。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="4422f6325302e696f8f6361b87e2dd46">
+                <content>Subscribing to the Mailing List</content>
+                <ns2:po-entry id="4422f6325302e696f8f6361b87e2dd46">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="4422f6325302e696f8f6361b87e2dd46">
+                        <content>メーリングリストへの登録</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="f963fc95ace6b211cf51dd9b7ca7a156">
+                <content>Visit &lt;ulink url=&quot;http://listman.redhat.com/mailman/listinfo/fedora-trans-list&quot; /&gt; and subscribe to the main translation mailing list.</content>
+                <ns2:po-entry id="f963fc95ace6b211cf51dd9b7ca7a156">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="3e95ae82c234343115bff2473fbfa1ec">
+                <content>Wait for the confirmation email which contains a link to confirm your subscription. Click the link to confirm your subscription.</content>
+                <ns2:po-entry id="3e95ae82c234343115bff2473fbfa1ec">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="3e95ae82c234343115bff2473fbfa1ec">
+                        <content>あなたの登録を確認するためのリンクを含んだ確認メールが届くのを待ちます。登録を確認するリンクをクリックします。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="f9040dc019ce9ec2b66e25f5798f62e3">
+                <content>Check &lt;ulink url=&quot;http://fedoraproject.org/wiki/L10N/Teams&quot; /&gt; to see if there is a special mailing list for your language. If so, subscribe to that list too.</content>
+                <ns2:po-entry id="f9040dc019ce9ec2b66e25f5798f62e3">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="3b1d20c1eb48c064911cad9ccc8150c2">
+                <content>Making a SSH Key</content>
+                <ns2:po-entry id="3b1d20c1eb48c064911cad9ccc8150c2">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="3b1d20c1eb48c064911cad9ccc8150c2">
+                        <content>SSH キーの作成</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="9b8f347485f1f46f641bc1df3b0d83a5">
+                <content>If you already have an existing SSH key, you can use it for Fedora work. In that case, proceed to &lt;xref linkend=&quot;st-change-permissions&quot; /&gt; in the following procedure. If you do not have a SSH key yet, start with the first step below:</content>
+                <ns2:po-entry id="9b8f347485f1f46f641bc1df3b0d83a5">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="6dcd1ebf4390170868ab9bcdfd967581">
+                <content>Enter the following command:</content>
+                <ns2:po-entry id="6dcd1ebf4390170868ab9bcdfd967581">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="6dcd1ebf4390170868ab9bcdfd967581">
+                        <content>次のコマンドを入力します:</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="d8c647b75b65cdf967b0de804ba7b5bf">
+                <content>Accept the default location (&lt;filename&gt;~/.ssh/id_rsa&lt;/filename&gt;) and enter a passphrase.</content>
+                <ns2:po-entry id="d8c647b75b65cdf967b0de804ba7b5bf">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="d8c647b75b65cdf967b0de804ba7b5bf">
+                        <content>デフォルトの場所 (&lt;filename&gt;~/.ssh/id_rsa&lt;/filename&gt;) を容認し、 パスフレーズを入力します。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="bdaf5953dc4ae2008c84bac94eb4e8cd">
+                <content>Remember Your Passphrase</content>
+                <ns2:po-entry id="bdaf5953dc4ae2008c84bac94eb4e8cd">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="bdaf5953dc4ae2008c84bac94eb4e8cd">
+                        <content>パスフレーズを覚えておいてください</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="0cdb2694743c60c8777eb6bb802d9a19">
+                <content>You must have your passphrase to commit translations. It cannot be recovered if you forget it.</content>
+                <ns2:po-entry id="0cdb2694743c60c8777eb6bb802d9a19">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="0cdb2694743c60c8777eb6bb802d9a19">
+                        <content>翻訳を送信するにはパスフレーズが必要になります。パスフレーズを忘れてしまうと回復できません。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="fdd957e3507d3712e01c8f9ab950dffc">
+                <content>Change permissions to your key and &lt;filename&gt;.ssh&lt;/filename&gt; directory:</content>
+                <ns2:po-entry id="fdd957e3507d3712e01c8f9ab950dffc">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="fdd957e3507d3712e01c8f9ab950dffc">
+                        <content>キーと &lt;filename&gt;.ssh&lt;/filename&gt; ディレクトリーのパーミッションを変更します:</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="0bfc2e5eda95a22174820edd33ed8d60">
+                <content>This public key (~/.ssh/id_rsa.pub) will be used for your Fedora account creation described in &lt;xref linkend=&quot;sect-Translation_Quick_Start_Guide-Accounts_and_Subscriptions-Applying_for_an_Account&quot; /&gt;.</content>
+                <ns2:po-entry id="0bfc2e5eda95a22174820edd33ed8d60">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="49fd11a969cbc455823bc6669031c388">
+                <content>Making a GPG Key</content>
+                <ns2:po-entry id="49fd11a969cbc455823bc6669031c388">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="49fd11a969cbc455823bc6669031c388">
+                        <content>GPG キーの作成</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="3cfaf246b53aebf68c94fb91996c12fd">
+                <content>Generate a key by typing in a command line:</content>
+                <ns2:po-entry id="3cfaf246b53aebf68c94fb91996c12fd">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="3cfaf246b53aebf68c94fb91996c12fd">
+                        <content>コマンドラインに次を入力してキーを作成します:</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="6cf865bf598749da00a35c81d7b544f2">
+                <content>A series of prompts guides you through the process. The default values suffice in almost all cases. Remember to choose a good password.</content>
+                <ns2:po-entry id="6cf865bf598749da00a35c81d7b544f2">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="6cf865bf598749da00a35c81d7b544f2">
+                        <content>処理の間、一連のプロンプトがあなたを導きます。たいていの場合、省略値で十分です。よいパスワードを選択するのを忘れないようにしてください。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="ded9de0241b4e34666ccea25deb9316a">
+                <content>Choosing a Good Password</content>
+                <ns2:po-entry id="ded9de0241b4e34666ccea25deb9316a">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="ded9de0241b4e34666ccea25deb9316a">
+                        <content>よいパスワードの選択</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="8069bc6435ada1e818ae726d3f6b18e4">
+                <content>A good password:</content>
+                <ns2:po-entry id="8069bc6435ada1e818ae726d3f6b18e4">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="8069bc6435ada1e818ae726d3f6b18e4">
+                        <content>よいパスワードは:</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="fc8f150288fbbcfbb68729bcf71daea7">
+                <content>consists of uppercase and lowercase letters, numbers, punctuation, and other characters</content>
+                <ns2:po-entry id="fc8f150288fbbcfbb68729bcf71daea7">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="fc8f150288fbbcfbb68729bcf71daea7">
+                        <content>大文字や、小文字、数字、区切り記号、その他の文字からなっている</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="84fc7ed67950c53da48ebd71a777497c">
+                <content>does not include any words or names, with or without substitutions</content>
+                <ns2:po-entry id="84fc7ed67950c53da48ebd71a777497c">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="84fc7ed67950c53da48ebd71a777497c">
+                        <content>置換の有無に関わらず、単語や名前を含んでいない</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="dfde6764575a8e05e4439349443c3235">
+                <content>is not the same as any other password used for other systems</content>
+                <ns2:po-entry id="dfde6764575a8e05e4439349443c3235">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="dfde6764575a8e05e4439349443c3235">
+                        <content>他のシステムで使った他のパスワードと同じではない</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="9e6ac2d5308cb4dccda12136644e8628">
+                <content>In the resulting text, find your key ID in the statement that resembles 'pub 1024D/1B2AFA1C'. Your key ID is the 8 character 'word' after the slash (&lt;literal&gt;/&lt;/literal&gt;). In the previous example, the GPG Key ID is &lt;literal&gt;1B2AFA1C&lt;/literal&gt;. Write down your key ID.</content>
+                <ns2:po-entry id="9e6ac2d5308cb4dccda12136644e8628">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="9e6ac2d5308cb4dccda12136644e8628">
+                        <content>結果のテキストの中で &quot;pub 1024D/1B2AFA1C&quot; に似た文の中であなたのキー ID を探してください。あなたのキー ID はスラッシュ (&lt;literal&gt;/&lt;/literal&gt;) の後の 8 文字の '単語' です。前の例の GPG キー ID は &lt;literal&gt;1B2AFA1C&lt;/literal&gt; です。あなたのキー ID を書き留めてください。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="9d730332027bc23b07ae3f0fc60ee63d">
+                <content>Export your public key to a public server so that others can find it with the following command, substituting your key ID:</content>
+                <ns2:po-entry id="9d730332027bc23b07ae3f0fc60ee63d">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="9d730332027bc23b07ae3f0fc60ee63d">
+                        <content>他の人が見つけられるよう、以下のコマンドであなたの公開キーを公開サーバーに書き出してください。キー ID は置き換えてください:</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="19a7e7bba46a300f45bd6f162a1de3ce">
+                <content>This GPG key ID will be used for your Fedora account creation described in &lt;xref linkend=&quot;sect-Translation_Quick_Start_Guide-Accounts_and_Subscriptions-Applying_for_an_Account&quot; /&gt;.</content>
+                <ns2:po-entry id="19a7e7bba46a300f45bd6f162a1de3ce">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="6e18e1a2a115f812fcd82110b27b4e70">
+                <content>Applying for an Account</content>
+                <ns2:po-entry id="6e18e1a2a115f812fcd82110b27b4e70">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="6e18e1a2a115f812fcd82110b27b4e70">
+                        <content>アカウントの適用</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="a8f42bdc5ab2d89d6b0246b706d8f418">
+                <content>To sign up for a Fedora account, first visit &lt;ulink url=&quot;http://admin.fedoraproject.org/accounts&quot; /&gt; and select &lt;guilabel&gt;New Account&lt;/guilabel&gt;.</content>
+                <ns2:po-entry id="a8f42bdc5ab2d89d6b0246b706d8f418">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="4a826f7cb27b63d36abd26ba8ee1541d">
+                <content>Fill in &lt;guilabel&gt;Username&lt;/guilabel&gt;, &lt;guilabel&gt;Full Name&lt;/guilabel&gt; and &lt;guilabel&gt;Email&lt;/guilabel&gt;, and click &lt;guibutton&gt;Sign up!&lt;/guibutton&gt;. Your password will be emailed to you.</content>
+                <ns2:po-entry id="4a826f7cb27b63d36abd26ba8ee1541d">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="4a826f7cb27b63d36abd26ba8ee1541d">
+                        <content>&lt;guilabel&gt;Username&lt;/guilabel&gt; と、&lt;guilabel&gt;Full Name&lt;/guilabel&gt;、&lt;guilabel&gt;Email&lt;/guilabel&gt; を埋め、&lt;guibutton&gt;Sign up!&lt;/guibutton&gt; をクリックします。パスワードがメールされます。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="867037f3dd0c809ae967915697941a67">
+                <content>Go back to &lt;ulink url=&quot;http://admin.fedoraproject.org/accounts&quot; /&gt; and log in with your password. The welcome page will be displayed, and it reminds you that CLA is not completed and that an SSH key is not submitted.</content>
+                <ns2:po-entry id="867037f3dd0c809ae967915697941a67">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="e35a28cbbce9cab373e5565a37a832e8">
+                <content>To submit public SSH key and GPG key ID, click &lt;guilabel&gt;My Account&lt;/guilabel&gt; or go to &lt;ulink url=&quot;http://admin.fedoraproject.org/accounts/user/edit&quot; /&gt;.</content>
+                <ns2:po-entry id="e35a28cbbce9cab373e5565a37a832e8">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="dc65f4f5247d6bf5d885a07686980c30">
+                <content>In the Edit Account (user_name) page, enter your GPG key ID in &lt;guilabel&gt;GPG Key ID:&lt;/guilabel&gt; field. For the public SSH key, click &lt;guilabel&gt;Browse...&lt;/guilabel&gt; button located next to &lt;guilabel&gt;Public SSH Key:&lt;/guilabel&gt; field and specify your public SSH key.</content>
+                <ns2:po-entry id="dc65f4f5247d6bf5d885a07686980c30">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="dc65f4f5247d6bf5d885a07686980c30">
+                        <content>Edit Account (user_name) ページでは、あなたの GPG キー ID を &lt;guilabel&gt;GPG Key ID:&lt;/guilabel&gt; 域に入れてください。パブリック SSH キーについては、&lt;guilabel&gt;Public SSH Key:&lt;/guilabel&gt; 域の次にある &lt;guilabel&gt;Browse...&lt;/guilabel&gt; ボタンをクリックし、あなたのパブリック SSH キーを指定してください。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="194d54fe6cf6ff7991017a1a025b0384">
+                <content>&lt;guilabel&gt;Telephone Number&lt;/guilabel&gt; and &lt;guilabel&gt;Postal Address&lt;/guilabel&gt; fields are also required to fill in for signing the CLA. These information is NOT accessible by others except admin groups. Please refer to Fedora Privacy Policy at &lt;ulink url=&quot;http://fedoraproject.org/wiki/Legal/PrivacyPolicy&quot; /&gt;.</content>
+                <ns2:po-entry id="194d54fe6cf6ff7991017a1a025b0384">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="ce4b20912a5bf68c04afafa5c5a7df17">
+                <content>Other fields will be displayed by any other member by visiting the user's view page.</content>
+                <ns2:po-entry id="ce4b20912a5bf68c04afafa5c5a7df17">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="ce4b20912a5bf68c04afafa5c5a7df17">
+                        <content>他の領域はユーザーの表示ページを訪れると他のメンバーに表示されます。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="04e21a720f70716c9ed694dc485981d9">
+                <content>Now click &lt;guilabel&gt;Save!&lt;/guilabel&gt; located at the bottom of this page to save your information.</content>
+                <ns2:po-entry id="04e21a720f70716c9ed694dc485981d9">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="04e21a720f70716c9ed694dc485981d9">
+                        <content>ではあなたの情報を保存するためにこのページの末尾にある &lt;guilabel&gt;Save!&lt;/guilabel&gt; をクリックしてください。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="c246a82cf4842b24c7997c55f9e66078">
+                <content>Signing the CLA</content>
+                <ns2:po-entry id="c246a82cf4842b24c7997c55f9e66078">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="c246a82cf4842b24c7997c55f9e66078">
+                        <content>CLA へのサイン</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="e11f4ee27c8280f2f82b5408db71d558">
+                <content>You must complete the Contributors License Agreement, or &lt;acronym&gt;CLA&lt;/acronym&gt;.</content>
+                <ns2:po-entry id="e11f4ee27c8280f2f82b5408db71d558">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="e11f4ee27c8280f2f82b5408db71d558">
+                        <content>あなたは貢献者のライセンス同意 &lt;acronym&gt;CLA&lt;/acronym&gt; を仕上げなければなりません</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="1f8071f05e37c9baf18f59f232abb544">
+                <content>Visit &lt;ulink url=&quot;http://admin.fedoraproject.org/accounts&quot; /&gt; and login your account using your user name and password obtained from the previous process.</content>
+                <ns2:po-entry id="1f8071f05e37c9baf18f59f232abb544">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="ada1be8e91d705716ec3b75fe13fbfba">
+                <content>In the Welcome page, click &lt;guilabel&gt;complete the CLA&lt;/guilabel&gt; or go to &lt;ulink url=&quot;http://admin.fedoraproject.org/accounts/user/edit&quot; /&gt;.</content>
+                <ns2:po-entry id="ada1be8e91d705716ec3b75fe13fbfba">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="1dc523b3f541748c7e2caa79fa4e0553">
+                <content>If the information of telephone number and postal address have not been provided yet, the Edit Account (user_name) page will be appeared. Otherwise Fedora Contributor License Agreement page will be displayed. Read through the agreement carefully and click &lt;guibutton&gt;I agree&lt;/guibutton&gt; if you are happy to do so.</content>
+                <ns2:po-entry id="1dc523b3f541748c7e2caa79fa4e0553">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="1dc523b3f541748c7e2caa79fa4e0553">
+                        <content>電話番号と郵便番号の情報をまだ提供していなければ、Edit Account (user_name) ページが現れます。そうでなければ Fedora Contributor License Agreement ページが表示されます。同意書をよく読んでいいと思えば &lt;guibutton&gt;I agree&lt;/guibutton&gt; をクリックしてください。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="583562021dd3953eacd25629ea04a45e">
+                <content>The user-view page is appeared and shows the &lt;guilabel&gt;CLA:&lt;/guilabel&gt; field as &lt;guilabel&gt;CLA Done&lt;/guilabel&gt;.</content>
+                <ns2:po-entry id="583562021dd3953eacd25629ea04a45e">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="583562021dd3953eacd25629ea04a45e">
+                        <content>user-view ページが現れ、&lt;guilabel&gt;CLA:&lt;/guilabel&gt; 域が &lt;guilabel&gt;CLA Done&lt;/guilabel&gt; と表示されます。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="145d94fe46329b43d302eaffe8694c46">
+                <content>Introducing Yourself</content>
+                <ns2:po-entry id="145d94fe46329b43d302eaffe8694c46">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="145d94fe46329b43d302eaffe8694c46">
+                        <content>自己紹介</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="49c3d588f4891dcdb10a35beb6062614">
+                <content>Create a personal page at &lt;ulink url=&quot;http://fedoraproject.org/wiki/User:Username&quot; /&gt;. This is very useful for Fedora contributors to get to know and contact each other.</content>
+                <ns2:po-entry id="49c3d588f4891dcdb10a35beb6062614">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="5326064eea17ef97782107ea3febbfc5">
+                <content>Post a short self introduction to the &lt;systemitem&gt;fedora-trans-list&lt;/systemitem&gt; mailing list and to the list of your local team with instructions from &lt;ulink url=&quot;http://fedoraproject.org/wiki/L10N/SelfIntroduction&quot; /&gt;. Please remember to include your FAS user name and your language. With this information, sponsor can identify you for 'cvsl10n' group joining approval.</content>
+                <ns2:po-entry id="5326064eea17ef97782107ea3febbfc5">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="e68b4b367835438c66627e2f4628e175">
+                <content>Joining the &lt;systemitem&gt;cvsl10n&lt;/systemitem&gt; Group</content>
+                <ns2:po-entry id="e68b4b367835438c66627e2f4628e175">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="e68b4b367835438c66627e2f4628e175">
+                        <content>&lt;systemitem&gt;cvsl10n&lt;/systemitem&gt; グループへの参加</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="0ec777f9fe5356babbb73c094d51d0b2">
+                <content>In the user-view page, click &lt;guilabel&gt;Apply for a New Group&lt;/guilabel&gt; located in the left side bar. If you like to do this step sometime later, your user-view page can be reached at &lt;ulink url=&quot;http://admin.fedoraproject.org/accounts/user/view/user_name&quot; /&gt;.</content>
+                <ns2:po-entry id="0ec777f9fe5356babbb73c094d51d0b2">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="5710dacbb6ef86c7373cbc8ee6238c65">
+                <content>Click &lt;guilabel&gt;C&lt;/guilabel&gt; of the alphabet, it returns the list of the groups starting with 'c'.</content>
+                <ns2:po-entry id="5710dacbb6ef86c7373cbc8ee6238c65">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="5710dacbb6ef86c7373cbc8ee6238c65">
+                        <content>アルファベットの &lt;guilabel&gt;C&lt;/guilabel&gt; をクリックすると、左側のグループが 'c' から始まります。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="d1ed1895fee6cc5c70d8eef8bd9056eb">
+                <content>Find the group name &lt;guilabel&gt;cvsl10n&lt;/guilabel&gt; in the list and click &lt;guilabel&gt;Apply&lt;/guilabel&gt;.</content>
+                <ns2:po-entry id="d1ed1895fee6cc5c70d8eef8bd9056eb">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="d1ed1895fee6cc5c70d8eef8bd9056eb">
+                        <content>一覧からグループ名 &lt;guilabel&gt;cvsl10n&lt;/guilabel&gt; を探し、&lt;guilabel&gt;Apply&lt;/guilabel&gt; をクリックします。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="8fba3f65bd29cdb9714e260d477313b4">
+                <content>All sponsors and administrators are notified of your application. Introduce yourself by following &lt;xref linkend=&quot;sect-Translation_Quick_Start_Guide-Accounts_and_Subscriptions-Introducing_Yourself&quot; /&gt;. Then your language sponsor offers to sponsor you. This may take between an hour and a few days. The membership notification will be emailed to you once sponsored.</content>
+                <ns2:po-entry id="8fba3f65bd29cdb9714e260d477313b4">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="0b9baddd17952b72bcf9f3230d98e08c">
+                <content>The rest of the steps help you test your access and grant you privileges to all the Fedora infrastructure you might need in the near future. Language maintainers and people starting new languages should follow them. Although they are optional for translations, everyone is encouraged to follow them.</content>
+                <ns2:po-entry id="0b9baddd17952b72bcf9f3230d98e08c">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="0b9baddd17952b72bcf9f3230d98e08c">
+                        <content>残りのステップは、アクセスのテストと、近いうちに必要となるかもしれない Fedora の基盤の全てへの権利を与えることです。言語の保守を行う人と新しい言語を始める人はこれに従ってください。翻訳者にとっては任意ですが、できるだけ従うようにしてください。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="1db2f0e1836eea7244e6bf5bebf3dfbb">
+                <content>Create a Bugzilla account</content>
+                <ns2:po-entry id="1db2f0e1836eea7244e6bf5bebf3dfbb">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="1db2f0e1836eea7244e6bf5bebf3dfbb">
+                        <content>Bugzilla アカウントの作成</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="ff0a1a7839b42da2db90939c22367f03">
+                <content>Visit &lt;ulink url=&quot;http://bugzilla.redhat.com/bugzilla/createaccount.cgi&quot; /&gt; to create a Bugzilla account.</content>
+                <ns2:po-entry id="ff0a1a7839b42da2db90939c22367f03">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="2e781e46cd473612f108b29a62e711ab">
+                <content>Congratulations</content>
+                <ns2:po-entry id="2e781e46cd473612f108b29a62e711ab">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="2e781e46cd473612f108b29a62e711ab">
+                        <content>おめでとうございます</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="e297e4d5a0da83f3c55324795c53b995">
+                <content>Sit back and enjoy your achievement. You are now a fully recognized member of the Fedora community, capable of digitally signing documents and emails, submitting contributions, publishing content on the wiki, submitting bugs, following the discussions of our groups and joining other Fedora teams.</content>
+                <ns2:po-entry id="e297e4d5a0da83f3c55324795c53b995">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+                <targets>
+                    <target state="Approved" xml:lang="ja-JP" id="e297e4d5a0da83f3c55324795c53b995">
+                        <content>気楽にあなたの成果を楽しんでください。あなたは Fedora コミュニティーの一員として完全に認識され、デジタル署名されたドキュメントやメールができ、成果を投稿し、wiki にコンテンツを出し、バグを投稿し、我々のグループで議論し、他の Fedora チームに参加できます。</content>
+                        <comment xml:space="preserve"></comment>
+                    </target>
+                </targets>
+            </text-flow>
+        </resources>
+        <ns2:header>
+            <ns2:comment xml:space="preserve">
+AUTHOR &lt;EMAIL@ADDRESS&gt;, YEAR.
+</ns2:comment>
+            <ns2:entries>
+                <ns2:entry value="0" key="Project-Id-Version"/>
+                <ns2:entry value="2009-11-24T08:04:00" key="POT-Creation-Date"/>
+                <ns2:entry value="1.0" key="MIME-Version"/>
+                <ns2:entry value="application/x-publican; charset=UTF-8" key="Content-Type"/>
+                <ns2:entry value="8bit" key="Content-Transfer-Encoding"/>
+            </ns2:entries>
+        </ns2:header>
+    </document>
+    <document path="pot/" name="Article_Info.pot" xml:lang="en-US" id="pot/Article_Info.pot" content-type="application/x-gettext">
+        <resources>
+            <text-flow xml:lang="en-US" id="d4a26018fc58ea3b25f4850eaa6f5042">
+                <content>Translation Quick Start Guide</content>
+                <ns2:po-entry id="d4a26018fc58ea3b25f4850eaa6f5042">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="64f65ab73beac9a98243339afe14c2e7">
+                <content>Quick start guide to providing translations on the Fedora Project</content>
+                <ns2:po-entry id="64f65ab73beac9a98243339afe14c2e7">
+                    <ns2:extracted-comment xml:space="preserve">Tag: subtitle</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="ab5a6292d47a5bc13303d6a6778623d0">
+                <content>This guide is a fast, simple, step-by-step set of instructions for translating Fedora Project software and documents.</content>
+                <ns2:po-entry id="ab5a6292d47a5bc13303d6a6778623d0">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+        </resources>
+        <ns2:header>
+            <ns2:comment xml:space="preserve">
+AUTHOR &lt;EMAIL@ADDRESS&gt;, YEAR.
+</ns2:comment>
+            <ns2:entries>
+                <ns2:entry value="0" key="Project-Id-Version"/>
+                <ns2:entry value="2009-11-24T08:04:00" key="POT-Creation-Date"/>
+                <ns2:entry value="1.0" key="MIME-Version"/>
+                <ns2:entry value="application/x-publican; charset=UTF-8" key="Content-Type"/>
+                <ns2:entry value="8bit" key="Content-Transfer-Encoding"/>
+            </ns2:entries>
+        </ns2:header>
+    </document>
+    <document path="pot/" name="Author_Group.pot" xml:lang="en-US" id="pot/Author_Group.pot" content-type="application/x-gettext">
+        <resources/>
+        <ns2:header>
+            <ns2:comment xml:space="preserve">
+AUTHOR &lt;EMAIL@ADDRESS&gt;, YEAR.
+</ns2:comment>
+            <ns2:entries>
+                <ns2:entry value="0" key="Project-Id-Version"/>
+                <ns2:entry value="2009-11-24T08:04:00" key="POT-Creation-Date"/>
+                <ns2:entry value="1.0" key="MIME-Version"/>
+                <ns2:entry value="application/x-publican; charset=UTF-8" key="Content-Type"/>
+                <ns2:entry value="8bit" key="Content-Transfer-Encoding"/>
+            </ns2:entries>
+        </ns2:header>
+    </document>
+    <document path="pot/" name="Contributors.pot" xml:lang="en-US" id="pot/Contributors.pot" content-type="application/x-gettext">
+        <resources>
+            <text-flow xml:lang="en-US" id="96858cb143562346b7f065e32c403f30">
+                <content>Contributors</content>
+                <ns2:po-entry id="96858cb143562346b7f065e32c403f30">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="2e63cd6ac25106083ab3c0e12a5373cb">
+                <content>&lt;ulink url=&quot;http://fedoraproject.org/wiki/User:Fab&quot;&gt;Fabian Affolter&lt;/ulink&gt; (translator &amp;mdash; German, 2007&amp;ndash;2009)</content>
+                <ns2:po-entry id="2e63cd6ac25106083ab3c0e12a5373cb">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="0b69fe96ce3baefd14a95e1a194bcbb5">
+                <content>&lt;ulink url=&quot;http://fedoraproject.org/wiki/AmanAlam&quot;&gt;Amanpreet Singh Alam&lt;/ulink&gt; (translator &amp;mdash; Punjabi, 2007)</content>
+                <ns2:po-entry id="0b69fe96ce3baefd14a95e1a194bcbb5">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="8302ff2424b0b21a830dbdf2e44994a9">
+                <content>&lt;ulink url=&quot;http://fedoraproject.org/wiki/User:Tetonio&quot;&gt;Teta Bilianou&lt;/ulink&gt; (translator &amp;mdash; Greek, 2007)</content>
+                <ns2:po-entry id="8302ff2424b0b21a830dbdf2e44994a9">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="a82c1feed2f85d9a42b6dfb907fb648b">
+                <content>&lt;ulink url=&quot;http://fedoraproject.org/wiki/User:Dapidc&quot;&gt;Dapid Candra&lt;/ulink&gt; (translator &amp;mdash; Indonesian, 2008)</content>
+                <ns2:po-entry id="a82c1feed2f85d9a42b6dfb907fb648b">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="01e01a178e4a2ac390df351026402eb8">
+                <content>&lt;ulink url=&quot;http://fedoraproject.org/wiki/User:Mrtom&quot;&gt;Thomas Canniot&lt;/ulink&gt; (translator &amp;mdash; French, 2006)</content>
+                <ns2:po-entry id="01e01a178e4a2ac390df351026402eb8">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="49aa7fd434966506088427df90639c8a">
+                <content>Glaucia Cintra (translator &amp;mdash; Brazilian Portuguese, 2007&amp;ndash;2008)</content>
+                <ns2:po-entry id="49aa7fd434966506088427df90639c8a">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="935bff4242715a84a199ef2b80dd17d6">
+                <content>&lt;ulink url=&quot;http://fedoraproject.org/wiki/User:Couf&quot;&gt;Bart Couvreur&lt;/ulink&gt; (translator &amp;mdash; Dutch, 2006&amp;ndash;2007)</content>
+                <ns2:po-entry id="935bff4242715a84a199ef2b80dd17d6">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="7cbb81ef0a33b5bc3256e2021c27248c">
+                <content>&lt;ulink url=&quot;http://fedoraproject.org/wiki/User:Raven&quot;&gt;Piotr Drąg&lt;/ulink&gt; (translator &amp;mdash; Polish, 2006; editor, 2008)</content>
+                <ns2:po-entry id="7cbb81ef0a33b5bc3256e2021c27248c">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="71b4688913e283a03f601213d0da041c">
+                <content>&lt;ulink url=&quot;http://fedoraproject.org/wiki/User:Splinux&quot;&gt;Damien Durand&lt;/ulink&gt; (translator &amp;mdash; French, 2006)</content>
+                <ns2:po-entry id="71b4688913e283a03f601213d0da041c">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="cc01883c3edf41270081478a3abc2568">
+                <content>&lt;ulink url=&quot;http://fedoraproject.org/wiki/User:Pfrields&quot;&gt;Paul W. Frields&lt;/ulink&gt; (editor, 2006&amp;ndash;2008)</content>
+                <ns2:po-entry id="cc01883c3edf41270081478a3abc2568">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="17161c496dee4aebe744fa4a2d233e74">
+                <content>&lt;ulink url=&quot;http://fedoraproject.org/wiki/User:Glezos&quot;&gt;Dmitris Glezos&lt;/ulink&gt; (Translator &amp;mdash; Greek, 2006&amp;ndash;2007; editor, 2008)</content>
+                <ns2:po-entry id="17161c496dee4aebe744fa4a2d233e74">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="7c975bb1a65326493cbf466ba9edbae1">
+                <content>&lt;ulink url=&quot;http://fedoraproject.org/wiki/User:Rafaelgomes&quot;&gt;Rafael Gomes&lt;/ulink&gt; (translator &amp;mdash; Brazilian Portuguese, 2008)</content>
+                <ns2:po-entry id="7c975bb1a65326493cbf466ba9edbae1">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="9843088f25a604fc3918535cd451b2a1">
+                <content>&lt;ulink url=&quot;http://fedoraproject.org/wiki/User:Ruigo&quot;&gt;Rui Gouveia&lt;/ulink&gt; (translator &amp;mdash; Portuguese, 2009)</content>
+                <ns2:po-entry id="9843088f25a604fc3918535cd451b2a1">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="7ec570031bd2c7fbcd026c21ba481680">
+                <content>Han Guokai (translator &amp;mdash; Simplified Chinese, 2008)</content>
+                <ns2:po-entry id="7ec570031bd2c7fbcd026c21ba481680">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="5f039a222c63df6294a31d26fce92469">
+                <content>Ryuichi Hyugabaru (translator &amp;mdash; Japanese, 2007&amp;ndash;2008)</content>
+                <ns2:po-entry id="5f039a222c63df6294a31d26fce92469">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="7b5f58baf8d2f3a274b51aeafbabe475">
+                <content>&lt;ulink url=&quot;http://fedoraproject.org/wiki/ValeriyKruchko&quot;&gt;Valeriy Kruchko&lt;/ulink&gt; (translator &amp;mdash; Russian, 2009)</content>
+                <ns2:po-entry id="7b5f58baf8d2f3a274b51aeafbabe475">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="235133677672314e65d4f64a97486fcc">
+                <content>&lt;ulink url=&quot;http://fedoraproject.org/wiki/User:Rlandmann&quot;&gt;Rüdiger Landmann&lt;/ulink&gt; (editor, 2009)</content>
+                <ns2:po-entry id="235133677672314e65d4f64a97486fcc">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="563f24c59a1050919d624344c6ce0e5f">
+                <content>&lt;ulink url=&quot;http://fedoraproject.org/wiki/MagnusLarsson&quot;&gt;Magnus Larsson&lt;/ulink&gt; (translator &amp;mdash; Swedish, 2006)</content>
+                <ns2:po-entry id="563f24c59a1050919d624344c6ce0e5f">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="41deb44ce0a61464b63fbb0291967cea">
+                <content>Gladys Guerrero Lozano (translator &amp;mdash; Spanish, 2009)</content>
+                <ns2:po-entry id="41deb44ce0a61464b63fbb0291967cea">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="04994fef6e14db082805633f2d1408ce">
+                <content>&lt;ulink url=&quot;http://fedoraproject.org/wiki/User:AndrMart&quot;&gt;Andrew Martynov&lt;/ulink&gt; (translator &amp;mdash; Russian, 2006&amp;ndash;2007)</content>
+                <ns2:po-entry id="04994fef6e14db082805633f2d1408ce">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="658df631c8ae105e6cefc1365f3b238c">
+                <content>&lt;ulink url=&quot;http://fedoraproject.org/wiki/User:Noriko&quot;&gt;Noriko Mizumoto&lt;/ulink&gt; (translator &amp;mdash; Japanese, 2006; editor, 2007&amp;ndash;2009)</content>
+                <ns2:po-entry id="658df631c8ae105e6cefc1365f3b238c">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="c6201e0cb16104ff32a1c2e01d822360">
+                <content>&lt;ulink url=&quot;http://fedoraproject.org/wiki/User:Izhar&quot;&gt;Mohd Izhar Firdaus Ismail&lt;/ulink&gt; (translator &amp;mdash; Malay, 2008)</content>
+                <ns2:po-entry id="c6201e0cb16104ff32a1c2e01d822360">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="d7fcd703aee9b34a599ba00f87447e9b">
+                <content>Manuel Ospina (writer, 2006&amp;ndash;2007; translator &amp;mdash; Spanish, 2006&amp;ndash;2007)</content>
+                <ns2:po-entry id="d7fcd703aee9b34a599ba00f87447e9b">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="905437d4a1f9b419aab89036af605fb2">
+                <content>Nikola Pajtic (translator &amp;mdash; Serbian, 2008)</content>
+                <ns2:po-entry id="905437d4a1f9b419aab89036af605fb2">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="5f793e2edac05f17eca782addcc5813c">
+                <content>&lt;ulink url=&quot;http://fedoraproject.org/wiki/RobertPereira&quot;&gt;Robert Pereira&lt;/ulink&gt; (translator &amp;mdash; Brazilian Portuguese, 2008)</content>
+                <ns2:po-entry id="5f793e2edac05f17eca782addcc5813c">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="22ca85e12fc16dbadd3e1e95e30e3ad0">
+                <content>&lt;ulink url=&quot;http://fedoraproject.org/wiki/User:Perplex&quot;&gt;Silvio Pierro&lt;/ulink&gt; (translator &amp;mdash; Italian, 2008)</content>
+                <ns2:po-entry id="22ca85e12fc16dbadd3e1e95e30e3ad0">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="41426c9558dfe743ea12306f91433e81">
+                <content>&lt;ulink url=&quot;http://fedoraproject.org/wiki/AlainPortal&quot;&gt;Alain Portal&lt;/ulink&gt; (translator &amp;mdash; French, 2007)</content>
+                <ns2:po-entry id="41426c9558dfe743ea12306f91433e81">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="6eda92fb7993ddb39964c7ef194239ee">
+                <content>&lt;ulink url=&quot;http://fedoraproject.org/wiki/User:Marionline&quot;&gt;Mario Santagiuliana&lt;/ulink&gt; (translator &amp;mdash; Italian, 2009)</content>
+                <ns2:po-entry id="6eda92fb7993ddb39964c7ef194239ee">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="233bbf39475f998e4980a2bbb3e71bf9">
+                <content>&lt;ulink url=&quot;http://fedoraproject.org/wiki/User:Jassy&quot;&gt;Jaswinder Singh Phulewala&lt;/ulink&gt; (translator &amp;mdash; Punjabi, 2007)</content>
+                <ns2:po-entry id="233bbf39475f998e4980a2bbb3e71bf9">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="64ed1f3a894f251220ba8f3a7ab4c82a">
+                <content>&lt;ulink url=&quot;http://fedoraproject.org/wiki/User:Peti&quot;&gt;Sulyok Péter&lt;/ulink&gt; (translator &amp;mdash; Hungarian, 2009)</content>
+                <ns2:po-entry id="64ed1f3a894f251220ba8f3a7ab4c82a">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="5a1b0448f22cdfd8ddc9bfa9b5d9c36d">
+                <content>&lt;ulink url=&quot;http://fedoraproject.org/wiki/User:Tombo&quot;&gt;Francesco Tombolini&lt;/ulink&gt; (translator &amp;mdash; Italian, 2006&amp;ndash;2008)</content>
+                <ns2:po-entry id="5a1b0448f22cdfd8ddc9bfa9b5d9c36d">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="34e584c45ab2f24a5d1f98b35a762ebc">
+                <content>&lt;ulink url=&quot;http://fedoraproject.org/wiki/VmlinzQi&quot;&gt;Vmlinz Qi&lt;/ulink&gt; (translator &amp;mdash; Simplified Chinese, 2007)</content>
+                <ns2:po-entry id="34e584c45ab2f24a5d1f98b35a762ebc">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="df35f956cef2fae35fc44384ab617daa">
+                <content>Thomas Wehrle (translator &amp;mdash; German, 2008)</content>
+                <ns2:po-entry id="df35f956cef2fae35fc44384ab617daa">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="8a00558fb177a28805fa44c7a0f6e885">
+                <content>&lt;ulink url=&quot;http://fedoraproject.org/wiki/User:Diegobz&quot;&gt;Diego Búrigo Zacarão&lt;/ulink&gt; (translator &amp;mdash; Brazilian Portuguese, 2007&amp;ndash;2008; editor, 2007)</content>
+                <ns2:po-entry id="8a00558fb177a28805fa44c7a0f6e885">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+        </resources>
+        <ns2:header>
+            <ns2:comment xml:space="preserve">
+AUTHOR &lt;EMAIL@ADDRESS&gt;, YEAR.
+</ns2:comment>
+            <ns2:entries>
+                <ns2:entry value="0" key="Project-Id-Version"/>
+                <ns2:entry value="2009-11-24T08:04:00" key="POT-Creation-Date"/>
+                <ns2:entry value="1.0" key="MIME-Version"/>
+                <ns2:entry value="application/x-publican; charset=UTF-8" key="Content-Type"/>
+                <ns2:entry value="8bit" key="Content-Transfer-Encoding"/>
+            </ns2:entries>
+        </ns2:header>
+    </document>
+    <document path="pot/" name="Introduction.pot" xml:lang="en-US" id="pot/Introduction.pot" content-type="application/x-gettext">
+        <resources>
+            <text-flow xml:lang="en-US" id="0b79795d3efc95b9976c7c5b933afce2">
+                <content>Introduction</content>
+                <ns2:po-entry id="0b79795d3efc95b9976c7c5b933afce2">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="ab5a6292d47a5bc13303d6a6778623d0">
+                <content>This guide is a fast, simple, step-by-step set of instructions for translating Fedora Project software and documents.</content>
+                <ns2:po-entry id="ab5a6292d47a5bc13303d6a6778623d0">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="827fd170570718ab92ab42343e580f87">
+                <content>More information can be found in FAQ, &lt;ulink url=&quot;http://fedoraproject.org/wiki/L10N/FAQ&quot; /&gt;.</content>
+                <ns2:po-entry id="827fd170570718ab92ab42343e580f87">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+        </resources>
+        <ns2:header>
+            <ns2:comment xml:space="preserve">
+AUTHOR &lt;EMAIL@ADDRESS&gt;, YEAR.
+</ns2:comment>
+            <ns2:entries>
+                <ns2:entry value="0" key="Project-Id-Version"/>
+                <ns2:entry value="2009-11-24T08:04:00" key="POT-Creation-Date"/>
+                <ns2:entry value="1.0" key="MIME-Version"/>
+                <ns2:entry value="application/x-publican; charset=UTF-8" key="Content-Type"/>
+                <ns2:entry value="8bit" key="Content-Transfer-Encoding"/>
+            </ns2:entries>
+        </ns2:header>
+    </document>
+    <document path="pot/" name="Revision_History.pot" xml:lang="en-US" id="pot/Revision_History.pot" content-type="application/x-gettext">
+        <resources>
+            <text-flow xml:lang="en-US" id="e0583393371074d791e836b0087dcbae">
+                <content>Revision History</content>
+                <ns2:po-entry id="e0583393371074d791e836b0087dcbae">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="878779cdcf96c085effcd618adbc22e2">
+                <content>Removed deprecated content</content>
+                <ns2:po-entry id="878779cdcf96c085effcd618adbc22e2">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="9b5936bdb54078513568b67e6a5df27c">
+                <content>Updated links and instructions</content>
+                <ns2:po-entry id="9b5936bdb54078513568b67e6a5df27c">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="2d81683c4ef26df7672b9ef2eefd3f8f">
+                <content>Fixed bugs #505480, #492255, #477566, #475632</content>
+                <ns2:po-entry id="2d81683c4ef26df7672b9ef2eefd3f8f">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="a3a9e252bd6f3be168b613bf19c18214">
+                <content>Convert document to Publican</content>
+                <ns2:po-entry id="a3a9e252bd6f3be168b613bf19c18214">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="33a851a749a36af3b914a63cec1601d5">
+                <content>Bug #479346 fixed</content>
+                <ns2:po-entry id="33a851a749a36af3b914a63cec1601d5">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="1d685d81bef99370edbd3ecb781aaa28">
+                <content>General bug fixes</content>
+                <ns2:po-entry id="1d685d81bef99370edbd3ecb781aaa28">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="0c479469cdcf554acc65b60e48a8e703">
+                <content>Updated Accounts and Subscriptions chapter to conform the current FAS2</content>
+                <ns2:po-entry id="0c479469cdcf554acc65b60e48a8e703">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="5a361c632ad44ad68902f84d20ba930d">
+                <content>Some minor changes made to other chapters along with bugs filed</content>
+                <ns2:po-entry id="5a361c632ad44ad68902f84d20ba930d">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="724a553f5d82b3207fffd2b8845ede46">
+                <content>Replaced the links in the section 3.2</content>
+                <ns2:po-entry id="724a553f5d82b3207fffd2b8845ede46">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="1c509d2659e903233fc633b26e7bc735">
+                <content>Removed references to i18n.redhat.com (elvis)</content>
+                <ns2:po-entry id="1c509d2659e903233fc633b26e7bc735">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="623e034f5035e4b75f80c6ebb3aba0a5">
+                <content>Fix GPG key URL</content>
+                <ns2:po-entry id="623e034f5035e4b75f80c6ebb3aba0a5">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="72a39fa392fee54ed61dfbc6ceeeee2f">
+                <content>Fix links to Transifex system</content>
+                <ns2:po-entry id="72a39fa392fee54ed61dfbc6ceeeee2f">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="27e8f2bbffb5aa4757d1e898a879c163">
+                <content>Editing for style, grammar, and clarity</content>
+                <ns2:po-entry id="27e8f2bbffb5aa4757d1e898a879c163">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="f37859641a16d9895cf6d828703d7591">
+                <content>Modified and updated all chapters to reflect latest information including usage of Transifex, moved repository etc.</content>
+                <ns2:po-entry id="f37859641a16d9895cf6d828703d7591">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="6ecd8c6879897757af86637c02af5e3a">
+                <content>Add information on using an existing SSH key</content>
+                <ns2:po-entry id="6ecd8c6879897757af86637c02af5e3a">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="4007c8d83471a5512682bb14f3c85c41">
+                <content>Brokeup main file into multiple files based on chapters</content>
+                <ns2:po-entry id="4007c8d83471a5512682bb14f3c85c41">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="ea0ed9c67c3179ecdbc08135c0b53a8a">
+                <content>Add information about LINGUAS and remove unnecessary admonitions</content>
+                <ns2:po-entry id="ea0ed9c67c3179ecdbc08135c0b53a8a">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="ef68ba79fa1ea5641135878c7caf94a2">
+                <content>Add information on branch modules and testing changes</content>
+                <ns2:po-entry id="ef68ba79fa1ea5641135878c7caf94a2">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="b9f96842c7db3d713ef8d688d4fd5bd0">
+                <content>Make admonition against manual POT changes</content>
+                <ns2:po-entry id="b9f96842c7db3d713ef8d688d4fd5bd0">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="c9dc16f4c49d52bf76b1e98237f5dd38">
+                <content>Fix CVS group membership details</content>
+                <ns2:po-entry id="c9dc16f4c49d52bf76b1e98237f5dd38">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="872ff3669e4ea44ff3591f43f80ef965">
+                <content>Shorten copyright holders list</content>
+                <ns2:po-entry id="872ff3669e4ea44ff3591f43f80ef965">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="3f0615c5c3b12267f1d0a13f4882572b">
+                <content>Generate new POT and PO keeping general entities</content>
+                <ns2:po-entry id="3f0615c5c3b12267f1d0a13f4882572b">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="69d1e876688b1fdfef3fbb8ed552c528">
+                <content>Fix erroneous URL (#209900)</content>
+                <ns2:po-entry id="69d1e876688b1fdfef3fbb8ed552c528">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="0ff02b0b1137060a202ff476fa9a6d48">
+                <content>Bug fixes (#198726, #204266, #205167)</content>
+                <ns2:po-entry id="0ff02b0b1137060a202ff476fa9a6d48">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="139de2c79a310f1cb4ee7dec647a008c">
+                <content>Editorial pass, revising procedure to match proper ordering</content>
+                <ns2:po-entry id="139de2c79a310f1cb4ee7dec647a008c">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="25701958657315368622a7a9b56f18e9">
+                <content>Additional information about joining the Docs Project and GPG.</content>
+                <ns2:po-entry id="25701958657315368622a7a9b56f18e9">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="c9dabf4cc52ad6b75a89541719aa9aa1">
+                <content>Remove step for translating rpm-info since this is now part of document POT</content>
+                <ns2:po-entry id="c9dabf4cc52ad6b75a89541719aa9aa1">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="c642ef7663f705923b334970a949a2dc">
+                <content>Fix docs translation procedure to include other common files translations</content>
+                <ns2:po-entry id="c642ef7663f705923b334970a949a2dc">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="01076bbca990649eee59758ef150e94c">
+                <content>Add information on common entities and admonition for disabled locales</content>
+                <ns2:po-entry id="01076bbca990649eee59758ef150e94c">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="8c0a99c77d75a2e328a6b4b956500300">
+                <content>Fix procedural guide and include document-specific entities</content>
+                <ns2:po-entry id="8c0a99c77d75a2e328a6b4b956500300">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="90838e5e21da90efc59182a36f8680d7">
+                <content>Move to DocBook XML 4.4 and use XInclude</content>
+                <ns2:po-entry id="90838e5e21da90efc59182a36f8680d7">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="6df1f70169c7a08034c188a4de8701bc">
+                <content>Fix spelling (#179717)</content>
+                <ns2:po-entry id="6df1f70169c7a08034c188a4de8701bc">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="aa61317833cbffcdfc4b4f00eced822b">
+                <content>Add entity for bug reporting</content>
+                <ns2:po-entry id="aa61317833cbffcdfc4b4f00eced822b">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="2f1549407af95c6712ba3b6975eabd90">
+                <content>Fix hostname error</content>
+                <ns2:po-entry id="2f1549407af95c6712ba3b6975eabd90">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="d423cef641057e4d37bc4e44a598d2e1">
+                <content>Additional style editing, division of procedures into more readable sections</content>
+                <ns2:po-entry id="d423cef641057e4d37bc4e44a598d2e1">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="979e54f0ef3b0ca007bbe9d729dd6548">
+                <content>First round of editing</content>
+                <ns2:po-entry id="979e54f0ef3b0ca007bbe9d729dd6548">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="b4de55de1a5e5074bef71d8c8af441cc">
+                <content>First draft</content>
+                <ns2:po-entry id="b4de55de1a5e5074bef71d8c8af441cc">
+                    <ns2:extracted-comment xml:space="preserve">Tag: member</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+        </resources>
+        <ns2:header>
+            <ns2:comment xml:space="preserve">
+AUTHOR &lt;EMAIL@ADDRESS&gt;, YEAR.
+</ns2:comment>
+            <ns2:entries>
+                <ns2:entry value="0" key="Project-Id-Version"/>
+                <ns2:entry value="2009-11-24T08:04:00" key="POT-Creation-Date"/>
+                <ns2:entry value="1.0" key="MIME-Version"/>
+                <ns2:entry value="application/x-publican; charset=UTF-8" key="Content-Type"/>
+                <ns2:entry value="8bit" key="Content-Transfer-Encoding"/>
+            </ns2:entries>
+        </ns2:header>
+    </document>
+    <document path="pot/" name="Translating_Documentation.pot" xml:lang="en-US" id="pot/Translating_Documentation.pot" content-type="application/x-gettext">
+        <resources>
+            <text-flow xml:lang="en-US" id="53be32a7f553648a5b5d8ae15e20132e">
+                <content>Translating Documentation</content>
+                <ns2:po-entry id="53be32a7f553648a5b5d8ae15e20132e">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="2e2f2a0c3808c0389f069e9c77ced5b0">
+                <content>Some Fedora Documentation Has Moved</content>
+                <ns2:po-entry id="2e2f2a0c3808c0389f069e9c77ced5b0">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="4d2e65f22e78d4e731e98445558514ee">
+                <content>Current Fedora Documentation material is now maintained in the Fedora Hosted system as &lt;command&gt;git&lt;/command&gt; repositories. This includes the latest versions of the common documentation build tools. You do not need to install &lt;command&gt;git&lt;/command&gt; to translate these materials. Instead, use Transifex, as described in previous sections, to translate these documentation materials.</content>
+                <ns2:po-entry id="4d2e65f22e78d4e731e98445558514ee">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="a1200e8bec87606e3c37c508ab9d0dcf">
+                <content>Creating Common Files</content>
+                <ns2:po-entry id="a1200e8bec87606e3c37c508ab9d0dcf">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="739e54ec8dee650e00f26206b7634965">
+                <content>If you are creating the first-ever translation for a locale, you must first translate some common files used in all documents for your locale. The common files are located in the Fedora Hosted repository for the &lt;package&gt;fedora-doc-utils&lt;/package&gt; package.</content>
+                <ns2:po-entry id="739e54ec8dee650e00f26206b7634965">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="1bd9e4321217f216b8979f2eeb89f0dc">
+                <content>Example Locale is &lt;replaceable&gt;pt_BR&lt;/replaceable&gt;</content>
+                <ns2:po-entry id="1bd9e4321217f216b8979f2eeb89f0dc">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="55fcf01186c7711f7c2f9529e454d910">
+                <content>The following examples use the locale code &lt;replaceable&gt;pt_BR&lt;/replaceable&gt;. Substitute your locale code in these commands as necessary.</content>
+                <ns2:po-entry id="55fcf01186c7711f7c2f9529e454d910">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="425a689153a628d5e8f931209068780a">
+                <content>Visit Transifex at &lt;ulink url=&quot;http://translate.fedoraproject.org&quot; /&gt;, and translate the project &lt;guilabel&gt;Docs :: Common entities&lt;/guilabel&gt;, using the same procedure shown in &lt;xref linkend=&quot;sect-Translation_Quick_Start_Guide-Translating_Software&quot; /&gt;.</content>
+                <ns2:po-entry id="425a689153a628d5e8f931209068780a">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="e7d7fe44bd6c0107ea6dccd13d247f16">
+                <content>Visit the &lt;package&gt;fedora-doc-utils&lt;/package&gt; hosted project at &lt;ulink url=&quot;https://fedorahosted.org/fedora-doc-utils&quot; /&gt;. Select the &lt;guilabel&gt;Login&lt;/guilabel&gt; link and use your Fedora Account System login and password to login.</content>
+                <ns2:po-entry id="e7d7fe44bd6c0107ea6dccd13d247f16">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="cf54765ded182089ad5fe539ae48e3be">
+                <content>Select the &lt;guilabel&gt;New ticket&lt;/guilabel&gt; link to file a new ticket. Use the following information to fill in the ticket:</content>
+                <ns2:po-entry id="cf54765ded182089ad5fe539ae48e3be">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="116ef98556136ce3eff61c16c210279d">
+                <content>Summary: New language support request: &lt;replaceable&gt;pt_BR&lt;/replaceable&gt;</content>
+                <ns2:po-entry id="116ef98556136ce3eff61c16c210279d">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="be4b1ee8f43aca5abca50bbbbfff704d">
+                <content>Priority: minor</content>
+                <ns2:po-entry id="be4b1ee8f43aca5abca50bbbbfff704d">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="3d145831127a1b9e06800b204dbc2cea">
+                <content>Component: language support</content>
+                <ns2:po-entry id="3d145831127a1b9e06800b204dbc2cea">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="b24c90bbd5167a182d7fa7b5afab93b2">
+                <content>You may leave the details blank or fill in information as desired.</content>
+                <ns2:po-entry id="b24c90bbd5167a182d7fa7b5afab93b2">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="abc1a3b49999d812ddda33f9417ad0d5">
+                <content>Attach Files if Necessary</content>
+                <ns2:po-entry id="abc1a3b49999d812ddda33f9417ad0d5">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="52f150ae8adecc9c17b396ab87661f99">
+                <content>If you have any problems submitting PO files using above instructions, you can attach them to the Trac ticket.</content>
+                <ns2:po-entry id="52f150ae8adecc9c17b396ab87661f99">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="0e07a3033bc25a59acec2a59aafd23d8">
+                <content>What to Translate</content>
+                <ns2:po-entry id="0e07a3033bc25a59acec2a59aafd23d8">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="9963d9174f24d5c948c57e58ef0a5cbf">
+                <content>The most important documentation for each release of Fedora are the following:</content>
+                <ns2:po-entry id="9963d9174f24d5c948c57e58ef0a5cbf">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="5fa6f3f8e33aa2b0bf42e04e8ce0b5fd">
+                <content>&lt;guilabel&gt;Docs :: Common entities&lt;/guilabel&gt;</content>
+                <ns2:po-entry id="5fa6f3f8e33aa2b0bf42e04e8ce0b5fd">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="37937c63eaf335c87c71aa09f9b40eea">
+                <content>&lt;guilabel&gt;Docs :: Release Notes&lt;/guilabel&gt;</content>
+                <ns2:po-entry id="37937c63eaf335c87c71aa09f9b40eea">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="a19d92870434c22d2e2337c3da9c082d">
+                <content>&lt;guilabel&gt;Docs :: About Fedora&lt;/guilabel&gt;</content>
+                <ns2:po-entry id="a19d92870434c22d2e2337c3da9c082d">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="8ca4ac97f37c00dc2fab3bbab1b3fcab">
+                <content>&lt;guilabel&gt;Docs :: Readme&lt;/guilabel&gt;</content>
+                <ns2:po-entry id="8ca4ac97f37c00dc2fab3bbab1b3fcab">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="4dff46a4183647dfbab9be95377a1176">
+                <content>&lt;guilabel&gt;Docs :: Readme Burning ISOs&lt;/guilabel&gt;</content>
+                <ns2:po-entry id="4dff46a4183647dfbab9be95377a1176">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="24036deffb216bb2fc6b06af3cc61eb4">
+                <content>&lt;guilabel&gt;Docs :: Readme Live Image&lt;/guilabel&gt;</content>
+                <ns2:po-entry id="24036deffb216bb2fc6b06af3cc61eb4">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+        </resources>
+        <ns2:header>
+            <ns2:comment xml:space="preserve">
+AUTHOR &lt;EMAIL@ADDRESS&gt;, YEAR.
+</ns2:comment>
+            <ns2:entries>
+                <ns2:entry value="0" key="Project-Id-Version"/>
+                <ns2:entry value="2009-11-24T08:04:00" key="POT-Creation-Date"/>
+                <ns2:entry value="1.0" key="MIME-Version"/>
+                <ns2:entry value="application/x-publican; charset=UTF-8" key="Content-Type"/>
+                <ns2:entry value="8bit" key="Content-Transfer-Encoding"/>
+            </ns2:entries>
+        </ns2:header>
+    </document>
+    <document path="pot/" name="Translating_Software.pot" xml:lang="en-US" id="pot/Translating_Software.pot" content-type="application/x-gettext">
+        <resources>
+            <text-flow xml:lang="en-US" id="8ba0689ecbf1a8c1b7379feebc74be9b">
+                <content>Translating Software</content>
+                <ns2:po-entry id="8ba0689ecbf1a8c1b7379feebc74be9b">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="b5640022c3d6043ae6e116ce015fe233">
+                <content>The translatable part of a software package is available in one or more &lt;filename class=&quot;extension&quot;&gt;po&lt;/filename&gt; files. These files may be maintained in any of a number of version control systems (VCSs) depending on the project, such as CVS, Subversion, Mercurial, and git. They may be hosted on either &lt;systemitem class=&quot;domainname&quot;&gt;fedorahosted.org&lt;/systemitem&gt; or other systems.</content>
+                <ns2:po-entry id="b5640022c3d6043ae6e116ce015fe233">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="8c4db7ba5f13f6865d4ca8c3281b2a23">
+                <content>This chapter explains how to translate the projects hosted on &lt;systemitem class=&quot;domainname&quot;&gt;fedorahosted.org&lt;/systemitem&gt;. Translators work on interface to obtaining and committing &lt;filename class=&quot;extension&quot;&gt;po&lt;/filename&gt; files. Before you start, you must first prepare the directories which hold your &lt;filename class=&quot;extension&quot;&gt;po&lt;/filename&gt; files.</content>
+                <ns2:po-entry id="8c4db7ba5f13f6865d4ca8c3281b2a23">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="c311b556a11b341d97b413b459f78b08">
+                <content>File Structure</content>
+                <ns2:po-entry id="c311b556a11b341d97b413b459f78b08">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="d8ea7ee8944af3d11f8f7b6177cf155f">
+                <content>To find which projects are translatable, visit the project list at &lt;ulink url=&quot;http://translate.fedoraproject.org/projects&quot; /&gt;.</content>
+                <ns2:po-entry id="d8ea7ee8944af3d11f8f7b6177cf155f">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="0f191ae619e2ccd33dcdc9093d072a5d">
+                <content>Before you download any files, prepare the structure holding those files. The described structure below is an example, and your structure can be formed differently. For example, if you want to download the &lt;systemitem&gt;comps&lt;/systemitem&gt; project for translation, make the following directories:</content>
+                <ns2:po-entry id="0f191ae619e2ccd33dcdc9093d072a5d">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="1319e07a681689e090113bc88086c6c8">
+                <content>To work on another project later, make a directory with the project name under the parent directory such as &lt;filename class=&quot;directory&quot;&gt;~/myproject/system-config-printer/&lt;/filename&gt;.</content>
+                <ns2:po-entry id="1319e07a681689e090113bc88086c6c8">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="487cd69223799364b92c8c0dd861577a">
+                <content>Obtaining and Translating Projects</content>
+                <ns2:po-entry id="487cd69223799364b92c8c0dd861577a">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="2d60edc6ea6b2544f182c82c514be95f">
+                <content>Now that you have prepared a directory structure, you can download a file to translate. You may need to communicate with other translators in your language team to avoid conflict. If you are not sure, please contact your language coordinator.</content>
+                <ns2:po-entry id="2d60edc6ea6b2544f182c82c514be95f">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="c3a126bbf621c041ceefdb5104866a15">
+                <content>Visit your language page such as &lt;ulink url=&quot;http://translate.fedoraproject.org/languages/ja/&quot; /&gt;, and select a target release. The interface will redirect you to a page for that release, such as &lt;ulink url=&quot;http://translate.fedoraproject.org/languages/ja/collection/fedora/fedora-12/&quot; /&gt;.</content>
+                <ns2:po-entry id="c3a126bbf621c041ceefdb5104866a15">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="72cc5acc2fe00705b519d8c52af7a554">
+                <content>Scroll down the page to find the table of all projects available for that release. Use the arrow download icon labeled &lt;guibutton&gt;Download ja.po&lt;/guibutton&gt; or similar next to each project to download the &lt;filename class=&quot;extension&quot;&gt;po&lt;/filename&gt; file to the directory you created in the previous section. &lt;!-- DO NOT USE COLORS SINCE IT DISADVANTAGES VISUALLY IMPAIRED USERS. USE A LABEL INSTEAD. --&gt;</content>
+                <ns2:po-entry id="72cc5acc2fe00705b519d8c52af7a554">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="05210e825ef8ca9338ece11e244cf9aa">
+                <content>Since the file name to commit follows the name convention of &lt;filename&gt;lang.po&lt;/filename&gt;, change the name of the downloaded file. The following example uses the Japanese locale for the &lt;filename class=&quot;extension&quot;&gt;po&lt;/filename&gt; file:</content>
+                <ns2:po-entry id="05210e825ef8ca9338ece11e244cf9aa">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="2f2eadb71b5bc8be572c47a6de98687c">
+                <content>Now the file is ready for translation. Translate the &lt;filename class=&quot;extension&quot;&gt;po&lt;/filename&gt; file for your language in a &lt;filename class=&quot;extension&quot;&gt;po&lt;/filename&gt; editor such as &lt;application&gt;Lokalize&lt;/application&gt; or &lt;application&gt;gtranslator&lt;/application&gt;.</content>
+                <ns2:po-entry id="2f2eadb71b5bc8be572c47a6de98687c">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="701372d6f9849d69c54b7202be319b33">
+                <content>Check the integrity of your file before you commit it.</content>
+                <ns2:po-entry id="701372d6f9849d69c54b7202be319b33">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="60d045538ed968158b33a55960ec538d">
+                <content>If any error message appears, correct it before commit.</content>
+                <ns2:po-entry id="60d045538ed968158b33a55960ec538d">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="145cfc2125e8484653d8c39b7ca86875">
+                <content>Committing Projects</content>
+                <ns2:po-entry id="145cfc2125e8484653d8c39b7ca86875">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="bc490e6afd0d0d085d20673b5233b3e3">
+                <content>Once you finish translation work, commit the file using the same interface.</content>
+                <ns2:po-entry id="bc490e6afd0d0d085d20673b5233b3e3">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="248e17d69658e84665456fba36dd522c">
+                <content>Go back to your language page such as &lt;ulink url=&quot;http://translate.fedoraproject.org/languages/ja/&quot; /&gt;, and select a target release. The interface will redirect you to a page for that release, such as &lt;ulink url=&quot;http://translate.fedoraproject.org/languages/ja/collection/fedora/fedora-12/&quot; /&gt;.</content>
+                <ns2:po-entry id="248e17d69658e84665456fba36dd522c">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="99dea78007133396a7b8ed70578ac6ae">
+                <content>Login</content>
+                <ns2:po-entry id="99dea78007133396a7b8ed70578ac6ae">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="87a7e9c5853dc3483a445ce0dc4d5c37">
+                <content>At the top of the page, select &lt;guilabel&gt;Sign in&lt;/guilabel&gt; to visit the &lt;guilabel&gt;Sign in&lt;/guilabel&gt; page. Authenticate with your Fedora Account System user name and password.</content>
+                <ns2:po-entry id="87a7e9c5853dc3483a445ce0dc4d5c37">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="a4d3b161ce1309df1c4e25df28694b7b">
+                <content>Submit</content>
+                <ns2:po-entry id="a4d3b161ce1309df1c4e25df28694b7b">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="5f5cf793621b7b76114c1374c28ef619">
+                <content>Use the pencil icon labeled &lt;guibutton&gt;Send a translation for this language&lt;/guibutton&gt; next to each project, then click the browse button to locate your translated file. &lt;!-- DO NOT USE COLORS SINCE IT DISADVANTAGES VISUALLY IMPAIRED USERS. USE A LABEL INSTEAD. --&gt;</content>
+                <ns2:po-entry id="5f5cf793621b7b76114c1374c28ef619">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="92497fa97038d7a7b155e1636807ccdb">
+                <content>Select the &lt;guibutton&gt;Send&lt;/guibutton&gt; to commit your translated file.</content>
+                <ns2:po-entry id="92497fa97038d7a7b155e1636807ccdb">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="589b0c6b5d51df9ea85ed49b87240a5e">
+                <content>Interface displays the message &lt;guilabel&gt;File submitted successfully&lt;/guilabel&gt;. If you receive an error or some other success message, please post it to the Fedora Localization Project mailing list so it can be addressed.</content>
+                <ns2:po-entry id="589b0c6b5d51df9ea85ed49b87240a5e">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="f2ee5d980988b06d5565e66976d7fe44">
+                <content>Adding New .po File</content>
+                <ns2:po-entry id="f2ee5d980988b06d5565e66976d7fe44">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="09435303357f5221bf5a4e2b384ca063">
+                <content>If there is no &lt;filename class=&quot;extension&quot;&gt;po&lt;/filename&gt; file for your language, add it.</content>
+                <ns2:po-entry id="09435303357f5221bf5a4e2b384ca063">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="cf2eae9eb66a2027636b10e78ffad9ec">
+                <content>Download the &lt;filename class=&quot;extension&quot;&gt;pot&lt;/filename&gt; file and copy it as your own language's &lt;filename class=&quot;extension&quot;&gt;po&lt;/filename&gt; file.</content>
+                <ns2:po-entry id="cf2eae9eb66a2027636b10e78ffad9ec">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="93d3339e35ada98d94313538f421644c">
+                <content>Once you finish the translation, click on the &lt;guilabel&gt;Add a new translation&lt;/guilabel&gt; button at project page.</content>
+                <ns2:po-entry id="93d3339e35ada98d94313538f421644c">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="d0d10396fae413c09a81809515a2b133">
+                <content>Type your new file name in the field marked &lt;guilabel&gt;or enter it here:&lt;/guilabel&gt;, replacing the file name with your locale:</content>
+                <ns2:po-entry id="d0d10396fae413c09a81809515a2b133">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="ddbc19f1600a45d88c6af674eb0c7014">
+                <content>Proofreading</content>
+                <ns2:po-entry id="ddbc19f1600a45d88c6af674eb0c7014">
+                    <ns2:extracted-comment xml:space="preserve">Tag: title</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="8b6c66e4421e5e02d75524acaee8f84a">
+                <content>To proofread your translation as part of the software, follow these steps:</content>
+                <ns2:po-entry id="8b6c66e4421e5e02d75524acaee8f84a">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="acf4377a7e213ce867aa3efe77cc5bb3">
+                <content>Change directory to the package you want to proofread. For example,</content>
+                <ns2:po-entry id="acf4377a7e213ce867aa3efe77cc5bb3">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="3f45bb96161cf822e2901378b4c097f9">
+                <content>Convert the &lt;filename class=&quot;extension&quot;&gt;.po&lt;/filename&gt; file to a &lt;filename class=&quot;extension&quot;&gt;.mo&lt;/filename&gt; file using &lt;command&gt;msgfmt&lt;/command&gt; with &lt;option&gt;-o&lt;/option&gt; option:</content>
+                <ns2:po-entry id="3f45bb96161cf822e2901378b4c097f9">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="fd1fdfae8178a8088d42edf6abce4ff4">
+                <content>As a root user, overwrite the existing &lt;filename class=&quot;extension&quot;&gt;.mo&lt;/filename&gt; file in &lt;filename&gt;/usr/share/locale/&lt;replaceable&gt;lang&lt;/replaceable&gt;/LC_MESSAGES/&lt;/filename&gt;.</content>
+                <ns2:po-entry id="fd1fdfae8178a8088d42edf6abce4ff4">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="4d6049ea116c20ab6e7779d02daa3238">
+                <content>First, back up the existing file:</content>
+                <ns2:po-entry id="4d6049ea116c20ab6e7779d02daa3238">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="a72127a43292c0fc999af4ad17ff11b8">
+                <content>Now move the file converted for proofreading.</content>
+                <ns2:po-entry id="a72127a43292c0fc999af4ad17ff11b8">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="3b37b3653bc35613a0772e90ced70f03">
+                <content>Exit root user.</content>
+                <ns2:po-entry id="3b37b3653bc35613a0772e90ced70f03">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="926dfa7db8edecdbb9bee42619903735">
+                <content>Proofread the package with the translated strings as part of the application:</content>
+                <ns2:po-entry id="926dfa7db8edecdbb9bee42619903735">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+            <text-flow xml:lang="en-US" id="1d8ccf4bf26e8473e3951ab802d6d00e">
+                <content>The application related to the translated package runs with the translated strings.</content>
+                <ns2:po-entry id="1d8ccf4bf26e8473e3951ab802d6d00e">
+                    <ns2:extracted-comment xml:space="preserve">Tag: para</ns2:extracted-comment>
+                    <ns2:source-references/>
+                    <ns2:flags>
+                        <ns2:flag>no-c-format</ns2:flag>
+                    </ns2:flags>
+                </ns2:po-entry>
+            </text-flow>
+        </resources>
+        <ns2:header>
+            <ns2:comment xml:space="preserve">
+AUTHOR &lt;EMAIL@ADDRESS&gt;, YEAR.
+</ns2:comment>
+            <ns2:entries>
+                <ns2:entry value="0" key="Project-Id-Version"/>
+                <ns2:entry value="2009-11-24T08:04:00" key="POT-Creation-Date"/>
+                <ns2:entry value="1.0" key="MIME-Version"/>
+                <ns2:entry value="application/x-publican; charset=UTF-8" key="Content-Type"/>
+                <ns2:entry value="8bit" key="Content-Transfer-Encoding"/>
+            </ns2:entries>
+        </ns2:header>
+    </document>
 </documents>
