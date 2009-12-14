@@ -1,5 +1,7 @@
 package org.fedorahosted.flies.webtrans.editor.table;
 
+import org.fedorahosted.flies.gwt.model.TransUnit;
+
 import com.google.gwt.gen2.table.client.CachedTableModel;
 
 public class RedirectingCachedTableModel<RowType> extends CachedTableModel<RowType>{
@@ -14,6 +16,10 @@ public class RedirectingCachedTableModel<RowType> extends CachedTableModel<RowTy
 	public RedirectingTableModel<RowType> getTableModel() {
 		return tableModel;
 	}
-	
+
+	public void onCancel(RowType cellValue) {
+		if(tableModel != null)
+			tableModel.onCancel(cellValue);
+	}
 
 }

@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.webtrans.editor.table;
 
 import org.fedorahosted.flies.common.ContentState;
+import org.fedorahosted.flies.common.EditState;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -60,6 +61,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 	 * The current {@link CellEditor.Callback}.
 	 */
 	private Callback<TransUnit> curCallback = null;
+	
+	private CancelCallback<TransUnit> cancelCallback = null;
 
 	/**
 	 * The current {@link CellEditor.CellEditInfo}.
@@ -82,8 +85,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 	 * @param content
 	 *            the {@link Widget} used to edit
 	 */
-	public InlineTargetCellEditor() {
-		this(GWT.<TargetCellEditorImages> create(TargetCellEditorImages.class));
+	public InlineTargetCellEditor(CancelCallback<TransUnit> callback) {
+		this(GWT.<TargetCellEditorImages> create(TargetCellEditorImages.class), callback);
 	}
 
 	/**
@@ -94,11 +97,12 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 	 * @param images
 	 *            the images to use for the accept/cancel buttons
 	 */
-	public InlineTargetCellEditor(TargetCellEditorImages images) {
+	public InlineTargetCellEditor(TargetCellEditorImages images, CancelCallback<TransUnit> callback) {
 
 		// Wrap contents in a table
 		layoutTable = new FlowPanel();
 
+		cancelCallback = callback;
 		textArea = new TextArea();
 		textArea.setWidth("100%");
 		textArea.setStyleName("TableEditorContent-Edit");
@@ -232,7 +236,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 		
 		// Call the callback
 		if (curCallback != null) {
-			curCallback.onCancel(curCellEditInfo);
+			//curCallback.onCancel(curCellEditInfo);
+			cancelCallback.onCancel(cellValue);
 		}
 
 		clearSelection();

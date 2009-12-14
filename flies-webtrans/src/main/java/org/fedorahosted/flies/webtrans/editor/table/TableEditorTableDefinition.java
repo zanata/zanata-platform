@@ -9,11 +9,14 @@ import org.fedorahosted.flies.webtrans.editor.filter.ContentFilter;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.gen2.table.client.AbstractColumnDefinition;
+import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.client.CellRenderer;
 import com.google.gwt.gen2.table.client.ColumnDefinition;
 import com.google.gwt.gen2.table.client.DefaultRowRenderer;
 import com.google.gwt.gen2.table.client.DefaultTableDefinition;
+import com.google.gwt.gen2.table.client.MutableTableModel;
 import com.google.gwt.gen2.table.client.RowRenderer;
+import com.google.gwt.gen2.table.client.CellEditor.CellEditInfo;
 import com.google.gwt.gen2.table.client.TableDefinition.AbstractRowView;
 import com.google.gwt.gen2.table.override.client.Panel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -144,7 +147,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 		}
 	};
 
-	public TableEditorTableDefinition() {
+	public TableEditorTableDefinition(final RedirectingCachedTableModel<TransUnit> tableModel) {
 		setRowRenderer(rowRenderer);
 		indicatorColumnDefinition.setMaximumColumnWidth(15);
 		indicatorColumnDefinition.setPreferredColumnWidth(15);
@@ -152,7 +155,15 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 		indicatorColumnDefinition.setCellRenderer(indicatorCellRenderer);
 		sourceColumnDefinition.setCellRenderer(sourceCellRenderer);
 		targetColumnDefinition.setCellRenderer(targetCellRenderer);
-		targetColumnDefinition.setCellEditor(new InlineTargetCellEditor());
+		targetColumnDefinition.setCellEditor(new InlineTargetCellEditor(
+		new CancelCallback<TransUnit>() {
+			 @Override
+			 public void onCancel(TransUnit cellValue) {
+	        	 if (tableModel instanceof RedirectingCachedTableModel) {
+	                 tableModel.onCancel(cellValue);
+	             } 
+	         }
+		}));
 		
 		addColumnDefinition(indicatorColumnDefinition);
 		addColumnDefinition(sourceColumnDefinition);

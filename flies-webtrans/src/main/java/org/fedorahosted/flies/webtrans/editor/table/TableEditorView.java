@@ -33,7 +33,8 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements
 	}
 	
 	public TableEditorView(RedirectingTableModel<TransUnit> tableModel) {
-		this(new RedirectingCachedTableModel<TransUnit>(tableModel), new TableEditorTableDefinition());
+		this(new RedirectingCachedTableModel<TransUnit>(tableModel), 
+		new TableEditorTableDefinition(new RedirectingCachedTableModel<TransUnit>(tableModel)));
 		
 	}
 	

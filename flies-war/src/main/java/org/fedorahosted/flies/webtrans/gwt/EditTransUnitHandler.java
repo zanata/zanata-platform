@@ -4,6 +4,7 @@ import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
+import org.fedorahosted.flies.common.EditState;
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.rpc.EditingTranslationAction;
 import org.fedorahosted.flies.gwt.rpc.EditingTranslationResult;
@@ -37,13 +38,35 @@ public class EditTransUnitHandler implements ActionHandler<EditingTranslationAct
 		TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(
 				hTextFlow.getDocument().getProject().getId(), action.getLocaleId() );
 		
-		workspace.lockTransUnit(action.getTransUnitId());
+		//If TransUnit is editing by some else, you will in trouble 
+		if (workspace.containTransUnit(action.getTransUnitId()) &&
+			workspace.getTransUnitStatus(action.getTransUnitId()).equals(EditState.Lock) && 
+			action.getEditState().equals(EditState.Lock)) {
+			
+			TransUnitEditing event = new TransUnitEditing(
+					new DocumentId(hTextFlow.getDocument().getId()), action.getTransUnitId(), action.getEditState());
+			workspace.publish(event);
+		}
 		
-		TransUnitEditing event = new TransUnitEditing(
-				new DocumentId(hTextFlow.getDocument().getId()), action.getTransUnitId(), action.getEditState());
-		
-		
-		workspace.publish(event);
+		//If TransUnit is editing by you, you can stop editing. 
+		if (workspace.containTransUnit(action.getTransUnitId()) &&
+				workspace.getTransUnitStatus(action.getTransUnitId()).equals(EditState.Lock) && 
+				action.getEditState().equals(EditState.UnLock)) {
+			workspace.unlockTransUnit(action.getTransUnitId());
+			TransUnitEditing event = new TransUnitEditing(
+					new DocumentId(hTextFlow.getDocument().getId()), action.getTransUnitId(), action.getEditState());
+			workspace.publish(event);
+		}
+				
+		//If TransUnit is not editing by someone else, you can start editing now.
+		if(workspace.containTransUnit(action.getTransUnitId()) &&
+				workspace.getTransUnitStatus(action.getTransUnitId()).equals(EditState.UnLock) && 
+				action.getEditState().equals(EditState.Lock)) {
+			workspace.lockTransUnit(action.getTransUnitId());
+			TransUnitEditing event = new TransUnitEditing(
+					new DocumentId(hTextFlow.getDocument().getId()), action.getTransUnitId(), action.getEditState());
+			workspace.publish(event);
+		}
 		
 		return new EditingTranslationResult(true);
 	}

@@ -1,5 +1,7 @@
 package org.fedorahosted.flies.webtrans.editor.table;
 
+import org.fedorahosted.flies.gwt.model.TransUnit;
+
 import com.google.gwt.gen2.table.client.MutableTableModel;
 import com.google.gwt.gen2.table.client.TableModelHelper.Request;
 
@@ -12,6 +14,11 @@ public class RedirectingTableModel<RowType> extends MutableTableModel<RowType> {
 	
 	public RedirectingTableModel(TableModelHandler<RowType> dataSource) {
 		this.tableModelHandler = dataSource;
+	}
+	
+	public void onCancel(RowType cellValue) {
+		if(tableModelHandler != null)
+			tableModelHandler.onCancel(cellValue);
 	}
 	
 	@Override

@@ -152,7 +152,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 				if(documentId != null && documentId.equals(event.getDocumentId())) {
 					if(currentSelection != null && currentSelection.getId().equals(event.getTransUnitId())) {
 						// handle change in current selection
-						eventBus.fireEvent(new NotificationEvent(Severity.Warning, "Someone else updated this translation unit. you're in trouble..."));
+						//eventBus.fireEvent(new NotificationEvent(Severity.Warning, "Someone else updated this translation unit. you're in trouble..."));
 						//display.getTableModel().setRowValue(row, rowValue);
 					}
 					display.getTableModel().clearCache();
@@ -171,9 +171,13 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 				if(documentId != null && documentId.equals(event.getDocumentId())) {
 					if(currentSelection != null && currentSelection.getId().equals(event.getTransUnitId())) {
 						// handle change in current selection
+						if(event.getEditStatus().equals(EditState.Lock))
+							eventBus.fireEvent(new NotificationEvent(Severity.Warning, "Translation Unit "+event.getTransUnitId().toString()+" is editing now."));
+						if(event.getEditStatus().equals(EditState.UnLock))
+							eventBus.fireEvent(new NotificationEvent(Severity.Warning, "Editing of Translation Unit "+event.getTransUnitId().toString()+" is stopped."));
 					}
-					display.getTableModel().clearCache();
-					display.reloadPage();
+					//display.getTableModel().clearCache();
+					//display.reloadPage();
 				}
 			}
 		}));
@@ -235,7 +239,38 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 						public void onSuccess(UpdateTransUnitResult result) {
 						}
 					});
+			
+			dispatcher.execute(
+					new EditingTranslationAction(rowValue.getId(), workspaceContext.getLocaleId(), EditState.UnLock), 
+					new AsyncCallback<EditingTranslationResult>() {
+						@Override
+						public void onFailure(Throwable caught) {
+							eventBus.fireEvent(new NotificationEvent(Severity.Error, "Failed to UnLock TransUnit"));
+						}
+						
+						@Override
+						public void onSuccess(EditingTranslationResult result) {
+							//eventBus.fireEvent(new NotificationEvent(Severity.Warning, "TransUnit Editing is finished"));
+						}
+			});
+			
 			return true;
+		}
+		
+		public void onCancel(TransUnit rowValue) {
+			dispatcher.execute(
+					new EditingTranslationAction(rowValue.getId(), workspaceContext.getLocaleId(), EditState.UnLock), 
+					new AsyncCallback<EditingTranslationResult>() {
+						@Override
+						public void onFailure(Throwable caught) {
+							eventBus.fireEvent(new NotificationEvent(Severity.Error, "Failed to UnLock TransUnit"));
+						}
+						
+						@Override
+						public void onSuccess(EditingTranslationResult result) {
+							//eventBus.fireEvent(new NotificationEvent(Severity.Warning, "TransUnit Editing is finished"));
+						}
+			});
 		}
 	};
 	
