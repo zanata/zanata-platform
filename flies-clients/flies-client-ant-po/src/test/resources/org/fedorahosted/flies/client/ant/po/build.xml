@@ -5,8 +5,8 @@
 
 	<!-- local def -->
 	<property name="in.dir" value="${root}/test-input" />
-	<property name="docs.dir" value="${root}/test-docs" />
-	<property name="out.dir" value="${root}/test-output" />
+	<property name="out.dir" value="${user.dir}/target/test-output" />
+	<mkdir dir="${out.dir}" />
 
 	<!-- remote def -->
 	<property name="bob.key" value="34567890123456789012345678901234" />
@@ -17,7 +17,7 @@
 
 	<target name="uploadpo">
 		<ant antfile="uploadpo.xml" target="_uploadpo">
-			<property name="docsUrl" value="${docs.dir}/project.xml" />
+			<property name="docsUrl" value="${out.dir}/project.xml" />
 		</ant>
 	</target>
 
@@ -29,7 +29,7 @@
 
 	<target name="roundtriplocal">
 		<ant antfile="roundtrip.xml" target="_roundtrip">
-			<property name="docsUrl" value="${docs.dir}/project.xml" />
+			<property name="docsUrl" value="${out.dir}/project.xml" />
 		</ant>
 	</target>
 
