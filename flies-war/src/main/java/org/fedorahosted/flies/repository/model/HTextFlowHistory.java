@@ -7,6 +7,7 @@ import javax.persistence.OneToOne;
 
 import org.fedorahosted.flies.core.model.AbstractFliesEntity;
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.Type;
 
 @Entity
 public class HTextFlowHistory extends AbstractFliesEntity{
@@ -45,6 +46,7 @@ public class HTextFlowHistory extends AbstractFliesEntity{
 		this.textFlow = textFlow;
 	}
 	
+	@Type(type = "text")
 	public String getContent() {
 		return content;
 	}
