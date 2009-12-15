@@ -1,17 +1,12 @@
 package org.fedorahosted.flies.webtrans.editor.filter;
 
 import org.fedorahosted.flies.webtrans.client.RoundedContainerWithHeader;
-import org.fedorahosted.flies.webtrans.client.ui.CaptionPanel;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ToggleButton;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TransFilterView extends Composite implements TransFilterPresenter.Display {
@@ -30,7 +25,7 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
 		
 		bodyPanel.add(filterButtonBar);
 
-		RoundedContainerWithHeader container = new RoundedContainerWithHeader(new Label("Filtering"), bodyPanel);
+		RoundedContainerWithHeader container = new RoundedContainerWithHeader(new Label("Find Messages"), bodyPanel);
 		initWidget(container);
 		getElement().setId("TransFilterView");
 	}
@@ -61,7 +56,7 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
 	}
 	
 	@Override
-	public Button getApplyButton() {
+	public HasClickHandlers getApplyButton() {
 		return applyButton;
 	}
 }

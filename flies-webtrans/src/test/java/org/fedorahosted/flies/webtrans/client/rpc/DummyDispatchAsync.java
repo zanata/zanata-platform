@@ -11,6 +11,8 @@ import org.fedorahosted.flies.gwt.rpc.EnsureLoggedInAction;
 import org.fedorahosted.flies.gwt.rpc.EnsureLoggedInResult;
 import org.fedorahosted.flies.gwt.rpc.GetDocsList;
 import org.fedorahosted.flies.gwt.rpc.GetDocsListResult;
+import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCount;
+import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCountResult;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnitsResult;
 
@@ -42,8 +44,12 @@ public class DummyDispatchAsync extends SeamDispatchAsync {
 			final EnsureLoggedInAction _action = (EnsureLoggedInAction) action;
 			AsyncCallback<EnsureLoggedInResult> _callback = (AsyncCallback<EnsureLoggedInResult>) callback;
 			DeferredCommand.addCommand(new DummyEnsureLoggedInCommand(_action, _callback));
+		} else if (action instanceof GetProjectStatusCount) {
+			final GetProjectStatusCount _action = (GetProjectStatusCount) action;
+			AsyncCallback<GetProjectStatusCountResult> _callback = (AsyncCallback<GetProjectStatusCountResult>) callback;
+			DeferredCommand.addCommand(new DummyGetProjectStatusCountCommand(_action, _callback));
 		} else {
-			Log.error("DummyDispatchAsync: ignoring action of "+action.getClass());
+			Log.warn("DummyDispatchAsync: ignoring action of "+action.getClass());
 //			callback.onFailure(new RuntimeException());
 		}
 	}

@@ -3,19 +3,17 @@ package org.fedorahosted.flies.webtrans.editor.filter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fedorahosted.flies.gwt.model.TransUnit;
-import org.fedorahosted.flies.webtrans.editor.filter.OperatorFilter.Operator;
-
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+
+import org.fedorahosted.flies.gwt.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -33,7 +31,7 @@ public class OperatorFilterPresenter extends FilterPresenter<OperatorFilter<Tran
 		void addFilterUnit(Widget widget);
 		void removeFilterUnit(Widget widget);
 
-		Button getAddButton();
+		HasClickHandlers getAddButton();
 	}
 
 	@Override
