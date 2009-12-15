@@ -156,10 +156,11 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 						//eventBus.fireEvent(new NotificationEvent(Severity.Warning, "Someone else updated this translation unit. you're in trouble..."));
 						//display.getTableModel().setRowValue(row, rowValue);
 					}
-					display.getTableModel().clearCache();
 					// TODO add model with methods such as
 					// getRowIndex(TransUnitId) 
 					// - add TU index to model
+//					display.getTableModel().setRowValue(rowIndex, transUnit)
+					display.getTableModel().clearCache();
 					display.reloadPage();
 					//dispatcher.execute(new GetTransUnits(documentId, localeId, page*pageSize+rowOffset, 1, count), callback)
 				}
