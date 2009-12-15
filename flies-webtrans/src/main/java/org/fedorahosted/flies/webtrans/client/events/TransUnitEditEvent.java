@@ -9,7 +9,8 @@ public class TransUnitEditEvent  extends SequenceEvent<TransUnitEditEventHandler
 
 	private final TransUnitId transUnitId;
 	private final DocumentId documentId;
-	private final EditState editStatus;
+	private final EditState preStatus;
+	private final EditState curStatus;
 	
 	/**
 	 * Handler type.
@@ -32,7 +33,8 @@ public class TransUnitEditEvent  extends SequenceEvent<TransUnitEditEventHandler
 		super(sequence);
 		this.documentId = data.getDocumentId();
 		this.transUnitId = data.getTransUnitId();
-		this.editStatus = data.getEditStatus();
+		this.preStatus = data.getPreStatus();
+		this.curStatus = data.getCurStatus();
 	}
 	
 	@Override
@@ -51,8 +53,13 @@ public class TransUnitEditEvent  extends SequenceEvent<TransUnitEditEventHandler
 	}
 
 	@Override
-	public EditState getEditStatus() {
-		return editStatus;
+	public EditState getPreStatus() {
+		return preStatus;
+	}
+	
+	@Override
+	public EditState getCurStatus() {
+		return curStatus;
 	}
 	
 	@Override

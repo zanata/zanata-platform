@@ -44,7 +44,7 @@ public class EditTransUnitHandler implements ActionHandler<EditingTranslationAct
 			action.getEditState().equals(EditState.Lock)) {
 			
 			TransUnitEditing event = new TransUnitEditing(
-					new DocumentId(hTextFlow.getDocument().getId()), action.getTransUnitId(), action.getEditState());
+					new DocumentId(hTextFlow.getDocument().getId()), action.getTransUnitId(), EditState.Lock, action.getEditState());
 			workspace.publish(event);
 		}
 		
@@ -54,7 +54,7 @@ public class EditTransUnitHandler implements ActionHandler<EditingTranslationAct
 				action.getEditState().equals(EditState.UnLock)) {
 			workspace.unlockTransUnit(action.getTransUnitId());
 			TransUnitEditing event = new TransUnitEditing(
-					new DocumentId(hTextFlow.getDocument().getId()), action.getTransUnitId(), action.getEditState());
+					new DocumentId(hTextFlow.getDocument().getId()), action.getTransUnitId(), EditState.Lock, action.getEditState());
 			workspace.publish(event);
 		}
 				
@@ -64,7 +64,7 @@ public class EditTransUnitHandler implements ActionHandler<EditingTranslationAct
 				action.getEditState().equals(EditState.Lock)) {
 			workspace.lockTransUnit(action.getTransUnitId());
 			TransUnitEditing event = new TransUnitEditing(
-					new DocumentId(hTextFlow.getDocument().getId()), action.getTransUnitId(), action.getEditState());
+					new DocumentId(hTextFlow.getDocument().getId()), action.getTransUnitId(), EditState.UnLock, action.getEditState());
 			workspace.publish(event);
 		}
 		

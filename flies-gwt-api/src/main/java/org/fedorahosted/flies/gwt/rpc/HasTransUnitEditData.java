@@ -8,7 +8,9 @@ public interface HasTransUnitEditData {
 		
 	DocumentId getDocumentId();
 
-	EditState getEditStatus();
+	EditState getPreStatus();
+	
+	EditState getCurStatus();
 
 	TransUnitId getTransUnitId();
 }

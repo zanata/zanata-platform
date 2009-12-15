@@ -172,10 +172,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 				if(documentId != null && documentId.equals(event.getDocumentId())) {
 					if(currentSelection != null && currentSelection.getId().equals(event.getTransUnitId())) {
 						// handle change in current selection
-						if(event.getEditStatus().equals(EditState.Lock))
-							eventBus.fireEvent(new NotificationEvent(Severity.Warning, "Translation Unit "+event.getTransUnitId().toString()+" is editing now."));
-						if(event.getEditStatus().equals(EditState.UnLock))
-							eventBus.fireEvent(new NotificationEvent(Severity.Warning, "Editing of Translation Unit "+event.getTransUnitId().toString()+" is stopped."));
+						if(event.getPreStatus().equals(EditState.Lock) && event.getCurStatus().equals(EditState.Lock))
+							eventBus.fireEvent(new NotificationEvent(Severity.Warning, "Warning: This Translation Unit is editing."));
 					}
 					//display.getTableModel().clearCache();
 					//display.reloadPage();

@@ -10,16 +10,18 @@ public class TransUnitEditing implements SessionEventData, HasTransUnitEditData 
 
 	private TransUnitId transUnitId;
 	private DocumentId documentId;
-	private EditState editStatus;
+	private EditState preStatus;
+	private EditState curStatus;
 	
 	@SuppressWarnings("unused")
 	private TransUnitEditing() {
 	}
 	
-	public TransUnitEditing(DocumentId documentId, TransUnitId transUnitId, EditState editStatus) {
+	public TransUnitEditing(DocumentId documentId, TransUnitId transUnitId, EditState preStatus, EditState curStatus) {
 		this.documentId = documentId;
 		this.transUnitId = transUnitId;
-		this.editStatus = editStatus;
+		this.preStatus = preStatus;
+		this.curStatus = curStatus;
 	}
 
 	@Override
@@ -28,8 +30,13 @@ public class TransUnitEditing implements SessionEventData, HasTransUnitEditData 
 	}
 	
 	@Override
-	public EditState getEditStatus() {
-		return editStatus;
+	public EditState getPreStatus() {
+		return preStatus;
+	}
+	
+	@Override
+	public EditState getCurStatus() {
+		return curStatus;
 	}
 
 	@Override
