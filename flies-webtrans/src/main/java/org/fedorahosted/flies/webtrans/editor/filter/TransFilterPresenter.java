@@ -1,20 +1,17 @@
 package org.fedorahosted.flies.webtrans.editor.filter;
 
-import org.fedorahosted.flies.gwt.model.TransUnit;
-import org.fedorahosted.flies.webtrans.editor.filter.OperatorFilter.Operator;
-
-import net.customware.gwt.presenter.client.BasicPresenter;
 import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.Presenter;
 import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import com.allen_sauer.gwt.log.client.Log;
+import org.fedorahosted.flies.gwt.model.TransUnit;
+import org.fedorahosted.flies.webtrans.editor.filter.OperatorFilter.Operator;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -23,7 +20,7 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
 	public static final Place PLACE = new Place("TransUnitInfoPresenter");
 	
 	public interface Display extends WidgetDisplay{
-		Button getApplyButton();
+		HasClickHandlers getApplyButton();
 		void setFilterUnitPanel(Widget widget);
 	}
 	
