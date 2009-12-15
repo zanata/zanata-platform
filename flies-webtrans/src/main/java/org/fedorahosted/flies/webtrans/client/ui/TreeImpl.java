@@ -3,6 +3,8 @@ package org.fedorahosted.flies.webtrans.client.ui;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeImages;
 import com.google.gwt.user.client.ui.TreeItem;
@@ -68,4 +70,13 @@ public class TreeImpl<K, T> extends Tree implements HasTreeNodes<K, T> {
 		nodeMap.put(key, node);
 	}
 	
+	@Override
+	public void onBrowserEvent(Event event) {
+	    int eventType = DOM.eventGetType(event);
+	    if (eventType == Event.ONCLICK) {
+	    	// bypass parent's implementation of onBrowserEvent
+	    } else {
+	    	super.onBrowserEvent(event);
+	    }
+	}
 }
