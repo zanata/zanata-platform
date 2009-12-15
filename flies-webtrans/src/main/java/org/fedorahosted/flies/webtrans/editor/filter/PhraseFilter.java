@@ -2,8 +2,6 @@ package org.fedorahosted.flies.webtrans.editor.filter;
 
 import org.fedorahosted.flies.gwt.model.TransUnit;
 
-import com.google.inject.internal.SourceProvider;
-
 public class PhraseFilter implements ContentFilter<TransUnit>{
 	private String phrase;
 	
@@ -25,7 +23,8 @@ public class PhraseFilter implements ContentFilter<TransUnit>{
 	
 	@Override
 	public boolean accept(TransUnit value) {
-		return value.getSource().contains(phrase) || value.getTarget().contains(phrase);
+		return value.getSource().toLowerCase().contains(phrase.toLowerCase()) || 
+		value.getTarget().toLowerCase().contains(phrase.toLowerCase());
 	}
 
 
