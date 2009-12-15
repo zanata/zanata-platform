@@ -149,10 +149,10 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
 	public TableEditorTableDefinition(final RedirectingCachedTableModel<TransUnit> tableModel) {
 		setRowRenderer(rowRenderer);
-		indicatorColumnDefinition.setMaximumColumnWidth(15);
-		indicatorColumnDefinition.setPreferredColumnWidth(15);
-		indicatorColumnDefinition.setMinimumColumnWidth(15);
-		indicatorColumnDefinition.setCellRenderer(indicatorCellRenderer);
+		//indicatorColumnDefinition.setMaximumColumnWidth(15);
+		//indicatorColumnDefinition.setPreferredColumnWidth(15);
+		//indicatorColumnDefinition.setMinimumColumnWidth(15);
+		//indicatorColumnDefinition.setCellRenderer(indicatorCellRenderer);
 		sourceColumnDefinition.setCellRenderer(sourceCellRenderer);
 		targetColumnDefinition.setCellRenderer(targetCellRenderer);
 		targetColumnDefinition.setCellEditor(new InlineTargetCellEditor(
@@ -165,7 +165,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 	         }
 		}));
 		
-		addColumnDefinition(indicatorColumnDefinition);
+		//addColumnDefinition(indicatorColumnDefinition);
 		addColumnDefinition(sourceColumnDefinition);
 		addColumnDefinition(targetColumnDefinition);
 	}
