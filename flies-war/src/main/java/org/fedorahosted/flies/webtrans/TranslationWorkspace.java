@@ -113,6 +113,7 @@ public class TranslationWorkspace {
 		synchronized (events) {
 			SessionEvent<T> event = new SessionEvent<T>(eventData, ++sequence );
 			events.add(event);
+			// FIXME we never remove events! (memory leak)
 			return event;
 		}
 	}
@@ -126,6 +127,8 @@ public class TranslationWorkspace {
 			}
 			eventsSince.add(event);
 		}
+		// reverse the order of the array list so that events are in chrono order
+		Collections.reverse(eventsSince);
 		return eventsSince;
 	}
 	
