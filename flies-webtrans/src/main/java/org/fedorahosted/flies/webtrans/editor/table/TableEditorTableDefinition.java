@@ -67,32 +67,32 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 		}
 	};
 	
-	private final AbstractColumnDefinition<TransUnit, TransUnit> indicatorColumnDefinition = 
-		new AbstractColumnDefinition<TransUnit, TransUnit>() {
-		@Override
-		public TransUnit getCellValue(TransUnit rowValue) {
-			return rowValue;
-		}
-
-		@Override
-		public void setCellValue(TransUnit rowValue, TransUnit cellValue) {
-			cellValue.setSource(rowValue.getSource());
-		}
-	};
-
-	private final CellRenderer<TransUnit, TransUnit> indicatorCellRenderer = new CellRenderer<TransUnit, TransUnit>() {
-		@Override
-		public void renderRowValue(
-				TransUnit rowValue,
-				ColumnDefinition<TransUnit, TransUnit> columnDef,
-				com.google.gwt.gen2.table.client.TableDefinition.AbstractCellView<TransUnit> view) {
-			view.setStyleName("TableEditorCell TableEditorCell-Source");
-			if(rowValue.getEditStatus().equals(EditState.Lock)) {
-				Image image = new Image("../img/silk/user.png");
-				view.setWidget(image);
-			}
-		}
-	};
+//	private final AbstractColumnDefinition<TransUnit, TransUnit> indicatorColumnDefinition = 
+//		new AbstractColumnDefinition<TransUnit, TransUnit>() {
+//		@Override
+//		public TransUnit getCellValue(TransUnit rowValue) {
+//			return rowValue;
+//		}
+//
+//		@Override
+//		public void setCellValue(TransUnit rowValue, TransUnit cellValue) {
+//			cellValue.setSource(rowValue.getSource());
+//		}
+//	};
+//
+//	private final CellRenderer<TransUnit, TransUnit> indicatorCellRenderer = new CellRenderer<TransUnit, TransUnit>() {
+//		@Override
+//		public void renderRowValue(
+//				TransUnit rowValue,
+//				ColumnDefinition<TransUnit, TransUnit> columnDef,
+//				com.google.gwt.gen2.table.client.TableDefinition.AbstractCellView<TransUnit> view) {
+//			view.setStyleName("TableEditorCell TableEditorCell-Source");
+//			if(rowValue.getEditStatus().equals(EditState.Lock)) {
+//				Image image = new Image("../img/silk/user.png");
+//				view.setWidget(image);
+//			}
+//		}
+//	};
 	
 	private final AbstractColumnDefinition<TransUnit, TransUnit> sourceColumnDefinition = 
 			new AbstractColumnDefinition<TransUnit, TransUnit>() {
