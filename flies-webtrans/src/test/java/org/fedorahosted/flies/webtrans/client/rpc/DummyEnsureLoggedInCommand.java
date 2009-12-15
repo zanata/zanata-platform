@@ -11,18 +11,20 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class DummyEnsureLoggedInCommand implements Command {
 
-	private final EnsureLoggedInAction action;
+//	private final EnsureLoggedInAction action;
 	private final AsyncCallback<EnsureLoggedInResult> callback;
 
 	public DummyEnsureLoggedInCommand(EnsureLoggedInAction action,
 			AsyncCallback<EnsureLoggedInResult> callback) {
-				this.action = action;
+//				this.action = action;
 				this.callback = callback;
 	}
 
 	@Override
 	public void execute() {
-		callback.onSuccess(new EnsureLoggedInResult(new SessionId("sessionId"), new Person(new PersonId("personId"), "personName")));
+		callback.onSuccess(new EnsureLoggedInResult(
+				new SessionId("sessionId"), 
+				new Person(new PersonId("personId"), "Dummy User")));
 	}
 
 }
