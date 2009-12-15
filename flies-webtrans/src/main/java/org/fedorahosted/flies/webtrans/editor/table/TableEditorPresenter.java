@@ -57,6 +57,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	implements HasPageNavigation, HasPageChangeHandlers, HasPageCountChangeHandlers {
 	
 	public static final Place PLACE = new Place("TableEditor");
+	private int latestStatusCountOffset = -1;
 	
 	public interface Display extends WidgetDisplay, HasPageNavigation {
 		HasSelectionHandlers<TransUnit> getSelectionHandlers();
@@ -171,11 +172,11 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 				if(documentId != null && documentId.equals(event.getDocumentId())) {
 					if(currentSelection != null && currentSelection.getId().equals(event.getTransUnitId())) {
 						// handle change in current selection
+						if(event.getEditStatus().equals(EditState.Lock))
+							eventBus.fireEvent(new NotificationEvent(Severity.Warning, "Translation Unit "+event.getTransUnitId().toString()+" is editing now."));
+						if(event.getEditStatus().equals(EditState.UnLock))
+							eventBus.fireEvent(new NotificationEvent(Severity.Warning, "Editing of Translation Unit "+event.getTransUnitId().toString()+" is stopped."));
 					}
-					if(event.getEditStatus().equals(EditState.Lock))
-						eventBus.fireEvent(new NotificationEvent(Severity.Warning, "Translation Unit "+event.getTransUnitId().toString()+" is editing now."));
-					if(event.getEditStatus().equals(EditState.UnLock))
-						eventBus.fireEvent(new NotificationEvent(Severity.Warning, "Editing of Translation Unit "+event.getTransUnitId().toString()+" is stopped."));
 					//display.getTableModel().clearCache();
 					//display.reloadPage();
 				}
