@@ -138,5 +138,7 @@ public class ProjectStatusPresenter extends TranslationStatsBarPresenter{
 			}
 	});
 	}	
+	
+	
 
 }

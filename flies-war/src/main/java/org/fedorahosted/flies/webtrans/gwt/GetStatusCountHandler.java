@@ -58,7 +58,7 @@ public class GetStatusCountHandler implements ActionHandler<GetStatusCount, GetS
 			stat.set(count.status, count.count);
 		}
 		
-		stat.set(ContentState.New, totalCount - stat.getNotApproved());
+		stat.set(ContentState.New, totalCount - stat.getApproved()-stat.getNeedReview());
 		TranslationWorkspace workspace = translationWorkspaceManager.getWorkspace(action.getProjectContainerId().getId(), action.getLocaleId() );
 		
 		return new GetStatusCountResult(

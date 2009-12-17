@@ -12,4 +12,5 @@ public abstract class TranslationStatsBarPresenter extends WidgetPresenter<Trans
 	public TranslationStatsBarPresenter(final Display display, final EventBus eventBus) {
 		super(display, eventBus);
 	}
+
 }

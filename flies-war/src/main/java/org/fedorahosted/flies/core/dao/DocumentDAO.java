@@ -65,7 +65,7 @@ public class DocumentDAO {
 			stat.set(count.status, count.count);
 		}
 		
-		stat.set(ContentState.New, totalCount - stat.getNotApproved());
+		stat.set(ContentState.New, totalCount - stat.getApproved()-stat.getNeedReview());
 		
 		return stat;
 	}

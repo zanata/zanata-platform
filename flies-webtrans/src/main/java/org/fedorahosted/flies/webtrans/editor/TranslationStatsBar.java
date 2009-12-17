@@ -32,7 +32,7 @@ public class TranslationStatsBar extends Composite implements TranslationStatsBa
 	private class PopupWindow extends DecoratedPopupPanel {
 		public PopupWindow() {
 			super(true);
-			this.setWidget(new Label("Status"));
+			//this.setWidget(new Label("Status"));
 		}
 	}
 
@@ -71,6 +71,8 @@ public class TranslationStatsBar extends Composite implements TranslationStatsBa
 		int top = bar.getAbsoluteTop();
 		int left = bar.getAbsoluteLeft();
 		popupWindow.setPopupPosition(left, top - popupoffset);
+		popupWindow.setWidget(new Label("New: "+getUntranslated() + " " +"Approved: "+ getTranslated() + " "
+				+ "Fuzzy: "+getFuzzy()));
 		popupWindow.show();
 	}
 
@@ -91,8 +93,8 @@ public class TranslationStatsBar extends Composite implements TranslationStatsBa
 
 	private TextFormatter formatter = new TextFormatter() {
 		protected String getText(ProgressBar bar, double curProgress) {
-			return "[" + getUntranslated() + "/" + getTranslated() + "/"
-					+ getFuzzy() + "] ";
+			return "["+"N:" + getUntranslated() + "/" +"A:"+ getTranslated() + "/"
+					+ "F:"+getFuzzy() + "] ";
 		}
 	};
 
