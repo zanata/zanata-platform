@@ -7,12 +7,10 @@ import org.fedorahosted.flies.core.model.HTribe;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.core.Conversation;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.framework.EntityHome;
@@ -25,7 +23,7 @@ public class TribeHome extends EntityHome<HTribe>{
 
 	private static final long serialVersionUID = 5139154491040234980L;
 
-	private int maxNumberOfTribeMemberships = 5;
+	private int maxNumberOfTribeMemberships = Integer.MAX_VALUE;
 	
 	@Override
 	protected HTribe loadInstance() {
@@ -56,8 +54,8 @@ public class TribeHome extends EntityHome<HTribe>{
 		HPerson currentPerson = getEntityManager().find(HPerson.class, authenticatedAccount.getPerson().getId());
 		
 		if(!getInstance().getMembers().contains(currentPerson)){
-			if(currentPerson.getTribeMemberships().size() >= getMaxNumberOfTribeMemberships()){
-				FacesMessages.instance().add(Severity.ERROR, "You can only be a member of up to 5 tribes at one time.");
+			if(currentPerson.getTribeMemberships().size() >= maxNumberOfTribeMemberships){
+				FacesMessages.instance().add(Severity.ERROR, "You can only be a member of up to "+maxNumberOfTribeMemberships+" tribes at one time.");
 			}
 			else{
 				getInstance().getMembers().add(currentPerson);
@@ -88,13 +86,5 @@ public class TribeHome extends EntityHome<HTribe>{
 	}
 	
 	public void cancel(){}
-	
-	public int getMaxNumberOfTribeMemberships() {
-		return maxNumberOfTribeMemberships;
-	}
-	
-	public void setMaxNumberOfTribeMemberships(int maxNumberOfTribeMemberships) {
-		this.maxNumberOfTribeMemberships = maxNumberOfTribeMemberships;
-	}
 	
 }
