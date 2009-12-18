@@ -7,11 +7,13 @@
     xmlns:s="http://jboss.com/products/seam/taglib">
 
   <ui:composition template="../layout/template.xhtml">
+<!-- disabled since it doesn't create the HPerson to go with the HAccount
     <ui:define name="left_content">
         <s:link action="#{userAction.createUser}"
           rendered="#{s:hasPermission('seam.account', 'create')}"
           value="Create new User"/>
     </ui:define>
+ -->
   
     <ui:define name="center_content">
         
