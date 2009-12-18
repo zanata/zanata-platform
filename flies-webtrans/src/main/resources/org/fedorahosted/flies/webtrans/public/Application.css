@@ -1,9 +1,5 @@
 /** Add css rules here for your application. */
 
-.DocumentListViewMainPanel {
-	width: 180px;
-}
-
 body {
 	background-color: #f6f6f6;
 }
@@ -16,7 +12,12 @@ body {
 
 #DocumentListView, #TransFilterView, #WorkspaceUsersView {
 	padding-bottom: 5px;
-	width: 220px;
+	width: 100%;
+}
+
+.DocumentListViewMainPanel {
+//	width: 100%;
+	width: 205px;
 }
 
 #WestNavigationView {
@@ -35,7 +36,7 @@ body {
 }
 
 .gwt-CollapsiblePanel { 
-    width: 220px;
+//    width: 220px;
 }
 
 .gwt-HeadingPanel .topLeftInner, .gwt-HeadingPanel .topRightInner {
