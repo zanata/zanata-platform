@@ -15,6 +15,8 @@ import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCount;
 import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCountResult;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnitsResult;
+import org.fedorahosted.flies.gwt.rpc.GetTranslatorList;
+import org.fedorahosted.flies.gwt.rpc.GetTranslatorListResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.DeferredCommand;
@@ -44,6 +46,10 @@ public class DummyDispatchAsync extends SeamDispatchAsync {
 			final EnsureLoggedInAction _action = (EnsureLoggedInAction) action;
 			AsyncCallback<EnsureLoggedInResult> _callback = (AsyncCallback<EnsureLoggedInResult>) callback;
 			DeferredCommand.addCommand(new DummyEnsureLoggedInCommand(_action, _callback));
+		} else if (action instanceof GetTranslatorList) {
+			final GetTranslatorList _action = (GetTranslatorList) action;
+			AsyncCallback<GetTranslatorListResult> _callback = (AsyncCallback<GetTranslatorListResult>) callback;
+			DeferredCommand.addCommand(new DummyGetTranslatorListCommand(_action, _callback));
 		} else if (action instanceof GetProjectStatusCount) {
 			final GetProjectStatusCount _action = (GetProjectStatusCount) action;
 			AsyncCallback<GetProjectStatusCountResult> _callback = (AsyncCallback<GetProjectStatusCountResult>) callback;

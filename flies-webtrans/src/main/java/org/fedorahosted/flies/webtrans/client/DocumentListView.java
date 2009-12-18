@@ -9,15 +9,16 @@ import org.fedorahosted.flies.webtrans.client.ui.HasTreeNodes;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.ImageBundle;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TreeImages;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class DocumentListView extends Composite 
 	implements DocumentListPresenter.Display {
+
+	private static final int UNPADDING = 15;
 
 	public interface Images extends ImageBundle, TreeImages {
 
@@ -38,15 +39,40 @@ public class DocumentListView extends Composite
 	
 	public DocumentListView() {
 	    tree = new FilterTree<DocumentId, DocName>(new FlatFolderDocNameMapper(), images);
-	    tree.setWidth("100%");
+//	    tree.setWidth("100%");
 	    
 	    mainpanel = new FlowPanel();
 	    mainpanel.add(tree);
 		mainpanel.setStylePrimaryName("DocumentListViewMainPanel");
+		
+//		mainpanel.setWidth("50%");
 
-		RoundedContainerWithHeader container = new RoundedContainerWithHeader(new Label("Documents"), mainpanel);
+//		RoundedContainerWithHeader container = new RoundedContainerWithHeader(new Label("Documents in Workspace"), mainpanel);
+//		initWidget(container);
+		
+		DisclosurePanel container = new DisclosurePanel("Documents in Workspace", true);
+		container.add(mainpanel);
 		initWidget(container);
+		
+		
+//		initWidget(mainpanel);
+		
+		
 		getElement().setId("DocumentListView");
+	
+	}
+	
+	@Override
+	public void setWidth(String width) {
+		super.setWidth(width);
+		String panelWidth = width;
+		if (width.endsWith("px")) {
+			double outerWidth = Double.parseDouble(width.substring(0, width.length()-2));
+			panelWidth = Double.toString(outerWidth - UNPADDING) + "px";
+		}
+		mainpanel.setWidth(panelWidth);
+		mainpanel.setVisible(false);
+		mainpanel.setVisible(true);
 	}
 
 	@Override
