@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -33,7 +34,7 @@ public class HAccount extends AbstractFliesEntity implements Serializable {
 	private HPerson person;
 	private Set<HAccountRole> roles;
 
-	@OneToOne(mappedBy = "account")
+	@OneToOne(mappedBy = "account", cascade=CascadeType.REMOVE)
 	public HPerson getPerson() {
 		return person;
 	}
