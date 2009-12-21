@@ -44,12 +44,12 @@ public class UpdateTransUnitHandler implements ActionHandler<UpdateTransUnit, Up
 		ContentState prevStatus = ContentState.New;
 		if(target == null) {
 			target = new HTextFlowTarget(hTextFlow, action.getLocaleId() );
-			target.setState(action.getContentState());
 			hTextFlow.getTargets().put(action.getLocaleId() , target);
 		}
 		else{
 			prevStatus = target.getState();
 		}
+		target.setState(action.getContentState());
 		target.setContent(action.getContent());
 		session.flush();
 		

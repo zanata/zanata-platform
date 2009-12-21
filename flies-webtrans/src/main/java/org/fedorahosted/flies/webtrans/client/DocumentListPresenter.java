@@ -122,7 +122,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 				|| (translated + untranslated + fuzzy) == 0) {
 			return 0;
 		} else {
-			return ((long) translated) / (fuzzy + untranslated + translated) * 100;
+			long value =  (long)((translated  * 100) / (fuzzy + untranslated + translated));
+			return value;
 		}
 		
 	}
