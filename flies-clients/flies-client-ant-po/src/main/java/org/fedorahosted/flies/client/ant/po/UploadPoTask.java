@@ -96,14 +96,14 @@ public class UploadPoTask extends MatchingTask {
 //				progress.update(i++, files.length);
 				File potFile = new File(srcDir, potFilename);
 //				File sourceLang = new File(srcDir, locale);
-				Document doc = new Document(potFilename, ContentType.TextPlain);
+				String basename = StringUtil.removeFileExtension(potFile.getName(), ".pot");
+				Document doc = new Document(basename, ContentType.TextPlain);
 				InputSource potInputSource = new InputSource(potFile.toURI().toString());
 				System.out.println(potFile.toURI().toString());
 				potInputSource.setEncoding("utf8");
 				poReader.extractTemplate(doc, potInputSource, LocaleId.fromJavaName(sourceLang));
 				docList.add(doc);
 				
-				String basename = StringUtil.removeFileExtension(potFile.getName(), ".pot");
 				String poName = basename + ".po";
 				
 				// for each of the corresponding po files in the locale subdirs:
@@ -116,7 +116,6 @@ public class UploadPoTask extends MatchingTask {
 						System.out.println(poFile.toURI().toString());
 						inputSource.setEncoding("utf8");
 						poReader.extractTarget(doc, inputSource, new LocaleId(localeDir.getName()));
-						docList.add(doc);
 					}
 				}
 			}		
