@@ -6,6 +6,7 @@ import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
+import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.EditState;
 import org.fedorahosted.flies.gwt.auth.AuthenticationError;
 import org.fedorahosted.flies.gwt.auth.AuthorizationError;
@@ -227,6 +228,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		
 		@Override
 		public boolean onSetRowValue(int row, TransUnit rowValue) {
+			if(rowValue.getTarget().isEmpty())
+				rowValue.setStatus(ContentState.New);
 			dispatcher.execute(
 					new UpdateTransUnit(rowValue.getId(), workspaceContext.getLocaleId(), rowValue.getTarget(),rowValue.getStatus()), 
 					new AsyncCallback<UpdateTransUnitResult>() {
