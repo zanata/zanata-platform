@@ -33,9 +33,16 @@ public class WestNavigationView extends FlowPanel implements
 		maximizeButton = new Button(MAX_TEXT);
 		controllerPanel = new HorizontalPanel();
 		controllerPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+
+		// I know this nesting is excessive. But two buttons will be 
+		// allocated and aligned into two even table <TD>, which the
+		// minimize button will be hanging in the center of the panel.
+		HorizontalPanel controllerAlignPanel = new HorizontalPanel();
+		controllerAlignPanel.add(minimizeButton);
+		controllerAlignPanel.add(maximizeButton);
+		controllerPanel.add(controllerAlignPanel);
 		controllerPanel.setWidth("100%");
-		controllerPanel.add(minimizeButton);
-		controllerPanel.add(maximizeButton);
+		
 		add(controllerPanel);
 		add(widgetPanel);
 		minimizeButton.addClickHandler(new ClickHandler() {
