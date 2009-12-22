@@ -12,10 +12,10 @@ import com.google.gwt.user.client.ui.Widget;
 public class WestNavigationView extends FlowPanel implements
 		WestNavigationPresenter.Display {
 
-	private static final String MAX_TEXT = "[+]";
-	private static final String MAX_RESTORE_TEXT = "[-]";
-	private static final String MIN_TEXT = "-";
-	private static final String MIN_RESTORE_TEXT = "+";
+	private static final String MAX_TEXT = "->";
+	private static final String MAX_RESTORE_TEXT = "[->]";
+	private static final String MIN_TEXT = "<-";
+	private static final String MIN_RESTORE_TEXT = "[<-]";
 	private static final String NORMAL_WIDTH = "220px";
 	private static final String MAX_WIDTH = "600px";
 	private static final String MIN_WIDTH = "25px";
@@ -32,9 +32,10 @@ public class WestNavigationView extends FlowPanel implements
 		minimizeButton = new Button(MIN_TEXT);
 		maximizeButton = new Button(MAX_TEXT);
 		controllerPanel = new HorizontalPanel();
-		controllerPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		controllerPanel.setWidth("100%");
+		controllerPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
 		controllerPanel.add(minimizeButton);
+		controllerPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		controllerPanel.add(maximizeButton);
 		add(controllerPanel);
 		add(widgetPanel);
