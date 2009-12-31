@@ -13,7 +13,6 @@ public class TransUnit implements IsSerializable, Serializable{
 	private static final long serialVersionUID = -8247442475446266600L;
 
 	private ContentState status;
-	private EditState editstatus;
 	
 	private TransUnitId id;
 	
@@ -32,13 +31,12 @@ public class TransUnit implements IsSerializable, Serializable{
 		this.source = "";
 		this.target = "";
 	}
-	public TransUnit(TransUnitId id, LocaleId localeId, String source, String target, ContentState status, EditState editstatus) {
+	public TransUnit(TransUnitId id, LocaleId localeId, String source, String target, ContentState status) {
 		this.id = id;
 		this.localeId = localeId;
 		this.source = source;
 		this.target = target;
 		this.status = status;
-		this.editstatus = editstatus;
 	}
 	
 	public TransUnitId getId() {
@@ -72,13 +70,4 @@ public class TransUnit implements IsSerializable, Serializable{
 	public void setStatus(ContentState status) {
 		this.status = status;
 	}
-	
-	public EditState getEditStatus() {
-		return editstatus;
-	}
-	
-	public void setEditStatus(EditState editstatus) {
-		this.editstatus = editstatus;
-	}
-
 }

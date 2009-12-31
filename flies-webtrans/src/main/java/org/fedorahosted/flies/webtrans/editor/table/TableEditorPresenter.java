@@ -24,6 +24,7 @@ import org.fedorahosted.flies.webtrans.client.DocumentSelectionHandler;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent;
 import org.fedorahosted.flies.webtrans.client.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent.Severity;
+import org.fedorahosted.flies.webtrans.client.auth.Identity;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitEditEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitEditEventHandler;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
@@ -76,13 +77,14 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
 	private final DispatchAsync dispatcher;
 	private final WorkspaceContext workspaceContext;
-	
+	private final Identity identity;
 
 	@Inject
-	public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final WorkspaceContext workspaceContext) {
+	public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher,final Identity identity, final WorkspaceContext workspaceContext) {
 		super(display, eventBus);
 		this.dispatcher = dispatcher;
 		this.workspaceContext = workspaceContext;
+		this.identity = identity;
 	}
 
 	@Override
@@ -103,7 +105,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 					currentSelection = event.getSelectedItem();
 					//Send a START_EDIT event
 					dispatcher.execute(
-							new EditingTranslationAction(event.getSelectedItem().getId(), workspaceContext.getLocaleId(), EditState.Lock), 
+							new EditingTranslationAction(event.getSelectedItem().getId(), workspaceContext.getLocaleId(), identity.getSessionId(),EditState.StartEditing), 
 							new AsyncCallback<EditingTranslationResult>() {
 								@Override
 								public void onFailure(Throwable caught) {
@@ -174,8 +176,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 				if(documentId != null && documentId.equals(event.getDocumentId())) {
 					if(currentSelection != null && currentSelection.getId().equals(event.getTransUnitId())) {
 						// handle change in current selection
-						//if(event.getPreStatus().equals(EditState.Lock) && event.getCurStatus().equals(EditState.Lock))
-						//	eventBus.fireEvent(new NotificationEvent(Severity.Warning, "Warning: This Translation Unit is editing."));
+						if(!event.getSessionId().equals(identity.getSessionId())) 
+							eventBus.fireEvent(new NotificationEvent(Severity.Warning, "Warning: This Translation Unit is editing by someone else."));
 					}
 					//display.getTableModel().clearCache();
 					//display.reloadPage();
@@ -244,11 +246,11 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 					});
 			
 			dispatcher.execute(
-					new EditingTranslationAction(rowValue.getId(), workspaceContext.getLocaleId(), EditState.UnLock), 
+					new EditingTranslationAction(rowValue.getId(), workspaceContext.getLocaleId(), identity.getSessionId(), EditState.StopEditing), 
 					new AsyncCallback<EditingTranslationResult>() {
 						@Override
 						public void onFailure(Throwable caught) {
-							eventBus.fireEvent(new NotificationEvent(Severity.Error, "Failed to UnLock TransUnit"));
+							eventBus.fireEvent(new NotificationEvent(Severity.Error, "Failed to Stop Editing TransUnit"));
 						}
 						
 						@Override
@@ -262,11 +264,11 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		
 		public void onCancel(TransUnit rowValue) {
 			dispatcher.execute(
-					new EditingTranslationAction(rowValue.getId(), workspaceContext.getLocaleId(), EditState.UnLock), 
+					new EditingTranslationAction(rowValue.getId(), workspaceContext.getLocaleId(), identity.getSessionId(),EditState.StopEditing), 
 					new AsyncCallback<EditingTranslationResult>() {
 						@Override
 						public void onFailure(Throwable caught) {
-							eventBus.fireEvent(new NotificationEvent(Severity.Error, "Failed to UnLock TransUnit"));
+							eventBus.fireEvent(new NotificationEvent(Severity.Error, "Failed to Stop Editing TransUnit"));
 						}
 						
 						@Override

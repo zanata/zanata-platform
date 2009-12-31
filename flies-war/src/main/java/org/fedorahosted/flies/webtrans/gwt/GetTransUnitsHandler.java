@@ -71,11 +71,9 @@ public class GetTransUnitsHandler implements ActionHandler<GetTransUnits, GetTra
 			TransUnitId tuId = new TransUnitId(textFlow.getId());
 			TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(
 					textFlow.getDocument().getProject().getId(), action.getLocaleId() );
-			if(!workspace.containTransUnit(tuId)) {
-				workspace.addTransUnit(tuId);
-			}
-			EditState editstate = workspace.getTransUnitStatus(tuId);
-			TransUnit tu = new TransUnit(tuId, action.getLocaleId(), textFlow.getContent(), "", ContentState.New, editstate);
+
+			//EditState editstate = workspace.getTransUnitStatus(tuId);
+			TransUnit tu = new TransUnit(tuId, action.getLocaleId(), textFlow.getContent(), "", ContentState.New);
 			HTextFlowTarget target = textFlow.getTargets().get(action.getLocaleId());
 			if(target != null) {
 				tu.setTarget(target.getContent());

@@ -1,6 +1,5 @@
 package org.fedorahosted.flies.webtrans.client.events;
 
-import org.fedorahosted.flies.common.EditState;
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.TransUnitId;
 import org.fedorahosted.flies.gwt.rpc.HasTransUnitEditData;
@@ -9,8 +8,7 @@ public class TransUnitEditEvent  extends SequenceEvent<TransUnitEditEventHandler
 
 	private final TransUnitId transUnitId;
 	private final DocumentId documentId;
-	private final EditState preStatus;
-	private final EditState curStatus;
+	private final String sessionId;
 	
 	/**
 	 * Handler type.
@@ -33,8 +31,7 @@ public class TransUnitEditEvent  extends SequenceEvent<TransUnitEditEventHandler
 		super(sequence);
 		this.documentId = data.getDocumentId();
 		this.transUnitId = data.getTransUnitId();
-		this.preStatus = data.getPreStatus();
-		this.curStatus = data.getCurStatus();
+		this.sessionId = data.getSessionId();
 	}
 	
 	@Override
@@ -51,20 +48,16 @@ public class TransUnitEditEvent  extends SequenceEvent<TransUnitEditEventHandler
 	public DocumentId getDocumentId() {
 		return documentId;
 	}
-
-	@Override
-	public EditState getPreStatus() {
-		return preStatus;
-	}
-	
-	@Override
-	public EditState getCurStatus() {
-		return curStatus;
-	}
 	
 	@Override
 	public TransUnitId getTransUnitId() {
 		return transUnitId;
+	}
+
+	@Override
+	public String getSessionId() {
+		// TODO Auto-generated method stub
+		return sessionId;
 	}
 	
 }

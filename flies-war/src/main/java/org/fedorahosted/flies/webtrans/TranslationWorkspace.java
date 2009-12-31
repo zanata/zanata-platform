@@ -35,7 +35,7 @@ public class TranslationWorkspace {
 	private final WorkspaceKey workspaceKey;
 	
 	private final ConcurrentMap<SessionId, PersonId> sessions = new MapMaker().makeMap();
-	private final ConcurrentMap<TransUnitId, EditState> editstatus = new MapMaker().makeMap();
+	private final ConcurrentMap<TransUnitId, String> editstatus = new MapMaker().makeMap();
 	private final Deque<SessionEvent<?>> events = new ArrayDeque<SessionEvent<?>>();
 	
 	private int sequence;
@@ -59,13 +59,13 @@ public class TranslationWorkspace {
 		return ImmutableSet.copyOf(sessions.keySet());
 	}
 	
-	public EditState getTransUnitStatus(TransUnitId unitId) {
+	public String getTransUnitStatus(TransUnitId unitId) {
 		return editstatus.get(unitId);
 	}
 	
-	public void addTransUnit(TransUnitId unitId) {
+	public void addTransUnit(TransUnitId unitId, String sessionId) {
 		if(!editstatus.containsKey(unitId)) {
-			editstatus.put(unitId, EditState.UnLock);
+			editstatus.put(unitId, sessionId);
 		}
 	}
 	
@@ -73,7 +73,7 @@ public class TranslationWorkspace {
 		return editstatus.containsKey(unitId);
 	}
 	
-	public ImmutableSet<EditState> getEditStatus() {
+	public ImmutableSet<String> getEditSessions() {
 		return ImmutableSet.copyOf(editstatus.values());
 	}
 	
@@ -85,14 +85,8 @@ public class TranslationWorkspace {
 		return ImmutableSet.copyOf(sessions.values());
 	}
 	
-	public void lockTransUnit(TransUnitId transUnitId) {
-		if(editstatus.containsKey(transUnitId)) {
-			editstatus.replace(transUnitId, EditState.Lock);
-		}
-	}
-	
-	public void unlockTransUnit(TransUnitId transUnitId) {
-		editstatus.replace(transUnitId, EditState.UnLock);
+	public void removeTransUnit(TransUnitId transUnitId, String sessionId) {
+		editstatus.remove(transUnitId, sessionId);
 	}
 	
 	public boolean removeTranslator(PersonId personId) {

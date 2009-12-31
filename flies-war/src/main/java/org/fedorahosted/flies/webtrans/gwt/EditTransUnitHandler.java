@@ -38,35 +38,30 @@ public class EditTransUnitHandler implements ActionHandler<EditingTranslationAct
 		TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(
 				hTextFlow.getDocument().getProject().getId(), action.getLocaleId() );
 		
-//		//If TransUnit is editing by some else, you will in trouble 
-//		if (workspace.containTransUnit(action.getTransUnitId()) &&
-//			workspace.getTransUnitStatus(action.getTransUnitId()).equals(EditState.Lock) && 
-//			action.getEditState().equals(EditState.Lock)) {
-//			
+		//If TransUnit is not editing, you can start editing now.
+		if(!workspace.containTransUnit(action.getTransUnitId()) && action.getEditState().equals(EditState.StartEditing)) {
+			workspace.addTransUnit(action.getTransUnitId(),action.getSessionId());
+		}
+		
+		//If TransUnit is editing by some else, you will be noticed. 
+		if (workspace.containTransUnit(action.getTransUnitId()) &&
+			!workspace.getTransUnitStatus(action.getTransUnitId()).equals(action.getSessionId()) && action.getEditState().equals(EditState.StartEditing)) {
+			
+			String sessionId = workspace.getTransUnitStatus(action.getTransUnitId());
+			TransUnitEditing event = new TransUnitEditing(
+					new DocumentId(hTextFlow.getDocument().getId()), action.getTransUnitId(), sessionId);
+			workspace.publish(event);
+		}
+		
+		//If TransUnit is editing by you, you can stop editing. 
+		if (workspace.containTransUnit(action.getTransUnitId()) &&
+				workspace.getTransUnitStatus(action.getTransUnitId()).equals(action.getSessionId()) && action.getEditState().equals(EditState.StopEditing)){
+			
+			workspace.removeTransUnit(action.getTransUnitId(), action.getSessionId());
 //			TransUnitEditing event = new TransUnitEditing(
-//					new DocumentId(hTextFlow.getDocument().getId()), action.getTransUnitId(), EditState.Lock, action.getEditState());
+//					new DocumentId(hTextFlow.getDocument().getId()), action.getTransUnitId());
 //			workspace.publish(event);
-//		}
-//		
-//		//If TransUnit is editing by you, you can stop editing. 
-//		if (workspace.containTransUnit(action.getTransUnitId()) &&
-//				workspace.getTransUnitStatus(action.getTransUnitId()).equals(EditState.Lock) && 
-//				action.getEditState().equals(EditState.UnLock)) {
-//			workspace.unlockTransUnit(action.getTransUnitId());
-//			TransUnitEditing event = new TransUnitEditing(
-//					new DocumentId(hTextFlow.getDocument().getId()), action.getTransUnitId(), EditState.Lock, action.getEditState());
-//			workspace.publish(event);
-//		}
-//				
-//		//If TransUnit is not editing by someone else, you can start editing now.
-//		if(workspace.containTransUnit(action.getTransUnitId()) &&
-//				workspace.getTransUnitStatus(action.getTransUnitId()).equals(EditState.UnLock) && 
-//				action.getEditState().equals(EditState.Lock)) {
-//			workspace.lockTransUnit(action.getTransUnitId());
-//			TransUnitEditing event = new TransUnitEditing(
-//					new DocumentId(hTextFlow.getDocument().getId()), action.getTransUnitId(), EditState.UnLock, action.getEditState());
-//			workspace.publish(event);
-//		}
+		}
 		
 		return new EditingTranslationResult(true);
 	}
