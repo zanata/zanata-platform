@@ -15,7 +15,6 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.resources.LocaleOutputSourcePair;
 import org.fedorahosted.flies.resources.OutputSource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.DocumentResource;
@@ -56,33 +55,27 @@ public class PoWriter {
 		// write the POT file to pot/$name.pot
 		{
 			File potDir = new File(baseDir, "pot");
+			potDir.mkdirs();
 			File potFile = new File(potDir, doc.getName()+".pot");
 			OutputSource outputSource = new OutputSource(potFile);
-			write(doc, new LocaleOutputSourcePair(outputSource, null));
+			write(doc, outputSource, null);
 		}
 		// write the PO files to $locale/$name.po
 		for (LocaleId locale : targetLangs) {
 			File localeDir = new File(baseDir, locale.toString());
+			localeDir.mkdirs();
 			File poFile = new File(localeDir, doc.getName()+".po");
 			OutputSource outputSource = new OutputSource(poFile);
-			write(doc, new LocaleOutputSourcePair(outputSource, locale));
+			write(doc, outputSource, locale);
 		}
 	}
 	
-	public void write(final Document document, final LocaleOutputSourcePair localeOutputSourcePair) throws IOException{
+	public void write(final Document document, OutputSource outputSource, LocaleId locale) throws IOException{
 
 		final Writer writer;
-		final LocaleId locale;
 
 		if(document == null)
 			throw new IllegalArgumentException("document");
-		
-		if(localeOutputSourcePair == null)
-			throw new IllegalArgumentException("localeOutputSourcePair");
-
-		OutputSource outputSource = localeOutputSourcePair.getOutputSource();
-		
-		locale = localeOutputSourcePair.getLocaleId();
 		
 		// the writer has first priority
 		if(outputSource.getWriter() != null)
@@ -125,19 +118,23 @@ public class PoWriter {
 		Message message;
 		if (locale != null) {
 			PoTargetHeaders poHeaders = document.getExtension(PoTargetHeaders.class);
-			PoTargetHeader poHeader = poHeaders.getByLocale(locale);
-			for(HeaderEntry e : poHeader.getEntries()){
-				hf.setValue(e.getKey(), e.getValue());
-			}
-			message = hf.unwrap();
-			for(String s : poHeader.getComment().getValue().split("\n")){
-				message.addComment(s);
+			if (poHeaders != null) {
+				PoTargetHeader poHeader = poHeaders.getByLocale(locale);
+				for(HeaderEntry e : poHeader.getEntries()){
+					hf.setValue(e.getKey(), e.getValue());
+				}
+				message = hf.unwrap();
+				for(String s : poHeader.getComment().getValue().split("\n")){
+					message.addComment(s);
+				}
+				poWriter.write(message, writer);
+				writer.write("\n");
 			}
 		} else {
 			message = hf.unwrap();
+			poWriter.write(message, writer);
+			writer.write("\n");
 		}
-		poWriter.write(message, writer);
-		writer.write("\n");
 
 		// first write header
 		if(!document.hasResources())
@@ -146,37 +143,43 @@ public class PoWriter {
 			TextFlow textFlow = (TextFlow) resource;
 
 			PotEntryData entryData = textFlow.getExtension(PotEntryData.class);
-			TextFlowTargets entryTargets = textFlow.getExtension(TextFlowTargets.class);
-			TextFlowTarget contentData = entryTargets.getByLocale(locale);
-			SimpleComment poComment = contentData.getExtension(SimpleComment.class);
-			
-			if(!entryData.getId().equals(textFlow.getId()) || ! contentData.getId().equals(textFlow.getId())){
-				throw new RuntimeException("hey, expected something else here!");
-			}
-
 			message = new Message();
 			message.setMsgid(textFlow.getContent());
-			message.setMsgstr(contentData.getContent());
-			
-			String [] comments = poComment.getValue().split("\n");
-			if(comments.length == 1 && comments[0].isEmpty()){
-				
-			}
-			else{
-				for(String comment : comments){
-					message.getComments().add(comment);
+			message.setMsgstr("");
+			if (locale != null) {
+				TextFlowTargets entryTargets = textFlow.getExtension(TextFlowTargets.class);
+				if (entryTargets != null) {
+					TextFlowTarget contentData = entryTargets.getByLocale(locale);
+					if (contentData != null) {
+						if(!entryData.getId().equals(textFlow.getId()) || ! contentData.getId().equals(textFlow.getId())){
+							throw new RuntimeException("hey, expected something else here!");
+						}
+						message.setMsgstr(contentData.getContent());
+						SimpleComment poComment = contentData.getExtension(SimpleComment.class);
+						if (poComment != null) {
+							String [] comments = poComment.getValue().split("\n");
+							if(comments.length == 1 && comments[0].isEmpty()){
+								
+							}
+							else{
+								for(String comment : comments){
+									message.getComments().add(comment);
+								}
+							}
+						}						
+						switch(contentData.getState()){
+						case Approved:
+							message.setFuzzy(false);
+							break;
+						case NeedReview:
+						case New:
+							message.setFuzzy(true);
+							break;
+						}
+					}
 				}
 			}
 			
-			switch(contentData.getState()){
-			case Approved:
-				message.setFuzzy(false);
-				break;
-			case NeedReview:
-			case New:
-				message.setFuzzy(true);
-				break;
-			}
 			copyToMessage(entryData, message);
 			
 			poWriter.write(message, writer);
