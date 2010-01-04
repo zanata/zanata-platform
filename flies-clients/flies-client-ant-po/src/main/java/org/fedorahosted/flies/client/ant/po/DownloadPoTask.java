@@ -9,13 +9,13 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.taskdefs.MatchingTask;
-import org.fedorahosted.flies.adapter.properties.PropWriter;
 import org.fedorahosted.flies.rest.ClientUtility;
 import org.fedorahosted.flies.rest.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.IDocumentsResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Documents;
 import org.jboss.resteasy.client.ClientResponse;
+import org.fedorahosted.flies.adapter.po.PoWriter;
 
 public class DownloadPoTask extends MatchingTask {
 
@@ -53,7 +53,8 @@ public class DownloadPoTask extends MatchingTask {
 				docList = response.getEntity().getDocuments();
 			}
 			for (Document doc : docList) {
-				PropWriter.write(doc, dstDir);
+				PoWriter pw = new PoWriter();
+				pw.write(doc, dstDir);
 			}
 
 		} catch (Exception e) {
