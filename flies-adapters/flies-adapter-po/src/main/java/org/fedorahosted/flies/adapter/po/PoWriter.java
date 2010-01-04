@@ -53,6 +53,14 @@ public class PoWriter {
 				}
 			}
 		}
+		// write the POT file to pot/$name.pot
+		{
+			File potDir = new File(baseDir, "pot");
+			File potFile = new File(potDir, doc.getName()+".pot");
+			OutputSource outputSource = new OutputSource(potFile);
+			write(doc, new LocaleOutputSourcePair(outputSource, null));
+		}
+		// write the PO files to $locale/$name.po
 		for (LocaleId locale : targetLangs) {
 			File localeDir = new File(baseDir, locale.toString());
 			File poFile = new File(localeDir, doc.getName()+".po");
@@ -109,22 +117,24 @@ public class PoWriter {
 //			throw new RuntimeException("could not find target locale");
 
 		PoHeader potHeader = document.getExtension(PoHeader.class);
-		PoTargetHeaders poHeaders = document.getExtension(PoTargetHeaders.class);
-		
-		PoTargetHeader poHeader = poHeaders.getByLocale(locale);
-		
 		
 		HeaderFields hf = new HeaderFields();
 		for(HeaderEntry e : potHeader.getEntries()){
 			hf.setValue(e.getKey(), e.getValue());
 		}
-		for(HeaderEntry e : poHeader.getEntries()){
-			hf.setValue(e.getKey(), e.getValue());
-		}
-		Message message = hf.unwrap();
-		
-		for(String s : poHeader.getComment().getValue().split("\n")){
-			message.addComment(s);
+		Message message;
+		if (locale != null) {
+			PoTargetHeaders poHeaders = document.getExtension(PoTargetHeaders.class);
+			PoTargetHeader poHeader = poHeaders.getByLocale(locale);
+			for(HeaderEntry e : poHeader.getEntries()){
+				hf.setValue(e.getKey(), e.getValue());
+			}
+			message = hf.unwrap();
+			for(String s : poHeader.getComment().getValue().split("\n")){
+				message.addComment(s);
+			}
+		} else {
+			message = hf.unwrap();
 		}
 		poWriter.write(message, writer);
 		writer.write("\n");
