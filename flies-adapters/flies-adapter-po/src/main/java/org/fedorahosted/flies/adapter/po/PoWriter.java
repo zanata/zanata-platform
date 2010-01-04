@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.adapter.po;
 
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -8,7 +9,9 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
-
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.common.LocaleId;
@@ -16,6 +19,7 @@ import org.fedorahosted.flies.resources.LocaleOutputSourcePair;
 import org.fedorahosted.flies.resources.OutputSource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.DocumentResource;
+import org.fedorahosted.flies.rest.dto.IExtensible;
 import org.fedorahosted.flies.rest.dto.SimpleComment;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
@@ -33,6 +37,28 @@ public class PoWriter {
 	private final org.fedorahosted.tennera.jgettext.PoWriter poWriter = new org.fedorahosted.tennera.jgettext.PoWriter();
 	
 	public PoWriter() {
+	}
+	
+	public void write(final Document doc, final File baseDir) throws IOException {
+		Set<LocaleId> targetLangs = new HashSet<LocaleId>();
+		if (doc.hasResources()) {
+			for (DocumentResource resource : doc.getResources()) {
+				if (resource instanceof TextFlow) {
+					TextFlow textflow = (TextFlow) resource;
+					for (TextFlowTarget target : getTargets(textflow)) {
+						targetLangs.add(target.getLang());
+					}
+				} else {
+					throw new RuntimeException("unsupported Document element: "+resource.getClass());
+				}
+			}
+		}
+		for (LocaleId locale : targetLangs) {
+			File localeDir = new File(baseDir, locale.toString());
+			File poFile = new File(localeDir, doc.getName()+".po");
+			OutputSource outputSource = new OutputSource(poFile);
+			write(doc, new LocaleOutputSourcePair(outputSource, locale));
+		}
 	}
 	
 	public void write(final Document document, final LocaleOutputSourcePair localeOutputSourcePair) throws IOException{
@@ -163,6 +189,15 @@ public class PoWriter {
 		}
 		for(String ref : data.getReferences()){
 			message.addSourceReference(ref);
+		}
+	}
+
+	private static Set<TextFlowTarget> getTargets(IExtensible resource) {
+		TextFlowTargets targets = resource.getExtension(TextFlowTargets.class);
+		if (targets != null) {
+			return targets.getTargets();
+		} else {
+			return Collections.EMPTY_SET;
 		}
 	}
 }
