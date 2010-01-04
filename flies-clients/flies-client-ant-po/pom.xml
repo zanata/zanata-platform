@@ -50,12 +50,6 @@
 			<version>1.5.0</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- temp added dep of flies-adapter-properties for testing powriter -->
-		<dependency>
-			<groupId>org.fedorahosted.flies</groupId>
-			<artifactId>flies-adapter-properties</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 	</dependencies>
 
 	<build>
