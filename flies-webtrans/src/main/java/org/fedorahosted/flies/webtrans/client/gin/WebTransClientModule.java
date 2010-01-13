@@ -1,6 +1,5 @@
 package org.fedorahosted.flies.webtrans.client.gin;
 
-import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.DefaultEventBus;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.gin.AbstractPresenterModule;
@@ -13,6 +12,8 @@ import org.fedorahosted.flies.webtrans.client.DocumentListView;
 import org.fedorahosted.flies.webtrans.client.EventProcessor;
 import org.fedorahosted.flies.webtrans.client.LoginPanel;
 import org.fedorahosted.flies.webtrans.client.LoginPresenter;
+import org.fedorahosted.flies.webtrans.client.SouthPresenter;
+import org.fedorahosted.flies.webtrans.client.SouthView;
 import org.fedorahosted.flies.webtrans.client.TopMenuPresenter;
 import org.fedorahosted.flies.webtrans.client.TopMenuView;
 import org.fedorahosted.flies.webtrans.client.WestNavigationPresenter;
@@ -34,10 +35,10 @@ import org.fedorahosted.flies.webtrans.editor.TranslationStatsBar;
 import org.fedorahosted.flies.webtrans.editor.TranslationStatsBarPresenter;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorPresenter;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorView;
-import org.fedorahosted.flies.webtrans.editor.filter.PhraseFilterPresenter;
-import org.fedorahosted.flies.webtrans.editor.filter.PhraseFilterView;
 import org.fedorahosted.flies.webtrans.editor.filter.OperatorFilterPresenter;
 import org.fedorahosted.flies.webtrans.editor.filter.OperatorFilterView;
+import org.fedorahosted.flies.webtrans.editor.filter.PhraseFilterPresenter;
+import org.fedorahosted.flies.webtrans.editor.filter.PhraseFilterView;
 import org.fedorahosted.flies.webtrans.editor.filter.TransFilterPresenter;
 import org.fedorahosted.flies.webtrans.editor.filter.TransFilterView;
 import org.fedorahosted.flies.webtrans.editor.table.TableEditorPresenter;
@@ -63,6 +64,7 @@ public class WebTransClientModule extends AbstractPresenterModule {
 		bindPresenter(TransFilterPresenter.class, TransFilterPresenter.Display.class, TransFilterView.class);
 		bindPresenter(TableEditorPresenter.class, TableEditorPresenter.Display.class, TableEditorView.class);
 		bindPresenter(WestNavigationPresenter.class, WestNavigationPresenter.Display.class, WestNavigationView.class);
+		bindPresenter(SouthPresenter.class, SouthPresenter.Display.class, SouthView.class);
 		bindPresenter(WorkspaceUsersPresenter.class, WorkspaceUsersPresenter.Display.class, WorkspaceUsersView.class);
 		bindPresenter(WebTransEditorPresenter.class, WebTransEditorPresenter.Display.class, WebTransEditorView.class);
 		bindPresenter(LoginPresenter.class, LoginPresenter.Display.class, LoginPanel.class);

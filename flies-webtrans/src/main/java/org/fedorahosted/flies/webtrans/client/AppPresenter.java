@@ -50,11 +50,13 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		public void setWest(Widget west);
 		public void setMain(Widget main);
 		public void setNorth(Widget north);
+		public void setSouth(Widget south);
 	}
 	
 	private final WestNavigationPresenter westNavigationPresenter;
 	private final WebTransEditorPresenter webTransEditorPresenter;
 	private final TopMenuPresenter topMenuPresenter;
+	private final SouthPresenter southPresenter;
 	private final EventProcessor eventProcessor;
 	private final LoginPresenter loginPresenter;
 	private final DispatchAsync dispatcher;
@@ -68,6 +70,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 				final WestNavigationPresenter leftNavigationPresenter,
 				final WebTransEditorPresenter webTransEditorPresenter,
 				final TopMenuPresenter topMenuPresenter,
+				final SouthPresenter southPresenter,
 				final EventProcessor eventProcessor,
 				final LoginPresenter loginPresenter,
 				final Identity identity) {
@@ -77,6 +80,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		this.westNavigationPresenter = leftNavigationPresenter;
 		this.webTransEditorPresenter = webTransEditorPresenter;
 		this.topMenuPresenter = topMenuPresenter;
+		this.southPresenter = southPresenter;
 		this.eventProcessor = eventProcessor;
 		this.loginPresenter = loginPresenter;
 	}
@@ -90,10 +94,12 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		westNavigationPresenter.bind();
 		webTransEditorPresenter.bind();
 		topMenuPresenter.bind();
+		southPresenter.bind();
 		
 		eventProcessor.scheduleRepeating(3000);
 		
 		display.setNorth(topMenuPresenter.getDisplay().asWidget());
+		display.setSouth(southPresenter.getDisplay().asWidget());
 		display.setWest(westNavigationPresenter.getDisplay().asWidget());
 		display.setMain(webTransEditorPresenter.getDisplay().asWidget());
 		// TODO refactor to presenter

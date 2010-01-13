@@ -8,6 +8,7 @@ public class AppView extends DockPanel implements AppPresenter.Display {
 	private Widget main;
 	private Widget west;
 	private Widget north;
+	private Widget south;
 	
 	public AppView() {
 		setSpacing(3);
@@ -56,4 +57,14 @@ public class AppView extends DockPanel implements AppPresenter.Display {
 		setCellHeight(north, "20px");
 	}
 
+	@Override
+	public void setSouth(Widget south) {
+		if(this.south != null) {
+			remove(south);
+		}
+		this.south = south;
+		add(south, DockPanel.SOUTH );
+		setCellHeight(south, "20px");
+	}
+	
 }
