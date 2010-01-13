@@ -11,10 +11,11 @@
 		<downloadpo user="bob" apiKey="${bob.key}" src="${docsUrl}" dstDir="${out.dir}" debug="true" />
 
 		
-		<!-- diff if input and output are same - disabled for now
+		<!-- diff (unified, recursive) to find out if input and output are same 
+		- disabled for now
 		<exec executable="diff" failonerror="true">
-			<arg value="- -unified" />
-			<arg value="- -recursive" />
+			<arg value="-u" /> 
+			<arg value="-r" />
 			<arg value="${in.dir}" />
 			<arg value="${out.dir}" />
 		</exec>
