@@ -12,7 +12,6 @@ import org.fedorahosted.flies.gwt.auth.AuthenticationError;
 import org.fedorahosted.flies.gwt.auth.AuthorizationError;
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.TransUnit;
-import org.fedorahosted.flies.gwt.model.TransUnitId;
 import org.fedorahosted.flies.gwt.rpc.EditingTranslationAction;
 import org.fedorahosted.flies.gwt.rpc.EditingTranslationResult;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
@@ -105,7 +104,11 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 					currentSelection = event.getSelectedItem();
 					//Send a START_EDIT event
 					dispatcher.execute(
-							new EditingTranslationAction(event.getSelectedItem().getId(), workspaceContext.getLocaleId(), identity.getSessionId(),EditState.StartEditing), 
+							new EditingTranslationAction(
+									event.getSelectedItem().getId(), 
+									workspaceContext.getLocaleId(), 
+									identity.getSessionId(), 
+									EditState.StartEditing), 
 							new AsyncCallback<EditingTranslationResult>() {
 								@Override
 								public void onFailure(Throwable caught) {
@@ -246,7 +249,10 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 					});
 			
 			dispatcher.execute(
-					new EditingTranslationAction(rowValue.getId(), workspaceContext.getLocaleId(), identity.getSessionId(), EditState.StopEditing), 
+					new EditingTranslationAction(rowValue.getId(), 
+							workspaceContext.getLocaleId(), 
+							identity.getSessionId(), 
+							EditState.StopEditing), 
 					new AsyncCallback<EditingTranslationResult>() {
 						@Override
 						public void onFailure(Throwable caught) {
@@ -264,7 +270,10 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		
 		public void onCancel(TransUnit rowValue) {
 			dispatcher.execute(
-					new EditingTranslationAction(rowValue.getId(), workspaceContext.getLocaleId(), identity.getSessionId(),EditState.StopEditing), 
+					new EditingTranslationAction(rowValue.getId(), 
+							workspaceContext.getLocaleId(), 
+							identity.getSessionId(),
+							EditState.StopEditing), 
 					new AsyncCallback<EditingTranslationResult>() {
 						@Override
 						public void onFailure(Throwable caught) {
