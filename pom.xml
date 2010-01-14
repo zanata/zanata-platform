@@ -24,7 +24,7 @@
   </modules>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <version.gwt>1.7.0</version.gwt>
+    <version.gwt>2.0.0</version.gwt>
     <version.tennera>0.6</version.tennera>
   </properties>
   
