@@ -43,7 +43,7 @@ final class DummyGetTransUnitCommand implements Command {
 	private ArrayList<TransUnit> generateTransUnitSampleData(LocaleId localeId, int numRows, int start) {
 		ArrayList<TransUnit> units = new ArrayList<TransUnit>();
 		for(int i=start;i<start+numRows; i++) {
-			TransUnit unit = new TransUnit( new TransUnitId(i+1), localeId, "<hellow num=\"" + (i+1) + "\" />", "<world> \"" + (i+1) +"\"</world>", ContentState.NeedReview);
+			TransUnit unit = new TransUnit( new TransUnitId(i+1), localeId, "<hellow num=\"" + (i+1) + "\" />", "comment "+(i+1), "<world> \"" + (i+1) +"\"</world>", ContentState.NeedReview);
 			units.add(unit);
 		}
 		return units;

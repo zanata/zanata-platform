@@ -15,6 +15,7 @@ import org.fedorahosted.flies.gwt.model.TransUnitId;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnitsResult;
 import org.fedorahosted.flies.repository.model.HDocument;
+import org.fedorahosted.flies.repository.model.HSimpleComment;
 import org.fedorahosted.flies.repository.model.HTextFlow;
 import org.fedorahosted.flies.repository.model.HTextFlowTarget;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
@@ -73,7 +74,7 @@ public class GetTransUnitsHandler implements ActionHandler<GetTransUnits, GetTra
 					textFlow.getDocument().getProject().getId(), action.getLocaleId() );
 
 			//EditState editstate = workspace.getTransUnitStatus(tuId);
-			TransUnit tu = new TransUnit(tuId, action.getLocaleId(), textFlow.getContent(), "", ContentState.New);
+			TransUnit tu = new TransUnit(tuId, action.getLocaleId(), textFlow.getContent(), toString(textFlow.getComment()), "", ContentState.New);
 			HTextFlowTarget target = textFlow.getTargets().get(action.getLocaleId());
 			if(target != null) {
 				tu.setTarget(target.getContent());
@@ -83,6 +84,13 @@ public class GetTransUnitsHandler implements ActionHandler<GetTransUnits, GetTra
 		}
 
 		return new GetTransUnitsResult(action.getDocumentId(), units, size );
+	}
+	
+	private static String toString(HSimpleComment comment) {
+		if (comment == null)
+			return null;
+		else
+			return comment.getComment();
 	}
 
 	@Override

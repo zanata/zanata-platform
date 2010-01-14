@@ -104,6 +104,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 		@Override
 		public void setCellValue(TransUnit rowValue, TransUnit cellValue) {
 			cellValue.setSource(rowValue.getSource());
+//			cellValue.setTooltip(rowValue.getSourceComment());
 		}
 	};
 	
