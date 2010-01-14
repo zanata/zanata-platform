@@ -38,13 +38,15 @@ public class AppView extends DockPanel implements AppPresenter.Display {
 	@Override
 	public void setNorth(Widget north) {
 		add(north, DockPanel.NORTH );
-//		setCellHeight(north, "20px");
+		// just for Chrome's benefit:
+		setCellHeight(north, "20px");
 	}
 
 	@Override
 	public void setSouth(Widget south) {
 		add(south, DockPanel.SOUTH );
-//		setCellHeight(south, "20px");
+		// just for Chrome's benefit:
+		setCellHeight(south, "20px");
 	}
 	
 }
