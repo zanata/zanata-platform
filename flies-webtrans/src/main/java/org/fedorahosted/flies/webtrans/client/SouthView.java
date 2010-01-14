@@ -1,24 +1,30 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
-public class SouthView extends TabPanel implements SouthPresenter.Display {
-	
+public class SouthView implements SouthPresenter.Display {
+	DisclosurePanel disclosurePanel = new DisclosurePanel("Translation Memory Tools", false);
+	TabPanel tabPanel = new TabPanel();
 	TextArea glossary = new TextArea();
 	TextArea related = new TextArea();
 	public SouthView() {
+		disclosurePanel.setWidth("100%");
 		glossary.setText("glossary............................................................\nglossary\nglossary");
-		add(glossary, "Glossary");
+		tabPanel.add(glossary, "Glossary");
 		related.setText("related\nrelated................................................................\nrelated");
-		add(related, "Related");
+		tabPanel.add(related, "Related");
+		disclosurePanel.add(tabPanel);
+		tabPanel.setWidth("100%");
+		tabPanel.selectTab(0);
 	}
 
 	@Override
 	public Widget asWidget() {
-		return this;
+		return disclosurePanel;
 	}
 
 	@Override

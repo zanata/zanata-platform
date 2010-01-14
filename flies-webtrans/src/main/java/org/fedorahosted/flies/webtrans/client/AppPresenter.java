@@ -99,9 +99,13 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		eventProcessor.scheduleRepeating(3000);
 		
 		display.setNorth(topMenuPresenter.getDisplay().asWidget());
-		display.setSouth(southPresenter.getDisplay().asWidget());
+		Widget south = southPresenter.getDisplay().asWidget();
+//		south.setHeight("15em");
+		display.setSouth(south);
 		display.setWest(westNavigationPresenter.getDisplay().asWidget());
-		display.setMain(webTransEditorPresenter.getDisplay().asWidget());
+		Widget mainWidget = webTransEditorPresenter.getDisplay().asWidget();
+//		mainWidget.setHeight("100%");
+		display.setMain(mainWidget);
 		// TODO refactor to presenter
 		
 		registerHandler(
