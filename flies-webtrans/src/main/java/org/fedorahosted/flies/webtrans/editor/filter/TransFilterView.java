@@ -18,7 +18,7 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
 
 		FlowPanel filterButtonBar = new FlowPanel();
 		filterButtonBar.setStyleName("float-right-div");
-		applyButton = new Button("Apply");
+		applyButton = new Button("Find");
 		filterButtonBar.add(applyButton);
 		
 		bodyPanel.add(filterButtonBar);
