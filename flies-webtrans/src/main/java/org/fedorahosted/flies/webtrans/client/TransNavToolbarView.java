@@ -29,4 +29,27 @@ public class TransNavToolbarView extends HorizontalPanel {
 		
 	}
 
+	public Button getPrevEntryButton() {
+		return prevEntryButton;
+	}
+	
+	public Button getNextEntryButton() {
+		return nextEntryButton;
+	}
+	
+	public Button getPrevFuzzyButton() {
+		return prevFuzzyButton;
+	}
+	
+	public Button getNextFuzzyButton() {
+		return nextFuzzyButton;
+	}
+	
+	public Button getPrevUntranslatedButton() {
+		return prevUntranslatedButton;
+	}
+	
+	public Button getNextUntranslatedButton() {
+		return nextUntranslatedButton;
+	}
 }
