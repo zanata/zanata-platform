@@ -1,14 +1,8 @@
 package org.fedorahosted.flies.webtrans.client;
 
-import org.fedorahosted.flies.gwt.model.Person;
-
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TopMenuView extends HorizontalPanel implements TopMenuPresenter.Display{
@@ -16,6 +10,7 @@ public class TopMenuView extends HorizontalPanel implements TopMenuPresenter.Dis
 	private final Label userLabel;
 	private final Label workspaceLabel;
 	//private final Hyperlink logoutLink;
+	private TransNavToolbarView transNavToolbarView;
 
 	private final HorizontalPanel rightMenu;
 
@@ -29,15 +24,19 @@ public class TopMenuView extends HorizontalPanel implements TopMenuPresenter.Dis
 		workspaceLabel = new Label("Workspace");
 
 		//logoutLink = new Hyperlink("Logout", "Logout");
+		
+		transNavToolbarView = new TransNavToolbarView();
+		rightMenu.add(transNavToolbarView);
 
 		rightMenu.add(userLabel);
 		//rightMenu.add(logoutLink);
-
+		
 		add(workspaceLabel);
 		setCellHorizontalAlignment(workspaceLabel, HorizontalPanel.ALIGN_LEFT);
 		
 		add(rightMenu);
 		setCellHorizontalAlignment(rightMenu, HorizontalPanel.ALIGN_RIGHT);
+		
 	}
 
 	//@Override
