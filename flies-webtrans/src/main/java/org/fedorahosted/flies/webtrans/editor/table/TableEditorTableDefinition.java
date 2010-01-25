@@ -8,6 +8,10 @@ import org.fedorahosted.flies.webtrans.editor.filter.ContentFilter;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.gen2.table.client.AbstractColumnDefinition;
 import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.client.CellRenderer;
@@ -20,6 +24,7 @@ import com.google.gwt.gen2.table.client.CellEditor.CellEditInfo;
 import com.google.gwt.gen2.table.client.TableDefinition.AbstractRowView;
 import com.google.gwt.gen2.table.override.client.Panel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -142,8 +147,26 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 				ColumnDefinition<TransUnit, TransUnit> columnDef,
 				AbstractCellView<TransUnit> view) {
 			view.setStyleName("TableEditorCell TableEditorCell-Target");
-			Label label = new HighlightingLabel(rowValue.getTarget(), ParserSyntax.MIXED);
+			final Label label = new HighlightingLabel(rowValue.getTarget(), ParserSyntax.MIXED);
 			label.setStylePrimaryName("TableEditorContent");
+				
+			final DecoratedPopupPanel popup = new DecoratedPopupPanel(true);
+			label.addMouseOverHandler(new MouseOverHandler() {
+				@Override
+				public void onMouseOver(MouseOverEvent event) {
+					int x = label.getAbsoluteLeft();
+					int y = label.getAbsoluteTop() - 35;
+					popup.setPopupPosition(x, y);
+					popup.setWidget(new Label("Users currently editing this cell: TODO")); // FIXME
+					popup.show();
+				}
+			});
+			label.addMouseOutHandler(new MouseOutHandler() {
+				@Override
+				public void onMouseOut(MouseOutEvent event) {
+					popup.hide();
+				}
+			});
 			view.setWidget( label );
 		}
 	};
