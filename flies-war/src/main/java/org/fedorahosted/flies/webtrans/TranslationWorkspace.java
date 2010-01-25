@@ -64,9 +64,20 @@ public class TranslationWorkspace {
 	}
 	
 	public void addTransUnit(TransUnitId unitId, String sessionId) {
+		//Make sure this session only link to one TransUnit
+		if(editstatus.containsValue(sessionId)) {
+			ImmutableSet<TransUnitId> transIdSet = ImmutableSet.copyOf(editstatus.keySet());
+			for(TransUnitId transId:transIdSet) {
+				if(editstatus.get(transId).equals(sessionId))
+					editstatus.remove(transId, sessionId);
+			}
+		}
+		
 		if(!editstatus.containsKey(unitId)) {
 			editstatus.put(unitId, sessionId);
-		}
+		} 
+			
+
 	}
 	
 	public boolean containTransUnit(TransUnitId unitId) {

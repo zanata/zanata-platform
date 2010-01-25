@@ -5,6 +5,10 @@ import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
 import org.fedorahosted.flies.webtrans.editor.filter.ContentFilter;
 
+import com.google.gwt.event.dom.client.HasKeyUpHandlers;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -22,7 +26,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TableEditorView extends PagingScrollTable<TransUnit> implements
-		TableEditorPresenter.Display, HasSelectionHandlers<TransUnit>, HasPageNavigation{
+		TableEditorPresenter.Display, HasSelectionHandlers<TransUnit>, HasPageNavigation {
 
 	private final RedirectingCachedTableModel<TransUnit> cachedTableModel;
 	private final TableEditorTableDefinition tableDefinition;
@@ -100,7 +104,7 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements
 			SelectionHandler<TransUnit> handler) {
 		return addHandler(handler, SelectionEvent.getType());
 	}
-
+	
 	@Override
 	public HasSelectionHandlers<TransUnit> getSelectionHandlers() {
 		return this;
@@ -146,4 +150,10 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements
 		tableDefinition.setContentFilter(filter);
 		reloadPage();
 	}
+
+	@Override
+	public void gotoRow(int row) {
+		editCell(row, 1);
+	}
+
 }

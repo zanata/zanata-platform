@@ -1,18 +1,23 @@
 package org.fedorahosted.flies.webtrans.editor.table;
 
 import org.fedorahosted.flies.common.ContentState;
-import org.fedorahosted.flies.common.EditState;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasKeyUpHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.client.InlineCellEditor.InlineCellEditorImages;
+import com.google.gwt.gen2.table.event.client.RowSelectionEvent;
+import com.google.gwt.gen2.table.event.client.TableEvent;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -21,8 +26,9 @@ import com.google.gwt.user.client.ui.ImageBundle;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.widgetideas.client.event.KeyboardHandler;
 
-public class InlineTargetCellEditor implements CellEditor<TransUnit> {
+public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 
 	/**
 	 * An {@link ImageBundle} that provides images for {@link InlineTargetCellEditor}.
@@ -54,6 +60,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 	private ClickHandler acceptHandler = new ClickHandler() {
 		public void onClick(ClickEvent event) {
 			accept();
+			if(row < 49 && row >= 0) {
+				row = row +1;
+			}
+			gotoRow(row);
 		}
 	};
 	
@@ -63,6 +73,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 	private Callback<TransUnit> curCallback = null;
 	
 	private CancelCallback<TransUnit> cancelCallback = null;
+	
+	private EditRowCallback editRowCallback = null;
 
 	/**
 	 * The current {@link CellEditor.CellEditInfo}.
@@ -79,14 +91,18 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 	private TransUnit cellValue;
 	
 	private final TextArea textArea;
+	
+	private int row;
+	private int col;
+	private HTMLTable table;
 	/**
 	 * Construct a new {@link InlineTargetCellEditor}.
 	 * 
 	 * @param content
 	 *            the {@link Widget} used to edit
 	 */
-	public InlineTargetCellEditor(CancelCallback<TransUnit> callback) {
-		this(GWT.<TargetCellEditorImages> create(TargetCellEditorImages.class), callback);
+	public InlineTargetCellEditor(CancelCallback<TransUnit> callback, EditRowCallback tranValueCallback) {
+		this(GWT.<TargetCellEditorImages> create(TargetCellEditorImages.class), callback, tranValueCallback);
 	}
 
 	/**
@@ -97,26 +113,49 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 	 * @param images
 	 *            the images to use for the accept/cancel buttons
 	 */
-	public InlineTargetCellEditor(TargetCellEditorImages images, CancelCallback<TransUnit> callback) {
+	public InlineTargetCellEditor(TargetCellEditorImages images, CancelCallback<TransUnit> callback,EditRowCallback rowCallback ) {
 
 		// Wrap contents in a table
 		layoutTable = new FlowPanel();
 
 		cancelCallback = callback;
+		editRowCallback = rowCallback;
 		textArea = new TextArea();
 		textArea.setWidth("100%");
 		textArea.setStyleName("TableEditorContent-Edit");
 		textArea.addKeyUpHandler(new KeyUpHandler() {
-			
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
 				if(event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
 					accept();
+					if(row < 49 && row >= 0) {
+						row = row +1;
+					}
+					gotoRow(row);
 				}
-				else if(event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE) {
+				
+				if(event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE) {
 					cancel();
 				}
+				
+				if(event.isControlKeyDown() && event.isShiftKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN) {
+					cancel();
+					if(row < 49 && row >= 0) {
+						row = row +1;
+					}
+					gotoRow(row);
+				}
+				
+				if(event.isControlKeyDown() && event.isShiftKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEUP) {
+					cancel();
+					if(row <= 49 && row > 0) {
+						row = row -1;
+					}
+					gotoRow(row);
+				}
 			}
+
+			
 		});
 		layoutTable.add(textArea);
 		
@@ -129,7 +168,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 		toggleFuzzy = new CheckBox("Fuzzy");
 		operationsPanel.add(toggleFuzzy);
 		
-
 		PushButton cancelButton = new PushButton(images.cellEditorCancel().createImage(),cancelHandler);
 		cancelButton.setText("Cancel");
 		operationsPanel.add(cancelButton);
@@ -137,11 +175,12 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 		PushButton acceptButton = new PushButton(images.cellEditorAccept().createImage(),acceptHandler);
 		acceptButton.setText("Save");
 		operationsPanel.add(acceptButton);
-		
+
 	}
 
-	int row;
-	int col;
+	private void gotoRow(int row) {
+			editRowCallback.gotoRow(row);
+	}
 
 	private void restoreView() {
 		if(curCellEditInfo != null && cellViewWidget != null) {
@@ -182,7 +221,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 		curCellEditInfo = cellEditInfo;
 
 		// Get the info about the cell
-		HTMLTable table = curCellEditInfo.getTable();
+		table = curCellEditInfo.getTable();
 
 		row = curCellEditInfo.getRowIndex();
 		col = curCellEditInfo.getCellIndex();
@@ -195,7 +234,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 		this.cellValue = cellValue;
 		textArea.setFocus(true);
 		toggleFuzzy.setValue(cellValue.getStatus() == ContentState.NeedReview);
-		
 	}
 
 	/**
@@ -212,7 +250,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit> {
 		
 		// Send the new cell value to the callback
 		curCallback.onComplete(curCellEditInfo, cellValue);
-		
 		clearSelection();
 	}
 	

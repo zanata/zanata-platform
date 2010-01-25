@@ -38,6 +38,10 @@ import org.fedorahosted.flies.webtrans.editor.filter.FilterEnabledEvent;
 import org.fedorahosted.flies.webtrans.editor.filter.FilterEnabledEventHandler;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.dom.client.HasKeyUpHandlers;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -70,6 +74,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		void setPageSize(int size);
 		void setContentFilter(ContentFilter<TransUnit> filter);
 		void clearContentFilter();
+		void gotoRow(int row);
 	}
 
 	private DocumentId documentId;
@@ -123,7 +128,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 				}
 			}
 		}));
-
+		
 		registerHandler(
 				eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {
 					@Override
@@ -163,9 +168,9 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 						//display.getTableModel().setRowValue(row, rowValue);
 					}
 					// TODO add model with methods such as
-					// getRowIndex(TransUnitId) 
+					//currentSelection.getRowIndex(TransUnitId); 
 					// - add TU index to model
-//					display.getTableModel().setRowValue(rowIndex, transUnit)
+					//display.getTableModel().setRowValue(rowIndex, currentSelection.getTarget());
 					display.getTableModel().clearCache();
 					display.reloadPage();
 					//dispatcher.execute(new GetTransUnits(documentId, localeId, page*pageSize+rowOffset, 1, count), callback)
@@ -286,6 +291,11 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 						}
 			});
 		}
+
+		@Override
+		void gotoRow(int row) {
+			display.gotoRow(row);
+		}
 	};
 	
 	
@@ -351,7 +361,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 			SelectionHandler<TransUnit> handler) {
 		return display.getSelectionHandlers().addSelectionHandler(handler);
 	}
-
+	
 	@Override
 	public void fireEvent(GwtEvent<?> event) {
 		display.getSelectionHandlers().fireEvent(event);

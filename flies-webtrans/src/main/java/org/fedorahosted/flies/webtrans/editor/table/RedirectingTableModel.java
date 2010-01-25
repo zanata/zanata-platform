@@ -60,4 +60,9 @@ public class RedirectingTableModel<RowType> extends MutableTableModel<RowType> {
 	public TableModelHandler<RowType> getTableModelHandler() {
 		return tableModelHandler;
 	}
+
+	public void gotoRow(int row) {
+		if(tableModelHandler != null)
+			tableModelHandler.gotoRow(row);
+	}
 }

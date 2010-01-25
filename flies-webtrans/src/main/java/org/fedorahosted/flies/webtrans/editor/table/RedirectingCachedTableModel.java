@@ -22,4 +22,10 @@ public class RedirectingCachedTableModel<RowType> extends CachedTableModel<RowTy
 			tableModel.onCancel(cellValue);
 	}
 
+	public void gotoRow(int row) {
+		// TODO Auto-generated method stub
+		if(tableModel != null)
+			tableModel.gotoRow(row);
+	}
+
 }

@@ -13,6 +13,8 @@ public abstract class TableModelHandler<RowType> {
 
 	protected boolean onRowRemoved(int row) {
 		return true;
-	}	
+	}
+	
+	abstract void gotoRow(int row);
 
 }
