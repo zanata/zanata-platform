@@ -9,7 +9,7 @@ import org.fedorahosted.flies.gwt.auth.SessionId;
 import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 import org.fedorahosted.flies.gwt.model.TransUnitId;
 
-public class EditingTranslationAction implements Action<EditingTranslationResult> {
+public class EditingTranslationAction implements DispatchAction<EditingTranslationResult> {
 	
 	private static final long serialVersionUID = 1L;
 

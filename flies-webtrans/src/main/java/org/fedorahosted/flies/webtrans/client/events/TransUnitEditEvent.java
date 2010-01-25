@@ -4,7 +4,9 @@ import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.TransUnitId;
 import org.fedorahosted.flies.gwt.rpc.HasTransUnitEditData;
 
-public class TransUnitEditEvent  extends SequenceEvent<TransUnitEditEventHandler> implements HasTransUnitEditData{
+import com.google.gwt.event.shared.GwtEvent;
+
+public class TransUnitEditEvent  extends GwtEvent<TransUnitEditEventHandler> implements HasTransUnitEditData{
 
 	private final TransUnitId transUnitId;
 	private final DocumentId documentId;
@@ -27,8 +29,7 @@ public class TransUnitEditEvent  extends SequenceEvent<TransUnitEditEventHandler
 		return TYPE;
 	}
 	
-	public TransUnitEditEvent(HasTransUnitEditData data, int sequence) {
-		super(sequence);
+	public TransUnitEditEvent(HasTransUnitEditData data) {
 		this.documentId = data.getDocumentId();
 		this.transUnitId = data.getTransUnitId();
 		this.sessionId = data.getSessionId();

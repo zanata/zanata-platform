@@ -1,19 +1,16 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
-import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.fedorahosted.flies.gwt.rpc.EnterWorkspace;
 import org.fedorahosted.flies.gwt.rpc.ExitWorkspace;
-import org.fedorahosted.flies.gwt.rpc.GetEventsAction;
-import org.fedorahosted.flies.gwt.rpc.GetEventsResult;
 import org.fedorahosted.flies.gwt.rpc.HasEnterWorkspaceData;
 import org.fedorahosted.flies.gwt.rpc.HasExitWorkspaceData;
 import org.fedorahosted.flies.gwt.rpc.HasTransUnitEditData;
 import org.fedorahosted.flies.gwt.rpc.HasTransUnitUpdatedData;
-import org.fedorahosted.flies.gwt.rpc.SessionEvent;
 import org.fedorahosted.flies.gwt.rpc.SessionEventData;
 import org.fedorahosted.flies.gwt.rpc.TransUnitEditing;
 import org.fedorahosted.flies.gwt.rpc.TransUnitUpdated;
@@ -25,18 +22,23 @@ import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
-public class EventProcessor extends Timer{
+import de.novanic.eventservice.client.event.Event;
+import de.novanic.eventservice.client.event.RemoteEventService;
+import de.novanic.eventservice.client.event.RemoteEventServiceFactory;
+import de.novanic.eventservice.client.event.domain.Domain;
+import de.novanic.eventservice.client.event.listener.RemoteEventListener;
+
+public class EventProcessor implements RemoteEventListener {
 
 	private final EventBus eventBus;
-	private final DispatchAsync dispatcher;
-	private final WorkspaceContext workspaceContext;
+//	private final DispatchAsync dispatcher;
+//	private final WorkspaceContext workspaceContext;
 	
 	private interface EventFactory<T extends GwtEvent<?>> {
-		T create(SessionEvent<?> event);
+		T create(SessionEventData event);
 	}
 	
 	private static class EventRegistry{
@@ -48,82 +50,107 @@ public class EventProcessor extends Timer{
 			// put any additional factories here
 			factories.put(TransUnitUpdated.class, new EventFactory<TransUnitUpdatedEvent>() {
 				@Override
-				public TransUnitUpdatedEvent create(SessionEvent<?> event) {
+				public TransUnitUpdatedEvent create(SessionEventData event) {
 					return new TransUnitUpdatedEvent(
-							(HasTransUnitUpdatedData) event.getData(), event.getSequence());
+							(HasTransUnitUpdatedData) event);
 				}
 			});
 			
 			factories.put(TransUnitEditing.class, new EventFactory<TransUnitEditEvent>() {
 				@Override
-				public TransUnitEditEvent create(SessionEvent<?> event) {
+				public TransUnitEditEvent create(SessionEventData event) {
 					return new TransUnitEditEvent(
-							(HasTransUnitEditData) event.getData(), event.getSequence());
+							(HasTransUnitEditData) event);
 				}
 			});
 			
 			factories.put(ExitWorkspace.class, new EventFactory<ExitWorkspaceEvent>() {
 				@Override
-				public ExitWorkspaceEvent create(SessionEvent<?> event) {
+				public ExitWorkspaceEvent create(SessionEventData event) {
 					return new ExitWorkspaceEvent(
-							(HasExitWorkspaceData) event.getData(), event.getSequence());
+							(HasExitWorkspaceData) event);
 				}
 			});
 			
 			factories.put(EnterWorkspace.class, new EventFactory<EnterWorkspaceEvent>() {
 				@Override
-				public EnterWorkspaceEvent create(SessionEvent<?> event) {
+				public EnterWorkspaceEvent create(SessionEventData event) {
 					return new EnterWorkspaceEvent(
-							(HasEnterWorkspaceData) event.getData(), event.getSequence());
+							(HasEnterWorkspaceData) event);
 				}
 			});
 		}
-		
-		public GwtEvent<?> getEvent(SessionEvent<?> sessionEvent) {
-			EventFactory<?> factory = factories.get(sessionEvent.getData().getClass());
+				
+		public GwtEvent<?> getEvent(SessionEventData sessionEventData) {
+			EventFactory<?> factory = factories.get(sessionEventData.getClass());
 			if(factories == null) {
 				Log.warn("Could not find factory for class " +
-						sessionEvent.getData().getClass());
+						sessionEventData.getClass());
 				return null;
 			}
-			return factory.create(sessionEvent);
+			return factory.create(sessionEventData);
 		}
 	}
 	
 	private final EventRegistry eventRegistry;
+	private RemoteEventService remoteEventService;
+	private ArrayList<AsyncCallback<Void>> waitingCallbacks = new ArrayList<AsyncCallback<Void>>();
+	private boolean registerSucceeded = false;
 	
 	@Inject
 	public EventProcessor(EventBus eventBus, CachingDispatchAsync dispatcher, WorkspaceContext workspaceContext) {
 		this.eventBus = eventBus;
-		this.dispatcher = dispatcher;
-		this.workspaceContext = workspaceContext;
+//		this.dispatcher = dispatcher;
+//		this.workspaceContext = workspaceContext;
 		this.eventRegistry = new EventRegistry();
+		remoteEventService = RemoteEventServiceFactory.getInstance().getRemoteEventService();
+		final Domain domain = workspaceContext.getDomain();
+		remoteEventService.addListener(domain, this, new AsyncCallback<Void>() {
+			@Override
+			public void onSuccess(Void result) {
+				Log.info("EventProcessor is now listening for events in the domain "+domain.getName());
+				for (AsyncCallback<Void> callback : waitingCallbacks)
+					callback.onSuccess(result);
+				waitingCallbacks = null;
+				registerSucceeded = true;
+			}
+			@Override
+			public void onFailure(Throwable e) {
+				Log.error(e.getMessage(), e);
+				for (AsyncCallback<Void> callback : waitingCallbacks)
+					callback.onFailure(e);
+				waitingCallbacks = null;
+				registerSucceeded = false;
+			}
+		});
 	}
 	
-	private int lastSequence = 0;
-	private boolean running = false;
+	/**
+	 * Calls back when the EventProcessor is registered with the domain.
+	 * Callback is immediate if already registered.
+	 * @param callback
+	 */
+	public void addCallback(AsyncCallback<Void> callback) {
+		if (waitingCallbacks != null)
+			waitingCallbacks.add(callback);
+		// we already got our callback, so pass the result straight back:
+		else if (registerSucceeded)
+			callback.onSuccess(null);
+		else
+			callback.onFailure(new Exception());
+	}
+	
+	
 	@Override
-	public void run() {
-		if(!running) {
-			running = true;
-			dispatcher.execute( new GetEventsAction(
-					workspaceContext.getProjectContainerId().getId(), workspaceContext.getLocaleId(), lastSequence), 
-						new AsyncCallback<GetEventsResult>() {
-							public void onSuccess(GetEventsResult result) {
-								for(SessionEvent<?> e : result.getEvents()) {
-									lastSequence = e.getSequence();
-									GwtEvent<?> event = eventRegistry.getEvent(e);
-									if( event != null) eventBus.fireEvent( event );
-								}
-								
-								running = false;
-							};
-							
-							public void onFailure(Throwable caught) {
-								running = false;
-							};
-						}
-			);
+	public void apply(Event event) {
+		//Log.info("received remote event "+event);
+		if (event instanceof SessionEventData) {
+			SessionEventData ed = (SessionEventData) event;
+			GwtEvent<?> gwtEvent = eventRegistry.getEvent(ed);
+			if(gwtEvent != null) 
+				eventBus.fireEvent(gwtEvent);
+			else
+				Log.warn("unknown event "+event);
 		}
 	}
 	

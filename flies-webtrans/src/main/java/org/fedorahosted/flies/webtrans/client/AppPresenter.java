@@ -8,25 +8,18 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.gwt.model.PersonId;
 import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceResult;
 import org.fedorahosted.flies.gwt.rpc.ExitWorkspaceAction;
 import org.fedorahosted.flies.gwt.rpc.ExitWorkspaceResult;
-import org.fedorahosted.flies.gwt.rpc.GetTranslatorList;
-import org.fedorahosted.flies.gwt.rpc.GetTranslatorListResult;
 import org.fedorahosted.flies.webtrans.client.Application.WindowResizeEvent;
 import org.fedorahosted.flies.webtrans.client.LoginPresenter.LoggedIn;
 import org.fedorahosted.flies.webtrans.client.auth.Identity;
-import org.fedorahosted.flies.webtrans.client.auth.LoginResult;
-import org.fedorahosted.flies.webtrans.client.auth.UserLogoutEvent;
-import org.fedorahosted.flies.webtrans.client.auth.UserLogoutEventHandler;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorPresenter;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -34,13 +27,9 @@ import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -95,8 +84,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		webTransEditorPresenter.bind();
 		topMenuPresenter.bind();
 		southPresenter.bind();
-		
-		eventProcessor.scheduleRepeating(3000);
 		
 		display.setNorth(topMenuPresenter.getDisplay().asWidget());
 		Widget south = southPresenter.getDisplay().asWidget();
@@ -204,37 +191,58 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		loginPresenter.ensureLoggedIn(new LoggedIn() {
 			@Override
 			public void onSuccess() {
-				dispatcher.execute(new ActivateWorkspaceAction(findProjectContainerId(), findLocaleId()), new AsyncCallback<ActivateWorkspaceResult>() {
-					@Override
-					public void onFailure(Throwable caught) {
-						loginPresenter.bind();
-						loginPresenter.ensureLoggedIn(new LoggedIn() {
+//				eventProcessor.addCallback(new AsyncCallback<Void>() {
+//					
+//					@Override
+//					public void onSuccess(Void result) {
+
+						
+						
+						Log.info("AppPresenter ActivateWorkspace requested");
+						
+						dispatcher.execute(new ActivateWorkspaceAction(findProjectContainerId(), findLocaleId()), new AsyncCallback<ActivateWorkspaceResult>() {
 							@Override
-							public void onSuccess() {
-//								dispatcher.execute(new ActivateWorkspaceAction(findProjectContainerId(), findLocaleId()), new AsyncCallback<ActivateWorkspaceResult>() {
-//									@Override
-//									public void onFailure(Throwable caught) {
-//									}
-//									@Override
-//									public void onSuccess(ActivateWorkspaceResult result) {
-//										setWorkspaceName(result.getWorkspaceName());
-//										setLocaleName(result.getLocaleName());
-										bindApp();
-//									}
-//								});
-								}
-							});
-						}
-					@Override
-					public void onSuccess(ActivateWorkspaceResult result) {
-						setWorkspaceName(result.getWorkspaceName());
-						setLocaleName(result.getLocaleName());
-						bindApp();
+							public void onFailure(Throwable caught) {
+								loginPresenter.bind();
+								loginPresenter.ensureLoggedIn(new LoggedIn() {
+									@Override
+									public void onSuccess() {
+//										dispatcher.execute(new ActivateWorkspaceAction(findProjectContainerId(), findLocaleId()), new AsyncCallback<ActivateWorkspaceResult>() {
+//											@Override
+//											public void onFailure(Throwable caught) {
+//											}
+//											@Override
+//											public void onSuccess(ActivateWorkspaceResult result) {
+//												setWorkspaceName(result.getWorkspaceName());
+//												setLocaleName(result.getLocaleName());
+												bindApp();
+//											}
+//										});
+									}
+								});
+							}
+							@Override
+							public void onSuccess(ActivateWorkspaceResult result) {
+								Log.info("AppPresenter ActivateWorkspace - success");
+								setWorkspaceName(result.getWorkspaceName());
+								setLocaleName(result.getLocaleName());
+								bindApp();
+							}
+						});
+						
+						
+						
+						
 					}
-				});
-			}
+					
+//					@Override
+//					public void onFailure(Throwable caught) {
+//						// nil
+//					}
+//				});
+//				
+//			}
 		});
-		
 	}
 
 	private void setWorkspaceName(String workspaceName) {

@@ -105,9 +105,6 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 		registerHandler(eventBus.addHandler(ExitWorkspaceEvent.getType(), new ExitWorkspaceEventHandler() {
 			@Override
 			public void onExitWorkspace(ExitWorkspaceEvent event) {
-				if( event.getOffset() < latestStatusCountOffset){
-					return;
-				}
 				loadTranslatorList();
 			}
 		}));
@@ -115,9 +112,6 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 		registerHandler(eventBus.addHandler(EnterWorkspaceEvent.getType(), new EnterWorkspaceEventHandler() {
 			@Override
 			public void onEnterWorkspace(EnterWorkspaceEvent event) {
-				if( event.getOffset() < latestStatusCountOffset){
-					return;
-				}
 				loadTranslatorList();
 			}
 		}));

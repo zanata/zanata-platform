@@ -15,7 +15,6 @@ import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -23,7 +22,6 @@ public class ProjectStatusPresenter extends TranslationStatsBarPresenter{
 
 	private final DispatchAsync dispatcher;
 	private final WorkspaceContext workspaceContext;
-	private int latestStatusCountOffset = -1;
 
 	@Inject
 	public ProjectStatusPresenter (Display display, EventBus eventBus,
@@ -47,11 +45,6 @@ public class ProjectStatusPresenter extends TranslationStatsBarPresenter{
 		registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler() {
 			@Override
 			public void onTransUnitUpdated(TransUnitUpdatedEvent event) {
-				
-				if( event.getOffset() <= latestStatusCountOffset){
-					return;
-				}
-				
 				int fuzzyCount = getDisplay().getFuzzy();
 				int translatedCount = getDisplay().getTranslated();
 				int untranslatedCount = getDisplay().getUntranslated();
@@ -134,7 +127,6 @@ public class ProjectStatusPresenter extends TranslationStatsBarPresenter{
 					untranslated = untranslated + doc.getUntranslated();
 				}
 				getDisplay().setStatus((int) fuzzy, (int)translated, (int)untranslated);
-				latestStatusCountOffset = result.getSequence();
 			}
 	});
 	}	

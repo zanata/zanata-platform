@@ -6,7 +6,7 @@ import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.gwt.model.PersonId;
 import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 
-public class ExitWorkspaceAction implements Action<ExitWorkspaceResult>{
+public class ExitWorkspaceAction implements DispatchAction<ExitWorkspaceResult>{
 
 	private static final long serialVersionUID = 1L;
 	

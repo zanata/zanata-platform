@@ -24,6 +24,19 @@
 		<!-- proxyPath, proxyPort, maxFileUploadSize -->
 	</servlet>
 
+	<servlet>
+	  <servlet-name>EventService</servlet-name>
+	  <servlet-class>
+	    de.novanic.eventservice.service.EventServiceImpl
+	  </servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+	  <servlet-name>EventService</servlet-name>
+	  <url-pattern>/org.fedorahosted.flies.webtrans.Application/gwteventservice</url-pattern>
+	</servlet-mapping>
+
+
 	<servlet-mapping>
 		<servlet-name>proxy</servlet-name>
 		<url-pattern>/flies/*</url-pattern>

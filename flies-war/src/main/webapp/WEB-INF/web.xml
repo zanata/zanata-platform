@@ -109,6 +109,72 @@
       <load-on-startup>1</load-on-startup>
    </servlet>
 
+
+   <!-- GWTEventService -->
+   <servlet>
+	  <servlet-name>EventService</servlet-name>
+	  <servlet-class>
+	    de.novanic.eventservice.service.EventServiceImpl
+	  </servlet-class>
+   </servlet>
+   
+   
+   <!-- GWTEventService -->
+   <servlet-mapping>
+	  <servlet-name>EventService</servlet-name>
+	  <url-pattern>/org.fedorahosted.flies.webtrans.Application/gwteventservice</url-pattern>
+   </servlet-mapping>
+   
+   
+<!-- http://lists.jboss.org/pipermail/errai-dev/2010-January/000004.html
+ -->
+    <servlet>
+        <servlet-name>ErraiAutoServlet</servlet-name>
+        <servlet-class>org.jboss.errai.bus.server.servlet.ErraiAutoServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ErraiAutoServlet</servlet-name>
+        <url-pattern>*.erraiBus</url-pattern>
+    </servlet-mapping>
+
+   
+   
+   
+   <!--  Errai 
+   <servlet>
+        <servlet-name>ErraiServlet</servlet-name>
+        <servlet-class>org.jboss.errai.bus.server.servlet.DefaultBlockingServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+   </servlet>
+	
+   <servlet-mapping>
+        <servlet-name>ErraiServlet</servlet-name>
+        <url-pattern>*.erraiBus</url-pattern>
+   </servlet-mapping>
+   -->
+   
+    <context-param>
+        <param-name>errai.properties</param-name>
+        <param-value>/WEB-INF/errai.properties</param-value>
+    </context-param>
+
+<!-- 
+    <context-param>
+        <param-name>login.config</param-name>
+        <param-value>/WEB-INF/login.config</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>users.properties</param-name>
+        <param-value>/WEB-INF/users.properties</param-value>
+    </context-param>
+   
+ -->
+   
+   
+
    <servlet-mapping>
       <servlet-name>Faces Servlet</servlet-name>
       <url-pattern>*.seam</url-pattern>

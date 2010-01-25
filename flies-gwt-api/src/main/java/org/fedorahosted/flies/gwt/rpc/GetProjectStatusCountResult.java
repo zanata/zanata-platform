@@ -2,24 +2,24 @@ package org.fedorahosted.flies.gwt.rpc;
 
 import java.util.ArrayList;
 
-import org.fedorahosted.flies.gwt.model.ProjectContainerId;
-import org.fedorahosted.flies.gwt.model.DocumentStatus;
+import net.customware.gwt.dispatch.shared.Result;
 
-public class GetProjectStatusCountResult implements SequenceResult {
+import org.fedorahosted.flies.gwt.model.DocumentStatus;
+import org.fedorahosted.flies.gwt.model.ProjectContainerId;
+
+public class GetProjectStatusCountResult implements Result {
 	private static final long serialVersionUID = 1L;
 	
 	private ProjectContainerId projectContainerId;
 	private ArrayList<DocumentStatus> status;
-	private int offset;
 	
 	@SuppressWarnings("unused")
 	private GetProjectStatusCountResult() {
 	}
 	
-	public GetProjectStatusCountResult(ProjectContainerId projectContainerId, ArrayList<DocumentStatus> status, int offset) {
+	public GetProjectStatusCountResult(ProjectContainerId projectContainerId, ArrayList<DocumentStatus> status) {
 		this.projectContainerId = projectContainerId;
 		this.status = status;
-		this.offset = offset;
 	}
 	
 	public ProjectContainerId getProjectContainerId() {
@@ -29,10 +29,5 @@ public class GetProjectStatusCountResult implements SequenceResult {
 	public ArrayList<DocumentStatus> getStatus() {
 		return status;
 	}
-	
-	@Override
-	public int getSequence() {
-		return offset;
-	}
-	
+		
 }

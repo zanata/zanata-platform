@@ -3,8 +3,10 @@ package org.fedorahosted.flies.webtrans.client.events;
 import org.fedorahosted.flies.gwt.model.PersonId;
 import org.fedorahosted.flies.gwt.rpc.HasEnterWorkspaceData;
 
+import com.google.gwt.event.shared.GwtEvent;
 
-public class EnterWorkspaceEvent extends SequenceEvent<EnterWorkspaceEventHandler> implements HasEnterWorkspaceData{
+
+public class EnterWorkspaceEvent extends GwtEvent<EnterWorkspaceEventHandler> implements HasEnterWorkspaceData{
 
 		private final PersonId personId;
 		
@@ -25,8 +27,7 @@ public class EnterWorkspaceEvent extends SequenceEvent<EnterWorkspaceEventHandle
 			return TYPE;
 		}
 		
-		public EnterWorkspaceEvent (HasEnterWorkspaceData data, int sequence) {
-			super(sequence);
+		public EnterWorkspaceEvent (HasEnterWorkspaceData data) {
 			this.personId = data.getPersonId();
 		}
 

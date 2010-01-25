@@ -11,6 +11,7 @@ import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.client.rpc.ErrorHandler;
 import org.fedorahosted.flies.webtrans.client.rpc.SeamDispatchAsync;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -115,6 +116,7 @@ public class LoginPresenter extends WidgetPresenter<LoginPresenter.Display> {
 		identity.trySilentLogin(new LoginResult() {
 			@Override
 			public void onSuccess() {
+				Log.info("LoginPresenter.ensureLoggedIn - success");
 				callback.onSuccess();
 			}
 			

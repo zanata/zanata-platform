@@ -67,7 +67,7 @@ public class GetProjectStatusCountHandler implements ActionHandler<GetProjectSta
 						
 			TranslationWorkspace workspace = translationWorkspaceManager.getWorkspace(action.getProjectContainerId().getId(), action.getLocaleId() );
 			
-			return new GetProjectStatusCountResult(action.getProjectContainerId(), docliststatus, workspace.getSequence());
+			return new GetProjectStatusCountResult(action.getProjectContainerId(), docliststatus);
 
 		}
 

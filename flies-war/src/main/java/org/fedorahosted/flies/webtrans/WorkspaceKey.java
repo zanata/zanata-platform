@@ -43,4 +43,9 @@ final class WorkspaceKey{
 		return projectContainerId;
 	}
 	
+	@Override
+	public String toString() {
+		return localeId.toString()+":"+projectContainerId;
+	}
+	
 }

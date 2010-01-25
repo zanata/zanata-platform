@@ -45,7 +45,7 @@ public class ActivateWorkspaceHandler implements ActionHandler<ActivateWorkspace
 		
 		HProjectContainer hProjectContainer = (HProjectContainer) session.get(HProjectContainer.class, action.getProjectContainerId().getId());
 		
-		//Send EnterWorkspace event to client 
+		//Send EnterWorkspace event to clients
 		EnterWorkspace event = new EnterWorkspace(new PersonId(FliesIdentity.instance().getPrincipal().getName()));
 		workspace.publish(event);
 		

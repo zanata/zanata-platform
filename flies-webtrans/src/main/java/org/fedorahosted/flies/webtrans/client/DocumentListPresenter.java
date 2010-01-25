@@ -48,7 +48,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 	private final DispatchAsync dispatcher;
     private final ProjectStatusPresenter prStatusPresenter;
     private final WorkspaceContext workspaceContext;
-    private int latestStatusCountOffset = -1;
     
 	@Inject
 	public DocumentListPresenter(Display display, EventBus eventBus,
@@ -59,7 +58,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 		this.workspaceContext = workspaceContext;
 		this.dispatcher = dispatcher;
 		this.prStatusPresenter = prStatusPresenter;
-		GWT.log("DocumentListPresenter()", null);
+		Log.info("DocumentListPresenter()");
 		loadDocsList(workspaceContext.getProjectContainerId());
 	}
 
@@ -88,11 +87,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 		registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler() {
 			@Override
 			public void onTransUnitUpdated(TransUnitUpdatedEvent event) {
-				
-				if( event.getOffset() < latestStatusCountOffset){
-					return;
-				}
-
 				DocumentStatus doc = statuscache.get(event.getDocumentId());
 				ContentState status = event.getPreviousStatus();
 				doc.setStatus(status, doc.getStatus(status)-1);
@@ -224,8 +218,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 					TreeNode<DocName> node = display.getTree().getNodeByKey(doc.getDocumentid());
 					node.setName(node.getObject().getName() + " ("+ calPercentage(doc.getUntranslated(), doc.getFuzzy(), doc.getTranslated()) +"%)");
 				}
-			
-				latestStatusCountOffset = result.getSequence();
 			}
 	});
 	}

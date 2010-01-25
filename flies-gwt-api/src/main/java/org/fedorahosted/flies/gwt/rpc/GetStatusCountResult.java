@@ -1,8 +1,10 @@
 package org.fedorahosted.flies.gwt.rpc;
 
+import net.customware.gwt.dispatch.shared.Result;
+
 import org.fedorahosted.flies.gwt.model.DocumentId;
 
-public class GetStatusCountResult implements SequenceResult {
+public class GetStatusCountResult implements Result {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -10,18 +12,16 @@ public class GetStatusCountResult implements SequenceResult {
 	private long untranslated;
 	private long fuzzy;
 	private long translated;
-	private int sequence;
 	
 	@SuppressWarnings("unused")
 	private GetStatusCountResult()	{
 	}
 	
-	public GetStatusCountResult(DocumentId documentId, long untranslated, long fuzzy, long translated, int sequence) {
+	public GetStatusCountResult(DocumentId documentId, long untranslated, long fuzzy, long translated) {
 		this.documentId = documentId;
 		this.untranslated = untranslated;
 		this.fuzzy = fuzzy;
 		this.translated = translated;
-		this.sequence = sequence;
 	}
 	
 	public DocumentId getDocumentId() {
@@ -38,11 +38,6 @@ public class GetStatusCountResult implements SequenceResult {
 	
 	public long getTranslated() {
 		return translated;
-	}
-	
-	@Override
-	public int getSequence() {
-		return sequence;
 	}
 	
 }

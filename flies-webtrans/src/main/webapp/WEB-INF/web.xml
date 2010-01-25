@@ -5,6 +5,18 @@
 <web-app>
 	<display-name>Flies WebTrans GWT Application</display-name>
 
+	<servlet>
+	  <servlet-name>EventService</servlet-name>
+	  <servlet-class>
+	    de.novanic.eventservice.service.EventServiceImpl
+	  </servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+	  <servlet-name>EventService</servlet-name>
+	  <url-pattern>/org.fedorahosted.flies.webtrans.Application/gwteventservice</url-pattern>
+	</servlet-mapping>
+
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>

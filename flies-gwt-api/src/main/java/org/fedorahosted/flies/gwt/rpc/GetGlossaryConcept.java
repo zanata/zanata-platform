@@ -5,7 +5,7 @@ import net.customware.gwt.dispatch.shared.Action;
 import org.fedorahosted.flies.common.LocaleId;
 
 
-public class GetGlossaryConcept  implements Action<GetGlossaryConceptResult> {
+public class GetGlossaryConcept  implements DispatchAction<GetGlossaryConceptResult> {
 
 	private static final long serialVersionUID = 1L;
 	private LocaleId localeId;

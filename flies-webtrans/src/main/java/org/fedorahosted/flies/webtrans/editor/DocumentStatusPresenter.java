@@ -24,7 +24,6 @@ public class DocumentStatusPresenter extends TranslationStatsBarPresenter {
 	
 	private final WorkspaceContext workspaceContext;
 	private final DispatchAsync dispatcher;
-	private int latestStatusCountOffset = -1;
 	private DocumentId documentid;
 	private HandlerRegistration updateHandlerRegistration;
 	
@@ -86,7 +85,6 @@ public class DocumentStatusPresenter extends TranslationStatsBarPresenter {
 			@Override
 			public void onSuccess(GetStatusCountResult result) {
 				getDisplay().setStatus((int) result.getFuzzy(), (int)result.getTranslated(), (int)result.getUntranslated());
-				latestStatusCountOffset = result.getSequence();
 				updateHandlerRegistration = eventBus.addHandler(TransUnitUpdatedEvent.getType(), updateHandler);
 				// TODO move this registration to before getting the count
 			}
@@ -102,9 +100,6 @@ public class DocumentStatusPresenter extends TranslationStatsBarPresenter {
 				return;
 			}
 			if(!event.getDocumentId().equals(documentid)){
-				return;
-			}
-			else if( event.getOffset() <= latestStatusCountOffset){
 				return;
 			}
 			

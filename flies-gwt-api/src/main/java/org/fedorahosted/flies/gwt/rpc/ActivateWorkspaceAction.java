@@ -7,7 +7,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 import net.customware.gwt.dispatch.shared.Action;
 
-public class ActivateWorkspaceAction implements Action<ActivateWorkspaceResult> {
+public class ActivateWorkspaceAction implements DispatchAction<ActivateWorkspaceResult> {
 	
 	private static final long serialVersionUID = 1L;
 

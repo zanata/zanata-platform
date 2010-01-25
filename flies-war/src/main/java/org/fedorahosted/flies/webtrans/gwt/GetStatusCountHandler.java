@@ -7,7 +7,6 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.fedorahosted.flies.common.ContentState;
-import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.core.model.StatusCount;
 import org.fedorahosted.flies.gwt.rpc.GetStatusCount;
 import org.fedorahosted.flies.gwt.rpc.GetStatusCountResult;
@@ -63,8 +62,7 @@ public class GetStatusCountHandler implements ActionHandler<GetStatusCount, GetS
 		
 		return new GetStatusCountResult(
 				action.getDocumentId(), 
-				stat.getNew(),stat.getNeedReview(), stat.getApproved(), 
-				workspace.getSequence());
+				stat.getNew(),stat.getNeedReview(), stat.getApproved());
 
 	}
 

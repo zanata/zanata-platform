@@ -3,7 +3,9 @@ package org.fedorahosted.flies.webtrans.client.events;
 import org.fedorahosted.flies.gwt.model.PersonId;
 import org.fedorahosted.flies.gwt.rpc.HasExitWorkspaceData;
 
-public class ExitWorkspaceEvent extends SequenceEvent<ExitWorkspaceEventHandler> implements HasExitWorkspaceData{
+import com.google.gwt.event.shared.GwtEvent;
+
+public class ExitWorkspaceEvent extends GwtEvent<ExitWorkspaceEventHandler> implements HasExitWorkspaceData{
 
 	private final PersonId personId;
 	
@@ -24,8 +26,7 @@ public class ExitWorkspaceEvent extends SequenceEvent<ExitWorkspaceEventHandler>
 		return TYPE;
 	}
 	
-	public ExitWorkspaceEvent (HasExitWorkspaceData data, int sequence) {
-		super(sequence);
+	public ExitWorkspaceEvent (HasExitWorkspaceData data) {
 		this.personId = data.getPersonId();
 	}
 

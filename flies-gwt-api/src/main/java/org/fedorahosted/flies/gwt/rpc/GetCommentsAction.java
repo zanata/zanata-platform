@@ -8,7 +8,7 @@ import org.fedorahosted.flies.gwt.model.TransUnitId;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class GetCommentsAction implements Action<GetCommentsResult> {
+public class GetCommentsAction implements DispatchAction<GetCommentsResult> {
 
 	private static final long serialVersionUID = 1L;
 

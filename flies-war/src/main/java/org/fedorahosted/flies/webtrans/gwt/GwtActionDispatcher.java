@@ -1,6 +1,5 @@
 package org.fedorahosted.flies.webtrans.gwt;
 
-import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.DefaultDispatch;
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.ActionException;
@@ -11,7 +10,6 @@ import org.fedorahosted.flies.gwt.auth.AuthorizationError;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -44,7 +42,6 @@ public class GwtActionDispatcher {
 		actionHandlerRegistry.addHandler(new GetStatusCountHandler());
 		actionHandlerRegistry.addHandler(new GetProjectStatusCountHandler());
 		actionHandlerRegistry.addHandler(new GetTranslatorListHandler());
-		actionHandlerRegistry.addHandler(new GetEventsActionHandler());
 		actionHandlerRegistry.addHandler(new GetGlossaryConceptHandler());
 		actionHandlerRegistry.addHandler(new GetCommentsActionHandler());
 		actionHandlerRegistry.addHandler(new EditTransUnitHandler());

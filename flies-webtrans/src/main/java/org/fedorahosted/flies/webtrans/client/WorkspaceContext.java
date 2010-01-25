@@ -13,22 +13,36 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
+import de.novanic.eventservice.client.event.domain.Domain;
+import de.novanic.eventservice.client.event.domain.DomainFactory;
+
 public class WorkspaceContext {
 	private final ProjectContainerId projectContainerId;
 	private final LocaleId localeId;
 
 	private String workspaceName;
 	private String localeName;
-
+	private final Domain domain;
+	
 	private final DispatchAsync dispatcher;
 	
 	@Inject
 	public WorkspaceContext(CachingDispatchAsync dispatcher) {
 		this.projectContainerId = findProjectContainerId();
 		this.localeId = findLocaleId();
+		this.domain = DomainFactory.getDomain(toString());
 		this.dispatcher = dispatcher;
 	}
-
+	
+	public Domain getDomain() {
+		return domain;
+	}
+	
+	@Override
+	public String toString() {
+		return localeId.toString()+":"+projectContainerId.toString();
+	}
+	
 	private static LocaleId findLocaleId() {
 		String localeId = Window.Location.getParameter("localeId");
 		return localeId == null ? null : new LocaleId(localeId);

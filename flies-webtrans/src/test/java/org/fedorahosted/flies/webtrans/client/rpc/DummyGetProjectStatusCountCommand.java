@@ -24,8 +24,7 @@ public class DummyGetProjectStatusCountCommand implements Command {
 	public void execute() {
 		callback.onSuccess(new GetProjectStatusCountResult(
 				action.getProjectContainerId(), 
-				new ArrayList<DocumentStatus>(), 
-				0));
+				new ArrayList<DocumentStatus>()));
 	}
 
 }

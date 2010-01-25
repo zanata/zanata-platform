@@ -4,11 +4,10 @@ import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.TransUnitId;
 import org.fedorahosted.flies.gwt.rpc.HasTransUnitUpdatedData;
-import org.fedorahosted.flies.gwt.rpc.TransUnitUpdated;
 
 import com.google.gwt.event.shared.GwtEvent;
 
-public class TransUnitUpdatedEvent extends SequenceEvent<TransUnitUpdatedEventHandler> implements HasTransUnitUpdatedData{
+public class TransUnitUpdatedEvent extends GwtEvent<TransUnitUpdatedEventHandler> implements HasTransUnitUpdatedData{
 
 	private final TransUnitId transUnitId;
 	private final DocumentId documentId;
@@ -32,8 +31,7 @@ public class TransUnitUpdatedEvent extends SequenceEvent<TransUnitUpdatedEventHa
 		return TYPE;
 	}
 	
-	public TransUnitUpdatedEvent(HasTransUnitUpdatedData data, int sequence) {
-		super(sequence);
+	public TransUnitUpdatedEvent(HasTransUnitUpdatedData data) {
 		this.documentId = data.getDocumentId();
 		this.newStatus = data.getNewStatus();
 		this.previousStatus = data.getPreviousStatus();
