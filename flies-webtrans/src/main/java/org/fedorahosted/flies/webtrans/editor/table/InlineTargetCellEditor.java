@@ -153,6 +153,22 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 					}
 					gotoRow(row);
 				}
+				
+				if(event.isAltKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN) {
+					cancel();
+					if(row < 49 && row >= 0) {
+						row = row +1;
+					}
+					gotoNextFuzzy(row);
+				}
+				
+				if(event.isAltKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEUP) {
+					cancel();
+					if(row <= 49 && row > 0) {
+						row = row -1;
+					}
+					gotoPreFuzzy(row);
+				}
 			}
 
 			
@@ -180,6 +196,14 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 
 	private void gotoRow(int row) {
 			editRowCallback.gotoRow(row);
+	}
+	
+	private void gotoNextFuzzy(int row) {
+		editRowCallback.gotoNextFuzzy(row);
+	}
+	
+	private void gotoPreFuzzy(int row) {
+		editRowCallback.gotoPreFuzzy(row);
 	}
 
 	private void restoreView() {
@@ -297,5 +321,4 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 	protected boolean onCancel() {
 		return true;
 	}
-
 }

@@ -171,6 +171,22 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 	                 tableModel.gotoRow(row);
 	             } 
 	         }
+
+			@Override
+			public void gotoNextFuzzy(int row) {
+				 if (tableModel instanceof RedirectingCachedTableModel) {
+	                 tableModel.gotoNextFuzzy(row);
+	             } 
+				
+			}
+
+			@Override
+			public void gotoPreFuzzy(int row) {
+				 if (tableModel instanceof RedirectingCachedTableModel) {
+	                 tableModel.gotoPreFuzzy(row);
+	             } 
+				
+			}
 		};
 		targetColumnDefinition.setCellEditor(new InlineTargetCellEditor(cancelCallBack,transValueCallBack
 		));

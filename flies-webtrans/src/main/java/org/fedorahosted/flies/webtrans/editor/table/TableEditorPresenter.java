@@ -75,6 +75,9 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		void setContentFilter(ContentFilter<TransUnit> filter);
 		void clearContentFilter();
 		void gotoRow(int row);
+		void gotoNextFuzzy(int row);
+		void gotoPreFuzzy(int row);
+		int getCurrentPageNumber();
 	}
 
 	private DocumentId documentId;
@@ -296,6 +299,17 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		void gotoRow(int row) {
 			display.gotoRow(row);
 		}
+		
+		@Override
+		void gotoNextFuzzy(int row) {
+			display.gotoNextFuzzy(row);
+		}
+		
+		@Override
+		void gotoPreFuzzy(int row) {
+			display.gotoPreFuzzy(row);
+		}
+		
 	};
 	
 	
@@ -303,6 +317,11 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		return currentSelection;
 	}
 	
+	public int getCurrentRow() {
+		Long id = currentSelection.getId().getValue();
+		int currentPage = display.getCurrentPageNumber();
+		return (int)(id-currentPage*50);
+	}
 	
 	@Override
 	protected void onPlaceRequest(PlaceRequest request) {

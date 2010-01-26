@@ -1,9 +1,12 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import org.fedorahosted.flies.webtrans.editor.table.TableEditorView;
+
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
-public class TransNavToolbarView extends HorizontalPanel {
+public class TransNavToolbarView extends HorizontalPanel implements TransNavToolbarPresenter.Display{
 	
 	private Button
 						nextEntryButton, prevEntryButton, 
@@ -11,7 +14,6 @@ public class TransNavToolbarView extends HorizontalPanel {
 						nextUntranslatedButton, prevUntranslatedButton;
 	
 	public TransNavToolbarView() {
-		super();
 		
 		prevEntryButton = new Button("Prev Entry"); 
 		nextEntryButton = new Button("Next Entry");
@@ -26,30 +28,51 @@ public class TransNavToolbarView extends HorizontalPanel {
 		add(nextFuzzyButton);
 		add(prevUntranslatedButton);
 		add(nextUntranslatedButton);
+	}
+	@Override
+	public Button getNextEntryButton() {
+		// TODO Auto-generated method stub
+		return nextEntryButton;
+	}
+	@Override
+	public Button getNextFuzzyButton() {
+		// TODO Auto-generated method stub
+		return nextFuzzyButton;
+	}
+	@Override
+	public Button getNextUntranslatedButton() {
+		// TODO Auto-generated method stub
+		return nextUntranslatedButton;
+	}
+	@Override
+	public Button getPrevEntryButton() {
+		// TODO Auto-generated method stub
+		return prevEntryButton;
+	}
+	@Override
+	public Button getPrevFuzzyButton() {
+		// TODO Auto-generated method stub
+		return prevFuzzyButton;
+	}
+	@Override
+	public Button getPrevUntranslatedButton() {
+		// TODO Auto-generated method stub
+		return nextUntranslatedButton;
+	}
+	@Override
+	public Widget asWidget() {
+		// TODO Auto-generated method stub
+		return this;
+	}
+	@Override
+	public void startProcessing() {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void stopProcessing() {
+		// TODO Auto-generated method stub
 		
 	}
 
-	public Button getPrevEntryButton() {
-		return prevEntryButton;
-	}
-	
-	public Button getNextEntryButton() {
-		return nextEntryButton;
-	}
-	
-	public Button getPrevFuzzyButton() {
-		return prevFuzzyButton;
-	}
-	
-	public Button getNextFuzzyButton() {
-		return nextFuzzyButton;
-	}
-	
-	public Button getPrevUntranslatedButton() {
-		return prevUntranslatedButton;
-	}
-	
-	public Button getNextUntranslatedButton() {
-		return nextUntranslatedButton;
-	}
 }

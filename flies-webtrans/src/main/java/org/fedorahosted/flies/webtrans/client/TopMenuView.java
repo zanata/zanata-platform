@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.webtrans.client;
 
 import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -25,8 +26,8 @@ public class TopMenuView extends HorizontalPanel implements TopMenuPresenter.Dis
 
 		//logoutLink = new Hyperlink("Logout", "Logout");
 		
-		transNavToolbarView = new TransNavToolbarView();
-		rightMenu.add(transNavToolbarView);
+		//transNavToolbarView = new TransNavToolbarView();
+		//rightMenu.add(transNavToolbarView);
 
 		rightMenu.add(userLabel);
 		//rightMenu.add(logoutLink);
@@ -65,6 +66,12 @@ public class TopMenuView extends HorizontalPanel implements TopMenuPresenter.Dis
 
 	@Override
 	public void stopProcessing() {
+	}
+
+	@Override
+	public HasWidgets getWidgets() {
+		// TODO Auto-generated method stub
+		return rightMenu;
 	}
 
 }

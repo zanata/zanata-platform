@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.webtrans.editor.table;
 
 
+import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
 import org.fedorahosted.flies.webtrans.editor.filter.ContentFilter;
@@ -154,6 +155,57 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements
 	@Override
 	public void gotoRow(int row) {
 		editCell(row, 1);
+	}
+	
+	@Override
+	public int getCurrentPageNumber() {
+		return this.getCurrentPage();
+	}
+	
+	@Override
+	public void gotoNextFuzzy(int row) {
+		//remember the current row position
+		int currow  = row-1;
+		while(row < 49) {
+			if(getRowValue(row).getStatus()==ContentState.NeedReview) {
+				editCell(row, 1);
+				break;
+			}
+			else {
+				row = row + 1;
+			}
+		}
+		//If the last row is not fuzzy, we will keep the editor in current row open
+		if(row == 49 && getRowValue(row).getStatus() !=ContentState.NeedReview) {
+			editCell(currow,1);
+		}
+		else if(row == 49 && getRowValue(row).getStatus() ==ContentState.NeedReview) {
+			editCell(row, 1);
+		}
+		
+		
+	}
+	
+	@Override
+	public void gotoPreFuzzy(int row) {
+		//remember the current row position
+		int currow  = row+1;
+		while(row > 0) {
+			if(getRowValue(row).getStatus()==ContentState.NeedReview) {
+				editCell(row, 1);
+				break;
+			}
+			else {
+				row = row - 1;
+			}
+		}
+		//If the First Row is not fuzzy, we will keep the editor in current row open
+		if(row == 0 && getRowValue(row).getStatus() !=ContentState.NeedReview) {
+			editCell(currow,1);
+		}else if(row == 0 && getRowValue(row).getStatus() ==ContentState.NeedReview) {
+			editCell(row, 1);
+		}
+		
 	}
 
 }

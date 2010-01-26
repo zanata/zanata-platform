@@ -6,7 +6,8 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import com.google.gwt.core.client.GWT;
+import org.fedorahosted.flies.webtrans.editor.table.TableEditorPresenter;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
@@ -24,7 +25,7 @@ public class TransNavToolbarPresenter extends WidgetPresenter<TransNavToolbarPre
 	}
 	
 	@Inject
-	public TransNavToolbarPresenter(Display display, EventBus eventBus, WorkspaceContext workspaceContext) {
+	public TransNavToolbarPresenter(Display display, EventBus eventBus, WorkspaceContext workspaceContext, TableEditorPresenter webTransTablePresenter) {
 		super(display, eventBus);
 	}
 
@@ -38,42 +39,42 @@ public class TransNavToolbarPresenter extends WidgetPresenter<TransNavToolbarPre
 		display.getPrevEntryButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				GWT.log("prevEntryButton is clicked.", null);
+
 			}
 		});
 		
 		display.getNextEntryButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				//
+
 			}
 		});	
 		
 		display.getPrevFuzzyButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				//
+
 			}
 		});
 		
 		display.getNextFuzzyButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				//
+
 			}
 		});		
 		
 		display.getPrevUntranslatedButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				//
+				
 			}
 		});
 		
 		display.getNextUntranslatedButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				//
+				
 			}
 		});		
 		

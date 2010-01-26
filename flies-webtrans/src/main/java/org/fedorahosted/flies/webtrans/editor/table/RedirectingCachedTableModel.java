@@ -23,9 +23,18 @@ public class RedirectingCachedTableModel<RowType> extends CachedTableModel<RowTy
 	}
 
 	public void gotoRow(int row) {
-		// TODO Auto-generated method stub
 		if(tableModel != null)
 			tableModel.gotoRow(row);
+	}
+	
+	public void gotoNextFuzzy(int row) {
+		if(tableModel != null)
+			tableModel.gotoNextFuzzy(row);
+	}
+	
+	public void gotoPreFuzzy(int row) {
+		if(tableModel != null)
+			tableModel.gotoPreFuzzy(row);
 	}
 
 }
