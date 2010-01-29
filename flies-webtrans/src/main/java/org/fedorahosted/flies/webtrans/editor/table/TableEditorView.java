@@ -1,15 +1,10 @@
 package org.fedorahosted.flies.webtrans.editor.table;
 
 
-import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
 import org.fedorahosted.flies.webtrans.editor.filter.ContentFilter;
 
-import com.google.gwt.event.dom.client.HasKeyUpHandlers;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -163,49 +158,9 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements
 	}
 	
 	@Override
-	public void gotoNextFuzzy(int row) {
-		//remember the current row position
-		int currow  = row-1;
-		while(row < 49) {
-			if(getRowValue(row).getStatus()==ContentState.NeedReview) {
-				editCell(row, 1);
-				break;
-			}
-			else {
-				row = row + 1;
-			}
-		}
-		//If the last row is not fuzzy, we will keep the editor in current row open
-		if(row == 49 && getRowValue(row).getStatus() !=ContentState.NeedReview) {
-			editCell(currow,1);
-		}
-		else if(row == 49 && getRowValue(row).getStatus() ==ContentState.NeedReview) {
-			editCell(row, 1);
-		}
-		
-		
-	}
-	
-	@Override
-	public void gotoPreFuzzy(int row) {
-		//remember the current row position
-		int currow  = row+1;
-		while(row > 0) {
-			if(getRowValue(row).getStatus()==ContentState.NeedReview) {
-				editCell(row, 1);
-				break;
-			}
-			else {
-				row = row - 1;
-			}
-		}
-		//If the First Row is not fuzzy, we will keep the editor in current row open
-		if(row == 0 && getRowValue(row).getStatus() !=ContentState.NeedReview) {
-			editCell(currow,1);
-		}else if(row == 0 && getRowValue(row).getStatus() ==ContentState.NeedReview) {
-			editCell(row, 1);
-		}
-		
+	public TransUnit getTransUnitValue(int row) {
+		// TODO Auto-generated method stub
+		return this.getRowValue(row);
 	}
 
 }

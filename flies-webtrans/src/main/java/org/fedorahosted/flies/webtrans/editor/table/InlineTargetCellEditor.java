@@ -138,7 +138,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 					cancel();
 				}
 				
-				if(event.isControlKeyDown() && event.isShiftKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN) {
+				if(event.isControlKeyDown() && event.getNativeKeyCode() == 'E') {
 					cancel();
 					if(row < 49 && row >= 0) {
 						row = row +1;
@@ -146,7 +146,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 					gotoRow(row);
 				}
 				
-				if(event.isControlKeyDown() && event.isShiftKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEUP) {
+				if(event.isControlKeyDown() && event.getNativeKeyCode() == 'M') {
 					cancel();
 					if(row <= 49 && row > 0) {
 						row = row -1;
