@@ -1,0 +1,55 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder
+    xmlns:ui="urn:ui:com.google.gwt.uibinder"
+    xmlns:g="urn:import:com.google.gwt.user.client.ui">
+    <ui:style>
+        .important {
+        	font-weight: bold;
+        }
+    </ui:style>
+    <g:HTMLPanel>
+        <table
+            witdh="100%"
+            border="0">
+            <tr>
+                <td
+                    width="150px"
+                    height="50px">[LOGO]</td>
+                <td
+                    width="20%"
+                    align="center">
+                    <g:HorizontalPanel ui:field="loginPanel">
+                        <g:Label
+                            ui:field="greetingLabel" />
+                        <g:Label
+                            ui:field="userLabel" />
+                        <g:Label
+                            ui:field="workspaceLabel" />
+                    </g:HorizontalPanel>
+                </td>
+                <td
+                    width="80%"
+                    align="right">
+                    <g:Button
+                        styleName="{style.important}"
+                        ui:field="prevEntryButton" />
+                    <g:Button
+                        styleName="{style.important}"
+                        ui:field="nextEntryButton" />
+                    <g:Button
+                        styleName="{style.important}"
+                        ui:field="prevFuzzyButton" />
+                    <g:Button
+                        styleName="{style.important}"
+                        ui:field="nextFuzzyButton" />
+                    <g:Button
+                        styleName="{style.important}"
+                        ui:field="prevUntranslatedButton" />
+                    <g:Button
+                        styleName="{style.important}"
+                        ui:field="nextUntranslatedButton" />
+                </td>
+            </tr>
+        </table>
+    </g:HTMLPanel>
+</ui:UiBinder>
