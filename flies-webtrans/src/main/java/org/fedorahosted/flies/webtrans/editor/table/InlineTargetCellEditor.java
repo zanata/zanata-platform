@@ -154,7 +154,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 					gotoRow(row);
 				}
 				
-				if(event.isAltKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN) {
+				if(event.isAltKeyDown() && event.getNativeKeyCode() == 'E') {
 					cancel();
 					if(row < 49 && row >= 0) {
 						row = row +1;
@@ -162,12 +162,12 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 					gotoNextFuzzy(row);
 				}
 				
-				if(event.isAltKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEUP) {
+				if(event.isAltKeyDown() && event.getNativeKeyCode() == 'M') {
 					cancel();
 					if(row <= 49 && row > 0) {
 						row = row -1;
 					}
-					gotoPreFuzzy(row);
+					gotoPrevFuzzy(row);
 				}
 			}
 
@@ -202,8 +202,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 		editRowCallback.gotoNextFuzzy(row);
 	}
 	
-	private void gotoPreFuzzy(int row) {
-		editRowCallback.gotoPreFuzzy(row);
+	private void gotoPrevFuzzy(int row) {
+		editRowCallback.gotoPrevFuzzy(row);
 	}
 
 	private void restoreView() {

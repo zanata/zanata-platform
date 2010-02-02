@@ -32,9 +32,9 @@ public class RedirectingCachedTableModel<RowType> extends CachedTableModel<RowTy
 			tableModel.gotoNextFuzzy(row);
 	}
 	
-	public void gotoPreFuzzy(int row) {
+	public void gotoPrevFuzzy(int row) {
 		if(tableModel != null)
-			tableModel.gotoPreFuzzy(row);
+			tableModel.gotoPrevFuzzy(row);
 	}
 
 }

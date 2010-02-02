@@ -181,9 +181,9 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 			}
 
 			@Override
-			public void gotoPreFuzzy(int row) {
+			public void gotoPrevFuzzy(int row) {
 				 if (tableModel instanceof RedirectingCachedTableModel) {
-	                 tableModel.gotoPreFuzzy(row);
+	                 tableModel.gotoPrevFuzzy(row);
 	             } 
 				
 			}

@@ -310,7 +310,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		}
 
 		@Override
-		public void gotoPreFuzzy(int row) {
+		public void gotoPrevFuzzy(int row) {
 			prevFuzzy(row);
 		}
 	};

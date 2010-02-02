@@ -1,6 +1,5 @@
 package org.fedorahosted.flies.webtrans.editor.table;
 
-
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
 import org.fedorahosted.flies.webtrans.editor.filter.ContentFilter;
