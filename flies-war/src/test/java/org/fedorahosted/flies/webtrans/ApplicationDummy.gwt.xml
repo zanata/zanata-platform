@@ -1,0 +1,19 @@
+<!DOCTYPE module PUBLIC "//gwt-module/" "http://google-web-toolkit.googlecode.com/svn/tags/1.6.2/distro-source/core/src/gwt-module.dtd">
+<module> <!-- rename-to="org.fedorahosted.flies.webtrans.Application" -->
+    <inherits name="org.fedorahosted.flies.webtrans.Application"/>
+<!--  
+    <define-property name="flies_mode" values="PROXY,STUB" />
+    <set-property name="flies_mode" value="STUB" />
+-->    
+	<replace-with class="org.fedorahosted.flies.webtrans.client.rpc.DummyDispatchAsync">
+		<when-type-is class="org.fedorahosted.flies.webtrans.client.rpc.SeamDispatchAsync" />
+<!-- 
+		<any>
+			<when-property-is name="flies_mode" value="STUB" />
+		</any>
+-->
+	</replace-with>
+		
+	<servlet class="org.jboss.errai.bus.server.servlet.DefaultBlockingServlet" path="/in.erraiBus"/>
+		
+</module>

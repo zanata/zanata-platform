@@ -23,6 +23,8 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
 
+import com.google.gwt.core.client.GWT;
+
 @Name("webtrans.gwt.ActivateWorkspaceHandler")
 @Scope(ScopeType.STATELESS)
 public class ActivateWorkspaceHandler implements ActionHandler<ActivateWorkspaceAction, ActivateWorkspaceResult> {
@@ -46,7 +48,9 @@ public class ActivateWorkspaceHandler implements ActionHandler<ActivateWorkspace
 		HProjectContainer hProjectContainer = (HProjectContainer) session.get(HProjectContainer.class, action.getProjectContainerId().getId());
 		
 		//Send EnterWorkspace event to clients
-		EnterWorkspace event = new EnterWorkspace(new PersonId(FliesIdentity.instance().getPrincipal().getName()));
+//		EnterWorkspace event = new EnterWorkspace(new PersonId(FliesIdentity.instance().getPrincipal().getName()));
+		EnterWorkspace event = GWT.create(EnterWorkspace.class);
+		event.setPersonId(new PersonId(FliesIdentity.instance().getPrincipal().getName()));
 		workspace.publish(event);
 		
 		String iterationName = (String)session.createQuery(

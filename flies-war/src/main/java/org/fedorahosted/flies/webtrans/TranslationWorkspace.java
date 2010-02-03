@@ -2,43 +2,49 @@ package org.fedorahosted.flies.webtrans;
 
 import java.util.concurrent.ConcurrentMap;
 
-import javax.servlet.http.HttpSession;
-
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.gwt.auth.SessionId;
 import org.fedorahosted.flies.gwt.model.PersonId;
 import org.fedorahosted.flies.gwt.model.TransUnitId;
 import org.fedorahosted.flies.gwt.rpc.SessionEventData;
-import org.jboss.seam.annotations.In;
+import org.fedorahosted.flies.gwt.rpc.SessionEventMessageParts;
+import org.jboss.errai.bus.client.MessageBuilder;
+import org.jboss.errai.bus.client.MessageBus;
+import org.jboss.errai.bus.server.NoSubscribersToDeliverTo;
 import org.jboss.seam.core.Events;
+import org.jboss.seam.log.Log;
+import org.jboss.seam.log.Logging;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MapMaker;
-
-import de.novanic.eventservice.client.event.domain.Domain;
-import de.novanic.eventservice.client.event.domain.DomainFactory;
-import de.novanic.eventservice.service.EventExecutorService;
-import de.novanic.eventservice.service.EventExecutorServiceFactory;
 
 public class TranslationWorkspace {
 	
 	private static final String EVENT_TRANSLATOR_ENTER_WORKSPACE = "webtrans.TranslatorEnterWorkspace"; 
 
+	private static final Log log = Logging.getLog(TranslationWorkspace.class);
 	private final WorkspaceKey workspaceKey;
 	
 	private final ConcurrentMap<SessionId, PersonId> sessions = new MapMaker().makeMap();
 	private final ConcurrentMap<TransUnitId, String> editstatus = new MapMaker().makeMap();
-	private final Domain domain;
-	@In
-	private HttpSession httpSession;
-	private final EventExecutorService eventExecutorService;
+	private final String subject;
+	private MessageBus messageBus;
+
 	
-	public TranslationWorkspace(WorkspaceKey workspaceKey) {
-		if(workspaceKey == null)
-			throw new IllegalArgumentException("workspaceKey");
-		this.workspaceKey = workspaceKey;
-		this.domain = DomainFactory.getDomain(workspaceKey.toString());
-		this.eventExecutorService = EventExecutorServiceFactory.getInstance().getEventExecutorService(httpSession);
+	public TranslationWorkspace(WorkspaceKey workspaceKey, MessageBus messageBus) {
+		this.messageBus = messageBus;
+		try {
+			if(workspaceKey == null)
+				throw new IllegalArgumentException("workspaceKey");
+			this.workspaceKey = workspaceKey;
+			this.subject = workspaceKey.toString();
+		} catch (RuntimeException e) {
+			log.error(e.getMessage(), e);
+			throw e;
+		} catch (Error e) {
+			log.error(e.getMessage(), e);
+			throw e;
+		}
 	}
 	
 	public LocaleId getLocale() {
@@ -98,7 +104,13 @@ public class TranslationWorkspace {
 	}
 
 	public <T extends SessionEventData> void publish(T eventData) {
-		eventExecutorService.addEvent(domain, eventData);
+		try {
+			MessageBuilder.createMessage().toSubject(subject).signalling()
+				.with(SessionEventMessageParts.Data, eventData)
+				.noErrorHandling().sendNowWith(messageBus);
+		} catch (NoSubscribersToDeliverTo e) {
+			log.warn(e.toString());
+		}
 	}
 	
 	@Override

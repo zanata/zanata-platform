@@ -95,18 +95,13 @@
       <artifactId>errai-bus</artifactId> 
       <!-- 
       <version>1.0-Beta1</version>
+      <version>1.0-20100114.200325-3</version>
+      <version>1.0-SNAPSHOT</version>
        -->      
       <version>1.0-20100114.200325-3</version>
       <scope>compile</scope>
     </dependency>
-  
-    <dependency>
-      <groupId>de.novanic</groupId>
-      <artifactId>gwteventservice</artifactId> 
-      <version>1.0.2</version>
-      <scope>compile</scope>
-    </dependency>
-  
+
   </dependencies>
 
   <repositories>

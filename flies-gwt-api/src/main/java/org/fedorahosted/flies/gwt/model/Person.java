@@ -7,6 +7,7 @@ public class Person implements HasIdentifier<PersonId>, IsSerializable {
 	private PersonId id;
 	private String name;
 	
+	@SuppressWarnings("unused")
 	private Person() {
 	}
 	

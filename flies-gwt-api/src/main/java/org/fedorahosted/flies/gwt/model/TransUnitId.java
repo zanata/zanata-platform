@@ -1,15 +1,20 @@
 package org.fedorahosted.flies.gwt.model;
 
+import java.io.Serializable;
+
+import org.jboss.errai.bus.server.annotations.ExposeEntity;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class TransUnitId implements IsSerializable, Identifier<Long>{
+@ExposeEntity 
+public class TransUnitId implements Serializable, IsSerializable, Identifier<Long>{
 	
 	private static final long serialVersionUID = 6291339842619640513L;
 
 	private long id;
 	
-	@SuppressWarnings("unused")
-	private TransUnitId() {
+	// for ExposeEntity
+	public TransUnitId() {
 	}
 	
 	public TransUnitId(long id) {
@@ -30,7 +35,15 @@ public class TransUnitId implements IsSerializable, Identifier<Long>{
 	public Long getValue(){
 		return id;
 	}
+	
+	public long getId() {
+		return id;
+	}
 
+	public void setId(long id) {
+		this.id = id;
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if(obj == this) return true;

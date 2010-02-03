@@ -13,6 +13,7 @@ public final class LocaleId implements Serializable{
 	public static final LocaleId EN_US = new LocaleId("en-US");
 	
 	// JaxB needs a no-arg constructor :(
+	@SuppressWarnings("unused")
 	private LocaleId(){
 		id = null;
 	}

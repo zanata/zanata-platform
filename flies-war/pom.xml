@@ -46,6 +46,11 @@
     <ds.password></ds.password> <!-- *-ds.xml -->    
    
     <gwt.filepattern>org.fedorahosted.flies.*/**</gwt.filepattern>
+    
+    <webapp.dir>${basedir}/war</webapp.dir>
+    <!-- 
+    <webapp.dir>${basedir}/src/main/webapp</webapp.dir>
+     -->
   </properties>
 
   <dependencyManagement>
@@ -218,42 +223,6 @@
     </profile>
     
     <profile>
-      <id>include-webtrans</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>copy-gwt-resources</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>unpack</goal>
-                </goals>
-                <configuration>
-                  <artifactItems>
-                    <artifactItem>
-                      <groupId>${project.groupId}</groupId>
-                      <artifactId>flies-webtrans</artifactId>
-                      <version>${project.version}</version>
-                      <type>war</type>
-                      <overWrite>true</overWrite>
-                      <outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
-                      <includes>org.fedorahosted.flies.*/**</includes>
-                    </artifactItem>
-                  </artifactItems>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
       <!--
         Unexplode ear. Remove project from appserver deploy folder. execute e.g. 
         "mvn clean -Punexplode"
@@ -288,7 +257,37 @@
       </build>
     </profile>
     
+    <profile>
+      <id>compile-gwt</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>gwt-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>compile</goal>
+                  <!--  
+                  <goal>generateAsync</goal>
+                  <goal>test</goal>
+                  -->
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <runTarget>org.fedorahosted.flies.webtrans.Application/Application.html<!--?projContainerId=1&amp;localeId=de--></runTarget>
+              <inplace>false</inplace>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
+
 
   <build>
     <finalName>flies</finalName>
@@ -305,19 +304,93 @@
 -->
     </resources>
         
+    <outputDirectory>war/WEB-INF/classes</outputDirectory>
     <plugins>
+		<plugin>
+			<!--
+			This plugin will copy dependencies into the right outputDirectory.
+			Usage: mvn dependency:copy-dependencies
+			-->
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-dependency-plugin</artifactId>
+			<configuration>
+				<outputDirectory>war/WEB-INF/lib</outputDirectory>
+				<overWriteReleases>true</overWriteReleases>
+				<overWriteSnapshots>true</overWriteSnapshots>
+				<overWriteIfNewer>true</overWriteIfNewer>
+				<includeScope>runtime</includeScope>
+				<excludeScope>provided</excludeScope>
+			</configuration>
+		</plugin>
+	  <plugin>
+	    <artifactId>maven-clean-plugin</artifactId>
+	    <version>2.2</version>
+	    <configuration>
+	      <filesets>
+	        <fileset>
+	          <directory>war</directory>
+	          <includes>
+	            <include>org.fedorahosted.flies.*/**</include>
+	            <include>.gwt-tmp</include>
+	            <include>WEB-INF/lib/**</include>
+	          </includes>
+	          <followSymlinks>false</followSymlinks>
+	        </fileset>
+	        <fileset>
+	          <directory>.gwt-tmp</directory>
+	          <followSymlinks>false</followSymlinks>
+	        </fileset>
+	      </filesets>
+	    </configuration>
+	  </plugin>
+
+      <!-- tell mvn eclipse:eclipse to include config for the GWT Eclipse 
+           plugin 
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <configuration>
+          <additionalProjectnatures>
+            <projectnature>com.google.gwt.eclipse.core.gwtNature</projectnature>
+          </additionalProjectnatures>
+          <additionalBuildcommands>
+            <buildcommand>com.google.gwt.eclipse.core.gwtProjectValidator</buildcommand>
+          </additionalBuildcommands>
+          <classpathContainers>
+            <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
+            <classpathContainer>com.google.gwt.eclipse.core.GWT_CONTAINER</classpathContainer>
+          </classpathContainers>
+          <excludes>
+            <!-- These are provided by the GWT container -->
+          	<exclude>com.google.gwt:gwt-servlet</exclude>
+          	<exclude>com.google.gwt:gwt-user</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <!-- Specify a non-standard root dir for our war file, since the 
+           Eclipse GWT plugin prefers it this way 
+      -->
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
+          <warSourceDirectory>${webapp.dir}</warSourceDirectory>
+<!-- 
+          <webXml>${webapp.dir}/WEB-INF/web.xml</webXml>
+ -->
+          <webXml>${basedir}/src/main/webapp/WEB-INF/web.xml</webXml>
+          <warSourceExcludes>.gwt-tmp/**,tomcat/**, WEB-INF/lib/**</warSourceExcludes>
           <webResources>
             <webResource>
-              <directory>${basedir}/src/main/webapp/WEB-INF</directory>
+              <directory>${webapp.dir}/WEB-INF</directory>
               <targetPath>WEB-INF</targetPath>
               <filtering>true</filtering>
               <includes>
                 <include>components.xml</include>
                 <include>jboss-web.xml</include>
+<!-- 
                 <include>web.xml</include>
+ -->
               </includes>
             </webResource>
           </webResources>
@@ -702,12 +775,6 @@
     </dependency>
     
     <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-servlet</artifactId>
-      <scope>compile</scope>
-    </dependency>
-
-    <dependency>
       <groupId>com.ibm.icu</groupId>
       <artifactId>icu4j</artifactId>
       <version>4.0.1</version>
@@ -722,12 +789,10 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.5.6</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-      <version>1.5.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.collections</groupId>
@@ -859,7 +924,9 @@
           <artifactId>junit</artifactId>
         </exclusion>
       </exclusions>
+<!-- needed by DBUnitImporter!  TODO: can we use a non-deployed scope like provided? 
       <scope>test</scope>
+ -->
     </dependency>
 
     <dependency>
@@ -982,6 +1049,151 @@
       <scope>provided</scope>
     </dependency>
     
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+      <version>3.1</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
+      <version>1.2.1</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-servlet</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <!-- 
+       -->
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-incubator</artifactId>
+      <version>20091216-r1739</version>
+      <!-- 
+      <scope>provided</scope>
+       -->
+    </dependency>
+
+    <dependency>
+      <groupId>net.customware.gwt.dispatch</groupId>
+      <artifactId>gwt-dispatch</artifactId>
+      <version>1.0.0</version>
+      <!-- 
+      <scope>provided</scope>
+       -->
+    </dependency>
+
+    <dependency>
+      <groupId>net.customware.gwt.presenter</groupId>
+      <artifactId>gwt-presenter</artifactId>
+      <version>1.0.0</version>
+<!-- ErraiServiceConfigurator tries to load WebTransGinjector and its annotations
+      <scope>provided</scope>
+ -->
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.code.gwt-log</groupId>
+      <artifactId>gwt-log</artifactId>
+      <version>3.0.0</version>
+      <!-- 
+      <scope>provided</scope>
+       -->
+    </dependency>
+
+    <dependency>
+      <groupId>com.weborient.codemirror</groupId>
+      <artifactId>gwt-codemirror</artifactId>
+      <version>0.5-SNAPSHOT</version>
+<!-- 
+      <scope>provided</scope>
+ -->
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-bus</artifactId> 
+      <!-- 
+      <version>1.0-Beta1</version>
+      <version>1.0-20100114.200325-3</version>
+      <version>1.0-SNAPSHOT</version>
+       -->      
+      <version>1.0-20100114.200325-3</version>
+      <scope>compile</scope>
+    </dependency>
+
+	<dependency>
+      <groupId>org.fedorahosted.flies</groupId>
+      <artifactId>flies-gwt-api</artifactId>
+      <version>${project.version}</version>
+      <!-- 
+      <scope>provided</scope>
+       -->
+    </dependency>
+
+    <!-- test -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   
+  <repositories>
+  
+    <repository>
+      <id>gwt-presenter-repo</id>
+      <name>gwt-presenter-repo</name>
+      <url>http://gwt-presenter.googlecode.com/svn/maven2/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  
+    <repository>
+      <id>gwt-dispatch-repo</id>
+      <name>gwt-dispatch-repo</name>
+      <url>http://gwt-dispatch.googlecode.com/svn/maven2/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  
+    <repository>
+      <id>gwt-dispatch-deps-repo</id>
+      <name>gwt-dispatch-deps-repo</name>
+      <url>http://gwt-dispatch.googlecode.com/svn/tags/gwt-dispatch-1.0.0/lib</url>
+      <layout>legacy</layout>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <checksumPolicy>ignore</checksumPolicy>
+      </releases>
+    </repository>
+    
+    <!--  for gwt-incubator -->
+    <repository>
+      <id>xwiki.externals</id>
+      <name>maven.xwiki.org/externals</name>
+      <url>http://maven.xwiki.org/externals/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+        
+  </repositories>
+
 </project>

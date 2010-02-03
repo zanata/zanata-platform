@@ -106,28 +106,54 @@
    <servlet>
       <servlet-name>Faces Servlet</servlet-name>
       <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-      <load-on-startup>1</load-on-startup>
+      <!-- Seam must start after FliesBlockingServlet/Errai -->
+      <load-on-startup>2</load-on-startup>
    </servlet>
+
+   <servlet-mapping>
+      <servlet-name>Faces Servlet</servlet-name>
+      <url-pattern>*.seam</url-pattern>
+   </servlet-mapping>
+
+<servlet>
+  <servlet-name>remoteLoggingService</servlet-name>
+  <servlet-class>com.google.gwt.gen2.logging.server.RemoteLoggingService</servlet-class>
+</servlet>
+<servlet-mapping>
+  <servlet-name>remoteLoggingService</servlet-name>
+  <url-pattern>/org.fedorahosted.flies.webtrans.Application/logging</url-pattern>
+</servlet-mapping>
+<servlet>
+  <servlet-name>remoteLoggerServiceImpl</servlet-name>
+  <servlet-class>com.allen_sauer.gwt.log.server.RemoteLoggerServiceImpl</servlet-class>
+</servlet>
+<servlet-mapping>
+  <servlet-name>remoteLoggerServiceImpl</servlet-name>
+  <url-pattern>/org.fedorahosted.flies.webtrans.Application/gwt-log</url-pattern>
+</servlet-mapping>
 
 
    <!-- GWTEventService -->
+<!-- 
    <servlet>
 	  <servlet-name>EventService</servlet-name>
 	  <servlet-class>
 	    de.novanic.eventservice.service.EventServiceImpl
 	  </servlet-class>
    </servlet>
+ -->
    
    
    <!-- GWTEventService -->
+<!-- 
    <servlet-mapping>
 	  <servlet-name>EventService</servlet-name>
 	  <url-pattern>/org.fedorahosted.flies.webtrans.Application/gwteventservice</url-pattern>
    </servlet-mapping>
+ -->
    
    
 <!-- http://lists.jboss.org/pipermail/errai-dev/2010-January/000004.html
- -->
     <servlet>
         <servlet-name>ErraiAutoServlet</servlet-name>
         <servlet-class>org.jboss.errai.bus.server.servlet.ErraiAutoServlet</servlet-class>
@@ -138,13 +164,18 @@
         <servlet-name>ErraiAutoServlet</servlet-name>
         <url-pattern>*.erraiBus</url-pattern>
     </servlet-mapping>
+ -->
 
    
    
    
    <!--  Errai 
+   -->
    <servlet>
         <servlet-name>ErraiServlet</servlet-name>
+        <!-- 
+        <servlet-class>org.fedorahosted.flies.errai.FliesBlockingServlet</servlet-class>
+         -->
         <servlet-class>org.jboss.errai.bus.server.servlet.DefaultBlockingServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
    </servlet>
@@ -153,11 +184,10 @@
         <servlet-name>ErraiServlet</servlet-name>
         <url-pattern>*.erraiBus</url-pattern>
    </servlet-mapping>
-   -->
    
     <context-param>
         <param-name>errai.properties</param-name>
-        <param-value>/WEB-INF/errai.properties</param-value>
+        <param-value>/WEB-INF/ErraiService.properties</param-value>
     </context-param>
 
 <!-- 
@@ -171,14 +201,23 @@
         <param-value>/WEB-INF/users.properties</param-value>
     </context-param>
    
+<servlet-mapping>
+  <servlet-name>ErraiServlet</servlet-name>
+  <url-pattern>/org.fedorahosted.flies.webtrans.ApplicationDummy/in.erraiBus</url-pattern>
+</servlet-mapping>
+<servlet-mapping>
+  <servlet-name>remoteLoggingService</servlet-name>
+  <url-pattern>/org.fedorahosted.flies.webtrans.ApplicationDummy/logging</url-pattern>
+</servlet-mapping>
+<servlet-mapping>
+  <servlet-name>remoteLoggerServiceImpl</servlet-name>
+  <url-pattern>/org.fedorahosted.flies.webtrans.ApplicationDummy/gwt-log</url-pattern>
+</servlet-mapping>
  -->
-   
-   
 
-   <servlet-mapping>
-      <servlet-name>Faces Servlet</servlet-name>
-      <url-pattern>*.seam</url-pattern>
-   </servlet-mapping>
+
+   
+   
 
    <security-constraint>
       <display-name>Restrict raw XHTML Documents</display-name>

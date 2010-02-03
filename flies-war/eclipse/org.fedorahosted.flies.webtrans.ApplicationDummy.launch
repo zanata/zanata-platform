@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="com.google.gdt.eclipse.suite.webapp">
+<stringAttribute key="com.google.gdt.eclipse.core.SERVER_PORT" value="48880"/>
+<listAttribute key="com.google.gwt.eclipse.core.ENTRY_POINT_MODULES">
+<listEntry value="org.fedorahosted.flies.webtrans.Application"/>
+<listEntry value="org.fedorahosted.flies.webtrans.ApplicationDummy"/>
+</listAttribute>
+<stringAttribute key="com.google.gwt.eclipse.core.URL" value="org.fedorahosted.flies.webtrans.ApplicationDummy/ApplicationDummy.html?projContainerId=2&amp;localeId=de"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/flies"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="4"/>
+</listAttribute>
+<mapAttribute key="org.eclipse.debug.core.environmentVariables">
+<mapEntry key="GWT_EXTERNAL_BROWSER" value="firefox"/>
+</mapAttribute>
+<listAttribute key="org.eclipse.debug.ui.favoriteGroups">
+<listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="com.google.gwt.eclipse.core.moduleClasspathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="flies"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dgwt.nowarn.legacy.tools -Dgwt.nowarn.webapp.classpath"/>
+<stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="/flies/war"/>
+</launchConfiguration>

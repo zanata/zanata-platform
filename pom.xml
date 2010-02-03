@@ -17,8 +17,8 @@
     <module>flies-gwt-api</module>
     <!-- NB: flies-webtrans should be compiled *and installed to the local repo* before compiling flies-war.
          This might change if we use maven-war-plugin's overlay support.
-     -->
     <module>flies-webtrans</module>
+     -->
     <module>flies-war</module>
     <module>thirdparty/gwt-codemirror</module>
   </modules>
@@ -118,7 +118,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>gwt-maven-plugin</artifactId>
-          <version>1.2-20091017.220620-9</version>
+          <version>1.2</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -136,6 +136,16 @@
         <artifactId>log4j</artifactId>
         <version>1.2.14</version>
       </dependency>
+	  <dependency>
+		  <groupId>org.slf4j</groupId>
+		  <artifactId>slf4j-api</artifactId>
+		  <version>1.5.10</version> <!-- 1.5.8? -->
+	  </dependency>
+	  <dependency>
+		  <groupId>org.slf4j</groupId>
+		  <artifactId>slf4j-log4j12</artifactId>
+		  <version>1.5.10</version>
+	  </dependency>
       <dependency>
         <groupId>org.testng</groupId>
         <artifactId>testng</artifactId>

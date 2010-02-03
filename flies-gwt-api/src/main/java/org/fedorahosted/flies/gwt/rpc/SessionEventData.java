@@ -2,6 +2,8 @@ package org.fedorahosted.flies.gwt.rpc;
 
 import java.io.Serializable;
 
-public interface SessionEventData extends Serializable, de.novanic.eventservice.client.event.Event {
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+public interface SessionEventData extends IsSerializable, Serializable {
 
 }

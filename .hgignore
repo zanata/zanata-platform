@@ -1,6 +1,8 @@
 syntax: glob
 
 *~
+*.patch
+*.sedbak
 */target/*
 */fliessearchindex/*
 */test-output/*
@@ -29,8 +31,8 @@ temp-testng-customsuite.xml$
 \.directory$
 
 #gwt related
-^flies-webtrans/war/WEB-INF/classes/
-^flies-webtrans/tomcat
+^flies-war/war/WEB-INF/classes/
+^flies-war/tomcat
 \.gwt-tmp$
-^flies-webtrans/org.fedorahosted.flies.webtrans.Application
-^flies-webtrans/war/org.fedorahosted.flies.webtrans.Application
+^flies-war/org.fedorahosted.flies.webtrans.Application
+^flies-war/war/org.fedorahosted.flies.webtrans.Application

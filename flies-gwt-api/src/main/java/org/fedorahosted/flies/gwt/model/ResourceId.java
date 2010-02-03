@@ -12,6 +12,10 @@ public class ResourceId implements IsSerializable{
 		this.id = id;
 	}
 	
+	public Long getId() {
+		return id;
+	}
+	
 	@Override
 	public int hashCode() {
 		return id.hashCode();

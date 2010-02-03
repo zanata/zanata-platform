@@ -1,12 +1,18 @@
 package org.fedorahosted.flies.gwt.model;
 
+import java.io.Serializable;
+
+import org.jboss.errai.bus.server.annotations.ExposeEntity;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public final class PersonId implements IsSerializable{
+@ExposeEntity 
+public final class PersonId implements IsSerializable, Serializable {
 	
 	private String id;
 	
-	private PersonId() {
+	// for ExposeEntity
+	public PersonId() {
 	}
 	
 	public PersonId(String id) {
@@ -33,5 +39,13 @@ public final class PersonId implements IsSerializable{
 	@Override
 	public String toString() {
 		return id;
+	}
+	
+	public String getId() {
+		return id;
+	}
+	
+	public void setId(String id) {
+		this.id = id;
 	}
 }

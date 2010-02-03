@@ -1,24 +1,29 @@
 package org.fedorahosted.flies.gwt.rpc;
 
 import org.fedorahosted.flies.gwt.model.PersonId;
+import org.jboss.errai.bus.server.annotations.ExposeEntity;
 
+@ExposeEntity 
 public class ExitWorkspace implements SessionEventData, HasExitWorkspaceData{
 	private static final long serialVersionUID = 1L;
 
 	private PersonId personId;
 	
-	@SuppressWarnings("unused")
-	private ExitWorkspace() {
+	// for ExposeEntity
+	public ExitWorkspace() {
 		// TODO Auto-generated constructor stub
 	}
 	
 	public ExitWorkspace(PersonId personId) {
-		this.personId = personId;
 	}
 
 	@Override
 	public PersonId getPersonId() {
 		return personId;
+	}
+	
+	public void setPersonId(PersonId personId) {
+		this.personId = personId;
 	}
 
 
