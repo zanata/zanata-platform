@@ -14,9 +14,9 @@ public class EnterWorkspace implements SessionEventData, HasEnterWorkspaceData{
 
 	}
 	
-//	public EnterWorkspace(PersonId personId) {
-//		this.personId = personId;
-//	}
+	public EnterWorkspace(PersonId personId) {
+		this.personId = personId;
+	}
 	
 	@Override
 	public PersonId getPersonId() {
