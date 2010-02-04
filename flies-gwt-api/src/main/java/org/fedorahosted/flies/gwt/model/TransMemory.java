@@ -8,6 +8,7 @@ public class TransMemory implements Serializable{
 
 	private String memory;
 	private String source;
+	// TODO we should include doc id, transunit id, etc
 
 	public TransMemory() {
 	}
