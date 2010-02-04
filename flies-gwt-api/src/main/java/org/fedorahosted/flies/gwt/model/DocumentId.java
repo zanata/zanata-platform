@@ -2,11 +2,9 @@ package org.fedorahosted.flies.gwt.model;
 
 import java.io.Serializable;
 
-import org.jboss.errai.bus.server.annotations.ExposeEntity;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-@ExposeEntity 
+//@ExposeEntity 
 public class DocumentId implements Identifier<Long>, Serializable, IsSerializable{
 
 	private static final long serialVersionUID = 6291339842619640513L;

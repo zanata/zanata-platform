@@ -91,12 +91,6 @@
     </dependency>
   
     <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId> 
-      <scope>compile</scope>
-    </dependency>
-
-    <dependency>
       <groupId>de.novanic</groupId>
       <artifactId>gwteventservice</artifactId>
 	</dependency>
