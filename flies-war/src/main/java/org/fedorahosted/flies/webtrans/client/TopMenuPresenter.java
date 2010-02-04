@@ -78,30 +78,12 @@ public class TopMenuPresenter extends WidgetPresenter<TopMenuPresenter.Display>
 			}
 		});
 
-//		display.getPrevEntryButton().addKeyUpHandler(new KeyUpHandler() {
-//			@Override
-//			public void onKeyUp(KeyUpEvent event) {
-//				if (event.isControlKeyDown() && event.isAltKeyDown()
-//						&& event.getNativeKeyCode() == KeyCodes.KEY_PAGEUP)
-//					fireEvent(new NavTransUnitEvent(null, -1));
-//			}
-//		});
-
 		display.getNextEntryButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				fireEvent(new NavTransUnitEvent(null, +1));
 			}
 		});
-
-//		display.getNextEntryButton().addKeyUpHandler(new KeyUpHandler() {
-//			@Override
-//			public void onKeyUp(KeyUpEvent event) {
-//				if (event.isControlKeyDown() && event.isAltKeyDown()
-//						&& event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN)
-//					fireEvent(new NavTransUnitEvent(null, +1));
-//			}
-//		});
 
 		display.getPrevFuzzyButton().addClickHandler(new ClickHandler() {
 			@Override
@@ -110,29 +92,12 @@ public class TopMenuPresenter extends WidgetPresenter<TopMenuPresenter.Display>
 			}
 		});
 
-//		display.getPrevFuzzyButton().addKeyUpHandler(new KeyUpHandler() {
-//			@Override
-//			public void onKeyUp(KeyUpEvent event) {
-//				if (event.isAltKeyDown()
-//						&& event.getNativeKeyCode() == KeyCodes.KEY_PAGEUP)
-//					fireEvent(new NavTransUnitEvent(ContentState.NeedReview, -1));
-//			}
-//		});
-
 		display.getNextFuzzyButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				fireEvent(new NavTransUnitEvent(ContentState.NeedReview, +1));
 			}
 		});
-
-//		display.getNextFuzzyButton().addKeyUpHandler(new KeyUpHandler() {
-//			@Override
-//			public void onKeyUp(KeyUpEvent event) {
-//				if (event.isAltKeyDown() && event.getNativeKeyCode() == 'J')
-//					fireEvent(new NavTransUnitEvent(ContentState.NeedReview, +1));
-//			}
-//		});
 
 		display.getPrevUntranslatedButton().addClickHandler(new ClickHandler() {
 			@Override

@@ -1,5 +1,7 @@
 package org.fedorahosted.flies.webtrans.editor.table;
 
+import org.fedorahosted.flies.common.ContentState;
+
 import com.google.gwt.gen2.table.client.TableModel.Callback;
 import com.google.gwt.gen2.table.client.TableModelHelper.Request;
 
@@ -16,7 +18,7 @@ public abstract class TableModelHandler<RowType> {
 	}
 	
 	abstract void gotoRow(int row);
-	abstract void gotoNextFuzzy(int row);
-	abstract void gotoPrevFuzzy(int row);
+	abstract void gotoNextFuzzy(int row, ContentState state);
+	abstract void gotoPrevFuzzy(int row, ContentState state);
 
 }

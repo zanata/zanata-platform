@@ -23,6 +23,12 @@ public class NavTransUnitEvent extends GwtEvent<NavTransUnitHandler> {
 	private ContentState rowType;
 	private int step;
 
+	/**
+	 * ContentState may be New, NeedApproved or null.
+	 * stepValue may be -1 or +1.
+	 * @param typeValue
+	 * @param stepValue
+	 */
 	public NavTransUnitEvent(ContentState typeValue, int stepValue) {
 		this.rowType = typeValue;
 		this.step = stepValue;

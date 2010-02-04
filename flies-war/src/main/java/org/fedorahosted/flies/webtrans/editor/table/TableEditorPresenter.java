@@ -1,7 +1,6 @@
 package org.fedorahosted.flies.webtrans.editor.table;
 
 import static org.fedorahosted.flies.webtrans.editor.table.TableConstants.MAX_PAGE_ROW;
-
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
@@ -77,6 +76,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		void gotoRow(int row);
 		int getCurrentPageNumber();
 		TransUnit getTransUnitValue(int row);
+		InlineTargetCellEditor getTargetCellEditor();
 	}
 
 	private DocumentId documentId;
@@ -183,29 +183,27 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 			@Override
 			public void onNavTransUnit(NavTransUnitEvent event) {
 				if(currentSelection != null) {
-					int currow = getCurrentRow();
 					int step = event.getStep();
 					//Send message to server to stop editing current selection
 					//stopEditing(currentSelection);
 					
+					InlineTargetCellEditor editor = display.getTargetCellEditor();
+					
 					//If goto Next or Prev Trans Unit
 					if (event.getRowType() == null ) {
-						if (event.getStep() > 0 && currow < MAX_PAGE_ROW) {
-							currentSelection = display.getTransUnitValue(currow+step);
-							display.gotoRow(currow+step);
-						}
-						if (event.getStep() < 0 && currow > 0) {
-							currentSelection = display.getTransUnitValue(currow+step);
-							display.gotoRow(currow+step);
-						}
+						if (step > 0)
+							editor.handleNext();
+						else
+							editor.handlePrev();
 					}
 					
-					//If goto Next or Prev Fuzzy Trans Unit
-					if (event.getRowType() == ContentState.NeedReview) {
-						if (event.getStep() > 0)
-							nextFuzzy(currow);
-						if (event.getStep() < 0)
-							prevFuzzy(currow);
+					//If goto Next or Prev Fuzzy/New Trans Unit
+					if (event.getRowType() == ContentState.NeedReview ||
+							event.getRowType() == ContentState.New) {
+						if (step > 0)
+							editor.handleNextFuzzy(event.getRowType());
+						else
+							editor.handlePrevFuzzy(event.getRowType());
 					}
 				}
 			}
@@ -305,13 +303,13 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		}
 
 		@Override
-		public void gotoNextFuzzy(int row) {
-			nextFuzzy(row);
+		public void gotoNextFuzzy(int row, ContentState state) {
+			nextFuzzy(row, state);
 		}
 
 		@Override
-		public void gotoPrevFuzzy(int row) {
-			prevFuzzy(row);
+		public void gotoPrevFuzzy(int row, ContentState state) {
+			prevFuzzy(row, state);
 		}
 	};
 	
@@ -356,11 +354,11 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	}
 	
 	
-	private void prevFuzzy(int row) { 
+	private void prevFuzzy(int row, ContentState desiredState) { 
 		int currow  = row;
 		row=row-1;
 		while(row > 0) {
-			if(display.getTransUnitValue(row).getStatus()==ContentState.NeedReview) {
+			if(display.getTransUnitValue(row).getStatus() == desiredState) {
 				display.gotoRow(row);
 				currentSelection = display.getTransUnitValue(row);
 				break;
@@ -370,22 +368,22 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 			}
 		}
 		//If the last row is not fuzzy, we will keep the editor in current row open
-		if(row == 0 && display.getTransUnitValue(row).getStatus() !=ContentState.NeedReview) {
+		if(row == 0 && display.getTransUnitValue(row).getStatus() != desiredState) {
 			display.gotoRow(currow);
 			currentSelection = display.getTransUnitValue(currow);
 		}
-		else if(row == 0 && display.getTransUnitValue(row).getStatus() ==ContentState.NeedReview) {
+		else if(row == 0 && display.getTransUnitValue(row).getStatus() == desiredState) {
 			display.gotoRow(row);
 			currentSelection = display.getTransUnitValue(row);
 		}
 		
 	}
 	
-	private void nextFuzzy(int row) { 
+	private void nextFuzzy(int row, ContentState desiredState) { 
 		int currow  = row;
 		row=row+1;
 		while(row < MAX_PAGE_ROW) {
-			if(display.getTransUnitValue(row).getStatus()==ContentState.NeedReview) {
+			if(display.getTransUnitValue(row).getStatus()==desiredState) {
 				currentSelection = display.getTransUnitValue(row);
 				display.gotoRow(row);
 				break;
@@ -395,11 +393,11 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 			}
 		}
 		//If the last row is not fuzzy, we will keep the editor in current row open
-		if(row == MAX_PAGE_ROW && display.getTransUnitValue(row).getStatus() !=ContentState.NeedReview) {
+		if(row == MAX_PAGE_ROW && display.getTransUnitValue(row).getStatus() !=desiredState) {
 			display.gotoRow(currow);
 			currentSelection = display.getTransUnitValue(currow);
 		}
-		else if(row == MAX_PAGE_ROW && display.getTransUnitValue(row).getStatus() ==ContentState.NeedReview) {
+		else if(row == MAX_PAGE_ROW && display.getTransUnitValue(row).getStatus() ==desiredState) {
 			display.gotoRow(row);
 			currentSelection = display.getTransUnitValue(row);
 		}

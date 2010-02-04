@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.webtrans.editor.table;
 
+import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 
 import com.google.gwt.gen2.table.client.MutableTableModel;
@@ -66,13 +67,13 @@ public class RedirectingTableModel<RowType> extends MutableTableModel<RowType> {
 			tableModelHandler.gotoRow(row);
 	}
 	
-	public void gotoNextFuzzy(int row) {
+	public void gotoNextFuzzy(int row, ContentState state) {
 		if(tableModelHandler != null)
-			tableModelHandler.gotoNextFuzzy(row);
+			tableModelHandler.gotoNextFuzzy(row, state);
 	}
 	
-	public void gotoPrevFuzzy(int row) {
+	public void gotoPrevFuzzy(int row, ContentState state) {
 		if(tableModelHandler != null)
-			tableModelHandler.gotoPrevFuzzy(row);
+			tableModelHandler.gotoPrevFuzzy(row, state);
 	}
 }

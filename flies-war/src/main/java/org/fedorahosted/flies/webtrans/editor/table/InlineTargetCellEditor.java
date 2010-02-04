@@ -125,30 +125,25 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 					acceptEdit();
 					incRow();
 					gotoRow(row);
-				}
-				
-				if(event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE) {
+				} else if(event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE) {
 					cancelEdit();
-				}
-				
-				if(event.isControlKeyDown() && event.getNativeKeyCode() == 'E') {
+				} else if(event.isControlKeyDown() && event.isShiftKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN) { // was alt-e
+					handleNextFuzzy(ContentState.NeedReview);
+				} else if(event.isControlKeyDown() && event.isShiftKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEUP) { // was alt-m
+					handlePrevFuzzy(ContentState.NeedReview);
+//				} else if(event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN) { // bad in Firefox
+				} else if(event.isAltKeyDown() && event.isDownArrow()) {
 					handleNext();
-				}
-				
-				if(event.isControlKeyDown() && event.getNativeKeyCode() == 'M') {
+//				} else if(event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEUP) { // bad in Firefox
+				} else if(event.isAltKeyDown() && event.isUpArrow()) {
 					handlePrev();
-				}
-				
-				if(event.isAltKeyDown() && event.getNativeKeyCode() == 'E') {
-					handleNextFuzzy();
-				}
-				
-				if(event.isAltKeyDown() && event.getNativeKeyCode() == 'M') {
-					handlePrevFuzzy();
+				} else if(event.isAltKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN) { //alt-down
+					handleNextFuzzy(ContentState.New);
+				} else if(event.isAltKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEUP) { // alt-up
+					handlePrevFuzzy(ContentState.New);
 				}
 			}
 
-			
 		});
 		layoutTable.add(textArea);
 		
@@ -175,12 +170,12 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 			editRowCallback.gotoRow(row);
 	}
 	
-	private void gotoNextFuzzy(int row) {
-		editRowCallback.gotoNextFuzzy(row);
+	private void gotoNextFuzzy(int row, ContentState state) {
+		editRowCallback.gotoNextFuzzy(row, state);
 	}
 	
-	private void gotoPrevFuzzy(int row) {
-		editRowCallback.gotoPrevFuzzy(row);
+	private void gotoPrevFuzzy(int row, ContentState state) {
+		editRowCallback.gotoPrevFuzzy(row, state);
 	}
 
 	private void restoreView() {
@@ -323,15 +318,28 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 		gotoRow(row);
 	}
 
-	public void handleNextFuzzy() {
+	public void handleNextFuzzy(ContentState state) {
 		cancelEdit();
 		incRow();
-		gotoNextFuzzy(row);
+		gotoNextFuzzy(row, state);
 	}
 
-	public void handlePrevFuzzy() {
+	public void handlePrevFuzzy(ContentState state) {
 		cancelEdit();
 		decRow();
-		gotoPrevFuzzy(row);
+		gotoPrevFuzzy(row, state);
 	}
+
+//	public void handleNextNew() {
+//		cancelEdit();
+//		incRow();
+//		gotoNextFuzzy(row, ContentState.New);
+//	}
+//
+//	public void handlePrevNew() {
+//		cancelEdit();
+//		decRow();
+//		gotoPrevFuzzy(row, ContentState.New);
+//	}
+
 }

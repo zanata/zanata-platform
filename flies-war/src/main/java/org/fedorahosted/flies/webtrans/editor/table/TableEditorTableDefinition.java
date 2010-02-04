@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.webtrans.editor.table;
 
+import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.webtrans.editor.filter.ContentFilter;
 
@@ -129,23 +130,24 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 			final Label label = new HighlightingLabel(rowValue.getTarget(), ParserSyntax.MIXED);
 			label.setStylePrimaryName("TableEditorContent");
 				
-			final DecoratedPopupPanel popup = new DecoratedPopupPanel(true);
-			label.addMouseOverHandler(new MouseOverHandler() {
-				@Override
-				public void onMouseOver(MouseOverEvent event) {
-					int x = label.getAbsoluteLeft();
-					int y = label.getAbsoluteTop() - 35;
-					popup.setPopupPosition(x, y);
-					popup.setWidget(new Label("Users currently editing this cell: TODO")); // FIXME
-					popup.show();
-				}
-			});
-			label.addMouseOutHandler(new MouseOutHandler() {
-				@Override
-				public void onMouseOut(MouseOutEvent event) {
-					popup.hide();
-				}
-			});
+			// TODO disabled for now
+//			final DecoratedPopupPanel popup = new DecoratedPopupPanel(true);
+//			label.addMouseOverHandler(new MouseOverHandler() {
+//				@Override
+//				public void onMouseOver(MouseOverEvent event) {
+//					int x = label.getAbsoluteLeft();
+//					int y = label.getAbsoluteTop() - 35;
+//					popup.setPopupPosition(x, y);
+//					popup.setWidget(new Label("Users currently editing this cell: TODO")); // FIXME
+//					popup.show();
+//				}
+//			});
+//			label.addMouseOutHandler(new MouseOutHandler() {
+//				@Override
+//				public void onMouseOut(MouseOutEvent event) {
+//					popup.hide();
+//				}
+//			});
 			view.setWidget( label );
 		}
 	};
@@ -163,33 +165,23 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 		CancelCallback<TransUnit> cancelCallBack = new CancelCallback<TransUnit>() {
 			 @Override
 			 public void onCancel(TransUnit cellValue) {
-	        	 if (tableModel instanceof RedirectingCachedTableModel) {
-	                 tableModel.onCancel(cellValue);
-	             } 
+				 tableModel.onCancel(cellValue);
 	         }
 		};
 		EditRowCallback transValueCallBack = new EditRowCallback() {
 			 @Override
 			 public void gotoRow(int row) {
-				 if (tableModel instanceof RedirectingCachedTableModel) {
-	                 tableModel.gotoRow(row);
-	             } 
+				 tableModel.gotoRow(row);
 	         }
 
 			@Override
-			public void gotoNextFuzzy(int row) {
-				 if (tableModel instanceof RedirectingCachedTableModel) {
-	                 tableModel.gotoNextFuzzy(row);
-	             } 
-				
+			public void gotoNextFuzzy(int row, ContentState state) {
+				tableModel.gotoNextFuzzy(row, state);
 			}
 
 			@Override
-			public void gotoPrevFuzzy(int row) {
-				 if (tableModel instanceof RedirectingCachedTableModel) {
-	                 tableModel.gotoPrevFuzzy(row);
-	             } 
-				
+			public void gotoPrevFuzzy(int row, ContentState state) {
+				tableModel.gotoPrevFuzzy(row, state);
 			}
 		};
 		this.targetCellEditor = new InlineTargetCellEditor(cancelCallBack,transValueCallBack);

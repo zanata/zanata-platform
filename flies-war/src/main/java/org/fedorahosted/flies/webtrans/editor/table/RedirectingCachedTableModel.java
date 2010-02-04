@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.webtrans.editor.table;
 
+import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 
 import com.google.gwt.gen2.table.client.CachedTableModel;
@@ -27,14 +28,14 @@ public class RedirectingCachedTableModel<RowType> extends CachedTableModel<RowTy
 			tableModel.gotoRow(row);
 	}
 	
-	public void gotoNextFuzzy(int row) {
+	public void gotoNextFuzzy(int row, ContentState state) {
 		if(tableModel != null)
-			tableModel.gotoNextFuzzy(row);
+			tableModel.gotoNextFuzzy(row, state);
 	}
 	
-	public void gotoPrevFuzzy(int row) {
+	public void gotoPrevFuzzy(int row, ContentState state) {
 		if(tableModel != null)
-			tableModel.gotoPrevFuzzy(row);
+			tableModel.gotoPrevFuzzy(row, state);
 	}
 
 }
