@@ -1,5 +1,7 @@
 package org.fedorahosted.flies.webtrans.editor.table;
 
+import static org.fedorahosted.flies.webtrans.editor.table.TableConstants.MAX_PAGE_ROW;
+
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
@@ -20,7 +22,6 @@ import org.fedorahosted.flies.gwt.rpc.UpdateTransUnit;
 import org.fedorahosted.flies.gwt.rpc.UpdateTransUnitResult;
 import org.fedorahosted.flies.webtrans.client.DocumentSelectionEvent;
 import org.fedorahosted.flies.webtrans.client.DocumentSelectionHandler;
-import org.fedorahosted.flies.webtrans.client.HasNavTransUnitHandlers;
 import org.fedorahosted.flies.webtrans.client.NavTransUnitEvent;
 import org.fedorahosted.flies.webtrans.client.NavTransUnitHandler;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent;
@@ -41,10 +42,6 @@ import org.fedorahosted.flies.webtrans.editor.filter.FilterEnabledEvent;
 import org.fedorahosted.flies.webtrans.editor.filter.FilterEnabledEventHandler;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.dom.client.HasKeyUpHandlers;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -106,7 +103,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	@Override
 	protected void onBind() {
 		display.setTableModelHandler(tableModelHandler);
-		display.setPageSize(50);
+		display.setPageSize(TableConstants.PAGE_SIZE);
 		registerHandler(display.getSelectionHandlers().addSelectionHandler(new SelectionHandler<TransUnit>() {
 			@Override
 			public void onSelection(SelectionEvent<TransUnit> event) {
@@ -193,7 +190,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 					
 					//If goto Next or Prev Trans Unit
 					if (event.getRowType() == null ) {
-						if (event.getStep() > 0 && currow < 49) {
+						if (event.getStep() > 0 && currow < MAX_PAGE_ROW) {
 							currentSelection = display.getTransUnitValue(currow+step);
 							display.gotoRow(currow+step);
 						}
@@ -387,7 +384,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	private void nextFuzzy(int row) { 
 		int currow  = row;
 		row=row+1;
-		while(row < 49) {
+		while(row < MAX_PAGE_ROW) {
 			if(display.getTransUnitValue(row).getStatus()==ContentState.NeedReview) {
 				currentSelection = display.getTransUnitValue(row);
 				display.gotoRow(row);
@@ -398,11 +395,11 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 			}
 		}
 		//If the last row is not fuzzy, we will keep the editor in current row open
-		if(row == 49 && display.getTransUnitValue(row).getStatus() !=ContentState.NeedReview) {
+		if(row == MAX_PAGE_ROW && display.getTransUnitValue(row).getStatus() !=ContentState.NeedReview) {
 			display.gotoRow(currow);
 			currentSelection = display.getTransUnitValue(currow);
 		}
-		else if(row == 49 && display.getTransUnitValue(row).getStatus() ==ContentState.NeedReview) {
+		else if(row == MAX_PAGE_ROW && display.getTransUnitValue(row).getStatus() ==ContentState.NeedReview) {
 			display.gotoRow(row);
 			currentSelection = display.getTransUnitValue(row);
 		}
@@ -417,7 +414,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	public int getCurrentRow() {
 		Long id = currentSelection.getId().getValue();
 		int currentPage = display.getCurrentPageNumber();
-		return (int)(id-currentPage*50-1);
+		return (int)(id-currentPage*TableConstants.PAGE_SIZE-1);
 	}
 	
 	@Override
