@@ -237,3 +237,9 @@ tr.TableEditorRow.selected td {
 .Severity-Warning {
 	background-color: #ffffcc; 
 }
+
+.TransMemoryTableColumnHeader {
+	color: Blue;
+	font-style: normal;
+	font-weight: bold
+}

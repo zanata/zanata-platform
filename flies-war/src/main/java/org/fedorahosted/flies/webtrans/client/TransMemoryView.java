@@ -77,8 +77,12 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 	@Override
 	public void createTable(ArrayList<TransMemory> memories) {
 		clearResults();
-		resultTable.setText(0, 0, "Source");
-		resultTable.setText(0, 1, "Target");
+		Label source = new Label("Source");
+		Label target = new Label("Target");
+		source.setStyleName("TransMemoryTableColumnHeader");
+		target.setStyleName("TransMemoryTableColumnHeader");
+		resultTable.setWidget(0, 0, source);
+		resultTable.setWidget(0, 1, target);
 		int row = 1;
 		for(TransMemory memory: memories) {
 			resultTable.setWidget(row, 0, new Label(memory.getSource()));
