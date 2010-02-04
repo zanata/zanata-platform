@@ -43,6 +43,7 @@ public class GwtActionDispatcher {
 		actionHandlerRegistry.addHandler(new GetProjectStatusCountHandler());
 		actionHandlerRegistry.addHandler(new GetTranslatorListHandler());
 		actionHandlerRegistry.addHandler(new GetGlossaryConceptHandler());
+		actionHandlerRegistry.addHandler(new GetTransMemoryHandler());
 		actionHandlerRegistry.addHandler(new GetCommentsActionHandler());
 		actionHandlerRegistry.addHandler(new EditTransUnitHandler());
 		actionHandlerRegistry.addHandler(new ExitWorkspaceHandler());

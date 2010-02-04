@@ -7,18 +7,23 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 public class SouthPresenter extends WidgetPresenter<SouthPresenter.Display> {
-
+	private final TransMemoryPresenter transMemorypresenter;
+	
 	public interface Display extends WidgetDisplay {
+		HasWidgets getWidgets();
 		HasText getGlossary();
 		HasText getRelated();
 	}
 	
 	@Inject
-	public SouthPresenter(Display display, EventBus eventBus) {
+	public SouthPresenter(Display display, EventBus eventBus, TransMemoryPresenter transMemorypresenter) {
 		super(display, eventBus);
+		this.transMemorypresenter = transMemorypresenter;
 	}
 
 	@Override
@@ -28,6 +33,8 @@ public class SouthPresenter extends WidgetPresenter<SouthPresenter.Display> {
 
 	@Override
 	protected void onBind() {
+		transMemorypresenter.bind();
+		display.getWidgets().add(transMemorypresenter.getDisplay().asWidget());
 		refreshDisplay();
 	}
 
