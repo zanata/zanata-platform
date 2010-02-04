@@ -3,24 +3,27 @@ package org.fedorahosted.flies.webtrans.client;
 import java.util.ArrayList;
 
 import org.fedorahosted.flies.gwt.model.TransMemory;
+
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.Display {
 
 	private Button searchButton;
+	private Button clearButton = new Button("Clear");
 	private TextBox tmTextBox;
 	
-	private final FlowPanel resultsPanel;
-	
+	private final FlexTable resultTable = new FlexTable();
 	public TransMemoryView() {
 		tmTextBox = new TextBox();
 		searchButton = new Button("Search");
@@ -33,19 +36,24 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 				}
 			}
 		});
-	    
+		
+		clearButton.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent arg0) {
+				tmTextBox.setText("");
+				clearResults();
+			}
+		});
+		
 		add(tmTextBox);
 		add(searchButton);
-		
-		resultsPanel = new FlowPanel();
-		//resultsPanel.add(resultTable);
-		resultsPanel.setHeight("40px");
-		add(resultsPanel);
+		add(clearButton);
+		add(resultTable);
 	}
 	
 	@Override
 	public Button getSearchButton() {
-		// TODO Auto-generated method stub
 		return searchButton;
 	}
 	
@@ -55,25 +63,20 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 
 	@Override
 	public Widget asWidget() {
-		// TODO Auto-generated method stub
 		return this;
 	}
 
 	@Override
 	public void startProcessing() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void stopProcessing() {
-		// TODO Auto-generated method stub
-		
 	}
 	
 	@Override
 	public void createTable(ArrayList<TransMemory> memories) {
-		FlexTable resultTable = new FlexTable();
+		clearResults();
 		resultTable.setText(0, 0, "Source");
 		resultTable.setText(0, 1, "Target");
 		int row = 1;
@@ -83,12 +86,11 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 			row++;
 		}
 		resultTable.setCellPadding(5);
-		this.add(resultTable);
 	}
 	
 	@Override
 	public void clearResults() {
-		resultsPanel.clear();
+		resultTable.removeAllRows();
 	}
 }
 
