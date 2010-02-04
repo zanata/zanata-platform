@@ -1,7 +1,5 @@
 package org.fedorahosted.flies.webtrans.client;
 
-import org.fedorahosted.flies.webtrans.editor.table.TableEditorView;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -22,7 +20,7 @@ public class TopMenuView extends Composite implements TopMenuPresenter.Display {
 	private static TopMenuUiBinder uiBinder = GWT.create(TopMenuUiBinder.class);
 
 	@UiField
-	Label greetingLabel, userLabel, workspaceLabel;
+	Label userLabel, workspaceLabel;
 
 	@UiField
 	Button nextEntryButton, prevEntryButton, nextFuzzyButton, prevFuzzyButton,
@@ -42,7 +40,6 @@ public class TopMenuView extends Composite implements TopMenuPresenter.Display {
 		prevUntranslatedButton.setText("Prev Untranslated");
 		nextUntranslatedButton.setText("Next Untranslated");
 
-		greetingLabel.setText("Hello, ");
 		userLabel.setText("<Username>");
 		workspaceLabel.setText("Workspace");
 
