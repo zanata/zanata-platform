@@ -19,31 +19,6 @@
 	  <url-pattern>/org.fedorahosted.flies.webtrans.Application/gwteventservice</url-pattern>
 	</servlet-mapping>
 
-   <!--  Errai 
-   <servlet>
-        <servlet-name>ErraiServlet</servlet-name>
-        <servlet-class>org.jboss.errai.bus.server.servlet.DefaultBlockingServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-   </servlet>
-	
-   <servlet-mapping>
-        <servlet-name>ErraiServlet</servlet-name>
-        <url-pattern>*.erraiBus</url-pattern>
-   </servlet-mapping>
-<servlet-mapping>
-  <servlet-name>ErraiServlet</servlet-name>
-  <url-pattern>/org.fedorahosted.flies.webtrans.ApplicationDummy/in.erraiBus</url-pattern>
-</servlet-mapping>
-   -->
-  
-<servlet>
-  <servlet-name>defaultBlockingServlet</servlet-name>
-  <servlet-class>org.jboss.errai.bus.server.servlet.DefaultBlockingServlet</servlet-class>
-</servlet>
-<servlet-mapping>
-  <servlet-name>defaultBlockingServlet</servlet-name>
-  <url-pattern>/org.fedorahosted.flies.webtrans.ApplicationDummy/in.erraiBus</url-pattern>
-</servlet-mapping>
 <servlet-mapping>
   <servlet-name>EventService</servlet-name>
   <url-pattern>/org.fedorahosted.flies.webtrans.ApplicationDummy/gwteventservice</url-pattern>
