@@ -35,6 +35,22 @@
   <url-pattern>/org.fedorahosted.flies.webtrans.ApplicationDummy/in.erraiBus</url-pattern>
 </servlet-mapping>
    -->
+  
+<servlet>
+  <servlet-name>defaultBlockingServlet</servlet-name>
+  <servlet-class>org.jboss.errai.bus.server.servlet.DefaultBlockingServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+  <servlet-name>defaultBlockingServlet</servlet-name>
+  <url-pattern>/org.fedorahosted.flies.webtrans.ApplicationDummy/in.erraiBus</url-pattern>
+</servlet-mapping>
+<servlet-mapping>
+  <servlet-name>EventService</servlet-name>
+  <url-pattern>/org.fedorahosted.flies.webtrans.ApplicationDummy/gwteventservice</url-pattern>
+</servlet-mapping>
+ 
+   
+
 
 <servlet>
   <servlet-name>remoteLoggingService</servlet-name>
