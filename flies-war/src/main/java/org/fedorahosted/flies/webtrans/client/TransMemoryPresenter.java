@@ -23,6 +23,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -34,7 +35,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 	public interface Display extends WidgetDisplay {
 		Button getSearchButton();
 		TextBox getTmTextBox();
-		void addResult(Widget widget);
+		void createTable(ArrayList<TransMemory> memories);
 		void clearResults();
 	}
 
@@ -64,10 +65,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 					@Override
 					public void onSuccess(GetTranslationMemoryResult result) {
 						ArrayList<TransMemory> memories = result.getMemories();
-						for(TransMemory tm : memories) {
-							display.addResult(new MemoryView(tm));
-						}
-						
+						display.createTable(memories);
 					}
 			});
 			}

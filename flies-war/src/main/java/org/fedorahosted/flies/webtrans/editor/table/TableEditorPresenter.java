@@ -409,12 +409,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		return currentSelection;
 	}
 	
-	public int getCurrentRow() {
-		Long id = currentSelection.getId().getValue();
-		int currentPage = display.getCurrentPageNumber();
-		return (int)(id-currentPage*TableConstants.PAGE_SIZE-1);
-	}
-	
 	@Override
 	protected void onPlaceRequest(PlaceRequest request) {
 	}

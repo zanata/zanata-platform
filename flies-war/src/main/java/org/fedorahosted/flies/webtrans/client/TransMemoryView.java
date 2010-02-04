@@ -1,7 +1,13 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import java.util.ArrayList;
+
+import org.fedorahosted.flies.gwt.model.TransMemory;
+
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -15,10 +21,13 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 	public TransMemoryView() {
 		tmTextBox = new TextBox();
 		searchButton = new Button("Search");
-	
+	    
 		add(tmTextBox);
 		add(searchButton);
+		
 		resultsPanel = new FlowPanel();
+		//resultsPanel.add(resultTable);
+		resultsPanel.setHeight("40px");
 		add(resultsPanel);
 	}
 	
@@ -51,8 +60,18 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 	}
 	
 	@Override
-	public void addResult(Widget widget) {
-		resultsPanel.add(widget);
+	public void createTable(ArrayList<TransMemory> memories) {
+		FlexTable resultTable = new FlexTable();
+		resultTable.setText(0, 0, "Source");
+		resultTable.setText(0, 1, "Target");
+		int row = 1;
+		for(TransMemory memory: memories) {
+			resultTable.setWidget(row, 0, new Label(memory.getSource()));
+			resultTable.setWidget(row, 1, new Label(memory.getMemory()));
+			row++;
+		}
+		resultTable.setCellPadding(5);
+		this.add(resultTable);
 	}
 	
 	@Override
