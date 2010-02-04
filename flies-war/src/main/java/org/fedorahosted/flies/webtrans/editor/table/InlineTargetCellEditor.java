@@ -1,5 +1,7 @@
 package org.fedorahosted.flies.webtrans.editor.table;
 
+import static org.fedorahosted.flies.webtrans.editor.table.TableConstants.MAX_PAGE_ROW;
+
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 
@@ -7,17 +9,11 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasKeyUpHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.client.InlineCellEditor.InlineCellEditorImages;
-import com.google.gwt.gen2.table.event.client.RowSelectionEvent;
-import com.google.gwt.gen2.table.event.client.TableEvent;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -26,7 +22,6 @@ import com.google.gwt.user.client.ui.ImageBundle;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.widgetideas.client.event.KeyboardHandler;
 
 public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 
@@ -60,7 +55,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 	private ClickHandler acceptHandler = new ClickHandler() {
 		public void onClick(ClickEvent event) {
 			accept();
-			if(row < 49 && row >= 0) {
+			if(row < MAX_PAGE_ROW && row >= 0) {
 				row = row +1;
 			}
 			gotoRow(row);
@@ -128,7 +123,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 			public void onKeyUp(KeyUpEvent event) {
 				if(event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
 					accept();
-					if(row < 49 && row >= 0) {
+					if(row < MAX_PAGE_ROW && row >= 0) {
 						row = row +1;
 					}
 					gotoRow(row);
@@ -140,7 +135,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 				
 				if(event.isControlKeyDown() && event.getNativeKeyCode() == 'E') {
 					cancel();
-					if(row < 49 && row >= 0) {
+					if(row < MAX_PAGE_ROW && row >= 0) {
 						row = row +1;
 					}
 					gotoRow(row);
@@ -148,7 +143,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 				
 				if(event.isControlKeyDown() && event.getNativeKeyCode() == 'M') {
 					cancel();
-					if(row <= 49 && row > 0) {
+					if(row <= MAX_PAGE_ROW && row > 0) {
 						row = row -1;
 					}
 					gotoRow(row);
@@ -156,7 +151,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 				
 				if(event.isAltKeyDown() && event.getNativeKeyCode() == 'E') {
 					cancel();
-					if(row < 49 && row >= 0) {
+					if(row < MAX_PAGE_ROW && row >= 0) {
 						row = row +1;
 					}
 					gotoNextFuzzy(row);
@@ -164,7 +159,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 				
 				if(event.isAltKeyDown() && event.getNativeKeyCode() == 'M') {
 					cancel();
-					if(row <= 49 && row > 0) {
+					if(row <= MAX_PAGE_ROW && row > 0) {
 						row = row -1;
 					}
 					gotoPrevFuzzy(row);

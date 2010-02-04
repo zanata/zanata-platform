@@ -10,15 +10,11 @@ import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.webtrans.client.auth.Identity;
 import org.fedorahosted.flies.webtrans.editor.table.TableEditorPresenter;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.inject.Inject;
@@ -141,14 +137,14 @@ public class TopMenuPresenter extends WidgetPresenter<TopMenuPresenter.Display>
 		display.getPrevUntranslatedButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				//
+				fireEvent(new NavTransUnitEvent(ContentState.New, -1));
 			}
 		});
 
 		display.getNextUntranslatedButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				//
+				fireEvent(new NavTransUnitEvent(ContentState.New, +1));
 			}
 		});
 
