@@ -25,6 +25,7 @@ public class AccountDAO {
 		return (HAccount) session.createCriteria(HAccount.class)
 			.add( Restrictions.naturalId()
 		        .set("username", username))
+		    .setCacheable(true)
 		    .uniqueResult();
 	}
 

@@ -20,6 +20,9 @@ import org.fedorahosted.flies.gwt.rpc.UpdateTransUnit;
 import org.fedorahosted.flies.gwt.rpc.UpdateTransUnitResult;
 import org.fedorahosted.flies.webtrans.client.DocumentSelectionEvent;
 import org.fedorahosted.flies.webtrans.client.DocumentSelectionHandler;
+import org.fedorahosted.flies.webtrans.client.HasNavTransUnitHandlers;
+import org.fedorahosted.flies.webtrans.client.NavTransUnitEvent;
+import org.fedorahosted.flies.webtrans.client.NavTransUnitHandler;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent;
 import org.fedorahosted.flies.webtrans.client.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent.Severity;
@@ -38,6 +41,10 @@ import org.fedorahosted.flies.webtrans.editor.filter.FilterEnabledEvent;
 import org.fedorahosted.flies.webtrans.editor.filter.FilterEnabledEventHandler;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.dom.client.HasKeyUpHandlers;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -70,6 +77,9 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		void setPageSize(int size);
 		void setContentFilter(ContentFilter<TransUnit> filter);
 		void clearContentFilter();
+		void gotoRow(int row);
+		int getCurrentPageNumber();
+		TransUnit getTransUnitValue(int row);
 	}
 
 	private DocumentId documentId;
@@ -102,28 +112,12 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 			public void onSelection(SelectionEvent<TransUnit> event) {
 				if(event.getSelectedItem() != currentSelection) {
 					currentSelection = event.getSelectedItem();
-					//Send a START_EDIT event
-					dispatcher.execute(
-							new EditingTranslationAction(
-									event.getSelectedItem().getId(), 
-									workspaceContext.getLocaleId(), 
-									identity.getSessionId(), 
-									EditState.StartEditing), 
-							new AsyncCallback<EditingTranslationResult>() {
-								@Override
-								public void onFailure(Throwable caught) {
-									eventBus.fireEvent(new NotificationEvent(Severity.Error, "Failed to Lock TransUnit"));
-								}
-								
-								@Override
-								public void onSuccess(EditingTranslationResult result) {
-								}
-					});
+					//startEditing(currentSelection);
 					eventBus.fireEvent(event);
 				}
 			}
 		}));
-
+		
 		registerHandler(
 				eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {
 					@Override
@@ -163,9 +157,9 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 						//display.getTableModel().setRowValue(row, rowValue);
 					}
 					// TODO add model with methods such as
-					// getRowIndex(TransUnitId) 
+					//currentSelection.getRowIndex(TransUnitId); 
 					// - add TU index to model
-//					display.getTableModel().setRowValue(rowIndex, transUnit)
+					//display.getTableModel().setRowValue(rowIndex, currentSelection.getTarget());
 					display.getTableModel().clearCache();
 					display.reloadPage();
 					//dispatcher.execute(new GetTransUnits(documentId, localeId, page*pageSize+rowOffset, 1, count), callback)
@@ -184,6 +178,38 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 					}
 					//display.getTableModel().clearCache();
 					//display.reloadPage();
+				}
+			}
+		}));
+		
+		registerHandler(eventBus.addHandler(NavTransUnitEvent.getType(), new NavTransUnitHandler() {
+			@Override
+			public void onNavTransUnit(NavTransUnitEvent event) {
+				if(currentSelection != null) {
+					int currow = getCurrentRow();
+					int step = event.getStep();
+					//Send message to server to stop editing current selection
+					//stopEditing(currentSelection);
+					
+					//If goto Next or Prev Trans Unit
+					if (event.getRowType() == null ) {
+						if (event.getStep() > 0 && currow < 49) {
+							currentSelection = display.getTransUnitValue(currow+step);
+							display.gotoRow(currow+step);
+						}
+						if (event.getStep() < 0 && currow > 0) {
+							currentSelection = display.getTransUnitValue(currow+step);
+							display.gotoRow(currow+step);
+						}
+					}
+					
+					//If goto Next or Prev Fuzzy Trans Unit
+					if (event.getRowType() == ContentState.NeedReview) {
+						if (event.getStep() > 0)
+							nextFuzzy(currow);
+						if (event.getStep() < 0)
+							prevFuzzy(currow);
+					}
 				}
 			}
 		}));
@@ -272,30 +298,127 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		}
 		
 		public void onCancel(TransUnit rowValue) {
-			dispatcher.execute(
-					new EditingTranslationAction(rowValue.getId(), 
-							workspaceContext.getLocaleId(), 
-							identity.getSessionId(),
-							EditState.StopEditing), 
-					new AsyncCallback<EditingTranslationResult>() {
-						@Override
-						public void onFailure(Throwable caught) {
-							eventBus.fireEvent(new NotificationEvent(Severity.Error, "Failed to Stop Editing TransUnit"));
-						}
-						
-						@Override
-						public void onSuccess(EditingTranslationResult result) {
-							//eventBus.fireEvent(new NotificationEvent(Severity.Warning, "TransUnit Editing is finished"));
-						}
-			});
+			//stopEditing(rowValue);
+		}
+
+		@Override
+		public void gotoRow(int row) {
+			currentSelection = display.getTransUnitValue(row);
+			display.gotoRow(row);
+		}
+
+		@Override
+		public void gotoNextFuzzy(int row) {
+			nextFuzzy(row);
+		}
+
+		@Override
+		public void gotoPrevFuzzy(int row) {
+			prevFuzzy(row);
 		}
 	};
+	
+	private void stopEditing(TransUnit rowValue) {
+		dispatcher.execute(
+				new EditingTranslationAction(rowValue.getId(), 
+						workspaceContext.getLocaleId(), 
+						identity.getSessionId(),
+						EditState.StopEditing), 
+				new AsyncCallback<EditingTranslationResult>() {
+					@Override
+					public void onSuccess(EditingTranslationResult result) {
+						//eventBus.fireEvent(new NotificationEvent(Severity.Warning, "TransUnit Editing is finished"));
+					}
+					
+					@Override
+					public void onFailure(Throwable caught) {
+						eventBus.fireEvent(new NotificationEvent(Severity.Error, "Failed to Stop Editing TransUnit"));
+					}
+					
+		});
+	}
+	
+	private void startEditing(TransUnit rowValue) {
+		//Send a START_EDIT event
+		dispatcher.execute(
+				new EditingTranslationAction(
+						rowValue.getId(), 
+						workspaceContext.getLocaleId(), 
+						identity.getSessionId(), 
+						EditState.StartEditing), 
+				new AsyncCallback<EditingTranslationResult>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						eventBus.fireEvent(new NotificationEvent(Severity.Error, "Failed to Lock TransUnit"));
+					}
+					
+					@Override
+					public void onSuccess(EditingTranslationResult result) {
+					}
+		});
+	}
+	
+	
+	private void prevFuzzy(int row) { 
+		int currow  = row;
+		row=row-1;
+		while(row > 0) {
+			if(display.getTransUnitValue(row).getStatus()==ContentState.NeedReview) {
+				display.gotoRow(row);
+				currentSelection = display.getTransUnitValue(row);
+				break;
+			}
+			else {
+				row = row - 1;
+			}
+		}
+		//If the last row is not fuzzy, we will keep the editor in current row open
+		if(row == 0 && display.getTransUnitValue(row).getStatus() !=ContentState.NeedReview) {
+			display.gotoRow(currow);
+			currentSelection = display.getTransUnitValue(currow);
+		}
+		else if(row == 0 && display.getTransUnitValue(row).getStatus() ==ContentState.NeedReview) {
+			display.gotoRow(row);
+			currentSelection = display.getTransUnitValue(row);
+		}
+		
+	}
+	
+	private void nextFuzzy(int row) { 
+		int currow  = row;
+		row=row+1;
+		while(row < 49) {
+			if(display.getTransUnitValue(row).getStatus()==ContentState.NeedReview) {
+				currentSelection = display.getTransUnitValue(row);
+				display.gotoRow(row);
+				break;
+			}
+			else {
+				row = row + 1;
+			}
+		}
+		//If the last row is not fuzzy, we will keep the editor in current row open
+		if(row == 49 && display.getTransUnitValue(row).getStatus() !=ContentState.NeedReview) {
+			display.gotoRow(currow);
+			currentSelection = display.getTransUnitValue(currow);
+		}
+		else if(row == 49 && display.getTransUnitValue(row).getStatus() ==ContentState.NeedReview) {
+			display.gotoRow(row);
+			currentSelection = display.getTransUnitValue(row);
+		}
+		
+	}
 	
 	
 	public TransUnit getCurrentSelection() {
 		return currentSelection;
 	}
 	
+	public int getCurrentRow() {
+		Long id = currentSelection.getId().getValue();
+		int currentPage = display.getCurrentPageNumber();
+		return (int)(id-currentPage*50-1);
+	}
 	
 	@Override
 	protected void onPlaceRequest(PlaceRequest request) {
@@ -354,7 +477,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 			SelectionHandler<TransUnit> handler) {
 		return display.getSelectionHandlers().addSelectionHandler(handler);
 	}
-
+	
 	@Override
 	public void fireEvent(GwtEvent<?> event) {
 		display.getSelectionHandlers().fireEvent(event);

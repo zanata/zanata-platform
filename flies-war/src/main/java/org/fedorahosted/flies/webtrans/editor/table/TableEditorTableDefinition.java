@@ -179,15 +179,40 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 		//indicatorColumnDefinition.setCellRenderer(indicatorCellRenderer);
 		sourceColumnDefinition.setCellRenderer(sourceCellRenderer);
 		targetColumnDefinition.setCellRenderer(targetCellRenderer);
-		targetColumnDefinition.setCellEditor(new InlineTargetCellEditor(
-		new CancelCallback<TransUnit>() {
+		CancelCallback<TransUnit> cancelCallBack = new CancelCallback<TransUnit>() {
 			 @Override
 			 public void onCancel(TransUnit cellValue) {
 	        	 if (tableModel instanceof RedirectingCachedTableModel) {
 	                 tableModel.onCancel(cellValue);
 	             } 
 	         }
-		}));
+		};
+		EditRowCallback transValueCallBack = new EditRowCallback() {
+			 @Override
+			 public void gotoRow(int row) {
+				 if (tableModel instanceof RedirectingCachedTableModel) {
+	                 tableModel.gotoRow(row);
+	             } 
+	         }
+
+			@Override
+			public void gotoNextFuzzy(int row) {
+				 if (tableModel instanceof RedirectingCachedTableModel) {
+	                 tableModel.gotoNextFuzzy(row);
+	             } 
+				
+			}
+
+			@Override
+			public void gotoPrevFuzzy(int row) {
+				 if (tableModel instanceof RedirectingCachedTableModel) {
+	                 tableModel.gotoPrevFuzzy(row);
+	             } 
+				
+			}
+		};
+		targetColumnDefinition.setCellEditor(new InlineTargetCellEditor(cancelCallBack,transValueCallBack
+		));
 		
 		//addColumnDefinition(indicatorColumnDefinition);
 		addColumnDefinition(sourceColumnDefinition);

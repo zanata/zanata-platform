@@ -22,4 +22,19 @@ public class RedirectingCachedTableModel<RowType> extends CachedTableModel<RowTy
 			tableModel.onCancel(cellValue);
 	}
 
+	public void gotoRow(int row) {
+		if(tableModel != null)
+			tableModel.gotoRow(row);
+	}
+	
+	public void gotoNextFuzzy(int row) {
+		if(tableModel != null)
+			tableModel.gotoNextFuzzy(row);
+	}
+	
+	public void gotoPrevFuzzy(int row) {
+		if(tableModel != null)
+			tableModel.gotoPrevFuzzy(row);
+	}
+
 }

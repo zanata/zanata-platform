@@ -13,6 +13,10 @@ public abstract class TableModelHandler<RowType> {
 
 	protected boolean onRowRemoved(int row) {
 		return true;
-	}	
+	}
+	
+	abstract void gotoRow(int row);
+	abstract void gotoNextFuzzy(int row);
+	abstract void gotoPrevFuzzy(int row);
 
 }
