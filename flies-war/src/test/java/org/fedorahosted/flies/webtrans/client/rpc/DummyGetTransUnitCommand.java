@@ -15,6 +15,7 @@ import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnitsResult;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 final class DummyGetTransUnitCommand implements Command {
@@ -43,7 +44,15 @@ final class DummyGetTransUnitCommand implements Command {
 	private ArrayList<TransUnit> generateTransUnitSampleData(LocaleId localeId, int numRows, int start) {
 		ArrayList<TransUnit> units = new ArrayList<TransUnit>();
 		for(int i=start;i<start+numRows; i++) {
-			TransUnit unit = new TransUnit( new TransUnitId(i+1), localeId, "<hellow num=\"" + (i+1) + "\" />", "comment "+(i+1), "<world> \"" + (i+1) +"\"</world>", ContentState.NeedReview);
+			int stateNum = Random.nextInt(ContentState.values().length);
+			ContentState state = ContentState.values()[stateNum];
+			String source = "<hellow num=\"" + (i + 1) + "\" />";
+			String sourceComment = "comment " + (i + 1);
+			String target = "";
+			if(state != ContentState.New)
+				target = "<world> \"" + (i + 1) + "\"</world>";
+			TransUnit unit = new TransUnit(new TransUnitId(i + 1), localeId,
+					source, sourceComment, target, state);
 			units.add(unit);
 		}
 		return units;
