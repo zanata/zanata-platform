@@ -43,7 +43,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 	 */
 	private ClickHandler cancelHandler = new ClickHandler() {
 		public void onClick(ClickEvent event) {
-			cancel();
+			cancelEdit();
 		}
 	};
 
@@ -54,7 +54,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 	 */
 	private ClickHandler acceptHandler = new ClickHandler() {
 		public void onClick(ClickEvent event) {
-			accept();
+			acceptEdit();
 			if(row < MAX_PAGE_ROW && row >= 0) {
 				row = row +1;
 			}
@@ -122,47 +122,29 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
 				if(event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-					accept();
-					if(row < MAX_PAGE_ROW && row >= 0) {
-						row = row +1;
-					}
+					acceptEdit();
+					incRow();
 					gotoRow(row);
 				}
 				
 				if(event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE) {
-					cancel();
+					cancelEdit();
 				}
 				
 				if(event.isControlKeyDown() && event.getNativeKeyCode() == 'E') {
-					cancel();
-					if(row < MAX_PAGE_ROW && row >= 0) {
-						row = row +1;
-					}
-					gotoRow(row);
+					handleNext();
 				}
 				
 				if(event.isControlKeyDown() && event.getNativeKeyCode() == 'M') {
-					cancel();
-					if(row <= MAX_PAGE_ROW && row > 0) {
-						row = row -1;
-					}
-					gotoRow(row);
+					handlePrev();
 				}
 				
 				if(event.isAltKeyDown() && event.getNativeKeyCode() == 'E') {
-					cancel();
-					if(row < MAX_PAGE_ROW && row >= 0) {
-						row = row +1;
-					}
-					gotoNextFuzzy(row);
+					handleNextFuzzy();
 				}
 				
 				if(event.isAltKeyDown() && event.getNativeKeyCode() == 'M') {
-					cancel();
-					if(row <= MAX_PAGE_ROW && row > 0) {
-						row = row -1;
-					}
-					gotoPrevFuzzy(row);
+					handlePrevFuzzy();
 				}
 			}
 
@@ -258,7 +240,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 	/**
 	 * Accept the contents of the cell editor as the new cell value.
 	 */
-	protected void accept() {
+	protected void acceptEdit() {
 		// Check if we are ready to accept
 		if (!onAccept()) {
 			return;
@@ -282,7 +264,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 	/**
 	 * Cancel the cell edit.
 	 */
-	protected void cancel() {
+	protected void cancelEdit() {
 		// Fire the event
 		if (!onCancel()) {
 			return;
@@ -315,5 +297,41 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 	 */
 	protected boolean onCancel() {
 		return true;
+	}
+
+	private void incRow() {
+		if(row < MAX_PAGE_ROW && row >= 0) {
+			row = row +1;
+		}
+	}
+
+	private void decRow() {
+		if(row <= MAX_PAGE_ROW && row > 0) {
+			row = row -1;
+		}
+	}
+
+	public void handleNext() {
+		cancelEdit();
+		incRow();
+		gotoRow(row);
+	}
+
+	public void handlePrev() {
+		cancelEdit();
+		decRow();
+		gotoRow(row);
+	}
+
+	public void handleNextFuzzy() {
+		cancelEdit();
+		incRow();
+		gotoNextFuzzy(row);
+	}
+
+	public void handlePrevFuzzy() {
+		cancelEdit();
+		decRow();
+		gotoPrevFuzzy(row);
 	}
 }

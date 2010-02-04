@@ -71,6 +71,10 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements
 			}
 		});
 	}
+	
+	public InlineTargetCellEditor getTargetCellEditor() {
+		return tableDefinition.getTargetCellEditor();
+	}
 
 	@Override
 	public void setPageSize(int pageSize) {
