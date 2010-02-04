@@ -191,18 +191,18 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		loginPresenter.ensureLoggedIn(new LoggedIn() {
 			@Override
 			public void onSuccess() {
-//				eventProcessor.addCallback(new AsyncCallback<Void>() {
-//					
-//					@Override
-//					public void onSuccess(Void result) {
-
-						
-						
+				AsyncCallback<Void> activateWorkspace =
+					new AsyncCallback<Void>() {
+					
+					@Override
+					public void onSuccess(Void result) {
 						Log.info("AppPresenter ActivateWorkspace requested");
 						
 						dispatcher.execute(new ActivateWorkspaceAction(findProjectContainerId(), findLocaleId()), new AsyncCallback<ActivateWorkspaceResult>() {
 							@Override
 							public void onFailure(Throwable caught) {
+								Log.info(caught.getMessage(), caught);
+								Log.info("AppPresenter ActivateWorkspace failed, logging in...");
 								loginPresenter.bind();
 								loginPresenter.ensureLoggedIn(new LoggedIn() {
 									@Override
@@ -229,19 +229,16 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 								bindApp();
 							}
 						});
-						
-						
-						
-						
 					}
 					
-//					@Override
-//					public void onFailure(Throwable caught) {
-//						// nil
-//					}
-//				});
-//				
-//			}
+					@Override
+					public void onFailure(Throwable e) {
+						Log.error(e.getMessage(), e);
+					}
+				};
+				eventProcessor.addCallback(activateWorkspace);
+//				activateWorkspace.onSuccess(null);
+			}
 		});
 	}
 

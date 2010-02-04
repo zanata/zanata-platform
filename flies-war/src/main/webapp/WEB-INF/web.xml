@@ -135,21 +135,21 @@
 
    <!-- GWTEventService -->
 <!-- 
+ -->
    <servlet>
 	  <servlet-name>EventService</servlet-name>
 	  <servlet-class>
 	    de.novanic.eventservice.service.EventServiceImpl
 	  </servlet-class>
    </servlet>
- -->
    
    
    <!-- GWTEventService -->
-<!-- 
    <servlet-mapping>
 	  <servlet-name>EventService</servlet-name>
 	  <url-pattern>/org.fedorahosted.flies.webtrans.Application/gwteventservice</url-pattern>
    </servlet-mapping>
+<!-- 
  -->
    
    
@@ -170,12 +170,8 @@
    
    
    <!--  Errai 
-   -->
    <servlet>
         <servlet-name>ErraiServlet</servlet-name>
-        <!-- 
-        <servlet-class>org.fedorahosted.flies.errai.FliesBlockingServlet</servlet-class>
-         -->
         <servlet-class>org.jboss.errai.bus.server.servlet.DefaultBlockingServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
    </servlet>
@@ -189,6 +185,7 @@
         <param-name>errai.properties</param-name>
         <param-value>/WEB-INF/ErraiService.properties</param-value>
     </context-param>
+   -->
 
 <!-- 
     <context-param>

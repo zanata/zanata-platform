@@ -38,7 +38,6 @@ public class EnterWorkspaceEvent extends GwtEvent<EnterWorkspaceEventHandler> im
 
 		@Override
 		public Type<EnterWorkspaceEventHandler> getAssociatedType() {
-			// TODO Auto-generated method stub
 			return getType();
 		}
 

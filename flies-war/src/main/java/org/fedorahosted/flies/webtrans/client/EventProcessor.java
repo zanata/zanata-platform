@@ -12,7 +12,6 @@ import org.fedorahosted.flies.gwt.rpc.HasExitWorkspaceData;
 import org.fedorahosted.flies.gwt.rpc.HasTransUnitEditData;
 import org.fedorahosted.flies.gwt.rpc.HasTransUnitUpdatedData;
 import org.fedorahosted.flies.gwt.rpc.SessionEventData;
-import org.fedorahosted.flies.gwt.rpc.SessionEventMessageParts;
 import org.fedorahosted.flies.gwt.rpc.TransUnitEditing;
 import org.fedorahosted.flies.gwt.rpc.TransUnitUpdated;
 import org.fedorahosted.flies.webtrans.client.events.EnterWorkspaceEvent;
@@ -20,17 +19,19 @@ import org.fedorahosted.flies.webtrans.client.events.ExitWorkspaceEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitEditEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
-import org.jboss.errai.bus.client.ErraiBus;
-import org.jboss.errai.bus.client.Message;
-import org.jboss.errai.bus.client.MessageBus;
-import org.jboss.errai.bus.client.MessageCallback;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
-public class EventProcessor implements /*RemoteEventListener*/ MessageCallback {
+import de.novanic.eventservice.client.event.Event;
+import de.novanic.eventservice.client.event.RemoteEventService;
+import de.novanic.eventservice.client.event.RemoteEventServiceFactory;
+import de.novanic.eventservice.client.event.domain.Domain;
+import de.novanic.eventservice.client.event.listener.RemoteEventListener;
+
+public class EventProcessor implements RemoteEventListener {
 
 	private final EventBus eventBus;
 //	private final DispatchAsync dispatcher;
@@ -92,9 +93,9 @@ public class EventProcessor implements /*RemoteEventListener*/ MessageCallback {
 	}
 	
 	private final EventRegistry eventRegistry;
-	private MessageBus messageBus;
-//	private ArrayList<AsyncCallback<Void>> waitingCallbacks = new ArrayList<AsyncCallback<Void>>();
-//	private boolean registerSucceeded = false;
+	private RemoteEventService remoteEventService;
+	private ArrayList<AsyncCallback<Void>> waitingCallbacks = new ArrayList<AsyncCallback<Void>>();
+	private boolean registerSucceeded = false;
 	
 	@Inject
 	public EventProcessor(EventBus eventBus, CachingDispatchAsync dispatcher, WorkspaceContext workspaceContext) {
@@ -102,56 +103,56 @@ public class EventProcessor implements /*RemoteEventListener*/ MessageCallback {
 //		this.dispatcher = dispatcher;
 //		this.workspaceContext = workspaceContext;
 		this.eventRegistry = new EventRegistry();
-		this.messageBus = ErraiBus.get();
-		messageBus.subscribe(workspaceContext.getSubject(), this);
-		Log.info("Subscribed to ErraiBus subject "+workspaceContext.getSubject());
-		// FIXME make sure we don't lose events at init time
-//		remoteEventService.addListener(domain, this, new AsyncCallback<Void>() {
-//			@Override
-//			public void onSuccess(Void result) {
-//				Log.info("EventProcessor is now listening for events in the domain "+domain.getName());
-//				for (AsyncCallback<Void> callback : waitingCallbacks)
-//					callback.onSuccess(result);
-//				waitingCallbacks = null;
-//				registerSucceeded = true;
-//			}
-//			@Override
-//			public void onFailure(Throwable e) {
-//				Log.error(e.getMessage(), e);
-//				for (AsyncCallback<Void> callback : waitingCallbacks)
-//					callback.onFailure(e);
-//				waitingCallbacks = null;
-//				registerSucceeded = false;
-//			}
-//		});
+		remoteEventService = RemoteEventServiceFactory.getInstance().getRemoteEventService();
+		final Domain domain = workspaceContext.getDomain();
+		
+		remoteEventService.addListener(domain, this, new AsyncCallback<Void>() {
+			@Override
+			public void onSuccess(Void result) {
+				Log.info("EventProcessor is now listening for events in the domain "+domain.getName());
+				for (AsyncCallback<Void> callback : waitingCallbacks)
+					callback.onSuccess(result);
+				waitingCallbacks = null;
+				registerSucceeded = true;
+			}
+			@Override
+			public void onFailure(Throwable e) {
+				Log.error(e.getMessage(), e);
+				for (AsyncCallback<Void> callback : waitingCallbacks)
+					callback.onFailure(e);
+				waitingCallbacks = null;
+				registerSucceeded = false;
+			}
+		});
 	}
 	
-//	/**
-//	 * Calls back when the EventProcessor is registered with the domain.
-//	 * Callback is immediate if already registered.
-//	 * @param callback
-//	 */
-//	public void addCallback(AsyncCallback<Void> callback) {
-//		if (waitingCallbacks != null)
-//			waitingCallbacks.add(callback);
-//		// we already got our callback, so pass the result straight back:
-//		else if (registerSucceeded)
-//			callback.onSuccess(null);
-//		else
-//			callback.onFailure(new Exception());
-//	}
-	
+	/**
+	 * Calls back when the EventProcessor is registered with the domain.
+	 * Callback is immediate if already registered.
+	 * @param callback
+	 */
+	public void addCallback(AsyncCallback<Void> callback) {
+		if (waitingCallbacks != null)
+			waitingCallbacks.add(callback);
+		// we already got our callback, so pass the result straight back:
+		else if (registerSucceeded)
+			callback.onSuccess(null);
+		else
+			callback.onFailure(new Exception());
+	}
 	
 	@Override
-	public void callback(Message message) {
-		SessionEventData ed = message.get(SessionEventData.class, SessionEventMessageParts.Data);
-if(ed == null) { Log.error("Data=null: "+message); return;}
-		GwtEvent<?> gwtEvent = eventRegistry.getEvent(ed);
-		if(gwtEvent != null) {
-			Log.info("received event "+gwtEvent);
-			eventBus.fireEvent(gwtEvent);
-		} else {
-			Log.warn("unknown event "+ed);
+	public void apply(Event event) {
+		//Log.info("received remote event "+event);
+		if (event instanceof SessionEventData) {
+			SessionEventData ed = (SessionEventData) event;
+			GwtEvent<?> gwtEvent = eventRegistry.getEvent(ed);
+			if(gwtEvent != null) {
+				Log.info("received event "+event+", GWT event "+gwtEvent.getClass().getName());
+				eventBus.fireEvent(gwtEvent);
+			} else {
+				Log.warn("unknown event "+event);
+			}
 		}
 	}
 	

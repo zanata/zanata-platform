@@ -37,7 +37,6 @@ public class ExitWorkspaceEvent extends GwtEvent<ExitWorkspaceEventHandler> impl
 
 	@Override
 	public Type<ExitWorkspaceEventHandler> getAssociatedType() {
-		// TODO Auto-generated method stub
 		return getType();
 	}
 

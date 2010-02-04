@@ -352,9 +352,11 @@
         <artifactId>maven-eclipse-plugin</artifactId>
         <configuration>
           <additionalProjectnatures>
+            <projectnature>com.google.gdt.eclipse.core.webAppNature</projectnature>
             <projectnature>com.google.gwt.eclipse.core.gwtNature</projectnature>
           </additionalProjectnatures>
           <additionalBuildcommands>
+            <buildcommand>com.google.gdt.eclipse.core.webAppProjectValidator</buildcommand>
             <buildcommand>com.google.gwt.eclipse.core.gwtProjectValidator</buildcommand>
           </additionalBuildcommands>
           <classpathContainers>
@@ -1123,16 +1125,17 @@
     </dependency>
 
     <dependency>
+      <groupId>de.novanic</groupId>
+      <artifactId>gwteventservice</artifactId>
+	</dependency>
+	
+<!-- 
+    <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-bus</artifactId> 
-      <!-- 
-      <version>1.0-Beta1</version>
-      <version>1.0-20100114.200325-3</version>
-      <version>1.0-SNAPSHOT</version>
-       -->      
-      <version>1.0-20100114.200325-3</version>
       <scope>compile</scope>
     </dependency>
+ -->
 
 	<dependency>
       <groupId>org.fedorahosted.flies</groupId>

@@ -85,7 +85,7 @@ public class TranslationWorkspaceManager {
 	public TranslationWorkspace getOrRegisterWorkspace(WorkspaceKey workspaceKey) {
 		TranslationWorkspace workspace = workspaceMap.get(workspaceKey);
 		if(workspace == null){
-			workspace = new TranslationWorkspace(workspaceKey, BusFactory.getMessageBus());
+			workspace = new TranslationWorkspace(workspaceKey);
 			TranslationWorkspace prev = workspaceMap.putIfAbsent(workspaceKey, workspace);
 			
 			if(prev == null){

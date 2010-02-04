@@ -17,8 +17,11 @@
       <inherits name="org.fedorahosted.flies.gwt.Flies-gwt"/>
 
       <inherits name='com.google.gwt.user.theme.standard.Standard' />
+<!-- 
   	  <inherits name="org.jboss.errai.common.ErraiCommon"/>
   	  <inherits name="org.jboss.errai.bus.ErraiBus"/>
+ -->
+  <inherits name="de.novanic.eventservice.GWTEventService"/>
 
       
       <!-- Specify the app entry point class.                         -->

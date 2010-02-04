@@ -57,7 +57,6 @@ public class TransUnitEditEvent  extends GwtEvent<TransUnitEditEventHandler> imp
 
 	@Override
 	public String getSessionId() {
-		// TODO Auto-generated method stub
 		return sessionId;
 	}
 	

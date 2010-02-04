@@ -44,8 +44,6 @@ public class ActivateWorkspaceHandler implements ActionHandler<ActivateWorkspace
 		
 		//Send EnterWorkspace event to clients
 		EnterWorkspace event = new EnterWorkspace(new PersonId(FliesIdentity.instance().getPrincipal().getName()));
-//		EnterWorkspace event = GWT.create(EnterWorkspace.class);
-//		event.setPersonId(new PersonId(FliesIdentity.instance().getPrincipal().getName()));
 		workspace.publish(event);
 		
 		String iterationName = (String)session.createQuery(
