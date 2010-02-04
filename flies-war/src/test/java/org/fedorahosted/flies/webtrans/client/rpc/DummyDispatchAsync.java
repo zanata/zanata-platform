@@ -13,8 +13,12 @@ import org.fedorahosted.flies.gwt.rpc.GetDocsList;
 import org.fedorahosted.flies.gwt.rpc.GetDocsListResult;
 import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCount;
 import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCountResult;
+import org.fedorahosted.flies.gwt.rpc.GetStatusCount;
+import org.fedorahosted.flies.gwt.rpc.GetStatusCountResult;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnitsResult;
+import org.fedorahosted.flies.gwt.rpc.GetTranslationMemory;
+import org.fedorahosted.flies.gwt.rpc.GetTranslationMemoryResult;
 import org.fedorahosted.flies.gwt.rpc.GetTranslatorList;
 import org.fedorahosted.flies.gwt.rpc.GetTranslatorListResult;
 
@@ -54,6 +58,14 @@ public class DummyDispatchAsync extends SeamDispatchAsync {
 			final GetProjectStatusCount _action = (GetProjectStatusCount) action;
 			AsyncCallback<GetProjectStatusCountResult> _callback = (AsyncCallback<GetProjectStatusCountResult>) callback;
 			DeferredCommand.addCommand(new DummyGetProjectStatusCountCommand(_action, _callback));
+		} else if (action instanceof GetStatusCount) {
+			final GetStatusCount _action = (GetStatusCount) action;
+			AsyncCallback<GetStatusCountResult> _callback = (AsyncCallback<GetStatusCountResult>) callback;
+			DeferredCommand.addCommand(new DummyGetStatusCountCommand(_action, _callback));
+		} else if (action instanceof GetTranslationMemory) {
+			final GetTranslationMemory _action = (GetTranslationMemory) action;
+			AsyncCallback<GetTranslationMemoryResult> _callback = (AsyncCallback<GetTranslationMemoryResult>) callback;
+			DeferredCommand.addCommand(new DummyGetTranslationMemoryCommand(_action, _callback));
 		} else {
 			Log.warn("DummyDispatchAsync: ignoring action of "+action.getClass());
 //			callback.onFailure(new RuntimeException());
