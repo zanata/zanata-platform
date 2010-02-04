@@ -2,11 +2,9 @@ package org.fedorahosted.flies.gwt.model;
 
 import java.io.Serializable;
 
-import org.jboss.errai.bus.server.annotations.ExposeEntity;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-@ExposeEntity 
+//@ExposeEntity 
 public final class PersonId implements IsSerializable, Serializable {
 	
 	private String id;

@@ -3,9 +3,8 @@ package org.fedorahosted.flies.gwt.rpc;
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.TransUnitId;
-import org.jboss.errai.bus.server.annotations.ExposeEntity;
 
-@ExposeEntity 
+//@ExposeEntity 
 public class TransUnitUpdated implements SessionEventData, HasTransUnitUpdatedData {
 
 	private static final long serialVersionUID = 1L;
