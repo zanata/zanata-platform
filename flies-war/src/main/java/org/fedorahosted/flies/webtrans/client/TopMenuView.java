@@ -1,5 +1,7 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import org.fedorahosted.flies.webtrans.editor.table.NavigationConsts;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -39,6 +41,12 @@ public class TopMenuView extends Composite implements TopMenuPresenter.Display {
 		nextFuzzyButton.setText("Next Fuzzy");
 		prevUntranslatedButton.setText("Prev Untranslated");
 		nextUntranslatedButton.setText("Next Untranslated");
+		prevEntryButton.setTitle(NavigationConsts.PREV);
+		nextEntryButton.setTitle(NavigationConsts.NEXT);
+		prevFuzzyButton.setTitle(NavigationConsts.PREV_FUZZY);
+		nextFuzzyButton.setTitle(NavigationConsts.NEXT_FUZZY);
+		prevUntranslatedButton.setTitle(NavigationConsts.PREV_NEW);
+		nextUntranslatedButton.setTitle(NavigationConsts.NEXT_NEW);
 
 		userLabel.setText("<Username>");
 		workspaceLabel.setText("Workspace");

@@ -121,6 +121,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 		textArea.addKeyUpHandler(new KeyUpHandler() {
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
+				// NB: if you change these, please change NavigationConsts too!
 				if(event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
 					acceptEdit();
 					incRow();
