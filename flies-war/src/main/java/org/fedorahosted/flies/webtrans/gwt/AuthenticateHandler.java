@@ -13,7 +13,6 @@ import org.fedorahosted.flies.gwt.rpc.AuthenticateAction;
 import org.fedorahosted.flies.gwt.rpc.AuthenticateResult;
 import org.fedorahosted.flies.webtrans.TranslationWorkspaceManager;
 import org.hibernate.Session;
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -74,12 +73,11 @@ public class AuthenticateHandler implements ActionHandler<AuthenticateAction, Au
 	}
 	
 	public static PersonId retrievePersonId(){
-		
-		HPerson authenticatedPerson = (HPerson) Component.getInstance("authenticatedPerson",true);
+		HPerson authenticatedPerson = (HPerson) Contexts.getSessionContext().get("authenticatedPerson");
 		return new PersonId(authenticatedPerson.getAccount().getUsername());
 	}
 	public static Person retrievePerson(){
-		HPerson authenticatedPerson = (HPerson) Component.getInstance("authenticatedPerson",true);
+		HPerson authenticatedPerson = (HPerson) Contexts.getSessionContext().get("authenticatedPerson");
 		return new Person( new PersonId(authenticatedPerson.getAccount().getUsername()), authenticatedPerson.getName());
 	}
 	
