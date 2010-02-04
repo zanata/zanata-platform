@@ -35,6 +35,7 @@ public class GetCommentsActionHandler implements ActionHandler<GetCommentsAction
 	public GetCommentsResult execute(GetCommentsAction action,
 			ExecutionContext context) throws ActionException {
 		log.info("Getting comments for {0} {1}", action.getTransUnitId().getValue(), action.getLocaleId());
+		FliesIdentity.instance().checkLoggedIn();
 		return new GetCommentsResult("Hello World");
 	}
 

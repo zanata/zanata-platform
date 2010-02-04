@@ -4,12 +4,10 @@ import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.fedorahosted.flies.common.EditState;
-import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.rpc.EditingTranslationAction;
 import org.fedorahosted.flies.gwt.rpc.EditingTranslationResult;
-import org.fedorahosted.flies.gwt.rpc.TransUnitEditing;
 import org.fedorahosted.flies.repository.model.HTextFlow;
+import org.fedorahosted.flies.security.FliesIdentity;
 import org.fedorahosted.flies.webtrans.TranslationWorkspace;
 import org.fedorahosted.flies.webtrans.TranslationWorkspaceManager;
 import org.hibernate.Session;
@@ -33,6 +31,7 @@ public class EditTransUnitHandler implements ActionHandler<EditingTranslationAct
 	@Override
 	public EditingTranslationResult execute(EditingTranslationAction action, ExecutionContext context)
 			throws ActionException {
+		FliesIdentity.instance().checkLoggedIn();
 		HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, action.getTransUnitId().getValue());
 		
 		TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(
