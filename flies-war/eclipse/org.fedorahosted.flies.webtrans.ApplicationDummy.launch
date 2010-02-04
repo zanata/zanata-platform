@@ -2,7 +2,6 @@
 <launchConfiguration type="com.google.gdt.eclipse.suite.webapp">
 <stringAttribute key="com.google.gdt.eclipse.core.SERVER_PORT" value="48880"/>
 <listAttribute key="com.google.gwt.eclipse.core.ENTRY_POINT_MODULES">
-<listEntry value="org.fedorahosted.flies.webtrans.Application"/>
 <listEntry value="org.fedorahosted.flies.webtrans.ApplicationDummy"/>
 </listAttribute>
 <stringAttribute key="com.google.gwt.eclipse.core.URL" value="org.fedorahosted.flies.webtrans.ApplicationDummy/ApplicationDummy.html?projContainerId=2&amp;localeId=de"/>
