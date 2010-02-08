@@ -26,7 +26,7 @@ public class DummyGetTranslationMemoryCommand implements Command {
 		matches.add(new TransMemory("source1", "target1"));
 		matches.add(new TransMemory("source2", "target2"));
 		matches.add(new TransMemory("source3", "target3"));
-		matches.add(new TransMemory("source4", "target4"));
+		matches.add(new TransMemory("<source4/>", "<target4/>"));
 		callback.onSuccess(new GetTranslationMemoryResult(matches));
 	}
 

@@ -13,9 +13,10 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.weborient.codemirror.client.HighlightingLabel;
+import com.weborient.codemirror.client.ParserSyntax;
 
 public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.Display {
 
@@ -85,8 +86,8 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 		resultTable.setWidget(0, 1, target);
 		int row = 1;
 		for(TransMemory memory: memories) {
-			resultTable.setWidget(row, 0, new Label(memory.getSource()));
-			resultTable.setWidget(row, 1, new Label(memory.getMemory()));
+			resultTable.setWidget(row, 0, new HighlightingLabel(memory.getSource(), ParserSyntax.MIXED));
+			resultTable.setWidget(row, 1, new HighlightingLabel(memory.getMemory(), ParserSyntax.MIXED));
 			row++;
 		}
 		resultTable.setCellPadding(5);
