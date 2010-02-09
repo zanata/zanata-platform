@@ -4,11 +4,13 @@ import java.util.ArrayList;
 
 import org.fedorahosted.flies.gwt.model.TransMemory;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -78,16 +80,32 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 	@Override
 	public void createTable(ArrayList<TransMemory> memories) {
 		clearResults();
-		Label source = new Label("Source");
-		Label target = new Label("Target");
-		source.setStyleName("TransMemoryTableColumnHeader");
-		target.setStyleName("TransMemoryTableColumnHeader");
-		resultTable.setWidget(0, 0, source);
-		resultTable.setWidget(0, 1, target);
+		Label sourceTitle = new Label("Source");
+		Label targetTitle = new Label("Target");
+		Label actionTitle = new Label("Action");
+		sourceTitle.setStyleName("TransMemoryTableColumnHeader");
+		targetTitle.setStyleName("TransMemoryTableColumnHeader");
+		actionTitle.setStyleName("TransMemoryTableColumnHeader");
+		resultTable.setWidget(0, 0, sourceTitle);
+		resultTable.setWidget(0, 1, targetTitle);
+		resultTable.setWidget(0, 2, actionTitle);
 		int row = 1;
-		for(TransMemory memory: memories) {
-			resultTable.setWidget(row, 0, new HighlightingLabel(memory.getSource(), ParserSyntax.MIXED));
-			resultTable.setWidget(row, 1, new HighlightingLabel(memory.getMemory(), ParserSyntax.MIXED));
+		for(final TransMemory memory: memories) {
+			final String sourceResult = new String(memory.getSource());
+			final String targetResult = new String(memory.getMemory());
+			resultTable.setWidget(row, 0, new HighlightingLabel(sourceResult, ParserSyntax.MIXED));
+			resultTable.setWidget(row, 1, new HighlightingLabel(targetResult, ParserSyntax.MIXED));
+			
+			Anchor copyLink = new Anchor("Copy To Target");
+			copyLink.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					fireEvent(new TransMemoryCopyEvent(memory.getSource(), memory.getMemory()));
+					Log.info("TransMemoryCopyEvent event is sent. (" + targetResult + ")");
+				}
+			});
+			resultTable.setWidget(row, 2, copyLink);
+			
 			row++;
 		}
 		resultTable.setCellPadding(5);
