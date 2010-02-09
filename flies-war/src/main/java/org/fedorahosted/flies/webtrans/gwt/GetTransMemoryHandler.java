@@ -57,7 +57,11 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 			if(target != null) {
 				// filter by status Approved?
 //				tu.setStatus( target.getState() );
-				TransMemory memory = new TransMemory(textFlow.getContent(), target.getContent());
+				TransMemory memory = new TransMemory(
+						textFlow.getContent(), 
+						target.getContent(),
+						textFlow.getDocument().getDocId(),
+						100);
 				results.add(memory);
 			}
 		}
