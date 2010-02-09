@@ -80,15 +80,12 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 	@Override
 	public void createTable(ArrayList<TransMemory> memories) {
 		clearResults();
-		Label sourceTitle = new Label("Source");
-		Label targetTitle = new Label("Target");
-		Label actionTitle = new Label("Action");
-		sourceTitle.setStyleName("TransMemoryTableColumnHeader");
-		targetTitle.setStyleName("TransMemoryTableColumnHeader");
-		actionTitle.setStyleName("TransMemoryTableColumnHeader");
-		resultTable.setWidget(0, 0, sourceTitle);
-		resultTable.setWidget(0, 1, targetTitle);
-		resultTable.setWidget(0, 2, actionTitle);
+		addColumn("Source", 0);
+		addColumn("Target", 1);
+		addColumn("Document", 2);
+		addColumn("Score", 3);
+		addColumn("Action", 4);
+
 		int row = 1;
 		for(final TransMemory memory: memories) {
 			final String sourceResult = new String(memory.getSource());
@@ -104,12 +101,19 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 					Log.info("TransMemoryCopyEvent event is sent. (" + targetResult + ")");
 				}
 			});
-			resultTable.setWidget(row, 2, copyLink);
+			resultTable.setWidget(row, 4, copyLink);
 			
 			row++;
 		}
 		resultTable.setCellPadding(5);
 	}
+	
+	private void addColumn(String columnHeading, int pos) {
+	    Label widget = new Label(columnHeading);
+	    widget.setWidth("100%");
+	    widget.addStyleName("TransMemoryTableColumnHeader");
+	    resultTable.setWidget(0, pos, widget);
+	  }
 	
 	@Override
 	public void clearResults() {
