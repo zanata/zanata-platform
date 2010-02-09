@@ -1,24 +1,24 @@
 package org.fedorahosted.flies.webtrans.client;
 
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class SouthView implements SouthPresenter.Display {
-	DisclosurePanel disclosurePanel = new DisclosurePanel("Translation Memory Tools", false);
+	DisclosurePanel disclosurePanel = new DisclosurePanel("Translation Memory Tools");
 	TabPanel tabPanel = new TabPanel();
 	FlowPanel transPanel = new FlowPanel();
-	//TextArea transMemory = new TextArea();
 	TextArea glossary = new TextArea();
 	TextArea related = new TextArea();
+	
 	public SouthView() {
 		disclosurePanel.setWidth("100%");
+		disclosurePanel.setOpen(false);
 		tabPanel.add(transPanel, "Translation Memory");
 		glossary.setText("glossary............................................................\nglossary\nglossary");
 		tabPanel.add(glossary, "Glossary");
@@ -26,7 +26,8 @@ public class SouthView implements SouthPresenter.Display {
 		tabPanel.add(related, "Related");
 		disclosurePanel.add(tabPanel);
 		tabPanel.setWidth("100%");
-		tabPanel.selectTab(1);
+		int glossIndex = tabPanel.getWidgetIndex(glossary);
+		tabPanel.selectTab(glossIndex);
 	}
 
 	@Override
@@ -54,13 +55,22 @@ public class SouthView implements SouthPresenter.Display {
 
 	@Override
 	public HasWidgets getWidgets() {
-		// TODO Auto-generated method stub
 		return transPanel;
 	}
 	
 	@Override
-	public TabPanel getTabPanel() {
+	public HasSelectionHandlers<Integer> getSelectionHandler() {
 		return tabPanel;
 	}
+	
+	@Override
+	public int getTransPanelIndex() {
+		return tabPanel.getWidgetIndex(transPanel);
+	}
 
+	@Override
+	public boolean isDisclosurePanelOpen() {
+		// TODO Auto-generated method stub
+		return disclosurePanel.isOpen();
+	}
 }

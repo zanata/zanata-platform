@@ -8,24 +8,16 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.fedorahosted.flies.gwt.model.Concept;
 import org.fedorahosted.flies.gwt.model.TransMemory;
-import org.fedorahosted.flies.gwt.rpc.GetGlossaryConcept;
-import org.fedorahosted.flies.gwt.rpc.GetGlossaryConceptResult;
 import org.fedorahosted.flies.gwt.rpc.GetTranslationMemory;
 import org.fedorahosted.flies.gwt.rpc.GetTranslationMemoryResult;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
-import org.fedorahosted.flies.webtrans.editor.ConceptView;
-import org.fedorahosted.flies.webtrans.editor.GlossaryPresenter;
-import org.fedorahosted.flies.webtrans.editor.GlossaryPresenter.Display;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.Display> {

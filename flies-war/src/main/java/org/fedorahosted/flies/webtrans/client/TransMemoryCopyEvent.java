@@ -1,7 +1,5 @@
 package org.fedorahosted.flies.webtrans.client;
 
-import org.fedorahosted.flies.common.ContentState;
-
 import com.google.gwt.event.shared.GwtEvent;
 
 public class TransMemoryCopyEvent extends GwtEvent<TransMemoryCopyHandler> {
