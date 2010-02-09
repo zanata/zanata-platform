@@ -19,14 +19,6 @@ public class SouthView implements SouthPresenter.Display {
 	TextArea related = new TextArea();
 	public SouthView() {
 		disclosurePanel.setWidth("100%");
-        TextBox input = new TextBox();
-		Button button = new Button("Search");
-//		transPanel.add(input);
-//		transPanel.add(button);
-//		transPanel.add(transMemory);
-//		transPanel.setWidth("100%");
-//		transMemory.setText("Translation Memory............................................................\nTranslation Memory\nTranslation Memory");
-//		transMemory.setWidth("100%");
 		tabPanel.add(transPanel, "Translation Memory");
 		glossary.setText("glossary............................................................\nglossary\nglossary");
 		tabPanel.add(glossary, "Glossary");
@@ -34,7 +26,7 @@ public class SouthView implements SouthPresenter.Display {
 		tabPanel.add(related, "Related");
 		disclosurePanel.add(tabPanel);
 		tabPanel.setWidth("100%");
-		tabPanel.selectTab(0);
+		tabPanel.selectTab(1);
 	}
 
 	@Override
@@ -64,6 +56,11 @@ public class SouthView implements SouthPresenter.Display {
 	public HasWidgets getWidgets() {
 		// TODO Auto-generated method stub
 		return transPanel;
+	}
+	
+	@Override
+	public TabPanel getTabPanel() {
+		return tabPanel;
 	}
 
 }

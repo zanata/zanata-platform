@@ -6,8 +6,13 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.SourcesTabEvents;
+import com.google.gwt.user.client.ui.TabListener;
+import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -18,12 +23,14 @@ public class SouthPresenter extends WidgetPresenter<SouthPresenter.Display> {
 		HasWidgets getWidgets();
 		HasText getGlossary();
 		HasText getRelated();
+		TabPanel getTabPanel();
 	}
 	
 	@Inject
 	public SouthPresenter(Display display, EventBus eventBus, TransMemoryPresenter transMemorypresenter) {
 		super(display, eventBus);
 		this.transMemorypresenter = transMemorypresenter;
+		
 	}
 
 	@Override
@@ -36,6 +43,20 @@ public class SouthPresenter extends WidgetPresenter<SouthPresenter.Display> {
 		transMemorypresenter.bind();
 		display.getWidgets().add(transMemorypresenter.getDisplay().asWidget());
 		refreshDisplay();
+		
+		display.getTabPanel().addSelectionHandler(new SelectionHandler<Integer>() {
+
+			@Override
+			public void onSelection(SelectionEvent<Integer> event) {
+				if (event.getSelectedItem() == 0) {
+					//Translation Memory Tab is visible, Send event to TableEditorPresenter
+					eventBus.fireEvent(new TMTabSelectionEvent(true));
+				}
+				else {
+					eventBus.fireEvent(new TMTabSelectionEvent(false));
+				}
+			}
+		});
 	}
 
 	@Override
