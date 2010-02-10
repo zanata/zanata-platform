@@ -123,7 +123,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		
 		registerHandler(eventBus.addHandler(VisibilityEvent.getType(), new VisibilityHandler() {
 			@Override
-			public void onTransMemorySelected(VisibilityEvent tabSelectionEvent) {
+			public void onVisibilityChange(VisibilityEvent tabSelectionEvent) {
 				 //transMemoryTabVisible = tabSelectionEvent.isTranslationMemoryVisible();
 			}
 		}));

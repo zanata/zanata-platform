@@ -2,13 +2,13 @@ package org.fedorahosted.flies.webtrans.client;
 
 import com.google.gwt.event.shared.GwtEvent;
 
-public class VisibilityEvent<I> extends GwtEvent<VisibilityHandler> {
+public class VisibilityEvent extends GwtEvent<VisibilityHandler> {
 	
 	/**
 	 * Handler type.
 	 */
 	private static Type<VisibilityHandler> TYPE;
-	private final I value;
+	private final boolean visible; 
 	
 	/**
 	 * Gets the type associated with this event.
@@ -19,13 +19,13 @@ public class VisibilityEvent<I> extends GwtEvent<VisibilityHandler> {
 		return TYPE != null ? TYPE : (TYPE = new Type<VisibilityHandler>());
 	}
 
-	public VisibilityEvent(I value) {
-		this.value = value;
+	public VisibilityEvent(boolean transMemTabVisible) {
+		this.visible = transMemTabVisible;
 	}
 	
 	@Override
 	protected void dispatch(VisibilityHandler handler) {
-		handler.onTransMemorySelected(this);
+		handler.onVisibilityChange(this);
 	}
 
 	@Override
@@ -33,13 +33,13 @@ public class VisibilityEvent<I> extends GwtEvent<VisibilityHandler> {
 		return getType();
 	}
 
-	public I getValue() {
-	    return value;
+	public boolean isVisible() {
+	    return this.visible;
 	}
 	
-	public static <I> void fire(HasVisibilityEventHandlers source, I value) {
+	public static <I> void fire(HasVisibilityEventHandlers source, boolean value) {
 		if (TYPE != null) {
-			VisibilityEvent<I> event = new VisibilityEvent<I>(value);
+			VisibilityEvent event = new VisibilityEvent(value);
 			source.fireEvent(event);
 		}
 	}
