@@ -88,8 +88,8 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 
 		int row = 1;
 		for(final TransMemory memory: memories) {
-			final String sourceResult = new String(memory.getSource());
-			final String targetResult = new String(memory.getMemory());
+			final String sourceResult = memory.getSource();
+			final String targetResult = memory.getMemory();
 			resultTable.setWidget(row, 0, new HighlightingLabel(sourceResult, ParserSyntax.MIXED));
 			resultTable.setWidget(row, 1, new HighlightingLabel(targetResult, ParserSyntax.MIXED));
 			
