@@ -97,7 +97,7 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 			copyLink.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					fireEvent(new TransMemoryCopyEvent(memory.getSource(), memory.getMemory()));
+					fireEvent(new TransMemoryCopyEvent(sourceResult, targetResult));
 					Log.info("TransMemoryCopyEvent event is sent. (" + targetResult + ")");
 				}
 			});
