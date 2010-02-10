@@ -23,6 +23,8 @@ import com.google.inject.Inject;
 public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.Display> {
 	private final WorkspaceContext workspaceContext;
 	private final CachingDispatchAsync dispatcher;
+	private boolean transMemoryVisible = false;
+	private boolean transUnitSelected = false;
 	
 	public interface Display extends WidgetDisplay {
 		Button getSearchButton();
@@ -49,6 +51,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 		display.getSearchButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+			if(transMemoryVisible && transUnitSelected) {
 				display.clearResults();
 				dispatcher.execute(new GetTranslationMemory(display.getTmTextBox().getText(), workspaceContext.getLocaleId()), new AsyncCallback<GetTranslationMemoryResult>() {
 					@Override
@@ -60,6 +63,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 						display.createTable(memories);
 					}
 			});
+			}
 			}
 		});
 	}
@@ -78,5 +82,14 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 
 	@Override
 	public void revealDisplay() {
+	}
+
+	public void isTransMemoryVisible(boolean visible) {
+		transMemoryVisible = visible;
+		
+	}
+
+	public void isTransUnitSelected(boolean selected) {
+		transUnitSelected  = selected;
 	}
 }
