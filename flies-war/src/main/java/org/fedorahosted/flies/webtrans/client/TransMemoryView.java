@@ -92,6 +92,8 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 			final String targetResult = memory.getMemory();
 			resultTable.setWidget(row, 0, new HighlightingLabel(sourceResult, ParserSyntax.MIXED));
 			resultTable.setWidget(row, 1, new HighlightingLabel(targetResult, ParserSyntax.MIXED));
+			resultTable.setText(row, 2, memory.getDocID());
+			resultTable.setText(row, 3, String.valueOf(memory.getRelevanceScore()));
 			
 			Anchor copyLink = new Anchor("Copy To Target");
 			copyLink.addClickHandler(new ClickHandler() {
