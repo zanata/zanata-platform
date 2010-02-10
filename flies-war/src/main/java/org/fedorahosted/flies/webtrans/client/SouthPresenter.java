@@ -1,5 +1,7 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import org.fedorahosted.flies.gwt.model.TransUnit;
+
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
@@ -9,6 +11,7 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.inject.Inject;
@@ -20,9 +23,6 @@ public class SouthPresenter extends WidgetPresenter<SouthPresenter.Display> {
 		HasWidgets getWidgets();
 		HasText getGlossary();
 		HasText getRelated();
-		HasSelectionHandlers<Integer> getSelectionHandler();
-		int getTransPanelIndex();
-		boolean isDisclosurePanelOpen();
 	}
 	
 	@Inject
@@ -41,20 +41,15 @@ public class SouthPresenter extends WidgetPresenter<SouthPresenter.Display> {
 		transMemorypresenter.bind();
 		display.getWidgets().add(transMemorypresenter.getDisplay().asWidget());
 		refreshDisplay();
-		display.getSelectionHandler().addSelectionHandler(new SelectionHandler<Integer>() {
+		
+		registerHandler(eventBus.addHandler(SelectionEvent.getType(), new SelectionHandler<TransUnit>() {
 			@Override
-			public void onSelection(SelectionEvent<Integer> event) {
-				if(display.isDisclosurePanelOpen()) {
-					if (event.getSelectedItem() == display.getTransPanelIndex()) {
-						//Translation Memory Tab is visible, Send TranslationMemoryVisibleEvent to TableEditorPresenter
-						eventBus.fireEvent(new TranslationMemoryVisibleEvent(true));
-					}
-					else {
-						eventBus.fireEvent(new TranslationMemoryVisibleEvent(false));
-					}
-				}
+			public void onSelection(SelectionEvent<TransUnit> event) {
+				//Check if the TransMemory Tab is visible
+			
 			}
-		});
+				
+		})); 
 	}
 
 	@Override
