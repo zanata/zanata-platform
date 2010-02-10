@@ -1,7 +1,5 @@
 package org.fedorahosted.flies.webtrans.client;
 
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.shared.GwtEvent;
 
 public class VisibilityEvent<I> extends GwtEvent<VisibilityHandler> {
@@ -39,10 +37,11 @@ public class VisibilityEvent<I> extends GwtEvent<VisibilityHandler> {
 	    return value;
 	}
 	
-	public static <I> void fire(HasValueChangeHandlers<I> source, I value) {
-		    if (TYPE != null) {
-		      VisibilityEvent<I> event = new VisibilityEvent<I>(value);
-		      source.fireEvent(event);
-		    }
+	public static <I> void fire(HasVisibilityEventHandlers source, I value) {
+		if (TYPE != null) {
+			VisibilityEvent<I> event = new VisibilityEvent<I>(value);
+			source.fireEvent(event);
+		}
 	}
+	
 }
