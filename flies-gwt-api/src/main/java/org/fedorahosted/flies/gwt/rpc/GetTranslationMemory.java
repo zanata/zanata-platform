@@ -9,14 +9,20 @@ public class GetTranslationMemory implements Action<GetTranslationMemoryResult> 
 	private static final long serialVersionUID = 1L;
 	private LocaleId localeId;
 	private String query;
+	private boolean fuzzy;
 	
 	@SuppressWarnings("unused")
 	private GetTranslationMemory(){
 	}
 	
-	public GetTranslationMemory(String query, LocaleId localeId) {
+	public GetTranslationMemory(String query, LocaleId localeId, boolean fuzzy) {
 		this.query = query;
 		this.localeId = localeId;
+		this.fuzzy = fuzzy;
+	}
+	
+	public boolean getFuzzy() {
+		return this.fuzzy;
 	}
 	
 	public void setLocaleId(LocaleId localeId) {

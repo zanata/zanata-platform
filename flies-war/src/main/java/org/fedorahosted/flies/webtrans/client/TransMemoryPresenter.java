@@ -53,7 +53,10 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 			public void onClick(ClickEvent event) {
 			if(transMemoryVisible && transUnitSelected) {
 				display.clearResults();
-				dispatcher.execute(new GetTranslationMemory(display.getTmTextBox().getText(), workspaceContext.getLocaleId()), new AsyncCallback<GetTranslationMemoryResult>() {
+				GetTranslationMemory action = new GetTranslationMemory(
+						display.getTmTextBox().getText(), 
+						workspaceContext.getLocaleId(), false);
+				dispatcher.execute(action, new AsyncCallback<GetTranslationMemoryResult>() {
 					@Override
 					public void onFailure(Throwable caught) {
 					}
