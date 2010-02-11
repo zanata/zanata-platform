@@ -44,7 +44,6 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.gen2.event.shared.HandlerRegistration;
 import com.google.gwt.gen2.table.client.TableModel;
 import com.google.gwt.gen2.table.client.TableModel.Callback;
@@ -461,17 +460,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		return display.getPageCountChangeHandlers().addPageCountChangeHandler(handler);
 	}
 
-	@Override
-	public com.google.gwt.event.shared.HandlerRegistration addSelectionHandler(
-			SelectionHandler<TransUnit> handler) {
-		return display.getSelectionHandlers().addSelectionHandler(handler);
-	}
-	
-	@Override
-	public void fireEvent(GwtEvent<?> event) {
-		display.getSelectionHandlers().fireEvent(event);
-	}
-	
 	public DocumentId getDocumentId() {
 		return documentId;
 	}
