@@ -5,14 +5,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.EntityManager;
-
 import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Query;
@@ -46,7 +43,7 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 	@In Session session;
     
 	@In
-	EntityManager entityManager;
+	private FullTextEntityManager entityManager;
     
 	@Override
 	public GetTranslationMemoryResult execute(GetTranslationMemory action,
@@ -130,14 +127,12 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 
     private FullTextQuery constructQuery(String searchText) throws ParseException
     {
-        String[] textFlowFields = {"content"};
 		// TODO filter by status Approved and by locale
-        // TODO we aren't querying Multi Fields (yet)
         // TODO wildcard escaping?  stemming?  fuzzy matching?
-        QueryParser parser = new MultiFieldQueryParser(textFlowFields, new StandardAnalyzer());
+        QueryParser parser = new QueryParser("content", new StandardAnalyzer());
 //        parser.setAllowLeadingWildcard(true);
         Query luceneQuery = parser.parse(searchText);
-        return ( (FullTextEntityManager) entityManager ).createFullTextQuery(luceneQuery, HTextFlow.class);
+        return entityManager.createFullTextQuery(luceneQuery, HTextFlow.class);
     }
 
 	@Override
