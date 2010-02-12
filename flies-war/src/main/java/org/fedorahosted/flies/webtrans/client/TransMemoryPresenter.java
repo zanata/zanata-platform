@@ -14,6 +14,7 @@ import org.fedorahosted.flies.gwt.rpc.GetTranslationMemory;
 import org.fedorahosted.flies.gwt.rpc.GetTranslationMemoryResult;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -28,6 +29,8 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 	private final CachingDispatchAsync dispatcher;
 	//FixME: As transPanel is set default, we have to make transMemoryVisible true, 
 	//otherwise the automatically fuzzy search will not work when clicking the TransUnit.
+	// FIXME: but the disclosure panel is initially closed, and we should get a 
+	// VisibilityEvent when it opens.  Must be a problem with the EventBus...
 	private boolean transMemoryVisible = true;
 	
 	public interface Display extends WidgetDisplay {
@@ -56,8 +59,9 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 			@Override
 			public void onClick(ClickEvent event) {
 				display.clearResults();
+				final String query = display.getTmTextBox().getText();
 				GetTranslationMemory action = new GetTranslationMemory(
-						display.getTmTextBox().getText(), 
+						query, 
 						workspaceContext.getLocaleId(), false);
 				dispatcher.execute(action, new AsyncCallback<GetTranslationMemoryResult>() {
 					@Override
@@ -78,9 +82,15 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 				if(transMemoryVisible) {
 					//Start automatically fuzzy search
 					//FixME: retrieve the query from Source
-					dispatcher.execute(new GetTranslationMemory(display.getTmTextBox().getText(), workspaceContext.getLocaleId(), true), new AsyncCallback<GetTranslationMemoryResult>() {
+					final String query = display.getTmTextBox().getText();
+					final GetTranslationMemory action = new GetTranslationMemory(
+							query, 
+							workspaceContext.getLocaleId(), 
+							true);
+					dispatcher.execute(action, new AsyncCallback<GetTranslationMemoryResult>() {
 						@Override
 						public void onFailure(Throwable caught) {
+							Log.error(caught.getMessage(), caught);
 						}
 						@Override
 						public void onSuccess(GetTranslationMemoryResult result) {
@@ -95,10 +105,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 		registerHandler(eventBus.addHandler(VisibilityEvent.getType(), new VisibilityHandler(){
 			@Override
 			public void onVisibilityChange(VisibilityEvent tabSelectionEvent) {
-				if(tabSelectionEvent.isVisible())
-					transMemoryVisible = true;
-				else
-					transMemoryVisible = false;
+				transMemoryVisible = tabSelectionEvent.isVisible();
 			}
 		}));
 	}
