@@ -77,8 +77,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 			public void onSelection(SelectionEvent<TransUnit> event) {
 				if(transMemoryVisible) {
 					//Start automatically fuzzy search
-					//FixME: retrieve the query from Source
-					final String query = display.getTmTextBox().getText();
+					final String query = event.getSelectedItem().getSource();
 					final GetTranslationMemory action = new GetTranslationMemory(
 							query, 
 							workspaceContext.getLocaleId(), 
