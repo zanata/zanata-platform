@@ -75,6 +75,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 		registerHandler(eventBus.addHandler(SelectionEvent.getType(), new SelectionHandler<TransUnit>() {
 			@Override
 			public void onSelection(SelectionEvent<TransUnit> event) {
+				display.clearResults();
 				if(transMemoryVisible) {
 					//Start automatically fuzzy search
 					final String query = event.getSelectedItem().getSource();
