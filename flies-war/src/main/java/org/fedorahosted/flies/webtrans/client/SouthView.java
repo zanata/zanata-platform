@@ -1,10 +1,17 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DisclosurePanel;
@@ -15,11 +22,24 @@ import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
-public class SouthView extends Composite implements SouthPresenter.Display, HasValueChangeHandlers<Boolean>{
-	DisclosurePanel disclosurePanel = new DisclosurePanel("Translation Memory Tools");
-	TabPanel tabPanel = new TabPanel();
-	FlowPanel transPanel = new FlowPanel();
-	TextArea glossary = new TextArea();
+public class SouthView extends Composite implements SouthPresenter.Display {
+	private final DisclosurePanel disclosurePanel = new DisclosurePanel("Translation Memory Tools");
+	private final TabPanel tabPanel = new TabPanel();
+	private final FlowPanel transPanel = new FlowPanel();
+	private final TextArea glossary = new TextArea();
+	private final HasValueChangeHandlers<Boolean> tmVisibility = new HasValueChangeHandlers<Boolean>() {
+		HandlerManager handlerManager = new HandlerManager(this);
+		@Override
+		public void fireEvent(GwtEvent<?> event) {
+			handlerManager.fireEvent(event);
+		}
+		@Override
+		public HandlerRegistration addValueChangeHandler(
+				ValueChangeHandler<Boolean> handler) {
+			return addHandler(handler, ValueChangeEvent.getType());
+		}
+	};
+	private boolean tmSelected;
 	
 	public SouthView() {
 		disclosurePanel.setWidth("100%");
@@ -29,23 +49,33 @@ public class SouthView extends Composite implements SouthPresenter.Display, HasV
 		tabPanel.add(glossary, "Glossary");
 		disclosurePanel.add(tabPanel);
 		tabPanel.setWidth("100%");
-		//int glossIndex = tabPanel.getWidgetIndex(glossary);
+		final int tmTabIndex = tabPanel.getWidgetIndex(transPanel);
 		tabPanel.addSelectionHandler(new SelectionHandler<Integer>() {
 			@Override
 			public void onSelection(SelectionEvent<Integer> event) {
-				if(disclosurePanel.isOpen()) {
-					if (event.getSelectedItem() == tabPanel.getWidgetIndex(transPanel)) {
-						ValueChangeEvent.fire(SouthView.this, true);
-					}else {
-						ValueChangeEvent.fire(SouthView.this, false);
-					}
-				} else {
-					ValueChangeEvent.fire(SouthView.this, false);
-				}
+				boolean tmSelectedNewValue = event.getSelectedItem() == tmTabIndex;
+				Log.debug("tab selected: fireIfNotEqual visibility="+tmSelectedNewValue);
+				ValueChangeEvent.fireIfNotEqual(tmVisibility, tmSelected, tmSelectedNewValue);
+				tmSelected = tmSelectedNewValue;
+			}
+		});
+		disclosurePanel.addOpenHandler(new OpenHandler<DisclosurePanel>() {
+			@Override
+			public void onOpen(OpenEvent<DisclosurePanel> event) {
+				Log.debug("disclosure panel opened: fireIfNotEqual visibility="+tmSelected);
+				ValueChangeEvent.fireIfNotEqual(tmVisibility, false, tmSelected);
+			}
+		});
+		disclosurePanel.addCloseHandler(new CloseHandler<DisclosurePanel>() {
+			@Override
+			public void onClose(CloseEvent<DisclosurePanel> event) {
+				Log.debug("disclosure panel closed: fireIfNotEqual visibility="+false);
+				ValueChangeEvent.fireIfNotEqual(tmVisibility, tmSelected, false);
 			}
 		});
 		//transPanel is set default
-		tabPanel.selectTab(tabPanel.getWidgetIndex(transPanel));
+		this.tmSelected = true;
+		tabPanel.selectTab(tmTabIndex);
 	}
 
 	@Override
@@ -72,12 +102,7 @@ public class SouthView extends Composite implements SouthPresenter.Display, HasV
 	}
 
 	@Override
-	public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Boolean> handler) {
-		return addHandler(handler, ValueChangeEvent.getType());
-	}
-
-	@Override
-	public HasValueChangeHandlers<Boolean> getValueChangeHandlers() {
-		return this;
+	public HasValueChangeHandlers<Boolean> getTMVisibility() {
+		return tmVisibility;
 	}
 }
