@@ -148,7 +148,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 			}
 		});
 
-		Window.enableScrolling(false);
+//		Window.enableScrolling(false);
 		Window.setMargin("0px");
 		
 		
