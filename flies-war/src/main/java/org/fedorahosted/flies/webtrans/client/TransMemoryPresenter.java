@@ -106,6 +106,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 			@Override
 			public void onVisibilityChange(VisibilityEvent tabSelectionEvent) {
 				transMemoryVisible = tabSelectionEvent.isVisible();
+				Log.debug("received visibility=="+transMemoryVisible);
 			}
 		}));
 	}

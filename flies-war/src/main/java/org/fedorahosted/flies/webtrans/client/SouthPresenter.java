@@ -6,6 +6,7 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -40,6 +41,7 @@ public class SouthPresenter extends WidgetPresenter<SouthPresenter.Display> {
 		display.getTMVisibility().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 				@Override
 				public void onValueChange(ValueChangeEvent<Boolean> event) {
+					Log.debug("firing VisibilityEvent=="+event.getValue());
 					eventBus.fireEvent(new VisibilityEvent(event.getValue()));
 				}
 			}
