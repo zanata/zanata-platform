@@ -14,6 +14,4 @@
 -->
 	</replace-with>
 		
-	<servlet class="org.jboss.errai.bus.server.servlet.DefaultBlockingServlet" path="/in.erraiBus"/>
-		
 </module>
