@@ -36,10 +36,13 @@ import com.google.inject.Inject;
 public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 	
 	public interface Display extends WidgetDisplay {
-		public void setWest(Widget west);
-		public void setMain(Widget main);
-		public void setNorth(Widget north);
-		public void setSouth(Widget south);
+		// Note that the appearance differs depending on the
+		// order widgets are added.  This is DockPanel behaviour.
+		// TODO this is far too UI-specific!
+		public void addWest(Widget west);
+		public void addMain(Widget main);
+		public void addNorth(Widget north);
+		public void addSouth(Widget south);
 	}
 	
 	private final WestNavigationPresenter westNavigationPresenter;
@@ -85,14 +88,14 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		topMenuPresenter.bind();
 		southPresenter.bind();
 		
-		display.setNorth(topMenuPresenter.getDisplay().asWidget());
+		display.addNorth(topMenuPresenter.getDisplay().asWidget());
 		Widget south = southPresenter.getDisplay().asWidget();
 //		south.setHeight("15em");
-		display.setSouth(south);
-		display.setWest(westNavigationPresenter.getDisplay().asWidget());
+		display.addSouth(south);
+		display.addWest(westNavigationPresenter.getDisplay().asWidget());
 		Widget mainWidget = webTransEditorPresenter.getDisplay().asWidget();
 //		mainWidget.setHeight("100%");
-		display.setMain(mainWidget);
+		display.addMain(mainWidget);
 		// TODO refactor to presenter
 		
 		registerHandler(
