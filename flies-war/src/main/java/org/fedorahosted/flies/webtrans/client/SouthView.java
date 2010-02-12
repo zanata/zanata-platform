@@ -46,13 +46,14 @@ public class SouthView implements SouthPresenter.Display {
 		disclosurePanel.setWidth("100%");
 		disclosurePanel.setOpen(false);
 		transPanel.setHeight(PANEL_HEIGHT);
-		tabPanel.add(new ScrollPanel(transPanel), "Translation Memory");
+		final ScrollPanel transScrollPanel = new ScrollPanel(transPanel);
+		tabPanel.add(transScrollPanel, "Translation Memory");
+		final int tmTabIndex = tabPanel.getWidgetIndex(transScrollPanel);
 		glossary.setText("glossary............................................................\nglossary\nglossary");
 		glossary.setHeight(PANEL_HEIGHT);
 		tabPanel.add(glossary, "Glossary");
 		disclosurePanel.add(tabPanel);
 		tabPanel.setWidth("100%");
-		final int tmTabIndex = tabPanel.getWidgetIndex(transPanel);
 		tabPanel.addSelectionHandler(new SelectionHandler<Integer>() {
 			@Override
 			public void onSelection(SelectionEvent<Integer> event) {
