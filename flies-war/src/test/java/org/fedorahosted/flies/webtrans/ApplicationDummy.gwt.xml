@@ -14,4 +14,7 @@
 -->
 	</replace-with>
 		
+    <extend-property name="log_level" values="DEBUG" />
+    <set-property name="log_level" value="DEBUG" />
+	
 </module>
