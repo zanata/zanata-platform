@@ -16,14 +16,18 @@ import org.hibernate.search.jpa.FullTextQuery;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.log.Log;
 
 @Name("communitySearch")
 @Scope(ScopeType.EVENT)
 @AutoCreate
 public class CommunitySearch {
-    
+	@Logger
+	private Log log;
+
     int pageSize = 5;
     
     boolean hasMore = false;
@@ -99,7 +103,8 @@ public class CommunitySearch {
         FullTextQuery query;
         try {
             query = searchQuery(searchQuery);
-        } catch (ParseException pe) { 
+        } catch (ParseException e) {
+        	log.warn("Can't parse query '"+searchQuery+"'");
             return; 
         }
         resultSize = query.getResultSize();
