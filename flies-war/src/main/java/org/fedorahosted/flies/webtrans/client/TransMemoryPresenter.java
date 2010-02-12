@@ -27,11 +27,7 @@ import com.google.inject.Inject;
 public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.Display> {
 	private final WorkspaceContext workspaceContext;
 	private final CachingDispatchAsync dispatcher;
-	//FixME: As transPanel is set default, we have to make transMemoryVisible true, 
-	//otherwise the automatically fuzzy search will not work when clicking the TransUnit.
-	// FIXME: but the disclosure panel is initially closed, and we should get a 
-	// VisibilityEvent when it opens.  Must be a problem with the EventBus...
-	private boolean transMemoryVisible = true;
+	private boolean transMemoryVisible = false;
 	
 	public interface Display extends WidgetDisplay {
 		Button getSearchButton();
