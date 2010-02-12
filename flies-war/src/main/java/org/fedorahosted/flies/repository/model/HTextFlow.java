@@ -16,6 +16,9 @@ import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.Type;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.NotNull;
 
 /**
@@ -26,6 +29,7 @@ import org.hibernate.validator.NotNull;
  *
  */
 @Entity
+@Indexed
 public class HTextFlow extends HDocumentResource {
 
 	private static final long serialVersionUID = 3023080107971905435L;
@@ -60,6 +64,7 @@ public class HTextFlow extends HDocumentResource {
 	
 	@NotNull
 	@Type(type = "text")
+	@Field(index=Index.TOKENIZED)
 	public String getContent() {
 		return content;
 	}
