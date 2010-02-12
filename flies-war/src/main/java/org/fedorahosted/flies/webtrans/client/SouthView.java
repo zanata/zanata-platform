@@ -17,11 +17,13 @@ import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
 public class SouthView implements SouthPresenter.Display {
+	private static final String PANEL_HEIGHT = "150px";
 	private final DisclosurePanel disclosurePanel = new DisclosurePanel("Translation Memory Tools");
 	private final TabPanel tabPanel = new TabPanel();
 	private final FlowPanel transPanel = new FlowPanel();
@@ -43,8 +45,10 @@ public class SouthView implements SouthPresenter.Display {
 	public SouthView() {
 		disclosurePanel.setWidth("100%");
 		disclosurePanel.setOpen(false);
-		tabPanel.add(transPanel, "Translation Memory");
+		transPanel.setHeight(PANEL_HEIGHT);
+		tabPanel.add(new ScrollPanel(transPanel), "Translation Memory");
 		glossary.setText("glossary............................................................\nglossary\nglossary");
+		glossary.setHeight(PANEL_HEIGHT);
 		tabPanel.add(glossary, "Glossary");
 		disclosurePanel.add(tabPanel);
 		tabPanel.setWidth("100%");
