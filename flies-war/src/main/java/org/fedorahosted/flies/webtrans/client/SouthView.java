@@ -13,7 +13,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasText;
@@ -22,7 +21,7 @@ import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
-public class SouthView extends Composite implements SouthPresenter.Display {
+public class SouthView implements SouthPresenter.Display {
 	private final DisclosurePanel disclosurePanel = new DisclosurePanel("Translation Memory Tools");
 	private final TabPanel tabPanel = new TabPanel();
 	private final FlowPanel transPanel = new FlowPanel();
@@ -36,7 +35,7 @@ public class SouthView extends Composite implements SouthPresenter.Display {
 		@Override
 		public HandlerRegistration addValueChangeHandler(
 				ValueChangeHandler<Boolean> handler) {
-			return addHandler(handler, ValueChangeEvent.getType());
+			return handlerManager.addHandler(ValueChangeEvent.getType(), handler);
 		}
 	};
 	private boolean tmSelected;
