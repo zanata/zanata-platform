@@ -22,8 +22,9 @@ public class DummyGetTranslationMemoryCommand implements Command {
 
 	@Override
 	public void execute() {
+		boolean fuzzy = action.getFuzzy();
 		ArrayList<TransMemory> matches = new ArrayList<TransMemory>();
-		matches.add(new TransMemory("source1", "target1", "doc1", 100));
+		matches.add(new TransMemory(fuzzy?"fuzzy1":"source1", "target1", "doc1", 100));
 		matches.add(new TransMemory("source2", "target2", "doc1", 90));
 		matches.add(new TransMemory("source3", "target3", "doc2", 85));
 		matches.add(new TransMemory("<source4/>", "<target4/>", "doc3", 60));
