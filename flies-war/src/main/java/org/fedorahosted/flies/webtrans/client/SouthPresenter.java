@@ -42,7 +42,7 @@ public class SouthPresenter extends WidgetPresenter<SouthPresenter.Display> {
 				@Override
 				public void onValueChange(ValueChangeEvent<Boolean> event) {
 					Log.debug("firing VisibilityEvent=="+event.getValue());
-					eventBus.fireEvent(new VisibilityEvent(event.getValue()));
+					eventBus.fireEvent(new TransMemoryVisibilityEvent(event.getValue()));
 				}
 			}
 		);

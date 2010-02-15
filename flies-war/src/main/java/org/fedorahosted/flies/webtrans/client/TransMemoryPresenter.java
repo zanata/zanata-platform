@@ -98,9 +98,9 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 			}
 		})); 
 		
-		registerHandler(eventBus.addHandler(VisibilityEvent.getType(), new VisibilityHandler(){
+		registerHandler(eventBus.addHandler(TransMemoryVisibilityEvent.getType(), new TransMemoryVisibilityHandler(){
 			@Override
-			public void onVisibilityChange(VisibilityEvent tabSelectionEvent) {
+			public void onVisibilityChange(TransMemoryVisibilityEvent tabSelectionEvent) {
 				transMemoryVisible = tabSelectionEvent.isVisible();
 				Log.debug("received visibility=="+transMemoryVisible);
 			}
