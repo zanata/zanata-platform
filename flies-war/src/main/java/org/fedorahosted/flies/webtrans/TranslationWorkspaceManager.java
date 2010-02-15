@@ -54,12 +54,14 @@ public class TranslationWorkspaceManager {
 	
 	@Observer(FliesIdentity.USER_LOGOUT_EVENT)
 	public void exitWorkspace(String username){
+		log.info("User logout: Removing {0} from all workspaces", username);
 		ImmutableSet<TranslationWorkspace> workspaceSet=ImmutableSet.copyOf(workspaceMap.values());
 		for(TranslationWorkspace workspace : workspaceSet) {
 			if(workspace.removeTranslator(new PersonId(username))) {
-			//Send GWT Event to client to update the userlist
-			ExitWorkspace event = new ExitWorkspace(new PersonId(username));
-			workspace.publish(event);
+				log.info("Removing user {0} from workspace {1}", username, workspace.getId());
+				//Send GWT Event to client to update the userlist
+				ExitWorkspace event = new ExitWorkspace(new PersonId(username));
+				workspace.publish(event);
 			}
 		}
 	}

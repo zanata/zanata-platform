@@ -36,7 +36,6 @@ public class TranslationWorkspace {
 	private HttpSession httpSession;
 	private final EventExecutorService eventExecutorService;
 
-	
 	public TranslationWorkspace(WorkspaceKey workspaceKey) {
 		try {
 			if(workspaceKey == null)
@@ -44,6 +43,17 @@ public class TranslationWorkspace {
 			this.workspaceKey = workspaceKey;
 			this.domain = DomainFactory.getDomain(workspaceKey.toString());
 			this.eventExecutorService = EventExecutorServiceFactory.getInstance().getEventExecutorService(httpSession);
+			/* TODO: requires GWTEventService 1.1:
+			UserManager userManager = UserManagerFactory.getInstance().getUserManager();
+			UserActivityScheduler scheduler = userManager.getUserActivityScheduler();
+			scheduler.addTimeoutListener(new UserTimeoutListener() {
+				@Override
+				public void onTimeout(UserInfo userInfo) {
+					final String sessionId = userInfo.getUserId();
+					TranslationWorkspace.this.onTimeout(sessionId);
+				}
+			});
+			*/
 		} catch (RuntimeException e) {
 			log.error(e.getMessage(), e);
 			throw e;
@@ -106,16 +116,35 @@ public class TranslationWorkspace {
 		editstatus.remove(transUnitId, sessionId);
 	}
 	
+	private void onTimeout(final String sessionId) {
+		// remove user session from workspace
+		PersonId personId = sessions.remove(sessionId);
+		if (personId != null) {
+			log.info("Timeout: Removed user '{0}' in session '{1}' from workspace {2}", 
+					personId.getId(), sessionId, workspaceKey);
+		} else {
+			log.debug("Timeout: Unknown user for session '{0}' in workspace {1} (already logged out?)", 
+					sessionId, workspaceKey);
+		}
+	}
+	
 	public boolean removeTranslator(PersonId personId) {
 		ImmutableSet<SessionId> sessionIdSet = getSessions();
 		for(SessionId sessionId:sessionIdSet) {
-			if(sessions.get(sessionId).equals(personId))
-				return sessions.remove(sessionId, personId);
+			if(sessions.get(sessionId).equals(personId)) {
+				final boolean removed = sessions.remove(sessionId, personId);
+				if (removed)
+					log.info("Removed user '{0}' in session '{1}' from workspace {2}", 
+							personId.getId(), sessionId, workspaceKey);
+				return removed;
+			}
 		}
 		return false;
 	}
 	
 	public void registerTranslator(SessionId sessionId, PersonId personId){
+		log.info("Added user '{0}' in session '{1}' to workspace {2}", 
+				personId.getId(), sessionId.getValue(), workspaceKey);
 		PersonId pId = sessions.putIfAbsent(sessionId, personId);
 		if(pId == null && Events.exists()) Events.instance().raiseEvent(EVENT_TRANSLATOR_ENTER_WORKSPACE, workspaceKey, personId);
 	}
@@ -139,4 +168,9 @@ public class TranslationWorkspace {
 	    hash = hash * 31 + workspaceKey.hashCode();
 	    return hash;
 	}
+	
+	public String getId() {
+		return workspaceKey.toString();
+	}
+
 }
