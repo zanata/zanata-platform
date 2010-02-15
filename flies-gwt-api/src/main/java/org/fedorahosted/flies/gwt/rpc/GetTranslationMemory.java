@@ -21,7 +21,7 @@ public class GetTranslationMemory implements Action<GetTranslationMemoryResult> 
 		this.fuzzy = fuzzy;
 	}
 	
-	public boolean getFuzzy() {
+	public boolean isFuzzySearch() {
 		return this.fuzzy;
 	}
 	

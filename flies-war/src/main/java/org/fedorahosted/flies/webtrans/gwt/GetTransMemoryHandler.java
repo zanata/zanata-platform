@@ -51,11 +51,11 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 		FliesIdentity.instance().checkLoggedIn();
 		
 		log.info("Fetching {0} TM matches for \"{1}\"", 
-				action.getFuzzy() ? "fuzzy" : "exact", 
+				action.isFuzzySearch() ? "fuzzy" : "exact", 
 				action.getQuery());
 		
 		LocaleId localeID = action.getLocaleId();
-		if (action.getFuzzy()) {
+		if (action.isFuzzySearch()) {
 			List<HTextFlow> matches = findMatchingTextFlows(action.getQuery());
 			ArrayList<TransMemory> results = new ArrayList<TransMemory>(matches.size());
 			for (HTextFlow match : matches) {
