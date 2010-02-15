@@ -344,32 +344,6 @@
 	    </configuration>
 	  </plugin>
 
-      <!-- tell mvn eclipse:eclipse to include config for the GWT Eclipse 
-           plugin 
-      -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-eclipse-plugin</artifactId>
-        <configuration>
-          <additionalProjectnatures>
-            <projectnature>com.google.gdt.eclipse.core.webAppNature</projectnature>
-            <projectnature>com.google.gwt.eclipse.core.gwtNature</projectnature>
-          </additionalProjectnatures>
-          <additionalBuildcommands>
-            <buildcommand>com.google.gdt.eclipse.core.webAppProjectValidator</buildcommand>
-            <buildcommand>com.google.gwt.eclipse.core.gwtProjectValidator</buildcommand>
-          </additionalBuildcommands>
-          <classpathContainers>
-            <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
-            <classpathContainer>com.google.gwt.eclipse.core.GWT_CONTAINER</classpathContainer>
-          </classpathContainers>
-          <excludes>
-            <!-- These are provided by the GWT container -->
-          	<exclude>com.google.gwt:gwt-servlet</exclude>
-          	<exclude>com.google.gwt:gwt-user</exclude>
-          </excludes>
-        </configuration>
-      </plugin>
       <!-- Specify a non-standard root dir for our war file, since the 
            Eclipse GWT plugin prefers it this way 
       -->
@@ -477,19 +451,24 @@
         </executions>
       </plugin>
   
+      <!-- tell mvn eclipse:eclipse to include config for the GWT Eclipse 
+           plugin 
+      -->
+                        
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-eclipse-plugin</artifactId>
         <configuration>
-        <!-- 
-          <additionalProjectnatures>
-            <projectnature>com.google.gwt.eclipse.core.gwtNature</projectnature>
-          </additionalProjectnatures>
-          <additionalBuildcommands>
-            <buildcommand>com.google.gwt.eclipse.core.gwtProjectValidator</buildcommand>
-          </additionalBuildcommands>
-         -->
+		<downloadSources>true</downloadSources>
+		<downloadJavadocs>false</downloadJavadocs>
+
         <additionalBuildcommands>
+			<buildCommand>
+				<name>com.google.gdt.eclipse.core.webAppProjectValidator</name>
+			</buildCommand>
+			<buildCommand>
+				<name>com.google.gwt.eclipse.core.gwtProjectValidator</name>
+			</buildCommand>
 			<buildCommand>
 				<name>org.eclipse.ui.externaltools.ExternalToolBuilder</name>
 				<triggers>auto,full,incremental,</triggers>
@@ -505,6 +484,12 @@
                 </arguments>
             </buildCommand>
         </additionalBuildcommands>
+
+		  <additionalProjectnatures>
+				<projectnature>com.google.gwt.eclipse.core.gwtNature</projectnature>
+				<projectnature>com.google.gdt.eclipse.core.webAppNature</projectnature>
+		  </additionalProjectnatures>
+
           <classpathContainers>
             <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
             <classpathContainer>com.google.gwt.eclipse.core.GWT_CONTAINER</classpathContainer>
@@ -512,6 +497,7 @@
           <excludes>
             <!-- These are provided by the GWT container -->
               <exclude>com.google.gwt:gwt-servlet</exclude>
+              <exclude>com.google.gwt:gwt-user</exclude>
           </excludes>
         </configuration>
       </plugin>
