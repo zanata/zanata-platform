@@ -22,6 +22,13 @@ import com.weborient.codemirror.client.ParserSyntax;
 
 public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.Display {
 
+	private static final int CELL_PADDING = 5;
+	private static final int HEADER_ROW = 0;
+	private static final int SOURCE_COL = 0;
+	private static final int TARGET_COL = 1;
+	private static final int DOCUMENT_COL = 2;
+	private static final int ACTION_COL = 3;
+	
 	private Button searchButton;
 	private Button clearButton = new Button("Clear");
 	private TextBox tmTextBox;
@@ -80,20 +87,19 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 	@Override
 	public void createTable(ArrayList<TransMemory> memories) {
 		clearResults();
-		addColumn("Source", 0);
-		addColumn("Target", 1);
-		addColumn("Document", 2);
-		addColumn("Score", 3);
-		addColumn("Action", 4);
+		addColumn("Source", SOURCE_COL);
+		addColumn("Target", TARGET_COL);
+		addColumn("Document", DOCUMENT_COL);
+		addColumn("Action", ACTION_COL);
 
-		int row = 1;
+		int row = HEADER_ROW;
 		for(final TransMemory memory: memories) {
+			++row;
 			final String sourceResult = memory.getSource();
 			final String targetResult = memory.getMemory();
-			resultTable.setWidget(row, 0, new HighlightingLabel(sourceResult, ParserSyntax.MIXED));
-			resultTable.setWidget(row, 1, new HighlightingLabel(targetResult, ParserSyntax.MIXED));
-			resultTable.setText(row, 2, memory.getDocID());
-			resultTable.setText(row, 3, String.valueOf(memory.getRelevanceScore()));
+			resultTable.setWidget(row, SOURCE_COL, new HighlightingLabel(sourceResult, ParserSyntax.MIXED));
+			resultTable.setWidget(row, TARGET_COL, new HighlightingLabel(targetResult, ParserSyntax.MIXED));
+			resultTable.setText(row, DOCUMENT_COL, memory.getDocID());
 			
 			Anchor copyLink = new Anchor("Copy To Target");
 			copyLink.addClickHandler(new ClickHandler() {
@@ -103,18 +109,16 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 					Log.info("TransMemoryCopyEvent event is sent. (" + targetResult + ")");
 				}
 			});
-			resultTable.setWidget(row, 4, copyLink);
-			
-			row++;
+			resultTable.setWidget(row, ACTION_COL, copyLink);
 		}
-		resultTable.setCellPadding(5);
+		resultTable.setCellPadding(CELL_PADDING);
 	}
 	
 	private void addColumn(String columnHeading, int pos) {
 	    Label widget = new Label(columnHeading);
 	    widget.setWidth("100%");
 	    widget.addStyleName("TransMemoryTableColumnHeader");
-	    resultTable.setWidget(0, pos, widget);
+	    resultTable.setWidget(HEADER_ROW, pos, widget);
 	  }
 	
 	@Override
