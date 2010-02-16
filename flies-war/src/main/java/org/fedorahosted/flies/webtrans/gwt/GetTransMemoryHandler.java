@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.webtrans.gwt;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,12 @@ import org.jboss.seam.log.Log;
 public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory, GetTranslationMemoryResult> {
 
 	private static final int MAX_RESULTS = 50;
-	private static final String ESCAPE = "~";
+	private static final String LIKE_ESCAPE = "~";
+	private static final char LUCENE_ESCAPE = '\\';
+	// list of special chars taken from
+	// http://lucene.apache.org/java/2_4_1/queryparsersyntax.html#Escaping%20Special%20Characters
+	private static final List<String> LUCENE_SPECIAL = 
+		Arrays.asList("+ - && || ! ( ) { } [ ] ^ \" ~ * ? : \\".split(" "));
 
 	@Logger 
 	private Log log;
@@ -50,13 +56,15 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 			ExecutionContext context) throws ActionException {
 		FliesIdentity.instance().checkLoggedIn();
 		
+		final String searchText = action.getQuery();
 		log.info("Fetching {0} TM matches for \"{1}\"", 
 				action.isFuzzySearch() ? "fuzzy" : "exact", 
-				action.getQuery());
+				searchText);
 		
 		LocaleId localeID = action.getLocaleId();
 		if (action.isFuzzySearch()) {
-			List<HTextFlow> matches = findMatchingTextFlows(action.getQuery());
+			String luceneQuery = toLuceneQuery(searchText);
+			List<HTextFlow> matches = findMatchingTextFlows(luceneQuery);
 			ArrayList<TransMemory> results = new ArrayList<TransMemory>(matches.size());
 			for (HTextFlow match : matches) {
 				Map<LocaleId, HTextFlowTarget> matchTargets = match.getTargets();
@@ -73,11 +81,12 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 			return new GetTranslationMemoryResult(results);
 		} else {
 			
-			// TODO this should probably be based on the Hibernate Search approach for fuzzy search
+			// TODO this should probably use Hibernate Search for efficiency
 			// TODO filter by status Approved and by locale
+			final String hqlQuery = toHQLQuery(searchText);
 			org.hibernate.Query query = session.createQuery(
-					"from HTextFlow tf where lower(tf.content) like :q escape '"+ESCAPE+"'")
-					.setParameter("q", wildcard(action.getQuery()));
+					"from HTextFlow tf where lower(tf.content) like :q escape '"+LIKE_ESCAPE+"'")
+					.setParameter("q", hqlQuery);
 			
 			
 			List<HTextFlow> textFlows = query 
@@ -102,13 +111,31 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 		}		
 	}
 
-	private String wildcard(String query) {
+	static String toHQLQuery(String substring) {
 		return "%"+
-			query.toLowerCase()
-			.replace(ESCAPE, ESCAPE+ESCAPE)
-			.replace("%", ESCAPE+"%")
-			.replace("_", ESCAPE+"_")
+			substring.toLowerCase()
+			.replace(LIKE_ESCAPE, LIKE_ESCAPE+LIKE_ESCAPE)
+			.replace("%", LIKE_ESCAPE+"%")
+			.replace("_", LIKE_ESCAPE+"_")
 				+"%";
+	}
+	
+	static String toLuceneQuery(String s) {
+		StringBuilder sb = new StringBuilder(s.length());
+		int i = 0;
+		outer: while (i < s.length()) {
+			for (String special : LUCENE_SPECIAL) {
+				if (s.regionMatches(i, special, 0, special.length())) {
+					sb.append(LUCENE_ESCAPE);
+					sb.append(special);
+					i += special.length();
+					continue outer;
+				}
+			}
+			sb.append(s.charAt(i));
+			i++;
+		}
+		return sb.toString();
 	}
 	
     private List<HTextFlow> findMatchingTextFlows(String searchQuery) {
