@@ -25,10 +25,10 @@ public class DummyGetTranslationMemoryCommand implements Command {
 		String query = action.getQuery();
 		boolean fuzzy = action.isFuzzySearch();
 		ArrayList<TransMemory> matches = new ArrayList<TransMemory>();
-		matches.add(new TransMemory(fuzzy?"fuzzy1":"source1", "target1", "doc1", 100));
-		matches.add(new TransMemory(query, "target2", "doc1", 90));
-		matches.add(new TransMemory("source3", "target3", "doc2", 85));
-		matches.add(new TransMemory("<source4/>", "<target4/>", "doc3", 60));
+		matches.add(new TransMemory(fuzzy?"fuzzy1":"source1", "target1", "doc1"));
+		matches.add(new TransMemory(query, "target2", "doc1"));
+		matches.add(new TransMemory("source3", "target3", "doc2"));
+		matches.add(new TransMemory("<source4/>", "<target4/>", "doc3"));
 		callback.onSuccess(new GetTranslationMemoryResult(matches));
 	}
 

@@ -9,17 +9,15 @@ public class TransMemory implements Serializable{
 	private String source;
 	private String memory;
 	private String docID;
-	private int relevanceScore;
-	// TODO we should probably include transunit id too
+	// TODO we should probably include transunit id too (useful when we support browser history for TUs)
 
 	public TransMemory() {
 	}
 
-	public TransMemory(String source, String memory, String documentPath, int relevanceScore) {
+	public TransMemory(String source, String memory, String documentPath) {
 		this.source = source;
 		this.memory = memory;
 		this.docID = documentPath;
-		this.relevanceScore = relevanceScore;
 	}
 	
 	public void setDocID(String documentPath) {
@@ -35,14 +33,6 @@ public class TransMemory implements Serializable{
 
 	public String getMemory() {
 		return memory;
-	}
-
-	public void setRelevanceScore(int relevanceScore) {
-		this.relevanceScore = relevanceScore;
-	}
-
-	public int getRelevanceScore() {
-		return relevanceScore;
 	}
 
 	public void setSource(String source) {

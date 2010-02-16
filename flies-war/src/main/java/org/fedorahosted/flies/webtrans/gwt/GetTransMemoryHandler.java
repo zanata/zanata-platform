@@ -73,8 +73,7 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 					TransMemory mem = new TransMemory(
 							match.getContent(), 
 							target.getContent(), 
-							match.getDocument().getDocId(), 
-							50); // FIXME get relevance score from Hibernate Search
+							match.getDocument().getDocId());
 					results.add(mem);
 				}
 			}
@@ -102,8 +101,7 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 					TransMemory memory = new TransMemory(
 							textFlow.getContent(), 
 							target.getContent(),
-							textFlow.getDocument().getDocId(),
-							100);
+							textFlow.getDocument().getDocId());
 					results.add(memory);
 				}
 			}
