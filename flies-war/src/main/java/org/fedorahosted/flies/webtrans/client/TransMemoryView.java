@@ -2,6 +2,8 @@ package org.fedorahosted.flies.webtrans.client;
 
 import java.util.ArrayList;
 
+import net.customware.gwt.presenter.client.EventBus;
+
 import org.fedorahosted.flies.gwt.model.TransMemory;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -17,6 +19,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 import com.weborient.codemirror.client.HighlightingLabel;
 import com.weborient.codemirror.client.ParserSyntax;
 
@@ -34,6 +37,9 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 	private TextBox tmTextBox;
 	
 	private final FlexTable resultTable = new FlexTable();
+	@Inject
+	private EventBus eventBus;
+	
 	public TransMemoryView() {
 		tmTextBox = new TextBox();
 		searchButton = new Button("Search");
@@ -105,7 +111,7 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 			copyLink.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					fireEvent(new TransMemoryCopyEvent(sourceResult, targetResult));
+					eventBus.fireEvent(new TransMemoryCopyEvent(sourceResult, targetResult));
 					Log.info("TransMemoryCopyEvent event is sent. (" + targetResult + ")");
 				}
 			});

@@ -191,8 +191,14 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 		return !textArea.getText().equals(cellValue.getTarget()) ;
 	}
 	
-	private boolean inEditMode() {
+	public boolean isEditing() {
 		return cellValue != null;
+	}
+	
+	public void setText(String text) {
+		if (isEditing()) {
+			textArea.setText(text);
+		}
 	}
 	
 	public void editCell(CellEditInfo cellEditInfo, TransUnit cellValue,
@@ -204,7 +210,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 	    	return;
 	    }
 		
-		if( inEditMode() ){
+		if( isEditing() ){
 			if(cellEditInfo.getCellIndex() == col && cellEditInfo.getRowIndex() == row){
 				return;
 			}

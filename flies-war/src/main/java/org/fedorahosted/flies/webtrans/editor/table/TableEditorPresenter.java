@@ -24,6 +24,8 @@ import org.fedorahosted.flies.webtrans.client.DocumentSelectionHandler;
 import org.fedorahosted.flies.webtrans.client.NavTransUnitEvent;
 import org.fedorahosted.flies.webtrans.client.NavTransUnitHandler;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent;
+import org.fedorahosted.flies.webtrans.client.TransMemoryCopyEvent;
+import org.fedorahosted.flies.webtrans.client.TransMemoryCopyHandler;
 import org.fedorahosted.flies.webtrans.client.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent.Severity;
 import org.fedorahosted.flies.webtrans.client.auth.Identity;
@@ -53,6 +55,7 @@ import com.google.gwt.gen2.table.event.client.HasPageChangeHandlers;
 import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
 import com.google.gwt.gen2.table.event.client.PageChangeHandler;
 import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -205,6 +208,20 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 							editor.handlePrevFuzzy(event.getRowType());
 					}
 				}
+			}
+		}));
+		
+		registerHandler(eventBus.addHandler(TransMemoryCopyEvent.getType(), new TransMemoryCopyHandler() {
+			@Override
+			public void onTransMemoryCopy(TransMemoryCopyEvent event) {
+				
+				// When user clicked on copy-to-target anchor, it checks
+				// if user is editing any target.
+				 if (!display.getTargetCellEditor().isEditing())
+				     Window.alert("Please open the target in the editor first.");
+				 else {
+					 display.getTargetCellEditor().setText(event.getTargetResult());
+				 }
 			}
 		}));
 		
