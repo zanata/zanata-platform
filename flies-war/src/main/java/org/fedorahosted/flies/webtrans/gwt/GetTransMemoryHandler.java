@@ -1,7 +1,6 @@
 package org.fedorahosted.flies.webtrans.gwt;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -37,11 +36,6 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 
 	private static final int MAX_RESULTS = 50;
 	private static final String LIKE_ESCAPE = "~";
-	private static final char LUCENE_ESCAPE = '\\';
-	// list of special chars taken from
-	// http://lucene.apache.org/java/2_4_1/queryparsersyntax.html#Escaping%20Special%20Characters
-	private static final List<String> LUCENE_SPECIAL = 
-		Arrays.asList("+ - && || ! ( ) { } [ ] ^ \" ~ * ? : \\".split(" "));
 
 	@Logger 
 	private Log log;
@@ -119,21 +113,7 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 	}
 	
 	static String toLuceneQuery(String s) {
-		StringBuilder sb = new StringBuilder(s.length());
-		int i = 0;
-		outer: while (i < s.length()) {
-			for (String special : LUCENE_SPECIAL) {
-				if (s.regionMatches(i, special, 0, special.length())) {
-					sb.append(LUCENE_ESCAPE);
-					sb.append(special);
-					i += special.length();
-					continue outer;
-				}
-			}
-			sb.append(s.charAt(i));
-			i++;
-		}
-		return sb.toString();
+		return QueryParser.escape(s);
 	}
 	
     private List<HTextFlow> findMatchingTextFlows(String searchQuery) {

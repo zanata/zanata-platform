@@ -19,6 +19,9 @@ public class GetTransMemoryHandlerTest {
 			is("%like special characters ~% ~_ ~~ plus \\%"));
 	}
 	
+	// list of special chars taken from
+	// http://lucene.apache.org/java/2_4_1/queryparsersyntax.html#Escaping%20Special%20Characters
+
 	public void testLuceneQuery(){
 		assertThat(
 			toLuceneQuery("plaintext"), 
@@ -26,7 +29,7 @@ public class GetTransMemoryHandlerTest {
 		assertThat(
 			toLuceneQuery("lucene special characters + - && || ! ( ) " +
 					"{ } [ ] ^ \" ~ * ? : \\ plus % _"), 
-			is("lucene special characters \\+ \\- \\&& \\|| \\! \\( \\) " +
+			is("lucene special characters \\+ \\- \\&\\& \\|\\| \\! \\( \\) " +
 					"\\{ \\} \\[ \\] \\^ \\\" \\~ \\* \\? \\: \\\\ plus % _"));
 	}
 }
