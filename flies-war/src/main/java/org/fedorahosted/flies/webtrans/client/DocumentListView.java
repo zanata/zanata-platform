@@ -7,7 +7,9 @@ import org.fedorahosted.flies.webtrans.client.ui.HasFilter;
 import org.fedorahosted.flies.webtrans.client.ui.HasTreeNodes;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -36,6 +38,7 @@ public class DocumentListView extends Composite
 	private static Images images = (Images) GWT.create(Images.class);
 	private FilterTree<DocumentId, DocName> tree;
 	private FlowPanel mainpanel;
+	private Anchor reloadButton = new Anchor("Reload");
 	
 	public DocumentListView() {
 	    tree = new FilterTree<DocumentId, DocName>(new FlatFolderDocNameMapper(), images);
@@ -43,6 +46,7 @@ public class DocumentListView extends Composite
 	    
 	    mainpanel = new FlowPanel();
 	    mainpanel.add(tree);
+	    mainpanel.add(reloadButton);
 		mainpanel.setStylePrimaryName("DocumentListViewMainPanel");
 		
 //		mainpanel.setWidth("50%");
@@ -99,6 +103,11 @@ public class DocumentListView extends Composite
 		return tree;
 	}
 
+	@Override
+	public HasClickHandlers getReloadButton() {
+		return reloadButton;
+	}
+	
 	@Override
 	public void setProjectStatusBar(Widget widget) {
 		mainpanel.add(widget);		
