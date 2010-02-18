@@ -4,7 +4,7 @@ import org.testng.annotations.Test;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
-import static org.fedorahosted.flies.webtrans.gwt.GetTransMemoryHandler.toLuceneQuery;
+import static org.fedorahosted.flies.webtrans.gwt.GetTransMemoryHandler.toFuzzyLuceneQuery;
 import static org.fedorahosted.flies.webtrans.gwt.GetTransMemoryHandler.toHQLQuery;
 
 @Test(groups={"unit-tests"})
@@ -24,10 +24,10 @@ public class GetTransMemoryHandlerTest {
 
 	public void testLuceneQuery(){
 		assertThat(
-			toLuceneQuery("plaintext"), 
+			toFuzzyLuceneQuery("plaintext"), 
 			is("plaintext"));
 		assertThat(
-			toLuceneQuery("lucene special characters + - && || ! ( ) " +
+			toFuzzyLuceneQuery("lucene special characters + - && || ! ( ) " +
 					"{ } [ ] ^ \" ~ * ? : \\ plus % _"), 
 			is("lucene special characters \\+ \\- \\&\\& \\|\\| \\! \\( \\) " +
 					"\\{ \\} \\[ \\] \\^ \\\" \\~ \\* \\? \\: \\\\ plus % _"));

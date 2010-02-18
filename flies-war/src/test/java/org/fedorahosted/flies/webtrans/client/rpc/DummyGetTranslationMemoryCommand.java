@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.fedorahosted.flies.gwt.model.TransMemory;
 import org.fedorahosted.flies.gwt.rpc.GetTranslationMemory;
 import org.fedorahosted.flies.gwt.rpc.GetTranslationMemoryResult;
+import org.fedorahosted.flies.gwt.rpc.GetTranslationMemory.SearchType;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -23,9 +24,9 @@ public class DummyGetTranslationMemoryCommand implements Command {
 	@Override
 	public void execute() {
 		String query = action.getQuery();
-		boolean fuzzy = action.isFuzzySearch();
+		SearchType type = action.getSearchType();
 		ArrayList<TransMemory> matches = new ArrayList<TransMemory>();
-		matches.add(new TransMemory(fuzzy?"fuzzy1":"source1", "target1", "doc1"));
+		matches.add(new TransMemory(type+"1", "target1", "doc1"));
 		matches.add(new TransMemory(query, "target2", "doc1"));
 		matches.add(new TransMemory("source3", "target3", "doc2"));
 		matches.add(new TransMemory("<source4/>", "<target4/>", "doc3"));

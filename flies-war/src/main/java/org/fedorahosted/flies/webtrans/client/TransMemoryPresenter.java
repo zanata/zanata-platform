@@ -12,6 +12,7 @@ import org.fedorahosted.flies.gwt.model.TransMemory;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.gwt.rpc.GetTranslationMemory;
 import org.fedorahosted.flies.gwt.rpc.GetTranslationMemoryResult;
+import org.fedorahosted.flies.gwt.rpc.GetTranslationMemory.SearchType;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -31,7 +32,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 	private boolean transMemoryVisible = false;
 	
 	public interface Display extends WidgetDisplay {
-		HasValue<Boolean> getFuzzyButton();
+		HasValue<Boolean> getExactButton();
 		HasClickHandlers getSearchButton();
 		HasText getTmTextBox();
 		void createTable(ArrayList<TransMemory> memories);
@@ -58,9 +59,11 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 			public void onClick(ClickEvent event) {
 				display.clearResults();
 				final String query = display.getTmTextBox().getText();
+				GetTranslationMemory.SearchType searchType = 
+					display.getExactButton().getValue() ? 
+						SearchType.EXACT : SearchType.RAW;
 				GetTranslationMemory action = new GetTranslationMemory(
-						query, 
-						workspaceContext.getLocaleId(), display.getFuzzyButton().getValue());
+						query, workspaceContext.getLocaleId(), searchType);
 				dispatcher.execute(action, new AsyncCallback<GetTranslationMemoryResult>() {
 					@Override
 					public void onFailure(Throwable caught) {
@@ -84,7 +87,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 					final GetTranslationMemory action = new GetTranslationMemory(
 							query, 
 							workspaceContext.getLocaleId(), 
-							true);
+							GetTranslationMemory.SearchType.FUZZY);
 					dispatcher.execute(action, new AsyncCallback<GetTranslationMemoryResult>() {
 						@Override
 						public void onFailure(Throwable caught) {

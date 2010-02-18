@@ -5,24 +5,30 @@ import net.customware.gwt.dispatch.shared.Action;
 import org.fedorahosted.flies.common.LocaleId;
 
 public class GetTranslationMemory implements Action<GetTranslationMemoryResult> {
+	
+	public static enum SearchType {
+		EXACT,
+		FUZZY,
+		RAW
+	}
 
 	private static final long serialVersionUID = 1L;
 	private LocaleId localeId;
 	private String query;
-	private boolean fuzzy;
+	private SearchType searchType;
 	
 	@SuppressWarnings("unused")
 	private GetTranslationMemory(){
 	}
 	
-	public GetTranslationMemory(String query, LocaleId localeId, boolean fuzzy) {
+	public GetTranslationMemory(String query, LocaleId localeId, SearchType searchType) {
 		this.query = query;
 		this.localeId = localeId;
-		this.fuzzy = fuzzy;
+		this.searchType = searchType;
 	}
 	
-	public boolean isFuzzySearch() {
-		return this.fuzzy;
+	public SearchType getSearchType() {
+		return searchType;
 	}
 	
 	public void setLocaleId(LocaleId localeId) {

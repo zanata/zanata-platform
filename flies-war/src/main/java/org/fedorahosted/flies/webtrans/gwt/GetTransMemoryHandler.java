@@ -17,6 +17,7 @@ import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.gwt.model.TransMemory;
 import org.fedorahosted.flies.gwt.rpc.GetTranslationMemory;
 import org.fedorahosted.flies.gwt.rpc.GetTranslationMemoryResult;
+import org.fedorahosted.flies.gwt.rpc.GetTranslationMemory.SearchType;
 import org.fedorahosted.flies.repository.model.HTextFlow;
 import org.fedorahosted.flies.repository.model.HTextFlowTarget;
 import org.fedorahosted.flies.security.FliesIdentity;
@@ -54,13 +55,17 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 		final String searchText = action.getQuery();
 		ShortString abbrev = new ShortString(searchText);
 		log.info("Fetching {0} TM matches for \"{1}\"", 
-				action.isFuzzySearch() ? "fuzzy" : "exact", 
+				action.getSearchType(), 
 				abbrev);
 		
 		LocaleId localeID = action.getLocaleId();
 		ArrayList<TransMemory> results;
-		if (action.isFuzzySearch()) {
-			String luceneQuery = toLuceneQuery(searchText);
+		if (action.getSearchType() != SearchType.EXACT) {
+			String luceneQuery;
+			if (action.getSearchType() == SearchType.RAW)
+				luceneQuery = searchText;
+			else
+				luceneQuery = toFuzzyLuceneQuery(searchText);
 			List<HTextFlow> matches = findMatchingTextFlows(luceneQuery);
 			results = new ArrayList<TransMemory>(matches.size());
 			for (HTextFlow match : matches) {
@@ -112,7 +117,8 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 				+"%";
 	}
 	
-	static String toLuceneQuery(String s) {
+	static String toFuzzyLuceneQuery(String s) {
+		// TODO add "~" to each word
 		return QueryParser.escape(s);
 	}
 	

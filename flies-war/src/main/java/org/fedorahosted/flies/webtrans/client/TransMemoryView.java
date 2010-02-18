@@ -35,7 +35,7 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 	private static final int ACTION_COL = 3;
 	
 	private final TextBox tmTextBox = new TextBox();
-	private final CheckBox fuzzyButton = new CheckBox("Fuzzy");
+	private final CheckBox phraseButton = new CheckBox("Exact");
 	private final Button searchButton = new Button("Search");
 	private final Button clearButton = new Button("Clear");
 	
@@ -63,15 +63,15 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 		});
 		
 		add(tmTextBox);
-		add(fuzzyButton);
+		add(phraseButton);
 		add(searchButton);
 		add(clearButton);
 		add(resultTable);
 	}
 	
 	@Override
-	public HasValue<Boolean> getFuzzyButton() {
-		return fuzzyButton;
+	public HasValue<Boolean> getExactButton() {
+		return phraseButton;
 	}
 	
 	@Override
