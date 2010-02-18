@@ -17,11 +17,12 @@ import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.HasValue;
 import com.google.inject.Inject;
 
 public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.Display> {
@@ -30,8 +31,9 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 	private boolean transMemoryVisible = false;
 	
 	public interface Display extends WidgetDisplay {
-		Button getSearchButton();
-		TextBox getTmTextBox();
+		HasValue<Boolean> getFuzzyButton();
+		HasClickHandlers getSearchButton();
+		HasText getTmTextBox();
 		void createTable(ArrayList<TransMemory> memories);
 		void clearResults();
 	}
@@ -58,7 +60,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 				final String query = display.getTmTextBox().getText();
 				GetTranslationMemory action = new GetTranslationMemory(
 						query, 
-						workspaceContext.getLocaleId(), false);
+						workspaceContext.getLocaleId(), display.getFuzzyButton().getValue());
 				dispatcher.execute(action, new AsyncCallback<GetTranslationMemoryResult>() {
 					@Override
 					public void onFailure(Throwable caught) {

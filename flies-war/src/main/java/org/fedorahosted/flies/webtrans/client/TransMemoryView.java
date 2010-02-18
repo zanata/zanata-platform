@@ -14,8 +14,10 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -32,18 +34,16 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 	private static final int DOCUMENT_COL = 2;
 	private static final int ACTION_COL = 3;
 	
-	private Button searchButton;
-	private Button clearButton = new Button("Clear");
-	private TextBox tmTextBox;
+	private final TextBox tmTextBox = new TextBox();
+	private final CheckBox fuzzyButton = new CheckBox("Fuzzy");
+	private final Button searchButton = new Button("Search");
+	private final Button clearButton = new Button("Clear");
 	
 	private final FlexTable resultTable = new FlexTable();
 	@Inject
 	private EventBus eventBus;
 	
 	public TransMemoryView() {
-		tmTextBox = new TextBox();
-		searchButton = new Button("Search");
-		
 		tmTextBox.addKeyUpHandler(new KeyUpHandler() {
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
@@ -63,9 +63,15 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 		});
 		
 		add(tmTextBox);
+		add(fuzzyButton);
 		add(searchButton);
 		add(clearButton);
 		add(resultTable);
+	}
+	
+	@Override
+	public HasValue<Boolean> getFuzzyButton() {
+		return fuzzyButton;
 	}
 	
 	@Override

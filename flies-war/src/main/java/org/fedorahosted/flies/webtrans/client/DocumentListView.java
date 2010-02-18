@@ -50,7 +50,8 @@ public class DocumentListView extends Composite
 //		RoundedContainerWithHeader container = new RoundedContainerWithHeader(new Label("Documents in Workspace"), mainpanel);
 //		initWidget(container);
 		
-		DisclosurePanel container = new DisclosurePanel("Documents in Workspace", true);
+		DisclosurePanel container = new DisclosurePanel("Documents in Workspace");
+		container.setOpen(true);
 		container.add(mainpanel);
 		initWidget(container);
 		

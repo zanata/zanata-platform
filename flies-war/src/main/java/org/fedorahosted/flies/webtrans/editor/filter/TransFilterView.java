@@ -5,6 +5,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TransFilterView extends Composite implements TransFilterPresenter.Display {
@@ -16,7 +17,7 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
 		bodyPanel = new FlowPanel();
 //		bodyPanel.setWidth("100%");
 
-		FlowPanel filterButtonBar = new FlowPanel();
+		Panel filterButtonBar = new FlowPanel();
 		filterButtonBar.setStyleName("float-right-div");
 		applyButton = new Button("Find");
 		filterButtonBar.add(applyButton);
@@ -26,7 +27,8 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
 //		RoundedContainerWithHeader container = new RoundedContainerWithHeader(new Label("Find Messages"), bodyPanel);
 //		initWidget(container);
 		
-		DisclosurePanel container = new DisclosurePanel("Find Messages", true);
+		DisclosurePanel container = new DisclosurePanel("Find Messages");
+		container.setOpen(false);
 		container.add(bodyPanel);
 		initWidget(container);
 
