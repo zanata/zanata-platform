@@ -56,10 +56,11 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 				searchText);
 		
 		LocaleId localeID = action.getLocaleId();
+		ArrayList<TransMemory> results;
 		if (action.isFuzzySearch()) {
 			String luceneQuery = toLuceneQuery(searchText);
 			List<HTextFlow> matches = findMatchingTextFlows(luceneQuery);
-			ArrayList<TransMemory> results = new ArrayList<TransMemory>(matches.size());
+			results = new ArrayList<TransMemory>(matches.size());
 			for (HTextFlow match : matches) {
 				Map<LocaleId, HTextFlowTarget> matchTargets = match.getTargets();
 				HTextFlowTarget target = matchTargets.get(localeID);
@@ -71,7 +72,6 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 					results.add(mem);
 				}
 			}
-			return new GetTranslationMemoryResult(results);
 		} else {
 			
 			// TODO this should probably use Hibernate Search for efficiency
@@ -81,13 +81,8 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 					"from HTextFlow tf where lower(tf.content) like :q escape '"+LIKE_ESCAPE+"'")
 					.setParameter("q", hqlQuery);
 			
-			
-			List<HTextFlow> textFlows = query 
-					.setMaxResults(MAX_RESULTS)
-					.list();
-			int size = textFlows.size();
-			
-			ArrayList<TransMemory> results = new ArrayList<TransMemory>(size);
+			List<HTextFlow> textFlows = query.setMaxResults(MAX_RESULTS).list();
+			results = new ArrayList<TransMemory>(textFlows.size());
 			
 			for(HTextFlow textFlow : textFlows) {
 				HTextFlowTarget target = textFlow.getTargets().get(localeID);
@@ -99,8 +94,11 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 					results.add(memory);
 				}
 			}
-			return new GetTranslationMemoryResult(results);
-		}		
+		}
+		log.info("Returning {0} TM matches for \"{1}\"", 
+				results.size(), 
+				searchText);
+		return new GetTranslationMemoryResult(results);
 	}
 
 	static String toHQLQuery(String substring) {
@@ -135,7 +133,6 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 		// TODO filter by status Approved and by locale
         // TODO wildcard escaping?  stemming?  fuzzy matching?
         QueryParser parser = new QueryParser("content", new StandardAnalyzer());
-//        parser.setAllowLeadingWildcard(true);
         Query luceneQuery = parser.parse(searchText);
         return entityManager.createFullTextQuery(luceneQuery, HTextFlow.class);
     }
