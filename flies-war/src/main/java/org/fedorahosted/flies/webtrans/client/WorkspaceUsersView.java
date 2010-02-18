@@ -43,7 +43,8 @@ public class WorkspaceUsersView extends Composite implements
 //		RoundedContainerWithHeader container = new RoundedContainerWithHeader(new Label("Translators in Workspace"), tree );
 //		initWidget(container);
 		
-		DisclosurePanel container = new DisclosurePanel("Translators in Workspace", true);
+		DisclosurePanel container = new DisclosurePanel("Translators in Workspace");
+		container.setOpen(false);
 		container.add(tree);
 		initWidget(container);
 		
