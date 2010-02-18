@@ -20,6 +20,7 @@ import org.fedorahosted.flies.gwt.rpc.GetTranslationMemoryResult;
 import org.fedorahosted.flies.repository.model.HTextFlow;
 import org.fedorahosted.flies.repository.model.HTextFlowTarget;
 import org.fedorahosted.flies.security.FliesIdentity;
+import org.fedorahosted.flies.util.ShortString;
 import org.hibernate.Session;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
@@ -51,9 +52,10 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 		FliesIdentity.instance().checkLoggedIn();
 		
 		final String searchText = action.getQuery();
+		ShortString abbrev = new ShortString(searchText);
 		log.info("Fetching {0} TM matches for \"{1}\"", 
 				action.isFuzzySearch() ? "fuzzy" : "exact", 
-				searchText);
+				abbrev);
 		
 		LocaleId localeID = action.getLocaleId();
 		ArrayList<TransMemory> results;
@@ -97,7 +99,7 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 		}
 		log.info("Returning {0} TM matches for \"{1}\"", 
 				results.size(), 
-				searchText);
+				abbrev);
 		return new GetTranslationMemoryResult(results);
 	}
 
