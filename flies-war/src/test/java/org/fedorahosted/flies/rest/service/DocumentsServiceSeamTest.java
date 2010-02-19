@@ -137,6 +137,12 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 		return doc;
 	}
 	
+	private void putZero() {
+		Documents docs = new Documents();
+		Response response = docsService.put(docs);
+		assertThat(response.getStatus(), is(200));
+	}
+	
 	private Document postDoc2() {
 	    Documents docs = new Documents();
 	    Document doc = newDoc("test.properties",
@@ -148,7 +154,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	}
 	
 //	@Test(enabled = false)
-	public void putGet() throws Exception {
+	public void put1Get() throws Exception {
 		log.info("putGet()");
 	    getZero();
 	    Document doc1 = putDoc1();
@@ -162,7 +168,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	}
 
 //	@Test(enabled = false)
-	public void putPostGet() throws Exception {
+	public void put1Post2Get() throws Exception {
 		log.info("putPostGet()");
 	    getZero();
 	    Document doc1 = putDoc1();
@@ -184,7 +190,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	}
 	
 //	@Test(enabled = false)
-	public void put2Then1() throws Exception {
+	public void put1Post2Put1() throws Exception {
 		log.info("put2Then1()");
 	    getZero();
 	    Document doc1 = putDoc1();
@@ -209,8 +215,52 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    // use dto to check that doc2 is marked obsolete
 	    verifyObsoleteDocument(doc2.getId());
 	}
+	
+	public void put1Put0Put1() throws Exception {
+		log.info("TEST: put1Put0Put1()");
+		getZero();
+		Document doc1 = putDoc1();
+	    doc1.setRevision(1);
+	    TextFlow tf1 = (TextFlow) doc1.getResources().get(0);
+	    tf1.setRevision(1);
+	    TextFlowTarget tft1 = tf1.getTarget(DE_DE);
+	    tft1.setRevision(1);
+		tft1.setResourceRevision(1);
+	    expectDocs(doc1);
+		putZero(); // doc1 becomes obsolete, rev 2
+		getZero();
+		putDoc1(); // doc1 resurrected, rev 3
+	    doc1.setRevision(3);
+	    tf1.setRevision(1);
+	    tft1.setRevision(1);
+		tft1.setResourceRevision(1);
+		expectDocs(doc1);
+	}
 
-	public void put1Then1a() throws Exception {
+	public void put1Put0Put1a() throws Exception {
+		log.info("TEST: put1Put0Put1a()");
+		getZero();
+		Document doc1 = putDoc1();
+	    doc1.setRevision(1);
+	    TextFlow tf1 = (TextFlow) doc1.getResources().get(0);
+	    tf1.setRevision(1);
+	    TextFlowTarget tft1 = tf1.getTarget(DE_DE);
+	    tft1.setRevision(1);
+		tft1.setResourceRevision(1);
+		expectDocs(doc1);
+		putZero(); // doc1 becomes obsolete, rev 2
+		getZero();
+		Document doc1a = putDoc1a(); // doc1 resurrected, rev 3
+		doc1a.setRevision(3);
+	    TextFlow tf1a = (TextFlow) doc1a.getResources().get(0);
+	    tf1a.setRevision(3);
+	    TextFlowTarget tft1a = tf1a.getTarget(FR);
+	    tft1a.setRevision(1);
+		tft1a.setResourceRevision(3);
+		expectDocs(doc1a);
+	}
+	
+	public void put1Put1a() throws Exception {
 		log.info("TEST: put1Then1a()");
 		log.info("getZero()");
 	    getZero();

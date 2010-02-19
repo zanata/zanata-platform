@@ -8,13 +8,15 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 
 import org.fedorahosted.flies.core.dao.DocumentDAO;
 import org.fedorahosted.flies.core.dao.ProjectContainerDAO;
 import org.fedorahosted.flies.repository.model.HDocument;
+import org.fedorahosted.flies.repository.model.HDocumentResource;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
+import org.fedorahosted.flies.repository.model.HTextFlow;
+import org.fedorahosted.flies.repository.model.HTextFlowHistory;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Documents;
 import org.hibernate.Session;
@@ -153,6 +155,7 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
     		} else {
     			log.debug("PUT updating HDocument with id {0}", doc.getId());
     			obsoleteDocs.remove(hDoc);
+    			hDoc.setObsolete(false);
     		}
     		docMap.put(hDoc.getDocId(), hDoc);
     		try {
@@ -175,7 +178,18 @@ public class DocumentsServiceActionImpl implements DocumentsServiceAction {
 //			session.save(hDoc);
     	}
     	for (HDocument hDoc: obsoleteDocs) {
+    		// mark document resources as obsolete 
+    		for (HDocumentResource resource : hDoc.getResources()) {
+    			// copy to TFHistory table under old revision
+    			if (resource instanceof HTextFlow) {
+					HTextFlow htf = (HTextFlow) resource;
+					HTextFlowHistory history = new HTextFlowHistory(htf);
+					htf.getHistory().put(htf.getRevision(), history);
+				}
+    			resource.setObsolete(true);
+    		}
     		hDoc.setObsolete(true);
+    		hDoc.setRevision(hDoc.getRevision()+1);
     		docMap.remove(hDoc.getId());
     	}
     	session.flush();

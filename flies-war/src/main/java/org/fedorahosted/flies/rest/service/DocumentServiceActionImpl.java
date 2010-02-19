@@ -156,6 +156,7 @@ public class DocumentServiceActionImpl implements DocumentServiceAction {
 		else{ // it's an update operation
 //			documentConverter.merge(document, hDoc);
 			documentConverter.copy(document, hDoc);
+			hDoc.setObsolete(false);
 			session.save(hDoc);
 			session.flush();
 			return Response.status(205).build();
