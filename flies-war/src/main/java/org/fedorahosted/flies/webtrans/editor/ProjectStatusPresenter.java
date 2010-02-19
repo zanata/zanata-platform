@@ -99,8 +99,7 @@ public class ProjectStatusPresenter extends TranslationStatsBarPresenter{
 
 	@Override
 	public void refreshDisplay() {
-		// TODO Auto-generated method stub
-		
+		requestStatusCount();
 	}
 
 	@Override

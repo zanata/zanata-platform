@@ -116,7 +116,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 		registerHandler(display.getReloadButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				loadDocsList();
+				refreshDisplay();
 			}
 		}));
 		
@@ -147,6 +147,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 	@Override
 	public void refreshDisplay() {
 		loadDocsList();
+		prStatusPresenter.refreshDisplay();
 	}
 
 	@Override
@@ -207,8 +208,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 			}
 			@Override
 			public void onSuccess(GetDocsListResult result) {
-				Log.info("Received doc list");
-				setDocNameList(result.getDocNames());
+				final ArrayList<DocName> docNames = result.getDocNames();
+				Log.info("Received doc list for "+result.getProjectContainerId()+": "+docNames.size()+" elements");
+				setDocNameList(docNames);
 			}
 		});
 	}
@@ -223,8 +225,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 			}
 			@Override
 			public void onSuccess(GetProjectStatusCountResult result) {
-				Log.info("Received project status");
 				ArrayList<DocumentStatus> liststatus = result.getStatus();
+				Log.info("Received project status for "+result.getProjectContainerId()+": "+liststatus.size()+" elements");
+				statuscache.clear();
 				for(DocumentStatus doc : liststatus) {
 					statuscache.put(doc.getDocumentid(), doc);
 					TreeNode<DocName> node = display.getTree().getNodeByKey(doc.getDocumentid());
