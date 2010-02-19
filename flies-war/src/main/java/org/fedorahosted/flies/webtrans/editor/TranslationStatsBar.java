@@ -12,7 +12,6 @@ import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.widgetideas.client.ProgressBar;
@@ -22,9 +21,9 @@ public class TranslationStatsBar extends Composite implements TranslationStatsBa
 		ClickHandler, MouseOverHandler, MouseOutHandler, HasTransUnitCount,
 		HasClickHandlers, HasMouseOverHandlers, HasMouseOutHandlers {
 
-	public int fuzzy;
-	public int untranslated;
-	public int translated;
+	private int fuzzy;
+	private int untranslated;
+	private int translated;
 	private final static int popupoffset = 35;
 	private final ProgressBar bar;
 	private final PopupWindow popupWindow;
@@ -51,14 +50,11 @@ public class TranslationStatsBar extends Composite implements TranslationStatsBa
 	}
 
 	public double calcCurrentProgress() {
-		int fuzzy = getFuzzy();
-		int untrans = getUntranslated();
-		int trans = getTranslated();
-		if (trans < 0 || untrans < 0 || fuzzy < 0
-				|| (trans + untrans + fuzzy) == 0) {
+		if (translated < 0 || untranslated < 0 || fuzzy < 0
+				|| (translated + untranslated + fuzzy) == 0) {
 			return 0.0;
 		} else {
-			return ((double) trans) / (fuzzy + untrans + trans) * 100;
+			return ((double) translated) / (fuzzy + untranslated + translated) * 100;
 		}
 	}
 
