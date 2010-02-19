@@ -51,7 +51,7 @@ public class GetProjectStatusCountHandler implements ActionHandler<GetProjectSta
 			FliesIdentity.instance().checkLoggedIn();
 			
 			ProjectContainerId containerId = action.getProjectContainerId();
-			log.info("Fetching Docs List for {0}", containerId);
+			log.info("Fetching Doc Status List for {0}", containerId);
 			ArrayList<DocumentStatus> docliststatus = new ArrayList<DocumentStatus>(); 
 			HProjectContainer hProjectContainer = projectContainerDAO.getById(containerId.getId());
 			
@@ -67,6 +67,8 @@ public class GetProjectStatusCountHandler implements ActionHandler<GetProjectSta
 						
 			TranslationWorkspace workspace = translationWorkspaceManager.getWorkspace(action.getProjectContainerId().getId(), action.getLocaleId() );
 			
+			log.info("Returning Doc Status List for {0}: {1} elements", containerId, docliststatus.size());
+
 			return new GetProjectStatusCountResult(action.getProjectContainerId(), docliststatus);
 
 		}

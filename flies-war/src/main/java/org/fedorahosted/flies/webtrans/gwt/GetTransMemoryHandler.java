@@ -54,7 +54,7 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 		
 		final String searchText = action.getQuery();
 		ShortString abbrev = new ShortString(searchText);
-		log.info("Fetching {0} TM matches for \"{1}\"", 
+		log.info("Fetching TM matches({0}) for \"{1}\"", 
 				action.getSearchType(), 
 				abbrev);
 		
