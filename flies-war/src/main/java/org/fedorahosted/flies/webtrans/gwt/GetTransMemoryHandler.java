@@ -117,11 +117,15 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 				+"%";
 	}
 	
-	static String toFuzzyLuceneQuery(String s) {
-		// TODO add "~" to each word
+	static String toLuceneQuery(String s) {
 		return QueryParser.escape(s);
 	}
 	
+	static String toFuzzyLuceneQuery(String s) {
+		// add "~" to each word
+		return QueryParser.escape(s).replaceAll("\\S+", "$0~");
+	}
+
     private List<HTextFlow> findMatchingTextFlows(String searchQuery) {
         FullTextQuery query;
         try {
