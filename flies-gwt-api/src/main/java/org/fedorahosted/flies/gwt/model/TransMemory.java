@@ -10,6 +10,7 @@ public class TransMemory implements Serializable{
 	private String memory;
 	private String docID;
 	// TODO we should probably include transunit id too (useful when we support browser history for TUs)
+	// TODO include obsolete flag and show this info to the user
 
 	public TransMemory() {
 	}
