@@ -31,8 +31,6 @@ import org.fedorahosted.flies.webtrans.client.rpc.DelegatingDispatchAsync;
 import org.fedorahosted.flies.webtrans.editor.DocumentStatusPresenter;
 import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
 import org.fedorahosted.flies.webtrans.editor.ProjectStatusPresenter;
-import org.fedorahosted.flies.webtrans.editor.ToolBoxPresenter;
-import org.fedorahosted.flies.webtrans.editor.ToolBoxView;
 import org.fedorahosted.flies.webtrans.editor.TranslationStatsBar;
 import org.fedorahosted.flies.webtrans.editor.TranslationStatsBarPresenter;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorPresenter;
@@ -71,7 +69,6 @@ public class WebTransClientModule extends AbstractPresenterModule {
 		bindPresenter(WebTransEditorPresenter.class, WebTransEditorPresenter.Display.class, WebTransEditorView.class);
 		bindPresenter(LoginPresenter.class, LoginPresenter.Display.class, LoginPanel.class);
 		bindPresenter(TopMenuPresenter.class, TopMenuPresenter.Display.class, TopMenuView.class);
-		bindPresenter(ToolBoxPresenter.class, ToolBoxPresenter.Display.class, ToolBoxView.class);
 		bindPresenter(TransMemoryPresenter.class, TransMemoryPresenter.Display.class, TransMemoryView.class);
 		bindPresenter(GlossaryPresenter.class, GlossaryPresenter.Display.class, GlossaryView.class);
 		bind(DocumentStatusPresenter.class);
