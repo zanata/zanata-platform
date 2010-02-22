@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.webtrans.editor;
+package org.fedorahosted.flies.webtrans.client;
 
 import java.util.ArrayList;
 
@@ -7,8 +7,8 @@ import org.fedorahosted.flies.gwt.rpc.GetGlossaryConcept;
 import org.fedorahosted.flies.gwt.rpc.GetGlossaryConceptResult;
 import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCount;
 import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCountResult;
-import org.fedorahosted.flies.webtrans.client.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
+import org.fedorahosted.flies.webtrans.editor.ConceptView;
 import org.fedorahosted.flies.webtrans.editor.ToolBoxPresenter.Display;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -34,8 +34,8 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
 	public interface Display extends WidgetDisplay {
 		Button getSearchButton();
 		TextBox getGlossaryTextBox();
-		void addResult(Widget widget);
 		void clearResults();
+		void createTable(ArrayList<Concept> concepts);
 	}
 
 	@Inject
@@ -63,12 +63,8 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
 					}
 					@Override
 					public void onSuccess(GetGlossaryConceptResult result) {
-						// TODO Auto-generated method stub
 						ArrayList<Concept> concepts = result.getConcepts();
-						for(Concept concept : concepts) {
-							display.addResult(new ConceptView(concept));
-						}
-						
+						display.createTable(concepts);
 					}
 			});
 			}

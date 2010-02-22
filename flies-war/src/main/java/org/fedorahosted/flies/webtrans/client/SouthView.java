@@ -27,7 +27,7 @@ public class SouthView implements SouthPresenter.Display {
 	private final DisclosurePanel disclosurePanel = new DisclosurePanel("Translation Memory Tools");
 	private final TabPanel tabPanel = new TabPanel();
 	private final FlowPanel transPanel = new FlowPanel();
-	private final TextArea glossary = new TextArea();
+	private final FlowPanel glossary = new FlowPanel();
 	private final HasValueChangeHandlers<Boolean> tmVisibility = new HasValueChangeHandlers<Boolean>() {
 		HandlerManager handlerManager = new HandlerManager(this);
 		@Override
@@ -45,13 +45,16 @@ public class SouthView implements SouthPresenter.Display {
 	public SouthView() {
 		disclosurePanel.setWidth("100%");
 		disclosurePanel.setOpen(false);
+		
 		transPanel.setHeight(PANEL_HEIGHT);
 		final ScrollPanel transScrollPanel = new ScrollPanel(transPanel);
 		tabPanel.add(transScrollPanel, "Translation Memory");
 		final int tmTabIndex = tabPanel.getWidgetIndex(transScrollPanel);
-		glossary.setText("glossary............................................................\nglossary\nglossary");
+		
 		glossary.setHeight(PANEL_HEIGHT);
-		tabPanel.add(glossary, "Glossary");
+		final ScrollPanel glossScrollPanel = new ScrollPanel(glossary);
+		tabPanel.add(glossScrollPanel, "Glossary");
+		
 		disclosurePanel.add(tabPanel);
 		tabPanel.setWidth("100%");
 		tabPanel.addSelectionHandler(new SelectionHandler<Integer>() {
@@ -96,12 +99,12 @@ public class SouthView implements SouthPresenter.Display {
 	}
 
 	@Override
-	public HasText getGlossary() {
+	public HasWidgets getGlossPanel() {
 		return glossary;
 	}
 
 	@Override
-	public HasWidgets getWidgets() {
+	public HasWidgets getTransPanel() {
 		return transPanel;
 	}
 

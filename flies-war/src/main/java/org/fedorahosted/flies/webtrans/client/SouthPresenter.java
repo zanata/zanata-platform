@@ -16,17 +16,19 @@ import com.google.inject.Inject;
 
 public class SouthPresenter extends WidgetPresenter<SouthPresenter.Display> {
 	private final TransMemoryPresenter transMemorypresenter;
+	private final GlossaryPresenter glossaryPresenter;
 	
 	public interface Display extends WidgetDisplay {
-		HasWidgets getWidgets();
-		HasText getGlossary();
+		HasWidgets getTransPanel();
+		HasWidgets getGlossPanel();
 		HasValueChangeHandlers<Boolean> getTMVisibility();
 	}
 	
 	@Inject
-	public SouthPresenter(Display display, EventBus eventBus, TransMemoryPresenter transMemorypresenter) {
+	public SouthPresenter(Display display, EventBus eventBus, TransMemoryPresenter transMemorypresenter, GlossaryPresenter glossaryPresenter) {
 		super(display, eventBus);
 		this.transMemorypresenter = transMemorypresenter;
+		this.glossaryPresenter = glossaryPresenter;
 	}
 
 	@Override
@@ -37,7 +39,9 @@ public class SouthPresenter extends WidgetPresenter<SouthPresenter.Display> {
 	@Override
 	protected void onBind() {
 		transMemorypresenter.bind();
-		display.getWidgets().add(transMemorypresenter.getDisplay().asWidget());
+		glossaryPresenter.bind();
+		display.getTransPanel().add(transMemorypresenter.getDisplay().asWidget());
+		display.getGlossPanel().add(glossaryPresenter.getDisplay().asWidget());
 		display.getTMVisibility().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 				@Override
 				public void onValueChange(ValueChangeEvent<Boolean> event) {
