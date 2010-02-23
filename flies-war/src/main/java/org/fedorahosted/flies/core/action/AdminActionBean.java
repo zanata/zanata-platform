@@ -29,7 +29,7 @@ public class AdminActionBean implements AdminAction {
 	private Log log;
 	
 	@In
-	FullTextSession fullTextSession;
+	FullTextSession session;
 	
 	/* (non-Javadoc)
 	 * @see org.fedorahosted.flies.core.action.AdminAction#reindexDatabase()
@@ -39,7 +39,6 @@ public class AdminActionBean implements AdminAction {
 		reindex(HCommunity.class);
 		reindex(HIterationProject.class);
 		reindex(HDocument.class);
-		reindex(HParentResource.class);
 		reindex(HTextFlow.class);
 		log.info("Re-indexing finished");
 		FacesMessages.instance().add("Re-indexing finished");
@@ -48,25 +47,26 @@ public class AdminActionBean implements AdminAction {
 	private void reindex (Class<?> clazz) {
 		log.info("Re-indexing {0}", clazz);
 		try {
-			fullTextSession.setFlushMode(FlushMode.MANUAL);
-			fullTextSession.setCacheMode(CacheMode.IGNORE);
-			Transaction transaction = fullTextSession.beginTransaction();
+			session.setFlushMode(FlushMode.MANUAL);
+			session.setCacheMode(CacheMode.IGNORE);
+			Transaction transaction = session.beginTransaction();
 			//Scrollable results will avoid loading too many objects in memory
-			ScrollableResults results = fullTextSession.createCriteria( clazz )
+			ScrollableResults results = session.createCriteria( clazz )
 			    .setFetchSize(BATCH_SIZE)
 			    .scroll( ScrollMode.FORWARD_ONLY );
 			int index = 0;
 			while( results.next() ) {
 			    index++;
-			    fullTextSession.index( results.get(0) ); //index each element
+			    session.index( results.get(0) ); //index each element
 			    if (index % BATCH_SIZE == 0) {
-			        fullTextSession.flushToIndexes(); //apply changes to indexes
-			        fullTextSession.clear(); //clear since the queue is processed
+			        session.flushToIndexes(); //apply changes to indexes
+			        session.clear(); //clear since the queue is processed
 			    }
 			}
+			results.close();
 			transaction.commit();
-		} catch (IllegalArgumentException e) {
-			log.warn("Unable to index object of {0}", clazz);
+		} catch (Exception e) {
+			log.warn("Unable to index object of {0}", e, clazz);
 		}
 	}
 	
