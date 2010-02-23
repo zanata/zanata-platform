@@ -1,7 +1,5 @@
 package org.fedorahosted.flies.core.action;
 
-import javax.ejb.Stateless;
-
 import org.fedorahosted.flies.core.model.HCommunity;
 import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.repository.model.HDocument;
@@ -11,20 +9,18 @@ import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
-import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.search.FullTextSession;
-import org.hibernate.search.Search;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 
-//@Scope(ScopeType.EVENT)
-//@Interceptors(SeamInterceptor.class)
+@Scope(ScopeType.STATELESS)
 @Name("adminAction")
-@Stateless
 public class AdminActionBean implements AdminAction {
 	
 	private static final int BATCH_SIZE = 500;
@@ -32,16 +28,9 @@ public class AdminActionBean implements AdminAction {
 	@Logger 
 	private Log log;
 	
-	@In 
-	private Session session;
-	
+	@In
 	FullTextSession fullTextSession;
 	
-	public AdminActionBean() {
-		fullTextSession = Search.getFullTextSession(session);
-	}
-	
-
 	/* (non-Javadoc)
 	 * @see org.fedorahosted.flies.core.action.AdminAction#reindexDatabase()
 	 */
