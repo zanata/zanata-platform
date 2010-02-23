@@ -1,7 +1,5 @@
 package org.fedorahosted.flies.core.action;
 
-import javax.ejb.Stateless;
-
 import org.fedorahosted.flies.core.model.HCommunity;
 import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.repository.model.HDocument;
@@ -15,36 +13,25 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 
-//@Scope(ScopeType.EVENT)
-//@Interceptors(SeamInterceptor.class)
 @Name("adminAction")
-@Stateless
-public class AdminActionBean implements AdminAction {
+@Scope(ScopeType.APPLICATION)
+public class AdminActionBean {
 	
 	private static final int BATCH_SIZE = 500;
 	
-	@Logger 
-	private Log log;
+	@Logger Log log;
 	
-	@In 
-	private Session session;
-	
-	FullTextSession fullTextSession;
-	
-	public AdminActionBean() {
-		fullTextSession = Search.getFullTextSession(session);
-	}
+	@In Session session;
 	
 
-	/* (non-Javadoc)
-	 * @see org.fedorahosted.flies.core.action.AdminAction#reindexDatabase()
-	 */
 	public void reindexDatabase() {
 		log.info("Re-indexing started");
 		reindex(HCommunity.class);
@@ -53,11 +40,15 @@ public class AdminActionBean implements AdminAction {
 		reindex(HParentResource.class);
 		reindex(HTextFlow.class);
 		log.info("Re-indexing finished");
+		
+		// TODO: this is a global action - not for a specific user
+		// should have some sort of global status on this one
 		FacesMessages.instance().add("Re-indexing finished");
 	}
 	
 	private void reindex (Class<?> clazz) {
 		log.info("Re-indexing {0}", clazz);
+		FullTextSession fullTextSession = Search.getFullTextSession(session);
 		try {
 			fullTextSession.setFlushMode(FlushMode.MANUAL);
 			fullTextSession.setCacheMode(CacheMode.IGNORE);

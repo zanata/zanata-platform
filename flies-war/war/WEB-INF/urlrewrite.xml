@@ -106,6 +106,12 @@
     <to>/home.seam</to>
   </rule>
 
+  <rule>
+    <from>^/admin/$</from>
+    <to>/admin/home.seam</to>
+  </rule>
+
+
   <outbound-rule>
     <from>^(/.+)?/community/create_community.seam(.+)?$</from>
     <to>$1/community/create/$2</to>
