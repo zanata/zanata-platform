@@ -6,14 +6,15 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
+    xmlns:a4j="http://richfaces.org/a4j"
     template="../layout/template.xhtml">
 
     <ui:define name="center_content">
-        <rich:jQuery selector="#tab_admin" query="addClass('ui-tabs-selected')" />
-        <h1>Administration</h1>
-
+      <h1>Search</h1>
+                 
         <s:button id="reindex"
        		value="Re-index full text search database"
       		action="#{adminAction.reindexDatabase}"/>
     </ui:define>
+    
 </ui:composition>
