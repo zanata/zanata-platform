@@ -11,6 +11,8 @@
     <ui:define name="center_content">
         <rich:jQuery selector="#tab_admin" query="addClass('ui-tabs-selected')" />
         <h1>Administration</h1>
-        <p>Blah</p>
+        <s:link action="#{adminAction.reindexDatabase}">Re-index database for searching</s:link>
+        <h:commandButton type="submit" value="Re-index database" action="#{adminAction.reindexDatabase}"/>
+        
     </ui:define>
 </ui:composition>
