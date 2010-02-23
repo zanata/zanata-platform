@@ -214,14 +214,12 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		registerHandler(eventBus.addHandler(TransMemoryCopyEvent.getType(), new TransMemoryCopyHandler() {
 			@Override
 			public void onTransMemoryCopy(TransMemoryCopyEvent event) {
-				
 				// When user clicked on copy-to-target anchor, it checks
-				// if user is editing any target.
-				 if (!display.getTargetCellEditor().isEditing())
-				     Window.alert("Please open the target in the editor first.");
-				 else {
+				// if user is editing any target. Notifies if not.
+				 if (display.getTargetCellEditor().isEditing())
 					 display.getTargetCellEditor().setText(event.getTargetResult());
-				 }
+				 else
+					 eventBus.fireEvent( new NotificationEvent(Severity.Error, "Select a target as copy destination."));
 			}
 		}));
 		
