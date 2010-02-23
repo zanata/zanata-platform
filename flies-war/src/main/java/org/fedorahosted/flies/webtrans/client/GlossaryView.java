@@ -21,9 +21,9 @@ public class GlossaryView extends FlowPanel implements GlossaryPresenter.Display
 	private static final int HEADER_ROW = 0;
 	private static final int SOURCE_COL = 0;
 	private static final int TARGET_COL = 1;
-	private static final int DESCRIPT_COL = 2;
+	private static final int LANG_COL = 2;
+	private static final int DESCRIPT_COL = 3;
 
-	private final Label glLabel = new Label("Input the term");
 	private final TextBox glTextBox = new TextBox();
 	private final Button searchButton = new Button("Search");
 	private final FlexTable resultTable = new FlexTable();
@@ -37,8 +37,7 @@ public class GlossaryView extends FlowPanel implements GlossaryPresenter.Display
 				}
 			}
 		});
-	
-		add(glLabel);
+
 		add(glTextBox);
 		add(searchButton);
 		add(resultTable);
@@ -75,6 +74,7 @@ public class GlossaryView extends FlowPanel implements GlossaryPresenter.Display
 		clearResults();
 		addColumn("Term", SOURCE_COL);
 		addColumn("Explain", TARGET_COL);
+		addColumn("Lang", LANG_COL);
 		addColumn("Description", DESCRIPT_COL);
 
 		int row = HEADER_ROW;
@@ -83,8 +83,10 @@ public class GlossaryView extends FlowPanel implements GlossaryPresenter.Display
 			final String source = concept.getTerm();
 			final String target = concept.getEntry().getTerm();
 			final String desc = concept.getDesc();
+			final String lang = concept.getEntry().getLocaleid().toString();
 			resultTable.setWidget(row, SOURCE_COL, new HighlightingLabel(source, ParserSyntax.MIXED));
 			resultTable.setWidget(row, TARGET_COL, new HighlightingLabel(target, ParserSyntax.MIXED));
+			resultTable.setText(row, LANG_COL, lang);
 			resultTable.setText(row, DESCRIPT_COL, desc);
 		}
 		resultTable.setCellPadding(CELL_PADDING);

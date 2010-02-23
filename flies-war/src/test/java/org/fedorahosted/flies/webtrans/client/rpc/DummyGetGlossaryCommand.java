@@ -2,6 +2,7 @@ package org.fedorahosted.flies.webtrans.client.rpc;
 
 import java.util.ArrayList;
 
+import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.gwt.model.Concept;
 import org.fedorahosted.flies.gwt.model.TermEntry;
 import org.fedorahosted.flies.gwt.rpc.GetGlossaryConcept;
@@ -24,8 +25,13 @@ public class DummyGetGlossaryCommand implements Command {
 	@Override
 	public void execute() {
 		ArrayList<Concept> matches = new ArrayList<Concept>();
-		matches.add(new Concept("hello", "an expression of greeting", "", new TermEntry("hallo", "")));
-		matches.add(new Concept("hello", "an expression of greeting", "", new TermEntry("bonjour", "")));
+		TermEntry frEntry = new TermEntry("trou noir", "");
+		frEntry.setLocaleid(new LocaleId("fr-FR"));
+		TermEntry deEntry = new TermEntry("Schwarzes Loch", "");
+		deEntry.setLocaleid(new LocaleId("de-DE"));
+		String desc = "The leftover core of a super massive star after a supernova,that exerts a tremendous gravitational pull.";
+		matches.add(new Concept("black hole", desc, "", frEntry));
+		matches.add(new Concept("black hole", desc, "", deEntry));
 		callback.onSuccess(new GetGlossaryConceptResult(matches));
 	}
 
