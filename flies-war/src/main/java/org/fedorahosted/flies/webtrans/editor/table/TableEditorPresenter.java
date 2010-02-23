@@ -219,7 +219,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 				 if (display.getTargetCellEditor().isEditing())
 					 display.getTargetCellEditor().setText(event.getTargetResult());
 				 else
-					 eventBus.fireEvent( new NotificationEvent(Severity.Error, "Select a target as copy destination."));
+					 eventBus.fireEvent( new NotificationEvent(Severity.Error, "Please open the target in the editor first."));
 			}
 		}));
 		
