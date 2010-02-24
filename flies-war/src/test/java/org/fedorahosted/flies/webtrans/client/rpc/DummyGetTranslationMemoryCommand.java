@@ -26,10 +26,10 @@ public class DummyGetTranslationMemoryCommand implements Command {
 		String query = action.getQuery();
 		SearchType type = action.getSearchType();
 		ArrayList<TransMemory> matches = new ArrayList<TransMemory>();
-		matches.add(new TransMemory(type+"1", "target1", "doc1"));
-		matches.add(new TransMemory(query, "target2", "doc1"));
-		matches.add(new TransMemory("source3", "target3", "doc2"));
-		matches.add(new TransMemory("<source4/>", "<target4/>", "doc3"));
+		matches.add(new TransMemory(type+"1", "target1", "sourceComment", "targetComment", "doc1", 1));
+		matches.add(new TransMemory(query, "target2", "sourceComment", "targetComment", "doc1", 1));
+		matches.add(new TransMemory("source3", "target3", "sourceComment", "targetComment", "doc2", 1));
+		matches.add(new TransMemory("<source4/>", "<target4/>", "sourceComment", "targetComment", "doc3", 1));
 		callback.onSuccess(new GetTranslationMemoryResult(matches));
 	}
 
