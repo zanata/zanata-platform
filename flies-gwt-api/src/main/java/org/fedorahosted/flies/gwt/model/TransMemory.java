@@ -58,4 +58,28 @@ public class TransMemory implements Serializable{
 	public String getSource() {
 		return source;
 	}
+
+	public void setSourceComment(String sourceComment) {
+		this.sourceComment = sourceComment;
+	}
+
+	public String getSourceComment() {
+		return sourceComment;
+	}
+
+	public void setTargetComment(String targetComment) {
+		this.targetComment = targetComment;
+	}
+
+	public String getTargetComment() {
+		return targetComment;
+	}
+
+	public void setProjectContainer(long projectContainer) {
+		this.projectContainer = projectContainer;
+	}
+
+	public long getProjectContainer() {
+		return projectContainer;
+	}
 }
