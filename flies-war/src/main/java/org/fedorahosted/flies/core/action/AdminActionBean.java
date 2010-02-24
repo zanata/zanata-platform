@@ -42,8 +42,9 @@ public class AdminActionBean {
 		log.info("Re-indexing started");
 		reindex(HCommunity.class);
 		reindex(HIterationProject.class);
-		reindex(HDocument.class);
+//		reindex(HDocument.class);
 		reindex(HTextFlow.class);
+//		reindex(HTextFlowTarget.class);
 		log.info("Re-indexing finished");
 		
 		// TODO: this is a global action - not for a specific user
