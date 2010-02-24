@@ -216,8 +216,10 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 			public void onTransMemoryCopy(TransMemoryCopyEvent event) {
 				// When user clicked on copy-to-target anchor, it checks
 				// if user is editing any target. Notifies if not.
-				 if (display.getTargetCellEditor().isEditing())
+				 if (display.getTargetCellEditor().isEditing()) {
 					 display.getTargetCellEditor().setText(event.getTargetResult());
+					 eventBus.fireEvent( new NotificationEvent(Severity.Info, "Message has been copied to the target."));
+				 }
 				 else
 					 eventBus.fireEvent( new NotificationEvent(Severity.Error, "Please open the target in the editor first."));
 			}
