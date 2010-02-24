@@ -100,7 +100,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		return PLACE;
 	}
 
-	private TransUnit currentSelection;
+	private TransUnit selectedTransUnit;
 	
 	@Override
 	protected void onBind() {
@@ -109,9 +109,9 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		registerHandler(display.getSelectionHandlers().addSelectionHandler(new SelectionHandler<TransUnit>() {
 			@Override
 			public void onSelection(SelectionEvent<TransUnit> event) {
-				if(event.getSelectedItem() != currentSelection) {
-					currentSelection = event.getSelectedItem();
-					//startEditing(currentSelection);
+				if(event.getSelectedItem() != selectedTransUnit) {
+					selectedTransUnit = event.getSelectedItem();
+					//startEditing(selectedTransUnit);
 					eventBus.fireEvent(event);
 				}
 			}
@@ -150,15 +150,15 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 			@Override
 			public void onTransUnitUpdated(TransUnitUpdatedEvent event) {
 				if(documentId != null && documentId.equals(event.getDocumentId())) {
-					if(currentSelection != null && currentSelection.getId().equals(event.getTransUnitId())) {
+					if(selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnitId())) {
 						// handle change in current selection
 						//eventBus.fireEvent(new NotificationEvent(Severity.Warning, "Someone else updated this translation unit. you're in trouble..."));
 						//display.getTableModel().setRowValue(row, rowValue);
 					}
 					// TODO add model with methods such as
-					//currentSelection.getRowIndex(TransUnitId); 
+					//selectedTransUnit.getRowIndex(TransUnitId); 
 					// - add TU index to model
-					//display.getTableModel().setRowValue(rowIndex, currentSelection.getTarget());
+					//display.getTableModel().setRowValue(rowIndex, selectedTransUnit.getTarget());
 					display.getTableModel().clearCache();
 					display.reloadPage();
 					//dispatcher.execute(new GetTransUnits(documentId, localeId, page*pageSize+rowOffset, 1, count), callback)
@@ -170,7 +170,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 			@Override
 			public void onTransUnitEdit(TransUnitEditEvent event) {
 				if(documentId != null && documentId.equals(event.getDocumentId())) {
-					if(currentSelection != null && currentSelection.getId().equals(event.getTransUnitId())) {
+					if(selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnitId())) {
 						// handle change in current selection
 						if(!event.getSessionId().equals(identity.getSessionId())) 
 							eventBus.fireEvent(new NotificationEvent(Severity.Warning, "Warning: This Translation Unit is being edited by someone else."));
@@ -184,10 +184,10 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		registerHandler(eventBus.addHandler(NavTransUnitEvent.getType(), new NavTransUnitHandler() {
 			@Override
 			public void onNavTransUnit(NavTransUnitEvent event) {
-				if(currentSelection != null) {
+				if(selectedTransUnit != null) {
 					int step = event.getStep();
 					//Send message to server to stop editing current selection
-					//stopEditing(currentSelection);
+					//stopEditing(selectedTransUnit);
 					
 					InlineTargetCellEditor editor = display.getTargetCellEditor();
 					
@@ -314,7 +314,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
 		@Override
 		public void gotoRow(int row) {
-			currentSelection = display.getTransUnitValue(row);
+			selectedTransUnit = display.getTransUnitValue(row);
 			display.gotoRow(row);
 		}
 
@@ -376,7 +376,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		while(row > 0) {
 			if(display.getTransUnitValue(row).getStatus() == desiredState) {
 				display.gotoRow(row);
-				currentSelection = display.getTransUnitValue(row);
+				selectedTransUnit = display.getTransUnitValue(row);
 				break;
 			}
 			else {
@@ -386,11 +386,11 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		//If the last row is not fuzzy, we will keep the editor in current row open
 		if(row == 0 && display.getTransUnitValue(row).getStatus() != desiredState) {
 			display.gotoRow(currow);
-			currentSelection = display.getTransUnitValue(currow);
+			selectedTransUnit = display.getTransUnitValue(currow);
 		}
 		else if(row == 0 && display.getTransUnitValue(row).getStatus() == desiredState) {
 			display.gotoRow(row);
-			currentSelection = display.getTransUnitValue(row);
+			selectedTransUnit = display.getTransUnitValue(row);
 		}
 		
 	}
@@ -400,7 +400,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		row=row+1;
 		while(row < MAX_PAGE_ROW) {
 			if(display.getTransUnitValue(row).getStatus()==desiredState) {
-				currentSelection = display.getTransUnitValue(row);
+				selectedTransUnit = display.getTransUnitValue(row);
 				display.gotoRow(row);
 				break;
 			}
@@ -411,18 +411,18 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		//If the last row is not fuzzy, we will keep the editor in current row open
 		if(row == MAX_PAGE_ROW && display.getTransUnitValue(row).getStatus() !=desiredState) {
 			display.gotoRow(currow);
-			currentSelection = display.getTransUnitValue(currow);
+			selectedTransUnit = display.getTransUnitValue(currow);
 		}
 		else if(row == MAX_PAGE_ROW && display.getTransUnitValue(row).getStatus() ==desiredState) {
 			display.gotoRow(row);
-			currentSelection = display.getTransUnitValue(row);
+			selectedTransUnit = display.getTransUnitValue(row);
 		}
 		
 	}
 	
 	
-	public TransUnit getCurrentSelection() {
-		return currentSelection;
+	public TransUnit getSelectedTransUnit() {
+		return selectedTransUnit;
 	}
 	
 	@Override
