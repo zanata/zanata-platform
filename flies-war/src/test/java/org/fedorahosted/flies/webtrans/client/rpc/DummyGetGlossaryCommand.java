@@ -30,7 +30,6 @@ public class DummyGetGlossaryCommand implements Command {
 		TermEntry deEntry = new TermEntry("Schwarzes Loch", "");
 		deEntry.setLocaleid(new LocaleId("de-DE"));
 		String desc = "The leftover core of a super massive star after a supernova,that exerts a tremendous gravitational pull.";
-		matches.add(new Concept("black hole", desc, "", frEntry));
 		matches.add(new Concept("black hole", desc, "", deEntry));
 		callback.onSuccess(new GetGlossaryConceptResult(matches));
 	}
