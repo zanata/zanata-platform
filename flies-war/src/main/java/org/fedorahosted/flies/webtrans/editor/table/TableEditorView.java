@@ -153,7 +153,7 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements
 
 	@Override
 	public void gotoRow(int row) {
-		editCell(row, 1);
+		editCell(row, TableEditorTableDefinition.TARGET_COL);
 	}
 	
 	@Override
@@ -163,7 +163,6 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements
 	
 	@Override
 	public TransUnit getTransUnitValue(int row) {
-		// TODO Auto-generated method stub
 		return this.getRowValue(row);
 	}
 

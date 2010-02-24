@@ -4,21 +4,20 @@ import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.webtrans.editor.filter.ContentFilter;
 
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.gen2.table.client.AbstractColumnDefinition;
 import com.google.gwt.gen2.table.client.CellRenderer;
 import com.google.gwt.gen2.table.client.ColumnDefinition;
 import com.google.gwt.gen2.table.client.DefaultTableDefinition;
 import com.google.gwt.gen2.table.client.RowRenderer;
-import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.weborient.codemirror.client.HighlightingLabel;
 import com.weborient.codemirror.client.ParserSyntax;
 
 public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit> {
+	
+//	public static final int INDICATOR_COL = 0;
+	public static final int SOURCE_COL = 0;
+	public static final int TARGET_COL = 1;
 
 	private ContentFilter<TransUnit> contentFilter = null;
 	
@@ -187,6 +186,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 		this.targetCellEditor = new InlineTargetCellEditor(cancelCallBack,transValueCallBack);
 		targetColumnDefinition.setCellEditor(targetCellEditor);
 		
+		// See _INDEX consts above if modifying!
 		//addColumnDefinition(indicatorColumnDefinition);
 		addColumnDefinition(sourceColumnDefinition);
 		addColumnDefinition(targetColumnDefinition);
