@@ -13,6 +13,7 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Query;
+import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.gwt.model.TransMemory;
 import org.fedorahosted.flies.gwt.rpc.GetTranslationMemory;
@@ -61,6 +62,7 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 		LocaleId localeID = action.getLocaleId();
 		ArrayList<TransMemory> results;
 		if (action.getSearchType() != SearchType.EXACT) {
+			// TODO need efficient filter/index: by status Approved and by locale
 			String luceneQuery;
 			if (action.getSearchType() == SearchType.RAW)
 				luceneQuery = searchText;
@@ -71,7 +73,7 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 			for (HTextFlow match : matches) {
 				Map<LocaleId, HTextFlowTarget> matchTargets = match.getTargets();
 				HTextFlowTarget target = matchTargets.get(localeID);
-				if (target != null) {
+				if (target != null && target.getState() == ContentState.Approved) {
 					TransMemory mem = new TransMemory(
 							match.getContent(), 
 							target.getContent(), 
@@ -82,7 +84,7 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 		} else {
 			
 			// TODO this should probably use Hibernate Search for efficiency
-			// TODO filter by status Approved and by locale
+			// TODO need efficient filter: by status Approved and by locale
 			final String hqlQuery = toHQLQuery(searchText);
 			org.hibernate.Query query = session.createQuery(
 					"from HTextFlow tf where lower(tf.content) like :q escape '"+LIKE_ESCAPE+"'")
@@ -93,7 +95,7 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 			
 			for(HTextFlow textFlow : textFlows) {
 				HTextFlowTarget target = textFlow.getTargets().get(localeID);
-				if(target != null) {
+				if(target != null && target.getState() == ContentState.Approved) {
 					TransMemory memory = new TransMemory(
 							textFlow.getContent(), 
 							target.getContent(),
