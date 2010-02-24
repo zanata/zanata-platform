@@ -37,7 +37,6 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 
 	private final DispatchAsync dispatcher;
 	private final WorkspaceContext workspaceContext;
-	private int latestStatusCountOffset = -1;
 		
 	public interface Display extends WidgetDisplay{
 		HasChildTreeNodes<Person> getTree();
