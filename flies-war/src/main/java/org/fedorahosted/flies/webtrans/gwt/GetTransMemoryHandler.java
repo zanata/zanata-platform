@@ -19,6 +19,7 @@ import org.fedorahosted.flies.gwt.model.TransMemory;
 import org.fedorahosted.flies.gwt.rpc.GetTranslationMemory;
 import org.fedorahosted.flies.gwt.rpc.GetTranslationMemoryResult;
 import org.fedorahosted.flies.gwt.rpc.GetTranslationMemory.SearchType;
+import org.fedorahosted.flies.repository.model.HSimpleComment;
 import org.fedorahosted.flies.repository.model.HTextFlow;
 import org.fedorahosted.flies.repository.model.HTextFlowTarget;
 import org.fedorahosted.flies.security.FliesIdentity;
@@ -70,14 +71,19 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 				luceneQuery = toFuzzyLuceneQuery(searchText);
 			List<HTextFlow> matches = findMatchingTextFlows(luceneQuery);
 			results = new ArrayList<TransMemory>(matches.size());
-			for (HTextFlow match : matches) {
-				Map<LocaleId, HTextFlowTarget> matchTargets = match.getTargets();
+			for (HTextFlow textFlow : matches) {
+				Map<LocaleId, HTextFlowTarget> matchTargets = textFlow.getTargets();
 				HTextFlowTarget target = matchTargets.get(localeID);
 				if (target != null && target.getState() == ContentState.Approved) {
 					TransMemory mem = new TransMemory(
-							match.getContent(), 
+							textFlow.getContent(), 
 							target.getContent(), 
-							match.getDocument().getDocId());
+							toString(textFlow.getComment()),
+							toString(target.getComment()),
+							textFlow.getDocument().getDocId(),
+							// TODO find the projectSlug and iterSlug
+							textFlow.getDocument().getProject().getId()
+							);
 					results.add(mem);
 				}
 			}
@@ -96,11 +102,15 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 			for(HTextFlow textFlow : textFlows) {
 				HTextFlowTarget target = textFlow.getTargets().get(localeID);
 				if(target != null && target.getState() == ContentState.Approved) {
-					TransMemory memory = new TransMemory(
+					TransMemory mem = new TransMemory(
 							textFlow.getContent(), 
-							target.getContent(),
-							textFlow.getDocument().getDocId());
-					results.add(memory);
+							target.getContent(), 
+							toString(textFlow.getComment()),
+							toString(target.getComment()),
+							textFlow.getDocument().getDocId(),
+							textFlow.getDocument().getProject().getId()
+							);
+					results.add(mem);
 				}
 			}
 		}
@@ -108,6 +118,14 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 				results.size(), 
 				abbrev);
 		return new GetTranslationMemoryResult(results);
+	}
+	
+	static String toString(HSimpleComment comment) {
+		if (comment == null)
+			return "";
+		if (comment.getComment() != null)
+			return comment.getComment();
+		return "";
 	}
 
 	static String toHQLQuery(String substring) {
