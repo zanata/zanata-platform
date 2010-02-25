@@ -1,5 +1,7 @@
 package org.fedorahosted.flies.webtrans.editor.table;
 
+import java.util.List;
+
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
 import org.fedorahosted.flies.webtrans.editor.filter.ContentFilter;
@@ -70,6 +72,11 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements
 				}
 			}
 		});
+	}
+	
+	@Override
+	public List<TransUnit> getRowValues() {
+		return super.getRowValues();
 	}
 	
 	@Override

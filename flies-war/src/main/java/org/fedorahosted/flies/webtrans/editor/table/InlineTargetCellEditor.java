@@ -248,7 +248,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 			return;
 		}
 		cellValue.setTarget(textArea.getText());
-		cellValue.setStatus(toggleFuzzy.getValue() ? ContentState.NeedReview : ContentState.Approved );
+		if(cellValue.getTarget().isEmpty())
+			cellValue.setStatus(ContentState.New);
+		else
+			cellValue.setStatus(toggleFuzzy.getValue() ? ContentState.NeedReview : ContentState.Approved );
 		restoreView();
 		
 		// Send the new cell value to the callback

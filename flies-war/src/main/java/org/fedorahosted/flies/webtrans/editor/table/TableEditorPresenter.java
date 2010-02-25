@@ -1,6 +1,9 @@
 package org.fedorahosted.flies.webtrans.editor.table;
 
 import static org.fedorahosted.flies.webtrans.editor.table.TableConstants.MAX_PAGE_ROW;
+
+import java.util.List;
+
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
@@ -13,6 +16,7 @@ import org.fedorahosted.flies.gwt.auth.AuthenticationError;
 import org.fedorahosted.flies.gwt.auth.AuthorizationError;
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.TransUnit;
+import org.fedorahosted.flies.gwt.model.TransUnitId;
 import org.fedorahosted.flies.gwt.rpc.EditingTranslationAction;
 import org.fedorahosted.flies.gwt.rpc.EditingTranslationResult;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
@@ -55,7 +59,6 @@ import com.google.gwt.gen2.table.event.client.HasPageChangeHandlers;
 import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
 import com.google.gwt.gen2.table.event.client.PageChangeHandler;
 import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -63,8 +66,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	implements HasPageNavigation, HasPageChangeHandlers, HasPageCountChangeHandlers {
 	
 	public static final Place PLACE = new Place("TableEditor");
-	private int latestStatusCountOffset = -1;
-	
+
 	public interface Display extends WidgetDisplay, HasPageNavigation {
 		HasSelectionHandlers<TransUnit> getSelectionHandlers();
 		HasPageChangeHandlers getPageChangeHandlers();
@@ -79,6 +81,9 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		int getCurrentPageNumber();
 		TransUnit getTransUnitValue(int row);
 		InlineTargetCellEditor getTargetCellEditor();
+		List<TransUnit> getRowValues();
+		int getCurrentPage();
+		int getPageSize();
 	}
 
 	private DocumentId documentId;
@@ -155,13 +160,30 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 						//eventBus.fireEvent(new NotificationEvent(Severity.Warning, "Someone else updated this translation unit. you're in trouble..."));
 						//display.getTableModel().setRowValue(row, rowValue);
 					}
-					// TODO add model with methods such as
-					//selectedTransUnit.getRowIndex(TransUnitId); 
-					// - add TU index to model
-					//display.getTableModel().setRowValue(rowIndex, selectedTransUnit.getTarget());
-					display.getTableModel().clearCache();
-					display.reloadPage();
-					//dispatcher.execute(new GetTransUnits(documentId, localeId, page*pageSize+rowOffset, 1, count), callback)
+					boolean reloadPage = false;
+					if (reloadPage) {
+						display.getTableModel().clearCache();
+						display.reloadPage();
+					} else {
+						final Integer rowOffset = getRowOffset(event.getTransUnitId());
+						// - add TU index to model
+						if (rowOffset != null)
+							dispatcher.execute(new GetTransUnits(
+								documentId, 
+								workspaceContext.getLocaleId(), 
+								display.getCurrentPage() * display.getPageSize() + rowOffset, 
+								1), new AsyncCallback<GetTransUnitsResult>() {
+									@Override
+									public void onFailure(Throwable e) {
+										Log.error(e.getMessage(), e);
+									}
+	
+									@Override
+									public void onSuccess(GetTransUnitsResult result) {
+										display.getTableModel().setRowValueOverride(rowOffset, result.getUnits().get(0));
+									}
+								});
+					}
 				}
 			}
 		}));
@@ -229,6 +251,16 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
 	}
 
+	public Integer getRowOffset(TransUnitId transUnitId) {
+		// TODO inefficient!
+		for (int i=0; i<display.getRowValues().size(); i++) {
+			if (transUnitId.equals(display.getTransUnitValue(i).getId())) {
+				return i;
+			}
+		}
+		return null;
+	}
+	
 	private final TableModelHandler<TransUnit> tableModelHandler = new TableModelHandler<TransUnit>() {
 		
 		@Override
@@ -271,8 +303,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		
 		@Override
 		public boolean onSetRowValue(int row, TransUnit rowValue) {
-			if(rowValue.getTarget().isEmpty())
-				rowValue.setStatus(ContentState.New);
 			dispatcher.execute(
 					new UpdateTransUnit(rowValue.getId(), workspaceContext.getLocaleId(), rowValue.getTarget(),rowValue.getStatus()), 
 					new AsyncCallback<UpdateTransUnitResult>() {
