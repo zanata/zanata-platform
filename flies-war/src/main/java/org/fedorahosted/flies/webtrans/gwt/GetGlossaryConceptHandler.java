@@ -49,29 +49,30 @@ public class GetGlossaryConceptHandler implements ActionHandler<GetGlossaryConce
 			
 			FliesIdentity.instance().checkLoggedIn();
 			
-			List<HTermEntry> entries = session.createQuery(
-					"select e "+
-					"from HTermEntry e "+
-			        "where e.concept.term =:term " +
-			        "  and e.localeId =:localeId "+
-			        "  and e.concept.glossary.id =:glossaryId"
-				).setParameter("term", action.getTerm())
-				 .setParameter("localeId", action.getLocaleId())
-				 .setParameter("glossaryId", action.getGlossaryId()).list();
-			
-			
+//			List<HTermEntry> entries = session.createQuery(
+//					"select e "+
+//					"from HTermEntry e "+
+//			        "where e.concept.term =:term " +
+//			        "  and e.localeId =:localeId "+
+//			        "  and e.concept.glossary.id =:glossaryId"
+//				).setParameter("term", action.getTerm())
+//				 .setParameter("localeId", action.getLocaleId())
+//				 .setParameter("glossaryId", action.getGlossaryId()).list();
+		
 			ArrayList<Concept> results = new ArrayList<Concept>();
 			
-			for(HTermEntry entry : entries) {
-				termEntry = new TermEntry(entry.getTerm(), entry.getComment());
-				Concept c = new Concept(entry.getConcept().getTerm(), entry.getConcept().getDesc(), entry.getConcept().getComment(),termEntry);
-				results.add(c);
-			}
-			
+//			for(HTermEntry entry : entries) {
+//				termEntry = new TermEntry(entry.getTerm(), entry.getComment());
+//				Concept c = new Concept(entry.getConcept().getTerm(), entry.getConcept().getDesc(), entry.getConcept().getComment(),termEntry);
+//				results.add(c);
+//			}
+		
+			TermEntry deEntry = new TermEntry("Schwarzes Loch", "");
+			deEntry.setLocaleid(new LocaleId("de-DE"));
+			String desc = "The leftover core of a super massive star after a supernova,that exerts a tremendous gravitational pull.";
+			results.add(new Concept("black hole", desc, "", deEntry));
 			
 			return new GetGlossaryConceptResult(results);
-
-
 		}
 
 		@Override
