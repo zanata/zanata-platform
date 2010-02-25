@@ -70,7 +70,7 @@ public class HPerson extends AbstractFliesEntity implements Serializable {
 		return email;
 	}
 
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "HProject_Maintainer", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "projectId"))
 	public List<HProject> getMaintainerProjects() {
 		return maintainerProjects;
