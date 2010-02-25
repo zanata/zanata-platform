@@ -88,7 +88,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 		@Override
 		public void setCellValue(TransUnit rowValue, TransUnit cellValue) {
 			cellValue.setSource(rowValue.getSource());
-//			cellValue.setTooltip(rowValue.getSourceComment());
+			cellValue.setSourceComment(rowValue.getSourceComment());
 		}
 	};
 	
@@ -128,25 +128,9 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 			view.setStyleName("TableEditorCell TableEditorCell-Target");
 			final Label label = new HighlightingLabel(rowValue.getTarget(), ParserSyntax.MIXED);
 			label.setStylePrimaryName("TableEditorContent");
-				
-			// TODO disabled for now
-//			final DecoratedPopupPanel popup = new DecoratedPopupPanel(true);
-//			label.addMouseOverHandler(new MouseOverHandler() {
-//				@Override
-//				public void onMouseOver(MouseOverEvent event) {
-//					int x = label.getAbsoluteLeft();
-//					int y = label.getAbsoluteTop() - 35;
-//					popup.setPopupPosition(x, y);
-//					popup.setWidget(new Label("Users currently editing this cell: TODO")); // FIXME
-//					popup.show();
-//				}
-//			});
-//			label.addMouseOutHandler(new MouseOutHandler() {
-//				@Override
-//				public void onMouseOut(MouseOutEvent event) {
-//					popup.hide();
-//				}
-//			});
+			
+			// TODO label.setTitle(rowValue.getTargetComment());
+			
 			view.setWidget( label );
 		}
 	};
