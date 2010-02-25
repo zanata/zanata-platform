@@ -130,8 +130,10 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
         	log.warn("Can't parse query '"+searchQuery+"'");
             return Collections.emptyList(); 
         }
+        // TODO setMaxResults sometimes causes results to be left out
+        // a bit like this old bug: http://opensource.atlassian.com/projects/hibernate/browse/HSEARCH-66?focusedCommentId=27137&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#action_27137
         List<HTextFlow> items = query
-            .setMaxResults(MAX_RESULTS)
+//            .setMaxResults(MAX_RESULTS)
             .getResultList();
         return items;
     }
