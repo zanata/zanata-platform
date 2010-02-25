@@ -160,7 +160,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 						//eventBus.fireEvent(new NotificationEvent(Severity.Warning, "Someone else updated this translation unit. you're in trouble..."));
 						//display.getTableModel().setRowValue(row, rowValue);
 					}
-					boolean reloadPage = false;
+					boolean reloadPage = true;
 					if (reloadPage) {
 						display.getTableModel().clearCache();
 						display.reloadPage();
@@ -169,6 +169,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 						// - add TU index to model
 						if (rowOffset != null) {
 							final int row = display.getCurrentPage() * display.getPageSize() + rowOffset;
+							Log.info("row calculated as "+row);
 							dispatcher.execute(new GetTransUnits(
 								documentId, 
 								workspaceContext.getLocaleId(), 
@@ -181,6 +182,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	
 									@Override
 									public void onSuccess(GetTransUnitsResult result) {
+										// FIXME should this be row, rowOffset, or something else?
 										display.getTableModel().setRowValueOverride(row, result.getUnits().get(0));
 									}
 								});
@@ -259,6 +261,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		// TODO inefficient!
 		for (int i=0; i<display.getRowValues().size(); i++) {
 			if (transUnitId.equals(display.getTransUnitValue(i).getId())) {
+				Log.info("getRowOffset returning "+i);
 				return i;
 			}
 		}
