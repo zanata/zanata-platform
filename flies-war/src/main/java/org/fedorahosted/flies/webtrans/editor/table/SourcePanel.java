@@ -35,6 +35,7 @@ public class SourcePanel extends Composite implements HasValue<TransUnit> {
 
 		sourceLabel = new HighlightingLabel(value.getSource(), ParserSyntax.MIXED);
 		sourceLabel.setStylePrimaryName("TableEditorContent");
+		sourceLabel.setTitle("Source Comment: " + value.getSourceComment());
 		
 		panel.add(sourceLabel);
 		textarea = new TextArea();

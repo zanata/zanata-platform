@@ -114,7 +114,7 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 			final String sourceMessage = memory.getSource();
 			final String targetMessage = memory.getMemory();
 			final String sourceComment = memory.getSourceComment();
-			final String targetComment = memory.getTargetComment();
+//			final String targetComment = memory.getTargetComment();
 			final String docID = memory.getDocID();
 
 			resultTable.setWidget(row, SOURCE_COL, new HighlightingLabel(sourceMessage, ParserSyntax.MIXED));
@@ -132,7 +132,7 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 			
 			// Use ToolTips for supplementary info.
 			resultTable.getWidget(row, SOURCE_COL).setTitle("Source Comment: " + sourceComment);				
-			resultTable.getWidget(row, TARGET_COL).setTitle("Target Comment: " + targetComment);
+//			resultTable.getWidget(row, TARGET_COL).setTitle("Target Comment: " + targetComment);
 			resultTable.getWidget(row, ACTION_COL).setTitle("Document Name: " + docID);
 		}
 		resultTable.setCellPadding(CELL_PADDING);
