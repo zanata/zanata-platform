@@ -39,7 +39,6 @@ import org.jboss.seam.log.Log;
 public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory, GetTranslationMemoryResult> {
 
 	private static final int MAX_RESULTS = 50;
-	private static final String LIKE_ESCAPE = "~";
 
 	@Logger 
 	private Log log;
@@ -56,64 +55,50 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 		
 		final String searchText = action.getQuery();
 		ShortString abbrev = new ShortString(searchText);
+		final SearchType searchType = action.getSearchType();
 		log.info("Fetching TM matches({0}) for \"{1}\"", 
-				action.getSearchType(), 
+				searchType, 
 				abbrev);
 		
 		LocaleId localeID = action.getLocaleId();
 		ArrayList<TransMemory> results;
-		if (action.getSearchType() != SearchType.EXACT) {
-			// TODO need efficient filter/index: by status Approved and by locale
-			String luceneQuery;
-			if (action.getSearchType() == SearchType.RAW)
-				luceneQuery = searchText;
-			else
-				luceneQuery = toFuzzyLuceneQuery(searchText);
-			List<HTextFlow> matches = findMatchingTextFlows(luceneQuery);
-			results = new ArrayList<TransMemory>(matches.size());
-			for (HTextFlow textFlow : matches) {
-				Map<LocaleId, HTextFlowTarget> matchTargets = textFlow.getTargets();
-				HTextFlowTarget target = matchTargets.get(localeID);
-				if (target != null && target.getState() == ContentState.Approved) {
-					TransMemory mem = new TransMemory(
-							textFlow.getContent(), 
-							target.getContent(), 
-							toString(textFlow.getComment()),
-							toString(target.getComment()),
-							textFlow.getDocument().getDocId(),
-							// TODO find the projectSlug and iterSlug
-							textFlow.getDocument().getProject().getId()
-							);
-					results.add(mem);
-				}
-			}
-		} else {
+		// TODO need efficient filter/index: by status Approved and by locale
+		String luceneQuery;
+		switch (searchType) {
+		case RAW:
+			luceneQuery = searchText;
+			break;
+
+		case FUZZY:
+			luceneQuery = toFuzzyLuceneQuery(searchText);
+			break;
 			
-			// TODO this should probably use Hibernate Search for efficiency
-			// TODO need efficient filter: by status Approved and by locale
-			final String hqlQuery = toHQLQuery(searchText);
-			org.hibernate.Query query = session.createQuery(
-					"from HTextFlow tf where lower(tf.content) like :q escape '"+LIKE_ESCAPE+"'")
-					.setParameter("q", hqlQuery);
+		case EXACT:
+			luceneQuery = "\""+QueryParser.escape(searchText)+"\"";
+			break;
 			
-			List<HTextFlow> textFlows = query.setMaxResults(MAX_RESULTS).list();
-			results = new ArrayList<TransMemory>(textFlows.size());
-			
-			for(HTextFlow textFlow : textFlows) {
-				HTextFlowTarget target = textFlow.getTargets().get(localeID);
-				if(target != null && target.getState() == ContentState.Approved) {
-					TransMemory mem = new TransMemory(
-							textFlow.getContent(), 
-							target.getContent(), 
-							toString(textFlow.getComment()),
-							toString(target.getComment()),
-							textFlow.getDocument().getDocId(),
-							textFlow.getDocument().getProject().getId()
-							);
-					results.add(mem);
-				}
+		default:
+			throw new RuntimeException("Unknown query type: "+searchType);
+		}
+		List<HTextFlow> matches = findMatchingTextFlows(luceneQuery);
+		results = new ArrayList<TransMemory>(matches.size());
+		for (HTextFlow textFlow : matches) {
+			Map<LocaleId, HTextFlowTarget> matchTargets = textFlow.getTargets();
+			HTextFlowTarget target = matchTargets.get(localeID);
+			if (target != null && target.getState() == ContentState.Approved) {
+				TransMemory mem = new TransMemory(
+						textFlow.getContent(), 
+						target.getContent(), 
+						toString(textFlow.getComment()),
+						toString(target.getComment()),
+						textFlow.getDocument().getDocId(),
+						// TODO find the projectSlug and iterSlug
+						textFlow.getDocument().getProject().getId()
+						);
+				results.add(mem);
 			}
 		}
+
 		log.info("Returning {0} TM matches for \"{1}\"", 
 				results.size(), 
 				abbrev);
@@ -128,15 +113,6 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
 		return "";
 	}
 
-	static String toHQLQuery(String substring) {
-		return "%"+
-			substring.toLowerCase()
-			.replace(LIKE_ESCAPE, LIKE_ESCAPE+LIKE_ESCAPE)
-			.replace("%", LIKE_ESCAPE+"%")
-			.replace("_", LIKE_ESCAPE+"_")
-				+"%";
-	}
-	
 	static String toLuceneQuery(String s) {
 		return QueryParser.escape(s);
 	}
@@ -154,8 +130,10 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
         	log.warn("Can't parse query '"+searchQuery+"'");
             return Collections.emptyList(); 
         }
+        // TODO setMaxResults sometimes causes results to be left out
+        // a bit like this old bug: http://opensource.atlassian.com/projects/hibernate/browse/HSEARCH-66?focusedCommentId=27137&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#action_27137
         List<HTextFlow> items = query
-            .setMaxResults(MAX_RESULTS)
+//            .setMaxResults(MAX_RESULTS)
             .getResultList();
         return items;
     }
