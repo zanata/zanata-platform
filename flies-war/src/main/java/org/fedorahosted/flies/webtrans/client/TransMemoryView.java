@@ -4,10 +4,7 @@ import java.util.ArrayList;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.fedorahosted.flies.gwt.model.Person;
-import org.fedorahosted.flies.gwt.model.PersonId;
 import org.fedorahosted.flies.gwt.model.TransMemory;
-import org.fedorahosted.flies.webtrans.client.ui.TreeNodeImpl;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -15,8 +12,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -26,7 +21,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.weborient.codemirror.client.HighlightingLabel;
@@ -110,6 +104,9 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 		addColumn("Source", SOURCE_COL);
 		addColumn("Target", TARGET_COL);
 		addColumn("Action", ACTION_COL);
+		
+		// Thinking where to include this help message.
+		addColumn("(move cursor on results for more information)", ACTION_COL + 1);
 
 		int row = HEADER_ROW;
 		for(final TransMemory memory: memories) {
@@ -119,6 +116,7 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 			final String sourceComment = memory.getSourceComment();
 			final String targetComment = memory.getTargetComment();
 			final String docID = memory.getDocID();
+
 			resultTable.setWidget(row, SOURCE_COL, new HighlightingLabel(sourceMessage, ParserSyntax.MIXED));
 			resultTable.setWidget(row, TARGET_COL, new HighlightingLabel(targetMessage, ParserSyntax.MIXED));
 
@@ -132,28 +130,10 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 			});
 			resultTable.setWidget(row, ACTION_COL, copyLink);
 			
-			// The MouseOverHandler is supposed to be added to the whole
-			// row of resultTable. However, resultTable has to be 
-			// modified to achieve that.
-			copyLink.addMouseOverHandler(new MouseOverHandler() {
-				@Override
-				public void onMouseOver(MouseOverEvent event) {
-						VerticalPanel contentPanel = new VerticalPanel();
-						contentPanel.add(new Label("Source Comment: " + sourceComment));
-						contentPanel.add(new Label("Target Comment: " + targetComment));
-						contentPanel.add(new Label("Document: " + docID));
-						
-						// setPopupPosition has to be done after the pop
-						// -up panel is shown as to get panel height. The
-						// position is 5 px above, center aligned of the
-						// anchor.
-						resultSuppPanel.setWidget(contentPanel);
-						resultSuppPanel.show();
-						resultSuppPanel.setPopupPosition(
-								(copyLink.getAbsoluteLeft() + copyLink.getOffsetWidth()) / 2, 
-								copyLink.getAbsoluteTop() - resultSuppPanel.getOffsetHeight() - 5);
-				}
-			});
+			// Use ToolTips for supplementary info.
+			resultTable.getWidget(row, SOURCE_COL).setTitle("Source Comment: " + sourceComment);				
+			resultTable.getWidget(row, TARGET_COL).setTitle("Target Comment: " + targetComment);
+			resultTable.getWidget(row, ACTION_COL).setTitle("Document Name: " + docID);
 		}
 		resultTable.setCellPadding(CELL_PADDING);
 	}
