@@ -8,6 +8,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -26,6 +27,7 @@ public class GlossaryView extends FlowPanel implements GlossaryPresenter.Display
 	private final TextBox glTextBox = new TextBox();
 	private final Button searchButton = new Button("Search");
 	private final FlexTable resultTable = new FlexTable();
+	private final GlossaryUpload fileUpload = new GlossaryUpload();
 	
 	public GlossaryView() {
 		glTextBox.addKeyUpHandler(new KeyUpHandler() {
@@ -37,6 +39,7 @@ public class GlossaryView extends FlowPanel implements GlossaryPresenter.Display
 			}
 		});
 
+		add(fileUpload);
 		add(glTextBox);
 		add(searchButton);
 		add(resultTable);
