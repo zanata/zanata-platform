@@ -167,11 +167,12 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 					} else {
 						final Integer rowOffset = getRowOffset(event.getTransUnitId());
 						// - add TU index to model
-						if (rowOffset != null)
+						if (rowOffset != null) {
+							final int row = display.getCurrentPage() * display.getPageSize() + rowOffset;
 							dispatcher.execute(new GetTransUnits(
 								documentId, 
 								workspaceContext.getLocaleId(), 
-								display.getCurrentPage() * display.getPageSize() + rowOffset, 
+								row, 
 								1), new AsyncCallback<GetTransUnitsResult>() {
 									@Override
 									public void onFailure(Throwable e) {
@@ -180,9 +181,12 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	
 									@Override
 									public void onSuccess(GetTransUnitsResult result) {
-										display.getTableModel().setRowValueOverride(rowOffset, result.getUnits().get(0));
+										display.getTableModel().setRowValueOverride(row, result.getUnits().get(0));
 									}
 								});
+						} else {
+							display.getTableModel().clearCache();
+						}
 					}
 				}
 			}
