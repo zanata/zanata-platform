@@ -38,6 +38,7 @@ public class UpdateTransUnitHandler implements ActionHandler<UpdateTransUnit, Up
 			throws ActionException {
 		
 		FliesIdentity.instance().checkLoggedIn();
+		log.info("Updating TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), action.getLocaleId(), action.getContentState(), action.getContent());
 		
 		HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, action.getTransUnitId().getValue());
 		HTextFlowTarget target = hTextFlow.getTargets().get( action.getLocaleId() );
