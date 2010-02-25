@@ -4,7 +4,10 @@ import java.util.ArrayList;
 
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.fedorahosted.flies.gwt.model.Person;
+import org.fedorahosted.flies.gwt.model.PersonId;
 import org.fedorahosted.flies.gwt.model.TransMemory;
+import org.fedorahosted.flies.webtrans.client.ui.TreeNodeImpl;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -12,14 +15,18 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.weborient.codemirror.client.HighlightingLabel;
@@ -31,13 +38,14 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 	private static final int HEADER_ROW = 0;
 	private static final int SOURCE_COL = 0;
 	private static final int TARGET_COL = 1;
-	private static final int DOCUMENT_COL = 2;
-	private static final int ACTION_COL = 3;
+	private static final int ACTION_COL = 2;
 	
 	private final TextBox tmTextBox = new TextBox();
 	private final CheckBox phraseButton = new CheckBox("Exact");
 	private final Button searchButton = new Button("Search");
 	private final Button clearButton = new Button("Clear");
+
+	final DecoratedPopupPanel resultSuppPanel = new DecoratedPopupPanel(true);
 	
 	private final FlexTable resultTable = new FlexTable();
 	@Inject
@@ -101,27 +109,51 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 		clearResults();
 		addColumn("Source", SOURCE_COL);
 		addColumn("Target", TARGET_COL);
-		addColumn("Document", DOCUMENT_COL);
 		addColumn("Action", ACTION_COL);
 
 		int row = HEADER_ROW;
 		for(final TransMemory memory: memories) {
 			++row;
-			final String sourceResult = memory.getSource();
-			final String targetResult = memory.getMemory();
-			resultTable.setWidget(row, SOURCE_COL, new HighlightingLabel(sourceResult, ParserSyntax.MIXED));
-			resultTable.setWidget(row, TARGET_COL, new HighlightingLabel(targetResult, ParserSyntax.MIXED));
-			resultTable.setText(row, DOCUMENT_COL, memory.getDocID());
-			
-			Anchor copyLink = new Anchor("Copy To Target");
+			final String sourceMessage = memory.getSource();
+			final String targetMessage = memory.getMemory();
+			final String sourceComment = memory.getSourceComment();
+			final String targetComment = memory.getTargetComment();
+			final String docID = memory.getDocID();
+			resultTable.setWidget(row, SOURCE_COL, new HighlightingLabel(sourceMessage, ParserSyntax.MIXED));
+			resultTable.setWidget(row, TARGET_COL, new HighlightingLabel(targetMessage, ParserSyntax.MIXED));
+
+			final Anchor copyLink = new Anchor("Copy To Target");
 			copyLink.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					eventBus.fireEvent(new TransMemoryCopyEvent(sourceResult, targetResult));
-					Log.info("TransMemoryCopyEvent event is sent. (" + targetResult + ")");
+					eventBus.fireEvent(new TransMemoryCopyEvent(sourceMessage, targetMessage));
+					Log.info("TransMemoryCopyEvent event is sent. (" + targetMessage + ")");
 				}
 			});
 			resultTable.setWidget(row, ACTION_COL, copyLink);
+			
+			// The MouseOverHandler is supposed to be added to the whole
+			// row of resultTable. However, resultTable has to be 
+			// modified to achieve that.
+			copyLink.addMouseOverHandler(new MouseOverHandler() {
+				@Override
+				public void onMouseOver(MouseOverEvent event) {
+						VerticalPanel contentPanel = new VerticalPanel();
+						contentPanel.add(new Label("Source Comment: " + sourceComment));
+						contentPanel.add(new Label("Target Comment: " + targetComment));
+						contentPanel.add(new Label("Document: " + docID));
+						
+						// setPopupPosition has to be done after the pop
+						// -up panel is shown as to get panel height. The
+						// position is 5 px above, center aligned of the
+						// anchor.
+						resultSuppPanel.setWidget(contentPanel);
+						resultSuppPanel.show();
+						resultSuppPanel.setPopupPosition(
+								(copyLink.getAbsoluteLeft() + copyLink.getOffsetWidth()) / 2, 
+								copyLink.getAbsoluteTop() - resultSuppPanel.getOffsetHeight() - 5);
+				}
+			});
 		}
 		resultTable.setCellPadding(CELL_PADDING);
 	}
