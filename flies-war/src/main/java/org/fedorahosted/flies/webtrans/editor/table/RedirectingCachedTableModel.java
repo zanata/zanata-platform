@@ -2,12 +2,14 @@ package org.fedorahosted.flies.webtrans.editor.table;
 
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.gwt.model.TransUnit;
+import org.fedorahosted.flies.gwt.model.TransUnitId;
 
 import com.google.gwt.gen2.table.client.CachedTableModel;
 
 public class RedirectingCachedTableModel<RowType> extends CachedTableModel<RowType>{
 	
 	private final RedirectingTableModel<RowType> tableModel;
+	private boolean quiet = false;
 	
 	public RedirectingCachedTableModel(RedirectingTableModel<RowType> tableModel) {
 		super(tableModel);
@@ -36,6 +38,24 @@ public class RedirectingCachedTableModel<RowType> extends CachedTableModel<RowTy
 	public void gotoPrevFuzzy(int row, ContentState state) {
 		if(tableModel != null)
 			tableModel.gotoPrevFuzzy(row, state);
+	}
+	
+	public void setRowValueOverride(int row, RowType rowValue) {
+		quiet = true;
+		try {
+			setRowValue(row, rowValue);
+		} finally {
+			quiet = false;
+		}
+		
+		// TODO ideally, we would just replace the affected row in the cache
+		clearCache();
+	}
+	
+	protected final boolean onSetRowValue(int row, RowType rowValue) {
+		if (quiet)
+			return true;
+		return super.onSetRowValue(row, rowValue);
 	}
 
 }
