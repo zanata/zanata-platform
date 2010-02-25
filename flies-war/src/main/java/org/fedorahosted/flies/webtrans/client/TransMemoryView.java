@@ -105,9 +105,6 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 		addColumn("Target", TARGET_COL);
 		addColumn("Action", ACTION_COL);
 		
-		// Thinking where to include this help message.
-		addColumn("(move cursor on results for more information)", ACTION_COL + 1);
-
 		int row = HEADER_ROW;
 		for(final TransMemory memory: memories) {
 			++row;
