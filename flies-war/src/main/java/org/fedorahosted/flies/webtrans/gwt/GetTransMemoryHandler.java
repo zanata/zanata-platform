@@ -38,7 +38,7 @@ import org.jboss.seam.log.Log;
 @Scope(ScopeType.STATELESS)
 public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory, GetTranslationMemoryResult> {
 
-	private static final int MAX_RESULTS = 50;
+	private static final int MAX_RESULTS = 10;
 
 	@Logger 
 	private Log log;
@@ -135,6 +135,8 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
         List<HTextFlow> items = query
 //            .setMaxResults(MAX_RESULTS)
             .getResultList();
+        if (items.size() > MAX_RESULTS)
+        	items = items.subList(0, MAX_RESULTS);
         return items;
     }
 
