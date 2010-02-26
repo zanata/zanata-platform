@@ -93,6 +93,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 			@Override
 			public void onTransUnitUpdated(TransUnitUpdatedEvent event) {
 				DocumentStatus doc = statuscache.get(event.getDocumentId());
+				if (doc == null)
+					return;  // GetProjectStatusCount hasn't returned yet!
 				ContentState status = event.getPreviousStatus();
 				doc.setStatus(status, doc.getStatus(status)-1);
 				status = event.getNewStatus();
