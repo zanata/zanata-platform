@@ -41,6 +41,8 @@ public class RedirectingCachedTableModel<RowType> extends CachedTableModel<RowTy
 	}
 	
 	public void setRowValueOverride(int row, RowType rowValue) {
+		// TODO ideally, we would just replace the affected row in the cache
+		clearCache();
 		quiet = true;
 		try {
 			setRowValue(row, rowValue);
@@ -48,8 +50,6 @@ public class RedirectingCachedTableModel<RowType> extends CachedTableModel<RowTy
 			quiet = false;
 		}
 		
-		// TODO ideally, we would just replace the affected row in the cache
-		clearCache();
 	}
 	
 	protected final boolean onSetRowValue(int row, RowType rowValue) {

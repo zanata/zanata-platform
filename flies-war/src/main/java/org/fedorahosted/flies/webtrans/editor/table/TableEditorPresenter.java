@@ -155,13 +155,19 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 			@Override
 			public void onTransUnitUpdated(TransUnitUpdatedEvent event) {
 				if(documentId != null && documentId.equals(event.getDocumentId())) {
+					// TODO this test never succeeds
 					if(selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnitId())) {
 						// handle change in current selection
 						//eventBus.fireEvent(new NotificationEvent(Severity.Warning, "Someone else updated this translation unit. you're in trouble..."));
 						//display.getTableModel().setRowValue(row, rowValue);
+						Log.info("selected TU updated; cancelling edit");
+						display.getTargetCellEditor().cancelEdit();
+						
+						// TODO reload page and return
 					}
-					boolean reloadPage = true;
+					boolean reloadPage = false;
 					if (reloadPage) {
+						display.getTargetCellEditor().cancelEdit();
 						display.getTableModel().clearCache();
 						display.reloadPage();
 					} else {
@@ -516,5 +522,9 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
 	public DocumentId getDocumentId() {
 		return documentId;
+	}
+
+	public void cancelEdit() {
+		display.getTargetCellEditor().cancelEdit();
 	}
 }
