@@ -104,7 +104,6 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 	
 	@Override
 	public void createTable(ArrayList<TransMemory> memories) {
-		startProcessing();
 		clearResults();
 		addColumn("Source", SOURCE_COL);
 		addColumn("Target", TARGET_COL);
@@ -138,7 +137,6 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 			resultTable.getWidget(row, ACTION_COL).setTitle("Document Name: " + docID);
 		}
 		resultTable.setCellPadding(CELL_PADDING);
-		stopProcessing();
 	}
 	
 	private void addColumn(String columnHeading, int pos) {

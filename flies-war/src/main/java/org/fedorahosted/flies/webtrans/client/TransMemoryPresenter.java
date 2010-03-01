@@ -38,6 +38,8 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 		HasText getTmTextBox();
 		void createTable(ArrayList<TransMemory> memories);
 		void clearResults();
+		void startProcessing();
+		void stopProcessing();
 	}
 
 	@Inject
@@ -58,6 +60,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 		display.getSearchButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				display.startProcessing();
 				display.clearResults();
 				final String query = display.getTmTextBox().getText();
 				GetTranslationMemory.SearchType searchType = 
@@ -75,6 +78,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 						display.createTable(memories);
 					}
 				});
+				display.stopProcessing();
 			}
 		});
 		
