@@ -99,6 +99,11 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 	}
 	
 	@Override
+	public void loading() {
+		resultTable.setWidget(0, 0, new Label("Loading..."));
+	}
+	
+	@Override
 	public void createTable(ArrayList<TransMemory> memories) {
 		clearResults();
 		addColumn("Source", SOURCE_COL);
