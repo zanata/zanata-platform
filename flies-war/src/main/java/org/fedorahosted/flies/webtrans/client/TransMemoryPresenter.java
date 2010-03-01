@@ -36,7 +36,6 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 		HasValue<Boolean> getExactButton();
 		HasClickHandlers getSearchButton();
 		HasText getTmTextBox();
-		void setMsgLabel(String label);
 		void createTable(ArrayList<TransMemory> memories);
 		void clearResults();
 	}
@@ -59,7 +58,6 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 		display.getSearchButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				display.setMsgLabel("Loading...");
 				display.clearResults();
 				final String query = display.getTmTextBox().getText();
 				GetTranslationMemory.SearchType searchType = 
