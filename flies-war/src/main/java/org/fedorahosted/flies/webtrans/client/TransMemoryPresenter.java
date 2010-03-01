@@ -24,6 +24,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.inject.Inject;
 
 public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.Display> {
@@ -35,6 +36,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 		HasValue<Boolean> getExactButton();
 		HasClickHandlers getSearchButton();
 		HasText getTmTextBox();
+		void setMsgLabel(String label);
 		void createTable(ArrayList<TransMemory> memories);
 		void clearResults();
 	}
@@ -57,6 +59,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 		display.getSearchButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				display.setMsgLabel("Loading...");
 				display.clearResults();
 				final String query = display.getTmTextBox().getText();
 				GetTranslationMemory.SearchType searchType = 

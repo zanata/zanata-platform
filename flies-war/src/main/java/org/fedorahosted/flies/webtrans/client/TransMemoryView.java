@@ -38,6 +38,7 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 	private final CheckBox phraseButton = new CheckBox("Exact");
 	private final Button searchButton = new Button("Search");
 	private final Button clearButton = new Button("Clear");
+	private final Label msgLabel = new Label("");
 
 	final DecoratedPopupPanel resultSuppPanel = new DecoratedPopupPanel(true);
 	
@@ -68,6 +69,7 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 		add(phraseButton);
 		add(searchButton);
 		add(clearButton);
+		add(msgLabel);
 		add(resultTable);
 	}
 	
@@ -85,6 +87,10 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 		return tmTextBox;
 	}
 
+	public void setMsgLabel(String label) {
+		msgLabel.setText(label);
+	}
+	
 	@Override
 	public Widget asWidget() {
 		return this;
@@ -133,6 +139,7 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 			resultTable.getWidget(row, ACTION_COL).setTitle("Document Name: " + docID);
 		}
 		resultTable.setCellPadding(CELL_PADDING);
+		setMsgLabel("");
 	}
 	
 	private void addColumn(String columnHeading, int pos) {
