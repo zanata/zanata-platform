@@ -88,6 +88,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 				display.getTmTextBox().setText("");
 				display.clearResults();
 				if(transMemoryVisible) {
+					display.startProcessing();
 					//Start automatically fuzzy search
 					final String query = event.getSelectedItem().getSource();
 					final GetTranslationMemory action = new GetTranslationMemory(
@@ -105,6 +106,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 							display.createTable(memories);
 						}
 					});
+					display.stopProcessing();
 				}
 			}
 		})); 
