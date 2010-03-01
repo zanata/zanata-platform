@@ -38,7 +38,6 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 	private final CheckBox phraseButton = new CheckBox("Exact");
 	private final Button searchButton = new Button("Search");
 	private final Button clearButton = new Button("Clear");
-	private final Label msgLabel = new Label("");
 
 	final DecoratedPopupPanel resultSuppPanel = new DecoratedPopupPanel(true);
 	
@@ -69,7 +68,6 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 		add(phraseButton);
 		add(searchButton);
 		add(clearButton);
-		add(msgLabel);
 		add(resultTable);
 	}
 	
@@ -86,7 +84,7 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 	public TextBox getTmTextBox() {
 		return tmTextBox;
 	}
-	
+
 	@Override
 	public Widget asWidget() {
 		return this;
@@ -94,14 +92,10 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 
 	@Override
 	public void startProcessing() {
-		msgLabel.setText("Loading... please wait.");
-		Log.info("TM View: Show loading message.");
 	}
 
 	@Override
 	public void stopProcessing() {
-		msgLabel.setText("");
-		Log.info("TM View: Clear loading message.");
 	}
 	
 	@Override
