@@ -37,7 +37,6 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 		HasText getTmTextBox();
 		void createTable(ArrayList<TransMemory> memories);
 		void clearResults();
-		void loading();
 	}
 
 	@Inject
@@ -59,7 +58,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 			@Override
 			public void onClick(ClickEvent event) {
 				display.clearResults();
-				display.loading();
+				display.startProcessing();
 				final String query = display.getTmTextBox().getText();
 				GetTranslationMemory.SearchType searchType = 
 					display.getExactButton().getValue() ? 
@@ -84,7 +83,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 			public void onSelection(SelectionEvent<TransUnit> event) {
 				display.getTmTextBox().setText("");
 				display.clearResults();
-				display.loading();
+				display.startProcessing();
 				if(transMemoryVisible) {
 					//Start automatically fuzzy search
 					final String query = event.getSelectedItem().getSource();

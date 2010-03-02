@@ -92,15 +92,12 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 
 	@Override
 	public void startProcessing() {
+		resultTable.setWidget(0, 0, new Label("Loading..."));
+		Log.info("TMView: shows loading message.");
 	}
 
 	@Override
 	public void stopProcessing() {
-	}
-	
-	@Override
-	public void loading() {
-		resultTable.setWidget(0, 0, new Label("Loading..."));
 	}
 	
 	@Override
