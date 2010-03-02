@@ -40,33 +40,47 @@ public class TopMenuView extends Composite implements TopMenuPresenter.Display {
 	public TopMenuView() {
 		initWidget(uiBinder.createAndBindUi(this));
 
-		// texts remain set by code is good for I18N
-		prevEntryButton.setText("Prev Entry");
-		nextEntryButton.setText("Next Entry");
-		prevFuzzyButton.setText("Prev Fuzzy");
-		nextFuzzyButton.setText("Next Fuzzy");
-		prevUntranslatedButton.setText("Prev Untranslated");
-		nextUntranslatedButton.setText("Next Untranslated");
-		prevEntryButton.setTitle(NavigationConsts.PREV);
-		nextEntryButton.setTitle(NavigationConsts.NEXT);
-		prevFuzzyButton.setTitle(NavigationConsts.PREV_FUZZY);
-		nextFuzzyButton.setTitle(NavigationConsts.NEXT_FUZZY);
-		prevUntranslatedButton.setTitle(NavigationConsts.PREV_NEW);
-		nextUntranslatedButton.setTitle(NavigationConsts.NEXT_NEW);
-
 		userLabel.setText("<Username>");
 		workspaceLabel.setText("Workspace");
+
+		// Text of navigations.
+		String prevEntryText = "Prev Entry";
+		String nextEntryText = "Next Entry";
+		String prevFuzzyText = "Prev Fuzzy";
+		String nextFuzzyText = "Next Fuzzy";
+		String prevUntranslatedText = "Prev Untranslated";
+		String nextUntranslatedText = "Next Untranslated";
+		String prevEntryShortcut = NavigationConsts.PREV;
+		String nextEntryShortcut = NavigationConsts.NEXT;
+		String prevFuzzyShortcut = NavigationConsts.PREV_FUZZY;
+		String nextFuzzyShortcut = NavigationConsts.NEXT_FUZZY;
+		String prevUntranslatedShortcut = NavigationConsts.PREV_NEW;
+		String nextUntranslatedShortcut = NavigationConsts.NEXT_NEW;
+		
+		// texts remain set by code is good for I18N
+		prevEntryButton.setText(prevEntryText);
+		nextEntryButton.setText(nextEntryText);
+		prevFuzzyButton.setText(prevFuzzyText);
+		nextFuzzyButton.setText(nextFuzzyText);
+		prevUntranslatedButton.setText(prevUntranslatedText);
+		nextUntranslatedButton.setText(nextUntranslatedText);
+		prevEntryButton.setTitle(prevEntryShortcut);
+		nextEntryButton.setTitle(nextEntryShortcut);
+		prevFuzzyButton.setTitle(prevFuzzyShortcut);
+		nextFuzzyButton.setTitle(nextFuzzyShortcut);
+		prevUntranslatedButton.setTitle(prevUntranslatedShortcut);
+		nextUntranslatedButton.setTitle(nextUntranslatedShortcut);
 
 		// Create list of shortcuts.
 		// TODO need to convert NagivationConsts into enum?
 		VerticalPanel shortcutListPanel = new VerticalPanel();
 		shortcutListPanel.add(new Label("<Navigation Shortcuts>"));
-		shortcutListPanel.add(new Label("Previous Entry - " + NavigationConsts.PREV));
-		shortcutListPanel.add(new Label("Next Entry - " + NavigationConsts.NEXT));
-		shortcutListPanel.add(new Label("Previous Fuzzy - " + NavigationConsts.PREV_FUZZY));
-		shortcutListPanel.add(new Label("Next Fuzzy - " + NavigationConsts.NEXT_FUZZY));
-		shortcutListPanel.add(new Label("Previous Untranslated - " + NavigationConsts.PREV_NEW));
-		shortcutListPanel.add(new Label("Next Untranslated - " + NavigationConsts.PREV_NEW));
+		shortcutListPanel.add(new Label(prevEntryText + " - " + prevEntryShortcut));
+		shortcutListPanel.add(new Label(nextEntryText + " - " + nextEntryShortcut));
+		shortcutListPanel.add(new Label(prevFuzzyText + " - " + prevFuzzyShortcut));
+		shortcutListPanel.add(new Label(nextFuzzyText + " - " + nextFuzzyShortcut));
+		shortcutListPanel.add(new Label(prevUntranslatedText + " - " + prevUntranslatedShortcut));
+		shortcutListPanel.add(new Label(nextUntranslatedText + " - " + nextUntranslatedShortcut));
 
 		// Guide users about shortcut.
 		shortcutLabel.setText("Show Shortcuts");
