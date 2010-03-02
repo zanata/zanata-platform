@@ -10,7 +10,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.widgetideas.client.GlassPanel;
 
-public class LoginPanel extends DecoratedPopupPanel implements LoginPresenter.Display {
+public class LoginView extends DecoratedPopupPanel implements LoginPresenter.Display {
 
 	private final TextBox username;
 	private final PasswordTextBox password;
@@ -19,7 +19,7 @@ public class LoginPanel extends DecoratedPopupPanel implements LoginPresenter.Di
 
 	private final GlassPanel glassPanel;
 	
-	public LoginPanel() {
+	public LoginView() {
 
 		FlexTable layout = new FlexTable();
 		layout.setWidth("400px");

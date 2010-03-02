@@ -15,11 +15,9 @@ import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TabPanel;
-import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
 public class SouthView implements SouthPresenter.Display {
@@ -56,7 +54,7 @@ public class SouthView implements SouthPresenter.Display {
 		tabPanel.add(glossScrollPanel, "Glossary");
 		
 		disclosurePanel.add(tabPanel);
-		tabPanel.setWidth("100%");
+		tabPanel.setWidth("98%");
 		tabPanel.addSelectionHandler(new SelectionHandler<Integer>() {
 			@Override
 			public void onSelection(SelectionEvent<Integer> event) {
