@@ -56,6 +56,8 @@ public class DocumentListView extends Composite
 		
 		DisclosurePanel container = new DisclosurePanel("Documents in Workspace");
 		container.setOpen(true);
+		container.setAnimationEnabled(true);
+		
 		container.add(mainpanel);
 		initWidget(container);
 		

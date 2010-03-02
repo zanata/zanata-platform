@@ -29,6 +29,8 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
 		
 		DisclosurePanel container = new DisclosurePanel("Find Messages");
 		container.setOpen(false);
+		container.setAnimationEnabled(true);
+		
 		container.add(bodyPanel);
 		initWidget(container);
 
