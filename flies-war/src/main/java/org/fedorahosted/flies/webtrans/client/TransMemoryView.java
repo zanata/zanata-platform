@@ -113,13 +113,13 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 			final String sourceMessage = memory.getSource();
 			final String targetMessage = memory.getMemory();
 			final String sourceComment = memory.getSourceComment();
-//			final String targetComment = memory.getTargetComment();
+			final String targetComment = memory.getTargetComment();
 			final String docID = memory.getDocID();
 
 			resultTable.setWidget(row, SOURCE_COL, new HighlightingLabel(sourceMessage, ParserSyntax.MIXED));
 			resultTable.setWidget(row, TARGET_COL, new HighlightingLabel(targetMessage, ParserSyntax.MIXED));
 
-			final Anchor copyLink = new Anchor("Copy To Target");
+			final Anchor copyLink = new Anchor("Copy");
 			copyLink.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
@@ -128,13 +128,16 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 				}
 			});
 			resultTable.setWidget(row, ACTION_COL, copyLink);
-			
+			String suppInfo = "Source Comment: " + sourceComment + "     "
+            + "Target Comment: " + targetComment + "     "
+            + "Document Name: " + docID;
+
 			// Use ToolTips for supplementary info.
-			resultTable.getWidget(row, SOURCE_COL).setTitle("Source Comment: " + sourceComment);				
-//			resultTable.getWidget(row, TARGET_COL).setTitle("Target Comment: " + targetComment);
-			resultTable.getWidget(row, ACTION_COL).setTitle("Document Name: " + docID);
-		}
-		resultTable.setCellPadding(CELL_PADDING);
+			resultTable.getWidget(row, SOURCE_COL).setTitle(suppInfo);				
+			resultTable.getWidget(row, TARGET_COL).setTitle(suppInfo);
+			resultTable.getWidget(row, ACTION_COL).setTitle("Copy \"" + targetMessage + "\" your editing target.");	
+			}
+			resultTable.setCellPadding(CELL_PADDING);
 	}
 	
 	private void addColumn(String columnHeading, int pos) {
