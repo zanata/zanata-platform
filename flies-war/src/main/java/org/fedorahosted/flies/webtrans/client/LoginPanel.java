@@ -31,12 +31,13 @@ public class LoginPanel extends DecoratedPopupPanel implements LoginPresenter.Di
 		glassPanel = new GlassPanel(false);
 		errorLabel = new Label("Invalid Username / Password combination.");
 		errorLabel.setVisible(false);
-		layout.setWidget(0, 0, errorLabel);
+		layout.setHTML(0, 1, "Welcome to Flies");
 		layout.setHTML(1, 0, "Username");
 		layout.setWidget(1, 1, username);
 		layout.setHTML(2, 0, "Password");
 		layout.setWidget(2, 1, password);
 		layout.setWidget(3, 2, loginButton);
+		layout.setWidget(3, 1, errorLabel);
 
 		setAnimationEnabled(true);
 		setModal(true);
