@@ -91,8 +91,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		display.addNorth(topMenuPresenter.getDisplay().asWidget());
 		Widget south = southPresenter.getDisplay().asWidget();
 //		south.setHeight("15em");
-		display.addSouth(south);
 		display.addWest(westNavigationPresenter.getDisplay().asWidget());
+		display.addSouth(south);
 		Widget mainWidget = webTransEditorPresenter.getDisplay().asWidget();
 //		mainWidget.setHeight("100%");
 		display.addMain(mainWidget);
