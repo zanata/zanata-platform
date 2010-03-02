@@ -4,14 +4,20 @@ import org.fedorahosted.flies.webtrans.editor.table.NavigationConsts;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TopMenuView extends Composite implements TopMenuPresenter.Display {
@@ -22,7 +28,7 @@ public class TopMenuView extends Composite implements TopMenuPresenter.Display {
 	private static TopMenuUiBinder uiBinder = GWT.create(TopMenuUiBinder.class);
 
 	@UiField
-	Label userLabel, workspaceLabel;
+	Label userLabel, workspaceLabel, shortcutLabel;
 
 	@UiField
 	Button nextEntryButton, prevEntryButton, nextFuzzyButton, prevFuzzyButton,
@@ -51,6 +57,38 @@ public class TopMenuView extends Composite implements TopMenuPresenter.Display {
 		userLabel.setText("<Username>");
 		workspaceLabel.setText("Workspace");
 
+		// Create list of shortcuts.
+		// TODO need to convert NagivationConsts into enum?
+		VerticalPanel shortcutListPanel = new VerticalPanel();
+		shortcutListPanel.add(new Label("<Navigation Shortcuts>"));
+		shortcutListPanel.add(new Label("Previous Entry - " + NavigationConsts.PREV));
+		shortcutListPanel.add(new Label("Next Entry - " + NavigationConsts.NEXT));
+		shortcutListPanel.add(new Label("Previous Fuzzy - " + NavigationConsts.PREV_FUZZY));
+		shortcutListPanel.add(new Label("Next Fuzzy - " + NavigationConsts.NEXT_FUZZY));
+		shortcutListPanel.add(new Label("Previous Untranslated - " + NavigationConsts.PREV_NEW));
+		shortcutListPanel.add(new Label("Next Untranslated - " + NavigationConsts.PREV_NEW));
+
+		// Guide users about shortcut.
+		shortcutLabel.setText("Show Shortcuts");
+		final DecoratedPopupPanel popup = new DecoratedPopupPanel();
+		popup.add(shortcutListPanel);
+		shortcutLabel.addMouseOverHandler(new MouseOverHandler() {
+			@Override
+			public void onMouseOver(MouseOverEvent event) {
+				popup.show();
+				popup.setPopupPosition(
+						getAbsoluteLeft() + getOffsetWidth() - popup.getOffsetWidth(),
+						getAbsoluteTop() + getOffsetHeight());
+			}
+		});
+		
+		shortcutLabel.addMouseOutHandler(new MouseOutHandler() {
+			@Override
+			public void onMouseOut(MouseOutEvent event) {
+				popup.hide();
+			}
+		});
+		
 		// logoutLink = new Hyperlink("Logout", "Logout");
 
 		// transNavToolbarView = new TransNavToolbarView();

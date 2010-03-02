@@ -41,6 +41,9 @@
                     <g:Button
                         styleName="{style.important}"
                         ui:field="nextUntranslatedButton" />
+                    <g:Label
+                        styleName="{style.important}"
+                        ui:field="shortcutLabel" />
                 </td>
             </tr>
         </table>
