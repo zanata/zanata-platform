@@ -43,7 +43,7 @@ public class SouthView implements SouthPresenter.Display {
 	public SouthView() {
 		disclosurePanel.setWidth("100%");
 		disclosurePanel.setOpen(false);
-		disclosurePanel.setAnimationEnabled(true);
+		disclosurePanel.setAnimationEnabled(false);
 		
 		transPanel.setHeight(PANEL_HEIGHT);
 		final ScrollPanel transScrollPanel = new ScrollPanel(transPanel);

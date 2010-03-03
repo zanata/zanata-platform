@@ -45,7 +45,7 @@ public class WorkspaceUsersView extends Composite implements
 		
 		DisclosurePanel container = new DisclosurePanel("Translators in Workspace");
 		container.setOpen(false);
-		container.setAnimationEnabled(true);
+		container.setAnimationEnabled(false);
 		
 		container.add(tree);
 		initWidget(container);
