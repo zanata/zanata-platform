@@ -135,7 +135,7 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 			// Use ToolTips for supplementary info.
 			resultTable.getWidget(row, SOURCE_COL).setTitle(suppInfo);				
 			resultTable.getWidget(row, TARGET_COL).setTitle(suppInfo);
-			resultTable.getWidget(row, ACTION_COL).setTitle("Copy \"" + targetMessage + "\" your editing target.");	
+			resultTable.getWidget(row, ACTION_COL).setTitle("Copy \"" + targetMessage + "\" to the editor.");	
 			}
 			resultTable.setCellPadding(CELL_PADDING);
 	}
