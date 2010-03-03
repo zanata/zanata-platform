@@ -5,55 +5,50 @@
 <web-app>
 	<display-name>Flies WebTrans GWT Application</display-name>
 
-<!-- 
- -->
 	<servlet>
-	  <servlet-name>EventService</servlet-name>
-	  <servlet-class>
-	    de.novanic.eventservice.service.EventServiceImpl
+		<servlet-name>EventService</servlet-name>
+		<servlet-class>
+			de.novanic.eventservice.service.EventServiceImpl
 	  </servlet-class>
 	</servlet>
-	
+
 	<servlet-mapping>
-	  <servlet-name>EventService</servlet-name>
-	  <url-pattern>/org.fedorahosted.flies.webtrans.Application/gwteventservice</url-pattern>
+		<servlet-name>EventService</servlet-name>
+		<url-pattern>/org.fedorahosted.flies.webtrans.Application/gwteventservice</url-pattern>
 	</servlet-mapping>
 
-<servlet-mapping>
-  <servlet-name>EventService</servlet-name>
-  <url-pattern>/org.fedorahosted.flies.webtrans.ApplicationDummy/gwteventservice</url-pattern>
-</servlet-mapping>
- 
-   
+	<servlet-mapping>
+		<servlet-name>EventService</servlet-name>
+		<url-pattern>/org.fedorahosted.flies.webtrans.ApplicationDummy/gwteventservice</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>remoteLoggingService</servlet-name>
+		<servlet-class>com.google.gwt.gen2.logging.server.RemoteLoggingService</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>remoteLoggingService</servlet-name>
+		<url-pattern>/org.fedorahosted.flies.webtrans.Application/logging</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>remoteLoggerServiceImpl</servlet-name>
+		<servlet-class>com.allen_sauer.gwt.log.server.RemoteLoggerServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>remoteLoggerServiceImpl</servlet-name>
+		<url-pattern>/org.fedorahosted.flies.webtrans.Application/gwt-log</url-pattern>
+	</servlet-mapping>
 
 
-<servlet>
-  <servlet-name>remoteLoggingService</servlet-name>
-  <servlet-class>com.google.gwt.gen2.logging.server.RemoteLoggingService</servlet-class>
-</servlet>
-<servlet-mapping>
-  <servlet-name>remoteLoggingService</servlet-name>
-  <url-pattern>/org.fedorahosted.flies.webtrans.Application/logging</url-pattern>
-</servlet-mapping>
-<servlet>
-  <servlet-name>remoteLoggerServiceImpl</servlet-name>
-  <servlet-class>com.allen_sauer.gwt.log.server.RemoteLoggerServiceImpl</servlet-class>
-</servlet>
-<servlet-mapping>
-  <servlet-name>remoteLoggerServiceImpl</servlet-name>
-  <url-pattern>/org.fedorahosted.flies.webtrans.Application/gwt-log</url-pattern>
-</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>remoteLoggingService</servlet-name>
+		<url-pattern>/org.fedorahosted.flies.webtrans.ApplicationDummy/logging</url-pattern>
+	</servlet-mapping>
 
-
-<servlet-mapping>
-  <servlet-name>remoteLoggingService</servlet-name>
-  <url-pattern>/org.fedorahosted.flies.webtrans.ApplicationDummy/logging</url-pattern>
-</servlet-mapping>
-
-<servlet-mapping>
-  <servlet-name>remoteLoggerServiceImpl</servlet-name>
-  <url-pattern>/org.fedorahosted.flies.webtrans.ApplicationDummy/gwt-log</url-pattern>
-</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>remoteLoggerServiceImpl</servlet-name>
+		<url-pattern>/org.fedorahosted.flies.webtrans.ApplicationDummy/gwt-log</url-pattern>
+	</servlet-mapping>
 
 
 	<welcome-file-list>
