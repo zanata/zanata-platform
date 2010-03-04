@@ -21,6 +21,11 @@ import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.service.EventExecutorService;
 import de.novanic.eventservice.service.EventExecutorServiceFactory;
+import de.novanic.eventservice.service.UserTimeoutListener;
+import de.novanic.eventservice.service.registry.user.UserActivityScheduler;
+import de.novanic.eventservice.service.registry.user.UserInfo;
+import de.novanic.eventservice.service.registry.user.UserManager;
+import de.novanic.eventservice.service.registry.user.UserManagerFactory;
 
 public class TranslationWorkspace {
 	
@@ -43,7 +48,6 @@ public class TranslationWorkspace {
 			this.workspaceKey = workspaceKey;
 			this.domain = DomainFactory.getDomain(workspaceKey.toString());
 			this.eventExecutorService = EventExecutorServiceFactory.getInstance().getEventExecutorService(httpSession);
-			/* TODO: requires GWTEventService 1.1:
 			UserManager userManager = UserManagerFactory.getInstance().getUserManager();
 			UserActivityScheduler scheduler = userManager.getUserActivityScheduler();
 			scheduler.addTimeoutListener(new UserTimeoutListener() {
@@ -53,7 +57,6 @@ public class TranslationWorkspace {
 					TranslationWorkspace.this.onTimeout(sessionId);
 				}
 			});
-			*/
 		} catch (RuntimeException e) {
 			log.error(e.getMessage(), e);
 			throw e;
