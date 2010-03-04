@@ -81,6 +81,8 @@ public class TopMenuView extends Composite implements TopMenuPresenter.Display {
 		shortcutListPanel.add(new Label(nextFuzzyText + " - " + nextFuzzyShortcut));
 		shortcutListPanel.add(new Label(prevUntranslatedText + " - " + prevUntranslatedShortcut));
 		shortcutListPanel.add(new Label(nextUntranslatedText + " - " + nextUntranslatedShortcut));
+		shortcutListPanel.add(new Label(NavigationConsts.EDIT_SAVE_DESC + " - " + NavigationConsts.EDIT_SAVE_SHORTCUT));
+		shortcutListPanel.add(new Label(NavigationConsts.EDIT_CANCEL_DESC + " - " + NavigationConsts.EDIT_CANCEL_SHORTCUT));
 
 		// Guide users about shortcut.
 		shortcutLabel.setText("Show Shortcuts");

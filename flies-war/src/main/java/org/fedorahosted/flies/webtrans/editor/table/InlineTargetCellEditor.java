@@ -158,13 +158,14 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 		operationsPanel.add(toggleFuzzy);
 		
 		PushButton cancelButton = new PushButton(images.cellEditorCancel().createImage(),cancelHandler);
-		cancelButton.setText("Cancel");
+		cancelButton.setText(NavigationConsts.EDIT_CANCEL_DESC);
+		cancelButton.setTitle(NavigationConsts.EDIT_CANCEL_SHORTCUT);
 		operationsPanel.add(cancelButton);
 
 		PushButton acceptButton = new PushButton(images.cellEditorAccept().createImage(),acceptHandler);
-		acceptButton.setText("Save");
+		acceptButton.setText(NavigationConsts.EDIT_SAVE_DESC);
+		acceptButton.setTitle(NavigationConsts.EDIT_SAVE_SHORTCUT);
 		operationsPanel.add(acceptButton);
-
 	}
 
 	private void gotoRow(int row) {

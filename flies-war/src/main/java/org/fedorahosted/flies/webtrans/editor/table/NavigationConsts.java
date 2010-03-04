@@ -7,4 +7,8 @@ public class NavigationConsts {
 	public static final String PREV_FUZZY = "Ctrl+Shift+PageUp";
 	public static final String NEXT_NEW = "Alt+PageDown";
 	public static final String PREV_NEW = "Alt+PageUp";
+	public static final String EDIT_SAVE_DESC = "Save";
+	public static final String EDIT_SAVE_SHORTCUT = "Ctrl+Enter";
+	public static final String EDIT_CANCEL_DESC = "Cancel";
+	public static final String EDIT_CANCEL_SHORTCUT = "Esc";
 }
