@@ -24,7 +24,12 @@
   </modules>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <version.drools>5.0.1</version.drools>
     <version.gwt>2.0.3</version.gwt>
+    <version.jboss.embedded>beta3.SP10</version.jboss.embedded>
+    <version.resteasy>1.1.GA</version.resteasy>
+    <version.richfaces>3.3.1.GA</version.richfaces>
+    <version.seam>2.2.0.GA</version.seam>
     <version.tennera>0.6</version.tennera>
   </properties>
   
