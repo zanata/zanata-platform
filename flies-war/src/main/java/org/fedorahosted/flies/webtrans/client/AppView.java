@@ -1,13 +1,27 @@
 package org.fedorahosted.flies.webtrans.client;
 
-import com.google.gwt.user.client.ui.DockPanel;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class AppView extends DockPanel implements AppPresenter.Display {
+public class AppView extends Composite implements AppPresenter.Display {
 
+	interface AppViewUiBinder extends UiBinder<DockLayoutPanel, AppView> {
+	}
+
+	private static AppViewUiBinder uiBinder = GWT.create(AppViewUiBinder.class);
+	
+	@UiField
+	FlowPanel editor;
+	
 	public AppView() {
-		setSpacing(3);
-//		setBorderWidth(1);
+		initWidget(uiBinder.createAndBindUi(this));
 	}
 	
 	@Override
@@ -22,31 +36,10 @@ public class AppView extends DockPanel implements AppPresenter.Display {
 	@Override
 	public void stopProcessing() {
 	}
-	
-	@Override
-	public void addMain(Widget main) {
-		add(main, DockPanel.CENTER );
-		setCellWidth(main, "100%");
-	}
-	
-	@Override
-	public void addWest(Widget west) {
-		add(west, DockPanel.WEST );
-//		setCellWidth(west, "220px");
-	}
-	
-	@Override
-	public void addNorth(Widget north) {
-		add(north, DockPanel.NORTH );
-		// just for Chrome's benefit:
-		setCellHeight(north, "20px");
-	}
 
 	@Override
-	public void addSouth(Widget south) {
-		add(south, DockPanel.SOUTH );
-		// just for Chrome's benefit:
-		setCellHeight(south, "20px");
+	public void setEditor(Widget editor) {
+		this.editor.clear();
+		this.editor.add(editor);
 	}
-	
 }

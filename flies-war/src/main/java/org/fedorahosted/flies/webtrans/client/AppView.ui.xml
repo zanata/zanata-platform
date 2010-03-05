@@ -1,0 +1,84 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.topPanel {
+			padding: 4px;
+			border-bottom: 1px solid #e0e0e0;
+		}
+		
+		.topPanel-Wrapper {
+			padding-bottom: 4px;
+		}
+
+		.topPanel-Logo {
+			border: 2px dotted #e0e0e0;	
+			float: left;
+			font-size: 16px;
+			display: inline;
+		}
+		
+		.topPanel-Navigation {
+			float: right;
+		}
+		
+		.topPanel-Workspace {
+			padding-left: 30px;
+			display: inline;
+			font-size: 18px;
+		}
+		.topPanel-Workspace-Name {
+			color: #6C5353;	
+		}
+		.topPanel-Workspace-Locale {
+			color: #DEAA87;	
+		}
+		
+		.divider {
+			color: #e0e0e0;	
+		}
+		
+	</ui:style>
+	<g:DockLayoutPanel unit="PX">
+		<g:north size="40">
+			<g:FlowPanel styleName="{style.topPanel-Wrapper}">
+				<g:HTMLPanel>
+					<div class="{style.topPanel}">
+						<div class="{style.topPanel-Logo}">Insert Small Flies logo here</div>
+						<div class="{style.topPanel-Workspace}">
+							<nobr>
+								<span class="{style.topPanel-Workspace-Name}">Deployment Guide (Fedora 13)</span>
+								<span class="{style.divider}">to</span>
+								<span class="{style.topPanel-Workspace-Locale}">French</span>
+							</nobr>
+						</div>
+						<div class="{style.topPanel-Navigation}">
+							<nobr>
+								<b><span>User Name</span></b>
+								<span class="{style.divider}">|</span>
+								<a href="#">Help</a>
+								<span class="{style.divider}">|</span>
+								<a href="#">Leave Workspace</a>
+								<span class="{style.divider}">|</span>
+								<a href="#">Sign Out</a>
+							</nobr>
+						</div>
+					</div>
+				</g:HTMLPanel>
+			</g:FlowPanel>
+		</g:north>
+		<g:center>
+			<g:SplitLayoutPanel>
+				<g:east size="200">
+					<g:Label>East panel</g:Label>
+				</g:east>
+				<g:center>
+					<g:FlowPanel ui:field="editor"/>
+				</g:center>
+				<g:south size="150" min-size="100">
+					<g:Label>TM view</g:Label>
+				</g:south>
+			</g:SplitLayoutPanel>
+		</g:center>
+	</g:DockLayoutPanel>
+</ui:UiBinder>

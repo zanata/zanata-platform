@@ -1,0 +1,17 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+	</ui:style>
+	<g:DockLayoutPanel unit="PX">
+		<g:north size="20">
+			<g:FlowPanel ui:field="headerPanel" />
+		</g:north>
+		<g:center>
+			<g:FlowPanel ui:field="bodyPanel" />
+		</g:center>
+		<g:south size="20">
+			<g:FlowPanel ui:field="footerPanel" />
+		</g:south>
+	</g:DockLayoutPanel>
+</ui:UiBinder>

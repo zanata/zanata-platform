@@ -15,6 +15,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -27,7 +28,7 @@ public class Application implements EntryPoint{
 	public void onModuleLoad() {
 
 		final AppPresenter appPresenter = injector.getAppPresenter();
-		RootPanel.get().add( appPresenter.getDisplay().asWidget() );
+		RootLayoutPanel.get().add( appPresenter.getDisplay().asWidget() );
 		appPresenter.bind();
 		
         // Needed because of this bug:

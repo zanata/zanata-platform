@@ -37,36 +37,25 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPresenter.Display>{
 
 	public static final Place PLACE = new Place("WebTransEditor");
-	private final DocumentStatusPresenter documentStatusPresenter;
-	private final ProjectStatusPresenter projectStatusPresenter;
-	private final TableEditorPresenter webTransTablePresenter;
-	//private final ToolBoxPresenter toolBoxPresenter;
-	private final Pager pager;
-	private final DispatchAsync dispatcher;
 
+	private final DocumentStatusPresenter documentStatusPresenter;
+	private final TableEditorPresenter webTransTablePresenter;
+	private final Pager pager;
 	
 	public interface Display extends WidgetDisplay{
-		HasThreeColWidgets getHeader();
-		HasThreeColWidgets getFooter();
 		void setEditor(Widget widget);
 		void setToolBox(Widget toolbox);
-		void setStatus(String status);
 	}
 
 	@Inject
 	public WebTransEditorPresenter(Display display, EventBus eventBus,
 			final CachingDispatchAsync dispatcher,
 			final TableEditorPresenter webTransTablePresenter,
-			final DocumentStatusPresenter documentStatsBarPresenter,
-			//final ToolBoxPresenter toolBoxPresenter,
-			final ProjectStatusPresenter projectStatusPresenter) {
+			final DocumentStatusPresenter documentStatsBarPresenter) {
 		super(display, eventBus);
-		this.dispatcher = dispatcher;
 		this.webTransTablePresenter = webTransTablePresenter;
 		this.pager = new Pager();
 		this.documentStatusPresenter = documentStatsBarPresenter;
-		this.projectStatusPresenter = projectStatusPresenter;
-		//this.toolBoxPresenter = toolBoxPresenter;
 	}
 
 	@Override
@@ -77,15 +66,9 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 	@Override
 	protected void onBind() {
 		webTransTablePresenter.bind();
-		projectStatusPresenter.bind();
 		documentStatusPresenter.bind();
-		//toolBoxPresenter.bind();
-        //display.setToolBox(toolBoxPresenter.getDisplay().asWidget());
-        display.getFooter().setMiddleWidget(pager);
         pager.setVisible(false);
 
-        display.getFooter().setRightWidget(documentStatusPresenter.getDisplay().asWidget());
-        
 		display.setEditor(webTransTablePresenter.getDisplay().asWidget());
 		
 		registerHandler(
@@ -115,10 +98,6 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 				pager.setVisible(true);
 			}
 		});
-	
-		
-		
-		
 		
 		webTransTablePresenter.gotoFirstPage();
 		

@@ -1,7 +1,6 @@
 package org.fedorahosted.flies.webtrans.client;
 
 import org.fedorahosted.flies.common.ContentState;
-import org.fedorahosted.flies.webtrans.client.TopMenuPresenter.Display;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;

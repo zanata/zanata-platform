@@ -35,18 +35,11 @@ import com.google.inject.Inject;
 public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 	
 	public interface Display extends WidgetDisplay {
-		// Note that the appearance differs depending on the
-		// order widgets are added.  This is DockPanel behaviour.
-		// TODO this is far too UI-specific!
-		public void addWest(Widget west);
-		public void addMain(Widget main);
-		public void addNorth(Widget north);
-		public void addSouth(Widget south);
+		void setEditor(Widget editor);
 	}
 	
 	private final WestNavigationPresenter westNavigationPresenter;
 	private final WebTransEditorPresenter webTransEditorPresenter;
-	private final TopMenuPresenter topMenuPresenter;
 	private final SouthPresenter southPresenter;
 	private final EventProcessor eventProcessor;
 	private final LoginPresenter loginPresenter;
@@ -60,7 +53,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 			    CachingDispatchAsync dispatcher,
 				final WestNavigationPresenter leftNavigationPresenter,
 				final WebTransEditorPresenter webTransEditorPresenter,
-				final TopMenuPresenter topMenuPresenter,
 				final SouthPresenter southPresenter,
 				final EventProcessor eventProcessor,
 				final LoginPresenter loginPresenter,
@@ -70,7 +62,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		this.dispatcher = dispatcher;
 		this.westNavigationPresenter = leftNavigationPresenter;
 		this.webTransEditorPresenter = webTransEditorPresenter;
-		this.topMenuPresenter = topMenuPresenter;
 		this.southPresenter = southPresenter;
 		this.eventProcessor = eventProcessor;
 		this.loginPresenter = loginPresenter;
@@ -84,18 +75,16 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 	protected void bindApp() {
 		westNavigationPresenter.bind();
 		webTransEditorPresenter.bind();
-		topMenuPresenter.bind();
 		southPresenter.bind();
 		
-		display.addNorth(topMenuPresenter.getDisplay().asWidget());
 		Widget south = southPresenter.getDisplay().asWidget();
-//		south.setHeight("15em");
-		display.addWest(westNavigationPresenter.getDisplay().asWidget());
-		display.addSouth(south);
+//		display.addWest(westNavigationPresenter.getDisplay().asWidget());
+//		display.addSouth(south);
 		Widget mainWidget = webTransEditorPresenter.getDisplay().asWidget();
-//		mainWidget.setHeight("100%");
-		display.addMain(mainWidget);
+//		display.addMain(mainWidget);
 		// TODO refactor to presenter
+		
+		display.setEditor(mainWidget);
 		
 		registerHandler(
 			eventBus.addHandler(NotificationEvent.getType(), new NotificationEventHandler() {
@@ -133,12 +122,12 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		});
 
 		// Hook the window resize event, so that we can adjust the UI.
-		Window.addResizeHandler( new ResizeHandler() {
-			@Override
-			public void onResize(ResizeEvent event) {
-				resizePageTo(event.getHeight(), event.getWidth());
-			}
-		});
+//		Window.addResizeHandler( new ResizeHandler() {
+//			@Override
+//			public void onResize(ResizeEvent event) {
+//				resizePageTo(event.getHeight(), event.getWidth());
+//			}
+//		});
 
 		Window.enableScrolling(false);
 		Window.setMargin("0px");
@@ -147,11 +136,11 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		// this in a deferred command causes it to occur after all widgets'
 		// sizes
 		// have been computed by the browser.
-		DeferredCommand.addCommand(new Command() {
-			public void execute() {
-				resizePageTo(Window.getClientHeight(), Window.getClientWidth());
-			}
-		});
+//		DeferredCommand.addCommand(new Command() {
+//			public void execute() {
+//				resizePageTo(Window.getClientHeight(), Window.getClientWidth());
+//			}
+//		});
 	}
 
 	private final void resizePageTo(int h, int w) {
