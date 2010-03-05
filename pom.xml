@@ -116,6 +116,11 @@
 		    <defaultTarget>explode</defaultTarget>
 		  </configuration>
 		</plugin>
+		<plugin>
+		   <groupId>org.twdata.maven</groupId>
+		   <artifactId>maven-cli-plugin</artifactId>
+		   <version>1.0.3</version>
+		</plugin>
     </plugins>
     
     <pluginManagement>
@@ -251,6 +256,12 @@
   </repositories>
 
   <pluginRepositories>
+
+	<pluginRepository>
+	  <id>twdata-m2-repository</id>
+	  <name>twdata.org Maven 2 Repository</name>
+	  <url>http://twdata-m2-repository.googlecode.com/svn/</url>
+	</pluginRepository>
 
     <pluginRepository>
       <id>snapshots.jboss.org</id>
