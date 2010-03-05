@@ -35,7 +35,10 @@ import org.testng.annotations.Test;
 @Test(groups = { "seam-tests" })
 public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 
-    private static final LocaleId DE_DE = LocaleId.fromJavaName("de_DE");
+    private static final String AUTH_KEY = "12345678901234567890123456789012";
+	private static final String USERNAME = "admin";
+	private static final String DOCUMENTS_DATA_DBUNIT_XML = "org/fedorahosted/flies/test/model/DocumentsData.dbunit.xml";
+	private static final LocaleId DE_DE = LocaleId.fromJavaName("de_DE");
     private static final LocaleId FR = LocaleId.fromJavaName("fr");
 
 	private final Logger log = LoggerFactory.getLogger(DocumentsServiceSeamTest.class);
@@ -51,8 +54,8 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 
 	public IDocumentsResource prepareRestEasyClientFramework(String projectSlug, String iter) throws Exception {
 		FliesClientRequestFactory clientRequestFactory = 
-			new FliesClientRequestFactory("admin",
-					"12345678901234567890123456789012", 
+			new FliesClientRequestFactory(USERNAME,
+					AUTH_KEY, 
 					new SeamMockClientExecutor(this));
 		return clientRequestFactory.getDocumentsResource(
 				new URI("/restv1/projects/p/"+projectSlug+"/iterations/i/"+iter+"/documents"));
@@ -61,10 +64,10 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	@Override
 	protected void prepareDBUnitOperations() {
 	    beforeTestOperations.add(new DataSetOperation(
-		    "org/fedorahosted/flies/test/model/DocumentsData.dbunit.xml",
+		    DOCUMENTS_DATA_DBUNIT_XML,
 		    DatabaseOperation.CLEAN_INSERT));
 	    afterTestOperations.add(new DataSetOperation(
-			    "org/fedorahosted/flies/test/model/DocumentsData.dbunit.xml",
+			    DOCUMENTS_DATA_DBUNIT_XML,
 			    DatabaseOperation.DELETE_ALL));
 	}
 
