@@ -45,8 +45,8 @@ public class GlossaryUpload extends FormPanel{
 		this.addSubmitCompleteHandler(new SubmitCompleteHandler() {
 			@Override
 			public void onSubmitComplete(SubmitCompleteEvent event) {
-				//Window.alert(event.getResults());
-				Window.alert("Upload Success!");
+				Window.alert(event.getResults());
+				//Window.alert("Upload Success!");
 			}
 		});
 

@@ -47,6 +47,7 @@ import org.fedorahosted.flies.webtrans.editor.filter.FilterEnabledEvent;
 import org.fedorahosted.flies.webtrans.editor.filter.FilterEnabledEventHandler;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -59,6 +60,9 @@ import com.google.gwt.gen2.table.event.client.HasPageChangeHandlers;
 import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
 import com.google.gwt.gen2.table.event.client.PageChangeHandler;
 import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -130,6 +134,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 							documentId = event.getDocumentId();
 							display.getTableModel().clearCache();
 							display.getTableModel().setRowCount(TableModel.UNKNOWN_ROW_COUNT);
+							display.asWidget().setVisible(true);
 							display.gotoPage(0, true);
 						}
 					}
@@ -258,6 +263,40 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 					 eventBus.fireEvent( new NotificationEvent(Severity.Error, "Please open the target in the editor first."));
 			}
 		}));
+	
+		Event.addNativePreviewHandler(new NativePreviewHandler() {
+			@Override
+			public void onPreviewNativeEvent(NativePreviewEvent event) {
+		    	 //Only when the Table is showed, the keyboard event will be processed. 
+				 if(display.asWidget().isVisible()) {
+		    		  //Alt+Right arrow key
+					  if(event.getNativeEvent().getType().equals("keyup") && event.getNativeEvent().getAltKey() && event.getNativeEvent().getKeyCode()==KeyCodes.KEY_RIGHT) {
+						  Log.info("fired event of type " + event.getAssociatedType().getClass().getName());
+		    			  display.gotoNextPage();
+		    			  event.cancel();
+		    		  }
+		    		  //Alt+Left arrow key
+					  if(event.getNativeEvent().getType().equals("keyup") && event.getNativeEvent().getAltKey() && event.getNativeEvent().getKeyCode()==KeyCodes.KEY_LEFT) {
+		    			  Log.info("fired event of type " + event.getAssociatedType().getClass().getName());
+		    			  display.gotoPreviousPage();
+		    			  event.cancel();
+		    		  }
+					  //Shift+Home
+					  if(event.getNativeEvent().getType().equals("keyup") && event.getNativeEvent().getShiftKey() && event.getNativeEvent().getKeyCode()==KeyCodes.KEY_HOME) {
+		    			  Log.info("fired event of type " + event.getAssociatedType().getClass().getName());
+		    			  display.gotoFirstPage();
+		    			  event.cancel();
+		    		  }
+					  //Shift+End
+					  if(event.getNativeEvent().getType().equals("keyup") && event.getNativeEvent().getShiftKey() && event.getNativeEvent().getKeyCode()==KeyCodes.KEY_END) {
+		    			  Log.info("fired event of type " + event.getAssociatedType().getClass().getName());
+		    			  display.gotoLastPage();
+		    			  event.cancel();
+		    		  }
+		    		  
+		    	  }
+			}
+		});
 		
 		display.gotoFirstPage();
 

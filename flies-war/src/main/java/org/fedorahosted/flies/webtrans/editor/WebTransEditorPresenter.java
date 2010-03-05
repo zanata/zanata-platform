@@ -116,12 +116,7 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 			}
 		});
 	
-		
-		
-		
-		
 		webTransTablePresenter.gotoFirstPage();
-		
 	}
 
 	
