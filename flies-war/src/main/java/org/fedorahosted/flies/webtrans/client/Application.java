@@ -38,16 +38,5 @@ public class Application implements EntryPoint{
 		injector.getPlaceManager().fireCurrentPlace();
 		
 	}
-	
-	// we reuse the logic of the generic ResizeEvent here
-	// the only ResizeEvent allowed on the EventBus is the
-	// window resize event
-	public static class WindowResizeEvent extends ResizeEvent{
-		WindowResizeEvent(int width, int height) {
-			super(width, height);
-		}
-		public WindowResizeEvent(ResizeEvent event) {
-			super(event.getWidth(), event.getHeight());
-		}
-	}
+
 }

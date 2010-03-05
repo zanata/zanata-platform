@@ -13,7 +13,6 @@ import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceResult;
 import org.fedorahosted.flies.gwt.rpc.ExitWorkspaceAction;
 import org.fedorahosted.flies.gwt.rpc.ExitWorkspaceResult;
-import org.fedorahosted.flies.webtrans.client.Application.WindowResizeEvent;
 import org.fedorahosted.flies.webtrans.client.LoginPresenter.LoggedIn;
 import org.fedorahosted.flies.webtrans.client.auth.Identity;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
@@ -99,16 +98,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		// TODO refactor to presenter
 		
 		registerHandler(
-			eventBus.addHandler(WindowResizeEvent.getType(), new ResizeHandler() {
-				@Override
-				public void onResize(ResizeEvent event) {
-					display.asWidget().setHeight(event.getHeight() + "px");
-					display.asWidget().setWidth(event.getWidth() + "px");
-				}
-			})
-		);
-		
-		registerHandler(
 			eventBus.addHandler(NotificationEvent.getType(), new NotificationEventHandler() {
 				
 				@Override
@@ -147,14 +136,12 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		Window.addResizeHandler( new ResizeHandler() {
 			@Override
 			public void onResize(ResizeEvent event) {
-				eventBus.fireEvent( new WindowResizeEvent(event));
+				resizePageTo(event.getHeight(), event.getWidth());
 			}
 		});
 
 		Window.enableScrolling(false);
 		Window.setMargin("0px");
-		
-		
 		
 		// Call the window resized handler to get the initial sizes setup. Doing
 		// this in a deferred command causes it to occur after all widgets'
@@ -162,12 +149,14 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		// have been computed by the browser.
 		DeferredCommand.addCommand(new Command() {
 			public void execute() {
-				eventBus.fireEvent( new WindowResizeEvent(Window.getClientWidth(), Window
-						.getClientHeight()));
+				resizePageTo(Window.getClientHeight(), Window.getClientWidth());
 			}
 		});
-		
-		
+	}
+
+	private final void resizePageTo(int h, int w) {
+		display.asWidget().setHeight(h+ "px");
+		display.asWidget().setWidth(w + "px");
 	}
 	
 	private static LocaleId findLocaleId() {
