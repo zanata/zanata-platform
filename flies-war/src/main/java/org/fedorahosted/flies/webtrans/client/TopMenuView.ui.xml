@@ -1,51 +1,19 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder
-    xmlns:ui="urn:ui:com.google.gwt.uibinder"
-    xmlns:g="urn:import:com.google.gwt.user.client.ui">
-    <ui:style>
-        .important {
-        	font-weight: bold;
-        }
-    </ui:style>
-    <g:HTMLPanel>
-        <table
-            width="100%"
-            border="0">
-            <tr>
-                <td
-                    align="left">
-                    <g:HorizontalPanel ui:field="loginPanel">
-                        <g:Label
-                            ui:field="userLabel" />
-                        <g:Label
-                            ui:field="workspaceLabel" />
-                    </g:HorizontalPanel>
-                </td>
-                <td
-                    align="right">
-                    <g:Button
-                        styleName="{style.important}"
-                        ui:field="prevEntryButton" />
-                    <g:Button
-                        styleName="{style.important}"
-                        ui:field="nextEntryButton" />
-                    <g:Button
-                        styleName="{style.important}"
-                        ui:field="prevFuzzyButton" />
-                    <g:Button
-                        styleName="{style.important}"
-                        ui:field="nextFuzzyButton" />
-                    <g:Button
-                        styleName="{style.important}"
-                        ui:field="prevUntranslatedButton" />
-                    <g:Button
-                        styleName="{style.important}"
-                        ui:field="nextUntranslatedButton" />
-                    <g:Label
-                        styleName="{style.important}"
-                        ui:field="shortcutLabel" />
-                </td>
-            </tr>
-        </table>
-    </g:HTMLPanel>
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<g:HTMLPanel>
+		<table width="100%" border="0">
+			<tr>
+				<td align="left">
+					<g:HorizontalPanel>
+						<g:Label ui:field="userLabel" />
+						<g:Label ui:field="workspaceLabel" />
+					</g:HorizontalPanel>
+				</td>
+				<td align="right">
+					<g:FlowPanel ui:field="transUnitNavigationPanel" />
+				</td>
+			</tr>
+		</table>
+	</g:HTMLPanel>
 </ui:UiBinder>

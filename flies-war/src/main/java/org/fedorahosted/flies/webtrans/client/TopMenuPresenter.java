@@ -6,21 +6,14 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.webtrans.client.auth.Identity;
-import org.fedorahosted.flies.webtrans.editor.table.TableEditorPresenter;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class TopMenuPresenter extends WidgetPresenter<TopMenuPresenter.Display>
-		implements HasNavTransUnitHandlers {
+public class TopMenuPresenter extends WidgetPresenter<TopMenuPresenter.Display> {
 
 	public interface Display extends WidgetDisplay {
 		// HasClickHandlers getLogoutLink();
@@ -29,30 +22,23 @@ public class TopMenuPresenter extends WidgetPresenter<TopMenuPresenter.Display>
 		HasText getUsername();
 
 		HasText getProjectName();
+		
+		void setTransUnitNavigation(Widget transUnitNavigation);
 
-		HasClickHandlers getPrevEntryButton();
-
-		HasClickHandlers getNextEntryButton();
-
-		HasClickHandlers getPrevFuzzyButton();
-
-		HasClickHandlers getNextFuzzyButton();
-
-		HasClickHandlers getPrevUntranslatedButton();
-
-		HasClickHandlers getNextUntranslatedButton();
 	}
 
 	private final WorkspaceContext workspaceContext;
 	private final Identity identity;
+	private final TransUnitNavigationPresenter transUnitNavigationPresenter;
 
 	@Inject
 	public TopMenuPresenter(Display display, EventBus eventBus,
-			WorkspaceContext workspaceContext, Identity identity,
-			TableEditorPresenter webTransTablePresenter) {
+			TransUnitNavigationPresenter transUnitNavigationPresenter, 
+			WorkspaceContext workspaceContext, Identity identity) {
 		super(display, eventBus);
 		this.workspaceContext = workspaceContext;
 		this.identity = identity;
+		this.transUnitNavigationPresenter = transUnitNavigationPresenter;
 	}
 
 	@Override
@@ -71,48 +57,11 @@ public class TopMenuPresenter extends WidgetPresenter<TopMenuPresenter.Display>
 		// });
 
 		// Prev Entry
-		display.getPrevEntryButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				fireEvent(new NavTransUnitEvent(null, -1));
-			}
-		});
 
-		display.getNextEntryButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				fireEvent(new NavTransUnitEvent(null, +1));
-			}
-		});
-
-		display.getPrevFuzzyButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				fireEvent(new NavTransUnitEvent(ContentState.NeedReview, -1));
-			}
-		});
-
-		display.getNextFuzzyButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				fireEvent(new NavTransUnitEvent(ContentState.NeedReview, +1));
-			}
-		});
-
-		display.getPrevUntranslatedButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				fireEvent(new NavTransUnitEvent(ContentState.New, -1));
-			}
-		});
-
-		display.getNextUntranslatedButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				fireEvent(new NavTransUnitEvent(ContentState.New, +1));
-			}
-		});
-
+		transUnitNavigationPresenter.bind();
+		
+		display.setTransUnitNavigation(transUnitNavigationPresenter.getDisplay().asWidget());
+		
 		refreshDisplay();
 	}
 
@@ -132,17 +81,5 @@ public class TopMenuPresenter extends WidgetPresenter<TopMenuPresenter.Display>
 
 	@Override
 	public void revealDisplay() {
-	}
-
-	@Override
-	public HandlerRegistration addNavTransUnitHandler(
-			NavTransUnitHandler handler) {
-		// TODO Auto-generated method stub
-		return eventBus.addHandler(NavTransUnitEvent.getType(), handler);
-	}
-
-	@Override
-	public void fireEvent(GwtEvent<?> event) {
-		eventBus.fireEvent(event);
 	}
 }
