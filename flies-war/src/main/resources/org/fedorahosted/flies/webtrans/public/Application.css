@@ -4,6 +4,17 @@ body {
 	background-color: #ffffff;
 }
 
+
+/*
+Removes some of the styling on the page-level splitters
+*/
+.PageSplitLayoutPanel>div>div.gwt-SplitLayoutPanel-HDragger {
+	background: none;
+}
+.PageSplitLayoutPanel>div>div.gwt-SplitLayoutPanel-VDragger {
+	background: none;
+}
+
 .CenterDiv {
 	margin-right:auto;
 	margin-left:auto;

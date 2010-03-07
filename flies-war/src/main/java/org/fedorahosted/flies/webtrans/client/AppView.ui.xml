@@ -3,14 +3,10 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:style>
 		.topPanel {
-			padding: 4px;
+			padding: 6px;
 			border-bottom: 1px solid #e0e0e0;
 		}
 		
-		.topPanel-Wrapper {
-			padding-bottom: 4px;
-		}
-
 		.topPanel-Logo {
 			border: 2px dotted #e0e0e0;	
 			float: left;
@@ -38,45 +34,74 @@
 			color: #e0e0e0;	
 		}
 		
+		.tmview-outer {
+			padding: 10px;
+			background-color: #b4e2ff;
+			border: 2px solid #99ccff;
+			-moz-border-radius-topleft: 10px;
+			-moz-border-radius-topright: 10px;
+		}
+		
+		.tuinfo-outer {
+			padding: 10px;
+		}
+		.tuinfo {
+			background-color: #b4e2ff;
+			border: 2px solid #99ccff;
+			-moz-border-radius: 10px;
+		}
+		
+		.editor-outer {
+			padding: 10px;
+			background-color: #b4e2ff;
+			border: 2px solid #99ccff;
+			-moz-border-radius: 10px;
+		}
 	</ui:style>
 	<g:DockLayoutPanel unit="PX">
 		<g:north size="40">
-			<g:FlowPanel styleName="{style.topPanel-Wrapper}">
-				<g:HTMLPanel>
-					<div class="{style.topPanel}">
-						<div class="{style.topPanel-Logo}">Insert Small Flies logo here</div>
-						<div class="{style.topPanel-Workspace}">
-							<nobr>
-								<span class="{style.topPanel-Workspace-Name}">Deployment Guide (Fedora 13)</span>
-								<span class="{style.divider}">to</span>
-								<span class="{style.topPanel-Workspace-Locale}">French</span>
-							</nobr>
-						</div>
-						<div class="{style.topPanel-Navigation}">
-							<nobr>
-								<b><span>User Name</span></b>
-								<span class="{style.divider}">|</span>
-								<a href="#">Help</a>
-								<span class="{style.divider}">|</span>
-								<a href="#">Leave Workspace</a>
-								<span class="{style.divider}">|</span>
-								<a href="#">Sign Out</a>
-							</nobr>
-						</div>
+			<g:HTMLPanel>
+				<div class="{style.topPanel}">
+					<div class="{style.topPanel-Logo}">Insert Small Flies logo here</div>
+					<div class="{style.topPanel-Workspace}">
+						<nobr>
+							<span class="{style.topPanel-Workspace-Name}">Deployment Guide (Fedora 13)</span>
+							<span class="{style.divider}">to</span>
+							<span class="{style.topPanel-Workspace-Locale}">French</span>
+						</nobr>
 					</div>
-				</g:HTMLPanel>
-			</g:FlowPanel>
+					<div class="{style.topPanel-Navigation}">
+						<nobr>
+							<b><span>User Name</span></b>
+							<span class="{style.divider}">|</span>
+							<a href="#">Help</a>
+							<span class="{style.divider}">|</span>
+							<a href="#">Leave Workspace</a>
+							<span class="{style.divider}">|</span>
+							<a href="#">Sign Out</a>
+						</nobr>
+					</div>
+				</div>
+			</g:HTMLPanel>
 		</g:north>
 		<g:center>
-			<g:SplitLayoutPanel>
+			<g:SplitLayoutPanel styleName="PageSplitLayoutPanel">
 				<g:east size="200">
-					<g:Label>East panel</g:Label>
+					<g:FlowPanel styleName="{style.tuinfo-outer}">
+						<g:FlowPanel styleName="{style.tuinfo}">
+							<g:Label>TU Info</g:Label>
+						</g:FlowPanel>
+					</g:FlowPanel>
 				</g:east>
 				<g:center>
-					<g:FlowPanel ui:field="editor"/>
+					<g:FlowPanel ui:field="editor" styleName="{style.editor-outer}">
+						<g:Label>Editor</g:Label>
+					</g:FlowPanel>
 				</g:center>
 				<g:south size="150" min-size="100">
-					<g:Label>TM view</g:Label>
+					<g:FlowPanel styleName="{style.tmview-outer}">
+						<g:Label>TM view</g:Label>
+					</g:FlowPanel>
 				</g:south>
 			</g:SplitLayoutPanel>
 		</g:center>
