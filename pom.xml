@@ -175,6 +175,12 @@
 	  </dependency>
 
 	  <dependency>
+	      <groupId>com.google.gwt.inject</groupId>
+	      <artifactId>gin</artifactId>
+	      <version>1.0</version>
+	  </dependency>
+
+	  <dependency>
 	      <groupId>org.jboss.errai</groupId>
 	      <artifactId>errai-bus</artifactId> 
 	      <!-- 
