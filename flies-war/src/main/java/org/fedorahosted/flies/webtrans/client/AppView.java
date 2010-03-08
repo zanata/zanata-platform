@@ -45,7 +45,7 @@ public class AppView extends Composite implements AppPresenter.Display {
 	SplitLayoutPanel mainSplitPanel;
 	
 	@UiField
-	FlowPanel tuInfoPanel, tmPanel;
+	FlowPanel tuInfoPanel, tmPanel, transUnitNavigation;
 	
 	@UiField 
 	Pager pager;
@@ -71,6 +71,7 @@ public class AppView extends Composite implements AppPresenter.Display {
 		workspaceName.setInnerText("Deployment Guide (F13)");
 		workspaceLocale.setInnerText("German");
 		pager.setVisible(false);
+		transUnitNavigation.setVisible(false);
 	}
 
 	@Override
@@ -98,6 +99,7 @@ public class AppView extends Composite implements AppPresenter.Display {
 		widgetInEditorView = documentListView;
 		editorPanel.add(documentListView);
 		pager.setVisible(false);
+		transUnitNavigation.setVisible(false);
 	}
 	
 	@Override
@@ -112,6 +114,7 @@ public class AppView extends Composite implements AppPresenter.Display {
 		widgetInEditorView = editorView;
 		editorPanel.add(editorView);
 		pager.setVisible(true);
+		transUnitNavigation.setVisible(true);
 	}
 	
 	@UiHandler("signOutLink")
@@ -143,6 +146,12 @@ public class AppView extends Composite implements AppPresenter.Display {
 	@Override
 	public void setEditorView(Widget editorView) {
 		this.editorView = editorView;
+	}
+	
+	@Override
+	public void setTransUnitNavigationView(Widget transUnitNavigation) {
+		this.transUnitNavigation.clear();
+		this.transUnitNavigation.add(transUnitNavigation);
 	}
 	
 	@Override

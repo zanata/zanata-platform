@@ -47,6 +47,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 	public interface Display extends WidgetDisplay {
 		void setDocumentListView(Widget documentListView);
 		void setEditorView(Widget editorView);
+		void setTransUnitNavigationView(Widget transUnitNavigation);
 
 		void showDocumentsView();
 		void showEditorView();
@@ -57,6 +58,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 	private final DocumentListPresenter documentListPresenter;
 	private final EventProcessor eventProcessor;
 	private final LoginPresenter loginPresenter;
+	private final TransUnitNavigationPresenter transUnitNavigationPresenter;
 	private final DispatchAsync dispatcher;
 	private String workspaceName;
 	private String localeName;
@@ -70,6 +72,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 				final DocumentListPresenter documentListPresenter,
 				final EventProcessor eventProcessor,
 				final LoginPresenter loginPresenter,
+				final TransUnitNavigationPresenter transUnitNavigationPresenter,
 				final Identity identity) {
 		super(display, eventBus);
 		this.identity = identity;
@@ -78,6 +81,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		this.eventProcessor = eventProcessor;
 		this.loginPresenter = loginPresenter;
 		this.documentListPresenter = documentListPresenter;
+		this.transUnitNavigationPresenter = transUnitNavigationPresenter;
 	}
 
 	@Override
@@ -126,9 +130,11 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		
 		documentListPresenter.bind();
 		tableEditorPresenter.bind();
+		transUnitNavigationPresenter.bind();
 		
 		display.setDocumentListView(documentListPresenter.getDisplay().asWidget());
 		display.setEditorView(tableEditorPresenter.getDisplay().asWidget());
+		display.setTransUnitNavigationView(transUnitNavigationPresenter.getDisplay().asWidget());
 		
 		registerHandler(
 				eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {
@@ -166,7 +172,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 			}
 		});
 
-		
 	}
 
 	private static LocaleId findLocaleId() {
@@ -269,6 +274,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 	@Override
 	protected void onUnbind() {
 		tableEditorPresenter.unbind();
+		// TODO impl
 	}
 
 	@Override

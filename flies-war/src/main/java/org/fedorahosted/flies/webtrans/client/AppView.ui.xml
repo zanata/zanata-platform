@@ -57,6 +57,11 @@
 		.pager {
 			text-align: center;	
 		}
+		
+		.transUnitNavigation {
+			float:right; 
+			display:inline;
+		}
 	</ui:style>
 	<g:DockLayoutPanel unit="PX">
 		<g:north size="40">
@@ -100,9 +105,7 @@
 									<span class="{style.divider}">></span>
 									<em>No document Selected</em>
 								</div>
-								<div style="float:right; display:inline">
-									TU navigation
-								</div>
+								<g:FlowPanel ui:field="transUnitNavigation" styleName="{style.transUnitNavigation}" />
 							</g:HTMLPanel>
 						</g:north>
 						<g:center>
