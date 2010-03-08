@@ -80,9 +80,9 @@
 			</g:HTMLPanel>
 		</g:north>
 		<g:center>
-			<g:SplitLayoutPanel styleName="PageSplitLayoutPanel">
+			<g:SplitLayoutPanel styleName="PageSplitLayoutPanel" ui:field="mainSplitPanel">
 				<g:east size="200">
-					<g:FlowPanel styleName="{style.tuinfo}">
+					<g:FlowPanel styleName="{style.tuinfo}" ui:field="tuInfoPanel">
 						<g:Label>TU Info</g:Label>
 					</g:FlowPanel>
 				</g:east>
@@ -109,7 +109,7 @@
 					</g:DockLayoutPanel>
 				</g:center>
 				<g:south size="150" min-size="100">
-					<g:FlowPanel styleName="{style.tmview}">
+					<g:FlowPanel styleName="{style.tmview}" ui:field="tmPanel">
 						<g:Label>TM view</g:Label>
 					</g:FlowPanel>
 				</g:south>

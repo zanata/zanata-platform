@@ -1,15 +1,12 @@
 package org.fedorahosted.flies.webtrans.client;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.dom.client.SpanElement;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.gen2.logging.shared.Log;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
@@ -40,7 +37,13 @@ public class AppView extends Composite implements AppPresenter.Display {
 
 	@UiField
 	DockLayoutPanel editorPanel;
-
+	
+	@UiField
+	SplitLayoutPanel mainSplitPanel;
+	
+	@UiField
+	FlowPanel tuInfoPanel, tmPanel;
+	
 	private Widget documentListView;
 	private Widget editorView;
 	private Widget widgetInEditorView;
@@ -48,9 +51,16 @@ public class AppView extends Composite implements AppPresenter.Display {
 	@Inject
 	public AppView(Resources resources) {
 		this.resources = resources;
+
+		// TODO this could be some sort of welcome page
 		editor = new HTML("");
 		widgetInEditorView = editor;
+		
 		initWidget(uiBinder.createAndBindUi(this));
+		mainSplitPanel.setWidgetMinSize(tuInfoPanel, 200);
+		mainSplitPanel.setWidgetMinSize(tmPanel, 150);
+		
+		
 		user.setInnerText("Bob the Builder");
 		workspaceName.setInnerText("Deployment Guide (F13)");
 		workspaceLocale.setInnerText("German");

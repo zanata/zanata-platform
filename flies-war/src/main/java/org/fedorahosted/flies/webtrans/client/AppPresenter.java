@@ -47,7 +47,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 	
 	private final TableEditorPresenter tableEditorPresenter;
 	private final DocumentListPresenter documentListPresenter;
-	private final SouthPresenter southPresenter;
 	private final EventProcessor eventProcessor;
 	private final LoginPresenter loginPresenter;
 	private final DispatchAsync dispatcher;
@@ -68,7 +67,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		this.identity = identity;
 		this.dispatcher = dispatcher;
 		this.tableEditorPresenter = tableEditorPresenter;
-		this.southPresenter = southPresenter;
 		this.eventProcessor = eventProcessor;
 		this.loginPresenter = loginPresenter;
 		this.documentListPresenter = documentListPresenter;
@@ -80,17 +78,21 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 	}
 
 	protected void bindApp() {
-		tableEditorPresenter.bind();
-		southPresenter.bind();
 		documentListPresenter.bind();
+		tableEditorPresenter.bind();
 		
 		display.setDocumentListView(documentListPresenter.getDisplay().asWidget());
+		display.setEditorView(tableEditorPresenter.getDisplay().asWidget());
 		
-		Widget south = southPresenter.getDisplay().asWidget();
-		Widget mainWidget = tableEditorPresenter.getDisplay().asWidget();
-		
-		display.setEditorView(mainWidget);
-		
+		registerHandler(
+				eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {
+					@Override
+					public void onDocumentSelected(DocumentSelectionEvent event) {
+						display.showEditor();
+					}
+				})
+			);
+
 		registerHandler(
 			eventBus.addHandler(NotificationEvent.getType(), new NotificationEventHandler() {
 				
@@ -107,17 +109,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 				}
 			})
 		);
-		
-		registerHandler(
-			eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {
-				@Override
-				public void onDocumentSelected(DocumentSelectionEvent event) {
-					display.showEditor();
-				}
-			})
-		);
-		
-		
 		
 		//When user close the workspace, send ExitWorkSpaceAction
 		Window.addCloseHandler(new CloseHandler<Window>() {
@@ -139,7 +130,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 
 
 		Window.enableScrolling(false);
-		Window.setMargin("0px");
 		
 	}
 
