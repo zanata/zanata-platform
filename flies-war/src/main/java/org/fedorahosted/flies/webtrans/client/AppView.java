@@ -93,7 +93,7 @@ public class AppView extends Composite implements AppPresenter.Display {
 	}
 	
 	@Override
-	public void showEditor() {
+	public void showEditorView() {
 		if(editorView == null) {
 			throw new RuntimeException("editorView is not set");
 		}

@@ -42,7 +42,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		void setEditorView(Widget editorView);
 
 		void showDocumentsView();
-		void showEditor();
+		void showEditorView();
 	}
 	
 	private final TableEditorPresenter tableEditorPresenter;
@@ -88,7 +88,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 				eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {
 					@Override
 					public void onDocumentSelected(DocumentSelectionEvent event) {
-						display.showEditor();
+						display.showEditorView();
 					}
 				})
 			);
