@@ -40,7 +40,6 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 
 	private final DocumentStatusPresenter documentStatusPresenter;
 	private final TableEditorPresenter webTransTablePresenter;
-	private final Pager pager;
 	
 	public interface Display extends WidgetDisplay{
 		void setEditor(Widget widget);
@@ -54,7 +53,6 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 			final DocumentStatusPresenter documentStatsBarPresenter) {
 		super(display, eventBus);
 		this.webTransTablePresenter = webTransTablePresenter;
-		this.pager = new Pager();
 		this.documentStatusPresenter = documentStatsBarPresenter;
 	}
 
@@ -67,37 +65,8 @@ public class WebTransEditorPresenter extends WidgetPresenter<WebTransEditorPrese
 	protected void onBind() {
 		webTransTablePresenter.bind();
 		documentStatusPresenter.bind();
-        pager.setVisible(false);
 
 		display.setEditor(webTransTablePresenter.getDisplay().asWidget());
-		
-		registerHandler(
-			pager.addValueChangeHandler( new ValueChangeHandler<Integer>() {
-				
-				@Override
-				public void onValueChange(ValueChangeEvent<Integer> event) {
-					webTransTablePresenter.cancelEdit();
-					webTransTablePresenter.getDisplay().gotoPage(event.getValue()-1, false);
-				}
-			})
-		);
-		
-		// TODO this uses incubator's HandlerRegistration
-		webTransTablePresenter.addPageChangeHandler( new PageChangeHandler() {
-			@Override
-			public void onPageChange(PageChangeEvent event) {
-				pager.setValue(event.getNewPage()+1);
-			}
-		});
-
-		// TODO this uses incubator's HandlerRegistration
-		webTransTablePresenter.addPageCountChangeHandler(new PageCountChangeHandler() {
-			@Override
-			public void onPageCountChange(PageCountChangeEvent event) {
-				pager.setPageCount(event.getNewPageCount());
-				pager.setVisible(true);
-			}
-		});
 		
 		webTransTablePresenter.gotoFirstPage();
 		

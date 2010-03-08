@@ -17,6 +17,7 @@ import org.fedorahosted.flies.gwt.rpc.ExitWorkspaceResult;
 import org.fedorahosted.flies.webtrans.client.LoginPresenter.LoggedIn;
 import org.fedorahosted.flies.webtrans.client.auth.Identity;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
+import org.fedorahosted.flies.webtrans.client.ui.HasPager;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorPresenter;
 import org.fedorahosted.flies.webtrans.editor.table.TableEditorPresenter;
 
@@ -25,7 +26,13 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.table.client.TableModel;
+import com.google.gwt.gen2.table.event.client.PageChangeEvent;
+import com.google.gwt.gen2.table.event.client.PageChangeHandler;
+import com.google.gwt.gen2.table.event.client.PageCountChangeEvent;
+import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
@@ -43,6 +50,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 
 		void showDocumentsView();
 		void showEditorView();
+		HasPager getTableEditorPager();
 	}
 	
 	private final TableEditorPresenter tableEditorPresenter;
@@ -78,20 +86,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 	}
 
 	protected void bindApp() {
-		documentListPresenter.bind();
-		tableEditorPresenter.bind();
-		
-		display.setDocumentListView(documentListPresenter.getDisplay().asWidget());
-		display.setEditorView(tableEditorPresenter.getDisplay().asWidget());
-		
-		registerHandler(
-				eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {
-					@Override
-					public void onDocumentSelected(DocumentSelectionEvent event) {
-						display.showEditorView();
-					}
-				})
-			);
 
 		registerHandler(
 			eventBus.addHandler(NotificationEvent.getType(), new NotificationEventHandler() {
@@ -128,8 +122,50 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 			}
 		});
 
-
 		Window.enableScrolling(false);
+		
+		documentListPresenter.bind();
+		tableEditorPresenter.bind();
+		
+		display.setDocumentListView(documentListPresenter.getDisplay().asWidget());
+		display.setEditorView(tableEditorPresenter.getDisplay().asWidget());
+		
+		registerHandler(
+				eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {
+					@Override
+					public void onDocumentSelected(DocumentSelectionEvent event) {
+						display.showEditorView();
+					}
+				})
+			);
+		
+		registerHandler(
+				display.getTableEditorPager().addValueChangeHandler( new ValueChangeHandler<Integer>() {
+					
+					@Override
+					public void onValueChange(ValueChangeEvent<Integer> event) {
+						tableEditorPresenter.cancelEdit();
+						tableEditorPresenter.gotoPage(event.getValue()-1, false);
+					}
+				})
+			);
+			
+		// TODO this uses incubator's HandlerRegistration
+		tableEditorPresenter.addPageChangeHandler( new PageChangeHandler() {
+			@Override
+			public void onPageChange(PageChangeEvent event) {
+				display.getTableEditorPager().setValue(event.getNewPage()+1);
+			}
+		});
+
+		// TODO this uses incubator's HandlerRegistration
+		tableEditorPresenter.addPageCountChangeHandler(new PageCountChangeHandler() {
+			@Override
+			public void onPageCountChange(PageCountChangeEvent event) {
+				display.getTableEditorPager().setPageCount(event.getNewPageCount());
+			}
+		});
+
 		
 	}
 
@@ -206,6 +242,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 //				activateWorkspace.onSuccess(null);
 			}
 		});
+		
+		
 	}
 
 	private void setWorkspaceName(String workspaceName) {

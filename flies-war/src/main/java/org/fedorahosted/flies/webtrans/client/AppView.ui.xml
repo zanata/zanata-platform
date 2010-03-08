@@ -1,6 +1,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:fui="urn:import:org.fedorahosted.flies.webtrans.client.ui">
 	
 	<ui:with field='resources' type="org.fedorahosted.flies.webtrans.client.Resources"/>
 	
@@ -51,6 +52,10 @@
 			background-color: #b4e2ff;
 			border: 2px solid #99ccff;
 			-moz-border-radius: 10px;
+		}
+		
+		.pager {
+			text-align: center;	
 		}
 	</ui:style>
 	<g:DockLayoutPanel unit="PX">
@@ -103,8 +108,8 @@
 						<g:center>
 							<g:Widget ui:field="editor" />
 						</g:center>
-						<g:south size="20">
-							<g:Label>Footer</g:Label>
+						<g:south size="22">
+							<fui:Pager ui:field="pager" styleName="{style.pager}" />
 						</g:south>
 					</g:DockLayoutPanel>
 				</g:center>

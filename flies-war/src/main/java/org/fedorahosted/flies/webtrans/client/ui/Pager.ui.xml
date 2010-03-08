@@ -1,0 +1,55 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	
+	<ui:with field='resources' type="org.fedorahosted.flies.webtrans.client.Resources"/>
+	
+	<ui:style>
+		.link_disabled {
+			color: #e0e0e0;				
+			display: inline;
+			cursor: default;
+			
+		}
+
+		.divider {
+			color: #e0e0e0;	
+		}
+		
+		.inline-label {
+			display: inline;
+		}
+		
+		.link {
+			cursor: pointer;
+		}
+		
+	</ui:style>
+	
+	<g:HTMLPanel>
+		<nobr>
+			<g:Anchor ui:field="firstPage" styleName="{style.link}">First</g:Anchor>
+			<g:Label ui:field="firstPageDisabled" styleName="{style.link_disabled}">First</g:Label>
+			
+			<span class="{style.divider}">|</span>
+			
+			<g:Anchor ui:field="previousPage" styleName="{style.link}">Previous</g:Anchor>
+			<g:Label ui:field="previousPageDisabled" styleName="{style.link_disabled}">Previous</g:Label>
+			
+			<span class="{style.divider}">|</span>
+			
+			<g:TextBox ui:field="gotoPage" maxLength="8" width="40px" />
+			<g:Label ui:field="pageCountLabel" styleName="{style.inline-label}">of 0</g:Label>
+			
+			<span class="{style.divider}">|</span>
+			
+			<g:Anchor ui:field="nextPage" styleName="{style.link}">Next</g:Anchor>
+			<g:Label ui:field="nextPageDisabled" styleName="{style.link_disabled}">Next</g:Label>
+			
+			<span class="{style.divider}">|</span>
+			
+			<g:Anchor ui:field="lastPage" styleName="{style.link}">Last</g:Anchor>
+			<g:Label ui:field="lastPageDisabled" styleName="{style.link_disabled}">Last</g:Label>
+		</nobr>
+	</g:HTMLPanel>
+</ui:UiBinder>

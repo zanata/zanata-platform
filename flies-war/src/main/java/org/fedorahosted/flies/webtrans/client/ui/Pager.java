@@ -1,6 +1,6 @@
 package org.fedorahosted.flies.webtrans.client.ui;
-
-
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -10,67 +10,65 @@ import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 
-public class Pager extends Composite implements HasPageCount, HasValue<Integer>, HasValueChangeHandlers<Integer>{
+public class Pager extends Composite implements HasPager {
 
-	private final Button firstPage;
-	private final TextBox gotoPage;
-	private final Button lastPage;
-	private final Button nextPage;
-	private final Button previousPage;
-	private final Label pageCountLabel;
+	interface PagerUiBinder extends UiBinder<HTMLPanel, Pager> {
+	}
+
+	private static PagerUiBinder uiBinder = GWT.create(PagerUiBinder.class);
+	
+	private static final String FIRST_PAGE = "First Page";
+	private static final String PREVIOUS_PAGE = "Previous Page";
+	private static final String NEXT_PAGE = "Next Page";
+	private static final String LAST_PAGE = "Last Page";
+	
+	@UiField
+	Anchor firstPage, lastPage, nextPage, previousPage;
+
+	@UiField
+	Label firstPageDisabled, lastPageDisabled, nextPageDisabled, previousPageDisabled;
+	
+	@UiField
+	TextBox gotoPage;
+	
+	@UiField
+	Label pageCountLabel;
 	
 	private int pageCount = PAGECOUNT_UNKNOWN;
 	private int currentPage;
 	
 	public static final int PAGECOUNT_UNKNOWN = -1;
 	
-	private final ClickHandler clickHandler = new ClickHandler() {
-		
-		@Override
-		public void onClick(ClickEvent event) {
-			if(event.getSource() == firstPage) {
-				setValue(1);
-			}
-			else if(event.getSource() == lastPage) {
-				setValue(pageCount);
-			} 
-			else if(event.getSource() == nextPage) {
-				setValue(currentPage +1);
-			} 
-			else if(event.getSource() == previousPage) {
-				setValue(currentPage -1);
-			} 
-		}
-	};
 
 	public Pager() {
-		HorizontalPanel panel = new HorizontalPanel();
-		initWidget(panel);
-		panel.setVerticalAlignment(HorizontalPanel.ALIGN_MIDDLE);
-		panel.setSpacing(2);
-		firstPage = new Button("&lt;&lt;");
-		lastPage = new Button(">>");
-		nextPage = new Button(">");
-		previousPage = new Button("&lt;");
-		gotoPage = new TextBox();
-		gotoPage.setMaxLength(8);
-		gotoPage.setWidth("40px");
-		pageCountLabel = new Label(" of 0");
+		initWidget(uiBinder.createAndBindUi(this));
+		firstPageDisabled.setVisible(false);
+		lastPageDisabled.setVisible(false);
+		nextPageDisabled.setVisible(false);
+		previousPageDisabled.setVisible(false);
+
+		firstPage.setText(FIRST_PAGE);
+		firstPageDisabled.setText(FIRST_PAGE);
 		
-		panel.add(firstPage);
-		panel.add(previousPage);
-		panel.add(new Label("Page "));
-		panel.add(gotoPage);
-		panel.add(pageCountLabel);
-		panel.add(nextPage);
-		panel.add(lastPage);
+		previousPage.setText(PREVIOUS_PAGE);
+		previousPageDisabled.setText(PREVIOUS_PAGE);
+		
+		nextPage.setText(NEXT_PAGE);
+		nextPageDisabled.setText(NEXT_PAGE);
+		
+		lastPage.setText(LAST_PAGE);
+		lastPageDisabled.setText(LAST_PAGE);
+		
 	}
 
 	@Override
@@ -94,16 +92,23 @@ public class Pager extends Composite implements HasPageCount, HasValue<Integer>,
 		lastPage.addClickHandler(clickHandler);
 		previousPage.addClickHandler(clickHandler);
 		nextPage.addClickHandler(clickHandler);
+		refresh();
+	}
+
+	private void setEnabled(Anchor link, Label diabledLabel, boolean enabled) {
+		link.setVisible(enabled);
+		diabledLabel.setVisible(!enabled);
 	}
 	
 	private void refresh(){
 		String page = pageCount == PAGECOUNT_UNKNOWN ? "" : "of " + pageCount;
 		pageCountLabel.setText(page);
-		firstPage.setEnabled( currentPage != 1);
-		previousPage.setEnabled( currentPage != 1);
-		nextPage.setEnabled( currentPage != pageCount );
-		lastPage.setEnabled( currentPage != pageCount && pageCount != PAGECOUNT_UNKNOWN );
-		lastPage.setVisible(pageCount != PAGECOUNT_UNKNOWN);
+		setEnabled(firstPage, firstPageDisabled, currentPage != 1);
+		setEnabled(previousPage, previousPageDisabled, currentPage != 1);
+
+		setEnabled(nextPage, nextPageDisabled, currentPage != pageCount );
+		setEnabled(lastPage, lastPageDisabled, currentPage != pageCount && pageCount != PAGECOUNT_UNKNOWN);
+
 		gotoPage.setText( String.valueOf(currentPage) );
 	}
 	
@@ -145,5 +150,24 @@ public class Pager extends Composite implements HasPageCount, HasValue<Integer>,
 			ValueChangeHandler<Integer> handler) {
 		return addHandler(handler, ValueChangeEvent.getType());
 	}
-	
+
+	private final ClickHandler clickHandler = new ClickHandler() {
+		
+		@Override
+		public void onClick(ClickEvent event) {
+			if(event.getSource() == firstPage) {
+				setValue(1);
+			}
+			else if(event.getSource() == lastPage) {
+				setValue(pageCount);
+			} 
+			else if(event.getSource() == nextPage) {
+				setValue(currentPage +1);
+			} 
+			else if(event.getSource() == previousPage) {
+				setValue(currentPage -1);
+			} 
+		}
+	};
+
 }

@@ -1,5 +1,8 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import org.fedorahosted.flies.webtrans.client.ui.HasPager;
+import org.fedorahosted.flies.webtrans.client.ui.Pager;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -44,6 +47,9 @@ public class AppView extends Composite implements AppPresenter.Display {
 	@UiField
 	FlowPanel tuInfoPanel, tmPanel;
 	
+	@UiField 
+	Pager pager;
+	
 	private Widget documentListView;
 	private Widget editorView;
 	private Widget widgetInEditorView;
@@ -64,6 +70,7 @@ public class AppView extends Composite implements AppPresenter.Display {
 		user.setInnerText("Bob the Builder");
 		workspaceName.setInnerText("Deployment Guide (F13)");
 		workspaceLocale.setInnerText("German");
+		pager.setVisible(false);
 	}
 
 	@Override
@@ -90,6 +97,7 @@ public class AppView extends Composite implements AppPresenter.Display {
 		editorPanel.remove(widgetInEditorView);
 		widgetInEditorView = documentListView;
 		editorPanel.add(documentListView);
+		pager.setVisible(false);
 	}
 	
 	@Override
@@ -103,6 +111,7 @@ public class AppView extends Composite implements AppPresenter.Display {
 		editorPanel.remove(widgetInEditorView);
 		widgetInEditorView = editorView;
 		editorPanel.add(editorView);
+		pager.setVisible(true);
 	}
 	
 	@UiHandler("signOutLink")
@@ -135,5 +144,12 @@ public class AppView extends Composite implements AppPresenter.Display {
 	public void setEditorView(Widget editorView) {
 		this.editorView = editorView;
 	}
+	
+	@Override
+	public HasPager getTableEditorPager() {
+		return pager;
+	}
+	
+	
 
 }
