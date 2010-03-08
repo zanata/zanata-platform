@@ -18,12 +18,14 @@ import org.fedorahosted.flies.webtrans.client.LoginPresenter.LoggedIn;
 import org.fedorahosted.flies.webtrans.client.auth.Identity;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorPresenter;
+import org.fedorahosted.flies.webtrans.editor.table.TableEditorPresenter;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.gen2.table.client.TableModel;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
@@ -36,10 +38,15 @@ import com.google.inject.Inject;
 public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 	
 	public interface Display extends WidgetDisplay {
-		void setEditor(Widget editor);
+		void setDocumentListView(Widget documentListView);
+		void setEditorView(Widget editorView);
+
+		void showDocumentsView();
+		void showEditor();
 	}
 	
-	private final WebTransEditorPresenter webTransEditorPresenter;
+	private final TableEditorPresenter tableEditorPresenter;
+	private final DocumentListPresenter documentListPresenter;
 	private final SouthPresenter southPresenter;
 	private final EventProcessor eventProcessor;
 	private final LoginPresenter loginPresenter;
@@ -51,18 +58,20 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 	@Inject
 	public AppPresenter(Display display, EventBus eventBus,
 			    CachingDispatchAsync dispatcher,
-				final WebTransEditorPresenter webTransEditorPresenter,
+				final TableEditorPresenter tableEditorPresenter,
 				final SouthPresenter southPresenter,
+				final DocumentListPresenter documentListPresenter,
 				final EventProcessor eventProcessor,
 				final LoginPresenter loginPresenter,
 				final Identity identity) {
 		super(display, eventBus);
 		this.identity = identity;
 		this.dispatcher = dispatcher;
-		this.webTransEditorPresenter = webTransEditorPresenter;
+		this.tableEditorPresenter = tableEditorPresenter;
 		this.southPresenter = southPresenter;
 		this.eventProcessor = eventProcessor;
 		this.loginPresenter = loginPresenter;
+		this.documentListPresenter = documentListPresenter;
 	}
 
 	@Override
@@ -71,17 +80,16 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 	}
 
 	protected void bindApp() {
-		webTransEditorPresenter.bind();
+		tableEditorPresenter.bind();
 		southPresenter.bind();
+		documentListPresenter.bind();
+		
+		display.setDocumentListView(documentListPresenter.getDisplay().asWidget());
 		
 		Widget south = southPresenter.getDisplay().asWidget();
-//		display.addWest(westNavigationPresenter.getDisplay().asWidget());
-//		display.addSouth(south);
-		Widget mainWidget = webTransEditorPresenter.getDisplay().asWidget();
-//		display.addMain(mainWidget);
-		// TODO refactor to presenter
+		Widget mainWidget = tableEditorPresenter.getDisplay().asWidget();
 		
-		display.setEditor(mainWidget);
+		display.setEditorView(mainWidget);
 		
 		registerHandler(
 			eventBus.addHandler(NotificationEvent.getType(), new NotificationEventHandler() {
@@ -91,7 +99,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 					PopupPanel popup = new PopupPanel(true);
 					popup.addStyleDependentName("Notification");
 					popup.addStyleName("Severity-"+ event.getSeverity().name());
-					Widget center = webTransEditorPresenter.getDisplay().asWidget();
+					Widget center = tableEditorPresenter.getDisplay().asWidget();
 					popup.setWidth(center.getOffsetWidth()-40 + "px");
 					popup.setWidget(new Label(event.getMessage()));
 					popup.setPopupPosition(center.getAbsoluteLeft()+20, center.getAbsoluteTop()+30);
@@ -99,6 +107,17 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 				}
 			})
 		);
+		
+		registerHandler(
+			eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {
+				@Override
+				public void onDocumentSelected(DocumentSelectionEvent event) {
+					display.showEditor();
+				}
+			})
+		);
+		
+		
 		
 		//When user close the workspace, send ExitWorkSpaceAction
 		Window.addCloseHandler(new CloseHandler<Window>() {
@@ -118,33 +137,12 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 			}
 		});
 
-		// Hook the window resize event, so that we can adjust the UI.
-//		Window.addResizeHandler( new ResizeHandler() {
-//			@Override
-//			public void onResize(ResizeEvent event) {
-//				resizePageTo(event.getHeight(), event.getWidth());
-//			}
-//		});
 
 		Window.enableScrolling(false);
 		Window.setMargin("0px");
 		
-		// Call the window resized handler to get the initial sizes setup. Doing
-		// this in a deferred command causes it to occur after all widgets'
-		// sizes
-		// have been computed by the browser.
-//		DeferredCommand.addCommand(new Command() {
-//			public void execute() {
-//				resizePageTo(Window.getClientHeight(), Window.getClientWidth());
-//			}
-//		});
 	}
 
-	private final void resizePageTo(int h, int w) {
-		display.asWidget().setHeight(h+ "px");
-		display.asWidget().setWidth(w + "px");
-	}
-	
 	private static LocaleId findLocaleId() {
 		String localeId = Window.Location.getParameter("localeId");
 		return localeId == null ? null : new LocaleId(localeId);
@@ -242,7 +240,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 
 	@Override
 	protected void onUnbind() {
-		webTransEditorPresenter.unbind();
+		tableEditorPresenter.unbind();
 	}
 
 	@Override

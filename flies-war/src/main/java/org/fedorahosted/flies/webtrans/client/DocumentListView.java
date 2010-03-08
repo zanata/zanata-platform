@@ -42,44 +42,11 @@ public class DocumentListView extends Composite
 	
 	public DocumentListView() {
 	    tree = new FilterTree<DocumentId, DocName>(new FlatFolderDocNameMapper(), images);
-//	    tree.setWidth("100%");
 	    
 	    mainpanel = new FlowPanel();
 	    mainpanel.add(tree);
 	    mainpanel.add(reloadButton);
-		mainpanel.setStylePrimaryName("DocumentListViewMainPanel");
-		
-//		mainpanel.setWidth("50%");
-
-//		RoundedContainerWithHeader container = new RoundedContainerWithHeader(new Label("Documents in Workspace"), mainpanel);
-//		initWidget(container);
-		
-		DisclosurePanel container = new DisclosurePanel("Documents in Workspace");
-		container.setOpen(true);
-		container.setAnimationEnabled(false);
-		
-		container.add(mainpanel);
-		initWidget(container);
-		
-		
-//		initWidget(mainpanel);
-		
-		
-		getElement().setId("DocumentListView");
-	
-	}
-	
-	@Override
-	public void setWidth(String width) {
-		super.setWidth(width);
-		String panelWidth = width;
-		if (width.endsWith("px")) {
-			double outerWidth = Double.parseDouble(width.substring(0, width.length()-2));
-			panelWidth = Double.toString(outerWidth - UNPADDING) + "px";
-		}
-		mainpanel.setWidth(panelWidth);
-		mainpanel.setVisible(false);
-		mainpanel.setVisible(true);
+		initWidget(mainpanel);
 	}
 
 	@Override

@@ -87,7 +87,7 @@
 					</g:FlowPanel>
 				</g:east>
 				<g:center>
-					<g:DockLayoutPanel unit="PX">
+					<g:DockLayoutPanel ui:field="editorPanel" unit="PX">
 						<g:north size="20">
 							<g:HTMLPanel>
 								<div style="display: inline;">
@@ -101,7 +101,7 @@
 							</g:HTMLPanel>
 						</g:north>
 						<g:center>
-							<g:FlowPanel ui:field="editor" />
+							<g:Widget ui:field="editor" />
 						</g:center>
 						<g:south size="20">
 							<g:Label>Footer</g:Label>
