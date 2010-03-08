@@ -1,17 +1,13 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	
+	<ui:with field='resources' type="org.fedorahosted.flies.webtrans.client.Resources"/>
+	
 	<ui:style>
 		.topPanel {
 			padding: 6px;
 			border-bottom: 1px solid #e0e0e0;
-		}
-		
-		.topPanel-Logo {
-			border: 2px dotted #e0e0e0;	
-			float: left;
-			font-size: 16px;
-			display: inline;
 		}
 		
 		.topPanel-Navigation {
@@ -61,7 +57,7 @@
 		<g:north size="40">
 			<g:HTMLPanel>
 				<div class="{style.topPanel}">
-					<div class="{style.topPanel-Logo}">Insert Small Flies logo here</div>
+					<g:Image resource='{resources.logo}'/>
 					<div class="{style.topPanel-Workspace}">
 						<nobr>
 							<span ui:field="workspaceName" class="{style.topPanel-Workspace-Name}">Name of Workspace</span>
@@ -73,11 +69,11 @@
 						<nobr>
 							<b><span ui:field="user">User Name</span></b>
 							<span class="{style.divider}">|</span>
-							<a href="#" ui:field="helpLink">Help</a>
+							<g:Anchor href="#" ui:field="helpLink">Help</g:Anchor>
 							<span class="{style.divider}">|</span>
-							<a href="#" ui:field="leaveLink">Leave Workspace</a>
+							<g:Anchor href="#" ui:field="leaveLink">Leave Workspace</g:Anchor>
 							<span class="{style.divider}">|</span>
-							<a href="#" ui:field="signOutLink">Sign Out</a>
+							<g:Anchor href="#" ui:field="signOutLink">Sign Out</g:Anchor>
 						</nobr>
 					</div>
 				</div>
@@ -91,9 +87,26 @@
 					</g:FlowPanel>
 				</g:east>
 				<g:center>
-					<g:FlowPanel ui:field="editor" styleName="{style.editor}">
-						<g:Label>Editor</g:Label>
-					</g:FlowPanel>
+					<g:DockLayoutPanel unit="PX">
+						<g:north size="20">
+							<g:HTMLPanel>
+								<div style="display: inline;">
+									<g:Anchor href="#" ui:field="documentsLink">Documents</g:Anchor>
+									<span class="{style.divider}">></span>
+									<em>No document Selected</em>
+								</div>
+								<div style="float:right; display:inline">
+									TU navigation
+								</div>
+							</g:HTMLPanel>
+						</g:north>
+						<g:center>
+							<g:FlowPanel ui:field="editor" />
+						</g:center>
+						<g:south size="20">
+							<g:Label>Footer</g:Label>
+						</g:south>
+					</g:DockLayoutPanel>
 				</g:center>
 				<g:south size="150" min-size="100">
 					<g:FlowPanel styleName="{style.tmview}">

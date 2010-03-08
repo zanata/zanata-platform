@@ -4,10 +4,12 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
-public class WebTransEditorView extends FlowPanel implements WebTransEditorPresenter.Display {
+public class WebTransEditorView extends Composite implements WebTransEditorPresenter.Display {
 	
 	interface WebTransEditorViewUiBinder extends UiBinder<Widget, WebTransEditorView> {
 	}
@@ -24,7 +26,8 @@ public class WebTransEditorView extends FlowPanel implements WebTransEditorPrese
 	FlowPanel footerPanel;
 	
 	public WebTransEditorView() {
-		uiBinder.createAndBindUi(this);
+		initWidget(uiBinder.createAndBindUi(this));
+		headerPanel.add(new HTML("hello world"));
 	}
 	
 	@Override

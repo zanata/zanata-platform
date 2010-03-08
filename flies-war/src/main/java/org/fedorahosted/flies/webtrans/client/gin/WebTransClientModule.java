@@ -14,6 +14,7 @@ import org.fedorahosted.flies.webtrans.client.GlossaryPresenter;
 import org.fedorahosted.flies.webtrans.client.GlossaryView;
 import org.fedorahosted.flies.webtrans.client.LoginView;
 import org.fedorahosted.flies.webtrans.client.LoginPresenter;
+import org.fedorahosted.flies.webtrans.client.Resources;
 import org.fedorahosted.flies.webtrans.client.SouthPresenter;
 import org.fedorahosted.flies.webtrans.client.SouthView;
 import org.fedorahosted.flies.webtrans.client.TransMemoryPresenter;
@@ -54,6 +55,7 @@ public class WebTransClientModule extends AbstractPresenterModule {
 		bind(EventBus.class).to(DefaultEventBus.class).in(Singleton.class);
 		bind(PlaceManager.class).in(Singleton.class);
 		bind(EventProcessor.class).in(Singleton.class);
+		bind(Resources.class).in(Singleton.class);
 		
 		bindPresenter(AppPresenter.class, AppPresenter.Display.class, AppView.class);
 		bindPresenter(DocumentListPresenter.class, DocumentListPresenter.Display.class, DocumentListView.class);
