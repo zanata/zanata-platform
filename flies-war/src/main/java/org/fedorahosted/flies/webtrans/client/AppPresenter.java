@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.webtrans.client;
 
+
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
@@ -38,7 +39,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		void setEditor(Widget editor);
 	}
 	
-	private final WestNavigationPresenter westNavigationPresenter;
 	private final WebTransEditorPresenter webTransEditorPresenter;
 	private final SouthPresenter southPresenter;
 	private final EventProcessor eventProcessor;
@@ -51,7 +51,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 	@Inject
 	public AppPresenter(Display display, EventBus eventBus,
 			    CachingDispatchAsync dispatcher,
-				final WestNavigationPresenter leftNavigationPresenter,
 				final WebTransEditorPresenter webTransEditorPresenter,
 				final SouthPresenter southPresenter,
 				final EventProcessor eventProcessor,
@@ -60,7 +59,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		super(display, eventBus);
 		this.identity = identity;
 		this.dispatcher = dispatcher;
-		this.westNavigationPresenter = leftNavigationPresenter;
 		this.webTransEditorPresenter = webTransEditorPresenter;
 		this.southPresenter = southPresenter;
 		this.eventProcessor = eventProcessor;
@@ -73,7 +71,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 	}
 
 	protected void bindApp() {
-		westNavigationPresenter.bind();
 		webTransEditorPresenter.bind();
 		southPresenter.bind();
 		
@@ -245,7 +242,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 
 	@Override
 	protected void onUnbind() {
-		westNavigationPresenter.unbind();
 		webTransEditorPresenter.unbind();
 	}
 
