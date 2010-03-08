@@ -34,25 +34,24 @@
 			color: #e0e0e0;	
 		}
 		
-		.tmview-outer {
-			padding: 10px;
+		.tmview{
+			padding-left: 7px;
+			padding-bottom: 7px;
 			background-color: #b4e2ff;
 			border: 2px solid #99ccff;
 			-moz-border-radius-topleft: 10px;
 			-moz-border-radius-topright: 10px;
 		}
-		
-		.tuinfo-outer {
-			padding: 10px;
-		}
+
 		.tuinfo {
+			padding-right: 7px;
 			background-color: #b4e2ff;
 			border: 2px solid #99ccff;
 			-moz-border-radius: 10px;
 		}
 		
-		.editor-outer {
-			padding: 10px;
+		.editor {
+			padding-left: 7px;
 			background-color: #b4e2ff;
 			border: 2px solid #99ccff;
 			-moz-border-radius: 10px;
@@ -65,20 +64,20 @@
 					<div class="{style.topPanel-Logo}">Insert Small Flies logo here</div>
 					<div class="{style.topPanel-Workspace}">
 						<nobr>
-							<span class="{style.topPanel-Workspace-Name}">Deployment Guide (Fedora 13)</span>
+							<span ui:field="workspaceName" class="{style.topPanel-Workspace-Name}">Name of Workspace</span>
 							<span class="{style.divider}">to</span>
-							<span class="{style.topPanel-Workspace-Locale}">French</span>
+							<span ui:field="workspaceLocale" class="{style.topPanel-Workspace-Locale}">Localename</span>
 						</nobr>
 					</div>
 					<div class="{style.topPanel-Navigation}">
 						<nobr>
-							<b><span>User Name</span></b>
+							<b><span ui:field="user">User Name</span></b>
 							<span class="{style.divider}">|</span>
-							<a href="#">Help</a>
+							<a href="#" ui:field="helpLink">Help</a>
 							<span class="{style.divider}">|</span>
-							<a href="#">Leave Workspace</a>
+							<a href="#" ui:field="leaveLink">Leave Workspace</a>
 							<span class="{style.divider}">|</span>
-							<a href="#">Sign Out</a>
+							<a href="#" ui:field="signOutLink">Sign Out</a>
 						</nobr>
 					</div>
 				</div>
@@ -87,19 +86,17 @@
 		<g:center>
 			<g:SplitLayoutPanel styleName="PageSplitLayoutPanel">
 				<g:east size="200">
-					<g:FlowPanel styleName="{style.tuinfo-outer}">
-						<g:FlowPanel styleName="{style.tuinfo}">
-							<g:Label>TU Info</g:Label>
-						</g:FlowPanel>
+					<g:FlowPanel styleName="{style.tuinfo}">
+						<g:Label>TU Info</g:Label>
 					</g:FlowPanel>
 				</g:east>
 				<g:center>
-					<g:FlowPanel ui:field="editor" styleName="{style.editor-outer}">
+					<g:FlowPanel ui:field="editor" styleName="{style.editor}">
 						<g:Label>Editor</g:Label>
 					</g:FlowPanel>
 				</g:center>
 				<g:south size="150" min-size="100">
-					<g:FlowPanel styleName="{style.tmview-outer}">
+					<g:FlowPanel styleName="{style.tmview}">
 						<g:Label>TM view</g:Label>
 					</g:FlowPanel>
 				</g:south>
