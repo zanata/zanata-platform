@@ -93,7 +93,6 @@
 			<g:SplitLayoutPanel styleName="PageSplitLayoutPanel" ui:field="mainSplitPanel">
 				<g:east size="200">
 					<g:FlowPanel styleName="{style.tuinfo}" ui:field="tuInfoPanel">
-						<g:Label>TU Info</g:Label>
 					</g:FlowPanel>
 				</g:east>
 				<g:center>

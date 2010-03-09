@@ -29,7 +29,7 @@ import com.google.inject.Inject;
 public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.Display> {
 	private final WorkspaceContext workspaceContext;
 	private final CachingDispatchAsync dispatcher;
-	private boolean transMemoryVisible = false;
+	private boolean transMemoryVisible = true;
 	
 	public interface Display extends WidgetDisplay {
 		HasValue<Boolean> getExactButton();

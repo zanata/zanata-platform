@@ -53,6 +53,8 @@ public class AppView extends Composite implements AppPresenter.Display {
 	private Widget documentListView;
 	private Widget editorView;
 	private Widget widgetInEditorView;
+	private Widget filterView;
+	private Widget workspaceUsersView;
 	
 	@Inject
 	public AppView(Resources resources) {
@@ -155,10 +157,31 @@ public class AppView extends Composite implements AppPresenter.Display {
 	}
 	
 	@Override
+	public void setTranslationMemoryView(Widget translationMemoryView) {
+		tmPanel.clear();
+		tmPanel.add(translationMemoryView);
+	}
+	
+	@Override
 	public HasPager getTableEditorPager() {
 		return pager;
 	}
 	
-	
+	@Override
+	public void setFilterView(Widget filterView) {
+		if(this.filterView != null) {
+			tuInfoPanel.remove(this.filterView);
+		}
+		this.filterView = filterView;
+		tuInfoPanel.add(filterView);
+	}
 
+	@Override
+	public void setWorkspaceUsersView(Widget workspaceUsersView) {
+		if(this.workspaceUsersView != null) {
+			tuInfoPanel.remove(this.workspaceUsersView);
+		}
+		this.workspaceUsersView = workspaceUsersView;
+		tuInfoPanel.add(workspaceUsersView);
+	}
 }

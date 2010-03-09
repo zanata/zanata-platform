@@ -19,6 +19,7 @@ import org.fedorahosted.flies.webtrans.client.auth.Identity;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.client.ui.HasPager;
 import org.fedorahosted.flies.webtrans.editor.WebTransEditorPresenter;
+import org.fedorahosted.flies.webtrans.editor.filter.TransFilterPresenter;
 import org.fedorahosted.flies.webtrans.editor.table.TableEditorPresenter;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -48,6 +49,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		void setDocumentListView(Widget documentListView);
 		void setEditorView(Widget editorView);
 		void setTransUnitNavigationView(Widget transUnitNavigation);
+		void setTranslationMemoryView(Widget translationMemoryView);
+		void setFilterView(Widget filterView);
+		void setWorkspaceUsersView(Widget workspaceUsersView);
 
 		void showDocumentsView();
 		void showEditorView();
@@ -59,6 +63,10 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 	private final EventProcessor eventProcessor;
 	private final LoginPresenter loginPresenter;
 	private final TransUnitNavigationPresenter transUnitNavigationPresenter;
+	private final TransMemoryPresenter transMemoryPresenter;
+	private final TransFilterPresenter transFilterPresenter;
+	private final WorkspaceUsersPresenter workspaceUsersPresenter;
+	
 	private final DispatchAsync dispatcher;
 	private String workspaceName;
 	private String localeName;
@@ -68,11 +76,13 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 	public AppPresenter(Display display, EventBus eventBus,
 			    CachingDispatchAsync dispatcher,
 				final TableEditorPresenter tableEditorPresenter,
-				final SouthPresenter southPresenter,
 				final DocumentListPresenter documentListPresenter,
 				final EventProcessor eventProcessor,
 				final LoginPresenter loginPresenter,
+				final TransMemoryPresenter transMemoryPresenter,
 				final TransUnitNavigationPresenter transUnitNavigationPresenter,
+				final TransFilterPresenter transFilterPresenter,
+				final WorkspaceUsersPresenter workspaceUsersPresenter,
 				final Identity identity) {
 		super(display, eventBus);
 		this.identity = identity;
@@ -82,6 +92,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		this.loginPresenter = loginPresenter;
 		this.documentListPresenter = documentListPresenter;
 		this.transUnitNavigationPresenter = transUnitNavigationPresenter;
+		this.transMemoryPresenter = transMemoryPresenter;
+		this.transFilterPresenter = transFilterPresenter;
+		this.workspaceUsersPresenter =  workspaceUsersPresenter;
 	}
 
 	@Override
@@ -172,6 +185,15 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 			}
 		});
 
+		transMemoryPresenter.bind();
+		display.setTranslationMemoryView(transMemoryPresenter.getDisplay().asWidget());
+		
+		transFilterPresenter.bind();
+		display.setFilterView(transFilterPresenter.getDisplay().asWidget());
+		
+		workspaceUsersPresenter.bind();
+		display.setWorkspaceUsersView(workspaceUsersPresenter.getDisplay().asWidget());
+		
 	}
 
 	private static LocaleId findLocaleId() {
