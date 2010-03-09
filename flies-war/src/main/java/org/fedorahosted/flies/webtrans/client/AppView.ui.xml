@@ -90,37 +90,57 @@
 			</g:HTMLPanel>
 		</g:north>
 		<g:center>
-			<g:SplitLayoutPanel styleName="PageSplitLayoutPanel" ui:field="mainSplitPanel">
-				<g:east size="200">
-					<g:FlowPanel styleName="{style.tuinfo}" ui:field="tuInfoPanel">
-					</g:FlowPanel>
+			<g:DockLayoutPanel unit="PX">
+				<!--
+				TODO there has to be a better way of adding
+				the 7px paddings to the page than this 
+				 -->
+				<g:north size="7">
+					<g:FlowPanel />
+				</g:north>
+				<g:east size="7">
+					<g:FlowPanel />
 				</g:east>
-				<g:center>
-					<g:DockLayoutPanel ui:field="editorPanel" unit="PX">
-						<g:north size="20">
-							<g:HTMLPanel>
-								<div style="display: inline;">
-									<g:Anchor href="#" ui:field="documentsLink">Documents</g:Anchor>
-									<span class="{style.divider}">></span>
-									<em>No document Selected</em>
-								</div>
-								<g:FlowPanel ui:field="transUnitNavigation" styleName="{style.transUnitNavigation}" />
-							</g:HTMLPanel>
-						</g:north>
-						<g:center>
-							<g:Widget ui:field="editor" />
-						</g:center>
-						<g:south size="22">
-							<fui:Pager ui:field="pager" styleName="{style.pager}" />
-						</g:south>
-					</g:DockLayoutPanel>
-				</g:center>
-				<g:south size="150" min-size="100">
-					<g:FlowPanel styleName="{style.tmview}" ui:field="tmPanel">
-						<g:Label>TM view</g:Label>
-					</g:FlowPanel>
+				<g:west size="7">
+					<g:FlowPanel />
+				</g:west>
+				<g:south size="7">
+					<g:FlowPanel />
 				</g:south>
-			</g:SplitLayoutPanel>
+				<g:center>
+					<g:SplitLayoutPanel styleName="PageSplitLayoutPanel" ui:field="mainSplitPanel">
+						<g:east size="200">
+							<g:FlowPanel styleName="{style.tuinfo}" ui:field="tuInfoPanel">
+							</g:FlowPanel>
+						</g:east>
+						<g:center>
+							<g:DockLayoutPanel ui:field="editorPanel" unit="PX">
+								<g:north size="20">
+									<g:HTMLPanel>
+										<div style="display: inline;">
+											<g:Anchor href="#" ui:field="documentsLink">Documents</g:Anchor>
+											<span class="{style.divider}">></span>
+											<em>No document Selected</em>
+										</div>
+										<g:FlowPanel ui:field="transUnitNavigation" styleName="{style.transUnitNavigation}" />
+									</g:HTMLPanel>
+								</g:north>
+								<g:center>
+									<g:Widget ui:field="editor" />
+								</g:center>
+								<g:south size="22">
+									<fui:Pager ui:field="pager" styleName="{style.pager}" />
+								</g:south>
+							</g:DockLayoutPanel>
+						</g:center>
+						<g:south size="150" min-size="100">
+							<g:FlowPanel styleName="{style.tmview}" ui:field="tmPanel">
+								<g:Label>TM view</g:Label>
+							</g:FlowPanel>
+						</g:south>
+					</g:SplitLayoutPanel>
+				</g:center>
+			</g:DockLayoutPanel>
 		</g:center>
 	</g:DockLayoutPanel>
 </ui:UiBinder>
