@@ -1,4 +1,6 @@
 package org.fedorahosted.flies.webtrans.client.ui;
+import org.fedorahosted.flies.webtrans.client.Resources;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -19,6 +21,7 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.inject.Inject;
 
 public class Pager extends Composite implements HasPager {
 
@@ -44,13 +47,16 @@ public class Pager extends Composite implements HasPager {
 	@UiField
 	Label pageCountLabel;
 	
+	@UiField(provided=true) 
+	Resources resources;
+	
 	private int pageCount = PAGECOUNT_UNKNOWN;
 	private int currentPage;
 	
 	public static final int PAGECOUNT_UNKNOWN = -1;
 	
-
-	public Pager() {
+	public Pager(Resources resources) {
+		this.resources = resources;
 		initWidget(uiBinder.createAndBindUi(this));
 		firstPageDisabled.setVisible(false);
 		lastPageDisabled.setVisible(false);

@@ -47,7 +47,7 @@ public class AppView extends Composite implements AppPresenter.Display {
 	@UiField
 	FlowPanel tuInfoPanel, tmPanel, transUnitNavigation;
 	
-	@UiField 
+	@UiField(provided=true) 
 	Pager pager;
 	
 	private Widget documentListView;
@@ -59,6 +59,7 @@ public class AppView extends Composite implements AppPresenter.Display {
 	@Inject
 	public AppView(Resources resources) {
 		this.resources = resources;
+		pager = new Pager(resources);
 
 		// TODO this could be some sort of welcome page
 		editor = new HTML("");
