@@ -331,13 +331,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 
 	public void handleNextFuzzy(ContentState state) {
 		cancelEdit();
-		incRow();
 		gotoNextFuzzy(row, state);
 	}
 
 	public void handlePrevFuzzy(ContentState state) {
 		cancelEdit();
-		decRow();
 		gotoPrevFuzzy(row, state);
 	}
 

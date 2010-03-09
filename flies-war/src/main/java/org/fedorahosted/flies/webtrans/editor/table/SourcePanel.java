@@ -40,7 +40,6 @@ public class SourcePanel extends Composite implements HasValue<TransUnit> {
 		panel.add(sourceLabel);
 		textarea = new TextArea();
 		textarea.getSelectedText();
-		sinkEvents(Event.MOUSEEVENTS);
 		refresh();
 	}
 	
@@ -71,33 +70,4 @@ public class SourcePanel extends Composite implements HasValue<TransUnit> {
 			ValueChangeHandler<TransUnit> handler) {
 		return addHandler(handler, ValueChangeEvent.getType());
 	}
-	
-	public void onBrowserEvent(Event event) {
-		if (event.getTypeInt() == Event.ONMOUSEDOWN) {
-			//DOM.setCapture(sourceLabel.getElement());
-		}
-		if (event.getTypeInt() == Event.ONMOUSEUP) {
-			//Element elem = DOM.getCaptureElement();
-			//DOM.releaseCapture(this.getElement());
-			//String str = elem.getString();
-			//String str = getSelection();
-		}
-	
-		super.onBrowserEvent(event);		
-	}
-
-	  public static native String getSelection() /*-{
-	    var txt = '';
-	    if ($wnd.getSelection) {
-	      txt = $wnd.getSelection();
-	    } else if ($wnd.document.getSelection) {
-	      txt = $wnd.document.getSelection();
-	    } else if ($wnd.document.selection) {
-	      txt = $wnd.document.selection.createRange().text;
-	    } else {
-	      return;
-	    }
-	    return txt;
-	  }-*/;
-
 }
