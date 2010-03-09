@@ -7,8 +7,12 @@ import org.fedorahosted.flies.gwt.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
@@ -87,6 +91,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 	
 	private final TextArea textArea;
 	
+	private boolean isFocused = false;
+	
 	private int row;
 	private int col;
 	private HTMLTable table;
@@ -118,6 +124,21 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 		textArea = new TextArea();
 		textArea.setWidth("100%");
 		textArea.setStyleName("TableEditorContent-Edit");
+		textArea.addBlurHandler(new BlurHandler() {
+			@Override
+			public void onBlur(BlurEvent event) {
+				isFocused = false;				
+			}
+			
+		});
+		textArea.addFocusHandler(new FocusHandler() {
+
+			@Override
+			public void onFocus(FocusEvent event) {
+				isFocused = true;				
+			}
+			
+		});
 		textArea.addKeyUpHandler(new KeyUpHandler() {
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
@@ -194,6 +215,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 	
 	public boolean isEditing() {
 		return cellValue != null;
+	}
+	
+	public boolean isFocused() {
+		return isFocused;
 	}
 	
 	public void setText(String text) {

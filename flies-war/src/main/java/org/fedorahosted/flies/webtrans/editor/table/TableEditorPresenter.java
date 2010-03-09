@@ -272,28 +272,28 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		Event.addNativePreviewHandler(new NativePreviewHandler() {
 			@Override
 			public void onPreviewNativeEvent(NativePreviewEvent event) {
-		    	 //Only when the Table is showed, the keyboard event will be processed. 
-				 if(display.asWidget().isVisible()) {
-		    		  //Alt+Right arrow key
-					  if(event.getNativeEvent().getType().equals("keyup") && event.getNativeEvent().getAltKey() && event.getNativeEvent().getKeyCode()==KeyCodes.KEY_RIGHT) {
+		    	 //Only when the Table is showed and editor is closed, the keyboard event will be processed. 
+				 if(display.asWidget().isVisible() && !display.getTargetCellEditor().isFocused()) {
+		    		  //PageDown key
+					  if(event.getNativeEvent().getType().equals("keypress") && event.getNativeEvent().getKeyCode()==KeyCodes.KEY_PAGEDOWN) {
 						  Log.info("fired event of type " + event.getAssociatedType().getClass().getName());
 		    			  display.gotoNextPage();
 		    			  event.cancel();
 		    		  }
-		    		  //Alt+Left arrow key
-					  if(event.getNativeEvent().getType().equals("keyup") && event.getNativeEvent().getAltKey() && event.getNativeEvent().getKeyCode()==KeyCodes.KEY_LEFT) {
+		    		  //PageUp key
+					  if(event.getNativeEvent().getType().equals("keypress") && event.getNativeEvent().getKeyCode()==KeyCodes.KEY_PAGEUP) {
 		    			  Log.info("fired event of type " + event.getAssociatedType().getClass().getName());
 		    			  display.gotoPreviousPage();
 		    			  event.cancel();
 		    		  }
-					  //Shift+Home
-					  if(event.getNativeEvent().getType().equals("keyup") && event.getNativeEvent().getShiftKey() && event.getNativeEvent().getKeyCode()==KeyCodes.KEY_HOME) {
+					  //Home
+					  if(event.getNativeEvent().getType().equals("keypress") && event.getNativeEvent().getKeyCode()==KeyCodes.KEY_HOME) {
 		    			  Log.info("fired event of type " + event.getAssociatedType().getClass().getName());
 		    			  display.gotoFirstPage();
 		    			  event.cancel();
 		    		  }
-					  //Shift+End
-					  if(event.getNativeEvent().getType().equals("keyup") && event.getNativeEvent().getShiftKey() && event.getNativeEvent().getKeyCode()==KeyCodes.KEY_END) {
+					  //End
+					  if(event.getNativeEvent().getType().equals("keypress") && event.getNativeEvent().getKeyCode()==KeyCodes.KEY_END) {
 		    			  Log.info("fired event of type " + event.getAssociatedType().getClass().getName());
 		    			  display.gotoLastPage();
 		    			  event.cancel();
