@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.webtrans.gwt;
+package org.fedorahosted.flies.webtrans.server;
 
 import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;

@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.webtrans.gwt;
+package org.fedorahosted.flies.webtrans.server;
 
 import java.util.ArrayList;
 import java.util.Collection;

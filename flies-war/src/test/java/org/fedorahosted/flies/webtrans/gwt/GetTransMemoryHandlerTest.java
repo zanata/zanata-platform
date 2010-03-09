@@ -4,8 +4,8 @@ import org.testng.annotations.Test;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
-import static org.fedorahosted.flies.webtrans.gwt.GetTransMemoryHandler.toFuzzyLuceneQuery;
-import static org.fedorahosted.flies.webtrans.gwt.GetTransMemoryHandler.toLuceneQuery;
+import static org.fedorahosted.flies.webtrans.server.GetTransMemoryHandler.toFuzzyLuceneQuery;
+import static org.fedorahosted.flies.webtrans.server.GetTransMemoryHandler.toLuceneQuery;
 
 @Test(groups={"unit-tests"})
 public class GetTransMemoryHandlerTest {

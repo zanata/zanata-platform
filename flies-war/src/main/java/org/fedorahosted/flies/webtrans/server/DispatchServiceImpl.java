@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.webtrans.gwt;
+package org.fedorahosted.flies.webtrans.server;
 
 
 import org.fedorahosted.flies.gwt.common.DispatchService;

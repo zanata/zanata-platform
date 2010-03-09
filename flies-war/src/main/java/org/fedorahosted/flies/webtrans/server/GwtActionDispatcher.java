@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.webtrans.gwt;
+package org.fedorahosted.flies.webtrans.server;
 
 import net.customware.gwt.dispatch.server.DefaultDispatch;
 import net.customware.gwt.dispatch.shared.Action;
