@@ -39,13 +39,13 @@ public class AppView extends Composite implements AppPresenter.Display {
 	final Resources resources;
 
 	@UiField
-	DockLayoutPanel editorPanel;
+	DockLayoutPanel editorPanel, tuInfoPanel;
 	
 	@UiField
 	SplitLayoutPanel mainSplitPanel;
 	
 	@UiField
-	FlowPanel tuInfoPanel, tmPanel, transUnitNavigation;
+	FlowPanel tuInfoPanelInner, tmPanel, transUnitNavigation;
 	
 	@UiField(provided=true) 
 	Pager pager;
@@ -171,18 +171,18 @@ public class AppView extends Composite implements AppPresenter.Display {
 	@Override
 	public void setFilterView(Widget filterView) {
 		if(this.filterView != null) {
-			tuInfoPanel.remove(this.filterView);
+			tuInfoPanelInner.remove(this.filterView);
 		}
 		this.filterView = filterView;
-		tuInfoPanel.add(filterView);
+		tuInfoPanelInner.add(filterView);
 	}
 
 	@Override
 	public void setWorkspaceUsersView(Widget workspaceUsersView) {
 		if(this.workspaceUsersView != null) {
-			tuInfoPanel.remove(this.workspaceUsersView);
+			tuInfoPanelInner.remove(this.workspaceUsersView);
 		}
 		this.workspaceUsersView = workspaceUsersView;
-		tuInfoPanel.add(workspaceUsersView);
+		tuInfoPanelInner.add(workspaceUsersView);
 	}
 }

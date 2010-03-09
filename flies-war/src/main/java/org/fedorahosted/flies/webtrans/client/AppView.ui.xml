@@ -6,6 +6,12 @@
 	<ui:with field='resources' type="org.fedorahosted.flies.webtrans.client.Resources"/>
 	
 	<ui:style>
+		.blah{
+			 background: #99ccff;
+			 text-align: center;
+			 font-style: italic;
+			 font-weight: bold;
+		}
 		.topPanel {
 			padding: 6px;
 			border-bottom: 1px solid #e0e0e0;
@@ -114,8 +120,17 @@
 				<g:center>
 					<g:SplitLayoutPanel styleName="PageSplitLayoutPanel" ui:field="mainSplitPanel">
 						<g:east size="200">
-							<g:FlowPanel styleName="{style.tuinfo}" ui:field="tuInfoPanel">
-							</g:FlowPanel>
+							<g:DockLayoutPanel unit="PX" ui:field="tuInfoPanel" styleName="{style.tuinfo}">
+								<g:center>
+									<g:FlowPanel ui:field="tuInfoPanelInner">
+									</g:FlowPanel>
+								</g:center>
+								<g:south size="20">
+									<g:Label styleName="{style.blah}">
+										2 users in workspace
+									</g:Label>
+								</g:south>
+							</g:DockLayoutPanel>
 						</g:east>
 						<g:center>
 							<g:DockLayoutPanel ui:field="editorPanel" unit="PX">
