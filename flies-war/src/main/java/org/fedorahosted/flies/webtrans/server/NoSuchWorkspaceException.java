@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.webtrans;
+package org.fedorahosted.flies.webtrans.server;
 
 import org.jboss.seam.annotations.exception.HttpError;
 

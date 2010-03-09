@@ -24,8 +24,6 @@ import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.repository.model.HTermEntry;
 import org.fedorahosted.flies.repository.util.TranslationStatistics;
 import org.fedorahosted.flies.security.FliesIdentity;
-import org.fedorahosted.flies.webtrans.TranslationWorkspace;
-import org.fedorahosted.flies.webtrans.TranslationWorkspaceManager;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;

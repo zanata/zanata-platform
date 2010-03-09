@@ -1,9 +1,9 @@
-package org.fedorahosted.flies.webtrans;
+package org.fedorahosted.flies.webtrans.server;
 
 
 import org.fedorahosted.flies.common.LocaleId;
 
-final class WorkspaceKey{
+public final class WorkspaceKey{
 	
 	private final Long projectContainerId;
 	private final LocaleId localeId;

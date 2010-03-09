@@ -13,8 +13,6 @@ import org.fedorahosted.flies.gwt.rpc.UpdateTransUnitResult;
 import org.fedorahosted.flies.repository.model.HTextFlow;
 import org.fedorahosted.flies.repository.model.HTextFlowTarget;
 import org.fedorahosted.flies.security.FliesIdentity;
-import org.fedorahosted.flies.webtrans.TranslationWorkspace;
-import org.fedorahosted.flies.webtrans.TranslationWorkspaceManager;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;

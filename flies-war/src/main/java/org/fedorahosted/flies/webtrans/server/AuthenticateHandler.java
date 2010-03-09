@@ -11,7 +11,6 @@ import org.fedorahosted.flies.gwt.model.Person;
 import org.fedorahosted.flies.gwt.model.PersonId;
 import org.fedorahosted.flies.gwt.rpc.AuthenticateAction;
 import org.fedorahosted.flies.gwt.rpc.AuthenticateResult;
-import org.fedorahosted.flies.webtrans.TranslationWorkspaceManager;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
