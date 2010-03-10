@@ -73,8 +73,9 @@ public class FliesInit {
 
 		Attributes atts = mf.getMainAttributes();
 
-		System.out.println("Version: " + atts.getValue("Implementation-Version"));
-		System.out.println("Build: " + atts.getValue("Implementation-Build"));
+		// TODO store these somewhere for later
+		log.info("Version: {0}", atts.getValue("Implementation-Version"));
+		log.info("Build: {0}", atts.getValue("Implementation-Build"));
 
 //		if (dbunitImporter != null) {
 //			log.info("Importing development test data");
