@@ -2,19 +2,15 @@ package org.fedorahosted.flies.webtrans.client;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.layout.client.Layout.Alignment;
+import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 public class SidePanel extends Composite {
 
@@ -30,15 +26,34 @@ public class SidePanel extends Composite {
 	@UiField(provided = true)
 	LayoutPanel userPanel;
 
+	private final int HEIGHT_USERPANEL_EXPANDED = 200;
+	private final int HEIGHT_USERPANEL_COLLAPSED = 20;
+	private final int USERPANEL_COLLAPSE_DELAY = 2000;
+	
 	private final LayoutPanel self;
+
+	private final Timer collapseTimer = new Timer() {
+		@Override
+		public void run() {
+			collapseUserList();
+		}
+	};
+	
+	private boolean collapseTriggered = false;
+	private boolean collapsed = true;
 
 	public SidePanel() {
 		userPanel = new LayoutPanel() {
 			@Override
 			public void onBrowserEvent(Event event) {
-				if(event.getTypeInt() == Event.ONBLUR) {
-					if (!toggled) {
-						toggleUserList();
+				if(event.getTypeInt() == Event.ONMOUSEOUT) {
+					if (!collapsed) {
+						collapseUsersPanelSoon();
+					}					
+				}
+				else if(event.getTypeInt() == Event.ONMOUSEOVER) {
+					if (!collapsed) {
+						cancelCollapseUsersPanel();
 					}					
 				}
 				super.onBrowserEvent(event);
@@ -46,26 +61,46 @@ public class SidePanel extends Composite {
 		};
 		self = uiBinder.createAndBindUi(this);
 		initWidget(self);
-
-		userPanel.sinkEvents(Event.ONBLUR);
+		userPanel.sinkEvents(Event.ONMOUSEOUT | Event.ONMOUSEOVER);
 	}
+	
 
-	int counter = 0;
-
-	boolean toggled = true;
+	private void cancelCollapseUsersPanel() {
+		if(collapseTriggered) {
+			collapseTimer.cancel();
+			collapseTriggered = false;
+		}
+	}
 
 	@UiHandler("miniLink")
-	public void onMiniLinkClicked(ClickEvent event) {
-		toggleUserList();
+	public void onMiniLinkOver(MouseOverEvent event) {
+		expandUserList();
 	}
 
+	private void collapseUsersPanelSoon() {
+		collapseTriggered = true;
+		collapseTimer.schedule(USERPANEL_COLLAPSE_DELAY);
+	}
+
+	private void collapseUserList() {
+		if(collapsed) return;
+		toggleUserList();
+	}
+	
 	private void toggleUserList() {
 		self.forceLayout();
-		toggled = !toggled;
-		int bottomHeight = toggled ? 20 : 150;
+		collapsed = !collapsed;
+		
+		int bottomHeight = collapsed ? HEIGHT_USERPANEL_COLLAPSED : HEIGHT_USERPANEL_EXPANDED;
 		self
 				.setWidgetBottomHeight(userPanel, 0, Unit.PX, bottomHeight,
 						Unit.PX);
 		self.animate(250);
+	}
+	
+	private void expandUserList() {
+		cancelCollapseUsersPanel();
+		if(!collapsed) return;
+		toggleUserList();
 	}
 }
