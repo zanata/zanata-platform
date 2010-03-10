@@ -39,13 +39,16 @@ public class AppView extends Composite implements AppPresenter.Display {
 	final Resources resources;
 
 	@UiField
-	DockLayoutPanel editorPanel, tuInfoPanel;
+	DockLayoutPanel editorPanel;
+	
+	@UiField 
+	SidePanel sidePanel;
 	
 	@UiField
 	SplitLayoutPanel mainSplitPanel;
 	
 	@UiField
-	FlowPanel tuInfoPanelInner, tmPanel, transUnitNavigation;
+	FlowPanel tmPanel, transUnitNavigation;
 	
 	@UiField(provided=true) 
 	Pager pager;
@@ -66,7 +69,7 @@ public class AppView extends Composite implements AppPresenter.Display {
 		widgetInEditorView = editor;
 		
 		initWidget(uiBinder.createAndBindUi(this));
-		mainSplitPanel.setWidgetMinSize(tuInfoPanel, 200);
+		mainSplitPanel.setWidgetMinSize(sidePanel, 200);
 		mainSplitPanel.setWidgetMinSize(tmPanel, 150);
 		
 		
@@ -170,19 +173,19 @@ public class AppView extends Composite implements AppPresenter.Display {
 	
 	@Override
 	public void setFilterView(Widget filterView) {
-		if(this.filterView != null) {
-			tuInfoPanelInner.remove(this.filterView);
-		}
-		this.filterView = filterView;
-		tuInfoPanelInner.add(filterView);
+//		if(this.filterView != null) {
+//			tuInfoPanelInner.remove(this.filterView);
+//		}
+//		this.filterView = filterView;
+//		tuInfoPanelInner.add(filterView);
 	}
 
 	@Override
 	public void setWorkspaceUsersView(Widget workspaceUsersView) {
-		if(this.workspaceUsersView != null) {
-			tuInfoPanelInner.remove(this.workspaceUsersView);
-		}
-		this.workspaceUsersView = workspaceUsersView;
-		tuInfoPanelInner.add(workspaceUsersView);
+//		if(this.workspaceUsersView != null) {
+//			tuInfoPanelInner.remove(this.workspaceUsersView);
+//		}
+//		this.workspaceUsersView = workspaceUsersView;
+//		tuInfoPanelInner.add(workspaceUsersView);
 	}
 }

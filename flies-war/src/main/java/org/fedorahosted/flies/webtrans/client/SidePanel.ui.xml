@@ -1,0 +1,51 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:with field='resources' type="org.fedorahosted.flies.webtrans.client.Resources"/>
+
+	<ui:style>
+		.blah{
+			 background: #99ccff;
+			 text-align: center;
+			 font-style: italic;
+			 font-weight: bold;
+			 display: block;
+			 text-decoration: none;
+			 color: green;
+		}
+		
+		.usersContent {
+			 background: #99ffcc;
+		}
+		.tuinfo {
+			padding-right: 7px;
+			background-color: #F5F8FF;
+			border: 2px solid #99ccff;
+			-moz-border-radius: 7px;
+			-webkit-border-radius: 7px;
+		}
+		
+	</ui:style>
+	
+	<g:LayoutPanel styleName="{style.tuinfo}">
+		<!-- Position horizontally 25% from each edge;
+		Vertically 4px from the top and 10em tall. -->
+		<g:layer left='25%' right='25%' top='4px' height='10em'>
+			<g:Label>Hello world</g:Label>
+		</g:layer>
+		<g:layer bottom='0px' height='20px'>
+			<g:LayoutPanel ui:field="userPanel">
+				<g:layer top='0px' height='20px'>
+					<g:Anchor ui:field="miniLink" href="#" styleName="{style.blah}">
+						2 users in workspace
+					</g:Anchor>
+				</g:layer>
+				<g:layer top='22px' left='2px' right='2px' bottom='2px'>
+					<g:Label styleName="{style.usersContent}">content</g:Label>				
+				</g:layer>
+			</g:LayoutPanel>
+		</g:layer>
+	</g:LayoutPanel>
+	
+</ui:UiBinder> 

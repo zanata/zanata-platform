@@ -1,17 +1,12 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:f="urn:import:org.fedorahosted.flies.webtrans.client"
 	xmlns:fui="urn:import:org.fedorahosted.flies.webtrans.client.ui">
 	
 	<ui:with field='resources' type="org.fedorahosted.flies.webtrans.client.Resources"/>
 	
 	<ui:style>
-		.blah{
-			 background: #99ccff;
-			 text-align: center;
-			 font-style: italic;
-			 font-weight: bold;
-		}
 		.topPanel {
 			padding: 6px;
 			border-bottom: 1px solid #e0e0e0;
@@ -46,15 +41,6 @@
 			-webkit-border-top-left-radius: 7px;
 			-moz-border-radius-topright: 7px;
 			-webkit-border-top-right-radius: 7px;
-		}
-
-		.tuinfo {
-			padding-right: 7px;
-			background-color: #F5F8FF;
-			border: 2px solid #99ccff;
-			-moz-border-radius: 7px;
-			-webkit-border-radius: 7px;
-			
 		}
 		
 		.editor {
@@ -100,37 +86,11 @@
 			</g:HTMLPanel>
 		</g:north>
 		<g:center>
-			<g:DockLayoutPanel unit="PX">
-				<!--
-				TODO there has to be a better way of adding
-				the 7px paddings to the page than this 
-				 -->
-				<g:north size="7">
-					<g:FlowPanel />
-				</g:north>
-				<g:east size="7">
-					<g:FlowPanel />
-				</g:east>
-				<g:west size="7">
-					<g:FlowPanel />
-				</g:west>
-				<g:south size="7">
-					<g:FlowPanel />
-				</g:south>
-				<g:center>
+			<g:LayoutPanel>
+				<g:layer left='7px' right='7px' top='7px' bottom='7px'>
 					<g:SplitLayoutPanel styleName="PageSplitLayoutPanel" ui:field="mainSplitPanel">
 						<g:east size="200">
-							<g:DockLayoutPanel unit="PX" ui:field="tuInfoPanel" styleName="{style.tuinfo}">
-								<g:center>
-									<g:FlowPanel ui:field="tuInfoPanelInner">
-									</g:FlowPanel>
-								</g:center>
-								<g:south size="20">
-									<g:Label styleName="{style.blah}">
-										2 users in workspace
-									</g:Label>
-								</g:south>
-							</g:DockLayoutPanel>
+							<f:SidePanel ui:field="sidePanel"/>	   
 						</g:east>
 						<g:center>
 							<g:DockLayoutPanel ui:field="editorPanel" unit="PX">
@@ -158,8 +118,8 @@
 							</g:FlowPanel>
 						</g:south>
 					</g:SplitLayoutPanel>
-				</g:center>
-			</g:DockLayoutPanel>
+				</g:layer>
+			</g:LayoutPanel>
 		</g:center>
 	</g:DockLayoutPanel>
 </ui:UiBinder>
