@@ -1,8 +1,12 @@
 package org.fedorahosted.flies;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Proxy;
 import java.util.Properties;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.ObjectName;
@@ -12,12 +16,10 @@ import javax.naming.LinkRef;
 import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
+import javax.servlet.ServletContext;
 
-import org.fedorahosted.flies.rest.FliesRestSecurityInterceptor;
 import org.fedorahosted.flies.util.DBUnitImporter;
 import org.hibernate.jmx.StatisticsService;
-import org.jboss.resteasy.core.Dispatcher;
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
@@ -25,9 +27,9 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.contexts.ServletLifecycle;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
-import org.jboss.seam.resteasy.SeamResteasyProviderFactory;
 
 /**
  * Doesn't do much useful stuff except printing a log message and firing the
@@ -60,6 +62,20 @@ public class FliesInit {
 	@Observer("org.jboss.seam.postInitialization")
 	public void initFlies() throws Exception {
 		log.info(">>>>>>>>>>>> Starting Flies...");
+
+		ServletContext servletContext = ServletLifecycle.getCurrentServletContext();
+		String appServerHome = servletContext.getRealPath("/");
+
+		File manifestFile = new File(appServerHome, "META-INF/MANIFEST.MF");
+		 
+		Manifest mf = new Manifest();
+		mf.read(new FileInputStream(manifestFile));
+
+		Attributes atts = mf.getMainAttributes();
+
+		// TODO store these somewhere for later
+		log.info("Version: {0}", atts.getValue("Implementation-Version"));
+		log.info("Build: {0}", atts.getValue("Implementation-Build"));
 
 //		if (dbunitImporter != null) {
 //			log.info("Importing development test data");

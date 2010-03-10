@@ -22,7 +22,13 @@
     <module>flies-war</module>
     <module>thirdparty/gwt-codemirror</module>
   </modules>
+  <scm>
+    <connection>scm:hg:http://flies.googlecode.com/hg/</connection>
+    <developerConnection>scm:hg:https://flies.googlecode.com/hg/</developerConnection>
+    <url>http://code.google.com/p/flies/source/browse/</url>
+  </scm>
   <properties>
+    <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <version.gwt>2.0.3</version.gwt>
     <version.tennera>0.6</version.tennera>
