@@ -51,6 +51,7 @@ public class FliesInit {
 	private boolean hibernateStatistics = false;
 	private int authenticatedSessionTimeoutMinutes = 0;
 	private String version;
+	private String buildTimestamp;
 	
 	private String serverPath;
 
@@ -73,9 +74,10 @@ public class FliesInit {
 
 		Attributes atts = mf.getMainAttributes();
 
-		// TODO store these somewhere for later
-		log.info("Version: {0}", atts.getValue("Implementation-Version"));
-		log.info("Build: {0}", atts.getValue("Implementation-Build"));
+		version = atts.getValue("Implementation-Version");
+		buildTimestamp = atts.getValue("Implementation-Build");
+		log.info("Version: {0}", version);
+		log.info("Build: {0}", buildTimestamp);
 
 //		if (dbunitImporter != null) {
 //			log.info("Importing development test data");
@@ -133,12 +135,12 @@ public class FliesInit {
 		this.adminContact = adminContact;
 	}
 
-	public String getVersion() {
-		return version;
+	public String getBuildTimestamp() {
+		return buildTimestamp;
 	}
 	
-	public void setVersion(String version) {
-		this.version = version;
+	public String getVersion() {
+		return version;
 	}
 	
 	public String getServerPath() {
