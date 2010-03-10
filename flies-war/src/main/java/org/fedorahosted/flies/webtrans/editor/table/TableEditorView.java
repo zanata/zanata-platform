@@ -6,6 +6,8 @@ import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
 import org.fedorahosted.flies.webtrans.editor.filter.ContentFilter;
 
+
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -126,6 +128,14 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements
 	@Override
 	public HasPageCountChangeHandlers getPageCountChangeHandlers() {
 		return this;
+	}
+	
+	public boolean isFirstPage() {
+		return getCurrentPage() == 0;
+	}
+	
+	public boolean isLastPage() {
+		return getCurrentPage() == getPageCount()-1;
 	}
 	
 	public void setCachedPages(int cachedPages) {
