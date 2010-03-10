@@ -22,6 +22,11 @@
     <module>flies-war</module>
     <module>thirdparty/gwt-codemirror</module>
   </modules>
+  <scm>
+    <connection>scm:hg:http://flies.googlecode.com/hg/</connection>
+    <developerConnection>scm:hg:https://flies.googlecode.com/hg/</developerConnection>
+    <url>http://code.google.com/p/flies/source/browse/</url>
+  </scm>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <version.gwt>2.0.3</version.gwt>
