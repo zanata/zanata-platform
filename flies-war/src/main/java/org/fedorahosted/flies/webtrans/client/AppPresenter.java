@@ -51,7 +51,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		void setTransUnitNavigationView(Widget transUnitNavigation);
 		void setTranslationMemoryView(Widget translationMemoryView);
 		void setFilterView(Widget filterView);
-		void setWorkspaceUsersView(Widget workspaceUsersView);
 
 		void showDocumentsView();
 		void showEditorView();
@@ -65,7 +64,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 	private final TransUnitNavigationPresenter transUnitNavigationPresenter;
 	private final TransMemoryPresenter transMemoryPresenter;
 	private final TransFilterPresenter transFilterPresenter;
-	private final WorkspaceUsersPresenter workspaceUsersPresenter;
+	private final SidePanelPresenter sidePanelPresenter;
+	
 	
 	private final DispatchAsync dispatcher;
 	private String workspaceName;
@@ -82,7 +82,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 				final TransMemoryPresenter transMemoryPresenter,
 				final TransUnitNavigationPresenter transUnitNavigationPresenter,
 				final TransFilterPresenter transFilterPresenter,
-				final WorkspaceUsersPresenter workspaceUsersPresenter,
+				final SidePanelPresenter sidePanelPresenter,
 				final Identity identity) {
 		super(display, eventBus);
 		this.identity = identity;
@@ -94,7 +94,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		this.transUnitNavigationPresenter = transUnitNavigationPresenter;
 		this.transMemoryPresenter = transMemoryPresenter;
 		this.transFilterPresenter = transFilterPresenter;
-		this.workspaceUsersPresenter =  workspaceUsersPresenter;
+		this.sidePanelPresenter = sidePanelPresenter;
 	}
 
 	@Override
@@ -188,11 +188,10 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		transMemoryPresenter.bind();
 		display.setTranslationMemoryView(transMemoryPresenter.getDisplay().asWidget());
 		
+		sidePanelPresenter.bind();
+		
 		transFilterPresenter.bind();
 		display.setFilterView(transFilterPresenter.getDisplay().asWidget());
-		
-		workspaceUsersPresenter.bind();
-		display.setWorkspaceUsersView(workspaceUsersPresenter.getDisplay().asWidget());
 		
 	}
 

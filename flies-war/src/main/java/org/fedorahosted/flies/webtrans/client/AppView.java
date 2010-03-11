@@ -39,11 +39,11 @@ public class AppView extends Composite implements AppPresenter.Display {
 	
 	@UiField(provided = true)
 	final Resources resources;
-
+	
 	@UiField
 	DockLayoutPanel editorPanel;
 	
-	@UiField 
+	@UiField(provided=true)
 	SidePanel sidePanel;
 	
 	@UiField
@@ -61,9 +61,10 @@ public class AppView extends Composite implements AppPresenter.Display {
 	private Widget workspaceUsersView;
 	
 	@Inject
-	public AppView(Resources resources) {
+	public AppView(Resources resources, SidePanel sidePanel) {
 		this.resources = resources;
 		pager = new Pager(resources);
+		this.sidePanel = sidePanel; 
 
 		initWidget(uiBinder.createAndBindUi(this));
 		mainSplitPanel.setWidgetMinSize(sidePanel, 200);
@@ -161,8 +162,4 @@ public class AppView extends Composite implements AppPresenter.Display {
 		sidePanel.setFilterView(filterView);
 	}
 
-	@Override
-	public void setWorkspaceUsersView(Widget workspaceUsersView) {
-		sidePanel.setWorkspaceUsersView(workspaceUsersView);
-	}
 }

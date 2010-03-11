@@ -1,6 +1,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:f="urn:import:org.fedorahosted.flies.webtrans.client">
 
 	<ui:with field='resources' type="org.fedorahosted.flies.webtrans.client.Resources"/>
 
@@ -16,8 +17,7 @@
 		.usersContent {
 			 background: #99ffcc;
 		}
-		.tuinfo {
-			padding-right: 7px;
+		.sidePanel {
 			background-color: #F5F8FF;
 			border: 2px solid #99ccff;
 			-moz-border-radius: 7px;
@@ -26,9 +26,7 @@
 		
 	</ui:style>
 	
-	<g:LayoutPanel styleName="{style.tuinfo}">
-		<!-- Position horizontally 25% from each edge;
-		Vertically 4px from the top and 10em tall. -->
+	<g:LayoutPanel styleName="{style.sidePanel}">
 		<g:layer left='25%' right='25%' top='4px' height='10em'>
 			<g:Label>Hello world</g:Label>
 		</g:layer>
@@ -40,13 +38,10 @@
 		<g:layer bottom='0px' height='20px'>
 			<g:LayoutPanel ui:field="userPanel">
 				<g:layer top='0px' height='20px'>
-					<g:Label ui:field="miniUsersPanel" styleName="{style.miniUsersPanel}">
-						XX users in workspace
-					</g:Label>
+					<g:Label ui:field="miniUsersPanel" styleName="{style.miniUsersPanel}"/>
 				</g:layer>
 				<g:layer top='20px' bottom='0px'>
-					<g:LayoutPanel ui:field='userPanelContainer'>
-					</g:LayoutPanel>				
+					<f:WorkspaceUsersView ui:field="workspaceUsersView"/>				
 				</g:layer>
 			</g:LayoutPanel>
 		</g:layer>

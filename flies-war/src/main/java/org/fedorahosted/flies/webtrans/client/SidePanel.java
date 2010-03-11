@@ -13,8 +13,9 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 
-public class SidePanel extends Composite {
+public class SidePanel extends Composite implements SidePanelPresenter.Display {
 
 	private static SidePanelUiBinder uiBinder = GWT
 			.create(SidePanelUiBinder.class);
@@ -28,11 +29,11 @@ public class SidePanel extends Composite {
 	@UiField(provided=true)
 	LayoutPanel userPanel;
 	
-	@UiField	
-	LayoutPanel userPanelContainer;
-	
 	@UiField
 	LayoutPanel filterPanel;
+	
+	@UiField(provided=true)
+	WorkspaceUsersView workspaceUsersView;
 	
 	private final int HEIGHT_USERPANEL_EXPANDED = 200;
 	private final int HEIGHT_USERPANEL_COLLAPSED = 20;
@@ -50,7 +51,12 @@ public class SidePanel extends Composite {
 	private boolean collapseTriggered = false;
 	private boolean collapsed = true;
 
-	public SidePanel() {
+	private final WebTransMessages messages;
+	
+	@Inject
+	public SidePanel(WebTransMessages messages, WorkspaceUsersView workspaceUsersView) {
+		this.messages = messages;
+		this.workspaceUsersView = workspaceUsersView;
 		userPanel = new LayoutPanel() {
 			@Override
 			public void onBrowserEvent(Event event) {
@@ -70,16 +76,13 @@ public class SidePanel extends Composite {
 		self = uiBinder.createAndBindUi(this);
 		initWidget(self);
 		userPanel.sinkEvents(Event.ONMOUSEOUT | Event.ONMOUSEOVER);
+		updateUserCount(0);
 	}
 	
 	public void setFilterView(Widget filterView) {
 		filterPanel.add(filterView);
 	}
 	
-	public void setWorkspaceUsersView(Widget workspaceUsersView) {
-		userPanelContainer.add(workspaceUsersView);
-	}
-
 	private void cancelCollapseUsersPanel() {
 		if(collapseTriggered) {
 			collapseTimer.cancel();
@@ -117,5 +120,23 @@ public class SidePanel extends Composite {
 		cancelCollapseUsersPanel();
 		if(!collapsed) return;
 		toggleUserList();
+	}
+
+	@Override
+	public void updateUserCount(int count) {
+		miniUsersPanel.setText( messages.nUsersOnline(count) );
+	}
+
+	@Override
+	public Widget asWidget() {
+		return this;
+	}
+
+	@Override
+	public void startProcessing() {
+	}
+
+	@Override
+	public void stopProcessing() {
 	}
 }
