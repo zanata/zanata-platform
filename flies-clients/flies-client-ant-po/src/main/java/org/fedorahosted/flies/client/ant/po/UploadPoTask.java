@@ -2,8 +2,9 @@ package org.fedorahosted.flies.client.ant.po;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -13,8 +14,12 @@ import javax.xml.bind.Marshaller;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.taskdefs.MatchingTask;
+import org.cyclopsgroup.jcli.ArgumentProcessor;
+import org.cyclopsgroup.jcli.annotation.Argument;
+import org.cyclopsgroup.jcli.annotation.Cli;
+import org.cyclopsgroup.jcli.annotation.MultiValue;
+import org.cyclopsgroup.jcli.annotation.Option;
 import org.fedorahosted.flies.adapter.po.PoReader;
-import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.rest.ClientUtility;
@@ -25,6 +30,7 @@ import org.fedorahosted.flies.rest.dto.Documents;
 import org.jboss.resteasy.client.ClientResponse;
 import org.xml.sax.InputSource;
 
+@Cli(name = "uploadpo")
 public class UploadPoTask extends MatchingTask {
 
 	private String user;
@@ -33,14 +39,23 @@ public class UploadPoTask extends MatchingTask {
 	private File srcDir;
 	private String sourceLang = "en_US";
 	private boolean debug;
-	private ContentState contentState = ContentState.Approved;
+
+	public static void main(String[] args) throws Exception {
+		UploadPoTask upload = new UploadPoTask();
+		ArgumentProcessor<UploadPoTask> argProcessor = ArgumentProcessor.newInstance(UploadPoTask.class);
+		argProcessor.printHelp(new PrintWriter(System.out));
+		argProcessor.process(args, upload);
+//		upload.execute();
+	}
 	
-	File file;
-	public void setup() throws IOException{
-		file = File.createTempFile("poReaderTests", ".xml");
-		System.out.println("creating file: " + file);
-		if(file.exists())
-			file.delete();
+	private List<String> arguments = new ArrayList<String>();
+	 
+	@MultiValue
+	@Argument( description = "Left over arguments" )
+	public List<String> getArguments() { return arguments; }
+
+	public void setArguments(List<String> arguments) {
+		this.arguments = arguments;
 	}
 	
 	public void execute() throws BuildException, NoSuchElementException {
@@ -164,6 +179,7 @@ public class UploadPoTask extends MatchingTask {
 		this.dst = dst;
 	}
 
+	@Option(name = "s", longName = "src-dir", required = true)
 	public void setSrcDir(File srcDir) {
 		this.srcDir = srcDir;
 	}
