@@ -5,12 +5,15 @@ import java.util.ArrayList;
 import org.fedorahosted.flies.gwt.model.Person;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.HasMouseOverHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 
 public class WorkspaceUsersView extends Composite implements
 		WorkspaceUsersPresenter.Display {
@@ -24,8 +27,16 @@ public class WorkspaceUsersView extends Composite implements
 	@UiField
 	FlowPanel userListPanel;
 	
-	public WorkspaceUsersView() {
+	@UiField
+	Label headerLabel;
+	
+	private final WebTransMessages messages;
+	
+	@Inject
+	public WorkspaceUsersView(WebTransMessages messages) {
+		this.messages = messages;
 		initWidget(uiBinder.createAndBindUi(this));
+		headerLabel.setText(messages.nUsersOnline(0));
 	}
 
 	@Override
@@ -62,6 +73,13 @@ public class WorkspaceUsersView extends Composite implements
 		for(int i= userList.size();i<existingCount;i++){
 			userListPanel.remove(i-1);
 		}
+		
+		headerLabel.setText(messages.nUsersOnline(userList.size()));
+		
 	}
 
+	@Override
+	public HasMouseOverHandlers getCollapsedWidget() {
+		return headerLabel;
+	}
 }

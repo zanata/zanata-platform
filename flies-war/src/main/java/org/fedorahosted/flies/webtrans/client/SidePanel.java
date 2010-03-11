@@ -3,14 +3,12 @@ package org.fedorahosted.flies.webtrans.client;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -23,14 +21,11 @@ public class SidePanel extends Composite implements SidePanelPresenter.Display {
 	interface SidePanelUiBinder extends UiBinder<LayoutPanel, SidePanel> {
 	}
 
-	@UiField
-	Label miniUsersPanel;
-
 	@UiField(provided=true)
-	LayoutPanel userPanel;
+	LayoutPanel usersPanelContainer;
 	
 	@UiField
-	LayoutPanel filterPanel;
+	LayoutPanel filterPanelContainer;
 	
 	@UiField(provided=true)
 	WorkspaceUsersView workspaceUsersView;
@@ -39,25 +34,22 @@ public class SidePanel extends Composite implements SidePanelPresenter.Display {
 	private final int HEIGHT_USERPANEL_COLLAPSED = 20;
 	private final int USERPANEL_COLLAPSE_DELAY = 1500;
 	
-	private final LayoutPanel self;
+	private final LayoutPanel rootPanel;
 
 	private final Timer collapseTimer = new Timer() {
 		@Override
 		public void run() {
-			collapseUserList();
+			collapseUsersPanel();
 		}
 	};
 	
 	private boolean collapseTriggered = false;
 	private boolean collapsed = true;
 
-	private final WebTransMessages messages;
-	
 	@Inject
-	public SidePanel(WebTransMessages messages, WorkspaceUsersView workspaceUsersView) {
-		this.messages = messages;
+	public SidePanel(WorkspaceUsersView workspaceUsersView) {
 		this.workspaceUsersView = workspaceUsersView;
-		userPanel = new LayoutPanel() {
+		usersPanelContainer = new LayoutPanel() {
 			@Override
 			public void onBrowserEvent(Event event) {
 				if(event.getTypeInt() == Event.ONMOUSEOUT) {
@@ -66,21 +58,23 @@ public class SidePanel extends Composite implements SidePanelPresenter.Display {
 					}					
 				}
 				else if(event.getTypeInt() == Event.ONMOUSEOVER) {
-					if (!collapsed) {
+					if (collapsed) {
+						expandUsersPanel();
+					}
+					else{
 						cancelCollapseUsersPanel();
-					}					
+					}
 				}
 				super.onBrowserEvent(event);
 			}
 		};
-		self = uiBinder.createAndBindUi(this);
-		initWidget(self);
-		userPanel.sinkEvents(Event.ONMOUSEOUT | Event.ONMOUSEOVER);
-		updateUserCount(0);
+		rootPanel = uiBinder.createAndBindUi(this);
+		initWidget(rootPanel);
+		usersPanelContainer.sinkEvents(Event.ONMOUSEOUT | Event.ONMOUSEOVER);
 	}
 	
 	public void setFilterView(Widget filterView) {
-		filterPanel.add(filterView);
+		filterPanelContainer.add(filterView);
 	}
 	
 	private void cancelCollapseUsersPanel() {
@@ -90,41 +84,33 @@ public class SidePanel extends Composite implements SidePanelPresenter.Display {
 		}
 	}
 
-	@UiHandler("miniUsersPanel")
-	public void onMiniUsersPanelOver(MouseOverEvent event) {
-		expandUserList();
-	}
-
 	private void collapseUsersPanelSoon() {
 		collapseTriggered = true;
 		collapseTimer.schedule(USERPANEL_COLLAPSE_DELAY);
 	}
 
-	private void collapseUserList() {
+	@Override
+	public void collapseUsersPanel() {
 		if(collapsed) return;
-		toggleUserList();
+		toggleUsersPanel();
 	}
 	
-	private void toggleUserList() {
-		self.forceLayout();
+	private void toggleUsersPanel() {
+		rootPanel.forceLayout();
 		collapsed = !collapsed;
 		
 		int bottomHeight = collapsed ? HEIGHT_USERPANEL_COLLAPSED : HEIGHT_USERPANEL_EXPANDED;
-		self
-				.setWidgetBottomHeight(userPanel, 0, Unit.PX, bottomHeight,
+		rootPanel
+				.setWidgetBottomHeight(usersPanelContainer, 0, Unit.PX, bottomHeight,
 						Unit.PX);
-		self.animate(250);
+		rootPanel.animate(250);
 	}
 	
-	private void expandUserList() {
+	@Override
+	public void expandUsersPanel() {
 		cancelCollapseUsersPanel();
 		if(!collapsed) return;
-		toggleUserList();
-	}
-
-	@Override
-	public void updateUserCount(int count) {
-		miniUsersPanel.setText( messages.nUsersOnline(count) );
+		toggleUsersPanel();
 	}
 
 	@Override

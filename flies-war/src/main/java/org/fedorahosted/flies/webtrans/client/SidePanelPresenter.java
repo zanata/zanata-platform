@@ -17,7 +17,8 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Display> {
 	
 	public interface Display extends WidgetDisplay{
-		void updateUserCount(int count);
+		void collapseUsersPanel();
+		void expandUsersPanel();
 	}
 	
 	private final WorkspaceUsersPresenter workspaceUsersPresenter;

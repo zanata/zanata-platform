@@ -22,14 +22,30 @@
 			background: #F5F8FF;
 		}
 		
+		.headerLabel{
+			 background: #99ccff;
+			 text-align: center;
+			 font-style: italic;
+			 font-weight: bold;
+			 display: block;
+		}
+		
 	</ui:style>
-	
-	<g:LayoutPanel>
-		<g:layer>
-			<g:FlowPanel ui:field='userListPanel'  styleName='{style.userList}'>
-			</g:FlowPanel>
+
+	<g:LayoutPanel ui:field="userPanel">
+		<g:layer top='0px' height='20px'>
+			<g:Label ui:field="headerLabel" styleName="{style.headerLabel}"/>
 		</g:layer>
-		<!-- Could add a toolbar and chat entry window below here -->
+		<g:layer top='20px' bottom='0px'>
+			<g:LayoutPanel>
+				<g:layer>
+					<g:FlowPanel ui:field='userListPanel'  styleName='{style.userList}'>
+					</g:FlowPanel>
+				</g:layer>
+				<!-- Could add a toolbar and chat entry window below here -->
+			</g:LayoutPanel>
+		</g:layer>
 	</g:LayoutPanel>
+	
 	
 </ui:UiBinder> 

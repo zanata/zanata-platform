@@ -6,17 +6,6 @@
 	<ui:with field='resources' type="org.fedorahosted.flies.webtrans.client.Resources"/>
 
 	<ui:style>
-		.miniUsersPanel{
-			 background: #99ccff;
-			 text-align: center;
-			 font-style: italic;
-			 font-weight: bold;
-			 display: block;
-		}
-		
-		.usersContent {
-			 background: #99ffcc;
-		}
 		.sidePanel {
 			background-color: #F5F8FF;
 			border: 2px solid #99ccff;
@@ -32,16 +21,13 @@
 		</g:layer>
 		
 		<g:layer bottom='20px' height='200px'>
-			<g:LayoutPanel ui:field='filterPanel' />
+			<g:LayoutPanel ui:field='filterPanelContainer' />
 		</g:layer>
 		
 		<g:layer bottom='0px' height='20px'>
-			<g:LayoutPanel ui:field="userPanel">
-				<g:layer top='0px' height='20px'>
-					<g:Label ui:field="miniUsersPanel" styleName="{style.miniUsersPanel}"/>
-				</g:layer>
-				<g:layer top='20px' bottom='0px'>
-					<f:WorkspaceUsersView ui:field="workspaceUsersView"/>				
+			<g:LayoutPanel ui:field="usersPanelContainer">
+				<g:layer>
+					<f:WorkspaceUsersView ui:field="workspaceUsersView"/>
 				</g:layer>
 			</g:LayoutPanel>
 		</g:layer>

@@ -25,6 +25,7 @@ import org.fedorahosted.flies.webtrans.client.ui.HasNodeMouseOverHandlers;
 import org.fedorahosted.flies.webtrans.client.ui.TreeNodeImpl;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.dom.client.HasMouseOverHandlers;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -42,6 +43,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 		
 	public interface Display extends WidgetDisplay{
 		void updateUserList(ArrayList<Person> userList);
+		HasMouseOverHandlers getCollapsedWidget();
 	}
 	
 	@Inject
