@@ -19,6 +19,7 @@
 			height: 100%;
 			overflow-y: auto;
 			overflow-x: hidden;
+			background: #F5F8FF;
 		}
 		
 	</ui:style>
