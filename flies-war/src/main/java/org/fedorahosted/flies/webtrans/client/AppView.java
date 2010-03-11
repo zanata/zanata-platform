@@ -173,19 +173,11 @@ public class AppView extends Composite implements AppPresenter.Display {
 	
 	@Override
 	public void setFilterView(Widget filterView) {
-//		if(this.filterView != null) {
-//			tuInfoPanelInner.remove(this.filterView);
-//		}
-//		this.filterView = filterView;
-//		tuInfoPanelInner.add(filterView);
+		sidePanel.setFilterView(filterView);
 	}
 
 	@Override
 	public void setWorkspaceUsersView(Widget workspaceUsersView) {
-//		if(this.workspaceUsersView != null) {
-//			tuInfoPanelInner.remove(this.workspaceUsersView);
-//		}
-//		this.workspaceUsersView = workspaceUsersView;
-//		tuInfoPanelInner.add(workspaceUsersView);
+		sidePanel.setWorkspaceUsersView(workspaceUsersView);
 	}
 }

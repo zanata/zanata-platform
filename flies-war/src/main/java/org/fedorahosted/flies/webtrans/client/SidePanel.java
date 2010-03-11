@@ -10,7 +10,9 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 public class SidePanel extends Composite {
 
@@ -21,14 +23,20 @@ public class SidePanel extends Composite {
 	}
 
 	@UiField
-	Anchor miniLink;
+	Label miniUsersPanel;
 
-	@UiField(provided = true)
+	@UiField(provided=true)
 	LayoutPanel userPanel;
-
+	
+	@UiField	
+	LayoutPanel userPanelContainer;
+	
+	@UiField
+	LayoutPanel filterPanel;
+	
 	private final int HEIGHT_USERPANEL_EXPANDED = 200;
 	private final int HEIGHT_USERPANEL_COLLAPSED = 20;
-	private final int USERPANEL_COLLAPSE_DELAY = 2000;
+	private final int USERPANEL_COLLAPSE_DELAY = 1500;
 	
 	private final LayoutPanel self;
 
@@ -64,6 +72,13 @@ public class SidePanel extends Composite {
 		userPanel.sinkEvents(Event.ONMOUSEOUT | Event.ONMOUSEOVER);
 	}
 	
+	public void setFilterView(Widget filterView) {
+		filterPanel.add(filterView);
+	}
+	
+	public void setWorkspaceUsersView(Widget workspaceUsersView) {
+		userPanelContainer.add(workspaceUsersView);
+	}
 
 	private void cancelCollapseUsersPanel() {
 		if(collapseTriggered) {
@@ -72,8 +87,8 @@ public class SidePanel extends Composite {
 		}
 	}
 
-	@UiHandler("miniLink")
-	public void onMiniLinkOver(MouseOverEvent event) {
+	@UiHandler("miniUsersPanel")
+	public void onMiniUsersPanelOver(MouseOverEvent event) {
 		expandUserList();
 	}
 

@@ -13,5 +13,8 @@ public interface Resources extends ClientBundle {
 
 	@Source("flies_logo_small.png")
 	ImageResource logo();
+	
+	@Source("org/fedorahosted/flies/webtrans/images/silk/user.png")
+	ImageResource userOnline();
 
 }

@@ -5,14 +5,12 @@
 	<ui:with field='resources' type="org.fedorahosted.flies.webtrans.client.Resources"/>
 
 	<ui:style>
-		.blah{
+		.miniUsersPanel{
 			 background: #99ccff;
 			 text-align: center;
 			 font-style: italic;
 			 font-weight: bold;
 			 display: block;
-			 text-decoration: none;
-			 color: green;
 		}
 		
 		.usersContent {
@@ -34,15 +32,21 @@
 		<g:layer left='25%' right='25%' top='4px' height='10em'>
 			<g:Label>Hello world</g:Label>
 		</g:layer>
+		
+		<g:layer bottom='20px' height='200px'>
+			<g:LayoutPanel ui:field='filterPanel' />
+		</g:layer>
+		
 		<g:layer bottom='0px' height='20px'>
 			<g:LayoutPanel ui:field="userPanel">
 				<g:layer top='0px' height='20px'>
-					<g:Anchor ui:field="miniLink" href="#" styleName="{style.blah}">
-						2 users in workspace
-					</g:Anchor>
+					<g:Label ui:field="miniUsersPanel" styleName="{style.miniUsersPanel}">
+						XX users in workspace
+					</g:Label>
 				</g:layer>
-				<g:layer top='22px' left='2px' right='2px' bottom='2px'>
-					<g:Label styleName="{style.usersContent}">content</g:Label>				
+				<g:layer top='20px' bottom='0px'>
+					<g:LayoutPanel ui:field='userPanelContainer'>
+					</g:LayoutPanel>				
 				</g:layer>
 			</g:LayoutPanel>
 		</g:layer>

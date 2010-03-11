@@ -1,0 +1,16 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.userListItem {
+			border: 1px solid #99ccff;
+			text-align: center;
+			padding: 10px;
+		}
+	</ui:style>
+	<g:HTMLPanel>
+		<div class='{style.userListItem}'>
+			<span ui:field='name'/>
+		</div>
+	</g:HTMLPanel>
+</ui:UiBinder> 
