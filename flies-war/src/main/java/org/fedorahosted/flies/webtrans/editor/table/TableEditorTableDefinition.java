@@ -153,10 +153,15 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 		};
 		EditRowCallback transValueCallBack = new EditRowCallback() {
 			 @Override
-			 public void gotoRow(int row) {
-				 tableModel.gotoRow(row);
+			 public void gotoNextRow(int row) {
+				 tableModel.gotoNextRow(row);
 	         }
 
+			 @Override
+			 public void gotoPrevRow(int row) {
+				 tableModel.gotoPrevRow(row);
+	         }
+			 
 			@Override
 			public void gotoNextFuzzy(int row, ContentState state) {
 				tableModel.gotoNextFuzzy(row, state);

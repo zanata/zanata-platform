@@ -59,10 +59,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 	private ClickHandler acceptHandler = new ClickHandler() {
 		public void onClick(ClickEvent event) {
 			acceptEdit();
-			if(row < MAX_PAGE_ROW && row >= 0) {
-				row = row +1;
+			if(curRow < MAX_PAGE_ROW && curRow >= 0) {
+				curRow = curRow +1;
 			}
-			gotoRow(row);
+			gotoNextRow(curRow);
 		}
 	};
 	
@@ -93,8 +93,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 	
 	private boolean isFocused = false;
 	
-	private int row;
-	private int col;
+	private int curRow;
+	private int curCol;
 	private HTMLTable table;
 	/**
 	 * Construct a new {@link InlineTargetCellEditor}.
@@ -145,8 +145,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 				// NB: if you change these, please change NavigationConsts too!
 				if(event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
 					acceptEdit();
-					incRow();
-					gotoRow(row);
+					gotoNextRow(curRow);
 				} else if(event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE) {
 					cancelEdit();
 				} else if(event.isControlKeyDown() && event.isShiftKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN) { // was alt-e
@@ -189,8 +188,12 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 		operationsPanel.add(acceptButton);
 	}
 
-	private void gotoRow(int row) {
-			editRowCallback.gotoRow(row);
+	private void gotoNextRow(int row) {
+		editRowCallback.gotoNextRow(row);
+	}
+	
+	private void gotoPrevRow(int row) {
+		editRowCallback.gotoPrevRow(row);
 	}
 	
 	private void gotoNextFuzzy(int row, ContentState state) {
@@ -203,7 +206,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 
 	private void restoreView() {
 		if(curCellEditInfo != null && cellViewWidget != null) {
-			curCellEditInfo.getTable().setWidget(row, col, cellViewWidget);
+			curCellEditInfo.getTable().setWidget(curRow, curCol, cellViewWidget);
 			cellViewWidget.getParent().setHeight(cellViewWidget.getOffsetHeight()+"px");
 		}
 	}
@@ -237,7 +240,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 	    }
 		
 		if( isEditing() ){
-			if(cellEditInfo.getCellIndex() == col && cellEditInfo.getRowIndex() == row){
+			if(cellEditInfo.getCellIndex() == curCol && cellEditInfo.getRowIndex() == curRow){
 				return;
 			}
 			restoreView();
@@ -252,12 +255,12 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 		// Get the info about the cell
 		table = curCellEditInfo.getTable();
 
-		row = curCellEditInfo.getRowIndex();
-		col = curCellEditInfo.getCellIndex();
+		curRow = curCellEditInfo.getRowIndex();
+		curCol = curCellEditInfo.getCellIndex();
 
-		cellViewWidget = table.getWidget(row, col);
-		textArea.setHeight( table.getWidget(row, col-1).getOffsetHeight() + "px");
-		table.setWidget(row, col, layoutTable);
+		cellViewWidget = table.getWidget(curRow, curCol);
+		textArea.setHeight( table.getWidget(curRow, curCol-1).getOffsetHeight() + "px");
+		table.setWidget(curRow, curCol, layoutTable);
 
 		textArea.setText(cellValue.getTarget());
 		this.cellValue = cellValue;
@@ -330,38 +333,20 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 		return true;
 	}
 
-	private void incRow() {
-		if(row < MAX_PAGE_ROW && row >= 0) {
-			row = row +1;
-		}
-	}
-
-	private void decRow() {
-		if(row <= MAX_PAGE_ROW && row > 0) {
-			row = row -1;
-		}
-	}
-
 	public void handleNext() {
-		cancelEdit();
-		incRow();
-		gotoRow(row);
+		gotoNextRow(curRow);
 	}
 
 	public void handlePrev() {
-		cancelEdit();
-		decRow();
-		gotoRow(row);
+		gotoPrevRow(curRow);
 	}
 
 	public void handleNextFuzzy(ContentState state) {
-		cancelEdit();
-		gotoNextFuzzy(row, state);
+		gotoNextFuzzy(curRow, state);
 	}
 
 	public void handlePrevFuzzy(ContentState state) {
-		cancelEdit();
-		gotoPrevFuzzy(row, state);
+		gotoPrevFuzzy(curRow, state);
 	}
 
 //	public void handleNextNew() {
