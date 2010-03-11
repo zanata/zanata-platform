@@ -149,9 +149,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 				} else if(event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE) {
 					cancelEdit();
 				} else if(event.isControlKeyDown() && event.isShiftKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN) { // was alt-e
-					handleNextFuzzy(ContentState.NeedReview);
+					handleNextState(ContentState.NeedReview);
 				} else if(event.isControlKeyDown() && event.isShiftKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEUP) { // was alt-m
-					handlePrevFuzzy(ContentState.NeedReview);
+					handlePrevState(ContentState.NeedReview);
 //				} else if(event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN) { // bad in Firefox
 				} else if(event.isAltKeyDown() && event.isDownArrow()) {
 					handleNext();
@@ -159,9 +159,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 				} else if(event.isAltKeyDown() && event.isUpArrow()) {
 					handlePrev();
 				} else if(event.isAltKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN) { //alt-down
-					handleNextFuzzy(ContentState.New);
+					handleNextState(ContentState.New);
 				} else if(event.isAltKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEUP) { // alt-up
-					handlePrevFuzzy(ContentState.New);
+					handlePrevState(ContentState.New);
 				}
 			}
 
@@ -341,11 +341,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 		gotoPrevRow(curRow);
 	}
 
-	public void handleNextFuzzy(ContentState state) {
+	public void handleNextState(ContentState state) {
 		gotoNextFuzzy(curRow, state);
 	}
 
-	public void handlePrevFuzzy(ContentState state) {
+	public void handlePrevState(ContentState state) {
 		gotoPrevFuzzy(curRow, state);
 	}
 

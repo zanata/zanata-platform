@@ -49,6 +49,11 @@
 			<artifactId>slf4j-log4j12</artifactId>
 			<scope>test</scope>
 		</dependency>
+       <dependency>
+            <groupId>org.cyclopsgroup</groupId>
+            <artifactId>jcli</artifactId>
+            <version>1.0-alpha-4</version>
+       </dependency>
 	</dependencies>
 
 	<build>
