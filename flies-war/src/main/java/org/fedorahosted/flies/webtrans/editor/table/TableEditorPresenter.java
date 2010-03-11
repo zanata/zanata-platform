@@ -250,9 +250,9 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 					if (event.getRowType() == ContentState.NeedReview ||
 							event.getRowType() == ContentState.New) {
 						if (step > 0)
-							editor.handleNextFuzzy(event.getRowType());
+							editor.handleNextState(event.getRowType());
 						else
-							editor.handlePrevFuzzy(event.getRowType());
+							editor.handlePrevState(event.getRowType());
 					}
 				}
 			}
@@ -282,34 +282,37 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 					 int keyCode = nativeEvent.getKeyCode();
 					 if(nativeEventType.equals("keypress")) {
 						  //PageDown key
-						  if (keyCode ==KeyCodes.KEY_PAGEDOWN) {
-						
-							  Log.info("fired event of type " + event.getAssociatedType().getClass().getName());
-							  if(!display.isLastPage())
-								  gotoNextPage();
-							  event.cancel();
-						  }
-						  //PageUp key
-						  if(keyCode ==KeyCodes.KEY_PAGEUP) {
-							  Log.info("fired event of type " + event.getAssociatedType().getClass().getName());
-							  if(!display.isFirstPage())
-								  gotoPreviousPage();
-							  event.cancel();
-						  }
-						  //Home
-						  if(keyCode ==KeyCodes.KEY_HOME) {
-							  Log.info("fired event of type " + event.getAssociatedType().getClass().getName());
-							  display.gotoFirstPage();
-							  event.cancel();
-						  }
-						  //End
-						  if(keyCode ==KeyCodes.KEY_END) {
-							  Log.info("fired event of type " + event.getAssociatedType().getClass().getName());
-							  display.gotoLastPage();
-							  event.cancel();
-						  }
-					  }	  
-		    	  }
+						  switch(keyCode) {
+						  	  case KeyCodes.KEY_PAGEDOWN: 
+						  		  Log.info("fired event of type " + event.getAssociatedType().getClass().getName());
+						  		  if(!display.isLastPage())
+						  			  gotoNextPage();
+						  		  event.cancel();
+							  break;
+							  //PageUp key
+							  case KeyCodes.KEY_PAGEUP:
+								  Log.info("fired event of type " + event.getAssociatedType().getClass().getName());
+								  if(!display.isFirstPage())
+									  gotoPreviousPage();
+								  event.cancel();
+						      break;
+						      //Home
+							  case KeyCodes.KEY_HOME: 
+								  Log.info("fired event of type " + event.getAssociatedType().getClass().getName());
+								  display.gotoFirstPage();
+								  event.cancel();
+							  break;
+						      //End
+							  case KeyCodes.KEY_END:
+								  Log.info("fired event of type " + event.getAssociatedType().getClass().getName());
+								  display.gotoLastPage();
+								  event.cancel();
+								  break;
+						      default:
+						    	  break;
+						  }	  
+					 }
+				 }
 			}
 		});
 		
@@ -416,8 +419,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 				cancelEdit();
 				selectedTransUnit = display.getTransUnitValue(nextRow);
 				display.gotoRow(nextRow);
-			} 
-			if(nextRow > MAX_PAGE_ROW) {
+			} else if(nextRow > MAX_PAGE_ROW) {
 				if(!display.isLastPage()) {
 					cancelEdit();
 					display.gotoNextPage();
@@ -435,8 +437,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 				cancelEdit();
 				selectedTransUnit = display.getTransUnitValue(prevRow);
 				display.gotoRow(prevRow);
-			} 
-			if(prevRow < 0) {
+			} else if(prevRow < 0) {
 				if(!display.isFirstPage()) {
 					cancelEdit();
 					display.gotoPreviousPage();
@@ -499,35 +500,34 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	
 	
 	private void prevFuzzy(int row, ContentState desiredState) { 
-		int currow  = row;
 		row=row-1;
 		while(row > 0) {
 			if(display.getTransUnitValue(row).getStatus() == desiredState) {
-				display.gotoRow(row);
+				cancelEdit();
 				selectedTransUnit = display.getTransUnitValue(row);
+				display.gotoRow(row);
 				break;
 			}
 			else {
 				row = row - 1;
 			}
 		}
-		//If the last row is not fuzzy, we will keep the editor in current row open
-		if(row == 0 && display.getTransUnitValue(row).getStatus() != desiredState) {
-			display.gotoRow(currow);
-			selectedTransUnit = display.getTransUnitValue(currow);
-		}
-		else if(row == 0 && display.getTransUnitValue(row).getStatus() == desiredState) {
-			display.gotoRow(row);
-			selectedTransUnit = display.getTransUnitValue(row);
+
+		if(row < 0) {
+			if(!display.isFirstPage()) {
+				cancelEdit();
+				display.gotoPreviousPage();
+				prevFuzzy(MAX_PAGE_ROW+1, desiredState);
+			}
 		}
 		
 	}
 	
 	private void nextFuzzy(int row, ContentState desiredState) { 
-		int currow  = row;
 		row=row+1;
-		while(row < MAX_PAGE_ROW) {
+		while(row <= MAX_PAGE_ROW) {
 			if(display.getTransUnitValue(row).getStatus()==desiredState) {
+				cancelEdit();
 				selectedTransUnit = display.getTransUnitValue(row);
 				display.gotoRow(row);
 				break;
@@ -535,15 +535,14 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 			else {
 				row = row + 1;
 			}
-		}
-		//If the last row is not fuzzy, we will keep the editor in current row open
-		if(row == MAX_PAGE_ROW && display.getTransUnitValue(row).getStatus() !=desiredState) {
-			display.gotoRow(currow);
-			selectedTransUnit = display.getTransUnitValue(currow);
-		}
-		else if(row == MAX_PAGE_ROW && display.getTransUnitValue(row).getStatus() ==desiredState) {
-			display.gotoRow(row);
-			selectedTransUnit = display.getTransUnitValue(row);
+		} 
+		
+		if(row > MAX_PAGE_ROW) {
+			if(!display.isLastPage()) {
+				cancelEdit();
+				display.gotoNextPage();
+				nextFuzzy(-1, desiredState);
+			} 
 		}
 		
 	}
