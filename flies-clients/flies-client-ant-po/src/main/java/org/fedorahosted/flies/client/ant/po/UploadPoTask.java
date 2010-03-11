@@ -2,17 +2,19 @@ package org.fedorahosted.flies.client.ant.po;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.taskdefs.MatchingTask;
 import org.cyclopsgroup.jcli.ArgumentProcessor;
 import org.cyclopsgroup.jcli.annotation.Argument;
@@ -30,7 +32,7 @@ import org.fedorahosted.flies.rest.dto.Documents;
 import org.jboss.resteasy.client.ClientResponse;
 import org.xml.sax.InputSource;
 
-@Cli(name = "uploadpo")
+@Cli(name = "uploadpo", description = "Uploads a Publican project's PO/POT files to Flies for translation")
 public class UploadPoTask extends MatchingTask {
 
 	private String user;
@@ -39,13 +41,32 @@ public class UploadPoTask extends MatchingTask {
 	private File srcDir;
 	private String sourceLang = "en_US";
 	private boolean debug;
+	private boolean help;
 
 	public static void main(String[] args) throws Exception {
 		UploadPoTask upload = new UploadPoTask();
 		ArgumentProcessor<UploadPoTask> argProcessor = ArgumentProcessor.newInstance(UploadPoTask.class);
-		argProcessor.printHelp(new PrintWriter(System.out));
 		argProcessor.process(args, upload);
-//		upload.execute();
+
+		if (upload.help)
+			help(argProcessor);
+		if (upload.srcDir == null)
+			missingOption("--src");
+			
+		upload.execute();
+	}
+	
+	private static void missingOption(String name) {
+		System.out.println("Required option missing: "+name);
+		System.exit(1);
+	}
+
+	private static void help(ArgumentProcessor<?> argProcessor)
+			throws IOException {
+		final PrintWriter out = new PrintWriter(System.out);
+		argProcessor.printHelp(out);
+		out.flush();
+		System.exit(0);
 	}
 	
 	private List<String> arguments = new ArrayList<String>();
@@ -58,14 +79,22 @@ public class UploadPoTask extends MatchingTask {
 		this.arguments = arguments;
 	}
 	
-	public void execute() throws BuildException, NoSuchElementException {
+	public void execute() throws BuildException {
 		ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
-//		Document doc = new Document("doc1","mydoc.doc", "/", PoReader.PO_CONTENT_TYPE);
-		
 		try {
 			// make sure RESTEasy classes will be found:
 			Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-			
+			process();
+		} catch (Exception e) {
+			throw new BuildException(e);
+		} finally {
+			Thread.currentThread().setContextClassLoader(oldLoader);
+		}
+	}
+	
+	public void process() throws JAXBException, MalformedURLException, URISyntaxException {
+//		Document doc = new Document("doc1","mydoc.doc", "/", PoReader.PO_CONTENT_TYPE);
+		
 //			InputSource inputSource = new InputSource("file:/home/cchance/src/fedorahosted/flies/flies-client/flies-client-ant-po/src/test/resources/test-input/ja-JP/Accounts_And_Subscriptions.po");
 //			
 //			inputSource.setEncoding("utf8");
@@ -76,17 +105,19 @@ public class UploadPoTask extends MatchingTask {
 //			poReader.extractTemplate(doc, inputSource);
 			
 			// scan the directory for pot files
-			DirectoryScanner ds = getDirectoryScanner(srcDir);
-			if (!getImplicitFileSet().hasPatterns())
-				ds.setIncludes(new String[] { "pot/*.pot" }); //$NON-NLS-1$
-			ds.scan();
-			String[] potFilenames = ds.getIncludedFiles();
+			File potDir = new File(srcDir, "pot");
+			File[] potFiles = potDir.listFiles(new FileFilter() {
+				@Override
+				public boolean accept(File pathname) {
+					return pathname.isFile() && pathname.getName().endsWith(".pot");
+				}
+			});
 			
 			// debug: print scanned files
 			if (debug) {
 				System.out.println("Here are scanned files: ");
-				for (String potFilename : potFilenames)
-					System.out.println(potFilename);
+				for (File potFile : potFiles)
+					System.out.println("  "+potFile);
 			}
 
 			JAXBContext jc = JAXBContext.newInstance(Documents.class);
@@ -107,9 +138,8 @@ public class UploadPoTask extends MatchingTask {
 			});
 			
 			// for each of the base pot files under srcdir/pot:
-			for (String potFilename : potFilenames) {
+			for (File potFile : potFiles) {
 //				progress.update(i++, files.length);
-				File potFile = new File(srcDir, potFilename);
 //				File sourceLang = new File(srcDir, locale);
 				String basename = StringUtil.removeFileExtension(potFile.getName(), ".pot");
 				Document doc = new Document(basename, ContentType.TextPlain);
@@ -154,12 +184,6 @@ public class UploadPoTask extends MatchingTask {
 				ClientResponse response = documentsResource.put(docs);
 				ClientUtility.checkResult(response, dstURL);
 			}
-
-		} catch (Exception e) {
-			throw new BuildException(e);
-		} finally {
-			Thread.currentThread().setContextClassLoader(oldLoader);
-		}
 	}
 	
 	@Override
@@ -178,8 +202,9 @@ public class UploadPoTask extends MatchingTask {
 	public void setDst(String dst) {
 		this.dst = dst;
 	}
-
-	@Option(name = "s", longName = "src-dir", required = true)
+	
+	// NB options whose longNames with "-" never get set
+	@Option(name = "s", longName = "src", required = true, description = "Base directory for publican files")
 	public void setSrcDir(File srcDir) {
 		this.srcDir = srcDir;
 	}
@@ -188,7 +213,13 @@ public class UploadPoTask extends MatchingTask {
 		this.sourceLang = sourceLang;
 	}
 
+	@Option(name = "d", longName = "debug", description = "Enable debug mode")
 	public void setDebug(boolean debug) {
 		this.debug = debug;
+	}
+	
+	@Option(name = "h", longName = "help", description = "Display this help and exit")
+	public void setHelp(boolean help) {
+		this.help = help;
 	}
 }
