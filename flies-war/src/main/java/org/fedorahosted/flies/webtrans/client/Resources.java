@@ -11,7 +11,7 @@ public interface Resources extends ClientBundle {
 	// @Source("Style.css")
 	// Style style();
 
-	@Source("flies_logo_small.png")
+	@Source("org/fedorahosted/flies/webtrans/images/flies_logo_small.png")
 	ImageResource logo();
 	
 	@Source("org/fedorahosted/flies/webtrans/images/silk/user.png")
