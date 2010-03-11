@@ -15,10 +15,6 @@
     <module>flies-rest-client</module>
     <module>flies-clients</module>
     <module>flies-gwt-api</module>
-    <!-- NB: flies-webtrans should be compiled *and installed to the local repo* before compiling flies-war.
-         This might change if we use maven-war-plugin's overlay support.
-    <module>flies-webtrans</module>
-     -->
     <module>flies-war</module>
     <module>thirdparty/gwt-codemirror</module>
   </modules>
@@ -30,7 +26,12 @@
   <properties>
     <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <version.drools>5.0.1</version.drools>
     <version.gwt>2.0.3</version.gwt>
+    <version.jboss.embedded>beta3.SP10</version.jboss.embedded>
+    <version.resteasy>1.1.GA</version.resteasy>
+    <version.richfaces>3.3.1.GA</version.richfaces>
+    <version.seam>2.2.0.GA</version.seam>
     <version.tennera>0.6</version.tennera>
   </properties>
   
@@ -116,6 +117,11 @@
 		    </targets>
 		    <defaultTarget>explode</defaultTarget>
 		  </configuration>
+		</plugin>
+		<plugin>
+		   <groupId>org.twdata.maven</groupId>
+		   <artifactId>maven-cli-plugin</artifactId>
+		   <version>1.0.3</version>
 		</plugin>
     </plugins>
     
@@ -258,6 +264,12 @@
   </repositories>
 
   <pluginRepositories>
+
+	<pluginRepository>
+	  <id>twdata-m2-repository</id>
+	  <name>twdata.org Maven 2 Repository</name>
+	  <url>http://twdata-m2-repository.googlecode.com/svn/</url>
+	</pluginRepository>
 
     <pluginRepository>
       <id>snapshots.jboss.org</id>
