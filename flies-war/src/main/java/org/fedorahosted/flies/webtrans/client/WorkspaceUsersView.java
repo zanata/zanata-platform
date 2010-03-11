@@ -78,7 +78,6 @@ public class WorkspaceUsersView extends Composite implements
 		
 	}
 
-	@Override
 	public HasMouseOverHandlers getCollapsedWidget() {
 		return headerLabel;
 	}

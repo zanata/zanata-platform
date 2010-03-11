@@ -43,7 +43,6 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 		
 	public interface Display extends WidgetDisplay{
 		void updateUserList(ArrayList<Person> userList);
-		HasMouseOverHandlers getCollapsedWidget();
 	}
 	
 	@Inject
