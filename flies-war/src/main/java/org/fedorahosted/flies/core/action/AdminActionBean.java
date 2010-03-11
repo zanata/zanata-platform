@@ -2,8 +2,6 @@ package org.fedorahosted.flies.core.action;
 
 import org.fedorahosted.flies.core.model.HCommunity;
 import org.fedorahosted.flies.core.model.HIterationProject;
-import org.fedorahosted.flies.repository.model.HDocument;
-import org.fedorahosted.flies.repository.model.HParentResource;
 import org.fedorahosted.flies.repository.model.HTextFlow;
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
@@ -11,7 +9,6 @@ import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Transaction;
 import org.hibernate.search.FullTextSession;
-import org.hibernate.search.Search;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
