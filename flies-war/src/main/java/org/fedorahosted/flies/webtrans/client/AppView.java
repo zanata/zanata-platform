@@ -5,6 +5,7 @@ import org.fedorahosted.flies.webtrans.client.ui.Pager;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.gen2.logging.shared.Log;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -15,6 +16,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -32,8 +34,8 @@ public class AppView extends Composite implements AppPresenter.Display {
 	@UiField
 	SpanElement user, workspaceName, workspaceLocale;
 
-	@UiField(provided=true)
-	Widget editor;
+	@UiField
+	LayoutPanel editor;
 	
 	@UiField(provided = true)
 	final Resources resources;
@@ -55,7 +57,6 @@ public class AppView extends Composite implements AppPresenter.Display {
 	
 	private Widget documentListView;
 	private Widget editorView;
-	private Widget widgetInEditorView;
 	private Widget filterView;
 	private Widget workspaceUsersView;
 	
@@ -64,10 +65,6 @@ public class AppView extends Composite implements AppPresenter.Display {
 		this.resources = resources;
 		pager = new Pager(resources);
 
-		// TODO this could be some sort of welcome page
-		editor = new HTML("");
-		widgetInEditorView = editor;
-		
 		initWidget(uiBinder.createAndBindUi(this));
 		mainSplitPanel.setWidgetMinSize(sidePanel, 200);
 		mainSplitPanel.setWidgetMinSize(tmPanel, 150);
@@ -95,30 +92,16 @@ public class AppView extends Composite implements AppPresenter.Display {
 
 	@Override
 	public void showDocumentsView() {
-		if(documentListView == null) {
-			throw new RuntimeException("documentListView is not set");
-		}
-		else if(widgetInEditorView == documentListView) {
-			return;
-		}
-		editorPanel.remove(widgetInEditorView);
-		widgetInEditorView = documentListView;
-		editorPanel.add(documentListView);
+		editor.setWidgetTopBottom(documentListView, 0, Unit.PX, 0, Unit.PX);
+		editor.setWidgetTopHeight(editorView, 0, Unit.PX, 0, Unit.PX);
 		pager.setVisible(false);
 		transUnitNavigation.setVisible(false);
 	}
 	
 	@Override
 	public void showEditorView() {
-		if(editorView == null) {
-			throw new RuntimeException("editorView is not set");
-		}
-		else if (widgetInEditorView == editorView ) {
-			return;
-		}
-		editorPanel.remove(widgetInEditorView);
-		widgetInEditorView = editorView;
-		editorPanel.add(editorView);
+		editor.setWidgetTopBottom(editorView, 0, Unit.PX, 0, Unit.PX);
+		editor.setWidgetTopHeight(documentListView, 0, Unit.PX, 0, Unit.PX);
 		pager.setVisible(true);
 		transUnitNavigation.setVisible(true);
 	}
@@ -146,11 +129,13 @@ public class AppView extends Composite implements AppPresenter.Display {
 
 	@Override
 	public void setDocumentListView(Widget documentListView) {
+		this.editor.add(documentListView);
 		this.documentListView = documentListView;
 	}
 	
 	@Override
 	public void setEditorView(Widget editorView) {
+		this.editor.add(editorView);
 		this.editorView = editorView;
 	}
 	

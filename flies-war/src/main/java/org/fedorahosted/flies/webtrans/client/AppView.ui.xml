@@ -105,7 +105,7 @@
 									</g:HTMLPanel>
 								</g:north>
 								<g:center>
-									<g:Widget ui:field="editor" />
+									<g:LayoutPanel ui:field="editor" />
 								</g:center>
 								<g:south size="22">
 									<fui:Pager ui:field="pager" styleName="{style.pager}" />
