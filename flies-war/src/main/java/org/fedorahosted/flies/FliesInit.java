@@ -68,16 +68,23 @@ public class FliesInit {
 		String appServerHome = servletContext.getRealPath("/");
 
 		File manifestFile = new File(appServerHome, "META-INF/MANIFEST.MF");
-		 
-		Manifest mf = new Manifest();
-		mf.read(new FileInputStream(manifestFile));
+		
+		if (manifestFile.canRead()) {
+			Manifest mf = new Manifest();
+			final FileInputStream fis = new FileInputStream(manifestFile);
+			try {
+				mf.read(fis);
+			} finally {
+				fis.close();
+			}
 
-		Attributes atts = mf.getMainAttributes();
+			Attributes atts = mf.getMainAttributes();
 
-		version = atts.getValue("Implementation-Version");
-		buildTimestamp = atts.getValue("Implementation-Build");
-		log.info("Version: {0}", version);
-		log.info("Build: {0}", buildTimestamp);
+			version = atts.getValue("Implementation-Version");
+			buildTimestamp = atts.getValue("Implementation-Build");
+			log.info("Version: {0}", version);
+			log.info("Build: {0}", buildTimestamp);
+		}
 
 //		if (dbunitImporter != null) {
 //			log.info("Importing development test data");
