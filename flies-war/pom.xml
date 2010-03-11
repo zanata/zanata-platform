@@ -12,13 +12,7 @@
   <packaging>war</packaging>
   <name>flies Webapp</name>
 
-  <properties>
-    <version.seam>2.2.0.GA</version.seam>
-    <version.resteasy>1.1.GA</version.resteasy>
-    <version.drools>5.0.1</version.drools>
-    <version.richfaces>3.3.1.GA</version.richfaces>
-    <version.jboss.embedded>beta3.SP10</version.jboss.embedded>
-    
+  <properties>    
     <!-- application properties -->
     <app.context>flies</app.context>  <!-- hint: same value as artifactId -->
     <app.database.name>flies</app.database.name>
