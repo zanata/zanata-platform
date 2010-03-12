@@ -197,28 +197,28 @@ public class UploadPoTask extends MatchingTask {
 		super.log(msg+"\n\n");
 	}
 	
-	@Option(name = "u", longName = "user", required = true, description = "User name of Flies.")
+	@Option(name = "u", longName = "user", required = true, description = "Flies user name")
 	public void setUser(String user) {
 		this.user = user;
 	}
 
-	@Option(name = "k", longName = "key", required = true, description = "API keys provided by Flies.")
+	@Option(name = "k", longName = "key", required = true, description = "Flies API key (from Flies Profile page)")
 	public void setApiKey(String apiKey) {
 		this.apiKey = apiKey;
 	}
 
-	@Option(name = "d", longName = "dst", required = true, description = "Server address of Flies.")
+	@Option(name = "d", longName = "dst", required = true, description = "Destination URL for upload, eg http://flies.example.com/seam/resource/restv1/projects/p/myProject/iterations/i/myIter/documents")
 	public void setDst(String dst) {
 		this.dst = dst;
 	}
 	
 	// NB options whose longNames with "-" never get set
-	@Option(name = "s", longName = "src", required = true, description = "Base directory for publican files")
+	@Option(name = "s", longName = "src", required = true, description = "Base directory for publican files (with subdirectory \"pot\" and optional locale directories)")
 	public void setSrcDir(File srcDir) {
 		this.srcDir = srcDir;
 	}
 
-	@Option(name = "l", longName = "srclang", required = true, description = "Language of source if other than en_US")
+	@Option(name = "l", longName = "srclang", required = true, description = "Language of source (defaults to en_US)")
 	public void setSourceLang(String sourceLang) {
 		this.sourceLang = sourceLang;
 	}
