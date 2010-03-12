@@ -3,7 +3,6 @@ package org.fedorahosted.flies.webtrans.client;
 import org.fedorahosted.flies.webtrans.editor.table.NavigationConsts;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
@@ -11,35 +10,31 @@ import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
-import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TransUnitNavigationView extends Composite implements TransUnitNavigationPresenter.Display{
 
-	private static final String prevEntryText = "Prev Entry";
-	private static final String nextEntryText = "Next Entry";
-	private static final String prevFuzzyText = "Prev Fuzzy";
-	private static final String nextFuzzyText = "Next Fuzzy";
-	private static final String prevUntranslatedText = "Prev Untranslated";
-	private static final String nextUntranslatedText = "Next Untranslated";
-	private static final String prevPageText = "Prev Page";
-	private static final String nextPageText = "Next Page";
-	private static final String firstPageText = "First Page";
-	private static final String lastPageText = "Last Page";
-	private static final String prevEntryShortcut = NavigationConsts.PREV;
-	private static final String nextEntryShortcut = NavigationConsts.NEXT;
-	private static final String prevFuzzyShortcut = NavigationConsts.PREV_FUZZY;
-	private static final String nextFuzzyShortcut = NavigationConsts.NEXT_FUZZY;
-	private static final String prevUntranslatedShortcut = NavigationConsts.PREV_NEW;
-	private static final String nextUntranslatedShortcut = NavigationConsts.NEXT_NEW;
+	private static final String prevEntryText = NavigationConsts.PREV_DESC;
+	private static final String nextEntryText = NavigationConsts.NEXT_DESC;
+	private static final String prevFuzzyText = NavigationConsts.PREV_FUZZY_DESC;
+	private static final String nextFuzzyText = NavigationConsts.NEXT_FUZZY_DESC;
+	private static final String prevUntranslatedText = NavigationConsts.PREV_NEW_DESC;
+	private static final String nextUntranslatedText = NavigationConsts.NEXT_NEW_DESC;
+	private static final String prevPageText = NavigationConsts.PREV_PAGE_DESC;
+	private static final String nextPageText = NavigationConsts.NEXT_PAGE_DESC;
+	private static final String firstPageText = NavigationConsts.FIRST_PAGE_DESC;
+	private static final String lastPageText = NavigationConsts.LAST_PAGE_DESC;
+	private static final String prevEntryShortcut = NavigationConsts.PREV_SHORTCUT;
+	private static final String nextEntryShortcut = NavigationConsts.NEXT_SHORTCUT;
+	private static final String prevFuzzyShortcut = NavigationConsts.PREV_FUZZY_SHORTCUT;
+	private static final String nextFuzzyShortcut = NavigationConsts.NEXT_FUZZY_SHORTCUT;
+	private static final String prevUntranslatedShortcut = NavigationConsts.PREV_NEW_SHORTCUT;
+	private static final String nextUntranslatedShortcut = NavigationConsts.NEXT_NEW_SHORTCUT;
 
 	private static TransUnitNavigationViewUiBinder uiBinder = GWT
 			.create(TransUnitNavigationViewUiBinder.class);
@@ -83,10 +78,10 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
 		shortcutListPanel.add(new Label(nextFuzzyText + " - " + nextFuzzyShortcut));
 		shortcutListPanel.add(new Label(prevUntranslatedText + " - " + prevUntranslatedShortcut));
 		shortcutListPanel.add(new Label(nextUntranslatedText + " - " + nextUntranslatedShortcut));
-		shortcutListPanel.add(new Label(prevPageText + " - " + NavigationConsts.PREV_PAGE));
-		shortcutListPanel.add(new Label(nextPageText + " - " + NavigationConsts.NEXT_PAGE));
-		shortcutListPanel.add(new Label(firstPageText + " - " + NavigationConsts.FIRST_PAGE));
-		shortcutListPanel.add(new Label(lastPageText + " - " + NavigationConsts.LAST_PAGE));
+		shortcutListPanel.add(new Label(prevPageText + " - " + NavigationConsts.PREV_PAGE_SHORTCUT));
+		shortcutListPanel.add(new Label(nextPageText + " - " + NavigationConsts.NEXT_PAGE_SHORTCUT));
+		shortcutListPanel.add(new Label(firstPageText + " - " + NavigationConsts.FIRST_PAGE_SHORTCUT));
+		shortcutListPanel.add(new Label(lastPageText + " - " + NavigationConsts.LAST_PAGE_SHORTCUT));
 		shortcutListPanel.add(new Label(NavigationConsts.EDIT_SAVE_DESC + " - " + NavigationConsts.EDIT_SAVE_SHORTCUT));
 		shortcutListPanel.add(new Label(NavigationConsts.EDIT_CANCEL_DESC + " - " + NavigationConsts.EDIT_CANCEL_SHORTCUT));
 

@@ -1,14 +1,13 @@
 package org.fedorahosted.flies.webtrans.client.ui;
 import org.fedorahosted.flies.webtrans.client.Resources;
+import org.fedorahosted.flies.webtrans.editor.table.NavigationConsts;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -17,11 +16,8 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.inject.Inject;
 
 public class Pager extends Composite implements HasPager {
 
@@ -29,11 +25,6 @@ public class Pager extends Composite implements HasPager {
 	}
 
 	private static PagerUiBinder uiBinder = GWT.create(PagerUiBinder.class);
-	
-	private static final String FIRST_PAGE = "First Page";
-	private static final String PREVIOUS_PAGE = "Previous Page";
-	private static final String NEXT_PAGE = "Next Page";
-	private static final String LAST_PAGE = "Last Page";
 	
 	@UiField
 	Anchor firstPage, lastPage, nextPage, previousPage;
@@ -63,18 +54,24 @@ public class Pager extends Composite implements HasPager {
 		nextPageDisabled.setVisible(false);
 		previousPageDisabled.setVisible(false);
 
-		firstPage.setText(FIRST_PAGE);
-		firstPageDisabled.setText(FIRST_PAGE);
+		firstPage.setText(NavigationConsts.FIRST_PAGE_DESC);
+		// TODO This is preliminary, until the ShortcutRegistry is created.
+		// Then we should set "title" attribute in the xml, and maybe something
+		// like ShortcutRegistry.register(firstPage.getText(), firstPage.getTitle())
+		firstPage.setTitle(NavigationConsts.FIRST_PAGE_SHORTCUT);
+		firstPageDisabled.setText(NavigationConsts.FIRST_PAGE_DESC);
 		
-		previousPage.setText(PREVIOUS_PAGE);
-		previousPageDisabled.setText(PREVIOUS_PAGE);
+		previousPage.setText(NavigationConsts.PREV_PAGE_DESC);
+		previousPage.setTitle(NavigationConsts.PREV_PAGE_SHORTCUT);
+		previousPageDisabled.setText(NavigationConsts.PREV_PAGE_DESC);
 		
-		nextPage.setText(NEXT_PAGE);
-		nextPageDisabled.setText(NEXT_PAGE);
+		nextPage.setText(NavigationConsts.NEXT_PAGE_DESC);
+		nextPage.setTitle(NavigationConsts.NEXT_PAGE_SHORTCUT);
+		nextPageDisabled.setText(NavigationConsts.NEXT_PAGE_DESC);
 		
-		lastPage.setText(LAST_PAGE);
-		lastPageDisabled.setText(LAST_PAGE);
-		
+		lastPage.setText(NavigationConsts.LAST_PAGE_DESC);
+		lastPage.setTitle(NavigationConsts.LAST_PAGE_SHORTCUT);
+		lastPageDisabled.setText(NavigationConsts.LAST_PAGE_DESC);
 	}
 
 	@Override
