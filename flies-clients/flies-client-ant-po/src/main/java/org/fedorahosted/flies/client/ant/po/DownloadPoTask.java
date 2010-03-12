@@ -3,19 +3,18 @@ package org.fedorahosted.flies.client.ant.po;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.taskdefs.MatchingTask;
 import org.cyclopsgroup.jcli.ArgumentProcessor;
-import org.cyclopsgroup.jcli.annotation.Argument;
 import org.cyclopsgroup.jcli.annotation.Cli;
-import org.cyclopsgroup.jcli.annotation.MultiValue;
 import org.cyclopsgroup.jcli.annotation.Option;
 import org.fedorahosted.flies.adapter.po.PoWriter;
 import org.fedorahosted.flies.rest.ClientUtility;
@@ -25,7 +24,7 @@ import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Documents;
 import org.jboss.resteasy.client.ClientResponse;
 
-@Cli(name = "downloadpo", description = "Downloads a Publican project's PO/POT files to Flies for translation")
+@Cli(name = "downloadpo", description = "Downloads a Publican project's PO/POT files from Flies after translation, to allow document generation")
 public class DownloadPoTask extends MatchingTask {
 
 	private String user;
@@ -67,22 +66,21 @@ public class DownloadPoTask extends MatchingTask {
 		System.exit(0);
 	}
 	
-	private List<String> arguments = new ArrayList<String>();
-	 
-	@MultiValue
-	@Argument( description = "Left over arguments" )
-	public List<String> getArguments() { return arguments; }
-
-	public void setArguments(List<String> arguments) {
-		this.arguments = arguments;
-	}
-	
 	@Override
 	public void execute() throws BuildException {
 		ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
 		try {
 			// make sure RESTEasy classes will be found:
 			Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+			process();
+		} catch (Exception e) {
+			throw new BuildException(e);
+		} finally {
+			Thread.currentThread().setContextClassLoader(oldLoader);
+		}
+	}
+	
+	public void process() throws JAXBException, IOException, URISyntaxException {
 			Unmarshaller m = null;
 			if (debug) {
 				JAXBContext jc = JAXBContext.newInstance(Documents.class);
@@ -108,12 +106,6 @@ public class DownloadPoTask extends MatchingTask {
 				PoWriter pw = new PoWriter();
 				pw.write(doc, dstDir);
 			}
-
-		} catch (Exception e) {
-			throw new BuildException(e);
-		} finally {
-			Thread.currentThread().setContextClassLoader(oldLoader);
-		}
 	}
 
 	@Override
@@ -125,7 +117,7 @@ public class DownloadPoTask extends MatchingTask {
 	//	super.log(msg, org.apache.tools.ant.Project.MSG_VERBOSE);
 	//    }
 
-	@Option(name = "k", longName = "key", required = true, description = "API keys provided by Flies.")
+	@Option(name = "k", longName = "key", required = true, description = "Flies API key (from Flies Profile page)")
 	public void setApiKey(String apiKey) {
 		this.apiKey = apiKey;
 	}
@@ -135,17 +127,17 @@ public class DownloadPoTask extends MatchingTask {
 		this.debug = debug;
 	}
 
-	@Option(name = "d", longName = "dst", required = true, description = "Base directory for publican files")
+	@Option(name = "d", longName = "dst", required = true, description = "Base directory for publican files (with subdirectory \"pot\" and optional locale directories)")
 	public void setDstDir(File dstDir) {
 		this.dstDir = dstDir;
 	}
 
-	@Option(name = "s", longName = "src", required = true, description = "Server address of Flies.")
+	@Option(name = "s", longName = "src", required = true, description = "Source URL for download, eg http://flies.example.com/seam/resource/restv1/projects/p/myProject/iterations/i/myIter/documents")
 	public void setSrc(String src) {
 		this.src = src;
 	}
 
-	@Option(name = "u", longName = "user", required = true, description = "User name of Flies.")
+	@Option(name = "u", longName = "user", required = true, description = "Flies user name")
 	public void setUser(String user) {
 		this.user = user;
 	}

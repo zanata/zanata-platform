@@ -7,7 +7,6 @@ import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -17,9 +16,7 @@ import javax.xml.bind.Marshaller;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.taskdefs.MatchingTask;
 import org.cyclopsgroup.jcli.ArgumentProcessor;
-import org.cyclopsgroup.jcli.annotation.Argument;
 import org.cyclopsgroup.jcli.annotation.Cli;
-import org.cyclopsgroup.jcli.annotation.MultiValue;
 import org.cyclopsgroup.jcli.annotation.Option;
 import org.fedorahosted.flies.adapter.po.PoReader;
 import org.fedorahosted.flies.common.ContentType;
@@ -59,7 +56,7 @@ public class UploadPoTask extends MatchingTask {
 		if (upload.apiKey == null)
 			missingOption("--key");
 			
-		upload.execute();
+		upload.process();
 	}
 	
 	private static void missingOption(String name) {
@@ -73,16 +70,6 @@ public class UploadPoTask extends MatchingTask {
 		argProcessor.printHelp(out);
 		out.flush();
 		System.exit(0);
-	}
-	
-	private List<String> arguments = new ArrayList<String>();
-	 
-	@MultiValue
-	@Argument( description = "Left over arguments" )
-	public List<String> getArguments() { return arguments; }
-
-	public void setArguments(List<String> arguments) {
-		this.arguments = arguments;
 	}
 	
 	public void execute() throws BuildException {
