@@ -223,7 +223,7 @@ public class UploadPoTask extends MatchingTask {
 		this.sourceLang = sourceLang;
 	}
 
-	@Option(name = "d", longName = "debug", description = "Enable debug mode")
+	@Option(name = "x", longName = "debug", description = "Enable debug mode")
 	public void setDebug(boolean debug) {
 		this.debug = debug;
 	}
