@@ -52,6 +52,10 @@ public class UploadPoTask extends MatchingTask {
 			help(argProcessor);
 		if (upload.srcDir == null)
 			missingOption("--src");
+		if (upload.user == null)
+			missingOption("--user");
+		if (upload.apiKey == null)
+			missingOption("--key");
 			
 		upload.execute();
 	}
@@ -191,10 +195,12 @@ public class UploadPoTask extends MatchingTask {
 		super.log(msg+"\n\n");
 	}
 	
+	@Option(name = "u", longName = "user", required = true, description = "User name of Flies.")
 	public void setUser(String user) {
 		this.user = user;
 	}
 
+	@Option(name = "k", longName = "key", required = true, description = "API keys provided by Flies.")
 	public void setApiKey(String apiKey) {
 		this.apiKey = apiKey;
 	}
