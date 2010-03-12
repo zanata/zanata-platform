@@ -52,6 +52,8 @@ public class UploadPoTask extends MatchingTask {
 			help(argProcessor);
 		if (upload.srcDir == null)
 			missingOption("--src");
+		if (upload.dst == null)
+			missingOption("--dst");
 		if (upload.user == null)
 			missingOption("--user");
 		if (upload.apiKey == null)
@@ -205,6 +207,7 @@ public class UploadPoTask extends MatchingTask {
 		this.apiKey = apiKey;
 	}
 
+	@Option(name = "d", longName = "dst", required = true, description = "Server address of Flies.")
 	public void setDst(String dst) {
 		this.dst = dst;
 	}
@@ -215,6 +218,7 @@ public class UploadPoTask extends MatchingTask {
 		this.srcDir = srcDir;
 	}
 
+	@Option(name = "l", longName = "srclang", required = true, description = "Language of source if other than en_US")
 	public void setSourceLang(String sourceLang) {
 		this.sourceLang = sourceLang;
 	}
