@@ -1,6 +1,9 @@
 <!DOCTYPE module PUBLIC "//gwt-module/" "http://google-web-toolkit.googlecode.com/svn/tags/1.6.2/distro-source/core/src/gwt-module.dtd">
 <module>
 
+	  <!-- Tell GWT to compile in UIObject.ensureDebugId(String) calls -->
+	  <inherits name="com.google.gwt.user.Debug"/>
+	  
       <!-- Inherit the core Web Toolkit stuff.                        -->
       <inherits name='com.google.gwt.user.User'/>
       <inherits name="com.google.gwt.inject.Inject" />
