@@ -2,6 +2,8 @@ package org.fedorahosted.flies.webtrans.editor.table;
 
 import static org.fedorahosted.flies.webtrans.editor.table.TableConstants.MAX_PAGE_ROW;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import net.customware.gwt.dispatch.client.DispatchAsync;
@@ -104,8 +106,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	private final WorkspaceContext workspaceContext;
 	private final Identity identity;
 	private TransUnit selectedTransUnit;
+	private int lastRowNum;
 	
-
 	@Inject
 	public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher,final Identity identity, final WorkspaceContext workspaceContext) {
 		super(display, eventBus);
@@ -178,6 +180,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 						
 						// TODO reload page and return
 					}
+					
 					boolean reloadPage = false;
 					if (reloadPage) {
 						display.getTargetCellEditor().cancelEdit();
@@ -280,7 +283,10 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 					 NativeEvent nativeEvent =  event.getNativeEvent();
 					 String nativeEventType = nativeEvent.getType();
 					 int keyCode = nativeEvent.getKeyCode();
-					 if(nativeEventType.equals("keypress")) {
+					 boolean shiftKey = nativeEvent.getShiftKey();
+					 boolean altKey = nativeEvent.getAltKey();
+					 boolean ctrlKey = nativeEvent.getCtrlKey();
+					 if(nativeEventType.equals("keypress") && !shiftKey && !altKey && !ctrlKey) {
 						  //PageDown key
 						  switch(keyCode) {
 						  	  case KeyCodes.KEY_PAGEDOWN: 
@@ -353,6 +359,10 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 					callback.onRowsReady(request, response);
 					Log.info("Total of " + result.getTotalCount() + " rows available");
 					display.getTableModel().setRowCount(result.getTotalCount());
+					lastRowNum = display.getTableModel().getRowCount()%display.getPageSize();
+					if(lastRowNum == 0)
+						lastRowNum = MAX_PAGE_ROW;
+					Log.info("Last Row of Last Page " + lastRowNum);
 				}
 				@Override
 				public void onFailure(Throwable caught) {
@@ -415,16 +425,22 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		public void gotoNextRow(int row) {
 			int nextRow = row+1;
 			Log.info("Next Row"+nextRow);
-			if(nextRow <= MAX_PAGE_ROW && nextRow >= 0) {
-				cancelEdit();
-				selectedTransUnit = display.getTransUnitValue(nextRow);
-				display.gotoRow(nextRow);
-			} else if(nextRow > MAX_PAGE_ROW) {
-				if(!display.isLastPage()) {
+			if(!display.isLastPage()) {
+				if(nextRow <= MAX_PAGE_ROW && nextRow >= 0) {
+					cancelEdit();
+					selectedTransUnit = display.getTransUnitValue(nextRow);
+					display.gotoRow(nextRow);
+				} else if(nextRow > MAX_PAGE_ROW) {
 					cancelEdit();
 					display.gotoNextPage();
 					selectedTransUnit = display.getTransUnitValue(nextRow);
 					display.gotoRow(0);
+				} 
+			} else {
+				if (nextRow <= lastRowNum) {
+					cancelEdit();
+					selectedTransUnit = display.getTransUnitValue(nextRow);
+					display.gotoRow(nextRow);
 				} 
 			}
 		}
@@ -433,7 +449,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		public void gotoPrevRow(int row) {
 			int prevRow = row-1;
 			Log.info("Prev Row"+prevRow);
-			if(prevRow < MAX_PAGE_ROW && prevRow > 0) {
+			if(prevRow < MAX_PAGE_ROW && prevRow >= 0) {
 				cancelEdit();
 				selectedTransUnit = display.getTransUnitValue(prevRow);
 				display.gotoRow(prevRow);
@@ -501,7 +517,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	
 	private void prevFuzzy(int row, ContentState desiredState) { 
 		row=row-1;
-		while(row > 0) {
+		while(row >= 0) {
 			if(display.getTransUnitValue(row).getStatus() == desiredState) {
 				cancelEdit();
 				selectedTransUnit = display.getTransUnitValue(row);
@@ -525,26 +541,37 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	
 	private void nextFuzzy(int row, ContentState desiredState) { 
 		row=row+1;
-		while(row <= MAX_PAGE_ROW) {
-			if(display.getTransUnitValue(row).getStatus()==desiredState) {
-				cancelEdit();
-				selectedTransUnit = display.getTransUnitValue(row);
-				display.gotoRow(row);
-				break;
-			}
-			else {
-				row = row + 1;
-			}
-		} 
-		
-		if(row > MAX_PAGE_ROW) {
-			if(!display.isLastPage()) {
+		if(!display.isLastPage()) {
+			while(row <= MAX_PAGE_ROW) {
+				if(display.getTransUnitValue(row).getStatus()==desiredState) {
+					cancelEdit();
+					selectedTransUnit = display.getTransUnitValue(row);
+					display.gotoRow(row);
+					break;
+				}	
+				else {
+					row = row + 1;
+				}
+			} 
+			if(row > MAX_PAGE_ROW) {
 				cancelEdit();
 				display.gotoNextPage();
 				nextFuzzy(-1, desiredState);
+
+			}
+		} else {
+			while(row <= lastRowNum) {
+				if(display.getTransUnitValue(row).getStatus()==desiredState) {
+					cancelEdit();
+					selectedTransUnit = display.getTransUnitValue(row);
+					display.gotoRow(row);
+					break;
+				}	
+				else {
+					row = row + 1;
+				}
 			} 
 		}
-		
 	}
 	
 	
