@@ -19,7 +19,7 @@
       <inherits name="org.fedorahosted.flies.Common"/>
       <inherits name="org.fedorahosted.flies.gwt.Flies-gwt"/>
 
-      <inherits name='com.google.gwt.user.theme.standard.Standard' />
+      <inherits name='com.google.gwt.user.theme.standard.StandardResources' />
 <!-- 
   	  <inherits name="org.jboss.errai.common.ErraiCommon"/>
   	  <inherits name="org.jboss.errai.bus.ErraiBus"/>
