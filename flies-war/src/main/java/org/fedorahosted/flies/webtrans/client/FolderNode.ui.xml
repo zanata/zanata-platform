@@ -1,0 +1,31 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:with field='resources' type="org.fedorahosted.flies.webtrans.client.Resources"/>
+
+	<ui:style>
+		.body {
+			background-color: #f5f5f5;
+			padding: 4px;
+			-moz-border-radius: 5px;
+			-webkit-border-radius: 5px;
+		}
+		
+		.label {
+			color: #444444;
+			font-weight: bold;
+			font-style: italic;
+			display:inline;
+			padding-left: 10px;
+		}
+		
+	</ui:style>
+	<g:FlowPanel>
+		<g:FlowPanel styleName="{style.body}">
+			<g:Image resource="{resources.folderImage}"/>
+			<g:Label ui:field='folderLabel' styleName="{style.label}"/>
+		</g:FlowPanel>
+		<g:FlowPanel ui:field='childrenContainer'/>
+	</g:FlowPanel>
+</ui:UiBinder> 

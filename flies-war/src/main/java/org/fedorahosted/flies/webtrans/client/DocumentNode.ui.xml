@@ -1,0 +1,50 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:with field='resources' type="org.fedorahosted.flies.webtrans.client.Resources"/>
+
+	<ui:style type="org.fedorahosted.flies.webtrans.client.DocumentNode.Styles">
+		.body {
+			padding: 5px;
+			padding-left: 20px;
+			border-top: 1px solid #f5f5f5;
+			border-bottom: 1px solid #f5f5f5;
+		}
+		
+		.label {
+			display: inline;
+			font-size: 1.3em;
+			padding-left: 10px;
+		}
+		
+		.status {
+			color: green;
+			display: inline;
+			float: right;
+			padding-left: 10px;
+		}
+		
+		.menu {
+			float: right;
+		}
+		
+		.mouseOver {
+			background-color: #fcfcfc;
+		}
+		
+		.selected {
+			background-color: #ffbbbb;
+			border-top: 1px solid #f5f5f5;
+			border-bottom: 1px solid #f5f5f5;
+		}
+	</ui:style>
+	<g:FlowPanel styleName='{style.body}' ui:field='rootPanel'>
+		<g:Image resource='{resources.documentImage}'  />
+		<g:Label ui:field='documentLabel' styleName="{style.label}" />
+		<g:FlowPanel styleName='{style.menu}'>
+			<g:Anchor href='#' ui:field='translateLink'>Translate</g:Anchor>
+			<g:Label styleName="{style.status}">50%</g:Label>
+		</g:FlowPanel>
+	</g:FlowPanel>
+</ui:UiBinder> 

@@ -30,6 +30,7 @@ import org.fedorahosted.flies.webtrans.client.ui.HasFilter;
 import org.fedorahosted.flies.webtrans.client.ui.HasTreeNodes;
 import org.fedorahosted.flies.webtrans.client.ui.TreeNode;
 import org.fedorahosted.flies.webtrans.editor.ProjectStatusPresenter;
+import org.fedorahosted.flies.webtrans.editor.filter.ContentFilter;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -37,15 +38,33 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter.Display> 
 		implements HasDocumentSelectionHandlers {
+
+	public static final Place PLACE = new Place("DocumentListList");
+	
+	public interface Display extends WidgetDisplay {
+
+		void setList(ArrayList<DocName> sortedList);
+		void clearSelection();
+		void setSelection(DocumentId documentId);
+		void ensureSelectionVisible();
+		HasDocumentSelectionHandlers getDocumentSelectionHandler();
+		void applyFilter(ContentFilter<DocName> filter);
+		void removeFilter();
+		HasValue<String> getFilterTextBox();
+	}
 
 	private final DispatchAsync dispatcher;
     private final ProjectStatusPresenter prStatusPresenter;
@@ -54,6 +73,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 	private final Map<DocumentId, DocumentStatus> statuscache = new HashMap<DocumentId, DocumentStatus>();
 	private DocumentId currentDoc;
     
+	
 	@Inject
 	public DocumentListPresenter(Display display, EventBus eventBus,
 			WorkspaceContext workspaceContext,
@@ -67,15 +87,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 		Log.info("DocumentListPresenter()");
 		loadDocsList();
 	}
-
-	public static final Place PLACE = new Place("DocumentListList");
-	
-	public interface Display extends WidgetDisplay {
-		HasTreeNodes<DocumentId, DocName> getTree();
-		HasFilter<DocName> getFilter();
-		void setProjectStatusBar(Widget widget);
-		HasClickHandlers getReloadButton();
-	}
 	
 	@Override
 	public Place getPlace() {
@@ -86,8 +97,16 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 	protected void onBind() {
 		prStatusPresenter.bind();
 		
+		registerHandler(display.getDocumentSelectionHandler().addDocumentSelectionHandler(new DocumentSelectionHandler() {
+			
+			@Override
+			public void onDocumentSelected(DocumentSelectionEvent event) {
+				display.setSelection(event.getDocumentId());
+				setValue(event.getDocumentId(), true);
+			}
+		}));
 		
-		display.setProjectStatusBar(prStatusPresenter.getDisplay().asWidget());
+		//display.setProjectStatusBar(prStatusPresenter.getDisplay().asWidget());
 		
 		registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler() {
 			@Override
@@ -95,34 +114,64 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 				DocumentStatus doc = statuscache.get(event.getDocumentId());
 				if (doc == null)
 					return;  // GetProjectStatusCount hasn't returned yet!
-				ContentState status = event.getPreviousStatus();
-				doc.setStatus(status, doc.getStatus(status)-1);
-				status = event.getNewStatus();
-				doc.setStatus(status, doc.getStatus(status)+1);
-				TreeNode<DocName> node = display.getTree().getNodeByKey(doc.getDocumentid());
-				node.setName(node.getObject().getName() + " ("+ calPercentage(doc.getUntranslated(), doc.getFuzzy(), doc.getTranslated()) +"%)");
+//				ContentState status = event.getPreviousStatus();
+//				doc.setStatus(status, doc.getStatus(status)-1);
+//				status = event.getNewStatus();
+//				doc.setStatus(status, doc.getStatus(status)+1);
+//				TreeNode<DocName> node = display.getTree().getNodeByKey(doc.getDocumentid());
+//				node.setName(node.getObject().getName() + " ("+ calPercentage(doc.getUntranslated(), doc.getFuzzy(), doc.getTranslated()) +"%)");
 			}
 
 
 		}));
 		
-		registerHandler(getDisplay().getTree().addSelectionHandler(new SelectionHandler<TreeItem>() {
-			@Override
-			public void onSelection(SelectionEvent<TreeItem> event) {
-				DocName selectedDocName = (DocName) event.getSelectedItem().getUserObject();
-				if (selectedDocName != null) // folders have null names
-					setValue(selectedDocName.getId(), true);
-			}
-		}));
+//		registerHandler(getDisplay().getTree().addSelectionHandler(new SelectionHandler<TreeItem>() {
+//			@Override
+//			public void onSelection(SelectionEvent<TreeItem> event) {
+//				DocName selectedDocName = (DocName) event.getSelectedItem().getUserObject();
+//				if (selectedDocName != null) // folders have null names
+//					setValue(selectedDocName.getId(), true);
+//			}
+//		}));
+//		
+//		registerHandler(display.getReloadButton().addClickHandler(new ClickHandler() {
+//			@Override
+//			public void onClick(ClickEvent event) {
+//				refreshDisplay();
+//			}
+//		}));
 		
-		registerHandler(display.getReloadButton().addClickHandler(new ClickHandler() {
+		registerHandler(display.getFilterTextBox().addValueChangeHandler(new ValueChangeHandler<String>() {
+			
 			@Override
-			public void onClick(ClickEvent event) {
-				refreshDisplay();
+			public void onValueChange(ValueChangeEvent<String> event) {
+				if(event.getValue().isEmpty()) {
+					display.removeFilter();
+				}
+				else {
+					basicContentFilter.setPattern(event.getValue());
+					display.applyFilter(basicContentFilter);
+				}
 			}
 		}));
 		
 	}
+
+	final class BasicContentFilter implements ContentFilter<DocName> {
+		private String pattern = "";
+		
+		@Override
+		public boolean accept(DocName value) {
+			return value.getName().contains(pattern);
+		}
+		
+		public void setPattern(String pattern) {
+			this.pattern = pattern;
+		}
+	}
+	
+	private final BasicContentFilter basicContentFilter = new BasicContentFilter();
+	
 	
 	private long calPercentage (long untranslated, long fuzzy, long translated) {
 		
@@ -195,7 +244,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 					return o1.getName().compareTo(o2.getName());
 				return pathCompare;
 			}});
-		display.getFilter().setList(sortedList);
+		display.setList(sortedList);
 	}
 
 	private void loadDocsList() {
@@ -232,8 +281,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 				statuscache.clear();
 				for(DocumentStatus doc : liststatus) {
 					statuscache.put(doc.getDocumentid(), doc);
-					TreeNode<DocName> node = display.getTree().getNodeByKey(doc.getDocumentid());
-					node.setName(node.getObject().getName() + " ("+ calPercentage(doc.getUntranslated(), doc.getFuzzy(), doc.getTranslated()) +"%)");
+					//TreeNode<DocName> node = display.getTree().getNodeByKey(doc.getDocumentid());
+					//node.setName(node.getObject().getName() + " ("+ calPercentage(doc.getUntranslated(), doc.getFuzzy(), doc.getTranslated()) +"%)");
 				}
 			}
 		});

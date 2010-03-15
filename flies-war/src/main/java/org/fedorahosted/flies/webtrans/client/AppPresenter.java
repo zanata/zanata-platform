@@ -193,6 +193,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		transFilterPresenter.bind();
 		display.setFilterView(transFilterPresenter.getDisplay().asWidget());
 		
+		display.showDocumentsView();
+		
 	}
 
 	private static LocaleId findLocaleId() {
