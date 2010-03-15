@@ -1,0 +1,42 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.complete {
+			background: green;
+		}
+		
+		.inProgress {
+			background: orange;
+		}
+		
+		.unfinished {
+			background: red;
+		}
+		
+		.undefined {
+			background: yellow;
+		}
+		
+		.body {
+			-moz-border-radius: 5px;
+			-webkit-border-radius: 5px;
+			border: 1px solid blue;
+			
+		}
+	</ui:style>
+	<g:LayoutPanel ui:field='layoutPanel' styleName="{style.body}">
+		<g:layer left='0' width='0'>
+			<g:FlowPanel ui:field='completePanel' styleName="{style.complete}"/>
+		</g:layer>
+		<g:layer left='0' width='0'>
+			<g:FlowPanel ui:field='inProgressPanel' styleName="{style.inProgress}"/>
+		</g:layer>
+		<g:layer left='0' width='0'>
+			<g:FlowPanel ui:field='unfinishedPanel' styleName="{style.unfinished}"/>
+		</g:layer>
+		<g:layer left='0' width='100%'>
+			<g:FlowPanel ui:field='undefinedPanel' styleName="{style.undefined}"/>
+		</g:layer>
+	</g:LayoutPanel>
+</ui:UiBinder> 

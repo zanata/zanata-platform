@@ -54,6 +54,14 @@
 			text-align: center;	
 		}
 		
+		.statusBar {
+			float: right;
+			display: inline;
+			width: 100px;
+			height: 20px;
+		}
+
+		
 		.transUnitNavigation {
 			float:right; 
 			display:inline;
@@ -108,7 +116,10 @@
 									<g:LayoutPanel ui:field="editor" />
 								</g:center>
 								<g:south size="22">
-									<fui:Pager ui:field="pager" styleName="{style.pager}" />
+									<g:FlowPanel>
+										<fui:Pager ui:field="pager" styleName="{style.pager}" />
+										<f:StatusBar ui:field='statusBar' styleName="{style.statusBar}"/>
+									</g:FlowPanel>
 								</g:south>
 							</g:DockLayoutPanel>
 						</g:center>

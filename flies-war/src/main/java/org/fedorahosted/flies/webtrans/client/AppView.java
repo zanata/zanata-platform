@@ -55,6 +55,9 @@ public class AppView extends Composite implements AppPresenter.Display {
 	@UiField(provided=true) 
 	Pager pager;
 	
+	@UiField
+	StatusBar statusBar;
+	
 	private Widget documentListView;
 	private Widget editorView;
 	private Widget filterView;
@@ -97,6 +100,7 @@ public class AppView extends Composite implements AppPresenter.Display {
 		editor.setWidgetTopHeight(editorView, 0, Unit.PX, 0, Unit.PX);
 		pager.setVisible(false);
 		transUnitNavigation.setVisible(false);
+		statusBar.setStatus((int)(100*Math.random()),(int)(100*Math.random()),(int)(100*Math.random()));
 	}
 	
 	@Override
