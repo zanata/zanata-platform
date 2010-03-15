@@ -1,0 +1,279 @@
+# 
+# AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0\n"
+"POT-Creation-Date: 2009-11-24T08:04:00\n"
+"PO-Revision-Date: 2009-11-24T08:04:00\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: None\n"
+"MIME-Version: 1.0\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#, no-c-format
+msgid "Accounts and Subscriptions"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "To become a Fedora Translator, you must sign up for accounts and subscriptions as described in this chapter. If you have questions, post them on the fedora-trans-list, or ask for help via Internet Relay Chat, or <acronym>IRC</acronym>, at <systemitem class=\"fqdomainname\">irc.freenode.org</systemitem> on channel <systemitem>#fedora-l10n</systemitem>."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Subscribing to the Mailing List"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Visit <ulink url=\"http://listman.redhat.com/mailman/listinfo/fedora-trans-list\" /> and subscribe to the main translation mailing list."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Wait for the confirmation email which contains a link to confirm your subscription. Click the link to confirm your subscription."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Check <ulink url=\"http://fedoraproject.org/wiki/L10N/Teams\" /> to see if there is a special mailing list for your language. If so, subscribe to that list too."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Making a SSH Key"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "If you already have an existing SSH key, you can use it for Fedora work. In that case, proceed to <xref linkend=\"st-change-permissions\" /> in the following procedure. If you do not have a SSH key yet, start with the first step below:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Enter the following command:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Accept the default location (<filename>~/.ssh/id_rsa</filename>) and enter a passphrase."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Remember Your Passphrase"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "You must have your passphrase to commit translations. It cannot be recovered if you forget it."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Change permissions to your key and <filename>.ssh</filename> directory:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This public key (~/.ssh/id_rsa.pub) will be used for your Fedora account creation described in <xref linkend=\"sect-Translation_Quick_Start_Guide-Accounts_and_Subscriptions-Applying_for_an_Account\" />."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Making a GPG Key"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Generate a key by typing in a command line:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "A series of prompts guides you through the process. The default values suffice in almost all cases. Remember to choose a good password."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Choosing a Good Password"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "A good password:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "consists of uppercase and lowercase letters, numbers, punctuation, and other characters"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "does not include any words or names, with or without substitutions"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "is not the same as any other password used for other systems"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "In the resulting text, find your key ID in the statement that resembles 'pub 1024D/1B2AFA1C'. Your key ID is the 8 character 'word' after the slash (<literal>/</literal>). In the previous example, the GPG Key ID is <literal>1B2AFA1C</literal>. Write down your key ID."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Export your public key to a public server so that others can find it with the following command, substituting your key ID:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This GPG key ID will be used for your Fedora account creation described in <xref linkend=\"sect-Translation_Quick_Start_Guide-Accounts_and_Subscriptions-Applying_for_an_Account\" />."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Applying for an Account"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "To sign up for a Fedora account, first visit <ulink url=\"http://admin.fedoraproject.org/accounts\" /> and select <guilabel>New Account</guilabel>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Fill in <guilabel>Username</guilabel>, <guilabel>Full Name</guilabel> and <guilabel>Email</guilabel>, and click <guibutton>Sign up!</guibutton>. Your password will be emailed to you."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Go back to <ulink url=\"http://admin.fedoraproject.org/accounts\" /> and log in with your password. The welcome page will be displayed, and it reminds you that CLA is not completed and that an SSH key is not submitted."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "To submit public SSH key and GPG key ID, click <guilabel>My Account</guilabel> or go to <ulink url=\"http://admin.fedoraproject.org/accounts/user/edit\" />."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "In the Edit Account (user_name) page, enter your GPG key ID in <guilabel>GPG Key ID:</guilabel> field. For the public SSH key, click <guilabel>Browse...</guilabel> button located next to <guilabel>Public SSH Key:</guilabel> field and specify your public SSH key."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "<guilabel>Telephone Number</guilabel> and <guilabel>Postal Address</guilabel> fields are also required to fill in for signing the CLA. These information is NOT accessible by others except admin groups. Please refer to Fedora Privacy Policy at <ulink url=\"http://fedoraproject.org/wiki/Legal/PrivacyPolicy\" />."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Other fields will be displayed by any other member by visiting the user's view page."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Now click <guilabel>Save!</guilabel> located at the bottom of this page to save your information."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Signing the CLA"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "You must complete the Contributors License Agreement, or <acronym>CLA</acronym>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Visit <ulink url=\"http://admin.fedoraproject.org/accounts\" /> and login your account using your user name and password obtained from the previous process."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "In the Welcome page, click <guilabel>complete the CLA</guilabel> or go to <ulink url=\"http://admin.fedoraproject.org/accounts/user/edit\" />."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "If the information of telephone number and postal address have not been provided yet, the Edit Account (user_name) page will be appeared. Otherwise Fedora Contributor License Agreement page will be displayed. Read through the agreement carefully and click <guibutton>I agree</guibutton> if you are happy to do so."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The user-view page is appeared and shows the <guilabel>CLA:</guilabel> field as <guilabel>CLA Done</guilabel>."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Introducing Yourself"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Create a personal page at <ulink url=\"http://fedoraproject.org/wiki/User:Username\" />. This is very useful for Fedora contributors to get to know and contact each other."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Post a short self introduction to the <systemitem>fedora-trans-list</systemitem> mailing list and to the list of your local team with instructions from <ulink url=\"http://fedoraproject.org/wiki/L10N/SelfIntroduction\" />. Please remember to include your FAS user name and your language. With this information, sponsor can identify you for 'cvsl10n' group joining approval."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Joining the <systemitem>cvsl10n</systemitem> Group"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "In the user-view page, click <guilabel>Apply for a New Group</guilabel> located in the left side bar. If you like to do this step sometime later, your user-view page can be reached at <ulink url=\"http://admin.fedoraproject.org/accounts/user/view/user_name\" />."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Click <guilabel>C</guilabel> of the alphabet, it returns the list of the groups starting with 'c'."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Find the group name <guilabel>cvsl10n</guilabel> in the list and click <guilabel>Apply</guilabel>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "All sponsors and administrators are notified of your application. Introduce yourself by following <xref linkend=\"sect-Translation_Quick_Start_Guide-Accounts_and_Subscriptions-Introducing_Yourself\" />. Then your language sponsor offers to sponsor you. This may take between an hour and a few days. The membership notification will be emailed to you once sponsored."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The rest of the steps help you test your access and grant you privileges to all the Fedora infrastructure you might need in the near future. Language maintainers and people starting new languages should follow them. Although they are optional for translations, everyone is encouraged to follow them."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Create a Bugzilla account"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Visit <ulink url=\"http://bugzilla.redhat.com/bugzilla/createaccount.cgi\" /> to create a Bugzilla account."
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Congratulations"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Sit back and enjoy your achievement. You are now a fully recognized member of the Fedora community, capable of digitally signing documents and emails, submitting contributions, publishing content on the wiki, submitting bugs, following the discussions of our groups and joining other Fedora teams."
+msgstr ""
+
