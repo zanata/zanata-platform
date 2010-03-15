@@ -437,7 +437,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 					display.gotoRow(0);
 				} 
 			} else {
-				if (nextRow <= lastRowNum) {
+				if (nextRow <= lastRowNum-1) {
 					cancelEdit();
 					selectedTransUnit = display.getTransUnitValue(nextRow);
 					display.gotoRow(nextRow);
@@ -560,7 +560,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
 			}
 		} else {
-			while(row <= lastRowNum) {
+			while(row <= lastRowNum-1) {
 				if(display.getTransUnitValue(row).getStatus()==desiredState) {
 					cancelEdit();
 					selectedTransUnit = display.getTransUnitValue(row);
