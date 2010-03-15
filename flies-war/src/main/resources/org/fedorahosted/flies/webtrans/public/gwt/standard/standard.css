@@ -45,27 +45,20 @@ a, a:visited, a:hover {
 }
 
 .gwt-Button {
-  margin: 0;
-  padding: 3px 5px;
   text-decoration: none;
   font-size: small;
   cursor: pointer;
   cursor: hand;
-  background: url("images/hborder.png") repeat-x 0px -27px;
-  border: 1px outset #ccc;
 }
 .gwt-Button:active {
-  border: 1px inset #ccc;
 }
 .gwt-Button:hover {
-  border-color: #9cf #69e #69e #7af;
 }
 .gwt-Button[disabled] {
   cursor: default;
   color: #888;
 }
 .gwt-Button[disabled]:hover {
-  border: 1px outset #ccc;
 }
 
 .gwt-CheckBox {
