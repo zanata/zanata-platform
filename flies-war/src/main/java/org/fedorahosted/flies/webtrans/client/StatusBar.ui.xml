@@ -3,29 +3,23 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:style>
 		.complete {
-			background: green;
+			background: #D0EFE0;
 		}
 		
 		.inProgress {
-			background: orange;
+			background: #EFE9E0;
 		}
 		
 		.unfinished {
-			background: red;
+			background: #EFDFE0;
 		}
 		
 		.undefined {
-			background: yellow;
+			background: #EFEFE0;
 		}
 		
-		.body {
-			-moz-border-radius: 5px;
-			-webkit-border-radius: 5px;
-			border: 1px solid blue;
-			
-		}
 	</ui:style>
-	<g:LayoutPanel ui:field='layoutPanel' styleName="{style.body}">
+	<g:LayoutPanel ui:field='layoutPanel'>
 		<g:layer left='0' width='0'>
 			<g:FlowPanel ui:field='completePanel' styleName="{style.complete}"/>
 		</g:layer>
