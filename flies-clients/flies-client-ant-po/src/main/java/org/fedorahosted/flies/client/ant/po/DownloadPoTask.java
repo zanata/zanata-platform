@@ -50,7 +50,7 @@ public class DownloadPoTask extends MatchingTask {
 		if (download.apiKey == null)
 			missingOption("--key");
 			
-		download.execute();
+		download.process();
 	}
 	
 	private static void missingOption(String name) {
