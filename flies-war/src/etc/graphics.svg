@@ -14,9 +14,10 @@
    height="1052.3622047"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.46+devel"
-   sodipodi:docname="New document 1"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+   inkscape:version="0.47 r22583"
+   sodipodi:docname="graphics.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   version="1.1">
   <defs
      id="defs4">
     <linearGradient
@@ -536,6 +537,13 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3886"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -545,15 +553,16 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2"
-     inkscape:cx="51.891765"
-     inkscape:cy="904.48252"
+     inkscape:cx="339.39741"
+     inkscape:cy="830.12799"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1920"
-     inkscape:window-height="992"
+     inkscape:window-width="1680"
+     inkscape:window-height="987"
      inkscape:window-x="-4"
-     inkscape:window-y="24" />
+     inkscape:window-y="-3"
+     inkscape:window-maximized="1" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -789,5 +798,100 @@
            x="78.5"
            y="12.862182"
            style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans" /></flowRegion><flowPara
-         id="flowPara1061-6-9-5">Filtered</flowPara></flowRoot>  </g>
+         id="flowPara1061-6-9-5">Filtered</flowPara></flowRoot>    <rect
+       style="fill:#aecbde;fill-opacity:1;stroke:none"
+       id="rect2816"
+       width="160"
+       height="65"
+       x="329"
+       y="270.93387" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2818"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       transform="translate(282,244.57169)"><flowRegion
+         id="flowRegion2820"><rect
+           id="rect2822"
+           width="119"
+           height="23"
+           x="64"
+           y="2.3621826"
+           style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Sans;-inkscape-font-specification:Sans" /></flowRegion><flowPara
+         id="flowPara2824">Untranslated / New</flowPara></flowRoot>    <rect
+       style="fill:#f7f488;fill-opacity:1;stroke:none"
+       id="rect2816-0"
+       width="160"
+       height="65"
+       x="169"
+       y="271.00555" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2818-8"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       transform="translate(122,244.64338)"><flowRegion
+         id="flowRegion2820-1"><rect
+           id="rect2822-3"
+           width="119"
+           height="23"
+           x="64"
+           y="2.3621826"
+           style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Sans;-inkscape-font-specification:Sans" /></flowRegion><flowPara
+         id="flowPara2824-1">Need Review</flowPara></flowRoot>    <rect
+       style="fill:#90cd95;fill-opacity:1;stroke:none"
+       id="rect2816-03"
+       width="160"
+       height="65"
+       x="10"
+       y="271.00555" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2818-4"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       transform="translate(-37,244.64338)"><flowRegion
+         id="flowRegion2820-0"><rect
+           id="rect2822-39"
+           width="119"
+           height="23"
+           x="64"
+           y="2.3621826"
+           style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Sans;-inkscape-font-specification:Sans" /></flowRegion><flowPara
+         id="flowPara2824-19">Approved</flowPara></flowRoot>    <rect
+       style="fill:#f5f8ff;fill-opacity:0.94117647;stroke:none"
+       id="rect3649"
+       width="258"
+       height="138"
+       x="8.5"
+       y="381.93387" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2818-8-6"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       transform="translate(-43.78711,354.07152)"><flowRegion
+         id="flowRegion2820-1-0"><rect
+           id="rect2822-3-6"
+           width="225"
+           height="22"
+           x="64"
+           y="2.3621826"
+           style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Sans;-inkscape-font-specification:Sans" /></flowRegion><flowPara
+         id="flowPara2824-1-9">Side panel background</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2818-8-6-7"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+       transform="translate(149.69629,354.90843)"><flowRegion
+         id="flowRegion2820-1-0-5"><rect
+           id="rect2822-3-6-9"
+           width="225"
+           height="22"
+           x="64"
+           y="2.3621826"
+           style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Sans;-inkscape-font-specification:Sans" /></flowRegion><flowPara
+         id="flowPara2824-1-9-3">Border</flowPara></flowRoot>    <rect
+       style="fill:#99ccff;fill-opacity:1;stroke:none"
+       id="rect3649-1"
+       width="54"
+       height="138"
+       x="212.5"
+       y="382.93387" />
+  </g>
 </svg>
