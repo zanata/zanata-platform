@@ -53,9 +53,12 @@ public class DocumentListView extends Composite implements
 	
 	private HashMap<DocumentId, DocumentNode> nodes;
 	
+	final WebTransMessages messages;
+	
 	@Inject
-	public DocumentListView(Resources resources) {
+	public DocumentListView(Resources resources, WebTransMessages messages) {
 		this.resources = resources;
+		this.messages = messages;
 		nodes = new HashMap<DocumentId, DocumentNode>();
 		initWidget( uiBinder.createAndBindUi(this) );
 	}
@@ -101,12 +104,12 @@ public class DocumentListView extends Composite implements
 			DocName doc = sortedList.get(i);
 			DocumentNode node;
 			if(doc.getPath() == null || doc.getPath().isEmpty()){
-				node = new DocumentNode(resources, doc, translateButtonClickHandler);
+				node = new DocumentNode(resources, messages, doc, translateButtonClickHandler);
 				add(node);
 			}
 			else{
 				FolderNode folder = new FolderNode(resources, doc);
-				node = new DocumentNode(resources, doc, translateButtonClickHandler);
+				node = new DocumentNode(resources, messages, doc, translateButtonClickHandler);
 				folder.addChild(node);
 				add(folder);
 			}

@@ -1,11 +1,39 @@
 package org.fedorahosted.flies.webtrans.editor;
 
+import org.fedorahosted.flies.common.ContentState;
+
 public interface HasTransUnitCount {
-	 public void setStatus(int fuzzy, int translated, int untranslated);
-	 public void setFuzzy(int fuzzy); 
-	 public void setTranslated(int translated); 
-	 public void setUntranslated(int untranslated);
-	 public int getFuzzy();
-	 public int getTranslated();
-	 public int getUntranslated();
+
+	public static enum CountUnit {
+		Word, TranslationUnit;
+	}
+
+	public static enum LabelFormat {
+		Percentage, Unit;
+	}
+
+	public void setCount(int approved, int needReview, int untranslated);
+
+	public void setCount(ContentState state, int count);
+
+	public int getCount(ContentState state);
+
+	public int getCount();
+	
+	public void setLabelFormat(LabelFormat format);
+	public LabelFormat getLabelFormat();
+	
+	public void setCountUnit(CountUnit countUnit);
+	public CountUnit getCountUnit();
+
+	void setToggleEnabled(boolean toggleEnabled);
+	boolean isToggleEnabled();
+
+	void setLabelVisible(boolean labelVisible);
+
+	boolean isLabelVisible();
+	
+	
+	
+	
 }

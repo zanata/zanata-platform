@@ -1,5 +1,8 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import org.fedorahosted.flies.common.ContentState;
+import org.fedorahosted.flies.webtrans.editor.HasTransUnitCount;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -13,17 +16,8 @@ import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class StatusBar extends Composite {
+public class StatusBar extends Composite implements HasTransUnitCount {
 
-	public static enum CountUnit {
-		Word, TranslationUnit;
-	}
-	
-	public static enum LabelFormat {
-		Percentage,Unit;
-	}
-
-	
 	private static StatusBarUiBinder uiBinder = GWT
 			.create(StatusBarUiBinder.class);
 
@@ -43,8 +37,8 @@ public class StatusBar extends Composite {
 	
 	@UiField
 	Label label;
-
-	int complete, inProgress, unfinished;
+	
+	int approved, needReview, untranslated;
 	
 	private final WebTransMessages messages;
 	
@@ -54,15 +48,16 @@ public class StatusBar extends Composite {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
-	public void setStatus(int complete, int inProgress, int unfinished) {
-		this.complete = complete;
-		this.inProgress = inProgress;
-		this.unfinished = unfinished;
+	@Override
+	public void setCount(int approved, int needReview, int untranslated) {
+		this.approved = approved;
+		this.needReview = needReview;
+		this.untranslated = untranslated;
 		refresh();
 	}
 
 	public void refresh() {
-		int total = complete + inProgress + unfinished;
+		int total = approved + needReview + untranslated;
 		int width = getOffsetWidth();
 		layoutPanel.forceLayout();
 		if(total == 0) {
@@ -73,9 +68,9 @@ public class StatusBar extends Composite {
 			label.setText("");
 		}
 		else{
-			int completePx = complete * 100 / total * width /100;
-			int inProgressPx = inProgress * 100 / total * width /100;;
-			int unfinishedPx = unfinished * 100 / total * width /100;;
+			int completePx = approved * 100 / total * width /100;
+			int inProgressPx = needReview * 100 / total * width /100;;
+			int unfinishedPx = untranslated * 100 / total * width /100;;
 			
 			layoutPanel.setWidgetLeftWidth(undefinedPanel, 0.0, Unit.PX, 0, Unit.PX);
 			
@@ -85,10 +80,10 @@ public class StatusBar extends Composite {
 
 			switch(labelFormat) {
 			case Percentage:
-				label.setText( messages.statusBarLabelPercentage(complete*100/total, inProgress*100/total, unfinished*100/total));
+				label.setText( messages.statusBarLabelPercentage(approved*100/total, needReview*100/total, untranslated*100/total));
 				break;
 			case Unit:
-				label.setText( messages.statusBarLabelUnits(complete, inProgress, unfinished));
+				label.setText( messages.statusBarLabelUnits(approved, needReview, untranslated));
 				break;
 			}
 		}
@@ -114,19 +109,23 @@ public class StatusBar extends Composite {
 		return labelFormat;
 	}
 	
+	@Override
 	public void setToggleEnabled(boolean toggleEnabled) {
 		this.toggleEnabled = toggleEnabled;
 	}
 	
+	@Override
 	public boolean isToggleEnabled() {
 		return toggleEnabled;
 	}
 	
+	@Override
 	public void setLabelVisible(boolean labelVisible) {
 		this.labelVisible = labelVisible;
 		label.setVisible(labelVisible);
 	}
 	
+	@Override
 	public boolean isLabelVisible() {
 		return labelVisible;
 	}
@@ -144,4 +143,41 @@ public class StatusBar extends Composite {
 			}
 		}
 	}
+	
+	@Override
+	public int getCount() {
+		return approved + needReview + untranslated;
+	}
+
+	@Override
+	public int getCount(ContentState state) {
+		switch(state) {
+		case Approved:
+			return approved;
+		case NeedReview:
+			return needReview;
+		case New:
+			return untranslated;
+		default:
+			throw new RuntimeException("method not implemented for " + state.name());
+		}
+	}
+	
+	@Override
+	public void setCount(ContentState state, int count) {
+		switch(state) {
+		case Approved:
+			approved = count;
+			break;
+		case NeedReview:
+			needReview = count;
+			break;
+		case New:
+			untranslated = count;
+			break;
+		default:
+			throw new RuntimeException("method not implemented for " + state.name());
+		}
+	}
+	
 }

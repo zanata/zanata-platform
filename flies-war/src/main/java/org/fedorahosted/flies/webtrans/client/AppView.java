@@ -2,6 +2,7 @@ package org.fedorahosted.flies.webtrans.client;
 
 import org.fedorahosted.flies.webtrans.client.ui.HasPager;
 import org.fedorahosted.flies.webtrans.client.ui.Pager;
+import org.fedorahosted.flies.webtrans.editor.HasTransUnitCount;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;
@@ -104,7 +105,6 @@ public class AppView extends Composite implements AppPresenter.Display {
 		editor.setWidgetTopHeight(editorView, 0, Unit.PX, 0, Unit.PX);
 		pager.setVisible(false);
 		transUnitNavigation.setVisible(false);
-		statusBar.setStatus((int)(100*Math.random()),(int)(100*Math.random()),(int)(100*Math.random()));
 	}
 	
 	@Override
@@ -170,4 +170,9 @@ public class AppView extends Composite implements AppPresenter.Display {
 		sidePanel.setFilterView(filterView);
 	}
 
+	@Override
+	public HasTransUnitCount getTransUnitCount() {
+		return statusBar;
+	}
+	
 }

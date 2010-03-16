@@ -33,7 +33,6 @@ import org.fedorahosted.flies.webtrans.client.rpc.DelegatingDispatchAsync;
 import org.fedorahosted.flies.webtrans.editor.DocumentStatusPresenter;
 import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
 import org.fedorahosted.flies.webtrans.editor.ProjectStatusPresenter;
-import org.fedorahosted.flies.webtrans.editor.TranslationStatsBar;
 import org.fedorahosted.flies.webtrans.editor.TranslationStatsBarPresenter;
 import org.fedorahosted.flies.webtrans.editor.filter.OperatorFilterPresenter;
 import org.fedorahosted.flies.webtrans.editor.filter.OperatorFilterView;
@@ -74,9 +73,6 @@ public class WebTransClientModule extends AbstractPresenterModule {
 		bindPresenter(GlossaryPresenter.class, GlossaryPresenter.Display.class, GlossaryView.class);
 		bindPresenter(TransUnitNavigationPresenter.class, TransUnitNavigationPresenter.Display.class, TransUnitNavigationView.class);
 		bindPresenter(SidePanelPresenter.class, SidePanelPresenter.Display.class, SidePanel.class);
-		bind(DocumentStatusPresenter.class);
-		bind(ProjectStatusPresenter.class);
-		bindDisplay(TranslationStatsBarPresenter.Display.class, TranslationStatsBar.class);
 		
 		bind(HasPageNavigation.class).to(TableEditorView.class).in(Singleton.class);
 

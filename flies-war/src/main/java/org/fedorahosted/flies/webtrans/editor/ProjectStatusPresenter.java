@@ -7,6 +7,7 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
 
+import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.gwt.model.DocumentStatus;
 import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCount;
 import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCountResult;
@@ -45,9 +46,9 @@ public class ProjectStatusPresenter extends TranslationStatsBarPresenter{
 		registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler() {
 			@Override
 			public void onTransUnitUpdated(TransUnitUpdatedEvent event) {
-				int fuzzyCount = getDisplay().getFuzzy();
-				int translatedCount = getDisplay().getTranslated();
-				int untranslatedCount = getDisplay().getUntranslated();
+				int fuzzyCount = getDisplay().getCount(ContentState.NeedReview);
+				int translatedCount = getDisplay().getCount(ContentState.Approved);
+				int untranslatedCount = getDisplay().getCount(ContentState.New);;
 				
 				switch (event.getPreviousStatus() ) {
 				case Approved:
@@ -73,7 +74,7 @@ public class ProjectStatusPresenter extends TranslationStatsBarPresenter{
 					break;
 				}
 				
-				getDisplay().setStatus(fuzzyCount, translatedCount, untranslatedCount);
+				getDisplay().setCount(fuzzyCount, translatedCount, untranslatedCount);
 				
 				
 			}
@@ -125,7 +126,7 @@ public class ProjectStatusPresenter extends TranslationStatsBarPresenter{
 					translated = translated + doc.getTranslated();
 					untranslated = untranslated + doc.getUntranslated();
 				}
-				getDisplay().setStatus((int) fuzzy, (int)translated, (int)untranslated);
+				getDisplay().setCount((int) fuzzy, (int)translated, (int)untranslated);
 			}
 	});
 	}	

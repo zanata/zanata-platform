@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.webtrans.client;
 
 import org.fedorahosted.flies.gwt.model.DocName;
+import org.fedorahosted.flies.webtrans.editor.HasTransUnitCount.LabelFormat;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
@@ -17,6 +18,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 
 public class DocumentNode extends Node<DocName> {
 
@@ -46,9 +48,18 @@ public class DocumentNode extends Node<DocName> {
 	@UiField 
 	Anchor translateLink;
 	
-	public DocumentNode(Resources resources) {
+	@UiField(provided=true)
+	StatusBar statusBar;
+	
+	final WebTransMessages messages;
+	
+	public DocumentNode(Resources resources, WebTransMessages messages) {
 		this.resources = resources;
+		this.messages = messages;
 		
+		this.statusBar = new StatusBar(messages);
+		statusBar.setToggleEnabled(false);
+		statusBar.setLabelFormat(LabelFormat.Percentage);
 		rootPanel = new FlowPanel() {
 			public void onBrowserEvent(Event event) {
 				switch(event.getTypeInt()) {
@@ -70,14 +81,14 @@ public class DocumentNode extends Node<DocName> {
 		
 	}
 	
-	public DocumentNode(Resources resources, DocName doc) {
-		this(resources);
+	public DocumentNode(Resources resources, WebTransMessages messages, DocName doc) {
+		this(resources, messages);
 		translateLink.getElement().setId("link_translate-doc#"+ doc.getId().toString());
 		setDataItem(doc);
 	}
 
-	public DocumentNode(Resources resources, DocName doc, ClickHandler clickHandler) {
-		this(resources, doc);
+	public DocumentNode(Resources resources, WebTransMessages messages, DocName doc, ClickHandler clickHandler) {
+		this(resources, messages, doc);
 		translateLink.addClickHandler(clickHandler);
 	}
 	
