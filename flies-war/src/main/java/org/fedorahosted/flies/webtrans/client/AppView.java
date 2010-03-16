@@ -55,7 +55,7 @@ public class AppView extends Composite implements AppPresenter.Display {
 	@UiField(provided=true) 
 	Pager pager;
 	
-	@UiField
+	@UiField(provided=true)
 	StatusBar statusBar;
 	
 	private Widget documentListView;
@@ -63,11 +63,15 @@ public class AppView extends Composite implements AppPresenter.Display {
 	private Widget filterView;
 	private Widget workspaceUsersView;
 	
+	final WebTransMessages messages;
+	
 	@Inject
-	public AppView(Resources resources, SidePanel sidePanel) {
+	public AppView(Resources resources, WebTransMessages messages, SidePanel sidePanel) {
 		this.resources = resources;
-		pager = new Pager(resources);
-		this.sidePanel = sidePanel; 
+		this.messages = messages;
+		this.sidePanel = sidePanel;
+		this.pager = new Pager(resources);
+		this.statusBar = new StatusBar(messages);
 
 		initWidget(uiBinder.createAndBindUi(this));
 		mainSplitPanel.setWidgetMinSize(sidePanel, 200);

@@ -58,7 +58,7 @@
 			float: right;
 			display: inline;
 			width: 100px;
-			height: 20px;
+			height: 1.2em;
 		}
 
 		

@@ -2,35 +2,48 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:style>
-		.complete {
-			background: #D0EFE0;
+		.approved {
+			background: #90cd95;
+			z-index: -1;
 		}
 		
-		.inProgress {
-			background: #EFE9E0;
+		.needReview {
+			background: #f7f488;
+			z-index: -1;
 		}
 		
-		.unfinished {
-			background: #EFDFE0;
+		.untranslated {
+			background: #aecbde;
+			z-index: -1;
 		}
 		
 		.undefined {
-			background: #EFEFE0;
+			background: #f7f488;
+			z-index: -1;
+		}
+		
+		.label {
+			font-weight: bold;
+			cursor: pointer;
+			text-align: center;
 		}
 		
 	</ui:style>
 	<g:LayoutPanel ui:field='layoutPanel'>
 		<g:layer left='0' width='0'>
-			<g:FlowPanel ui:field='completePanel' styleName="{style.complete}"/>
+			<g:FlowPanel ui:field='approvedPanel' styleName="{style.approved}"/>
 		</g:layer>
 		<g:layer left='0' width='0'>
-			<g:FlowPanel ui:field='inProgressPanel' styleName="{style.inProgress}"/>
+			<g:FlowPanel ui:field='needReviewPanel' styleName="{style.needReview}"/>
 		</g:layer>
 		<g:layer left='0' width='0'>
-			<g:FlowPanel ui:field='unfinishedPanel' styleName="{style.unfinished}"/>
+			<g:FlowPanel ui:field='untranslatedPanel' styleName="{style.untranslated}"/>
 		</g:layer>
 		<g:layer left='0' width='100%'>
 			<g:FlowPanel ui:field='undefinedPanel' styleName="{style.undefined}"/>
+		</g:layer>
+		<g:layer>
+			<g:Label ui:field='label' styleName='{style.label}'/>
 		</g:layer>
 	</g:LayoutPanel>
 </ui:UiBinder> 
