@@ -21,6 +21,7 @@ import com.google.gwt.gen2.table.client.InlineCellEditor.InlineCellEditorImages;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ImageBundle;
 import com.google.gwt.user.client.ui.PushButton;
@@ -259,10 +260,16 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 		curCol = curCellEditInfo.getCellIndex();
 
 		cellViewWidget = table.getWidget(curRow, curCol);
-		textArea.setHeight( table.getWidget(curRow, curCol-1).getOffsetHeight() + "px");
+		//textArea.setHeight( table.getWidget(curRow, curCol-1).getOffsetHeight() + "px");
+		
+		//Set Fix Height(four lines height) for textArea, if set 100%, it will be three lines height.
+		//The vertical scroll will be used, when content is more than four lines.
+		textArea.setHeight("65px");
+		
 		table.setWidget(curRow, curCol, layoutTable);
 
 		textArea.setText(cellValue.getTarget());
+		
 		this.cellValue = cellValue;
 		textArea.setFocus(true);
 		toggleFuzzy.setValue(cellValue.getStatus() == ContentState.NeedReview);
