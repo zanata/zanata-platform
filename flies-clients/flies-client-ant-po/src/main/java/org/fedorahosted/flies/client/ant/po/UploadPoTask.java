@@ -36,7 +36,7 @@ public class UploadPoTask extends MatchingTask {
 	private String apiKey;
 	private String dst;
 	private File srcDir;
-	private String sourceLang = "en_US";
+	private String sourceLang = "en-US";
 	private boolean debug;
 	private boolean help;
 
@@ -133,13 +133,12 @@ public class UploadPoTask extends MatchingTask {
 			// for each of the base pot files under srcdir/pot:
 			for (File potFile : potFiles) {
 //				progress.update(i++, files.length);
-//				File sourceLang = new File(srcDir, locale);
 				String basename = StringUtil.removeFileExtension(potFile.getName(), ".pot");
 				Document doc = new Document(basename, ContentType.TextPlain);
 				InputSource potInputSource = new InputSource(potFile.toURI().toString());
 				System.out.println(potFile.toURI().toString());
 				potInputSource.setEncoding("utf8");
-				poReader.extractTemplate(doc, potInputSource, LocaleId.fromJavaName(sourceLang));
+				poReader.extractTemplate(doc, potInputSource, new LocaleId(sourceLang));
 				docList.add(doc);
 				
 				String poName = basename + ".po";
@@ -205,7 +204,7 @@ public class UploadPoTask extends MatchingTask {
 		this.srcDir = srcDir;
 	}
 
-	@Option(name = "l", longName = "srclang", required = true, description = "Language of source (defaults to en_US)")
+	@Option(name = "l", longName = "srclang", required = true, description = "Language of source (defaults to en-US)")
 	public void setSourceLang(String sourceLang) {
 		this.sourceLang = sourceLang;
 	}
