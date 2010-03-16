@@ -18,7 +18,6 @@ import org.fedorahosted.flies.webtrans.client.LoginPresenter.LoggedIn;
 import org.fedorahosted.flies.webtrans.client.auth.Identity;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.client.ui.HasPager;
-import org.fedorahosted.flies.webtrans.editor.WebTransEditorPresenter;
 import org.fedorahosted.flies.webtrans.editor.filter.TransFilterPresenter;
 import org.fedorahosted.flies.webtrans.editor.table.TableEditorPresenter;
 

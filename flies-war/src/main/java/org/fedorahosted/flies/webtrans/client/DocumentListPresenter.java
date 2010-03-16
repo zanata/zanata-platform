@@ -27,8 +27,6 @@ import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.client.ui.HasFilter;
-import org.fedorahosted.flies.webtrans.client.ui.HasTreeNodes;
-import org.fedorahosted.flies.webtrans.client.ui.TreeNode;
 import org.fedorahosted.flies.webtrans.editor.ProjectStatusPresenter;
 import org.fedorahosted.flies.webtrans.editor.filter.ContentFilter;
 
