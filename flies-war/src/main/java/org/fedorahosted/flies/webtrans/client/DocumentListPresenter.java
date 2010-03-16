@@ -59,7 +59,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 		void setSelection(DocumentId documentId);
 		void ensureSelectionVisible();
 		HasDocumentSelectionHandlers getDocumentSelectionHandler();
-		void applyFilter(ContentFilter<DocName> filter);
+		void setFilter(ContentFilter<DocName> filter);
 		void removeFilter();
 		HasValue<String> getFilterTextBox();
 	}
@@ -148,7 +148,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 				}
 				else {
 					basicContentFilter.setPattern(event.getValue());
-					display.applyFilter(basicContentFilter);
+					display.setFilter(basicContentFilter);
 				}
 			}
 		}));
