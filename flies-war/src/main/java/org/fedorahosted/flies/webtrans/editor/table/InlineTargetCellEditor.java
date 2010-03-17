@@ -101,7 +101,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 	/*
 	 * The minimum height of the target editor
 	 */
-	private static final int MIN_HEIGHT = 32;
+	private static final int MIN_HEIGHT = 48;
 	
 	/**
 	 * Construct a new {@link InlineTargetCellEditor}.
