@@ -97,6 +97,12 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 	private int curRow;
 	private int curCol;
 	private HTMLTable table;
+	
+	/*
+	 * The minimum height of the target editor
+	 */
+	private static final int MIN_HEIGHT = 32;
+	
 	/**
 	 * Construct a new {@link InlineTargetCellEditor}.
 	 * 
@@ -233,7 +239,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 	
 	public void editCell(CellEditInfo cellEditInfo, TransUnit cellValue,
 			Callback<TransUnit> callback) {
-
+        
 		// don't allow edits of two cells at once
 		if( isDirty() ) {
 	    	callback.onCancel(cellEditInfo);
@@ -260,14 +266,13 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 		curCol = curCellEditInfo.getCellIndex();
 
 		cellViewWidget = table.getWidget(curRow, curCol);
-		//textArea.setHeight( table.getWidget(curRow, curCol-1).getOffsetHeight() + "px");
-		
-		//Set Fix Height(four lines height) for textArea, if set 100%, it will be three lines height.
-		//The vertical scroll will be used, when content is more than four lines.
-		textArea.setHeight("65px");
-		
-		table.setWidget(curRow, curCol, layoutTable);
 
+		int height = table.getWidget(curRow, curCol-1).getOffsetHeight();
+		Log.info("The height of the target editor "+height);
+		int realHeight = height > MIN_HEIGHT ? height : MIN_HEIGHT;
+		
+		textArea.setHeight(realHeight+"px");
+		table.setWidget(curRow, curCol, layoutTable);
 		textArea.setText(cellValue.getTarget());
 		
 		this.cellValue = cellValue;
