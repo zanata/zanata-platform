@@ -12,7 +12,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.taskdefs.MatchingTask;
+import org.apache.tools.ant.Task;
 import org.cyclopsgroup.jcli.ArgumentProcessor;
 import org.cyclopsgroup.jcli.annotation.Cli;
 import org.cyclopsgroup.jcli.annotation.Option;
@@ -25,7 +25,7 @@ import org.fedorahosted.flies.rest.dto.Documents;
 import org.jboss.resteasy.client.ClientResponse;
 
 @Cli(name = "downloadpo", description = "Downloads a Publican project's PO/POT files from Flies after translation, to allow document generation")
-public class DownloadPoTask extends MatchingTask {
+public class DownloadPoTask extends Task {
 
 	private String user;
 	private String apiKey;
@@ -87,7 +87,7 @@ public class DownloadPoTask extends MatchingTask {
 				m = jc.createUnmarshaller();
 			}
 
-			URL srcURL = Utility.createURL(src, getProject());
+			URL srcURL = Utility.createURL(src, Utility.getBaseDir(getProject()));
 
 			List<Document> docList;
 			if("file".equals(srcURL.getProtocol())) {
@@ -107,7 +107,7 @@ public class DownloadPoTask extends MatchingTask {
 				pw.write(doc, dstDir);
 			}
 	}
-
+	
 	@Override
 	public void log(String msg) {
 		super.log(msg+"\n\n");

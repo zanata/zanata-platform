@@ -14,7 +14,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.taskdefs.MatchingTask;
+import org.apache.tools.ant.Task;
 import org.cyclopsgroup.jcli.ArgumentProcessor;
 import org.cyclopsgroup.jcli.annotation.Cli;
 import org.cyclopsgroup.jcli.annotation.Option;
@@ -30,7 +30,7 @@ import org.jboss.resteasy.client.ClientResponse;
 import org.xml.sax.InputSource;
 
 @Cli(name = "uploadpo", description = "Uploads a Publican project's PO/POT files to Flies for translation")
-public class UploadPoTask extends MatchingTask {
+public class UploadPoTask extends Task {
 
 	private String user;
 	private String apiKey;
@@ -72,6 +72,7 @@ public class UploadPoTask extends MatchingTask {
 		System.exit(0);
 	}
 	
+	@Override
 	public void execute() throws BuildException {
 		ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
 		try {
@@ -86,17 +87,7 @@ public class UploadPoTask extends MatchingTask {
 	}
 	
 	public void process() throws JAXBException, MalformedURLException, URISyntaxException {
-//		Document doc = new Document("doc1","mydoc.doc", "/", PoReader.PO_CONTENT_TYPE);
-		
-//			InputSource inputSource = new InputSource("file:/home/cchance/src/fedorahosted/flies/flies-client/flies-client-ant-po/src/test/resources/test-input/ja-JP/Accounts_And_Subscriptions.po");
-//			
-//			inputSource.setEncoding("utf8");
-//			
 			PoReader poReader = new PoReader();
-//
-//			System.out.println("parsing template");
-//			poReader.extractTemplate(doc, inputSource);
-			
 			// scan the directory for pot files
 			File potDir = new File(srcDir, "pot");
 			File[] potFiles = potDir.listFiles(new FileFilter() {
@@ -166,7 +157,7 @@ public class UploadPoTask extends MatchingTask {
 				return;
 
 			// check if local or remote: write to file if local, put to server if remote
-			URL dstURL = Utility.createURL(dst, getProject());
+			URL dstURL = Utility.createURL(dst, Utility.getBaseDir(getProject()));
 			if("file".equals(dstURL.getProtocol())) {
 				m.marshal(docs, new File(dstURL.getFile()));
 			} else {
