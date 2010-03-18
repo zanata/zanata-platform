@@ -774,4 +774,23 @@ a.action_link:hover {
 	overflow-y: auto;
 }
 
+
+.translationStatusBar{
+    display: block;
+    padding: 3px;
+    padding-right: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    color: grey;
+    width: 111px;
+    height: 14px;
+    text-align: right;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    background-image: url(../img/bar.png);
+    background-repeat: no-repeat;
+    
+}
+
+
 /* --> */

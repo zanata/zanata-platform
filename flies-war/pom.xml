@@ -756,12 +756,6 @@
     </dependency>    
 
     <dependency>
-      <groupId>org.fedorahosted.flies.ui</groupId>
-      <artifactId>flies-ui</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
       <groupId>org.fedorahosted.flies</groupId>
       <artifactId>flies-gwt-api</artifactId>
       <version>${project.version}</version>

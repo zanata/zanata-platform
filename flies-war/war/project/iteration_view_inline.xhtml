@@ -5,7 +5,6 @@
    xmlns:h="http://java.sun.com/jsf/html"
    xmlns:rich="http://richfaces.org/rich"
    xmlns:f="http://java.sun.com/jsf/core"
-   xmlns:flies="http://flies.fedorahosted.org/ui"
    xmlns:s="http://jboss.com/products/seam/taglib">
   <div class="list_view_header">
     <h2>#{_iteration.name}</h2>
@@ -26,11 +25,10 @@
     <rich:column>#{tribe.locale.nativeName}</rich:column>
     <rich:column>
       <ui:param name="tstatus" value="#{projectIterationDAO.getStatisticsForContainer(_iteration.container.id, tribe.locale.localeId)}" />
-      <flies:translation-status-bar
-        title="Total: #{tstatus.total}, Translated: #{tstatus.approved}, Need Review #{tstatus.needReview}"
-        translated="#{tstatus.approved}" 
-        fuzzy="0" 
-        untranslated="#{tstatus.notApproved}"/>    </rich:column>
+      <ui:include src="../layout/statsbar.xhtml">
+        <ui:param name="status" value="#{tstatus}" />
+      </ui:include>        
+    </rich:column>
     <rich:column>
       <h:outputLink target="_blank" value="/flies/org.fedorahosted.flies.webtrans.Application/Application.html">
 		<f:param name="projContainerId" value="#{_iteration.container.id}"/>
