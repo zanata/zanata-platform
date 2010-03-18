@@ -90,6 +90,7 @@ public class Container extends AbstractBaseResource implements DocumentResource,
 		if(ext == null){
 			try {
 				ext = clz.newInstance();
+				getExtensions(true).add(ext);
 			} catch (Throwable e) {
 				throw new RuntimeException("unable to create instance", e);
 			}
