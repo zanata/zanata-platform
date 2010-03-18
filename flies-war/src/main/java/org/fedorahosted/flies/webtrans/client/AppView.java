@@ -171,6 +171,11 @@ public class AppView extends Composite implements AppPresenter.Display {
 	public HasClickHandlers getSignOutLink() {
 		return signOutLink;
 	}
+
+	@Override
+	public HasClickHandlers getDocumentsLink() {
+		return documentsLink;
+	}
 	
 	@Override
 	public void setTableEditorPagerVisible(boolean visible) {

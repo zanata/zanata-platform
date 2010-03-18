@@ -32,6 +32,8 @@ import org.fedorahosted.flies.webtrans.editor.filter.TransFilterPresenter;
 import org.fedorahosted.flies.webtrans.editor.table.TableEditorPresenter;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
@@ -78,6 +80,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		HasClickHandlers getSignOutLink();
 		HasClickHandlers getLeaveWorkspaceLink();
 		HasClickHandlers getHelpLink();
+		HasClickHandlers getDocumentsLink();
 	}
 
 	private final TableEditorPresenter tableEditorPresenter;
@@ -234,6 +237,13 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 				projectCount.decrement(event.getPreviousStatus());
 				projectCount.increment(event.getNewStatus());
 				getDisplay().getTransUnitCountBar().setCount(projectCount);
+			}
+		}));
+		
+		registerHandler(display.getDocumentsLink().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				display.showInMainView(MainView.Documents);
 			}
 		}));
 		
