@@ -27,7 +27,7 @@
     <rich:column>
       <ui:param name="tstatus" value="#{projectIterationDAO.getStatisticsForContainer(_iteration.container.id, tribe.locale.localeId)}" />
       <flies:translation-status-bar
-        title="Total: #{tstatus.total}, Translated: #{tstatus.get(org.fedorahosted.flies.common.ContentState.Approved)}, Need Review #{tstatus.get(org.fedorahosted.flies.common.NeedReview)}"
+        title="Total: #{tstatus.total}, Translated: #{tstatus.approved}, Need Review #{tstatus.needReview}"
         translated="#{tstatus.approved}" 
         fuzzy="0" 
         untranslated="#{tstatus.notApproved}"/>    </rich:column>

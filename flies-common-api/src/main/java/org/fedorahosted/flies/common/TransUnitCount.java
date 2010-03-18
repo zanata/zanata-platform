@@ -61,6 +61,18 @@ public  final class TransUnitCount {
 			return approved + needReview + untranslated;
 		}
 		
+		public int getApproved() {
+			return approved;
+		}
+		
+		public int getNeedReview() {
+			return needReview;
+		}
+		
+		public int getUntranslated() {
+			return untranslated;
+		}
+		
 		public int getNotApproved() {
 			return untranslated + needReview;
 		}
