@@ -112,44 +112,31 @@ public class PoWriter {
 //		if(!document.getTargetLanguages().contains(locale))
 //			throw new RuntimeException("could not find target locale");
 
-		PoHeader potHeader = document.getExtension(PoHeader.class);
-		
+		PoHeader poHeader = document.getExtension(PoHeader.class);
 		HeaderFields hf = new HeaderFields();
-		if (potHeader == null) {
+		if (poHeader == null) {
 			log.warn("No PO header in document with ID "+document.getId());
-			hf.setValue("MIME-Version", "1.0");
-			hf.setValue("Content-Type", "text/plain; charset=UTF-8");
-			hf.setValue("Content-Transfer-Encoding", "8bit");
+			setDefaultHeaderFields(hf);
 		} else {
-			final List<HeaderEntry> headerEntries = potHeader.getEntries();
-			for(HeaderEntry e : headerEntries){
-				hf.setValue(e.getKey(), e.getValue());
-			}
+			copyToHeaderFields(hf, poHeader.getEntries());
 		}
-		Message message;
+		Message headerMessage = null;
 		if (locale != null) {
-			PoTargetHeaders poHeaders = document.getExtension(PoTargetHeaders.class);
-			if (poHeaders != null) {
-				PoTargetHeader poHeader = poHeaders.getByLocale(locale);
-				for(HeaderEntry e : poHeader.getEntries()){
-					hf.setValue(e.getKey(), e.getValue());
+			PoTargetHeaders poTargetHeaders = document.getExtension(PoTargetHeaders.class);
+			if (poTargetHeaders != null) {
+				PoTargetHeader poTargetHeader = poTargetHeaders.getByLocale(locale);
+				if (poTargetHeader != null) {
+					copyToHeaderFields(hf, poTargetHeader.getEntries());
+					headerMessage = hf.unwrap();
+					copyTargetHeaderComments(headerMessage, poTargetHeader);
 				}
-				message = hf.unwrap();
-				for(String s : poHeader.getComment().getValue().split("\n")){
-					message.addComment(s);
-				}
-				poWriter.write(message, writer);
-				writer.write("\n");
-			}  else {
-				message = hf.unwrap();
-				poWriter.write(message, writer);
-				writer.write("\n");
 			}
-		} else {
-			message = hf.unwrap();
-			poWriter.write(message, writer);
-			writer.write("\n");
 		}
+		if (headerMessage == null) {
+			headerMessage = hf.unwrap();
+		}
+		poWriter.write(headerMessage, writer);
+		writer.write("\n");
 
 		// first write header
 		if(!document.hasResources())
@@ -158,7 +145,7 @@ public class PoWriter {
 			TextFlow textFlow = (TextFlow) resource;
 
 			PotEntryData entryData = textFlow.getExtension(PotEntryData.class);
-			message = new Message();
+			Message message = new Message();
 			message.setMsgid(textFlow.getContent());
 			message.setMsgstr("");
 			if (locale != null) {
@@ -204,6 +191,26 @@ public class PoWriter {
 			
 			poWriter.write(message, writer);
 			writer.write("\n");
+		}
+	}
+
+	private void copyTargetHeaderComments(Message headerMessage,
+			PoTargetHeader poTargetHeader) {
+		for (String s : poTargetHeader.getComment().getValue().split("\n")){
+			headerMessage.addComment(s);
+		}
+	}
+
+	private void setDefaultHeaderFields(HeaderFields hf) {
+		hf.setValue("MIME-Version", "1.0");
+		hf.setValue("Content-Type", "text/plain; charset=UTF-8");
+		hf.setValue("Content-Transfer-Encoding", "8bit");
+	}
+
+	private void copyToHeaderFields(HeaderFields hf,
+			final List<HeaderEntry> entries) {
+		for (HeaderEntry e : entries){
+			hf.setValue(e.getKey(), e.getValue());
 		}
 	}
 	
