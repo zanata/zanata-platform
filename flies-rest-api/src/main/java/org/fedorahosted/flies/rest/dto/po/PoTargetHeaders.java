@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.fedorahosted.flies.common.LocaleId;
 
 /**
- * Represents a list of target-language translations for a single TextFlow
+ * Represents a list of target-language translations for a single Document
  * 
  * @author asgeirf
  *
