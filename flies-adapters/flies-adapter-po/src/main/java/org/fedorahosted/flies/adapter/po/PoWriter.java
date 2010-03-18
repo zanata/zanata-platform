@@ -88,7 +88,7 @@ public class PoWriter {
 				writer = new OutputStreamWriter(outputSource.getOutputStream(), Charset.forName(outputSource.getEncoding()));
 			}
 			else{
-				writer = new OutputStreamWriter(outputSource.getOutputStream() );
+				writer = new OutputStreamWriter(outputSource.getOutputStream(), Charset.forName("UTF-8") );
 			}
 		}
 		else if(outputSource.getFile() != null){ // file has 3rd priority
@@ -98,7 +98,7 @@ public class PoWriter {
 					writer = new OutputStreamWriter(os, Charset.forName(outputSource.getEncoding()));
 				}
 				else{
-					writer = new OutputStreamWriter(os);
+					writer = new OutputStreamWriter(os, Charset.forName("UTF-8"));
 				}
 			}
 			catch(FileNotFoundException fnf){
@@ -117,6 +117,9 @@ public class PoWriter {
 		HeaderFields hf = new HeaderFields();
 		if (potHeader == null) {
 			log.warn("No PO header in document with ID "+document.getId());
+			hf.setValue("MIME-Version", "1.0");
+			hf.setValue("Content-Type", "text/plain; charset=UTF-8");
+			hf.setValue("Content-Transfer-Encoding", "8bit");
 		} else {
 			final List<HeaderEntry> headerEntries = potHeader.getEntries();
 			for(HeaderEntry e : headerEntries){
@@ -135,6 +138,10 @@ public class PoWriter {
 				for(String s : poHeader.getComment().getValue().split("\n")){
 					message.addComment(s);
 				}
+				poWriter.write(message, writer);
+				writer.write("\n");
+			}  else {
+				message = hf.unwrap();
 				poWriter.write(message, writer);
 				writer.write("\n");
 			}

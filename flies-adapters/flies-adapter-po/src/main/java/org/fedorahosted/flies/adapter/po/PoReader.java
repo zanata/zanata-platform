@@ -301,7 +301,7 @@ public class PoReader {
 			if(inputSource.getEncoding() != null)
 				messageParser = new MessageStreamParser(inputSource.getByteStream(), Charset.forName(inputSource.getEncoding()));
 			else
-				messageParser = new MessageStreamParser(inputSource.getByteStream());
+				messageParser = new MessageStreamParser(inputSource.getByteStream(), Charset.forName("UTF-8"));
 		}
 		else if(inputSource.getSystemId() != null){
 			try{
@@ -310,7 +310,7 @@ public class PoReader {
 				if(inputSource.getEncoding() != null)
 					messageParser = new MessageStreamParser(url.openStream(), Charset.forName(inputSource.getEncoding()));
 				else
-					messageParser = new MessageStreamParser(url.openStream());
+					messageParser = new MessageStreamParser(url.openStream(), Charset.forName("UTF-8"));
 				}
 			catch(IOException e){
 				// TODO throw stronger typed exception
