@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -22,8 +23,12 @@ import org.fedorahosted.flies.rest.client.IDocumentsResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.DocumentResource;
 import org.fedorahosted.flies.rest.dto.Documents;
+import org.fedorahosted.flies.rest.dto.SimpleComment;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
+import org.fedorahosted.flies.rest.dto.po.HeaderEntry;
+import org.fedorahosted.flies.rest.dto.po.PoHeader;
+import org.fedorahosted.flies.rest.dto.po.PotEntryData;
 import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,9 +94,11 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 //	    assertThat(response.getEntity().getDocuments().size(), is(Arrays.asList(docs).size()));
 	    Set<String> actualDocs = new TreeSet<String>();
 	    for (Document doc : response.getEntity().getDocuments()) {
-	    	// leave links out of the XML
+	    	// leave links out of the XML comparison
 	    	doc.getLinks().clear();
-			actualDocs.add(doc.toString());
+	    	// The XML should include PoHeader, PotEntryData and target comments. FIXME check this
+			final String docXml = doc.toString();
+			actualDocs.add(docXml);
 			System.out.println("actual doc: "+doc);
 		}
 	    assertThat(actualDocs, is(expectedDocs));
@@ -107,7 +114,9 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 		return doc;
 	}
 	
-	private TextFlow newTextFlow(String id, String sourceContent, String sourceComment, LocaleId targetLocale, String targetContent, String targetComment) {
+	private TextFlow newTextFlow(
+			String id, String sourceContent, String sourceComment, 
+			LocaleId targetLocale, String targetContent, String targetComment) {
 		TextFlow textFlow = new TextFlow(id, LocaleId.EN);
 	    textFlow.setContent(sourceContent);
 	    if (sourceComment != null)
@@ -120,6 +129,34 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 		return textFlow;
 	}
 
+	private Document putPo1() {
+		Documents docs = new Documents();
+		TextFlow textflow = newTextFlow(
+				"FOOD", "Slime Mould", "POT comment", 
+				DE_DE, "Sauerkraut", "translator comment");
+
+		PotEntryData poData = textflow.getOrAddExtension(PotEntryData.class);
+		poData.setId("FOOD");
+		poData.setContext("context");
+		poData.setExtractedComment(new SimpleComment("Tag: title"));
+		List<String> flags = poData.getFlags();
+		flags.add("no-c-format");
+		flags.add("flag2");
+		List<String> refs = poData.getReferences();
+		refs.add("ref1.xml:7");
+		refs.add("ref1.xml:21");
+		Document doc = newDoc("foo.pot", textflow);
+		PoHeader poHeader = doc.getOrAddExtension(PoHeader.class);
+		poHeader.setComment("poheader comment");
+		List<HeaderEntry> entries = poHeader.getEntries();
+		entries.add(new HeaderEntry("Project-Id-Version", "ja"));
+		docs.getDocuments().add(doc);
+		System.out.println(docs.toString());
+		Response response = docsService.put(docs);
+		assertThat(response.getStatus(), is(200));
+		return doc;
+	}
+	
 	private Document putDoc1() {
 		Documents docs = new Documents();
 		Document doc = newDoc("foo.properties", 
@@ -261,6 +298,15 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    tft1a.setRevision(1);
 		tft1a.setResourceRevision(3);
 		expectDocs(doc1a);
+	}
+
+	
+	@Test(enabled = false) // DocsService doesn't support PO/POT yet
+	private void putPoPotGet() throws Exception {
+		log.info("TEST: putPoPotGet()");
+//		getZero();
+		Document po1 = putPo1();
+		expectDocs(po1);
 	}
 	
 	public void put1Put1a() throws Exception {
