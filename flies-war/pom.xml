@@ -129,6 +129,13 @@
                         <include name="**/*" />
                         <exclude name="META-INF/context.xml" />
                       </fileset>
+                      <fileset dir="war">
+                        <include name="**/*" />
+                        <exclude name="WEB-INF/lib/**/*" />
+                        <exclude name="WEB-INF/classes/**/*" />
+                        <exclude name="org.fedorahosted.flies.webtrans.**/*" />
+                        <exclude name="WEB-INF/web.xml" />
+                      </fileset>
                     </copy>
                     <copy 
                       todir="${deploy-path}/WEB-INF/dev"  
