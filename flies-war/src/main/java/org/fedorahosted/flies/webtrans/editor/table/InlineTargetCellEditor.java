@@ -21,6 +21,7 @@ import com.google.gwt.gen2.table.client.InlineCellEditor.InlineCellEditorImages;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ImageBundle;
 import com.google.gwt.user.client.ui.PushButton;
@@ -96,6 +97,12 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 	private int curRow;
 	private int curCol;
 	private HTMLTable table;
+	
+	/*
+	 * The minimum height of the target editor
+	 */
+	private static final int MIN_HEIGHT = 48;
+	
 	/**
 	 * Construct a new {@link InlineTargetCellEditor}.
 	 * 
@@ -232,7 +239,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 	
 	public void editCell(CellEditInfo cellEditInfo, TransUnit cellValue,
 			Callback<TransUnit> callback) {
-
+        
 		// don't allow edits of two cells at once
 		if( isDirty() ) {
 	    	callback.onCancel(cellEditInfo);
@@ -259,10 +266,15 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 		curCol = curCellEditInfo.getCellIndex();
 
 		cellViewWidget = table.getWidget(curRow, curCol);
-		textArea.setHeight( table.getWidget(curRow, curCol-1).getOffsetHeight() + "px");
-		table.setWidget(curRow, curCol, layoutTable);
 
+		int height = table.getWidget(curRow, curCol-1).getOffsetHeight();
+		Log.info("The height of the target editor "+height);
+		int realHeight = height > MIN_HEIGHT ? height : MIN_HEIGHT;
+		
+		textArea.setHeight(realHeight+"px");
+		table.setWidget(curRow, curCol, layoutTable);
 		textArea.setText(cellValue.getTarget());
+		
 		this.cellValue = cellValue;
 		textArea.setFocus(true);
 		toggleFuzzy.setValue(cellValue.getStatus() == ContentState.NeedReview);

@@ -11,6 +11,7 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -30,9 +31,11 @@ import org.fedorahosted.flies.rest.dto.po.PoTargetHeaders;
 import org.fedorahosted.flies.rest.dto.po.PotEntryData;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
 import org.fedorahosted.tennera.jgettext.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PoWriter {
-
+	private static final Logger log = LoggerFactory.getLogger(PoWriter.class);
 	private final org.fedorahosted.tennera.jgettext.PoWriter poWriter = new org.fedorahosted.tennera.jgettext.PoWriter();
 	
 	public PoWriter() {
@@ -85,7 +88,7 @@ public class PoWriter {
 				writer = new OutputStreamWriter(outputSource.getOutputStream(), Charset.forName(outputSource.getEncoding()));
 			}
 			else{
-				writer = new OutputStreamWriter(outputSource.getOutputStream() );
+				writer = new OutputStreamWriter(outputSource.getOutputStream(), Charset.forName("UTF-8") );
 			}
 		}
 		else if(outputSource.getFile() != null){ // file has 3rd priority
@@ -95,7 +98,7 @@ public class PoWriter {
 					writer = new OutputStreamWriter(os, Charset.forName(outputSource.getEncoding()));
 				}
 				else{
-					writer = new OutputStreamWriter(os);
+					writer = new OutputStreamWriter(os, Charset.forName("UTF-8"));
 				}
 			}
 			catch(FileNotFoundException fnf){
@@ -112,8 +115,16 @@ public class PoWriter {
 		PoHeader potHeader = document.getExtension(PoHeader.class);
 		
 		HeaderFields hf = new HeaderFields();
-		for(HeaderEntry e : potHeader.getEntries()){
-			hf.setValue(e.getKey(), e.getValue());
+		if (potHeader == null) {
+			log.warn("No PO header in document with ID "+document.getId());
+			hf.setValue("MIME-Version", "1.0");
+			hf.setValue("Content-Type", "text/plain; charset=UTF-8");
+			hf.setValue("Content-Transfer-Encoding", "8bit");
+		} else {
+			final List<HeaderEntry> headerEntries = potHeader.getEntries();
+			for(HeaderEntry e : headerEntries){
+				hf.setValue(e.getKey(), e.getValue());
+			}
 		}
 		Message message;
 		if (locale != null) {
@@ -127,6 +138,10 @@ public class PoWriter {
 				for(String s : poHeader.getComment().getValue().split("\n")){
 					message.addComment(s);
 				}
+				poWriter.write(message, writer);
+				writer.write("\n");
+			}  else {
+				message = hf.unwrap();
 				poWriter.write(message, writer);
 				writer.write("\n");
 			}
@@ -151,8 +166,12 @@ public class PoWriter {
 				if (entryTargets != null) {
 					TextFlowTarget contentData = entryTargets.getByLocale(locale);
 					if (contentData != null) {
-						if(!entryData.getId().equals(textFlow.getId()) || ! contentData.getId().equals(textFlow.getId())){
-							throw new RuntimeException("hey, expected something else here!");
+						if (entryData == null) {
+							log.warn("Missing POT entry for text-flow ID "+textFlow.getId());
+						} else if(!entryData.getId().equals(textFlow.getId())){
+							throw new RuntimeException("ID from POT entry doesn't match text-flow ID");
+						} else if (!contentData.getId().equals(textFlow.getId())) {
+							throw new RuntimeException("ID from target doesn't match text-flow ID");
 						}
 						message.setMsgstr(contentData.getContent());
 						SimpleComment poComment = contentData.getExtension(SimpleComment.class);
@@ -180,7 +199,8 @@ public class PoWriter {
 				}
 			}
 			
-			copyToMessage(entryData, message);
+			if (entryData != null)
+				copyToMessage(entryData, message);
 			
 			poWriter.write(message, writer);
 			writer.write("\n");

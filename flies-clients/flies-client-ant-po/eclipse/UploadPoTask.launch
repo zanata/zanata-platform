@@ -7,6 +7,6 @@
 <listEntry value="1"/>
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.fedorahosted.flies.client.ant.po.UploadPoTask"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="--debug --src src/test/resources/test-input"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="--debug --user admin --key 12345678901234567890123456789012 --src src/test/resources/test-input --dst http://localhost:8080/flies/seam/resource/restv1/projects/p/sample-project/iterations/i/1.1/documents"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="flies-client-ant-po"/>
 </launchConfiguration>
