@@ -118,7 +118,7 @@
 								<g:south size="22">
 									<g:FlowPanel>
 										<fui:Pager ui:field="pager" styleName="{style.pager}" />
-										<f:StatusBar ui:field='statusBar' styleName="{style.statusBar}"/>
+										<f:TransUnitCountBar ui:field='transUnitCountBar' styleName="{style.statusBar}"/>
 									</g:FlowPanel>
 								</g:south>
 							</g:DockLayoutPanel>

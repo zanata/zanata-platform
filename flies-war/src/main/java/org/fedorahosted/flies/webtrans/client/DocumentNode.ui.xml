@@ -47,7 +47,7 @@
 		<g:Label ui:field='documentLabel' styleName="{style.label}" />
 		<g:FlowPanel styleName='{style.menu}'>
 			<g:Anchor href='#' ui:field='translateLink'>Translate</g:Anchor>
-			<f:StatusBar ui:field='statusBar' styleName='{style.status}'/>
+			<f:TransUnitCountBar ui:field='transUnitCountBar' styleName='{style.status}'/>
 		</g:FlowPanel>
 	</g:FlowPanel>
 </ui:UiBinder> 

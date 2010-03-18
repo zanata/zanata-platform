@@ -32,7 +32,6 @@ import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.client.rpc.DelegatingDispatchAsync;
 import org.fedorahosted.flies.webtrans.editor.DocumentStatusPresenter;
 import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
-import org.fedorahosted.flies.webtrans.editor.ProjectStatusPresenter;
 import org.fedorahosted.flies.webtrans.editor.TranslationStatsBarPresenter;
 import org.fedorahosted.flies.webtrans.editor.filter.OperatorFilterPresenter;
 import org.fedorahosted.flies.webtrans.editor.filter.OperatorFilterView;

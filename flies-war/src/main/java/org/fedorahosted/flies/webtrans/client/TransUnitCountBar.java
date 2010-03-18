@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.webtrans.client;
 
 import org.fedorahosted.flies.common.ContentState;
+import org.fedorahosted.flies.common.TransUnitCount;
 import org.fedorahosted.flies.webtrans.editor.HasTransUnitCount;
 
 import com.google.gwt.core.client.GWT;
@@ -16,12 +17,12 @@ import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class StatusBar extends Composite implements HasTransUnitCount {
+public class TransUnitCountBar extends Composite implements HasTransUnitCount {
 
-	private static StatusBarUiBinder uiBinder = GWT
-			.create(StatusBarUiBinder.class);
+	private static TransUnitCountBarUiBinder uiBinder = GWT
+			.create(TransUnitCountBarUiBinder.class);
 
-	interface StatusBarUiBinder extends UiBinder<Widget, StatusBar> {
+	interface TransUnitCountBarUiBinder extends UiBinder<Widget, TransUnitCountBar> {
 	}
 
 	private CountUnit countUnit = CountUnit.TranslationUnit;
@@ -37,26 +38,36 @@ public class StatusBar extends Composite implements HasTransUnitCount {
 	
 	@UiField
 	Label label;
-	
-	int approved, needReview, untranslated;
+
+	private final TransUnitCount count = new TransUnitCount(); 
 	
 	private final WebTransMessages messages;
 	
 	@Inject
-	public StatusBar(WebTransMessages messages) {
+	public TransUnitCountBar(WebTransMessages messages) {
 		this.messages = messages;
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
 	@Override
 	public void setCount(int approved, int needReview, int untranslated) {
-		this.approved = approved;
-		this.needReview = needReview;
-		this.untranslated = untranslated;
+		count.set(ContentState.Approved, approved);
+		count.set(ContentState.NeedReview, needReview);
+		count.set(ContentState.New, untranslated);
 		refresh();
 	}
+	
+	@Override
+	public void setCount(TransUnitCount count) {
+		count.set(count);
+		refresh();
+	}
+	
 
 	public void refresh() {
+		int approved = count.get(ContentState.Approved);
+		int needReview = count.get(ContentState.NeedReview);
+		int untranslated = count.get(ContentState.New);
 		int total = approved + needReview + untranslated;
 		int width = getOffsetWidth();
 		layoutPanel.forceLayout();
@@ -146,38 +157,17 @@ public class StatusBar extends Composite implements HasTransUnitCount {
 	
 	@Override
 	public int getCount() {
-		return approved + needReview + untranslated;
+		return count.getTotal();
 	}
 
 	@Override
 	public int getCount(ContentState state) {
-		switch(state) {
-		case Approved:
-			return approved;
-		case NeedReview:
-			return needReview;
-		case New:
-			return untranslated;
-		default:
-			throw new RuntimeException("method not implemented for " + state.name());
-		}
+		return count.get(state);
 	}
 	
 	@Override
 	public void setCount(ContentState state, int count) {
-		switch(state) {
-		case Approved:
-			approved = count;
-			break;
-		case NeedReview:
-			needReview = count;
-			break;
-		case New:
-			untranslated = count;
-			break;
-		default:
-			throw new RuntimeException("method not implemented for " + state.name());
-		}
+		this.count.set(state, count);
 	}
 	
 }

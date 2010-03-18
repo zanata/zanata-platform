@@ -9,7 +9,9 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.common.TransUnitCount;
 import org.fedorahosted.flies.gwt.model.DocumentStatus;
 import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
@@ -18,8 +20,11 @@ import org.fedorahosted.flies.gwt.rpc.ExitWorkspaceAction;
 import org.fedorahosted.flies.gwt.rpc.ExitWorkspaceResult;
 import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCount;
 import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCountResult;
+import org.fedorahosted.flies.webtrans.client.AppPresenter.Display.MainView;
 import org.fedorahosted.flies.webtrans.client.LoginPresenter.LoggedIn;
 import org.fedorahosted.flies.webtrans.client.auth.Identity;
+import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
+import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.client.ui.HasPager;
 import org.fedorahosted.flies.webtrans.editor.HasTransUnitCount;
@@ -27,6 +32,7 @@ import org.fedorahosted.flies.webtrans.editor.filter.TransFilterPresenter;
 import org.fedorahosted.flies.webtrans.editor.table.TableEditorPresenter;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -50,23 +56,28 @@ import com.google.inject.Inject;
 public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 
 	public interface Display extends WidgetDisplay {
+		
+		enum MainView{
+			Documents,
+			Editor;
+		}
+		
 		void setDocumentListView(Widget documentListView);
-
 		void setEditorView(Widget editorView);
-
 		void setTransUnitNavigationView(Widget transUnitNavigation);
-
 		void setTranslationMemoryView(Widget translationMemoryView);
-
 		void setFilterView(Widget filterView);
-
-		void showDocumentsView();
-
-		void showEditorView();
+		
+		void showInMainView(MainView view);
 
 		HasPager getTableEditorPager();
-
-		HasTransUnitCount getTransUnitCount();
+		void setTableEditorPagerVisible(boolean visible);
+		void setTransUnitCountBarVisible(boolean visible);
+		HasTransUnitCount getTransUnitCountBar();
+		
+		HasClickHandlers getSignOutLink();
+		HasClickHandlers getLeaveWorkspaceLink();
+		HasClickHandlers getHelpLink();
 	}
 
 	private final TableEditorPresenter tableEditorPresenter;
@@ -82,6 +93,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 	private String workspaceName;
 	private String localeName;
 	private final Identity identity;
+	
+	private final TransUnitCount projectCount = new TransUnitCount();
 
 	@Inject
 	public AppPresenter(Display display, EventBus eventBus,
@@ -171,7 +184,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 				new DocumentSelectionHandler() {
 					@Override
 					public void onDocumentSelected(DocumentSelectionEvent event) {
-						display.showEditorView();
+						display.showInMainView(MainView.Editor);
 					}
 				}));
 
@@ -213,8 +226,36 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		transFilterPresenter.bind();
 		display.setFilterView(transFilterPresenter.getDisplay().asWidget());
 
-		display.showDocumentsView();
-
+		display.showInMainView(MainView.Documents);
+		
+		registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler() {
+			@Override
+			public void onTransUnitUpdated(TransUnitUpdatedEvent event) {
+				projectCount.decrement(event.getPreviousStatus());
+				projectCount.increment(event.getNewStatus());
+				getDisplay().getTransUnitCountBar().setCount(projectCount);
+			}
+		}));
+		
+//		dispatcher.execute(new GetProjectStatusCount(workspaceContext.getProjectContainerId(), workspaceContext.getLocaleId()), new AsyncCallback<GetProjectStatusCountResult>() {
+//			@Override
+//			public void onFailure(Throwable caught) {
+//			}
+//			@Override
+//			public void onSuccess(GetProjectStatusCountResult result) {
+//				ArrayList<DocumentStatus> liststatus = result.getStatus();
+//				for(DocumentStatus doc : liststatus) {
+////					projectCount.increment(doc.ge, count)
+////					fuzzy =fuzzy+ doc.getFuzzy();
+////					translated = translated + doc.getTranslated();
+////					untranslated = untranslated + doc.getUntranslated();
+//				}
+//				getDisplay().setCount((int) fuzzy, (int)translated, (int)untranslated);
+//			}
+//		});
+		
+		
+		
 	}
 
 	private static LocaleId findLocaleId() {

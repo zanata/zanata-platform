@@ -49,7 +49,7 @@ public class DocumentNode extends Node<DocName> {
 	Anchor translateLink;
 	
 	@UiField(provided=true)
-	StatusBar statusBar;
+	TransUnitCountBar transUnitCountBar;
 	
 	final WebTransMessages messages;
 	
@@ -57,9 +57,9 @@ public class DocumentNode extends Node<DocName> {
 		this.resources = resources;
 		this.messages = messages;
 		
-		this.statusBar = new StatusBar(messages);
-		statusBar.setToggleEnabled(false);
-		statusBar.setLabelFormat(LabelFormat.Percentage);
+		this.transUnitCountBar = new TransUnitCountBar(messages);
+		transUnitCountBar.setToggleEnabled(false);
+		transUnitCountBar.setLabelFormat(LabelFormat.Percentage);
 		rootPanel = new FlowPanel() {
 			public void onBrowserEvent(Event event) {
 				switch(event.getTypeInt()) {

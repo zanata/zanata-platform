@@ -22,7 +22,6 @@ import org.fedorahosted.flies.gwt.rpc.GetGlossaryConceptResult;
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.repository.model.HTermEntry;
-import org.fedorahosted.flies.repository.util.TranslationStatistics;
 import org.fedorahosted.flies.security.FliesIdentity;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;

@@ -7,10 +7,10 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.fedorahosted.flies.common.ContentState;
+import org.fedorahosted.flies.common.TransUnitCount;
 import org.fedorahosted.flies.core.model.StatusCount;
 import org.fedorahosted.flies.gwt.rpc.GetStatusCount;
 import org.fedorahosted.flies.gwt.rpc.GetStatusCountResult;
-import org.fedorahosted.flies.repository.util.TranslationStatistics;
 import org.fedorahosted.flies.security.FliesIdentity;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
@@ -50,17 +50,16 @@ public class GetStatusCountHandler implements ActionHandler<GetStatusCount, GetS
 			.setParameter("id", action.getDocumentId().getValue())
 			.uniqueResult();
 		
-		TranslationStatistics stat = new TranslationStatistics();
+		TransUnitCount stat = new TransUnitCount();
 		for(StatusCount count: stats){
-			stat.set(count.status, count.count);
+			stat.set(count.status, count.count.intValue());
 		}
 		
-		stat.set(ContentState.New, totalCount - stat.getApproved()-stat.getNeedReview());
+		stat.set(ContentState.New, totalCount.intValue() - stat.get(ContentState.Approved)-stat.get(ContentState.NeedReview));
 		TranslationWorkspace workspace = translationWorkspaceManager.getWorkspace(action.getProjectContainerId().getId(), action.getLocaleId() );
 		
 		return new GetStatusCountResult(
-				action.getDocumentId(), 
-				stat.getNew(),stat.getNeedReview(), stat.getApproved());
+				action.getDocumentId(), stat);
 
 	}
 

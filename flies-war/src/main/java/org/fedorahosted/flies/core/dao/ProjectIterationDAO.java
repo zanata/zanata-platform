@@ -6,10 +6,10 @@ import javax.persistence.EntityManager;
 
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.common.TransUnitCount;
 import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.core.model.StatusCount;
-import org.fedorahosted.flies.repository.util.TranslationStatistics;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.AutoCreate;
@@ -56,7 +56,7 @@ public class ProjectIterationDAO {
 		.setCacheable(true).uniqueResult();
 	}
 	
-	public TranslationStatistics getStatisticsForContainer(Long containerId, LocaleId localeId){
+	public TransUnitCount getStatisticsForContainer(Long containerId, LocaleId localeId){
 		
 		List<StatusCount> stats = session.createQuery(
 				"select new org.fedorahosted.flies.core.model.StatusCount(tft.state, count(tft)) " +
@@ -75,12 +75,12 @@ public class ProjectIterationDAO {
 			.setParameter("id", containerId)
 			.setCacheable(true).uniqueResult();
 		
-		TranslationStatistics stat = new TranslationStatistics();
+		TransUnitCount stat = new TransUnitCount();
 		for(StatusCount count: stats){
-			stat.set(count.status, count.count);
+			stat.set(count.status, count.count.intValue());
 		}
 		
-		stat.set(ContentState.New, totalCount - stat.getNotApproved());
+		stat.set(ContentState.New, totalCount.intValue() - stat.getNotApproved());
 		
 		return stat;
 	}

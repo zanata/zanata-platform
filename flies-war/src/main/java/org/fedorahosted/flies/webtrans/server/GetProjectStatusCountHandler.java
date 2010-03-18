@@ -8,6 +8,7 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.common.TransUnitCount;
 import org.fedorahosted.flies.core.dao.DocumentDAO;
 import org.fedorahosted.flies.core.dao.ProjectContainerDAO;
 import org.fedorahosted.flies.gwt.model.DocumentId;
@@ -17,7 +18,6 @@ import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCount;
 import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCountResult;
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
-import org.fedorahosted.flies.repository.util.TranslationStatistics;
 import org.fedorahosted.flies.security.FliesIdentity;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
@@ -57,9 +57,9 @@ public class GetProjectStatusCountHandler implements ActionHandler<GetProjectSta
 			for (HDocument hDoc : hDocs) {
 				DocumentId docId = new DocumentId(hDoc.getId());
 								
-				TranslationStatistics stat = documentDAO.getStatistics(docId.getValue(), action.getLocaleId() );
+				TransUnitCount stat = documentDAO.getStatistics(docId.getValue(), action.getLocaleId() );
 				
-				DocumentStatus docstatus = new DocumentStatus(docId, stat.getNew(),stat.getNeedReview(), stat.getApproved());
+				DocumentStatus docstatus = new DocumentStatus(docId, stat);
 				docliststatus.add(docstatus);
 			}
 						

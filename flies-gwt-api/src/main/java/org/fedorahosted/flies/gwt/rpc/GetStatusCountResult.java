@@ -2,6 +2,7 @@ package org.fedorahosted.flies.gwt.rpc;
 
 import net.customware.gwt.dispatch.shared.Result;
 
+import org.fedorahosted.flies.common.TransUnitCount;
 import org.fedorahosted.flies.gwt.model.DocumentId;
 
 public class GetStatusCountResult implements Result {
@@ -9,35 +10,23 @@ public class GetStatusCountResult implements Result {
 	private static final long serialVersionUID = 1L;
 	
 	private DocumentId documentId;
-	private long untranslated;
-	private long fuzzy;
-	private long translated;
+	private TransUnitCount count;
 	
 	@SuppressWarnings("unused")
 	private GetStatusCountResult()	{
 	}
 	
-	public GetStatusCountResult(DocumentId documentId, long untranslated, long fuzzy, long translated) {
+	public GetStatusCountResult(DocumentId documentId, TransUnitCount count) {
 		this.documentId = documentId;
-		this.untranslated = untranslated;
-		this.fuzzy = fuzzy;
-		this.translated = translated;
+		this.count = count;
 	}
 	
 	public DocumentId getDocumentId() {
 		return documentId;
 	}
-	
-	public long getUntranslated() {
-		return untranslated;
-	}
-	
-	public long getFuzzy() {
-		return fuzzy;
-	}
-	
-	public long getTranslated() {
-		return translated;
+
+	public TransUnitCount getCount() {
+		return count;
 	}
 	
 }

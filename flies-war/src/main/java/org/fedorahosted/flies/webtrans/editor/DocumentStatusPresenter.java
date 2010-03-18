@@ -85,7 +85,7 @@ public class DocumentStatusPresenter extends TranslationStatsBarPresenter {
 			}
 			@Override
 			public void onSuccess(GetStatusCountResult result) {
-				getDisplay().setCount((int) result.getFuzzy(), (int)result.getTranslated(), (int)result.getUntranslated());
+				getDisplay().setCount(result.getCount());
 				updateHandlerRegistration = eventBus.addHandler(TransUnitUpdatedEvent.getType(), updateHandler);
 				// TODO move this registration to before getting the count
 			}

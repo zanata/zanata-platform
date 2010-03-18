@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.webtrans.editor;
 
 import org.fedorahosted.flies.common.ContentState;
+import org.fedorahosted.flies.common.TransUnitCount;
 
 public interface HasTransUnitCount {
 
@@ -13,11 +14,10 @@ public interface HasTransUnitCount {
 	}
 
 	public void setCount(int approved, int needReview, int untranslated);
-
 	public void setCount(ContentState state, int count);
+	public void setCount(TransUnitCount count);
 
 	public int getCount(ContentState state);
-
 	public int getCount();
 	
 	public void setLabelFormat(LabelFormat format);
@@ -32,8 +32,6 @@ public interface HasTransUnitCount {
 	void setLabelVisible(boolean labelVisible);
 
 	boolean isLabelVisible();
-	
-	
 	
 	
 }
