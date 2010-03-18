@@ -236,6 +236,7 @@ public class Document extends AbstractBaseResource implements IExtensible{
 		if(ext == null){
 			try {
 				ext = clz.newInstance();
+				getExtensions(true).add(ext);
 			} catch (Throwable e) {
 				throw new RuntimeException("unable to create instance", e);
 			}

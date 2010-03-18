@@ -71,6 +71,7 @@ public class DataHook extends AbstractBaseResource implements DocumentResource, 
 		if(ext == null){
 			try {
 				ext = clz.newInstance();
+				getExtensions().add(ext);
 			} catch (Throwable e) {
 				throw new RuntimeException("unable to create instance", e);
 			}
