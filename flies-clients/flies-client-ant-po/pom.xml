@@ -47,7 +47,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<scope>test</scope>
+			<scope>runtime</scope>
 		</dependency>
        <dependency>
             <groupId>org.cyclopsgroup</groupId>
@@ -58,6 +58,73 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<!--
+				This plugin will copy dependencies into the right outputDirectory.
+				Usage: mvn dependency:copy-dependencies
+				-->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<configuration>
+					<outputDirectory>target/lib</outputDirectory>
+					<overWriteReleases>true</overWriteReleases>
+					<overWriteSnapshots>true</overWriteSnapshots>
+					<overWriteIfNewer>true</overWriteIfNewer>
+					<includeScope>runtime</includeScope>
+					<excludeScope>provided</excludeScope>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+				  <archive>
+					<manifest>
+					  <addClasspath>true</addClasspath>
+					  <classpathPrefix>lib/</classpathPrefix>
+					  <mainClass>org.fedorahosted.flies.client.ant.po.PoTool</mainClass>
+					</manifest>
+				  </archive>
+				</configuration>
+			</plugin>
+<!--
+			<plugin>
+			  <artifactId>maven-assembly-plugin</artifactId>
+			  <configuration>
+				<descriptors>
+				  <descriptor>src/main/assembly/jar-assembly.xml</descriptor>
+				</descriptors>
+				<archive>
+				<manifest>
+					<mainClass>org.fedorahosted.flies.client.ant.po.PoTool</mainClass>
+				</manifest>
+				</archive>
+			  </configuration>
+			  <executions>
+				<execution>
+				  <phase>package</phase>
+				  <goals>
+					<goal>single</goal>
+				  </goals>
+				</execution>
+			  </executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>1.3.1</version>
+				<executions>
+				  <execution>
+					<phase>package</phase>
+					<goals>
+					  <goal>shade</goal>
+					</goals>
+					<configuration>
+					</configuration>
+				  </execution>
+				</executions>
+			</plugin>
+-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
