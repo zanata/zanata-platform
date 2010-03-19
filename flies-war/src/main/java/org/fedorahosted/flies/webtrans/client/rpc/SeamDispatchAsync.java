@@ -1,18 +1,11 @@
 package org.fedorahosted.flies.webtrans.client.rpc;
 
-import java.util.ArrayList;
-
-import org.fedorahosted.flies.gwt.auth.AuthenticationError;
-import org.fedorahosted.flies.gwt.common.DispatchService;
-import org.fedorahosted.flies.gwt.common.DispatchServiceAsync;
-import org.fedorahosted.flies.webtrans.client.LoginPresenter;
-import org.fedorahosted.flies.webtrans.client.auth.LoginResult;
-
-import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.place.PlaceRequest;
+
+import org.fedorahosted.flies.gwt.common.DispatchService;
+import org.fedorahosted.flies.gwt.common.DispatchServiceAsync;
+import org.fedorahosted.flies.webtrans.client.Application;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -22,10 +15,10 @@ import com.google.inject.Inject;
 public class SeamDispatchAsync implements CachingDispatchAsync {
 
 	private static final DispatchServiceAsync realService;
-
+	
 	static {
 		realService = GWT.create(DispatchService.class);
-		final String endpointURL = "/flies/seam/resource/gwt";
+		final String endpointURL = Application.FLIES_BASE_PATH + "seam/resource/gwt";
 
 		((ServiceDefTarget) realService).setServiceEntryPoint(endpointURL);
 	}

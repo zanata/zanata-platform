@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.gwt.rpc;
 
 import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.gwt.common.WorkspaceId;
 import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -11,24 +12,17 @@ public class ActivateWorkspaceAction implements DispatchAction<ActivateWorkspace
 	
 	private static final long serialVersionUID = 1L;
 
-	private LocaleId localeId;
-	private ProjectContainerId projectContainerId;
+	private WorkspaceId workspaceId;
 	
 	@SuppressWarnings("unused")
 	private ActivateWorkspaceAction() {
 	}
 
-	public ActivateWorkspaceAction(ProjectContainerId projectContainerId, LocaleId localeId) {
-		this.localeId = localeId;
-		this.projectContainerId = projectContainerId;
-	}
-	
-	public LocaleId getLocaleId() {
-		return localeId;
-	}
-	
-	public ProjectContainerId getProjectContainerId() {
-		return projectContainerId;
+	public ActivateWorkspaceAction(WorkspaceId workspaceId) {
+		this.workspaceId = workspaceId;
 	}
 
+	public WorkspaceId getWorkspaceId() {
+		return workspaceId;
+	}
 }

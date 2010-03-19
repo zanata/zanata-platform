@@ -9,6 +9,7 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.gwt.common.WorkspaceContext;
 import org.fedorahosted.flies.gwt.model.Concept;
 import org.fedorahosted.flies.gwt.model.TermEntry;
 import org.fedorahosted.flies.gwt.rpc.GetGlossaryConcept;
@@ -52,7 +53,7 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryPresenter.Display
 			@Override
 			public void onClick(ClickEvent event) {
 				display.clearResults();
-				dispatcher.execute(new GetGlossaryConcept(display.getGlossaryTextBox().getText(), workspaceContext.getLocaleId(), 1L), new AsyncCallback<GetGlossaryConceptResult>() {
+				dispatcher.execute(new GetGlossaryConcept(display.getGlossaryTextBox().getText(), workspaceContext.getWorkspaceId().getLocaleId(), 1L), new AsyncCallback<GetGlossaryConceptResult>() {
 					@Override
 					public void onFailure(Throwable caught) {
 					}

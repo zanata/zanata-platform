@@ -41,8 +41,7 @@ public class GetTranslatorListHandler implements ActionHandler<GetTranslatorList
 		FliesIdentity.instance().checkLoggedIn();
 		
 		TranslationWorkspace translationWorkspace = 
-			translationWorkspaceManager.getOrRegisterWorkspace(action.getProjectContainerId().getId(), 
-					action.getLocaleId() );
+			translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId() );
 		
 		ImmutableSet<PersonId> personIdlist = translationWorkspace.getUsers();
 

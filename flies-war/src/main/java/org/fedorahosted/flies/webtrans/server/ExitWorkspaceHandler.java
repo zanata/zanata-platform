@@ -37,7 +37,7 @@ public class ExitWorkspaceHandler implements ActionHandler<ExitWorkspaceAction, 
 		
 		FliesIdentity.instance().checkLoggedIn();
 
-		TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getProjectContainerId().getId(), action.getLocaleId());
+		TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
 			
 		//Send ExitWorkspace event to client 
 		if(workspace.removeTranslator(action.getPersonId())) {

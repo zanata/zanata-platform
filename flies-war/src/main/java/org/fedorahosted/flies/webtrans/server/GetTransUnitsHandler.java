@@ -10,6 +10,7 @@ import net.customware.gwt.dispatch.shared.ActionException;
 import org.fedorahosted.flies.FliesInit;
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.EditState;
+import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.gwt.model.TransUnitId;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
@@ -68,12 +69,13 @@ public class GetTransUnitsHandler implements ActionHandler<GetTransUnits, GetTra
 		for(HTextFlow textFlow : textFlows) {
 			
 			TransUnitId tuId = new TransUnitId(textFlow.getId());
+			ProjectContainerId projectContainerId = new ProjectContainerId(textFlow.getDocument().getProject().getId());
 			TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(
-					textFlow.getDocument().getProject().getId(), action.getLocaleId() );
+					action.getWorkspaceId() );
 
 			//EditState editstate = workspace.getTransUnitStatus(tuId);
-			TransUnit tu = new TransUnit(tuId, action.getLocaleId(), textFlow.getContent(), toString(textFlow.getComment()), "", ContentState.New);
-			HTextFlowTarget target = textFlow.getTargets().get(action.getLocaleId());
+			TransUnit tu = new TransUnit(tuId, action.getWorkspaceId().getLocaleId(), textFlow.getContent(), toString(textFlow.getComment()), "", ContentState.New);
+			HTextFlowTarget target = textFlow.getTargets().get(action.getWorkspaceId().getLocaleId());
 			if(target != null) {
 				tu.setTarget(target.getContent());
 				tu.setStatus( target.getState() );

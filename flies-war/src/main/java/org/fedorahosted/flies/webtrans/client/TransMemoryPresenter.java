@@ -8,6 +8,7 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.fedorahosted.flies.gwt.common.WorkspaceContext;
 import org.fedorahosted.flies.gwt.model.TransMemory;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.gwt.rpc.GetTranslationMemory;
@@ -62,7 +63,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 					display.getExactButton().getValue() ? 
 						SearchType.EXACT : SearchType.RAW;
 				GetTranslationMemory action = new GetTranslationMemory(
-						query, workspaceContext.getLocaleId(), searchType);
+						query, workspaceContext.getWorkspaceId().getLocaleId(), searchType);
 				dispatcher.execute(action, new AsyncCallback<GetTranslationMemoryResult>() {
 					@Override
 					public void onFailure(Throwable caught) {
@@ -86,7 +87,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 					final String query = event.getSelectedItem().getSource();
 					final GetTranslationMemory action = new GetTranslationMemory(
 							query, 
-							workspaceContext.getLocaleId(), 
+							workspaceContext.getWorkspaceId().getLocaleId(), 
 							GetTranslationMemory.SearchType.FUZZY);
 					dispatcher.execute(action, new AsyncCallback<GetTranslationMemoryResult>() {
 						@Override

@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class ProjectContainerId implements Serializable, IsSerializable{
+public class ProjectContainerId implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

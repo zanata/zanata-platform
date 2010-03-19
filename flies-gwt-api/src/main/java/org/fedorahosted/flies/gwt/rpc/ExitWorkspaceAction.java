@@ -3,15 +3,15 @@ package org.fedorahosted.flies.gwt.rpc;
 import net.customware.gwt.dispatch.shared.Action;
 
 import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.gwt.common.WorkspaceId;
 import org.fedorahosted.flies.gwt.model.PersonId;
 import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 
-public class ExitWorkspaceAction implements DispatchAction<ExitWorkspaceResult>{
+public class ExitWorkspaceAction implements WorkspaceAction<ExitWorkspaceResult>{
 
 	private static final long serialVersionUID = 1L;
 	
-	private LocaleId localeId;
-	private ProjectContainerId projectContainerId;
+	private WorkspaceId workspaceId;
 	private PersonId personId;
 	
 	@SuppressWarnings("unused")
@@ -19,20 +19,16 @@ public class ExitWorkspaceAction implements DispatchAction<ExitWorkspaceResult>{
 
 	}
 
-	public ExitWorkspaceAction(ProjectContainerId projectContainerId, LocaleId localeId, PersonId personId) {
-		this.localeId = localeId;
-		this.projectContainerId = projectContainerId;
+	public ExitWorkspaceAction(WorkspaceId workspaceId, PersonId personId) {
+		this.workspaceId = workspaceId;
 		this.personId = personId;
 	}
 
-	public LocaleId getLocaleId() {
-		return localeId;
+	@Override
+	public WorkspaceId getWorkspaceId() {
+		return workspaceId;
 	}
 	
-	public ProjectContainerId getProjectContainerId() {
-		return projectContainerId;
-	}
-
 	public void setPersonId(PersonId personId) {
 		this.personId = personId;
 	}

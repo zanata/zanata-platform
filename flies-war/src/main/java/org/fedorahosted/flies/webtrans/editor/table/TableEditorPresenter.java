@@ -16,6 +16,8 @@ import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.EditState;
 import org.fedorahosted.flies.gwt.auth.AuthenticationError;
 import org.fedorahosted.flies.gwt.auth.AuthorizationError;
+import org.fedorahosted.flies.gwt.auth.Identity;
+import org.fedorahosted.flies.gwt.common.WorkspaceContext;
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.gwt.model.TransUnitId;
@@ -32,9 +34,7 @@ import org.fedorahosted.flies.webtrans.client.NavTransUnitHandler;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent;
 import org.fedorahosted.flies.webtrans.client.TransMemoryCopyEvent;
 import org.fedorahosted.flies.webtrans.client.TransMemoryCopyHandler;
-import org.fedorahosted.flies.webtrans.client.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent.Severity;
-import org.fedorahosted.flies.webtrans.client.auth.Identity;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitEditEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitEditEventHandler;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
@@ -193,8 +193,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 							final int row = display.getCurrentPage() * display.getPageSize() + rowOffset;
 							Log.info("row calculated as "+row);
 							dispatcher.execute(new GetTransUnits(
+								workspaceContext.getWorkspaceId(), 
 								documentId, 
-								workspaceContext.getLocaleId(), 
 								row, 
 								1), new AsyncCallback<GetTransUnitsResult>() {
 									@Override
@@ -350,7 +350,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 				return;
 			}
 			
-			dispatcher.execute(new GetTransUnits(documentId, workspaceContext.getLocaleId(), startRow, numRows), new AsyncCallback<GetTransUnitsResult>() {
+			dispatcher.execute(new GetTransUnits(workspaceContext.getWorkspaceId(), documentId, startRow, numRows), new AsyncCallback<GetTransUnitsResult>() {
 				@Override
 				public void onSuccess(GetTransUnitsResult result) {
 					SerializableResponse<TransUnit> response = new SerializableResponse<TransUnit>(
@@ -383,7 +383,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		@Override
 		public boolean onSetRowValue(int row, TransUnit rowValue) {
 			dispatcher.execute(
-					new UpdateTransUnit(rowValue.getId(), workspaceContext.getLocaleId(), rowValue.getTarget(),rowValue.getStatus()), 
+					new UpdateTransUnit(workspaceContext.getWorkspaceId(), rowValue.getId(), rowValue.getTarget(),rowValue.getStatus()), 
 					new AsyncCallback<UpdateTransUnitResult>() {
 						@Override
 						public void onFailure(Throwable caught) {
@@ -398,8 +398,9 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 					});
 			
 			dispatcher.execute(
-					new EditingTranslationAction(rowValue.getId(), 
-							workspaceContext.getLocaleId(), 
+					new EditingTranslationAction(
+							workspaceContext.getWorkspaceId(), 
+							rowValue.getId(), 
 							identity.getSessionId(), 
 							EditState.StopEditing), 
 					new AsyncCallback<EditingTranslationResult>() {
@@ -476,8 +477,9 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	
 	private void stopEditing(TransUnit rowValue) {
 		dispatcher.execute(
-				new EditingTranslationAction(rowValue.getId(), 
-						workspaceContext.getLocaleId(), 
+				new EditingTranslationAction(
+						workspaceContext.getWorkspaceId(), 
+						rowValue.getId(), 
 						identity.getSessionId(),
 						EditState.StopEditing), 
 				new AsyncCallback<EditingTranslationResult>() {
@@ -498,8 +500,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		//Send a START_EDIT event
 		dispatcher.execute(
 				new EditingTranslationAction(
+						workspaceContext.getWorkspaceId(), 
 						rowValue.getId(), 
-						workspaceContext.getLocaleId(), 
 						identity.getSessionId(), 
 						EditState.StartEditing), 
 				new AsyncCallback<EditingTranslationResult>() {

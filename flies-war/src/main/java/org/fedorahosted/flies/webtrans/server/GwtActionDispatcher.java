@@ -37,8 +37,6 @@ public class GwtActionDispatcher {
 		actionHandlerRegistry.addHandler( new GetDocsListHandler());
 		actionHandlerRegistry.addHandler(new ActivateWorkspaceHandler());
 		actionHandlerRegistry.addHandler(new UpdateTransUnitHandler());
-		actionHandlerRegistry.addHandler(new AuthenticateHandler());
-		actionHandlerRegistry.addHandler(new EnsureLoggedInHandler());
 		actionHandlerRegistry.addHandler(new GetStatusCountHandler());
 		actionHandlerRegistry.addHandler(new GetProjectStatusCountHandler());
 		actionHandlerRegistry.addHandler(new GetTranslatorListHandler());

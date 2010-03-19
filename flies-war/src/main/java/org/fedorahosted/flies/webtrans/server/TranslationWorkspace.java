@@ -6,10 +6,14 @@ import javax.servlet.http.HttpSession;
 
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.gwt.auth.SessionId;
+import org.fedorahosted.flies.gwt.common.WorkspaceContext;
 import org.fedorahosted.flies.gwt.model.PersonId;
 import org.fedorahosted.flies.gwt.model.TransUnitId;
 import org.fedorahosted.flies.gwt.rpc.SessionEventData;
+import org.jboss.seam.Component;
+import org.jboss.seam.Seam;
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
@@ -32,46 +36,31 @@ public class TranslationWorkspace {
 	private static final String EVENT_TRANSLATOR_ENTER_WORKSPACE = "webtrans.TranslatorEnterWorkspace"; 
 
 	private static final Log log = Logging.getLog(TranslationWorkspace.class);
-	private final WorkspaceKey workspaceKey;
+	private final WorkspaceContext workspaceContext;
 	
 	private final ConcurrentMap<SessionId, PersonId> sessions = new MapMaker().makeMap();
 	private final ConcurrentMap<TransUnitId, String> editstatus = new MapMaker().makeMap();
-	private final Domain domain;
-	@In
-	private HttpSession httpSession;
+
 	private final EventExecutorService eventExecutorService;
 
-	public TranslationWorkspace(WorkspaceKey workspaceKey) {
-		try {
-			if(workspaceKey == null)
-				throw new IllegalArgumentException("workspaceKey");
-			this.workspaceKey = workspaceKey;
-			this.domain = DomainFactory.getDomain(workspaceKey.toString());
-			this.eventExecutorService = EventExecutorServiceFactory.getInstance().getEventExecutorService(httpSession);
-			UserManager userManager = UserManagerFactory.getInstance().getUserManager();
-			UserActivityScheduler scheduler = userManager.getUserActivityScheduler();
-			scheduler.addTimeoutListener(new UserTimeoutListener() {
-				@Override
-				public void onTimeout(UserInfo userInfo) {
-					final String sessionId = userInfo.getUserId();
-					TranslationWorkspace.this.onTimeout(sessionId);
-				}
-			});
-		} catch (RuntimeException e) {
-			log.error(e.getMessage(), e);
-			throw e;
-		} catch (Error e) {
-			log.error(e.getMessage(), e);
-			throw e;
-		}
+	public TranslationWorkspace(WorkspaceContext workspaceContext) {
+		if(workspaceContext == null)
+			throw new IllegalArgumentException("workspaceContext is null");
+		this.workspaceContext = workspaceContext;
+		//this.domain = DomainFactory.getDomain(workspaceKey.toString());
+		this.eventExecutorService = EventExecutorServiceFactory.getInstance().getEventExecutorService( workspaceContext.getDomain().getName() );
+		UserManager userManager = UserManagerFactory.getInstance().getUserManager();
+		userManager.getUserActivityScheduler().addTimeoutListener(new UserTimeoutListener() {
+			@Override
+			public void onTimeout(UserInfo userInfo) {
+				final String sessionId = userInfo.getUserId();
+				TranslationWorkspace.this.onTimeout(sessionId);
+			}
+		});
 	}
 	
-	public LocaleId getLocale() {
-		return workspaceKey.getLocaleId();
-	}
-
-	public Long getProjectContainerId() {
-		return workspaceKey.getProjectContainerId();
+	public WorkspaceContext getWorkspaceContext() {
+		return workspaceContext;
 	}
 	
 	public ImmutableSet<SessionId> getSessions(){
@@ -124,10 +113,10 @@ public class TranslationWorkspace {
 		PersonId personId = sessions.remove(sessionId);
 		if (personId != null) {
 			log.info("Timeout: Removed user '{0}' in session '{1}' from workspace {2}", 
-					personId.getId(), sessionId, workspaceKey);
+					personId.getId(), sessionId, workspaceContext);
 		} else {
 			log.debug("Timeout: Unknown user for session '{0}' in workspace {1} (already logged out?)", 
-					sessionId, workspaceKey);
+					sessionId, workspaceContext);
 		}
 	}
 	
@@ -138,7 +127,7 @@ public class TranslationWorkspace {
 				final boolean removed = sessions.remove(sessionId, personId);
 				if (removed)
 					log.info("Removed user '{0}' in session '{1}' from workspace {2}", 
-							personId.getId(), sessionId, workspaceKey);
+							personId.getId(), sessionId, workspaceContext);
 				return removed;
 			}
 		}
@@ -147,13 +136,13 @@ public class TranslationWorkspace {
 	
 	public void registerTranslator(SessionId sessionId, PersonId personId){
 		log.info("Added user '{0}' in session '{1}' to workspace {2}", 
-				personId.getId(), sessionId.getValue(), workspaceKey);
+				personId.getId(), sessionId.getValue(), workspaceContext);
 		PersonId pId = sessions.putIfAbsent(sessionId, personId);
-		if(pId == null && Events.exists()) Events.instance().raiseEvent(EVENT_TRANSLATOR_ENTER_WORKSPACE, workspaceKey, personId);
+		if(pId == null && Events.exists()) Events.instance().raiseEvent(EVENT_TRANSLATOR_ENTER_WORKSPACE, workspaceContext.getWorkspaceId(), personId);
 	}
 
 	public <T extends SessionEventData> void publish(T eventData) {
-		eventExecutorService.addEvent(domain, eventData);
+		eventExecutorService.addEvent(workspaceContext.getDomain(), eventData);
 	}
 
 	
@@ -162,18 +151,14 @@ public class TranslationWorkspace {
 		if(obj == null) return false;
 		if( !(obj instanceof TranslationWorkspace) ) return false;
 		TranslationWorkspace other = (TranslationWorkspace) obj;
-		return other.workspaceKey.equals(workspaceKey);
+		return other.workspaceContext.getWorkspaceId().equals(workspaceContext.getWorkspaceId());
 	}
 	
 	@Override
 	public int hashCode() {
 	    int hash = 1;
-	    hash = hash * 31 + workspaceKey.hashCode();
+	    hash = hash * 31 + workspaceContext.getWorkspaceId().hashCode();
 	    return hash;
 	}
 	
-	public String getId() {
-		return workspaceKey.toString();
-	}
-
 }

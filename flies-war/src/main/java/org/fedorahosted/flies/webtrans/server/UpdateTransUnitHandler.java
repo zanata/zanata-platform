@@ -7,6 +7,7 @@ import net.customware.gwt.dispatch.shared.ActionException;
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.gwt.model.DocumentId;
+import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 import org.fedorahosted.flies.gwt.rpc.TransUnitUpdated;
 import org.fedorahosted.flies.gwt.rpc.UpdateTransUnit;
 import org.fedorahosted.flies.gwt.rpc.UpdateTransUnitResult;
@@ -36,14 +37,14 @@ public class UpdateTransUnitHandler implements ActionHandler<UpdateTransUnit, Up
 			throws ActionException {
 		
 		FliesIdentity.instance().checkLoggedIn();
-		log.info("Updating TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), action.getLocaleId(), action.getContentState(), action.getContent());
+		log.info("Updating TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), action.getWorkspaceId().getLocaleId(), action.getContentState(), action.getContent());
 		
 		HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, action.getTransUnitId().getValue());
-		HTextFlowTarget target = hTextFlow.getTargets().get( action.getLocaleId() );
+		HTextFlowTarget target = hTextFlow.getTargets().get( action.getWorkspaceId().getLocaleId() );
 		ContentState prevStatus = ContentState.New;
 		if(target == null) {
-			target = new HTextFlowTarget(hTextFlow, action.getLocaleId() );
-			hTextFlow.getTargets().put(action.getLocaleId() , target);
+			target = new HTextFlowTarget(hTextFlow, action.getWorkspaceId().getLocaleId() );
+			hTextFlow.getTargets().put(action.getWorkspaceId().getLocaleId() , target);
 		}
 		else{
 			prevStatus = target.getState();
@@ -55,9 +56,10 @@ public class UpdateTransUnitHandler implements ActionHandler<UpdateTransUnit, Up
 		TransUnitUpdated event = new TransUnitUpdated(
 				new DocumentId(hTextFlow.getDocument().getId()), action.getTransUnitId(), prevStatus, action.getContentState() );
 		
+		ProjectContainerId projectContainerId = new ProjectContainerId(hTextFlow.getDocument().getProject().getId());
 		
 		TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(
-				hTextFlow.getDocument().getProject().getId(), action.getLocaleId() );
+				action.getWorkspaceId() );
 		workspace.publish(event);
 		
 		return new UpdateTransUnitResult(true);

@@ -14,6 +14,8 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.fedorahosted.flies.common.ContentState;
+import org.fedorahosted.flies.gwt.common.WorkspaceContext;
+import org.fedorahosted.flies.gwt.common.WorkspaceId;
 import org.fedorahosted.flies.gwt.model.DocName;
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.DocumentStatus;
@@ -65,7 +67,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
 	private final DispatchAsync dispatcher;
     private final WorkspaceContext workspaceContext;
-    private final ProjectContainerId projectContainerId;
 	private final Map<DocumentId, DocumentStatus> statuscache = new HashMap<DocumentId, DocumentStatus>();
 	private DocumentId currentDoc;
     
@@ -76,7 +77,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 			CachingDispatchAsync dispatcher) {
 		super(display, eventBus);
 		this.workspaceContext = workspaceContext;
-		this.projectContainerId = workspaceContext.getProjectContainerId();
 		this.dispatcher = dispatcher;
 		Log.info("DocumentListPresenter()");
 		loadDocsList();
@@ -243,7 +243,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 		loadDocsStatus();
 		// switch doc list to the new project
 		dispatcher.execute(
-				new GetDocsList(projectContainerId), 
+				new GetDocsList(workspaceContext.getWorkspaceId().getProjectContainerId()), 
 				new AsyncCallback<GetDocsListResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
@@ -260,7 +260,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 	
 	private void loadDocsStatus() {
 		dispatcher.execute(
-				new GetProjectStatusCount(projectContainerId , workspaceContext.getLocaleId()), 
+				new GetProjectStatusCount(workspaceContext.getWorkspaceId()), 
 				new AsyncCallback<GetProjectStatusCountResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
@@ -269,7 +269,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 			@Override
 			public void onSuccess(GetProjectStatusCountResult result) {
 				ArrayList<DocumentStatus> liststatus = result.getStatus();
-				Log.info("Received project status for "+result.getProjectContainerId()+": "+liststatus.size()+" elements");
+				Log.info("Received project status for "+liststatus.size()+" elements");
 				statuscache.clear();
 				for(DocumentStatus doc : liststatus) {
 					statuscache.put(doc.getDocumentid(), doc);

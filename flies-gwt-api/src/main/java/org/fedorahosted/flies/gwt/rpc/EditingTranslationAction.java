@@ -6,25 +6,26 @@ import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.EditState;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.gwt.auth.SessionId;
+import org.fedorahosted.flies.gwt.common.WorkspaceId;
 import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 import org.fedorahosted.flies.gwt.model.TransUnitId;
 
-public class EditingTranslationAction implements DispatchAction<EditingTranslationResult> {
+public class EditingTranslationAction implements WorkspaceAction<EditingTranslationResult> {
 	
 	private static final long serialVersionUID = 1L;
 
+	private WorkspaceId workspaceId;
 	private TransUnitId transUnitId;
-	private LocaleId localeId;
 	private EditState editState;
-	private String sessionId;
+	private SessionId sessionId;
 	
 	@SuppressWarnings("unused")
 	private EditingTranslationAction() {
 	}
 	
-	public EditingTranslationAction(TransUnitId transUnitId, LocaleId localeId, String sessionid, EditState editState) {
+	public EditingTranslationAction(WorkspaceId workspaceId, TransUnitId transUnitId, SessionId sessionid, EditState editState) {
+		this.workspaceId = workspaceId;
 		this.transUnitId = transUnitId;
-		this.localeId = localeId;
 		this.editState = editState;
 		this.sessionId = sessionid;
 	}
@@ -32,16 +33,17 @@ public class EditingTranslationAction implements DispatchAction<EditingTranslati
 	public TransUnitId getTransUnitId() {
 		return transUnitId;
 	}
-	
-	public LocaleId getLocaleId() {
-		return localeId;
+
+	@Override
+	public WorkspaceId getWorkspaceId() {
+		return workspaceId;
 	}
 
 	public EditState getEditState() {
 		return editState;
 	}
 	
-	public String getSessionId() {
+	public SessionId getSessionId() {
 		return sessionId;
 	}
 }

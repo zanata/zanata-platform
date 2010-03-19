@@ -7,8 +7,6 @@ import net.customware.gwt.dispatch.shared.Result;
 
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceResult;
-import org.fedorahosted.flies.gwt.rpc.EnsureLoggedInAction;
-import org.fedorahosted.flies.gwt.rpc.EnsureLoggedInResult;
 import org.fedorahosted.flies.gwt.rpc.GetDocsList;
 import org.fedorahosted.flies.gwt.rpc.GetDocsListResult;
 import org.fedorahosted.flies.gwt.rpc.GetGlossaryConcept;
@@ -48,10 +46,6 @@ public class DummyDispatchAsync extends SeamDispatchAsync {
 			final ActivateWorkspaceAction gwcAction = (ActivateWorkspaceAction) action;
 			AsyncCallback<ActivateWorkspaceResult> gwcCallback = (AsyncCallback<ActivateWorkspaceResult>) callback;
 			DeferredCommand.addCommand(new DummyActivateWorkspaceCommand(gwcAction, gwcCallback));
-		} else if (action instanceof EnsureLoggedInAction) {
-			final EnsureLoggedInAction _action = (EnsureLoggedInAction) action;
-			AsyncCallback<EnsureLoggedInResult> _callback = (AsyncCallback<EnsureLoggedInResult>) callback;
-			DeferredCommand.addCommand(new DummyEnsureLoggedInCommand(_action, _callback));
 		} else if (action instanceof GetTranslatorList) {
 			final GetTranslatorList _action = (GetTranslatorList) action;
 			AsyncCallback<GetTranslatorListResult> _callback = (AsyncCallback<GetTranslatorListResult>) callback;

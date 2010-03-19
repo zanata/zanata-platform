@@ -9,6 +9,7 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.fedorahosted.flies.gwt.common.WorkspaceContext;
 import org.fedorahosted.flies.gwt.model.Person;
 import org.fedorahosted.flies.gwt.model.PersonId;
 import org.fedorahosted.flies.gwt.rpc.GetTranslatorList;
@@ -83,7 +84,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 	}
 
 	private void loadTranslatorList() {
-		dispatcher.execute(new GetTranslatorList(workspaceContext.getProjectContainerId(), workspaceContext.getLocaleId()), new AsyncCallback<GetTranslatorListResult>() {
+		dispatcher.execute(new GetTranslatorList(workspaceContext.getWorkspaceId()), new AsyncCallback<GetTranslatorListResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				Log.error("error");

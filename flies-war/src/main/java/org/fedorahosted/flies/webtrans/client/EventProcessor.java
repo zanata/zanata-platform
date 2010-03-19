@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.fedorahosted.flies.gwt.common.WorkspaceContext;
 import org.fedorahosted.flies.gwt.rpc.EnterWorkspace;
 import org.fedorahosted.flies.gwt.rpc.ExitWorkspace;
 import org.fedorahosted.flies.gwt.rpc.HasEnterWorkspaceData;

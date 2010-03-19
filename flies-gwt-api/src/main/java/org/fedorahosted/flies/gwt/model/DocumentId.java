@@ -5,7 +5,7 @@ import java.io.Serializable;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 //@ExposeEntity 
-public class DocumentId implements Identifier<Long>, Serializable, IsSerializable{
+public class DocumentId implements Identifier<Long>, Serializable {
 
 	private static final long serialVersionUID = 6291339842619640513L;
 

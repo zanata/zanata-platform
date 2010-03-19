@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.gwt.rpc;
 
 import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.gwt.common.WorkspaceId;
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 
@@ -8,26 +9,18 @@ public class GetProjectStatusCount implements WorkspaceAction<GetProjectStatusCo
 	
 	private static final long serialVersionUID = -143162507696820592L;
 
-	private LocaleId localeId;
-	private ProjectContainerId projectContainerId;
+	private WorkspaceId workspaceId;
 
 	@SuppressWarnings("unused")
 	private GetProjectStatusCount(){
 	}
 	
-	public GetProjectStatusCount(ProjectContainerId projectContainerId, LocaleId localeId) {
-		this.localeId = localeId;
-		this.projectContainerId = projectContainerId;
+	public GetProjectStatusCount(WorkspaceId workspaceId) {
+		this.workspaceId = workspaceId;
 	}
 
-	@Override
-	public LocaleId getLocaleId() {
-		return localeId;
-	}
-	
-	@Override
-	public ProjectContainerId getProjectContainerId() {
-		return projectContainerId;
+	public WorkspaceId getWorkspaceId() {
+		return workspaceId;
 	}
 
 }

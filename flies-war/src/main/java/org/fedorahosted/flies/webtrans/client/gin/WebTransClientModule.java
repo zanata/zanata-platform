@@ -7,6 +7,7 @@ import net.customware.gwt.presenter.client.Presenter;
 import net.customware.gwt.presenter.client.gin.AbstractPresenterModule;
 import net.customware.gwt.presenter.client.place.PlaceManager;
 
+import org.fedorahosted.flies.gwt.auth.Identity;
 import org.fedorahosted.flies.webtrans.client.AppPresenter;
 import org.fedorahosted.flies.webtrans.client.AppView;
 import org.fedorahosted.flies.webtrans.client.DocumentListPresenter;
@@ -14,8 +15,6 @@ import org.fedorahosted.flies.webtrans.client.DocumentListView;
 import org.fedorahosted.flies.webtrans.client.EventProcessor;
 import org.fedorahosted.flies.webtrans.client.GlossaryPresenter;
 import org.fedorahosted.flies.webtrans.client.GlossaryView;
-import org.fedorahosted.flies.webtrans.client.LoginView;
-import org.fedorahosted.flies.webtrans.client.LoginPresenter;
 import org.fedorahosted.flies.webtrans.client.Resources;
 import org.fedorahosted.flies.webtrans.client.SidePanel;
 import org.fedorahosted.flies.webtrans.client.SidePanelPresenter;
@@ -26,8 +25,6 @@ import org.fedorahosted.flies.webtrans.client.TransUnitNavigationView;
 import org.fedorahosted.flies.webtrans.client.WebTransMessages;
 import org.fedorahosted.flies.webtrans.client.WorkspaceUsersPresenter;
 import org.fedorahosted.flies.webtrans.client.WorkspaceUsersView;
-import org.fedorahosted.flies.webtrans.client.auth.Identity;
-import org.fedorahosted.flies.webtrans.client.auth.IdentityImpl;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.client.rpc.DelegatingDispatchAsync;
 import org.fedorahosted.flies.webtrans.editor.DocumentStatusPresenter;
@@ -67,7 +64,6 @@ public class WebTransClientModule extends AbstractPresenterModule {
 		bindPresenter(TransFilterPresenter.class, TransFilterPresenter.Display.class, TransFilterView.class);
 		bindPresenter(TableEditorPresenter.class, TableEditorPresenter.Display.class, TableEditorView.class);
 		bindPresenter(WorkspaceUsersPresenter.class, WorkspaceUsersPresenter.Display.class, WorkspaceUsersView.class);
-		bindPresenter(LoginPresenter.class, LoginPresenter.Display.class, LoginView.class);
 		bindPresenter(TransMemoryPresenter.class, TransMemoryPresenter.Display.class, TransMemoryView.class);
 		bindPresenter(GlossaryPresenter.class, GlossaryPresenter.Display.class, GlossaryView.class);
 		bindPresenter(TransUnitNavigationPresenter.class, TransUnitNavigationPresenter.Display.class, TransUnitNavigationView.class);
@@ -78,8 +74,6 @@ public class WebTransClientModule extends AbstractPresenterModule {
 		// NB: if we bind directly to SeamDispatchAsync, we can't use replace-class in
 		// the module definition unless the replacement extends SeamDispatchAsync
 		bind(CachingDispatchAsync.class).to(DelegatingDispatchAsync.class).in(Singleton.class);
-		
-		bind(Identity.class).to(IdentityImpl.class).in(Singleton.class);
 	}
 
 }

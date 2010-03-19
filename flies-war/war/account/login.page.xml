@@ -2,10 +2,14 @@
 <page xmlns="http://jboss.com/products/seam/pages"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.1.xsd">
+  <param name="continue" value="#{userRedirect.encodedUrl}" />
 
    <navigation from-action="#{identity.login}">
-      <rule if="#{identity.loggedIn}">
-         <redirect view-id="/home.xhtml"/>
+      <rule if="#{identity.loggedIn and not userRedirect.redirect}">
+         <redirect view-id="/home.xhtml" />
+      </rule>
+      <rule if="#{identity.loggedIn and userRedirect.redirect}">
+         <redirect url="#{userRedirect.url}" />
       </rule>
    </navigation>
 

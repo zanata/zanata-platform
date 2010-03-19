@@ -6,12 +6,12 @@ import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
 
 import org.fedorahosted.flies.common.ContentState;
+import org.fedorahosted.flies.gwt.common.WorkspaceContext;
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.rpc.GetStatusCount;
 import org.fedorahosted.flies.gwt.rpc.GetStatusCountResult;
 import org.fedorahosted.flies.webtrans.client.DocumentSelectionEvent;
 import org.fedorahosted.flies.webtrans.client.DocumentSelectionHandler;
-import org.fedorahosted.flies.webtrans.client.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
@@ -78,7 +78,7 @@ public class DocumentStatusPresenter extends TranslationStatsBarPresenter {
 			updateHandlerRegistration.removeHandler();
 		}
 		documentid  = newDocumentId;
-		dispatcher.execute(new GetStatusCount(newDocumentId, workspaceContext.getProjectContainerId(), workspaceContext.getLocaleId()), new AsyncCallback<GetStatusCountResult>() {
+		dispatcher.execute(new GetStatusCount(newDocumentId, workspaceContext.getWorkspaceId()), new AsyncCallback<GetStatusCountResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				Log.error("error");

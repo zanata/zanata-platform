@@ -12,6 +12,7 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.TransUnitCount;
+import org.fedorahosted.flies.gwt.auth.Identity;
 import org.fedorahosted.flies.gwt.model.DocumentStatus;
 import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
@@ -21,8 +22,6 @@ import org.fedorahosted.flies.gwt.rpc.ExitWorkspaceResult;
 import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCount;
 import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCountResult;
 import org.fedorahosted.flies.webtrans.client.AppPresenter.Display.MainView;
-import org.fedorahosted.flies.webtrans.client.LoginPresenter.LoggedIn;
-import org.fedorahosted.flies.webtrans.client.auth.Identity;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
@@ -86,15 +85,12 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 	private final TableEditorPresenter tableEditorPresenter;
 	private final DocumentListPresenter documentListPresenter;
 	private final EventProcessor eventProcessor;
-	private final LoginPresenter loginPresenter;
 	private final TransUnitNavigationPresenter transUnitNavigationPresenter;
 	private final TransMemoryPresenter transMemoryPresenter;
 	private final TransFilterPresenter transFilterPresenter;
 	private final SidePanelPresenter sidePanelPresenter;
 
 	private final DispatchAsync dispatcher;
-	private String workspaceName;
-	private String localeName;
 	private final Identity identity;
 	
 	private final TransUnitCount projectCount = new TransUnitCount();
@@ -105,7 +101,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 			final TableEditorPresenter tableEditorPresenter,
 			final DocumentListPresenter documentListPresenter,
 			final EventProcessor eventProcessor,
-			final LoginPresenter loginPresenter,
 			final TransMemoryPresenter transMemoryPresenter,
 			final TransUnitNavigationPresenter transUnitNavigationPresenter,
 			final TransFilterPresenter transFilterPresenter,
@@ -115,7 +110,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		this.dispatcher = dispatcher;
 		this.tableEditorPresenter = tableEditorPresenter;
 		this.eventProcessor = eventProcessor;
-		this.loginPresenter = loginPresenter;
 		this.documentListPresenter = documentListPresenter;
 		this.transUnitNavigationPresenter = transUnitNavigationPresenter;
 		this.transMemoryPresenter = transMemoryPresenter;
@@ -128,7 +122,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		return null;
 	}
 
-	protected void bindApp() {
+	@Override
+	protected void onBind() {
 
 		registerHandler(eventBus.addHandler(NotificationEvent.getType(),
 				new NotificationEventHandler() {
@@ -148,28 +143,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 						popup.show();
 					}
 				}));
-
-		// When user close the workspace, send ExitWorkSpaceAction
-		Window.addCloseHandler(new CloseHandler<Window>() {
-			@Override
-			public void onClose(CloseEvent<Window> event) {
-				dispatcher.execute(new ExitWorkspaceAction(
-						findProjectContainerId(), findLocaleId(), identity
-								.getPerson().getId()),
-						new AsyncCallback<ExitWorkspaceResult>() {
-							@Override
-							public void onFailure(Throwable caught) {
-
-							}
-
-							@Override
-							public void onSuccess(ExitWorkspaceResult result) {
-								identity.invalidate();
-							}
-
-						});
-			}
-		});
 
 		Window.enableScrolling(false);
 
@@ -266,113 +239,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		
 		
 		
-	}
-
-	private static LocaleId findLocaleId() {
-		String localeId = Window.Location.getParameter("localeId");
-		return localeId == null ? null : new LocaleId(localeId);
-	}
-
-	private static ProjectContainerId findProjectContainerId() {
-		String projContainerId = Window.Location
-				.getParameter("projContainerId");
-		if (projContainerId == null)
-			return null;
-		try {
-			int id = Integer.parseInt(projContainerId);
-			return new ProjectContainerId(id);
-		} catch (NumberFormatException nfe) {
-			return null;
-		}
-	}
-
-	@Override
-	protected void onBind() {
-		loginPresenter.bind();
-		loginPresenter.ensureLoggedIn(new LoggedIn() {
-			@Override
-			public void onSuccess() {
-				AsyncCallback<Void> activateWorkspace = new AsyncCallback<Void>() {
-
-					@Override
-					public void onSuccess(Void result) {
-						Log.info("AppPresenter ActivateWorkspace requested");
-
-						dispatcher.execute(new ActivateWorkspaceAction(
-								findProjectContainerId(), findLocaleId()),
-								new AsyncCallback<ActivateWorkspaceResult>() {
-									@Override
-									public void onFailure(Throwable caught) {
-										Log.info(caught.getMessage(), caught);
-										Log
-												.info("AppPresenter ActivateWorkspace failed, logging in...");
-										loginPresenter.bind();
-										loginPresenter
-												.ensureLoggedIn(new LoggedIn() {
-													@Override
-													public void onSuccess() {
-														// dispatcher.execute(new
-														// ActivateWorkspaceAction(findProjectContainerId(),
-														// findLocaleId()), new
-														// AsyncCallback<ActivateWorkspaceResult>()
-														// {
-														// @Override
-														// public void
-														// onFailure(Throwable
-														// caught) {
-														// }
-														// @Override
-														// public void
-														// onSuccess(ActivateWorkspaceResult
-														// result) {
-														// setWorkspaceName(result.getWorkspaceName());
-														// setLocaleName(result.getLocaleName());
-														bindApp();
-														// }
-														// });
-													}
-												});
-									}
-
-									@Override
-									public void onSuccess(
-											ActivateWorkspaceResult result) {
-										Log
-												.info("AppPresenter ActivateWorkspace - success");
-										setWorkspaceName(result
-												.getWorkspaceName());
-										setLocaleName(result.getLocaleName());
-										bindApp();
-									}
-								});
-					}
-
-					@Override
-					public void onFailure(Throwable e) {
-						Log.error(e.getMessage(), e);
-					}
-				};
-				eventProcessor.addCallback(activateWorkspace);
-				// activateWorkspace.onSuccess(null);
-			}
-		});
-
-	}
-
-	private void setWorkspaceName(String workspaceName) {
-		this.workspaceName = workspaceName;
-	}
-
-	public String getWorkspaceName() {
-		return workspaceName;
-	}
-
-	private void setLocaleName(String localeName) {
-		this.localeName = localeName;
-	}
-
-	public String getLocaleName() {
-		return localeName;
 	}
 
 	@Override

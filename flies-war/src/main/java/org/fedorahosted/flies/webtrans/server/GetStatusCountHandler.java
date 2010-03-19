@@ -42,7 +42,7 @@ public class GetStatusCountHandler implements ActionHandler<GetStatusCount, GetS
 		        "  and tft.locale = :locale "+ 
 				"group by tft.state"
 			).setParameter("id", action.getDocumentId().getValue())
-			 .setParameter("locale", action.getLocaleId() )
+			 .setParameter("locale", action.getWorkspaceId().getLocaleId() )
 			 .list();
 		
 		
@@ -56,7 +56,7 @@ public class GetStatusCountHandler implements ActionHandler<GetStatusCount, GetS
 		}
 		
 		stat.set(ContentState.New, totalCount.intValue() - stat.get(ContentState.Approved)-stat.get(ContentState.NeedReview));
-		TranslationWorkspace workspace = translationWorkspaceManager.getWorkspace(action.getProjectContainerId().getId(), action.getLocaleId() );
+		TranslationWorkspace workspace = translationWorkspaceManager.getWorkspace(action.getWorkspaceId() );
 		
 		return new GetStatusCountResult(
 				action.getDocumentId(), stat);

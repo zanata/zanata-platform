@@ -23,7 +23,6 @@ public class DummyGetProjectStatusCountCommand implements Command {
 	@Override
 	public void execute() {
 		callback.onSuccess(new GetProjectStatusCountResult(
-				action.getProjectContainerId(), 
 				new ArrayList<DocumentStatus>()));
 	}
 

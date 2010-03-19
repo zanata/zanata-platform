@@ -4,6 +4,7 @@ import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
+import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 import org.fedorahosted.flies.gwt.rpc.EditingTranslationAction;
 import org.fedorahosted.flies.gwt.rpc.EditingTranslationResult;
 import org.fedorahosted.flies.repository.model.HTextFlow;
@@ -32,8 +33,10 @@ public class EditTransUnitHandler implements ActionHandler<EditingTranslationAct
 		FliesIdentity.instance().checkLoggedIn();
 		HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, action.getTransUnitId().getValue());
 		
+		ProjectContainerId projectContainerId = new ProjectContainerId(hTextFlow.getDocument().getProject().getId());
+		
 		TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(
-				hTextFlow.getDocument().getProject().getId(), action.getLocaleId() );
+				action.getWorkspaceId() );
 		
 		//If TransUnit is not editing, you can start editing now.
 //		if(!workspace.containTransUnit(action.getTransUnitId()) && action.getEditState().equals(EditState.StartEditing)) {

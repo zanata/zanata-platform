@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class DocName implements HasIdentifier<DocumentId>, Serializable, IsSerializable {
+public class DocName implements HasIdentifier<DocumentId>, Serializable {
 	private static final long serialVersionUID = 1L;
 	private DocumentId id;
 	private String name;

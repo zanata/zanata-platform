@@ -1,14 +1,23 @@
-package org.fedorahosted.flies.webtrans.server;
+package org.fedorahosted.flies.gwt.common;
 
+
+import java.io.Serializable;
 
 import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 
-public final class WorkspaceKey{
+public final class WorkspaceId implements Serializable { 
+
+	private static final long serialVersionUID = 1045784401405248038L;
+
+	private ProjectContainerId projectContainerId;
+	private LocaleId localeId;
 	
-	private final Long projectContainerId;
-	private final LocaleId localeId;
+	@SuppressWarnings("unused")
+	private WorkspaceId() {
+	}
 	
-	public WorkspaceKey(Long projectContainerId, LocaleId localeId){
+	public WorkspaceId(ProjectContainerId projectContainerId , LocaleId localeId){
 		if(projectContainerId == null)
 			throw new IllegalArgumentException("projectContainerId");
 		if(localeId == null)
@@ -21,8 +30,8 @@ public final class WorkspaceKey{
 	@Override
 	public boolean equals(Object obj) {
 		if(obj == null) return false;
-		if( !(obj instanceof WorkspaceKey) ) return false;
-		WorkspaceKey other = (WorkspaceKey) obj;
+		if( !(obj instanceof WorkspaceId) ) return false;
+		WorkspaceId other = (WorkspaceId) obj;
 		return ( other.localeId.equals(localeId) 
 				&& other.projectContainerId.equals(projectContainerId));
 	}
@@ -39,7 +48,7 @@ public final class WorkspaceKey{
 		return localeId;
 	}
 	
-	public Long getProjectContainerId() {
+	public ProjectContainerId getProjectContainerId() {
 		return projectContainerId;
 	}
 	

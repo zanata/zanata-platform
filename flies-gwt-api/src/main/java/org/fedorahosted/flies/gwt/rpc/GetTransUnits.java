@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.gwt.rpc;
 
+import org.fedorahosted.flies.gwt.common.WorkspaceId;
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.common.LocaleId;
 
@@ -7,22 +8,22 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 import net.customware.gwt.dispatch.shared.Action;
 
-public class GetTransUnits implements DispatchAction<GetTransUnitsResult> {
+public class GetTransUnits implements WorkspaceAction<GetTransUnitsResult> {
 
 	private static final long serialVersionUID = 1L;
 
+	private WorkspaceId workspaceId;
 	private int offset;
 	private int count;
 	private DocumentId documentId;
-	private LocaleId localeId;
 
 	@SuppressWarnings("unused")
 	private GetTransUnits(){
 	}
 	
-	public GetTransUnits(DocumentId id, LocaleId localeId, int offset, int count) {
+	public GetTransUnits(WorkspaceId workspaceId, DocumentId id, int offset, int count) {
+		this.workspaceId = workspaceId;
 		this.documentId = id;
-		this.localeId = localeId;
 		this.offset = offset;
 		this.count = count;
 	}
@@ -50,12 +51,9 @@ public class GetTransUnits implements DispatchAction<GetTransUnitsResult> {
 	public void setDocumentId(DocumentId documentId) {
 		this.documentId = documentId;
 	}
-	
-	public LocaleId getLocaleId() {
-		return localeId;
-	}
-	
-	public void setLocaleId(LocaleId localeId) {
-		this.localeId = localeId;
+
+	@Override
+	public WorkspaceId getWorkspaceId() {
+		return workspaceId;
 	}
 }
