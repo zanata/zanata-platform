@@ -2,6 +2,7 @@ package org.fedorahosted.flies.client.ant.po;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -35,35 +36,45 @@ public class DownloadPoTask extends Task {
 	private boolean help;
 
 	public static void main(String[] args) throws Exception {
+		if (args.length == 0) {
+			help(System.out);
+			System.exit(0);
+		}
 		DownloadPoTask download = new DownloadPoTask();
 		ArgumentProcessor<DownloadPoTask> argProcessor = ArgumentProcessor.newInstance(DownloadPoTask.class);
 		argProcessor.process(args, download);
+		
+		download.processArgs();
+	}
 
-		if (download.help)
-			help(argProcessor);
-		if (download.src == null)
+	private void processArgs()
+			throws IOException, JAXBException, URISyntaxException {
+		if (help) {
+			help(System.out);
+			System.exit(0);
+		}
+		if (src == null)
 			missingOption("--src");
-		if (download.dstDir == null)
+		if (dstDir == null)
 			missingOption("--dst");
-		if (download.user == null)
+		if (user == null)
 			missingOption("--user");
-		if (download.apiKey == null)
+		if (apiKey == null)
 			missingOption("--key");
 			
-		download.process();
+		process();
 	}
 	
 	private static void missingOption(String name) {
 		System.out.println("Required option missing: "+name);
 		System.exit(1);
 	}
-
-	private static void help(ArgumentProcessor<?> argProcessor)
-			throws IOException {
-		final PrintWriter out = new PrintWriter(System.out);
+	
+	public static void help(PrintStream output) throws IOException {
+		ArgumentProcessor<DownloadPoTask> argProcessor = ArgumentProcessor.newInstance(DownloadPoTask.class);
+		PrintWriter out = new PrintWriter(output);
 		argProcessor.printHelp(out);
 		out.flush();
-		System.exit(0);
 	}
 	
 	@Override
