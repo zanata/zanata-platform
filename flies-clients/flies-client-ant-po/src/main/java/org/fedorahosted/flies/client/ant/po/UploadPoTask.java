@@ -3,6 +3,7 @@ package org.fedorahosted.flies.client.ant.po;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -41,22 +42,33 @@ public class UploadPoTask extends Task {
 	private boolean help;
 
 	public static void main(String[] args) throws Exception {
+		if (args.length == 0) {
+			help(System.out);
+			System.exit(0);
+		}
 		UploadPoTask upload = new UploadPoTask();
 		ArgumentProcessor<UploadPoTask> argProcessor = ArgumentProcessor.newInstance(UploadPoTask.class);
 		argProcessor.process(args, upload);
 
-		if (upload.help)
-			help(argProcessor);
-		if (upload.srcDir == null)
+		upload.processArgs();
+	}
+
+	private void processArgs() throws IOException,
+			JAXBException, MalformedURLException, URISyntaxException {
+		if (help) {
+			help(System.out);
+			System.exit(0);
+		}
+		if (srcDir == null)
 			missingOption("--src");
-		if (upload.dst == null)
+		if (dst == null)
 			missingOption("--dst");
-		if (upload.user == null)
+		if (user == null)
 			missingOption("--user");
-		if (upload.apiKey == null)
+		if (apiKey == null)
 			missingOption("--key");
 			
-		upload.process();
+		process();
 	}
 	
 	private static void missingOption(String name) {
@@ -64,12 +76,11 @@ public class UploadPoTask extends Task {
 		System.exit(1);
 	}
 
-	private static void help(ArgumentProcessor<?> argProcessor)
-			throws IOException {
-		final PrintWriter out = new PrintWriter(System.out);
+	public static void help(PrintStream output) throws IOException {
+		ArgumentProcessor<UploadPoTask> argProcessor = ArgumentProcessor.newInstance(UploadPoTask.class);
+		PrintWriter out = new PrintWriter(output);
 		argProcessor.printHelp(out);
 		out.flush();
-		System.exit(0);
 	}
 	
 	@Override
