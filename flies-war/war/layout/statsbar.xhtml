@@ -16,8 +16,8 @@
 	-222 is 0% translated
 	-->
 	
-	<ui:param name="vBarPos" value="#{(pComplete == 100 || pComplete == 0) ? -40 : 0 }" />
-	<ui:param name="hBarPos" value="#{pComplete == 100 ? 0 : total == 0 ? -120 : -120 + (120 *pComplete/100)}" />
+	<ui:param name="vBarPos" value="#{ (total==0) ? 0 : ( (pComplete == 100 || pComplete == 0) ? -20 : -40 ) }" />
+	<ui:param name="hBarPos" value="#{pComplete == 100 ? 0 : total == 0 ? 0 : -120 + (120 *pComplete/100)}" />
 	
 	<ui:param name="colorRed" value="#{0}" />
 	<ui:param name="colorGreen" value="#{0}" />
@@ -36,6 +36,11 @@
 	 class="translationStatusBar"
 	 style="background-position: #{hBarPos}px #{vBarPos}px; color: rgb(#{colorRed},#{colorGreen},#{colorBlue});" 
 	 >
-	 #{status.total != 0 ? ''+pComplete+'%' : '(No Content)'}
+		 <h:outputText value="#{pComplete/100}" rendered="#{status.total > 0}"> 
+			<f:convertNumber type="percent"/> 
+		 </h:outputText>
+		 <h:outputText rendered="#{status.total eq 0}"> 
+			(No Content) 
+		 </h:outputText>
 	</div>   
 </div>
