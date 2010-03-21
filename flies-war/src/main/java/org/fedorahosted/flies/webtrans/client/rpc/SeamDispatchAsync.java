@@ -22,8 +22,6 @@ public class SeamDispatchAsync implements CachingDispatchAsync {
 
 		((ServiceDefTarget) realService).setServiceEntryPoint(endpointURL);
 	}
-
-	private ErrorHandler errorHandler;
 	
 	@Inject
 	public SeamDispatchAsync() {
@@ -34,7 +32,7 @@ public class SeamDispatchAsync implements CachingDispatchAsync {
 		realService.execute(action, new AsyncCallback<Result>() {
 
 			public void onFailure(final Throwable caught) {
-				handleError(action, callback, caught);
+				callback.onFailure(caught);
 			}
 
 			@SuppressWarnings("unchecked")
@@ -44,21 +42,4 @@ public class SeamDispatchAsync implements CachingDispatchAsync {
 		});
 	}
 	
-	private <A extends Action<R>, R extends Result> void handleError(final A action,
-			final AsyncCallback<R> callback, final Throwable caught) {
-
-//		if(errorHandler != null){
-//			errorHandler.onFailure(action, callback, caught);
-//		}
-//		else{
-//			callback.onFailure(caught);
-//		}
-		callback.onFailure(caught);
-
-	}
-	
-	@Override
-	public void setErrorHandler(ErrorHandler errorHandler) {
-		this.errorHandler = errorHandler;
-	}
 }

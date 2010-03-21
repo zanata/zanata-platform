@@ -20,10 +20,4 @@ public class DelegatingDispatchAsync implements CachingDispatchAsync {
 		delegate.execute(action, callback);
 	}
 	
-	@Override
-	public void setErrorHandler(ErrorHandler errorHandler) {
-		delegate.setErrorHandler(errorHandler);
-		
-	}
-
 }
