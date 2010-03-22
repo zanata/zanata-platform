@@ -105,6 +105,24 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			
+			<!-- 
+			  To generate a template script file: mvn appassembler:assemble
+			  The script will be generated under target/appassembler/bin/ 
+			 -->
+		    <plugin>
+		        <groupId>org.codehaus.mojo</groupId>
+		        <artifactId>appassembler-maven-plugin</artifactId>
+		        <version>1.0</version>
+		        <configuration>
+		          <programs>
+		            <program>
+		              <mainClass>org.fedorahosted.flies.client.ant.po.PoTool</mainClass>
+		              <name>flies-publican</name>
+		            </program>
+		          </programs>
+		        </configuration>
+		    </plugin>
 		</plugins>
 	</build>
 </project>
