@@ -193,7 +193,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 							final int row = display.getCurrentPage() * display.getPageSize() + rowOffset;
 							Log.info("row calculated as "+row);
 							dispatcher.execute(new GetTransUnits(
-								workspaceContext.getWorkspaceId(), 
 								documentId, 
 								row, 
 								1), new AsyncCallback<GetTransUnitsResult>() {
@@ -350,7 +349,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 				return;
 			}
 			
-			dispatcher.execute(new GetTransUnits(workspaceContext.getWorkspaceId(), documentId, startRow, numRows), new AsyncCallback<GetTransUnitsResult>() {
+			dispatcher.execute(new GetTransUnits(documentId, startRow, numRows), new AsyncCallback<GetTransUnitsResult>() {
 				@Override
 				public void onSuccess(GetTransUnitsResult result) {
 					SerializableResponse<TransUnit> response = new SerializableResponse<TransUnit>(
@@ -383,7 +382,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		@Override
 		public boolean onSetRowValue(int row, TransUnit rowValue) {
 			dispatcher.execute(
-					new UpdateTransUnit(workspaceContext.getWorkspaceId(), rowValue.getId(), rowValue.getTarget(),rowValue.getStatus()), 
+					new UpdateTransUnit(rowValue.getId(), rowValue.getTarget(),rowValue.getStatus()), 
 					new AsyncCallback<UpdateTransUnitResult>() {
 						@Override
 						public void onFailure(Throwable caught) {
@@ -399,9 +398,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 			
 			dispatcher.execute(
 					new EditingTranslationAction(
-							workspaceContext.getWorkspaceId(), 
 							rowValue.getId(), 
-							identity.getSessionId(), 
 							EditState.StopEditing), 
 					new AsyncCallback<EditingTranslationResult>() {
 						@Override
@@ -478,9 +475,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	private void stopEditing(TransUnit rowValue) {
 		dispatcher.execute(
 				new EditingTranslationAction(
-						workspaceContext.getWorkspaceId(), 
 						rowValue.getId(), 
-						identity.getSessionId(),
 						EditState.StopEditing), 
 				new AsyncCallback<EditingTranslationResult>() {
 					@Override
@@ -500,9 +495,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		//Send a START_EDIT event
 		dispatcher.execute(
 				new EditingTranslationAction(
-						workspaceContext.getWorkspaceId(), 
 						rowValue.getId(), 
-						identity.getSessionId(), 
 						EditState.StartEditing), 
 				new AsyncCallback<EditingTranslationResult>() {
 					@Override

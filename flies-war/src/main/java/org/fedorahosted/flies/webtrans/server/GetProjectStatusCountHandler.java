@@ -29,7 +29,8 @@ import org.jboss.seam.log.Log;
 
 @Name("webtrans.gwt.GetProjectStatusCountHandler")
 @Scope(ScopeType.STATELESS)
-public class GetProjectStatusCountHandler implements ActionHandler<GetProjectStatusCount, GetProjectStatusCountResult> {
+@ActionHandlerFor(GetProjectStatusCount.class)
+public class GetProjectStatusCountHandler extends AbstractActionHandler<GetProjectStatusCount, GetProjectStatusCountResult> {
 
 		@Logger Log log;
 		
@@ -69,12 +70,6 @@ public class GetProjectStatusCountHandler implements ActionHandler<GetProjectSta
 
 			return new GetProjectStatusCountResult(docliststatus);
 
-		}
-
-		@Override
-		public Class<GetProjectStatusCount> getActionType() {
-			// TODO Auto-generated method stub
-			return GetProjectStatusCount.class;
 		}
 
 		@Override

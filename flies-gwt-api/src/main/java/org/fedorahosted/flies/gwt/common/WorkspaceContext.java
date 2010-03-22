@@ -1,12 +1,16 @@
 package org.fedorahosted.flies.gwt.common;
 
+import java.io.Serializable;
+
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 
 import de.novanic.eventservice.client.event.domain.Domain;
 
-public class WorkspaceContext {
+public class WorkspaceContext implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	private WorkspaceId workspaceId;
 	private String workspaceName;
 	private String localeName;

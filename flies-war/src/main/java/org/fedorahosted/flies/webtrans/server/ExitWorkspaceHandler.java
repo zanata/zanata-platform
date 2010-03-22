@@ -24,8 +24,10 @@ import org.jboss.seam.log.Log;
 
 @Name("webtrans.gwt.ExitWorkspaceHandler")
 @Scope(ScopeType.STATELESS)
-public class ExitWorkspaceHandler implements ActionHandler<ExitWorkspaceAction, ExitWorkspaceResult> {
-@Logger Log log;
+@ActionHandlerFor(ExitWorkspaceAction.class)
+public class ExitWorkspaceHandler extends AbstractActionHandler<ExitWorkspaceAction, ExitWorkspaceResult> {
+	
+	@Logger Log log;
 	
 	@In Session session;
 	
@@ -47,11 +49,6 @@ public class ExitWorkspaceHandler implements ActionHandler<ExitWorkspaceAction, 
 		}
 
 		return new ExitWorkspaceResult(action.getPersonId().toString());
-	}
-
-	@Override
-	public Class<ExitWorkspaceAction> getActionType() {
-		return ExitWorkspaceAction.class;
 	}
 
 	@Override

@@ -18,6 +18,7 @@ public class Identity implements Serializable {
 	private Person person;
 
 	
+	@SuppressWarnings("unused")
 	private Identity() {
 	}
 	

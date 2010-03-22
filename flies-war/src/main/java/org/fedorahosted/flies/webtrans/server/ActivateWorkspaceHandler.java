@@ -29,7 +29,8 @@ import org.jboss.seam.web.ServletContexts;
 
 @Name("webtrans.gwt.ActivateWorkspaceHandler")
 @Scope(ScopeType.STATELESS)
-public class ActivateWorkspaceHandler implements ActionHandler<ActivateWorkspaceAction, ActivateWorkspaceResult> {
+@ActionHandlerFor(ActivateWorkspaceAction.class)
+public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWorkspaceAction, ActivateWorkspaceResult> {
 
 	@Logger Log log;
 	
@@ -58,11 +59,6 @@ public class ActivateWorkspaceHandler implements ActionHandler<ActivateWorkspace
 				retrievePerson(), Collections.EMPTY_SET, Collections.EMPTY_SET);
 		
 		return new ActivateWorkspaceResult(workspace.getWorkspaceContext(), identity);
-	}
-
-	@Override
-	public Class<ActivateWorkspaceAction> getActionType() {
-		return ActivateWorkspaceAction.class;
 	}
 
 	@Override

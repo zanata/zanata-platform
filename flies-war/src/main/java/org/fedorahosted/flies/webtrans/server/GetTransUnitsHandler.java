@@ -37,7 +37,8 @@ import org.jboss.seam.security.Identity;
 
 @Name("webtrans.gwt.GetTransUnitHandler")
 @Scope(ScopeType.STATELESS)
-public class GetTransUnitsHandler implements ActionHandler<GetTransUnits, GetTransUnitsResult> {
+@ActionHandlerFor(GetTransUnits.class)
+public class GetTransUnitsHandler extends AbstractActionHandler<GetTransUnits, GetTransUnitsResult> {
 
 	@Logger Log log;
 	@In Session session;
@@ -91,11 +92,6 @@ public class GetTransUnitsHandler implements ActionHandler<GetTransUnits, GetTra
 			return null;
 		else
 			return comment.getComment();
-	}
-
-	@Override
-	public Class<GetTransUnits> getActionType() {
-		return GetTransUnits.class;
 	}
 
 	@Override

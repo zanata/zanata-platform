@@ -84,7 +84,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 	}
 
 	private void loadTranslatorList() {
-		dispatcher.execute(new GetTranslatorList(workspaceContext.getWorkspaceId()), new AsyncCallback<GetTranslatorListResult>() {
+		dispatcher.execute(new GetTranslatorList(), new AsyncCallback<GetTranslatorListResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				Log.error("error");

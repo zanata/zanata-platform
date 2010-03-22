@@ -15,12 +15,12 @@ import net.customware.gwt.dispatch.shared.Result;
 public class DispatchServiceImpl implements DispatchService {
 	
 	@In 
-	GwtActionDispatcher gwtActionDispatcher;
+	SeamDispatch seamDispatch;
 	
 	@Override
 	@WebRemote
 	public Result execute(Action<?> action) throws Exception {
-		return gwtActionDispatcher.execute(action);
+		return seamDispatch.execute(action);
 	}
 	
 	

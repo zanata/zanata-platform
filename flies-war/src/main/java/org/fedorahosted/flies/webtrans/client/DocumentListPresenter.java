@@ -260,7 +260,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 	
 	private void loadDocsStatus() {
 		dispatcher.execute(
-				new GetProjectStatusCount(workspaceContext.getWorkspaceId()), 
+				new GetProjectStatusCount(), 
 				new AsyncCallback<GetProjectStatusCountResult>() {
 			@Override
 			public void onFailure(Throwable caught) {

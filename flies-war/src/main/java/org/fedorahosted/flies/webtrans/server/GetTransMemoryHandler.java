@@ -36,7 +36,8 @@ import org.jboss.seam.log.Log;
 
 @Name("webtrans.gwt.GetTransMemoryHandler")
 @Scope(ScopeType.STATELESS)
-public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory, GetTranslationMemoryResult> {
+@ActionHandlerFor(GetTranslationMemory.class)
+public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationMemory, GetTranslationMemoryResult> {
 
 	private static final int MAX_RESULTS = 10;
 
@@ -148,11 +149,6 @@ public class GetTransMemoryHandler implements ActionHandler<GetTranslationMemory
         Query luceneQuery = parser.parse(searchText);
         return entityManager.createFullTextQuery(luceneQuery, HTextFlow.class);
     }
-
-	@Override
-	public Class<GetTranslationMemory> getActionType() {
-		return GetTranslationMemory.class;
-	}
 
 	@Override
 	public void rollback(GetTranslationMemory action,

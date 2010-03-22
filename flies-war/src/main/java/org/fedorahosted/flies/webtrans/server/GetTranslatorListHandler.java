@@ -24,7 +24,8 @@ import com.google.common.collect.ImmutableSet;
 
 @Name("webtrans.gwt.GetTranslatorListHandler")
 @Scope(ScopeType.STATELESS)
-public class GetTranslatorListHandler implements ActionHandler<GetTranslatorList, GetTranslatorListResult> {
+@ActionHandlerFor(GetTranslatorList.class)
+public class GetTranslatorListHandler extends AbstractActionHandler<GetTranslatorList, GetTranslatorListResult> {
 
 	@Logger Log log;
 	
@@ -53,11 +54,6 @@ public class GetTranslatorListHandler implements ActionHandler<GetTranslatorList
 		}
 		
 		return new GetTranslatorListResult(translators);
-	}
-
-	@Override
-	public Class<GetTranslatorList> getActionType() {
-		return GetTranslatorList.class;
 	}
 
 	@Override

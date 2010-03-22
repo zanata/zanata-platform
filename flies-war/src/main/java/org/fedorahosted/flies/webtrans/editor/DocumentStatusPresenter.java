@@ -78,7 +78,7 @@ public class DocumentStatusPresenter extends TranslationStatsBarPresenter {
 			updateHandlerRegistration.removeHandler();
 		}
 		documentid  = newDocumentId;
-		dispatcher.execute(new GetStatusCount(newDocumentId, workspaceContext.getWorkspaceId()), new AsyncCallback<GetStatusCountResult>() {
+		dispatcher.execute(new GetStatusCount(newDocumentId), new AsyncCallback<GetStatusCountResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				Log.error("error");

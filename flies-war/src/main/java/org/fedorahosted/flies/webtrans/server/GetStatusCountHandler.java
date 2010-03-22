@@ -22,7 +22,8 @@ import org.jboss.seam.log.Log;
 
 @Name("webtrans.gwt.GetStatusCountHandler")
 @Scope(ScopeType.STATELESS)
-public class GetStatusCountHandler implements ActionHandler<GetStatusCount, GetStatusCountResult> {
+@ActionHandlerFor(GetStatusCount.class)
+public class GetStatusCountHandler extends AbstractActionHandler<GetStatusCount, GetStatusCountResult> {
 
 	@Logger Log log;
 	
@@ -61,12 +62,6 @@ public class GetStatusCountHandler implements ActionHandler<GetStatusCount, GetS
 		return new GetStatusCountResult(
 				action.getDocumentId(), stat);
 
-	}
-
-	@Override
-	public Class<GetStatusCount> getActionType() {
-		// TODO Auto-generated method stub
-		return GetStatusCount.class;
 	}
 
 	@Override

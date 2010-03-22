@@ -62,20 +62,18 @@ public class Application implements EntryPoint{
 		Window.addCloseHandler(new CloseHandler<Window>() {
 			@Override
 			public void onClose(CloseEvent<Window> event) {
-				injector.getDispatcher().execute(new ExitWorkspaceAction(
-						workspaceContext.getWorkspaceId(),
-						identity.getPerson().getId()),
-						new AsyncCallback<ExitWorkspaceResult>() {
-							@Override
-							public void onFailure(Throwable caught) {
-
-							}
-
-							@Override
-							public void onSuccess(ExitWorkspaceResult result) {
-							}
-
-						});
+//				injector.getDispatcher().execute(new ExitWorkspaceAction(),
+//						new AsyncCallback<ExitWorkspaceResult>() {
+//							@Override
+//							public void onFailure(Throwable caught) {
+//
+//							}
+//
+//							@Override
+//							public void onSuccess(ExitWorkspaceResult result) {
+//							}
+//
+//						});
 			}
 		});
 		

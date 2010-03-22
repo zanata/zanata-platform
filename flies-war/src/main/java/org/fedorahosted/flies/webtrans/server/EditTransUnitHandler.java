@@ -19,7 +19,8 @@ import org.jboss.seam.log.Log;
 
 @Name("webtrans.gwt.EditTransUnitHandler")
 @Scope(ScopeType.STATELESS)
-public class EditTransUnitHandler implements ActionHandler<EditingTranslationAction, EditingTranslationResult> {
+@ActionHandlerFor(EditingTranslationAction.class)
+public class EditTransUnitHandler extends AbstractActionHandler<EditingTranslationAction, EditingTranslationResult> {
 
 	@Logger Log log;
 	
@@ -61,11 +62,6 @@ public class EditTransUnitHandler implements ActionHandler<EditingTranslationAct
 //		}
 		
 		return new EditingTranslationResult(true);
-	}
-
-	@Override
-	public Class<EditingTranslationAction> getActionType() {
-		return EditingTranslationAction.class;
 	}
 
 	@Override

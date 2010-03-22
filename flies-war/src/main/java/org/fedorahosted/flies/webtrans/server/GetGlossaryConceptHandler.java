@@ -33,7 +33,8 @@ import org.jboss.seam.log.Log;
 
 @Name("webtrans.gwt.GetGlossaryConceptHandler")
 @Scope(ScopeType.STATELESS)
-public class GetGlossaryConceptHandler implements ActionHandler<GetGlossaryConcept, GetGlossaryConceptResult> {
+@ActionHandlerFor(GetGlossaryConcept.class)
+public class GetGlossaryConceptHandler extends AbstractActionHandler<GetGlossaryConcept, GetGlossaryConceptResult> {
 
 		@Logger Log log;
 		
@@ -70,12 +71,6 @@ public class GetGlossaryConceptHandler implements ActionHandler<GetGlossaryConce
 			results.add(new Concept("black hole", desc, "", deEntry));
 			
 			return new GetGlossaryConceptResult(results);
-		}
-
-		@Override
-		public Class<GetGlossaryConcept> getActionType() {
-			// TODO Auto-generated method stub
-			return GetGlossaryConcept.class;
 		}
 
 		@Override

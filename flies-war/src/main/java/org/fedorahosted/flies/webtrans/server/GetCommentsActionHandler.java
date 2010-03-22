@@ -27,7 +27,8 @@ import org.jboss.seam.log.Log;
 
 @Name("webtrans.gwt.GetCommentsActionHandler")
 @Scope(ScopeType.STATELESS)
-public class GetCommentsActionHandler implements ActionHandler<GetCommentsAction, GetCommentsResult> {
+@ActionHandlerFor(GetCommentsAction.class)
+public class GetCommentsActionHandler extends AbstractActionHandler<GetCommentsAction, GetCommentsResult> {
 
 	@Logger Log log;
 
@@ -37,11 +38,6 @@ public class GetCommentsActionHandler implements ActionHandler<GetCommentsAction
 		log.info("Getting comments for {0} {1}", action.getTransUnitId().getValue(), action.getLocaleId());
 		FliesIdentity.instance().checkLoggedIn();
 		return new GetCommentsResult("Hello World");
-	}
-
-	@Override
-	public Class<GetCommentsAction> getActionType() {
-		return GetCommentsAction.class;
 	}
 
 	@Override

@@ -25,7 +25,8 @@ import org.jboss.seam.log.Log;
 
 @Name("webtrans.gwt.GetDocsListHandler")
 @Scope(ScopeType.STATELESS)
-public class GetDocsListHandler implements ActionHandler<GetDocsList, GetDocsListResult> {
+@ActionHandlerFor(GetDocsList.class)
+public class GetDocsListHandler extends AbstractActionHandler<GetDocsList, GetDocsListResult> {
 
 	@Logger Log log;
 	
@@ -49,11 +50,6 @@ public class GetDocsListHandler implements ActionHandler<GetDocsList, GetDocsLis
 			docs.add(docName);
 		}
 		return new GetDocsListResult(containerId, docs);
-	}
-
-	@Override
-	public Class<GetDocsList> getActionType() {
-		return GetDocsList.class;
 	}
 
 	@Override

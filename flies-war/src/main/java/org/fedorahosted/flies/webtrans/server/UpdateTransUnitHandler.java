@@ -24,7 +24,8 @@ import org.jboss.seam.log.Log;
 
 @Name("webtrans.gwt.UpdateTransUnitHandler")
 @Scope(ScopeType.STATELESS)
-public class UpdateTransUnitHandler implements ActionHandler<UpdateTransUnit, UpdateTransUnitResult> {
+@ActionHandlerFor(UpdateTransUnit.class)
+public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUnit, UpdateTransUnitResult> {
 
 	@Logger Log log;
 	
@@ -63,11 +64,6 @@ public class UpdateTransUnitHandler implements ActionHandler<UpdateTransUnit, Up
 		workspace.publish(event);
 		
 		return new UpdateTransUnitResult(true);
-	}
-
-	@Override
-	public Class<UpdateTransUnit> getActionType() {
-		return UpdateTransUnit.class;
 	}
 
 	@Override
