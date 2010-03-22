@@ -14,5 +14,7 @@ public interface DocumentResource {
 	public String getId();
 	
 	public Integer getRevision();
+	
+	public void setRevision(Integer revision);
 
 }

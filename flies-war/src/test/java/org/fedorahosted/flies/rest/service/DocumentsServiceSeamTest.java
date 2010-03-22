@@ -76,13 +76,12 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 			    DatabaseOperation.DELETE_ALL));
 	}
 
-//	@Test(enabled = false)
 	public void getZero() throws Exception {
 //		log.info("getZero()");
-		expectDocs();
+		expectDocs(true, false);
 	}
 	
-	private void expectDocs(Document... docs) {
+	private void expectDocs(boolean checkRevs, boolean checkLinks, Document... docs) {
 	    ClientResponse<Documents> response = docsService.getDocuments();
 	    
 	    assertThat(response.getStatus(), is(200));
@@ -94,8 +93,11 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 //	    assertThat(response.getEntity().getDocuments().size(), is(Arrays.asList(docs).size()));
 	    Set<String> actualDocs = new TreeSet<String>();
 	    for (Document doc : response.getEntity().getDocuments()) {
-	    	// leave links out of the XML comparison
-	    	doc.getLinks().clear();
+	    	if (!checkLinks)
+	    		// leave links out of the XML comparison
+	    		doc.getLinks().clear();
+	    	if (!checkRevs)
+	    		clearRevs(doc);
 	    	// The XML should include PoHeader, PotEntryData and target comments. FIXME check this
 			final String docXml = doc.toString();
 			actualDocs.add(docXml);
@@ -104,6 +106,22 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    assertThat(actualDocs, is(expectedDocs));
 	}
 	
+	private void clearRevs(Document doc) {
+		doc.setRevision(null);
+		final List<DocumentResource> resources = doc.getResources();
+		if (resources != null)
+			for (DocumentResource res : resources) {
+				res.setRevision(null);
+				if (res instanceof TextFlow) {
+					TextFlow tf = (TextFlow) res;
+					for (TextFlowTarget tft : tf.getTargets().getTargets()) {
+						tft.setRevision(null);
+						tft.setResourceRevision(null);
+					}
+				}
+			}
+	}
+
 	private Document newDoc(String id, DocumentResource... resources) {
 		ContentType contentType = ContentType.TextPlain;
 		Integer revision = null;
@@ -193,7 +211,6 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 		return doc;
 	}
 	
-//	@Test(enabled = false)
 	public void put1Get() throws Exception {
 		log.info("putGet()");
 	    getZero();
@@ -204,10 +221,9 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    TextFlowTarget tft1 = tf1.getTarget(DE_DE);
 	    tft1.setRevision(1);
 		tft1.setResourceRevision(1);
-	    expectDocs(doc1);
+	    expectDocs(true, false, doc1);
 	}
 
-//	@Test(enabled = false)
 	public void put1Post2Get() throws Exception {
 		log.info("putPostGet()");
 	    getZero();
@@ -218,7 +234,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    TextFlowTarget tft1 = tf1.getTarget(DE_DE);
 	    tft1.setRevision(1);
 		tft1.setResourceRevision(1);
-	    expectDocs(doc1);
+	    expectDocs(true, false, doc1);
 	    Document doc2 = postDoc2();
 	    doc2.setRevision(1);
 	    TextFlow tf2 = (TextFlow) doc2.getResources().get(0);
@@ -226,10 +242,9 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    TextFlowTarget tft2 = tf2.getTarget(FR);
 	    tft2.setRevision(1);
 		tft2.setResourceRevision(1);
-	    expectDocs(doc1, doc2);
+	    expectDocs(true, false, doc1, doc2);
 	}
 	
-//	@Test(enabled = false)
 	public void put1Post2Put1() throws Exception {
 		log.info("put2Then1()");
 	    getZero();
@@ -247,11 +262,11 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    TextFlowTarget tft2 = tf2.getTarget(FR);
 	    tft2.setRevision(1);
 		tft2.setResourceRevision(1);
-	    expectDocs(doc1, doc2);
+	    expectDocs(true, false, doc1, doc2);
 	    // this put should have the effect of deleting doc2
 		putDoc1();
 		// should be identical to doc1 from before, including revisions
-	    expectDocs(doc1);
+	    expectDocs(true, false, doc1);
 	    // use dto to check that doc2 is marked obsolete
 	    verifyObsoleteDocument(doc2.getId());
 	}
@@ -266,7 +281,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    TextFlowTarget tft1 = tf1.getTarget(DE_DE);
 	    tft1.setRevision(1);
 		tft1.setResourceRevision(1);
-	    expectDocs(doc1);
+	    expectDocs(true, false, doc1);
 		putZero(); // doc1 becomes obsolete, rev 2
 		getZero();
 		putDoc1(); // doc1 resurrected, rev 3
@@ -274,7 +289,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    tf1.setRevision(1);
 	    tft1.setRevision(1);
 		tft1.setResourceRevision(1);
-		expectDocs(doc1);
+		expectDocs(true, false, doc1);
 	}
 
 	public void put1Put0Put1a() throws Exception {
@@ -287,7 +302,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    TextFlowTarget tft1 = tf1.getTarget(DE_DE);
 	    tft1.setRevision(1);
 		tft1.setResourceRevision(1);
-		expectDocs(doc1);
+		expectDocs(true, false, doc1);
 		putZero(); // doc1 becomes obsolete, rev 2
 		getZero();
 		Document doc1a = putDoc1a(); // doc1 resurrected, rev 3
@@ -297,16 +312,16 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    TextFlowTarget tft1a = tf1a.getTarget(FR);
 	    tft1a.setRevision(1);
 		tft1a.setResourceRevision(3);
-		expectDocs(doc1a);
+		expectDocs(true, false, doc1a);
 	}
 
 	
 	@Test(enabled = false) // DocsService doesn't support PO/POT yet
-	private void putPoPotGet() throws Exception {
+	public void putPoPotGet() throws Exception {
 		log.info("TEST: putPoPotGet()");
-//		getZero();
+		getZero();
 		Document po1 = putPo1();
-		expectDocs(po1);
+		expectDocs(false, false, po1);
 	}
 	
 	public void put1Put1a() throws Exception {
@@ -322,7 +337,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    tft1.setRevision(1);
 		tft1.setResourceRevision(1);
 	    log.info("expect doc1");
-	    expectDocs(doc1);
+	    expectDocs(true, false, doc1);
 	    // this should completely replace doc1's textflow FOOD with HELLO
 	    log.info("putDoc1a()");
 		Document doc1a = putDoc1a();
@@ -333,7 +348,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    tft1a.setRevision(1);
 		tft1a.setResourceRevision(2);
 		log.info("expect doc1a");
-	    expectDocs(doc1a);
+	    expectDocs(true, false, doc1a);
 	    // use dto to check that the HTextFlow FOOD (from doc1) is marked obsolete
 	    log.info("verifyObsoleteResource");
 	    verifyObsoleteResource(doc1.getId(), "FOOD");
@@ -341,7 +356,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    putDoc1(); // same as original doc1, but different doc rev
 	    doc1.setRevision(3);
 	    log.info("expect doc1b");
-	    expectDocs(doc1);
+	    expectDocs(true, false, doc1);
 	}
 	
 	private void verifyObsoleteDocument(final String docID) throws Exception {        
@@ -368,7 +383,6 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 		}.run();
 	}
 	
-//	@Test(enabled = false)
 	public void getBadProject() throws Exception {
 		log.info("getBadProject()");
 		IDocumentsResource nonexistentDocsService = prepareRestEasyClientFramework("nonexistentProject", "99.9");
