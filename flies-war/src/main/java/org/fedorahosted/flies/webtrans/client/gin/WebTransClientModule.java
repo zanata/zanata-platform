@@ -8,8 +8,10 @@ import net.customware.gwt.presenter.client.gin.AbstractPresenterModule;
 import net.customware.gwt.presenter.client.place.PlaceManager;
 
 import org.fedorahosted.flies.gwt.auth.Identity;
+import org.fedorahosted.flies.gwt.common.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.client.AppPresenter;
 import org.fedorahosted.flies.webtrans.client.AppView;
+import org.fedorahosted.flies.webtrans.client.Application;
 import org.fedorahosted.flies.webtrans.client.DocumentListPresenter;
 import org.fedorahosted.flies.webtrans.client.DocumentListView;
 import org.fedorahosted.flies.webtrans.client.EventProcessor;
@@ -39,6 +41,7 @@ import org.fedorahosted.flies.webtrans.editor.filter.TransFilterView;
 import org.fedorahosted.flies.webtrans.editor.table.TableEditorPresenter;
 import org.fedorahosted.flies.webtrans.editor.table.TableEditorView;
 
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 public class WebTransClientModule extends AbstractPresenterModule {
@@ -74,6 +77,24 @@ public class WebTransClientModule extends AbstractPresenterModule {
 		// NB: if we bind directly to SeamDispatchAsync, we can't use replace-class in
 		// the module definition unless the replacement extends SeamDispatchAsync
 		bind(CachingDispatchAsync.class).to(DelegatingDispatchAsync.class).in(Singleton.class);
+		
+		bind(Identity.class).toProvider(IdentityProvider.class).in(Singleton.class);
+		bind(WorkspaceContext.class).toProvider(WorkspaceContextProvider.class).in(Singleton.class);
+		
+	}
+	
+	static class WorkspaceContextProvider implements Provider<WorkspaceContext> {
+		@Override
+		public WorkspaceContext get() {
+			return Application.getWorkspaceContext();
+		}
+	}
+	
+	static class IdentityProvider implements Provider<Identity> {
+		@Override
+		public Identity get() {
+			return Application.getIdentity();
+		}
 	}
 
 }

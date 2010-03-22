@@ -30,8 +30,9 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
 public class Application implements EntryPoint{
 
 	public static final String FLIES_BASE_PATH = "/flies/";
-	
 	private static WorkspaceId workspaceId;
+	private static WorkspaceContext workspaceContext;
+	private static Identity identity;
 	
 	private final WebTransGinjector injector = GWT.create(WebTransGinjector.class);
 	public void onModuleLoad() {
@@ -46,14 +47,16 @@ public class Application implements EntryPoint{
 
 				@Override
 				public void onSuccess(ActivateWorkspaceResult result) {
-					startApp( result.getWorkspaceContext(), result.getIdentity() );
+					workspaceContext = result.getWorkspaceContext();
+					identity = result.getIdentity();
+					startApp();
 				}
 				
 			}
 		);
 	}
 	
-	private void startApp(final WorkspaceContext workspaceContext, final Identity identity) {
+	private void startApp() {
 		
 		// When user close the workspace, send ExitWorkSpaceAction
 		Window.addCloseHandler(new CloseHandler<Window>() {
@@ -121,6 +124,14 @@ public class Application implements EntryPoint{
 			workspaceId = new WorkspaceId(getProjectContainerId(), getLocaleId());
 		}
 		return workspaceId;
+	}
+	
+	public static WorkspaceContext getWorkspaceContext() {
+		return workspaceContext;
+	}
+	
+	public static Identity getIdentity() {
+		return identity;
 	}
 	
 }
