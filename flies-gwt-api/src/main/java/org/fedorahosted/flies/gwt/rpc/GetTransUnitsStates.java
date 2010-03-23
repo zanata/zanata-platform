@@ -12,16 +12,18 @@ public class GetTransUnitsStates extends AbstractWorkspaceAction<GetTransUnitsSt
 	private int count;
 	private DocumentId documentId;
 	private ContentState state;
+	private boolean reverse;
 
 	@SuppressWarnings("unused")
 	private GetTransUnitsStates(){
 	}
 	
-	public GetTransUnitsStates(DocumentId id, int offset, int count, ContentState state) {
+	public GetTransUnitsStates(DocumentId id, int offset, int count, boolean reverse, ContentState state) {
 		this.documentId = id;
 		this.offset = offset;
 		this.count = count;
 		this.state = state;
+		this.setReverse(reverse);
 	}
 
 	public int getOffset() {
@@ -54,5 +56,13 @@ public class GetTransUnitsStates extends AbstractWorkspaceAction<GetTransUnitsSt
 
 	public ContentState getState() {
 		return state;
+	}
+
+	public void setReverse(boolean reverse) {
+		this.reverse = reverse;
+	}
+
+	public boolean isReverse() {
+		return reverse;
 	}
 }

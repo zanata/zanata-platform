@@ -1,6 +1,8 @@
 package org.fedorahosted.flies.webtrans.server.rpc;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -52,16 +54,28 @@ public class GetTransUnitStatesHandler extends AbstractActionHandler<GetTransUni
 			List<HTextFlowTarget> textFlowTargets = query.list();
 		    int count = 0;
 			ArrayList<TransUnitId> units = new ArrayList<TransUnitId>();
-			for(HTextFlowTarget textFlowTarget : textFlowTargets) {
-				if(textFlowTarget.getTextFlow().getId() > action.getOffset() && count < action.getCount()) {
-					TransUnitId tuId = new TransUnitId(textFlowTarget.getTextFlow().getId());
-					units.add(tuId);
-					count++;
-				} else if (count >= action.getCount()) {
-					break;
+			if(action.isReverse()) {
+				Collections.reverse(textFlowTargets);
+				for(HTextFlowTarget textFlowTarget : textFlowTargets) {
+					if(textFlowTarget.getTextFlow().getId() < action.getOffset() && count < action.getCount()) {
+						TransUnitId tuId = new TransUnitId(textFlowTarget.getTextFlow().getId());
+						units.add(tuId);
+						count++;
+					} else if (count >= action.getCount()) {
+						break;
+					}
+				}
+			} else {
+				for(HTextFlowTarget textFlowTarget : textFlowTargets) {
+					if(textFlowTarget.getTextFlow().getId() > action.getOffset() && count < action.getCount()) {
+						TransUnitId tuId = new TransUnitId(textFlowTarget.getTextFlow().getId());
+						units.add(tuId);
+						count++;
+					} else if (count >= action.getCount()) {
+						break;
+					}
 				}
 			}
-
 			return new GetTransUnitsStatesResult(action.getDocumentId(), units);
 		}
 
