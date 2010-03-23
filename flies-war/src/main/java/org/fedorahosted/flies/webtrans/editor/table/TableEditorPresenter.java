@@ -111,6 +111,9 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	private ArrayList<TransUnitId> transIdNextCache = new ArrayList<TransUnitId>(); 
 	private ArrayList<TransUnitId> transIdPrevCache = new ArrayList<TransUnitId>(); 
 	
+	private int curRowIndex;
+	private int curPage;
+	
 	@Inject
 	public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher,final Identity identity) {
 		super(display, eventBus);
@@ -465,12 +468,18 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		
 		@Override
 		public void gotoNextFuzzy(int row, ContentState state) {
-			nextFuzzy(row, state);
+			//Convert row number to row Index in table
+			curPage = display.getCurrentPage();
+			curRowIndex = curPage*50+row; 
+			nextFuzzyIndex(curRowIndex, state);
 		}
 
 		@Override
 		public void gotoPrevFuzzy(int row, ContentState state) {
-			prevFuzzy(row, state);
+			//Convert row number to row Index in table
+			curPage = display.getCurrentPage();
+			curRowIndex = curPage*50+row; 
+			prevFuzzyIndex(curRowIndex, state);
 		}
 	};
 	
@@ -511,9 +520,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		});
 	}
 	
-	private int curRowIndex;
-	private int curPage;
-	
 	private void getNextFuzzy(int rowIndex, ContentState desiredState) {
 		dispatcher.execute(new GetTransUnitsStates(documentId, rowIndex, 3, false, ContentState.NeedReview), new AsyncCallback<GetTransUnitsStatesResult>() {
 			@Override
@@ -521,18 +527,17 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 				if(result.getUnits().size()>0) {
 					transIdNextCache = new ArrayList<TransUnitId> (result.getUnits());
 					int size = result.getUnits().size(); 
-					int lastNum = (int)result.getUnits().get(size-1).getId()-1;
-					if(curRowIndex < lastNum) {
+					int offset = (int)result.getUnits().get(size-1).getId()-1;
+					if(curRowIndex < offset) {
 							for (int i = 0; i < size; i++) {
 								int fuzzyNum = (int)result.getUnits().get(i).getId()-1;
 								if (curRowIndex < fuzzyNum) {
 									int pageNum = fuzzyNum/(MAX_PAGE_ROW+1);
 									int rowNum = fuzzyNum%(MAX_PAGE_ROW+1);
-									Log.info("Fuzzy Num "+fuzzyNum);
 									cancelEdit();
 									selectedTransUnit = display.getTransUnitValue(rowNum);
 									if(pageNum != curPage)
-										display.gotoPage(pageNum, true);
+										display.gotoPage(pageNum, false);
 									display.gotoRow(rowNum); 
 									break;
 								}
@@ -554,18 +559,17 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 				if(result.getUnits().size()>0) {
 					transIdPrevCache = new ArrayList<TransUnitId> (result.getUnits());
 					int size = result.getUnits().size(); 
-					int lastNum = (int)result.getUnits().get(size-1).getId()-1;
-					if(curRowIndex > lastNum) {
+					int offset = (int)result.getUnits().get(size-1).getId()-1;
+					if(curRowIndex > offset) {
 							for (int i = 0; i < size; i++) {
 								int fuzzyNum = (int)result.getUnits().get(i).getId()-1;
 								if (curRowIndex > fuzzyNum) {
 									int pageNum = fuzzyNum/(MAX_PAGE_ROW+1);
 									int rowNum = fuzzyNum%(MAX_PAGE_ROW+1);
-									Log.info("Fuzzy Num "+fuzzyNum);
 									cancelEdit();
 									selectedTransUnit = display.getTransUnitValue(rowNum);
 									if(pageNum != curPage)
-										display.gotoPage(pageNum, true);
+										display.gotoPage(pageNum, false);
 									display.gotoRow(rowNum); 
 									break;
 								}
@@ -579,37 +583,31 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		});
 	}
 	
-	private void prevFuzzy(int row, ContentState desiredState) { 
-		//Convert row number to row Index in table
-		curPage = display.getCurrentPage();
-		curRowIndex = curPage*50+row; 
-		Log.info("Current Page Num "+curPage);
-		Log.info("Current Row Index"+curRowIndex);
+	private void prevFuzzyIndex(int rowIndex, ContentState desiredState) { 
         //If the catch of fuzzy row is empty, generate one
 		if(transIdPrevCache.isEmpty()) {
 			getPrevFuzzy(curRowIndex, desiredState);
 		} else {
 			int size = transIdPrevCache.size(); 
 			if (size > 0) { 
-				int lastFuzzyNum = (int)transIdPrevCache.get(size-1).getId()-1;
-				if(curRowIndex > lastFuzzyNum) {
+				int offset = (int)transIdPrevCache.get(size-1).getId()-1;
+				if(curRowIndex > offset) {
 					for (int i = 0; i < size; i++) {
 						int fuzzyNum = (int)transIdPrevCache.get(i).getId()-1;
 						if (curRowIndex > fuzzyNum) {
 								int pageNum = fuzzyNum/(MAX_PAGE_ROW+1);
 								int rowNum = fuzzyNum%(MAX_PAGE_ROW+1);
-								Log.info("Test Fuzzy Num "+fuzzyNum);
-								Log.info("Row number "+rowNum);
+								Log.info("Page for prev"+pageNum);
+								Log.info("Prev Row Index "+rowNum);
 								cancelEdit();
 								selectedTransUnit = display.getTransUnitValue(rowNum);
 								if(pageNum != curPage)
-									display.gotoPage(pageNum, true);
+									display.gotoPage(pageNum, false);
 								display.gotoRow(rowNum); 
 								break;
 						}
 					}
 				}  else {
-					Log.info("The current row in PrevFuzzy" + row);
 					transIdPrevCache.clear();
 					getPrevFuzzy(curRowIndex, desiredState);
 				}
@@ -618,36 +616,32 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	}
 	
 	
-	private void nextFuzzy(int row, ContentState desiredState) { 
-		//Convert row number to row Index in table
-		curPage = display.getCurrentPage();
-		curRowIndex = curPage*50+row; 
-
+	private void nextFuzzyIndex(int rowIndex, ContentState desiredState) { 
 		//If the catch of fuzzy row is empty, generate one
 		if(transIdNextCache.isEmpty()) {
 			getNextFuzzy(curRowIndex, desiredState);
 		} else {
 			int size = transIdNextCache.size(); 
 			if (size > 0) { 
-				int lastFuzzyNum = (int)transIdNextCache.get(size-1).getId()-1;
-				if(curRowIndex < lastFuzzyNum) {
+				int offset = (int)transIdNextCache.get(size-1).getId()-1;
+				if(curRowIndex < offset) {
 					for (int i = 0; i < size; i++) {
 						int fuzzyNum = (int)transIdNextCache.get(i).getId()-1;
 						if (curRowIndex < fuzzyNum) {
 								int pageNum = fuzzyNum/(MAX_PAGE_ROW+1);
 								int rowNum = fuzzyNum%(MAX_PAGE_ROW+1);
-								Log.info("Test Fuzzy Num "+fuzzyNum);
-								Log.info("Row number "+rowNum);
+								Log.info("Page for Next "+pageNum);
+								Log.info("Next Row Index "+rowNum);
 								cancelEdit();
 								selectedTransUnit = display.getTransUnitValue(rowNum);
 								if(pageNum != curPage)
-									display.gotoPage(pageNum, true);
+									display.gotoPage(pageNum, false);
 								display.gotoRow(rowNum); 
 								break;
 						}
 					}
 				} else {
-					Log.info("The current row " + row);
+					Log.info("The current row " + rowIndex);
 					transIdNextCache.clear();
 					getNextFuzzy(curRowIndex, desiredState);
 				}

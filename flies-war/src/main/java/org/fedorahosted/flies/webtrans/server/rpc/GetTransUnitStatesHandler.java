@@ -52,10 +52,12 @@ public class GetTransUnitStatesHandler extends AbstractActionHandler<GetTransUni
 			    .setParameter("state", action.getState());
 		
 			List<HTextFlowTarget> textFlowTargets = query.list();
-		    int count = 0;
+		    
 			ArrayList<TransUnitId> units = new ArrayList<TransUnitId>();
 			if(action.isReverse()) {
+				int count = 0;
 				Collections.reverse(textFlowTargets);
+				
 				for(HTextFlowTarget textFlowTarget : textFlowTargets) {
 					if(textFlowTarget.getTextFlow().getId() < action.getOffset() && count < action.getCount()) {
 						TransUnitId tuId = new TransUnitId(textFlowTarget.getTextFlow().getId());
@@ -66,6 +68,7 @@ public class GetTransUnitStatesHandler extends AbstractActionHandler<GetTransUni
 					}
 				}
 			} else {
+				int count = 0;
 				for(HTextFlowTarget textFlowTarget : textFlowTargets) {
 					if(textFlowTarget.getTextFlow().getId() > action.getOffset() && count < action.getCount()) {
 						TransUnitId tuId = new TransUnitId(textFlowTarget.getTextFlow().getId());
