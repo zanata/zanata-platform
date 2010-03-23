@@ -15,7 +15,6 @@
     <module>flies-clients</module>
     <module>flies-gwt-api</module>
     <module>flies-war</module>
-    <module>thirdparty/gwt-codemirror</module>
   </modules>
   <scm>
     <connection>scm:hg:http://flies.googlecode.com/hg/</connection>
