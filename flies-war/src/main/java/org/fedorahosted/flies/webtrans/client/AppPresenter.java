@@ -233,6 +233,13 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 			}
 		}));
 		
+		registerHandler( display.getLeaveWorkspaceLink().addClickHandler( new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				Application.redirectToFliesProjectHome(workspaceContext.getWorkspaceId());
+			}
+		}));
+		
 		display.setUserLabel(identity.getPerson().getName());
 		
 		display.setWorkspaceNameLabel(workspaceContext.getWorkspaceName());

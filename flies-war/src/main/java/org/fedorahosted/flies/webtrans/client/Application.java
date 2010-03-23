@@ -117,6 +117,10 @@ public class Application implements EntryPoint{
 	public static void redirectToLogout() {
 		redirectToUrl( FLIES_BASE_PATH + "account/sign_out");	
 	}
+
+	public static void redirectToFliesProjectHome(WorkspaceId workspaceId) {
+		redirectToUrl( FLIES_BASE_PATH + "project/project_by_container_id.seam?id="+ workspaceId.getProjectContainerId().getId());	
+	}
 	
 	public static native void redirectToUrl(String url)/*-{
 		$wnd.location = url;

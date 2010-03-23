@@ -21,6 +21,16 @@
     <action execute="#{projectHome.validateSuppliedId}" />
   </page>
 
+  <page view-id="/project/project_by_container_id.xhtml">
+    <param name="id" value="#{projectContainerRedirect.id}" />
+    <action execute="#{projectContainerRedirect.validateSuppliedId}" />
+    <navigation from-action="#{projectContainerRedirect.validateSuppliedId}">
+    	<redirect view-id="/project/project.xhtml">
+    		<param name="slug" value="#{projectContainerRedirect.projectSlug}" />
+    	</redirect>
+    </navigation>
+  </page>
+
   <page view-id="/project/create_project.xhtml">
     <navigation from-action="#{projectHome.persist}">
       <rule if="#{projectHome.managed}">
