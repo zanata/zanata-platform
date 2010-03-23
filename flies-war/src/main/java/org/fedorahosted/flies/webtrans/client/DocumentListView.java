@@ -127,7 +127,7 @@ public class DocumentListView extends Composite implements
 		@Override
 		public void onClick(ClickEvent event) {
 			DocumentId selectionId = new DocumentId( Long.valueOf(
-					event.getRelativeElement().getId().substring(19)));
+					event.getRelativeElement().getId().substring(5)));
 			if(currentSelection == null || !currentSelection.getDataItem().getId().equals(selectionId)) {
 				DocumentSelectionEvent docSelectionEvent = new DocumentSelectionEvent(selectionId);
 				fireEvent(docSelectionEvent);
