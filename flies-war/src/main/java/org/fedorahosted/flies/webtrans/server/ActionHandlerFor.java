@@ -9,9 +9,7 @@ import java.lang.annotation.Target;
 import net.customware.gwt.dispatch.shared.Action;
 
 /**
- * Specifies the component name of a Seam component.
- * 
- * @author <a href="mailto:theute@jboss.org">Thomas Heute</a>
+ * Specifies the Action for the given action handler 
  * 
  */
 @Target(TYPE)

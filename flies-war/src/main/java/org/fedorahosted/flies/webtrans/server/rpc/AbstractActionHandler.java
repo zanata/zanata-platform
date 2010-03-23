@@ -1,4 +1,6 @@
-package org.fedorahosted.flies.webtrans.server;
+package org.fedorahosted.flies.webtrans.server.rpc;
+
+import org.fedorahosted.flies.webtrans.server.ActionHandlerFor;
 
 import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.shared.Action;

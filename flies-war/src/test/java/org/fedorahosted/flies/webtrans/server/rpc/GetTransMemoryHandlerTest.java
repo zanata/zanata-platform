@@ -1,11 +1,11 @@
-package org.fedorahosted.flies.webtrans.server;
+package org.fedorahosted.flies.webtrans.server.rpc;
 
 import org.testng.annotations.Test;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
-import static org.fedorahosted.flies.webtrans.server.GetTransMemoryHandler.toFuzzyLuceneQuery;
-import static org.fedorahosted.flies.webtrans.server.GetTransMemoryHandler.toLuceneQuery;
+import static org.fedorahosted.flies.webtrans.server.rpc.GetTransMemoryHandler.toFuzzyLuceneQuery;
+import static org.fedorahosted.flies.webtrans.server.rpc.GetTransMemoryHandler.toLuceneQuery;
 
 @Test(groups={"unit-tests"})
 public class GetTransMemoryHandlerTest {
