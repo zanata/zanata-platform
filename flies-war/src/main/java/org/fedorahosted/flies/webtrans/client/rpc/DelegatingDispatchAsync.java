@@ -1,5 +1,8 @@
 package org.fedorahosted.flies.webtrans.client.rpc;
 
+import org.fedorahosted.flies.gwt.auth.Identity;
+import org.fedorahosted.flies.gwt.common.WorkspaceContext;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -18,6 +21,17 @@ public class DelegatingDispatchAsync implements CachingDispatchAsync {
 	public <A extends Action<R>, R extends Result> void execute(A action,
 			AsyncCallback<R> callback) {
 		delegate.execute(action, callback);
+	}
+	
+	@Override
+	public void setIdentity(Identity identity) {
+		delegate.setIdentity(identity);
+		
+	}
+	
+	@Override
+	public void setWorkspaceContext(WorkspaceContext workspaceContext) {
+		delegate.setWorkspaceContext(workspaceContext);
 	}
 	
 }

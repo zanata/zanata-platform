@@ -49,6 +49,8 @@ public class Application implements EntryPoint{
 				public void onSuccess(ActivateWorkspaceResult result) {
 					workspaceContext = result.getWorkspaceContext();
 					identity = result.getIdentity();
+					injector.getDispatcher().setIdentity(identity);
+					injector.getDispatcher().setWorkspaceContext(workspaceContext);
 					startApp();
 				}
 				

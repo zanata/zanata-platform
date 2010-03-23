@@ -60,6 +60,16 @@ public class SeamDispatchAsync implements CachingDispatchAsync {
 		});
 	}
 	
+	@Override
+	public void setWorkspaceContext(WorkspaceContext workspaceContext) {
+		this.workspaceContext = workspaceContext;
+	}
+	
+	@Override
+	public void setIdentity(Identity identity) {
+		this.identity = identity;
+	}
+	
 	
 	
 }

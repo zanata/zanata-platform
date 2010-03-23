@@ -87,7 +87,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
 		dispatcher.execute(new GetTranslatorList(), new AsyncCallback<GetTranslatorListResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				Log.error("error");
+				Log.error("error fetching translators list: " + caught.getMessage() );
 			}
 			@Override
 			public void onSuccess(GetTranslatorListResult result) {

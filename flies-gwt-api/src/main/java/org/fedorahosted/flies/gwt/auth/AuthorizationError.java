@@ -6,4 +6,12 @@ public class AuthorizationError extends ActionException {
 
 	private static final long serialVersionUID = 1L;
 
+	public AuthorizationError() {
+	}
+	
+	public AuthorizationError(String message) {
+		super(message)
+	}
+
+
 }

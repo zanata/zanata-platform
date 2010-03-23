@@ -81,7 +81,7 @@ public class DocumentStatusPresenter extends TranslationStatsBarPresenter {
 		dispatcher.execute(new GetStatusCount(newDocumentId), new AsyncCallback<GetStatusCountResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				Log.error("error");
+				Log.error("error fetching GetStatusCount: " + caught.getMessage());
 			}
 			@Override
 			public void onSuccess(GetStatusCountResult result) {
