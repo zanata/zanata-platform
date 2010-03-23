@@ -1100,15 +1100,6 @@
     </dependency>
 
     <dependency>
-      <groupId>com.weborient.codemirror</groupId>
-      <artifactId>gwt-codemirror</artifactId>
-      <version>0.5-SNAPSHOT</version>
-<!-- 
-      <scope>provided</scope>
- -->
-    </dependency>
-
-    <dependency>
       <groupId>de.novanic</groupId>
       <artifactId>gwteventservice</artifactId>
 	</dependency>

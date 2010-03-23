@@ -2,6 +2,7 @@ package org.fedorahosted.flies.webtrans.editor.table;
 
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.gwt.model.TransUnit;
+import org.fedorahosted.flies.webtrans.client.ui.HighlightingLabel;
 import org.fedorahosted.flies.webtrans.editor.filter.ContentFilter;
 
 import com.google.gwt.gen2.table.client.AbstractColumnDefinition;
@@ -10,8 +11,6 @@ import com.google.gwt.gen2.table.client.ColumnDefinition;
 import com.google.gwt.gen2.table.client.DefaultTableDefinition;
 import com.google.gwt.gen2.table.client.RowRenderer;
 import com.google.gwt.user.client.ui.Label;
-import com.weborient.codemirror.client.HighlightingLabel;
-import com.weborient.codemirror.client.ParserSyntax;
 
 public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit> {
 	
@@ -126,7 +125,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 				ColumnDefinition<TransUnit, TransUnit> columnDef,
 				AbstractCellView<TransUnit> view) {
 			view.setStyleName("TableEditorCell TableEditorCell-Target");
-			final Label label = new HighlightingLabel(rowValue.getTarget(), ParserSyntax.MIXED);
+			final Label label = new HighlightingLabel(rowValue.getTarget());
 			label.setStylePrimaryName("TableEditorContent");
 			
 			// TODO label.setTitle(rowValue.getTargetComment());

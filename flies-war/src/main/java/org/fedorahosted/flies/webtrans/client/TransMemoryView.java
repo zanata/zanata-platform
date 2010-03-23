@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.fedorahosted.flies.gwt.model.TransMemory;
+import org.fedorahosted.flies.webtrans.client.ui.HighlightingLabel;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -23,8 +24,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-import com.weborient.codemirror.client.HighlightingLabel;
-import com.weborient.codemirror.client.ParserSyntax;
 
 public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.Display {
 
@@ -117,8 +116,8 @@ public class TransMemoryView extends FlowPanel implements TransMemoryPresenter.D
 			final String targetComment = memory.getTargetComment();
 			final String docID = memory.getDocID();
 
-			resultTable.setWidget(row, SOURCE_COL, new HighlightingLabel(sourceMessage, ParserSyntax.MIXED));
-			resultTable.setWidget(row, TARGET_COL, new HighlightingLabel(targetMessage, ParserSyntax.MIXED));
+			resultTable.setWidget(row, SOURCE_COL, new HighlightingLabel(sourceMessage));
+			resultTable.setWidget(row, TARGET_COL, new HighlightingLabel(targetMessage));
 
 			final Anchor copyLink = new Anchor("Copy");
 			copyLink.addClickHandler(new ClickHandler() {

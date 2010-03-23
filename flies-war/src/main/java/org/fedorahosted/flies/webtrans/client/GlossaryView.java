@@ -3,6 +3,7 @@ package org.fedorahosted.flies.webtrans.client;
 import java.util.ArrayList;
 
 import org.fedorahosted.flies.gwt.model.Concept;
+import org.fedorahosted.flies.webtrans.client.ui.HighlightingLabel;
 
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -14,8 +15,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.weborient.codemirror.client.HighlightingLabel;
-import com.weborient.codemirror.client.ParserSyntax;
 
 public class GlossaryView extends FlowPanel implements GlossaryPresenter.Display {
 	private static final int CELL_PADDING = 5;
@@ -84,8 +83,8 @@ public class GlossaryView extends FlowPanel implements GlossaryPresenter.Display
 			final String source = concept.getTerm();
 			final String target = concept.getEntry().getTerm();
 			final String desc = concept.getDesc();
-			resultTable.setWidget(row, TERM_COL, new HighlightingLabel(source, ParserSyntax.MIXED));
-			resultTable.setWidget(row, TRANSLATION_COL, new HighlightingLabel(target, ParserSyntax.MIXED));
+			resultTable.setWidget(row, TERM_COL, new HighlightingLabel(source));
+			resultTable.setWidget(row, TRANSLATION_COL, new HighlightingLabel(target));
 			resultTable.setText(row, DESCRIPT_COL, desc);
 		}
 		resultTable.setCellPadding(CELL_PADDING);

@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.webtrans.editor.table;
 
 import org.fedorahosted.flies.gwt.model.TransUnit;
+import org.fedorahosted.flies.webtrans.client.ui.HighlightingLabel;
 
 
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
@@ -16,8 +17,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
-import com.weborient.codemirror.client.HighlightingLabel;
-import com.weborient.codemirror.client.ParserSyntax;
 
 public class SourcePanel extends Composite implements HasValue<TransUnit> {
 
@@ -33,7 +32,7 @@ public class SourcePanel extends Composite implements HasValue<TransUnit> {
 		initWidget(panel);
 		setStylePrimaryName("TableEditorSource");
 
-		sourceLabel = new HighlightingLabel(value.getSource(), ParserSyntax.MIXED);
+		sourceLabel = new HighlightingLabel(value.getSource());
 		sourceLabel.setStylePrimaryName("TableEditorContent");
 		sourceLabel.setTitle("Source Comment: " + value.getSourceComment());
 		
