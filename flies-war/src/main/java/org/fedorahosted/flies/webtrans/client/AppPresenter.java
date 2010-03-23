@@ -33,6 +33,7 @@ import org.fedorahosted.flies.webtrans.editor.filter.TransFilterPresenter;
 import org.fedorahosted.flies.webtrans.editor.table.TableEditorPresenter;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.dev.shell.Messages;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -99,6 +100,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 	private final Identity identity;
 	
 	private final TransUnitCount projectCount = new TransUnitCount();
+	private final WebTransMessages messages;
 
 	@Inject
 	public AppPresenter(Display display, EventBus eventBus,
@@ -111,9 +113,11 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 			final TransFilterPresenter transFilterPresenter,
 			final SidePanelPresenter sidePanelPresenter, 
 			final Identity identity,
-			final WorkspaceContext workspaceContext ) {
+			final WorkspaceContext workspaceContext, 
+			final WebTransMessages messages ) {
 		super(display, eventBus);
 		this.identity = identity;
+		this.messages = messages;
 		this.dispatcher = dispatcher;
 		this.tableEditorPresenter = tableEditorPresenter;
 		this.eventProcessor = eventProcessor;
@@ -256,6 +260,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		
 		display.setWorkspaceNameLabel(workspaceContext.getWorkspaceName());
 		display.setLocaleLabel(workspaceContext.getLocaleName());
+		
+		Window.setTitle( messages.windowTitle(workspaceContext.getWorkspaceName(), workspaceContext.getLocaleName()));
 	}
 
 	@Override

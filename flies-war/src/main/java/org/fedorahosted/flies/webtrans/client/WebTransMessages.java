@@ -19,5 +19,11 @@ public interface WebTransMessages extends Messages {
 	
 	@DefaultMessage("{0}/{1}/{2}")
 	String statusBarLabelUnits(int approved, int needReview, int untranslated);
-		
+	
+	@DefaultMessage("http://code.google.com/docreader/#p=flies&s=flies&t=UserHelp")
+	String hrefHelpLink();
+
+
+	@DefaultMessage("{0} :: {1} :: Flies Web Translation")
+	String windowTitle(String workspaceName, String localeName);
 }

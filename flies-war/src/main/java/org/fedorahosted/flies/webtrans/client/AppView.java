@@ -85,6 +85,9 @@ public class AppView extends Composite implements AppPresenter.Display {
 		workspaceLocale.setInnerText("German");
 		pager.setVisible(false);
 		transUnitNavigation.setVisible(false);
+		
+		helpLink.setHref( messages.hrefHelpLink() );
+		helpLink.setTarget("_BLANK");
 	}
 
 	@Override
