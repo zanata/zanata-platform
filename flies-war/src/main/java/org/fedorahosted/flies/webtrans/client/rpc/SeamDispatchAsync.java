@@ -20,8 +20,8 @@ public class SeamDispatchAsync implements CachingDispatchAsync {
 
 	private static final DispatchServiceAsync realService;
 	
-	private WorkspaceContext workspaceContext;
-	private Identity identity;
+	protected WorkspaceContext workspaceContext;
+	protected Identity identity;
 	
 	static {
 		realService = GWT.create(DispatchService.class);

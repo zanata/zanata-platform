@@ -5,6 +5,8 @@ package org.fedorahosted.flies.webtrans.client.rpc;
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;
 
+import org.fedorahosted.flies.gwt.auth.AuthorizationError;
+import org.fedorahosted.flies.gwt.rpc.AbstractWorkspaceAction;
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceResult;
 import org.fedorahosted.flies.gwt.rpc.GetDocsList;
@@ -34,6 +36,17 @@ public class DummyDispatchAsync extends SeamDispatchAsync {
 	@Override
 	public <A extends Action<R>, R extends Result> void execute(A action,
 			AsyncCallback<R> callback) {
+		
+		if(action instanceof AbstractWorkspaceAction<?>) {
+			if(this.workspaceContext == null || this.identity == null ) {
+				callback.onFailure( new AuthorizationError("Dispatcher not initialized for WorkspaceActions"));
+				return;
+			}
+			AbstractWorkspaceAction<?> wsAction = (AbstractWorkspaceAction<?>) action;
+			wsAction.setWorkspaceId( this.workspaceContext.getWorkspaceId());
+			wsAction.setSessionId( this.identity.getSessionId() );
+		}
+		
 		if (action instanceof GetTransUnits) {
 			GetTransUnits gtuAction = (GetTransUnits) action;
 			AsyncCallback<GetTransUnitsResult> gtuCallback = (AsyncCallback<GetTransUnitsResult>) callback;
