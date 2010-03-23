@@ -40,7 +40,7 @@ public class SeamDispatchAsync implements CachingDispatchAsync {
 		if( action instanceof AbstractWorkspaceAction<?> ) {
 			AbstractWorkspaceAction<?> wsAction = (AbstractWorkspaceAction<?>) action;
 			if(workspaceContext == null || identity == null) {
-				callback.onFailure( new AuthorizationError() );
+				callback.onFailure( new AuthorizationError("Dispatcher not set up to delegate WorkspaceContext and Identity") );
 				return;
 			}
 			wsAction.setSessionId(identity.getSessionId());

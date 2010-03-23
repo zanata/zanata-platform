@@ -14,6 +14,7 @@ import net.customware.gwt.dispatch.shared.Result;
 import net.customware.gwt.dispatch.shared.UnsupportedActionException;
 
 import org.fedorahosted.flies.gwt.auth.AuthenticationError;
+import org.fedorahosted.flies.gwt.auth.AuthorizationError;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
@@ -24,6 +25,7 @@ import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.deployment.HotDeploymentStrategy;
 import org.jboss.seam.deployment.StandardDeploymentStrategy;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.security.NotLoggedInException;
 
 @Name("seamDispatch")
@@ -111,7 +113,10 @@ public class SeamDispatch implements Dispatch {
 			throw e;
 		} catch(NotLoggedInException e) {
 			ctx.rollback();
-			throw new AuthenticationError();
+			throw new AuthenticationError(e.getMessage());
+		} catch(AuthorizationException e) {
+			ctx.rollback();
+			throw new AuthorizationError(e.getMessage());
 		}
 	}
 

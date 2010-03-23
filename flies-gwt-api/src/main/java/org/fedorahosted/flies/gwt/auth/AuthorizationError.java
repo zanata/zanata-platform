@@ -10,7 +10,7 @@ public class AuthorizationError extends ActionException {
 	}
 	
 	public AuthorizationError(String message) {
-		super(message)
+		super(message);
 	}
 
 
