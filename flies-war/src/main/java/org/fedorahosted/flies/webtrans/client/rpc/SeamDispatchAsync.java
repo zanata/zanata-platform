@@ -1,8 +1,10 @@
 package org.fedorahosted.flies.webtrans.client.rpc;
 
 import net.customware.gwt.dispatch.shared.Action;
+
 import net.customware.gwt.dispatch.shared.Result;
 
+import org.fedorahosted.flies.gwt.auth.AuthenticationError;
 import org.fedorahosted.flies.gwt.auth.AuthorizationError;
 import org.fedorahosted.flies.gwt.auth.Identity;
 import org.fedorahosted.flies.gwt.common.DispatchService;
@@ -11,6 +13,7 @@ import org.fedorahosted.flies.gwt.common.WorkspaceContext;
 import org.fedorahosted.flies.gwt.rpc.AbstractWorkspaceAction;
 import org.fedorahosted.flies.webtrans.client.Application;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -50,7 +53,16 @@ public class SeamDispatchAsync implements CachingDispatchAsync {
 		realService.execute(action, new AsyncCallback<Result>() {
 
 			public void onFailure(final Throwable caught) {
-				callback.onFailure(caught);
+				if(caught instanceof AuthenticationError) {
+					Application.redirectToLogin();
+				}
+				else if(caught instanceof AuthorizationError){
+					Log.info("RCP Authorization Error calling " + action.getClass() + ": " + caught.getMessage());
+					callback.onFailure(caught);
+				} 
+				else {
+					callback.onFailure(caught);
+				}
 			}
 
 			@SuppressWarnings("unchecked")
