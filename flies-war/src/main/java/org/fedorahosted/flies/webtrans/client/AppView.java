@@ -186,4 +186,19 @@ public class AppView extends Composite implements AppPresenter.Display {
 	public void setTransUnitCountBarVisible(boolean visible) {
 		transUnitCountBar.setVisible(visible);
 	}
+	
+	@Override
+	public void setUserLabel(String userLabel) {
+		user.setInnerText(userLabel);
+	}
+	
+	@Override
+	public void setWorkspaceNameLabel(String workspaceNameLabel) {
+		workspaceName.setInnerText(workspaceNameLabel);
+	}
+	
+	@Override
+	public void setLocaleLabel(String localeLabel) {
+		workspaceLocale.setInnerText(localeLabel);
+	}
 }

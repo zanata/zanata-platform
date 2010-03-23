@@ -14,6 +14,7 @@ import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.TransUnitCount;
 import org.fedorahosted.flies.gwt.auth.Identity;
+import org.fedorahosted.flies.gwt.common.WorkspaceContext;
 import org.fedorahosted.flies.gwt.model.DocumentStatus;
 import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
@@ -81,6 +82,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		HasClickHandlers getLeaveWorkspaceLink();
 		HasClickHandlers getHelpLink();
 		HasClickHandlers getDocumentsLink();
+		void setUserLabel(String userLabel);
+		void setLocaleLabel(String localeLabel);
+		void setWorkspaceNameLabel(String workspaceNameLabel);
 	}
 
 	private final TableEditorPresenter tableEditorPresenter;
@@ -90,7 +94,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 	private final TransMemoryPresenter transMemoryPresenter;
 	private final TransFilterPresenter transFilterPresenter;
 	private final SidePanelPresenter sidePanelPresenter;
-
+	private final WorkspaceContext workspaceContext;
 	private final DispatchAsync dispatcher;
 	private final Identity identity;
 	
@@ -105,7 +109,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 			final TransMemoryPresenter transMemoryPresenter,
 			final TransUnitNavigationPresenter transUnitNavigationPresenter,
 			final TransFilterPresenter transFilterPresenter,
-			final SidePanelPresenter sidePanelPresenter, final Identity identity) {
+			final SidePanelPresenter sidePanelPresenter, 
+			final Identity identity,
+			final WorkspaceContext workspaceContext ) {
 		super(display, eventBus);
 		this.identity = identity;
 		this.dispatcher = dispatcher;
@@ -116,6 +122,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		this.transMemoryPresenter = transMemoryPresenter;
 		this.transFilterPresenter = transFilterPresenter;
 		this.sidePanelPresenter = sidePanelPresenter;
+		this.workspaceContext = workspaceContext;
 	}
 
 	@Override
@@ -245,6 +252,10 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 			}
 		}));
 		
+		display.setUserLabel(identity.getPerson().getName());
+		
+		display.setWorkspaceNameLabel(workspaceContext.getWorkspaceName());
+		display.setLocaleLabel(workspaceContext.getLocaleName());
 	}
 
 	@Override
