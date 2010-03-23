@@ -30,6 +30,7 @@ import de.novanic.eventservice.client.event.Event;
 import de.novanic.eventservice.client.event.RemoteEventService;
 import de.novanic.eventservice.client.event.RemoteEventServiceFactory;
 import de.novanic.eventservice.client.event.domain.Domain;
+import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.listener.RemoteEventListener;
 
 public class EventProcessor implements RemoteEventListener {
@@ -105,7 +106,7 @@ public class EventProcessor implements RemoteEventListener {
 //		this.workspaceContext = workspaceContext;
 		this.eventRegistry = new EventRegistry();
 		remoteEventService = RemoteEventServiceFactory.getInstance().getRemoteEventService();
-		final Domain domain = workspaceContext.getDomain();
+		final Domain domain = DomainFactory.getDomain(workspaceContext.getWorkspaceId().toString());
 		
 		remoteEventService.addListener(domain, this, new AsyncCallback<Void>() {
 			@Override

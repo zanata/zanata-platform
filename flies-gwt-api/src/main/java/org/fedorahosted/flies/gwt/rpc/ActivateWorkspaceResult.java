@@ -1,11 +1,9 @@
 package org.fedorahosted.flies.gwt.rpc;
 
+import net.customware.gwt.dispatch.shared.Result;
+
 import org.fedorahosted.flies.gwt.auth.Identity;
 import org.fedorahosted.flies.gwt.common.WorkspaceContext;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
-
-import net.customware.gwt.dispatch.shared.Result;
 
 public class ActivateWorkspaceResult implements Result {
 

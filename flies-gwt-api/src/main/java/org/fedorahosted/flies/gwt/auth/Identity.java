@@ -13,8 +13,8 @@ public class Identity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private SessionId sessionId;
-	private Set<Permission> permissions = new HashSet<Permission>();
-	private Set<Role> roles = new HashSet<Role>();
+	private HashSet<Permission> permissions = new HashSet<Permission>();
+	private HashSet<Role> roles = new HashSet<Role>();
 	private Person person;
 
 	
@@ -22,7 +22,7 @@ public class Identity implements Serializable {
 	private Identity() {
 	}
 	
-	public Identity(SessionId sessionId, Person person, Set<Permission> permissions, Set<Role> roles) {
+	public Identity(SessionId sessionId, Person person, HashSet<Permission> permissions, HashSet<Role> roles) {
 		this.sessionId = sessionId;
 		this.person = person;
 		this.permissions = permissions;
@@ -45,4 +45,5 @@ public class Identity implements Serializable {
 	public SessionId getSessionId() {
 		return sessionId;
 	}
+	
 }

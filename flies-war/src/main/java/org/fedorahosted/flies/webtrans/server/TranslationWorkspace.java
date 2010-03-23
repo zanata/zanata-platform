@@ -37,7 +37,7 @@ public class TranslationWorkspace {
 
 	private static final Log log = Logging.getLog(TranslationWorkspace.class);
 	private final WorkspaceContext workspaceContext;
-	
+	private final Domain domain;
 	private final ConcurrentMap<SessionId, PersonId> sessions = new MapMaker().makeMap();
 	private final ConcurrentMap<TransUnitId, String> editstatus = new MapMaker().makeMap();
 
@@ -47,8 +47,8 @@ public class TranslationWorkspace {
 		if(workspaceContext == null)
 			throw new IllegalArgumentException("workspaceContext is null");
 		this.workspaceContext = workspaceContext;
-		//this.domain = DomainFactory.getDomain(workspaceKey.toString());
-		this.eventExecutorService = EventExecutorServiceFactory.getInstance().getEventExecutorService( workspaceContext.getDomain().getName() );
+		this.domain = DomainFactory.getDomain(workspaceContext.getWorkspaceId().toString());
+		this.eventExecutorService = EventExecutorServiceFactory.getInstance().getEventExecutorService( workspaceContext.getWorkspaceId().toString() );
 		UserManager userManager = UserManagerFactory.getInstance().getUserManager();
 		userManager.getUserActivityScheduler().addTimeoutListener(new UserTimeoutListener() {
 			@Override
@@ -142,7 +142,7 @@ public class TranslationWorkspace {
 	}
 
 	public <T extends SessionEventData> void publish(T eventData) {
-		eventExecutorService.addEvent(workspaceContext.getDomain(), eventData);
+		eventExecutorService.addEvent(domain, eventData);
 	}
 
 	

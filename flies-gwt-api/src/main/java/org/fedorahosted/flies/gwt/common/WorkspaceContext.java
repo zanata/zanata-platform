@@ -2,10 +2,7 @@ package org.fedorahosted.flies.gwt.common;
 
 import java.io.Serializable;
 
-import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.gwt.model.ProjectContainerId;
-
-import de.novanic.eventservice.client.event.domain.Domain;
+import de.novanic.eventservice.client.event.domain.DefaultDomain;
 
 public class WorkspaceContext implements Serializable {
 
@@ -14,13 +11,14 @@ public class WorkspaceContext implements Serializable {
 	private WorkspaceId workspaceId;
 	private String workspaceName;
 	private String localeName;
-	private Domain domain;
 	
-	public WorkspaceContext(WorkspaceId workspaceId, String workspaceName, String localeName, Domain domain) {
+	private WorkspaceContext() {
+	}
+	
+	public WorkspaceContext(WorkspaceId workspaceId, String workspaceName, String localeName ) {
 		this.workspaceId = workspaceId;
 		this.workspaceName = workspaceName;
 		this.localeName = localeName;
-		this.domain = domain;
 	}
 	
 	@Override
@@ -40,7 +38,4 @@ public class WorkspaceContext implements Serializable {
 		return localeName;
 	}
 	
-	public Domain getDomain() {
-		return domain;
-	}
 }

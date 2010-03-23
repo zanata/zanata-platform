@@ -2,11 +2,11 @@ package org.fedorahosted.flies.gwt.model;
 
 import java.io.Serializable;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 //@ExposeEntity 
-public final class PersonId implements IsSerializable, Serializable {
+public final class PersonId implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
 	private String id;
 	
 	// for ExposeEntity

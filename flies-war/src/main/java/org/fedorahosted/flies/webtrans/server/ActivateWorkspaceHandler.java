@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.webtrans.server;
 
 import java.util.Collections;
+import java.util.HashSet;
 
 import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -8,6 +9,8 @@ import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.fedorahosted.flies.core.model.HPerson;
 import org.fedorahosted.flies.gwt.auth.Identity;
+import org.fedorahosted.flies.gwt.auth.Permission;
+import org.fedorahosted.flies.gwt.auth.Role;
 import org.fedorahosted.flies.gwt.auth.SessionId;
 import org.fedorahosted.flies.gwt.common.WorkspaceContext;
 import org.fedorahosted.flies.gwt.model.Person;
@@ -56,7 +59,7 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
 
 		Identity identity = new Identity( 
 				retrieveSessionId(), 
-				retrievePerson(), Collections.EMPTY_SET, Collections.EMPTY_SET);
+				retrievePerson(), new HashSet<Permission>(), new HashSet<Role>());
 		
 		return new ActivateWorkspaceResult(workspace.getWorkspaceContext(), identity);
 	}

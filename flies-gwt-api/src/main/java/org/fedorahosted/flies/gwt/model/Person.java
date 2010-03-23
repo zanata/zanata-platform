@@ -1,8 +1,10 @@
 package org.fedorahosted.flies.gwt.model;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
 
-public class Person implements HasIdentifier<PersonId>, IsSerializable {
+public class Person implements HasIdentifier<PersonId>, Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private PersonId id;
 	private String name;
