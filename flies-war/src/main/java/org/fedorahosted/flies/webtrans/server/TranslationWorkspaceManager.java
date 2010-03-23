@@ -25,6 +25,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
+import com.ibm.icu.util.ULocale;
 
 import de.novanic.eventservice.client.event.domain.DefaultDomain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
@@ -129,7 +130,7 @@ public class TranslationWorkspaceManager {
 		WorkspaceContext workspaceContext = 
 			new WorkspaceContext(workspaceId, 
 					projectName + " (" + iterationName + ")",
-					"Locale Name");
+					ULocale.getDisplayName(workspaceId.getLocaleId().toJavaName(), ULocale.ENGLISH));
 		return new TranslationWorkspace(workspaceContext);
 	}
 	
