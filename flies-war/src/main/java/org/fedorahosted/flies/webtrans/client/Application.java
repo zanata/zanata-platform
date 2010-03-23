@@ -114,6 +114,10 @@ public class Application implements EntryPoint{
 		redirectToUrl( FLIES_BASE_PATH + "account/sign_in?continue=" + URL.encodeComponent(Window.Location.getHref()));	
 	}
 	
+	public static void redirectToLogout() {
+		redirectToUrl( FLIES_BASE_PATH + "account/sign_out");	
+	}
+	
 	public static native void redirectToUrl(String url)/*-{
 		$wnd.location = url;
 	}-*/;

@@ -9,6 +9,7 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.drools.xml.changeset.AddHandler;
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.TransUnitCount;
@@ -237,7 +238,12 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 //			}
 //		});
 		
-		
+		registerHandler( display.getSignOutLink().addClickHandler( new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				Application.redirectToLogout();
+			}
+		}));
 		
 	}
 
