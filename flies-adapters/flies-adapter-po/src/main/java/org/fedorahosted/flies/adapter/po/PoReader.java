@@ -5,10 +5,8 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.StringUtils;
@@ -19,7 +17,6 @@ import org.fedorahosted.flies.resources.LocaleInputSourcePair;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.DocumentResource;
 import org.fedorahosted.flies.rest.dto.SimpleComment;
-import org.fedorahosted.flies.rest.dto.SimpleComments;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.po.HeaderEntry;
@@ -78,8 +75,6 @@ public class PoReader {
 
 			if (message.isHeader()) {
 				// add target header data
-				HeaderFields hf = HeaderFields.wrap(message);
-
 				PoTargetHeader poHeader = new PoTargetHeader();
 				extractPoHeader(message, poHeader);
 				PoTargetHeaders targetHeaders = document.getOrAddExtension(PoTargetHeaders.class);

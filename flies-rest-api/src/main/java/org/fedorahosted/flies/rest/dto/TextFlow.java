@@ -13,11 +13,13 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.Namespaces;
+import org.fedorahosted.flies.rest.dto.po.PotEntryData;
 
 
 @XmlType(name="textFlowType", namespace=Namespaces.FLIES, propOrder={"content", "extensions"})
 @XmlRootElement(name="text-flow", namespace=Namespaces.FLIES)
 @XmlSeeAlso({
+	PotEntryData.class,
 	TextFlowTargets.class,
 	SimpleComment.class
 })

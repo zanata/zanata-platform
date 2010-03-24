@@ -28,6 +28,8 @@ import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.po.HeaderEntry;
 import org.fedorahosted.flies.rest.dto.po.PoHeader;
+import org.fedorahosted.flies.rest.dto.po.PoTargetHeader;
+import org.fedorahosted.flies.rest.dto.po.PoTargetHeaders;
 import org.fedorahosted.flies.rest.dto.po.PotEntryData;
 import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
@@ -101,7 +103,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    	// The XML should include PoHeader, PotEntryData and target comments. FIXME check this
 			final String docXml = doc.toString();
 			actualDocs.add(docXml);
-			System.out.println("actual doc: "+doc);
+			log.debug("actual doc: "+doc);
 		}
 	    assertThat(actualDocs, is(expectedDocs));
 	}
@@ -152,7 +154,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 		TextFlow textflow = newTextFlow(
 				"FOOD", "Slime Mould", "POT comment", 
 				DE_DE, "Sauerkraut", "translator comment");
-
+		TextFlowTarget target = textflow.getTarget(DE_DE);
 		PotEntryData poData = textflow.getOrAddExtension(PotEntryData.class);
 		poData.setId("FOOD");
 		poData.setContext("context");
@@ -164,12 +166,22 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 		refs.add("ref1.xml:7");
 		refs.add("ref1.xml:21");
 		Document doc = newDoc("foo.pot", textflow);
+		
 		PoHeader poHeader = doc.getOrAddExtension(PoHeader.class);
 		poHeader.setComment("poheader comment");
-		List<HeaderEntry> entries = poHeader.getEntries();
+		List<HeaderEntry> poEntries = poHeader.getEntries();
+		poEntries.add(new HeaderEntry("Project-Id-Version", "en"));
+		
+		PoTargetHeaders targetHeaders = doc.getOrAddExtension(PoTargetHeaders.class);
+		PoTargetHeader targetHeader = new PoTargetHeader();
+		targetHeader.setComment("target comment");
+		List<HeaderEntry> entries = targetHeader.getEntries();
 		entries.add(new HeaderEntry("Project-Id-Version", "ja"));
+		targetHeader.setTargetLanguage(DE_DE);
+		targetHeaders.getHeaders().add(targetHeader);
+		
 		docs.getDocuments().add(doc);
-		System.out.println(docs.toString());
+		log.debug(docs.toString());
 		Response response = docsService.put(docs);
 		assertThat(response.getStatus(), is(200));
 		return doc;
@@ -316,7 +328,6 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	}
 
 	
-	@Test(enabled = false) // DocsService doesn't support PO/POT yet
 	public void putPoPotGet() throws Exception {
 		log.info("TEST: putPoPotGet()");
 		getZero();
