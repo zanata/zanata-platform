@@ -106,7 +106,7 @@
 						</g:east>
 						<g:center>
 							<g:DockLayoutPanel ui:field="editorPanel" unit="PX">
-								<g:north size="20">
+								<g:north size="40">
 									<g:HTMLPanel>
 										<div style="display: inline;">
 											<g:Anchor href="#" ui:field="documentsLink">Documents</g:Anchor>
