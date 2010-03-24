@@ -16,11 +16,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.Namespaces;
-import org.fedorahosted.flies.rest.dto.po.HeaderEntry;
 import org.fedorahosted.flies.rest.dto.po.PoHeader;
-import org.fedorahosted.flies.rest.dto.po.PoTargetHeader;
 import org.fedorahosted.flies.rest.dto.po.PoTargetHeaders;
-import org.fedorahosted.flies.rest.dto.po.PotEntryData;
 import org.jboss.resteasy.annotations.providers.jaxb.json.Mapped;
 import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
 
@@ -31,12 +28,8 @@ import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
 @XmlRootElement(name="document", namespace=Namespaces.FLIES)
 @XmlType(name="documentType", namespace=Namespaces.FLIES, propOrder={"resources", "extensions"})
 @XmlSeeAlso({
-	HeaderEntry.class,
 	PoHeader.class,
-	PoTargetHeader.class,
 	PoTargetHeaders.class,
-	PotEntryData.class,
-	PotEntryData.class
 })
 public class Document extends AbstractBaseResource implements IExtensible{
 

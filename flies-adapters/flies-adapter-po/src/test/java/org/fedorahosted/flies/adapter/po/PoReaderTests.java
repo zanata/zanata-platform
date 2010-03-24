@@ -7,16 +7,12 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-
-import org.fedorahosted.flies.adapter.po.PoReader;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.TextFlowTargets;
 import org.fedorahosted.flies.rest.dto.po.PoHeader;
-import org.fedorahosted.flies.rest.dto.po.PotEntriesData;
 import org.fedorahosted.flies.rest.dto.po.PotEntryData;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xml.sax.InputSource;
 

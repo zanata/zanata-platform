@@ -14,7 +14,7 @@ import org.fedorahosted.flies.rest.dto.LocaleIdAdapter;
 public class PoTargetHeader extends PoHeader{
 	
 	private LocaleId targetLanguage;
-	
+
 	@XmlJavaTypeAdapter(type=LocaleId.class, value=LocaleIdAdapter.class)
 	@XmlAttribute(name="target-language", required=true)
 	public LocaleId getTargetLanguage() {

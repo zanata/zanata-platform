@@ -1,34 +1,19 @@
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-
 
 import org.fedorahosted.flies.adapter.po.PoReader;
-import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.rest.FliesClient;
 import org.fedorahosted.flies.rest.client.IDocumentResource;
-import org.fedorahosted.flies.rest.client.IProjectResource;
 import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.Project;
-import org.fedorahosted.flies.rest.dto.TextFlowTargets;
-import org.fedorahosted.flies.rest.dto.po.PoHeader;
-import org.fedorahosted.flies.rest.dto.po.PotEntriesData;
-import org.fedorahosted.flies.rest.dto.po.PotEntryData;
-import org.jboss.resteasy.client.ClientResponse;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.internal.runners.statements.Fail;
 import org.xml.sax.InputSource;
 
 public class PublishPoFileTest {
