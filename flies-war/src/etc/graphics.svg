@@ -544,6 +544,45 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3992"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <filter
+       inkscape:collect="always"
+       id="filter4032"
+       x="-0.17004049"
+       width="1.340081"
+       y="-0.17004049"
+       height="1.340081">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.58239717"
+         id="feGaussianBlur4034" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter4044"
+       x="-0.1704"
+       width="1.3408"
+       y="-0.1704"
+       height="1.3408">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.58362852"
+         id="feGaussianBlur4046" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter4065">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.43817805"
+         id="feGaussianBlur4067" />
+    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -552,9 +591,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2"
-     inkscape:cx="339.39741"
-     inkscape:cy="830.12799"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="209.11105"
+     inkscape:cy="577.23866"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -893,5 +932,36 @@
        height="138"
        x="212.5"
        y="382.93387" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#e2e2e2;fill-opacity:1;stroke:#c4c4c4;stroke-width:1.71530402;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter4065)"
+       id="path3196"
+       sodipodi:cx="414"
+       sodipodi:cy="523.36218"
+       sodipodi:rx="12"
+       sodipodi:ry="10"
+       d="m 426,523.36218 a 12,10 0 1 1 -24,0 12,10 0 1 1 24,0 z"
+       transform="matrix(0.6375659,0,0,0.76507908,-228.59755,153.14112)"
+       inkscape:export-filename="/home/asgeirf/projects/flies/flies-war/src/main/resources/org/fedorahosted/flies/webtrans/images/x.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <g
+       id="g4052"
+       transform="matrix(0.76682347,0,0,0.76917213,-276.37468,133.66598)"
+       style="fill:#ffccaa;stroke:#ffffff">
+      <g
+         id="g4048"
+         style="fill:#ffccaa;stroke:#ffffff">
+        <path
+           style="fill:#ffccaa;stroke:#ffffff;stroke-width:2;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter4044)"
+           d="m 410.62083,541.74135 -8.22012,8.22012"
+           id="path3970" />
+        <path
+           style="fill:#ffccaa;stroke:#ffffff;stroke-width:2;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter4032)"
+           d="m 415.99976,520.57369 -8.22012,8.22012"
+           id="path3970-9"
+           transform="matrix(-1,0,0,1,818.39751,21.170619)" />
+      </g>
+    </g>
   </g>
 </svg>
