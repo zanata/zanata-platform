@@ -26,7 +26,7 @@ import com.google.inject.Inject;
 
 public class AppView extends Composite implements AppPresenter.Display {
 
-	interface AppViewUiBinder extends UiBinder<DockLayoutPanel, AppView> {
+	interface AppViewUiBinder extends UiBinder<LayoutPanel, AppView> {
 	}
 
 	private static AppViewUiBinder uiBinder = GWT.create(AppViewUiBinder.class);

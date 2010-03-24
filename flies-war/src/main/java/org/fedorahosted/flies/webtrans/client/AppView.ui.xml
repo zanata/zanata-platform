@@ -63,8 +63,8 @@
 			display:inline;
 		}
 	</ui:style>
-	<g:DockLayoutPanel unit="PX">
-		<g:north size="40">
+	<g:LayoutPanel>
+		<g:layer top="0px" height="30px">
 			<g:LayoutPanel>
 				<g:layer top="6px" height="100%" left="6px"  width="100px">
 					<g:Image resource='{resources.logo}'/>
@@ -96,45 +96,41 @@
 					</g:FlowPanel>
 				</g:layer>
 			</g:LayoutPanel>
-		</g:north>
-		<g:center>
-			<g:LayoutPanel>
-				<g:layer left='7px' right='7px' top='7px' bottom='7px'>
-					<g:SplitLayoutPanel styleName="PageSplitLayoutPanel" ui:field="mainSplitPanel">
-						<g:east size="200">
-							<f:SidePanel ui:field="sidePanel"/>	   
-						</g:east>
+		</g:layer>
+		<g:layer top="37px" bottom="7px" left='7px' right='7px' >
+			<g:SplitLayoutPanel styleName="PageSplitLayoutPanel" ui:field="mainSplitPanel">
+				<g:east size="200">
+					<f:SidePanel ui:field="sidePanel"/>	   
+				</g:east>
+				<g:center>
+					<g:DockLayoutPanel ui:field="editorPanel" unit="PX">
+						<g:north size="40">
+							<g:HTMLPanel>
+								<div style="display: inline;">
+									<g:Anchor href="#" ui:field="documentsLink">Documents</g:Anchor>
+									<span class="{style.divider}">></span>
+									<em><span ui:field="selectedDocumentSpan">No document Selected</span></em>
+								</div>
+								<g:FlowPanel ui:field="transUnitNavigation" styleName="{style.transUnitNavigation}" />
+							</g:HTMLPanel>
+						</g:north>
 						<g:center>
-							<g:DockLayoutPanel ui:field="editorPanel" unit="PX">
-								<g:north size="40">
-									<g:HTMLPanel>
-										<div style="display: inline;">
-											<g:Anchor href="#" ui:field="documentsLink">Documents</g:Anchor>
-											<span class="{style.divider}">></span>
-											<em><span ui:field="selectedDocumentSpan">No document Selected</span></em>
-										</div>
-										<g:FlowPanel ui:field="transUnitNavigation" styleName="{style.transUnitNavigation}" />
-									</g:HTMLPanel>
-								</g:north>
-								<g:center>
-									<g:LayoutPanel ui:field="editor" />
-								</g:center>
-								<g:south size="22">
-									<g:FlowPanel>
-										<fui:Pager ui:field="pager" styleName="{style.pager}" />
-										<f:TransUnitCountBar ui:field='transUnitCountBar' styleName="{style.statusBar}"/>
-									</g:FlowPanel>
-								</g:south>
-							</g:DockLayoutPanel>
+							<g:LayoutPanel ui:field="editor" />
 						</g:center>
-						<g:south size="150" min-size="100">
-							<g:FlowPanel styleName="{style.tmview}" ui:field="tmPanel">
-								<g:Label>TM view</g:Label>
+						<g:south size="22">
+							<g:FlowPanel>
+								<fui:Pager ui:field="pager" styleName="{style.pager}" />
+								<f:TransUnitCountBar ui:field='transUnitCountBar' styleName="{style.statusBar}"/>
 							</g:FlowPanel>
 						</g:south>
-					</g:SplitLayoutPanel>
-				</g:layer>
-			</g:LayoutPanel>
-		</g:center>
-	</g:DockLayoutPanel>
+					</g:DockLayoutPanel>
+				</g:center>
+				<g:south size="150" min-size="100">
+					<g:FlowPanel styleName="{style.tmview}" ui:field="tmPanel">
+						<g:Label>TM view</g:Label>
+					</g:FlowPanel>
+				</g:south>
+			</g:SplitLayoutPanel>
+		</g:layer>
+	</g:LayoutPanel>
 </ui:UiBinder>
