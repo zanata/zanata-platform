@@ -584,7 +584,9 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	}
 	
 	private void prevFuzzyIndex(int rowIndex, ContentState desiredState) { 
-        //If the catch of fuzzy row is empty, generate one
+        //Clean the cache
+		transIdNextCache.clear();
+		//If the catch of fuzzy row is empty, generate one
 		if(transIdPrevCache.isEmpty()) {
 			getPrevFuzzy(curRowIndex, desiredState);
 		} else {
@@ -616,7 +618,9 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	}
 	
 	
-	private void nextFuzzyIndex(int rowIndex, ContentState desiredState) { 
+	private void nextFuzzyIndex(int rowIndex, ContentState desiredState) {
+		//Clean the cache
+		transIdPrevCache.clear();
 		//If the catch of fuzzy row is empty, generate one
 		if(transIdNextCache.isEmpty()) {
 			getNextFuzzy(curRowIndex, desiredState);
