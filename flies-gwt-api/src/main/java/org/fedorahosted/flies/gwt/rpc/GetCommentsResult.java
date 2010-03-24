@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import net.customware.gwt.dispatch.shared.Result;
 
-import org.fedorahosted.flies.gwt.model.DocName;
+import org.fedorahosted.flies.gwt.model.DocumentInfo;
 import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 
 import com.google.gwt.user.client.rpc.IsSerializable;

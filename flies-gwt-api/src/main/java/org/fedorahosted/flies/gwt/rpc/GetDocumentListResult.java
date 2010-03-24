@@ -4,29 +4,29 @@ import java.util.ArrayList;
 
 import net.customware.gwt.dispatch.shared.Result;
 
-import org.fedorahosted.flies.gwt.model.DocName;
+import org.fedorahosted.flies.gwt.model.DocumentInfo;
 import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class GetDocsListResult implements Result {
+public class GetDocumentListResult implements Result {
 
 	private static final long serialVersionUID = 1L;
 
 	private ProjectContainerId projectContainerId;
-	private ArrayList<DocName> docNames;
+	private ArrayList<DocumentInfo> documents;
 
 	@SuppressWarnings("unused")
-	private GetDocsListResult()	{
+	private GetDocumentListResult()	{
 	}
 	
-	public GetDocsListResult(ProjectContainerId projectContainerId, ArrayList<DocName> units) {
+	public GetDocumentListResult(ProjectContainerId projectContainerId, ArrayList<DocumentInfo> documents) {
 		this.projectContainerId = projectContainerId;
-		this.docNames = units;
+		this.documents = documents;
 	}
 	
-	public ArrayList<DocName> getDocNames() {
-		return docNames;
+	public ArrayList<DocumentInfo> getDocuments() {
+		return documents;
 	}
 	
 	public ProjectContainerId getProjectContainerId() {

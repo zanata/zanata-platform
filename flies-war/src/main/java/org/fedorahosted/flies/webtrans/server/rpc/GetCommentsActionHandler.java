@@ -8,13 +8,13 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.fedorahosted.flies.core.dao.ProjectContainerDAO;
-import org.fedorahosted.flies.gwt.model.DocName;
+import org.fedorahosted.flies.gwt.model.DocumentInfo;
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 import org.fedorahosted.flies.gwt.rpc.GetCommentsAction;
 import org.fedorahosted.flies.gwt.rpc.GetCommentsResult;
-import org.fedorahosted.flies.gwt.rpc.GetDocsList;
-import org.fedorahosted.flies.gwt.rpc.GetDocsListResult;
+import org.fedorahosted.flies.gwt.rpc.GetDocumentList;
+import org.fedorahosted.flies.gwt.rpc.GetDocumentListResult;
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.security.FliesIdentity;

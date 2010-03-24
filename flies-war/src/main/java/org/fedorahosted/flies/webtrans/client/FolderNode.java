@@ -1,6 +1,6 @@
 package org.fedorahosted.flies.webtrans.client;
 
-import org.fedorahosted.flies.gwt.model.DocName;
+import org.fedorahosted.flies.gwt.model.DocumentInfo;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -10,7 +10,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class FolderNode extends Node<DocName> {
+public class FolderNode extends Node<DocumentInfo> {
 
 	private static FolderNodeUiBinder uiBinder = GWT
 			.create(FolderNodeUiBinder.class);
@@ -32,7 +32,7 @@ public class FolderNode extends Node<DocName> {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 	
-	public FolderNode(Resources resources, DocName doc) {
+	public FolderNode(Resources resources, DocumentInfo doc) {
 		this(resources);
 		setDataItem(doc);
 	}

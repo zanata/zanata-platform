@@ -6,17 +6,17 @@ import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class GetDocsList implements DispatchAction<GetDocsListResult> {
+public class GetDocumentList implements DispatchAction<GetDocumentListResult> {
 
 	private static final long serialVersionUID = 1L;
 
 	private ProjectContainerId projectContainerId;
 
 	@SuppressWarnings("unused")
-	private GetDocsList(){
+	private GetDocumentList(){
 	}
 	
-	public GetDocsList(ProjectContainerId id) {
+	public GetDocumentList(ProjectContainerId id) {
 		this.projectContainerId = id;
 	}
 

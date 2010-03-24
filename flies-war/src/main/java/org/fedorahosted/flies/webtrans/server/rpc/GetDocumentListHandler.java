@@ -8,11 +8,11 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.fedorahosted.flies.core.dao.ProjectContainerDAO;
-import org.fedorahosted.flies.gwt.model.DocName;
+import org.fedorahosted.flies.gwt.model.DocumentInfo;
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.ProjectContainerId;
-import org.fedorahosted.flies.gwt.rpc.GetDocsList;
-import org.fedorahosted.flies.gwt.rpc.GetDocsListResult;
+import org.fedorahosted.flies.gwt.rpc.GetDocumentList;
+import org.fedorahosted.flies.gwt.rpc.GetDocumentListResult;
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.security.FliesIdentity;
@@ -26,8 +26,8 @@ import org.jboss.seam.log.Log;
 
 @Name("webtrans.gwt.GetDocsListHandler")
 @Scope(ScopeType.STATELESS)
-@ActionHandlerFor(GetDocsList.class)
-public class GetDocsListHandler extends AbstractActionHandler<GetDocsList, GetDocsListResult> {
+@ActionHandlerFor(GetDocumentList.class)
+public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentList, GetDocumentListResult> {
 
 	@Logger Log log;
 	
@@ -36,25 +36,25 @@ public class GetDocsListHandler extends AbstractActionHandler<GetDocsList, GetDo
 
 	
 	@Override
-	public GetDocsListResult execute(GetDocsList action, ExecutionContext context)
+	public GetDocumentListResult execute(GetDocumentList action, ExecutionContext context)
 			throws ActionException {
 		
 		FliesIdentity.instance().checkLoggedIn();
 		
 		ProjectContainerId containerId = action.getProjectContainerId();
-		ArrayList<DocName> docs = new ArrayList<DocName>(); 
+		ArrayList<DocumentInfo> docs = new ArrayList<DocumentInfo>(); 
 		HProjectContainer hProjectContainer = projectContainerDAO.getById(containerId.getId());
 		Collection<HDocument> hDocs = hProjectContainer.getDocuments().values();
 		for (HDocument hDoc : hDocs) {
 			DocumentId docId = new DocumentId(hDoc.getId());
-			DocName docName = new DocName(docId, hDoc.getName(), hDoc.getPath());
-			docs.add(docName);
+			DocumentInfo doc = new DocumentInfo(docId, hDoc.getName(), hDoc.getPath());
+			docs.add(doc);
 		}
-		return new GetDocsListResult(containerId, docs);
+		return new GetDocumentListResult(containerId, docs);
 	}
 
 	@Override
-	public void rollback(GetDocsList action, GetDocsListResult result,
+	public void rollback(GetDocumentList action, GetDocumentListResult result,
 			ExecutionContext context) throws ActionException {
 	}
 	

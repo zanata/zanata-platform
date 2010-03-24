@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fedorahosted.flies.gwt.model.DocName;
+import org.fedorahosted.flies.gwt.model.DocumentInfo;
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.webtrans.editor.filter.ContentFilter;
 
@@ -47,7 +47,7 @@ public class DocumentListView extends Composite implements
 	@UiField
 	TextBox filterTextBox;
 	
-	private ContentFilter<DocName> filter;
+	private ContentFilter<DocumentInfo> filter;
 	
 	private DocumentNode currentSelection;
 	
@@ -98,10 +98,10 @@ public class DocumentListView extends Composite implements
 	}
 	
 	@Override
-	public void setList(ArrayList<DocName> sortedList) {
+	public void setList(ArrayList<DocumentInfo> sortedList) {
 		clear();
 		for(int i=0;i<sortedList.size();i++) {
-			DocName doc = sortedList.get(i);
+			DocumentInfo doc = sortedList.get(i);
 			DocumentNode node;
 			if(doc.getPath() == null || doc.getPath().isEmpty()){
 				node = new DocumentNode(resources, messages, doc, translateButtonClickHandler);
@@ -175,7 +175,7 @@ public class DocumentListView extends Composite implements
 	}
 	
 	@Override
-	public void setFilter(ContentFilter<DocName> filter) {
+	public void setFilter(ContentFilter<DocumentInfo> filter) {
 		this.filter = filter;
 		for(DocumentNode docNode : nodes.values() ){
 			docNode.setVisible(filter.accept(docNode.getDataItem()));

@@ -1,6 +1,6 @@
 package org.fedorahosted.flies.webtrans.client;
 
-import org.fedorahosted.flies.gwt.model.DocName;
+import org.fedorahosted.flies.gwt.model.DocumentInfo;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.NativeEvent;
@@ -15,7 +15,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.impl.HyperlinkImpl;
 
-public class DocumentNode extends Node<DocName> {
+public class DocumentNode extends Node<DocumentInfo> {
 
 	private static DocumentNodeUiBinder uiBinder = GWT
 			.create(DocumentNodeUiBinder.class);
@@ -74,12 +74,12 @@ public class DocumentNode extends Node<DocName> {
 		
 	}
 	
-	public DocumentNode(Resources resources, WebTransMessages messages, DocName doc) {
+	public DocumentNode(Resources resources, WebTransMessages messages, DocumentInfo doc) {
 		this(resources, messages);
 		setDataItem(doc);
 	}
 
-	public DocumentNode(Resources resources, WebTransMessages messages, DocName doc, ClickHandler clickHandler) {
+	public DocumentNode(Resources resources, WebTransMessages messages, DocumentInfo doc, ClickHandler clickHandler) {
 		this(resources, messages, doc);
 		addHandler(clickHandler, ClickEvent.getType());
 	}

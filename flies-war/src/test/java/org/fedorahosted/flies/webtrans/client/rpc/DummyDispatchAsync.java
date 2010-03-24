@@ -9,8 +9,8 @@ import org.fedorahosted.flies.gwt.auth.AuthorizationError;
 import org.fedorahosted.flies.gwt.rpc.AbstractWorkspaceAction;
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceResult;
-import org.fedorahosted.flies.gwt.rpc.GetDocsList;
-import org.fedorahosted.flies.gwt.rpc.GetDocsListResult;
+import org.fedorahosted.flies.gwt.rpc.GetDocumentList;
+import org.fedorahosted.flies.gwt.rpc.GetDocumentListResult;
 import org.fedorahosted.flies.gwt.rpc.GetGlossaryConcept;
 import org.fedorahosted.flies.gwt.rpc.GetGlossaryConceptResult;
 import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCount;
@@ -51,9 +51,9 @@ public class DummyDispatchAsync extends SeamDispatchAsync {
 			GetTransUnits gtuAction = (GetTransUnits) action;
 			AsyncCallback<GetTransUnitsResult> gtuCallback = (AsyncCallback<GetTransUnitsResult>) callback;
 			DeferredCommand.addCommand(new DummyGetTransUnitCommand(gtuAction, gtuCallback));
-		} else if (action instanceof GetDocsList) {
-			final GetDocsList gdlAction = (GetDocsList) action;
-			AsyncCallback<GetDocsListResult> gdlCallback = (AsyncCallback<GetDocsListResult>) callback;
+		} else if (action instanceof GetDocumentList) {
+			final GetDocumentList gdlAction = (GetDocumentList) action;
+			AsyncCallback<GetDocumentListResult> gdlCallback = (AsyncCallback<GetDocumentListResult>) callback;
 			DeferredCommand.addCommand(new DummyGetDocsListCommand(gdlAction, gdlCallback));
 		} else if (action instanceof ActivateWorkspaceAction) {
 			final ActivateWorkspaceAction gwcAction = (ActivateWorkspaceAction) action;
