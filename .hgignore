@@ -17,6 +17,7 @@ syntax: regexp
 ^.ant-targets-build.xml
 \.pages.xml.spdia$
 temp-testng-customsuite.xml$
+^flies-war/src/test/resources/bootstrap/data
 
 # eclipse and maven stuff
 \.classpath$
