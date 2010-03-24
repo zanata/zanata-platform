@@ -1,16 +1,19 @@
 package org.fedorahosted.flies.repository.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 import org.fedorahosted.flies.common.ContentType;
@@ -18,12 +21,19 @@ import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.core.model.AbstractFliesEntity;
 import org.fedorahosted.flies.hibernate.type.ContentTypeType;
 import org.fedorahosted.flies.hibernate.type.LocaleIdType;
+import org.fedorahosted.flies.repository.model.po.HPoHeader;
+import org.fedorahosted.flies.repository.model.po.HPoTargetHeader;
+import org.fedorahosted.flies.repository.model.po.PoUtility;
 import org.fedorahosted.flies.rest.dto.Container;
 import org.fedorahosted.flies.rest.dto.DataHook;
 import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.Reference;
 import org.fedorahosted.flies.rest.dto.DocumentResource;
+import org.fedorahosted.flies.rest.dto.Reference;
 import org.fedorahosted.flies.rest.dto.TextFlow;
+import org.fedorahosted.flies.rest.dto.po.HeaderEntry;
+import org.fedorahosted.flies.rest.dto.po.PoHeader;
+import org.fedorahosted.flies.rest.dto.po.PoTargetHeader;
+import org.fedorahosted.flies.rest.dto.po.PoTargetHeaders;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
@@ -54,6 +64,8 @@ public class HDocument extends AbstractFliesEntity{
 	private Map<String, HDocumentResource> obsoletes;
 	private List<HDocumentResource> resources;
 	private boolean obsolete = false;
+	private HPoHeader poHeader;
+	private Map<LocaleId, HPoTargetHeader> poTargetHeaders;
 	
 	public HDocument(String fullPath, ContentType contentType) {
 		this(fullPath, contentType, LocaleId.EN_US);
@@ -233,7 +245,7 @@ public class HDocument extends AbstractFliesEntity{
 	
 	@OneToMany(cascade=CascadeType.ALL/*, mappedBy="document"*/)
 	@Where(clause="parent_id is null and obsolete=0")
-	@IndexColumn(name="pos", base=0, nullable=true)// see http://opensource.atlassian.com/projects/hibernate/browse/HHH-4390?focusedCommentId=30964&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#action_30964
+	@IndexColumn(name="pos", base=0, nullable=true)// see http://opensource.atlassian.com/projects/hibernate/browse/HHH-4390?focusedCommentId=30964#action_30964
 	@JoinColumn(name="document_id",nullable=true)
 	/**
 	 * Returns the <b>top-level</b> resources contained in the document.  Some 
@@ -276,6 +288,27 @@ public class HDocument extends AbstractFliesEntity{
 			return toDocument(0);
 	}
 	
+	public void setPoHeader(HPoHeader poHeader) {
+		this.poHeader = poHeader;
+	}
+	
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY, optional=true)
+	public HPoHeader getPoHeader() {
+		return poHeader;
+	}
+	
+	public void setPoTargetHeaders(Map<LocaleId, HPoTargetHeader> poTargetHeaders) {
+		this.poTargetHeaders = poTargetHeaders;
+	}
+	
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="document")
+	@MapKey(name="targetLanguage")
+	public Map<LocaleId, HPoTargetHeader> getPoTargetHeaders() {
+		if (poTargetHeaders == null)
+			poTargetHeaders = new HashMap<LocaleId, HPoTargetHeader>();
+		return poTargetHeaders;
+	}
+	
 	public Document toDocument(int levels) {
 	    Document doc = new Document(docId, name, path, contentType, revision, locale);
 	    if (levels != 0) {
@@ -283,8 +316,27 @@ public class HDocument extends AbstractFliesEntity{
 		    for (HDocumentResource hRes : this.getResources()) {
 				docResources.add(hRes.toResource(levels));
 			}
-		    // TODO handle extensions
-	//	    List<Object> docExtensions = doc.getExtensions();
+		    HPoHeader fromPoHeader = this.getPoHeader();
+		    if (fromPoHeader != null) {
+		    	PoHeader toPoHeader = doc.getOrAddExtension(PoHeader.class);
+		    	String fromComment = fromPoHeader.getComment() != null ? fromPoHeader.getComment().getComment() : null;
+		    	toPoHeader.setComment(fromComment);
+		    	List<HeaderEntry> toEntries = toPoHeader.getEntries();
+		    	toEntries.addAll(PoUtility.headerToList(fromPoHeader.getEntries()));
+		    }
+		    Collection<HPoTargetHeader> fromTargetHeaders = this.getPoTargetHeaders().values();
+		    if (!fromTargetHeaders.isEmpty()) {
+			    PoTargetHeaders toTargetHeaders = doc.getOrAddExtension(PoTargetHeaders.class);
+			    for (HPoTargetHeader fromHeader : fromTargetHeaders) {
+			    	PoTargetHeader toHeader = new PoTargetHeader();
+			    	String fromComment = fromHeader.getComment() != null ? fromHeader.getComment().getComment() : null;
+			    	toHeader.setComment(fromComment);
+			    	List<HeaderEntry> toEntries = toHeader.getEntries();
+			    	toEntries.addAll(PoUtility.headerToList(fromHeader.getEntries()));
+			    	toHeader.setTargetLanguage(fromHeader.getTargetLanguage());
+			    	toTargetHeaders.getHeaders().add(toHeader);
+				}
+		    }		    
 	    }
 		return doc;
 	}

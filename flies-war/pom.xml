@@ -1130,12 +1130,20 @@
        -->
     </dependency>
 
+    <dependency>
+      <groupId>org.fedorahosted.openprops</groupId>
+      <artifactId>openprops</artifactId>
+      <version>0.5</version>
+      <scope>compile</scope>
+    </dependency>
+    
     <!-- test -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
+    
   </dependencies>
   
   <repositories>

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.fedorahosted.flies.common.ContentState;
+import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.core.dao.ResourceDAO;
 import org.fedorahosted.flies.core.dao.TextFlowTargetDAO;
 import org.fedorahosted.flies.repository.model.HContainer;
@@ -20,6 +21,10 @@ import org.fedorahosted.flies.repository.model.HSimpleComment;
 import org.fedorahosted.flies.repository.model.HTextFlow;
 import org.fedorahosted.flies.repository.model.HTextFlowHistory;
 import org.fedorahosted.flies.repository.model.HTextFlowTarget;
+import org.fedorahosted.flies.repository.model.po.HPoHeader;
+import org.fedorahosted.flies.repository.model.po.HPoTargetHeader;
+import org.fedorahosted.flies.repository.model.po.HPotEntryData;
+import org.fedorahosted.flies.repository.model.po.PoUtility;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Container;
 import org.fedorahosted.flies.rest.dto.DataHook;
@@ -32,6 +37,9 @@ import org.fedorahosted.flies.rest.dto.SimpleComment;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.TextFlowTargets;
+import org.fedorahosted.flies.rest.dto.po.PoHeader;
+import org.fedorahosted.flies.rest.dto.po.PoTargetHeader;
+import org.fedorahosted.flies.rest.dto.po.PoTargetHeaders;
 import org.fedorahosted.flies.rest.dto.po.PotEntryData;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
@@ -125,6 +133,7 @@ public class DocumentConverter {
     			hRes.setObsolete(false);
     		}
     		hResources.add(hRes);
+//    		session.save(hRes);
 
     		resChanged |= copy(fromRes, hRes, toHDoc, nextDocRev);
     		if (resChanged) {
@@ -136,6 +145,69 @@ public class DocumentConverter {
     			log.debug("CHANGED: Resource {0}:{1} was added", toHDoc.getDocId(), hRes.getResId());
     		}
     	}
+    	if (fromDoc.hasExtensions())
+	    	for (Object ext : fromDoc.getExtensions()) {
+	    		if (ext instanceof PoHeader) {
+					PoHeader fromHeader = (PoHeader) ext;
+					HPoHeader toHeader = toHDoc.getPoHeader();
+					if (toHeader == null) {
+						toHeader = new HPoHeader();
+						toHDoc.setPoHeader(toHeader);
+	//					toHPoHeader.setDocument(toHDoc);
+						docChanged = true;
+					}
+					HSimpleComment toComment = toHeader.getComment();
+					if (toComment == null) {
+						toComment = new HSimpleComment();
+						toHeader.setComment(toComment);
+						docChanged = true;
+					}
+					String fromComment = fromHeader.getComment().getValue();
+					if (!equal(fromComment, toComment.getComment())) {
+						toComment.setComment(fromComment);
+						docChanged = true;
+					}
+					String fromEntries = PoUtility.listToHeader(fromHeader.getEntries());
+					if (!equal(toHeader.getEntries(), fromEntries)) {
+						toHeader.setEntries(fromEntries);
+						docChanged = true;
+					}
+				} else if (ext instanceof PoTargetHeaders) {
+					PoTargetHeaders fromHeaders = (PoTargetHeaders) ext;
+					Map<LocaleId, HPoTargetHeader> toHeaders = toHDoc.getPoTargetHeaders();
+					for (PoTargetHeader fromHeader : fromHeaders.getHeaders()) {
+//						List<HeaderEntry> fromEntries = fromHeader.getEntries();
+						LocaleId localeId = fromHeader.getTargetLanguage();
+						HPoTargetHeader toHeader = toHeaders.get(localeId);
+						if (toHeader == null) {
+							toHeader = new HPoTargetHeader();
+							toHeader.setDocument(toHDoc);
+							toHeader.setTargetLanguage(localeId);
+							toHeaders.put(localeId, toHeader);
+							docChanged = true;
+						}
+						HSimpleComment toComment = toHeader.getComment();
+						if (toComment == null) {
+							toComment = new HSimpleComment();
+							toHeader.setComment(toComment);
+							docChanged = true;
+						}
+						String fromComment = fromHeader.getComment().getValue();
+						if (!equal(fromComment, toComment.getComment())) {
+							toComment.setComment(fromComment);
+							docChanged = true;
+						}
+						String fromEntries = PoUtility.listToHeader(fromHeader.getEntries());
+						if (!equal(toHeader.getEntries(), fromEntries)) {
+							toHeader.setEntries(fromEntries);
+							docChanged = true;
+						}
+					}  
+				} else {
+					throw new RuntimeException("Unknown Document extension "+ext.getClass());
+				}
+	    	}
+    	
     	// even if we just move around resources without changing them,
     	// the document is considered changed
     	if(!oldResources.equals(hResources))
@@ -148,6 +220,10 @@ public class DocumentConverter {
     	}
     	if (docChanged)
     		toHDoc.setRevision(nextDocRev);
+    }
+    
+    private static boolean equal(String a, String b) {
+    	return a == null ? b == null : a.equals(b);
     }
 
 
@@ -237,65 +313,101 @@ public class DocumentConverter {
 		}
 	
 		htf.setContent(fromTf.getContent());
-		List<Object> extensions = fromTf.getExtensions();
-		if (extensions != null) {
-			for (Object ext : extensions) {
-				if (ext instanceof PotEntryData) {
-					
+		for (Object ext : fromTf.getExtensions()) {
+			if (ext instanceof PotEntryData) {
+				PotEntryData potEntryData = (PotEntryData) ext;
+				HPotEntryData hPotEntryData = htf.getPotEntryData();
+				if (hPotEntryData == null) {
+					hPotEntryData = new HPotEntryData();
+//						hPotEntryData.setTextFlow(htf);
+					htf.setPotEntryData(hPotEntryData);
 				}
-				else if(ext instanceof TextFlowTargets) {
-					// do nothing here, we want to do targets last: 
-					// if the comment changes, the resourceRev will have to be incremented
-				} else if (ext instanceof SimpleComment) {
-					SimpleComment simpleComment = (SimpleComment) ext;
-					HSimpleComment hComment = htf.getComment();
-					if (hComment == null) {
-						changed = true;
-						log.debug("CHANGED: TextFlow {0}:{1} comment changed", htf.getDocument().getDocId(), htf.getResId());
-						// NB HTextFlowHistory doesn't record comments
-						hComment = new HSimpleComment();
-						htf.setComment(hComment);
-					} else {
-						if (!hComment.getComment().equals(simpleComment.getValue()))
-							changed = true;
-					}
-					hComment.setComment(simpleComment.getValue());
-				} else {
-					throw new RuntimeException("Unknown TextFlow extension "+ext.getClass());
-				}
+				changed |= copy(potEntryData, hPotEntryData);
 			}
-			TextFlowTargets targets = fromTf.getTargets();
-			if (targets != null) {
-				for (TextFlowTarget target : targets.getTargets()) {
-					HTextFlowTarget hTarget = null;
-					if (session.contains(htf)) {
-						hTarget = textFlowTargetDAO.getByNaturalId(htf, target.getLang());
-					}
-					if (hTarget == null) {
-						hTarget = new HTextFlowTarget();
-						hTarget.setLocale(target.getLang());
-						hTarget.setTextFlow(htf);
-						Integer resourceRev;
-						
-						if (changed || htf.getRevision() == null)
-							resourceRev = nextDocRev;
-						else
-							resourceRev = htf.getRevision();
-							
-						hTarget.setState(target.getState());
-						hTarget.setContent(target.getContent());
-						copy(target, hTarget, htf);
-						hTarget.setResourceRevision(resourceRev);
-						hTarget.setRevision(1);
-					} else {
-						copy(target, hTarget, htf);
-					}
-					htf.getTargets().put(target.getLang(), hTarget);
+			else if(ext instanceof TextFlowTargets) {
+				// do nothing here, we want to do targets last: 
+				// if the comment changes, the resourceRev will have to be incremented
+			} else if (ext instanceof SimpleComment) {
+				SimpleComment simpleComment = (SimpleComment) ext;
+				HSimpleComment hComment = htf.getComment();
+				if (hComment == null) {
+					changed = true;
+					log.debug("CHANGED: TextFlow {0}:{1} comment changed", htf.getDocument().getDocId(), htf.getResId());
+					// NB HTextFlowHistory doesn't record comments
+					hComment = new HSimpleComment();
+					htf.setComment(hComment);
+				} else {
+					if (!hComment.getComment().equals(simpleComment.getValue()))
+						changed = true;
 				}
+				hComment.setComment(simpleComment.getValue());
+			} else {
+				throw new RuntimeException("Unknown TextFlow extension "+ext.getClass());
+			}
+		}
+		TextFlowTargets targets = fromTf.getTargets();
+		if (targets != null) {
+			for (TextFlowTarget target : targets.getTargets()) {
+				HTextFlowTarget hTarget = null;
+				if (session.contains(htf)) {
+					hTarget = textFlowTargetDAO.getByNaturalId(htf, target.getLang());
+				}
+				if (hTarget == null) {
+					hTarget = new HTextFlowTarget();
+					hTarget.setLocale(target.getLang());
+					hTarget.setTextFlow(htf);
+					Integer resourceRev;
+					
+					if (changed || htf.getRevision() == null)
+						resourceRev = nextDocRev;
+					else
+						resourceRev = htf.getRevision();
+						
+					hTarget.setState(target.getState());
+					hTarget.setContent(target.getContent());
+					copy(target, hTarget, htf);
+					hTarget.setResourceRevision(resourceRev);
+					hTarget.setRevision(1);
+				} else {
+					copy(target, hTarget, htf);
+				}
+				htf.getTargets().put(target.getLang(), hTarget);
 			}
 		}
 		return changed;
     }
+
+
+	private boolean copy(PotEntryData fromPotEntryData,
+			HPotEntryData toHPotEntryData) {
+		boolean changed = false;
+		toHPotEntryData.setContext(fromPotEntryData.getContext());
+		SimpleComment fromExtractedSimpleComment = fromPotEntryData.getExtractedComment();
+		String fromExtractedComment = 
+			fromExtractedSimpleComment == null ? null : fromExtractedSimpleComment.getValue();
+
+		HSimpleComment toExtractedComment = toHPotEntryData.getExtractedComment();
+		if (fromExtractedComment != null && toExtractedComment == null) {
+			toExtractedComment = new HSimpleComment();
+			toHPotEntryData.setExtractedComment(toExtractedComment);
+		}
+		if (fromExtractedComment == null) {
+			if (toExtractedComment != null) {
+				changed = true;
+				toHPotEntryData.setExtractedComment(null);
+			}
+		} else {
+			changed |= !fromExtractedComment.equals(toExtractedComment.getComment());
+			toExtractedComment.setComment(fromExtractedComment);
+		}
+		String flags = PoUtility.concatFlags(fromPotEntryData.getFlags());
+		changed |= !flags.equals(toHPotEntryData.getFlags());
+		toHPotEntryData.setFlags(flags);
+		String references = PoUtility.concatRefs(fromPotEntryData.getReferences());
+		changed |= !references.equals(toHPotEntryData.getReferences());
+		toHPotEntryData.setReferences(references);
+		return changed;
+	}
 	
 	/**
 	 * Creates the Hibernate equivalent of the TextFlow, 

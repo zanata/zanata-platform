@@ -6,14 +6,18 @@ import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.repository.model.po.HPotEntryData;
+import org.fedorahosted.flies.repository.model.po.PoUtility;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
+import org.fedorahosted.flies.rest.dto.po.PotEntryData;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Field;
@@ -43,6 +47,8 @@ public class HTextFlow extends HDocumentResource {
 	public Map<Integer, HTextFlowHistory> history;
 	
 	private HSimpleComment comment;
+	
+	private HPotEntryData potEntryData;
 	
 	public HTextFlow() {
 	}
@@ -115,6 +121,14 @@ public class HTextFlow extends HDocumentResource {
 		this.targets = targets;
 	}
 	
+	public void setPotEntryData(HPotEntryData potEntryData) {
+		this.potEntryData = potEntryData;
+	}
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY, optional=true)
+	public HPotEntryData getPotEntryData() {
+		return potEntryData;
+	}
+	
 	@Override
 	public TextFlow toResource(int levels) {
 		TextFlow textFlow = new TextFlow(this.getResId());
@@ -141,6 +155,20 @@ public class HTextFlow extends HDocumentResource {
 				textFlow.addTarget(textFlowTarget);
 			}
 		}
+
+		HPotEntryData fromHPotEntryData = this.getPotEntryData();
+		if (fromHPotEntryData != null) {
+			PotEntryData toPotEntryData = textFlow.getOrAddExtension(PotEntryData.class);
+			toPotEntryData.setId(this.getResId());
+			toPotEntryData.setContext(fromHPotEntryData.getContext());
+			HSimpleComment extractedComment = fromHPotEntryData.getExtractedComment();
+			toPotEntryData.setExtractedComment(HSimpleComment.toSimpleComment(extractedComment));
+			List<String> toFlags = toPotEntryData.getFlags();
+			toFlags.addAll(PoUtility.splitFlags(fromHPotEntryData.getFlags()));
+			List<String> toReferences = toPotEntryData.getReferences();
+			toReferences.addAll(PoUtility.splitRefs(fromHPotEntryData.getReferences()));
+		}
+		
 		return textFlow;
 	}
 	
