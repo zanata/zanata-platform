@@ -57,7 +57,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
 		void setList(ArrayList<DocumentInfo> sortedList);
 		void clearSelection();
-		void setSelection(DocumentId documentId);
+		void setSelection(DocumentInfo document);
 		void ensureSelectionVisible();
 		HasDocumentSelectionHandlers getDocumentSelectionHandler();
 		void setFilter(ContentFilter<DocumentInfo> filter);
@@ -68,7 +68,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 	private final DispatchAsync dispatcher;
     private final WorkspaceContext workspaceContext;
 	private final Map<DocumentId, DocumentStatus> statuscache = new HashMap<DocumentId, DocumentStatus>();
-	private DocumentId currentDoc;
+	private DocumentInfo currentDocument;
     
 	
 	@Inject
@@ -94,8 +94,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 			
 			@Override
 			public void onDocumentSelected(DocumentSelectionEvent event) {
-				display.setSelection(event.getDocumentId());
-				setValue(event.getDocumentId(), true);
+				display.setSelection(event.getDocument());
+				setValue(event.getDocument(), true);
 			}
 		}));
 		
@@ -200,11 +200,11 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 	}
 
 
-	public void setValue(DocumentId value, boolean fireEvents) {
-		DocumentId oldValue = currentDoc;
-		currentDoc = value;
-		if (oldValue != currentDoc) {
-			fireEvent(new DocumentSelectionEvent(currentDoc));
+	public void setValue(DocumentInfo value, boolean fireEvents) {
+		DocumentInfo oldValue = currentDocument;
+		currentDocument = value;
+		if (oldValue != currentDocument) {
+			fireEvent(new DocumentSelectionEvent(currentDocument));
 		}
 	}
 

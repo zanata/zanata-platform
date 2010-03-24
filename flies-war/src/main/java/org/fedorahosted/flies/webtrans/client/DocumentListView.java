@@ -104,12 +104,12 @@ public class DocumentListView extends Composite implements
 			DocumentInfo doc = sortedList.get(i);
 			DocumentNode node;
 			if(doc.getPath() == null || doc.getPath().isEmpty()){
-				node = new DocumentNode(resources, messages, doc, translateButtonClickHandler);
+				node = new DocumentNode(resources, messages, doc, documentNodeClickHandler);
 				add(node);
 			}
 			else{
 				FolderNode folder = new FolderNode(resources, doc);
-				node = new DocumentNode(resources, messages, doc, translateButtonClickHandler);
+				node = new DocumentNode(resources, messages, doc, documentNodeClickHandler);
 				folder.addChild(node);
 				add(folder);
 			}
@@ -123,13 +123,12 @@ public class DocumentListView extends Composite implements
 	/**
 	 * Common click-handler for all 'translate' links
 	 */
-	private final ClickHandler translateButtonClickHandler = new ClickHandler() {
+	private final ClickHandler documentNodeClickHandler = new ClickHandler() {
 		@Override
 		public void onClick(ClickEvent event) {
-			DocumentId selectionId = new DocumentId( Long.valueOf(
-					event.getRelativeElement().getId().substring(5)));
-			if(currentSelection == null || !currentSelection.getDataItem().getId().equals(selectionId)) {
-				DocumentSelectionEvent docSelectionEvent = new DocumentSelectionEvent(selectionId);
+			DocumentNode node = (DocumentNode) event.getSource();
+			if(currentSelection != node) {
+				DocumentSelectionEvent docSelectionEvent = new DocumentSelectionEvent(node.getDataItem());
 				fireEvent(docSelectionEvent);
 			}
 		}
@@ -145,12 +144,12 @@ public class DocumentListView extends Composite implements
 	}
 	
 	@Override
-	public void setSelection(final DocumentId documentId) {
-		if(currentSelection != null && currentSelection.getDataItem().getId().equals(documentId)) {
+	public void setSelection(final DocumentInfo document) {
+		if(currentSelection != null && currentSelection.getDataItem() == document) {
 			return;
 		}
 		clearSelection();
-		DocumentNode node = nodes.get(documentId);
+		DocumentNode node = nodes.get(document.getId());
 		if(node != null) {
 			node.setSelected( true ) ;
 			currentSelection = node;

@@ -1,6 +1,6 @@
 package org.fedorahosted.flies.webtrans.client;
 
-import org.fedorahosted.flies.gwt.model.DocumentId;
+import org.fedorahosted.flies.gwt.model.DocumentInfo;
 
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -10,7 +10,7 @@ public class DocumentSelectionEvent extends GwtEvent<DocumentSelectionHandler> {
 	 * Handler type.
 	 */
 	private static Type<DocumentSelectionHandler> TYPE;
-	private final DocumentId documentId;
+	private final DocumentInfo document;
 	
 	/**
 	 * Gets the type associated with this event.
@@ -21,12 +21,12 @@ public class DocumentSelectionEvent extends GwtEvent<DocumentSelectionHandler> {
 		return TYPE != null ? TYPE : (TYPE = new Type<DocumentSelectionHandler>());
 	}
 
-	public DocumentSelectionEvent(DocumentId id) {
-		this.documentId = id;
+	public DocumentSelectionEvent(DocumentInfo document) {
+		this.document = document;
 	}
-	
-	public DocumentId getDocumentId() {
-		return documentId;
+
+	public DocumentInfo getDocument() {
+		return document;
 	}
 	
 	@Override

@@ -107,7 +107,7 @@
 										<div style="display: inline;">
 											<g:Anchor href="#" ui:field="documentsLink">Documents</g:Anchor>
 											<span class="{style.divider}">></span>
-											<em>No document Selected</em>
+											<em><span ui:field="selectedDocumentSpan">No document Selected</span></em>
 										</div>
 										<g:FlowPanel ui:field="transUnitNavigation" styleName="{style.transUnitNavigation}" />
 									</g:HTMLPanel>

@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import org.fedorahosted.flies.gwt.model.DocumentInfo;
 import org.fedorahosted.flies.webtrans.client.ui.HasPager;
 import org.fedorahosted.flies.webtrans.client.ui.Pager;
 import org.fedorahosted.flies.webtrans.editor.HasTransUnitCount;
@@ -34,7 +35,7 @@ public class AppView extends Composite implements AppPresenter.Display {
 	Anchor signOutLink, leaveLink, helpLink, documentsLink;
 
 	@UiField
-	SpanElement user, workspaceName, workspaceLocale;
+	SpanElement user, workspaceName, workspaceLocale, selectedDocumentSpan;
 
 	@UiField
 	LayoutPanel editor;
@@ -203,5 +204,10 @@ public class AppView extends Composite implements AppPresenter.Display {
 	@Override
 	public void setLocaleLabel(String localeLabel) {
 		workspaceLocale.setInnerText(localeLabel);
+	}
+	
+	@Override
+	public void setSelectedDocument(DocumentInfo document) {
+		selectedDocumentSpan.setInnerText(document.getName());
 	}
 }

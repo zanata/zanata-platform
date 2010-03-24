@@ -47,7 +47,7 @@ public class DocumentStatusPresenter extends TranslationStatsBarPresenter {
 		registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {
 			@Override
 			public void onDocumentSelected(DocumentSelectionEvent event) {
-				requestStatusCount(event.getDocumentId());
+				requestStatusCount(event.getDocument().getId());
 			}
 		}));
 	}

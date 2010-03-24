@@ -10,6 +10,7 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.fedorahosted.flies.common.TransUnitCount;
 import org.fedorahosted.flies.gwt.auth.Identity;
 import org.fedorahosted.flies.gwt.common.WorkspaceContext;
+import org.fedorahosted.flies.gwt.model.DocumentInfo;
 import org.fedorahosted.flies.webtrans.client.AppPresenter.Display.MainView;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
@@ -63,6 +64,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		void setUserLabel(String userLabel);
 		void setLocaleLabel(String localeLabel);
 		void setWorkspaceNameLabel(String workspaceNameLabel);
+		void setSelectedDocument(DocumentInfo document);
 	}
 
 	private final TableEditorPresenter tableEditorPresenter;
@@ -150,6 +152,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 					@Override
 					public void onDocumentSelected(DocumentSelectionEvent event) {
 						display.showInMainView(MainView.Editor);
+						display.setSelectedDocument(event.getDocument());
 					}
 				}));
 

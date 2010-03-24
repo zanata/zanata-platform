@@ -145,8 +145,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 				eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {
 					@Override
 					public void onDocumentSelected(DocumentSelectionEvent event) {
-						if(!event.getDocumentId().equals(documentId)) {
-							documentId = event.getDocumentId();
+						if(!event.getDocument().getId().equals(documentId)) {
+							documentId = event.getDocument().getId();
 							display.getTableModel().clearCache();
 							display.getTableModel().setRowCount(TableModel.UNKNOWN_ROW_COUNT);
 							display.asWidget().setVisible(true);
