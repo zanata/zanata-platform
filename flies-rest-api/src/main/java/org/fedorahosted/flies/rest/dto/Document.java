@@ -29,7 +29,7 @@ import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
 @XmlType(name="documentType", namespace=Namespaces.FLIES, propOrder={"resources", "extensions"})
 @XmlSeeAlso({
 	PoHeader.class,
-	PoTargetHeaders.class,
+	PoTargetHeaders.class
 })
 public class Document extends AbstractBaseResource implements IExtensible{
 
