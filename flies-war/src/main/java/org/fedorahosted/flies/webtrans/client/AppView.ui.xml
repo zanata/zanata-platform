@@ -8,7 +8,6 @@
 	
 	<ui:style>
 		.topPanel {
-			padding: 6px;
 			border-bottom: 1px solid #e0e0e0;
 		}
 		
@@ -56,9 +55,6 @@
 		
 		.statusBar {
 			float: right;
-			display: inline;
-			width: 100px;
-			height: 1.2em;
 		}
 
 		
@@ -69,29 +65,37 @@
 	</ui:style>
 	<g:DockLayoutPanel unit="PX">
 		<g:north size="40">
-			<g:HTMLPanel>
-				<div class="{style.topPanel}">
+			<g:LayoutPanel>
+				<g:layer top="6px" height="100%" left="6px"  width="100px">
 					<g:Image resource='{resources.logo}'/>
-					<div class="{style.topPanel-Workspace}">
+				</g:layer>
+				<g:layer top="6px" height="100%" left="100px" right="6px">
+					<g:FlowPanel>
+						<g:HTMLPanel styleName="{style.topPanel-Workspace}">
 						<nobr>
 							<span ui:field="workspaceName" class="{style.topPanel-Workspace-Name}">Name of Workspace</span>
 							<span class="{style.divider}">to</span>
 							<span ui:field="workspaceLocale" class="{style.topPanel-Workspace-Locale}">Localename</span>
 						</nobr>
-					</div>
-					<div class="{style.topPanel-Navigation}">
-						<nobr>
-							<b><span ui:field="user">User Name</span></b>
-							<span class="{style.divider}">|</span>
-							<g:Anchor href="#" ui:field="helpLink">Help</g:Anchor>
-							<span class="{style.divider}">|</span>
-							<g:Anchor href="#" ui:field="leaveLink">Leave Workspace</g:Anchor>
-							<span class="{style.divider}">|</span>
-							<g:Anchor href="#" ui:field="signOutLink">Sign Out</g:Anchor>
-						</nobr>
-					</div>
-				</div>
-			</g:HTMLPanel>
+						</g:HTMLPanel>
+					</g:FlowPanel>
+				</g:layer>
+				<g:layer top="6px" height="100%" left="6px" right="6px">
+					<g:FlowPanel>
+						<g:HTMLPanel styleName="{style.statusBar}">
+							<nobr>
+								<b><span ui:field="user">User Name</span></b>
+								<span class="{style.divider}">|</span>
+								<g:Anchor href="#" ui:field="helpLink">Help</g:Anchor>
+								<span class="{style.divider}">|</span>
+								<g:Anchor href="#" ui:field="leaveLink">Leave Workspace</g:Anchor>
+								<span class="{style.divider}">|</span>
+								<g:Anchor href="#" ui:field="signOutLink">Sign Out</g:Anchor>
+							</nobr>
+						</g:HTMLPanel>
+					</g:FlowPanel>
+				</g:layer>
+			</g:LayoutPanel>
 		</g:north>
 		<g:center>
 			<g:LayoutPanel>
