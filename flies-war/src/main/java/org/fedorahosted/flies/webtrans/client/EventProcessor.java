@@ -1,6 +1,5 @@
 package org.fedorahosted.flies.webtrans.client;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -35,10 +34,6 @@ import de.novanic.eventservice.client.event.listener.RemoteEventListener;
 
 public class EventProcessor implements RemoteEventListener {
 
-	private final EventBus eventBus;
-//	private final DispatchAsync dispatcher;
-//	private final WorkspaceContext workspaceContext;
-	
 	private interface EventFactory<T extends GwtEvent<?>> {
 		T create(SessionEventData event);
 	}
@@ -95,52 +90,29 @@ public class EventProcessor implements RemoteEventListener {
 	}
 	
 	private final EventRegistry eventRegistry;
-	private RemoteEventService remoteEventService;
-	private ArrayList<AsyncCallback<Void>> waitingCallbacks = new ArrayList<AsyncCallback<Void>>();
-	private boolean registerSucceeded = false;
+	private final RemoteEventService remoteEventService;
+	private final Domain domain;
+	private final EventBus eventBus;
 	
 	@Inject
 	public EventProcessor(EventBus eventBus, CachingDispatchAsync dispatcher, WorkspaceContext workspaceContext) {
 		this.eventBus = eventBus;
-//		this.dispatcher = dispatcher;
-//		this.workspaceContext = workspaceContext;
 		this.eventRegistry = new EventRegistry();
-		remoteEventService = RemoteEventServiceFactory.getInstance().getRemoteEventService();
-		final Domain domain = DomainFactory.getDomain(workspaceContext.getWorkspaceId().toString());
-		
+		this.remoteEventService = RemoteEventServiceFactory.getInstance().getRemoteEventService();
+		this.domain =  DomainFactory.getDomain(workspaceContext.getWorkspaceId().toString());
+	}
+	
+	public void start() {
 		remoteEventService.addListener(domain, this, new AsyncCallback<Void>() {
 			@Override
 			public void onSuccess(Void result) {
 				Log.info("EventProcessor is now listening for events in the domain "+domain.getName());
-				for (AsyncCallback<Void> callback : waitingCallbacks)
-					callback.onSuccess(result);
-				waitingCallbacks = null;
-				registerSucceeded = true;
 			}
 			@Override
 			public void onFailure(Throwable e) {
-				Log.error(e.getMessage(), e);
-				for (AsyncCallback<Void> callback : waitingCallbacks)
-					callback.onFailure(e);
-				waitingCallbacks = null;
-				registerSucceeded = false;
+				Log.error("Failed to start EventProcessor", e);
 			}
 		});
-	}
-	
-	/**
-	 * Calls back when the EventProcessor is registered with the domain.
-	 * Callback is immediate if already registered.
-	 * @param callback
-	 */
-	public void addCallback(AsyncCallback<Void> callback) {
-		if (waitingCallbacks != null)
-			waitingCallbacks.add(callback);
-		// we already got our callback, so pass the result straight back:
-		else if (registerSucceeded)
-			callback.onSuccess(null);
-		else
-			callback.onFailure(new Exception());
 	}
 	
 	@Override

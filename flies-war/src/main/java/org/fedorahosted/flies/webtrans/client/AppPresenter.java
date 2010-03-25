@@ -76,7 +76,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 
 	private final TableEditorPresenter tableEditorPresenter;
 	private final DocumentListPresenter documentListPresenter;
-	private final EventProcessor eventProcessor;
 	private final TransUnitNavigationPresenter transUnitNavigationPresenter;
 	private final TransMemoryPresenter transMemoryPresenter;
 	private final TransFilterPresenter transFilterPresenter;
@@ -93,7 +92,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 			CachingDispatchAsync dispatcher,
 			final TableEditorPresenter tableEditorPresenter,
 			final DocumentListPresenter documentListPresenter,
-			final EventProcessor eventProcessor,
 			final TransMemoryPresenter transMemoryPresenter,
 			final TransUnitNavigationPresenter transUnitNavigationPresenter,
 			final TransFilterPresenter transFilterPresenter,
@@ -106,7 +104,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		this.messages = messages;
 		this.dispatcher = dispatcher;
 		this.tableEditorPresenter = tableEditorPresenter;
-		this.eventProcessor = eventProcessor;
 		this.documentListPresenter = documentListPresenter;
 		this.transUnitNavigationPresenter = transUnitNavigationPresenter;
 		this.transMemoryPresenter = transMemoryPresenter;

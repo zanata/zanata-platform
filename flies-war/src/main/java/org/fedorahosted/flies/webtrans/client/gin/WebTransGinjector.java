@@ -28,5 +28,5 @@ public interface WebTransGinjector extends Ginjector {
 	WorkspaceContext getWorkspaceContext();
 	
 	EventProcessor getEventProcessor();
-
+	
 }
