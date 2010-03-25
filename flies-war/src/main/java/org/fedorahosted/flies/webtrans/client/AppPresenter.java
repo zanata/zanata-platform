@@ -69,7 +69,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		HasClickHandlers getHelpLink();
 		HasClickHandlers getDocumentsLink();
 		void setUserLabel(String userLabel);
-		void setLocaleLabel(String localeLabel);
 		void setWorkspaceNameLabel(String workspaceNameLabel);
 		void setSelectedDocument(DocumentInfo document);
 	}
@@ -249,7 +248,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		display.setUserLabel(identity.getPerson().getName());
 		
 		display.setWorkspaceNameLabel(workspaceContext.getWorkspaceName());
-		display.setLocaleLabel(workspaceContext.getLocaleName());
 		
 		Window.setTitle( messages.windowTitle(workspaceContext.getWorkspaceName(), workspaceContext.getLocaleName()));
 	}

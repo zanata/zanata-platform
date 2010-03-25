@@ -583,6 +583,13 @@
          stdDeviation="0.43817805"
          id="feGaussianBlur4067" />
     </filter>
+    <inkscape:perspective
+       id="perspective2850"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -963,5 +970,27 @@
            transform="matrix(-1,0,0,1,818.39751,21.170619)" />
       </g>
     </g>
-  </g>
+    <path
+       d="m 132.3242,579.10486 c -0.18441,-2.01153 1.29094,-3.20055 4.36158,-3.51511 1.46219,-0.1498 2.008,-0.34672 1.95512,-0.70537 -0.0403,-0.27367 0.19383,-0.65514 0.52041,-0.84773 0.37129,-0.21896 0.58625,-0.97686 0.57367,-2.02258 -0.0235,-1.94868 0.5535,-4.27394 1.23298,-4.96923 0.84962,-0.8694 2.14085,-0.75685 3.26993,0.28504 1.2107,1.11719 1.706,2.35292 2.72731,6.80431 0.34825,1.51781 0.80236,3.36482 1.00913,4.10447 0.60345,2.15853 0.44018,4.21619 -0.37256,4.69546 -0.39167,0.23098 -0.91131,0.36033 -1.15475,0.28745 -0.24344,-0.0729 -1.08404,-0.005 -1.86801,0.1503 -0.78399,0.15552 -2.60793,-0.052 -4.05323,-0.46123 -1.44529,-0.40918 -3.17552,-0.82379 -3.84495,-0.92136 -1.59631,-0.23266 -3.93936,-1.13906 -4.12489,-1.59572 -0.0807,-0.19859 -0.18495,-0.7785 -0.23174,-1.2887 z m 3.61839,1.52735 c 4.50275,1.29791 5.11499,1.45831 6.44014,1.68711 1.59719,0.2758 1.91883,0.12852 1.52834,-0.69986 -0.16345,-0.34672 -0.22541,-0.88969 -0.1377,-1.20658 0.11392,-0.41165 -0.28114,-0.76454 -1.38361,-1.2358 -0.84869,-0.3628 -1.86677,-1.10496 -2.26239,-1.64928 -0.6128,-0.84308 -1.08432,-0.97008 -3.18382,-0.85762 -2.941,0.15754 -4.12601,1.18155 -3.50868,3.03192 0.0421,0.12613 1.17056,0.54469 2.50772,0.93011 z m 6.08944,-6.02607 c 1.0181,0.23976 2.45342,1.4406 2.92979,2.45113 0.44743,0.9492 1.24023,1.21538 1.43712,0.48251 0.0678,-0.2524 -0.32137,-2.1601 -0.86483,-4.23934 -1.83468,-7.01937 -4.32809,-7.99657 -4.60592,-1.80513 -0.0959,2.1382 0.17126,2.89122 1.10384,3.11083 z"
+       style="fill:#e9c6af"
+       id="path2585"
+       inkscape:export-filename="/home/asgeirf/projects/flies/flies-war/src/main/resources/org/fedorahosted/flies/webtrans/images/flies_logo_small.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2833"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#502d16;fill-opacity:1;stroke:none;font-family:Monospace;-inkscape-font-specification:Monospace"
+       transform="translate(62.458048,522.99866)"
+       inkscape:export-filename="/home/asgeirf/projects/flies/flies-war/src/main/resources/org/fedorahosted/flies/webtrans/images/flies_logo_small.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><flowRegion
+         id="flowRegion2835"><rect
+           id="rect2837"
+           width="65.659912"
+           height="51.012703"
+           x="87.88327"
+           y="44.441612"
+           style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#502d16;font-family:Monospace;-inkscape-font-specification:Monospace" /></flowRegion><flowPara
+         id="flowPara2839">Flies</flowPara></flowRoot>  </g>
 </svg>

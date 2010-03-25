@@ -36,7 +36,7 @@ public class AppView extends Composite implements AppPresenter.Display {
 	Anchor signOutLink, leaveLink, helpLink, documentsLink;
 
 	@UiField
-	SpanElement user, workspaceName, workspaceLocale, selectedDocumentSpan;
+	SpanElement user, selectedDocumentSpan;
 
 	@UiField
 	LayoutPanel editor;
@@ -85,8 +85,6 @@ public class AppView extends Composite implements AppPresenter.Display {
 		
 		
 		user.setInnerText("Bob the Builder");
-		workspaceName.setInnerText("Deployment Guide (F13)");
-		workspaceLocale.setInnerText("German");
 		pager.setVisible(false);
 		transUnitNavigation.setVisible(false);
 		
@@ -201,12 +199,7 @@ public class AppView extends Composite implements AppPresenter.Display {
 	
 	@Override
 	public void setWorkspaceNameLabel(String workspaceNameLabel) {
-		workspaceName.setInnerText(workspaceNameLabel);
-	}
-	
-	@Override
-	public void setLocaleLabel(String localeLabel) {
-		workspaceLocale.setInnerText(localeLabel);
+		documentsLink.setText(workspaceNameLabel);
 	}
 	
 	@Override
