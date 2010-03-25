@@ -19,7 +19,6 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.client.InlineCellEditor.InlineCellEditorImages;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -280,7 +279,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 		
 		this.cellValue = cellValue;
 		textArea.setFocus(true);
-		DOM.scrollIntoView(textArea.getElement());
 		toggleFuzzy.setValue(cellValue.getStatus() == ContentState.NeedReview);
 	}
 
@@ -365,7 +363,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 		gotoPrevFuzzy(curRow, state);
 	}
 
-	//	public void handleNextNew() {
+//	public void handleNextNew() {
 //		cancelEdit();
 //		incRow();
 //		gotoNextFuzzy(row, ContentState.New);

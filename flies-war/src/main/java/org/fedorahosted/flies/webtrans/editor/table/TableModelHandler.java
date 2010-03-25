@@ -19,7 +19,7 @@ public abstract class TableModelHandler<RowType> {
 	
 	abstract void gotoNextRow(int row);
 	abstract void gotoPrevRow(int row);
-	abstract void nextFuzzyIndex(int row, ContentState state);
-	abstract void prevFuzzyIndex(int row, ContentState state);
+	abstract void gotoNextFuzzy(int row, ContentState state);
+	abstract void gotoPrevFuzzy(int row, ContentState state);
 
 }

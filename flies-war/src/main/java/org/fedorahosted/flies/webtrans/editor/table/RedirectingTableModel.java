@@ -74,11 +74,11 @@ public class RedirectingTableModel<RowType> extends MutableTableModel<RowType> {
 	
 	public void gotoNextFuzzy(int row, ContentState state) {
 		if(tableModelHandler != null)
-			tableModelHandler.nextFuzzyIndex(row, state);
+			tableModelHandler.gotoNextFuzzy(row, state);
 	}
 	
 	public void gotoPrevFuzzy(int row, ContentState state) {
 		if(tableModelHandler != null)
-			tableModelHandler.prevFuzzyIndex(row, state);
+			tableModelHandler.gotoPrevFuzzy(row, state);
 	}
 }
