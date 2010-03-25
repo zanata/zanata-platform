@@ -4,6 +4,7 @@ import org.fedorahosted.flies.gwt.model.DocumentInfo;
 import org.fedorahosted.flies.webtrans.client.ui.HasPager;
 import org.fedorahosted.flies.webtrans.client.ui.Pager;
 import org.fedorahosted.flies.webtrans.editor.HasTransUnitCount;
+import org.fedorahosted.flies.webtrans.editor.HasTransUnitCount.CountUnit;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;
@@ -75,6 +76,8 @@ public class AppView extends Composite implements AppPresenter.Display {
 		this.sidePanel = sidePanel;
 		this.pager = new Pager(resources);
 		this.transUnitCountBar = new TransUnitCountBar(messages);
+		transUnitCountBar.setToggleEnabled(true);
+		transUnitCountBar.setCountUnit(CountUnit.TranslationUnit);
 
 		initWidget(uiBinder.createAndBindUi(this));
 		mainSplitPanel.setWidgetMinSize(sidePanel, 200);

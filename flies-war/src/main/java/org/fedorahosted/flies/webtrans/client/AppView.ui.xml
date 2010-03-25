@@ -14,6 +14,12 @@
 		.topPanel-Navigation {
 			float: right;
 		}
+
+		.unitStatus {
+			float: right;
+			width: 100px;
+			height: 1.2em;
+		}
 		
 		.topPanel-Workspace {
 			padding-left: 30px;
@@ -52,12 +58,7 @@
 		.pager {
 			text-align: center;	
 		}
-		
-		.statusBar {
-			float: right;
-		}
-
-		
+				
 		.transUnitNavigation {
 			float:right; 
 			display:inline;
@@ -82,7 +83,7 @@
 				</g:layer>
 				<g:layer top="6px" height="100%" left="6px" right="6px">
 					<g:FlowPanel>
-						<g:HTMLPanel styleName="{style.statusBar}">
+						<g:HTMLPanel styleName="{style.topPanel-Navigation}">
 							<nobr>
 								<b><span ui:field="user">User Name</span></b>
 								<span class="{style.divider}">|</span>
@@ -120,7 +121,7 @@
 						<g:south size="22">
 							<g:FlowPanel>
 								<fui:Pager ui:field="pager" styleName="{style.pager}" />
-								<f:TransUnitCountBar ui:field='transUnitCountBar' styleName="{style.statusBar}"/>
+								<f:TransUnitCountBar ui:field='transUnitCountBar' styleName="{style.unitStatus}"/>
 							</g:FlowPanel>
 						</g:south>
 					</g:DockLayoutPanel>

@@ -49,21 +49,6 @@ public class TransUnitCountBar extends Composite implements HasTransUnitCount {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
-	@Override
-	public void setCount(int approved, int needReview, int untranslated) {
-		count.set(ContentState.Approved, approved);
-		count.set(ContentState.NeedReview, needReview);
-		count.set(ContentState.New, untranslated);
-		refresh();
-	}
-	
-	@Override
-	public void setCount(TransUnitCount count) {
-		count.set(count);
-		refresh();
-	}
-	
-
 	public void refresh() {
 		int approved = count.get(ContentState.Approved);
 		int needReview = count.get(ContentState.NeedReview);
@@ -156,7 +141,7 @@ public class TransUnitCountBar extends Composite implements HasTransUnitCount {
 	}
 	
 	@Override
-	public int getCount() {
+	public int getTotal() {
 		return count.getTotal();
 	}
 
@@ -168,6 +153,20 @@ public class TransUnitCountBar extends Composite implements HasTransUnitCount {
 	@Override
 	public void setCount(ContentState state, int count) {
 		this.count.set(state, count);
+		refresh();
 	}
 	
+	@Override
+	public void setCount(int approved, int needReview, int untranslated) {
+		count.set(ContentState.Approved, approved);
+		count.set(ContentState.NeedReview, needReview);
+		count.set(ContentState.New, untranslated);
+		refresh();
+	}
+	
+	@Override
+	public void setCount(TransUnitCount count) {
+		this.count.set(count);
+		refresh();
+	}
 }

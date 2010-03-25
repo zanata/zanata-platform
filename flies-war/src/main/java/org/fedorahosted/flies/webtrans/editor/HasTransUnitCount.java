@@ -18,7 +18,7 @@ public interface HasTransUnitCount {
 	public void setCount(TransUnitCount count);
 
 	public int getCount(ContentState state);
-	public int getCount();
+	public int getTotal();
 	
 	public void setLabelFormat(LabelFormat format);
 	public LabelFormat getLabelFormat();

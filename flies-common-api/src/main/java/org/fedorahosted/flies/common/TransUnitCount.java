@@ -7,6 +7,15 @@ public  final class TransUnitCount {
 		private int needReview;
 		private int untranslated;
 		
+		public TransUnitCount() {
+		}
+		
+		public TransUnitCount(int approved, int needReview, int untranslated) {
+			this.approved = approved;
+			this.needReview = needReview;
+			this.untranslated = untranslated;
+		}
+		
 		public void increment(ContentState state) {
 			increment(state, 1);
 		}
@@ -49,6 +58,12 @@ public  final class TransUnitCount {
 			default:
 				throw new RuntimeException("not implemented for state " + state.name());
 			}
+		}
+		
+		public void add(TransUnitCount other) {
+			this.approved += other.approved;
+			this.needReview += other.needReview;
+			this.untranslated += other.untranslated;
 		}
 		
 		public void set(TransUnitCount other) {

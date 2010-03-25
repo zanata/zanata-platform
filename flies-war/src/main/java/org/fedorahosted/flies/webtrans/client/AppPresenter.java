@@ -1,5 +1,7 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import java.util.ArrayList;
+
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
@@ -11,6 +13,9 @@ import org.fedorahosted.flies.common.TransUnitCount;
 import org.fedorahosted.flies.gwt.auth.Identity;
 import org.fedorahosted.flies.gwt.common.WorkspaceContext;
 import org.fedorahosted.flies.gwt.model.DocumentInfo;
+import org.fedorahosted.flies.gwt.model.DocumentStatus;
+import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCount;
+import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCountResult;
 import org.fedorahosted.flies.webtrans.client.AppPresenter.Display.MainView;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
@@ -20,6 +25,7 @@ import org.fedorahosted.flies.webtrans.editor.HasTransUnitCount;
 import org.fedorahosted.flies.webtrans.editor.filter.TransFilterPresenter;
 import org.fedorahosted.flies.webtrans.editor.table.TableEditorPresenter;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -30,6 +36,7 @@ import com.google.gwt.gen2.table.event.client.PageChangeHandler;
 import com.google.gwt.gen2.table.event.client.PageCountChangeEvent;
 import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -212,22 +219,21 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 			}
 		}));
 		
-//		dispatcher.execute(new GetProjectStatusCount(workspaceContext.getProjectContainerId(), workspaceContext.getLocaleId()), new AsyncCallback<GetProjectStatusCountResult>() {
-//			@Override
-//			public void onFailure(Throwable caught) {
-//			}
-//			@Override
-//			public void onSuccess(GetProjectStatusCountResult result) {
-//				ArrayList<DocumentStatus> liststatus = result.getStatus();
-//				for(DocumentStatus doc : liststatus) {
-////					projectCount.increment(doc.ge, count)
-////					fuzzy =fuzzy+ doc.getFuzzy();
-////					translated = translated + doc.getTranslated();
-////					untranslated = untranslated + doc.getUntranslated();
-//				}
-//				getDisplay().setCount((int) fuzzy, (int)translated, (int)untranslated);
-//			}
-//		});
+		dispatcher.execute(new GetProjectStatusCount(), new AsyncCallback<GetProjectStatusCountResult>() {
+			@Override
+			public void onFailure(Throwable caught) {
+			}
+			@Override
+			public void onSuccess(GetProjectStatusCountResult result) {
+				ArrayList<DocumentStatus> liststatus = result.getStatus();
+				for(DocumentStatus doc : liststatus) {
+					projectCount.add(doc.getCount());
+				}
+				display.setTransUnitCountBarVisible(true);
+				display.getTransUnitCountBar().setCount(projectCount);
+				
+			}
+		});
 		
 		registerHandler( display.getSignOutLink().addClickHandler( new ClickHandler() {
 			@Override
