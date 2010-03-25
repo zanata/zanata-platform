@@ -188,9 +188,11 @@ Removes some of the styling on the page-level splitters
 }
 
 td.TableEditorCell {
+	border-top: 1px solid #e0e0e0;
 }
 
 td.TableEditorCell-Source {
+	border-right: 1px solid #e0e0e0;
 }
 
 td.TableEditorCell-Target {
@@ -208,7 +210,7 @@ tr.TableEditorRow.highlighted td.TableEditorCell-Target {
 }
 
 tr.TableEditorRow.even-row {
-	background-color: #fafaff;
+	background-color: #ffffff;
 }
 tr.TableEditorRow.odd-row {
 	background-color: #ffffff;
