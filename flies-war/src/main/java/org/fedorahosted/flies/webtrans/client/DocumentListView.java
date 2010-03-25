@@ -8,6 +8,7 @@ import java.util.Map;
 import org.fedorahosted.flies.gwt.model.DocumentInfo;
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.webtrans.client.ui.ClearableTextBox;
+import org.fedorahosted.flies.webtrans.editor.HasTransUnitCount;
 import org.fedorahosted.flies.webtrans.editor.filter.ContentFilter;
 
 import com.google.gwt.core.client.GWT;
@@ -45,6 +46,9 @@ public class DocumentListView extends Composite implements
 	@UiField
 	ScrollPanel documentScrollPanel;
 
+	@UiField(provided=true)
+	TransUnitCountBar transUnitCountBar;
+	
 	@UiField(provided = true)
 	ClearableTextBox filterTextBox;
 	
@@ -62,6 +66,7 @@ public class DocumentListView extends Composite implements
 		this.messages = messages;
 		filterTextBox = new ClearableTextBox(resources);
 		nodes = new HashMap<DocumentId, DocumentNode>();
+		transUnitCountBar = new TransUnitCountBar(messages);
 		initWidget( uiBinder.createAndBindUi(this) );
 	}
 
@@ -193,6 +198,11 @@ public class DocumentListView extends Composite implements
 	@Override
 	public HasValue<String> getFilterTextBox() {
 		return filterTextBox.getTextBox();
+	}
+	
+	@Override
+	public HasTransUnitCount getTransUnitCountBar() {
+		return transUnitCountBar;
 	}
 	
 }

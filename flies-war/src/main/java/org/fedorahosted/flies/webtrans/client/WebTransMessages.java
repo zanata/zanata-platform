@@ -25,7 +25,7 @@ public interface WebTransMessages extends Messages {
 	String hrefHelpLink();
 
 
-	@DefaultMessage("{0} :: {1} :: Flies Web Translation")
+	@DefaultMessage("{0} to {1} - Flies Web Translation")
 	String windowTitle(String workspaceName, String localeName);
 	
 	@DefaultMessage("first Page")

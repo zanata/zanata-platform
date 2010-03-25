@@ -15,16 +15,9 @@
 			float: right;
 		}
 
-		.unitStatus {
-			float: right;
-			width: 100px;
-			height: 1.2em;
-		}
-		
 		.topPanel-Workspace {
-			padding-left: 30px;
 			display: inline;
-			font-size: 18px;
+			font-size: 1.2em;
 		}
 		.topPanel-Workspace-Name {
 			color: #6C5353;	
@@ -35,17 +28,6 @@
 		
 		.divider {
 			color: #e0e0e0;	
-		}
-		
-		.tmview{
-			padding-left: 7px;
-			padding-bottom: 7px;
-			background-color: #F5F8FF;
-			border: 2px solid #99ccff;
-			-moz-border-radius-topleft: 7px;
-			-webkit-border-top-left-radius: 7px;
-			-moz-border-radius-topright: 7px;
-			-webkit-border-top-right-radius: 7px;
 		}
 		
 		.editor {
@@ -67,21 +49,21 @@
 	<g:LayoutPanel>
 		<g:layer top="0px" height="30px">
 			<g:LayoutPanel>
-				<g:layer top="6px" height="100%" left="6px"  width="100px">
+				<g:layer top="6px" height="100%" left="6px"  width="20px">
 					<g:Image resource='{resources.logo}'/>
 				</g:layer>
-				<g:layer top="6px" height="100%" left="100px" right="6px">
+				<g:layer top="6px" height="100%" left="26px" right="200px">
 					<g:FlowPanel>
 						<g:HTMLPanel styleName="{style.topPanel-Workspace}">
 						<nobr>
-							<span ui:field="workspaceName" class="{style.topPanel-Workspace-Name}">Name of Workspace</span>
-							<span class="{style.divider}">to</span>
-							<span ui:field="workspaceLocale" class="{style.topPanel-Workspace-Locale}">Localename</span>
+							<g:Anchor href="#" ui:field="documentsLink">Documents</g:Anchor>
+							<span class="{style.divider}">></span>
+							<em><span ui:field="selectedDocumentSpan">No document Selected</span></em>
 						</nobr>
 						</g:HTMLPanel>
 					</g:FlowPanel>
 				</g:layer>
-				<g:layer top="6px" height="100%" left="6px" right="6px">
+				<g:layer top="6px" height="100%" left="500px" right="6px">
 					<g:FlowPanel>
 						<g:HTMLPanel styleName="{style.topPanel-Navigation}">
 							<nobr>
@@ -104,33 +86,8 @@
 					<f:SidePanel ui:field="sidePanel"/>	   
 				</g:east>
 				<g:center>
-					<g:DockLayoutPanel ui:field="editorPanel" unit="PX">
-						<g:north size="40">
-							<g:HTMLPanel>
-								<div style="display: inline;">
-									<g:Anchor href="#" ui:field="documentsLink">Documents</g:Anchor>
-									<span class="{style.divider}">></span>
-									<em><span ui:field="selectedDocumentSpan">No document Selected</span></em>
-								</div>
-								<g:FlowPanel ui:field="transUnitNavigation" styleName="{style.transUnitNavigation}" />
-							</g:HTMLPanel>
-						</g:north>
-						<g:center>
-							<g:LayoutPanel ui:field="editor" />
-						</g:center>
-						<g:south size="22">
-							<g:FlowPanel>
-								<fui:Pager ui:field="pager" styleName="{style.pager}" />
-								<f:TransUnitCountBar ui:field='transUnitCountBar' styleName="{style.unitStatus}"/>
-							</g:FlowPanel>
-						</g:south>
-					</g:DockLayoutPanel>
+					<g:LayoutPanel ui:field="editor" />
 				</g:center>
-				<g:south size="150" min-size="100">
-					<g:FlowPanel styleName="{style.tmview}" ui:field="tmPanel">
-						<g:Label>TM view</g:Label>
-					</g:FlowPanel>
-				</g:south>
 			</g:SplitLayoutPanel>
 		</g:layer>
 	</g:LayoutPanel>
