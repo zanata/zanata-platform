@@ -100,14 +100,16 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 	 */
 	private static final int MIN_HEIGHT = 48;
 	
+	private final NavigationMessages messages;
+	
 	/**
 	 * Construct a new {@link InlineTargetCellEditor}.
 	 * 
 	 * @param content
 	 *            the {@link Widget} used to edit
 	 */
-	public InlineTargetCellEditor(CancelCallback<TransUnit> callback, EditRowCallback tranValueCallback) {
-		this(GWT.<TargetCellEditorImages> create(TargetCellEditorImages.class), callback, tranValueCallback);
+	public InlineTargetCellEditor(final NavigationMessages messages, CancelCallback<TransUnit> callback, EditRowCallback tranValueCallback) {
+		this(messages, GWT.<TargetCellEditorImages> create(TargetCellEditorImages.class), callback, tranValueCallback);
 	}
 
 	/**
@@ -118,8 +120,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 	 * @param images
 	 *            the images to use for the accept/cancel buttons
 	 */
-	public InlineTargetCellEditor(TargetCellEditorImages images, CancelCallback<TransUnit> callback,EditRowCallback rowCallback ) {
-
+	public InlineTargetCellEditor(final NavigationMessages messages, TargetCellEditorImages images, CancelCallback<TransUnit> callback,EditRowCallback rowCallback ) {
+		this.messages = messages;
 		// Wrap contents in a table
 		layoutTable = new FlowPanel();
 
@@ -181,13 +183,13 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 		operationsPanel.add(toggleFuzzy);
 		
 		PushButton cancelButton = new PushButton(images.cellEditorCancel().createImage(),cancelHandler);
-		cancelButton.setText(NavigationConsts.EDIT_CANCEL_DESC);
-		cancelButton.setTitle(NavigationConsts.EDIT_CANCEL_SHORTCUT);
+		cancelButton.setText( messages.editCancel() );
+		cancelButton.setTitle( messages.editCancelShortcut() );
 		operationsPanel.add(cancelButton);
 
 		PushButton acceptButton = new PushButton(images.cellEditorAccept().createImage(),acceptHandler);
-		acceptButton.setText(NavigationConsts.EDIT_SAVE_DESC);
-		acceptButton.setTitle(NavigationConsts.EDIT_SAVE_SHORTCUT);
+		acceptButton.setText( messages.editSave() );
+		acceptButton.setTitle( messages.editSaveShortcut() );
 		operationsPanel.add(acceptButton);
 	}
 

@@ -136,7 +136,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
 	private InlineTargetCellEditor targetCellEditor;
 
-	public TableEditorTableDefinition(final RedirectingCachedTableModel<TransUnit> tableModel) {
+	public TableEditorTableDefinition(final NavigationMessages messages, final RedirectingCachedTableModel<TransUnit> tableModel) {
 		setRowRenderer(rowRenderer);
 		//indicatorColumnDefinition.setMaximumColumnWidth(15);
 		//indicatorColumnDefinition.setPreferredColumnWidth(15);
@@ -171,7 +171,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 				tableModel.gotoPrevFuzzy(row, state);
 			}
 		};
-		this.targetCellEditor = new InlineTargetCellEditor(cancelCallBack,transValueCallBack);
+		this.targetCellEditor = new InlineTargetCellEditor(messages, cancelCallBack,transValueCallBack);
 		targetColumnDefinition.setCellEditor(targetCellEditor);
 		
 		// See _INDEX consts above if modifying!

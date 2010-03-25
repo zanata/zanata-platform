@@ -22,8 +22,6 @@
 			<g:Anchor href="#" ui:field="prevUntranslatedButton" />
 			<span class="{style.divider}">|</span>
 			<g:Anchor href="#" ui:field="nextUntranslatedButton" />
-			<span class="{style.divider}">|</span>
-			<g:Label styleName="{style.inlineLabel}" ui:field="shortcutLabel" />
 		</nobr>
 	</g:HTMLPanel>
 </ui:UiBinder> 

@@ -23,6 +23,7 @@ import com.google.gwt.gen2.table.event.client.RowSelectionHandler;
 import com.google.gwt.gen2.table.event.client.TableEvent.Row;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 
 public class TableEditorView extends PagingScrollTable<TransUnit> implements
 		TableEditorPresenter.Display, HasSelectionHandlers<TransUnit>, HasPageNavigation {
@@ -31,13 +32,14 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements
 	private final TableEditorTableDefinition tableDefinition;
 	private int cachedPages = 2;
 	
-	public TableEditorView() {
-		this(new RedirectingTableModel<TransUnit>());
+	@Inject
+	public TableEditorView(NavigationMessages messages) {
+		this(messages, new RedirectingTableModel<TransUnit>());
 	}
 	
-	public TableEditorView(RedirectingTableModel<TransUnit> tableModel) {
+	public TableEditorView(NavigationMessages messages, RedirectingTableModel<TransUnit> tableModel) {
 		this(new RedirectingCachedTableModel<TransUnit>(tableModel), 
-		new TableEditorTableDefinition(new RedirectingCachedTableModel<TransUnit>(tableModel)));
+		new TableEditorTableDefinition(messages, new RedirectingCachedTableModel<TransUnit>(tableModel)));
 		
 	}
 	

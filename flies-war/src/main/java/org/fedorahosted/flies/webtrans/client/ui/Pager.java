@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.webtrans.client.ui;
 import org.fedorahosted.flies.webtrans.client.Resources;
-import org.fedorahosted.flies.webtrans.editor.table.NavigationConsts;
+import org.fedorahosted.flies.webtrans.client.WebTransMessages;
+import org.fedorahosted.flies.webtrans.editor.table.NavigationMessages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -46,7 +47,10 @@ public class Pager extends Composite implements HasPager {
 	
 	public static final int PAGECOUNT_UNKNOWN = -1;
 	
-	public Pager(Resources resources) {
+	private final WebTransMessages messages;
+	
+	public Pager(final WebTransMessages messages, final Resources resources) {
+		this.messages = messages;
 		this.resources = resources;
 		initWidget(uiBinder.createAndBindUi(this));
 		firstPageDisabled.setVisible(false);
@@ -54,24 +58,22 @@ public class Pager extends Composite implements HasPager {
 		nextPageDisabled.setVisible(false);
 		previousPageDisabled.setVisible(false);
 
-		firstPage.setText(NavigationConsts.FIRST_PAGE_DESC);
-		// TODO This is preliminary, until the ShortcutRegistry is created.
-		// Then we should set "title" attribute in the xml, and maybe something
-		// like ShortcutRegistry.register(firstPage.getText(), firstPage.getTitle())
-		firstPage.setTitle(NavigationConsts.FIRST_PAGE_SHORTCUT);
-		firstPageDisabled.setText(NavigationConsts.FIRST_PAGE_DESC);
+		firstPage.setText( messages.firstPage() );
+
+		firstPage.setTitle( messages.firstPageShortcut() );
+		firstPageDisabled.setText( messages.firstPage() );
 		
-		previousPage.setText(NavigationConsts.PREV_PAGE_DESC);
-		previousPage.setTitle(NavigationConsts.PREV_PAGE_SHORTCUT);
-		previousPageDisabled.setText(NavigationConsts.PREV_PAGE_DESC);
+		previousPage.setText( messages.prevPage() );
+		previousPage.setTitle( messages.prevPageShortcut() );
+		previousPageDisabled.setText( messages.prevPage() );
 		
-		nextPage.setText(NavigationConsts.NEXT_PAGE_DESC);
-		nextPage.setTitle(NavigationConsts.NEXT_PAGE_SHORTCUT);
-		nextPageDisabled.setText(NavigationConsts.NEXT_PAGE_DESC);
+		nextPage.setText( messages.nextPage() );
+		nextPage.setTitle( messages.nextPageShortcut() );
+		nextPageDisabled.setText( messages.nextPage() );
 		
-		lastPage.setText(NavigationConsts.LAST_PAGE_DESC);
-		lastPage.setTitle(NavigationConsts.LAST_PAGE_SHORTCUT);
-		lastPageDisabled.setText(NavigationConsts.LAST_PAGE_DESC);
+		lastPage.setText( messages.lastPage() );
+		lastPage.setTitle( messages.lastPageShortcut() );
+		lastPageDisabled.setText( messages.lastPage() );
 	}
 
 	@Override

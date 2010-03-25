@@ -74,7 +74,7 @@ public class AppView extends Composite implements AppPresenter.Display {
 		this.resources = resources;
 		this.messages = messages;
 		this.sidePanel = sidePanel;
-		this.pager = new Pager(resources);
+		this.pager = new Pager(messages, resources);
 		this.transUnitCountBar = new TransUnitCountBar(messages);
 		transUnitCountBar.setToggleEnabled(true);
 		transUnitCountBar.setCountUnit(CountUnit.TranslationUnit);
