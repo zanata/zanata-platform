@@ -44,23 +44,12 @@ public class AppView extends Composite implements AppPresenter.Display {
 	@UiField(provided = true)
 	final Resources resources;
 	
-	@UiField
-	DockLayoutPanel editorPanel;
-	
 	@UiField(provided=true)
 	SidePanel sidePanel;
 	
 	@UiField
 	SplitLayoutPanel mainSplitPanel;
 	
-	@UiField
-	FlowPanel tmPanel, transUnitNavigation;
-	
-	@UiField(provided=true) 
-	Pager pager;
-	
-	@UiField(provided=true)
-	TransUnitCountBar transUnitCountBar;
 	
 	private Widget documentListView;
 	private Widget editorView;
@@ -74,19 +63,9 @@ public class AppView extends Composite implements AppPresenter.Display {
 		this.resources = resources;
 		this.messages = messages;
 		this.sidePanel = sidePanel;
-		this.pager = new Pager(messages, resources);
-		this.transUnitCountBar = new TransUnitCountBar(messages);
-		transUnitCountBar.setToggleEnabled(true);
-		transUnitCountBar.setCountUnit(CountUnit.TranslationUnit);
 
 		initWidget(uiBinder.createAndBindUi(this));
 		mainSplitPanel.setWidgetMinSize(sidePanel, 200);
-		mainSplitPanel.setWidgetMinSize(tmPanel, 150);
-		
-		
-		user.setInnerText("Bob the Builder");
-		pager.setVisible(false);
-		transUnitNavigation.setVisible(false);
 		
 		helpLink.setHref( messages.hrefHelpLink() );
 		helpLink.setTarget("_BLANK");
@@ -111,14 +90,10 @@ public class AppView extends Composite implements AppPresenter.Display {
 		case Documents:
 			editor.setWidgetTopBottom(documentListView, 0, Unit.PX, 0, Unit.PX);
 			editor.setWidgetTopHeight(editorView, 0, Unit.PX, 0, Unit.PX);
-			pager.setVisible(false);
-			transUnitNavigation.setVisible(false);
 			break;
 		case Editor:
 			editor.setWidgetTopBottom(editorView, 0, Unit.PX, 0, Unit.PX);
 			editor.setWidgetTopHeight(documentListView, 0, Unit.PX, 0, Unit.PX);
-			pager.setVisible(true);
-			transUnitNavigation.setVisible(true);
 			break;
 		}
 	}
@@ -136,32 +111,10 @@ public class AppView extends Composite implements AppPresenter.Display {
 	}
 	
 	@Override
-	public void setTransUnitNavigationView(Widget transUnitNavigation) {
-		this.transUnitNavigation.clear();
-		this.transUnitNavigation.add(transUnitNavigation);
-	}
-	
-	@Override
-	public void setTranslationMemoryView(Widget translationMemoryView) {
-		tmPanel.clear();
-		tmPanel.add(translationMemoryView);
-	}
-	
-	@Override
-	public HasPager getTableEditorPager() {
-		return pager;
-	}
-	
-	@Override
 	public void setFilterView(Widget filterView) {
 		sidePanel.setFilterView(filterView);
 	}
 
-	@Override
-	public HasTransUnitCount getTransUnitCountBar() {
-		return transUnitCountBar;
-	}
-	
 	@Override
 	public HasClickHandlers getHelpLink() {
 		return helpLink;
@@ -180,16 +133,6 @@ public class AppView extends Composite implements AppPresenter.Display {
 	@Override
 	public HasClickHandlers getDocumentsLink() {
 		return documentsLink;
-	}
-	
-	@Override
-	public void setTableEditorPagerVisible(boolean visible) {
-		pager.setVisible(visible);
-	}
-	
-	@Override
-	public void setTransUnitCountBarVisible(boolean visible) {
-		transUnitCountBar.setVisible(visible);
 	}
 	
 	@Override

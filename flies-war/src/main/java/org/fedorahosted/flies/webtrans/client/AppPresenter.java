@@ -53,16 +53,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		
 		void setDocumentListView(Widget documentListView);
 		void setEditorView(Widget editorView);
-		void setTransUnitNavigationView(Widget transUnitNavigation);
-		void setTranslationMemoryView(Widget translationMemoryView);
 		void setFilterView(Widget filterView);
-		
 		void showInMainView(MainView view);
-
-		HasPager getTableEditorPager();
-		void setTableEditorPagerVisible(boolean visible);
-		void setTransUnitCountBarVisible(boolean visible);
-		HasTransUnitCount getTransUnitCountBar();
 		
 		HasClickHandlers getSignOutLink();
 		HasClickHandlers getLeaveWorkspaceLink();
@@ -73,25 +65,22 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		void setSelectedDocument(DocumentInfo document);
 	}
 
-	private final TableEditorPresenter tableEditorPresenter;
 	private final DocumentListPresenter documentListPresenter;
-	private final TransUnitNavigationPresenter transUnitNavigationPresenter;
-	private final TransMemoryPresenter transMemoryPresenter;
 	private final TransFilterPresenter transFilterPresenter;
+	private final TranslationEditorPresenter translationEditorPresenter;
 	private final SidePanelPresenter sidePanelPresenter;
 	private final WorkspaceContext workspaceContext;
 	private final DispatchAsync dispatcher;
 	private final Identity identity;
 	
-	private final TransUnitCount projectCount = new TransUnitCount();
 	private final WebTransMessages messages;
 
 	@Inject
 	public AppPresenter(Display display, EventBus eventBus,
 			CachingDispatchAsync dispatcher,
 			final TableEditorPresenter tableEditorPresenter,
+			final TranslationEditorPresenter translationEditorPresenter,
 			final DocumentListPresenter documentListPresenter,
-			final TransMemoryPresenter transMemoryPresenter,
 			final TransUnitNavigationPresenter transUnitNavigationPresenter,
 			final TransFilterPresenter transFilterPresenter,
 			final SidePanelPresenter sidePanelPresenter, 
@@ -102,10 +91,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		this.identity = identity;
 		this.messages = messages;
 		this.dispatcher = dispatcher;
-		this.tableEditorPresenter = tableEditorPresenter;
 		this.documentListPresenter = documentListPresenter;
-		this.transUnitNavigationPresenter = transUnitNavigationPresenter;
-		this.transMemoryPresenter = transMemoryPresenter;
+		this.translationEditorPresenter = translationEditorPresenter;
 		this.transFilterPresenter = transFilterPresenter;
 		this.sidePanelPresenter = sidePanelPresenter;
 		this.workspaceContext = workspaceContext;
@@ -128,7 +115,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 						popup.addStyleDependentName("Notification");
 						popup.addStyleName("Severity-"
 								+ event.getSeverity().name());
-						Widget center = tableEditorPresenter.getDisplay()
+						Widget center = translationEditorPresenter.getDisplay()
 								.asWidget();
 						popup.setWidth(center.getOffsetWidth() - 40 + "px");
 						popup.setWidget(new Label(event.getMessage()));
@@ -141,14 +128,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		Window.enableScrolling(false);
 
 		documentListPresenter.bind();
-		tableEditorPresenter.bind();
-		transUnitNavigationPresenter.bind();
 
 		display.setDocumentListView(documentListPresenter.getDisplay()
 				.asWidget());
-		display.setEditorView(tableEditorPresenter.getDisplay().asWidget());
-		display.setTransUnitNavigationView(transUnitNavigationPresenter
-				.getDisplay().asWidget());
 
 		registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(),
 				new DocumentSelectionHandler() {
@@ -159,54 +141,15 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 					}
 				}));
 
-		registerHandler(display.getTableEditorPager().addValueChangeHandler(
-				new ValueChangeHandler<Integer>() {
-
-					@Override
-					public void onValueChange(ValueChangeEvent<Integer> event) {
-						tableEditorPresenter.cancelEdit();
-						tableEditorPresenter.gotoPage(event.getValue() - 1,
-								false);
-					}
-				}));
-
-		// TODO this uses incubator's HandlerRegistration
-		tableEditorPresenter.addPageChangeHandler(new PageChangeHandler() {
-			@Override
-			public void onPageChange(PageChangeEvent event) {
-				display.getTableEditorPager().setValue(event.getNewPage() + 1);
-			}
-		});
-
-		// TODO this uses incubator's HandlerRegistration
-		tableEditorPresenter
-				.addPageCountChangeHandler(new PageCountChangeHandler() {
-					@Override
-					public void onPageCountChange(PageCountChangeEvent event) {
-						display.getTableEditorPager().setPageCount(
-								event.getNewPageCount());
-					}
-				});
-
-		transMemoryPresenter.bind();
-		display.setTranslationMemoryView(transMemoryPresenter.getDisplay()
-				.asWidget());
-
+		translationEditorPresenter.bind();
+		display.setEditorView(translationEditorPresenter.getDisplay().asWidget());
+		
 		sidePanelPresenter.bind();
 
 		transFilterPresenter.bind();
 		display.setFilterView(transFilterPresenter.getDisplay().asWidget());
 
 		display.showInMainView(MainView.Documents);
-		
-		registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler() {
-			@Override
-			public void onTransUnitUpdated(TransUnitUpdatedEvent event) {
-				projectCount.decrement(event.getPreviousStatus());
-				projectCount.increment(event.getNewStatus());
-				getDisplay().getTransUnitCountBar().setCount(projectCount);
-			}
-		}));
 		
 		registerHandler(display.getDocumentsLink().addClickHandler(new ClickHandler() {
 			@Override
@@ -215,21 +158,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 			}
 		}));
 		
-		dispatcher.execute(new GetProjectStatusCount(), new AsyncCallback<GetProjectStatusCountResult>() {
-			@Override
-			public void onFailure(Throwable caught) {
-			}
-			@Override
-			public void onSuccess(GetProjectStatusCountResult result) {
-				ArrayList<DocumentStatus> liststatus = result.getStatus();
-				for(DocumentStatus doc : liststatus) {
-					projectCount.add(doc.getCount());
-				}
-				display.setTransUnitCountBarVisible(true);
-				display.getTransUnitCountBar().setCount(projectCount);
-				
-			}
-		});
 		
 		registerHandler( display.getSignOutLink().addClickHandler( new ClickHandler() {
 			@Override
@@ -258,8 +186,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 
 	@Override
 	protected void onUnbind() {
-		tableEditorPresenter.unbind();
-		// TODO impl
 	}
 
 	@Override

@@ -170,21 +170,34 @@ Removes some of the styling on the page-level splitters
 
 .TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Source{
 	background: url(tu_bg_fuzzy_left.png) repeat-y left;
+	border-right: 3px solid #f7f488;
+	border-left: 3px solid #f7f488;
 }
 .TableEditor tr.NewStateDecoration td.TableEditorCell-Source{
 	background: url(tu_bg_new_left.png) repeat-y left;
+	border-right: 3px solid #aecbde;
+	border-left: 3px solid #aecbde;
+	
 }
 .TableEditor tr.ApprovedStateDecoration td.TableEditorCell-Source{
 	background: url(tu_bg_approved_left.png) repeat-y left;
+	border-right: 3px solid #90cd95;
+	border-left: 3px solid #90cd95;
 }
 .TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Target{
 	background: url(tu_bg_fuzzy_right.png) repeat-y right;
+	border-right: 3px solid #f7f488;
+	border-left: 3px solid #f7f488;
 }
 .TableEditor tr.NewStateDecoration td.TableEditorCell-Target{
 	background: url(tu_bg_new_right.png) repeat-y right;
+	border-right: 3px solid #aecbde;
+	border-left: 3px solid #aecbde;
 }
 .TableEditor tr.ApprovedStateDecoration td.TableEditorCell-Target{
 	background: url(tu_bg_approved_right.png) repeat-y right;
+	border-right: 3px solid #90cd95;
+	border-left: 3px solid #90cd95;
 }
 
 td.TableEditorCell {
@@ -192,7 +205,6 @@ td.TableEditorCell {
 }
 
 td.TableEditorCell-Source {
-	border-right: 1px solid #e0e0e0;
 }
 
 td.TableEditorCell-Target {

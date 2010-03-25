@@ -7,11 +7,19 @@
 	<ui:with field='resources' type="org.fedorahosted.flies.webtrans.client.Resources"/>
 
 	<ui:style>
+		.unitStatus {
+			float: right;
+			width: 100px;
+			height: 1.2em;
+		}
 	</ui:style>
 	
 	<g:LayoutPanel>
-		<g:layer top='0px' height='2em'>
+		<g:layer top='0px' height='2em' left="0px" right="200px">
 			<fui:ClearableTextBox ui:field='filterTextBox' />
+		</g:layer>
+		<g:layer top='0px' height='2em' right="0px" width="100px">
+			<f:TransUnitCountBar ui:field='transUnitCountBar' styleName="{style.unitStatus}"/>
 		</g:layer>
 		<g:layer top='2em' bottom='0px'>
 			<g:ScrollPanel ui:field='documentScrollPanel'>

@@ -14,6 +14,7 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.fedorahosted.flies.common.ContentState;
+import org.fedorahosted.flies.common.TransUnitCount;
 import org.fedorahosted.flies.gwt.common.WorkspaceContext;
 import org.fedorahosted.flies.gwt.common.WorkspaceId;
 import org.fedorahosted.flies.gwt.model.DocumentInfo;
@@ -29,6 +30,7 @@ import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.client.ui.HasFilter;
+import org.fedorahosted.flies.webtrans.editor.HasTransUnitCount;
 import org.fedorahosted.flies.webtrans.editor.filter.ContentFilter;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -63,12 +65,14 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 		void setFilter(ContentFilter<DocumentInfo> filter);
 		void removeFilter();
 		HasValue<String> getFilterTextBox();
+		HasTransUnitCount getTransUnitCountBar();
 	}
 
 	private final DispatchAsync dispatcher;
     private final WorkspaceContext workspaceContext;
 	private final Map<DocumentId, DocumentStatus> statuscache = new HashMap<DocumentId, DocumentStatus>();
 	private DocumentInfo currentDocument;
+	private final TransUnitCount projectCount = new TransUnitCount();
     
 	
 	@Inject
@@ -147,6 +151,32 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 				}
 			}
 		}));
+		
+		
+		registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler() {
+			@Override
+			public void onTransUnitUpdated(TransUnitUpdatedEvent event) {
+				projectCount.decrement(event.getPreviousStatus());
+				projectCount.increment(event.getNewStatus());
+				getDisplay().getTransUnitCountBar().setCount(projectCount);
+			}
+		}));
+		
+		dispatcher.execute(new GetProjectStatusCount(), new AsyncCallback<GetProjectStatusCountResult>() {
+			@Override
+			public void onFailure(Throwable caught) {
+			}
+			@Override
+			public void onSuccess(GetProjectStatusCountResult result) {
+				ArrayList<DocumentStatus> liststatus = result.getStatus();
+				for(DocumentStatus doc : liststatus) {
+					projectCount.add(doc.getCount());
+				}
+				display.getTransUnitCountBar().setCount(projectCount);
+				
+			}
+		});
+		
 		
 	}
 
