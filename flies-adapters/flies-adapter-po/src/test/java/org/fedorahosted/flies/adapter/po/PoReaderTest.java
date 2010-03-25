@@ -31,7 +31,7 @@ public class PoReaderTest {
 		Document doc = new Document("doc1", "doc1.pot", "/", PoReader.PO_CONTENT_TYPE);
 		
 		InputSource inputSource = new InputSource(
-				new File(testDir, "pot/Accounts_And_Subscriptions.pot").toURI().toString()
+				new File(testDir, "pot/RPM.pot").toURI().toString()
 		);
 		inputSource.setEncoding("utf8");
 		
@@ -42,7 +42,7 @@ public class PoReaderTest {
 		String [] locales = new String[]{"ja-JP"};
 		for (String locale : locales){
 			inputSource = new InputSource(
-					new File(testDir, locale+"/Accounts_And_Subscriptions.po").toURI().toString()
+					new File(testDir, locale+"/RPM.po").toURI().toString()
 			);
 			inputSource.setEncoding("utf8");
 			System.out.println("extracting target: " + locale);
@@ -57,9 +57,9 @@ public class PoReaderTest {
 		
 		List<DocumentResource> resources = doc.getResources();
 		
-		TextFlow tf1 = (TextFlow) resources.get(0);
-		Assert.assertEquals("Accounts and Subscriptions", tf1.getContent());
-		Assert.assertEquals("アカウントと登録", tf1.getTarget(ja).getContent());
+		TextFlow tf1 = (TextFlow) resources.get(3);
+		Assert.assertEquals("Important", tf1.getContent());
+		Assert.assertEquals("キーのインポート", tf1.getTarget(ja).getContent());
 		
 		// TODO test PO headers and attributes
 	}
