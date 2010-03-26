@@ -21,6 +21,32 @@
   <defs
      id="defs4">
     <marker
+       inkscape:stockid="Arrow2Mend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Mend"
+       style="overflow:visible;">
+      <path
+         id="path4371"
+         style="font-size:12.0;fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round;"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(0.6) rotate(180) translate(0,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Lend"
+       style="overflow:visible;">
+      <path
+         id="path4365"
+         style="font-size:12.0;fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round;"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(1.1) rotate(180) translate(1,0)" />
+    </marker>
+    <marker
        inkscape:stockid="Tail"
        orient="auto"
        refY="0.0"
@@ -655,15 +681,6 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
-    <filter
-       color-interpolation-filters="sRGB"
-       inkscape:collect="always"
-       id="filter4855-5">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="0.33315089"
-         id="feGaussianBlur4857-3" />
-    </filter>
     <inkscape:perspective
        id="perspective4895"
        inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
@@ -671,15 +688,6 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
-    <filter
-       color-interpolation-filters="sRGB"
-       inkscape:collect="always"
-       id="filter4855-5-5">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="0.33315089"
-         id="feGaussianBlur4857-3-4" />
-    </filter>
     <inkscape:perspective
        id="perspective4895-0"
        inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
@@ -687,15 +695,6 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
-    <filter
-       color-interpolation-filters="sRGB"
-       inkscape:collect="always"
-       id="filter4855-5-4">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="0.33315089"
-         id="feGaussianBlur4857-3-0" />
-    </filter>
     <inkscape:perspective
        id="perspective4936"
        inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
@@ -703,17 +702,15 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
-    <filter
-       color-interpolation-filters="sRGB"
-       inkscape:collect="always"
-       id="filter4855-5-5-3">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="0.33315089"
-         id="feGaussianBlur4857-3-4-0" />
-    </filter>
     <inkscape:perspective
        id="perspective4964"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3048"
        inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
        inkscape:vp_z="1 : 0.5 : 1"
        inkscape:vp_y="0 : 1000 : 0"
@@ -722,29 +719,234 @@
     <filter
        color-interpolation-filters="sRGB"
        inkscape:collect="always"
-       id="filter4855-5-8">
+       id="filter4855-5-5-3-8">
       <feGaussianBlur
          inkscape:collect="always"
          stdDeviation="0.33315089"
-         id="feGaussianBlur4857-3-9" />
+         id="feGaussianBlur4857-3-4-0-9" />
+    </filter>
+    <inkscape:perspective
+       id="perspective3078"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3130"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <filter
+       color-interpolation-filters="sRGB"
+       inkscape:collect="always"
+       id="filter4855-5-5-3-8-6">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.33315089"
+         id="feGaussianBlur4857-3-4-0-9-0" />
+    </filter>
+    <inkscape:perspective
+       id="perspective3158"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <filter
+       color-interpolation-filters="sRGB"
+       inkscape:collect="always"
+       id="filter4855-5-5-3-8-6-8">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.33315089"
+         id="feGaussianBlur4857-3-4-0-9-0-3" />
+    </filter>
+    <inkscape:perspective
+       id="perspective3186"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <filter
+       color-interpolation-filters="sRGB"
+       inkscape:collect="always"
+       id="filter4855-5-5-3-8-61">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.33315089"
+         id="feGaussianBlur4857-3-4-0-9-1" />
+    </filter>
+    <inkscape:perspective
+       id="perspective3214"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <filter
+       color-interpolation-filters="sRGB"
+       inkscape:collect="always"
+       id="filter4855-5-5-3-8-61-9">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.33315089"
+         id="feGaussianBlur4857-3-4-0-9-1-0" />
     </filter>
     <filter
        color-interpolation-filters="sRGB"
        inkscape:collect="always"
-       id="filter4855-5-5-8">
+       id="filter4855-5-5-3-8-0">
       <feGaussianBlur
          inkscape:collect="always"
          stdDeviation="0.33315089"
-         id="feGaussianBlur4857-3-4-7" />
+         id="feGaussianBlur4857-3-4-0-9-2" />
     </filter>
     <filter
        color-interpolation-filters="sRGB"
        inkscape:collect="always"
-       id="filter4855-5-5-3-0">
+       id="filter4855-5-5-3-8-6-2">
       <feGaussianBlur
          inkscape:collect="always"
          stdDeviation="0.33315089"
-         id="feGaussianBlur4857-3-4-0-2" />
+         id="feGaussianBlur4857-3-4-0-9-0-6" />
+    </filter>
+    <filter
+       color-interpolation-filters="sRGB"
+       inkscape:collect="always"
+       id="filter4855-5-5-3-8-6-8-9">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.33315089"
+         id="feGaussianBlur4857-3-4-0-9-0-3-0" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter4229"
+       x="-0.11390323"
+       width="1.2278065"
+       y="-0.12678636"
+       height="1.2535727">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.28735352"
+         id="feGaussianBlur4231" />
+    </filter>
+    <inkscape:perspective
+       id="perspective4322"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective5601"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective5633"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <filter
+       color-interpolation-filters="sRGB"
+       inkscape:collect="always"
+       id="filter4855-5-5-3-8-61-9-4">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.33315089"
+         id="feGaussianBlur4857-3-4-0-9-1-0-1" />
+    </filter>
+    <inkscape:perspective
+       id="perspective5718"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective5749"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <filter
+       color-interpolation-filters="sRGB"
+       inkscape:collect="always"
+       id="filter4229-5"
+       x="-0.11390323"
+       width="1.2278064"
+       y="-0.12678637"
+       height="1.2535727">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.28735352"
+         id="feGaussianBlur4231-1" />
+    </filter>
+    <inkscape:perspective
+       id="perspective5793"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <filter
+       color-interpolation-filters="sRGB"
+       inkscape:collect="always"
+       id="filter4855-5-5-3-8-61-9-4-2">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.33315089"
+         id="feGaussianBlur4857-3-4-0-9-1-0-1-2" />
+    </filter>
+    <inkscape:perspective
+       id="perspective5821"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <filter
+       color-interpolation-filters="sRGB"
+       inkscape:collect="always"
+       id="filter4229-5-4"
+       x="-0.11390323"
+       width="1.2278064"
+       y="-0.12678637"
+       height="1.2535727">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.28735352"
+         id="feGaussianBlur4231-1-0" />
+    </filter>
+    <inkscape:perspective
+       id="perspective5865"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <filter
+       color-interpolation-filters="sRGB"
+       inkscape:collect="always"
+       id="filter4229-5-3"
+       x="-0.11390323"
+       width="1.2278064"
+       y="-0.12678637"
+       height="1.2535727">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.28735352"
+         id="feGaussianBlur4231-1-4" />
     </filter>
   </defs>
   <sodipodi:namedview
@@ -754,9 +956,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1"
-     inkscape:cx="522.29706"
-     inkscape:cy="790.9196"
+     inkscape:zoom="4"
+     inkscape:cx="344.04086"
+     inkscape:cy="295.18941"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -1154,40 +1356,146 @@
        id="rect4822"
        sodipodi:nodetypes="cccccccc" />
     <path
-       style="fill:#aecbde;fill-opacity:1;stroke:#9eabb0;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter4855-5-5-3)"
-       d="m 290.5469,666.34917 -39.78125,0 c -2.8108,0 -5.0625,0.39839 -5.0625,3.40625 l 0,5.21875 c 0,3.00786 2.2517,3.40625 5.0625,3.40625 l 39.78125,0 c 2.91499,-0.26054 12.18433,-2.34279 13.99116,-6.53125 -2.19829,-3.5336 -11.37812,-5.62404 -13.99116,-5.5 z"
-       id="rect4822-1-3-6"
-       sodipodi:nodetypes="cccccccc"
-       transform="matrix(0.48486666,0,0,0.97924026,168.38353,86.189839)" />
+       style="fill:#90cd95;fill-opacity:1;stroke:#9eabb0;stroke-width:0.68905801;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter4855-5-5-3-8-6-8)"
+       d="m 320.00801,739.16723 c -0.0432,0.004 -0.0827,0.0253 -0.125,0.0312 1.65445,0.27443 3.32203,2.22975 4.28125,5.34375 -0.82132,3.84516 -2.77593,5.86324 -4.4375,6.3125 0.24466,0.0487 0.50824,0.0937 0.78125,0.0937 l 25.28125,0 c 1.41338,-0.25513 5.90518,-2.30474 6.78125,-6.40625 -1.06588,-3.46024 -5.51427,-5.49646 -6.78125,-5.375 l -25.28125,0 c -0.17036,0 -0.33972,-0.0164 -0.5,0 l 0,10e-5 z"
+       id="rect4822-1-3-6-6-6-8"
+       sodipodi:nodetypes="ccccccccccc"
+       transform="matrix(0.99520786,0,0,1.0673866,-202.04376,-31.398592)"
+       inkscape:export-filename="/home/asgeirf/projects/flies/flies-war/src/main/resources/org/fedorahosted/flies/webtrans/images/next_approved.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
     <path
-       style="fill:#f7f488;fill-opacity:1;stroke:#9eabb0;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter4855-5-5)"
-       d="m 290.5469,666.34917 -39.78125,0 c -2.8108,0 -5.0625,0.39839 -5.0625,3.40625 l 0,5.21875 c 0,3.00786 2.2517,3.40625 5.0625,3.40625 l 39.78125,0 c 2.91499,-0.26054 12.18433,-2.34279 13.99116,-6.53125 -2.19829,-3.5336 -11.37812,-5.62404 -13.99116,-5.5 z"
-       id="rect4822-1-3"
-       sodipodi:nodetypes="cccccccc"
-       transform="matrix(0.48486666,0,0,0.97924026,151.60319,86.098657)" />
+       style="fill:#f7f488;fill-opacity:1;stroke:#9eabb0;stroke-width:0.68905801;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter4855-5-5-3-8-6)"
+       d="m 320.00801,739.16723 c -0.0432,0.004 -0.0827,0.0253 -0.125,0.0312 1.65445,0.27443 3.32203,2.22975 4.28125,5.34375 -0.82132,3.84516 -2.77593,5.86324 -4.4375,6.3125 0.24466,0.0487 0.50824,0.0937 0.78125,0.0937 l 25.28125,0 c 1.41338,-0.25513 5.90518,-2.30474 6.78125,-6.40625 -1.06588,-3.46024 -5.51427,-5.49646 -6.78125,-5.375 l -25.28125,0 c -0.17036,0 -0.33972,-0.0164 -0.5,0 l 0,10e-5 z"
+       id="rect4822-1-3-6-6-6"
+       sodipodi:nodetypes="ccccccccccc"
+       transform="matrix(0.99520786,0,0,1.0673866,-125.04376,-32.398553)"
+       inkscape:export-filename="/home/asgeirf/projects/flies/flies-war/src/main/resources/org/fedorahosted/flies/webtrans/images/next_fuzzy.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
     <path
-       style="fill:#90cd95;fill-opacity:1;stroke:#9eabb0;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter4855-5)"
-       d="m 290.5469,666.34917 -39.78125,0 c -2.8108,0 -5.0625,0.39839 -5.0625,3.40625 l 0,5.21875 c 0,3.00786 2.2517,3.40625 5.0625,3.40625 l 39.78125,0 c 2.91499,-0.26054 12.18433,-2.34279 13.99116,-6.53125 -2.19829,-3.5336 -11.37812,-5.62404 -13.99116,-5.5 z"
-       id="rect4822-1"
-       sodipodi:nodetypes="cccccccc"
-       transform="matrix(0.48486666,0,0,0.97924026,131.59894,85.978862)" />
+       style="fill:#aecbde;fill-opacity:1;stroke:#9eabb0;stroke-width:0.68905801;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter4855-5-5-3-8)"
+       d="m 320.00801,739.16723 c -0.0432,0.004 -0.0827,0.0253 -0.125,0.0312 1.65445,0.27443 3.32203,2.22975 4.28125,5.34375 -0.82132,3.84516 -2.77593,5.86324 -4.4375,6.3125 0.24466,0.0487 0.50824,0.0937 0.78125,0.0937 l 25.28125,0 c 1.41338,-0.25513 5.90518,-2.30474 6.78125,-6.40625 -1.06588,-3.46024 -5.51427,-5.49646 -6.78125,-5.375 l -25.28125,0 c -0.17036,0 -0.33972,-0.0164 -0.5,0 l 0,10e-5 z"
+       id="rect4822-1-3-6-6"
+       sodipodi:nodetypes="ccccccccccc"
+       transform="matrix(0.99520786,0,0,1.0673866,-161.04376,-31.398592)"
+       inkscape:export-filename="/home/asgeirf/projects/flies/flies-war/src/main/resources/org/fedorahosted/flies/webtrans/images/next_untranslated.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
     <path
-       style="fill:#aecbde;fill-opacity:1;stroke:#9eabb0;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter4855-5-5-3-0)"
-       d="m 290.5469,666.34917 -39.78125,0 c -2.8108,0 -5.0625,0.39839 -5.0625,3.40625 l 0,5.21875 c 0,3.00786 2.2517,3.40625 5.0625,3.40625 l 39.78125,0 c 2.91499,-0.26054 12.18433,-2.34279 13.99116,-6.53125 -2.19829,-3.5336 -11.37812,-5.62404 -13.99116,-5.5 z"
-       id="rect4822-1-3-6-1"
-       sodipodi:nodetypes="cccccccc"
-       transform="matrix(-0.48486666,0,0,0.97924026,330.00451,86.06355)" />
+       style="fill:#f5f8ff;fill-opacity:0.94117647;stroke:#9eabb0;stroke-width:0.68905801;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter4855-5-5-3-8-61)"
+       d="m 320.00801,739.16723 c -0.0432,0.004 -0.0827,0.0253 -0.125,0.0312 1.65445,0.27443 3.32203,2.22975 4.28125,5.34375 -0.82132,3.84516 -2.77593,5.86324 -4.4375,6.3125 0.24466,0.0487 0.50824,0.0937 0.78125,0.0937 l 25.28125,0 c 1.41338,-0.25513 5.90518,-2.30474 6.78125,-6.40625 -1.06588,-3.46024 -5.51427,-5.49646 -6.78125,-5.375 l -25.28125,0 c -0.17036,0 -0.33972,-0.0164 -0.5,0 l 0,10e-5 z"
+       id="rect4822-1-3-6-6-4"
+       sodipodi:nodetypes="ccccccccccc"
+       transform="matrix(0.99520786,0,0,1.0673866,-87.04376,-31.398592)"
+       inkscape:export-filename="/home/asgeirf/projects/flies/flies-war/src/main/resources/org/fedorahosted/flies/webtrans/images/next_entry.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
     <path
-       style="fill:#f7f488;fill-opacity:1;stroke:#9eabb0;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter4855-5-5-8)"
-       d="m 290.5469,666.34917 -39.78125,0 c -2.8108,0 -5.0625,0.39839 -5.0625,3.40625 l 0,5.21875 c 0,3.00786 2.2517,3.40625 5.0625,3.40625 l 39.78125,0 c 2.91499,-0.26054 12.18433,-2.34279 13.99116,-6.53125 -2.19829,-3.5336 -11.37812,-5.62404 -13.99116,-5.5 z"
-       id="rect4822-1-3-9"
-       sodipodi:nodetypes="cccccccc"
-       transform="matrix(-0.48486666,0,0,0.97924026,346.78485,85.97237)" />
+       style="fill:#90cd95;fill-opacity:1;stroke:#9eabb0;stroke-width:0.68905801;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter4855-5-5-3-8-6-8-9)"
+       d="m 320.00801,739.16723 c -0.0432,0.004 -0.0827,0.0253 -0.125,0.0312 1.65445,0.27443 3.32203,2.22975 4.28125,5.34375 -0.82132,3.84516 -2.77593,5.86324 -4.4375,6.3125 0.24466,0.0487 0.50824,0.0937 0.78125,0.0937 l 25.28125,0 c 1.41338,-0.25513 5.90518,-2.30474 6.78125,-6.40625 -1.06588,-3.46024 -5.51427,-5.49646 -6.78125,-5.375 l -25.28125,0 c -0.17036,0 -0.33972,-0.0164 -0.5,0 l 0,10e-5 z"
+       id="rect4822-1-3-6-6-6-8-3"
+       sodipodi:nodetypes="ccccccccccc"
+       transform="matrix(-0.99520786,0,0,1.0673866,466.03177,-50.398632)"
+       inkscape:export-filename="/home/asgeirf/projects/flies/flies-war/src/main/resources/org/fedorahosted/flies/webtrans/images/prev_approved.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
     <path
-       style="fill:#90cd95;fill-opacity:1;stroke:#9eabb0;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter4855-5-8)"
-       d="m 290.5469,666.34917 -39.78125,0 c -2.8108,0 -5.0625,0.39839 -5.0625,3.40625 l 0,5.21875 c 0,3.00786 2.2517,3.40625 5.0625,3.40625 l 39.78125,0 c 2.91499,-0.26054 12.18433,-2.34279 13.99116,-6.53125 -2.19829,-3.5336 -11.37812,-5.62404 -13.99116,-5.5 z"
-       id="rect4822-1-8"
-       sodipodi:nodetypes="cccccccc"
-       transform="matrix(-0.48486666,0,0,0.97924026,366.78911,85.85258)" />
-  </g>
+       style="fill:#f7f488;fill-opacity:1;stroke:#9eabb0;stroke-width:0.68905801;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter4855-5-5-3-8-6-2)"
+       d="m 320.00801,739.16723 c -0.0432,0.004 -0.0827,0.0253 -0.125,0.0312 1.65445,0.27443 3.32203,2.22975 4.28125,5.34375 -0.82132,3.84516 -2.77593,5.86324 -4.4375,6.3125 0.24466,0.0487 0.50824,0.0937 0.78125,0.0937 l 25.28125,0 c 1.41338,-0.25513 5.90518,-2.30474 6.78125,-6.40625 -1.06588,-3.46024 -5.51427,-5.49646 -6.78125,-5.375 l -25.28125,0 c -0.17036,0 -0.33972,-0.0164 -0.5,0 l 0,10e-5 z"
+       id="rect4822-1-3-6-6-6-5"
+       sodipodi:nodetypes="ccccccccccc"
+       transform="matrix(-0.99520786,0,0,1.0673866,545.03177,-50.398592)"
+       inkscape:export-filename="/home/asgeirf/projects/flies/flies-war/src/main/resources/org/fedorahosted/flies/webtrans/images/prev_fuzzy.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:#aecbde;fill-opacity:1;stroke:#9eabb0;stroke-width:0.68905801;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter4855-5-5-3-8-0)"
+       d="m 320.00801,739.16723 c -0.0432,0.004 -0.0827,0.0253 -0.125,0.0312 1.65445,0.27443 3.32203,2.22975 4.28125,5.34375 -0.82132,3.84516 -2.77593,5.86324 -4.4375,6.3125 0.24466,0.0487 0.50824,0.0937 0.78125,0.0937 l 25.28125,0 c 1.41338,-0.25513 5.90518,-2.30474 6.78125,-6.40625 -1.06588,-3.46024 -5.51427,-5.49646 -6.78125,-5.375 l -25.28125,0 c -0.17036,0 -0.33972,-0.0164 -0.5,0 l 0,10e-5 z"
+       id="rect4822-1-3-6-6-5"
+       sodipodi:nodetypes="ccccccccccc"
+       transform="matrix(-0.99520786,0,0,1.0673866,509.03177,-50.398632)"
+       inkscape:export-filename="/home/asgeirf/projects/flies/flies-war/src/main/resources/org/fedorahosted/flies/webtrans/images/prev_untranslated.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:#f5f8ff;fill-opacity:0.94117647000000004;stroke:#9eabb0;stroke-width:0.68887524;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter4855-5-5-3-8-61-9)"
+       d="m 320.00801,739.16723 c -0.0432,0.004 -0.0827,0.0253 -0.125,0.0312 1.65445,0.27443 3.32203,2.22975 4.28125,5.34375 -0.82132,3.84516 -2.77593,5.86324 -4.4375,6.3125 0.24466,0.0487 0.50824,0.0937 0.78125,0.0937 l 25.28125,0 c 1.41338,-0.25513 5.90518,-2.30474 6.78125,-6.40625 -1.06588,-3.46024 -5.51427,-5.49646 -6.78125,-5.375 l -25.28125,0 c -0.17036,0 -0.33972,-0.0164 -0.5,0 l 0,10e-5 z"
+       id="rect4822-1-3-6-6-4-8"
+       sodipodi:nodetypes="ccccccccccc"
+       transform="matrix(-0.99520786,0,0,1.0673866,581.03177,-50.398632)"
+       inkscape:export-filename="/home/asgeirf/projects/flies/flies-war/src/main/resources/org/fedorahosted/flies/webtrans/images/prev_entry.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <g
+       id="g4330"
+       transform="matrix(0.18298249,0,0,0.17407074,122.69107,603.41051)"
+       style="fill:#6c691d;fill-opacity:1;"
+       inkscape:export-filename="/home/asgeirf/projects/flies/flies-war/src/main/resources/org/fedorahosted/flies/webtrans/images/prev_fuzzy.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <path
+         id="path4328"
+         d="m 466.74592,834.27651 c -4.92162,-1.15994 -12.25788,-4.93274 -17.24592,-8.86901 -4.84244,-3.82137 -10.44059,-10.90726 -10.47496,-13.25873 -0.0379,-2.59631 11.18606,-14.03936 16.73053,-17.05704 14.88892,-8.10356 37.48761,-7.55728 51.19311,1.23752 6.65987,4.27362 14.05132,12.71009 14.05132,16.03791 0,5.87301 -13.83839,17.62927 -24.70083,20.98433 -6.99531,2.16063 -22.28056,2.63906 -29.55325,0.92502 z M 467,827.66593 c 0,-0.38294 -1.23606,-2.47989 -2.74681,-4.65989 -2.25681,-3.25658 -2.74737,-5.04571 -2.75,-10.02951 -0.003,-4.9795 0.31023,-6.12812 1.74681,-6.41344 1.47684,-0.29331 1.75,0.42125 1.75,4.57788 0,5.72365 2.65499,10.39819 7.92168,13.94741 9.18676,6.19096 22.08387,-1.18469 22.07458,-12.62408 -0.007,-9.01922 -5.74794,-14.58793 -15.07551,-14.62408 -3.19282,-0.0124 -6.36079,-0.59835 -7.2573,-1.34239 -3.5056,-2.90939 -18.0939,4.54899 -23.13999,11.8305 l -2.73791,3.9508 2.07494,3.35732 c 2.72694,4.41228 4.66544,6.08962 11.2007,9.69174 5.60416,3.0889 6.93881,3.53855 6.93881,2.33774 z m 6.97251,-6.00786 c -3.84146,-2.64762 -4.90631,-4.48948 -4.94071,-8.54589 -0.036,-4.24516 0.34892,-4.38171 5.98945,-2.12482 2.23395,0.89385 4.27936,1.40754 4.54537,1.14153 0.266,-0.266 -0.39397,-2.53103 -1.46661,-5.03339 -2.18333,-5.09351 -1.95997,-5.73332 2.00156,-5.73332 10.69128,0 15.75524,12.27042 7.9444,19.25 -3.6653,3.27522 -10.14069,3.75645 -14.07346,1.04589 z m 27.69353,3.10732 C 506.35202,822.07811 513,814.83102 513,812.41003 c 0,-4.1393 -13.17858,-15.01106 -18.22939,-15.03847 -1.42022,-0.008 -1.15503,0.80548 1.48333,4.54855 2.73656,3.88239 3.21273,5.43003 3.21273,10.44207 0,5.01982 -0.47495,6.55795 -3.23334,10.47131 C 494.455,825.35643 493,827.66282 493,827.9588 c 0,0.90201 4.26548,-0.66981 8.66604,-3.19341 z"
+         style="fill:#6c691d;fill-opacity:1" />
+    </g>
+    <path
+       style="fill:#9eabb0;fill-opacity:1;stroke:#9eabb0;stroke-width:0.71000004;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter4855-5-5-3-8-61-9-4)"
+       d="m 280.25,774 c -1.81709,0.78649 -4.32746,2.64443 -5.09375,5.3125 0.64064,3.21684 3.21044,5.25793 5.09375,6.21875 L 280.25,774 z"
+       id="rect4822-1-3-6-6-4-8-6"
+       transform="matrix(2.5777535,0,0,0.62375068,-471.52207,258.51129)"
+       inkscape:export-filename="/home/asgeirf/projects/flies/flies-war/src/main/resources/org/fedorahosted/flies/webtrans/images/prev_entry.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <g
+       id="g4330-2"
+       transform="matrix(0.18298249,0,0,0.17407074,121.66612,621.70841)"
+       style="fill:#6c691d;fill-opacity:1;"
+       inkscape:export-filename="/home/asgeirf/projects/flies/flies-war/src/main/resources/org/fedorahosted/flies/webtrans/images/next_fuzzy.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <path
+         id="path4328-4"
+         d="m 466.74592,834.27651 c -4.92162,-1.15994 -12.25788,-4.93274 -17.24592,-8.86901 -4.84244,-3.82137 -10.44059,-10.90726 -10.47496,-13.25873 -0.0379,-2.59631 11.18606,-14.03936 16.73053,-17.05704 14.88892,-8.10356 37.48761,-7.55728 51.19311,1.23752 6.65987,4.27362 14.05132,12.71009 14.05132,16.03791 0,5.87301 -13.83839,17.62927 -24.70083,20.98433 -6.99531,2.16063 -22.28056,2.63906 -29.55325,0.92502 z M 467,827.66593 c 0,-0.38294 -1.23606,-2.47989 -2.74681,-4.65989 -2.25681,-3.25658 -2.74737,-5.04571 -2.75,-10.02951 -0.003,-4.9795 0.31023,-6.12812 1.74681,-6.41344 1.47684,-0.29331 1.75,0.42125 1.75,4.57788 0,5.72365 2.65499,10.39819 7.92168,13.94741 9.18676,6.19096 22.08387,-1.18469 22.07458,-12.62408 -0.007,-9.01922 -5.74794,-14.58793 -15.07551,-14.62408 -3.19282,-0.0124 -6.36079,-0.59835 -7.2573,-1.34239 -3.5056,-2.90939 -18.0939,4.54899 -23.13999,11.8305 l -2.73791,3.9508 2.07494,3.35732 c 2.72694,4.41228 4.66544,6.08962 11.2007,9.69174 5.60416,3.0889 6.93881,3.53855 6.93881,2.33774 z m 6.97251,-6.00786 c -3.84146,-2.64762 -4.90631,-4.48948 -4.94071,-8.54589 -0.036,-4.24516 0.34892,-4.38171 5.98945,-2.12482 2.23395,0.89385 4.27936,1.40754 4.54537,1.14153 0.266,-0.266 -0.39397,-2.53103 -1.46661,-5.03339 -2.18333,-5.09351 -1.95997,-5.73332 2.00156,-5.73332 10.69128,0 15.75524,12.27042 7.9444,19.25 -3.6653,3.27522 -10.14069,3.75645 -14.07346,1.04589 z m 27.69353,3.10732 C 506.35202,822.07811 513,814.83102 513,812.41003 c 0,-4.1393 -13.17858,-15.01106 -18.22939,-15.03847 -1.42022,-0.008 -1.15503,0.80548 1.48333,4.54855 2.73656,3.88239 3.21273,5.43003 3.21273,10.44207 0,5.01982 -0.47495,6.55795 -3.23334,10.47131 C 494.455,825.35643 493,827.66282 493,827.9588 c 0,0.90201 4.26548,-0.66981 8.66604,-3.19341 z"
+         style="fill:#6c691d;fill-opacity:1" />
+    </g>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3409-9"
+       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#006c00;fill-opacity:1;stroke:none;filter:url(#filter4229-5);font-family:Sans;-inkscape-font-specification:Sans"
+       transform="matrix(1.7487258,0,0,1.7598533,-711.37321,-69.684733)"
+       inkscape:export-filename="/home/asgeirf/projects/flies/flies-war/src/main/resources/org/fedorahosted/flies/webtrans/images/next_approved.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><flowRegion
+         id="flowRegion3411-6"><rect
+           id="rect3413-8"
+           width="21.666651"
+           height="11.891838"
+           x="471.30673"
+           y="467.14056"
+           style="font-size:10px;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#006c00;fill-opacity:1" /></flowRegion><flowPara
+         id="flowPara3415-2">✔</flowPara></flowRoot>    <path
+       style="fill:#9eabb0;fill-opacity:1;stroke:#9eabb0;stroke-width:0.71000004;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter4855-5-5-3-8-61-9-4-2)"
+       d="m 280.25,774 c -1.81709,0.78649 -4.32746,2.64443 -5.09375,5.3125 0.64064,3.21684 3.21044,5.25793 5.09375,6.21875 L 280.25,774 z"
+       id="rect4822-1-3-6-6-4-8-6-5"
+       transform="matrix(-2.5777535,0,0,0.62375068,964.1002,277.48284)"
+       inkscape:export-filename="/home/asgeirf/projects/flies/flies-war/src/main/resources/org/fedorahosted/flies/webtrans/images/next_entry.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3409-9-8"
+       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#006c00;fill-opacity:1;stroke:none;filter:url(#filter4229-5-3);font-family:Sans;-inkscape-font-specification:Sans"
+       transform="matrix(1.7487258,0,0,1.7598533,-710.62321,-88.684733)"
+       inkscape:export-filename="/home/asgeirf/projects/flies/flies-war/src/main/resources/org/fedorahosted/flies/webtrans/images/prev_approved.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><flowRegion
+         id="flowRegion3411-6-7"><rect
+           id="rect3413-8-3"
+           width="21.666651"
+           height="11.891838"
+           x="471.30673"
+           y="467.14056"
+           style="font-size:10px;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#006c00;fill-opacity:1" /></flowRegion><flowPara
+         id="flowPara3415-2-2">✔</flowPara></flowRoot>  </g>
 </svg>
