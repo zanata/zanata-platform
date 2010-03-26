@@ -14,6 +14,9 @@ import org.fedorahosted.flies.webtrans.editor.HasTransUnitCount;
 import org.fedorahosted.flies.webtrans.editor.table.TableEditorPresenter;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.table.event.client.PageChangeEvent;
@@ -42,9 +45,15 @@ public class TranslationEditorPresenter extends
 
 		void setTransUnitNavigation(Widget widget);
 
+		void setTmViewVisible(boolean visible);
+		
 		HasTransUnitCount getTransUnitCount();
 
 		HasPager getPageNavigation();
+
+		HasClickHandlers getHideTMViewButton();
+		HasClickHandlers getShowTMViewButton();
+		void setShowTMViewButtonVisible(boolean visible);
 
 	}
 
@@ -128,6 +137,25 @@ public class TranslationEditorPresenter extends
 		registerHandler(
 				eventBus.addHandler(TransUnitUpdatedEvent.getType(), updateHandler)
 		);
+		
+		registerHandler( display.getHideTMViewButton().addClickHandler( new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				display.setTmViewVisible(false);
+				transMemoryPresenter.unbind();
+				display.setShowTMViewButtonVisible(true);
+			}
+		}));
+		
+		display.setShowTMViewButtonVisible(false);
+		display.getShowTMViewButton().addClickHandler( new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				transMemoryPresenter.bind();
+				display.setTmViewVisible(true);
+				display.setShowTMViewButtonVisible(false);
+			}
+		});
 		
 	}
 
