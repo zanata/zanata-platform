@@ -25,4 +25,29 @@ public interface Resources extends ClientBundle {
 
 	@Source("org/fedorahosted/flies/webtrans/images/silk/folder.png")
 	ImageResource folderImage();
+	
+	@Source("org/fedorahosted/flies/webtrans/images/next_entry.png")
+	ImageResource nextEntry();
+
+	@Source("org/fedorahosted/flies/webtrans/images/prev_entry.png")
+	ImageResource prevEntry();
+
+	@Source("org/fedorahosted/flies/webtrans/images/next_fuzzy.png")
+	ImageResource nextFuzzy();
+	
+	@Source("org/fedorahosted/flies/webtrans/images/prev_fuzzy.png")
+	ImageResource prevFuzzy();
+
+	@Source("org/fedorahosted/flies/webtrans/images/next_untranslated.png")
+	ImageResource nextUntranslated();
+	
+	@Source("org/fedorahosted/flies/webtrans/images/prev_untranslated.png")
+	ImageResource prevUntranslated();
+
+	@Source("org/fedorahosted/flies/webtrans/images/next_approved.png")
+	ImageResource nextApproved();
+
+	@Source("org/fedorahosted/flies/webtrans/images/prev_approved.png")
+	ImageResource prevApproved();
+
 }

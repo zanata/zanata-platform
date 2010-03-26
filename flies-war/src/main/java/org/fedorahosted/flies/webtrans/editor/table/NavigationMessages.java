@@ -51,4 +51,7 @@ public interface NavigationMessages extends Messages {
 	
 	@DefaultMessage("Esc")
 	String editCancelShortcut();
+	
+	@DefaultMessage("{0} ({1})")
+	String actionToolTip(String actionName, String shortcut);
 }
