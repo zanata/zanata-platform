@@ -7,12 +7,11 @@
 
 	<ui:style>
 		.sidePanel {
-			background-color: #F5F8FF;
-			border: 2px solid #99ccff;
+			background-color: #ffffff;
+			border: 3px solid #e0e8ee;
 			-moz-border-radius: 7px;
 			-webkit-border-radius: 7px;
 		}
-		
 	</ui:style>
 	
 	<g:LayoutPanel styleName="{style.sidePanel}">

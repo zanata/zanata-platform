@@ -9,12 +9,16 @@
 		.tmview{
 			padding-left: 7px;
 			padding-bottom: 7px;
-			background-color: #F5F8FF;
-			border: 2px solid #99ccff;
-			-moz-border-radius-topleft: 7px;
-			-webkit-border-top-left-radius: 7px;
-			-moz-border-radius-topright: 7px;
-			-webkit-border-top-right-radius: 7px;
+			background-color: #ffffff;
+			border: 3px solid #e0e8ee;
+			-moz-border-radius: 7px;
+			-webkit-border-radius: 7px;
+		}
+		.editor {
+			background-color: #ffffff;
+			border: 3px solid #e0e8ee;
+			-moz-border-radius: 7px;
+			-webkit-border-radius: 7px;
 		}
 		
 		.unitStatus {
@@ -39,7 +43,7 @@
 	</ui:style>
 	<g:SplitLayoutPanel ui:field="splitPanel" styleName="PageSplitLayoutPanel" >
 		<g:center>
-			<g:LayoutPanel>
+			<g:LayoutPanel styleName="{style.editor}">
 				<g:layer top='0px' height='1.3em' right="0px" width="100px">
 					<f:TransUnitCountBar ui:field='transUnitCountBar' styleName="{style.unitStatus}"/>
 				</g:layer>

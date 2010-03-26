@@ -12,9 +12,16 @@
 			width: 100px;
 			height: 1.2em;
 		}
+		.mainPanel {
+			background-color: #ffffff;
+			border: 3px solid #e0e8ee;
+			-moz-border-radius: 7px;
+			-webkit-border-radius: 7px;
+		}
+		
 	</ui:style>
 	
-	<g:LayoutPanel>
+	<g:LayoutPanel styleName="{style.mainPanel}">
 		<g:layer top='0px' height='2em' left="0px" right="200px">
 			<fui:ClearableTextBox ui:field='filterTextBox' />
 		</g:layer>

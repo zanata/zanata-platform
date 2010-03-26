@@ -10,20 +10,40 @@
 		.topPanel {
 			border-bottom: 1px solid #e0e0e0;
 		}
+		.header {
+			background-color: #ffffff;
+		}
 		
 		.topPanel-Navigation {
 			float: right;
+			color: #0203ad;
+		}
+		.topPanel-Navigation a {
+			text-decoration: none;
 		}
 
 		.topPanel-Workspace {
 			display: inline;
 			font-size: 1.2em;
+			color: white;
+			padding: 5px;
+		}
+
+		.topPanel-Workspace a{
+			color: white;
+			font-weight: bold;
+			text-decoration: none;
 		}
 		.topPanel-Workspace-Name {
 			color: #6C5353;	
 		}
 		.topPanel-Workspace-Locale {
 			color: #DEAA87;	
+		}
+
+		.userName {
+			font-weight: bold;
+			color: #ae1f23;
 		}
 		
 		.divider {
@@ -45,29 +65,21 @@
 			float:right; 
 			display:inline;
 		}
+		.overBar{
+			background: #09305c;
+		}
 	</ui:style>
 	<g:LayoutPanel>
 		<g:layer top="0px" height="30px">
-			<g:LayoutPanel>
-				<g:layer top="6px" height="100%" left="6px"  width="20px">
-					<g:Image resource='{resources.logo}'/>
+			<g:LayoutPanel styleName="{style.header}">
+				<g:layer top="6px" left="6px" width="18px" height="18px">
+					<g:Image resource="{resources.logo}"/>
 				</g:layer>
-				<g:layer top="6px" height="100%" left="26px" right="200px">
-					<g:FlowPanel>
-						<g:HTMLPanel styleName="{style.topPanel-Workspace}">
-						<nobr>
-							<g:Anchor href="#" ui:field="documentsLink">Documents</g:Anchor>
-							<span class="{style.divider}">></span>
-							<em><span ui:field="selectedDocumentSpan">No document Selected</span></em>
-						</nobr>
-						</g:HTMLPanel>
-					</g:FlowPanel>
-				</g:layer>
-				<g:layer top="6px" height="100%" left="500px" right="6px">
+				<g:layer top="6px" height="100%" left="25px" right="6px">
 					<g:FlowPanel>
 						<g:HTMLPanel styleName="{style.topPanel-Navigation}">
 							<nobr>
-								<b><span ui:field="user">User Name</span></b>
+								<span ui:field="user" class="{style.userName}">User Name</span>
 								<span class="{style.divider}">|</span>
 								<g:Anchor href="#" ui:field="helpLink">Help</g:Anchor>
 								<span class="{style.divider}">|</span>
@@ -80,7 +92,18 @@
 				</g:layer>
 			</g:LayoutPanel>
 		</g:layer>
-		<g:layer top="37px" bottom="7px" left='7px' right='7px' >
+		<g:layer top="30px" height="30px">
+			<g:FlowPanel styleName="{style.overBar}">
+				<g:HTMLPanel styleName="{style.topPanel-Workspace}">
+					<nobr>
+						<g:Anchor href="#" ui:field="documentsLink">Documents</g:Anchor>
+						<span class="{style.divider}">></span>
+						<em><span ui:field="selectedDocumentSpan">No document Selected</span></em>
+					</nobr>
+				</g:HTMLPanel>
+			</g:FlowPanel>
+		</g:layer>
+		<g:layer top="66px" bottom="7px" left='7px' right='7px' >
 			<g:SplitLayoutPanel styleName="PageSplitLayoutPanel" ui:field="mainSplitPanel">
 				<g:east size="200">
 					<f:SidePanel ui:field="sidePanel"/>	   
