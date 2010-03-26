@@ -22,6 +22,7 @@ import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.gen2.table.client.TableModel.Callback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -36,6 +37,11 @@ public class EventProcessor implements RemoteEventListener {
 
 	private interface EventFactory<T extends GwtEvent<?>> {
 		T create(SessionEventData event);
+	}
+	
+	public static interface StartCallback {
+		void onSuccess();
+		void onFailure(Throwable e);
 	}
 	
 	private static class EventRegistry{
@@ -102,15 +108,17 @@ public class EventProcessor implements RemoteEventListener {
 		this.domain =  DomainFactory.getDomain(workspaceContext.getWorkspaceId().toString());
 	}
 	
-	public void start() {
+	public void start(final StartCallback callback) {
 		remoteEventService.addListener(domain, this, new AsyncCallback<Void>() {
 			@Override
 			public void onSuccess(Void result) {
 				Log.info("EventProcessor is now listening for events in the domain "+domain.getName());
+				callback.onSuccess();
 			}
 			@Override
 			public void onFailure(Throwable e) {
 				Log.error("Failed to start EventProcessor", e);
+				callback.onFailure(e);
 			}
 		});
 	}

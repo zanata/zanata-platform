@@ -12,6 +12,7 @@ import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceResult;
 import org.fedorahosted.flies.gwt.rpc.ExitWorkspaceAction;
 import org.fedorahosted.flies.gwt.rpc.ExitWorkspaceResult;
+import org.fedorahosted.flies.webtrans.client.EventProcessor.StartCallback;
 import org.fedorahosted.flies.webtrans.client.gin.WebTransGinjector;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -22,6 +23,8 @@ import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 
 /**
@@ -80,12 +83,28 @@ public class Application implements EntryPoint{
 		});
 		
 		
+		final EventProcessor eventProcessor = injector.getEventProcessor();
+		eventProcessor.start( new StartCallback() {
+			@Override
+			public void onSuccess() {
+				delayedStartApp();
+			}
+			
+			@Override
+			public void onFailure(Throwable e) {
+				RootLayoutPanel.get().add( 
+						new HTML("<h1>Failed to start Event Service...</h1>" 
+						+ "<b>Exception:</b> "+ e.getMessage()));
+			}
+		});
+
+	}
+	
+	private void delayedStartApp() {
 		final AppPresenter appPresenter = injector.getAppPresenter();
 		RootLayoutPanel.get().add( appPresenter.getDisplay().asWidget() );
 		appPresenter.bind();
 
-		final EventProcessor eventProcessor = injector.getEventProcessor();
-		eventProcessor.start();
         // Needed because of this bug:
         // http://code.google.com/p/gwt-presenter/issues/detail?id=6
         PlaceManager placeManager = injector.getPlaceManager();
