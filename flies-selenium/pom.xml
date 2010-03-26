@@ -1,0 +1,104 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    
+    <artifactId>flies-selenium</artifactId>
+    <name>Flies Selenium tests</name>
+    <parent>
+        <artifactId>root</artifactId>
+        <groupId>org.fedorahosted.flies</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    
+    <properties>
+        <selenium.port>6444</selenium.port>
+        <selenium.version>1.0.1</selenium.version>
+        <startURL>http://localhost</startURL>
+    </properties>
+    
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.seleniumhq.selenium.client-drivers</groupId>
+            <artifactId>selenium-java-client-driver</artifactId>
+            <version>${selenium.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>selenium-maven-plugin</artifactId>
+                <version>${selenium.version}</version>
+                <executions>
+                    <execution>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>start-server</goal>
+                        </goals>
+                        <configuration>
+                            <background>true</background>
+                            <port>${selenium.port}</port>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>selenium-maven-plugin</artifactId>
+                <version>${selenium.version}</version>
+                <executions>
+                    <execution>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>selenese</goal>
+                        </goals>
+                        <configuration>
+                            <browser>*firefox</browser>
+                            <startURL>${startURL}</startURL>
+                            <suite>src/test/resources/RootTest.html</suite>
+                            <port>${selenium.port}</port>
+                            <slowResources>true</slowResources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!-- Skip the normal tests, we'll run them in the integration-test phase -->
+                    <skip>true</skip>
+                </configuration>
+                
+                <executions>
+                    <execution>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <skip>false</skip>
+                            <systemProperties>
+                              <property>
+                                <name>selenium.port</name>
+                                <value>${selenium.port}</value>
+                              </property>
+                            </systemProperties>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    
+</project>
