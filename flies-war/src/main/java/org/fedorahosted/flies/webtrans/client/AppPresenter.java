@@ -12,6 +12,7 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.fedorahosted.flies.common.TransUnitCount;
 import org.fedorahosted.flies.gwt.auth.Identity;
 import org.fedorahosted.flies.gwt.common.WorkspaceContext;
+import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.DocumentInfo;
 import org.fedorahosted.flies.gwt.model.DocumentStatus;
 import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCount;
@@ -74,6 +75,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 	private final Identity identity;
 	
 	private final WebTransMessages messages;
+	
+	private DocumentId selectedDocument;
 
 	@Inject
 	public AppPresenter(Display display, EventBus eventBus,
@@ -136,8 +139,10 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 				new DocumentSelectionHandler() {
 					@Override
 					public void onDocumentSelected(DocumentSelectionEvent event) {
+						if(selectedDocument == null || !event.getDocument().getId().equals(selectedDocument)) {
+							display.setSelectedDocument(event.getDocument());
+						}
 						display.showInMainView(MainView.Editor);
-						display.setSelectedDocument(event.getDocument());
 					}
 				}));
 

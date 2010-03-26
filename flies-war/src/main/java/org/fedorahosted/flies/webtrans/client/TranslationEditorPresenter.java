@@ -118,6 +118,9 @@ public class TranslationEditorPresenter extends
 		registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler() {
 			@Override
 			public void onDocumentSelected(DocumentSelectionEvent event) {
+				if(currentDocument != null && currentDocument.getId().equals(event.getDocument().getId())){
+					return;
+				}
 				currentDocument = event.getDocument();
 				requestStatusCount(event.getDocument().getId());
 			}

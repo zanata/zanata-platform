@@ -37,6 +37,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -61,11 +62,11 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 		void clearSelection();
 		void setSelection(DocumentInfo document);
 		void ensureSelectionVisible();
-		HasDocumentSelectionHandlers getDocumentSelectionHandler();
 		void setFilter(ContentFilter<DocumentInfo> filter);
 		void removeFilter();
 		HasValue<String> getFilterTextBox();
 		HasTransUnitCount getTransUnitCountBar();
+		HasSelectionHandlers<DocumentInfo> getDocumentList();
 	}
 
 	private final DispatchAsync dispatcher;
@@ -94,12 +95,12 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 	@Override
 	protected void onBind() {
 		
-		registerHandler(display.getDocumentSelectionHandler().addDocumentSelectionHandler(new DocumentSelectionHandler() {
-			
+		registerHandler( display.getDocumentList().addSelectionHandler(new SelectionHandler<DocumentInfo>() {
 			@Override
-			public void onDocumentSelected(DocumentSelectionEvent event) {
-				display.setSelection(event.getDocument());
-				setValue(event.getDocument(), true);
+			public void onSelection(SelectionEvent<DocumentInfo> event) {
+				currentDocument = event.getSelectedItem();
+				display.setSelection(currentDocument);
+				fireEvent(new DocumentSelectionEvent(currentDocument));
 			}
 		}));
 		
@@ -227,15 +228,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 	public void revealDisplay() {
 		// TODO Auto-generated method stub
 		
-	}
-
-
-	public void setValue(DocumentInfo value, boolean fireEvents) {
-		DocumentInfo oldValue = currentDocument;
-		currentDocument = value;
-		if (oldValue != currentDocument) {
-			fireEvent(new DocumentSelectionEvent(currentDocument));
-		}
 	}
 
 	@Override
