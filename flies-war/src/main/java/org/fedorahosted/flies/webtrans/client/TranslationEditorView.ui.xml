@@ -3,6 +3,8 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:f="urn:import:org.fedorahosted.flies.webtrans.client"
 	xmlns:fui="urn:import:org.fedorahosted.flies.webtrans.client.ui">
+	
+	<ui:with field="resources" type="org.fedorahosted.flies.webtrans.client.Resources" />
 	<ui:style>
 		.tmview{
 			padding-left: 7px;
@@ -25,6 +27,15 @@
 			text-align: center;
 		}
 		
+		.pager {
+			text-align: center;
+			display: inline;
+			}
+		
+		.imageButton {
+			cursor: pointer;
+		}
+				
 	</ui:style>
 	<g:SplitLayoutPanel ui:field="splitPanel" styleName="PageSplitLayoutPanel" >
 		<g:center>
@@ -38,17 +49,29 @@
 				<g:layer top="1.3em" bottom="2em">
 					<g:LayoutPanel ui:field="editor" />
 				</g:layer>
-				<g:layer bottom="0px" height="2em">
-					<g:FlowPanel styleName="{style.centerText}">
-						<fui:Pager ui:field="pager" />
+				<g:layer bottom="0px" height="2em" left="30px" right="30px">
+					<g:FlowPanel styleName="{style.pager}">
+						<fui:Pager ui:field="pager"/>
+					</g:FlowPanel>
+				</g:layer>
+				<g:layer bottom="0px" height="2em" width="30px" right="0px">
+					<g:FlowPanel>
+					<g:Image resource="{resources.tmViewButton}" ui:field="showTmViewLink" styleName="{style.imageButton}" />
 					</g:FlowPanel>
 				</g:layer>
 			</g:LayoutPanel>
 		</g:center>
 		<g:south size="150" min-size="100">
-			<g:FlowPanel styleName="{style.tmview}" ui:field="tmPanel">
-				<g:Label>TM view</g:Label>
-			</g:FlowPanel>
+			<g:LayoutPanel ui:field="tmPanelContainer">
+				<g:layer>
+					<g:FlowPanel styleName="{style.tmview}" ui:field="tmPanel">
+						<g:Label>TM view</g:Label>
+					</g:FlowPanel>
+				</g:layer>
+				<g:layer right="2px" top="2px" width="15px" height="15px">
+					<g:Image resource="{resources.minimizeButton}" ui:field="tmMinimize" styleName="{style.imageButton}" />
+				</g:layer>
+			</g:LayoutPanel>
 		</g:south>
 	</g:SplitLayoutPanel>
 </ui:UiBinder> 

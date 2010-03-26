@@ -51,5 +51,9 @@ public interface WebTransMessages extends Messages {
 	
 	@DefaultMessage("End")
 	String lastPageShortcut();
+
+
+	@DefaultMessage("Show Translation Suggestions")
+	String showTranslationMemoryPanel();
 	
 }

@@ -16,6 +16,9 @@ public interface Resources extends ClientBundle {
 	
 	@Source("org/fedorahosted/flies/webtrans/images/x.png")
 	ImageResource xButton();
+
+	@Source("org/fedorahosted/flies/webtrans/images/x2.png")
+	ImageResource minimizeButton();
 	
 	@Source("org/fedorahosted/flies/webtrans/images/silk/user.png")
 	ImageResource userOnline();
@@ -49,5 +52,8 @@ public interface Resources extends ClientBundle {
 
 	@Source("org/fedorahosted/flies/webtrans/images/prev_approved.png")
 	ImageResource prevApproved();
+	
+	@Source("org/fedorahosted/flies/webtrans/images/tm_view.png")
+	ImageResource tmViewButton();
 
 }
