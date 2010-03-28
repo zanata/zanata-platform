@@ -1,22 +1,15 @@
 package org.fedorahosted.flies.webtrans.client;
 
-import org.fedorahosted.flies.webtrans.client.ui.SplitLayoutPanelHelper;
 import org.fedorahosted.flies.webtrans.client.ui.HasPager;
 import org.fedorahosted.flies.webtrans.client.ui.Pager;
+import org.fedorahosted.flies.webtrans.client.ui.SplitLayoutPanelHelper;
 import org.fedorahosted.flies.webtrans.editor.HasTransUnitCount;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -81,13 +74,14 @@ public class TranslationEditorView extends Composite implements TranslationEdito
 					tmMinimize.setVisible(false);
 					break;
 				}
-				
 			};
 		};
 		tmPanelContainer.sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT);
-			
+ 			
 		initWidget(uiBinder.createAndBindUi(this));
+		tmMinimize.setVisible(false);
 		splitPanel.setWidgetMinSize(tmPanelContainer, 150);
+		
 		showTmViewLink.setTitle( messages.showTranslationMemoryPanel() );
 	}
 
@@ -141,6 +135,7 @@ public class TranslationEditorView extends Composite implements TranslationEdito
 	@Override
 	public void setTmViewVisible(boolean visible) {
 		splitPanel.forceLayout();
+		Widget splitter = SplitLayoutPanelHelper.getAssociatedSplitter(splitPanel, tmPanelContainer);
 		if(visible) {
 			SplitLayoutPanelHelper.setSplitPosition(splitPanel, tmPanelContainer, southHeight);
 		}
@@ -148,7 +143,9 @@ public class TranslationEditorView extends Composite implements TranslationEdito
 			southHeight = splitPanel.getWidgetContainerElement(tmPanelContainer).getOffsetHeight();
 			SplitLayoutPanelHelper.setSplitPosition(splitPanel, tmPanelContainer, 0);
 		}
+		splitter.setVisible(visible);
 		splitPanel.animate(500);
+
 	}
 	
 	@Override

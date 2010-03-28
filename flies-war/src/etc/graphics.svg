@@ -20,6 +20,28 @@
    version="1.1">
   <defs
      id="defs4">
+    <linearGradient
+       id="linearGradient3994">
+      <stop
+         style="stop-color:#09305c;stop-opacity:1;"
+         offset="0"
+         id="stop3996" />
+      <stop
+         style="stop-color:#09305c;stop-opacity:0.58823532;"
+         offset="1"
+         id="stop3998" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3984">
+      <stop
+         style="stop-color:#09305c;stop-opacity:1;"
+         offset="0"
+         id="stop3986" />
+      <stop
+         style="stop-color:#002d5d;stop-opacity:0"
+         offset="1"
+         id="stop3988" />
+    </linearGradient>
     <marker
        inkscape:stockid="Arrow2Mend"
        orient="auto"
@@ -823,18 +845,6 @@
          stdDeviation="0.33315089"
          id="feGaussianBlur4857-3-4-0-9-0-3-0" />
     </filter>
-    <filter
-       inkscape:collect="always"
-       id="filter4229"
-       x="-0.11390323"
-       width="1.2278065"
-       y="-0.12678636"
-       height="1.2535727">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="0.28735352"
-         id="feGaussianBlur4231" />
-    </filter>
     <inkscape:perspective
        id="perspective4322"
        inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
@@ -915,19 +925,6 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
-    <filter
-       color-interpolation-filters="sRGB"
-       inkscape:collect="always"
-       id="filter4229-5-4"
-       x="-0.11390323"
-       width="1.2278064"
-       y="-0.12678637"
-       height="1.2535727">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="0.28735352"
-         id="feGaussianBlur4231-1-0" />
-    </filter>
     <inkscape:perspective
        id="perspective5865"
        inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
@@ -948,6 +945,33 @@
          stdDeviation="0.28735352"
          id="feGaussianBlur4231-1-4" />
     </filter>
+    <inkscape:perspective
+       id="perspective3156"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3984"
+       id="linearGradient3990"
+       x1="431.366"
+       y1="552.36218"
+       x2="500"
+       y2="712.36218"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-88.741901,1.767767)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3994"
+       id="linearGradient4000"
+       x1="410.12192"
+       y1="482.08057"
+       x2="480.8326"
+       y2="482.08057"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(36.60331,-927.55782)" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -956,9 +980,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="4"
-     inkscape:cx="344.04086"
-     inkscape:cy="295.18941"
+     inkscape:zoom="1"
+     inkscape:cx="353.97377"
+     inkscape:cy="580.00104"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -1330,7 +1354,7 @@
     </g>
     <path
        d="m 132.3242,579.10486 c -0.18441,-2.01153 1.29094,-3.20055 4.36158,-3.51511 1.46219,-0.1498 2.008,-0.34672 1.95512,-0.70537 -0.0403,-0.27367 0.19383,-0.65514 0.52041,-0.84773 0.37129,-0.21896 0.58625,-0.97686 0.57367,-2.02258 -0.0235,-1.94868 0.5535,-4.27394 1.23298,-4.96923 0.84962,-0.8694 2.14085,-0.75685 3.26993,0.28504 1.2107,1.11719 1.706,2.35292 2.72731,6.80431 0.34825,1.51781 0.80236,3.36482 1.00913,4.10447 0.60345,2.15853 0.44018,4.21619 -0.37256,4.69546 -0.39167,0.23098 -0.91131,0.36033 -1.15475,0.28745 -0.24344,-0.0729 -1.08404,-0.005 -1.86801,0.1503 -0.78399,0.15552 -2.60793,-0.052 -4.05323,-0.46123 -1.44529,-0.40918 -3.17552,-0.82379 -3.84495,-0.92136 -1.59631,-0.23266 -3.93936,-1.13906 -4.12489,-1.59572 -0.0807,-0.19859 -0.18495,-0.7785 -0.23174,-1.2887 z m 3.61839,1.52735 c 4.50275,1.29791 5.11499,1.45831 6.44014,1.68711 1.59719,0.2758 1.91883,0.12852 1.52834,-0.69986 -0.16345,-0.34672 -0.22541,-0.88969 -0.1377,-1.20658 0.11392,-0.41165 -0.28114,-0.76454 -1.38361,-1.2358 -0.84869,-0.3628 -1.86677,-1.10496 -2.26239,-1.64928 -0.6128,-0.84308 -1.08432,-0.97008 -3.18382,-0.85762 -2.941,0.15754 -4.12601,1.18155 -3.50868,3.03192 0.0421,0.12613 1.17056,0.54469 2.50772,0.93011 z m 6.08944,-6.02607 c 1.0181,0.23976 2.45342,1.4406 2.92979,2.45113 0.44743,0.9492 1.24023,1.21538 1.43712,0.48251 0.0678,-0.2524 -0.32137,-2.1601 -0.86483,-4.23934 -1.83468,-7.01937 -4.32809,-7.99657 -4.60592,-1.80513 -0.0959,2.1382 0.17126,2.89122 1.10384,3.11083 z"
-       style="fill:#e9c6af"
+       style="fill:#ff7a2e;fill-opacity:1"
        id="path2585"
        inkscape:export-filename="/home/asgeirf/projects/flies/flies-war/src/main/resources/org/fedorahosted/flies/webtrans/images/flies_logo_small.png"
        inkscape:export-xdpi="90"
@@ -1497,5 +1521,29 @@
            x="471.30673"
            y="467.14056"
            style="font-size:10px;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#006c00;fill-opacity:1" /></flowRegion><flowPara
-         id="flowPara3415-2-2">✔</flowPara></flowRoot>  </g>
+         id="flowPara3415-2-2">✔</flowPara></flowRoot>    <rect
+       style="fill:url(#linearGradient3990);fill-opacity:1;stroke:#99ccff;stroke-width:1.26800001;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect3162"
+       width="136"
+       height="72"
+       x="343.25809"
+       y="518.12994" />
+    <rect
+       style="fill:url(#linearGradient4000);fill-opacity:1;stroke:none"
+       id="rect3992"
+       width="30"
+       height="30"
+       x="446.72522"
+       y="-466.33691"
+       transform="matrix(0,1,-1,0,0,0)" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:none"
+       id="rect4023"
+       width="150.61374"
+       height="85.206367"
+       x="-2087.0256"
+       y="-254.7247"
+       inkscape:export-xdpi="31.687754"
+       inkscape:export-ydpi="31.687754" />
+  </g>
 </svg>

@@ -67,7 +67,7 @@
 		</g:center>
 		<g:south size="150" min-size="100">
 			<g:LayoutPanel ui:field="tmPanelContainer">
-				<g:layer>
+				<g:layer top="0" bottom="8px">
 					<g:FlowPanel styleName="{style.tmview}" ui:field="tmPanel">
 						<g:Label>TM view</g:Label>
 					</g:FlowPanel>
