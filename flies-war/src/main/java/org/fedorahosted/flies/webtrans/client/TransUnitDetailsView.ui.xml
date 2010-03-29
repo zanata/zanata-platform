@@ -11,10 +11,14 @@
 			color: grey;
 			}
 	</ui:style>
-	<g:LayoutPanel>
+	<g:LayoutPanel ui:field="rootPanel">
 		<g:layer top="5px" bottom="5px" left="5px" right="5px">
-			<g:Label styleName="{style.tuDetailsInactive}">
+			<g:Label styleName="{style.tuDetailsInactive}" ui:field="noDetailsLabel">
 				Select a Translation Unit to view details.
+			</g:Label>
+		</g:layer>
+		<g:layer top="0px" height="0px">
+			<g:Label ui:field="sourceCommentsLabel">
 			</g:Label>
 		</g:layer>
 	</g:LayoutPanel>

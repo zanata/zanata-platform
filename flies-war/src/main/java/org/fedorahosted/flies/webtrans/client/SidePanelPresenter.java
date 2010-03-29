@@ -16,21 +16,25 @@ public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Displ
 	public interface Display extends WidgetDisplay{
 		void setFilterView(Widget widget);
 		void setWorkspaceUsersView(Widget widget);
-
+		void setTransUnitDetailView(Widget widget);
+		
 		void collapseUsersPanel();
 		void expandUsersPanel();
 	}
 	
 	private final TransFilterPresenter transFilterPresenter;
 	private final WorkspaceUsersPresenter workspaceUsersPresenter;
+	private final TransUnitDetailsPresenter transUnitDetailsPresenter;
 	
 	@Inject
-	public SidePanelPresenter(final Display display, final EventBus eventBus, 
+	public SidePanelPresenter(final Display display, final EventBus eventBus,
+			final TransUnitDetailsPresenter transUnitDetailsPresenter,
 			final WorkspaceUsersPresenter workspaceUsersPresenter,
 			final TransFilterPresenter transFilterPresenter) {
 		super(display, eventBus);
 		this.workspaceUsersPresenter = workspaceUsersPresenter;
 		this.transFilterPresenter = transFilterPresenter;
+		this.transUnitDetailsPresenter = transUnitDetailsPresenter;
 	}
 
 	@Override
@@ -40,6 +44,10 @@ public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Displ
 
 	@Override
 	protected void onBind() {
+		
+		transUnitDetailsPresenter.bind();
+		display.setTransUnitDetailView(transUnitDetailsPresenter.getDisplay().asWidget());
+		
 		workspaceUsersPresenter.bind();
 		display.setWorkspaceUsersView(workspaceUsersPresenter.getDisplay().asWidget());
 		

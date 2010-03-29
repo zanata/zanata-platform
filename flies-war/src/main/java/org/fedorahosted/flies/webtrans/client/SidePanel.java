@@ -23,7 +23,7 @@ public class SidePanel extends Composite implements SidePanelPresenter.Display {
 	LayoutPanel usersPanelContainer;
 	
 	@UiField
-	LayoutPanel filterPanelContainer;
+	LayoutPanel filterPanelContainer, transUnitDetailContainer;
 	
 	private final int HEIGHT_USERPANEL_EXPANDED = 200;
 	private final int HEIGHT_USERPANEL_COLLAPSED = 20;
@@ -77,6 +77,12 @@ public class SidePanel extends Composite implements SidePanelPresenter.Display {
 	public void setWorkspaceUsersView(Widget widget) {
 		usersPanelContainer.clear();
 		usersPanelContainer.add(widget);
+	}
+	
+	@Override
+	public void setTransUnitDetailView(Widget widget) {
+		transUnitDetailContainer.clear();
+		transUnitDetailContainer.add(widget);
 	}
 	
 	private void cancelCollapseUsersPanel() {

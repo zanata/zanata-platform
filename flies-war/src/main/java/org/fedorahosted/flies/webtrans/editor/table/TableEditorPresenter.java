@@ -39,6 +39,7 @@ import org.fedorahosted.flies.webtrans.client.TransMemoryCopyHandler;
 import org.fedorahosted.flies.webtrans.client.NotificationEvent.Severity;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitEditEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitEditEventHandler;
+import org.fedorahosted.flies.webtrans.client.events.TransUnitSelectionEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
@@ -134,10 +135,9 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		registerHandler(display.getSelectionHandlers().addSelectionHandler(new SelectionHandler<TransUnit>() {
 			@Override
 			public void onSelection(SelectionEvent<TransUnit> event) {
-				if(event.getSelectedItem() != selectedTransUnit) {
+				if(selectedTransUnit == null || !event.getSelectedItem().getId().equals(selectedTransUnit.getId())) {
 					selectedTransUnit = event.getSelectedItem();
-					//startEditing(selectedTransUnit);
-					eventBus.fireEvent(event);
+					eventBus.fireEvent( new TransUnitSelectionEvent(selectedTransUnit));
 				}
 			}
 		}));

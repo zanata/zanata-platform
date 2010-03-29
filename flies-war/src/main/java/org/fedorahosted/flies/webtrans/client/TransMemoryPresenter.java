@@ -14,6 +14,8 @@ import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.gwt.rpc.GetTranslationMemory;
 import org.fedorahosted.flies.gwt.rpc.GetTranslationMemoryResult;
 import org.fedorahosted.flies.gwt.rpc.GetTranslationMemory.SearchType;
+import org.fedorahosted.flies.webtrans.client.events.TransUnitSelectionEvent;
+import org.fedorahosted.flies.webtrans.client.events.TransUnitSelectionHandler;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -75,12 +77,12 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 			}
 		});
 		
-		registerHandler(eventBus.addHandler(SelectionEvent.getType(), new SelectionHandler<TransUnit>() {
+		registerHandler(eventBus.addHandler(TransUnitSelectionEvent.getType(), new TransUnitSelectionHandler() {
 			@Override
-			public void onSelection(SelectionEvent<TransUnit> event) {
-				showResultsFor(event.getSelectedItem());
+			public void onTransUnitSelected(TransUnitSelectionEvent event) {
+				showResultsFor(event.getSelection());
 			}
-		})); 
+		}));
 	}
 
 	public void showResultsFor(TransUnit transUnit) {

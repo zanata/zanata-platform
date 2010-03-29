@@ -1,5 +1,9 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import org.fedorahosted.flies.gwt.model.TransUnit;
+import org.fedorahosted.flies.webtrans.client.events.TransUnitSelectionEvent;
+import org.fedorahosted.flies.webtrans.client.events.TransUnitSelectionHandler;
+
 import com.google.inject.Inject;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -11,7 +15,7 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 public class TransUnitDetailsPresenter extends WidgetPresenter<TransUnitDetailsPresenter.Display>{
 
 	public interface Display extends WidgetDisplay{
-		
+		void showDetails(TransUnit transUnit);
 	}
 
 
@@ -27,6 +31,13 @@ public class TransUnitDetailsPresenter extends WidgetPresenter<TransUnitDetailsP
 
 	@Override
 	protected void onBind() {
+		registerHandler( eventBus.addHandler(TransUnitSelectionEvent.getType(), new TransUnitSelectionHandler() {
+			
+			@Override
+			public void onTransUnitSelected(TransUnitSelectionEvent event) {
+				display.showDetails( event.getSelection() );
+			}
+		}));
 	}
 
 	@Override
