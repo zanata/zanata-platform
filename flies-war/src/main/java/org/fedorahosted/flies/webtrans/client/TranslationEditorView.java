@@ -32,10 +32,10 @@ public class TranslationEditorView extends Composite implements TranslationEdito
 	LayoutPanel tmPanelContainer;
 	
 	@UiField
-	FlowPanel tmPanel, transUnitNavigationContainer;
+	FlowPanel transUnitNavigationContainer;
 
 	@UiField
-	LayoutPanel editor;
+	LayoutPanel editor, tmPanel;
 	
 	@UiField
 	SplitLayoutPanel splitPanel;
