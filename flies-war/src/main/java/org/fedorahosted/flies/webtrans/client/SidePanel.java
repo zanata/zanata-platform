@@ -32,7 +32,7 @@ public class SidePanel extends Composite implements SidePanelPresenter.Display {
 	
 	private final int HEIGHT_USERPANEL_EXPANDED = 200;
 	private final int HEIGHT_USERPANEL_COLLAPSED = 20;
-	private final int USERPANEL_COLLAPSE_DELAY = 1500;
+	private final int USERPANEL_COLLAPSE_DELAY = 1;
 	
 	private final LayoutPanel rootPanel;
 
