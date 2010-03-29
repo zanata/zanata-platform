@@ -3,6 +3,7 @@ package org.fedorahosted.flies.repository.model.po;
 import java.io.Serializable;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -80,6 +81,7 @@ public class HPotEntryData implements Serializable {
 	public void setReferences(String references) {
 		this.references = references;
 	}
+	@Column(name = "refs")
 	public String getReferences() {
 		return references;
 	}

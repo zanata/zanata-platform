@@ -3,6 +3,7 @@ package org.fedorahosted.flies.repository.model;
 import java.util.Map;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -54,6 +55,7 @@ public class HConcept extends AbstractFliesEntity{
 		this.desc = desc;
 	}
 	
+	@Column(name = "description")
 	public String getDesc() {
 		return desc;
 	}

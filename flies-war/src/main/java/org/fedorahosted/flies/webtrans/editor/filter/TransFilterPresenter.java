@@ -20,7 +20,7 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
 	public static final Place PLACE = new Place("TransUnitInfoPresenter");
 	
 	public interface Display extends WidgetDisplay{
-		HasClickHandlers getApplyButton();
+		HasClickHandlers getFindButton();
 		void setFilterUnitPanel(Widget widget);
 	}
 	
@@ -46,7 +46,7 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
 		
 		display.setFilterUnitPanel(operatorFilterPresenter.getDisplay().asWidget());
 		
-		display.getApplyButton().addClickHandler(new ClickHandler() {
+		display.getFindButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				eventBus.fireEvent( new FilterEnabledEvent(operatorFilterPresenter.getFilter()));
