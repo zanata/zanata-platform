@@ -14,12 +14,12 @@
 
 	<servlet-mapping>
 		<servlet-name>EventService</servlet-name>
-		<url-pattern>/org.fedorahosted.flies.webtrans.Application/gwteventservice</url-pattern>
+		<url-pattern>/org.fedorahosted.flies.webtrans.Application/gwteventservice/*</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>EventService</servlet-name>
-		<url-pattern>/org.fedorahosted.flies.webtrans.ApplicationDummy/gwteventservice</url-pattern>
+		<url-pattern>/org.fedorahosted.flies.webtrans.ApplicationDummy/gwteventservice/*</url-pattern>
 	</servlet-mapping>
 
 	<servlet>

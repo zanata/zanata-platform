@@ -189,9 +189,13 @@
       </dependency>
       
 	  <dependency>
-	      <groupId>de.novanic</groupId>
+	      <groupId>com.google.code.gwteventservice</groupId>
 	      <artifactId>gwteventservice</artifactId>
-	      <version>1.1</version>
+		  <!-- This SNAPSHOT version includes v1 of this patch:
+		  http://code.google.com/p/gwteventservice/issues/detail?id=15
+		  applied to http://gwteventservice.googlecode.com/svn/!svn/bc/251/trunk/
+		   -->
+	      <version>1.2.0-20100326.075632-1</version>
 	  </dependency>
 
 	  <dependency>
