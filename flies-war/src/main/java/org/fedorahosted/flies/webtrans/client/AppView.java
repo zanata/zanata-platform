@@ -39,7 +39,7 @@ public class AppView extends Composite implements AppPresenter.Display {
 	SpanElement user, selectedDocumentSpan;
 
 	@UiField
-	LayoutPanel editorContainer, sidePanelContainer;
+	LayoutPanel editorContainer, sidePanelContainer, sidePanelOuterContainer;
 	
 	@UiField(provided = true)
 	final Resources resources;
@@ -58,7 +58,7 @@ public class AppView extends Composite implements AppPresenter.Display {
 		this.messages = messages;
 
 		initWidget(uiBinder.createAndBindUi(this));
-		mainSplitPanel.setWidgetMinSize(sidePanelContainer, 200);
+		mainSplitPanel.setWidgetMinSize(sidePanelOuterContainer, 200);
 		
 		helpLink.setHref( messages.hrefHelpLink() );
 		helpLink.setTarget("_BLANK");

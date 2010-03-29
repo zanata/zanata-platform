@@ -20,19 +20,23 @@
 		}
 		
 	</ui:style>
-	
-	<g:LayoutPanel styleName="{style.mainPanel}">
-		<g:layer top='0px' height='2em' left="0px" right="200px">
-			<fui:ClearableTextBox ui:field='filterTextBox' />
-		</g:layer>
-		<g:layer top='0px' height='2em' right="0px" width="100px">
-			<f:TransUnitCountBar ui:field='transUnitCountBar' styleName="{style.unitStatus}"/>
-		</g:layer>
-		<g:layer top='2em' bottom='0px'>
-			<g:ScrollPanel ui:field='documentScrollPanel'>
-				<g:FlowPanel ui:field='documentList' />
-			</g:ScrollPanel>
+	<g:LayoutPanel>
+		<g:layer top="0px" bottom="8px">
+			<g:LayoutPanel styleName="{style.mainPanel}">
+				<g:layer top='0px' height='2em' left="0px" right="200px">
+					<fui:ClearableTextBox ui:field='filterTextBox' />
+				</g:layer>
+				<g:layer top='0px' height='2em' right="0px" width="100px">
+					<f:TransUnitCountBar ui:field='transUnitCountBar' styleName="{style.unitStatus}"/>
+				</g:layer>
+				<g:layer top='2em' bottom="0px">
+					<g:ScrollPanel ui:field='documentScrollPanel'>
+						<g:FlowPanel ui:field='documentList' />
+					</g:ScrollPanel>
+				</g:layer>
+			</g:LayoutPanel>
 		</g:layer>
 	</g:LayoutPanel>
+
 	
 </ui:UiBinder> 
