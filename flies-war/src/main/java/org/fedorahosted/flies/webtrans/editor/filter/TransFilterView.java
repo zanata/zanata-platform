@@ -11,7 +11,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class TransFilterView extends Composite implements TransFilterPresenter.Display {
 
 	private FlowPanel bodyPanel;
-	private Button applyButton;
+	private Button findButton;
 	
 	public TransFilterView() {
 		bodyPanel = new FlowPanel();
@@ -19,8 +19,8 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
 
 		Panel filterButtonBar = new FlowPanel();
 		filterButtonBar.setStyleName("float-right-div");
-		applyButton = new Button("Find");
-		filterButtonBar.add(applyButton);
+		findButton = new Button("Find");
+		filterButtonBar.add(findButton);
 		
 		bodyPanel.add(filterButtonBar);
 
@@ -63,7 +63,7 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
 	}
 	
 	@Override
-	public HasClickHandlers getApplyButton() {
-		return applyButton;
+	public HasClickHandlers getFindButton() {
+		return findButton;
 	}
 }
