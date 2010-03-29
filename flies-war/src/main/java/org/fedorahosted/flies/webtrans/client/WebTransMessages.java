@@ -55,5 +55,15 @@ public interface WebTransMessages extends Messages {
 
 	@DefaultMessage("Show Translation Suggestions")
 	String showTranslationMemoryPanel();
+
+
+	@DefaultMessage("Exact")
+	String tmPhraseButtonLabel();
+
+	@DefaultMessage("Clear")
+	String tmClearButtonLabel();
+
+	@DefaultMessage("Search")
+	String tmSearchButtonLabel();
 	
 }
