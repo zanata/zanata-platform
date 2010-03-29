@@ -6,12 +6,18 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TransFilterView extends Composite implements TransFilterPresenter.Display {
+	private static final boolean INITIALLY_OPEN = true; // for now, anyway
 
 	private FlowPanel bodyPanel;
-	private Button findButton;
+	private Button findButton = new Button("Find");
+	private TextBox replaceText = new TextBox();
+	private Button replaceButton = new Button("Replace");
+	private Button replaceAllButton = new Button("Replace All");
+	private Widget filterUnitPanel;
 	
 	public TransFilterView() {
 		bodyPanel = new FlowPanel();
@@ -19,16 +25,22 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
 
 		Panel filterButtonBar = new FlowPanel();
 		filterButtonBar.setStyleName("float-right-div");
-		findButton = new Button("Find");
 		filterButtonBar.add(findButton);
-		
 		bodyPanel.add(filterButtonBar);
 
+		bodyPanel.add(replaceText);
+		
+		Panel replaceButtonBar = new FlowPanel();
+		replaceButtonBar.setStyleName("float-right-div");
+		replaceButtonBar.add(replaceButton);
+		replaceButtonBar.add(replaceAllButton);
+		bodyPanel.add(replaceButtonBar);
+		
 //		RoundedContainerWithHeader container = new RoundedContainerWithHeader(new Label("Find Messages"), bodyPanel);
 //		initWidget(container);
 		
 		DisclosurePanel container = new DisclosurePanel("Find Messages");
-		container.setOpen(false);
+		container.setOpen(INITIALLY_OPEN);
 		container.setAnimationEnabled(false);
 		
 		container.add(bodyPanel);
@@ -39,10 +51,13 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
 	
 	@Override
 	public void setFilterUnitPanel (Widget widget) {
-		if (bodyPanel.getWidgetCount() == 2)
-			bodyPanel.remove(0);
-		else
+		if (filterUnitPanel != null) {
+			bodyPanel.remove(filterUnitPanel);
+			filterUnitPanel = null;
+		} else {
 			bodyPanel.insert(widget,0);
+			filterUnitPanel = widget;
+		}
 	}
 
 	@Override
