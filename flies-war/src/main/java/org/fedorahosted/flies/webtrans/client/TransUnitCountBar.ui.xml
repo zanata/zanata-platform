@@ -4,28 +4,29 @@
 	<ui:style>
 		.approved {
 			background: #90cd95;
-			z-index: -1;
+			z-index: 0;
 		}
 		
 		.needReview {
 			background: #f7f488;
-			z-index: -1;
+			z-index: 0;
 		}
 		
 		.untranslated {
 			background: #aecbde;
-			z-index: -1;
+			z-index: 0;
 		}
 		
 		.undefined {
 			background: #f7f488;
-			z-index: -1;
+			z-index: 0;
 		}
 		
 		.label {
 			font-weight: bold;
 			cursor: pointer;
 			text-align: center;
+			z-index: 1;
 		}
 		
 	</ui:style>
