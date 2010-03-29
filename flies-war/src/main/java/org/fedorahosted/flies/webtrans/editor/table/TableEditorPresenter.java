@@ -12,6 +12,7 @@ import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
+import org.drools.spi.Constraint.ConstraintType;
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.EditState;
 import org.fedorahosted.flies.gwt.auth.AuthenticationError;
@@ -110,8 +111,10 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	private final Identity identity;
 	private TransUnit selectedTransUnit;
 	private int lastRowNum;
-	private ArrayList<TransUnitId> transIdNextCache = new ArrayList<TransUnitId>(); 
-	private ArrayList<TransUnitId> transIdPrevCache = new ArrayList<TransUnitId>(); 
+	private ArrayList<TransUnitId> transIdNextFuzzyCache = new ArrayList<TransUnitId>();
+	private ArrayList<TransUnitId> transIdNextNewCache = new ArrayList<TransUnitId>();
+	private ArrayList<TransUnitId> transIdPrevFuzzyCache = new ArrayList<TransUnitId>(); 
+	private ArrayList<TransUnitId> transIdPrevNewCache = new ArrayList<TransUnitId>(); 
 	
 	private int curRowIndex;
 	private int curPage;
@@ -177,10 +180,14 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 			public void onTransUnitUpdated(TransUnitUpdatedEvent event) {
 				if(documentId != null && documentId.equals(event.getDocumentId())) {
 					//Clear the cache
-					if(!transIdNextCache.isEmpty())
-						transIdNextCache.clear();
-					if(!transIdPrevCache.isEmpty())
-						transIdPrevCache.clear();
+					if(!transIdNextFuzzyCache.isEmpty())
+						transIdNextFuzzyCache.clear();
+					if(!transIdNextNewCache.isEmpty())
+						transIdNextNewCache.clear();
+					if(!transIdPrevFuzzyCache.isEmpty())
+						transIdPrevFuzzyCache.clear();
+					if(!transIdPrevNewCache.isEmpty())
+						transIdPrevNewCache.clear();
 					// TODO this test never succeeds
 					if(selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnitId())) {
 						// handle change in current selection
@@ -531,12 +538,20 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	
 	private void cacheNextFuzzy(final ContentState desiredState, final StatesCacheCallback callBack) {
 		isReqComplete = false;
-		dispatcher.execute(new GetTransUnitsStates(documentId, curRowIndex+1, 3, false, ContentState.NeedReview), new AsyncCallback<GetTransUnitsStatesResult>() {
+		dispatcher.execute(new GetTransUnitsStates(documentId, curRowIndex+1, 3, false, desiredState), new AsyncCallback<GetTransUnitsStatesResult>() {
 			@Override
 			public void onSuccess(GetTransUnitsStatesResult result) {
+				Log.info("DesiredState: "+desiredState);
+				Log.info("Size:"+result.getUnits().size());
 				isReqComplete = true;	
 				if(!result.getUnits().isEmpty()) {
-					transIdNextCache = result.getUnits();
+					if(desiredState.equals(ContentState.NeedReview))
+						transIdNextFuzzyCache = result.getUnits();
+					if(desiredState.equals(ContentState.New)) {
+					
+						transIdNextNewCache = result.getUnits();
+					}
+						
 					callBack.nextFuzzy(desiredState);
 				}
 			}
@@ -549,12 +564,16 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	
 	private void cachePrevFuzzy(final ContentState desiredState, final StatesCacheCallback callBack) {
 		isReqComplete = false;
-		dispatcher.execute(new GetTransUnitsStates(documentId, curRowIndex+1, 3, true, ContentState.NeedReview), new AsyncCallback<GetTransUnitsStatesResult>() {
+		dispatcher.execute(new GetTransUnitsStates(documentId, curRowIndex+1, 3, true, desiredState), new AsyncCallback<GetTransUnitsStatesResult>() {
 			@Override
 			public void onSuccess(GetTransUnitsStatesResult result) {
 				isReqComplete = true;
 				if(!result.getUnits().isEmpty()) {
-					transIdPrevCache = result.getUnits();
+					if(desiredState.equals(ContentState.NeedReview))
+						transIdPrevFuzzyCache = result.getUnits();
+					if(desiredState.equals(ContentState.New))
+						transIdPrevNewCache = result.getUnits();
+					
 					callBack.prevFuzzy(desiredState);
 				}
 			}
@@ -565,23 +584,22 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	}
 	
 	private void gotoPrevState(ContentState desiredState) { 
-        //Clean the cache for Next Fuzzy to avoid issues about cache is obsolete
-		transIdNextCache.clear();
+		if(desiredState.equals(ContentState.NeedReview)) {
+		//Clean the cache for Next Fuzzy to avoid issues about cache is obsolete
+		transIdNextFuzzyCache.clear();
 		//If the catch of fuzzy row is empty and request is complete, generate one
-		if(transIdPrevCache.isEmpty()) {
+		if(transIdPrevFuzzyCache.isEmpty()) {
 			 if (isReqComplete)
 				 cachePrevFuzzy(desiredState, cacheCallback);
 		} else {
-			int size = transIdPrevCache.size(); 
-			int offset = (int)transIdPrevCache.get(size-1).getId()-1;
+			int size = transIdPrevFuzzyCache.size(); 
+			int offset = (int)transIdPrevFuzzyCache.get(size-1).getId()-1;
 				if(curRowIndex > offset) {
 					for (int i = 0; i < size; i++) {
-						int fuzzyRowIndex = (int)transIdPrevCache.get(i).getId()-1;
+						int fuzzyRowIndex = (int)transIdPrevFuzzyCache.get(i).getId()-1;
 						if (curRowIndex > fuzzyRowIndex) {
 								int pageNum = fuzzyRowIndex/(MAX_PAGE_ROW+1);
 								int rowNum = fuzzyRowIndex%(MAX_PAGE_ROW+1);
-								Log.info("Page for prev"+pageNum);
-								Log.info("Prev Row Index "+rowNum);
 								cancelEdit();
 								selectedTransUnit = display.getTransUnitValue(rowNum);
 								if(pageNum != curPage)
@@ -591,10 +609,40 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 						}
 					}
 				}  else {
-					transIdPrevCache.clear();
+					transIdPrevFuzzyCache.clear();
 					cachePrevFuzzy(desiredState, cacheCallback);
 				}
 		}
+		} else if(desiredState.equals(ContentState.New)) {
+			 //Clean the cache for Next New to avoid issues about cache is obsolete
+			transIdNextNewCache.clear();
+			//If the catch of fuzzy row is empty and request is complete, generate one
+				if(transIdPrevNewCache.isEmpty()) {
+					 if (isReqComplete)
+						 cachePrevFuzzy(desiredState, cacheCallback);
+				} else {
+					int size = transIdPrevNewCache.size(); 
+					int offset = (int)transIdPrevNewCache.get(size-1).getId()-1;
+					if(curRowIndex > offset) {
+							for (int i = 0; i < size; i++) {
+								int fuzzyRowIndex = (int)transIdPrevNewCache.get(i).getId()-1;
+								if (curRowIndex > fuzzyRowIndex) {
+										int pageNum = fuzzyRowIndex/(MAX_PAGE_ROW+1);
+										int rowNum = fuzzyRowIndex%(MAX_PAGE_ROW+1);
+										cancelEdit();
+										selectedTransUnit = display.getTransUnitValue(rowNum);
+										if(pageNum != curPage)
+											display.gotoPage(pageNum, false);
+										display.gotoRow(rowNum); 
+										break;
+								}
+							}
+						}  else {
+							transIdPrevNewCache.clear();
+							cachePrevFuzzy(desiredState, cacheCallback);
+						}
+				}
+				}
 	}
 	
 	StatesCacheCallback cacheCallback = new StatesCacheCallback() {
@@ -611,19 +659,19 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	};
 	
 	private void gotoNextState(ContentState desiredState) {
-		//Clean the cache
-		transIdPrevCache.clear();
+		Log.info("State: "+desiredState);
+        if(desiredState.equals(ContentState.NeedReview)) {
+        	transIdPrevFuzzyCache.clear();
 		//If the catch of fuzzy row is empty, generate one
-		if(transIdNextCache.isEmpty()) {
+		if(transIdNextFuzzyCache.isEmpty()) {
 			if(isReqComplete) 
 				cacheNextFuzzy(desiredState, cacheCallback);
-			//}
 		} else {
-			int size = transIdNextCache.size(); 
-			int offset = (int)transIdNextCache.get(size-1).getId()-1;
+			int size = transIdNextFuzzyCache.size(); 
+			int offset = (int)transIdNextFuzzyCache.get(size-1).getId()-1;
 			if(curRowIndex < offset) {
 				for (int i = 0; i < size; i++) {
-						int fuzzyRowIndex = (int)transIdNextCache.get(i).getId()-1;
+						int fuzzyRowIndex = (int)transIdNextFuzzyCache.get(i).getId()-1;
 						if (curRowIndex < fuzzyRowIndex) {
 								int pageNum = fuzzyRowIndex/(MAX_PAGE_ROW+1);
 								int rowNum = fuzzyRowIndex%(MAX_PAGE_ROW+1);
@@ -638,10 +686,43 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 						}
 					}
 				} else {
-					transIdNextCache.clear();
+					transIdNextFuzzyCache.clear();
 					cacheNextFuzzy(desiredState, cacheCallback);
 				}
 		}
+        } else if (desiredState.equals(ContentState.New)) {
+         	transIdPrevNewCache.clear();
+    		//If the catch of fuzzy row is empty, generate one
+    		if(transIdNextNewCache.isEmpty()) {
+    			if(isReqComplete) 
+    				cacheNextFuzzy(desiredState, cacheCallback);
+    		} else {
+    			int size = transIdNextNewCache.size(); 
+    			int offset = (int)transIdNextNewCache.get(size-1).getId()-1;
+    			if(curRowIndex < offset) {
+    				for (int i = 0; i < size; i++) {
+    						int fuzzyRowIndex = (int)transIdNextNewCache.get(i).getId()-1;
+    						if (curRowIndex < fuzzyRowIndex) {
+    								int pageNum = fuzzyRowIndex/(MAX_PAGE_ROW+1);
+    								int rowNum = fuzzyRowIndex%(MAX_PAGE_ROW+1);
+    								Log.info("Page for Next "+pageNum);
+    								Log.info("Next Row Index "+rowNum);
+    								cancelEdit();
+    								selectedTransUnit = display.getTransUnitValue(rowNum);
+    								if(pageNum != curPage)
+    									display.gotoPage(pageNum, false);
+    								display.gotoRow(rowNum); 
+    								break;
+    						}
+    					}
+    				} else {
+    					transIdNextNewCache.clear();
+    					cacheNextFuzzy(desiredState, cacheCallback);
+    				}
+    		}
+        	
+        	
+        }
 	}
 	
 	
