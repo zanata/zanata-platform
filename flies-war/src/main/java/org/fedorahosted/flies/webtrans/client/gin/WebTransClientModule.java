@@ -59,9 +59,6 @@ public class WebTransClientModule extends AbstractPresenterModule {
 		bind(Resources.class).in(Singleton.class);
 		bind(WebTransMessages.class).in(Singleton.class);
 	
-		bind(WorkspaceUsersView.class).in(Singleton.class);
-		bind(SidePanel.class).in(Singleton.class);
-		
 		bindPresenter(AppPresenter.class, AppPresenter.Display.class, AppView.class);
 		bindPresenter(DocumentListPresenter.class, DocumentListPresenter.Display.class, DocumentListView.class);
 		bindPresenter(PhraseFilterPresenter.class, PhraseFilterPresenter.Display.class, PhraseFilterView.class);
