@@ -57,7 +57,7 @@ public class GetTransUnitsHandler extends AbstractActionHandler<GetTransUnits, G
 		log.info("Fetching Transunits for {0}", action.getDocumentId());
 		
 		Query query = session.createQuery(
-			"from HTextFlow tf where tf.document.id = :id order by tf.id")
+			"from HTextFlow tf where tf.document.id = :id order by tf.pos")
 			.setParameter("id", action.getDocumentId().getValue());
 		
 		int size = query.list().size();

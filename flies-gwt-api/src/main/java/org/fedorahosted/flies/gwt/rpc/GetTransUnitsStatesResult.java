@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.gwt.rpc;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.customware.gwt.dispatch.shared.Result;
 
@@ -12,18 +13,18 @@ public class GetTransUnitsStatesResult implements Result {
 	private static final long serialVersionUID = 1L;
 
 	private DocumentId documentId;
-	private ArrayList<TransUnitId> units;
+	private List<Long> units;
 
 	@SuppressWarnings("unused")
 	private GetTransUnitsStatesResult()	{
 	}
 	
-	public GetTransUnitsStatesResult(DocumentId documentId, ArrayList<TransUnitId> units) {
+	public GetTransUnitsStatesResult(DocumentId documentId, List<Long> units) {
 		this.documentId = documentId;
 		this.units = units;
 	}
 	
-	public ArrayList<TransUnitId> getUnits() {
+	public List<Long> getUnits() {
 		return units;
 	}
 
