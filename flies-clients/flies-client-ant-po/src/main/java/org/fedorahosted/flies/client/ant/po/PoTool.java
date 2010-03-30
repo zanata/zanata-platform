@@ -11,7 +11,7 @@ import org.cyclopsgroup.jcli.annotation.Cli;
 import org.cyclopsgroup.jcli.annotation.MultiValue;
 import org.cyclopsgroup.jcli.annotation.Option;
 
-@Cli(name = "potool", description = "Send publican PO/POT files to and from Flies")
+@Cli(name = "flies-publican", description = "Send publican PO/POT files to and from Flies")
 public class PoTool {
 
 	/**
@@ -32,9 +32,9 @@ public class PoTool {
 		}
 		String command = arguments.get(0);
 		final String[] otherArgs = arguments.subList(1, arguments.size()).toArray(new String[0]);
-		if (command.equals("uploadpo")) {
+		if (command.equals("upload")) {
 			UploadPoTask.main(otherArgs);
-		} else if (command.equals("downloadpo")) {
+		} else if (command.equals("download")) {
 			DownloadPoTask.main(otherArgs);
 		} else {
 			help(System.out);
@@ -43,11 +43,8 @@ public class PoTool {
 	
 	private static void help(PrintStream out) throws IOException {
 		out.println("[USAGE]"); 
-		out.println("  potool <subcommand> [options] [args]");
+		out.println("  flies-publican upload/download [--help] [options] [args]");
 		out.println();
-		UploadPoTask.help(out);
-		out.println();
-		DownloadPoTask.help(out);
 	}
 	
 	private boolean help;

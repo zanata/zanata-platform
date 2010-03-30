@@ -58,93 +58,6 @@
     <build>
         <plugins>
             <plugin>
-                <!--
-                    This plugin will copy dependencies into the right
-                    outputDirectory. Usage: mvn dependency:copy-dependencies
-                -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <outputDirectory>target/lib</outputDirectory>
-                    <overWriteReleases>true</overWriteReleases>
-                    <overWriteSnapshots>true</overWriteSnapshots>
-                    <overWriteIfNewer>true</overWriteIfNewer>
-                    <includeScope>runtime</includeScope>
-                    <excludeScope>provided</excludeScope>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>rpm-maven-plugin</artifactId>
-                <version>2.0.1</version>
-           <!--     
-                <executions>
-                    <execution>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>rpm</goal>
-                        </goals>
-                    </execution>
-                </executions>
-               -->
-                <configuration>
-                    <name>flies-publican</name>
-                    <description>Publican client for Flies.</description>
-                    <organization
-                        url="http://code.google.com/p/flies/" />
-                    <release>1</release>
-                    <group>flies</group>
-                    <copyright>GPLv3+</copyright>
-                    <prefix>/usr</prefix>
-                    <mappings>
-                        <mapping>
-                            <directory>/usr/bin</directory>
-                            <filemode>755</filemode>
-                            <username>root</username>
-                            <groupname>root</groupname>
-                            <sources>
-                                <source>
-                                    <location>src/main/bin</location>
-                                </source>
-                            </sources>
-                        </mapping>
-                        <mapping>
-                            <directory>/usr/share/flies-publican</directory>
-                            <filemode>755</filemode>
-                            <username>root</username>
-                            <groupname>root</groupname>
-                            <sources>
-                                <source>
-                                    <location>target/flies-client-ant-po-1.0-SNAPSHOT.jar</location>
-                                </source>
-                            </sources>
-                        </mapping>                 
-                        <mapping>
-                            <directory>/usr/share/flies-publican/lib</directory>
-                            <filemode>755</filemode>
-                            <username>root</username>
-                            <groupname>root</groupname>
-                            <sources>
-                                <source>
-                                    <location>target/lib</location>
-                                </source>
-                            </sources>
-                        </mapping>                 
-                    </mappings>
-                    <preinstallScriptlet>
-                        <script>echo "installing now"</script>
-                    </preinstallScriptlet>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
@@ -188,4 +101,79 @@
 		    </plugin>
         </plugins>
     </build>
+	<profiles>
+		<profile>
+			<id>buildrpm</id>
+			<activation>
+			    <property>
+			      <name>buildrpm</name>
+			      <value>true</value>
+			    </property>
+			</activation>
+			<build>
+				<plugins>
+		            <plugin>
+		                <groupId>org.codehaus.mojo</groupId>
+		                <artifactId>rpm-maven-plugin</artifactId>
+		                <version>2.0.1</version>
+						<executions>
+						  <execution>
+						    <goals>
+						      <goal>rpm</goal>
+						    </goals>
+						  </execution>
+						</executions>
+		
+		                <configuration>
+		                    <name>flies-publican</name>
+		                    <description>Publican client for Flies.</description>
+		                    <organization
+		                        url="http://code.google.com/p/flies/" />
+		                    <group>flies</group>
+		                    <copyright>LGPLv2.1+</copyright>
+		                    <prefix>/usr</prefix>
+		                    <mappings>
+		                        <mapping>
+		                            <directory>/usr/bin</directory>
+		                            <filemode>755</filemode>
+		                            <username>root</username>
+		                            <groupname>root</groupname>
+		                            <sources>
+		                                <source>
+		                                    <location>src/main/bin</location>
+		                                </source>
+		                            </sources>
+		                        </mapping>
+		                        <mapping>
+		                            <directory>/usr/share/flies-publican</directory>
+		                            <filemode>755</filemode>
+		                            <username>root</username>
+		                            <groupname>root</groupname>
+		                            <sources>
+		                                <source>
+		                                    <location>target/flies-client-ant-po-${project.version}.jar</location>
+		                                </source>
+		                            </sources>
+		                        </mapping>                 
+		                        <mapping>
+		                            <directory>/usr/share/flies-publican/lib</directory>
+		                            <filemode>755</filemode>
+		                            <username>root</username>
+		                            <groupname>root</groupname>
+		                            <dependency />
+		                        </mapping>                 
+		                    </mappings>
+		                    <preinstallScriptlet>
+		                        <script>echo "installing flies-publican"</script>
+		                    </preinstallScriptlet>
+		                    <requires>
+		                    	<param>java &gt;= 1:1.6.0</param>
+		                    	<param>jpackage-utils</param>
+		                    </requires>
+		                </configuration>
+		            </plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

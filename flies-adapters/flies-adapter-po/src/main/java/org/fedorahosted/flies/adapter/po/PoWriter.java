@@ -41,7 +41,7 @@ public class PoWriter {
 	public PoWriter() {
 	}
 	
-	public void write(final Document doc, final File baseDir) throws IOException {
+	public void write(final Document doc, final File baseDir, boolean includePot) throws IOException {
 		Set<LocaleId> targetLangs = new HashSet<LocaleId>();
 		if (doc.hasResources()) {
 			for (DocumentResource resource : doc.getResources()) {
@@ -55,8 +55,9 @@ public class PoWriter {
 				}
 			}
 		}
-		// write the POT file to pot/$name.pot
+		if (includePot)
 		{
+			// write the POT file to pot/$name.pot
 			File potDir = new File(baseDir, "pot");
 			potDir.mkdirs();
 			File potFile = new File(potDir, doc.getName()+".pot");

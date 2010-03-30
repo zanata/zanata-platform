@@ -34,6 +34,7 @@ public class DownloadPoTask extends Task {
 	private File dstDir;
 	private String src;
 	private boolean help;
+	private boolean exportPot;
 
 	public static void main(String[] args) throws Exception {
 		if (args.length == 0) {
@@ -115,7 +116,7 @@ public class DownloadPoTask extends Task {
 			}
 			for (Document doc : docList) {
 				PoWriter pw = new PoWriter();
-				pw.write(doc, dstDir);
+				pw.write(doc, dstDir, exportPot);
 			}
 	}
 	
@@ -141,6 +142,11 @@ public class DownloadPoTask extends Task {
 	@Option(name = "d", longName = "dst", required = true, description = "Base directory for publican files (with subdirectory \"pot\" and optional locale directories)")
 	public void setDstDir(File dstDir) {
 		this.dstDir = dstDir;
+	}
+
+	@Option(name = "e", longName = "exportpot", description = "Export source text from Flies to local POT files")
+	public void setExportPot(boolean exportPot) {
+		this.exportPot = exportPot;
 	}
 
 	@Option(name = "s", longName = "src", required = true, description = "Source URL for download, eg http://flies.example.com/seam/resource/restv1/projects/p/myProject/iterations/i/myIter/documents")

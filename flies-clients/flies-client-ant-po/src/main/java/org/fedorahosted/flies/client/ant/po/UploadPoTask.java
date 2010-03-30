@@ -40,6 +40,7 @@ public class UploadPoTask extends Task {
 	private String sourceLang = "en-US";
 	private boolean debug;
 	private boolean help;
+	private boolean importPo;
 
 	public static void main(String[] args) throws Exception {
 		if (args.length == 0) {
@@ -125,12 +126,16 @@ public class UploadPoTask extends Task {
 			Documents docs = new Documents();
 			List<Document> docList = docs.getDocuments();
 			
-			File[] localeDirs = srcDir.listFiles(new FileFilter() {
-				@Override
-				public boolean accept(File f) {
-					return f.isDirectory() && !f.getName().equals("pot");
-				}
-			});
+			File[] localeDirs = new File[0];
+			if (importPo) {
+				localeDirs = srcDir.listFiles(new FileFilter() {;
+				
+					@Override
+					public boolean accept(File f) {
+						return f.isDirectory() && !f.getName().equals("pot");
+					}
+				});
+			}
 			
 			// for each of the base pot files under srcdir/pot:
 			for (File potFile : potFiles) {
@@ -146,15 +151,18 @@ public class UploadPoTask extends Task {
 				String poName = basename + ".po";
 				
 				// for each of the corresponding po files in the locale subdirs:
-				for (int i = 0; i < localeDirs.length; i++) {
-					File localeDir = localeDirs[i];
-					File poFile = new File(localeDir, poName);
-					if (poFile.exists()) {
-	//					progress.update(i++, files.length);
-						InputSource inputSource = new InputSource(poFile.toURI().toString());
-						System.out.println(poFile.toURI().toString());
-						inputSource.setEncoding("utf8");
-						poReader.extractTarget(doc, inputSource, new LocaleId(localeDir.getName()));
+				// (The locale list should actually be empty unless importPo is enabled)
+				if (importPo) {
+					for (int i = 0; i < localeDirs.length; i++) {
+						File localeDir = localeDirs[i];
+						File poFile = new File(localeDir, poName);
+						if (poFile.exists()) {
+		//					progress.update(i++, files.length);
+							InputSource inputSource = new InputSource(poFile.toURI().toString());
+							System.out.println(poFile.toURI().toString());
+							inputSource.setEncoding("utf8");
+							poReader.extractTarget(doc, inputSource, new LocaleId(localeDir.getName()));
+						}
 					}
 				}
 			}		
@@ -209,6 +217,11 @@ public class UploadPoTask extends Task {
 	@Option(name = "l", longName = "srclang", required = true, description = "Language of source (defaults to en-US)")
 	public void setSourceLang(String sourceLang) {
 		this.sourceLang = sourceLang;
+	}
+	
+	@Option(name = "i", longName = "importpo", description = "Import translations from local PO files to Flies (DANGER!)")
+	public void setImportPo(boolean importPo) {
+		this.importPo = importPo;
 	}
 
 	@Option(name = "x", longName = "debug", description = "Enable debug mode")
