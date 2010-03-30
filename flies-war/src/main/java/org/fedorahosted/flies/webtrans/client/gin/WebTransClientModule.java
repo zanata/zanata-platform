@@ -22,6 +22,8 @@ import org.fedorahosted.flies.webtrans.client.SidePanel;
 import org.fedorahosted.flies.webtrans.client.SidePanelPresenter;
 import org.fedorahosted.flies.webtrans.client.TransMemoryPresenter;
 import org.fedorahosted.flies.webtrans.client.TransMemoryView;
+import org.fedorahosted.flies.webtrans.client.TransUnitDetailsPresenter;
+import org.fedorahosted.flies.webtrans.client.TransUnitDetailsView;
 import org.fedorahosted.flies.webtrans.client.TransUnitNavigationPresenter;
 import org.fedorahosted.flies.webtrans.client.TransUnitNavigationView;
 import org.fedorahosted.flies.webtrans.client.TranslationEditorPresenter;
@@ -57,9 +59,6 @@ public class WebTransClientModule extends AbstractPresenterModule {
 		bind(Resources.class).in(Singleton.class);
 		bind(WebTransMessages.class).in(Singleton.class);
 	
-		bind(WorkspaceUsersView.class).in(Singleton.class);
-		bind(SidePanel.class).in(Singleton.class);
-		
 		bindPresenter(AppPresenter.class, AppPresenter.Display.class, AppView.class);
 		bindPresenter(DocumentListPresenter.class, DocumentListPresenter.Display.class, DocumentListView.class);
 		bindPresenter(PhraseFilterPresenter.class, PhraseFilterPresenter.Display.class, PhraseFilterView.class);
@@ -72,6 +71,7 @@ public class WebTransClientModule extends AbstractPresenterModule {
 		bindPresenter(TransUnitNavigationPresenter.class, TransUnitNavigationPresenter.Display.class, TransUnitNavigationView.class);
 		bindPresenter(SidePanelPresenter.class, SidePanelPresenter.Display.class, SidePanel.class);
 		bindPresenter(TranslationEditorPresenter.class, TranslationEditorPresenter.Display.class, TranslationEditorView.class);
+		bindPresenter(TransUnitDetailsPresenter.class, TransUnitDetailsPresenter.Display.class, TransUnitDetailsView.class);
 		
 		bind(HasPageNavigation.class).to(TableEditorView.class).in(Singleton.class);
 

@@ -15,8 +15,8 @@
 	</ui:style>
 	
 	<g:LayoutPanel styleName="{style.sidePanel}">
-		<g:layer left='25%' right='25%' top='4px' height='10em'>
-			<g:Label>Hello world</g:Label>
+		<g:layer top='0' bottom='220px'>
+			<g:LayoutPanel ui:field="transUnitDetailContainer"/>
 		</g:layer>
 		
 		<g:layer bottom='20px' height='200px'>
@@ -24,11 +24,7 @@
 		</g:layer>
 		
 		<g:layer bottom='0px' height='20px'>
-			<g:LayoutPanel ui:field="usersPanelContainer">
-				<g:layer>
-					<f:WorkspaceUsersView ui:field="workspaceUsersView"/>
-				</g:layer>
-			</g:LayoutPanel>
+			<g:LayoutPanel ui:field="usersPanelContainer" />
 		</g:layer>
 	</g:LayoutPanel>
 	

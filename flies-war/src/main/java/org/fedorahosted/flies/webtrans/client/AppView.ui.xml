@@ -106,14 +106,14 @@
 		<g:layer top="66px" bottom="0px" left='7px' right='7px' >
 			<g:SplitLayoutPanel styleName="PageSplitLayoutPanel" ui:field="mainSplitPanel">
 				<g:east size="200">
-					<g:LayoutPanel ui:field="sidePanelContainer">
+					<g:LayoutPanel ui:field="sidePanelOuterContainer">
 						<g:layer top="0px" bottom="8px">
-							<f:SidePanel ui:field="sidePanel"/>	   
+							<g:LayoutPanel ui:field="sidePanelContainer" />
 						</g:layer>
 					</g:LayoutPanel>
 				</g:east>
 				<g:center>
-					<g:LayoutPanel ui:field="editor" />
+					<g:LayoutPanel ui:field="editorContainer" />
 				</g:center>
 			</g:SplitLayoutPanel>
 		</g:layer>

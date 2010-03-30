@@ -46,10 +46,13 @@ public class GetTransUnitStatesHandler extends AbstractActionHandler<GetTransUni
 			Query query = session.createQuery(
 				"from HTextFlowTarget tft where tft.textFlow.document.id = :id " +
 		        " and tft.locale = :locale "+ 
-				" and tft.state = :state")
+				" and tft.state = :state"+
+				" order by tft.textFlow.id")
 				.setParameter("id", action.getDocumentId().getValue())
 			    .setParameter("locale", action.getWorkspaceId().getLocaleId())
 			    .setParameter("state", action.getState());
+			
+			log.info("Transunits for State {0}", action.getState());
 		
 			List<HTextFlowTarget> textFlowTargets = query.list();
 		    

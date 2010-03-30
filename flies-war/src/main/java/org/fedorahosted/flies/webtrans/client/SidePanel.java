@@ -2,8 +2,6 @@ package org.fedorahosted.flies.webtrans.client;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Event;
@@ -25,14 +23,11 @@ public class SidePanel extends Composite implements SidePanelPresenter.Display {
 	LayoutPanel usersPanelContainer;
 	
 	@UiField
-	LayoutPanel filterPanelContainer;
-	
-	@UiField(provided=true)
-	WorkspaceUsersView workspaceUsersView;
+	LayoutPanel filterPanelContainer, transUnitDetailContainer;
 	
 	private final int HEIGHT_USERPANEL_EXPANDED = 200;
 	private final int HEIGHT_USERPANEL_COLLAPSED = 20;
-	private final int USERPANEL_COLLAPSE_DELAY = 1500;
+	private final int USERPANEL_COLLAPSE_DELAY = 1;
 	
 	private final LayoutPanel rootPanel;
 
@@ -47,8 +42,7 @@ public class SidePanel extends Composite implements SidePanelPresenter.Display {
 	private boolean collapsed = true;
 
 	@Inject
-	public SidePanel(WorkspaceUsersView workspaceUsersView) {
-		this.workspaceUsersView = workspaceUsersView;
+	public SidePanel() {
 		usersPanelContainer = new LayoutPanel() {
 			@Override
 			public void onBrowserEvent(Event event) {
@@ -73,8 +67,22 @@ public class SidePanel extends Composite implements SidePanelPresenter.Display {
 		usersPanelContainer.sinkEvents(Event.ONMOUSEOUT | Event.ONMOUSEOVER);
 	}
 	
+	@Override
 	public void setFilterView(Widget filterView) {
+		filterPanelContainer.clear();
 		filterPanelContainer.add(filterView);
+	}
+	
+	@Override
+	public void setWorkspaceUsersView(Widget widget) {
+		usersPanelContainer.clear();
+		usersPanelContainer.add(widget);
+	}
+	
+	@Override
+	public void setTransUnitDetailView(Widget widget) {
+		transUnitDetailContainer.clear();
+		transUnitDetailContainer.add(widget);
 	}
 	
 	private void cancelCollapseUsersPanel() {

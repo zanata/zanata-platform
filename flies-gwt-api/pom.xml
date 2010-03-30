@@ -90,11 +90,11 @@
       <scope>compile</scope>
     </dependency>
   
-    <dependency>
-      <groupId>de.novanic</groupId>
-      <artifactId>gwteventservice</artifactId>
+	<dependency>
+	    <groupId>com.google.code.gwteventservice</groupId>
+	    <artifactId>gwteventservice</artifactId>
 	</dependency>
-	
+
   </dependencies>
 
   <repositories>

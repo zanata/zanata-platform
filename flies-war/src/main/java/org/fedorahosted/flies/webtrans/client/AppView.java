@@ -39,33 +39,26 @@ public class AppView extends Composite implements AppPresenter.Display {
 	SpanElement user, selectedDocumentSpan;
 
 	@UiField
-	LayoutPanel editor, sidePanelContainer;
+	LayoutPanel editorContainer, sidePanelContainer, sidePanelOuterContainer;
 	
 	@UiField(provided = true)
 	final Resources resources;
 	
-	@UiField(provided=true)
-	SidePanel sidePanel;
-	
 	@UiField
 	SplitLayoutPanel mainSplitPanel;
 	
-	
 	private Widget documentListView;
 	private Widget editorView;
-	private Widget filterView;
-	private Widget workspaceUsersView;
 	
 	final WebTransMessages messages;
 	
 	@Inject
-	public AppView(Resources resources, WebTransMessages messages, SidePanel sidePanel) {
+	public AppView(Resources resources, WebTransMessages messages) {
 		this.resources = resources;
 		this.messages = messages;
-		this.sidePanel = sidePanel;
 
 		initWidget(uiBinder.createAndBindUi(this));
-		mainSplitPanel.setWidgetMinSize(sidePanelContainer, 200);
+		mainSplitPanel.setWidgetMinSize(sidePanelOuterContainer, 200);
 		
 		helpLink.setHref( messages.hrefHelpLink() );
 		helpLink.setTarget("_BLANK");
@@ -88,33 +81,34 @@ public class AppView extends Composite implements AppPresenter.Display {
 	public void showInMainView(MainView view) {
 		switch(view) {
 		case Documents:
-			editor.setWidgetTopBottom(documentListView, 0, Unit.PX, 0, Unit.PX);
-			editor.setWidgetTopHeight(editorView, 0, Unit.PX, 0, Unit.PX);
+			editorContainer.setWidgetTopBottom(documentListView, 0, Unit.PX, 0, Unit.PX);
+			editorContainer.setWidgetTopHeight(editorView, 0, Unit.PX, 0, Unit.PX);
 			break;
 		case Editor:
-			editor.setWidgetTopBottom(editorView, 0, Unit.PX, 0, Unit.PX);
-			editor.setWidgetTopHeight(documentListView, 0, Unit.PX, 0, Unit.PX);
+			editorContainer.setWidgetTopBottom(editorView, 0, Unit.PX, 0, Unit.PX);
+			editorContainer.setWidgetTopHeight(documentListView, 0, Unit.PX, 0, Unit.PX);
 			break;
 		}
 	}
 
 	@Override
 	public void setDocumentListView(Widget documentListView) {
-		this.editor.add(documentListView);
+		this.editorContainer.add(documentListView);
 		this.documentListView = documentListView;
 	}
 	
 	@Override
 	public void setEditorView(Widget editorView) {
-		this.editor.add(editorView);
+		this.editorContainer.add(editorView);
 		this.editorView = editorView;
 	}
-	
-	@Override
-	public void setFilterView(Widget filterView) {
-		sidePanel.setFilterView(filterView);
-	}
 
+	@Override
+	public void setSidePanel(Widget sidePanel) {
+		sidePanelContainer.clear();
+		sidePanelContainer.add(sidePanel);
+	}
+	
 	@Override
 	public HasClickHandlers getHelpLink() {
 		return helpLink;

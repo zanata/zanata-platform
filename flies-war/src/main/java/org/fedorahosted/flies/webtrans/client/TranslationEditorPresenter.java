@@ -4,6 +4,7 @@ import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.TransUnitCount;
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.DocumentInfo;
+import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.gwt.rpc.GetStatusCount;
 import org.fedorahosted.flies.gwt.rpc.GetStatusCountResult;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
@@ -154,6 +155,10 @@ public class TranslationEditorPresenter extends
 				transMemoryPresenter.bind();
 				display.setTmViewVisible(true);
 				display.setShowTMViewButtonVisible(false);
+				TransUnit tu = tableEditorPresenter.getSelectedTransUnit();
+				if(tu != null) {
+					transMemoryPresenter.showResultsFor( tu );
+				}
 			}
 		});
 		

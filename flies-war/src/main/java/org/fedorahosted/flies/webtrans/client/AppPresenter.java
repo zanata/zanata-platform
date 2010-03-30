@@ -54,7 +54,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		
 		void setDocumentListView(Widget documentListView);
 		void setEditorView(Widget editorView);
-		void setFilterView(Widget filterView);
+		void setSidePanel(Widget sidePanel);
 		void showInMainView(MainView view);
 		
 		HasClickHandlers getSignOutLink();
@@ -67,7 +67,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 	}
 
 	private final DocumentListPresenter documentListPresenter;
-	private final TransFilterPresenter transFilterPresenter;
 	private final TranslationEditorPresenter translationEditorPresenter;
 	private final SidePanelPresenter sidePanelPresenter;
 	private final WorkspaceContext workspaceContext;
@@ -85,7 +84,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 			final TranslationEditorPresenter translationEditorPresenter,
 			final DocumentListPresenter documentListPresenter,
 			final TransUnitNavigationPresenter transUnitNavigationPresenter,
-			final TransFilterPresenter transFilterPresenter,
 			final SidePanelPresenter sidePanelPresenter, 
 			final Identity identity,
 			final WorkspaceContext workspaceContext, 
@@ -96,7 +94,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		this.dispatcher = dispatcher;
 		this.documentListPresenter = documentListPresenter;
 		this.translationEditorPresenter = translationEditorPresenter;
-		this.transFilterPresenter = transFilterPresenter;
 		this.sidePanelPresenter = sidePanelPresenter;
 		this.workspaceContext = workspaceContext;
 	}
@@ -150,9 +147,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
 		display.setEditorView(translationEditorPresenter.getDisplay().asWidget());
 		
 		sidePanelPresenter.bind();
-
-		transFilterPresenter.bind();
-		display.setFilterView(transFilterPresenter.getDisplay().asWidget());
+		display.setSidePanel(sidePanelPresenter.getDisplay().asWidget());
 
 		display.showInMainView(MainView.Documents);
 		

@@ -14,6 +14,8 @@ import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.gwt.rpc.GetTranslationMemory;
 import org.fedorahosted.flies.gwt.rpc.GetTranslationMemoryResult;
 import org.fedorahosted.flies.gwt.rpc.GetTranslationMemory.SearchType;
+import org.fedorahosted.flies.webtrans.client.events.TransUnitSelectionEvent;
+import org.fedorahosted.flies.webtrans.client.events.TransUnitSelectionHandler;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -30,7 +32,6 @@ import com.google.inject.Inject;
 public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.Display> {
 	private final WorkspaceContext workspaceContext;
 	private final CachingDispatchAsync dispatcher;
-	private boolean transMemoryVisible = true;
 	
 	public interface Display extends WidgetDisplay {
 		HasValue<Boolean> getExactButton();
@@ -53,7 +54,6 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 
 	@Override
 	protected void onBind() {
-		
 		display.getSearchButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -77,42 +77,36 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 			}
 		});
 		
-		registerHandler(eventBus.addHandler(SelectionEvent.getType(), new SelectionHandler<TransUnit>() {
+		registerHandler(eventBus.addHandler(TransUnitSelectionEvent.getType(), new TransUnitSelectionHandler() {
 			@Override
-			public void onSelection(SelectionEvent<TransUnit> event) {
-				display.getTmTextBox().setText("");
-				display.startProcessing();
-				if(transMemoryVisible) {
-					//Start automatically fuzzy search
-					final String query = event.getSelectedItem().getSource();
-					final GetTranslationMemory action = new GetTranslationMemory(
-							query, 
-							workspaceContext.getWorkspaceId().getLocaleId(), 
-							GetTranslationMemory.SearchType.FUZZY);
-					dispatcher.execute(action, new AsyncCallback<GetTranslationMemoryResult>() {
-						@Override
-						public void onFailure(Throwable caught) {
-							Log.error(caught.getMessage(), caught);
-						}
-						@Override
-						public void onSuccess(GetTranslationMemoryResult result) {
-							ArrayList<TransMemory> memories = result.getMemories();
-							display.createTable(memories);
-						}
-					});
-				}
-			}
-		})); 
-		
-		registerHandler(eventBus.addHandler(TransMemoryVisibilityEvent.getType(), new TransMemoryVisibilityHandler(){
-			@Override
-			public void onVisibilityChange(TransMemoryVisibilityEvent tabSelectionEvent) {
-				transMemoryVisible = tabSelectionEvent.isVisible();
-				Log.debug("received visibility=="+transMemoryVisible);
+			public void onTransUnitSelected(TransUnitSelectionEvent event) {
+				showResultsFor(event.getSelection());
 			}
 		}));
 	}
 
+	public void showResultsFor(TransUnit transUnit) {
+		display.getTmTextBox().setText("");
+		display.startProcessing();
+		//Start automatically fuzzy search
+		final String query = transUnit.getSource();
+		final GetTranslationMemory action = new GetTranslationMemory(
+				query, 
+				workspaceContext.getWorkspaceId().getLocaleId(), 
+				GetTranslationMemory.SearchType.FUZZY);
+		dispatcher.execute(action, new AsyncCallback<GetTranslationMemoryResult>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Log.error(caught.getMessage(), caught);
+			}
+			@Override
+			public void onSuccess(GetTranslationMemoryResult result) {
+				ArrayList<TransMemory> memories = result.getMemories();
+				display.createTable(memories);
+			}
+		});
+	}
+	
 	@Override
 	protected void onPlaceRequest(PlaceRequest request) {
 	}

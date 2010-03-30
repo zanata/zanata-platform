@@ -9,8 +9,8 @@ import com.google.gwt.i18n.client.Messages.DefaultMessage;
 @Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
 public interface WebTransMessages extends Messages {
 	
-	@DefaultMessage("{0} users online")
-	@PluralText({"one", "One user online"})
+	@DefaultMessage("{0} participants")
+	@PluralText({"one", "One participant"})
 	@Description("Title of the minimized users panel")
 	String nUsersOnline(@PluralCount int numUsers);
 
@@ -55,5 +55,15 @@ public interface WebTransMessages extends Messages {
 
 	@DefaultMessage("Show Translation Suggestions")
 	String showTranslationMemoryPanel();
+
+
+	@DefaultMessage("Exact")
+	String tmPhraseButtonLabel();
+
+	@DefaultMessage("Clear")
+	String tmClearButtonLabel();
+
+	@DefaultMessage("Search")
+	String tmSearchButtonLabel();
 	
 }

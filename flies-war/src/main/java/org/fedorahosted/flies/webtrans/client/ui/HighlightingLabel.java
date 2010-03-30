@@ -8,7 +8,7 @@ public class HighlightingLabel extends Label {
 	private String plainText;
 	
 	public HighlightingLabel() {
-		addStyleName("prettyprint");
+		addStyleName("prettyprint lang-xml");
 	}	
 	
 	public HighlightingLabel(String text) {

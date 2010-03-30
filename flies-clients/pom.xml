@@ -13,7 +13,6 @@
     <module>flies-client-ant-properties</module>
     <module>flies-client-ant-po</module>
     <module>flies-client-pseudo</module>
-    <module>flies-client-publican</module>
   </modules>
   <dependencies>
     <dependency>
