@@ -166,6 +166,10 @@
 		                    <preinstallScriptlet>
 		                        <script>echo "installing flies-publican"</script>
 		                    </preinstallScriptlet>
+		                    <requires>
+		                    	<param>java &gt;= 1:1.6.0</param>
+		                    	<param>jpackage-utils</param>
+		                    </requires>
 		                </configuration>
 		            </plugin>
 				</plugins>
