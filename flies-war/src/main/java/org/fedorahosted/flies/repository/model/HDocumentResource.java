@@ -32,6 +32,8 @@ public abstract class HDocumentResource implements Serializable{
 	private Integer revision = 1;
 	private String resId;
 	
+	private Integer pos;
+	
 	private HDocument document;
 	private HDocumentResource parent;
 	private boolean obsolete = false;
@@ -52,6 +54,14 @@ public abstract class HDocumentResource implements Serializable{
 	
 	protected void setId(Long id) {
 		this.id = id;
+	}
+	
+	public Integer getPos() {
+		return pos;
+	}
+	
+	public void setPos(Integer pos) {
+		this.pos = pos;
 	}
 	
 	// TODO make this case sensitive
