@@ -147,11 +147,12 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 					@Override
 					public void onDocumentSelected(DocumentSelectionEvent event) {
 						if(!event.getDocument().getId().equals(documentId)) {
+							display.startProcessing();
 							documentId = event.getDocument().getId();
 							display.getTableModel().clearCache();
 							display.getTableModel().setRowCount(TableModel.UNKNOWN_ROW_COUNT);
-							display.asWidget().setVisible(true);
 							display.gotoPage(0, true);
+							display.stopProcessing();
 						}
 					}
 				})
