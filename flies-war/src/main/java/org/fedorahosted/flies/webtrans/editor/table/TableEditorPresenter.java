@@ -210,7 +210,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 						final Integer rowOffset = getRowOffset(event.getTransUnitId());
 						// - add TU index to model
 						if (rowOffset != null) {
-							final int row = display.getCurrentPage() * display.getPageSize() + rowOffset+2;
+							final int row = display.getCurrentPage() * display.getPageSize() + rowOffset;
 							Log.info("row calculated as "+row);
 							dispatcher.execute(new GetTransUnits(
 								documentId, 
@@ -224,6 +224,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 									@Override
 									public void onSuccess(GetTransUnitsResult result) {
 										// FIXME should this be row, rowOffset, or something else?
+										Log.info("TransUnit Id"+result.getUnits().get(0).getId());
 										display.getTableModel().setRowValueOverride(row, result.getUnits().get(0));
 									}
 								});
@@ -443,12 +444,14 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		@Override
 		public void gotoNextRow(int row) {
 			curPage = display.getCurrentPage();
+			curRowIndex = curPage*50+row;
 			int rowIndex = curPage*50+row+1;
 			if(rowIndex < display.getTableModel().getRowCount()) {
 				int pageNum = rowIndex/(MAX_PAGE_ROW+1);
 				int rowNum = rowIndex%(MAX_PAGE_ROW+1);
 				if(pageNum != curPage)
 					display.gotoPage(pageNum, false);
+				selectedTransUnit = display.getTransUnitValue(rowNum);
 				display.gotoRow(rowNum);
 			}
 //			int nextRow = row+1;
@@ -482,6 +485,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 				int rowNum = rowIndex%(MAX_PAGE_ROW+1);
 				if(pageNum != curPage)
 					display.gotoPage(pageNum, false);
+				selectedTransUnit = display.getTransUnitValue(rowNum);
 				display.gotoRow(rowNum);
 			}
 //			int prevRow = row-1;
