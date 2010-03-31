@@ -10,13 +10,14 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TransFilterView extends Composite implements TransFilterPresenter.Display {
-	private static final boolean INITIALLY_OPEN = true; // for now, anyway
+	private static final boolean INITIALLY_OPEN = false;
+	private static final boolean RENDER_REPLACE = false;
 
 	private FlowPanel bodyPanel;
 	private Button findButton = new Button("Find");
 	private TextBox replaceText = new TextBox();
-	private Button replaceButton = new Button("Replace");
-	private Button replaceAllButton = new Button("Replace All");
+	private Button replaceButton;
+	private Button replaceAllButton;
 	private Widget filterUnitPanel;
 	
 	public TransFilterView() {
@@ -28,13 +29,18 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
 		filterButtonBar.add(findButton);
 		bodyPanel.add(filterButtonBar);
 
-		bodyPanel.add(replaceText);
 		
-		Panel replaceButtonBar = new FlowPanel();
-		replaceButtonBar.setStyleName("float-right-div");
-		replaceButtonBar.add(replaceButton);
-		replaceButtonBar.add(replaceAllButton);
-		bodyPanel.add(replaceButtonBar);
+		if (RENDER_REPLACE) {
+			bodyPanel.add(replaceText);
+			
+			Panel replaceButtonBar = new FlowPanel();
+			replaceButtonBar.setStyleName("float-right-div");
+			replaceButton = new Button("Replace");
+			replaceButtonBar.add(replaceButton);
+			replaceAllButton = new Button("Replace All");
+			replaceButtonBar.add(replaceAllButton);
+			bodyPanel.add(replaceButtonBar);
+		}
 		
 //		RoundedContainerWithHeader container = new RoundedContainerWithHeader(new Label("Find Messages"), bodyPanel);
 //		initWidget(container);
