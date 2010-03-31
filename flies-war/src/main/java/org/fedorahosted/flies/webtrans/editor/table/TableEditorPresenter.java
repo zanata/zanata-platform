@@ -210,7 +210,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 						final Integer rowOffset = getRowOffset(event.getTransUnitId());
 						// - add TU index to model
 						if (rowOffset != null) {
-							final int row = display.getCurrentPage() * display.getPageSize() + rowOffset;
+							final int row = display.getCurrentPage() * display.getPageSize() + rowOffset+2;
 							Log.info("row calculated as "+row);
 							dispatcher.execute(new GetTransUnits(
 								documentId, 
@@ -624,8 +624,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 								cancelEdit();
 								if(pageNum != curPage)
 									display.gotoPage(pageNum, false);
-								selectedTransUnit = display.getTransUnitValue(fuzzyRowIndex);
 								display.gotoRow(rowNum); 
+								selectedTransUnit = display.getTransUnitValue(rowNum);
 								break;
 							}
 						}
@@ -655,8 +655,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 										cancelEdit();
 										if(pageNum != curPage)
 											display.gotoPage(pageNum, false);
-										selectedTransUnit = display.getTransUnitValue(rowNum);
 										display.gotoRow(rowNum); 
+										selectedTransUnit = display.getTransUnitValue(rowNum);
 										break;
 								}
 							}
