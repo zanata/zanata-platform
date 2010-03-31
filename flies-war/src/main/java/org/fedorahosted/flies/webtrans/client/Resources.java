@@ -59,5 +59,14 @@ public interface Resources extends ClientBundle {
 	
 	@Source("org/fedorahosted/flies/webtrans/images/tm_view.png")
 	ImageResource tmViewButton();
+	
+	@Source("org/fedorahosted/flies/webtrans/images/collapse_open.png")
+	ImageResource collapseOpen();
+	
+	@Source("org/fedorahosted/flies/webtrans/images/collapse_closed.png")
+	ImageResource collapseClosed();
+	
+	
+	
 
 }

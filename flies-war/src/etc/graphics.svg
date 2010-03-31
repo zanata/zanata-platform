@@ -972,6 +972,20 @@
        y2="482.08057"
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(5,0,0,3.2333333,-1661.8843,-1897.6179)" />
+    <inkscape:perspective
+       id="perspective4251"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4275"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -980,9 +994,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1"
-     inkscape:cx="229.68396"
-     inkscape:cy="401.10716"
+     inkscape:zoom="0.70710678"
+     inkscape:cx="607.90633"
+     inkscape:cy="511.45748"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -1541,5 +1555,19 @@
        y="-254.7247"
        inkscape:export-xdpi="31.687754"
        inkscape:export-ydpi="31.687754" />
+    <path
+       style="fill:#c4c4c4;fill-opacity:0.88235294"
+       d="m 385.85786,566.96016 50,100 50,-100 -100,0 z"
+       id="rect4238"
+       inkscape:export-filename="/home/asgeirf/projects/flies/flies-war/src/main/resources/org/fedorahosted/flies/webtrans/images/collapse_open.png"
+       inkscape:export-xdpi="9"
+       inkscape:export-ydpi="9" />
+    <path
+       style="fill:#c4c4c4;fill-opacity:0.88235294"
+       d="m 506.61522,577.81802 100,50 -100,50 0,-100 z"
+       id="rect4238-0"
+       inkscape:export-filename="/home/asgeirf/projects/flies/flies-war/src/main/resources/org/fedorahosted/flies/webtrans/images/collapse_closed.png"
+       inkscape:export-xdpi="9"
+       inkscape:export-ydpi="9" />
   </g>
 </svg>
