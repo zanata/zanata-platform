@@ -84,8 +84,9 @@ public class ClearableTextBox extends Composite {
 	
 	private void refresh() {
 		if(textBox.getText().isEmpty() || textBox.getStyleName().contains(style.emptyBox())) {
-			textBox.setValue(emptyText);
+			textBox.setValue("");
 			textBox.addStyleName(style.emptyBox());
+			textBox.setValue(emptyText);
 		}
 	}
 	
