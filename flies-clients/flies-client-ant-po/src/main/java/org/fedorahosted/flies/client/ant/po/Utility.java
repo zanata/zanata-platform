@@ -55,4 +55,14 @@ class Utility {
 			return project.getBaseDir();
 	}
 
+	public static void handleException(Exception e, boolean outputErrors) {
+		System.err.println("Execution failed: "+e.getMessage());
+		if (outputErrors) {
+			e.printStackTrace();
+		} else {
+			System.err.println("Use --errors for full stack trace (or when reporting bugs)");
+		}
+		System.exit(1);
+	}
+
 }

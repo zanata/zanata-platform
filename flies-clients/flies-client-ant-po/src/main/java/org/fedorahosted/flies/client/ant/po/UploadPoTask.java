@@ -40,6 +40,7 @@ public class UploadPoTask extends Task {
 	private String sourceLang = "en-US";
 	private boolean debug;
 	private boolean help;
+	private boolean errors;
 	private boolean importPo;
 
 	public static void main(String[] args) throws Exception {
@@ -68,8 +69,12 @@ public class UploadPoTask extends Task {
 			missingOption("--user");
 		if (apiKey == null)
 			missingOption("--key");
-			
-		process();
+				
+		try {
+			process();
+		} catch (Exception e) {
+			Utility.handleException(e, errors);
+		}
 	}
 	
 	private static void missingOption(String name) {
@@ -98,7 +103,7 @@ public class UploadPoTask extends Task {
 		}
 	}
 	
-	public void process() throws JAXBException, MalformedURLException, URISyntaxException {
+	public void process() throws JAXBException, URISyntaxException, IOException {
 			PoReader poReader = new PoReader();
 			// scan the directory for pot files
 			File potDir = new File(srcDir, "pot");
@@ -108,6 +113,10 @@ public class UploadPoTask extends Task {
 					return pathname.isFile() && pathname.getName().endsWith(".pot");
 				}
 			});
+			
+			if (potFiles == null) {
+				throw new IOException("Unable to read directory \"pot\" - have you run \"publican update_pot\"?");
+			}
 			
 			// debug: print scanned files
 			if (debug) {
@@ -233,4 +242,10 @@ public class UploadPoTask extends Task {
 	public void setHelp(boolean help) {
 		this.help = help;
 	}
+	
+	@Option(name = "e", longName = "errors", description = "Output full execution error messages")
+	public void setErrors(boolean exceptionTrace) {
+		this.errors = exceptionTrace;
+	}
+
 }

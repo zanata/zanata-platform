@@ -34,6 +34,7 @@ public class DownloadPoTask extends Task {
 	private File dstDir;
 	private String src;
 	private boolean help;
+	private boolean errors;
 	private boolean exportPot;
 
 	public static void main(String[] args) throws Exception {
@@ -62,8 +63,12 @@ public class DownloadPoTask extends Task {
 			missingOption("--user");
 		if (apiKey == null)
 			missingOption("--key");
-			
-		process();
+				
+		try {
+			process();
+		} catch (Exception e) {
+			Utility.handleException(e, errors);
+		}
 	}
 	
 	private static void missingOption(String name) {
@@ -162,5 +167,10 @@ public class DownloadPoTask extends Task {
 	@Option(name = "h", longName = "help", description = "Display this help and exit")
 	public void setHelp(boolean help) {
 		this.help = help;
+	}
+
+	@Option(name = "e", longName = "errors", description = "Output full execution error messages")
+	public void setErrors(boolean exceptionTrace) {
+		this.errors = exceptionTrace;
 	}
 }
