@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.webtrans.client;
 
 import org.fedorahosted.flies.gwt.model.TransUnit;
+import org.fedorahosted.flies.webtrans.client.ui.CollapsePanel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
@@ -10,6 +11,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 
 public class TransUnitDetailsView extends Composite implements TransUnitDetailsPresenter.Display {
 
@@ -20,13 +22,19 @@ public class TransUnitDetailsView extends Composite implements TransUnitDetailsP
 			UiBinder<Widget, TransUnitDetailsView> {
 	}
 	
+	@UiField(provided = true)
+	CollapsePanel collapsePanel;
+	
 	@UiField
 	Label noDetailsLabel, sourceCommentsLabel;
 	
 	@UiField
 	LayoutPanel rootPanel;
 
-	public TransUnitDetailsView() {
+	@Inject
+	public TransUnitDetailsView(WebTransMessages messages, Resources resources) {
+		collapsePanel = new CollapsePanel(resources);
+		collapsePanel.setHeading( messages.transUnitDetailsHeading() );
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 

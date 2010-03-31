@@ -12,24 +12,26 @@ import org.fedorahosted.flies.webtrans.editor.filter.OperatorFilter.Operator;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.Display> {
 	
 	public static final Place PLACE = new Place("TransUnitInfoPresenter");
+
+	private PhraseFilter phraseFilter;
 	
 	public interface Display extends WidgetDisplay{
-		HasClickHandlers getFindButton();
-		void setFilterUnitPanel(Widget widget);
+		HasValue<String> getFilterText();
 	}
-	
-	private final OperatorFilterPresenter operatorFilterPresenter;
 
 	@Inject
-	public TransFilterPresenter(final Display display, final EventBus eventBus, OperatorFilterPresenter operatorFilterPresenter) {
+	public TransFilterPresenter(final Display display, final EventBus eventBus) {
 		super(display, eventBus);
-		this.operatorFilterPresenter = operatorFilterPresenter;
+		this.phraseFilter = new PhraseFilter("");
 	}
 	
 	
@@ -41,17 +43,20 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.D
 
 	@Override
 	protected void onBind() {
-		OperatorFilter<TransUnit> filter = new OperatorFilter<TransUnit>(Operator.And);
-		operatorFilterPresenter.bind(filter);
 		
-		display.setFilterUnitPanel(operatorFilterPresenter.getDisplay().asWidget());
-		
-		display.getFindButton().addClickHandler(new ClickHandler() {
+		display.getFilterText().addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
-			public void onClick(ClickEvent event) {
-				eventBus.fireEvent( new FilterEnabledEvent(operatorFilterPresenter.getFilter()));
+			public void onValueChange(ValueChangeEvent<String> event) {
+				phraseFilter.setPhrase(event.getValue());
+				if(!event.getValue().isEmpty()) {
+					eventBus.fireEvent( new FilterEnabledEvent(phraseFilter));
+				}
+				else {
+					eventBus.fireEvent( new FilterDisabledEvent());
+				}
 			}
 		});
+		
 		
 	}
 

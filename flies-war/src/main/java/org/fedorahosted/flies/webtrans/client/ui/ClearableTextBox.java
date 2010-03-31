@@ -44,6 +44,10 @@ public class ClearableTextBox extends Composite {
 	@UiField
 	Styles style;	
 	
+	public ClearableTextBox() {
+		this((Resources) GWT.create(Resources.class));
+	}
+	
 	@Inject
 	public ClearableTextBox(final Resources resources) {
 		this.resources = resources;
@@ -75,10 +79,19 @@ public class ClearableTextBox extends Composite {
 	
 	@UiHandler("textBox")
 	public void onTextBoxBlur(BlurEvent event) {
-		if(textBox.getText().isEmpty()) {
+		refresh();
+	}
+	
+	private void refresh() {
+		if(textBox.getText().isEmpty() || textBox.getStyleName().contains(style.emptyBox())) {
 			textBox.setValue(emptyText);
 			textBox.addStyleName(style.emptyBox());
 		}
+	}
+	
+	public void setEmptyText(String emptyText) {
+		this.emptyText = emptyText;
+		refresh();
 	}
 	
 	

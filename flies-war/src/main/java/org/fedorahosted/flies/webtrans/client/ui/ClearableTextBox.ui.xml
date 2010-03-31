@@ -6,20 +6,39 @@
 	
 	<ui:style type="org.fedorahosted.flies.webtrans.client.ui.ClearableTextBox.Styles">
 		.flow {
-			vertical-align: middle;
-			}
-		.label{
 			display: inline;
+			vertical-align: middle;
+			border: 1px solid black;
+			-moz-border-radius: 4px;
+			-webkit-border-radius: 4px;
+			padding: 2px; 
+			}
+		.xButton {
+			cursor: pointer;
 		}
-		
+
 		.emptyBox {
 			color: #ddd;
 			font-style: italic;
+			font-size: 12px;
+		}
+		.textBox {
+			border: none;
+			width: 100%;
+			font-size: 12px;
+			padding: 0px;
+			margin: 0px;
 		}
 	</ui:style>
 	
-	<g:FlowPanel styleName="{style.flow}">
-		<g:TextBox ui:field="textBox" />
-		<g:Image ui:field="xButton" resource="{resources.xButton}" />
-	</g:FlowPanel>
+	<g:LayoutPanel styleName="{style.flow}">
+		<g:layer top="1" bottom="1" left="2" right="20px">
+			<g:FlowPanel>
+				<g:TextBox ui:field="textBox" styleName="{style.textBox}"/>
+			</g:FlowPanel>
+		</g:layer>
+		<g:layer top="0" bottom="0" right="1" width="18px">
+			<g:Image ui:field="xButton" resource="{resources.xButton}" styleName="{style.xButton}" />
+		</g:layer>
+	</g:LayoutPanel>
 </ui:UiBinder> 
