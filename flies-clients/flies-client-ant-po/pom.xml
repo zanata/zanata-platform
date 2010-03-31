@@ -64,8 +64,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <classpathMavenRepositoryLayout>true</classpathMavenRepositoryLayout>
-                            <classpathPrefix>../../../../../</classpathPrefix>
+                            <classpathPrefix>lib/</classpathPrefix>
                             <mainClass>org.fedorahosted.flies.client.ant.po.PoTool
                             </mainClass>
                         </manifest>
