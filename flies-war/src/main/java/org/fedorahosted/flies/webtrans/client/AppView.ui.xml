@@ -19,12 +19,6 @@
 			text-decoration: none;
 		}
 
-		.topPanel-OverBar {
-			background: #09305c;
-			display: table-cell;
-			vertical-align: middle;
-		}
-
 		.topPanel-Workspace {
 			font-size: 1.2em;
 			color: white;
@@ -78,7 +72,7 @@
 			</g:LayoutPanel>
 		</g:layer>
 		<g:layer top="30px" height="30px">
-			<g:FlowPanel styleName="{style.topPanel-OverBar}">
+			<g:FlowPanel styleName="{resources.style.banner}">
 				<g:HTMLPanel styleName="{style.topPanel-Workspace}">
 					<nobr>
 						<g:Anchor href="#" ui:field="documentsLink">Documents</g:Anchor>
