@@ -44,13 +44,13 @@
 	<g:SplitLayoutPanel ui:field="splitPanel" styleName="PageSplitLayoutPanel" >
 		<g:center>
 			<g:LayoutPanel styleName="{style.editor}">
-				<g:layer top='0px' height='1.3em' right="0px" width="100px">
+				<g:layer top='4px' height='18px' right="2px" width="100px">
 					<f:TransUnitCountBar ui:field='transUnitCountBar' styleName="{style.unitStatus}"/>
 				</g:layer>
-				<g:layer top="0px" height="1.3em" right="100px" left="100px">
+				<g:layer top="2px" height="20px" right="100px" left="100px">
 					<g:FlowPanel ui:field="transUnitNavigationContainer" styleName="{style.centerText}"/>
 				</g:layer>
-				<g:layer top="1.3em" bottom="2em">
+				<g:layer top="22px" bottom="2em">
 					<g:LayoutPanel ui:field="editor" />
 				</g:layer>
 				<g:layer bottom="0px" height="2em" left="30px" right="30px">
