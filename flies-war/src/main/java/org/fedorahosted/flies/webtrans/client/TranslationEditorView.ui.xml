@@ -70,7 +70,7 @@
 				<g:layer top="0" bottom="8px">
 					<g:LayoutPanel styleName="{style.tmview}" ui:field="tmPanel" />
 				</g:layer>
-				<g:layer right="2px" top="2px" width="15px" height="15px">
+				<g:layer right="3px" top="3px" width="15px" height="15px">
 					<g:Image resource="{resources.minimizeButton}" ui:field="tmMinimize" styleName="{style.imageButton}" />
 				</g:layer>
 			</g:LayoutPanel>
