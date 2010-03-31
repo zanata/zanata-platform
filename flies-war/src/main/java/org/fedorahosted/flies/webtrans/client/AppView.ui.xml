@@ -23,7 +23,6 @@
 		}
 
 		.topPanel-Workspace {
-			display: inline;
 			font-size: 1.2em;
 			color: white;
 			padding: 5px;
@@ -67,6 +66,8 @@
 		}
 		.overBar{
 			background: #09305c;
+			display: table-cell;
+			vertical-align: middle;
 		}
 	</ui:style>
 	<g:LayoutPanel>
