@@ -15,14 +15,16 @@
 	</ui:style>
 	
 	<g:LayoutPanel styleName="{style.sidePanel}">
-		<g:layer top='0' bottom='220px'>
-			<g:LayoutPanel ui:field="transUnitDetailContainer"/>
+		<g:layer top="0" bottom="170px">
+			<g:LayoutPanel>
+				<g:layer top='0' height="50%">
+					<g:LayoutPanel ui:field="transUnitDetailContainer"/>
+				</g:layer>
+			</g:LayoutPanel>
 		</g:layer>
-		
-		<g:layer bottom='20px' height='200px'>
+		<g:layer bottom='20px' height='150px'>
 			<g:LayoutPanel ui:field='filterPanelContainer' />
 		</g:layer>
-		
 		<g:layer bottom='0px' height='20px'>
 			<g:LayoutPanel ui:field="usersPanelContainer" />
 		</g:layer>

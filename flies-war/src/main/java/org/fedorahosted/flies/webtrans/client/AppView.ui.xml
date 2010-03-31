@@ -7,9 +7,6 @@
 	<ui:with field='resources' type="org.fedorahosted.flies.webtrans.client.Resources"/>
 	
 	<ui:style>
-		.topPanel {
-			border-bottom: 1px solid #e0e0e0;
-		}
 		.header {
 			background-color: #ffffff;
 		}
@@ -23,7 +20,6 @@
 		}
 
 		.topPanel-Workspace {
-			display: inline;
 			font-size: 1.2em;
 			color: white;
 			padding: 5px;
@@ -33,12 +29,6 @@
 			color: white;
 			font-weight: bold;
 			text-decoration: none;
-		}
-		.topPanel-Workspace-Name {
-			color: #6C5353;	
-		}
-		.topPanel-Workspace-Locale {
-			color: #DEAA87;	
 		}
 
 		.userName {
@@ -57,17 +47,6 @@
 			-moz-border-radius: 10px;
 		}
 		
-		.pager {
-			text-align: center;	
-		}
-				
-		.transUnitNavigation {
-			float:right; 
-			display:inline;
-		}
-		.overBar{
-			background: #09305c;
-		}
 	</ui:style>
 	<g:LayoutPanel>
 		<g:layer top="0px" height="30px">
@@ -93,12 +72,14 @@
 			</g:LayoutPanel>
 		</g:layer>
 		<g:layer top="30px" height="30px">
-			<g:FlowPanel styleName="{style.overBar}">
+			<g:FlowPanel styleName="{resources.style.banner}">
 				<g:HTMLPanel styleName="{style.topPanel-Workspace}">
 					<nobr>
 						<g:Anchor href="#" ui:field="documentsLink">Documents</g:Anchor>
 						<span class="{style.divider}">></span>
-						<em><span ui:field="selectedDocumentSpan">No document Selected</span></em>
+						<em>
+							<span ui:field="selectedDocumentPathSpan"/><span ui:field="selectedDocumentSpan">No document Selected</span>
+						</em>
 					</nobr>
 				</g:HTMLPanel>
 			</g:FlowPanel>

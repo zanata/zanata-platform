@@ -971,7 +971,21 @@
        x2="480.8326"
        y2="482.08057"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="translate(36.60331,-927.55782)" />
+       gradientTransform="matrix(5,0,0,3.2333333,-1661.8843,-1897.6179)" />
+    <inkscape:perspective
+       id="perspective4251"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4275"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -980,14 +994,14 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1"
-     inkscape:cx="353.97377"
-     inkscape:cy="580.00104"
+     inkscape:zoom="0.70710678"
+     inkscape:cx="607.90633"
+     inkscape:cy="511.45748"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1680"
-     inkscape:window-height="987"
+     inkscape:window-width="1920"
+     inkscape:window-height="1024"
      inkscape:window-x="-4"
      inkscape:window-y="-3"
      inkscape:window-maximized="1" />
@@ -1522,20 +1536,16 @@
            y="467.14056"
            style="font-size:10px;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#006c00;fill-opacity:1" /></flowRegion><flowPara
          id="flowPara3415-2-2">✔</flowPara></flowRoot>    <rect
-       style="fill:url(#linearGradient3990);fill-opacity:1;stroke:#99ccff;stroke-width:1.26800001;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       id="rect3162"
-       width="136"
-       height="72"
-       x="343.25809"
-       y="518.12994" />
-    <rect
        style="fill:url(#linearGradient4000);fill-opacity:1;stroke:none"
        id="rect3992"
-       width="30"
-       height="30"
-       x="446.72522"
-       y="-466.33691"
-       transform="matrix(0,1,-1,0,0,0)" />
+       width="150"
+       height="97"
+       x="388.72522"
+       y="-406.33691"
+       transform="matrix(0,1,-1,0,0,0)"
+       inkscape:export-filename="/home/asgeirf/projects/flies/flies-war/src/main/resources/org/fedorahosted/flies/webtrans/images/banner_bg.png"
+       inkscape:export-xdpi="18"
+       inkscape:export-ydpi="18" />
     <rect
        style="fill:#ffffff;fill-opacity:1;stroke:none"
        id="rect4023"
@@ -1545,5 +1555,19 @@
        y="-254.7247"
        inkscape:export-xdpi="31.687754"
        inkscape:export-ydpi="31.687754" />
+    <path
+       style="fill:#c4c4c4;fill-opacity:0.88235294"
+       d="m 385.85786,566.96016 50,100 50,-100 -100,0 z"
+       id="rect4238"
+       inkscape:export-filename="/home/asgeirf/projects/flies/flies-war/src/main/resources/org/fedorahosted/flies/webtrans/images/collapse_open.png"
+       inkscape:export-xdpi="9"
+       inkscape:export-ydpi="9" />
+    <path
+       style="fill:#c4c4c4;fill-opacity:0.88235294"
+       d="m 506.61522,577.81802 100,50 -100,50 0,-100 z"
+       id="rect4238-0"
+       inkscape:export-filename="/home/asgeirf/projects/flies/flies-war/src/main/resources/org/fedorahosted/flies/webtrans/images/collapse_closed.png"
+       inkscape:export-xdpi="9"
+       inkscape:export-ydpi="9" />
   </g>
 </svg>

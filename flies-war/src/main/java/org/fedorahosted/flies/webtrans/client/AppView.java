@@ -8,6 +8,7 @@ import org.fedorahosted.flies.webtrans.editor.HasTransUnitCount.CountUnit;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;
+import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -36,7 +37,7 @@ public class AppView extends Composite implements AppPresenter.Display {
 	Anchor signOutLink, leaveLink, helpLink, documentsLink;
 
 	@UiField
-	SpanElement user, selectedDocumentSpan;
+	SpanElement user, selectedDocumentSpan, selectedDocumentPathSpan;
 
 	@UiField
 	LayoutPanel editorContainer, sidePanelContainer, sidePanelOuterContainer;
@@ -57,6 +58,8 @@ public class AppView extends Composite implements AppPresenter.Display {
 		this.resources = resources;
 		this.messages = messages;
 
+		StyleInjector.inject(resources.style().getText(),true);
+		
 		initWidget(uiBinder.createAndBindUi(this));
 		mainSplitPanel.setWidgetMinSize(sidePanelOuterContainer, 200);
 		
@@ -141,6 +144,8 @@ public class AppView extends Composite implements AppPresenter.Display {
 	
 	@Override
 	public void setSelectedDocument(DocumentInfo document) {
+		String path = document.getPath() == null || document.getPath().isEmpty() ? "" : document.getPath() + "/";
+		selectedDocumentPathSpan.setInnerText(path);
 		selectedDocumentSpan.setInnerText(document.getName());
 	}
 }

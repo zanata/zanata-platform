@@ -65,5 +65,19 @@ public interface WebTransMessages extends Messages {
 
 	@DefaultMessage("Search")
 	String tmSearchButtonLabel();
+
+	@DefaultMessage("Find")
+	String findButton();
+
+	@DefaultMessage("Find Messages")
+	String transUnitSearchesHeading();
+
+
+	@DefaultMessage("Translation Unit Details")
+	String transUnitDetailsHeading();
+
+
+	@DefaultMessage("Source or Target content")
+	String findSourceOrTargetString();
 	
 }

@@ -18,18 +18,17 @@
 			-moz-border-radius: 7px;
 			-webkit-border-radius: 7px;
 		}
-		
 	</ui:style>
 	<g:LayoutPanel>
 		<g:layer top="0px" bottom="8px">
 			<g:LayoutPanel styleName="{style.mainPanel}">
-				<g:layer top='0px' height='2em' left="0px" right="200px">
-					<fui:ClearableTextBox ui:field='filterTextBox' />
+				<g:layer top='2px' height='20px' left="2px" right="104px">
+					<fui:ClearableTextBox ui:field='filterTextBox'/>
 				</g:layer>
-				<g:layer top='0px' height='2em' right="0px" width="100px">
+				<g:layer top='4px' height='18px' right="2px" width="100px">
 					<f:TransUnitCountBar ui:field='transUnitCountBar' styleName="{style.unitStatus}"/>
 				</g:layer>
-				<g:layer top='2em' bottom="0px">
+				<g:layer top='24px' bottom="2px">
 					<g:ScrollPanel ui:field='documentScrollPanel'>
 						<g:FlowPanel ui:field='documentList' />
 					</g:ScrollPanel>

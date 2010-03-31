@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.webtrans.client;
 
 import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.DataResource;
 import com.google.gwt.resources.client.ImageResource;
 
 /**
@@ -8,8 +9,11 @@ import com.google.gwt.resources.client.ImageResource;
  */
 public interface Resources extends ClientBundle {
 
-	// @Source("Style.css")
-	// Style style();
+	@Source("org/fedorahosted/flies/webtrans/WebTransStyles.css")
+	WebTransStyles style();
+	
+	@Source("org/fedorahosted/flies/webtrans/images/banner_bg.png")
+	DataResource bannerBackground();
 
 	@Source("org/fedorahosted/flies/webtrans/images/flies_logo_small.png")
 	ImageResource logo();
@@ -55,5 +59,14 @@ public interface Resources extends ClientBundle {
 	
 	@Source("org/fedorahosted/flies/webtrans/images/tm_view.png")
 	ImageResource tmViewButton();
+	
+	@Source("org/fedorahosted/flies/webtrans/images/collapse_open.png")
+	ImageResource collapseOpen();
+	
+	@Source("org/fedorahosted/flies/webtrans/images/collapse_closed.png")
+	ImageResource collapseClosed();
+	
+	
+	
 
 }
