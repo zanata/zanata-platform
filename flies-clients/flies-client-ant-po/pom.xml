@@ -65,7 +65,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathMavenRepositoryLayout>true</classpathMavenRepositoryLayout>
-                            <classpathPrefix>../../../../../</classpathPrefix>
+	                        <classpathPrefix>../../../../../</classpathPrefix>
                             <mainClass>org.fedorahosted.flies.client.ant.po.PoTool
                             </mainClass>
                         </manifest>
@@ -114,6 +114,33 @@
 			<build>
 				<plugins>
 		            <plugin>
+		                <!--
+		                    This plugin will copy dependencies into the right
+		                    outputDirectory. Usage: mvn dependency:copy-dependencies
+		                -->
+		                <groupId>org.apache.maven.plugins</groupId>
+		                <artifactId>maven-dependency-plugin</artifactId>
+		                <executions>
+		                    <execution>
+		                        <phase>package</phase>
+		                        <goals>
+		                            <goal>copy-dependencies</goal>
+		                        </goals>
+		                    </execution>
+		                </executions>
+		                <configuration>
+		                    <outputDirectory>target/lib</outputDirectory>
+		                    <overWriteReleases>true</overWriteReleases>
+		                    <overWriteSnapshots>true</overWriteSnapshots>
+		                    <overWriteIfNewer>true</overWriteIfNewer>
+		                    <includeScope>runtime</includeScope>
+		                    <excludeScope>provided</excludeScope>
+		                    <useRepositoryLayout>true</useRepositoryLayout>
+		                </configuration>
+		            </plugin>
+
+
+		            <plugin>
 		                <groupId>org.codehaus.mojo</groupId>
 		                <artifactId>rpm-maven-plugin</artifactId>
 		                <version>2.0.1</version>
@@ -146,7 +173,7 @@
 		                            </sources>
 		                        </mapping>
 		                        <mapping>
-		                            <directory>/usr/share/flies-publican</directory>
+		                            <directory>/usr/share/flies-publican/org/fedorahosted/flies/flies-client-ant-po/${project.version}/</directory>
 		                            <filemode>755</filemode>
 		                            <username>root</username>
 		                            <groupname>root</groupname>
@@ -157,11 +184,15 @@
 		                            </sources>
 		                        </mapping>                 
 		                        <mapping>
-		                            <directory>/usr/share/flies-publican/lib</directory>
+		                            <directory>/usr/share/flies-publican</directory>
 		                            <filemode>755</filemode>
 		                            <username>root</username>
 		                            <groupname>root</groupname>
-		                            <dependency />
+		                            <sources>
+		                                <source>
+		                                    <location>target/lib</location>
+		                                </source>
+		                            </sources>
 		                        </mapping>                 
 		                    </mappings>
 		                    <preinstallScriptlet>

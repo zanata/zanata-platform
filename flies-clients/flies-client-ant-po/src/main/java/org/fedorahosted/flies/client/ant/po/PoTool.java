@@ -14,6 +14,9 @@ import org.cyclopsgroup.jcli.annotation.Option;
 @Cli(name = "flies-publican", description = "Send publican PO/POT files to and from Flies")
 public class PoTool {
 
+	private boolean help;
+	private boolean errors;
+
 	/**
 	 * @param args
 	 * @throws Exception 
@@ -31,26 +34,34 @@ public class PoTool {
 			System.exit(0);
 		}
 		String command = arguments.get(0);
-		final String[] otherArgs = arguments.subList(1, arguments.size()).toArray(new String[0]);
-		if (command.equals("upload")) {
-			UploadPoTask.main(otherArgs);
-		} else if (command.equals("download")) {
-			DownloadPoTask.main(otherArgs);
-		} else {
-			help(System.out);
+		String[] otherArgs = arguments.subList(1, arguments.size()).toArray(new String[0]);
+			try {
+			if (command.equals("upload")) {
+				UploadPoTask.main(otherArgs);
+			} else if (command.equals("download")) {
+				DownloadPoTask.main(otherArgs);
+			} else {
+				help(System.out);
+			}
+		} catch (Exception e) {
+			Utility.handleException(e, errors);
 		}
 	}
-	
+
 	private static void help(PrintStream out) throws IOException {
 		out.println("[USAGE]"); 
 		out.println("  flies-publican upload/download [--help] [options] [args]");
 		out.println();
 	}
 	
-	private boolean help;
 	@Option(name = "h", longName = "help", description = "Display this help and exit")
 	public void setHelp(boolean help) {
 		this.help = help;
+	}
+	
+	@Option(name = "e", longName = "errors", description = "Output full execution error messages")
+	public void setErrors(boolean exceptionTrace) {
+		this.errors = exceptionTrace;
 	}
 
 	private List<String> arguments = new ArrayList<String>();

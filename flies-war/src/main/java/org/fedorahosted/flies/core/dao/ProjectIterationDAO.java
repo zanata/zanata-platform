@@ -80,7 +80,7 @@ public class ProjectIterationDAO {
 			stat.set(count.status, count.count.intValue());
 		}
 		
-		stat.set(ContentState.New, totalCount.intValue() - stat.getNotApproved());
+		stat.set(ContentState.New, totalCount.intValue() - (stat.getApproved() + stat.getNeedReview()));
 		
 		return stat;
 	}
