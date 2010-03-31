@@ -76,6 +76,7 @@ public class GetTransUnitStatesHandler extends AbstractActionHandler<GetTransUni
 				}
 			} else if(action.getState().equals(ContentState.New)) {
 				List<HTextFlow> textFlows = new ArrayList<HTextFlow>();
+				int count = 0;
 				if(action.isReverse()) {
 					textFlows = session.createQuery(
 							"from HTextFlow tf where tf.document.id = :id " +
@@ -83,7 +84,6 @@ public class GetTransUnitStatesHandler extends AbstractActionHandler<GetTransUni
 							" order by tf.pos desc")
 							.setParameter("offset", action.getOffset())
 							.setParameter("id", action.getDocumentId().getValue())
-							.setMaxResults(action.getCount())
 							.list();
 				} else {
 					textFlows = session.createQuery(
@@ -92,18 +92,19 @@ public class GetTransUnitStatesHandler extends AbstractActionHandler<GetTransUni
 									" order by tf.pos")
 									.setParameter("offset", action.getOffset())
 									.setParameter("id", action.getDocumentId().getValue())
-									.setMaxResults(action.getCount())
 									.list();
 				}
+				
 				for(HTextFlow textFlow : textFlows) {
+					if(count > action.getCount()) break;
 					if(textFlow.getTargets().get(action.getWorkspaceId().getLocaleId())==null){
 						results.add(new Long(textFlow.getPos()));
+						count++;
 					}
 				}
 				
 			}
-			
-			
+		
 			return new GetTransUnitsStatesResult(action.getDocumentId(), results);
 		}
 
