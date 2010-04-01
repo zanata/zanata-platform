@@ -96,10 +96,17 @@ public class GetTransUnitStatesHandler extends AbstractActionHandler<GetTransUni
 				}
 				
 				for(HTextFlow textFlow : textFlows) {
-					if(count > action.getCount()) break;
-					if(textFlow.getTargets().get(action.getWorkspaceId().getLocaleId())==null){
-						results.add(new Long(textFlow.getPos()));
-						count++;
+					if(count < action.getCount()) {
+						HTextFlowTarget textFlowTarget = textFlow.getTargets().get(action.getWorkspaceId().getLocaleId());
+						if(textFlowTarget==null) {						
+							results.add(new Long(textFlow.getPos()));
+							count++;
+						}
+						
+						if(textFlowTarget!=null && textFlowTarget.getContent().isEmpty()) {
+							results.add(new Long(textFlow.getPos()));
+							count++;
+						}
 					}
 				}
 				
