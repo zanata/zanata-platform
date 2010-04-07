@@ -26,7 +26,7 @@ import org.fedorahosted.flies.rest.dto.Documents;
 import org.jboss.resteasy.client.ClientResponse;
 
 @Cli(name = "downloadpo", description = "Downloads a Publican project's PO/POT files from Flies after translation, to allow document generation")
-public class DownloadPoTask extends Task {
+public class DownloadPoTask extends Task implements Subcommand {
 
 	private String user;
 	private String apiKey;
@@ -38,23 +38,27 @@ public class DownloadPoTask extends Task {
 	private boolean exportPot;
 
 	public static void main(String[] args) throws Exception {
+		DownloadPoTask download = new DownloadPoTask();
+		download.processArgs(args, GlobalOptions.EMPTY);
+	}
+
+	@Override
+	public void processArgs(String[] args, GlobalOptions globals)
+			throws IOException, JAXBException, URISyntaxException {
 		if (args.length == 0) {
 			help(System.out);
 			System.exit(0);
 		}
-		DownloadPoTask download = new DownloadPoTask();
 		ArgumentProcessor<DownloadPoTask> argProcessor = ArgumentProcessor.newInstance(DownloadPoTask.class);
-		argProcessor.process(args, download);
-		
-		download.processArgs();
-	}
-
-	private void processArgs()
-			throws IOException, JAXBException, URISyntaxException {
+		argProcessor.process(args, this);
 		if (help) {
 			help(System.out);
 			System.exit(0);
 		}
+		
+		if(globals.getErrors())
+			errors = true;
+		
 		if (src == null)
 			missingOption("--src");
 		if (dstDir == null)

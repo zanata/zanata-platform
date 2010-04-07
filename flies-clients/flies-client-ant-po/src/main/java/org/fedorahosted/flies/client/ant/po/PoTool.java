@@ -12,10 +12,11 @@ import org.cyclopsgroup.jcli.annotation.MultiValue;
 import org.cyclopsgroup.jcli.annotation.Option;
 
 @Cli(name = "flies-publican", description = "Send publican PO/POT files to and from Flies")
-public class PoTool {
+public class PoTool implements GlobalOptions {
 
 	private boolean help;
 	private boolean errors;
+	private boolean version;
 
 	/**
 	 * @param args
@@ -29,6 +30,10 @@ public class PoTool {
 	}
 	
 	private void processArgs() throws Exception {
+		if (version) {
+			Utility.printJarVersion(System.out);
+			System.exit(0);
+		}
 		if (help || arguments.isEmpty()) {
 			help(System.out);
 			System.exit(0);
@@ -37,9 +42,11 @@ public class PoTool {
 		String[] otherArgs = arguments.subList(1, arguments.size()).toArray(new String[0]);
 			try {
 			if (command.equals("upload")) {
-				UploadPoTask.main(otherArgs);
+				Subcommand upload = new UploadPoTask();
+				upload.processArgs(otherArgs, this);
 			} else if (command.equals("download")) {
-				DownloadPoTask.main(otherArgs);
+				Subcommand download = new DownloadPoTask();
+				download.processArgs(otherArgs, this);
 			} else {
 				help(System.out);
 			}
@@ -50,13 +57,23 @@ public class PoTool {
 
 	private static void help(PrintStream out) throws IOException {
 		out.println("[USAGE]"); 
-		out.println("  flies-publican upload/download [--help] [options] [args]");
+		out.println("  flies-publican [-e/--errors] upload/download [--help] [options] [args]");
 		out.println();
+	}
+	
+	@Override
+	public boolean getHelp() {
+		return help;
 	}
 	
 	@Option(name = "h", longName = "help", description = "Display this help and exit")
 	public void setHelp(boolean help) {
 		this.help = help;
+	}
+
+	@Override
+	public boolean getErrors() {
+		return errors;
 	}
 	
 	@Option(name = "e", longName = "errors", description = "Output full execution error messages")
@@ -64,6 +81,11 @@ public class PoTool {
 		this.errors = exceptionTrace;
 	}
 
+	@Option(name = "v", longName = "version", description = "Output version information and exit")
+	public void setVersion(boolean version) {
+		this.version = version;
+	}
+	
 	private List<String> arguments = new ArrayList<String>();
 	 
 	@MultiValue
