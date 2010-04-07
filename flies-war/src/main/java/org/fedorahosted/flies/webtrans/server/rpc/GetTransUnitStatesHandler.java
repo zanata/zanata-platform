@@ -101,9 +101,7 @@ public class GetTransUnitStatesHandler extends AbstractActionHandler<GetTransUni
 						if(textFlowTarget==null) {						
 							results.add(new Long(textFlow.getPos()));
 							count++;
-						}
-						
-						if(textFlowTarget!=null && textFlowTarget.getContent().isEmpty()) {
+						} else if (textFlowTarget.getState().equals(ContentState.New)){
 							results.add(new Long(textFlow.getPos()));
 							count++;
 						}
