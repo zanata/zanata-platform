@@ -31,7 +31,7 @@ import org.jboss.resteasy.client.ClientResponse;
 import org.xml.sax.InputSource;
 
 @Cli(name = "uploadpo", description = "Uploads a Publican project's PO/POT files to Flies for translation")
-public class UploadPoTask extends Task {
+public class UploadPoTask extends Task implements Subcommand {
 
 	private String user;
 	private String apiKey;
@@ -44,23 +44,27 @@ public class UploadPoTask extends Task {
 	private boolean importPo;
 
 	public static void main(String[] args) throws Exception {
+		UploadPoTask upload = new UploadPoTask();
+		upload.processArgs(args, GlobalOptions.EMPTY);
+	}
+
+	@Override
+	public void processArgs(String[] args, GlobalOptions globals) throws IOException,
+			JAXBException, MalformedURLException, URISyntaxException {
 		if (args.length == 0) {
 			help(System.out);
 			System.exit(0);
 		}
-		UploadPoTask upload = new UploadPoTask();
 		ArgumentProcessor<UploadPoTask> argProcessor = ArgumentProcessor.newInstance(UploadPoTask.class);
-		argProcessor.process(args, upload);
-
-		upload.processArgs();
-	}
-
-	private void processArgs() throws IOException,
-			JAXBException, MalformedURLException, URISyntaxException {
+		argProcessor.process(args, this);
 		if (help) {
 			help(System.out);
 			System.exit(0);
 		}
+		
+		if(globals.getErrors())
+			errors = true;
+		
 		if (srcDir == null)
 			missingOption("--src");
 		if (dst == null)

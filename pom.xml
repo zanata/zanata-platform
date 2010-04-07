@@ -84,6 +84,18 @@
           <downloadJavadocs>false</downloadJavadocs>
         </configuration>
       </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+			            <manifestEntries>
+			              <Implementation-Version>${version}</Implementation-Version>
+			              <Implementation-Build>${maven.build.timestamp}</Implementation-Build>
+			            </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
 		<plugin>
 		  <!-- See http://portals.apache.org/jetspeed-2/buildguide/jetspeed-mvn-plugin.html -->
 		  <groupId>org.apache.portals.jetspeed-2</groupId>
