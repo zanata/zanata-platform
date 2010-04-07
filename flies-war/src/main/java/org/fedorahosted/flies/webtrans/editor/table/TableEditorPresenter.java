@@ -141,6 +141,15 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 				if(selectedTransUnit == null || !event.getSelectedItem().getId().equals(selectedTransUnit.getId())) {
 					selectedTransUnit = event.getSelectedItem();
 					Log.info("SelectedTransUnit "+selectedTransUnit.getId());
+					//Clean the cache when we click the new entry
+					if(!transIdNextNewCache.isEmpty())
+						transIdNextNewCache.clear();
+					if(!transIdPrevNewCache.isEmpty())
+						transIdPrevNewCache.clear();
+					if(!transIdNextFuzzyCache.isEmpty())
+						transIdNextFuzzyCache.clear();
+					if(!transIdPrevFuzzyCache.isEmpty())
+						transIdPrevFuzzyCache.clear();
 					eventBus.fireEvent( new TransUnitSelectionEvent(selectedTransUnit));
 				}
 			}
@@ -445,6 +454,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		public void gotoNextRow(int row) {
 			curPage = display.getCurrentPage();
 			curRowIndex = curPage*50+row;
+			if (curRowIndex < lastRowIndex)
+				transIdNextNewCache.clear();
 			int rowIndex = curPage*50+row+1;
 			if(rowIndex < display.getTableModel().getRowCount()) {
 				int pageNum = rowIndex/(MAX_PAGE_ROW+1);
@@ -563,6 +574,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	}
 	
 	boolean isReqComplete = true;
+
+	private int lastRowIndex;
 	
 	private void cacheNextFuzzy(final ContentState desiredState, final StatesCacheCallback callBack) {
 		isReqComplete = false;
