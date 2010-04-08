@@ -22,7 +22,7 @@
                   var="tribe" 
                   styleClass="iteration_inline_tribes"
                   rowClasses="odd,even">
-    <rich:column>#{tribe.locale.nativeName}</rich:column>
+    <rich:column>#{tribe.locale.nativeName} [#{tribe.locale.id}]</rich:column>
     <rich:column>
       <ui:param name="tstatus" value="#{projectIterationDAO.getStatisticsForContainer(_iteration.container.id, tribe.locale.localeId)}" />
       <ui:include src="../layout/statsbar.xhtml">
