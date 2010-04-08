@@ -584,9 +584,9 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 			public void onSuccess(GetTransUnitsStatesResult result) {
 				isReqComplete = true;	
 				if(!result.getUnits().isEmpty()) {
-					if(desiredState.equals(ContentState.NeedReview))
+					if(desiredState == ContentState.NeedReview)
 						transIdNextFuzzyCache = result.getUnits();
-					if(desiredState.equals(ContentState.New))
+					if(desiredState == ContentState.New)
 						transIdNextNewCache = result.getUnits();
 					callBack.nextFuzzy(desiredState);
 				}
@@ -605,9 +605,9 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 			public void onSuccess(GetTransUnitsStatesResult result) {
 				isReqComplete = true;
 				if(!result.getUnits().isEmpty()) {
-					if(desiredState.equals(ContentState.NeedReview))
+					if(desiredState == ContentState.NeedReview)
 						transIdPrevFuzzyCache = result.getUnits();
-					if(desiredState.equals(ContentState.New))
+					if(desiredState == ContentState.New)
 						transIdPrevNewCache = result.getUnits();
 					callBack.prevFuzzy(desiredState);
 				}
@@ -620,7 +620,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	
 	private void gotoPrevState(ContentState desiredState) { 
 			Log.info("Previous State: "+desiredState);
-			if(desiredState.equals(ContentState.NeedReview)) {
+			if(desiredState == ContentState.NeedReview) {
 				//Clean the cache for Next Fuzzy to avoid issues about cache is obsolete
 				transIdNextFuzzyCache.clear();
 				//If the catch of fuzzy row is empty and request is complete, generate one
@@ -651,7 +651,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 						cachePrevFuzzy(desiredState, cacheCallback);
 					}
 				}
-			} else if(desiredState.equals(ContentState.New)) {
+			} else if(desiredState == ContentState.New) {
 			 		//Clean the cache for Previous New to avoid issues about cache is obsolete
 					transIdNextNewCache.clear();
 					//If the cache of Previous new is empty and request is complete, generate one
@@ -700,7 +700,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	
 	private void gotoNextState(ContentState desiredState) {
 		Log.info("Next State: "+desiredState);
-        if(desiredState.equals(ContentState.NeedReview)) {
+        if(desiredState == ContentState.NeedReview) {
         	transIdPrevFuzzyCache.clear();
 		//If the cache of next fuzzy is empty, generate one
 		if(transIdNextFuzzyCache.isEmpty()) {
@@ -730,7 +730,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 					cacheNextFuzzy(desiredState, cacheCallback);
 				}
 		}
-        } else if (desiredState.equals(ContentState.New)) {
+        } else if (desiredState == ContentState.New) {
          		transIdPrevNewCache.clear();
          		//If the cache of next new is empty, generate one
          		if(transIdNextNewCache.isEmpty()) {
