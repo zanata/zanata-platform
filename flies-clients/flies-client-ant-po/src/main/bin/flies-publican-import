@@ -1,0 +1,42 @@
+#!/bin/bash
+
+PUBLICAN_LANGS=$(find -noleaf -maxdepth 1 -type d | grep -v pot | xargs)
+
+if [ "$PROJ" == "" ]
+then
+  echo Provide PROJ variable please.
+  exit
+fi
+
+if [ "$ITER" == "" ]
+then
+  echo Provide ITER variable please.
+  exit
+fi
+
+if [ "$FLIES_USER" == "" ]
+then
+  FLIES_USER='admin'
+fi
+
+if [ "$KEY" == "" ]
+then
+  KEY='12345678901234567890123456789012'
+fi
+
+if [ "$HOST" == "" ]
+then
+  HOST='localhost:8080'
+fi
+
+echo $PUBLICAN_LANGS
+
+echo Importing to Flies ...
+
+#for publican_lang_dot in $PUBLICAN_LANGS
+#do
+#  publican_lang=$(basename $publican_lang_dot)
+#  echo '- Importing locale $publican_lang ...'
+#done
+
+flies-publican upload -e --importpo --user $FLIES_USER --key $KEY --src ./ --dst http://$HOST/flies/seam/resource/restv1/projects/p/$PROJ/iterations/i/$ITER/documents 
