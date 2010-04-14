@@ -18,14 +18,11 @@ import org.jboss.resteasy.client.ClientResponse;
 public interface IProjectResource {
 	
 	@GET
-	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
+	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON })
 	public ClientResponse<Project> get();
 
 	@PUT
-	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
+	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON })
 	public Response put(Project project);
 
-//	@Path("/iterations/i/{iterationSlug}")
-//	public IProjectIterationResource getIteration(
-//			@PathParam("iterationSlug") String iterationSlug);
 }

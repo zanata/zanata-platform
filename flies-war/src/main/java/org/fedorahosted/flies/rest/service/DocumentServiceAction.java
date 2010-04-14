@@ -25,15 +25,13 @@ public interface DocumentServiceAction {
 
 	@GET
 	@Produces( { MediaTypes.APPLICATION_FLIES_DOCUMENT_XML,
-			MediaTypes.APPLICATION_FLIES_DOCUMENT_JSON,
-			MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+			MediaTypes.APPLICATION_FLIES_DOCUMENT_JSON})
 	public Response get(
 			@QueryParam("resources") @DefaultValue("") ContentQualifier resources);
 
 	@PUT
 	@Consumes( { MediaTypes.APPLICATION_FLIES_DOCUMENT_XML,
-			MediaTypes.APPLICATION_FLIES_DOCUMENT_JSON,
-			MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+			MediaTypes.APPLICATION_FLIES_DOCUMENT_JSON})
 	@Restrict("#{identity.loggedIn}")
 	public Response put(Document document) throws URISyntaxException;
 

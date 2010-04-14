@@ -18,7 +18,7 @@ import org.jboss.resteasy.client.ClientResponse;
 public interface IProjectsResource {
 
 	@GET
-	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECTS_XML, MediaType.APPLICATION_JSON })
+	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECTS_XML, MediaTypes.APPLICATION_FLIES_PROJECTS_JSON })
 	public ClientResponse<ProjectList> get();
 	
 }

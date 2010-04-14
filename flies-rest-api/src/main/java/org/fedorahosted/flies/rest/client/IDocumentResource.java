@@ -21,7 +21,7 @@ public interface IDocumentResource {
 	 * @return
 	 */
 	@GET
-	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
+	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaTypes.APPLICATION_FLIES_DOCUMENT_JSON })
 	public ClientResponse<Document> get(
 			@QueryParam("resources") ContentQualifier resources);
 
@@ -29,7 +29,7 @@ public interface IDocumentResource {
 	 * Add/Update one Document.
 	 */
 	@PUT
-	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaType.APPLICATION_JSON })
+	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENT_XML, MediaTypes.APPLICATION_FLIES_DOCUMENT_JSON })
 	public Response put(Document document);
 
 }

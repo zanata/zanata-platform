@@ -21,7 +21,7 @@ public interface IDocumentsResource {
 	 * Adds multiple Documents
 	 */
 	@POST
-	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
+	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaTypes.APPLICATION_FLIES_DOCUMENTS_JSON })
 	public ClientResponse post(Documents documents);
 	
 	/**
@@ -30,10 +30,10 @@ public interface IDocumentsResource {
 	 * @return
 	 */
 	@PUT
-	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
+	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaTypes.APPLICATION_FLIES_DOCUMENTS_JSON })
 	public ClientResponse put(Documents documents);
 
 	@GET
-	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaType.APPLICATION_JSON })
+	@Produces({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaTypes.APPLICATION_FLIES_DOCUMENTS_JSON })
 	public ClientResponse<Documents> getDocuments();
 }
