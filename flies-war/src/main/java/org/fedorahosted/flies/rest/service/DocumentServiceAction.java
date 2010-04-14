@@ -23,47 +23,23 @@ import org.jboss.seam.annotations.security.Restrict;
 
 public interface DocumentServiceAction {
 
-	@GET
-	@Produces( { MediaTypes.APPLICATION_FLIES_DOCUMENT_XML,
-			MediaTypes.APPLICATION_FLIES_DOCUMENT_JSON})
-	public Response get(
-			@QueryParam("resources") @DefaultValue("") ContentQualifier resources);
+	public Response get(ContentQualifier resources);
 
-	@PUT
-	@Consumes( { MediaTypes.APPLICATION_FLIES_DOCUMENT_XML,
-			MediaTypes.APPLICATION_FLIES_DOCUMENT_JSON})
-	@Restrict("#{identity.loggedIn}")
 	public Response put(Document document) throws URISyntaxException;
 
-	@GET
-	@Path("content/{qualifier}")
-	public Response getContent(
-			@PathParam("qualifier") ContentQualifier qualifier,
-			@QueryParam("levels") @DefaultValue("1") int levels);
+	public Response getContent(ContentQualifier qualifier, int levels);
 
-	@POST
-	@Path("content/{qualifier}")
-	@Restrict("#{identity.loggedIn}")
-	public Response postContent(ResourceList content,
-			@PathParam("qualifier") ContentQualifier qualifier);
+	public Response postContent(ResourceList content, ContentQualifier qualifier);
 
-	@PUT
-	@Path("content/{qualifier}")
-	public Response putContent(ResourceList content,
-			@PathParam("qualifier") ContentQualifier qualifier);
+	public Response putContent(ResourceList content, ContentQualifier qualifier);
 
-	@POST
-	@Path("content/{qualifier}/{resourceId}")
-	@Restrict("#{identity.loggedIn}")
 	public Response postContentByResourceId(DocumentResource resource,
-			@PathParam("qualifier") ContentQualifier qualifier,
-			@PathParam("resourceId") String resourceId);
+			ContentQualifier qualifier,
+			String resourceId);
 
-	@GET
-	@Path("content/{qualifier}/{resourceId}")
 	public Response getContentByResourceId(
-			@PathParam("qualifier") ContentQualifier qualifier,
-			@PathParam("resourceId") String resourceId,
-			@QueryParam("levels") @DefaultValue("1") int levels);
+			ContentQualifier qualifier,
+			String resourceId,
+			int levels);
 
 }

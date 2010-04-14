@@ -2,18 +2,27 @@ package org.fedorahosted.flies.rest.service;
 
 import java.net.URISyntaxException;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.client.ContentQualifier;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.DocumentResource;
 import org.fedorahosted.flies.rest.dto.ResourceList;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.security.Restrict;
 
 @Name("documentService")
 @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/documents/d/{documentId}")
@@ -52,33 +61,59 @@ public class DocumentService implements DocumentServiceAction {
 	}
 
 
-	public Response get(ContentQualifier resources) {
+	@GET
+	@Produces( { MediaTypes.APPLICATION_FLIES_DOCUMENT_XML,
+			MediaTypes.APPLICATION_FLIES_DOCUMENT_JSON})
+	public Response get(
+			@QueryParam("resources") @DefaultValue("") ContentQualifier resources) {
 		return impl.get(resources);
 	}
 
-	public Response getContent(ContentQualifier qualifier, int levels) {
+	@GET
+	@Path("content/{qualifier}")
+	public Response getContent(
+			@PathParam("qualifier") ContentQualifier qualifier, 
+			@QueryParam("levels") @DefaultValue("1") int levels) {
 		return impl.getContent(qualifier, levels);
 	}
 
-	public Response getContentByResourceId(ContentQualifier qualifier,
-			String resourceId, int levels) {
+	@GET
+	@Path("content/{qualifier}/{resourceId}")
+	public Response getContentByResourceId(
+			@PathParam("qualifier") ContentQualifier qualifier,
+			@PathParam("resourceId") String resourceId, 
+			@QueryParam("levels") @DefaultValue("1") int levels) {
 		return impl.getContentByResourceId(qualifier, resourceId, levels);
 	}
 
-	public Response postContent(ResourceList content, ContentQualifier qualifier) {
+	@POST
+	@Path("content/{qualifier}")
+	@Restrict("#{identity.loggedIn}")
+	public Response postContent(ResourceList content, @PathParam("qualifier") ContentQualifier qualifier) {
 		return impl.postContent(content, qualifier);
 	}
 
+	@POST
+	@Path("content/{qualifier}/{resourceId}")
+	@Restrict("#{identity.loggedIn}")
 	public Response postContentByResourceId(DocumentResource resource,
-			ContentQualifier qualifier, String resourceId) {
+			@PathParam("qualifier") ContentQualifier qualifier, 
+			@PathParam("resourceId") String resourceId) {
 		return impl.postContentByResourceId(resource, qualifier, resourceId);
 	}
 
+	@PUT
+	@Consumes( { MediaTypes.APPLICATION_FLIES_DOCUMENT_XML,
+			MediaTypes.APPLICATION_FLIES_DOCUMENT_JSON})
+	@Restrict("#{identity.loggedIn}")
 	public Response put(Document document) throws URISyntaxException {
 		return impl.put(document);
 	}
 
-	public Response putContent(ResourceList content, ContentQualifier qualifier) {
+	@PUT
+	@Path("content/{qualifier}")
+	public Response putContent(ResourceList content, 
+			@PathParam("qualifier") ContentQualifier qualifier) {
 		return impl.putContent(content, qualifier);
 	}
 
