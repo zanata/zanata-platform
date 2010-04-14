@@ -21,12 +21,4 @@ public interface IProjectsResource {
 	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECTS_XML, MediaType.APPLICATION_JSON })
 	public ClientResponse<ProjectList> get();
 	
-	@POST
-	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaType.APPLICATION_JSON })
-	public Response post(Project project);
-
-	
-//  @Path("/p/{projectSlug}")
-//	public IProjectResource getProject(
-//		@PathParam("projectSlug") String projectSlug);
 }

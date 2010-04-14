@@ -107,20 +107,32 @@ public class ProjectService{
 		
 		HProject hProject = projectDAO.getBySlug(project.getId());
 		if(hProject == null){
-			return Response.status(Status.BAD_REQUEST).build();
+			hProject = new org.fedorahosted.flies.core.model.HIterationProject();
+			hProject.setSlug(project.getId());
+			hProject.setName(project.getName());
+			hProject.setDescription(project.getDescription());
 		}
-		//hProject = new org.fedorahosted.flies.core.model.HIterationProject();
-		hProject.setSlug(project.getId());
-		hProject.setName(project.getName());
-		hProject.setDescription(project.getDescription());
-		HAccount hAccount = accountDAO.getByUsername(Identity.instance().getCredentials().getUsername());
-		if(hAccount != null && hAccount.getPerson() != null) {
-			hProject.getMaintainers().add(hAccount.getPerson());
+		else{
+			hProject.setSlug(project.getId());
+			hProject.setName(project.getName());
+			hProject.setDescription(project.getDescription());
 		}
 		
 		try{
-			session.flush();
-			return Response.ok().build();
+			if(!session.contains(hProject)) {
+				session.save(hProject);
+				session.flush();
+				HAccount hAccount = accountDAO.getByUsername(Identity.instance().getCredentials().getUsername());
+				if(hAccount != null && hAccount.getPerson() != null) {
+					hProject.getMaintainers().add(hAccount.getPerson());
+				}
+				session.flush();
+				return Response.created( new URI("/projects/p/"+hProject.getSlug()) ).build();
+			}
+			else{
+				session.flush();
+				return Response.ok().build();
+			}
 		}
         catch(InvalidStateException e){
         	return Response.status(Status.BAD_REQUEST).build();
@@ -128,8 +140,6 @@ public class ProjectService{
         catch(HibernateException e){
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
+        
 	}
-	
-	
-
 }

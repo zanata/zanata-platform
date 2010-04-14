@@ -24,6 +24,8 @@ import org.jboss.seam.mock.ResourceRequestEnvironment;
 import org.jboss.seam.mock.ResourceRequestEnvironment.Method;
 import org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 @Test(groups={"seam-tests"})
@@ -31,13 +33,14 @@ public class ProjectServiceRawSeamTest extends FliesDBUnitSeamTest {
 
 	ResourceRequestEnvironment sharedEnvironment;
 	
-	@BeforeClass
+	@BeforeMethod(firstTimeOnly=true)
 	public void prepareSharedEnvironment() throws Exception {
 		sharedEnvironment = new ResourceRequestEnvironment(this) {
 			@Override
 			public Map<String, Object> getDefaultHeaders() {
 				return new HashMap<String, Object>() {
 					{
+						put("X-Auth-User", "admin");
 						put("X-Auth-Token", "12345678901234567890123456789012");
 					}
 				};
