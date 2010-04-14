@@ -10,13 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.common.Namespaces;
-import org.jboss.resteasy.annotations.providers.jaxb.json.Mapped;
-import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
 
-@Mapped(namespaceMap = {
-		@XmlNsMap(namespace = Namespaces.FLIES, jsonName = Namespaces.FLIES_JSON), 
-		@XmlNsMap(namespace = Namespaces.XML, jsonName = Namespaces.XML_JSON) 
-	})
 @XmlRootElement(name="document-content", namespace=Namespaces.FLIES)
 @XmlType(name="resourcesType", namespace=Namespaces.FLIES)
 public class ResourceList {

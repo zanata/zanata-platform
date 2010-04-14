@@ -10,10 +10,6 @@
   </parent>
   <packaging>jar</packaging>
   
-  <properties>
-    <version.resteasy>1.1.GA</version.resteasy>
-  </properties>
-  
   <dependencies>
 
     <dependency>

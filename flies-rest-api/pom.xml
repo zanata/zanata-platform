@@ -10,10 +10,6 @@
   </parent>
   <packaging>jar</packaging>
 
-  <properties>
-    <version.resteasy>1.1.GA</version.resteasy>
-  </properties>
-  
   <dependencies>
 
     <dependency>
@@ -87,17 +83,6 @@
           <artifactId>slf4j-log4j12</artifactId>
           <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-jaxb-provider</artifactId>
-      <version>${version.resteasy}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-atom-provider</artifactId>
-      <version>${version.resteasy}</version>
-    </dependency>
-
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

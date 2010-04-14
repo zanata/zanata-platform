@@ -11,15 +11,9 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.common.Namespaces;
-import org.jboss.resteasy.annotations.providers.jaxb.json.Mapped;
-import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
 import org.jboss.resteasy.spi.touri.URITemplate;
 
 
-@Mapped(namespaceMap = {
-		@XmlNsMap(namespace = Namespaces.FLIES, jsonName = Namespaces.FLIES_JSON), 
-		@XmlNsMap(namespace = Namespaces.XML, jsonName = Namespaces.XML_JSON) 
-	})
 @XmlType(name="projectIterationType", namespace=Namespaces.FLIES, propOrder={"name", "summary", "documents"})
 @XmlRootElement(name="project-iteration", namespace=Namespaces.FLIES)
 @XmlSeeAlso({

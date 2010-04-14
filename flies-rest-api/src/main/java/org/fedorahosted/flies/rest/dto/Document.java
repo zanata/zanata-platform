@@ -18,13 +18,7 @@ import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.Namespaces;
 import org.fedorahosted.flies.rest.dto.po.PoHeader;
 import org.fedorahosted.flies.rest.dto.po.PoTargetHeaders;
-import org.jboss.resteasy.annotations.providers.jaxb.json.Mapped;
-import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
 
-@Mapped(namespaceMap = {
-	@XmlNsMap(namespace = Namespaces.FLIES, jsonName = Namespaces.FLIES_JSON), 
-	@XmlNsMap(namespace = Namespaces.XML, jsonName = Namespaces.XML_JSON) 
-})
 @XmlRootElement(name="document", namespace=Namespaces.FLIES)
 @XmlType(name="documentType", namespace=Namespaces.FLIES, propOrder={"resources", "extensions"})
 @XmlSeeAlso({
