@@ -6,7 +6,6 @@ import javax.ws.rs.core.Response;
 
 import org.fedorahosted.flies.rest.client.IProjectIterationResource;
 import org.fedorahosted.flies.rest.client.IProjectResource;
-import org.fedorahosted.flies.rest.client.IProjectsResource;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.jboss.resteasy.client.ClientResponse;
 

@@ -9,7 +9,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.fedorahosted.flies.common.Namespaces;
 import org.fedorahosted.flies.rest.MediaTypes;
-import org.fedorahosted.flies.rest.dto.Project;
+import org.fedorahosted.flies.rest.dto.ProjectRef;
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -27,7 +27,7 @@ public class ProjectsService {
 		MediaTypes.APPLICATION_FLIES_PROJECTS_JSON,
 		MediaType.APPLICATION_JSON })
 	@Wrapped(element="projects", namespace=Namespaces.FLIES)
-	public List<Project> get() {
+	public List<ProjectRef> get() {
 
 		return projectsServiceAction.get();
 	}

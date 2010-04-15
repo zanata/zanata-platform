@@ -1,44 +1,28 @@
 package org.fedorahosted.flies.rest.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.common.Namespaces;
 
-
-@XmlType(name="projectType", namespace=Namespaces.FLIES, propOrder={"name", "description", "iterations"})
-@XmlRootElement(name="project", namespace=Namespaces.FLIES)
-public class Project extends AbstractBaseResource{
+@XmlType(name="projectRefType", namespace=Namespaces.FLIES, propOrder={"name", "description"})
+@XmlRootElement(name="project-ref", namespace=Namespaces.FLIES)
+public class ProjectRef extends AbstractBaseResource{
 
 	private String id;
 	private String name;
 	private ProjectType type = ProjectType.IterationProject;
 	private String description;
 	
-	private List<ProjectIteration> iterations;
-	
-	public Project() {
+	public ProjectRef() {
 	}
 	
-	public Project(String id, String name) {
+	public ProjectRef(String id, String name, String description, ProjectType type) {
 		this.id = id;
 		this.name = name;
-	}
-	
-	public Project(String id, String name, String description) {
-		this(id,name);
 		this.description = description;
-	}
-	
-	public Project(String id, String name, String description, ProjectType type) {
-		this(id,name, description);
 		this.type = type;
 	}
 	
@@ -75,13 +59,5 @@ public class Project extends AbstractBaseResource{
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
-	@XmlElementWrapper(name="project-iterations", namespace=Namespaces.FLIES, required=false)
-	@XmlElement(name="project-iteration", namespace=Namespaces.FLIES)
-	public List<ProjectIteration> getIterations() {
-		if(iterations == null)
-			iterations = new ArrayList<ProjectIteration>();
-		return iterations;
-	}
-
+	
 }
