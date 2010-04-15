@@ -34,20 +34,8 @@ import org.jboss.seam.security.Identity;
 @Path("/projects")
 public class ProjectsService {
 
-	@In
-	ProjectDAO projectDAO;
-	
-	@In
-	Session session;
-	
 	@In 
-	AccountDAO accountDAO;
-	
-	
-	@Context
-	HttpServletResponse response;
-	
-	@In ProjectsServiceAction projectsServiceAction;
+	ProjectsServiceAction projectsServiceAction;
 	
 	@GET
 	@Produces({ 
