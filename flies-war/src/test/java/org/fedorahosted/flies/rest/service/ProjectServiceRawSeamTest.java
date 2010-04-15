@@ -1,31 +1,22 @@
 package org.fedorahosted.flies.rest.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.testng.Assert.fail;
 
-import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.ws.rs.core.MediaType;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.flies.rest.MediaTypes;
-import org.fedorahosted.flies.rest.dto.Project;
-import org.fedorahosted.flies.rest.dto.ProjectList;
 import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
 import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
 import org.jboss.seam.mock.ResourceRequestEnvironment;
 import org.jboss.seam.mock.ResourceRequestEnvironment.Method;
 import org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 @Test(groups={"seam-tests"})
@@ -79,26 +70,10 @@ public class ProjectServiceRawSeamTest extends FliesDBUnitSeamTest {
 			protected void onResponse(EnhancedMockHttpServletResponse response) {
 				assertThat( response.getStatus(), is(200));
 				
-				// check that the content we get back is XML
-				byte [] xmlVal = response.getContentAsByteArray();
+				String xmlContent = response.getContentAsString();
 				
-				JAXBContext context;
-				ProjectList projectRefs = null;
-				try {
-					context = JAXBContext.newInstance(ProjectList.class);
-					Unmarshaller unmarshaller = context.createUnmarshaller();
-					projectRefs = (ProjectList) unmarshaller.unmarshal(new ByteArrayInputStream(xmlVal));
-					
-				} catch (JAXBException e) {
-					fail("Failed to initialize Jaxb", e);
-				}
-				
-				assertThat( projectRefs, notNullValue() );
-				
-				assertThat( projectRefs.getProjects().size(), is(1) );
-				
-				Project projectRef = projectRefs.getProjects().get(0);
-				assertThat( projectRef.getName(), is("Sample Project"));
+				assertThat( xmlContent, containsString("projects") );
+				assertThat( xmlContent, containsString("Sample Project") );
 			}
 
 		}.run();

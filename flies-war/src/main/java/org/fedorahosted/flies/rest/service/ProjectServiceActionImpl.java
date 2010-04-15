@@ -1,7 +1,6 @@
 package org.fedorahosted.flies.rest.service;
 
 import java.net.URI;
-import java.util.List;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -14,7 +13,6 @@ import org.fedorahosted.flies.core.model.HProject;
 import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
-import org.fedorahosted.flies.rest.dto.ProjectList;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.validator.InvalidStateException;
@@ -27,7 +25,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
 
-@Name("projectServiceAction")
+@Name("projectServiceActionImpl")
 @Scope(ScopeType.STATELESS)
 @AutoCreate
 public class ProjectServiceActionImpl implements ProjectServiceAction{

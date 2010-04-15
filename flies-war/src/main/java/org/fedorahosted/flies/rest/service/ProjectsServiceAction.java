@@ -1,9 +1,11 @@
 package org.fedorahosted.flies.rest.service;
 
-import org.fedorahosted.flies.rest.dto.ProjectList;
+import java.util.List;
+
+import org.fedorahosted.flies.rest.dto.Project;
 
 public interface ProjectsServiceAction {
 	
-	public ProjectList get();
+	public List<Project> get();
 
 }

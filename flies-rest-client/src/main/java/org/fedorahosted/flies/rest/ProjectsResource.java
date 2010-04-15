@@ -1,13 +1,11 @@
 package org.fedorahosted.flies.rest;
 
 import java.net.URI;
-
-import javax.ws.rs.core.Response;
+import java.util.List;
 
 import org.fedorahosted.flies.rest.client.IProjectResource;
 import org.fedorahosted.flies.rest.client.IProjectsResource;
 import org.fedorahosted.flies.rest.dto.Project;
-import org.fedorahosted.flies.rest.dto.ProjectList;
 import org.jboss.resteasy.client.ClientResponse;
 
 public class ProjectsResource implements IProjectsResource{
@@ -29,7 +27,7 @@ public class ProjectsResource implements IProjectsResource{
 	}
 
 	@Override
-	public ClientResponse<ProjectList> get() {
+	public ClientResponse<List<Project>> get() {
 		return projectsResource.get();
 	}
 	

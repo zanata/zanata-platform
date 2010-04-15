@@ -1,20 +1,16 @@
 package org.fedorahosted.flies.rest.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 import java.net.URI;
-
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import java.util.List;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.flies.rest.ApiKeyHeaderDecorator;
 import org.fedorahosted.flies.rest.client.IProjectsResource;
 import org.fedorahosted.flies.rest.dto.Project;
-import org.fedorahosted.flies.rest.dto.ProjectList;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
@@ -55,11 +51,11 @@ public class ProjectsServiceSeamTest extends FliesDBUnitSeamTest {
 	}
 
 	public void retrieveListofProjects() throws Exception {
-		ClientResponse<ProjectList> response = projectService.get();
+		ClientResponse<List<Project>> response = projectService.get();
 
 		assertThat(response.getStatus(), is(200));
 		assertThat(response.getEntity(), notNullValue());
-		assertThat(response.getEntity().getProjects().size(), is(1));
+		assertThat(response.getEntity().size(), is(1));
 
 	}
 }
