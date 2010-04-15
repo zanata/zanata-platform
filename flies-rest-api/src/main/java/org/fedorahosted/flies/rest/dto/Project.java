@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.common.Namespaces;
@@ -18,6 +19,7 @@ public class Project extends AbstractBaseResource{
 
 	private String id;
 	private String name;
+	private ProjectType type = ProjectType.IterationProject;
 	private String description;
 	private Integer revision = 1;
 	
@@ -36,12 +38,26 @@ public class Project extends AbstractBaseResource{
 		this.description = description;
 	}
 	
+	public Project(String id, String name, String description, ProjectType type) {
+		this(id,name, description);
+		this.type = type;
+	}
+	
 	@XmlAttribute(name="id", required=true)
 	public String getId() {
 		return id;
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	@XmlAttribute(name="type", required=true)
+	public ProjectType getType() {
+		return type;
+	}
+	
+	public void setType(ProjectType type) {
+		this.type = type;
 	}
 	
 	@XmlElement(name="name", namespace=Namespaces.FLIES, required=true)
@@ -70,11 +86,12 @@ public class Project extends AbstractBaseResource{
 		this.revision = revision;
 	}
 	
-	@XmlElementWrapper(name="project-iterations", namespace=Namespaces.FLIES, required=true)
+	@XmlElementWrapper(name="project-iterations", namespace=Namespaces.FLIES, required=false)
 	@XmlElement(name="project-iteration", namespace=Namespaces.FLIES)
 	public List<ProjectIteration> getIterations() {
 		if(iterations == null)
 			iterations = new ArrayList<ProjectIteration>();
 		return iterations;
 	}
+
 }
