@@ -50,7 +50,10 @@ public class ProjectsService {
 	@In ProjectsServiceAction projectsServiceAction;
 	
 	@GET
-	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECTS_XML, MediaTypes.APPLICATION_FLIES_PROJECTS_JSON })
+	@Produces({ 
+		MediaTypes.APPLICATION_FLIES_PROJECTS_XML,
+		MediaTypes.APPLICATION_FLIES_PROJECTS_JSON,
+		MediaType.APPLICATION_JSON })
 	public ProjectList get() {
 
 		return projectsServiceAction.get();

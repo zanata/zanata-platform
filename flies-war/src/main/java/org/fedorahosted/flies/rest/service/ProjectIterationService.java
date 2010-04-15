@@ -52,8 +52,10 @@ public class ProjectIterationService {
 	Session session;
 	
 	@GET
-	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML, 
-		MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON })
+	@Produces({ 
+		MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML, 
+		MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON,
+		MediaType.APPLICATION_JSON })
 	public ProjectIteration get(){
 
 		org.fedorahosted.flies.core.model.HProjectIteration hProjectIteration = 
@@ -91,8 +93,10 @@ public class ProjectIterationService {
 	
 
 	@PUT
-	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML, 
-		MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON })
+	@Consumes({ 
+		MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML, 
+		MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON,
+		MediaType.APPLICATION_JSON })
 	@Restrict("#{identity.loggedIn}")
 	public Response put(ProjectIteration projectIteration){
 

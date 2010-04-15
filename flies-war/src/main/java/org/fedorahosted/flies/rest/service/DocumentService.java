@@ -12,6 +12,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
@@ -27,27 +28,26 @@ import org.jboss.seam.annotations.security.Restrict;
 @Name("documentService")
 @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/documents/d/{documentId}")
 public class DocumentService implements DocumentServiceAction {
-	
+
 	@PathParam("projectSlug")
 	private String projectSlug;
-	
+
 	@PathParam("iterationSlug")
 	private String iterationSlug;
 
 	@PathParam("documentId")
 	private String documentId;
-	
+
 	@Context
 	private UriInfo uri;
-	
+
 	@In("DocumentServiceActionImpl")
 	private DocumentServiceAction impl;
 
-	
 	public String getDocumentId() {
 		return documentId;
 	}
-	
+
 	public String getIterationSlug() {
 		return iterationSlug;
 	}
@@ -55,15 +55,15 @@ public class DocumentService implements DocumentServiceAction {
 	public String getProjectSlug() {
 		return projectSlug;
 	}
-	
+
 	public UriInfo getUri() {
 		return uri;
 	}
 
-
 	@GET
 	@Produces( { MediaTypes.APPLICATION_FLIES_DOCUMENT_XML,
-			MediaTypes.APPLICATION_FLIES_DOCUMENT_JSON})
+			MediaTypes.APPLICATION_FLIES_DOCUMENT_JSON,
+			MediaType.APPLICATION_JSON })
 	public Response get(
 			@QueryParam("resources") @DefaultValue("") ContentQualifier resources) {
 		return impl.get(resources);
@@ -72,7 +72,7 @@ public class DocumentService implements DocumentServiceAction {
 	@GET
 	@Path("content/{qualifier}")
 	public Response getContent(
-			@PathParam("qualifier") ContentQualifier qualifier, 
+			@PathParam("qualifier") ContentQualifier qualifier,
 			@QueryParam("levels") @DefaultValue("1") int levels) {
 		return impl.getContent(qualifier, levels);
 	}
@@ -81,7 +81,7 @@ public class DocumentService implements DocumentServiceAction {
 	@Path("content/{qualifier}/{resourceId}")
 	public Response getContentByResourceId(
 			@PathParam("qualifier") ContentQualifier qualifier,
-			@PathParam("resourceId") String resourceId, 
+			@PathParam("resourceId") String resourceId,
 			@QueryParam("levels") @DefaultValue("1") int levels) {
 		return impl.getContentByResourceId(qualifier, resourceId, levels);
 	}
@@ -89,7 +89,8 @@ public class DocumentService implements DocumentServiceAction {
 	@POST
 	@Path("content/{qualifier}")
 	@Restrict("#{identity.loggedIn}")
-	public Response postContent(ResourceList content, @PathParam("qualifier") ContentQualifier qualifier) {
+	public Response postContent(ResourceList content,
+			@PathParam("qualifier") ContentQualifier qualifier) {
 		return impl.postContent(content, qualifier);
 	}
 
@@ -97,14 +98,16 @@ public class DocumentService implements DocumentServiceAction {
 	@Path("content/{qualifier}/{resourceId}")
 	@Restrict("#{identity.loggedIn}")
 	public Response postContentByResourceId(DocumentResource resource,
-			@PathParam("qualifier") ContentQualifier qualifier, 
+			@PathParam("qualifier") ContentQualifier qualifier,
 			@PathParam("resourceId") String resourceId) {
 		return impl.postContentByResourceId(resource, qualifier, resourceId);
 	}
 
 	@PUT
-	@Consumes( { MediaTypes.APPLICATION_FLIES_DOCUMENT_XML,
-			MediaTypes.APPLICATION_FLIES_DOCUMENT_JSON})
+	@Consumes( { 
+			MediaTypes.APPLICATION_FLIES_DOCUMENT_XML,
+			MediaTypes.APPLICATION_FLIES_DOCUMENT_JSON,
+			MediaType.APPLICATION_JSON })
 	@Restrict("#{identity.loggedIn}")
 	public Response put(Document document) throws URISyntaxException {
 		return impl.put(document);
@@ -112,11 +115,9 @@ public class DocumentService implements DocumentServiceAction {
 
 	@PUT
 	@Path("content/{qualifier}")
-	public Response putContent(ResourceList content, 
+	public Response putContent(ResourceList content,
 			@PathParam("qualifier") ContentQualifier qualifier) {
 		return impl.putContent(content, qualifier);
 	}
-
-
 
 }

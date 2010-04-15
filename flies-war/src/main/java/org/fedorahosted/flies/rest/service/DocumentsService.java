@@ -39,7 +39,10 @@ public class DocumentsService implements DocumentsServiceAction {
 	private DocumentsServiceAction impl;
 
 	@POST
-	@Consumes({ MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, MediaTypes.APPLICATION_FLIES_DOCUMENTS_JSON })
+	@Consumes({ 
+		MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML, 
+		MediaTypes.APPLICATION_FLIES_DOCUMENTS_JSON, 
+		MediaType.APPLICATION_JSON })
 	@Restrict("#{identity.loggedIn}")
 	public Response post(Documents documents) {
 	    return impl.post(documents);

@@ -69,7 +69,10 @@ public class ProjectService{
 	HttpServletRequest request;
 
 	@GET
-	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaTypes.APPLICATION_FLIES_PROJECT_JSON })
+	@Produces({ 
+		MediaTypes.APPLICATION_FLIES_PROJECT_XML, 
+		MediaTypes.APPLICATION_FLIES_PROJECT_JSON,
+		MediaType.APPLICATION_JSON})
 	public Response get() {
 
 		HProject hProject = projectDAO.getBySlug(projectSlug);
@@ -101,7 +104,10 @@ public class ProjectService{
 	}
 	
 	@PUT
-	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaTypes.APPLICATION_FLIES_PROJECT_JSON })
+	@Consumes({ 
+		MediaTypes.APPLICATION_FLIES_PROJECT_XML, 
+		MediaTypes.APPLICATION_FLIES_PROJECT_JSON,
+		MediaType.APPLICATION_JSON })
 	@Restrict("#{identity.loggedIn}")
 	public Response put(Project project) throws URISyntaxException{
 		

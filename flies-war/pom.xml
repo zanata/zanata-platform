@@ -669,11 +669,12 @@
       <artifactId>resteasy-jaxb-provider</artifactId>
       <version>${version.resteasy}</version>
     </dependency>
+
     <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-atom-provider</artifactId>
-      <version>${version.resteasy}</version>
-    </dependency>
+       <groupId>org.jboss.resteasy</groupId>
+       <artifactId>resteasy-jackson-provider</artifactId>
+       <version>1.2.GA</version>
+    </dependency>    
     <!--
       Available Seam artifacts as of 2.1.2-SNAPSHOT: jboss-seam-debug
       jboss-seam-excel jboss-seam-gen jboss-seam-ioc jboss-seam-jbas5
