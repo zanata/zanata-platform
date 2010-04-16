@@ -3,7 +3,7 @@
 
 # RestEasy doesn't support hot deployment, so leaving this out for now
 # **/rest/service/*Service.class
-
+**/rest/service/ProjectsService.class
 **/rest/service/*ActionImpl.class
 
 # GWT action handlers
