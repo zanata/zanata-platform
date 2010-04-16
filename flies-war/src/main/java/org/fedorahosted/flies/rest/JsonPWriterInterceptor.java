@@ -15,28 +15,25 @@ import org.jboss.seam.log.Logging;
 
 @Provider
 @ServerInterceptor
-public class JsonPWriterInterceptor implements MessageBodyWriterInterceptor{
-	
+public class JsonPWriterInterceptor implements MessageBodyWriterInterceptor {
+
 	@Context
 	HttpRequest request;
-	
+
 	private static final Log log = Logging.getLog(JsonPWriterInterceptor.class);
-	
+
 	@Override
 	public void write(MessageBodyWriterContext context) throws IOException,
 			WebApplicationException {
 		String jsonp = request.getUri().getQueryParameters().getFirst("jsonp");
-		if(jsonp != null) {
+		if (jsonp != null) {
 			context.getOutputStream().write(jsonp.getBytes());
-			context.getOutputStream().write( "{".getBytes() );
+			context.getOutputStream().write("{".getBytes());
 			context.proceed();
 			context.getOutputStream().write("}".getBytes());
-		}
-		else{
+		} else {
 			context.proceed();
 		}
 	}
-	
-	
 
 }

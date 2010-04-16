@@ -2,29 +2,24 @@ package org.fedorahosted.flies.rest;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashSet;
 
 import javax.ws.rs.core.Response.Status;
 
 import org.jboss.resteasy.core.Dispatcher;
 import org.jboss.resteasy.core.SynchronousDispatcher;
-import org.jboss.resteasy.core.ThreadLocalResteasyProviderFactory;
 import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.HttpResponse;
 import org.jboss.resteasy.spi.UnhandledException;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
-import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.deployment.AnnotationDeploymentHandler;
-import org.jboss.seam.deployment.DeploymentStrategy;
 import org.jboss.seam.deployment.HotDeploymentStrategy;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.resteasy.ResteasyBootstrap;
