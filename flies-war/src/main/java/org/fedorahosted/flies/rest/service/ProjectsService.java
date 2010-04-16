@@ -26,29 +26,31 @@ public class ProjectsService {
 
 	@In
 	Session session;
-	
-	@Logger Log log;
-	
+
+	@Logger
+	Log log;
+
 	@GET
-	@Produces({ 
-		MediaTypes.APPLICATION_FLIES_PROJECTS_XML,
-		MediaTypes.APPLICATION_FLIES_PROJECTS_JSON,
-		MediaType.APPLICATION_JSON })
-	@Wrapped(element="projects", namespace=Namespaces.FLIES)
+	@Produces( { MediaTypes.APPLICATION_FLIES_PROJECTS_XML,
+			MediaTypes.APPLICATION_FLIES_PROJECTS_JSON,
+			MediaType.APPLICATION_JSON })
+	@Wrapped(element = "projects", namespace = Namespaces.FLIES)
 	public List<ProjectRef> get() {
 		List<HProject> projects = session.createQuery("from HProject p").list();
 
-		List<ProjectRef> projectRefs = new ArrayList<ProjectRef>(projects.size());
-		
-		for(HProject hProject : projects){
-			ProjectRef project = 
-				new ProjectRef(hProject.getSlug(), hProject.getName(), hProject.getDescription(), ProjectType.IterationProject);
-			projectRefs.add( project );
+		List<ProjectRef> projectRefs = new ArrayList<ProjectRef>(projects
+				.size());
+
+		for (HProject hProject : projects) {
+			ProjectRef project = new ProjectRef(hProject.getSlug(), hProject
+					.getName(), hProject.getDescription(),
+					ProjectType.IterationProject);
+			projectRefs.add(project);
 		}
-		
+
 		log.info("All still good hot deploying again...");
-		
+
 		return projectRefs;
 	}
-	
+
 }

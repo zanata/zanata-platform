@@ -1,6 +1,5 @@
 package org.fedorahosted.flies.rest.service;
 
-
 import java.net.URI;
 
 import javax.ws.rs.Consumes;
@@ -38,96 +37,88 @@ public class ProjectService {
 
 	@PathParam("projectSlug")
 	String projectSlug;
-	
+
 	@Logger
 	Log log;
-	
+
 	@In
 	ProjectDAO projectDAO;
-	
+
 	@In
 	Session session;
-	
-	@In 
+
+	@In
 	AccountDAO accountDAO;
-	
+
 	@GET
-	@Produces({ 
-		MediaTypes.APPLICATION_FLIES_PROJECT_XML, 
-		MediaTypes.APPLICATION_FLIES_PROJECT_JSON,
-		MediaType.APPLICATION_JSON})
+	@Produces( { MediaTypes.APPLICATION_FLIES_PROJECT_XML,
+			MediaTypes.APPLICATION_FLIES_PROJECT_JSON,
+			MediaType.APPLICATION_JSON })
 	public Response get() {
 		HProject hProject = projectDAO.getBySlug(projectSlug);
-		if(hProject == null)
+		if (hProject == null)
 			return Response.status(Status.NOT_FOUND).build();
-		
+
 		return Response.ok(toMini(hProject)).build();
 	}
-	
+
 	@PUT
-	@Consumes({ 
-		MediaTypes.APPLICATION_FLIES_PROJECT_XML, 
-		MediaTypes.APPLICATION_FLIES_PROJECT_JSON,
-		MediaType.APPLICATION_JSON })
+	@Consumes( { MediaTypes.APPLICATION_FLIES_PROJECT_XML,
+			MediaTypes.APPLICATION_FLIES_PROJECT_JSON,
+			MediaType.APPLICATION_JSON })
 	@Restrict("#{identity.loggedIn}")
 	public Response put(Project project) {
 		HProject hProject = projectDAO.getBySlug(project.getId());
-		if(hProject == null){
+		if (hProject == null) {
 			hProject = new org.fedorahosted.flies.core.model.HIterationProject();
 			hProject.setSlug(project.getId());
 			hProject.setName(project.getName());
 			hProject.setDescription(project.getDescription());
-		}
-		else{
+		} else {
 			hProject.setSlug(project.getId());
 			hProject.setName(project.getName());
 			hProject.setDescription(project.getDescription());
 		}
-		
-		try{
-			if(!session.contains(hProject)) {
+
+		try {
+			if (!session.contains(hProject)) {
 				session.save(hProject);
 				session.flush();
-				HAccount hAccount = accountDAO.getByUsername(Identity.instance().getCredentials().getUsername());
-				if(hAccount != null && hAccount.getPerson() != null) {
+				HAccount hAccount = accountDAO.getByUsername(Identity
+						.instance().getCredentials().getUsername());
+				if (hAccount != null && hAccount.getPerson() != null) {
 					hProject.getMaintainers().add(hAccount.getPerson());
 				}
 				session.flush();
-				return Response.created( URI.create("/projects/p/"+hProject.getSlug()) ).build();
-			}
-			else{
+				return Response.created(
+						URI.create("/projects/p/" + hProject.getSlug()))
+						.build();
+			} else {
 				session.flush();
 				return Response.ok().build();
 			}
-		}
-        catch(InvalidStateException e){
-        	return Response.status(Status.BAD_REQUEST).build();
-        }
-        catch(HibernateException e){
+		} catch (InvalidStateException e) {
+			return Response.status(Status.BAD_REQUEST).build();
+		} catch (HibernateException e) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
 	}
-	
-	
-	private static Project toMini(HProject hProject){
+
+	private static Project toMini(HProject hProject) {
 		Project project = new Project();
 		project.setId(hProject.getSlug());
 		project.setName(hProject.getName());
 		project.setDescription(hProject.getDescription());
-		if(hProject instanceof HIterationProject){
+		if (hProject instanceof HIterationProject) {
 			HIterationProject itProject = (HIterationProject) hProject;
-			for(HProjectIteration pIt : itProject.getProjectIterations()){
+			for (HProjectIteration pIt : itProject.getProjectIterations()) {
 				project.getIterations().add(
-								new ProjectIteration(
-										pIt.getSlug(),
-										pIt.getName(), 
-										pIt.getDescription()
-								)
-					);
+						new ProjectIteration(pIt.getSlug(), pIt.getName(), pIt
+								.getDescription()));
 			}
 		}
-		
+
 		return project;
 	}
-	
+
 }

@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -27,8 +26,6 @@ import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.client.ContentQualifier;
 import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.DocumentResource;
-import org.fedorahosted.flies.rest.dto.ResourceList;
 import org.hibernate.Session;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -52,116 +49,119 @@ public class DocumentService {
 	@Context
 	private UriInfo uri;
 
-	@Logger 
-    private Log log;
+	@Logger
+	private Log log;
 
-    @In 
-    private DocumentConverter documentConverter;
+	@In
+	private DocumentConverter documentConverter;
 
-    @In
-    private DocumentDAO documentDAO;
-	
+	@In
+	private DocumentDAO documentDAO;
+
 	@In
 	private ProjectContainerDAO projectContainerDAO;
-	
+
 	@In
 	private Session session;
-	
-	
+
 	@GET
 	@Produces( { MediaTypes.APPLICATION_FLIES_DOCUMENT_XML,
 			MediaTypes.APPLICATION_FLIES_DOCUMENT_JSON,
 			MediaType.APPLICATION_JSON })
 	public Response get(
 			@QueryParam("resources") @DefaultValue("") ContentQualifier resources) {
-		HProjectContainer hProjectContainer = 
-			projectContainerDAO.getBySlug(projectSlug, iterationSlug);
+		HProjectContainer hProjectContainer = projectContainerDAO.getBySlug(
+				projectSlug, iterationSlug);
 
-		if(hProjectContainer == null)
+		if (hProjectContainer == null)
 			return containerNotFound();
-		
+
 		String docId = URIHelper.convertFromDocumentURIId(documentId);
-		
+
 		HDocument hDoc = documentDAO.getByDocId(hProjectContainer, docId);
-		
-		if(hDoc == null) {
-			return Response.status(Status.NOT_FOUND).entity("Document not found").build();
+
+		if (hDoc == null) {
+			return Response.status(Status.NOT_FOUND).entity(
+					"Document not found").build();
 		}
-		
+
 		Set<LocaleId> requestedLanguages = resources.getLanguages();
 		if (resources.isAll()) {
-			requestedLanguages = documentDAO.getTargetLocales(hDoc); 
+			requestedLanguages = documentDAO.getTargetLocales(hDoc);
 		}
-		
+
 		int requestedLevels = resources.isNone() ? 0 : Integer.MAX_VALUE;
-		Document doc = hDoc.toDocument(requestedLevels); 
-		
-    	URI iterationUri = uri.getBaseUri().resolve(URIHelper.getIteration(projectSlug, iterationSlug));
-		URI docUri = uri.getBaseUri().resolve(URIHelper.getDocument(projectSlug, iterationSlug, documentId));
+		Document doc = hDoc.toDocument(requestedLevels);
+
+		URI iterationUri = uri.getBaseUri().resolve(
+				URIHelper.getIteration(projectSlug, iterationSlug));
+		URI docUri = uri.getBaseUri().resolve(
+				URIHelper.getDocument(projectSlug, iterationSlug, documentId));
 		documentConverter.addLinks(doc, docUri, iterationUri);
-		
+
 		return Response.ok().entity(doc).tag("v-" + doc.getRevision()).build();
 	}
 
 	@PUT
-	@Consumes( { 
-			MediaTypes.APPLICATION_FLIES_DOCUMENT_XML,
+	@Consumes( { MediaTypes.APPLICATION_FLIES_DOCUMENT_XML,
 			MediaTypes.APPLICATION_FLIES_DOCUMENT_JSON,
 			MediaType.APPLICATION_JSON })
 	@Restrict("#{identity.loggedIn}")
 	public Response put(Document document) throws URISyntaxException {
-		
+
 		String hDocId = URIHelper.convertFromDocumentURIId(documentId);
 
-		if(!document.getId().equals(hDocId)){
-			return Response.status(Status.BAD_REQUEST).entity("Invalid document Id").build();
+		if (!document.getId().equals(hDocId)) {
+			return Response.status(Status.BAD_REQUEST).entity(
+					"Invalid document Id").build();
 		}
 
-		HProjectContainer hProjectContainer = 
-			projectContainerDAO.getBySlug(projectSlug, iterationSlug);
-		if(hProjectContainer == null)
+		HProjectContainer hProjectContainer = projectContainerDAO.getBySlug(
+				projectSlug, iterationSlug);
+		if (hProjectContainer == null)
 			return containerNotFound();
 
 		HDocument hDoc = documentDAO.getByDocId(hProjectContainer, hDocId);
-		
-		if(hDoc == null) { // it's a create operation
-//			hDoc = documentConverter.create(document, hProjectContainer);
+
+		if (hDoc == null) { // it's a create operation
+		// hDoc = documentConverter.create(document, hProjectContainer);
 			// FIXME create hDoc, set its hProjectContainer
-			log.debug("PUT creating new HDocument with id {0}", document.getId());
+			log.debug("PUT creating new HDocument with id {0}", document
+					.getId());
 			hDoc = new HDocument(document);
 			hDoc.setRevision(0);
 			hDoc.setProject(hProjectContainer);
 
-			
 			documentConverter.copy(document, hDoc);
 			hProjectContainer.getDocuments().put(hDoc.getDocId(), hDoc);
 			session.save(hDoc);
-			try{
+			try {
 				session.flush();
-				return Response.created(uri.getBaseUri().resolve(
-						URIHelper.getDocument(
-								projectSlug, iterationSlug, documentId))).build();
-			}
-			catch(Exception e){
+				return Response.created(
+						uri.getBaseUri().resolve(
+								URIHelper.getDocument(projectSlug,
+										iterationSlug, documentId))).build();
+			} catch (Exception e) {
 				log.error("Invalid document content", e);
 				// TODO validation on the input data
 				// this could also be a server error
-				return Response.status(Status.BAD_REQUEST).entity("Invalid document content").build();
+				return Response.status(Status.BAD_REQUEST).entity(
+						"Invalid document content").build();
 			}
-		}
-		else{ // it's an update operation
-//			documentConverter.merge(document, hDoc);
+		} else { // it's an update operation
+		// documentConverter.merge(document, hDoc);
 			documentConverter.copy(document, hDoc);
 			hDoc.setObsolete(false);
 			session.save(hDoc);
 			session.flush();
 			return Response.status(205).build();
 		}
-		
+
 	}
 
 	private Response containerNotFound() {
-		return Response.status(Status.NOT_FOUND).entity("Project Container not found").build();
+		return Response.status(Status.NOT_FOUND).entity(
+				"Project Container not found").build();
 	}
 
 }
