@@ -170,43 +170,75 @@ Removes some of the styling on the page-level splitters
 
 .TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Source{
 	background: url(tu_bg_fuzzy_left.png) repeat-y left;
+    border-right: 3px solid #cccccc;
+    border-left: 3px solid #cccccc;
+	/* need to verify if #cccccc works for all borders first
 	border-right: 3px solid #f7dec3;
 	border-left: 3px solid #f7dec3;
+	*/
 }
 .TableEditor tr.NewStateDecoration td.TableEditorCell-Source{
 	background: url(tu_bg_new_left.png) repeat-y left;
+    border-right: 3px solid #cccccc;
+    border-left: 3px solid #cccccc;
+    /* need to verify if #cccccc works for all borders first
 	border-right: 3px solid #c3e0f7;
 	border-left: 3px solid #c3e0f7;	
+	*/
 }
 .TableEditor tr.ApprovedStateDecoration td.TableEditorCell-Source{
 	background: url(tu_bg_approved_left.png) repeat-y left;
+    border-right: 3px solid #cccccc;
+    border-left: 3px solid #cccccc;
+	/* need to verify if #cccccc works for all borders first
 	border-right: 3px solid #a8eab1;
 	border-left: 3px solid #a8eab1;
+	*/
 }
 .TableEditor tr.ErrorStateDecoration td.TableEditorCell-Source{
     background: url(tu_bg_error_left.png) repeat-y left;
+    border-right: 3px solid #cccccc;
+    border-left: 3px solid #cccccc;
+    /* need to verify if #cccccc works for all borders first
     border-right: 3px solid #f7c3c3;
     border-left: 3px solid #f7c3c3;
+    */
 }
 .TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Target{
 	background: url(tu_bg_fuzzy_right.png) repeat-y right;
+    border-right: 3px solid #cccccc;
+    border-left: 3px solid #cccccc;
+    /* need to verify if #cccccc works for all borders first
 	border-right: 3px solid #f7dec3;
 	border-left: 3px solid #f7dec3;
+    */
 }
 .TableEditor tr.NewStateDecoration td.TableEditorCell-Target{
 	background: url(tu_bg_new_right.png) repeat-y right;
+    border-right: 3px solid #cccccc;
+    border-left: 3px solid #cccccc;
+    /* need to verify if #cccccc works for all borders first
 	border-right: 3px solid #c3e0f7;
 	border-left: 3px solid #c3e0f7;
+	*/
 }
 .TableEditor tr.ApprovedStateDecoration td.TableEditorCell-Target{
 	background: url(tu_bg_approved_right.png) repeat-y right;
+    border-right: 3px solid #cccccc;
+    border-left: 3px solid #cccccc;
+    /* need to verify if #cccccc works for all borders first
 	border-right: 3px solid #a8eab1;
 	border-left: 3px solid #a8eab1;
+	*/
 }
 .TableEditor tr.ErrorStateDecoration td.TableEditorCell-Target{
     background: url(tu_bg_error_right.png) repeat-y right;
+    border-right: 3px solid #cccccc;
+    border-left: 3px solid #cccccc;
+    /* need to verify if #cccccc works for all borders first
     border-right: 3px solid #f7c3c3;
     border-left: 3px solid #f7c3c3;
+    */
 }
 
 td.TableEditorCell {
