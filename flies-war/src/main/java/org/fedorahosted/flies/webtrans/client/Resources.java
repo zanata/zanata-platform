@@ -66,7 +66,28 @@ public interface Resources extends ClientBundle {
 	@Source("org/fedorahosted/flies/webtrans/images/collapse_closed.png")
 	ImageResource collapseClosed();
 	
+	@Source("org/fedorahosted/flies/webtrans/images/first_page.png")
+	ImageResource firstPage();
 	
+	@Source("org/fedorahosted/flies/webtrans/images/prev_page.png")
+	ImageResource prevPage();
 	
-
+	@Source("org/fedorahosted/flies/webtrans/images/next_page.png")
+	ImageResource nextPage();
+	
+	@Source("org/fedorahosted/flies/webtrans/images/last_page.png")
+	ImageResource lastPage();
+	
+	@Source("org/fedorahosted/flies/webtrans/images/approved_unit.png")
+	ImageResource approvedUnit();
+	
+	@Source("org/fedorahosted/flies/webtrans/images/error_unit.png")
+	ImageResource errorUnit();
+	
+	@Source("org/fedorahosted/flies/webtrans/images/fuzzy_unit.png")
+	ImageResource fuzzyUnit();
+	
+	@Source("org/fedorahosted/flies/webtrans/images/new_unit.png")
+	ImageResource newUnit();
+	
 }

@@ -17,6 +17,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 
@@ -24,12 +25,15 @@ public class Pager extends Composite implements HasPager {
 
 	interface PagerUiBinder extends UiBinder<HTMLPanel, Pager> {
 	}
-
+	
 	private static PagerUiBinder uiBinder = GWT.create(PagerUiBinder.class);
 	
 	@UiField
-	Anchor firstPage, lastPage, nextPage, previousPage;
+	Anchor firstPage, lastPage, nextPage, prevPage;
 
+	@UiField
+	Image firstPageImage, prevPageImage, nextPageImage, lastPageImage;
+	
 	@UiField
 	Label firstPageDisabled, lastPageDisabled, nextPageDisabled, previousPageDisabled;
 	
@@ -63,8 +67,8 @@ public class Pager extends Composite implements HasPager {
 		firstPage.setTitle( messages.firstPageShortcut() );
 		firstPageDisabled.setText( messages.firstPage() );
 		
-		previousPage.setText( messages.prevPage() );
-		previousPage.setTitle( messages.prevPageShortcut() );
+		prevPage.setText( messages.prevPage() );
+		prevPage.setTitle( messages.prevPageShortcut() );
 		previousPageDisabled.setText( messages.prevPage() );
 		
 		nextPage.setText( messages.nextPage() );
@@ -95,7 +99,7 @@ public class Pager extends Composite implements HasPager {
 
 		firstPage.addClickHandler(clickHandler);
 		lastPage.addClickHandler(clickHandler);
-		previousPage.addClickHandler(clickHandler);
+		prevPage.addClickHandler(clickHandler);
 		nextPage.addClickHandler(clickHandler);
 		refresh();
 	}
@@ -109,7 +113,7 @@ public class Pager extends Composite implements HasPager {
 		String page = pageCount == PAGECOUNT_UNKNOWN ? "" : "of " + pageCount;
 		pageCountLabel.setText(page);
 		setEnabled(firstPage, firstPageDisabled, currentPage != 1);
-		setEnabled(previousPage, previousPageDisabled, currentPage != 1);
+		setEnabled(prevPage, previousPageDisabled, currentPage != 1);
 
 		setEnabled(nextPage, nextPageDisabled, currentPage != pageCount );
 		setEnabled(lastPage, lastPageDisabled, currentPage != pageCount && pageCount != PAGECOUNT_UNKNOWN);
@@ -169,7 +173,7 @@ public class Pager extends Composite implements HasPager {
 			else if(event.getSource() == nextPage) {
 				setValue(currentPage +1);
 			} 
-			else if(event.getSource() == previousPage) {
+			else if(event.getSource() == prevPage) {
 				setValue(currentPage -1);
 			} 
 		}
