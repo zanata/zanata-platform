@@ -45,7 +45,7 @@ public class Document extends AbstractBaseResource implements IExtensible{
 	private Integer revision = null;
 	private LocaleId lang = LocaleId.EN_US;
 	
-	private List<DocumentResource> resources;
+	private List<TextFlow> resources;
 	private List<Object> extensions;
 
 	protected Document() {
@@ -159,26 +159,23 @@ public class Document extends AbstractBaseResource implements IExtensible{
 	
 	@XmlElementWrapper(name="resources", namespace=Namespaces.FLIES, required=false)
 	@XmlElements({
-		@XmlElement(name="text-flow", type=TextFlow.class, namespace=Namespaces.FLIES),
-		@XmlElement(name="container", type=Container.class, namespace=Namespaces.FLIES),
-		@XmlElement(name="reference", type=Reference.class, namespace=Namespaces.FLIES),
-		@XmlElement(name="data-hook", type=DataHook.class, namespace=Namespaces.FLIES)
+		@XmlElement(name="text-flow", type=TextFlow.class, namespace=Namespaces.FLIES)
 		})
 	/**
 	 * Returns the <b>top-level</b> resources contained in the document.  Some 
 	 * of these resources may be containers containing other resources.
 	 */
-	public List<DocumentResource> getResources() {
+	public List<TextFlow> getResources() {
 		return resources;
 	}	
 
-	public List<DocumentResource> getResources(boolean create) {
+	public List<TextFlow> getResources(boolean create) {
 		if(resources == null && create)
-			resources = new ArrayList<DocumentResource>();
+			resources = new ArrayList<TextFlow>();
 		return resources;
 	}	
 
-	public void setResources(List<DocumentResource> resources) {
+	public void setResources(List<TextFlow> resources) {
 		this.resources = resources;
 	}
 	

@@ -23,13 +23,9 @@ import org.fedorahosted.flies.rest.ApiKeyHeaderDecorator;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.client.ContentQualifier;
 import org.fedorahosted.flies.rest.client.IDocumentResource;
-import org.fedorahosted.flies.rest.dto.Container;
-import org.fedorahosted.flies.rest.dto.DataHook;
 import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.DocumentResource;
 import org.fedorahosted.flies.rest.dto.Documents;
 import org.fedorahosted.flies.rest.dto.Link;
-import org.fedorahosted.flies.rest.dto.Reference;
 import org.fedorahosted.flies.rest.dto.Relationships;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
@@ -137,7 +133,7 @@ public class DocumentServiceSeamTest extends FliesDBUnitSeamTest {
 		response = documentResource.get( ContentQualifier.fromLocales( nbLocale, deLocale));
 		assertThat( response.getResponseStatus(), is(Status.OK) ) ;
 		doc = response.getEntity();
-		List<DocumentResource> resources = doc.getResources(); 
+		List<TextFlow> resources = doc.getResources(); 
 		assertThat( resources.size(), is(1) );
 		TextFlow tf = (TextFlow) resources.get(0);
 		assertThat( tf, notNullValue());
@@ -180,24 +176,15 @@ public class DocumentServiceSeamTest extends FliesDBUnitSeamTest {
 		String docUrl = "my,fancy,document.txt";
 		IDocumentResource documentResource = getDocumentService(docUrl);
 		Document doc = new Document("/my/fancy/document.txt", ContentType.TextPlain);
-		List<DocumentResource> resources = doc.getResources(true);
+		List<TextFlow> resources = doc.getResources(true);
 		
 		TextFlow textFlow = new TextFlow("tf1");
 		textFlow.setContent("hello world!");
 		resources.add(textFlow);
 		
-		DataHook datahook1 = new DataHook("datahook1");
-		resources.add(datahook1);
-		
-		Reference ref1 = new Reference("ref1", "someRelationship");
-		resources.add(ref1);
-		
-		Container container = new Container("container1");
 		TextFlow tf3 = new TextFlow("tf3");
 		tf3.setContent("more text");
-		container.getResources().add(tf3);
-		resources.add(container);
-		
+		resources.add(tf3);
 		
 		Marshaller m = null;
 		JAXBContext jc = JAXBContext.newInstance(Documents.class);
@@ -220,13 +207,9 @@ public class DocumentServiceSeamTest extends FliesDBUnitSeamTest {
 		assertThat( doc.getRevision(), is(1) );
 		
 		assertThat("Should have resources", doc.getResources(), notNullValue() );
-		assertThat("Should have four resources", doc.getResources().size(), is(4) );
+		assertThat("Should have 2 resources", doc.getResources().size(), is(2) );
 		assertThat("Should have tf1 resource", doc.getResources().get(0).getId(), is("tf1") );
-		assertThat("Should have datahook1 resource", doc.getResources().get(1).getId(), is("datahook1") );
-		assertThat("Should have ref1 resource", doc.getResources().get(2).getId(), is("ref1") );
-		Container returnedContainer = (Container) doc.getResources().get(3);
-		assertThat("Should have container1 resource", returnedContainer.getId(), is("container1") );
-		assertThat("Container1 should have tf3 resource", returnedContainer.getResources().get(0).getId(), is(tf3.getId()));
+		assertThat("Container1 should have tf3 resource", doc.getResources().get(1).getId(), is(tf3.getId()));
 		assertThat("No targets should be included", ((TextFlow)doc.getResources().get(0)).getExtension(TextFlowTargets.class), nullValue() );
 		
 		textFlow = (TextFlow) doc.getResources().get(0);
@@ -239,8 +222,8 @@ public class DocumentServiceSeamTest extends FliesDBUnitSeamTest {
 		doc = documentResponse.getEntity(); 
 		assertThat( doc.getRevision(), is(2) );
 		assertThat("Should have resources", doc.getResources(), notNullValue() );
-		assertThat("Should have one resource", doc.getResources().size(), is(4) );
-		assertThat("Should have one resource", doc.getResources().get(0).getId(), is("tf2") );
+		assertThat("Should have two resources", doc.getResources().size(), is(2) );
+		assertThat("should have same id", doc.getResources().get(0).getId(), is("tf2") );
 	}
 
 }

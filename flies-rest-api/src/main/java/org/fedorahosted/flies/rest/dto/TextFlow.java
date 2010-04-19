@@ -23,7 +23,7 @@ import org.fedorahosted.flies.rest.dto.po.PotEntryData;
 	TextFlowTargets.class,
 	SimpleComment.class
 })
-public class TextFlow extends AbstractBaseResource implements DocumentResource, IExtensible {
+public class TextFlow extends AbstractBaseResource implements IExtensible {
 
 	private String id;
 	private LocaleId lang;
@@ -54,7 +54,6 @@ public class TextFlow extends AbstractBaseResource implements DocumentResource, 
 	}
 
 	@XmlAttribute(name="revision", required=false)
-	@Override
 	public Integer getRevision() {
 		return revision;
 	}

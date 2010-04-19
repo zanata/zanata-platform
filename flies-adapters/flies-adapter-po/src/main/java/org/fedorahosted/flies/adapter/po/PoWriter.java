@@ -18,7 +18,6 @@ import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.resources.OutputSource;
 import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.DocumentResource;
 import org.fedorahosted.flies.rest.dto.IExtensible;
 import org.fedorahosted.flies.rest.dto.SimpleComment;
 import org.fedorahosted.flies.rest.dto.TextFlow;
@@ -44,14 +43,9 @@ public class PoWriter {
 	public void write(final Document doc, final File baseDir, boolean includePot) throws IOException {
 		Set<LocaleId> targetLangs = new HashSet<LocaleId>();
 		if (doc.hasResources()) {
-			for (DocumentResource resource : doc.getResources()) {
-				if (resource instanceof TextFlow) {
-					TextFlow textflow = (TextFlow) resource;
-					for (TextFlowTarget target : getTargets(textflow)) {
-						targetLangs.add(target.getLang());
-					}
-				} else {
-					throw new RuntimeException("unsupported Document element: "+resource.getClass());
+			for (TextFlow resource : doc.getResources()) {
+				for (TextFlowTarget target : getTargets(resource)) {
+					targetLangs.add(target.getLang());
 				}
 			}
 		}
@@ -142,8 +136,7 @@ public class PoWriter {
 		// first write header
 		if(!document.hasResources())
 			return;
-		for(DocumentResource resource : document.getResources()){
-			TextFlow textFlow = (TextFlow) resource;
+		for(TextFlow textFlow : document.getResources()){
 
 			PotEntryData entryData = textFlow.getExtension(PotEntryData.class);
 			Message message = new Message();

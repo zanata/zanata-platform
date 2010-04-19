@@ -13,7 +13,6 @@ import java.util.Map;
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.DocumentResource;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.fedorahosted.openprops.Properties;
@@ -68,11 +67,8 @@ public class PropReader {
 	public void extractTarget(Document doc, InputSource inputSource,
 			LocaleId localeId, ContentState contentState) throws IOException {
 		Map<String, TextFlow> textFlowMap = new HashMap<String, TextFlow>();
-		for (DocumentResource resource : doc.getResources(true)) {
-			if (resource instanceof TextFlow) {
-				TextFlow textFlow = (TextFlow) resource;
-				textFlowMap.put(textFlow.getId(), textFlow);
-			}
+		for (TextFlow resource : doc.getResources(true)) {
+			textFlowMap.put(resource.getId(), resource);
 		}
 
 		Properties props = loadProps(inputSource);
@@ -102,7 +98,7 @@ public class PropReader {
 	// TODO allowing Readers (via InputSource) might be a bad idea
 	public void extractTemplate(Document doc, InputSource inputSource)
 			throws IOException {
-		List<DocumentResource> resources = doc.getResources(true);
+		List<TextFlow> resources = doc.getResources(true);
 		Properties props = loadProps(inputSource);
 		for (String key : props.stringPropertyNames()) {
 			String val = props.getProperty(key);

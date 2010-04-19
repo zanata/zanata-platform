@@ -15,7 +15,6 @@ import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.resources.LocaleInputSourcePair;
 import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.DocumentResource;
 import org.fedorahosted.flies.rest.dto.SimpleComment;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
@@ -61,13 +60,10 @@ public class PoReader {
 	public void extractTarget(Document document, InputSource inputSource, LocaleId targetLocaleId) {
 		MessageStreamParser messageParser = createParser(inputSource);
 
-		List<DocumentResource> resources = document.getResources(true);
-		Map<String, DocumentResource> resourceMap = new HashMap<String, DocumentResource>(resources.size());
-		for (DocumentResource res : resources) {
-			if (res instanceof TextFlow) {
-				TextFlow tf = (TextFlow) res;
-				resourceMap.put(tf.getContent(), tf);
-			}
+		List<TextFlow> resources = document.getResources(true);
+		Map<String, TextFlow> resourceMap = new HashMap<String, TextFlow>(resources.size());
+		for (TextFlow res : resources) {
+			resourceMap.put(res.getContent(), res);
 		}
 		
 		while(messageParser.hasNext()) {
@@ -159,7 +155,7 @@ public class PoReader {
 		
 		document.setLang(sourceLocaleId);
 		document.setContentType(PO_CONTENT_TYPE);
-		List<DocumentResource> resources = document.getResources(true);
+		List<TextFlow> resources = document.getResources(true);
 
 		boolean headerFound = false;
 		while(messageParser.hasNext()) {
@@ -221,7 +217,7 @@ public class PoReader {
 		document.setLang(sourceLocaleId);
 		document.setContentType(PO_CONTENT_TYPE);
 		
-		List<DocumentResource> resources = document.getResources(true);
+		List<TextFlow> resources = document.getResources(true);
 
 		boolean headerFound = false;
 		while(messageParser.hasNext()) {

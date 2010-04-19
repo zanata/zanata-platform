@@ -24,7 +24,6 @@ import javax.ws.rs.core.Response.Status;
 import org.fedorahosted.flies.core.dao.DocumentDAO;
 import org.fedorahosted.flies.core.dao.ProjectContainerDAO;
 import org.fedorahosted.flies.repository.model.HDocument;
-import org.fedorahosted.flies.repository.model.HDocumentResource;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.repository.model.HTextFlow;
 import org.fedorahosted.flies.repository.model.HTextFlowHistory;
@@ -196,14 +195,10 @@ public class DocumentsService {
 		}
 		for (HDocument hDoc : obsoleteDocs) {
 			// mark document resources as obsolete
-			for (HDocumentResource resource : hDoc.getResources()) {
-				// copy to TFHistory table under old revision
-				if (resource instanceof HTextFlow) {
-					HTextFlow htf = (HTextFlow) resource;
-					HTextFlowHistory history = new HTextFlowHistory(htf);
-					htf.getHistory().put(htf.getRevision(), history);
-				}
-				resource.setObsolete(true);
+			for (HTextFlow htf : hDoc.getResources()) {
+				HTextFlowHistory history = new HTextFlowHistory(htf);
+				htf.getHistory().put(htf.getRevision(), history);
+				htf.setObsolete(true);
 			}
 			hDoc.setObsolete(true);
 			hDoc.setRevision(hDoc.getRevision() + 1);
