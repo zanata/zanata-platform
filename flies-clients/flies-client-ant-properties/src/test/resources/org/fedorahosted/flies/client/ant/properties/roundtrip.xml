@@ -16,6 +16,7 @@
 			apiKey="${bob.key}"
 			src="${docsUrl}" 
 			dstDir="${out.dir}/test3b" 
+			exportRootLocale="true"
 			debug="true" />
 		<verifyprop dir1="test1" dir2="${out.dir}/test3b" />
 	</target>
