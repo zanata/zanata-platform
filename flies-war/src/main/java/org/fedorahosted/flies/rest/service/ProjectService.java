@@ -89,7 +89,18 @@ public class ProjectService {
 			MediaTypes.APPLICATION_FLIES_PROJECT_JSON,
 			MediaType.APPLICATION_JSON })
 	@Restrict("#{identity.loggedIn}")
-	public Response put(Project project) {
+	public Response put(Project project, @HeaderParam("If-Match") EntityTag ifMatch) {
+		
+		if(ifMatch != null) {
+			Integer rev = projectDAO.getRevisionBySlug(projectSlug);
+			if(rev == null)
+				return Response.status(Status.NOT_FOUND).build();
+			EntityTag etag = EntityTag.valueOf( toHash( rev) );
+			if( !etag.equals(ifMatch) ) {
+				return Response.status(Status.CONFLICT).build();
+			}
+		}
+		
 		HProject hProject = projectDAO.getBySlug(project.getId());
 		if (hProject == null) {
 			hProject = new org.fedorahosted.flies.core.model.HIterationProject();
