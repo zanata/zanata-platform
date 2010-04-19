@@ -1,7 +1,6 @@
 package org.fedorahosted.flies.webtrans.client.ui;
 import org.fedorahosted.flies.webtrans.client.Resources;
 import org.fedorahosted.flies.webtrans.client.WebTransMessages;
-import org.fedorahosted.flies.webtrans.editor.table.NavigationMessages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -23,17 +22,14 @@ import com.google.gwt.user.client.ui.TextBox;
 
 public class Pager extends Composite implements HasPager {
 
+	private static PagerUiBinder uiBinder = GWT.create(PagerUiBinder.class);
+	
 	interface PagerUiBinder extends UiBinder<HTMLPanel, Pager> {
 	}
-	
-	private static PagerUiBinder uiBinder = GWT.create(PagerUiBinder.class);
 	
 	@UiField
 	Anchor firstPage, lastPage, nextPage, prevPage;
 
-	@UiField
-	Image firstPageImage, prevPageImage, nextPageImage, lastPageImage;
-	
 	@UiField
 	Label firstPageDisabled, lastPageDisabled, nextPageDisabled, previousPageDisabled;
 	
@@ -78,6 +74,7 @@ public class Pager extends Composite implements HasPager {
 		lastPage.setText( messages.lastPage() );
 		lastPage.setTitle( messages.lastPageShortcut() );
 		lastPageDisabled.setText( messages.lastPage() );
+
 	}
 
 	@Override
