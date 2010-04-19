@@ -2,9 +2,12 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	
-	<ui:with field='resources' type="org.fedorahosted.flies.webtrans.client.Resources"/>
+	<ui:with field="resources" type="org.fedorahosted.flies.webtrans.client.Resources"/>
 	
 	<ui:style>
+	    .buttonImage {
+            cursor: pointer;
+        }
 		.link_disabled {
 			color: #e0e0e0;				
 			display: inline;
@@ -28,12 +31,16 @@
 	
 	<g:HTMLPanel>
 		<nobr>
-			<g:Anchor ui:field="firstPage" styleName="{style.link}">First</g:Anchor>
+			<g:Anchor ui:field="firstPage" styleName="{style.link}">
+               <g:Image ui:field="firstPageImage" styleName="{style.buttonImage}" resource="{resources.firstPage}" />
+           </g:Anchor>
 			<g:Label ui:field="firstPageDisabled" styleName="{style.link_disabled}">First</g:Label>
 			
 			<span class="{style.divider}">|</span>
 			
-			<g:Anchor ui:field="previousPage" styleName="{style.link}">Previous</g:Anchor>
+			<g:Anchor ui:field="prevPage" styleName="{style.link}">
+               <g:Image ui:field="prevPageImage" styleName="{style.buttonImage}" resource="{resources.prevPage}" />
+           </g:Anchor>
 			<g:Label ui:field="previousPageDisabled" styleName="{style.link_disabled}">Previous</g:Label>
 			
 			<span class="{style.divider}">|</span>
@@ -43,12 +50,16 @@
 			
 			<span class="{style.divider}">|</span>
 			
-			<g:Anchor ui:field="nextPage" styleName="{style.link}">Next</g:Anchor>
+			<g:Anchor ui:field="nextPageImage" styleName="{style.link}">
+               <g:Image ui:field="nextPage" styleName="{style.buttonImage}" resource="{resources.nextPage}" />
+           </g:Anchor>
 			<g:Label ui:field="nextPageDisabled" styleName="{style.link_disabled}">Next</g:Label>
 			
 			<span class="{style.divider}">|</span>
 			
-			<g:Anchor ui:field="lastPage" styleName="{style.link}">Last</g:Anchor>
+			<g:Anchor ui:field="lastPageImage" styleName="{style.link}">
+               <g:Image ui:field="lastPage" styleName="{style.buttonImage}" resource="{resources.lastPage}" />
+           </g:Anchor>
 			<g:Label ui:field="lastPageDisabled" styleName="{style.link_disabled}">Last</g:Label>
 		</nobr>
 	</g:HTMLPanel>
