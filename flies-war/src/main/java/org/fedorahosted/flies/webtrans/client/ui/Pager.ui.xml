@@ -5,10 +5,10 @@
 	<ui:with field="resources" type="org.fedorahosted.flies.webtrans.client.Resources"/>
 	
 	<ui:style>
-	    .buttonImage {
+        .buttonImage {
             cursor: pointer;
         }
-		.link_disabled {
+        .link_disabled {
 			color: #e0e0e0;				
 			display: inline;
 			cursor: default;
@@ -32,14 +32,14 @@
 	<g:HTMLPanel>
 		<nobr>
 			<g:Anchor ui:field="firstPage" styleName="{style.link}">
-               <g:Image ui:field="firstPageImage" styleName="{style.buttonImage}" resource="{resources.firstPage}" />
+                <img src="{resources.firstPageImage.getURL}" />
            </g:Anchor>
 			<g:Label ui:field="firstPageDisabled" styleName="{style.link_disabled}">First</g:Label>
 			
 			<span class="{style.divider}">|</span>
 			
 			<g:Anchor ui:field="prevPage" styleName="{style.link}">
-               <g:Image ui:field="prevPageImage" styleName="{style.buttonImage}" resource="{resources.prevPage}" />
+               <img src="{resources.prevPageImage.getURL}" />
            </g:Anchor>
 			<g:Label ui:field="previousPageDisabled" styleName="{style.link_disabled}">Previous</g:Label>
 			
@@ -50,15 +50,15 @@
 			
 			<span class="{style.divider}">|</span>
 			
-			<g:Anchor ui:field="nextPageImage" styleName="{style.link}">
-               <g:Image ui:field="nextPage" styleName="{style.buttonImage}" resource="{resources.nextPage}" />
+			<g:Anchor ui:field="nextPage" styleName="{style.link}">
+               <img src="{resources.nextPageImage.getURL}" />
            </g:Anchor>
 			<g:Label ui:field="nextPageDisabled" styleName="{style.link_disabled}">Next</g:Label>
 			
 			<span class="{style.divider}">|</span>
 			
-			<g:Anchor ui:field="lastPageImage" styleName="{style.link}">
-               <g:Image ui:field="lastPage" styleName="{style.buttonImage}" resource="{resources.lastPage}" />
+			<g:Anchor ui:field="lastPage" styleName="{style.link}">
+               <img src="{resources.lastPageImage.getURL}" />
            </g:Anchor>
 			<g:Label ui:field="lastPageDisabled" styleName="{style.link_disabled}">Last</g:Label>
 		</nobr>
