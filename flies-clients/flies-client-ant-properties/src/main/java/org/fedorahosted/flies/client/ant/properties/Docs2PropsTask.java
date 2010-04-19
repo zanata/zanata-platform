@@ -23,6 +23,7 @@ public class Docs2PropsTask extends BaseTask {
 	private boolean debug;
 	private File dstDir;
 	private String src;
+	private boolean exportRoot;
 
 	@Override
 	public void execute() throws BuildException {
@@ -53,7 +54,7 @@ public class Docs2PropsTask extends BaseTask {
 			}
 
 			for (Document doc : docList) {
-				PropWriter.write(doc, dstDir);
+				PropWriter.write(doc, dstDir, exportRoot);
 			}
 		} catch (Exception e) {
 			throw new BuildException(e);
@@ -90,6 +91,10 @@ public class Docs2PropsTask extends BaseTask {
 
 	public void setUser(String user) {
 		this.user = user;
+	}
+	
+	public void setExportRootLocale(boolean exportRoot) {
+		this.exportRoot = exportRoot;
 	}
 
 }

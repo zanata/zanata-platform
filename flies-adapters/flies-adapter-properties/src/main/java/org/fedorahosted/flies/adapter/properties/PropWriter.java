@@ -30,28 +30,30 @@ public class PropWriter {
 			parentFile.mkdirs();
 	}
 
-	public static void write(final Document doc, final File baseDir)
+	public static void write(final Document doc, final File baseDir, boolean exportRoot)
 			throws IOException {
 		File docDir = new File(baseDir, doc.getPath());
 		File baseFile = new File(docDir, doc.getName());
 		makeParentDirs(baseFile);
 
-		logVerbose("Creating base file " + baseFile);
-		Properties props = new Properties();
-		for (DocumentResource resource : doc.getResources(true)) {
-			if (!(resource instanceof TextFlow)) {
-				throw new RuntimeException("Unhandled Resource: "
-						+ resource.getClass() + " with id " + resource.getId());
+		if (exportRoot) {
+			logVerbose("Creating base file " + baseFile);
+			Properties props = new Properties();
+			for (DocumentResource resource : doc.getResources(true)) {
+				if (!(resource instanceof TextFlow)) {
+					throw new RuntimeException("Unhandled Resource: "
+							+ resource.getClass() + " with id " + resource.getId());
+				}
+				TextFlow textFlow = (TextFlow) resource;
+				props.setProperty(textFlow.getId(), textFlow.getContent());
+				if (textFlow.hasComment() && textFlow.getComment().getValue() != null)
+					props.setComment(textFlow.getId(), textFlow.getComment().getValue());
 			}
-			TextFlow textFlow = (TextFlow) resource;
-			props.setProperty(textFlow.getId(), textFlow.getContent());
-			if (textFlow.hasComment() && textFlow.getComment().getValue() != null)
-				props.setComment(textFlow.getId(), textFlow.getComment().getValue());
+			// props.store(System.out, null);
+			PrintStream out = new PrintStream(new FileOutputStream(baseFile));
+			props.store(out, null);
 		}
-		// props.store(System.out, null);
-		PrintStream out = new PrintStream(new FileOutputStream(baseFile));
-		props.store(out, null);
-
+		
 		String baseName = baseFile.getName();
 		String bundleName = baseName.substring(0, baseName.length()
 				- ".properties".length());
