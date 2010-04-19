@@ -16,12 +16,11 @@ import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.core.dao.ProjectContainerDAO;
 import org.fedorahosted.flies.repository.model.HDocument;
-import org.fedorahosted.flies.repository.model.HDocumentResource;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
+import org.fedorahosted.flies.repository.model.HTextFlow;
 import org.fedorahosted.flies.rest.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.IDocumentsResource;
 import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.DocumentResource;
 import org.fedorahosted.flies.rest.dto.Documents;
 import org.fedorahosted.flies.rest.dto.SimpleComment;
 import org.fedorahosted.flies.rest.dto.TextFlow;
@@ -110,9 +109,9 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	
 	private void clearRevs(Document doc) {
 		doc.setRevision(null);
-		final List<DocumentResource> resources = doc.getResources();
+		final List<TextFlow> resources = doc.getResources();
 		if (resources != null)
-			for (DocumentResource res : resources) {
+			for (TextFlow res : resources) {
 				res.setRevision(null);
 				if (res instanceof TextFlow) {
 					TextFlow tf = (TextFlow) res;
@@ -124,11 +123,11 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 			}
 	}
 
-	private Document newDoc(String id, DocumentResource... resources) {
+	private Document newDoc(String id, TextFlow... resources) {
 		ContentType contentType = ContentType.TextPlain;
 		Integer revision = null;
 		Document doc = new Document(id, id+"name", id+"path", contentType, revision, LocaleId.EN);
-		for (DocumentResource textFlow : resources) {
+		for (TextFlow textFlow : resources) {
 			doc.getResources(true).add(textFlow);
 		}
 		return doc;
@@ -387,7 +386,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 				ProjectContainerDAO containerDAO = (ProjectContainerDAO) getInstance("projectContainerDAO");
 				HProjectContainer container = containerDAO.getBySlug(projectSlug, iter);
 				HDocument hDocument = container.getAllDocuments().get(docID);
-				HDocumentResource hResource = hDocument.getAllResources().get(resourceID);
+				HTextFlow hResource = hDocument.getAllResources().get(resourceID);
 				Assert.assertNotNull(hResource);
 				Assert.assertTrue(hResource.isObsolete());
 			}

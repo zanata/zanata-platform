@@ -13,17 +13,13 @@
     revision="1"
     obsolete="0"
   />
-  <HDocumentResource
+  <HTextFlow 
   	id="1"
   	document_id="1"
-  	parent_id="[NULL]"
   	resId="tf1"
   	revision="1"
   	pos="0"
     obsolete="0"
-  />
-  <HTextFlow 
-  	id="1"
   	content="hello world"
   />
   <HTextFlowTarget 

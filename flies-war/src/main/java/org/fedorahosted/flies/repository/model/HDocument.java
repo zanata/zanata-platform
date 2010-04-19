@@ -24,11 +24,7 @@ import org.fedorahosted.flies.hibernate.type.LocaleIdType;
 import org.fedorahosted.flies.repository.model.po.HPoHeader;
 import org.fedorahosted.flies.repository.model.po.HPoTargetHeader;
 import org.fedorahosted.flies.repository.model.po.PoUtility;
-import org.fedorahosted.flies.rest.dto.Container;
-import org.fedorahosted.flies.rest.dto.DataHook;
 import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.DocumentResource;
-import org.fedorahosted.flies.rest.dto.Reference;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.po.HeaderEntry;
 import org.fedorahosted.flies.rest.dto.po.PoHeader;
@@ -60,9 +56,9 @@ public class HDocument extends AbstractFliesEntity{
 	
 	private HProjectContainer project;
 
-	private Map<String, HDocumentResource> allResources;
-	private Map<String, HDocumentResource> obsoletes;
-	private List<HDocumentResource> resources;
+	private Map<String, HTextFlow> allResources;
+	private Map<String, HTextFlow> obsoletes;
+	private List<HTextFlow> resources;
 	private boolean obsolete = false;
 	private HPoHeader poHeader;
 	private Map<LocaleId, HPoTargetHeader> poTargetHeaders;
@@ -120,40 +116,13 @@ public class HDocument extends AbstractFliesEntity{
 		this.revision = docInfo.getRevision();
 	}
 
-	public HDocumentResource create(DocumentResource res, int nextDocRev){
-		HDocumentResource result;
-		if(res instanceof TextFlow){
-			TextFlow tf = (TextFlow) res;
-			result = new HTextFlow(tf, nextDocRev);
-		}
-		else if (res instanceof Container){
-			Container cont = (Container) res;
-			result = new HContainer(cont, this, nextDocRev);
-		}
-		else if (res instanceof DataHook){
-			DataHook hook = (DataHook) res;
-			result = new HDataHook(hook, nextDocRev);
-		}
-		else if (res instanceof Reference){
-			Reference ref = (Reference) res;
-			result = new HReference(ref, nextDocRev);
-		} else {
-			throw new IllegalStateException("could not find subclass of Resource: " + res.getClass().toString());
-		}
+	public HTextFlow create(TextFlow res, int nextDocRev){
+		HTextFlow tf = new HTextFlow(res, nextDocRev);
 		// don't add to this.resources, we could be in a subcontainer
-		getAllResources().put(result.getResId(), result);
-		result.setDocument(this);
-		return result;
+		getAllResources().put(tf.getResId(), tf);
+		tf.setDocument(this);
+		return tf;
 	}
-	
-	// seems to be obsolete
-//	public void copy(List<DocumentResource> content, int nextDocRev){
-//		for(DocumentResource res :content){
-//			HDocumentResource hRes = create(res, nextDocRev);
-//			hRes.setDocument(this);
-//			getResources().add(hRes);
-//		}
-//	}
 	
 	// TODO make this case sensitive
 	@NaturalId
@@ -232,32 +201,31 @@ public class HDocument extends AbstractFliesEntity{
 
 	@OneToMany(mappedBy="document", cascade=CascadeType.ALL)
 	@MapKey(name="resId")
-	// all resources, obsolete or not, inside containers or not
-	public Map<String,HDocumentResource> getAllResources() {
+	public Map<String,HTextFlow> getAllResources() {
 		if(allResources == null)
-			allResources = new HashMap<String, HDocumentResource>();
+			allResources = new HashMap<String, HTextFlow>();
 		return allResources;
 	}
 	
-	public void setAllResources(Map<String, HDocumentResource> resources) {
+	public void setAllResources(Map<String, HTextFlow> resources) {
 		this.allResources = resources;
 	}
 	
 	@OneToMany(cascade=CascadeType.ALL/*, mappedBy="document"*/)
-	@Where(clause="parent_id is null and obsolete=0")
+	@Where(clause="obsolete=0")
 	@IndexColumn(name="pos", base=0, nullable=true)// see http://opensource.atlassian.com/projects/hibernate/browse/HHH-4390?focusedCommentId=30964#action_30964
 	@JoinColumn(name="document_id",nullable=true)
 	/**
 	 * Returns the <b>top-level</b> resources contained in the document.  Some 
 	 * of these resources may be containers containing other resources.
 	 */
-	public List<HDocumentResource> getResources() {
+	public List<HTextFlow> getResources() {
 		if(resources == null)
-			resources = new ArrayList<HDocumentResource>();
+			resources = new ArrayList<HTextFlow>();
 		return resources;
 	}
 	
-	public void setResources(List<HDocumentResource> resources) {
+	public void setResources(List<HTextFlow> resources) {
 		this.resources = resources;
 	}
 
@@ -272,13 +240,13 @@ public class HDocument extends AbstractFliesEntity{
 	@OneToMany(cascade=CascadeType.ALL)
 	@Where(clause="obsolete=1")
 	@MapKey(name="resId")
-	public Map<String, HDocumentResource> getObsoletes() {
+	public Map<String, HTextFlow> getObsoletes() {
 		if(obsoletes == null)
-			obsoletes = new HashMap<String, HDocumentResource>();
+			obsoletes = new HashMap<String, HTextFlow>();
 		return obsoletes;
 	}
 	
-	public void setObsoletes(Map<String, HDocumentResource> obsoletes) {
+	public void setObsoletes(Map<String, HTextFlow> obsoletes) {
 		this.obsoletes = obsoletes;
 	}
 	public Document toDocument(boolean deep) {
@@ -312,8 +280,8 @@ public class HDocument extends AbstractFliesEntity{
 	public Document toDocument(int levels) {
 	    Document doc = new Document(docId, name, path, contentType, revision, locale);
 	    if (levels != 0) {
-		    List<DocumentResource> docResources = doc.getResources(true);
-		    for (HDocumentResource hRes : this.getResources()) {
+		    List<TextFlow> docResources = doc.getResources(true);
+		    for (HTextFlow hRes : this.getResources()) {
 				docResources.add(hRes.toResource(levels));
 			}
 		    HPoHeader fromPoHeader = this.getPoHeader();

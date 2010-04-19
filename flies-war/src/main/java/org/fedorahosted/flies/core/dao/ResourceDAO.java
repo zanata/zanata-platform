@@ -1,7 +1,7 @@
 package org.fedorahosted.flies.core.dao;
 
 import org.fedorahosted.flies.repository.model.HDocument;
-import org.fedorahosted.flies.repository.model.HDocumentResource;
+import org.fedorahosted.flies.repository.model.HTextFlow;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.AutoCreate;
@@ -20,8 +20,8 @@ public class ResourceDAO {
 	 * @param id
 	 * @return
 	 */
-	public HDocumentResource getById(HDocument document, String id){
-		return (HDocumentResource) session.createCriteria(HDocumentResource.class)
+	public HTextFlow getById(HDocument document, String id){
+		return (HTextFlow) session.createCriteria(HTextFlow.class)
 			.add( Restrictions.naturalId()
 		        .set("resId", id)
 		        .set("document", document)
@@ -31,8 +31,8 @@ public class ResourceDAO {
 		    .uniqueResult();
 	}
 	
-	public HDocumentResource getObsoleteById(HDocument document, String id) {
-		return (HDocumentResource) session.createCriteria(HDocumentResource.class)
+	public HTextFlow getObsoleteById(HDocument document, String id) {
+		return (HTextFlow) session.createCriteria(HTextFlow.class)
 		.add( Restrictions.naturalId()
 	        .set("resId", id)
 	        .set("document", document)

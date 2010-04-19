@@ -11,7 +11,6 @@ import java.util.Set;
 
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.DocumentResource;
 import org.fedorahosted.flies.rest.dto.IExtensible;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
@@ -38,12 +37,7 @@ public class PropWriter {
 
 		logVerbose("Creating base file " + baseFile);
 		Properties props = new Properties();
-		for (DocumentResource resource : doc.getResources(true)) {
-			if (!(resource instanceof TextFlow)) {
-				throw new RuntimeException("Unhandled Resource: "
-						+ resource.getClass() + " with id " + resource.getId());
-			}
-			TextFlow textFlow = (TextFlow) resource;
+		for (TextFlow textFlow : doc.getResources(true)) {
 			props.setProperty(textFlow.getId(), textFlow.getContent());
 			if (textFlow.hasComment() && textFlow.getComment().getValue() != null)
 				props.setComment(textFlow.getId(), textFlow.getComment().getValue());
@@ -58,22 +52,17 @@ public class PropWriter {
 
 		Map<LocaleId, Properties> targetProps = new HashMap<LocaleId, Properties>();
 		if (doc.hasResources()) {
-			for (DocumentResource resource : doc.getResources()) {
-				if (resource instanceof TextFlow) {
-					TextFlow textflow = (TextFlow) resource;
-					for (TextFlowTarget target : getTargets(textflow)) {
-						Properties targetProp = targetProps.get(target.getLang());
-						if (targetProp == null) {
-							targetProp = new Properties();
-							targetProps.put(target.getLang(), targetProp);
-						}
-						targetProp.setProperty(resource.getId(), target
-								.getContent());
-						if (target.hasComment() && target.getComment().getValue() != null)
-							targetProp.setComment(resource.getId(), target.getComment().getValue());
+			for (TextFlow textflow : doc.getResources()) {
+				for (TextFlowTarget target : getTargets(textflow)) {
+					Properties targetProp = targetProps.get(target.getLang());
+					if (targetProp == null) {
+						targetProp = new Properties();
+						targetProps.put(target.getLang(), targetProp);
 					}
-				} else {
-					throw new RuntimeException("unsupported Document element: "+resource.getClass());
+					targetProp.setProperty(textflow.getId(), target
+							.getContent());
+					if (target.hasComment() && target.getComment().getValue() != null)
+						targetProp.setComment(textflow.getId(), target.getComment().getValue());
 				}
 			}
 		}

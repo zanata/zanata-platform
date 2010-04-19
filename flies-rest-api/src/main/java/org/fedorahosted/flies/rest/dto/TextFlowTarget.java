@@ -36,12 +36,12 @@ public class TextFlowTarget implements IExtensible{
 		// TODO Auto-generated constructor stub
 	}
 	
-	public TextFlowTarget(DocumentResource resource) {
+	public TextFlowTarget(TextFlow resource) {
 		this.id = resource.getId();
 		this.resourceRevision = resource.getRevision();
 	}
 
-	public TextFlowTarget(DocumentResource resource, LocaleId lang) {
+	public TextFlowTarget(TextFlow resource, LocaleId lang) {
 		this(resource);
 		this.lang = lang;
 	}

@@ -12,7 +12,6 @@ import junit.framework.Assert;
 
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.DocumentResource;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTargets;
 import org.fedorahosted.flies.rest.dto.po.PoHeader;
@@ -55,7 +54,7 @@ public class PoReaderTest {
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		m.marshal(doc, System.out);
 		
-		List<DocumentResource> resources = doc.getResources();
+		List<TextFlow> resources = doc.getResources();
 		
 		TextFlow tf1 = (TextFlow) resources.get(3);
 		Assert.assertEquals("Important", tf1.getContent());
