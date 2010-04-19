@@ -2,6 +2,7 @@
 <dataset>
 	<HProject projecttype="iteration" 
 	    id="1"
+	    versionNum="1"
 		creationDate="2009-09-01 20:30:16"
 		lastChanged="2009-09-01 20:30:16" 
 		slug="sample-project" 

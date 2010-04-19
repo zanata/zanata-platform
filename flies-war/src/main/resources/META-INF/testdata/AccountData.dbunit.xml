@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <dataset>
 	<HAccount id="1"
-          	  creationDate="2009-01-14 11:39:00"
+				  versionNum="1"
+    	      	  creationDate="2009-01-14 11:39:00"
                   lastChanged="2009-01-14 11:39:00"
                   apiKey="12345678901234567890123456789012"
                   enabled="TRUE"
@@ -9,6 +10,7 @@
                   username="admin"
         />
         <HAccount id="2" 
+				  versionNum="1"
                   creationDate="2009-01-14 11:39:00"
                   lastChanged="2009-01-14 11:39:00"
                   apiKey="23456789012345678901234567890123"
@@ -17,6 +19,7 @@
                   username="demo"
         />
         <HAccount id="3"
+				  versionNum="1"
                   creationDate="2009-01-14 11:39:00"
                   lastChanged="2009-01-14 11:39:00"
                   apiKey="34567890123456789012345678901234"
@@ -49,6 +52,7 @@
         />
 
         <HPerson id="1"
+  			     versionNum="1"
                  creationDate="2009-01-14 11:39:00"
                  lastChanged="2009-01-14 11:39:00"
                  email="asgeirf@localhost"
@@ -56,6 +60,7 @@
                  accountId="1"
         />
         <HPerson id="2"
+  			     versionNum="1"
                  creationDate="2009-01-14 11:39:00"
                  lastChanged="2009-01-14 11:39:00"
                  email="asgeirf@localhost"
@@ -63,6 +68,7 @@
                  accountId="2"
         />
         <HPerson id="3"
+  			     versionNum="1"
                  creationDate="2009-01-14 11:39:00"
                  lastChanged="2009-01-14 11:39:00"
                  email="asgeirf@localhost"

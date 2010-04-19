@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <dataset> 
         <HCommunity id="1"
+    			     versionNum="1"
                     creationDate="2009-01-14 11:39:00"
                     lastChanged="2009-01-14 11:39:00"
                     slug="jboss"
@@ -10,6 +11,7 @@
                     ownerId="1"
         />
         <HCommunity id="2"
+    			     versionNum="1"
                     creationDate="2009-01-14 11:39:00"
                     lastChanged="2009-01-14 11:39:00" 
                     slug="redhat"
@@ -19,6 +21,7 @@
                     ownerId="1"
         />
         <HCommunity id="3"
+    			     versionNum="1"
                     creationDate="2009-01-14 11:39:00"
                     lastChanged="2009-01-14 11:39:00"
                     slug="hibernate"
@@ -28,6 +31,7 @@
                     ownerId="1"
         />
         <HCommunity id="4"
+    			     versionNum="1"
                     creationDate="2009-01-14 11:39:00"
                     lastChanged="2009-01-14 11:39:00"
                     slug="seam"

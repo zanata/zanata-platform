@@ -1,8 +1,9 @@
 <?xml version="1.0"?>
 <dataset>
 	<HPerson id="1"
-		creationDate="[NULL]"
-		lastChanged="[NULL]" 
+	    versionNum="1"
+		creationDate="2009-09-01 20:30:16"
+		lastChanged="2009-09-01 20:30:16" 
 		email="bean@mr.com" 
 		name="Mr Bean"
 	/>

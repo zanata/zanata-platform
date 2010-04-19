@@ -2,10 +2,12 @@ package org.fedorahosted.flies.core.model;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
@@ -17,6 +19,8 @@ public class AbstractFliesEntity {
 	protected Date creationDate;
 	protected Date lastChanged;
 
+	protected Integer versionNum;
+	
 	@Id
 	@GeneratedValue
 	public Long getId() {
@@ -27,7 +31,18 @@ public class AbstractFliesEntity {
 		this.id = id;
 	}
 
+	@Version
+	@Column(nullable=false)
+	public Integer getVersionNum() {
+		return versionNum;
+	}
+	
+	public void setVersionNum(Integer versionNum) {
+		this.versionNum = versionNum;
+	}
+	
 	@Temporal(TemporalType.TIMESTAMP)
+	@Column(nullable=false)
 	public Date getCreationDate() {
 		return creationDate;
 	}
@@ -36,8 +51,8 @@ public class AbstractFliesEntity {
 		this.creationDate = creationDate;
 	}
 
-	@Version
 	@Temporal(TemporalType.TIMESTAMP)
+	@Column(nullable=false)
 	public Date getLastChanged() {
 		return lastChanged;
 	}
@@ -49,6 +64,12 @@ public class AbstractFliesEntity {
 	@PrePersist
 	private void onPersist() {
 		creationDate = new Date();
+		lastChanged = creationDate;
+	}
+	
+	@PreUpdate
+	private void onUpdate() {
+		lastChanged = new Date();
 	}
 
 	@Override
