@@ -59,7 +59,7 @@ public class PropReaderTests {
 		Unmarshaller unmarshal = jc.createUnmarshaller();
 		Document docIn = (Document) unmarshal.unmarshal(new StringReader(sw.toString()));
 		
-		PropWriter.write(docIn, new File("target/test-output"));
+		PropWriter.write(docIn, new File("target/test-output"), true);
 		
 		// TODO check output files against input
 	}
