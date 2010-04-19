@@ -30,11 +30,21 @@
       </ui:include>        
     </rich:column>
     <rich:column>
-      <h:outputLink value="/flies/org.fedorahosted.flies.webtrans.Application/Application.html">
+      <h:outputLink 
+          rendered="#{!fliesInit.debug}" 
+          value="/flies/org.fedorahosted.flies.webtrans.Application/Application.html">
 		<f:param name="projContainerId" value="#{_iteration.container.id}"/>
 		<f:param name="localeId" value="#{tribe.locale.id}"/>
 		Launch Translation Editor    	
-   	</h:outputLink>
+      </h:outputLink>
+      <h:outputLink 
+          rendered="#{fliesInit.debug}"
+          value="/flies/org.fedorahosted.flies.webtrans.Application/Application.html">
+		<f:param name="projContainerId" value="#{_iteration.container.id}"/>
+		<f:param name="localeId" value="#{tribe.locale.id}"/>
+		<f:param name="gwt.codesvr" value="localhost:9997"/>
+		Launch Translation Editor (GWT DevMode)
+      </h:outputLink>
         
     </rich:column>
   </rich:dataTable>

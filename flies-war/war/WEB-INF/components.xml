@@ -191,7 +191,7 @@
 
   <component class="org.fedorahosted.flies.FliesInit" name="fliesInit" precedence="30">
     <property name="adminContact">+41 123 123 123, admin@my.address</property>
-    <property name="debug">false</property>
+    <property name="debug">@env.debug@</property>
     <property name="hibernateStatistics">false</property>
     <property name="serverPath">@env.server.path@</property>
     <property name="authenticatedSessionTimeoutMinutes">180</property>
