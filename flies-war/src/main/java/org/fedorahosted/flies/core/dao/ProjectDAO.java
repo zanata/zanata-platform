@@ -23,4 +23,11 @@ public class ProjectDAO {
 		    .setComment("ProjectDAO.getBySlug")
 		    .uniqueResult();
 	}
+	
+	public Integer getRevisionBySlug(String slug) {
+		return (Integer) session.createQuery(
+				"select p.versionNum from HProject p where slug =:slug")
+				.setParameter("slug", slug)
+				.uniqueResult();
+	}
 }

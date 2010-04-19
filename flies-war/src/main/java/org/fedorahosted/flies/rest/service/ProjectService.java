@@ -1,15 +1,19 @@
 package org.fedorahosted.flies.rest.service;
 
 import java.net.URI;
+import java.security.MessageDigest;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.fedorahosted.flies.core.dao.AccountDAO;
@@ -30,6 +34,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
+import org.jboss.seam.util.Hex;
 
 @Name("projectService")
 @Path("/projects/p/{projectSlug}")
@@ -54,14 +59,31 @@ public class ProjectService {
 	@Produces( { MediaTypes.APPLICATION_FLIES_PROJECT_XML,
 			MediaTypes.APPLICATION_FLIES_PROJECT_JSON,
 			MediaType.APPLICATION_JSON })
-	public Response get() {
+	public Response get(@HeaderParam("If-None-Match") EntityTag ifNoneMatch) {
+		 		
+		if(ifNoneMatch != null) {
+			Integer rev = projectDAO.getRevisionBySlug(projectSlug);
+			if(rev == null)
+				return Response.status(Status.NOT_FOUND).build();
+			EntityTag etag = EntityTag.valueOf( toHash( rev) );
+			if( etag.equals(ifNoneMatch) ) {
+				return Response.notModified(ifNoneMatch).build();
+			}
+		}
+
 		HProject hProject = projectDAO.getBySlug(projectSlug);
 		if (hProject == null)
 			return Response.status(Status.NOT_FOUND).build();
-
-		return Response.ok(toMini(hProject)).build();
+		
+		ResponseBuilder response = Response.ok(toMini(hProject));
+		response.tag( EntityTag.valueOf( toHash(hProject.getVersionNum()) ));
+		return response.build();
 	}
 
+	private String toHash(int rev) {
+		return String.valueOf(rev);
+	}
+	
 	@PUT
 	@Consumes( { MediaTypes.APPLICATION_FLIES_PROJECT_XML,
 			MediaTypes.APPLICATION_FLIES_PROJECT_JSON,
