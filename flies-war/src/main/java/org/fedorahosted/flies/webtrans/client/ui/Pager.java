@@ -31,7 +31,7 @@ public class Pager extends Composite implements HasPager {
 	Anchor firstPage, lastPage, nextPage, prevPage;
 
 	@UiField
-	Label firstPageDisabled, lastPageDisabled, nextPageDisabled, previousPageDisabled;
+	Image firstPageDisabled, lastPageDisabled, nextPageDisabled, prevPageDisabled;
 	
 	@UiField
 	TextBox gotoPage;
@@ -53,28 +53,18 @@ public class Pager extends Composite implements HasPager {
 		this.messages = messages;
 		this.resources = resources;
 		initWidget(uiBinder.createAndBindUi(this));
-		firstPageDisabled.setVisible(false);
-		lastPageDisabled.setVisible(false);
-		nextPageDisabled.setVisible(false);
-		previousPageDisabled.setVisible(false);
 
-		firstPage.setText( messages.firstPage() );
-
-		firstPage.setTitle( messages.firstPageShortcut() );
-		firstPageDisabled.setText( messages.firstPage() );
+		firstPage.setTitle( messages.firstPage() + " (Shortcut: " + messages.firstPageShortcut() + ")" );
+		firstPage.setHTML( createImgHTML( resources.firstPageImage().getURL() ) );
 		
-		prevPage.setText( messages.prevPage() );
-		prevPage.setTitle( messages.prevPageShortcut() );
-		previousPageDisabled.setText( messages.prevPage() );
+		prevPage.setTitle( messages.prevPageShortcut()  + " (Shortcut: " + messages.prevPageShortcut() + ")" );
+		prevPage.setHTML( createImgHTML( resources.prevPageImage().getURL() ) );
 		
-		nextPage.setText( messages.nextPage() );
-		nextPage.setTitle( messages.nextPageShortcut() );
-		nextPageDisabled.setText( messages.nextPage() );
+		nextPage.setTitle( messages.nextPageShortcut() + " (Shortcut: " + messages.nextPageShortcut() + ")" );
+		nextPage.setHTML( createImgHTML( resources.nextPageImage().getURL() ) );
 		
-		lastPage.setText( messages.lastPage() );
-		lastPage.setTitle( messages.lastPageShortcut() );
-		lastPageDisabled.setText( messages.lastPage() );
-
+		lastPage.setTitle( messages.lastPageShortcut() + " (Shortcut: " + messages.lastPageShortcut() + ")" );
+		lastPage.setHTML( createImgHTML( resources.lastPageImage().getURL() ) );
 	}
 
 	@Override
@@ -100,18 +90,12 @@ public class Pager extends Composite implements HasPager {
 		nextPage.addClickHandler(clickHandler);
 		refresh();
 	}
-
-	private void setEnabled(Anchor link, Label diabledLabel, boolean enabled) {
-		link.setVisible(enabled);
-		diabledLabel.setVisible(!enabled);
-	}
 	
 	private void refresh(){
 		String page = pageCount == PAGECOUNT_UNKNOWN ? "" : "of " + pageCount;
 		pageCountLabel.setText(page);
 		setEnabled(firstPage, firstPageDisabled, currentPage != 1);
-		setEnabled(prevPage, previousPageDisabled, currentPage != 1);
-
+		setEnabled(prevPage, prevPageDisabled, currentPage != 1);
 		setEnabled(nextPage, nextPageDisabled, currentPage != pageCount );
 		setEnabled(lastPage, lastPageDisabled, currentPage != pageCount && pageCount != PAGECOUNT_UNKNOWN);
 
@@ -175,5 +159,14 @@ public class Pager extends Composite implements HasPager {
 			} 
 		}
 	};
-
+	
+	private void setEnabled(Anchor link, Image disabledLink, boolean enabled) {
+		link.setVisible(enabled);
+		disabledLink.setVisible(!enabled);
+	}
+	
+	// TODO: extract this into a subclass of ImageResource.
+	private String createImgHTML (String url) {
+		return "<img src=\"" + url + "\" />";
+	}
 }
