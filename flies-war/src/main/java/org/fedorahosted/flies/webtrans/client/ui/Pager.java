@@ -54,17 +54,11 @@ public class Pager extends Composite implements HasPager {
 		this.resources = resources;
 		initWidget(uiBinder.createAndBindUi(this));
 
+		// set tooltips of page nav icons
 		firstPage.setTitle( messages.firstPage() + " (Shortcut: " + messages.firstPageShortcut() + ")" );
-		firstPage.setHTML( createImgHTML( resources.firstPageImage().getURL() ) );
-		
 		prevPage.setTitle( messages.prevPageShortcut()  + " (Shortcut: " + messages.prevPageShortcut() + ")" );
-		prevPage.setHTML( createImgHTML( resources.prevPageImage().getURL() ) );
-		
 		nextPage.setTitle( messages.nextPageShortcut() + " (Shortcut: " + messages.nextPageShortcut() + ")" );
-		nextPage.setHTML( createImgHTML( resources.nextPageImage().getURL() ) );
-		
 		lastPage.setTitle( messages.lastPageShortcut() + " (Shortcut: " + messages.lastPageShortcut() + ")" );
-		lastPage.setHTML( createImgHTML( resources.lastPageImage().getURL() ) );
 	}
 
 	@Override
@@ -163,10 +157,5 @@ public class Pager extends Composite implements HasPager {
 	private void setEnabled(Anchor link, Image disabledLink, boolean enabled) {
 		link.setVisible(enabled);
 		disabledLink.setVisible(!enabled);
-	}
-	
-	// TODO: extract this into a subclass of ImageResource.
-	private String createImgHTML (String url) {
-		return "<img src=\"" + url + "\" />";
 	}
 }

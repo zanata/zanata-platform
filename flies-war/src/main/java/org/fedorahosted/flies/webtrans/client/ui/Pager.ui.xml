@@ -33,19 +33,27 @@
 		<nobr>
            <!-- *PageDisabled g:Image are acting as disabled g:Anchor, because we could not disable anchor due to HTML limitation. -->
 			
-           <g:Anchor ui:field="firstPage" styleName="{style.link}" />
+           <g:Anchor ui:field="firstPage" styleName="{style.link}">
+            <img src="{resources.firstPageImage.getURL}"/>
+           </g:Anchor>
 			<g:Image ui:field="firstPageDisabled" resource="{resources.noPageImage}" visible="false" />
 			
-			<g:Anchor ui:field="prevPage" styleName="{style.link}" />
+			<g:Anchor ui:field="prevPage" styleName="{style.link}">
+            <img src="{resources.prevPageImage.getURL}"/>
+           </g:Anchor>
            <g:Image ui:field="prevPageDisabled" resource="{resources.noPageImage}" visible="false" />
 			
 			<g:TextBox ui:field="gotoPage" maxLength="8" width="40px" />
 			<g:Label ui:field="pageCountLabel" styleName="{style.inline-label}">of 0</g:Label>
 			
-			<g:Anchor ui:field="nextPage" styleName="{style.link}" />
+			<g:Anchor ui:field="nextPage" styleName="{style.link}">
+            <img src="{resources.nextPageImage.getURL}"/>
+           </g:Anchor>
            <g:Image ui:field="nextPageDisabled" resource="{resources.noPageImage}" visible="false" />
 			
-			<g:Anchor ui:field="lastPage" styleName="{style.link}" />
+			<g:Anchor ui:field="lastPage" styleName="{style.link}">
+            <img src="{resources.lastPageImage.getURL}"/>
+           </g:Anchor>
            <g:Image ui:field="lastPageDisabled" resource="{resources.noPageImage}" visible="false" />
 		</nobr>
 	</g:HTMLPanel>
