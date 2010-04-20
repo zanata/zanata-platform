@@ -78,6 +78,9 @@ public interface Resources extends ClientBundle {
 	@Source("org/fedorahosted/flies/webtrans/images/last_page.png")
 	ImageResource lastPageImage();
 	
+	@Source("org/fedorahosted/flies/webtrans/images/no_page.png")
+	ImageResource noPageImage();
+	
 	@Source("org/fedorahosted/flies/webtrans/images/approved_unit.png")
 	ImageResource approvedUnit();
 	

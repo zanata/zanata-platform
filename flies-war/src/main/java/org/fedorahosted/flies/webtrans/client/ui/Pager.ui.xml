@@ -31,17 +31,15 @@
 	
 	<g:HTMLPanel>
 		<nobr>
-			<g:Anchor ui:field="firstPage" styleName="{style.link}">
-                <img src="{resources.firstPageImage.getURL}" />
-           </g:Anchor>
-			<g:Label ui:field="firstPageDisabled" styleName="{style.link_disabled}">First</g:Label>
+           <!-- *PageDisabled g:Image are acting as disabled g:Anchor, because we could not disable anchor due to HTML limitation. -->
+			
+           <g:Anchor ui:field="firstPage" styleName="{style.link}" />
+			<g:Image ui:field="firstPageDisabled" resource="{resources.noPageImage}" visible="false" />
 			
 			<span class="{style.divider}">|</span>
 			
-			<g:Anchor ui:field="prevPage" styleName="{style.link}">
-               <img src="{resources.prevPageImage.getURL}" />
-           </g:Anchor>
-			<g:Label ui:field="previousPageDisabled" styleName="{style.link_disabled}">Previous</g:Label>
+			<g:Anchor ui:field="prevPage" styleName="{style.link}" />
+           <g:Image ui:field="prevPageDisabled" resource="{resources.noPageImage}" visible="false" />
 			
 			<span class="{style.divider}">|</span>
 			
@@ -50,17 +48,13 @@
 			
 			<span class="{style.divider}">|</span>
 			
-			<g:Anchor ui:field="nextPage" styleName="{style.link}">
-               <img src="{resources.nextPageImage.getURL}" />
-           </g:Anchor>
-			<g:Label ui:field="nextPageDisabled" styleName="{style.link_disabled}">Next</g:Label>
+			<g:Anchor ui:field="nextPage" styleName="{style.link}" />
+           <g:Image ui:field="nextPageDisabled" resource="{resources.noPageImage}" visible="false" />
 			
 			<span class="{style.divider}">|</span>
 			
-			<g:Anchor ui:field="lastPage" styleName="{style.link}">
-               <img src="{resources.lastPageImage.getURL}" />
-           </g:Anchor>
-			<g:Label ui:field="lastPageDisabled" styleName="{style.link_disabled}">Last</g:Label>
+			<g:Anchor ui:field="lastPage" styleName="{style.link}" />
+           <g:Image ui:field="lastPageDisabled" resource="{resources.noPageImage}" visible="false" />
 		</nobr>
 	</g:HTMLPanel>
 </ui:UiBinder>
