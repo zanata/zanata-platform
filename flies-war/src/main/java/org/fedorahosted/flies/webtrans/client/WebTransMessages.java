@@ -79,5 +79,7 @@ public interface WebTransMessages extends Messages {
 
 	@DefaultMessage("Source or Target content")
 	String findSourceOrTargetString();
-	
+
+	@DefaultMessage("{0} (Shortcut: {1})")
+	String tooltipsWithShortcut(String text, String shortcut);
 }
