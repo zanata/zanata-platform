@@ -40,6 +40,7 @@
     <version.richfaces>3.3.1.GA</version.richfaces>
     <version.seam>2.2.1.CR1</version.seam>
     <version.tennera>0.6</version.tennera>
+    <version.googlecollect>1.0</version.googlecollect>
   </properties>
   
   <build>
@@ -227,6 +228,13 @@
 	      <version>1.0-20100114.200325-3</version>
 	      <scope>compile</scope>
 	  </dependency>
+      
+      <dependency>
+        <groupId>com.google.collections</groupId>
+        <artifactId>google-collections</artifactId>
+        <version>${version.googlecollect}</version>
+      </dependency>
+	  
     </dependencies>
     
     
