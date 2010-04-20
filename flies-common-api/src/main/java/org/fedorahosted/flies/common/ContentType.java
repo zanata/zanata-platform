@@ -40,4 +40,8 @@ public final class ContentType implements Serializable{
 		return contentType;
 	}
 	
+	public String getValue() {
+		return contentType;
+	}
+	
 }

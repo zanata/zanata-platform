@@ -51,5 +51,8 @@ public final class LocaleId implements Serializable{
         return id.replace('-', '_');
     }
 	
+    public String getValue() {
+    	return id;
+    }
 	
 }
