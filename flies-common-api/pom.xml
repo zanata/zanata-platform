@@ -15,6 +15,12 @@
       <groupId>com.google.collections</groupId>
       <artifactId>google-collections</artifactId>
     </dependency>
+    
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-core-asl</artifactId>
+    </dependency>
+    
   </dependencies>
   
   <build>

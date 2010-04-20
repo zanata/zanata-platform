@@ -234,6 +234,13 @@
         <artifactId>google-collections</artifactId>
         <version>${version.googlecollect}</version>
       </dependency>
+      
+      <dependency>
+        <groupId>org.codehaus.jackson</groupId>
+        <artifactId>jackson-core-asl</artifactId>
+        <version>1.3.0</version>
+      </dependency>
+      
 	  
     </dependencies>
     
