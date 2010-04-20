@@ -36,22 +36,14 @@
            <g:Anchor ui:field="firstPage" styleName="{style.link}" />
 			<g:Image ui:field="firstPageDisabled" resource="{resources.noPageImage}" visible="false" />
 			
-			<span class="{style.divider}">|</span>
-			
 			<g:Anchor ui:field="prevPage" styleName="{style.link}" />
            <g:Image ui:field="prevPageDisabled" resource="{resources.noPageImage}" visible="false" />
-			
-			<span class="{style.divider}">|</span>
 			
 			<g:TextBox ui:field="gotoPage" maxLength="8" width="40px" />
 			<g:Label ui:field="pageCountLabel" styleName="{style.inline-label}">of 0</g:Label>
 			
-			<span class="{style.divider}">|</span>
-			
 			<g:Anchor ui:field="nextPage" styleName="{style.link}" />
            <g:Image ui:field="nextPageDisabled" resource="{resources.noPageImage}" visible="false" />
-			
-			<span class="{style.divider}">|</span>
 			
 			<g:Anchor ui:field="lastPage" styleName="{style.link}" />
            <g:Image ui:field="lastPageDisabled" resource="{resources.noPageImage}" visible="false" />
