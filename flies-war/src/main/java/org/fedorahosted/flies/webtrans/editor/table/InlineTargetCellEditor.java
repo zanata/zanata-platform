@@ -1,9 +1,8 @@
 package org.fedorahosted.flies.webtrans.editor.table;
 
-import static org.fedorahosted.flies.webtrans.editor.table.TableConstants.MAX_PAGE_ROW;
-
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.gwt.model.TransUnit;
+import org.fedorahosted.flies.webtrans.client.Resources;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
@@ -22,8 +21,8 @@ import com.google.gwt.gen2.table.override.client.HTMLTable;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ImageBundle;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.TextArea;
@@ -92,9 +91,13 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 	
 	private boolean isFocused = false;
 	
+	private Image stateImage;
+	
 	private int curRow;
 	private int curCol;
 	private HTMLTable table;
+	
+	private Resources resources = GWT.create(Resources.class);
 	
 	/*
 	 * The minimum height of the target editor
@@ -179,6 +182,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 		operationsPanel.setSpacing(4);
 		layoutTable.add(operationsPanel);
 		
+		// icon as the current state of the unit
+		stateImage = new Image( resources.newUnit() );
+		operationsPanel.add(stateImage);
+
 		// Add content widget
 		toggleFuzzy = new CheckBox("Fuzzy");
 		operationsPanel.add(toggleFuzzy);
@@ -282,6 +289,16 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 		textArea.setFocus(true);
 		DOM.scrollIntoView(textArea.getElement());
 		toggleFuzzy.setValue(cellValue.getStatus() == ContentState.NeedReview);
+		refreshStateImage();
+	}
+
+	private void refreshStateImage() {
+		if (cellValue.getStatus() == ContentState.New)
+			stateImage.setUrl( resources.newUnit().getURL() );
+		else if (cellValue.getStatus() == ContentState.NeedReview)
+			stateImage.setUrl( resources.fuzzyUnit().getURL() );
+		else if (cellValue.getStatus() == ContentState.Approved)
+			stateImage.setUrl( resources.approvedUnit().getURL() );
 	}
 
 	/**
@@ -296,7 +313,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 		if(cellValue.getTarget().isEmpty())
 			cellValue.setStatus(ContentState.New);
 		else
-			cellValue.setStatus(toggleFuzzy.getValue() ? ContentState.NeedReview : ContentState.Approved );
+			cellValue.setStatus(toggleFuzzy.getValue()? ContentState.NeedReview : ContentState.Approved) ;
 		restoreView();
 		
 		// Send the new cell value to the callback
