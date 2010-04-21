@@ -10,29 +10,29 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.common.Namespaces;
 
-@XmlType(name="projectRefType", namespace=Namespaces.FLIES, propOrder={"links"})
-@XmlRootElement(name="project-ref", namespace=Namespaces.FLIES)
-public class ProjectRef extends Project {
+@XmlType(name="projectResType", namespace=Namespaces.FLIES, propOrder={"links"})
+@XmlRootElement(name="project-res", namespace=Namespaces.FLIES)
+public class ProjectRes extends Project {
 
 	private List<Link> links;
 	
-	public ProjectRef() {
+	public ProjectRes() {
 	}
 	
-	public ProjectRef(String id, String name, String description, ProjectType type) {
+	public ProjectRes(String id, String name, String description, ProjectType type) {
 		super(id, name, description, type);
 	}
 	
-	public ProjectRef(String id, String name, String description, ProjectType type, List<Link> links) {
+	public ProjectRes(String id, String name, String description, ProjectType type, List<Link> links) {
 		super(id, name, description, type);
 		this.links = links;
 	}
 	
-	public ProjectRef(Project project) {
+	public ProjectRes(Project project) {
 		super(project);
 	}
 	
-	public ProjectRef(Project project, List<Link> links) {
+	public ProjectRes(Project project, List<Link> links) {
 		super(project);
 		this.links = links;
 	}

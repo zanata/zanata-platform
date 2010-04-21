@@ -13,18 +13,23 @@ import javax.xml.bind.annotation.XmlType;
 import org.fedorahosted.flies.common.Namespaces;
 
 
-@XmlType(name="projectType", namespace=Namespaces.FLIES, propOrder={"name", "description", "iterations"})
+@XmlType(name="projectType", namespace=Namespaces.FLIES, propOrder={"name", "description"})
 @XmlRootElement(name="project", namespace=Namespaces.FLIES)
-public class Project extends AbstractBaseResource{
+public class Project {
 
 	private String id;
 	private String name;
 	private ProjectType type = ProjectType.IterationProject;
 	private String description;
 	
-	private List<ProjectIteration> iterations;
-	
 	public Project() {
+	}
+	
+	public Project(Project other) {
+		this.id = other.id;
+		this.name = other.name;
+		this.type = other.type;
+		this.description = other.description;
 	}
 	
 	public Project(String id, String name) {
@@ -74,14 +79,6 @@ public class Project extends AbstractBaseResource{
 	
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	@XmlElementWrapper(name="project-iterations", namespace=Namespaces.FLIES, required=false)
-	@XmlElement(name="project-iteration", namespace=Namespaces.FLIES)
-	public List<ProjectIteration> getIterations() {
-		if(iterations == null)
-			iterations = new ArrayList<ProjectIteration>();
-		return iterations;
 	}
 
 }

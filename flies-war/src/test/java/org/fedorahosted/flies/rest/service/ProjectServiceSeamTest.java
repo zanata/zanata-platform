@@ -16,6 +16,8 @@ import org.fedorahosted.flies.rest.ApiKeyHeaderDecorator;
 import org.fedorahosted.flies.rest.client.IProjectResource;
 import org.fedorahosted.flies.rest.client.IProjectsResource;
 import org.fedorahosted.flies.rest.dto.Project;
+import org.fedorahosted.flies.rest.dto.ProjectRes;
+import org.fedorahosted.flies.rest.dto.ProjectType;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
@@ -58,13 +60,13 @@ public class ProjectServiceSeamTest extends FliesDBUnitSeamTest {
 	public void retrieveNonExistingProject(){
 		projectService = clientRequestFactory.createProxy(IProjectResource.class, baseUri.resolve("invalid-project"));
 
-		ClientResponse<Project> response = projectService.get();
+		ClientResponse<ProjectRes> response = projectService.get();
 		assertThat( response.getStatus(), is(404) );
 	}
 
 	public void retrieveExistingProject(){
 		projectService = clientRequestFactory.createProxy(IProjectResource.class, baseUri.resolve("sample-project"));
-		ClientResponse<Project> response = projectService.get();
+		ClientResponse<ProjectRes> response = projectService.get();
 		assertThat( response.getStatus(), lessThan(400) );
 	}
 
@@ -72,7 +74,7 @@ public class ProjectServiceSeamTest extends FliesDBUnitSeamTest {
 		final String PROJECT_SLUG = "my-new-project";
 		final String PROJECT_NAME = "My New Project";
 		final String PROJECT_DESC = "Another test project";
-		Project project = new Project(PROJECT_SLUG, PROJECT_NAME, PROJECT_DESC);
+		ProjectRes project = new ProjectRes(PROJECT_SLUG, PROJECT_NAME, PROJECT_DESC, ProjectType.IterationProject);
 
 		projectService = clientRequestFactory.createProxy(IProjectResource.class, baseUri.resolve(PROJECT_SLUG));
 		
@@ -84,7 +86,7 @@ public class ProjectServiceSeamTest extends FliesDBUnitSeamTest {
 		
 		assertThat( location, endsWith("/projects/p/"+PROJECT_SLUG));
 		
-		ClientResponse<Project> response1 = projectService.get();
+		ClientResponse<ProjectRes> response1 = projectService.get();
 		assertThat(response1.getStatus(), is(Status.OK.getStatusCode()));
 		assertThat(response1.getEntity(), notNullValue());
 		assertThat(response1.getEntity().getName(), is(PROJECT_NAME)); 
@@ -100,13 +102,13 @@ public class ProjectServiceSeamTest extends FliesDBUnitSeamTest {
 		final String PROJECT_DESC = "Another test project";
 		projectService = clientRequestFactory.createProxy(IProjectResource.class, baseUri.resolve(PROJECT_SLUG_INVALID));
 
-		Project project = new Project(PROJECT_SLUG_INVALID, PROJECT_NAME, PROJECT_DESC);
+		ProjectRes project = new ProjectRes(PROJECT_SLUG_INVALID, PROJECT_NAME, PROJECT_DESC, ProjectType.IterationProject);
 		Response response = projectService.put(project);
 		
         assertThat( response.getStatus(), is( Status.BAD_REQUEST.getStatusCode()));
 
 		projectService = clientRequestFactory.createProxy(IProjectResource.class, baseUri.resolve(PROJECT_SLUG));
-        Project project1 = new Project(PROJECT_SLUG,PROJECT_NAME_INVALID, PROJECT_DESC);
+        ProjectRes project1 = new ProjectRes(PROJECT_SLUG,PROJECT_NAME_INVALID, PROJECT_DESC,ProjectType.IterationProject);
         Response response1 = projectService.put(project1);
         
         assertThat(response1.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
@@ -114,7 +116,7 @@ public class ProjectServiceSeamTest extends FliesDBUnitSeamTest {
 	}
 
 	public void updateProjectWithInvalidData() {
-		Project project = new Project("sample-project", "ProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdate", "Project Name exceeds 80");
+		ProjectRes project = new ProjectRes("sample-project", "ProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdate", "Project Name exceeds 80", ProjectType.IterationProject);
 
 		projectService = clientRequestFactory.createProxy(IProjectResource.class, baseUri.resolve("sample-project"));
 		
@@ -125,7 +127,7 @@ public class ProjectServiceSeamTest extends FliesDBUnitSeamTest {
 	}
 
 	public void updateProject() {
-		Project project = new Project("sample-project", "My Project Update", "Update project");
+		ProjectRes project = new ProjectRes("sample-project", "My Project Update", "Update project",ProjectType.IterationProject);
 
 		projectService = clientRequestFactory.createProxy(IProjectResource.class, baseUri.resolve("sample-project"));
 		
@@ -133,11 +135,11 @@ public class ProjectServiceSeamTest extends FliesDBUnitSeamTest {
 				
 		assertThat( response.getStatus(), is( Status.OK.getStatusCode()));
 		
-		ClientResponse<Project> projectResponse = projectService.get();
+		ClientResponse<ProjectRes> projectResponse = projectService.get();
 		
 		assertThat( projectResponse.getStatus(), is( Status.OK.getStatusCode()));
 		
-		project = projectResponse.getEntity();
+		project = new ProjectRes(projectResponse.getEntity());
 		
 		assertThat( project.getName(), is("My Project Update"));
 		assertThat( project.getDescription(), is("Update project"));

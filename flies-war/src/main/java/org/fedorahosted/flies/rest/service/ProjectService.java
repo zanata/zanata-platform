@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
+import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.core.dao.AccountDAO;
 import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.model.HAccount;
@@ -23,8 +24,10 @@ import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.HProject;
 import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.rest.MediaTypes;
+import org.fedorahosted.flies.rest.dto.Link;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
+import org.fedorahosted.flies.rest.dto.ProjectRes;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.validator.InvalidStateException;
@@ -35,6 +38,8 @@ import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.util.Hex;
+
+import com.google.gwt.http.client.URL;
 
 @Name("projectService")
 @Path("/projects/p/{projectSlug}")
@@ -137,17 +142,17 @@ public class ProjectService {
 		}
 	}
 
-	private static Project toMini(HProject hProject) {
-		Project project = new Project();
+	private static ProjectRes toMini(HProject hProject) {
+		ProjectRes project = new ProjectRes();
 		project.setId(hProject.getSlug());
 		project.setName(hProject.getName());
 		project.setDescription(hProject.getDescription());
 		if (hProject instanceof HIterationProject) {
 			HIterationProject itProject = (HIterationProject) hProject;
 			for (HProjectIteration pIt : itProject.getProjectIterations()) {
-				project.getIterations().add(
-						new ProjectIteration(pIt.getSlug(), pIt.getName(), pIt
-								.getDescription()));
+				project.getLinks().add(
+						new Link( URI.create("iterations/i"+pIt.getSlug()), "iteration", MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION)
+						);
 			}
 		}
 

@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.rest.service;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,9 @@ import javax.ws.rs.core.MediaType;
 import org.fedorahosted.flies.common.Namespaces;
 import org.fedorahosted.flies.core.model.HProject;
 import org.fedorahosted.flies.rest.MediaTypes;
+import org.fedorahosted.flies.rest.dto.Link;
 import org.fedorahosted.flies.rest.dto.ProjectRef;
+import org.fedorahosted.flies.rest.dto.ProjectRes;
 import org.fedorahosted.flies.rest.dto.ProjectType;
 import org.hibernate.Session;
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
@@ -45,6 +48,8 @@ public class ProjectsService {
 			ProjectRef project = new ProjectRef(hProject.getSlug(), hProject
 					.getName(), hProject.getDescription(),
 					ProjectType.IterationProject);
+			project.getLinks().add( 
+					new Link(URI.create("p/"+hProject.getSlug()), "self", MediaTypes.APPLICATION_FLIES_PROJECT));
 			projectRefs.add(project);
 		}
 

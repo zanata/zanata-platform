@@ -14,6 +14,8 @@ import org.fedorahosted.flies.rest.client.IProjectsResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
+import org.fedorahosted.flies.rest.dto.ProjectRes;
+import org.fedorahosted.flies.rest.dto.ProjectType;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Test;
@@ -26,18 +28,17 @@ public class FliesClientTest {
 		
 		ProjectsResource projectsResource = client.getProjectsResource();
 		
-		ClientResponse<Project> projectResponse = projectsResource.getProjectResource("sample-project").get();
+		ClientResponse<ProjectRes> projectResponse = projectsResource.getProjectResource("sample-project").get();
 		
 		if (projectResponse.getResponseStatus().getStatusCode() < 399) {
-			Project p = projectResponse.getEntity();
+			ProjectRes p = new ProjectRes(projectResponse.getEntity());
 			System.out.println( p.getName() );
-			p.getIterations().clear();
 			p.setName( "replaced "+ p.getName());
 			Response r = projectsResource.getProjectResource("myproject").put(p);
 			System.out.println("Completed with status: " + r.getStatus());
 			
 			for (int i = 1; i < 21; i++) {
-				p = new Project("myxproject-"+i, "Project #"+i, "Sample Description #"+i);
+				p = new ProjectRes("myxproject-"+i, "Project #"+i, "Sample Description #"+i, ProjectType.IterationProject);
 				r = projectsResource.getProjectResource(p.getId()).put(p);
 				Status s = Status.fromStatusCode(r.getStatus());
 				if(Status.CREATED == s ) {
