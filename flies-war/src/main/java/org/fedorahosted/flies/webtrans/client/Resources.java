@@ -78,6 +78,19 @@ public interface Resources extends ClientBundle {
 	@Source("org/fedorahosted/flies/webtrans/images/last_page.png")
 	ImageResource lastPageImage();
 	
+	@Source("org/fedorahosted/flies/webtrans/images/first_page_disabled.png")
+	ImageResource firstPageDisabledImage();
+	
+	@Source("org/fedorahosted/flies/webtrans/images/prev_page_disabled.png")
+	ImageResource prevPageDisabledImage();
+	
+	@Source("org/fedorahosted/flies/webtrans/images/next_page_disabled.png")
+	ImageResource nextPageDisabledImage();
+	
+	@Source("org/fedorahosted/flies/webtrans/images/last_page_disabled.png")
+	ImageResource lastPageDisabledImage();
+	
+	// unused after intro of grey-out icons to reflect disabled state
 	@Source("org/fedorahosted/flies/webtrans/images/no_page.png")
 	ImageResource noPageImage();
 	
@@ -92,5 +105,6 @@ public interface Resources extends ClientBundle {
 	
 	@Source("org/fedorahosted/flies/webtrans/images/new_unit.png")
 	ImageResource newUnit();
+	
 	
 }
