@@ -5,11 +5,10 @@ import java.util.Arrays;
 
 import javax.ws.rs.core.Response;
 
-import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.client.core.BaseClientResponse;
 
 public class ClientUtility {
-	public static void checkResult(ClientResponse response, URL url) {
+	public static void checkResult(Response response, URL url) {
 		if (response.getStatus() >= 399) {
 			String annots = "";
 			String entity = "";

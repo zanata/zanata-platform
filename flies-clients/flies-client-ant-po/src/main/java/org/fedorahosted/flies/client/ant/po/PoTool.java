@@ -34,19 +34,28 @@ public class PoTool implements GlobalOptions {
 			Utility.printJarVersion(System.out);
 			System.exit(0);
 		}
-		if (help || arguments.isEmpty()) {
+		if (arguments.isEmpty()) {
 			help(System.out);
 			System.exit(0);
 		}
-		String command = arguments.get(0);
-		String[] otherArgs = arguments.subList(1, arguments.size()).toArray(new String[0]);
-			try {
+		String command = arguments.remove(0);
+		if (command.equals("help")) {
+			help = true;
+		}
+		String[] otherArgs = arguments.toArray(new String[0]);
+		try {
 			if (command.equals("upload")) {
 				Subcommand upload = new UploadPoTask();
 				upload.processArgs(otherArgs, this);
 			} else if (command.equals("download")) {
 				Subcommand download = new DownloadPoTask();
 				download.processArgs(otherArgs, this);
+			} else if (command.equals("createproj")) {
+				Subcommand cmd = new CreateProjectTask();
+				cmd.processArgs(otherArgs, this);
+			} else if (command.equals("createiter")) {
+				Subcommand cmd = new CreateIterationTask();
+				cmd.processArgs(otherArgs, this);
 			} else {
 				help(System.out);
 			}
@@ -57,7 +66,7 @@ public class PoTool implements GlobalOptions {
 
 	private static void help(PrintStream out) throws IOException {
 		out.println("[USAGE]"); 
-		out.println("  flies-publican [-e/--errors] upload/download [--help] [options] [args]");
+		out.println("  flies-publican [-e/--errors] upload/download/createproj/createiter [--help] [options] [args]");
 		out.println();
 	}
 	
