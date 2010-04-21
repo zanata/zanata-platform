@@ -209,8 +209,14 @@
                         <includesfile name="hotdeploy.list"/>
                       </fileset>
                     </sync>
+                    <echo>Touching ${temp-deploy-path}/WEB-INF/web.xml</echo>
+                    <touch file="${temp-deploy-path}/WEB-INF/web.xml" />
                     <echo>Moving to ${deploy-path}</echo>
                     <move file="${temp-deploy-path}" tofile="${deploy-path}" verbose="true"/>
+<!-- 
+                    <echo>Touching ${deploy-path}/WEB-INF/web.xml</echo>
+                    <touch file="${deploy-path}/WEB-INF/web.xml" />
+ -->
                   </tasks>
                 </configuration>
                 <goals>
