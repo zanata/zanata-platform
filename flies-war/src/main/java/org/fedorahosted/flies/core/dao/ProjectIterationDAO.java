@@ -68,7 +68,7 @@ public class ProjectIterationDAO {
 	 */
 	public EntityTag getETag(String projectSlug, String iterationSlug) {
 		Integer iterationVersion = (Integer) session.createQuery(
-		"select i.versionNum from HProjectIteation i where i.slug =:islug and i.project.slug =:pslug")
+		"select i.versionNum from HProjectIteration i where i.slug =:islug and i.project.slug =:pslug")
 		.setParameter("islug", iterationSlug)
 		.setParameter("pslug", projectSlug)
 		.uniqueResult();
