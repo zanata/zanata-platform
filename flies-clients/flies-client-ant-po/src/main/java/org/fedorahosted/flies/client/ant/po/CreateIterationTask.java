@@ -117,8 +117,7 @@ public class CreateIterationTask extends Task implements Subcommand {
 			ProjectIteration iteration = new ProjectIteration();
 			iteration.setId(iter);
 			iteration.setName(name);
-			iteration.setSummary(desc);
-			iteration.getDocuments(true);
+			iteration.setDescription(desc);
 			
 			if (debug) {
 				m.marshal(iteration, System.out);

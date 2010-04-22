@@ -10,6 +10,7 @@ import org.fedorahosted.flies.rest.ProjectIterationResource;
 import org.fedorahosted.flies.rest.ProjectsResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
+import org.fedorahosted.flies.rest.dto.ProjectIterationRes;
 import org.jboss.resteasy.client.ClientResponse;
 
 public class Pseudo {
@@ -40,10 +41,7 @@ public class Pseudo {
 		URI uri = new URI(baseUri);
 		ProjectsResource projectsResource = new ProjectsResource(factory, factory.getProjectsResource(uri), uri);
 		ProjectIterationResource iterationResource = projectsResource.getProjectResource(projectSlug).getIterationResource(iterationSlug);
-		ClientResponse<ProjectIteration> clientResponse = iterationResource.get();
-		List<Document> documents = clientResponse.getEntity().getDocuments();
-		
-		System.out.println(documents);
+		ClientResponse<ProjectIterationRes> clientResponse = iterationResource.get();
 		
 //		DocumentsResource documentsResource = iterationResource.getDocumentsResource();
 //		documentsResource.get

@@ -24,9 +24,11 @@ import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.HProject;
 import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.rest.MediaTypes;
+import org.fedorahosted.flies.rest.dto.AbstractProject;
 import org.fedorahosted.flies.rest.dto.Link;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
+import org.fedorahosted.flies.rest.dto.ProjectIterationInline;
 import org.fedorahosted.flies.rest.dto.ProjectRes;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -80,7 +82,8 @@ public class ProjectService {
 		if (hProject == null)
 			return Response.status(Status.NOT_FOUND).build();
 		
-		ResponseBuilder response = Response.ok(toMini(hProject));
+		ProjectRes project = toResource(hProject);
+		ResponseBuilder response = Response.ok(project);
 		response.tag( EntityTag.valueOf( toHash(hProject.getVersionNum()) ));
 		return response.build();
 	}
@@ -142,17 +145,24 @@ public class ProjectService {
 		}
 	}
 
-	private static ProjectRes toMini(HProject hProject) {
+	public static void transfer(HProject from, AbstractProject to){
+		to.setId(from.getSlug());
+		to.setName(from.getName());
+		to.setDescription(from.getDescription());
+	}
+	
+	private static ProjectRes toResource(HProject hProject) {
 		ProjectRes project = new ProjectRes();
-		project.setId(hProject.getSlug());
-		project.setName(hProject.getName());
-		project.setDescription(hProject.getDescription());
+		transfer(hProject, project);
 		if (hProject instanceof HIterationProject) {
 			HIterationProject itProject = (HIterationProject) hProject;
 			for (HProjectIteration pIt : itProject.getProjectIterations()) {
-				project.getLinks().add(
-						new Link( URI.create("iterations/i"+pIt.getSlug()), "iteration", MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION)
+				ProjectIterationInline iteration = new ProjectIterationInline();
+				ProjectIterationService.transfer(pIt, iteration);
+				iteration.getLinks().add(
+						new Link( URI.create("iterations/i"+pIt.getSlug()), "self", MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION)
 						);
+				project.getIterations().add(iteration);
 			}
 		}
 

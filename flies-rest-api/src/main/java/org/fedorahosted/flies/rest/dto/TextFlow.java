@@ -23,7 +23,7 @@ import org.fedorahosted.flies.rest.dto.po.PotEntryData;
 	TextFlowTargets.class,
 	SimpleComment.class
 })
-public class TextFlow extends AbstractBaseResource implements IExtensible {
+public class TextFlow implements IExtensible {
 
 	private String id;
 	private LocaleId lang;

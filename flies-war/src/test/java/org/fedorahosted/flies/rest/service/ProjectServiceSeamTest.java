@@ -74,7 +74,7 @@ public class ProjectServiceSeamTest extends FliesDBUnitSeamTest {
 		final String PROJECT_SLUG = "my-new-project";
 		final String PROJECT_NAME = "My New Project";
 		final String PROJECT_DESC = "Another test project";
-		ProjectRes project = new ProjectRes(PROJECT_SLUG, PROJECT_NAME, PROJECT_DESC, ProjectType.IterationProject);
+		Project project = new Project(PROJECT_SLUG, PROJECT_NAME, ProjectType.IterationProject, PROJECT_DESC);
 
 		projectService = clientRequestFactory.createProxy(IProjectResource.class, baseUri.resolve(PROJECT_SLUG));
 		
@@ -85,13 +85,18 @@ public class ProjectServiceSeamTest extends FliesDBUnitSeamTest {
 		String location = (String) response.getMetadata().getFirst("Location");
 		
 		assertThat( location, endsWith("/projects/p/"+PROJECT_SLUG));
+
+		projectService = clientRequestFactory.createProxy(IProjectResource.class, baseUri.resolve(PROJECT_SLUG));
 		
 		ClientResponse<ProjectRes> response1 = projectService.get();
 		assertThat(response1.getStatus(), is(Status.OK.getStatusCode()));
-		assertThat(response1.getEntity(), notNullValue());
-		assertThat(response1.getEntity().getName(), is(PROJECT_NAME)); 
-		assertThat(response1.getEntity().getId(), is(PROJECT_SLUG)); 
-		assertThat(response1.getEntity().getDescription(), is(PROJECT_DESC)); 
+
+		ProjectRes projectRes = response1.getEntity();
+		
+		assertThat(projectRes, notNullValue());
+		assertThat(projectRes.getName(), is(PROJECT_NAME)); 
+		assertThat(projectRes.getId(), is(PROJECT_SLUG)); 
+		assertThat(projectRes.getDescription(), is(PROJECT_DESC)); 
 	}
 
 	public void createProjectWithInvalidData(){
@@ -102,13 +107,13 @@ public class ProjectServiceSeamTest extends FliesDBUnitSeamTest {
 		final String PROJECT_DESC = "Another test project";
 		projectService = clientRequestFactory.createProxy(IProjectResource.class, baseUri.resolve(PROJECT_SLUG_INVALID));
 
-		ProjectRes project = new ProjectRes(PROJECT_SLUG_INVALID, PROJECT_NAME, PROJECT_DESC, ProjectType.IterationProject);
+		Project project = new Project(PROJECT_SLUG_INVALID, PROJECT_NAME, ProjectType.IterationProject, PROJECT_DESC );
 		Response response = projectService.put(project);
 		
         assertThat( response.getStatus(), is( Status.BAD_REQUEST.getStatusCode()));
 
 		projectService = clientRequestFactory.createProxy(IProjectResource.class, baseUri.resolve(PROJECT_SLUG));
-        ProjectRes project1 = new ProjectRes(PROJECT_SLUG,PROJECT_NAME_INVALID, PROJECT_DESC,ProjectType.IterationProject);
+        Project project1 = new Project(PROJECT_SLUG,PROJECT_NAME_INVALID, ProjectType.IterationProject, PROJECT_DESC);
         Response response1 = projectService.put(project1);
         
         assertThat(response1.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
@@ -116,7 +121,7 @@ public class ProjectServiceSeamTest extends FliesDBUnitSeamTest {
 	}
 
 	public void updateProjectWithInvalidData() {
-		ProjectRes project = new ProjectRes("sample-project", "ProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdate", "Project Name exceeds 80", ProjectType.IterationProject);
+		Project project = new Project("sample-project", "ProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdate", ProjectType.IterationProject, "Project Name exceeds 80");
 
 		projectService = clientRequestFactory.createProxy(IProjectResource.class, baseUri.resolve("sample-project"));
 		
@@ -127,7 +132,7 @@ public class ProjectServiceSeamTest extends FliesDBUnitSeamTest {
 	}
 
 	public void updateProject() {
-		ProjectRes project = new ProjectRes("sample-project", "My Project Update", "Update project",ProjectType.IterationProject);
+		Project project = new Project("sample-project", "My Project Update", ProjectType.IterationProject, "Update project");
 
 		projectService = clientRequestFactory.createProxy(IProjectResource.class, baseUri.resolve("sample-project"));
 		
@@ -139,10 +144,10 @@ public class ProjectServiceSeamTest extends FliesDBUnitSeamTest {
 		
 		assertThat( projectResponse.getStatus(), is( Status.OK.getStatusCode()));
 		
-		project = new ProjectRes(projectResponse.getEntity());
+		ProjectRes projectRes = projectResponse.getEntity();
 		
-		assertThat( project.getName(), is("My Project Update"));
-		assertThat( project.getDescription(), is("Update project"));
+		assertThat( projectRes.getName(), is("My Project Update"));
+		assertThat( projectRes.getDescription(), is("Update project"));
 	}
 	
 }

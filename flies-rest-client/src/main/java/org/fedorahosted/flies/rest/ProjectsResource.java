@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.fedorahosted.flies.rest.client.IProjectResource;
 import org.fedorahosted.flies.rest.client.IProjectsResource;
-import org.fedorahosted.flies.rest.dto.ProjectRef;
+import org.fedorahosted.flies.rest.dto.ProjectInline;
 import org.jboss.resteasy.client.ClientResponse;
 
 public class ProjectsResource implements IProjectsResource{
@@ -27,7 +27,7 @@ public class ProjectsResource implements IProjectsResource{
 	}
 
 	@Override
-	public ClientResponse<List<ProjectRef>> get() {
+	public ClientResponse<List<ProjectInline>> get() {
 		return projectsResource.get();
 	}
 	

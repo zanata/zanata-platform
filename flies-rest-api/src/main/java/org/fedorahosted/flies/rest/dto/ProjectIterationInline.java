@@ -1,21 +1,30 @@
 package org.fedorahosted.flies.rest.dto;
 
-
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.common.Namespaces;
 
-@XmlType(name="abstractBaseResource", namespace=Namespaces.FLIES, propOrder={"links"})
-public abstract class AbstractBaseResource {
-	
+
+@XmlType(name="projectIterationInlineType", namespace=Namespaces.FLIES, propOrder={"links"})
+@XmlRootElement(name="project-iteration", namespace=Namespaces.FLIES)
+public class ProjectIterationInline extends AbstractMiniProjectIteration {
+
 	private Links links;
 
+	public ProjectIterationInline() {
+	}
+	
+	public ProjectIterationInline(String id, String name) {
+		super(id, name);
+	}
+	
+	public ProjectIterationInline(String id, String name, Links links) {
+		super(id, name);
+		this.links = links;
+	}
+	
 	/**
 	 * Set of links managed by this resource
 	 * 
@@ -30,9 +39,5 @@ public abstract class AbstractBaseResource {
 		return links;
 	}
 	
-	@Override
-	public String toString() {
-		return Utility.toXML(this);
-	}
 	
 }

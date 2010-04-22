@@ -8,32 +8,31 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.fedorahosted.flies.common.Namespaces;
 
-@XmlType(name="projectRefType", namespace=Namespaces.FLIES, propOrder={"links"})
-@XmlRootElement(name="project-ref", namespace=Namespaces.FLIES)
-public class ProjectRef extends Project {
+/**
+ * Representation of the Project resource when it is embedded within
+ * another resource
+ * 
+ * @author asgeirf
+ *
+ */
+@XmlType(name="projectInlineType", namespace=Namespaces.FLIES, propOrder={"links"})
+@XmlRootElement(name="project", namespace=Namespaces.FLIES)
+public class ProjectInline extends AbstractMiniProject {
 
 	private Links links;
 	
-	public ProjectRef() {
+	public ProjectInline() {
 	}
 	
-	public ProjectRef(String id, String name, String description, ProjectType type) {
-		super(id, name, description, type);
+	public ProjectInline(String id, String name, ProjectType type) {
+		super(id, name, type);
 	}
 	
-	public ProjectRef(String id, String name, String description, ProjectType type, Links links) {
-		super(id, name, description, type);
-		this.links = links;
-	}
-	
-	public ProjectRef(Project project) {
-		super(project);
-	}
-	
-	public ProjectRef(Project project, Links links) {
-		super(project);
+	public ProjectInline(String id, String name, ProjectType type, Links links) {
+		super(id, name, type);
 		this.links = links;
 	}
 	
