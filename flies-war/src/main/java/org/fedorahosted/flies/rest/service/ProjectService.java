@@ -128,6 +128,7 @@ public class ProjectService {
 		}
 		
 		try {
+			ResponseBuilder response;
 			if (!session.contains(hProject)) {
 				session.save(hProject);
 				session.flush();
@@ -137,11 +138,14 @@ public class ProjectService {
 					hProject.getMaintainers().add(hAccount.getPerson());
 				}
 				session.flush();
-				return Response.created( uri.getAbsolutePath() ).build();
+				response =  Response.created( uri.getAbsolutePath() );
 			} else {
 				session.flush();
-				return Response.ok().build();
+				response = Response.ok();
 			}
+			etag = projectDAO.getETag(projectSlug);
+			return response.tag(etag).build();
+			
 		} catch (InvalidStateException e) {
 			return Response.status(Status.BAD_REQUEST).build();
 		} catch (HibernateException e) {
