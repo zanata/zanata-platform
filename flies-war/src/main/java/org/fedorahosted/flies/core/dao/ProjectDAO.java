@@ -26,6 +26,12 @@ public class ProjectDAO {
 		    .uniqueResult();
 	}
 	
+	/**
+	 * Retrieves the ETag for the Project
+	 * 
+	 * @param slug Project slug
+	 * @return calculated EntityTag or null if project does not exist
+	 */
 	public EntityTag getETag(String slug) {
 		Integer projectVersion = (Integer) session.createQuery(
 		"select p.versionNum from HProject p where slug =:slug")
