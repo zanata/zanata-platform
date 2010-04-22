@@ -8,4 +8,5 @@
             <loader-repository-config>java2ParentDelegation=false</loader-repository-config>
         </loader-repository>
     </class-loading>
+    <depends>jboss.jca:service=DataSourceBinding,name=fliesDatasource</depends>
 </jboss-web>
