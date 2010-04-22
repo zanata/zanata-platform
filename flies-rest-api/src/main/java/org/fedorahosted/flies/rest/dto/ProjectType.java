@@ -4,5 +4,6 @@ import javax.xml.bind.annotation.XmlEnum;
 
 @XmlEnum(String.class)
 public enum ProjectType {
-	IterationProject;
+	IterationProject,
+	ProjectCollection;
 }

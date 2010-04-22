@@ -2,30 +2,32 @@ package org.fedorahosted.flies.rest.dto;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.common.Namespaces;
 
-@XmlType(name="projectRefType", namespace=Namespaces.FLIES, propOrder={"name", "description"})
-@XmlRootElement(name="project-ref", namespace=Namespaces.FLIES)
-public class ProjectRef extends AbstractBaseResource{
+@XmlType(name="abstractMiniProjectType", namespace=Namespaces.FLIES, propOrder={"name"})
+public abstract class AbstractMiniProject {
 
 	private String id;
 	private String name;
 	private ProjectType type = ProjectType.IterationProject;
-	private String description;
-	
-	public ProjectRef() {
+
+	public AbstractMiniProject() {
 	}
 	
-	public ProjectRef(String id, String name, String description, ProjectType type) {
+	public AbstractMiniProject(AbstractMiniProject other) {
+		this.id = other.id;
+		this.name = other.name;
+		this.type = other.type;
+	}
+	
+	public AbstractMiniProject(String id, String name, ProjectType type) {
 		this.id = id;
 		this.name = name;
-		this.description = description;
 		this.type = type;
 	}
-	
+
 	@XmlAttribute(name="id", required=true)
 	public String getId() {
 		return id;
@@ -50,14 +52,6 @@ public class ProjectRef extends AbstractBaseResource{
 	public void setName(String name) {
 		this.name = name;
 	}
+	
 
-	@XmlElement(name="description", namespace=Namespaces.FLIES, required=false)
-	public String getDescription() {
-		return description;
-	}
-	
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	
 }

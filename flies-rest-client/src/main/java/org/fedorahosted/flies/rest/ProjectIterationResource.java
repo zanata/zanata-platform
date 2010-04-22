@@ -6,8 +6,8 @@ import javax.ws.rs.core.Response;
 
 import org.fedorahosted.flies.rest.client.IDocumentsResource;
 import org.fedorahosted.flies.rest.client.IProjectIterationResource;
-import org.fedorahosted.flies.rest.client.IProjectResource;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
+import org.fedorahosted.flies.rest.dto.ProjectIterationRes;
 import org.jboss.resteasy.client.ClientResponse;
 
 public class ProjectIterationResource implements IProjectIterationResource{
@@ -23,7 +23,7 @@ public class ProjectIterationResource implements IProjectIterationResource{
 	}
 	
 	@Override
-	public ClientResponse<ProjectIteration> get() {
+	public ClientResponse<ProjectIterationRes> get() {
 		return projectIterationResource.get();
 	}
 

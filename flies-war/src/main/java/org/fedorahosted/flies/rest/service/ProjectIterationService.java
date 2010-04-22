@@ -15,12 +15,14 @@ import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.dao.ProjectIterationDAO;
 import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.HProject;
+import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.core.model.HProjectSeries;
-import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.rest.MediaTypes;
-import org.fedorahosted.flies.rest.dto.Document;
+import org.fedorahosted.flies.rest.dto.AbstractMiniProjectIteration;
+import org.fedorahosted.flies.rest.dto.AbstractProjectIteration;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
+import org.fedorahosted.flies.rest.dto.ProjectIterationRes;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.jboss.resteasy.spi.NotFoundException;
@@ -51,7 +53,7 @@ public class ProjectIterationService {
 	@Produces( { MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML,
 			MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON,
 			MediaType.APPLICATION_JSON })
-	public ProjectIteration get() {
+	public ProjectIterationRes get() {
 
 		org.fedorahosted.flies.core.model.HProjectIteration hProjectIteration = projectIterationDAO
 				.getBySlug(projectSlug, iterationSlug);
@@ -59,23 +61,22 @@ public class ProjectIterationService {
 		if (hProjectIteration == null)
 			throw new NotFoundException("No such Project Iteration");
 
-		return toMini(hProjectIteration);
+		return toResource(hProjectIteration);
 	}
 
-	private static ProjectIteration toMini(
-			org.fedorahosted.flies.core.model.HProjectIteration hibIt) {
-		ProjectIteration it = new ProjectIteration();
-		it.setId(hibIt.getSlug());
-		it.setName(hibIt.getName());
-		it.setSummary(hibIt.getDescription());
-
-		for (HDocument doc : hibIt.getContainer().getDocuments().values()) {
-			it.getDocuments(true).add(
-					new Document(doc.getDocId(), doc.getName(), doc.getPath(),
-							doc.getContentType(), doc.getRevision(), doc
-									.getLocale()));
-		}
-
+	public static void transfer(HProjectIteration from, AbstractMiniProjectIteration to) {
+		to.setId(from.getSlug());
+		to.setName(from.getName());
+	}
+	
+	public static void transfer(HProjectIteration from, AbstractProjectIteration to) {
+		transfer(from, (AbstractMiniProjectIteration)to);
+		to.setDescription(from.getDescription());
+	}
+	
+	public static ProjectIterationRes toResource(HProjectIteration hibIt) {
+		ProjectIterationRes it = new ProjectIterationRes();
+		transfer(hibIt, it);
 		return it;
 
 	}
@@ -87,7 +88,7 @@ public class ProjectIterationService {
 	@Restrict("#{identity.loggedIn}")
 	public Response put(ProjectIteration projectIteration) {
 
-		org.fedorahosted.flies.core.model.HProjectIteration hProjectIteration = projectIterationDAO
+		HProjectIteration hProjectIteration = projectIterationDAO
 				.getBySlug(projectSlug, projectIteration.getId());
 
 		HProject hProject = projectDAO.getBySlug(projectSlug);
@@ -96,11 +97,11 @@ public class ProjectIterationService {
 			return Response.status(409).build();
 		}
 
-		hProjectIteration = new org.fedorahosted.flies.core.model.HProjectIteration();
+		hProjectIteration = new HProjectIteration();
 		hProjectIteration.setProject((HIterationProject) hProject);
 		hProjectIteration.setName(projectIteration.getName());
 		hProjectIteration.setSlug(projectIteration.getId());
-		hProjectIteration.setDescription(projectIteration.getSummary());
+		hProjectIteration.setDescription(projectIteration.getDescription());
 
 		try {
 			HProjectContainer container = new HProjectContainer();

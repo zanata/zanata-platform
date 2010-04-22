@@ -51,7 +51,7 @@ public class DownloadPoTask extends Task implements Subcommand {
 		}
 		ArgumentProcessor<DownloadPoTask> argProcessor = ArgumentProcessor.newInstance(DownloadPoTask.class);
 		argProcessor.process(args, this);
-		if (help) {
+		if (help || globals.getHelp()) {
 			help(System.out);
 			System.exit(0);
 		}
@@ -157,6 +157,8 @@ public class DownloadPoTask extends Task implements Subcommand {
 	public void setExportPot(boolean exportPot) {
 		this.exportPot = exportPot;
 	}
+	
+	// TODO make --src optional, and provide --flies, --proj, --iter options
 
 	@Option(name = "s", longName = "src", required = true, description = "Source URL for download, eg http://flies.example.com/seam/resource/restv1/projects/p/myProject/iterations/i/myIter/documents")
 	public void setSrc(String src) {

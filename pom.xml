@@ -36,10 +36,11 @@
     <version.drools>5.0.1</version.drools>
     <version.gwt>2.0.3</version.gwt>
     <version.jboss.embedded>beta3.SP10</version.jboss.embedded>
-    <version.resteasy>1.2.GA</version.resteasy>
+    <version.resteasy>2.0-beta-2</version.resteasy>
     <version.richfaces>3.3.1.GA</version.richfaces>
-    <version.seam>2.2.0.GA</version.seam>
+    <version.seam>2.2.1.CR1</version.seam>
     <version.tennera>0.6</version.tennera>
+    <version.googlecollect>1.0</version.googlecollect>
   </properties>
   
   <build>
@@ -227,6 +228,20 @@
 	      <version>1.0-20100114.200325-3</version>
 	      <scope>compile</scope>
 	  </dependency>
+      
+      <dependency>
+        <groupId>com.google.collections</groupId>
+        <artifactId>google-collections</artifactId>
+        <version>${version.googlecollect}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.codehaus.jackson</groupId>
+        <artifactId>jackson-core-asl</artifactId>
+        <version>1.3.0</version>
+      </dependency>
+      
+	  
     </dependencies>
     
     

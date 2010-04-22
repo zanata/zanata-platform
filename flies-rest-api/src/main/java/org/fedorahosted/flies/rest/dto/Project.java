@@ -12,76 +12,30 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.common.Namespaces;
 
-
-@XmlType(name="projectType", namespace=Namespaces.FLIES, propOrder={"name", "description", "iterations"})
+/**
+ * Representation of the data within a Project resource
+ * 
+ * @author asgeirf
+ *
+ */
+@XmlType(name="projectType", namespace=Namespaces.FLIES, propOrder={})
 @XmlRootElement(name="project", namespace=Namespaces.FLIES)
-public class Project extends AbstractBaseResource{
+public class Project extends AbstractProject {
 
-	private String id;
-	private String name;
-	private ProjectType type = ProjectType.IterationProject;
-	private String description;
-	
-	private List<ProjectIteration> iterations;
-	
 	public Project() {
 	}
 	
-	public Project(String id, String name) {
-		this.id = id;
-		this.name = name;
-	}
-	
-	public Project(String id, String name, String description) {
-		this(id,name);
-		this.description = description;
-	}
-	
-	public Project(String id, String name, String description, ProjectType type) {
-		this(id,name, description);
-		this.type = type;
-	}
-	
-	@XmlAttribute(name="id", required=true)
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
+	public Project(Project other) {
+		super(other);
 	}
 
-	@XmlAttribute(name="type", required=true)
-	public ProjectType getType() {
-		return type;
+	public Project(ProjectRes other) {
+		super(other);
 	}
 	
-	public void setType(ProjectType type) {
-		this.type = type;
-	}
 	
-	@XmlElement(name="name", namespace=Namespaces.FLIES, required=true)
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	@XmlElement(name="description", namespace=Namespaces.FLIES, required=false)
-	public String getDescription() {
-		return description;
-	}
-	
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	@XmlElementWrapper(name="project-iterations", namespace=Namespaces.FLIES, required=false)
-	@XmlElement(name="project-iteration", namespace=Namespaces.FLIES)
-	public List<ProjectIteration> getIterations() {
-		if(iterations == null)
-			iterations = new ArrayList<ProjectIteration>();
-		return iterations;
+	public Project(String id, String name, ProjectType type, String description) {
+		super(id, name, type, description);
 	}
 
 }

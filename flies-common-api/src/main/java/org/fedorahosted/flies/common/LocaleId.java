@@ -2,6 +2,9 @@ package org.fedorahosted.flies.common;
 
 import java.io.Serializable;
 
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonValue;
+
 public final class LocaleId implements Serializable{
 
 	private static final long serialVersionUID = -7977805381672178179L;
@@ -18,6 +21,7 @@ public final class LocaleId implements Serializable{
 		id = null;
 	}
 	
+	@JsonCreator
 	public LocaleId(String localeId) {
 		if(localeId == null)
 			throw new IllegalArgumentException("localeId");
@@ -39,10 +43,11 @@ public final class LocaleId implements Serializable{
 	}
 
 	@Override
+	@JsonValue
 	public String toString() {
 		return id;
 	}
-	
+
     public static LocaleId fromJavaName(String localeName) {
         return new LocaleId(localeName.replace('_', '-'));
     }
@@ -50,6 +55,5 @@ public final class LocaleId implements Serializable{
     public String toJavaName() {
         return id.replace('-', '_');
     }
-	
 	
 }

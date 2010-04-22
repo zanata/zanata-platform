@@ -1,35 +1,21 @@
 package org.fedorahosted.flies.rest.dto;
 
-
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.common.Namespaces;
 
-@XmlType(name="abstractBaseResource", namespace=Namespaces.FLIES, propOrder={"links"})
-public abstract class AbstractBaseResource {
-	
-	private List<Link> links;
 
-	/**
-	 * Set of links managed by this resource
-	 * 
-	 * This field is ignored in PUT/POST operations 
-	 * 
-	 * @return set of Links managed by this resource
-	 */
-	@XmlElement(name="link", namespace=Namespaces.FLIES, required=false)
-	public List<Link> getLinks() {
-		if(links == null)
-			links = new ArrayList<Link>();
-		return links;
-	}
-	
+@XmlType(name="projectResType", namespace=Namespaces.FLIES, propOrder={"links"})
+@XmlRootElement(name="project-res", namespace=Namespaces.FLIES)
+public class Links extends ArrayList<Link> {
+
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Retrieve the first found link of with the given type or null of it doesn't exist
 	 * 
@@ -37,8 +23,7 @@ public abstract class AbstractBaseResource {
 	 * @return first found Link or null
 	 */
 	public Link findLinkByType(String type){
-		if (links == null) return null;
-		for(Link link : links) {
+		for(Link link : this) {
 			if(type.equals(link.getType()))
 				return link; 
 		}
@@ -52,8 +37,7 @@ public abstract class AbstractBaseResource {
 	 * @return first found Link or null
 	 */
 	public Link findLinkByRel(String rel){
-		if (links == null) return null;
-		for(Link link : links) {
+		for(Link link : this) {
 			if(rel.equals(link.getRel()))
 				return link; 
 		}
@@ -67,8 +51,7 @@ public abstract class AbstractBaseResource {
 	 * @return first found Link or null
 	 */
 	public Link findLinkByRef(URI href){
-		if (links == null) return null;
-		for(Link link : links) {
+		for(Link link : this) {
 			if(href.equals(link.getHref()))
 				return link; 
 		}
@@ -82,9 +65,8 @@ public abstract class AbstractBaseResource {
 	 * @return List of found Links
 	 */
 	public List<Link> findLinksByType(String type){
-		if (links == null) return Collections.emptyList();
 		List<Link> foundLinks = new ArrayList<Link>();
-		for(Link link : links) {
+		for(Link link : this) {
 			if(type.equals(link.getType()))
 				foundLinks.add(link); 
 		}
@@ -98,9 +80,8 @@ public abstract class AbstractBaseResource {
 	 * @return List of found Links
 	 */
 	public List<Link> findLinksByRel(String rel){
-		if (links == null) return Collections.emptyList();
 		List<Link> foundLinks = new ArrayList<Link>();
-		for(Link link : links) {
+		for(Link link : this) {
 			if(rel.equals(link.getRel()))
 				foundLinks.add(link); 
 		}
@@ -114,18 +95,12 @@ public abstract class AbstractBaseResource {
 	 * @return List of found Links
 	 */
 	public List<Link> findLinksByRef(URI href){
-		if (links == null) return Collections.emptyList();
 		List<Link> foundLinks = new ArrayList<Link>();
-		for(Link link : links) {
+		for(Link link : this) {
 			if(href.equals(link.getHref()))
 				foundLinks.add(link); 
 		}
 		return foundLinks;
-	}
-	
-	@Override
-	public String toString() {
-		return Utility.toXML(this);
 	}
 	
 }

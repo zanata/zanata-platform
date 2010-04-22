@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.UriBuilder;
 
 import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.client.ClientExecutor;
@@ -30,6 +31,16 @@ public class SeamMockClientExecutor implements ClientExecutor {
 
 	public SeamMockClientExecutor(AbstractSeamTest seamTest) {
 		this.seamTest = seamTest;
+	}
+	
+	@Override
+	public ClientRequest createRequest(String uriTemplate) {
+		return new ClientRequest(uriTemplate, this);
+	}
+	
+	@Override
+	public ClientRequest createRequest(UriBuilder uriBuilder) {
+		return new ClientRequest(uriBuilder, this);
 	}
 
 	@Override

@@ -28,25 +28,25 @@ public interface WebTransMessages extends Messages {
 	@DefaultMessage("{0} to {1} - Flies Web Translation")
 	String windowTitle(String workspaceName, String localeName);
 	
-	@DefaultMessage("first Page")
+	@DefaultMessage("First Page")
 	String firstPage();
 
 	@DefaultMessage("Home")
 	String firstPageShortcut();
 
-	@DefaultMessage("previous Page")	
+	@DefaultMessage("Previous Page")	
 	String prevPage();
 	
 	@DefaultMessage("PageUp")
 	String prevPageShortcut();
 	
-	@DefaultMessage("next Page")
+	@DefaultMessage("Next Page")
 	String nextPage();
 	
 	@DefaultMessage("PageDown")			
 	String nextPageShortcut();
 	
-	@DefaultMessage("last Page")
+	@DefaultMessage("Last Page")
 	String lastPage();
 	
 	@DefaultMessage("End")
@@ -79,5 +79,7 @@ public interface WebTransMessages extends Messages {
 
 	@DefaultMessage("Source or Target content")
 	String findSourceOrTargetString();
-	
+
+	@DefaultMessage("{0} (Shortcut: {1})")
+	String tooltipsWithShortcut(String text, String shortcut);
 }

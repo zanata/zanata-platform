@@ -20,12 +20,12 @@ import org.fedorahosted.flies.rest.dto.po.PoHeader;
 import org.fedorahosted.flies.rest.dto.po.PoTargetHeaders;
 
 @XmlRootElement(name="document", namespace=Namespaces.FLIES)
-@XmlType(name="documentType", namespace=Namespaces.FLIES, propOrder={"resources", "extensions"})
+@XmlType(name="documentType", namespace=Namespaces.FLIES, propOrder={"resources", "extensions", "links"})
 @XmlSeeAlso({
 	PoHeader.class,
 	PoTargetHeaders.class
 })
-public class Document extends AbstractBaseResource implements IExtensible{
+public class Document implements IExtensible{
 
 	/**
 	 * An opaque id, which is the canonical id of the Document
@@ -36,6 +36,9 @@ public class Document extends AbstractBaseResource implements IExtensible{
 	 * Just the filename without the path
 	 */
 	private String name;
+
+	private Links links;
+	
 	/**
 	 * Pathname (slash-separated) for the parent folder, which may be empty
 	 * for files which are in the root
@@ -118,6 +121,13 @@ public class Document extends AbstractBaseResource implements IExtensible{
 		this.path = path;
 	}
 
+	@XmlElement(name="link", namespace=Namespaces.FLIES, required=false)
+	public Links getLinks() {
+		if(links == null)
+			links = new Links();
+		return links;
+	}	
+	
 	/**
 	 * Holds the current version in GET requests
 	 * 
@@ -227,4 +237,10 @@ public class Document extends AbstractBaseResource implements IExtensible{
 		}
 		return ext;
 	}
+	
+	@Override
+	public String toString() {
+		return Utility.toXML(this);
+	}
+	
 }

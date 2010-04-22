@@ -100,11 +100,11 @@ public class DocumentServiceSeamTest extends FliesDBUnitSeamTest {
 		assertThat( doc.getRevision(), is(1) );
 		assertThat( doc.getResources(), nullValue() );
 
-		Link link = doc.findLinkByRel(Relationships.SELF);
+		Link link = doc.getLinks().findLinkByRel(Relationships.SELF);
 		assertThat( link, notNullValue() );
 		assertThat( URIUtil.decode(link.getHref().toString()), endsWith(url+docUri) );
 		
-		link = doc.findLinkByRel(Relationships.DOCUMENT_CONTAINER);
+		link = doc.getLinks().findLinkByRel(Relationships.DOCUMENT_CONTAINER);
 		assertThat( link, notNullValue() );
 		assertThat( link.getHref().toString(), endsWith("iterations/i/1.0") );
 	}
@@ -163,11 +163,11 @@ public class DocumentServiceSeamTest extends FliesDBUnitSeamTest {
 		
 		doc = documentResponse.getEntity(); 
 		assertThat( doc.getRevision(), is(1) );
-		Link link = doc.findLinkByRel(Relationships.SELF); 
+		Link link = doc.getLinks().findLinkByRel(Relationships.SELF); 
 		assertThat( link, notNullValue() );
 		assertThat( link.getHref().toString(), endsWith(url+docUrl) );
 		
-		link = doc.findLinkByRel(Relationships.DOCUMENT_CONTAINER); 
+		link = doc.getLinks().findLinkByRel(Relationships.DOCUMENT_CONTAINER); 
 		assertThat( link, notNullValue() );
 		assertThat( link.getType(), is( MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML) );
 	}
