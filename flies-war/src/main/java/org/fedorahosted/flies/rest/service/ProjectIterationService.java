@@ -1,6 +1,8 @@
 package org.fedorahosted.flies.rest.service;
 
 import java.net.URI;
+import java.util.Arrays;
+import java.util.Collections;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -10,6 +12,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.dao.ProjectIterationDAO;
@@ -25,15 +28,20 @@ import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.fedorahosted.flies.rest.dto.ProjectIterationRes;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.validator.InvalidStateException;
 import org.jboss.resteasy.spi.NotFoundException;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Name("projectIterationService")
 @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}")
 public class ProjectIterationService {
 
+	private static Logger log = LoggerFactory.getLogger(ProjectIterationService.class);
+	
 	@PathParam("projectSlug")
 	private String projectSlug;
 
@@ -112,8 +120,16 @@ public class ProjectIterationService {
 			session.save(hProjectIteration);
 			return Response.created(
 					URI.create("/i/" + hProjectIteration.getSlug())).build();
+		} catch (InvalidStateException e) {
+			String message = "Iteration with id '" + projectIteration.getId()
+				+ "' is invalid: "
+				+ Arrays.asList(e.getInvalidValues());
+			log.warn(message + '\n' + projectIteration, e);
+			return Response.status(Status.BAD_REQUEST).entity(message)
+					.build();
 		} catch (HibernateException e) {
-			return Response.notAcceptable(null).build();
+			log.error("Hibernate exception", e);
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Server error").build();
 		}
 
 	}

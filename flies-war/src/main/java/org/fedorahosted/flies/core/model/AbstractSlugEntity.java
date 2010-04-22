@@ -12,7 +12,7 @@ public class AbstractSlugEntity extends AbstractFliesEntity{
 	private String slug;
 
 	@NaturalId
-	@Length(min = 2, max = 40)
+	@Length(min = 1, max = 40)
 	@Slug
 	@NotNull
 	public String getSlug() {

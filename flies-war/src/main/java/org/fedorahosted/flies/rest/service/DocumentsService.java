@@ -187,7 +187,7 @@ public class DocumentsService {
 				String message = "Document with id '" + doc.getId()
 						+ "' is invalid: "
 						+ Arrays.asList(e.getInvalidValues());
-				log.error(message + '\n' + doc, e);
+				log.warn(message + '\n' + doc, e);
 				return Response.status(Status.BAD_REQUEST).entity(message)
 						.build();
 			}

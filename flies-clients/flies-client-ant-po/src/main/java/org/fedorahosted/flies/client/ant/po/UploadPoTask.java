@@ -156,7 +156,7 @@ public class UploadPoTask extends Task implements Subcommand {
 				String basename = StringUtil.removeFileExtension(potFile.getName(), ".pot");
 				Document doc = new Document(basename, ContentType.TextPlain);
 				InputSource potInputSource = new InputSource(potFile.toURI().toString());
-				System.out.println(potFile.toURI().toString());
+//				System.out.println(potFile.toURI().toString());
 				potInputSource.setEncoding("utf8");
 				poReader.extractTemplate(doc, potInputSource, new LocaleId(sourceLang));
 				docList.add(doc);
@@ -172,7 +172,7 @@ public class UploadPoTask extends Task implements Subcommand {
 						if (poFile.exists()) {
 		//					progress.update(i++, files.length);
 							InputSource inputSource = new InputSource(poFile.toURI().toString());
-							System.out.println(poFile.toURI().toString());
+//							System.out.println(poFile.toURI().toString());
 							inputSource.setEncoding("utf8");
 							poReader.extractTarget(doc, inputSource, new LocaleId(localeDir.getName()));
 						}
