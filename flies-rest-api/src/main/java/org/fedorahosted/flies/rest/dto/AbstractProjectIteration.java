@@ -10,7 +10,7 @@ import org.fedorahosted.flies.common.Namespaces;
 
 
 @XmlType(name="abstractProjectIterationType", namespace=Namespaces.FLIES, propOrder={"description"})
-public class AbstractProjectIteration extends AbstractMiniProjectIteration {
+public abstract class AbstractProjectIteration extends AbstractMiniProjectIteration {
 
 	private String description;
 	private Integer revision = 1;
