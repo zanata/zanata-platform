@@ -1,9 +1,5 @@
 package org.fedorahosted.flies.rest.service;
 
-import java.net.URI;
-import java.util.Arrays;
-import java.util.Collections;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -36,7 +32,6 @@ import org.fedorahosted.flies.rest.dto.ProjectIterationRes;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.validator.InvalidStateException;
-import org.jboss.resteasy.spi.NotFoundException;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;

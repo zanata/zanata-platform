@@ -1,7 +1,6 @@
 package org.fedorahosted.flies.rest.service;
 
 import java.net.URI;
-import java.security.MessageDigest;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -20,7 +19,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang.StringUtils;
-import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.core.dao.AccountDAO;
 import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.model.HAccount;
@@ -31,13 +29,11 @@ import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.AbstractProject;
 import org.fedorahosted.flies.rest.dto.Link;
 import org.fedorahosted.flies.rest.dto.Project;
-import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.fedorahosted.flies.rest.dto.ProjectIterationInline;
 import org.fedorahosted.flies.rest.dto.ProjectRes;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.validator.InvalidStateException;
-import org.jboss.resteasy.util.AcceptCharsetParser;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -45,9 +41,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
-import org.jboss.seam.util.Hex;
-
-import com.google.gwt.http.client.URL;
 
 @Name("projectService")
 @Path("/projects/p/{projectSlug}")

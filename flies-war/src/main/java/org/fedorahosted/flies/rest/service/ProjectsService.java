@@ -16,7 +16,6 @@ import org.fedorahosted.flies.core.model.HProject;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Link;
 import org.fedorahosted.flies.rest.dto.ProjectInline;
-import org.fedorahosted.flies.rest.dto.ProjectRes;
 import org.fedorahosted.flies.rest.dto.ProjectType;
 import org.hibernate.Session;
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
