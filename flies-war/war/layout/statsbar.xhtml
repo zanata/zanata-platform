@@ -17,7 +17,7 @@
 	-->
 	
 	<ui:param name="vBarPos" value="#{ (total==0) ? 0 : ( (pComplete == 100 || pComplete == 0) ? -20 : -40 ) }" />
-	<ui:param name="hBarPos" value="#{pComplete == 100 ? 0 : total == 0 ? 0 : -120 + (120 *pComplete/100)}" />
+	<ui:param name="hBarPos" value="#{ (pComplete == 100) ? 0 : ( (total == 0) ? 0 : (-120 + (120 *pComplete/100)) ) }" />
 	
 	<ui:param name="colorRed" value="#{0}" />
 	<ui:param name="colorGreen" value="#{0}" />
