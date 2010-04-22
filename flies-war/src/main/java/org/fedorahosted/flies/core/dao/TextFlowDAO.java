@@ -8,9 +8,9 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 
-@Name("resourceDAO")
+@Name("textFlowDAO")
 @AutoCreate
-public class ResourceDAO {
+public class TextFlowDAO {
 
 	@In
 	Session session;

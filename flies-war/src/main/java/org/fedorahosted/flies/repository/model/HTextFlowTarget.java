@@ -40,7 +40,7 @@ public class HTextFlowTarget implements Serializable{
 	
 	private String content;
 	private ContentState state = ContentState.New;
-	private Integer resourceRevision;
+	private Integer textFlowRevision;
 	private Integer revision = 1;
 	
 	private HSimpleComment comment;
@@ -51,13 +51,13 @@ public class HTextFlowTarget implements Serializable{
 	public HTextFlowTarget(HTextFlow textFlow, LocaleId locale) {
 		this.locale = locale;
 		this.textFlow = textFlow;
-		this.resourceRevision = textFlow.getRevision();
+		this.textFlowRevision = textFlow.getRevision();
 	}
 	
 	public HTextFlowTarget(TextFlowTarget target) {
 		this.content = target.getContent();
 		this.locale = target.getLang();
-		this.resourceRevision = target.getResourceRevision();
+		this.textFlowRevision = target.getResourceRevision();
 		this.revision = target.getRevision();
 		this.state = target.getState();
 //		setTextFlow(target.getTextFlow);
@@ -102,13 +102,13 @@ public class HTextFlowTarget implements Serializable{
 	}
 
 	@NotNull
-	@Column(name="resource_revision")
-	public Integer getResourceRevision() {
-		return resourceRevision;
+	@Column(name="tf_revision")
+	public Integer getTextFlowRevision() {
+		return textFlowRevision;
 	}
 	
-	public void setResourceRevision(Integer resourceRevision) {
-		this.resourceRevision = resourceRevision;
+	public void setTextFlowRevision(Integer textFlowRevision) {
+		this.textFlowRevision = textFlowRevision;
 	}
 	
 	@NotNull
@@ -122,7 +122,7 @@ public class HTextFlowTarget implements Serializable{
 	
 	@NaturalId
 	@ManyToOne
-	@JoinColumn(name="resource_id")
+	@JoinColumn(name="tf_id")
 	public HTextFlow getTextFlow() {
 		return textFlow;
 	}

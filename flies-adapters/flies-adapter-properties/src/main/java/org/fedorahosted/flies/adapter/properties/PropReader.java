@@ -67,7 +67,7 @@ public class PropReader {
 	public void extractTarget(Document doc, InputSource inputSource,
 			LocaleId localeId, ContentState contentState) throws IOException {
 		Map<String, TextFlow> textFlowMap = new HashMap<String, TextFlow>();
-		for (TextFlow resource : doc.getResources(true)) {
+		for (TextFlow resource : doc.getTextFlows()) {
 			textFlowMap.put(resource.getId(), resource);
 		}
 
@@ -98,7 +98,7 @@ public class PropReader {
 	// TODO allowing Readers (via InputSource) might be a bad idea
 	public void extractTemplate(Document doc, InputSource inputSource)
 			throws IOException {
-		List<TextFlow> resources = doc.getResources(true);
+		List<TextFlow> resources = doc.getTextFlows();
 		Properties props = loadProps(inputSource);
 		for (String key : props.stringPropertyNames()) {
 			String val = props.getProperty(key);

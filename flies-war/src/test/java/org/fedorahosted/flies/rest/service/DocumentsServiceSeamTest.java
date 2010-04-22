@@ -109,9 +109,9 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	
 	private void clearRevs(Document doc) {
 		doc.setRevision(null);
-		final List<TextFlow> resources = doc.getResources();
-		if (resources != null)
-			for (TextFlow res : resources) {
+		final List<TextFlow> textFlows = doc.getTextFlows();
+		if (textFlows != null)
+			for (TextFlow res : textFlows) {
 				res.setRevision(null);
 				if (res instanceof TextFlow) {
 					TextFlow tf = (TextFlow) res;
@@ -123,12 +123,12 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 			}
 	}
 
-	private Document newDoc(String id, TextFlow... resources) {
+	private Document newDoc(String id, TextFlow... textFlows) {
 		ContentType contentType = ContentType.TextPlain;
 		Integer revision = null;
 		Document doc = new Document(id, id+"name", id+"path", contentType, revision, LocaleId.EN);
-		for (TextFlow textFlow : resources) {
-			doc.getResources(true).add(textFlow);
+		for (TextFlow textFlow : textFlows) {
+			doc.getTextFlows().add(textFlow);
 		}
 		return doc;
 	}
@@ -227,7 +227,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    getZero();
 	    Document doc1 = putDoc1();
 	    doc1.setRevision(1);
-	    TextFlow tf1 = (TextFlow) doc1.getResources().get(0);
+	    TextFlow tf1 = (TextFlow) doc1.getTextFlows().get(0);
 	    tf1.setRevision(1);
 	    TextFlowTarget tft1 = tf1.getTarget(DE_DE);
 	    tft1.setRevision(1);
@@ -240,7 +240,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    getZero();
 	    Document doc1 = putDoc1();
 	    doc1.setRevision(1);
-	    TextFlow tf1 = (TextFlow) doc1.getResources().get(0);
+	    TextFlow tf1 = (TextFlow) doc1.getTextFlows().get(0);
 	    tf1.setRevision(1);
 	    TextFlowTarget tft1 = tf1.getTarget(DE_DE);
 	    tft1.setRevision(1);
@@ -248,7 +248,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    expectDocs(true, false, doc1);
 	    Document doc2 = postDoc2();
 	    doc2.setRevision(1);
-	    TextFlow tf2 = (TextFlow) doc2.getResources().get(0);
+	    TextFlow tf2 = (TextFlow) doc2.getTextFlows().get(0);
 	    tf2.setRevision(1);
 	    TextFlowTarget tft2 = tf2.getTarget(FR);
 	    tft2.setRevision(1);
@@ -261,14 +261,14 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    getZero();
 	    Document doc1 = putDoc1();
 	    doc1.setRevision(1);
-	    TextFlow tf1 = (TextFlow) doc1.getResources().get(0);
+	    TextFlow tf1 = (TextFlow) doc1.getTextFlows().get(0);
 	    tf1.setRevision(1);
 	    TextFlowTarget tft1 = tf1.getTarget(DE_DE);
 	    tft1.setRevision(1);
 		tft1.setResourceRevision(1);
 	    Document doc2 = postDoc2();
 	    doc2.setRevision(1);
-	    TextFlow tf2 = (TextFlow) doc2.getResources().get(0);
+	    TextFlow tf2 = (TextFlow) doc2.getTextFlows().get(0);
 	    tf2.setRevision(1);
 	    TextFlowTarget tft2 = tf2.getTarget(FR);
 	    tft2.setRevision(1);
@@ -287,7 +287,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 		getZero();
 		Document doc1 = putDoc1();
 	    doc1.setRevision(1);
-	    TextFlow tf1 = (TextFlow) doc1.getResources().get(0);
+	    TextFlow tf1 = (TextFlow) doc1.getTextFlows().get(0);
 	    tf1.setRevision(1);
 	    TextFlowTarget tft1 = tf1.getTarget(DE_DE);
 	    tft1.setRevision(1);
@@ -308,7 +308,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 		getZero();
 		Document doc1 = putDoc1();
 	    doc1.setRevision(1);
-	    TextFlow tf1 = (TextFlow) doc1.getResources().get(0);
+	    TextFlow tf1 = (TextFlow) doc1.getTextFlows().get(0);
 	    tf1.setRevision(1);
 	    TextFlowTarget tft1 = tf1.getTarget(DE_DE);
 	    tft1.setRevision(1);
@@ -318,7 +318,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 		getZero();
 		Document doc1a = putDoc1a(); // doc1 resurrected, rev 3
 		doc1a.setRevision(3);
-	    TextFlow tf1a = (TextFlow) doc1a.getResources().get(0);
+	    TextFlow tf1a = (TextFlow) doc1a.getTextFlows().get(0);
 	    tf1a.setRevision(3);
 	    TextFlowTarget tft1a = tf1a.getTarget(FR);
 	    tft1a.setRevision(1);
@@ -341,7 +341,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    log.info("putDoc1()");
 	    Document doc1 = putDoc1();
 	    doc1.setRevision(1);
-	    TextFlow tf1 = (TextFlow) doc1.getResources().get(0);
+	    TextFlow tf1 = (TextFlow) doc1.getTextFlows().get(0);
 	    tf1.setRevision(1);
 	    TextFlowTarget tft1 = tf1.getTarget(DE_DE);
 	    tft1.setRevision(1);
@@ -352,7 +352,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    log.info("putDoc1a()");
 		Document doc1a = putDoc1a();
 		doc1a.setRevision(2);
-	    TextFlow tf1a = (TextFlow) doc1a.getResources().get(0);
+	    TextFlow tf1a = (TextFlow) doc1a.getTextFlows().get(0);
 	    tf1a.setRevision(2);
 	    TextFlowTarget tft1a = tf1a.getTarget(FR);
 	    tft1a.setRevision(1);
@@ -386,7 +386,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 				ProjectContainerDAO containerDAO = (ProjectContainerDAO) getInstance("projectContainerDAO");
 				HProjectContainer container = containerDAO.getBySlug(projectSlug, iter);
 				HDocument hDocument = container.getAllDocuments().get(docID);
-				HTextFlow hResource = hDocument.getAllResources().get(resourceID);
+				HTextFlow hResource = hDocument.getAllTextFlows().get(resourceID);
 				Assert.assertNotNull(hResource);
 				Assert.assertTrue(hResource.isObsolete());
 			}

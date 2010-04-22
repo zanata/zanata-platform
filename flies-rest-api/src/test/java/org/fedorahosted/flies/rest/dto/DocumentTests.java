@@ -23,7 +23,7 @@ public class DocumentTests {
 		doc.getLinks().add(new Link(URI.create("http://example.com")));
 		TextFlow tf = new TextFlow("id");
 		tf.setContent("hello world!");
-		doc.getResources(true).add(tf);
+		doc.getTextFlows().add(tf);
 		
 		TextFlowTarget tft = new TextFlowTarget(tf);
 		tft.setLang(LocaleId.EN_US);

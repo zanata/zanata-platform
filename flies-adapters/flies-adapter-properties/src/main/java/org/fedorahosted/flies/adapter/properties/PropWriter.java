@@ -38,7 +38,7 @@ public class PropWriter {
 		if (exportRoot) {
 			logVerbose("Creating base file " + baseFile);
 			Properties props = new Properties();
-			for (TextFlow textFlow : doc.getResources(true)) {
+			for (TextFlow textFlow : doc.getTextFlows()) {
 				props.setProperty(textFlow.getId(), textFlow.getContent());
 				if (textFlow.hasComment() && textFlow.getComment().getValue() != null)
 					props.setComment(textFlow.getId(), textFlow.getComment().getValue());
@@ -53,19 +53,17 @@ public class PropWriter {
 				- ".properties".length());
 
 		Map<LocaleId, Properties> targetProps = new HashMap<LocaleId, Properties>();
-		if (doc.hasResources()) {
-			for (TextFlow textflow : doc.getResources()) {
-				for (TextFlowTarget target : getTargets(textflow)) {
-					Properties targetProp = targetProps.get(target.getLang());
-					if (targetProp == null) {
-						targetProp = new Properties();
-						targetProps.put(target.getLang(), targetProp);
-					}
-					targetProp.setProperty(textflow.getId(), target
-							.getContent());
-					if (target.hasComment() && target.getComment().getValue() != null)
-						targetProp.setComment(textflow.getId(), target.getComment().getValue());
+		for (TextFlow textflow : doc.getTextFlows()) {
+			for (TextFlowTarget target : getTargets(textflow)) {
+				Properties targetProp = targetProps.get(target.getLang());
+				if (targetProp == null) {
+					targetProp = new Properties();
+					targetProps.put(target.getLang(), targetProp);
 				}
+				targetProp.setProperty(textflow.getId(), target
+						.getContent());
+				if (target.hasComment() && target.getComment().getValue() != null)
+					targetProp.setComment(textflow.getId(), target.getComment().getValue());
 			}
 		}
 		Set<LocaleId> targetLangs = targetProps.keySet();

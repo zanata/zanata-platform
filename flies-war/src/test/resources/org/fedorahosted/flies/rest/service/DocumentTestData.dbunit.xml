@@ -29,8 +29,8 @@
   	locale="nb-NO"
   	revision="1"
   	state="1"
-  	resource_id="1"
-  	resource_revision="1"
+  	tf_id="1"
+  	tf_revision="1"
   />
   <HTextFlowTarget 
   	id="2"
@@ -38,7 +38,7 @@
   	locale="de-DE"
   	revision="1"
   	state="1"
-  	resource_id="1"
-  	resource_revision="1"
+  	tf_id="1"
+  	tf_revision="1"
   />
 </dataset>

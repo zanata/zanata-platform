@@ -81,7 +81,7 @@ public class FliesClientTest {
 						
 						TextFlow tf = new TextFlow("tf1");
 						tf.setContent("Hello World");
-						doc.getResources(true).add(tf);
+						doc.getTextFlows().add(tf);
 						
 						r = documentResource.getDocumentResource(doc.getId()).put(doc);
 						s = Status.fromStatusCode(r.getStatus());

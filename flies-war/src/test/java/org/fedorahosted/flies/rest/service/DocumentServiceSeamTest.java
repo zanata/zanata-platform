@@ -98,7 +98,6 @@ public class DocumentServiceSeamTest extends FliesDBUnitSeamTest {
 		assertThat( doc.getContentType(), is(ContentType.TextPlain) );
 		assertThat( doc.getLang(), is(LocaleId.EN_US) );
 		assertThat( doc.getRevision(), is(1) );
-		assertThat( doc.getResources(), nullValue() );
 
 		Link link = doc.getLinks().findLinkByRel(Relationships.SELF);
 		assertThat( link, notNullValue() );
@@ -114,12 +113,12 @@ public class DocumentServiceSeamTest extends FliesDBUnitSeamTest {
 		ClientResponse<Document> response = documentResource.get( ContentQualifier.ALL );
 		assertThat( response.getResponseStatus(), is(Status.OK) ) ;
 		Document doc = response.getEntity();
-		assertThat( doc.getResources().size(), is(1) );
+		assertThat( doc.getTextFlows().size(), is(1) );
 
 		response = documentResource.get( ContentQualifier.SOURCE );
 		assertThat( response.getResponseStatus(), is(Status.OK) ) ;
 		doc = response.getEntity();
-		assertThat("Should have one resource", doc.getResources().size(), is(1) );
+		assertThat("Should have one textFlow", doc.getTextFlows().size(), is(1) );
 		// FIXME breaking test disabled
 //		assertThat("No targets should be included", ((TextFlow)doc.getResources().get(0)).getExtension(TextFlowTargets.class), nullValue() );
 
@@ -127,15 +126,15 @@ public class DocumentServiceSeamTest extends FliesDBUnitSeamTest {
 		response = documentResource.get( ContentQualifier.fromLocales(nbLocale));
 		assertThat( response.getResponseStatus(), is(Status.OK) ) ;
 		doc = response.getEntity();
-		assertThat("should have one resource", doc.getResources().size(), is(1) );
+		assertThat("should have one textFlow", doc.getTextFlows().size(), is(1) );
 		
 		LocaleId deLocale = new LocaleId("de-DE");
 		response = documentResource.get( ContentQualifier.fromLocales( nbLocale, deLocale));
 		assertThat( response.getResponseStatus(), is(Status.OK) ) ;
 		doc = response.getEntity();
-		List<TextFlow> resources = doc.getResources(); 
-		assertThat( resources.size(), is(1) );
-		TextFlow tf = (TextFlow) resources.get(0);
+		List<TextFlow> textFlows = doc.getTextFlows(); 
+		assertThat( textFlows.size(), is(1) );
+		TextFlow tf = (TextFlow) textFlows.get(0);
 		assertThat( tf, notNullValue());
 		assertThat("should have a textflow with this id", tf.getId(), is("tf1") );
 
@@ -176,15 +175,15 @@ public class DocumentServiceSeamTest extends FliesDBUnitSeamTest {
 		String docUrl = "my,fancy,document.txt";
 		IDocumentResource documentResource = getDocumentService(docUrl);
 		Document doc = new Document("/my/fancy/document.txt", ContentType.TextPlain);
-		List<TextFlow> resources = doc.getResources(true);
+		List<TextFlow> textFlows = doc.getTextFlows();
 		
 		TextFlow textFlow = new TextFlow("tf1");
 		textFlow.setContent("hello world!");
-		resources.add(textFlow);
+		textFlows.add(textFlow);
 		
 		TextFlow tf3 = new TextFlow("tf3");
 		tf3.setContent("more text");
-		resources.add(tf3);
+		textFlows.add(tf3);
 		
 		Marshaller m = null;
 		JAXBContext jc = JAXBContext.newInstance(Documents.class);
@@ -206,13 +205,13 @@ public class DocumentServiceSeamTest extends FliesDBUnitSeamTest {
 
 		assertThat( doc.getRevision(), is(1) );
 		
-		assertThat("Should have resources", doc.getResources(), notNullValue() );
-		assertThat("Should have 2 resources", doc.getResources().size(), is(2) );
-		assertThat("Should have tf1 resource", doc.getResources().get(0).getId(), is("tf1") );
-		assertThat("Container1 should have tf3 resource", doc.getResources().get(1).getId(), is(tf3.getId()));
-		assertThat("No targets should be included", ((TextFlow)doc.getResources().get(0)).getExtension(TextFlowTargets.class), nullValue() );
+		assertThat("Should have textFlows", doc.getTextFlows(), notNullValue() );
+		assertThat("Should have 2 textFlows", doc.getTextFlows().size(), is(2) );
+		assertThat("Should have tf1 textFlow", doc.getTextFlows().get(0).getId(), is("tf1") );
+		assertThat("Container1 should have tf3 textFlow", doc.getTextFlows().get(1).getId(), is(tf3.getId()));
+		assertThat("No targets should be included", ((TextFlow)doc.getTextFlows().get(0)).getExtension(TextFlowTargets.class), nullValue() );
 		
-		textFlow = (TextFlow) doc.getResources().get(0);
+		textFlow = (TextFlow) doc.getTextFlows().get(0);
 		textFlow.setId("tf2");
 		
 		response = documentResource.put(doc);
@@ -221,9 +220,9 @@ public class DocumentServiceSeamTest extends FliesDBUnitSeamTest {
 		assertThat( documentResponse.getResponseStatus(), is(Status.OK) );
 		doc = documentResponse.getEntity(); 
 		assertThat( doc.getRevision(), is(2) );
-		assertThat("Should have resources", doc.getResources(), notNullValue() );
-		assertThat("Should have two resources", doc.getResources().size(), is(2) );
-		assertThat("should have same id", doc.getResources().get(0).getId(), is("tf2") );
+		assertThat("Should have textFlows", doc.getTextFlows(), notNullValue() );
+		assertThat("Should have two textFlows", doc.getTextFlows().size(), is(2) );
+		assertThat("should have same id", doc.getTextFlows().get(0).getId(), is("tf2") );
 	}
 
 }

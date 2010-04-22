@@ -195,7 +195,7 @@ public class DocumentsService {
 		}
 		for (HDocument hDoc : obsoleteDocs) {
 			// mark document resources as obsolete
-			for (HTextFlow htf : hDoc.getResources()) {
+			for (HTextFlow htf : hDoc.getTextFlows()) {
 				HTextFlowHistory history = new HTextFlowHistory(htf);
 				htf.getHistory().put(htf.getRevision(), history);
 				htf.setObsolete(true);

@@ -48,7 +48,7 @@ public class HPotEntryData implements Serializable {
 	}
 	
 	@OneToOne
-	@JoinColumn(name = "resource_id", /*nullable=false,*/ unique=true)
+	@JoinColumn(name = "tf_id", /*nullable=false,*/ unique=true)
 	@NaturalId
 	public HTextFlow getTextFlow() {
 		return textFlow;

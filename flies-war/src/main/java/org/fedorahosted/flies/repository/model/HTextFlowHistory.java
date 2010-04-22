@@ -37,7 +37,7 @@ public class HTextFlowHistory extends AbstractFliesEntity{
 	
 	@NaturalId
 	@ManyToOne
-	@JoinColumn(name="resource_id")
+	@JoinColumn(name="tf_id")
 	public HTextFlow getTextFlow() {
 		return textFlow;
 	}

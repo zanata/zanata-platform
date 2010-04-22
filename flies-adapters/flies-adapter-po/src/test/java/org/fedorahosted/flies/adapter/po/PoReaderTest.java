@@ -54,7 +54,7 @@ public class PoReaderTest {
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		m.marshal(doc, System.out);
 		
-		List<TextFlow> resources = doc.getResources();
+		List<TextFlow> resources = doc.getTextFlows();
 		
 		TextFlow tf1 = (TextFlow) resources.get(3);
 		Assert.assertEquals("Important", tf1.getContent());

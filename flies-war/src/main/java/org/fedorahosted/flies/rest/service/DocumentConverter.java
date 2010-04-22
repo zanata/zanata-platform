@@ -9,7 +9,7 @@ import java.util.Map;
 
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.core.dao.ResourceDAO;
+import org.fedorahosted.flies.core.dao.TextFlowDAO;
 import org.fedorahosted.flies.core.dao.TextFlowTargetDAO;
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HSimpleComment;
@@ -50,7 +50,7 @@ public class DocumentConverter {
 	private Log log;
 
 	@In
-	private ResourceDAO resourceDAO;
+	private TextFlowDAO textFlowDAO;
 	@In
 	private TextFlowTargetDAO textFlowTargetDAO;
 	@In
@@ -86,13 +86,11 @@ public class DocumentConverter {
 		// toHDoc.setProject(container); // this must be done by the caller
 
 		// don't copy revision; we don't accept revision from the client
-		List<TextFlow> fromDocResources = Collections.emptyList();
-		if (fromDoc.hasResources()) {
-			fromDocResources = fromDoc.getResources();
-		}
+		List<TextFlow> fromDocResources = fromDoc.getTextFlows();
+		
 		List<HTextFlow> hResources;
 		Map<String, HTextFlow> oldResourceMap = new HashMap<String, HTextFlow>();
-		List<HTextFlow> oldResources = toHDoc.getResources();
+		List<HTextFlow> oldResources = toHDoc.getTextFlows();
 		for (HTextFlow oldResource : oldResources) {
 			oldResourceMap.put(oldResource.getResId(), oldResource);
 		}
@@ -100,12 +98,12 @@ public class DocumentConverter {
 		// We create an empty list for HDocument.resources, and build it up
 		// in the order of fromDoc's resources. This ensures that we preserve
 		// the order of the list.
-		toHDoc.setResources(hResources);
+		toHDoc.setTextFlows(hResources);
 		for (TextFlow fromRes : fromDocResources) {
 			HTextFlow hRes = null;
 			if (session.contains(toHDoc)) {
 				// document already exists, see if the resource does too
-				hRes = resourceDAO.getById(toHDoc, fromRes.getId());
+				hRes = textFlowDAO.getById(toHDoc, fromRes.getId());
 			}
 			boolean resChanged = false;
 			if (hRes == null) {
@@ -287,17 +285,17 @@ public class DocumentConverter {
 					hTarget = new HTextFlowTarget();
 					hTarget.setLocale(target.getLang());
 					hTarget.setTextFlow(htf);
-					Integer resourceRev;
+					Integer tfRev;
 
 					if (changed || htf.getRevision() == null)
-						resourceRev = nextDocRev;
+						tfRev = nextDocRev;
 					else
-						resourceRev = htf.getRevision();
+						tfRev = htf.getRevision();
 
 					hTarget.setState(target.getState());
 					hTarget.setContent(target.getContent());
 					copy(target, hTarget, htf);
-					hTarget.setResourceRevision(resourceRev);
+					hTarget.setTextFlowRevision(tfRev);
 					hTarget.setRevision(1);
 				} else {
 					copy(target, hTarget, htf);
@@ -365,7 +363,7 @@ public class DocumentConverter {
 		hTarget.setContent(target.getContent());
 		changed |= !target.getLang().equals(hTarget.getLocale());
 		hTarget.setLocale(target.getLang());
-		hTarget.setResourceRevision(htf.getRevision());
+		hTarget.setTextFlowRevision(htf.getRevision());
 		changed |= !target.getState().equals(hTarget.getState());
 		hTarget.setState(target.getState());
 		hTarget.setTextFlow(htf);
@@ -402,10 +400,10 @@ public class DocumentConverter {
 	}
 
 	private static Map<String, HTextFlow> toMap(
-			List<HTextFlow> resources) {
+			List<HTextFlow> textFlows) {
 		Map<String, HTextFlow> map = new HashMap<String, HTextFlow>(
-				resources.size());
-		for (HTextFlow res : resources) {
+				textFlows.size());
+		for (HTextFlow res : textFlows) {
 			map.put(res.getResId(), res);
 		}
 		return map;

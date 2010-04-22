@@ -20,7 +20,7 @@ import org.fedorahosted.flies.rest.dto.po.PoHeader;
 import org.fedorahosted.flies.rest.dto.po.PoTargetHeaders;
 
 @XmlRootElement(name="document", namespace=Namespaces.FLIES)
-@XmlType(name="documentType", namespace=Namespaces.FLIES, propOrder={"resources", "extensions", "links"})
+@XmlType(name="documentType", namespace=Namespaces.FLIES, propOrder={"textFlows", "extensions", "links"})
 @XmlSeeAlso({
 	PoHeader.class,
 	PoTargetHeaders.class
@@ -48,20 +48,13 @@ public class Document implements IExtensible{
 	private Integer revision = null;
 	private LocaleId lang = LocaleId.EN_US;
 	
-	private List<TextFlow> resources;
+	private List<TextFlow> textFlows;
 	private List<Object> extensions;
 
 	protected Document() {
 		super();
 	}
 
-	public Document(Document other){
-		this.id = other.id;
-		// TODO deep copy
-		this.resources = other.resources;
-		this.extensions = other.extensions;
-	}
-	
 	public Document(String fullPath, ContentType contentType){
 		int lastSepChar =  fullPath.lastIndexOf('/');
 		switch(lastSepChar){
@@ -167,32 +160,16 @@ public class Document implements IExtensible{
 		this.lang = lang;
 	}
 	
-	@XmlElementWrapper(name="resources", namespace=Namespaces.FLIES, required=false)
+	@XmlElementWrapper(name="text-flows", namespace=Namespaces.FLIES, required=false)
 	@XmlElements({
 		@XmlElement(name="text-flow", type=TextFlow.class, namespace=Namespaces.FLIES)
 		})
-	/**
-	 * Returns the <b>top-level</b> resources contained in the document.  Some 
-	 * of these resources may be containers containing other resources.
-	 */
-	public List<TextFlow> getResources() {
-		return resources;
+	public List<TextFlow> getTextFlows() {
+		if(textFlows == null)
+			textFlows = new ArrayList<TextFlow>();
+		return textFlows;
 	}	
 
-	public List<TextFlow> getResources(boolean create) {
-		if(resources == null && create)
-			resources = new ArrayList<TextFlow>();
-		return resources;
-	}	
-
-	public void setResources(List<TextFlow> resources) {
-		this.resources = resources;
-	}
-	
-	public boolean hasResources() {
-		return resources != null;
-	}
-	
 	@Override
 	@XmlAnyElement(lax=true)
 	public List<Object> getExtensions() {

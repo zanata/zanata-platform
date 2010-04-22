@@ -42,11 +42,9 @@ public class PoWriter {
 	
 	public void write(final Document doc, final File baseDir, boolean includePot) throws IOException {
 		Set<LocaleId> targetLangs = new HashSet<LocaleId>();
-		if (doc.hasResources()) {
-			for (TextFlow resource : doc.getResources()) {
-				for (TextFlowTarget target : getTargets(resource)) {
-					targetLangs.add(target.getLang());
-				}
+		for (TextFlow resource : doc.getTextFlows()) {
+			for (TextFlowTarget target : getTargets(resource)) {
+				targetLangs.add(target.getLang());
 			}
 		}
 		if (includePot)
@@ -134,9 +132,7 @@ public class PoWriter {
 		writer.write("\n");
 
 		// first write header
-		if(!document.hasResources())
-			return;
-		for(TextFlow textFlow : document.getResources()){
+		for(TextFlow textFlow : document.getTextFlows()){
 
 			PotEntryData entryData = textFlow.getExtension(PotEntryData.class);
 			Message message = new Message();

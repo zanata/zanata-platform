@@ -60,7 +60,7 @@ public class PoReader {
 	public void extractTarget(Document document, InputSource inputSource, LocaleId targetLocaleId) {
 		MessageStreamParser messageParser = createParser(inputSource);
 
-		List<TextFlow> resources = document.getResources(true);
+		List<TextFlow> resources = document.getTextFlows();
 		Map<String, TextFlow> resourceMap = new HashMap<String, TextFlow>(resources.size());
 		for (TextFlow res : resources) {
 			resourceMap.put(res.getContent(), res);
@@ -155,7 +155,7 @@ public class PoReader {
 		
 		document.setLang(sourceLocaleId);
 		document.setContentType(PO_CONTENT_TYPE);
-		List<TextFlow> resources = document.getResources(true);
+		List<TextFlow> resources = document.getTextFlows();
 
 		boolean headerFound = false;
 		while(messageParser.hasNext()) {
@@ -217,7 +217,7 @@ public class PoReader {
 		document.setLang(sourceLocaleId);
 		document.setContentType(PO_CONTENT_TYPE);
 		
-		List<TextFlow> resources = document.getResources(true);
+		List<TextFlow> resources = document.getTextFlows();
 
 		boolean headerFound = false;
 		while(messageParser.hasNext()) {
