@@ -11,9 +11,11 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
@@ -68,65 +70,63 @@ public class ProjectService {
 	@DefaultValue(MediaType.APPLICATION_XML)
 	MediaType accept;
 
+	@Context
+	private UriInfo uri;
+	
 	@GET
 	@Produces( { MediaTypes.APPLICATION_FLIES_PROJECT_XML,
 			MediaTypes.APPLICATION_FLIES_PROJECT_JSON,
 			MediaType.APPLICATION_JSON })
 	public Response get(@HeaderParam("If-None-Match") EntityTag ifNoneMatch) {
+		EntityTag etag = projectDAO.getETag(projectSlug);
+
+		if(etag == null)
+			return Response.status(Status.NOT_FOUND).build();
 		 		
-		if(ifNoneMatch != null) {
-			Integer rev = projectDAO.getRevisionBySlug(projectSlug);
-			if(rev == null)
-				return Response.status(Status.NOT_FOUND).build();
-			EntityTag etag = EntityTag.valueOf( toHash( rev) );
-			if( etag.equals(ifNoneMatch) ) {
-				return Response.notModified(ifNoneMatch).build();
-			}
+		if(ifNoneMatch != null && etag.equals(ifNoneMatch)) {
+			return Response.notModified(ifNoneMatch).build();
 		}
 
 		HProject hProject = projectDAO.getBySlug(projectSlug);
-		if (hProject == null)
-			return Response.status(Status.NOT_FOUND).build();
 		
 		ProjectRes project = toResource(hProject, accept);
-		ResponseBuilder response = Response.ok(project);
-		response.tag( EntityTag.valueOf( toHash(hProject.getVersionNum()) ));
-		return response.build();
+		return Response.ok(project).tag(etag).build();
 	}
 
-	private String toHash(int rev) {
-		return String.valueOf(rev);
-	}
-	
 	@PUT
 	@Consumes( { MediaTypes.APPLICATION_FLIES_PROJECT_XML,
 			MediaTypes.APPLICATION_FLIES_PROJECT_JSON,
 			MediaType.APPLICATION_JSON })
 	@Restrict("#{identity.loggedIn}")
 	public Response put(Project project, @HeaderParam("If-Match") EntityTag ifMatch) {
+
+		EntityTag etag = projectDAO.getETag(projectSlug);
+		HProject hProject;
 		
-		if(ifMatch != null) {
-			Integer rev = projectDAO.getRevisionBySlug(projectSlug);
-			if(rev == null)
+		if(etag == null) { 
+			// this has to be a create operation
+			
+			if(ifMatch != null) {
+				// the caller expected an existing resource at this location 
 				return Response.status(Status.NOT_FOUND).build();
-			EntityTag etag = EntityTag.valueOf( toHash( rev) );
-			if( !etag.equals(ifMatch) ) {
-				return Response.status(Status.CONFLICT).build();
 			}
-		}
-		
-		HProject hProject = projectDAO.getBySlug(project.getId());
-		if (hProject == null) {
+			
 			hProject = new org.fedorahosted.flies.core.model.HIterationProject();
 			hProject.setSlug(project.getId());
 			hProject.setName(project.getName());
 			hProject.setDescription(project.getDescription());
-		} else {
+		}
+		else if(ifMatch != null && !etag.equals(ifMatch)) {
+			return Response.status(Status.CONFLICT).build();
+		}
+		else {
+			// it's an update operation
+			hProject = projectDAO.getBySlug(project.getId());
 			hProject.setSlug(project.getId());
 			hProject.setName(project.getName());
 			hProject.setDescription(project.getDescription());
 		}
-
+		
 		try {
 			if (!session.contains(hProject)) {
 				session.save(hProject);
@@ -137,9 +137,7 @@ public class ProjectService {
 					hProject.getMaintainers().add(hAccount.getPerson());
 				}
 				session.flush();
-				return Response.created(
-						URI.create("/projects/p/" + hProject.getSlug()))
-						.build();
+				return Response.created( uri.getAbsolutePath() ).build();
 			} else {
 				session.flush();
 				return Response.ok().build();
@@ -157,7 +155,7 @@ public class ProjectService {
 		to.setDescription(from.getDescription());
 	}
 	
-	private static ProjectRes toResource(HProject hProject, MediaType mediaType) {
+	public static ProjectRes toResource(HProject hProject, MediaType mediaType) {
 		ProjectRes project = new ProjectRes();
 		transfer(hProject, project);
 		if (hProject instanceof HIterationProject) {

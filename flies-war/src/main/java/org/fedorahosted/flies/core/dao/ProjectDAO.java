@@ -1,5 +1,7 @@
 package org.fedorahosted.flies.core.dao;
 
+import javax.ws.rs.core.EntityTag;
+
 import org.fedorahosted.flies.core.model.HProject;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -24,10 +26,15 @@ public class ProjectDAO {
 		    .uniqueResult();
 	}
 	
-	public Integer getRevisionBySlug(String slug) {
-		return (Integer) session.createQuery(
-				"select p.versionNum from HProject p where slug =:slug")
-				.setParameter("slug", slug)
-				.uniqueResult();
+	public EntityTag getETag(String slug) {
+		Integer projectVersion = (Integer) session.createQuery(
+		"select p.versionNum from HProject p where slug =:slug")
+		.setParameter("slug", slug)
+		.uniqueResult();
+		
+		if(projectVersion == null)
+			return null;
+		
+		return EntityTag.valueOf( String.valueOf(projectVersion));
 	}
 }
