@@ -188,7 +188,6 @@
                             <exclude name="${gwt.filepattern}" unless="deploy.gwt" />
                         </fileset>
                     </delete>
-                    <delete file="${as.deploy}/${app.ds.xml}" quiet="true" />
                     <echo>Exploding to ${temp-deploy-path}</echo>
                     <copy todir="${as.deploy}" file="${project.build.directory}/${app.ds.xml}" verbose="true" />
                     <move file="${deploy-path}" tofile="${temp-deploy-path}" 
@@ -213,10 +212,6 @@
                     <touch file="${temp-deploy-path}/WEB-INF/web.xml" />
                     <echo>Moving to ${deploy-path}</echo>
                     <move file="${temp-deploy-path}" tofile="${deploy-path}" verbose="true"/>
-<!-- 
-                    <echo>Touching ${deploy-path}/WEB-INF/web.xml</echo>
-                    <touch file="${deploy-path}/WEB-INF/web.xml" />
- -->
                   </tasks>
                 </configuration>
                 <goals>
