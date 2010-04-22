@@ -4,7 +4,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -33,6 +35,10 @@ public class ProjectsService {
 	@Logger
 	Log log;
 
+	@HeaderParam("Accept")
+	@DefaultValue(MediaType.APPLICATION_XML)
+	MediaType accept;
+	
 	@GET
 	@Produces( { MediaTypes.APPLICATION_FLIES_PROJECTS_XML,
 			MediaTypes.APPLICATION_FLIES_PROJECTS_JSON,
@@ -48,11 +54,12 @@ public class ProjectsService {
 			ProjectInline project = new ProjectInline(hProject.getSlug(), hProject
 					.getName(), ProjectType.IterationProject);
 			project.getLinks().add( 
-					new Link(URI.create("p/"+hProject.getSlug()), "self", MediaTypes.APPLICATION_FLIES_PROJECT));
+					new Link(URI.create("p/"+hProject.getSlug()), "self", 
+							MediaTypes.createFormatSpecificType(
+									MediaTypes.APPLICATION_FLIES_PROJECT,
+									accept)));
 			projectRefs.add(project);
 		}
-
-		log.info("All still good hot deploying again...");
 
 		return projectRefs;
 	}

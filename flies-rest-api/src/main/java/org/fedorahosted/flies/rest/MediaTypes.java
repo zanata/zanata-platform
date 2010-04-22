@@ -1,5 +1,7 @@
 package org.fedorahosted.flies.rest;
 
+import javax.ws.rs.core.MediaType;
+
 public class MediaTypes {
 
 	private static final String XML = "+xml";
@@ -39,5 +41,27 @@ public class MediaTypes {
 	public static final String APPLICATION_FLIES_DOCUMENT_RESOURCES_XML = APPLICATION_FLIES_DOCUMENT_RESOURCES + XML;
 	public static final String APPLICATION_FLIES_DOCUMENT_RESOURCES_JSON = APPLICATION_FLIES_DOCUMENT_RESOURCES + JSON;
 
-	
+	/**
+	 * Creates a format specific MediaType string given an existing media type
+	 * 
+	 * @param type the new type 
+	 * @param from an existing media type with a format modifier such as xml or json 
+	 * @return type with the format modifier from from
+	 */
+	public static String createFormatSpecificType(String type, MediaType from){
+		StringBuilder str = new StringBuilder(type);
+		String subtype = from.getSubtype();
+		int plusIndex = subtype.indexOf('+');
+
+		if(!(type.charAt(type.length()-1) == '/')) {
+			str.append('+');
+		}
+		
+		if(plusIndex != -1)
+			str.append( subtype.substring( plusIndex+1 ) ); 
+		else
+			str.append(subtype);
+
+		return str.toString();
+	}
 }

@@ -4,6 +4,7 @@ import java.net.URI;
 import java.security.MessageDigest;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PUT;
@@ -33,6 +34,7 @@ import org.fedorahosted.flies.rest.dto.ProjectRes;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.validator.InvalidStateException;
+import org.jboss.resteasy.util.AcceptCharsetParser;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -62,6 +64,10 @@ public class ProjectService {
 	@In
 	AccountDAO accountDAO;
 
+	@HeaderParam("Accept")
+	@DefaultValue(MediaType.APPLICATION_XML)
+	MediaType accept;
+
 	@GET
 	@Produces( { MediaTypes.APPLICATION_FLIES_PROJECT_XML,
 			MediaTypes.APPLICATION_FLIES_PROJECT_JSON,
@@ -82,7 +88,7 @@ public class ProjectService {
 		if (hProject == null)
 			return Response.status(Status.NOT_FOUND).build();
 		
-		ProjectRes project = toResource(hProject);
+		ProjectRes project = toResource(hProject, accept);
 		ResponseBuilder response = Response.ok(project);
 		response.tag( EntityTag.valueOf( toHash(hProject.getVersionNum()) ));
 		return response.build();
@@ -151,7 +157,7 @@ public class ProjectService {
 		to.setDescription(from.getDescription());
 	}
 	
-	private static ProjectRes toResource(HProject hProject) {
+	private static ProjectRes toResource(HProject hProject, MediaType mediaType) {
 		ProjectRes project = new ProjectRes();
 		transfer(hProject, project);
 		if (hProject instanceof HIterationProject) {
@@ -160,8 +166,11 @@ public class ProjectService {
 				ProjectIterationInline iteration = new ProjectIterationInline();
 				ProjectIterationService.transfer(pIt, iteration);
 				iteration.getLinks().add(
-						new Link( URI.create("iterations/i"+pIt.getSlug()), "self", MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION)
-						);
+						new Link( URI.create("iterations/i/"+pIt.getSlug()), "self", 
+								MediaTypes.createFormatSpecificType(
+										MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION,
+										mediaType)
+						));
 				project.getIterations().add(iteration);
 			}
 		}
