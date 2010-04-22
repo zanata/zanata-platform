@@ -211,7 +211,7 @@ public class HDocument extends AbstractFliesEntity{
 		this.allResources = resources;
 	}
 	
-	@OneToMany(cascade=CascadeType.ALL/*, mappedBy="document"*/)
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="document")
 	@Where(clause="obsolete=0")
 	@IndexColumn(name="pos", base=0, nullable=true)// see http://opensource.atlassian.com/projects/hibernate/browse/HHH-4390?focusedCommentId=30964#action_30964
 	@JoinColumn(name="document_id",nullable=true)
