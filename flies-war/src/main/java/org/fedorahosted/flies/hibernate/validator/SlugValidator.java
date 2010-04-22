@@ -6,7 +6,8 @@ import org.hibernate.validator.Validator;
 
 public class SlugValidator implements Validator<Slug>, Serializable {
 
-	private static final String pattern = "[a-zA-Z0-9]+[a-zA-Z0-9_\\-{.}]*[a-zA-Z0-9]+";
+//	private static final String pattern = "[a-zA-Z0-9]+[a-zA-Z0-9_\\-{.}]*[a-zA-Z0-9]+";
+	private static final String pattern = "[a-zA-Z0-9]+([a-zA-Z0-9_\\-{.}]*[a-zA-Z0-9]+)?";
 
 	public void initialize(Slug parameters) {
 	}
