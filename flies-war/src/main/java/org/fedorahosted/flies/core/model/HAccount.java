@@ -24,7 +24,7 @@ import org.jboss.seam.annotations.security.management.UserRoles;
 import org.jboss.seam.security.management.PasswordHash;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "apiKey"))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = "username"))
 public class HAccount extends AbstractFliesEntity implements Serializable {
 
 	private String username;
