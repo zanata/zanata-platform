@@ -14,7 +14,7 @@ import org.fedorahosted.flies.common.Namespaces;
 @XmlRootElement(name="project-ref", namespace=Namespaces.FLIES)
 public class ProjectRef extends Project {
 
-	private List<Link> links;
+	private Links links;
 	
 	public ProjectRef() {
 	}
@@ -23,7 +23,7 @@ public class ProjectRef extends Project {
 		super(id, name, description, type);
 	}
 	
-	public ProjectRef(String id, String name, String description, ProjectType type, List<Link> links) {
+	public ProjectRef(String id, String name, String description, ProjectType type, Links links) {
 		super(id, name, description, type);
 		this.links = links;
 	}
@@ -32,7 +32,7 @@ public class ProjectRef extends Project {
 		super(project);
 	}
 	
-	public ProjectRef(Project project, List<Link> links) {
+	public ProjectRef(Project project, Links links) {
 		super(project);
 		this.links = links;
 	}
@@ -45,9 +45,9 @@ public class ProjectRef extends Project {
 	 * @return set of Links managed by this resource
 	 */
 	@XmlElement(name="link", namespace=Namespaces.FLIES, required=false)
-	public List<Link> getLinks() {
+	public Links getLinks() {
 		if(links == null)
-			links = new ArrayList<Link>();
+			links = new Links();
 		return links;
 	}
 	
