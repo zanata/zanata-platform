@@ -3,7 +3,10 @@ package org.fedorahosted.flies.core.dao;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.ws.rs.core.EntityTag;
 
+import org.apache.commons.lang.StringUtils;
+import org.fedorahosted.flies.account.action.RegisterAction;
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.TransUnitCount;
@@ -55,6 +58,29 @@ public class ProjectIterationDAO {
 	    )
 		.setCacheable(true).uniqueResult();
 	}
+	
+	/**
+	 * Retrieves the ETag for the ProjectIteration
+	 * 
+	 * @param projectSlug project slug
+	 * @param iterationSlug iteration slug
+	 * @return calculated EntityTag or null if iteration does not exist
+	 */
+	public EntityTag getETag(String projectSlug, String iterationSlug) {
+		Integer iterationVersion = (Integer) session.createQuery(
+		"select i.versionNum from HProjectIteation i where i.slug =:islug and i.project.slug =:pslug")
+		.setParameter("islug", iterationSlug)
+		.setParameter("pslug", projectSlug)
+		.uniqueResult();
+		
+		if(iterationVersion == null)
+			return null;
+
+		String hash = RegisterAction.generateHash(String.valueOf(iterationVersion));
+		
+		return EntityTag.valueOf( hash );
+	}
+	
 	
 	public TransUnitCount getStatisticsForContainer(Long containerId, LocaleId localeId){
 		

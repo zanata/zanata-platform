@@ -19,6 +19,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.core.dao.AccountDAO;
 import org.fedorahosted.flies.core.dao.ProjectDAO;
@@ -37,6 +38,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.validator.InvalidStateException;
 import org.jboss.resteasy.util.AcceptCharsetParser;
+import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -66,7 +68,7 @@ public class ProjectService {
 	@In
 	AccountDAO accountDAO;
 
-	@HeaderParam("Accept")
+	@HeaderParam(HttpHeaderNames.ACCEPT)
 	@DefaultValue(MediaType.APPLICATION_XML)
 	MediaType accept;
 
@@ -77,7 +79,7 @@ public class ProjectService {
 	@Produces( { MediaTypes.APPLICATION_FLIES_PROJECT_XML,
 			MediaTypes.APPLICATION_FLIES_PROJECT_JSON,
 			MediaType.APPLICATION_JSON })
-	public Response get(@HeaderParam("If-None-Match") EntityTag ifNoneMatch) {
+	public Response get(@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
 		EntityTag etag = projectDAO.getETag(projectSlug);
 
 		if(etag == null)
@@ -98,7 +100,7 @@ public class ProjectService {
 			MediaTypes.APPLICATION_FLIES_PROJECT_JSON,
 			MediaType.APPLICATION_JSON })
 	@Restrict("#{identity.loggedIn}")
-	public Response put(Project project, @HeaderParam("If-Match") EntityTag ifMatch) {
+	public Response put(Project project, @HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch) {
 
 		EntityTag etag = projectDAO.getETag(projectSlug);
 		HProject hProject;
@@ -113,8 +115,7 @@ public class ProjectService {
 			
 			hProject = new org.fedorahosted.flies.core.model.HIterationProject();
 			hProject.setSlug(project.getId());
-			hProject.setName(project.getName());
-			hProject.setDescription(project.getDescription());
+			transfer(project, hProject);
 		}
 		else if(ifMatch != null && !etag.equals(ifMatch)) {
 			return Response.status(Status.CONFLICT).build();
@@ -122,9 +123,7 @@ public class ProjectService {
 		else {
 			// it's an update operation
 			hProject = projectDAO.getBySlug(project.getId());
-			hProject.setSlug(project.getId());
-			hProject.setName(project.getName());
-			hProject.setDescription(project.getDescription());
+			transfer(project, hProject);
 		}
 		
 		try {
@@ -137,23 +136,34 @@ public class ProjectService {
 				if (hAccount != null && hAccount.getPerson() != null) {
 					hProject.getMaintainers().add(hAccount.getPerson());
 				}
-				session.flush();
 				response =  Response.created( uri.getAbsolutePath() );
 			} else {
-				session.flush();
 				response = Response.ok();
 			}
+			session.flush();
 			etag = projectDAO.getETag(projectSlug);
 			return response.tag(etag).build();
 			
 		} catch (InvalidStateException e) {
-			return Response.status(Status.BAD_REQUEST).build();
+			String message = 
+				String.format(
+					"Project '%s' is invalid: \n %s", 
+					projectSlug, StringUtils.join(e.getInvalidValues(),"\n"));
+			log.warn(message + '\n' + project, e);
+			return Response.status(Status.BAD_REQUEST).entity(message)
+					.build();
 		} catch (HibernateException e) {
-			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+			log.error("Hibernate exception", e);
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Server error").build();
 		}
 	}
 
-	public static void transfer(HProject from, AbstractProject to){
+	public static void transfer(Project from, HProject to) {
+		to.setName(from.getName());
+		to.setDescription(from.getDescription());
+	}
+	
+	public static void transfer(HProject from, AbstractProject to) {
 		to.setId(from.getSlug());
 		to.setName(from.getName());
 		to.setDescription(from.getDescription());
