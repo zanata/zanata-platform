@@ -4,21 +4,21 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="" />
-<title>translationLaunch</title>
+<title>No User Manager access test</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">translationLaunch</td></tr>
+<tr><td rowspan="1" colspan="3">No User Manager access test</td></tr>
 </thead><tbody>
 <tr>
-	<td>waitForElementPresent</td>
-	<td>//div[div='ArchivesUIMessages.properties']</td>
+	<td>open</td>
+	<td>/flies/admin/usermanager.seam</td>
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>//div[div='ArchivesUIMessages.properties']/div[2]/div[1]</td>
+	<td>verifyTextNotPresent</td>
+	<td>User Manager</td>
 	<td></td>
 </tr>
 
