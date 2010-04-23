@@ -1,6 +1,8 @@
 package org.fedorahosted.flies.rest;
 
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.fedorahosted.flies.core.dao.AccountDAO;
 import org.fedorahosted.flies.security.FliesIdentity;
@@ -30,7 +32,6 @@ public class FliesRestSecurityInterceptor implements PreProcessInterceptor {
 			throws Failure, WebApplicationException {
 
 		Log log = Logging.getLog(FliesRestSecurityInterceptor.class);
-		log.info("Authenticating a REST request...");
 		String username = request.getHttpHeaders().getRequestHeaders()
 				.getFirst(X_AUTH_USER_HEADER);
 		String apiKey = request.getHttpHeaders().getRequestHeaders().getFirst(
@@ -40,8 +41,11 @@ public class FliesRestSecurityInterceptor implements PreProcessInterceptor {
 			FliesIdentity.instance().getCredentials().setUsername(username);
 			FliesIdentity.instance().setApiKey(apiKey);
 			FliesIdentity.instance().tryLogin();
+			if(!FliesIdentity.instance().isLoggedIn()) {
+				log.info("Failed attempt to authenticate REST request for user {0}", username);
+				return ServerResponse.copyIfNotServerResponse(Response.status(Status.UNAUTHORIZED).build());
+			}
 		}
 		return null;
-		// throw new UnauthorizedException();
 	}
 }
