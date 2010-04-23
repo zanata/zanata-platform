@@ -10,8 +10,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.fedorahosted.flies.common.Namespaces;
 
 
-@XmlType(name="projectResType", namespace=Namespaces.FLIES, propOrder={"links"})
-@XmlRootElement(name="project-res", namespace=Namespaces.FLIES)
+@XmlType(name="linksType", namespace=Namespaces.FLIES, propOrder={})
 public class Links extends ArrayList<Link> {
 
 	private static final long serialVersionUID = 1L;
