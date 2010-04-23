@@ -2,6 +2,7 @@ package org.fedorahosted.flies.rest.service;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +34,8 @@ import org.fedorahosted.flies.rest.dto.po.PoTargetHeader;
 import org.fedorahosted.flies.rest.dto.po.PoTargetHeaders;
 import org.fedorahosted.flies.rest.dto.po.PotEntryData;
 import org.hibernate.Session;
+import org.hibernate.validator.ClassValidator;
+import org.hibernate.validator.InvalidValue;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -55,6 +58,9 @@ public class DocumentConverter {
 	private TextFlowTargetDAO textFlowTargetDAO;
 	@In
 	private Session session;
+
+	ClassValidator<HTextFlow> resValidator = new ClassValidator<HTextFlow>(
+			HTextFlow.class);
 
 	/**
 	 * Recursively copies from the source Document to the destination HDocument.
@@ -125,6 +131,13 @@ public class DocumentConverter {
 				docChanged = true;
 				log.debug("CHANGED: Resource {0}:{1} was added", toHDoc
 						.getDocId(), hRes.getResId());
+			}
+
+			InvalidValue[] invalidValues = resValidator.getInvalidValues(hRes);
+			if (invalidValues.length != 0) {
+				String message = "Resource with id '" + hRes.getResId()
+						+ "' is invalid: " + Arrays.asList(invalidValues);
+				log.error(message);
 			}
 		}
 		if (fromDoc.hasExtensions())
