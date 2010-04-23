@@ -308,4 +308,12 @@ public class HDocument extends AbstractFliesEntity{
 	    }
 		return doc;
 	}
+	
+	/**
+	 * Used for debugging
+	 */
+	public String toString() {
+		return String.format("HDocument(name:%s path:%s docID:%s locale:%s rev:%d)", 
+				getName(), getPath(), getDocId(), getLocale(), getRevision());
+	}
 }
