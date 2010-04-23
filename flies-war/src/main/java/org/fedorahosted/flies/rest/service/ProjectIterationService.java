@@ -34,16 +34,17 @@ import org.hibernate.Session;
 import org.hibernate.validator.InvalidStateException;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jboss.seam.log.Log;
 
 @Name("projectIterationService")
 @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}")
 public class ProjectIterationService {
 
-	private static Logger log = LoggerFactory.getLogger(ProjectIterationService.class);
+	@Logger
+	Log log;
 	
 	@PathParam("projectSlug")
 	private String projectSlug;
@@ -148,7 +149,8 @@ public class ProjectIterationService {
 				String.format(
 					"Iteration '%s:%s' is invalid: \n %s", 
 					projectSlug,iterationSlug, StringUtils.join(e.getInvalidValues(),"\n"));
-			log.warn(message + '\n' + projectIteration, e);
+			log.warn(message + '\n' + projectIteration);
+			log.debug(e,e);
 			return Response.status(Status.BAD_REQUEST).entity(message)
 					.build();
 		} catch (HibernateException e) {

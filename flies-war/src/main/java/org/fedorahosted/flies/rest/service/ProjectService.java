@@ -142,7 +142,8 @@ public class ProjectService {
 				String.format(
 					"Project '%s' is invalid: \n %s", 
 					projectSlug, StringUtils.join(e.getInvalidValues(),"\n"));
-			log.warn(message + '\n' + project, e);
+			log.warn(message + '\n' + project);
+			log.debug(e,e);
 			return Response.status(Status.BAD_REQUEST).entity(message)
 					.build();
 		} catch (HibernateException e) {
