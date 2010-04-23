@@ -16,7 +16,6 @@ import org.fedorahosted.flies.rest.dto.SimpleComment;
 public class PoHeader {
 	
 	public static final String NAMESPACE = "http://flies.fedorahosted.org/api/gettext/header";
-	public static final String NAMESPACE_JSON = "poheader";
 	
 	private SimpleComment comment;
 	private List<HeaderEntry> entries;
