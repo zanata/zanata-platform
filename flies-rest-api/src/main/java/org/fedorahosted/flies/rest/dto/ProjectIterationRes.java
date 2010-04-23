@@ -17,8 +17,8 @@ public class ProjectIterationRes extends AbstractProjectIteration {
 	public ProjectIterationRes() {
 	}
 	
-	public ProjectIterationRes(String id, String name, String description, int revision) {
-		super(id, name, description, revision);
+	public ProjectIterationRes(String id, String name, String description) {
+		super(id, name, description);
 	}
 	
 	@XmlElement(name="link", namespace=Namespaces.FLIES, required=false)

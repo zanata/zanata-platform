@@ -24,8 +24,8 @@ public class ProjectIteration extends AbstractProjectIteration {
 		super(other);
 	}
 	
-	public ProjectIteration(String id, String name, String description, int revision) {
-		super(id, name, description, revision);
+	public ProjectIteration(String id, String name, String description) {
+		super(id, name, description);
 	}
 
 }

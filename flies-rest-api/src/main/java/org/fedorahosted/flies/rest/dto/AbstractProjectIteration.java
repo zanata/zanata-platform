@@ -13,7 +13,6 @@ import org.fedorahosted.flies.common.Namespaces;
 public abstract class AbstractProjectIteration extends AbstractMiniProjectIteration {
 
 	private String description;
-	private Integer revision = 1;
 	
 	public AbstractProjectIteration() {
 	}
@@ -22,10 +21,9 @@ public abstract class AbstractProjectIteration extends AbstractMiniProjectIterat
 		super(other);
 	}
 
-	public AbstractProjectIteration(String id, String name, String description, int revision) {
+	public AbstractProjectIteration(String id, String name, String description) {
 		super(id, name);
 		this.description = description;
-		this.revision = revision;
 	}
 
 	@XmlElement(name="description", namespace=Namespaces.FLIES, required=false)
@@ -35,15 +33,6 @@ public abstract class AbstractProjectIteration extends AbstractMiniProjectIterat
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-	
-	@XmlAttribute(name="revision", required=true)
-	public Integer getRevision() {
-		return revision;
-	}
-	
-	public void setRevision(Integer revision) {
-		this.revision = revision;
 	}
 	
 }
