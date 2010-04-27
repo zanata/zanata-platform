@@ -52,6 +52,17 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 		}
 	};
 
+	/**
+	 * The click listener used to accept.
+	 */
+	private ClickHandler cloneHandler = new ClickHandler() {
+		public void onClick(ClickEvent event) {
+			// TODO: added logic for cloning from source to target
+			// cloneEdit();
+			Log.info("InlineTargetCellEditor.java: Clone button is clicked.");
+		}
+	};
+	
 	private final CheckBox toggleFuzzy;
 	
 	/**
@@ -194,6 +205,12 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 		cancelButton.setText( messages.editCancel() );
 		cancelButton.setTitle( messages.editCancelShortcut() );
 		operationsPanel.add(cancelButton);
+		
+		PushButton cloneButton = new PushButton(images.cellEditorCancel().createImage(),cloneHandler);
+		cloneButton.setText( messages.editClone() );
+		cloneButton.setTitle( messages.editCloneShortcut() );
+		// TODO: Uncomment when clone func is ready.
+		// operationsPanel.add(cloneButton);
 
 		PushButton acceptButton = new PushButton(images.cellEditorAccept().createImage(),acceptHandler);
 		acceptButton.setText( messages.editSave() );
