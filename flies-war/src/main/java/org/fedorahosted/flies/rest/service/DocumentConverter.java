@@ -2,7 +2,7 @@ package org.fedorahosted.flies.rest.service;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +33,8 @@ import org.fedorahosted.flies.rest.dto.po.PoTargetHeader;
 import org.fedorahosted.flies.rest.dto.po.PoTargetHeaders;
 import org.fedorahosted.flies.rest.dto.po.PotEntryData;
 import org.hibernate.Session;
+import org.hibernate.validator.ClassValidator;
+import org.hibernate.validator.InvalidValue;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -55,6 +57,19 @@ public class DocumentConverter {
 	private TextFlowTargetDAO textFlowTargetDAO;
 	@In
 	private Session session;
+
+	ClassValidator<HTextFlow> resValidator = new ClassValidator<HTextFlow>(
+			HTextFlow.class);
+	ClassValidator<HTextFlowTarget> tftValidator = new ClassValidator<HTextFlowTarget>(
+			HTextFlowTarget.class);
+	ClassValidator<HSimpleComment> commentValidator = new ClassValidator<HSimpleComment>(
+			HSimpleComment.class);
+	ClassValidator<HPotEntryData> potEntryValidator = new ClassValidator<HPotEntryData>(
+			HPotEntryData.class);
+	ClassValidator<HPoHeader> poValidator = new ClassValidator<HPoHeader>(
+			HPoHeader.class);
+	ClassValidator<HPoTargetHeader> poTargetValidator = new ClassValidator<HPoTargetHeader>(
+			HPoTargetHeader.class);
 
 	/**
 	 * Recursively copies from the source Document to the destination HDocument.
@@ -94,11 +109,10 @@ public class DocumentConverter {
 		for (HTextFlow oldResource : oldResources) {
 			oldResourceMap.put(oldResource.getResId(), oldResource);
 		}
-		hResources = new ArrayList<HTextFlow>(fromDocResources.size());
 		// We create an empty list for HDocument.resources, and build it up
 		// in the order of fromDoc's resources. This ensures that we preserve
 		// the order of the list.
-		toHDoc.setTextFlows(hResources);
+		hResources = new ArrayList<HTextFlow>(fromDocResources.size());
 		for (TextFlow fromRes : fromDocResources) {
 			HTextFlow hRes = null;
 			if (session.contains(toHDoc)) {
@@ -125,6 +139,13 @@ public class DocumentConverter {
 				docChanged = true;
 				log.debug("CHANGED: Resource {0}:{1} was added", toHDoc
 						.getDocId(), hRes.getResId());
+			}
+
+			InvalidValue[] invalidValues = resValidator.getInvalidValues(hRes);
+			if (invalidValues.length != 0) {
+				String message = "TextFlow with content '" + hRes.getContent()
+						+ "' is invalid: " + Arrays.asList(invalidValues);
+				log.error(message);
 			}
 		}
 		if (fromDoc.hasExtensions())
@@ -154,6 +175,12 @@ public class DocumentConverter {
 					if (!equal(toHeader.getEntries(), fromEntries)) {
 						toHeader.setEntries(fromEntries);
 						docChanged = true;
+					}
+					InvalidValue[] invalidValues = poValidator.getInvalidValues(toHeader);
+					if (invalidValues.length != 0) {
+						String message = "PO header for document '" + toHeader.getDocument().getDocId()
+								+ "' is invalid: " + Arrays.asList(invalidValues);
+						log.error(message);
 					}
 				} else if (ext instanceof PoTargetHeaders) {
 					PoTargetHeaders fromHeaders = (PoTargetHeaders) ext;
@@ -188,23 +215,30 @@ public class DocumentConverter {
 							toHeader.setEntries(fromEntries);
 							docChanged = true;
 						}
+						InvalidValue[] invalidValues = poTargetValidator.getInvalidValues(toHeader);
+						if (invalidValues.length != 0) {
+							String message = "PO target header for document '" + toHeader.getDocument().getDocId()
+									+ "' is invalid: " + Arrays.asList(invalidValues);
+							log.error(message);
+						}
 					}
 				} else {
 					throw new RuntimeException("Unknown Document extension "
-							+ ext.getClass());
+							+ ext.getClass() + " - please ensure your client is up to date");
 				}
 			}
 
 		// even if we just move around resources without changing them,
 		// the document is considered changed
-		if (!oldResources.equals(hResources))
+		if (!oldResources.equals(hResources)) {
+			// mark any removed resources as obsolete
+			for (HTextFlow oldResource : oldResourceMap.values()) {
+				oldResource.setObsolete(true);
+				log.debug("CHANGED: Resource {0}:{1} was removed", toHDoc
+						.getDocId(), oldResource.getResId());
+			}
+			toHDoc.setTextFlows(hResources);
 			docChanged = true;
-		// mark any removed resources as obsolete
-		for (HTextFlow oldResource : oldResourceMap.values()) {
-			deleteOrObsolete(oldResource);
-			docChanged = true;
-			log.debug("CHANGED: Resource {0}:{1} was removed", toHDoc
-					.getDocId(), oldResource.getResId());
 		}
 		if (docChanged)
 			toHDoc.setRevision(nextDocRev);
@@ -249,6 +283,12 @@ public class DocumentConverter {
 					htf.setPotEntryData(hPotEntryData);
 				}
 				changed |= copy(potEntryData, hPotEntryData);
+				InvalidValue[] invalidValues = potEntryValidator.getInvalidValues(hPotEntryData);
+				if (invalidValues.length != 0) {
+					String message = "POT entry for TextFlow with id '" + htf.getResId()
+							+ "' is invalid: " + Arrays.asList(invalidValues);
+					log.error(message);
+				}
 			} else if (ext instanceof TextFlowTargets) {
 				// do nothing here, we want to do targets last:
 				// if the comment changes, the resourceRev will have to be
@@ -268,6 +308,12 @@ public class DocumentConverter {
 						changed = true;
 				}
 				hComment.setComment(simpleComment.getValue());
+				InvalidValue[] invalidValues = commentValidator.getInvalidValues(hComment);
+				if (invalidValues.length != 0) {
+					String message = "Comment for TextFlow with id '" + htf.getResId()
+							+ "' is invalid: " + Arrays.asList(invalidValues);
+					log.error(message);
+				}
 			} else {
 				throw new RuntimeException("Unknown TextFlow extension "
 						+ ext.getClass());
@@ -301,6 +347,12 @@ public class DocumentConverter {
 					copy(target, hTarget, htf);
 				}
 				htf.getTargets().put(target.getLang(), hTarget);
+				InvalidValue[] invalidValues = tftValidator.getInvalidValues(hTarget);
+				if (invalidValues.length != 0) {
+					String message = "TextFlowTarget with id '" + hTarget.getTextFlow().getResId()
+							+ "' is invalid: " + Arrays.asList(invalidValues);
+					log.error(message);
+				}
 			}
 		}
 		return changed;
@@ -393,10 +445,6 @@ public class DocumentConverter {
 		link = new Link(iterationUri, Relationships.DOCUMENT_CONTAINER,
 				MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML);
 		doc.getLinks().add(link);
-	}
-
-	private void deleteOrObsolete(HTextFlow hResource) {
-		hResource.setObsolete(true);
 	}
 
 	private static Map<String, HTextFlow> toMap(

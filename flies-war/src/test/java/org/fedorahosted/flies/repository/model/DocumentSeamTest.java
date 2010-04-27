@@ -8,14 +8,16 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import org.dbunit.operation.DatabaseOperation;
+import org.fedorahosted.flies.common.ContentType;
+import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.core.model.HProjectSeries;
-import org.jboss.seam.mock.DBUnitSeamTest;
+import org.fedorahosted.flies.rest.service.FliesDBUnitSeamTest;
 import org.testng.annotations.Test;
 
 @Test(groups={"seam-tests"})
-public class DocumentSeamTest extends DBUnitSeamTest {
+public class DocumentSeamTest extends FliesDBUnitSeamTest {
 
     protected void prepareDBUnitOperations() {
         beforeTestOperations.add(
@@ -46,28 +48,59 @@ public class DocumentSeamTest extends DBUnitSeamTest {
     }
     
     @Test
-    public void myTsets() throws Exception{
+    public void checkPositionsNotNull() throws Exception {
         new FacesRequest() {
 
             protected void invokeApplication() throws Exception {
                 EntityManager em = (EntityManager) getInstance("entityManager");
-                /*
-                ProjectContainer prCont = new ProjectContainer();
-                for(int i=0;i<10;i++){
-                	Document doc = new Document();
-                	doc.setContentType("po");
-                	doc.setName("mydoc "+i);
-                	doc.setRevision(1);
-                	//prCont.getItems().add(doc);
-                }
-                em.persist(prCont);
                 
-                assertNotNull(prCont.getId());
-                */
-                //assertNotNull(prCont.getItems().get(0).getId());
                 
-            	
+                HIterationProject project = em.find(HIterationProject.class, 1l);
+//                assertThat( project, notNullValue() );
+                
+                HDocument hdoc = new HDocument("fullpath", ContentType.TextPlain, LocaleId.EN_US);
+                hdoc.setProject(project.getProjectIterations().get(0).getContainer());
+                
+                List<HTextFlow> textFlows = hdoc.getTextFlows();
+                HTextFlow flow1 = new HTextFlow(hdoc, "textflow1", "some content");
+                HTextFlow flow2 = new HTextFlow(hdoc, "textflow2", "more content");
+                textFlows.add(flow1);
+                textFlows.add(flow2);
+                em.persist(hdoc);
+                Long docId = hdoc.getId();
+                em.flush();
+//                em.clear();
+//                hdoc = em.find(HDocument.class, docId);
+                em.refresh(hdoc);
+                
+                List<HTextFlow> textFlows2 = hdoc.getTextFlows();
+                assertThat(textFlows2.size(), is(2));
+                flow1 = textFlows2.get(0);
+                assertThat(flow1, notNullValue());
+                flow2 = textFlows2.get(1);
+                assertThat(flow2, notNullValue());
+                
+                
+                textFlows2.remove(flow1);
+                flow1.setObsolete(true);
+//flow1.setPos(null);
+                em.flush();
+                em.refresh(hdoc);
+                em.refresh(flow1);
+                em.refresh(flow2);
+                assertThat(hdoc.getTextFlows().size(), is(1));
+                flow2 = hdoc.getTextFlows().get(0);
+                assertThat(flow2.getResId(), equalTo("textflow2"));
+                
+                flow1 = hdoc.getAllTextFlows().get("textflow1");
+//                assertThat(flow1.getPos(), nullValue());
+                assertThat(flow1.isObsolete(), is(true));
+                flow2 = hdoc.getAllTextFlows().get("textflow2");
+//                assertThat(flow1.getPos(), is(0));
+                assertThat(flow2.isObsolete(), is(false));
+                
             }
         }.run();
     }
+    
 }

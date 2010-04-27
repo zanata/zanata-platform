@@ -30,4 +30,14 @@ public class HPoHeader extends AbstractPoHeader {
 		return document;
 	}
 	
+	/**
+	 * Used for debugging
+	 */
+	@Override
+	public String toString() {
+		return "HPoHeader(" +
+			super.toString()+
+			")";
+	}
+
 }

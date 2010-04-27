@@ -73,6 +73,7 @@ public class PoReader {
 				// add target header data
 				PoTargetHeader poHeader = new PoTargetHeader();
 				extractPoHeader(message, poHeader);
+				poHeader.setTargetLanguage(targetLocaleId);
 				PoTargetHeaders targetHeaders = document.getOrAddExtension(PoTargetHeaders.class);
 				targetHeaders.getHeaders().add(poHeader);
 			} 

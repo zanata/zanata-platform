@@ -152,4 +152,18 @@ public class HTextFlowTarget implements Serializable{
 		this.comment = comment;
 	}
 	
+	/**
+	 * Used for debugging
+	 */
+	@Override
+	public String toString() {
+		return "HTextFlowTarget(" +
+			"content:"+getContent()+
+			"locale:"+getLocale()+
+			"state:"+getState()+
+			"revision:"+getRevision()+
+			"comment:"+getComment()+
+			"textflow:"+getTextFlow().getContent()+
+			")";
+	}
 }

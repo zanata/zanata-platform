@@ -51,4 +51,11 @@ public class HSimpleComment {
 	public static String toString(HSimpleComment comment) {
 		return comment != null ? comment.getComment() : null;
 	}
+
+	/**
+	 * Used for debugging
+	 */
+	public String toString() {
+		return "HSimpleComment("+toString(this)+")";
+	}
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -22,7 +23,6 @@ import org.fedorahosted.flies.repository.model.po.PoUtility;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.po.PotEntryData;
-import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Field;
@@ -70,6 +70,13 @@ public class HTextFlow implements Serializable {
 	public HTextFlow() {
 		
 	}
+	
+	public HTextFlow(HDocument document, String resId, String content) {
+		this.document = document;
+		this.resId = resId;
+		this.content = content;
+	}
+
 	public HTextFlow(TextFlow other, int revision) {
 		this.resId = other.getId();
 		this.content = other.getContent();
@@ -86,6 +93,9 @@ public class HTextFlow implements Serializable {
 		this.id = id;
 	}
 	
+	// we can't use @NotNull because the position isn't set until the object has been persisted
+	@Column(insertable=false, updatable=false, nullable=false)
+//	@Column(insertable=false, updatable=false)
 	public Integer getPos() {
 		return pos;
 	}
@@ -119,12 +129,17 @@ public class HTextFlow implements Serializable {
 		return obsolete;
 	}
 	
+	/**
+	 * Caller must ensure that textFlow is in document.textFlows if and only if
+	 * obsolete = false
+	 * @param obsolete
+	 */
 	public void setObsolete(boolean obsolete) {
 		this.obsolete = obsolete;
 	}
 	
 	@ManyToOne
-	@JoinColumn(name="document_id",insertable=true, updatable=false, nullable=true)
+	@JoinColumn(name="document_id",insertable=false, updatable=false, nullable=false)
 	@NaturalId
 	public HDocument getDocument() {
 		return document;
@@ -227,4 +242,17 @@ public class HTextFlow implements Serializable {
 		return textFlow;
 	}
 	
+	/**
+	 * Used for debugging
+	 */
+	@Override
+	public String toString() {
+		return "HTextFlow(" +
+			"resId:"+getResId()+
+			"content:"+getContent()+
+			"revision:"+getRevision()+
+			"comment:"+getComment()+
+			"obsolete:"+isObsolete()+
+			")";
+	}
 }

@@ -57,7 +57,6 @@ public class HDocument extends AbstractFliesEntity{
 	private HProjectContainer project;
 
 	private Map<String, HTextFlow> allTextFlows;
-	private Map<String, HTextFlow> obsoletes;
 	private List<HTextFlow> textFlows;
 	private boolean obsolete = false;
 	private HPoHeader poHeader;
@@ -118,7 +117,7 @@ public class HDocument extends AbstractFliesEntity{
 
 	public HTextFlow create(TextFlow res, int nextDocRev){
 		HTextFlow tf = new HTextFlow(res, nextDocRev);
-		getAllTextFlows().put(tf.getResId(), tf);
+		getTextFlows().add(tf);
 		tf.setDocument(this);
 		return tf;
 	}
@@ -198,28 +197,47 @@ public class HDocument extends AbstractFliesEntity{
 		this.contentType = contentType;
 	}
 
-	@OneToMany(mappedBy="document", cascade=CascadeType.ALL)
+	@OneToMany
+	@JoinColumn(name="document_id",insertable=false, updatable=false/*, nullable=true*/)
 	@MapKey(name="resId")
+	/**
+	 * NB Don't modify this collection.  Add to the TextFlows list instead.
+	 * TODO get ImmutableMap working here.
+	 */
 	public Map<String,HTextFlow> getAllTextFlows() {
 		if(allTextFlows == null)
 			allTextFlows = new HashMap<String, HTextFlow>();
 		return allTextFlows;
 	}
 
-	public void setAllTextFlows(Map<String, HTextFlow> allTextFlows) {
+	@SuppressWarnings("unused")
+	// used only by Hibernate
+	private void setAllTextFlows(Map<String, HTextFlow> allTextFlows) {
 		this.allTextFlows = allTextFlows;
 	}
 	
-	@OneToMany(cascade=CascadeType.ALL/*, mappedBy="document"*/)
+	
+	@OneToMany(cascade=CascadeType.ALL)
 	@Where(clause="obsolete=0")
-	@IndexColumn(name="pos", base=0, nullable=true)// see http://opensource.atlassian.com/projects/hibernate/browse/HHH-4390?focusedCommentId=30964#action_30964
-	@JoinColumn(name="document_id",nullable=true)
+	@IndexColumn(name="pos", base=0,nullable=false)
+	@JoinColumn(name="document_id",nullable=false)
+	/**
+	 * NB: Any elements which are removed from this list must have obsolete set 
+	 * to true, and any elements which are added to this list must have obsolete 
+	 * set to false. 
+	 */
 	public List<HTextFlow> getTextFlows() {
 		if(textFlows == null)
 			textFlows = new ArrayList<HTextFlow>();
 		return textFlows;
+//		return ImmutableList.copyOf(textFlows);
 	}
 
+	/**
+	 * NB: Any elements which are removed from this list must have obsolete set 
+	 * to true, and any elements which are added to this list must have obsolete 
+	 * set to false. 
+	 */
 	public void setTextFlows(List<HTextFlow> textFlows) {
 		this.textFlows = textFlows;
 	}
@@ -232,18 +250,6 @@ public class HDocument extends AbstractFliesEntity{
 		this.obsolete = obsolete;
 	}
 	
-	@OneToMany(cascade=CascadeType.ALL)
-	@Where(clause="obsolete=1")
-	@MapKey(name="resId")
-	public Map<String, HTextFlow> getObsoletes() {
-		if(obsoletes == null)
-			obsoletes = new HashMap<String, HTextFlow>();
-		return obsoletes;
-	}
-	
-	public void setObsoletes(Map<String, HTextFlow> obsoletes) {
-		this.obsoletes = obsoletes;
-	}
 	public Document toDocument(boolean deep) {
 		if (deep)
 			return toDocument(Integer.MAX_VALUE);
@@ -302,5 +308,13 @@ public class HDocument extends AbstractFliesEntity{
 		    }		    
 	    }
 		return doc;
+	}
+	
+	/**
+	 * Used for debugging
+	 */
+	public String toString() {
+		return String.format("HDocument(name:%s path:%s docID:%s locale:%s rev:%d)", 
+				getName(), getPath(), getDocId(), getLocale(), getRevision());
 	}
 }
