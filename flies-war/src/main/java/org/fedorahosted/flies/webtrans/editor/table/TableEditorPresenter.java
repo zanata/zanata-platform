@@ -789,26 +789,38 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	@Override
 	public void gotoFirstPage() {
 		display.gotoFirstPage();
+		gotoPageHead();
 	}
 
 	@Override
 	public void gotoLastPage() {
 		display.gotoLastPage();
+		gotoPageHead();
 	}
 
 	@Override
 	public void gotoNextPage() {
 		display.gotoNextPage();
+		gotoPageHead();
 	}
 
 	@Override
 	public void gotoPage(int page, boolean forced) {
 		display.gotoPage(page, forced);
+		gotoPageHead();
 	}
 
 	@Override
 	public void gotoPreviousPage() {
 		display.gotoPreviousPage();
+		gotoPageHead();
+	}
+	
+	// Goto the page head.
+	// TODO: Need a more elegant approach.
+	private void gotoPageHead() {
+		display.gotoRow(0);
+		display.getTargetCellEditor().cancelEdit();
 	}
 
 	@Override
