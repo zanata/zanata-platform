@@ -12,7 +12,8 @@
   <packaging>war</packaging>
   <name>flies Webapp</name>
 
-  <properties>    
+  <properties>
+  	<version.jackson>1.5.0</version.jackson>    
     <!-- application properties -->
     <app.context>flies</app.context>  <!-- hint: same value as artifactId -->
     <app.database.name>flies</app.database.name>
@@ -76,7 +77,7 @@
         <env>dev</env>
         <env.debug>true</env.debug>
         <env.import.testdata>true</env.import.testdata>
-        <env.hibernate.hbm2ddl.auto>create-drop</env.hibernate.hbm2ddl.auto>
+        <env.hibernate.hbm2ddl.auto>update</env.hibernate.hbm2ddl.auto>
         <env.hibernate.show_sql>false</env.hibernate.show_sql>
         <env.hibernate.format_sql>true</env.hibernate.format_sql>
         <env.hibernate.default_batch_size>16</env.hibernate.default_batch_size>
@@ -681,6 +682,27 @@
        <groupId>org.jboss.resteasy</groupId>
        <artifactId>resteasy-jackson-provider</artifactId>
        <version>${version.resteasy}</version>
+    </dependency>    
+
+    <dependency>
+       <groupId>org.codehaus.jackson</groupId>
+       <artifactId>jackson-core-asl</artifactId>
+       <version>${version.jackson}</version>
+    </dependency>    
+    <dependency>
+       <groupId>org.codehaus.jackson</groupId>
+       <artifactId>jackson-mapper-asl</artifactId>
+       <version>${version.jackson}</version>
+    </dependency>    
+    <dependency>
+       <groupId>org.codehaus.jackson</groupId>
+       <artifactId>jackson-jaxrs</artifactId>
+       <version>${version.jackson}</version>
+    </dependency>    
+    <dependency>
+       <groupId>org.codehaus.jackson</groupId>
+       <artifactId>jackson-xc</artifactId>
+       <version>${version.jackson}</version>
     </dependency>    
 
     <!--
