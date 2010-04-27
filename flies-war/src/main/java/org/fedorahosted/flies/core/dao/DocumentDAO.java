@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.ws.rs.core.EntityTag;
+
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.TransUnitCount;
@@ -22,6 +24,10 @@ public class DocumentDAO {
 
 	@In
 	Session session;
+
+	public EntityTag getETag(HProjectContainer container, String id) {
+		return EntityTag.valueOf("x");
+	}
 	
 	public HDocument getByDocId(HProjectContainer container, String id){
 		return (HDocument) session.createCriteria(HDocument.class)
