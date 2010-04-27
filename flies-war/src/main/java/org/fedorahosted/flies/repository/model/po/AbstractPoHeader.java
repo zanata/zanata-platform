@@ -61,4 +61,15 @@ public abstract class AbstractPoHeader implements Serializable {
 		return entries;
 	}
 
+	/**
+	 * Used for debugging
+	 */
+	@Override
+	public String toString() {
+		return 
+			"document:"+getDocument()+
+			"comment:"+getComment()+
+			"entries:"+getEntries()+
+			"";
+	}
 }

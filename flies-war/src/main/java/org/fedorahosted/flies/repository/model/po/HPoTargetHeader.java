@@ -47,5 +47,17 @@ public class HPoTargetHeader extends AbstractPoHeader {
 	public HDocument getDocument() {
 		return document;
 	}
+	
+
+	/**
+	 * Used for debugging
+	 */
+	@Override
+	public String toString() {
+		return "HPoTargetHeader(" +
+			super.toString()+
+			"lang:"+getTargetLanguage()+
+			")";
+	}
 
 }

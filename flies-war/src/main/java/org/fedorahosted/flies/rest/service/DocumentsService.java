@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.rest.service;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -200,6 +201,7 @@ public class DocumentsService {
 				htf.getHistory().put(htf.getRevision(), history);
 				htf.setObsolete(true);
 			}
+			hDoc.getTextFlows().clear();
 			hDoc.setObsolete(true);
 			hDoc.setRevision(hDoc.getRevision() + 1);
 			docMap.remove(hDoc.getId());
