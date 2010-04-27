@@ -867,14 +867,6 @@
       <scope>provided</scope>
     </dependency>
     
-    <!--
-    <dependency>
-      <groupId>org.jboss.envers</groupId>
-      <artifactId>jboss-envers</artifactId>
-      <version>1.2.1.GA-hibernate-3.3</version>
-      <scope>provided</scope>
-    </dependency>
-    -->
     <!--  Testing dependencies -->
     
     <dependency>
@@ -1088,8 +1080,6 @@
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
-      <!-- 
-       -->
       <scope>provided</scope>
     </dependency>
 
@@ -1106,36 +1096,27 @@
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-incubator</artifactId>
       <version>2.0.1</version>
-      <!-- 
       <scope>provided</scope>
-       -->
     </dependency>
 
     <dependency>
       <groupId>net.customware.gwt.dispatch</groupId>
       <artifactId>gwt-dispatch</artifactId>
       <version>1.0.0</version>
-      <!-- 
-      <scope>provided</scope>
-       -->
     </dependency>
 
     <dependency>
       <groupId>net.customware.gwt.presenter</groupId>
       <artifactId>gwt-presenter</artifactId>
       <version>1.0.0</version>
-<!-- ErraiServiceConfigurator tries to load WebTransGinjector and its annotations
       <scope>provided</scope>
- -->
     </dependency>
 
     <dependency>
       <groupId>com.google.code.gwt-log</groupId>
       <artifactId>gwt-log</artifactId>
       <version>3.0.0</version>
-      <!-- 
       <scope>provided</scope>
-       -->
     </dependency>
 
 	<dependency>
@@ -1143,21 +1124,10 @@
 	    <artifactId>gwteventservice</artifactId>
 	</dependency>
 
-<!-- 
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId> 
-      <scope>compile</scope>
-    </dependency>
- -->
-
 	<dependency>
       <groupId>org.fedorahosted.flies</groupId>
       <artifactId>flies-gwt-api</artifactId>
       <version>${project.version}</version>
-      <!-- 
-      <scope>provided</scope>
-       -->
     </dependency>
 
     <dependency>
