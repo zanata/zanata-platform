@@ -1093,6 +1093,15 @@
       <scope>provided</scope>
     </dependency>
 
+	<!-- JAXB sources are needed for GWT compilation of JAXB annotated classes -->
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <version>2.2</version> 
+      <classifier>sources</classifier>
+      <scope>provided</scope>
+    </dependency>
+
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-incubator</artifactId>
