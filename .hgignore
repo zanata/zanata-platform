@@ -4,6 +4,7 @@ syntax: glob
 *.patch
 *.sedbak
 */target/*
+fliessearchindex/
 */fliessearchindex/*
 */test-output/*
 
