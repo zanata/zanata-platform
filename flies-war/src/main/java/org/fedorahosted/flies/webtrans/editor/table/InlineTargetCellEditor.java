@@ -60,7 +60,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 			// Set textArea back focused after the cloning.
 			textArea.setText(cellValue.getSource());
 			textArea.setFocus(true);
-			isFocused = true;
 			Log.info("InlineTargetCellEditor.java: Cloned content of source to target.");
 		}
 	};
