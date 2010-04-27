@@ -52,6 +52,12 @@ public interface NavigationMessages extends Messages {
 	@DefaultMessage("Esc")
 	String editCancelShortcut();
 	
+	@DefaultMessage("Clone")
+	String editClone();
+	
+	@DefaultMessage("NOT IMPLE YET")
+	String editCloneShortcut();
+	
 	@DefaultMessage("{0} ({1})")
 	String actionToolTip(String actionName, String shortcut);
 }
