@@ -41,6 +41,7 @@
     <version.seam>2.2.1.CR1</version.seam>
     <version.tennera>0.6</version.tennera>
     <version.googlecollect>1.0</version.googlecollect>
+  	<version.jackson>1.5.0</version.jackson>    
   </properties>
   
   <build>

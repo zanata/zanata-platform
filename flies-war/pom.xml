@@ -13,7 +13,6 @@
   <name>flies Webapp</name>
 
   <properties>
-  	<version.jackson>1.5.0</version.jackson>    
     <!-- application properties -->
     <app.context>flies</app.context>  <!-- hint: same value as artifactId -->
     <app.database.name>flies</app.database.name>
