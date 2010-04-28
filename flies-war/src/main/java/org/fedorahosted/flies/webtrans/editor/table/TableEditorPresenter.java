@@ -56,7 +56,6 @@ import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.gen2.event.shared.HandlerRegistration;
-import com.google.gwt.gen2.table.client.FixedWidthGrid;
 import com.google.gwt.gen2.table.client.TableModel;
 import com.google.gwt.gen2.table.client.TableModel.Callback;
 import com.google.gwt.gen2.table.client.TableModelHelper.Request;
@@ -65,7 +64,6 @@ import com.google.gwt.gen2.table.event.client.HasPageChangeHandlers;
 import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
 import com.google.gwt.gen2.table.event.client.PageChangeHandler;
 import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
@@ -96,7 +94,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		boolean isLastPage();
 		int getCurrentPage();
 		int getPageSize();
-		FixedWidthGrid getDataTable();
 	}
 
 	private DocumentId documentId;
@@ -783,36 +780,31 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	@Override
 	public void gotoFirstPage() {
 		display.gotoFirstPage();
-		gotoPageHead();
+		display.gotoRow(0);
 	}
 
 	@Override
 	public void gotoLastPage() {
 		display.gotoLastPage();
-		gotoPageHead();
+		display.gotoRow(0);
 	}
 
 	@Override
 	public void gotoNextPage() {
 		display.gotoNextPage();
-		gotoPageHead();
+		display.gotoRow(0);
 	}
 
 	@Override
 	public void gotoPage(int page, boolean forced) {
 		display.gotoPage(page, forced);
-		gotoPageHead();
+		display.gotoRow(0);
 	}
 
 	@Override
 	public void gotoPreviousPage() {
 		display.gotoPreviousPage();
-		gotoPageHead();
-	}
-	
-	// Goto the page head.
-	private void gotoPageHead() {
-		DOM.scrollIntoView( display.getDataTable().getWidget( 0, TableEditorTableDefinition.TARGET_COL ).getElement() );
+		display.gotoRow(0);
 	}
 
 	@Override

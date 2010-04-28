@@ -21,6 +21,7 @@ import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
 import com.google.gwt.gen2.table.event.client.RowSelectionEvent;
 import com.google.gwt.gen2.table.event.client.RowSelectionHandler;
 import com.google.gwt.gen2.table.event.client.TableEvent.Row;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -172,7 +173,15 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements
 
 	@Override
 	public void gotoRow(int row) {
-		editCell(row, TableEditorTableDefinition.TARGET_COL);
+		// Could get the boolean to be customizable variable.
+		gotoRow(row, false);
+	}
+	
+	private void gotoRow(int row, boolean andEdit) {
+		if (andEdit)
+			editCell(row, TableEditorTableDefinition.TARGET_COL);
+		else
+			DOM.scrollIntoView( getDataTable().getWidget( row, TableEditorTableDefinition.TARGET_COL ).getElement() );
 	}
 	
 	@Override
