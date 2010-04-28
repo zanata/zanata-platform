@@ -86,6 +86,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		void setContentFilter(ContentFilter<TransUnit> filter);
 		void clearContentFilter();
 		void gotoRow(int row);
+		void gotoRow(int row, boolean andEdit);
 		int getCurrentPageNumber();
 		TransUnit getTransUnitValue(int row);
 		InlineTargetCellEditor getTargetCellEditor();
@@ -780,31 +781,31 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	@Override
 	public void gotoFirstPage() {
 		display.gotoFirstPage();
-		display.gotoRow(0);
+		display.gotoRow(0, false);
 	}
 
 	@Override
 	public void gotoLastPage() {
 		display.gotoLastPage();
-		display.gotoRow(0);
+		display.gotoRow(0, false);
 	}
 
 	@Override
 	public void gotoNextPage() {
 		display.gotoNextPage();
-		display.gotoRow(0);
+		display.gotoRow(0, false);
 	}
 
 	@Override
 	public void gotoPage(int page, boolean forced) {
 		display.gotoPage(page, forced);
-		display.gotoRow(0);
+		display.gotoRow(0, false);
 	}
 
 	@Override
 	public void gotoPreviousPage() {
 		display.gotoPreviousPage();
-		display.gotoRow(0);
+		display.gotoRow(0, false);
 	}
 
 	@Override

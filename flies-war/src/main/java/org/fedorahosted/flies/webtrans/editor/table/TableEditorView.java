@@ -173,11 +173,11 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements
 
 	@Override
 	public void gotoRow(int row) {
-		// Could get the boolean to be customizable variable.
-		gotoRow(row, false);
+		editCell(row, TableEditorTableDefinition.TARGET_COL);
 	}
 	
-	private void gotoRow(int row, boolean andEdit) {
+	// Go to row location of the current page.
+	public void gotoRow(int row, boolean andEdit) {
 		if (andEdit)
 			editCell(row, TableEditorTableDefinition.TARGET_COL);
 		else
