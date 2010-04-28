@@ -5,16 +5,15 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.common.Namespaces;
 
-@XmlType(name="sourceResourceType", namespace=Namespaces.FLIES, propOrder={})
+@XmlType(name="sourceAsTargetResourceType", namespace=Namespaces.FLIES, propOrder={})
 @XmlRootElement(name="resource",namespace=Namespaces.FLIES)
-public class SourceResource extends AbstractContentTranslationResource<SourceTextFlow> {
+public class SourceAsTargetResource extends AbstractContentTranslationResource<SourceAsTargetTextFlow> {
 
-	public SourceResource() {
+	public SourceAsTargetResource() {
 	}
 
-	public SourceResource(String id) {
+	public SourceAsTargetResource(String id) {
 		super(id);
 	}
-	
 	
 }

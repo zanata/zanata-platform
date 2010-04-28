@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.rest.service;
 
 import java.io.InputStream;
+import java.util.Set;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -10,6 +11,8 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MediaType;
@@ -20,13 +23,14 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.MessageBodyReader;
 
 import org.apache.commons.lang.StringUtils;
+import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.core.dao.DocumentDAO;
 import org.fedorahosted.flies.core.dao.ProjectContainerDAO;
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.repository.model.HTextFlow;
 import org.fedorahosted.flies.rest.dto.v1.SourceResource;
-import org.fedorahosted.flies.rest.dto.v1.TextFlow;
+import org.fedorahosted.flies.rest.dto.v1.SourceTextFlow;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.validator.InvalidStateException;
@@ -49,6 +53,9 @@ public class TranslationResourcesService {
 	@PathParam("iterationSlug")
 	private String iterationSlug;
 
+	@QueryParam("ext")
+	Set<String> extensions;
+	
 	@In
 	ProjectContainerDAO projectContainerDAO;
 
@@ -92,12 +99,16 @@ public class TranslationResourcesService {
 
 	@Logger 
 	Log log;
+
 	
 	@PUT
 	@Path("/r/{id}/source")
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	@Restrict("#{identity.loggedIn}")
-	public Response putSource(@PathParam("id") String id, @HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch, InputStream messageBody) {
+	public Response putSource(
+			@PathParam("id") String id, 
+			@HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch, 
+			InputStream messageBody) {
 
 		HProjectContainer hProjectContainer = projectContainerDAO.getBySlug(
 				projectSlug, iterationSlug);
@@ -161,10 +172,26 @@ public class TranslationResourcesService {
 		}
 	}
 	
+	@Path("/r/{id}/target/{locale}")
+	public Response getTarget(
+		@PathParam("id") String id,
+		@PathParam("locale") LocaleId locale,
+		@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
+
+		return Response.ok().build();
+	}
+	
+	public Response getTargets() {
+		return Response.ok().build();
+	}
+
+	
 	@GET
 	@Path("/r/{id}/source")
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public Response getSource(@PathParam("id") String id, @HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
+	public Response getSource(
+			@PathParam("id") String id, 
+			@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
 
 		HProjectContainer hProjectContainer = projectContainerDAO.getBySlug(
 				projectSlug, iterationSlug);
@@ -192,7 +219,7 @@ public class TranslationResourcesService {
 		transfer(doc, entity);
 
 		for(HTextFlow htf : doc.getTextFlows()) {
-			TextFlow tf = new TextFlow(htf.getResId());
+			SourceTextFlow tf = new SourceTextFlow(htf.getResId());
 			transfer(htf, tf);
 			entity.getTextFlows().add(tf);
 		}
@@ -212,11 +239,13 @@ public class TranslationResourcesService {
 		to.setContentType(from.getContentType());
 	}
 	
-	public static void transfer(HTextFlow from, TextFlow to) {
+	public static void transfer(HTextFlow from, SourceTextFlow to) {
 		to.setContent(from.getContent());
 		// TODO
 		//to.setLang(from.get)
 	}
+
+	
 	
 	private <T> T unmarshallEntity(Class<T> entityClass, InputStream is) {
 		MessageBodyReader<T> reader = SeamResteasyProviderFactory.getInstance()
@@ -232,7 +261,8 @@ public class TranslationResourcesService {
 			entity = reader.readFrom(entityClass, entityClass, entityClass
 					.getAnnotations(), requestContentType, headers, is);
 		} catch (Exception e) {
-			throw new RuntimeException("Unable to unmarshall request body");
+			throw new WebApplicationException(
+					Response.status(Status.BAD_REQUEST).entity("Unable to read request body").build());
 		}
 		return entity;
 	}
