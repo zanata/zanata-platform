@@ -3,7 +3,6 @@ package org.fedorahosted.flies.webtrans.editor.table;
 import static org.fedorahosted.flies.webtrans.editor.table.TableConstants.MAX_PAGE_ROW;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import net.customware.gwt.dispatch.client.DispatchAsync;
@@ -12,13 +11,11 @@ import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
-import org.drools.spi.Constraint.ConstraintType;
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.EditState;
 import org.fedorahosted.flies.gwt.auth.AuthenticationError;
 import org.fedorahosted.flies.gwt.auth.AuthorizationError;
 import org.fedorahosted.flies.gwt.auth.Identity;
-import org.fedorahosted.flies.gwt.common.WorkspaceContext;
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.gwt.model.TransUnitId;
@@ -44,7 +41,6 @@ import org.fedorahosted.flies.webtrans.client.events.TransUnitSelectionEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
-import org.fedorahosted.flies.webtrans.client.ui.Pager;
 import org.fedorahosted.flies.webtrans.editor.DocumentEditorPresenter;
 import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
 import org.fedorahosted.flies.webtrans.editor.filter.ContentFilter;
@@ -59,18 +55,15 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.event.shared.HandlerRegistration;
+import com.google.gwt.gen2.table.client.FixedWidthGrid;
 import com.google.gwt.gen2.table.client.TableModel;
 import com.google.gwt.gen2.table.client.TableModel.Callback;
 import com.google.gwt.gen2.table.client.TableModelHelper.Request;
 import com.google.gwt.gen2.table.client.TableModelHelper.SerializableResponse;
 import com.google.gwt.gen2.table.event.client.HasPageChangeHandlers;
 import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
-import com.google.gwt.gen2.table.event.client.PageChangeEvent;
 import com.google.gwt.gen2.table.event.client.PageChangeHandler;
-import com.google.gwt.gen2.table.event.client.PageCountChangeEvent;
 import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
@@ -103,6 +96,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 		boolean isLastPage();
 		int getCurrentPage();
 		int getPageSize();
+		FixedWidthGrid getDataTable();
 	}
 
 	private DocumentId documentId;
@@ -817,10 +811,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	}
 	
 	// Goto the page head.
-	// TODO: Need a more elegant approach.
 	private void gotoPageHead() {
-		display.gotoRow(0);
-		display.getTargetCellEditor().cancelEdit();
+		DOM.scrollIntoView( display.getDataTable().getWidget( 0, TableEditorTableDefinition.TARGET_COL ).getElement() );
 	}
 
 	@Override
