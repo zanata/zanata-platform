@@ -13,10 +13,13 @@ SET(PROJECT_DESCRIPTION "Online translator collaboration system")
 SET(BASE_URL "http://hudson.englab.bne.redhat.com/")
 SET(SELENIUM_SERVER_ARGS )
 SET(RESULT_DIR results)
+SET(BROWSERS_TO_TEST firefox googlechrome)
+
+#===================================================================
+# Search Paths
 SET(MAVEN_REPOSITORY "$ENV{HOME}/.m2/repository/")
 SET(MAVEN_SELENIUM_SERVER_PATH "${MAVEN_REPOSITORY}/org/seleniumhq/selenium/server/selenium-server/")
 SET(SELENIUM_SEARCH_PATHS ${MAVEN_SELENIUM_SERVER_PATH} /usr/share/java)
-SET(BROWSERS_TO_TEST firefox googlechrome)
 
 SET(firefox_SEARCH_PATHS /usr/lib64/firefox-3.6 /usr/lib/firefox-3.6 /usr/lib64/firefox-3.5 /usr/lib/firefox-3.5
     /usr/lib64/firefox-3.4 /usr/lib/firefox-3.4 /usr/lib64/firefox-3 /usr/lib/firefox-3
@@ -26,6 +29,8 @@ SET(opera_SEARCH_PATHS /usr/lib64/opera /usr/lib/opera /opt/opera)
 
 SET(googlechrome_SEARCH_PATHS /opt/google/chrome)
 
+#===================================================================
+# Macro FIND_FILE_IN_DIRS
 MACRO(FIND_FILE_IN_DIRS var pattern searchPaths)
     FOREACH(fileDir ${searchPaths})
         IF (EXISTS ${fileDir})
@@ -61,40 +66,67 @@ IF( ${SELENIUM_SERVER_CMD} STREQUAL "SELENIUM_SERVER_CMD-NOTFOUND" )
     ENDIF()
     SET(SELENIUM_SERVER_CMD java -jar ${SELENIUM_SERVER_JAR})
 ENDIF()
-MESSAGE("SELENIUM_SERVER_CMD=|${SELENIUM_SERVER_CMD}|")
-
-
+MESSAGE("SELENIUM_SERVER_CMD=${SELENIUM_SERVER_CMD}")
 
 ### Find the browser binary
 FIND_FILE_IN_DIRS(firefox_BIN firefox "${firefox_SEARCH_PATHS}")
 MESSAGE("firefox_BIN=${firefox_BIN}")
  
 #FIND_FILE_IN_DIRS(googlechrome_BIN chrome "${googlechrome_SEARCH_PATHS}")
-MESSAGE("googlechrome_BIN=${googlechrome_BIN}")
+#MESSAGE("googlechrome_BIN=${googlechrome_BIN}")
 
-FIND_FILE_IN_DIRS(opera_BIN opera "${opera_SEARCH_PATHS}")
-MESSAGE("opera_BIN=${opera_BIN}")
-
-
-####################################################################
-# Sub directories
-####################################################################
-# ADD_SUBDIRECTORY(resources)
+#FIND_FILE_IN_DIRS(opera_BIN opera "${opera_SEARCH_PATHS}")
+#MESSAGE("opera_BIN=${opera_BIN}")
 
 ####################################################################
 # Test Suites.
 ####################################################################
+
+#===================================================================
+# Generate test suites.
+SET(TEST_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/resources)
+FILE(GLOB_RECURSE TEST_SUITES_RAW  "0-*.html")
+
+#MESSAGE("TEST_SUITES_RAW=${TEST_SUITES_RAW}")
+SET(LI_FILE LoginBasicTest.html)
+SET(LI_PATTERN_MATCH "Test Suite</b></td></tr>")
+SET(LI_PATTERN_REPLACE "${LI_PATTERN_MATCH}\n<tr><td><a href=\"${LI_FILE}\">Login</a></td></tr>")
+
+SET(LO_FILE LogoutBasicTest.html)
+SET(LO_PATTERN_MATCH "</tbody>")
+SET(LO_PATTERN_REPLACE "<tr><td><a href=\"${LO_FILE}\">Logout</a></td></tr>\n${LO_PATTERN_MATCH}")
+
+FOREACH(testSuiteRaw ${TEST_SUITES_RAW})
+    GET_FILENAME_COMPONENT(testSuitePath ${testSuiteRaw} PATH)
+    GET_FILENAME_COMPONENT(testSuiteNameOrig ${testSuiteRaw} NAME_WE)
+
+    STRING(REGEX REPLACE "^0-" "" testSuiteName ${testSuiteNameOrig})
+    FILE(READ ${testSuiteRaw} testSuite_content)
+
+    STRING(REPLACE "${LI_PATTERN_MATCH}" "${LI_PATTERN_REPLACE}" testSuite_content_LI "${testSuite_content}")
+    FILE(WRITE "${testSuitePath}/1-${testSuiteName}.html" ${testSuite_content_LI})
+    EXECUTE_PROCESS(COMMAND ln -sf  "${TEST_ROOT}/${LI_FILE}" "${testSuitePath}/${LI_FILE}")
+    
+    STRING(REPLACE "${LO_PATTERN_MATCH}" "${LO_PATTERN_REPLACE}" testSuite_content_LO "${testSuite_content_LI}")
+    FILE(WRITE "${testSuitePath}/3-${testSuiteName}.html" ${testSuite_content_LO})
+    EXECUTE_PROCESS(COMMAND ln -sf  "${TEST_ROOT}/${LO_FILE}" "${testSuitePath}/${LO_FILE}")
+ENDFOREACH()
+
+FILE(GLOB_RECURSE TEST_SUITES_AUTO  RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/resources "3-*.html")
+#MESSAGE("TEST_SUITES_AUTO=${TEST_SUITES_AUTO}")
+
+
+#===================================================================
+# Make test rules.
 ENABLE_TESTING()
 
 FOREACH(browser ${BROWSERS_TO_TEST} )
-    FILE(GLOB_RECURSE TEST_SUITES  RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/resources "0-*.html")
-    MESSAGE("TEST_SUITES=${TEST_SUITES}")
     IF (${browser} STREQUAL "firefox")
          SET(BROWSER_STR "*${browser} ${${browser}_BIN}")
     ELSE()
          SET(BROWSER_STR "*${browser}")
     ENDIF()
-    FOREACH(testSuite ${TEST_SUITES})
+    FOREACH(testSuite ${TEST_SUITES_AUTO})
         GET_FILENAME_COMPONENT(testSuitePath ${testSuite} PATH)
         GET_FILENAME_COMPONENT(testSuiteNameOrig ${testSuite} NAME_WE)
         STRING(REGEX REPLACE "^[0-9]-" "" testSuiteName ${testSuiteNameOrig})
@@ -104,8 +136,5 @@ FOREACH(browser ${BROWSERS_TO_TEST} )
              ${CMAKE_CURRENT_SOURCE_DIR}/${RESULT_DIR}/${testSuiteName}_on_${browser}.result.html )
    ENDFOREACH()
 ENDFOREACH()
-#        ADD_TEST("TranslationEditor_Editing" selenium-server
-#             -htmlsuite '*firefox' '${BASE_URL}' resources/TranslationEditor/Editing/0-TranslationEditor_Editing.html
-#             results/TranslationEditor_Editing.result.html )
 
 
