@@ -214,7 +214,7 @@ public class UploadPoTask extends Task implements Subcommand {
 //					System.out.append(new String(out.toByteArray()));
 					sources[i] = new StreamSource(new ByteArrayInputStream(out.toByteArray()),"");
 				}
-				SchemaFactory sf = SchemaFactory.newInstance( XMLConstants.W3C_XML_SCHEMA_NS_URI );
+				SchemaFactory sf = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
 				m.setSchema(sf.newSchema(sources));
 				m.marshal(docs, new DefaultHandler());
 			}
