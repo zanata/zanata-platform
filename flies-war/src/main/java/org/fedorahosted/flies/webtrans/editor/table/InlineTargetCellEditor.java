@@ -42,9 +42,31 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 	 * Default style name.
 	 */
 	public static final String DEFAULT_STYLENAME = "gwt-TargetCellEditor";
+	
+	/**
+	 * The click listener used to clone.
+	 */
+	private ClickHandler cloneHandler = new ClickHandler() {
+		public void onClick(ClickEvent event) {
+			textArea.setText(cellValue.getSource());
+			textArea.setFocus(true);
+			Log.info("InlineTargetCellEditor.java: Clone action.");
+		}
+	};
+	
+	/**
+	 * The click listener used to clone and save.
+	 */
+	private ClickHandler cloneAndSaveHandler = new ClickHandler() {
+		public void onClick(ClickEvent event) {
+			cloneHandler.onClick(null);
+			acceptHandler.onClick(null);
+			Log.info("InlineTargetCellEditor.java: Clone-and-save action (The last clone action is called by this action).");
+		}
+	};
 
 	/**
-	 * The click listener used to accept.
+	 * The click listener used to cancel.
 	 */
 	private ClickHandler cancelHandler = new ClickHandler() {
 		public void onClick(ClickEvent event) {
@@ -52,18 +74,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 		}
 	};
 
-	/**
-	 * The click listener used to accept.
-	 */
-	private ClickHandler cloneHandler = new ClickHandler() {
-		public void onClick(ClickEvent event) {
-			// Set textArea back focused after the cloning.
-			textArea.setText(cellValue.getSource());
-			textArea.setFocus(true);
-			Log.info("InlineTargetCellEditor.java: Cloned content of source to target.");
-		}
-	};
-	
 	private final CheckBox toggleFuzzy;
 	
 	/**
@@ -201,16 +211,21 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 		// Add content widget
 		toggleFuzzy = new CheckBox("Fuzzy");
 		operationsPanel.add(toggleFuzzy);
+				
+		PushButton cloneButton = new PushButton(new Image(), cloneHandler);
+		cloneButton.setText( messages.editClone() );
+		cloneButton.setTitle( messages.editCloneShortcut() );
+		operationsPanel.add(cloneButton);
+
+		PushButton cloneAndSaveButton = new PushButton(new Image(), cloneAndSaveHandler);
+		cloneAndSaveButton.setText( messages.editCloneAndSave() );
+		cloneAndSaveButton.setTitle( messages.editCloneAndSaveShortcut() );
+		operationsPanel.add(cloneAndSaveButton);
 		
 		PushButton cancelButton = new PushButton(images.cellEditorCancel().createImage(),cancelHandler);
 		cancelButton.setText( messages.editCancel() );
 		cancelButton.setTitle( messages.editCancelShortcut() );
 		operationsPanel.add(cancelButton);
-		
-		PushButton cloneButton = new PushButton(images.cellEditorCancel().createImage(),cloneHandler);
-		cloneButton.setText( messages.editClone() );
-		cloneButton.setTitle( messages.editCloneShortcut() );
-		operationsPanel.add(cloneButton);
 
 		PushButton acceptButton = new PushButton(images.cellEditorAccept().createImage(),acceptHandler);
 		acceptButton.setText( messages.editSave() );
