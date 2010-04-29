@@ -55,8 +55,14 @@ public interface NavigationMessages extends Messages {
 	@DefaultMessage("Clone")
 	String editClone();
 	
-	@DefaultMessage("NOT IMPLE YET")
+	@DefaultMessage("[TODO: add shortcut keys]")
 	String editCloneShortcut();
+	
+	@DefaultMessage("Clone & Save")
+	String editCloneAndSave();
+	
+	@DefaultMessage("[TODO: add shortcut keys]")
+	String editCloneAndSaveShortcut();
 	
 	@DefaultMessage("{0} ({1})")
 	String actionToolTip(String actionName, String shortcut);
