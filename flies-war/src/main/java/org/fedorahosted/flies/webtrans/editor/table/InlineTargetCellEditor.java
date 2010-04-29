@@ -193,6 +193,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 					handleNextState(ContentState.New);
 				} else if(event.isAltKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEUP) { // alt-up
 					handlePrevState(ContentState.New);
+				} else if(event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_HOME) { // ctrl-home
+					cloneHandler.onClick(null);
+				} else if(event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_END) { // ctrl-end
+					cloneAndSaveHandler.onClick(null);
 				}
 			}
 
