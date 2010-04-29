@@ -686,22 +686,18 @@
     <dependency>
        <groupId>org.codehaus.jackson</groupId>
        <artifactId>jackson-core-asl</artifactId>
-       <version>${version.jackson}</version>
     </dependency>    
     <dependency>
        <groupId>org.codehaus.jackson</groupId>
        <artifactId>jackson-mapper-asl</artifactId>
-       <version>${version.jackson}</version>
     </dependency>    
     <dependency>
        <groupId>org.codehaus.jackson</groupId>
        <artifactId>jackson-jaxrs</artifactId>
-       <version>${version.jackson}</version>
     </dependency>    
     <dependency>
        <groupId>org.codehaus.jackson</groupId>
        <artifactId>jackson-xc</artifactId>
-       <version>${version.jackson}</version>
     </dependency>    
 
     <!--
@@ -935,12 +931,6 @@
 <!-- needed by DBUnitImporter!  TODO: can we use a non-deployed scope like provided? 
       <scope>test</scope>
  -->
-    </dependency>
-
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-all</artifactId>
-      <scope>test</scope>
     </dependency>
 
     <!-- Dependencies provided by JBoss As 4.2.3 -->
