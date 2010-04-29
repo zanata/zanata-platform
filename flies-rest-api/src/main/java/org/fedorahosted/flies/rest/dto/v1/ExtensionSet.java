@@ -7,9 +7,10 @@ import javax.xml.bind.annotation.XmlType;
 import org.fedorahosted.flies.common.Namespaces;
 
 
-@SuppressWarnings("serial")
 @XmlType(name="extensionsType", namespace=Namespaces.FLIES, propOrder={})
 public class ExtensionSet extends HashSet<Extension> {
+
+	private static final long serialVersionUID = 8077674295531213159L;
 
 	public Extension findById(String id) {
 		for(Extension e : this) {

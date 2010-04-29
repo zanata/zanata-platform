@@ -12,8 +12,8 @@ public class SourceAsTargetResource extends AbstractContentTranslationResource<S
 	public SourceAsTargetResource() {
 	}
 
-	public SourceAsTargetResource(String id) {
-		super(id);
+	public SourceAsTargetResource(String id, String name) {
+		super(id, name);
 	}
 	
 }

@@ -215,7 +215,7 @@ public class TranslationResourcesService {
 			return Response.status(Status.NOT_FOUND).entity("document not found").build();
 		}
 
-		SourceResource entity = new SourceResource(doc.getDocId());
+		SourceResource entity = new SourceResource(doc.getDocId(), doc.getName());
 		transfer(doc, entity);
 
 		for(HTextFlow htf : doc.getTextFlows()) {

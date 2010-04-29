@@ -12,8 +12,8 @@ public class SourceResource extends AbstractContentTranslationResource<SourceTex
 	public SourceResource() {
 	}
 
-	public SourceResource(String id) {
-		super(id);
+	public SourceResource(String id, String name) {
+		super(id, name);
 	}
 	
 	

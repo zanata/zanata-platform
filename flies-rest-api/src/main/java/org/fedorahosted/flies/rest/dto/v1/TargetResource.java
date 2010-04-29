@@ -12,8 +12,8 @@ public class TargetResource extends AbstractContentTranslationResource<MultiTarg
 	public TargetResource() {
 	}
 
-	public TargetResource(String id) {
-		super(id);
+	public TargetResource(String id, String name) {
+		super(id, name);
 	}
 	
 }

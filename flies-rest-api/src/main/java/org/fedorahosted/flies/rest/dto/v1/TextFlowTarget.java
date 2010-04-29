@@ -1,17 +1,14 @@
 package org.fedorahosted.flies.rest.dto.v1;
 
-import java.util.Set;
-
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.Namespaces;
-import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
 
 @XmlType(name="textFlowTargetType", namespace=Namespaces.FLIES, propOrder={"translator", "extensions"})
 @XmlRootElement(name="target", namespace=Namespaces.FLIES)
@@ -53,10 +50,8 @@ public class TextFlowTarget {
 	}
 	
 	@XmlElementWrapper(name="extensions", namespace=Namespaces.FLIES, required=false)
-	@XmlElements({
-		@XmlElement(name="po-header", type=PoHeader.class, namespace=Namespaces.FLIES)
-		})
-	public Set<Extension> getExtensions() {
+	@XmlAnyElement(lax=true)
+	public ExtensionSet getExtensions() {
 		if(extensions == null)
 			extensions = new ExtensionSet();
 		return extensions;
