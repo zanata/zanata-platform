@@ -1,14 +1,7 @@
 package org.fedorahosted.flies.rest.dto.v1;
 
 import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.Arrays;
-
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.ValidationException;
-
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -16,7 +9,6 @@ import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
 import org.junit.Before;
 import org.junit.Test;
 
-import sun.misc.FpUtils;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.matchers.JUnitMatchers.*;
