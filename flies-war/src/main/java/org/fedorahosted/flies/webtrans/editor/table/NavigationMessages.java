@@ -55,13 +55,13 @@ public interface NavigationMessages extends Messages {
 	@DefaultMessage("Clone")
 	String editClone();
 	
-	@DefaultMessage("[TODO: add shortcut keys]")
+	@DefaultMessage("Ctrl+Home")
 	String editCloneShortcut();
 	
 	@DefaultMessage("Clone & Save")
 	String editCloneAndSave();
 	
-	@DefaultMessage("[TODO: add shortcut keys]")
+	@DefaultMessage("Ctrl+End")
 	String editCloneAndSaveShortcut();
 	
 	@DefaultMessage("{0} ({1})")
