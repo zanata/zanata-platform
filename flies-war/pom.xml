@@ -13,7 +13,8 @@
   <name>flies Webapp</name>
 
   <properties>
-  	<version.jackson>1.5.0</version.jackson>    
+  	<version.jackson>1.5.0</version.jackson>
+  	<version.hibernate>3.3.1.GA</version.hibernate>
     <!-- application properties -->
     <app.context>flies</app.context>  <!-- hint: same value as artifactId -->
     <app.database.name>flies</app.database.name>
@@ -828,7 +829,7 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
-      <version>3.3.1.GA</version>
+      <version>${version.hibernate}</version>
     </dependency>
 
     <dependency>
@@ -854,11 +855,10 @@
         </exclusion>
       </exclusions>
     </dependency>
-    
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-jmx</artifactId>
-      <version>3.3.1.GA</version>
+      <version>${version.hibernate}</version>
     </dependency>
 
     <dependency>
@@ -1136,7 +1136,22 @@
       <version>0.5</version>
       <scope>compile</scope>
     </dependency>
-    
+
+    <dependency>
+      <groupId>net.sf.okapi.lib</groupId>
+      <artifactId>okapi-lib-search</artifactId>
+      <version>0.7-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <!-- okapi-lib-search would otherwise use lucene 3.0.0 -->
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-core</artifactId>
+      <version>2.9.2</version>
+      <scope>compile</scope>
+    </dependency>
+
     <!-- test -->
     <dependency>
       <groupId>junit</groupId>
@@ -1177,6 +1192,15 @@
       <releases>
         <checksumPolicy>ignore</checksumPolicy>
       </releases>
+    </repository>
+
+    <repository>
+      <id>openl10n-repo</id>
+      <name>openl10n-repo</name>
+      <url>http://openl10n.net/maven2/</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
     </repository>
     
   </repositories>

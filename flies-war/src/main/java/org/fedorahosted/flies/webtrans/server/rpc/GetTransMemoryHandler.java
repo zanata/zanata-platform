@@ -5,14 +5,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.util.Version;
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.gwt.model.TransMemory;
@@ -22,10 +21,10 @@ import org.fedorahosted.flies.gwt.rpc.GetTranslationMemory.SearchType;
 import org.fedorahosted.flies.repository.model.HSimpleComment;
 import org.fedorahosted.flies.repository.model.HTextFlow;
 import org.fedorahosted.flies.repository.model.HTextFlowTarget;
+import org.fedorahosted.flies.search.DefaultNgramAnalyzer;
 import org.fedorahosted.flies.security.FliesIdentity;
 import org.fedorahosted.flies.util.ShortString;
 import org.fedorahosted.flies.webtrans.server.ActionHandlerFor;
-import org.hibernate.Session;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.jboss.seam.ScopeType;
@@ -45,11 +44,9 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 	@Logger 
 	private Log log;
 	
-	@In Session session;
-    
 	@In
 	private FullTextEntityManager entityManager;
-    
+	
 	@Override
 	public GetTranslationMemoryResult execute(GetTranslationMemory action,
 			ExecutionContext context) throws ActionException {
@@ -68,11 +65,13 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 		String luceneQuery;
 		switch (searchType) {
 		case RAW:
+			// TODO search by normal tokens/StandardAnalyzer?
 			luceneQuery = searchText;
 			break;
 
 		case FUZZY:
-			luceneQuery = toFuzzyLuceneQuery(searchText);
+			// search by N-grams
+			luceneQuery = searchText;
 			break;
 			
 		case EXACT:
@@ -146,7 +145,8 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
     {
 		// TODO filter by status Approved and by locale
         // TODO wildcard escaping?  stemming?  fuzzy matching?
-        QueryParser parser = new QueryParser("content", new StandardAnalyzer());
+        QueryParser parser = new QueryParser(Version.LUCENE_29, "content", 
+        		new DefaultNgramAnalyzer());
         Query luceneQuery = parser.parse(searchText);
         return entityManager.createFullTextQuery(luceneQuery, HTextFlow.class);
     }

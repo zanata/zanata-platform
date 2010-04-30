@@ -23,8 +23,10 @@ import org.fedorahosted.flies.repository.model.po.PoUtility;
 import org.fedorahosted.flies.rest.dto.TextFlow;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.po.PotEntryData;
+import org.fedorahosted.flies.search.DefaultNgramAnalyzer;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
+import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
@@ -161,7 +163,7 @@ public class HTextFlow implements Serializable {
 	
 	@NotNull
 	@Type(type = "text")
-	@Field(index=Index.TOKENIZED)
+	@Field(index=Index.TOKENIZED, analyzer=@Analyzer(impl=DefaultNgramAnalyzer.class))
 	public String getContent() {
 		return content;
 	}
