@@ -83,7 +83,7 @@ public class DocumentsService {
 				projectSlug, iterationSlug);
 		if (hContainer == null)
 			return containerNotFound();
-		Map<String, HDocument> docMap = hContainer.getDocuments();
+		Map<String, HDocument> docMap = hContainer.getAllDocuments();
 		for (Document doc : documents.getDocuments()) {
 			// if doc already exists, load it and update it, but don't create it
 			HDocument hDoc = docMap.get(doc.getId());
@@ -98,6 +98,7 @@ public class DocumentsService {
 				log.info("POST updating HDocument with id {0}", doc.getId());
 			}
 
+			hDoc.setObsolete(false);
 			docMap.put(hDoc.getDocId(), hDoc);
 			// TODO handle invalid data. See put()
 			session.save(hDoc);
