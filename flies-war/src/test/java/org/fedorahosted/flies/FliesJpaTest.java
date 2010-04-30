@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.repository.model;
+package org.fedorahosted.flies;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
