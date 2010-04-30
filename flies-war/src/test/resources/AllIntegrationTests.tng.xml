@@ -10,13 +10,6 @@
 
   <parameter name="binaryDir" value=""/>
 
-  <test name="Model">
-    <packages>
-      <package name="org.fedorahosted.flies.test.model"/>
-      <package name="org.fedorahosted.flies.repository.model"/>
-    </packages>
-  </test>
-
   <test name="REST">
     <packages>
       <package name="org.fedorahosted.flies.rest.service"/>

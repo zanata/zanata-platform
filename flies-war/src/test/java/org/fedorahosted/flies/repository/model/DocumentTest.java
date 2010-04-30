@@ -16,8 +16,8 @@ import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.core.model.HProjectSeries;
 import org.testng.annotations.Test;
 
-@Test(groups = { "jpa-tests" })
-public class DocumentSeamTest extends FliesDbunitJpaTest {
+@Test(groups = { "jpa-tests" }, enabled=false)
+public class DocumentTest extends FliesDbunitJpaTest {
 
 	protected void prepareDBUnitOperations() {
 		beforeTestOperations.add(new DataSetOperation(
