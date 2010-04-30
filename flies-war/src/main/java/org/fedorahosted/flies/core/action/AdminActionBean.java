@@ -52,6 +52,7 @@ public class AdminActionBean {
     private void reindex (Class<?> clazz) {
         log.info("Re-indexing {0}", clazz);
         try {
+        	session.purgeAll(clazz);
             session.setFlushMode(FlushMode.MANUAL);
             session.setCacheMode(CacheMode.IGNORE);
             Transaction transaction = session.beginTransaction();
@@ -71,7 +72,7 @@ public class AdminActionBean {
             results.close();
             transaction.commit();
         } catch (Exception e) {
-                log.warn("Unable to index object of {0}", e, clazz);
+                log.warn("Unable to index objects of type {0}", e, clazz.getName());
         }
     }
 	

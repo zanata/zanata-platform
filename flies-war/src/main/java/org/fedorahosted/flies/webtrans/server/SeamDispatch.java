@@ -117,6 +117,10 @@ public class SeamDispatch implements Dispatch {
 		} catch(AuthorizationException e) {
 			ctx.rollback();
 			throw new AuthorizationError(e.getMessage());
+		} catch(Throwable e) {
+			ctx.rollback();
+			log.error("Error dispatching action: "+e, e);
+			throw new ActionException(e.getMessage());
 		}
 	}
 

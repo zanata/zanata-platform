@@ -58,4 +58,6 @@
 	    <HProject_Maintainer personId="3" 
                              projectId="1"
         />
+		<!-- Tell DbUnit to delete any existing documents -->
+		<HDocument />
 </dataset>
