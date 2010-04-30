@@ -539,9 +539,7 @@
 					</additionalClasspathElements>
 					<childDelegation>true</childDelegation>
 					<useSystemClassLoader>true</useSystemClassLoader>
-					<argLine>-Djava.endorsed.dirs=${project.build.testOutputDirectory}/endorsed
-						-Dsun.lang.ClassLoader.allowArraySyntax=true</argLine>
-
+					<argLine>-Djava.endorsed.dirs=${project.build.testOutputDirectory}/endorsed -Dsun.lang.ClassLoader.allowArraySyntax=true</argLine>
 				</configuration>
 				<executions>
 					<execution>
