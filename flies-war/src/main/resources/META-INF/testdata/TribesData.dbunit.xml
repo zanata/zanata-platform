@@ -154,18 +154,4 @@
                 chiefId="1" 
                 localeId="zh-TW"
         />
-		<HTribe id="24"
-	          versionNum="1"
-                creationDate="2009-01-14 11:39:00"
-                lastChanged="2009-01-14 11:39:00"
-                chiefId="1" 
-                localeId="ja"
-		/>
-		<HTribe id="25"
-	          versionNum="1"
-                creationDate="2010-01-25 00:00:00"
-                lastChanged="2010-01-25 00:00:00"
-                chiefId="1" 
-                localeId="da"
-		/>
 </dataset>
