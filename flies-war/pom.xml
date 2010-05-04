@@ -14,7 +14,7 @@
 	<name>flies Webapp</name>
 
 	<properties>
-  	<version.hibernate>3.3.1.GA</version.hibernate>
+		<version.hibernate>3.3.1.GA</version.hibernate>
 		<!-- application properties -->
 		<app.context>flies</app.context>  <!-- hint: same value as artifactId -->
 		<app.database.name>flies</app.database.name>
@@ -437,30 +437,6 @@
 				</executions>
 			</plugin>
 
-			<plugin>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>javax.xml.bind</groupId>
-									<artifactId>jaxb-api</artifactId>
-									<version>2.1</version>
-								</artifactItem>
-							</artifactItems>
-							<outputDirectory>${project.build.testOutputDirectory}/endorsed</outputDirectory>
-						</configuration>
-						<id>download-jaxb-api</id>
-						<phase>process-test-resources</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-					</execution>
-
-				</executions>
-			</plugin>
-
 			<!--
 				tell mvn eclipse:eclipse to include config for the GWT Eclipse
 				plugin
@@ -579,14 +555,9 @@
 		</dependency>
 
 		<dependency>
+			<!-- TODO this should be excluded in production -->
 			<groupId>org.jboss.seam</groupId>
 			<artifactId>jboss-seam-debug</artifactId>
-			<version>${version.seam}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.seam</groupId>
-			<artifactId>jboss-seam-ioc</artifactId>
 			<version>${version.seam}</version>
 		</dependency>
 
@@ -596,23 +567,14 @@
 			<version>${version.seam}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.jboss.seam</groupId>
-			<artifactId>jboss-seam-remoting</artifactId>
-			<version>${version.seam}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>dom4j</groupId>
-					<artifactId>dom4j</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+		<!-- RestEasy dependencies -->
 
 		<dependency>
 			<groupId>org.jboss.seam</groupId>
 			<artifactId>jboss-seam-resteasy</artifactId>
 			<version>${version.seam}</version>
 			<exclusions>
+				<!-- We use Jackson for json -->
 				<exclusion>
 					<groupId>org.jboss.resteasy</groupId>
 					<artifactId>resteasy-jettison-provider</artifactId>
@@ -621,49 +583,10 @@
 		</dependency>
 
 		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-			<version>3.1</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxrs</artifactId>
 			<version>${version.resteasy}</version>
 			<exclusions>
-				<exclusion>
-					<groupId>commons-codec</groupId>
-					<artifactId>commons-codec</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.sun.xml.bind</groupId>
-					<artifactId>jaxb-impl</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>javax.annotation</groupId>
-					<artifactId>jsr250-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-httpclient</groupId>
-					<artifactId>commons-httpclient</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>tjws</groupId>
-					<artifactId>webserver</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.scannotation</groupId>
-					<artifactId>scannotation</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-simple</artifactId>
-				</exclusion>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
 					<artifactId>jcl-over-slf4j</artifactId>
@@ -703,13 +626,7 @@
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-xc</artifactId>
 		</dependency>
-
-		<!--
-			Available Seam artifacts as of 2.1.2-SNAPSHOT: jboss-seam-debug
-			jboss-seam-excel jboss-seam-gen jboss-seam-ioc jboss-seam-jbas5
-			jboss-seam-jul jboss-seam-mail jboss-seam-pdf jboss-seam-remoting
-			jboss-seam-resteasy jboss-seam-rss jboss-seam-ui jboss-seam-wicket
-		-->
+		
 		<!--  Drools -->
 
 		<dependency>
@@ -744,85 +661,13 @@
 			<version>${version.richfaces}</version>
 		</dependency>
 
-		<!-- We use a newer version of hibernate -->
+		<!-- Hibernate / JPA -->
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-search</artifactId>
 			<version>3.1.1.GA</version>
 		</dependency>
-
-		<!--  Other -->
-
-		<dependency>
-			<groupId>org.dbunit</groupId>
-			<artifactId>dbunit</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.codehaus.groovy</groupId>
-			<artifactId>groovy-all</artifactId>
-			<version>1.5.4</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.tuckey</groupId>
-			<artifactId>urlrewritefilter</artifactId>
-			<version>3.0.4</version>
-		</dependency>
-
-		<!-- Flies-specific dependencies -->
-
-		<dependency>
-			<groupId>org.fedorahosted.flies</groupId>
-			<artifactId>flies-common-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.fedorahosted.flies</groupId>
-			<artifactId>flies-rest-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.fedorahosted.flies</groupId>
-			<artifactId>flies-gwt-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.ibm.icu</groupId>
-			<artifactId>icu4j</artifactId>
-			<version>4.0.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.3</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.google.collections</groupId>
-			<artifactId>google-collections</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.fedorahosted.flies</groupId>
-			<artifactId>flies-rest-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<!--  JBoss AS deps -->
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -866,6 +711,83 @@
 			<scope>provided</scope>
 		</dependency>
 
+
+		<!--  Other -->
+
+		<dependency>
+			<groupId>org.dbunit</groupId>
+			<artifactId>dbunit</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.tuckey</groupId>
+			<artifactId>urlrewritefilter</artifactId>
+			<version>3.0.4</version>
+		</dependency>
+
+		<!-- Flies-specific dependencies -->
+
+		<dependency>
+			<groupId>org.fedorahosted.flies</groupId>
+			<artifactId>flies-common-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.fedorahosted.flies</groupId>
+			<artifactId>flies-rest-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.ibm.icu</groupId>
+			<artifactId>icu4j</artifactId>
+			<version>4.0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.google.collections</groupId>
+			<artifactId>google-collections</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.fedorahosted.openprops</groupId>
+			<artifactId>openprops</artifactId>
+			<version>0.5</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.okapi.lib</groupId>
+			<artifactId>okapi-lib-search</artifactId>
+			<version>0.7-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- okapi-lib-search would otherwise use lucene 3.0.0 -->
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-core</artifactId>
+			<version>2.9.2</version>
+			<scope>compile</scope>
+		</dependency>
+
 		<!--  Testing dependencies -->
 
 		<dependency>
@@ -904,32 +826,24 @@
 			</exclusions>
 			<scope>test</scope>
 		</dependency>
-		<!--
-			<dependency> <groupId>org.eclipse.jdt</groupId>
-			<artifactId>core</artifactId> <version>3.2.3.v_686_R32x</version>
-			<scope>test</scope> </dependency>
-		-->
-		<!--
-			We use a newer version of hibernate <dependency>
-			<groupId>org.jboss.embedded</groupId>
-			<artifactId>hibernate-all</artifactId>
-			<version>${version.jboss.embedded}</version> <scope>embedded</scope>
-			</dependency>
-		-->
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+			<scope>test</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>junit</groupId>
-					<artifactId>junit</artifactId>
-				</exclusion>
-			</exclusions>
-			<!--
-				needed by DBUnitImporter! TODO: can we use a non-deployed scope like
-				provided? <scope>test</scope>
-			-->
+			<!-- We use testng in DBUnitImporter so can't use test scope here -->
 		</dependency>
 
 		<!-- Dependencies provided by JBoss As 4.2.3 -->
@@ -1033,25 +947,15 @@
 		</dependency>
 
 		<dependency>
-			<groupId>xstream</groupId>
-			<artifactId>xstream</artifactId>
-			<version>1.1.3</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>xpp3</groupId>
 			<artifactId>xpp3_min</artifactId>
 			<version>1.1.3.4.O</version>
 			<scope>provided</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-			<version>3.1</version>
-			<scope>provided</scope>
-		</dependency>
+		<!-- end of JBoss 4.2.3 provided dependencies -->
+
+		<!-- GWT related dependencies -->
 
 		<dependency>
 			<groupId>commons-fileupload</groupId>
@@ -1070,11 +974,9 @@
 			<artifactId>gwt-user</artifactId>
 			<scope>provided</scope>
 		</dependency>
-
-		<!--
-			JAXB sources are needed for GWT compilation of JAXB annotated classes
-		-->
+		
 		<dependency>
+			<!-- needed for GWT compilation of JAXB annotated classes -->
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
 			<version>2.2</version>
@@ -1120,34 +1022,7 @@
 			<version>${project.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.fedorahosted.openprops</groupId>
-			<artifactId>openprops</artifactId>
-			<version>0.5</version>
-			<scope>compile</scope>
-		</dependency>
-
-    <dependency>
-      <groupId>net.sf.okapi.lib</groupId>
-      <artifactId>okapi-lib-search</artifactId>
-      <version>0.7-SNAPSHOT</version>
-      <scope>compile</scope>
-    </dependency>
-
-    <!-- okapi-lib-search would otherwise use lucene 3.0.0 -->
-    <dependency>
-      <groupId>org.apache.lucene</groupId>
-      <artifactId>lucene-core</artifactId>
-      <version>2.9.2</version>
-      <scope>compile</scope>
-    </dependency>
-
-		<!-- test -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
+		<!-- end of GWT related dependencies -->
 
 	</dependencies>
 
@@ -1182,15 +1057,15 @@
 			<releases>
 				<checksumPolicy>ignore</checksumPolicy>
 			</releases>
-    </repository>
+		</repository>
 
-    <repository>
-      <id>openl10n-repo</id>
-      <name>openl10n-repo</name>
-      <url>http://openl10n.net/maven2/</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
+		<repository>
+			<id>openl10n-repo</id>
+			<name>openl10n-repo</name>
+			<url>http://openl10n.net/maven2/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
 		</repository>
 
 	</repositories>
