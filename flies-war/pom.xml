@@ -567,6 +567,12 @@
 			<version>${version.seam}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.jboss.seam</groupId>
+			<artifactId>jboss-seam-remoting</artifactId>
+			<version>${version.seam}</version>
+		</dependency>
+
 		<!-- RestEasy dependencies -->
 
 		<dependency>
