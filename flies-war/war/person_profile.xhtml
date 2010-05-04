@@ -74,7 +74,9 @@
               <code>#{personHome.instance.account.apiKey}</code> 
             </p>
           </s:fragment>
-          <h:commandButton action="#{personHome.regenerateApiKey}" value="Regenerate API Key" reRender="api_key,no_api_key" />
+          <h:commandButton action="#{personHome.regenerateApiKey}"
+              value="Regenerate API Key" reRender="api_key,no_api_key"
+              onclick="if (!confirm('All of your preconfigured clients may not work. Are you sure you need to regenerate API Key?')) return false" />
 	    </h:form>
     </ui:define>
 </ui:composition>
