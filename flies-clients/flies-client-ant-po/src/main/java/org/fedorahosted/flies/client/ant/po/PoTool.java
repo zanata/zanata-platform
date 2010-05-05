@@ -66,7 +66,12 @@ public class PoTool implements GlobalOptions {
 
 	private static void help(PrintStream out) throws IOException {
 		out.println("[USAGE]"); 
-		out.println("  flies-publican [-e/--errors] upload/download/createproj/createiter [--help] [options] [args]");
+		out.println("  flies-publican [-e/--errors] upload/download/createproj/createiter [options] [args]");
+		out.println("  For 'upload' help: flies-publican upload --help");
+		out.println("  For 'download' help: flies-publican download --help");
+		out.println("  For 'createproj' help: flies-publican createproj --help");
+		out.println("  For 'createiter' help: flies-publican createiter --help");
+		out.println("");
 		out.println();
 	}
 	
