@@ -10,10 +10,8 @@
     <h2>#{_iteration.name}</h2>
     <s:span rendered="#{_iteration.projectSeries.name != 'default'}" 
             styleClass="series_name">#{_iteration.projectSeries.name}</s:span>
+    <h:outputLink value="#{fliesInit.serverPath}/flies/seam/resource/restv1/projects/p/#{projectHome.instance.slug}/iterations/i/#{_iteration.slug}/documents">(REST Link)</h:outputLink>
     <div class="menu_items">
-      <h:commandButton 
-        value="Generate flies-publican command" 
-              onclick="alert('flies-publican upload --importpo --user #{personHome.instance.account.username} --key #{personHome.instance.account.apiKey} --src ./ --dst http://#{fliesInit.serverPath}/flies/seam/resource/restv1/projects/p/#{projectHome.instance.slug}/iterations/i/#{_iteration.slug}/documents')" />
       <s:link view="/project/iteration_edit.xhtml" propagation="none" rendered="#{identity.loggedIn}">
         <f:param name="slug" value="#{_iteration.slug}"/>
         <f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
