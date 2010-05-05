@@ -108,7 +108,7 @@ public class CreateIterationTask extends Task implements Subcommand {
 	}
 	
 	public void process() throws JAXBException, URISyntaxException, IOException {
-			JAXBContext jc = JAXBContext.newInstance(Project.class);
+			JAXBContext jc = JAXBContext.newInstance(ProjectIteration.class);
 			Marshaller m = jc.createMarshaller();
 			// debug
 			if (debug)
