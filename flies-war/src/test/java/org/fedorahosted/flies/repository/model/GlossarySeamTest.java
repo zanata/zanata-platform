@@ -10,7 +10,6 @@ import javax.persistence.EntityManager;
 import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.HProjectIteration;
-import org.fedorahosted.flies.core.model.HProjectSeries;
 import org.hamcrest.core.IsEqual;
 import org.jboss.seam.mock.DBUnitSeamTest;
 import org.testng.annotations.Test;

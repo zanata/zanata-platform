@@ -3,9 +3,11 @@ package org.fedorahosted.flies.core.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 
 import org.hibernate.search.annotations.Indexed;
 
@@ -14,18 +16,8 @@ import org.hibernate.search.annotations.Indexed;
 @Indexed
 public class HIterationProject extends HProject{
 
-	private List<HProjectSeries> projectSeries = new ArrayList<HProjectSeries>();
 	private List<HProjectIteration> projectIterations = new ArrayList<HProjectIteration>();
 
-	@OneToMany(mappedBy = "project")
-	public List<HProjectSeries> getProjectSeries() {
-		return projectSeries;
-	}
-
-	public void setProjectSeries(List<HProjectSeries> projectSeries) {
-		this.projectSeries = projectSeries;
-	}
-	
 	@OneToMany(mappedBy = "project")
 	public List<HProjectIteration> getProjectIterations() {
 		return projectIterations;

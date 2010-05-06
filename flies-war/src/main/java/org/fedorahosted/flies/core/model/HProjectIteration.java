@@ -3,10 +3,12 @@ package org.fedorahosted.flies.core.model;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 
 import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.hibernate.annotations.NaturalId;
@@ -19,12 +21,11 @@ public class HProjectIteration extends AbstractSlugEntity implements IProjectCon
 	private String name;
 	private String description;
 
-	private HProjectSeries projectSeries;
 	private HIterationProject project;
 
 	private Boolean active = true;
 
-	private HProjectContainer container;
+	private HProjectContainer container = new HProjectContainer();
 
 	private HProjectIteration parent;
 	private List<HProjectIteration> children;
@@ -56,8 +57,8 @@ public class HProjectIteration extends AbstractSlugEntity implements IProjectCon
 	}
 
 	@NotNull
-	@ManyToOne
-	@JoinColumn(name = "project_container_id")
+	@ManyToOne(cascade=CascadeType.PERSIST)
+	@JoinColumn(name = "project_container_id", nullable=false)
 	@Override
 	public HProjectContainer getContainer() {
 		return container;
@@ -67,17 +68,6 @@ public class HProjectIteration extends AbstractSlugEntity implements IProjectCon
 		this.container = container;
 	}
 	
-	@ManyToOne
-	@JoinColumn(name = "projectSeriesId")
-	@NotNull
-	public HProjectSeries getProjectSeries() {
-		return projectSeries;
-	}
-
-	public void setProjectSeries(HProjectSeries projectSeries) {
-		this.projectSeries = projectSeries;
-	}
-
 	@ManyToOne
 	@NotNull
 	@NaturalId

@@ -13,7 +13,6 @@ import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.HProjectIteration;
-import org.fedorahosted.flies.core.model.HProjectSeries;
 import org.testng.annotations.Test;
 
 @Test(groups = { "jpa-tests" }, enabled=false)
@@ -30,9 +29,6 @@ public class DocumentTest extends FliesDbunitJpaTest {
 		EntityManager em = getEm();
 		HIterationProject project = em.find(HIterationProject.class, 1l);
 		assertThat(project, notNullValue());
-
-		List<HProjectSeries> projectSeries = project.getProjectSeries();
-		assertThat("Project should have 1 series", projectSeries.size(), is(1));
 
 		List<HProjectIteration> projectTargets = project.getProjectIterations();
 		assertThat("Project should have 2 targets", projectTargets.size(),

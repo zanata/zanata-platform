@@ -32,14 +32,6 @@
                          value="#{projectIterationHome.instance.description}" style="width:400px;"/>
         </s:decorate>
 
-        <s:decorate id="projectSeriesField" template="../layout/edit.xhtml">
-            <ui:define name="label">Project Series</ui:define>
-            <h:selectOneMenu id="projectSeries" value="#{projectIterationHome.instance.projectSeries}" require="true">  
-              <s:selectItems value="#{projectIterationHome.availableProjectSeries}" var="serie" label="#{serie.name}"/>  
-              <s:convertEntity/>  
-            </h:selectOneMenu>  
-        </s:decorate>
-
         <s:decorate id="activeField" template="../layout/edit.xhtml">
             <ui:define name="label">Active</ui:define>
             <h:selectBooleanCheckbox id="acvite"

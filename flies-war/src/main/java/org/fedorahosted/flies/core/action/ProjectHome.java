@@ -9,7 +9,6 @@ import org.fedorahosted.flies.core.model.HAccount;
 import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.HPerson;
 import org.fedorahosted.flies.core.model.HProjectIteration;
-import org.fedorahosted.flies.core.model.HProjectSeries;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.NaturalIdentifier;
@@ -91,14 +90,6 @@ public class ProjectHome extends SlugHome<HIterationProject> {
 		
 		String retValue = super.persist();
 
-		// add a default series as well..
-		if("persisted".equals(retValue)){
-			HProjectSeries defaultSeries = new HProjectSeries();
-			defaultSeries.setName(HProjectSeries.DEFAULT);
-			defaultSeries.setProject(getInstance());
-			getEntityManager().persist(defaultSeries);
-		}
-		
 		return retValue;
 	}
 

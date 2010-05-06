@@ -9,7 +9,6 @@ import javax.persistence.NoResultException;
 import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.HProjectIteration;
-import org.fedorahosted.flies.core.model.HProjectSeries;
 import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
@@ -104,19 +103,9 @@ public class ProjectIterationHome extends SlugHome<HProjectIteration>{
 	public String persist() {
 		if(!validateSlug(getInstance().getSlug(), "slug"))
 			return null;
-		if(getInstance().getContainer() == null){
-			HProjectContainer container = new HProjectContainer();
-			getEntityManager().persist(container);
-			getInstance().setContainer(container);
-		}
 		return super.persist();
 	}
 	
-	public List<HProjectSeries> getAvailableProjectSeries(){
-		return getEntityManager().createQuery("from HProjectSeries where project.slug = :projectSlug")
-			.setParameter("projectSlug", projectSlug).getResultList();
-	}
-
 	public void cancel(){}
 
 	@Override

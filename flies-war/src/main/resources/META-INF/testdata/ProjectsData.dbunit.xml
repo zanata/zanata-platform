@@ -21,14 +21,6 @@
 		  name="Sample Project"
 		  project_container_id="[NULL]"
 	    />
-        <HProjectSeries id="1"
-			          versionNum="1"
-                        creationDate="2009-09-01 20:30:16"
-                        lastChanged="2009-09-01 20:30:16"
-                        name="default"
-                        parentId="[NULL]"
-                        projectId="1"
-        />
         <HProjectIteration id="1"
 				          versionNum="1"
                            creationDate="2009-09-01 20:30:46"
@@ -40,7 +32,6 @@
                            project_container_id="1"
                            parentId="[NULL]"
                            project_id="1"
-                           projectSeriesId="1" 
         />
 	   	<HProjectIteration id="2"
 				          versionNum="1"
@@ -53,7 +44,6 @@
                            project_container_id="2"
                            parentId="[NULL]"
                            project_id="1"
-                           projectSeriesId="1"
         />
 	    <HProject_Maintainer personId="3" 
                              projectId="1"

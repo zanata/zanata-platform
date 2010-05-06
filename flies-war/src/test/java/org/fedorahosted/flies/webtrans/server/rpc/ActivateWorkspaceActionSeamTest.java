@@ -11,7 +11,6 @@ import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.HProjectIteration;
-import org.fedorahosted.flies.core.model.HProjectSeries;
 import org.fedorahosted.flies.gwt.common.WorkspaceId;
 import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
