@@ -129,6 +129,13 @@ public class ProjectIterationService {
 		try {
 			ResponseBuilder response;
 			if(!session.contains(hProjectIteration)) {
+				if(hProjectIteration.getContainer() == null ) {
+					HProjectContainer container = new HProjectContainer();
+					session.persist(container);
+					session.flush();
+					hProjectIteration.setContainer(container);
+				}
+				
 				session.save(hProjectIteration);
 				response = Response.created( uri.getAbsolutePath() );
 			} else {

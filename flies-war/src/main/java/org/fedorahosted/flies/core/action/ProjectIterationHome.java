@@ -103,6 +103,12 @@ public class ProjectIterationHome extends SlugHome<HProjectIteration>{
 	public String persist() {
 		if(!validateSlug(getInstance().getSlug(), "slug"))
 			return null;
+		if(getInstance().getContainer() == null ) {
+			HProjectContainer container = new HProjectContainer();
+			getEntityManager().persist(container);
+			getEntityManager().flush();
+			getInstance().setContainer(container);
+		}
 		return super.persist();
 	}
 	

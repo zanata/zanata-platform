@@ -25,7 +25,7 @@ public class HProjectIteration extends AbstractSlugEntity implements IProjectCon
 
 	private Boolean active = true;
 
-	private HProjectContainer container = new HProjectContainer();
+	private HProjectContainer container;
 
 	private HProjectIteration parent;
 	private List<HProjectIteration> children;
@@ -57,7 +57,7 @@ public class HProjectIteration extends AbstractSlugEntity implements IProjectCon
 	}
 
 	@NotNull
-	@ManyToOne(cascade=CascadeType.PERSIST)
+	@ManyToOne
 	@JoinColumn(name = "project_container_id", nullable=false)
 	@Override
 	public HProjectContainer getContainer() {
