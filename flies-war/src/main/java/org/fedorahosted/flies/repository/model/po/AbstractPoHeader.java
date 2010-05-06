@@ -57,6 +57,7 @@ public abstract class AbstractPoHeader implements Serializable {
 	}
 
 	// see PoUtility.stringToHeaderEntries
+	@Type(type="text")
 	public String getEntries() {
 		return entries;
 	}
