@@ -12,6 +12,7 @@ import javax.persistence.Transient;
 
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HSimpleComment;
+import org.hibernate.annotations.Type;
 
 /**
  * 
