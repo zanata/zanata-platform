@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 import org.fedorahosted.flies.gwt.model.DocumentInfo;
 import org.fedorahosted.flies.gwt.model.DocumentId;
-import org.fedorahosted.flies.gwt.model.ProjectContainerId;
+import org.fedorahosted.flies.gwt.model.ProjectIterationId;
 import org.fedorahosted.flies.gwt.rpc.GetDocumentList;
 import org.fedorahosted.flies.gwt.rpc.GetDocumentListResult;
 
@@ -26,8 +26,8 @@ final class DummyGetDocsListCommand implements Command {
 
 	@Override
 	public void execute() {
-		ProjectContainerId projectContainerId = action.getProjectContainerId();
-		GetDocumentListResult result = new GetDocumentListResult(projectContainerId, generateTransUnitSampleData()); 
+		ProjectIterationId projectIterationId = action.getProjectIterationId();
+		GetDocumentListResult result = new GetDocumentListResult(projectIterationId, generateTransUnitSampleData()); 
 		callback.onSuccess(result);
 	}
 

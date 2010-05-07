@@ -7,7 +7,7 @@ import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.gwt.common.WorkspaceContext;
 import org.fedorahosted.flies.gwt.common.WorkspaceId;
 import org.fedorahosted.flies.gwt.model.PersonId;
-import org.fedorahosted.flies.gwt.model.ProjectContainerId;
+import org.fedorahosted.flies.gwt.model.ProjectIterationId;
 import org.fedorahosted.flies.gwt.rpc.ExitWorkspace;
 import org.fedorahosted.flies.security.FliesIdentity;
 import org.hibernate.Session;
@@ -42,13 +42,13 @@ public class TranslationWorkspaceManager {
 	@In Session session;
 	
 	private final ConcurrentHashMap<WorkspaceId, TranslationWorkspace> workspaceMap;
-	private final Multimap<Long, LocaleId> projectIterationLocaleMap;
+	private final Multimap<ProjectIterationId, LocaleId> projectIterationLocaleMap;
 	private final Multimap<LocaleId, TranslationWorkspace> localeWorkspaceMap;
 
 	public TranslationWorkspaceManager() {
 		this.workspaceMap = new ConcurrentHashMap<WorkspaceId, TranslationWorkspace>();
 
-		Multimap<Long, LocaleId> projectIterationLocaleMap = HashMultimap.create();
+		Multimap<ProjectIterationId, LocaleId> projectIterationLocaleMap = HashMultimap.create();
 		this.projectIterationLocaleMap = Multimaps.synchronizedMultimap(projectIterationLocaleMap);
 
 		Multimap<LocaleId, TranslationWorkspace> localeWorkspaceMap = HashMultimap.create();
@@ -81,8 +81,8 @@ public class TranslationWorkspaceManager {
 		log.info("closing down {0} workspaces: ", workspaceMap.size());
 	}
 	
-	public ImmutableSet<LocaleId> getLocales(Long projectContainerId){
-		return ImmutableSet.copyOf(projectIterationLocaleMap.get(projectContainerId));
+	public ImmutableSet<LocaleId> getLocales(ProjectIterationId projectIterationId){
+		return ImmutableSet.copyOf(projectIterationLocaleMap.get(projectIterationId));
 	}
 
 	public ImmutableSet<LocaleId> getLocales(){
@@ -100,7 +100,7 @@ public class TranslationWorkspaceManager {
 			TranslationWorkspace prev = workspaceMap.putIfAbsent(workspaceId, workspace);
 			
 			if(prev == null){
-				projectIterationLocaleMap.put(workspaceId.getProjectContainerId().getId(), workspaceId.getLocaleId());
+				projectIterationLocaleMap.put(workspaceId.getProjectIterationId(), workspaceId.getLocaleId());
 				localeWorkspaceMap.put(workspaceId.getLocaleId(), workspace);
 				if(Events.exists()) Events.instance().raiseEvent(EVENT_WORKSPACE_CREATED, workspaceId);
 			}
@@ -114,17 +114,21 @@ public class TranslationWorkspaceManager {
 		String iterationName = (String) session.createQuery(
 				"select it.name " +
 				"from HProjectIteration it " +
-				"where it.container.id = :containerId "
+				"where it.slug = :slug " +
+				"and it.project.slug = :pslug"
 				)
-				.setParameter("containerId", workspaceId.getProjectContainerId().getId())
+				.setParameter("slug", workspaceId.getProjectIterationId().getIterationSlug())
+				.setParameter("pslug", workspaceId.getProjectIterationId().getProjectSlug())
 				.uniqueResult();
 		
 		String projectName = (String) session.createQuery(
 				"select it.project.name " +
 				"from HProjectIteration it " +
-				"where it.container.id = :containerId "
+				"where it.slug = :slug " +
+				"and it.project.slug = :pslug"
 				)
-				.setParameter("containerId", workspaceId.getProjectContainerId().getId())
+				.setParameter("slug", workspaceId.getProjectIterationId().getIterationSlug())
+				.setParameter("pslug", workspaceId.getProjectIterationId().getProjectSlug())
 				.uniqueResult();
 
 		WorkspaceContext workspaceContext = 
@@ -134,8 +138,8 @@ public class TranslationWorkspaceManager {
 		return new TranslationWorkspace(workspaceContext);
 	}
 	
-	public TranslationWorkspace getWorkspace(ProjectContainerId projectContainerId, LocaleId localeId) {
-		WorkspaceId workspaceId = new WorkspaceId(projectContainerId, localeId);
+	public TranslationWorkspace getWorkspace(ProjectIterationId projectIterationId, LocaleId localeId) {
+		WorkspaceId workspaceId = new WorkspaceId(projectIterationId, localeId);
 		return getWorkspace(workspaceId);
 	}
 	
@@ -147,7 +151,7 @@ public class TranslationWorkspaceManager {
 		return ImmutableSet.copyOf(localeWorkspaceMap.get(locale));
 	}
 	
-	public ImmutableSet<Long> getProjects(){
+	public ImmutableSet<ProjectIterationId> getProjects(){
 		return ImmutableSet.copyOf(projectIterationLocaleMap.keySet());
 	}
 	

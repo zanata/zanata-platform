@@ -12,10 +12,10 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 
-@Name("projectContainerRedirect")
+@Name("projectIterationRedirect")
 @Scope(ScopeType.PAGE)
 @AutoCreate
-public class ProjectContainerRedirectBean {
+public class ProjectIterationRedirectBean {
 
 	private Long id;
 	
@@ -38,7 +38,7 @@ public class ProjectContainerRedirectBean {
 			return (String) session.createQuery(
 					"select it.project.slug " +
 					"from HProjectIteration it " +
-					"where it.container.id = :id"
+					"where it.id = :id"
 					)
 					.setParameter("id", id)
 					.uniqueResult();

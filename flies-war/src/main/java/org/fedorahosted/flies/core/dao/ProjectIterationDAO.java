@@ -82,23 +82,23 @@ public class ProjectIterationDAO {
 	}
 	
 	
-	public TransUnitCount getStatisticsForContainer(Long containerId, LocaleId localeId){
+	public TransUnitCount getStatisticsForContainer(Long iterationId, LocaleId localeId){
 		
 		List<StatusCount> stats = session.createQuery(
 				"select new org.fedorahosted.flies.core.model.StatusCount(tft.state, count(tft)) " +
 				"from HTextFlowTarget tft " +
-				"where tft.textFlow.document.project.id = :id " +
+				"where tft.textFlow.document.projectIteration.id = :id " +
 				"  and tft.locale = :locale "+  
 				"group by tft.state"
 			)
-			.setParameter("id", containerId)
+			.setParameter("id", iterationId)
 			.setParameter("locale", localeId)
 			.setCacheable(true)
 			.list();
 		
 		
-		Long totalCount = (Long) session.createQuery("select count(tf) from HTextFlow tf where tf.document.project.id = :id")
-			.setParameter("id", containerId)
+		Long totalCount = (Long) session.createQuery("select count(tf) from HTextFlow tf where tf.document.projectIteration.id = :id")
+			.setParameter("id", iterationId)
 			.setCacheable(true).uniqueResult();
 		
 		TransUnitCount stat = new TransUnitCount();
@@ -110,4 +110,5 @@ public class ProjectIterationDAO {
 		
 		return stat;
 	}
+	
 }

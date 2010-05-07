@@ -1,22 +1,25 @@
 package org.fedorahosted.flies.core.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
 
-import org.fedorahosted.flies.repository.model.HProjectContainer;
+import org.fedorahosted.flies.repository.model.HDocument;
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.Where;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;
 
 @Entity
-public class HProjectIteration extends AbstractSlugEntity implements IProjectContainerProvider, Serializable {
+public class HProjectIteration extends AbstractSlugEntity {
 
 	private String name;
 	private String description;
@@ -25,10 +28,12 @@ public class HProjectIteration extends AbstractSlugEntity implements IProjectCon
 
 	private Boolean active = true;
 
-	private HProjectContainer container;
-
 	private HProjectIteration parent;
 	private List<HProjectIteration> children;
+
+	private Map<String,HDocument> documents;
+	private Map<String,HDocument> allDocuments;
+	
 	
 	@Length(max = 20)
 	public String getName() {
@@ -56,18 +61,6 @@ public class HProjectIteration extends AbstractSlugEntity implements IProjectCon
 		return active;
 	}
 
-	@NotNull
-	@ManyToOne
-	@JoinColumn(name = "project_container_id", nullable=false)
-	@Override
-	public HProjectContainer getContainer() {
-		return container;
-	}
-	
-	public void setContainer(HProjectContainer container) {
-		this.container = container;
-	}
-	
 	@ManyToOne
 	@NotNull
 	@NaturalId
@@ -96,6 +89,32 @@ public class HProjectIteration extends AbstractSlugEntity implements IProjectCon
 
 	public void setParent(HProjectIteration parent) {
 		this.parent = parent;
+	}
+	
+	@OneToMany(mappedBy = "projectIteration", cascade=CascadeType.ALL)
+	@MapKey(name="docId")
+	@Where(clause="obsolete=0")
+	public Map<String, HDocument> getDocuments() {
+		if(documents == null)
+			documents = new HashMap<String,HDocument>();
+		return documents;
+	}
+	
+	@OneToMany(mappedBy = "projectIteration", cascade=CascadeType.ALL)
+	@MapKey(name="docId")
+	// even obsolete documents
+	public Map<String, HDocument> getAllDocuments() {
+		if(allDocuments == null)
+			allDocuments = new HashMap<String,HDocument>();
+		return allDocuments;
+	}
+	
+	public void setAllDocuments(Map<String, HDocument> allDocuments) {
+		this.allDocuments = allDocuments;
+	}
+	
+	public void setDocuments(Map<String, HDocument> documents) {
+		this.documents = documents;
 	}
 	
 }

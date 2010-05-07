@@ -9,7 +9,6 @@
 		description="An example Project"
 		homeContent=""
 		name="Sample Project"
-		project_container_id="[NULL]"
 	/>
 	<!-- Tell DbUnit to delete any existing documents -->
 	<HDocument />

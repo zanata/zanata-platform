@@ -9,9 +9,9 @@ import javax.ws.rs.core.EntityTag;
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.TransUnitCount;
+import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.core.model.StatusCount;
 import org.fedorahosted.flies.repository.model.HDocument;
-import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.AutoCreate;
@@ -25,15 +25,15 @@ public class DocumentDAO {
 	@In
 	Session session;
 
-	public EntityTag getETag(HProjectContainer container, String id) {
+	public EntityTag getETag(HProjectIteration iteration, String id) {
 		return EntityTag.valueOf("x");
 	}
 	
-	public HDocument getByDocId(HProjectContainer container, String id){
+	public HDocument getByDocId(HProjectIteration iteration, String id){
 		return (HDocument) session.createCriteria(HDocument.class)
 			.add( Restrictions.naturalId()
 		        .set("docId", id)
-		        .set("project", container)
+		        .set("project", iteration)
 		    	)
 		    .setCacheable(true)
 		    .setComment("DocumentDAO.getById")

@@ -20,9 +20,9 @@ import javax.ws.rs.core.Response.Status;
 
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.core.dao.DocumentDAO;
-import org.fedorahosted.flies.core.dao.ProjectContainerDAO;
+import org.fedorahosted.flies.core.dao.ProjectIterationDAO;
+import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.repository.model.HDocument;
-import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.client.ContentQualifier;
 import org.fedorahosted.flies.rest.dto.Document;
@@ -59,7 +59,7 @@ public class DocumentService {
 	private DocumentDAO documentDAO;
 
 	@In
-	private ProjectContainerDAO projectContainerDAO;
+	private ProjectIterationDAO projectIterationDAO;
 
 	@In
 	private Session session;
@@ -70,15 +70,15 @@ public class DocumentService {
 			MediaType.APPLICATION_JSON })
 	public Response get(
 			@QueryParam("resources") @DefaultValue("") ContentQualifier resources) {
-		HProjectContainer hProjectContainer = projectContainerDAO.getBySlug(
+		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(
 				projectSlug, iterationSlug);
 
-		if (hProjectContainer == null)
+		if (hProjectIteration == null)
 			return containerNotFound();
 
 		String docId = URIHelper.convertFromDocumentURIId(documentId);
 
-		HDocument hDoc = documentDAO.getByDocId(hProjectContainer, docId);
+		HDocument hDoc = documentDAO.getByDocId(hProjectIteration, docId);
 
 		if (hDoc == null) {
 			return Response.status(Status.NOT_FOUND).entity(
@@ -116,24 +116,23 @@ public class DocumentService {
 					"Invalid document Id").build();
 		}
 
-		HProjectContainer hProjectContainer = projectContainerDAO.getBySlug(
+		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(
 				projectSlug, iterationSlug);
-		if (hProjectContainer == null)
+
+		if (hProjectIteration == null)
 			return containerNotFound();
 
-		HDocument hDoc = documentDAO.getByDocId(hProjectContainer, hDocId);
+		HDocument hDoc = documentDAO.getByDocId(hProjectIteration, hDocId);
 
 		if (hDoc == null) { // it's a create operation
-		// hDoc = documentConverter.create(document, hProjectContainer);
-			// FIXME create hDoc, set its hProjectContainer
 			log.debug("PUT creating new HDocument with id {0}", document
 					.getId());
 			hDoc = new HDocument(document);
 			hDoc.setRevision(0);
-			hDoc.setProject(hProjectContainer);
+			hDoc.setProjectIteration(hProjectIteration);
 
 			documentConverter.copy(document, hDoc);
-			hProjectContainer.getDocuments().put(hDoc.getDocId(), hDoc);
+			hProjectIteration.getDocuments().put(hDoc.getDocId(), hDoc);
 			session.save(hDoc);
 			try {
 				session.flush();

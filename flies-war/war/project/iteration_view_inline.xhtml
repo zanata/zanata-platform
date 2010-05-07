@@ -22,7 +22,7 @@
                   rowClasses="odd,even">
     <rich:column>#{tribe.locale.nativeName} [#{tribe.locale.id}]</rich:column>
     <rich:column>
-      <ui:param name="tstatus" value="#{projectIterationDAO.getStatisticsForContainer(_iteration.container.id, tribe.locale.localeId)}" />
+      <ui:param name="tstatus" value="#{projectIterationDAO.getStatisticsForContainer(_iteration.id, tribe.locale.localeId)}" />
       <ui:include src="../layout/statsbar.xhtml">
         <ui:param name="status" value="#{tstatus}" />
       </ui:include>        
@@ -31,14 +31,16 @@
       <h:outputLink 
           rendered="#{!fliesInit.debug}" 
           value="/flies/org.fedorahosted.flies.webtrans.Application/Application.html">
-		<f:param name="projContainerId" value="#{_iteration.container.id}"/>
+		<f:param name="project" value="#{_iteration.project.slug}"/>
+		<f:param name="iteration" value="#{_iteration.slug}"/>
 		<f:param name="localeId" value="#{tribe.locale.id}"/>
 		Launch Translation Editor    	
       </h:outputLink>
       <h:outputLink 
           rendered="#{fliesInit.debug}"
           value="/flies/org.fedorahosted.flies.webtrans.Application/Application.html">
-		<f:param name="projContainerId" value="#{_iteration.container.id}"/>
+		<f:param name="project" value="#{_iteration.project.slug}"/>
+		<f:param name="iteration" value="#{_iteration.slug}"/>
 		<f:param name="localeId" value="#{tribe.locale.id}"/>
 		<f:param name="gwt.codesvr" value="localhost:9997"/>
 		Launch Translation Editor (GWT DevMode)

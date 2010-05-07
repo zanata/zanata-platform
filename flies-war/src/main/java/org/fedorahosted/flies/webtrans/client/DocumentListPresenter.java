@@ -20,7 +20,7 @@ import org.fedorahosted.flies.gwt.common.WorkspaceId;
 import org.fedorahosted.flies.gwt.model.DocumentInfo;
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.DocumentStatus;
-import org.fedorahosted.flies.gwt.model.ProjectContainerId;
+import org.fedorahosted.flies.gwt.model.ProjectIterationId;
 import org.fedorahosted.flies.gwt.rpc.GetDocumentList;
 import org.fedorahosted.flies.gwt.rpc.GetDocumentListResult;
 import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCount;
@@ -265,7 +265,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 		loadDocsStatus();
 		// switch doc list to the new project
 		dispatcher.execute(
-				new GetDocumentList(workspaceContext.getWorkspaceId().getProjectContainerId()), 
+				new GetDocumentList(workspaceContext.getWorkspaceId().getProjectIterationId()), 
 				new AsyncCallback<GetDocumentListResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
@@ -274,7 +274,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 			@Override
 			public void onSuccess(GetDocumentListResult result) {
 				final ArrayList<DocumentInfo> documents = result.getDocuments();
-				Log.info("Received doc list for "+result.getProjectContainerId()+": "+documents.size()+" elements");
+				Log.info("Received doc list for "+result.getProjectIterationId()+": "+documents.size()+" elements");
 				setDocumentList(documents);
 			}
 		});

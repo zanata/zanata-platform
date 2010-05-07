@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import net.customware.gwt.dispatch.shared.Result;
 
 import org.fedorahosted.flies.gwt.model.DocumentInfo;
-import org.fedorahosted.flies.gwt.model.ProjectContainerId;
+import org.fedorahosted.flies.gwt.model.ProjectIterationId;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -13,15 +13,15 @@ public class GetDocumentListResult implements Result {
 
 	private static final long serialVersionUID = 1L;
 
-	private ProjectContainerId projectContainerId;
+	private ProjectIterationId projectIterationId;
 	private ArrayList<DocumentInfo> documents;
 
 	@SuppressWarnings("unused")
 	private GetDocumentListResult()	{
 	}
 	
-	public GetDocumentListResult(ProjectContainerId projectContainerId, ArrayList<DocumentInfo> documents) {
-		this.projectContainerId = projectContainerId;
+	public GetDocumentListResult(ProjectIterationId projectIterationId, ArrayList<DocumentInfo> documents) {
+		this.projectIterationId = projectIterationId;
 		this.documents = documents;
 	}
 	
@@ -29,8 +29,8 @@ public class GetDocumentListResult implements Result {
 		return documents;
 	}
 	
-	public ProjectContainerId getProjectContainerId() {
-		return projectContainerId;
+	public ProjectIterationId getProjectIterationId() {
+		return projectIterationId;
 	}	
 	
 }

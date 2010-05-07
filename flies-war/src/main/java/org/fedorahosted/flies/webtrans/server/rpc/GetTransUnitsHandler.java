@@ -10,7 +10,7 @@ import net.customware.gwt.dispatch.shared.ActionException;
 import org.fedorahosted.flies.FliesInit;
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.EditState;
-import org.fedorahosted.flies.gwt.model.ProjectContainerId;
+import org.fedorahosted.flies.gwt.model.ProjectIterationId;
 import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.gwt.model.TransUnitId;
 import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
@@ -73,7 +73,6 @@ public class GetTransUnitsHandler extends AbstractActionHandler<GetTransUnits, G
 		for(HTextFlow textFlow : textFlows) {
 			
 			TransUnitId tuId = new TransUnitId(textFlow.getId());
-			ProjectContainerId projectContainerId = new ProjectContainerId(textFlow.getDocument().getProject().getId());
 			TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(
 					action.getWorkspaceId() );
 

@@ -94,7 +94,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 						toString(target.getComment()),
 						textFlow.getDocument().getDocId(),
 						// TODO find the projectSlug and iterSlug
-						textFlow.getDocument().getProject().getId()
+						textFlow.getDocument().getProjectIteration().getId()
 						);
 				results.add(mem);
 			}

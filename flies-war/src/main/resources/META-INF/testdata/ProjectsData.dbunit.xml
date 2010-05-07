@@ -1,15 +1,5 @@
 <?xml version="1.0"?>
 <dataset>
-        <HProjectContainer id="1" 
-					       versionNum="1"
-                           creationDate="2009-09-01 20:30:46"
-                           lastChanged="2009-09-01 20:30:46"
-        />
-        <HProjectContainer id="2"
-					       versionNum="1"
-                           creationDate="2009-09-01 20:31:32"
-                           lastChanged="2009-09-01 20:31:32"
-        />
         <HProject projecttype="iteration" 
 	          id="1"
           versionNum="1"
@@ -19,7 +9,6 @@
 		  description="An example Project"
 		  homeContent=""
 		  name="Sample Project"
-		  project_container_id="[NULL]"
 	    />
         <HProjectIteration id="1"
 				          versionNum="1"
@@ -29,7 +18,6 @@
                            active="TRUE"
                            description="Initial Release"
                            name="Version 1.0"
-                           project_container_id="1"
                            parentId="[NULL]"
                            project_id="1"
         />
@@ -41,7 +29,6 @@
                            active="TRUE"
                            description="Next Release"
                            name="Version 1.1"
-                           project_container_id="2"
                            parentId="[NULL]"
                            project_id="1"
         />

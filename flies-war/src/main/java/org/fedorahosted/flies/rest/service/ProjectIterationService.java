@@ -22,7 +22,6 @@ import org.fedorahosted.flies.core.dao.ProjectIterationDAO;
 import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.HProject;
 import org.fedorahosted.flies.core.model.HProjectIteration;
-import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.AbstractMiniProjectIteration;
 import org.fedorahosted.flies.rest.dto.AbstractProjectIteration;
@@ -129,13 +128,6 @@ public class ProjectIterationService {
 		try {
 			ResponseBuilder response;
 			if(!session.contains(hProjectIteration)) {
-				if(hProjectIteration.getContainer() == null ) {
-					HProjectContainer container = new HProjectContainer();
-					session.persist(container);
-					session.flush();
-					hProjectIteration.setContainer(container);
-				}
-				
 				session.save(hProjectIteration);
 				response = Response.created( uri.getAbsolutePath() );
 			} else {

@@ -1,7 +1,5 @@
 package org.fedorahosted.flies.core.action;
 
-import java.util.List;
-
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
@@ -9,19 +7,14 @@ import javax.persistence.NoResultException;
 import org.fedorahosted.flies.core.dao.ProjectDAO;
 import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.HProjectIteration;
-import org.fedorahosted.flies.repository.model.HProjectContainer;
-import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.core.Conversation;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.framework.EntityHome;
 import org.jboss.seam.log.Log;
 
 @Name("projectIterationHome")
@@ -103,12 +96,6 @@ public class ProjectIterationHome extends SlugHome<HProjectIteration>{
 	public String persist() {
 		if(!validateSlug(getInstance().getSlug(), "slug"))
 			return null;
-		if(getInstance().getContainer() == null ) {
-			HProjectContainer container = new HProjectContainer();
-			getEntityManager().persist(container);
-			getEntityManager().flush();
-			getInstance().setContainer(container);
-		}
 		return super.persist();
 	}
 	

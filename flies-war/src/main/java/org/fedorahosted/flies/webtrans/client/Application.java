@@ -7,7 +7,7 @@ import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.gwt.auth.Identity;
 import org.fedorahosted.flies.gwt.common.WorkspaceContext;
 import org.fedorahosted.flies.gwt.common.WorkspaceId;
-import org.fedorahosted.flies.gwt.model.ProjectContainerId;
+import org.fedorahosted.flies.gwt.model.ProjectIterationId;
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceResult;
 import org.fedorahosted.flies.gwt.rpc.ExitWorkspaceAction;
@@ -113,13 +113,13 @@ public class Application implements EntryPoint{
 		injector.getPlaceManager().fireCurrentPlace();
 	}
 	
-	public static ProjectContainerId getProjectContainerId() {
-		String projContainerId = Window.Location.getParameter("projContainerId");
-		if(projContainerId == null)
+	public static ProjectIterationId getProjectIterationId() {
+		String projectSlug = Window.Location.getParameter("project");
+		String iterationSlug = Window.Location.getParameter("iteration");
+		if(projectSlug == null || iterationSlug == null)
 			return null;
 		try{
-			int id = Integer.parseInt(projContainerId);
-			return new ProjectContainerId(id);
+			return new ProjectIterationId(projectSlug, iterationSlug);
 		}
 		catch(NumberFormatException nfe){
 			return null;
@@ -140,7 +140,7 @@ public class Application implements EntryPoint{
 	}
 
 	public static void redirectToFliesProjectHome(WorkspaceId workspaceId) {
-		redirectToUrl( FLIES_BASE_PATH + "project/project_by_container_id.seam?id="+ workspaceId.getProjectContainerId().getId());	
+		redirectToUrl( FLIES_BASE_PATH + "project/view/"+ workspaceId.getProjectIterationId().getProjectSlug());	
 	}
 	
 	public static native void redirectToUrl(String url)/*-{
@@ -150,7 +150,7 @@ public class Application implements EntryPoint{
 	public static WorkspaceId getWorkspaceId() {
 		if(workspaceId == null) {
 			// TODO handle null values
-			workspaceId = new WorkspaceId(getProjectContainerId(), getLocaleId());
+			workspaceId = new WorkspaceId(getProjectIterationId(), getLocaleId());
 		}
 		return workspaceId;
 	}

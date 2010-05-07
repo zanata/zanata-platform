@@ -3,21 +3,19 @@ package org.fedorahosted.flies.webtrans.server.rpc;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.TransUnitCount;
 import org.fedorahosted.flies.core.dao.DocumentDAO;
-import org.fedorahosted.flies.core.dao.ProjectContainerDAO;
+import org.fedorahosted.flies.core.dao.ProjectIterationDAO;
+import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.gwt.model.DocumentStatus;
-import org.fedorahosted.flies.gwt.model.ProjectContainerId;
+import org.fedorahosted.flies.gwt.model.ProjectIterationId;
 import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCount;
 import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCountResult;
 import org.fedorahosted.flies.repository.model.HDocument;
-import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.security.FliesIdentity;
 import org.fedorahosted.flies.webtrans.server.ActionHandlerFor;
 import org.fedorahosted.flies.webtrans.server.TranslationWorkspace;
@@ -40,7 +38,7 @@ public class GetProjectStatusCountHandler extends AbstractActionHandler<GetProje
 		@In Session session;
 		
 		@In
-		ProjectContainerDAO projectContainerDAO;
+		ProjectIterationDAO projectIterationDAO;
 		@In
 		DocumentDAO documentDAO;
 
@@ -52,12 +50,12 @@ public class GetProjectStatusCountHandler extends AbstractActionHandler<GetProje
 			
 			FliesIdentity.instance().checkLoggedIn();
 			
-			ProjectContainerId containerId = action.getWorkspaceId().getProjectContainerId();
-			log.info("Fetching Doc Status List for {0}", containerId);
+			ProjectIterationId iterationId = action.getWorkspaceId().getProjectIterationId();
+			log.info("Fetching Doc Status List for {0}", iterationId);
 			ArrayList<DocumentStatus> docliststatus = new ArrayList<DocumentStatus>(); 
-			HProjectContainer hProjectContainer = projectContainerDAO.getById(containerId.getId());
+			HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(iterationId.getProjectSlug(), iterationId.getIterationSlug());
 			
-			Collection<HDocument> hDocs = hProjectContainer.getDocuments().values();
+			Collection<HDocument> hDocs = hProjectIteration.getDocuments().values();
 			for (HDocument hDoc : hDocs) {
 				DocumentId docId = new DocumentId(hDoc.getId());
 								
@@ -69,7 +67,7 @@ public class GetProjectStatusCountHandler extends AbstractActionHandler<GetProje
 						
 			TranslationWorkspace workspace = translationWorkspaceManager.getWorkspace(action.getWorkspaceId() );
 			
-			log.info("Returning Doc Status List for {0}: {1} elements", containerId, docliststatus.size());
+			log.info("Returning Doc Status List for {0}: {1} elements", iterationId, docliststatus.size());
 
 			return new GetProjectStatusCountResult(docliststatus);
 

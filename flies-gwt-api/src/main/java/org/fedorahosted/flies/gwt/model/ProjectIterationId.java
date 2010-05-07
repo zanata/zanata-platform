@@ -4,33 +4,38 @@ import java.io.Serializable;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class ProjectIterationId implements Serializable, IsSerializable{
+public class ProjectIterationId implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private long id;
+	private String projectSlug;
+	private String iterationSlug;
 	
 	@SuppressWarnings("unused")
 	private ProjectIterationId() {
 	}
 	
-	public ProjectIterationId(long id) {
-		this.id = id;
+	public ProjectIterationId(String projectSlug, String iterationSlug) {
+		this.projectSlug = projectSlug;
+		this.iterationSlug = iterationSlug;
 	}
 	
+	public String getProjectSlug() {
+		return projectSlug;
+	}
 	
-	public long getId() {
-		return id;
+	public String getIterationSlug() {
+		return iterationSlug;
 	}
 	
 	@Override
 	public String toString() {
-		return String.valueOf(id);
+		return projectSlug+ "/" + iterationSlug;
 	}
 
 	@Override
 	public int hashCode() {
-		return (int) id;
+		return (projectSlug + "/" + iterationSlug).hashCode();
 	}
 
 	@Override
@@ -38,7 +43,8 @@ public class ProjectIterationId implements Serializable, IsSerializable{
 		if(obj == this) return true;
 		if(obj == null) return false;
 		if(obj instanceof ProjectIterationId) {
-			return ((ProjectIterationId) obj).id == id;
+			ProjectIterationId other = (ProjectIterationId) obj; 
+			return other.projectSlug == projectSlug && other.iterationSlug == iterationSlug;
 		}
 		return false;
 	}

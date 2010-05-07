@@ -7,14 +7,14 @@ import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.fedorahosted.flies.core.dao.ProjectContainerDAO;
+import org.fedorahosted.flies.core.dao.ProjectIterationDAO;
+import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.gwt.model.DocumentInfo;
 import org.fedorahosted.flies.gwt.model.DocumentId;
-import org.fedorahosted.flies.gwt.model.ProjectContainerId;
+import org.fedorahosted.flies.gwt.model.ProjectIterationId;
 import org.fedorahosted.flies.gwt.rpc.GetDocumentList;
 import org.fedorahosted.flies.gwt.rpc.GetDocumentListResult;
 import org.fedorahosted.flies.repository.model.HDocument;
-import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.security.FliesIdentity;
 import org.fedorahosted.flies.webtrans.server.ActionHandlerFor;
 import org.jboss.seam.ScopeType;
@@ -32,7 +32,7 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
 	@Logger Log log;
 	
 	@In
-	ProjectContainerDAO projectContainerDAO;
+	ProjectIterationDAO projectIterationDAO;
 
 	
 	@Override
@@ -41,16 +41,16 @@ public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentLis
 		
 		FliesIdentity.instance().checkLoggedIn();
 		
-		ProjectContainerId containerId = action.getProjectContainerId();
+		ProjectIterationId iterationId = action.getProjectIterationId();
 		ArrayList<DocumentInfo> docs = new ArrayList<DocumentInfo>(); 
-		HProjectContainer hProjectContainer = projectContainerDAO.getById(containerId.getId());
-		Collection<HDocument> hDocs = hProjectContainer.getDocuments().values();
+		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(iterationId.getProjectSlug(), iterationId.getIterationSlug());
+		Collection<HDocument> hDocs = hProjectIteration.getDocuments().values();
 		for (HDocument hDoc : hDocs) {
 			DocumentId docId = new DocumentId(hDoc.getId());
 			DocumentInfo doc = new DocumentInfo(docId, hDoc.getName(), hDoc.getPath());
 			docs.add(doc);
 		}
-		return new GetDocumentListResult(containerId, docs);
+		return new GetDocumentListResult(iterationId, docs);
 	}
 
 	@Override

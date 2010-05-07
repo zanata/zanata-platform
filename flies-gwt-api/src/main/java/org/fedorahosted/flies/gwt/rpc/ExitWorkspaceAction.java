@@ -5,7 +5,7 @@ import net.customware.gwt.dispatch.shared.Action;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.gwt.common.WorkspaceId;
 import org.fedorahosted.flies.gwt.model.PersonId;
-import org.fedorahosted.flies.gwt.model.ProjectContainerId;
+import org.fedorahosted.flies.gwt.model.ProjectIterationId;
 
 public class ExitWorkspaceAction extends AbstractWorkspaceAction<ExitWorkspaceResult>{
 

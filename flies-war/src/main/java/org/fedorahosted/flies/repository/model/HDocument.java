@@ -19,6 +19,7 @@ import javax.persistence.Transient;
 import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.core.model.AbstractFliesEntity;
+import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.hibernate.type.ContentTypeType;
 import org.fedorahosted.flies.hibernate.type.LocaleIdType;
 import org.fedorahosted.flies.repository.model.po.HPoHeader;
@@ -54,7 +55,7 @@ public class HDocument extends AbstractFliesEntity{
 	private Integer revision = 1;
 	private LocaleId locale;
 	
-	private HProjectContainer project;
+	private HProjectIteration projectIteration;
 
 	private Map<String, HTextFlow> allTextFlows;
 	private List<HTextFlow> textFlows;
@@ -163,14 +164,14 @@ public class HDocument extends AbstractFliesEntity{
 	}
 	
 	@ManyToOne(cascade=CascadeType.PERSIST)
-	@JoinColumn(name="project_id", nullable=false)
+	@JoinColumn(name="project_iteration_id", nullable=false)
 	@NaturalId
-	public HProjectContainer getProject() {
-		return project;
+	public HProjectIteration getProjectIteration() {
+		return projectIteration;
 	}
 	
-	public void setProject(HProjectContainer project) {
-		this.project = project;
+	public void setProjectIteration(HProjectIteration projectIteration) {
+		this.projectIteration = projectIteration;
 	}
 
 	@NotNull

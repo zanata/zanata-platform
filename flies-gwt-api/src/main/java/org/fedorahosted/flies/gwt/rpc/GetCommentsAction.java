@@ -3,7 +3,7 @@ package org.fedorahosted.flies.gwt.rpc;
 import net.customware.gwt.dispatch.shared.Action;
 
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.gwt.model.ProjectContainerId;
+import org.fedorahosted.flies.gwt.model.ProjectIterationId;
 import org.fedorahosted.flies.gwt.model.TransUnitId;
 
 import com.google.gwt.user.client.rpc.IsSerializable;

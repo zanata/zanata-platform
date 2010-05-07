@@ -14,9 +14,9 @@ import javax.ws.rs.core.Response;
 import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.core.dao.ProjectContainerDAO;
+import org.fedorahosted.flies.core.dao.ProjectIterationDAO;
+import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.repository.model.HDocument;
-import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.repository.model.HTextFlow;
 import org.fedorahosted.flies.rest.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.IDocumentsResource;
@@ -372,9 +372,9 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	private void verifyObsoleteDocument(final String docID) throws Exception {        
 		new FacesRequest() {
             protected void invokeApplication() throws Exception {
-            	ProjectContainerDAO containerDAO = (ProjectContainerDAO) getInstance("projectContainerDAO");
-                HProjectContainer container = containerDAO.getBySlug(projectSlug, iter);
-				HDocument hDocument = container.getAllDocuments().get(docID);
+            	ProjectIterationDAO projectIterationDAO = (ProjectIterationDAO) getInstance("projectIterationDAO");
+                HProjectIteration iteration = projectIterationDAO.getBySlug(projectSlug, iter);
+				HDocument hDocument = iteration.getAllDocuments().get(docID);
                 Assert.assertTrue(hDocument.isObsolete());
             }
         }.run();
@@ -383,9 +383,9 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	private void verifyObsoleteResource(final String docID, final String resourceID) throws Exception {        
 		new FacesRequest() {
 			protected void invokeApplication() throws Exception {
-				ProjectContainerDAO containerDAO = (ProjectContainerDAO) getInstance("projectContainerDAO");
-				HProjectContainer container = containerDAO.getBySlug(projectSlug, iter);
-				HDocument hDocument = container.getAllDocuments().get(docID);
+            	ProjectIterationDAO projectIterationDAO = (ProjectIterationDAO) getInstance("projectIterationDAO");
+                HProjectIteration iteration = projectIterationDAO.getBySlug(projectSlug, iter);
+				HDocument hDocument = iteration.getAllDocuments().get(docID);
 				HTextFlow hResource = hDocument.getAllTextFlows().get(resourceID);
 				Assert.assertNotNull(hResource);
 				Assert.assertTrue(hResource.isObsolete());

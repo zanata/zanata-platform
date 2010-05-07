@@ -46,7 +46,7 @@ public class DocumentTest extends FliesDbunitJpaTest {
 
 		HDocument hdoc = new HDocument("fullpath", ContentType.TextPlain,
 				LocaleId.EN_US);
-		hdoc.setProject(project.getProjectIterations().get(0).getContainer());
+		hdoc.setProjectIteration(project.getProjectIterations().get(0));
 
 		List<HTextFlow> textFlows = hdoc.getTextFlows();
 		HTextFlow flow1 = new HTextFlow(hdoc, "textflow1", "some content");

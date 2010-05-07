@@ -1,27 +1,15 @@
 package org.fedorahosted.flies.webtrans.server.rpc;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
-import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.core.dao.DocumentDAO;
-import org.fedorahosted.flies.core.dao.ProjectContainerDAO;
-import org.fedorahosted.flies.core.model.StatusCount;
 import org.fedorahosted.flies.gwt.model.Concept;
-import org.fedorahosted.flies.gwt.model.DocumentId;
-import org.fedorahosted.flies.gwt.model.DocumentStatus;
-import org.fedorahosted.flies.gwt.model.ProjectContainerId;
 import org.fedorahosted.flies.gwt.model.TermEntry;
 import org.fedorahosted.flies.gwt.rpc.GetGlossaryConcept;
 import org.fedorahosted.flies.gwt.rpc.GetGlossaryConceptResult;
-import org.fedorahosted.flies.repository.model.HDocument;
-import org.fedorahosted.flies.repository.model.HProjectContainer;
-import org.fedorahosted.flies.repository.model.HTermEntry;
 import org.fedorahosted.flies.security.FliesIdentity;
 import org.fedorahosted.flies.webtrans.server.ActionHandlerFor;
 import org.hibernate.Session;
