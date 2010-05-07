@@ -33,7 +33,7 @@ public class DocumentDAO {
 		return (HDocument) session.createCriteria(HDocument.class)
 			.add( Restrictions.naturalId()
 		        .set("docId", id)
-		        .set("project", iteration)
+		        .set("projectIteration", iteration)
 		    	)
 		    .setCacheable(true)
 		    .setComment("DocumentDAO.getById")
