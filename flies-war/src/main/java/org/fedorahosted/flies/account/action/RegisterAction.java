@@ -6,11 +6,11 @@ import java.security.MessageDigest;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
-import org.fedorahosted.flies.common.HashUtil;
 import org.fedorahosted.flies.core.dao.AccountDAO;
 import org.fedorahosted.flies.core.model.HAccount;
 import org.fedorahosted.flies.core.model.HAccountActivationKey;
 import org.fedorahosted.flies.core.model.HPerson;
+import org.fedorahosted.flies.util.HashUtil;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Pattern;

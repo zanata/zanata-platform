@@ -5,8 +5,8 @@ import java.util.List;
 import javax.ws.rs.core.EntityTag;
 
 import org.apache.commons.lang.StringUtils;
-import org.fedorahosted.flies.common.HashUtil;
 import org.fedorahosted.flies.core.model.HProject;
+import org.fedorahosted.flies.util.HashUtil;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.AutoCreate;

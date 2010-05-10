@@ -6,12 +6,12 @@ import javax.persistence.EntityManager;
 import javax.ws.rs.core.EntityTag;
 
 import org.fedorahosted.flies.common.ContentState;
-import org.fedorahosted.flies.common.HashUtil;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.TransUnitCount;
 import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.core.model.StatusCount;
+import org.fedorahosted.flies.util.HashUtil;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.AutoCreate;

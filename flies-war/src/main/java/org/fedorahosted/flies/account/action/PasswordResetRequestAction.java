@@ -2,9 +2,9 @@ package org.fedorahosted.flies.account.action;
 
 import javax.persistence.EntityManager;
 
-import org.fedorahosted.flies.common.HashUtil;
 import org.fedorahosted.flies.core.model.HAccount;
 import org.fedorahosted.flies.core.model.HAccountResetPasswordKey;
+import org.fedorahosted.flies.util.HashUtil;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.validator.Email;

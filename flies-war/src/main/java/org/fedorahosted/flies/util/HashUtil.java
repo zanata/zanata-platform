@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.common;
+package org.fedorahosted.flies.util;
 
 import java.security.MessageDigest;
 
