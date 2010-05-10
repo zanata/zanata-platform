@@ -222,6 +222,12 @@
 						<targetPath>${project.build.directory}</targetPath>
 						<filtering>true</filtering>
 					</resource>
+
+					<resource>
+						<directory>src/main/resources-jboss4</directory>
+						<filtering>true</filtering>
+					</resource>
+					
 				
 				</resources>
 				<plugins>
