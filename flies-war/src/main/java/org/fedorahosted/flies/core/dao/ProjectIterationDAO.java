@@ -5,9 +5,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.ws.rs.core.EntityTag;
 
-import org.apache.commons.lang.StringUtils;
-import org.fedorahosted.flies.account.action.RegisterAction;
 import org.fedorahosted.flies.common.ContentState;
+import org.fedorahosted.flies.common.HashUtil;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.TransUnitCount;
 import org.fedorahosted.flies.core.model.HIterationProject;
@@ -76,7 +75,7 @@ public class ProjectIterationDAO {
 		if(iterationVersion == null)
 			return null;
 
-		String hash = RegisterAction.generateHash(String.valueOf(iterationVersion));
+		String hash = HashUtil.generateHash(String.valueOf(iterationVersion));
 		
 		return EntityTag.valueOf( hash );
 	}

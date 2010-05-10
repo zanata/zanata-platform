@@ -1,13 +1,11 @@
 package org.fedorahosted.flies.core.dao;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import javax.ws.rs.core.EntityTag;
 
 import org.apache.commons.lang.StringUtils;
-import org.fedorahosted.flies.account.action.RegisterAction;
+import org.fedorahosted.flies.common.HashUtil;
 import org.fedorahosted.flies.core.model.HProject;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -53,7 +51,7 @@ public class ProjectDAO {
 		"select i.versionNum from HProjectIteration i where i.project.slug =:slug")
 		.setParameter("slug", slug).list();
 
-		String hash = RegisterAction.generateHash(projectVersion + ':' + StringUtils.join(iterationVersions, ':'));
+		String hash = HashUtil.generateHash(projectVersion + ':' + StringUtils.join(iterationVersions, ':'));
 		
 		return EntityTag.valueOf( hash );
 	}

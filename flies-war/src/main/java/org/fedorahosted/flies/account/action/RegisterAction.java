@@ -6,6 +6,7 @@ import java.security.MessageDigest;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
+import org.fedorahosted.flies.common.HashUtil;
 import org.fedorahosted.flies.core.dao.AccountDAO;
 import org.fedorahosted.flies.core.model.HAccount;
 import org.fedorahosted.flies.core.model.HAccountActivationKey;
@@ -165,7 +166,7 @@ public class RegisterAction implements Serializable {
     	
     	HAccountActivationKey key = new HAccountActivationKey();
     	key.setAccount(account);
-    	key.setKeyHash(generateHash(getUsername() + getPassword() + getPerson().getEmail() + getPerson().getName() + System.currentTimeMillis()));
+    	key.setKeyHash(HashUtil.generateHash(getUsername() + getPassword() + getPerson().getEmail() + getPerson().getName() + System.currentTimeMillis()));
     	entityManager.persist(key);
     	
     	setActivationKey(key.getKeyHash());
@@ -177,16 +178,6 @@ public class RegisterAction implements Serializable {
     	return "/home.xhtml";
     }
 
-    public static String generateHash(String key){
-        try {
-            MessageDigest md5 = MessageDigest.getInstance("MD5");
-            md5.reset();
-            return new String(Hex.encodeHex(md5.digest(key.getBytes("UTF-8"))));
-        } catch (Exception exc) {
-            throw new RuntimeException(exc);
-        }
-    }
-    
     public String getActivationKey() {
 		return activationKey;
 	}

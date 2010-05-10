@@ -2,6 +2,7 @@ package org.fedorahosted.flies.account.action;
 
 import javax.persistence.EntityManager;
 
+import org.fedorahosted.flies.common.HashUtil;
 import org.fedorahosted.flies.core.model.HAccount;
 import org.fedorahosted.flies.core.model.HAccountResetPasswordKey;
 import org.hibernate.Session;
@@ -95,7 +96,7 @@ public class PasswordResetRequestAction {
     	
     	HAccountResetPasswordKey key = new HAccountResetPasswordKey();
     	key.setAccount(account);
-    	key.setKeyHash(RegisterAction.generateHash(account.getUsername() + account.getPasswordHash() + account.getPerson().getEmail() + account.getPerson().getName() + System.currentTimeMillis()));
+    	key.setKeyHash(HashUtil.generateHash(account.getUsername() + account.getPasswordHash() + account.getPerson().getEmail() + account.getPerson().getName() + System.currentTimeMillis()));
     	entityManager.persist(key);
     	
     	setActivationKey(key.getKeyHash());
