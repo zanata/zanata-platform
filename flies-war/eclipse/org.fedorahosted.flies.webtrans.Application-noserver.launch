@@ -9,7 +9,7 @@
 <listAttribute key="com.google.gwt.eclipse.core.ENTRY_POINT_MODULES">
 <listEntry value="org.fedorahosted.flies.webtrans.Application"/>
 </listAttribute>
-<stringAttribute key="com.google.gwt.eclipse.core.URL" value="http://localhost:8080/flies/org.fedorahosted.flies.webtrans.Application/Application.html?projContainerId=2&amp;localeId=de"/>
+<stringAttribute key="com.google.gwt.eclipse.core.URL" value="http://localhost:8080/flies/org.fedorahosted.flies.webtrans.Application/Application.html?project=sample-project&amp;iteration=1.0&amp;localeId=de"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
 <listEntry value="/flies"/>
 </listAttribute>
@@ -24,8 +24,7 @@
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="com.google.gwt.eclipse.core.moduleClasspathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.google.gwt.dev.DevMode"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-remoteUI &quot;${gwt_remote_ui_server_port}:${unique_id}&quot; -logLevel INFO -noserver -war &quot;${jboss42home}/server/default/deploy/flies.war&quot; -startupUrl http://localhost:8080/flies/org.fedorahosted.flies.webtrans.Application/Application.html?projContainerId=2&amp;localeId=de org.fedorahosted.flies.webtrans.Application"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-remoteUI &quot;${gwt_remote_ui_server_port}:${unique_id}&quot; -logLevel INFO -noserver -war &quot;${jboss42home}/server/default/deploy/flies.war&quot; -startupUrl http://localhost:8080/flies/org.fedorahosted.flies.webtrans.Application/Application.html?project=sample-project&amp;iteration=1.0&amp;localeId=de org.fedorahosted.flies.webtrans.Application"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="flies"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx512m"/>
-<stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="/flies/war"/>
 </launchConfiguration>
