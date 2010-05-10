@@ -1,376 +1,329 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.fedorahosted.flies</groupId>
-  <artifactId>root</artifactId>
-  <version>1.0-SNAPSHOT</version>
-  <name>Flies Root POM</name>
-  <url>http://flies.fedorahosted.org/</url>
-  <packaging>pom</packaging>
-  <modules>
-    <module>flies-common-api</module>
-    <module>flies-rest-api</module>
-    <module>flies-adapters</module>
-    <module>flies-rest-client</module>
-    <module>flies-clients</module>
-    <module>flies-gwt-api</module>
-    <module>flies-war</module>
-  </modules>
-  <scm>
-    <connection>scm:hg:http://flies.googlecode.com/hg/</connection>
-    <developerConnection>scm:hg:https://flies.googlecode.com/hg/</developerConnection>
-    <url>http://code.google.com/p/flies/source/browse/</url>
-  </scm>
-  
-  <licenses>
-    <license>
-      <name>GNU Lesser General Public License v2.1</name>
-      <url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-  
-  <properties>
-    <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <version.drools>5.0.1</version.drools>
-    <version.gwt>2.0.3</version.gwt>
-    <version.jboss.embedded>beta3.SP10</version.jboss.embedded>
-    <version.resteasy>2.0-beta-2</version.resteasy>
-    <version.richfaces>3.3.1.GA</version.richfaces>
-    <version.seam>2.2.1-20100507.043727-129</version.seam>
-    <version.tennera>0.6</version.tennera>
-    <version.googlecollect>1.0</version.googlecollect>
-  	<version.jackson>1.5.0</version.jackson>    
-  </properties>
-  
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>enforce-versions</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requireMavenVersion>
-                  <version>[2.1,)</version>
-                </requireMavenVersion>
-                <requireJavaVersion>
-                  <version>[1.6,)</version>
-                </requireJavaVersion>
-              </rules>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <encoding>UTF-8</encoding>
-          <source>1.6</source>
-          <target>1.6</target>
-          <showDeprecation>true</showDeprecation>
-          <showWarnings>true</showWarnings>
-          <optimize>true</optimize>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-eclipse-plugin</artifactId>
-        <configuration>
-          <downloadSources>true</downloadSources>
-          <downloadJavadocs>false</downloadJavadocs>
-        </configuration>
-      </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-			            <manifestEntries>
-			              <Implementation-Version>${version}</Implementation-Version>
-			              <Implementation-Build>${maven.build.timestamp}</Implementation-Build>
-			            </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>
-		<plugin>
-		  <!-- See http://portals.apache.org/jetspeed-2/buildguide/jetspeed-mvn-plugin.html -->
-		  <groupId>org.apache.portals.jetspeed-2</groupId>
-		  <artifactId>jetspeed-mvn-maven-plugin</artifactId>
-		  <version>2.2.0</version>
-		  <configuration>
-		    <targets combine.children="append">
-		      <target>
-		        <id>explode</id>
-		        <profiles>explode</profiles>
-		        <properties>
-		        	<skipTests>true</skipTests>
-		        </properties>
-		        <dir>@rootdir@/flies-war</dir>
-		        <goals>package</goals>
-		      </target>
-		      <target>
-		      	<id>explodeall</id>
-		      	<profiles>explode,include-webtrans</profiles>
-		      	<properties>
-		      		<env.deploy.gwt>true</env.deploy.gwt>
-		        	<skipTests>true</skipTests>
-		      	</properties>
-		        <dir>@rootdir@/flies-war</dir>
-		        <goals>package</goals>
-		      </target>
-		      <target>
-		        <id>hotdeploy</id>
-		        <profiles>hotdeploy</profiles>
-		        <dir>@rootdir@/flies-war</dir>
-		        <goals>process-classes</goals>
-		      </target>
-		      <target>
-		        <id>unexplode</id>
-		        <profiles>unexplode</profiles>
-		        <dir>@rootdir@/flies-war</dir>
-		        <goals>clean</goals>
-		      </target>
-		    </targets>
-		    <defaultTarget>explode</defaultTarget>
-		  </configuration>
-		</plugin>
-		<plugin>
-		   <groupId>org.twdata.maven</groupId>
-		   <artifactId>maven-cli-plugin</artifactId>
-		   <version>1.0.3</version>
-		</plugin>
-    </plugins>
-    
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>gwt-maven-plugin</artifactId>
-          <version>1.2</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
-  
-  <dependencies>
-      <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-all</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-  
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>4.5</version>
-      </dependency>
-      <dependency>
-        <groupId>log4j</groupId>
-        <artifactId>log4j</artifactId>
-        <version>1.2.14</version>
-      </dependency>
-	  <dependency>
-		  <groupId>org.slf4j</groupId>
-		  <artifactId>slf4j-api</artifactId>
-		  <version>1.5.10</version> <!-- 1.5.8? -->
-	  </dependency>
-	  <dependency>
-		  <groupId>org.slf4j</groupId>
-		  <artifactId>slf4j-log4j12</artifactId>
-		  <version>1.5.10</version>
-	  </dependency>
-      <dependency>
-        <groupId>org.testng</groupId>
-        <artifactId>testng</artifactId>
-        <version>5.9</version>
-      </dependency>
-      <dependency>
-        <groupId>org.hamcrest</groupId>
-        <artifactId>hamcrest-all</artifactId>
-        <version>1.1</version>
-      </dependency>
-      
-      <dependency>
-        <groupId>com.google.gwt</groupId>
-        <artifactId>gwt-servlet</artifactId>
-        <version>${version.gwt}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.google.gwt</groupId>
-        <artifactId>gwt-user</artifactId>
-        <version>${version.gwt}</version>
-      </dependency>
-      
-	  <dependency>
-	      <groupId>com.google.code.gwteventservice</groupId>
-	      <artifactId>gwteventservice</artifactId>
-		  <!-- This SNAPSHOT version includes v1 of this patch:
-		  http://code.google.com/p/gwteventservice/issues/detail?id=15
-		  applied to http://gwteventservice.googlecode.com/svn/!svn/bc/251/trunk/
-		   -->
-	      <version>1.2.0-20100326.075632-1</version>
-	  </dependency>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.fedorahosted.flies</groupId>
+	<artifactId>root</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<name>Flies Root POM</name>
+	<url>http://flies.fedorahosted.org/</url>
+	<packaging>pom</packaging>
+	<modules>
+		<module>flies-common-api</module>
+		<module>flies-rest-api</module>
+		<module>flies-adapters</module>
+		<module>flies-rest-client</module>
+		<module>flies-clients</module>
+		<module>flies-gwt-api</module>
+		<module>flies-war</module>
+	</modules>
+	<scm>
+		<connection>scm:hg:http://flies.googlecode.com/hg/</connection>
+		<developerConnection>scm:hg:https://flies.googlecode.com/hg/</developerConnection>
+		<url>http://code.google.com/p/flies/source/browse/</url>
+	</scm>
 
-	  <dependency>
-	      <groupId>com.google.gwt.inject</groupId>
-	      <artifactId>gin</artifactId>
-	      <version>1.0</version>
-	  </dependency>
-      
-      <dependency>
-        <groupId>com.google.collections</groupId>
-        <artifactId>google-collections</artifactId>
-        <version>${version.googlecollect}</version>
-      </dependency>
-      
-    <dependency>
-       <groupId>org.codehaus.jackson</groupId>
-       <artifactId>jackson-core-asl</artifactId>
-       <version>${version.jackson}</version>
-    </dependency>
-        
-    <dependency>
-       <groupId>org.codehaus.jackson</groupId>
-       <artifactId>jackson-jaxrs</artifactId>
-       <version>${version.jackson}</version>
-    </dependency>
-        
-    <dependency>
-       <groupId>org.codehaus.jackson</groupId>
-       <artifactId>jackson-mapper-asl</artifactId>
-       <version>${version.jackson}</version>
-    </dependency>    
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License v2.1</name>
+			<url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
-    <dependency>
-       <groupId>org.codehaus.jackson</groupId>
-       <artifactId>jackson-xc</artifactId>
-       <version>${version.jackson}</version>
-    </dependency>    
-      
-	  
-    </dependencies>
-    
-    
-  </dependencyManagement>
+	<properties>
+		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<version.gwt>2.0.3</version.gwt>
+		<version.resteasy>2.0-beta-2</version.resteasy>
+		<version.seam>2.2.1-20100507.043727-129</version.seam>
+		<version.tennera>0.6</version.tennera>
+		<version.googlecollect>1.0</version.googlecollect>
+		<version.jackson>1.5.0</version.jackson>
+	</properties>
 
-  <repositories>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>enforce-versions</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireMavenVersion>
+									<version>[2.1,)</version>
+								</requireMavenVersion>
+								<requireJavaVersion>
+									<version>[1.6,)</version>
+								</requireJavaVersion>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<encoding>UTF-8</encoding>
+					<source>1.6</source>
+					<target>1.6</target>
+					<showDeprecation>true</showDeprecation>
+					<showWarnings>true</showWarnings>
+					<optimize>true</optimize>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>false</downloadJavadocs>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<Implementation-Version>${version}</Implementation-Version>
+							<Implementation-Build>${maven.build.timestamp}</Implementation-Build>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
 
-    <!--  jboss.org repo  -->
-    <repository>
-      <id>repository.jboss.org</id>
-      <name>JBoss Repository</name>
-      <url>http://repository.jboss.org/maven2</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-        <updatePolicy>never</updatePolicy>
-      </snapshots>
-    </repository>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>gwt-maven-plugin</artifactId>
+					<version>1.2</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 
-    <!--  jboss.org snapshot repo  -->
-    <repository>
-      <id>snapshots.jboss.org</id>
-      <name>JBoss Snapshots Repository</name>
-      <url>http://snapshots.jboss.org/maven2</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-      </snapshots>
-    </repository>
+	<dependencies>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-all</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
-    <repository>
-      <name>Tennera release repository on fedorahosted.org</name>
-      <id>fhosted.tennera.svn</id>
-      <url>http://svn.fedorahosted.org/svn/tennera/m2repo/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <name>Tennera snapshot repository on fedorapeople.org</name>
-      <id>fpeople.tennera.snap</id>
-      <url>http://seanf.fedorapeople.org/maven2/snapshot/</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.5</version>
+			</dependency>
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>1.2.14</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.5.10</version> <!-- 1.5.8? -->
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>1.5.10</version>
+			</dependency>
+			<dependency>
+				<groupId>org.testng</groupId>
+				<artifactId>testng</artifactId>
+				<version>5.9</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hamcrest</groupId>
+				<artifactId>hamcrest-all</artifactId>
+				<version>1.1</version>
+			</dependency>
 
-  </repositories>
+			<dependency>
+				<groupId>com.google.gwt</groupId>
+				<artifactId>gwt-servlet</artifactId>
+				<version>${version.gwt}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.gwt</groupId>
+				<artifactId>gwt-user</artifactId>
+				<version>${version.gwt}</version>
+			</dependency>
 
-  <pluginRepositories>
+			<dependency>
+				<groupId>com.google.code.gwteventservice</groupId>
+				<artifactId>gwteventservice</artifactId>
+				<!--
+					This SNAPSHOT version includes v1 of this patch:
+					http://code.google.com/p/gwteventservice/issues/detail?id=15
+					applied to
+					http://gwteventservice.googlecode.com/svn/!svn/bc/251/trunk/
+				-->
+				<version>1.2.0-20100326.075632-1</version>
+			</dependency>
 
-	<pluginRepository>
-	  <id>twdata-m2-repository</id>
-	  <name>twdata.org Maven 2 Repository</name>
-	  <url>http://twdata-m2-repository.googlecode.com/svn/</url>
-	</pluginRepository>
+			<dependency>
+				<groupId>com.google.gwt.inject</groupId>
+				<artifactId>gin</artifactId>
+				<version>1.0</version>
+			</dependency>
 
-    <pluginRepository>
-      <id>snapshots.jboss.org</id>
-      <name>JBoss Repository for Maven Snapshots</name>
-      <url>http://snapshots.jboss.org/maven2/</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-      </snapshots>
-    </pluginRepository>
-    
-    <pluginRepository>
-      <id>repository.jboss.org</id>
-      <name>Jboss Repository for Maven</name>
-      <url>http://repository.jboss.com/maven2/</url>
-      <layout>default</layout>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-        <updatePolicy>never</updatePolicy>
-      </snapshots>
-    </pluginRepository>
-   
-    <pluginRepository>
-      <id>repository.codehaus</id>
-      <name>Codehaus Repository</name>
-      <url>http://repository.codehaus.org</url>
-    </pluginRepository>
+			<dependency>
+				<groupId>com.google.collections</groupId>
+				<artifactId>google-collections</artifactId>
+				<version>${version.googlecollect}</version>
+			</dependency>
 
-    <pluginRepository>
-      <id>snapshots.repository.codehaus</id>
-      <name>Codehaus Snapshots Repository</name>
-      <url>http://snapshots.repository.codehaus.org</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>weekly</updatePolicy>
-      </snapshots>
-    </pluginRepository>
+			<dependency>
+				<groupId>org.codehaus.jackson</groupId>
+				<artifactId>jackson-core-asl</artifactId>
+				<version>${version.jackson}</version>
+			</dependency>
 
-  </pluginRepositories>
-  
+			<dependency>
+				<groupId>org.codehaus.jackson</groupId>
+				<artifactId>jackson-jaxrs</artifactId>
+				<version>${version.jackson}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.codehaus.jackson</groupId>
+				<artifactId>jackson-mapper-asl</artifactId>
+				<version>${version.jackson}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.codehaus.jackson</groupId>
+				<artifactId>jackson-xc</artifactId>
+				<version>${version.jackson}</version>
+			</dependency>
+
+
+		</dependencies>
+
+
+	</dependencyManagement>
+
+	<repositories>
+
+		<!--  jboss.org repo  -->
+		<repository>
+			<id>repository.jboss.org</id>
+			<name>JBoss Repository</name>
+			<url>http://repository.jboss.org/maven2</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+			</snapshots>
+		</repository>
+
+		<!--  jboss.org snapshot repo  -->
+		<repository>
+			<id>snapshots.jboss.org</id>
+			<name>JBoss Snapshots Repository</name>
+			<url>http://snapshots.jboss.org/maven2</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+			</snapshots>
+		</repository>
+
+		<repository>
+			<name>Tennera release repository on fedorahosted.org</name>
+			<id>fhosted.tennera.svn</id>
+			<url>http://svn.fedorahosted.org/svn/tennera/m2repo/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<name>Tennera snapshot repository on fedorapeople.org</name>
+			<id>fpeople.tennera.snap</id>
+			<url>http://seanf.fedorapeople.org/maven2/snapshot/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+
+	</repositories>
+
+	<pluginRepositories>
+
+		<pluginRepository>
+			<id>twdata-m2-repository</id>
+			<name>twdata.org Maven 2 Repository</name>
+			<url>http://twdata-m2-repository.googlecode.com/svn/</url>
+		</pluginRepository>
+
+		<pluginRepository>
+			<id>snapshots.jboss.org</id>
+			<name>JBoss Repository for Maven Snapshots</name>
+			<url>http://snapshots.jboss.org/maven2/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+			</snapshots>
+		</pluginRepository>
+
+		<pluginRepository>
+			<id>repository.jboss.org</id>
+			<name>Jboss Repository for Maven</name>
+			<url>http://repository.jboss.com/maven2/</url>
+			<layout>default</layout>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+			</snapshots>
+		</pluginRepository>
+
+		<pluginRepository>
+			<id>repository.codehaus</id>
+			<name>Codehaus Repository</name>
+			<url>http://repository.codehaus.org</url>
+		</pluginRepository>
+
+		<pluginRepository>
+			<id>snapshots.repository.codehaus</id>
+			<name>Codehaus Snapshots Repository</name>
+			<url>http://snapshots.repository.codehaus.org</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>weekly</updatePolicy>
+			</snapshots>
+		</pluginRepository>
+
+	</pluginRepositories>
+
 </project>

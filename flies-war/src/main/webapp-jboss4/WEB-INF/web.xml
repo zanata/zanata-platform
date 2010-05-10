@@ -117,35 +117,6 @@
 		<url-pattern>*.seam</url-pattern>
 	</servlet-mapping>
 
-	<!--  GWT  -->
-
-	<servlet>
-		<servlet-name>remoteLoggingService</servlet-name>
-		<servlet-class>com.google.gwt.gen2.logging.server.RemoteLoggingService</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>remoteLoggingService</servlet-name>
-		<url-pattern>/org.fedorahosted.flies.webtrans.Application/logging</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>remoteLoggerServiceImpl</servlet-name>
-		<servlet-class>com.allen_sauer.gwt.log.server.RemoteLoggerServiceImpl</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>remoteLoggerServiceImpl</servlet-name>
-		<url-pattern>/org.fedorahosted.flies.webtrans.Application/gwt-log</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>glossaryUploadServlet</servlet-name>
-		<servlet-class>org.fedorahosted.flies.core.action.GlossaryUploadServlet</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>glossaryUploadServlet</servlet-name>
-		<url-pattern>/org.fedorahosted.flies.webtrans.Application/glossaryupload</url-pattern>
-	</servlet-mapping>
-
 	<!-- GWTEventService -->
 
 	<servlet>

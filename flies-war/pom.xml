@@ -8,22 +8,16 @@
 		<artifactId>root</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
-	<groupId>org.fedorahosted.flies</groupId>
 	<artifactId>flies</artifactId>
 	<packaging>war</packaging>
 	<name>flies Webapp</name>
 
 	<properties>
 		<version.hibernate>3.3.1.GA</version.hibernate>
-		<!-- application properties -->
-		<app.context>flies</app.context>  <!-- hint: same value as artifactId -->
-		<app.database.name>flies</app.database.name>
-		<app.ds.xml>${app.context}-ds.xml</app.ds.xml>
+		<version.jboss.embedded>beta3.SP12</version.jboss.embedded>
 
-		<!--
-			Production environment properties. Can be modified by developer in
-			"profiles.xml"
-		-->
+		<!-- application properties -->
+
 		<env.debug>false</env.debug>
 		<env.server.path>http://localhost:8080/flies</env.server.path>
 		<env.import.testdata>false</env.import.testdata>
@@ -33,23 +27,17 @@
 		<env.hibernate.format_sql>false</env.hibernate.format_sql>
 		<env.hibernate.default_batch_size>16</env.hibernate.default_batch_size>
 
-		<as>jboss423</as>
-		<as.version>4.2</as.version>
 		<ds>hsqldb</ds>
 		<ds.hibernate.dialect>org.hibernate.dialect.HSQLDialect</ds.hibernate.dialect> <!-- persistence.xml -->
 		<ds.driver.class>org.hsqldb.jdbcDriver</ds.driver.class> <!-- *-ds.xml -->
 		<ds.server.name></ds.server.name> <!-- *-ds.xml (if xa) -->
-		<ds.database.name>${app.database.name}</ds.database.name> <!-- *-ds.xml (if xa) -->
+		<ds.database.name>flies</ds.database.name> <!-- *-ds.xml (if xa) -->
 		<ds.connection.url>jdbc:hsqldb:.</ds.connection.url> <!-- *-ds.xml -->
 		<ds.user.name>sa</ds.user.name> <!-- *-ds.xml -->
 		<ds.password></ds.password> <!-- *-ds.xml -->
 
 		<gwt.filepattern>org.fedorahosted.flies.*/**</gwt.filepattern>
 
-		<webapp.dir>${basedir}/war</webapp.dir>
-		<!-- 
-    <webapp.dir>${basedir}/src/main/webapp</webapp.dir>
-     -->
 	</properties>
 
 	<dependencyManagement>
@@ -61,238 +49,33 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+
+			<dependency>
+				<groupId>commons-codec</groupId>
+				<artifactId>commons-codec</artifactId>
+				<version>1.3</version>
+			</dependency>
+
+			<dependency>
+				<groupId>commons-collections</groupId>
+				<artifactId>commons-collections</artifactId>
+				<version>3.2</version>
+			</dependency>
+
+			<dependency>
+				<groupId>commons-logging</groupId>
+				<artifactId>commons-logging</artifactId>
+				<version>1.1.1</version>
+			</dependency>
+
+			<dependency>
+				<groupId>javax.xml.stream</groupId>
+				<artifactId>stax-api</artifactId>
+				<version>1.0</version>
+			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
-
-	<profiles>
-
-		<profile>
-			<id>env-dev</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>dev</value>
-				</property>
-			</activation>
-			<properties>
-				<!--
-					Developer environment properties. Can be modified by developer in
-					"profiles.xml"
-				-->
-				<env>dev</env>
-				<env.debug>true</env.debug>
-				<env.import.testdata>true</env.import.testdata>
-				<env.hibernate.hbm2ddl.auto>update</env.hibernate.hbm2ddl.auto>
-				<env.hibernate.show_sql>false</env.hibernate.show_sql>
-				<env.hibernate.format_sql>true</env.hibernate.format_sql>
-				<env.hibernate.default_batch_size>16</env.hibernate.default_batch_size>
-				<!--
-					Should GWT files be processed in exploded deployment? If false,
-					GWT's hosted mode is expected to handle these files.
-				-->
-				<env.deploy.gwt>false</env.deploy.gwt>
-			</properties>
-		</profile>
-
-		<profile>
-			<id>hotdeploy</id>
-			<!--
-				<activation> <property> <name>env</name> <value>dev</value>
-				</property> </activation>
-			-->
-			<build>
-				<plugins>
-					<!--
-						<plugin> <artifactId>maven-assembly-plugin</artifactId>
-						<configuration> <skip>true</skip> </configuration> </plugin>
-					-->
-					<plugin>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>war-process-classes</id>
-								<phase>process-classes</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<tasks>
-										<property name="deploy-path" value="${as.deploy}/${app.context}.war" />
-										<echo>Hot Deploying to ${deploy-path}/WEB-INF/dev</echo>
-										<copy todir="${deploy-path}" verbose="true">
-											<fileset dir="src/main/webapp">
-												<include name="**/*" />
-												<exclude name="META-INF/context.xml" />
-											</fileset>
-											<fileset dir="war">
-												<include name="**/*" />
-												<exclude name="WEB-INF/lib/**/*" />
-												<exclude name="WEB-INF/classes/**/*" />
-												<exclude name="org.fedorahosted.flies.webtrans.**/*" />
-												<exclude name="WEB-INF/web.xml" />
-											</fileset>
-										</copy>
-										<copy todir="${deploy-path}/WEB-INF/dev" verbose="true">
-											<fileset dir="${project.build.outputDirectory}">
-												<includesfile name="hotdeploy.list" />
-											</fileset>
-										</copy>
-									</tasks>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-
-		<profile>
-			<id>explode</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>dev</value>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-
-					<plugin>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>package</id>
-								<phase>package</phase>
-								<configuration>
-									<tasks>
-										<!--
-											Set the Ant property deploy.gwt if Maven property
-											env.deploy.gwt=true/yes/on
-										-->
-										<condition property="deploy.gwt">
-											<istrue value="${env.deploy.gwt}" />
-										</condition>
-										<property name="deploy-path" value="${as.deploy}/${app.context}.war" />
-										<property name="temp-deploy-path" value="target/disabled.${app.context}.war" />
-										<echo>Removing old version at ${deploy-path}</echo>
-										<delete file="${deploy-path}" quiet="true" />
-										<delete quiet="true">
-											<fileset dir="${deploy-path}">
-												<!-- GWT hosted mode is responsible for keeping these files updated  -->
-												<exclude name="${gwt.filepattern}" unless="deploy.gwt" />
-											</fileset>
-										</delete>
-										<echo>Exploding to ${temp-deploy-path}</echo>
-										<copy todir="${as.deploy}" file="${project.build.directory}/${app.ds.xml}"
-											verbose="true" />
-										<move file="${deploy-path}" tofile="${temp-deploy-path}"
-											failonerror="false" verbose="true" />
-										<sync todir="${temp-deploy-path}" verbose="false">
-											<fileset
-												dir="${project.build.directory}/${project.build.finalName}">
-												<excludesfile name="hotdeploy.list" />
-												<exclude name="${gwt.filepattern}" unless="deploy.gwt" />
-											</fileset>
-											<preserveintarget>
-												<!-- GWT hosted mode is responsible for keeping these files updated  -->
-												<include name="${gwt.filepattern}" unless="deploy.gwt" />
-											</preserveintarget>
-										</sync>
-										<mkdir dir="${temp-deploy-path}/WEB-INF/dev" />
-										<sync todir="${temp-deploy-path}/WEB-INF/dev" verbose="false">
-											<fileset
-												dir="${project.build.directory}/${project.build.finalName}/WEB-INF/classes">
-												<includesfile name="hotdeploy.list" />
-											</fileset>
-										</sync>
-										<echo>Touching ${temp-deploy-path}/WEB-INF/web.xml</echo>
-										<touch file="${temp-deploy-path}/WEB-INF/web.xml" />
-										<echo>Moving to ${deploy-path}</echo>
-										<move file="${temp-deploy-path}" tofile="${deploy-path}"
-											verbose="true" />
-									</tasks>
-								</configuration>
-								<goals>
-									<goal>run</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-
-		<profile>
-			<!--
-				Unexplode ear. Remove project from appserver deploy folder. execute
-				e.g. "mvn clean -Punexplode"
-			-->
-			<id>unexplode</id>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>clean</id>
-								<phase>clean</phase>
-								<configuration>
-									<tasks>
-										<property name="deploy-path" value="${as.deploy}/${app.context}.war" />
-										<delete file="${deploy-path}" quiet="true" />
-										<delete dir="${deploy-path}" quiet="true" />
-										<!--
-											Uncomment this tag if you have deployed the *-ds.xml file to
-											the appserver's deploy folder
-										-->
-										<delete file="${as.deploy}/${app.ds.xml}" quiet="true" />
-									</tasks>
-								</configuration>
-								<goals>
-									<goal>run</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-
-		<profile>
-			<id>compile-gwt</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>gwt-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<goals>
-									<goal>compile</goal>
-									<!--
-										<goal>generateAsync</goal> <goal>test</goal>
-									-->
-								</goals>
-							</execution>
-						</executions>
-						<configuration>
-							<runTarget>
-								org.fedorahosted.flies.webtrans.Application/Application.html
-								<!--
-									?projContainerId=1&amp;localeId=de
-								-->
-							</runTarget>
-							<inplace>false</inplace>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-
 
 	<build>
 		<finalName>flies</finalName>
@@ -300,80 +83,15 @@
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
-				<filtering>true</filtering> <!-- filtering persistence.xml and components.properties -->
+				<filtering>true</filtering>
 			</resource>
-			<!--
-				<resource> <directory>src/main/webapp</directory> </resource>
-			-->
 		</resources>
 
-		<outputDirectory>war/WEB-INF/classes</outputDirectory>
 		<plugins>
-			<plugin>
-				<!--
-					This plugin will copy dependencies into the right outputDirectory.
-					Usage: mvn dependency:copy-dependencies
-				-->
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<configuration>
-					<outputDirectory>war/WEB-INF/lib</outputDirectory>
-					<overWriteReleases>true</overWriteReleases>
-					<overWriteSnapshots>true</overWriteSnapshots>
-					<overWriteIfNewer>true</overWriteIfNewer>
-					<includeScope>runtime</includeScope>
-					<excludeScope>provided</excludeScope>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-clean-plugin</artifactId>
-				<version>2.2</version>
-				<configuration>
-					<filesets>
-						<fileset>
-							<directory>war</directory>
-							<includes>
-								<include>org.fedorahosted.flies.*/**</include>
-								<include>.gwt-tmp</include>
-								<include>WEB-INF/lib/**</include>
-							</includes>
-							<followSymlinks>false</followSymlinks>
-						</fileset>
-						<fileset>
-							<directory>.gwt-tmp</directory>
-							<followSymlinks>false</followSymlinks>
-						</fileset>
-					</filesets>
-				</configuration>
-			</plugin>
 
-			<!--
-				Specify a non-standard root dir for our war file, since the Eclipse
-				GWT plugin prefers it this way
-			-->
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
-					<warSourceDirectory>${webapp.dir}</warSourceDirectory>
-					<!-- 
-          <webXml>${webapp.dir}/WEB-INF/web.xml</webXml>
- -->
-					<webXml>${basedir}/src/main/webapp/WEB-INF/web.xml</webXml>
-					<warSourceExcludes>.gwt-tmp/**,tomcat/**, WEB-INF/lib/**</warSourceExcludes>
-					<webResources>
-						<webResource>
-							<directory>${webapp.dir}/WEB-INF</directory>
-							<targetPath>WEB-INF</targetPath>
-							<filtering>true</filtering>
-							<includes>
-								<include>components.xml</include>
-								<include>jboss-web.xml</include>
-								<!-- 
-                <include>web.xml</include>
- -->
-							</includes>
-						</webResource>
-					</webResources>
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
@@ -386,66 +104,12 @@
 				</configuration>
 			</plugin>
 
-			<!--
-				Maven resources plugin The default resources folder for ear is the
-				src/main/application folder. Stuff in this folder will go into the
-				target ear folder. The projects *-ds.xml file is placed in the
-				src/main/resources folder, so we'll have to use the
-				maven-resources-plugin to copy the *-ds.xml file. The reason for
-				this is that we need to control where to copy the *-ds.xml is in the
-				target build. If we want to deploy the *-ds.xml file embedded into
-				the ear project then the file is located in the target/ear root
-				folder. If the *-ds.xml file should be deployed as a separate
-				service, then the file is located the target folder. The explode
-				profile will then copy the *-ds.xml file to the application server's
-				deploy folder.
-			-->
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-app-ds-xml</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-
-							<!--
-								Comment out this tag if you have deployed the *-ds.xml file to
-								the appserver's deploy folder
-								<outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
-							-->
-
-							<!--
-								Uncomment this tag if you have deployed the *-ds.xml file to the
-								appserver's deploy folder
-							-->
-							<outputDirectory>${project.build.directory}</outputDirectory>
-
-							<resources>
-								<resource>
-									<directory>src/main/resources</directory>
-									<filtering>true</filtering>
-									<includes>
-										<include>${app.ds.xml}</include>
-									</includes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<!--
-				tell mvn eclipse:eclipse to include config for the GWT Eclipse
-				plugin
-			-->
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<configuration>
+					<wtpversion>2.0</wtpversion>
 					<downloadSources>true</downloadSources>
 					<downloadJavadocs>false</downloadJavadocs>
 
@@ -455,20 +119,6 @@
 						</buildCommand>
 						<buildCommand>
 							<name>com.google.gwt.eclipse.core.gwtProjectValidator</name>
-						</buildCommand>
-						<buildCommand>
-							<name>org.eclipse.ui.externaltools.ExternalToolBuilder</name>
-							<triggers>auto,full,incremental,</triggers>
-							<arguments>
-								<LaunchConfigHandle>&lt;project&gt;/.externalToolBuilders/copy-test-resources.launch</LaunchConfigHandle>
-							</arguments>
-						</buildCommand>
-						<buildCommand>
-							<name>org.eclipse.ui.externaltools.ExternalToolBuilder</name>
-							<triggers>auto,full,incremental,</triggers>
-							<arguments>
-								<LaunchConfigHandle>&lt;project&gt;/.externalToolBuilders/mvn-resources.launch</LaunchConfigHandle>
-							</arguments>
 						</buildCommand>
 					</additionalBuildcommands>
 
@@ -488,6 +138,26 @@
 					</excludes>
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<!-- compile, generateAsync, test -->
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<runTarget>
+						org.fedorahosted.flies.webtrans.Application/Application.html
+					</runTarget>
+					<inplace>false</inplace>
+				</configuration>
+			</plugin>
+
 
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -516,7 +186,7 @@
 					</additionalClasspathElements>
 					<childDelegation>true</childDelegation>
 					<useSystemClassLoader>true</useSystemClassLoader>
-					<argLine>-Djava.endorsed.dirs=${project.build.testOutputDirectory}/endorsed -Dsun.lang.ClassLoader.allowArraySyntax=true</argLine>
+					<argLine xml:space="preserve">-Djava.endorsed.dirs=${project.build.testOutputDirectory}/endorsed -Dsun.lang.ClassLoader.allowArraySyntax=true</argLine>
 				</configuration>
 				<executions>
 					<execution>
@@ -538,7 +208,213 @@
 
 	</build>
 
+
+	<profiles>
+
+		<profile>
+			<id>jboss4</id>
+
+			<build>
+			
+				<resources>
+					<resource>
+						<directory>src/main/resources-jboss4-external</directory>
+						<targetPath>${project.build.directory}</targetPath>
+						<filtering>true</filtering>
+					</resource>
+				
+				</resources>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-war-plugin</artifactId>
+						<configuration>
+							<webResources>
+								<resource>
+									<directory>src/main/webapp-jboss4</directory>
+									<filtering>true</filtering>
+								</resource>
+							</webResources>
+						</configuration>
+					</plugin>
+
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>jboss-maven-plugin</artifactId>
+						<version>1.4</version>
+						<configuration>
+							<jbossHome>/opt/jboss-4.2.3.GA-jdk6</jbossHome>
+							<serverName>default</serverName>
+							<fileNames>
+								<fileName>${project.build.directory}/flies-ds.xml</fileName>
+								<fileName>${project.build.directory}/flies.war</fileName>
+							</fileNames>
+						</configuration>
+					</plugin>
+
+				</plugins>
+			</build>
+
+			<dependencies>
+
+				<dependency>
+					<groupId>commons-codec</groupId>
+					<artifactId>commons-codec</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>commons-collections</groupId>
+					<artifactId>commons-collections</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>javax.el</groupId>
+					<artifactId>el-api</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>javax.persistence</groupId>
+					<artifactId>persistence-api</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>javax.ejb</groupId>
+					<artifactId>ejb-api</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>javassist</groupId>
+					<artifactId>javassist</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>hsqldb</groupId>
+					<artifactId>hsqldb</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>javax.faces</groupId>
+					<artifactId>jsf-api</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>javax.faces</groupId>
+					<artifactId>jsf-impl</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>javax.annotation</groupId>
+					<artifactId>jsr250-api</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>javax.xml.stream</groupId>
+					<artifactId>stax-api</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>xpp3</groupId>
+					<artifactId>xpp3_min</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+			</dependencies>
+
+		</profile>
+
+		<profile>
+			<id>jboss5</id>
+		</profile>
+
+		<profile>
+			<id>tomcat</id>
+
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-war-plugin</artifactId>
+						<configuration>
+							<webResources>
+								<resource>
+									<directory>src/main/webapp-tomcat</directory>
+									<filtering>false</filtering>
+								</resource>
+							</webResources>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+
+		</profile>
+
+		<profile>
+			<id>nogwt</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>gwt-maven-plugin</artifactId>
+						<configuration>
+							<skip>true</skip>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+	</profiles>
+
 	<dependencies>
+
+		<!-- Flies-specific dependencies -->
+
+		<dependency>
+			<groupId>org.fedorahosted.flies</groupId>
+			<artifactId>flies-common-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.fedorahosted.flies</groupId>
+			<artifactId>flies-rest-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.fedorahosted.flies</groupId>
+			<artifactId>flies-gwt-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<!-- Seam Dependencies -->
 
@@ -580,7 +456,9 @@
 			<artifactId>jboss-seam-resteasy</artifactId>
 			<version>${version.seam}</version>
 			<exclusions>
-				<!-- We use Jackson for json -->
+				<!--
+					We use Jackson for json, so exclude the default jettison provider
+				-->
 				<exclusion>
 					<groupId>org.jboss.resteasy</groupId>
 					<artifactId>resteasy-jettison-provider</artifactId>
@@ -632,19 +510,17 @@
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-xc</artifactId>
 		</dependency>
-		
+
 		<!--  Drools -->
 
 		<dependency>
 			<groupId>org.drools</groupId>
 			<artifactId>drools-core</artifactId>
-			<version>${version.drools}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.drools</groupId>
 			<artifactId>drools-compiler</artifactId>
-			<version>${version.drools}</version>
 		</dependency>
 
 		<!-- Richfaces -->
@@ -652,19 +528,16 @@
 		<dependency>
 			<groupId>org.richfaces.framework</groupId>
 			<artifactId>richfaces-api</artifactId>
-			<version>${version.richfaces}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.richfaces.framework</groupId>
 			<artifactId>richfaces-impl</artifactId>
-			<version>${version.richfaces}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.richfaces.ui</groupId>
 			<artifactId>richfaces-ui</artifactId>
-			<version>${version.richfaces}</version>
 		</dependency>
 
 		<!-- Hibernate / JPA -->
@@ -717,7 +590,6 @@
 			<scope>provided</scope>
 		</dependency>
 
-
 		<!--  Other -->
 
 		<dependency>
@@ -728,21 +600,6 @@
 		<dependency>
 			<groupId>org.tuckey</groupId>
 			<artifactId>urlrewritefilter</artifactId>
-			<version>3.0.4</version>
-		</dependency>
-
-		<!-- Flies-specific dependencies -->
-
-		<dependency>
-			<groupId>org.fedorahosted.flies</groupId>
-			<artifactId>flies-common-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.fedorahosted.flies</groupId>
-			<artifactId>flies-rest-api</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
@@ -761,12 +618,12 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.google.collections</groupId>
 			<artifactId>google-collections</artifactId>
@@ -776,14 +633,12 @@
 			<groupId>org.fedorahosted.openprops</groupId>
 			<artifactId>openprops</artifactId>
 			<version>0.5</version>
-			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>net.sf.okapi.lib</groupId>
 			<artifactId>okapi-lib-search</artifactId>
 			<version>0.7-SNAPSHOT</version>
-			<scope>compile</scope>
 		</dependency>
 
 		<!-- okapi-lib-search would otherwise use lucene 3.0.0 -->
@@ -791,7 +646,59 @@
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
 			<version>2.9.2</version>
-			<scope>compile</scope>
+		</dependency>
+
+		<!-- Container dependencies - provided by jboss -->
+
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>javassist</groupId>
+			<artifactId>javassist</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.faces</groupId>
+			<artifactId>jsf-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.faces</groupId>
+			<artifactId>jsf-impl</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>jsr250-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.xml.stream</groupId>
+			<artifactId>stax-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>xpp3</groupId>
+			<artifactId>xpp3_min</artifactId>
 		</dependency>
 
 		<!--  Testing dependencies -->
@@ -852,115 +759,6 @@
 			<!-- We use testng in DBUnitImporter so can't use test scope here -->
 		</dependency>
 
-		<!-- Dependencies provided by JBoss As 4.2.3 -->
-
-		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-			<version>1.3</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-collections</groupId>
-			<artifactId>commons-collections</artifactId>
-			<version>3.2</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.1.1</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.el</groupId>
-			<artifactId>el-api</artifactId>
-			<version>1.0</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.persistence</groupId>
-			<artifactId>persistence-api</artifactId>
-			<version>1.0</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.ejb</groupId>
-			<artifactId>ejb-api</artifactId>
-			<version>3.0</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.14</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>javassist</groupId>
-			<artifactId>javassist</artifactId>
-			<version>3.8.0.GA</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>hsqldb</groupId>
-			<artifactId>hsqldb</artifactId>
-			<version>1.8.0.8-brew</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.faces</groupId>
-			<artifactId>jsf-api</artifactId>
-			<version>1.2_12</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.faces</groupId>
-			<artifactId>jsf-impl</artifactId>
-			<version>1.2_12</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.annotation</groupId>
-			<artifactId>jsr250-api</artifactId>
-			<version>1.0</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.xml.stream</groupId>
-			<artifactId>stax-api</artifactId>
-			<version>1.0</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>xpp3</groupId>
-			<artifactId>xpp3_min</artifactId>
-			<version>1.1.3.4.O</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- end of JBoss 4.2.3 provided dependencies -->
-
 		<!-- GWT related dependencies -->
 
 		<dependency>
@@ -980,7 +778,7 @@
 			<artifactId>gwt-user</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<!-- needed for GWT compilation of JAXB annotated classes -->
 			<groupId>javax.xml.bind</groupId>
@@ -1014,18 +812,11 @@
 			<groupId>com.google.code.gwt-log</groupId>
 			<artifactId>gwt-log</artifactId>
 			<version>3.0.0</version>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>com.google.code.gwteventservice</groupId>
 			<artifactId>gwteventservice</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.fedorahosted.flies</groupId>
-			<artifactId>flies-gwt-api</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 
 		<!-- end of GWT related dependencies -->
