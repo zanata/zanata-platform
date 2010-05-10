@@ -1,123 +1,26 @@
-<?xml version="1.0" ?>
-<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	version="2.5">
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
-	<!-- RichFaces -->
-
-	<context-param>
-		<param-name>org.richfaces.SKIN</param-name>
-		<param-value>classic</param-value>
-	</context-param>
-
-	<!-- Suppress spurious stylesheets -->
-
-	<context-param>
-		<param-name>org.richfaces.CONTROL_SKINNING</param-name>
-		<param-value>disable</param-value>
-	</context-param>
-
-	<context-param>
-		<param-name>org.richfaces.CONTROL_SKINNING_CLASSES</param-name>
-		<param-value>disable</param-value>
-	</context-param>
-
-	<!--
-		Change load strategy to DEFAULT to disable sending scripts/styles as
-		packs
-	-->
-
-	<context-param>
-		<param-name>org.richfaces.LoadStyleStrategy</param-name>
-		<!--
-			TODO: When this is set to all, css from custom Richfaces components
-			such as flies-richfaces-ui components are not loaded.
-		-->
-		<param-value>DEFAULT</param-value>
-	</context-param>
-
-	<context-param>
-		<param-name>org.richfaces.LoadScriptStrategy</param-name>
-		<param-value>DEFAULT</param-value>
-	</context-param>
-
-	<!-- Seam -->
-
-	<listener>
-		<listener-class>org.jboss.seam.servlet.SeamListener</listener-class>
-	</listener>
-
-	<filter>
-		<filter-name>Seam Filter</filter-name>
-		<filter-class>org.jboss.seam.servlet.SeamFilter</filter-class>
-	</filter>
-
-	<filter-mapping>
-		<filter-name>Seam Filter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-
-	<filter>
-		<filter-name>UrlRewriteFilter</filter-name>
-		<filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
-		<init-param>
-			<param-name>logLevel</param-name>
-			<param-value>INFO</param-value>
-		</init-param>
-		<init-param>
-			<param-name>statusPath</param-name>
-			<param-value>/rwstatus</param-value>
-		</init-param>
-
-		<init-param>
-			<param-name>statusEnabled</param-name>
-			<param-value>true</param-value>
-		</init-param>
-
-	</filter>
-
-	<filter-mapping>
-		<filter-name>UrlRewriteFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+<web-app>
+	<display-name>Flies WebTrans GWT Application</display-name>
 
 	<servlet>
-		<servlet-name>Seam Resource Servlet</servlet-name>
-		<servlet-class>org.jboss.seam.servlet.SeamResourceServlet</servlet-class>
+		<servlet-name>EventService</servlet-name>
+		<servlet-class>
+			de.novanic.eventservice.service.EventServiceImpl
+	  </servlet-class>
 	</servlet>
 
 	<servlet-mapping>
-		<servlet-name>Seam Resource Servlet</servlet-name>
-		<url-pattern>/seam/resource/*</url-pattern>
+		<servlet-name>EventService</servlet-name>
+		<url-pattern>/org.fedorahosted.flies.webtrans.Application/gwteventservice/*</url-pattern>
 	</servlet-mapping>
-
-	<!-- Facelets development mode (disable in production) -->
-
-	<context-param>
-		<param-name>facelets.DEVELOPMENT</param-name>
-		<param-value>true</param-value>
-	</context-param>
-
-	<!-- JSF -->
-
-	<context-param>
-		<param-name>javax.faces.DEFAULT_SUFFIX</param-name>
-		<param-value>.xhtml</param-value>
-	</context-param>
-
-	<servlet>
-		<servlet-name>Faces Servlet</servlet-name>
-		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-		<!-- Seam must start after FliesBlockingServlet/Errai -->
-		<load-on-startup>2</load-on-startup>
-	</servlet>
 
 	<servlet-mapping>
-		<servlet-name>Faces Servlet</servlet-name>
-		<url-pattern>*.seam</url-pattern>
+		<servlet-name>EventService</servlet-name>
+		<url-pattern>/org.fedorahosted.flies.webtrans.ApplicationDummy/gwteventservice/*</url-pattern>
 	</servlet-mapping>
-
-	<!--  GWT  -->
 
 	<servlet>
 		<servlet-name>remoteLoggingService</servlet-name>
@@ -136,40 +39,20 @@
 		<url-pattern>/org.fedorahosted.flies.webtrans.Application/gwt-log</url-pattern>
 	</servlet-mapping>
 
-	<servlet>
-		<servlet-name>glossaryUploadServlet</servlet-name>
-		<servlet-class>org.fedorahosted.flies.core.action.GlossaryUploadServlet</servlet-class>
-	</servlet>
 
 	<servlet-mapping>
-		<servlet-name>glossaryUploadServlet</servlet-name>
-		<url-pattern>/org.fedorahosted.flies.webtrans.Application/glossaryupload</url-pattern>
+		<servlet-name>remoteLoggingService</servlet-name>
+		<url-pattern>/org.fedorahosted.flies.webtrans.ApplicationDummy/logging</url-pattern>
 	</servlet-mapping>
-
-	<!-- GWTEventService -->
-
-	<servlet>
-		<servlet-name>EventService</servlet-name>
-		<servlet-class>de.novanic.eventservice.service.EventServiceImpl</servlet-class>
-	</servlet>
 
 	<servlet-mapping>
-		<servlet-name>EventService</servlet-name>
-		<url-pattern>/org.fedorahosted.flies.webtrans.Application/gwteventservice/*</url-pattern>
+		<servlet-name>remoteLoggerServiceImpl</servlet-name>
+		<url-pattern>/org.fedorahosted.flies.webtrans.ApplicationDummy/gwt-log</url-pattern>
 	</servlet-mapping>
 
-	<security-constraint>
-		<display-name>Restrict raw XHTML Documents</display-name>
-		<web-resource-collection>
-			<web-resource-name>XHTML</web-resource-name>
-			<url-pattern>*.xhtml</url-pattern>
-		</web-resource-collection>
-		<auth-constraint />
-	</security-constraint>
 
-	<persistence-unit-ref>
-		<persistence-unit-ref-name>flies/pu</persistence-unit-ref-name>
-		<persistence-unit-name>fliesDatabase</persistence-unit-name>
-	</persistence-unit-ref>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
 
 </web-app>
