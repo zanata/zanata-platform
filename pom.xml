@@ -14,7 +14,6 @@
 		<module>flies-adapters</module>
 		<module>flies-rest-client</module>
 		<module>flies-clients</module>
-		<module>flies-gwt-api</module>
 		<module>flies-war</module>
 	</modules>
 	<scm>

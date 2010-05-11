@@ -425,12 +425,6 @@
 			<version>${project.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.fedorahosted.flies</groupId>
-			<artifactId>flies-gwt-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
 		<!-- Seam Dependencies -->
 
 		<dependency>
@@ -674,6 +668,16 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.persistence</groupId>
+			<artifactId>persistence-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.ejb</groupId>
+			<artifactId>ejb-api</artifactId>
 		</dependency>
 
 		<dependency>
