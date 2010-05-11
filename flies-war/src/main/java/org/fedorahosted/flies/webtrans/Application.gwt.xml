@@ -41,6 +41,5 @@
       <set-property name="log_DivLogger" value="DISABLED" />
     
       <source path="client" />
-      <source path="editor" />
 
 </module>

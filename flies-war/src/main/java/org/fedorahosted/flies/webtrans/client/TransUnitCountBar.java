@@ -2,7 +2,7 @@ package org.fedorahosted.flies.webtrans.client;
 
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.TransUnitCount;
-import org.fedorahosted.flies.webtrans.editor.HasTransUnitCount;
+import org.fedorahosted.flies.webtrans.client.editor.HasTransUnitCount;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;

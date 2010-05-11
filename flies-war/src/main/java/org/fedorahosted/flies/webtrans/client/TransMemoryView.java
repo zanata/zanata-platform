@@ -6,6 +6,7 @@ import net.customware.gwt.presenter.client.EventBus;
 
 import org.fedorahosted.flies.gwt.model.TransMemory;
 import org.fedorahosted.flies.webtrans.client.TranslationEditorView.TranslationEditorViewUiBinder;
+import org.fedorahosted.flies.webtrans.client.events.TransMemoryCopyEvent;
 import org.fedorahosted.flies.webtrans.client.ui.HighlightingLabel;
 
 import com.allen_sauer.gwt.log.client.Log;

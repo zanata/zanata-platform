@@ -28,13 +28,13 @@ import org.fedorahosted.flies.webtrans.client.TranslationEditorView;
 import org.fedorahosted.flies.webtrans.client.WebTransMessages;
 import org.fedorahosted.flies.webtrans.client.WorkspaceUsersPresenter;
 import org.fedorahosted.flies.webtrans.client.WorkspaceUsersView;
+import org.fedorahosted.flies.webtrans.client.editor.HasPageNavigation;
+import org.fedorahosted.flies.webtrans.client.editor.filter.TransFilterPresenter;
+import org.fedorahosted.flies.webtrans.client.editor.filter.TransFilterView;
+import org.fedorahosted.flies.webtrans.client.editor.table.TableEditorPresenter;
+import org.fedorahosted.flies.webtrans.client.editor.table.TableEditorView;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.client.rpc.DelegatingDispatchAsync;
-import org.fedorahosted.flies.webtrans.editor.HasPageNavigation;
-import org.fedorahosted.flies.webtrans.editor.filter.TransFilterPresenter;
-import org.fedorahosted.flies.webtrans.editor.filter.TransFilterView;
-import org.fedorahosted.flies.webtrans.editor.table.TableEditorPresenter;
-import org.fedorahosted.flies.webtrans.editor.table.TableEditorView;
 
 import com.google.inject.Provider;
 import com.google.inject.Singleton;

@@ -1,9 +1,9 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import org.fedorahosted.flies.webtrans.client.editor.HasTransUnitCount;
 import org.fedorahosted.flies.webtrans.client.ui.HasPager;
 import org.fedorahosted.flies.webtrans.client.ui.Pager;
 import org.fedorahosted.flies.webtrans.client.ui.SplitLayoutPanelHelper;
-import org.fedorahosted.flies.webtrans.editor.HasTransUnitCount;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;
