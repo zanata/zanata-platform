@@ -212,41 +212,35 @@
 						</configuration>
 					</plugin>
 
+					<!--
+						Configure Surefire to run in integration-test phase
+					-->
 					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>failsafe-maven-plugin</artifactId>
-						<version>2.4.3-alpha-1</version>
-						<configuration>
-							<excludes>
-								<exclude>none</exclude>
-							</excludes>
-							<includes>
-								<include>**/*SeamTest.java</include>
-							</includes>
-							<suiteXmlFiles>
-								<suiteXmlFile>src/test/resources/AllIntegrationTests.tng.xml</suiteXmlFile>
-							</suiteXmlFiles>
-							<additionalClasspathElements>
-								<additionalClasspathElement>${project.build.testOutputDirectory}/bootstrap</additionalClasspathElement>
-								<additionalClasspathElement>${project.build.directory}/flies-ds.xml</additionalClasspathElement>
-								<additionalClasspathElement>${project.build.directory}/flies</additionalClasspathElement>
-							</additionalClasspathElements>
-							<childDelegation>true</childDelegation>
-							<useSystemClassLoader>true</useSystemClassLoader>
-							<argLine xml:space="preserve">-Djava.endorsed.dirs=${project.build.testOutputDirectory}/endorsed -Dsun.lang.ClassLoader.allowArraySyntax=true</argLine>
-						</configuration>
+						<artifactId>maven-surefire-plugin</artifactId>
 						<executions>
 							<execution>
-								<id>integration-test</id>
+								<id>surefire-it</id>
+								<phase>integration-test</phase>
 								<goals>
-									<goal>integration-test</goal>
+									<goal>test</goal>
 								</goals>
-							</execution>
-							<execution>
-								<id>verify</id>
-								<goals>
-									<goal>verify</goal>
-								</goals>
+								<configuration>
+									<skip>false</skip>
+									<redirectTestOutputToFile>true</redirectTestOutputToFile>
+									<printSummary>true</printSummary>
+									<forkMode>always</forkMode>
+									<suiteXmlFiles>
+										<suiteXmlFile>src/test/resources/AllIntegrationTests.tng.xml</suiteXmlFile>
+									</suiteXmlFiles>
+									<additionalClasspathElements>
+										<additionalClasspathElement>${project.build.testOutputDirectory}/bootstrap</additionalClasspathElement>
+										<additionalClasspathElement>${project.build.directory}/flies-ds.xml</additionalClasspathElement>
+										<additionalClasspathElement>${project.build.directory}/flies</additionalClasspathElement>
+									</additionalClasspathElements>
+									<childDelegation>true</childDelegation>
+									<useSystemClassLoader>true</useSystemClassLoader>
+									<argLine xml:space="preserve">-Djava.endorsed.dirs=${project.build.testOutputDirectory}/endorsed -Dsun.lang.ClassLoader.allowArraySyntax=true</argLine>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>
