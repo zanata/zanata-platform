@@ -11,8 +11,6 @@ import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
 import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceResult;
 import org.fedorahosted.flies.gwt.rpc.GetDocumentList;
 import org.fedorahosted.flies.gwt.rpc.GetDocumentListResult;
-import org.fedorahosted.flies.gwt.rpc.GetGlossaryConcept;
-import org.fedorahosted.flies.gwt.rpc.GetGlossaryConceptResult;
 import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCount;
 import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCountResult;
 import org.fedorahosted.flies.gwt.rpc.GetStatusCount;
@@ -75,10 +73,6 @@ public class DummyDispatchAsync extends SeamDispatchAsync {
 			final GetTranslationMemory _action = (GetTranslationMemory) action;
 			AsyncCallback<GetTranslationMemoryResult> _callback = (AsyncCallback<GetTranslationMemoryResult>) callback;
 			DeferredCommand.addCommand(new DummyGetTranslationMemoryCommand(_action, _callback));
-		}  else if (action instanceof GetGlossaryConcept) {
-			final GetGlossaryConcept _action = (GetGlossaryConcept) action;
-			AsyncCallback<GetGlossaryConceptResult> _callback = (AsyncCallback<GetGlossaryConceptResult>) callback;
-			DeferredCommand.addCommand(new DummyGetGlossaryCommand(_action, _callback));
 		} else {
 			Log.warn("DummyDispatchAsync: ignoring action of "+action.getClass());
 //			callback.onFailure(new RuntimeException());

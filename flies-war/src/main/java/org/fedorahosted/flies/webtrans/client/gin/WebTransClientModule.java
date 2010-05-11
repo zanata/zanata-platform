@@ -1,9 +1,8 @@
 package org.fedorahosted.flies.webtrans.client.gin;
 
+
 import net.customware.gwt.presenter.client.DefaultEventBus;
-import net.customware.gwt.presenter.client.Display;
 import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.Presenter;
 import net.customware.gwt.presenter.client.gin.AbstractPresenterModule;
 import net.customware.gwt.presenter.client.place.PlaceManager;
 
@@ -15,8 +14,6 @@ import org.fedorahosted.flies.webtrans.client.Application;
 import org.fedorahosted.flies.webtrans.client.DocumentListPresenter;
 import org.fedorahosted.flies.webtrans.client.DocumentListView;
 import org.fedorahosted.flies.webtrans.client.EventProcessor;
-import org.fedorahosted.flies.webtrans.client.GlossaryPresenter;
-import org.fedorahosted.flies.webtrans.client.GlossaryView;
 import org.fedorahosted.flies.webtrans.client.Resources;
 import org.fedorahosted.flies.webtrans.client.SidePanel;
 import org.fedorahosted.flies.webtrans.client.SidePanelPresenter;
@@ -61,7 +58,6 @@ public class WebTransClientModule extends AbstractPresenterModule {
 		bindPresenter(TableEditorPresenter.class, TableEditorPresenter.Display.class, TableEditorView.class);
 		bindPresenter(WorkspaceUsersPresenter.class, WorkspaceUsersPresenter.Display.class, WorkspaceUsersView.class);
 		bindPresenter(TransMemoryPresenter.class, TransMemoryPresenter.Display.class, TransMemoryView.class);
-		bindPresenter(GlossaryPresenter.class, GlossaryPresenter.Display.class, GlossaryView.class);
 		bindPresenter(TransUnitNavigationPresenter.class, TransUnitNavigationPresenter.Display.class, TransUnitNavigationView.class);
 		bindPresenter(SidePanelPresenter.class, SidePanelPresenter.Display.class, SidePanel.class);
 		bindPresenter(TranslationEditorPresenter.class, TranslationEditorPresenter.Display.class, TranslationEditorView.class);
