@@ -1,7 +1,7 @@
 package org.fedorahosted.flies.webtrans.server;
 
 
-import org.fedorahosted.flies.gwt.common.DispatchService;
+import org.fedorahosted.flies.webtrans.shared.common.DispatchService;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.remoting.WebRemote;
@@ -11,7 +11,7 @@ import org.jboss.seam.security.Identity;
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;
 
-@Name("org.fedorahosted.flies.gwt.common.DispatchService")
+@Name("org.fedorahosted.flies.webtrans.shared.common.DispatchService")
 public class DispatchServiceImpl implements DispatchService {
 	
 	@In 

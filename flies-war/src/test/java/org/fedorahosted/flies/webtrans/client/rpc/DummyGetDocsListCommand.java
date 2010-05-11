@@ -5,11 +5,11 @@ package org.fedorahosted.flies.webtrans.client.rpc;
 
 import java.util.ArrayList;
 
-import org.fedorahosted.flies.gwt.model.DocumentInfo;
-import org.fedorahosted.flies.gwt.model.DocumentId;
-import org.fedorahosted.flies.gwt.model.ProjectIterationId;
-import org.fedorahosted.flies.gwt.rpc.GetDocumentList;
-import org.fedorahosted.flies.gwt.rpc.GetDocumentListResult;
+import org.fedorahosted.flies.webtrans.shared.model.DocumentId;
+import org.fedorahosted.flies.webtrans.shared.model.DocumentInfo;
+import org.fedorahosted.flies.webtrans.shared.model.ProjectIterationId;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetDocumentList;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetDocumentListResult;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;

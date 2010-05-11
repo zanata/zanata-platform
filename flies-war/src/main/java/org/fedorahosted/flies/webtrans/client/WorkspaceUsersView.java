@@ -2,7 +2,7 @@ package org.fedorahosted.flies.webtrans.client;
 
 import java.util.ArrayList;
 
-import org.fedorahosted.flies.gwt.model.Person;
+import org.fedorahosted.flies.webtrans.shared.model.Person;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasMouseOverHandlers;

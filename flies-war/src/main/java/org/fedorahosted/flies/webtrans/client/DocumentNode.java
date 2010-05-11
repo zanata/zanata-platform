@@ -1,6 +1,6 @@
 package org.fedorahosted.flies.webtrans.client;
 
-import org.fedorahosted.flies.gwt.model.DocumentInfo;
+import org.fedorahosted.flies.webtrans.shared.model.DocumentInfo;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.NativeEvent;

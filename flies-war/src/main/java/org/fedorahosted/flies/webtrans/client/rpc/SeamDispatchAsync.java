@@ -4,14 +4,14 @@ import net.customware.gwt.dispatch.shared.Action;
 
 import net.customware.gwt.dispatch.shared.Result;
 
-import org.fedorahosted.flies.gwt.auth.AuthenticationError;
-import org.fedorahosted.flies.gwt.auth.AuthorizationError;
-import org.fedorahosted.flies.gwt.auth.Identity;
-import org.fedorahosted.flies.gwt.common.DispatchService;
-import org.fedorahosted.flies.gwt.common.DispatchServiceAsync;
-import org.fedorahosted.flies.gwt.common.WorkspaceContext;
-import org.fedorahosted.flies.gwt.rpc.AbstractWorkspaceAction;
 import org.fedorahosted.flies.webtrans.client.Application;
+import org.fedorahosted.flies.webtrans.shared.auth.AuthenticationError;
+import org.fedorahosted.flies.webtrans.shared.auth.AuthorizationError;
+import org.fedorahosted.flies.webtrans.shared.auth.Identity;
+import org.fedorahosted.flies.webtrans.shared.common.DispatchService;
+import org.fedorahosted.flies.webtrans.shared.common.DispatchServiceAsync;
+import org.fedorahosted.flies.webtrans.shared.common.WorkspaceContext;
+import org.fedorahosted.flies.webtrans.shared.rpc.AbstractWorkspaceAction;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;

@@ -1,7 +1,7 @@
 package org.fedorahosted.flies.webtrans.client.editor.table;
 
-import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.webtrans.client.ui.HighlightingLabel;
+import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
 
 
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;

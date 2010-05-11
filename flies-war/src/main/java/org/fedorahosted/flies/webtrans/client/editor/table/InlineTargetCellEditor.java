@@ -1,8 +1,8 @@
 package org.fedorahosted.flies.webtrans.client.editor.table;
 
 import org.fedorahosted.flies.common.ContentState;
-import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.webtrans.client.Resources;
+import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;

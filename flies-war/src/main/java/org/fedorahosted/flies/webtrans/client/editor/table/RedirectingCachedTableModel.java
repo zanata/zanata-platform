@@ -1,8 +1,8 @@
 package org.fedorahosted.flies.webtrans.client.editor.table;
 
 import org.fedorahosted.flies.common.ContentState;
-import org.fedorahosted.flies.gwt.model.TransUnit;
-import org.fedorahosted.flies.gwt.model.TransUnitId;
+import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
+import org.fedorahosted.flies.webtrans.shared.model.TransUnitId;
 
 import com.google.gwt.gen2.table.client.CachedTableModel;
 

@@ -11,11 +11,11 @@ import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.HProjectIteration;
-import org.fedorahosted.flies.gwt.common.WorkspaceId;
-import org.fedorahosted.flies.gwt.model.ProjectIterationId;
-import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
-import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceResult;
 import org.fedorahosted.flies.webtrans.server.SeamDispatch;
+import org.fedorahosted.flies.webtrans.shared.common.WorkspaceId;
+import org.fedorahosted.flies.webtrans.shared.model.ProjectIterationId;
+import org.fedorahosted.flies.webtrans.shared.rpc.ActivateWorkspaceAction;
+import org.fedorahosted.flies.webtrans.shared.rpc.ActivateWorkspaceResult;
 import org.jboss.seam.mock.DBUnitSeamTest;
 import org.testng.annotations.Test;
 

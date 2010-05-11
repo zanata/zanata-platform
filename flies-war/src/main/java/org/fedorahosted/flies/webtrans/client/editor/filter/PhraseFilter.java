@@ -1,6 +1,6 @@
 package org.fedorahosted.flies.webtrans.client.editor.filter;
 
-import org.fedorahosted.flies.gwt.model.TransUnit;
+import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
 
 public class PhraseFilter implements ContentFilter<TransUnit>{
 	private String phrase;

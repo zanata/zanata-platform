@@ -4,21 +4,21 @@ import java.util.HashMap;
 
 import net.customware.gwt.presenter.client.EventBus;
 
-import org.fedorahosted.flies.gwt.common.WorkspaceContext;
-import org.fedorahosted.flies.gwt.rpc.EnterWorkspace;
-import org.fedorahosted.flies.gwt.rpc.ExitWorkspace;
-import org.fedorahosted.flies.gwt.rpc.HasEnterWorkspaceData;
-import org.fedorahosted.flies.gwt.rpc.HasExitWorkspaceData;
-import org.fedorahosted.flies.gwt.rpc.HasTransUnitEditData;
-import org.fedorahosted.flies.gwt.rpc.HasTransUnitUpdatedData;
-import org.fedorahosted.flies.gwt.rpc.SessionEventData;
-import org.fedorahosted.flies.gwt.rpc.TransUnitEditing;
-import org.fedorahosted.flies.gwt.rpc.TransUnitUpdated;
 import org.fedorahosted.flies.webtrans.client.events.EnterWorkspaceEvent;
 import org.fedorahosted.flies.webtrans.client.events.ExitWorkspaceEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitEditEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
+import org.fedorahosted.flies.webtrans.shared.common.WorkspaceContext;
+import org.fedorahosted.flies.webtrans.shared.rpc.EnterWorkspace;
+import org.fedorahosted.flies.webtrans.shared.rpc.ExitWorkspace;
+import org.fedorahosted.flies.webtrans.shared.rpc.HasEnterWorkspaceData;
+import org.fedorahosted.flies.webtrans.shared.rpc.HasExitWorkspaceData;
+import org.fedorahosted.flies.webtrans.shared.rpc.HasTransUnitEditData;
+import org.fedorahosted.flies.webtrans.shared.rpc.HasTransUnitUpdatedData;
+import org.fedorahosted.flies.webtrans.shared.rpc.SessionEventData;
+import org.fedorahosted.flies.webtrans.shared.rpc.TransUnitEditing;
+import org.fedorahosted.flies.webtrans.shared.rpc.TransUnitUpdated;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.GwtEvent;

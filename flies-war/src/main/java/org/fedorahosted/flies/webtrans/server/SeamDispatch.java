@@ -13,8 +13,8 @@ import net.customware.gwt.dispatch.shared.ActionException;
 import net.customware.gwt.dispatch.shared.Result;
 import net.customware.gwt.dispatch.shared.UnsupportedActionException;
 
-import org.fedorahosted.flies.gwt.auth.AuthenticationError;
-import org.fedorahosted.flies.gwt.auth.AuthorizationError;
+import org.fedorahosted.flies.webtrans.shared.auth.AuthenticationError;
+import org.fedorahosted.flies.webtrans.shared.auth.AuthorizationError;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;

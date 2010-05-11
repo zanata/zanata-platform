@@ -6,8 +6,6 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.gin.AbstractPresenterModule;
 import net.customware.gwt.presenter.client.place.PlaceManager;
 
-import org.fedorahosted.flies.gwt.auth.Identity;
-import org.fedorahosted.flies.gwt.common.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.client.AppPresenter;
 import org.fedorahosted.flies.webtrans.client.AppView;
 import org.fedorahosted.flies.webtrans.client.Application;
@@ -35,6 +33,8 @@ import org.fedorahosted.flies.webtrans.client.editor.table.TableEditorPresenter;
 import org.fedorahosted.flies.webtrans.client.editor.table.TableEditorView;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.client.rpc.DelegatingDispatchAsync;
+import org.fedorahosted.flies.webtrans.shared.auth.Identity;
+import org.fedorahosted.flies.webtrans.shared.common.WorkspaceContext;
 
 import com.google.inject.Provider;
 import com.google.inject.Singleton;

@@ -2,10 +2,10 @@ package org.fedorahosted.flies.webtrans.client.rpc;
 
 import java.util.ArrayList;
 
-import org.fedorahosted.flies.gwt.model.TransMemory;
-import org.fedorahosted.flies.gwt.rpc.GetTranslationMemory;
-import org.fedorahosted.flies.gwt.rpc.GetTranslationMemoryResult;
-import org.fedorahosted.flies.gwt.rpc.GetTranslationMemory.SearchType;
+import org.fedorahosted.flies.webtrans.shared.model.TransMemory;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetTranslationMemory;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetTranslationMemoryResult;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetTranslationMemory.SearchType;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;

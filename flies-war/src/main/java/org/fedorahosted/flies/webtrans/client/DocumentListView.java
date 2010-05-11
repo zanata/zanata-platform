@@ -5,11 +5,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fedorahosted.flies.gwt.model.DocumentInfo;
-import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.webtrans.client.editor.HasTransUnitCount;
 import org.fedorahosted.flies.webtrans.client.editor.filter.ContentFilter;
 import org.fedorahosted.flies.webtrans.client.ui.ClearableTextBox;
+import org.fedorahosted.flies.webtrans.shared.model.DocumentId;
+import org.fedorahosted.flies.webtrans.shared.model.DocumentInfo;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;

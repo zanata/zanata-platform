@@ -5,11 +5,11 @@ import java.util.concurrent.ConcurrentMap;
 import javax.servlet.http.HttpSession;
 
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.gwt.auth.SessionId;
-import org.fedorahosted.flies.gwt.common.WorkspaceContext;
-import org.fedorahosted.flies.gwt.model.PersonId;
-import org.fedorahosted.flies.gwt.model.TransUnitId;
-import org.fedorahosted.flies.gwt.rpc.SessionEventData;
+import org.fedorahosted.flies.webtrans.shared.auth.SessionId;
+import org.fedorahosted.flies.webtrans.shared.common.WorkspaceContext;
+import org.fedorahosted.flies.webtrans.shared.model.PersonId;
+import org.fedorahosted.flies.webtrans.shared.model.TransUnitId;
+import org.fedorahosted.flies.webtrans.shared.rpc.SessionEventData;
 import org.jboss.seam.Component;
 import org.jboss.seam.Seam;
 import org.jboss.seam.annotations.In;

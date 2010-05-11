@@ -4,16 +4,16 @@ import net.customware.gwt.presenter.client.place.PlaceManager;
 import net.customware.gwt.presenter.client.place.PlaceRequestEvent;
 
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.gwt.auth.Identity;
-import org.fedorahosted.flies.gwt.common.WorkspaceContext;
-import org.fedorahosted.flies.gwt.common.WorkspaceId;
-import org.fedorahosted.flies.gwt.model.ProjectIterationId;
-import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
-import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceResult;
-import org.fedorahosted.flies.gwt.rpc.ExitWorkspaceAction;
-import org.fedorahosted.flies.gwt.rpc.ExitWorkspaceResult;
 import org.fedorahosted.flies.webtrans.client.EventProcessor.StartCallback;
 import org.fedorahosted.flies.webtrans.client.gin.WebTransGinjector;
+import org.fedorahosted.flies.webtrans.shared.auth.Identity;
+import org.fedorahosted.flies.webtrans.shared.common.WorkspaceContext;
+import org.fedorahosted.flies.webtrans.shared.common.WorkspaceId;
+import org.fedorahosted.flies.webtrans.shared.model.ProjectIterationId;
+import org.fedorahosted.flies.webtrans.shared.rpc.ActivateWorkspaceAction;
+import org.fedorahosted.flies.webtrans.shared.rpc.ActivateWorkspaceResult;
+import org.fedorahosted.flies.webtrans.shared.rpc.ExitWorkspaceAction;
+import org.fedorahosted.flies.webtrans.shared.rpc.ExitWorkspaceResult;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;

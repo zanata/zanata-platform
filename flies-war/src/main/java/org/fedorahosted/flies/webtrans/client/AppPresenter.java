@@ -10,13 +10,6 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.fedorahosted.flies.common.TransUnitCount;
-import org.fedorahosted.flies.gwt.auth.Identity;
-import org.fedorahosted.flies.gwt.common.WorkspaceContext;
-import org.fedorahosted.flies.gwt.model.DocumentId;
-import org.fedorahosted.flies.gwt.model.DocumentInfo;
-import org.fedorahosted.flies.gwt.model.DocumentStatus;
-import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCount;
-import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCountResult;
 import org.fedorahosted.flies.webtrans.client.AppPresenter.Display.MainView;
 import org.fedorahosted.flies.webtrans.client.editor.HasTransUnitCount;
 import org.fedorahosted.flies.webtrans.client.editor.filter.TransFilterPresenter;
@@ -29,6 +22,13 @@ import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.client.ui.HasPager;
+import org.fedorahosted.flies.webtrans.shared.auth.Identity;
+import org.fedorahosted.flies.webtrans.shared.common.WorkspaceContext;
+import org.fedorahosted.flies.webtrans.shared.model.DocumentId;
+import org.fedorahosted.flies.webtrans.shared.model.DocumentInfo;
+import org.fedorahosted.flies.webtrans.shared.model.DocumentStatus;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetProjectStatusCount;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetProjectStatusCountResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;

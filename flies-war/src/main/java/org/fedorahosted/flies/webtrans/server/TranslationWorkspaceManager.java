@@ -4,12 +4,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.fedorahosted.flies.FliesInit;
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.gwt.common.WorkspaceContext;
-import org.fedorahosted.flies.gwt.common.WorkspaceId;
-import org.fedorahosted.flies.gwt.model.PersonId;
-import org.fedorahosted.flies.gwt.model.ProjectIterationId;
-import org.fedorahosted.flies.gwt.rpc.ExitWorkspace;
 import org.fedorahosted.flies.security.FliesIdentity;
+import org.fedorahosted.flies.webtrans.shared.common.WorkspaceContext;
+import org.fedorahosted.flies.webtrans.shared.common.WorkspaceId;
+import org.fedorahosted.flies.webtrans.shared.model.PersonId;
+import org.fedorahosted.flies.webtrans.shared.model.ProjectIterationId;
+import org.fedorahosted.flies.webtrans.shared.rpc.ExitWorkspace;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;

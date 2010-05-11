@@ -2,9 +2,9 @@ package org.fedorahosted.flies.webtrans.client.editor.table;
 
 import java.util.List;
 
-import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.webtrans.client.editor.HasPageNavigation;
 import org.fedorahosted.flies.webtrans.client.editor.filter.ContentFilter;
+import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
 
 
 import com.allen_sauer.gwt.log.client.Log;

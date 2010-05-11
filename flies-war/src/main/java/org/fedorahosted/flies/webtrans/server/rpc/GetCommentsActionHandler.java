@@ -3,10 +3,10 @@ package org.fedorahosted.flies.webtrans.server.rpc;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.fedorahosted.flies.gwt.rpc.GetCommentsAction;
-import org.fedorahosted.flies.gwt.rpc.GetCommentsResult;
 import org.fedorahosted.flies.security.FliesIdentity;
 import org.fedorahosted.flies.webtrans.server.ActionHandlerFor;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetCommentsAction;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetCommentsResult;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;

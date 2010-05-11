@@ -1,9 +1,9 @@
 package org.fedorahosted.flies.webtrans.client.events;
 
 import org.fedorahosted.flies.common.ContentState;
-import org.fedorahosted.flies.gwt.model.DocumentId;
-import org.fedorahosted.flies.gwt.model.TransUnitId;
-import org.fedorahosted.flies.gwt.rpc.HasTransUnitUpdatedData;
+import org.fedorahosted.flies.webtrans.shared.model.DocumentId;
+import org.fedorahosted.flies.webtrans.shared.model.TransUnitId;
+import org.fedorahosted.flies.webtrans.shared.rpc.HasTransUnitUpdatedData;
 
 import com.google.gwt.event.shared.GwtEvent;
 

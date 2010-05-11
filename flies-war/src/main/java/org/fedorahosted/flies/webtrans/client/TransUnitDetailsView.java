@@ -1,7 +1,7 @@
 package org.fedorahosted.flies.webtrans.client;
 
-import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.webtrans.client.ui.CollapsePanel;
+import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;

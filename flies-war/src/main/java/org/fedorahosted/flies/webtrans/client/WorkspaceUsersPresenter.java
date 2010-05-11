@@ -9,17 +9,17 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.fedorahosted.flies.gwt.common.WorkspaceContext;
-import org.fedorahosted.flies.gwt.model.Person;
-import org.fedorahosted.flies.gwt.model.PersonId;
-import org.fedorahosted.flies.gwt.rpc.GetTranslatorList;
-import org.fedorahosted.flies.gwt.rpc.GetTranslatorListResult;
 import org.fedorahosted.flies.webtrans.client.events.EnterWorkspaceEvent;
 import org.fedorahosted.flies.webtrans.client.events.EnterWorkspaceEventHandler;
 import org.fedorahosted.flies.webtrans.client.events.ExitWorkspaceEvent;
 import org.fedorahosted.flies.webtrans.client.events.ExitWorkspaceEventHandler;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.client.ui.HasFilter;
+import org.fedorahosted.flies.webtrans.shared.common.WorkspaceContext;
+import org.fedorahosted.flies.webtrans.shared.model.Person;
+import org.fedorahosted.flies.webtrans.shared.model.PersonId;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetTranslatorList;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetTranslatorListResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.HasMouseOverHandlers;

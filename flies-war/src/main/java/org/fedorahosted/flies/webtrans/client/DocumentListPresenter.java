@@ -15,16 +15,6 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.TransUnitCount;
-import org.fedorahosted.flies.gwt.common.WorkspaceContext;
-import org.fedorahosted.flies.gwt.common.WorkspaceId;
-import org.fedorahosted.flies.gwt.model.DocumentInfo;
-import org.fedorahosted.flies.gwt.model.DocumentId;
-import org.fedorahosted.flies.gwt.model.DocumentStatus;
-import org.fedorahosted.flies.gwt.model.ProjectIterationId;
-import org.fedorahosted.flies.gwt.rpc.GetDocumentList;
-import org.fedorahosted.flies.gwt.rpc.GetDocumentListResult;
-import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCount;
-import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCountResult;
 import org.fedorahosted.flies.webtrans.client.editor.HasTransUnitCount;
 import org.fedorahosted.flies.webtrans.client.editor.filter.ContentFilter;
 import org.fedorahosted.flies.webtrans.client.events.DocumentSelectionEvent;
@@ -35,6 +25,16 @@ import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandle
 import org.fedorahosted.flies.webtrans.client.events.NotificationEvent.Severity;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.client.ui.HasFilter;
+import org.fedorahosted.flies.webtrans.shared.common.WorkspaceContext;
+import org.fedorahosted.flies.webtrans.shared.common.WorkspaceId;
+import org.fedorahosted.flies.webtrans.shared.model.DocumentId;
+import org.fedorahosted.flies.webtrans.shared.model.DocumentInfo;
+import org.fedorahosted.flies.webtrans.shared.model.DocumentStatus;
+import org.fedorahosted.flies.webtrans.shared.model.ProjectIterationId;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetDocumentList;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetDocumentListResult;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetProjectStatusCount;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetProjectStatusCountResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
