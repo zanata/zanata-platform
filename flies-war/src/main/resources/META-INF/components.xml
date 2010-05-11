@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<components xmlns="http://jboss.com/products/seam/components"
+    xmlns:core="http://jboss.com/products/seam/core"
+    xmlns:persistence="http://jboss.com/products/seam/persistence"
+    xmlns:drools="http://jboss.com/products/seam/drools"
+    xmlns:bpm="http://jboss.com/products/seam/bpm"
+    xmlns:security="http://jboss.com/products/seam/security"
+    xmlns:mail="http://jboss.com/products/seam/mail"
+    xmlns:web="http://jboss.com/products/seam/web"
+    xmlns:framework="http://jboss.com/products/seam/framework"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:resteasy="http://jboss.com/products/seam/resteasy"
+    xsi:schemaLocation=
+        "http://jboss.com/products/seam/core http://jboss.com/products/seam/core-2.1.xsd
+         http://jboss.com/products/seam/persistence http://jboss.com/products/seam/persistence-2.1.xsd
+         http://jboss.com/products/seam/drools http://jboss.com/products/seam/drools-2.1.xsd
+         http://jboss.com/products/seam/bpm http://jboss.com/products/seam/bpm-2.1.xsd
+         http://jboss.com/products/seam/security http://jboss.com/products/seam/security-2.1.xsd
+         http://jboss.com/products/seam/mail http://jboss.com/products/seam/mail-2.1.xsd
+         http://jboss.com/products/seam/web http://jboss.com/products/seam/web-2.1.xsd
+         http://jboss.com/products/seam/components http://jboss.com/products/seam/components-2.1.xsd
+         http://jboss.com/products/seam/resteasy http://jboss.com/products/seam/resteasy-2.1.xsd">
+ 
+  <!-- Conversation timeout: 20 minutes -->
+  <core:manager concurrent-request-timeout="4000"
+      conversation-timeout="1200000"
+      conversation-id-parameter="cid" parent-conversation-id-parameter="pid"/>
+
+  <resteasy:application resource-path-prefix="/restv1" />
+  
+  <web:multipart-filter create-temp-files="false" 
+      max-request-size="5200000" 
+      url-pattern="/*"/>
+
+  <!-- Login and security -->
+	
+  <drools:rule-base name="securityRules">
+    <drools:rule-files>
+      <value>/security.drl</value>
+    </drools:rule-files>
+  </drools:rule-base>
+
+  <security:rule-based-permission-resolver security-rules="#{securityRules}"/> 
+   
+  <security:jpa-identity-store 
+      user-class="org.fedorahosted.flies.core.model.HAccount"
+      role-class="org.fedorahosted.flies.core.model.HAccountRole" />
+
+  <security:jpa-permission-store user-permission-class="org.fedorahosted.flies.core.model.HAccountPermission"/>
+
+  <event type="org.jboss.seam.security.notLoggedIn">
+    <action execute="#{redirect.captureCurrentView}"/>
+  </event>
+  <event type="org.jboss.seam.security.loginSuccessful">
+    <action execute="#{redirect.returnToCapturedView}"/>
+  </event>
+
+  <web:redirect-filter disabled="true"/> <!-- Messes up into-conversation-redirect and is not needed -->
+
+  <factory name="session" value="#{entityManager.delegate}" scope="STATELESS" auto-create="true"/>
+
+  <component class="org.fedorahosted.flies.FliesInit" name="fliesInit" precedence="30">
+    <property name="adminContact">+41 123 123 123, admin@my.address</property>
+    <property name="debug">@env.debug@</property>
+    <property name="hibernateStatistics">false</property>
+    <property name="serverPath">@env.server.path@</property>
+    <property name="authenticatedSessionTimeoutMinutes">180</property>
+  </component>
+
+  <!-- Mailserver for notification messages -->
+  <mail:mail-session host="localhost" port="25" ssl="false" tls="false"/>
+
+  <!-- Maximum size of file uploads 
+      If you are using MySQL, don't forget their magic stuff:
+      http://dev.mysql.com/doc/refman/5.0/en/packet-too-large.html
+  -->
+  <web:multipart-filter create-temp-files="true"
+      max-request-size="10000000" url-pattern="*.seam"/>
+
+  <component name="essentialDataCreator" class="org.fedorahosted.flies.util.EssentialDataCreator" installed="true">
+  	<property name="username">admin</property>
+  	<property name="password">admin</property>
+  	<property name="email">admin@example.com</property>
+  	<property name="name">Administrator</property>
+  </component>
+  
+  <component name="dbunitImporter" class="org.fedorahosted.flies.util.DBUnitImporter" installed="@env.import.testdata@">
+    <property name="database">@env.dbunit.type@</property>
+    <property name="datasourceJndiName">java:/fliesDatasource</property>
+    <property name="binaryDir">META-INF/testdata</property>
+    <property name="datasets">
+        <value>META-INF/testdata/AccountData.dbunit.xml</value>
+        <value>META-INF/testdata/CommunitiesData.dbunit.xml</value>
+        <value>META-INF/testdata/ProjectsData.dbunit.xml</value>
+        <value>META-INF/testdata/GlossaryData.dbunit.xml</value>
+    </property>
+  </component>
+  <component name="dbunitImporterTribes" class="org.fedorahosted.flies.util.DBUnitImporter" installed="true">
+    <property name="database">@env.dbunit.type@</property>
+    <property name="datasourceJndiName">java:/fliesDatasource</property>
+    <property name="binaryDir">META-INF/testdata</property>
+    <property name="datasets">
+        <value>META-INF/testdata/LocalesData.dbunit.xml</value>
+        <value>META-INF/testdata/TribesData.dbunit.xml</value>
+    </property>
+  </component>
+</components>
