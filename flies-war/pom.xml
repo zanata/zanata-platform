@@ -104,7 +104,6 @@
 				</configuration>
 			</plugin>
 
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
@@ -158,7 +157,6 @@
 				</configuration>
 			</plugin>
 
-
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
@@ -208,7 +206,6 @@
 
 	</build>
 
-
 	<profiles>
 
 		<profile>
@@ -227,7 +224,6 @@
 						<directory>src/main/resources-jboss4</directory>
 						<filtering>true</filtering>
 					</resource>
-					
 				
 				</resources>
 				<plugins>

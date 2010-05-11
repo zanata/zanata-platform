@@ -72,13 +72,6 @@
     </persistence:parameters>
   </persistence:filter>
 
-  <component name="restrictedEntityManager" auto-create="true" scope="CONVERSATION"
-      class="org.fedorahosted.flies.core.dao.FliesManagedPersistenceContext">
-    <property name="entityManagerFactory">#{fliesEntityManagerFactory}</property>
-    <property name="persistenceUnitJndiName">java:/entityManagerFactories/flies</property>
-    <property name="filters"><value>#{accessLevelFilter}</value></property>
-  </component>
-
   <resteasy:application resource-path-prefix="/restv1" />
   
   <web:multipart-filter create-temp-files="false" 
@@ -108,84 +101,7 @@
     <action execute="#{redirect.returnToCapturedView}"/>
   </event>
 
-  <!-- Caching -->
-  <!-- 
-  <component name="ehCacheManager"
-      class="org.fedorahosted.flies.core.cache.EHCacheManager"
-      startup="true"
-      scope="APPLICATION"/>
-
-  <component name="pageFragmentCache"
-      class="org.fedorahosted.flies.core.cache.PageFragmentCache"
-      startup="true" startupDepends="ehCacheManager pluginRegistry"
-      scope="APPLICATION">
-    <property name="cacheRegions">
-      <value>wiki.MainMenu</value>
-      <value>wiki.Breadcrumb</value>
-      <value>wiki.Comment</value>
-      <value>wiki.Signature</value>
-      <value>wiki.TagList</value>
-    </property>
-  </component>
-  -->
-
   <web:redirect-filter disabled="true"/> <!-- Messes up into-conversation-redirect and is not needed -->
-
-  <!-- 
-  <component name="fliesUrlRewriteFilter" class="org.fedorahosted.flies.core.ui.WikiUrlRewriteFilter" precedence="30">
-    <property name="initParameters">
-      <key>logLevel</key><value>WARN</value>
-      <key>statusEnabled</key><value>false</value>
-    </property>
-  </component>
-  -->
-
-  <!--  
-  <component name="themePreferenceValueTemplate"
-      class="org.fedorahosted.flies.core.preferences.template.ThemeTemplate"
-      scope="CONVERSATION">
-    <property name="templateValues">
-      <value>default</value>
-      <value>jbossdotorg</value>
-    </property>
-  </component>
-  -->
-
-
-  <!-- Some convenience value factories -->
-
-  <!-- 
-  <factory name="contextPath" scope="CONVERSATION"  auto-create="true"
-      value="#{facesContext.externalContext.request.contextPath}"/>
-
-  <factory name="themePathGetRequest" scope="CONVERSATION"  auto-create="true"
-      value="#{servletContexts.request.contextPath}/themes/#{currentTheme}"/>
-
-  <factory name="themePath" scope="CONVERSATION" auto-create="true"
-      value="#{facesContext.externalContext.request.contextPath}/themes/#{currentTheme}"/>
-
-  <factory name="imagePath" scope="CONVERSATION" auto-create="true"
-      value="/themes/#{currentTheme}/img"/>
-
-  <factory name="currentTheme" scope="CONVERSATION" auto-create="true"
-      value="#{preferences.get('Wiki').themeName}"/>
-
-  <factory name="skin" scope="SESSION" value="d"/>
-
-  <factory name="sessionTimeoutSeconds" scope="EVENT"
-      value="#{facesContext.externalContext.getSession(true).getMaxInactiveInterval()}"/>
-
-  <factory name="currentPreferencesUser" scope="EVENT"
-      value="#{currentUser}"/>
-  -->
-
-  <!-- For use with jBPM pageflow or process management -->
-  <!--
-  <bpm:jbpm>
-    <bpm:process-definitions></bpm:process-definitions>
-    <bpm:pageflow-definitions></bpm:pageflow-definitions>
-  </bpm:jbpm>
-  -->
 
   <factory name="session" value="#{entityManager.delegate}" scope="STATELESS" auto-create="true"/>
 
@@ -207,26 +123,6 @@
   <web:multipart-filter create-temp-files="true"
       max-request-size="10000000" url-pattern="*.seam"/>
 
-  <!--  startupDepends="ehCacheManager"/>  
-      Some DBUnit datasets we use in unit testing - let's also use them in dev mode when the app is deployed 
- 
-  <component name="dbunitImporter" class="org.fedorahosted.flies.util.DBUnitImporter" scope="APPLICATION" auto-create="true">
-    <property name="database">mysql</property>
-    <property name="datasourceJndiName">java:/fliesDatasource</property>
-    <property name="binaryDir">META-INF/testbinaries</property>
-    <property name="datasets">
-      <value>META-INF/testdata/FliesBaseData.dbunit.xml</value>
-      <value>META-INF/testdata/HelpDocuments.dbunit.xml</value>
-      <value>META-INF/testdata/DocumentFeedEntries.dbunit.xml</value>
-      <value>META-INF/testdata/UploadData.dbunit.xml</value>
-      <value>META-INF/testdata/BlogData.dbunit.xml</value>
-      <value>META-INF/testdata/ForumData.dbunit.xml</value>
-      <value>META-INF/testdata/KnowledgeBase.dbunit.xml</value>
-      <value>META-INF/testdata/FAQData.dbunit.xml</value>
-    </property>
-  </component>
-  -->
-  
   <component name="essentialDataCreator" class="org.fedorahosted.flies.util.EssentialDataCreator" installed="true">
   	<property name="username">admin</property>
   	<property name="password">admin</property>
