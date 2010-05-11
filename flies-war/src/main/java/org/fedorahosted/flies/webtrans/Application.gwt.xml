@@ -16,7 +16,6 @@
       <inherits name='com.google.gwt.gen2.table.Table'/>
       
       <inherits name="org.fedorahosted.flies.Common"/>
-      <inherits name="org.fedorahosted.flies.gwt.Flies-gwt"/>
 
       <inherits name='com.google.gwt.user.theme.standard.StandardResources' />
 
@@ -41,5 +40,6 @@
       <set-property name="log_DivLogger" value="DISABLED" />
     
       <source path="client" />
+      <source path="shared" />
 
 </module>
