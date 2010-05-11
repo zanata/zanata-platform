@@ -21,22 +21,18 @@
 		<env.debug>false</env.debug>
 		<env.server.path>http://localhost:8080/flies</env.server.path>
 		<env.import.testdata>false</env.import.testdata>
-		<env.dbunit.type>HSQL</env.dbunit.type>
 		<env.hibernate.hbm2ddl.auto>update</env.hibernate.hbm2ddl.auto>
 		<env.hibernate.show_sql>false</env.hibernate.show_sql>
 		<env.hibernate.format_sql>false</env.hibernate.format_sql>
-		<env.hibernate.default_batch_size>16</env.hibernate.default_batch_size>
 
-		<ds>hsqldb</ds>
-		<ds.hibernate.dialect>org.hibernate.dialect.HSQLDialect</ds.hibernate.dialect> <!-- persistence.xml -->
-		<ds.driver.class>org.hsqldb.jdbcDriver</ds.driver.class> <!-- *-ds.xml -->
-		<ds.server.name></ds.server.name> <!-- *-ds.xml (if xa) -->
-		<ds.database.name>flies</ds.database.name> <!-- *-ds.xml (if xa) -->
+		<!-- Default database settings -->
+	
+		<env.dbunit.type>HSQL</env.dbunit.type>
+		<ds.hibernate.dialect>org.hibernate.dialect.HSQLDialect</ds.hibernate.dialect>
+		<ds.driver.class>org.hsqldb.jdbcDriver</ds.driver.class>
 		<ds.connection.url>jdbc:hsqldb:.</ds.connection.url> <!-- *-ds.xml -->
 		<ds.user.name>sa</ds.user.name> <!-- *-ds.xml -->
 		<ds.password></ds.password> <!-- *-ds.xml -->
-
-		<gwt.filepattern>org.fedorahosted.flies.*/**</gwt.filepattern>
 
 	</properties>
 
@@ -164,44 +160,6 @@
 				</configuration>
 			</plugin>
 
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>failsafe-maven-plugin</artifactId>
-				<version>2.4.3-alpha-1</version>
-				<configuration>
-					<excludes>
-						<exclude>none</exclude>
-					</excludes>
-					<includes>
-						<include>**/*SeamTest.java</include>
-					</includes>
-					<suiteXmlFiles>
-						<suiteXmlFile>src/test/resources/AllIntegrationTests.tng.xml</suiteXmlFile>
-					</suiteXmlFiles>
-					<additionalClasspathElements>
-						<additionalClasspathElement>${project.build.testOutputDirectory}/bootstrap</additionalClasspathElement>
-						<additionalClasspathElement>${project.build.directory}/flies</additionalClasspathElement>
-					</additionalClasspathElements>
-					<childDelegation>true</childDelegation>
-					<useSystemClassLoader>true</useSystemClassLoader>
-					<argLine xml:space="preserve">-Djava.endorsed.dirs=${project.build.testOutputDirectory}/endorsed -Dsun.lang.ClassLoader.allowArraySyntax=true</argLine>
-				</configuration>
-				<executions>
-					<execution>
-						<id>integration-test</id>
-						<goals>
-							<goal>integration-test</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>verify</id>
-						<goals>
-							<goal>verify</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
 		</plugins>
 
 	</build>
@@ -248,10 +206,49 @@
 							<jbossHome>/opt/jboss-4.2.3.GA-jdk6</jbossHome>
 							<serverName>default</serverName>
 							<fileNames>
-								<fileName>${project.build.directory}/flies-ds.xml</fileName>
+								<fileName>${project.build.directory}/classes/flies-ds.xml</fileName>
 								<fileName>${project.build.directory}/flies.war</fileName>
 							</fileNames>
 						</configuration>
+					</plugin>
+
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>failsafe-maven-plugin</artifactId>
+						<version>2.4.3-alpha-1</version>
+						<configuration>
+							<excludes>
+								<exclude>none</exclude>
+							</excludes>
+							<includes>
+								<include>**/*SeamTest.java</include>
+							</includes>
+							<suiteXmlFiles>
+								<suiteXmlFile>src/test/resources/AllIntegrationTests.tng.xml</suiteXmlFile>
+							</suiteXmlFiles>
+							<additionalClasspathElements>
+								<additionalClasspathElement>${project.build.testOutputDirectory}/bootstrap</additionalClasspathElement>
+								<additionalClasspathElement>${project.build.directory}/flies-ds.xml</additionalClasspathElement>
+								<additionalClasspathElement>${project.build.directory}/flies</additionalClasspathElement>
+							</additionalClasspathElements>
+							<childDelegation>true</childDelegation>
+							<useSystemClassLoader>true</useSystemClassLoader>
+							<argLine xml:space="preserve">-Djava.endorsed.dirs=${project.build.testOutputDirectory}/endorsed -Dsun.lang.ClassLoader.allowArraySyntax=true</argLine>
+						</configuration>
+						<executions>
+							<execution>
+								<id>integration-test</id>
+								<goals>
+									<goal>integration-test</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>verify</id>
+								<goals>
+									<goal>verify</goal>
+								</goals>
+							</execution>
+						</executions>
 					</plugin>
 
 				</plugins>
@@ -359,7 +356,6 @@
 
 		<profile>
 			<id>tomcat</id>
-
 			<build>
 				<plugins>
 					<plugin>
@@ -380,6 +376,18 @@
 		</profile>
 
 		<profile>
+			<id>mysql</id>
+			<properties>
+		        <env.dbunit.type>MYSQL</env.dbunit.type>
+		        <ds.hibernate.dialect>org.fedorahosted.flies.FliseMySQL5InnoDBDialect</ds.hibernate.dialect>
+		        <ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
+		        <ds.connection.url>jdbc:mysql://localhost:3306/flies?characterEncoding=UTF-8</ds.connection.url>
+		        <ds.user.name>root</ds.user.name>
+		        <ds.password></ds.password>
+			</properties>
+		</profile>
+
+		<profile>
 			<id>nogwt</id>
 			<build>
 				<plugins>
@@ -392,6 +400,17 @@
 					</plugin>
 				</plugins>
 			</build>
+		</profile>
+		
+		<profile>
+			<id>dev</id>
+			<properties>
+				<env.debug>true</env.debug>
+				<env.import.testdata>true</env.import.testdata>
+				<env.hibernate.hbm2ddl.auto>drop-create</env.hibernate.hbm2ddl.auto>
+				<env.hibernate.show_sql>true</env.hibernate.show_sql>
+				<env.hibernate.format_sql>true</env.hibernate.format_sql>
+			</properties>
 		</profile>
 
 	</profiles>

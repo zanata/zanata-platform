@@ -1,0 +1,9 @@
+<Context path="/jboss-seam-jpa" docBase="jboss-seam-jpa"
+        debug="5" reloadable="true" crossContext="true">
+
+  <Resource name="jdbc/TestDB" auth="Container" type="javax.sql.DataSource"
+               maxActive="100" maxIdle="30" maxWait="10000"
+               username="sa" driverClassName="org.hsqldb.jdbcDriver"
+               url="jdbc:hsqldb:."/>
+ 
+</Context>
