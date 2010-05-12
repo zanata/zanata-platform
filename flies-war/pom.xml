@@ -168,6 +168,10 @@
 
 		<profile>
 			<id>jboss4</id>
+			
+			<properties>
+				<env.JBOSS_HOME>/opt/jboss-4.2.3.GA-jdk6</env.JBOSS_HOME>
+			</properties>
 
 			<build>
 			
@@ -203,7 +207,6 @@
 						<artifactId>jboss-maven-plugin</artifactId>
 						<version>1.4</version>
 						<configuration>
-							<jbossHome>/opt/jboss-4.2.3.GA-jdk6</jbossHome>
 							<serverName>default</serverName>
 							<fileNames>
 								<fileName>${project.build.directory}/classes/flies-ds.xml</fileName>
@@ -401,7 +404,7 @@
 			<properties>
 				<env.debug>true</env.debug>
 				<env.import.testdata>true</env.import.testdata>
-				<env.hibernate.hbm2ddl.auto>drop-create</env.hibernate.hbm2ddl.auto>
+				<env.hibernate.hbm2ddl.auto>create-drop</env.hibernate.hbm2ddl.auto>
 				<env.hibernate.show_sql>true</env.hibernate.show_sql>
 				<env.hibernate.format_sql>true</env.hibernate.format_sql>
 			</properties>
