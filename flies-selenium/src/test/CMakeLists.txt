@@ -20,7 +20,7 @@ SET(BROWSERS_TO_TEST firefox googlechrome)
 #===================================================================
 # Flies Projects to be test
 SET (SAMPLE_PROJ_DIR    samples)
-SET (LANGS              "ja_JP,zh_CN,pt_PT")
+SET (LANGS              "ja-JP,zh-CN,pt-PT")
 
 SET(INIT_ITER		"s1")
 SET(INIT_ITER_NAME	"s1name")
@@ -40,7 +40,8 @@ SET(PROJ_ABOUT_FEDORA_F13_URL		"git://git.fedorahosted.org/git/docs/about-fedora
 SET(PROJ_ABOUT_FEDORA_F13_NAME	"About Fedora 13")
 SET(PROJ_ABOUT_FEDORA_F13_DESC	"About Fedora 13")
 
-SET(PUBLICAN_PROJECTS PROJ_SECURITY_GUIDE_F13 PROJ_ABOUT_FEDORA_F13)
+#SET(PUBLICAN_PROJECTS PROJ_SECURITY_GUIDE_F13 PROJ_ABOUT_FEDORA_F13)
+SET(PUBLICAN_PROJECTS PROJ_ABOUT_FEDORA_F13)
 
 #===================================================================
 # Generate Targets for publican projects
@@ -52,7 +53,7 @@ SET(SAMPLE_PROJ_PATHS )
 SET(SAMPLE_PROJ_TARGETS )
 FILE(STRINGS "apikey" _APIKEY)
 STRING(STRIP "${_APIKEY}" APIKEY)
-SET(FLIES_PUBLICAN_COMMON_OPTS "--debug --errors --user admin --key ${APIKEY}")
+SET(FLIES_PUBLICAN_COMMON_OPTS --errors --debug --user admin --key ${APIKEY})
 
 FOREACH(pProj ${PUBLICAN_PROJECTS})
     MESSAGE("Building target for ${pProj} in ${${pProj}}")
@@ -64,76 +65,90 @@ FOREACH(pProj ${PUBLICAN_PROJECTS})
 	SET(UPDATE_ACTION "pull")
     ENDIF()
 
-    ADD_CUSTOM_COMMAND(OUTPUT "${SAMPLE_PROJ_DIR}/${${pProj}}"}
-	COMMAND "${${pProj}_REPO_TYPE}" "${CLONE_ACTION}" "${${pProj}_URL}" "${SAMPLE_PROJ_DIR}/${${pProj}}"
-	COMMAND cd "${SAMPLE_PROJ_DIR}/${${pProj}}"
-	COMMAND ${PUBLICAN_CMD}  update_pot
+    SET(P_PROJ_DIR "${SAMPLE_PROJ_DIR}/${${pProj}}")
+
+    ADD_CUSTOM_COMMAND(OUTPUT "${P_PROJ_DIR}" "${P_PROJ_DIR}/publican.cfg"}
+	COMMAND "${${pProj}_REPO_TYPE}" "${CLONE_ACTION}" "${${pProj}_URL}" "${P_PROJ_DIR}"
 	DEPENDS ${SAMPLE_PROJ_DIR}
     )
 
     ADD_CUSTOM_TARGET(clone_${${pProj}}
-	COMMAND "${${pProj}_REPO_TYPE}" "${CLONE_ACTION}" "${${pProj}_URL}" "${SAMPLE_PROJ_DIR}/${${pProj}}"
-	DEPENDS ${SAMPLE_PROJ_DIR}
+	DEPENDS ${P_PROJ_DIR}
+    )
+
+    # Remove brand
+    ADD_CUSTOM_COMMAND(OUTPUT "${P_PROJ_DIR}/publican.cfg.orig"
+	COMMAND mv ${P_PROJ_DIR}/publican.cfg ${P_PROJ_DIR}/publican.cfg.orig
+	COMMAND sed -e 's/brand:.*//' ${P_PROJ_DIR}/publican.cfg.orig > ${P_PROJ_DIR}/publican.cfg
+	DEPENDS "${P_PROJ_DIR}/publican.cfg"
+    )
+
+    ADD_CUSTOM_TARGET(remove_brand_${${pProj}}
+	DEPENDS ${P_PROJ_DIR}
     )
 
     ADD_CUSTOM_TARGET(update_pot_${${pProj}}
 	COMMAND ${PUBLICAN_CMD}  update_pot
-	WORKING_DIRECTORY "${SAMPLE_PROJ_DIR}/${${pProj}}"
-	DEPENDS ${SAMPLE_PROJ_DIR}
+	WORKING_DIRECTORY "${P_PROJ_DIR}"
+	DEPENDS ${P_PROJ_DIR}/publican.cfg.orig
     )
 
     ADD_CUSTOM_TARGET(update_src_${${pProj}}
 	COMMAND "${${pProj}_REPO_TYPE}" "${UPDATE_ACTION}"
-        DEPENDS ${SAMPLE_PROJ_DIR}/${${pProj}}
-	WORKING_DIRECTORY "${SAMPLE_PROJ_DIR}/${${pProj}}"
-	COMMENT "Updating publican project ${${pProj}}"
+        DEPENDS ${P_PROJ_DIR}
+	WORKING_DIRECTORY "${P_PROJ_DIR}"
+	COMMENT "Updating pot of publican project ${${pProj}}"
     )
 
     ADD_CUSTOM_TARGET(update_po_${${pProj}}
         COMMAND ${PUBLICAN_CMD} update_po --langs="${LANGS}"
-        DEPENDS ${SAMPLE_PROJ_DIR}/${${pProj}}
-        WORKING_DIRECTORY "${SAMPLE_PROJ_DIR}/${${pProj}}"
-        COMMENT "Updating publican project ${${pProj}}"
+        DEPENDS ${P_PROJ_DIR}/publican.cfg.orig
+        WORKING_DIRECTORY "${P_PROJ_DIR}"
+        COMMENT "Updating po of publican project ${${pProj}}"
     )
 
     ADD_CUSTOM_TARGET(init_${${pProj}}
-        DEPENDS ${SAMPLE_PROJ_DIR}/${${pProj}}
+        DEPENDS ${SAMPLE_PROJ_DIR}
     )
 
-    ADD_DEPENDENCIES(init_${${pProj}} clone_${${pProj}} update_pot_${${pProj}} update_po_${${pProj}})
+    ADD_DEPENDENCIES(init_${${pProj}} update_pot_${${pProj}} update_po_${${pProj}})
 
     ADD_CUSTOM_TARGET(createproj_${${pProj}}
-	COMMAND "${FLIES_PUBLICAN_CMD}" createproj "${FLIES_COMMON_OPTS}" --flies "${FLIES_URL}" --proj "${${pProj}}" --name "${${pProj}_NAME}" --desc "${${pProj}_DESC}"
-        DEPENDS ${SAMPLE_PROJ_DIR}/${${pProj}}
-	WORKING_DIRECTORY "${SAMPLE_PROJ_DIR}/${${pProj}}"
+	COMMAND "${FLIES_PUBLICAN_CMD}" createproj ${FLIES_PUBLICAN_COMMON_OPTS} --flies "${FLIES_URL}" --proj "${${pProj}}" --name "${${pProj}_NAME}" --desc "${${pProj}_DESC}"
+        DEPENDS ${P_PROJ_DIR}
+	WORKING_DIRECTORY "${P_PROJ_DIR}"
     	COMMENT "Project ${${pProj}}: Creating"
+	VERBATIM
     )
 
     ADD_CUSTOM_TARGET(createiter_${${pProj}}
-	COMMAND "${FLIES_PUBLICAN_CMD}" createiter "${FLIES_COMMON_OPTS}" --flies "${FLIES_URL}" --proj "${${pProj}}" --iter "${INIT_ITER}" --name "${INIT_ITER_NAME}" --desc "${INIT_ITER_DESC}"
-	DEPENDS ${SAMPLE_PROJ_DIR}/${${pProj}}
-	WORKING_DIRECTORY "${SAMPLE_PROJ_DIR}/${${pProj}}"
-		COMMENT "Project ${${pProj}}: Creating an iteration ${INIT_ITER}"
+	COMMAND "${FLIES_PUBLICAN_CMD}" createiter ${FLIES_PUBLICAN_COMMON_OPTS} --flies "${FLIES_URL}" --proj "${${pProj}}" --iter "${INIT_ITER}" --name "${INIT_ITER_NAME}" --desc "${INIT_ITER_DESC}"
+	DEPENDS ${P_PROJ_DIR}
+	WORKING_DIRECTORY "${P_PROJ_DIR}"
+	COMMENT "Project ${${pProj}}: Creating an iteration ${INIT_ITER}"
+	VERBATIM
     )
 
     SET(UPLOAD_DEST "${FLIES_URL}${REST_PATH}${${pProj}}/iterations/i/${INIT_ITER}/documents")
 
     ADD_CUSTOM_TARGET(upload_${${pProj}}
-        COMMAND "${FLIES_PUBLICAN_CMD}" upload "${FLIES_COMMON_OPTS}" -i --src . --dest "${UPLOAD_DEST}"
-	DEPENDS ${SAMPLE_PROJ_DIR}/${${pProj}}
-	WORKING_DIRECTORY "${SAMPLE_PROJ_DIR}/${${pProj}}"
+        COMMAND "${FLIES_PUBLICAN_CMD}" upload ${FLIES_PUBLICAN_COMMON_OPTS} -i --src . --dest "${UPLOAD_DEST}"
+	DEPENDS ${P_PROJ_DIR}
+	WORKING_DIRECTORY "${P_PROJ_DIR}"
 	COMMENT "Project ${${pProj}}: Uploading"
+	VERBATIM
     )
 
 #    ADD_CUSTOM_TARGET(download_${${pProj}}
-#        COMMAND "${FLIES_PUBLICAN_CMD} download "${FLIES_COMMON_OPTS}" -e --src . --dest "${UPLOAD_DEST}"
-#        DEPENDS ${SAMPLE_PROJ_DIR}/${${pProj}}
-#        WORKING_DIRECTORY "${SAMPLE_PROJ_DIR}/${${pProj}}"
+#        COMMAND "${FLIES_PUBLICAN_CMD} download ${FLIES_PUBLICAN_COMMON_OPTS} -e --src . --dest "${UPLOAD_DEST}"
+#        DEPENDS ${P_PROJ_DIR}
+#        WORKING_DIRECTORY "${P_PROJ_DIR}"
 #	COMMENT "Project ${${pProj}}: Downloading"
+#	VERBATIM
 #    )
 
     # Keep track of the project paths and targets
-    SET(SAMPLE_PROJ_PATHS ${SAMPLE_PROJ_PATHS} "${SAMPLE_PROJ_DIR}/${${pProj}}")
+    SET(SAMPLE_PROJ_PATHS ${SAMPLE_PROJ_PATHS} "${P_PROJ_DIR}")
     SET(SAMPLE_PROJ_TARGETS ${SAMPLE_PROJ_TARGETS} "init_${${pProj}}")
 ENDFOREACH()
 
