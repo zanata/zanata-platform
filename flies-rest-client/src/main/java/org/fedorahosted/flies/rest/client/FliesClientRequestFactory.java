@@ -1,12 +1,7 @@
-package org.fedorahosted.flies.rest;
+package org.fedorahosted.flies.rest.client;
 
 import java.net.URI;
 
-import org.fedorahosted.flies.rest.client.IDocumentResource;
-import org.fedorahosted.flies.rest.client.IDocumentsResource;
-import org.fedorahosted.flies.rest.client.IProjectIterationResource;
-import org.fedorahosted.flies.rest.client.IProjectResource;
-import org.fedorahosted.flies.rest.client.IProjectsResource;
 import org.jboss.resteasy.client.ClientExecutor;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;

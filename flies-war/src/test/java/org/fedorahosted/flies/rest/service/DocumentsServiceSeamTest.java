@@ -18,7 +18,7 @@ import org.fedorahosted.flies.core.dao.ProjectIterationDAO;
 import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.repository.model.HTextFlow;
-import org.fedorahosted.flies.rest.FliesClientRequestFactory;
+import org.fedorahosted.flies.rest.client.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.IDocumentsResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Documents;

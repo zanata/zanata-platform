@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.rest;
+package org.fedorahosted.flies.rest.client;
 
 import java.net.URL;
 import java.util.Arrays;

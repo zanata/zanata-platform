@@ -8,7 +8,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.fedorahosted.flies.rest.ApiKeyHeaderDecorator;
+import org.fedorahosted.flies.rest.client.ApiKeyHeaderDecorator;
 import org.fedorahosted.flies.rest.client.IProjectsResource;
 import org.fedorahosted.flies.rest.dto.ProjectInline;
 import org.jboss.resteasy.client.ClientRequestFactory;

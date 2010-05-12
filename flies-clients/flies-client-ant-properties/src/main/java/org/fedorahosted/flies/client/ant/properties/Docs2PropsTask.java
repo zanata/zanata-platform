@@ -9,8 +9,8 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apache.tools.ant.BuildException;
 import org.fedorahosted.flies.adapter.properties.PropWriter;
-import org.fedorahosted.flies.rest.ClientUtility;
-import org.fedorahosted.flies.rest.FliesClientRequestFactory;
+import org.fedorahosted.flies.rest.client.ClientUtility;
+import org.fedorahosted.flies.rest.client.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.IDocumentsResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Documents;
