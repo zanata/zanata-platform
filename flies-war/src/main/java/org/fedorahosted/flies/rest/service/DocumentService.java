@@ -24,7 +24,7 @@ import org.fedorahosted.flies.core.dao.ProjectIterationDAO;
 import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.fedorahosted.flies.repository.model.HDocument;
 import org.fedorahosted.flies.rest.MediaTypes;
-import org.fedorahosted.flies.rest.client.ContentQualifier;
+import org.fedorahosted.flies.rest.ContentQualifier;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.hibernate.Session;
 import org.jboss.seam.annotations.In;

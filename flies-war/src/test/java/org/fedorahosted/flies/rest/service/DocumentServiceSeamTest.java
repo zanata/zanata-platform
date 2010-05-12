@@ -21,7 +21,7 @@ import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.rest.ApiKeyHeaderDecorator;
 import org.fedorahosted.flies.rest.MediaTypes;
-import org.fedorahosted.flies.rest.client.ContentQualifier;
+import org.fedorahosted.flies.rest.ContentQualifier;
 import org.fedorahosted.flies.rest.client.IDocumentResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Documents;

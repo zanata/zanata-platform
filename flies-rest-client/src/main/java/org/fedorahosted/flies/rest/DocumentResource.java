@@ -4,7 +4,6 @@ import java.net.URI;
 
 import javax.ws.rs.core.Response;
 
-import org.fedorahosted.flies.rest.client.ContentQualifier;
 import org.fedorahosted.flies.rest.client.IDocumentResource;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.jboss.resteasy.client.ClientResponse;

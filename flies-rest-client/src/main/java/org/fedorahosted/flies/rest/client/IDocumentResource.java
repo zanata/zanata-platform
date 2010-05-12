@@ -8,6 +8,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.fedorahosted.flies.rest.ContentQualifier;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.jboss.resteasy.client.ClientResponse;

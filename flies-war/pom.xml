@@ -720,6 +720,13 @@
 		<!--  Testing dependencies -->
 
 		<dependency>
+			<groupId>org.fedorahosted.flies</groupId>
+			<artifactId>flies-rest-client</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>org.jboss.embedded</groupId>
 			<artifactId>jboss-embedded-all</artifactId>
 			<version>${version.jboss.embedded}</version>

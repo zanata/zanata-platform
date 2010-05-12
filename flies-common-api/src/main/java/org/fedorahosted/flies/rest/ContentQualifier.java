@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.rest.client;
+package org.fedorahosted.flies.rest;
 
 import java.util.Collections;
 import java.util.HashSet;
