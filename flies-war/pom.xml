@@ -422,12 +422,6 @@
 			<version>${project.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.fedorahosted.flies</groupId>
-			<artifactId>flies-rest-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
 		<!-- Seam Dependencies -->
 
 		<dependency>

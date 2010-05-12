@@ -17,7 +17,7 @@
   <dependencies>
     <dependency>
       <groupId>org.fedorahosted.flies</groupId>
-      <artifactId>flies-rest-api</artifactId>
+      <artifactId>flies-common-api</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
