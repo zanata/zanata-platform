@@ -20,6 +20,13 @@ public class AccountDAO {
 	@In
 	EntityManager entityManager;
 	
+	public AccountDAO() {
+	}
+	
+	public AccountDAO(EntityManager entityManager) {
+		this.entityManager = entityManager;
+	}
+	
 	public HAccount getByUsername(String username){
 		Session session = (Session) entityManager.getDelegate();
 		return (HAccount) session.createCriteria(HAccount.class)
