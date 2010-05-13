@@ -7,8 +7,8 @@ import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.fedorahosted.flies.core.model.HPerson;
-import org.fedorahosted.flies.core.model.HProjectIteration;
+import org.fedorahosted.flies.model.HPerson;
+import org.fedorahosted.flies.model.HProjectIteration;
 import org.fedorahosted.flies.security.FliesIdentity;
 import org.fedorahosted.flies.webtrans.server.ActionHandlerFor;
 import org.fedorahosted.flies.webtrans.server.TranslationWorkspace;

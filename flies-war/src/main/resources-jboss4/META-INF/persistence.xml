@@ -54,52 +54,6 @@
       <property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider"/>
       <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.JBossTransactionManagerLookup"/>
       
-      <!-- Enable EHCache -->
-      <!-- 
-      <property name="hibernate.cache.provider_class" value="org.fedorahosted.flies.core.cache.EHCacheProvider"/>
-      <property name="hibernate.cache.use_query_cache" value="true"/>
-      <property name="hibernate.cache.use_second_level_cache" value="true"/>
-      
-      <property name="hibernate.ejb.classcache.org.jboss.seam.wiki.core.preferences.WikiPreferenceValue"
-               value="read-write, WikiPreference"/>
-      
-      <property name="hibernate.ejb.classcache.org.jboss.seam.wiki.core.model.LinkProtocol"
-               value="nonstrict-read-write, WikiLinkProtocol"/>
-      
-      <property name="hibernate.ejb.classcache.org.jboss.seam.wiki.core.model.User"
-               value="read-write, WikiUser"/>
-      
-      <property name="hibernate.ejb.classcache.org.jboss.seam.wiki.core.model.Role"
-               value="read-write, WikiRole"/>
-      
-      <property name="hibernate.ejb.collectioncache.org.jboss.seam.wiki.core.model.User.roles"
-               value="read-write, WikiUserRoleCollection"/>
-      
-      <property name="hibernate.ejb.classcache.org.jboss.seam.wiki.core.model.Feed"
-               value="read-write, WikiFeed"/>
-      
-      <property name="hibernate.ejb.classcache.org.jboss.seam.wiki.core.model.FeedEntry"
-               value="read-write, WikiFeedEntry"/>
-      
-      <property name="hibernate.ejb.collectioncache.org.jboss.seam.wiki.core.model.Feed.feedEntries"
-               value="read-write, WikiFeedEntryCollection"/>
-      -->
-      
-      <!-- Envers related configuration -->      
-<!--
-      <property name="hibernate.ejb.event.post-insert"
-      	value="org.hibernate.ejb.event.EJB3PostInsertEventListener,org.hibernate.envers.event.AuditEventListener" />
-      <property name="hibernate.ejb.event.post-update"
-      	value="org.hibernate.ejb.event.EJB3PostUpdateEventListener,org.hibernate.envers.event.AuditEventListener" />
-      <property name="hibernate.ejb.event.post-delete"
-      	value="org.hibernate.ejb.event.EJB3PostDeleteEventListener,org.hibernate.envers.event.AuditEventListener" />
-      <property name="hibernate.ejb.event.pre-collection-update"
-      	value="org.hibernate.envers.event.AuditEventListener" />
-      <property name="hibernate.ejb.event.pre-collection-remove"
-      	value="org.hibernate.envers.event.AuditEventListener" />
-      <property name="hibernate.ejb.event.post-collection-recreate"
-      	value="org.hibernate.envers.event.AuditEventListener" />
--->
     </properties>
   </persistence-unit>
   

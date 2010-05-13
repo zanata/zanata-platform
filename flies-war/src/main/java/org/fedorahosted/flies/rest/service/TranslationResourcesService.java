@@ -24,11 +24,11 @@ import javax.ws.rs.ext.MessageBodyReader;
 
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.core.dao.DocumentDAO;
-import org.fedorahosted.flies.core.dao.ProjectIterationDAO;
-import org.fedorahosted.flies.core.model.HProjectIteration;
-import org.fedorahosted.flies.repository.model.HDocument;
-import org.fedorahosted.flies.repository.model.HTextFlow;
+import org.fedorahosted.flies.dao.DocumentDAO;
+import org.fedorahosted.flies.dao.ProjectIterationDAO;
+import org.fedorahosted.flies.model.HDocument;
+import org.fedorahosted.flies.model.HProjectIteration;
+import org.fedorahosted.flies.model.HTextFlow;
 import org.fedorahosted.flies.rest.dto.v1.SourceResource;
 import org.fedorahosted.flies.rest.dto.v1.SourceTextFlow;
 import org.hibernate.HibernateException;

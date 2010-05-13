@@ -4,9 +4,9 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import org.fedorahosted.flies.core.dao.IdentityDAO;
-import org.fedorahosted.flies.core.model.HAccount;
-import org.fedorahosted.flies.core.model.HPerson;
+import org.fedorahosted.flies.dao.IdentityDAO;
+import org.fedorahosted.flies.model.HAccount;
+import org.fedorahosted.flies.model.HPerson;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Install;

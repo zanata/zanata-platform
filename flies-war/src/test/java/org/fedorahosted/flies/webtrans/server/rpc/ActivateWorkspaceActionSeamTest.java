@@ -9,8 +9,8 @@ import javax.persistence.EntityManager;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.core.model.HIterationProject;
-import org.fedorahosted.flies.core.model.HProjectIteration;
+import org.fedorahosted.flies.model.HIterationProject;
+import org.fedorahosted.flies.model.HProjectIteration;
 import org.fedorahosted.flies.webtrans.server.SeamDispatch;
 import org.fedorahosted.flies.webtrans.shared.common.WorkspaceId;
 import org.fedorahosted.flies.webtrans.shared.model.ProjectIterationId;
