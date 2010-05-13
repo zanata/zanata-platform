@@ -1,0 +1,1 @@
+These resources are used for development mode only within eclipse.

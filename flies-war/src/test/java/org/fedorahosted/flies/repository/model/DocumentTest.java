@@ -15,7 +15,7 @@ import org.fedorahosted.flies.core.model.HIterationProject;
 import org.fedorahosted.flies.core.model.HProjectIteration;
 import org.testng.annotations.Test;
 
-@Test(groups = { "jpa-tests" }, enabled=false)
+@Test(groups = { "jpa-tests" })
 public class DocumentTest extends FliesDbunitJpaTest {
 
 	protected void prepareDBUnitOperations() {
