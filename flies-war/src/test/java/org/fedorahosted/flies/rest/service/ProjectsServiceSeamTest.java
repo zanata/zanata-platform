@@ -50,6 +50,7 @@ public class ProjectsServiceSeamTest extends FliesDBUnitSeamTest {
 				DatabaseOperation.CLEAN_INSERT));
 	}
 
+	@Test(enabled=false)
 	public void retrieveListofProjects() throws Exception {
 		ClientResponse<List<ProjectInline>> response = projectService.get();
 

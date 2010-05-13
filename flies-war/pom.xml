@@ -237,12 +237,11 @@
 									</suiteXmlFiles>
 									<additionalClasspathElements>
 										<additionalClasspathElement>src/test/jboss-embedded-bootstrap</additionalClasspathElement>
-										<additionalClasspathElement>${project.build.directory}/flies-ds.xml</additionalClasspathElement>
 										<additionalClasspathElement>${project.build.directory}/flies</additionalClasspathElement>
 									</additionalClasspathElements>
 									<childDelegation>true</childDelegation>
 									<useSystemClassLoader>true</useSystemClassLoader>
-									<argLine xml:space="preserve">-Djava.endorsed.dirs=${project.build.testOutputDirectory}/endorsed -Dsun.lang.ClassLoader.allowArraySyntax=true</argLine>
+									<argLine xml:space="preserve">-Dsun.lang.ClassLoader.allowArraySyntax=true</argLine>
 								</configuration>
 							</execution>
 						</executions>
