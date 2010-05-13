@@ -236,7 +236,7 @@
 										<suiteXmlFile>src/test/resources/AllIntegrationTests.tng.xml</suiteXmlFile>
 									</suiteXmlFiles>
 									<additionalClasspathElements>
-										<additionalClasspathElement>src/test/jboss-embedded-bootstrap</additionalClasspathElement>
+										<additionalClasspathElement>${project.basedir}/src/test/jboss-embedded-bootstrap</additionalClasspathElement>
 										<additionalClasspathElement>${project.build.directory}/flies</additionalClasspathElement>
 									</additionalClasspathElements>
 									<childDelegation>true</childDelegation>
