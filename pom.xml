@@ -34,7 +34,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<version.gwt>2.0.3</version.gwt>
 		<version.resteasy>2.0-beta-2</version.resteasy>
-		<version.seam>2.2.1-20100507.043727-129</version.seam>
+		<version.seam>2.2.1-20100512.044058-131</version.seam>
 		<version.tennera>0.6</version.tennera>
 		<version.googlecollect>1.0</version.googlecollect>
 		<version.jackson>1.5.0</version.jackson>
