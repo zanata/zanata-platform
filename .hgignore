@@ -38,3 +38,4 @@ temp-testng-customsuite.xml$
 \.gwt-tmp$
 ^flies-war/org.fedorahosted.flies.webtrans.Application
 ^flies-war/src/main/webapp/org.fedorahosted.flies.webtrans.Application
+bootstrap/data/hypersonic/
