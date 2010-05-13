@@ -375,7 +375,7 @@
 			<id>mysql</id>
 			<properties>
 		        <env.dbunit.type>MYSQL</env.dbunit.type>
-		        <ds.hibernate.dialect>org.fedorahosted.flies.FliseMySQL5InnoDBDialect</ds.hibernate.dialect>
+		        <ds.hibernate.dialect>org.fedorahosted.flies.FliesMySQL5InnoDBDialect</ds.hibernate.dialect>
 		        <ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
 		        <ds.connection.url>jdbc:mysql://localhost:3306/flies?characterEncoding=UTF-8</ds.connection.url>
 		        <ds.user.name>root</ds.user.name>
