@@ -1,10 +1,9 @@
-package org.fedorahosted.flies.webtrans.shared.common;
+package org.fedorahosted.flies.webtrans.shared.model;
 
 
 import java.io.Serializable;
 
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.webtrans.shared.model.ProjectIterationId;
 
 public final class WorkspaceId implements Serializable { 
 

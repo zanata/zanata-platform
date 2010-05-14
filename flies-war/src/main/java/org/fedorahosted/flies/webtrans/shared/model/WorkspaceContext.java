@@ -1,6 +1,7 @@
-package org.fedorahosted.flies.webtrans.shared.common;
+package org.fedorahosted.flies.webtrans.shared.model;
 
 import java.io.Serializable;
+
 
 import de.novanic.eventservice.client.event.domain.DefaultDomain;
 

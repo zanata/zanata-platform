@@ -15,9 +15,9 @@ import org.fedorahosted.flies.webtrans.client.events.ExitWorkspaceEvent;
 import org.fedorahosted.flies.webtrans.client.events.ExitWorkspaceEventHandler;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.client.ui.HasFilter;
-import org.fedorahosted.flies.webtrans.shared.common.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.shared.model.Person;
 import org.fedorahosted.flies.webtrans.shared.model.PersonId;
+import org.fedorahosted.flies.webtrans.shared.model.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.shared.rpc.GetTranslatorList;
 import org.fedorahosted.flies.webtrans.shared.rpc.GetTranslatorListResult;
 

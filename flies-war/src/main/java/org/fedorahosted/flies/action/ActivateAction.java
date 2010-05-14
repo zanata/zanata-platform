@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.persistence.EntityManager;
 
 import org.fedorahosted.flies.model.HAccountActivationKey;
+import org.fedorahosted.flies.security.KeyNotFoundException;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.End;

@@ -5,12 +5,12 @@ import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;
 
 import org.fedorahosted.flies.webtrans.client.Application;
+import org.fedorahosted.flies.webtrans.shared.DispatchService;
+import org.fedorahosted.flies.webtrans.shared.DispatchServiceAsync;
 import org.fedorahosted.flies.webtrans.shared.auth.AuthenticationError;
 import org.fedorahosted.flies.webtrans.shared.auth.AuthorizationError;
 import org.fedorahosted.flies.webtrans.shared.auth.Identity;
-import org.fedorahosted.flies.webtrans.shared.common.DispatchService;
-import org.fedorahosted.flies.webtrans.shared.common.DispatchServiceAsync;
-import org.fedorahosted.flies.webtrans.shared.common.WorkspaceContext;
+import org.fedorahosted.flies.webtrans.shared.model.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.shared.rpc.AbstractWorkspaceAction;
 
 import com.allen_sauer.gwt.log.client.Log;

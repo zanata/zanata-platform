@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.action;
+package org.fedorahosted.flies.security;
 
 public class KeyNotFoundException extends RuntimeException{
 	

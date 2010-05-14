@@ -9,7 +9,7 @@ import org.fedorahosted.flies.webtrans.client.events.ExitWorkspaceEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitEditEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
-import org.fedorahosted.flies.webtrans.shared.common.WorkspaceContext;
+import org.fedorahosted.flies.webtrans.shared.model.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.shared.rpc.EnterWorkspace;
 import org.fedorahosted.flies.webtrans.shared.rpc.ExitWorkspace;
 import org.fedorahosted.flies.webtrans.shared.rpc.HasEnterWorkspaceData;

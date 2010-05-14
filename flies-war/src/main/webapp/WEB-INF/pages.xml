@@ -140,7 +140,7 @@
   </page>
 
   <exception
-    class="org.fedorahosted.flies.account.action.KeyNotFoundException">
+    class="org.fedorahosted.flies.security.KeyNotFoundException">
     <redirect view-id="/error.xhtml">
       <message severity="error">Invalid Activation Key</message>
     </redirect>

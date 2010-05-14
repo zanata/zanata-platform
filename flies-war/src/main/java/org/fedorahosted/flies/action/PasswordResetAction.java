@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.persistence.EntityManager;
 
 import org.fedorahosted.flies.model.HAccountResetPasswordKey;
+import org.fedorahosted.flies.security.KeyNotFoundException;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.jboss.seam.ScopeType;

@@ -14,6 +14,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 
@@ -35,6 +36,7 @@ public class AdminActionBean {
 	 * isRunning method to disable the button if the job is already running
 	 */
 
+    @Restrict("#{s:hasRole('admin')}")
 	public void reindexDatabase() {
 		log.info("Re-indexing started");
 		reindex(HCommunity.class);
