@@ -11,7 +11,7 @@ PROJECT(flies)
 SET(PROJECT_DESCRIPTION "Online translator collaboration system")
 # base URL for test to be run at:
 SET(BASE_URL "http://hudson.englab.bne.redhat.com/")
-SET(FLIES_URL "${BASE_URL}/flies/")
+SET(FLIES_URL "${BASE_URL}flies")
 SET(REST_PATH "seam/resource/restv1/projects/p/")
 SET(SELENIUM_SERVER_ARGS )
 SET(RESULT_DIR results)
@@ -40,8 +40,15 @@ SET(PROJ_ABOUT_FEDORA_F13_URL		"git://git.fedorahosted.org/git/docs/about-fedora
 SET(PROJ_ABOUT_FEDORA_F13_NAME	"About Fedora 13")
 SET(PROJ_ABOUT_FEDORA_F13_DESC	"About Fedora 13")
 
-#SET(PUBLICAN_PROJECTS PROJ_SECURITY_GUIDE_F13 PROJ_ABOUT_FEDORA_F13)
-SET(PUBLICAN_PROJECTS PROJ_ABOUT_FEDORA_F13)
+# Release Note
+SET(PROJ_RELEASE_NOTE		ReleaseNote)
+SET(PROJ_RELEASE_NOTE_REPO_TYPE	git)
+SET(PROJ_RELEASE_NOTE_URL	"git://git.fedorahosted.org/git/docs/release-notes.git")
+SET(PROJ_RELEASE_NOTE_NAME	"Fedora Release Note")
+SET(PROJ_RELEASE_NOTE_DESC	"Fedora Release Note")
+
+SET(PUBLICAN_PROJECTS PROJ_SECURITY_GUIDE_F13 PROJ_ABOUT_FEDORA_F13 PROJ_RELEASE_NOTE)
+#SET(PUBLICAN_PROJECTS PROJ_ABOUT_FEDORA_F13)
 
 #===================================================================
 # Generate Targets for publican projects
@@ -129,10 +136,10 @@ FOREACH(pProj ${PUBLICAN_PROJECTS})
 	VERBATIM
     )
 
-    SET(UPLOAD_DEST "${FLIES_URL}${REST_PATH}${${pProj}}/iterations/i/${INIT_ITER}/documents")
+    SET(UPLOAD_DEST "${FLIES_URL}/${REST_PATH}${${pProj}}/iterations/i/${INIT_ITER}/documents")
 
     ADD_CUSTOM_TARGET(upload_${${pProj}}
-        COMMAND "${FLIES_PUBLICAN_CMD}" upload ${FLIES_PUBLICAN_COMMON_OPTS} -i --src . --dest "${UPLOAD_DEST}"
+        COMMAND "${FLIES_PUBLICAN_CMD}" upload ${FLIES_PUBLICAN_COMMON_OPTS} -i --src . --dst "${UPLOAD_DEST}"
 	DEPENDS ${P_PROJ_DIR}
 	WORKING_DIRECTORY "${P_PROJ_DIR}"
 	COMMENT "Project ${${pProj}}: Uploading"
@@ -140,12 +147,18 @@ FOREACH(pProj ${PUBLICAN_PROJECTS})
     )
 
 #    ADD_CUSTOM_TARGET(download_${${pProj}}
-#        COMMAND "${FLIES_PUBLICAN_CMD} download ${FLIES_PUBLICAN_COMMON_OPTS} -e --src . --dest "${UPLOAD_DEST}"
+#        COMMAND "${FLIES_PUBLICAN_CMD} download ${FLIES_PUBLICAN_COMMON_OPTS} -e --src . --dst "${UPLOAD_DEST}"
 #        DEPENDS ${P_PROJ_DIR}
 #        WORKING_DIRECTORY "${P_PROJ_DIR}"
 #	COMMENT "Project ${${pProj}}: Downloading"
 #	VERBATIM
 #    )
+
+    ADD_CUSTOM_TARGET(import_${${pProj}}
+	COMMENT "Importing Project ${${pProj}}"
+	VERBATIM
+    )
+    ADD_DEPENDENCIES(import_${${pProj}} createproj_${${pProj}} createiter_${${pProj}} upload_${${pProj}})
 
     # Keep track of the project paths and targets
     SET(SAMPLE_PROJ_PATHS ${SAMPLE_PROJ_PATHS} "${P_PROJ_DIR}")
