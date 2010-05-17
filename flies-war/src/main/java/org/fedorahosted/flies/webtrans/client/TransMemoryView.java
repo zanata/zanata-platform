@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.fedorahosted.flies.gwt.model.TransMemory;
-import org.fedorahosted.flies.webtrans.client.TranslationEditorView.TranslationEditorViewUiBinder;
 import org.fedorahosted.flies.webtrans.client.ui.HighlightingLabel;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -14,7 +13,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -22,9 +20,7 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
@@ -37,7 +33,8 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 	private static final int HEADER_ROW = 0;
 	private static final int SOURCE_COL = 0;
 	private static final int TARGET_COL = 1;
-	private static final int ACTION_COL = 2;
+	private static final int SCORE_COL = 2;
+	private static final int ACTION_COL = 3;
 
 	private static TransMemoryViewUiBinder uiBinder = GWT
 		.create(TransMemoryViewUiBinder.class);
@@ -122,6 +119,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 		clearResults();
 		addColumn("Source", SOURCE_COL);
 		addColumn("Target", TARGET_COL);
+		addColumn("Score", SCORE_COL);
 		addColumn("Action", ACTION_COL);
 		
 		int row = HEADER_ROW;
@@ -135,6 +133,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 
 			resultTable.setWidget(row, SOURCE_COL, new HighlightingLabel(sourceMessage));
 			resultTable.setWidget(row, TARGET_COL, new HighlightingLabel(targetMessage));
+			resultTable.setText(row, SCORE_COL, String.valueOf(memory.getRelevanceScore()));
 
 			final Anchor copyLink = new Anchor("Copy");
 			copyLink.addClickHandler(new ClickHandler() {
@@ -145,9 +144,11 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 				}
 			});
 			resultTable.setWidget(row, ACTION_COL, copyLink);
-			String suppInfo = "Source Comment: " + sourceComment + "     "
-            + "Target Comment: " + targetComment + "     "
-            + "Document Name: " + docID;
+			// comments are presently disabled on the server side
+//			String suppInfo = "Source Comment: " + sourceComment + "     "
+//            + "Target Comment: " + targetComment + "     "
+//            + "Document Name: " + docID;
+			String suppInfo = "Document Name: " + docID;
 
 			// Use ToolTips for supplementary info.
 			resultTable.getWidget(row, SOURCE_COL).setTitle(suppInfo);				

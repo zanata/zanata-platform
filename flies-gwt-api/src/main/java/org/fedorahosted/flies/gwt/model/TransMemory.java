@@ -16,24 +16,27 @@ public class TransMemory implements Serializable{
 	private String targetComment;
 
 	private String docID;
-
-	private long projectContainer;
+	private float relevanceScore;
 
 	public TransMemory() {
 	}
 
 	@Deprecated
 	public TransMemory(String source, String memory, String documentPath) {
-		this(source, memory, "", "", documentPath, 0);
+		this(source, memory, "", "", documentPath, 0, 50);
 	}
 	
-	public TransMemory(String source, String memory, String sourceComment, String targetComment, String documentPath, long projectContainer) {
+	@Deprecated
+	public TransMemory(String source, String memory, String sourceComment, String targetComment, String documentPath, long projectContainer, float relevanceScore) {
+		this(source, memory, sourceComment, targetComment, documentPath, relevanceScore);
+	}
+	
+	public TransMemory(String source, String memory, String sourceComment, String targetComment, String documentPath, float relevanceScore) {
 		this.source = source;
 		this.memory = memory;
 		this.sourceComment = sourceComment;
 		this.targetComment = targetComment;
 		this.docID = documentPath;
-		this.projectContainer = projectContainer;
 	}
 	
 	public void setDocID(String documentPath) {
@@ -49,6 +52,14 @@ public class TransMemory implements Serializable{
 
 	public String getMemory() {
 		return memory;
+	}
+	
+	public void setRelevanceScore(float relevanceScore) {
+		this.relevanceScore = relevanceScore;
+	}
+	
+	public float getRelevanceScore() {
+		return relevanceScore;
 	}
 
 	public void setSource(String source) {
@@ -75,11 +86,4 @@ public class TransMemory implements Serializable{
 		return targetComment;
 	}
 
-	public void setProjectContainer(long projectContainer) {
-		this.projectContainer = projectContainer;
-	}
-
-	public long getProjectContainer() {
-		return projectContainer;
-	}
 }

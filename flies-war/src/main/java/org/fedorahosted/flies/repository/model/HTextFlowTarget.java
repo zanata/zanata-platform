@@ -13,11 +13,19 @@ import javax.persistence.OneToOne;
 
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.hibernate.search.ContentStateBridge;
+import org.fedorahosted.flies.hibernate.search.LocaleIdBridge;
 import org.fedorahosted.flies.hibernate.type.LocaleIdType;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.NotNull;
 
 /**
@@ -28,6 +36,7 @@ import org.hibernate.validator.NotNull;
  *
  */
 @Entity
+@Indexed
 @TypeDef(name="localeId", typeClass=LocaleIdType.class)
 public class HTextFlowTarget implements Serializable{
 
@@ -84,6 +93,10 @@ public class HTextFlowTarget implements Serializable{
 	@NaturalId
 	@Type(type="localeId")
 	@NotNull
+	@Field(index=Index.UN_TOKENIZED)
+	@FieldBridge(
+			impl=LocaleIdBridge.class
+	)
 	public LocaleId getLocale() {
 		return locale;
 	}
@@ -93,6 +106,10 @@ public class HTextFlowTarget implements Serializable{
 	}
 	
 	@NotNull
+	@Field(index=Index.UN_TOKENIZED)
+	@FieldBridge(
+			impl=ContentStateBridge.class
+	)
 	public ContentState getState() {
 		return state;
 	}
@@ -123,6 +140,7 @@ public class HTextFlowTarget implements Serializable{
 	@NaturalId
 	@ManyToOne
 	@JoinColumn(name="tf_id")
+	@IndexedEmbedded(depth=2)
 	public HTextFlow getTextFlow() {
 		return textFlow;
 	}
@@ -134,6 +152,7 @@ public class HTextFlowTarget implements Serializable{
 
 	@NotNull
 	@Type(type = "text")
+//	@Field(index=Index.NO) // no searching on target text yet
 	public String getContent() {
 		return content;
 	}

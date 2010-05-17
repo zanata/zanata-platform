@@ -1,11 +1,10 @@
 package org.fedorahosted.flies.webtrans.server.rpc;
 
+import org.apache.lucene.queryParser.QueryParser;
 import org.testng.annotations.Test;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
-import static org.fedorahosted.flies.webtrans.server.rpc.GetTransMemoryHandler.toFuzzyLuceneQuery;
-import static org.fedorahosted.flies.webtrans.server.rpc.GetTransMemoryHandler.toLuceneQuery;
 
 @Test(groups={"unit-tests"})
 public class GetTransMemoryHandlerTest {
@@ -15,20 +14,13 @@ public class GetTransMemoryHandlerTest {
 
 	public void testLuceneQuery(){
 		assertThat(
-			toLuceneQuery("plaintext"), 
+			QueryParser.escape("plaintext"), 
 			is("plaintext"));
 		assertThat(
-			toLuceneQuery("lucene special characters + - && || ! ( ) " +
+			QueryParser.escape("lucene special characters + - && || ! ( ) " +
 					"{ } [ ] ^ \" ~ * ? : \\ plus % _"), 
 			is("lucene special characters \\+ \\- \\&\\& \\|\\| \\! \\( \\) " +
 					"\\{ \\} \\[ \\] \\^ \\\" \\~ \\* \\? \\: \\\\ plus % _"));
 	}
-	
-	public void testFuzzyLuceneQuery(){
-		assertThat(
-				toFuzzyLuceneQuery(" lucene special characters + - && || ! ( ) " +
-				"{ } [ ] ^ \" ~ * ? : \\ plus % _ "), 
-				is(" lucene~ special~ characters~ \\+~ \\-~ \\&\\&~ \\|\\|~ \\!~ \\(~ \\)~ " +
-				"\\{~ \\}~ \\[~ \\]~ \\^~ \\\"~ \\~~ \\*~ \\?~ \\:~ \\\\~ plus~ %~ _~ "));
-	}
+
 }
