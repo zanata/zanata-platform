@@ -57,7 +57,7 @@ public interface WebTransMessages extends Messages {
 	String showTranslationMemoryPanel();
 
 
-	@DefaultMessage("Exact")
+	@DefaultMessage("Phrase")
 	String tmPhraseButtonLabel();
 
 	@DefaultMessage("Clear")
