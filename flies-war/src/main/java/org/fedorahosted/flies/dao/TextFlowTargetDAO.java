@@ -11,10 +11,15 @@ import org.jboss.seam.annotations.Name;
 
 @Name("textFlowTargetDAO")
 @AutoCreate
-public class TextFlowTargetDAO {
+public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>{
 
-	@In
-	Session session;
+	public TextFlowTargetDAO() {
+		super(HTextFlowTarget.class);
+	}
+	
+	public TextFlowTargetDAO(Session session) {
+		super(HTextFlowTarget.class, session);
+	}
 	
 	/**
 	 * @param textFlow
@@ -22,7 +27,7 @@ public class TextFlowTargetDAO {
 	 * @return
 	 */
 	public HTextFlowTarget getByNaturalId(HTextFlow textFlow, LocaleId localeId){
-		return (HTextFlowTarget) session.createCriteria(HTextFlowTarget.class)
+		return (HTextFlowTarget) getSession().createCriteria(HTextFlowTarget.class)
 			.add( Restrictions.naturalId()
 		        .set("textFlow", textFlow)
 		        .set("locale", localeId)

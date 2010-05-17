@@ -10,10 +10,15 @@ import org.jboss.seam.annotations.Name;
 
 @Name("textFlowDAO")
 @AutoCreate
-public class TextFlowDAO {
+public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>{
 
-	@In
-	Session session;
+	public TextFlowDAO() {
+		super(HTextFlow.class);
+	}
+	
+	public TextFlowDAO(Session session) {
+		super(HTextFlow.class, session);
+	}
 	
 	/**
 	 * @param document
@@ -21,7 +26,7 @@ public class TextFlowDAO {
 	 * @return
 	 */
 	public HTextFlow getById(HDocument document, String id){
-		return (HTextFlow) session.createCriteria(HTextFlow.class)
+		return (HTextFlow) getSession().createCriteria(HTextFlow.class)
 			.add( Restrictions.naturalId()
 		        .set("resId", id)
 		        .set("document", document)
@@ -32,7 +37,7 @@ public class TextFlowDAO {
 	}
 	
 	public HTextFlow getObsoleteById(HDocument document, String id) {
-		return (HTextFlow) session.createCriteria(HTextFlow.class)
+		return (HTextFlow) getSession().createCriteria(HTextFlow.class)
 		.add( Restrictions.naturalId()
 	        .set("resId", id)
 	        .set("document", document)

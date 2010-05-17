@@ -2,6 +2,7 @@ package org.fedorahosted.flies.dao;
 
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 
@@ -15,29 +16,25 @@ import org.jboss.seam.util.Hex;
 
 @Name("accountDAO")
 @AutoCreate
-public class AccountDAO {
+public class AccountDAO extends AbstractDAOImpl<HAccount, Long>{
 
-	@In
-	EntityManager entityManager;
-	
 	public AccountDAO() {
+		super(HAccount.class);
 	}
-	
-	public AccountDAO(EntityManager entityManager) {
-		this.entityManager = entityManager;
+
+	public AccountDAO(Session session) {
+		super(HAccount.class, session);
 	}
 	
 	public HAccount getByUsername(String username){
-		Session session = (Session) entityManager.getDelegate();
-		return (HAccount) session.createCriteria(HAccount.class)
+		return (HAccount) getSession().createCriteria(HAccount.class)
 			.add( Restrictions.naturalId()
 		        .set("username", username))
 		    .uniqueResult();
 	}
 
 	public HAccount getByApiKey(String apikey) {
-		Session session = (Session) entityManager.getDelegate();
-		return (HAccount) session.createCriteria(HAccount.class).add(
+		return (HAccount) getSession().createCriteria(HAccount.class).add(
 				Restrictions.eq("apiKey", apikey)).uniqueResult();
 	}
 

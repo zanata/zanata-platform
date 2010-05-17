@@ -9,6 +9,7 @@ import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.TransUnitCount;
 import org.fedorahosted.flies.model.HIterationProject;
+import org.fedorahosted.flies.model.HProject;
 import org.fedorahosted.flies.model.HProjectIteration;
 import org.fedorahosted.flies.model.StatusCount;
 import org.fedorahosted.flies.util.HashUtil;
@@ -22,35 +23,28 @@ import org.jboss.seam.log.Log;
 
 @Name("projectIterationDAO")
 @AutoCreate
-public class ProjectIterationDAO {
-	
-	@In
-	EntityManager entityManager;
+public class ProjectIterationDAO extends AbstractDAOImpl< HProjectIteration, Long>{
 
-	@In
-	Session session;
-	
-	@Logger
-	Log log;
+	public ProjectIterationDAO() {
+		super(HProjectIteration.class);
+	}
 
-	@In
-	ProjectDAO projectDAO;
-	
-	public HProjectIteration getById(long projectIterationId){
-		return entityManager.find(HProjectIteration.class, projectIterationId);
+	public ProjectIterationDAO(Session session) {
+		super(HProjectIteration.class, session);
 	}
 	
 	public HProjectIteration getBySlug(String projectSlug, String iterationSlug){
-		return (HProjectIteration) session.createCriteria(HProjectIteration.class)
+		HIterationProject project = (HIterationProject) getSession().createCriteria(HProject.class)
 		.add( Restrictions.naturalId()
-	        .set("project", projectDAO.getBySlug( projectSlug ) )
-	        .set("slug", iterationSlug )
-	    )
-		.setCacheable(true).uniqueResult();
+		        .set("slug", projectSlug )
+		    )
+			.setCacheable(true).uniqueResult();
+		
+		return getBySlug(project, iterationSlug);
 	}
 
 	public HProjectIteration getBySlug(HIterationProject project, String iterationSlug){
-		return (HProjectIteration) session.createCriteria(HProjectIteration.class)
+		return (HProjectIteration) getSession().createCriteria(HProjectIteration.class)
 		.add( Restrictions.naturalId()
 	        .set("project", project )
 	        .set("slug", iterationSlug )
@@ -66,7 +60,7 @@ public class ProjectIterationDAO {
 	 * @return calculated EntityTag or null if iteration does not exist
 	 */
 	public EntityTag getETag(String projectSlug, String iterationSlug) {
-		Integer iterationVersion = (Integer) session.createQuery(
+		Integer iterationVersion = (Integer) getSession().createQuery(
 		"select i.versionNum from HProjectIteration i where i.slug =:islug and i.project.slug =:pslug")
 		.setParameter("islug", iterationSlug)
 		.setParameter("pslug", projectSlug)
@@ -83,7 +77,7 @@ public class ProjectIterationDAO {
 	
 	public TransUnitCount getStatisticsForContainer(Long iterationId, LocaleId localeId){
 		
-		List<StatusCount> stats = session.createQuery(
+		List<StatusCount> stats = getSession().createQuery(
 				"select new org.fedorahosted.flies.model.StatusCount(tft.state, count(tft)) " +
 				"from HTextFlowTarget tft " +
 				"where tft.textFlow.document.projectIteration.id = :id " +
@@ -96,7 +90,7 @@ public class ProjectIterationDAO {
 			.list();
 		
 		
-		Long totalCount = (Long) session.createQuery("select count(tf) from HTextFlow tf where tf.document.projectIteration.id = :id")
+		Long totalCount = (Long) getSession().createQuery("select count(tf) from HTextFlow tf where tf.document.projectIteration.id = :id")
 			.setParameter("id", iterationId)
 			.setCacheable(true).uniqueResult();
 		

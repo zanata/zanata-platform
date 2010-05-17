@@ -15,20 +15,18 @@ import org.jboss.seam.annotations.Name;
 
 @Name("projectDAO")
 @AutoCreate
-public class ProjectDAO {
+public class ProjectDAO extends AbstractDAOImpl<HProject, Long>{
 
-	@In
-	Session session;
-	
 	public ProjectDAO() {
+		super(HProject.class);
 	}
 	
 	public ProjectDAO(Session session) {
-		this.session = session;
+		super(HProject.class, session);
 	}
 	
 	public HProject getBySlug(String slug){
-		return (HProject) session.createCriteria(HProject.class)
+		return (HProject) getSession().createCriteria(HProject.class)
 			.add( Restrictions.naturalId()
 		        .set("slug", slug)
 		    	)
@@ -46,7 +44,7 @@ public class ProjectDAO {
 	 * @return calculated EntityTag or null if project does not exist
 	 */
 	public EntityTag getETag(String slug) {
-		Integer projectVersion = (Integer) session.createQuery(
+		Integer projectVersion = (Integer) getSession().createQuery(
 		"select p.versionNum from HProject p where slug =:slug")
 		.setParameter("slug", slug)
 		.uniqueResult();
@@ -54,7 +52,7 @@ public class ProjectDAO {
 		if(projectVersion == null)
 			return null;
 		
-		List<Integer> iterationVersions =  session.createQuery(
+		List<Integer> iterationVersions =  getSession().createQuery(
 		"select i.versionNum from HProjectIteration i where i.project.slug =:slug")
 		.setParameter("slug", slug).list();
 

@@ -20,17 +20,22 @@ import org.jboss.seam.annotations.Name;
 
 @Name("documentDAO")
 @AutoCreate
-public class DocumentDAO {
+public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>{
 
-	@In
-	Session session;
+	public DocumentDAO() {
+		super(HDocument.class);
+	}
+	
+	public DocumentDAO(Session session) {
+		super(HDocument.class, session);
+	}
 
 	public EntityTag getETag(HProjectIteration iteration, String id) {
 		return EntityTag.valueOf("x");
 	}
 	
 	public HDocument getByDocId(HProjectIteration iteration, String id){
-		return (HDocument) session.createCriteria(HDocument.class)
+		return (HDocument) getSession().createCriteria(HDocument.class)
 			.add( Restrictions.naturalId()
 		        .set("docId", id)
 		        .set("projectIteration", iteration)
@@ -41,14 +46,14 @@ public class DocumentDAO {
 	}
 
 	public Set<LocaleId> getTargetLocales(HDocument hDoc) {
-		List<LocaleId> locales = (List<LocaleId>) session.createQuery(
+		List<LocaleId> locales = (List<LocaleId>) getSession().createQuery(
 				"select tft.locale from HTextFlowTarget tft where tft.textFlow.document = :document")
 			.setParameter("document", hDoc).list();
 		return new HashSet<LocaleId>(locales);
 	}
 	
 	public TransUnitCount getStatistics(long docId, LocaleId localeId) {
-		List<StatusCount> stats = session.createQuery(
+		List<StatusCount> stats = getSession().createQuery(
 				"select new org.fedorahosted.flies.model.StatusCount(tft.state, count(tft)) " +
 				"from HTextFlowTarget tft " +
 				"where tft.textFlow.document.id = :id " +
@@ -62,7 +67,7 @@ public class DocumentDAO {
 			.list();
 		
 		
-		Long totalCount = (Long) session.createQuery("select count(tf) from HTextFlow tf where tf.document.id = :id")
+		Long totalCount = (Long) getSession().createQuery("select count(tf) from HTextFlow tf where tf.document.id = :id")
 			.setParameter("id", docId)
 			.setCacheable(true).uniqueResult();
 
