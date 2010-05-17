@@ -12,6 +12,7 @@ import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.security.management.PasswordHash;
 import org.jboss.seam.util.Hex;
 
 @Name("accountDAO")
@@ -67,4 +68,19 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long>{
 		}
 
 	}
+	
+	public HAccount create(String username, String password, boolean enabled) {
+		HAccount account = new HAccount();
+		account.setUsername(username);
+		// TODO add a @PasswordSalt field to HAccount
+		// otherwise, Seam uses the @UserPrincipal field as salt
+		String saltPhrase = username;
+		String passwordHash = PasswordHash.instance().generateSaltedHash(password, saltPhrase, PasswordHash.ALGORITHM_MD5);
+		account.setPasswordHash(passwordHash);
+		account.setEnabled(enabled);
+		makePersistent(account);
+		return account;
+	}
+	
+	
 }
