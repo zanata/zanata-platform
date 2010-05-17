@@ -16,6 +16,13 @@
 			<property name="hibernate.connection.username" value="sa" />
 			<property name="hibernate.connection.password" value="" />
 			<property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
+
+			<!-- Search engine -->
+			<property name="hibernate.search.default.directory_provider"
+				value="org.hibernate.search.store.FSDirectoryProvider" />
+			<property name="hibernate.search.default.indexBase" value="fliessearchindex" />
+			<property name="hibernate.search.worker.batch_size" value="50" />
+
 		</properties>
 	</persistence-unit>
 </persistence>

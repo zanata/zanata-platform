@@ -20,6 +20,13 @@ public class ProjectDAO {
 	@In
 	Session session;
 	
+	public ProjectDAO() {
+	}
+	
+	public ProjectDAO(Session session) {
+		this.session = session;
+	}
+	
 	public HProject getBySlug(String slug){
 		return (HProject) session.createCriteria(HProject.class)
 			.add( Restrictions.naturalId()
