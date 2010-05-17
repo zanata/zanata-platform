@@ -43,10 +43,10 @@
   <security:rule-based-permission-resolver security-rules="#{securityRules}"/> 
    
   <security:jpa-identity-store 
-      user-class="org.fedorahosted.flies.core.model.HAccount"
-      role-class="org.fedorahosted.flies.core.model.HAccountRole" />
+      user-class="org.fedorahosted.flies.model.HAccount"
+      role-class="org.fedorahosted.flies.model.HAccountRole" />
 
-  <security:jpa-permission-store user-permission-class="org.fedorahosted.flies.core.model.HAccountPermission"/>
+  <security:jpa-permission-store user-permission-class="org.fedorahosted.flies.model.HAccountPermission"/>
 
   <event type="org.jboss.seam.security.notLoggedIn">
     <action execute="#{redirect.captureCurrentView}"/>

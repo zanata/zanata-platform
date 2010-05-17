@@ -17,11 +17,11 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang.StringUtils;
-import org.fedorahosted.flies.core.dao.ProjectDAO;
-import org.fedorahosted.flies.core.dao.ProjectIterationDAO;
-import org.fedorahosted.flies.core.model.HIterationProject;
-import org.fedorahosted.flies.core.model.HProject;
-import org.fedorahosted.flies.core.model.HProjectIteration;
+import org.fedorahosted.flies.dao.ProjectDAO;
+import org.fedorahosted.flies.dao.ProjectIterationDAO;
+import org.fedorahosted.flies.model.HIterationProject;
+import org.fedorahosted.flies.model.HProject;
+import org.fedorahosted.flies.model.HProjectIteration;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.AbstractMiniProjectIteration;
 import org.fedorahosted.flies.rest.dto.AbstractProjectIteration;

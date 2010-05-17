@@ -3,7 +3,7 @@ package org.fedorahosted.flies.webtrans.shared.rpc;
 import net.customware.gwt.dispatch.shared.Result;
 
 import org.fedorahosted.flies.webtrans.shared.auth.Identity;
-import org.fedorahosted.flies.webtrans.shared.common.WorkspaceContext;
+import org.fedorahosted.flies.webtrans.shared.model.WorkspaceContext;
 
 public class ActivateWorkspaceResult implements Result {
 

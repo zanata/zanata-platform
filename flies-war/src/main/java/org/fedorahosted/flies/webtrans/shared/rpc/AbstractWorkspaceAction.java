@@ -3,7 +3,7 @@ package org.fedorahosted.flies.webtrans.shared.rpc;
 import net.customware.gwt.dispatch.shared.Result;
 
 import org.fedorahosted.flies.webtrans.shared.auth.SessionId;
-import org.fedorahosted.flies.webtrans.shared.common.WorkspaceId;
+import org.fedorahosted.flies.webtrans.shared.model.WorkspaceId;
 
 public abstract class AbstractWorkspaceAction<R extends Result> implements DispatchAction<R> {
 

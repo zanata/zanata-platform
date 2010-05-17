@@ -23,10 +23,10 @@ import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandle
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.client.ui.HasPager;
 import org.fedorahosted.flies.webtrans.shared.auth.Identity;
-import org.fedorahosted.flies.webtrans.shared.common.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.shared.model.DocumentId;
 import org.fedorahosted.flies.webtrans.shared.model.DocumentInfo;
 import org.fedorahosted.flies.webtrans.shared.model.DocumentStatus;
+import org.fedorahosted.flies.webtrans.shared.model.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.shared.rpc.GetProjectStatusCount;
 import org.fedorahosted.flies.webtrans.shared.rpc.GetProjectStatusCountResult;
 

@@ -1,7 +1,7 @@
 package org.fedorahosted.flies.webtrans.server;
 
 
-import org.fedorahosted.flies.webtrans.shared.common.DispatchService;
+import org.fedorahosted.flies.webtrans.shared.DispatchService;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.remoting.WebRemote;

@@ -17,8 +17,8 @@ import org.apache.tools.ant.Task;
 import org.cyclopsgroup.jcli.ArgumentProcessor;
 import org.cyclopsgroup.jcli.annotation.Cli;
 import org.cyclopsgroup.jcli.annotation.Option;
-import org.fedorahosted.flies.rest.ClientUtility;
-import org.fedorahosted.flies.rest.FliesClientRequestFactory;
+import org.fedorahosted.flies.rest.client.ClientUtility;
+import org.fedorahosted.flies.rest.client.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.IProjectResource;
 import org.fedorahosted.flies.rest.dto.Project;
 

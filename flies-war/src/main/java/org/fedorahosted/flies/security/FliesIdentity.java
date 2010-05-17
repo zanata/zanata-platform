@@ -7,8 +7,8 @@ import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
-import org.fedorahosted.flies.core.dao.AccountDAO;
-import org.fedorahosted.flies.core.model.HAccount;
+import org.fedorahosted.flies.dao.AccountDAO;
+import org.fedorahosted.flies.model.HAccount;
 import org.jboss.resteasy.plugins.server.embedded.SimplePrincipal;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;

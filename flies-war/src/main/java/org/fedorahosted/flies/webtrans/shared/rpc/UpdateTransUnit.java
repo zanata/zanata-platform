@@ -2,8 +2,8 @@ package org.fedorahosted.flies.webtrans.shared.rpc;
 
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.webtrans.shared.common.WorkspaceId;
 import org.fedorahosted.flies.webtrans.shared.model.TransUnitId;
+import org.fedorahosted.flies.webtrans.shared.model.WorkspaceId;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 

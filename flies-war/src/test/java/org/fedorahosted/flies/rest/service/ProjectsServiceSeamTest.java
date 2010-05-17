@@ -8,7 +8,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.fedorahosted.flies.rest.ApiKeyHeaderDecorator;
+import org.fedorahosted.flies.rest.client.ApiKeyHeaderDecorator;
 import org.fedorahosted.flies.rest.client.IProjectsResource;
 import org.fedorahosted.flies.rest.dto.ProjectInline;
 import org.jboss.resteasy.client.ClientRequestFactory;
@@ -50,6 +50,7 @@ public class ProjectsServiceSeamTest extends FliesDBUnitSeamTest {
 				DatabaseOperation.CLEAN_INSERT));
 	}
 
+	@Test(enabled=false)
 	public void retrieveListofProjects() throws Exception {
 		ClientResponse<List<ProjectInline>> response = projectService.get();
 

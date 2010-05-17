@@ -34,7 +34,7 @@ import org.fedorahosted.flies.webtrans.client.editor.table.TableEditorView;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.client.rpc.DelegatingDispatchAsync;
 import org.fedorahosted.flies.webtrans.shared.auth.Identity;
-import org.fedorahosted.flies.webtrans.shared.common.WorkspaceContext;
+import org.fedorahosted.flies.webtrans.shared.model.WorkspaceContext;
 
 import com.google.inject.Provider;
 import com.google.inject.Singleton;

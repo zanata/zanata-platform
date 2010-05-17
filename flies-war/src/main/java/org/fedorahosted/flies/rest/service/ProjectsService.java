@@ -12,7 +12,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.fedorahosted.flies.common.Namespaces;
-import org.fedorahosted.flies.core.model.HProject;
+import org.fedorahosted.flies.model.HProject;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Link;
 import org.fedorahosted.flies.rest.dto.ProjectInline;

@@ -39,7 +39,7 @@ public abstract class FliesJpaTest {
 	
 	@BeforeSuite
 	public void initializeEMF() {
-		emf = Persistence.createEntityManagerFactory("fliesTestDatabase");
+		emf = Persistence.createEntityManagerFactory("fliesDatabase");
 	}
 
 	@AfterSuite

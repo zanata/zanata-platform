@@ -22,12 +22,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 
-import org.fedorahosted.flies.core.dao.DocumentDAO;
-import org.fedorahosted.flies.core.dao.ProjectIterationDAO;
-import org.fedorahosted.flies.core.model.HProjectIteration;
-import org.fedorahosted.flies.repository.model.HDocument;
-import org.fedorahosted.flies.repository.model.HTextFlow;
-import org.fedorahosted.flies.repository.model.HTextFlowHistory;
+import org.fedorahosted.flies.dao.DocumentDAO;
+import org.fedorahosted.flies.dao.ProjectIterationDAO;
+import org.fedorahosted.flies.model.HDocument;
+import org.fedorahosted.flies.model.HProjectIteration;
+import org.fedorahosted.flies.model.HTextFlow;
+import org.fedorahosted.flies.model.HTextFlowHistory;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Documents;

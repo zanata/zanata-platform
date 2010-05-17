@@ -26,7 +26,7 @@
 		<env.hibernate.format_sql>false</env.hibernate.format_sql>
 
 		<!-- Default database settings -->
-	
+
 		<env.dbunit.type>HSQL</env.dbunit.type>
 		<ds.hibernate.dialect>org.hibernate.dialect.HSQLDialect</ds.hibernate.dialect>
 		<ds.driver.class>org.hsqldb.jdbcDriver</ds.driver.class>
@@ -81,6 +81,7 @@
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
 			</resource>
+
 		</resources>
 
 		<plugins>
@@ -97,40 +98,6 @@
 							<Implementation-Build>${maven.build.timestamp}</Implementation-Build>
 						</manifestEntries>
 					</archive>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<configuration>
-					<wtpversion>2.0</wtpversion>
-					<downloadSources>true</downloadSources>
-					<downloadJavadocs>false</downloadJavadocs>
-
-					<additionalBuildcommands>
-						<buildCommand>
-							<name>com.google.gdt.eclipse.core.webAppProjectValidator</name>
-						</buildCommand>
-						<buildCommand>
-							<name>com.google.gwt.eclipse.core.gwtProjectValidator</name>
-						</buildCommand>
-					</additionalBuildcommands>
-
-					<additionalProjectnatures>
-						<projectnature>com.google.gwt.eclipse.core.gwtNature</projectnature>
-						<projectnature>com.google.gdt.eclipse.core.webAppNature</projectnature>
-					</additionalProjectnatures>
-
-					<classpathContainers>
-						<classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
-						<classpathContainer>com.google.gwt.eclipse.core.GWT_CONTAINER</classpathContainer>
-					</classpathContainers>
-					<excludes>
-						<!-- These are provided by the GWT container -->
-						<exclude>com.google.gwt:gwt-servlet</exclude>
-						<exclude>com.google.gwt:gwt-user</exclude>
-					</excludes>
 				</configuration>
 			</plugin>
 
@@ -168,13 +135,13 @@
 
 		<profile>
 			<id>jboss4</id>
-			
+
 			<properties>
 				<env.JBOSS_HOME>/opt/jboss-4.2.3.GA-jdk6</env.JBOSS_HOME>
 			</properties>
 
 			<build>
-			
+
 				<resources>
 					<resource>
 						<directory>src/main/resources-jboss4-external</directory>
@@ -186,7 +153,7 @@
 						<directory>src/main/resources-jboss4</directory>
 						<filtering>true</filtering>
 					</resource>
-				
+
 				</resources>
 				<plugins>
 					<plugin>
@@ -236,13 +203,12 @@
 										<suiteXmlFile>src/test/resources/AllIntegrationTests.tng.xml</suiteXmlFile>
 									</suiteXmlFiles>
 									<additionalClasspathElements>
-										<additionalClasspathElement>${project.build.testOutputDirectory}/bootstrap</additionalClasspathElement>
-										<additionalClasspathElement>${project.build.directory}/flies-ds.xml</additionalClasspathElement>
+										<additionalClasspathElement>${project.basedir}/src/test/jboss-embedded-bootstrap</additionalClasspathElement>
 										<additionalClasspathElement>${project.build.directory}/flies</additionalClasspathElement>
 									</additionalClasspathElements>
 									<childDelegation>true</childDelegation>
 									<useSystemClassLoader>true</useSystemClassLoader>
-									<argLine xml:space="preserve">-Djava.endorsed.dirs=${project.build.testOutputDirectory}/endorsed -Dsun.lang.ClassLoader.allowArraySyntax=true</argLine>
+									<argLine xml:space="preserve">-Dsun.lang.ClassLoader.allowArraySyntax=true</argLine>
 								</configuration>
 							</execution>
 						</executions>
@@ -302,6 +268,12 @@
 				</dependency>
 
 				<dependency>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
 					<groupId>javassist</groupId>
 					<artifactId>javassist</artifactId>
 					<scope>provided</scope>
@@ -352,40 +324,22 @@
 		</profile>
 
 		<profile>
-			<id>tomcat</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-war-plugin</artifactId>
-						<configuration>
-							<webResources>
-								<resource>
-									<directory>src/main/webapp-tomcat</directory>
-									<filtering>false</filtering>
-								</resource>
-							</webResources>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-
-		</profile>
-
-		<profile>
 			<id>mysql</id>
 			<properties>
-		        <env.dbunit.type>MYSQL</env.dbunit.type>
-		        <ds.hibernate.dialect>org.fedorahosted.flies.FliseMySQL5InnoDBDialect</ds.hibernate.dialect>
-		        <ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
-		        <ds.connection.url>jdbc:mysql://localhost:3306/flies?characterEncoding=UTF-8</ds.connection.url>
-		        <ds.user.name>root</ds.user.name>
-		        <ds.password></ds.password>
+				<env.dbunit.type>MYSQL</env.dbunit.type>
+				<ds.hibernate.dialect>org.fedorahosted.flies.FliesMySQL5InnoDBDialect</ds.hibernate.dialect>
+				<ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
+				<ds.connection.url>jdbc:mysql://localhost:3306/flies?characterEncoding=UTF-8</ds.connection.url>
+				<ds.user.name>root</ds.user.name>
+				<ds.password></ds.password>
 			</properties>
 		</profile>
 
 		<profile>
 			<id>nogwt</id>
+			<!--
+				This profile allows you to skip the GWT compilation step
+			-->
 			<build>
 				<plugins>
 					<plugin>
@@ -398,7 +352,58 @@
 				</plugins>
 			</build>
 		</profile>
-		
+
+		<profile>
+			<id>eclipse</id>
+			<build>
+				<finalName>flies-dev</finalName>
+				<resources>
+					<resource>
+						<directory>src/main/resources-dev</directory>
+						<filtering>true</filtering>
+					</resource>
+				</resources>
+
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-eclipse-plugin</artifactId>
+						<configuration>
+							<wtpversion>2.0</wtpversion>
+							<downloadSources>true</downloadSources>
+							<downloadJavadocs>false</downloadJavadocs>
+
+							<additionalBuildcommands>
+								<buildCommand>
+									<name>com.google.gdt.eclipse.core.webAppProjectValidator</name>
+								</buildCommand>
+								<buildCommand>
+									<name>com.google.gwt.eclipse.core.gwtProjectValidator</name>
+								</buildCommand>
+							</additionalBuildcommands>
+
+							<additionalProjectnatures>
+								<projectnature>com.google.gwt.eclipse.core.gwtNature</projectnature>
+								<projectnature>com.google.gdt.eclipse.core.webAppNature</projectnature>
+							</additionalProjectnatures>
+
+							<classpathContainers>
+								<classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
+								<classpathContainer>com.google.gwt.eclipse.core.GWT_CONTAINER</classpathContainer>
+							</classpathContainers>
+							<excludes>
+								<!-- These are provided by the GWT container -->
+								<exclude>com.google.gwt:gwt-servlet</exclude>
+								<exclude>com.google.gwt:gwt-user</exclude>
+							</excludes>
+						</configuration>
+					</plugin>
+
+				</plugins>
+
+			</build>
+		</profile>
+
 		<profile>
 			<id>dev</id>
 			<properties>

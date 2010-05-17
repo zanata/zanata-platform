@@ -12,7 +12,6 @@
   <modules>
     <module>flies-client-ant-properties</module>
     <module>flies-client-ant-po</module>
-    <module>flies-client-pseudo</module>
   </modules>
   <dependencies>
     <dependency>

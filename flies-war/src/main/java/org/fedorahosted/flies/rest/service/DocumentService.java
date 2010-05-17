@@ -19,10 +19,10 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.core.dao.DocumentDAO;
-import org.fedorahosted.flies.core.dao.ProjectIterationDAO;
-import org.fedorahosted.flies.core.model.HProjectIteration;
-import org.fedorahosted.flies.repository.model.HDocument;
+import org.fedorahosted.flies.dao.DocumentDAO;
+import org.fedorahosted.flies.dao.ProjectIterationDAO;
+import org.fedorahosted.flies.model.HDocument;
+import org.fedorahosted.flies.model.HProjectIteration;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.ContentQualifier;
 import org.fedorahosted.flies.rest.dto.Document;

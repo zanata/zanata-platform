@@ -1,6 +1,6 @@
 package org.fedorahosted.flies.webtrans.shared.rpc;
 
-import org.fedorahosted.flies.webtrans.shared.common.WorkspaceId;
+import org.fedorahosted.flies.webtrans.shared.model.WorkspaceId;
 
 public class ActivateWorkspaceAction implements DispatchAction<ActivateWorkspaceResult> {
 	

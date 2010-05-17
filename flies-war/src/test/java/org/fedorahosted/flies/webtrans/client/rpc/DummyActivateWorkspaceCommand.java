@@ -6,9 +6,9 @@ import org.fedorahosted.flies.webtrans.shared.auth.Identity;
 import org.fedorahosted.flies.webtrans.shared.auth.Permission;
 import org.fedorahosted.flies.webtrans.shared.auth.Role;
 import org.fedorahosted.flies.webtrans.shared.auth.SessionId;
-import org.fedorahosted.flies.webtrans.shared.common.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.shared.model.Person;
 import org.fedorahosted.flies.webtrans.shared.model.PersonId;
+import org.fedorahosted.flies.webtrans.shared.model.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.shared.rpc.ActivateWorkspaceAction;
 import org.fedorahosted.flies.webtrans.shared.rpc.ActivateWorkspaceResult;
 

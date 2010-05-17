@@ -6,9 +6,9 @@ import javax.servlet.http.HttpSession;
 
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.webtrans.shared.auth.SessionId;
-import org.fedorahosted.flies.webtrans.shared.common.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.shared.model.PersonId;
 import org.fedorahosted.flies.webtrans.shared.model.TransUnitId;
+import org.fedorahosted.flies.webtrans.shared.model.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.shared.rpc.SessionEventData;
 import org.jboss.seam.Component;
 import org.jboss.seam.Seam;
