@@ -23,9 +23,7 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
-import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.NotNull;
 
 /**
@@ -36,7 +34,6 @@ import org.hibernate.validator.NotNull;
  *
  */
 @Entity
-@Indexed
 @TypeDef(name="localeId", typeClass=LocaleIdType.class)
 public class HTextFlowTarget implements Serializable{
 

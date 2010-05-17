@@ -6,13 +6,9 @@ import java.util.List;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.util.Version;
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
@@ -85,25 +81,14 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
         	// TODO try a TmFuzzyQuery (to get okapi's relevance calcs)
 //        	TmFuzzyQuery q = new TmFuzzyQuery(threshold, termCountField);
 //        	q.extractTerms(terms);
-        	BooleanQuery boolQuery = new BooleanQuery();
         	QueryParser parser = new QueryParser(Version.LUCENE_29, 
-        			"textFlow.content", 
+        			"content", 
 					new DefaultNgramAnalyzer());
 			Query textQuery = parser.parse(queryText);
-        	boolQuery.add(textQuery, Occur.MUST);
-        	boolQuery.add(new TermQuery(new Term("locale", localeID.toString())), Occur.MUST);
-        	boolQuery.add(new TermQuery(new Term("state", ContentState.Approved.toString())), Occur.MUST);
-        	FullTextQuery ftQuery = entityManager.createFullTextQuery(boolQuery, HTextFlowTarget.class);
+        	FullTextQuery ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlow.class);
 
-//        	ftQuery.setProjection(FullTextQuery.SCORE, 
-//        			"textFlow.content", "content", 
-//        			"textFlow.document.docId"
-////        			"textFlow.comment", "comment", 
-//        			);
         	ftQuery.setProjection(FullTextQuery.SCORE, 
         			FullTextQuery.THIS
-//        			"textFlow.document.docId"
-//        			"textFlow.comment", "comment", 
         			);
         	List<Object[]> matches = ftQuery
                 .setMaxResults(MAX_RESULTS)
@@ -111,24 +96,17 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
             results = new ArrayList<TransMemory>(matches.size());
     		for (Object[] match : matches) {
     			float score = (Float) match[0];
-    			HTextFlowTarget target = (HTextFlowTarget) match[1];
-    			HTextFlow textFlow = target.getTextFlow();
-    			String textFlowContent =
-					 textFlow.getContent();
-//					(String) match[1];
-    			String targetContent =
-					target.getContent();
-//					(String) match[2]; 
-    			String docId =
-					textFlow.getDocument().getDocId();
-//					(String) match[3];
-//    				(String) match[2];
-//    			String textFlowComment =
-////					textFlow.getComment();
-//					(String) match[4];   
-//    			String targetComment =
-////					target.getComment();
-//					(String) match[5];
+    			HTextFlow textFlow = (HTextFlow) match[1];
+    			if (textFlow == null) {
+    				continue;
+    			}
+    			HTextFlowTarget target = textFlow.getTargets().get(localeID);
+    			if (target == null || target.getState() != ContentState.Approved) {
+    				continue;
+    			}
+    			String textFlowContent = textFlow.getContent();
+    			String targetContent = target.getContent();
+    			String docId = textFlow.getDocument().getDocId();
     				
 				TransMemory mem = new TransMemory(
 						textFlowContent, 

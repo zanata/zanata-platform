@@ -27,12 +27,9 @@ import org.fedorahosted.flies.search.DefaultNgramAnalyzer;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyzer;
-import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
@@ -45,7 +42,7 @@ import org.hibernate.validator.NotNull;
  *
  */
 @Entity
-//@Indexed
+@Indexed
 public class HTextFlow implements Serializable {
 
 	private static final long serialVersionUID = 3023080107971905435L;
