@@ -30,7 +30,7 @@
 		<env.dbunit.type>HSQL</env.dbunit.type>
 		<ds.hibernate.dialect>org.hibernate.dialect.H2Dialect</ds.hibernate.dialect>
 		<ds.driver.class>org.h2.Driver</ds.driver.class>
-		<ds.connection.url>jdbc:h2:.</ds.connection.url> <!-- *-ds.xml -->
+		<ds.connection.url>jdbc:h2:mem:flies</ds.connection.url> <!-- *-ds.xml -->
 		<ds.user.name>sa</ds.user.name> <!-- *-ds.xml -->
 		<ds.password></ds.password> <!-- *-ds.xml -->
 
