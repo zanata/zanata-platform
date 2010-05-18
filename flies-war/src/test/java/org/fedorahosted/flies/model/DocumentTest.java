@@ -69,6 +69,9 @@ public class DocumentTest extends FliesDbunitJpaTest {
 		flow2 = textFlows2.get(1);
 		assertThat(flow2, notNullValue());
 
+		// TODO: we should automate this...
+		hdoc.setRevision(hdoc.getRevision()+1);
+		
 		textFlows2.remove(flow1);
 		flow1.setObsolete(true);
 		// flow1.setPos(null);
@@ -88,4 +91,29 @@ public class DocumentTest extends FliesDbunitJpaTest {
 		assertThat(flow2.isObsolete(), is(false));
 	}
 
+	@Test
+	public void ensureHistoryOnTextFlow() {
+		EntityManager em = getEm();
+		HIterationProject project = em.find(HIterationProject.class, 1l);
+		// assertThat( project, notNullValue() );
+
+		HDocument hdoc = new HDocument("fullpath", ContentType.TextPlain,
+				LocaleId.EN_US);
+		hdoc.setProjectIteration(project.getProjectIterations().get(0));
+
+		List<HTextFlow> textFlows = hdoc.getTextFlows();
+		HTextFlow flow1 = new HTextFlow(hdoc, "textflow3", "some content");
+		HTextFlow flow2 = new HTextFlow(hdoc, "textflow4", "more content");
+		textFlows.add(flow1);
+		textFlows.add(flow2);
+		em.persist(hdoc);
+		em.flush();
+		
+		hdoc.setRevision(hdoc.getRevision()+1);
+		
+		flow1.setContent("nwe content!");
+		em.flush();
+
+	}
+	
 }

@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PreUpdate;
 
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.model.po.HPotEntryData;
@@ -256,5 +257,17 @@ public class HTextFlow implements Serializable {
 			"comment:"+getComment()+
 			"obsolete:"+isObsolete()+
 			")";
+	}
+	
+	@PreUpdate
+	public void onUpdate() {
+		if(getDocument() != null) {
+			if(getDocument().getRevision() > this.revision ) {
+				setRevision(getDocument().getRevision());
+			}
+		}
+		else {
+			this.revision++;
+		}
 	}
 }

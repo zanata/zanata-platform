@@ -1,16 +1,22 @@
 package org.fedorahosted.flies.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 
 @Entity
-public class HTextFlowHistory extends AbstractFliesEntity{
+public class HTextFlowHistory implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	
+	private Long id;
 	private Integer revision;
 	private HTextFlow textFlow;
 	private String content;
@@ -24,6 +30,17 @@ public class HTextFlowHistory extends AbstractFliesEntity{
 		this.textFlow = textFlow;
 	}
 	
+	
+	@Id
+	@GeneratedValue
+	public Long getId() {
+		return id;
+	}
+	
+	
+	protected void setId(Long id) {
+		this.id = id;
+	}
 	
 	@NaturalId
 	public Integer getRevision() {
