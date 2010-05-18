@@ -20,7 +20,7 @@ SET(BROWSERS_TO_TEST firefox googlechrome)
 #===================================================================
 # Flies Projects to be test
 SET (SAMPLE_PROJ_DIR    samples)
-SET (LANGS              "ja-JP,zh-CN,pt-PT")
+SET (LANGS              "as-IN,ja-JP,zh-CN,pt-PT")
 
 SET(INIT_ITER		"s1")
 SET(INIT_ITER_NAME	"s1name")
@@ -94,10 +94,14 @@ FOREACH(pProj ${PUBLICAN_PROJECTS})
 	DEPENDS ${P_PROJ_DIR}
     )
 
+    ADD_CUSTOM_COMMAND(OUTPUT "${P_PROJ_DIR}/pot"}
+        COMMAND ${PUBLICAN_CMD}  update_pot
+        WORKING_DIRECTORY "${P_PROJ_DIR}"
+        DEPENDS ${P_PROJ_DIR}/publican.cfg.orig
+    )
+
     ADD_CUSTOM_TARGET(update_pot_${${pProj}}
-	COMMAND ${PUBLICAN_CMD}  update_pot
-	WORKING_DIRECTORY "${P_PROJ_DIR}"
-	DEPENDS ${P_PROJ_DIR}/publican.cfg.orig
+	DEPENDS ${P_PROJ_DIR}/pot
     )
 
     ADD_CUSTOM_TARGET(update_src_${${pProj}}
@@ -109,7 +113,7 @@ FOREACH(pProj ${PUBLICAN_PROJECTS})
 
     ADD_CUSTOM_TARGET(update_po_${${pProj}}
         COMMAND ${PUBLICAN_CMD} update_po --langs="${LANGS}"
-        DEPENDS ${P_PROJ_DIR}/publican.cfg.orig
+	DEPENDS ${P_PROJ_DIR}/publican.cfg.orig ${P_PROJ_DIR}/pot
         WORKING_DIRECTORY "${P_PROJ_DIR}"
         COMMENT "Updating po of publican project ${${pProj}}"
     )
@@ -140,7 +144,7 @@ FOREACH(pProj ${PUBLICAN_PROJECTS})
 
     ADD_CUSTOM_TARGET(upload_${${pProj}}
         COMMAND "${FLIES_PUBLICAN_CMD}" upload ${FLIES_PUBLICAN_COMMON_OPTS} -i --src . --dst "${UPLOAD_DEST}"
-	DEPENDS ${P_PROJ_DIR}
+	DEPENDS ${P_PROJ_DIR} ${P_PROJ_DIR}/publican.cfg.orig ${P_PROJ_DIR}/pot
 	WORKING_DIRECTORY "${P_PROJ_DIR}"
 	COMMENT "Project ${${pProj}}: Uploading"
 	VERBATIM
