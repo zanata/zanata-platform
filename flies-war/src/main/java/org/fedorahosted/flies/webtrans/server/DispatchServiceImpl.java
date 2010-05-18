@@ -11,7 +11,7 @@ import org.jboss.seam.security.Identity;
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;
 
-@Name("org.fedorahosted.flies.webtrans.shared.common.DispatchService")
+@Name("org.fedorahosted.flies.webtrans.shared.DispatchService")
 public class DispatchServiceImpl implements DispatchService {
 	
 	@In 
