@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.dao;
 
+
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.model.HTextFlow;
 import org.fedorahosted.flies.model.HTextFlowTarget;
@@ -33,7 +34,7 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>{
 		        .set("locale", localeId)
 		    	)
 		    .setCacheable(true)
-		    .setComment("TextFlowTargetDAO.getById")
+		    .setComment("TextFlowTargetDAO.getByNaturalId")
 		    .uniqueResult();
 	}
 }

@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 
 import org.fedorahosted.flies.model.HAccount;
 import org.fedorahosted.flies.model.HTribe;
+import org.fedorahosted.flies.security.FliesIdentity;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
@@ -52,13 +53,13 @@ public class MemberTribesList implements Serializable{
     		memberTribes = Collections.EMPTY_LIST;
     		return;
     	}
+//    	entityManager.refresh(authenticatedAccount);
     	
         memberTribes = entityManager.createQuery(
-            "select p.tribeMemberships from HPerson p where p.account = :account")
-            .setParameter("account", authenticatedAccount)
+            "select p.tribeMemberships from HPerson p where p.account.username = :username")
+            .setParameter("username", authenticatedAccount.getUsername())
             .getResultList();
     	log.info("now listing {0} tribes", memberTribes.size());
-
     }
     
     

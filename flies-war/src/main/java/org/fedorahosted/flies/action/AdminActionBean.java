@@ -1,25 +1,32 @@
 package org.fedorahosted.flies.action;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.fedorahosted.flies.model.HCommunity;
 import org.fedorahosted.flies.model.HIterationProject;
-import org.fedorahosted.flies.model.HTextFlow;
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Transaction;
 import org.hibernate.search.FullTextSession;
+import org.hibernate.search.annotations.Indexed;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.annotations.security.Restrict;
+import org.jboss.seam.deployment.StandardDeploymentStrategy;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 
 @Name("adminAction")
 @Scope(ScopeType.APPLICATION)
+@Startup
 public class AdminActionBean {
 	
 	private static final int BATCH_SIZE = 500;
@@ -31,6 +38,16 @@ public class AdminActionBean {
     @In
     FullTextSession session;
 
+    private Set<Class<?>> indexables = new HashSet<Class<?>>();
+
+	@Create
+	public void create() {
+		indexables.addAll(StandardDeploymentStrategy.instance().getAnnotatedClasses().get(Indexed.class.getName()));
+		indexables.add(HCommunity.class);
+		indexables.add(HIterationProject.class);
+	}
+    
+    
 	/*
 	 * TODO make it an @Asynchronous call and have some boolean 
 	 * isRunning method to disable the button if the job is already running
@@ -39,11 +56,13 @@ public class AdminActionBean {
     @Restrict("#{s:hasRole('admin')}")
 	public void reindexDatabase() {
 		log.info("Re-indexing started");
-		reindex(HCommunity.class);
-		reindex(HIterationProject.class);
-//		reindex(HDocument.class);
-		reindex(HTextFlow.class);
-//		reindex(HTextFlowTarget.class);
+		
+		// reindex all @Indexed entities 
+		for (Class<?> clazz : indexables) {
+			log.info("Reindexing class "+clazz.getName());
+			reindex(clazz);
+		}
+
 		log.info("Re-indexing finished");
 		
 		// TODO: this is a global action - not for a specific user

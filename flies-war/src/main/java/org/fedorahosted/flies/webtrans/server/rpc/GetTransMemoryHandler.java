@@ -1,9 +1,7 @@
 package org.fedorahosted.flies.webtrans.server.rpc;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
@@ -61,44 +59,77 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 		
 		LocaleId localeID = action.getLocaleId();
 		ArrayList<TransMemory> results;
-		// TODO need efficient filter/index: by status Approved and by locale
-		String luceneQuery;
+		String queryText;
 		switch (searchType) {
 		case RAW:
-			// TODO search by normal tokens/StandardAnalyzer?
-			luceneQuery = searchText;
+			queryText = searchText;
 			break;
 
 		case FUZZY:
 			// search by N-grams
-			luceneQuery = searchText;
+			queryText = QueryParser.escape(searchText);
 			break;
 			
 		case EXACT:
-			luceneQuery = "\""+QueryParser.escape(searchText)+"\"";
+			queryText = "\""+QueryParser.escape(searchText)+"\"";
 			break;
 			
 		default:
 			throw new RuntimeException("Unknown query type: "+searchType);
 		}
-		List<HTextFlow> matches = findMatchingTextFlows(luceneQuery);
-		results = new ArrayList<TransMemory>(matches.size());
-		for (HTextFlow textFlow : matches) {
-			Map<LocaleId, HTextFlowTarget> matchTargets = textFlow.getTargets();
-			HTextFlowTarget target = matchTargets.get(localeID);
-			if (target != null && target.getState() == ContentState.Approved) {
+		
+        try {
+        	// TODO try a TmFuzzyQuery (to get okapi's relevance calcs)
+//        	TmFuzzyQuery q = new TmFuzzyQuery(threshold, termCountField);
+//        	q.extractTerms(terms);
+        	QueryParser parser = new QueryParser(Version.LUCENE_29, 
+        			"content", 
+					new DefaultNgramAnalyzer());
+			Query textQuery = parser.parse(queryText);
+        	FullTextQuery ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlow.class);
+//        	ftQuery.enableFullTextFilter("translated").setParameter("locale", localeID);
+        	ftQuery.setProjection(FullTextQuery.SCORE, 
+        			FullTextQuery.THIS
+        			);
+        	List<Object[]> matches = ftQuery
+                .setMaxResults(MAX_RESULTS)
+                .getResultList();
+            results = new ArrayList<TransMemory>(matches.size());
+    		for (Object[] match : matches) {
+    			float score = (Float) match[0];
+    			HTextFlow textFlow = (HTextFlow) match[1];
+    			if (textFlow == null) {
+    				continue;
+    			}
+    			HTextFlowTarget target = textFlow.getTargets().get(localeID);
+    			if (target == null || target.getState() != ContentState.Approved) {
+    				continue;
+    			}
+    			String textFlowContent = textFlow.getContent();
+    			String targetContent = target.getContent();
+    			String docId = textFlow.getDocument().getDocId();
+    				
 				TransMemory mem = new TransMemory(
-						textFlow.getContent(), 
-						target.getContent(), 
-						toString(textFlow.getComment()),
-						toString(target.getComment()),
-						textFlow.getDocument().getDocId(),
+						textFlowContent, 
+						targetContent, 
+						null, // textFlowComment,
+						null, // targetComment,
+						docId,
 						// TODO find the projectSlug and iterSlug
-						textFlow.getDocument().getProjectIteration().getId()
-						);
+						score
+				);
 				results.add(mem);
+    		}
+
+        } catch (ParseException e) {
+        	if (searchType == SearchType.RAW) {
+				log.warn("Can't parse raw query '"+queryText+"'");
+			} else {
+				// escaping failed!
+				log.error("Can't parse query '"+queryText+"'", e);
 			}
-		}
+            results = new ArrayList<TransMemory>(0); 
+        }
 
 		log.info("Returning {0} TM matches for \"{1}\"", 
 				results.size(), 
@@ -106,52 +137,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 		return new GetTranslationMemoryResult(results);
 	}
 	
-	static String toString(HSimpleComment comment) {
-		if (comment == null)
-			return "";
-		if (comment.getComment() != null)
-			return comment.getComment();
-		return "";
-	}
-
-	static String toLuceneQuery(String s) {
-		return QueryParser.escape(s);
-	}
-	
-	static String toFuzzyLuceneQuery(String s) {
-		// add "~" to each word
-		return QueryParser.escape(s).replaceAll("\\S+", "$0~");
-	}
-
-    private List<HTextFlow> findMatchingTextFlows(String searchQuery) {
-        FullTextQuery query;
-        try {
-            query = constructQuery(searchQuery);
-        } catch (ParseException e) {
-        	log.warn("Can't parse query '"+searchQuery+"'");
-            return Collections.emptyList(); 
-        }
-        // TODO setMaxResults sometimes causes results to be left out
-        // a bit like this old bug: http://opensource.atlassian.com/projects/hibernate/browse/HSEARCH-66?focusedCommentId=27137&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#action_27137
-        List<HTextFlow> items = query
-//            .setMaxResults(MAX_RESULTS)
-            .getResultList();
-        if (items.size() > MAX_RESULTS)
-        	items = items.subList(0, MAX_RESULTS);
-        return items;
-    }
-
-    private FullTextQuery constructQuery(String searchText) throws ParseException
-    {
-		// TODO filter by status Approved and by locale
-        // TODO wildcard escaping?  stemming?  fuzzy matching?
-        QueryParser parser = new QueryParser(Version.LUCENE_29, "content", 
-        		new DefaultNgramAnalyzer());
-        Query luceneQuery = parser.parse(searchText);
-        return entityManager.createFullTextQuery(luceneQuery, HTextFlow.class);
-    }
-
-	@Override
+    @Override
 	public void rollback(GetTranslationMemory action,
 			GetTranslationMemoryResult result, ExecutionContext context)
 			throws ActionException {
