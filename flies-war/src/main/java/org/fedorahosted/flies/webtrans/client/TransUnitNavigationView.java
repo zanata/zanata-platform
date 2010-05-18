@@ -1,6 +1,6 @@
 package org.fedorahosted.flies.webtrans.client;
 
-import org.fedorahosted.flies.webtrans.editor.table.NavigationMessages;
+import org.fedorahosted.flies.webtrans.client.editor.table.NavigationMessages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;

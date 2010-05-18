@@ -4,7 +4,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.fedorahosted.flies.core.dao.AccountDAO;
+import org.fedorahosted.flies.dao.AccountDAO;
 import org.fedorahosted.flies.security.FliesIdentity;
 import org.jboss.resteasy.annotations.interception.SecurityPrecedence;
 import org.jboss.resteasy.annotations.interception.ServerInterceptor;

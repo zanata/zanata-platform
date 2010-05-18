@@ -5,24 +5,22 @@ package org.fedorahosted.flies.webtrans.client.rpc;
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;
 
-import org.fedorahosted.flies.gwt.auth.AuthorizationError;
-import org.fedorahosted.flies.gwt.rpc.AbstractWorkspaceAction;
-import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
-import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceResult;
-import org.fedorahosted.flies.gwt.rpc.GetDocumentList;
-import org.fedorahosted.flies.gwt.rpc.GetDocumentListResult;
-import org.fedorahosted.flies.gwt.rpc.GetGlossaryConcept;
-import org.fedorahosted.flies.gwt.rpc.GetGlossaryConceptResult;
-import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCount;
-import org.fedorahosted.flies.gwt.rpc.GetProjectStatusCountResult;
-import org.fedorahosted.flies.gwt.rpc.GetStatusCount;
-import org.fedorahosted.flies.gwt.rpc.GetStatusCountResult;
-import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
-import org.fedorahosted.flies.gwt.rpc.GetTransUnitsResult;
-import org.fedorahosted.flies.gwt.rpc.GetTranslationMemory;
-import org.fedorahosted.flies.gwt.rpc.GetTranslationMemoryResult;
-import org.fedorahosted.flies.gwt.rpc.GetTranslatorList;
-import org.fedorahosted.flies.gwt.rpc.GetTranslatorListResult;
+import org.fedorahosted.flies.webtrans.shared.auth.AuthorizationError;
+import org.fedorahosted.flies.webtrans.shared.rpc.AbstractWorkspaceAction;
+import org.fedorahosted.flies.webtrans.shared.rpc.ActivateWorkspaceAction;
+import org.fedorahosted.flies.webtrans.shared.rpc.ActivateWorkspaceResult;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetDocumentList;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetDocumentListResult;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetProjectStatusCount;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetProjectStatusCountResult;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetStatusCount;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetStatusCountResult;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetTransUnits;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetTransUnitsResult;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetTranslationMemory;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetTranslationMemoryResult;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetTranslatorList;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetTranslatorListResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.DeferredCommand;
@@ -75,10 +73,6 @@ public class DummyDispatchAsync extends SeamDispatchAsync {
 			final GetTranslationMemory _action = (GetTranslationMemory) action;
 			AsyncCallback<GetTranslationMemoryResult> _callback = (AsyncCallback<GetTranslationMemoryResult>) callback;
 			DeferredCommand.addCommand(new DummyGetTranslationMemoryCommand(_action, _callback));
-		}  else if (action instanceof GetGlossaryConcept) {
-			final GetGlossaryConcept _action = (GetGlossaryConcept) action;
-			AsyncCallback<GetGlossaryConceptResult> _callback = (AsyncCallback<GetGlossaryConceptResult>) callback;
-			DeferredCommand.addCommand(new DummyGetGlossaryCommand(_action, _callback));
 		} else {
 			Log.warn("DummyDispatchAsync: ignoring action of "+action.getClass());
 //			callback.onFailure(new RuntimeException());

@@ -17,8 +17,8 @@ import org.apache.tools.ant.Task;
 import org.cyclopsgroup.jcli.ArgumentProcessor;
 import org.cyclopsgroup.jcli.annotation.Cli;
 import org.cyclopsgroup.jcli.annotation.Option;
-import org.fedorahosted.flies.rest.ClientUtility;
-import org.fedorahosted.flies.rest.FliesClientRequestFactory;
+import org.fedorahosted.flies.rest.client.ClientUtility;
+import org.fedorahosted.flies.rest.client.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.IProjectIterationResource;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
@@ -108,7 +108,7 @@ public class CreateIterationTask extends Task implements Subcommand {
 	}
 	
 	public void process() throws JAXBException, URISyntaxException, IOException {
-			JAXBContext jc = JAXBContext.newInstance(Project.class);
+			JAXBContext jc = JAXBContext.newInstance(ProjectIteration.class);
 			Marshaller m = jc.createMarshaller();
 			// debug
 			if (debug)

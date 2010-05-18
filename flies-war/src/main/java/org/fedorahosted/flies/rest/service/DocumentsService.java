@@ -22,12 +22,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 
-import org.fedorahosted.flies.core.dao.DocumentDAO;
-import org.fedorahosted.flies.core.dao.ProjectContainerDAO;
-import org.fedorahosted.flies.repository.model.HDocument;
-import org.fedorahosted.flies.repository.model.HProjectContainer;
-import org.fedorahosted.flies.repository.model.HTextFlow;
-import org.fedorahosted.flies.repository.model.HTextFlowHistory;
+import org.fedorahosted.flies.dao.DocumentDAO;
+import org.fedorahosted.flies.dao.ProjectIterationDAO;
+import org.fedorahosted.flies.model.HDocument;
+import org.fedorahosted.flies.model.HProjectIteration;
+import org.fedorahosted.flies.model.HTextFlow;
+import org.fedorahosted.flies.model.HTextFlowHistory;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Document;
 import org.fedorahosted.flies.rest.dto.Documents;
@@ -64,7 +64,7 @@ public class DocumentsService {
 	private DocumentDAO documentDAO;
 
 	@In
-	private ProjectContainerDAO projectContainerDAO;
+	private ProjectIterationDAO projectIterationDAO;
 
 	@In
 	private DocumentConverter documentConverter;
@@ -79,11 +79,13 @@ public class DocumentsService {
 	@Restrict("#{identity.loggedIn}")
 	public Response post(Documents documents) {
 		log.debug("HTTP POST {0} : \n{1}", request.getRequestURL(), documents);
-		HProjectContainer hContainer = projectContainerDAO.getBySlug(
+		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(
 				projectSlug, iterationSlug);
-		if (hContainer == null)
+
+		if (hProjectIteration == null)
 			return containerNotFound();
-		Map<String, HDocument> docMap = hContainer.getAllDocuments();
+
+		Map<String, HDocument> docMap = hProjectIteration.getAllDocuments();
 		for (Document doc : documents.getDocuments()) {
 			// if doc already exists, load it and update it, but don't create it
 			HDocument hDoc = docMap.get(doc.getId());
@@ -93,7 +95,7 @@ public class DocumentsService {
 								.getId());
 				hDoc = new HDocument(doc);
 				hDoc.setRevision(0);
-				hDoc.setProject(hContainer);
+				hDoc.setProjectIteration(hProjectIteration);
 			} else {
 				log.info("POST updating HDocument with id {0}", doc.getId());
 			}
@@ -117,12 +119,13 @@ public class DocumentsService {
 		URI iterationUri = baseUri.resolve(URIHelper.getIteration(projectSlug,
 				iterationSlug));
 
-		HProjectContainer hContainer = projectContainerDAO.getBySlug(
+		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(
 				projectSlug, iterationSlug);
-		if (hContainer == null)
+
+		if (hProjectIteration == null)
 			return containerNotFound();
 
-		Collection<HDocument> hdocs = hContainer.getDocuments().values();
+		Collection<HDocument> hdocs = hProjectIteration.getDocuments().values();
 		Documents result = new Documents();
 
 		for (HDocument hDocument : hdocs) {
@@ -144,11 +147,12 @@ public class DocumentsService {
 	@Restrict("#{identity.loggedIn}")
 	public Response put(Documents documents) {
 		log.debug("HTTP PUT {0} : \n{1}", request.getRequestURL(), documents);
-		HProjectContainer hContainer = projectContainerDAO.getBySlug(
+		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(
 				projectSlug, iterationSlug);
-		if (hContainer == null)
+
+		if (hProjectIteration == null)
 			return containerNotFound();
-		Map<String, HDocument> docMap = hContainer.getDocuments();
+		Map<String, HDocument> docMap = hProjectIteration.getDocuments();
 		// any Docs still in this set at the end will be marked obsolete
 		Set<HDocument> obsoleteDocs = new HashSet<HDocument>(docMap.values());
 		ClassValidator<HDocument> docValidator = new ClassValidator<HDocument>(
@@ -157,14 +161,14 @@ public class DocumentsService {
 
 		for (Document doc : documents.getDocuments()) {
 			// if doc already exists, load it and update it, but don't create it
-			HDocument hDoc = documentDAO.getByDocId(hContainer, doc.getId());
+			HDocument hDoc = documentDAO.getByDocId(hProjectIteration, doc.getId());
 			if (hDoc == null) {
 				log
 						.debug("PUT creating new HDocument with id {0}", doc
 								.getId());
 				hDoc = new HDocument(doc);
 				hDoc.setRevision(0);
-				hDoc.setProject(hContainer);
+				hDoc.setProjectIteration(hProjectIteration);
 			} else {
 				log.debug("PUT updating HDocument with id {0}", doc.getId());
 				obsoleteDocs.remove(hDoc);

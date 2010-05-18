@@ -5,14 +5,14 @@ package org.fedorahosted.flies.webtrans.client.rpc;
 
 import java.util.ArrayList;
 
-import org.fedorahosted.flies.gwt.model.DocumentId;
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.EditState;
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.gwt.model.TransUnit;
-import org.fedorahosted.flies.gwt.model.TransUnitId;
-import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
-import org.fedorahosted.flies.gwt.rpc.GetTransUnitsResult;
+import org.fedorahosted.flies.webtrans.shared.model.DocumentId;
+import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
+import org.fedorahosted.flies.webtrans.shared.model.TransUnitId;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetTransUnits;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetTransUnitsResult;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Random;

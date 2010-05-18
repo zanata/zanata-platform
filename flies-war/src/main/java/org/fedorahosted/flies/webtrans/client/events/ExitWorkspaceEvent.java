@@ -1,7 +1,7 @@
 package org.fedorahosted.flies.webtrans.client.events;
 
-import org.fedorahosted.flies.gwt.model.PersonId;
-import org.fedorahosted.flies.gwt.rpc.HasExitWorkspaceData;
+import org.fedorahosted.flies.webtrans.shared.model.PersonId;
+import org.fedorahosted.flies.webtrans.shared.rpc.HasExitWorkspaceData;
 
 import com.google.gwt.event.shared.GwtEvent;
 

@@ -3,10 +3,10 @@ package org.fedorahosted.flies.webtrans.client.rpc;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.fedorahosted.flies.gwt.model.Person;
-import org.fedorahosted.flies.gwt.model.PersonId;
-import org.fedorahosted.flies.gwt.rpc.GetTranslatorList;
-import org.fedorahosted.flies.gwt.rpc.GetTranslatorListResult;
+import org.fedorahosted.flies.webtrans.shared.model.Person;
+import org.fedorahosted.flies.webtrans.shared.model.PersonId;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetTranslatorList;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetTranslatorListResult;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;

@@ -10,20 +10,20 @@ import net.customware.gwt.dispatch.shared.ActionException;
 import org.fedorahosted.flies.FliesInit;
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.EditState;
-import org.fedorahosted.flies.gwt.model.ProjectContainerId;
-import org.fedorahosted.flies.gwt.model.TransUnit;
-import org.fedorahosted.flies.gwt.model.TransUnitId;
-import org.fedorahosted.flies.gwt.rpc.GetTransUnits;
-import org.fedorahosted.flies.gwt.rpc.GetTransUnitsResult;
-import org.fedorahosted.flies.repository.model.HDocument;
-import org.fedorahosted.flies.repository.model.HSimpleComment;
-import org.fedorahosted.flies.repository.model.HTextFlow;
-import org.fedorahosted.flies.repository.model.HTextFlowTarget;
+import org.fedorahosted.flies.model.HDocument;
+import org.fedorahosted.flies.model.HSimpleComment;
+import org.fedorahosted.flies.model.HTextFlow;
+import org.fedorahosted.flies.model.HTextFlowTarget;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.fedorahosted.flies.security.FliesIdentity;
 import org.fedorahosted.flies.webtrans.server.ActionHandlerFor;
 import org.fedorahosted.flies.webtrans.server.TranslationWorkspace;
 import org.fedorahosted.flies.webtrans.server.TranslationWorkspaceManager;
+import org.fedorahosted.flies.webtrans.shared.model.ProjectIterationId;
+import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
+import org.fedorahosted.flies.webtrans.shared.model.TransUnitId;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetTransUnits;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetTransUnitsResult;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -73,7 +73,6 @@ public class GetTransUnitsHandler extends AbstractActionHandler<GetTransUnits, G
 		for(HTextFlow textFlow : textFlows) {
 			
 			TransUnitId tuId = new TransUnitId(textFlow.getId());
-			ProjectContainerId projectContainerId = new ProjectContainerId(textFlow.getDocument().getProject().getId());
 			TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(
 					action.getWorkspaceId() );
 

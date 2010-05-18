@@ -2,8 +2,8 @@ package org.fedorahosted.flies.webtrans.client.rpc;
 
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.TransUnitCount;
-import org.fedorahosted.flies.gwt.rpc.GetStatusCount;
-import org.fedorahosted.flies.gwt.rpc.GetStatusCountResult;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetStatusCount;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetStatusCountResult;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;

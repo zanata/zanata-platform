@@ -6,17 +6,17 @@ import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.gwt.model.DocumentId;
-import org.fedorahosted.flies.gwt.model.ProjectContainerId;
-import org.fedorahosted.flies.gwt.rpc.TransUnitUpdated;
-import org.fedorahosted.flies.gwt.rpc.UpdateTransUnit;
-import org.fedorahosted.flies.gwt.rpc.UpdateTransUnitResult;
-import org.fedorahosted.flies.repository.model.HTextFlow;
-import org.fedorahosted.flies.repository.model.HTextFlowTarget;
+import org.fedorahosted.flies.model.HTextFlow;
+import org.fedorahosted.flies.model.HTextFlowTarget;
 import org.fedorahosted.flies.security.FliesIdentity;
 import org.fedorahosted.flies.webtrans.server.ActionHandlerFor;
 import org.fedorahosted.flies.webtrans.server.TranslationWorkspace;
 import org.fedorahosted.flies.webtrans.server.TranslationWorkspaceManager;
+import org.fedorahosted.flies.webtrans.shared.model.DocumentId;
+import org.fedorahosted.flies.webtrans.shared.model.ProjectIterationId;
+import org.fedorahosted.flies.webtrans.shared.rpc.TransUnitUpdated;
+import org.fedorahosted.flies.webtrans.shared.rpc.UpdateTransUnit;
+import org.fedorahosted.flies.webtrans.shared.rpc.UpdateTransUnitResult;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -59,8 +59,6 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
 		
 		TransUnitUpdated event = new TransUnitUpdated(
 				new DocumentId(hTextFlow.getDocument().getId()), action.getTransUnitId(), prevStatus, action.getContentState() );
-		
-		ProjectContainerId projectContainerId = new ProjectContainerId(hTextFlow.getDocument().getProject().getId());
 		
 		TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(
 				action.getWorkspaceId() );

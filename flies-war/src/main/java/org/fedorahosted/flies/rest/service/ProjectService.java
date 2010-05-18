@@ -19,12 +19,12 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang.StringUtils;
-import org.fedorahosted.flies.core.dao.AccountDAO;
-import org.fedorahosted.flies.core.dao.ProjectDAO;
-import org.fedorahosted.flies.core.model.HAccount;
-import org.fedorahosted.flies.core.model.HIterationProject;
-import org.fedorahosted.flies.core.model.HProject;
-import org.fedorahosted.flies.core.model.HProjectIteration;
+import org.fedorahosted.flies.dao.AccountDAO;
+import org.fedorahosted.flies.dao.ProjectDAO;
+import org.fedorahosted.flies.model.HAccount;
+import org.fedorahosted.flies.model.HIterationProject;
+import org.fedorahosted.flies.model.HProject;
+import org.fedorahosted.flies.model.HProjectIteration;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.AbstractProject;
 import org.fedorahosted.flies.rest.dto.Link;
@@ -106,7 +106,7 @@ public class ProjectService {
 				return Response.status(Status.NOT_FOUND).build();
 			}
 			
-			hProject = new org.fedorahosted.flies.core.model.HIterationProject();
+			hProject = new org.fedorahosted.flies.model.HIterationProject();
 			hProject.setSlug(project.getId());
 			transfer(project, hProject);
 		}

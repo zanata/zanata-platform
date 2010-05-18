@@ -5,11 +5,11 @@ package org.fedorahosted.flies.webtrans.client.rpc;
 
 import java.util.ArrayList;
 
-import org.fedorahosted.flies.gwt.model.DocumentInfo;
-import org.fedorahosted.flies.gwt.model.DocumentId;
-import org.fedorahosted.flies.gwt.model.ProjectContainerId;
-import org.fedorahosted.flies.gwt.rpc.GetDocumentList;
-import org.fedorahosted.flies.gwt.rpc.GetDocumentListResult;
+import org.fedorahosted.flies.webtrans.shared.model.DocumentId;
+import org.fedorahosted.flies.webtrans.shared.model.DocumentInfo;
+import org.fedorahosted.flies.webtrans.shared.model.ProjectIterationId;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetDocumentList;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetDocumentListResult;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -26,8 +26,8 @@ final class DummyGetDocsListCommand implements Command {
 
 	@Override
 	public void execute() {
-		ProjectContainerId projectContainerId = action.getProjectContainerId();
-		GetDocumentListResult result = new GetDocumentListResult(projectContainerId, generateTransUnitSampleData()); 
+		ProjectIterationId projectIterationId = action.getProjectIterationId();
+		GetDocumentListResult result = new GetDocumentListResult(projectIterationId, generateTransUnitSampleData()); 
 		callback.onSuccess(result);
 	}
 

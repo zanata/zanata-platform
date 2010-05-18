@@ -1,8 +1,8 @@
 package org.fedorahosted.flies.webtrans.client;
 
-import org.fedorahosted.flies.gwt.model.TransUnit;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitSelectionEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitSelectionHandler;
+import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
 
 import com.google.inject.Inject;
 

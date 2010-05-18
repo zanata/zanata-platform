@@ -2,15 +2,15 @@ package org.fedorahosted.flies.webtrans.client.rpc;
 
 import java.util.HashSet;
 
-import org.fedorahosted.flies.gwt.auth.Identity;
-import org.fedorahosted.flies.gwt.auth.Permission;
-import org.fedorahosted.flies.gwt.auth.Role;
-import org.fedorahosted.flies.gwt.auth.SessionId;
-import org.fedorahosted.flies.gwt.common.WorkspaceContext;
-import org.fedorahosted.flies.gwt.model.Person;
-import org.fedorahosted.flies.gwt.model.PersonId;
-import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
-import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceResult;
+import org.fedorahosted.flies.webtrans.shared.auth.Identity;
+import org.fedorahosted.flies.webtrans.shared.auth.Permission;
+import org.fedorahosted.flies.webtrans.shared.auth.Role;
+import org.fedorahosted.flies.webtrans.shared.auth.SessionId;
+import org.fedorahosted.flies.webtrans.shared.model.Person;
+import org.fedorahosted.flies.webtrans.shared.model.PersonId;
+import org.fedorahosted.flies.webtrans.shared.model.WorkspaceContext;
+import org.fedorahosted.flies.webtrans.shared.rpc.ActivateWorkspaceAction;
+import org.fedorahosted.flies.webtrans.shared.rpc.ActivateWorkspaceResult;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;

@@ -8,15 +8,15 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.fedorahosted.flies.gwt.common.WorkspaceContext;
-import org.fedorahosted.flies.gwt.model.TransMemory;
-import org.fedorahosted.flies.gwt.model.TransUnit;
-import org.fedorahosted.flies.gwt.rpc.GetTranslationMemory;
-import org.fedorahosted.flies.gwt.rpc.GetTranslationMemoryResult;
-import org.fedorahosted.flies.gwt.rpc.GetTranslationMemory.SearchType;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitSelectionEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitSelectionHandler;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
+import org.fedorahosted.flies.webtrans.shared.model.TransMemory;
+import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
+import org.fedorahosted.flies.webtrans.shared.model.WorkspaceContext;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetTranslationMemory;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetTranslationMemoryResult;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetTranslationMemory.SearchType;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;

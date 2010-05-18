@@ -10,7 +10,7 @@
     locale="en-US"
     name="document.txt"
     path="/my/path"
-    project_id="1"
+    project_iteration_id="1"
     revision="1"
     obsolete="0"
   />

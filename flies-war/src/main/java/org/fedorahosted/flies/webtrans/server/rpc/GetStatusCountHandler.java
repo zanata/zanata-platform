@@ -8,13 +8,13 @@ import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.TransUnitCount;
-import org.fedorahosted.flies.core.model.StatusCount;
-import org.fedorahosted.flies.gwt.rpc.GetStatusCount;
-import org.fedorahosted.flies.gwt.rpc.GetStatusCountResult;
+import org.fedorahosted.flies.model.StatusCount;
 import org.fedorahosted.flies.security.FliesIdentity;
 import org.fedorahosted.flies.webtrans.server.ActionHandlerFor;
 import org.fedorahosted.flies.webtrans.server.TranslationWorkspace;
 import org.fedorahosted.flies.webtrans.server.TranslationWorkspaceManager;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetStatusCount;
+import org.fedorahosted.flies.webtrans.shared.rpc.GetStatusCountResult;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -41,7 +41,7 @@ public class GetStatusCountHandler extends AbstractActionHandler<GetStatusCount,
 		FliesIdentity.instance().checkLoggedIn();
 		
 		List<StatusCount> stats = session.createQuery(
-				"select new org.fedorahosted.flies.core.model.StatusCount(tft.state, count(tft)) " +
+				"select new org.fedorahosted.flies.model.StatusCount(tft.state, count(tft)) " +
 		        "from HTextFlowTarget tft where tft.textFlow.document.id = :id " +
 		        "  and tft.locale = :locale "+ 
 				"group by tft.state"

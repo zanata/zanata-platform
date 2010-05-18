@@ -12,12 +12,11 @@
   <modules>
     <module>flies-client-ant-properties</module>
     <module>flies-client-ant-po</module>
-    <module>flies-client-pseudo</module>
   </modules>
   <dependencies>
     <dependency>
       <groupId>org.fedorahosted.flies</groupId>
-      <artifactId>flies-rest-api</artifactId>
+      <artifactId>flies-common-api</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

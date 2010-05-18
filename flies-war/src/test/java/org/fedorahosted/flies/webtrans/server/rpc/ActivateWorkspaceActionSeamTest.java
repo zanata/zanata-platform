@@ -9,14 +9,13 @@ import javax.persistence.EntityManager;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.core.model.HIterationProject;
-import org.fedorahosted.flies.core.model.HProjectIteration;
-import org.fedorahosted.flies.core.model.HProjectSeries;
-import org.fedorahosted.flies.gwt.common.WorkspaceId;
-import org.fedorahosted.flies.gwt.model.ProjectContainerId;
-import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
-import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceResult;
+import org.fedorahosted.flies.model.HIterationProject;
+import org.fedorahosted.flies.model.HProjectIteration;
 import org.fedorahosted.flies.webtrans.server.SeamDispatch;
+import org.fedorahosted.flies.webtrans.shared.model.ProjectIterationId;
+import org.fedorahosted.flies.webtrans.shared.model.WorkspaceId;
+import org.fedorahosted.flies.webtrans.shared.rpc.ActivateWorkspaceAction;
+import org.fedorahosted.flies.webtrans.shared.rpc.ActivateWorkspaceResult;
 import org.jboss.seam.mock.DBUnitSeamTest;
 import org.testng.annotations.Test;
 
@@ -37,7 +36,7 @@ public class ActivateWorkspaceActionSeamTest extends DBUnitSeamTest {
             	SeamDispatch seamDispatch = (SeamDispatch) getInstance(SeamDispatch.class);
             	
             	ActivateWorkspaceAction action = new ActivateWorkspaceAction(
-            			new WorkspaceId( new ProjectContainerId(1L), new LocaleId("en-US")));
+            			new WorkspaceId( new ProjectIterationId("sample-project", "1.0"), new LocaleId("en-US")));
             	ActivateWorkspaceResult result = seamDispatch.execute( action );
 
             	assertThat(result, notNullValue() );

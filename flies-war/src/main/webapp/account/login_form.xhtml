@@ -1,0 +1,37 @@
+<h:form id="login"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:s="http://jboss.com/products/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+>
+
+    <rich:panel>
+        <f:facet name="header">Sign In</f:facet>
+
+        <s:decorate id="usernameField" template="../layout/edit.xhtml">
+            <ui:define name="label">Username</ui:define>
+            <h:inputText id="username"
+                      value="#{credentials.username}"/>
+        </s:decorate>
+        <s:decorate id="passwordField" template="../layout/edit.xhtml">
+            <ui:define name="label">Password</ui:define>
+            <h:inputSecret id="password"
+                        value="#{credentials.password}"/>
+                        <rich:spacer width="10px"/>
+                        <s:link view="/account/password_reset_request.xhtml" propagation="none">Forgot Your Password?</s:link>
+        </s:decorate>
+        <s:decorate id="rememberMeField" template="../layout/edit.xhtml">
+            <ui:define name="label">Remember Me</ui:define>
+            <h:selectBooleanCheckbox id="rememberMe"
+                                  value="#{identity.rememberMe}"/>
+        </s:decorate>
+        <div style="clear:both"/>
+        <div class="actionButtons">
+            <h:commandButton value="Sign In" action="#{identity.login}"/>
+        </div>
+    </rich:panel>
+
+
+</h:form>

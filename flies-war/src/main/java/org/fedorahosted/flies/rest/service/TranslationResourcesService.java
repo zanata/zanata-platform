@@ -24,11 +24,11 @@ import javax.ws.rs.ext.MessageBodyReader;
 
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.core.dao.DocumentDAO;
-import org.fedorahosted.flies.core.dao.ProjectContainerDAO;
-import org.fedorahosted.flies.repository.model.HDocument;
-import org.fedorahosted.flies.repository.model.HProjectContainer;
-import org.fedorahosted.flies.repository.model.HTextFlow;
+import org.fedorahosted.flies.dao.DocumentDAO;
+import org.fedorahosted.flies.dao.ProjectIterationDAO;
+import org.fedorahosted.flies.model.HDocument;
+import org.fedorahosted.flies.model.HProjectIteration;
+import org.fedorahosted.flies.model.HTextFlow;
 import org.fedorahosted.flies.rest.dto.v1.SourceResource;
 import org.fedorahosted.flies.rest.dto.v1.SourceTextFlow;
 import org.hibernate.HibernateException;
@@ -57,7 +57,7 @@ public class TranslationResourcesService {
 	Set<String> extensions;
 	
 	@In
-	ProjectContainerDAO projectContainerDAO;
+	ProjectIterationDAO projectIterationDAO;
 
 	@In
 	DocumentDAO documentDAO;
@@ -81,10 +81,10 @@ public class TranslationResourcesService {
 	@GET
 	@Produces
 	public Response get() {
-		HProjectContainer hProjectContainer = projectContainerDAO.getBySlug(
+		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(
 				projectSlug, iterationSlug);
 
-		if (hProjectContainer == null) {
+		if (hProjectIteration == null) {
 			return Response.status(Status.NOT_FOUND).build();
 		}
 
@@ -110,14 +110,14 @@ public class TranslationResourcesService {
 			@HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch, 
 			InputStream messageBody) {
 
-		HProjectContainer hProjectContainer = projectContainerDAO.getBySlug(
+		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(
 				projectSlug, iterationSlug);
 
-		if (hProjectContainer == null) {
+		if (hProjectIteration == null) {
 			return Response.status(Status.NOT_FOUND).entity("container not found").build();
 		}
 		
-		EntityTag etag = documentDAO.getETag(hProjectContainer, id);
+		EntityTag etag = documentDAO.getETag(hProjectIteration, id);
 
 		HDocument document;
 		
@@ -130,7 +130,7 @@ public class TranslationResourcesService {
 			}
 
 			document = new HDocument();
-			document.setProject(hProjectContainer);
+			document.setProjectIteration(hProjectIteration);
 			SourceResource entity = unmarshallEntity(SourceResource.class, messageBody);
 			transfer(entity, document);
 		}
@@ -139,7 +139,7 @@ public class TranslationResourcesService {
 		}
 		else {
 			SourceResource entity = unmarshallEntity(SourceResource.class, messageBody);
-			document = documentDAO.getByDocId(hProjectContainer, id);
+			document = documentDAO.getByDocId(hProjectIteration, id);
 			transfer(entity, document);
 		}
 	
@@ -154,7 +154,7 @@ public class TranslationResourcesService {
 				response = Response.ok();
 			}
 			session.flush();
-			etag = documentDAO.getETag(hProjectContainer, id);
+			etag = documentDAO.getETag(hProjectIteration, id);
 			return response.tag(etag).build();
 			
 		} catch (InvalidStateException e) {
@@ -193,14 +193,14 @@ public class TranslationResourcesService {
 			@PathParam("id") String id, 
 			@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
 
-		HProjectContainer hProjectContainer = projectContainerDAO.getBySlug(
+		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(
 				projectSlug, iterationSlug);
 
-		if (hProjectContainer == null) {
+		if (hProjectIteration == null) {
 			return Response.status(Status.NOT_FOUND).entity("container not found").build();
 		}
 
-		EntityTag etag = documentDAO.getETag(hProjectContainer, id);
+		EntityTag etag = documentDAO.getETag(hProjectIteration, id);
 
 		if(etag == null)
 			return Response.status(Status.NOT_FOUND).entity("document not found").build();
@@ -209,7 +209,7 @@ public class TranslationResourcesService {
 			return Response.notModified(ifNoneMatch).build();
 		}
 		
-		HDocument doc = documentDAO.getByDocId(hProjectContainer, id);
+		HDocument doc = documentDAO.getByDocId(hProjectIteration, id);
 
 		if(doc == null) {
 			return Response.status(Status.NOT_FOUND).entity("document not found").build();

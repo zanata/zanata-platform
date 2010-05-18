@@ -33,8 +33,28 @@ temp-testng-customsuite.xml$
 \.directory$
 
 #gwt related
-^flies-war/war/WEB-INF/classes/
+^flies-war/src/main/webapp/WEB-INF/classes/
 ^flies-war/tomcat
 \.gwt-tmp$
 ^flies-war/org.fedorahosted.flies.webtrans.Application
-^flies-war/war/org.fedorahosted.flies.webtrans.Application
+^flies-war/src/main/webapp/org.fedorahosted.flies.webtrans.Application
+
+# vim
+.swp
+
+# CMake
+/CMakeFiles/
+CMakeCache.txt
+/src/test/Makefile
+/src/test/Testing/
+.*\.cmake$
+
+# Generated tests
+/samples/
+/results/
+/src/test/resources/.*/1-.*\.html$
+/src/test/resources/.*/3-.*\.html$
+/src/test/resources/.*/LoginBasicTest.html$
+/src/test/resources/.*/LogoutBasicTest.html$
+"
+

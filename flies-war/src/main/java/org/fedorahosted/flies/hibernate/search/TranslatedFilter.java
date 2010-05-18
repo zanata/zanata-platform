@@ -12,7 +12,7 @@ import org.apache.lucene.search.Filter;
 import org.apache.lucene.util.DocIdBitSet;
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.core.dao.TextFlowDAO;
+import org.fedorahosted.flies.dao.TextFlowDAO;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 

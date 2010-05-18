@@ -1,21 +1,15 @@
 package org.fedorahosted.flies.webtrans.server.rpc;
 
-import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.fedorahosted.flies.gwt.model.PersonId;
-import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
-import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceResult;
-import org.fedorahosted.flies.gwt.rpc.EnterWorkspace;
-import org.fedorahosted.flies.gwt.rpc.ExitWorkspace;
-import org.fedorahosted.flies.gwt.rpc.ExitWorkspaceAction;
-import org.fedorahosted.flies.gwt.rpc.ExitWorkspaceResult;
-import org.fedorahosted.flies.repository.model.HProjectContainer;
 import org.fedorahosted.flies.security.FliesIdentity;
 import org.fedorahosted.flies.webtrans.server.ActionHandlerFor;
 import org.fedorahosted.flies.webtrans.server.TranslationWorkspace;
 import org.fedorahosted.flies.webtrans.server.TranslationWorkspaceManager;
+import org.fedorahosted.flies.webtrans.shared.rpc.ExitWorkspace;
+import org.fedorahosted.flies.webtrans.shared.rpc.ExitWorkspaceAction;
+import org.fedorahosted.flies.webtrans.shared.rpc.ExitWorkspaceResult;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;

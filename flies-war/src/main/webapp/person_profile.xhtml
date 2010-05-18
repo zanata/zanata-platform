@@ -1,0 +1,82 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a4j="http://richfaces.org/a4j"
+    template="layout/template.xhtml"
+    >
+    
+    <ui:define name="left_content">
+      <rich:panel>
+        <f:facet name="header">Actions</f:facet>
+        <a href="#" class="action_link">Edit Profile</a>
+        <a href="#" class="action_link">Change Password</a>
+      </rich:panel>
+    </ui:define>
+    
+    <ui:define name="center_content">
+        <rich:jQuery selector="#tab_profile" query="addClass('ui-tabs-selected')" />
+        <h1>#{personHome.instance.name}</h1>
+        <h2>My Projects</h2>
+        <h:outputText value="None Available" rendered="#{empty personHome.instance.maintainerProjects}"/>
+        <rich:dataGrid value="#{personHome.instance.maintainerProjects}" 
+                       var="project" 
+                       columns="3"
+                       columnClasses="grid_col_one_third_width">
+          <ui:include src="./project/project_view_inline.xhtml" />
+        </rich:dataGrid>
+        <h2>My Tribes</h2>
+        <h:outputText value="None Available" rendered="#{empty personHome.instance.tribeMemberships}"/>
+        <rich:dataGrid value="#{personHome.instance.tribeMemberships.toArray()}" 
+                       var="tribe" 
+                       columns="3"
+                       columnClasses="grid_col_one_third_width">
+          <ui:include src="./tribe/tribe_view_inline.xhtml" />
+        </rich:dataGrid>
+        <h2>My Communities</h2>
+        <h:outputText value="None Available" rendered="#{empty personHome.instance.communityOwnerships}"/>
+        <s:div rendered="#{not empty personHome.instance.communityOwnerships}">
+          <h3>Ownerships</h3>
+          <rich:dataGrid value="#{personHome.instance.communityOwnerships.toArray()}" 
+                         var="community" 
+                         columns="3"
+                         columnClasses="grid_col_one_third_width">
+            <ui:include src="./community/community_view_inline.xhtml" />
+          </rich:dataGrid>
+        </s:div>
+        <s:div rendered="#{not empty personHome.instance.communityOfficerships and not empty personHome.instance.communityOfficerships and not empty personHome.instance.communityOwnerships }">
+          <h3>Officerships</h3>
+          <rich:dataGrid value="#{personHome.instance.communityOfficerships.toArray()}" 
+                         var="community" 
+                         columns="3"
+                         columnClasses="grid_col_one_third_width">
+            <ui:include src="./community/community_view_inline.xhtml" />
+          </rich:dataGrid>
+        </s:div>
+        <s:div rendered="#{not empty personHome.instance.communityMemberships}">
+          <h3>Membership</h3>
+          <rich:dataGrid value="#{personHome.instance.communityMemberships.toArray()}" 
+                         var="community" 
+                         columns="3"
+                         columnClasses="grid_col_one_third_width">
+            <ui:include src="./community/community_view_inline.xhtml" />
+          </rich:dataGrid>
+        </s:div>
+        <h2>API Key</h2>
+        <h:form>
+          <s:span id="no_api_key" rendered="#{personHome.instance.account.apiKey == null}">(Not Generated)</s:span>
+          <s:fragment id="api_key" rendered="#{personHome.instance.account.apiKey != null}"> 
+            <p>Your current API Key is
+              <code>#{personHome.instance.account.apiKey}</code> 
+            </p>
+          </s:fragment>
+          <h:commandButton action="#{personHome.regenerateApiKey}"
+              value="Regenerate API Key" reRender="api_key,no_api_key"
+              onclick="if (!confirm('All of your preconfigured clients may not work. Are you sure you need to regenerate API Key?')) return false" />
+	    </h:form>
+    </ui:define>
+</ui:composition>

@@ -7,22 +7,22 @@ import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.fedorahosted.flies.core.model.HPerson;
-import org.fedorahosted.flies.gwt.auth.Identity;
-import org.fedorahosted.flies.gwt.auth.Permission;
-import org.fedorahosted.flies.gwt.auth.Role;
-import org.fedorahosted.flies.gwt.auth.SessionId;
-import org.fedorahosted.flies.gwt.common.WorkspaceContext;
-import org.fedorahosted.flies.gwt.model.Person;
-import org.fedorahosted.flies.gwt.model.PersonId;
-import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceAction;
-import org.fedorahosted.flies.gwt.rpc.ActivateWorkspaceResult;
-import org.fedorahosted.flies.gwt.rpc.EnterWorkspace;
-import org.fedorahosted.flies.repository.model.HProjectContainer;
+import org.fedorahosted.flies.model.HPerson;
+import org.fedorahosted.flies.model.HProjectIteration;
 import org.fedorahosted.flies.security.FliesIdentity;
 import org.fedorahosted.flies.webtrans.server.ActionHandlerFor;
 import org.fedorahosted.flies.webtrans.server.TranslationWorkspace;
 import org.fedorahosted.flies.webtrans.server.TranslationWorkspaceManager;
+import org.fedorahosted.flies.webtrans.shared.auth.Identity;
+import org.fedorahosted.flies.webtrans.shared.auth.Permission;
+import org.fedorahosted.flies.webtrans.shared.auth.Role;
+import org.fedorahosted.flies.webtrans.shared.auth.SessionId;
+import org.fedorahosted.flies.webtrans.shared.model.Person;
+import org.fedorahosted.flies.webtrans.shared.model.PersonId;
+import org.fedorahosted.flies.webtrans.shared.model.WorkspaceContext;
+import org.fedorahosted.flies.webtrans.shared.rpc.ActivateWorkspaceAction;
+import org.fedorahosted.flies.webtrans.shared.rpc.ActivateWorkspaceResult;
+import org.fedorahosted.flies.webtrans.shared.rpc.EnterWorkspace;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -53,8 +53,6 @@ public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWork
 		TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
 		
 		workspace.registerTranslator(ActivateWorkspaceHandler.retrieveSessionId(), ActivateWorkspaceHandler.retrievePersonId());
-		
-		HProjectContainer hProjectContainer = (HProjectContainer) session.get(HProjectContainer.class, action.getWorkspaceId().getProjectContainerId().getId());
 		
 		//Send EnterWorkspace event to clients
 		EnterWorkspace event = new EnterWorkspace(new PersonId(FliesIdentity.instance().getPrincipal().getName()));

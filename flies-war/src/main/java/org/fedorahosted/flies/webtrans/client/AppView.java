@@ -1,10 +1,10 @@
 package org.fedorahosted.flies.webtrans.client;
 
-import org.fedorahosted.flies.gwt.model.DocumentInfo;
+import org.fedorahosted.flies.webtrans.client.editor.HasTransUnitCount;
+import org.fedorahosted.flies.webtrans.client.editor.HasTransUnitCount.CountUnit;
 import org.fedorahosted.flies.webtrans.client.ui.HasPager;
 import org.fedorahosted.flies.webtrans.client.ui.Pager;
-import org.fedorahosted.flies.webtrans.editor.HasTransUnitCount;
-import org.fedorahosted.flies.webtrans.editor.HasTransUnitCount.CountUnit;
+import org.fedorahosted.flies.webtrans.shared.model.DocumentInfo;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;
