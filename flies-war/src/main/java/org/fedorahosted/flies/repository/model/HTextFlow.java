@@ -18,6 +18,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.hibernate.search.TranslatedFilterFactory;
 import org.fedorahosted.flies.repository.model.po.HPotEntryData;
 import org.fedorahosted.flies.repository.model.po.PoUtility;
 import org.fedorahosted.flies.rest.dto.TextFlow;
@@ -27,7 +28,9 @@ import org.fedorahosted.flies.search.DefaultNgramAnalyzer;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyzer;
+import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.Length;
@@ -43,6 +46,7 @@ import org.hibernate.validator.NotNull;
  */
 @Entity
 @Indexed
+@FullTextFilterDef(name="translated", impl=TranslatedFilterFactory.class)
 public class HTextFlow implements Serializable {
 
 	private static final long serialVersionUID = 3023080107971905435L;
@@ -87,6 +91,7 @@ public class HTextFlow implements Serializable {
 
 	@Id
 	@GeneratedValue	
+	@DocumentId
 	public Long getId() {
 		return id;
 	}

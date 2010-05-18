@@ -86,7 +86,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 					new DefaultNgramAnalyzer());
 			Query textQuery = parser.parse(queryText);
         	FullTextQuery ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlow.class);
-
+//        	ftQuery.enableFullTextFilter("translated").setParameter("locale", localeID);
         	ftQuery.setProjection(FullTextQuery.SCORE, 
         			FullTextQuery.THIS
         			);
