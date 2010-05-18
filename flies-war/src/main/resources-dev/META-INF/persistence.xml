@@ -11,11 +11,11 @@
 			<property name="hibernate.show_sql" value="true" />
 			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider" />
 
-			<property name="hibernate.connection.driver_class" value="org.hsqldb.jdbcDriver" />
-			<property name="hibernate.connection.url" value="jdbc:hsqldb:." />
+			<property name="hibernate.connection.driver_class" value="org.h2.Driver" />
+			<property name="hibernate.connection.url" value="jdbc:h2:db/flies" />
 			<property name="hibernate.connection.username" value="sa" />
 			<property name="hibernate.connection.password" value="" />
-			<property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
 
 			<!-- Search engine -->
 			<property name="hibernate.search.default.directory_provider"
