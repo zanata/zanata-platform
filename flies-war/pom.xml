@@ -30,7 +30,9 @@
 		<env.dbunit.type>HSQL</env.dbunit.type>
 		<ds.hibernate.dialect>org.hibernate.dialect.H2Dialect</ds.hibernate.dialect>
 		<ds.driver.class>org.h2.Driver</ds.driver.class>
-		<ds.connection.url>jdbc:h2:mem:flies</ds.connection.url> <!-- *-ds.xml -->
+		<!-- Configure the in-memory database to be shared, and so that it
+			 doesn't disappear after it has been set up by Hibernate: -->
+		<ds.connection.url>jdbc:h2:mem:flies;DB_CLOSE_DELAY=-1</ds.connection.url> <!-- *-ds.xml -->
 		<ds.user.name>sa</ds.user.name> <!-- *-ds.xml -->
 		<ds.password></ds.password> <!-- *-ds.xml -->
 
