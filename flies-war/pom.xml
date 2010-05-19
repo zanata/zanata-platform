@@ -139,7 +139,12 @@
 
 		<profile>
 			<id>jboss4</id>
-
+			<activation>
+				<property>
+					<name>env</name>
+					<value>dev</value>
+				</property>
+			</activation>
 			<properties>
 				<env.JBOSS_HOME>/opt/jboss-4.2.3.GA-jdk6</env.JBOSS_HOME>
 			</properties>
@@ -313,6 +318,12 @@
 
 		<profile>
 			<id>explode</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>dev</value>
+				</property>
+			</activation>
 			<build>
 				<plugins>
 					<plugin>
@@ -364,6 +375,12 @@
 
 		<profile>
 			<id>nogwt</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>dev</value>
+				</property>
+			</activation>
 			<!--
 				This profile allows you to skip the GWT compilation step
 			-->
@@ -433,6 +450,12 @@
 
 		<profile>
 			<id>dev</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>dev</value>
+				</property>
+			</activation>
 			<properties>
 				<env.debug>true</env.debug>
 				<env.import.testdata>true</env.import.testdata>
