@@ -11,21 +11,33 @@ import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.flies.FliesDbunitJpaTest;
 import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.dao.DocumentDAO;
+import org.fedorahosted.flies.dao.ProjectDAO;
 import org.fedorahosted.flies.model.HDocument;
 import org.fedorahosted.flies.model.HIterationProject;
 import org.fedorahosted.flies.model.HProjectIteration;
 import org.fedorahosted.flies.model.HTextFlow;
+import org.hibernate.Session;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 @Test(groups = { "jpa-tests" })
 public class DocumentTest extends FliesDbunitJpaTest {
 
+	private DocumentDAO dao;
+	
 	protected void prepareDBUnitOperations() {
 		beforeTestOperations.add(new DataSetOperation(
 				"META-INF/testdata/ProjectsData.dbunit.xml",
 				DatabaseOperation.CLEAN_INSERT));
 	}
 
+	@BeforeMethod(firstTimeOnly=true)
+	public void setup() {
+		dao = new DocumentDAO((Session) getEm().getDelegate());
+	}
+	
+	
 	@Test
 	public void traverseProjectGraph() throws Exception {
 		EntityManager em = getEm();
@@ -70,10 +82,12 @@ public class DocumentTest extends FliesDbunitJpaTest {
 		assertThat(flow2, notNullValue());
 
 		// TODO: we should automate this...
-		hdoc.setRevision(hdoc.getRevision()+1);
+		hdoc.incrementRevision();
 		
 		textFlows2.remove(flow1);
 		flow1.setObsolete(true);
+		dao.syncRevisions(hdoc, flow1);
+		
 		// flow1.setPos(null);
 		em.flush();
 		em.refresh(hdoc);
@@ -86,6 +100,7 @@ public class DocumentTest extends FliesDbunitJpaTest {
 		flow1 = hdoc.getAllTextFlows().get("textflow1");
 		// assertThat(flow1.getPos(), nullValue());
 		assertThat(flow1.isObsolete(), is(true));
+		assertThat(flow1.getRevision(), is(2));
 		flow2 = hdoc.getAllTextFlows().get("textflow2");
 		// assertThat(flow1.getPos(), is(0));
 		assertThat(flow2.isObsolete(), is(false));
@@ -109,9 +124,12 @@ public class DocumentTest extends FliesDbunitJpaTest {
 		em.persist(hdoc);
 		em.flush();
 		
-		hdoc.setRevision(hdoc.getRevision()+1);
+		hdoc.incrementRevision();
 		
 		flow1.setContent("nwe content!");
+		
+		dao.syncRevisions(hdoc, flow1);
+		
 		em.flush();
 
 	}

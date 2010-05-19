@@ -11,6 +11,7 @@ import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.TransUnitCount;
 import org.fedorahosted.flies.model.HDocument;
 import org.fedorahosted.flies.model.HProjectIteration;
+import org.fedorahosted.flies.model.HTextFlow;
 import org.fedorahosted.flies.model.StatusCount;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -80,4 +81,18 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>{
 		
 		return stat;
 	}
+	
+	public void syncRevisions(HDocument doc, HTextFlow ... textFlows) {
+		int rev = doc.getRevision();
+		syncRevisions(doc, rev, textFlows);
+	}
+	
+	public void syncRevisions(HDocument doc, int revision, HTextFlow ... textFlows) {
+		doc.setRevision(revision);
+		for(HTextFlow textFlow : textFlows) {
+			textFlow.setRevision(revision);
+		}
+	}
+	
+	
 }

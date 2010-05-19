@@ -264,15 +264,4 @@ public class HTextFlow implements Serializable {
 			")";
 	}
 	
-	@PreUpdate
-	public void onUpdate() {
-		if(getDocument() != null) {
-			if(getDocument().getRevision() > this.revision ) {
-				setRevision(getDocument().getRevision());
-			}
-		}
-		else {
-			this.revision++;
-		}
-	}
 }
