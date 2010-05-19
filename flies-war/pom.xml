@@ -13,7 +13,7 @@
 	<name>flies Webapp</name>
 
 	<properties>
-		<version.hibernate>3.3.1.GA</version.hibernate>
+		<version.hibernate>3.3.2.GA</version.hibernate>
 		<version.jboss.embedded>beta3.SP12</version.jboss.embedded>
 
 		<!-- application properties -->
@@ -33,6 +33,9 @@
 		<!-- Configure the in-memory database to be shared, and so that it
 			 doesn't disappear after it has been set up by Hibernate: -->
 		<ds.connection.url>jdbc:h2:mem:flies;DB_CLOSE_DELAY=-1</ds.connection.url> <!-- *-ds.xml -->
+<!--  
+		<ds.connection.url>jdbc:h2:db/flies;AUTO_SERVER=TRUE</ds.connection.url>
+-->
 		<ds.user.name>sa</ds.user.name> <!-- *-ds.xml -->
 		<ds.password></ds.password> <!-- *-ds.xml -->
 
@@ -181,6 +184,28 @@
 								<fileName>${project.build.directory}/flies.war</fileName>
 							</fileNames>
 						</configuration>
+						<executions>
+							<execution>
+								<id>deploy-ds</id>
+								<phase>package</phase>
+								<goals><goal>hard-deploy</goal></goals>
+								<configuration>
+									<serverName>default</serverName>
+									<fileName>${project.build.directory}/classes/flies-ds.xml</fileName>
+									<unpack>false</unpack>
+								</configuration>
+							</execution>
+							<execution>
+								<id>deploy-war-unpacked</id>
+								<phase>package</phase>
+								<goals><goal>hard-deploy</goal></goals>
+								<configuration>
+									<serverName>default</serverName>
+	 								<fileName>${project.build.directory}/flies.war</fileName>
+									<unpack>true</unpack>
+								</configuration>
+							</execution>
+						</executions>
 					</plugin>
 
 					<!--
