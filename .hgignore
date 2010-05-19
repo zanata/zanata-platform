@@ -10,6 +10,7 @@ fliessearchindex/
 
 hs_err_pid*.log
 tomcat
+bin
 
 syntax: regexp
 \.jar$

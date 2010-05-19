@@ -130,7 +130,6 @@
 					<groups>unit-tests</groups>
 				</configuration>
 			</plugin>
-
 		</plugins>
 
 	</build>
@@ -414,8 +413,6 @@
 						<artifactId>maven-eclipse-plugin</artifactId>
 						<configuration>
 							<wtpversion>2.0</wtpversion>
-							<downloadSources>true</downloadSources>
-							<downloadJavadocs>false</downloadJavadocs>
 
 							<additionalBuildcommands>
 								<buildCommand>
