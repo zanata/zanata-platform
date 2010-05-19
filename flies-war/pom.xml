@@ -184,28 +184,6 @@
 								<fileName>${project.build.directory}/flies.war</fileName>
 							</fileNames>
 						</configuration>
-						<executions>
-							<execution>
-								<id>deploy-ds</id>
-								<phase>package</phase>
-								<goals><goal>hard-deploy</goal></goals>
-								<configuration>
-									<serverName>default</serverName>
-									<fileName>${project.build.directory}/classes/flies-ds.xml</fileName>
-									<unpack>false</unpack>
-								</configuration>
-							</execution>
-							<execution>
-								<id>deploy-war-unpacked</id>
-								<phase>package</phase>
-								<goals><goal>hard-deploy</goal></goals>
-								<configuration>
-									<serverName>default</serverName>
-	 								<fileName>${project.build.directory}/flies.war</fileName>
-									<unpack>true</unpack>
-								</configuration>
-							</execution>
-						</executions>
 					</plugin>
 
 					<!--
@@ -331,6 +309,41 @@
 
 			</dependencies>
 
+		</profile>
+
+		<profile>
+			<id>explode</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>jboss-maven-plugin</artifactId>
+						<version>1.4</version>
+						<configuration>
+							<serverName>default</serverName>
+						</configuration>
+						<executions>
+							<execution>
+								<id>deploy-ds</id>
+								<phase>package</phase>
+								<goals><goal>hard-deploy</goal></goals>
+								<configuration>
+									<fileName>${project.build.directory}/classes/flies-ds.xml</fileName>
+								</configuration>
+							</execution>
+							<execution>
+								<id>deploy-war-unpacked</id>
+								<phase>package</phase>
+								<goals><goal>hard-deploy</goal></goals>
+								<configuration>
+	 								<fileName>${project.build.directory}/flies.war</fileName>
+									<unpack>true</unpack>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 
 		<profile>
