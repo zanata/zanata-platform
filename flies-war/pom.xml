@@ -387,7 +387,7 @@
 				<resources>
 					<resource>
 						<directory>src/main/resources-dev</directory>
-						<filtering>true</filtering>
+						<filtering>false</filtering>
 					</resource>
 				</resources>
 
