@@ -228,7 +228,6 @@ public class HTextFlow implements Serializable {
 				}
 				textFlowTarget.setContent(hTextFlowTarget.getContent());
 				textFlowTarget.setResourceRevision(hTextFlowTarget.getTextFlowRevision());
-				textFlowTarget.setRevision(hTextFlowTarget.getRevision());
 				textFlowTarget.setState(hTextFlowTarget.getState());
 				textFlow.addTarget(textFlowTarget);
 			}

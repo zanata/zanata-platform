@@ -35,19 +35,17 @@ import org.hibernate.validator.NotNull;
  */
 @Entity
 @TypeDef(name="localeId", typeClass=LocaleIdType.class)
-public class HTextFlowTarget implements Serializable{
+public class HTextFlowTarget extends AbstractFliesEntity {
 
 	private static final long serialVersionUID = 302308010797605435L;
 
-	private Long id;
-	
 	private HTextFlow textFlow;
 	private LocaleId locale;
 	
 	private String content;
 	private ContentState state = ContentState.New;
 	private Integer textFlowRevision;
-	private Integer revision = 1;
+	private HPerson lastModifiedBy;
 	
 	private HSimpleComment comment;
 	
@@ -64,7 +62,6 @@ public class HTextFlowTarget implements Serializable{
 		this.content = target.getContent();
 		this.locale = target.getLang();
 		this.textFlowRevision = target.getResourceRevision();
-		this.revision = target.getRevision();
 		this.state = target.getState();
 //		setTextFlow(target.getTextFlow);
 //		setComment(target.comment);
@@ -84,7 +81,6 @@ public class HTextFlowTarget implements Serializable{
 	public void copy(TextFlowTarget tfTarget){
 		this.content = tfTarget.getContent();
 		this.state = tfTarget.getState();
-		this.revision = tfTarget.getRevision();
 	}
 	
 	@NaturalId
@@ -125,13 +121,14 @@ public class HTextFlowTarget implements Serializable{
 		this.textFlowRevision = textFlowRevision;
 	}
 	
-	@NotNull
-	public Integer getRevision() {
-		return revision;
+	@ManyToOne
+	@JoinColumn(name="last_modified_by_id", nullable=true)
+	public HPerson getLastModifiedBy() {
+		return lastModifiedBy;
 	}
 	
-	public void setRevision(Integer revision) {
-		this.revision = revision;
+	public void setLastModifiedBy(HPerson lastModifiedBy) {
+		this.lastModifiedBy = lastModifiedBy;
 	}
 	
 	@NaturalId
@@ -177,7 +174,6 @@ public class HTextFlowTarget implements Serializable{
 			"content:"+getContent()+
 			"locale:"+getLocale()+
 			"state:"+getState()+
-			"revision:"+getRevision()+
 			"comment:"+getComment()+
 			"textflow:"+getTextFlow().getContent()+
 			")";

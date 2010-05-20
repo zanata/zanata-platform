@@ -342,7 +342,6 @@ public class DocumentConverter {
 					hTarget.setContent(target.getContent());
 					copy(target, hTarget, htf);
 					hTarget.setTextFlowRevision(tfRev);
-					hTarget.setRevision(1);
 				} else {
 					copy(target, hTarget, htf);
 				}
@@ -430,8 +429,6 @@ public class DocumentConverter {
 		} else {
 			changed |= (hTarget.getComment() != null);
 		}
-		if (changed)
-			hTarget.setRevision(hTarget.getRevision() + 1);
 	}
 
 
