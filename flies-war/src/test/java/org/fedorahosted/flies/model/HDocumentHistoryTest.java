@@ -1,5 +1,9 @@
 package org.fedorahosted.flies.model;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.util.Date;
 import java.util.List;
 
@@ -7,14 +11,9 @@ import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.flies.FliesDbunitJpaTest;
 import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.testng.annotations.Test;
-
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.CoreMatchers.*;
 
 public class HDocumentHistoryTest extends FliesDbunitJpaTest {
 
