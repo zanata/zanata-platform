@@ -29,7 +29,6 @@ import org.fedorahosted.flies.search.DefaultNgramAnalyzer;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyzer;
-import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.Index;
@@ -92,7 +91,6 @@ public class HTextFlow implements Serializable {
 
 	@Id
 	@GeneratedValue	
-	@DocumentId
 	public Long getId() {
 		return id;
 	}
