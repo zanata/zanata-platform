@@ -37,6 +37,7 @@ public class TransMemory implements Serializable{
 		this.sourceComment = sourceComment;
 		this.targetComment = targetComment;
 		this.docID = documentPath;
+		this.relevanceScore = relevanceScore;
 	}
 	
 	public void setDocID(String documentPath) {
