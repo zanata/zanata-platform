@@ -371,6 +371,14 @@
 				<ds.user.name>root</ds.user.name>
 				<ds.password></ds.password>
 			</properties>
+			<build>
+				<resources>
+					<resource>
+						<directory>src/main/resources-mysql</directory>
+						<filtering>false</filtering>
+					</resource>
+				</resources>			
+			</build>
 		</profile>
 
 		<profile>
