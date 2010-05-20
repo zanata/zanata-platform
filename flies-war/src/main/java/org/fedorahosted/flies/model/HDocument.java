@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 
 import org.fedorahosted.flies.common.ContentType;
@@ -38,6 +39,8 @@ import org.hibernate.annotations.Where;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
+import org.jboss.seam.Component;
+import org.jboss.seam.ScopeType;
 
 @Entity
 @TypeDefs({
@@ -181,7 +184,7 @@ public class HDocument extends AbstractFliesEntity implements IDocumentHistory {
 		return lastModifiedBy;
 	}
 	
-	public void setLastModifiedBy(HPerson lastModifiedBy) {
+	protected void setLastModifiedBy(HPerson lastModifiedBy) {
 		this.lastModifiedBy = lastModifiedBy;
 	}
 	
@@ -330,4 +333,11 @@ public class HDocument extends AbstractFliesEntity implements IDocumentHistory {
 		return String.format("HDocument(name:%s path:%s docID:%s locale:%s rev:%d)", 
 				getName(), getPath(), getDocId(), getLocale(), getRevision());
 	}
+	
+	@PreUpdate
+	public void onUpdate() {
+		HPerson person = (HPerson) Component.getInstance("authenticatedPerson", ScopeType.SESSION);
+		setLastModifiedBy(person);
+	}
+	
 }

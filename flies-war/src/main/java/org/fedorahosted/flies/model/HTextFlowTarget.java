@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.PreUpdate;
 
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
@@ -25,6 +26,8 @@ import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.NotNull;
+import org.jboss.seam.Component;
+import org.jboss.seam.ScopeType;
 
 /**
  * Represents a flow of text that should be processed as a
@@ -130,7 +133,7 @@ public class HTextFlowTarget extends AbstractFliesEntity implements ITextFlowTar
 		return lastModifiedBy;
 	}
 	
-	public void setLastModifiedBy(HPerson lastModifiedBy) {
+	protected void setLastModifiedBy(HPerson lastModifiedBy) {
 		this.lastModifiedBy = lastModifiedBy;
 	}
 	
@@ -182,4 +185,12 @@ public class HTextFlowTarget extends AbstractFliesEntity implements ITextFlowTar
 			"textflow:"+getTextFlow().getContent()+
 			")";
 	}
+	
+	@PreUpdate
+	public void onUpdate() {
+		HPerson person = (HPerson) Component.getInstance("authenticatedPerson", ScopeType.SESSION);
+		setLastModifiedBy(person);
+	}
+	
+	
 }
