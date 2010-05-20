@@ -9,9 +9,12 @@ import org.hibernate.search.filter.StandardFilterKey;
 import org.jboss.seam.Seam;
 
 public class TranslatedFilterFactory {
+
 	@Factory
-	public static Filter getFilter() {
-		return (TranslatedFilter) Seam.componentForName("translatedFilter").newInstance();
+	public Filter getFilter() {
+		TranslatedFilter filter = (TranslatedFilter) Seam.componentForName("translatedFilter").newInstance();
+		filter.setLocale(locale);
+		return filter;
 	}
 
 	private LocaleId locale;
