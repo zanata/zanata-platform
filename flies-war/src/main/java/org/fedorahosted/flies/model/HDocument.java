@@ -44,7 +44,7 @@ import org.hibernate.validator.NotNull;
 	@TypeDef(name="localeId", typeClass=LocaleIdType.class),
 	@TypeDef(name = "contentType", typeClass = ContentTypeType.class)
 })
-public class HDocument extends AbstractFliesEntity{
+public class HDocument extends AbstractFliesEntity implements IDocumentHistory {
 
 	private String docId;
 	private String name;
@@ -52,6 +52,8 @@ public class HDocument extends AbstractFliesEntity{
 	private ContentType contentType;
 	private Integer revision = 1;
 	private LocaleId locale;
+	private HPerson lastModifiedBy;
+	
 	
 	private HProjectIteration projectIteration;
 
@@ -172,6 +174,18 @@ public class HDocument extends AbstractFliesEntity{
 		this.projectIteration = projectIteration;
 	}
 
+	@ManyToOne
+	@JoinColumn(name="last_modified_by_id", nullable=true)
+	@Override
+	public HPerson getLastModifiedBy() {
+		return lastModifiedBy;
+	}
+	
+	public void setLastModifiedBy(HPerson lastModifiedBy) {
+		this.lastModifiedBy = lastModifiedBy;
+	}
+	
+	
 	@NotNull
 	public Integer getRevision() {
 		return revision;
