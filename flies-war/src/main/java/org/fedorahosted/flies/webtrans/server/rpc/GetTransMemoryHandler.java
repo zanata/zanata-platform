@@ -87,7 +87,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 					new DefaultNgramAnalyzer());
 			Query textQuery = parser.parse(queryText);
         	FullTextQuery ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlow.class);
-//        	ftQuery.enableFullTextFilter("translated").setParameter("locale", localeID);
+        	ftQuery.enableFullTextFilter("translated").setParameter("locale", localeID);
         	ftQuery.setProjection(FullTextQuery.SCORE, 
         			FullTextQuery.THIS
         			);
@@ -102,9 +102,6 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
     				continue;
     			}
     			HTextFlowTarget target = textFlow.getTargets().get(localeID);
-    			if (target == null || target.getState() != ContentState.Approved) {
-    				continue;
-    			}
     			String textFlowContent = textFlow.getContent();
     			String targetContent = target.getContent();
     			String docId = textFlow.getDocument().getDocId();
