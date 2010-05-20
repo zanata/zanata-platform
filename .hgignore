@@ -19,6 +19,7 @@ syntax: regexp
 \.pages.xml.spdia$
 temp-testng-customsuite.xml$
 ^flies-war/src/test/resources/bootstrap/data
+^flies-war/src/test/jboss-embedded-bootstrap/data
 
 # eclipse and maven stuff
 \.classpath$
