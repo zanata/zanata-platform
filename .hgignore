@@ -11,6 +11,8 @@ fliessearchindex/
 hs_err_pid*.log
 tomcat
 bin
+localDB.log
+localDB.properties
 
 syntax: regexp
 \.jar$
