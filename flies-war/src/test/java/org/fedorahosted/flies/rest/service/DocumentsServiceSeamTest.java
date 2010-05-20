@@ -116,7 +116,6 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 				if (res instanceof TextFlow) {
 					TextFlow tf = (TextFlow) res;
 					for (TextFlowTarget tft : tf.getTargets().getTargets()) {
-						tft.setRevision(null);
 						tft.setResourceRevision(null);
 					}
 				}
@@ -230,7 +229,6 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    TextFlow tf1 = (TextFlow) doc1.getTextFlows().get(0);
 	    tf1.setRevision(1);
 	    TextFlowTarget tft1 = tf1.getTarget(DE_DE);
-	    tft1.setRevision(1);
 		tft1.setResourceRevision(1);
 	    expectDocs(true, false, doc1);
 	}
@@ -243,7 +241,6 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    TextFlow tf1 = (TextFlow) doc1.getTextFlows().get(0);
 	    tf1.setRevision(1);
 	    TextFlowTarget tft1 = tf1.getTarget(DE_DE);
-	    tft1.setRevision(1);
 		tft1.setResourceRevision(1);
 	    expectDocs(true, false, doc1);
 	    Document doc2 = postDoc2();
@@ -251,7 +248,6 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    TextFlow tf2 = (TextFlow) doc2.getTextFlows().get(0);
 	    tf2.setRevision(1);
 	    TextFlowTarget tft2 = tf2.getTarget(FR);
-	    tft2.setRevision(1);
 		tft2.setResourceRevision(1);
 	    expectDocs(true, false, doc1, doc2);
 	}
@@ -264,14 +260,12 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    TextFlow tf1 = (TextFlow) doc1.getTextFlows().get(0);
 	    tf1.setRevision(1);
 	    TextFlowTarget tft1 = tf1.getTarget(DE_DE);
-	    tft1.setRevision(1);
 		tft1.setResourceRevision(1);
 	    Document doc2 = postDoc2();
 	    doc2.setRevision(1);
 	    TextFlow tf2 = (TextFlow) doc2.getTextFlows().get(0);
 	    tf2.setRevision(1);
 	    TextFlowTarget tft2 = tf2.getTarget(FR);
-	    tft2.setRevision(1);
 		tft2.setResourceRevision(1);
 	    expectDocs(true, false, doc1, doc2);
 	    // this put should have the effect of deleting doc2
@@ -290,7 +284,6 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    TextFlow tf1 = (TextFlow) doc1.getTextFlows().get(0);
 	    tf1.setRevision(1);
 	    TextFlowTarget tft1 = tf1.getTarget(DE_DE);
-	    tft1.setRevision(1);
 		tft1.setResourceRevision(1);
 	    expectDocs(true, false, doc1);
 		putZero(); // doc1 becomes obsolete, rev 2
@@ -298,7 +291,6 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 		putDoc1(); // doc1 resurrected, rev 3
 	    doc1.setRevision(3);
 	    tf1.setRevision(1);
-	    tft1.setRevision(1);
 		tft1.setResourceRevision(1);
 		expectDocs(true, false, doc1);
 	}
@@ -311,7 +303,6 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    TextFlow tf1 = (TextFlow) doc1.getTextFlows().get(0);
 	    tf1.setRevision(1);
 	    TextFlowTarget tft1 = tf1.getTarget(DE_DE);
-	    tft1.setRevision(1);
 		tft1.setResourceRevision(1);
 		expectDocs(true, false, doc1);
 		putZero(); // doc1 becomes obsolete, rev 2
@@ -321,7 +312,6 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    TextFlow tf1a = (TextFlow) doc1a.getTextFlows().get(0);
 	    tf1a.setRevision(3);
 	    TextFlowTarget tft1a = tf1a.getTarget(FR);
-	    tft1a.setRevision(1);
 		tft1a.setResourceRevision(3);
 		expectDocs(true, false, doc1a);
 	}
@@ -344,7 +334,6 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    TextFlow tf1 = (TextFlow) doc1.getTextFlows().get(0);
 	    tf1.setRevision(1);
 	    TextFlowTarget tft1 = tf1.getTarget(DE_DE);
-	    tft1.setRevision(1);
 		tft1.setResourceRevision(1);
 	    log.info("expect doc1");
 	    expectDocs(true, false, doc1);
@@ -355,7 +344,6 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest {
 	    TextFlow tf1a = (TextFlow) doc1a.getTextFlows().get(0);
 	    tf1a.setRevision(2);
 	    TextFlowTarget tft1a = tf1a.getTarget(FR);
-	    tft1a.setRevision(1);
 		tft1a.setResourceRevision(2);
 		log.info("expect doc1a");
 	    expectDocs(true, false, doc1a);

@@ -28,7 +28,6 @@ public class TextFlowTarget implements IExtensible{
 	
 	private String id;
 	private Integer resourceRevision;
-	private Integer revision = null;
 	private ContentState state = ContentState.New;
 	private String content;
 	
@@ -88,15 +87,6 @@ public class TextFlowTarget implements IExtensible{
 	
 	public void setResourceRevision(Integer resourceRevision) {
 		this.resourceRevision = resourceRevision;
-	}
-	
-	@XmlAttribute(name="revision", required=false)
-	public Integer getRevision() {
-		return revision;
-	}
-	
-	public void setRevision(Integer revision) {
-		this.revision = revision;
 	}
 	
 	@XmlAttribute(name="state", required=true)
