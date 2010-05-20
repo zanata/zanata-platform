@@ -25,6 +25,7 @@ import org.hibernate.validator.NotNull;
 	@TypeDef(name="localeId", typeClass=LocaleIdType.class),
 	@TypeDef(name = "contentType", typeClass = ContentTypeType.class)
 })
+@org.hibernate.annotations.Entity(mutable=false)
 public class HDocumentHistory implements IDocumentHistory {
 
 	private String docId;

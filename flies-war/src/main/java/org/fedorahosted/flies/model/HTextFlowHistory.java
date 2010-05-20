@@ -12,6 +12,7 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 
 @Entity
+@org.hibernate.annotations.Entity(mutable=false)
 public class HTextFlowHistory implements Serializable, ITextFlowHistory {
 
 	private static final long serialVersionUID = 1L;

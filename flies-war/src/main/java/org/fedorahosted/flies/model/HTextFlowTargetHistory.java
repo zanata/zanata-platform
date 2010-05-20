@@ -15,6 +15,7 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 
 @Entity
+@org.hibernate.annotations.Entity(mutable=false)
 public class HTextFlowTargetHistory implements Serializable, ITextFlowTargetHistory {
 
 	private static final long serialVersionUID = 1L;
