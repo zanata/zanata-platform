@@ -13,6 +13,7 @@ public final class ContentType implements Serializable{
 	// TODO split up
 
 	public static final ContentType TextPlain = new ContentType("text/plain");
+	public static final ContentType PO = new ContentType("application/x-gettext");
 	
 	// JaxB needs a no-arg constructor :(
 	@SuppressWarnings("unused")
