@@ -35,7 +35,7 @@ import org.hibernate.validator.NotNull;
  */
 @Entity
 @TypeDef(name="localeId", typeClass=LocaleIdType.class)
-public class HTextFlowTarget extends AbstractFliesEntity {
+public class HTextFlowTarget extends AbstractFliesEntity implements ITextFlowTargetHistory {
 
 	private static final long serialVersionUID = 302308010797605435L;
 
@@ -103,6 +103,7 @@ public class HTextFlowTarget extends AbstractFliesEntity {
 	@FieldBridge(
 			impl=ContentStateBridge.class
 	)
+	@Override
 	public ContentState getState() {
 		return state;
 	}
@@ -113,6 +114,7 @@ public class HTextFlowTarget extends AbstractFliesEntity {
 
 	@NotNull
 	@Column(name="tf_revision")
+	@Override
 	public Integer getTextFlowRevision() {
 		return textFlowRevision;
 	}
@@ -123,6 +125,7 @@ public class HTextFlowTarget extends AbstractFliesEntity {
 	
 	@ManyToOne
 	@JoinColumn(name="last_modified_by_id", nullable=true)
+	@Override
 	public HPerson getLastModifiedBy() {
 		return lastModifiedBy;
 	}
@@ -147,6 +150,7 @@ public class HTextFlowTarget extends AbstractFliesEntity {
 	@NotNull
 	@Type(type = "text")
 //	@Field(index=Index.NO) // no searching on target text yet
+	@Override
 	public String getContent() {
 		return content;
 	}

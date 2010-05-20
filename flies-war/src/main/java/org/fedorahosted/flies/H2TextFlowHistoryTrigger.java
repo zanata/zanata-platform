@@ -1,63 +1,45 @@
 package org.fedorahosted.flies;
 
-import java.io.Reader;
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
-import org.apache.commons.lang.StringUtils;
-import org.h2.api.Trigger;
+import org.h2.tools.TriggerAdapter;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 
-public class H2TextFlowHistoryTrigger implements Trigger {
+public class H2TextFlowHistoryTrigger extends TriggerAdapter { 
 
 	private static Log log = Logging.getLog(H2TextFlowHistoryTrigger.class);
-	
-	@Override
-	public void close() throws SQLException {
-	}
-
-	@Override
-	public void fire(Connection conn, Object[] oldRow, Object[] newRow)
-			throws SQLException {
 		
-		log.debug("Executing trigger");
-		log.debug(StringUtils.join(oldRow, ";"));
-		log.debug(StringUtils.join(newRow, ";"));
+	@Override
+	public void fire(Connection conn, ResultSet oldRow, ResultSet newRow)
+			throws SQLException {
 
-		// 0: id
-		// 1: content
-		// 2: obsolete
-		// 3: pos
-		// 4: resid
-		// 5: revision
-		// 6: comment_id
-		// 7: document_id
-		// 8: potentrydata_id
+		log.debug("Executing HTextFlowHistory trigger");
 
-		if (!oldRow[5].equals(newRow[5])) {
+		int oldRev = oldRow.getInt("revision");
+		int newRev = newRow.getInt("revision"); 
+		if ( oldRev != newRev ) {
+
+			log.debug("revision incremented from {0} to {1}. Executing trigger..", oldRev, newRev);
+			
 			PreparedStatement prep = conn
-					.prepareStatement("INSERT INTO HTextFlowHistory (tf_id,revision,content) VALUES (?,?,?)");
-			prep.setLong(1, (Long) oldRow[0]);
-			prep.setInt(2, (Integer) oldRow[5]);
-			prep.setCharacterStream(3, (Reader) oldRow[1]);
+					.prepareStatement("INSERT INTO HTextFlowHistory (tf_id,revision,content, obsolete, pos) VALUES (?,?,?,?,?)");
+			
+			prep.setObject(1, oldRow.getObject("id"));
+			prep.setObject(2, oldRow.getObject("revision"));
+			prep.setObject(3, oldRow.getObject("content"));
+			prep.setObject(4, oldRow.getObject("obsolete"));
+			prep.setObject(5, oldRow.getObject("pos"));
 			prep.execute();
 		}
 		else {
-			log.error("HTextFlow updated without incrementing revision... skipping tirgger");
+			log.warn("HTextFlow updated without incrementing revision... skipping tirgger");
 		}
-
+		
 	}
-
-	@Override
-	public void init(Connection conn, String schemaName, String triggerName,
-			String tableName, boolean before, int type) throws SQLException {
-	}
-
-	@Override
-	public void remove() throws SQLException {
-	}
-
+	
 }

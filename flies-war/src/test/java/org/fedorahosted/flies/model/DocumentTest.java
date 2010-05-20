@@ -131,6 +131,18 @@ public class DocumentTest extends FliesDbunitJpaTest {
 		dao.syncRevisions(hdoc, flow1);
 		
 		em.flush();
+		
+		HTextFlowTarget target = new HTextFlowTarget(flow1, LocaleId.EN);
+		target.setContent("hello world");
+		em.persist(target);
+		em.flush();
+		target.setContent("h2");
+		em.flush();
+		
+		List<HTextFlowTargetHistory> hist = em.createQuery("from HTextFlowTargetHistory h where h.textFlowTarget =:target")
+			.setParameter("target", target).getResultList();
+		assertThat(hist, notNullValue());
+		assertThat(hist.size(), not(0));
 
 	}
 	
