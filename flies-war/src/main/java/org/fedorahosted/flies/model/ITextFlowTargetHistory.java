@@ -7,10 +7,6 @@ import org.fedorahosted.flies.common.LocaleId;
 
 public interface ITextFlowTargetHistory {
 
-	public static enum AuditField{
-		POS,REVISION,OBSOLETE,CONTENT;
-	}
-
 	ContentState getState();
 
 	Integer getTextFlowRevision();
