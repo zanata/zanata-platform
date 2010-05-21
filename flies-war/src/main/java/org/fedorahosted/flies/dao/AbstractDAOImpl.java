@@ -98,6 +98,12 @@ public abstract class AbstractDAOImpl<T, ID extends Serializable>
 		getSession().clear();
 	}
 
+	@Override
+	public boolean isPersistent(T entity) {
+		return getSession().contains(entity);
+		
+	};
+	
 	/**
 	 * Use this inside subclasses as a convenience method.
 	 */

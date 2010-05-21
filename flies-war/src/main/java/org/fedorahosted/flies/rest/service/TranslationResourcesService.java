@@ -1,9 +1,11 @@
 package org.fedorahosted.flies.rest.service;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.util.Set;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -24,15 +26,18 @@ import javax.ws.rs.ext.MessageBodyReader;
 
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.common.ResourceType;
 import org.fedorahosted.flies.dao.DocumentDAO;
 import org.fedorahosted.flies.dao.ProjectIterationDAO;
 import org.fedorahosted.flies.model.HDocument;
 import org.fedorahosted.flies.model.HProjectIteration;
 import org.fedorahosted.flies.model.HTextFlow;
+import org.fedorahosted.flies.rest.NoSuchEntityException;
+import org.fedorahosted.flies.rest.dto.v1.ResourcesList;
 import org.fedorahosted.flies.rest.dto.v1.SourceResource;
 import org.fedorahosted.flies.rest.dto.v1.SourceTextFlow;
+import org.fedorahosted.flies.rest.dto.v1.TranslationResource;
 import org.hibernate.HibernateException;
-import org.hibernate.Session;
 import org.hibernate.validator.InvalidStateException;
 import org.jboss.resteasy.core.Headers;
 import org.jboss.resteasy.util.HttpHeaderNames;
@@ -54,85 +59,136 @@ public class TranslationResourcesService {
 	private String iterationSlug;
 
 	@QueryParam("ext")
-	Set<String> extensions;
-	
-	@In
-	ProjectIterationDAO projectIterationDAO;
-
-	@In
-	DocumentDAO documentDAO;
-	
-	@Context
-	private UriInfo uriInfo;
-	
-	@Context
-	private Headers headers;
+	private Set<String> extensions;
 	
 	@HeaderParam("Content-Type")
 	private MediaType requestContentType;
 
-	@In
-	Session session;
+	@Context
+	private UriInfo uriInfo;
 	
 	@Context
-	private UriInfo uri;
-
+	private Headers<String> headers;
 	
-	@GET
-	@Produces
-	public Response get() {
-		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(
-				projectSlug, iterationSlug);
+	@In
+	private ProjectIterationDAO projectIterationDAO;
 
-		if (hProjectIteration == null) {
-			return Response.status(Status.NOT_FOUND).build();
-		}
-
-		return Response.ok().build();
-		
-	}
-
-	@POST
-	public Response post() {
-		return Response.ok().build();
-	}
+	@In
+	private DocumentDAO documentDAO;
 
 	@Logger 
-	Log log;
+	private Log log;
 
+	/**
+	 * Retrieve the List of Resources
+	 *  
+	 * @return Response.ok with ResourcesList or Response(404) if not found 
+	 */
+	@GET
+	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public Response doGet() {
+		HProjectIteration hProjectIteration = retrieveIteration();
+		
+		ResourcesList resources = new ResourcesList();
+		
+		for(HDocument doc : hProjectIteration.getDocuments().values() ) {
+			if(!doc.isObsolete()) {
+				TranslationResource resource = new TranslationResource();
+				transfer(doc, resource);
+				resources.add(resource);
+			}
+		}
+
+		return Response.ok().entity(resources).build();
+		
+	}
 	
-	@PUT
-	@Path("/r/{id}/source")
+	@POST
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	@Restrict("#{identity.loggedIn}")
-	public Response putSource(
+	public Response doPost(InputStream messageBody) {
+
+		HProjectIteration hProjectIteration = retrieveIteration();
+
+		HDocument document = new HDocument();
+		document.setProjectIteration(hProjectIteration);
+		SourceResource entity = unmarshallEntity(SourceResource.class, messageBody);
+		transfer(entity, document);
+		
+		try {
+			documentDAO.makePersistent(document);
+			documentDAO.flush();
+			EntityTag etag = documentDAO.getETag(hProjectIteration, document.getDocId());
+			return Response.created(URI.create("r/"+encodeDocId(document.getDocId()))).tag(etag).build();
+			
+		} catch (InvalidStateException e) {
+			String message = 
+				String.format(
+					"Document '%s' (%s:%s) is invalid: \n %s", 
+					entity.getName(), projectSlug, iterationSlug, StringUtils.join(e.getInvalidValues(),"\n"));
+			log.warn(message + '\n' + document);
+			log.debug(e,e);
+			return Response.status(Status.BAD_REQUEST).entity(message)
+					.build();
+		} catch (HibernateException e) {
+			log.error("Hibernate exception", e);
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Server error").build();
+		}
+	}
+
+	@GET
+	@Path("/r/{id}")
+	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public Response doResGet(
+			@PathParam("id") String id, 
+			@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
+
+		HProjectIteration hProjectIteration = retrieveIteration();
+
+		EntityTag etag = documentDAO.getETag(hProjectIteration, id);
+
+		if(etag == null)
+			return Response.status(Status.NOT_FOUND).entity("document not found").build();
+
+		if(ifNoneMatch != null && etag.equals(ifNoneMatch)) {
+			return Response.notModified(ifNoneMatch).build();
+		}
+		
+		HDocument doc = documentDAO.getByDocId(hProjectIteration, id);
+
+		if(doc == null) {
+			return Response.status(Status.NOT_FOUND).entity("document not found").build();
+		}
+
+		SourceResource entity = new SourceResource(doc.getDocId());
+		transfer(doc, entity);
+
+		for(HTextFlow htf : doc.getTextFlows()) {
+			SourceTextFlow tf = new SourceTextFlow(htf.getResId());
+			transfer(htf, tf);
+			entity.getTextFlows().add(tf);
+		}
+		
+		return Response.ok().entity(entity).tag(etag).build();
+	}
+
+	@PUT
+	@Path("/r/{id}")
+	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	@Restrict("#{identity.loggedIn}")
+	public Response doResPut(
 			@PathParam("id") String id, 
 			@HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch, 
 			InputStream messageBody) {
 
-		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(
-				projectSlug, iterationSlug);
-
-		if (hProjectIteration == null) {
-			return Response.status(Status.NOT_FOUND).entity("container not found").build();
-		}
+		HProjectIteration hProjectIteration = retrieveIteration();
 		
 		EntityTag etag = documentDAO.getETag(hProjectIteration, id);
 
 		HDocument document;
 		
 		if(etag == null) {
-			// this has to be a create operation
-
-			if(ifMatch != null) {
-				// the caller expected an existing resource at this location 
-				return Response.status(Status.NOT_FOUND).build();
-			}
-
-			document = new HDocument();
-			document.setProjectIteration(hProjectIteration);
-			SourceResource entity = unmarshallEntity(SourceResource.class, messageBody);
-			transfer(entity, document);
+			return Response.status(Status.NOT_FOUND).build();
 		}
 		else if(ifMatch != null && !etag.equals(ifMatch)) {
 			return Response.status(Status.CONFLICT).build();
@@ -145,15 +201,8 @@ public class TranslationResourcesService {
 	
 		
 		try {
-			ResponseBuilder response;
-			if (!session.contains(document)) {
-				session.save(document);
-				session.flush();
-				response =  Response.created( uri.getAbsolutePath() );
-			} else {
-				response = Response.ok();
-			}
-			session.flush();
+			ResponseBuilder response = Response.ok();
+			documentDAO.flush();
 			etag = documentDAO.getETag(hProjectIteration, id);
 			return response.tag(etag).build();
 			
@@ -171,34 +220,40 @@ public class TranslationResourcesService {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Server error").build();
 		}
 	}
-	
-	@Path("/r/{id}/target/{locale}")
-	public Response getTarget(
-		@PathParam("id") String id,
-		@PathParam("locale") LocaleId locale,
-		@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
 
+	@DELETE
+	@Path("/r/{id}")
+	public Response doResDelete(			
+			@PathParam("id") String id, 
+			@HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch 
+			) {
+		HProjectIteration hProjectIteration = retrieveIteration();
+		
+		EntityTag etag = documentDAO.getETag(hProjectIteration, id);
+
+		if(etag == null) {
+			return Response.status(Status.NOT_FOUND).build();
+		}
+
+		if(ifMatch != null && !etag.equals(ifMatch)) {
+			return Response.status(Status.CONFLICT).build();
+		}
+
+		HDocument document = documentDAO.getByDocId(hProjectIteration, id);
+		document.setObsolete(true);
+		documentDAO.makePersistent(document);
+		documentDAO.flush();
 		return Response.ok().build();
 	}
-	
-	public Response getTargets() {
-		return Response.ok().build();
-	}
 
-	
 	@GET
-	@Path("/r/{id}/source")
+	@Path("/r/{id}/meta")
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public Response getSource(
+	public Response doResMetaGet(
 			@PathParam("id") String id, 
 			@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
-
-		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(
-				projectSlug, iterationSlug);
-
-		if (hProjectIteration == null) {
-			return Response.status(Status.NOT_FOUND).entity("container not found").build();
-		}
+		
+		HProjectIteration hProjectIteration = retrieveIteration();
 
 		EntityTag etag = documentDAO.getETag(hProjectIteration, id);
 
@@ -215,18 +270,52 @@ public class TranslationResourcesService {
 			return Response.status(Status.NOT_FOUND).entity("document not found").build();
 		}
 
-		SourceResource entity = new SourceResource(doc.getDocId(), doc.getName());
+		TranslationResource entity = new TranslationResource(doc.getDocId());
 		transfer(doc, entity);
 
-		for(HTextFlow htf : doc.getTextFlows()) {
-			SourceTextFlow tf = new SourceTextFlow(htf.getResId());
-			transfer(htf, tf);
-			entity.getTextFlows().add(tf);
-		}
-		
 		return Response.ok().entity(entity).tag(etag).build();
 	}
+	
+	@PUT
+	@Path("/r/{id}/meta")
+	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public Response doResMetaPut(
+			@PathParam("id") String id) {
+		
+		return Response.ok().build();
+	}
+	
+	
+	@GET
+	@Path("/r/{id}/target/{locale}")
+	public Response doResTargetGet(
+		@PathParam("id") String id,
+		@PathParam("locale") Set<LocaleId> locales,
+		@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
 
+		return Response.ok().build();
+	}
+	
+	@PUT
+	@Path("/r/{id}/target/{locale}")
+	public Response doResTargetPut(
+		@PathParam("id") String id,
+		@PathParam("locale") Set<LocaleId> locales,
+		@HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch) {
+
+		return Response.ok().build();
+	}
+
+	@GET
+	@Path("/r/{id}/target-as-source/{locale}")
+	public Response doResTargetAsSourceGet(
+		@PathParam("id") String id,
+		@PathParam("locale") LocaleId locale,
+		@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
+
+		return Response.ok().build();
+	}
+	
 	public static void transfer(SourceResource from, HDocument to) {
 		to.setName(from.getName());
 		to.setLocale(from.getLang());
@@ -245,7 +334,12 @@ public class TranslationResourcesService {
 		//to.setLang(from.get)
 	}
 
-	
+	public static void transfer(HDocument from, TranslationResource to) {
+		to.setContentType(from.getContentType());
+		to.setLang(from.getLocale());
+		to.setName(from.getDocId());
+		to.setType(ResourceType.FILE); // TODO
+	}
 	
 	private <T> T unmarshallEntity(Class<T> entityClass, InputStream is) {
 		MessageBodyReader<T> reader = SeamResteasyProviderFactory.getInstance()
@@ -266,4 +360,24 @@ public class TranslationResourcesService {
 		}
 		return entity;
 	}
+	
+	private HProjectIteration retrieveIteration() {
+		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(
+				projectSlug, iterationSlug);
+
+		if (hProjectIteration != null) {
+			return hProjectIteration;
+		}
+		
+		throw new NoSuchEntityException("Project Iteration '" + projectSlug+":"+iterationSlug+"' not found.");
+	}
+
+	private String encodeDocId(String id){
+		return id;
+	}
+	
+	private String decodeDocId(String id) {
+		return id;
+	}
+	
 }

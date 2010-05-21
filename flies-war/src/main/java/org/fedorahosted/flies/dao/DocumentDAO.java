@@ -32,7 +32,10 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>{
 	}
 
 	public EntityTag getETag(HProjectIteration iteration, String id) {
-		return EntityTag.valueOf("x");
+		HDocument doc = getByDocId(iteration, id);
+		if( doc == null ) 
+			return null;
+		return EntityTag.valueOf( String.valueOf(doc.getRevision()) );
 	}
 	
 	public HDocument getByDocId(HProjectIteration iteration, String id){
