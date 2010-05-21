@@ -33,6 +33,7 @@ import org.fedorahosted.flies.model.HDocument;
 import org.fedorahosted.flies.model.HProjectIteration;
 import org.fedorahosted.flies.model.HTextFlow;
 import org.fedorahosted.flies.rest.NoSuchEntityException;
+import org.fedorahosted.flies.rest.dto.v1.AbstractTranslationResource;
 import org.fedorahosted.flies.rest.dto.v1.ResourcesList;
 import org.fedorahosted.flies.rest.dto.v1.SourceResource;
 import org.fedorahosted.flies.rest.dto.v1.SourceTextFlow;
@@ -169,7 +170,7 @@ public class TranslationResourcesService {
 			entity.getTextFlows().add(tf);
 		}
 		
-		return Response.ok().entity(entity).tag(etag).build();
+		return Response.ok().entity(entity).tag(etag).lastModified(doc.getLastChanged()).build();
 	}
 
 	@PUT
@@ -201,10 +202,9 @@ public class TranslationResourcesService {
 	
 		
 		try {
-			ResponseBuilder response = Response.ok();
 			documentDAO.flush();
 			etag = documentDAO.getETag(hProjectIteration, id);
-			return response.tag(etag).build();
+			return Response.ok().tag(etag).build();
 			
 		} catch (InvalidStateException e) {
 			String message = 
@@ -280,9 +280,46 @@ public class TranslationResourcesService {
 	@Path("/r/{id}/meta")
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Response doResMetaPut(
-			@PathParam("id") String id) {
+			@PathParam("id") String id, 
+			@HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch, 
+			InputStream messageBody) {
+
+		HProjectIteration hProjectIteration = retrieveIteration();
 		
-		return Response.ok().build();
+		EntityTag etag = documentDAO.getETag(hProjectIteration, id);
+
+		HDocument document;
+		
+		if(etag == null) {
+			return Response.status(Status.NOT_FOUND).build();
+		}
+		else if(ifMatch != null && !etag.equals(ifMatch)) {
+			return Response.status(Status.CONFLICT).build();
+		}
+		else {
+			TranslationResource entity = unmarshallEntity(TranslationResource.class, messageBody);
+			document = documentDAO.getByDocId(hProjectIteration, id);
+			transfer(entity, document);
+		}
+		
+		try {
+			documentDAO.flush();
+			etag = documentDAO.getETag(hProjectIteration, id);
+			return Response.ok().tag(etag).lastModified(document.getLastChanged()).build();
+			
+		} catch (InvalidStateException e) {
+			String message = 
+				String.format(
+					"Document '%s' (%s:%s) is invalid: \n %s", 
+					id, projectSlug, iterationSlug, StringUtils.join(e.getInvalidValues(),"\n"));
+			log.warn(message + '\n' + document);
+			log.debug(e,e);
+			return Response.status(Status.BAD_REQUEST).entity(message)
+					.build();
+		} catch (HibernateException e) {
+			log.error("Hibernate exception", e);
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Server error").build();
+		}
 	}
 	
 	
@@ -317,11 +354,15 @@ public class TranslationResourcesService {
 	}
 	
 	public static void transfer(SourceResource from, HDocument to) {
+		transfer( (AbstractTranslationResource) from, to);
+	}
+
+	public static void transfer(AbstractTranslationResource from, HDocument to) {
 		to.setName(from.getName());
 		to.setLocale(from.getLang());
 		to.setContentType(from.getContentType());
 	}
-
+	
 	public static void transfer(HDocument from, SourceResource to) {
 		to.setName(from.getName());
 		to.setLang(from.getLocale());
