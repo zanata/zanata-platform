@@ -6,8 +6,6 @@ import org.fedorahosted.flies.webtrans.client.editor.HasPageNavigation;
 import org.fedorahosted.flies.webtrans.client.editor.filter.ContentFilter;
 import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
 
-
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -180,8 +178,10 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements
 	public void gotoRow(int row, boolean andEdit) {
 		if (andEdit)
 			editCell(row, TableEditorTableDefinition.TARGET_COL);
-		else
-			DOM.scrollIntoView( getDataTable().getWidget( row, TableEditorTableDefinition.TARGET_COL ).getElement() );
+		else {
+			if ( row < getDataTable().getRowCount() )
+				DOM.scrollIntoView( getDataTable().getWidget( row, TableEditorTableDefinition.TARGET_COL ).getElement() );
+		}
 	}
 	
 	@Override
@@ -194,4 +194,9 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements
 		return this.getRowValue(row);
 	}
 
+	@Override
+	public void gotoPage(int page, boolean forced) {
+		super.gotoPage(page, forced);
+		gotoRow(0, false);
+	}
 }
