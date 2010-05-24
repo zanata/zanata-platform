@@ -121,7 +121,6 @@ public class Pager extends Composite implements HasPager {
 	public void setValue(Integer value, boolean fireEvents) {
 		if(value != this.currentPage){
 			this.currentPage = value;
-			ValueChangeEvent.fire(this, value);
 			if(fireEvents) {
 				ValueChangeEvent.fire(this, value);
 			}
