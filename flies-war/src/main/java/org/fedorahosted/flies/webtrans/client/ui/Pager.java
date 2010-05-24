@@ -120,11 +120,10 @@ public class Pager extends Composite implements HasPager {
 	@Override
 	public void setValue(Integer value, boolean fireEvents) {
 		if(value != this.currentPage){
-			this.currentPage = value;
-			ValueChangeEvent.fire(this, value);
-			if(fireEvents) {
+			// Firing event for page is not needed for the first load.
+			if(fireEvents && currentPage != 0)
 				ValueChangeEvent.fire(this, value);
-			}
+			this.currentPage = value;
 			refresh();
 		}
 	}
