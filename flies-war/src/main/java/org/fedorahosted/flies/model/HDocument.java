@@ -41,6 +41,7 @@ import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.contexts.Contexts;
 
 @Entity
 @TypeDefs({
@@ -336,8 +337,10 @@ public class HDocument extends AbstractFliesEntity implements IDocumentHistory {
 	
 	@PreUpdate
 	public void onUpdate() {
-		HPerson person = (HPerson) Component.getInstance("authenticatedPerson", ScopeType.SESSION);
-		setLastModifiedBy(person);
+		if(Contexts.isSessionContextActive() ) {
+			HPerson person = (HPerson) Component.getInstance("authenticatedPerson", ScopeType.SESSION);
+			setLastModifiedBy(person);
+		}
 	}
 	
 }

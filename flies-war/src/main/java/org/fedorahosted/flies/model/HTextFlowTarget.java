@@ -28,6 +28,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.NotNull;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.contexts.Contexts;
 
 /**
  * Represents a flow of text that should be processed as a
@@ -188,8 +189,10 @@ public class HTextFlowTarget extends AbstractFliesEntity implements ITextFlowTar
 	
 	@PreUpdate
 	public void onUpdate() {
-		HPerson person = (HPerson) Component.getInstance("authenticatedPerson", ScopeType.SESSION);
-		setLastModifiedBy(person);
+		if(Contexts.isSessionContextActive() ) {
+			HPerson person = (HPerson) Component.getInstance("authenticatedPerson", ScopeType.SESSION);
+			setLastModifiedBy(person);
+		}
 	}
 	
 	
