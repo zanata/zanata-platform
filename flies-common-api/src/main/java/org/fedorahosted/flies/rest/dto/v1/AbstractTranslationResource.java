@@ -1,5 +1,7 @@
 package org.fedorahosted.flies.rest.dto.v1;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -17,7 +19,7 @@ import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
 
 @XmlType(name="abstractTranslationResourceType", namespace=Namespaces.FLIES, propOrder={"name", "extensions"})
 @XmlSeeAlso({PoHeader.class})
-public abstract class AbstractTranslationResource {
+public abstract class AbstractTranslationResource implements Serializable {
 	
 	private String name;
 
