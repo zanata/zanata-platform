@@ -179,7 +179,7 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements
 		if (andEdit)
 			editCell(row, TableEditorTableDefinition.TARGET_COL);
 		else {
-			if ( getDataTable().getRowCount() > 0  && row < getDataTable().getRowCount() )
+			if ( row < getDataTable().getRowCount() )
 				DOM.scrollIntoView( getDataTable().getWidget( row, TableEditorTableDefinition.TARGET_COL ).getElement() );
 		}
 	}
