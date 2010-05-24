@@ -6,11 +6,12 @@ import org.fedorahosted.flies.webtrans.client.editor.HasPageNavigation;
 import org.fedorahosted.flies.webtrans.client.editor.filter.ContentFilter;
 import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
 
+
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.gen2.table.client.FixedWidthGrid;
 import com.google.gwt.gen2.table.client.FixedWidthGridBulkRenderer;
 import com.google.gwt.gen2.table.client.PagingScrollTable;
 import com.google.gwt.gen2.table.client.ScrollTable;
@@ -175,15 +176,12 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements
 		editCell(row, TableEditorTableDefinition.TARGET_COL);
 	}
 	
-	// A more detailed up of gotoRow(int row), with switch of not edit mode.
+	// Go to row location of the current page.
 	public void gotoRow(int row, boolean andEdit) {
-		if (!andEdit)
-		{
-			FixedWidthGrid editorTable = getDataTable();
-			if ( editorTable.getRowCount() > 0 )
-				DOM.scrollIntoView( editorTable.getWidget( row, TableEditorTableDefinition.TARGET_COL ).getElement() );
-		} else
-			gotoRow(row);
+		if (andEdit)
+			editCell(row, TableEditorTableDefinition.TARGET_COL);
+		else
+			DOM.scrollIntoView( getDataTable().getWidget( row, TableEditorTableDefinition.TARGET_COL ).getElement() );
 	}
 	
 	@Override

@@ -12,8 +12,8 @@ public class TranslationResource extends AbstractTranslationResource {
 	public TranslationResource() {
 	}
 	
-	public TranslationResource(String id, String name) {
-		super(id, name);
+	public TranslationResource(String name) {
+		super(name);
 	}
 	
 

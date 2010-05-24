@@ -65,7 +65,7 @@ public class SerializationTests {
 	
 	@Test
 	public void serializeAndDeserializeTranslationResource() throws JsonGenerationException, JsonMappingException, IOException, JAXBException{
-		TranslationResource res = new TranslationResource("id", null);
+		TranslationResource res = new TranslationResource("id");
 		res.getExtensions().add(new PoHeader());
 		JaxbTestUtil.validate(res, PoHeader.class);
 		

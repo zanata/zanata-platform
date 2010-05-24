@@ -16,8 +16,8 @@ public abstract class AbstractContentTranslationResource<T> extends AbstractTran
 	public AbstractContentTranslationResource() {
 	}
 
-	public AbstractContentTranslationResource(String id, String name) {
-		super(id, name);
+	public AbstractContentTranslationResource(String name) {
+		super(name);
 	}
 	
 	@XmlElementWrapper(name="text-flows", namespace=Namespaces.FLIES, required=false)

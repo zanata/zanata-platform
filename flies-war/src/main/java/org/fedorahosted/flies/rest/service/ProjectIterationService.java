@@ -84,7 +84,10 @@ public class ProjectIterationService {
 		HProjectIteration hProjectIteration = projectIterationDAO
 				.getBySlug(projectSlug, iterationSlug);
 
-		return Response.ok(toResource(hProjectIteration, accept)).tag(etag).build();
+		ProjectIterationRes it = new ProjectIterationRes();
+		transfer(hProjectIteration, it);
+		
+		return Response.ok(it).tag(etag).build();
 	}
 
 	@PUT
@@ -166,13 +169,6 @@ public class ProjectIterationService {
 	public static void transfer(HProjectIteration from, AbstractProjectIteration to) {
 		transfer(from, (AbstractMiniProjectIteration)to);
 		to.setDescription(from.getDescription());
-	}
-	
-	public static ProjectIterationRes toResource(HProjectIteration hibIt, MediaType mediaType) {
-		ProjectIterationRes it = new ProjectIterationRes();
-		transfer(hibIt, it);
-		return it;
-
 	}
 
 }

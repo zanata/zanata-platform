@@ -22,4 +22,6 @@ public interface GenericDAO<T, ID extends Serializable> {
 	void clear();
 
 	List<T> findByExample(T exampleInstance, String[] excludeProperty);
+	
+	boolean isPersistent(T entity);
 }
