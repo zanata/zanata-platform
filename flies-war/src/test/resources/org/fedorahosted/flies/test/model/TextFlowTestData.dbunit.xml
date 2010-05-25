@@ -25,36 +25,44 @@
   />
   <HTextFlowTarget 
   	id="1"
+    versionNum="1"
+    creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16" 
   	content="hei verden"
   	locale="nb-NO"
-  	revision="1"
   	state="2"
   	tf_id="1"
   	tf_revision="1"
   />
   <HTextFlowTarget 
   	id="2"
+    versionNum="1"
+    creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16" 
   	content="hello welt"
   	locale="de-DE"
-  	revision="1"
   	state="2"
   	tf_id="1"
   	tf_revision="1"
   />
   <HTextFlowTarget 
   	id="3"
+    versionNum="1"
+    creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16" 
   	content="fuzzy hello"
   	locale="es-ES"
-  	revision="1"
   	state="1"
   	tf_id="1"
   	tf_revision="1"
   />
   <HTextFlowTarget 
   	id="4"
+    versionNum="1"
+    creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16" 
   	content=""
   	locale="fr-FR"
-  	revision="1"
   	state="0"
   	tf_id="1"
   	tf_revision="1"
