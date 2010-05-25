@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.ws.rs.core.MediaType;
 
 import org.dbunit.operation.DatabaseOperation;
+import org.fedorahosted.flies.FliesDBUnitSeamTest;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
 import org.jboss.seam.mock.EnhancedMockHttpServletResponse;

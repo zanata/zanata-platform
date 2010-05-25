@@ -11,7 +11,6 @@ import org.fedorahosted.flies.rest.HibernateExceptionMapper;
 import org.fedorahosted.flies.rest.InvalidStateExceptionMapper;
 import org.fedorahosted.flies.rest.NoSuchEntityExceptionMapper;
 import org.fedorahosted.flies.rest.NotLoggedInExceptionMapper;
-import org.fedorahosted.flies.rest.service.MockResourceFactory;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.core.executors.InMemoryClientExecutor;
 import org.jboss.resteasy.core.Dispatcher;

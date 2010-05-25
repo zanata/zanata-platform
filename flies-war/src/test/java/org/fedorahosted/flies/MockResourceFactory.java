@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.rest.service;
+package org.fedorahosted.flies;
 
 import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.HttpResponse;

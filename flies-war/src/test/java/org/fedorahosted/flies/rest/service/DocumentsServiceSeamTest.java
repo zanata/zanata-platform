@@ -12,6 +12,7 @@ import java.util.TreeSet;
 import javax.ws.rs.core.Response;
 
 import org.dbunit.operation.DatabaseOperation;
+import org.fedorahosted.flies.FliesDBUnitSeamTest;
 import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.dao.ProjectIterationDAO;

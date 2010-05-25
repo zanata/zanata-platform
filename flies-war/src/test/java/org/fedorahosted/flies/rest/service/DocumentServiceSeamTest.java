@@ -17,6 +17,7 @@ import javax.xml.bind.Marshaller;
 import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.util.URIUtil;
 import org.dbunit.operation.DatabaseOperation;
+import org.fedorahosted.flies.FliesDBUnitSeamTest;
 import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.rest.MediaTypes;
