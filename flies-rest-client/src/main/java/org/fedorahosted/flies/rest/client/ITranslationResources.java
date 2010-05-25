@@ -31,44 +31,44 @@ public interface ITranslationResources {
 
 	@GET
 	@Path("/r/{id}")
-	public ClientResponse<SourceResource> resGet(
+	public ClientResponse<SourceResource> getResource(
 			@PathParam("id") String id);
 	
 	@PUT
 	@Path("/r/{id}")
-	public ClientResponse<String> resPut(
+	public ClientResponse<String> putResource(
 			@PathParam("id") String id, SourceResource messageBody);
 	
 	@DELETE
 	@Path("/r/{id}")
-	public ClientResponse<String> resDelete(
+	public ClientResponse<String> deleteResource(
 			@PathParam("id") String id);
 	
 	@GET
 	@Path("/r/{id}/meta")
-	public ClientResponse<TranslationResource> resMetaGet(
+	public ClientResponse<TranslationResource> getResourceMeta(
 			@PathParam("id") String id);
 	
 	@PUT
 	@Path("/r/{id}/meta")
-	public ClientResponse<String> resMetaPut(
+	public ClientResponse<String> putResourceMeta(
 			@PathParam("id") String id, TranslationResource messageBody);
 
 	@GET
 	@Path("/r/{id}/target/{locale}")
-	public ClientResponse<String> resTargetGet(
+	public ClientResponse<String> getResourceTarget(
 			@PathParam("id") String id, 
 			@PathParam("locale") Set<LocaleId> locales);
 	
 	@PUT
 	@Path("/r/{id}/target/{locale}")
-	public ClientResponse<String> resTargetPut(
+	public ClientResponse<String> putResourceTarget(
 			@PathParam("id") String id, 
 			@PathParam("locale") Set<LocaleId> locales);
 	
 	@GET
 	@Path("/r/{id}/target-as-source/{locale}")
-	public ClientResponse<String> resTargetAsSourceGet(
+	public ClientResponse<String> getResourceTargetAsSource(
 			@PathParam("id") String id, 
 			@PathParam("locale") LocaleId locale);
 	

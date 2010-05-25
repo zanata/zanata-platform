@@ -133,7 +133,7 @@ public class TranslationResourcesService {
 	@GET
 	@Path("/r/{id}")
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public Response doResGet(
+	public Response doGetResource(
 			@PathParam("id") String id, 
 			@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
 
@@ -170,7 +170,7 @@ public class TranslationResourcesService {
 	@Path("/r/{id}")
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	@Restrict("#{identity.loggedIn}")
-	public Response doResPut(
+	public Response doPutResource(
 			@PathParam("id") String id, 
 			@HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch, 
 			InputStream messageBody) {
@@ -201,7 +201,7 @@ public class TranslationResourcesService {
 
 	@DELETE
 	@Path("/r/{id}")
-	public Response doResDelete(			
+	public Response doDeleteResource(			
 			@PathParam("id") String id, 
 			@HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch 
 			) {
@@ -227,7 +227,7 @@ public class TranslationResourcesService {
 	@GET
 	@Path("/r/{id}/meta")
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public Response doResMetaGet(
+	public Response doGetResourceMeta(
 			@PathParam("id") String id, 
 			@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
 		
@@ -257,7 +257,7 @@ public class TranslationResourcesService {
 	@PUT
 	@Path("/r/{id}/meta")
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public Response doResMetaPut(
+	public Response doPutResourceMeta(
 			@PathParam("id") String id, 
 			@HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch, 
 			InputStream messageBody) {
@@ -289,7 +289,7 @@ public class TranslationResourcesService {
 	
 	@GET
 	@Path("/r/{id}/target/{locale}")
-	public Response doResTargetGet(
+	public Response doGetResourceTarget(
 		@PathParam("id") String id,
 		@PathParam("locale") Set<LocaleId> locales,
 		@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
@@ -299,7 +299,7 @@ public class TranslationResourcesService {
 	
 	@PUT
 	@Path("/r/{id}/target/{locale}")
-	public Response doResTargetPut(
+	public Response doPutResourceTarget(
 		@PathParam("id") String id,
 		@PathParam("locale") Set<LocaleId> locales,
 		@HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch) {
@@ -309,7 +309,7 @@ public class TranslationResourcesService {
 
 	@GET
 	@Path("/r/{id}/target-as-source/{locale}")
-	public Response doResTargetAsSourceGet(
+	public Response doGetResourceTargetAsSource(
 		@PathParam("id") String id,
 		@PathParam("locale") LocaleId locale,
 		@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
