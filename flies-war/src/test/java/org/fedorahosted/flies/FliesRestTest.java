@@ -22,19 +22,24 @@ import org.testng.annotations.BeforeMethod;
 public abstract class FliesRestTest extends FliesDbunitJpaTest {
 	
 	private ClientRequestFactory clientRequestFactory;
+	protected Set<Class<? extends ExceptionMapper<? extends Throwable>>> exceptionMappers = new HashSet<Class<? extends ExceptionMapper<? extends Throwable>>>();
+	protected Set<Object> resources = new HashSet<Object>();
 	
 	@BeforeMethod
 	public void prepareRestEasyClientFramework() {
 		
 		Dispatcher dispatcher = MockDispatcherFactory.createDispatcher();
+
+		prepareResources();
+		prepareExceptionMappers();
 		
-		for(Object obj : getResources() ) {
+		for(Object obj : resources ) {
 			ResourceFactory factory = new MockResourceFactory(obj); 
 			dispatcher.getRegistry().addResourceFactory(factory);
 		}
 		
 		// register Exception Mappers
-		for(Class<? extends ExceptionMapper<? extends Throwable>> mapper : getExceptionMappers()) {
+		for(Class<? extends ExceptionMapper<? extends Throwable>> mapper : exceptionMappers ) {
 			dispatcher.getProviderFactory().addExceptionMapper(mapper);
 		}
 		
@@ -44,18 +49,14 @@ public abstract class FliesRestTest extends FliesDbunitJpaTest {
 		
 	}
 
-	protected Set<Object> getResources() {
-		return new HashSet<Object>();
-	}
+	protected abstract void prepareResources();
 
-	protected Set<Class<? extends ExceptionMapper<? extends Throwable>>> getExceptionMappers(){
-		Set<Class<? extends ExceptionMapper<? extends Throwable>>> mappers = new HashSet<Class<? extends ExceptionMapper<? extends Throwable>>>();
-		mappers.add(AuthorizationExceptionMapper.class);
-		mappers.add(HibernateExceptionMapper.class);
-		mappers.add(InvalidStateExceptionMapper.class);
-		mappers.add(NoSuchEntityExceptionMapper.class);
-		mappers.add(NotLoggedInExceptionMapper.class);
-		return mappers;
+	protected void prepareExceptionMappers(){
+		exceptionMappers.add(AuthorizationExceptionMapper.class);
+		exceptionMappers.add(HibernateExceptionMapper.class);
+		exceptionMappers.add(InvalidStateExceptionMapper.class);
+		exceptionMappers.add(NoSuchEntityExceptionMapper.class);
+		exceptionMappers.add(NotLoggedInExceptionMapper.class);
 	}
 	
 	protected ClientRequestFactory getClientRequestFactory() {

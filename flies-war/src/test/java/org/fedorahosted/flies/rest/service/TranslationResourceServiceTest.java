@@ -3,8 +3,6 @@ package org.fedorahosted.flies.rest.service;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import java.util.Set;
-
 import javax.ws.rs.core.Response.Status;
 
 import org.dbunit.operation.DatabaseOperation;
@@ -26,8 +24,7 @@ public class TranslationResourceServiceTest extends FliesRestTest {
 	}
 
 	@Override
-	protected Set<Object> getResources() {
-		Set<Object> resources = super.getResources();
+	protected void prepareResources() {
 		final ProjectIterationDAO projectIterationDAO = new ProjectIterationDAO(getSession());
 		final DocumentDAO documentDAO = new DocumentDAO(getSession());
 		final DocumentUtils documentUtils = new DocumentUtils();
@@ -36,7 +33,6 @@ public class TranslationResourceServiceTest extends FliesRestTest {
 				projectIterationDAO, documentDAO, documentUtils);
 		
 		resources.add(obj);
-		return resources;
 	}
 	
 	@Test
