@@ -1,5 +1,9 @@
 package org.fedorahosted.flies.rest.dto.v1;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -14,6 +18,15 @@ public class SourceAsTargetResource extends AbstractContentTranslationResource<S
 
 	public SourceAsTargetResource(String name) {
 		super(name);
+	}
+
+	@Override
+	@XmlElementWrapper(name="text-flows", namespace=Namespaces.FLIES, required=false)
+	public List<SourceAsTargetTextFlow> getTextFlows() {
+		if(textFlows == null) {
+			textFlows = new ArrayList<SourceAsTargetTextFlow>();
+		}
+		return textFlows;
 	}
 	
 }
