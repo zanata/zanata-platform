@@ -11,7 +11,6 @@ import org.fedorahosted.flies.rest.HibernateExceptionMapper;
 import org.fedorahosted.flies.rest.InvalidStateExceptionMapper;
 import org.fedorahosted.flies.rest.NoSuchEntityExceptionMapper;
 import org.fedorahosted.flies.rest.NotLoggedInExceptionMapper;
-import org.jboss.resteasy.client.ClientExecutor;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.core.executors.InMemoryClientExecutor;
 import org.jboss.resteasy.core.Dispatcher;
@@ -22,6 +21,7 @@ import org.testng.annotations.BeforeMethod;
 public abstract class FliesRestTest extends FliesDbunitJpaTest {
 	
 	protected static final URI MOCK_BASE_URI = URI.create("http://mockhost");
+	
 	private ClientRequestFactory clientRequestFactory;
 	protected Set<Class<? extends ExceptionMapper<? extends Throwable>>> exceptionMappers = new HashSet<Class<? extends ExceptionMapper<? extends Throwable>>>();
 	protected Set<Object> resources = new HashSet<Object>();
