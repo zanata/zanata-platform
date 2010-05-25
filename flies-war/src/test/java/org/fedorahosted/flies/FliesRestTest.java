@@ -16,6 +16,7 @@ import org.jboss.resteasy.client.core.executors.InMemoryClientExecutor;
 import org.jboss.resteasy.core.Dispatcher;
 import org.jboss.resteasy.mock.MockDispatcherFactory;
 import org.jboss.resteasy.spi.ResourceFactory;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
 public abstract class FliesRestTest extends FliesDbunitJpaTest {
@@ -27,7 +28,7 @@ public abstract class FliesRestTest extends FliesDbunitJpaTest {
 	protected final Set<Object> resources = new HashSet<Object>();
 	
 	@BeforeMethod
-	public final void prepareRestEasyClientFramework() {
+	public final void prepareRestEasyFramework() {
 		
 		Dispatcher dispatcher = MockDispatcherFactory.createDispatcher();
 		prepareResources();
@@ -48,6 +49,12 @@ public abstract class FliesRestTest extends FliesDbunitJpaTest {
 			new ClientRequestFactory(
 					executor, MOCK_BASE_URI);
 		
+	}
+	
+	@AfterMethod
+	public final void cleanUpRestEasyFramework() {
+		exceptionMappers.clear();
+		resources.clear();
 	}
 
 	/**
