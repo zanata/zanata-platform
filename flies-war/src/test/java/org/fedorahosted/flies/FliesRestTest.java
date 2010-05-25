@@ -23,11 +23,11 @@ public abstract class FliesRestTest extends FliesDbunitJpaTest {
 	protected static final URI MOCK_BASE_URI = URI.create("http://mockhost");
 	
 	private ClientRequestFactory clientRequestFactory;
-	protected Set<Class<? extends ExceptionMapper<? extends Throwable>>> exceptionMappers = new HashSet<Class<? extends ExceptionMapper<? extends Throwable>>>();
-	protected Set<Object> resources = new HashSet<Object>();
+	protected final Set<Class<? extends ExceptionMapper<? extends Throwable>>> exceptionMappers = new HashSet<Class<? extends ExceptionMapper<? extends Throwable>>>();
+	protected final Set<Object> resources = new HashSet<Object>();
 	
 	@BeforeMethod
-	public void prepareRestEasyClientFramework() {
+	public final void prepareRestEasyClientFramework() {
 		
 		Dispatcher dispatcher = MockDispatcherFactory.createDispatcher();
 		prepareResources();
@@ -50,8 +50,16 @@ public abstract class FliesRestTest extends FliesDbunitJpaTest {
 		
 	}
 
+	/**
+	 * Clients should add instances of the tested server side Resource
+	 * to the protected resources set within this method.
+	 */
 	protected abstract void prepareResources();
 
+	/**
+	 * Override this to add custom server-side ExceptionMappers for
+	 * the test, by configuring the protected exceptionMappers set.
+	 */
 	protected void prepareExceptionMappers(){
 		exceptionMappers.add(AuthorizationExceptionMapper.class);
 		exceptionMappers.add(HibernateExceptionMapper.class);
@@ -60,11 +68,25 @@ public abstract class FliesRestTest extends FliesDbunitJpaTest {
 		exceptionMappers.add(NotLoggedInExceptionMapper.class);
 	}
 	
-	protected ClientRequestFactory getClientRequestFactory() {
+	/**
+	 * Retrieve the configured request factory
+	 * 
+	 * @return a ClientRequestFactory configured for your environment.
+	 */
+	protected final ClientRequestFactory getClientRequestFactory() {
 		return clientRequestFactory;
 	}
 	
-	protected URI createBaseURI(String resourcePath) {
+	/**
+	 * Creates a URI suitable for passing to ClientRequestFactory for
+	 * a given resource.  
+	 * 
+	 * @param resourcePath the class-level @Path structure for the 
+	 * 	      resource being tested.
+	 * @return a URI suitable for passing to ClientRequestFactory for
+	 *         the resource being tested.
+	 */
+	protected final URI createBaseURI(String resourcePath) {
 		return MOCK_BASE_URI.resolve(resourcePath);		
 	}
 }
