@@ -1,0 +1,24 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Flies JPA and REST Tests" verbose="1">
+
+	<test name="JPA Tests">
+		<packages>
+			<package name="org.fedorahosted.flies.model" />
+			<package name="org.fedorahosted.flies.model.po" />
+		</packages>
+	</test>
+
+	<test name="DAO Tests">
+		<packages>
+			<package name="org.fedorahosted.flies.dao" />
+		</packages>
+	</test>
+
+	<test name="REST Tests">
+		<classes>
+			<class name="org.fedorahosted.flies.rest.service.DocumentUtilsTest"/>
+			<class name="org.fedorahosted.flies.rest.service.TranslationResourceServiceTest"/>
+		</classes>
+	</test>
+
+</suite>
