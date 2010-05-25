@@ -59,14 +59,6 @@ public class TranslationResourceServiceTest extends FliesRestTest {
 		doGetandAssertThatResourceListContainsNItems(1);
 	}
 
-	private SourceResource createSourceResource(String name) {
-		SourceResource sr = new SourceResource(name);
-		sr.setContentType(ContentType.TextPlain);
-		sr.setLang(LocaleId.EN);
-		sr.setType(ResourceType.FILE);
-		return sr;
-	}
-	
 	@Test
 	public void createResourceWithContent() {
 		ITranslationResources client = 
@@ -78,11 +70,30 @@ public class TranslationResourceServiceTest extends FliesRestTest {
 		SourceTextFlow stf = new SourceTextFlow("tf1", LocaleId.EN, "tf1");
 		sr.getTextFlows().add(stf);
 		
-		ClientResponse<String> resources = client.post(sr);
-		assertThat(resources.getResponseStatus(), is(Status.CREATED));
+		ClientResponse<String> postResponse = client.post(sr);
+		assertThat(postResponse.getResponseStatus(), is(Status.CREATED));
 		doGetandAssertThatResourceListContainsNItems(1);
 		
+		ClientResponse<SourceResource> resourceGetResponse = client.getResource("my.txt");
+		assertThat(resourceGetResponse.getResponseStatus(), is(Status.OK));
+		SourceResource gotSr = resourceGetResponse.getEntity();
+		assertThat(gotSr.getTextFlows().size(), is(1));
+		assertThat(gotSr.getTextFlows().get(0).getContent(), is("tf1"));
+		
+		
 	}
+	
+	// END of tests 
+	
+	private SourceResource createSourceResource(String name) {
+		SourceResource sr = new SourceResource(name);
+		sr.setContentType(ContentType.TextPlain);
+		sr.setLang(LocaleId.EN);
+		sr.setType(ResourceType.FILE);
+		return sr;
+	}
+	
+	
 	
 	private void doGetandAssertThatResourceListContainsNItems(int n) {
 		ITranslationResources client = 
