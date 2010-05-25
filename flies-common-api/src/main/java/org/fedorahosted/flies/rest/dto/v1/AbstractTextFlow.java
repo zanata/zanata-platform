@@ -10,13 +10,20 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.Namespaces;
 import org.fedorahosted.flies.rest.dto.LocaleIdAdapter;
+import org.hibernate.validator.Length;
+import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.NotNull;
 
 @XmlType(name="abstractTextFlowType", namespace=Namespaces.FLIES, propOrder={"content", "extensions"})
 public abstract class AbstractTextFlow {
 	
+	@NotEmpty @Length(max=255)
 	private String id;
+	
+	@NotNull
 	private LocaleId lang;
 	
+	@NotNull
 	private String content;
 
 	private ExtensionSet extensions;

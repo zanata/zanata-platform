@@ -17,36 +17,29 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.MessageBodyReader;
 
-import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.common.ResourceType;
 import org.fedorahosted.flies.dao.DocumentDAO;
 import org.fedorahosted.flies.dao.ProjectIterationDAO;
 import org.fedorahosted.flies.model.HDocument;
 import org.fedorahosted.flies.model.HProjectIteration;
 import org.fedorahosted.flies.model.HTextFlow;
 import org.fedorahosted.flies.rest.NoSuchEntityException;
-import org.fedorahosted.flies.rest.dto.v1.AbstractTranslationResource;
 import org.fedorahosted.flies.rest.dto.v1.ResourcesList;
 import org.fedorahosted.flies.rest.dto.v1.SourceResource;
 import org.fedorahosted.flies.rest.dto.v1.SourceTextFlow;
 import org.fedorahosted.flies.rest.dto.v1.TranslationResource;
-import org.hibernate.HibernateException;
-import org.hibernate.validator.InvalidStateException;
 import org.jboss.resteasy.core.Headers;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.resteasy.SeamResteasyProviderFactory;
 
 @Name("translationResourcesService")
@@ -69,7 +62,7 @@ public class TranslationResourcesService {
 	private UriInfo uriInfo;
 	
 	@Context
-	private Headers<String> headers;
+	private HttpHeaders headers;
 	
 	@In
 	private ProjectIterationDAO projectIterationDAO;
@@ -77,9 +70,19 @@ public class TranslationResourcesService {
 	@In
 	private DocumentDAO documentDAO;
 
-	@Logger 
-	private Log log;
-
+	@In
+	private DocumentUtils documentUtils;
+	
+	public TranslationResourcesService() {
+	}
+	
+	public TranslationResourcesService(ProjectIterationDAO projectIterationDAO, DocumentDAO documentDAO, DocumentUtils documentUtils) {
+		this.projectIterationDAO = projectIterationDAO;
+		this.documentDAO = documentDAO;
+		this.documentUtils = documentUtils;
+	}
+	
+	
 	/**
 	 * Retrieve the List of Resources
 	 *  
@@ -95,7 +98,7 @@ public class TranslationResourcesService {
 		for(HDocument doc : hProjectIteration.getDocuments().values() ) {
 			if(!doc.isObsolete()) {
 				TranslationResource resource = new TranslationResource();
-				transfer(doc, resource);
+				documentUtils.transfer(doc, resource);
 				resources.add(resource);
 			}
 		}
@@ -114,27 +117,17 @@ public class TranslationResourcesService {
 		HDocument document = new HDocument();
 		document.setProjectIteration(hProjectIteration);
 		SourceResource entity = unmarshallEntity(SourceResource.class, messageBody);
-		transfer(entity, document);
+		RestUtils.validateEntity(entity);
 		
-		try {
-			documentDAO.makePersistent(document);
-			documentDAO.flush();
-			EntityTag etag = documentDAO.getETag(hProjectIteration, document.getDocId());
-			return Response.created(URI.create("r/"+encodeDocId(document.getDocId()))).tag(etag).build();
-			
-		} catch (InvalidStateException e) {
-			String message = 
-				String.format(
-					"Document '%s' (%s:%s) is invalid: \n %s", 
-					entity.getName(), projectSlug, iterationSlug, StringUtils.join(e.getInvalidValues(),"\n"));
-			log.warn(message + '\n' + document);
-			log.debug(e,e);
-			return Response.status(Status.BAD_REQUEST).entity(message)
-					.build();
-		} catch (HibernateException e) {
-			log.error("Hibernate exception", e);
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Server error").build();
-		}
+		documentUtils.transfer(entity, document);
+		
+		documentDAO.makePersistent(document);
+		documentDAO.flush();
+		
+		EntityTag etag = documentDAO.getETag(hProjectIteration, document.getDocId());
+		
+		return Response.created(URI.create("r/"+documentUtils.encodeDocId(document.getDocId())))
+			.tag(etag).build();
 	}
 
 	@GET
@@ -162,11 +155,11 @@ public class TranslationResourcesService {
 		}
 
 		SourceResource entity = new SourceResource(doc.getDocId());
-		transfer(doc, entity);
+		documentUtils.transfer(doc, entity);
 
 		for(HTextFlow htf : doc.getTextFlows()) {
 			SourceTextFlow tf = new SourceTextFlow(htf.getResId());
-			transfer(htf, tf);
+			documentUtils.transfer(htf, tf);
 			entity.getTextFlows().add(tf);
 		}
 		
@@ -197,28 +190,13 @@ public class TranslationResourcesService {
 		else {
 			SourceResource entity = unmarshallEntity(SourceResource.class, messageBody);
 			document = documentDAO.getByDocId(hProjectIteration, id);
-			transfer(entity, document);
+			documentUtils.transfer(entity, document);
 		}
-	
 		
-		try {
-			documentDAO.flush();
-			etag = documentDAO.getETag(hProjectIteration, id);
-			return Response.ok().tag(etag).build();
+		documentDAO.flush();
+		etag = documentDAO.getETag(hProjectIteration, id);
+		return Response.ok().tag(etag).build();
 			
-		} catch (InvalidStateException e) {
-			String message = 
-				String.format(
-					"Document '%s' (%s:%s) is invalid: \n %s", 
-					id, projectSlug, iterationSlug, StringUtils.join(e.getInvalidValues(),"\n"));
-			log.warn(message + '\n' + document);
-			log.debug(e,e);
-			return Response.status(Status.BAD_REQUEST).entity(message)
-					.build();
-		} catch (HibernateException e) {
-			log.error("Hibernate exception", e);
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Server error").build();
-		}
 	}
 
 	@DELETE
@@ -271,7 +249,7 @@ public class TranslationResourcesService {
 		}
 
 		TranslationResource entity = new TranslationResource(doc.getDocId());
-		transfer(doc, entity);
+		documentUtils.transfer(doc, entity);
 
 		return Response.ok().entity(entity).tag(etag).build();
 	}
@@ -299,27 +277,13 @@ public class TranslationResourcesService {
 		else {
 			TranslationResource entity = unmarshallEntity(TranslationResource.class, messageBody);
 			document = documentDAO.getByDocId(hProjectIteration, id);
-			transfer(entity, document);
+			documentUtils.transfer(entity, document);
 		}
 		
-		try {
-			documentDAO.flush();
-			etag = documentDAO.getETag(hProjectIteration, id);
-			return Response.ok().tag(etag).lastModified(document.getLastChanged()).build();
+		documentDAO.flush();
+		etag = documentDAO.getETag(hProjectIteration, id);
+		return Response.ok().tag(etag).lastModified(document.getLastChanged()).build();
 			
-		} catch (InvalidStateException e) {
-			String message = 
-				String.format(
-					"Document '%s' (%s:%s) is invalid: \n %s", 
-					id, projectSlug, iterationSlug, StringUtils.join(e.getInvalidValues(),"\n"));
-			log.warn(message + '\n' + document);
-			log.debug(e,e);
-			return Response.status(Status.BAD_REQUEST).entity(message)
-					.build();
-		} catch (HibernateException e) {
-			log.error("Hibernate exception", e);
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Server error").build();
-		}
 	}
 	
 	
@@ -353,35 +317,6 @@ public class TranslationResourcesService {
 		return Response.ok().build();
 	}
 	
-	public static void transfer(SourceResource from, HDocument to) {
-		transfer( (AbstractTranslationResource) from, to);
-	}
-
-	public static void transfer(AbstractTranslationResource from, HDocument to) {
-		to.setName(from.getName());
-		to.setLocale(from.getLang());
-		to.setContentType(from.getContentType());
-	}
-	
-	public static void transfer(HDocument from, SourceResource to) {
-		to.setName(from.getName());
-		to.setLang(from.getLocale());
-		to.setContentType(from.getContentType());
-	}
-	
-	public static void transfer(HTextFlow from, SourceTextFlow to) {
-		to.setContent(from.getContent());
-		// TODO
-		//to.setLang(from.get)
-	}
-
-	public static void transfer(HDocument from, TranslationResource to) {
-		to.setContentType(from.getContentType());
-		to.setLang(from.getLocale());
-		to.setName(from.getDocId());
-		to.setType(ResourceType.FILE); // TODO
-	}
-	
 	private <T> T unmarshallEntity(Class<T> entityClass, InputStream is) {
 		MessageBodyReader<T> reader = SeamResteasyProviderFactory.getInstance()
 				.getMessageBodyReader(entityClass, entityClass,
@@ -394,11 +329,12 @@ public class TranslationResourcesService {
 		T entity;
 		try {
 			entity = reader.readFrom(entityClass, entityClass, entityClass
-					.getAnnotations(), requestContentType, headers, is);
+					.getAnnotations(), requestContentType, headers.getRequestHeaders(), is);
 		} catch (Exception e) {
 			throw new WebApplicationException(
 					Response.status(Status.BAD_REQUEST).entity("Unable to read request body").build());
 		}
+		
 		return entity;
 	}
 	
@@ -411,14 +347,6 @@ public class TranslationResourcesService {
 		}
 		
 		throw new NoSuchEntityException("Project Iteration '" + projectSlug+":"+iterationSlug+"' not found.");
-	}
-
-	private String encodeDocId(String id){
-		return id;
-	}
-	
-	private String decodeDocId(String id) {
-		return id;
 	}
 	
 }
