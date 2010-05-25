@@ -44,6 +44,8 @@ import org.jboss.seam.resteasy.SeamResteasyProviderFactory;
 
 @Name("translationResourcesService")
 @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/resources")
+@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class TranslationResourcesService {
 
 	@PathParam("projectSlug")
@@ -82,14 +84,12 @@ public class TranslationResourcesService {
 		this.documentUtils = documentUtils;
 	}
 	
-	
 	/**
 	 * Retrieve the List of Resources
 	 *  
 	 * @return Response.ok with ResourcesList or Response(404) if not found 
 	 */
 	@GET
-	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Response doGet() {
 		HProjectIteration hProjectIteration = retrieveIteration();
 		
@@ -108,20 +108,20 @@ public class TranslationResourcesService {
 	}
 	
 	@POST
-	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	@Restrict("#{identity.loggedIn}")
 	public Response doPost(InputStream messageBody) {
 
 		HProjectIteration hProjectIteration = retrieveIteration();
 
-		HDocument document = new HDocument();
-		document.setProjectIteration(hProjectIteration);
 		SourceResource entity = unmarshallEntity(SourceResource.class, messageBody);
 		RestUtils.validateEntity(entity);
+
+		HDocument document = new HDocument(entity.getName(),entity.getContentType());
+		document.setProjectIteration(hProjectIteration);
 		
 		documentUtils.transfer(entity, document);
 		
-		documentDAO.makePersistent(document);
+		document = documentDAO.makePersistent(document);
 		documentDAO.flush();
 		
 		EntityTag etag = documentDAO.getETag(hProjectIteration, document.getDocId());
@@ -132,7 +132,6 @@ public class TranslationResourcesService {
 
 	@GET
 	@Path("/r/{id}")
-	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Response doGetResource(
 			@PathParam("id") String id, 
 			@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
@@ -168,7 +167,6 @@ public class TranslationResourcesService {
 
 	@PUT
 	@Path("/r/{id}")
-	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	@Restrict("#{identity.loggedIn}")
 	public Response doPutResource(
 			@PathParam("id") String id, 
@@ -226,7 +224,6 @@ public class TranslationResourcesService {
 
 	@GET
 	@Path("/r/{id}/meta")
-	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Response doGetResourceMeta(
 			@PathParam("id") String id, 
 			@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
@@ -256,7 +253,6 @@ public class TranslationResourcesService {
 	
 	@PUT
 	@Path("/r/{id}/meta")
-	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Response doPutResourceMeta(
 			@PathParam("id") String id, 
 			@HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch, 
