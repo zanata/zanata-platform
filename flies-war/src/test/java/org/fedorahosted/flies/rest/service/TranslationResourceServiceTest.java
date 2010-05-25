@@ -15,6 +15,7 @@ import org.fedorahosted.flies.dao.ProjectIterationDAO;
 import org.fedorahosted.flies.rest.client.ITranslationResources;
 import org.fedorahosted.flies.rest.dto.v1.ResourcesList;
 import org.fedorahosted.flies.rest.dto.v1.SourceResource;
+import org.fedorahosted.flies.rest.dto.v1.SourceTextFlow;
 import org.jboss.resteasy.client.ClientResponse;
 import org.testng.annotations.Test;
 
@@ -43,7 +44,7 @@ public class TranslationResourceServiceTest extends FliesRestTest {
 	
 	@Test
 	public void fetchEmptyListOfResources() {
-		assertThatResourceListContainsNItems(0);
+		doGetandAssertThatResourceListContainsNItems(0);
 	}
 	
 	@Test
@@ -52,17 +53,38 @@ public class TranslationResourceServiceTest extends FliesRestTest {
 			getClientRequestFactory()
 			.createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
 		
-		SourceResource sr = new SourceResource("my.txt");
+		SourceResource sr = createSourceResource("my.txt");
+		ClientResponse<String> resources = client.post(sr);
+		assertThat(resources.getResponseStatus(), is(Status.CREATED));
+		doGetandAssertThatResourceListContainsNItems(1);
+	}
+
+	private SourceResource createSourceResource(String name) {
+		SourceResource sr = new SourceResource(name);
 		sr.setContentType(ContentType.TextPlain);
 		sr.setLang(LocaleId.EN);
 		sr.setType(ResourceType.FILE);
+		return sr;
+	}
+	
+	@Test
+	public void createResourceWithContent() {
+		ITranslationResources client = 
+			getClientRequestFactory()
+			.createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
+		
+		SourceResource sr = createSourceResource("my.txt");
+		
+		SourceTextFlow stf = new SourceTextFlow("tf1", LocaleId.EN, "tf1");
+		sr.getTextFlows().add(stf);
 		
 		ClientResponse<String> resources = client.post(sr);
 		assertThat(resources.getResponseStatus(), is(Status.CREATED));
-		assertThatResourceListContainsNItems(1);
+		doGetandAssertThatResourceListContainsNItems(1);
+		
 	}
 	
-	private void assertThatResourceListContainsNItems(int n) {
+	private void doGetandAssertThatResourceListContainsNItems(int n) {
 		ITranslationResources client = 
 			getClientRequestFactory()
 			.createProxy(ITranslationResources.class,createBaseURI(RESOURCE_PATH));

@@ -11,7 +11,7 @@ import org.fedorahosted.flies.common.Namespaces;
 @XmlType(name="abstractTranslationResourceType", namespace=Namespaces.FLIES, propOrder={"textFlows"})
 public abstract class AbstractContentTranslationResource<T> extends AbstractTranslationResource{
 
-	private List<T> textFlows;
+	protected List<T> textFlows;
 	
 	public AbstractContentTranslationResource() {
 	}
@@ -20,13 +20,7 @@ public abstract class AbstractContentTranslationResource<T> extends AbstractTran
 		super(name);
 	}
 	
-	@XmlElementWrapper(name="text-flows", namespace=Namespaces.FLIES, required=false)
-	public List<T> getTextFlows() {
-		if(textFlows == null) {
-			textFlows = new ArrayList<T>();
-		}
-		return textFlows;
-	}
+	public abstract List<T> getTextFlows();
 	
 
 }
