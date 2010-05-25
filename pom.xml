@@ -167,6 +167,7 @@
 				<groupId>org.testng</groupId>
 				<artifactId>testng</artifactId>
 				<version>5.9</version>
+				<classifier>jdk15</classifier>
 			</dependency>
 			<dependency>
 				<groupId>org.hamcrest</groupId>
@@ -241,11 +242,11 @@
 
 	<repositories>
 
-		<!--  jboss.org repo  -->
+		<!-- NEW jboss.org repo  -->
 		<repository>
-			<id>repository.jboss.org</id>
-			<name>JBoss Repository</name>
-			<url>http://repository.jboss.org/maven2</url>
+			<id>repository.jboss.org-releases</id>
+			<name>JBoss Repository (Nexus)</name>
+			<url>https://repository.jboss.org/nexus/content/repositories/releases</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -254,12 +255,12 @@
 				<updatePolicy>never</updatePolicy>
 			</snapshots>
 		</repository>
-
-		<!--  jboss.org snapshot repo  -->
+		
+		<!-- NEW jboss.org snapshot repo  -->
 		<repository>
-			<id>snapshots.jboss.org</id>
-			<name>JBoss Snapshots Repository</name>
-			<url>http://snapshots.jboss.org/maven2</url>
+			<id>repository.jboss.org-snapshots</id>
+			<name>JBoss Snapshots Repository (Nexus)</name>
+			<url>https://repository.jboss.org/nexus/content/repositories/snapshots</url>
 			<releases>
 				<enabled>false</enabled>
 			</releases>
@@ -268,6 +269,7 @@
 				<updatePolicy>daily</updatePolicy>
 			</snapshots>
 		</repository>
+
 
 		<repository>
 			<name>Tennera release repository on fedorahosted.org</name>
@@ -303,9 +305,9 @@
 		</pluginRepository>
 
 		<pluginRepository>
-			<id>snapshots.jboss.org</id>
-			<name>JBoss Repository for Maven Snapshots</name>
-			<url>http://snapshots.jboss.org/maven2/</url>
+			<id>repository.jboss.org-snapshots</id>
+			<name>JBoss Repository for Maven Snapshots (Nexus)</name>
+			<url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
 			<releases>
 				<enabled>false</enabled>
 			</releases>
@@ -316,9 +318,9 @@
 		</pluginRepository>
 
 		<pluginRepository>
-			<id>repository.jboss.org</id>
-			<name>Jboss Repository for Maven</name>
-			<url>http://repository.jboss.com/maven2/</url>
+			<id>repository.jboss.org-releases</id>
+			<name>Jboss Repository for Maven (Nexus)</name>
+			<url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
 			<layout>default</layout>
 			<releases>
 				<enabled>true</enabled>

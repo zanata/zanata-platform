@@ -22,6 +22,7 @@
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
+			<classifier>jdk15</classifier>
 			<scope>test</scope>
 		</dependency>
 
