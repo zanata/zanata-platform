@@ -8,8 +8,12 @@ BUILD_SERIAL=$1
 export HUDSON_HOME="@HUDSON_HOME@"
 REPORT_DEST="@HUDSON_HOME@/job/@JOB_NAME@/$BUILD_SERIAL/postBuildResult"
 export DISPLAY="@HEADLESS_DISPLAY@"
+RESULT_DIR=@RESULT_DIR@
 
-/usr/bin/ctest -V --output-log @TEST_LOGFILE@
+# Wipe out the old results
+rm -fr @RESULT_DIR@
+mkdir -p @RESULT_DIR@
+ctest -V --output-log @TEST_LOGFILE@
 
 RESULT=$?
 #MSG=`grep "% tests passed" $LOGFILE`
@@ -18,9 +22,18 @@ RESULT=$?
 #   <result>$RESULT</result>\
 #</run>"
 
+TESTS=`grep "tests failed out of " $LOGFILE | sed -e 's/^.*tests failed out of //'`
+TESTS_FAILED=`grep "% tests passed, " $LOGFILE | sed -e 's/% tests passed, //' |  sed -e 's/ tests.*//'`
+MSG=`grep "% tests passed" $LOGFILE`
+
+XML_MSG="<testsuite errors=\"0\" failures=\"$TESTS_FAILED\" hostname=\"@HUDSON_HOME@\" name=\"@JOB_NAME@\" tests=\"$TESTS\" time=\"27.169\" timestamp=\"$BUILD_ID\">\n\
+   <system-out>$MSG</system-out>\n\
+   <system-err></system-err>\n\
+</testsuite>"
+
+echo $XML_MSG > @TEST_REPORT_XML@
 #CMD="curl -X POST -d \"$XML_MSG\" $REPORT_DEST"
 #echo "CMD=$CMD"
-
 #eval $CMD
 
 exit $RESULT

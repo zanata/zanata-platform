@@ -18,15 +18,16 @@ SET(BASE_URL "http://hudson.englab.bne.redhat.com/")
 SET(FLIES_URL "${BASE_URL}flies")
 SET(REST_PATH "seam/resource/restv1/projects/p/")
 SET(SELENIUM_SERVER_ARGS )
-SET(RESULT_DIR results)
+SET(RESULT_DIR ../../results)
 #SET(BROWSERS_TO_TEST firefox googlechrome)
 SET(BROWSERS_TO_TEST firefox)
 
 # For hudson testing/reporting
 SET(HUDSON_HOME "http://localhost:8083")
 SET(TEST_LOGFILE "${RESULT_DIR}/output.txt")
+SET(TEST_REPORT_XML "${RESULT_DIR}/report.xml")
 SET(HEADLESS_DISPLAY ":98")
-SET(JOB_TITLE "flies-selenium")
+SET(JOB_NAME "flies-selenium")
 CONFIGURE_FILE(hudson_test_wrap.sh.in hudson_test_wrap.sh)
 
 #===================================================================
@@ -309,7 +310,7 @@ MACRO(ADD_OUTPUT_AND_TEST testRole testSuitePath testSuiteName)
             ADD_TEST("${testSuiteName}_${testRole}_on_${browser}" ${SELENIUM_SERVER_CMD} ${SELENIUM_SERVER_ARG}
                 -htmlsuite "${BROWSER_STR}" "${BASE_URL}"
                  ${testSuitePath}/${SISO_TEST_TARGET}
-                 ${RESULT_DIR}/new/${testSuiteName}_${testRole}_on_${browser}.result.html )
+                 ${RESULT_DIR}/${testSuiteName}_${testRole}_on_${browser}.result.html )
         ENDFOREACH()
     ENDIF()
 ENDMACRO()
@@ -324,12 +325,12 @@ FOREACH(testSuiteRaw ${TEST_SUITES_RAW})
     ADD_OUTPUT_AND_TEST(ADMIN  ${testSuitePath} ${testSuiteName})
 ENDFOREACH()
 
-ADD_CUSTOM_COMMAND(OUTPUT ${RESULT_DIR}/new
-    COMMAND cmake -E make_directory ${RESULT_DIR}/new
+ADD_CUSTOM_COMMAND(OUTPUT ${RESULT_DIR}
+    COMMAND cmake -E make_directory ${RESULT_DIR}
 )
 
 ADD_CUSTOM_TARGET(prep_tests ALL
-    DEPENDS ${ALL_OUTPUT_TARGETS} ${RESULT_DIR}/new
+    DEPENDS ${ALL_OUTPUT_TARGETS} ${RESULT_DIR}
 )
 
 #ADD_DEPENDENCIES(test all)
