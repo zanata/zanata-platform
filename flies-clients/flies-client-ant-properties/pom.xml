@@ -45,6 +45,20 @@
       <artifactId>flies-rest-client</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <!-- needed by the ant taskdefs.xml -->
+    <dependency>
+      <groupId>org.fedorahosted.tennera</groupId>
+      <artifactId>ant-gettext</artifactId>
+      <version>0.6</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- needed by the ant taskdefs.xml -->
+    <dependency>
+      <groupId>org.fedorahosted.tennera</groupId>
+      <artifactId>jgettext</artifactId>
+      <version>0.6</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-log4j12</artifactId>
