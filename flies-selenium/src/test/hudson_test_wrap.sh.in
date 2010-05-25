@@ -16,22 +16,25 @@ mkdir -p @RESULT_DIR@
 ctest -V --output-log @TEST_LOGFILE@
 
 RESULT=$?
-#MSG=`grep "% tests passed" $LOGFILE`
 #XML_MSG="<run>\
 #   <log encoding=\\\"hexBinary\\\">$MSG</log>\
 #   <result>$RESULT</result>\
 #</run>"
 
 TESTS=`grep "tests failed out of " $LOGFILE | sed -e 's/^.*tests failed out of //'`
+echo "TESTS=$TESTS"
 TESTS_FAILED=`grep "% tests passed, " $LOGFILE | sed -e 's/% tests passed, //' |  sed -e 's/ tests.*//'`
+echo "TESTS_FAILED=$TESTS_FAILED"
 MSG=`grep "% tests passed" $LOGFILE`
+echo "MSG=$MSG"
 
-XML_MSG="<testsuite errors=\"0\" failures=\"$TESTS_FAILED\" hostname=\"@HUDSON_HOME@\" name=\"@JOB_NAME@\" tests=\"$TESTS\" time=\"27.169\" timestamp=\"$BUILD_ID\">\n\
-   <system-out>$MSG</system-out>\n\
-   <system-err></system-err>\n\
-</testsuite>"
+cat > @TEST_REPORT_XML@ << EOF
+<testsuite errors="0" failures="$TESTS_FAILED" hostname="@HUDSON_HOME@" name="@JOB_NAME@" tests="$TESTS" time="27.169" timestamp="$BUILD_ID">
+    <system-out>$MSG</system-out>
+    <system-err></system-err>
+</testsuite>
+EOF
 
-echo $XML_MSG > @TEST_REPORT_XML@
 #CMD="curl -X POST -d \"$XML_MSG\" $REPORT_DEST"
 #echo "CMD=$CMD"
 #eval $CMD
