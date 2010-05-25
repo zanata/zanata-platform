@@ -16,16 +16,12 @@ mkdir -p @RESULT_DIR@
 ctest -V --output-log @TEST_LOGFILE@
 
 RESULT=$?
-#XML_MSG="<run>\
-#   <log encoding=\\\"hexBinary\\\">$MSG</log>\
-#   <result>$RESULT</result>\
-#</run>"
 
-TESTS=`grep "tests failed out of " @LOGFILE@ | sed -e 's/^.*tests failed out of //'`
+TESTS=`grep "tests failed out of " @TEST_LOGFILE@ | sed -e 's/^.*tests failed out of //'`
 echo "TESTS=$TESTS"
-TESTS_FAILED=`grep "% tests passed, " @LOGFILE@ | sed -e 's/% tests passed, //' |  sed -e 's/ tests.*//'`
+TESTS_FAILED=`grep "% tests passed, " @TEST_LOGFILE@ | sed -e 's/% tests passed, //' |  sed -e 's/ tests.*//'`
 echo "TESTS_FAILED=$TESTS_FAILED"
-MSG=`grep "% tests passed" @LOGFILE@`
+MSG=`grep "% tests passed" @TEST_LOGFILE@`
 echo "MSG=$MSG"
 
 cat > @TEST_REPORT_XML@ << EOF
