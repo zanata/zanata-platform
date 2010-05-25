@@ -1,0 +1,27 @@
+#!/bin/sh
+if [ $# -lt 1 ]; then
+    echo "Usage: $0 <buildNumber>"
+    exit 1
+fi
+
+BUILD_SERIAL=$1
+export HUDSON_HOME="@HUDSON_HOME@"
+REPORT_DEST="@HUDSON_HOME@/job/@JOB_NAME@/$BUILD_SERIAL/postBuildResult"
+export DISPLAY="@HEADLESS_DISPLAY@"
+
+/usr/bin/ctest -V --output-log @TEST_LOGFILE@
+
+RESULT=$?
+#MSG=`grep "% tests passed" $LOGFILE`
+#XML_MSG="<run>\
+#   <log encoding=\\\"hexBinary\\\">$MSG</log>\
+#   <result>$RESULT</result>\
+#</run>"
+
+#CMD="curl -X POST -d \"$XML_MSG\" $REPORT_DEST"
+#echo "CMD=$CMD"
+
+#eval $CMD
+
+exit $RESULT
+

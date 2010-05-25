@@ -3,6 +3,10 @@ cmake_minimum_required(VERSION 2.6)
 # Init Definition
 ####################################################################
 SET(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS ON)
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR})
+SET(ENV{LC_ALL} "C")
+INCLUDE(BasicMacros)
+
 
 ####################################################################
 # Project basic information (Place to customize)
@@ -15,7 +19,15 @@ SET(FLIES_URL "${BASE_URL}flies")
 SET(REST_PATH "seam/resource/restv1/projects/p/")
 SET(SELENIUM_SERVER_ARGS )
 SET(RESULT_DIR results)
-SET(BROWSERS_TO_TEST firefox googlechrome)
+#SET(BROWSERS_TO_TEST firefox googlechrome)
+SET(BROWSERS_TO_TEST firefox)
+
+# For hudson testing/reporting
+SET(HUDSON_HOME "http://localhost:8083")
+SET(TEST_LOGFILE "${RESULT_DIR}/output.txt")
+SET(HEADLESS_DISPLAY ":98")
+SET(JOB_TITLE "flies-selenium")
+CONFIGURE_FILE(hudson_test_wrap.sh.in hudson_test_wrap.sh)
 
 #===================================================================
 # Flies Projects to be test
@@ -260,59 +272,65 @@ MESSAGE("firefox_BIN=${firefox_BIN}")
 # Test Suites.
 ####################################################################
 
+ENABLE_TESTING()
+
 #===================================================================
 # Generate test suites.
-SET(TEST_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/resources)
+SET(TEST_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/resources")
+#FILE(GLOB_RECURSE TEST_SUITES_RAW  RELATIVE ${TEST_ROOT} "0-*.html")
 FILE(GLOB_RECURSE TEST_SUITES_RAW  "0-*.html")
 
-#MESSAGE("TEST_SUITES_RAW=${TEST_SUITES_RAW}")
-SET(LI_FILE LoginBasicTest.html)
-SET(LI_PATTERN_MATCH "Test Suite</b></td></tr>")
-SET(LI_PATTERN_REPLACE "${LI_PATTERN_MATCH}\n<tr><td><a href=\"${LI_FILE}\">Login</a></td></tr>")
+MESSAGE("TEST_SUITES_RAW=${TEST_SUITES_RAW}")
+SET(ALL_OUTPUT_TARGETS "")
 
-SET(LO_FILE LogoutBasicTest.html)
-SET(LO_PATTERN_MATCH "</tbody>")
-SET(LO_PATTERN_REPLACE "<tr><td><a href=\"${LO_FILE}\">Logout</a></td></tr>\n${LO_PATTERN_MATCH}")
+MACRO(ADD_OUTPUT_AND_TEST testRole testSuitePath testSuiteName)
+    MESSAGE("testPath=${testSuitePath}")
+    IF ( NOT EXISTS "${testSuitePath}/NO_${testRole}" )
+        IF ( ${testRole} STREQUAL "ADMIN" )
+            SET(SISO_TEST_TARGET 4-${testSuiteName}.html)
+            SET(SI_TEST_TARGET   3-${testSuiteName}.html)
+        ELSE()
+            SET(SISO_TEST_TARGET 2-${testSuiteName}.html)
+            SET(SI_TEST_TARGET   1-${testSuiteName}.html)
+        ENDIF()
+        SET(OUTPUT_TARGETS ${testSuitePath}/${SISO_TEST_TARGET} ${testSuitePath}/${SI_TEST_TARGET})
+        ADD_CUSTOM_COMMAND(OUTPUT ${OUTPUT_TARGETS}
+            COMMAND ./generate_test_suite.sh ${testRole} ${testSuitePath} ${testSuiteName} ${SI_TEST_TARGET} ${SISO_TEST_TARGET} ${TEST_ROOT}
+            DEPENDS ${testSuiteRaw}
+            VERBATIM
+        )
+        SET(ALL_OUTPUT_TARGETS ${ALL_OUTPUT_TARGETS} ${OUTPUT_TARGETS})
+        FOREACH(browser ${BROWSERS_TO_TEST} )
+            IF (${browser} STREQUAL "firefox")
+                SET(BROWSER_STR "*${browser} ${${browser}_BIN}")
+            ELSE()
+                SET(BROWSER_STR "*${browser}")
+            ENDIF()
+            ADD_TEST("${testSuiteName}_${testRole}_on_${browser}" ${SELENIUM_SERVER_CMD} ${SELENIUM_SERVER_ARG}
+                -htmlsuite "${BROWSER_STR}" "${BASE_URL}"
+                 ${testSuitePath}/${SISO_TEST_TARGET}
+                 ${RESULT_DIR}/new/${testSuiteName}_${testRole}_on_${browser}.result.html )
+        ENDFOREACH()
+    ENDIF()
+ENDMACRO()
 
 FOREACH(testSuiteRaw ${TEST_SUITES_RAW})
     GET_FILENAME_COMPONENT(testSuitePath ${testSuiteRaw} PATH)
     GET_FILENAME_COMPONENT(testSuiteNameOrig ${testSuiteRaw} NAME_WE)
-
     STRING(REGEX REPLACE "^0-" "" testSuiteName ${testSuiteNameOrig})
-    FILE(READ ${testSuiteRaw} testSuite_content)
 
-    STRING(REPLACE "${LI_PATTERN_MATCH}" "${LI_PATTERN_REPLACE}" testSuite_content_LI "${testSuite_content}")
-    FILE(WRITE "${testSuitePath}/1-${testSuiteName}.html" ${testSuite_content_LI})
-    EXECUTE_PROCESS(COMMAND ln -sf  "${TEST_ROOT}/${LI_FILE}" "${testSuitePath}/${LI_FILE}")
-
-    STRING(REPLACE "${LO_PATTERN_MATCH}" "${LO_PATTERN_REPLACE}" testSuite_content_LO "${testSuite_content_LI}")
-    FILE(WRITE "${testSuitePath}/3-${testSuiteName}.html" ${testSuite_content_LO})
-    EXECUTE_PROCESS(COMMAND ln -sf  "${TEST_ROOT}/${LO_FILE}" "${testSuitePath}/${LO_FILE}")
+    # Make test rules.
+    #    ADD_OUTPUT_AND_TEST(NORMAL ${testSuitePath} ${testSuiteName})
+    ADD_OUTPUT_AND_TEST(ADMIN  ${testSuitePath} ${testSuiteName})
 ENDFOREACH()
 
-FILE(GLOB_RECURSE TEST_SUITES_AUTO  RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/resources "3-*.html")
-#MESSAGE("TEST_SUITES_AUTO=${TEST_SUITES_AUTO}")
+ADD_CUSTOM_COMMAND(OUTPUT ${RESULT_DIR}/new
+    COMMAND cmake -E make_directory ${RESULT_DIR}/new
+)
 
+ADD_CUSTOM_TARGET(prep_tests ALL
+    DEPENDS ${ALL_OUTPUT_TARGETS} ${RESULT_DIR}/new
+)
 
-#===================================================================
-# Make test rules.
-ENABLE_TESTING()
-
-FOREACH(browser ${BROWSERS_TO_TEST} )
-    IF (${browser} STREQUAL "firefox")
-         SET(BROWSER_STR "*${browser} ${${browser}_BIN}")
-    ELSE()
-         SET(BROWSER_STR "*${browser}")
-    ENDIF()
-    FOREACH(testSuite ${TEST_SUITES_AUTO})
-        GET_FILENAME_COMPONENT(testSuitePath ${testSuite} PATH)
-        GET_FILENAME_COMPONENT(testSuiteNameOrig ${testSuite} NAME_WE)
-        STRING(REGEX REPLACE "^[0-9]-" "" testSuiteName ${testSuiteNameOrig})
-        ADD_TEST("${testSuiteName}_on_${browser}" ${SELENIUM_SERVER_CMD} ${SELENIUM_SERVER_ARG}
-             -htmlsuite "${BROWSER_STR}" "${BASE_URL}"
-             ${CMAKE_CURRENT_SOURCE_DIR}/resources/${testSuitePath}/${testSuiteNameOrig}.html
-             ${CMAKE_CURRENT_SOURCE_DIR}/${RESULT_DIR}/${testSuiteName}_on_${browser}.result.html )
-   ENDFOREACH()
-ENDFOREACH()
-
+#ADD_DEPENDENCIES(test all)
 
