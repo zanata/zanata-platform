@@ -233,29 +233,32 @@ td.action a {
 }
 
 
-#hd{
+#header{
 	position: relative;
-	margin: 0px;
-	padding: 0px;
-	margin-bottom: 50px;
+    background:url(../img/header_bg.png) repeat-x left top;
+    width:100%;
+    height:60px; 
+    line-height:20px; 
+    text-align:center; 
 }
 
-#hd.fullscreen{
+#header.fullscreen{
 	margin-bottom: 20px;
 }
 
 #headerlogo {
 	position: absolute;
-	left: 10px;
-	top: 10px;
+	left: 0px;
+	top: 0px;
 }
 
 #header_top_right {
 	position: absolute;
 	right: 0px;
 	top: 0px;
-	padding: 5px;
-	padding-right: 20px;
+	padding: 2px;
+	padding-left: 10px;
+	padding-right: 10px;
 	margin: 0px;
 	font-size: 77%;
 	background-color: #f4f4f4;
@@ -291,12 +294,12 @@ td.action a {
 
 /* Footer styles */
 #footer {
-	border-top: 1px solid #eee;
-	text-align: center;
-	font-size: 77%;
-	padding: 5px;
-	margin-bottom: 10px;
-	margin-top: 10px;
+	background:url(../img/footer_bg.png) repeat-x left top; 
+	width:100%; 
+	height:50px; 
+	line-height:20px; 
+	text-align:center; 
+	padding-top:15px;
 }
 
 /* Styles from the security-stuff in seamspace*/
@@ -389,8 +392,8 @@ table.fullwidth {
 
 #search_panel {
 	position: absolute;
-	right: 0px;
-	top: 40px;
+	right: 10px;
+	top: 30px;
 	padding: 0px;
 	color: #999999;
 	-moz-border-radius: 10px;

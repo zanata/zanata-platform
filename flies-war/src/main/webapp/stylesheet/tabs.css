@@ -24,9 +24,9 @@
 .ui-tabs-nav {
     padding: 0 0 0 4px;
     margin: 0px;
-    margin-left: 210px;
+    margin-left: 0px;
     padding-right: 10px;
-    background: #ffffff;
+    background: url(../img/menu_bg.png) repeat-x left top; 
 }
 .ui-tabs-nav:after { /* clearing without presentational markup, IE gets extra treatment */
     display: block;
@@ -43,6 +43,8 @@
     display: block;
     padding: 0 10px;
     background: transparent url(../img/tab_grey.png) no-repeat;
+    -moz-border-radius-topleft: 10px;
+    -moz-border-radius-topright: 10px;
 }
 .ui-tabs-nav a {
     margin: 1px 0 0; /* position: relative makes opacity fail for disabled tab in IE */
