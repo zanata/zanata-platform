@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.webtrans.server.rpc;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -15,6 +16,7 @@ import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.model.HTextFlow;
 import org.fedorahosted.flies.model.HTextFlowTarget;
 import org.fedorahosted.flies.search.DefaultNgramAnalyzer;
+import org.fedorahosted.flies.search.LevenshteinUtil;
 import org.fedorahosted.flies.security.FliesIdentity;
 import org.fedorahosted.flies.util.ShortString;
 import org.fedorahosted.flies.webtrans.server.ActionHandlerFor;
@@ -105,9 +107,9 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
     			String targetContent = target.getContent();
     			String docId = textFlow.getDocument().getDocId();
     			
-    			int levDistance = StringUtils.getLevenshteinDistance(searchText, textFlowContent);
-    			int maxLength = Math.max(searchText.length(), textFlowContent.length());
-    			int percent = 100 * (maxLength - levDistance) / maxLength;
+    			int levDistance = LevenshteinUtil.getLevenshteinSubstringDistance(searchText, textFlowContent);
+    			int maxDistance = searchText.length();
+    			int percent = 100 * (maxDistance - levDistance) / maxDistance;
     				
 				TransMemory mem = new TransMemory(
 						textFlowContent, 
@@ -143,4 +145,5 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 			GetTranslationMemoryResult result, ExecutionContext context)
 			throws ActionException {
 	}
+    
 }
