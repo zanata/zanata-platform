@@ -125,8 +125,21 @@ public class TranslationResourcesService {
 		SourceResource entity = unmarshallEntity(SourceResource.class, messageBody);
 		RestUtils.validateEntity(entity);
 
-		HDocument document = new HDocument(entity.getName(),entity.getContentType());
-		document.setProjectIteration(hProjectIteration);
+		HDocument document = documentDAO.getByDocId(hProjectIteration, entity.getName()); 
+		if(document != null) {
+			if( !document.isObsolete() ) {
+				// updates happens through PUT on the actual resource
+				return Response.status(Status.CONFLICT)
+					.entity("A document with name " + entity.getName() +" already exists.")
+					.build();
+			}
+			// a deleted document is being created again 
+			document.setObsolete(false);
+		}
+		else {
+			document = new HDocument(entity.getName(),entity.getContentType());
+			document.setProjectIteration(hProjectIteration);
+		}
 		
 		documentUtils.transfer(entity, document);
 		
@@ -228,7 +241,6 @@ public class TranslationResourcesService {
 
 		HDocument document = documentDAO.getByDocId(hProjectIteration, id);
 		document.setObsolete(true);
-		documentDAO.makePersistent(document);
 		documentDAO.flush();
 		return Response.ok().build();
 	}
