@@ -2,10 +2,12 @@ package org.fedorahosted.flies.rest.service;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -24,23 +26,28 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.MessageBodyReader;
 
+import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.dao.DocumentDAO;
 import org.fedorahosted.flies.dao.ProjectIterationDAO;
 import org.fedorahosted.flies.model.HDocument;
 import org.fedorahosted.flies.model.HProjectIteration;
 import org.fedorahosted.flies.model.HTextFlow;
+import org.fedorahosted.flies.rest.LocaleIdSet;
 import org.fedorahosted.flies.rest.NoSuchEntityException;
+import org.fedorahosted.flies.rest.StringSet;
 import org.fedorahosted.flies.rest.dto.v1.ResourcesList;
 import org.fedorahosted.flies.rest.dto.v1.SourceResource;
 import org.fedorahosted.flies.rest.dto.v1.SourceTextFlow;
 import org.fedorahosted.flies.rest.dto.v1.TranslationResource;
-import org.jboss.resteasy.core.Headers;
+import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.resteasy.SeamResteasyProviderFactory;
+
+import com.google.common.collect.ImmutableSet;
 
 @Name("translationResourcesService")
 @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/resources")
@@ -48,14 +55,16 @@ import org.jboss.seam.resteasy.SeamResteasyProviderFactory;
 @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class TranslationResourcesService {
 
+	public static final Set<String> EXTENSIONS = ImmutableSet.of(PoHeader.ID);
+	
 	@PathParam("projectSlug")
 	private String projectSlug;
 
 	@PathParam("iterationSlug")
 	private String iterationSlug;
 
-	@QueryParam("ext")
-	private Set<String> extensions;
+	@QueryParam("ext") @DefaultValue("")
+	private StringSet extensions;
 	
 	@HeaderParam("Content-Type")
 	private MediaType requestContentType;
@@ -132,12 +141,14 @@ public class TranslationResourcesService {
 
 	@GET
 	@Path("/r/{id}")
-	public Response doGetResource(
+	public Response doResourceGet(
 			@PathParam("id") String id, 
 			@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
 
 		HProjectIteration hProjectIteration = retrieveIteration();
 
+		validateExtensions();
+		
 		EntityTag etag = documentDAO.getETag(hProjectIteration, id);
 
 		if(etag == null)
@@ -168,7 +179,7 @@ public class TranslationResourcesService {
 	@PUT
 	@Path("/r/{id}")
 	@Restrict("#{identity.loggedIn}")
-	public Response doPutResource(
+	public Response doResourcePut(
 			@PathParam("id") String id, 
 			@HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch, 
 			InputStream messageBody) {
@@ -199,7 +210,7 @@ public class TranslationResourcesService {
 
 	@DELETE
 	@Path("/r/{id}")
-	public Response doDeleteResource(			
+	public Response doResourceDelete(			
 			@PathParam("id") String id, 
 			@HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch 
 			) {
@@ -224,7 +235,7 @@ public class TranslationResourcesService {
 
 	@GET
 	@Path("/r/{id}/meta")
-	public Response doGetResourceMeta(
+	public Response doResourceMetaGet(
 			@PathParam("id") String id, 
 			@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
 		
@@ -253,7 +264,7 @@ public class TranslationResourcesService {
 	
 	@PUT
 	@Path("/r/{id}/meta")
-	public Response doPutResourceMeta(
+	public Response doResourceMetaPut(
 			@PathParam("id") String id, 
 			@HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch, 
 			InputStream messageBody) {
@@ -285,9 +296,9 @@ public class TranslationResourcesService {
 	
 	@GET
 	@Path("/r/{id}/target/{locale}")
-	public Response doGetResourceTarget(
+	public Response doResourceTargetGet(
 		@PathParam("id") String id,
-		@PathParam("locale") Set<LocaleId> locales,
+		@PathParam("locale") LocaleIdSet locales,
 		@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
 
 		return Response.ok().build();
@@ -295,9 +306,9 @@ public class TranslationResourcesService {
 	
 	@PUT
 	@Path("/r/{id}/target/{locale}")
-	public Response doPutResourceTarget(
+	public Response doResourceTargetPut(
 		@PathParam("id") String id,
-		@PathParam("locale") Set<LocaleId> locales,
+		@PathParam("locale") LocaleIdSet locales,
 		@HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch) {
 
 		return Response.ok().build();
@@ -305,7 +316,7 @@ public class TranslationResourcesService {
 
 	@GET
 	@Path("/r/{id}/target-as-source/{locale}")
-	public Response doGetResourceTargetAsSource(
+	public Response doResourceTargetAsSourceGet(
 		@PathParam("id") String id,
 		@PathParam("locale") LocaleId locale,
 		@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
@@ -344,5 +355,23 @@ public class TranslationResourcesService {
 		
 		throw new NoSuchEntityException("Project Iteration '" + projectSlug+":"+iterationSlug+"' not found.");
 	}
-	
+
+	private void validateExtensions() {
+		Set<String> invalidExtensions = null;
+		for(String ext : extensions) {
+			if( ! EXTENSIONS.contains(ext)) {
+				if(invalidExtensions == null) {
+					invalidExtensions = new HashSet<String>();
+				}
+				invalidExtensions.add(ext);
+			}
+		}
+		
+		if(invalidExtensions != null) {
+			throw new WebApplicationException(
+					Response.status(Status.BAD_REQUEST)
+						.entity("Unsupported Extensions: " + StringUtils.join(invalidExtensions, ",")).build());
+			
+		}
+	}
 }
