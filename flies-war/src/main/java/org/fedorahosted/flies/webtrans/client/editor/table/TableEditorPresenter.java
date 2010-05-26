@@ -395,7 +395,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 						eventBus.fireEvent( new NotificationEvent(Severity.Error, "Failed to load data from Server"));
 					}
 					else {
-						Log.error("GetTransUnits failure " + caught);
+						Log.error("GetTransUnits failure " + caught, caught);
 						eventBus.fireEvent( new NotificationEvent(Severity.Error, "An unknown error occurred"));
 					}
 				}
@@ -409,7 +409,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 					new AsyncCallback<UpdateTransUnitResult>() {
 						@Override
 						public void onFailure(Throwable caught) {
-							Log.error("UpdateTransUnit failure " + caught);
+							Log.error("UpdateTransUnit failure " + caught, caught);
 							eventBus.fireEvent(new NotificationEvent(Severity.Error, "Failed to update Translation Unit"));
 						}
 						
@@ -426,6 +426,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 					new AsyncCallback<EditingTranslationResult>() {
 						@Override
 						public void onFailure(Throwable caught) {
+							Log.error("EditingTranslationAction failure " + caught, caught);
 							eventBus.fireEvent(new NotificationEvent(Severity.Error, "Failed to Stop Editing TransUnit"));
 						}
 						
@@ -542,6 +543,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 					
 					@Override
 					public void onFailure(Throwable caught) {
+						Log.error("EditingTranslationAction failure " + caught, caught);
 						eventBus.fireEvent(new NotificationEvent(Severity.Error, "Failed to Stop Editing TransUnit"));
 					}
 					
@@ -557,6 +559,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 				new AsyncCallback<EditingTranslationResult>() {
 					@Override
 					public void onFailure(Throwable caught) {
+						Log.error("EditingTranslationAction failure " + caught, caught);
 						eventBus.fireEvent(new NotificationEvent(Severity.Error, "Failed to Lock TransUnit"));
 					}
 					@Override
@@ -585,6 +588,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 			}
 			@Override
 			public void onFailure(Throwable caught) {
+				Log.error("GetTransUnitsStates failure " + caught, caught);
 			}
 		});
 	}
@@ -606,6 +610,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 			}
 			@Override
 			public void onFailure(Throwable caught) {
+				Log.error("GetTransUnitsStates failure " + caught, caught);
 			}
 		});
 	}
