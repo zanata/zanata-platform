@@ -265,7 +265,6 @@ td.action a {
 	border-bottom: 1px solid #f4f4f4;
 	border-left: 1px solid #f4f4f4;
 	color: #999999;
-	-moz-border-radius-bottomleft: 10px;
 }
 
 #tabs_menu_wrapper {
@@ -392,7 +391,7 @@ table.fullwidth {
 
 #search_panel {
 	position: absolute;
-	right: 10px;
+	right: 5px;
 	top: 30px;
 	padding: 0px;
 	color: #999999;
