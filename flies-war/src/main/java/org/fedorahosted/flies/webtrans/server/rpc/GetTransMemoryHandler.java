@@ -6,13 +6,12 @@ import java.util.List;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.util.Version;
-import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.model.HSimpleComment;
 import org.fedorahosted.flies.model.HTextFlow;
 import org.fedorahosted.flies.model.HTextFlowTarget;
 import org.fedorahosted.flies.search.DefaultNgramAnalyzer;
@@ -105,6 +104,10 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
     			String textFlowContent = textFlow.getContent();
     			String targetContent = target.getContent();
     			String docId = textFlow.getDocument().getDocId();
+    			
+    			int levDistance = StringUtils.getLevenshteinDistance(searchText, textFlowContent);
+    			int maxLength = Math.max(searchText.length(), textFlowContent.length());
+    			int percent = 100 * (maxLength - levDistance) / maxLength;
     				
 				TransMemory mem = new TransMemory(
 						textFlowContent, 
@@ -113,7 +116,8 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 						null, // targetComment,
 						docId,
 						// TODO find the projectSlug and iterSlug
-						score
+						score,
+						percent
 				);
 				results.add(mem);
     		}
