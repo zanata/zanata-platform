@@ -10,9 +10,11 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.rest.StringSet;
 import org.fedorahosted.flies.rest.dto.v1.ResourcesList;
 import org.fedorahosted.flies.rest.dto.v1.SourceResource;
 import org.fedorahosted.flies.rest.dto.v1.TranslationResource;
@@ -27,12 +29,15 @@ public interface ITranslationResources {
 	public ClientResponse<ResourcesList> get();
 	
 	@POST
-	public ClientResponse<String> post(SourceResource messageBody);
+	public ClientResponse<String> post(
+			SourceResource messageBody, 
+			@QueryParam("ext") StringSet extensions);
 
 	@GET
 	@Path("/r/{id}")
 	public ClientResponse<SourceResource> getResource(
-			@PathParam("id") String id);
+			@PathParam("id") String id,
+			@QueryParam("ext") StringSet extensions);
 	
 	@PUT
 	@Path("/r/{id}")

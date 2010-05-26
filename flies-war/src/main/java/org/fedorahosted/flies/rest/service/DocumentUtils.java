@@ -12,11 +12,16 @@ import org.apache.commons.lang.CharSetUtils;
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.common.ResourceType;
 import org.fedorahosted.flies.model.HDocument;
+import org.fedorahosted.flies.model.HSimpleComment;
 import org.fedorahosted.flies.model.HTextFlow;
+import org.fedorahosted.flies.model.po.HPoHeader;
+import org.fedorahosted.flies.model.po.PoUtility;
+import org.fedorahosted.flies.rest.dto.po.HeaderEntry;
 import org.fedorahosted.flies.rest.dto.v1.AbstractTranslationResource;
 import org.fedorahosted.flies.rest.dto.v1.SourceResource;
 import org.fedorahosted.flies.rest.dto.v1.SourceTextFlow;
 import org.fedorahosted.flies.rest.dto.v1.TranslationResource;
+import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
@@ -105,6 +110,30 @@ public class DocumentUtils {
 		return changed;
 	}
 
+	public boolean transfer(PoHeader from, HPoHeader to) {
+		boolean changed = false;
+
+		HSimpleComment comment = to.getComment();
+		if(comment == null) {
+			comment = new HSimpleComment();
+		}
+		if( ! equals(from.getComment(), comment.getComment()) ) {
+			changed = true;
+			comment.setComment(from.getComment());
+			to.setComment(comment);
+		}
+		
+		String entries = PoUtility.listToHeader(from.getEntries());
+		if( ! equals(entries, to.getEntries()) ) {
+			to.setEntries(entries);
+			changed = true;
+		}
+		
+		return changed;
+		
+	}
+	
+	
 	private static <T> boolean equals(T a, T b) {
 		if(a == null && b == null ) {
 			return true;
@@ -133,6 +162,13 @@ public class DocumentUtils {
 		to.setName(from.getName());
 		to.setLang(from.getLocale());
 		to.setContentType(from.getContentType());
+	}
+
+	public void transfer(HPoHeader from, PoHeader to) {
+		if(from.getComment() != null) {
+			to.setComment(from.getComment().getComment());
+		}
+		to.getEntries().addAll(PoUtility.headerToList( from.getEntries() ) );
 	}
 	
 	public void transfer(HTextFlow from, SourceTextFlow to) {
@@ -168,6 +204,5 @@ public class DocumentUtils {
 			throw new RuntimeException(e);
 		}
 	}
-	
-	
+
 }

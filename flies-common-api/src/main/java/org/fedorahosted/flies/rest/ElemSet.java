@@ -90,5 +90,10 @@ public abstract class ElemSet<T> implements Collection<T>{
 	}
 	
 	
+	@Override
+	public String toString() {
+		return StringUtils.join(this, ";");
+	}
+	
 	
 }

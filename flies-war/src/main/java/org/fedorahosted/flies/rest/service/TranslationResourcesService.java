@@ -34,6 +34,7 @@ import org.fedorahosted.flies.dao.ProjectIterationDAO;
 import org.fedorahosted.flies.model.HDocument;
 import org.fedorahosted.flies.model.HProjectIteration;
 import org.fedorahosted.flies.model.HTextFlow;
+import org.fedorahosted.flies.model.po.HPoHeader;
 import org.fedorahosted.flies.rest.LocaleIdSet;
 import org.fedorahosted.flies.rest.NoSuchEntityException;
 import org.fedorahosted.flies.rest.StringSet;
@@ -136,9 +137,12 @@ public class TranslationResourcesService {
 
 		HProjectIteration hProjectIteration = retrieveIteration();
 
+		validateExtensions();
+
 		SourceResource entity = unmarshallEntity(SourceResource.class, messageBody);
 		RestUtils.validateEntity(entity);
 
+		
 		HDocument document = documentDAO.getByDocId(hProjectIteration, entity.getName()); 
 		if(document != null) {
 			if( !document.isObsolete() ) {
@@ -156,10 +160,25 @@ public class TranslationResourcesService {
 		}
 		
 		documentUtils.transfer(entity, document);
-		
+
 		document = documentDAO.makePersistent(document);
 		documentDAO.flush();
+
+		// handle extensions
 		
+		// po header
+		if( extensions.contains(PoHeader.ID) ) {
+			PoHeader poHeaderExt = entity.getExtensions().findByType(PoHeader.class);
+			if(poHeaderExt != null) {
+				HPoHeader poHeader = new HPoHeader();
+				poHeader.setDocument(document);
+				document.setPoHeader(poHeader);
+				documentUtils.transfer(poHeaderExt, poHeader);
+				documentDAO.flush();
+			}
+		}
+		
+		// TODO include extensions in etag generation
 		EntityTag etag = documentDAO.getETag(hProjectIteration, document.getDocId());
 		
 		return Response.created(URI.create("r/"+documentUtils.encodeDocId(document.getDocId())))
@@ -193,6 +212,15 @@ public class TranslationResourcesService {
 
 		SourceResource entity = new SourceResource(doc.getDocId());
 		documentUtils.transfer(doc, entity);
+		
+		// handle po header
+		if(extensions.contains(PoHeader.ID)) {
+			PoHeader poHeaderExt = new PoHeader();
+			if(doc.getPoHeader() != null) {
+				documentUtils.transfer(doc.getPoHeader(), poHeaderExt);
+				entity.getExtensions().add(poHeaderExt);
+			}
+		}
 
 		for(HTextFlow htf : doc.getTextFlows()) {
 			SourceTextFlow tf = new SourceTextFlow(htf.getResId());
@@ -223,12 +251,27 @@ public class TranslationResourcesService {
 		else if(ifMatch != null && !etag.equals(ifMatch)) {
 			return Response.status(Status.CONFLICT).build();
 		}
-		else {
-			SourceResource entity = unmarshallEntity(SourceResource.class, messageBody);
-			document = documentDAO.getByDocId(hProjectIteration, id);
-			documentUtils.transfer(entity, document);
-		}
+
+		SourceResource entity = unmarshallEntity(SourceResource.class, messageBody);
+		document = documentDAO.getByDocId(hProjectIteration, id);
 		
+		documentUtils.transfer(entity, document);
+		
+		// handle po header
+		if( extensions.contains(PoHeader.ID) ) {
+			PoHeader poHeaderExt = entity.getExtensions().findByType(PoHeader.class);
+			if(poHeaderExt != null) {
+				HPoHeader poHeader = document.getPoHeader(); 
+				if ( poHeader == null) {
+					poHeader = new HPoHeader();
+					poHeader.setDocument(document);
+					document.setPoHeader( poHeader );
+					
+				}
+				documentUtils.transfer(poHeaderExt, poHeader);
+			}
+		}
+
 		documentDAO.flush();
 		etag = documentDAO.getETag(hProjectIteration, id);
 		return Response.ok().tag(etag).build();

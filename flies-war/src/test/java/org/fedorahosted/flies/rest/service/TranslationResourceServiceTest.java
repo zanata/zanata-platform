@@ -1,7 +1,7 @@
 package org.fedorahosted.flies.rest.service;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 
 import javax.ws.rs.core.Response.Status;
 
@@ -12,10 +12,13 @@ import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.ResourceType;
 import org.fedorahosted.flies.dao.DocumentDAO;
 import org.fedorahosted.flies.dao.ProjectIterationDAO;
+import org.fedorahosted.flies.rest.StringSet;
 import org.fedorahosted.flies.rest.client.ITranslationResources;
+import org.fedorahosted.flies.rest.dto.po.HeaderEntry;
 import org.fedorahosted.flies.rest.dto.v1.ResourcesList;
 import org.fedorahosted.flies.rest.dto.v1.SourceResource;
 import org.fedorahosted.flies.rest.dto.v1.SourceTextFlow;
+import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
 import org.jboss.resteasy.client.ClientResponse;
 import org.testng.annotations.Test;
 
@@ -54,7 +57,7 @@ public class TranslationResourceServiceTest extends FliesRestTest {
 			.createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
 		
 		SourceResource sr = createSourceResource("my.txt");
-		ClientResponse<String> resources = client.post(sr);
+		ClientResponse<String> resources = client.post(sr, null);
 		assertThat(resources.getResponseStatus(), is(Status.CREATED));
 		doGetandAssertThatResourceListContainsNItems(1);
 	}
@@ -70,16 +73,47 @@ public class TranslationResourceServiceTest extends FliesRestTest {
 		SourceTextFlow stf = new SourceTextFlow("tf1", LocaleId.EN, "tf1");
 		sr.getTextFlows().add(stf);
 		
-		ClientResponse<String> postResponse = client.post(sr);
+		ClientResponse<String> postResponse = client.post(sr, null);
 		assertThat(postResponse.getResponseStatus(), is(Status.CREATED));
 		doGetandAssertThatResourceListContainsNItems(1);
 		
-		ClientResponse<SourceResource> resourceGetResponse = client.getResource("my.txt");
+		ClientResponse<SourceResource> resourceGetResponse = client.getResource("my.txt", null);
 		assertThat(resourceGetResponse.getResponseStatus(), is(Status.OK));
 		SourceResource gotSr = resourceGetResponse.getEntity();
 		assertThat(gotSr.getTextFlows().size(), is(1));
 		assertThat(gotSr.getTextFlows().get(0).getContent(), is("tf1"));
 		
+		
+	}
+	
+	@Test
+	public void createPoResourceWithPoHeader() {
+		ITranslationResources client = 
+			getClientRequestFactory()
+			.createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
+		
+		SourceResource sr = createSourceResource("my.txt");
+		
+		SourceTextFlow stf = new SourceTextFlow("tf1", LocaleId.EN, "tf1");
+		sr.getTextFlows().add(stf);
+		
+		PoHeader poHeaderExt = new PoHeader("comment", new HeaderEntry("h1", "v1"), new HeaderEntry("h2", "v2"));
+		sr.getExtensions().add(poHeaderExt);
+		
+		ClientResponse<String> postResponse = client.post(sr,new StringSet(PoHeader.ID));
+		assertThat(postResponse.getResponseStatus(), is(Status.CREATED));
+		doGetandAssertThatResourceListContainsNItems(1);
+		
+		ClientResponse<SourceResource> resourceGetResponse = client.getResource("my.txt", new StringSet(PoHeader.ID));
+		assertThat(resourceGetResponse.getResponseStatus(), is(Status.OK));
+		SourceResource gotSr = resourceGetResponse.getEntity();
+		assertThat(gotSr.getTextFlows().size(), is(1));
+		assertThat(gotSr.getTextFlows().get(0).getContent(), is("tf1"));
+		assertThat(gotSr.getExtensions().size(), is(1));
+		PoHeader gotPoHeader = gotSr.getExtensions().findByType(PoHeader.class);
+		assertThat(gotPoHeader, notNullValue());
+		assertThat(poHeaderExt.getComment(), is(gotPoHeader.getComment()));
+		assertThat(poHeaderExt.getEntries(), is(gotPoHeader.getEntries()));
 		
 	}
 	
