@@ -103,5 +103,23 @@ public class ProjectIterationDAO extends AbstractDAOImpl< HProjectIteration, Lon
 		
 		return stat;
 	}
+
+	public EntityTag getResourcesETag(HProjectIteration projectIteration) {
+		List<Integer> revisions = getSession().createQuery(
+		"select d.revision from HDocument d where d.projectIteration =:iteration " +
+		"and d.obsolete =:obsolete")
+		.setParameter("iteration", projectIteration)
+		.setParameter("obsolete", false)
+		.list();
+		
+		int hashCode = 1;
+		for(int revision : revisions) {
+		      hashCode = 31*hashCode + revision;
+		}
+		
+		String hash = HashUtil.generateHash(String.valueOf(hashCode));
+		
+		return EntityTag.valueOf( hash );
+	}
 	
 }

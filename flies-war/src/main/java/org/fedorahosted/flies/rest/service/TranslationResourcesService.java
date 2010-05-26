@@ -9,6 +9,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -99,8 +100,21 @@ public class TranslationResourcesService {
 	 * @return Response.ok with ResourcesList or Response(404) if not found 
 	 */
 	@GET
-	public Response doGet() {
+	public Response doGet(
+			@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch		
+				) {
+		
 		HProjectIteration hProjectIteration = retrieveIteration();
+		
+		EntityTag etag = projectIterationDAO.getResourcesETag(hProjectIteration);
+
+		if(etag == null)
+			return Response.status(Status.NOT_FOUND).entity("document not found").build();
+
+		if(ifNoneMatch != null && etag.equals(ifNoneMatch)) {
+			return Response.notModified(ifNoneMatch).build();
+		}
+		
 		
 		ResourcesList resources = new ResourcesList();
 		
@@ -112,7 +126,7 @@ public class TranslationResourcesService {
 			}
 		}
 
-		return Response.ok().entity(resources).build();
+		return Response.ok().entity(resources).tag(etag).build();
 		
 	}
 	
