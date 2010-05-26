@@ -1,9 +1,15 @@
 package org.fedorahosted.flies.rest.service;
 
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.CharSetUtils;
+import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.common.ResourceType;
 import org.fedorahosted.flies.model.HDocument;
 import org.fedorahosted.flies.model.HTextFlow;
@@ -143,11 +149,24 @@ public class DocumentUtils {
 	}
 	
 	public String encodeDocId(String id){
-		return id;
+		String other = StringUtils.replace(id,"/", ",");
+		try{
+			other = URLEncoder.encode(other, "UTF-8");
+			return StringUtils.replace(other, "%2C", ",");
+		}
+		catch(UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	public String decodeDocId(String id) {
-		return id;
+		try{
+			String other = URLDecoder.decode(id, "UTF-8");
+			return StringUtils.replace(other,",", "/");
+		}
+		catch(UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	
