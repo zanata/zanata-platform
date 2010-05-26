@@ -1,24 +1,21 @@
 <div id="project_list_view_item_#{project.id}" class="inline_cell_item"
-   xmlns="http://www.w3.org/1999/xhtml"
-   xmlns:ui="http://java.sun.com/jsf/facelets"
-   xmlns:h="http://java.sun.com/jsf/html"
-   xmlns:f="http://java.sun.com/jsf/core"
-   xmlns:s="http://jboss.com/products/seam/taglib">
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:s="http://jboss.com/products/seam/taglib">
 
-  <h2>
-    <s:link id="project"
-         value="#{project.name}"
-         propagation="none"
-         view="/project/project.xhtml">
-      <f:param name="slug"
-               value="#{project.slug}"/>
-    </s:link>
-  </h2>
-  <p><em>#{project.description}</em></p>
-  <p>
-    <ui:repeat value="#{project.projectIterations}" var="t">
-      <span style="margin-right: 1pt; margin-left: 1pt;">#{t.name}</span> 
-    </ui:repeat>
-  </p>
+	<div class="inline_cell_item_top">
+	    <s:link id="project" value="#{project.name}" propagation="none" view="/project/project.xhtml">
+	        <f:param name="slug" value="#{project.slug}" />
+	    </s:link>
+	</div>
+	<div class="inline_cell_item_middle">
+	    <p><em>#{project.description}</em></p>
+	    <p><ui:repeat value="#{project.projectIterations}" var="t">
+		   <span style="margin-right: 1pt; margin-left: 1pt;">#{t.name}</span>
+	    </ui:repeat></p>
+	</div>
+    <div class="inline_cell_item_bottom" />
 
 </div>

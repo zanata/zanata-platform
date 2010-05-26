@@ -17,7 +17,8 @@
 	      <rich:dataGrid columns="3" 
 	                     value="#{latestProjects}" 
 	                     var="project" 
-	                     columnClasses="grid_col_one_third_width"
+	                     columnClasses="grid_col"
+	                     styleClass="grid_style"
 	                     rendered="#{not empty projects}">
 	        <ui:include src="./project/project_view_inline.xhtml" />
 	      </rich:dataGrid>
