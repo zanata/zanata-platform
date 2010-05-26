@@ -14,6 +14,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -35,7 +36,8 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 	private static final int SOURCE_COL = 0;
 	private static final int TARGET_COL = 1;
 	private static final int SCORE_COL = 2;
-	private static final int ACTION_COL = 3;
+	private static final int SIMILARITY_COL = 3;
+	private static final int ACTION_COL = 4;
 
 	private static TransMemoryViewUiBinder uiBinder = GWT
 		.create(TransMemoryViewUiBinder.class);
@@ -63,6 +65,8 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 	private EventBus eventBus;
 	
 	private final WebTransMessages messages;
+	
+	NumberFormat scoreFormat = NumberFormat.getFormat("#.##");
 	
 	@Inject
 	public TransMemoryView(final WebTransMessages messages) {
@@ -120,7 +124,8 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 		clearResults();
 		addColumn("Source", SOURCE_COL);
 		addColumn("Target", TARGET_COL);
-		addColumn("Score", SCORE_COL);
+		addColumn("Relevance", SCORE_COL);
+		addColumn("Similarity", SIMILARITY_COL);
 		addColumn("Action", ACTION_COL);
 		
 		int row = HEADER_ROW;
@@ -131,10 +136,14 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 			final String sourceComment = memory.getSourceComment();
 			final String targetComment = memory.getTargetComment();
 			final String docID = memory.getDocID();
+			final float score = memory.getRelevanceScore();
+			final int similarity = memory.getSimilarityPercent();
 
 			resultTable.setWidget(row, SOURCE_COL, new HighlightingLabel(sourceMessage));
 			resultTable.setWidget(row, TARGET_COL, new HighlightingLabel(targetMessage));
-			resultTable.setText(row, SCORE_COL, String.valueOf(memory.getRelevanceScore()));
+			String scoreString = scoreFormat.format(score);
+			resultTable.setText(row, SCORE_COL, scoreString);
+			resultTable.setText(row, SIMILARITY_COL, String.valueOf(similarity));
 
 			final Anchor copyLink = new Anchor("Copy");
 			copyLink.addClickHandler(new ClickHandler() {
@@ -155,8 +164,8 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 			resultTable.getWidget(row, SOURCE_COL).setTitle(suppInfo);				
 			resultTable.getWidget(row, TARGET_COL).setTitle(suppInfo);
 			resultTable.getWidget(row, ACTION_COL).setTitle("Copy \"" + targetMessage + "\" to the editor.");	
-			}
-			resultTable.setCellPadding(CELL_PADDING);
+		}
+		resultTable.setCellPadding(CELL_PADDING);
 	}
 	
 	private void addColumn(String columnHeading, int pos) {

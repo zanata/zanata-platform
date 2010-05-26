@@ -17,27 +17,29 @@ public class TransMemory implements Serializable{
 
 	private String docID;
 	private float relevanceScore;
+	private int similarityPercent;
 
 	public TransMemory() {
 	}
 
 	@Deprecated
 	public TransMemory(String source, String memory, String documentPath) {
-		this(source, memory, "", "", documentPath, 0, 50);
+		this(source, memory, "", "", documentPath, 0, 50, 50);
 	}
 	
 	@Deprecated
-	public TransMemory(String source, String memory, String sourceComment, String targetComment, String documentPath, long projectContainer, float relevanceScore) {
-		this(source, memory, sourceComment, targetComment, documentPath, relevanceScore);
+	public TransMemory(String source, String memory, String sourceComment, String targetComment, String documentPath, long projectContainer, float relevanceScore, int similarityPercent) {
+		this(source, memory, sourceComment, targetComment, documentPath, relevanceScore, 50);
 	}
 	
-	public TransMemory(String source, String memory, String sourceComment, String targetComment, String documentPath, float relevanceScore) {
+	public TransMemory(String source, String memory, String sourceComment, String targetComment, String documentPath, float relevanceScore, int similarityPercent) {
 		this.source = source;
 		this.memory = memory;
 		this.sourceComment = sourceComment;
 		this.targetComment = targetComment;
 		this.docID = documentPath;
 		this.relevanceScore = relevanceScore;
+		this.similarityPercent = similarityPercent;
 	}
 	
 	public void setDocID(String documentPath) {
@@ -61,6 +63,14 @@ public class TransMemory implements Serializable{
 	
 	public float getRelevanceScore() {
 		return relevanceScore;
+	}
+	
+	public int getSimilarityPercent() {
+		return similarityPercent;
+	}
+	
+	public void setSimilarityPercent(int similarityPercent) {
+		this.similarityPercent = similarityPercent;
 	}
 
 	public void setSource(String source) {
