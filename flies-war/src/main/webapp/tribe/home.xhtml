@@ -18,7 +18,7 @@
     <ui:define name="center_content">
         <rich:jQuery selector="#tab_tribes" query="addClass('ui-tabs-selected')" />
         <h1>Tribes</h1>
-        <rich:dataGrid value="#{tribesBean.latestTribes}" var="tribe" columns="3" columnClasses="grid_col_one_third_width">
+        <rich:dataGrid value="#{tribesBean.latestTribes}" var="tribe" columns="3" columnClasses="grid_col" styleClass="grid_style">
           <ui:include src="./tribe_view_inline.xhtml" />
         </rich:dataGrid>
     </ui:define>
