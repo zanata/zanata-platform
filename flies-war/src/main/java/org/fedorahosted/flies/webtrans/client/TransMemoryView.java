@@ -133,8 +133,8 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 			++row;
 			final String sourceMessage = memory.getSource();
 			final String targetMessage = memory.getMemory();
-			final String sourceComment = memory.getSourceComment();
-			final String targetComment = memory.getTargetComment();
+//			final String sourceComment = memory.getSourceComment();
+//			final String targetComment = memory.getTargetComment();
 			final String docID = memory.getDocID();
 			final float score = memory.getRelevanceScore();
 			final int similarity = memory.getSimilarityPercent();
@@ -143,7 +143,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 			resultTable.setWidget(row, TARGET_COL, new HighlightingLabel(targetMessage));
 			String scoreString = scoreFormat.format(score);
 			resultTable.setText(row, SCORE_COL, scoreString);
-			resultTable.setText(row, SIMILARITY_COL, String.valueOf(similarity));
+			resultTable.setText(row, SIMILARITY_COL, similarity + "%");
 
 			final Anchor copyLink = new Anchor("Copy");
 			copyLink.addClickHandler(new ClickHandler() {
