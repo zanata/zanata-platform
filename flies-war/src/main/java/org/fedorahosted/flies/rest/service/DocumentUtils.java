@@ -16,8 +16,10 @@ import org.fedorahosted.flies.model.HSimpleComment;
 import org.fedorahosted.flies.model.HTextFlow;
 import org.fedorahosted.flies.model.po.HPoHeader;
 import org.fedorahosted.flies.model.po.PoUtility;
+import org.fedorahosted.flies.rest.StringSet;
 import org.fedorahosted.flies.rest.dto.po.HeaderEntry;
 import org.fedorahosted.flies.rest.dto.v1.AbstractTranslationResource;
+import org.fedorahosted.flies.rest.dto.v1.ExtensionSet;
 import org.fedorahosted.flies.rest.dto.v1.SourceResource;
 import org.fedorahosted.flies.rest.dto.v1.SourceTextFlow;
 import org.fedorahosted.flies.rest.dto.v1.TranslationResource;
@@ -110,6 +112,29 @@ public class DocumentUtils {
 		return changed;
 	}
 
+	public boolean transfer(ExtensionSet from, HDocument to, StringSet extensions) {
+		boolean changed = false;
+
+		if( extensions.contains(PoHeader.ID) ) {
+			PoHeader poHeaderExt = from.findByType(PoHeader.class);
+			if(poHeaderExt != null) {
+				HPoHeader poHeader = to.getPoHeader(); 
+				if ( poHeader == null) {
+					poHeader = new HPoHeader();
+				}
+				changed |= transfer(poHeaderExt, poHeader);
+
+				if(to.getPoHeader() == null && changed) {
+					poHeader.setDocument(to);
+					to.setPoHeader( poHeader );
+				}
+				
+			}
+		}
+		
+		return changed;
+	}
+	
 	public boolean transfer(PoHeader from, HPoHeader to) {
 		boolean changed = false;
 
@@ -183,6 +208,17 @@ public class DocumentUtils {
 		to.setName(from.getDocId());
 		to.setType(ResourceType.FILE); // TODO
 	}
+
+	public void transfer(HDocument from, ExtensionSet to, StringSet extensions) {
+		if(extensions.contains(PoHeader.ID)) {
+			PoHeader poHeaderExt = new PoHeader();
+			if(from.getPoHeader() != null) {
+				transfer(from.getPoHeader(), poHeaderExt);
+				to.add(poHeaderExt);
+			}
+		}
+	}
+	
 	
 	public String encodeDocId(String id){
 		String other = StringUtils.replace(id,"/", ",");

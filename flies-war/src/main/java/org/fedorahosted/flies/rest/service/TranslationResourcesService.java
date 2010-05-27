@@ -167,19 +167,12 @@ public class TranslationResourcesService {
 		// handle extensions
 		
 		// po header
-		if( extensions.contains(PoHeader.ID) ) {
-			PoHeader poHeaderExt = entity.getExtensions().findByType(PoHeader.class);
-			if(poHeaderExt != null) {
-				HPoHeader poHeader = new HPoHeader();
-				poHeader.setDocument(document);
-				document.setPoHeader(poHeader);
-				documentUtils.transfer(poHeaderExt, poHeader);
-				documentDAO.flush();
-			}
+		if ( documentUtils.transfer(entity.getExtensions(), document, extensions) ) {
+			documentDAO.flush();
 		}
 		
 		// TODO include extensions in etag generation
-		EntityTag etag = documentDAO.getETag(hProjectIteration, document.getDocId());
+		EntityTag etag = documentDAO.getETag(hProjectIteration, document.getDocId(), extensions);
 		
 		return Response.created(URI.create("r/"+documentUtils.encodeDocId(document.getDocId())))
 			.tag(etag).build();
@@ -195,7 +188,7 @@ public class TranslationResourcesService {
 
 		validateExtensions();
 		
-		EntityTag etag = documentDAO.getETag(hProjectIteration, id);
+		EntityTag etag = documentDAO.getETag(hProjectIteration, id, extensions);
 
 		if(etag == null)
 			return Response.status(Status.NOT_FOUND).entity("document not found").build();
@@ -213,20 +206,14 @@ public class TranslationResourcesService {
 		SourceResource entity = new SourceResource(doc.getDocId());
 		documentUtils.transfer(doc, entity);
 		
-		// handle po header
-		if(extensions.contains(PoHeader.ID)) {
-			PoHeader poHeaderExt = new PoHeader();
-			if(doc.getPoHeader() != null) {
-				documentUtils.transfer(doc.getPoHeader(), poHeaderExt);
-				entity.getExtensions().add(poHeaderExt);
-			}
-		}
-
 		for(HTextFlow htf : doc.getTextFlows()) {
 			SourceTextFlow tf = new SourceTextFlow(htf.getResId());
 			documentUtils.transfer(htf, tf);
 			entity.getTextFlows().add(tf);
 		}
+
+		// handle extensions
+		documentUtils.transfer(doc, entity.getExtensions(), extensions);
 		
 		return Response.ok().entity(entity).tag(etag).lastModified(doc.getLastChanged()).build();
 	}
@@ -241,7 +228,7 @@ public class TranslationResourcesService {
 
 		HProjectIteration hProjectIteration = retrieveIteration();
 		
-		EntityTag etag = documentDAO.getETag(hProjectIteration, id);
+		EntityTag etag = documentDAO.getETag(hProjectIteration, id, extensions);
 
 		HDocument document;
 		
@@ -273,7 +260,7 @@ public class TranslationResourcesService {
 		}
 
 		documentDAO.flush();
-		etag = documentDAO.getETag(hProjectIteration, id);
+		etag = documentDAO.getETag(hProjectIteration, id, extensions);
 		return Response.ok().tag(etag).build();
 			
 	}
@@ -286,7 +273,7 @@ public class TranslationResourcesService {
 			) {
 		HProjectIteration hProjectIteration = retrieveIteration();
 		
-		EntityTag etag = documentDAO.getETag(hProjectIteration, id);
+		EntityTag etag = documentDAO.getETag(hProjectIteration, id, extensions);
 
 		if(etag == null) {
 			return Response.status(Status.NOT_FOUND).build();
@@ -310,7 +297,7 @@ public class TranslationResourcesService {
 		
 		HProjectIteration hProjectIteration = retrieveIteration();
 
-		EntityTag etag = documentDAO.getETag(hProjectIteration, id);
+		EntityTag etag = documentDAO.getETag(hProjectIteration, id, extensions);
 
 		if(etag == null)
 			return Response.status(Status.NOT_FOUND).entity("document not found").build();
@@ -327,6 +314,9 @@ public class TranslationResourcesService {
 
 		TranslationResource entity = new TranslationResource(doc.getDocId());
 		documentUtils.transfer(doc, entity);
+		
+		// transfer extensions
+		documentUtils.transfer(doc, entity.getExtensions(), extensions);
 
 		return Response.ok().entity(entity).tag(etag).build();
 	}
@@ -340,24 +330,27 @@ public class TranslationResourcesService {
 
 		HProjectIteration hProjectIteration = retrieveIteration();
 		
-		EntityTag etag = documentDAO.getETag(hProjectIteration, id);
+		EntityTag etag = documentDAO.getETag(hProjectIteration, id, extensions);
 
-		HDocument document;
-		
 		if(etag == null) {
 			return Response.status(Status.NOT_FOUND).build();
 		}
 		else if(ifMatch != null && !etag.equals(ifMatch)) {
 			return Response.status(Status.CONFLICT).build();
 		}
-		else {
-			TranslationResource entity = unmarshallEntity(TranslationResource.class, messageBody);
-			document = documentDAO.getByDocId(hProjectIteration, id);
-			documentUtils.transfer(entity, document);
+
+		TranslationResource entity = unmarshallEntity(TranslationResource.class, messageBody);
+		HDocument document = documentDAO.getByDocId(hProjectIteration, id);
+		boolean changed = documentUtils.transfer(entity, document);
+		
+		// handle extensions
+		changed |= documentUtils.transfer(entity.getExtensions(), document, extensions);
+		
+		if(changed) {
+			documentDAO.flush();
+			etag = documentDAO.getETag(hProjectIteration, id, extensions);
 		}
 		
-		documentDAO.flush();
-		etag = documentDAO.getETag(hProjectIteration, id);
 		return Response.ok().tag(etag).lastModified(document.getLastChanged()).build();
 			
 	}

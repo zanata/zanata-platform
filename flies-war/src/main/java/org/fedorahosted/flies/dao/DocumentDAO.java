@@ -13,6 +13,9 @@ import org.fedorahosted.flies.model.HDocument;
 import org.fedorahosted.flies.model.HProjectIteration;
 import org.fedorahosted.flies.model.HTextFlow;
 import org.fedorahosted.flies.model.StatusCount;
+import org.fedorahosted.flies.model.po.HPoHeader;
+import org.fedorahosted.flies.rest.StringSet;
+import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.AutoCreate;
@@ -31,11 +34,23 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>{
 		super(HDocument.class, session);
 	}
 
-	public EntityTag getETag(HProjectIteration iteration, String id) {
+	public EntityTag getETag(HProjectIteration iteration, String id, StringSet extensions) {
 		HDocument doc = getByDocId(iteration, id);
 		if( doc == null ) 
 			return null;
-		return EntityTag.valueOf( String.valueOf(doc.getRevision()) );
+		Integer hashcode = 1;
+		hashcode += doc.getRevision() * 37;
+		
+		int extHash = 0;
+		if( extensions.contains(PoHeader.ID) ) {
+			HPoHeader header = doc.getPoHeader();
+			if(header != null) {
+				extHash =  header.getVersionNum();
+			}
+		}
+		hashcode += extHash * 37;
+		
+		return EntityTag.valueOf( String.valueOf( hashcode) );
 	}
 	
 	public HDocument getByDocId(HProjectIteration iteration, String id){
