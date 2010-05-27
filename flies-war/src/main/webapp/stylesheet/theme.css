@@ -538,6 +538,7 @@ table.fullwidth {
 }
 
 .rich-panel {
+	width: 62%;
 	-moz-border-radius-topleft: 8px;
 	-moz-border-radius-topright: 8px;
 }
