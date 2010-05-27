@@ -1,15 +1,12 @@
 package org.fedorahosted.flies.model.po;
 
-import java.io.Serializable;
-
 import javax.persistence.CascadeType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
+import org.fedorahosted.flies.model.AbstractFliesEntity;
 import org.fedorahosted.flies.model.HDocument;
 import org.fedorahosted.flies.model.HSimpleComment;
 import org.hibernate.annotations.Type;
@@ -20,22 +17,11 @@ import org.hibernate.annotations.Type;
  * @see org.fedorahosted.flies.rest.dto.po.PoHeader
  */
 @MappedSuperclass
-public abstract class AbstractPoHeader implements Serializable {
-	private static final long serialVersionUID = 1L;
-	private Long id;
+public abstract class AbstractPoHeader extends AbstractFliesEntity {
+
 	private HSimpleComment comment;
 	private String entries;
 
-	@Id
-	@GeneratedValue
-	public Long getId() {
-		return id;
-	}
-	
-	protected void setId(Long id) {
-		this.id = id;
-	}
-	
 	public abstract void setDocument(HDocument document);
 
 	@Transient
