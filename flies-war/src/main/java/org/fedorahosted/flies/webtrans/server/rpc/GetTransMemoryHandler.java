@@ -2,6 +2,7 @@ package org.fedorahosted.flies.webtrans.server.rpc;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -133,6 +134,42 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 			}
             results = new ArrayList<TransMemory>(0); 
         }
+        
+        /**
+         * NB just because this Comparator returns 0 doesn't mean the matches are identical.
+         */
+        Comparator<TransMemory> comp = new Comparator<TransMemory>() {
+			
+			@Override
+			public int compare(TransMemory m1, TransMemory m2) {
+				int result;
+				result = compare(m1.getSimilarityPercent(), m2.getSimilarityPercent());
+				if (result != 0)
+					return -result;
+				result = compare(m1.getSource().length(), m2.getSource().length());
+				if (result != 0)
+					return result; // shorter matches are preferred, if similarity is the same
+				result = compare(m1.getRelevanceScore(), m2.getRelevanceScore());
+				if (result != 0)
+					return -result;
+				return m1.getSource().compareTo(m2.getSource());
+			}
+
+			private int compare(int a, int b) {
+				if (a < b) return -1;
+				if (a > b) return 1;
+				return 0;
+			}
+			
+			private int compare(float a, float b) {
+				if (a < b) return -1;
+				if (a > b) return 1;
+				return 0;
+			}
+			
+		};
+		
+		Collections.sort(results, comp);
 
 		log.info("Returning {0} TM matches for \"{1}\"", 
 				results.size(), 
