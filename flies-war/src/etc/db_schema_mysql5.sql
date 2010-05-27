@@ -1,488 +1,563 @@
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HAccount` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `creationDate` datetime NOT NULL,
-  `lastChanged` datetime NOT NULL,
-  `versionNum` int(11) NOT NULL,
-  `apiKey` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `enabled` bit(1) NOT NULL,
-  `passwordHash` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `username` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HAccountActivationKey` (
-  `keyHash` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `accountId` bigint(20) NOT NULL,
-  PRIMARY KEY (`keyHash`),
-  UNIQUE KEY `accountId` (`accountId`),
-  KEY `FK86E79CA44A0EDB13` (`accountId`),
-  CONSTRAINT `FK86E79CA44A0EDB13` FOREIGN KEY (`accountId`) REFERENCES `HAccount` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HAccountMembership` (
-  `accountId` bigint(20) NOT NULL,
-  `memberOf` int(11) NOT NULL,
-  PRIMARY KEY (`accountId`,`memberOf`),
-  KEY `FK9D5DB27B8AFBEC12` (`memberOf`),
-  KEY `FK9D5DB27B4A0EDB13` (`accountId`),
-  CONSTRAINT `FK9D5DB27B4A0EDB13` FOREIGN KEY (`accountId`) REFERENCES `HAccount` (`id`),
-  CONSTRAINT `FK9D5DB27B8AFBEC12` FOREIGN KEY (`memberOf`) REFERENCES `HAccountRole` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HAccountPermission` (
-  `permissionId` int(11) NOT NULL AUTO_INCREMENT,
-  `action` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `discriminator` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `recipient` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `target` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  PRIMARY KEY (`permissionId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HAccountResetPasswordKey` (
-  `keyHash` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `accountId` bigint(20) NOT NULL,
-  PRIMARY KEY (`keyHash`),
-  UNIQUE KEY `accountId` (`accountId`),
-  KEY `FK85C9EFDA4A0EDB13` (`accountId`),
-  CONSTRAINT `FK85C9EFDA4A0EDB13` FOREIGN KEY (`accountId`) REFERENCES `HAccount` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HAccountRole` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `conditional` bit(1) NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HAccountRoleGroup` (
-  `roleId` int(11) NOT NULL,
-  `memberOf` int(11) NOT NULL,
-  PRIMARY KEY (`roleId`,`memberOf`),
-  KEY `FK3321CC648AFBEC12` (`memberOf`),
-  KEY `FK3321CC647A88DA32` (`roleId`),
-  CONSTRAINT `FK3321CC647A88DA32` FOREIGN KEY (`roleId`) REFERENCES `HAccountRole` (`id`),
-  CONSTRAINT `FK3321CC648AFBEC12` FOREIGN KEY (`memberOf`) REFERENCES `HAccountRole` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HCommunity` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `creationDate` datetime NOT NULL,
-  `lastChanged` datetime NOT NULL,
-  `versionNum` int(11) NOT NULL,
-  `slug` varchar(40) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `description` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `homeContent` longtext,
-  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `ownerId` bigint(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `slug` (`slug`),
-  KEY `FKD3DF20814C1F95C5` (`ownerId`),
-  CONSTRAINT `FKD3DF20814C1F95C5` FOREIGN KEY (`ownerId`) REFERENCES `HPerson` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HCommunity_Member` (
-  `communityId` bigint(20) NOT NULL,
-  `personId` bigint(20) NOT NULL,
-  PRIMARY KEY (`personId`,`communityId`),
-  KEY `FK8BEBF038A5679DE7` (`personId`),
-  KEY `FK8BEBF038ADFEE80B` (`communityId`),
-  CONSTRAINT `FK8BEBF038ADFEE80B` FOREIGN KEY (`communityId`) REFERENCES `HCommunity` (`id`),
-  CONSTRAINT `FK8BEBF038A5679DE7` FOREIGN KEY (`personId`) REFERENCES `HPerson` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HCommunity_Officer` (
-  `communityId` bigint(20) NOT NULL,
-  `personId` bigint(20) NOT NULL,
-  PRIMARY KEY (`personId`,`communityId`),
-  KEY `FK5CB3E758A5679DE7` (`personId`),
-  KEY `FK5CB3E758ADFEE80B` (`communityId`),
-  CONSTRAINT `FK5CB3E758ADFEE80B` FOREIGN KEY (`communityId`) REFERENCES `HCommunity` (`id`),
-  CONSTRAINT `FK5CB3E758A5679DE7` FOREIGN KEY (`personId`) REFERENCES `HPerson` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HDocument` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `creationDate` datetime NOT NULL,
-  `lastChanged` datetime NOT NULL,
-  `versionNum` int(11) NOT NULL,
-  `contentType` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `docId` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `locale` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `obsolete` bit(1) NOT NULL,
-  `path` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `revision` int(11) NOT NULL,
-  `last_modified_by_id` bigint(20) DEFAULT NULL,
-  `poHeader_id` bigint(20) DEFAULT NULL,
-  `project_iteration_id` bigint(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `docId` (`docId`,`project_iteration_id`),
-  KEY `FKEA766D83B13DF08D` (`last_modified_by_id`),
-  KEY `FKEA766D835063A1C9` (`project_iteration_id`),
-  KEY `FKEA766D8360005CD9` (`poHeader_id`),
-  CONSTRAINT `FKEA766D8360005CD9` FOREIGN KEY (`poHeader_id`) REFERENCES `HPoHeader` (`id`),
-  CONSTRAINT `FKEA766D835063A1C9` FOREIGN KEY (`project_iteration_id`) REFERENCES `HProjectIteration` (`id`),
-  CONSTRAINT `FKEA766D83B13DF08D` FOREIGN KEY (`last_modified_by_id`) REFERENCES `HPerson` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = latin1 */ ;
-/*!50003 SET character_set_results = latin1 */ ;
-/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
-DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `HDocument_Update` BEFORE UPDATE on `HDocument` FOR EACH ROW BEGIN IF NEW.revision != OLD.revision THEN INSERT INTO HDocumentHistory(document_id,revision,contentType,docId,locale,name,path,lastChanged,last_modified_by_id,obsolete) VALUES (OLD.id,OLD.revision,OLD.contentType,OLD.docId,OLD.locale,OLD.name,OLD.path,OLD.lastChanged,OLD.last_modified_by_id,OLD.obsolete); END IF; END */;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HDocumentHistory` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `contentType` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `docId` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `lastChanged` datetime DEFAULT NULL,
-  `locale` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `obsolete` bit(1) NOT NULL,
-  `path` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `revision` int(11) DEFAULT NULL,
-  `document_id` bigint(20) DEFAULT NULL,
-  `last_modified_by_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `document_id` (`document_id`,`revision`),
-  KEY `FK27976591F8A0A2BC` (`document_id`),
-  KEY `FK27976591B13DF08D` (`last_modified_by_id`),
-  CONSTRAINT `FK27976591B13DF08D` FOREIGN KEY (`last_modified_by_id`) REFERENCES `HPerson` (`id`),
-  CONSTRAINT `FK27976591F8A0A2BC` FOREIGN KEY (`document_id`) REFERENCES `HDocument` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HFliesLocale` (
-  `id` varchar(80) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `icuLocaleId` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `parentId` varchar(80) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK6CAF0A33D884B2E` (`parentId`),
-  CONSTRAINT `FK6CAF0A33D884B2E` FOREIGN KEY (`parentId`) REFERENCES `HFliesLocale` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HFliesLocale_Friends` (
-  `localeId` varchar(80) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `friendId` varchar(80) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  KEY `FKF87125D9A2AAA022` (`friendId`),
-  KEY `FKF87125D968C8A4DE` (`localeId`),
-  CONSTRAINT `FKF87125D968C8A4DE` FOREIGN KEY (`localeId`) REFERENCES `HFliesLocale` (`id`),
-  CONSTRAINT `FKF87125D9A2AAA022` FOREIGN KEY (`friendId`) REFERENCES `HFliesLocale` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HPerson` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `creationDate` datetime NOT NULL,
-  `lastChanged` datetime NOT NULL,
-  `versionNum` int(11) NOT NULL,
-  `email` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `name` varchar(80) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `accountId` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK6F0931BD4A0EDB13` (`accountId`),
-  CONSTRAINT `FK6F0931BD4A0EDB13` FOREIGN KEY (`accountId`) REFERENCES `HAccount` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HPoHeader` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `creationDate` datetime NOT NULL,
-  `lastChanged` datetime NOT NULL,
-  `versionNum` int(11) NOT NULL,
-  `entries` longtext,
-  `comment_id` bigint(20) DEFAULT NULL,
-  `document_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `document_id` (`document_id`),
-  UNIQUE KEY `document_id_2` (`document_id`),
-  KEY `FK9A0ABDD4F8A0A2BC` (`document_id`),
-  KEY `FK9A0ABDD42DC34DA6` (`comment_id`),
-  CONSTRAINT `FK9A0ABDD42DC34DA6` FOREIGN KEY (`comment_id`) REFERENCES `HSimpleComment` (`id`),
-  CONSTRAINT `FK9A0ABDD4F8A0A2BC` FOREIGN KEY (`document_id`) REFERENCES `HDocument` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HPoTargetHeader` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `creationDate` datetime NOT NULL,
-  `lastChanged` datetime NOT NULL,
-  `versionNum` int(11) NOT NULL,
-  `entries` longtext,
-  `targetLanguage` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `comment_id` bigint(20) DEFAULT NULL,
-  `document_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `document_id` (`document_id`,`targetLanguage`),
-  KEY `FK1BC71985F8A0A2BC` (`document_id`),
-  KEY `FK1BC719852DC34DA6` (`comment_id`),
-  CONSTRAINT `FK1BC719852DC34DA6` FOREIGN KEY (`comment_id`) REFERENCES `HSimpleComment` (`id`),
-  CONSTRAINT `FK1BC71985F8A0A2BC` FOREIGN KEY (`document_id`) REFERENCES `HDocument` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HPotEntryData` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `context` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `flags` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `refs` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `comment_id` bigint(20) DEFAULT NULL,
-  `tf_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `tf_id` (`tf_id`),
-  UNIQUE KEY `tf_id_2` (`tf_id`),
-  KEY `FK17A648CF2DC34DA6` (`comment_id`),
-  KEY `FK17A648CF71CA5CE5` (`tf_id`),
-  CONSTRAINT `FK17A648CF71CA5CE5` FOREIGN KEY (`tf_id`) REFERENCES `HTextFlow` (`id`),
-  CONSTRAINT `FK17A648CF2DC34DA6` FOREIGN KEY (`comment_id`) REFERENCES `HSimpleComment` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HProject` (
-  `projecttype` varchar(31) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `creationDate` datetime NOT NULL,
-  `lastChanged` datetime NOT NULL,
-  `versionNum` int(11) NOT NULL,
-  `slug` varchar(40) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `description` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `homeContent` longtext,
-  `name` varchar(80) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `slug` (`slug`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HProjectIteration` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `creationDate` datetime NOT NULL,
-  `lastChanged` datetime NOT NULL,
-  `versionNum` int(11) NOT NULL,
-  `slug` varchar(40) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `active` bit(1) NOT NULL,
-  `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `name` varchar(20) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `parentId` bigint(20) DEFAULT NULL,
-  `project_id` bigint(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `slug` (`slug`,`project_id`),
-  KEY `FK31C1E42C4A451E5F` (`project_id`),
-  KEY `FK31C1E42C59934BEB` (`parentId`),
-  CONSTRAINT `FK31C1E42C59934BEB` FOREIGN KEY (`parentId`) REFERENCES `HProjectIteration` (`id`),
-  CONSTRAINT `FK31C1E42C4A451E5F` FOREIGN KEY (`project_id`) REFERENCES `HProject` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HProject_Maintainer` (
-  `personId` bigint(20) NOT NULL,
-  `projectId` bigint(20) NOT NULL,
-  PRIMARY KEY (`projectId`,`personId`),
-  KEY `FK1491F2E6A5679DE7` (`personId`),
-  KEY `FK1491F2E6B55BD1EB` (`projectId`),
-  CONSTRAINT `FK1491F2E6B55BD1EB` FOREIGN KEY (`projectId`) REFERENCES `HProject` (`id`),
-  CONSTRAINT `FK1491F2E6A5679DE7` FOREIGN KEY (`personId`) REFERENCES `HPerson` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HSimpleComment` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `comment` longtext NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HTextFlow` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `content` longtext NOT NULL,
-  `obsolete` bit(1) NOT NULL,
-  `pos` int(11) NOT NULL,
-  `resId` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `revision` int(11) NOT NULL,
-  `comment_id` bigint(20) DEFAULT NULL,
-  `document_id` bigint(20) NOT NULL,
-  `potEntryData_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `document_id` (`document_id`,`resId`),
-  KEY `FK7B40F863F8A0A2BC` (`document_id`),
-  KEY `FK7B40F863F8DC9359` (`potEntryData_id`),
-  KEY `FK7B40F8632DC34DA6` (`comment_id`),
-  CONSTRAINT `FK7B40F8632DC34DA6` FOREIGN KEY (`comment_id`) REFERENCES `HSimpleComment` (`id`),
-  CONSTRAINT `FK7B40F863F8A0A2BC` FOREIGN KEY (`document_id`) REFERENCES `HDocument` (`id`),
-  CONSTRAINT `FK7B40F863F8DC9359` FOREIGN KEY (`potEntryData_id`) REFERENCES `HPotEntryData` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = latin1 */ ;
-/*!50003 SET character_set_results = latin1 */ ;
-/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
-DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `HTextFlow_Update` BEFORE UPDATE on `HTextFlow` FOR EACH ROW BEGIN IF NEW.revision != OLD.revision THEN INSERT INTO HTextFlowHistory(tf_id,revision,content, obsolete, pos) VALUES (OLD.id,OLD.revision,OLD.content,OLD.obsolete,OLD.pos); END IF; END */;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HTextFlowHistory` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `content` longtext,
-  `obsolete` bit(1) NOT NULL,
-  `pos` int(11) DEFAULT NULL,
-  `revision` int(11) DEFAULT NULL,
-  `tf_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `revision` (`revision`,`tf_id`),
-  KEY `FK46C4DEB171CA5CE5` (`tf_id`),
-  CONSTRAINT `FK46C4DEB171CA5CE5` FOREIGN KEY (`tf_id`) REFERENCES `HTextFlow` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HTextFlowTarget` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `creationDate` datetime NOT NULL,
-  `lastChanged` datetime NOT NULL,
-  `versionNum` int(11) NOT NULL,
-  `content` longtext NOT NULL,
-  `locale` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `state` int(11) NOT NULL,
-  `tf_revision` int(11) NOT NULL,
-  `comment_id` bigint(20) DEFAULT NULL,
-  `last_modified_by_id` bigint(20) DEFAULT NULL,
-  `tf_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `locale` (`locale`,`tf_id`),
-  KEY `FK1E933FD4B13DF08D` (`last_modified_by_id`),
-  KEY `FK1E933FD42DC34DA6` (`comment_id`),
-  KEY `FK1E933FD471CA5CE5` (`tf_id`),
-  CONSTRAINT `FK1E933FD471CA5CE5` FOREIGN KEY (`tf_id`) REFERENCES `HTextFlow` (`id`),
-  CONSTRAINT `FK1E933FD42DC34DA6` FOREIGN KEY (`comment_id`) REFERENCES `HSimpleComment` (`id`),
-  CONSTRAINT `FK1E933FD4B13DF08D` FOREIGN KEY (`last_modified_by_id`) REFERENCES `HPerson` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = latin1 */ ;
-/*!50003 SET character_set_results = latin1 */ ;
-/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
-DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `HTextFlowTarget_Update` BEFORE UPDATE on `HTextFlowTarget` FOR EACH ROW BEGIN IF NEW.versionNum != OLD.versionNum THEN INSERT INTO HTextFlowTarget(target_id,versionNum,content, lastChanged, last_modified_by_id, state, tf_revision) VALUES (OLD.id,OLD.versionNum,OLD.content,OLD.lastChanged,OLD.last_modified_by_id,OLD.state,OLD.tf_revision); END IF; END */;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HTextFlowTargetHistory` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `content` longtext,
-  `lastChanged` datetime DEFAULT NULL,
-  `state` int(11) DEFAULT NULL,
-  `tf_revision` int(11) DEFAULT NULL,
-  `versionNum` int(11) DEFAULT NULL,
-  `last_modified_by_id` bigint(20) DEFAULT NULL,
-  `target_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `target_id` (`target_id`,`versionNum`),
-  KEY `FKF1098620B13DF08D` (`last_modified_by_id`),
-  KEY `FKF1098620CE3B3557` (`target_id`),
-  CONSTRAINT `FKF1098620CE3B3557` FOREIGN KEY (`target_id`) REFERENCES `HTextFlowTarget` (`id`),
-  CONSTRAINT `FKF1098620B13DF08D` FOREIGN KEY (`last_modified_by_id`) REFERENCES `HPerson` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HTribe` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `creationDate` datetime NOT NULL,
-  `lastChanged` datetime NOT NULL,
-  `versionNum` int(11) NOT NULL,
-  `chiefId` bigint(20) DEFAULT NULL,
-  `localeId` varchar(80) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `localeId` (`localeId`),
-  KEY `FK7FB20BC6B7757AD7` (`chiefId`),
-  KEY `FK7FB20BC668C8A4DE` (`localeId`),
-  CONSTRAINT `FK7FB20BC668C8A4DE` FOREIGN KEY (`localeId`) REFERENCES `HFliesLocale` (`id`),
-  CONSTRAINT `FK7FB20BC6B7757AD7` FOREIGN KEY (`chiefId`) REFERENCES `HPerson` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HTribe_Leader` (
-  `personId` bigint(20) NOT NULL,
-  `tribeId` bigint(20) NOT NULL,
-  PRIMARY KEY (`tribeId`,`personId`),
-  KEY `FK20177C2A5679DE7` (`personId`),
-  KEY `FK20177C2EED54855` (`tribeId`),
-  CONSTRAINT `FK20177C2EED54855` FOREIGN KEY (`tribeId`) REFERENCES `HTribe` (`id`),
-  CONSTRAINT `FK20177C2A5679DE7` FOREIGN KEY (`personId`) REFERENCES `HPerson` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `HTribe_Member` (
-  `personId` bigint(20) NOT NULL,
-  `tribeId` bigint(20) NOT NULL,
-  PRIMARY KEY (`tribeId`,`personId`),
-  KEY `FK3BBBD53A5679DE7` (`personId`),
-  KEY `FK3BBBD53EED54855` (`tribeId`),
-  CONSTRAINT `FK3BBBD53EED54855` FOREIGN KEY (`tribeId`) REFERENCES `HTribe` (`id`),
-  CONSTRAINT `FK3BBBD53A5679DE7` FOREIGN KEY (`personId`) REFERENCES `HPerson` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+
+    create table HAccount (
+        id bigint not null auto_increment,
+        creationDate datetime not null,
+        lastChanged datetime not null,
+        versionNum integer not null,
+        apiKey varchar(32) binary,
+        enabled bit not null,
+        passwordHash varchar(255) binary,
+        username varchar(255) binary,
+        primary key (id),
+        unique (username)
+    ) ENGINE=InnoDB;
+
+    create table HAccountActivationKey (
+        keyHash varchar(32) binary not null,
+        accountId bigint not null,
+        primary key (keyHash),
+        unique (accountId)
+    ) ENGINE=InnoDB;
+
+    create table HAccountMembership (
+        accountId bigint not null,
+        memberOf integer not null,
+        primary key (accountId, memberOf)
+    ) ENGINE=InnoDB;
+
+    create table HAccountPermission (
+        permissionId integer not null auto_increment,
+        action varchar(255) binary,
+        discriminator varchar(255) binary,
+        recipient varchar(255) binary,
+        target varchar(255) binary,
+        primary key (permissionId)
+    ) ENGINE=InnoDB;
+
+    create table HAccountResetPasswordKey (
+        keyHash varchar(32) binary not null,
+        accountId bigint not null,
+        primary key (keyHash),
+        unique (accountId)
+    ) ENGINE=InnoDB;
+
+    create table HAccountRole (
+        id integer not null auto_increment,
+        conditional bit not null,
+        name varchar(255) binary,
+        primary key (id)
+    ) ENGINE=InnoDB;
+
+    create table HAccountRoleGroup (
+        roleId integer not null,
+        memberOf integer not null,
+        primary key (roleId, memberOf)
+    ) ENGINE=InnoDB;
+
+    create table HCommunity (
+        id bigint not null auto_increment,
+        creationDate datetime not null,
+        lastChanged datetime not null,
+        versionNum integer not null,
+        slug varchar(40) binary not null,
+        description varchar(100) binary,
+        homeContent longtext,
+        name varchar(255) binary not null,
+        ownerId bigint not null,
+        primary key (id),
+        unique (slug)
+    ) ENGINE=InnoDB;
+
+    create table HCommunity_Member (
+        communityId bigint not null,
+        personId bigint not null,
+        primary key (personId, communityId)
+    ) ENGINE=InnoDB;
+
+    create table HCommunity_Officer (
+        communityId bigint not null,
+        personId bigint not null,
+        primary key (personId, communityId)
+    ) ENGINE=InnoDB;
+
+    create table HDocument (
+        id bigint not null auto_increment,
+        creationDate datetime not null,
+        lastChanged datetime not null,
+        versionNum integer not null,
+        contentType varchar(255) binary not null,
+        docId varchar(255) binary not null,
+        locale varchar(255) binary not null,
+        name varchar(255) binary not null,
+        obsolete bit not null,
+        path varchar(255) binary not null,
+        revision integer not null,
+        last_modified_by_id bigint,
+        poHeader_id bigint,
+        project_iteration_id bigint not null,
+        primary key (id),
+        unique (docId, project_iteration_id)
+    ) ENGINE=InnoDB;
+
+    create table HDocumentHistory (
+        id bigint not null auto_increment,
+        contentType varchar(255) binary not null,
+        docId varchar(255) binary not null,
+        lastChanged datetime,
+        locale varchar(255) binary not null,
+        name varchar(255) binary,
+        obsolete bit not null,
+        path varchar(255) binary,
+        revision integer,
+        document_id bigint,
+        last_modified_by_id bigint,
+        primary key (id),
+        unique (document_id, revision)
+    ) ENGINE=InnoDB;
+
+    create table HFliesLocale (
+        id varchar(80) binary not null,
+        icuLocaleId varchar(255) binary not null,
+        parentId varchar(80) binary,
+        primary key (id)
+    ) ENGINE=InnoDB;
+
+    create table HFliesLocale_Friends (
+        localeId varchar(80) binary not null,
+        friendId varchar(80) binary not null
+    ) ENGINE=InnoDB;
+
+    create table HPerson (
+        id bigint not null auto_increment,
+        creationDate datetime not null,
+        lastChanged datetime not null,
+        versionNum integer not null,
+        email varchar(255) binary not null,
+        name varchar(80) binary not null,
+        accountId bigint,
+        primary key (id)
+    ) ENGINE=InnoDB;
+
+    create table HPoHeader (
+        id bigint not null auto_increment,
+        creationDate datetime not null,
+        lastChanged datetime not null,
+        versionNum integer not null,
+        entries longtext,
+        comment_id bigint,
+        document_id bigint unique,
+        primary key (id),
+        unique (document_id)
+    ) ENGINE=InnoDB;
+
+    create table HPoTargetHeader (
+        id bigint not null auto_increment,
+        creationDate datetime not null,
+        lastChanged datetime not null,
+        versionNum integer not null,
+        entries longtext,
+        targetLanguage varchar(255) binary not null,
+        comment_id bigint,
+        document_id bigint,
+        primary key (id),
+        unique (document_id, targetLanguage)
+    ) ENGINE=InnoDB;
+
+    create table HPotEntryData (
+        id bigint not null auto_increment,
+        context varchar(255) binary,
+        flags varchar(255) binary,
+        refs varchar(255) binary,
+        comment_id bigint,
+        tf_id bigint unique,
+        primary key (id),
+        unique (tf_id)
+    ) ENGINE=InnoDB;
+
+    create table HProject (
+        projecttype varchar(31) binary not null,
+        id bigint not null auto_increment,
+        creationDate datetime not null,
+        lastChanged datetime not null,
+        versionNum integer not null,
+        slug varchar(40) binary not null,
+        description varchar(100) binary,
+        homeContent longtext,
+        name varchar(80) binary,
+        primary key (id),
+        unique (slug)
+    ) ENGINE=InnoDB;
+
+    create table HProjectIteration (
+        id bigint not null auto_increment,
+        creationDate datetime not null,
+        lastChanged datetime not null,
+        versionNum integer not null,
+        slug varchar(40) binary not null,
+        active bit not null,
+        description varchar(255) binary,
+        name varchar(20) binary,
+        parentId bigint,
+        project_id bigint not null,
+        primary key (id),
+        unique (slug, project_id)
+    ) ENGINE=InnoDB;
+
+    create table HProject_Maintainer (
+        personId bigint not null,
+        projectId bigint not null,
+        primary key (projectId, personId)
+    ) ENGINE=InnoDB;
+
+    create table HSimpleComment (
+        id bigint not null auto_increment,
+        comment longtext not null,
+        primary key (id)
+    ) ENGINE=InnoDB;
+
+    create table HTextFlow (
+        id bigint not null auto_increment,
+        content longtext not null,
+        obsolete bit not null,
+        pos integer not null,
+        resId varchar(255) binary not null,
+        revision integer not null,
+        comment_id bigint,
+        document_id bigint not null,
+        potEntryData_id bigint,
+        primary key (id),
+        unique (document_id, resId)
+    ) ENGINE=InnoDB;
+
+    create table HTextFlowHistory (
+        id bigint not null auto_increment,
+        content longtext,
+        obsolete bit not null,
+        pos integer,
+        revision integer,
+        tf_id bigint,
+        primary key (id),
+        unique (revision, tf_id)
+    ) ENGINE=InnoDB;
+
+    create table HTextFlowTarget (
+        id bigint not null auto_increment,
+        creationDate datetime not null,
+        lastChanged datetime not null,
+        versionNum integer not null,
+        content longtext not null,
+        locale varchar(255) binary not null,
+        state integer not null,
+        tf_revision integer not null,
+        comment_id bigint,
+        last_modified_by_id bigint,
+        tf_id bigint,
+        primary key (id),
+        unique (locale, tf_id)
+    ) ENGINE=InnoDB;
+
+    create table HTextFlowTargetHistory (
+        id bigint not null auto_increment,
+        content longtext,
+        lastChanged datetime,
+        state integer,
+        tf_revision integer,
+        versionNum integer,
+        last_modified_by_id bigint,
+        target_id bigint,
+        primary key (id),
+        unique (target_id, versionNum)
+    ) ENGINE=InnoDB;
+
+    create table HTribe (
+        id bigint not null auto_increment,
+        creationDate datetime not null,
+        lastChanged datetime not null,
+        versionNum integer not null,
+        chiefId bigint,
+        localeId varchar(80) binary not null,
+        primary key (id),
+        unique (localeId)
+    ) ENGINE=InnoDB;
+
+    create table HTribe_Leader (
+        personId bigint not null,
+        tribeId bigint not null,
+        primary key (tribeId, personId)
+    ) ENGINE=InnoDB;
+
+    create table HTribe_Member (
+        personId bigint not null,
+        tribeId bigint not null,
+        primary key (tribeId, personId)
+    ) ENGINE=InnoDB;
+
+    alter table HAccountActivationKey 
+        add index FK86E79CA44A0EDB13 (accountId), 
+        add constraint FK86E79CA44A0EDB13 
+        foreign key (accountId) 
+        references HAccount (id);
+
+    alter table HAccountMembership 
+        add index FK9D5DB27B8AFBEC12 (memberOf), 
+        add constraint FK9D5DB27B8AFBEC12 
+        foreign key (memberOf) 
+        references HAccountRole (id);
+
+    alter table HAccountMembership 
+        add index FK9D5DB27B4A0EDB13 (accountId), 
+        add constraint FK9D5DB27B4A0EDB13 
+        foreign key (accountId) 
+        references HAccount (id);
+
+    alter table HAccountResetPasswordKey 
+        add index FK85C9EFDA4A0EDB13 (accountId), 
+        add constraint FK85C9EFDA4A0EDB13 
+        foreign key (accountId) 
+        references HAccount (id);
+
+    alter table HAccountRoleGroup 
+        add index FK3321CC648AFBEC12 (memberOf), 
+        add constraint FK3321CC648AFBEC12 
+        foreign key (memberOf) 
+        references HAccountRole (id);
+
+    alter table HAccountRoleGroup 
+        add index FK3321CC647A88DA32 (roleId), 
+        add constraint FK3321CC647A88DA32 
+        foreign key (roleId) 
+        references HAccountRole (id);
+
+    alter table HCommunity 
+        add index FKD3DF20814C1F95C5 (ownerId), 
+        add constraint FKD3DF20814C1F95C5 
+        foreign key (ownerId) 
+        references HPerson (id);
+
+    alter table HCommunity_Member 
+        add index FK8BEBF038A5679DE7 (personId), 
+        add constraint FK8BEBF038A5679DE7 
+        foreign key (personId) 
+        references HPerson (id);
+
+    alter table HCommunity_Member 
+        add index FK8BEBF038ADFEE80B (communityId), 
+        add constraint FK8BEBF038ADFEE80B 
+        foreign key (communityId) 
+        references HCommunity (id);
+
+    alter table HCommunity_Officer 
+        add index FK5CB3E758A5679DE7 (personId), 
+        add constraint FK5CB3E758A5679DE7 
+        foreign key (personId) 
+        references HPerson (id);
+
+    alter table HCommunity_Officer 
+        add index FK5CB3E758ADFEE80B (communityId), 
+        add constraint FK5CB3E758ADFEE80B 
+        foreign key (communityId) 
+        references HCommunity (id);
+
+    alter table HDocument 
+        add index FKEA766D83B13DF08D (last_modified_by_id), 
+        add constraint FKEA766D83B13DF08D 
+        foreign key (last_modified_by_id) 
+        references HPerson (id);
+
+    alter table HDocument 
+        add index FKEA766D835063A1C9 (project_iteration_id), 
+        add constraint FKEA766D835063A1C9 
+        foreign key (project_iteration_id) 
+        references HProjectIteration (id);
+
+    alter table HDocument 
+        add index FKEA766D8360005CD9 (poHeader_id), 
+        add constraint FKEA766D8360005CD9 
+        foreign key (poHeader_id) 
+        references HPoHeader (id);
+
+    alter table HDocumentHistory 
+        add index FK27976591F8A0A2BC (document_id), 
+        add constraint FK27976591F8A0A2BC 
+        foreign key (document_id) 
+        references HDocument (id);
+
+    alter table HDocumentHistory 
+        add index FK27976591B13DF08D (last_modified_by_id), 
+        add constraint FK27976591B13DF08D 
+        foreign key (last_modified_by_id) 
+        references HPerson (id);
+
+    alter table HFliesLocale 
+        add index FK6CAF0A33D884B2E (parentId), 
+        add constraint FK6CAF0A33D884B2E 
+        foreign key (parentId) 
+        references HFliesLocale (id);
+
+    alter table HFliesLocale_Friends 
+        add index FKF87125D9A2AAA022 (friendId), 
+        add constraint FKF87125D9A2AAA022 
+        foreign key (friendId) 
+        references HFliesLocale (id);
+
+    alter table HFliesLocale_Friends 
+        add index FKF87125D968C8A4DE (localeId), 
+        add constraint FKF87125D968C8A4DE 
+        foreign key (localeId) 
+        references HFliesLocale (id);
+
+    alter table HPerson 
+        add index FK6F0931BD4A0EDB13 (accountId), 
+        add constraint FK6F0931BD4A0EDB13 
+        foreign key (accountId) 
+        references HAccount (id);
+
+    alter table HPoHeader 
+        add index FK9A0ABDD4F8A0A2BC (document_id), 
+        add constraint FK9A0ABDD4F8A0A2BC 
+        foreign key (document_id) 
+        references HDocument (id);
+
+    alter table HPoHeader 
+        add index FK9A0ABDD42DC34DA6 (comment_id), 
+        add constraint FK9A0ABDD42DC34DA6 
+        foreign key (comment_id) 
+        references HSimpleComment (id);
+
+    alter table HPoTargetHeader 
+        add index FK1BC71985F8A0A2BC (document_id), 
+        add constraint FK1BC71985F8A0A2BC 
+        foreign key (document_id) 
+        references HDocument (id);
+
+    alter table HPoTargetHeader 
+        add index FK1BC719852DC34DA6 (comment_id), 
+        add constraint FK1BC719852DC34DA6 
+        foreign key (comment_id) 
+        references HSimpleComment (id);
+
+    alter table HPotEntryData 
+        add index FK17A648CF2DC34DA6 (comment_id), 
+        add constraint FK17A648CF2DC34DA6 
+        foreign key (comment_id) 
+        references HSimpleComment (id);
+
+    alter table HPotEntryData 
+        add index FK17A648CF71CA5CE5 (tf_id), 
+        add constraint FK17A648CF71CA5CE5 
+        foreign key (tf_id) 
+        references HTextFlow (id);
+
+    alter table HProjectIteration 
+        add index FK31C1E42C4A451E5F (project_id), 
+        add constraint FK31C1E42C4A451E5F 
+        foreign key (project_id) 
+        references HProject (id);
+
+    alter table HProjectIteration 
+        add index FK31C1E42C59934BEB (parentId), 
+        add constraint FK31C1E42C59934BEB 
+        foreign key (parentId) 
+        references HProjectIteration (id);
+
+    alter table HProject_Maintainer 
+        add index FK1491F2E6A5679DE7 (personId), 
+        add constraint FK1491F2E6A5679DE7 
+        foreign key (personId) 
+        references HPerson (id);
+
+    alter table HProject_Maintainer 
+        add index FK1491F2E6B55BD1EB (projectId), 
+        add constraint FK1491F2E6B55BD1EB 
+        foreign key (projectId) 
+        references HProject (id);
+
+    alter table HTextFlow 
+        add index FK7B40F863F8A0A2BC (document_id), 
+        add constraint FK7B40F863F8A0A2BC 
+        foreign key (document_id) 
+        references HDocument (id);
+
+    alter table HTextFlow 
+        add index FK7B40F863F8DC9359 (potEntryData_id), 
+        add constraint FK7B40F863F8DC9359 
+        foreign key (potEntryData_id) 
+        references HPotEntryData (id);
+
+    alter table HTextFlow 
+        add index FK7B40F8632DC34DA6 (comment_id), 
+        add constraint FK7B40F8632DC34DA6 
+        foreign key (comment_id) 
+        references HSimpleComment (id);
+
+    alter table HTextFlowHistory 
+        add index FK46C4DEB171CA5CE5 (tf_id), 
+        add constraint FK46C4DEB171CA5CE5 
+        foreign key (tf_id) 
+        references HTextFlow (id);
+
+    alter table HTextFlowTarget 
+        add index FK1E933FD4B13DF08D (last_modified_by_id), 
+        add constraint FK1E933FD4B13DF08D 
+        foreign key (last_modified_by_id) 
+        references HPerson (id);
+
+    alter table HTextFlowTarget 
+        add index FK1E933FD42DC34DA6 (comment_id), 
+        add constraint FK1E933FD42DC34DA6 
+        foreign key (comment_id) 
+        references HSimpleComment (id);
+
+    alter table HTextFlowTarget 
+        add index FK1E933FD471CA5CE5 (tf_id), 
+        add constraint FK1E933FD471CA5CE5 
+        foreign key (tf_id) 
+        references HTextFlow (id);
+
+    alter table HTextFlowTargetHistory 
+        add index FKF1098620B13DF08D (last_modified_by_id), 
+        add constraint FKF1098620B13DF08D 
+        foreign key (last_modified_by_id) 
+        references HPerson (id);
+
+    alter table HTextFlowTargetHistory 
+        add index FKF1098620CE3B3557 (target_id), 
+        add constraint FKF1098620CE3B3557 
+        foreign key (target_id) 
+        references HTextFlowTarget (id);
+
+    alter table HTribe 
+        add index FK7FB20BC6B7757AD7 (chiefId), 
+        add constraint FK7FB20BC6B7757AD7 
+        foreign key (chiefId) 
+        references HPerson (id);
+
+    alter table HTribe 
+        add index FK7FB20BC668C8A4DE (localeId), 
+        add constraint FK7FB20BC668C8A4DE 
+        foreign key (localeId) 
+        references HFliesLocale (id);
+
+    alter table HTribe_Leader 
+        add index FK20177C2A5679DE7 (personId), 
+        add constraint FK20177C2A5679DE7 
+        foreign key (personId) 
+        references HPerson (id);
+
+    alter table HTribe_Leader 
+        add index FK20177C2EED54855 (tribeId), 
+        add constraint FK20177C2EED54855 
+        foreign key (tribeId) 
+        references HTribe (id);
+
+    alter table HTribe_Member 
+        add index FK3BBBD53A5679DE7 (personId), 
+        add constraint FK3BBBD53A5679DE7 
+        foreign key (personId) 
+        references HPerson (id);
+
+    alter table HTribe_Member 
+        add index FK3BBBD53EED54855 (tribeId), 
+        add constraint FK3BBBD53EED54855 
+        foreign key (tribeId) 
+        references HTribe (id);
