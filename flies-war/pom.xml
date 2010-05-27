@@ -74,6 +74,49 @@
 				<version>1.0</version>
 			</dependency>
 
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-search</artifactId>
+				<version>3.1.1.GA</version>
+			</dependency>
+	
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-core</artifactId>
+				<version>${version.hibernate}</version>
+			</dependency>
+	
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-validator</artifactId>
+				<version>3.1.0.GA</version>
+			</dependency>
+	
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-annotations</artifactId>
+				<version>3.4.0.GA</version>
+			</dependency>
+	
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-entitymanager</artifactId>
+				<version>3.4.0.GA</version>
+				<exclusions>
+					<exclusion>
+						<groupId>javassist</groupId>
+						<artifactId>javassist</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+	
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-jmx</artifactId>
+				<version>${version.hibernate}</version>
+			</dependency>
+
+
 		</dependencies>
 	</dependencyManagement>
 
@@ -152,13 +195,7 @@
 
 				<resources>
 					<resource>
-						<directory>src/main/resources-jboss4-external</directory>
-						<targetPath>${project.build.directory}</targetPath>
-						<filtering>true</filtering>
-					</resource>
-
-					<resource>
-						<directory>src/main/resources-jboss4</directory>
+						<directory>src/main/resources-jboss</directory>
 						<filtering>true</filtering>
 					</resource>
 
@@ -170,7 +207,7 @@
 						<configuration>
 							<webResources>
 								<resource>
-									<directory>src/main/webapp-jboss4</directory>
+									<directory>src/main/webapp-jboss</directory>
 									<filtering>true</filtering>
 								</resource>
 							</webResources>
@@ -358,6 +395,165 @@
 
 		<profile>
 			<id>jboss5</id>
+			
+			<build>
+
+				<resources>
+					<resource>
+						<directory>src/main/resources-jboss</directory>
+						<filtering>true</filtering>
+					</resource>
+				</resources>
+				
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-war-plugin</artifactId>
+						<configuration>
+							<webResources>
+								<resource>
+									<directory>src/main/webapp-jboss</directory>
+									<filtering>true</filtering>
+								</resource>
+							</webResources>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+						
+			<dependencies>
+
+				<dependency>
+					<groupId>org.hibernate</groupId>
+					<artifactId>hibernate-search</artifactId>
+					<exclusions>
+						<exclusion>
+							<groupId>org.hibernate</groupId>
+							<artifactId>hibernate-commons-annotations</artifactId>
+						</exclusion>
+						<exclusion>
+							<groupId>org.hibernate</groupId>
+							<artifactId>ejb3-persistence</artifactId>
+						</exclusion>
+					</exclusions>
+				</dependency>
+			
+				<dependency>
+					<groupId>org.hibernate</groupId>
+					<artifactId>hibernate-core</artifactId>
+					<scope>provided</scope>
+				</dependency>
+		
+				<dependency>
+					<groupId>org.hibernate</groupId>
+					<artifactId>hibernate-validator</artifactId>
+					<scope>provided</scope>
+				</dependency>
+		
+				<dependency>
+					<groupId>org.hibernate</groupId>
+					<artifactId>hibernate-annotations</artifactId>
+					<scope>provided</scope>
+				</dependency>
+		
+				<dependency>
+					<groupId>org.hibernate</groupId>
+					<artifactId>hibernate-entitymanager</artifactId>
+					<scope>provided</scope>
+				</dependency>
+		
+				<dependency>
+					<groupId>org.hibernate</groupId>
+					<artifactId>hibernate-jmx</artifactId>
+					<scope>provided</scope>
+				</dependency>
+			
+				<dependency>
+					<groupId>commons-codec</groupId>
+					<artifactId>commons-codec</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>commons-collections</groupId>
+					<artifactId>commons-collections</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>javax.el</groupId>
+					<artifactId>el-api</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>javax.persistence</groupId>
+					<artifactId>persistence-api</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>javax.ejb</groupId>
+					<artifactId>ejb-api</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>javassist</groupId>
+					<artifactId>javassist</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>javax.faces</groupId>
+					<artifactId>jsf-api</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>javax.faces</groupId>
+					<artifactId>jsf-impl</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>javax.annotation</groupId>
+					<artifactId>jsr250-api</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>javax.xml.stream</groupId>
+					<artifactId>stax-api</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>xpp3</groupId>
+					<artifactId>xpp3_min</artifactId>
+					<scope>provided</scope>
+				</dependency>
+			
+			</dependencies>
+			
 		</profile>
 
 		<profile>
@@ -484,6 +680,17 @@
 			</build>
 		</profile>
 
+		<profile>
+			<id>prod</id>
+			<properties>
+				<env.debug>false</env.debug>
+				<env.import.testdata>false</env.import.testdata>
+				<env.hibernate.hbm2ddl.auto>validate</env.hibernate.hbm2ddl.auto>
+				<env.hibernate.show_sql>false</env.hibernate.show_sql>
+				<env.hibernate.format_sql>false</env.hibernate.format_sql>
+			</properties>
+		</profile>
+		
 		<profile>
 			<id>dev</id>
 			<activation>
@@ -642,43 +849,31 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-search</artifactId>
-			<version>3.1.1.GA</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>${version.hibernate}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>3.1.0.GA</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-annotations</artifactId>
-			<version>3.4.0.GA</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
-			<version>3.4.0.GA</version>
-			<exclusions>
-				<exclusion>
-					<groupId>javassist</groupId>
-					<artifactId>javassist</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-jmx</artifactId>
-			<version>${version.hibernate}</version>
 		</dependency>
 
 		<dependency>
