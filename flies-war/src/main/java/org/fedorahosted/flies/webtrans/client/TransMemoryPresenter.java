@@ -57,23 +57,11 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 		display.getSearchButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				display.startProcessing();
-				final String query = display.getTmTextBox().getText();
+				String query = display.getTmTextBox().getText();
 				GetTranslationMemory.SearchType searchType = 
 					display.getExactButton().getValue() ? 
 						SearchType.EXACT : SearchType.RAW;
-				GetTranslationMemory action = new GetTranslationMemory(
-						query, workspaceContext.getWorkspaceId().getLocaleId(), searchType);
-				dispatcher.execute(action, new AsyncCallback<GetTranslationMemoryResult>() {
-					@Override
-					public void onFailure(Throwable caught) {
-					}
-					@Override
-					public void onSuccess(GetTranslationMemoryResult result) {
-						ArrayList<TransMemory> memories = result.getMemories();
-						display.createTable(memories);
-					}
-				});
+				showResults(query, searchType);
 			}
 		});
 		
@@ -86,14 +74,20 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 	}
 
 	public void showResultsFor(TransUnit transUnit) {
-		display.getTmTextBox().setText("");
-		display.startProcessing();
+		String query = transUnit.getSource();
 		//Start automatically fuzzy search
-		final String query = transUnit.getSource();
+		SearchType searchType = GetTranslationMemory.SearchType.FUZZY;
+		display.getTmTextBox().setText("");
+		showResults(query, searchType);
+	}
+
+	private void showResults(String query,
+			GetTranslationMemory.SearchType searchType) {
+		display.startProcessing();
 		final GetTranslationMemory action = new GetTranslationMemory(
 				query, 
 				workspaceContext.getWorkspaceId().getLocaleId(), 
-				GetTranslationMemory.SearchType.FUZZY);
+				searchType);
 		dispatcher.execute(action, new AsyncCallback<GetTranslationMemoryResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
