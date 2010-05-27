@@ -232,6 +232,9 @@ td.action a {
 	padding-right: 1px;
 }
 
+#panel{
+	border: 2px;
+}
 
 #hd{
 	position: relative;
@@ -523,13 +526,16 @@ table.fullwidth {
 }
 
 .rich-panel {
-	-moz-border-radius-topleft: 8px;
-	-moz-border-radius-topright: 8px;
+    width: 62%;
+	-moz-border-radius-topleft: 5px;
+	-moz-border-radius-topright: 5px;
+    -moz-border-radius-bottomleft: 5px;
+    -moz-border-radius-bottomright: 5px;
 }
 
 .rich-panel-header {
-	-moz-border-radius-topleft: 8px;
-	-moz-border-radius-topright: 8px;
+	-moz-border-radius-topleft: 5px;
+	-moz-border-radius-topright: 5px;
 	text-align: center;
 }
 
