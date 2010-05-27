@@ -1,0 +1,12 @@
+To generate the SQL for the tables within flies, execute:
+
+  mvn -Pjboss5,mysql,nogwt hibernate3:hbm2ddl
+
+This must be run from within the 'flies-war' project. Running it from the parent project won't work.
+
+The resulting schema is then available in:
+
+  ./target/hibernate3/schema.ddl
+
+
+
