@@ -36,7 +36,7 @@
       <!-- Search engine -->
       <property name="hibernate.search.default.directory_provider"
                value="org.hibernate.search.store.FSDirectoryProvider"/>
-      <property name="hibernate.search.default.indexBase" value="fliessearchindex"/>
+      <property name="hibernate.search.default.indexBase" value="${env.hibernate.indexBase}"/>
       <property name="hibernate.search.worker.batch_size" value="50"/>
       
       <!-- Run the Hibernate bytecode instrumentation at deployment time, for lazy loading of @ToOne and byte[] properties -->
