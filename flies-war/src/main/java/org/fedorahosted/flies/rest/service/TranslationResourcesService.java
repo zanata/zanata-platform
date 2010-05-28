@@ -2,6 +2,8 @@ package org.fedorahosted.flies.rest.service;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,7 +11,6 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.HEAD;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -23,9 +24,7 @@ import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.ext.MessageBodyReader;
 
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.common.LocaleId;
@@ -34,20 +33,23 @@ import org.fedorahosted.flies.dao.ProjectIterationDAO;
 import org.fedorahosted.flies.model.HDocument;
 import org.fedorahosted.flies.model.HProjectIteration;
 import org.fedorahosted.flies.model.HTextFlow;
-import org.fedorahosted.flies.model.po.HPoHeader;
+import org.fedorahosted.flies.model.HTextFlowTarget;
+import org.fedorahosted.flies.rest.LanguageQualifier;
 import org.fedorahosted.flies.rest.LocaleIdSet;
 import org.fedorahosted.flies.rest.NoSuchEntityException;
 import org.fedorahosted.flies.rest.StringSet;
+import org.fedorahosted.flies.rest.dto.v1.MultiTargetTextFlow;
+import org.fedorahosted.flies.rest.dto.v1.MultiTargetTextFlowList;
 import org.fedorahosted.flies.rest.dto.v1.ResourcesList;
 import org.fedorahosted.flies.rest.dto.v1.SourceResource;
 import org.fedorahosted.flies.rest.dto.v1.SourceTextFlow;
+import org.fedorahosted.flies.rest.dto.v1.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.v1.TranslationResource;
 import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.resteasy.SeamResteasyProviderFactory;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -70,9 +72,6 @@ public class TranslationResourcesService {
 	
 	@HeaderParam("Content-Type")
 	private MediaType requestContentType;
-
-	@Context
-	private UriInfo uriInfo;
 	
 	@Context
 	private HttpHeaders headers;
@@ -139,9 +138,8 @@ public class TranslationResourcesService {
 
 		validateExtensions();
 
-		SourceResource entity = unmarshallEntity(SourceResource.class, messageBody);
+		SourceResource entity = RestUtils.unmarshall(SourceResource.class, messageBody, requestContentType, headers.getRequestHeaders());
 		RestUtils.validateEntity(entity);
-
 		
 		HDocument document = documentDAO.getByDocId(hProjectIteration, entity.getName()); 
 		if(document != null) {
@@ -165,8 +163,6 @@ public class TranslationResourcesService {
 		documentDAO.flush();
 
 		// handle extensions
-		
-		// po header
 		if ( documentUtils.transfer(entity.getExtensions(), document, extensions) ) {
 			documentDAO.flush();
 		}
@@ -199,7 +195,7 @@ public class TranslationResourcesService {
 		
 		HDocument doc = documentDAO.getByDocId(hProjectIteration, id);
 
-		if(doc == null) {
+		if(doc == null || doc.isObsolete() ) {
 			return Response.status(Status.NOT_FOUND).entity("document not found").build();
 		}
 
@@ -229,8 +225,6 @@ public class TranslationResourcesService {
 		HProjectIteration hProjectIteration = retrieveIteration();
 		
 		EntityTag etag = documentDAO.getETag(hProjectIteration, id, extensions);
-
-		HDocument document;
 		
 		if(etag == null) {
 			return Response.status(Status.NOT_FOUND).build();
@@ -239,28 +233,25 @@ public class TranslationResourcesService {
 			return Response.status(Status.CONFLICT).build();
 		}
 
-		SourceResource entity = unmarshallEntity(SourceResource.class, messageBody);
-		document = documentDAO.getByDocId(hProjectIteration, id);
-		
-		documentUtils.transfer(entity, document);
-		
-		// handle po header
-		if( extensions.contains(PoHeader.ID) ) {
-			PoHeader poHeaderExt = entity.getExtensions().findByType(PoHeader.class);
-			if(poHeaderExt != null) {
-				HPoHeader poHeader = document.getPoHeader(); 
-				if ( poHeader == null) {
-					poHeader = new HPoHeader();
-					poHeader.setDocument(document);
-					document.setPoHeader( poHeader );
-					
-				}
-				documentUtils.transfer(poHeaderExt, poHeader);
-			}
+		SourceResource entity = RestUtils.unmarshall(SourceResource.class, messageBody, requestContentType, headers.getRequestHeaders());
+		RestUtils.validateEntity(entity);
+
+		HDocument document = documentDAO.getByDocId(hProjectIteration, id);
+		if( document.isObsolete() ) {
+			return Response.status(Status.NOT_FOUND).build();
 		}
 
-		documentDAO.flush();
-		etag = documentDAO.getETag(hProjectIteration, id, extensions);
+		boolean changed = documentUtils.transfer(entity, document);
+		
+		// handle extensions
+		changed |= documentUtils.transfer(entity.getExtensions(), document, extensions);
+		
+		
+		if ( changed ) {
+			etag = documentDAO.getETag(hProjectIteration, id, extensions);
+			documentDAO.flush();
+		}
+
 		return Response.ok().tag(etag).build();
 			
 	}
@@ -339,8 +330,15 @@ public class TranslationResourcesService {
 			return Response.status(Status.CONFLICT).build();
 		}
 
-		TranslationResource entity = unmarshallEntity(TranslationResource.class, messageBody);
+		TranslationResource entity = RestUtils.unmarshall(TranslationResource.class, messageBody, requestContentType, headers.getRequestHeaders());
+		RestUtils.validateEntity(entity);
+		
 		HDocument document = documentDAO.getByDocId(hProjectIteration, id);
+
+		if(document.isObsolete()) {
+			return Response.status(Status.NOT_FOUND).build();
+		}
+		
 		boolean changed = documentUtils.transfer(entity, document);
 		
 		// handle extensions
@@ -357,54 +355,81 @@ public class TranslationResourcesService {
 	
 	
 	@GET
-	@Path("/r/{id}/target/{locale}")
-	public Response doResourceTargetGet(
+	@Path("/r/{id}/translations/{locales}")
+	public Response doTranslationsGet(
 		@PathParam("id") String id,
-		@PathParam("locale") LocaleIdSet locales,
+		@PathParam("locales") LanguageQualifier languageQualifier,
 		@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
 
-		return Response.ok().build();
+		HProjectIteration hProjectIteration = retrieveIteration();
+
+		validateExtensions();
+		
+		// TODO fix etag
+		EntityTag etag = documentDAO.getETag(hProjectIteration, id, extensions);
+
+		if(etag == null)
+			return Response.status(Status.NOT_FOUND).entity("document not found").build();
+
+		if(ifNoneMatch != null && etag.equals(ifNoneMatch)) {
+			return Response.notModified(ifNoneMatch).build();
+		}
+		
+		// TODO eager loading
+		HDocument doc = documentDAO.getByDocId(hProjectIteration, id);
+
+		if(doc == null || doc.isObsolete() ) {
+			return Response.status(Status.NOT_FOUND).entity("document not found").build();
+		}
+
+		Collection<LocaleId> locales =  languageQualifier.getLanguages();
+		if(languageQualifier.isAll()) {
+			locales = documentDAO.getTargetLocales(doc);
+		}
+		
+		MultiTargetTextFlowList entity = new MultiTargetTextFlowList();
+		
+		for(HTextFlow htf : doc.getTextFlows()) {
+			MultiTargetTextFlow tf = new MultiTargetTextFlow();
+			documentUtils.transfer(htf, tf);
+			// TODO transfer extensions
+			for(LocaleId locale : locales) {
+				HTextFlowTarget htft = htf.getTargets().get(locale);
+				if(htft != null) {
+					TextFlowTarget target = new TextFlowTarget();
+					documentUtils.transfer(htft, target);
+					// TODO transfer extensions
+					tf.getTargets().put(locale, target);
+				}
+			}
+			entity.add(tf);
+		}
+
+		return Response.ok().entity(entity).tag(etag).lastModified(doc.getLastChanged()).build();
+		// TODO fix last modified
+		
 	}
 	
 	@PUT
-	@Path("/r/{id}/target/{locale}")
-	public Response doResourceTargetPut(
+	@Path("/r/{id}/translations/{locales}")
+	public Response doTranslationsPut(
 		@PathParam("id") String id,
-		@PathParam("locale") LocaleIdSet locales,
+		@PathParam("locales") LocaleIdSet locales,
 		@HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch) {
 
 		return Response.ok().build();
 	}
 
 	@GET
-	@Path("/r/{id}/target-as-source/{locale}")
-	public Response doResourceTargetAsSourceGet(
+	@Path("/r/{id}/translation-as-source/{locale}")
+	public Response doTranslationAsSourceGet(
 		@PathParam("id") String id,
 		@PathParam("locale") LocaleId locale,
-		@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
+		@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch,
+		@QueryParam("onlyApproved") @DefaultValue("true") boolean onlyApproved,
+		@QueryParam("useSource") @DefaultValue("true") boolean useSource) {
 
 		return Response.ok().build();
-	}
-	
-	private <T> T unmarshallEntity(Class<T> entityClass, InputStream is) {
-		MessageBodyReader<T> reader = SeamResteasyProviderFactory.getInstance()
-				.getMessageBodyReader(entityClass, entityClass,
-						entityClass.getAnnotations(), requestContentType);
-		if (reader == null) {
-			throw new RuntimeException(
-					"Unable to find MessageBodyReader for content type "
-							+ requestContentType);
-		}
-		T entity;
-		try {
-			entity = reader.readFrom(entityClass, entityClass, entityClass
-					.getAnnotations(), requestContentType, headers.getRequestHeaders(), is);
-		} catch (Exception e) {
-			throw new WebApplicationException(
-					Response.status(Status.BAD_REQUEST).entity("Unable to read request body").build());
-		}
-		
-		return entity;
 	}
 	
 	private HProjectIteration retrieveIteration() {

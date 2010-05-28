@@ -14,7 +14,9 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.rest.LanguageQualifier;
 import org.fedorahosted.flies.rest.StringSet;
+import org.fedorahosted.flies.rest.dto.v1.MultiTargetTextFlowList;
 import org.fedorahosted.flies.rest.dto.v1.ResourcesList;
 import org.fedorahosted.flies.rest.dto.v1.SourceResource;
 import org.fedorahosted.flies.rest.dto.v1.TranslationResource;
@@ -60,20 +62,20 @@ public interface ITranslationResources {
 			@PathParam("id") String id, TranslationResource messageBody);
 
 	@GET
-	@Path("/r/{id}/target/{locale}")
-	public ClientResponse<String> getResourceTarget(
+	@Path("/r/{id}/translations/{locales}")
+	public ClientResponse<MultiTargetTextFlowList> getTranslations(
 			@PathParam("id") String id, 
-			@PathParam("locale") Set<LocaleId> locales);
+			@PathParam("locales") LanguageQualifier locales);
 	
 	@PUT
 	@Path("/r/{id}/target/{locale}")
-	public ClientResponse<String> putResourceTarget(
+	public ClientResponse<String> putTranslations(
 			@PathParam("id") String id, 
 			@PathParam("locale") Set<LocaleId> locales);
 	
 	@GET
-	@Path("/r/{id}/target-as-source/{locale}")
-	public ClientResponse<String> getResourceTargetAsSource(
+	@Path("/r/{id}/translation-as-source/{locale}")
+	public ClientResponse<String> getTranslationAsSource(
 			@PathParam("id") String id, 
 			@PathParam("locale") LocaleId locale);
 	

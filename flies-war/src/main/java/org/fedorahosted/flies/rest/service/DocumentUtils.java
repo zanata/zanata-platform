@@ -12,16 +12,21 @@ import org.apache.commons.lang.CharSetUtils;
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.common.ResourceType;
 import org.fedorahosted.flies.model.HDocument;
+import org.fedorahosted.flies.model.HPerson;
 import org.fedorahosted.flies.model.HSimpleComment;
 import org.fedorahosted.flies.model.HTextFlow;
+import org.fedorahosted.flies.model.HTextFlowTarget;
 import org.fedorahosted.flies.model.po.HPoHeader;
 import org.fedorahosted.flies.model.po.PoUtility;
 import org.fedorahosted.flies.rest.StringSet;
 import org.fedorahosted.flies.rest.dto.po.HeaderEntry;
+import org.fedorahosted.flies.rest.dto.v1.AbstractTextFlow;
 import org.fedorahosted.flies.rest.dto.v1.AbstractTranslationResource;
 import org.fedorahosted.flies.rest.dto.v1.ExtensionSet;
+import org.fedorahosted.flies.rest.dto.v1.Person;
 import org.fedorahosted.flies.rest.dto.v1.SourceResource;
 import org.fedorahosted.flies.rest.dto.v1.SourceTextFlow;
+import org.fedorahosted.flies.rest.dto.v1.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.v1.TranslationResource;
 import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
 import org.jboss.seam.ScopeType;
@@ -170,7 +175,7 @@ public class DocumentUtils {
 		return a.equals(b);
 	}
 	
-	public boolean transfer(SourceTextFlow from, HTextFlow to) {
+	public boolean transfer(AbstractTextFlow from, HTextFlow to) {
 		boolean changed = false;
 		if( ! equals(from.getContent(), to.getContent()) ) {
 			to.setContent(from.getContent());
@@ -196,7 +201,7 @@ public class DocumentUtils {
 		to.getEntries().addAll(PoUtility.headerToList( from.getEntries() ) );
 	}
 	
-	public void transfer(HTextFlow from, SourceTextFlow to) {
+	public void transfer(HTextFlow from, AbstractTextFlow to) {
 		to.setContent(from.getContent());
 		// TODO
 		//to.setLang(from.get)
@@ -238,6 +243,15 @@ public class DocumentUtils {
 		}
 		catch(UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
+		}
+	}
+
+	public void transfer(HTextFlowTarget from, TextFlowTarget to) {
+		to.setContent(from.getContent());
+		to.setState(from.getState());
+		HPerson translator = from.getLastModifiedBy();
+		if(translator != null) {
+			to.setTranslator(new Person(translator.getEmail(), translator.getName()));
 		}
 	}
 

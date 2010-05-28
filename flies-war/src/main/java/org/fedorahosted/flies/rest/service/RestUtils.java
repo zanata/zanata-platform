@@ -1,13 +1,18 @@
 package org.fedorahosted.flies.rest.service;
 
+import java.io.InputStream;
 import java.io.Serializable;
 
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.ext.MessageBodyReader;
 
 import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
+import org.jboss.seam.resteasy.SeamResteasyProviderFactory;
 
 public class RestUtils {
 
@@ -41,5 +46,27 @@ public class RestUtils {
 			}
 		}
 	}
+	
+	public  static <T> T unmarshall(Class<T> entityClass, InputStream is, MediaType requestContentType, MultivaluedMap<String,String> requestHeaders) {
+		MessageBodyReader<T> reader = SeamResteasyProviderFactory.getInstance()
+				.getMessageBodyReader(entityClass, entityClass,
+						entityClass.getAnnotations(), requestContentType);
+		if (reader == null) {
+			throw new RuntimeException(
+					"Unable to find MessageBodyReader for content type "
+							+ requestContentType);
+		}
+		T entity;
+		try {
+			entity = reader.readFrom(entityClass, entityClass, entityClass
+					.getAnnotations(), requestContentType, requestHeaders, is);
+		} catch (Exception e) {
+			throw new WebApplicationException(
+					Response.status(Status.BAD_REQUEST).entity("Unable to read request body").build());
+		}
+		
+		return entity;
+	}
+	
 	
 }
