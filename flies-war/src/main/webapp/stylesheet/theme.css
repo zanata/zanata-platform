@@ -539,14 +539,15 @@ table.fullwidth {
 
 .rich-panel {
 	position: relative;
-	width: 62%;
-	-moz-border-radius-topleft: 8px;
-	-moz-border-radius-topright: 8px;
+	-moz-border-radius-topleft: 10px;
+	-moz-border-radius-topright: 10px;
+	-moz-border-radius-topleft: 10px;
+    -moz-border-radius-bottomright: 10px;
 }
 
 .rich-panel-header {
-	-moz-border-radius-topleft: 8px;
-	-moz-border-radius-topright: 8px;
+	-moz-border-radius-topleft: 10px;
+	-moz-border-radius-topright: 10px;
 	text-align: center;
 }
 

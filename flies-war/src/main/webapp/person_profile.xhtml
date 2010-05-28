@@ -26,7 +26,8 @@
         <rich:dataGrid value="#{personHome.instance.maintainerProjects}" 
                        var="project" 
                        columns="3"
-                       columnClasses="grid_col_one_third_width">
+                       columnClasses="grid_col"
+                       styleClass="grid_style">
           <ui:include src="./project/project_view_inline.xhtml" />
         </rich:dataGrid>
         <h2>My Tribes</h2>
@@ -34,7 +35,8 @@
         <rich:dataGrid value="#{personHome.instance.tribeMemberships.toArray()}" 
                        var="tribe" 
                        columns="3"
-                       columnClasses="grid_col_one_third_width">
+                       columnClasses="grid_col"
+                       styleClass="grid_style">
           <ui:include src="./tribe/tribe_view_inline.xhtml" />
         </rich:dataGrid>
         <h2>My Communities</h2>
@@ -44,7 +46,8 @@
           <rich:dataGrid value="#{personHome.instance.communityOwnerships.toArray()}" 
                          var="community" 
                          columns="3"
-                         columnClasses="grid_col_one_third_width">
+                         columnClasses="grid_col"
+                         styleClass="grid_style">
             <ui:include src="./community/community_view_inline.xhtml" />
           </rich:dataGrid>
         </s:div>
@@ -53,7 +56,8 @@
           <rich:dataGrid value="#{personHome.instance.communityOfficerships.toArray()}" 
                          var="community" 
                          columns="3"
-                         columnClasses="grid_col_one_third_width">
+                         columnClasses="grid_col"
+                         styleClass="grid_style">
             <ui:include src="./community/community_view_inline.xhtml" />
           </rich:dataGrid>
         </s:div>
@@ -62,7 +66,8 @@
           <rich:dataGrid value="#{personHome.instance.communityMemberships.toArray()}" 
                          var="community" 
                          columns="3"
-                         columnClasses="grid_col_one_third_width">
+                         columnClasses="grid_col"
+                         styleClass="grid_style">
             <ui:include src="./community/community_view_inline.xhtml" />
           </rich:dataGrid>
         </s:div>
