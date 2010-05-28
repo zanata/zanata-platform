@@ -6,12 +6,14 @@
    xmlns:f="http://java.sun.com/jsf/core"
    xmlns:s="http://jboss.com/products/seam/taglib">
 
-  <h2>
-    <s:link view="/tribe/tribe.xhtml" propagation="none">
-      #{tribe.locale.nativeName}
-      <f:param name="id" value="#{tribe.locale.id}"/>
-    </s:link>
-  </h2>
-  <p><em>#{tribe.locale.locale.displayName}</em> [#{tribe.locale.id}] - #{tribe.members.size} members</p>
+    <div class="inline_cell_item_top">
+	    <s:link view="/tribe/tribe.xhtml" propagation="none">
+	      #{tribe.locale.nativeName}
+	      <f:param name="id" value="#{tribe.locale.id}"/>
+	    </s:link>
+    </div>
+    <div class="inline_cell_item_middle">
+        <p><em>#{tribe.locale.locale.displayName}</em> [#{tribe.locale.id}] - #{tribe.members.size} members</p>
+    </div>
 
 </div>

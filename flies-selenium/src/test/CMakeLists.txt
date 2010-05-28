@@ -310,7 +310,7 @@ MACRO(ADD_OUTPUT_AND_TEST testRole testSuitePath testSuiteName)
             ADD_TEST("${testSuiteName}_${testRole}_on_${browser}" ${SELENIUM_SERVER_CMD} ${SELENIUM_SERVER_ARG}
                 -htmlsuite "${BROWSER_STR}" "${BASE_URL}"
                  ${testSuitePath}/${SISO_TEST_TARGET}
-                 ${RESULT_DIR}/${testSuiteName}_${testRole}_on_${browser}.result.html )
+                 ${RESULT_DIR}/${testSuiteName}.${testRole}.on.${browser}.result.html )
         ENDFOREACH()
     ENDIF()
 ENDMACRO()
