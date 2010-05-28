@@ -931,7 +931,7 @@
 		<dependency>
 			<groupId>net.sf.okapi.lib</groupId>
 			<artifactId>okapi-lib-search</artifactId>
-			<version>0.7-SNAPSHOT</version>
+			<version>0.7</version>
 		</dependency>
 
 		<!-- okapi-lib-search would otherwise use lucene 3.0.0 -->
