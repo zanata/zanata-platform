@@ -26,10 +26,6 @@ public class FliesClientRequestFactory extends ClientRequestFactory {
 				new ApiKeyHeaderDecorator(username, apiKey));
 	}
 
-	public IDocumentResource getDocumentResource(URI uri) {
-		return createProxy(IDocumentResource.class, uri);
-	}
-
 	public IDocumentsResource getDocumentsResource(final URI uri) {
 		return createProxy(IDocumentsResource.class, uri);
 	}
