@@ -541,7 +541,7 @@ table.fullwidth {
 	position: relative;
 	-moz-border-radius-topleft: 10px;
 	-moz-border-radius-topright: 10px;
-	-moz-border-radius-topleft: 10px;
+	-moz-border-radius-bottomleft: 10px;
     -moz-border-radius-bottomright: 10px;
 }
 
