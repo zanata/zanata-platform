@@ -143,8 +143,8 @@ body {
 }
 
 .yui-t1 #yui-main,.yui-t2 #yui-main,.yui-t3 #yui-main {
-	float: right;
-	margin-left: -25em;
+	float: left;
+	margin-right: -25em;
 }
 
 .yui-t4 #yui-main,.yui-t5 #yui-main,.yui-t6 #yui-main {
@@ -164,14 +164,14 @@ body {
 }
 
 .yui-t2 .yui-b {
-	float: left;
+	float: right;
 	width: 13.8461em; *
 	width: 13.50em;
 }
 
 .yui-t2 #yui-main .yui-b {
-	margin-left: 14.8461em; *
-	margin-left: 14.55em;
+	margin-right: 14.8461em; *
+	margin-right: 14.55em;
 }
 
 .yui-t3 .yui-b {
