@@ -19,13 +19,14 @@ RESULT=$?
 
 TESTS=`grep "tests failed out of " @TEST_LOGFILE@ | sed -e 's/^.*tests failed out of //'`
 echo "TESTS=$TESTS"
-TESTS_FAILED=`grep "% tests passed, " @TEST_LOGFILE@ | sed -e 's/% tests passed, //' |  sed -e 's/ tests.*//'`
+TESTS_FAILED=`grep "% tests passed, " @TEST_LOGFILE@ | sed -e 's/^.*% tests passed, //' |  sed -e 's/ tests.*//'`
 echo "TESTS_FAILED=$TESTS_FAILED"
 MSG=`grep "% tests passed" @TEST_LOGFILE@`
 echo "MSG=$MSG"
 
 cat > @TEST_REPORT_XML@ << EOF
-<testsuite errors="0" failures="$TESTS_FAILED" hostname="@HUDSON_HOME@" name="@JOB_NAME@" tests="$TESTS" time="27.169" timestamp="$BUILD_ID">
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite errors="0" failures="$TESTS_FAILED" hostname="@HUDSON_HOME@" name="@JOB_NAME@" tests="$TESTS" timestamp="$BUILD_ID">
     <system-out>$MSG</system-out>
     <system-err></system-err>
 </testsuite>

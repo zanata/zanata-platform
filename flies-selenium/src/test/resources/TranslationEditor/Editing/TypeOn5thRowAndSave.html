@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="" />
+<title>Type on 5th And Save</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Type on 5th And Save</td></tr>
+</thead><tbody>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>css=table[class='TableEditor'] tr:nth-child(6) &gt; td:nth-child(2)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=table[class='TableEditor'] tr:nth-child(6) &gt; td:nth-child(2)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>css=textarea[class='TableEditorContent-Edit']</td>
+	<td>Fedora 翻譯</td>
+</tr>
+<tr>
+	<td>keyPress</td>
+	<td>//div[div='Save']</td>
+	<td>\13</td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Fedora 翻譯</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//table[@class='TableEditor']//tr[7]//textarea</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</body>
+</html>
