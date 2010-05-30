@@ -861,23 +861,5 @@ a.action_link:hover {
     
 }
 
-/* this overrides the style in reset-fonts-grids.css, which action panel on left and main panel on right */
-.yui-t1 #yui-main,.yui-t2 #yui-main,.yui-t3 #yui-main {
-	float: left;
-	margin-right: -25em;
-}
-
-.yui-t2 .yui-b {
-    float: right;
-    width: 13.8461em;
-    *width: 13.50em;
-}
-
-.yui-t2 #yui-main .yui-b {
-	margin-right: 14.8461em;
-	*margin-right: 14.55em;
-}
-/* end of overrides */
-
 
 /* --> */
