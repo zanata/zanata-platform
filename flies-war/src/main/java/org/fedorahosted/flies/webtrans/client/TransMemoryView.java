@@ -127,7 +127,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 		for(final TransMemory memory: memories) {
 			++row;
 			final String sourceMessage = memory.getSource();
-			final String targetMessage = memory.getMemory();
+			final String targetMessage = memory.getTarget();
 //			final String sourceComment = memory.getSourceComment();
 //			final String targetComment = memory.getTargetComment();
 			final String docID = memory.getDocID();

@@ -7,7 +7,7 @@ public class TransMemory implements Serializable{
 	private static final long serialVersionUID = -7381018377520206564L;
 
 	private String source;
-	private String memory;
+	private String target;
 
 	private String sourceComment;
 	// TODO we should probably include transunit id too (useful when we support browser history for TUs)
@@ -34,7 +34,7 @@ public class TransMemory implements Serializable{
 	
 	public TransMemory(String source, String memory, String sourceComment, String targetComment, String documentPath, float relevanceScore, int similarityPercent) {
 		this.source = source;
-		this.memory = memory;
+		this.target = memory;
 		this.sourceComment = sourceComment;
 		this.targetComment = targetComment;
 		this.docID = documentPath;
@@ -49,12 +49,12 @@ public class TransMemory implements Serializable{
 	public String getDocID() {
 		return docID;
 	}
-	public void setMemory(String memory) {
-		this.memory = memory;
+	public void setTarget(String target) {
+		this.target = target;
 	}
 
-	public String getMemory() {
-		return memory;
+	public String getTarget() {
+		return target;
 	}
 	
 	public void setRelevanceScore(float relevanceScore) {
