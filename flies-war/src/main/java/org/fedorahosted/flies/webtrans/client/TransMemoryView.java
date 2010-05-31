@@ -62,10 +62,10 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 	@Inject
 	private EventBus eventBus;
 	
-	private final WebTransMessages messages;
+	private final TransMemoryMessages messages;
 	
 	@Inject
-	public TransMemoryView(final WebTransMessages messages) {
+	public TransMemoryView(final TransMemoryMessages messages) {
 		this.messages = messages;
 		initWidget( uiBinder.createAndBindUi(this));
 		phraseButton.setText( messages.tmPhraseButtonLabel() );
