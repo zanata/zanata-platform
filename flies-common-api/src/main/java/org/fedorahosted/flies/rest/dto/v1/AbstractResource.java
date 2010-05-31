@@ -17,9 +17,9 @@ import org.fedorahosted.flies.rest.dto.ContentTypeAdapter;
 import org.fedorahosted.flies.rest.dto.LocaleIdAdapter;
 import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
 
-@XmlType(name="abstractTranslationResourceType", namespace=Namespaces.FLIES, propOrder={"name", "extensions"})
+@XmlType(name="abstractResourceType", namespace=Namespaces.FLIES, propOrder={"name", "extensions"})
 @XmlSeeAlso({PoHeader.class})
-public abstract class AbstractTranslationResource implements Serializable {
+public abstract class AbstractResource implements Serializable {
 	
 	private String name;
 
@@ -31,10 +31,10 @@ public abstract class AbstractTranslationResource implements Serializable {
 	
 	private ExtensionSet extensions;
 	
-	public AbstractTranslationResource() {
+	public AbstractResource() {
 	}
 
-	public AbstractTranslationResource(String name) {
+	public AbstractResource(String name) {
 		this.name = name;
 	}
 	

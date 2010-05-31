@@ -44,7 +44,7 @@ import org.fedorahosted.flies.rest.dto.v1.ResourcesList;
 import org.fedorahosted.flies.rest.dto.v1.SourceResource;
 import org.fedorahosted.flies.rest.dto.v1.SourceTextFlow;
 import org.fedorahosted.flies.rest.dto.v1.TextFlowTarget;
-import org.fedorahosted.flies.rest.dto.v1.TranslationResource;
+import org.fedorahosted.flies.rest.dto.v1.ResourceMeta;
 import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
@@ -120,7 +120,7 @@ public class TranslationResourcesService {
 		
 		for(HDocument doc : hProjectIteration.getDocuments().values() ) {
 			if(!doc.isObsolete()) {
-				TranslationResource resource = new TranslationResource();
+				ResourceMeta resource = new ResourceMeta();
 				resourceUtils.transfer(doc, resource);
 				resources.add(resource);
 			}
@@ -303,7 +303,7 @@ public class TranslationResourcesService {
 			return Response.status(Status.NOT_FOUND).entity("document not found").build();
 		}
 
-		TranslationResource entity = new TranslationResource(doc.getDocId());
+		ResourceMeta entity = new ResourceMeta(doc.getDocId());
 		resourceUtils.transfer(doc, entity);
 		
 		// transfer extensions
@@ -330,7 +330,7 @@ public class TranslationResourcesService {
 			return Response.status(Status.CONFLICT).build();
 		}
 
-		TranslationResource entity = RestUtils.unmarshall(TranslationResource.class, messageBody, requestContentType, headers.getRequestHeaders());
+		ResourceMeta entity = RestUtils.unmarshall(ResourceMeta.class, messageBody, requestContentType, headers.getRequestHeaders());
 		RestUtils.validateEntity(entity);
 		
 		HDocument document = documentDAO.getByDocId(hProjectIteration, id);

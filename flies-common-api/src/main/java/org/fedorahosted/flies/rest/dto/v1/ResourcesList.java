@@ -9,6 +9,6 @@ import org.fedorahosted.flies.common.Namespaces;
 
 @XmlType(name="resourcesListType", namespace=Namespaces.FLIES, propOrder={})
 @XmlRootElement(name="resources", namespace=Namespaces.FLIES)
-public class ResourcesList extends ArrayList<TranslationResource> {
+public class ResourcesList extends ArrayList<ResourceMeta> {
 	
 }

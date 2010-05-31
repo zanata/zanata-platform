@@ -5,14 +5,14 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.common.Namespaces;
 
-@XmlType(name="translationResourceType", namespace=Namespaces.FLIES, propOrder={})
+@XmlType(name="resourceMetaType", namespace=Namespaces.FLIES, propOrder={})
 @XmlRootElement(name="resource", namespace=Namespaces.FLIES)
-public class TranslationResource extends AbstractTranslationResource {
+public class ResourceMeta extends AbstractResource {
 	
-	public TranslationResource() {
+	public ResourceMeta() {
 	}
 	
-	public TranslationResource(String name) {
+	public ResourceMeta(String name) {
 		super(name);
 	}
 	

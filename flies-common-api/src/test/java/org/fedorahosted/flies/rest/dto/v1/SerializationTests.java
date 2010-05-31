@@ -65,12 +65,12 @@ public class SerializationTests {
 	
 	@Test
 	public void serializeAndDeserializeTranslationResource() throws JsonGenerationException, JsonMappingException, IOException, JAXBException{
-		TranslationResource res = new TranslationResource("id");
+		ResourceMeta res = new ResourceMeta("id");
 		res.getExtensions().add(new PoHeader());
 		JaxbTestUtil.validate(res, PoHeader.class);
 		
 		String output = mapper.writeValueAsString(res);
-		TranslationResource res2 = mapper.readValue(output, TranslationResource.class);
+		ResourceMeta res2 = mapper.readValue(output, ResourceMeta.class);
 		
 		assertThat( res2.getExtensions().size(), is(1));
 		assertThat( res2.getExtensions().iterator().next(), instanceOf(PoHeader.class)); 

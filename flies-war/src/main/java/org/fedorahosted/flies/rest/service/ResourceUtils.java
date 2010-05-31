@@ -19,13 +19,13 @@ import org.fedorahosted.flies.model.po.HPotEntryData;
 import org.fedorahosted.flies.model.po.PoUtility;
 import org.fedorahosted.flies.rest.StringSet;
 import org.fedorahosted.flies.rest.dto.v1.AbstractTextFlow;
-import org.fedorahosted.flies.rest.dto.v1.AbstractTranslationResource;
+import org.fedorahosted.flies.rest.dto.v1.AbstractResource;
 import org.fedorahosted.flies.rest.dto.v1.ExtensionSet;
 import org.fedorahosted.flies.rest.dto.v1.Person;
 import org.fedorahosted.flies.rest.dto.v1.SourceResource;
 import org.fedorahosted.flies.rest.dto.v1.SourceTextFlow;
 import org.fedorahosted.flies.rest.dto.v1.TextFlowTarget;
-import org.fedorahosted.flies.rest.dto.v1.TranslationResource;
+import org.fedorahosted.flies.rest.dto.v1.ResourceMeta;
 import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
 import org.fedorahosted.flies.rest.dto.v1.ext.PotEntryHeader;
 import org.fedorahosted.flies.rest.dto.v1.ext.SimpleComment;
@@ -88,12 +88,12 @@ public class ResourceUtils {
 	
 	public boolean transfer(SourceResource from, HDocument to) {
 		boolean changed = false;
-		changed |= transfer( (AbstractTranslationResource) from, to);
+		changed |= transfer( (AbstractResource) from, to);
 		changed |= mergeTextFlows(from.getTextFlows(), to);
 		return changed;
 	}
 
-	public boolean transfer(AbstractTranslationResource from, HDocument to) {
+	public boolean transfer(AbstractResource from, HDocument to) {
 		boolean changed = false;
 
 		// name
@@ -207,7 +207,7 @@ public class ResourceUtils {
 		//to.setLang(from.get)
 	}
 
-	public void transfer(HDocument from, TranslationResource to) {
+	public void transfer(HDocument from, ResourceMeta to) {
 		to.setContentType(from.getContentType());
 		to.setLang(from.getLocale());
 		to.setName(from.getDocId());
