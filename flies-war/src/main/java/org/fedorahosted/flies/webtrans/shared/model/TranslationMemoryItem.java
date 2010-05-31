@@ -2,7 +2,7 @@ package org.fedorahosted.flies.webtrans.shared.model;
 
 import java.io.Serializable;
 
-public class TransMemory implements Serializable{
+public class TranslationMemoryItem implements Serializable{
 
 	private static final long serialVersionUID = -7381018377520206564L;
 
@@ -19,20 +19,20 @@ public class TransMemory implements Serializable{
 	private float relevanceScore;
 	private int similarityPercent;
 
-	public TransMemory() {
+	public TranslationMemoryItem() {
 	}
 
 	@Deprecated
-	public TransMemory(String source, String memory, String documentPath) {
+	public TranslationMemoryItem(String source, String memory, String documentPath) {
 		this(source, memory, "", "", documentPath, 0, 50, 50);
 	}
 	
 	@Deprecated
-	public TransMemory(String source, String memory, String sourceComment, String targetComment, String documentPath, long projectContainer, float relevanceScore, int similarityPercent) {
+	public TranslationMemoryItem(String source, String memory, String sourceComment, String targetComment, String documentPath, long projectContainer, float relevanceScore, int similarityPercent) {
 		this(source, memory, sourceComment, targetComment, documentPath, relevanceScore, 50);
 	}
 	
-	public TransMemory(String source, String memory, String sourceComment, String targetComment, String documentPath, float relevanceScore, int similarityPercent) {
+	public TranslationMemoryItem(String source, String memory, String sourceComment, String targetComment, String documentPath, float relevanceScore, int similarityPercent) {
 		this.source = source;
 		this.target = memory;
 		this.sourceComment = sourceComment;

@@ -6,7 +6,7 @@ import net.customware.gwt.presenter.client.EventBus;
 
 import org.fedorahosted.flies.webtrans.client.events.TransMemoryCopyEvent;
 import org.fedorahosted.flies.webtrans.client.ui.HighlightingLabel;
-import org.fedorahosted.flies.webtrans.shared.model.TransMemory;
+import org.fedorahosted.flies.webtrans.shared.model.TranslationMemoryItem;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
@@ -116,7 +116,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 	}
 	
 	@Override
-	public void createTable(ArrayList<TransMemory> memories) {
+	public void createTable(ArrayList<TranslationMemoryItem> memories) {
 		clearResults();
 		addColumn("Source", SOURCE_COL);
 		addColumn("Target", TARGET_COL);
@@ -124,7 +124,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 		addColumn("Action", ACTION_COL);
 		
 		int row = HEADER_ROW;
-		for(final TransMemory memory: memories) {
+		for(final TranslationMemoryItem memory: memories) {
 			++row;
 			final String sourceMessage = memory.getSource();
 			final String targetMessage = memory.getTarget();
