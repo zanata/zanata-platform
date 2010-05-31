@@ -146,6 +146,10 @@ public class Application implements EntryPoint{
 	public static native void redirectToUrl(String url)/*-{
 		$wnd.location = url;
 	}-*/;
+	
+	public static native void closeWindow()/*-{
+		$wnd.close();
+	}-*/;
 
 	public static WorkspaceId getWorkspaceId() {
 		if(workspaceId == null) {
