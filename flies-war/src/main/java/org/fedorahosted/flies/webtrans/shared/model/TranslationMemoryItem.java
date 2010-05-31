@@ -15,7 +15,7 @@ public class TranslationMemoryItem implements Serializable{
 
 	private String targetComment;
 
-	private String docID;
+	private TransUnitId transUnitId;
 	private float relevanceScore;
 	private int similarityPercent;
 
@@ -23,32 +23,33 @@ public class TranslationMemoryItem implements Serializable{
 	}
 
 	@Deprecated
-	public TranslationMemoryItem(String source, String memory, String documentPath) {
-		this(source, memory, "", "", documentPath, 0, 50, 50);
+	public TranslationMemoryItem(String source, String memory, TransUnitId transUnitId) {
+		this(source, memory, "", "", transUnitId, 0, 50, 50);
 	}
 	
 	@Deprecated
-	public TranslationMemoryItem(String source, String memory, String sourceComment, String targetComment, String documentPath, long projectContainer, float relevanceScore, int similarityPercent) {
-		this(source, memory, sourceComment, targetComment, documentPath, relevanceScore, 50);
+	public TranslationMemoryItem(String source, String memory, String sourceComment, String targetComment, TransUnitId transUnitId, long projectContainer, float relevanceScore, int similarityPercent) {
+		this(source, memory, sourceComment, targetComment, transUnitId, relevanceScore, 50);
 	}
 	
-	public TranslationMemoryItem(String source, String memory, String sourceComment, String targetComment, String documentPath, float relevanceScore, int similarityPercent) {
+	public TranslationMemoryItem(String source, String memory, String sourceComment, String targetComment, TransUnitId transUnitId, float relevanceScore, int similarityPercent) {
 		this.source = source;
 		this.target = memory;
 		this.sourceComment = sourceComment;
 		this.targetComment = targetComment;
-		this.docID = documentPath;
+		this.transUnitId = transUnitId;
 		this.relevanceScore = relevanceScore;
 		this.similarityPercent = similarityPercent;
 	}
+
+	public TransUnitId getTransUnitId() {
+		return transUnitId;
+	}
 	
-	public void setDocID(String documentPath) {
-		this.docID = documentPath;
+	public void setTransUnitId(TransUnitId transUnitId) {
+		this.transUnitId = transUnitId;
 	}
 
-	public String getDocID() {
-		return docID;
-	}
 	public void setTarget(String target) {
 		this.target = target;
 	}

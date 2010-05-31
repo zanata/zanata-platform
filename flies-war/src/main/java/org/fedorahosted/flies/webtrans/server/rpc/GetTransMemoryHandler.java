@@ -20,6 +20,7 @@ import org.fedorahosted.flies.search.LevenshteinUtil;
 import org.fedorahosted.flies.security.FliesIdentity;
 import org.fedorahosted.flies.util.ShortString;
 import org.fedorahosted.flies.webtrans.server.ActionHandlerFor;
+import org.fedorahosted.flies.webtrans.shared.model.TransUnitId;
 import org.fedorahosted.flies.webtrans.shared.model.TranslationMemoryItem;
 import org.fedorahosted.flies.webtrans.shared.rpc.GetTranslationMemory;
 import org.fedorahosted.flies.webtrans.shared.rpc.GetTranslationMemoryResult;
@@ -113,7 +114,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 						targetContent, 
 						CommentsUtil.toString(textFlow.getComment()),
 						CommentsUtil.toString(target.getComment()),
-						docId,
+						new TransUnitId(textFlow.getId()),
 						score,
 						percent
 				);
