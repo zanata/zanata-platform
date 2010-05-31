@@ -20,7 +20,7 @@ public class SourcePanel extends Composite implements HasValue<TransUnit> {
 	private final TextArea textarea;
 	private TransUnit value;
 	
-	private NavigationMessages messages;
+	private final NavigationMessages messages;
 	
 	public SourcePanel(TransUnit value, NavigationMessages messages) {
 		this.value = value;

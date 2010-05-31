@@ -68,15 +68,16 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 	private DocumentInfo currentDocument;
 	private final TransUnitCount projectCount = new TransUnitCount();
     
-	private WebTransMessages messages;
+	private final WebTransMessages messages;
 	
 	@Inject
 	public DocumentListPresenter(Display display, EventBus eventBus,
 			WorkspaceContext workspaceContext,
-			CachingDispatchAsync dispatcher) {
+			CachingDispatchAsync dispatcher, final WebTransMessages messages) {
 		super(display, eventBus);
 		this.workspaceContext = workspaceContext;
 		this.dispatcher = dispatcher;
+		this.messages = messages;
 		Log.info("DocumentListPresenter()");
 		loadDocumentList();
 	}
