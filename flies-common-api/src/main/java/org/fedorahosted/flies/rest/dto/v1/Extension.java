@@ -11,15 +11,17 @@ import org.codehaus.jackson.annotate.JsonTypeInfo.As;
 import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
 import org.fedorahosted.flies.common.Namespaces;
 import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
+import org.fedorahosted.flies.rest.dto.v1.ext.PoTargetHeaders;
 import org.fedorahosted.flies.rest.dto.v1.ext.PotEntryHeader;
 import org.fedorahosted.flies.rest.dto.v1.ext.SimpleComment;
 
 @XmlType(name="extensionType", namespace=Namespaces.FLIES)
-@XmlSeeAlso({PoHeader.class, PotEntryHeader.class, SimpleComment.class})
+@XmlSeeAlso({PoHeader.class, PotEntryHeader.class, SimpleComment.class, PoTargetHeaders.class})
 @JsonTypeInfo(use=Id.NAME, include=As.WRAPPER_OBJECT)
 @JsonSubTypes({
 	@JsonSubTypes.Type(PoHeader.class),
 	@JsonSubTypes.Type(PotEntryHeader.class),
+	@JsonSubTypes.Type(PoTargetHeaders.class),
 	@JsonSubTypes.Type(SimpleComment.class)
 })
 public abstract class Extension {

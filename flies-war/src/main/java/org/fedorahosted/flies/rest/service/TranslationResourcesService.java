@@ -39,12 +39,12 @@ import org.fedorahosted.flies.rest.LocaleIdSet;
 import org.fedorahosted.flies.rest.NoSuchEntityException;
 import org.fedorahosted.flies.rest.StringSet;
 import org.fedorahosted.flies.rest.dto.v1.MultiTargetTextFlow;
-import org.fedorahosted.flies.rest.dto.v1.MultiTargetTextFlowList;
 import org.fedorahosted.flies.rest.dto.v1.ResourcesList;
 import org.fedorahosted.flies.rest.dto.v1.SourceResource;
 import org.fedorahosted.flies.rest.dto.v1.SourceTextFlow;
 import org.fedorahosted.flies.rest.dto.v1.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.v1.ResourceMeta;
+import org.fedorahosted.flies.rest.dto.v1.TranslationResource;
 import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
@@ -387,7 +387,10 @@ public class TranslationResourcesService {
 			locales = documentDAO.getTargetLocales(doc);
 		}
 		
-		MultiTargetTextFlowList entity = new MultiTargetTextFlowList();
+		TranslationResource entity = new TranslationResource();
+		
+		resourceUtils.transfer(doc, entity.getExtensions(), extensions);
+		resourceUtils.transfer(doc, entity.getExtensions(), extensions, locales);
 		
 		for(HTextFlow htf : doc.getTextFlows()) {
 			MultiTargetTextFlow tf = new MultiTargetTextFlow();
@@ -402,7 +405,7 @@ public class TranslationResourcesService {
 					tf.getTargets().put(locale, target);
 				}
 			}
-			entity.add(tf);
+			entity.getTextFlows().add(tf);
 		}
 
 		return Response.ok().entity(entity).tag(etag).lastModified(doc.getLastChanged()).build();

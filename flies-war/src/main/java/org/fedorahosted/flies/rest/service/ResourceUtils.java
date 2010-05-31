@@ -4,17 +4,22 @@ package org.fedorahosted.flies.rest.service;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang.StringUtils;
+import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.ResourceType;
 import org.fedorahosted.flies.model.HDocument;
 import org.fedorahosted.flies.model.HPerson;
 import org.fedorahosted.flies.model.HSimpleComment;
 import org.fedorahosted.flies.model.HTextFlow;
 import org.fedorahosted.flies.model.HTextFlowTarget;
+import org.fedorahosted.flies.model.po.AbstractPoHeader;
 import org.fedorahosted.flies.model.po.HPoHeader;
+import org.fedorahosted.flies.model.po.HPoTargetHeader;
 import org.fedorahosted.flies.model.po.HPotEntryData;
 import org.fedorahosted.flies.model.po.PoUtility;
 import org.fedorahosted.flies.rest.StringSet;
@@ -27,6 +32,8 @@ import org.fedorahosted.flies.rest.dto.v1.SourceTextFlow;
 import org.fedorahosted.flies.rest.dto.v1.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.v1.ResourceMeta;
 import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
+import org.fedorahosted.flies.rest.dto.v1.ext.PoTargetHeader;
+import org.fedorahosted.flies.rest.dto.v1.ext.PoTargetHeaders;
 import org.fedorahosted.flies.rest.dto.v1.ext.PotEntryHeader;
 import org.fedorahosted.flies.rest.dto.v1.ext.SimpleComment;
 import org.jboss.seam.ScopeType;
@@ -139,8 +146,65 @@ public class ResourceUtils {
 		
 		return changed;
 	}
+
+	public boolean transfer(ExtensionSet from, HDocument to, StringSet extensions, Collection<LocaleId> locales) {
+		boolean changed = false;
+		if( extensions.contains(PoTargetHeaders.ID) ) {
+			PoTargetHeaders poTargetHeadersExt = from.findByType(PoTargetHeaders.class);
+			if(poTargetHeadersExt != null) {
+				Map<LocaleId, HPoTargetHeader> targetHeaders = to.getPoTargetHeaders();
+				Set<LocaleId> unProcessedHeaders = new HashSet<LocaleId>(locales);
+				for(PoTargetHeader header : poTargetHeadersExt.getHeaders()) {
+					HPoTargetHeader poTargetHeader = targetHeaders.get(header.getLocale());
+					if(poTargetHeader == null) {
+						changed = true;
+						poTargetHeader = new HPoTargetHeader();
+						transfer(header, poTargetHeader);
+						targetHeaders.put(header.getLocale(), poTargetHeader);
+					}
+					else{
+						changed |= transfer(header, poTargetHeader);
+					}
+					
+					unProcessedHeaders.remove(header.getLocale());
+				}
+				for(LocaleId locale : unProcessedHeaders) {
+					changed |= targetHeaders.remove(locale) != null;
+				}
+			}
+		}
+		
+		return changed;
+	}
 	
-	public boolean transfer(PoHeader from, HPoHeader to) {
+	private boolean transfer(PoTargetHeader from, HPoTargetHeader to) {
+		boolean changed = false;
+
+		if( !equals(from.getLocale(), to.getTargetLanguage())) {
+			to.setTargetLanguage(from.getLocale());
+			changed = true;
+		}
+		
+		HSimpleComment comment = to.getComment();
+		if(comment == null) {
+			comment = new HSimpleComment();
+		}
+		if( ! equals(from.getComment(), comment.getComment()) ) {
+			changed = true;
+			comment.setComment(from.getComment());
+			to.setComment(comment);
+		}
+		
+		String entries = PoUtility.listToHeader(from.getEntries());
+		if( ! equals(entries, to.getEntries()) ) {
+			to.setEntries(entries);
+			changed = true;
+		}
+		
+		return changed;
+	}
+	
+	private boolean transfer(PoHeader from, HPoHeader to) {
 		boolean changed = false;
 
 		HSimpleComment comment = to.getComment();
@@ -201,6 +265,16 @@ public class ResourceUtils {
 		to.getEntries().addAll(PoUtility.headerToList( from.getEntries() ) );
 	}
 	
+	private void transfer(HPoTargetHeader from, PoTargetHeader to) {
+		to.setLocale(from.getTargetLanguage());
+		HSimpleComment comment = from.getComment();
+		if(comment != null) {
+			to.setComment(comment.getComment());
+		}
+		to.getEntries().addAll(PoUtility.headerToList( from.getEntries() ) );
+		
+	}
+	
 	public void transfer(HTextFlow from, AbstractTextFlow to) {
 		to.setContent(from.getContent());
 		// TODO HTextFlow should have a lang
@@ -224,7 +298,22 @@ public class ResourceUtils {
 			}
 		}
 	}
-
+	
+	public void transfer(HDocument from, ExtensionSet to, StringSet extensions, Collection<LocaleId> locales) {
+		if(extensions.contains(PoTargetHeaders.ID)) {
+			PoTargetHeaders poTargetHeaders = new PoTargetHeaders();
+			for(LocaleId locale : locales) {
+				HPoTargetHeader fromHeader = from.getPoTargetHeaders().get(locale);
+				if(fromHeader != null) {
+					PoTargetHeader header = new PoTargetHeader();
+					transfer(fromHeader, header);
+					poTargetHeaders.getHeaders().add(header);
+				}
+			}
+			to.add(poTargetHeaders);
+		}
+	}
+	
 	public void transfer(HTextFlow from, ExtensionSet to, StringSet extensions) {
 		if(extensions.contains(PotEntryHeader.ID) && from.getPotEntryData() != null) {
 			PotEntryHeader header = new PotEntryHeader();
@@ -255,7 +344,7 @@ public class ResourceUtils {
 			comment.setValue(from.getComment().getComment());
 		}
 	}
-	
+
 	public String encodeDocId(String id){
 		String other = StringUtils.replace(id,"/", ",");
 		try{

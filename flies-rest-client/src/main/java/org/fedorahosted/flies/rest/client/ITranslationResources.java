@@ -16,7 +16,6 @@ import javax.ws.rs.core.MediaType;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.rest.LanguageQualifier;
 import org.fedorahosted.flies.rest.StringSet;
-import org.fedorahosted.flies.rest.dto.v1.MultiTargetTextFlowList;
 import org.fedorahosted.flies.rest.dto.v1.ResourcesList;
 import org.fedorahosted.flies.rest.dto.v1.SourceResource;
 import org.fedorahosted.flies.rest.dto.v1.TranslationResource;
@@ -63,7 +62,7 @@ public interface ITranslationResources {
 
 	@GET
 	@Path("/r/{id}/translations/{locales}")
-	public ClientResponse<MultiTargetTextFlowList> getTranslations(
+	public ClientResponse<TranslationResource> getTranslations(
 			@PathParam("id") String id, 
 			@PathParam("locales") LanguageQualifier locales, 
 			@QueryParam("ext") StringSet extensions);

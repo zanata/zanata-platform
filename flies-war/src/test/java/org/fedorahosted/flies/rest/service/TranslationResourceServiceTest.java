@@ -16,11 +16,10 @@ import org.fedorahosted.flies.rest.LanguageQualifier;
 import org.fedorahosted.flies.rest.StringSet;
 import org.fedorahosted.flies.rest.client.ITranslationResources;
 import org.fedorahosted.flies.rest.dto.po.HeaderEntry;
-import org.fedorahosted.flies.rest.dto.v1.ExtensionSet;
-import org.fedorahosted.flies.rest.dto.v1.MultiTargetTextFlowList;
 import org.fedorahosted.flies.rest.dto.v1.ResourcesList;
 import org.fedorahosted.flies.rest.dto.v1.SourceResource;
 import org.fedorahosted.flies.rest.dto.v1.SourceTextFlow;
+import org.fedorahosted.flies.rest.dto.v1.TranslationResource;
 import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
 import org.jboss.resteasy.client.ClientResponse;
 import org.testng.annotations.Test;
@@ -128,12 +127,12 @@ public class TranslationResourceServiceTest extends FliesRestTest {
 			getClientRequestFactory()
 			.createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
 
-		ClientResponse<MultiTargetTextFlowList> response = client.getTranslations("my.txt", LanguageQualifier.ALL, StringSet.valueOf(""));
+		ClientResponse<TranslationResource> response = client.getTranslations("my.txt", LanguageQualifier.ALL, StringSet.valueOf(""));
 		
 		assertThat(response.getResponseStatus(), is(Status.OK));
-		MultiTargetTextFlowList entity = response.getEntity();
+		TranslationResource entity = response.getEntity();
 		
-		assertThat(entity.size(), is(1));
+		assertThat(entity.getTextFlows().size(), is(1));
 		
 		
 	}
