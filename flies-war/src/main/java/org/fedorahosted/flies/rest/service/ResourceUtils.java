@@ -7,8 +7,6 @@ import java.net.URLEncoder;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.apache.commons.lang.CharSetUtils;
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.common.ResourceType;
 import org.fedorahosted.flies.model.HDocument;
@@ -17,9 +15,9 @@ import org.fedorahosted.flies.model.HSimpleComment;
 import org.fedorahosted.flies.model.HTextFlow;
 import org.fedorahosted.flies.model.HTextFlowTarget;
 import org.fedorahosted.flies.model.po.HPoHeader;
+import org.fedorahosted.flies.model.po.HPotEntryData;
 import org.fedorahosted.flies.model.po.PoUtility;
 import org.fedorahosted.flies.rest.StringSet;
-import org.fedorahosted.flies.rest.dto.po.HeaderEntry;
 import org.fedorahosted.flies.rest.dto.v1.AbstractTextFlow;
 import org.fedorahosted.flies.rest.dto.v1.AbstractTranslationResource;
 import org.fedorahosted.flies.rest.dto.v1.ExtensionSet;
@@ -29,6 +27,8 @@ import org.fedorahosted.flies.rest.dto.v1.SourceTextFlow;
 import org.fedorahosted.flies.rest.dto.v1.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.v1.TranslationResource;
 import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
+import org.fedorahosted.flies.rest.dto.v1.ext.PotEntryHeader;
+import org.fedorahosted.flies.rest.dto.v1.ext.SimpleComment;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
@@ -37,13 +37,13 @@ import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 
-@Name("documentUtils")
+@Name("resourceUtils")
 @Scope(ScopeType.STATELESS)
 @AutoCreate
 @BypassInterceptors
-public class DocumentUtils {
+public class ResourceUtils {
 	
-	Log log = Logging.getLog(DocumentUtils.class);
+	Log log = Logging.getLog(ResourceUtils.class);
 
 	public boolean mergeTextFlows(List<SourceTextFlow> from, HDocument to) {
 		boolean changed = false;
@@ -203,7 +203,7 @@ public class DocumentUtils {
 	
 	public void transfer(HTextFlow from, AbstractTextFlow to) {
 		to.setContent(from.getContent());
-		// TODO
+		// TODO HTextFlow should have a lang
 		//to.setLang(from.get)
 	}
 
@@ -211,7 +211,8 @@ public class DocumentUtils {
 		to.setContentType(from.getContentType());
 		to.setLang(from.getLocale());
 		to.setName(from.getDocId());
-		to.setType(ResourceType.FILE); // TODO
+		// TODO ADD support within the hibernate model for multiple resource types
+		to.setType(ResourceType.FILE); 
 	}
 
 	public void transfer(HDocument from, ExtensionSet to, StringSet extensions) {
@@ -223,7 +224,37 @@ public class DocumentUtils {
 			}
 		}
 	}
+
+	public void transfer(HTextFlow from, ExtensionSet to, StringSet extensions) {
+		if(extensions.contains(PotEntryHeader.ID) && from.getPotEntryData() != null) {
+			PotEntryHeader header = new PotEntryHeader();
+			transfer(from.getPotEntryData(), header);
+			to.add(header);
+			
+		}
+
+		if(extensions.contains(SimpleComment.ID) && from.getComment() != null) {
+			SimpleComment comment = new SimpleComment();
+			comment.setValue(from.getComment().getComment());
+			to.add(comment);
+		}
+		
+	}
 	
+	private void transfer(HPotEntryData from, PotEntryHeader to) {
+		to.setContext(from.getContext());
+		HSimpleComment comment = from.getExtractedComment();
+		if(comment != null) {
+			to.setExtractedComment(comment.getComment());
+		}
+	}
+
+	public void transfer(HTextFlowTarget from, ExtensionSet to, StringSet extensions) {
+		if(extensions.contains(SimpleComment.ID) && from.getComment() != null) {
+			SimpleComment comment = new SimpleComment();
+			comment.setValue(from.getComment().getComment());
+		}
+	}
 	
 	public String encodeDocId(String id){
 		String other = StringUtils.replace(id,"/", ",");

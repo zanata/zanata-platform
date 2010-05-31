@@ -83,15 +83,15 @@ public class TranslationResourcesService {
 	private DocumentDAO documentDAO;
 
 	@In
-	private DocumentUtils documentUtils;
+	private ResourceUtils resourceUtils;
 	
 	public TranslationResourcesService() {
 	}
 	
-	public TranslationResourcesService(ProjectIterationDAO projectIterationDAO, DocumentDAO documentDAO, DocumentUtils documentUtils) {
+	public TranslationResourcesService(ProjectIterationDAO projectIterationDAO, DocumentDAO documentDAO, ResourceUtils resourceUtils) {
 		this.projectIterationDAO = projectIterationDAO;
 		this.documentDAO = documentDAO;
-		this.documentUtils = documentUtils;
+		this.resourceUtils = resourceUtils;
 	}
 	
 	/**
@@ -121,7 +121,7 @@ public class TranslationResourcesService {
 		for(HDocument doc : hProjectIteration.getDocuments().values() ) {
 			if(!doc.isObsolete()) {
 				TranslationResource resource = new TranslationResource();
-				documentUtils.transfer(doc, resource);
+				resourceUtils.transfer(doc, resource);
 				resources.add(resource);
 			}
 		}
@@ -157,20 +157,20 @@ public class TranslationResourcesService {
 			document.setProjectIteration(hProjectIteration);
 		}
 		
-		documentUtils.transfer(entity, document);
+		resourceUtils.transfer(entity, document);
 
 		document = documentDAO.makePersistent(document);
 		documentDAO.flush();
 
 		// handle extensions
-		if ( documentUtils.transfer(entity.getExtensions(), document, extensions) ) {
+		if ( resourceUtils.transfer(entity.getExtensions(), document, extensions) ) {
 			documentDAO.flush();
 		}
 		
 		// TODO include extensions in etag generation
 		EntityTag etag = documentDAO.getETag(hProjectIteration, document.getDocId(), extensions);
 		
-		return Response.created(URI.create("r/"+documentUtils.encodeDocId(document.getDocId())))
+		return Response.created(URI.create("r/"+resourceUtils.encodeDocId(document.getDocId())))
 			.tag(etag).build();
 	}
 
@@ -200,16 +200,16 @@ public class TranslationResourcesService {
 		}
 
 		SourceResource entity = new SourceResource(doc.getDocId());
-		documentUtils.transfer(doc, entity);
+		resourceUtils.transfer(doc, entity);
 		
 		for(HTextFlow htf : doc.getTextFlows()) {
 			SourceTextFlow tf = new SourceTextFlow(htf.getResId());
-			documentUtils.transfer(htf, tf);
+			resourceUtils.transfer(htf, tf);
 			entity.getTextFlows().add(tf);
 		}
 
 		// handle extensions
-		documentUtils.transfer(doc, entity.getExtensions(), extensions);
+		resourceUtils.transfer(doc, entity.getExtensions(), extensions);
 		
 		return Response.ok().entity(entity).tag(etag).lastModified(doc.getLastChanged()).build();
 	}
@@ -241,10 +241,10 @@ public class TranslationResourcesService {
 			return Response.status(Status.NOT_FOUND).build();
 		}
 
-		boolean changed = documentUtils.transfer(entity, document);
+		boolean changed = resourceUtils.transfer(entity, document);
 		
 		// handle extensions
-		changed |= documentUtils.transfer(entity.getExtensions(), document, extensions);
+		changed |= resourceUtils.transfer(entity.getExtensions(), document, extensions);
 		
 		
 		if ( changed ) {
@@ -304,10 +304,10 @@ public class TranslationResourcesService {
 		}
 
 		TranslationResource entity = new TranslationResource(doc.getDocId());
-		documentUtils.transfer(doc, entity);
+		resourceUtils.transfer(doc, entity);
 		
 		// transfer extensions
-		documentUtils.transfer(doc, entity.getExtensions(), extensions);
+		resourceUtils.transfer(doc, entity.getExtensions(), extensions);
 
 		return Response.ok().entity(entity).tag(etag).build();
 	}
@@ -339,10 +339,10 @@ public class TranslationResourcesService {
 			return Response.status(Status.NOT_FOUND).build();
 		}
 		
-		boolean changed = documentUtils.transfer(entity, document);
+		boolean changed = resourceUtils.transfer(entity, document);
 		
 		// handle extensions
-		changed |= documentUtils.transfer(entity.getExtensions(), document, extensions);
+		changed |= resourceUtils.transfer(entity.getExtensions(), document, extensions);
 		
 		if(changed) {
 			documentDAO.flush();
@@ -391,14 +391,14 @@ public class TranslationResourcesService {
 		
 		for(HTextFlow htf : doc.getTextFlows()) {
 			MultiTargetTextFlow tf = new MultiTargetTextFlow();
-			documentUtils.transfer(htf, tf);
-			// TODO transfer extensions
+			resourceUtils.transfer(htf, tf);
+			resourceUtils.transfer(htf, tf.getExtensions(), extensions);
 			for(LocaleId locale : locales) {
 				HTextFlowTarget htft = htf.getTargets().get(locale);
 				if(htft != null) {
 					TextFlowTarget target = new TextFlowTarget();
-					documentUtils.transfer(htft, target);
-					// TODO transfer extensions
+					resourceUtils.transfer(htft, target);
+					resourceUtils.transfer(htft, tf.getExtensions(), extensions);
 					tf.getTargets().put(locale, target);
 				}
 			}

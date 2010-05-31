@@ -16,6 +16,7 @@ import org.fedorahosted.flies.rest.LanguageQualifier;
 import org.fedorahosted.flies.rest.StringSet;
 import org.fedorahosted.flies.rest.client.ITranslationResources;
 import org.fedorahosted.flies.rest.dto.po.HeaderEntry;
+import org.fedorahosted.flies.rest.dto.v1.ExtensionSet;
 import org.fedorahosted.flies.rest.dto.v1.MultiTargetTextFlowList;
 import org.fedorahosted.flies.rest.dto.v1.ResourcesList;
 import org.fedorahosted.flies.rest.dto.v1.SourceResource;
@@ -39,10 +40,10 @@ public class TranslationResourceServiceTest extends FliesRestTest {
 	protected void prepareResources() {
 		final ProjectIterationDAO projectIterationDAO = new ProjectIterationDAO(getSession());
 		final DocumentDAO documentDAO = new DocumentDAO(getSession());
-		final DocumentUtils documentUtils = new DocumentUtils();
+		final ResourceUtils resourceUtils = new ResourceUtils();
 		
 		TranslationResourcesService obj = new TranslationResourcesService(
-				projectIterationDAO, documentDAO, documentUtils);
+				projectIterationDAO, documentDAO, resourceUtils);
 		
 		resources.add(obj);
 	}
@@ -127,7 +128,7 @@ public class TranslationResourceServiceTest extends FliesRestTest {
 			getClientRequestFactory()
 			.createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
 
-		ClientResponse<MultiTargetTextFlowList> response = client.getTranslations("my.txt", LanguageQualifier.ALL);
+		ClientResponse<MultiTargetTextFlowList> response = client.getTranslations("my.txt", LanguageQualifier.ALL, StringSet.valueOf(""));
 		
 		assertThat(response.getResponseStatus(), is(Status.OK));
 		MultiTargetTextFlowList entity = response.getEntity();

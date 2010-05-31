@@ -10,5 +10,9 @@ public class StringSet extends ElemSet<String> {
 	protected String valueOfElem(String value) {
 		return value;
 	}
+	
+	public static StringSet valueOf(String value) {
+		return new StringSet(value);
+	}
 
 }

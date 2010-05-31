@@ -11,9 +11,9 @@ import org.testng.annotations.Test;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 
-public class DocumentUtilsTest {
+public class ResourceUtilsTest {
 
-	private static DocumentUtils documentUtils = new DocumentUtils();
+	private static ResourceUtils documentUtils = new ResourceUtils();
 
 	@Test
 	public void mergeNoTextFlows() {

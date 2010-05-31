@@ -16,7 +16,7 @@
 
 	<test name="REST Tests">
 		<classes>
-			<class name="org.fedorahosted.flies.rest.service.DocumentUtilsTest"/>
+			<class name="org.fedorahosted.flies.rest.service.ResourceUtilsTest"/>
 			<class name="org.fedorahosted.flies.rest.service.TranslationResourceServiceTest"/>
 		</classes>
 	</test>

@@ -2,6 +2,7 @@ package org.fedorahosted.flies.rest.dto.po;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlValue;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -30,7 +31,7 @@ public class HeaderEntry {
 		this.key = key;
 	}
 	
-	@XmlAttribute(name="value", required=true)
+	@XmlValue
 	public String getValue() {
 		if(value == null)
 			value = "";

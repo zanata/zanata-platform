@@ -65,7 +65,8 @@ public interface ITranslationResources {
 	@Path("/r/{id}/translations/{locales}")
 	public ClientResponse<MultiTargetTextFlowList> getTranslations(
 			@PathParam("id") String id, 
-			@PathParam("locales") LanguageQualifier locales);
+			@PathParam("locales") LanguageQualifier locales, 
+			@QueryParam("ext") StringSet extensions);
 	
 	@PUT
 	@Path("/r/{id}/target/{locale}")
