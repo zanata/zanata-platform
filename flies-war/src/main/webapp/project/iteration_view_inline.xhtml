@@ -38,6 +38,7 @@
       </h:outputLink>
       <h:outputLink 
           rendered="#{fliesInit.debug}"
+          onclick="window.open('popup.faces', 'popupWindowName', 'dependent=yes, menubar=no, toolbar=no'); return false;"
           value="/flies/org.fedorahosted.flies.webtrans.Application/Application.html">
 		<f:param name="project" value="#{_iteration.project.slug}"/>
 		<f:param name="iteration" value="#{_iteration.slug}"/>
