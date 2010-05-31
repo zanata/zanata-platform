@@ -128,8 +128,8 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 			++row;
 			final String sourceMessage = memory.getSource();
 			final String targetMessage = memory.getTarget();
-//			final String sourceComment = memory.getSourceComment();
-//			final String targetComment = memory.getTargetComment();
+			final String sourceComment = memory.getSourceComment();
+			final String targetComment = memory.getTargetComment();
 			final String docID = memory.getDocID();
 //			final float score = memory.getRelevanceScore();
 			final int similarity = memory.getSimilarityPercent();
@@ -148,10 +148,10 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 			});
 			resultTable.setWidget(row, ACTION_COL, copyLink);
 			// comments are presently disabled on the server side
-//			String suppInfo = "Source Comment: " + sourceComment + "     "
-//            + "Target Comment: " + targetComment + "     "
-//            + "Document Name: " + docID;
-			String suppInfo = "Document Name: " + docID;
+			String suppInfo = "Source Comment: " + sourceComment + "     "
+            + "Target Comment: " + targetComment + "     "
+            + "Document Name: " + docID;
+//			String suppInfo = "Document Name: " + docID;
 
 			// Use ToolTips for supplementary info.
 			resultTable.getWidget(row, SOURCE_COL).setTitle(suppInfo);				

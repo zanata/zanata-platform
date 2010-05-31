@@ -8,7 +8,6 @@ import java.util.List;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Query;
@@ -81,9 +80,6 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 		}
 		
         try {
-        	// TODO try a TmFuzzyQuery (to get okapi's relevance calcs)
-//        	TmFuzzyQuery q = new TmFuzzyQuery(threshold, termCountField);
-//        	q.extractTerms(terms);
         	QueryParser parser = new QueryParser(Version.LUCENE_29, 
         			"content", 
 					new DefaultNgramAnalyzer());
@@ -115,10 +111,9 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 				TranslationMemoryItem mem = new TranslationMemoryItem(
 						textFlowContent, 
 						targetContent, 
-						null, // textFlowComment,
-						null, // targetComment,
+						CommentsUtil.toString(textFlow.getComment()),
+						CommentsUtil.toString(target.getComment()),
 						docId,
-						// TODO find the projectSlug and iterSlug
 						score,
 						percent
 				);
