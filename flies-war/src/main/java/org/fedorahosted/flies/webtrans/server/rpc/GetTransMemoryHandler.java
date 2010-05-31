@@ -8,7 +8,6 @@ import java.util.List;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Query;
@@ -21,7 +20,8 @@ import org.fedorahosted.flies.search.LevenshteinUtil;
 import org.fedorahosted.flies.security.FliesIdentity;
 import org.fedorahosted.flies.util.ShortString;
 import org.fedorahosted.flies.webtrans.server.ActionHandlerFor;
-import org.fedorahosted.flies.webtrans.shared.model.TransMemory;
+import org.fedorahosted.flies.webtrans.shared.model.TransUnitId;
+import org.fedorahosted.flies.webtrans.shared.model.TranslationMemoryItem;
 import org.fedorahosted.flies.webtrans.shared.rpc.GetTranslationMemory;
 import org.fedorahosted.flies.webtrans.shared.rpc.GetTranslationMemoryResult;
 import org.fedorahosted.flies.webtrans.shared.rpc.GetTranslationMemory.SearchType;
@@ -60,7 +60,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 				abbrev);
 		
 		LocaleId localeID = action.getLocaleId();
-		ArrayList<TransMemory> results;
+		ArrayList<TranslationMemoryItem> results;
 		String queryText;
 		switch (searchType) {
 		case RAW:
@@ -81,9 +81,6 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 		}
 		
         try {
-        	// TODO try a TmFuzzyQuery (to get okapi's relevance calcs)
-//        	TmFuzzyQuery q = new TmFuzzyQuery(threshold, termCountField);
-//        	q.extractTerms(terms);
         	QueryParser parser = new QueryParser(Version.LUCENE_29, 
         			"content", 
 					new DefaultNgramAnalyzer());
@@ -96,7 +93,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
         	List<Object[]> matches = ftQuery
                 .setMaxResults(MAX_RESULTS)
                 .getResultList();
-            results = new ArrayList<TransMemory>(matches.size());
+            results = new ArrayList<TranslationMemoryItem>(matches.size());
     		for (Object[] match : matches) {
     			float score = (Float) match[0];
     			HTextFlow textFlow = (HTextFlow) match[1];
@@ -112,13 +109,12 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
     			int maxDistance = searchText.length();
     			int percent = 100 * (maxDistance - levDistance) / maxDistance;
     				
-				TransMemory mem = new TransMemory(
+				TranslationMemoryItem mem = new TranslationMemoryItem(
 						textFlowContent, 
 						targetContent, 
-						null, // textFlowComment,
-						null, // targetComment,
-						docId,
-						// TODO find the projectSlug and iterSlug
+						CommentsUtil.toString(textFlow.getComment()),
+						CommentsUtil.toString(target.getComment()),
+						new TransUnitId(textFlow.getId()),
 						score,
 						percent
 				);
@@ -132,16 +128,16 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 				// escaping failed!
 				log.error("Can't parse query '"+queryText+"'", e);
 			}
-            results = new ArrayList<TransMemory>(0); 
+            results = new ArrayList<TranslationMemoryItem>(0); 
         }
         
         /**
          * NB just because this Comparator returns 0 doesn't mean the matches are identical.
          */
-        Comparator<TransMemory> comp = new Comparator<TransMemory>() {
+        Comparator<TranslationMemoryItem> comp = new Comparator<TranslationMemoryItem>() {
 			
 			@Override
-			public int compare(TransMemory m1, TransMemory m2) {
+			public int compare(TranslationMemoryItem m1, TranslationMemoryItem m2) {
 				int result;
 				result = compare(m1.getSimilarityPercent(), m2.getSimilarityPercent());
 				if (result != 0)

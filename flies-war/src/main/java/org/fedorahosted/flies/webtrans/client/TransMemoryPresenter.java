@@ -11,7 +11,7 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitSelectionEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitSelectionHandler;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
-import org.fedorahosted.flies.webtrans.shared.model.TransMemory;
+import org.fedorahosted.flies.webtrans.shared.model.TranslationMemoryItem;
 import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
 import org.fedorahosted.flies.webtrans.shared.model.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.shared.rpc.GetTranslationMemory;
@@ -37,7 +37,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 		HasValue<Boolean> getExactButton();
 		HasClickHandlers getSearchButton();
 		HasText getTmTextBox();
-		void createTable(ArrayList<TransMemory> memories);
+		void createTable(ArrayList<TranslationMemoryItem> memories);
 	}
 
 	@Inject
@@ -95,7 +95,7 @@ public class TransMemoryPresenter extends WidgetPresenter<TransMemoryPresenter.D
 			}
 			@Override
 			public void onSuccess(GetTranslationMemoryResult result) {
-				ArrayList<TransMemory> memories = result.getMemories();
+				ArrayList<TranslationMemoryItem> memories = result.getMemories();
 				display.createTable(memories);
 			}
 		});
