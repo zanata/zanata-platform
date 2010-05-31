@@ -98,7 +98,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 				ColumnDefinition<TransUnit, TransUnit> columnDef,
 				com.google.gwt.gen2.table.client.TableDefinition.AbstractCellView<TransUnit> view) {
 			view.setStyleName("TableEditorCell TableEditorCell-Source");
-			SourcePanel sourcePanel = new SourcePanel(rowValue);
+			SourcePanel sourcePanel = new SourcePanel(rowValue, messages);
 			view.setWidget( sourcePanel );
 		}
 	};
@@ -135,8 +135,10 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 	};
 
 	private InlineTargetCellEditor targetCellEditor;
+	private final NavigationMessages messages;
 
 	public TableEditorTableDefinition(final NavigationMessages messages, final RedirectingCachedTableModel<TransUnit> tableModel) {
+		this.messages = messages;
 		setRowRenderer(rowRenderer);
 		//indicatorColumnDefinition.setMaximumColumnWidth(15);
 		//indicatorColumnDefinition.setPreferredColumnWidth(15);

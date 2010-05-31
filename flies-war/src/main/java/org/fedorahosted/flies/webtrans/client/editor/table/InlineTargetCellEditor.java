@@ -213,7 +213,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>{
 		operationsPanel.add(stateImage);
 
 		// Add content widget
-		toggleFuzzy = new CheckBox("Fuzzy");
+		toggleFuzzy = new CheckBox(messages.fuzzy());
 		operationsPanel.add(toggleFuzzy);
 				
 		PushButton cloneButton = new PushButton(new Image(), cloneHandler);

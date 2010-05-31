@@ -72,4 +72,7 @@ public interface WebTransMessages extends Messages {
 
 	@DefaultMessage("{0} (Shortcut: {1})")
 	String tooltipsWithShortcut(String text, String shortcut);
+	
+	@DefaultMessage("Failed to load document from Server")
+	String loadDocFailed();
 }

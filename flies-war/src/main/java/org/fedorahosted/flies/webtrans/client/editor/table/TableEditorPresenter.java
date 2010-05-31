@@ -111,11 +111,14 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 	private int curRowIndex;
 	private int curPage;
 	
+	private final TableEditorMessages messages;
+	
 	@Inject
-	public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher,final Identity identity) {
+	public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher,final Identity identity, final TableEditorMessages messages) {
 		super(display, eventBus);
 		this.dispatcher = dispatcher;
 		this.identity = identity;
+		this.messages = messages;
 	}
 
 	@Override
@@ -244,7 +247,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 					if(selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnitId())) {
 						// handle change in current selection
 						if(!event.getSessionId().equals(identity.getSessionId())) 
-							eventBus.fireEvent(new NotificationEvent(Severity.Warning, "Warning: This Translation Unit is being edited by someone else."));
+							eventBus.fireEvent(new NotificationEvent(Severity.Warning, messages.notifyInEdit()));
 					}
 					//display.getTableModel().clearCache();
 					//display.reloadPage();
@@ -290,10 +293,10 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 				// if user is editing any target. Notifies if not.
 				 if (display.getTargetCellEditor().isEditing()) {
 					 display.getTargetCellEditor().setText(event.getTargetResult());
-					 eventBus.fireEvent( new NotificationEvent(Severity.Info, "Message has been copied to the target."));
+					 eventBus.fireEvent( new NotificationEvent(Severity.Info, messages.notifyCopied()));
 				 }
 				 else
-					 eventBus.fireEvent( new NotificationEvent(Severity.Error, "Please open the target in the editor first."));
+					 eventBus.fireEvent( new NotificationEvent(Severity.Error, messages.notifyUnopened()));
 			}
 		}));
 	
@@ -389,14 +392,14 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 				@Override
 				public void onFailure(Throwable caught) {
 					if(caught instanceof AuthenticationError) {
-						eventBus.fireEvent( new NotificationEvent(Severity.Error, "Not logged in!"));
+						eventBus.fireEvent( new NotificationEvent(Severity.Error, messages.notifyNotLoggedIn()));
 					}
 					else if(caught instanceof AuthorizationError) {
-						eventBus.fireEvent( new NotificationEvent(Severity.Error, "Failed to load data from Server"));
+						eventBus.fireEvent( new NotificationEvent(Severity.Error, messages.notifyLoadFailed()));
 					}
 					else {
 						Log.error("GetTransUnits failure " + caught, caught);
-						eventBus.fireEvent( new NotificationEvent(Severity.Error, "An unknown error occurred"));
+						eventBus.fireEvent( new NotificationEvent(Severity.Error, messages.notifyUnknownError()));
 					}
 				}
 			});
@@ -410,12 +413,12 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 						@Override
 						public void onFailure(Throwable caught) {
 							Log.error("UpdateTransUnit failure " + caught, caught);
-							eventBus.fireEvent(new NotificationEvent(Severity.Error, "Failed to update Translation Unit"));
+							eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUpdateFailed()));
 						}
 						
 						@Override
 						public void onSuccess(UpdateTransUnitResult result) {
-							eventBus.fireEvent(new NotificationEvent(Severity.Info, "Saved change to Translation Unit"));
+							eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyUpdateSaved()));
 						}
 					});
 			
@@ -427,7 +430,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 						@Override
 						public void onFailure(Throwable caught) {
 							Log.error("EditingTranslationAction failure " + caught, caught);
-							eventBus.fireEvent(new NotificationEvent(Severity.Error, "Failed to Stop Editing TransUnit"));
+							eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyStopFailed()));
 						}
 						
 						@Override
@@ -544,7 +547,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 					@Override
 					public void onFailure(Throwable caught) {
 						Log.error("EditingTranslationAction failure " + caught, caught);
-						eventBus.fireEvent(new NotificationEvent(Severity.Error, "Failed to Stop Editing TransUnit"));
+						eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyStopFailed()));
 					}
 					
 		});
@@ -560,7 +563,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 					@Override
 					public void onFailure(Throwable caught) {
 						Log.error("EditingTranslationAction failure " + caught, caught);
-						eventBus.fireEvent(new NotificationEvent(Severity.Error, "Failed to Lock TransUnit"));
+						eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyLockFailed()));
 					}
 					@Override
 					public void onSuccess(EditingTranslationResult result) {

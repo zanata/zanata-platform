@@ -66,4 +66,10 @@ public interface NavigationMessages extends Messages {
 	
 	@DefaultMessage("{0} ({1})")
 	String actionToolTip(String actionName, String shortcut);
+	
+	@DefaultMessage("Fuzzy")
+	String fuzzy();
+
+	@DefaultMessage("Source comment: ")
+	String sourceCommentLabel();
 }
