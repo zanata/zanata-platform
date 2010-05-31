@@ -3,20 +3,15 @@ package org.fedorahosted.flies.webtrans.client.editor.table;
 import org.fedorahosted.flies.webtrans.client.ui.HighlightingLabel;
 import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
 
-
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
+import com.google.inject.Inject;
 
 public class SourcePanel extends Composite implements HasValue<TransUnit> {
 
@@ -25,8 +20,11 @@ public class SourcePanel extends Composite implements HasValue<TransUnit> {
 	private final TextArea textarea;
 	private TransUnit value;
 	
-	public SourcePanel(TransUnit value) {
+	private final NavigationMessages messages;
+	
+	public SourcePanel(TransUnit value, NavigationMessages messages) {
 		this.value = value;
+		this.messages = messages;
 		panel = new FlowPanel();
 		panel.setSize("100%", "100%");
 		initWidget(panel);
@@ -34,7 +32,7 @@ public class SourcePanel extends Composite implements HasValue<TransUnit> {
 
 		sourceLabel = new HighlightingLabel(value.getSource());
 		sourceLabel.setStylePrimaryName("TableEditorContent");
-		sourceLabel.setTitle("Source Comment: " + value.getSourceComment());
+		sourceLabel.setTitle(messages.sourceCommentLabel() + value.getSourceComment());
 		
 		panel.add(sourceLabel);
 		textarea = new TextArea();

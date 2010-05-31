@@ -13,7 +13,6 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.TransUnitCount;
 import org.fedorahosted.flies.webtrans.client.editor.HasTransUnitCount;
 import org.fedorahosted.flies.webtrans.client.editor.filter.ContentFilter;
@@ -24,22 +23,16 @@ import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.fedorahosted.flies.webtrans.client.events.NotificationEvent.Severity;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
-import org.fedorahosted.flies.webtrans.client.ui.HasFilter;
 import org.fedorahosted.flies.webtrans.shared.model.DocumentId;
 import org.fedorahosted.flies.webtrans.shared.model.DocumentInfo;
 import org.fedorahosted.flies.webtrans.shared.model.DocumentStatus;
-import org.fedorahosted.flies.webtrans.shared.model.ProjectIterationId;
 import org.fedorahosted.flies.webtrans.shared.model.WorkspaceContext;
-import org.fedorahosted.flies.webtrans.shared.model.WorkspaceId;
 import org.fedorahosted.flies.webtrans.shared.rpc.GetDocumentList;
 import org.fedorahosted.flies.webtrans.shared.rpc.GetDocumentListResult;
 import org.fedorahosted.flies.webtrans.shared.rpc.GetProjectStatusCount;
 import org.fedorahosted.flies.webtrans.shared.rpc.GetProjectStatusCountResult;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -48,10 +41,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.TreeItem;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter.Display> 
@@ -78,14 +68,16 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 	private DocumentInfo currentDocument;
 	private final TransUnitCount projectCount = new TransUnitCount();
     
+	private final WebTransMessages messages;
 	
 	@Inject
 	public DocumentListPresenter(Display display, EventBus eventBus,
 			WorkspaceContext workspaceContext,
-			CachingDispatchAsync dispatcher) {
+			CachingDispatchAsync dispatcher, final WebTransMessages messages) {
 		super(display, eventBus);
 		this.workspaceContext = workspaceContext;
 		this.dispatcher = dispatcher;
+		this.messages = messages;
 		Log.info("DocumentListPresenter()");
 		loadDocumentList();
 	}
@@ -272,7 +264,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 				new AsyncCallback<GetDocumentListResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				eventBus.fireEvent( new NotificationEvent(Severity.Error, "Failed to load data from Server"));
+				eventBus.fireEvent( new NotificationEvent(Severity.Error, messages.loadDocFailed()));
 			}
 			@Override
 			public void onSuccess(GetDocumentListResult result) {
