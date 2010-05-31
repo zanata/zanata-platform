@@ -11,7 +11,6 @@ import org.fedorahosted.flies.FliesInit;
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.EditState;
 import org.fedorahosted.flies.model.HDocument;
-import org.fedorahosted.flies.model.HSimpleComment;
 import org.fedorahosted.flies.model.HTextFlow;
 import org.fedorahosted.flies.model.HTextFlowTarget;
 import org.fedorahosted.flies.rest.dto.TextFlowTarget;
@@ -77,7 +76,7 @@ public class GetTransUnitsHandler extends AbstractActionHandler<GetTransUnits, G
 					action.getWorkspaceId() );
 
 			//EditState editstate = workspace.getTransUnitStatus(tuId);
-			TransUnit tu = new TransUnit(tuId, action.getWorkspaceId().getLocaleId(), textFlow.getContent(), toString(textFlow.getComment()), "", ContentState.New);
+			TransUnit tu = new TransUnit(tuId, action.getWorkspaceId().getLocaleId(), textFlow.getContent(), CommentsUtil.toString(textFlow.getComment()), "", ContentState.New);
 			HTextFlowTarget target = textFlow.getTargets().get(action.getWorkspaceId().getLocaleId());
 			if(target != null) {
 				tu.setTarget(target.getContent());
@@ -89,13 +88,6 @@ public class GetTransUnitsHandler extends AbstractActionHandler<GetTransUnits, G
 		return new GetTransUnitsResult(action.getDocumentId(), units, size );
 	}
 	
-	private static String toString(HSimpleComment comment) {
-		if (comment == null)
-			return null;
-		else
-			return comment.getComment();
-	}
-
 	@Override
 	public void rollback(GetTransUnits action, GetTransUnitsResult result,
 			ExecutionContext context) throws ActionException {

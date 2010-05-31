@@ -21,7 +21,7 @@
 		<env.debug>false</env.debug>
 		<env.server.path>http://localhost:8080/flies</env.server.path>
 		<env.import.testdata>false</env.import.testdata>
-		<env.hibernate.hbm2ddl.auto>update</env.hibernate.hbm2ddl.auto>
+		<env.hibernate.hbm2ddl.auto>validate</env.hibernate.hbm2ddl.auto>
 		<env.hibernate.show_sql>false</env.hibernate.show_sql>
 		<env.hibernate.format_sql>false</env.hibernate.format_sql>
 		<env.hibernate.indexBase>fliessearchindex</env.hibernate.indexBase>
@@ -727,6 +727,7 @@
 			<groupId>org.jboss.seam</groupId>
 			<artifactId>jboss-seam</artifactId>
 			<version>${version.seam}</version>
+			<type>ejb</type>
 		</dependency>
 
 		<dependency>
