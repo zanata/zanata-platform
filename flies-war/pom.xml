@@ -727,6 +727,7 @@
 			<groupId>org.jboss.seam</groupId>
 			<artifactId>jboss-seam</artifactId>
 			<version>${version.seam}</version>
+			<type>ejb</type>
 		</dependency>
 
 		<dependency>
