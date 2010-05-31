@@ -20,7 +20,7 @@ import org.fedorahosted.flies.rest.dto.v1.ext.SimpleComment;
 @JsonSubTypes({
 	@JsonSubTypes.Type(PoHeader.class),
 	@JsonSubTypes.Type(PotEntryHeader.class),
-	@JsonSubTypes.Type(SimpleComment.class),
+	@JsonSubTypes.Type(SimpleComment.class)
 })
 public abstract class Extension {
 
