@@ -5,31 +5,38 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.common.Namespaces;
+import org.hibernate.validator.Email;
+import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.NotNull;
 
 @XmlType(name="personType", namespace=Namespaces.FLIES, propOrder={})
 @XmlRootElement(name="person", namespace=Namespaces.FLIES)
 public class Person {
 
-	private String id;
+	private String email;
 	private String name;
 	
 	public Person() {
 	}
-	public Person(String id, String name) {
-		this.id = id;
+	
+	public Person(String email, String name) {
+		this.email = email;
 		this.name = name;
 	}
 	
-	@XmlAttribute(name="id", required=true)
-	public String getId() {
-		return id;
+	@XmlAttribute(name="email", required=true)
+	@Email
+	@NotNull
+	public String getEmail() {
+		return email;
 	}
 	
-	public void setId(String id) {
-		this.id = id;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	
 	@XmlAttribute(name="name", required=true)
+	@NotEmpty
 	public String getName() {
 		return name;
 	}
