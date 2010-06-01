@@ -186,6 +186,10 @@
 	z-index: 10 !important;
 	margin: 0 !important;
 	padding: 0 !important;
+	-moz-border-radius-topleft: 0px;
+	-moz-border-radius-topright: 0px;
+	-moz-border-radius-bottomleft: 0px;
+	-moz-border-radius-bottomright: 0px;
 }
 
 .ui-tabs-nav-issues ul li.odd {
