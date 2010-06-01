@@ -20,6 +20,7 @@ import org.fedorahosted.flies.rest.dto.v1.ResourceMeta;
 import org.fedorahosted.flies.rest.dto.v1.ResourcesList;
 import org.fedorahosted.flies.rest.dto.v1.SourceResource;
 import org.fedorahosted.flies.rest.dto.v1.TargetResource;
+import org.fedorahosted.flies.rest.dto.v1.TranslationResource;
 import org.jboss.resteasy.client.ClientResponse;
 
 
@@ -70,7 +71,7 @@ public interface ITranslationResources {
 	
 	@GET
 	@Path("/r/{id}/translations/{locale}")
-	public ClientResponse<String> getTranslations(
+	public ClientResponse<TranslationResource> getTranslations(
 			@PathParam("id") String id, 
 			@PathParam("locale") LocaleId locale
 		);
@@ -87,7 +88,7 @@ public interface ITranslationResources {
 	public ClientResponse<String> putTranslations(
 			@PathParam("id") String id, 
 			@PathParam("locale") LocaleId locale,
-			TargetResource messageBody
+			TranslationResource messageBody
 		);
 	
 }

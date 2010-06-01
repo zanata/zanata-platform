@@ -3,6 +3,7 @@ package org.fedorahosted.flies.dao;
 
 import java.util.List;
 
+import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.model.HDocument;
 import org.fedorahosted.flies.model.HTextFlow;
@@ -44,11 +45,14 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>{
 	@SuppressWarnings("unchecked")
 	public List<HTextFlowTarget> findAllTranslations(HDocument document, LocaleId locale) {
 		return getSession().createQuery(
-				"select t from HTextFlowTarget where " +
+				"select t from HTextFlowTarget t where " +
 				"t.textFlow.document =:document and t.locale =:locale " +
+				"and t.state !=:state " +
 				"order by t.textFlow.pos")
 				.setParameter("document", document)
-				.setParameter("locale", locale).list();
+				.setParameter("locale", locale)
+				.setParameter("state", ContentState.New)
+				.list();
 		
 	}
 	

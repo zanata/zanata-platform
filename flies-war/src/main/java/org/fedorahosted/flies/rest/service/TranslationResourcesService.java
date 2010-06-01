@@ -435,7 +435,6 @@ public class TranslationResourcesService {
 		
 	}
 
-
 	@GET
 	@Path("/r/{id}/translations/{locale}")
 	public Response doTranslationsGet(
@@ -556,8 +555,6 @@ public class TranslationResourcesService {
 		// handle extensions
 		changed |= resourceUtils.transfer(entity.getExtensions(), document, extensions, locale);
 		
-		List<String> errors = new ArrayList<String>();
-		
 		List<HPerson> newPeople = new ArrayList<HPerson>();
 		List<HTextFlowTarget> newTargets = new ArrayList<HTextFlowTarget>();
 		List<HTextFlowTarget> changedTargets = new ArrayList<HTextFlowTarget>();
@@ -567,99 +564,68 @@ public class TranslationResourcesService {
 		TextFlowTargetWithId current = null;
 		for(HTextFlow textFlow : document.getTextFlows()) {
 			if(current == null) {
-				if(!iter.hasNext()) {
-					HTextFlowTarget hTarget = textFlow.getTargets().get(locale);
-					if(hTarget != null) {
-						removedTargets.add(hTarget);
-					}
-				}
-				else{
+				if(iter.hasNext()) {
 					current = iter.next();
-				}
-				
-				if(textFlow.getResId().equals(current.getResId())) {
-					// transfer
-					
-					HTextFlowTarget hTarget = textFlow.getTargets().get(locale);
-					if(hTarget == null) {
-						hTarget = new HTextFlowTarget(textFlow, locale);
-						// transfer
-						newTargets.add(hTarget);
-					}
-					else {
-						// transfer
-						changedTargets.add(hTarget);
-					}
-					
-					current = null;
 				}
 				else {
 					HTextFlowTarget hTarget = textFlow.getTargets().get(locale);
 					if(hTarget != null) {
 						removedTargets.add(hTarget);
 					}
+					continue;
+				}
+			}
+			
+			if(textFlow.getResId().equals(current.getResId())) {
+				// transfer
+				
+				HTextFlowTarget hTarget = textFlow.getTargets().get(locale);
+				boolean targetChanged = false;
+				if(hTarget == null) {
+					targetChanged = true;
+					hTarget = new HTextFlowTarget(textFlow, locale);
+					textFlow.getTargets().put(locale, hTarget);
+					newTargets.add(hTarget);
+					targetChanged |= resourceUtils.transfer(current, hTarget);
+					targetChanged |= resourceUtils.transfer(current.getExtensions(),hTarget, extensions);
+				}
+				else {
+					targetChanged |= resourceUtils.transfer(current, hTarget);
+					targetChanged |= resourceUtils.transfer(current.getExtensions(),hTarget, extensions);
+					if(targetChanged) {
+						changedTargets.add(hTarget);
+					}
 				}
 				
+				// update translation information if applicable
+				if(targetChanged && current.getTranslator() != null) {
+					String email = current.getTranslator().getEmail();
+					HPerson hPerson = personDAO.findByEmail(email);
+					if(hPerson == null) {
+						hPerson = new HPerson();
+						hPerson.setEmail(email);
+						hPerson.setName(current.getTranslator().getName());
+						newPeople.add(hPerson);
+					}
+					hTarget.setLastModifiedBy(hPerson);
+				}
+				
+				
+				current = null;
+			}
+			else {
+				HTextFlowTarget hTarget = textFlow.getTargets().get(locale);
+				if(hTarget != null) {
+					removedTargets.add(hTarget);
+				}
 			}
 			
 		}
 		
 		if(iter.hasNext()) {
-			// we're in trouble
+			return Response.status(Status.BAD_REQUEST).entity("Unexpected target: " + iter.next().getResId()).build();
 		}
-		for(MultiTargetTextFlow multiTargetTextFlow : entity.getTextFlows()) {
-			String resId = multiTargetTextFlow.getId();
-			HTextFlow hTextFlow = document.getAllTextFlows().get(resId);
-			if(hTextFlow == null) {
-				errors.add(resId +  ": no such resource exists.");
-				continue;
-			}
-			else if(hTextFlow.isObsolete()) {
-				errors.add(resId +  ": no such resource exists.");
-				continue;
-			}
-
-			// iterate through all translations for the text flow
-			for(LocaleId locale : locales) {
-				TextFlowTarget target = multiTargetTextFlow.getTargets().get(locale);
-				if(target != null) {
-					HTextFlowTarget hTarget = hTextFlow.getTargets().get(locale);
-					boolean targetChanged = false;
-					if(hTarget == null) { // no existing entry, create one
-						targetChanged = true;
-						hTarget = new HTextFlowTarget(hTextFlow, locale);
-						newTargets.add(hTarget);
-						targetChanged |= resourceUtils.transfer(target, hTarget);
-						targetChanged |= resourceUtils.transfer(target.getExtensions(),hTarget, extensions);
-					}
-					else{ // update an existing entry
-						targetChanged |= resourceUtils.transfer(target, hTarget);
-						targetChanged |= resourceUtils.transfer(target.getExtensions(),hTarget, extensions);
-						if(targetChanged) {
-							changedTargets.add(hTarget);
-						}
-					}
-					
-					// update translation information if applicable
-					if(targetChanged && target.getTranslator() != null) {
-						String email = target.getTranslator().getEmail();
-						HPerson hPerson = personDAO.findByEmail(email);
-						if(hPerson == null) {
-							hPerson = new HPerson();
-							hPerson.setEmail(email);
-							hPerson.setName(target.getTranslator().getName());
-							newPeople.add(hPerson);
-						}
-						hTarget.setLastModifiedBy(hPerson);
-					}
-				}
-			}
-		}
-		
-		if( !errors.isEmpty() ) {
-			return Response.status(Status.BAD_REQUEST).entity(StringUtils.join(errors, "\n")).build();
-		}
-		else if ( changed ) {
+		else if ( changed || !newTargets.isEmpty() || !changedTargets.isEmpty() || !removedTargets.isEmpty() ) {
 
 			for(HPerson person : newPeople) {
 				personDAO.makePersistent(person);
@@ -668,6 +634,11 @@ public class TranslationResourcesService {
 
 			for(HTextFlowTarget target : newTargets) {
 				textFlowTargetDAO.makePersistent(target);
+			}
+			textFlowTargetDAO.flush();
+			
+			for(HTextFlowTarget target : removedTargets) {
+				target.clear();
 			}
 			textFlowTargetDAO.flush();
 			

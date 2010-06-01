@@ -3,6 +3,8 @@ package org.fedorahosted.flies.rest.service;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
+import java.util.List;
+
 import javax.ws.rs.core.Response.Status;
 
 import org.dbunit.operation.DatabaseOperation;
@@ -26,6 +28,8 @@ import org.fedorahosted.flies.rest.dto.v1.SourceResource;
 import org.fedorahosted.flies.rest.dto.v1.SourceTextFlow;
 import org.fedorahosted.flies.rest.dto.v1.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.v1.TargetResource;
+import org.fedorahosted.flies.rest.dto.v1.TextFlowTargetWithId;
+import org.fedorahosted.flies.rest.dto.v1.TranslationResource;
 import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
 import org.jboss.resteasy.client.ClientResponse;
 import org.testng.annotations.Test;
@@ -67,8 +71,11 @@ public class TranslationResourceServiceTest extends FliesRestTest {
 			.createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
 		
 		SourceResource sr = createSourceResource("my.txt");
-		ClientResponse<String> resources = client.post(sr, null);
-		assertThat(resources.getResponseStatus(), is(Status.CREATED));
+		ClientResponse<String> response = client.post(sr, null);
+		assertThat(response.getResponseStatus(), is(Status.CREATED));
+		List<String> locationHeader = response.getHeaders().get("Location"); 
+		assertThat(locationHeader.size(), is(1));
+		assertThat(locationHeader.get(0), endsWith("r/my.txt"));
 		doGetandAssertThatResourceListContainsNItems(1);
 	}
 
@@ -85,7 +92,7 @@ public class TranslationResourceServiceTest extends FliesRestTest {
 		
 		ClientResponse<String> postResponse = client.post(sr, null);
 		assertThat(postResponse.getResponseStatus(), is(Status.CREATED));
-		doGetandAssertThatResourceListContainsNItems(1);
+		postResponse = client.post(sr, null);
 		
 		ClientResponse<SourceResource> resourceGetResponse = client.getResource("my.txt", null);
 		assertThat(resourceGetResponse.getResponseStatus(), is(Status.OK));
@@ -150,18 +157,31 @@ public class TranslationResourceServiceTest extends FliesRestTest {
 			getClientRequestFactory()
 			.createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
 
-		TargetResource entity = new TargetResource();
-		MultiTargetTextFlow textFlow = new MultiTargetTextFlow("tf1");
-		TextFlowTarget target = new TextFlowTarget();
+		TranslationResource entity = new TranslationResource();
+		TextFlowTargetWithId target = new TextFlowTargetWithId("tf1");
 		target.setContent("hello world");
 		target.setState(ContentState.Approved);
 		target.setTranslator( new Person("root@localhost", "Admin user"));
-		textFlow.getTargets().put(new LocaleId("de"), target);
-		entity.getTextFlows().add(textFlow);
+		entity.getTextFlowTargets().add(target);
 		
-		ClientResponse<String> response = client.putTranslations("my.txt", LanguageQualifier.valueOf("de"), entity);
+		ClientResponse<String> response = client.putTranslations("my.txt", LocaleId.DE, entity);
 		
 		assertThat(response.getResponseStatus(), is(Status.OK));
+		
+		ClientResponse<TranslationResource> getResponse = client.getTranslations("my.txt", LocaleId.DE);
+		assertThat(getResponse.getResponseStatus(), is(Status.OK));
+		TranslationResource entity2 = getResponse.getEntity();
+		assertThat(entity2.getTextFlowTargets().size(), is(entity.getTextFlowTargets().size()));
+
+		entity.getTextFlowTargets().clear();
+		response = client.putTranslations("my.txt", LocaleId.DE, entity);
+		
+		assertThat(response.getResponseStatus(), is(Status.OK));
+		
+		getResponse = client.getTranslations("my.txt", LocaleId.DE);
+		assertThat(getResponse.getResponseStatus(), is(Status.NOT_FOUND));
+		
+		
 		
 	}
 	
