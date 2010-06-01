@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.Email;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
@@ -66,6 +67,7 @@ public class HPerson extends AbstractFliesEntity implements Serializable {
 
 	@Email
 	@NotEmpty
+	@NaturalId(mutable=true)
 	public String getEmail() {
 		return email;
 	}

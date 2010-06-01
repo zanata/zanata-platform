@@ -55,7 +55,7 @@
   			     versionNum="1"
                  creationDate="2009-01-14 11:39:00"
                  lastChanged="2009-01-14 11:39:00"
-                 email="asgeirf@localhost"
+                 email="root@localhost"
                  name="Administrator"
                  accountId="1"
         />
@@ -63,7 +63,7 @@
   			     versionNum="1"
                  creationDate="2009-01-14 11:39:00"
                  lastChanged="2009-01-14 11:39:00"
-                 email="asgeirf@localhost"
+                 email="user1@localhost"
                  name="Sample User"
                  accountId="2"
         />
@@ -71,7 +71,7 @@
   			     versionNum="1"
                  creationDate="2009-01-14 11:39:00"
                  lastChanged="2009-01-14 11:39:00"
-                 email="asgeirf@localhost"
+                 email="user2@localhost"
                  name="Bob Translator"
                  accountId="3"
 		/>
