@@ -11,12 +11,14 @@
     >
     
     <ui:define name="left_content">
-      <rich:panel>
-        <f:facet name="header">Actions</f:facet>
-        <s:link styleClass="action_link" view="/admin/editprofile.xhtml" propagation="none">
-          Edit Profile
-        </s:link>
-      </rich:panel>
+      <s:fragment rendered="#{identity.loggedIn}">
+        <rich:panel>
+          <f:facet name="header">Actions</f:facet>
+          <s:link styleClass="action_link" view="/admin/editprofile.xhtml" propagation="none">
+            Edit Profile
+          </s:link>
+        </rich:panel>
+        </s:fragment>
     </ui:define>
     
     <ui:define name="center_content">
