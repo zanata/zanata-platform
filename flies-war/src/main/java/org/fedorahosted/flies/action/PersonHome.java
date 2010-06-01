@@ -28,8 +28,8 @@ public class PersonHome extends EntityHome<HPerson>{
 	@Logger
 	Log log;
 	
-	private String password = null;
-	private String confirm = null;
+	private String name;
+	private String email;
 	
 	@Override
 	public Object getId() {
@@ -46,37 +46,33 @@ public class PersonHome extends EntityHome<HPerson>{
 		log.info("Reset API key for {0}", getInstance().getAccount().getUsername());
 	}
 	
-	public String save(){
-		// Check if a new password has been entered
-	      if (getPassword() != null && !"".equals(getPassword()))
-	      {
-	         if (!getPassword().equals(getConfirm()))
-	         {
-	            StatusMessages.instance().addToControl("password", "Passwords do not match");
-	            return "failure";
-	         }
-	         else
-	         {
-	            IdentityManager.instance().changePassword(authenticatedAccount.getUsername(), password);
-	            FacesMessages.instance().add("Password is changed.");
-	         }
-	      }
-	     return "success";
+	@Override
+	public String update(){
+		if (getName() == null || "".equals(getName())
+				|| getEmail() == null || "".equals(getEmail())) {
+			StatusMessages.instance().addToControl("emptyField", "Please fill out all required fields.");
+            return "failure";
+		} else {
+			getInstance().setName(getName());
+			getInstance().setEmail(getEmail());
+			FacesMessages.instance().add("Profile is updated.");
+		}
+		return "success";
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public String getPassword() {
-		return password;
+	public String getName() {
+		return name;
 	}
 
-	public void setConfirm(String confirm) {
-		this.confirm = confirm;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
-	public String getConfirm() {
-		return confirm;
+	public String getEmail() {
+		return email;
 	}
 }
