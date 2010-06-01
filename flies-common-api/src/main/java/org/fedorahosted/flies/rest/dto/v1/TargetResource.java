@@ -12,12 +12,12 @@ import org.fedorahosted.flies.common.Namespaces;
 
 @XmlType(name="translationResourceType", namespace=Namespaces.FLIES, propOrder={"extensions", "textFlows"})
 @XmlRootElement(name="resource",namespace=Namespaces.FLIES)
-public class TranslationResource implements Serializable {
+public class TargetResource implements Serializable {
 
 	private ExtensionSet extensions;
 	private List<MultiTargetTextFlow> textFlows;
 	
-	public TranslationResource() {
+	public TargetResource() {
 	}
 
 	@XmlElementWrapper(name="text-flows", namespace=Namespaces.FLIES, required=false)

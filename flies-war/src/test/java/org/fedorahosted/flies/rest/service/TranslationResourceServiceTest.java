@@ -7,19 +7,25 @@ import javax.ws.rs.core.Response.Status;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.flies.FliesRestTest;
+import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.ResourceType;
 import org.fedorahosted.flies.dao.DocumentDAO;
+import org.fedorahosted.flies.dao.PersonDAO;
 import org.fedorahosted.flies.dao.ProjectIterationDAO;
+import org.fedorahosted.flies.dao.TextFlowTargetDAO;
 import org.fedorahosted.flies.rest.LanguageQualifier;
 import org.fedorahosted.flies.rest.StringSet;
 import org.fedorahosted.flies.rest.client.ITranslationResources;
 import org.fedorahosted.flies.rest.dto.po.HeaderEntry;
+import org.fedorahosted.flies.rest.dto.v1.MultiTargetTextFlow;
+import org.fedorahosted.flies.rest.dto.v1.Person;
 import org.fedorahosted.flies.rest.dto.v1.ResourcesList;
 import org.fedorahosted.flies.rest.dto.v1.SourceResource;
 import org.fedorahosted.flies.rest.dto.v1.SourceTextFlow;
-import org.fedorahosted.flies.rest.dto.v1.TranslationResource;
+import org.fedorahosted.flies.rest.dto.v1.TextFlowTarget;
+import org.fedorahosted.flies.rest.dto.v1.TargetResource;
 import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
 import org.jboss.resteasy.client.ClientResponse;
 import org.testng.annotations.Test;
@@ -39,10 +45,12 @@ public class TranslationResourceServiceTest extends FliesRestTest {
 	protected void prepareResources() {
 		final ProjectIterationDAO projectIterationDAO = new ProjectIterationDAO(getSession());
 		final DocumentDAO documentDAO = new DocumentDAO(getSession());
+		final PersonDAO personDAO = new PersonDAO(getSession());
+		final TextFlowTargetDAO textFlowTargetDAO = new TextFlowTargetDAO(getSession());
 		final ResourceUtils resourceUtils = new ResourceUtils();
 		
 		TranslationResourcesService obj = new TranslationResourcesService(
-				projectIterationDAO, documentDAO, resourceUtils);
+				projectIterationDAO, documentDAO, personDAO, textFlowTargetDAO, resourceUtils);
 		
 		resources.add(obj);
 	}
@@ -85,7 +93,6 @@ public class TranslationResourceServiceTest extends FliesRestTest {
 		assertThat(gotSr.getTextFlows().size(), is(1));
 		assertThat(gotSr.getTextFlows().get(0).getContent(), is("tf1"));
 		
-		
 	}
 	
 	@Test
@@ -127,13 +134,34 @@ public class TranslationResourceServiceTest extends FliesRestTest {
 			getClientRequestFactory()
 			.createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
 
-		ClientResponse<TranslationResource> response = client.getTranslations("my.txt", LanguageQualifier.ALL, StringSet.valueOf(""));
+		ClientResponse<TargetResource> response = client.getTargets("my.txt", LanguageQualifier.ALL, StringSet.valueOf(""));
 		
 		assertThat(response.getResponseStatus(), is(Status.OK));
-		TranslationResource entity = response.getEntity();
+		TargetResource entity = response.getEntity();
 		
 		assertThat(entity.getTextFlows().size(), is(1));
+	}
+	
+	@Test
+	public void publishTranslations() {
+		createResourceWithContent();
 		
+		ITranslationResources client = 
+			getClientRequestFactory()
+			.createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
+
+		TargetResource entity = new TargetResource();
+		MultiTargetTextFlow textFlow = new MultiTargetTextFlow("tf1");
+		TextFlowTarget target = new TextFlowTarget();
+		target.setContent("hello world");
+		target.setState(ContentState.Approved);
+		target.setTranslator( new Person("root@localhost", "Admin user"));
+		textFlow.getTargets().put(new LocaleId("de"), target);
+		entity.getTextFlows().add(textFlow);
+		
+		ClientResponse<String> response = client.putTranslations("my.txt", LanguageQualifier.valueOf("de"), entity);
+		
+		assertThat(response.getResponseStatus(), is(Status.OK));
 		
 	}
 	

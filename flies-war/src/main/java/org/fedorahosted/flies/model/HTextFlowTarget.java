@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
@@ -179,6 +180,14 @@ public class HTextFlowTarget extends AbstractFliesEntity implements ITextFlowTar
 			"comment:"+getComment()+
 			"textflow:"+getTextFlow().getContent()+
 			")";
+	}
+	
+	@Transient
+	public void clear() {
+		setContent("");
+		setState(ContentState.New);
+		setComment(null);
+		setLastModifiedBy(null);
 	}
 	
 }

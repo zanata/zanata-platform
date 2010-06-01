@@ -33,6 +33,7 @@ import org.fedorahosted.flies.rest.dto.v1.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.v1.ResourceMeta;
 import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
 import org.fedorahosted.flies.rest.dto.v1.ext.PoTargetHeader;
+import org.fedorahosted.flies.rest.dto.v1.ext.PoTargetHeaderEntry;
 import org.fedorahosted.flies.rest.dto.v1.ext.PoTargetHeaders;
 import org.fedorahosted.flies.rest.dto.v1.ext.PotEntryHeader;
 import org.fedorahosted.flies.rest.dto.v1.ext.SimpleComment;
@@ -77,6 +78,7 @@ public class ResourceUtils {
 				log.debug("TextFlow with id {0} is new", tf.getId());
 			}
 			to.getTextFlows().add(textFlow);
+			to.getAllTextFlows().put(textFlow.getResId(), textFlow);
 		}
 		
 		// set remaining textflows to obsolete.
@@ -124,6 +126,20 @@ public class ResourceUtils {
 		return changed;
 	}
 
+	public boolean transfer(TextFlowTarget from, HTextFlowTarget to) {
+		boolean changed = false;
+		if( ! equals(from.getContent(), to.getContent()) ) {
+			to.setContent(from.getContent());
+			changed = true;
+		}
+		if( ! equals(from.getState(), to.getState()) ) {
+			to.setState(from.getState());
+			changed = true;
+		}
+		
+		return changed;
+	}
+	
 	public boolean transfer(ExtensionSet from, HDocument to, StringSet extensions) {
 		boolean changed = false;
 
@@ -147,37 +163,55 @@ public class ResourceUtils {
 		return changed;
 	}
 
-	public boolean transfer(ExtensionSet from, HDocument to, StringSet extensions, Collection<LocaleId> locales) {
+	public boolean transfer(ExtensionSet from, HDocument to, StringSet extensions, LocaleId locale) {
 		boolean changed = false;
-		if( extensions.contains(PoTargetHeaders.ID) ) {
-			PoTargetHeaders poTargetHeadersExt = from.findByType(PoTargetHeaders.class);
-			if(poTargetHeadersExt != null) {
-				Map<LocaleId, HPoTargetHeader> targetHeaders = to.getPoTargetHeaders();
-				Set<LocaleId> unProcessedHeaders = new HashSet<LocaleId>(locales);
-				for(PoTargetHeader header : poTargetHeadersExt.getHeaders()) {
-					HPoTargetHeader poTargetHeader = targetHeaders.get(header.getLocale());
-					if(poTargetHeader == null) {
-						changed = true;
-						poTargetHeader = new HPoTargetHeader();
-						transfer(header, poTargetHeader);
-						targetHeaders.put(header.getLocale(), poTargetHeader);
-					}
-					else{
-						changed |= transfer(header, poTargetHeader);
-					}
-					
-					unProcessedHeaders.remove(header.getLocale());
+		if( extensions.contains(PoTargetHeader.ID) ) {
+			PoTargetHeader fromTargetHeader = from.findByType(PoTargetHeader.class);
+			if(fromTargetHeader != null) {
+				HPoTargetHeader toTargetHeader = to.getPoTargetHeaders().get(locale);
+				if(toTargetHeader == null) {
+					changed = true;
+					toTargetHeader = new HPoTargetHeader();
+					transfer(fromTargetHeader, toTargetHeader);
+					to.getPoTargetHeaders().put(locale, toTargetHeader);
 				}
-				for(LocaleId locale : unProcessedHeaders) {
-					changed |= targetHeaders.remove(locale) != null;
+				else{
+					changed |= transfer(fromTargetHeader, toTargetHeader);
 				}
+			}
+			else{
+				changed |= to.getPoTargetHeaders().remove(locale) != null;
 			}
 		}
 		
 		return changed;
 	}
 	
-	private boolean transfer(PoTargetHeader from, HPoTargetHeader to) {
+	public boolean transfer(ExtensionSet extensions, HTextFlowTarget hTarget,
+			StringSet extensions2) {
+		boolean changed = false;
+		
+		if(extensions.contains(SimpleComment.ID)) {
+			SimpleComment comment = extensions.findByType(SimpleComment.class);
+			if(comment != null) {
+				HSimpleComment hComment = hTarget.getComment();
+				
+				if(hComment == null) {
+					hComment = new HSimpleComment();
+				}
+				if( ! equals(comment.getValue(), hComment.getComment()) ) {
+					changed = true;
+					hComment.setComment(comment.getValue());
+					hTarget.setComment(hComment);
+				}
+			}
+		}
+		
+		return changed;
+		
+	}
+
+	private boolean transfer(PoTargetHeaderEntry from, HPoTargetHeader to) {
 		boolean changed = false;
 
 		if( !equals(from.getLocale(), to.getTargetLanguage())) {
@@ -204,6 +238,28 @@ public class ResourceUtils {
 		return changed;
 	}
 	
+	private boolean transfer(PoTargetHeader from, HPoTargetHeader to) {
+		boolean changed = false;
+
+		HSimpleComment comment = to.getComment();
+		if(comment == null) {
+			comment = new HSimpleComment();
+		}
+		if( ! equals(from.getComment(), comment.getComment()) ) {
+			changed = true;
+			comment.setComment(from.getComment());
+			to.setComment(comment);
+		}
+		
+		String entries = PoUtility.listToHeader(from.getEntries());
+		if( ! equals(entries, to.getEntries()) ) {
+			to.setEntries(entries);
+			changed = true;
+		}
+		
+		return changed;
+	}
+
 	private boolean transfer(PoHeader from, HPoHeader to) {
 		boolean changed = false;
 
@@ -264,8 +320,17 @@ public class ResourceUtils {
 		}
 		to.getEntries().addAll(PoUtility.headerToList( from.getEntries() ) );
 	}
-	
+
 	private void transfer(HPoTargetHeader from, PoTargetHeader to) {
+		HSimpleComment comment = from.getComment();
+		if(comment != null) {
+			to.setComment(comment.getComment());
+		}
+		to.getEntries().addAll(PoUtility.headerToList( from.getEntries() ) );
+		
+	}
+	
+	private void transfer(HPoTargetHeader from, PoTargetHeaderEntry to) {
 		to.setLocale(from.getTargetLanguage());
 		HSimpleComment comment = from.getComment();
 		if(comment != null) {
@@ -298,14 +363,23 @@ public class ResourceUtils {
 			}
 		}
 	}
-	
+	public void transfer(HDocument from, ExtensionSet to, StringSet extensions, LocaleId locale) {
+		if(extensions.contains(PoTargetHeader.ID)) {
+			PoTargetHeader poTargetHeader = new PoTargetHeader();
+			HPoTargetHeader fromHeader = from.getPoTargetHeaders().get(locale);
+			if(fromHeader != null) {
+				transfer(fromHeader, poTargetHeader);
+				to.add(poTargetHeader);
+			}
+		}
+	}	
 	public void transfer(HDocument from, ExtensionSet to, StringSet extensions, Collection<LocaleId> locales) {
 		if(extensions.contains(PoTargetHeaders.ID)) {
 			PoTargetHeaders poTargetHeaders = new PoTargetHeaders();
 			for(LocaleId locale : locales) {
 				HPoTargetHeader fromHeader = from.getPoTargetHeaders().get(locale);
 				if(fromHeader != null) {
-					PoTargetHeader header = new PoTargetHeader();
+					PoTargetHeaderEntry header = new PoTargetHeaderEntry();
 					transfer(fromHeader, header);
 					poTargetHeaders.getHeaders().add(header);
 				}

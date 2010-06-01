@@ -2,9 +2,12 @@ package org.fedorahosted.flies.rest.service;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javax.ws.rs.Consumes;
@@ -28,12 +31,17 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.dao.AccountDAO;
 import org.fedorahosted.flies.dao.DocumentDAO;
+import org.fedorahosted.flies.dao.PersonDAO;
 import org.fedorahosted.flies.dao.ProjectIterationDAO;
+import org.fedorahosted.flies.dao.TextFlowTargetDAO;
 import org.fedorahosted.flies.model.HDocument;
+import org.fedorahosted.flies.model.HPerson;
 import org.fedorahosted.flies.model.HProjectIteration;
 import org.fedorahosted.flies.model.HTextFlow;
 import org.fedorahosted.flies.model.HTextFlowTarget;
+import org.fedorahosted.flies.model.po.HPoTargetHeader;
 import org.fedorahosted.flies.rest.LanguageQualifier;
 import org.fedorahosted.flies.rest.LocaleIdSet;
 import org.fedorahosted.flies.rest.NoSuchEntityException;
@@ -44,6 +52,8 @@ import org.fedorahosted.flies.rest.dto.v1.SourceResource;
 import org.fedorahosted.flies.rest.dto.v1.SourceTextFlow;
 import org.fedorahosted.flies.rest.dto.v1.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.v1.ResourceMeta;
+import org.fedorahosted.flies.rest.dto.v1.TargetResource;
+import org.fedorahosted.flies.rest.dto.v1.TextFlowTargetWithId;
 import org.fedorahosted.flies.rest.dto.v1.TranslationResource;
 import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
 import org.jboss.resteasy.util.HttpHeaderNames;
@@ -52,6 +62,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Multimap;
 
 @Name("translationResourcesService")
 @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/resources")
@@ -83,14 +94,23 @@ public class TranslationResourcesService {
 	private DocumentDAO documentDAO;
 
 	@In
+	private TextFlowTargetDAO textFlowTargetDAO;
+	
+	@In
 	private ResourceUtils resourceUtils;
+	
+	@In
+	private PersonDAO personDAO;
 	
 	public TranslationResourcesService() {
 	}
 	
-	public TranslationResourcesService(ProjectIterationDAO projectIterationDAO, DocumentDAO documentDAO, ResourceUtils resourceUtils) {
+	public TranslationResourcesService(ProjectIterationDAO projectIterationDAO, 
+			DocumentDAO documentDAO, PersonDAO personDAO, TextFlowTargetDAO textFlowTargetDAO, ResourceUtils resourceUtils) {
 		this.projectIterationDAO = projectIterationDAO;
 		this.documentDAO = documentDAO;
+		this.personDAO = personDAO;
+		this.textFlowTargetDAO = textFlowTargetDAO;
 		this.resourceUtils = resourceUtils;
 	}
 	
@@ -223,7 +243,9 @@ public class TranslationResourcesService {
 			InputStream messageBody) {
 
 		HProjectIteration hProjectIteration = retrieveIteration();
-		
+
+		validateExtensions();
+
 		EntityTag etag = documentDAO.getETag(hProjectIteration, id, extensions);
 		
 		if(etag == null) {
@@ -355,8 +377,8 @@ public class TranslationResourcesService {
 	
 	
 	@GET
-	@Path("/r/{id}/translations/{locales}")
-	public Response doTranslationsGet(
+	@Path("/r/{id}/targets/{locales}")
+	public Response doTargetsGet(
 		@PathParam("id") String id,
 		@PathParam("locales") LanguageQualifier languageQualifier,
 		@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
@@ -387,7 +409,7 @@ public class TranslationResourcesService {
 			locales = documentDAO.getTargetLocales(doc);
 		}
 		
-		TranslationResource entity = new TranslationResource();
+		TargetResource entity = new TargetResource();
 		
 		resourceUtils.transfer(doc, entity.getExtensions(), extensions);
 		resourceUtils.transfer(doc, entity.getExtensions(), extensions, locales);
@@ -412,29 +434,253 @@ public class TranslationResourcesService {
 		// TODO fix last modified
 		
 	}
-	
-	@PUT
-	@Path("/r/{id}/translations/{locales}")
-	public Response doTranslationsPut(
-		@PathParam("id") String id,
-		@PathParam("locales") LocaleIdSet locales,
-		@HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch) {
 
-		return Response.ok().build();
-	}
 
 	@GET
-	@Path("/r/{id}/translation-as-source/{locale}")
-	public Response doTranslationAsSourceGet(
+	@Path("/r/{id}/translations/{locale}")
+	public Response doTranslationsGet(
 		@PathParam("id") String id,
 		@PathParam("locale") LocaleId locale,
-		@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch,
-		@QueryParam("onlyApproved") @DefaultValue("true") boolean onlyApproved,
-		@QueryParam("useSource") @DefaultValue("true") boolean useSource) {
+		@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
+		
+		HProjectIteration hProjectIteration = retrieveIteration();
 
-		return Response.ok().build();
-	}
+		validateExtensions();
+
+		// TODO create valid etag
+		EntityTag etag = documentDAO.getETag(hProjectIteration, id, extensions);
+		
+		if(etag == null) {
+			return Response.status(Status.NOT_FOUND).build();
+		}
+		if(ifNoneMatch != null && etag.equals(ifNoneMatch)) {
+			return Response.notModified(ifNoneMatch).build();
+		}
+
+		HDocument document = documentDAO.getByDocId(hProjectIteration, id);
+		if( document.isObsolete() ) {
+			return Response.status(Status.NOT_FOUND).build();
+		}
+		
+		List<HTextFlowTarget> hTargets = textFlowTargetDAO.findAllTranslations(document, locale);
+
+		TranslationResource translationResource = new TranslationResource();
+		resourceUtils.transfer(document, translationResource.getExtensions(), extensions, locale);
+		
+		if(hTargets.isEmpty() && translationResource.getExtensions().isEmpty() ) {
+			return Response.status(Status.NOT_FOUND).build();
+		}
+		
+		for(HTextFlowTarget hTarget : hTargets) {
+			TextFlowTargetWithId target = new TextFlowTargetWithId(hTarget.getTextFlow().getResId());
+			resourceUtils.transfer(hTarget, target);
+			resourceUtils.transfer(hTarget, target.getExtensions(), extensions);
+			translationResource.getTextFlowTargets().add(target);
+		}
+		
+		// TODO lastChanged
+		return Response.ok().entity(translationResource).tag(etag).build();
+		
+	}	
 	
+	@DELETE
+	@Path("/r/{id}/translations/{locale}")
+	public Response doTranslationsDelete(
+		@PathParam("id") String id,
+		@PathParam("locale") LocaleId locale,
+		@HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch) {
+		
+		HProjectIteration hProjectIteration = retrieveIteration();
+		
+		// TODO find correct etag
+		EntityTag etag = documentDAO.getETag(hProjectIteration, id, extensions);
+
+		if(etag == null) {
+			return Response.status(Status.NOT_FOUND).build();
+		}
+
+		if(ifMatch != null && !etag.equals(ifMatch)) {
+			return Response.status(Status.CONFLICT).build();
+		}
+		
+		HDocument document = documentDAO.getByDocId(hProjectIteration, id);
+		if( document.isObsolete() ) {
+			return Response.status(Status.NOT_FOUND).build();
+		}		
+		List<HTextFlowTarget> targets = textFlowTargetDAO.findAllTranslations(document, locale);
+		
+		for(HTextFlowTarget target : targets) {
+			target.clear();
+		}
+		
+		// we also need to delete the extensions here
+		document.getPoTargetHeaders().remove(locale);
+		textFlowTargetDAO.flush();
+		
+		return Response.ok().build();
+		
+	}	
+	
+	@PUT
+	@Path("/r/{id}/translations/{locale}")
+	public Response doTranslationsPut(
+		@PathParam("id") String id,
+		@PathParam("locale") LocaleId locale,
+		@HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch,
+		InputStream messageBody) {
+
+		HProjectIteration hProjectIteration = retrieveIteration();
+
+		validateExtensions();
+
+		// TODO create valid etag
+		EntityTag etag = documentDAO.getETag(hProjectIteration, id, extensions);
+		
+		if(etag == null) {
+			return Response.status(Status.NOT_FOUND).build();
+		}
+		else if(ifMatch != null && !etag.equals(ifMatch)) {
+			return Response.status(Status.CONFLICT).build();
+		}
+
+		HDocument document = documentDAO.getByDocId(hProjectIteration, id);
+		if( document.isObsolete() ) {
+			return Response.status(Status.NOT_FOUND).build();
+		}
+
+		TranslationResource entity = RestUtils.unmarshall(TranslationResource.class, messageBody, requestContentType, headers.getRequestHeaders());
+		RestUtils.validateEntity(entity);
+
+		boolean changed = false;
+		
+		// handle extensions
+		changed |= resourceUtils.transfer(entity.getExtensions(), document, extensions, locale);
+		
+		List<String> errors = new ArrayList<String>();
+		
+		List<HPerson> newPeople = new ArrayList<HPerson>();
+		List<HTextFlowTarget> newTargets = new ArrayList<HTextFlowTarget>();
+		List<HTextFlowTarget> changedTargets = new ArrayList<HTextFlowTarget>();
+		List<HTextFlowTarget> removedTargets = new ArrayList<HTextFlowTarget>();
+		
+		Iterator<TextFlowTargetWithId> iter = entity.getTextFlowTargets().iterator();
+		TextFlowTargetWithId current = null;
+		for(HTextFlow textFlow : document.getTextFlows()) {
+			if(current == null) {
+				if(!iter.hasNext()) {
+					HTextFlowTarget hTarget = textFlow.getTargets().get(locale);
+					if(hTarget != null) {
+						removedTargets.add(hTarget);
+					}
+				}
+				else{
+					current = iter.next();
+				}
+				
+				if(textFlow.getResId().equals(current.getResId())) {
+					// transfer
+					
+					HTextFlowTarget hTarget = textFlow.getTargets().get(locale);
+					if(hTarget == null) {
+						hTarget = new HTextFlowTarget(textFlow, locale);
+						// transfer
+						newTargets.add(hTarget);
+					}
+					else {
+						// transfer
+						changedTargets.add(hTarget);
+					}
+					
+					current = null;
+				}
+				else {
+					HTextFlowTarget hTarget = textFlow.getTargets().get(locale);
+					if(hTarget != null) {
+						removedTargets.add(hTarget);
+					}
+				}
+				
+			}
+			
+		}
+		
+		if(iter.hasNext()) {
+			// we're in trouble
+		}
+		for(MultiTargetTextFlow multiTargetTextFlow : entity.getTextFlows()) {
+			String resId = multiTargetTextFlow.getId();
+			HTextFlow hTextFlow = document.getAllTextFlows().get(resId);
+			if(hTextFlow == null) {
+				errors.add(resId +  ": no such resource exists.");
+				continue;
+			}
+			else if(hTextFlow.isObsolete()) {
+				errors.add(resId +  ": no such resource exists.");
+				continue;
+			}
+
+			// iterate through all translations for the text flow
+			for(LocaleId locale : locales) {
+				TextFlowTarget target = multiTargetTextFlow.getTargets().get(locale);
+				if(target != null) {
+					HTextFlowTarget hTarget = hTextFlow.getTargets().get(locale);
+					boolean targetChanged = false;
+					if(hTarget == null) { // no existing entry, create one
+						targetChanged = true;
+						hTarget = new HTextFlowTarget(hTextFlow, locale);
+						newTargets.add(hTarget);
+						targetChanged |= resourceUtils.transfer(target, hTarget);
+						targetChanged |= resourceUtils.transfer(target.getExtensions(),hTarget, extensions);
+					}
+					else{ // update an existing entry
+						targetChanged |= resourceUtils.transfer(target, hTarget);
+						targetChanged |= resourceUtils.transfer(target.getExtensions(),hTarget, extensions);
+						if(targetChanged) {
+							changedTargets.add(hTarget);
+						}
+					}
+					
+					// update translation information if applicable
+					if(targetChanged && target.getTranslator() != null) {
+						String email = target.getTranslator().getEmail();
+						HPerson hPerson = personDAO.findByEmail(email);
+						if(hPerson == null) {
+							hPerson = new HPerson();
+							hPerson.setEmail(email);
+							hPerson.setName(target.getTranslator().getName());
+							newPeople.add(hPerson);
+						}
+						hTarget.setLastModifiedBy(hPerson);
+					}
+				}
+			}
+		}
+		
+		if( !errors.isEmpty() ) {
+			return Response.status(Status.BAD_REQUEST).entity(StringUtils.join(errors, "\n")).build();
+		}
+		else if ( changed ) {
+
+			for(HPerson person : newPeople) {
+				personDAO.makePersistent(person);
+			}
+			personDAO.flush();
+
+			for(HTextFlowTarget target : newTargets) {
+				textFlowTargetDAO.makePersistent(target);
+			}
+			textFlowTargetDAO.flush();
+			
+			documentDAO.flush();
+
+			// TODO create valid etag
+			etag = documentDAO.getETag(hProjectIteration, id, extensions);
+		}
+
+		// TODO lastChanged
+		return Response.ok().tag(etag).build();
+	}
+
 	private HProjectIteration retrieveIteration() {
 		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(
 				projectSlug, iterationSlug);

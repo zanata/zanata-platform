@@ -18,7 +18,7 @@ public class PoTargetHeaders extends Extension {
 	public static final String VERSION = "1.0";
 	public static final String NAMESPACE = "http://flies.fedorahosted.org/api/gettext/header";
 
-	private Set<PoTargetHeader> headers;
+	private Set<PoTargetHeaderEntry> headers;
 	
 	public PoTargetHeaders() {
 		super(ID, VERSION);
@@ -26,7 +26,7 @@ public class PoTargetHeaders extends Extension {
 	
 	
 	@XmlElement(name="header", namespace=PoHeader.NAMESPACE)
-	public Set<PoTargetHeader> getHeaders() {
+	public Set<PoTargetHeaderEntry> getHeaders() {
 		return headers;
 	}
 }

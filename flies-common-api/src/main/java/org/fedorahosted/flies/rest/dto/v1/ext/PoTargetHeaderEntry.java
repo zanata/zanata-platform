@@ -12,19 +12,19 @@ import javax.xml.bind.annotation.XmlType;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.rest.dto.po.HeaderEntry;
 
-@XmlType(name="poTargetHeader", namespace=PoHeader.NAMESPACE, propOrder={"comment", "entries"})
+@XmlType(name="poTargetHeaderEntry", namespace=PoHeader.NAMESPACE, propOrder={"comment", "entries"})
 @XmlRootElement(name="po-target-header", namespace=PoHeader.NAMESPACE)
-public class PoTargetHeader {
+public class PoTargetHeaderEntry {
 
 	private LocaleId locale;
 	
 	private String comment;
 	private List<HeaderEntry> entries;
 	
-	public PoTargetHeader() {
+	public PoTargetHeaderEntry() {
 	}
 	
-	public PoTargetHeader(LocaleId locale, String comment, HeaderEntry ... entries) {
+	public PoTargetHeaderEntry(LocaleId locale, String comment, HeaderEntry ... entries) {
 		this.locale = locale;
 		setComment(comment);
 		for (int i = 0; i < entries.length; i++) {

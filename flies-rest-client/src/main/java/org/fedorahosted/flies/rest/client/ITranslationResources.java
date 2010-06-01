@@ -16,9 +16,10 @@ import javax.ws.rs.core.MediaType;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.rest.LanguageQualifier;
 import org.fedorahosted.flies.rest.StringSet;
+import org.fedorahosted.flies.rest.dto.v1.ResourceMeta;
 import org.fedorahosted.flies.rest.dto.v1.ResourcesList;
 import org.fedorahosted.flies.rest.dto.v1.SourceResource;
-import org.fedorahosted.flies.rest.dto.v1.TranslationResource;
+import org.fedorahosted.flies.rest.dto.v1.TargetResource;
 import org.jboss.resteasy.client.ClientResponse;
 
 
@@ -52,31 +53,41 @@ public interface ITranslationResources {
 	
 	@GET
 	@Path("/r/{id}/meta")
-	public ClientResponse<TranslationResource> getResourceMeta(
+	public ClientResponse<ResourceMeta> getResourceMeta(
 			@PathParam("id") String id);
 	
 	@PUT
 	@Path("/r/{id}/meta")
 	public ClientResponse<String> putResourceMeta(
-			@PathParam("id") String id, TranslationResource messageBody);
+			@PathParam("id") String id, ResourceMeta messageBody);
 
 	@GET
-	@Path("/r/{id}/translations/{locales}")
-	public ClientResponse<TranslationResource> getTranslations(
+	@Path("/r/{id}/targets/{locales}")
+	public ClientResponse<TargetResource> getTargets(
 			@PathParam("id") String id, 
 			@PathParam("locales") LanguageQualifier locales, 
 			@QueryParam("ext") StringSet extensions);
 	
+	@GET
+	@Path("/r/{id}/translations/{locale}")
+	public ClientResponse<String> getTranslations(
+			@PathParam("id") String id, 
+			@PathParam("locale") LocaleId locale
+		);
+
+	@DELETE
+	@Path("/r/{id}/translations/{locale}")
+	public ClientResponse<String> deleteTranslations(
+			@PathParam("id") String id, 
+			@PathParam("locale") LocaleId locale
+		);
+	
 	@PUT
-	@Path("/r/{id}/target/{locale}")
+	@Path("/r/{id}/translations/{locale}")
 	public ClientResponse<String> putTranslations(
 			@PathParam("id") String id, 
-			@PathParam("locale") Set<LocaleId> locales);
-	
-	@GET
-	@Path("/r/{id}/translation-as-source/{locale}")
-	public ClientResponse<String> getTranslationAsSource(
-			@PathParam("id") String id, 
-			@PathParam("locale") LocaleId locale);
+			@PathParam("locale") LocaleId locale,
+			TargetResource messageBody
+		);
 	
 }
