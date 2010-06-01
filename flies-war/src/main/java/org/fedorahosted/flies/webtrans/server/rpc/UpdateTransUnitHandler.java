@@ -55,6 +55,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
 		}
 		target.setState(action.getContentState());
 		target.setContent(action.getContent());
+		// TODO update last modified by
 		session.flush();
 		
 		TransUnitUpdated event = new TransUnitUpdated(
