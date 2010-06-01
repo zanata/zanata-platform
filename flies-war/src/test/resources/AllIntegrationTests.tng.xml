@@ -7,7 +7,6 @@
 
 	<test name="Seam Tests">
 		<classes>
-			<class name="org.fedorahosted.flies.rest.service.DocumentServiceSeamTest"/>
 			<class name="org.fedorahosted.flies.rest.service.DocumentsServiceSeamTest"/>
 			<class name="org.fedorahosted.flies.rest.service.ProjectServiceRawSeamTest"/>
 			<class name="org.fedorahosted.flies.rest.service.ProjectServiceSeamTest"/>
