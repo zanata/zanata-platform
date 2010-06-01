@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:rich="http://richfaces.org/rich"       
+    xmlns:s="http://jboss.com/products/seam/taglib">
+
+  <ui:composition template="./layout/template.xhtml">
+  
+    <ui:define name="center_content">
+        
+      <h:form>
+        <rich:panel>
+          <f:facet name="header">Account Details</f:facet>
+              
+          <s:decorate id="passwordField" template="./layout/edit.xhtml">
+            <ui:define name="label">Password</ui:define>
+            <h:inputSecret id="password" value="#{personHome.password}"/>
+          </s:decorate>
+              
+          <s:decorate id="passwordConfirmField" template="./layout/edit.xhtml">
+            <ui:define name="label">Confirm Password</ui:define>
+            <h:inputSecret id="confirm" value="#{personHome.confirm}"/>
+          </s:decorate>
+                      
+          <div style="clear:both"/>
+
+          <div class="actionButtons">
+            <h:commandButton value="Save" action="#{personHome.save}"/>
+            <s:button view="/person_profile.xhtml" value="Cancel" propagation="end"/>
+          </div>
+    
+        </rich:panel>
+      </h:form>
+
+    </ui:define>
+    
+  </ui:composition>
+</html>

@@ -13,8 +13,9 @@
     <ui:define name="left_content">
       <rich:panel>
         <f:facet name="header">Actions</f:facet>
-        <a href="#" class="action_link">Edit Profile</a>
-        <a href="#" class="action_link">Change Password</a>
+        <s:link styleClass="action_link" view="/admin/editprofile.xhtml" propagation="none">
+          Edit Profile
+        </s:link>
       </rich:panel>
     </ui:define>
     
