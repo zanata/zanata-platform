@@ -14,6 +14,7 @@ import org.fedorahosted.flies.model.HProjectIteration;
 import org.fedorahosted.flies.model.HTextFlow;
 import org.fedorahosted.flies.model.StatusCount;
 import org.fedorahosted.flies.model.po.HPoHeader;
+import org.fedorahosted.flies.rest.LanguageQualifier;
 import org.fedorahosted.flies.rest.StringSet;
 import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
 import org.hibernate.Session;
@@ -34,12 +35,18 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>{
 		super(HDocument.class, session);
 	}
 
+	public EntityTag getETag(HProjectIteration hProjectIteration, String id,
+			LanguageQualifier languageQualifier, StringSet extensions) {
+		// TODO implementation
+		return getETag(hProjectIteration, id, extensions);
+	}
+	
 	public EntityTag getETag(HProjectIteration iteration, String id, StringSet extensions) {
 		HDocument doc = getByDocId(iteration, id);
 		if( doc == null ) 
 			return null;
 		Integer hashcode = 1;
-		hashcode += doc.getRevision() * 37;
+		hashcode  = hashcode *31 + doc.getRevision();
 		
 		int extHash = 0;
 		if( extensions.contains(PoHeader.ID) ) {
@@ -48,7 +55,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>{
 				extHash =  header.getVersionNum();
 			}
 		}
-		hashcode += extHash * 37;
+		hashcode = hashcode * 31 + extHash;
 		
 		return EntityTag.valueOf( String.valueOf( hashcode) );
 	}
@@ -111,6 +118,5 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>{
 			textFlow.setRevision(revision);
 		}
 	}
-	
-	
+
 }

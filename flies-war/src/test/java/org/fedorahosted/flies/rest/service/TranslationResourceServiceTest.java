@@ -181,8 +181,6 @@ public class TranslationResourceServiceTest extends FliesRestTest {
 		getResponse = client.getTranslations("my.txt", LocaleId.DE);
 		assertThat(getResponse.getResponseStatus(), is(Status.NOT_FOUND));
 		
-		
-		
 	}
 	
 	// END of tests 

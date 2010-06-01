@@ -388,7 +388,7 @@ public class TranslationResourcesService {
 		validateExtensions();
 		
 		// TODO fix etag
-		EntityTag etag = documentDAO.getETag(hProjectIteration, id, extensions);
+		EntityTag etag = documentDAO.getETag(hProjectIteration, id, languageQualifier, extensions);
 
 		if(etag == null)
 			return Response.status(Status.NOT_FOUND).entity("document not found").build();
