@@ -4,35 +4,54 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:rich="http://richfaces.org/rich"       
-    xmlns:s="http://jboss.com/products/seam/taglib">
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:a4j="http://richfaces.org/a4j">
+    
 
   <ui:composition template="./layout/template.xhtml">
   
     <ui:define name="center_content">
-        
-      <h:form>
-        <rich:panel>
-          <f:facet name="header">Account Details</f:facet>
+      <h1>Edit Profile</h1>
+      <h:outputText value="Sign in first." rendered="#{not identity.loggedIn}"/>
+      <s:fragment rendered="#{identity.loggedIn}">
+        <h:form>
+          <rich:panel>
+            <f:facet name="header">Account Details</f:facet>
               
-          <s:decorate id="passwordField" template="./layout/edit.xhtml">
-            <ui:define name="label">Password</ui:define>
-            <h:inputSecret id="password" value="#{personHome.password}"/>
-          </s:decorate>
-              
-          <s:decorate id="passwordConfirmField" template="./layout/edit.xhtml">
-            <ui:define name="label">Confirm Password</ui:define>
-            <h:inputSecret id="confirm" value="#{personHome.confirm}"/>
-          </s:decorate>
+            <s:decorate id="nameField" template="./layout/edit.xhtml">
+              <ui:define name="label">Name *</ui:define>
+              <h:inputText id="name" value="#{personHome.name}">
+                <a4j:support event="onblur" reRender="nameField" ajaxSingle="true"/>
+              </h:inputText>
+              <h:graphicImage id="nameHelp" value="./img/msginfo.png" styleClass="input_help">
+                <rich:toolTip>
+                  Must be lowercase blah blah and so on...
+                </rich:toolTip>
+              </h:graphicImage>
+            </s:decorate>
+                
+            <s:decorate id="emailField" template="./layout/edit.xhtml">
+              <ui:define name="label">Email *</ui:define>
+              <h:inputText id="email" value="#{personHome.email}">
+                  <a4j:support event="onblur" reRender="usernameField" ajaxSingle="true"/>
+              </h:inputText>
+              <h:graphicImage id="usernameHelp" value="./img/msginfo.png" styleClass="input_help">
+                <rich:toolTip>
+                  Must be lowercase blah blah and so on...
+                </rich:toolTip>
+              </h:graphicImage>
+            </s:decorate>
                       
-          <div style="clear:both"/>
+            <div style="clear:both"/>
 
-          <div class="actionButtons">
-            <h:commandButton value="Save" action="#{personHome.save}"/>
-            <s:button view="/person_profile.xhtml" value="Cancel" propagation="end"/>
-          </div>
+            <div class="actionButtons">
+              <h:commandButton value="Save" action="#{personHome.update}"/>
+              <s:button view="/person_profile.xhtml" value="Cancel" propagation="end"/>
+            </div>
     
-        </rich:panel>
-      </h:form>
+          </rich:panel>
+        </h:form>
+      </s:fragment>
 
     </ui:define>
     
