@@ -44,8 +44,6 @@ import org.jboss.seam.security.Identity;
 
 @Name("projectService")
 @Path(ProjectService.SERVICE_PATH)
-@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class ProjectService {
 
 	
@@ -105,8 +103,11 @@ public class ProjectService {
 	}
 	
 	@GET
-	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECT_XML,
-			MediaTypes.APPLICATION_FLIES_PROJECT_JSON})
+	@Produces({ 
+		MediaTypes.APPLICATION_FLIES_PROJECT_XML,
+		MediaTypes.APPLICATION_FLIES_PROJECT_JSON,
+		MediaType.APPLICATION_XML,
+		MediaType.APPLICATION_JSON})
 	public Response get() {
 		EntityTag etag = eTagUtils.generateTagForProject(projectSlug);
 
@@ -122,8 +123,11 @@ public class ProjectService {
 	}
 
 	@PUT
-	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_XML,
-			MediaTypes.APPLICATION_FLIES_PROJECT_JSON})
+	@Consumes({ 
+		MediaTypes.APPLICATION_FLIES_PROJECT_XML,
+		MediaTypes.APPLICATION_FLIES_PROJECT_JSON,
+		MediaType.APPLICATION_XML,
+		MediaType.APPLICATION_JSON})
 	@Restrict("#{identity.loggedIn}")
 	public Response put(InputStream messageBody) {
 

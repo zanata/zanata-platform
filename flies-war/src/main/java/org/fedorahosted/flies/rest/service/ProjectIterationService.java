@@ -101,8 +101,11 @@ public class ProjectIterationService {
 	}
 	
 	@GET
-	@Produces( { MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML,
-			MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON})
+	@Produces( { 
+		MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML,
+		MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON,
+		MediaType.APPLICATION_XML,
+		MediaType.APPLICATION_JSON})
 	public Response get() {
 
 		EntityTag etag = eTagUtils.generateETagForIteration(projectSlug, iterationSlug);
@@ -122,8 +125,11 @@ public class ProjectIterationService {
 	}
 
 	@PUT
-	@Consumes( { MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML,
-			MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON})
+	@Consumes( { 
+		MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML,
+		MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON,
+		MediaType.APPLICATION_XML,
+		MediaType.APPLICATION_JSON})
 	@Restrict("#{identity.loggedIn}")
 	public Response put(InputStream messageBody) {
 		

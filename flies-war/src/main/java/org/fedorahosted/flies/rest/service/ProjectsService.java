@@ -39,9 +39,11 @@ public class ProjectsService {
 	MediaType accept;
 	
 	@GET
-	@Produces( { MediaTypes.APPLICATION_FLIES_PROJECTS_XML,
-			MediaTypes.APPLICATION_FLIES_PROJECTS_JSON,
-			MediaType.APPLICATION_JSON })
+	@Produces( { 
+		MediaTypes.APPLICATION_FLIES_PROJECTS_XML,
+		MediaTypes.APPLICATION_FLIES_PROJECTS_JSON,
+		MediaType.APPLICATION_XML,
+		MediaType.APPLICATION_JSON})
 	@Wrapped(element = "projects", namespace = Namespaces.FLIES)
 	public List<ProjectInline> get() {
 		List<HProject> projects = session.createQuery("from HProject p").list();
