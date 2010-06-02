@@ -135,7 +135,8 @@
         email varchar(255) binary not null,
         name varchar(80) binary not null,
         accountId bigint,
-        primary key (id)
+        primary key (id),
+        unique (email)
     ) ENGINE=InnoDB;
 
     create table HPoHeader (
