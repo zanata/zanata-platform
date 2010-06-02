@@ -48,8 +48,9 @@ import org.jboss.seam.security.Identity;
 @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class ProjectService {
 
-	public static final String SERVICE_PATH = 
-		"/projects/p/{projectSlug:" + SlugValidator.PATTERN + "}"; 
+	
+	public static final String PROJECT_SLUG_TEMPLATE = "{projectSlug:" + SlugValidator.PATTERN + "}";
+	public static final String SERVICE_PATH = "/projects/p/" + PROJECT_SLUG_TEMPLATE; 
 	
 	@PathParam("projectSlug")
 	String projectSlug;

@@ -43,8 +43,10 @@ import org.jboss.seam.annotations.security.Restrict;
 @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class ProjectIterationService {
 
+	public static final String ITERATION_SLUG_TEMPLATE = 
+		"{iterationSlug:" + SlugValidator.PATTERN + "}";
 	public static final String SERVICE_PATH = 
-		ProjectService.SERVICE_PATH + "/iterations/i/{iterationSlug:" + SlugValidator.PATTERN + "}";
+		ProjectService.SERVICE_PATH + "/iterations/i/" + ITERATION_SLUG_TEMPLATE; 
 	
 	@PathParam("projectSlug")
 	private String projectSlug;

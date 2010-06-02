@@ -42,6 +42,7 @@ import org.fedorahosted.flies.model.HPerson;
 import org.fedorahosted.flies.model.HProjectIteration;
 import org.fedorahosted.flies.model.HTextFlow;
 import org.fedorahosted.flies.model.HTextFlowTarget;
+import org.fedorahosted.flies.model.validator.SlugValidator;
 import org.fedorahosted.flies.rest.LanguageQualifier;
 import org.fedorahosted.flies.rest.NoSuchEntityException;
 import org.fedorahosted.flies.rest.StringSet;
@@ -63,11 +64,17 @@ import org.jboss.seam.annotations.security.Restrict;
 import com.google.common.collect.Sets;
 
 @Name("translationResourcesService")
-@Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/resources")
+@Path(TranslationResourcesService.SERVICE_PATH)
 @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class TranslationResourcesService {
 
+	public static final String RESOURCE_SLUG_TEMPLATE = 
+		"/r/{id:" + SlugValidator.PATTERN + "}";
+	
+	public static final String SERVICE_PATH = 
+		ProjectIterationService.SERVICE_PATH + "/resources/"; 
+	
 	@PathParam("projectSlug")
 	private String projectSlug;
 
@@ -204,7 +211,7 @@ public class TranslationResourcesService {
 	}
 
 	@GET
-	@Path("/r/{id}")
+	@Path(RESOURCE_SLUG_TEMPLATE) // /r/{id}
 	public Response doResourceGet(@PathParam("id") String id) {
 
 		HProjectIteration hProjectIteration = retrieveIteration();
@@ -240,7 +247,7 @@ public class TranslationResourcesService {
 	}
 
 	@PUT
-	@Path("/r/{id}")
+	@Path(RESOURCE_SLUG_TEMPLATE) // /r/{id}
 	@Restrict("#{identity.loggedIn}")
 	public Response doResourcePut(
 			@PathParam("id") String id, 
@@ -280,7 +287,7 @@ public class TranslationResourcesService {
 	}
 
 	@DELETE
-	@Path("/r/{id}")
+	@Path(RESOURCE_SLUG_TEMPLATE) // /r/{id}
 	public Response doResourceDelete(@PathParam("id") String id) {
 		HProjectIteration hProjectIteration = retrieveIteration();
 		
@@ -298,7 +305,7 @@ public class TranslationResourcesService {
 	}
 
 	@GET
-	@Path("/r/{id}/meta")
+	@Path(RESOURCE_SLUG_TEMPLATE + "/meta") // /r/{id}/meta
 	public Response doResourceMetaGet(
 			@PathParam("id") String id ) {
 		
@@ -327,7 +334,7 @@ public class TranslationResourcesService {
 	}
 	
 	@PUT
-	@Path("/r/{id}/meta")
+	@Path(RESOURCE_SLUG_TEMPLATE + "/meta") // /r/{id}/meta
 	public Response doResourceMetaPut(
 			@PathParam("id") String id, 
 			InputStream messageBody) {
@@ -365,7 +372,7 @@ public class TranslationResourcesService {
 	
 	
 	@GET
-	@Path("/r/{id}/targets/{locales}")
+	@Path(RESOURCE_SLUG_TEMPLATE + "/targets/{locales}") // /r/{id}/targets/{locales}
 	public Response doTargetsGet(
 		@PathParam("id") String id,
 		@PathParam("locales") LanguageQualifier languageQualifier ) {
@@ -421,7 +428,7 @@ public class TranslationResourcesService {
 	}
 
 	@GET
-	@Path("/r/{id}/translations/{locale}")
+	@Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}") // /r/{id}/translations/{locale}
 	public Response doTranslationsGet(
 		@PathParam("id") String id,
 		@PathParam("locale") LocaleId locale ) {
@@ -465,7 +472,7 @@ public class TranslationResourcesService {
 	}	
 	
 	@DELETE
-	@Path("/r/{id}/translations/{locale}")
+	@Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}") // /r/{id}/translations/{locale}
 	public Response doTranslationsDelete(
 		@PathParam("id") String id,
 		@PathParam("locale") LocaleId locale) {
@@ -499,7 +506,7 @@ public class TranslationResourcesService {
 	}	
 	
 	@PUT
-	@Path("/r/{id}/translations/{locale}")
+	@Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}") // /r/{id}/translations/{locale}
 	public Response doTranslationsPut(
 		@PathParam("id") String id,
 		@PathParam("locale") LocaleId locale,
