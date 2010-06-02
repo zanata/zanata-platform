@@ -39,8 +39,6 @@ import org.jboss.seam.annotations.security.Restrict;
 
 @Name("projectIterationService")
 @Path(ProjectIterationService.SERVICE_PATH)
-@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class ProjectIterationService {
 
 	public static final String ITERATION_SLUG_TEMPLATE = 
