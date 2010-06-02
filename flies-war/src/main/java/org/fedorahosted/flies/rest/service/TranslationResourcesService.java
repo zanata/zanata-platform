@@ -70,7 +70,7 @@ import com.google.common.collect.Sets;
 public class TranslationResourcesService {
 
 	public static final String RESOURCE_SLUG_TEMPLATE = 
-		"/r/{id:" + SlugValidator.PATTERN + "}";
+		"/r/{id:[a-zA-Z0-9]+([a-zA-Z0-9_\\-,{.}]*[a-zA-Z0-9]+)?}";
 	
 	public static final String SERVICE_PATH = 
 		ProjectIterationService.SERVICE_PATH + "/resources/"; 
