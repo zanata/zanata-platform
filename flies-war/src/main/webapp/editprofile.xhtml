@@ -20,7 +20,7 @@
               
             <s:decorate id="nameField" template="./layout/edit.xhtml">
               <ui:define name="label">Name *</ui:define>
-              <h:inputText id="name" value="#{personHome.name}">
+              <h:inputText id="name" value="#{personHome.instance.name}">
                 <a4j:support event="onblur" reRender="nameField" ajaxSingle="true"/>
               </h:inputText>
               <h:graphicImage id="nameHelp" value="./img/msginfo.png" styleClass="input_help">
@@ -32,7 +32,7 @@
                 
             <s:decorate id="emailField" template="./layout/edit.xhtml">
               <ui:define name="label">Email *</ui:define>
-              <h:inputText id="email" value="#{personHome.email}">
+              <h:inputText id="email" value="#{personHome.instance.email}">
                   <a4j:support event="onblur" reRender="usernameField" ajaxSingle="true"/>
               </h:inputText>
               <h:graphicImage id="usernameHelp" value="./img/msginfo.png" styleClass="input_help">
