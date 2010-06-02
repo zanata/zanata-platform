@@ -12,6 +12,7 @@ import javax.ws.rs.ext.MessageBodyReader;
 
 import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
+import org.jboss.resteasy.spi.NoLogWebApplicationException;
 import org.jboss.seam.resteasy.SeamResteasyProviderFactory;
 
 public class RestUtils {
@@ -42,7 +43,7 @@ public class RestUtils {
 					message.append(invalidValue.getMessage());
 					message.append("\n");
 				}
-				throw new WebApplicationException(
+				throw new NoLogWebApplicationException (
 						Response.status(Status.BAD_REQUEST).entity(message.toString()).build());
 			}
 		}

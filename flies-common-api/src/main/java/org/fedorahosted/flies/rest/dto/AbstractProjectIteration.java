@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.common.Namespaces;
+import org.hibernate.validator.Length;
 
 
 @XmlType(name="abstractProjectIterationType", namespace=Namespaces.FLIES, propOrder={"description"})
@@ -26,6 +27,7 @@ public abstract class AbstractProjectIteration extends AbstractMiniProjectIterat
 		this.description = description;
 	}
 
+	@Length(max = 80)
 	@XmlElement(name="description", namespace=Namespaces.FLIES, required=false)
 	public String getDescription() {
 		return description;

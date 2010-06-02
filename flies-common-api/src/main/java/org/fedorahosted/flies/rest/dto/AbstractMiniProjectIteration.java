@@ -9,6 +9,8 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.common.Namespaces;
+import org.hibernate.validator.Length;
+import org.hibernate.validator.NotEmpty;
 
 
 @XmlType(name="abstractMiniProjectIterationType", namespace=Namespaces.FLIES, propOrder={"name"})
@@ -38,6 +40,8 @@ public abstract class AbstractMiniProjectIteration implements Serializable {
 		this.id = id;
 	}
 
+	@NotEmpty
+	@Length(max = 80)
 	@XmlElement(name="name", namespace=Namespaces.FLIES, required=true)
 	public String getName() {
 		return name;

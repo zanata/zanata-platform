@@ -30,8 +30,7 @@ public abstract class FliesJpaTest {
 	@AfterMethod
 	public void shutdownEM() {
 		log.debug("Shutting down EM");
-		em.getTransaction().commit();
-		em.close();
+		em.getTransaction().rollback();
 		em = null;
 	}
 

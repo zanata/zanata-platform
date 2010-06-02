@@ -23,6 +23,7 @@ import org.fedorahosted.flies.rest.client.IProjectIterationResource;
 import org.fedorahosted.flies.rest.client.IProjectResource;
 import org.fedorahosted.flies.rest.client.IProjectsResource;
 import org.fedorahosted.flies.rest.dto.Project;
+import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.fedorahosted.flies.rest.dto.ProjectIterationRes;
 import org.fedorahosted.flies.rest.dto.ProjectRes;
 import org.fedorahosted.flies.rest.dto.ProjectType;
@@ -74,99 +75,104 @@ public class ProjectIterationServiceTest extends FliesRestTest {
 	ClientResponse<ProjectIterationRes> response = resource.get();
 		assertThat( response.getStatus(), lessThan(400) );
 	}
-/*
-	@Test
-	public void createIterationProject(){
-		final String PROJECT_SLUG = "my-new-project";
-		final String PROJECT_NAME = "My New Project";
-		final String PROJECT_DESC = "Another test project";
-		Project project = new Project(PROJECT_SLUG, PROJECT_NAME, ProjectType.IterationProject, PROJECT_DESC);
 
-		IProjectResource projectService = getClientRequestFactory()
-			.createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve(PROJECT_SLUG));
+	private static final String SLUG = "my-new-iteration";
+	private static final String NAME = "My New Iteration";
+	private static final String DESC = "Another test iteration";
+
+	@Test
+	public void create(){
+
+		ProjectIteration iteration = new ProjectIteration(SLUG, NAME, DESC);
+
+		IProjectIterationResource resource = getClientRequestFactory()
+		.createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve(SLUG));
 		
-		Response response = projectService.put(project);
+		Response response = resource.put(iteration);
 		
 		assertThat( response.getStatus(), is( Status.CREATED.getStatusCode()));
 		
 		String location = (String) response.getMetadata().getFirst("Location");
 		
-		assertThat( location, endsWith("/projects/p/"+PROJECT_SLUG));
+		assertThat( location, endsWith("/iterations/i/"+SLUG));
 
-		projectService = getClientRequestFactory()
-		.createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve(PROJECT_SLUG));
-		
-		ClientResponse<ProjectRes> response1 = projectService.get();
+		ClientResponse<ProjectIterationRes> response1 = resource.get();
 		assertThat(response1.getStatus(), is(Status.OK.getStatusCode()));
 
-		ProjectRes projectRes = response1.getEntity();
+		ProjectIterationRes iterationRes = response1.getEntity();
 		
-		assertThat(projectRes, notNullValue());
-		assertThat(projectRes.getName(), is(PROJECT_NAME)); 
-		assertThat(projectRes.getId(), is(PROJECT_SLUG)); 
-		assertThat(projectRes.getDescription(), is(PROJECT_DESC)); 
+		assertThat(iterationRes, notNullValue());
+		assertThat(iterationRes.getName(), is(NAME)); 
+		assertThat(iterationRes.getId(), is(SLUG)); 
+		assertThat(iterationRes.getDescription(), is(DESC)); 
 	}
 
-	final String PROJECT_SLUG = "my-new-project";
-	final String PROJECT_SLUG_INVALID = "my,new,project";
-	final String PROJECT_NAME = "My New Project";
-	final String PROJECT_NAME_INVALID = "My test ProjectMy test ProjectMy test ProjectMy test ProjectMy test ProjectMy test Project";
-	final String PROJECT_DESC = "Another test project";
+	private static final String SLUG_INVALID = "my,new,iteration";
+	private static final String NAME_INVALID = "My test ProjectMy test ProjectMy test ProjectMy test ProjectMy test ProjectMy test Project";
+	private static final String DESC_INVALID = NAME_INVALID + NAME_INVALID + NAME_INVALID + NAME_INVALID + NAME_INVALID + NAME_INVALID;
 	
 	@Test
-	public void createProjectWithInvalidSlug(){
-		IProjectResource projectService = getClientRequestFactory()
-		.createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve(PROJECT_SLUG_INVALID));
+	public void createWithInvalidSlug(){
+		ProjectIteration iteration = new ProjectIteration(SLUG_INVALID, NAME, DESC);
 
-		Project project = new Project(PROJECT_SLUG_INVALID, PROJECT_NAME, ProjectType.IterationProject, PROJECT_DESC );
-		Response response = projectService.put(project);
+		IProjectIterationResource resource = getClientRequestFactory()
+		.createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve(SLUG_INVALID));
+
+		Response response = resource.put(iteration);
 		
         assertThat( response.getStatus(), is( Status.NOT_FOUND.getStatusCode()));
 	}
 	
 	@Test
-	public void createProjectWithInvalidData(){
-		IProjectResource projectService = getClientRequestFactory()
-		.createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve(PROJECT_SLUG));
-        Project project1 = new Project(PROJECT_SLUG,PROJECT_NAME_INVALID, ProjectType.IterationProject, PROJECT_DESC);
-        Response response1 = projectService.put(project1);
+	public void createWithInvalidData(){
+		ProjectIteration iteration = new ProjectIteration(SLUG, NAME_INVALID, DESC);
+
+		IProjectIterationResource resource = getClientRequestFactory()
+		.createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve(SLUG));
+		
+		Response response = resource.put(iteration);
+        assertThat(response.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
         
-        assertThat(response1.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
+        iteration = new ProjectIteration(SLUG, NAME, DESC_INVALID);
+        response = resource.put(iteration);
+        assertThat(response.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
+                
         
 	}
 
 	@Test
-	public void updateProjectWithInvalidData() {
-		Project project = new Project("sample-project", "ProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdateProjectUpdate", ProjectType.IterationProject, "Project Name exceeds 80");
+	public void updateWithInvalidData() {
+		create();
+		ProjectIteration iteration = new ProjectIteration(SLUG, NAME_INVALID, DESC);
 
-		IProjectResource projectService = getClientRequestFactory()
-		.createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve("sample-project"));
-		
-		Response response = projectService.put(project);
-				
-		assertThat( response.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
+		IProjectIterationResource resource = getClientRequestFactory()
+		.createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve(SLUG));
 
+		Response response = resource.put(iteration);
+        assertThat(response.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
 	}
 
+	private static final String NAME_UPDATED = "xx" + NAME + "xx"; 
+	private static final String DESC_UPDATED = "xx" + DESC + "xx"; 
+	
 	@Test
-	public void updateProject() {
-		Project project = new Project("sample-project", "My Project Update", ProjectType.IterationProject, "Update project");
+	public void update() {
+		create();
+		ProjectIteration iteration = new ProjectIteration(SLUG, NAME_UPDATED , DESC_UPDATED);
 
-		IProjectResource projectService = getClientRequestFactory()
-		.createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve("sample-project"));
-		
-		Response response = projectService.put(project);
-				
-		assertThat( response.getStatus(), is( Status.OK.getStatusCode()));
-		
-		ClientResponse<ProjectRes> projectResponse = projectService.get();
-		
-		assertThat( projectResponse.getStatus(), is( Status.OK.getStatusCode()));
-		
-		ProjectRes projectRes = projectResponse.getEntity();
-		
-		assertThat( projectRes.getName(), is("My Project Update"));
-		assertThat( projectRes.getDescription(), is("Update project"));
+		IProjectIterationResource resource = getClientRequestFactory()
+		.createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve(SLUG));
+
+		Response response = resource.put(iteration);
+        assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
+
+        ClientResponse<ProjectIterationRes> gotResponse = resource.get();
+        assertThat(gotResponse.getStatus(), is(Status.OK.getStatusCode()));
+        
+        ProjectIterationRes entity = gotResponse.getEntity();
+        
+		assertThat( entity.getName(), is(NAME_UPDATED));
+		assertThat( entity.getDescription(), is(DESC_UPDATED));
 	}
-	*/
+	
 }
