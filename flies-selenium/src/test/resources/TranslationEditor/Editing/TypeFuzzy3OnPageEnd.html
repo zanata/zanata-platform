@@ -4,22 +4,37 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="" />
-<title>GoFedoraPtBrTest</title>
+<title>TypeFuzzy3OnPageEnd</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">GoFedoraPtBrTest</td></tr>
+<tr><td rowspan="1" colspan="3">TypeFuzzy3OnPageEnd</td></tr>
 </thead><tbody>
 <tr>
-	<td>clickAndWait</td>
-	<td>link=User Guide</td>
+	<td>waitForElementPresent</td>
+	<td>css=tr.TableEditorRow:last-child&gt;td:nth-child(2)</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//table[@class='dr-table rich-table iteration_inline_tribes']//tr[td='português (Brasil) [pt-BR]']/td/a</td>
+	<td>css=tr.TableEditorRow:last-child&gt;td:nth-child(2)</td>
 	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>css=textarea[class='TableEditorContent-Edit']</td>
+	<td>Fedora Fuzzy 3</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=label:contains(Fuzzy)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>keyPress</td>
+	<td>css=div:contains(^Save$)</td>
+	<td>\13</td>
 </tr>
 
 </tbody></table>
