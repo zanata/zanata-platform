@@ -2,7 +2,6 @@ package org.fedorahosted.flies.dao;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
 import javax.ws.rs.core.EntityTag;
 
 import org.fedorahosted.flies.common.ContentState;
@@ -16,10 +15,7 @@ import org.fedorahosted.flies.util.HashUtil;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.log.Log;
 
 @Name("projectIterationDAO")
 @AutoCreate
@@ -52,31 +48,9 @@ public class ProjectIterationDAO extends AbstractDAOImpl< HProjectIteration, Lon
 		.setCacheable(true).uniqueResult();
 	}
 	
-	/**
-	 * Retrieves the ETag for the ProjectIteration
-	 * 
-	 * @param projectSlug project slug
-	 * @param iterationSlug iteration slug
-	 * @return calculated EntityTag or null if iteration does not exist
-	 */
-	public EntityTag getETag(String projectSlug, String iterationSlug) {
-		Integer iterationVersion = (Integer) getSession().createQuery(
-		"select i.versionNum from HProjectIteration i where i.slug =:islug and i.project.slug =:pslug")
-		.setParameter("islug", iterationSlug)
-		.setParameter("pslug", projectSlug)
-		.uniqueResult();
-		
-		if(iterationVersion == null)
-			return null;
-
-		String hash = HashUtil.generateHash(String.valueOf(iterationVersion));
-		
-		return EntityTag.valueOf( hash );
-	}
-	
-	
 	public TransUnitCount getStatisticsForContainer(Long iterationId, LocaleId localeId){
 		
+		@SuppressWarnings("unchecked")
 		List<StatusCount> stats = getSession().createQuery(
 				"select new org.fedorahosted.flies.model.StatusCount(tft.state, count(tft)) " +
 				"from HTextFlowTarget tft " +
@@ -105,6 +79,7 @@ public class ProjectIterationDAO extends AbstractDAOImpl< HProjectIteration, Lon
 	}
 
 	public EntityTag getResourcesETag(HProjectIteration projectIteration) {
+		@SuppressWarnings("unchecked")
 		List<Integer> revisions = getSession().createQuery(
 		"select d.revision from HDocument d where d.projectIteration =:iteration " +
 		"and d.obsolete =:obsolete")

@@ -59,6 +59,9 @@ public class ProjectIterationService {
 	@In
 	Session session;
 
+	@In
+	ETagUtils eTagUtils;
+	
 	@HeaderParam(HttpHeaderNames.ACCEPT)
 	@DefaultValue(MediaType.APPLICATION_XML)
 	MediaType accept;
@@ -72,7 +75,7 @@ public class ProjectIterationService {
 			MediaType.APPLICATION_JSON })
 	public Response get(@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
 
-		EntityTag etag = projectIterationDAO.getETag(projectSlug, iterationSlug);
+		EntityTag etag = eTagUtils.generateETagForIteration(projectSlug, iterationSlug);
 
 		if(etag == null)
 			return Response.status(Status.NOT_FOUND).build();
@@ -97,7 +100,7 @@ public class ProjectIterationService {
 	@Restrict("#{identity.loggedIn}")
 	public Response put(ProjectIteration projectIteration,
 			 @HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch) {
-		EntityTag etag = projectIterationDAO.getETag(projectSlug, iterationSlug);
+		EntityTag etag = eTagUtils.generateETagForIteration(projectSlug, iterationSlug);
 		
 		HProjectIteration hProjectIteration;
 		
@@ -137,7 +140,7 @@ public class ProjectIterationService {
 				session.flush();
 				response = Response.ok();
 			}
-			etag = projectIterationDAO.getETag(projectSlug, iterationSlug);
+			etag = eTagUtils.generateETagForIteration(projectSlug, iterationSlug);
 			return response.tag(etag).build();
 			
 		} catch (InvalidStateException e) {

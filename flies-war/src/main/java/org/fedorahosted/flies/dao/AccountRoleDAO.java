@@ -54,6 +54,7 @@ public class AccountRoleDAO extends AbstractDAOImpl<HAccountRole, Integer> {
 		return listMembers(role);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<HAccount> listMembers(HAccountRole role) {
 		return getSession().createQuery("from HAccount account where :role member of account.roles")
 			.setParameter("role", role)

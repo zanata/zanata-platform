@@ -52,6 +52,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>{
 	    .uniqueResult();
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Long> getIdsByTargetState(LocaleId locale, ContentState state) {
 		Query q = getSession().createQuery(
 			"select tft.textFlow.id from HTextFlowTarget tft where tft.locale=:locale and tft.state=:state");

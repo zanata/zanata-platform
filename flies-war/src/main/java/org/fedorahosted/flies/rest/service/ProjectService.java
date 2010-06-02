@@ -61,6 +61,9 @@ public class ProjectService {
 	@In
 	AccountDAO accountDAO;
 
+	@In
+	ETagUtils eTagUtils;
+	
 	@HeaderParam(HttpHeaderNames.ACCEPT)
 	@DefaultValue(MediaType.APPLICATION_XML)
 	MediaType accept;
@@ -73,7 +76,7 @@ public class ProjectService {
 			MediaTypes.APPLICATION_FLIES_PROJECT_JSON,
 			MediaType.APPLICATION_JSON })
 	public Response get(@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
-		EntityTag etag = projectDAO.getETag(projectSlug);
+		EntityTag etag = eTagUtils.generateTagForProject(projectSlug);
 
 		if(etag == null)
 			return Response.status(Status.NOT_FOUND).build();
@@ -95,7 +98,7 @@ public class ProjectService {
 	@Restrict("#{identity.loggedIn}")
 	public Response put(Project project, @HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch) {
 
-		EntityTag etag = projectDAO.getETag(projectSlug);
+		EntityTag etag = eTagUtils.generateTagForProject(projectSlug);
 		HProject hProject;
 		
 		if(etag == null) { 
@@ -134,7 +137,7 @@ public class ProjectService {
 				response = Response.ok();
 			}
 			session.flush();
-			etag = projectDAO.getETag(projectSlug);
+			etag = eTagUtils.generateTagForProject(projectSlug);
 			return response.tag(etag).build();
 			
 		} catch (InvalidStateException e) {

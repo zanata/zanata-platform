@@ -58,7 +58,6 @@ public abstract class AbstractDAOImpl<T, ID extends Serializable>
 		return entity;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<T> findAll() {
 		return findByCriteria();
@@ -76,7 +75,6 @@ public abstract class AbstractDAOImpl<T, ID extends Serializable>
 		return crit.list();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public T makePersistent(T entity) {
 		getSession().saveOrUpdate(entity);

@@ -11,7 +11,6 @@ import org.fedorahosted.flies.model.HTextFlowTarget;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 
 @Name("textFlowTargetDAO")

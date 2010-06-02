@@ -1,7 +1,9 @@
 package org.fedorahosted.flies.rest.service;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 import java.util.List;
 
@@ -21,12 +23,10 @@ import org.fedorahosted.flies.rest.LanguageQualifier;
 import org.fedorahosted.flies.rest.StringSet;
 import org.fedorahosted.flies.rest.client.ITranslationResources;
 import org.fedorahosted.flies.rest.dto.po.HeaderEntry;
-import org.fedorahosted.flies.rest.dto.v1.MultiTargetTextFlow;
 import org.fedorahosted.flies.rest.dto.v1.Person;
 import org.fedorahosted.flies.rest.dto.v1.ResourcesList;
 import org.fedorahosted.flies.rest.dto.v1.SourceResource;
 import org.fedorahosted.flies.rest.dto.v1.SourceTextFlow;
-import org.fedorahosted.flies.rest.dto.v1.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.v1.TargetResource;
 import org.fedorahosted.flies.rest.dto.v1.TextFlowTargetWithId;
 import org.fedorahosted.flies.rest.dto.v1.TranslationResource;
@@ -52,9 +52,11 @@ public class TranslationResourceServiceTest extends FliesRestTest {
 		final PersonDAO personDAO = new PersonDAO(getSession());
 		final TextFlowTargetDAO textFlowTargetDAO = new TextFlowTargetDAO(getSession());
 		final ResourceUtils resourceUtils = new ResourceUtils();
+		final ETagUtils eTagUtils = new ETagUtils(getSession(), documentDAO);
 		
 		TranslationResourcesService obj = new TranslationResourcesService(
-				projectIterationDAO, documentDAO, personDAO, textFlowTargetDAO, resourceUtils);
+				projectIterationDAO, documentDAO, personDAO, textFlowTargetDAO, 
+				resourceUtils, eTagUtils);
 		
 		resources.add(obj);
 	}

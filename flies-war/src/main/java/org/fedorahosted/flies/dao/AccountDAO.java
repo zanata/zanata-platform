@@ -2,15 +2,11 @@ package org.fedorahosted.flies.dao;
 
 import java.security.MessageDigest;
 import java.security.SecureRandom;
-import java.util.List;
-
-import javax.persistence.EntityManager;
 
 import org.fedorahosted.flies.model.HAccount;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.security.management.PasswordHash;
 import org.jboss.seam.util.Hex;

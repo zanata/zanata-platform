@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -31,7 +30,6 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.dao.AccountDAO;
 import org.fedorahosted.flies.dao.DocumentDAO;
 import org.fedorahosted.flies.dao.PersonDAO;
 import org.fedorahosted.flies.dao.ProjectIterationDAO;
@@ -41,18 +39,16 @@ import org.fedorahosted.flies.model.HPerson;
 import org.fedorahosted.flies.model.HProjectIteration;
 import org.fedorahosted.flies.model.HTextFlow;
 import org.fedorahosted.flies.model.HTextFlowTarget;
-import org.fedorahosted.flies.model.po.HPoTargetHeader;
 import org.fedorahosted.flies.rest.LanguageQualifier;
-import org.fedorahosted.flies.rest.LocaleIdSet;
 import org.fedorahosted.flies.rest.NoSuchEntityException;
 import org.fedorahosted.flies.rest.StringSet;
 import org.fedorahosted.flies.rest.dto.v1.MultiTargetTextFlow;
+import org.fedorahosted.flies.rest.dto.v1.ResourceMeta;
 import org.fedorahosted.flies.rest.dto.v1.ResourcesList;
 import org.fedorahosted.flies.rest.dto.v1.SourceResource;
 import org.fedorahosted.flies.rest.dto.v1.SourceTextFlow;
-import org.fedorahosted.flies.rest.dto.v1.TextFlowTarget;
-import org.fedorahosted.flies.rest.dto.v1.ResourceMeta;
 import org.fedorahosted.flies.rest.dto.v1.TargetResource;
+import org.fedorahosted.flies.rest.dto.v1.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.v1.TextFlowTargetWithId;
 import org.fedorahosted.flies.rest.dto.v1.TranslationResource;
 import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
@@ -62,7 +58,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Multimap;
 
 @Name("translationResourcesService")
 @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/resources")
@@ -100,18 +95,23 @@ public class TranslationResourcesService {
 	private ResourceUtils resourceUtils;
 	
 	@In
+	private ETagUtils eTagUtils;
+	
+	@In
 	private PersonDAO personDAO;
 	
 	public TranslationResourcesService() {
 	}
 	
 	public TranslationResourcesService(ProjectIterationDAO projectIterationDAO, 
-			DocumentDAO documentDAO, PersonDAO personDAO, TextFlowTargetDAO textFlowTargetDAO, ResourceUtils resourceUtils) {
+			DocumentDAO documentDAO, PersonDAO personDAO, TextFlowTargetDAO textFlowTargetDAO, 
+			ResourceUtils resourceUtils, ETagUtils eTagUtils) {
 		this.projectIterationDAO = projectIterationDAO;
 		this.documentDAO = documentDAO;
 		this.personDAO = personDAO;
 		this.textFlowTargetDAO = textFlowTargetDAO;
 		this.resourceUtils = resourceUtils;
+		this.eTagUtils = eTagUtils;
 	}
 	
 	/**
@@ -188,7 +188,7 @@ public class TranslationResourcesService {
 		}
 		
 		// TODO include extensions in etag generation
-		EntityTag etag = documentDAO.getETag(hProjectIteration, document.getDocId(), extensions);
+		EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, document.getDocId(), extensions);
 		
 		return Response.created(URI.create("r/"+resourceUtils.encodeDocId(document.getDocId())))
 			.tag(etag).build();
@@ -204,7 +204,7 @@ public class TranslationResourcesService {
 
 		validateExtensions();
 		
-		EntityTag etag = documentDAO.getETag(hProjectIteration, id, extensions);
+		EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 
 		if(etag == null)
 			return Response.status(Status.NOT_FOUND).entity("document not found").build();
@@ -246,7 +246,7 @@ public class TranslationResourcesService {
 
 		validateExtensions();
 
-		EntityTag etag = documentDAO.getETag(hProjectIteration, id, extensions);
+		EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 		
 		if(etag == null) {
 			return Response.status(Status.NOT_FOUND).build();
@@ -270,7 +270,7 @@ public class TranslationResourcesService {
 		
 		
 		if ( changed ) {
-			etag = documentDAO.getETag(hProjectIteration, id, extensions);
+			etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 			documentDAO.flush();
 		}
 
@@ -286,7 +286,7 @@ public class TranslationResourcesService {
 			) {
 		HProjectIteration hProjectIteration = retrieveIteration();
 		
-		EntityTag etag = documentDAO.getETag(hProjectIteration, id, extensions);
+		EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 
 		if(etag == null) {
 			return Response.status(Status.NOT_FOUND).build();
@@ -310,7 +310,7 @@ public class TranslationResourcesService {
 		
 		HProjectIteration hProjectIteration = retrieveIteration();
 
-		EntityTag etag = documentDAO.getETag(hProjectIteration, id, extensions);
+		EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 
 		if(etag == null)
 			return Response.status(Status.NOT_FOUND).entity("document not found").build();
@@ -343,7 +343,7 @@ public class TranslationResourcesService {
 
 		HProjectIteration hProjectIteration = retrieveIteration();
 		
-		EntityTag etag = documentDAO.getETag(hProjectIteration, id, extensions);
+		EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 
 		if(etag == null) {
 			return Response.status(Status.NOT_FOUND).build();
@@ -368,7 +368,7 @@ public class TranslationResourcesService {
 		
 		if(changed) {
 			documentDAO.flush();
-			etag = documentDAO.getETag(hProjectIteration, id, extensions);
+			etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 		}
 		
 		return Response.ok().tag(etag).lastModified(document.getLastChanged()).build();
@@ -388,7 +388,7 @@ public class TranslationResourcesService {
 		validateExtensions();
 		
 		// TODO fix etag
-		EntityTag etag = documentDAO.getETag(hProjectIteration, id, languageQualifier, extensions);
+		EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, languageQualifier, extensions);
 
 		if(etag == null)
 			return Response.status(Status.NOT_FOUND).entity("document not found").build();
@@ -447,7 +447,7 @@ public class TranslationResourcesService {
 		validateExtensions();
 
 		// TODO create valid etag
-		EntityTag etag = documentDAO.getETag(hProjectIteration, id, extensions);
+		EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 		
 		if(etag == null) {
 			return Response.status(Status.NOT_FOUND).build();
@@ -492,7 +492,7 @@ public class TranslationResourcesService {
 		HProjectIteration hProjectIteration = retrieveIteration();
 		
 		// TODO find correct etag
-		EntityTag etag = documentDAO.getETag(hProjectIteration, id, extensions);
+		EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 
 		if(etag == null) {
 			return Response.status(Status.NOT_FOUND).build();
@@ -533,7 +533,7 @@ public class TranslationResourcesService {
 		validateExtensions();
 
 		// TODO create valid etag
-		EntityTag etag = documentDAO.getETag(hProjectIteration, id, extensions);
+		EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 		
 		if(etag == null) {
 			return Response.status(Status.NOT_FOUND).build();
@@ -645,7 +645,7 @@ public class TranslationResourcesService {
 			documentDAO.flush();
 
 			// TODO create valid etag
-			etag = documentDAO.getETag(hProjectIteration, id, extensions);
+			etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 		}
 
 		// TODO lastChanged
