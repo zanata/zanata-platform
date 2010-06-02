@@ -15,6 +15,7 @@ import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
 import org.fedorahosted.flies.util.HashUtil;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -23,6 +24,7 @@ import org.jboss.seam.log.Logging;
 
 @Name("eTagUtils")
 @Scope(ScopeType.STATELESS)
+@AutoCreate
 public class ETagUtils {
 
 	@In
