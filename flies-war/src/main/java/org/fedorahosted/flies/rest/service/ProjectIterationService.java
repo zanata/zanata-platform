@@ -34,35 +34,23 @@ import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.fedorahosted.flies.rest.dto.ProjectIterationRes;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.log.Log;
 
 @Name("projectIterationService")
 @Path(ProjectIterationService.SERVICE_PATH)
+@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class ProjectIterationService {
 
 	public static final String SERVICE_PATH = 
 		ProjectService.SERVICE_PATH + "/iterations/i/{iterationSlug:" + SlugValidator.PATTERN + "}";
-	
-	@Logger
-	Log log;
 	
 	@PathParam("projectSlug")
 	private String projectSlug;
 
 	@PathParam("iterationSlug")
 	private String iterationSlug;
-
-	@In
-	ProjectDAO projectDAO;
-
-	@In
-	ProjectIterationDAO projectIterationDAO;
-
-	@In
-	ETagUtils eTagUtils;
 	
 	@HeaderParam("Content-Type")
 	private MediaType requestContentType;
@@ -72,7 +60,7 @@ public class ProjectIterationService {
 	
 	@HeaderParam(HttpHeaderNames.ACCEPT)
 	@DefaultValue(MediaType.APPLICATION_XML)
-	MediaType accept;
+	private MediaType accept;
 	
 	@Context
 	private UriInfo uri;
@@ -80,6 +68,24 @@ public class ProjectIterationService {
 	@Context
 	private Request request;
 
+	@In
+	ProjectDAO projectDAO;
+
+	@In
+	ProjectIterationDAO projectIterationDAO;
+
+	@In
+	ETagUtils eTagUtils;
+
+	public ProjectIterationService() {
+	}
+	
+	public ProjectIterationService(ProjectDAO projectDAO, ProjectIterationDAO projectIterationDAO, ETagUtils eTagUtils) {
+		this.projectDAO = projectDAO;
+		this.projectIterationDAO = projectIterationDAO;
+		this.eTagUtils = eTagUtils;
+	}
+	
 	@HEAD
 	public Response head() {
 		EntityTag etag = eTagUtils.generateETagForIteration(projectSlug, iterationSlug);
@@ -94,8 +100,7 @@ public class ProjectIterationService {
 	
 	@GET
 	@Produces( { MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML,
-			MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON,
-			MediaType.APPLICATION_JSON })
+			MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON})
 	public Response get() {
 
 		EntityTag etag = eTagUtils.generateETagForIteration(projectSlug, iterationSlug);
@@ -116,8 +121,7 @@ public class ProjectIterationService {
 
 	@PUT
 	@Consumes( { MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML,
-			MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON,
-			MediaType.APPLICATION_JSON })
+			MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON})
 	@Restrict("#{identity.loggedIn}")
 	public Response put(InputStream messageBody) {
 		

@@ -47,7 +47,7 @@ public class ProjectsServiceSeamTest extends FliesDBUnitSeamTest {
 	@Override
 	protected void prepareDBUnitOperations() {
 		beforeTestOperations.add(new DataSetOperation(
-				"org/fedorahosted/flies/test/model/ProjectData.dbunit.xml",
+				"META-INF/testdata/ProjectsData.dbunit.xml",
 				DatabaseOperation.CLEAN_INSERT));
 	}
 

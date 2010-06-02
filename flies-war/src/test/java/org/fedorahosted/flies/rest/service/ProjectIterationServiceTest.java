@@ -17,10 +17,13 @@ import org.fedorahosted.flies.FliesRestTest;
 import org.fedorahosted.flies.dao.AccountDAO;
 import org.fedorahosted.flies.dao.DocumentDAO;
 import org.fedorahosted.flies.dao.ProjectDAO;
+import org.fedorahosted.flies.dao.ProjectIterationDAO;
 import org.fedorahosted.flies.rest.client.ApiKeyHeaderDecorator;
+import org.fedorahosted.flies.rest.client.IProjectIterationResource;
 import org.fedorahosted.flies.rest.client.IProjectResource;
 import org.fedorahosted.flies.rest.client.IProjectsResource;
 import org.fedorahosted.flies.rest.dto.Project;
+import org.fedorahosted.flies.rest.dto.ProjectIterationRes;
 import org.fedorahosted.flies.rest.dto.ProjectRes;
 import org.fedorahosted.flies.rest.dto.ProjectType;
 import org.jboss.resteasy.client.ClientRequestFactory;
@@ -30,9 +33,9 @@ import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-public class ProjectServiceTest extends FliesRestTest {
+public class ProjectIterationServiceTest extends FliesRestTest {
 
-	private final String RESOURCE_PATH = "/projects/p/";
+	private final String RESOURCE_PATH = "/projects/p/sample-project/iterations/i/";
 	
 	@Override
     protected void prepareDBUnitOperations() {
@@ -45,34 +48,35 @@ public class ProjectServiceTest extends FliesRestTest {
 	protected void prepareResources() {
 		
 		ProjectDAO projectDAO = new ProjectDAO(getSession());
-		AccountDAO accountDAO = new AccountDAO(getSession());
+		ProjectIterationDAO projectIterationDAO = new ProjectIterationDAO(getSession());
 		DocumentDAO documentDAO = new DocumentDAO(getSession());
 		ETagUtils eTagUtils = new ETagUtils(getSession(), documentDAO);
 		
-		ProjectService projectService = new ProjectService(projectDAO, accountDAO, null, eTagUtils);
+		ProjectIterationService projectIterationService = new ProjectIterationService(projectDAO, projectIterationDAO, eTagUtils);
 		
-		resources.add(projectService);
+		resources.add(projectIterationService);
 	}
 	
 	@Test
-	public void retrieveNonExistingProject(){
-		IProjectResource projectService = getClientRequestFactory()
-			.createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve("invalid-project"));
+	public void retrieveNonExistingIteration(){
+		IProjectIterationResource resource = getClientRequestFactory()
+			.createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve("1.0.0"));
 
-		ClientResponse<ProjectRes> response = projectService.get();
+		ClientResponse<ProjectIterationRes> response = resource.get();
 		assertThat( response.getStatus(), is(404) );
 	}
 
 	@Test
 	public void retrieveExistingProject(){
-		IProjectResource projectService = getClientRequestFactory()
-			.createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve("sample-project"));
-		ClientResponse<ProjectRes> response = projectService.get();
+		IProjectIterationResource resource = getClientRequestFactory()
+		.createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve("1.0"));
+
+	ClientResponse<ProjectIterationRes> response = resource.get();
 		assertThat( response.getStatus(), lessThan(400) );
 	}
-
+/*
 	@Test
-	public void createProject(){
+	public void createIterationProject(){
 		final String PROJECT_SLUG = "my-new-project";
 		final String PROJECT_NAME = "My New Project";
 		final String PROJECT_DESC = "Another test project";
@@ -164,5 +168,5 @@ public class ProjectServiceTest extends FliesRestTest {
 		assertThat( projectRes.getName(), is("My Project Update"));
 		assertThat( projectRes.getDescription(), is("Update project"));
 	}
-	
+	*/
 }

@@ -20,7 +20,7 @@ public class ProjectDAOTest extends FliesDbunitJpaTest {
 	@Override
     protected void prepareDBUnitOperations() {
         beforeTestOperations.add(
-                new DataSetOperation("org/fedorahosted/flies/test/model/ProjectData.dbunit.xml", DatabaseOperation.CLEAN_INSERT)
+                new DataSetOperation("META-INF/testdata/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT)
         );
     }
 

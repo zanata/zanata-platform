@@ -18,6 +18,7 @@
 		<classes>
 			<class name="org.fedorahosted.flies.rest.service.ResourceUtilsTest"/>
 			<class name="org.fedorahosted.flies.rest.service.ProjectServiceTest"/>
+			<class name="org.fedorahosted.flies.rest.service.ProjectIterationServiceTest"/>
 			<class name="org.fedorahosted.flies.rest.service.TranslationResourceServiceTest"/>
 		</classes>
 	</test>
