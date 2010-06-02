@@ -10,6 +10,7 @@ import org.fedorahosted.flies.model.HDocument;
 import org.fedorahosted.flies.model.HProjectIteration;
 import org.fedorahosted.flies.model.po.HPoHeader;
 import org.fedorahosted.flies.rest.LanguageQualifier;
+import org.fedorahosted.flies.rest.NoSuchEntityException;
 import org.fedorahosted.flies.rest.StringSet;
 import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
 import org.fedorahosted.flies.util.HashUtil;
@@ -58,7 +59,7 @@ public class ETagUtils {
 		.uniqueResult();
 		
 		if(projectVersion == null)
-			return null;
+			throw new NoSuchEntityException("Project '" + slug + "' not found.");;
 		
 		@SuppressWarnings("unchecked")
 		List<Integer> iterationVersions =  session.createQuery(
@@ -85,7 +86,7 @@ public class ETagUtils {
 		.uniqueResult();
 		
 		if(iterationVersion == null)
-			return null;
+			throw new NoSuchEntityException("Project Iteration '" + iterationSlug + "' not found.");;
 
 		String hash = HashUtil.generateHash(String.valueOf(iterationVersion));
 		
@@ -101,7 +102,7 @@ public class ETagUtils {
 	public EntityTag generateETagForDocument(HProjectIteration iteration, String id, StringSet extensions) {
 		HDocument doc = documentDAO.getByDocId(iteration, id);
 		if( doc == null ) 
-			return null;
+			throw new NoSuchEntityException("Document '" + id + "' not found.");;
 		Integer hashcode = 1;
 		hashcode  = hashcode *31 + doc.getRevision();
 		

@@ -27,6 +27,7 @@ public class RestUtils {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T extends Serializable> void validateEntity(T entity) {
+		@SuppressWarnings("rawtypes")
 		ClassValidator<T> validator = new ClassValidator(entity.getClass());
 		if(validator.hasValidationRules() ) {
 			InvalidValue[] invalidValues = validator.getInvalidValues(entity);
@@ -47,7 +48,7 @@ public class RestUtils {
 		}
 	}
 	
-	public  static <T> T unmarshall(Class<T> entityClass, InputStream is, MediaType requestContentType, MultivaluedMap<String,String> requestHeaders) {
+	public  static <T extends Serializable> T unmarshall(Class<T> entityClass, InputStream is, MediaType requestContentType, MultivaluedMap<String,String> requestHeaders) {
 		MessageBodyReader<T> reader = SeamResteasyProviderFactory.getInstance()
 				.getMessageBodyReader(entityClass, entityClass,
 						entityClass.getAnnotations(), requestContentType);
@@ -64,6 +65,8 @@ public class RestUtils {
 			throw new WebApplicationException(
 					Response.status(Status.BAD_REQUEST).entity("Unable to read request body").build());
 		}
+
+		validateEntity(entity);
 		
 		return entity;
 	}

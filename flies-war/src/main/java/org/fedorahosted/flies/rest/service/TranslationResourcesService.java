@@ -13,6 +13,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -25,7 +26,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang.StringUtils;
@@ -52,12 +55,12 @@ import org.fedorahosted.flies.rest.dto.v1.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.v1.TextFlowTargetWithId;
 import org.fedorahosted.flies.rest.dto.v1.TranslationResource;
 import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
-import org.jboss.resteasy.util.HttpHeaderNames;
+import org.fedorahosted.flies.rest.dto.v1.ext.PotEntryHeader;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
 
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
 @Name("translationResourcesService")
 @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/resources")
@@ -65,8 +68,6 @@ import com.google.common.collect.ImmutableSet;
 @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class TranslationResourcesService {
 
-	public static final Set<String> EXTENSIONS = ImmutableSet.of(PoHeader.ID);
-	
 	@PathParam("projectSlug")
 	private String projectSlug;
 
@@ -81,6 +82,9 @@ public class TranslationResourcesService {
 	
 	@Context
 	private HttpHeaders headers;
+	
+	@Context
+	private Request request;
 	
 	@In
 	private ProjectIterationDAO projectIterationDAO;
@@ -113,6 +117,18 @@ public class TranslationResourcesService {
 		this.resourceUtils = resourceUtils;
 		this.eTagUtils = eTagUtils;
 	}
+
+	@HEAD
+	public Response doHead() {
+		HProjectIteration hProjectIteration = retrieveIteration();
+		validateExtensions();
+		EntityTag etag = projectIterationDAO.getResourcesETag(hProjectIteration);
+		ResponseBuilder response = request.evaluatePreconditions(etag);
+		if(response != null) {
+			return response.build();
+		}
+		return Response.ok().tag(etag).build();
+	}
 	
 	/**
 	 * Retrieve the List of Resources
@@ -120,21 +136,16 @@ public class TranslationResourcesService {
 	 * @return Response.ok with ResourcesList or Response(404) if not found 
 	 */
 	@GET
-	public Response doGet(
-			@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch		
-				) {
+	public Response doGet() {
 		
 		HProjectIteration hProjectIteration = retrieveIteration();
 		
 		EntityTag etag = projectIterationDAO.getResourcesETag(hProjectIteration);
-
-		if(etag == null)
-			return Response.status(Status.NOT_FOUND).entity("document not found").build();
-
-		if(ifNoneMatch != null && etag.equals(ifNoneMatch)) {
-			return Response.notModified(ifNoneMatch).build();
-		}
 		
+		ResponseBuilder response = request.evaluatePreconditions(etag);
+		if(response != null) {
+			return response.build();
+		}
 		
 		ResourcesList resources = new ResourcesList();
 		
@@ -156,10 +167,9 @@ public class TranslationResourcesService {
 
 		HProjectIteration hProjectIteration = retrieveIteration();
 
-		validateExtensions();
+		validateExtensions(PoHeader.ID, PotEntryHeader.ID);
 
 		SourceResource entity = RestUtils.unmarshall(SourceResource.class, messageBody, requestContentType, headers.getRequestHeaders());
-		RestUtils.validateEntity(entity);
 		
 		HDocument document = documentDAO.getByDocId(hProjectIteration, entity.getName()); 
 		if(document != null) {
@@ -187,7 +197,6 @@ public class TranslationResourcesService {
 			documentDAO.flush();
 		}
 		
-		// TODO include extensions in etag generation
 		EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, document.getDocId(), extensions);
 		
 		return Response.created(URI.create("r/"+resourceUtils.encodeDocId(document.getDocId())))
@@ -196,21 +205,17 @@ public class TranslationResourcesService {
 
 	@GET
 	@Path("/r/{id}")
-	public Response doResourceGet(
-			@PathParam("id") String id, 
-			@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
+	public Response doResourceGet(@PathParam("id") String id) {
 
 		HProjectIteration hProjectIteration = retrieveIteration();
 
-		validateExtensions();
+		validateExtensions(PoHeader.ID, PotEntryHeader.ID);
 		
 		EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 
-		if(etag == null)
-			return Response.status(Status.NOT_FOUND).entity("document not found").build();
-
-		if(ifNoneMatch != null && etag.equals(ifNoneMatch)) {
-			return Response.notModified(ifNoneMatch).build();
+		ResponseBuilder response = request.evaluatePreconditions(etag);
+		if(response != null) {
+			return response.build();
 		}
 		
 		HDocument doc = documentDAO.getByDocId(hProjectIteration, id);
@@ -239,7 +244,6 @@ public class TranslationResourcesService {
 	@Restrict("#{identity.loggedIn}")
 	public Response doResourcePut(
 			@PathParam("id") String id, 
-			@HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch, 
 			InputStream messageBody) {
 
 		HProjectIteration hProjectIteration = retrieveIteration();
@@ -248,15 +252,12 @@ public class TranslationResourcesService {
 
 		EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 		
-		if(etag == null) {
-			return Response.status(Status.NOT_FOUND).build();
-		}
-		else if(ifMatch != null && !etag.equals(ifMatch)) {
-			return Response.status(Status.CONFLICT).build();
+		ResponseBuilder response = request.evaluatePreconditions(etag);
+		if(response != null) {
+			return response.build();
 		}
 
 		SourceResource entity = RestUtils.unmarshall(SourceResource.class, messageBody, requestContentType, headers.getRequestHeaders());
-		RestUtils.validateEntity(entity);
 
 		HDocument document = documentDAO.getByDocId(hProjectIteration, id);
 		if( document.isObsolete() ) {
@@ -280,20 +281,14 @@ public class TranslationResourcesService {
 
 	@DELETE
 	@Path("/r/{id}")
-	public Response doResourceDelete(			
-			@PathParam("id") String id, 
-			@HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch 
-			) {
+	public Response doResourceDelete(@PathParam("id") String id) {
 		HProjectIteration hProjectIteration = retrieveIteration();
 		
 		EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 
-		if(etag == null) {
-			return Response.status(Status.NOT_FOUND).build();
-		}
-
-		if(ifMatch != null && !etag.equals(ifMatch)) {
-			return Response.status(Status.CONFLICT).build();
+		ResponseBuilder response = request.evaluatePreconditions(etag);
+		if(response != null) {
+			return response.build();
 		}
 
 		HDocument document = documentDAO.getByDocId(hProjectIteration, id);
@@ -305,18 +300,15 @@ public class TranslationResourcesService {
 	@GET
 	@Path("/r/{id}/meta")
 	public Response doResourceMetaGet(
-			@PathParam("id") String id, 
-			@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
+			@PathParam("id") String id ) {
 		
 		HProjectIteration hProjectIteration = retrieveIteration();
 
 		EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 
-		if(etag == null)
-			return Response.status(Status.NOT_FOUND).entity("document not found").build();
-
-		if(ifNoneMatch != null && etag.equals(ifNoneMatch)) {
-			return Response.notModified(ifNoneMatch).build();
+		ResponseBuilder response = request.evaluatePreconditions(etag);
+		if(response != null) {
+			return response.build();
 		}
 		
 		HDocument doc = documentDAO.getByDocId(hProjectIteration, id);
@@ -338,22 +330,18 @@ public class TranslationResourcesService {
 	@Path("/r/{id}/meta")
 	public Response doResourceMetaPut(
 			@PathParam("id") String id, 
-			@HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch, 
 			InputStream messageBody) {
 
 		HProjectIteration hProjectIteration = retrieveIteration();
 		
 		EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 
-		if(etag == null) {
-			return Response.status(Status.NOT_FOUND).build();
-		}
-		else if(ifMatch != null && !etag.equals(ifMatch)) {
-			return Response.status(Status.CONFLICT).build();
+		ResponseBuilder response = request.evaluatePreconditions(etag);
+		if(response != null) {
+			return response.build();
 		}
 
 		ResourceMeta entity = RestUtils.unmarshall(ResourceMeta.class, messageBody, requestContentType, headers.getRequestHeaders());
-		RestUtils.validateEntity(entity);
 		
 		HDocument document = documentDAO.getByDocId(hProjectIteration, id);
 
@@ -380,8 +368,7 @@ public class TranslationResourcesService {
 	@Path("/r/{id}/targets/{locales}")
 	public Response doTargetsGet(
 		@PathParam("id") String id,
-		@PathParam("locales") LanguageQualifier languageQualifier,
-		@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
+		@PathParam("locales") LanguageQualifier languageQualifier ) {
 
 		HProjectIteration hProjectIteration = retrieveIteration();
 
@@ -390,11 +377,9 @@ public class TranslationResourcesService {
 		// TODO fix etag
 		EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, languageQualifier, extensions);
 
-		if(etag == null)
-			return Response.status(Status.NOT_FOUND).entity("document not found").build();
-
-		if(ifNoneMatch != null && etag.equals(ifNoneMatch)) {
-			return Response.notModified(ifNoneMatch).build();
+		ResponseBuilder response = request.evaluatePreconditions(etag);
+		if(response != null) {
+			return response.build();
 		}
 		
 		// TODO eager loading
@@ -439,8 +424,7 @@ public class TranslationResourcesService {
 	@Path("/r/{id}/translations/{locale}")
 	public Response doTranslationsGet(
 		@PathParam("id") String id,
-		@PathParam("locale") LocaleId locale,
-		@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
+		@PathParam("locale") LocaleId locale ) {
 		
 		HProjectIteration hProjectIteration = retrieveIteration();
 
@@ -449,11 +433,9 @@ public class TranslationResourcesService {
 		// TODO create valid etag
 		EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 		
-		if(etag == null) {
-			return Response.status(Status.NOT_FOUND).build();
-		}
-		if(ifNoneMatch != null && etag.equals(ifNoneMatch)) {
-			return Response.notModified(ifNoneMatch).build();
+		ResponseBuilder response = request.evaluatePreconditions(etag);
+		if(response != null) {
+			return response.build();
 		}
 
 		HDocument document = documentDAO.getByDocId(hProjectIteration, id);
@@ -486,20 +468,16 @@ public class TranslationResourcesService {
 	@Path("/r/{id}/translations/{locale}")
 	public Response doTranslationsDelete(
 		@PathParam("id") String id,
-		@PathParam("locale") LocaleId locale,
-		@HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch) {
+		@PathParam("locale") LocaleId locale) {
 		
 		HProjectIteration hProjectIteration = retrieveIteration();
 		
 		// TODO find correct etag
 		EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 
-		if(etag == null) {
-			return Response.status(Status.NOT_FOUND).build();
-		}
-
-		if(ifMatch != null && !etag.equals(ifMatch)) {
-			return Response.status(Status.CONFLICT).build();
+		ResponseBuilder response = request.evaluatePreconditions(etag);
+		if(response != null) {
+			return response.build();
 		}
 		
 		HDocument document = documentDAO.getByDocId(hProjectIteration, id);
@@ -525,7 +503,6 @@ public class TranslationResourcesService {
 	public Response doTranslationsPut(
 		@PathParam("id") String id,
 		@PathParam("locale") LocaleId locale,
-		@HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch,
 		InputStream messageBody) {
 
 		HProjectIteration hProjectIteration = retrieveIteration();
@@ -535,11 +512,9 @@ public class TranslationResourcesService {
 		// TODO create valid etag
 		EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 		
-		if(etag == null) {
-			return Response.status(Status.NOT_FOUND).build();
-		}
-		else if(ifMatch != null && !etag.equals(ifMatch)) {
-			return Response.status(Status.CONFLICT).build();
+		ResponseBuilder response = request.evaluatePreconditions(etag);
+		if(response != null) {
+			return response.build();
 		}
 
 		HDocument document = documentDAO.getByDocId(hProjectIteration, id);
@@ -548,7 +523,6 @@ public class TranslationResourcesService {
 		}
 
 		TranslationResource entity = RestUtils.unmarshall(TranslationResource.class, messageBody, requestContentType, headers.getRequestHeaders());
-		RestUtils.validateEntity(entity);
 
 		boolean changed = false;
 		
@@ -663,10 +637,11 @@ public class TranslationResourcesService {
 		throw new NoSuchEntityException("Project Iteration '" + projectSlug+":"+iterationSlug+"' not found.");
 	}
 
-	private void validateExtensions() {
+	private void validateExtensions(String ... extensions) {
+		Set<String> validExtensions = Sets.newHashSet(extensions);
 		Set<String> invalidExtensions = null;
 		for(String ext : extensions) {
-			if( ! EXTENSIONS.contains(ext)) {
+			if( ! validExtensions.contains(ext)) {
 				if(invalidExtensions == null) {
 					invalidExtensions = new HashSet<String>();
 				}
@@ -677,7 +652,7 @@ public class TranslationResourcesService {
 		if(invalidExtensions != null) {
 			throw new WebApplicationException(
 					Response.status(Status.BAD_REQUEST)
-						.entity("Unsupported Extensions: " + StringUtils.join(invalidExtensions, ",")).build());
+						.entity("Unsupported Extensions within this context: " + StringUtils.join(invalidExtensions, ",")).build());
 			
 		}
 	}
