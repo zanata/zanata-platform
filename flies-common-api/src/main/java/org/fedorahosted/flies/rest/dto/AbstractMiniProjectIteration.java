@@ -1,5 +1,7 @@
 package org.fedorahosted.flies.rest.dto;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -10,7 +12,7 @@ import org.fedorahosted.flies.common.Namespaces;
 
 
 @XmlType(name="abstractMiniProjectIterationType", namespace=Namespaces.FLIES, propOrder={"name"})
-public abstract class AbstractMiniProjectIteration {
+public abstract class AbstractMiniProjectIteration implements Serializable {
 
 	private String id;
 	private String name;

@@ -18,6 +18,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.Length;
+import org.hibernate.validator.NotEmpty;
 
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
@@ -34,6 +35,7 @@ public abstract class HProject extends AbstractSlugEntity implements Serializabl
 	private Set<HPerson> maintainers;
 
 	@Length(max = 80)
+	@NotEmpty
     @Field(index=Index.TOKENIZED)
     public String getName() {
 		return name;

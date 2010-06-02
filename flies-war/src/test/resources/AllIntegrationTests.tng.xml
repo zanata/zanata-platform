@@ -9,7 +9,6 @@
 		<classes>
 			<class name="org.fedorahosted.flies.rest.service.DocumentsServiceSeamTest"/>
 			<class name="org.fedorahosted.flies.rest.service.ProjectServiceRawSeamTest"/>
-			<class name="org.fedorahosted.flies.rest.service.ProjectServiceSeamTest"/>
 			<class name="org.fedorahosted.flies.rest.service.ProjectsServiceSeamTest"/>
 		</classes>
 	</test>

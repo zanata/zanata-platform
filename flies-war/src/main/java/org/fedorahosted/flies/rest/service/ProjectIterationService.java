@@ -1,8 +1,11 @@
 package org.fedorahosted.flies.rest.service;
 
+import java.io.InputStream;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -10,26 +13,25 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
 
-import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.dao.ProjectDAO;
 import org.fedorahosted.flies.dao.ProjectIterationDAO;
 import org.fedorahosted.flies.model.HIterationProject;
 import org.fedorahosted.flies.model.HProject;
 import org.fedorahosted.flies.model.HProjectIteration;
+import org.fedorahosted.flies.model.validator.SlugValidator;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.AbstractMiniProjectIteration;
 import org.fedorahosted.flies.rest.dto.AbstractProjectIteration;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.fedorahosted.flies.rest.dto.ProjectIterationRes;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.validator.InvalidStateException;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -38,9 +40,12 @@ import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.log.Log;
 
 @Name("projectIterationService")
-@Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}")
+@Path(ProjectIterationService.SERVICE_PATH)
 public class ProjectIterationService {
 
+	public static final String SERVICE_PATH = 
+		ProjectService.SERVICE_PATH + "/iterations/i/{iterationSlug:" + SlugValidator.PATTERN + "}";
+	
 	@Logger
 	Log log;
 	
@@ -57,10 +62,13 @@ public class ProjectIterationService {
 	ProjectIterationDAO projectIterationDAO;
 
 	@In
-	Session session;
-
-	@In
 	ETagUtils eTagUtils;
+	
+	@HeaderParam("Content-Type")
+	private MediaType requestContentType;
+	
+	@Context
+	private HttpHeaders headers;
 	
 	@HeaderParam(HttpHeaderNames.ACCEPT)
 	@DefaultValue(MediaType.APPLICATION_XML)
@@ -69,19 +77,32 @@ public class ProjectIterationService {
 	@Context
 	private UriInfo uri;
 	
+	@Context
+	private Request request;
+
+	@HEAD
+	public Response head() {
+		EntityTag etag = eTagUtils.generateETagForIteration(projectSlug, iterationSlug);
+
+		ResponseBuilder response = request.evaluatePreconditions(etag);
+		if(response != null) {
+			return response.build();
+		}
+
+		return Response.ok().tag(etag).build();
+	}
+	
 	@GET
 	@Produces( { MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML,
 			MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON,
 			MediaType.APPLICATION_JSON })
-	public Response get(@HeaderParam(HttpHeaderNames.IF_NONE_MATCH) EntityTag ifNoneMatch) {
+	public Response get() {
 
 		EntityTag etag = eTagUtils.generateETagForIteration(projectSlug, iterationSlug);
 
-		if(etag == null)
-			return Response.status(Status.NOT_FOUND).build();
-		 		
-		if(ifNoneMatch != null && etag.equals(ifNoneMatch)) {
-			return Response.notModified(ifNoneMatch).build();
+		ResponseBuilder response = request.evaluatePreconditions(etag);
+		if(response != null) {
+			return response.build();
 		}
 		
 		HProjectIteration hProjectIteration = projectIterationDAO
@@ -98,65 +119,49 @@ public class ProjectIterationService {
 			MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON,
 			MediaType.APPLICATION_JSON })
 	@Restrict("#{identity.loggedIn}")
-	public Response put(ProjectIteration projectIteration,
-			 @HeaderParam(HttpHeaderNames.IF_MATCH) EntityTag ifMatch) {
-		EntityTag etag = eTagUtils.generateETagForIteration(projectSlug, iterationSlug);
+	public Response put(InputStream messageBody) {
 		
-		HProjectIteration hProjectIteration;
+		ResponseBuilder response;
+		EntityTag etag;
 		
-		if(etag == null) {
-			// this has to be a create operation
-			
-			if(ifMatch != null) {
-				// the caller expected an existing resource at this location 
-				return Response.status(Status.NOT_FOUND).build();
+		HProjectIteration hProjectIteration = projectIterationDAO
+			.getBySlug(projectSlug, iterationSlug);
+		
+		if(hProjectIteration == null) { // must be a create operation
+			response = request.evaluatePreconditions();
+			if(response != null) {
+				return response.build();
 			}
-			
 			HProject hProject = projectDAO.getBySlug(projectSlug);
-			if( hProject == null) {
-				return Response.status(Status.NOT_FOUND).build();
-			}
-
-			hProjectIteration = new HProjectIteration();
-			hProjectIteration.setSlug(projectIteration.getId());
-			hProjectIteration.setProject((HIterationProject) hProject);
-			transfer(projectIteration, hProjectIteration);
-		}
-		else if(ifMatch != null && !etag.equals(ifMatch)) {
-			return Response.status(Status.CONFLICT).build();
-		}
-		else{
-			hProjectIteration = projectIterationDAO
-				.getBySlug(projectSlug, projectIteration.getId());
-			transfer(projectIteration, hProjectIteration);
-		}
-
-		try {
-			ResponseBuilder response;
-			if(!session.contains(hProjectIteration)) {
-				session.save(hProjectIteration);
-				response = Response.created( uri.getAbsolutePath() );
-			} else {
-				session.flush();
-				response = Response.ok();
-			}
-			etag = eTagUtils.generateETagForIteration(projectSlug, iterationSlug);
-			return response.tag(etag).build();
-			
-		} catch (InvalidStateException e) {
-			String message = 
-				String.format(
-					"Iteration '%s:%s' is invalid: \n %s", 
-					projectSlug,iterationSlug, StringUtils.join(e.getInvalidValues(),"\n"));
-			log.warn(message + '\n' + projectIteration);
-			log.debug(e,e);
-			return Response.status(Status.BAD_REQUEST).entity(message)
+			if(hProject == null) {
+				return Response.status(Status.NOT_FOUND)
+					.entity("Project '"+ projectSlug +"' not found.")
 					.build();
-		} catch (HibernateException e) {
-			log.error("Hibernate exception", e);
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Server error").build();
+			}
+			hProjectIteration = new HProjectIteration();
+			hProjectIteration.setSlug(iterationSlug);
+			hProjectIteration.setProject((HIterationProject) hProject);
+			response = Response.created( uri.getAbsolutePath() );
+			
+		}
+		else{ // must be an update operation
+			etag = eTagUtils.generateETagForIteration(projectSlug, iterationSlug);
+			response = request.evaluatePreconditions(etag);
+			if(response != null) {
+				return response.build();
+			}
+			response = Response.ok();
 		}
 
+		ProjectIteration projectIteration = RestUtils.unmarshall(ProjectIteration.class, messageBody, requestContentType, headers.getRequestHeaders());
+		transfer(projectIteration, hProjectIteration);
+		
+		projectIterationDAO.makePersistent(hProjectIteration);
+		projectIterationDAO.flush();
+
+		etag = eTagUtils.generateETagForIteration(projectSlug, iterationSlug);
+		return response.tag(etag).build();
+		
 	}
 
 	public static void transfer(ProjectIteration from, HProjectIteration to) {

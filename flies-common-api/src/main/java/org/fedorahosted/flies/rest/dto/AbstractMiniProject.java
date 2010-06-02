@@ -1,13 +1,17 @@
 package org.fedorahosted.flies.rest.dto;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.common.Namespaces;
+import org.hibernate.validator.Length;
+import org.hibernate.validator.NotEmpty;
 
 @XmlType(name="abstractMiniProjectType", namespace=Namespaces.FLIES, propOrder={"name"})
-public abstract class AbstractMiniProject {
+public abstract class AbstractMiniProject implements Serializable {
 
 	private String id;
 	private String name;
@@ -45,6 +49,8 @@ public abstract class AbstractMiniProject {
 		this.type = type;
 	}
 	
+	@NotEmpty
+	@Length(max = 80)
 	@XmlElement(name="name", namespace=Namespaces.FLIES, required=true)
 	public String getName() {
 		return name;

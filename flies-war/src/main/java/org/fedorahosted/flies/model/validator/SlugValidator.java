@@ -6,8 +6,7 @@ import org.hibernate.validator.Validator;
 
 public class SlugValidator implements Validator<Slug>, Serializable {
 
-//	private static final String pattern = "[a-zA-Z0-9]+[a-zA-Z0-9_\\-{.}]*[a-zA-Z0-9]+";
-	private static final String pattern = "[a-zA-Z0-9]+([a-zA-Z0-9_\\-{.}]*[a-zA-Z0-9]+)?";
+	public static final String PATTERN = "[a-zA-Z0-9]+([a-zA-Z0-9_\\-{.}]*[a-zA-Z0-9]+)?";
 
 	public void initialize(Slug parameters) {
 	}
@@ -20,7 +19,7 @@ public class SlugValidator implements Validator<Slug>, Serializable {
 		String string = (String) value;
 		if (string.isEmpty())
 			return true;
-		return string.matches(pattern);
+		return string.matches(PATTERN);
 	}
 
 }

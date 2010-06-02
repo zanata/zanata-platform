@@ -5,6 +5,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.common.Namespaces;
+import org.hibernate.validator.Length;
+import org.hibernate.validator.NotEmpty;
 
 @XmlType(name="abstractProjectType", namespace=Namespaces.FLIES, propOrder={"description"})
 public abstract class AbstractProject extends AbstractMiniProject {
@@ -24,6 +26,7 @@ public abstract class AbstractProject extends AbstractMiniProject {
 		this.description = description;
 	}
 	
+	@Length(max = 80)
 	@XmlElement(name="description", namespace=Namespaces.FLIES, required=false)
 	public String getDescription() {
 		return description;
