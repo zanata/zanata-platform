@@ -4,21 +4,37 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="" />
-<title>Launch 1st Document</title>
+<title>Type Fuzzy1</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Translation editor launch</td></tr>
+<tr><td rowspan="1" colspan="3">Type Fuzzy1</td></tr>
 </thead><tbody>
+<!--Type Fuzzy1 on 7th entry-->
 <tr>
-	<td>waitForElementPresent</td>
-	<td>//div[@id='doc-#1']</td>
-	<td></td>
+	<td>type</td>
+	<td>css=textarea[class='TableEditorContent-Edit']</td>
+	<td>Fedora Fuzzy1</td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@id='doc-#1']/div</td>
+	<td>css=label:contains(Fuzzy)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>keyPress</td>
+	<td>css=div:contains(^Save$)</td>
+	<td>\13</td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Fedora Fuzzy1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=tr.TableEditorRow:nth-child(9)&gt;td:nth-child(2)&gt;div&gt;textarea</td>
 	<td></td>
 </tr>
 

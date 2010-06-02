@@ -13,12 +13,34 @@
 </thead><tbody>
 <tr>
 	<td>click</td>
-	<td>css=img:nth-child(2)</td>
+	<td>css=img[title~=Prev Untranslated]</td>
+	<td></td>
+</tr>
+<!--Should be 6 th row now-->
+<tr>
+	<td>waitForElementPresent</td>
+	<td>css=tr.TableEditorRow:nth-child(7)&gt;td:nth-child(2)&gt;div</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>css=tr.TableEditorRow:nth-child(7)&gt;td:nth-child(2)&gt;div</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=img[title~=Prev Untranslated]</td>
+	<td></td>
+</tr>
+<!--Should be 4 th row now-->
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=tr.TableEditorRow:nth-child(5)&gt;td:nth-child(2)&gt;div&gt;textarea</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>//table[@class='TableEditor']//tr[5]//textarea</td>
+	<td>css=tr.TableEditorRow:nth-child(5)&gt;td:nth-child(2)&gt;div&gt;textarea</td>
 	<td></td>
 </tr>
 

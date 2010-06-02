@@ -4,28 +4,22 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="" />
-<title>Next Untranslated</title>
+<title>TranslationUnitSaveCheck</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Next Untranslated</td></tr>
+<tr><td rowspan="1" colspan="3">TranslationUnitSaveCheck</td></tr>
 </thead><tbody>
 <tr>
-	<td>click</td>
-	<td>css=img[title~=Next Untranslated]</td>
-	<td></td>
-</tr>
-<!--Should be 6th row-->
-<tr>
 	<td>waitForElementPresent</td>
-	<td>css=tr.TableEditorRow:nth-child(7)&gt;td:nth-child(2)</td>
+	<td>css=div.popupContent&gt;div</td>
 	<td></td>
 </tr>
 <tr>
-	<td>verifyElementPresent</td>
-	<td>css=tr.TableEditorRow:nth-child(7)&gt;td:nth-child(2)&gt; div&gt;textarea</td>
-	<td></td>
+	<td>verifyText</td>
+	<td>css=div.popupContent&gt;div</td>
+	<td>Saved change to Translation Unit</td>
 </tr>
 
 </tbody></table>

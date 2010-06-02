@@ -4,16 +4,26 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="" />
-<title>Go About Fedora 13</title>
+<title>Next Entry</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Go About Fedora 13</td></tr>
+<tr><td rowspan="1" colspan="3">Next Entry</td></tr>
 </thead><tbody>
 <tr>
-	<td>clickAndWait</td>
-	<td>link=About Fedora 13</td>
+	<td>click</td>
+	<td>css=img[title~=Next Entry]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>css=tr.TableEditorRow:nth-child(8)&gt;td:nth-child(2)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=tr.TableEditorRow:nth-child(8)&gt;td:nth-child(2)&gt; div&gt;textarea</td>
 	<td></td>
 </tr>
 
