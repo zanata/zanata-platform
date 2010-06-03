@@ -15,6 +15,8 @@ import org.fedorahosted.flies.webtrans.client.EventProcessor;
 import org.fedorahosted.flies.webtrans.client.Resources;
 import org.fedorahosted.flies.webtrans.client.SidePanel;
 import org.fedorahosted.flies.webtrans.client.SidePanelPresenter;
+import org.fedorahosted.flies.webtrans.client.TransMemoryDetailsPresenter;
+import org.fedorahosted.flies.webtrans.client.TransMemoryDetailsView;
 import org.fedorahosted.flies.webtrans.client.TransMemoryPresenter;
 import org.fedorahosted.flies.webtrans.client.TransMemoryView;
 import org.fedorahosted.flies.webtrans.client.TransUnitDetailsPresenter;
@@ -58,6 +60,7 @@ public class WebTransClientModule extends AbstractPresenterModule {
 		bindPresenter(TableEditorPresenter.class, TableEditorPresenter.Display.class, TableEditorView.class);
 		bindPresenter(WorkspaceUsersPresenter.class, WorkspaceUsersPresenter.Display.class, WorkspaceUsersView.class);
 		bindPresenter(TransMemoryPresenter.class, TransMemoryPresenter.Display.class, TransMemoryView.class);
+		bindPresenter(TransMemoryDetailsPresenter.class, TransMemoryDetailsPresenter.Display.class, TransMemoryDetailsView.class);
 		bindPresenter(TransUnitNavigationPresenter.class, TransUnitNavigationPresenter.Display.class, TransUnitNavigationView.class);
 		bindPresenter(SidePanelPresenter.class, SidePanelPresenter.Display.class, SidePanel.class);
 		bindPresenter(TranslationEditorPresenter.class, TranslationEditorPresenter.Display.class, TranslationEditorView.class);

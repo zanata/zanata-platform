@@ -1,0 +1,47 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:f="urn:import:org.fedorahosted.flies.webtrans.client"
+	xmlns:fui="urn:import:org.fedorahosted.flies.webtrans.client.ui">
+	
+	<ui:with field='resources' type="org.fedorahosted.flies.webtrans.client.Resources"/>
+	
+	<g:DialogBox autoHide="true" modal="true">
+	  <g:caption><b>Translation Memory Details</b></g:caption>
+	  <g:HTMLPanel>
+			<g:VerticalPanel>
+				<g:HorizontalPanel>
+					<g:Label>Locations: </g:Label>
+				    <g:ListBox ui:field='documentListBox' visibleItemCount='5'/>
+				</g:HorizontalPanel>
+				<g:HorizontalPanel>
+					<g:Label>Project: </g:Label>
+					<g:Label ui:field='projectName' >Project Name</g:Label>
+				</g:HorizontalPanel>
+				<g:HorizontalPanel>
+					<g:Label>Iteration: </g:Label>
+					<g:Label ui:field='iterationName' >Iteration Name</g:Label>
+				</g:HorizontalPanel>
+				<g:HorizontalPanel>
+					<g:Label>Document: </g:Label>
+					<g:Label ui:field='docName' >Document Name</g:Label>
+				</g:HorizontalPanel>
+				<g:HorizontalPanel>
+					<g:VerticalPanel>
+						<g:Label>Source:</g:Label>
+						<g:TextArea ui:field='sourceText' readOnly='true'>Source Text</g:TextArea>
+						<g:Label>Comment:</g:Label>
+						<g:TextArea ui:field='sourceComment' readOnly='true'>Source Comment</g:TextArea>
+					</g:VerticalPanel>
+					<g:VerticalPanel>
+						<g:Label>Target:</g:Label>
+						<g:TextArea ui:field='targetText' readOnly='true'>Target Text</g:TextArea>
+						<g:Label>Comment:</g:Label>
+						<g:TextArea ui:field='targetComment' readOnly='true'>Target Comment</g:TextArea>
+					</g:VerticalPanel>
+				</g:HorizontalPanel>
+			</g:VerticalPanel>
+	    <g:Button ui:field='dismissButton'>Dismiss</g:Button>
+	  </g:HTMLPanel>
+	</g:DialogBox>
+</ui:UiBinder>

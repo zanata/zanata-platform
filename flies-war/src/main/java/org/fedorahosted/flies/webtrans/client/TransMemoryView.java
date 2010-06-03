@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -35,7 +36,8 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 	private static final int SOURCE_COL = 0;
 	private static final int TARGET_COL = 1;
 	private static final int SIMILARITY_COL = 2;
-	private static final int ACTION_COL = 3;
+	private static final int INFO_COL = 3;
+	private static final int ACTION_COL = 4;
 
 	private static TransMemoryViewUiBinder uiBinder = GWT
 		.create(TransMemoryViewUiBinder.class);
@@ -61,6 +63,9 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 	
 	@Inject
 	private EventBus eventBus;
+	
+	@Inject
+	private TransMemoryDetailsPresenter tmInfoPresenter;
 	
 	private final TransMemoryMessages messages;
 	
@@ -117,25 +122,32 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 	
 	@Override
 	public void createTable(ArrayList<TranslationMemoryItem> memories) {
+		// TODO most of this should be in TransMemoryPresenter
 		clearResults();
 		addColumn("Source", SOURCE_COL);
 		addColumn("Target", TARGET_COL);
 		addColumn("Similarity", SIMILARITY_COL);
-		addColumn("Action", ACTION_COL);
 		
 		int row = HEADER_ROW;
 		for(final TranslationMemoryItem memory: memories) {
 			++row;
 			final String sourceMessage = memory.getSource();
 			final String targetMessage = memory.getTarget();
-			final String sourceComment = memory.getSourceComment();
-			final String targetComment = memory.getTargetComment();
-//			final float score = memory.getRelevanceScore();
 			final int similarity = memory.getSimilarityPercent();
 
 			resultTable.setWidget(row, SOURCE_COL, new HighlightingLabel(sourceMessage));
 			resultTable.setWidget(row, TARGET_COL, new HighlightingLabel(targetMessage));
 			resultTable.setText(row, SIMILARITY_COL, similarity + "%");
+
+			final Image infoLink  = new Image("../img/silk/world.png");
+			infoLink.setTitle("Info");
+			infoLink.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					tmInfoPresenter.show(memory);
+				}
+			});
+			resultTable.setWidget(row, INFO_COL, infoLink);
 
 			final Anchor copyLink = new Anchor("Copy");
 			copyLink.addClickHandler(new ClickHandler() {
@@ -146,14 +158,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 				}
 			});
 			resultTable.setWidget(row, ACTION_COL, copyLink);
-			// comments are presently disabled on the server side
-			String suppInfo = "Source Comment: " + sourceComment + "     "
-            + "Target Comment: " + targetComment;
-
-			// Use ToolTips for supplementary info.
-			resultTable.getWidget(row, SOURCE_COL).setTitle(suppInfo);				
-			resultTable.getWidget(row, TARGET_COL).setTitle(suppInfo);
-			resultTable.getWidget(row, ACTION_COL).setTitle("Copy \"" + targetMessage + "\" to the editor.");	
+			copyLink.setTitle("Copy \"" + targetMessage + "\" to the editor.");	
 		}
 		resultTable.setCellPadding(CELL_PADDING);
 	}
