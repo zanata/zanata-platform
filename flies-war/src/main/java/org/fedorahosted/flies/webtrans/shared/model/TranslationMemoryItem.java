@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.webtrans.shared.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class TranslationMemoryItem implements Serializable{
 
@@ -9,47 +10,34 @@ public class TranslationMemoryItem implements Serializable{
 	private String source;
 	private String target;
 
-	private String sourceComment;
-	// TODO we should probably include transunit id too (useful when we support browser history for TUs)
-	// TODO include obsolete flag and show this info to the user
-
-	private String targetComment;
-
-	private TransUnitId transUnitId;
+	private ArrayList<Long> transUnitIdList = new ArrayList<Long>();
 	private float relevanceScore;
 	private int similarityPercent;
 
-	public TranslationMemoryItem() {
+	@SuppressWarnings("unused")
+	private TranslationMemoryItem() {
 	}
 
 	@Deprecated
-	public TranslationMemoryItem(String source, String memory, TransUnitId transUnitId) {
-		this(source, memory, "", "", transUnitId, 0, 50, 50);
+	public TranslationMemoryItem(String source, String memory, String sourceComment, String targetComment, Long transUnitId, float relevanceScore, int similarityPercent) {
+		addTransUnitId(transUnitId);
 	}
 	
-	@Deprecated
-	public TranslationMemoryItem(String source, String memory, String sourceComment, String targetComment, TransUnitId transUnitId, long projectContainer, float relevanceScore, int similarityPercent) {
-		this(source, memory, sourceComment, targetComment, transUnitId, relevanceScore, 50);
-	}
-	
-	public TranslationMemoryItem(String source, String memory, String sourceComment, String targetComment, TransUnitId transUnitId, float relevanceScore, int similarityPercent) {
+	public TranslationMemoryItem(String source, String memory, float relevanceScore, int similarityPercent) {
 		this.source = source;
 		this.target = memory;
-		this.sourceComment = sourceComment;
-		this.targetComment = targetComment;
-		this.transUnitId = transUnitId;
 		this.relevanceScore = relevanceScore;
 		this.similarityPercent = similarityPercent;
 	}
 
-	public TransUnitId getTransUnitId() {
-		return transUnitId;
+	public ArrayList<Long> getTransUnitIdList() {
+		return transUnitIdList;
 	}
 	
-	public void setTransUnitId(TransUnitId transUnitId) {
-		this.transUnitId = transUnitId;
+	public void addTransUnitId(Long transUnitId) {
+		this.transUnitIdList.add(transUnitId);
 	}
-
+	
 	public void setTarget(String target) {
 		this.target = target;
 	}
@@ -80,22 +68,6 @@ public class TranslationMemoryItem implements Serializable{
 
 	public String getSource() {
 		return source;
-	}
-
-	public void setSourceComment(String sourceComment) {
-		this.sourceComment = sourceComment;
-	}
-
-	public String getSourceComment() {
-		return sourceComment;
-	}
-
-	public void setTargetComment(String targetComment) {
-		this.targetComment = targetComment;
-	}
-
-	public String getTargetComment() {
-		return targetComment;
 	}
 
 }

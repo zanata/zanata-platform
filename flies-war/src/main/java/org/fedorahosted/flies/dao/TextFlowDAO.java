@@ -39,8 +39,16 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>{
 		        .set("document", document)
 		    	)
 		    .setCacheable(true)
-		    .setComment("ResourceDAO.getById")
+		    .setComment("TextFlowDAO.getById")
 		    .uniqueResult();
+	}
+	
+	public List<HTextFlow> findByIdList(List<Long> idList){
+		Query query = getSession().createQuery(
+				"FROM HTextFlow WHERE id in (:idList)");
+		query.setParameterList("idList", idList);
+		query.setComment("TextFlowDAO.getByIdList");
+		return query.list();
 	}
 	
 	public HTextFlow getObsoleteById(HDocument document, String id) {
@@ -51,7 +59,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>{
 	    	)
 	    .add( Restrictions.eq("obsolete", true))
 	    .setCacheable(true)
-	    .setComment("ResourceDAO.getObsoleteById")
+	    .setComment("TextFlowDAO.getObsoleteById")
 	    .uniqueResult();
 	}
 

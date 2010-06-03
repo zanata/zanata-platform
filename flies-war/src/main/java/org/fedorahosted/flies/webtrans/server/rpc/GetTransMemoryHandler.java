@@ -3,7 +3,9 @@ package org.fedorahosted.flies.webtrans.server.rpc;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
@@ -12,6 +14,7 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.util.Version;
+import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.model.HTextFlow;
 import org.fedorahosted.flies.model.HTextFlowTarget;
@@ -20,7 +23,6 @@ import org.fedorahosted.flies.search.LevenshteinUtil;
 import org.fedorahosted.flies.security.FliesIdentity;
 import org.fedorahosted.flies.util.ShortString;
 import org.fedorahosted.flies.webtrans.server.ActionHandlerFor;
-import org.fedorahosted.flies.webtrans.shared.model.TransUnitId;
 import org.fedorahosted.flies.webtrans.shared.model.TranslationMemoryItem;
 import org.fedorahosted.flies.webtrans.shared.rpc.GetTranslationMemory;
 import org.fedorahosted.flies.webtrans.shared.rpc.GetTranslationMemoryResult;
@@ -93,7 +95,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
         	List<Object[]> matches = ftQuery
                 .setMaxResults(MAX_RESULTS)
                 .getResultList();
-            results = new ArrayList<TranslationMemoryItem>(matches.size());
+        	Map<TMKey, TranslationMemoryItem> matchesMap = new LinkedHashMap<TMKey, TranslationMemoryItem>();
     		for (Object[] match : matches) {
     			float score = (Float) match[0];
     			HTextFlow textFlow = (HTextFlow) match[1];
@@ -101,26 +103,31 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
     				continue;
     			}
     			HTextFlowTarget target = textFlow.getTargets().get(localeID);
+    			// double check in case of caching issues
+    			if (target.getState() != ContentState.Approved) {
+    				continue;
+    			}
     			String textFlowContent = textFlow.getContent();
     			String targetContent = target.getContent();
-    			String docId = textFlow.getDocument().getDocId();
     			
     			int levDistance = LevenshteinUtil.getLevenshteinSubstringDistance(searchText, textFlowContent);
     			int maxDistance = searchText.length();
     			int percent = 100 * (maxDistance - levDistance) / maxDistance;
     				
-				TranslationMemoryItem mem = new TranslationMemoryItem(
-						textFlowContent, 
-						targetContent, 
-						CommentsUtil.toString(textFlow.getComment()),
-						CommentsUtil.toString(target.getComment()),
-						new TransUnitId(textFlow.getId()),
-						score,
-						percent
-				);
-				results.add(mem);
+				TMKey key = new TMKey(textFlowContent, targetContent);
+				TranslationMemoryItem item = matchesMap.get(key);
+				if (item == null) {
+					item = new TranslationMemoryItem(
+							textFlowContent,
+							targetContent,
+							score,
+							percent
+					);
+					matchesMap.put(key, item);
+				}
+				item.addTransUnitId(textFlow.getId());
     		}
-
+    		results = new ArrayList<TranslationMemoryItem>(matchesMap.values());
         } catch (ParseException e) {
         	if (searchType == SearchType.RAW) {
 				log.warn("Can't parse raw query '"+queryText+"'");
@@ -178,5 +185,47 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 			GetTranslationMemoryResult result, ExecutionContext context)
 			throws ActionException {
 	}
+    
+    static class TMKey {
+
+		private final String textFlowContent;
+		private final String targetContent;
+
+		public TMKey(String textFlowContent, String targetContent) {
+			this.textFlowContent = textFlowContent;
+			this.targetContent = targetContent;
+		}
+		
+		public String getTextFlowContent() {
+			return textFlowContent;
+		}
+		
+		public String getTargetContent() {
+			return targetContent;
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof TMKey) {
+				TMKey o = (TMKey) obj;
+				return equal(textFlowContent, o.textFlowContent) && 
+					equal(targetContent, o.targetContent);
+			}
+			return false;
+		}
+		
+		private static boolean equal(String s1, String s2) {
+			return s1 == null ? s2 == null : s1.equals(s2);
+		}
+		
+		@Override
+		public int hashCode() {
+			int result = 1;
+			result = 37 * result + textFlowContent != null ? textFlowContent.hashCode() : 0;
+			result = 37 * result + targetContent != null ? targetContent.hashCode() : 0;
+			return result;
+		}
+    	
+    }
     
 }
