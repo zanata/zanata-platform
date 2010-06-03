@@ -1,7 +1,6 @@
 package org.fedorahosted.flies.hibernate.search;
 
 import java.io.IOException;
-import java.util.BitSet;
 import java.util.List;
 
 import org.apache.lucene.index.IndexReader;
@@ -9,7 +8,7 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermDocs;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
-import org.apache.lucene.util.DocIdBitSet;
+import org.apache.lucene.util.OpenBitSet;
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.dao.TextFlowDAO;
@@ -40,7 +39,7 @@ public class TranslatedFilter extends Filter {
 	
 	@Override
 	public DocIdSet getDocIdSet(IndexReader reader) throws IOException {
-		BitSet bitSet = new BitSet(reader.maxDoc());
+		OpenBitSet bitSet = new OpenBitSet(reader.maxDoc());
 		
 		List<Long> translatedIds = textFlowDAO.getIdsByTargetState(locale, ContentState.Approved);
 		log.debug("{0} matching TF ids for locale {0}: {1}", translatedIds.size(), locale, translatedIds);
@@ -50,6 +49,6 @@ public class TranslatedFilter extends Filter {
 			while (termDocs.next())
 				bitSet.set(termDocs.doc());
 		}
-		return new DocIdBitSet(bitSet);
+		return bitSet;
 	}
 }
