@@ -9,7 +9,7 @@ import org.fedorahosted.flies.common.Namespaces;
 
 @XmlType(name="projectIterationInlineType", namespace=Namespaces.FLIES, propOrder={"links"})
 @XmlRootElement(name="project-iteration", namespace=Namespaces.FLIES)
-public class ProjectIterationInline extends AbstractMiniProjectIteration {
+public class ProjectIterationInline extends AbstractMiniProjectIteration implements HasSample<ProjectIterationInline>{
 
 	private Links links;
 
@@ -39,5 +39,9 @@ public class ProjectIterationInline extends AbstractMiniProjectIteration {
 		return links;
 	}
 	
-	
+	@Override
+	public ProjectIterationInline createSample() {
+		ProjectIterationInline entity = new ProjectIterationInline("iteration-id", "Iteration Name");
+		return entity;
+	}
 }

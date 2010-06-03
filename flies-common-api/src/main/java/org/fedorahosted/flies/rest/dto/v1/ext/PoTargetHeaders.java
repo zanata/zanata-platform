@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.fedorahosted.flies.rest.dto.v1.Extension;
 
-@XmlType(name="poTargetHeadersExtension", namespace=PoTargetHeaders.NAMESPACE, propOrder={"comment", "entries"})
+@XmlType(name="poTargetHeadersExtension", namespace=PoTargetHeaders.NAMESPACE, propOrder={"headers"})
 @XmlRootElement(name="po-target-header", namespace=PoTargetHeaders.NAMESPACE)
 @JsonTypeName(value=PoTargetHeaders.ID)
 public class PoTargetHeaders extends Extension {

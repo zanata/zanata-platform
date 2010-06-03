@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.common.Namespaces;
 
-@XmlType(name="abstractTranslationResourceType", namespace=Namespaces.FLIES, propOrder={"textFlows"})
+@XmlType(name="abstractTranslationResourceType", namespace=Namespaces.FLIES, propOrder={})
 public abstract class AbstractContentTranslationResource<T> extends AbstractResource{
 
 	protected List<T> textFlows;

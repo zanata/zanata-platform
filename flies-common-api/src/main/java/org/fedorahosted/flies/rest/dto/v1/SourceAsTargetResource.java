@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.common.Namespaces;
 
-@XmlType(name="sourceAsTargetResourceType", namespace=Namespaces.FLIES, propOrder={})
+@XmlType(name="sourceAsTargetResourceType", namespace=Namespaces.FLIES, propOrder={"textFlows"})
 @XmlRootElement(name="resource",namespace=Namespaces.FLIES)
 public class SourceAsTargetResource extends AbstractContentTranslationResource<SourceAsTargetTextFlow> {
 

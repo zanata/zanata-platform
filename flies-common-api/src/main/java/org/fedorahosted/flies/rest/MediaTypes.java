@@ -4,6 +4,19 @@ import javax.ws.rs.core.MediaType;
 
 public class MediaTypes {
 
+	public static enum Format{
+		XML("xml"),
+		JSON("json");
+		
+		private final String format;
+		private Format(String format) {
+			this.format = format;
+		}
+		public String toString() {
+			return "+" + format;
+		};
+	}
+	
 	private static final String XML = "+xml";
 	private static final String JSON = "+json";
 	
@@ -64,4 +77,5 @@ public class MediaTypes {
 
 		return str.toString();
 	}
+	
 }

@@ -34,6 +34,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.common.Namespaces;
 import org.fedorahosted.flies.dao.DocumentDAO;
 import org.fedorahosted.flies.dao.PersonDAO;
 import org.fedorahosted.flies.dao.ProjectIterationDAO;
@@ -58,6 +59,7 @@ import org.fedorahosted.flies.rest.dto.v1.TextFlowTargetWithId;
 import org.fedorahosted.flies.rest.dto.v1.TranslationResource;
 import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
 import org.fedorahosted.flies.rest.dto.v1.ext.PotEntryHeader;
+import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
@@ -147,6 +149,7 @@ public class TranslationResourcesService {
 	 * @return Response.ok with ResourcesList or Response(404) if not found 
 	 */
 	@GET
+	@Wrapped(element = "resources", namespace = Namespaces.FLIES)
 	public Response doGet() {
 		
 		HProjectIteration hProjectIteration = retrieveIteration();
@@ -158,7 +161,7 @@ public class TranslationResourcesService {
 			return response.build();
 		}
 		
-		ResourcesList resources = new ResourcesList();
+		List<ResourceMeta> resources = new ArrayList<ResourceMeta>();
 		
 		for(HDocument doc : hProjectIteration.getDocuments().values() ) {
 			if(!doc.isObsolete()) {

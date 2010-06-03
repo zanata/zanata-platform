@@ -1,11 +1,18 @@
 package org.fedorahosted.flies.rest.dto.v1.ext;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
+import org.codehaus.jackson.annotate.JsonTypeName;
 import org.fedorahosted.flies.common.Namespaces;
 import org.fedorahosted.flies.rest.dto.v1.Extension;
 
+@XmlType(name="simpleCommentExtension", namespace=PoHeader.NAMESPACE, propOrder={})
+@XmlRootElement(name="comment", namespace=PoHeader.NAMESPACE)
+@JsonTypeName(value=SimpleComment.ID)
 public class SimpleComment extends Extension {
 
 	public static final String ID = "comment";
@@ -22,7 +29,7 @@ public class SimpleComment extends Extension {
 		this.value = value;
 	}
 	
-	@XmlValue
+	@XmlElement(name="value", required=true)
 	public String getValue() {
 		return value;
 	}

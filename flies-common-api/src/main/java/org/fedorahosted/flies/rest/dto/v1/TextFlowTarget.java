@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.Namespaces;
 
-@XmlType(name="textFlowTargetType", namespace=Namespaces.FLIES, propOrder={"translator", "extensions"})
+@XmlType(name="textFlowTargetType", namespace=Namespaces.FLIES, propOrder={"translator", "content", "extensions"})
 @XmlRootElement(name="target", namespace=Namespaces.FLIES)
 public class TextFlowTarget {
 

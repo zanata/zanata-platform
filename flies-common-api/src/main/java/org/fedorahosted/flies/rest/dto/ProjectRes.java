@@ -8,6 +8,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.common.Namespaces;
+import org.fedorahosted.flies.rest.MediaTypes;
+import org.fedorahosted.flies.rest.MediaTypes.Format;
 
 /**
  * Representation of the Project resource that is retrieved through a
@@ -18,7 +20,7 @@ import org.fedorahosted.flies.common.Namespaces;
  */
 @XmlType(name="projectResType", namespace=Namespaces.FLIES, propOrder={"links","iterations"})
 @XmlRootElement(name="project", namespace=Namespaces.FLIES)
-public class ProjectRes extends AbstractProject {
+public class ProjectRes extends AbstractProject implements HasSample<ProjectRes>, HasMediaType {
 
 	private Links links;
 	
@@ -53,4 +55,19 @@ public class ProjectRes extends AbstractProject {
 		return iterations;
 	}
 	
+	@Override
+	public ProjectRes createSample() {
+		ProjectRes entity = new ProjectRes();
+		entity.setId("myproject");
+		entity.setName("Project Name");
+		entity.setDescription("Project Description");
+		entity.setType(ProjectType.IterationProject);
+		entity.getIterations().add( new ProjectIterationInline().createSample());
+		return entity;
+	}
+	
+	@Override
+	public String getMediaType(Format format) {
+		return MediaTypes.APPLICATION_FLIES_PROJECT + format;
+	}	
 }
