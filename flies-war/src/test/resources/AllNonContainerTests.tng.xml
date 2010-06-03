@@ -22,5 +22,11 @@
 			<class name="org.fedorahosted.flies.rest.service.TranslationResourceServiceTest"/>
 		</classes>
 	</test>
+	
+	<test name="WebTrans Server Tests">
+		<classes>
+			<class name="org.fedorahosted.flies.webtrans.server.TranslationWorkspaceManagerTest" />
+		</classes>
+	</test>
 
 </suite>

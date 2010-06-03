@@ -20,6 +20,7 @@ import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.log.Logging;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
@@ -36,8 +37,7 @@ public class TranslationWorkspaceManager {
 
 	public static final String EVENT_WORKSPACE_CREATED = "webtrans.WorkspaceCreated";
 	
-	@Logger
-	private Log log;
+	private Log log = Logging.getLog(TranslationWorkspaceManager.class);
 	
 	@In Session session;
 	
@@ -54,6 +54,11 @@ public class TranslationWorkspaceManager {
 		Multimap<LocaleId, TranslationWorkspace> localeWorkspaceMap = HashMultimap.create();
 		this.localeWorkspaceMap = Multimaps.synchronizedMultimap(localeWorkspaceMap);
 		
+	}
+
+	public TranslationWorkspaceManager(Session session) {
+		this();
+		this.session = session;
 	}
 	
 	@Observer(FliesInit.EVENT_Flies_Startup)
@@ -111,18 +116,8 @@ public class TranslationWorkspaceManager {
 	}
 	
 	private TranslationWorkspace createWorkspace(WorkspaceId workspaceId) {
-		String iterationName = (String) session.createQuery(
-				"select it.name " +
-				"from HProjectIteration it " +
-				"where it.slug = :slug " +
-				"and it.project.slug = :pslug"
-				)
-				.setParameter("slug", workspaceId.getProjectIterationId().getIterationSlug())
-				.setParameter("pslug", workspaceId.getProjectIterationId().getProjectSlug())
-				.uniqueResult();
-		
-		String projectName = (String) session.createQuery(
-				"select it.project.name " +
+		String workspaceName = (String) session.createQuery(
+				"select it.project.name || ' (' || it.name || ')' " +
 				"from HProjectIteration it " +
 				"where it.slug = :slug " +
 				"and it.project.slug = :pslug"
@@ -133,7 +128,7 @@ public class TranslationWorkspaceManager {
 
 		WorkspaceContext workspaceContext = 
 			new WorkspaceContext(workspaceId, 
-					projectName + " (" + iterationName + ")",
+					workspaceName,
 					ULocale.getDisplayName(workspaceId.getLocaleId().toJavaName(), ULocale.ENGLISH));
 		return new TranslationWorkspace(workspaceContext);
 	}
