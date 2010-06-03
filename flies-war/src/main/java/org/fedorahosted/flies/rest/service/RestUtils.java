@@ -63,7 +63,7 @@ public class RestUtils {
 			entity = reader.readFrom(entityClass, entityClass, entityClass
 					.getAnnotations(), requestContentType, requestHeaders, is);
 		} catch (Exception e) {
-			throw new WebApplicationException(
+			throw new NoLogWebApplicationException(
 					Response.status(Status.BAD_REQUEST).entity("Unable to read request body").build());
 		}
 
