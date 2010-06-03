@@ -6,13 +6,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-
 import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.TextFlow;
-import org.fedorahosted.flies.rest.dto.TextFlowTarget;
-import org.fedorahosted.flies.rest.dto.TextFlowTargets;
 import org.junit.Test;
 
 public class DocumentTests {

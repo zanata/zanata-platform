@@ -3,13 +3,11 @@ package org.fedorahosted.flies.rest.dto.v1.ext;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.rest.dto.po.HeaderEntry;
 import org.fedorahosted.flies.rest.dto.v1.Extension;
 

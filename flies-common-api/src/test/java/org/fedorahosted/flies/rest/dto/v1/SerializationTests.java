@@ -1,7 +1,14 @@
 package org.fedorahosted.flies.rest.dto.v1;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.io.IOException;
+
 import javax.xml.bind.JAXBException;
+
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -12,10 +19,6 @@ import org.fedorahosted.flies.rest.JaxbUtil;
 import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.matchers.JUnitMatchers.*;
 
 public class SerializationTests {
 

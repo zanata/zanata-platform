@@ -1,12 +1,10 @@
 package org.fedorahosted.flies.rest.dto;
 
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.common.Namespaces;
 import org.hibernate.validator.Length;
-import org.hibernate.validator.NotEmpty;
 
 @XmlType(name="abstractProjectType", namespace=Namespaces.FLIES, propOrder={"description"})
 public abstract class AbstractProject extends AbstractMiniProject {

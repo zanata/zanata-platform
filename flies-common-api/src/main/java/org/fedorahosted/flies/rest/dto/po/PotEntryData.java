@@ -9,7 +9,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 import org.fedorahosted.flies.rest.dto.SimpleComment;
 
 @XmlRootElement(name="po-entry", namespace=PoHeader.NAMESPACE)
