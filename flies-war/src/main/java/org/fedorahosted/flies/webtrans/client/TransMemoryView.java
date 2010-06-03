@@ -14,6 +14,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -68,10 +69,12 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 	private TransMemoryDetailsPresenter tmInfoPresenter;
 	
 	private final TransMemoryMessages messages;
+	private final Resources resources;
 	
 	@Inject
-	public TransMemoryView(final TransMemoryMessages messages) {
+	public TransMemoryView(final TransMemoryMessages messages, Resources resources) {
 		this.messages = messages;
+		this.resources = resources;
 		initWidget( uiBinder.createAndBindUi(this));
 		phraseButton.setText( messages.tmPhraseButtonLabel() );
 		clearButton.setText( messages.tmClearButtonLabel() );
@@ -139,7 +142,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 			resultTable.setWidget(row, TARGET_COL, new HighlightingLabel(targetMessage));
 			resultTable.setText(row, SIMILARITY_COL, similarity + "%");
 
-			final Image infoLink  = new Image("../img/silk/world.png");
+			final Image infoLink  = new Image(resources.informationImage());
 			infoLink.setTitle("Info");
 			infoLink.addClickHandler(new ClickHandler() {
 				@Override
