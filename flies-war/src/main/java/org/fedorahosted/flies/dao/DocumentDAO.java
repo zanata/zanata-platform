@@ -13,11 +13,14 @@ import org.fedorahosted.flies.model.HTextFlow;
 import org.fedorahosted.flies.model.StatusCount;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 
 @Name("documentDAO")
 @AutoCreate
+@Scope(ScopeType.STATELESS)
 public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>{
 
 	public DocumentDAO() {

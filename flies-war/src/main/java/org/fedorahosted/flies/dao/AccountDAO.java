@@ -6,13 +6,16 @@ import java.security.SecureRandom;
 import org.fedorahosted.flies.model.HAccount;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.management.PasswordHash;
 import org.jboss.seam.util.Hex;
 
 @Name("accountDAO")
 @AutoCreate
+@Scope(ScopeType.STATELESS)
 public class AccountDAO extends AbstractDAOImpl<HAccount, Long>{
 
 	public AccountDAO() {

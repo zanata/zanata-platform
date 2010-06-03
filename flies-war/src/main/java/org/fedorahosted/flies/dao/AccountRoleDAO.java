@@ -8,11 +8,14 @@ import org.fedorahosted.flies.model.HAccount;
 import org.fedorahosted.flies.model.HAccountRole;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 
 @Name("accountRoleDAO")
 @AutoCreate
+@Scope(ScopeType.STATELESS)
 public class AccountRoleDAO extends AbstractDAOImpl<HAccountRole, Integer> {
 	
 	public AccountRoleDAO() {

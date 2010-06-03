@@ -9,11 +9,14 @@ import org.fedorahosted.flies.model.HTextFlow;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 
 @Name("textFlowDAO")
 @AutoCreate
+@Scope(ScopeType.STATELESS)
 public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>{
 
 	public TextFlowDAO() {

@@ -14,11 +14,14 @@ import org.fedorahosted.flies.model.StatusCount;
 import org.fedorahosted.flies.util.HashUtil;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 
 @Name("projectIterationDAO")
 @AutoCreate
+@Scope(ScopeType.STATELESS)
 public class ProjectIterationDAO extends AbstractDAOImpl< HProjectIteration, Long>{
 
 	public ProjectIterationDAO() {
