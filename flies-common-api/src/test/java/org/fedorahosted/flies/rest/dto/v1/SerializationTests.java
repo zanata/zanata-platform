@@ -5,6 +5,10 @@ import javax.xml.bind.JAXBException;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.fedorahosted.flies.common.ContentType;
+import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.common.ResourceType;
+import org.fedorahosted.flies.rest.JaxbUtil;
 import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,13 +37,13 @@ public class SerializationTests {
 	@Test
 	public void serializeAndDeserializePerson() throws JAXBException, JsonGenerationException, JsonMappingException, IOException {
 		Person p = createPerson(); 
-		JaxbTestUtil.validate(p);
+		JaxbUtil.validateXml(p);
 
 		String output = mapper.writeValueAsString(p);
 		
 		Person p2 = mapper.readValue(output, Person.class);
 		assertThat(p2 , notNullValue());
-		JaxbTestUtil.validate(p2);
+		JaxbUtil.validateXml(p2);
 		
 		p2 = JaxbTestUtil.roundTripXml(p);
 		assertThat(p2 , notNullValue());
@@ -52,11 +56,11 @@ public class SerializationTests {
 	@Test
 	public void serializeAndDeserializeExtension() throws JsonGenerationException, JsonMappingException, IOException, JAXBException {
 		Extension e = createPoHeader();
-		JaxbTestUtil.validate(e);
+		JaxbUtil.validateXml(e);
 
 		String output = mapper.writeValueAsString(e);
 		Extension e2 = mapper.readValue(output, Extension.class);
-		JaxbTestUtil.validate(e2);
+		JaxbUtil.validateXml(e2);
 		assertThat(e2, instanceOf(PoHeader.class));
 		
 		e2 = JaxbTestUtil.roundTripXml(e, Extension.class);
@@ -67,7 +71,7 @@ public class SerializationTests {
 	public void serializeAndDeserializeTranslationResource() throws JsonGenerationException, JsonMappingException, IOException, JAXBException{
 		ResourceMeta res = new ResourceMeta("id");
 		res.getExtensions().add(new PoHeader());
-		JaxbTestUtil.validate(res, PoHeader.class);
+		JaxbUtil.validateXml(res, PoHeader.class);
 		
 		String output = mapper.writeValueAsString(res);
 		ResourceMeta res2 = mapper.readValue(output, ResourceMeta.class);
@@ -79,6 +83,17 @@ public class SerializationTests {
 		assertThat(res2, notNullValue());
 		assertThat( res2.getExtensions().size(), is(1));
 		assertThat( res2.getExtensions().iterator().next(), instanceOf(PoHeader.class)); 
+	}
+	
+	@Test
+	public void serializeSourceResource()  throws JsonGenerationException, JsonMappingException, IOException, JAXBException{
+		SourceResource sourceResource = new SourceResource("Acls.pot");
+		sourceResource.setType(ResourceType.FILE);
+		sourceResource.setContentType(ContentType.PO);
+		sourceResource.setLang(LocaleId.EN);
+		
+		System.out.println(mapper.writeValueAsString(sourceResource));
+		
 	}
 	
 }
