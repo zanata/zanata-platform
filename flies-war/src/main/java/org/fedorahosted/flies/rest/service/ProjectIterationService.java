@@ -132,8 +132,17 @@ public class ProjectIterationService {
 	public Response put(InputStream messageBody) {
 		
 		ResponseBuilder response;
-		EntityTag etag;
+		EntityTag etag = null;
+		boolean changed = false;
 		
+		HProject hProject = projectDAO.getBySlug(projectSlug);
+		
+		if(hProject == null) {
+			return Response.status(Status.NOT_FOUND)
+				.entity("Project '"+ projectSlug +"' not found.")
+				.build();
+		}
+
 		HProjectIteration hProjectIteration = projectIterationDAO
 			.getBySlug(projectSlug, iterationSlug);
 		
@@ -142,16 +151,11 @@ public class ProjectIterationService {
 			if(response != null) {
 				return response.build();
 			}
-			HProject hProject = projectDAO.getBySlug(projectSlug);
-			if(hProject == null) {
-				return Response.status(Status.NOT_FOUND)
-					.entity("Project '"+ projectSlug +"' not found.")
-					.build();
-			}
 			hProjectIteration = new HProjectIteration();
 			hProjectIteration.setSlug(iterationSlug);
 			hProjectIteration.setProject((HIterationProject) hProject);
 			response = Response.created( uri.getAbsolutePath() );
+			changed = true;
 			
 		}
 		else{ // must be an update operation
@@ -164,19 +168,29 @@ public class ProjectIterationService {
 		}
 
 		ProjectIteration projectIteration = RestUtils.unmarshall(ProjectIteration.class, messageBody, requestContentType, headers.getRequestHeaders());
-		transfer(projectIteration, hProjectIteration);
+		changed |= transfer(projectIteration, hProjectIteration);
 		
-		projectIterationDAO.makePersistent(hProjectIteration);
-		projectIterationDAO.flush();
-
-		etag = eTagUtils.generateETagForIteration(projectSlug, iterationSlug);
+		if(changed) {
+			projectIterationDAO.makePersistent(hProjectIteration);
+			projectIterationDAO.flush();
+			etag = eTagUtils.generateETagForIteration(projectSlug, iterationSlug);
+		}
 		return response.tag(etag).build();
 		
 	}
 
-	public static void transfer(ProjectIteration from, HProjectIteration to) {
-		to.setName(from.getName());
-		to.setDescription(from.getDescription());
+	public static boolean transfer(ProjectIteration from, HProjectIteration to) {
+		boolean changed = false;
+		if( !ResourceUtils.equals(to.getName(), from.getName()) ) {
+			to.setName(from.getName());
+			changed = true;
+		}
+		if( !ResourceUtils.equals(to.getDescription(), from.getDescription()) ) {
+			to.setDescription(from.getDescription());
+			changed = true;
+		}
+		return changed;
+		
 	}
 	
 	public static void transfer(HProjectIteration from, AbstractMiniProjectIteration to) {

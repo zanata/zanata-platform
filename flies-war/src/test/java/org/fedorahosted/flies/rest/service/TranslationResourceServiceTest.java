@@ -82,7 +82,7 @@ public class TranslationResourceServiceTest extends FliesRestTest {
 	}
 
 	@Test
-	public void createResourceWithContent() {
+	public void createResourceWithContentUsingPost() {
 		ITranslationResources client = 
 			getClientRequestFactory()
 			.createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
@@ -104,6 +104,29 @@ public class TranslationResourceServiceTest extends FliesRestTest {
 		
 	}
 	
+	@Test
+	public void createResourceWithContentUsingPut() {
+		ITranslationResources client = 
+			getClientRequestFactory()
+			.createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
+		
+		SourceResource sr = createSourceResource("my.txt");
+		
+		SourceTextFlow stf = new SourceTextFlow("tf1", LocaleId.EN, "tf1");
+		sr.getTextFlows().add(stf);
+		
+		ClientResponse<String> response = client.putResource("my.txt", sr);
+		assertThat(response.getResponseStatus(), is(Status.CREATED));
+		assertThat( response.getLocation().getHref(), endsWith("/r/my.txt"));
+		
+		ClientResponse<SourceResource> resourceGetResponse = client.getResource("my.txt", null);
+		assertThat(resourceGetResponse.getResponseStatus(), is(Status.OK));
+		SourceResource gotSr = resourceGetResponse.getEntity();
+		assertThat(gotSr.getTextFlows().size(), is(1));
+		assertThat(gotSr.getTextFlows().get(0).getContent(), is("tf1"));
+		
+	}
+
 	@Test
 	public void createPoResourceWithPoHeader() {
 		ITranslationResources client = 
@@ -137,7 +160,7 @@ public class TranslationResourceServiceTest extends FliesRestTest {
 
 	@Test
 	public void retrieveTranslations() {
-		createResourceWithContent();
+		createResourceWithContentUsingPut();
 		
 		ITranslationResources client = 
 			getClientRequestFactory()
@@ -153,7 +176,7 @@ public class TranslationResourceServiceTest extends FliesRestTest {
 	
 	@Test
 	public void publishTranslations() {
-		createResourceWithContent();
+		createResourceWithContentUsingPut();
 		
 		ITranslationResources client = 
 			getClientRequestFactory()

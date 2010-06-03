@@ -28,6 +28,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
@@ -92,6 +93,9 @@ public class TranslationResourcesService {
 	
 	@Context
 	private Request request;
+	
+	@Context
+	private UriInfo uri;
 	
 	@In
 	private ProjectIterationDAO projectIterationDAO;
@@ -253,36 +257,59 @@ public class TranslationResourcesService {
 			@PathParam("id") String id, 
 			InputStream messageBody) {
 
+		ResponseBuilder response;
+		EntityTag etag = null;
+		boolean changed = false;
 		HProjectIteration hProjectIteration = retrieveIteration();
-
-		validateExtensions();
-
-		EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 		
-		ResponseBuilder response = request.evaluatePreconditions(etag);
-		if(response != null) {
-			return response.build();
-		}
+		validateExtensions();
 
 		SourceResource entity = RestUtils.unmarshall(SourceResource.class, messageBody, requestContentType, headers.getRequestHeaders());
 
 		HDocument document = documentDAO.getByDocId(hProjectIteration, id);
-		if( document.isObsolete() ) {
-			return Response.status(Status.NOT_FOUND).build();
+		
+		if(document == null) {  // must be a create operation
+			response = request.evaluatePreconditions();
+			if(response != null) {
+				return response.build();
+			}
+			changed = true;
+			document = new HDocument(entity.getName(),entity.getContentType());
+			document.setProjectIteration(hProjectIteration);
+			response = Response.created( uri.getAbsolutePath() );
+			
+		}
+		else if(document.isObsolete()) { // must also be a create operation
+			response = request.evaluatePreconditions();
+			if(response != null) {
+				return response.build();
+			}
+			changed = true;
+			document.setObsolete(false);
+			response = Response.created( uri.getAbsolutePath() );
+		}
+		else { // must be an update operation
+			etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
+			response = request.evaluatePreconditions(etag);
+			if(response != null) {
+				return response.build();
+			}
+			
+			response = Response.ok();
 		}
 
-		boolean changed = resourceUtils.transfer(entity, document);
+		changed |= resourceUtils.transfer(entity, document);
 		
 		// handle extensions
 		changed |= resourceUtils.transfer(entity.getExtensions(), document, extensions);
 		
-		
 		if ( changed ) {
-			etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
+			document = documentDAO.makePersistent(document);
 			documentDAO.flush();
+			etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 		}
 
-		return Response.ok().tag(etag).build();
+		return response.tag(etag).build();
 			
 	}
 

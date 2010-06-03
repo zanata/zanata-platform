@@ -284,7 +284,7 @@ public class ResourceUtils {
 	}
 	
 	
-	private static <T> boolean equals(T a, T b) {
+	public static <T> boolean equals(T a, T b) {
 		if(a == null && b == null ) {
 			return true;
 		}
