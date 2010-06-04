@@ -79,7 +79,7 @@ public class PasswordChangeAction implements Serializable {
     		return null;
     	
     	if (!identityManager.authenticate(authenticatedAccount.getUsername(), passwordOld)) {
-    		FacesMessages.instance().add("Old password is incorrect, please check and try again.");
+    		FacesMessages.instance().addToControl("passwordOld", "Old password is incorrect, please check and try again.");
     		return null;
     	}
     	

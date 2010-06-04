@@ -94,6 +94,11 @@
     <from casesensitive="true">^/account/activate(.+)?$</from>
     <to last="true">/account/activate.seam$1</to>
   </rule>
+ 
+  <rule>
+    <from casesensitive="true">^/account/changepassword(.+)?$</from>
+    <to last="true">/account/changepassword.seam$1</to>
+  </rule>  
 
   <rule>
     <from casesensitive="true">^/account/password_reset_request(.+)?$</from>
