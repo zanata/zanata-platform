@@ -188,6 +188,10 @@
     <from>^(/.+)?/account/password_reset.seam\?key=(.+)$</from>
     <to>$1/account/password_reset/$2</to>
   </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/account/changepassword.seam(.+)?$</from>
+    <to>$1/account/changepassword$2</to>
+  </outbound-rule>
 
   <outbound-rule>
     <from>^(/.+)?/home.seam(.+)?$</from>
