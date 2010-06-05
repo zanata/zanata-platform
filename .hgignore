@@ -33,6 +33,10 @@ temp-testng-customsuite.xml$
 ^flies-war/src/test/resources/DocumentsServiceSeamTest.tng.xml$
 \.orig$
 
+# idea
+\.idea/
+\.iml$
+
 # kde related
 \.directory$
 
