@@ -19,7 +19,7 @@ public class TranslationResource implements Serializable, HasSample<TranslationR
 	private ExtensionSet extensions;
 	private List<TextFlowTargetWithId> textFlowTargets;
 
-	@XmlElementWrapper(name="extensions", namespace=Namespaces.FLIES, required=false)
+	@XmlElementWrapper(name="extensions", namespace=Namespaces.FLIES, required=false, nillable=false)
 	@XmlAnyElement(lax=true)
 	public ExtensionSet getExtensions() {
 		if(extensions == null)

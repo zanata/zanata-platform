@@ -8,8 +8,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.rest.dto.LocaleIdAdapter;
 import org.fedorahosted.flies.rest.dto.po.HeaderEntry;
 
 @XmlType(name="poTargetHeaderEntry", namespace=PoHeader.NAMESPACE, propOrder={"comment", "entries"})
@@ -33,6 +35,7 @@ public class PoTargetHeaderEntry {
 	}
 	
 	@XmlAttribute(name="locale", required=true)
+	@XmlJavaTypeAdapter(type=LocaleId.class, value=LocaleIdAdapter.class)
 	public LocaleId getLocale() {
 		return locale;
 	}

@@ -24,6 +24,7 @@ import org.fedorahosted.flies.rest.StringSet;
 import org.fedorahosted.flies.rest.client.ITranslationResources;
 import org.fedorahosted.flies.rest.dto.po.HeaderEntry;
 import org.fedorahosted.flies.rest.dto.v1.Person;
+import org.fedorahosted.flies.rest.dto.v1.ResourceMeta;
 import org.fedorahosted.flies.rest.dto.v1.ResourcesList;
 import org.fedorahosted.flies.rest.dto.v1.SourceResource;
 import org.fedorahosted.flies.rest.dto.v1.SourceTextFlow;
@@ -224,8 +225,9 @@ public class TranslationResourceServiceTest extends FliesRestTest {
 		ITranslationResources client = 
 			getClientRequestFactory()
 			.createProxy(ITranslationResources.class,createBaseURI(RESOURCE_PATH));
-		ClientResponse<ResourcesList> resources = client.get();
+		ClientResponse<List<ResourceMeta>> resources = client.get();
 		assertThat(resources.getResponseStatus(), is(Status.OK));
+		
 		assertThat(resources.getEntity().size(), is(n));
 	}
 

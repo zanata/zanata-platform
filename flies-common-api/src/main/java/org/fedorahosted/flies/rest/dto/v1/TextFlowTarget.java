@@ -49,7 +49,7 @@ public class TextFlowTarget {
 		this.content = content;
 	}
 	
-	@XmlElementWrapper(name="extensions", namespace=Namespaces.FLIES, required=false)
+	@XmlElementWrapper(name="extensions", namespace=Namespaces.FLIES, required=false, nillable=false)
 	@XmlAnyElement(lax=true)
 	public ExtensionSet getExtensions() {
 		if(extensions == null)

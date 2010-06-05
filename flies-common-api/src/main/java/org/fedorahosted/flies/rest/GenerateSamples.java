@@ -53,12 +53,11 @@ public class GenerateSamples {
 			JsonMappingException, IOException {
 
 		// projects service
+		write(Person.class);
 		write(ResourcesList.class);
 		write(ProjectRes.class);
 		
-		write(Person.class);
 		write(TranslationResource.class);
-		write(ProjectRes.class);
 
 	}
 
@@ -88,10 +87,10 @@ public class GenerateSamples {
 			m.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper",
 					namespacePrefixMapper);
 			m.marshal(obj, out);
-			out.println();
-			out.println("xml schema:");
-			out.println();
-			context.generateSchema(schemaOutputResolver);
+//			out.println();
+//			out.println("xml schema:");
+//			out.println();
+//			context.generateSchema(schemaOutputResolver);
 
 		} catch (JAXBException e) {
 			throw new RuntimeException(e);
@@ -116,8 +115,8 @@ public class GenerateSamples {
 		@Override
 		public String getPreferredPrefix(String namespaceUri,
 				String suggestion, boolean requirePrefix) {
-			if (namespaceUri == null || namespaceUri.equals("")) {
-				return "tns";
+			if (namespaceUri == null || namespaceUri.isEmpty() ) {
+				return "";
 			}
 			if (namespaceUri.equalsIgnoreCase(Namespaces.FLIES)) {
 				return "";

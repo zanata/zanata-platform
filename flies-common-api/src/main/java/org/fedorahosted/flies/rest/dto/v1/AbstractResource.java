@@ -2,6 +2,7 @@ package org.fedorahosted.flies.rest.dto.v1;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -18,7 +19,6 @@ import org.fedorahosted.flies.rest.dto.LocaleIdAdapter;
 import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
 
 @XmlType(name="abstractResourceType", namespace=Namespaces.FLIES, propOrder={"name", "extensions"})
-@XmlSeeAlso({PoHeader.class})
 public abstract class AbstractResource implements Serializable {
 	
 	private String name;
@@ -39,6 +39,7 @@ public abstract class AbstractResource implements Serializable {
 	}
 	
 	@XmlElementWrapper(name="extensions", namespace=Namespaces.FLIES, required=false, nillable=false)
+	@XmlAnyElement(lax=true)
 	public ExtensionSet getExtensions() {
 		if(extensions == null)
 			extensions = new ExtensionSet();

@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.rest.client;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.ws.rs.Consumes;
@@ -29,7 +30,7 @@ import org.jboss.resteasy.client.ClientResponse;
 public interface ITranslationResources {
 
 	@GET
-	public ClientResponse<ResourcesList> get();
+	public ClientResponse<List<ResourceMeta>> get();
 	
 	@POST
 	public ClientResponse<String> post(

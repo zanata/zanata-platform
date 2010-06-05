@@ -15,7 +15,7 @@ import org.fedorahosted.flies.rest.dto.v1.ext.PoTargetHeaders;
 import org.fedorahosted.flies.rest.dto.v1.ext.PotEntryHeader;
 import org.fedorahosted.flies.rest.dto.v1.ext.SimpleComment;
 
-@XmlType(name="extensionType", namespace=Namespaces.FLIES)
+//@XmlType(name="extensionType", namespace=Namespaces.FLIES)
 @XmlSeeAlso({PoHeader.class, PotEntryHeader.class, SimpleComment.class, PoTargetHeaders.class})
 @JsonTypeInfo(use=Id.NAME, include=As.WRAPPER_OBJECT)
 @JsonSubTypes({
