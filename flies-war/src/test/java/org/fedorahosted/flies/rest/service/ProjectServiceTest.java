@@ -21,7 +21,6 @@ import org.fedorahosted.flies.rest.client.ApiKeyHeaderDecorator;
 import org.fedorahosted.flies.rest.client.IProjectResource;
 import org.fedorahosted.flies.rest.client.IProjectsResource;
 import org.fedorahosted.flies.rest.dto.Project;
-import org.fedorahosted.flies.rest.dto.ProjectRes;
 import org.fedorahosted.flies.rest.dto.ProjectType;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
@@ -59,7 +58,7 @@ public class ProjectServiceTest extends FliesRestTest {
 		IProjectResource projectService = getClientRequestFactory()
 			.createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve("invalid-project"));
 
-		ClientResponse<ProjectRes> response = projectService.get();
+		ClientResponse<Project> response = projectService.get();
 		assertThat( response.getStatus(), is(404) );
 	}
 
@@ -67,7 +66,7 @@ public class ProjectServiceTest extends FliesRestTest {
 	public void retrieveExistingProject(){
 		IProjectResource projectService = getClientRequestFactory()
 			.createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve("sample-project"));
-		ClientResponse<ProjectRes> response = projectService.get();
+		ClientResponse<Project> response = projectService.get();
 		assertThat( response.getStatus(), lessThan(400) );
 	}
 
@@ -92,10 +91,10 @@ public class ProjectServiceTest extends FliesRestTest {
 		projectService = getClientRequestFactory()
 		.createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve(PROJECT_SLUG));
 		
-		ClientResponse<ProjectRes> response1 = projectService.get();
+		ClientResponse<Project> response1 = projectService.get();
 		assertThat(response1.getStatus(), is(Status.OK.getStatusCode()));
 
-		ProjectRes projectRes = response1.getEntity();
+		Project projectRes = response1.getEntity();
 		
 		assertThat(projectRes, notNullValue());
 		assertThat(projectRes.getName(), is(PROJECT_NAME)); 
@@ -155,11 +154,11 @@ public class ProjectServiceTest extends FliesRestTest {
 				
 		assertThat( response.getStatus(), is( Status.OK.getStatusCode()));
 		
-		ClientResponse<ProjectRes> projectResponse = projectService.get();
+		ClientResponse<Project> projectResponse = projectService.get();
 		
 		assertThat( projectResponse.getStatus(), is( Status.OK.getStatusCode()));
 		
-		ProjectRes projectRes = projectResponse.getEntity();
+		Project projectRes = projectResponse.getEntity();
 		
 		assertThat( projectRes.getName(), is("My Project Update"));
 		assertThat( projectRes.getDescription(), is("Update project"));

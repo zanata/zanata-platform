@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.model.HDocument;
-import org.fedorahosted.flies.rest.dto.v1.SourceTextFlow;
+import org.fedorahosted.flies.rest.dto.SourceTextFlow;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import static org.hamcrest.CoreMatchers.*;

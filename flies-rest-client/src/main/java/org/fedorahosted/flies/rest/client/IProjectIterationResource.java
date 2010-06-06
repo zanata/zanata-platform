@@ -8,7 +8,6 @@ import javax.ws.rs.core.Response;
 
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
-import org.fedorahosted.flies.rest.dto.ProjectIterationRes;
 import org.jboss.resteasy.client.ClientResponse;
 
 //@Path("/i/{iterationSlug}")
@@ -16,7 +15,7 @@ public interface IProjectIterationResource{
 
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML, MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON })
-	public ClientResponse<ProjectIterationRes> get();
+	public ClientResponse<ProjectIteration> get();
 
 	@PUT
 	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML, MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON })

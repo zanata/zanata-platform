@@ -16,7 +16,11 @@ import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.ResourceType;
 import org.fedorahosted.flies.rest.JaxbUtil;
-import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
+import org.fedorahosted.flies.rest.dto.Extension;
+import org.fedorahosted.flies.rest.dto.Person;
+import org.fedorahosted.flies.rest.dto.ResourceMeta;
+import org.fedorahosted.flies.rest.dto.SourceResource;
+import org.fedorahosted.flies.rest.dto.extensions.PoHeader;
 import org.junit.Before;
 import org.junit.Test;
 

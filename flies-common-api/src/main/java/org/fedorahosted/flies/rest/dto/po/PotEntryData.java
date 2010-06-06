@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.fedorahosted.flies.rest.dto.SimpleComment;
+import org.fedorahosted.flies.rest.dto.deprecated.SimpleComment;
 
 @XmlRootElement(name="po-entry", namespace=PoHeader.NAMESPACE)
 @XmlType(name="poEntryType", namespace=PoHeader.NAMESPACE, propOrder={"context", "extractedComment", "references", "flags"})

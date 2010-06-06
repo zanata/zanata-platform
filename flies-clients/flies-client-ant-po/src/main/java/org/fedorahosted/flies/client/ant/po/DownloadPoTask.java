@@ -21,8 +21,8 @@ import org.fedorahosted.flies.adapter.po.PoWriter;
 import org.fedorahosted.flies.rest.client.ClientUtility;
 import org.fedorahosted.flies.rest.client.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.IDocumentsResource;
-import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.Documents;
+import org.fedorahosted.flies.rest.dto.deprecated.Document;
+import org.fedorahosted.flies.rest.dto.deprecated.Documents;
 import org.jboss.resteasy.client.ClientResponse;
 
 @Cli(name = "downloadpo", description = "Downloads a Publican project's PO/POT files from Flies after translation, to allow document generation")

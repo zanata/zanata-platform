@@ -6,32 +6,17 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.notNullValue;
 
-import java.net.URI;
-
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.fedorahosted.flies.FliesDBUnitSeamTest;
 import org.fedorahosted.flies.FliesRestTest;
-import org.fedorahosted.flies.dao.AccountDAO;
 import org.fedorahosted.flies.dao.DocumentDAO;
 import org.fedorahosted.flies.dao.ProjectDAO;
 import org.fedorahosted.flies.dao.ProjectIterationDAO;
-import org.fedorahosted.flies.rest.client.ApiKeyHeaderDecorator;
 import org.fedorahosted.flies.rest.client.IProjectIterationResource;
-import org.fedorahosted.flies.rest.client.IProjectResource;
-import org.fedorahosted.flies.rest.client.IProjectsResource;
-import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
-import org.fedorahosted.flies.rest.dto.ProjectIterationRes;
-import org.fedorahosted.flies.rest.dto.ProjectRes;
-import org.fedorahosted.flies.rest.dto.ProjectType;
-import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
-import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
-import org.jboss.resteasy.spi.ResteasyProviderFactory;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class ProjectIterationServiceTest extends FliesRestTest {
@@ -63,7 +48,7 @@ public class ProjectIterationServiceTest extends FliesRestTest {
 		IProjectIterationResource resource = getClientRequestFactory()
 			.createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve("1.0.0"));
 
-		ClientResponse<ProjectIterationRes> response = resource.get();
+		ClientResponse<ProjectIteration> response = resource.get();
 		assertThat( response.getStatus(), is(404) );
 	}
 
@@ -72,7 +57,7 @@ public class ProjectIterationServiceTest extends FliesRestTest {
 		IProjectIterationResource resource = getClientRequestFactory()
 		.createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve("1.0"));
 
-	ClientResponse<ProjectIterationRes> response = resource.get();
+	ClientResponse<ProjectIteration> response = resource.get();
 		assertThat( response.getStatus(), lessThan(400) );
 	}
 
@@ -96,10 +81,10 @@ public class ProjectIterationServiceTest extends FliesRestTest {
 		
 		assertThat( location, endsWith("/iterations/i/"+SLUG));
 
-		ClientResponse<ProjectIterationRes> response1 = resource.get();
+		ClientResponse<ProjectIteration> response1 = resource.get();
 		assertThat(response1.getStatus(), is(Status.OK.getStatusCode()));
 
-		ProjectIterationRes iterationRes = response1.getEntity();
+		ProjectIteration iterationRes = response1.getEntity();
 		
 		assertThat(iterationRes, notNullValue());
 		assertThat(iterationRes.getName(), is(NAME)); 
@@ -166,10 +151,10 @@ public class ProjectIterationServiceTest extends FliesRestTest {
 		Response response = resource.put(iteration);
         assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
 
-        ClientResponse<ProjectIterationRes> gotResponse = resource.get();
+        ClientResponse<ProjectIteration> gotResponse = resource.get();
         assertThat(gotResponse.getStatus(), is(Status.OK.getStatusCode()));
         
-        ProjectIterationRes entity = gotResponse.getEntity();
+        ProjectIteration entity = gotResponse.getEntity();
         
 		assertThat( entity.getName(), is(NAME_UPDATED));
 		assertThat( entity.getDescription(), is(DESC_UPDATED));

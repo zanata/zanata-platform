@@ -1,9 +1,15 @@
 package org.fedorahosted.flies.rest.dto;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonPropertyOrder;
+import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 import org.fedorahosted.flies.common.Namespaces;
 
 /**
@@ -15,7 +21,9 @@ import org.fedorahosted.flies.common.Namespaces;
  */
 @XmlType(name="projectInlineType", namespace=Namespaces.FLIES, propOrder={"links"})
 @XmlRootElement(name="project", namespace=Namespaces.FLIES)
-public class ProjectInline extends AbstractMiniProject {
+@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonWriteNullProperties(false)
+public class ProjectInline extends AbstractProject  implements HasCollectionSample<ProjectInline> {
 
 	private Links links;
 	
@@ -40,13 +48,31 @@ public class ProjectInline extends AbstractMiniProject {
 	 */
 	@XmlElement(name="link", namespace=Namespaces.FLIES, required=false)
 	public Links getLinks() {
-		if(links == null)
+		return links;
+	}
+
+	public void setLinks(Links links) {
+		this.links = links;
+	}
+	
+	public Links getLinks(boolean createIfNull) {
+		if(createIfNull && links == null)
 			links = new Links();
 		return links;
 	}
-	
-	
-	
-	
-	
+
+	@Override
+	public ProjectInline createSample() {
+		ProjectInline entity = new ProjectInline("sample-project", "My Project", ProjectType.IterationProject);
+		// TODO add links
+		return entity;
+	}	
+
+	@Override
+	public Collection<ProjectInline> createSamples() {
+		Collection<ProjectInline> entities = new ArrayList<ProjectInline>();
+		entities.add(createSample());
+		entities.add(new ProjectInline("my-other-project", "My other Project", ProjectType.IterationProject));
+		return entities;
+	}
 }

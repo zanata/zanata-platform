@@ -54,7 +54,7 @@ public class ProjectsService {
 		for (HProject hProject : projects) {
 			ProjectInline project = new ProjectInline(hProject.getSlug(), hProject
 					.getName(), ProjectType.IterationProject);
-			project.getLinks().add( 
+			project.getLinks(true).add( 
 					new Link(URI.create("p/"+hProject.getSlug()), "self", 
 							MediaTypes.createFormatSpecificType(
 									MediaTypes.APPLICATION_FLIES_PROJECT,

@@ -12,7 +12,6 @@ import javax.ws.rs.core.Response;
 
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Project;
-import org.fedorahosted.flies.rest.dto.ProjectRes;
 import org.jboss.resteasy.client.ClientResponse;
 
 //@Path("/projects/p/{projectSlug}")
@@ -20,7 +19,7 @@ public interface IProjectResource {
 	
 	@GET
 	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON })
-	public ClientResponse<ProjectRes> get();
+	public ClientResponse<Project> get();
 
 	@PUT
 	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON })

@@ -15,7 +15,7 @@ import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.hibernate.search.ContentStateBridge;
 import org.fedorahosted.flies.hibernate.search.LocaleIdBridge;
 import org.fedorahosted.flies.model.type.LocaleIdType;
-import org.fedorahosted.flies.rest.dto.TextFlowTarget;
+import org.fedorahosted.flies.rest.dto.deprecated.TextFlowTarget;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;

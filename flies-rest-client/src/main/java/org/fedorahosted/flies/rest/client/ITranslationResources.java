@@ -17,11 +17,11 @@ import javax.ws.rs.core.MediaType;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.rest.LanguageQualifier;
 import org.fedorahosted.flies.rest.StringSet;
-import org.fedorahosted.flies.rest.dto.v1.ResourceMeta;
-import org.fedorahosted.flies.rest.dto.v1.ResourcesList;
-import org.fedorahosted.flies.rest.dto.v1.SourceResource;
-import org.fedorahosted.flies.rest.dto.v1.TargetResource;
-import org.fedorahosted.flies.rest.dto.v1.TranslationResource;
+import org.fedorahosted.flies.rest.dto.ResourceMeta;
+import org.fedorahosted.flies.rest.dto.ResourcesList;
+import org.fedorahosted.flies.rest.dto.SourceResource;
+import org.fedorahosted.flies.rest.dto.TargetResource;
+import org.fedorahosted.flies.rest.dto.TranslationResource;
 import org.jboss.resteasy.client.ClientResponse;
 
 

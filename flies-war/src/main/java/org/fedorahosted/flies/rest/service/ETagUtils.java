@@ -12,7 +12,7 @@ import org.fedorahosted.flies.model.po.HPoHeader;
 import org.fedorahosted.flies.rest.LanguageQualifier;
 import org.fedorahosted.flies.rest.NoSuchEntityException;
 import org.fedorahosted.flies.rest.StringSet;
-import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
+import org.fedorahosted.flies.rest.dto.extensions.PoHeader;
 import org.fedorahosted.flies.util.HashUtil;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;

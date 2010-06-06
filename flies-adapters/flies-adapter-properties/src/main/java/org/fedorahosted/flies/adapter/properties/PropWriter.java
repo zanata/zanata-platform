@@ -10,11 +10,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.IExtensible;
-import org.fedorahosted.flies.rest.dto.TextFlow;
-import org.fedorahosted.flies.rest.dto.TextFlowTarget;
-import org.fedorahosted.flies.rest.dto.TextFlowTargets;
+import org.fedorahosted.flies.rest.dto.deprecated.Document;
+import org.fedorahosted.flies.rest.dto.deprecated.IExtensible;
+import org.fedorahosted.flies.rest.dto.deprecated.TextFlow;
+import org.fedorahosted.flies.rest.dto.deprecated.TextFlowTarget;
+import org.fedorahosted.flies.rest.dto.deprecated.TextFlowTargets;
 import org.fedorahosted.openprops.Properties;
 
 public class PropWriter {

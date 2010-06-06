@@ -29,11 +29,9 @@ import org.fedorahosted.flies.model.HProject;
 import org.fedorahosted.flies.model.HProjectIteration;
 import org.fedorahosted.flies.model.validator.SlugValidator;
 import org.fedorahosted.flies.rest.MediaTypes;
-import org.fedorahosted.flies.rest.dto.AbstractProject;
 import org.fedorahosted.flies.rest.dto.Link;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.ProjectIterationInline;
-import org.fedorahosted.flies.rest.dto.ProjectRes;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -118,7 +116,7 @@ public class ProjectService {
 
 		HProject hProject = projectDAO.getBySlug(projectSlug);
 
-		ProjectRes project = toResource(hProject, accept);
+		Project project = toResource(hProject, accept);
 		return Response.ok(project).tag(etag).build();
 	}
 
@@ -181,14 +179,14 @@ public class ProjectService {
 		to.setDescription(from.getDescription());
 	}
 
-	public static void transfer(HProject from, AbstractProject to) {
+	public static void transfer(HProject from, Project to) {
 		to.setId(from.getSlug());
 		to.setName(from.getName());
 		to.setDescription(from.getDescription());
 	}
 
-	public static ProjectRes toResource(HProject hProject, MediaType mediaType) {
-		ProjectRes project = new ProjectRes();
+	public static Project toResource(HProject hProject, MediaType mediaType) {
+		Project project = new Project();
 		transfer(hProject, project);
 		if (hProject instanceof HIterationProject) {
 			HIterationProject itProject = (HIterationProject) hProject;
@@ -204,7 +202,7 @@ public class ProjectService {
 										.createFormatSpecificType(
 												MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION,
 												mediaType)));
-				project.getIterations().add(iteration);
+				project.getIterations(true).add(iteration);
 			}
 		}
 

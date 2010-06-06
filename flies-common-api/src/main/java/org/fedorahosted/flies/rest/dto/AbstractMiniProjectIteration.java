@@ -6,12 +6,14 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.fedorahosted.flies.common.Namespaces;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 
 
 @XmlType(name="abstractMiniProjectIterationType", namespace=Namespaces.FLIES, propOrder={"name"})
+@JsonPropertyOrder({"id", "name"})
 public abstract class AbstractMiniProjectIteration implements Serializable {
 
 	private String id;
@@ -48,4 +50,9 @@ public abstract class AbstractMiniProjectIteration implements Serializable {
 		this.name = name;
 	}
 
+	protected void createSample(AbstractMiniProjectIteration entity) {
+		entity.setId("sample-iteration");
+		entity.setName("Sample Iteration");
+	}
+	
 }

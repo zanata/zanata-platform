@@ -12,9 +12,9 @@ import java.util.Map;
 
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.TextFlow;
-import org.fedorahosted.flies.rest.dto.TextFlowTarget;
+import org.fedorahosted.flies.rest.dto.deprecated.Document;
+import org.fedorahosted.flies.rest.dto.deprecated.TextFlow;
+import org.fedorahosted.flies.rest.dto.deprecated.TextFlowTarget;
 import org.fedorahosted.openprops.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

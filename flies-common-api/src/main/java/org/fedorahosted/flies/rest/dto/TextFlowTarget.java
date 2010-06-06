@@ -1,92 +1,32 @@
 package org.fedorahosted.flies.rest.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.fedorahosted.flies.common.ContentState;
-import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.Namespaces;
 
+@XmlType(name="textFlowTargetType", namespace=Namespaces.FLIES, propOrder={"translator", "content", "extensions"})
+@XmlRootElement(name="target", namespace=Namespaces.FLIES)
+public class TextFlowTarget {
 
-@XmlType(name="textFlowTargetType", namespace=Namespaces.FLIES, propOrder={"content", "extensions"})
-@XmlRootElement(name="text-flow-target", namespace=Namespaces.FLIES)
-@XmlSeeAlso({
-	SimpleComment.class
-})
-public class TextFlowTarget implements IExtensible{
-	
-	private LocaleId lang;
-	private List<Object> extensions;
-	
-	private String id;
-	private Integer resourceRevision;
 	private ContentState state = ContentState.New;
+	private Person translator;
 	private String content;
+	private ExtensionSet extensions;
 	
-	public TextFlowTarget() {
-		// TODO Auto-generated constructor stub
-	}
 	
-	public TextFlowTarget(TextFlow resource) {
-		this.id = resource.getId();
-		this.resourceRevision = resource.getRevision();
-	}
-
-	public TextFlowTarget(TextFlow resource, LocaleId lang) {
-		this(resource);
-		this.lang = lang;
-	}
-
-	public boolean hasComment() {
-		return getExtension(SimpleComment.class) != null;
+	@XmlElement(name="translator", namespace=Namespaces.FLIES, required=true)
+	public Person getTranslator() {
+		return translator;
 	}
 	
-	/**
-	 * This represents a comment entered by a translator, whether in flies
-	 * or imported from a PO/Properties file.
-	 */
-	public SimpleComment getComment() {
-		return getExtension(SimpleComment.class);
-	}
-	
-	public SimpleComment getOrAddComment(){
-		return getOrAddExtension(SimpleComment.class);
-	}
-	
-	@XmlJavaTypeAdapter(type=LocaleId.class, value=LocaleIdAdapter.class)
-	@XmlAttribute(name="lang", namespace=Namespaces.XML, required=true)
-	public LocaleId getLang() {
-		return lang;
-	}
-	
-	public void setLang(LocaleId lang) {
-		this.lang = lang;
-	}
-	
-	@XmlAttribute(name="id", required=true)
-	public String getId() {
-		return id;
-	}
-	
-	public void setId(String id) {
-		this.id = id;
-	}
-	
-	@XmlAttribute(name="resourceRevision", required=false)
-	public Integer getResourceRevision() {
-		return resourceRevision;
-	}
-	
-	public void setResourceRevision(Integer resourceRevision) {
-		this.resourceRevision = resourceRevision;
+	public void setTranslator(Person translator) {
+		this.translator = translator;
 	}
 	
 	@XmlAttribute(name="state", required=true)
@@ -97,7 +37,7 @@ public class TextFlowTarget implements IExtensible{
 	public void setState(ContentState state) {
 		this.state = state;
 	}
-	
+
 	@XmlElement(name="content",namespace=Namespaces.FLIES, required=true)
 	public String getContent() {
 		if(content == null)
@@ -109,41 +49,13 @@ public class TextFlowTarget implements IExtensible{
 		this.content = content;
 	}
 	
+	@XmlElementWrapper(name="extensions", namespace=Namespaces.FLIES, required=false, nillable=false)
 	@XmlAnyElement(lax=true)
-	public List<Object> getExtensions() {
+	public ExtensionSet getExtensions() {
 		if(extensions == null)
-			extensions = new ArrayList<Object>();
+			extensions = new ExtensionSet();
 		return extensions;
 	}
 	
-	@Override
-	public <T> T getExtension(Class<T> clz){
-		if(extensions == null)
-			return null;
-		for(Object o : extensions){
-			if(clz.isInstance(o))
-				return clz.cast(o);
-		}
-		return null;
-	}
-
-	@Override
-	public <T> T getOrAddExtension(Class<T> clz) {
-		T ext = getExtension(clz);
-		if(ext == null){
-			try {
-				ext = clz.newInstance();
-				getExtensions().add(ext);
-			} catch (Throwable e) {
-				throw new RuntimeException("unable to create instance", e);
-			}
-		}
-		return ext;
-	}
-
-	@Override
-	public String toString() {
-		return Utility.toXML(this);
-	}
-
+	
 }

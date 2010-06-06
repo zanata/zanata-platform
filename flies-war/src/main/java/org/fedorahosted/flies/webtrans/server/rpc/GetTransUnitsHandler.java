@@ -13,7 +13,7 @@ import org.fedorahosted.flies.common.EditState;
 import org.fedorahosted.flies.model.HDocument;
 import org.fedorahosted.flies.model.HTextFlow;
 import org.fedorahosted.flies.model.HTextFlowTarget;
-import org.fedorahosted.flies.rest.dto.TextFlowTarget;
+import org.fedorahosted.flies.rest.dto.deprecated.TextFlowTarget;
 import org.fedorahosted.flies.security.FliesIdentity;
 import org.fedorahosted.flies.webtrans.server.ActionHandlerFor;
 import org.fedorahosted.flies.webtrans.server.TranslationWorkspace;

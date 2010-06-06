@@ -8,8 +8,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.rest.dto.Document;
-import org.fedorahosted.flies.rest.dto.TextFlowTargets;
+import org.fedorahosted.flies.rest.dto.deprecated.Document;
+import org.fedorahosted.flies.rest.dto.deprecated.TextFlowTargets;
 import org.fedorahosted.flies.rest.dto.po.PoHeader;
 import org.fedorahosted.flies.rest.dto.po.PotEntryData;
 import org.junit.Before;

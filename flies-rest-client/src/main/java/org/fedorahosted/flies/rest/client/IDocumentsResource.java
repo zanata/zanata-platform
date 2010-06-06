@@ -8,7 +8,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.fedorahosted.flies.rest.MediaTypes;
-import org.fedorahosted.flies.rest.dto.Documents;
+import org.fedorahosted.flies.rest.dto.deprecated.Documents;
 import org.jboss.resteasy.client.ClientResponse;
 
 public interface IDocumentsResource {

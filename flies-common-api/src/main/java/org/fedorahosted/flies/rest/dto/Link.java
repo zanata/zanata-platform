@@ -16,7 +16,7 @@ public class Link {
 	private String rel;
 	private String type;
 	
-	private Link() {
+	protected Link() {
 	}
 	
 	public Link(URI href) {
@@ -59,12 +59,5 @@ public class Link {
 	public void setType(String type) {
 		this.type = type;
 	}
-	
-	@Override
-	public String toString() {
-		return Utility.toXML(this);
-	}
-	
-	
 	
 }

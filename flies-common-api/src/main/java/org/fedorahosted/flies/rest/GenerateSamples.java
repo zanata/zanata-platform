@@ -19,12 +19,14 @@ import org.codehaus.jackson.map.SerializationConfig.Feature;
 import org.fedorahosted.flies.common.Namespaces;
 import org.fedorahosted.flies.rest.MediaTypes.Format;
 import org.fedorahosted.flies.rest.dto.HasMediaType;
-import org.fedorahosted.flies.rest.dto.ProjectRes;
+import org.fedorahosted.flies.rest.dto.Person;
+import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.HasSample;
-import org.fedorahosted.flies.rest.dto.v1.Person;
-import org.fedorahosted.flies.rest.dto.v1.ResourcesList;
-import org.fedorahosted.flies.rest.dto.v1.TranslationResource;
-import org.fedorahosted.flies.rest.dto.v1.ext.PoHeader;
+import org.fedorahosted.flies.rest.dto.ProjectInlineList;
+import org.fedorahosted.flies.rest.dto.ProjectIteration;
+import org.fedorahosted.flies.rest.dto.ResourcesList;
+import org.fedorahosted.flies.rest.dto.TranslationResource;
+import org.fedorahosted.flies.rest.dto.extensions.PoHeader;
 import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
 
@@ -52,33 +54,65 @@ public class GenerateSamples {
 	public void run() throws ValidationException, JsonGenerationException,
 			JsonMappingException, IOException {
 
-		// projects service
-		write(Person.class);
-		write(ResourcesList.class);
-		write(ProjectRes.class);
+		// Projects Resource
+		h1("Project Resource");
+		write("`GET /projects/`", ProjectInlineList.class);
+		write("`PUT /projects/p/{id}`", Project.class);
 		
-		write(TranslationResource.class);
+		h1("Project Iteration Resource");
+		// ProjectIteration Resource
+		write("`GET /projects/{id}/iterations/{id}`", ProjectIteration.class);
+		
+		// Translation Resource
+		h1("Translation Resource");
+		write("`GET ./`", ResourcesList.class);
+		write("`GET ./r/{res}`", TranslationResource.class);
 
+		h1("People Resource");
+
+		write("Person inline:", Person.class);
+
+		
 	}
 
-	private <T extends HasSample<T>> void write(Class<T> clazz) throws JsonGenerationException,
+	private void h1(String message) {
+		out.println("= " + message + " =");
+	}
+	private void h2(String message) {
+		out.println("== " + message + " ==");
+	}
+	private void h3(String message) {
+		out.println("=== " + message + " ===");
+	}
+	
+	private <T extends HasSample<T>> void write(String heading, Class<T> clazz) throws JsonGenerationException,
 			JsonMappingException, IOException, ValidationException {
 		
+		h2(heading);
 		T obj = create(clazz);
 		validateEntity((Serializable)obj);
-		out.println(obj.getClass().getCanonicalName());
+		out.println("*Specified by class:* `"+ obj.getClass().getCanonicalName() + "`");
 		out.println();
-		out.print("json:");
+		h3("Json Example");
 		if(obj instanceof HasMediaType) {
-			out.print(" ");
+			out.print("*Media Type:* `");
 			out.print(((HasMediaType)obj).getMediaType(Format.JSON));
+			out.print("`");
 		}
 		out.println();
+		out.println("{{{");
 		mapper.writeValue(noCloseOut, obj);
 		out.println();
+		out.println("}}}");
 		out.println();
-		out.println("xml:");
+		h3("XML example");
+		if(obj instanceof HasMediaType) {
+			out.print("*Media Type:* `");
+			out.print(((HasMediaType)obj).getMediaType(Format.XML));
+			out.print("`");
+		}
 		out.println();
+		out.println("{{{");
 		try {
 			JAXBContext context = JAXBContext.newInstance(obj.getClass());
 			Marshaller m = context.createMarshaller();
@@ -95,6 +129,7 @@ public class GenerateSamples {
 		} catch (JAXBException e) {
 			throw new RuntimeException(e);
 		}
+		out.println("}}}");
 		out.println();
 	}
 

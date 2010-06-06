@@ -14,7 +14,7 @@ import javax.xml.bind.Unmarshaller;
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.rest.dto.Document;
+import org.fedorahosted.flies.rest.dto.deprecated.Document;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;

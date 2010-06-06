@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-import org.fedorahosted.flies.rest.dto.SimpleComment;
+import org.fedorahosted.flies.rest.dto.deprecated.SimpleComment;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.NotNull;
 
