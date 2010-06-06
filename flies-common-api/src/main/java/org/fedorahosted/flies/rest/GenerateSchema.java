@@ -30,8 +30,8 @@ public class GenerateSchema {
 		Marshaller m = context.createMarshaller();
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		m.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-		m.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper",
-				GenerateSamples.namespacePrefixMapper);
+//		m.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper",
+//				GenerateSamples.namespacePrefixMapper);
 	
 		SchemaOutputResolver schemaOutputResolver = new SchemaOutputResolver() {
 
