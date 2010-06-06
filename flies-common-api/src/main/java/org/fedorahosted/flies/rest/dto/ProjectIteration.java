@@ -1,5 +1,10 @@
 package org.fedorahosted.flies.rest.dto;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -11,30 +16,52 @@ import org.fedorahosted.flies.common.Namespaces;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.MediaTypes.Format;
 import org.hibernate.validator.Length;
+import org.hibernate.validator.NotEmpty;
 
 
-@XmlType(name="projectIterationType", namespace=Namespaces.FLIES, propOrder={"description","links"})
+@XmlType(name="projectIterationType", namespace=Namespaces.FLIES, propOrder={"name", "description","links"})
 @XmlRootElement(name="project-iteration", namespace=Namespaces.FLIES)
 @JsonIgnoreProperties(ignoreUnknown=true)
 @JsonWriteNullProperties(false)
-@JsonPropertyOrder({"description", "links"})
-public class ProjectIteration extends AbstractMiniProjectIteration implements HasSample<ProjectIteration>, HasMediaType {
+@JsonPropertyOrder({"id", "name", "description", "links"})
+public class ProjectIteration implements Serializable, HasCollectionSample<ProjectIteration>, HasMediaType {
 
+	private String id;
+	private String name;
 	private String description;
 	private Links links;
 	
 	public ProjectIteration() {
 	}
 	
-	public ProjectIteration(ProjectIteration other) {
-		super(other);
+	public ProjectIteration(String id, String name) {
+		this.id = id;
+		this.name = name;
 	}
 
 	public ProjectIteration(String id, String name, String description) {
-		super(id, name);
+		this(id, name);
 		this.description = description;
 	}
 
+	@XmlAttribute(name="id", required=true)
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	@NotEmpty
+	@Length(max = 80)
+	@XmlElement(name="name", namespace=Namespaces.FLIES, required=true)
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 	@Length(max = 80)
 	@XmlElement(name="description", namespace=Namespaces.FLIES, required=false)
 	public String getDescription() {
@@ -72,6 +99,15 @@ public class ProjectIteration extends AbstractMiniProjectIteration implements Ha
 	public ProjectIteration createSample() {
 		ProjectIteration entity = new ProjectIteration("sample-iteration", "Sample Iteration", "Description of Sample Iteration");
 		return entity;
+	}
+
+	@Override
+	public Collection<ProjectIteration> createSamples() {
+		Collection<ProjectIteration> entities = new ArrayList<ProjectIteration>();
+		entities.add(createSample());
+		ProjectIteration entity = new ProjectIteration("another-iteration", "Another Iteration", "Description of Another Iteration");
+		entities.add(entity);
+		return entities;
 	}
 	
 	@Override

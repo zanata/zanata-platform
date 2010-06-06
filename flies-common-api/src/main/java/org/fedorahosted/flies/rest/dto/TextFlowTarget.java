@@ -3,6 +3,7 @@ package org.fedorahosted.flies.rest.dto;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -11,7 +12,7 @@ import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.Namespaces;
 
 @XmlType(name="textFlowTargetType", namespace=Namespaces.FLIES, propOrder={"translator", "content", "extensions"})
-@XmlRootElement(name="target", namespace=Namespaces.FLIES)
+@XmlRootElement(name="text-flow-target", namespace=Namespaces.FLIES)
 public class TextFlowTarget {
 
 	private ContentState state = ContentState.New;
@@ -20,7 +21,8 @@ public class TextFlowTarget {
 	private ExtensionSet extensions;
 	
 	
-	@XmlElement(name="translator", namespace=Namespaces.FLIES, required=true)
+//	@XmlElement(name="translator", namespace=Namespaces.FLIES, required=true)
+	@XmlElementRef
 	public Person getTranslator() {
 		return translator;
 	}

@@ -28,7 +28,6 @@ import org.fedorahosted.flies.model.HProject;
 import org.fedorahosted.flies.model.HProjectIteration;
 import org.fedorahosted.flies.model.validator.SlugValidator;
 import org.fedorahosted.flies.rest.MediaTypes;
-import org.fedorahosted.flies.rest.dto.AbstractMiniProjectIteration;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
@@ -191,13 +190,9 @@ public class ProjectIterationService {
 		
 	}
 	
-	public static void transfer(HProjectIteration from, AbstractMiniProjectIteration to) {
+	public static void transfer(HProjectIteration from, ProjectIteration to) {
 		to.setId(from.getSlug());
 		to.setName(from.getName());
-	}
-	
-	public static void transfer(HProjectIteration from, ProjectIteration to) {
-		transfer(from, (AbstractMiniProjectIteration)to);
 		to.setDescription(from.getDescription());
 	}
 

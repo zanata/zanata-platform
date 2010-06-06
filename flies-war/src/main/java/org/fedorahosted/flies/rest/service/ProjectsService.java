@@ -15,7 +15,7 @@ import org.fedorahosted.flies.common.Namespaces;
 import org.fedorahosted.flies.model.HProject;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Link;
-import org.fedorahosted.flies.rest.dto.ProjectInline;
+import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.ProjectType;
 import org.hibernate.Session;
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
@@ -45,14 +45,14 @@ public class ProjectsService {
 		MediaType.APPLICATION_XML,
 		MediaType.APPLICATION_JSON})
 	@Wrapped(element = "projects", namespace = Namespaces.FLIES)
-	public List<ProjectInline> get() {
+	public List<Project> get() {
 		List<HProject> projects = session.createQuery("from HProject p").list();
 
-		List<ProjectInline> projectRefs = new ArrayList<ProjectInline>(projects
+		List<Project> projectRefs = new ArrayList<Project>(projects
 				.size());
 
 		for (HProject hProject : projects) {
-			ProjectInline project = new ProjectInline(hProject.getSlug(), hProject
+			Project project = new Project(hProject.getSlug(), hProject
 					.getName(), ProjectType.IterationProject);
 			project.getLinks(true).add( 
 					new Link(URI.create("p/"+hProject.getSlug()), "self", 

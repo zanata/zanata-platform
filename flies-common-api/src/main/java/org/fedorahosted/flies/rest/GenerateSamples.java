@@ -22,7 +22,7 @@ import org.fedorahosted.flies.rest.dto.HasMediaType;
 import org.fedorahosted.flies.rest.dto.Person;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.HasSample;
-import org.fedorahosted.flies.rest.dto.ProjectInlineList;
+import org.fedorahosted.flies.rest.dto.ProjectList;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.fedorahosted.flies.rest.dto.ResourcesList;
 import org.fedorahosted.flies.rest.dto.TranslationResource;
@@ -56,7 +56,7 @@ public class GenerateSamples {
 
 		// Projects Resource
 		h1("Project Resource");
-		write("`GET /projects/`", ProjectInlineList.class);
+		write("`GET /projects/`", ProjectList.class);
 		write("`PUT /projects/p/{id}`", Project.class);
 		
 		h1("Project Iteration Resource");
@@ -70,7 +70,7 @@ public class GenerateSamples {
 
 		h1("People Resource");
 
-		write("Person inline:", Person.class);
+		//write("Person inline:", PersonInline.class);
 
 		
 	}
@@ -133,19 +133,7 @@ public class GenerateSamples {
 		out.println();
 	}
 
-	private final SchemaOutputResolver schemaOutputResolver = new SchemaOutputResolver() {
-
-		@Override
-		public Result createOutput(String namespaceUri, String suggestedFileName)
-				throws IOException {
-			StreamResult result = new StreamResult(noCloseOut);
-			result.setSystemId("stdout");
-			return result;
-
-		}
-	};
-
-	private final NamespacePrefixMapper namespacePrefixMapper = new NamespacePrefixMapper() {
+	static final NamespacePrefixMapper namespacePrefixMapper = new NamespacePrefixMapper() {
 
 		@Override
 		public String getPreferredPrefix(String namespaceUri,

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -19,25 +20,25 @@ import org.fedorahosted.flies.common.Namespaces;
  * @author asgeirf
  *
  */
-@XmlType(name="projectInlineListType", namespace=Namespaces.FLIES, propOrder={"projects"})
+@XmlType(name="projectListType", namespace=Namespaces.FLIES, propOrder={"projects"})
 @XmlRootElement(name="projects", namespace=Namespaces.FLIES)
-public class ProjectInlineList implements Serializable, HasSample<ProjectInlineList> {
+public class ProjectList implements Serializable, HasSample<ProjectList> {
 	
-	private List<ProjectInline> projects;
+	private List<Project> projects;
 	
-	@XmlElement(name="project", namespace=Namespaces.FLIES, required=true)
+	@XmlElementRef
 	@JsonValue
-	public List<ProjectInline> getProjects() {
+	public List<Project> getProjects() {
 		if(projects == null) {
-			projects = new ArrayList<ProjectInline>();
+			projects = new ArrayList<Project>();
 		}
 		return projects;
 	}
 	
 	@Override
-	public ProjectInlineList createSample() {
-		ProjectInlineList entity = new ProjectInlineList();
-		entity.getProjects().addAll(new ProjectInline().createSamples());
+	public ProjectList createSample() {
+		ProjectList entity = new ProjectList();
+		entity.getProjects().addAll(new Project().createSamples());
 		return entity;
 	}
 }

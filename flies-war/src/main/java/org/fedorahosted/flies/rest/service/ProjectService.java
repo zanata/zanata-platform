@@ -31,7 +31,7 @@ import org.fedorahosted.flies.model.validator.SlugValidator;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Link;
 import org.fedorahosted.flies.rest.dto.Project;
-import org.fedorahosted.flies.rest.dto.ProjectIterationInline;
+import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -191,10 +191,10 @@ public class ProjectService {
 		if (hProject instanceof HIterationProject) {
 			HIterationProject itProject = (HIterationProject) hProject;
 			for (HProjectIteration pIt : itProject.getProjectIterations()) {
-				ProjectIterationInline iteration = new ProjectIterationInline();
+				ProjectIteration iteration = new ProjectIteration();
 				ProjectIterationService.transfer(pIt, iteration);
 				iteration
-						.getLinks()
+						.getLinks(true)
 						.add(new Link(
 								URI.create("iterations/i/" + pIt.getSlug()),
 								"self",

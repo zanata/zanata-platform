@@ -11,7 +11,7 @@ import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.flies.FliesDBUnitSeamTest;
 import org.fedorahosted.flies.rest.client.ApiKeyHeaderDecorator;
 import org.fedorahosted.flies.rest.client.IProjectsResource;
-import org.fedorahosted.flies.rest.dto.ProjectInline;
+import org.fedorahosted.flies.rest.dto.Project;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
@@ -53,7 +53,7 @@ public class ProjectsServiceSeamTest extends FliesDBUnitSeamTest {
 
 	@Test(enabled=false)
 	public void retrieveListofProjects() throws Exception {
-		ClientResponse<List<ProjectInline>> response = projectService.get();
+		ClientResponse<List<Project>> response = projectService.get();
 
 		assertThat(response.getStatus(), is(200));
 		assertThat(response.getEntity(), notNullValue());

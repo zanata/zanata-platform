@@ -7,8 +7,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.fedorahosted.flies.common.Namespaces;
 import org.hibernate.validator.NotEmpty;
 
-@XmlType(name="textFlowTargetWithIdType", namespace=Namespaces.FLIES, propOrder={})
-@XmlRootElement(name="target", namespace=Namespaces.FLIES)
+@XmlType(name="textFlowTargetWithIdType", namespace=Namespaces.FLIES)
 public class TextFlowTargetWithId extends TextFlowTarget {
 	
 	private String resId;
