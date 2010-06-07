@@ -43,8 +43,6 @@
     display: block;
     padding: 0 10px;
     background: transparent url(../img/tab_grey.png) no-repeat;
-    -moz-border-radius-topleft: 10px;
-    -moz-border-radius-topright: 10px;
 }
 .ui-tabs-nav a {
     margin: 1px 0 0; /* position: relative makes opacity fail for disabled tab in IE */
@@ -66,6 +64,8 @@
     z-index: 2;
     margin-top: 0;
     color: #525252 !important;
+    background:url(../img/menu_bg.png) repeat-x left top;
+    height:33px;
 }
 .ui-tabs-nav a span {
     width: 64px; /* IE 6 treats width as min-width */
@@ -202,4 +202,13 @@
 
 .tabs-issues-private {
 	width: 962px !important;
+	
 }
+
+/* Stylesheet from June */
+.menu{ background:url(../img/menu_bg.png) repeat-x left top; height:33px;}
+.menu ul li{ display:inline; list-style:none}
+.menu ul{ margin-left:10px; height:33px; line-height:33px;}
+.menu ul li a:link,.menu ul li a:visited{ display:inline-block; width:150px; text-align:center; color:#fff}
+.menu ul li a:hover{ color:#F60; text-decoration:none}
+.menu ul li a:link.selected,.menu ul li a:visited.selected{ background:url(../img/menu_active_bg.png) repeat-x left top; color:#003366; font-weight:bold}
