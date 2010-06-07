@@ -46,15 +46,12 @@ public class FliesInit {
 	@Logger
 	static Log log;
 
-	private String adminContact;
 	private boolean debug;
 	private boolean hibernateStatistics = false;
 	private int authenticatedSessionTimeoutMinutes = 0;
 	private String version;
 	private String buildTimestamp;
 	
-	private String serverPath;
-
 	@In(required = false)
 	DBUnitImporter dbunitImporter;
 
@@ -134,28 +131,12 @@ public class FliesInit {
 		log.info("Stopped Flies...");
 	}
 
-	public String getAdminContact() {
-		return adminContact;
-	}
-
-	public void setAdminContact(String adminContact) {
-		this.adminContact = adminContact;
-	}
-
 	public String getBuildTimestamp() {
 		return buildTimestamp;
 	}
 	
 	public String getVersion() {
 		return version;
-	}
-	
-	public String getServerPath() {
-		return serverPath;
-	}
-	
-	public void setServerPath(String serverPath) {
-		this.serverPath = serverPath;
 	}
 	
 	public boolean isDebug() {

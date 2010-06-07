@@ -55,13 +55,11 @@
           <span><img src="#{request.contextPath}/img/silk/wrench.png"/>Administration ↓</span>
         </s:link>
         <ul>
+          <li><s:link view="/admin/server_configuration.xhtml" propagation="none">Server Configuration</s:link></li>
           <li><s:link view="/admin/usermanager.xhtml" propagation="none">Manage Users</s:link></li>
           <li><s:link view="/admin/rolemanager.xhtml" propagation="none">Manage Roles</s:link></li>
           <li><s:link view="/admin/locales.xhtml" propagation="none">Manage Locales</s:link></li>
           <li><s:link view="/admin/search.xhtml" propagation="none">Manage Search</s:link></li>
-          <!-- 
-          <li><s:link view="/admin/dlImport.xhtml" propagation="begin">Import from Damned Lies</s:link></li>
-          -->
         </ul>
       </li>
     </s:fragment>

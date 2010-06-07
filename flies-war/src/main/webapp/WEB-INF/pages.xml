@@ -11,6 +11,17 @@
     </navigation>
   </page>
 
+  <page view-id="/admin/*">
+    <restrict>#{s:hasRole('admin')}</restrict>
+  </page>
+  
+  <page view-id="/admin/server_configuration.xhtml">
+    <navigation from-action="#{serverConfigurationBean.update}">
+      <redirect view-id="/admin/home.xhtml"/>
+    </navigation>  
+  </page>
+  
+  
   <page view-id="/search.xhtml" action="#{searchaction.search()}">
     <param name="q" value="#{searchaction.searchQuery}" />
     <param name="page" value="#{searchaction.currentPage}" />

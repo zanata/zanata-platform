@@ -17,6 +17,13 @@
     <to last="true" type="temporary-redirect">/robots.txt</to>
   </rule>
 
+  <!-- Admin Rules -->
+
+  <rule>
+    <from casesensitive="true">^/admin/server_configuration</from>
+    <to last="true">/admin/server_configuration.seam</to>
+  </rule>
+
   <!-- Community Rules -->
 
   <rule>
@@ -121,6 +128,10 @@
     <to>/admin/home.seam</to>
   </rule>
 
+  <outbound-rule>
+    <from>^(/.+)?/admin/server_configuration.seam</from>
+    <to>$1/admin/server_configuration</to>
+  </outbound-rule>
 
   <outbound-rule>
     <from>^(/.+)?/community/create_community.seam(.+)?$</from>

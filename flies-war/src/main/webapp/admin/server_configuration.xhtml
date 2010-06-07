@@ -1,0 +1,42 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a4j="http://richfaces.org/a4j"
+    template="../layout/template.xhtml">
+
+    <ui:define name="center_content">
+      <rich:jQuery selector="#tab_admin" query="addClass('ui-tabs-selected')" />
+        <h:form>
+          <rich:panel>
+            <f:facet name="header">Server configuration</f:facet>
+              
+            <s:decorate id="urlField" template="../layout/edit.xhtml">
+              <ui:define name="label">Server URL</ui:define>
+              <h:inputText id="url" value="#{serverConfigurationBean.serverUrl}">
+                <a4j:support event="onblur" reRender="urlField" ajaxSingle="false"/>
+              </h:inputText>
+              <h:graphicImage id="urlHelp" value="../img/msginfo.png" styleClass="input_help">
+                <rich:toolTip>
+                  The base URL for the server, including the application context path
+                  <br/>
+                  <em>E.g. <code>http://example.com/flies/</code></em>
+                </rich:toolTip>
+              </h:graphicImage>
+            </s:decorate>
+                
+            <div style="clear:both"/>
+
+            <div class="actionButtons">
+              <h:commandButton value="Save" action="#{serverConfigurationBean.update}"/>
+              <s:button view="/admin/home.xhtml" value="Cancel" propagation="none"/>
+            </div>
+    
+          </rich:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>
