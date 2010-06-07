@@ -65,4 +65,5 @@ CMakeCache.txt
 /src/test/resources/.*/SignInAdmin.html$
 /src/test/resources/.*/SignOut.html$
 hudson_test_wrap.sh
+.*\.log$
 
