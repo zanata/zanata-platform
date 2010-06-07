@@ -200,8 +200,9 @@ img.errors {
 }
 
 .actionButtons {
+	padding-top: 10px;
 	padding-right: 10px;
-	text-align: right;
+	text-align: left;
 }
 
 .actionButtons select {
