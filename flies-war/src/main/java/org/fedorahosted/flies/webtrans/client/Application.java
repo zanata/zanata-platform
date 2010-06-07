@@ -15,6 +15,7 @@ import org.fedorahosted.flies.webtrans.shared.rpc.ActivateWorkspaceResult;
 import org.fedorahosted.flies.webtrans.shared.rpc.ExitWorkspaceAction;
 import org.fedorahosted.flies.webtrans.shared.rpc.ExitWorkspaceResult;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -32,7 +33,7 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
  */
 public class Application implements EntryPoint{
 
-	public static final String FLIES_BASE_PATH = "/flies/";
+	private static String fliesUrl = null;
 	private static WorkspaceId workspaceId;
 	private static WorkspaceContext workspaceContext;
 	private static Identity identity;
@@ -132,15 +133,15 @@ public class Application implements EntryPoint{
 	}
 
 	public static void redirectToLogin() {
-		redirectToUrl( FLIES_BASE_PATH + "account/sign_in?continue=" + URL.encodeComponent(Window.Location.getHref()));	
+		redirectToUrl( getFliesUrl() + "account/sign_in?continue=" + URL.encodeComponent(Window.Location.getHref()));	
 	}
 	
 	public static void redirectToLogout() {
-		redirectToUrl( FLIES_BASE_PATH + "account/sign_out");	
+		redirectToUrl( getFliesUrl() + "account/sign_out");	
 	}
 
 	public static void redirectToFliesProjectHome(WorkspaceId workspaceId) {
-		redirectToUrl( FLIES_BASE_PATH + "project/view/"+ workspaceId.getProjectIterationId().getProjectSlug());	
+		redirectToUrl( getFliesUrl() + "project/view/"+ workspaceId.getProjectIterationId().getProjectSlug());	
 	}
 	
 	public static native void redirectToUrl(String url)/*-{
@@ -165,6 +166,17 @@ public class Application implements EntryPoint{
 	
 	public static Identity getIdentity() {
 		return identity;
+	}
+	
+	public static String getFliesUrl() {
+		if(fliesUrl == null) {
+			StringBuilder str = new StringBuilder(Window.Location.getProtocol());
+			str.append("//");
+			str.append(Window.Location.getHost());
+			str.append( PathUtils.getContextRoot( Window.Location.getPath() ) );
+			fliesUrl = str.toString();
+		}
+		return fliesUrl;
 	}
 	
 }

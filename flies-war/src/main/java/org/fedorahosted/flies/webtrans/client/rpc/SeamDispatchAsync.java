@@ -23,18 +23,18 @@ public class SeamDispatchAsync implements CachingDispatchAsync {
 
 	private static final DispatchServiceAsync realService;
 	
+	static{
+		realService = GWT.create(DispatchService.class);
+	}
+	
 	protected WorkspaceContext workspaceContext;
 	protected Identity identity;
 	
-	static {
-		realService = GWT.create(DispatchService.class);
-		final String endpointURL = Application.FLIES_BASE_PATH + "seam/resource/gwt";
-
-		((ServiceDefTarget) realService).setServiceEntryPoint(endpointURL);
-	}
-	
 	@Inject
 	public SeamDispatchAsync() {
+		final String endpointURL = Application.getFliesUrl() + "seam/resource/gwt";
+
+		((ServiceDefTarget) realService).setServiceEntryPoint(endpointURL);
 	}
 	
 	public <A extends Action<R>, R extends Result> void execute(final A action,
