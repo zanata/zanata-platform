@@ -1,26 +1,37 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:s="http://jboss.com/products/seam/taglib"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:rich="http://richfaces.org/rich"
-    template="layout/template.xhtml">
-    
-    <ui:define name="breadcrumbs">
-     Search Result
-    </ui:define>
-    
-    <ui:define name="center_content">
-         <rich:tabPanel id="searchPanel" switchType="client" >
-			<rich:tab  id="projects_tab" label="Project (#{projectSearch.resultSize})" styleClass="bold" >
-        			 <ui:include src="/projecttable.xhtml" />
-     		</rich:tab>
-            <rich:tab  id="communities_tab" label="Community (#{communitySearch.resultSize})" styleClass="bold" >
-					<ui:include src="/communitytable.xhtml" />
-        	</rich:tab>
-     	</rich:tabPanel>
-    </ui:define>
-    
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich" template="layout/template.xhtml">
+
+	<ui:define name="center_content">
+		<rich:jQuery selector="#tab_projects"
+			query="addClass('ui-tabs-selected')" />
+		<h1>Found #{projectSearch.resultSize} Projects</h1>
+
+		<rich:dataGrid columns="3" value="#{projectSearch.searchResults}"
+			var="project" columnClasses="grid_col" styleClass="grid_style"
+			rendered="#{not empty projectSearch.searchResults}">
+			<ui:include src="./project/project_view_inline.xhtml" />
+		</rich:dataGrid>
+
+		<div class="tableControl"><s:link view="/search.xhtml"
+			rendered="#{!projectSearch.firstPage()}" value="First Page"
+			id="projectListFirstPage">
+			<f:param name="page" value="0" />
+		</s:link> <s:link view="/search.xhtml" action="#{projectSearch.prevPage}"
+			rendered="#{!projectSearch.firstPage()}" value="Previous Page"
+			id="projectListPreviousPage">
+			<f:param name="page" value="#{projectSearch.currentPage}" />
+		</s:link> <s:link view="/search.xhtml" action="#{projectSearch.nextPage}"
+			rendered="#{!projectSearch.lastPage()}" value="Next Page"
+			id="projectListNextPage">
+			<f:param name="page" value="#{projectSearch.currentPage}" />
+		</s:link></div>
+
+	</ui:define>
+
 </ui:composition>

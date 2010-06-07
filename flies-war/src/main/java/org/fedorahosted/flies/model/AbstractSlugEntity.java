@@ -4,6 +4,7 @@ import javax.persistence.MappedSuperclass;
 
 import org.fedorahosted.flies.model.validator.Slug;
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.search.annotations.Field;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;
 
@@ -15,6 +16,7 @@ public class AbstractSlugEntity extends AbstractFliesEntity{
 	@Length(min = 1, max = 40)
 	@Slug
 	@NotNull
+	@Field
 	public String getSlug() {
 		return slug;
 	}

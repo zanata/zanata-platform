@@ -24,7 +24,7 @@ import org.jboss.seam.annotations.Scope;
 @AutoCreate
 public class ProjectSearch {
     
-    int pageSize = 5;
+    private int pageSize = 5;
     
     boolean hasMore = false;
     
@@ -71,8 +71,26 @@ public class ProjectSearch {
     	this.currentPage = page;
     }
     
-    public void doSearch() {
-        updateResults();
+    public void search() {
+        FullTextQuery query;
+        try {
+            query = searchQuery(searchQuery);
+        } catch (ParseException pe) { 
+            return; 
+        }
+        resultSize = query.getResultSize();
+        List<HProject> items = query
+            .setMaxResults(pageSize + 1)
+            .setFirstResult(pageSize * currentPage)
+            .getResultList();
+        
+        if (items.size() > pageSize) {
+            searchResults = new ArrayList(items.subList(0, pageSize));
+            hasMore = true;
+        } else {
+            searchResults = items;
+            hasMore = false;
+        }
     }
     
     public void nextPage() {
@@ -95,32 +113,9 @@ public class ProjectSearch {
         return ( searchResults != null ) && ( currentPage == 0 );
     }
 
-    private void updateResults() {
-        FullTextQuery query;
-        try {
-            query = searchQuery(searchQuery);
-        } catch (ParseException pe) { 
-            return; 
-        }
-        resultSize = query.getResultSize();
-        List<HProject> items = query
-            .setMaxResults(pageSize + 1)
-            .setFirstResult(pageSize * currentPage)
-            .getResultList();
-        
-        if (items.size() > pageSize) {
-            searchResults = new ArrayList(items.subList(0, pageSize));
-            hasMore = true;
-        } else {
-            searchResults = items;
-            hasMore = false;
-        }
-
-    }
-
     private FullTextQuery searchQuery(String searchQuery) throws ParseException
     {
-        String[] projectFields = {"name", "description"};
+        String[] projectFields = {"slug", "name", "description"};
         QueryParser parser = new MultiFieldQueryParser(projectFields, new StandardAnalyzer());
         parser.setAllowLeadingWildcard(true);
         Query luceneQuery = parser.parse(searchQuery);
