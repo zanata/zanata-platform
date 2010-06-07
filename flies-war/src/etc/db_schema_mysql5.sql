@@ -54,6 +54,17 @@
         primary key (roleId, memberOf)
     ) ENGINE=InnoDB;
 
+    create table HApplicationConfiguration (
+        id bigint not null auto_increment,
+        creationDate datetime not null,
+        lastChanged datetime not null,
+        versionNum integer not null,
+        key varchar(255) binary not null,
+        value longtext not null,
+        primary key (id),
+        unique (key)
+    ) ENGINE=InnoDB;
+
     create table HCommunity (
         id bigint not null auto_increment,
         creationDate datetime not null,
