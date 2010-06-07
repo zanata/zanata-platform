@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="com.google.gdt.eclipse.suite.webapp">
 <stringAttribute key="com.google.gdt.eclipse.core.SERVER_PORT" value="48880"/>
-<stringAttribute key="com.google.gdt.eclipse.suiteMainTypeProcessor.PREVIOUSLY_SET_MAIN_TYPE_NAME" value="com.google.gwt.dev.DevMode"/>
+<stringAttribute key="com.google.gdt.eclipse.suiteMainTypeProcessor.PREVIOUSLY_SET_MAIN_TYPE_NAME" value="com.google.gwt.dev.GWTShell"/>
 <booleanAttribute key="com.google.gdt.eclipse.suiteWarArgumentProcessor.IS_WAR_FROM_PROJECT_PROPERTIES" value="true"/>
 <listAttribute key="com.google.gwt.eclipse.core.ENTRY_POINT_MODULES">
 <listEntry value="org.fedorahosted.flies.webtrans.ApplicationDummy"/>
@@ -21,7 +21,8 @@
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="com.google.gwt.eclipse.core.moduleClasspathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.google.gwt.dev.DevMode"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-war src/main/webapp -remoteUI &quot;${gwt_remote_ui_server_port}:${unique_id}&quot; -logLevel INFO -port 48880 -startupUrl org.fedorahosted.flies.webtrans.ApplicationDummy/ApplicationDummy.html?project=sample-project&amp;iteration=1.0&amp;localeId=de org.fedorahosted.flies.webtrans.ApplicationDummy"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-war src/main/webapp -remoteUI &quot;${gwt_remote_ui_server_port}:${unique_id}&quot; -startupUrl org.fedorahosted.flies.webtrans.ApplicationDummy/ApplicationDummy.html?project=sample-project&amp;iteration=1.0&amp;localeId=de -logLevel INFO -port 48880 org.fedorahosted.flies.webtrans.ApplicationDummy"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="flies"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx512m -Dgwt.nowarn.legacy.tools -Dgwt.nowarn.webapp.classpath"/>
+<stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:flies}"/>
 </launchConfiguration>
