@@ -11,7 +11,7 @@
     </navigation>
   </page>
 
-  <page view-id="/admin/*">
+  <page view-id="/admin/*" login-required="true">
     <restrict>#{s:hasRole('admin')}</restrict>
   </page>
   
@@ -46,7 +46,7 @@
     </navigation>
   </page>
 
-  <page view-id="/project/edit.xhtml">
+  <page view-id="/project/edit.xhtml" login-required="true">
     <restrict>#{s:hasRole('admin')}</restrict>
     <param name="slug" value="#{projectHome.slug}" />
 
