@@ -19,7 +19,7 @@ import org.jboss.seam.security.management.IdentityManager;
 import org.jboss.seam.security.management.JpaIdentityStore;
 
 @Name("passwordChange")
-@Scope(ScopeType.CONVERSATION)
+@Scope(ScopeType.PAGE)
 public class PasswordChangeAction implements Serializable {
 
 	@In(required=false, value=JpaIdentityStore.AUTHENTICATED_USER) 
