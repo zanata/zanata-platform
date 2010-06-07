@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import org.hibernate.annotations.NaturalId;
@@ -27,6 +28,7 @@ public class HApplicationConfiguration extends AbstractFliesEntity {
 	@NaturalId
 	@NotEmpty
 	@Length(max=255)
+	@Column(name="config_key", nullable=false)
 	public String getKey() {
 		return key;
 	}
@@ -37,6 +39,7 @@ public class HApplicationConfiguration extends AbstractFliesEntity {
 	
 	@NotNull
 	@Type(type="text")
+	@Column(name="config_value", nullable=false)
 	public String getValue() {
 		return value;
 	}

@@ -59,10 +59,10 @@
         creationDate datetime not null,
         lastChanged datetime not null,
         versionNum integer not null,
-        key varchar(255) binary not null,
-        value longtext not null,
+        config_key varchar(255) binary not null,
+        config_value longtext not null,
         primary key (id),
-        unique (key)
+        unique (config_key)
     ) ENGINE=InnoDB;
 
     create table HCommunity (
