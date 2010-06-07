@@ -25,12 +25,12 @@
     <!-- #doc = 750px; #doc2 = 950px; #doc3 = 100%; #doc4 = 974px -->
     <div id="doc4" class="yui-t4">
       <div id="header">
-        <div id="flies_name"><a href="/flies/">Flies - The Future of Localization</a></div>
-        <div id="headerlogo">
+        <div id="headerlogo" rendered="#{not identity.loggedIn}">
           <s:link view="/home.xhtml" propagation="none">
-            <img src="#{request.contextPath}/img/flies_logo.png" />
+            <img src="#{request.contextPath}/img/flies_logo_blue_text.png" />
           </s:link>
         </div>
+        <div id="flies_name"><a href="/flies/">Flies - The Future of Localization</a></div>
         <div id="header_top_right">
           <h:outputText rendered="#{identity.loggedIn}"
             value="#{authenticatedPerson == null ? identity.username : authenticatedPerson.name} " />
