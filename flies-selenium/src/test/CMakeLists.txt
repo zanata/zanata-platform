@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.4)
 ####################################################################
 # Init Definition
 ####################################################################
@@ -11,183 +11,44 @@ INCLUDE(BasicMacros)
 ####################################################################
 # Project basic information (Place to customize)
 ####################################################################
-PROJECT(flies)
+PROJECT(flies-selenium)
 SET(PROJECT_DESCRIPTION "Online translator collaboration system")
 # base URL for test to be run at:
-SET(BASE_URL "http://hudson.englab.bne.redhat.com/")
-SET(FLIES_URL "${BASE_URL}flies")
-SET(REST_PATH "seam/resource/restv1/projects/p/")
-SET(SELENIUM_SERVER_ARGS )
-SET(RESULT_DIR ../../results)
-#SET(BROWSERS_TO_TEST firefox googlechrome)
-SET(BROWSERS_TO_TEST firefox)
+SETTING_FILE_GET_ATTRIBUTE(BASE_URL "BASE_URL" "test.cfg" UNQUOTED)
+SETTING_FILE_GET_ATTRIBUTE(FLIES_URL "FLIES_URL" "test.cfg" UNQUOTED)
+SETTING_FILE_GET_ATTRIBUTE(REST_PATH "REST_PATH" "test.cfg" UNQUOTED)
+SETTING_FILE_GET_ATTRIBUTE(SELENIUM_SERVER_ARGS "SELENIUM_SERVER_ARGS" "test.cfg" UNQUOTED)
+SETTING_FILE_GET_ATTRIBUTE(RESULT_DIR "RESULT_DIR" "test.cfg" UNQUOTED)
+SETTING_FILE_GET_ATTRIBUTE(_browsers_to_test "BROWSERS_TO_TEST" "test.cfg" UNQUOTED)
+STRING(REGEX MATCHALL "[^ \t]+" BROWSERS_TO_TEST "${_browsers_to_test}")
+MESSAGE("BROWSERS_TO_TEST=${BROWSERS_TO_TEST} _browsers_to_test=${_browsers_to_test}")
 
 # For hudson testing/reporting
-SET(HUDSON_HOME "http://localhost:8083")
-SET(TEST_LOGFILE "${RESULT_DIR}/output.txt")
-SET(TEST_REPORT_XML "${RESULT_DIR}/report.xml")
-SET(HEADLESS_DISPLAY ":98")
-SET(JOB_NAME "flies-selenium")
+SETTING_FILE_GET_ATTRIBUTE(HUDSON_HOME "HUDSON_HOME" "test.cfg" UNQUOTED)
+SETTING_FILE_GET_ATTRIBUTE(FLIES_URL "FLIES_URL" "test.cfg" UNQUOTED)
+SETTING_FILE_GET_ATTRIBUTE(TEST_LOGFILE "TEST_LOGFILE" "test.cfg" UNQUOTED)
+SETTING_FILE_GET_ATTRIBUTE(HEADLESS_DISPLAY "HEADLESS_DISPLAY" "test.cfg" UNQUOTED)
+SETTING_FILE_GET_ATTRIBUTE(JOB_NAME "JOB_NAME" "test.cfg" UNQUOTED)
 CONFIGURE_FILE(hudson_test_wrap.sh.in hudson_test_wrap.sh)
 
 #===================================================================
 # Flies Projects to be test
-SET (SAMPLE_PROJ_DIR    samples)
-SET (LANGS              "as-IN,ja-JP,zh-CN,pt-PT")
+SETTING_FILE_GET_ATTRIBUTE(SAMPLE_PROJ_DIR	"SAMPLE_PROJ_DIR" "test.cfg" UNQUOTED)
+SETTING_FILE_GET_ATTRIBUTE(LANGS	"LANGS" "test.cfg" UNQUOTED)
 
-SET(INIT_ITER		"s1")
-SET(INIT_ITER_NAME	"s1name")
-SEt(INIT_ITER_DESC	"s1 desc")
+SETTING_FILE_GET_ATTRIBUTE(INIT_ITER	"INIT_ITER" "test.cfg" UNQUOTED)
+SETTING_FILE_GET_ATTRIBUTE(INIT_ITER_NAME	"INIT_ITER_NAME" "test.cfg" UNQUOTED)
+SET(INIT_ITER_DESC	"s1 desc")
 
-# Security Guide F13
-SET(PROJ_SECURITY_GUIDE_F13		SecurityGuideF13)
-SET(PROJ_SECURITY_GUIDE_F13_REPO_TYPE   svn)
-SET(PROJ_SECURITY_GUIDE_F13_URL		"http://svn.fedorahosted.org/svn/securityguide/community/f13")
-SET(PROJ_SECURITY_GUIDE_F13_NAME	"Security Guide F13")
-SET(PROJ_SECURITY_GUIDE_F13_DESC	"Security Guide for Fedora 13")
+SETTING_FILE_GET_ATTRIBUTE(PUBLICAN_PROJECTS	"PUBLICAN_PROJECTS" "test.cfg" UNQUOTED)
 
-# About Fedora F13
-SET(PROJ_ABOUT_FEDORA_F13		AboutFedoraF13)
-SET(PROJ_ABOUT_FEDORA_F13_REPO_TYPE   git)
-SET(PROJ_ABOUT_FEDORA_F13_URL		"git://git.fedorahosted.org/git/docs/about-fedora.git")
-SET(PROJ_ABOUT_FEDORA_F13_NAME	"About Fedora 13")
-SET(PROJ_ABOUT_FEDORA_F13_DESC	"About Fedora 13")
-
-# Release Note
-SET(PROJ_RELEASE_NOTE		ReleaseNote)
-SET(PROJ_RELEASE_NOTE_REPO_TYPE	git)
-SET(PROJ_RELEASE_NOTE_URL	"git://git.fedorahosted.org/git/docs/release-notes.git")
-SET(PROJ_RELEASE_NOTE_NAME	"Fedora Release Note")
-SET(PROJ_RELEASE_NOTE_DESC	"Fedora Release Note")
-
-SET(PUBLICAN_PROJECTS PROJ_SECURITY_GUIDE_F13 PROJ_ABOUT_FEDORA_F13 PROJ_RELEASE_NOTE)
-#SET(PUBLICAN_PROJECTS PROJ_ABOUT_FEDORA_F13)
 
 #===================================================================
-# Generate Targets for publican projects
-ADD_CUSTOM_COMMAND(OUTPUT ${SAMPLE_PROJ_DIR}
-    COMMAND cmake -E make_directory ${SAMPLE_PROJ_DIR}
-)
-
-SET(SAMPLE_PROJ_PATHS )
-SET(SAMPLE_PROJ_TARGETS )
-FILE(STRINGS "apikey" _APIKEY)
-STRING(STRIP "${_APIKEY}" APIKEY)
-SET(FLIES_PUBLICAN_COMMON_OPTS --errors --debug --user admin --key ${APIKEY})
-
-FOREACH(pProj ${PUBLICAN_PROJECTS})
-    MESSAGE("Building target for ${pProj} in ${${pProj}}")
-    IF( ${${pProj}_REPO_TYPE} STREQUAL "svn")
-	SET(CLONE_ACTION "co")
-	SET(UPDATE_ACTION "up")
-    ELSE()
-	SET(CLONE_ACTION "clone")
-	SET(UPDATE_ACTION "pull")
-    ENDIF()
-
-    SET(P_PROJ_DIR "${SAMPLE_PROJ_DIR}/${${pProj}}")
-
-    ADD_CUSTOM_COMMAND(OUTPUT "${P_PROJ_DIR}" "${P_PROJ_DIR}/publican.cfg"}
-	COMMAND "${${pProj}_REPO_TYPE}" "${CLONE_ACTION}" "${${pProj}_URL}" "${P_PROJ_DIR}"
-	DEPENDS ${SAMPLE_PROJ_DIR}
+# Import publican projects.
+ADD_CUSTOM_TARGET(import ALL
+    COMMAND "./import.sh"
+    COMMENT "See if publican projects are imported."
     )
-
-    ADD_CUSTOM_TARGET(clone_${${pProj}}
-	DEPENDS ${P_PROJ_DIR}
-    )
-
-    # Remove brand
-    ADD_CUSTOM_COMMAND(OUTPUT "${P_PROJ_DIR}/publican.cfg.orig"
-	COMMAND mv ${P_PROJ_DIR}/publican.cfg ${P_PROJ_DIR}/publican.cfg.orig
-	COMMAND sed -e 's/brand:.*//' ${P_PROJ_DIR}/publican.cfg.orig > ${P_PROJ_DIR}/publican.cfg
-	DEPENDS "${P_PROJ_DIR}/publican.cfg"
-    )
-
-    ADD_CUSTOM_TARGET(remove_brand_${${pProj}}
-	DEPENDS ${P_PROJ_DIR}
-    )
-
-    ADD_CUSTOM_COMMAND(OUTPUT "${P_PROJ_DIR}/pot"}
-        COMMAND ${PUBLICAN_CMD}  update_pot
-        WORKING_DIRECTORY "${P_PROJ_DIR}"
-        DEPENDS ${P_PROJ_DIR}/publican.cfg.orig
-    )
-
-    ADD_CUSTOM_TARGET(update_pot_${${pProj}}
-	DEPENDS ${P_PROJ_DIR}/pot
-    )
-
-    ADD_CUSTOM_TARGET(update_src_${${pProj}}
-	COMMAND "${${pProj}_REPO_TYPE}" "${UPDATE_ACTION}"
-        DEPENDS ${P_PROJ_DIR}
-	WORKING_DIRECTORY "${P_PROJ_DIR}"
-	COMMENT "Updating pot of publican project ${${pProj}}"
-    )
-
-    ADD_CUSTOM_TARGET(update_po_${${pProj}}
-        COMMAND ${PUBLICAN_CMD} update_po --langs="${LANGS}"
-	DEPENDS ${P_PROJ_DIR}/publican.cfg.orig ${P_PROJ_DIR}/pot
-        WORKING_DIRECTORY "${P_PROJ_DIR}"
-        COMMENT "Updating po of publican project ${${pProj}}"
-    )
-
-    ADD_CUSTOM_TARGET(init_${${pProj}}
-        DEPENDS ${SAMPLE_PROJ_DIR}
-    )
-
-    ADD_DEPENDENCIES(init_${${pProj}} update_pot_${${pProj}} update_po_${${pProj}})
-
-    ADD_CUSTOM_TARGET(createproj_${${pProj}}
-	COMMAND "${FLIES_PUBLICAN_CMD}" createproj ${FLIES_PUBLICAN_COMMON_OPTS} --flies "${FLIES_URL}" --proj "${${pProj}}" --name "${${pProj}_NAME}" --desc "${${pProj}_DESC}"
-        DEPENDS ${P_PROJ_DIR}
-	WORKING_DIRECTORY "${P_PROJ_DIR}"
-    	COMMENT "Project ${${pProj}}: Creating"
-	VERBATIM
-    )
-
-    ADD_CUSTOM_TARGET(createiter_${${pProj}}
-	COMMAND "${FLIES_PUBLICAN_CMD}" createiter ${FLIES_PUBLICAN_COMMON_OPTS} --flies "${FLIES_URL}" --proj "${${pProj}}" --iter "${INIT_ITER}" --name "${INIT_ITER_NAME}" --desc "${INIT_ITER_DESC}"
-	DEPENDS ${P_PROJ_DIR}
-	WORKING_DIRECTORY "${P_PROJ_DIR}"
-	COMMENT "Project ${${pProj}}: Creating an iteration ${INIT_ITER}"
-	VERBATIM
-    )
-
-    SET(UPLOAD_DEST "${FLIES_URL}/${REST_PATH}${${pProj}}/iterations/i/${INIT_ITER}/documents")
-
-    ADD_CUSTOM_TARGET(upload_${${pProj}}
-        COMMAND "${FLIES_PUBLICAN_CMD}" upload ${FLIES_PUBLICAN_COMMON_OPTS} -i --src . --dst "${UPLOAD_DEST}"
-	DEPENDS ${P_PROJ_DIR} ${P_PROJ_DIR}/publican.cfg.orig ${P_PROJ_DIR}/pot
-	WORKING_DIRECTORY "${P_PROJ_DIR}"
-	COMMENT "Project ${${pProj}}: Uploading"
-	VERBATIM
-    )
-
-#    ADD_CUSTOM_TARGET(download_${${pProj}}
-#        COMMAND "${FLIES_PUBLICAN_CMD} download ${FLIES_PUBLICAN_COMMON_OPTS} -e --src . --dst "${UPLOAD_DEST}"
-#        DEPENDS ${P_PROJ_DIR}
-#        WORKING_DIRECTORY "${P_PROJ_DIR}"
-#	COMMENT "Project ${${pProj}}: Downloading"
-#	VERBATIM
-#    )
-
-    ADD_CUSTOM_TARGET(import_${${pProj}}
-	COMMENT "Importing Project ${${pProj}}"
-	VERBATIM
-    )
-    ADD_DEPENDENCIES(import_${${pProj}} createproj_${${pProj}} createiter_${${pProj}} upload_${${pProj}})
-
-    # Keep track of the project paths and targets
-    SET(SAMPLE_PROJ_PATHS ${SAMPLE_PROJ_PATHS} "${P_PROJ_DIR}")
-    SET(SAMPLE_PROJ_TARGETS ${SAMPLE_PROJ_TARGETS} "init_${${pProj}}")
-ENDFOREACH()
-
-ADD_CUSTOM_TARGET(init_projects
-    DEPENDS ${SAMPLE_PROJ_PATHS}
-)
-
-ADD_DEPENDENCIES(init_projects ${SAMPLE_PROJ_TARGETS})
-
 
 #===================================================================
 # Search Paths
@@ -197,10 +58,13 @@ SET(SELENIUM_SEARCH_PATHS ${MAVEN_SELENIUM_SERVER_PATH} /usr/share/java)
 
 SET(firefox_SEARCH_PATHS /usr/lib64/firefox-3.6 /usr/lib/firefox-3.6 /usr/lib64/firefox-3.5 /usr/lib/firefox-3.5
     /usr/lib64/firefox-3* /usr/lib/firefox-3* /usr/lib64/firefox* /usr/lib/firefox*)
+SET(firefox_BIN_NAME firefox)
 
 SET(opera_SEARCH_PATHS /usr/lib64/opera /usr/lib/opera /opt/opera)
+SET(opera_BIN_NAME opera)
 
 SET(googlechrome_SEARCH_PATHS /opt/google/chrome)
+SET(googlechrome_BIN_NAME google-chrome)
 
 #===================================================================
 # Macro FIND_FILE_IN_DIRS
@@ -222,7 +86,7 @@ MACRO(FIND_FILE_IN_DIRS var pattern searchPaths)
             ENDIF()
         ENDFOREACH()
 	IF ( fileObj_raw )
-	    MESSAGE(" ${var} Found in ${fileObj_raw}")
+	    MESSAGE(" ${var} Found at ${fileObj_raw}")
 	    BREAK()
 	ENDIF()
     ENDFOREACH()
@@ -249,10 +113,10 @@ IF( ${FLIES_PUBLICAN_CMD} STREQUAL "FLIES_PUBLICAN_CMD-NOTFOUND" )
 ENDIF()
 
 FIND_PROGRAM(SELENIUM_SERVER_CMD selenium-server)
-IF( ${SELENIUM_SERVER_CMD} STREQUAL "SELENIUM_SERVER_CMD-NOTFOUND" )
+IF(${SELENIUM_SERVER_CMD} STREQUAL "SELENIUM_SERVER_CMD-NOTFOUND")
     # find selenium server jar
     FIND_FILE_IN_DIRS(SELENIUM_SERVER_JAR "selenium-server*.jar" "${SELENIUM_SEARCH_PATHS}")
-    IF ( ${SELENIUM_SERVER_JAR} STREQUAL "SELENIUM_SERVER_JAR-NOTFOUND" )
+    IF (${SELENIUM_SERVER_JAR} STREQUAL "SELENIUM_SERVER_JAR-NOTFOUND")
         MESSAGE(FATAL_ERROR "selenium-server not found, install it please.")
     ENDIF()
     SET(SELENIUM_SERVER_CMD java -jar ${SELENIUM_SERVER_JAR})
@@ -260,14 +124,14 @@ ENDIF()
 #MESSAGE("SELENIUM_SERVER_CMD=${SELENIUM_SERVER_CMD}")
 
 ### Find the browser binary
-FIND_FILE_IN_DIRS(firefox_BIN firefox "${firefox_SEARCH_PATHS}")
-MESSAGE("firefox_BIN=${firefox_BIN}")
-
-#FIND_FILE_IN_DIRS(googlechrome_BIN chrome "${googlechrome_SEARCH_PATHS}")
-#MESSAGE("googlechrome_BIN=${googlechrome_BIN}")
-
-#FIND_FILE_IN_DIRS(opera_BIN opera "${opera_SEARCH_PATHS}")
-#MESSAGE("opera_BIN=${opera_BIN}")
+FOREACH(_browser ${BROWSERS_TO_TEST})
+    FIND_FILE_IN_DIRS(${_browser}_BIN "${${_browser}_BIN_NAME}" "${${_browser}_SEARCH_PATHS}")
+    IF("${${_browser}_BIN}" STREQUAL "${_browser}_BIN-NOTFOUND")
+	MESSAGE(FATAL_ERROR "Cannot find ${_browser} with ${${_browser}_BIN_NAME}, install it please.")
+    ELSE()
+	# MESSAGE("${_browser}_BIN=${${_browser}_BIN}")
+    ENDIF()
+ENDFOREACH()
 
 ####################################################################
 # Test Suites.
@@ -284,36 +148,55 @@ FILE(GLOB_RECURSE TEST_SUITES_RAW  "0-*.html")
 MESSAGE("TEST_SUITES_RAW=${TEST_SUITES_RAW}")
 SET(ALL_OUTPUT_TARGETS "")
 
-MACRO(ADD_OUTPUT_AND_TEST testRole testSuitePath testSuiteName)
-    MESSAGE("testPath=${testSuitePath}")
-    IF ( NOT EXISTS "${testSuitePath}/NO_${testRole}" )
-        IF ( ${testRole} STREQUAL "ADMIN" )
-            SET(SISO_TEST_TARGET 4-${testSuiteName}.html)
-            SET(SI_TEST_TARGET   3-${testSuiteName}.html)
-        ELSE()
-            SET(SISO_TEST_TARGET 2-${testSuiteName}.html)
-            SET(SI_TEST_TARGET   1-${testSuiteName}.html)
-        ENDIF()
-        SET(OUTPUT_TARGETS ${testSuitePath}/${SISO_TEST_TARGET} ${testSuitePath}/${SI_TEST_TARGET})
-        ADD_CUSTOM_COMMAND(OUTPUT ${OUTPUT_TARGETS}
-            COMMAND ./generate_test_suite.sh ${testRole} ${testSuitePath} ${testSuiteName} ${SI_TEST_TARGET} ${SISO_TEST_TARGET} ${TEST_ROOT}
-            DEPENDS ${testSuiteRaw}
-            VERBATIM
-        )
-        SET(ALL_OUTPUT_TARGETS ${ALL_OUTPUT_TARGETS} ${OUTPUT_TARGETS})
-        FOREACH(browser ${BROWSERS_TO_TEST} )
-            IF (${browser} STREQUAL "firefox")
-                SET(BROWSER_STR "*${browser} ${${browser}_BIN}")
-            ELSE()
-                SET(BROWSER_STR "*${browser}")
-            ENDIF()
-            ADD_TEST("${testSuiteName}_${testRole}_on_${browser}" ${SELENIUM_SERVER_CMD} ${SELENIUM_SERVER_ARG}
-                -htmlsuite "${BROWSER_STR}" "${BASE_URL}"
-                 ${testSuitePath}/${SISO_TEST_TARGET}
-                 ${RESULT_DIR}/${testSuiteName}.${testRole}.on.${browser}.result.html )
-        ENDFOREACH()
-    ENDIF()
+MACRO(ADD_OUTPUT_FOR_BROWSERS testSuiteName testRole suiteFile)
+    FOREACH(browser ${BROWSERS_TO_TEST})
+	SET(BROWSER_STR "*${browser} ${${browser}_BIN}")
+	#            IF (${browser} STREQUAL "firefox")
+	#   SET(BROWSER_STR "*${browser} ${${browser}_BIN}")
+	#	    ELSE()
+	#   SET(BROWSER_STR "*${browser}")
+	#	    ENDIF()
+	ADD_TEST("${testSuiteName}.${testRole}.${browser}" ${SELENIUM_SERVER_CMD} ${SELENIUM_SERVER_ARG}
+	    -htmlsuite "${BROWSER_STR}" "${BASE_URL}"
+	    ${suiteFile}
+	    ${RESULT_DIR}/${testSuiteName}.${testRole}.${browser}.html )
+    ENDFOREACH()
 ENDMACRO()
+
+SET(TEST_ROLES ADMIN)
+MACRO(ADD_OUTPUT_AND_TEST testSuitePath testSuiteName)
+    IF (EXISTS "${testSuitePath}/TEST_PRELOGIN")
+	SET(_testRoles ${TEST_ROLES} PRELOGIN)
+    ELSE()
+	SET(_testRoles ${TEST_ROLES})
+    ENDIF()
+    MESSAGE("testPath=${testSuitePath}")
+    FOREACH(testRole ${_testRoles})
+	IF (NOT EXISTS "${testSuitePath}/NO_${testRole}" )
+	    IF ( ${testRole} STREQUAL "PRELOGIN" )
+		SET(suiteFile ${testSuitePath}/0-${testSuiteName}.html)
+	    ELSE()
+		IF ( ${testRole} STREQUAL "ADMIN" )
+		    SET(SISO_TEST_TARGET 2-${testSuiteName}.html)
+		    SET(SI_TEST_TARGET   1-${testSuiteName}.html)
+		    SET(suiteFile ${testSuitePath}/${SISO_TEST_TARGET})
+		ELSE()
+		    SET(SISO_TEST_TARGET 4-${testSuiteName}.html)
+		    SET(SI_TEST_TARGET   3-${testSuiteName}.html)
+		    SET(suiteFile ${testSuitePath}/${SISO_TEST_TARGET})
+		ENDIF()
+  	        SET(OUTPUT_TARGETS ${testSuitePath}/${SISO_TEST_TARGET} ${testSuitePath}/${SI_TEST_TARGET})
+	        ADD_CUSTOM_COMMAND(OUTPUT ${OUTPUT_TARGETS}
+		    COMMAND ./generate_test_suite.sh ${testRole} ${testSuitePath} ${testSuiteName} ${SI_TEST_TARGET} ${SISO_TEST_TARGET} ${TEST_ROOT}
+		    DEPENDS ${testSuiteRaw}
+		    VERBATIM
+		    )
+		SET(ALL_OUTPUT_TARGETS ${ALL_OUTPUT_TARGETS} ${OUTPUT_TARGETS})
+	    ENDIF()
+	    ADD_OUTPUT_FOR_BROWSERS(${testSuiteName} "${testRole}" ${suiteFile} )
+	ENDIF()
+    ENDFOREACH()
+ENDMACRO(ADD_OUTPUT_AND_TEST testRole testSuitePath testSuiteName)
 
 FOREACH(testSuiteRaw ${TEST_SUITES_RAW})
     GET_FILENAME_COMPONENT(testSuitePath ${testSuiteRaw} PATH)
@@ -322,8 +205,8 @@ FOREACH(testSuiteRaw ${TEST_SUITES_RAW})
 
     # Make test rules.
     #    ADD_OUTPUT_AND_TEST(NORMAL ${testSuitePath} ${testSuiteName})
-    ADD_OUTPUT_AND_TEST(ADMIN  ${testSuitePath} ${testSuiteName})
-ENDFOREACH()
+    ADD_OUTPUT_AND_TEST(${testSuitePath} ${testSuiteName})
+ENDFOREACH(testSuiteRaw ${TEST_SUITES_RAW})
 
 ADD_CUSTOM_COMMAND(OUTPUT ${RESULT_DIR}
     COMMAND cmake -E make_directory ${RESULT_DIR}
@@ -332,6 +215,4 @@ ADD_CUSTOM_COMMAND(OUTPUT ${RESULT_DIR}
 ADD_CUSTOM_TARGET(prep_tests ALL
     DEPENDS ${ALL_OUTPUT_TARGETS} ${RESULT_DIR}
 )
-
-#ADD_DEPENDENCIES(test all)
 

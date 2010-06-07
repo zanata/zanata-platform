@@ -108,6 +108,11 @@
   </rule>  
 
   <rule>
+    <from casesensitive="true">^/editprofile(.+)?$</from>
+    <to last="true">/editprofile.seam$1</to>
+  </rule>  
+
+  <rule>
     <from casesensitive="true">^/account/password_reset_request(.+)?$</from>
     <to last="true">/account/password_reset_request.seam$1</to>
   </rule>
@@ -164,7 +169,7 @@
     <to>$1/project/create/$2</to>
   </outbound-rule>
   <outbound-rule>
-    <from>^(/.+)?/project/project.seam\?slug=(.+)$</from>
+    <from>^(/.+)?/project/project.seam\?slugaccount/=(.+)$</from>
     <to>$1/project/view/$2</to>
   </outbound-rule>
   <outbound-rule>
@@ -202,6 +207,10 @@
   <outbound-rule>
     <from>^(/.+)?/account/changepassword.seam(.+)?$</from>
     <to>$1/account/changepassword$2</to>
+  </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/editprofile.seam(.+)?$</from>
+    <to>$1/editprofile$2</to>
   </outbound-rule>
 
   <outbound-rule>

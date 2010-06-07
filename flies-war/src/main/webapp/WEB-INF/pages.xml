@@ -149,6 +149,8 @@
     <param name="key" value="#{passwordReset.activationKey}" />
     <action execute="#{passwordReset.validateActivationKey}" />
   </page>
+
+  <page view-id="/editprofile.xhtml" login-required="true" />
   
   <page view-id="/account/changepassword.xhtml" login-required="true" />
 
