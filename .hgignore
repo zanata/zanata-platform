@@ -55,7 +55,8 @@ temp-testng-customsuite.xml$
 CMakeCache.txt
 /src/test/Makefile
 /src/test/Testing/
-.*\.cmake$
+cmake_install.cmake$
+CTestTestfile.cmake$
 
 # Generated tests
 /samples/
@@ -66,4 +67,5 @@ CMakeCache.txt
 /src/test/resources/.*/SignOut.html$
 hudson_test_wrap.sh
 .*\.log$
+/tmp*
 

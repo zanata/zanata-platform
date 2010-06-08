@@ -8,6 +8,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.flies.FliesDbunitJpaTest;
 import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.webtrans.shared.NoSuchWorkspaceException;
 import org.fedorahosted.flies.webtrans.shared.model.ProjectIterationId;
 import org.fedorahosted.flies.webtrans.shared.model.WorkspaceId;
 import org.hibernate.Session;
@@ -34,7 +35,7 @@ public class TranslationWorkspaceManagerTest  extends FliesDbunitJpaTest {
 
 	
 	@Test
-	public void createNewWorkspace() {
+	public void createNewWorkspace() throws NoSuchWorkspaceException {
 		assertThat(twm.getWorkspaceCount(), is(0));
 		
 		WorkspaceId wsId = new WorkspaceId(

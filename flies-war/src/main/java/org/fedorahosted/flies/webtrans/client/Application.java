@@ -6,6 +6,9 @@ import net.customware.gwt.presenter.client.place.PlaceRequestEvent;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.webtrans.client.EventProcessor.StartCallback;
 import org.fedorahosted.flies.webtrans.client.gin.WebTransGinjector;
+import org.fedorahosted.flies.webtrans.shared.NoSuchWorkspaceException;
+import org.fedorahosted.flies.webtrans.shared.auth.AuthenticationError;
+import org.fedorahosted.flies.webtrans.shared.auth.AuthorizationError;
 import org.fedorahosted.flies.webtrans.shared.auth.Identity;
 import org.fedorahosted.flies.webtrans.shared.model.ProjectIterationId;
 import org.fedorahosted.flies.webtrans.shared.model.WorkspaceContext;
@@ -46,7 +49,18 @@ public class Application implements EntryPoint{
 
 				@Override
 				public void onFailure(Throwable caught) {
-					redirectToLogin();
+					try {
+						throw caught;
+					}
+					catch(AuthenticationError e) {
+						redirectToLogin();
+					}
+					catch(NoSuchWorkspaceException e) {
+						showError("Invalid Workspace");
+					}
+					catch(Throwable e) {
+						showError("An unexpected Error occurred: " + e.getMessage());
+					}
 				}
 
 				@Override
@@ -133,15 +147,15 @@ public class Application implements EntryPoint{
 	}
 
 	public static void redirectToLogin() {
-		redirectToUrl( getFliesUrl() + "account/sign_in?continue=" + URL.encodeComponent(Window.Location.getHref()));	
+		redirectToUrl( getModuleParentBaseUrl() + "account/sign_in?continue=" + URL.encodeComponent(Window.Location.getHref()));	
 	}
 	
 	public static void redirectToLogout() {
-		redirectToUrl( getFliesUrl() + "account/sign_out");	
+		redirectToUrl( getModuleParentBaseUrl() + "account/sign_out");	
 	}
 
 	public static void redirectToFliesProjectHome(WorkspaceId workspaceId) {
-		redirectToUrl( getFliesUrl() + "project/view/"+ workspaceId.getProjectIterationId().getProjectSlug());	
+		redirectToUrl( getModuleParentBaseUrl() + "project/view/"+ workspaceId.getProjectIterationId().getProjectSlug());	
 	}
 	
 	public static native void redirectToUrl(String url)/*-{
@@ -168,15 +182,13 @@ public class Application implements EntryPoint{
 		return identity;
 	}
 	
-	public static String getFliesUrl() {
-		if(fliesUrl == null) {
-			StringBuilder str = new StringBuilder(Window.Location.getProtocol());
-			str.append("//");
-			str.append(Window.Location.getHost());
-			str.append( PathUtils.getContextRoot( Window.Location.getPath() ) );
-			fliesUrl = str.toString();
-		}
-		return fliesUrl;
+	public static String getModuleParentBaseUrl() {
+		return GWT.getModuleBaseURL().replace(GWT.getModuleName() + "/", "");
+	}
+	
+	public static void showError(String message) {
+		Label label = new Label(message);
+		RootLayoutPanel.get().add(label);
 	}
 	
 }

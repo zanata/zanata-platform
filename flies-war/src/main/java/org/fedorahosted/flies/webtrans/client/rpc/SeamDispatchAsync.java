@@ -32,7 +32,7 @@ public class SeamDispatchAsync implements CachingDispatchAsync {
 	
 	@Inject
 	public SeamDispatchAsync() {
-		final String endpointURL = Application.getFliesUrl() + "seam/resource/gwt";
+		final String endpointURL = Application.getModuleParentBaseUrl() + "seam/resource/gwt";
 
 		((ServiceDefTarget) realService).setServiceEntryPoint(endpointURL);
 	}
