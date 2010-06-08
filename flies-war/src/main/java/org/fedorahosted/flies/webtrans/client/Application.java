@@ -6,6 +6,9 @@ import net.customware.gwt.presenter.client.place.PlaceRequestEvent;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.webtrans.client.EventProcessor.StartCallback;
 import org.fedorahosted.flies.webtrans.client.gin.WebTransGinjector;
+import org.fedorahosted.flies.webtrans.shared.NoSuchWorkspaceException;
+import org.fedorahosted.flies.webtrans.shared.auth.AuthenticationError;
+import org.fedorahosted.flies.webtrans.shared.auth.AuthorizationError;
 import org.fedorahosted.flies.webtrans.shared.auth.Identity;
 import org.fedorahosted.flies.webtrans.shared.model.ProjectIterationId;
 import org.fedorahosted.flies.webtrans.shared.model.WorkspaceContext;
@@ -46,7 +49,18 @@ public class Application implements EntryPoint{
 
 				@Override
 				public void onFailure(Throwable caught) {
-					redirectToLogin();
+					try {
+						throw caught;
+					}
+					catch(AuthenticationError e) {
+						redirectToLogin();
+					}
+					catch(NoSuchWorkspaceException e) {
+						showError("Invalid Workspace");
+					}
+					catch(Throwable e) {
+						showError("An unexpected Error occurred: " + e.getMessage());
+					}
 				}
 
 				@Override
@@ -170,6 +184,11 @@ public class Application implements EntryPoint{
 	
 	public static String getModuleParentBaseUrl() {
 		return GWT.getModuleBaseURL().replace(GWT.getModuleName() + "/", "");
+	}
+	
+	public static void showError(String message) {
+		Label label = new Label(message);
+		RootLayoutPanel.get().add(label);
 	}
 	
 }

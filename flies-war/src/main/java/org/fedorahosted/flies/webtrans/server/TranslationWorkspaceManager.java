@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.fedorahosted.flies.FliesInit;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.security.FliesIdentity;
+import org.fedorahosted.flies.webtrans.shared.NoSuchWorkspaceException;
 import org.fedorahosted.flies.webtrans.shared.model.PersonId;
 import org.fedorahosted.flies.webtrans.shared.model.ProjectIterationId;
 import org.fedorahosted.flies.webtrans.shared.model.WorkspaceContext;
@@ -98,7 +99,7 @@ public class TranslationWorkspaceManager {
 		return workspaceMap.size();
 	}
 
-	public TranslationWorkspace getOrRegisterWorkspace(WorkspaceId workspaceId) {
+	public TranslationWorkspace getOrRegisterWorkspace(WorkspaceId workspaceId) throws NoSuchWorkspaceException {
 		TranslationWorkspace workspace = workspaceMap.get(workspaceId);
 		if(workspace == null){
 			workspace = createWorkspace(workspaceId);
@@ -115,7 +116,7 @@ public class TranslationWorkspaceManager {
 		return workspace;
 	}
 	
-	private TranslationWorkspace createWorkspace(WorkspaceId workspaceId) {
+	private TranslationWorkspace createWorkspace(WorkspaceId workspaceId) throws NoSuchWorkspaceException {
 		String workspaceName = (String) session.createQuery(
 				"select it.project.name || ' (' || it.name || ')' " +
 				"from HProjectIteration it " +
@@ -125,6 +126,9 @@ public class TranslationWorkspaceManager {
 				.setParameter("slug", workspaceId.getProjectIterationId().getIterationSlug())
 				.setParameter("pslug", workspaceId.getProjectIterationId().getProjectSlug())
 				.uniqueResult();
+		if(workspaceName == null ) {
+			throw new NoSuchWorkspaceException("Invalid workspace Id");
+		}
 
 		WorkspaceContext workspaceContext = 
 			new WorkspaceContext(workspaceId, 
