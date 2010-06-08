@@ -27,6 +27,7 @@ import org.jboss.seam.log.Log;
 @Name("adminAction")
 @Scope(ScopeType.APPLICATION)
 @Startup
+@Restrict("#{s:hasRole('admin')}")
 public class AdminActionBean {
 	
 	private static final int BATCH_SIZE = 500;
@@ -53,7 +54,6 @@ public class AdminActionBean {
 	 * isRunning method to disable the button if the job is already running
 	 */
 
-    @Restrict("#{s:hasRole('admin')}")
 	public void reindexDatabase() {
 		log.info("Re-indexing started");
 		
