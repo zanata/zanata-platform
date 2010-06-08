@@ -271,17 +271,17 @@ td.action a {
 	position: absolute;
 	right: 0px;
 	top: 0px;
-	padding: 2px;
-	padding-left: 10px;
-	padding-right: 10px;
+	padding: 10px;
 	margin: 0px;
 	font-size: 77%;
+	/*
 	background-color: #f4f4f4;
 	border-bottom: 1px solid #f4f4f4;
 	border-left: 1px solid #f4f4f4;
 	color: #999999;
 	-moz-border-radius-bottomleft:10px;
     -webkit-border-bottom-left-radius:10px; 
+    */
 }
 
 #tabs_menu_wrapper {
