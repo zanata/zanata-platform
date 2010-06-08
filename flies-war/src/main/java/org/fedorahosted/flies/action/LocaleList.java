@@ -6,12 +6,14 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.model.HFliesLocale;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.framework.EntityQuery;
 
 import com.ibm.icu.util.ULocale;
 
 @Name("localeList")
+@Restrict("#{s:hasRole('admin')}")
 public class LocaleList extends EntityQuery<HFliesLocale> {
 	public LocaleList() {
 		setEjbql("select locale from HFliesLocale locale");
