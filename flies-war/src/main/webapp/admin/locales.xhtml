@@ -15,6 +15,7 @@
       <h:outputText value="No Locales exists"
                     rendered="#{empty localeList.resultList}"/>
       <h:form>
+        <s:token/>
         <rich:dataTable id="localeList" var="locale"
                   value="#{localeList.resultList}"
                rendered="#{not empty localeList.resultList}">

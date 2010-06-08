@@ -10,6 +10,7 @@ import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.util.Version;
 import org.fedorahosted.flies.model.HCommunity;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
@@ -126,9 +127,9 @@ public class CommunitySearch {
     private FullTextQuery searchQuery(String searchQuery) throws ParseException
     {
         String[] communityFields = {"name", "description"};
-        QueryParser parser = new MultiFieldQueryParser(communityFields, new StandardAnalyzer());
+        QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_29, communityFields, new StandardAnalyzer());
         parser.setAllowLeadingWildcard(true);
-        Query luceneQuery = parser.parse(searchQuery);
+        Query luceneQuery = parser.parse(QueryParser.escape(searchQuery));
         return ( (FullTextEntityManager) entityManager ).createFullTextQuery(luceneQuery, HCommunity.class);
     }
     
