@@ -133,15 +133,15 @@ public class Application implements EntryPoint{
 	}
 
 	public static void redirectToLogin() {
-		redirectToUrl( getFliesUrl() + "account/sign_in?continue=" + URL.encodeComponent(Window.Location.getHref()));	
+		redirectToUrl( getModuleParentBaseUrl() + "account/sign_in?continue=" + URL.encodeComponent(Window.Location.getHref()));	
 	}
 	
 	public static void redirectToLogout() {
-		redirectToUrl( getFliesUrl() + "account/sign_out");	
+		redirectToUrl( getModuleParentBaseUrl() + "account/sign_out");	
 	}
 
 	public static void redirectToFliesProjectHome(WorkspaceId workspaceId) {
-		redirectToUrl( getFliesUrl() + "project/view/"+ workspaceId.getProjectIterationId().getProjectSlug());	
+		redirectToUrl( getModuleParentBaseUrl() + "project/view/"+ workspaceId.getProjectIterationId().getProjectSlug());	
 	}
 	
 	public static native void redirectToUrl(String url)/*-{
@@ -168,15 +168,8 @@ public class Application implements EntryPoint{
 		return identity;
 	}
 	
-	public static String getFliesUrl() {
-		if(fliesUrl == null) {
-			StringBuilder str = new StringBuilder(Window.Location.getProtocol());
-			str.append("//");
-			str.append(Window.Location.getHost());
-			str.append( PathUtils.getContextRoot( Window.Location.getPath() ) );
-			fliesUrl = str.toString();
-		}
-		return fliesUrl;
+	public static String getModuleParentBaseUrl() {
+		return GWT.getModuleBaseURL().replace(GWT.getModuleName() + "/", "");
 	}
 	
 }
