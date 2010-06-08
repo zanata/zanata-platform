@@ -12,6 +12,7 @@ import org.fedorahosted.flies.webtrans.shared.model.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.shared.model.WorkspaceId;
 import org.fedorahosted.flies.webtrans.shared.rpc.ExitWorkspace;
 import org.hibernate.Session;
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
@@ -19,6 +20,7 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.Synchronized;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
@@ -34,13 +36,12 @@ import de.novanic.eventservice.client.event.domain.DomainFactory;
 
 @Scope(ScopeType.APPLICATION)
 @Name("translationWorkspaceManager")
+@Synchronized
 public class TranslationWorkspaceManager {
 
 	public static final String EVENT_WORKSPACE_CREATED = "webtrans.WorkspaceCreated";
 	
 	private Log log = Logging.getLog(TranslationWorkspaceManager.class);
-	
-	@In Session session;
 	
 	private final ConcurrentHashMap<WorkspaceId, TranslationWorkspace> workspaceMap;
 	private final Multimap<ProjectIterationId, LocaleId> projectIterationLocaleMap;
@@ -57,11 +58,6 @@ public class TranslationWorkspaceManager {
 		
 	}
 
-	public TranslationWorkspaceManager(Session session) {
-		this();
-		this.session = session;
-	}
-	
 	@Observer(FliesInit.EVENT_Flies_Startup)
 	public void start(){
 		log.info("starting...");
@@ -117,6 +113,7 @@ public class TranslationWorkspaceManager {
 	}
 	
 	private TranslationWorkspace createWorkspace(WorkspaceId workspaceId) throws NoSuchWorkspaceException {
+		Session session = (Session) Component.getInstance("session");
 		String workspaceName = (String) session.createQuery(
 				"select it.project.name || ' (' || it.name || ')' " +
 				"from HProjectIteration it " +
