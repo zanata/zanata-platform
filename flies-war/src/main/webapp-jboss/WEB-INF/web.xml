@@ -33,7 +33,7 @@
 			TODO: When this is set to all, css from custom Richfaces components
 			such as flies-richfaces-ui components are not loaded.
 		-->
-		<param-value>DEFAULT</param-value>
+		<param-value>all</param-value>
 	</context-param>
 
 	<context-param>
