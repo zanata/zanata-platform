@@ -25,15 +25,13 @@ import org.jboss.seam.annotations.Scope;
 @AutoCreate
 public class ProjectSearch {
     
-    private int pageSize = 5;
-    
-    boolean hasMore = false;
+    private int pageSize = 30;
     
     private String searchQuery;
 
     private List<HProject> searchResults;
 	
-    private int currentPage = 0;
+    private int currentPage = 1;
     
     private int resultSize;
     
@@ -60,16 +58,15 @@ public class ProjectSearch {
     	return resultSize;
     }
     
-    public void setResultSize(int value) {
-    	this.resultSize = value;
-    }
-    
     public int getCurrentPage() {
     	return currentPage;
     }
     
     public void setCurrentPage(int page) {
-    	this.currentPage = page;
+    	if(page < 1)
+    		this.currentPage = 1;
+    	else
+    		this.currentPage = page;
     }
     
     public void search() {
@@ -80,38 +77,10 @@ public class ProjectSearch {
             return; 
         }
         resultSize = query.getResultSize();
-        List<HProject> items = query
+        searchResults = query
             .setMaxResults(pageSize + 1)
-            .setFirstResult(pageSize * currentPage)
+            .setFirstResult(pageSize * (currentPage-1) )
             .getResultList();
-        
-        if (items.size() > pageSize) {
-            searchResults = new ArrayList(items.subList(0, pageSize));
-            hasMore = true;
-        } else {
-            searchResults = items;
-            hasMore = false;
-        }
-    }
-    
-    public void nextPage() {
-        if (!lastPage()) {
-            currentPage++;
-        }
-    }
-
-    public void prevPage() {
-        if (!firstPage()) {
-            currentPage--;
-        }
-    }
-
-    public boolean lastPage() {
-        return ( searchResults != null ) && !hasMore;
-    }
-
-    public boolean firstPage() {
-        return ( searchResults != null ) && ( currentPage == 0 );
     }
 
     private FullTextQuery searchQuery(String searchQuery) throws ParseException

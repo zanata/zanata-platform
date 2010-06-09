@@ -10,7 +10,7 @@
 	<ui:define name="center_content">
 		<rich:jQuery selector="#tab_projects"
 			query="addClass('ui-tabs-selected')" />
-		<h1>Found #{projectSearch.resultSize} Projects</h1>
+		<h1>Found #{projectSearch.resultSize} Projects matching query '<h:outputText value="#{projectSearch.searchQuery}"/>'</h1>
 
 		<rich:dataGrid columns="3" value="#{projectSearch.searchResults}"
 			var="project" columnClasses="grid_col" styleClass="grid_style"
@@ -18,19 +18,9 @@
 			<ui:include src="./project/project_view_inline.xhtml" />
 		</rich:dataGrid>
 
-		<div class="tableControl"><s:link view="/search.xhtml"
-			rendered="#{!projectSearch.firstPage()}" value="First Page"
-			id="projectListFirstPage">
-			<f:param name="page" value="0" />
-		</s:link> <s:link view="/search.xhtml" action="#{projectSearch.prevPage}"
-			rendered="#{!projectSearch.firstPage()}" value="Previous Page"
-			id="projectListPreviousPage">
-			<f:param name="page" value="#{projectSearch.currentPage}" />
-		</s:link> <s:link view="/search.xhtml" action="#{projectSearch.nextPage}"
-			rendered="#{!projectSearch.lastPage()}" value="Next Page"
-			id="projectListNextPage">
-			<f:param name="page" value="#{projectSearch.currentPage}" />
-		</s:link></div>
+		<s:fragment rendered="#{projectSearch.resultSize gt projectSearch.pageSize}"> 
+			<p>Only showing first #{projectSearch.pageSize} results.</p>
+		</s:fragment>
 
 	</ui:define>
 
