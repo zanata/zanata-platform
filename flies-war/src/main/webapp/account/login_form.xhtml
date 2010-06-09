@@ -7,7 +7,7 @@
   xmlns:rich="http://richfaces.org/rich"
 >
 	<s:token/>
-    <rich:panel>
+    <rich:panel rendered="#{not identity.loggedIn}">
         <f:facet name="header">Sign In</f:facet>
 
         <s:decorate id="usernameField" template="../layout/edit.xhtml">
