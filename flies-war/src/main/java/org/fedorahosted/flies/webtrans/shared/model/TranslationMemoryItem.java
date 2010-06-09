@@ -18,11 +18,6 @@ public class TranslationMemoryItem implements Serializable{
 	private TranslationMemoryItem() {
 	}
 
-	@Deprecated
-	public TranslationMemoryItem(String source, String memory, String sourceComment, String targetComment, Long transUnitId, float relevanceScore, int similarityPercent) {
-		addTransUnitId(transUnitId);
-	}
-	
 	public TranslationMemoryItem(String source, String memory, float relevanceScore, int similarityPercent) {
 		this.source = source;
 		this.target = memory;

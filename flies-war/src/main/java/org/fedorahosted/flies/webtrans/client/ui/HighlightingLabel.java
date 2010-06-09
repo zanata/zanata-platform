@@ -8,11 +8,11 @@ public class HighlightingLabel extends Label {
 	private String plainText;
 	
 	public HighlightingLabel() {
-		addStyleName("prettyprint lang-xml");
 	}	
 	
 	public HighlightingLabel(String text) {
-		super(text);
+		super();
+		setText(text);
 	}
 
 	@Override
@@ -22,13 +22,15 @@ public class HighlightingLabel extends Label {
 	
 	@Override
 	public void setText(String text) {
+		this.plainText = text;
 		super.setText(text);
 		highlight();
 	}
 	
 	private void highlight() {
 		Element element = getElement();
-		Prettify.doHighlight(element);
+		String text = plainText == null ? "" : plainText;
+		CodeMirror.doHighlight(text, element);
 	}
 
 }
