@@ -18,8 +18,8 @@
             <f:facet name="header">Account Details</f:facet>
               
             <s:decorate id="nameField" template="./layout/edit.xhtml">
-              <ui:define name="label">Name *</ui:define>
-              <h:inputText id="name" value="#{personHome.instance.name}">
+              <ui:define name="label">Name</ui:define>
+              <h:inputText id="name" value="#{personHome.instance.name}" required="true">
                 <a4j:support event="onblur" reRender="nameField" ajaxSingle="true"/>
               </h:inputText>
               <h:graphicImage id="nameHelp" value="./img/msginfo.png" styleClass="input_help">
@@ -30,9 +30,9 @@
             </s:decorate>
                 
             <s:decorate id="emailField" template="./layout/edit.xhtml">
-              <ui:define name="label">Email *</ui:define>
-              <h:inputText id="email" value="#{personHome.instance.email}">
-                  <a4j:support event="onblur" reRender="usernameField" ajaxSingle="true"/>
+              <ui:define name="label">Email</ui:define>
+              <h:inputText id="email" value="#{personHome.instance.email}" required="true">
+                  <a4j:support event="onblur" reRender="emailField" ajaxSingle="true"/>
               </h:inputText>
               <h:graphicImage id="usernameHelp" value="./img/msginfo.png" styleClass="input_help">
                 <rich:toolTip>
