@@ -11,10 +11,12 @@ import org.fedorahosted.flies.webtrans.shared.auth.AuthenticationError;
 import org.fedorahosted.flies.webtrans.shared.auth.AuthorizationError;
 import org.fedorahosted.flies.webtrans.shared.auth.Identity;
 import org.fedorahosted.flies.webtrans.shared.model.WorkspaceContext;
+import org.fedorahosted.flies.webtrans.shared.rpc.AbstractDispatchAction;
 import org.fedorahosted.flies.webtrans.shared.rpc.AbstractWorkspaceAction;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.inject.Inject;
@@ -39,6 +41,12 @@ public class SeamDispatchAsync implements CachingDispatchAsync {
 	
 	public <A extends Action<R>, R extends Result> void execute(final A action,
 			final AsyncCallback<R> callback) {
+		
+		if (action instanceof AbstractDispatchAction<?>) {
+			AbstractDispatchAction<?> a = (AbstractDispatchAction<?>) action;
+			String sessionId = Cookies.getCookie("JSESSIONID");
+			a.setCsrfToken(sessionId);
+		}
 
 		if( action instanceof AbstractWorkspaceAction<?> ) {
 			AbstractWorkspaceAction<?> wsAction = (AbstractWorkspaceAction<?>) action;

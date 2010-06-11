@@ -1,12 +1,8 @@
 package org.fedorahosted.flies.webtrans.shared.rpc;
 
-import net.customware.gwt.dispatch.shared.Action;
-
 import org.fedorahosted.flies.webtrans.shared.model.ProjectIterationId;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
-public class GetDocumentList implements DispatchAction<GetDocumentListResult> {
+public class GetDocumentList extends AbstractDispatchAction<GetDocumentListResult> {
 
 	private static final long serialVersionUID = 1L;
 

@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ActionResult;
 import net.customware.gwt.dispatch.server.Dispatch;
@@ -15,6 +17,7 @@ import net.customware.gwt.dispatch.shared.UnsupportedActionException;
 
 import org.fedorahosted.flies.webtrans.shared.auth.AuthenticationError;
 import org.fedorahosted.flies.webtrans.shared.auth.AuthorizationError;
+import org.fedorahosted.flies.webtrans.shared.rpc.DispatchAction;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
@@ -27,6 +30,7 @@ import org.jboss.seam.deployment.StandardDeploymentStrategy;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.security.NotLoggedInException;
+import org.jboss.seam.web.ServletContexts;
 
 @Name("seamDispatch")
 @Scope(ScopeType.APPLICATION)
@@ -105,6 +109,14 @@ public class SeamDispatch implements Dispatch {
 	@Override
 	public <A extends Action<R>, R extends Result> R execute(A action)
 			throws ActionException {
+		if (action instanceof DispatchAction<?>) {
+			DispatchAction<?> a = (DispatchAction<?>) action;
+			HttpSession session = ServletContexts.instance().getRequest().getSession();
+			if (session != null && !session.getId().equals(a.getCsrfToken())) {
+				throw new SecurityException(
+                	"Blocked request without session id (CSRF attack?)");
+			}
+		}
 		DefaultExecutionContext ctx = new DefaultExecutionContext(this);
 		try {
 			return doExecute(action, ctx);

@@ -1,10 +1,9 @@
 package org.fedorahosted.flies.webtrans.shared.rpc;
 
-import net.customware.gwt.dispatch.shared.Action;
-
 import org.fedorahosted.flies.common.LocaleId;
 
-public class GetTranslationMemory implements Action<GetTranslationMemoryResult> {
+public class GetTranslationMemory 
+	extends AbstractDispatchAction<GetTranslationMemoryResult> { 
 	
 	public static enum SearchType {
 		EXACT,
