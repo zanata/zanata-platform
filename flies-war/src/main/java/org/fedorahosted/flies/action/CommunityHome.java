@@ -8,11 +8,9 @@ import org.fedorahosted.flies.model.HPerson;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.core.Conversation;
 import org.jboss.seam.faces.FacesMessages;
 
 @Name("communityHome")
@@ -22,9 +20,10 @@ public class CommunityHome extends SlugHome<HCommunity>{
 	private String slug;
 	
 	@Override
-	@Restrict("#{identity.loggedIn}")
+	@Restrict("#{s:hasRole('admin')}")
 	protected HCommunity createInstance() {
 		HCommunity instance = super.createInstance();
+		// FIXME this should be the current user
 		instance.setOwner(getEntityManager().find(HPerson.class, 1l));
 		return instance;
 	}
@@ -62,10 +61,10 @@ public class CommunityHome extends SlugHome<HCommunity>{
 	}
 	
 	@Override
+	@Restrict("#{s:hasRole('admin')}")
 	public String persist() {
 		if(!validateSlug(getInstance().getSlug(), "slug"))
 			return null;
-		// TODO Auto-generated method stub
 		return super.persist();
 	}
 	
