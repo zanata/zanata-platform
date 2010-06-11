@@ -56,9 +56,11 @@ public class Application implements EntryPoint{
 						redirectToLogin();
 					}
 					catch(NoSuchWorkspaceException e) {
+						Log.error("Invalid workspace", e);
 						showError("Invalid Workspace");
 					}
 					catch(Throwable e) {
+						Log.error("An unexpected Error occurred", e);
 						showError("An unexpected Error occurred: " + e.getMessage());
 					}
 				}
