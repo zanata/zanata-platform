@@ -33,6 +33,7 @@
   </page>
 
   <page view-id="/project/create_project.xhtml">
+    <restrict>#{s:hasRole('admin')}</restrict>
     <navigation from-action="#{projectHome.persist}">
       <rule if="#{projectHome.managed}">
         <redirect view-id="/project/project.xhtml">
@@ -65,6 +66,7 @@
   </page>
 
   <page view-id="/project/add_iteration.xhtml">
+    <restrict>#{s:hasRole('admin')}</restrict>
     <param name="projectSlug" value="#{projectIterationHome.projectSlug}" />
     <action execute="#{projectIterationHome.validateProjectSlug}" />
 
@@ -84,6 +86,7 @@
   </page>
 
   <page view-id="/project/iteration_edit.xhtml">
+    <restrict>#{s:hasRole('admin')}</restrict>
     <param name="slug" value="#{projectIterationHome.slug}" />
     <param name="projectSlug" value="#{projectIterationHome.projectSlug}" />
 
@@ -108,6 +111,7 @@
   </page>
 
   <page view-id="/community/create_community.xhtml">
+    <restrict>#{s:hasRole('admin')}</restrict>
     <navigation from-action="#{communityHome.persist}">
       <rule if="#{communityHome.managed}">
         <redirect view-id="/community/community.xhtml">
@@ -121,6 +125,7 @@
   </page>
 
   <page view-id="/community/edit.xhtml">
+    <restrict>#{s:hasRole('admin')}</restrict>
     <param name="slug" value="#{communityHome.id}" />
 
     <navigation from-action="#{communityHome.update}">
