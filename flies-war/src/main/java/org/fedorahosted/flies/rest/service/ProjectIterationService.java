@@ -125,7 +125,7 @@ public class ProjectIterationService {
 		MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON,
 		MediaType.APPLICATION_XML,
 		MediaType.APPLICATION_JSON})
-	@Restrict("#{identity.loggedIn}")
+	@Restrict("#{s:hasRole('admin')}")
 	public Response put(InputStream messageBody) {
 		
 		ResponseBuilder response;

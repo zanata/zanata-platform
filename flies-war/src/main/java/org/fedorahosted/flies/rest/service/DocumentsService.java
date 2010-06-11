@@ -76,7 +76,7 @@ public class DocumentsService {
 	@Consumes( { MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML,
 			MediaTypes.APPLICATION_FLIES_DOCUMENTS_JSON,
 			MediaType.APPLICATION_JSON })
-	@Restrict("#{identity.loggedIn}")
+	@Restrict("#{s:hasRole('admin')}")
 	public Response post(Documents documents) {
 		log.debug("HTTP POST {0} : \n{1}", request.getRequestURL(), documents);
 		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(
@@ -144,7 +144,7 @@ public class DocumentsService {
 	@PUT
 	@Consumes( { MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML,
 			MediaTypes.APPLICATION_FLIES_DOCUMENTS_JSON })
-	@Restrict("#{identity.loggedIn}")
+	@Restrict("#{s:hasRole('admin')}")
 	public Response put(Documents documents) {
 		log.debug("HTTP PUT {0} : \n{1}", request.getRequestURL(), documents);
 		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(

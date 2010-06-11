@@ -126,7 +126,7 @@ public class ProjectService {
 		MediaTypes.APPLICATION_FLIES_PROJECT_JSON,
 		MediaType.APPLICATION_XML,
 		MediaType.APPLICATION_JSON})
-	@Restrict("#{identity.loggedIn}")
+	@Restrict("#{s:hasRole('admin')}")
 	public Response put(InputStream messageBody) {
 
 		ResponseBuilder response;
