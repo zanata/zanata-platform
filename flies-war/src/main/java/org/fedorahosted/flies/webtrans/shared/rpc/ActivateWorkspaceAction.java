@@ -1,8 +1,10 @@
 package org.fedorahosted.flies.webtrans.shared.rpc;
 
+import net.customware.gwt.dispatch.shared.Action;
+
 import org.fedorahosted.flies.webtrans.shared.model.WorkspaceId;
 
-public class ActivateWorkspaceAction extends AbstractDispatchAction<ActivateWorkspaceResult> {
+public class ActivateWorkspaceAction implements Action<ActivateWorkspaceResult> {
 	
 	private static final long serialVersionUID = 1L;
 

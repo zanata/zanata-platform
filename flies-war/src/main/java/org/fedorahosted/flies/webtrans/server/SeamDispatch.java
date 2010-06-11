@@ -17,7 +17,7 @@ import net.customware.gwt.dispatch.shared.UnsupportedActionException;
 
 import org.fedorahosted.flies.webtrans.shared.auth.AuthenticationError;
 import org.fedorahosted.flies.webtrans.shared.auth.AuthorizationError;
-import org.fedorahosted.flies.webtrans.shared.rpc.DispatchAction;
+import org.fedorahosted.flies.webtrans.shared.rpc.WrappedAction;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
@@ -109,17 +109,18 @@ public class SeamDispatch implements Dispatch {
 	@Override
 	public <A extends Action<R>, R extends Result> R execute(A action)
 			throws ActionException {
-		if (action instanceof DispatchAction<?>) {
-			DispatchAction<?> a = (DispatchAction<?>) action;
-			HttpSession session = ServletContexts.instance().getRequest().getSession();
-			if (session != null && !session.getId().equals(a.getCsrfToken())) {
-				throw new SecurityException(
-                	"Blocked request without session id (CSRF attack?)");
-			}
+		if (!(action instanceof WrappedAction<?>)) {
+			throw new ActionException("Invalid (non-wrapped) action received: "+action.getClass());
+		}
+		WrappedAction<?> a = (WrappedAction<?>) action;
+		HttpSession session = ServletContexts.instance().getRequest().getSession();
+		if (session != null && !session.getId().equals(a.getCsrfToken())) {
+			throw new SecurityException(
+            	"Blocked action without session id (CSRF attack?)");
 		}
 		DefaultExecutionContext ctx = new DefaultExecutionContext(this);
 		try {
-			return doExecute(action, ctx);
+			return (R) doExecute(a.getAction(), ctx);
 		} catch (ActionException e) {
 			ctx.rollback();
 			throw e;

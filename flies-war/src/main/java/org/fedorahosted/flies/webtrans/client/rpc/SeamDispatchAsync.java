@@ -11,7 +11,7 @@ import org.fedorahosted.flies.webtrans.shared.auth.AuthenticationError;
 import org.fedorahosted.flies.webtrans.shared.auth.AuthorizationError;
 import org.fedorahosted.flies.webtrans.shared.auth.Identity;
 import org.fedorahosted.flies.webtrans.shared.model.WorkspaceContext;
-import org.fedorahosted.flies.webtrans.shared.rpc.AbstractDispatchAction;
+import org.fedorahosted.flies.webtrans.shared.rpc.WrappedAction;
 import org.fedorahosted.flies.webtrans.shared.rpc.AbstractWorkspaceAction;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -41,13 +41,6 @@ public class SeamDispatchAsync implements CachingDispatchAsync {
 	
 	public <A extends Action<R>, R extends Result> void execute(final A action,
 			final AsyncCallback<R> callback) {
-		
-		if (action instanceof AbstractDispatchAction<?>) {
-			AbstractDispatchAction<?> a = (AbstractDispatchAction<?>) action;
-			String sessionId = Cookies.getCookie("JSESSIONID");
-			a.setCsrfToken(sessionId);
-		}
-
 		if( action instanceof AbstractWorkspaceAction<?> ) {
 			AbstractWorkspaceAction<?> wsAction = (AbstractWorkspaceAction<?>) action;
 			if(workspaceContext == null || identity == null) {
@@ -58,7 +51,8 @@ public class SeamDispatchAsync implements CachingDispatchAsync {
 			wsAction.setWorkspaceId(workspaceContext.getWorkspaceId());
 		}
 		
-		realService.execute(action, new AsyncCallback<Result>() {
+		String sessionId = Cookies.getCookie("JSESSIONID");
+		realService.execute(new WrappedAction<R>(action, sessionId), new AsyncCallback<Result>() {
 
 			public void onFailure(final Throwable caught) {
 				if(caught instanceof AuthenticationError) {
