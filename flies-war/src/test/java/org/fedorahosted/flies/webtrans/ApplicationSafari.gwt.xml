@@ -1,7 +1,0 @@
-<!DOCTYPE module PUBLIC "//gwt-module/" "http://google-web-toolkit.googlecode.com/svn/tags/1.6.2/distro-source/core/src/gwt-module.dtd">
-<module> <!-- rename-to="org.fedorahosted.flies.webtrans.Application" -->
-    <inherits name="org.fedorahosted.flies.webtrans.Application"/>
-    <!-- Safari, WebKit, Chrome, Chromium... -->
-    <set-property name="user.agent" value="safari"/>
-    <set-property name="locale" value="default"/>
-</module>
