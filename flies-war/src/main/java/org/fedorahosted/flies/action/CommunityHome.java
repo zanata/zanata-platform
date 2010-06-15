@@ -20,7 +20,6 @@ public class CommunityHome extends SlugHome<HCommunity>{
 	private String slug;
 	
 	@Override
-	@Restrict("#{s:hasRole('admin')}")
 	protected HCommunity createInstance() {
 		HCommunity instance = super.createInstance();
 		// FIXME this should be the current user
