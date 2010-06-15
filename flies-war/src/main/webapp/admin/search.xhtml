@@ -13,7 +13,7 @@
       <h1>Search</h1>
                  
         <a4j:form>
-            <s:token />
+            <s:token allowMultiplePosts="true" />
 	        <a4j:commandButton id="reindex"
 	       		value="Re-index full text search database"
 	      		action="#{adminAction.reindexDatabase}"/>

@@ -79,7 +79,7 @@
         </s:div>
         <h2>API Key</h2>
         <h:form>
-          <s:token/>
+          <s:token allowMultiplePosts="true" />
           <s:span id="no_api_key" rendered="#{personHome.instance.account.apiKey == null}">(Not Generated)</s:span>
           <s:fragment id="api_key" rendered="#{personHome.instance.account.apiKey != null}"> 
             <p>Your current API Key is
