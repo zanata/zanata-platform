@@ -27,48 +27,47 @@
       <rich:panel>
         <f:facet name="header">User Manager</f:facet>
   	    
-        <h:dataTable 
-            id="threads"
-            value="#{users}" 
-            var="user" 
-            cellspacing="0"
-            headerClass="columnHeader"
-            rowClasses="odd,even"
-            columnClasses=",,enabled,action">
-          <h:column width="auto">
-            <f:facet name="header">
-              User name
-            </f:facet>
-            #{user}
-          </h:column>
-          <h:column width="auto">
-            <f:facet name="header">
-              Member Of
-            </f:facet>
-            #{userSearch.getUserRoles(user)}
-          </h:column>
-          <h:column width="auto">
-            <f:facet name="header">
-              Enabled
-            </f:facet>
-            <div class="#{identityManager.isUserEnabled(user) ? 'checkmark' : 'cross'}"/>
-          </h:column>
-          <h:column width="auto">
-            <f:facet name="header">
-              Action
-            </f:facet>
-          
-	        <a4j:form>
-	            <s:token />
+        <a4j:form>
+            <s:token />
+	        <h:dataTable 
+	            id="threads"
+	            value="#{users}" 
+	            var="user" 
+	            cellspacing="0"
+	            headerClass="columnHeader"
+	            rowClasses="odd,even"
+	            columnClasses=",,enabled,action">
+	          <h:column width="auto">
+	            <f:facet name="header">
+	              User name
+	            </f:facet>
+	            #{user}
+	          </h:column>
+	          <h:column width="auto">
+	            <f:facet name="header">
+	              Member Of
+	            </f:facet>
+	            #{userSearch.getUserRoles(user)}
+	          </h:column>
+	          <h:column width="auto">
+	            <f:facet name="header">
+	              Enabled
+	            </f:facet>
+	            <div class="#{identityManager.isUserEnabled(user) ? 'checkmark' : 'cross'}"/>
+	          </h:column>
+	          <h:column width="auto">
+	            <f:facet name="header">
+	              Action
+	            </f:facet>
 	            <s:fragment rendered="#{s:hasPermission('seam.user', 'update')}">
 	              <h:commandLink value="Edit" action="#{userAction.editUser(userSearch.selectedUser)}"/><span> | </span>
 	            </s:fragment>
 	            <h:commandLink value="Delete" action="#{identityManager.deleteUser(userSearch.selectedUser)}" 
 	                    rendered="#{s:hasPermission('seam.user', 'delete')}"
 	                    onclick="return confirmDelete()"/>
-	        </a4j:form>
-          </h:column>
-  	    </h:dataTable>
+	          </h:column>
+	  	    </h:dataTable>
+        </a4j:form>
       </rich:panel>	    
     </ui:define>
     
