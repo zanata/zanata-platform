@@ -62,6 +62,9 @@
     </ui:define>
     
     <ui:define name="left_content">
-    	<s:link action="#{localeList.importJavaLocales}">Import Java Locales</s:link>
+        <a4j:form>
+            <s:token />
+	    	<a4j:commandLink value="Import Java Locales" action="#{localeList.importJavaLocales}"/>
+	    </a4j:form>
 	</ui:define>    
 </ui:composition>

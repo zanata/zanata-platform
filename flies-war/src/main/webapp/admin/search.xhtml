@@ -12,9 +12,12 @@
     <ui:define name="center_content">
       <h1>Search</h1>
                  
-        <s:button id="reindex"
-       		value="Re-index full text search database"
-      		action="#{adminAction.reindexDatabase}"/>
+        <a4j:form>
+            <s:token />
+	        <a4j:commandButton id="reindex"
+	       		value="Re-index full text search database"
+	      		action="#{adminAction.reindexDatabase}"/>
+	    </a4j:form>
     </ui:define>
     
 </ui:composition>

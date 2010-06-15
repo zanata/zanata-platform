@@ -4,6 +4,7 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:rich="http://richfaces.org/rich" 
+    xmlns:a4j="http://richfaces.org/a4j"
     xmlns:s="http://jboss.com/products/seam/taglib">
 
   <ui:composition template="../layout/template.xhtml">
@@ -57,12 +58,15 @@
               Action
             </f:facet>
           
-            <s:fragment rendered="#{s:hasPermission('seam.user', 'update')}">
-              <s:link value="Edit" action="#{userAction.editUser(userSearch.selectedUser)}"/><span> | </span>
-            </s:fragment>
-            <s:link value="Delete" action="#{identityManager.deleteUser(userSearch.selectedUser)}" 
-                    rendered="#{s:hasPermission('seam.user', 'delete')}"
-                    onclick="return confirmDelete()"/>
+	        <a4j:form>
+	            <s:token />
+	            <s:fragment rendered="#{s:hasPermission('seam.user', 'update')}">
+	              <h:commandLink value="Edit" action="#{userAction.editUser(userSearch.selectedUser)}"/><span> | </span>
+	            </s:fragment>
+	            <h:commandLink value="Delete" action="#{identityManager.deleteUser(userSearch.selectedUser)}" 
+	                    rendered="#{s:hasPermission('seam.user', 'delete')}"
+	                    onclick="return confirmDelete()"/>
+	        </a4j:form>
           </h:column>
   	    </h:dataTable>
       </rich:panel>	    
