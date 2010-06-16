@@ -8,7 +8,7 @@
     xmlns:a4j="http://richfaces.org/a4j">
     
 
-  <ui:composition template="./layout/template.xhtml">
+  <ui:composition template="../layout/template.xhtml">
   
     <ui:define name="center_content">
       <h1>Edit Profile</h1>
@@ -17,24 +17,24 @@
           <rich:panel>
             <f:facet name="header">Account Details</f:facet>
               
-            <s:decorate id="nameField" template="./layout/edit.xhtml">
+            <s:decorate id="nameField" template="../layout/edit.xhtml">
               <ui:define name="label">Name</ui:define>
               <h:inputText id="name" value="#{personHome.instance.name}" required="true">
                 <a4j:support event="onblur" reRender="nameField" ajaxSingle="true"/>
               </h:inputText>
-              <h:graphicImage id="nameHelp" value="./img/msginfo.png" styleClass="input_help">
+              <h:graphicImage id="nameHelp" value="../img/msginfo.png" styleClass="input_help">
                 <rich:toolTip>
                   Must be lowercase blah blah and so on...
                 </rich:toolTip>
               </h:graphicImage>
             </s:decorate>
                 
-            <s:decorate id="emailField" template="./layout/edit.xhtml">
+            <s:decorate id="emailField" template="../layout/edit.xhtml">
               <ui:define name="label">Email</ui:define>
               <h:inputText id="email" value="#{personHome.instance.email}" required="true">
                   <a4j:support event="onblur" reRender="emailField" ajaxSingle="true"/>
               </h:inputText>
-              <h:graphicImage id="usernameHelp" value="./img/msginfo.png" styleClass="input_help">
+              <h:graphicImage id="usernameHelp" value="../img/msginfo.png" styleClass="input_help">
                 <rich:toolTip>
                   Must be lowercase blah blah and so on...
                 </rich:toolTip>
@@ -45,7 +45,7 @@
 
             <div class="actionButtons">
               <h:commandButton value="Save" action="#{personHome.update}"/>
-              <s:button view="/person_profile.xhtml" value="Cancel" propagation="end"/>
+              <s:button view="/profile/view.xhtml" value="Cancel" propagation="end"/>
             </div>
     
           </rich:panel>

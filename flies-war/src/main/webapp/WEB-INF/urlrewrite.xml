@@ -108,8 +108,13 @@
   </rule>  
 
   <rule>
-    <from casesensitive="true">^/editprofile(.+)?$</from>
-    <to last="true">/editprofile.seam$1</to>
+    <from casesensitive="true">^/profile/edit(.+)?$</from>
+    <to last="true">/profile/edit.seam$1</to>
+  </rule>  
+
+  <rule>
+    <from casesensitive="true">^/profile/view(.+)?$</from>
+    <to last="true">/profile/view.seam$1</to>
   </rule>  
 
   <rule>
@@ -208,9 +213,15 @@
     <from>^(/.+)?/account/changepassword.seam(.+)?$</from>
     <to>$1/account/changepassword$2</to>
   </outbound-rule>
+  
   <outbound-rule>
-    <from>^(/.+)?/editprofile.seam(.+)?$</from>
-    <to>$1/editprofile$2</to>
+    <from>^(/.+)?/profile/edit.seam(.+)?$</from>
+    <to>$1/profile/edit$2</to>
+  </outbound-rule>
+
+  <outbound-rule>
+    <from>^(/.+)?/profile/view.seam(.+)?$</from>
+    <to>$1/profile/view$2</to>
   </outbound-rule>
 
   <outbound-rule>
