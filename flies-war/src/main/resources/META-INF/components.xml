@@ -101,4 +101,10 @@
         <value>META-INF/testdata/TribesData.dbunit.xml</value>
     </property>
   </component>
+  
+  <!-- 
+	${components.xml.nukes}  
+  -->
+  
+  
 </components>

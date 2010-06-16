@@ -151,27 +151,30 @@
   </page>
 
   <page view-id="/account/password_reset.xhtml">
+    <restrict>#{not identityStore.nukesActive}</restrict>
     <param name="key" value="#{passwordReset.activationKey}" />
     <action execute="#{passwordReset.validateActivationKey}" />
   </page>
 
   <page view-id="/editprofile.xhtml" login-required="true" />
   
-  <page view-id="/account/changepassword.xhtml" login-required="true" />
+  <page view-id="/account/changepassword.xhtml" login-required="true">
+    <restrict>#{not identityStore.nukesActive}</restrict>
+  </page>
 
-  <exception class="org.fedorahosted.flies.security.KeyNotFoundException">
+  <exception class="org.fedorahosted.flies.security.KeyNotFoundException" log-level="debug">
     <redirect view-id="/error.xhtml">
       <message severity="error">Invalid Activation Key</message>
     </redirect>
   </exception>
 
-  <exception class="org.jboss.seam.framework.EntityNotFoundException">
+  <exception class="org.jboss.seam.framework.EntityNotFoundException" log-level="debug">
     <redirect view-id="/error.xhtml">
       <message severity="warn">Record not found</message>
     </redirect>
   </exception>
 
-  <exception class="javax.persistence.EntityNotFoundException">
+  <exception class="javax.persistence.EntityNotFoundException" log-level="debug">
     <redirect view-id="/error.xhtml">
       <message severity="warn">Record not found</message>
     </redirect>
@@ -190,26 +193,25 @@
     </redirect>
   </exception>
 
-  <exception class="org.jboss.seam.security.AuthorizationException">
+  <exception class="org.jboss.seam.security.AuthorizationException" log-level="debug">
     <redirect view-id="/error.xhtml">
       <message severity="error">You don't have permission to access this resource</message>
     </redirect>
   </exception>
 
-  <exception class="org.jboss.seam.security.NotLoggedInException">
+  <exception class="org.jboss.seam.security.NotLoggedInException" log-level="debug">
     <redirect view-id="/account/login.xhtml">
       <message severity="warn">#{messages['org.jboss.seam.NotLoggedIn']}</message>
     </redirect>
   </exception>
 
-  <exception class="javax.faces.application.ViewExpiredException">
+  <exception class="javax.faces.application.ViewExpiredException" log-level="debug">
     <redirect view-id="/error.xhtml">
       <message severity="warn">Your session has timed out, please try again</message>
     </redirect>
   </exception>
 
-  <exception class="org.jboss.seam.ConcurrentRequestTimeoutException"
-    log-level="trace">
+  <exception class="org.jboss.seam.ConcurrentRequestTimeoutException" log-level="trace">
     <http-error error-code="503" />
   </exception>
 

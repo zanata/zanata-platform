@@ -34,7 +34,7 @@ public class HAccount extends AbstractFliesEntity implements Serializable {
 	private HPerson person;
 	private Set<HAccountRole> roles;
 
-	@OneToOne(mappedBy = "account", cascade=CascadeType.REMOVE)
+	@OneToOne(mappedBy = "account", cascade=CascadeType.ALL)
 	public HPerson getPerson() {
 		return person;
 	}

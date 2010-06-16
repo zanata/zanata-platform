@@ -2,6 +2,8 @@ package org.fedorahosted.flies.action;
 
 import org.fedorahosted.flies.model.HAccount;
 import org.fedorahosted.flies.model.HPerson;
+import org.fedorahosted.flies.security.FliesJpaIdentityStore;
+import org.jboss.infrastructure.nukes.IUserInfo;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -31,6 +33,11 @@ public class AuthenticationEvents {
 	@Observer(JpaIdentityStore.EVENT_USER_CREATED)
 	public void createSuccessful(HAccount account) {
 		log.info("Account {0} created", account.getUsername());
+	}
+	
+	@Observer(FliesJpaIdentityStore.EVENT_NEW_USER_LOGGED_IN)
+	public void onNewNukesUserLoggedIn(IUserInfo user) {
+		log.info("Account {0} created from external system", user.getUsername());
 	}
 
 }

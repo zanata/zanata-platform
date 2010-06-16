@@ -15,7 +15,7 @@
 	<properties>
 		<version.hibernate>3.3.2.GA</version.hibernate>
 		<version.jboss.embedded>beta3.SP12</version.jboss.embedded>
-
+		<version.nukes.security>1.0</version.nukes.security>
 		<!-- application properties -->
 
 		<env.debug>false</env.debug>
@@ -38,6 +38,8 @@
 -->
 		<ds.user.name>sa</ds.user.name> <!-- *-ds.xml -->
 		<ds.password></ds.password> <!-- *-ds.xml -->
+
+		<components.xml.nukes></components.xml.nukes>
 
 		<extra.servlets></extra.servlets>
 	</properties>
@@ -688,6 +690,34 @@
 		</profile>
 
 		<profile>
+			<id>nukes-security</id>
+			<properties>
+				<nukes.dbUrl>jdbc:mysql://localhost:3306/jboss_nukes</nukes.dbUrl>
+				<nukes.dbUserName>root</nukes.dbUserName>
+				<nukes.dbPass></nukes.dbPass>
+				<components.xml.nukes>
+					<![CDATA[ 
+					-->
+				    <component name="nukesSecurityService" 
+				    	class="org.jboss.infrastructure.nukes.NukesSecurityService" installed="true">
+				        <property name="dbUrl">${nukes.dbUrl}</property>
+				        <property name="dbUserName">${nukes.dbUserName}</property>
+				        <property name="dbPass">${nukes.dbPass}</property>
+				    </component>
+					<!--
+					]]>
+				</components.xml.nukes>
+			</properties>
+			<dependencies>
+				<dependency>
+					<groupId>org.jboss.infrastructure</groupId>
+					<artifactId>seam-jbnukes-security-impl</artifactId>
+					<version>${version.nukes.security}</version>
+				</dependency>
+			</dependencies>
+		</profile>
+
+		<profile>
 			<id>prod</id>
 			<properties>
 				<env.debug>false</env.debug>
@@ -742,6 +772,12 @@
 			<groupId>org.fedorahosted.flies</groupId>
 			<artifactId>flies-common-api</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.jboss.infrastructure</groupId>
+			<artifactId>seam-jbnukes-security-api</artifactId>
+			<version>${version.nukes.security}</version>
 		</dependency>
 
 		<!-- Seam Dependencies -->
