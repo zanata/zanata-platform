@@ -19,16 +19,17 @@
             <ui:define name="label">Username</ui:define>
             <h:inputText id="username" value="#{userAction.username}" readonly="#{identityManager.userExists(userAction.username)}"/>
           </s:decorate>
-              
-          <s:decorate id="passwordField" template="../layout/edit.xhtml">
-            <ui:define name="label">Password</ui:define>
-            <h:inputSecret id="password" value="#{userAction.password}"/>
-          </s:decorate>
-              
-          <s:decorate id="passwordConfirmField" template="../layout/edit.xhtml">
-            <ui:define name="label">Confirm Password</ui:define>
-            <h:inputSecret id="confirm" value="#{userAction.confirm}"/>
-          </s:decorate>
+	      <s:fragment rendered="#{not identityStore.nukesActive}">
+	          <s:decorate id="passwordField" template="../layout/edit.xhtml" >
+	            <ui:define name="label">Password</ui:define>
+	            <h:inputSecret id="password" value="#{userAction.password}"/>
+	          </s:decorate>
+	              
+	          <s:decorate id="passwordConfirmField" template="../layout/edit.xhtml">
+	            <ui:define name="label">Confirm Password</ui:define>
+	            <h:inputSecret id="confirm" value="#{userAction.confirm}"/>
+	          </s:decorate>
+          </s:fragment>              
               
           <s:decorate id="rolesField" template="../layout/edit.xhtml">
             <ui:define name="label">Member of</ui:define>
