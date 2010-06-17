@@ -11,99 +11,100 @@
     </navigation>
   </page>
 
-  <page view-id="/admin/*" login-required="true">
-    <restrict>#{s:hasRole('admin')}</restrict>
-  </page>
-  
-  <page view-id="/admin/server_configuration.xhtml">
-    <navigation from-action="#{serverConfigurationBean.update}">
-      <redirect view-id="/admin/home.xhtml"/>
-    </navigation>  
-  </page>
-  
-  
   <page view-id="/search.xhtml" action="#{projectSearch.search}">
     <param name="q" value="#{projectSearch.searchQuery}" />
     <param name="page" value="#{projectSearch.currentPage}" />
   </page>
 
-  <page view-id="/project/project.xhtml">
-    <param name="slug" value="#{projectHome.slug}" />
-    <action execute="#{projectHome.validateSuppliedId}" />
-  </page>
+  <!-- Account -->
 
-  <page view-id="/project/create_project.xhtml">
-    <restrict>#{s:hasRole('admin')}</restrict>
-    <navigation from-action="#{projectHome.persist}">
-      <rule if="#{projectHome.managed}">
-        <redirect view-id="/project/project.xhtml">
-          <param name="slug" value="#{projectHome.instance.slug}" />
-        </redirect>
+  <page view-id="/account/login.xhtml">
+    <param name="continue" value="#{userRedirect.encodedUrl}" />
+    <header name="Cache-Control" value="no-cache, no-store, max-age=0, must-revalidate" />
+    <navigation from-action="#{identity.login}">
+      <rule if="#{identity.loggedIn and not userRedirect.redirect}">
+        <end-conversation before-redirect="true" />
+        <redirect view-id="/home.xhtml" />
+      </rule>
+      <rule if="#{identity.loggedIn and userRedirect.redirect}">
+        <end-conversation before-redirect="true" />
+        <redirect url="#{userRedirect.url}" />
       </rule>
     </navigation>
+  </page>
 
-    <navigation from-action="#{projectHome.cancel}">
-      <redirect view-id="/project/home.xhtml" />
+  <page view-id="/account/logout.xhtml">
+    <action execute="#{identity.logout}" if="#{identity.loggedIn}" />
+    <navigation>
+      <redirect view-id="/home.xhtml" />
     </navigation>
   </page>
 
-  <page view-id="/project/edit.xhtml" login-required="true">
-    <restrict>#{s:hasRole('admin')}</restrict>
-    <param name="slug" value="#{projectHome.slug}" />
-
-    <navigation from-action="#{projectHome.update}">
-      <redirect view-id="/project/project.xhtml">
-        <param name="slug" value="#{projectHome.slug}" />
-      </redirect>
-    </navigation>
-
-    <navigation from-action="#{projectHome.cancel}">
-      <redirect view-id="/project/project.xhtml">
-        <param name="slug" value="#{projectHome.slug}" />
-      </redirect>
-    </navigation>
-
+  <page view-id="/account/activate.xhtml">
+    <param name="key" value="#{activate.activationKey}" />
+    <action execute="#{activate.validateActivationKey}" />
+    <action execute="#{activate.activate}" />
   </page>
 
-  <page view-id="/project/add_iteration.xhtml">
-    <restrict>#{s:hasRole('admin')}</restrict>
-    <param name="projectSlug" value="#{projectIterationHome.projectSlug}" />
-    <action execute="#{projectIterationHome.validateProjectSlug}" />
+  <page view-id="/account/password_reset.xhtml">
+    <restrict>#{not identityStore.nukesActive}</restrict>
+    <param name="key" value="#{passwordReset.activationKey}" />
+    <action execute="#{passwordReset.validateActivationKey}" />
+  </page>
 
-    <navigation from-action="#{projectIterationHome.persist}">
-      <rule if="#{projectIterationHome.managed}">
-        <redirect view-id="/project/project.xhtml">
-          <param name="slug" value="#{projectIterationHome.projectSlug}" />
-        </redirect>
+  <page view-id="/account/changepassword.xhtml" login-required="true">
+    <restrict>#{not identityStore.nukesActive}</restrict>
+  </page>
+
+  <!-- Admin -->
+
+  <page view-id="/admin/*" login-required="true">
+    <restrict>#{s:hasRole('admin')}</restrict>
+  </page>
+
+  <page view-id="/admin/roledetail.xhtml">
+    <navigation from-action="#{roleAction.save}">
+      <rule if-outcome="success">
+        <redirect view-id="/admin/rolemanager.xhtml" />
       </rule>
     </navigation>
+  </page>
 
-    <navigation from-action="#{projectIterationHome.cancel}">
-      <redirect view-id="/project/project.xhtml">
-        <param name="slug" value="#{projectIterationHome.projectSlug}" />
-      </redirect>
+  <page view-id="/admin/rolemanager.xhtml" action="#{roleSearch.loadRoles}">
+    <restrict>#{s:hasPermission('seam.role', 'read')}</restrict>
+    <navigation from-action="#{roleAction.createRole}">
+      <redirect view-id="/admin/roledetail.xhtml" />
+    </navigation>
+    <navigation from-action="#{roleAction.editRole(roleSearch.selectedRole)}">
+      <redirect view-id="/admin/roledetail.xhtml" />
     </navigation>
   </page>
 
-  <page view-id="/project/iteration_edit.xhtml">
-    <restrict>#{s:hasRole('admin')}</restrict>
-    <param name="slug" value="#{projectIterationHome.slug}" />
-    <param name="projectSlug" value="#{projectIterationHome.projectSlug}" />
-
-    <action execute="#{projectIterationHome.validateSuppliedId}" />
-
-    <navigation from-action="#{projectIterationHome.update}">
-      <redirect view-id="/project/project.xhtml">
-        <param name="slug" value="#{projectIterationHome.projectSlug}" />
-      </redirect>
-    </navigation>
-
-    <navigation from-action="#{projectIterationHome.cancel}">
-      <redirect view-id="/project/project.xhtml">
-        <param name="slug" value="#{projectIterationHome.projectSlug}" />
-      </redirect>
+  <page view-id="/admin/userdetail.xhtml">
+    <navigation from-action="#{userAction.save}">
+      <rule if-outcome="success">
+        <redirect view-id="/admin/usermanager.xhtml" />
+      </rule>
     </navigation>
   </page>
+
+  <page view-id="/admin/usermanager.xhtml" action="#{userSearch.loadUsers}">
+    <restrict>#{s:hasPermission('seam.user', 'read')}</restrict>
+    <navigation from-action="#{userAction.createUser}">
+      <redirect view-id="/admin/userdetail.xhtml" />
+    </navigation>
+    <navigation from-action="#{userAction.editUser(userSearch.selectedUser)}">
+      <redirect view-id="/admin/userdetail.xhtml" />
+    </navigation>
+  </page>
+
+  <page view-id="/admin/server_configuration.xhtml">
+    <navigation from-action="#{serverConfigurationBean.update}">
+      <redirect view-id="/admin/home.xhtml" />
+    </navigation>
+  </page>
+
+  <!-- Community -->
 
   <page view-id="/community/community.xhtml">
     <param name="slug" value="#{communityHome.id}" />
@@ -127,55 +128,119 @@
   <page view-id="/community/edit.xhtml">
     <restrict>#{s:hasRole('admin')}</restrict>
     <param name="slug" value="#{communityHome.id}" />
-
     <navigation from-action="#{communityHome.update}">
       <redirect view-id="/community/community.xhtml"
         include-page-params="true" />
     </navigation>
-
     <navigation from-action="#{communityHome.cancel}">
       <redirect view-id="/community/community.xhtml"
         include-page-params="true" />
     </navigation>
   </page>
 
+  <!-- Profile -->
+
+  <page view-id="/profile/edit.xhtml" login-required="true" />
+
+  <page view-id="/profile/view.xhtml" login-required="true" />
+
+  <!-- Project -->
+
+  <page view-id="/project/project.xhtml">
+    <param name="slug" value="#{projectHome.slug}" />
+    <action execute="#{projectHome.validateSuppliedId}" />
+  </page>
+
+  <page view-id="/project/create_project.xhtml">
+    <restrict>#{s:hasRole('admin')}</restrict>
+    <navigation from-action="#{projectHome.persist}">
+      <rule if="#{projectHome.managed}">
+        <redirect view-id="/project/project.xhtml">
+          <param name="slug" value="#{projectHome.instance.slug}" />
+        </redirect>
+      </rule>
+    </navigation>
+    <navigation from-action="#{projectHome.cancel}">
+      <redirect view-id="/project/home.xhtml" />
+    </navigation>
+  </page>
+
+  <page view-id="/project/edit.xhtml" login-required="true">
+    <restrict>#{s:hasRole('admin')}</restrict>
+    <param name="slug" value="#{projectHome.slug}" />
+    <navigation from-action="#{projectHome.update}">
+      <redirect view-id="/project/project.xhtml">
+        <param name="slug" value="#{projectHome.slug}" />
+      </redirect>
+    </navigation>
+    <navigation from-action="#{projectHome.cancel}">
+      <redirect view-id="/project/project.xhtml">
+        <param name="slug" value="#{projectHome.slug}" />
+      </redirect>
+    </navigation>
+  </page>
+
+  <page view-id="/project/add_iteration.xhtml">
+    <restrict>#{s:hasRole('admin')}</restrict>
+    <param name="projectSlug" value="#{projectIterationHome.projectSlug}" />
+    <action execute="#{projectIterationHome.validateProjectSlug}" />
+    <navigation from-action="#{projectIterationHome.persist}">
+      <rule if="#{projectIterationHome.managed}">
+        <redirect view-id="/project/project.xhtml">
+          <param name="slug" value="#{projectIterationHome.projectSlug}" />
+        </redirect>
+      </rule>
+    </navigation>
+    <navigation from-action="#{projectIterationHome.cancel}">
+      <redirect view-id="/project/project.xhtml">
+        <param name="slug" value="#{projectIterationHome.projectSlug}" />
+      </redirect>
+    </navigation>
+  </page>
+
+  <page view-id="/project/iteration_edit.xhtml">
+    <restrict>#{s:hasRole('admin')}</restrict>
+    <param name="slug" value="#{projectIterationHome.slug}" />
+    <param name="projectSlug" value="#{projectIterationHome.projectSlug}" />
+    <action execute="#{projectIterationHome.validateSuppliedId}" />
+    <navigation from-action="#{projectIterationHome.update}">
+      <redirect view-id="/project/project.xhtml">
+        <param name="slug" value="#{projectIterationHome.projectSlug}" />
+      </redirect>
+    </navigation>
+
+    <navigation from-action="#{projectIterationHome.cancel}">
+      <redirect view-id="/project/project.xhtml">
+        <param name="slug" value="#{projectIterationHome.projectSlug}" />
+      </redirect>
+    </navigation>
+  </page>
+
+  <!-- Tribe -->
+
   <page view-id="/tribe/tribe.xhtml">
     <param name="id" value="#{tribeHome.id}" />
     <action execute="#{tribeHome.validateSuppliedId}" />
   </page>
 
-  <page view-id="/account/activate.xhtml">
-    <param name="key" value="#{activate.activationKey}" />
-    <action execute="#{activate.validateActivationKey}" />
-    <action execute="#{activate.activate}" />
-  </page>
+  <!-- Exceptions -->
 
-  <page view-id="/account/password_reset.xhtml">
-    <restrict>#{not identityStore.nukesActive}</restrict>
-    <param name="key" value="#{passwordReset.activationKey}" />
-    <action execute="#{passwordReset.validateActivationKey}" />
-  </page>
-
-  <page view-id="/profile/edit.xhtml" login-required="true" />
-  <page view-id="/profile/view.xhtml" login-required="true" />
-  
-  <page view-id="/account/changepassword.xhtml" login-required="true">
-    <restrict>#{not identityStore.nukesActive}</restrict>
-  </page>
-
-  <exception class="org.fedorahosted.flies.security.KeyNotFoundException" log-level="debug">
+  <exception class="org.fedorahosted.flies.security.KeyNotFoundException"
+    log-level="debug">
     <redirect view-id="/error.xhtml">
       <message severity="error">Invalid Activation Key</message>
     </redirect>
   </exception>
 
-  <exception class="org.jboss.seam.framework.EntityNotFoundException" log-level="debug">
+  <exception class="org.jboss.seam.framework.EntityNotFoundException"
+    log-level="debug">
     <redirect view-id="/error.xhtml">
       <message severity="warn">Record not found</message>
     </redirect>
   </exception>
 
-  <exception class="javax.persistence.EntityNotFoundException" log-level="debug">
+  <exception class="javax.persistence.EntityNotFoundException"
+    log-level="debug">
     <redirect view-id="/error.xhtml">
       <message severity="warn">Record not found</message>
     </redirect>
@@ -194,25 +259,29 @@
     </redirect>
   </exception>
 
-  <exception class="org.jboss.seam.security.AuthorizationException" log-level="debug">
+  <exception class="org.jboss.seam.security.AuthorizationException"
+    log-level="debug">
     <redirect view-id="/error.xhtml">
       <message severity="error">You don't have permission to access this resource</message>
     </redirect>
   </exception>
 
-  <exception class="org.jboss.seam.security.NotLoggedInException" log-level="debug">
+  <exception class="org.jboss.seam.security.NotLoggedInException"
+    log-level="debug">
     <redirect view-id="/account/login.xhtml">
       <message severity="warn">#{messages['org.jboss.seam.NotLoggedIn']}</message>
     </redirect>
   </exception>
 
-  <exception class="javax.faces.application.ViewExpiredException" log-level="debug">
+  <exception class="javax.faces.application.ViewExpiredException"
+    log-level="debug">
     <redirect view-id="/error.xhtml">
       <message severity="warn">Your session has timed out, please try again</message>
     </redirect>
   </exception>
 
-  <exception class="org.jboss.seam.ConcurrentRequestTimeoutException" log-level="trace">
+  <exception class="org.jboss.seam.ConcurrentRequestTimeoutException"
+    log-level="trace">
     <http-error error-code="503" />
   </exception>
 
