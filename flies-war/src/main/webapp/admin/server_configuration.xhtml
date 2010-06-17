@@ -7,7 +7,7 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
     xmlns:a4j="http://richfaces.org/a4j"
-    template="../layout/template.xhtml">
+    template="../WEB-INF/layout/template.xhtml">
 
     <ui:define name="center_content">
       <rich:jQuery selector="#tab_admin" query="addClass('ui-tabs-selected')" />
@@ -16,7 +16,7 @@
           <rich:panel>
             <f:facet name="header">Server configuration</f:facet>
               
-            <s:decorate id="urlField" template="../layout/edit.xhtml">
+            <s:decorate id="urlField" template="../WEB-INF/layout/edit.xhtml">
               <ui:define name="label">Server URL</ui:define>
               <h:inputText id="url" value="#{serverConfigurationBean.serverUrl}">
                 <a4j:support event="onblur" reRender="urlField" ajaxSingle="false"/>

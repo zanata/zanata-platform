@@ -6,7 +6,7 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
-    template="../layout/template.xhtml">
+    template="../WEB-INF/layout/template.xhtml">
 
     <ui:define name="center_content">
         <rich:jQuery selector="#tab_communities" query="addClass('ui-tabs-selected')" />
@@ -16,7 +16,7 @@
                        columnClasses="grid_col" 
                        styleClass="grid_style" 
                        var="community">
-          <ui:include src="./community_view_inline.xhtml" />
+          <ui:include src="../WEB-INF/layout/community_view_inline.xhtml" />
         </rich:dataGrid>
     </ui:define>
     

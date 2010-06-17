@@ -6,7 +6,7 @@
     xmlns:rich="http://richfaces.org/rich"       
     xmlns:s="http://jboss.com/products/seam/taglib">
 
-  <ui:composition template="../layout/template.xhtml">
+  <ui:composition template="../WEB-INF/layout/template.xhtml">
   
     <ui:define name="center_content">
         
@@ -15,23 +15,23 @@
         <rich:panel>
           <f:facet name="header">Account Details</f:facet>
           
-          <s:decorate id="usernameField" template="../layout/edit.xhtml">
+          <s:decorate id="usernameField" template="../WEB-INF/layout/edit.xhtml">
             <ui:define name="label">Username</ui:define>
             <h:inputText id="username" value="#{userAction.username}" readonly="#{identityManager.userExists(userAction.username)}"/>
           </s:decorate>
 	      <s:fragment rendered="#{not identityStore.nukesActive}">
-	          <s:decorate id="passwordField" template="../layout/edit.xhtml" >
+	          <s:decorate id="passwordField" template="../WEB-INF/layout/edit.xhtml" >
 	            <ui:define name="label">Password</ui:define>
 	            <h:inputSecret id="password" value="#{userAction.password}"/>
 	          </s:decorate>
 	              
-	          <s:decorate id="passwordConfirmField" template="../layout/edit.xhtml">
+	          <s:decorate id="passwordConfirmField" template="../WEB-INF/layout/edit.xhtml">
 	            <ui:define name="label">Confirm Password</ui:define>
 	            <h:inputSecret id="confirm" value="#{userAction.confirm}"/>
 	          </s:decorate>
           </s:fragment>              
               
-          <s:decorate id="rolesField" template="../layout/edit.xhtml">
+          <s:decorate id="rolesField" template="../WEB-INF/layout/edit.xhtml">
             <ui:define name="label">Member of</ui:define>
             <div class="selectMany">
               <h:selectManyCheckbox id="roles" value="#{userAction.roles}" layout="pageDirection">
@@ -40,7 +40,7 @@
             </div>
           </s:decorate>
           
-          <s:decorate id="enabledField" template="../layout/edit.xhtml">
+          <s:decorate id="enabledField" template="../WEB-INF/layout/edit.xhtml">
             <ui:define name="label">Account enabled</ui:define>
             <h:selectBooleanCheckbox id="enabled" value="#{userAction.enabled}"/>
           </s:decorate>

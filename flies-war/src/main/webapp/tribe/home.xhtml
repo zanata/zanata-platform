@@ -6,7 +6,7 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
-    template="../layout/template.xhtml">
+    template="../WEB-INF/layout/template.xhtml">
 
     <ui:define name="left_content">
       <rich:panel rendered="#{identity.loggedIn}">
@@ -19,7 +19,7 @@
         <rich:jQuery selector="#tab_tribes" query="addClass('ui-tabs-selected')" />
         <h1>Tribes</h1>
         <rich:dataGrid value="#{tribesBean.latestTribes}" var="tribe" columns="3" columnClasses="grid_col" styleClass="grid_style">
-          <ui:include src="./tribe_view_inline.xhtml" />
+          <ui:include src="../WEB-INF/layout/tribe_view_inline.xhtml" />
         </rich:dataGrid>
     </ui:define>
 </ui:composition>

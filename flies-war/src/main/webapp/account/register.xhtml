@@ -7,7 +7,7 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
     xmlns:a4j="http://richfaces.org/a4j"
-    template="../layout/template.xhtml">
+    template="../WEB-INF/layout/template.xhtml">
 
   <ui:define name="center_content">
     <a4j:form id="registerForm">
@@ -15,7 +15,7 @@
       <rich:panel>
         <f:facet name="header">Sign Up</f:facet>
 
-        <s:decorate id="nameField" template="../layout/edit.xhtml">
+        <s:decorate id="nameField" template="../WEB-INF/layout/edit.xhtml">
             <ui:define name="label">Name</ui:define>
             <h:inputText id="name" required="true"
                       value="#{register.person.name}">
@@ -28,7 +28,7 @@
             </h:graphicImage>
         </s:decorate>
 
-        <s:decorate id="emailField" template="../layout/edit.xhtml">
+        <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml">
             <ui:define name="label">Email</ui:define>
             <h:inputText id="email" required="true"
                       value="#{register.person.email}">
@@ -41,7 +41,7 @@
             </h:graphicImage>
         </s:decorate>
 
-        <s:decorate id="usernameField" template="../layout/edit.xhtml">
+        <s:decorate id="usernameField" template="../WEB-INF/layout/edit.xhtml">
             <ui:define name="label">Username</ui:define>
             <h:inputText id="username" required="true"
                       value="#{register.username}">
@@ -53,26 +53,26 @@
               </rich:toolTip>
             </h:graphicImage>
         </s:decorate>
-        <s:decorate id="passwordField" template="../layout/edit.xhtml">
+        <s:decorate id="passwordField" template="../WEB-INF/layout/edit.xhtml">
             <ui:define name="label">Password</ui:define>
             <h:inputSecret id="password" redisplay="true" required="true"
                         value="#{register.password}">
               <a4j:support event="onblur" reRender="passwordField" ajaxSingle="true"/>
             </h:inputSecret>
         </s:decorate>
-        <s:decorate id="passwordConfirmField" template="../layout/edit.xhtml">
+        <s:decorate id="passwordConfirmField" template="../WEB-INF/layout/edit.xhtml">
             <ui:define name="label">Confirm Password</ui:define>
             <h:inputSecret id="passwordConfirm" redisplay="true" required="true"
                         value="#{register.passwordConfirm}">
               <a4j:support event="onblur" reRender="passwordConfirmField" ajaxSingle="true"/>                        
             </h:inputSecret>
         </s:decorate>
-        <s:decorate id="captcha" template="../layout/edit.xhtml">
+        <s:decorate id="captcha" template="../WEB-INF/layout/edit.xhtml">
             <ui:define name="label"><h:graphicImage value="/seam/resource/captcha"/></ui:define>
             <h:inputText id="verifyCaptcha" value="#{captcha.response}" required="true"/>
         </s:decorate>
         
-        <s:decorate id="agreedToTerms" template="../layout/edit.xhtml">
+        <s:decorate id="agreedToTerms" template="../WEB-INF/layout/edit.xhtml">
           <h:selectBooleanCheckbox id="agreedToTerms" value="#{register.agreedToTermsOfUse}"/>
           <label for="agreedToTerms">
             I <strong>agree</strong> to the

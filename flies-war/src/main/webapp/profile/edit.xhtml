@@ -8,7 +8,7 @@
     xmlns:a4j="http://richfaces.org/a4j">
     
 
-  <ui:composition template="../layout/template.xhtml">
+  <ui:composition template="../WEB-INF/layout/template.xhtml">
   
     <ui:define name="center_content">
       <h1>Edit Profile</h1>
@@ -17,7 +17,7 @@
           <rich:panel>
             <f:facet name="header">Account Details</f:facet>
               
-            <s:decorate id="nameField" template="../layout/edit.xhtml">
+            <s:decorate id="nameField" template="../WEB-INF/layout/edit.xhtml">
               <ui:define name="label">Name</ui:define>
               <h:inputText id="name" value="#{personHome.instance.name}" required="true">
                 <a4j:support event="onblur" reRender="nameField" ajaxSingle="true"/>
@@ -29,7 +29,7 @@
               </h:graphicImage>
             </s:decorate>
                 
-            <s:decorate id="emailField" template="../layout/edit.xhtml">
+            <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml">
               <ui:define name="label">Email</ui:define>
               <h:inputText id="email" value="#{personHome.instance.email}" required="true">
                   <a4j:support event="onblur" reRender="emailField" ajaxSingle="true"/>

@@ -7,7 +7,7 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
     xmlns:a4j="http://richfaces.org/a4j"
-    template="../layout/template.xhtml"
+    template="../WEB-INF/layout/template.xhtml"
     >
     
     <ui:define name="left_content">
@@ -34,7 +34,7 @@
                        columns="3"
                        columnClasses="grid_col"
                        styleClass="grid_style">
-          <ui:include src="../project/project_view_inline.xhtml" />
+          <ui:include src="../WEB-INF/layout/project_view_inline.xhtml" />
         </rich:dataGrid>
         <h2>My Tribes</h2>
         <h:outputText value="None Available" rendered="#{empty personHome.instance.tribeMemberships}"/>
@@ -43,7 +43,7 @@
                        columns="3"
                        columnClasses="grid_col"
                        styleClass="grid_style">
-          <ui:include src="../tribe/tribe_view_inline.xhtml" />
+          <ui:include src="../WEB-INF/layout/tribe_view_inline.xhtml" />
         </rich:dataGrid>
         <h2>My Communities</h2>
         <h:outputText value="None Available" rendered="#{empty personHome.instance.communityOwnerships}"/>
@@ -54,7 +54,7 @@
                          columns="3"
                          columnClasses="grid_col"
                          styleClass="grid_style">
-            <ui:include src="../community/community_view_inline.xhtml" />
+            <ui:include src="../WEB-INF/layout/community_view_inline.xhtml" />
           </rich:dataGrid>
         </s:div>
         <s:div rendered="#{not empty personHome.instance.communityOfficerships and not empty personHome.instance.communityOfficerships and not empty personHome.instance.communityOwnerships }">
@@ -64,7 +64,7 @@
                          columns="3"
                          columnClasses="grid_col"
                          styleClass="grid_style">
-            <ui:include src="../community/community_view_inline.xhtml" />
+            <ui:include src="../WEB-INF/layout/community_view_inline.xhtml" />
           </rich:dataGrid>
         </s:div>
         <s:div rendered="#{not empty personHome.instance.communityMemberships}">
@@ -74,7 +74,7 @@
                          columns="3"
                          columnClasses="grid_col"
                          styleClass="grid_style">
-            <ui:include src="../community/community_view_inline.xhtml" />
+            <ui:include src="../WEB-INF/layout/community_view_inline.xhtml" />
           </rich:dataGrid>
         </s:div>
         <h2>API Key</h2>

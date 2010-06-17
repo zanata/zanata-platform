@@ -7,7 +7,7 @@
   xmlns:a="http://richfaces.org/a4j"
   xmlns:s="http://jboss.com/products/seam/taglib"
   xmlns:rich="http://richfaces.org/rich">
-<html style="background-color: white;">
+<html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>flies</title>
@@ -25,7 +25,7 @@
     <!-- #doc = 750px; #doc2 = 950px; #doc3 = 100%; #doc4 = 974px -->
     <div id="doc4" class="yui-t4">
       <div id="header">
-        <div id="headerlogo" rendered="#{not identity.loggedIn}">
+        <div id="headerlogo">
           <s:link view="/home.xhtml" propagation="none">
             <img src="#{request.contextPath}/img/flies_logo_blue_text.png" />
           </s:link>
@@ -55,7 +55,6 @@
           <ui:param name="projectName" value="flies" />
         </ui:include>
       </div>
-      <ui:include src="breadcrumbs.xhtml" />
       <div id="bd">
       <div id="yui-main">
         <div class="yui-b">

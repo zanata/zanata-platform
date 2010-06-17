@@ -6,7 +6,7 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
-    template="../layout/template.xhtml">
+    template="../WEB-INF/layout/template.xhtml">
 
 <ui:define name="center_content">
     <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
@@ -24,7 +24,7 @@
                    var="_iteration" 
                    columnClasses="grid_col_one_third_width"
                    >
-      <ui:include src="./iteration_view_inline.xhtml" />
+      <ui:include src="../WEB-INF/layout/iteration_view_inline.xhtml" />
     </rich:dataGrid>
 
     <s:fragment rendered="#{projectHome.retiredIterations.size > 0}">
@@ -33,7 +33,7 @@
                      value="#{projectHome.retiredIterations}" 
                      var="_iteration" 
                      columnClasses="grid_col_one_third_width">
-        <ui:include src="./iteration_view_inline.xhtml" />
+        <ui:include src="../WEB-INF/layout/iteration_view_inline.xhtml" />
       </rich:dataGrid>
     </s:fragment>    
 </ui:define>

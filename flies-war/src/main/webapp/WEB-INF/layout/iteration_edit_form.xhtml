@@ -11,13 +11,13 @@
 
     <s:token allowMultiplePosts="true" />
     <rich:panel>
-        <s:decorate id="nameField" template="../layout/edit.xhtml">
+        <s:decorate id="nameField" template="edit.xhtml">
             <ui:define name="label">Name</ui:define>
             <h:inputText id="name" required="true"
                          value="#{projectIterationHome.instance.name}"/>
         </s:decorate>
 
-        <s:decorate id="slugField" template="../layout/edit.xhtml">
+        <s:decorate id="slugField" template="edit.xhtml">
             <ui:define name="label">Slug</ui:define>
             <h:inputText id="slug" required="true"
                          value="#{projectIterationHome.instance.slug}" 
@@ -27,13 +27,13 @@
             </h:inputText>
         </s:decorate>
 
-        <s:decorate id="descriptionField" template="../layout/edit.xhtml">
+        <s:decorate id="descriptionField" template="edit.xhtml">
             <ui:define name="label">Description</ui:define>
             <h:inputText id="description" required="true"
                          value="#{projectIterationHome.instance.description}" style="width:400px;"/>
         </s:decorate>
 
-        <s:decorate id="activeField" template="../layout/edit.xhtml">
+        <s:decorate id="activeField" template="edit.xhtml">
             <ui:define name="label">Active</ui:define>
             <h:selectBooleanCheckbox id="acvite"
                          value="#{projectIterationHome.instance.active}"/>

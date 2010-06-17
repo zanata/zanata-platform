@@ -23,7 +23,7 @@
     <rich:column>#{tribe.locale.nativeName} [#{tribe.locale.id}]</rich:column>
     <rich:column>
       <ui:param name="tstatus" value="#{projectIterationDAO.getStatisticsForContainer(_iteration.id, tribe.locale.localeId)}" />
-      <ui:include src="../layout/statsbar.xhtml">
+      <ui:include src="statsbar.xhtml">
         <ui:param name="status" value="#{tstatus}" />
       </ui:include>        
     </rich:column>
@@ -31,7 +31,7 @@
       <h:outputLink 
           rendered="#{!fliesInit.debug}" 
           target="_blank"
-          value="/flies/org.fedorahosted.flies.webtrans.Application/Application.html">
+          value="#{applicationConfiguration.serverPath}org.fedorahosted.flies.webtrans.Application/Application.html">
 		<f:param name="project" value="#{_iteration.project.slug}"/>
 		<f:param name="iteration" value="#{_iteration.slug}"/>
 		<f:param name="localeId" value="#{tribe.locale.id}"/>
@@ -40,7 +40,7 @@
       <h:outputLink 
           rendered="#{fliesInit.debug}"
           target="_blank"
-          value="/flies/org.fedorahosted.flies.webtrans.Application/Application.html">
+          value="#{applicationConfiguration.serverPath}org.fedorahosted.flies.webtrans.Application/Application.html">
 		<f:param name="project" value="#{_iteration.project.slug}"/>
 		<f:param name="iteration" value="#{_iteration.slug}"/>
 		<f:param name="localeId" value="#{tribe.locale.id}"/>
