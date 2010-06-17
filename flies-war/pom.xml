@@ -742,7 +742,7 @@
 				<env.hibernate.hbm2ddl.auto>create-drop</env.hibernate.hbm2ddl.auto>
 				<env.hibernate.show_sql>true</env.hibernate.show_sql>
 				<env.hibernate.format_sql>true</env.hibernate.format_sql>
-				<extra.servlets><![CDATA[
+				<extra.servlets><![CDATA[-->
 	<servlet>
 		<servlet-name>H2Console</servlet-name>
 		<servlet-class>org.h2.server.web.WebServlet</servlet-class>
@@ -752,7 +752,7 @@
 		<servlet-name>H2Console</servlet-name>
 		<url-pattern>/console/*</url-pattern>
 	</servlet-mapping>
-				]]></extra.servlets>
+				<!--]]></extra.servlets>
 			</properties>
 			<dependencies>
 				<dependency>
