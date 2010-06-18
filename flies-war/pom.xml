@@ -1231,9 +1231,9 @@
 		<repository>
 			<id>openl10n-repo</id>
 			<name>openl10n-repo</name>
-			<url>http://openl10n.net/maven2/</url>
+			<url>http://openl10n.net/maven2/releases</url>
 			<snapshots>
-				<enabled>true</enabled>
+				<enabled>false</enabled>
 			</snapshots>
 		</repository>
 
