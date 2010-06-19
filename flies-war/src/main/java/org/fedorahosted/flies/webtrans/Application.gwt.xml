@@ -29,17 +29,39 @@
       <stylesheet src='roundedContainerWithHeader.css' />
 
       <!-- Add gwt-log support, default level `OFF` - check for
-           extended property 'log_level' to see if this is overridden -->
+           extended property 'log_level' to see if this is overridden
+-->
       <inherits name="com.allen_sauer.gwt.log.gwt-log-OFF" />
 
       <!-- Also compile Logger at `INFO` level -->
       <extend-property name="log_level" values="INFO" />
       <set-property name="log_level" value="INFO" />
       
-      <!-- Turn off the floating logger - output will be shown in the hosted mode console -->
+      <!-- Turn off the floating logger - output will be shown in the hosted mode console
+-->
       <set-property name="log_DivLogger" value="DISABLED" />
     
       <source path="client" />
       <source path="shared" />
 
+  <inherits name="com.google.gwt.user.User"/>
+  <inherits name="com.google.gwt.i18n.I18N"/>
+  
+  <!-- English language, independent of country -->
+  <extend-property name="locale" values="en"/>
+
+  <!-- Belgium language, independent of country -->
+  <extend-property name="locale" values="bg"/>
+
+  <!-- German language, independent of country -->
+  <extend-property name="locale" values="de"/>
+
+  <!-- French language, independent of country -->
+  <extend-property name="locale" values="fr"/>
+  
+  <!-- Italian language, independent of country -->
+  <extend-property name="locale" values="it"/>
+  
+  <!-- Turkish language, independent of country -->
+  <extend-property name="locale" values="tr"/>
 </module>

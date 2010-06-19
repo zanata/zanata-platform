@@ -32,8 +32,11 @@ public class SeamDispatchAsync implements CachingDispatchAsync {
 	protected WorkspaceContext workspaceContext;
 	protected Identity identity;
 	
+	private final RpcMessages messages;
+	
 	@Inject
 	public SeamDispatchAsync() {
+		this.messages = GWT.create(RpcMessages.class);
 		final String endpointURL = Application.getModuleParentBaseUrl() + "seam/resource/gwt";
 
 		((ServiceDefTarget) realService).setServiceEntryPoint(endpointURL);
@@ -44,7 +47,7 @@ public class SeamDispatchAsync implements CachingDispatchAsync {
 		if( action instanceof AbstractWorkspaceAction<?> ) {
 			AbstractWorkspaceAction<?> wsAction = (AbstractWorkspaceAction<?>) action;
 			if(workspaceContext == null || identity == null) {
-				callback.onFailure( new AuthorizationError("Dispatcher not set up to delegate WorkspaceContext and Identity") );
+				callback.onFailure( new AuthorizationError( messages.dispatcherSetupFailed() ) );
 				return;
 			}
 			wsAction.setSessionId(identity.getSessionId());

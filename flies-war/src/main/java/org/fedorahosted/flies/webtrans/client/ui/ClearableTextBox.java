@@ -30,7 +30,7 @@ public class ClearableTextBox extends Composite {
 		String emptyBox();
 	}	
 	
-	String emptyText = "Type to filter";
+	String emptyText;
 
 	@UiField
 	TextBox textBox;
@@ -44,13 +44,10 @@ public class ClearableTextBox extends Composite {
 	@UiField
 	Styles style;	
 	
-	public ClearableTextBox() {
-		this((Resources) GWT.create(Resources.class));
-	}
-	
 	@Inject
-	public ClearableTextBox(final Resources resources) {
+	public ClearableTextBox(final Resources resources, final UiMessages messages) {
 		this.resources = resources;
+		emptyText = messages.typeToEnter();
 		initWidget(uiBinder.createAndBindUi(this));
 		xButton.setVisible( !textBox.getValue().isEmpty() );
 		textBox.setText(emptyText);
