@@ -39,10 +39,17 @@
 		<ds.user.name>sa</ds.user.name> <!-- *-ds.xml -->
 		<ds.password></ds.password> <!-- *-ds.xml -->
 
+		<extra.servlets></extra.servlets>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>com.h2database</groupId>
+				<artifactId>h2</artifactId>
+				<version>1.2.134</version>
+				<scope>provided</scope>
+			</dependency>
 			<dependency>
 				<groupId>org.jboss.seam</groupId>
 				<artifactId>root</artifactId>
@@ -705,7 +712,24 @@
 				<env.hibernate.hbm2ddl.auto>create-drop</env.hibernate.hbm2ddl.auto>
 				<env.hibernate.show_sql>true</env.hibernate.show_sql>
 				<env.hibernate.format_sql>true</env.hibernate.format_sql>
+				<extra.servlets><![CDATA[
+	<servlet>
+		<servlet-name>H2Console</servlet-name>
+		<servlet-class>org.h2.server.web.WebServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>H2Console</servlet-name>
+		<url-pattern>/console/*</url-pattern>
+	</servlet-mapping>
+				]]></extra.servlets>
 			</properties>
+			<dependencies>
+				<dependency>
+					<groupId>com.h2database</groupId>
+					<artifactId>h2</artifactId>
+				</dependency>
+			</dependencies>
 		</profile>
 
 	</profiles>
@@ -978,7 +1002,6 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>1.2.134</version>
 		</dependency>
 
 		<dependency>
