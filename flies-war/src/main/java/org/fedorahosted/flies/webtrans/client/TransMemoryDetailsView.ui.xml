@@ -2,46 +2,49 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:f="urn:import:org.fedorahosted.flies.webtrans.client"
-	xmlns:fui="urn:import:org.fedorahosted.flies.webtrans.client.ui">
+	xmlns:fui="urn:import:org.fedorahosted.flies.webtrans.client.ui"
+    ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+    ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+    ui:generateLocales="en,bg,de,fr,it,tr">
 	
 	<ui:with field='resources' type="org.fedorahosted.flies.webtrans.client.Resources"/>
 	
 	<g:DialogBox autoHide="true" modal="true">
-	  <g:caption><b>Translation Memory Details</b></g:caption>
+	  <g:caption><b><ui:msg description="Translation Memory Details">Translation Memory Details</ui:msg></b></g:caption>
 	  <g:HTMLPanel>
 			<g:VerticalPanel>
 				<g:HorizontalPanel>
-					<g:Label>Locations: </g:Label>
+					<g:Label><ui:msg description="Locations: ">Locations: </ui:msg></g:Label>
 				    <g:ListBox ui:field='documentListBox' visibleItemCount='5'/>
 				</g:HorizontalPanel>
 				<g:HorizontalPanel>
-					<g:Label>Project: </g:Label>
-					<g:Label ui:field='projectName' >Project Name</g:Label>
+					<g:Label><ui:msg description="Project: ">Project: </ui:msg></g:Label>
+					<g:Label ui:field='projectName' ><ui:msg description="Project Name">Project Name</ui:msg></g:Label>
 				</g:HorizontalPanel>
 				<g:HorizontalPanel>
-					<g:Label>Iteration: </g:Label>
-					<g:Label ui:field='iterationName' >Iteration Name</g:Label>
+					<g:Label><ui:msg description="Iteration: ">Iteration: </ui:msg></g:Label>
+					<g:Label ui:field='iterationName' ><ui:msg description="Iteration Name">Iteration Name</ui:msg></g:Label>
 				</g:HorizontalPanel>
 				<g:HorizontalPanel>
-					<g:Label>Document: </g:Label>
-					<g:Label ui:field='docName' >Document Name</g:Label>
+					<g:Label><ui:msg description="Document: ">Document: </ui:msg></g:Label>
+					<g:Label ui:field='docName' ><ui:msg description="Document Name">Document Name</ui:msg></g:Label>
 				</g:HorizontalPanel>
 				<g:HorizontalPanel>
 					<g:VerticalPanel>
-						<g:Label>Source:</g:Label>
-						<g:TextArea ui:field='sourceText' readOnly='true'>Source Text</g:TextArea>
-						<g:Label>Comment:</g:Label>
-						<g:TextArea ui:field='sourceComment' readOnly='true'>Source Comment</g:TextArea>
+						<g:Label><ui:msg description="Source: ">Source: </ui:msg></g:Label>
+						<g:TextArea ui:field='sourceText' readOnly='true'><ui:msg description="Source Text">Source Text</ui:msg></g:TextArea>
+						<g:Label><ui:msg description="Comment: ">Comment: </ui:msg></g:Label>
+						<g:TextArea ui:field='sourceComment' readOnly='true'><ui:msg description="Source Comment">Source Comment</ui:msg></g:TextArea>
 					</g:VerticalPanel>
 					<g:VerticalPanel>
-						<g:Label>Target:</g:Label>
-						<g:TextArea ui:field='targetText' readOnly='true'>Target Text</g:TextArea>
-						<g:Label>Comment:</g:Label>
-						<g:TextArea ui:field='targetComment' readOnly='true'>Target Comment</g:TextArea>
+						<g:Label><ui:msg description="Target: ">Target: </ui:msg></g:Label>
+						<g:TextArea ui:field='targetText' readOnly='true'><ui:msg description="Target Text">Target Text</ui:msg></g:TextArea>
+						<g:Label><ui:msg description="Comment: ">Comment: </ui:msg></g:Label>
+						<g:TextArea ui:field='targetComment' readOnly='true'><ui:msg description="Target Comment">Target Comment</ui:msg></g:TextArea>
 					</g:VerticalPanel>
 				</g:HorizontalPanel>
 			</g:VerticalPanel>
-	    <g:Button ui:field='dismissButton'>Dismiss</g:Button>
+	    <g:Button ui:field='dismissButton'><ui:msg description="Dismiss">Dismiss</ui:msg></g:Button>
 	  </g:HTMLPanel>
 	</g:DialogBox>
 </ui:UiBinder>
