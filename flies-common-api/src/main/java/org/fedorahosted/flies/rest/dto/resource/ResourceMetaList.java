@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.rest.dto;
+package org.fedorahosted.flies.rest.dto.resource;
 
 
 import java.io.Serializable;
@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.codehaus.jackson.annotate.JsonValue;
 import org.fedorahosted.flies.common.Namespaces;
+import org.fedorahosted.flies.rest.dto.HasSample;
 
 /**
  * 
@@ -22,7 +23,7 @@ import org.fedorahosted.flies.common.Namespaces;
  */
 @XmlType(name="resourcesListType", namespace=Namespaces.FLIES, propOrder={"resources"})
 @XmlRootElement(name="resources", namespace=Namespaces.FLIES)
-public class ResourcesList implements Serializable, HasSample<ResourcesList> {
+public class ResourceMetaList implements Serializable, HasSample<ResourceMetaList> {
 	
 	private List<ResourceMeta> resources;
 	
@@ -36,8 +37,8 @@ public class ResourcesList implements Serializable, HasSample<ResourcesList> {
 	}
 	
 	@Override
-	public ResourcesList createSample() {
-		ResourcesList entity = new ResourcesList();
+	public ResourceMetaList createSample() {
+		ResourceMetaList entity = new ResourceMetaList();
 		entity.getResources().addAll(new ResourceMeta().createSamples());
 		return entity;
 	}

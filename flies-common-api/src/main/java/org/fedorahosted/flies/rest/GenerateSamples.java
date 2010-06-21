@@ -20,9 +20,9 @@ import org.fedorahosted.flies.rest.dto.HasSample;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.fedorahosted.flies.rest.dto.ProjectList;
-import org.fedorahosted.flies.rest.dto.ResourcesList;
-import org.fedorahosted.flies.rest.dto.TranslationResource;
 import org.fedorahosted.flies.rest.dto.extensions.PoHeader;
+import org.fedorahosted.flies.rest.dto.resource.ResourceMetaList;
+import org.fedorahosted.flies.rest.dto.resource.TranslationsResource;
 import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
 
@@ -61,8 +61,8 @@ public class GenerateSamples {
 		
 		// Translation Resource
 		h1("Translation Resource");
-		write("`GET ./`", ResourcesList.class);
-		write("`GET ./r/{res}`", TranslationResource.class);
+		write("`GET ./`", ResourceMetaList.class);
+		write("`GET ./r/{res}`", TranslationsResource.class);
 
 		h1("People Resource");
 

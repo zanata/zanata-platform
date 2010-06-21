@@ -1,4 +1,6 @@
-package org.fedorahosted.flies.rest.dto;
+package org.fedorahosted.flies.rest.dto.resource;
+
+import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -10,18 +12,25 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.Namespaces;
+import org.fedorahosted.flies.rest.dto.Person;
+import org.hibernate.validator.NotEmpty;
 
 @XmlType(name="textFlowTargetType", namespace=Namespaces.FLIES, propOrder={"translator", "content", "extensions"})
-@XmlRootElement(name="text-flow-target", namespace=Namespaces.FLIES)
-public class TextFlowTarget {
+public class TextFlowTarget implements Serializable {
 
+	private String resId;
 	private ContentState state = ContentState.New;
 	private Person translator;
 	private String content;
 	private ExtensionSet extensions;
 	
+	public TextFlowTarget() {
+	}
 	
-//	@XmlElement(name="translator", namespace=Namespaces.FLIES, required=true)
+	public TextFlowTarget(String resId) {
+		this.resId = resId;
+	}
+	
 	@XmlElementRef
 	public Person getTranslator() {
 		return translator;
@@ -57,6 +66,16 @@ public class TextFlowTarget {
 		if(extensions == null)
 			extensions = new ExtensionSet();
 		return extensions;
+	}
+	
+	@XmlAttribute(name="res-id", required=true)
+	@NotEmpty
+	public String getResId() {
+		return resId;
+	}
+	
+	public void setResId(String resId) {
+		this.resId = resId;
 	}
 	
 	

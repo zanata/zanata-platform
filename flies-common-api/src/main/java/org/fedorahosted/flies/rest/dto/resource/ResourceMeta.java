@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.rest.dto;
+package org.fedorahosted.flies.rest.dto.resource;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,16 +11,18 @@ import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.Namespaces;
 import org.fedorahosted.flies.common.ResourceType;
+import org.fedorahosted.flies.rest.dto.HasCollectionSample;
 
-@XmlType(name="resourceMetaType", namespace=Namespaces.FLIES, propOrder={})
-@XmlRootElement(name="resource", namespace=Namespaces.FLIES)
-public class ResourceMeta extends AbstractResource implements HasCollectionSample<ResourceMeta>{
+
+@XmlType(name="resourceMetaType", namespace=Namespaces.FLIES)
+@XmlRootElement(name="resource-meta", namespace=Namespaces.FLIES)
+public class ResourceMeta extends AbstractResourceMeta implements HasCollectionSample<ResourceMeta> {
 	
 	public ResourceMeta() {
 	}
 	
-	public ResourceMeta(String name) {
-		super(name);
+	public ResourceMeta(String resId) {
+		super(resId);
 	}
 	
 	@Override

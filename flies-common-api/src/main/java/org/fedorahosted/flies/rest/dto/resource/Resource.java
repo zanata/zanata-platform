@@ -1,31 +1,34 @@
-package org.fedorahosted.flies.rest.dto;
+package org.fedorahosted.flies.rest.dto.resource;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.common.Namespaces;
 
-@XmlType(name="sourceResourceType", namespace=Namespaces.FLIES, propOrder={"textFlows"})
+@XmlType(name="resourceType", namespace=Namespaces.FLIES, propOrder={"textFlows"})
 @XmlRootElement(name="resource",namespace=Namespaces.FLIES)
-public class SourceResource extends AbstractResource {
+public class Resource extends AbstractResourceMeta {
 
-	private List<SourceTextFlow> textFlows;
+	private List<TextFlow> textFlows;
 	
-	public SourceResource() {
+	public Resource() {
 	}
 
-	public SourceResource(String name) {
+	public Resource(String name) {
 		super(name);
 	}
 	
 	@XmlElementWrapper(name="text-flows", namespace=Namespaces.FLIES, required=false)
-	public List<SourceTextFlow> getTextFlows() {
+	@XmlElementRef
+	public List<TextFlow> getTextFlows() {
 		if(textFlows == null) {
-			textFlows = new ArrayList<SourceTextFlow>();
+			textFlows = new ArrayList<TextFlow>();
 		}
 		return textFlows;
 	}

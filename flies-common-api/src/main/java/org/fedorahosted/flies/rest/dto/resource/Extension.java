@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.rest.dto;
+package org.fedorahosted.flies.rest.dto.resource;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSeeAlso;

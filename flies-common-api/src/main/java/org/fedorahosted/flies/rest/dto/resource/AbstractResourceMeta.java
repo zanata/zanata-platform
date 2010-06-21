@@ -1,11 +1,15 @@
-package org.fedorahosted.flies.rest.dto;
+package org.fedorahosted.flies.rest.dto.resource;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -14,10 +18,13 @@ import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.Namespaces;
 import org.fedorahosted.flies.common.ResourceType;
+import org.fedorahosted.flies.rest.dto.ContentTypeAdapter;
+import org.fedorahosted.flies.rest.dto.HasCollectionSample;
+import org.fedorahosted.flies.rest.dto.LocaleIdAdapter;
 import org.fedorahosted.flies.rest.dto.extensions.PoHeader;
 
-@XmlType(name="abstractResourceType", namespace=Namespaces.FLIES, propOrder={"name", "extensions"})
-public abstract class AbstractResource implements Serializable {
+@XmlType(name="abstractResourceMetaType", namespace=Namespaces.FLIES, propOrder={"name", "extensions"})
+public abstract class AbstractResourceMeta implements Serializable {
 	
 	private String name;
 
@@ -29,10 +36,10 @@ public abstract class AbstractResource implements Serializable {
 	
 	private ExtensionSet extensions;
 	
-	public AbstractResource() {
+	public AbstractResourceMeta() {
 	}
 
-	public AbstractResource(String name) {
+	public AbstractResourceMeta(String name) {
 		this.name = name;
 	}
 	
@@ -81,5 +88,5 @@ public abstract class AbstractResource implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	
 }

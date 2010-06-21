@@ -17,11 +17,10 @@ import javax.ws.rs.core.MediaType;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.rest.LanguageQualifier;
 import org.fedorahosted.flies.rest.StringSet;
-import org.fedorahosted.flies.rest.dto.ResourceMeta;
-import org.fedorahosted.flies.rest.dto.ResourcesList;
-import org.fedorahosted.flies.rest.dto.SourceResource;
-import org.fedorahosted.flies.rest.dto.TargetResource;
-import org.fedorahosted.flies.rest.dto.TranslationResource;
+import org.fedorahosted.flies.rest.dto.resource.ResourceMeta;
+import org.fedorahosted.flies.rest.dto.resource.ResourceMetaList;
+import org.fedorahosted.flies.rest.dto.resource.Resource;
+import org.fedorahosted.flies.rest.dto.resource.TranslationsResource;
 import org.jboss.resteasy.client.ClientResponse;
 
 
@@ -34,19 +33,19 @@ public interface ITranslationResources {
 	
 	@POST
 	public ClientResponse<String> post(
-			SourceResource messageBody, 
+			Resource messageBody, 
 			@QueryParam("ext") StringSet extensions);
 
 	@GET
 	@Path("/r/{id}")
-	public ClientResponse<SourceResource> getResource(
+	public ClientResponse<Resource> getResource(
 			@PathParam("id") String id,
 			@QueryParam("ext") StringSet extensions);
 	
 	@PUT
 	@Path("/r/{id}")
 	public ClientResponse<String> putResource(
-			@PathParam("id") String id, SourceResource messageBody);
+			@PathParam("id") String id, Resource messageBody);
 	
 	@DELETE
 	@Path("/r/{id}")
@@ -64,15 +63,8 @@ public interface ITranslationResources {
 			@PathParam("id") String id, ResourceMeta messageBody);
 
 	@GET
-	@Path("/r/{id}/targets/{locales}")
-	public ClientResponse<TargetResource> getTargets(
-			@PathParam("id") String id, 
-			@PathParam("locales") LanguageQualifier locales, 
-			@QueryParam("ext") StringSet extensions);
-	
-	@GET
 	@Path("/r/{id}/translations/{locale}")
-	public ClientResponse<TranslationResource> getTranslations(
+	public ClientResponse<TranslationsResource> getTranslations(
 			@PathParam("id") String id, 
 			@PathParam("locale") LocaleId locale
 		);
@@ -89,7 +81,7 @@ public interface ITranslationResources {
 	public ClientResponse<String> putTranslations(
 			@PathParam("id") String id, 
 			@PathParam("locale") LocaleId locale,
-			TranslationResource messageBody
+			TranslationsResource messageBody
 		);
 	
 }

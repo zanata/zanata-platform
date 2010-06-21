@@ -8,8 +8,8 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.fedorahosted.flies.rest.dto.Extension;
 import org.fedorahosted.flies.rest.dto.po.HeaderEntry;
+import org.fedorahosted.flies.rest.dto.resource.Extension;
 
 @XmlType(name="poTargetHeader", namespace=PoHeader.NAMESPACE, propOrder={"comment", "entries"})
 @XmlRootElement(name="po-target-header", namespace=PoHeader.NAMESPACE)

@@ -5,7 +5,8 @@ import java.util.List;
 
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.model.HDocument;
-import org.fedorahosted.flies.rest.dto.SourceTextFlow;
+import org.fedorahosted.flies.rest.dto.resource.TextFlow;
+import org.fedorahosted.flies.rest.dto.resource.TextFlow;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import static org.hamcrest.CoreMatchers.*;
@@ -17,7 +18,7 @@ public class ResourceUtilsTest {
 
 	@Test
 	public void mergeNoTextFlows() {
-		List<SourceTextFlow> from = new ArrayList<SourceTextFlow>();
+		List<TextFlow> from = new ArrayList<TextFlow>();
 		HDocument to = new HDocument();
 		boolean changed = documentUtils.mergeTextFlows(from, to);
 
@@ -26,9 +27,9 @@ public class ResourceUtilsTest {
 
 	@Test
 	public void mergeTextFlowWithOneFromChange() {
-		List<SourceTextFlow> from = new ArrayList<SourceTextFlow>();
+		List<TextFlow> from = new ArrayList<TextFlow>();
 
-		SourceTextFlow tf1 = new SourceTextFlow("id", LocaleId.EN, "text1");
+		TextFlow tf1 = new TextFlow("id", LocaleId.EN, "text1");
 		from.add(tf1);
 
 		HDocument to = new HDocument();

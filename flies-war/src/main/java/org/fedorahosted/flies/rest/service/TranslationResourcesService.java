@@ -3,7 +3,6 @@ package org.fedorahosted.flies.rest.service;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -28,9 +27,9 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.flies.common.LocaleId;
@@ -44,19 +43,16 @@ import org.fedorahosted.flies.model.HPerson;
 import org.fedorahosted.flies.model.HProjectIteration;
 import org.fedorahosted.flies.model.HTextFlow;
 import org.fedorahosted.flies.model.HTextFlowTarget;
-import org.fedorahosted.flies.rest.LanguageQualifier;
 import org.fedorahosted.flies.rest.NoSuchEntityException;
 import org.fedorahosted.flies.rest.StringSet;
-import org.fedorahosted.flies.rest.dto.MultiTargetTextFlow;
-import org.fedorahosted.flies.rest.dto.ResourceMeta;
-import org.fedorahosted.flies.rest.dto.SourceResource;
-import org.fedorahosted.flies.rest.dto.SourceTextFlow;
-import org.fedorahosted.flies.rest.dto.TargetResource;
-import org.fedorahosted.flies.rest.dto.TextFlowTarget;
-import org.fedorahosted.flies.rest.dto.TextFlowTargetWithId;
-import org.fedorahosted.flies.rest.dto.TranslationResource;
 import org.fedorahosted.flies.rest.dto.extensions.PoHeader;
 import org.fedorahosted.flies.rest.dto.extensions.PotEntryHeader;
+import org.fedorahosted.flies.rest.dto.resource.Resource;
+import org.fedorahosted.flies.rest.dto.resource.AbstractResourceMeta;
+import org.fedorahosted.flies.rest.dto.resource.ResourceMeta;
+import org.fedorahosted.flies.rest.dto.resource.TextFlowTarget;
+import org.fedorahosted.flies.rest.dto.resource.TextFlow;
+import org.fedorahosted.flies.rest.dto.resource.TranslationsResource;
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -181,7 +177,7 @@ public class TranslationResourcesService {
 
 		validateExtensions(PoHeader.ID, PotEntryHeader.ID);
 
-		SourceResource entity = RestUtils.unmarshall(SourceResource.class, messageBody, requestContentType, headers.getRequestHeaders());
+		Resource entity = RestUtils.unmarshall(Resource.class, messageBody, requestContentType, headers.getRequestHeaders());
 		
 		HDocument document = documentDAO.getByDocId(hProjectIteration, entity.getName()); 
 		if(document != null) {
@@ -236,11 +232,11 @@ public class TranslationResourcesService {
 			return Response.status(Status.NOT_FOUND).entity("document not found").build();
 		}
 
-		SourceResource entity = new SourceResource(doc.getDocId());
+		Resource entity = new Resource(doc.getDocId());
 		resourceUtils.transfer(doc, entity);
 		
 		for(HTextFlow htf : doc.getTextFlows()) {
-			SourceTextFlow tf = new SourceTextFlow(htf.getResId());
+			TextFlow tf = new TextFlow(htf.getResId(), doc.getLocale());
 			resourceUtils.transfer(htf, tf);
 			entity.getTextFlows().add(tf);
 		}
@@ -265,7 +261,7 @@ public class TranslationResourcesService {
 		
 		validateExtensions();
 
-		SourceResource entity = RestUtils.unmarshall(SourceResource.class, messageBody, requestContentType, headers.getRequestHeaders());
+		Resource entity = RestUtils.unmarshall(Resource.class, messageBody, requestContentType, headers.getRequestHeaders());
 
 		HDocument document = documentDAO.getByDocId(hProjectIteration, id);
 		
@@ -400,63 +396,6 @@ public class TranslationResourcesService {
 			
 	}
 	
-	
-	@GET
-	@Path(RESOURCE_SLUG_TEMPLATE + "/targets/{locales}") // /r/{id}/targets/{locales}
-	public Response doTargetsGet(
-		@PathParam("id") String id,
-		@PathParam("locales") LanguageQualifier languageQualifier ) {
-
-		HProjectIteration hProjectIteration = retrieveIteration();
-
-		validateExtensions();
-		
-		// TODO fix etag
-		EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, languageQualifier, extensions);
-
-		ResponseBuilder response = request.evaluatePreconditions(etag);
-		if(response != null) {
-			return response.build();
-		}
-		
-		// TODO eager loading
-		HDocument doc = documentDAO.getByDocId(hProjectIteration, id);
-
-		if(doc == null || doc.isObsolete() ) {
-			return Response.status(Status.NOT_FOUND).entity("document not found").build();
-		}
-
-		Collection<LocaleId> locales =  languageQualifier.getLanguages();
-		if(languageQualifier.isAll()) {
-			locales = documentDAO.getTargetLocales(doc);
-		}
-		
-		TargetResource entity = new TargetResource();
-		
-		resourceUtils.transfer(doc, entity.getExtensions(), extensions);
-		resourceUtils.transfer(doc, entity.getExtensions(), extensions, locales);
-		
-		for(HTextFlow htf : doc.getTextFlows()) {
-			MultiTargetTextFlow tf = new MultiTargetTextFlow();
-			resourceUtils.transfer(htf, tf);
-			resourceUtils.transfer(htf, tf.getExtensions(), extensions);
-			for(LocaleId locale : locales) {
-				HTextFlowTarget htft = htf.getTargets().get(locale);
-				if(htft != null) {
-					TextFlowTarget target = new TextFlowTarget();
-					resourceUtils.transfer(htft, target);
-					resourceUtils.transfer(htft, tf.getExtensions(), extensions);
-					tf.getTargets().put(locale, target);
-				}
-			}
-			entity.getTextFlows().add(tf);
-		}
-
-		return Response.ok().entity(entity).tag(etag).lastModified(doc.getLastChanged()).build();
-		// TODO fix last modified
-		
-	}
-
 	@GET
 	@Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}") // /r/{id}/translations/{locale}
 	public Response doTranslationsGet(
@@ -482,7 +421,7 @@ public class TranslationResourcesService {
 		
 		List<HTextFlowTarget> hTargets = textFlowTargetDAO.findAllTranslations(document, locale);
 
-		TranslationResource translationResource = new TranslationResource();
+		TranslationsResource translationResource = new TranslationsResource();
 		resourceUtils.transfer(document, translationResource.getExtensions(), extensions, locale);
 		
 		if(hTargets.isEmpty() && translationResource.getExtensions().isEmpty() ) {
@@ -490,10 +429,10 @@ public class TranslationResourcesService {
 		}
 		
 		for(HTextFlowTarget hTarget : hTargets) {
-			TextFlowTargetWithId target = new TextFlowTargetWithId(hTarget.getTextFlow().getResId());
+			TextFlowTarget target = new TextFlowTarget(hTarget.getTextFlow().getResId());
 			resourceUtils.transfer(hTarget, target);
 			resourceUtils.transfer(hTarget, target.getExtensions(), extensions);
-			translationResource.getTextFlowTargets().add(target);
+			translationResource.getTextFlowTargets(true).add(target);
 		}
 		
 		// TODO lastChanged
@@ -561,7 +500,7 @@ public class TranslationResourcesService {
 			return Response.status(Status.NOT_FOUND).build();
 		}
 
-		TranslationResource entity = RestUtils.unmarshall(TranslationResource.class, messageBody, requestContentType, headers.getRequestHeaders());
+		TranslationsResource entity = RestUtils.unmarshall(TranslationsResource.class, messageBody, requestContentType, headers.getRequestHeaders());
 
 		boolean changed = false;
 		
@@ -573,8 +512,8 @@ public class TranslationResourcesService {
 		List<HTextFlowTarget> changedTargets = new ArrayList<HTextFlowTarget>();
 		List<HTextFlowTarget> removedTargets = new ArrayList<HTextFlowTarget>();
 		
-		Iterator<TextFlowTargetWithId> iter = entity.getTextFlowTargets().iterator();
-		TextFlowTargetWithId current = null;
+		Iterator<TextFlowTarget> iter = entity.getTextFlowTargets(true).iterator();
+		TextFlowTarget current = null;
 		for(HTextFlow textFlow : document.getTextFlows()) {
 			if(current == null) {
 				if(iter.hasNext()) {

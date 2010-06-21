@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.rest.dto;
+package org.fedorahosted.flies.rest.dto.resource;
 
 import java.util.HashSet;
 
@@ -7,7 +7,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.fedorahosted.flies.common.Namespaces;
 
 
-@XmlType(name="extensionsType", namespace=Namespaces.FLIES, propOrder={})
 public class ExtensionSet extends HashSet<Extension> {
 
 	private static final long serialVersionUID = 8077674295531213159L;

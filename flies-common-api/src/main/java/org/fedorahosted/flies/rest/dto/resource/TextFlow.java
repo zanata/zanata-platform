@@ -1,20 +1,25 @@
-package org.fedorahosted.flies.rest.dto;
+package org.fedorahosted.flies.rest.dto.resource;
+
+import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.Namespaces;
+import org.fedorahosted.flies.rest.dto.LocaleIdAdapter;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 
-@XmlType(name="abstractTextFlowType", namespace=Namespaces.FLIES, propOrder={"content", "extensions"})
-public abstract class AbstractTextFlow {
+@XmlType(name="textFlowType", namespace=Namespaces.FLIES, propOrder={"content", "extensions"})
+@XmlRootElement(name="text-flow", namespace=Namespaces.FLIES)
+public class TextFlow implements Serializable {
 	
 	@NotEmpty @Length(max=255)
 	private String id;
@@ -27,29 +32,25 @@ public abstract class AbstractTextFlow {
 
 	private ExtensionSet extensions;
 	
-	public AbstractTextFlow() {
-	}
-	
 	/**
 	 * This constructor sets the lang value to en-US
 	 * 
 	 * @param id Resource Id value
 	 */
-	public AbstractTextFlow(String id) {
-		this.id = id;
+	public TextFlow() {
 		this.lang = LocaleId.EN_US;
 	}
 	
-	public AbstractTextFlow(String id, LocaleId lang) {
-		this(id);
+	public TextFlow(String id, LocaleId lang) {
+		this.id = id;
 		this.lang = lang;
 	}
 
-	public AbstractTextFlow(String id, LocaleId lang, String content) {
-		this(id, lang);
+	public TextFlow(String id,LocaleId lang, String content) {
+		this(id,lang);
 		this.content = content;
 	}
-
+	
 	@XmlAttribute(name="id", required=true)
 	public String getId() {
 		return id;
@@ -58,6 +59,7 @@ public abstract class AbstractTextFlow {
 	public void setId(String id) {
 		this.id = id;
 	}
+	
 	
 	@XmlJavaTypeAdapter(type=LocaleId.class, value=LocaleIdAdapter.class)
 	@XmlAttribute(name="lang", namespace=Namespaces.XML, required=false)
