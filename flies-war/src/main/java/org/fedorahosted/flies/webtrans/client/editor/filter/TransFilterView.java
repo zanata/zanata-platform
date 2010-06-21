@@ -31,10 +31,10 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
 	private final TransFilterMessages messages;
 	
 	@Inject
-	public TransFilterView(final Resources resources, final TransFilterMessages messages) {
+	public TransFilterView(final Resources resources, final TransFilterMessages messages, final UiMessages uiMessages) {
 		this.messages = messages;
 		this.collapsePanel = new CollapsePanel(resources);
-		this.filterTextBox = new ClearableTextBox(resources, (UiMessages) GWT.create( UiMessages.class ));
+		this.filterTextBox = new ClearableTextBox(resources, uiMessages );
 		filterTextBox.setEmptyText( messages.findSourceOrTargetString() );
 		initWidget( uiBinder.createAndBindUi(this) );
 		collapsePanel.setHeading( messages.transUnitSearchesHeading() );
