@@ -7,6 +7,9 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonPropertyOrder;
+import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.Namespaces;
@@ -16,6 +19,9 @@ import org.fedorahosted.flies.rest.dto.HasCollectionSample;
 
 @XmlType(name="resourceMetaType", namespace=Namespaces.FLIES)
 @XmlRootElement(name="resource-meta", namespace=Namespaces.FLIES)
+@JsonPropertyOrder({"name", "contentType", "lang", "extensions"})
+@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonWriteNullProperties(false)
 public class ResourceMeta extends AbstractResourceMeta implements HasCollectionSample<ResourceMeta> {
 	
 	public ResourceMeta() {

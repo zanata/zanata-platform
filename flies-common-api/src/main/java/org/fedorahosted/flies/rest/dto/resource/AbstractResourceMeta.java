@@ -14,6 +14,8 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.Namespaces;
@@ -43,10 +45,15 @@ public abstract class AbstractResourceMeta implements Serializable {
 		this.name = name;
 	}
 	
-	@XmlElementWrapper(name="extensions", namespace=Namespaces.FLIES, required=false, nillable=false)
+	@XmlElementWrapper(name="extensions", namespace=Namespaces.FLIES, required=false)
 	@XmlAnyElement(lax=true)
 	public ExtensionSet getExtensions() {
-		if(extensions == null)
+		return extensions;
+	}
+	
+	@JsonIgnore
+	public ExtensionSet getExtensions(boolean createIfNull) {
+		if(createIfNull && extensions == null)
 			extensions = new ExtensionSet();
 		return extensions;
 	}

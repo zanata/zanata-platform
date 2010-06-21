@@ -67,10 +67,10 @@ import com.google.common.collect.Sets;
 public class TranslationResourcesService {
 
 	public static final String RESOURCE_SLUG_TEMPLATE = 
-		"/r/{id:[a-zA-Z0-9]+([a-zA-Z0-9_\\-,{.}]*[a-zA-Z0-9]+)?}";
+		"/{id:[a-zA-Z0-9]+([a-zA-Z0-9_\\-,{.}]*[a-zA-Z0-9]+)?}";
 	
 	public static final String SERVICE_PATH = 
-		ProjectIterationService.SERVICE_PATH + "/resources/"; 
+		ProjectIterationService.SERVICE_PATH + "/r"; 
 	
 	@PathParam("projectSlug")
 	private String projectSlug;
@@ -201,7 +201,7 @@ public class TranslationResourcesService {
 		documentDAO.flush();
 
 		// handle extensions
-		if ( resourceUtils.transfer(entity.getExtensions(), document, extensions) ) {
+		if ( resourceUtils.transfer(entity.getExtensions(true), document, extensions) ) {
 			documentDAO.flush();
 		}
 		
@@ -242,7 +242,7 @@ public class TranslationResourcesService {
 		}
 
 		// handle extensions
-		resourceUtils.transfer(doc, entity.getExtensions(), extensions);
+		resourceUtils.transfer(doc, entity.getExtensions(true), extensions);
 		
 		return Response.ok().entity(entity).tag(etag).lastModified(doc.getLastChanged()).build();
 	}
@@ -298,7 +298,7 @@ public class TranslationResourcesService {
 		changed |= resourceUtils.transfer(entity, document);
 		
 		// handle extensions
-		changed |= resourceUtils.transfer(entity.getExtensions(), document, extensions);
+		changed |= resourceUtils.transfer(entity.getExtensions(true), document, extensions);
 		
 		if ( changed ) {
 			document = documentDAO.makePersistent(document);
@@ -353,7 +353,7 @@ public class TranslationResourcesService {
 		resourceUtils.transfer(doc, entity);
 		
 		// transfer extensions
-		resourceUtils.transfer(doc, entity.getExtensions(), extensions);
+		resourceUtils.transfer(doc, entity.getExtensions(true), extensions);
 
 		return Response.ok().entity(entity).tag(etag).build();
 	}
@@ -385,7 +385,7 @@ public class TranslationResourcesService {
 		boolean changed = resourceUtils.transfer(entity, document);
 		
 		// handle extensions
-		changed |= resourceUtils.transfer(entity.getExtensions(), document, extensions);
+		changed |= resourceUtils.transfer(entity.getExtensions(true), document, extensions);
 		
 		if(changed) {
 			documentDAO.flush();
@@ -422,16 +422,16 @@ public class TranslationResourcesService {
 		List<HTextFlowTarget> hTargets = textFlowTargetDAO.findAllTranslations(document, locale);
 
 		TranslationsResource translationResource = new TranslationsResource();
-		resourceUtils.transfer(document, translationResource.getExtensions(), extensions, locale);
+		resourceUtils.transfer(document, translationResource.getExtensions(true), extensions, locale);
 		
-		if(hTargets.isEmpty() && translationResource.getExtensions().isEmpty() ) {
+		if(hTargets.isEmpty() && translationResource.getExtensions(true).isEmpty() ) {
 			return Response.status(Status.NOT_FOUND).build();
 		}
 		
 		for(HTextFlowTarget hTarget : hTargets) {
 			TextFlowTarget target = new TextFlowTarget(hTarget.getTextFlow().getResId());
 			resourceUtils.transfer(hTarget, target);
-			resourceUtils.transfer(hTarget, target.getExtensions(), extensions);
+			resourceUtils.transfer(hTarget, target.getExtensions(true), extensions);
 			translationResource.getTextFlowTargets(true).add(target);
 		}
 		
@@ -505,7 +505,7 @@ public class TranslationResourcesService {
 		boolean changed = false;
 		
 		// handle extensions
-		changed |= resourceUtils.transfer(entity.getExtensions(), document, extensions, locale);
+		changed |= resourceUtils.transfer(entity.getExtensions(true), document, extensions, locale);
 		
 		List<HPerson> newPeople = new ArrayList<HPerson>();
 		List<HTextFlowTarget> newTargets = new ArrayList<HTextFlowTarget>();
@@ -539,11 +539,11 @@ public class TranslationResourcesService {
 					textFlow.getTargets().put(locale, hTarget);
 					newTargets.add(hTarget);
 					targetChanged |= resourceUtils.transfer(current, hTarget);
-					targetChanged |= resourceUtils.transfer(current.getExtensions(),hTarget, extensions);
+					targetChanged |= resourceUtils.transfer(current.getExtensions(true),hTarget, extensions);
 				}
 				else {
 					targetChanged |= resourceUtils.transfer(current, hTarget);
-					targetChanged |= resourceUtils.transfer(current.getExtensions(),hTarget, extensions);
+					targetChanged |= resourceUtils.transfer(current.getExtensions(true),hTarget, extensions);
 					if(targetChanged) {
 						changedTargets.add(hTarget);
 					}

@@ -141,7 +141,7 @@ public class TranslationResourceServiceTest extends FliesRestTest {
 		sr.getTextFlows().add(stf);
 		
 		PoHeader poHeaderExt = new PoHeader("comment", new HeaderEntry("h1", "v1"), new HeaderEntry("h2", "v2"));
-		sr.getExtensions().add(poHeaderExt);
+		sr.getExtensions(true).add(poHeaderExt);
 		
 		ClientResponse<String> postResponse = client.post(sr,new StringSet(PoHeader.ID));
 		assertThat(postResponse.getResponseStatus(), is(Status.CREATED));

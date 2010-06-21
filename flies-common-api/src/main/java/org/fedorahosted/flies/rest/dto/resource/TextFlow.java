@@ -10,6 +10,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonPropertyOrder;
+import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.Namespaces;
 import org.fedorahosted.flies.rest.dto.LocaleIdAdapter;
@@ -19,6 +23,9 @@ import org.hibernate.validator.NotNull;
 
 @XmlType(name="textFlowType", namespace=Namespaces.FLIES, propOrder={"content", "extensions"})
 @XmlRootElement(name="text-flow", namespace=Namespaces.FLIES)
+@JsonPropertyOrder({"id", "lang", "content", "extensions"})
+@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonWriteNullProperties(false)
 public class TextFlow implements Serializable {
 	
 	@NotEmpty @Length(max=255)
@@ -82,10 +89,15 @@ public class TextFlow implements Serializable {
 		this.content = content;
 	}
 
-	@XmlElementWrapper(name="extensions", namespace=Namespaces.FLIES, required=false, nillable=false)
+	@XmlElementWrapper(name="extensions", namespace=Namespaces.FLIES, required=false)
 	@XmlAnyElement(lax=true)
 	public ExtensionSet getExtensions() {
-		if(extensions == null)
+		return extensions;
+	}
+	
+	@JsonIgnore
+	public ExtensionSet getExtensions(boolean createIfNull) {
+		if(createIfNull && extensions == null)
 			extensions = new ExtensionSet();
 		return extensions;
 	}

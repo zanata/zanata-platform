@@ -31,17 +31,21 @@ public class TranslationsResource implements Serializable, HasSample<Translation
 	private Links links;
 	private List<TextFlowTarget> textFlowTargets;
 
-	@XmlElementWrapper(name="extensions", namespace=Namespaces.FLIES, required=false, nillable=false)
+	@XmlElementWrapper(name="extensions", namespace=Namespaces.FLIES, required=false)
 	@XmlAnyElement(lax=true)
 	public ExtensionSet getExtensions() {
-		if(extensions == null)
+		return extensions;
+	}
+	
+	@JsonIgnore
+	public ExtensionSet getExtensions(boolean createIfNull) {
+		if(createIfNull && extensions == null)
 			extensions = new ExtensionSet();
 		return extensions;
 	}
-
 	
 	@XmlElementWrapper(name="targets", namespace=Namespaces.FLIES, required=false)
-	@XmlElement(name="text-flow-target", namespace=Namespaces.FLIES)
+	@XmlElementRef
 	public List<TextFlowTarget> getTextFlowTargets() {
 		return textFlowTargets;
 	}
