@@ -5,7 +5,8 @@
 	xmlns:fui="urn:import:org.fedorahosted.flies.webtrans.client.ui"
     ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
     ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
-    ui:generateLocales="en,bg,de,fr,it,tr,qc">
+    ui:generateFilename="TransMemoryDetailsViewUi"
+    ui:generateLocales="default">
 	
 	<ui:with field='resources' type="org.fedorahosted.flies.webtrans.client.Resources"/>
 	
