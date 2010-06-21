@@ -64,4 +64,7 @@
   
   <!-- Turkish language, independent of country -->
   <extend-property name="locale" values="tr"/>
+  
+  <!-- Testing language, independent of country -->
+  <extend-property name="locale" values="qc"/>
 </module>

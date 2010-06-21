@@ -4,7 +4,7 @@
 	xmlns:fui="urn:import:org.fedorahosted.flies.webtrans.client.ui"
     ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
     ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
-    ui:generateLocales="en,bg,de,fr,it,tr">
+    ui:generateLocales="en,bg,de,fr,it,tr,qc">
 	<ui:style>
 		.tuDetailsInactive {
 			border: 2px dotted grey;
