@@ -73,7 +73,14 @@
       </div>
     </div>
     <div id="ft">
-      <div id="footer">Copyright 2008 
+      <div id="footer">
+        <h:form>
+            <h:selectOneMenu value="#{localeSelector.localeString}"> 
+                <f:selectItems value="#{localeSelector.supportedLocales}"/> 
+            </h:selectOneMenu> 
+            <h:commandButton action="#{localeSelector.select}" value="#{messages['Change Language']}"/>
+        </h:form>
+      Copyright 2008 
         <a href="http://www.redhat.com/">Red Hat</a> and Others. 
         Powered by <a href="http://flies.googlecode.com/">Flies</a>.
         <br />Running version #{fliesInit.version} (#{fliesInit.buildTimestamp}).

@@ -35,6 +35,7 @@
 		<f:param name="project" value="#{_iteration.project.slug}"/>
 		<f:param name="iteration" value="#{_iteration.slug}"/>
 		<f:param name="localeId" value="#{tribe.locale.id}"/>
+		<f:param name="locale" value="#{locale.language}" />
 		Launch Translation Editor    	
       </h:outputLink>
       <h:outputLink 
@@ -45,6 +46,7 @@
 		<f:param name="iteration" value="#{_iteration.slug}"/>
 		<f:param name="localeId" value="#{tribe.locale.id}"/>
 		<f:param name="gwt.codesvr" value="127.0.0.1:9997"/>
+		<f:param name="locale" value="#{locale.language}" />
 		Launch Translation Editor (GWT DevMode)
       </h:outputLink>
         
