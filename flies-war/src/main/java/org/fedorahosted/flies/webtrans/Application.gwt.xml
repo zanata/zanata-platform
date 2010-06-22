@@ -44,29 +44,10 @@
       <source path="client" />
       <source path="shared" />
 
-  <inherits name="com.google.gwt.user.User"/>
   <inherits name="com.google.gwt.i18n.I18N"/>
   
+  <!-- Default language, as a fallback -->
   <extend-property name="locale" values="default" />
-  <set-property-fallback name="locale" value="default"/>
-  
-  <!-- English language, independent of country -->
-  <extend-property name="locale" values="en"/>
-
-  <!-- Belgium language, independent of country -->
-  <extend-property name="locale" values="bg"/>
-
-  <!-- German language, independent of country -->
-  <extend-property name="locale" values="de"/>
-
-  <!-- French language, independent of country -->
-  <extend-property name="locale" values="fr"/>
-  
-  <!-- Italian language, independent of country -->
-  <extend-property name="locale" values="it"/>
-  
-  <!-- Turkish language, independent of country -->
-  <extend-property name="locale" values="tr"/>
   
   <!-- Testing language, independent of country -->
   <extend-property name="locale" values="qc"/>
