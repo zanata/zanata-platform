@@ -46,8 +46,9 @@
 
   <inherits name="com.google.gwt.i18n.I18N"/>
   
-  <!-- Default language, as a fallback -->
-  <extend-property name="locale" values="default" />
+  <!-- English language, independent of country -->
+  <extend-property name="locale" values="en"/>
+  <set-property name="locale" value="en" />
   
   <!-- Testing language, independent of country -->
   <extend-property name="locale" values="qc"/>
