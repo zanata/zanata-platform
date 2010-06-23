@@ -12,21 +12,21 @@
     <ui:define name="center_content">
         <rich:jQuery selector="#tab_tribes" query="addClass('ui-tabs-selected')" />
         <h1>#{tribeHome.instance.locale.nativeName}</h1>
-        <p>#{tribeHome.instance.members.size} members</p>
+        <p>#{messages['jsf.SizeMembers']}</p>
     </ui:define>
     
     <ui:define name="left_content">
       <rich:panel id="actionPanel" rendered="#{identity.loggedIn}">
         <f:facet name="header">
-          Actions
+          #{messages['jsf.Actions']}
         </f:facet>
         <a:form>
           <a:commandLink styleClass="action_link" action="#{tribeHome.joinTribe}" reRender="actionPanel,tribesTabDiv" rendered="#{not memberTribes.contains(tribeHome.instance)}">
-            Join this tribe
+            #{messages['jsf.JoinThisTribe']}
             <s:conversationId name="id" value="#{tribeHome.id}"/>
           </a:commandLink>
           <a:commandLink styleClass="action_link" action="#{tribeHome.leaveTribe}" reRender="actionPanel,tribesTabDiv" rendered="#{memberTribes.contains(tribeHome.instance)}">
-            Leave this tribe
+            #{messages['jsf.LeaveThisTribe']}
             <s:conversationId name="id" value="#{tribeHome.id}"/>
           </a:commandLink>
         </a:form>

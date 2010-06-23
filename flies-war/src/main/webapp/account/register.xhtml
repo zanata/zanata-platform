@@ -13,30 +13,30 @@
     <a4j:form id="registerForm">
       <s:token allowMultiplePosts="true" />
       <rich:panel>
-        <f:facet name="header">Sign Up</f:facet>
+        <f:facet name="header">#{messages['jsf.SignUp']}</f:facet>
 
         <s:decorate id="nameField" template="../WEB-INF/layout/edit.xhtml">
-            <ui:define name="label">Name</ui:define>
+            <ui:define name="label">#{messages['jsf.Name']}</ui:define>
             <h:inputText id="name" required="true"
                       value="#{register.person.name}">
                <a4j:support event="onblur" reRender="nameField" ajaxSingle="true"/>
             </h:inputText>
             <h:graphicImage id="nameHelp" value="../img/msginfo.png" styleClass="input_help">
               <rich:toolTip>
-                Must be lowercase blah blah and so on...
+                #{messages['jsf.NameToolTip']}
               </rich:toolTip>
             </h:graphicImage>
         </s:decorate>
 
         <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml">
-            <ui:define name="label">Email</ui:define>
+            <ui:define name="label">#{messages['jsf.Email']}</ui:define>
             <h:inputText id="email" required="true"
                       value="#{register.person.email}">
                <a4j:support event="onblur" reRender="emailField" ajaxSingle="true"/>
             </h:inputText>
             <h:graphicImage id="emailHelp" value="../img/msginfo.png" styleClass="input_help">
               <rich:toolTip>
-                Must be lowercase blah blah and so on...
+                #{messages['jsf.EmailToolTip']}
               </rich:toolTip>
             </h:graphicImage>
         </s:decorate>
@@ -49,19 +49,19 @@
             </h:inputText>
             <h:graphicImage id="usernameHelp" value="../img/msginfo.png" styleClass="input_help">
               <rich:toolTip>
-                Must be lowercase blah blah and so on...
+                #{messages['jsf.UsernameToolTip']}
               </rich:toolTip>
             </h:graphicImage>
         </s:decorate>
         <s:decorate id="passwordField" template="../WEB-INF/layout/edit.xhtml">
-            <ui:define name="label">Password</ui:define>
+            <ui:define name="label">#{messages['jsf.Password']}</ui:define>
             <h:inputSecret id="password" redisplay="true" required="true"
                         value="#{register.password}">
               <a4j:support event="onblur" reRender="passwordField" ajaxSingle="true"/>
             </h:inputSecret>
         </s:decorate>
         <s:decorate id="passwordConfirmField" template="../WEB-INF/layout/edit.xhtml">
-            <ui:define name="label">Confirm Password</ui:define>
+            <ui:define name="label">#{messages['jsf.ConfirmPassword']}</ui:define>
             <h:inputSecret id="passwordConfirm" redisplay="true" required="true"
                         value="#{register.passwordConfirm}">
               <a4j:support event="onblur" reRender="passwordConfirmField" ajaxSingle="true"/>                        
@@ -75,9 +75,9 @@
         <s:decorate id="agreedToTerms" template="../WEB-INF/layout/edit.xhtml">
           <h:selectBooleanCheckbox id="agreedToTerms" value="#{register.agreedToTermsOfUse}"/>
           <label for="agreedToTerms">
-            I <strong>agree</strong> to the
+            #{messages['jsf.IAgreeToThe']}
             <h:outputLink value="#" id="termsOfUseLink">
-              <h:outputText value="Terms of use"/>
+              <h:outputText value="#{messages['jsf.TermsOfUse']}"/>
               <rich:componentControl for="termsOfUse" attachTo="termsOfUseLink" operation="show" event="onclick"/>
             </h:outputLink>
           </label>
@@ -93,7 +93,7 @@
     <rich:modalPanel id="termsOfUse" width="640" height="480" rendered="#{not identity.loggedIn}">
       <f:facet name="header">
         <h:panelGroup>
-          <h:outputText value="Terms of Use"/>
+          <h:outputText value="#{messages['jsf.TermsOfUse']}"/>
         </h:panelGroup>
       </f:facet>
       <f:facet name="controls">

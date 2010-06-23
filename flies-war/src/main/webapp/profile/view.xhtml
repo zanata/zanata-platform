@@ -13,12 +13,12 @@
     <ui:define name="left_content">
       <s:fragment rendered="#{identity.loggedIn}">
         <rich:panel>
-          <f:facet name="header">Actions</f:facet>
+          <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
           <s:link styleClass="action_link" view="/profile/edit.xhtml" propagation="none">
-            Edit Profile
+            #{messages['jsf.EditProfile']}
           </s:link>
           <s:link styleClass="action_link" view="/account/changepassword.xhtml" propagation="none" rendered="#{not identityStore.nukesActive}">
-            Change Password
+            #{messages['jsf.ChangePassword']}
           </s:link>
         </rich:panel>
       </s:fragment>
@@ -27,7 +27,7 @@
     <ui:define name="center_content">
         <rich:jQuery selector="#tab_profile" query="addClass('ui-tabs-selected')" />
         <h1>#{personHome.instance.name}</h1>
-        <h2>My Projects</h2>
+        <h2>#{messages['jsf.MyProjects']}</h2>
         <h:outputText value="None Available" rendered="#{empty personHome.instance.maintainerProjects}"/>
         <rich:dataGrid value="#{personHome.instance.maintainerProjects}" 
                        var="project" 
@@ -36,7 +36,7 @@
                        styleClass="grid_style">
           <ui:include src="../WEB-INF/layout/project_view_inline.xhtml" />
         </rich:dataGrid>
-        <h2>My Tribes</h2>
+        <h2>#{messages['jsf.MyTribes']}</h2>
         <h:outputText value="None Available" rendered="#{empty personHome.instance.tribeMemberships}"/>
         <rich:dataGrid value="#{personHome.instance.tribeMemberships.toArray()}" 
                        var="tribe" 
@@ -45,10 +45,10 @@
                        styleClass="grid_style">
           <ui:include src="../WEB-INF/layout/tribe_view_inline.xhtml" />
         </rich:dataGrid>
-        <h2>My Communities</h2>
+        <h2>#{messages['jsf.MyCommunities']}</h2>
         <h:outputText value="None Available" rendered="#{empty personHome.instance.communityOwnerships}"/>
         <s:div rendered="#{not empty personHome.instance.communityOwnerships}">
-          <h3>Ownerships</h3>
+          <h3>#{messages['jsf.Ownerships']}</h3>
           <rich:dataGrid value="#{personHome.instance.communityOwnerships.toArray()}" 
                          var="community" 
                          columns="3"
@@ -58,7 +58,7 @@
           </rich:dataGrid>
         </s:div>
         <s:div rendered="#{not empty personHome.instance.communityOfficerships and not empty personHome.instance.communityOfficerships and not empty personHome.instance.communityOwnerships }">
-          <h3>Officerships</h3>
+          <h3>#{messages['jsf.Officerships']}</h3>
           <rich:dataGrid value="#{personHome.instance.communityOfficerships.toArray()}" 
                          var="community" 
                          columns="3"
@@ -68,7 +68,7 @@
           </rich:dataGrid>
         </s:div>
         <s:div rendered="#{not empty personHome.instance.communityMemberships}">
-          <h3>Membership</h3>
+          <h3>#{messages['jsf.Membership']}</h3>
           <rich:dataGrid value="#{personHome.instance.communityMemberships.toArray()}" 
                          var="community" 
                          columns="3"
@@ -77,12 +77,12 @@
             <ui:include src="../WEB-INF/layout/community_view_inline.xhtml" />
           </rich:dataGrid>
         </s:div>
-        <h2>API Key</h2>
+        <h2>#{messages['jsf.ApiKey']}</h2>
         <h:form>
           <s:token allowMultiplePosts="true" />
-          <s:span id="no_api_key" rendered="#{personHome.instance.account.apiKey == null}">(Not Generated)</s:span>
+          <s:span id="no_api_key" rendered="#{personHome.instance.account.apiKey == null}">#{messages['jsf.NotGenerated']}</s:span>
           <s:fragment id="api_key" rendered="#{personHome.instance.account.apiKey != null}"> 
-            <p>Your current API Key is
+            <p>#{messages['jsf.YourCurrentApiKeyIs']}
               <code>#{personHome.instance.account.apiKey}</code> 
             </p>
           </s:fragment>

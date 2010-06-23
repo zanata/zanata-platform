@@ -10,10 +10,10 @@
     
     <ui:define name="center_content">
         <rich:jQuery selector="#tab_home" query="addClass('ui-tabs-selected')" />
-        <h1>Welcome to Flies!</h1>
+        <h1>#{messages['jsf.WelcomeToFlies']}</h1>
 
 	    <s:fragment rendered="#{not empty projects}">
-	      <h2>Latest Projects</h2>
+	      <h2>#{messages['jsf.LatestProjects']}</h2>
 	      <rich:dataGrid columns="3" 
 	                     value="#{latestProjects}" 
 	                     var="project" 

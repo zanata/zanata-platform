@@ -10,7 +10,7 @@
 
     <ui:define name="center_content">
         <rich:jQuery selector="#tab_communities" query="addClass('ui-tabs-selected')" />
-        <h1>Communities</h1>
+        <h1>#{messages['jsf.Communities']}</h1>
         <rich:dataGrid columns="3" 
                        value="#{communitiesBean.latestCommunities}"
                        columnClasses="grid_col" 
@@ -23,10 +23,10 @@
     <ui:define name="left_content">
       <rich:panel rendered="#{identity.loggedIn}">
         <f:facet name="header">
-          Actions
+          #{messages['jsf.Actions']}
         </f:facet>
         <s:link styleClass="action_link" rendered="#{s:hasRole('admin')}" view="/community/create_community.xhtml" propagation="none">
-          Create a Community
+          #{messages['jsf.CreateACommunity']}
         </s:link>
       </rich:panel>
     </ui:define>

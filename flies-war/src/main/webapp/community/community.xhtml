@@ -18,10 +18,10 @@
     <ui:define name="left_content">
       <rich:panel rendered="#{identity.loggedIn}">
         <f:facet name="header">
-          Actions
+          #{messages['jsf.Actions']}
         </f:facet>
         <s:link styleClass="action_link" rendered="#{s:hasRole('admin')}" view="/community/edit.xhtml" propagation="none">
-          Edit
+          #{messages['jsf.Edit']}
           <f:param name="slug" value="#{communityHome.instance.slug}"/>
         </s:link>
       </rich:panel>

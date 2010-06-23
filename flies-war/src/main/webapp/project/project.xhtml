@@ -17,7 +17,7 @@
     
     <h:outputText value="#{projectHome.instance.description}" rendered="#{empty projectHome.instance.homeContent}"/>
     <s:fragment rendered="#{projectHome.retiredIterations.size > 0}">
-      <h2>Active Iterations</h2>
+      <h2>#{messages['jsf.ActiveIterations']}</h2>
     </s:fragment>
     <rich:dataGrid columns="2" 
                    value="#{projectHome.activeIterations}" 
@@ -28,7 +28,7 @@
     </rich:dataGrid>
 
     <s:fragment rendered="#{projectHome.retiredIterations.size > 0}">
-      <h2>Retired Iterations</h2>
+      <h2>#{messages['RetiredIterations']}</h2>
       <rich:dataGrid columns="2" 
                      value="#{projectHome.retiredIterations}" 
                      var="_iteration" 
@@ -41,7 +41,7 @@
 <ui:define name="left_content">
   
   <rich:panel rendered="#{identity.loggedIn}">
-    <f:facet name="header">Actions</f:facet>
+    <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
     <s:link styleClass="action_link" rendered="#{s:hasRole('admin')}" value="Edit Project" view="/project/edit.xhtml" propagation="none">
       <f:param name="slug" value="#{projectHome.instance.slug}"/>
     </s:link>
@@ -51,8 +51,8 @@
   </rich:panel>
   
   <rich:panel>
-    <f:facet name="header">Maintainers</f:facet>
-    <h:outputText rendered="#{empty projectHome.instance.maintainers}">(No maintainers defined)</h:outputText>
+    <f:facet name="header">#{messages['jsf.Maintainers']}</f:facet>
+    <h:outputText rendered="#{empty projectHome.instance.maintainers}">#{messages['jsf.NoMaintainersDefined']}</h:outputText>
     <rich:dataList value="#{projectHome.instance.maintainers.toArray()}" var="maintainer">
       <h:outputText value="#{maintainer.name}"/>
     </rich:dataList>

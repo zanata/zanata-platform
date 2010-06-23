@@ -14,15 +14,15 @@
       <h:form>
         <s:token allowMultiplePosts="true" />
         <rich:panel>
-          <f:facet name="header">Role Details</f:facet>
+          <f:facet name="header">#{messages['jsf.RoleDetails']}</f:facet>
 
           <s:decorate id="roleField" template="../WEB-INF/layout/edit.xhtml">
-            <ui:define name="label">Role</ui:define>
+            <ui:define name="label">#{messages['jsf.Role']}</ui:define>
             <h:inputText id="role" value="#{roleAction.role}" readonly="#{identityManager.userExists(roleAction.role)}"/>
           </s:decorate>
               
           <s:decorate id="groupsField" template="../WEB-INF/layout/edit.xhtml">
-            <ui:define name="label">Member of</ui:define>
+            <ui:define name="label">#{messages['jsf.MemberOf']}</ui:define>
               <h:selectManyCheckbox id="groups" value="#{roleAction.groups}" layout="pageDirection">
                 <s:selectItems value="#{identityManager.listRoles()}" var="role" label="#{role}"/>
               </h:selectManyCheckbox>

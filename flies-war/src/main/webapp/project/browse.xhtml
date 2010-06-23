@@ -20,11 +20,11 @@
                   value="#{projects}"
                rendered="#{not empty projects}">
             <h:column>
-                <f:facet name="header">Id</f:facet>
+                <f:facet name="header">#{messages['jsf.Id']}</f:facet>
                 #{project.id}
             </h:column>
             <h:column>
-                <f:facet name="header">Name</f:facet>
+                <f:facet name="header">#{messages['jsf.Name']}</f:facet>
                 <s:link id="project"
                      value="#{project.name}"
                propagation="none"
@@ -34,7 +34,7 @@
                 </s:link>
             </h:column>
             <h:column>
-                <f:facet name="header">Description</f:facet>
+                <f:facet name="header">#{messages['jsf.Description']}</f:facet>
                 #{project.description}
             </h:column>
         </h:dataTable>
