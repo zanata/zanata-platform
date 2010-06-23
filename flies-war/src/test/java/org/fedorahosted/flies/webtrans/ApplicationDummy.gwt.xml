@@ -16,5 +16,8 @@
 		
     <extend-property name="log_level" values="DEBUG" />
     <set-property name="log_level" value="DEBUG" />
+    
+    <extend-property name="locale" values="en"/>
+    <set-property name="locale" value="en"/>
 	
 </module>
