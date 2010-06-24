@@ -85,7 +85,7 @@
         
         <div style="clear:both"/>
         <div class="actionButtons">
-            <h:commandButton value="Register" action="#{register.register}"/>
+            <h:commandButton value="#{messages['jsf.Register']}" action="#{register.register}"/>
         </div>
       </rich:panel>
     </a4j:form>
@@ -106,7 +106,7 @@
       <h:panelGroup style="width: 600px; text-align: center;">
         <a4j:form>
           <rich:spacer height="40"/>
-          <a4j:commandButton value="Close" onclick="#{rich:component('termsOfUse')}.hide()"/>
+          <a4j:commandButton value="#{messages['jsf.Close']}" onclick="#{rich:component('termsOfUse')}.hide()"/>
         </a4j:form>
       </h:panelGroup>
     </rich:modalPanel>

@@ -50,15 +50,15 @@
 
     <div class="actionButtons">
         <h:commandButton id="save"
-                      value="Save"
+                      value="#{messages['jsf.Save']}"
                      action="#{projectHome.persist}"
                    rendered="#{!projectHome.managed}"/>
         <h:commandButton id="update"
-                      value="Save"
+                      value="#{messages['jsf.Update']}"
                      action="#{projectHome.update}"
                    rendered="#{projectHome.managed}"/>
         <s:button id="cancel"
-                        value="Cancel"
+                        value="#{messages['jsf.Cancel']}"
                         propagation="none"
                        action="#{projectHome.cancel}"/>
     </div>

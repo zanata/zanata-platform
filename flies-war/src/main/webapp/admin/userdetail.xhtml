@@ -48,8 +48,8 @@
           <div style="clear:both"/>
 
           <div class="actionButtons">
-            <h:commandButton value="Save" action="#{userAction.save}"/>
-            <s:button view="/admin/usermanager.xhtml" value="Cancel" propagation="end"/>
+            <h:commandButton value="#{messages['jsf.Save']}" action="#{userAction.save}"/>
+            <s:button view="/admin/usermanager.xhtml" value="#{messages['jsf.Cancel']}" propagation="end"/>
           </div>
     
         </rich:panel>

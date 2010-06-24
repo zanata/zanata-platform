@@ -45,15 +45,15 @@
 
     <div class="actionButtons">
         <h:commandButton id="save"
-                      value="Save"
+                      value="#{messages['jsf.Save']}"
                      action="#{projectIterationHome.persist}"
                    rendered="#{!projectIterationHome.managed}"/>
         <h:commandButton id="update"
-                      value="Save"
+                      value="#{messages['jsf.Update']}"
                      action="#{projectIterationHome.update}"
                    rendered="#{projectIterationHome.managed}"/>
         <s:button id="cancel"
-                        value="Cancel"
+                        value="#{messages['jsf.Cancel']}"
                          action="#{projectIterationHome.cancel}"/>
     </div>
 

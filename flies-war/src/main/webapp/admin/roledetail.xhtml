@@ -31,8 +31,8 @@
           <div style="clear:both"/>
 
           <div class="actionButtons">
-            <h:commandButton value="Save" action="#{roleAction.save}"/>
-            <s:button view="/admin/rolemanager.xhtml" value="Cancel" propagation="end"/>
+            <h:commandButton value="#{messages['jsf.Save']}" action="#{roleAction.save}"/>
+            <s:button view="/admin/rolemanager.xhtml" value="#{messages['jsf.Cancel']}" propagation="end"/>
           </div>
     
         </rich:panel>

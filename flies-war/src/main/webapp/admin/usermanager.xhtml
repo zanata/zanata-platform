@@ -12,7 +12,7 @@
     <ui:define name="left_content">
         <s:link action="#{userAction.createUser}"
           rendered="#{s:hasPermission('seam.account', 'create')}"
-          value="Create new User"/>
+          value="#{messages['jsf.CreateNewUser']}"/>
     </ui:define>
  -->
   
@@ -60,9 +60,9 @@
 	              #{messages['jsf.Actions']}
 	            </f:facet>
 	            <s:fragment rendered="#{s:hasPermission('seam.user', 'update')}">
-	              <h:commandLink value="Edit" action="#{userAction.editUser(userSearch.selectedUser)}"/><span> | </span>
+	              <h:commandLink value="#{messages['jsf.Edit']}" action="#{userAction.editUser(userSearch.selectedUser)}"/><span> | </span>
 	            </s:fragment>
-	            <h:commandLink value="Delete" action="#{identityManager.deleteUser(userSearch.selectedUser)}" 
+	            <h:commandLink value="#{messages['jsf.Delete']}" action="#{identityManager.deleteUser(userSearch.selectedUser)}" 
 	                    rendered="#{s:hasPermission('seam.user', 'delete')}"
 	                    onclick="return confirmDelete()"/>
 	          </h:column>

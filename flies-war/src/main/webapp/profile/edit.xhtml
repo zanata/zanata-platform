@@ -44,8 +44,8 @@
             <div style="clear:both"/>
 
             <div class="actionButtons">
-              <h:commandButton value="Save" action="#{personHome.update}"/>
-              <s:button view="/profile/view.xhtml" value="Cancel" propagation="end"/>
+              <h:commandButton value="#{messages['jsf.Save']}" action="#{personHome.update}"/>
+              <s:button view="/profile/view.xhtml" value="#{messages['jsf.Cancel']}" propagation="end"/>
             </div>
     
           </rich:panel>

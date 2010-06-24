@@ -50,15 +50,15 @@
 
   <div class="actionButtons">
       <h:commandButton id="save"
-                    value="Save"
+                    value="#{messages['jsf.Save']}"
                    action="#{communityHome.persist}"
                  rendered="#{!communityHome.managed}"/>
       <h:commandButton id="update"
-                    value="Save"
+                    value="#{messages['jsf.Update']}"
                    action="#{communityHome.update}"
                  rendered="#{communityHome.managed}"/>
       <s:button id="cancel"
-             value="Cancel"
+             value="#{messages['jsf.Cancel']}"
             action="#{communityHome.cancel}"/>
   </div>
 

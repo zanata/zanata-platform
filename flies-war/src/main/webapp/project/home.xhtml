@@ -13,7 +13,7 @@
       <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
       <s:link styleClass="action_link"
       				rendered="#{s:hasRole('admin')}" 
-      				value="Create project" 
+      				value="#{messages['jsf.CreateProject']}" 
                     view="/project/create_project.xhtml"
                     propagation="none"/>
     </rich:panel>
@@ -21,7 +21,7 @@
   <ui:define name="center_content">
     <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
 
-    <h:outputText value="No project exists"
+    <h:outputText value="#{messages['jsf.NoProjectExists']}"
                rendered="#{empty latestProjects}"/>
 
     <s:fragment rendered="#{not empty projects}">

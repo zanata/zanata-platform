@@ -12,7 +12,7 @@
     <ui:define name="left_content">
         <s:link action="#{roleAction.createRole}" 
           rendered="#{s:hasPermission('seam.account', 'create', null)}"
-          value="Create Role"
+          value="#{messages['jsf.CreateRole']}"
         />
     </ui:define>
    
@@ -50,9 +50,9 @@
 	          <h:column width="auto">
 	            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>          
 	            <s:fragment rendered="#{s:hasPermission('seam.role', 'update')}">
-	              <h:commandLink value="Edit" action="#{roleAction.editRole(roleSearch.selectedRole)}"/><span> | </span>
+	              <h:commandLink value="#{messages['jsf.Edit']}" action="#{roleAction.editRole(roleSearch.selectedRole)}"/><span> | </span>
 	            </s:fragment>
-	            <h:commandLink value="Delete" action="#{identityManager.deleteRole(roleSearch.selectedRole)}"
+	            <h:commandLink value="#{messages['jsf.Delete']}" action="#{identityManager.deleteRole(roleSearch.selectedRole)}"
 	                    rendered="#{s:hasPermission('seam.role', 'delete')}"
 	                    onclick="return confirmDelete()"/>
 	          </h:column>
