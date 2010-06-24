@@ -45,7 +45,7 @@
     <s:link styleClass="action_link" rendered="#{s:hasRole('admin')}" value="#{messages['jsf.EditProject']}" view="/project/edit.xhtml" propagation="none">
       <f:param name="slug" value="#{projectHome.instance.slug}"/>
     </s:link>
-    <s:link styleClass="action_link" rendered="#{s:hasRole('admin')}" view="/project/add_iteration.xhtml" value="#{messages['jsf.AddVersion']}" propagation="none">
+    <s:link styleClass="action_link" rendered="#{s:hasRole('admin')}" view="/project/add_iteration.xhtml" value="#{messages['jsf.CreateVersion']}" propagation="none">
     	<f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
     </s:link>
   </rich:panel>

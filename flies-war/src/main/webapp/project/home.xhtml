@@ -25,7 +25,7 @@
                rendered="#{empty latestProjects}"/>
 
     <s:fragment rendered="#{not empty projects}">
-      <h1>Projects</h1>
+      <h1>#{messages['jsf.Projects']}</h1>
       <rich:dataGrid columns="3" 
                      value="#{latestProjects}" 
                      var="project" 
