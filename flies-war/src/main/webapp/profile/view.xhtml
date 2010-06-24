@@ -36,7 +36,7 @@
                        styleClass="grid_style">
           <ui:include src="../WEB-INF/layout/project_view_inline.xhtml" />
         </rich:dataGrid>
-        <h2>#{messages['jsf.MyTribes']}</h2>
+        <h2>#{messages['jsf.MyLanguages']}</h2>
         <h:outputText value="None Available" rendered="#{empty personHome.instance.tribeMemberships}"/>
         <rich:dataGrid value="#{personHome.instance.tribeMemberships.toArray()}" 
                        var="tribe" 

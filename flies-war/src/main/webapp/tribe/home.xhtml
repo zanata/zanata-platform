@@ -11,13 +11,13 @@
     <ui:define name="left_content">
       <rich:panel rendered="#{identity.loggedIn}">
         <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-        <a href="#" class="action_link">#{messages['jsf.YourTribeMissing']}</a>
+        <a href="#" class="action_link">#{messages['jsf.YourLanguageMissing']}</a>
       </rich:panel>
     </ui:define>
 
     <ui:define name="center_content">
         <rich:jQuery selector="#tab_tribes" query="addClass('ui-tabs-selected')" />
-        <h1>#{messages['jsf.Tribes']}</h1>
+        <h1>#{messages['jsf.Languages']}</h1>
         <rich:dataGrid value="#{tribesBean.latestTribes}" var="tribe" columns="3" columnClasses="grid_col" styleClass="grid_style">
           <ui:include src="../WEB-INF/layout/tribe_view_inline.xhtml" />
         </rich:dataGrid>
