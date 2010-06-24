@@ -9,7 +9,7 @@
   <ul class="ui-tabs-nav">
     <li id="tab_projects" class="ui-tabs-nav-issues">
       <s:link view="/project/home.xhtml" propagation="none">
-        <span><img src="#{request.contextPath}/img/silk/photos.png"/>Projects</span>
+        <span><img src="#{request.contextPath}/img/silk/photos.png"/>#{messages['jsf.Projects']}</span>
       </s:link>
       <s:fragment rendered="#{authenticatedPerson != null}">
         <ul>
@@ -26,7 +26,7 @@
     </li>
     <li id="tab_tribes">
       <s:link view="/tribe/home.xhtml" propagation="none">
-        <span><img src="#{request.contextPath}/img/silk/world.png"/>Tribes</span>
+        <span><img src="#{request.contextPath}/img/silk/world.png"/>#{messages['jsf.Tribes']}</span>
       </s:link>
       <s:div id="tribesTabDiv">
         <s:fragment rendered="#{memberTribes.size != 0}">
@@ -46,27 +46,27 @@
     </li>
     <li id="tab_communities">
       <s:link view="/community/home.xhtml" propagation="none">
-        <span><img src="#{request.contextPath}/img/silk/group.png"/>Communities</span>
+        <span><img src="#{request.contextPath}/img/silk/group.png"/>#{messages['jsf.Communities']}</span>
       </s:link>
     </li>
     <s:fragment rendered="#{s:hasRole('admin')}">
       <li  id="tab_admin" class="ui-tabs-nav-issues">
         <s:link view="/admin/home.xhtml" propagation="none">
-          <span><img src="#{request.contextPath}/img/silk/wrench.png"/>Administration ↓</span>
+          <span><img src="#{request.contextPath}/img/silk/wrench.png"/>#{messages['jsf.Administration']} ↓</span>
         </s:link>
         <ul>
-          <li><s:link view="/admin/server_configuration.xhtml" propagation="none">Server Configuration</s:link></li>
-          <li><s:link view="/admin/usermanager.xhtml" propagation="none">Manage Users</s:link></li>
-          <li><s:link view="/admin/rolemanager.xhtml" propagation="none">Manage Roles</s:link></li>
-          <li><s:link view="/admin/locales.xhtml" propagation="none">Manage Locales</s:link></li>
-          <li><s:link view="/admin/search.xhtml" propagation="none">Manage Search</s:link></li>
+          <li><s:link view="/admin/server_configuration.xhtml" propagation="none">#{messages['jsf.ServerConfiguration']}</s:link></li>
+          <li><s:link view="/admin/usermanager.xhtml" propagation="none">#{messages['jsf.ManageUsers']}</s:link></li>
+          <li><s:link view="/admin/rolemanager.xhtml" propagation="none">#{messages['jsf.ManageRoles']}</s:link></li>
+          <li><s:link view="/admin/locales.xhtml" propagation="none">#{messages['jsf.ManageLocales']}</s:link></li>
+          <li><s:link view="/admin/search.xhtml" propagation="none">#{messages['jsf.ManageSearch']}</s:link></li>
         </ul>
       </li>
     </s:fragment>
     <s:fragment rendered="#{identity.loggedIn}">
       <li id="tab_profile">
         <s:link view="/profile/view.xhtml" propagation="none">
-          <span><img src="#{request.contextPath}/img/silk/user.png"/>My Profile</span>
+          <span><img src="#{request.contextPath}/img/silk/user.png"/>#{messages['jsf.MyProfile']}</span>
         </s:link>
       </li>
     </s:fragment>

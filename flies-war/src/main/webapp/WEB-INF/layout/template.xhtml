@@ -10,7 +10,7 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>flies</title>
+    <title>#{messages['jsf.FliesMainTitle']}</title>
     <link rel="shortcut icon"
       href="#{request.contextPath}/img/favicon.ico" type="image/x-icon" />
     <a:loadStyle src="/stylesheet/reset-fonts-grids.css" />
@@ -30,7 +30,7 @@
             <img src="#{request.contextPath}/img/flies_logo_blue_text.png" />
           </s:link>
         </div>
-        <div id="flies_name"><a href="/flies/">Flies - The Future of Localization</a></div>
+        <div id="flies_name"><a href="/flies/">#{messages['FliesMainDescription']}</a></div>
         <div id="header_top_right">
           <h:outputText rendered="#{identity.loggedIn}"
             value="#{authenticatedPerson == null ? identity.username : authenticatedPerson.name} " />
@@ -80,10 +80,10 @@
             </h:selectOneMenu> 
             <h:commandButton action="#{localeSelector.select}" value="#{messages['Change Language']}"/>
         </h:form>
-      Copyright 2008 
-        <a href="http://www.redhat.com/">Red Hat</a> and Others. 
-        Powered by <a href="http://flies.googlecode.com/">Flies</a>.
-        <br />Running version #{fliesInit.version} (#{fliesInit.buildTimestamp}).
+      #{messages['jsf.Copyright']} #{messages['jsf.CopyrightYearInfo']} 
+        <a href="http://www.redhat.com/">#{messages['jsf.ManufacturerInfo']}</a> and Others. 
+        #{messages['jsf.PoweredBy']}<a href="http://flies.googlecode.com/">#{messages['jsf.Flies']}</a>.
+        <br />#{messages['jsf.RunningVersionInfo']}
       </div>
     </div>
   </div>

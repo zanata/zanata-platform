@@ -7,12 +7,12 @@
            charset="UTF-8" importance="normal">
   <m:from name="Flies" address="asgeirf@redhat.com"/>
   <m:to name="#{register.person.name}">#{register.person.email}</m:to>
-  <m:subject>Flies Account Activation</m:subject>
+  <m:subject>#{messages['jsf.FliesAccountActivation']}</m:subject>
   <m:body>
     <html>
     <body>
-    <p>Dear #{register.person.name},</p>
-    <p>Please click on the following link to activate your account:</p>
+    <p>#{messages['jsf.DearName']}</p>
+    <p>#{messages['jsf.PleaseClickOnTheFollowingLinkToActivateYourAccount']}</p>
     <p>
       <a href="#{applicationConfiguration.serverPath}account/activate/#{register.activationKey}">
       #{applicationConfiguration.serverPath}account/activate/#{register.activationKey}

@@ -11,13 +11,13 @@
     <s:token allowMultiplePosts="true" />
     <rich:panel>
         <s:decorate id="nameField" template="edit.xhtml">
-            <ui:define name="label">Name</ui:define>
+            <ui:define name="label">#{messages['jsf.Name']}</ui:define>
             <h:inputText id="name" required="true"
                          value="#{projectHome.instance.name}"/>
         </s:decorate>
 
         <s:decorate id="slugField" template="edit.xhtml">
-            <ui:define name="label">Slug</ui:define>
+            <ui:define name="label">#{messages['jsf.Slug']}</ui:define>
             <h:inputText id="slug" required="true"
                          value="#{projectHome.instance.slug}" 
                          readonly="#{projectHome.managed}"
@@ -27,13 +27,13 @@
         </s:decorate>
 
         <s:decorate id="descriptionField" template="edit.xhtml">
-            <ui:define name="label">Description</ui:define>
+            <ui:define name="label">#{messages['jsf.Description']}</ui:define>
             <h:inputText id="description" required="true"
                          value="#{projectHome.instance.description}" style="width:400px;"/>
         </s:decorate>
 
         <s:decorate id="homeContentField" template="edit.xhtml">
-            <ui:define name="label">Homepage Content</ui:define>
+            <ui:define name="label">#{messages['jsf.HomepageContent']}</ui:define>
              <rich:editor id="homeContent" 
                 width="400" height="300" style="width:400px;"
                 required="false"
