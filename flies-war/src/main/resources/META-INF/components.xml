@@ -2,6 +2,7 @@
 <components xmlns="http://jboss.com/products/seam/components"
     xmlns:core="http://jboss.com/products/seam/core"
     xmlns:persistence="http://jboss.com/products/seam/persistence"
+    xmlns:international="http://jboss.com/products/seam/international"
     xmlns:drools="http://jboss.com/products/seam/drools"
     xmlns:bpm="http://jboss.com/products/seam/bpm"
     xmlns:security="http://jboss.com/products/seam/security"
@@ -106,5 +107,7 @@
 	${components.xml.nukes}  
   -->
   
+  <!-- Remember the locale selected -->
+  <international:locale-selector cookie-enabled="true"/> 
   
 </components>
