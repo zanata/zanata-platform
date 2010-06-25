@@ -312,10 +312,16 @@ td.action a {
 #footer {
 	background:url(../img/footer_bg.png) repeat-x left top; 
 	width:100%; 
-	height:75px; 
+	height:50px; 
 	line-height:20px; 
 	text-align:center; 
-	padding-top:15px;
+	padding-top:10px;
+}
+
+#localeSelector {
+	float: right;
+	padding-top: 0px;
+	padding-right: 5px;
 }
 
 /* Styles from the security-stuff in seamspace*/
