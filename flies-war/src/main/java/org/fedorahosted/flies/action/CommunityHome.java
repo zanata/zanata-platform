@@ -8,6 +8,7 @@ import org.fedorahosted.flies.model.HPerson;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
@@ -19,14 +20,12 @@ public class CommunityHome extends SlugHome<HCommunity>{
 
 	private String slug;
 	
-	@Override
-	protected HCommunity createInstance() {
-		HCommunity instance = super.createInstance();
-		// FIXME this should be the current user
-		instance.setOwner(getEntityManager().find(HPerson.class, 1l));
-		return instance;
-	}
-
+//	@In(required=false, value=JpaIdentityStore.AUTHENTICATED_USER) 
+//	HAccount authenticatedAccount;
+	
+	@In(required=false)
+	HPerson authenticatedPerson;
+	
 	public void validateSuppliedId(){
 		getInstance(); // this will raise an EntityNotFound exception
 					   // when id is invalid and conversation will not
@@ -64,6 +63,11 @@ public class CommunityHome extends SlugHome<HCommunity>{
 	public String persist() {
 		if(!validateSlug(getInstance().getSlug(), "slug"))
 			return null;
+		if(authenticatedPerson != null){
+			HPerson currentPerson = getEntityManager().find(HPerson.class, authenticatedPerson.getId());
+			if(currentPerson != null)
+				getInstance().setOwner(currentPerson);
+		}
 		return super.persist();
 	}
 	
