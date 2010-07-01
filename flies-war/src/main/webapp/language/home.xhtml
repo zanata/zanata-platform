@@ -19,7 +19,7 @@
         <rich:jQuery selector="#tab_tribes" query="addClass('ui-tabs-selected')" />
         <h1>#{messages['jsf.Languages']}</h1>
         <rich:dataGrid value="#{tribesBean.latestTribes}" var="tribe" columns="3" columnClasses="grid_col" styleClass="grid_style">
-          <ui:include src="../WEB-INF/layout/tribe_view_inline.xhtml" />
+          <ui:include src="../WEB-INF/layout/language_view_inline.xhtml" />
         </rich:dataGrid>
     </ui:define>
 </ui:composition>

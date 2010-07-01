@@ -22,11 +22,11 @@
         </f:facet>
         <a:form>
           <a:commandLink styleClass="action_link" action="#{tribeHome.joinTribe}" reRender="actionPanel,tribesTabDiv" rendered="#{not memberTribes.contains(tribeHome.instance)}">
-            #{messages['jsf.JoinThisTribe']}
+            #{messages['jsf.JoinLanguageTeam']}
             <s:conversationId name="id" value="#{tribeHome.id}"/>
           </a:commandLink>
           <a:commandLink styleClass="action_link" action="#{tribeHome.leaveTribe}" reRender="actionPanel,tribesTabDiv" rendered="#{memberTribes.contains(tribeHome.instance)}">
-            #{messages['jsf.LeaveThisTribe']}
+            #{messages['jsf.LeaveLanguageTeam']}
             <s:conversationId name="id" value="#{tribeHome.id}"/>
           </a:commandLink>
         </a:form>

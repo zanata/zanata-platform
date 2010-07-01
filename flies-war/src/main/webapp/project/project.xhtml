@@ -14,8 +14,10 @@
     <h1>#{projectHome.instance.name}</h1>
 
     <s:formattedText id="project-home-content" value="#{projectHome.instance.homeContent}"></s:formattedText>
-    
     <h:outputText value="#{projectHome.instance.description}" rendered="#{empty projectHome.instance.homeContent}"/>
+    
+    <br/><i>* #{messages['jsf.PleaseJoinALanguageTeamFromTheLanguagesPageToHelpTranslateThisProject']}</i>
+    
     <s:fragment rendered="#{projectHome.retiredIterations.size > 0}">
       <h2>#{messages['jsf.ActiveIterations']}</h2>
     </s:fragment>

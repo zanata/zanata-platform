@@ -25,7 +25,7 @@
       </s:fragment>
     </li>
     <li id="tab_tribes">
-      <s:link view="/tribe/home.xhtml" propagation="none">
+      <s:link view="/language/home.xhtml" propagation="none">
         <span><img src="#{request.contextPath}/img/silk/world.png"/>#{messages['jsf.Languages']}</span>
       </s:link>
       <s:div id="tribesTabDiv">
@@ -34,7 +34,7 @@
           <ul>
             <a:repeat value="#{memberTribes}" var="tribe">
               <li>
-                <s:link view="/tribe/tribe.xhtml" propagation="none">
+                <s:link view="/language/language.xhtml" propagation="none">
                   #{tribe.locale.nativeName}
                   <f:param name="id" value="#{tribe.locale.id}"/>
                 </s:link>
