@@ -6,11 +6,11 @@ import com.google.gwt.i18n.client.LocalizableResource.Generate;
 import com.google.gwt.i18n.client.Messages.DefaultMessage;
 
 @DefaultLocale("en_US")
-@Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
+//@Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
 public interface TransFilterMessages extends Messages {
-	@DefaultMessage("Find Messages")
+//	@DefaultMessage("Find Messages")
 	String transUnitSearchesHeading();
 
-	@DefaultMessage("Source or Target content")
+//	@DefaultMessage("Source or Target content")
 	String findSourceOrTargetString();
 }

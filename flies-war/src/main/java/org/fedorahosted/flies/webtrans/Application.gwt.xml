@@ -46,10 +46,12 @@
 
   <inherits name="com.google.gwt.i18n.I18N"/>
   
-  <!-- English language, independent of country -->
-  <extend-property name="locale" values="en"/>
-  <set-property name="locale" value="en" />
-  
-  <!-- Testing language, independent of country -->
-  <extend-property name="locale" values="qc"/>
+    <extend-property name="locale" values="en"/>
+    <extend-property name="locale" values="bg"/>
+    <extend-property name="locale" values="de"/>
+    <extend-property name="locale" values="fr"/>
+    <extend-property name="locale" values="it"/>
+    <extend-property name="locale" values="tr"/>
+    
+    <set-property name="locale" value="en"/>
 </module>

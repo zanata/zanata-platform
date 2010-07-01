@@ -182,6 +182,20 @@
 					<groups>unit-tests</groups>
 				</configuration>
 			</plugin>
+            
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>l10n-maven-plugin</artifactId>
+                <version>1.0-alpha-2</version>
+                <configuration>
+                    <pseudoLocale>qc</pseudoLocale>
+                    <includes>
+                        <include>**/*_en.properties</include>
+                        <include>**/*Messages.properties</include>
+                    </includes>
+                </configuration>
+            </plugin>
+                
 		</plugins>
 
 	</build>

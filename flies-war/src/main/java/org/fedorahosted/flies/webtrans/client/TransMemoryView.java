@@ -14,6 +14,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -79,6 +80,7 @@ public class TransMemoryView extends Composite implements TransMemoryPresenter.D
 		phraseButton.setText( messages.tmPhraseButtonLabel() );
 		clearButton.setText( messages.tmClearButtonLabel() );
 		searchButton.setText( messages.tmSearchButtonLabel() );
+		Log.info(LocaleInfo.getCurrentLocale().getLocaleName());
 	}
 
 	@UiHandler("tmTextBox")

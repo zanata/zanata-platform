@@ -13,6 +13,7 @@
          <supported-locale>fr</supported-locale>
          <supported-locale>it</supported-locale>
          <supported-locale>tr</supported-locale>
+         <supported-locale>qc</supported-locale>
       </locale-config>
       <view-handler>com.sun.facelets.FaceletViewHandler</view-handler>
    </application>

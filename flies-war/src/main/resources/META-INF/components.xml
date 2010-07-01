@@ -105,9 +105,9 @@
   
   <!-- 
 	${components.xml.nukes}  
+  <international:locale-selector cookie-enabled="true"/> 
   -->
   
   <!-- Remember the locale selected -->
-  <international:locale-selector cookie-enabled="true"/> 
   
 </components>

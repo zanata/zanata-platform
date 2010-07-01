@@ -6,8 +6,8 @@ import com.google.gwt.i18n.client.LocalizableResource.Generate;
 import com.google.gwt.i18n.client.Messages.DefaultMessage;
 
 @DefaultLocale("en_US")
-@Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
+//@Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
 public interface UiMessages extends Messages {
-	@DefaultMessage("")
+//	@DefaultMessage("")
 	String typeToEnter();
 }
