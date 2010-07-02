@@ -37,6 +37,10 @@ public class TranslationsResource implements Serializable, HasSample<Translation
 		return extensions;
 	}
 	
+	public void setExtensions(ExtensionSet extensions) {
+		this.extensions = extensions;
+	}
+	
 	@JsonIgnore
 	public ExtensionSet getExtensions(boolean createIfNull) {
 		if(createIfNull && extensions == null)
