@@ -81,6 +81,10 @@ public class TextFlowTarget implements Serializable {
 		return extensions;
 	}
 	
+	public void setExtensions(ExtensionSet extensions) {
+		this.extensions = extensions;
+	}
+	
 	@XmlAttribute(name="res-id", required=true)
 	@NotEmpty
 	public String getResId() {
