@@ -189,7 +189,7 @@
                 <version>1.0-alpha-2</version>
                 <executions>
                     <execution>
-                        <phase>compile</phase>
+                        <phase>generate-resources</phase>
                         <goals>
                             <goal>pseudo</goal>
                         </goals>
