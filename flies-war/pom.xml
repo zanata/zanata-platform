@@ -187,12 +187,26 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>l10n-maven-plugin</artifactId>
                 <version>1.0-alpha-2</version>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>pseudo</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <pseudoLocale>qc</pseudoLocale>
                     <includes>
-                        <include>**/*_en.properties</include>
-                        <include>**/*Messages.properties</include>
+                        <include>**/*.properties</include>
                     </includes>
+                    <excludes>
+                        <exclude>**/*_*.properties</exclude>
+                        <exclude>**/components.properties</exclude>
+                        <exclude>**/seam.properties</exclude>
+                        <exclude>**/seam-deployment.properties</exclude>
+                    </excludes>
+                    <outputDirectory>src/main/resources</outputDirectory>
                 </configuration>
             </plugin>
                 

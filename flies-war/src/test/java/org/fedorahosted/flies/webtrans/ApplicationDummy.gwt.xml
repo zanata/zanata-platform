@@ -25,5 +25,4 @@
     <extend-property name="locale" values="tr"/>
     <extend-property name="locale" values="qc"/>
     
-    <set-property name="locale" value="en"/>
 </module>
