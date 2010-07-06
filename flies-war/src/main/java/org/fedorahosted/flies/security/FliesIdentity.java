@@ -3,13 +3,6 @@ package org.fedorahosted.flies.security;
 import static org.jboss.seam.ScopeType.SESSION;
 import static org.jboss.seam.annotations.Install.APPLICATION;
 
-import javax.security.auth.Subject;
-import javax.security.auth.login.LoginContext;
-import javax.security.auth.login.LoginException;
-
-import org.fedorahosted.flies.dao.AccountDAO;
-import org.fedorahosted.flies.model.HAccount;
-import org.jboss.resteasy.plugins.server.embedded.SimplePrincipal;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Install;
@@ -77,5 +70,25 @@ public class FliesIdentity extends Identity {
 		if (Events.exists()) Events.instance().raiseEvent(USER_LOGOUT_EVENT, getPrincipal().getName());
 		super.logout();
 	}
+
+	@Override
+	public boolean hasPermission(Object target, String action) {
+		if (log.isDebugEnabled())
+			log.debug("ENTER hasPermission("+target+","+action+")");
+		boolean result = super.hasPermission(target, action);
+		if (log.isDebugEnabled())
+			log.debug("EXIT hasPermission(): "+result);
+		return result;
+	}
 	
+	@Override
+	public boolean hasPermission(String name, String action, Object... arg) {
+		if (log.isDebugEnabled())
+			log.debug("ENTER hasPermission("+name+","+action+","+arg+")");
+		boolean result = super.hasPermission(name, action, arg);
+		if (log.isDebugEnabled())
+			log.debug("EXIT hasPermission(): "+result);
+		return result;
+	}	
+
 }
