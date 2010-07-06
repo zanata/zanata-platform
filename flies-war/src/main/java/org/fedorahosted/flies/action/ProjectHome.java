@@ -5,24 +5,18 @@ import java.util.List;
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.NoResultException;
 
-import org.fedorahosted.flies.model.HAccount;
 import org.fedorahosted.flies.model.HIterationProject;
 import org.fedorahosted.flies.model.HPerson;
 import org.fedorahosted.flies.model.HProjectIteration;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.core.Conversation;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.framework.EntityHome;
-import org.jboss.seam.security.management.JpaIdentityStore;
 
 @Name("projectHome")
 @Scope(ScopeType.EVENT)
@@ -30,8 +24,8 @@ public class ProjectHome extends SlugHome<HIterationProject> {
 
 	private String slug;
 	
-	@In(required=false, value=JpaIdentityStore.AUTHENTICATED_USER) 
-	HAccount authenticatedAccount;
+	@In(required=false)
+	HPerson authenticatedPerson;
 	
 	@Override
 	protected HIterationProject loadInstance() {
@@ -82,8 +76,8 @@ public class ProjectHome extends SlugHome<HIterationProject> {
 		if(!validateSlug(getInstance().getSlug(), "slug"))
 			return null;
 		
-		if(authenticatedAccount != null){
-			HPerson currentPerson = getEntityManager().find(HPerson.class, authenticatedAccount.getPerson().getId());
+		if(authenticatedPerson != null){
+			HPerson currentPerson = getEntityManager().find(HPerson.class, authenticatedPerson.getId());
 			if(currentPerson != null)
 				getInstance().getMaintainers().add(currentPerson);
 		}
