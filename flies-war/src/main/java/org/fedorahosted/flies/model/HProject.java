@@ -18,6 +18,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
+import org.jboss.seam.annotations.security.Restrict;
 
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
@@ -25,6 +26,7 @@ import org.hibernate.validator.NotEmpty;
     name="projecttype",
     discriminatorType=DiscriminatorType.STRING
 )
+@Restrict
 public abstract class HProject extends AbstractSlugEntity implements Serializable {
 
 	private String name;

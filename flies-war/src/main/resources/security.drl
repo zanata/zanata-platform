@@ -2,9 +2,25 @@ package FliesPermissions;
 
 import java.security.Principal;
 
+import org.fedorahosted.flies.model.HAccount;
+import org.fedorahosted.flies.model.HCommunity;
+import org.fedorahosted.flies.model.HPerson;
+import org.fedorahosted.flies.model.HProject;
+import org.fedorahosted.flies.model.HProjectIteration;
 import org.jboss.seam.security.permission.PermissionCheck;
 import org.jboss.seam.security.permission.RoleCheck;
 import org.jboss.seam.security.Role;
+
+/* admin can do anything */
+rule AdminAnything
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(granted == false)
+  Role(name == "admin")
+then
+  check.grant();
+end
 
 rule CreateAccount
   no-loop
@@ -38,6 +54,57 @@ rule ManageRoles
 when
   check: PermissionCheck(target == "seam.role", granted == false)
   Role(name == "admin")
+then
+  check.grant();
+end
+
+
+/*****************************************************************************************
+
+  Community ownership rules
+  
+******************************************************************************************/
+
+/* admin can create/delete communities (see rule AdminAnything above) */
+
+/* anyone can read a community */
+rule ReadCommunity
+  no-loop
+  activation-group "permissions"
+when
+  $community: HCommunity()
+  check: PermissionCheck(target == $community, action == "read", granted == false)
+then
+  check.grant();
+end
+
+/*****************************************************************************************
+
+  Project ownership rules
+  
+******************************************************************************************/
+
+/* admin can create/delete projects (see rule AdminAnything above) */
+
+/* anyone can read a project */
+rule ReadProject
+  no-loop
+  activation-group "permissions"
+when
+  $project: HProject()
+  check: PermissionCheck(target == $project, action == "read", granted == false)
+then
+  check.grant();
+end
+
+
+/* anyone can read a project iteration */
+rule ReadProjectIteration
+  no-loop
+  activation-group "permissions"
+when
+  $iter: HProjectIteration()
+  check: PermissionCheck(target == $iter, action == "read", granted == false)
 then
   check.grant();
 end

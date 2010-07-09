@@ -16,6 +16,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
+import org.jboss.seam.annotations.security.Restrict;
 
 /**
  * A community represents people from different tribes coming together
@@ -28,6 +29,7 @@ import org.hibernate.validator.NotNull;
  */
 @Entity
 @Indexed
+@Restrict
 public class HCommunity extends AbstractSlugEntity{
 	
 	private String name;

@@ -33,7 +33,7 @@
   </page>
 
   <page view-id="/project/create_project.xhtml">
-    <restrict>#{s:hasRole('admin')}</restrict>
+    <restrict>#{s:hasPermission(projectHome.instance, 'insert')}</restrict>
     <navigation from-action="#{projectHome.persist}">
       <rule if="#{projectHome.managed}">
         <redirect view-id="/project/project.xhtml">
@@ -48,9 +48,14 @@
   </page>
 
   <page view-id="/project/edit.xhtml" login-required="true">
-    <restrict>#{s:hasRole('admin')}</restrict>
     <param name="slug" value="#{projectHome.slug}" />
-
+    
+    <!-- we can't use <restrict> on projectHome.instance because it creates
+         a brand-new HProject instead of loading the existing one
+         (at some stages of the JSF lifecycle)
+      -->
+    <action execute="#{identity.checkPermission(projectHome.instance, 'update')}" />
+        
     <navigation from-action="#{projectHome.update}">
       <redirect view-id="/project/project.xhtml">
         <param name="slug" value="#{projectHome.slug}" />
@@ -66,9 +71,11 @@
   </page>
 
   <page view-id="/project/add_iteration.xhtml">
-    <restrict>#{s:hasRole('admin')}</restrict>
     <param name="projectSlug" value="#{projectIterationHome.projectSlug}" />
+    
     <action execute="#{projectIterationHome.validateProjectSlug}" />
+    <!-- can't use <restrict> here either -->
+    <action execute="#{identity.checkPermission(projectIterationHome.instance, 'insert')}" />
 
     <navigation from-action="#{projectIterationHome.persist}">
       <rule if="#{projectIterationHome.managed}">
@@ -86,11 +93,12 @@
   </page>
 
   <page view-id="/project/iteration_edit.xhtml">
-    <restrict>#{s:hasRole('admin')}</restrict>
     <param name="slug" value="#{projectIterationHome.slug}" />
     <param name="projectSlug" value="#{projectIterationHome.projectSlug}" />
 
     <action execute="#{projectIterationHome.validateSuppliedId}" />
+    <!-- can't use <restrict> here either -->
+    <action execute="#{identity.checkPermission(projectIterationHome.instance, 'update')}" />
 
     <navigation from-action="#{projectIterationHome.update}">
       <redirect view-id="/project/project.xhtml">
@@ -111,7 +119,8 @@
   </page>
 
   <page view-id="/community/create_community.xhtml">
-    <restrict>#{s:hasRole('admin')}</restrict>
+    <restrict>#{s:hasPermission(communityHome.instance, 'insert')}</restrict>
+    
     <navigation from-action="#{communityHome.persist}">
       <rule if="#{communityHome.managed}">
         <redirect view-id="/community/community.xhtml">
@@ -125,8 +134,10 @@
   </page>
 
   <page view-id="/community/edit.xhtml">
-    <restrict>#{s:hasRole('admin')}</restrict>
     <param name="slug" value="#{communityHome.id}" />
+    
+    <!-- can't use <restrict> here either -->
+    <action execute="#{identity.checkPermission(communityHome.instance, 'update')}" />
 
     <navigation from-action="#{communityHome.update}">
       <redirect view-id="/community/community.xhtml"

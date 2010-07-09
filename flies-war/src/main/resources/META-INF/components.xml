@@ -46,8 +46,6 @@
       user-class="org.fedorahosted.flies.model.HAccount"
       role-class="org.fedorahosted.flies.model.HAccountRole" />
 
-  <security:jpa-permission-store user-permission-class="org.fedorahosted.flies.model.HAccountPermission"/>
-
   <event type="org.jboss.seam.security.notLoggedIn">
     <action execute="#{redirect.captureCurrentView}"/>
   </event>

@@ -15,8 +15,10 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Where;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;
+import org.jboss.seam.annotations.security.Restrict;
 
 @Entity
+@Restrict
 public class HProjectIteration extends AbstractSlugEntity {
 
 	private String name;
