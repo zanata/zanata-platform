@@ -11,15 +11,12 @@ import org.fedorahosted.flies.model.HProjectIteration;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
 
 @Name("projectHome")
-@Scope(ScopeType.EVENT)
 public class ProjectHome extends SlugHome<HIterationProject> {
 
 	private String slug;

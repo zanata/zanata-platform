@@ -7,15 +7,12 @@ import org.fedorahosted.flies.model.HCommunity;
 import org.fedorahosted.flies.model.HPerson;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
 
 @Name("communityHome")
-@Scope(ScopeType.CONVERSATION)
 public class CommunityHome extends SlugHome<HCommunity>{
 
 	private String slug;
