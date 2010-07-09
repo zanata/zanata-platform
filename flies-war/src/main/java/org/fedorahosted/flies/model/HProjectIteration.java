@@ -1,6 +1,5 @@
 package org.fedorahosted.flies.model;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,6 +113,12 @@ public class HProjectIteration extends AbstractSlugEntity {
 	
 	public void setDocuments(Map<String, HDocument> documents) {
 		this.documents = documents;
+	}
+	
+
+	@Override
+	public String toString() {
+		return super.toString()+"[name="+name+",project="+project+"]";
 	}
 	
 }

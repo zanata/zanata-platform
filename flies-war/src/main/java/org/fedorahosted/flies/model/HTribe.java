@@ -66,4 +66,10 @@ public class HTribe extends AbstractFliesEntity{
 		this.members = members;
 	}
 	
+
+	@Override
+	public String toString() {
+		return super.toString()+"[locale="+locale.getId()+"]";
+	}
+	
 }

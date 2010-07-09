@@ -16,7 +16,6 @@ import javax.persistence.ManyToMany;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
-import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 
@@ -76,4 +75,9 @@ public abstract class HProject extends AbstractSlugEntity implements Serializabl
 		this.maintainers = maintainers;
 	}
 
+	@Override
+	public String toString() {
+		return super.toString()+"[name="+name+"]";
+	}
+	
 }

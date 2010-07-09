@@ -187,6 +187,12 @@ public class HPerson extends AbstractFliesEntity implements Serializable {
 		return true;
 	}
 
+
+	@Override
+	public String toString() {
+		return super.toString()+"[name="+name+"]";
+	}
+	
 	
 	
 }

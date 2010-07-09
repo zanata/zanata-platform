@@ -143,4 +143,10 @@ public class HAccount extends AbstractFliesEntity implements Serializable {
 		return true;
 	}
 
+
+	@Override
+	public String toString() {
+		return super.toString()+"[username="+username+"]";
+	}
+	
 }

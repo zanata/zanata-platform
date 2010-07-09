@@ -25,4 +25,9 @@ public class AbstractSlugEntity extends AbstractFliesEntity{
 		this.slug = slug;
 	}
 
+	@Override
+	public String toString() {
+		return super.toString()+"[slug="+slug+"]";
+	}
+	
 }

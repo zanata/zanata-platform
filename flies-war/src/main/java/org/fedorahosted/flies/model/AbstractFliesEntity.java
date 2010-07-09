@@ -111,5 +111,11 @@ public class AbstractFliesEntity {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode())+  
+			"[id="+id+",versionNum="+versionNum+"]";
+	}
+	
 	
 }

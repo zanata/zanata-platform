@@ -131,4 +131,10 @@ public class HCommunity extends AbstractSlugEntity{
 	}
 	*/
 	
+
+	@Override
+	public String toString() {
+		return super.toString()+"[name="+name+"]";
+	}
+	
 }
