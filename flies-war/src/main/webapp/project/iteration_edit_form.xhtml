@@ -19,9 +19,10 @@
 
         <s:decorate id="slugField" template="../layout/edit.xhtml">
             <ui:define name="label">Slug</ui:define>
-            <h:inputText id="slug" required="true"
+            <h:outputText rendered="#{projectIterationHome.managed}" value="#{projectIterationHome.instance.slug}" />
+            <h:inputText rendered="#{not projectIterationHome.managed}"
+                         id="slug" required="true"
                          value="#{projectIterationHome.instance.slug}" 
-                         readonly="#{projectIterationHome.managed}"
                          valueChangeListener="#{projectIterationHome.verifySlugAvailable}">
               <a4j:support event="onblur" reRender="slugField" ajaxSingle="true"/>
             </h:inputText>
