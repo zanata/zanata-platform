@@ -36,7 +36,7 @@
 		<resteasy.version>2.0-beta-2</resteasy.version>
 		<seam.version>2.2.0.GA</seam.version>
 		<tennera.version>0.6</tennera.version>
-		<googlecollect.version>1.0</googlecollect.version>
+		<guava.version>r06</guava.version>
 		<jackson.version>1.5.0</jackson.version>
 	</properties>
 
@@ -183,9 +183,9 @@
 			</dependency>
 
 			<dependency>
-				<groupId>com.google.collections</groupId>
-				<artifactId>google-collections</artifactId>
-				<version>${googlecollect.version}</version>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>${guava.version}</version>
 			</dependency>
 
 			<dependency>
