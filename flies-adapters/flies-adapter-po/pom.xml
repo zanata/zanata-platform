@@ -13,7 +13,7 @@
     <dependency>
       <groupId>org.fedorahosted.tennera</groupId>
       <artifactId>jgettext</artifactId>
-      <version>${version.tennera}</version>
+      <version>${tennera.version}</version>
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>

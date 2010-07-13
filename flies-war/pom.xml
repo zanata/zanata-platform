@@ -13,9 +13,9 @@
 	<name>flies Webapp</name>
 
 	<properties>
-		<version.hibernate>3.3.2.GA</version.hibernate>
-		<version.jboss.embedded>beta3.SP12</version.jboss.embedded>
-		<version.nukes.security>1.0</version.nukes.security>
+		<hibernate.version>3.3.2.GA</hibernate.version>
+		<jboss.embedded.version>beta3.SP12</jboss.embedded.version>
+		<nukes.security.version>1.0</nukes.security.version>
 		<!-- application properties -->
 
 		<env.debug>false</env.debug>
@@ -55,7 +55,7 @@
 			<dependency>
 				<groupId>org.jboss.seam</groupId>
 				<artifactId>root</artifactId>
-				<version>${version.seam}</version>
+				<version>${seam.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -92,7 +92,7 @@
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-core</artifactId>
-				<version>${version.hibernate}</version>
+				<version>${hibernate.version}</version>
 			</dependency>
 	
 			<dependency>
@@ -122,7 +122,7 @@
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-jmx</artifactId>
-				<version>${version.hibernate}</version>
+				<version>${hibernate.version}</version>
 			</dependency>
 
 
@@ -740,7 +740,7 @@
 				<dependency>
 					<groupId>org.jboss.infrastructure</groupId>
 					<artifactId>seam-jbnukes-security-impl</artifactId>
-					<version>${version.nukes.security}</version>
+					<version>${nukes.security.version}</version>
 				</dependency>
 			</dependencies>
 		</profile>
@@ -805,7 +805,7 @@
 		<dependency>
 			<groupId>org.jboss.infrastructure</groupId>
 			<artifactId>seam-jbnukes-security-api</artifactId>
-			<version>${version.nukes.security}</version>
+			<version>${nukes.security.version}</version>
 		</dependency>
 
 		<!-- Seam Dependencies -->
@@ -813,33 +813,33 @@
 		<dependency>
 			<groupId>org.jboss.seam</groupId>
 			<artifactId>jboss-seam</artifactId>
-			<version>${version.seam}</version>
+			<version>${seam.version}</version>
 			<type>ejb</type>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jboss.seam</groupId>
 			<artifactId>jboss-seam-ui</artifactId>
-			<version>${version.seam}</version>
+			<version>${seam.version}</version>
 		</dependency>
 
 		<dependency>
 			<!-- TODO this should be excluded in production -->
 			<groupId>org.jboss.seam</groupId>
 			<artifactId>jboss-seam-debug</artifactId>
-			<version>${version.seam}</version>
+			<version>${seam.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jboss.seam</groupId>
 			<artifactId>jboss-seam-mail</artifactId>
-			<version>${version.seam}</version>
+			<version>${seam.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jboss.seam</groupId>
 			<artifactId>jboss-seam-remoting</artifactId>
-			<version>${version.seam}</version>
+			<version>${seam.version}</version>
 		</dependency>
 
 		<!-- RestEasy dependencies -->
@@ -847,7 +847,7 @@
 		<dependency>
 			<groupId>org.jboss.seam</groupId>
 			<artifactId>jboss-seam-resteasy</artifactId>
-			<version>${version.seam}</version>
+			<version>${seam.version}</version>
 			<exclusions>
 				<!--
 					We use Jackson for json, so exclude the default jettison provider
@@ -862,7 +862,7 @@
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxrs</artifactId>
-			<version>${version.resteasy}</version>
+			<version>${resteasy.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
@@ -878,13 +878,13 @@
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxb-provider</artifactId>
-			<version>${version.resteasy}</version>
+			<version>${resteasy.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jackson-provider</artifactId>
-			<version>${version.resteasy}</version>
+			<version>${resteasy.version}</version>
 		</dependency>
 
 		<dependency>
@@ -1105,7 +1105,7 @@
 		<dependency>
 			<groupId>org.jboss.embedded</groupId>
 			<artifactId>jboss-embedded-all</artifactId>
-			<version>${version.jboss.embedded}</version>
+			<version>${jboss.embedded.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.jboss.microcontainer</groupId>
@@ -1122,14 +1122,14 @@
 		<dependency>
 			<groupId>org.jboss.embedded</groupId>
 			<artifactId>thirdparty-all</artifactId>
-			<version>${version.jboss.embedded}</version>
+			<version>${jboss.embedded.version}</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jboss.seam.embedded</groupId>
 			<artifactId>jboss-embedded-api</artifactId>
-			<version>${version.jboss.embedded}</version>
+			<version>${jboss.embedded.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.jboss.microcontainer</groupId>

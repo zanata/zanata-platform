@@ -32,12 +32,12 @@
 	<properties>
 		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<version.gwt>2.0.3</version.gwt>
-		<version.resteasy>2.0-beta-2</version.resteasy>
-		<version.seam>2.2.0.GA</version.seam>
-		<version.tennera>0.6</version.tennera>
-		<version.googlecollect>1.0</version.googlecollect>
-		<version.jackson>1.5.0</version.jackson>
+		<gwt.version>2.0.3</gwt.version>
+		<resteasy.version>2.0-beta-2</resteasy.version>
+		<seam.version>2.2.0.GA</seam.version>
+		<tennera.version>0.6</tennera.version>
+		<googlecollect.version>1.0</googlecollect.version>
+		<jackson.version>1.5.0</jackson.version>
 	</properties>
 
 	<build>
@@ -178,12 +178,12 @@
 			<dependency>
 				<groupId>com.google.gwt</groupId>
 				<artifactId>gwt-servlet</artifactId>
-				<version>${version.gwt}</version>
+				<version>${gwt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.google.gwt</groupId>
 				<artifactId>gwt-user</artifactId>
-				<version>${version.gwt}</version>
+				<version>${gwt.version}</version>
 			</dependency>
 
 			<dependency>
@@ -207,31 +207,31 @@
 			<dependency>
 				<groupId>com.google.collections</groupId>
 				<artifactId>google-collections</artifactId>
-				<version>${version.googlecollect}</version>
+				<version>${googlecollect.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.codehaus.jackson</groupId>
 				<artifactId>jackson-core-asl</artifactId>
-				<version>${version.jackson}</version>
+				<version>${jackson.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.codehaus.jackson</groupId>
 				<artifactId>jackson-jaxrs</artifactId>
-				<version>${version.jackson}</version>
+				<version>${jackson.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.codehaus.jackson</groupId>
 				<artifactId>jackson-mapper-asl</artifactId>
-				<version>${version.jackson}</version>
+				<version>${jackson.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.codehaus.jackson</groupId>
 				<artifactId>jackson-xc</artifactId>
-				<version>${version.jackson}</version>
+				<version>${jackson.version}</version>
 			</dependency>
 
 

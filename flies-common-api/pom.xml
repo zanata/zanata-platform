@@ -51,7 +51,7 @@
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>jaxrs-api</artifactId>
-			<version>${version.resteasy}</version>
+			<version>${resteasy.version}</version>
 		</dependency>
 
 		<dependency>
