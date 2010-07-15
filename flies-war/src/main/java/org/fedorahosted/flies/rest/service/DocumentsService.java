@@ -1,7 +1,6 @@
 package org.fedorahosted.flies.rest.service;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -38,7 +37,7 @@ import org.hibernate.validator.InvalidValue;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.security.Restrict;
+import org.jboss.seam.annotations.security.Admin;
 import org.jboss.seam.log.Log;
 
 @Name("documentsService")
@@ -76,7 +75,7 @@ public class DocumentsService {
 	@Consumes( { MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML,
 			MediaTypes.APPLICATION_FLIES_DOCUMENTS_JSON,
 			MediaType.APPLICATION_JSON })
-	@Restrict("#{s:hasRole('admin')}")
+	@Admin
 	public Response post(Documents documents) {
 		log.debug("HTTP POST {0} : \n{1}", request.getRequestURL(), documents);
 		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(
@@ -144,7 +143,7 @@ public class DocumentsService {
 	@PUT
 	@Consumes( { MediaTypes.APPLICATION_FLIES_DOCUMENTS_XML,
 			MediaTypes.APPLICATION_FLIES_DOCUMENTS_JSON })
-	@Restrict("#{s:hasRole('admin')}")
+	@Admin
 	public Response put(Documents documents) {
 		log.debug("HTTP PUT {0} : \n{1}", request.getRequestURL(), documents);
 		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(
