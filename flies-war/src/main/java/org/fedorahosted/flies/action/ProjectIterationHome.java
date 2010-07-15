@@ -12,7 +12,6 @@ import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 
@@ -91,7 +90,6 @@ public class ProjectIterationHome extends SlugHome<HProjectIteration>{
 	}
 	
 	@Override
-	@Restrict("#{s:hasRole('admin')}")
 	public String persist() {
 		if(!validateSlug(getInstance().getSlug(), "slug"))
 			return null;

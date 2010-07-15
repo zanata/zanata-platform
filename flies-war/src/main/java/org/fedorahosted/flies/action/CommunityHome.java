@@ -9,7 +9,6 @@ import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
 
 @Name("communityHome")
@@ -56,7 +55,6 @@ public class CommunityHome extends SlugHome<HCommunity>{
 	}
 	
 	@Override
-	@Restrict("#{s:hasRole('admin')}")
 	public String persist() {
 		if(!validateSlug(getInstance().getSlug(), "slug"))
 			return null;
