@@ -12,6 +12,7 @@ import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
+import org.jboss.seam.security.permission.RuleBasedPermissionResolver;
 
 @Name("authenticationEvents")
 @Scope(ScopeType.STATELESS)
@@ -28,6 +29,8 @@ public class AuthenticationEvents {
 		log.info("Account {0} authenticated", account.getUsername());
 
 		authenticatedPerson = account.getPerson();
+		// insert authenticatedPerson for use in security.drl rules
+		RuleBasedPermissionResolver.instance().getSecurityContext().insert(authenticatedPerson);
 	}
 
 	@Observer(JpaIdentityStore.EVENT_USER_CREATED)

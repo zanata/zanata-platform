@@ -1,15 +1,15 @@
 package FliesPermissions;
 
 import java.security.Principal;
-
 import org.fedorahosted.flies.model.HAccount;
 import org.fedorahosted.flies.model.HCommunity;
 import org.fedorahosted.flies.model.HPerson;
 import org.fedorahosted.flies.model.HProject;
 import org.fedorahosted.flies.model.HProjectIteration;
+import org.jboss.seam.security.Identity;
+import org.jboss.seam.security.Role;
 import org.jboss.seam.security.permission.PermissionCheck;
 import org.jboss.seam.security.permission.RoleCheck;
-import org.jboss.seam.security.Role;
 
 /* admin can do anything */
 rule AdminAnything
@@ -109,3 +109,68 @@ then
   check.grant();
 end
 
+
+/* 
+  Project maintainers may edit (but not delete) a project, or add an iteration.
+  Note that 'add-iteration' (on a project) should be granted in the same 
+  circumstances that 'insert' is granted (on an iteration).  In other words,
+  make sure the rules agree with each other.  (NB: 'add-iteration' is used in the
+  UI to enable buttons etc, without requiring the construction of
+  HProjectIteration just to do a permission check.)   
+ */
+rule UpdateProjectOrAddIteration
+  no-loop
+  activation-group "permissions"
+when
+  authenticatedPerson: HPerson() 
+  eval(authenticatedPerson != null)
+  $project: HProject(
+    eval(authenticatedPerson.isMaintainer($project))
+  )
+  check: PermissionCheck(
+    target == $project, action == "update" || action == "add-iteration", granted == false)
+then
+  check.grant();
+end
+
+
+/* 
+  Project maintainers may create or edit (but not delete) a project iteration 
+ */
+rule InsertOrUpdateProjectIteration
+  no-loop
+  activation-group "permissions"
+when
+  authenticatedPerson: HPerson() 
+  eval(authenticatedPerson != null)
+  $iter: HProjectIteration(
+    $project: project -> 
+    (authenticatedPerson.isMaintainer($project))
+  )
+  check: PermissionCheck(
+    target == $iter, 
+    action == "insert" || action == "update", 
+    granted == false)
+then
+  check.grant();
+end
+
+
+/*
+  This rule grants 'insert' on iteration if 'add-iteration' is granted
+  on the project.  It works, but it seems like a bad idea to re-invoke
+  the rules framework recursively like this.  Instead, just make sure the rules
+  above agree with each other!
+ */
+/*
+rule GrantInsertIfAddIterationGranted
+  no-loop
+  activation-group "permissions"
+when
+  $iter: HProjectIteration()
+  check: PermissionCheck(target == $iter, action == "insert", granted == false)
+  eval(Identity.instance().hasPermission($iter.getProject(), "add-iteration"))
+then
+  check.grant();
+end
+*/
