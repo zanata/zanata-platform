@@ -6,12 +6,12 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
-    template="../layout/template.xhtml">
+    template="../WEB-INF/layout/template.xhtml">
 
     <ui:define name="center_content">
         <rich:jQuery selector="#tab_admin" query="addClass('ui-tabs-selected')" />
-        <h1>Administration</h1>
+        <h1>#{messages['jsf.Administration']}</h1>
 		
-		Please choose a page from the "Administration" menu above.
+		#{messages['jsf.PleaseChooseAPageFromTheAdministrationMenuAbove']}
     </ui:define>
 </ui:composition>

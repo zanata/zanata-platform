@@ -6,21 +6,21 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
-    template="layout/template.xhtml">
+    template="./WEB-INF/layout/template.xhtml">
     
     <ui:define name="center_content">
         <rich:jQuery selector="#tab_home" query="addClass('ui-tabs-selected')" />
-        <h1>Welcome to Flies!</h1>
+        <h1>#{messages['jsf.WelcomeToFlies']}</h1>
 
 	    <s:fragment rendered="#{not empty projects}">
-	      <h2>Latest Projects</h2>
+	      <h2>#{messages['jsf.LatestProjects']}</h2>
 	      <rich:dataGrid columns="3" 
 	                     value="#{latestProjects}" 
 	                     var="project" 
 	                     columnClasses="grid_col"
 	                     styleClass="grid_style"
 	                     rendered="#{not empty projects}">
-	        <ui:include src="./project/project_view_inline.xhtml" />
+	        <ui:include src="./WEB-INF/layout/project_view_inline.xhtml" />
 	      </rich:dataGrid>
 	    </s:fragment>
     </ui:define>

@@ -4,6 +4,7 @@ import org.fedorahosted.flies.webtrans.client.Resources;
 import org.fedorahosted.flies.webtrans.client.editor.filter.TransFilterMessages;
 import org.fedorahosted.flies.webtrans.client.ui.ClearableTextBox;
 import org.fedorahosted.flies.webtrans.client.ui.CollapsePanel;
+import org.fedorahosted.flies.webtrans.client.ui.UiMessages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -30,10 +31,10 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
 	private final TransFilterMessages messages;
 	
 	@Inject
-	public TransFilterView(final Resources resources, final TransFilterMessages messages) {
+	public TransFilterView(final Resources resources, final TransFilterMessages messages, final UiMessages uiMessages) {
 		this.messages = messages;
 		this.collapsePanel = new CollapsePanel(resources);
-		this.filterTextBox = new ClearableTextBox(resources);
+		this.filterTextBox = new ClearableTextBox(resources, uiMessages );
 		filterTextBox.setEmptyText( messages.findSourceOrTargetString() );
 		initWidget( uiBinder.createAndBindUi(this) );
 		collapsePanel.setHeading( messages.transUnitSearchesHeading() );

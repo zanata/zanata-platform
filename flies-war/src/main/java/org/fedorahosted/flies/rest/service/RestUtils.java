@@ -64,7 +64,7 @@ public class RestUtils {
 					.getAnnotations(), requestContentType, requestHeaders, is);
 		} catch (Exception e) {
 			throw new NoLogWebApplicationException(
-					Response.status(Status.BAD_REQUEST).entity("Unable to read request body").build());
+					Response.status(Status.BAD_REQUEST).entity("Unable to read request body: " + e.getMessage()).build());
 		}
 
 		validateEntity(entity);

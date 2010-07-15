@@ -7,25 +7,25 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
     xmlns:a4j="http://richfaces.org/a4j"
-    template="../layout/template.xhtml">
+    template="../WEB-INF/layout/template.xhtml">
 
     <ui:define name="center_content">
       <rich:jQuery selector="#tab_admin" query="addClass('ui-tabs-selected')" />
         <h:form>
           <s:token allowMultiplePosts="true" />
           <rich:panel>
-            <f:facet name="header">Server configuration</f:facet>
+            <f:facet name="header">#{messages['jsf.ServerConfiguration']}</f:facet>
               
-            <s:decorate id="urlField" template="../layout/edit.xhtml">
-              <ui:define name="label">Server URL</ui:define>
+            <s:decorate id="urlField" template="../WEB-INF/layout/edit.xhtml">
+              <ui:define name="label">#{messages['jsf.ServerUrl']}</ui:define>
               <h:inputText id="url" value="#{serverConfigurationBean.serverUrl}">
                 <a4j:support event="onblur" reRender="urlField" ajaxSingle="false"/>
               </h:inputText>
               <h:graphicImage id="urlHelp" value="../img/msginfo.png" styleClass="input_help">
                 <rich:toolTip>
-                  The base URL for the server, including the application context path
+                  #{messages['jsf.UrlToolTip']}
                   <br/>
-                  <em>E.g. <code>http://example.com/flies/</code></em>
+                  <em><code>#{messages['jsf.UrlExample']}</code></em>
                 </rich:toolTip>
               </h:graphicImage>
             </s:decorate>
@@ -33,8 +33,8 @@
             <div style="clear:both"/>
 
             <div class="actionButtons">
-              <h:commandButton value="Save" action="#{serverConfigurationBean.update}"/>
-              <s:button view="/admin/home.xhtml" value="Cancel" propagation="none"/>
+              <h:commandButton value="#{messages['jsf.Save']}" action="#{serverConfigurationBean.update}"/>
+              <s:button view="/admin/home.xhtml" value="#{messages['jsf.Cancel']}" propagation="none"/>
             </div>
     
           </rich:panel>

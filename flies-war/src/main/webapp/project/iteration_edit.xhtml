@@ -6,13 +6,13 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
-    template="../layout/template.xhtml">
+    template="../WEB-INF/layout/template.xhtml">
 
 <ui:define name="center_content">
     <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
     <h1>#{projectIterationHome.instance.name}</h1>
 
-    <ui:include src="iteration_edit_form.xhtml" />
+    <ui:include src="../WEB-INF/layout/iteration_edit_form.xhtml" />
 
 </ui:define>
 

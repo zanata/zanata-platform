@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlValue;
 
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.fedorahosted.flies.common.Namespaces;
-import org.fedorahosted.flies.rest.dto.Extension;
+import org.fedorahosted.flies.rest.dto.resource.Extension;
 
 @XmlType(name="simpleCommentExtension", namespace=PoHeader.NAMESPACE, propOrder={})
 @XmlRootElement(name="comment", namespace=PoHeader.NAMESPACE)

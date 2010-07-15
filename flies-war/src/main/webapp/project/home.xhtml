@@ -6,14 +6,14 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
-    template="../layout/template.xhtml">
+    template="../WEB-INF/layout/template.xhtml">
 
   <ui:define name="left_content">
     <rich:panel rendered="#{identity.loggedIn}">
-      <f:facet name="header">Actions</f:facet>
+      <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
       <s:link styleClass="action_link"
       				rendered="#{s:hasPermission(projectHome.instance, 'insert')}" 
-      				value="Create project" 
+      				value="#{messages['jsf.CreateProject']}" 
                     view="/project/create_project.xhtml"
                     propagation="none"/>
     </rich:panel>
@@ -21,18 +21,18 @@
   <ui:define name="center_content">
     <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
 
-    <h:outputText value="No project exists"
+    <h:outputText value="#{messages['jsf.NoProjectExists']}"
                rendered="#{empty latestProjects}"/>
 
     <s:fragment rendered="#{not empty projects}">
-      <h1>Projects</h1>
+      <h1>#{messages['jsf.Projects']}</h1>
       <rich:dataGrid columns="3" 
                      value="#{latestProjects}" 
                      var="project" 
                      columnClasses="grid_col"
                      styleClass="grid_style" 
                      rendered="#{not empty projects}">
-        <ui:include src="./project_view_inline.xhtml" />
+        <ui:include src="../WEB-INF/layout/project_view_inline.xhtml" />
       </rich:dataGrid>
     </s:fragment>
   </ui:define>

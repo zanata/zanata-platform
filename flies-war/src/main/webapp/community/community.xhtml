@@ -6,7 +6,7 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
-    template="../layout/template.xhtml">
+    template="../WEB-INF/layout/template.xhtml">
 
     <ui:define name="center_content">
         <rich:jQuery selector="#tab_communities" query="addClass('ui-tabs-selected')" />
@@ -18,10 +18,10 @@
     <ui:define name="left_content">
       <rich:panel rendered="#{identity.loggedIn}">
         <f:facet name="header">
-          Actions
+          #{messages['jsf.Actions']}
         </f:facet>
         <s:link styleClass="action_link" rendered="#{s:hasPermission(communityHome.instance, 'update')}" view="/community/edit.xhtml" propagation="none">
-          Edit
+          #{messages['jsf.Edit']}
           <f:param name="slug" value="#{communityHome.instance.slug}"/>
         </s:link>
       </rich:panel>

@@ -32,39 +32,17 @@
 	<properties>
 		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<version.gwt>2.0.3</version.gwt>
-		<version.hibernate>3.3.2.GA</version.hibernate>
-		<version.resteasy>2.0-beta-2</version.resteasy>
-		<version.seam>2.2.0.GA</version.seam>
-		<version.tennera>0.6</version.tennera>
-		<version.googlecollect>1.0</version.googlecollect>
-		<version.jackson>1.5.0</version.jackson>
+		<gwt.version>2.0.3</gwt.version>
+		<hibernate.version>3.3.2.GA</hibernate.version>
+		<resteasy.version>2.0-beta-2</resteasy.version>
+		<seam.version>2.2.0.GA</seam.version>
+		<tennera.version>0.6</tennera.version>
+		<guava.version>r06</guava.version>
+		<jackson.version>1.5.0</jackson.version>
 	</properties>
 
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-enforcer-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>enforce-versions</id>
-						<goals>
-							<goal>enforce</goal>
-						</goals>
-						<configuration>
-							<rules>
-								<requireMavenVersion>
-									<version>[2.1,)</version>
-								</requireMavenVersion>
-								<requireJavaVersion>
-									<version>[1.6,)</version>
-								</requireJavaVersion>
-							</rules>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
@@ -92,7 +70,7 @@
 				<configuration>
 					<archive>
 						<manifestEntries>
-							<Implementation-Version>${version}</Implementation-Version>
+							<Implementation-Version>${project.version}</Implementation-Version>
 							<Implementation-Build>${maven.build.timestamp}</Implementation-Build>
 						</manifestEntries>
 					</archive>
@@ -102,6 +80,22 @@
 
 		<pluginManagement>
 			<plugins>
+				<plugin>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>2.3.1</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>2.3.1</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>2.1-beta-1</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.5</version>
+				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>gwt-maven-plugin</artifactId>
@@ -179,12 +173,12 @@
 			<dependency>
 				<groupId>com.google.gwt</groupId>
 				<artifactId>gwt-servlet</artifactId>
-				<version>${version.gwt}</version>
+				<version>${gwt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.google.gwt</groupId>
 				<artifactId>gwt-user</artifactId>
-				<version>${version.gwt}</version>
+				<version>${gwt.version}</version>
 			</dependency>
 
 			<dependency>
@@ -206,33 +200,33 @@
 			</dependency>
 
 			<dependency>
-				<groupId>com.google.collections</groupId>
-				<artifactId>google-collections</artifactId>
-				<version>${version.googlecollect}</version>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>${guava.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.codehaus.jackson</groupId>
 				<artifactId>jackson-core-asl</artifactId>
-				<version>${version.jackson}</version>
+				<version>${jackson.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.codehaus.jackson</groupId>
 				<artifactId>jackson-jaxrs</artifactId>
-				<version>${version.jackson}</version>
+				<version>${jackson.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.codehaus.jackson</groupId>
 				<artifactId>jackson-mapper-asl</artifactId>
-				<version>${version.jackson}</version>
+				<version>${jackson.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.codehaus.jackson</groupId>
 				<artifactId>jackson-xc</artifactId>
-				<version>${version.jackson}</version>
+				<version>${jackson.version}</version>
 			</dependency>
 
 			<dependency>
@@ -244,7 +238,7 @@
 			<dependency>
 				<groupId>org.jboss.seam</groupId>
 				<artifactId>root</artifactId>
-				<version>${version.seam}</version>
+				<version>${seam.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -277,25 +271,25 @@
 				<artifactId>hibernate-search</artifactId>
 				<version>3.1.1.GA</version>
 			</dependency>
-	
+
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-core</artifactId>
-				<version>${version.hibernate}</version>
+				<version>${hibernate.version}</version>
 			</dependency>
-	
+
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-validator</artifactId>
 				<version>3.1.0.GA</version>
 			</dependency>
-	
+
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-annotations</artifactId>
 				<version>3.4.0.GA</version>
 			</dependency>
-	
+
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-entitymanager</artifactId>
@@ -307,13 +301,12 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-	
+
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-jmx</artifactId>
-				<version>${version.hibernate}</version>
+				<version>${hibernate.version}</version>
 			</dependency>
-
 
 		</dependencies>
 	</dependencyManagement>

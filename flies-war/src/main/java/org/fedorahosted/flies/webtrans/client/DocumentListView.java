@@ -8,6 +8,7 @@ import java.util.Map;
 import org.fedorahosted.flies.webtrans.client.editor.HasTransUnitCount;
 import org.fedorahosted.flies.webtrans.client.editor.filter.ContentFilter;
 import org.fedorahosted.flies.webtrans.client.ui.ClearableTextBox;
+import org.fedorahosted.flies.webtrans.client.ui.UiMessages;
 import org.fedorahosted.flies.webtrans.shared.model.DocumentId;
 import org.fedorahosted.flies.webtrans.shared.model.DocumentInfo;
 
@@ -64,10 +65,10 @@ public class DocumentListView extends Composite implements
 	final WebTransMessages messages;
 	
 	@Inject
-	public DocumentListView(Resources resources, WebTransMessages messages) {
+	public DocumentListView(Resources resources, WebTransMessages messages, UiMessages uiMessages) {
 		this.resources = resources;
 		this.messages = messages;
-		filterTextBox = new ClearableTextBox(resources);
+		filterTextBox = new ClearableTextBox(resources, uiMessages);
 		nodes = new HashMap<DocumentId, DocumentNode>();
 		transUnitCountBar = new TransUnitCountBar(messages);
 		initWidget( uiBinder.createAndBindUi(this) );

@@ -87,6 +87,11 @@ public class ProjectIterationService {
 	}
 	
 	@HEAD
+	@Produces( { 
+		MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML,
+		MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON,
+		MediaType.APPLICATION_XML,
+		MediaType.APPLICATION_JSON})
 	public Response head() {
 		EntityTag etag = eTagUtils.generateETagForIteration(projectSlug, iterationSlug);
 

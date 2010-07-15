@@ -1,4 +1,4 @@
-<!DOCTYPE module PUBLIC "//gwt-module/" "http://google-web-toolkit.googlecode.com/svn/tags/1.6.2/distro-source/core/src/gwt-module.dtd">
+<!DOCTYPE module PUBLIC "//gwt-module/" "http://google-web-toolkit.googlecode.com/svn/tags/2.0.3/distro-source/core/src/gwt-module.dtd">
 <module>
 
 	  <!-- Tell GWT to compile in UIObject.ensureDebugId(String) calls -->
@@ -29,17 +29,28 @@
       <stylesheet src='roundedContainerWithHeader.css' />
 
       <!-- Add gwt-log support, default level `OFF` - check for
-           extended property 'log_level' to see if this is overridden -->
+           extended property 'log_level' to see if this is overridden
+-->
       <inherits name="com.allen_sauer.gwt.log.gwt-log-OFF" />
 
       <!-- Also compile Logger at `INFO` level -->
       <extend-property name="log_level" values="INFO" />
       <set-property name="log_level" value="INFO" />
       
-      <!-- Turn off the floating logger - output will be shown in the hosted mode console -->
+      <!-- Turn off the floating logger - output will be shown in the hosted mode console
+-->
       <set-property name="log_DivLogger" value="DISABLED" />
     
       <source path="client" />
       <source path="shared" />
 
+  <inherits name="com.google.gwt.i18n.I18N"/>
+  
+    <extend-property name="locale" values="en"/>
+    <extend-property name="locale" values="bg"/>
+    <extend-property name="locale" values="de"/>
+    <extend-property name="locale" values="fr"/>
+    <extend-property name="locale" values="it"/>
+    <extend-property name="locale" values="tr"/>
+    <extend-property name="locale" values="qc"/>    
 </module>

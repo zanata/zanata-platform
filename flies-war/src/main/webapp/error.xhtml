@@ -5,12 +5,12 @@
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
-    template="layout/template.xhtml">
+    template="WEB-INF/layout/template.xhtml">
 
     <ui:param name="showGlobalMessages" value="false"/>
     <ui:define name="center_content">
 
-        <h1>Error</h1>
+        <h1>#{messages['jsf.error.Error']}</h1>
 
         <h:messages id="errorMessage" styleClass="message"/>
 

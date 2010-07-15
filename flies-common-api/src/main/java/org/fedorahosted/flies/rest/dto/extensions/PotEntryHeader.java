@@ -6,7 +6,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import org.fedorahosted.flies.rest.dto.Extension;
+import org.fedorahosted.flies.rest.dto.resource.Extension;
 
 public class PotEntryHeader extends Extension {
 

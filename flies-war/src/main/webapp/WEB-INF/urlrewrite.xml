@@ -41,16 +41,16 @@
     <to last="true">/community/home.seam$1</to>
   </rule>
 
-  <!-- Tribe rules -->
+  <!-- Language rules -->
 
   <rule>
-    <from casesensitive="true">^/tribe/view/(.+)$</from>
-    <to last="true">/tribe/tribe.seam\?id=$1</to>
+    <from casesensitive="true">^/language/view/(.+)$</from>
+    <to last="true">/language/language.seam\?id=$1</to>
   </rule>
 
   <rule>
-    <from casesensitive="true">^/tribe/list(.+)?$</from>
-    <to last="true">/tribe/home.seam$1</to>
+    <from casesensitive="true">^/language/list(.+)?$</from>
+    <to last="true">/language/home.seam$1</to>
   </rule>
 
   <!-- Project Rules -->
@@ -158,12 +158,12 @@
     <to>$1/community/list$2</to>
   </outbound-rule>
   <outbound-rule>
-    <from>^(/.+)?/tribe/tribe.seam\?id=(.+)$</from>
-    <to>$1/tribe/view/$2</to>
+    <from>^(/.+)?/language/language.seam\?id=(.+)$</from>
+    <to>$1/language/view/$2</to>
   </outbound-rule>
   <outbound-rule>
-    <from>^(/.+)?/tribe/home.seam(.+)?$</from>
-    <to>$1/tribe/list$2</to>
+    <from>^(/.+)?/language/home.seam(.+)?$</from>
+    <to>$1/language/list$2</to>
   </outbound-rule>
   <outbound-rule>
     <from>^(/.+)?/project/add_iteration.seam\?slug=(.+)$</from>

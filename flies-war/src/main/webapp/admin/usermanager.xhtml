@@ -7,12 +7,12 @@
     xmlns:a4j="http://richfaces.org/a4j"
     xmlns:s="http://jboss.com/products/seam/taglib">
 
-  <ui:composition template="../layout/template.xhtml">
+  <ui:composition template="../WEB-INF/layout/template.xhtml">
 <!-- disabled since it doesn't create the HPerson to go with the HAccount
     <ui:define name="left_content">
         <s:link action="#{userAction.createUser}"
           rendered="#{s:hasPermission('seam.account', 'create')}"
-          value="Create new User"/>
+          value="#{messages['jsf.CreateNewUser']}"/>
     </ui:define>
  -->
   
@@ -21,11 +21,11 @@
       <script type="text/javascript">
         function confirmDelete()
         {
-          return confirm("Are you sure you wish to delete this user? This action cannot be undone.");
+          return confirm("#{messages['jsf.AreYouSureYouWishToDeleteThisUserThisActionCannotBeUndone']}");
         }
       </script>
       <rich:panel>
-        <f:facet name="header">User Manager</f:facet>
+        <f:facet name="header">#{messages['jsf.UserManager']}</f:facet>
   	    
         <a4j:form>
             <s:token allowMultiplePosts="true" />
@@ -45,24 +45,24 @@
 	          </h:column>
 	          <h:column width="auto">
 	            <f:facet name="header">
-	              Member Of
+	              #{messages['jsf.MemberOf']}
 	            </f:facet>
 	            #{userSearch.getUserRoles(user)}
 	          </h:column>
 	          <h:column width="auto">
 	            <f:facet name="header">
-	              Enabled
+	              #{messages['jsf.Enabled']}
 	            </f:facet>
 	            <div class="#{identityManager.isUserEnabled(user) ? 'checkmark' : 'cross'}"/>
 	          </h:column>
 	          <h:column width="auto">
 	            <f:facet name="header">
-	              Action
+	              #{messages['jsf.Actions']}
 	            </f:facet>
 	            <s:fragment rendered="#{s:hasPermission('seam.user', 'update')}">
-	              <h:commandLink value="Edit" action="#{userAction.editUser(userSearch.selectedUser)}"/><span> | </span>
+	              <h:commandLink value="#{messages['jsf.Edit']}" action="#{userAction.editUser(userSearch.selectedUser)}"/><span> | </span>
 	            </s:fragment>
-	            <h:commandLink value="Delete" action="#{identityManager.deleteUser(userSearch.selectedUser)}" 
+	            <h:commandLink value="#{messages['jsf.Delete']}" action="#{identityManager.deleteUser(userSearch.selectedUser)}" 
 	                    rendered="#{s:hasPermission('seam.user', 'delete')}"
 	                    onclick="return confirmDelete()"/>
 	          </h:column>

@@ -1,0 +1,25 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="../WEB-INF/layout/template.xhtml">
+
+    <ui:define name="left_content">
+      <rich:panel rendered="#{identity.loggedIn}">
+        <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+        <a href="#" class="action_link">#{messages['jsf.YourLanguageMissing']}</a>
+      </rich:panel>
+    </ui:define>
+
+    <ui:define name="center_content">
+        <rich:jQuery selector="#tab_tribes" query="addClass('ui-tabs-selected')" />
+        <h1>#{messages['jsf.Languages']}</h1>
+        <rich:dataGrid value="#{tribesBean.latestTribes}" var="tribe" columns="3" columnClasses="grid_col" styleClass="grid_style">
+          <ui:include src="../WEB-INF/layout/language_view_inline.xhtml" />
+        </rich:dataGrid>
+    </ui:define>
+</ui:composition>

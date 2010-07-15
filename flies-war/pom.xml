@@ -13,8 +13,8 @@
 	<name>flies Webapp</name>
 
 	<properties>
-		<version.jboss.embedded>beta3.SP12</version.jboss.embedded>
-		<version.nukes.security>1.0</version.nukes.security>
+		<jboss.embedded.version>beta3.SP12</jboss.embedded.version>
+		<nukes.security.version>1.0</nukes.security.version>
 		<!-- application properties -->
 
 		<env.debug>false</env.debug>
@@ -64,7 +64,7 @@
 							<addClasspath>true</addClasspath>
 						</manifest>
 						<manifestEntries>
-							<Implementation-Version>${version}</Implementation-Version>
+							<Implementation-Version>${project.version}</Implementation-Version>
 							<Implementation-Build>${maven.build.timestamp}</Implementation-Build>
 						</manifestEntries>
 					</archive>
@@ -96,6 +96,34 @@
 					<groups>unit-tests</groups>
 				</configuration>
 			</plugin>
+            
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>l10n-maven-plugin</artifactId>
+                <version>1.0-alpha-2</version>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>pseudo</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <pseudoLocale>qc</pseudoLocale>
+                    <includes>
+                        <include>**/*.properties</include>
+                    </includes>
+                    <excludes>
+                        <exclude>**/*_*.properties</exclude>
+                        <exclude>**/components.properties</exclude>
+                        <exclude>**/seam.properties</exclude>
+                        <exclude>**/seam-deployment.properties</exclude>
+                    </excludes>
+                    <outputDirectory>src/main/resources</outputDirectory>
+                </configuration>
+            </plugin>
+                
 		</plugins>
 
 	</build>
@@ -626,7 +654,7 @@
 				<dependency>
 					<groupId>org.jboss.infrastructure</groupId>
 					<artifactId>seam-jbnukes-security-impl</artifactId>
-					<version>${version.nukes.security}</version>
+					<version>${nukes.security.version}</version>
 				</dependency>
 			</dependencies>
 		</profile>
@@ -656,7 +684,7 @@
 				<env.hibernate.hbm2ddl.auto>create-drop</env.hibernate.hbm2ddl.auto>
 				<env.hibernate.show_sql>true</env.hibernate.show_sql>
 				<env.hibernate.format_sql>true</env.hibernate.format_sql>
-				<extra.servlets><![CDATA[
+				<extra.servlets><![CDATA[-->
 	<servlet>
 		<servlet-name>H2Console</servlet-name>
 		<servlet-class>org.h2.server.web.WebServlet</servlet-class>
@@ -666,7 +694,7 @@
 		<servlet-name>H2Console</servlet-name>
 		<url-pattern>/console/*</url-pattern>
 	</servlet-mapping>
-				]]></extra.servlets>
+				<!--]]></extra.servlets>
 			</properties>
 			<dependencies>
 				<dependency>
@@ -691,7 +719,7 @@
 		<dependency>
 			<groupId>org.jboss.infrastructure</groupId>
 			<artifactId>seam-jbnukes-security-api</artifactId>
-			<version>${version.nukes.security}</version>
+			<version>${nukes.security.version}</version>
 		</dependency>
 
 		<!-- Seam Dependencies -->
@@ -699,33 +727,33 @@
 		<dependency>
 			<groupId>org.jboss.seam</groupId>
 			<artifactId>jboss-seam</artifactId>
-			<version>${version.seam}</version>
+			<version>${seam.version}</version>
 			<type>ejb</type>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jboss.seam</groupId>
 			<artifactId>jboss-seam-ui</artifactId>
-			<version>${version.seam}</version>
+			<version>${seam.version}</version>
 		</dependency>
 
 		<dependency>
 			<!-- TODO this should be excluded in production -->
 			<groupId>org.jboss.seam</groupId>
 			<artifactId>jboss-seam-debug</artifactId>
-			<version>${version.seam}</version>
+			<version>${seam.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jboss.seam</groupId>
 			<artifactId>jboss-seam-mail</artifactId>
-			<version>${version.seam}</version>
+			<version>${seam.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jboss.seam</groupId>
 			<artifactId>jboss-seam-remoting</artifactId>
-			<version>${version.seam}</version>
+			<version>${seam.version}</version>
 		</dependency>
 
 		<!-- RestEasy dependencies -->
@@ -733,7 +761,7 @@
 		<dependency>
 			<groupId>org.jboss.seam</groupId>
 			<artifactId>jboss-seam-resteasy</artifactId>
-			<version>${version.seam}</version>
+			<version>${seam.version}</version>
 			<exclusions>
 				<!--
 					We use Jackson for json, so exclude the default jettison provider
@@ -748,7 +776,7 @@
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxrs</artifactId>
-			<version>${version.resteasy}</version>
+			<version>${resteasy.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
@@ -764,13 +792,13 @@
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxb-provider</artifactId>
-			<version>${version.resteasy}</version>
+			<version>${resteasy.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jackson-provider</artifactId>
-			<version>${version.resteasy}</version>
+			<version>${resteasy.version}</version>
 		</dependency>
 
 		<dependency>
@@ -893,8 +921,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.google.collections</groupId>
-			<artifactId>google-collections</artifactId>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
 		</dependency>
 
 		<dependency>
@@ -991,7 +1019,7 @@
 		<dependency>
 			<groupId>org.jboss.embedded</groupId>
 			<artifactId>jboss-embedded-all</artifactId>
-			<version>${version.jboss.embedded}</version>
+			<version>${jboss.embedded.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.jboss.microcontainer</groupId>
@@ -1008,14 +1036,14 @@
 		<dependency>
 			<groupId>org.jboss.embedded</groupId>
 			<artifactId>thirdparty-all</artifactId>
-			<version>${version.jboss.embedded}</version>
+			<version>${jboss.embedded.version}</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jboss.seam.embedded</groupId>
 			<artifactId>jboss-embedded-api</artifactId>
-			<version>${version.jboss.embedded}</version>
+			<version>${jboss.embedded.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.jboss.microcontainer</groupId>
@@ -1130,24 +1158,11 @@
 		</repository>
 
 		<repository>
-			<id>gwt-dispatch-deps-repo</id>
-			<name>gwt-dispatch-deps-repo</name>
-			<url>http://gwt-dispatch.googlecode.com/svn/tags/gwt-dispatch-1.0.0/lib</url>
-			<layout>legacy</layout>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<checksumPolicy>ignore</checksumPolicy>
-			</releases>
-		</repository>
-
-		<repository>
 			<id>openl10n-repo</id>
 			<name>openl10n-repo</name>
-			<url>http://openl10n.net/maven2/releases/</url>
+			<url>http://openl10n.net/maven2/releases</url>
 			<snapshots>
-				<enabled>true</enabled>
+				<enabled>false</enabled>
 			</snapshots>
 		</repository>
 

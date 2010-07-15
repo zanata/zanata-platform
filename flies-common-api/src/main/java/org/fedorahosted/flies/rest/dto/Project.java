@@ -100,14 +100,7 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
 		this.description = description;
 	}
 	
-	/**
-	 * Set of links managed by this resource
-	 * 
-	 * This field is ignored in PUT/POST operations 
-	 * 
-	 * @return set of Links managed by this resource
-	 */
-	@XmlElement(name="link", namespace=Namespaces.FLIES, required=false)
+	@XmlElementRef(type=Link.class)
 	public Links getLinks() {
 		return links;
 	}

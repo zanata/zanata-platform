@@ -13,8 +13,12 @@ import javax.xml.transform.stream.StreamResult;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.fedorahosted.flies.rest.dto.ProjectList;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
-import org.fedorahosted.flies.rest.dto.TextFlowTarget;
-import org.fedorahosted.flies.rest.dto.TranslationResource;
+import org.fedorahosted.flies.rest.dto.resource.ResourceMeta;
+import org.fedorahosted.flies.rest.dto.resource.TextFlow;
+import org.fedorahosted.flies.rest.dto.resource.TextFlowTarget;
+import org.fedorahosted.flies.rest.dto.resource.Resource;
+import org.fedorahosted.flies.rest.dto.resource.TextFlowTarget;
+import org.fedorahosted.flies.rest.dto.resource.TranslationsResource;
 
 public class GenerateSchema {
 
@@ -23,7 +27,10 @@ public class GenerateSchema {
 			ProjectList.class,
 			Project.class,
 			ProjectIteration.class,
-			TranslationResource.class,
+			Resource.class,
+			ResourceMeta.class,
+			TranslationsResource.class,
+			TextFlow.class,
 			TextFlowTarget.class
 		};
 		JAXBContext context = JAXBContext.newInstance(classes);

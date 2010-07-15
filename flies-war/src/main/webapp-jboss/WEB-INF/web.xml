@@ -129,7 +129,7 @@
 		<url-pattern>/org.fedorahosted.flies.webtrans.Application/gwteventservice/*</url-pattern>
 	</servlet-mapping>
 
-	@extra.servlets@
+	<!-- @extra.servlets@ -->
 
 	<security-constraint>
 		<display-name>Restrict raw XHTML Documents</display-name>

@@ -23,6 +23,7 @@ import org.fedorahosted.flies.webtrans.shared.rpc.GetTranslatorList;
 import org.fedorahosted.flies.webtrans.shared.rpc.GetTranslatorListResult;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 

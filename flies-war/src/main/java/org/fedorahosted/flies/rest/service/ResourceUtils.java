@@ -23,20 +23,21 @@ import org.fedorahosted.flies.model.po.HPoTargetHeader;
 import org.fedorahosted.flies.model.po.HPotEntryData;
 import org.fedorahosted.flies.model.po.PoUtility;
 import org.fedorahosted.flies.rest.StringSet;
-import org.fedorahosted.flies.rest.dto.AbstractResource;
-import org.fedorahosted.flies.rest.dto.AbstractTextFlow;
-import org.fedorahosted.flies.rest.dto.ExtensionSet;
 import org.fedorahosted.flies.rest.dto.Person;
-import org.fedorahosted.flies.rest.dto.ResourceMeta;
-import org.fedorahosted.flies.rest.dto.SourceResource;
-import org.fedorahosted.flies.rest.dto.SourceTextFlow;
-import org.fedorahosted.flies.rest.dto.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.extensions.PoHeader;
 import org.fedorahosted.flies.rest.dto.extensions.PoTargetHeader;
 import org.fedorahosted.flies.rest.dto.extensions.PoTargetHeaderEntry;
 import org.fedorahosted.flies.rest.dto.extensions.PoTargetHeaders;
 import org.fedorahosted.flies.rest.dto.extensions.PotEntryHeader;
 import org.fedorahosted.flies.rest.dto.extensions.SimpleComment;
+import org.fedorahosted.flies.rest.dto.resource.AbstractResourceMeta;
+import org.fedorahosted.flies.rest.dto.resource.TextFlow;
+import org.fedorahosted.flies.rest.dto.resource.TextFlowTarget;
+import org.fedorahosted.flies.rest.dto.resource.ExtensionSet;
+import org.fedorahosted.flies.rest.dto.resource.AbstractResourceMeta;
+import org.fedorahosted.flies.rest.dto.resource.Resource;
+import org.fedorahosted.flies.rest.dto.resource.TextFlow;
+import org.fedorahosted.flies.rest.dto.resource.TextFlow;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
@@ -53,11 +54,11 @@ public class ResourceUtils {
 	
 	Log log = Logging.getLog(ResourceUtils.class);
 
-	public boolean mergeTextFlows(List<SourceTextFlow> from, HDocument to) {
+	public boolean mergeTextFlows(List<TextFlow> from, HDocument to) {
 		boolean changed = false;
 		to.getTextFlows().clear();
 		Set<String> ids = new HashSet<String>(to.getAllTextFlows().keySet());
-		for(SourceTextFlow tf : from) {
+		for(TextFlow tf : from) {
 			HTextFlow textFlow;
 			if(ids.contains(tf.getId())) {
 				ids.remove(tf.getId());
@@ -95,14 +96,14 @@ public class ResourceUtils {
 		return changed;
 	}
 	
-	public boolean transfer(SourceResource from, HDocument to) {
+	public boolean transfer(Resource from, HDocument to) {
 		boolean changed = false;
-		changed |= transfer( (AbstractResource) from, to);
+		changed |= transfer( (AbstractResourceMeta) from, to);
 		changed |= mergeTextFlows(from.getTextFlows(), to);
 		return changed;
 	}
 
-	public boolean transfer(AbstractResource from, HDocument to) {
+	public boolean transfer(AbstractResourceMeta from, HDocument to) {
 		boolean changed = false;
 
 		// name
@@ -295,7 +296,7 @@ public class ResourceUtils {
 		return a.equals(b);
 	}
 	
-	public boolean transfer(AbstractTextFlow from, HTextFlow to) {
+	public boolean transfer(TextFlow from, HTextFlow to) {
 		boolean changed = false;
 		if( ! equals(from.getContent(), to.getContent()) ) {
 			to.setContent(from.getContent());
@@ -307,7 +308,7 @@ public class ResourceUtils {
 		return changed;
 	}
 	
-	public void transfer(HDocument from, SourceResource to) {
+	public void transfer(HDocument from, Resource to) {
 		
 		to.setName(from.getName());
 		to.setLang(from.getLocale());
@@ -340,13 +341,13 @@ public class ResourceUtils {
 		
 	}
 	
-	public void transfer(HTextFlow from, AbstractTextFlow to) {
+	public void transfer(HTextFlow from, TextFlow to) {
 		to.setContent(from.getContent());
 		// TODO HTextFlow should have a lang
 		//to.setLang(from.get)
 	}
 
-	public void transfer(HDocument from, ResourceMeta to) {
+	public void transfer(HDocument from, AbstractResourceMeta to) {
 		to.setContentType(from.getContentType());
 		to.setLang(from.getLocale());
 		to.setName(from.getDocId());

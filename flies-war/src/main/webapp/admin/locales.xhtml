@@ -7,12 +7,12 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:rich="http://richfaces.org/rich"
     xmlns:a4j="http://richfaces.org/a4j"
-    template="../layout/template.xhtml">
+    template="../WEB-INF/layout/template.xhtml">
 
     <ui:define name="center_content">
       <rich:jQuery selector="#tab_admin" query="addClass('ui-tabs-selected')" />
       <h1>Locales</h1>
-      <h:outputText value="No Locales exists"
+      <h:outputText value="#{messages['jsf.NoLocaleExists']}"
                     rendered="#{empty localeList.resultList}"/>
       <h:form>
         <s:token allowMultiplePosts="true" />
@@ -20,7 +20,7 @@
                   value="#{localeList.resultList}"
                rendered="#{not empty localeList.resultList}">
           <rich:column sortBy="#{locale.id}">
-              <f:facet name="header">Id</f:facet>
+              <f:facet name="header">#{messages['jsf.Id']}</f:facet>
               <s:link id="locale"
                    value="#{locale.id}"
              propagation="none"
@@ -30,31 +30,31 @@
               </s:link>
           </rich:column>
           <rich:column sortBy="#{locale.locale.baseName}">
-              <f:facet name="header">Java Locale Id</f:facet>
+              <f:facet name="header">#{messages['jsf.JavaLocaleId']}</f:facet>
               #{locale.locale.name}
           </rich:column>
           <rich:column sortBy="#{locale.locale.name}">
-              <f:facet name="header">Name</f:facet>
+              <f:facet name="header">#{messages['jsf.Name']}</f:facet>
               #{locale.locale.displayName}
           </rich:column>
           <rich:column sortBy="#{locale.locale.country}">
-              <f:facet name="header">Country Code</f:facet>
+              <f:facet name="header">#{messages['jsf.CountryCode']}</f:facet>
               #{locale.locale.country}
           </rich:column>
           <rich:column sortBy="#{locale.locale.language}">
-              <f:facet name="header">Language Code</f:facet>
+              <f:facet name="header">#{messages['jsf.LanguageCode']}</f:facet>
               #{locale.locale.language}
           </rich:column>
           <rich:column sortBy="#{locale.locale.variant}">
-              <f:facet name="header">Variant</f:facet>
+              <f:facet name="header">#{messages['jsf.Variant']}</f:facet>
               #{locale.locale.variant}
           </rich:column>
           <rich:column sortBy="#{locale.locale.script}">
-              <f:facet name="header">Script</f:facet>
+              <f:facet name="header">#{messages['jsf.Script']}</f:facet>
               #{locale.locale.script}
           </rich:column>
           <rich:column sortBy="#{locale.locale.nativeName}" dir="#{locale.locale.characterOrientation == 'right-to-left' ? 'rtl' : 'ltr'}">
-              <f:facet name="header">Native Name</f:facet>
+              <f:facet name="header">#{messages['jsf.NativeName']}</f:facet>
               #{locale.nativeName}
           </rich:column>
         </rich:dataTable>
@@ -64,7 +64,7 @@
     <ui:define name="left_content">
         <a4j:form>
             <s:token allowMultiplePosts="true" />
-	    	<a4j:commandLink value="Import Java Locales" action="#{localeList.importJavaLocales}"/>
+	    	<a4j:commandLink value="#{messages['jsf.ImportJavaLocales']}" action="#{localeList.importJavaLocales}"/>
 	    </a4j:form>
 	</ui:define>    
 </ui:composition>

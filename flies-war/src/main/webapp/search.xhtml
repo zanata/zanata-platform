@@ -5,21 +5,21 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:rich="http://richfaces.org/rich" template="layout/template.xhtml">
+	xmlns:rich="http://richfaces.org/rich" template="./WEB-INF/layout/template.xhtml">
 
 	<ui:define name="center_content">
 		<rich:jQuery selector="#tab_projects"
 			query="addClass('ui-tabs-selected')" />
-		<h1>Found #{projectSearch.resultSize} Projects matching query '<h:outputText value="#{projectSearch.searchQuery}"/>'</h1>
+		<h1>#{messages['jsf.FoundResultsizeProjectsMatchingQuerySearchquery']}</h1>
 
 		<rich:dataGrid columns="3" value="#{projectSearch.searchResults}"
 			var="project" columnClasses="grid_col" styleClass="grid_style"
 			rendered="#{not empty projectSearch.searchResults}">
-			<ui:include src="./project/project_view_inline.xhtml" />
+			<ui:include src="./WEB-INF/layout/project_view_inline.xhtml" />
 		</rich:dataGrid>
 
 		<s:fragment rendered="#{projectSearch.resultSize gt projectSearch.pageSize}"> 
-			<p>Only showing first #{projectSearch.pageSize} results.</p>
+			<p>#{messages['OnlyShowingFirstPagesizeResults']}</p>
 		</s:fragment>
 
 	</ui:define>

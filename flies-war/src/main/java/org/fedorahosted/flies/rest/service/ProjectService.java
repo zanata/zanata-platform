@@ -90,6 +90,11 @@ public class ProjectService {
 	}
 	
 	@HEAD
+	@Produces({ 
+		MediaTypes.APPLICATION_FLIES_PROJECT_XML,
+		MediaTypes.APPLICATION_FLIES_PROJECT_JSON,
+		MediaType.APPLICATION_XML,
+		MediaType.APPLICATION_JSON})
 	public Response head() {
 		EntityTag etag = eTagUtils.generateTagForProject(projectSlug);
 		ResponseBuilder response = request.evaluatePreconditions(etag);
