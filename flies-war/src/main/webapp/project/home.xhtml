@@ -12,7 +12,7 @@
     <rich:panel rendered="#{identity.loggedIn}">
       <f:facet name="header">Actions</f:facet>
       <s:link styleClass="action_link"
-      				rendered="#{s:hasRole('admin')}" 
+      				rendered="#{s:hasPermission(projectHome.instance, 'insert')}" 
       				value="Create project" 
                     view="/project/create_project.xhtml"
                     propagation="none"/>

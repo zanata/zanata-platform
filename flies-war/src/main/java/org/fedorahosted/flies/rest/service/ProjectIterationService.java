@@ -17,9 +17,9 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
 
 import org.fedorahosted.flies.dao.ProjectDAO;
 import org.fedorahosted.flies.dao.ProjectIterationDAO;
@@ -32,7 +32,7 @@ import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.security.Restrict;
+import org.jboss.seam.security.Identity;
 
 @Name("projectIterationService")
 @Path(ProjectIterationService.SERVICE_PATH)
@@ -73,6 +73,9 @@ public class ProjectIterationService {
 
 	@In
 	ETagUtils eTagUtils;
+	
+	@In
+	Identity identity;
 
 	public ProjectIterationService() {
 	}
@@ -125,7 +128,6 @@ public class ProjectIterationService {
 		MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON,
 		MediaType.APPLICATION_XML,
 		MediaType.APPLICATION_JSON})
-	@Restrict("#{s:hasRole('admin')}")
 	public Response put(InputStream messageBody) {
 		
 		ResponseBuilder response;
@@ -151,11 +153,16 @@ public class ProjectIterationService {
 			hProjectIteration = new HProjectIteration();
 			hProjectIteration.setSlug(iterationSlug);
 			hProjectIteration.setProject((HIterationProject) hProject);
+			// pre-emptive entity permission check
+//			identity.checkPermission(hProject, "add-iteration");
+			identity.checkPermission(hProjectIteration, "insert");
+			
 			response = Response.created( uri.getAbsolutePath() );
 			changed = true;
-			
 		}
 		else{ // must be an update operation
+			// pre-emptive entity permission check
+			identity.checkPermission(hProjectIteration, "update");
 			etag = eTagUtils.generateETagForIteration(projectSlug, iterationSlug);
 			response = request.evaluatePreconditions(etag);
 			if(response != null) {

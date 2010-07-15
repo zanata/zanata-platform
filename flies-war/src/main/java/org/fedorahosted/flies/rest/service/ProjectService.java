@@ -18,8 +18,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.fedorahosted.flies.dao.AccountDAO;
 import org.fedorahosted.flies.dao.ProjectDAO;
@@ -35,7 +35,6 @@ import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
@@ -126,7 +125,6 @@ public class ProjectService {
 		MediaTypes.APPLICATION_FLIES_PROJECT_JSON,
 		MediaType.APPLICATION_XML,
 		MediaType.APPLICATION_JSON})
-	@Restrict("#{s:hasRole('admin')}")
 	public Response put(InputStream messageBody) {
 
 		ResponseBuilder response;
@@ -141,9 +139,13 @@ public class ProjectService {
 			}
 			hProject = new HIterationProject();
 			hProject.setSlug(projectSlug);
+			// pre-emptive entity permission check
+			identity.checkPermission(hProject, "insert");
 
 			response = Response.created(uri.getAbsolutePath());
 		} else { // must be an update operation
+			// pre-emptive entity permission check
+			identity.checkPermission(hProject, "update");
 			etag = eTagUtils.generateTagForProject(projectSlug);
 			response = request.evaluatePreconditions(etag);
 			if (response != null) {

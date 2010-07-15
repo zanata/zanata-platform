@@ -25,7 +25,7 @@
         <f:facet name="header">
           Actions
         </f:facet>
-        <s:link styleClass="action_link" rendered="#{s:hasRole('admin')}" view="/community/create_community.xhtml" propagation="none">
+        <s:link styleClass="action_link" rendered="#{s:hasPermission(communityHome.instance, 'insert')}" view="/community/create_community.xhtml" propagation="none">
           Create a Community
         </s:link>
       </rich:panel>
