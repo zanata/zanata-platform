@@ -75,10 +75,7 @@
     
     <action execute="#{projectIterationHome.validateProjectSlug}" />
     <!-- can't use <restrict> here either --> 
-    <!-- NB: we don't check for 'insert' permission on the HProjectIteration 
-         because we would have to create HProjectIteration *and* set its project.
-    -->
-    <action execute="#{identity.checkPermission(projectHome.instance, 'add-iteration')}" />
+    <action execute="#{identity.checkPermission(projectIterationHome.instance, 'insert')}" />
 
     <navigation from-action="#{projectIterationHome.persist}">
       <rule if="#{projectIterationHome.managed}">
