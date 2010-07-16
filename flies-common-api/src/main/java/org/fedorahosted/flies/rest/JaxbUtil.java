@@ -20,57 +20,70 @@ import javax.xml.validation.SchemaFactory;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-public class JaxbUtil {
+public class JaxbUtil
+{
 
-	public static void validateXml(Object obj, Class<?>... classes)
-			throws ValidationException {
-		try {
-			int index = -1;
-			for (int i = 0; i < classes.length; i++) {
-				if (obj.getClass() == classes[i]) {
-					index = i;
-					break;
-				}
-			}
-			if (index == -1) {
-				classes = Arrays.copyOf(classes, classes.length+1);
-				classes[classes.length-1] = obj.getClass();
-			}
-	
-			JAXBContext jc = JAXBContext.newInstance(classes);
-			Marshaller m = jc.createMarshaller();
-			final List<StringWriter> outs = new ArrayList<StringWriter>();
-			jc.generateSchema(new SchemaOutputResolver() {
-				@Override
-				public Result createOutput(String namespaceUri,
-						String suggestedFileName) throws IOException {
-					StringWriter out = new StringWriter();
-					outs.add(out);
-					StreamResult streamResult = new StreamResult(out);
-					streamResult.setSystemId("");
-					return streamResult;
-				}
-			});
-			StreamSource[] sources = new StreamSource[outs.size()];
-			int i = 0;
-			for(StringWriter writer : outs){
-				writer.flush();
-				//System.out.println(writer.toString());
-				sources[i++] = new StreamSource(new StringReader(writer.toString()), "");
-			}
-			SchemaFactory sf = SchemaFactory
-					.newInstance("http://www.w3.org/2001/XMLSchema");
-			m.setSchema(sf.newSchema(sources));
-			m.marshal(obj, new DefaultHandler());
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} catch (SAXException e) {
-			throw new RuntimeException(e);
-		} catch (JAXBException e) {
-			if (e instanceof ValidationException) {
-				throw (ValidationException) e;
-			}
-		}
-	}
+   public static void validateXml(Object obj, Class<?>... classes) throws ValidationException
+   {
+      try
+      {
+         int index = -1;
+         for (int i = 0; i < classes.length; i++)
+         {
+            if (obj.getClass() == classes[i])
+            {
+               index = i;
+               break;
+            }
+         }
+         if (index == -1)
+         {
+            classes = Arrays.copyOf(classes, classes.length + 1);
+            classes[classes.length - 1] = obj.getClass();
+         }
+
+         JAXBContext jc = JAXBContext.newInstance(classes);
+         Marshaller m = jc.createMarshaller();
+         final List<StringWriter> outs = new ArrayList<StringWriter>();
+         jc.generateSchema(new SchemaOutputResolver()
+         {
+            @Override
+            public Result createOutput(String namespaceUri, String suggestedFileName) throws IOException
+            {
+               StringWriter out = new StringWriter();
+               outs.add(out);
+               StreamResult streamResult = new StreamResult(out);
+               streamResult.setSystemId("");
+               return streamResult;
+            }
+         });
+         StreamSource[] sources = new StreamSource[outs.size()];
+         int i = 0;
+         for (StringWriter writer : outs)
+         {
+            writer.flush();
+            // System.out.println(writer.toString());
+            sources[i++] = new StreamSource(new StringReader(writer.toString()), "");
+         }
+         SchemaFactory sf = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
+         m.setSchema(sf.newSchema(sources));
+         m.marshal(obj, new DefaultHandler());
+      }
+      catch (IOException e)
+      {
+         throw new RuntimeException(e);
+      }
+      catch (SAXException e)
+      {
+         throw new RuntimeException(e);
+      }
+      catch (JAXBException e)
+      {
+         if (e instanceof ValidationException)
+         {
+            throw (ValidationException) e;
+         }
+      }
+   }
 
 }

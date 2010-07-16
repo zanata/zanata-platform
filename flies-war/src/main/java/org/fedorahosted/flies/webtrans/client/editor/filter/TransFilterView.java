@@ -14,49 +14,55 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class TransFilterView extends Composite implements TransFilterPresenter.Display {
-	
-	private static TransFilterViewUiBinder uiBinder = GWT
-	.create(TransFilterViewUiBinder.class);
+public class TransFilterView extends Composite implements TransFilterPresenter.Display
+{
 
-	interface TransFilterViewUiBinder extends UiBinder<Widget, TransFilterView> {
-	}
+   private static TransFilterViewUiBinder uiBinder = GWT.create(TransFilterViewUiBinder.class);
 
-	@UiField(provided=true)
-	CollapsePanel collapsePanel;
-	
-	@UiField(provided=true)
-	ClearableTextBox filterTextBox;
-	
-	private final TransFilterMessages messages;
-	
-	@Inject
-	public TransFilterView(final Resources resources, final TransFilterMessages messages, final UiMessages uiMessages) {
-		this.messages = messages;
-		this.collapsePanel = new CollapsePanel(resources);
-		this.filterTextBox = new ClearableTextBox(resources, uiMessages );
-		filterTextBox.setEmptyText( messages.findSourceOrTargetString() );
-		initWidget( uiBinder.createAndBindUi(this) );
-		collapsePanel.setHeading( messages.transUnitSearchesHeading() );
-		getElement().setId("TransFilterView");
-	}
-	
-	@Override
-	public Widget asWidget() {
-		return this;
-	}
+   interface TransFilterViewUiBinder extends UiBinder<Widget, TransFilterView>
+   {
+   }
 
-	@Override
-	public void startProcessing() {
-	}
+   @UiField(provided = true)
+   CollapsePanel collapsePanel;
 
-	@Override
-	public void stopProcessing() {
-	}
-	
-	@Override
-	public TextBox getFilterText() {
-		return filterTextBox.getTextBox();
-	}
-	
+   @UiField(provided = true)
+   ClearableTextBox filterTextBox;
+
+   private final TransFilterMessages messages;
+
+   @Inject
+   public TransFilterView(final Resources resources, final TransFilterMessages messages, final UiMessages uiMessages)
+   {
+      this.messages = messages;
+      this.collapsePanel = new CollapsePanel(resources);
+      this.filterTextBox = new ClearableTextBox(resources, uiMessages);
+      filterTextBox.setEmptyText(messages.findSourceOrTargetString());
+      initWidget(uiBinder.createAndBindUi(this));
+      collapsePanel.setHeading(messages.transUnitSearchesHeading());
+      getElement().setId("TransFilterView");
+   }
+
+   @Override
+   public Widget asWidget()
+   {
+      return this;
+   }
+
+   @Override
+   public void startProcessing()
+   {
+   }
+
+   @Override
+   public void stopProcessing()
+   {
+   }
+
+   @Override
+   public TextBox getFilterText()
+   {
+      return filterTextBox.getTextBox();
+   }
+
 }

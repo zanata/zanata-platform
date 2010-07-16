@@ -36,52 +36,57 @@ import org.jboss.seam.web.ServletContexts;
 @Name("webtrans.gwt.ActivateWorkspaceHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(ActivateWorkspaceAction.class)
-public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWorkspaceAction, ActivateWorkspaceResult> {
+public class ActivateWorkspaceHandler extends AbstractActionHandler<ActivateWorkspaceAction, ActivateWorkspaceResult>
+{
 
-	@Logger Log log;
-	
-	@In Session session;
-	
-	@In TranslationWorkspaceManager translationWorkspaceManager;
+   @Logger
+   Log log;
 
-	@Override
-	public ActivateWorkspaceResult execute(ActivateWorkspaceAction action, ExecutionContext context)
-			throws ActionException {
-		
-		FliesIdentity.instance().checkLoggedIn();
+   @In
+   Session session;
 
-		TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
-		
-		workspace.registerTranslator(ActivateWorkspaceHandler.retrieveSessionId(), ActivateWorkspaceHandler.retrievePersonId());
-		
-		//Send EnterWorkspace event to clients
-		EnterWorkspace event = new EnterWorkspace(new PersonId(FliesIdentity.instance().getPrincipal().getName()));
-		workspace.publish(event);
+   @In
+   TranslationWorkspaceManager translationWorkspaceManager;
 
-		Identity identity = new Identity( 
-				retrieveSessionId(), 
-				retrievePerson(), new HashSet<Permission>(), new HashSet<Role>());
-		
-		return new ActivateWorkspaceResult(workspace.getWorkspaceContext(), identity);
-	}
+   @Override
+   public ActivateWorkspaceResult execute(ActivateWorkspaceAction action, ExecutionContext context) throws ActionException
+   {
 
-	@Override
-	public void rollback(ActivateWorkspaceAction action, ActivateWorkspaceResult result,
-			ExecutionContext context) throws ActionException {
-	}
+      FliesIdentity.instance().checkLoggedIn();
 
-	public static SessionId retrieveSessionId() {
-		return new SessionId(ServletContexts.instance().getRequest().getSession().getId());
-	}
+      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
 
-	public static PersonId retrievePersonId(){
-		HPerson authenticatedPerson = (HPerson) Contexts.getSessionContext().get("authenticatedPerson");
-		return new PersonId(authenticatedPerson.getAccount().getUsername());
-	}
+      workspace.registerTranslator(ActivateWorkspaceHandler.retrieveSessionId(), ActivateWorkspaceHandler.retrievePersonId());
 
-	public static Person retrievePerson(){
-		HPerson authenticatedPerson = (HPerson) Contexts.getSessionContext().get("authenticatedPerson");
-		return new Person( new PersonId(authenticatedPerson.getAccount().getUsername()), authenticatedPerson.getName());
-	}
-	
+      // Send EnterWorkspace event to clients
+      EnterWorkspace event = new EnterWorkspace(new PersonId(FliesIdentity.instance().getPrincipal().getName()));
+      workspace.publish(event);
+
+      Identity identity = new Identity(retrieveSessionId(), retrievePerson(), new HashSet<Permission>(), new HashSet<Role>());
+
+      return new ActivateWorkspaceResult(workspace.getWorkspaceContext(), identity);
+   }
+
+   @Override
+   public void rollback(ActivateWorkspaceAction action, ActivateWorkspaceResult result, ExecutionContext context) throws ActionException
+   {
+   }
+
+   public static SessionId retrieveSessionId()
+   {
+      return new SessionId(ServletContexts.instance().getRequest().getSession().getId());
+   }
+
+   public static PersonId retrievePersonId()
+   {
+      HPerson authenticatedPerson = (HPerson) Contexts.getSessionContext().get("authenticatedPerson");
+      return new PersonId(authenticatedPerson.getAccount().getUsername());
+   }
+
+   public static Person retrievePerson()
+   {
+      HPerson authenticatedPerson = (HPerson) Contexts.getSessionContext().get("authenticatedPerson");
+      return new Person(new PersonId(authenticatedPerson.getAccount().getUsername()), authenticatedPerson.getName());
+   }
+
 }

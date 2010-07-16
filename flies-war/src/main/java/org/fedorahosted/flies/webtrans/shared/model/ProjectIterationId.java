@@ -4,48 +4,59 @@ import java.io.Serializable;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class ProjectIterationId implements Serializable {
+public class ProjectIterationId implements Serializable
+{
 
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-	private String projectSlug;
-	private String iterationSlug;
-	
-	@SuppressWarnings("unused")
-	private ProjectIterationId() {
-	}
-	
-	public ProjectIterationId(String projectSlug, String iterationSlug) {
-		this.projectSlug = projectSlug;
-		this.iterationSlug = iterationSlug;
-	}
-	
-	public String getProjectSlug() {
-		return projectSlug;
-	}
-	
-	public String getIterationSlug() {
-		return iterationSlug;
-	}
-	
-	@Override
-	public String toString() {
-		return projectSlug+ "/" + iterationSlug;
-	}
+   private String projectSlug;
+   private String iterationSlug;
 
-	@Override
-	public int hashCode() {
-		return (projectSlug + "/" + iterationSlug).hashCode();
-	}
+   @SuppressWarnings("unused")
+   private ProjectIterationId()
+   {
+   }
 
-	@Override
-	public boolean equals(Object obj) {
-		if(obj == this) return true;
-		if(obj == null) return false;
-		if(obj instanceof ProjectIterationId) {
-			ProjectIterationId other = (ProjectIterationId) obj; 
-			return other.projectSlug == projectSlug && other.iterationSlug == iterationSlug;
-		}
-		return false;
-	}
+   public ProjectIterationId(String projectSlug, String iterationSlug)
+   {
+      this.projectSlug = projectSlug;
+      this.iterationSlug = iterationSlug;
+   }
+
+   public String getProjectSlug()
+   {
+      return projectSlug;
+   }
+
+   public String getIterationSlug()
+   {
+      return iterationSlug;
+   }
+
+   @Override
+   public String toString()
+   {
+      return projectSlug + "/" + iterationSlug;
+   }
+
+   @Override
+   public int hashCode()
+   {
+      return (projectSlug + "/" + iterationSlug).hashCode();
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (obj == this)
+         return true;
+      if (obj == null)
+         return false;
+      if (obj instanceof ProjectIterationId)
+      {
+         ProjectIterationId other = (ProjectIterationId) obj;
+         return other.projectSlug == projectSlug && other.iterationSlug == iterationSlug;
+      }
+      return false;
+   }
 }

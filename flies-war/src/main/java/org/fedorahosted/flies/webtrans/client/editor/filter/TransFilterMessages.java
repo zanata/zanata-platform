@@ -7,10 +7,11 @@ import com.google.gwt.i18n.client.Messages.DefaultMessage;
 
 @DefaultLocale
 @Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
-public interface TransFilterMessages extends Messages {
-	@DefaultMessage("Find Messages")
-	String transUnitSearchesHeading();
+public interface TransFilterMessages extends Messages
+{
+   @DefaultMessage("Find Messages")
+   String transUnitSearchesHeading();
 
-	@DefaultMessage("Source or Target content")
-	String findSourceOrTargetString();
+   @DefaultMessage("Source or Target content")
+   String findSourceOrTargetString();
 }

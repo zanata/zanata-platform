@@ -25,120 +25,143 @@ import com.ibm.icu.util.ULocale;
 
 @Entity
 @TypeDef(name = "ulocale", typeClass = ULocaleType.class)
-public class HFliesLocale implements Serializable {
+public class HFliesLocale implements Serializable
+{
 
-	private String id;
-	private ULocale locale;
+   private String id;
+   private ULocale locale;
 
-	private HFliesLocale parent;
-	private List<HFliesLocale> children;
+   private HFliesLocale parent;
+   private List<HFliesLocale> children;
 
-	private HTribe tribe;
-	
-	private List<HFliesLocale> friends; // e.g. nn, nb.
+   private HTribe tribe;
 
-	public HFliesLocale() {
-	}
+   private List<HFliesLocale> friends; // e.g. nn, nb.
 
-	public HFliesLocale(ULocale locale) {
-		setLocale(locale);
-	}
+   public HFliesLocale()
+   {
+   }
 
-	@OneToOne(mappedBy="locale")
-	public HTribe getTribe() {
-		return tribe;
-	}
-	
-	public void setTribe(HTribe tribe) {
-		this.tribe = tribe;
-	}
-	
-	public static String getFliesId(ULocale locale) {
-		StringBuilder builder = new StringBuilder();
-		builder.append(locale.getLanguage());
-		if (!locale.getCountry().isEmpty()) {
-			builder.append('-');
-			builder.append(locale.getCountry());
-		}
-		if (!locale.getScript().isEmpty()) {
-			builder.append('-');
-			builder.append(locale.getScript());
-		}
-		if (!locale.getVariant().isEmpty()) {
-			builder.append('-');
-			builder.append(locale.getVariant());
-		}
+   public HFliesLocale(ULocale locale)
+   {
+      setLocale(locale);
+   }
 
-		return builder.toString();
-	}
+   @OneToOne(mappedBy = "locale")
+   public HTribe getTribe()
+   {
+      return tribe;
+   }
 
-	@Id
-	@Length(max = 80, min = 1)
-	public String getId() {
-		return id;
-	}
+   public void setTribe(HTribe tribe)
+   {
+      this.tribe = tribe;
+   }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+   public static String getFliesId(ULocale locale)
+   {
+      StringBuilder builder = new StringBuilder();
+      builder.append(locale.getLanguage());
+      if (!locale.getCountry().isEmpty())
+      {
+         builder.append('-');
+         builder.append(locale.getCountry());
+      }
+      if (!locale.getScript().isEmpty())
+      {
+         builder.append('-');
+         builder.append(locale.getScript());
+      }
+      if (!locale.getVariant().isEmpty())
+      {
+         builder.append('-');
+         builder.append(locale.getVariant());
+      }
 
-	@NotNull
-	@Column(name = "icuLocaleId")
-	@Type(type = "ulocale")
-	public ULocale getLocale() {
-		return locale;
-	}
+      return builder.toString();
+   }
 
-	public void setLocale(ULocale locale) {
-		this.locale = locale;
-		setId(getFliesId(locale));
-	}
+   @Id
+   @Length(max = 80, min = 1)
+   public String getId()
+   {
+      return id;
+   }
 
-	@ManyToMany
-	@JoinTable(name = "HFliesLocale_Friends", joinColumns = @JoinColumn(name = "localeId"), inverseJoinColumns = @JoinColumn(name = "friendId"))
-	public List<HFliesLocale> getFriends() {
-		return friends;
-	}
+   public void setId(String id)
+   {
+      this.id = id;
+   }
 
-	public void setFriends(List<HFliesLocale> friends) {
-		this.friends = friends;
-	}
+   @NotNull
+   @Column(name = "icuLocaleId")
+   @Type(type = "ulocale")
+   public ULocale getLocale()
+   {
+      return locale;
+   }
 
-	@OneToMany(mappedBy = "parent")
-	public List<HFliesLocale> getChildren() {
-		return children;
-	}
+   public void setLocale(ULocale locale)
+   {
+      this.locale = locale;
+      setId(getFliesId(locale));
+   }
 
-	public void setChildren(List<HFliesLocale> children) {
-		this.children = children;
-	}
+   @ManyToMany
+   @JoinTable(name = "HFliesLocale_Friends", joinColumns = @JoinColumn(name = "localeId"), inverseJoinColumns = @JoinColumn(name = "friendId"))
+   public List<HFliesLocale> getFriends()
+   {
+      return friends;
+   }
 
-	@ManyToOne
-	@JoinColumn(name = "parentId")
-	public HFliesLocale getParent() {
-		return parent;
-	}
+   public void setFriends(List<HFliesLocale> friends)
+   {
+      this.friends = friends;
+   }
 
-	public void setParent(HFliesLocale parent) {
-		this.parent = parent;
-	}
+   @OneToMany(mappedBy = "parent")
+   public List<HFliesLocale> getChildren()
+   {
+      return children;
+   }
 
-	private static int findLocId(ULocale fallback, ULocale[] locales) {
-		for (int i = 0; i < locales.length; i++) {
-			if (locales[i].equals(fallback))
-				return i;
-		}
-		return -1;
-	}
+   public void setChildren(List<HFliesLocale> children)
+   {
+      this.children = children;
+   }
 
-	@Transient
-	public String getNativeName() {
-		return locale.getDisplayName(locale);
-	}
-	
-	@Transient
-	public LocaleId getLocaleId(){
-		return new LocaleId(id);
-	}
-	
+   @ManyToOne
+   @JoinColumn(name = "parentId")
+   public HFliesLocale getParent()
+   {
+      return parent;
+   }
+
+   public void setParent(HFliesLocale parent)
+   {
+      this.parent = parent;
+   }
+
+   private static int findLocId(ULocale fallback, ULocale[] locales)
+   {
+      for (int i = 0; i < locales.length; i++)
+      {
+         if (locales[i].equals(fallback))
+            return i;
+      }
+      return -1;
+   }
+
+   @Transient
+   public String getNativeName()
+   {
+      return locale.getDisplayName(locale);
+   }
+
+   @Transient
+   public LocaleId getLocaleId()
+   {
+      return new LocaleId(id);
+   }
+
 }

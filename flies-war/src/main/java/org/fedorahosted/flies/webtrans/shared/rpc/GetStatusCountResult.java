@@ -5,28 +5,33 @@ import net.customware.gwt.dispatch.shared.Result;
 import org.fedorahosted.flies.common.TransUnitCount;
 import org.fedorahosted.flies.webtrans.shared.model.DocumentId;
 
-public class GetStatusCountResult implements Result {
+public class GetStatusCountResult implements Result
+{
 
-	private static final long serialVersionUID = 1L;
-	
-	private DocumentId documentId;
-	private TransUnitCount count;
-	
-	@SuppressWarnings("unused")
-	private GetStatusCountResult()	{
-	}
-	
-	public GetStatusCountResult(DocumentId documentId, TransUnitCount count) {
-		this.documentId = documentId;
-		this.count = count;
-	}
-	
-	public DocumentId getDocumentId() {
-		return documentId;
-	}
+   private static final long serialVersionUID = 1L;
 
-	public TransUnitCount getCount() {
-		return count;
-	}
-	
+   private DocumentId documentId;
+   private TransUnitCount count;
+
+   @SuppressWarnings("unused")
+   private GetStatusCountResult()
+   {
+   }
+
+   public GetStatusCountResult(DocumentId documentId, TransUnitCount count)
+   {
+      this.documentId = documentId;
+      this.count = count;
+   }
+
+   public DocumentId getDocumentId()
+   {
+      return documentId;
+   }
+
+   public TransUnitCount getCount()
+   {
+      return count;
+   }
+
 }

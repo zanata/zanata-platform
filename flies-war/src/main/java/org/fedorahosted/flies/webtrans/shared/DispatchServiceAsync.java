@@ -4,7 +4,8 @@ import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public interface DispatchServiceAsync {
+public interface DispatchServiceAsync
+{
 
-	void execute(Action<?> action, AsyncCallback<Result> callback);
+   void execute(Action<?> action, AsyncCallback<Result> callback);
 }

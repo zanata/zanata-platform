@@ -21,65 +21,72 @@ import org.hibernate.validator.NotEmpty;
 import org.jboss.seam.annotations.security.Restrict;
 
 @Entity
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(
-    name="projecttype",
-    discriminatorType=DiscriminatorType.STRING
-)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "projecttype", discriminatorType = DiscriminatorType.STRING)
 @Restrict
-public abstract class HProject extends AbstractSlugEntity implements Serializable {
+public abstract class HProject extends AbstractSlugEntity implements Serializable
+{
 
-	private String name;
-	private String description;
-	private String homeContent;
+   private String name;
+   private String description;
+   private String homeContent;
 
-	private Set<HPerson> maintainers;
+   private Set<HPerson> maintainers;
 
-	@Length(max = 80)
-	@NotEmpty
-    @Field(index=Index.TOKENIZED)
-    public String getName() {
-		return name;
-	}
+   @Length(max = 80)
+   @NotEmpty
+   @Field(index = Index.TOKENIZED)
+   public String getName()
+   {
+      return name;
+   }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+   public void setName(String name)
+   {
+      this.name = name;
+   }
 
-	@Length(max = 100)
-    @Field(index=Index.TOKENIZED)
-	public String getDescription() {
-		return description;
-	}
-	
-	public void setDescription(String description) {
-		this.description = description;
-	}
+   @Length(max = 100)
+   @Field(index = Index.TOKENIZED)
+   public String getDescription()
+   {
+      return description;
+   }
 
-	@Type(type = "text")
-	public String getHomeContent() {
-		return homeContent;
-	}
+   public void setDescription(String description)
+   {
+      this.description = description;
+   }
 
-	public void setHomeContent(String homeContent) {
-		this.homeContent = homeContent;
-	}
+   @Type(type = "text")
+   public String getHomeContent()
+   {
+      return homeContent;
+   }
 
-	@ManyToMany
-	@JoinTable(name = "HProject_Maintainer", joinColumns = @JoinColumn(name = "projectId"), inverseJoinColumns = @JoinColumn(name = "personId"))
-	public Set<HPerson> getMaintainers() {
-		if(maintainers == null)
-			maintainers = new HashSet<HPerson>();
-		return maintainers;
-	}
+   public void setHomeContent(String homeContent)
+   {
+      this.homeContent = homeContent;
+   }
 
-	public void setMaintainers(Set<HPerson> maintainers) {
-		this.maintainers = maintainers;
-	}
+   @ManyToMany
+   @JoinTable(name = "HProject_Maintainer", joinColumns = @JoinColumn(name = "projectId"), inverseJoinColumns = @JoinColumn(name = "personId"))
+   public Set<HPerson> getMaintainers()
+   {
+      if (maintainers == null)
+         maintainers = new HashSet<HPerson>();
+      return maintainers;
+   }
 
-	@Override
-	public String toString() {
-		return super.toString()+"[name="+name+"]";
-	}
-	
+   public void setMaintainers(Set<HPerson> maintainers)
+   {
+      this.maintainers = maintainers;
+   }
+
+   @Override
+   public String toString()
+   {
+      return super.toString() + "[name=" + name + "]";
+   }
+
 }

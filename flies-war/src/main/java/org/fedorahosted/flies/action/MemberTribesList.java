@@ -22,46 +22,48 @@ import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
 
 @Name("memberTribes")
-@Scope(ScopeType.SESSION) 
-public class MemberTribesList implements Serializable{
+@Scope(ScopeType.SESSION)
+public class MemberTribesList implements Serializable
+{
 
-	private static final long serialVersionUID = -1879925862165479255L;
+   private static final long serialVersionUID = -1879925862165479255L;
 
-	@In protected EntityManager entityManager;
-    
-    @Logger Log log;
-    
-    protected List<HTribe> memberTribes;
-    
-    @Create
-    public void onCreate() {
-        fetchMemberTribes();
-    }
+   @In
+   protected EntityManager entityManager;
 
-    @Unwrap
-    public List<HTribe> getMemberTribes() {
-        return memberTribes;
-    }
+   @Logger
+   Log log;
 
-	@In(required=false, value=JpaIdentityStore.AUTHENTICATED_USER) 
-	HAccount authenticatedAccount;
-    
-    @Observer(create = false, value = {"personJoinedTribe","personLeftTribe",Identity.EVENT_POST_AUTHENTICATE})
-    synchronized public void fetchMemberTribes() {
-    	log.info("refreshing tribes...");
-    	if(authenticatedAccount == null){
-    		memberTribes = Collections.EMPTY_LIST;
-    		return;
-    	}
-//    	entityManager.refresh(authenticatedAccount);
-    	
-        memberTribes = entityManager.createQuery(
-            "select p.tribeMemberships from HPerson p where p.account.username = :username")
-            .setParameter("username", authenticatedAccount.getUsername())
-            .getResultList();
-    	log.info("now listing {0} tribes", memberTribes.size());
-    }
-    
-    
+   protected List<HTribe> memberTribes;
+
+   @Create
+   public void onCreate()
+   {
+      fetchMemberTribes();
+   }
+
+   @Unwrap
+   public List<HTribe> getMemberTribes()
+   {
+      return memberTribes;
+   }
+
+   @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
+   HAccount authenticatedAccount;
+
+   @Observer(create = false, value = { "personJoinedTribe", "personLeftTribe", Identity.EVENT_POST_AUTHENTICATE })
+   synchronized public void fetchMemberTribes()
+   {
+      log.info("refreshing tribes...");
+      if (authenticatedAccount == null)
+      {
+         memberTribes = Collections.EMPTY_LIST;
+         return;
+      }
+      // entityManager.refresh(authenticatedAccount);
+
+      memberTribes = entityManager.createQuery("select p.tribeMemberships from HPerson p where p.account.username = :username").setParameter("username", authenticatedAccount.getUsername()).getResultList();
+      log.info("now listing {0} tribes", memberTribes.size());
+   }
 
 }

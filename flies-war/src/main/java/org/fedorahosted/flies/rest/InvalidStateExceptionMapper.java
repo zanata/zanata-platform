@@ -8,12 +8,13 @@ import javax.ws.rs.ext.Provider;
 import org.hibernate.validator.InvalidStateException;
 
 @Provider
-public class InvalidStateExceptionMapper implements
-		ExceptionMapper<InvalidStateException> {
+public class InvalidStateExceptionMapper implements ExceptionMapper<InvalidStateException>
+{
 
-	@Override
-	public Response toResponse(InvalidStateException exception) {
-		return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-	}
+   @Override
+   public Response toResponse(InvalidStateException exception)
+   {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+   }
 
 }

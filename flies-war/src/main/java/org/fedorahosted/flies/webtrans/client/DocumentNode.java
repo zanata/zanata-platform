@@ -15,93 +15,107 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.impl.HyperlinkImpl;
 
-public class DocumentNode extends Node<DocumentInfo> {
+public class DocumentNode extends Node<DocumentInfo>
+{
 
-	private static DocumentNodeUiBinder uiBinder = GWT
-			.create(DocumentNodeUiBinder.class);
+   private static DocumentNodeUiBinder uiBinder = GWT.create(DocumentNodeUiBinder.class);
 
-	interface DocumentNodeUiBinder extends UiBinder<Widget, DocumentNode> {
-	}
+   interface DocumentNodeUiBinder extends UiBinder<Widget, DocumentNode>
+   {
+   }
 
-	interface Styles extends CssResource {
-		String mouseOver();
-		String selected();
-	}
+   interface Styles extends CssResource
+   {
+      String mouseOver();
 
-	private static final HyperlinkImpl impl = new HyperlinkImpl();
-	
-	@UiField
-	Label documentLabel;
-	
-	@UiField(provided=true)
-	final Resources resources;
-	
-	@UiField(provided=true)
-	final FlowPanel rootPanel;
-	
-	@UiField
-	Styles style;
-	
-	final WebTransMessages messages;
-	
-	public DocumentNode(Resources resources, WebTransMessages messages) {
-		this.resources = resources;
-		this.messages = messages;
-		
-		
-		rootPanel = new FlowPanel() {
-			public void onBrowserEvent(Event event) {
-				switch(event.getTypeInt()) {
-				case Event.ONMOUSEOVER:
-					addStyleName(style.mouseOver());
-					break;
-				case Event.ONMOUSEOUT:
-					removeStyleName(style.mouseOver());
-					break;
-				case Event.ONCLICK:
-					if(event.getButton() == NativeEvent.BUTTON_LEFT && impl.handleAsClick(event)) {
-						ClickEvent.fireNativeEvent(event, this);
-					}
-				}
+      String selected();
+   }
 
-				super.onBrowserEvent(event);
-			};
-		};
-		
-		initWidget(uiBinder.createAndBindUi(this));
-		
-		rootPanel.sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT | Event.ONCLICK);
-		
-	}
-	
-	public DocumentNode(Resources resources, WebTransMessages messages, DocumentInfo doc) {
-		this(resources, messages);
-		setDataItem(doc);
-	}
+   private static final HyperlinkImpl impl = new HyperlinkImpl();
 
-	public DocumentNode(Resources resources, WebTransMessages messages, DocumentInfo doc, ClickHandler clickHandler) {
-		this(resources, messages, doc);
-		addHandler(clickHandler, ClickEvent.getType());
-	}
-	
-	public void refresh() {
-		rootPanel.getElement().setId("doc-#"+getDataItem().getId().toString());
-		documentLabel.setText(getDataItem().getName());
-	}
+   @UiField
+   Label documentLabel;
 
-	@Override
-	boolean isDocument() {
-		return true;
-	}
+   @UiField(provided = true)
+   final Resources resources;
 
-	public void setSelected(boolean selected) {
-		if(selected) {
-			rootPanel.addStyleName(style.selected());
-		}
-		else {
-			rootPanel.removeStyleName(style.selected()); 
-		}
-		
-	}
-	
+   @UiField(provided = true)
+   final FlowPanel rootPanel;
+
+   @UiField
+   Styles style;
+
+   final WebTransMessages messages;
+
+   public DocumentNode(Resources resources, WebTransMessages messages)
+   {
+      this.resources = resources;
+      this.messages = messages;
+
+      rootPanel = new FlowPanel()
+      {
+         public void onBrowserEvent(Event event)
+         {
+            switch (event.getTypeInt())
+            {
+            case Event.ONMOUSEOVER:
+               addStyleName(style.mouseOver());
+               break;
+            case Event.ONMOUSEOUT:
+               removeStyleName(style.mouseOver());
+               break;
+            case Event.ONCLICK:
+               if (event.getButton() == NativeEvent.BUTTON_LEFT && impl.handleAsClick(event))
+               {
+                  ClickEvent.fireNativeEvent(event, this);
+               }
+            }
+
+            super.onBrowserEvent(event);
+         };
+      };
+
+      initWidget(uiBinder.createAndBindUi(this));
+
+      rootPanel.sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT | Event.ONCLICK);
+
+   }
+
+   public DocumentNode(Resources resources, WebTransMessages messages, DocumentInfo doc)
+   {
+      this(resources, messages);
+      setDataItem(doc);
+   }
+
+   public DocumentNode(Resources resources, WebTransMessages messages, DocumentInfo doc, ClickHandler clickHandler)
+   {
+      this(resources, messages, doc);
+      addHandler(clickHandler, ClickEvent.getType());
+   }
+
+   public void refresh()
+   {
+      rootPanel.getElement().setId("doc-#" + getDataItem().getId().toString());
+      documentLabel.setText(getDataItem().getName());
+   }
+
+   @Override
+   boolean isDocument()
+   {
+      return true;
+   }
+
+   public void setSelected(boolean selected)
+   {
+      if (selected)
+      {
+         rootPanel.addStyleName(style.selected());
+      }
+      else
+      {
+         rootPanel.removeStyleName(style.selected());
+      }
+
+   }
+
 }

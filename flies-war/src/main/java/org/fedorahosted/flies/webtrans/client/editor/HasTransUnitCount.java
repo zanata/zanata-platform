@@ -3,35 +3,43 @@ package org.fedorahosted.flies.webtrans.client.editor;
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.TransUnitCount;
 
-public interface HasTransUnitCount {
+public interface HasTransUnitCount
+{
 
-	public static enum CountUnit {
-		Word, TranslationUnit;
-	}
+   public static enum CountUnit
+   {
+      Word, TranslationUnit;
+   }
 
-	public static enum LabelFormat {
-		Percentage, Unit;
-	}
+   public static enum LabelFormat
+   {
+      Percentage, Unit;
+   }
 
-	public void setCount(int approved, int needReview, int untranslated);
-	public void setCount(ContentState state, int count);
-	public void setCount(TransUnitCount count);
+   public void setCount(int approved, int needReview, int untranslated);
 
-	public int getCount(ContentState state);
-	public int getTotal();
-	
-	public void setLabelFormat(LabelFormat format);
-	public LabelFormat getLabelFormat();
-	
-	public void setCountUnit(CountUnit countUnit);
-	public CountUnit getCountUnit();
+   public void setCount(ContentState state, int count);
 
-	void setToggleEnabled(boolean toggleEnabled);
-	boolean isToggleEnabled();
+   public void setCount(TransUnitCount count);
 
-	void setLabelVisible(boolean labelVisible);
+   public int getCount(ContentState state);
 
-	boolean isLabelVisible();
-	
-	
+   public int getTotal();
+
+   public void setLabelFormat(LabelFormat format);
+
+   public LabelFormat getLabelFormat();
+
+   public void setCountUnit(CountUnit countUnit);
+
+   public CountUnit getCountUnit();
+
+   void setToggleEnabled(boolean toggleEnabled);
+
+   boolean isToggleEnabled();
+
+   void setLabelVisible(boolean labelVisible);
+
+   boolean isLabelVisible();
+
 }

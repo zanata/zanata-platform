@@ -2,21 +2,25 @@ package org.fedorahosted.flies.webtrans.shared.rpc;
 
 import net.customware.gwt.dispatch.shared.Result;
 
-public class ExitWorkspaceResult implements Result{
+public class ExitWorkspaceResult implements Result
+{
 
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-	private String userName;
-	
-	@SuppressWarnings("unused")
-	private ExitWorkspaceResult() {
-	}
-	
-	public ExitWorkspaceResult(String userName) {
-		this.userName = userName;
-	}
-	
-	public String getuserName() {
-		return userName;
-	}
+   private String userName;
+
+   @SuppressWarnings("unused")
+   private ExitWorkspaceResult()
+   {
+   }
+
+   public ExitWorkspaceResult(String userName)
+   {
+      this.userName = userName;
+   }
+
+   public String getuserName()
+   {
+      return userName;
+   }
 }

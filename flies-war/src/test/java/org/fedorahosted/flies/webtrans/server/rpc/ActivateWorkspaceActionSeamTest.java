@@ -19,29 +19,31 @@ import org.fedorahosted.flies.webtrans.shared.rpc.ActivateWorkspaceResult;
 import org.jboss.seam.mock.DBUnitSeamTest;
 import org.testng.annotations.Test;
 
-@Test(groups={"seam-tests"})
-public class ActivateWorkspaceActionSeamTest extends DBUnitSeamTest {
+@Test(groups = { "seam-tests" })
+public class ActivateWorkspaceActionSeamTest extends DBUnitSeamTest
+{
 
-    protected void prepareDBUnitOperations() {
-        beforeTestOperations.add(
-                new DataSetOperation("META-INF/testdata/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT)
-        );
-    }
+   protected void prepareDBUnitOperations()
+   {
+      beforeTestOperations.add(new DataSetOperation("META-INF/testdata/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+   }
 
-    @Test
-    public void activateWorkspaceWithValidData() throws Exception {
-        new FacesRequest() {
+   @Test
+   public void activateWorkspaceWithValidData() throws Exception
+   {
+      new FacesRequest()
+      {
 
-            protected void invokeApplication() throws Exception {
-            	SeamDispatch seamDispatch = (SeamDispatch) getInstance(SeamDispatch.class);
-            	
-            	ActivateWorkspaceAction action = new ActivateWorkspaceAction(
-            			new WorkspaceId( new ProjectIterationId("sample-project", "1.0"), new LocaleId("en-US")));
-            	ActivateWorkspaceResult result = seamDispatch.execute( action );
+         protected void invokeApplication() throws Exception
+         {
+            SeamDispatch seamDispatch = (SeamDispatch) getInstance(SeamDispatch.class);
 
-            	assertThat(result, notNullValue() );
-            }
-        }.run();
-    }
-    
+            ActivateWorkspaceAction action = new ActivateWorkspaceAction(new WorkspaceId(new ProjectIterationId("sample-project", "1.0"), new LocaleId("en-US")));
+            ActivateWorkspaceResult result = seamDispatch.execute(action);
+
+            assertThat(result, notNullValue());
+         }
+      }.run();
+   }
+
 }

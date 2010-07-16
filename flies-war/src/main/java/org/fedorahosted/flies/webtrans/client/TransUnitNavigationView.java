@@ -19,78 +19,88 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class TransUnitNavigationView extends Composite implements TransUnitNavigationPresenter.Display{
+public class TransUnitNavigationView extends Composite implements TransUnitNavigationPresenter.Display
+{
 
-	private static TransUnitNavigationViewUiBinder uiBinder = GWT
-			.create(TransUnitNavigationViewUiBinder.class);
+   private static TransUnitNavigationViewUiBinder uiBinder = GWT.create(TransUnitNavigationViewUiBinder.class);
 
-	interface TransUnitNavigationViewUiBinder extends
-			UiBinder<Widget, TransUnitNavigationView> {
-	}
+   interface TransUnitNavigationViewUiBinder extends UiBinder<Widget, TransUnitNavigationView>
+   {
+   }
 
-	@UiField
-	Image nextEntry, prevEntry, nextFuzzy, prevFuzzy, nextUntranslated, prevUntranslated;
+   @UiField
+   Image nextEntry, prevEntry, nextFuzzy, prevFuzzy, nextUntranslated, prevUntranslated;
 
-	private final NavigationMessages messages;
-	
-	@UiField(provided=true)
-	Resources resources;
-	
-	@Inject
-	public TransUnitNavigationView(final NavigationMessages messages, final Resources resources) {
-		this.resources = resources;
-		this.messages = messages;
-		initWidget(uiBinder.createAndBindUi(this));
+   private final NavigationMessages messages;
 
-		prevEntry.setTitle( messages.actionToolTip(messages.prevEntry(), messages.prevEntryShortcut() ));
-		nextEntry.setTitle( messages.actionToolTip(messages.nextEntry(), messages.nextEntryShortcut() ));
-		prevFuzzy.setTitle( messages.actionToolTip(messages.prevFuzzy(), messages.prevFuzzyShortcut() ));
-		nextFuzzy.setTitle( messages.actionToolTip(messages.nextFuzzy(), messages.nextFuzzyShortcut() ));
-		prevUntranslated.setTitle( messages.actionToolTip(messages.prevUntranslated(), messages.prevUntranslatedShortcut() ));
-		nextUntranslated.setTitle( messages.actionToolTip(messages.nextUntranslated(), messages.nextUntranslatedShortcut() ));
-	}
+   @UiField(provided = true)
+   Resources resources;
 
-	@Override
-	public HasClickHandlers getPrevEntryButton() {
-		return prevEntry;
-	}
+   @Inject
+   public TransUnitNavigationView(final NavigationMessages messages, final Resources resources)
+   {
+      this.resources = resources;
+      this.messages = messages;
+      initWidget(uiBinder.createAndBindUi(this));
 
-	@Override
-	public HasClickHandlers getNextEntryButton() {
-		return nextEntry;
-	}
+      prevEntry.setTitle(messages.actionToolTip(messages.prevEntry(), messages.prevEntryShortcut()));
+      nextEntry.setTitle(messages.actionToolTip(messages.nextEntry(), messages.nextEntryShortcut()));
+      prevFuzzy.setTitle(messages.actionToolTip(messages.prevFuzzy(), messages.prevFuzzyShortcut()));
+      nextFuzzy.setTitle(messages.actionToolTip(messages.nextFuzzy(), messages.nextFuzzyShortcut()));
+      prevUntranslated.setTitle(messages.actionToolTip(messages.prevUntranslated(), messages.prevUntranslatedShortcut()));
+      nextUntranslated.setTitle(messages.actionToolTip(messages.nextUntranslated(), messages.nextUntranslatedShortcut()));
+   }
 
-	@Override
-	public HasClickHandlers getPrevFuzzyButton() {
-		return prevFuzzy;
-	}
+   @Override
+   public HasClickHandlers getPrevEntryButton()
+   {
+      return prevEntry;
+   }
 
-	@Override
-	public HasClickHandlers getNextFuzzyButton() {
-		return nextFuzzy;
-	}
+   @Override
+   public HasClickHandlers getNextEntryButton()
+   {
+      return nextEntry;
+   }
 
-	@Override
-	public HasClickHandlers getPrevUntranslatedButton() {
-		return prevUntranslated;
-	}
+   @Override
+   public HasClickHandlers getPrevFuzzyButton()
+   {
+      return prevFuzzy;
+   }
 
-	@Override
-	public HasClickHandlers getNextUntranslatedButton() {
-		return nextUntranslated;
-	}
+   @Override
+   public HasClickHandlers getNextFuzzyButton()
+   {
+      return nextFuzzy;
+   }
 
-	@Override
-	public Widget asWidget() {
-		return this;
-	}
+   @Override
+   public HasClickHandlers getPrevUntranslatedButton()
+   {
+      return prevUntranslated;
+   }
 
-	@Override
-	public void startProcessing() {
-	}
+   @Override
+   public HasClickHandlers getNextUntranslatedButton()
+   {
+      return nextUntranslated;
+   }
 
-	@Override
-	public void stopProcessing() {
-	}
-	
+   @Override
+   public Widget asWidget()
+   {
+      return this;
+   }
+
+   @Override
+   public void startProcessing()
+   {
+   }
+
+   @Override
+   public void stopProcessing()
+   {
+   }
+
 }

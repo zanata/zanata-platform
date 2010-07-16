@@ -4,65 +4,78 @@ import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.webtrans.shared.model.DocumentId;
 
-public class GetTransUnitsStates extends AbstractWorkspaceAction<GetTransUnitsStatesResult> {
+public class GetTransUnitsStates extends AbstractWorkspaceAction<GetTransUnitsStatesResult>
+{
 
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-	private int offset;
-	private int count;
-	private DocumentId documentId;
-	private ContentState state;
-	private boolean reverse;
+   private int offset;
+   private int count;
+   private DocumentId documentId;
+   private ContentState state;
+   private boolean reverse;
 
-	@SuppressWarnings("unused")
-	private GetTransUnitsStates(){
-	}
-	
-	public GetTransUnitsStates(DocumentId id, int offset, int count, boolean reverse, ContentState state) {
-		this.documentId = id;
-		this.offset = offset;
-		this.count = count;
-		this.state = state;
-		this.setReverse(reverse);
-	}
+   @SuppressWarnings("unused")
+   private GetTransUnitsStates()
+   {
+   }
 
-	public int getOffset() {
-		return offset;
-	}
+   public GetTransUnitsStates(DocumentId id, int offset, int count, boolean reverse, ContentState state)
+   {
+      this.documentId = id;
+      this.offset = offset;
+      this.count = count;
+      this.state = state;
+      this.setReverse(reverse);
+   }
 
-	public void setOffset(int offset) {
-		this.offset = offset;
-	}
+   public int getOffset()
+   {
+      return offset;
+   }
 
-	public int getCount() {
-		return count;
-	}
+   public void setOffset(int offset)
+   {
+      this.offset = offset;
+   }
 
-	public void setCount(int count) {
-		this.count = count;
-	}
+   public int getCount()
+   {
+      return count;
+   }
 
-	public DocumentId getDocumentId() {
-		return documentId;
-	}
-	
-	public void setDocumentId(DocumentId documentId) {
-		this.documentId = documentId;
-	}
+   public void setCount(int count)
+   {
+      this.count = count;
+   }
 
-	public void setState(ContentState state) {
-		this.state = state;
-	}
+   public DocumentId getDocumentId()
+   {
+      return documentId;
+   }
 
-	public ContentState getState() {
-		return state;
-	}
+   public void setDocumentId(DocumentId documentId)
+   {
+      this.documentId = documentId;
+   }
 
-	public void setReverse(boolean reverse) {
-		this.reverse = reverse;
-	}
+   public void setState(ContentState state)
+   {
+      this.state = state;
+   }
 
-	public boolean isReverse() {
-		return reverse;
-	}
+   public ContentState getState()
+   {
+      return state;
+   }
+
+   public void setReverse(boolean reverse)
+   {
+      this.reverse = reverse;
+   }
+
+   public boolean isReverse()
+   {
+      return reverse;
+   }
 }

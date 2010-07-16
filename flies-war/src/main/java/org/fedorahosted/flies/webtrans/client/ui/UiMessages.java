@@ -7,8 +7,9 @@ import com.google.gwt.i18n.client.Messages.DefaultMessage;
 
 @DefaultLocale
 @Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
-public interface UiMessages extends Messages {
+public interface UiMessages extends Messages
+{
 
-	@DefaultMessage("")
-	String typeToEnter();
+   @DefaultMessage("")
+   String typeToEnter();
 }

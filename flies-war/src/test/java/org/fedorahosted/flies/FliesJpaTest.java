@@ -12,47 +12,54 @@ import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 
-public abstract class FliesJpaTest {
+public abstract class FliesJpaTest
+{
 
-	private static EntityManagerFactory emf;
+   private static EntityManagerFactory emf;
 
-	protected EntityManager em;
-	
-	Log log = Logging.getLog(FliesJpaTest.class);
-	
-	@BeforeMethod
-	public void setupEM() {
-		log.debug("Setting up EM");
-		em = emf.createEntityManager();
-		em.getTransaction().begin();
-	}
-	
-	@AfterMethod
-	public void shutdownEM() {
-		log.debug("Shutting down EM");
-		em.getTransaction().rollback();
-		em = null;
-	}
+   protected EntityManager em;
 
-	protected EntityManager getEm() {
-		return em;
-	}
+   Log log = Logging.getLog(FliesJpaTest.class);
 
-	protected Session getSession() {
-		return (Session) em.getDelegate();
-	}
-	
-	@BeforeSuite
-	public void initializeEMF() {
-		log.debug("Initializing EMF");
-		emf = Persistence.createEntityManagerFactory("fliesDatabase");
-	}
+   @BeforeMethod
+   public void setupEM()
+   {
+      log.debug("Setting up EM");
+      em = emf.createEntityManager();
+      em.getTransaction().begin();
+   }
 
-	@AfterSuite
-	public void shutDownEMF() {
-		log.debug("Shutting down EMF");
-		emf.close();
-		emf = null;
-	}
-	
+   @AfterMethod
+   public void shutdownEM()
+   {
+      log.debug("Shutting down EM");
+      em.getTransaction().rollback();
+      em = null;
+   }
+
+   protected EntityManager getEm()
+   {
+      return em;
+   }
+
+   protected Session getSession()
+   {
+      return (Session) em.getDelegate();
+   }
+
+   @BeforeSuite
+   public void initializeEMF()
+   {
+      log.debug("Initializing EMF");
+      emf = Persistence.createEntityManagerFactory("fliesDatabase");
+   }
+
+   @AfterSuite
+   public void shutDownEMF()
+   {
+      log.debug("Shutting down EMF");
+      emf.close();
+      emf = null;
+   }
+
 }

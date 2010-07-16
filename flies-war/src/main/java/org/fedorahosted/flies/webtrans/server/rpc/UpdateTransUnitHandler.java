@@ -28,49 +28,53 @@ import org.jboss.seam.log.Log;
 @Name("webtrans.gwt.UpdateTransUnitHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(UpdateTransUnit.class)
-public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUnit, UpdateTransUnitResult> {
+public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUnit, UpdateTransUnitResult>
+{
 
-	@Logger Log log;
-	
-	@In Session session;
-	
-	@In TranslationWorkspaceManager translationWorkspaceManager;
-	
-	@Override
-	public UpdateTransUnitResult execute(UpdateTransUnit action, ExecutionContext context)
-			throws ActionException {
-		
-		FliesIdentity.instance().checkLoggedIn();
-		log.info("Updating TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), action.getWorkspaceId().getLocaleId(), action.getContentState(), action.getContent());
-		
-		HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, action.getTransUnitId().getValue());
-		HTextFlowTarget target = hTextFlow.getTargets().get( action.getWorkspaceId().getLocaleId() );
-		ContentState prevStatus = ContentState.New;
-		if(target == null) {
-			target = new HTextFlowTarget(hTextFlow, action.getWorkspaceId().getLocaleId() );
-			hTextFlow.getTargets().put(action.getWorkspaceId().getLocaleId() , target);
-		}
-		else{
-			prevStatus = target.getState();
-		}
-		target.setState(action.getContentState());
-		target.setContent(action.getContent());
-		// TODO update last modified by
-		session.flush();
-		
-		TransUnitUpdated event = new TransUnitUpdated(
-				new DocumentId(hTextFlow.getDocument().getId()), action.getTransUnitId(), prevStatus, action.getContentState() );
-		
-		TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(
-				action.getWorkspaceId() );
-		workspace.publish(event);
-		
-		return new UpdateTransUnitResult(true);
-	}
+   @Logger
+   Log log;
 
-	@Override
-	public void rollback(UpdateTransUnit action, UpdateTransUnitResult result,
-			ExecutionContext context) throws ActionException {
-	}
-	
+   @In
+   Session session;
+
+   @In
+   TranslationWorkspaceManager translationWorkspaceManager;
+
+   @Override
+   public UpdateTransUnitResult execute(UpdateTransUnit action, ExecutionContext context) throws ActionException
+   {
+
+      FliesIdentity.instance().checkLoggedIn();
+      log.info("Updating TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), action.getWorkspaceId().getLocaleId(), action.getContentState(), action.getContent());
+
+      HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, action.getTransUnitId().getValue());
+      HTextFlowTarget target = hTextFlow.getTargets().get(action.getWorkspaceId().getLocaleId());
+      ContentState prevStatus = ContentState.New;
+      if (target == null)
+      {
+         target = new HTextFlowTarget(hTextFlow, action.getWorkspaceId().getLocaleId());
+         hTextFlow.getTargets().put(action.getWorkspaceId().getLocaleId(), target);
+      }
+      else
+      {
+         prevStatus = target.getState();
+      }
+      target.setState(action.getContentState());
+      target.setContent(action.getContent());
+      // TODO update last modified by
+      session.flush();
+
+      TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), action.getTransUnitId(), prevStatus, action.getContentState());
+
+      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
+      workspace.publish(event);
+
+      return new UpdateTransUnitResult(true);
+   }
+
+   @Override
+   public void rollback(UpdateTransUnit action, UpdateTransUnitResult result, ExecutionContext context) throws ActionException
+   {
+   }
+
 }

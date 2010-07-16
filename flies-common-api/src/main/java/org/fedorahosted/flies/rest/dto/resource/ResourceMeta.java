@@ -16,40 +16,44 @@ import org.fedorahosted.flies.common.Namespaces;
 import org.fedorahosted.flies.common.ResourceType;
 import org.fedorahosted.flies.rest.dto.HasCollectionSample;
 
-
-@XmlType(name="resourceMetaType", namespace=Namespaces.FLIES)
-@XmlRootElement(name="resource-meta", namespace=Namespaces.FLIES)
-@JsonPropertyOrder({"name", "contentType", "lang", "extensions"})
-@JsonIgnoreProperties(ignoreUnknown=true)
+@XmlType(name = "resourceMetaType", namespace = Namespaces.FLIES)
+@XmlRootElement(name = "resource-meta", namespace = Namespaces.FLIES)
+@JsonPropertyOrder( { "name", "contentType", "lang", "extensions" })
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
-public class ResourceMeta extends AbstractResourceMeta implements HasCollectionSample<ResourceMeta> {
-	
-	public ResourceMeta() {
-	}
-	
-	public ResourceMeta(String resId) {
-		super(resId);
-	}
-	
-	@Override
-	public ResourceMeta createSample() {
-		ResourceMeta entity = new ResourceMeta();
-		entity.setContentType(ContentType.TextPlain);
-		entity.setName("readme.txt");
-		entity.setLang(LocaleId.EN);
-		entity.setType(ResourceType.FILE);
-		// TODO add sample extension
-		return entity;
-	}
-	
-	@Override
-	public Collection<ResourceMeta> createSamples() {
-		List<ResourceMeta> elems = new ArrayList<ResourceMeta>(2);
-		elems.add(createSample());
-		ResourceMeta sample2 = createSample();
-		sample2.setName("license.txt");
-		elems.add(sample2);
-		return elems;
-	}
+public class ResourceMeta extends AbstractResourceMeta implements HasCollectionSample<ResourceMeta>
+{
+
+   public ResourceMeta()
+   {
+   }
+
+   public ResourceMeta(String resId)
+   {
+      super(resId);
+   }
+
+   @Override
+   public ResourceMeta createSample()
+   {
+      ResourceMeta entity = new ResourceMeta();
+      entity.setContentType(ContentType.TextPlain);
+      entity.setName("readme.txt");
+      entity.setLang(LocaleId.EN);
+      entity.setType(ResourceType.FILE);
+      // TODO add sample extension
+      return entity;
+   }
+
+   @Override
+   public Collection<ResourceMeta> createSamples()
+   {
+      List<ResourceMeta> elems = new ArrayList<ResourceMeta>(2);
+      elems.add(createSample());
+      ResourceMeta sample2 = createSample();
+      sample2.setName("license.txt");
+      elems.add(sample2);
+      return elems;
+   }
 
 }

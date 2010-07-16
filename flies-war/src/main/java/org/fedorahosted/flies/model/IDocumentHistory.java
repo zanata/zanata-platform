@@ -5,22 +5,23 @@ import java.util.Date;
 import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
 
-public interface IDocumentHistory {
+public interface IDocumentHistory
+{
 
-	HPerson getLastModifiedBy();
+   HPerson getLastModifiedBy();
 
-	Date getLastChanged();
+   Date getLastChanged();
 
-	Integer getRevision();
-	
-	boolean isObsolete();
+   Integer getRevision();
 
-	LocaleId getLocale();
-	
-	ContentType getContentType();
-	
-	String getName();
-	
-	String getPath();
-	
+   boolean isObsolete();
+
+   LocaleId getLocale();
+
+   ContentType getContentType();
+
+   String getName();
+
+   String getPath();
+
 }

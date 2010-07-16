@@ -18,38 +18,42 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 
-
 @Name("webtrans.gwt.ExitWorkspaceHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(ExitWorkspaceAction.class)
-public class ExitWorkspaceHandler extends AbstractActionHandler<ExitWorkspaceAction, ExitWorkspaceResult> {
-	
-	@Logger Log log;
-	
-	@In Session session;
-	
-	@In TranslationWorkspaceManager translationWorkspaceManager;
+public class ExitWorkspaceHandler extends AbstractActionHandler<ExitWorkspaceAction, ExitWorkspaceResult>
+{
 
-	@Override
-	public ExitWorkspaceResult execute(ExitWorkspaceAction action, ExecutionContext context)
-			throws ActionException {
-		
-		FliesIdentity.instance().checkLoggedIn();
+   @Logger
+   Log log;
 
-		TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
-			
-		//Send ExitWorkspace event to client 
-		if(workspace.removeTranslator(action.getPersonId())) {
-			//Send GWT Event to client to update the userlist
-			ExitWorkspace event = new ExitWorkspace(action.getPersonId());
-			workspace.publish(event);
-		}
+   @In
+   Session session;
 
-		return new ExitWorkspaceResult(action.getPersonId().toString());
-	}
+   @In
+   TranslationWorkspaceManager translationWorkspaceManager;
 
-	@Override
-	public void rollback(ExitWorkspaceAction action, ExitWorkspaceResult result,
-			ExecutionContext context) throws ActionException {
-	}
+   @Override
+   public ExitWorkspaceResult execute(ExitWorkspaceAction action, ExecutionContext context) throws ActionException
+   {
+
+      FliesIdentity.instance().checkLoggedIn();
+
+      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
+
+      // Send ExitWorkspace event to client
+      if (workspace.removeTranslator(action.getPersonId()))
+      {
+         // Send GWT Event to client to update the userlist
+         ExitWorkspace event = new ExitWorkspace(action.getPersonId());
+         workspace.publish(event);
+      }
+
+      return new ExitWorkspaceResult(action.getPersonId().toString());
+   }
+
+   @Override
+   public void rollback(ExitWorkspaceAction action, ExitWorkspaceResult result, ExecutionContext context) throws ActionException
+   {
+   }
 }

@@ -9,12 +9,12 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
  * 
  * @author asgeirf
  */
-public abstract class DocumentEditorPresenter<D extends WidgetDisplay> extends WidgetPresenter<D> {
+public abstract class DocumentEditorPresenter<D extends WidgetDisplay> extends WidgetPresenter<D>
+{
 
-	public DocumentEditorPresenter(D display, EventBus eventBus) {
-		super(display, eventBus);
-	}
+   public DocumentEditorPresenter(D display, EventBus eventBus)
+   {
+      super(display, eventBus);
+   }
 
-	
-	
 }

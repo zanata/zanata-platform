@@ -27,35 +27,37 @@ import org.jboss.seam.log.Log;
 @Name("webtrans.gwt.GetDocsListHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetDocumentList.class)
-public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentList, GetDocumentListResult> {
+public class GetDocumentListHandler extends AbstractActionHandler<GetDocumentList, GetDocumentListResult>
+{
 
-	@Logger Log log;
-	
-	@In
-	ProjectIterationDAO projectIterationDAO;
+   @Logger
+   Log log;
 
-	
-	@Override
-	public GetDocumentListResult execute(GetDocumentList action, ExecutionContext context)
-			throws ActionException {
-		
-		FliesIdentity.instance().checkLoggedIn();
-		
-		ProjectIterationId iterationId = action.getProjectIterationId();
-		ArrayList<DocumentInfo> docs = new ArrayList<DocumentInfo>(); 
-		HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(iterationId.getProjectSlug(), iterationId.getIterationSlug());
-		Collection<HDocument> hDocs = hProjectIteration.getDocuments().values();
-		for (HDocument hDoc : hDocs) {
-			DocumentId docId = new DocumentId(hDoc.getId());
-			DocumentInfo doc = new DocumentInfo(docId, hDoc.getName(), hDoc.getPath());
-			docs.add(doc);
-		}
-		return new GetDocumentListResult(iterationId, docs);
-	}
+   @In
+   ProjectIterationDAO projectIterationDAO;
 
-	@Override
-	public void rollback(GetDocumentList action, GetDocumentListResult result,
-			ExecutionContext context) throws ActionException {
-	}
-	
+   @Override
+   public GetDocumentListResult execute(GetDocumentList action, ExecutionContext context) throws ActionException
+   {
+
+      FliesIdentity.instance().checkLoggedIn();
+
+      ProjectIterationId iterationId = action.getProjectIterationId();
+      ArrayList<DocumentInfo> docs = new ArrayList<DocumentInfo>();
+      HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(iterationId.getProjectSlug(), iterationId.getIterationSlug());
+      Collection<HDocument> hDocs = hProjectIteration.getDocuments().values();
+      for (HDocument hDoc : hDocs)
+      {
+         DocumentId docId = new DocumentId(hDoc.getId());
+         DocumentInfo doc = new DocumentInfo(docId, hDoc.getName(), hDoc.getPath());
+         docs.add(doc);
+      }
+      return new GetDocumentListResult(iterationId, docs);
+   }
+
+   @Override
+   public void rollback(GetDocumentList action, GetDocumentListResult result, ExecutionContext context) throws ActionException
+   {
+   }
+
 }

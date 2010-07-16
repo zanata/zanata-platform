@@ -26,49 +26,43 @@ import org.jboss.seam.log.Log;
 @Name("webtrans.gwt.GetStatusCountHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetStatusCount.class)
-public class GetStatusCountHandler extends AbstractActionHandler<GetStatusCount, GetStatusCountResult> {
+public class GetStatusCountHandler extends AbstractActionHandler<GetStatusCount, GetStatusCountResult>
+{
 
-	@Logger Log log;
-	
-	@In Session session;
+   @Logger
+   Log log;
 
-	@In TranslationWorkspaceManager translationWorkspaceManager;
-	
-	@Override
-	public GetStatusCountResult execute(GetStatusCount action,
-			ExecutionContext context) throws ActionException {
-		
-		FliesIdentity.instance().checkLoggedIn();
-		
-		List<StatusCount> stats = session.createQuery(
-				"select new org.fedorahosted.flies.model.StatusCount(tft.state, count(tft)) " +
-		        "from HTextFlowTarget tft where tft.textFlow.document.id = :id " +
-		        "  and tft.locale = :locale "+ 
-				"group by tft.state"
-			).setParameter("id", action.getDocumentId().getValue())
-			 .setParameter("locale", action.getWorkspaceId().getLocaleId() )
-			 .list();
-		
-		
-		Long totalCount = (Long) session.createQuery("select count(tf) from HTextFlow tf where tf.document.id = :id")
-			.setParameter("id", action.getDocumentId().getValue())
-			.uniqueResult();
-		
-		TransUnitCount stat = new TransUnitCount();
-		for(StatusCount count: stats){
-			stat.set(count.status, count.count.intValue());
-		}
-		
-		stat.set(ContentState.New, totalCount.intValue() - stat.get(ContentState.Approved)-stat.get(ContentState.NeedReview));
-		TranslationWorkspace workspace = translationWorkspaceManager.getWorkspace(action.getWorkspaceId() );
-		
-		return new GetStatusCountResult(
-				action.getDocumentId(), stat);
+   @In
+   Session session;
 
-	}
+   @In
+   TranslationWorkspaceManager translationWorkspaceManager;
 
-	@Override
-	public void rollback(GetStatusCount action, GetStatusCountResult result,
-			ExecutionContext context) throws ActionException {
-	}
+   @Override
+   public GetStatusCountResult execute(GetStatusCount action, ExecutionContext context) throws ActionException
+   {
+
+      FliesIdentity.instance().checkLoggedIn();
+
+      List<StatusCount> stats = session.createQuery("select new org.fedorahosted.flies.model.StatusCount(tft.state, count(tft)) " + "from HTextFlowTarget tft where tft.textFlow.document.id = :id " + "  and tft.locale = :locale " + "group by tft.state").setParameter("id", action.getDocumentId().getValue()).setParameter("locale", action.getWorkspaceId().getLocaleId()).list();
+
+      Long totalCount = (Long) session.createQuery("select count(tf) from HTextFlow tf where tf.document.id = :id").setParameter("id", action.getDocumentId().getValue()).uniqueResult();
+
+      TransUnitCount stat = new TransUnitCount();
+      for (StatusCount count : stats)
+      {
+         stat.set(count.status, count.count.intValue());
+      }
+
+      stat.set(ContentState.New, totalCount.intValue() - stat.get(ContentState.Approved) - stat.get(ContentState.NeedReview));
+      TranslationWorkspace workspace = translationWorkspaceManager.getWorkspace(action.getWorkspaceId());
+
+      return new GetStatusCountResult(action.getDocumentId(), stat);
+
+   }
+
+   @Override
+   public void rollback(GetStatusCount action, GetStatusCountResult result, ExecutionContext context) throws ActionException
+   {
+   }
 }

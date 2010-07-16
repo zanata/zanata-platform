@@ -30,58 +30,61 @@ import org.jboss.seam.resteasy.SeamResteasyProviderFactory;
 @Startup
 @AutoCreate
 @Install(classDependencies = "org.jboss.resteasy.spi.ResteasyProviderFactory", precedence = Install.DEPLOYMENT)
-public class FliesResteasyBootstrap extends ResteasyBootstrap {
+public class FliesResteasyBootstrap extends ResteasyBootstrap
+{
 
-	@Logger
-	Log log;
+   @Logger
+   Log log;
 
-	@Observer("org.jboss.seam.postReInitialization")
-	public void registerHotDeployedClasses() {
+   @Observer("org.jboss.seam.postReInitialization")
+   public void registerHotDeployedClasses()
+   {
 
-		Collection<Component> seamComponents = findSeamComponents();
+      Collection<Component> seamComponents = findSeamComponents();
 
-		// Also scan for hot deployed components
-		HotDeploymentStrategy hotDeployment = HotDeploymentStrategy.instance();
-		if (hotDeployment != null && hotDeployment.available()) {
-			log.info("scanning for hot deployable JAX-RS components");
-			AnnotationDeploymentHandler hotDeploymentHandler = (AnnotationDeploymentHandler) hotDeployment
-					.getDeploymentHandlers().get(
-							AnnotationDeploymentHandler.NAME);
-			registerProviders(seamComponents,
-					findProviders(hotDeploymentHandler));
-			registerResources(seamComponents,
-					findResources(hotDeploymentHandler));
-		}
-	}
+      // Also scan for hot deployed components
+      HotDeploymentStrategy hotDeployment = HotDeploymentStrategy.instance();
+      if (hotDeployment != null && hotDeployment.available())
+      {
+         log.info("scanning for hot deployable JAX-RS components");
+         AnnotationDeploymentHandler hotDeploymentHandler = (AnnotationDeploymentHandler) hotDeployment.getDeploymentHandlers().get(AnnotationDeploymentHandler.NAME);
+         registerProviders(seamComponents, findProviders(hotDeploymentHandler));
+         registerResources(seamComponents, findResources(hotDeploymentHandler));
+      }
+   }
 
-	@Override
-	protected void initDispatcher() {
-		super.initDispatcher();
-		getDispatcher().getProviderFactory()
-				.getServerPreProcessInterceptorRegistry().register(
-						FliesRestSecurityInterceptor.class);
-	}
+   @Override
+   protected void initDispatcher()
+   {
+      super.initDispatcher();
+      getDispatcher().getProviderFactory().getServerPreProcessInterceptorRegistry().register(FliesRestSecurityInterceptor.class);
+   }
 
-	@Override
-	protected Dispatcher createDispatcher(
-			SeamResteasyProviderFactory providerFactory) {
-		return new SynchronousDispatcher(providerFactory) {
-			@Override
-			public void invoke(HttpRequest request, HttpResponse response) {
-				try {
-					super.invoke(request, response);
-				} catch (UnhandledException e) {
-					log.error("Failed to process REST request", e.getCause());
-					try {
-						response.sendError(Status.INTERNAL_SERVER_ERROR
-								.getStatusCode(), "Error processing Request");
-					} catch (IOException ioe) {
-						log.error(
-								"Failed to send error on failed REST request",
-								ioe);
-					}
-				}
-			}
-		};
-	}
+   @Override
+   protected Dispatcher createDispatcher(SeamResteasyProviderFactory providerFactory)
+   {
+      return new SynchronousDispatcher(providerFactory)
+      {
+         @Override
+         public void invoke(HttpRequest request, HttpResponse response)
+         {
+            try
+            {
+               super.invoke(request, response);
+            }
+            catch (UnhandledException e)
+            {
+               log.error("Failed to process REST request", e.getCause());
+               try
+               {
+                  response.sendError(Status.INTERNAL_SERVER_ERROR.getStatusCode(), "Error processing Request");
+               }
+               catch (IOException ioe)
+               {
+                  log.error("Failed to send error on failed REST request", ioe);
+               }
+            }
+         }
+      };
+   }
 }

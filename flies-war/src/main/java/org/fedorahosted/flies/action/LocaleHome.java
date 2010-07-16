@@ -7,23 +7,27 @@ import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.framework.EntityHome;
 
 @Name("localeHome")
-public class LocaleHome extends EntityHome<HFliesLocale> {
-	@RequestParameter
-	private String id;
+public class LocaleHome extends EntityHome<HFliesLocale>
+{
+   @RequestParameter
+   private String id;
 
-	@Override
-	public Object getId() {
-		if (id == null) {
-			return super.getId();
-		}
+   @Override
+   public Object getId()
+   {
+      if (id == null)
+      {
+         return super.getId();
+      }
 
-		return id;
-	}
+      return id;
+   }
 
-	@Override
-	@Begin
-	public void create() {
-		super.create();
-	}
+   @Override
+   @Begin
+   public void create()
+   {
+      super.create();
+   }
 
 }

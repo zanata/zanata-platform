@@ -1,6 +1,5 @@
 package org.fedorahosted.flies.webtrans.client.gin;
 
-
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.PlaceManager;
@@ -14,19 +13,20 @@ import org.fedorahosted.flies.webtrans.shared.model.WorkspaceContext;
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
 
-@GinModules({ WebTransClientModule.class })
-public interface WebTransGinjector extends Ginjector {
+@GinModules( { WebTransClientModule.class })
+public interface WebTransGinjector extends Ginjector
+{
 
-	AppPresenter getAppPresenter();
+   AppPresenter getAppPresenter();
 
-	CachingDispatchAsync getDispatcher();
-	
-	PlaceManager getPlaceManager();
-	
-	EventBus getEventBus();
+   CachingDispatchAsync getDispatcher();
 
-	WorkspaceContext getWorkspaceContext();
-	
-	EventProcessor getEventProcessor();
-	
+   PlaceManager getPlaceManager();
+
+   EventBus getEventBus();
+
+   WorkspaceContext getWorkspaceContext();
+
+   EventProcessor getEventProcessor();
+
 }

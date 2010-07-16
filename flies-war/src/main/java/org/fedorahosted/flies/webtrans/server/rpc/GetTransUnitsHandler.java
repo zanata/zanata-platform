@@ -40,57 +40,55 @@ import org.jboss.seam.security.Identity;
 @Name("webtrans.gwt.GetTransUnitHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetTransUnits.class)
-public class GetTransUnitsHandler extends AbstractActionHandler<GetTransUnits, GetTransUnitsResult> {
+public class GetTransUnitsHandler extends AbstractActionHandler<GetTransUnits, GetTransUnitsResult>
+{
 
-	@Logger Log log;
-	@In Session session;
-	
-	@In TranslationWorkspaceManager translationWorkspaceManager;
-	
-	@Override
-	public GetTransUnitsResult execute(GetTransUnits action, ExecutionContext context)
-			throws ActionException {
+   @Logger
+   Log log;
+   @In
+   Session session;
 
-		FliesIdentity.instance().checkLoggedIn();
-		
-		log.info("Fetching Transunits for {0}", action.getDocumentId());
-		
-		Query query = session.createQuery(
-			"from HTextFlow tf where tf.document.id = :id order by tf.pos")
-			.setParameter("id", action.getDocumentId().getValue());
-		
-		int size = query.list().size();
-		
-		List<HTextFlow> textFlows = query 
-				.setFirstResult(action.getOffset())
-				.setMaxResults(action.getCount())
-				.list();
-		
-		
-		
-		ArrayList<TransUnit> units = new ArrayList<TransUnit>();
-		for(HTextFlow textFlow : textFlows) {
-			
-			TransUnitId tuId = new TransUnitId(textFlow.getId());
-			TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(
-					action.getWorkspaceId() );
+   @In
+   TranslationWorkspaceManager translationWorkspaceManager;
 
-			//EditState editstate = workspace.getTransUnitStatus(tuId);
-			TransUnit tu = new TransUnit(tuId, action.getWorkspaceId().getLocaleId(), textFlow.getContent(), CommentsUtil.toString(textFlow.getComment()), "", ContentState.New);
-			HTextFlowTarget target = textFlow.getTargets().get(action.getWorkspaceId().getLocaleId());
-			if(target != null) {
-				tu.setTarget(target.getContent());
-				tu.setStatus( target.getState() );
-			}
-			units.add(tu);
-		}
+   @Override
+   public GetTransUnitsResult execute(GetTransUnits action, ExecutionContext context) throws ActionException
+   {
 
-		return new GetTransUnitsResult(action.getDocumentId(), units, size );
-	}
-	
-	@Override
-	public void rollback(GetTransUnits action, GetTransUnitsResult result,
-			ExecutionContext context) throws ActionException {
-	}
-	
+      FliesIdentity.instance().checkLoggedIn();
+
+      log.info("Fetching Transunits for {0}", action.getDocumentId());
+
+      Query query = session.createQuery("from HTextFlow tf where tf.document.id = :id order by tf.pos").setParameter("id", action.getDocumentId().getValue());
+
+      int size = query.list().size();
+
+      List<HTextFlow> textFlows = query.setFirstResult(action.getOffset()).setMaxResults(action.getCount()).list();
+
+      ArrayList<TransUnit> units = new ArrayList<TransUnit>();
+      for (HTextFlow textFlow : textFlows)
+      {
+
+         TransUnitId tuId = new TransUnitId(textFlow.getId());
+         TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
+
+         // EditState editstate = workspace.getTransUnitStatus(tuId);
+         TransUnit tu = new TransUnit(tuId, action.getWorkspaceId().getLocaleId(), textFlow.getContent(), CommentsUtil.toString(textFlow.getComment()), "", ContentState.New);
+         HTextFlowTarget target = textFlow.getTargets().get(action.getWorkspaceId().getLocaleId());
+         if (target != null)
+         {
+            tu.setTarget(target.getContent());
+            tu.setStatus(target.getState());
+         }
+         units.add(tu);
+      }
+
+      return new GetTransUnitsResult(action.getDocumentId(), units, size);
+   }
+
+   @Override
+   public void rollback(GetTransUnits action, GetTransUnitsResult result, ExecutionContext context) throws ActionException
+   {
+   }
+
 }

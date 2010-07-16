@@ -13,109 +13,138 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
-public class TransMemoryDetailsView implements TransMemoryDetailsPresenter.Display {
+public class TransMemoryDetailsView implements TransMemoryDetailsPresenter.Display
+{
 
-	interface TMIUiBinder extends UiBinder<DialogBox, TransMemoryDetailsView> {
-	}
+   interface TMIUiBinder extends UiBinder<DialogBox, TransMemoryDetailsView>
+   {
+   }
 
-	private static TMIUiBinder uiBinder = GWT.create(TMIUiBinder.class);
-	
-	DialogBox dialogBox;
+   private static TMIUiBinder uiBinder = GWT.create(TMIUiBinder.class);
 
-	@UiField TextArea sourceText;
-	@UiField TextArea targetText;
-	@UiField TextArea sourceComment;
-	@UiField TextArea targetComment;
-	@UiField Label projectName;
-	@UiField Label iterationName;
-	@UiField Label docName;
-	@UiField Button dismissButton;
+   DialogBox dialogBox;
 
-	@UiField ListBox documentListBox;
-	
-	public TransMemoryDetailsView() {
-		dialogBox = uiBinder.createAndBindUi(this);
-	}
+   @UiField
+   TextArea sourceText;
+   @UiField
+   TextArea targetText;
+   @UiField
+   TextArea sourceComment;
+   @UiField
+   TextArea targetComment;
+   @UiField
+   Label projectName;
+   @UiField
+   Label iterationName;
+   @UiField
+   Label docName;
+   @UiField
+   Button dismissButton;
 
-	public void hide() {
-		dialogBox.hide();
-	}
+   @UiField
+   ListBox documentListBox;
 
-	public void show() {
-		dialogBox.center();
-	}
+   public TransMemoryDetailsView()
+   {
+      dialogBox = uiBinder.createAndBindUi(this);
+   }
 
-	@Override
-	public Widget asWidget() {
-		return dialogBox;
-	}
+   public void hide()
+   {
+      dialogBox.hide();
+   }
 
-	@Override
-	public void startProcessing() {
-	}
+   public void show()
+   {
+      dialogBox.center();
+   }
 
-	@Override
-	public void stopProcessing() {
-	}
+   @Override
+   public Widget asWidget()
+   {
+      return dialogBox;
+   }
 
-	@Override
-	public HasText getProjectName() {
-		return projectName;
-	}
-	
-	@Override
-	public HasText getIterationName() {
-		return iterationName;
-	}
+   @Override
+   public void startProcessing()
+   {
+   }
 
-	@Override
-	public HasText getDocumentName() {
-		return docName;
-	}
+   @Override
+   public void stopProcessing()
+   {
+   }
 
-	@Override
-	public HasText getSourceComment() {
-		return sourceComment;
-	}
+   @Override
+   public HasText getProjectName()
+   {
+      return projectName;
+   }
 
-	@Override
-	public HasText getSourceText() {
-		return sourceText;
-	}
+   @Override
+   public HasText getIterationName()
+   {
+      return iterationName;
+   }
 
-	@Override
-	public HasText getTargetComment() {
-		return targetComment;
-	}
+   @Override
+   public HasText getDocumentName()
+   {
+      return docName;
+   }
 
-	@Override
-	public HasText getTargetText() {
-		return targetText;
-	}
+   @Override
+   public HasText getSourceComment()
+   {
+      return sourceComment;
+   }
 
-	@Override
-	public HasChangeHandlers getDocumentListBox() {
-		return documentListBox;
-	}
+   @Override
+   public HasText getSourceText()
+   {
+      return sourceText;
+   }
 
-	@Override
-	public HasClickHandlers getDismissButton() {
-		return dismissButton;
-	}
+   @Override
+   public HasText getTargetComment()
+   {
+      return targetComment;
+   }
 
-	@Override
-	public int getSelectedDocumentIndex() {
-		return documentListBox.getSelectedIndex();
-	}
+   @Override
+   public HasText getTargetText()
+   {
+      return targetText;
+   }
 
-	@Override
-	public void addDoc(String text) {
-		documentListBox.addItem(text);
-	}
+   @Override
+   public HasChangeHandlers getDocumentListBox()
+   {
+      return documentListBox;
+   }
 
-	@Override
-	public void clearDocs() {
-		documentListBox.clear();
-	}
+   @Override
+   public HasClickHandlers getDismissButton()
+   {
+      return dismissButton;
+   }
+
+   @Override
+   public int getSelectedDocumentIndex()
+   {
+      return documentListBox.getSelectedIndex();
+   }
+
+   @Override
+   public void addDoc(String text)
+   {
+      documentListBox.addItem(text);
+   }
+
+   @Override
+   public void clearDocs()
+   {
+      documentListBox.clear();
+   }
 
 }

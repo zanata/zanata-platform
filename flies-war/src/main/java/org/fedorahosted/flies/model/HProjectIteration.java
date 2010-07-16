@@ -19,108 +19,124 @@ import org.jboss.seam.annotations.security.Restrict;
 
 @Entity
 @Restrict
-public class HProjectIteration extends AbstractSlugEntity {
+public class HProjectIteration extends AbstractSlugEntity
+{
 
-	private String name;
-	private String description;
+   private String name;
+   private String description;
 
-	private HIterationProject project;
+   private HIterationProject project;
 
-	private Boolean active = true;
+   private Boolean active = true;
 
-	private HProjectIteration parent;
-	private List<HProjectIteration> children;
+   private HProjectIteration parent;
+   private List<HProjectIteration> children;
 
-	private Map<String,HDocument> documents;
-	private Map<String,HDocument> allDocuments;
-	
-	
-	@Length(max = 20)
-	public String getName() {
-		return name;
-	}
+   private Map<String, HDocument> documents;
+   private Map<String, HDocument> allDocuments;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+   @Length(max = 20)
+   public String getName()
+   {
+      return name;
+   }
 
-	public String getDescription() {
-		return description;
-	}
+   public void setName(String name)
+   {
+      this.name = name;
+   }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+   public String getDescription()
+   {
+      return description;
+   }
 
-	public void setActive(Boolean active) {
-		this.active = active;
-	}
+   public void setDescription(String description)
+   {
+      this.description = description;
+   }
 
-	@NotNull
-	public Boolean getActive() {
-		return active;
-	}
+   public void setActive(Boolean active)
+   {
+      this.active = active;
+   }
 
-	@ManyToOne
-	@NotNull
-	@NaturalId
-	public HIterationProject getProject() {
-		return project;
-	}
+   @NotNull
+   public Boolean getActive()
+   {
+      return active;
+   }
 
-	public void setProject(HIterationProject project) {
-		this.project = project;
-	}
+   @ManyToOne
+   @NotNull
+   @NaturalId
+   public HIterationProject getProject()
+   {
+      return project;
+   }
 
-	@OneToMany(mappedBy = "parent")
-	public List<HProjectIteration> getChildren() {
-		return children;
-	}
+   public void setProject(HIterationProject project)
+   {
+      this.project = project;
+   }
 
-	public void setChildren(List<HProjectIteration> children) {
-		this.children = children;
-	}
+   @OneToMany(mappedBy = "parent")
+   public List<HProjectIteration> getChildren()
+   {
+      return children;
+   }
 
-	@ManyToOne
-	@JoinColumn(name = "parentId")
-	public HProjectIteration getParent() {
-		return parent;
-	}
+   public void setChildren(List<HProjectIteration> children)
+   {
+      this.children = children;
+   }
 
-	public void setParent(HProjectIteration parent) {
-		this.parent = parent;
-	}
-	
-	@OneToMany(mappedBy = "projectIteration", cascade=CascadeType.ALL)
-	@MapKey(name="docId")
-	@Where(clause="obsolete=0")
-	public Map<String, HDocument> getDocuments() {
-		if(documents == null)
-			documents = new HashMap<String,HDocument>();
-		return documents;
-	}
-	
-	@OneToMany(mappedBy = "projectIteration", cascade=CascadeType.ALL)
-	@MapKey(name="docId")
-	// even obsolete documents
-	public Map<String, HDocument> getAllDocuments() {
-		if(allDocuments == null)
-			allDocuments = new HashMap<String,HDocument>();
-		return allDocuments;
-	}
-	
-	public void setAllDocuments(Map<String, HDocument> allDocuments) {
-		this.allDocuments = allDocuments;
-	}
-	
-	public void setDocuments(Map<String, HDocument> documents) {
-		this.documents = documents;
-	}
-	
+   @ManyToOne
+   @JoinColumn(name = "parentId")
+   public HProjectIteration getParent()
+   {
+      return parent;
+   }
 
-	@Override
-	public String toString() {
-		return super.toString()+"[name="+name+",project="+project+"]";
-	}
-	
+   public void setParent(HProjectIteration parent)
+   {
+      this.parent = parent;
+   }
+
+   @OneToMany(mappedBy = "projectIteration", cascade = CascadeType.ALL)
+   @MapKey(name = "docId")
+   @Where(clause = "obsolete=0")
+   public Map<String, HDocument> getDocuments()
+   {
+      if (documents == null)
+         documents = new HashMap<String, HDocument>();
+      return documents;
+   }
+
+   @OneToMany(mappedBy = "projectIteration", cascade = CascadeType.ALL)
+   @MapKey(name = "docId")
+   // even obsolete documents
+   public Map<String, HDocument> getAllDocuments()
+   {
+      if (allDocuments == null)
+         allDocuments = new HashMap<String, HDocument>();
+      return allDocuments;
+   }
+
+   public void setAllDocuments(Map<String, HDocument> allDocuments)
+   {
+      this.allDocuments = allDocuments;
+   }
+
+   public void setDocuments(Map<String, HDocument> documents)
+   {
+      this.documents = documents;
+   }
+
+   @Override
+   public String toString()
+   {
+      return super.toString() + "[name=" + name + ",project=" + project + "]";
+   }
+
 }

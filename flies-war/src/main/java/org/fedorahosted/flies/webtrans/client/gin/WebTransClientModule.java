@@ -1,6 +1,5 @@
 package org.fedorahosted.flies.webtrans.client.gin;
 
-
 import net.customware.gwt.presenter.client.DefaultEventBus;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.gin.AbstractPresenterModule;
@@ -41,54 +40,61 @@ import org.fedorahosted.flies.webtrans.shared.model.WorkspaceContext;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
-public class WebTransClientModule extends AbstractPresenterModule {
+public class WebTransClientModule extends AbstractPresenterModule
+{
 
-	/**
-	 * The Binding EDSL is described in {@link com.google.inject.Binder}
-	 */
-	@Override
-	protected void configure() {		
-		bind(EventBus.class).to(DefaultEventBus.class).in(Singleton.class);
-		bind(PlaceManager.class).in(Singleton.class);
-		bind(EventProcessor.class).in(Singleton.class);
-		bind(Resources.class).in(Singleton.class);
-		bind(WebTransMessages.class).in(Singleton.class);
-	
-		bindPresenter(AppPresenter.class, AppPresenter.Display.class, AppView.class);
-		bindPresenter(DocumentListPresenter.class, DocumentListPresenter.Display.class, DocumentListView.class);
-		bindPresenter(TransFilterPresenter.class, TransFilterPresenter.Display.class, TransFilterView.class);
-		bindPresenter(TableEditorPresenter.class, TableEditorPresenter.Display.class, TableEditorView.class);
-		bindPresenter(WorkspaceUsersPresenter.class, WorkspaceUsersPresenter.Display.class, WorkspaceUsersView.class);
-		bindPresenter(TransMemoryPresenter.class, TransMemoryPresenter.Display.class, TransMemoryView.class);
-		bindPresenter(TransMemoryDetailsPresenter.class, TransMemoryDetailsPresenter.Display.class, TransMemoryDetailsView.class);
-		bindPresenter(TransUnitNavigationPresenter.class, TransUnitNavigationPresenter.Display.class, TransUnitNavigationView.class);
-		bindPresenter(SidePanelPresenter.class, SidePanelPresenter.Display.class, SidePanel.class);
-		bindPresenter(TranslationEditorPresenter.class, TranslationEditorPresenter.Display.class, TranslationEditorView.class);
-		bindPresenter(TransUnitDetailsPresenter.class, TransUnitDetailsPresenter.Display.class, TransUnitDetailsView.class);
-		
-		bind(HasPageNavigation.class).to(TableEditorView.class).in(Singleton.class);
+   /**
+    * The Binding EDSL is described in {@link com.google.inject.Binder}
+    */
+   @Override
+   protected void configure()
+   {
+      bind(EventBus.class).to(DefaultEventBus.class).in(Singleton.class);
+      bind(PlaceManager.class).in(Singleton.class);
+      bind(EventProcessor.class).in(Singleton.class);
+      bind(Resources.class).in(Singleton.class);
+      bind(WebTransMessages.class).in(Singleton.class);
 
-		// NB: if we bind directly to SeamDispatchAsync, we can't use replace-class in
-		// the module definition unless the replacement extends SeamDispatchAsync
-		bind(CachingDispatchAsync.class).to(DelegatingDispatchAsync.class).in(Singleton.class);
-		
-		bind(Identity.class).toProvider(IdentityProvider.class).in(Singleton.class);
-		bind(WorkspaceContext.class).toProvider(WorkspaceContextProvider.class).in(Singleton.class);
-		
-	}
-	
-	static class WorkspaceContextProvider implements Provider<WorkspaceContext> {
-		@Override
-		public WorkspaceContext get() {
-			return Application.getWorkspaceContext();
-		}
-	}
-	
-	static class IdentityProvider implements Provider<Identity> {
-		@Override
-		public Identity get() {
-			return Application.getIdentity();
-		}
-	}
+      bindPresenter(AppPresenter.class, AppPresenter.Display.class, AppView.class);
+      bindPresenter(DocumentListPresenter.class, DocumentListPresenter.Display.class, DocumentListView.class);
+      bindPresenter(TransFilterPresenter.class, TransFilterPresenter.Display.class, TransFilterView.class);
+      bindPresenter(TableEditorPresenter.class, TableEditorPresenter.Display.class, TableEditorView.class);
+      bindPresenter(WorkspaceUsersPresenter.class, WorkspaceUsersPresenter.Display.class, WorkspaceUsersView.class);
+      bindPresenter(TransMemoryPresenter.class, TransMemoryPresenter.Display.class, TransMemoryView.class);
+      bindPresenter(TransMemoryDetailsPresenter.class, TransMemoryDetailsPresenter.Display.class, TransMemoryDetailsView.class);
+      bindPresenter(TransUnitNavigationPresenter.class, TransUnitNavigationPresenter.Display.class, TransUnitNavigationView.class);
+      bindPresenter(SidePanelPresenter.class, SidePanelPresenter.Display.class, SidePanel.class);
+      bindPresenter(TranslationEditorPresenter.class, TranslationEditorPresenter.Display.class, TranslationEditorView.class);
+      bindPresenter(TransUnitDetailsPresenter.class, TransUnitDetailsPresenter.Display.class, TransUnitDetailsView.class);
+
+      bind(HasPageNavigation.class).to(TableEditorView.class).in(Singleton.class);
+
+      // NB: if we bind directly to SeamDispatchAsync, we can't use
+      // replace-class in
+      // the module definition unless the replacement extends SeamDispatchAsync
+      bind(CachingDispatchAsync.class).to(DelegatingDispatchAsync.class).in(Singleton.class);
+
+      bind(Identity.class).toProvider(IdentityProvider.class).in(Singleton.class);
+      bind(WorkspaceContext.class).toProvider(WorkspaceContextProvider.class).in(Singleton.class);
+
+   }
+
+   static class WorkspaceContextProvider implements Provider<WorkspaceContext>
+   {
+      @Override
+      public WorkspaceContext get()
+      {
+         return Application.getWorkspaceContext();
+      }
+   }
+
+   static class IdentityProvider implements Provider<Identity>
+   {
+      @Override
+      public Identity get()
+      {
+         return Application.getIdentity();
+      }
+   }
 
 }

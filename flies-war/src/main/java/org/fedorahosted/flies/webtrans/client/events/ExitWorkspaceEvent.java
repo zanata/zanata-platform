@@ -5,46 +5,51 @@ import org.fedorahosted.flies.webtrans.shared.rpc.HasExitWorkspaceData;
 
 import com.google.gwt.event.shared.GwtEvent;
 
-public class ExitWorkspaceEvent extends GwtEvent<ExitWorkspaceEventHandler> implements HasExitWorkspaceData{
+public class ExitWorkspaceEvent extends GwtEvent<ExitWorkspaceEventHandler> implements HasExitWorkspaceData
+{
 
-	private final PersonId personId;
-	
-	/**
-	 * Handler type.
-	 */
-	private static Type<ExitWorkspaceEventHandler> TYPE;
+   private final PersonId personId;
 
-	/**
-	 * Gets the type associated with this event.
-	 * 
-	 * @return returns the handler type
-	 */
-	public static Type<ExitWorkspaceEventHandler> getType() {
-		if (TYPE == null) {
-			TYPE = new Type<ExitWorkspaceEventHandler>();
-		}
-		return TYPE;
-	}
-	
-	public ExitWorkspaceEvent (HasExitWorkspaceData data) {
-		this.personId = data.getPersonId();
-	}
+   /**
+    * Handler type.
+    */
+   private static Type<ExitWorkspaceEventHandler> TYPE;
 
-	@Override
-	protected void dispatch(ExitWorkspaceEventHandler handler) {
-		handler.onExitWorkspace(this);
-	}
+   /**
+    * Gets the type associated with this event.
+    * 
+    * @return returns the handler type
+    */
+   public static Type<ExitWorkspaceEventHandler> getType()
+   {
+      if (TYPE == null)
+      {
+         TYPE = new Type<ExitWorkspaceEventHandler>();
+      }
+      return TYPE;
+   }
 
-	@Override
-	public Type<ExitWorkspaceEventHandler> getAssociatedType() {
-		return getType();
-	}
+   public ExitWorkspaceEvent(HasExitWorkspaceData data)
+   {
+      this.personId = data.getPersonId();
+   }
 
-	@Override
-	public PersonId getPersonId() {
-		return personId;
-	}
-	
+   @Override
+   protected void dispatch(ExitWorkspaceEventHandler handler)
+   {
+      handler.onExitWorkspace(this);
+   }
 
+   @Override
+   public Type<ExitWorkspaceEventHandler> getAssociatedType()
+   {
+      return getType();
+   }
+
+   @Override
+   public PersonId getPersonId()
+   {
+      return personId;
+   }
 
 }

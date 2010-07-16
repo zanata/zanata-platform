@@ -18,74 +18,80 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.Display> {
-	
-	public static final Place PLACE = new Place("TransUnitInfoPresenter");
+public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.Display>
+{
 
-	private PhraseFilter phraseFilter;
-	
-	public interface Display extends WidgetDisplay{
-		HasValue<String> getFilterText();
-	}
+   public static final Place PLACE = new Place("TransUnitInfoPresenter");
 
-	@Inject
-	public TransFilterPresenter(final Display display, final EventBus eventBus) {
-		super(display, eventBus);
-		this.phraseFilter = new PhraseFilter("");
-	}
-	
-	
-	@Override
-	public Place getPlace() {
-		return PLACE;
-	}
+   private PhraseFilter phraseFilter;
 
+   public interface Display extends WidgetDisplay
+   {
+      HasValue<String> getFilterText();
+   }
 
-	@Override
-	protected void onBind() {
-		
-		display.getFilterText().addValueChangeHandler(new ValueChangeHandler<String>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<String> event) {
-				phraseFilter.setPhrase(event.getValue());
-				if(!event.getValue().isEmpty()) {
-					eventBus.fireEvent( new FilterEnabledEvent(phraseFilter));
-				}
-				else {
-					eventBus.fireEvent( new FilterDisabledEvent());
-				}
-			}
-		});
-		
-		
-	}
+   @Inject
+   public TransFilterPresenter(final Display display, final EventBus eventBus)
+   {
+      super(display, eventBus);
+      this.phraseFilter = new PhraseFilter("");
+   }
 
+   @Override
+   public Place getPlace()
+   {
+      return PLACE;
+   }
 
-	@Override
-	protected void onPlaceRequest(PlaceRequest request) {
-		// TODO Auto-generated method stub
-		
-	}
+   @Override
+   protected void onBind()
+   {
 
+      display.getFilterText().addValueChangeHandler(new ValueChangeHandler<String>()
+      {
+         @Override
+         public void onValueChange(ValueChangeEvent<String> event)
+         {
+            phraseFilter.setPhrase(event.getValue());
+            if (!event.getValue().isEmpty())
+            {
+               eventBus.fireEvent(new FilterEnabledEvent(phraseFilter));
+            }
+            else
+            {
+               eventBus.fireEvent(new FilterDisabledEvent());
+            }
+         }
+      });
 
-	@Override
-	protected void onUnbind() {
-		// TODO Auto-generated method stub
-		
-	}
+   }
 
+   @Override
+   protected void onPlaceRequest(PlaceRequest request)
+   {
+      // TODO Auto-generated method stub
 
-	@Override
-	public void refreshDisplay() {
-		// TODO Auto-generated method stub
-		
-	}
+   }
 
+   @Override
+   protected void onUnbind()
+   {
+      // TODO Auto-generated method stub
 
-	@Override
-	public void revealDisplay() {
-		// TODO Auto-generated method stub
-		
-	}
+   }
+
+   @Override
+   public void refreshDisplay()
+   {
+      // TODO Auto-generated method stub
+
+   }
+
+   @Override
+   public void revealDisplay()
+   {
+      // TODO Auto-generated method stub
+
+   }
 
 }

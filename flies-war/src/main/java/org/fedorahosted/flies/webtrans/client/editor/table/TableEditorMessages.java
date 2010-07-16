@@ -6,38 +6,39 @@ import com.google.gwt.i18n.client.LocalizableResource.Generate;
 
 @DefaultLocale
 @Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
-public interface TableEditorMessages extends Messages {
+public interface TableEditorMessages extends Messages
+{
 
-	@DefaultMessage("Source comment: ")
-	String sourceCommentLabel();
+   @DefaultMessage("Source comment: ")
+   String sourceCommentLabel();
 
-	@DefaultMessage("Warning: This Translation Unit is being edited by someone else.")
-	String notifyInEdit();
+   @DefaultMessage("Warning: This Translation Unit is being edited by someone else.")
+   String notifyInEdit();
 
-	@DefaultMessage("Message has been copied to the target.")
-	String notifyCopied();
-	
-	@DefaultMessage("Please open the target in the editor first.")
-	String notifyUnopened();
+   @DefaultMessage("Message has been copied to the target.")
+   String notifyCopied();
 
-	@DefaultMessage("Not logged in!")
-	String notifyNotLoggedIn();
+   @DefaultMessage("Please open the target in the editor first.")
+   String notifyUnopened();
 
-	@DefaultMessage("Failed to load data from Server")
-	String notifyLoadFailed();
+   @DefaultMessage("Not logged in!")
+   String notifyNotLoggedIn();
 
-	@DefaultMessage("An unknown error occurred")
-	String notifyUnknownError();
+   @DefaultMessage("Failed to load data from Server")
+   String notifyLoadFailed();
 
-	@DefaultMessage("Failed to update Translation Unit")
-	String notifyUpdateFailed();
+   @DefaultMessage("An unknown error occurred")
+   String notifyUnknownError();
 
-	@DefaultMessage("Saved change to Translation Unit")
-	String notifyUpdateSaved();
+   @DefaultMessage("Failed to update Translation Unit")
+   String notifyUpdateFailed();
 
-	@DefaultMessage("Failed to Stop Editing TransUnit")
-	String notifyStopFailed();
-	
-	@DefaultMessage("Failed to Lock TransUnit")
-	String notifyLockFailed();
+   @DefaultMessage("Saved change to Translation Unit")
+   String notifyUpdateSaved();
+
+   @DefaultMessage("Failed to Stop Editing TransUnit")
+   String notifyStopFailed();
+
+   @DefaultMessage("Failed to Lock TransUnit")
+   String notifyLockFailed();
 }

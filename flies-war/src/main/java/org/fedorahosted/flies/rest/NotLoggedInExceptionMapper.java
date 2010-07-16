@@ -8,12 +8,13 @@ import javax.ws.rs.ext.Provider;
 import org.jboss.seam.security.NotLoggedInException;
 
 @Provider
-public class NotLoggedInExceptionMapper implements
-		ExceptionMapper<NotLoggedInException> {
+public class NotLoggedInExceptionMapper implements ExceptionMapper<NotLoggedInException>
+{
 
-	@Override
-	public Response toResponse(NotLoggedInException exception) {
-		return Response.status(Status.UNAUTHORIZED).build();
-	}
+   @Override
+   public Response toResponse(NotLoggedInException exception)
+   {
+      return Response.status(Status.UNAUTHORIZED).build();
+   }
 
 }

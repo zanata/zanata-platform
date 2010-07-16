@@ -14,29 +14,33 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 
 @Name("personHome")
 @Scope(ScopeType.CONVERSATION)
-public class PersonHome extends EntityHome<HPerson>{
-	
-	@In(required=false, value=JpaIdentityStore.AUTHENTICATED_USER) 
-	HAccount authenticatedAccount;
-	
-	@In
-	AccountDAO accountDAO;
-	
-	@Logger
-	Log log;
-	
-	@Override
-	public Object getId() {
-		Object id = super.getId();
-		if(id == null && authenticatedAccount != null && authenticatedAccount.getPerson() != null){
-			return authenticatedAccount.getPerson().getId();
-		}
-		return id;
-	}
-	
-	public void regenerateApiKey(){
-		accountDAO.createApiKey(getInstance().getAccount());
-		getEntityManager().merge(getInstance().getAccount());
-		log.info("Reset API key for {0}", getInstance().getAccount().getUsername());
-	}
+public class PersonHome extends EntityHome<HPerson>
+{
+
+   @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
+   HAccount authenticatedAccount;
+
+   @In
+   AccountDAO accountDAO;
+
+   @Logger
+   Log log;
+
+   @Override
+   public Object getId()
+   {
+      Object id = super.getId();
+      if (id == null && authenticatedAccount != null && authenticatedAccount.getPerson() != null)
+      {
+         return authenticatedAccount.getPerson().getId();
+      }
+      return id;
+   }
+
+   public void regenerateApiKey()
+   {
+      accountDAO.createApiKey(getInstance().getAccount());
+      getEntityManager().merge(getInstance().getAccount());
+      log.info("Reset API key for {0}", getInstance().getAccount().getUsername());
+   }
 }

@@ -10,23 +10,24 @@ import org.jboss.seam.framework.EntityHome;
  * 
  * @author asgeirf
  */
-public abstract class SlugHome<E> extends EntityHome<E>{
-	
-	private static final long serialVersionUID = -992545184963409194L;
-	
-	@Override
-	protected E loadInstance() {
-		Session session = (Session) getEntityManager().getDelegate();
-		return (E) session.createCriteria(getEntityClass())
-		.add( getNaturalId() ).uniqueResult();
-	}
-	
-	public abstract NaturalIdentifier getNaturalId();
-	
-	@Override
-	public abstract boolean isIdDefined();
-	
-	@Override
-	public abstract Object getId();
-	
+public abstract class SlugHome<E> extends EntityHome<E>
+{
+
+   private static final long serialVersionUID = -992545184963409194L;
+
+   @Override
+   protected E loadInstance()
+   {
+      Session session = (Session) getEntityManager().getDelegate();
+      return (E) session.createCriteria(getEntityClass()).add(getNaturalId()).uniqueResult();
+   }
+
+   public abstract NaturalIdentifier getNaturalId();
+
+   @Override
+   public abstract boolean isIdDefined();
+
+   @Override
+   public abstract Object getId();
+
 }

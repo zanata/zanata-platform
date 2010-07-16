@@ -9,53 +9,62 @@ import org.hibernate.annotations.Type;
 import org.hibernate.validator.NotNull;
 
 @Entity
-public class HSimpleComment {
-	
-	private Long id;
-	
-	private String comment;
-	
-	public HSimpleComment() {
-	}
-	
-	public HSimpleComment(String comment) {
-		this.comment = comment;
-	}
-	
-	
-	@Id
-	@GeneratedValue
-	public Long getId() {
-		return id;
-	}
-	
-	protected void setId(Long id) {
-		this.id = id;
-	}
-	
-	@NotNull
-	@Type(type = "text")
-	public String getComment() {
-		return comment;
-	}
-	
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
-	
-	public static SimpleComment toSimpleComment(HSimpleComment comment) {
-		String s = toString(comment);
-		return s != null ? new SimpleComment(s) : null;
-	}
-	
-	public static String toString(HSimpleComment comment) {
-		return comment != null ? comment.getComment() : null;
-	}
+public class HSimpleComment
+{
 
-	/**
-	 * Used for debugging
-	 */
-	public String toString() {
-		return "HSimpleComment("+toString(this)+")";
-	}
+   private Long id;
+
+   private String comment;
+
+   public HSimpleComment()
+   {
+   }
+
+   public HSimpleComment(String comment)
+   {
+      this.comment = comment;
+   }
+
+   @Id
+   @GeneratedValue
+   public Long getId()
+   {
+      return id;
+   }
+
+   protected void setId(Long id)
+   {
+      this.id = id;
+   }
+
+   @NotNull
+   @Type(type = "text")
+   public String getComment()
+   {
+      return comment;
+   }
+
+   public void setComment(String comment)
+   {
+      this.comment = comment;
+   }
+
+   public static SimpleComment toSimpleComment(HSimpleComment comment)
+   {
+      String s = toString(comment);
+      return s != null ? new SimpleComment(s) : null;
+   }
+
+   public static String toString(HSimpleComment comment)
+   {
+      return comment != null ? comment.getComment() : null;
+   }
+
+   /**
+    * Used for debugging
+    */
+   public String toString()
+   {
+      return "HSimpleComment(" + toString(this) + ")";
+   }
 }

@@ -15,29 +15,25 @@ import org.fedorahosted.flies.webtrans.shared.rpc.ActivateWorkspaceResult;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class DummyActivateWorkspaceCommand implements Command {
+public class DummyActivateWorkspaceCommand implements Command
+{
 
-	private final ActivateWorkspaceAction action;
-	private final AsyncCallback<ActivateWorkspaceResult> callback;
+   private final ActivateWorkspaceAction action;
+   private final AsyncCallback<ActivateWorkspaceResult> callback;
 
-	public DummyActivateWorkspaceCommand(ActivateWorkspaceAction gwcAction,
-			AsyncCallback<ActivateWorkspaceResult> gwcCallback) {
-		this.action = gwcAction;
-		this.callback = gwcCallback;
-	}
+   public DummyActivateWorkspaceCommand(ActivateWorkspaceAction gwcAction, AsyncCallback<ActivateWorkspaceResult> gwcCallback)
+   {
+      this.action = gwcAction;
+      this.callback = gwcCallback;
+   }
 
-	@Override
-	public void execute() {
-		WorkspaceContext context = 
-			new WorkspaceContext(action.getWorkspaceId(), "Dummy Workspace", "Mock Sweedish");
-		
-		Identity identity = new Identity(
-				new SessionId("123456"), 
-				new Person( new PersonId("bob"), "Bob The Builder"), 
-				new HashSet<Permission>(),
-				new HashSet<Role>() );
-		callback.onSuccess(
-				new ActivateWorkspaceResult(context, identity));
-	}
+   @Override
+   public void execute()
+   {
+      WorkspaceContext context = new WorkspaceContext(action.getWorkspaceId(), "Dummy Workspace", "Mock Sweedish");
+
+      Identity identity = new Identity(new SessionId("123456"), new Person(new PersonId("bob"), "Bob The Builder"), new HashSet<Permission>(), new HashSet<Role>());
+      callback.onSuccess(new ActivateWorkspaceResult(context, identity));
+   }
 
 }

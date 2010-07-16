@@ -4,14 +4,15 @@ import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.webtrans.shared.model.DocumentId;
 import org.fedorahosted.flies.webtrans.shared.model.TransUnitId;
 
-public interface HasTransUnitUpdatedData {
+public interface HasTransUnitUpdatedData
+{
 
-	DocumentId getDocumentId();
+   DocumentId getDocumentId();
 
-	ContentState getNewStatus();
+   ContentState getNewStatus();
 
-	ContentState getPreviousStatus();
+   ContentState getPreviousStatus();
 
-	TransUnitId getTransUnitId();
+   TransUnitId getTransUnitId();
 
 }

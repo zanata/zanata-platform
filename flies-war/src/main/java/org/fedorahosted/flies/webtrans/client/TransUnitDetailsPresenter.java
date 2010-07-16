@@ -12,48 +12,58 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-public class TransUnitDetailsPresenter extends WidgetPresenter<TransUnitDetailsPresenter.Display>{
+public class TransUnitDetailsPresenter extends WidgetPresenter<TransUnitDetailsPresenter.Display>
+{
 
-	public interface Display extends WidgetDisplay{
-		void showDetails(TransUnit transUnit);
-	}
+   public interface Display extends WidgetDisplay
+   {
+      void showDetails(TransUnit transUnit);
+   }
 
+   @Inject
+   public TransUnitDetailsPresenter(Display display, EventBus eventBus)
+   {
+      super(display, eventBus);
+   }
 
-	@Inject
-	public TransUnitDetailsPresenter(Display display, EventBus eventBus) {
-		super(display, eventBus);
-	}
+   @Override
+   public Place getPlace()
+   {
+      return null;
+   }
 
-	@Override
-	public Place getPlace() {
-		return null;
-	}
+   @Override
+   protected void onBind()
+   {
+      registerHandler(eventBus.addHandler(TransUnitSelectionEvent.getType(), new TransUnitSelectionHandler()
+      {
 
-	@Override
-	protected void onBind() {
-		registerHandler( eventBus.addHandler(TransUnitSelectionEvent.getType(), new TransUnitSelectionHandler() {
-			
-			@Override
-			public void onTransUnitSelected(TransUnitSelectionEvent event) {
-				display.showDetails( event.getSelection() );
-			}
-		}));
-	}
+         @Override
+         public void onTransUnitSelected(TransUnitSelectionEvent event)
+         {
+            display.showDetails(event.getSelection());
+         }
+      }));
+   }
 
-	@Override
-	protected void onPlaceRequest(PlaceRequest request) {
-	}
+   @Override
+   protected void onPlaceRequest(PlaceRequest request)
+   {
+   }
 
-	@Override
-	protected void onUnbind() {
-	}
+   @Override
+   protected void onUnbind()
+   {
+   }
 
-	@Override
-	public void refreshDisplay() {
-	}
+   @Override
+   public void refreshDisplay()
+   {
+   }
 
-	@Override
-	public void revealDisplay() {
-	}
-	
+   @Override
+   public void revealDisplay()
+   {
+   }
+
 }

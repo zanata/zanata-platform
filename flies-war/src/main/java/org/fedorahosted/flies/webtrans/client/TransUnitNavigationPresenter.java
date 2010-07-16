@@ -18,106 +18,125 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-public class TransUnitNavigationPresenter 
-	extends WidgetPresenter<TransUnitNavigationPresenter.Display> implements HasNavTransUnitHandlers {
+public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavigationPresenter.Display> implements HasNavTransUnitHandlers
+{
 
-	
-	public interface Display extends WidgetDisplay {
-		HasClickHandlers getPrevEntryButton();
+   public interface Display extends WidgetDisplay
+   {
+      HasClickHandlers getPrevEntryButton();
 
-		HasClickHandlers getNextEntryButton();
+      HasClickHandlers getNextEntryButton();
 
-		HasClickHandlers getPrevFuzzyButton();
+      HasClickHandlers getPrevFuzzyButton();
 
-		HasClickHandlers getNextFuzzyButton();
+      HasClickHandlers getNextFuzzyButton();
 
-		HasClickHandlers getPrevUntranslatedButton();
+      HasClickHandlers getPrevUntranslatedButton();
 
-		HasClickHandlers getNextUntranslatedButton();
-	}
+      HasClickHandlers getNextUntranslatedButton();
+   }
 
-	@Inject
-	public TransUnitNavigationPresenter(Display display, EventBus eventBus) {
-		super(display, eventBus);
-	}
+   @Inject
+   public TransUnitNavigationPresenter(Display display, EventBus eventBus)
+   {
+      super(display, eventBus);
+   }
 
-	@Override
-	protected void onBind() {
-		display.getPrevEntryButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				fireEvent(new NavTransUnitEvent(null, -1));
-			}
-		});
+   @Override
+   protected void onBind()
+   {
+      display.getPrevEntryButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            fireEvent(new NavTransUnitEvent(null, -1));
+         }
+      });
 
-		display.getNextEntryButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				fireEvent(new NavTransUnitEvent(null, +1));
-			}
-		});
+      display.getNextEntryButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            fireEvent(new NavTransUnitEvent(null, +1));
+         }
+      });
 
-		display.getPrevFuzzyButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				fireEvent(new NavTransUnitEvent(ContentState.NeedReview, -1));
-			}
-		});
+      display.getPrevFuzzyButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            fireEvent(new NavTransUnitEvent(ContentState.NeedReview, -1));
+         }
+      });
 
-		display.getNextFuzzyButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				fireEvent(new NavTransUnitEvent(ContentState.NeedReview, +1));
-			}
-		});
+      display.getNextFuzzyButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            fireEvent(new NavTransUnitEvent(ContentState.NeedReview, +1));
+         }
+      });
 
-		display.getPrevUntranslatedButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				fireEvent(new NavTransUnitEvent(ContentState.New, -1));
-			}
-		});
+      display.getPrevUntranslatedButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            fireEvent(new NavTransUnitEvent(ContentState.New, -1));
+         }
+      });
 
-		display.getNextUntranslatedButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				fireEvent(new NavTransUnitEvent(ContentState.New, +1));
-			}
-		});
-	}
-	
-	@Override
-	public HandlerRegistration addNavTransUnitHandler(
-			NavTransUnitHandler handler) {
-		// TODO Auto-generated method stub
-		return eventBus.addHandler(NavTransUnitEvent.getType(), handler);
-	}
+      display.getNextUntranslatedButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            fireEvent(new NavTransUnitEvent(ContentState.New, +1));
+         }
+      });
+   }
 
-	@Override
-	public void fireEvent(GwtEvent<?> event) {
-		eventBus.fireEvent(event);
-	}
+   @Override
+   public HandlerRegistration addNavTransUnitHandler(NavTransUnitHandler handler)
+   {
+      // TODO Auto-generated method stub
+      return eventBus.addHandler(NavTransUnitEvent.getType(), handler);
+   }
 
-	@Override
-	public Place getPlace() {
-		return null;
-	}
+   @Override
+   public void fireEvent(GwtEvent<?> event)
+   {
+      eventBus.fireEvent(event);
+   }
 
-	@Override
-	protected void onPlaceRequest(PlaceRequest request) {
-	}
+   @Override
+   public Place getPlace()
+   {
+      return null;
+   }
 
-	@Override
-	protected void onUnbind() {
-	}
+   @Override
+   protected void onPlaceRequest(PlaceRequest request)
+   {
+   }
 
-	@Override
-	public void refreshDisplay() {
-	}
+   @Override
+   protected void onUnbind()
+   {
+   }
 
-	@Override
-	public void revealDisplay() {
-	}
-	
-	
+   @Override
+   public void refreshDisplay()
+   {
+   }
+
+   @Override
+   public void revealDisplay()
+   {
+   }
+
 }

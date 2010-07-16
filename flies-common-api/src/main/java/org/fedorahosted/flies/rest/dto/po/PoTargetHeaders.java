@@ -13,27 +13,31 @@ import org.fedorahosted.flies.common.LocaleId;
  * Represents a list of target-language translations for a single Document
  * 
  * @author asgeirf
- *
+ * 
  */
-@XmlType(name="poHeadersType", namespace=PoHeader.NAMESPACE)
-@XmlRootElement(name="po-target-headers", namespace=PoHeader.NAMESPACE)
-public class PoTargetHeaders {
-	
-	private Set<PoTargetHeader> headers;
-	
-	@XmlElement(name="po-target-header", namespace=PoHeader.NAMESPACE)
-	public Set<PoTargetHeader> getHeaders() {
-		if(headers == null)
-			headers = new HashSet<PoTargetHeader>();
-		return headers;
-	}
+@XmlType(name = "poHeadersType", namespace = PoHeader.NAMESPACE)
+@XmlRootElement(name = "po-target-headers", namespace = PoHeader.NAMESPACE)
+public class PoTargetHeaders
+{
 
-	public PoTargetHeader getByLocale(LocaleId locale){
-		for(PoTargetHeader header : headers){
-			if(locale.equals(header.getTargetLanguage()))
-				return header;
-		}
-		
-		return null;
-	}
+   private Set<PoTargetHeader> headers;
+
+   @XmlElement(name = "po-target-header", namespace = PoHeader.NAMESPACE)
+   public Set<PoTargetHeader> getHeaders()
+   {
+      if (headers == null)
+         headers = new HashSet<PoTargetHeader>();
+      return headers;
+   }
+
+   public PoTargetHeader getByLocale(LocaleId locale)
+   {
+      for (PoTargetHeader header : headers)
+      {
+         if (locale.equals(header.getTargetLanguage()))
+            return header;
+      }
+
+      return null;
+   }
 }
