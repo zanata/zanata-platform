@@ -31,7 +31,7 @@
       <h:outputLink 
           rendered="#{!fliesInit.debug}" 
           target="_blank"
-          value="#{applicationConfiguration.serverPath}org.fedorahosted.flies.webtrans.Application/Application.html">
+          value="#{applicationConfiguration.serverPath}webtrans/Application.html">
 		<f:param name="project" value="#{_iteration.project.slug}"/>
 		<f:param name="iteration" value="#{_iteration.slug}"/>
 		<f:param name="localeId" value="#{tribe.locale.id}"/>
@@ -41,7 +41,7 @@
       <h:outputLink 
           rendered="#{fliesInit.debug}"
           target="_blank"
-          value="#{applicationConfiguration.serverPath}org.fedorahosted.flies.webtrans.Application/Application.html">
+          value="#{applicationConfiguration.serverPath}webtrans/Application.html">
 		<f:param name="project" value="#{_iteration.project.slug}"/>
 		<f:param name="iteration" value="#{_iteration.slug}"/>
 		<f:param name="localeId" value="#{tribe.locale.id}"/>

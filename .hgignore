@@ -45,8 +45,7 @@ temp-testng-customsuite.xml$
 ^flies-war/src/main/webapp/WEB-INF/classes/
 ^flies-war/tomcat
 \.gwt-tmp$
-^flies-war/org.fedorahosted.flies.webtrans.Application
-^flies-war/src/main/webapp/org.fedorahosted.flies.webtrans.Application
+^flies-war/src/main/webapp/webtrans/
 
 # vim
 .swp

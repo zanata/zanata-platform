@@ -1,4 +1,4 @@
-<module>
+<module rename-to="webtrans">
   <inherits name="org.fedorahosted.flies.webtrans.Application"/>
   <inherits name="com.google.gwt.junit.JUnit"/>
   <source path="test"/>
