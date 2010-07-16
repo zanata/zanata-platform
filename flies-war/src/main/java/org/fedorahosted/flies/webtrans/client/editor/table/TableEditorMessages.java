@@ -1,8 +1,13 @@
 package org.fedorahosted.flies.webtrans.client.editor.table;
 
 import com.google.gwt.i18n.client.Messages;
+import com.google.gwt.i18n.client.LocalizableResource.DefaultLocale;
+import com.google.gwt.i18n.client.LocalizableResource.Generate;
 
+@DefaultLocale
+@Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
 public interface TableEditorMessages extends Messages {
+
 	@DefaultMessage("Source comment: ")
 	String sourceCommentLabel();
 

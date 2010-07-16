@@ -5,9 +5,11 @@ import com.google.gwt.i18n.client.LocalizableResource.DefaultLocale;
 import com.google.gwt.i18n.client.LocalizableResource.Generate;
 import com.google.gwt.i18n.client.Messages.DefaultMessage;
 
-@DefaultLocale("en_US")
-//@Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
+@DefaultLocale
+@Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
 public interface RpcMessages extends Messages {
-//	@DefaultMessage("Dispatcher not set up to delegate WorkspaceContext and Identity.")
+
+	@DefaultMessage("Dispatcher not set up to delegate WorkspaceContext and Identity.")
 	String dispatcherSetupFailed();
+	
 }
