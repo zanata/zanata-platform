@@ -1,4 +1,7 @@
-<!DOCTYPE module PUBLIC "//gwt-module/" "http://google-web-toolkit.googlecode.com/svn/tags/2.0.3/distro-source/core/src/gwt-module.dtd">
+<!--
+  set-property-fallback is missing from the DTD:
+  <!DOCTYPE module PUBLIC "//gwt-module/" "http://google-web-toolkit.googlecode.com/svn/tags/2.0.3/distro-source/core/src/gwt-module.dtd">
+-->
 <module rename-to="webtrans">
 
 	  <!-- Tell GWT to compile in UIObject.ensureDebugId(String) calls -->
@@ -43,14 +46,7 @@
       <source path="client" />
       <source path="shared" />
 
-  <inherits name="com.google.gwt.i18n.I18N"/>
-    <extend-property name="locale" values="qc"/>    
-<!--   
-    <extend-property name="locale" values="en"/>
-    <extend-property name="locale" values="bg"/>
-    <extend-property name="locale" values="de"/>
-    <extend-property name="locale" values="fr"/>
-    <extend-property name="locale" values="it"/>
-    <extend-property name="locale" values="tr"/>
- -->
+      <inherits name="com.google.gwt.i18n.I18N"/>
+      <extend-property name="locale" values="en,qc"/>
+      <set-property-fallback name="locale" value="en"/>
 </module>
