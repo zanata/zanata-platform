@@ -19,7 +19,7 @@
 		<g:LayoutPanel ui:field="rootPanel">
 			<g:layer top="5px" bottom="5px" left="5px" right="5px">
 				<g:Label styleName="{style.tuDetailsInactive}" ui:field="noDetailsLabel">
-					<ui:msg description="Select a Translation Unit to view details.">Select a Translation Unit to view details.</ui:msg>
+					<ui:msg>Select a Translation Unit to view details.</ui:msg>
 				</g:Label>
 			</g:layer>
 			<g:layer top="0px" height="0px" left="3px" right="3px">

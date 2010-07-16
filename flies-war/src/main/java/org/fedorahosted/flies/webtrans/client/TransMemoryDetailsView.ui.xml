@@ -10,41 +10,41 @@
 	<ui:with field='resources' type="org.fedorahosted.flies.webtrans.client.Resources"/>
 	
 	<g:DialogBox autoHide="true" modal="true">
-	  <g:caption><b><ui:msg description="Translation Memory Details">Translation Memory Details</ui:msg></b></g:caption>
+	  <g:caption><b><ui:msg>Translation Memory Details</ui:msg></b></g:caption>
 	  <g:HTMLPanel>
 			<g:VerticalPanel>
 				<g:HorizontalPanel>
-					<g:Label><ui:msg description="Locations: ">Locations: </ui:msg></g:Label>
+					<g:Label><ui:msg>Locations:</ui:msg></g:Label>
 				    <g:ListBox ui:field='documentListBox' visibleItemCount='5'/>
 				</g:HorizontalPanel>
 				<g:HorizontalPanel>
-					<g:Label><ui:msg description="Project: ">Project: </ui:msg></g:Label>
-					<g:Label ui:field='projectName' ><ui:msg description="Project Name">Project Name</ui:msg></g:Label>
+					<g:Label><ui:msg>Project:</ui:msg></g:Label>
+					<g:Label ui:field='projectName' ><ui:msg>Project Name</ui:msg></g:Label>
 				</g:HorizontalPanel>
 				<g:HorizontalPanel>
-					<g:Label><ui:msg description="Iteration: ">Iteration: </ui:msg></g:Label>
-					<g:Label ui:field='iterationName' ><ui:msg description="Iteration Name">Iteration Name</ui:msg></g:Label>
+					<g:Label><ui:msg>Iteration:</ui:msg></g:Label>
+					<g:Label ui:field='iterationName' ><ui:msg>Iteration Name</ui:msg></g:Label>
 				</g:HorizontalPanel>
 				<g:HorizontalPanel>
-					<g:Label><ui:msg description="Document: ">Document: </ui:msg></g:Label>
-					<g:Label ui:field='docName' ><ui:msg description="Document Name">Document Name</ui:msg></g:Label>
+					<g:Label><ui:msg>Document:</ui:msg></g:Label>
+					<g:Label ui:field='docName' ><ui:msg>Document Name</ui:msg></g:Label>
 				</g:HorizontalPanel>
 				<g:HorizontalPanel>
 					<g:VerticalPanel>
-						<g:Label><ui:msg description="Source: ">Source: </ui:msg></g:Label>
-						<g:TextArea ui:field='sourceText' readOnly='true'><ui:msg description="Source Text">Source Text</ui:msg></g:TextArea>
-						<g:Label><ui:msg description="Comment: ">Comment: </ui:msg></g:Label>
-						<g:TextArea ui:field='sourceComment' readOnly='true'><ui:msg description="Source Comment">Source Comment</ui:msg></g:TextArea>
+						<g:Label><ui:msg>Source: </ui:msg></g:Label>
+						<g:TextArea ui:field='sourceText' readOnly='true'><ui:msg>Source Text</ui:msg></g:TextArea>
+						<g:Label><ui:msg>Comment:</ui:msg></g:Label>
+						<g:TextArea ui:field='sourceComment' readOnly='true'><ui:msg>Source Comment</ui:msg></g:TextArea>
 					</g:VerticalPanel>
 					<g:VerticalPanel>
-						<g:Label><ui:msg description="Target: ">Target: </ui:msg></g:Label>
-						<g:TextArea ui:field='targetText' readOnly='true'><ui:msg description="Target Text">Target Text</ui:msg></g:TextArea>
-						<g:Label><ui:msg description="Comment: ">Comment: </ui:msg></g:Label>
-						<g:TextArea ui:field='targetComment' readOnly='true'><ui:msg description="Target Comment">Target Comment</ui:msg></g:TextArea>
+						<g:Label><ui:msg>Target:</ui:msg></g:Label>
+						<g:TextArea ui:field='targetText' readOnly='true'><ui:msg>Target Text</ui:msg></g:TextArea>
+						<g:Label><ui:msg>Comment:</ui:msg></g:Label>
+						<g:TextArea ui:field='targetComment' readOnly='true'><ui:msg>Target Comment</ui:msg></g:TextArea>
 					</g:VerticalPanel>
 				</g:HorizontalPanel>
 			</g:VerticalPanel>
-	    <g:Button ui:field='dismissButton'><ui:msg description="Dismiss">Dismiss</ui:msg></g:Button>
+	    <g:Button ui:field='dismissButton'><ui:msg>Dismiss</ui:msg></g:Button>
 	  </g:HTMLPanel>
 	</g:DialogBox>
 </ui:UiBinder>

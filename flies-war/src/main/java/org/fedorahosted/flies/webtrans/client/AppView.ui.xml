@@ -61,13 +61,13 @@
 					<g:FlowPanel>
 						<g:HTMLPanel styleName="{style.topPanel-Navigation}">
 							<nobr>
-								<span ui:field="user" class="{style.userName}"><ui:msg description="User Name">User Name</ui:msg></span>
+								<span ui:field="user" class="{style.userName}"><ui:msg>User Name</ui:msg></span>
 								<span class="{style.divider}">|</span>
-								<g:Anchor href="#" ui:field="helpLink"><ui:msg description="Help">Help</ui:msg></g:Anchor>
+								<g:Anchor href="#" ui:field="helpLink"><ui:msg>Help</ui:msg></g:Anchor>
 								<span class="{style.divider}">|</span>
-								<g:Anchor href="#" ui:field="leaveLink"><ui:msg description="Leave Workspace">Leave Workspace</ui:msg></g:Anchor>
+								<g:Anchor href="#" ui:field="leaveLink"><ui:msg>Leave Workspace</ui:msg></g:Anchor>
 								<span class="{style.divider}">|</span>
-								<g:Anchor href="#" ui:field="signOutLink"><ui:msg description="Sign Out">Sign Out</ui:msg></g:Anchor>
+								<g:Anchor href="#" ui:field="signOutLink"><ui:msg>Sign Out</ui:msg></g:Anchor>
 							</nobr>
 						</g:HTMLPanel>
 					</g:FlowPanel>
@@ -78,10 +78,10 @@
 			<g:FlowPanel styleName="{resources.style.banner}">
 				<g:HTMLPanel styleName="{style.topPanel-Workspace}">
 					<nobr>
-						<g:Anchor href="#" ui:field="documentsLink"><ui:msg description="Documents">Documents</ui:msg></g:Anchor>
+						<g:Anchor href="#" ui:field="documentsLink"><ui:msg>Documents</ui:msg></g:Anchor>
 						<span class="{style.divider}">></span>
 						<em>
-							<span ui:field="selectedDocumentPathSpan"/><span ui:field="selectedDocumentSpan"><ui:msg description="No document selected">No document selected</ui:msg></span>
+							<span ui:field="selectedDocumentPathSpan"/><span ui:field="selectedDocumentSpan"><ui:msg>No document selected</ui:msg></span>
 						</em>
 					</nobr>
 				</g:HTMLPanel>
