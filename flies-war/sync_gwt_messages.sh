@@ -3,7 +3,7 @@
 EXTRA_DIR=target/extra/webtrans/
 TARGET_DIR=src/main/resources/
 
-SUFFIX='_default.properties'
+SUFFIX='_en.properties'
 
 echo "Processing Messages";
 
