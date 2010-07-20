@@ -140,6 +140,9 @@
 			</activation>
 			<properties>
 				<env.JBOSS_HOME>/opt/jboss-4.2.3.GA-jdk6</env.JBOSS_HOME>
+				<!-- jboss config for the Cargo plugin -->
+				<containerId>jboss42x</containerId>
+				<downloadUrl>http://downloads.sourceforge.net/jboss/jboss-4.2.3.GA-jdk6.zip?big_mirror=1</downloadUrl>
 			</properties>
 
 			<build>
@@ -311,8 +314,69 @@
 					<value>dev</value>
 				</property>
 			</activation>
+			<properties>
+				<!-- common config for Cargo -->
+				<port>8080</port>
+				<installDir>${java.io.tmpdir}/cargo/installs</installDir>
+			</properties>
 			<build>
 				<plugins>
+					<plugin>
+						<groupId>org.codehaus.cargo</groupId>
+						<artifactId>cargo-maven2-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>redeploy</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<wait>false</wait>
+							<container>
+								<containerId>${containerId}</containerId>
+							</container>
+							<configuration>
+								<type>existing</type>
+								<home>${jboss42x.home}/server/default</home>
+							</configuration>
+							<deployer>
+								<deployables>
+									<deployable>
+										<pingURL>http://localhost:${port}/flies/</pingURL>
+										<location>${project.build.directory}/flies</location>
+									</deployable>
+								</deployables>
+							</deployer>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-resources-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>copy-ds-context</id>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<phase>package</phase>
+								<configuration>
+									<outputDirectory>${as.deploy}</outputDirectory>
+									<resources>
+										<resource>
+											<directory>${basedir}/src/main/resources-jboss/</directory>
+											<filtering>true</filtering>
+											<includes>
+												<include>flies-ds.xml</include>
+											</includes>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+<!--
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>jboss-maven-plugin</artifactId>
@@ -340,6 +404,7 @@
 							</execution>
 						</executions>
 					</plugin>
+-->
 				</plugins>
 			</build>
 		</profile>
