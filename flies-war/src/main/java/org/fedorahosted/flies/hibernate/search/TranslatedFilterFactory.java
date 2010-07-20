@@ -8,30 +8,35 @@ import org.hibernate.search.filter.FilterKey;
 import org.hibernate.search.filter.StandardFilterKey;
 import org.jboss.seam.Seam;
 
-public class TranslatedFilterFactory {
+public class TranslatedFilterFactory
+{
 
-	@Factory
-	public Filter getFilter() {
-		TranslatedFilter filter = (TranslatedFilter) Seam.componentForName("translatedFilter").newInstance();
-		filter.setLocale(locale);
-		return filter;
-	}
+   @Factory
+   public Filter getFilter()
+   {
+      TranslatedFilter filter = (TranslatedFilter) Seam.componentForName("translatedFilter").newInstance();
+      filter.setLocale(locale);
+      return filter;
+   }
 
-	private LocaleId locale;
-	
-	public LocaleId getLocale() {
-		return locale;
-	}
-	
-	public void setLocale(LocaleId locale) {
-		this.locale = locale;
-	}
-	
-	@Key
-	public FilterKey getKey() {
-		StandardFilterKey key = new StandardFilterKey();
-		key.addParameter(locale);
-		return key;
-	}
+   private LocaleId locale;
+
+   public LocaleId getLocale()
+   {
+      return locale;
+   }
+
+   public void setLocale(LocaleId locale)
+   {
+      this.locale = locale;
+   }
+
+   @Key
+   public FilterKey getKey()
+   {
+      StandardFilterKey key = new StandardFilterKey();
+      key.addParameter(locale);
+      return key;
+   }
 
 }

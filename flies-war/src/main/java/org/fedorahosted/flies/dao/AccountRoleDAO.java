@@ -16,57 +16,62 @@ import org.jboss.seam.annotations.Scope;
 @Name("accountRoleDAO")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
-public class AccountRoleDAO extends AbstractDAOImpl<HAccountRole, Integer> {
-	
-	public AccountRoleDAO() {
-		super(HAccountRole.class);
-	}
+public class AccountRoleDAO extends AbstractDAOImpl<HAccountRole, Integer>
+{
 
-	public AccountRoleDAO(Session session) {
-		super(HAccountRole.class, session);
-	}
-	
-	public boolean roleExists(String role) {
-		return findByName(role) != null;
-	}
-	
-	public HAccountRole findByName(String roleName) {
-		return (HAccountRole) getSession().createCriteria(HAccountRole.class)
-			.add( Restrictions.naturalId()
-		        .set("name", roleName))
-		    .uniqueResult();
-	}
+   public AccountRoleDAO()
+   {
+      super(HAccountRole.class);
+   }
 
-	public HAccountRole create(String roleName, String... includesRoles) {
-		HAccountRole role = new HAccountRole();
-		role.setName(roleName);
-		for (String includeRole : includesRoles) {
-			Set<HAccountRole> groups = role.getGroups();
-			if(groups == null) {
-				groups = new HashSet<HAccountRole>();
-				role.setGroups(groups);
-			}
-			groups.add(findByName(includeRole));
-		}
-		makePersistent(role);
-		return role;
-	}
-	
-	public List<HAccount> listMembers(String roleName) {
-		HAccountRole role = findByName(roleName);
-		return listMembers(role);
-	}
-	
-	@SuppressWarnings("unchecked")
-	public List<HAccount> listMembers(HAccountRole role) {
-		return getSession().createQuery("from HAccount account where :role member of account.roles")
-			.setParameter("role", role)
-			.list();
-	}
-	
-	public void grantRole(HAccount account, HAccountRole role) {
-		account.getRoles().add(role);
-	}
-	
+   public AccountRoleDAO(Session session)
+   {
+      super(HAccountRole.class, session);
+   }
+
+   public boolean roleExists(String role)
+   {
+      return findByName(role) != null;
+   }
+
+   public HAccountRole findByName(String roleName)
+   {
+      return (HAccountRole) getSession().createCriteria(HAccountRole.class).add(Restrictions.naturalId().set("name", roleName)).uniqueResult();
+   }
+
+   public HAccountRole create(String roleName, String... includesRoles)
+   {
+      HAccountRole role = new HAccountRole();
+      role.setName(roleName);
+      for (String includeRole : includesRoles)
+      {
+         Set<HAccountRole> groups = role.getGroups();
+         if (groups == null)
+         {
+            groups = new HashSet<HAccountRole>();
+            role.setGroups(groups);
+         }
+         groups.add(findByName(includeRole));
+      }
+      makePersistent(role);
+      return role;
+   }
+
+   public List<HAccount> listMembers(String roleName)
+   {
+      HAccountRole role = findByName(roleName);
+      return listMembers(role);
+   }
+
+   @SuppressWarnings("unchecked")
+   public List<HAccount> listMembers(HAccountRole role)
+   {
+      return getSession().createQuery("from HAccount account where :role member of account.roles").setParameter("role", role).list();
+   }
+
+   public void grantRole(HAccount account, HAccountRole role)
+   {
+      account.getRoles().add(role);
+   }
 
 }

@@ -12,17 +12,20 @@ import org.hibernate.search.annotations.Indexed;
 @Entity
 @DiscriminatorValue("iteration")
 @Indexed
-public class HIterationProject extends HProject{
+public class HIterationProject extends HProject
+{
 
-	private List<HProjectIteration> projectIterations = new ArrayList<HProjectIteration>();
+   private List<HProjectIteration> projectIterations = new ArrayList<HProjectIteration>();
 
-	@OneToMany(mappedBy = "project")
-	public List<HProjectIteration> getProjectIterations() {
-		return projectIterations;
-	}
+   @OneToMany(mappedBy = "project")
+   public List<HProjectIteration> getProjectIterations()
+   {
+      return projectIterations;
+   }
 
-	public void setProjectIterations(List<HProjectIteration> projectIterations) {
-		this.projectIterations = projectIterations;
-	}
-	
+   public void setProjectIterations(List<HProjectIteration> projectIterations)
+   {
+      this.projectIterations = projectIterations;
+   }
+
 }

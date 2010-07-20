@@ -26,43 +26,36 @@ import org.jboss.seam.log.Log;
 
 @Name("projectsService")
 @Path("/projects")
-public class ProjectsService {
+public class ProjectsService
+{
 
-	@In
-	Session session;
+   @In
+   Session session;
 
-	@Logger
-	Log log;
+   @Logger
+   Log log;
 
-	@HeaderParam("Accept")
-	@DefaultValue(MediaType.APPLICATION_XML)
-	MediaType accept;
-	
-	@GET
-	@Produces( { 
-		MediaTypes.APPLICATION_FLIES_PROJECTS_XML,
-		MediaTypes.APPLICATION_FLIES_PROJECTS_JSON,
-		MediaType.APPLICATION_XML,
-		MediaType.APPLICATION_JSON})
-	@Wrapped(element = "projects", namespace = Namespaces.FLIES)
-	public List<Project> get() {
-		List<HProject> projects = session.createQuery("from HProject p").list();
+   @HeaderParam("Accept")
+   @DefaultValue(MediaType.APPLICATION_XML)
+   MediaType accept;
 
-		List<Project> projectRefs = new ArrayList<Project>(projects
-				.size());
+   @GET
+   @Produces( { MediaTypes.APPLICATION_FLIES_PROJECTS_XML, MediaTypes.APPLICATION_FLIES_PROJECTS_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+   @Wrapped(element = "projects", namespace = Namespaces.FLIES)
+   public List<Project> get()
+   {
+      List<HProject> projects = session.createQuery("from HProject p").list();
 
-		for (HProject hProject : projects) {
-			Project project = new Project(hProject.getSlug(), hProject
-					.getName(), ProjectType.IterationProject);
-			project.getLinks(true).add( 
-					new Link(URI.create("p/"+hProject.getSlug()), "self", 
-							MediaTypes.createFormatSpecificType(
-									MediaTypes.APPLICATION_FLIES_PROJECT,
-									accept)));
-			projectRefs.add(project);
-		}
+      List<Project> projectRefs = new ArrayList<Project>(projects.size());
 
-		return projectRefs;
-	}
+      for (HProject hProject : projects)
+      {
+         Project project = new Project(hProject.getSlug(), hProject.getName(), ProjectType.IterationProject);
+         project.getLinks(true).add(new Link(URI.create("p/" + hProject.getSlug()), "self", MediaTypes.createFormatSpecificType(MediaTypes.APPLICATION_FLIES_PROJECT, accept)));
+         projectRefs.add(project);
+      }
+
+      return projectRefs;
+   }
 
 }

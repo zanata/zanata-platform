@@ -19,145 +19,145 @@ import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.jboss.resteasy.client.ClientResponse;
 import org.testng.annotations.Test;
 
-public class ProjectIterationServiceTest extends FliesRestTest {
+public class ProjectIterationServiceTest extends FliesRestTest
+{
 
-	private final String RESOURCE_PATH = "/projects/p/sample-project/iterations/i/";
-	
-	@Override
-    protected void prepareDBUnitOperations() {
-        beforeTestOperations.add(
-                new DataSetOperation("META-INF/testdata/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT)
-        );
-    }
+   private final String RESOURCE_PATH = "/projects/p/sample-project/iterations/i/";
 
-	@Override
-	protected void prepareResources() {
-		
-		ProjectDAO projectDAO = new ProjectDAO(getSession());
-		ProjectIterationDAO projectIterationDAO = new ProjectIterationDAO(getSession());
-		DocumentDAO documentDAO = new DocumentDAO(getSession());
-		ETagUtils eTagUtils = new ETagUtils(getSession(), documentDAO);
-		
-		ProjectIterationService projectIterationService = new ProjectIterationService(projectDAO, projectIterationDAO, eTagUtils);
-		
-		resources.add(projectIterationService);
-	}
-	
-	@Test
-	public void retrieveNonExistingIteration(){
-		IProjectIterationResource resource = getClientRequestFactory()
-			.createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve("1.0.0"));
+   @Override
+   protected void prepareDBUnitOperations()
+   {
+      beforeTestOperations.add(new DataSetOperation("META-INF/testdata/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+   }
 
-		ClientResponse<ProjectIteration> response = resource.get();
-		assertThat( response.getStatus(), is(404) );
-	}
+   @Override
+   protected void prepareResources()
+   {
 
-	@Test
-	public void retrieveExistingProject(){
-		IProjectIterationResource resource = getClientRequestFactory()
-		.createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve("1.0"));
+      ProjectDAO projectDAO = new ProjectDAO(getSession());
+      ProjectIterationDAO projectIterationDAO = new ProjectIterationDAO(getSession());
+      DocumentDAO documentDAO = new DocumentDAO(getSession());
+      ETagUtils eTagUtils = new ETagUtils(getSession(), documentDAO);
 
-	ClientResponse<ProjectIteration> response = resource.get();
-		assertThat( response.getStatus(), lessThan(400) );
-	}
+      ProjectIterationService projectIterationService = new ProjectIterationService(projectDAO, projectIterationDAO, eTagUtils);
 
-	private static final String SLUG = "my-new-iteration";
-	private static final String NAME = "My New Iteration";
-	private static final String DESC = "Another test iteration";
+      resources.add(projectIterationService);
+   }
 
-	@Test
-	public void create(){
+   @Test
+   public void retrieveNonExistingIteration()
+   {
+      IProjectIterationResource resource = getClientRequestFactory().createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve("1.0.0"));
 
-		ProjectIteration iteration = new ProjectIteration(SLUG, NAME, DESC);
+      ClientResponse<ProjectIteration> response = resource.get();
+      assertThat(response.getStatus(), is(404));
+   }
 
-		IProjectIterationResource resource = getClientRequestFactory()
-		.createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve(SLUG));
-		
-		Response response = resource.put(iteration);
-		
-		assertThat( response.getStatus(), is( Status.CREATED.getStatusCode()));
-		
-		String location = (String) response.getMetadata().getFirst("Location");
-		
-		assertThat( location, endsWith("/iterations/i/"+SLUG));
+   @Test
+   public void retrieveExistingProject()
+   {
+      IProjectIterationResource resource = getClientRequestFactory().createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve("1.0"));
 
-		ClientResponse<ProjectIteration> response1 = resource.get();
-		assertThat(response1.getStatus(), is(Status.OK.getStatusCode()));
+      ClientResponse<ProjectIteration> response = resource.get();
+      assertThat(response.getStatus(), lessThan(400));
+   }
 
-		ProjectIteration iterationRes = response1.getEntity();
-		
-		assertThat(iterationRes, notNullValue());
-		assertThat(iterationRes.getName(), is(NAME)); 
-		assertThat(iterationRes.getId(), is(SLUG)); 
-		assertThat(iterationRes.getDescription(), is(DESC)); 
-	}
+   private static final String SLUG = "my-new-iteration";
+   private static final String NAME = "My New Iteration";
+   private static final String DESC = "Another test iteration";
 
-	private static final String SLUG_INVALID = "my,new,iteration";
-	private static final String NAME_INVALID = "My test ProjectMy test ProjectMy test ProjectMy test ProjectMy test ProjectMy test Project";
-	private static final String DESC_INVALID = NAME_INVALID + NAME_INVALID + NAME_INVALID + NAME_INVALID + NAME_INVALID + NAME_INVALID;
-	
-	@Test
-	public void createWithInvalidSlug(){
-		ProjectIteration iteration = new ProjectIteration(SLUG_INVALID, NAME, DESC);
+   @Test
+   public void create()
+   {
 
-		IProjectIterationResource resource = getClientRequestFactory()
-		.createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve(SLUG_INVALID));
+      ProjectIteration iteration = new ProjectIteration(SLUG, NAME, DESC);
 
-		Response response = resource.put(iteration);
-		
-        assertThat( response.getStatus(), is( Status.NOT_FOUND.getStatusCode()));
-	}
-	
-	@Test
-	public void createWithInvalidData(){
-		ProjectIteration iteration = new ProjectIteration(SLUG, NAME_INVALID, DESC);
+      IProjectIterationResource resource = getClientRequestFactory().createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve(SLUG));
 
-		IProjectIterationResource resource = getClientRequestFactory()
-		.createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve(SLUG));
-		
-		Response response = resource.put(iteration);
-        assertThat(response.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
-        
-        iteration = new ProjectIteration(SLUG, NAME, DESC_INVALID);
-        response = resource.put(iteration);
-        assertThat(response.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
-                
-        
-	}
+      Response response = resource.put(iteration);
 
-	@Test
-	public void updateWithInvalidData() {
-		create();
-		ProjectIteration iteration = new ProjectIteration(SLUG, NAME_INVALID, DESC);
+      assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
 
-		IProjectIterationResource resource = getClientRequestFactory()
-		.createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve(SLUG));
+      String location = (String) response.getMetadata().getFirst("Location");
 
-		Response response = resource.put(iteration);
-        assertThat(response.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
-	}
+      assertThat(location, endsWith("/iterations/i/" + SLUG));
 
-	private static final String NAME_UPDATED = "xx" + NAME + "xx"; 
-	private static final String DESC_UPDATED = "xx" + DESC + "xx"; 
-	
-	@Test
-	public void update() {
-		create();
-		ProjectIteration iteration = new ProjectIteration(SLUG, NAME_UPDATED , DESC_UPDATED);
+      ClientResponse<ProjectIteration> response1 = resource.get();
+      assertThat(response1.getStatus(), is(Status.OK.getStatusCode()));
 
-		IProjectIterationResource resource = getClientRequestFactory()
-		.createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve(SLUG));
+      ProjectIteration iterationRes = response1.getEntity();
 
-		Response response = resource.put(iteration);
-        assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
+      assertThat(iterationRes, notNullValue());
+      assertThat(iterationRes.getName(), is(NAME));
+      assertThat(iterationRes.getId(), is(SLUG));
+      assertThat(iterationRes.getDescription(), is(DESC));
+   }
 
-        ClientResponse<ProjectIteration> gotResponse = resource.get();
-        assertThat(gotResponse.getStatus(), is(Status.OK.getStatusCode()));
-        
-        ProjectIteration entity = gotResponse.getEntity();
-        
-		assertThat( entity.getName(), is(NAME_UPDATED));
-		assertThat( entity.getDescription(), is(DESC_UPDATED));
-	}
-	
+   private static final String SLUG_INVALID = "my,new,iteration";
+   private static final String NAME_INVALID = "My test ProjectMy test ProjectMy test ProjectMy test ProjectMy test ProjectMy test Project";
+   private static final String DESC_INVALID = NAME_INVALID + NAME_INVALID + NAME_INVALID + NAME_INVALID + NAME_INVALID + NAME_INVALID;
+
+   @Test
+   public void createWithInvalidSlug()
+   {
+      ProjectIteration iteration = new ProjectIteration(SLUG_INVALID, NAME, DESC);
+
+      IProjectIterationResource resource = getClientRequestFactory().createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve(SLUG_INVALID));
+
+      Response response = resource.put(iteration);
+
+      assertThat(response.getStatus(), is(Status.NOT_FOUND.getStatusCode()));
+   }
+
+   @Test
+   public void createWithInvalidData()
+   {
+      ProjectIteration iteration = new ProjectIteration(SLUG, NAME_INVALID, DESC);
+
+      IProjectIterationResource resource = getClientRequestFactory().createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve(SLUG));
+
+      Response response = resource.put(iteration);
+      assertThat(response.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
+
+      iteration = new ProjectIteration(SLUG, NAME, DESC_INVALID);
+      response = resource.put(iteration);
+      assertThat(response.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
+
+   }
+
+   @Test
+   public void updateWithInvalidData()
+   {
+      create();
+      ProjectIteration iteration = new ProjectIteration(SLUG, NAME_INVALID, DESC);
+
+      IProjectIterationResource resource = getClientRequestFactory().createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve(SLUG));
+
+      Response response = resource.put(iteration);
+      assertThat(response.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
+   }
+
+   private static final String NAME_UPDATED = "xx" + NAME + "xx";
+   private static final String DESC_UPDATED = "xx" + DESC + "xx";
+
+   @Test
+   public void update()
+   {
+      create();
+      ProjectIteration iteration = new ProjectIteration(SLUG, NAME_UPDATED, DESC_UPDATED);
+
+      IProjectIterationResource resource = getClientRequestFactory().createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve(SLUG));
+
+      Response response = resource.put(iteration);
+      assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
+
+      ClientResponse<ProjectIteration> gotResponse = resource.get();
+      assertThat(gotResponse.getStatus(), is(Status.OK.getStatusCode()));
+
+      ProjectIteration entity = gotResponse.getEntity();
+
+      assertThat(entity.getName(), is(NAME_UPDATED));
+      assertThat(entity.getDescription(), is(DESC_UPDATED));
+   }
+
 }

@@ -23,107 +23,119 @@ import org.jboss.seam.security.management.IdentityManager;
 
 @Name("passwordReset")
 @Scope(ScopeType.CONVERSATION)
-public class PasswordResetAction implements Serializable{
+public class PasswordResetAction implements Serializable
+{
 
-	private static final long serialVersionUID = -3966625589007754411L;
+   private static final long serialVersionUID = -3966625589007754411L;
 
-	@Logger
-	Log log;
-	
-    @In
-    private EntityManager entityManager;
+   @Logger
+   Log log;
 
-    @In
-    private IdentityManager identityManager;
-    
-    @In
-    private Identity identity;
-    
-    private String activationKey;
+   @In
+   private EntityManager entityManager;
 
-    private String password;
-    private String passwordConfirm;
+   @In
+   private IdentityManager identityManager;
 
-    private HAccountResetPasswordKey key;
-    
-    
-    public void setPassword(String password) {
-		this.password = password;
-	}
-    
-    @NotEmpty
-    @Length(min=6,max=20)
-    //@Pattern(regex="(?=^.{6,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$", message="Password is not secure enough!")
-    public String getPassword() {
-		return password;
-	}
-    
-    public void setPasswordConfirm(String passwordConfirm) {
-		this.passwordConfirm = passwordConfirm;
-    	validatePasswordsMatch();
-	}
+   @In
+   private Identity identity;
 
-    public String getPasswordConfirm() {
-		return passwordConfirm;
-	}
+   private String activationKey;
 
-    public boolean validatePasswordsMatch(){
-		if (password == null || !password.equals(passwordConfirm) ){
-			FacesMessages.instance().addToControl("passwordConfirm", "Passwords do not match");
-			return false;
-		}
-		return true;
-    }
-    
-    public String getActivationKey() {
-		return activationKey;
-	}
-    
-    public void setActivationKey(String activationKey) {
-		this.activationKey = activationKey;
-		key = entityManager.find(HAccountResetPasswordKey.class, getActivationKey());		
-	}
-    
-    private HAccountResetPasswordKey getKey(){
-    	return key;
-    }
-    
-    @Begin(join=true)
-    public void validateActivationKey(){
-    	
-    	if(getActivationKey() == null)
-    		throw new KeyNotFoundException();
-    	
-		key = entityManager.find(HAccountResetPasswordKey.class, getActivationKey());
+   private String password;
+   private String passwordConfirm;
 
-		if(key == null)
-			throw new KeyNotFoundException();
-    }
-    
-    @End
-    public String changePassword(){
+   private HAccountResetPasswordKey key;
 
-    	if( !validatePasswordsMatch() )
-    		return null;
-    	
-        new RunAsOperation() {
-            public void execute() {
-               identityManager.changePassword(getKey().getAccount().getUsername(), getPassword());
-            }         
-        }.addRole("admin")
-         .run();
+   public void setPassword(String password)
+   {
+      this.password = password;
+   }
 
-        entityManager.remove(getKey());
-        
-        FacesMessages.instance().add("Your password has been successfully changed.");
+   @NotEmpty
+   @Length(min = 6, max = 20)
+   // @Pattern(regex="(?=^.{6,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$",
+   // message="Password is not secure enough!")
+   public String getPassword()
+   {
+      return password;
+   }
 
-        // Login the user
-        identity.getCredentials().setUsername(getKey().getAccount().getUsername());
-        identity.getCredentials().setPassword(getPassword());
-        identity.login();         
-         
-    	return "/home.xhtml";
-    }
+   public void setPasswordConfirm(String passwordConfirm)
+   {
+      this.passwordConfirm = passwordConfirm;
+      validatePasswordsMatch();
+   }
 
-    
+   public String getPasswordConfirm()
+   {
+      return passwordConfirm;
+   }
+
+   public boolean validatePasswordsMatch()
+   {
+      if (password == null || !password.equals(passwordConfirm))
+      {
+         FacesMessages.instance().addToControl("passwordConfirm", "Passwords do not match");
+         return false;
+      }
+      return true;
+   }
+
+   public String getActivationKey()
+   {
+      return activationKey;
+   }
+
+   public void setActivationKey(String activationKey)
+   {
+      this.activationKey = activationKey;
+      key = entityManager.find(HAccountResetPasswordKey.class, getActivationKey());
+   }
+
+   private HAccountResetPasswordKey getKey()
+   {
+      return key;
+   }
+
+   @Begin(join = true)
+   public void validateActivationKey()
+   {
+
+      if (getActivationKey() == null)
+         throw new KeyNotFoundException();
+
+      key = entityManager.find(HAccountResetPasswordKey.class, getActivationKey());
+
+      if (key == null)
+         throw new KeyNotFoundException();
+   }
+
+   @End
+   public String changePassword()
+   {
+
+      if (!validatePasswordsMatch())
+         return null;
+
+      new RunAsOperation()
+      {
+         public void execute()
+         {
+            identityManager.changePassword(getKey().getAccount().getUsername(), getPassword());
+         }
+      }.addRole("admin").run();
+
+      entityManager.remove(getKey());
+
+      FacesMessages.instance().add("Your password has been successfully changed.");
+
+      // Login the user
+      identity.getCredentials().setUsername(getKey().getAccount().getUsername());
+      identity.getCredentials().setPassword(getPassword());
+      identity.login();
+
+      return "/home.xhtml";
+   }
+
 }

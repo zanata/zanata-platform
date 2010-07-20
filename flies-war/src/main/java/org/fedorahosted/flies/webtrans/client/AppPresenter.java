@@ -47,158 +47,172 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class AppPresenter extends WidgetPresenter<AppPresenter.Display> {
+public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
+{
 
-	public interface Display extends WidgetDisplay {
-		
-		enum MainView{
-			Documents,
-			Editor;
-		}
-		
-		void setDocumentListView(Widget documentListView);
-		void setEditorView(Widget editorView);
-		void setSidePanel(Widget sidePanel);
-		void showInMainView(MainView view);
-		
-		HasClickHandlers getSignOutLink();
-		HasClickHandlers getLeaveWorkspaceLink();
-		HasClickHandlers getHelpLink();
-		HasClickHandlers getDocumentsLink();
-		void setUserLabel(String userLabel);
-		void setWorkspaceNameLabel(String workspaceNameLabel);
-		void setSelectedDocument(DocumentInfo document);
-	}
+   public interface Display extends WidgetDisplay
+   {
 
-	private final DocumentListPresenter documentListPresenter;
-	private final TranslationEditorPresenter translationEditorPresenter;
-	private final SidePanelPresenter sidePanelPresenter;
-	private final WorkspaceContext workspaceContext;
-	private final DispatchAsync dispatcher;
-	private final Identity identity;
-	
-	private final WebTransMessages messages;
-	
-	private DocumentId selectedDocument;
+      enum MainView
+      {
+         Documents, Editor;
+      }
 
-	@Inject
-	public AppPresenter(Display display, EventBus eventBus,
-			CachingDispatchAsync dispatcher,
-			final TableEditorPresenter tableEditorPresenter,
-			final TranslationEditorPresenter translationEditorPresenter,
-			final DocumentListPresenter documentListPresenter,
-			final TransUnitNavigationPresenter transUnitNavigationPresenter,
-			final SidePanelPresenter sidePanelPresenter, 
-			final Identity identity,
-			final WorkspaceContext workspaceContext, 
-			final WebTransMessages messages ) {
-		super(display, eventBus);
-		this.identity = identity;
-		this.messages = messages;
-		this.dispatcher = dispatcher;
-		this.documentListPresenter = documentListPresenter;
-		this.translationEditorPresenter = translationEditorPresenter;
-		this.sidePanelPresenter = sidePanelPresenter;
-		this.workspaceContext = workspaceContext;
-	}
+      void setDocumentListView(Widget documentListView);
 
-	@Override
-	public Place getPlace() {
-		return null;
-	}
+      void setEditorView(Widget editorView);
 
-	@Override
-	protected void onBind() {
+      void setSidePanel(Widget sidePanel);
 
-		registerHandler(eventBus.addHandler(NotificationEvent.getType(),
-				new NotificationEventHandler() {
+      void showInMainView(MainView view);
 
-					@Override
-					public void onNotification(NotificationEvent event) {
-						PopupPanel popup = new PopupPanel(true);
-						popup.addStyleDependentName("Notification");
-						popup.addStyleName("Severity-"
-								+ event.getSeverity().name());
-						Widget center = translationEditorPresenter.getDisplay()
-								.asWidget();
-						popup.setWidth(center.getOffsetWidth() - 40 + "px");
-						popup.setWidget(new Label(event.getMessage()));
-						popup.setPopupPosition(center.getAbsoluteLeft() + 20,
-								center.getAbsoluteTop() + 30);
-						popup.show();
-					}
-				}));
+      HasClickHandlers getSignOutLink();
 
-		Window.enableScrolling(false);
+      HasClickHandlers getLeaveWorkspaceLink();
 
-		documentListPresenter.bind();
+      HasClickHandlers getHelpLink();
 
-		display.setDocumentListView(documentListPresenter.getDisplay()
-				.asWidget());
+      HasClickHandlers getDocumentsLink();
 
-		registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(),
-				new DocumentSelectionHandler() {
-					@Override
-					public void onDocumentSelected(DocumentSelectionEvent event) {
-						if(selectedDocument == null || !event.getDocument().getId().equals(selectedDocument)) {
-							display.setSelectedDocument(event.getDocument());
-						}
-						display.showInMainView(MainView.Editor);
-					}
-				}));
+      void setUserLabel(String userLabel);
 
-		translationEditorPresenter.bind();
-		display.setEditorView(translationEditorPresenter.getDisplay().asWidget());
-		
-		sidePanelPresenter.bind();
-		display.setSidePanel(sidePanelPresenter.getDisplay().asWidget());
+      void setWorkspaceNameLabel(String workspaceNameLabel);
 
-		display.showInMainView(MainView.Documents);
-		
-		registerHandler(display.getDocumentsLink().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				display.showInMainView(MainView.Documents);
-			}
-		}));
-		
-		
-		registerHandler( display.getSignOutLink().addClickHandler( new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				Application.redirectToLogout();
-			}
-		}));
-		
-		registerHandler( display.getLeaveWorkspaceLink().addClickHandler( new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				Application.closeWindow();
-//				As the editor was created at new window, it should be closed rather than redirected to project home.
-//				Application.redirectToFliesProjectHome(workspaceContext.getWorkspaceId());
-			}
-		}));
-		
-		display.setUserLabel(identity.getPerson().getName());
-		
-		display.setWorkspaceNameLabel(workspaceContext.getWorkspaceName());
-		
-		Window.setTitle( messages.windowTitle(workspaceContext.getWorkspaceName(), workspaceContext.getLocaleName()));
-	}
+      void setSelectedDocument(DocumentInfo document);
+   }
 
-	@Override
-	protected void onPlaceRequest(PlaceRequest request) {
-	}
+   private final DocumentListPresenter documentListPresenter;
+   private final TranslationEditorPresenter translationEditorPresenter;
+   private final SidePanelPresenter sidePanelPresenter;
+   private final WorkspaceContext workspaceContext;
+   private final DispatchAsync dispatcher;
+   private final Identity identity;
 
-	@Override
-	protected void onUnbind() {
-	}
+   private final WebTransMessages messages;
 
-	@Override
-	public void refreshDisplay() {
-	}
+   private DocumentId selectedDocument;
 
-	@Override
-	public void revealDisplay() {
-	}
+   @Inject
+   public AppPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TableEditorPresenter tableEditorPresenter, final TranslationEditorPresenter translationEditorPresenter, final DocumentListPresenter documentListPresenter, final TransUnitNavigationPresenter transUnitNavigationPresenter, final SidePanelPresenter sidePanelPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages)
+   {
+      super(display, eventBus);
+      this.identity = identity;
+      this.messages = messages;
+      this.dispatcher = dispatcher;
+      this.documentListPresenter = documentListPresenter;
+      this.translationEditorPresenter = translationEditorPresenter;
+      this.sidePanelPresenter = sidePanelPresenter;
+      this.workspaceContext = workspaceContext;
+   }
+
+   @Override
+   public Place getPlace()
+   {
+      return null;
+   }
+
+   @Override
+   protected void onBind()
+   {
+
+      registerHandler(eventBus.addHandler(NotificationEvent.getType(), new NotificationEventHandler()
+      {
+
+         @Override
+         public void onNotification(NotificationEvent event)
+         {
+            PopupPanel popup = new PopupPanel(true);
+            popup.addStyleDependentName("Notification");
+            popup.addStyleName("Severity-" + event.getSeverity().name());
+            Widget center = translationEditorPresenter.getDisplay().asWidget();
+            popup.setWidth(center.getOffsetWidth() - 40 + "px");
+            popup.setWidget(new Label(event.getMessage()));
+            popup.setPopupPosition(center.getAbsoluteLeft() + 20, center.getAbsoluteTop() + 30);
+            popup.show();
+         }
+      }));
+
+      Window.enableScrolling(false);
+
+      documentListPresenter.bind();
+
+      display.setDocumentListView(documentListPresenter.getDisplay().asWidget());
+
+      registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler()
+      {
+         @Override
+         public void onDocumentSelected(DocumentSelectionEvent event)
+         {
+            if (selectedDocument == null || !event.getDocument().getId().equals(selectedDocument))
+            {
+               display.setSelectedDocument(event.getDocument());
+            }
+            display.showInMainView(MainView.Editor);
+         }
+      }));
+
+      translationEditorPresenter.bind();
+      display.setEditorView(translationEditorPresenter.getDisplay().asWidget());
+
+      sidePanelPresenter.bind();
+      display.setSidePanel(sidePanelPresenter.getDisplay().asWidget());
+
+      display.showInMainView(MainView.Documents);
+
+      registerHandler(display.getDocumentsLink().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            display.showInMainView(MainView.Documents);
+         }
+      }));
+
+      registerHandler(display.getSignOutLink().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            Application.redirectToLogout();
+         }
+      }));
+
+      registerHandler(display.getLeaveWorkspaceLink().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            Application.closeWindow();
+            // As the editor was created at new window, it should be closed
+            // rather than redirected to project home.
+            // Application.redirectToFliesProjectHome(workspaceContext.getWorkspaceId());
+         }
+      }));
+
+      display.setUserLabel(identity.getPerson().getName());
+
+      display.setWorkspaceNameLabel(workspaceContext.getWorkspaceName());
+
+      Window.setTitle(messages.windowTitle(workspaceContext.getWorkspaceName(), workspaceContext.getLocaleName()));
+   }
+
+   @Override
+   protected void onPlaceRequest(PlaceRequest request)
+   {
+   }
+
+   @Override
+   protected void onUnbind()
+   {
+   }
+
+   @Override
+   public void refreshDisplay()
+   {
+   }
+
+   @Override
+   public void revealDisplay()
+   {
+   }
 }

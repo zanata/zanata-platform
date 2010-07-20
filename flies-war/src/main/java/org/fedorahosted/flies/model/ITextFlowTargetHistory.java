@@ -5,18 +5,19 @@ import java.util.Date;
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.LocaleId;
 
-public interface ITextFlowTargetHistory {
+public interface ITextFlowTargetHistory
+{
 
-	ContentState getState();
+   ContentState getState();
 
-	Integer getTextFlowRevision();
+   Integer getTextFlowRevision();
 
-	HPerson getLastModifiedBy();
+   HPerson getLastModifiedBy();
 
-	String getContent();
-	
-	Date getLastChanged();
+   String getContent();
 
-	Integer getVersionNum();
-	
+   Date getLastChanged();
+
+   Integer getVersionNum();
+
 }

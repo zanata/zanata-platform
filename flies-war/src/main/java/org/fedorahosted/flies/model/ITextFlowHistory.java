@@ -1,15 +1,14 @@
 package org.fedorahosted.flies.model;
 
-public interface ITextFlowHistory {
+public interface ITextFlowHistory
+{
 
-	Integer getPos();
+   Integer getPos();
 
-	Integer getRevision();
+   Integer getRevision();
 
-	boolean isObsolete();
+   boolean isObsolete();
 
-	String getContent();
+   String getContent();
 
-	
-	
 }

@@ -4,24 +4,25 @@ import java.util.ArrayList;
 
 import net.customware.gwt.dispatch.shared.Result;
 
-public class TransMemoryDetailsList implements Result {
-	
-	
-	private ArrayList<TransMemoryDetails> items;
+public class TransMemoryDetailsList implements Result
+{
 
-	@SuppressWarnings("unused")
-	private TransMemoryDetailsList() {
-		this(null);
-	}
-	
-	public TransMemoryDetailsList(
-			ArrayList<TransMemoryDetails> items) {
-				this.items = items;
-	}
+   private ArrayList<TransMemoryDetails> items;
 
-	public ArrayList<TransMemoryDetails> getItems() {
-		return items;
-	}
-	
+   @SuppressWarnings("unused")
+   private TransMemoryDetailsList()
+   {
+      this(null);
+   }
+
+   public TransMemoryDetailsList(ArrayList<TransMemoryDetails> items)
+   {
+      this.items = items;
+   }
+
+   public ArrayList<TransMemoryDetails> getItems()
+   {
+      return items;
+   }
 
 }

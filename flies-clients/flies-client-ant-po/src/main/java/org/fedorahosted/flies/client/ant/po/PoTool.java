@@ -12,106 +12,136 @@ import org.cyclopsgroup.jcli.annotation.MultiValue;
 import org.cyclopsgroup.jcli.annotation.Option;
 
 @Cli(name = "flies-publican", description = "Send publican PO/POT files to and from Flies")
-public class PoTool implements GlobalOptions {
+public class PoTool implements GlobalOptions
+{
 
-	private boolean help;
-	private boolean errors;
-	private boolean version;
+   private boolean help;
+   private boolean errors;
+   private boolean version;
 
-	/**
-	 * @param args
-	 * @throws Exception 
-	 */
-	public static void main(String[] args) throws Exception {
-		PoTool tool = new PoTool();
-		ArgumentProcessor<PoTool> argProcessor = ArgumentProcessor.newInstance(PoTool.class);
-		argProcessor.process(args, tool);
-		tool.processArgs();
-	}
-	
-	private void processArgs() throws Exception {
-		if (version) {
-			Utility.printJarVersion(System.out);
-			System.exit(0);
-		}
-		if (arguments.isEmpty()) {
-			help(System.out);
-			System.exit(0);
-		}
-		String command = arguments.remove(0);
-		if (command.equals("help")) {
-			help = true;
-		}
-		String[] otherArgs = arguments.toArray(new String[0]);
-		try {
-			if (command.equals("upload")) {
-				Subcommand upload = new UploadPoTask();
-				upload.processArgs(otherArgs, this);
-			} else if (command.equals("download")) {
-				Subcommand download = new DownloadPoTask();
-				download.processArgs(otherArgs, this);
-			} else if (command.equals("createproj")) {
-				Subcommand cmd = new CreateProjectTask();
-				cmd.processArgs(otherArgs, this);
-			} else if (command.equals("createiter")) {
-				Subcommand cmd = new CreateIterationTask();
-				cmd.processArgs(otherArgs, this);
-			} else if (command.equals("putuser")) {
-				Subcommand cmd = new PutUserTask();
-				cmd.processArgs(otherArgs, this);
-			} else {
-				help(System.out);
-			}
-		} catch (Exception e) {
-			Utility.handleException(e, errors);
-		}
-	}
+   /**
+    * @param args
+    * @throws Exception
+    */
+   public static void main(String[] args) throws Exception
+   {
+      PoTool tool = new PoTool();
+      ArgumentProcessor<PoTool> argProcessor = ArgumentProcessor.newInstance(PoTool.class);
+      argProcessor.process(args, tool);
+      tool.processArgs();
+   }
 
-	private static void help(PrintStream out) throws IOException {
-		out.println("[USAGE]"); 
-		out.println("  flies-publican [-e/--errors] upload/download/createproj/createiter [options] [args]");
-		out.println("  For 'upload' help: flies-publican upload --help");
-		out.println("  For 'download' help: flies-publican download --help");
-		out.println("  For 'createproj' help: flies-publican createproj --help");
-		out.println("  For 'createiter' help: flies-publican createiter --help");
+   private void processArgs() throws Exception
+   {
+      if (version)
+      {
+         Utility.printJarVersion(System.out);
+         System.exit(0);
+      }
+      if (arguments.isEmpty())
+      {
+         help(System.out);
+         System.exit(0);
+      }
+      String command = arguments.remove(0);
+      if (command.equals("help"))
+      {
+         help = true;
+      }
+      String[] otherArgs = arguments.toArray(new String[0]);
+      try
+      {
+         if (command.equals("upload"))
+         {
+            Subcommand upload = new UploadPoTask();
+            upload.processArgs(otherArgs, this);
+         }
+         else if (command.equals("download"))
+         {
+            Subcommand download = new DownloadPoTask();
+            download.processArgs(otherArgs, this);
+         }
+         else if (command.equals("createproj"))
+         {
+            Subcommand cmd = new CreateProjectTask();
+            cmd.processArgs(otherArgs, this);
+         }
+         else if (command.equals("createiter"))
+         {
+            Subcommand cmd = new CreateIterationTask();
+            cmd.processArgs(otherArgs, this);
+         }
+         else if (command.equals("putuser")) 
+         {
+            Subcommand cmd = new PutUserTask();
+            cmd.processArgs(otherArgs, this);
+         }
+         else
+         {
+            help(System.out);
+         }
+      }
+      catch (Exception e)
+      {
+         Utility.handleException(e, errors);
+      }
+   }
+
+   private static void help(PrintStream out) throws IOException
+   {
+      out.println("[USAGE]");
+      out.println("  flies-publican [-e/--errors] upload/download/createproj/createiter [options] [args]");
+      out.println("  For 'upload' help: flies-publican upload --help");
+      out.println("  For 'download' help: flies-publican download --help");
+      out.println("  For 'createproj' help: flies-publican createproj --help");
+      out.println("  For 'createiter' help: flies-publican createiter --help");
 		out.println("  For 'putuser' help: flies-publican putuser --help");
-		out.println("");
-		out.println();
-	}
-	
-	@Override
-	public boolean getHelp() {
-		return help;
-	}
-	
-	@Option(name = "h", longName = "help", description = "Display this help and exit")
-	public void setHelp(boolean help) {
-		this.help = help;
-	}
+      out.println("");
+      out.println();
+   }
 
-	@Override
-	public boolean getErrors() {
-		return errors;
-	}
-	
-	@Option(name = "e", longName = "errors", description = "Output full execution error messages")
-	public void setErrors(boolean exceptionTrace) {
-		this.errors = exceptionTrace;
-	}
+   @Override
+   public boolean getHelp()
+   {
+      return help;
+   }
 
-	@Option(name = "v", longName = "version", description = "Output version information and exit")
-	public void setVersion(boolean version) {
-		this.version = version;
-	}
-	
-	private List<String> arguments = new ArrayList<String>();
-	 
-	@MultiValue
-	@Argument( description = "Arguments" )
-	public List<String> getArguments() { return arguments; }
-	
-	public void setArguments(List<String> arguments) {
-		this.arguments = arguments;
-	}
+   @Option(name = "h", longName = "help", description = "Display this help and exit")
+   public void setHelp(boolean help)
+   {
+      this.help = help;
+   }
+
+   @Override
+   public boolean getErrors()
+   {
+      return errors;
+   }
+
+   @Option(name = "e", longName = "errors", description = "Output full execution error messages")
+   public void setErrors(boolean exceptionTrace)
+   {
+      this.errors = exceptionTrace;
+   }
+
+   @Option(name = "v", longName = "version", description = "Output version information and exit")
+   public void setVersion(boolean version)
+   {
+      this.version = version;
+   }
+
+   private List<String> arguments = new ArrayList<String>();
+
+   @MultiValue
+   @Argument(description = "Arguments")
+   public List<String> getArguments()
+   {
+      return arguments;
+   }
+
+   public void setArguments(List<String> arguments)
+   {
+      this.arguments = arguments;
+   }
 
 }

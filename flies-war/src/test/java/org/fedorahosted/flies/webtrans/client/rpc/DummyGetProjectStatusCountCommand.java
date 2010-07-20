@@ -11,24 +11,26 @@ import org.fedorahosted.flies.webtrans.shared.rpc.GetProjectStatusCountResult;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class DummyGetProjectStatusCountCommand implements Command {
+public class DummyGetProjectStatusCountCommand implements Command
+{
 
-	private final GetProjectStatusCount action;
-	private final AsyncCallback<GetProjectStatusCountResult> callback;
+   private final GetProjectStatusCount action;
+   private final AsyncCallback<GetProjectStatusCountResult> callback;
 
-	public DummyGetProjectStatusCountCommand(GetProjectStatusCount action,
-			AsyncCallback<GetProjectStatusCountResult> callback) {
-		this.action = action;
-		this.callback = callback;
-	}
+   public DummyGetProjectStatusCountCommand(GetProjectStatusCount action, AsyncCallback<GetProjectStatusCountResult> callback)
+   {
+      this.action = action;
+      this.callback = callback;
+   }
 
-	@Override
-	public void execute() {
-		ArrayList<DocumentStatus> documentStatuses = new ArrayList<DocumentStatus>();
-		documentStatuses.add( new DocumentStatus(new DocumentId(1L), new TransUnitCount(100,23,23)));
-		documentStatuses.add( new DocumentStatus(new DocumentId(2L), new TransUnitCount(130,23,23)));
-		
-		callback.onSuccess(new GetProjectStatusCountResult(documentStatuses));
-	}
+   @Override
+   public void execute()
+   {
+      ArrayList<DocumentStatus> documentStatuses = new ArrayList<DocumentStatus>();
+      documentStatuses.add(new DocumentStatus(new DocumentId(1L), new TransUnitCount(100, 23, 23)));
+      documentStatuses.add(new DocumentStatus(new DocumentId(2L), new TransUnitCount(130, 23, 23)));
+
+      callback.onSuccess(new GetProjectStatusCountResult(documentStatuses));
+   }
 
 }

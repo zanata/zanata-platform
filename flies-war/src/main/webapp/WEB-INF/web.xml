@@ -10,12 +10,7 @@
 
 	<servlet-mapping>
 		<servlet-name>EventService</servlet-name>
-		<url-pattern>/org.fedorahosted.flies.webtrans.Application/gwteventservice/*</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>EventService</servlet-name>
-		<url-pattern>/org.fedorahosted.flies.webtrans.ApplicationDummy/gwteventservice/*</url-pattern>
+		<url-pattern>/webtrans/gwteventservice/*</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
@@ -24,31 +19,20 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>remoteLoggingService</servlet-name>
-		<url-pattern>/org.fedorahosted.flies.webtrans.Application/logging</url-pattern>
+		<url-pattern>/webtrans/logging</url-pattern>
 	</servlet-mapping>
+
 	<servlet>
 		<servlet-name>remoteLoggerServiceImpl</servlet-name>
 		<servlet-class>com.allen_sauer.gwt.log.server.RemoteLoggerServiceImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>remoteLoggerServiceImpl</servlet-name>
-		<url-pattern>/org.fedorahosted.flies.webtrans.Application/gwt-log</url-pattern>
+		<url-pattern>/webtrans/gwt-log</url-pattern>
 	</servlet-mapping>
-
-
-	<servlet-mapping>
-		<servlet-name>remoteLoggingService</servlet-name>
-		<url-pattern>/org.fedorahosted.flies.webtrans.ApplicationDummy/logging</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>remoteLoggerServiceImpl</servlet-name>
-		<url-pattern>/org.fedorahosted.flies.webtrans.ApplicationDummy/gwt-log</url-pattern>
-	</servlet-mapping>
-
 
 	<welcome-file-list>
-		<welcome-file>index.html</welcome-file>
+		<welcome-file>/webtrans/Application.html</welcome-file>
 	</welcome-file-list>
 
 </web-app>

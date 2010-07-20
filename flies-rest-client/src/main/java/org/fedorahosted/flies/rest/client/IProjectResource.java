@@ -15,14 +15,15 @@ import org.fedorahosted.flies.rest.dto.Project;
 import org.jboss.resteasy.client.ClientResponse;
 
 //@Path("/projects/p/{projectSlug}")
-public interface IProjectResource {
-	
-	@GET
-	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON })
-	public ClientResponse<Project> get();
+public interface IProjectResource
+{
 
-	@PUT
-	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON })
-	public Response put(Project project);
+   @GET
+   @Produces( { MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON })
+   public ClientResponse<Project> get();
+
+   @PUT
+   @Consumes( { MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON })
+   public Response put(Project project);
 
 }

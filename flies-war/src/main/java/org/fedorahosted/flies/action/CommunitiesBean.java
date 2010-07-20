@@ -12,14 +12,15 @@ import org.jboss.seam.annotations.Scope;
 
 @Name("communitiesBean")
 @Scope(ScopeType.STATELESS)
-public class CommunitiesBean {
+public class CommunitiesBean
+{
 
-	@In EntityManager entityManager;
-	
+   @In
+   EntityManager entityManager;
 
-	public List<HCommunity> getLatestCommunities(){
-		return entityManager.createQuery("select c from HCommunity c").getResultList();
-	}
-	
-	
+   public List<HCommunity> getLatestCommunities()
+   {
+      return entityManager.createQuery("select c from HCommunity c").getResultList();
+   }
+
 }

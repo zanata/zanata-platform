@@ -14,20 +14,24 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.inject.Inject;
 
-public abstract class FilterPresenter<T extends ContentFilter<TransUnit>, D extends WidgetDisplay> extends WidgetPresenter<D> {
-	
-	private T filter;
-	
-	public FilterPresenter(D display, EventBus eventBus) {
-		super(display, eventBus);
-	}
+public abstract class FilterPresenter<T extends ContentFilter<TransUnit>, D extends WidgetDisplay> extends WidgetPresenter<D>
+{
 
-	public void bind(T filter) {
-		this.filter = filter;
-		bind();
-	}
+   private T filter;
 
-	public T getFilter() {
-		return filter;
-	}
+   public FilterPresenter(D display, EventBus eventBus)
+   {
+      super(display, eventBus);
+   }
+
+   public void bind(T filter)
+   {
+      this.filter = filter;
+      bind();
+   }
+
+   public T getFilter()
+   {
+      return filter;
+   }
 }

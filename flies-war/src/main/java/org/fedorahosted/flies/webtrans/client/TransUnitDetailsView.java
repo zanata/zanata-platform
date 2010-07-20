@@ -13,49 +13,54 @@ import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class TransUnitDetailsView extends Composite implements TransUnitDetailsPresenter.Display {
+public class TransUnitDetailsView extends Composite implements TransUnitDetailsPresenter.Display
+{
 
-	private static TransUnitDetailsViewUiBinder uiBinder = GWT
-			.create(TransUnitDetailsViewUiBinder.class);
+   private static TransUnitDetailsViewUiBinder uiBinder = GWT.create(TransUnitDetailsViewUiBinder.class);
 
-	interface TransUnitDetailsViewUiBinder extends
-			UiBinder<Widget, TransUnitDetailsView> {
-	}
-	
-	@UiField(provided = true)
-	CollapsePanel collapsePanel;
-	
-	@UiField
-	Label noDetailsLabel, sourceCommentsLabel;
-	
-	@UiField
-	LayoutPanel rootPanel;
+   interface TransUnitDetailsViewUiBinder extends UiBinder<Widget, TransUnitDetailsView>
+   {
+   }
 
-	@Inject
-	public TransUnitDetailsView(WebTransMessages messages, Resources resources) {
-		collapsePanel = new CollapsePanel(resources);
-		collapsePanel.setHeading( messages.transUnitDetailsHeading() );
-		initWidget(uiBinder.createAndBindUi(this));
-	}
+   @UiField(provided = true)
+   CollapsePanel collapsePanel;
 
-	@Override
-	public Widget asWidget() {
-		return this;
-	}
+   @UiField
+   Label noDetailsLabel, sourceCommentsLabel;
 
-	@Override
-	public void startProcessing() {
-	}
+   @UiField
+   LayoutPanel rootPanel;
 
-	@Override
-	public void stopProcessing() {
-	}
+   @Inject
+   public TransUnitDetailsView(WebTransMessages messages, Resources resources)
+   {
+      collapsePanel = new CollapsePanel(resources);
+      collapsePanel.setHeading(messages.transUnitDetailsHeading());
+      initWidget(uiBinder.createAndBindUi(this));
+   }
 
-	@Override
-	public void showDetails(TransUnit transUnit) {
-		rootPanel.setWidgetTopHeight(noDetailsLabel, 0, Unit.PX, 0, Unit.PX);
-		rootPanel.setWidgetTopBottom(sourceCommentsLabel, 0, Unit.PX, 0, Unit.PX);
-		sourceCommentsLabel.setText(transUnit.getSourceComment());
-	}
-	
+   @Override
+   public Widget asWidget()
+   {
+      return this;
+   }
+
+   @Override
+   public void startProcessing()
+   {
+   }
+
+   @Override
+   public void stopProcessing()
+   {
+   }
+
+   @Override
+   public void showDetails(TransUnit transUnit)
+   {
+      rootPanel.setWidgetTopHeight(noDetailsLabel, 0, Unit.PX, 0, Unit.PX);
+      rootPanel.setWidgetTopBottom(sourceCommentsLabel, 0, Unit.PX, 0, Unit.PX);
+      sourceCommentsLabel.setText(transUnit.getSourceComment());
+   }
+
 }

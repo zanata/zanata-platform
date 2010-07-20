@@ -20,60 +20,65 @@ import org.jboss.seam.security.management.IdentityManager;
 
 @Name("activate")
 @Scope(ScopeType.CONVERSATION)
-public class ActivateAction implements Serializable{
+public class ActivateAction implements Serializable
+{
 
-	private static final long serialVersionUID = -8079131168179421345L;
+   private static final long serialVersionUID = -8079131168179421345L;
 
-	@Logger
-	Log log;
-	
-    @In
-    private EntityManager entityManager;
+   @Logger
+   Log log;
 
-    @In
-    private IdentityManager identityManager;
-    
-    private String activationKey;
+   @In
+   private EntityManager entityManager;
 
-    public String getActivationKey() {
-		return activationKey;
-	}
+   @In
+   private IdentityManager identityManager;
 
-    private HAccountActivationKey key;
+   private String activationKey;
 
-    
-    @Begin(join=true)
-    public void validateActivationKey(){
-    	
-    	if(getActivationKey() == null)
-    		throw new KeyNotFoundException();
-    	
-		key = entityManager.find(HAccountActivationKey.class, getActivationKey());
-		
-		if(key == null)
-			throw new KeyNotFoundException();
-    }
-    
-    public void setActivationKey(String activationKey) {
-		this.activationKey = activationKey;
-	}
-    
-    @End
-    public String activate(){
-    	
-        new RunAsOperation() {
-            public void execute() {
-               identityManager.enableUser(key.getAccount().getUsername());
-               identityManager.grantRole(key.getAccount().getUsername(), "user");            
-            }         
-         }.addRole("admin")
-          .run();
+   public String getActivationKey()
+   {
+      return activationKey;
+   }
 
-         entityManager.remove(key);
-         
-         FacesMessages.instance().add("Your account was successfully activated. You can now sign in.");
-         
-    	return "/account/login.xhtml";
-    }
-	
+   private HAccountActivationKey key;
+
+   @Begin(join = true)
+   public void validateActivationKey()
+   {
+
+      if (getActivationKey() == null)
+         throw new KeyNotFoundException();
+
+      key = entityManager.find(HAccountActivationKey.class, getActivationKey());
+
+      if (key == null)
+         throw new KeyNotFoundException();
+   }
+
+   public void setActivationKey(String activationKey)
+   {
+      this.activationKey = activationKey;
+   }
+
+   @End
+   public String activate()
+   {
+
+      new RunAsOperation()
+      {
+         public void execute()
+         {
+            identityManager.enableUser(key.getAccount().getUsername());
+            identityManager.grantRole(key.getAccount().getUsername(), "user");
+         }
+      }.addRole("admin").run();
+
+      entityManager.remove(key);
+
+      FacesMessages.instance().add("Your account was successfully activated. You can now sign in.");
+
+      return "/account/login.xhtml";
+   }
+
 }

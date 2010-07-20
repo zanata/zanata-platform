@@ -1,9 +1,12 @@
 package org.fedorahosted.flies.common;
 
-public final class Namespaces {
+public final class Namespaces
+{
 
-	public static final String FLIES = "http://flies.fedorahosted.org/api/v1/";
-	public static final String XML = "http://www.w3.org/XML/1998/namespace";
-	
-	private Namespaces(){}
+   public static final String FLIES = "http://flies.fedorahosted.org/api/v1/";
+   public static final String XML = "http://www.w3.org/XML/1998/namespace";
+
+   private Namespaces()
+   {
+   }
 }

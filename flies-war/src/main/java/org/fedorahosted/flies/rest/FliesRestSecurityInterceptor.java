@@ -19,33 +19,34 @@ import org.jboss.seam.log.Logging;
 
 @SecurityPrecedence
 @ServerInterceptor
-public class FliesRestSecurityInterceptor implements PreProcessInterceptor {
+public class FliesRestSecurityInterceptor implements PreProcessInterceptor
+{
 
-	public static final String X_AUTH_TOKEN_HEADER = "X-Auth-Token";
-	public static final String X_AUTH_USER_HEADER = "X-Auth-User";
+   public static final String X_AUTH_TOKEN_HEADER = "X-Auth-Token";
+   public static final String X_AUTH_USER_HEADER = "X-Auth-User";
 
-	@In
-	AccountDAO accountDAO;
+   @In
+   AccountDAO accountDAO;
 
-	@Override
-	public ServerResponse preProcess(HttpRequest request, ResourceMethod method)
-			throws Failure, WebApplicationException {
+   @Override
+   public ServerResponse preProcess(HttpRequest request, ResourceMethod method) throws Failure, WebApplicationException
+   {
 
-		Log log = Logging.getLog(FliesRestSecurityInterceptor.class);
-		String username = request.getHttpHeaders().getRequestHeaders()
-				.getFirst(X_AUTH_USER_HEADER);
-		String apiKey = request.getHttpHeaders().getRequestHeaders().getFirst(
-				X_AUTH_TOKEN_HEADER);
+      Log log = Logging.getLog(FliesRestSecurityInterceptor.class);
+      String username = request.getHttpHeaders().getRequestHeaders().getFirst(X_AUTH_USER_HEADER);
+      String apiKey = request.getHttpHeaders().getRequestHeaders().getFirst(X_AUTH_TOKEN_HEADER);
 
-		if (username != null && apiKey != null) {
-			FliesIdentity.instance().getCredentials().setUsername(username);
-			FliesIdentity.instance().setApiKey(apiKey);
-			FliesIdentity.instance().tryLogin();
-			if(!FliesIdentity.instance().isLoggedIn()) {
-				log.info("Failed attempt to authenticate REST request for user {0}", username);
-				return ServerResponse.copyIfNotServerResponse(Response.status(Status.UNAUTHORIZED).build());
-			}
-		}
-		return null;
-	}
+      if (username != null && apiKey != null)
+      {
+         FliesIdentity.instance().getCredentials().setUsername(username);
+         FliesIdentity.instance().setApiKey(apiKey);
+         FliesIdentity.instance().tryLogin();
+         if (!FliesIdentity.instance().isLoggedIn())
+         {
+            log.info("Failed attempt to authenticate REST request for user {0}", username);
+            return ServerResponse.copyIfNotServerResponse(Response.status(Status.UNAUTHORIZED).build());
+         }
+      }
+      return null;
+   }
 }

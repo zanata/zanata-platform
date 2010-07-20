@@ -31,51 +31,56 @@ import org.jboss.seam.log.Log;
 @Name("webtrans.gwt.GetProjectStatusCountHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetProjectStatusCount.class)
-public class GetProjectStatusCountHandler extends AbstractActionHandler<GetProjectStatusCount, GetProjectStatusCountResult> {
+public class GetProjectStatusCountHandler extends AbstractActionHandler<GetProjectStatusCount, GetProjectStatusCountResult>
+{
 
-		@Logger Log log;
-		
-		@In Session session;
-		
-		@In
-		ProjectIterationDAO projectIterationDAO;
-		@In
-		DocumentDAO documentDAO;
+   @Logger
+   Log log;
 
-		@In TranslationWorkspaceManager translationWorkspaceManager;
-		
-		@Override
-		public GetProjectStatusCountResult execute(GetProjectStatusCount action,
-				ExecutionContext context) throws ActionException {
-			
-			FliesIdentity.instance().checkLoggedIn();
-			
-			ProjectIterationId iterationId = action.getWorkspaceId().getProjectIterationId();
-			log.info("Fetching Doc Status List for {0}", iterationId);
-			ArrayList<DocumentStatus> docliststatus = new ArrayList<DocumentStatus>(); 
-			HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(iterationId.getProjectSlug(), iterationId.getIterationSlug());
-			
-			Collection<HDocument> hDocs = hProjectIteration.getDocuments().values();
-			for (HDocument hDoc : hDocs) {
-				DocumentId docId = new DocumentId(hDoc.getId());
-								
-				TransUnitCount stat = documentDAO.getStatistics(docId.getValue(), action.getWorkspaceId().getLocaleId() );
-				
-				DocumentStatus docstatus = new DocumentStatus(docId, stat);
-				docliststatus.add(docstatus);
-			}
-						
-			TranslationWorkspace workspace = translationWorkspaceManager.getWorkspace(action.getWorkspaceId() );
-			
-			log.info("Returning Doc Status List for {0}: {1} elements", iterationId, docliststatus.size());
+   @In
+   Session session;
 
-			return new GetProjectStatusCountResult(docliststatus);
+   @In
+   ProjectIterationDAO projectIterationDAO;
+   @In
+   DocumentDAO documentDAO;
 
-		}
+   @In
+   TranslationWorkspaceManager translationWorkspaceManager;
 
-		@Override
-		public void rollback(GetProjectStatusCount action, GetProjectStatusCountResult result,
-				ExecutionContext context) throws ActionException {
-		}
+   @Override
+   public GetProjectStatusCountResult execute(GetProjectStatusCount action, ExecutionContext context) throws ActionException
+   {
+
+      FliesIdentity.instance().checkLoggedIn();
+
+      ProjectIterationId iterationId = action.getWorkspaceId().getProjectIterationId();
+      log.info("Fetching Doc Status List for {0}", iterationId);
+      ArrayList<DocumentStatus> docliststatus = new ArrayList<DocumentStatus>();
+      HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(iterationId.getProjectSlug(), iterationId.getIterationSlug());
+
+      Collection<HDocument> hDocs = hProjectIteration.getDocuments().values();
+      for (HDocument hDoc : hDocs)
+      {
+         DocumentId docId = new DocumentId(hDoc.getId());
+
+         TransUnitCount stat = documentDAO.getStatistics(docId.getValue(), action.getWorkspaceId().getLocaleId());
+
+         DocumentStatus docstatus = new DocumentStatus(docId, stat);
+         docliststatus.add(docstatus);
+      }
+
+      TranslationWorkspace workspace = translationWorkspaceManager.getWorkspace(action.getWorkspaceId());
+
+      log.info("Returning Doc Status List for {0}: {1} elements", iterationId, docliststatus.size());
+
+      return new GetProjectStatusCountResult(docliststatus);
+
+   }
+
+   @Override
+   public void rollback(GetProjectStatusCount action, GetProjectStatusCountResult result, ExecutionContext context) throws ActionException
+   {
+   }
 
 }

@@ -17,7 +17,8 @@ import org.hibernate.validator.ValidatorClass;
 @ValidatorClass(SlugValidator.class)
 @Target( { ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Slug {
+public @interface Slug
+{
 
-	String message() default "{validator.slug}";
+   String message() default "{validator.slug}";
 }

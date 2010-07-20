@@ -11,25 +11,23 @@ import org.jboss.seam.annotations.Scope;
 @Name("personDAO")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
-public class PersonDAO extends AbstractDAOImpl<HPerson, Long> {
-	
-	public PersonDAO() {
-		super(HPerson.class);
-	}
+public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
+{
 
-	public PersonDAO(Session session) {
-		super(HPerson.class, session);
-	}
-	
-	public HPerson findByEmail(String email) {
-		return (HPerson) getSession().createCriteria(HPerson.class)
-		.add( Restrictions.naturalId()
-	        .set("email", email)
-	    	)
-	    .setCacheable(true)
-	    .setComment("PersonDAO.findByEmail")
-	    .uniqueResult();
-		
-	}
-	
+   public PersonDAO()
+   {
+      super(HPerson.class);
+   }
+
+   public PersonDAO(Session session)
+   {
+      super(HPerson.class, session);
+   }
+
+   public HPerson findByEmail(String email)
+   {
+      return (HPerson) getSession().createCriteria(HPerson.class).add(Restrictions.naturalId().set("email", email)).setCacheable(true).setComment("PersonDAO.findByEmail").uniqueResult();
+
+   }
+
 }

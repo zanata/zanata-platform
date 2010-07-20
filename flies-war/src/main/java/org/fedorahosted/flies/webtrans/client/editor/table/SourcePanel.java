@@ -13,58 +13,68 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.inject.Inject;
 
-public class SourcePanel extends Composite implements HasValue<TransUnit> {
+public class SourcePanel extends Composite implements HasValue<TransUnit>
+{
 
-	private final FlowPanel panel;
-	private final Label sourceLabel;
-	private final TextArea textarea;
-	private TransUnit value;
-	
-	private final NavigationMessages messages;
-	
-	public SourcePanel(TransUnit value, NavigationMessages messages) {
-		this.value = value;
-		this.messages = messages;
-		panel = new FlowPanel();
-		panel.setSize("100%", "100%");
-		initWidget(panel);
-		setStylePrimaryName("TableEditorSource");
+   private final FlowPanel panel;
+   private final Label sourceLabel;
+   private final TextArea textarea;
+   private TransUnit value;
 
-		sourceLabel = new HighlightingLabel(value.getSource());
-		sourceLabel.setStylePrimaryName("TableEditorContent");
-		sourceLabel.setTitle(messages.sourceCommentLabel() + value.getSourceComment());
-		
-		panel.add(sourceLabel);
-		textarea = new TextArea();
-		textarea.getSelectedText();
-		refresh();
-	}
-	
-	public void refresh() {
-	}
-	
-	@Override
-	public TransUnit getValue() {
-		return value;
-	}
-	@Override
-	public void setValue(TransUnit value) {
-		setValue(value, true);
-	}
-	
-	@Override
-	public void setValue(TransUnit value, boolean fireEvents) {
-		if(this.value != value) {
-			this.value = value;
-			if(fireEvents) {
-				ValueChangeEvent.fire(this, value);
-			}
-			refresh();
-		}
-	}
-	@Override
-	public HandlerRegistration addValueChangeHandler(
-			ValueChangeHandler<TransUnit> handler) {
-		return addHandler(handler, ValueChangeEvent.getType());
-	}
+   private final NavigationMessages messages;
+
+   public SourcePanel(TransUnit value, NavigationMessages messages)
+   {
+      this.value = value;
+      this.messages = messages;
+      panel = new FlowPanel();
+      panel.setSize("100%", "100%");
+      initWidget(panel);
+      setStylePrimaryName("TableEditorSource");
+
+      sourceLabel = new HighlightingLabel(value.getSource());
+      sourceLabel.setStylePrimaryName("TableEditorContent");
+      sourceLabel.setTitle(messages.sourceCommentLabel() + value.getSourceComment());
+
+      panel.add(sourceLabel);
+      textarea = new TextArea();
+      textarea.getSelectedText();
+      refresh();
+   }
+
+   public void refresh()
+   {
+   }
+
+   @Override
+   public TransUnit getValue()
+   {
+      return value;
+   }
+
+   @Override
+   public void setValue(TransUnit value)
+   {
+      setValue(value, true);
+   }
+
+   @Override
+   public void setValue(TransUnit value, boolean fireEvents)
+   {
+      if (this.value != value)
+      {
+         this.value = value;
+         if (fireEvents)
+         {
+            ValueChangeEvent.fire(this, value);
+         }
+         refresh();
+      }
+   }
+
+   @Override
+   public HandlerRegistration addValueChangeHandler(ValueChangeHandler<TransUnit> handler)
+   {
+      return addHandler(handler, ValueChangeEvent.getType());
+   }
 }

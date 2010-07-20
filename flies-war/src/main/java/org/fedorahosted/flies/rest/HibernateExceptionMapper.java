@@ -10,15 +10,16 @@ import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 
 @Provider
-public class HibernateExceptionMapper implements
-		ExceptionMapper<HibernateException> {
+public class HibernateExceptionMapper implements ExceptionMapper<HibernateException>
+{
 
-	Log log = Logging.getLog(HibernateExceptionMapper.class);
-	
-	@Override
-	public Response toResponse(HibernateException exception) {
-		log.error("Hibernate Exception in REST request", exception);
-		return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-	}
+   Log log = Logging.getLog(HibernateExceptionMapper.class);
+
+   @Override
+   public Response toResponse(HibernateException exception)
+   {
+      log.error("Hibernate Exception in REST request", exception);
+      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+   }
 
 }

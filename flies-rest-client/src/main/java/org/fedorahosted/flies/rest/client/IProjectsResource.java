@@ -11,10 +11,11 @@ import org.fedorahosted.flies.rest.dto.Project;
 import org.jboss.resteasy.client.ClientResponse;
 
 @Path("/projects")
-public interface IProjectsResource {
+public interface IProjectsResource
+{
 
-	@GET
-	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECTS_XML, MediaTypes.APPLICATION_FLIES_PROJECTS_JSON })
-	public ClientResponse<List<Project>> get();
-	
+   @GET
+   @Produces( { MediaTypes.APPLICATION_FLIES_PROJECTS_XML, MediaTypes.APPLICATION_FLIES_PROJECTS_JSON })
+   public ClientResponse<List<Project>> get();
+
 }

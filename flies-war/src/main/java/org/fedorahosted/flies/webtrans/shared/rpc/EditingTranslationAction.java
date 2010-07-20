@@ -10,28 +10,33 @@ import org.fedorahosted.flies.webtrans.shared.model.ProjectIterationId;
 import org.fedorahosted.flies.webtrans.shared.model.TransUnitId;
 import org.fedorahosted.flies.webtrans.shared.model.WorkspaceId;
 
-public class EditingTranslationAction extends AbstractWorkspaceAction<EditingTranslationResult> {
-	
-	private static final long serialVersionUID = 1L;
+public class EditingTranslationAction extends AbstractWorkspaceAction<EditingTranslationResult>
+{
 
-	private TransUnitId transUnitId;
-	private EditState editState;
-	
-	@SuppressWarnings("unused")
-	private EditingTranslationAction() {
-	}
-	
-	public EditingTranslationAction(TransUnitId transUnitId, EditState editState) {
-		this.transUnitId = transUnitId;
-		this.editState = editState;
-	}
-	
-	public TransUnitId getTransUnitId() {
-		return transUnitId;
-	}
+   private static final long serialVersionUID = 1L;
 
-	public EditState getEditState() {
-		return editState;
-	}
-	
+   private TransUnitId transUnitId;
+   private EditState editState;
+
+   @SuppressWarnings("unused")
+   private EditingTranslationAction()
+   {
+   }
+
+   public EditingTranslationAction(TransUnitId transUnitId, EditState editState)
+   {
+      this.transUnitId = transUnitId;
+      this.editState = editState;
+   }
+
+   public TransUnitId getTransUnitId()
+   {
+      return transUnitId;
+   }
+
+   public EditState getEditState()
+   {
+      return editState;
+   }
+
 }

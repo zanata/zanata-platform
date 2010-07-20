@@ -8,26 +8,27 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class DocumentTreeItemView extends Composite {
+public class DocumentTreeItemView extends Composite
+{
 
-	private static DocumentTreeItemViewUiBinder uiBinder = GWT
-			.create(DocumentTreeItemViewUiBinder.class);
+   private static DocumentTreeItemViewUiBinder uiBinder = GWT.create(DocumentTreeItemViewUiBinder.class);
 
-	interface DocumentTreeItemViewUiBinder extends
-			UiBinder<Widget, DocumentTreeItemView> {
-	}
-	
-	@UiField
-	Label documentName;
+   interface DocumentTreeItemViewUiBinder extends UiBinder<Widget, DocumentTreeItemView>
+   {
+   }
 
-	public DocumentTreeItemView(String documentName) {
-		initWidget(uiBinder.createAndBindUi(this));
-		setName(documentName);
-	}
-	
-	public void setName(String name) {
-		this.documentName.setText(name);
-	}
-	
+   @UiField
+   Label documentName;
+
+   public DocumentTreeItemView(String documentName)
+   {
+      initWidget(uiBinder.createAndBindUi(this));
+      setName(documentName);
+   }
+
+   public void setName(String name)
+   {
+      this.documentName.setText(name);
+   }
 
 }

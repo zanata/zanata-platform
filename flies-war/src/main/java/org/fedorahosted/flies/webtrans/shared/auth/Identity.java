@@ -8,42 +8,48 @@ import org.fedorahosted.flies.webtrans.shared.model.Person;
 
 import com.google.gwt.user.client.Cookies;
 
-public class Identity implements Serializable {
-	
-	private static final long serialVersionUID = 1L;
+public class Identity implements Serializable
+{
 
-	private SessionId sessionId;
-	private HashSet<Permission> permissions = new HashSet<Permission>();
-	private HashSet<Role> roles = new HashSet<Role>();
-	private Person person;
+   private static final long serialVersionUID = 1L;
 
-	
-	@SuppressWarnings("unused")
-	private Identity() {
-	}
-	
-	public Identity(SessionId sessionId, Person person, HashSet<Permission> permissions, HashSet<Role> roles) {
-		this.sessionId = sessionId;
-		this.person = person;
-		this.permissions = permissions;
-		this.roles = roles;
-		
-	}
-	
-	public boolean hasRole(Role role) {
-		return roles.contains(role);
-	}
-	
-	public boolean hasPermission(Permission permission) {
-		return permissions.contains(permission);
-	}
-	
-	public Person getPerson() {
-		return person;
-	}
+   private SessionId sessionId;
+   private HashSet<Permission> permissions = new HashSet<Permission>();
+   private HashSet<Role> roles = new HashSet<Role>();
+   private Person person;
 
-	public SessionId getSessionId() {
-		return sessionId;
-	}
-	
+   @SuppressWarnings("unused")
+   private Identity()
+   {
+   }
+
+   public Identity(SessionId sessionId, Person person, HashSet<Permission> permissions, HashSet<Role> roles)
+   {
+      this.sessionId = sessionId;
+      this.person = person;
+      this.permissions = permissions;
+      this.roles = roles;
+
+   }
+
+   public boolean hasRole(Role role)
+   {
+      return roles.contains(role);
+   }
+
+   public boolean hasPermission(Permission permission)
+   {
+      return permissions.contains(permission);
+   }
+
+   public Person getPerson()
+   {
+      return person;
+   }
+
+   public SessionId getSessionId()
+   {
+      return sessionId;
+   }
+
 }

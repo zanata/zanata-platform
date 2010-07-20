@@ -15,38 +15,44 @@ import org.jboss.seam.util.RandomStringUtils;
  * supplied by "wolfgang geck" in 
  * http://seamframework.org/Community/SeamTokenTagProblemCSRF#comment110227
  */
-public class FixedClientUidSelector extends ClientUidSelector {
+public class FixedClientUidSelector extends ClientUidSelector
+{
 
-	private static final long serialVersionUID = -4923235748771706010L;
-	private String clientUid;
+   private static final long serialVersionUID = -4923235748771706010L;
+   private String clientUid;
 
-	@Create
-	public void onCreate() {
-		setCookiePath(FacesContext.getCurrentInstance().getExternalContext()
-				.getRequestContextPath());
-		setCookieMaxAge(-1);
-		setCookieEnabled(true);
-		clientUid = getCookieValue();
-	}
+   @Create
+   public void onCreate()
+   {
+      setCookiePath(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath());
+      setCookieMaxAge(-1);
+      setCookieEnabled(true);
+      clientUid = getCookieValue();
+   }
 
-	public void seed() {
-		if (!isSet()) {
-			clientUid = RandomStringUtils.random(50, true, true); // Fixed
-			setCookieValueIfEnabled(clientUid);
-		}
-	}
+   public void seed()
+   {
+      if (!isSet())
+      {
+         clientUid = RandomStringUtils.random(50, true, true); // Fixed
+         setCookieValueIfEnabled(clientUid);
+      }
+   }
 
-	public boolean isSet() {
-		return clientUid != null;
-	}
+   public boolean isSet()
+   {
+      return clientUid != null;
+   }
 
-	public String getClientUid() {
-		return clientUid;
-	}
+   public String getClientUid()
+   {
+      return clientUid;
+   }
 
-	@Override
-	protected String getCookieName() {
-		return "javax.faces.ClientToken";
-	}
+   @Override
+   protected String getCookieName()
+   {
+      return "javax.faces.ClientToken";
+   }
 
 }

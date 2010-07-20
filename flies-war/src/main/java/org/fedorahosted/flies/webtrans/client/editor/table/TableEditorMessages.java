@@ -1,38 +1,44 @@
 package org.fedorahosted.flies.webtrans.client.editor.table;
 
 import com.google.gwt.i18n.client.Messages;
+import com.google.gwt.i18n.client.LocalizableResource.DefaultLocale;
+import com.google.gwt.i18n.client.LocalizableResource.Generate;
 
-public interface TableEditorMessages extends Messages {
-	@DefaultMessage("Source comment: ")
-	String sourceCommentLabel();
+@DefaultLocale
+@Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
+public interface TableEditorMessages extends Messages
+{
 
-	@DefaultMessage("Warning: This Translation Unit is being edited by someone else.")
-	String notifyInEdit();
+   @DefaultMessage("Source comment: ")
+   String sourceCommentLabel();
 
-	@DefaultMessage("Message has been copied to the target.")
-	String notifyCopied();
-	
-	@DefaultMessage("Please open the target in the editor first.")
-	String notifyUnopened();
+   @DefaultMessage("Warning: This Translation Unit is being edited by someone else.")
+   String notifyInEdit();
 
-	@DefaultMessage("Not logged in!")
-	String notifyNotLoggedIn();
+   @DefaultMessage("Message has been copied to the target.")
+   String notifyCopied();
 
-	@DefaultMessage("Failed to load data from Server")
-	String notifyLoadFailed();
+   @DefaultMessage("Please open the target in the editor first.")
+   String notifyUnopened();
 
-	@DefaultMessage("An unknown error occurred")
-	String notifyUnknownError();
+   @DefaultMessage("Not logged in!")
+   String notifyNotLoggedIn();
 
-	@DefaultMessage("Failed to update Translation Unit")
-	String notifyUpdateFailed();
+   @DefaultMessage("Failed to load data from Server")
+   String notifyLoadFailed();
 
-	@DefaultMessage("Saved change to Translation Unit")
-	String notifyUpdateSaved();
+   @DefaultMessage("An unknown error occurred")
+   String notifyUnknownError();
 
-	@DefaultMessage("Failed to Stop Editing TransUnit")
-	String notifyStopFailed();
-	
-	@DefaultMessage("Failed to Lock TransUnit")
-	String notifyLockFailed();
+   @DefaultMessage("Failed to update Translation Unit")
+   String notifyUpdateFailed();
+
+   @DefaultMessage("Saved change to Translation Unit")
+   String notifyUpdateSaved();
+
+   @DefaultMessage("Failed to Stop Editing TransUnit")
+   String notifyStopFailed();
+
+   @DefaultMessage("Failed to Lock TransUnit")
+   String notifyLockFailed();
 }

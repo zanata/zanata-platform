@@ -5,10 +5,11 @@ import org.fedorahosted.flies.webtrans.shared.model.WorkspaceContext;
 
 import net.customware.gwt.dispatch.client.DispatchAsync;
 
-public interface CachingDispatchAsync extends DispatchAsync{
+public interface CachingDispatchAsync extends DispatchAsync
+{
 
-	void setWorkspaceContext(WorkspaceContext workspaceContext);
+   void setWorkspaceContext(WorkspaceContext workspaceContext);
 
-	void setIdentity(Identity identity);
-	
+   void setIdentity(Identity identity);
+
 }

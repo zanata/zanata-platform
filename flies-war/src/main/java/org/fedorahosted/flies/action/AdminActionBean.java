@@ -28,73 +28,79 @@ import org.jboss.seam.log.Log;
 @Scope(ScopeType.APPLICATION)
 @Startup
 @Restrict("#{s:hasRole('admin')}")
-public class AdminActionBean {
-	
-	private static final int BATCH_SIZE = 500;
-	
-	  
-    @Logger 
-    private Log log;
-    
-    @In
-    FullTextSession session;
+public class AdminActionBean
+{
 
-    private Set<Class<?>> indexables = new HashSet<Class<?>>();
+   private static final int BATCH_SIZE = 500;
 
-	@Create
-	public void create() {
-		indexables.addAll(StandardDeploymentStrategy.instance().getAnnotatedClasses().get(Indexed.class.getName()));
-		indexables.add(HCommunity.class);
-		indexables.add(HIterationProject.class);
-	}
-    
-    
-	/*
-	 * TODO make it an @Asynchronous call and have some boolean 
-	 * isRunning method to disable the button if the job is already running
-	 */
+   @Logger
+   private Log log;
 
-	public void reindexDatabase() {
-		log.info("Re-indexing started");
-		
-		// reindex all @Indexed entities 
-		for (Class<?> clazz : indexables) {
-			log.info("Reindexing class "+clazz.getName());
-			reindex(clazz);
-		}
+   @In
+   FullTextSession session;
 
-		log.info("Re-indexing finished");
-		
-		// TODO: this is a global action - not for a specific user
-		// should have some sort of global status on this one
-		FacesMessages.instance().add("Re-indexing finished");
-	}
-	
-    private void reindex (Class<?> clazz) {
-        log.info("Re-indexing {0}", clazz);
-        try {
-        	session.purgeAll(clazz);
-            session.setFlushMode(FlushMode.MANUAL);
-            session.setCacheMode(CacheMode.IGNORE);
-            Transaction transaction = session.beginTransaction();
-            //Scrollable results will avoid loading too many objects in memory
-            ScrollableResults results = session.createCriteria( clazz )
-                .setFetchSize(BATCH_SIZE)
-                .scroll( ScrollMode.FORWARD_ONLY );
-            int index = 0;
-            while( results.next() ) {
-                index++;
-                session.index( results.get(0) ); //index each element
-                if (index % BATCH_SIZE == 0) {
-                    session.flushToIndexes(); //apply changes to indexes
-                    session.clear(); //clear since the queue is processed
-                }
+   private Set<Class<?>> indexables = new HashSet<Class<?>>();
+
+   @Create
+   public void create()
+   {
+      indexables.addAll(StandardDeploymentStrategy.instance().getAnnotatedClasses().get(Indexed.class.getName()));
+      indexables.add(HCommunity.class);
+      indexables.add(HIterationProject.class);
+   }
+
+   /*
+    * TODO make it an @Asynchronous call and have some boolean isRunning method
+    * to disable the button if the job is already running
+    */
+
+   public void reindexDatabase()
+   {
+      log.info("Re-indexing started");
+
+      // reindex all @Indexed entities
+      for (Class<?> clazz : indexables)
+      {
+         log.info("Reindexing class " + clazz.getName());
+         reindex(clazz);
+      }
+
+      log.info("Re-indexing finished");
+
+      // TODO: this is a global action - not for a specific user
+      // should have some sort of global status on this one
+      FacesMessages.instance().add("Re-indexing finished");
+   }
+
+   private void reindex(Class<?> clazz)
+   {
+      log.info("Re-indexing {0}", clazz);
+      try
+      {
+         session.purgeAll(clazz);
+         session.setFlushMode(FlushMode.MANUAL);
+         session.setCacheMode(CacheMode.IGNORE);
+         Transaction transaction = session.beginTransaction();
+         // Scrollable results will avoid loading too many objects in memory
+         ScrollableResults results = session.createCriteria(clazz).setFetchSize(BATCH_SIZE).scroll(ScrollMode.FORWARD_ONLY);
+         int index = 0;
+         while (results.next())
+         {
+            index++;
+            session.index(results.get(0)); // index each element
+            if (index % BATCH_SIZE == 0)
+            {
+               session.flushToIndexes(); // apply changes to indexes
+               session.clear(); // clear since the queue is processed
             }
-            results.close();
-            transaction.commit();
-        } catch (Exception e) {
-                log.warn("Unable to index objects of type {0}", e, clazz.getName());
-        }
-    }
-	
+         }
+         results.close();
+         transaction.commit();
+      }
+      catch (Exception e)
+      {
+         log.warn("Unable to index objects of type {0}", e, clazz.getName());
+      }
+   }
+
 }

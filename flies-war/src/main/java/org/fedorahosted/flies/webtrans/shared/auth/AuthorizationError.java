@@ -2,16 +2,18 @@ package org.fedorahosted.flies.webtrans.shared.auth;
 
 import net.customware.gwt.dispatch.shared.ActionException;
 
-public class AuthorizationError extends ActionException {
+public class AuthorizationError extends ActionException
+{
 
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-	public AuthorizationError() {
-	}
-	
-	public AuthorizationError(String message) {
-		super(message);
-	}
+   public AuthorizationError()
+   {
+   }
 
+   public AuthorizationError(String message)
+   {
+      super(message);
+   }
 
 }

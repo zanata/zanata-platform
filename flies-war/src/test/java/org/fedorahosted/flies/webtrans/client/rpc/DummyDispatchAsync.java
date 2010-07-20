@@ -1,7 +1,5 @@
 package org.fedorahosted.flies.webtrans.client.rpc;
 
-
-
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;
 
@@ -27,57 +25,76 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class DummyDispatchAsync extends SeamDispatchAsync {
-	public DummyDispatchAsync() {
-		Log.info("DummyDispatchAsync()");
-	}
+public class DummyDispatchAsync extends SeamDispatchAsync
+{
+   public DummyDispatchAsync()
+   {
+      Log.info("DummyDispatchAsync()");
+   }
 
-	@Override
-	public <A extends Action<R>, R extends Result> void execute(A action,
-			AsyncCallback<R> callback) {
-		
-		if(action instanceof AbstractWorkspaceAction<?>) {
-			if(this.workspaceContext == null || this.identity == null ) {
-				callback.onFailure( new AuthorizationError("Dispatcher not initialized for WorkspaceActions"));
-				return;
-			}
-			AbstractWorkspaceAction<?> wsAction = (AbstractWorkspaceAction<?>) action;
-			wsAction.setWorkspaceId( this.workspaceContext.getWorkspaceId());
-			wsAction.setSessionId( this.identity.getSessionId() );
-		}
-		
-		if (action instanceof GetTransUnits) {
-			GetTransUnits gtuAction = (GetTransUnits) action;
-			AsyncCallback<GetTransUnitsResult> gtuCallback = (AsyncCallback<GetTransUnitsResult>) callback;
-			DeferredCommand.addCommand(new DummyGetTransUnitCommand(gtuAction, gtuCallback));
-		} else if (action instanceof GetDocumentList) {
-			final GetDocumentList gdlAction = (GetDocumentList) action;
-			AsyncCallback<GetDocumentListResult> gdlCallback = (AsyncCallback<GetDocumentListResult>) callback;
-			DeferredCommand.addCommand(new DummyGetDocsListCommand(gdlAction, gdlCallback));
-		} else if (action instanceof ActivateWorkspaceAction) {
-			final ActivateWorkspaceAction gwcAction = (ActivateWorkspaceAction) action;
-			AsyncCallback<ActivateWorkspaceResult> gwcCallback = (AsyncCallback<ActivateWorkspaceResult>) callback;
-			DeferredCommand.addCommand(new DummyActivateWorkspaceCommand(gwcAction, gwcCallback));
-		} else if (action instanceof GetTranslatorList) {
-			final GetTranslatorList _action = (GetTranslatorList) action;
-			AsyncCallback<GetTranslatorListResult> _callback = (AsyncCallback<GetTranslatorListResult>) callback;
-			DeferredCommand.addCommand(new DummyGetTranslatorListCommand(_action, _callback));
-		} else if (action instanceof GetProjectStatusCount) {
-			final GetProjectStatusCount _action = (GetProjectStatusCount) action;
-			AsyncCallback<GetProjectStatusCountResult> _callback = (AsyncCallback<GetProjectStatusCountResult>) callback;
-			DeferredCommand.addCommand(new DummyGetProjectStatusCountCommand(_action, _callback));
-		} else if (action instanceof GetStatusCount) {
-			final GetStatusCount _action = (GetStatusCount) action;
-			AsyncCallback<GetStatusCountResult> _callback = (AsyncCallback<GetStatusCountResult>) callback;
-			DeferredCommand.addCommand(new DummyGetStatusCountCommand(_action, _callback));
-		} else if (action instanceof GetTranslationMemory) {
-			final GetTranslationMemory _action = (GetTranslationMemory) action;
-			AsyncCallback<GetTranslationMemoryResult> _callback = (AsyncCallback<GetTranslationMemoryResult>) callback;
-			DeferredCommand.addCommand(new DummyGetTranslationMemoryCommand(_action, _callback));
-		} else {
-			Log.warn("DummyDispatchAsync: ignoring action of "+action.getClass());
-//			callback.onFailure(new RuntimeException());
-		}
-	}
+   @Override
+   public <A extends Action<R>, R extends Result> void execute(A action, AsyncCallback<R> callback)
+   {
+
+      if (action instanceof AbstractWorkspaceAction<?>)
+      {
+         if (this.workspaceContext == null || this.identity == null)
+         {
+            callback.onFailure(new AuthorizationError("Dispatcher not initialized for WorkspaceActions"));
+            return;
+         }
+         AbstractWorkspaceAction<?> wsAction = (AbstractWorkspaceAction<?>) action;
+         wsAction.setWorkspaceId(this.workspaceContext.getWorkspaceId());
+         wsAction.setSessionId(this.identity.getSessionId());
+      }
+
+      if (action instanceof GetTransUnits)
+      {
+         GetTransUnits gtuAction = (GetTransUnits) action;
+         AsyncCallback<GetTransUnitsResult> gtuCallback = (AsyncCallback<GetTransUnitsResult>) callback;
+         DeferredCommand.addCommand(new DummyGetTransUnitCommand(gtuAction, gtuCallback));
+      }
+      else if (action instanceof GetDocumentList)
+      {
+         final GetDocumentList gdlAction = (GetDocumentList) action;
+         AsyncCallback<GetDocumentListResult> gdlCallback = (AsyncCallback<GetDocumentListResult>) callback;
+         DeferredCommand.addCommand(new DummyGetDocsListCommand(gdlAction, gdlCallback));
+      }
+      else if (action instanceof ActivateWorkspaceAction)
+      {
+         final ActivateWorkspaceAction gwcAction = (ActivateWorkspaceAction) action;
+         AsyncCallback<ActivateWorkspaceResult> gwcCallback = (AsyncCallback<ActivateWorkspaceResult>) callback;
+         DeferredCommand.addCommand(new DummyActivateWorkspaceCommand(gwcAction, gwcCallback));
+      }
+      else if (action instanceof GetTranslatorList)
+      {
+         final GetTranslatorList _action = (GetTranslatorList) action;
+         AsyncCallback<GetTranslatorListResult> _callback = (AsyncCallback<GetTranslatorListResult>) callback;
+         DeferredCommand.addCommand(new DummyGetTranslatorListCommand(_action, _callback));
+      }
+      else if (action instanceof GetProjectStatusCount)
+      {
+         final GetProjectStatusCount _action = (GetProjectStatusCount) action;
+         AsyncCallback<GetProjectStatusCountResult> _callback = (AsyncCallback<GetProjectStatusCountResult>) callback;
+         DeferredCommand.addCommand(new DummyGetProjectStatusCountCommand(_action, _callback));
+      }
+      else if (action instanceof GetStatusCount)
+      {
+         final GetStatusCount _action = (GetStatusCount) action;
+         AsyncCallback<GetStatusCountResult> _callback = (AsyncCallback<GetStatusCountResult>) callback;
+         DeferredCommand.addCommand(new DummyGetStatusCountCommand(_action, _callback));
+      }
+      else if (action instanceof GetTranslationMemory)
+      {
+         final GetTranslationMemory _action = (GetTranslationMemory) action;
+         AsyncCallback<GetTranslationMemoryResult> _callback = (AsyncCallback<GetTranslationMemoryResult>) callback;
+         DeferredCommand.addCommand(new DummyGetTranslationMemoryCommand(_action, _callback));
+      }
+      else
+      {
+         Log.warn("DummyDispatchAsync: ignoring action of " + action.getClass());
+         // callback.onFailure(new RuntimeException());
+      }
+   }
 
 }

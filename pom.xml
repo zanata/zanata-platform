@@ -32,7 +32,7 @@
 	<properties>
 		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<gwt.version>2.0.3</gwt.version>
+		<gwt.version>2.0.4</gwt.version>
 		<hibernate.version>3.3.2.GA</hibernate.version>
 		<resteasy.version>2.0-beta-2</resteasy.version>
 		<seam.version>2.2.0.GA</seam.version>

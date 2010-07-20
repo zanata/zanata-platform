@@ -21,95 +21,110 @@ import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class CollapsePanel extends Composite implements HasWidgets {
+public class CollapsePanel extends Composite implements HasWidgets
+{
 
-	private static CollapsePanelUiBinder uiBinder = GWT
-			.create(CollapsePanelUiBinder.class);
+   private static CollapsePanelUiBinder uiBinder = GWT.create(CollapsePanelUiBinder.class);
 
-	interface CollapsePanelUiBinder extends UiBinder<Widget, CollapsePanel> {
-	}
+   interface CollapsePanelUiBinder extends UiBinder<Widget, CollapsePanel>
+   {
+   }
 
+   @UiField
+   Anchor heading;
 
-	@UiField
-	Anchor heading;
-	
-	@UiField
-	LayoutPanel rootPanel, contentPanel;
-	
-	@UiField
-	Image collapseImage;
-	
-	@UiField(provided=true)
-	Resources resources;
-	
-	private boolean collapsed = false;
-	
-	@Inject
-	public CollapsePanel(final Resources resources) {
-		this.resources = resources;
-		initWidget(uiBinder.createAndBindUi(this));
-	}
-	
-	public void setHeading(String heading) {
-		this.heading.setText(heading);
-	}
-	
-	public void setCollapsedByDefault(boolean collapsed) {
-		setCollapsed(collapsed, false);
-	}
+   @UiField
+   LayoutPanel rootPanel, contentPanel;
 
-	@Override
-	public void add(Widget w) {
-		contentPanel.add(w);
-	}
+   @UiField
+   Image collapseImage;
 
-	@Override
-	public void clear() {
-		contentPanel.clear();
-	}
+   @UiField(provided = true)
+   Resources resources;
 
-	@Override
-	public Iterator<Widget> iterator() {
-		return contentPanel.iterator();
-	}
+   private boolean collapsed = false;
 
-	@Override
-	public boolean remove(Widget w) {
-		return contentPanel.remove(w);
-	}
+   @Inject
+   public CollapsePanel(final Resources resources)
+   {
+      this.resources = resources;
+      initWidget(uiBinder.createAndBindUi(this));
+   }
 
-	@UiHandler({"collapseImage", "heading"})
-	protected void onCollapseClicked(ClickEvent event) {
-		setCollapsed( !isCollapsed() );
-	}
+   public void setHeading(String heading)
+   {
+      this.heading.setText(heading);
+   }
 
-	public boolean isCollapsed() {
-		return collapsed;
-	}
-	
-	private void setCollapsed(boolean collapsed, boolean animate) {
-		if(collapsed == this.collapsed)
-			return;
-		this.collapsed = collapsed;
-		collapseImage.setResource( collapsed ? resources.collapseClosed() : resources.collapseOpen() );
-		rootPanel.forceLayout();
-		if(collapsed) {
-			rootPanel.setWidgetTopHeight(contentPanel, 20, Unit.PX, 0, Unit.PX);
-		}
-		else {
-			rootPanel.setWidgetTopBottom(contentPanel, 20, Unit.PX, 0, Unit.PX);
-		}
-		if(animate) {
-			rootPanel.animate(500);
-		}
-		else{
-			rootPanel.forceLayout();
-		}
-	}
-	
-	public void setCollapsed(boolean collapsed) {
-		setCollapsed(collapsed, true);
-		
-	}
-	
+   public void setCollapsedByDefault(boolean collapsed)
+   {
+      setCollapsed(collapsed, false);
+   }
+
+   @Override
+   public void add(Widget w)
+   {
+      contentPanel.add(w);
+   }
+
+   @Override
+   public void clear()
+   {
+      contentPanel.clear();
+   }
+
+   @Override
+   public Iterator<Widget> iterator()
+   {
+      return contentPanel.iterator();
+   }
+
+   @Override
+   public boolean remove(Widget w)
+   {
+      return contentPanel.remove(w);
+   }
+
+   @UiHandler( { "collapseImage", "heading" })
+   protected void onCollapseClicked(ClickEvent event)
+   {
+      setCollapsed(!isCollapsed());
+   }
+
+   public boolean isCollapsed()
+   {
+      return collapsed;
+   }
+
+   private void setCollapsed(boolean collapsed, boolean animate)
+   {
+      if (collapsed == this.collapsed)
+         return;
+      this.collapsed = collapsed;
+      collapseImage.setResource(collapsed ? resources.collapseClosed() : resources.collapseOpen());
+      rootPanel.forceLayout();
+      if (collapsed)
+      {
+         rootPanel.setWidgetTopHeight(contentPanel, 20, Unit.PX, 0, Unit.PX);
+      }
+      else
+      {
+         rootPanel.setWidgetTopBottom(contentPanel, 20, Unit.PX, 0, Unit.PX);
+      }
+      if (animate)
+      {
+         rootPanel.animate(500);
+      }
+      else
+      {
+         rootPanel.forceLayout();
+      }
+   }
+
+   public void setCollapsed(boolean collapsed)
+   {
+      setCollapsed(collapsed, true);
+
+   }
+
 }

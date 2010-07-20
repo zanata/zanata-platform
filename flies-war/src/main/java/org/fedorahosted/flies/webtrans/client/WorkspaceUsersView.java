@@ -15,70 +15,80 @@ import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class WorkspaceUsersView extends Composite implements
-		WorkspaceUsersPresenter.Display {
+public class WorkspaceUsersView extends Composite implements WorkspaceUsersPresenter.Display
+{
 
-	private static WorkspaceUsersViewUiBinder uiBinder = GWT
-			.create(WorkspaceUsersViewUiBinder.class);
+   private static WorkspaceUsersViewUiBinder uiBinder = GWT.create(WorkspaceUsersViewUiBinder.class);
 
-	interface WorkspaceUsersViewUiBinder extends UiBinder<LayoutPanel, WorkspaceUsersView> {
-	}
+   interface WorkspaceUsersViewUiBinder extends UiBinder<LayoutPanel, WorkspaceUsersView>
+   {
+   }
 
-	@UiField
-	FlowPanel userListPanel;
-	
-	@UiField
-	Label headerLabel;
-	
-	private final WebTransMessages messages;
-	
-	@Inject
-	public WorkspaceUsersView(WebTransMessages messages) {
-		this.messages = messages;
-		initWidget(uiBinder.createAndBindUi(this));
-		headerLabel.setText(messages.nUsersOnline(0));
-	}
+   @UiField
+   FlowPanel userListPanel;
 
-	@Override
-	public Widget asWidget() {
-		return this;
-	}
+   @UiField
+   Label headerLabel;
 
-	@Override
-	public void startProcessing() {
-		// TODO Auto-generated method stub
+   private final WebTransMessages messages;
 
-	}
+   @Inject
+   public WorkspaceUsersView(WebTransMessages messages)
+   {
+      this.messages = messages;
+      initWidget(uiBinder.createAndBindUi(this));
+      headerLabel.setText(messages.nUsersOnline(0));
+   }
 
-	@Override
-	public void stopProcessing() {
-		// TODO Auto-generated method stub
+   @Override
+   public Widget asWidget()
+   {
+      return this;
+   }
 
-	}
+   @Override
+   public void startProcessing()
+   {
+      // TODO Auto-generated method stub
 
-	@Override
-	public void updateUserList(ArrayList<Person> userList) {
-		int existingCount = userListPanel.getWidgetCount();
-		UserListItem item = null;
-		for(int i=0;i<userList.size();i++) {
-			if(existingCount > i) {
-				item = (UserListItem) userListPanel.getWidget(i);
-				item.setUser(userList.get(i));
-			}
-			else{
-				item = new UserListItem(userList.get(i));
-				userListPanel.add(item);
-			}
-		}
-		for(int i= userList.size();i<existingCount;i++){
-			userListPanel.remove(i-1);
-		}
-		
-		headerLabel.setText(messages.nUsersOnline(userList.size()));
-		
-	}
+   }
 
-	public HasMouseOverHandlers getCollapsedWidget() {
-		return headerLabel;
-	}
+   @Override
+   public void stopProcessing()
+   {
+      // TODO Auto-generated method stub
+
+   }
+
+   @Override
+   public void updateUserList(ArrayList<Person> userList)
+   {
+      int existingCount = userListPanel.getWidgetCount();
+      UserListItem item = null;
+      for (int i = 0; i < userList.size(); i++)
+      {
+         if (existingCount > i)
+         {
+            item = (UserListItem) userListPanel.getWidget(i);
+            item.setUser(userList.get(i));
+         }
+         else
+         {
+            item = new UserListItem(userList.get(i));
+            userListPanel.add(item);
+         }
+      }
+      for (int i = userList.size(); i < existingCount; i++)
+      {
+         userListPanel.remove(i - 1);
+      }
+
+      headerLabel.setText(messages.nUsersOnline(userList.size()));
+
+   }
+
+   public HasMouseOverHandlers getCollapsedWidget()
+   {
+      return headerLabel;
+   }
 }

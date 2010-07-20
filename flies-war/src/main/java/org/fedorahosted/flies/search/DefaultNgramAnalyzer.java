@@ -4,11 +4,12 @@ import java.util.Locale;
 
 import net.sf.okapi.lib.search.lucene.analysis.NgramAnalyzer;
 
+public class DefaultNgramAnalyzer extends NgramAnalyzer
+{
 
-public class DefaultNgramAnalyzer extends NgramAnalyzer {
-
-	public DefaultNgramAnalyzer() {
-		super(Locale.ENGLISH, 3);
-	}
+   public DefaultNgramAnalyzer()
+   {
+      super(Locale.ENGLISH, 3);
+   }
 
 }

@@ -17,47 +17,49 @@ import org.hibernate.annotations.Type;
  * @see org.fedorahosted.flies.rest.dto.po.PoHeader
  */
 @MappedSuperclass
-public abstract class AbstractPoHeader extends AbstractFliesEntity {
+public abstract class AbstractPoHeader extends AbstractFliesEntity
+{
 
-	private HSimpleComment comment;
-	private String entries;
+   private HSimpleComment comment;
+   private String entries;
 
-	public abstract void setDocument(HDocument document);
+   public abstract void setDocument(HDocument document);
 
-	@Transient
-	public abstract HDocument getDocument();
-	
-	public void setComment(HSimpleComment comment) {
-		this.comment = comment;
-	}
+   @Transient
+   public abstract HDocument getDocument();
 
-	@OneToOne(optional=true, cascade=CascadeType.ALL)
-	@JoinColumn(name="comment_id")
-	public HSimpleComment getComment() {
-		return comment;
-	}
+   public void setComment(HSimpleComment comment)
+   {
+      this.comment = comment;
+   }
 
-	// stored in the format used by java.util.Properties.store(Writer)
-	// see PoUtility.headerEntriesToString
-	public void setEntries(String entries) {
-		this.entries = entries;
-	}
+   @OneToOne(optional = true, cascade = CascadeType.ALL)
+   @JoinColumn(name = "comment_id")
+   public HSimpleComment getComment()
+   {
+      return comment;
+   }
 
-	// see PoUtility.stringToHeaderEntries
-	@Type(type="text")
-	public String getEntries() {
-		return entries;
-	}
+   // stored in the format used by java.util.Properties.store(Writer)
+   // see PoUtility.headerEntriesToString
+   public void setEntries(String entries)
+   {
+      this.entries = entries;
+   }
 
-	/**
-	 * Used for debugging
-	 */
-	@Override
-	public String toString() {
-		return 
-			"document:"+getDocument()+
-			"comment:"+getComment()+
-			"entries:"+getEntries()+
-			"";
-	}
+   // see PoUtility.stringToHeaderEntries
+   @Type(type = "text")
+   public String getEntries()
+   {
+      return entries;
+   }
+
+   /**
+    * Used for debugging
+    */
+   @Override
+   public String toString()
+   {
+      return "document:" + getDocument() + "comment:" + getComment() + "entries:" + getEntries() + "";
+   }
 }

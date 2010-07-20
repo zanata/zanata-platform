@@ -4,21 +4,25 @@ import net.customware.gwt.dispatch.shared.Action;
 
 import org.fedorahosted.flies.webtrans.shared.model.WorkspaceId;
 
-public class ActivateWorkspaceAction implements Action<ActivateWorkspaceResult> {
-	
-	private static final long serialVersionUID = 1L;
+public class ActivateWorkspaceAction implements Action<ActivateWorkspaceResult>
+{
 
-	private WorkspaceId workspaceId;
-	
-	@SuppressWarnings("unused")
-	private ActivateWorkspaceAction() {
-	}
+   private static final long serialVersionUID = 1L;
 
-	public ActivateWorkspaceAction(WorkspaceId workspaceId) {
-		this.workspaceId = workspaceId;
-	}
+   private WorkspaceId workspaceId;
 
-	public WorkspaceId getWorkspaceId() {
-		return workspaceId;
-	}
+   @SuppressWarnings("unused")
+   private ActivateWorkspaceAction()
+   {
+   }
+
+   public ActivateWorkspaceAction(WorkspaceId workspaceId)
+   {
+      this.workspaceId = workspaceId;
+   }
+
+   public WorkspaceId getWorkspaceId()
+   {
+      return workspaceId;
+   }
 }

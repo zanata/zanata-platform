@@ -11,17 +11,17 @@ import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.jboss.resteasy.client.ClientResponse;
 
 //@Path("/i/{iterationSlug}")
-public interface IProjectIterationResource{
+public interface IProjectIterationResource
+{
 
-	@GET
-	@Produces({ MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML, MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON })
-	public ClientResponse<ProjectIteration> get();
+   @GET
+   @Produces( { MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML, MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON })
+   public ClientResponse<ProjectIteration> get();
 
-	@PUT
-	@Consumes({ MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML, MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON })
-	public Response put(
-			ProjectIteration project);
-	
-//	@Path("/documents")
-//	public IDocumentsResource getDocuments();
+   @PUT
+   @Consumes( { MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML, MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON })
+   public Response put(ProjectIteration project);
+
+   // @Path("/documents")
+   // public IDocumentsResource getDocuments();
 }

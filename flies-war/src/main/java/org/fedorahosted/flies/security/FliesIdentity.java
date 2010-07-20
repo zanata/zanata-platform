@@ -22,73 +22,83 @@ import org.jboss.seam.security.NotLoggedInException;
 @Install(precedence = APPLICATION)
 @BypassInterceptors
 @Startup
-public class FliesIdentity extends Identity {
-	
-	public static final String USER_LOGOUT_EVENT = "user.logout";
-	public static final String USER_ENTER_WORKSPACE = "user.enter";
-	private String username;
+public class FliesIdentity extends Identity
+{
 
-	private static final LogProvider log = Logging
-			.getLogProvider(FliesIdentity.class);
+   public static final String USER_LOGOUT_EVENT = "user.logout";
+   public static final String USER_ENTER_WORKSPACE = "user.enter";
+   private String username;
 
-	private String apiKey;
+   private static final LogProvider log = Logging.getLogProvider(FliesIdentity.class);
 
-	public String getApiKey() {
-		return apiKey;
-	}
+   private String apiKey;
 
-	public void setApiKey(String apiKey) {
-		this.apiKey = apiKey;
-		getCredentials().setPassword(apiKey);
-	}
+   public String getApiKey()
+   {
+      return apiKey;
+   }
 
-	public boolean isApiRequest() {
-		return apiKey != null;
-	}
+   public void setApiKey(String apiKey)
+   {
+      this.apiKey = apiKey;
+      getCredentials().setPassword(apiKey);
+   }
 
-	public static FliesIdentity instance() {
-		if (!Contexts.isSessionContextActive()) {
-			throw new IllegalStateException("No active session context");
-		}
+   public boolean isApiRequest()
+   {
+      return apiKey != null;
+   }
 
-		FliesIdentity instance = (FliesIdentity) Component.getInstance(
-				FliesIdentity.class, ScopeType.SESSION);
+   public static FliesIdentity instance()
+   {
+      if (!Contexts.isSessionContextActive())
+      {
+         throw new IllegalStateException("No active session context");
+      }
 
-		if (instance == null) {
-			throw new IllegalStateException("No Identity could be created");
-		}
+      FliesIdentity instance = (FliesIdentity) Component.getInstance(FliesIdentity.class, ScopeType.SESSION);
 
-		return instance;
-	}
-	
-	public void checkLoggedIn(){
-		if(!isLoggedIn())
-			throw new NotLoggedInException();
-	}
-	
-	public void logout() {
-		if (Events.exists()) Events.instance().raiseEvent(USER_LOGOUT_EVENT, getPrincipal().getName());
-		super.logout();
-	}
+      if (instance == null)
+      {
+         throw new IllegalStateException("No Identity could be created");
+      }
 
-	@Override
-	public boolean hasPermission(Object target, String action) {
-		if (log.isDebugEnabled())
-			log.debug("ENTER hasPermission("+target+","+action+")");
-		boolean result = super.hasPermission(target, action);
-		if (log.isDebugEnabled())
-			log.debug("EXIT hasPermission(): "+result);
-		return result;
-	}
-	
-	@Override
-	public boolean hasPermission(String name, String action, Object... arg) {
-		if (log.isDebugEnabled())
-			log.debug("ENTER hasPermission("+name+","+action+","+arg+")");
-		boolean result = super.hasPermission(name, action, arg);
-		if (log.isDebugEnabled())
-			log.debug("EXIT hasPermission(): "+result);
-		return result;
-	}	
+      return instance;
+   }
+
+   public void checkLoggedIn()
+   {
+      if (!isLoggedIn())
+         throw new NotLoggedInException();
+   }
+
+   public void logout()
+   {
+      if (Events.exists())
+         Events.instance().raiseEvent(USER_LOGOUT_EVENT, getPrincipal().getName());
+      super.logout();
+   }
+
+   @Override
+   public boolean hasPermission(Object target, String action)
+   {
+      if (log.isDebugEnabled())
+         log.debug("ENTER hasPermission(" + target + "," + action + ")");
+      boolean result = super.hasPermission(target, action);
+      if (log.isDebugEnabled())
+         log.debug("EXIT hasPermission(): " + result);
+      return result;
+   }
+
+   @Override
+   public boolean hasPermission(String name, String action, Object... arg)
+   {
+      if (log.isDebugEnabled())
+         log.debug("ENTER hasPermission(" + name + "," + action + "," + arg + ")");
+      boolean result = super.hasPermission(name, action, arg);
+      if (log.isDebugEnabled())
+         log.debug("EXIT hasPermission(): " + result);
+      return result;
+   }
 
 }

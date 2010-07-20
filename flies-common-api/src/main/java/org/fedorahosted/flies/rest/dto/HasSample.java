@@ -1,5 +1,6 @@
 package org.fedorahosted.flies.rest.dto;
 
-public interface HasSample<T> {
-	T createSample();
+public interface HasSample<T>
+{
+   T createSample();
 }

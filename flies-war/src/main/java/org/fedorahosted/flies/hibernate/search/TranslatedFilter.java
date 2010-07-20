@@ -18,37 +18,42 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.log.Log;
 
 @Name("translatedFilter")
-public class TranslatedFilter extends Filter {
-	
-	@In
-	TextFlowDAO textFlowDAO;
-	
-	private LocaleId locale;
-	
-	@Logger
-	Log log;
-	
-	public LocaleId getLocale() {
-		return locale;
-	}
-	
-	public void setLocale(LocaleId locale) {
-		log.debug("Setting locale to {0}", locale);
-		this.locale = locale;
-	}
-	
-	@Override
-	public DocIdSet getDocIdSet(IndexReader reader) throws IOException {
-		OpenBitSet bitSet = new OpenBitSet(reader.maxDoc());
-		
-		List<Long> translatedIds = textFlowDAO.getIdsByTargetState(locale, ContentState.Approved);
-		log.debug("{0} matching TF ids for locale {0}: {1}", translatedIds.size(), locale, translatedIds);
-		for (Long tfId : translatedIds) {
-			Term term = new Term("id", tfId.toString());
-			TermDocs termDocs = reader.termDocs(term);
-			while (termDocs.next())
-				bitSet.set(termDocs.doc());
-		}
-		return bitSet;
-	}
+public class TranslatedFilter extends Filter
+{
+
+   @In
+   TextFlowDAO textFlowDAO;
+
+   private LocaleId locale;
+
+   @Logger
+   Log log;
+
+   public LocaleId getLocale()
+   {
+      return locale;
+   }
+
+   public void setLocale(LocaleId locale)
+   {
+      log.debug("Setting locale to {0}", locale);
+      this.locale = locale;
+   }
+
+   @Override
+   public DocIdSet getDocIdSet(IndexReader reader) throws IOException
+   {
+      OpenBitSet bitSet = new OpenBitSet(reader.maxDoc());
+
+      List<Long> translatedIds = textFlowDAO.getIdsByTargetState(locale, ContentState.Approved);
+      log.debug("{0} matching TF ids for locale {0}: {1}", translatedIds.size(), locale, translatedIds);
+      for (Long tfId : translatedIds)
+      {
+         Term term = new Term("id", tfId.toString());
+         TermDocs termDocs = reader.termDocs(term);
+         while (termDocs.next())
+            bitSet.set(termDocs.doc());
+      }
+      return bitSet;
+   }
 }

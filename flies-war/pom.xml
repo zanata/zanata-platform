@@ -84,7 +84,7 @@
 				</executions>
 				<configuration>
 					<runTarget>
-						org.fedorahosted.flies.webtrans.Application/Application.html
+						webtrans/Application.html
 					</runTarget>
 					<inplace>false</inplace>
 				</configuration>

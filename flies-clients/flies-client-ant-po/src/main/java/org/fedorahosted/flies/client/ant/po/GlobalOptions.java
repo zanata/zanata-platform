@@ -1,19 +1,24 @@
 package org.fedorahosted.flies.client.ant.po;
 
-interface GlobalOptions {
-	static final GlobalOptions EMPTY = new GlobalOptions() {
-		@Override
-		public boolean getErrors() {
-			return false;
-		}
-		@Override
-		public boolean getHelp() {
-			return false;
-		}
-	};
+interface GlobalOptions
+{
+   static final GlobalOptions EMPTY = new GlobalOptions()
+   {
+      @Override
+      public boolean getErrors()
+      {
+         return false;
+      }
 
-	boolean getHelp();
+      @Override
+      public boolean getHelp()
+      {
+         return false;
+      }
+   };
 
-	boolean getErrors();
+   boolean getHelp();
+
+   boolean getErrors();
 
 }

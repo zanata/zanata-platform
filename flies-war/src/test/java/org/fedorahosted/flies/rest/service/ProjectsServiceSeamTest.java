@@ -19,45 +19,41 @@ import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-
 @Test(groups = { "seam-tests" })
-public class ProjectsServiceSeamTest extends FliesDBUnitSeamTest {
+public class ProjectsServiceSeamTest extends FliesDBUnitSeamTest
+{
 
-	ClientRequestFactory clientRequestFactory;
-	IProjectsResource projectService;
+   ClientRequestFactory clientRequestFactory;
+   IProjectsResource projectService;
 
-	@BeforeClass
-	public void prepareRestEasyClientFramework() throws Exception {
-		ResteasyProviderFactory instance = ResteasyProviderFactory
-				.getInstance();
-		RegisterBuiltin.register(instance);
+   @BeforeClass
+   public void prepareRestEasyClientFramework() throws Exception
+   {
+      ResteasyProviderFactory instance = ResteasyProviderFactory.getInstance();
+      RegisterBuiltin.register(instance);
 
-		clientRequestFactory = new ClientRequestFactory(
-				new SeamMockClientExecutor(this), new URI("/restv1/"));
+      clientRequestFactory = new ClientRequestFactory(new SeamMockClientExecutor(this), new URI("/restv1/"));
 
-		clientRequestFactory.getPrefixInterceptors().registerInterceptor(
-				new ApiKeyHeaderDecorator("admin",
-						"12345678901234567890123456789012"));
+      clientRequestFactory.getPrefixInterceptors().registerInterceptor(new ApiKeyHeaderDecorator("admin", "12345678901234567890123456789012"));
 
-		projectService = clientRequestFactory
-				.createProxy(IProjectsResource.class);
+      projectService = clientRequestFactory.createProxy(IProjectsResource.class);
 
-	}
+   }
 
-	@Override
-	protected void prepareDBUnitOperations() {
-		beforeTestOperations.add(new DataSetOperation(
-				"META-INF/testdata/ProjectsData.dbunit.xml",
-				DatabaseOperation.CLEAN_INSERT));
-	}
+   @Override
+   protected void prepareDBUnitOperations()
+   {
+      beforeTestOperations.add(new DataSetOperation("META-INF/testdata/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+   }
 
-	@Test(enabled=false)
-	public void retrieveListofProjects() throws Exception {
-		ClientResponse<List<Project>> response = projectService.get();
+   @Test(enabled = false)
+   public void retrieveListofProjects() throws Exception
+   {
+      ClientResponse<List<Project>> response = projectService.get();
 
-		assertThat(response.getStatus(), is(200));
-		assertThat(response.getEntity(), notNullValue());
-		assertThat(response.getEntity().size(), is(1));
+      assertThat(response.getStatus(), is(200));
+      assertThat(response.getEntity(), notNullValue());
+      assertThat(response.getEntity().size(), is(1));
 
-	}
+   }
 }

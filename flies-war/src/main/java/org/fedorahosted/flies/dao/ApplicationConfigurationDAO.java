@@ -11,21 +11,22 @@ import org.jboss.seam.annotations.Scope;
 @Name("applicationConfigurationDAO")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
-public class ApplicationConfigurationDAO extends AbstractDAOImpl<HApplicationConfiguration, Long> {
-	
-	public ApplicationConfigurationDAO() {
-		super(HApplicationConfiguration.class);
-	}
+public class ApplicationConfigurationDAO extends AbstractDAOImpl<HApplicationConfiguration, Long>
+{
 
-	public ApplicationConfigurationDAO(Session session) {
-		super(HApplicationConfiguration.class, session);
-	}
-	
-	public HApplicationConfiguration findByKey(String key) {
-		return (HApplicationConfiguration) getSession().createCriteria(HApplicationConfiguration.class)
-			.add( Restrictions.naturalId()
-		        .set("key", key))
-		    .uniqueResult();
-	}
+   public ApplicationConfigurationDAO()
+   {
+      super(HApplicationConfiguration.class);
+   }
+
+   public ApplicationConfigurationDAO(Session session)
+   {
+      super(HApplicationConfiguration.class, session);
+   }
+
+   public HApplicationConfiguration findByKey(String key)
+   {
+      return (HApplicationConfiguration) getSession().createCriteria(HApplicationConfiguration.class).add(Restrictions.naturalId().set("key", key)).uniqueResult();
+   }
 
 }

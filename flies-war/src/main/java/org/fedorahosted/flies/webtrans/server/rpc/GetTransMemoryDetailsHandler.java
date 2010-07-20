@@ -27,53 +27,47 @@ import org.jboss.seam.log.Log;
 @Name("webtrans.gwt.GetTransMemoryDetailsHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetTransMemoryDetailsAction.class)
-public class GetTransMemoryDetailsHandler extends AbstractActionHandler<GetTransMemoryDetailsAction, TransMemoryDetailsList> {
+public class GetTransMemoryDetailsHandler extends AbstractActionHandler<GetTransMemoryDetailsAction, TransMemoryDetailsList>
+{
 
-	@Logger 
-	private Log log;
-	
-	@In
-	TextFlowDAO textFlowDAO;
-	
-	@In 
-	Session session;
-	
-	@Override
-	public TransMemoryDetailsList execute(GetTransMemoryDetailsAction action,
-			ExecutionContext context) throws ActionException {
-		FliesIdentity.instance().checkLoggedIn();
-		ArrayList<Long> textFlowIds = action.getTransUnitIdList();
-		LocaleId locale = action.getWorkspaceId().getLocaleId();
-		log.info("Fetching TM details for TFs {0} in locale {1}", 
-				textFlowIds, 
-				locale);
-		
-		List<HTextFlow> textFlows = textFlowDAO.findByIdList(textFlowIds);
-		ArrayList<TransMemoryDetails> items = new ArrayList<TransMemoryDetails>(textFlows.size());
-		
-		for (HTextFlow tf : textFlows) {
-			HTextFlowTarget tft = tf.getTargets().get(locale);
-			HSimpleComment sourceComment = tf.getComment();
-			HSimpleComment targetComment = tft.getComment();
-			String docId = tf.getDocument().getDocId();
-			String iterationName = tf.getDocument().getProjectIteration().getName();
-			String projectName = tf.getDocument().getProjectIteration().getProject().getName();
-			items.add(new TransMemoryDetails(
-					HSimpleComment.toString(sourceComment),
-					HSimpleComment.toString(targetComment), 
-					projectName, iterationName, docId));
-		}
-		 
-		log.info("Returning {0} TM details", 
-				items.size()); 
-		return new TransMemoryDetailsList(items);
-	}
-	
-    @Override
-	public void rollback(GetTransMemoryDetailsAction action,
-			TransMemoryDetailsList result, ExecutionContext context)
-			throws ActionException {
-	}
-    
-    
+   @Logger
+   private Log log;
+
+   @In
+   TextFlowDAO textFlowDAO;
+
+   @In
+   Session session;
+
+   @Override
+   public TransMemoryDetailsList execute(GetTransMemoryDetailsAction action, ExecutionContext context) throws ActionException
+   {
+      FliesIdentity.instance().checkLoggedIn();
+      ArrayList<Long> textFlowIds = action.getTransUnitIdList();
+      LocaleId locale = action.getWorkspaceId().getLocaleId();
+      log.info("Fetching TM details for TFs {0} in locale {1}", textFlowIds, locale);
+
+      List<HTextFlow> textFlows = textFlowDAO.findByIdList(textFlowIds);
+      ArrayList<TransMemoryDetails> items = new ArrayList<TransMemoryDetails>(textFlows.size());
+
+      for (HTextFlow tf : textFlows)
+      {
+         HTextFlowTarget tft = tf.getTargets().get(locale);
+         HSimpleComment sourceComment = tf.getComment();
+         HSimpleComment targetComment = tft.getComment();
+         String docId = tf.getDocument().getDocId();
+         String iterationName = tf.getDocument().getProjectIteration().getName();
+         String projectName = tf.getDocument().getProjectIteration().getProject().getName();
+         items.add(new TransMemoryDetails(HSimpleComment.toString(sourceComment), HSimpleComment.toString(targetComment), projectName, iterationName, docId));
+      }
+
+      log.info("Returning {0} TM details", items.size());
+      return new TransMemoryDetailsList(items);
+   }
+
+   @Override
+   public void rollback(GetTransMemoryDetailsAction action, TransMemoryDetailsList result, ExecutionContext context) throws ActionException
+   {
+   }
+
 }

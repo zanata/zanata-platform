@@ -15,51 +15,60 @@ import org.jboss.seam.annotations.security.management.RoleGroups;
 import org.jboss.seam.annotations.security.management.RoleName;
 
 @Entity
-public class HAccountRole implements Serializable {
-	private static final long serialVersionUID = 9177366120789064801L;
+public class HAccountRole implements Serializable
+{
+   private static final long serialVersionUID = 9177366120789064801L;
 
-	private Integer id;
-	private String name;
-	private boolean conditional;
+   private Integer id;
+   private String name;
+   private boolean conditional;
 
-	private Set<HAccountRole> groups;
+   private Set<HAccountRole> groups;
 
-	@Id
-	@GeneratedValue
-	public Integer getId() {
-		return id;
-	}
+   @Id
+   @GeneratedValue
+   public Integer getId()
+   {
+      return id;
+   }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+   public void setId(Integer id)
+   {
+      this.id = id;
+   }
 
-	@RoleName
-	public String getName() {
-		return name;
-	}
+   @RoleName
+   public String getName()
+   {
+      return name;
+   }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+   public void setName(String name)
+   {
+      this.name = name;
+   }
 
-	@RoleGroups
-	@ManyToMany(targetEntity = HAccountRole.class)
-	@JoinTable(name = "HAccountRoleGroup", joinColumns = @JoinColumn(name = "roleId"), inverseJoinColumns = @JoinColumn(name = "memberOf"))
-	public Set<HAccountRole> getGroups() {
-		return groups;
-	}
+   @RoleGroups
+   @ManyToMany(targetEntity = HAccountRole.class)
+   @JoinTable(name = "HAccountRoleGroup", joinColumns = @JoinColumn(name = "roleId"), inverseJoinColumns = @JoinColumn(name = "memberOf"))
+   public Set<HAccountRole> getGroups()
+   {
+      return groups;
+   }
 
-	public void setGroups(Set<HAccountRole> groups) {
-		this.groups = groups;
-	}
+   public void setGroups(Set<HAccountRole> groups)
+   {
+      this.groups = groups;
+   }
 
-	@RoleConditional
-	public boolean isConditional() {
-		return conditional;
-	}
+   @RoleConditional
+   public boolean isConditional()
+   {
+      return conditional;
+   }
 
-	public void setConditional(boolean conditional) {
-		this.conditional = conditional;
-	}
+   public void setConditional(boolean conditional)
+   {
+      this.conditional = conditional;
+   }
 }

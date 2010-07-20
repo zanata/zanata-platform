@@ -11,31 +11,36 @@ import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 
 @MappedSuperclass
-public class AbstractAccountKey{
-	
-	private String keyHash;
-	private HAccount account;
+public class AbstractAccountKey
+{
 
-	@NotEmpty
-	@Length(min=32, max=32)
-	@Id
-	public String getKeyHash() {
-		return keyHash;
-	}
-	
-	public void setKeyHash(String keyHash) {
-		this.keyHash = keyHash;
-	}
-	
-	@NaturalId
-	@OneToOne(optional=false, fetch=FetchType.EAGER)
-	@JoinColumn(name = "accountId")
-	public HAccount getAccount() {
-		return account;
-	}
-	
-	public void setAccount(HAccount account) {
-		this.account = account;
-	}
+   private String keyHash;
+   private HAccount account;
+
+   @NotEmpty
+   @Length(min = 32, max = 32)
+   @Id
+   public String getKeyHash()
+   {
+      return keyHash;
+   }
+
+   public void setKeyHash(String keyHash)
+   {
+      this.keyHash = keyHash;
+   }
+
+   @NaturalId
+   @OneToOne(optional = false, fetch = FetchType.EAGER)
+   @JoinColumn(name = "accountId")
+   public HAccount getAccount()
+   {
+      return account;
+   }
+
+   public void setAccount(HAccount account)
+   {
+      this.account = account;
+   }
 
 }

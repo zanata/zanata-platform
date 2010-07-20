@@ -20,44 +20,40 @@ import org.fedorahosted.flies.rest.dto.resource.Resource;
 import org.fedorahosted.flies.rest.dto.resource.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.resource.TranslationsResource;
 
-public class GenerateSchema {
+public class GenerateSchema
+{
 
-	public static void main(String[] args) throws IOException, JAXBException {
-		Class<?> [] classes = new Class<?>[]{
-			ProjectList.class,
-			Project.class,
-			ProjectIteration.class,
-			Resource.class,
-			ResourceMeta.class,
-			TranslationsResource.class,
-			TextFlow.class,
-			TextFlowTarget.class
-		};
-		JAXBContext context = JAXBContext.newInstance(classes);
-		Marshaller m = context.createMarshaller();
-		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-		m.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-//		m.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper",
-//				GenerateSamples.namespacePrefixMapper);
-	
-		SchemaOutputResolver schemaOutputResolver = new SchemaOutputResolver() {
+   public static void main(String[] args) throws IOException, JAXBException
+   {
+      Class<?>[] classes = new Class<?>[] { ProjectList.class, Project.class, ProjectIteration.class, Resource.class, ResourceMeta.class, TranslationsResource.class, TextFlow.class, TextFlowTarget.class };
+      JAXBContext context = JAXBContext.newInstance(classes);
+      Marshaller m = context.createMarshaller();
+      m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+      m.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+      // m.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper",
+      // GenerateSamples.namespacePrefixMapper);
 
-			@Override
-			public Result createOutput(String namespaceUri, String suggestedFileName)
-					throws IOException {
-				StreamResult result = new StreamResult(new PrintStream(System.out){
-					@Override
-					public void close() {
-					}
-				});
-				result.setSystemId("stdout");
-				return result;
+      SchemaOutputResolver schemaOutputResolver = new SchemaOutputResolver()
+      {
 
-			}
-		};
-		
-		context.generateSchema(schemaOutputResolver);
-		
-	}
-	
+         @Override
+         public Result createOutput(String namespaceUri, String suggestedFileName) throws IOException
+         {
+            StreamResult result = new StreamResult(new PrintStream(System.out)
+            {
+               @Override
+               public void close()
+               {
+               }
+            });
+            result.setSystemId("stdout");
+            return result;
+
+         }
+      };
+
+      context.generateSchema(schemaOutputResolver);
+
+   }
+
 }

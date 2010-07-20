@@ -8,33 +8,39 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 import net.customware.gwt.dispatch.shared.Action;
 
-public class GetTransUnits extends AbstractWorkspaceAction<GetTransUnitsResult> {
+public class GetTransUnits extends AbstractWorkspaceAction<GetTransUnitsResult>
+{
 
-	private static final long serialVersionUID = 1L;
-	private int offset;
-	private int count;
-	private DocumentId documentId;
+   private static final long serialVersionUID = 1L;
+   private int offset;
+   private int count;
+   private DocumentId documentId;
 
-	@SuppressWarnings("unused")
-	private GetTransUnits(){
-	}
-	
-	public GetTransUnits(DocumentId id, int offset, int count) {
-		this.documentId = id;
-		this.offset = offset;
-		this.count = count;
-	}
+   @SuppressWarnings("unused")
+   private GetTransUnits()
+   {
+   }
 
-	public int getOffset() {
-		return offset;
-	}
+   public GetTransUnits(DocumentId id, int offset, int count)
+   {
+      this.documentId = id;
+      this.offset = offset;
+      this.count = count;
+   }
 
-	public int getCount() {
-		return count;
-	}
+   public int getOffset()
+   {
+      return offset;
+   }
 
-	public DocumentId getDocumentId() {
-		return documentId;
-	}
-	
+   public int getCount()
+   {
+      return count;
+   }
+
+   public DocumentId getDocumentId()
+   {
+      return documentId;
+   }
+
 }
