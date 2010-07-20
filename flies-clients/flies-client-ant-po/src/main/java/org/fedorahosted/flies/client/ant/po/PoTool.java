@@ -56,6 +56,9 @@ public class PoTool implements GlobalOptions {
 			} else if (command.equals("createiter")) {
 				Subcommand cmd = new CreateIterationTask();
 				cmd.processArgs(otherArgs, this);
+			} else if (command.equals("putuser")) {
+				Subcommand cmd = new PutUserTask();
+				cmd.processArgs(otherArgs, this);
 			} else {
 				help(System.out);
 			}
@@ -71,6 +74,7 @@ public class PoTool implements GlobalOptions {
 		out.println("  For 'download' help: flies-publican download --help");
 		out.println("  For 'createproj' help: flies-publican createproj --help");
 		out.println("  For 'createiter' help: flies-publican createiter --help");
+		out.println("  For 'putuser' help: flies-publican putuser --help");
 		out.println("");
 		out.println();
 	}

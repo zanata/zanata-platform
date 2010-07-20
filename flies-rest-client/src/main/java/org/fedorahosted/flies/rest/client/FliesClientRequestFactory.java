@@ -34,10 +34,14 @@ public class FliesClientRequestFactory extends ClientRequestFactory {
 		return  createProxy(IProjectIterationResource.class, uri);
 	}
 
+	public IAccountResource getAccountResource(final URI uri) {
+		return createProxy(IAccountResource.class, uri);
+	}
+
 	public IProjectResource getProjectResource(final URI uri) {
 		return createProxy(IProjectResource.class, uri);
 	}
-
+	
 	public IProjectsResource getProjectsResource(final URI uri) {
 		return createProxy(IProjectsResource.class, uri);
 	}
