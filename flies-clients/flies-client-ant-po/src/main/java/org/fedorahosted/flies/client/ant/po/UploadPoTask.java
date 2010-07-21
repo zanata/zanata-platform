@@ -153,7 +153,7 @@ public class UploadPoTask extends Task implements Subcommand {
 			
 			File[] localeDirs = new File[0];
 			if (importPo) {
-				localeDirs = srcDir.listFiles(new FileFilter() {;
+				localeDirs = srcDir.listFiles(new FileFilter() {
 				
 					@Override
 					public boolean accept(File f) {
