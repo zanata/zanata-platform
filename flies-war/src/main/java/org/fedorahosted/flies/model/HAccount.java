@@ -29,10 +29,15 @@ public class HAccount extends AbstractFliesEntity implements Serializable
 {
 
    private String username;
+
    private String passwordHash;
+
    private boolean enabled;
+
    private String apiKey;
+
    private HPerson person;
+
    private Set<HAccountRole> roles;
 
    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
@@ -99,7 +104,7 @@ public class HAccount extends AbstractFliesEntity implements Serializable
    }
 
    @UserRoles
-   @ManyToMany(targetEntity = HAccountRole.class)
+   @ManyToMany(targetEntity = HAccountRole.class, cascade = CascadeType.ALL)
    @JoinTable(name = "HAccountMembership", joinColumns = @JoinColumn(name = "accountId"), inverseJoinColumns = @JoinColumn(name = "memberOf"))
    public Set<HAccountRole> getRoles()
    {

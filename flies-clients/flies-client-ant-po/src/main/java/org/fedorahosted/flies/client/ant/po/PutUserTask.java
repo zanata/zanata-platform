@@ -7,6 +7,8 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
@@ -36,6 +38,7 @@ public class PutUserTask extends Task implements Subcommand {
 	private String email;
 	private String username;
 	private String passwordHash;
+	private Set<String> roles = new HashSet<String>();
 	private boolean disabled;
 
 	public static void main(String[] args) throws Exception {
@@ -121,7 +124,7 @@ public class PutUserTask extends Task implements Subcommand {
 		account.setUsername(username);
 		account.setPasswordHash(passwordHash);
 		account.setEnabled(!disabled);
-		account.setRoles(Arrays.asList("user", "admin"));
+		account.setRoles(roles);
 		
 		if (debug) {
 			m.marshal(account, System.out);
@@ -175,6 +178,12 @@ public class PutUserTask extends Task implements Subcommand {
 	@Option(name = "passwordhash", longName = "passwordhash", required = true, description = "User password hash")
 	public void setPasswordHash(String passwordHash) {
 		this.passwordHash = passwordHash;
+	}
+	
+	@Option(name = "roles", longName = "roles", required = false, description = "Security roles for the user")
+	public void setRoles(String roles) {
+	   this.roles.clear();
+	   this.roles.addAll(Arrays.asList(roles.split(",")));
 	}
 	
 	@Option(name = "x", longName = "debug", description = "Enable debug mode")

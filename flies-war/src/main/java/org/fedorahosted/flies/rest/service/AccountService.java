@@ -1,5 +1,8 @@
 package org.fedorahosted.flies.rest.service;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -14,7 +17,9 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.fedorahosted.flies.dao.AccountDAO;
+import org.fedorahosted.flies.dao.AccountRoleDAO;
 import org.fedorahosted.flies.model.HAccount;
+import org.fedorahosted.flies.model.HAccountRole;
 import org.fedorahosted.flies.model.HPerson;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Account;
@@ -42,6 +47,9 @@ public class AccountService {
 	@In
 	AccountDAO accountDAO;
 
+	@In
+	AccountRoleDAO accountRoleDAO;
+	
 	@In Identity identity;
 		
 	public AccountService() {
@@ -108,8 +116,14 @@ public class AccountService {
 		HPerson hPerson = to.getPerson();
 		hPerson.setEmail(from.getEmail());
 		hPerson.setName(from.getName());
+		
+		to.getRoles().clear();
+		for (String role : from.getRoles())
+      {
+         HAccountRole hAccountRole = accountRoleDAO.findByName(role);
+         to.getRoles().add(hAccountRole);
+      }
 
-//		to.setRoles(roles) // FIXME
 		to.setUsername(from.getUsername());
 		
 		// TODO is this maintained by a trigger?
@@ -124,8 +138,15 @@ public class AccountService {
 		HPerson hPerson = from.getPerson();
 		to.setEmail(hPerson.getEmail());
 		to.setName(hPerson.getName());
+		
+		Set<String> roles = new HashSet<String>();
+		
+		for (HAccountRole role : from.getRoles())
+      {
+         roles.add(role.getName());
+      }
 
-//		to.setRoles(roles) // FIXME
+		to.setRoles(roles);
 		to.setUsername(from.getUsername());
 	}
 }

@@ -1,13 +1,11 @@
 package org.fedorahosted.flies.rest.dto;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementRef;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -34,7 +32,7 @@ public class Account implements Serializable, HasMediaType {
 	private String passwordHash;
 	private String apiKey;
 	private boolean enabled;
-	private List<String> roles = new ArrayList<String>();
+	private Set<String> roles = new HashSet<String>();
 	
 	public Account() {
 	}
@@ -107,12 +105,12 @@ public class Account implements Serializable, HasMediaType {
 	}
 	
 	@XmlElement(name="role", namespace=Namespaces.FLIES)
-	public List<String> getRoles() {
+	public Set<String> getRoles() {
 		return roles;
 	}
 	
-	public void setRoles(List<String> roleNames) {
-		this.roles = roleNames;
+	public void setRoles(Set<String> roles) {
+		this.roles = roles;
 	}
 	
 	@Override
