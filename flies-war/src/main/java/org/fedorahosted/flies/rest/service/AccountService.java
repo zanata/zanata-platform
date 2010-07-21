@@ -135,9 +135,6 @@ public class AccountService
       }
 
       to.setUsername(from.getUsername());
-
-      // TODO is this maintained by a trigger?
-      //		to.setVersionNum(versionNum)
    }
 
    private void transfer(HAccount from, Account to)
