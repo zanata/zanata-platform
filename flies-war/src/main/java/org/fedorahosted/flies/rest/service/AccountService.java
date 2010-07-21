@@ -23,6 +23,8 @@ import org.fedorahosted.flies.model.HAccountRole;
 import org.fedorahosted.flies.model.HPerson;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Account;
+import org.hibernate.Session;
+import org.jboss.resteasy.spi.NoLogWebApplicationException;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.log.Log;
@@ -53,6 +55,9 @@ public class AccountService
 
    @In
    Identity identity;
+
+   @In
+   private Session session;
 
    public AccountService()
    {
@@ -87,6 +92,8 @@ public class AccountService
    public Response put(Account account)
    {
       log.debug("HTTP PUT {0} : \n{1}", request.getRequestURL(), account);
+
+      RestUtils.validateEntity(account);
       HAccount hAccount = accountDAO.getByUsername(username);
       ResponseBuilder response;
       String operation;
@@ -112,7 +119,8 @@ public class AccountService
       transfer(account, hAccount);
       // entity permission check
       identity.checkPermission(hAccount, operation);
-      accountDAO.makePersistent(hAccount);
+      session.save(hAccount);
+      session.flush();
 
       return response.build();
    }
@@ -131,6 +139,9 @@ public class AccountService
       for (String role : from.getRoles())
       {
          HAccountRole hAccountRole = accountRoleDAO.findByName(role);
+         if (hAccountRole == null)
+            // generate error for missing roles
+            throw new NoLogWebApplicationException(Response.status(Status.BAD_REQUEST).entity("Invalid role '"+role+"'").build());
          to.getRoles().add(hAccountRole);
       }
 
