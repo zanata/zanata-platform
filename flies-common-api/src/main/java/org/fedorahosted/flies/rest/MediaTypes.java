@@ -60,8 +60,8 @@ public class MediaTypes
    public static final String APPLICATION_FLIES_DOCUMENT_RESOURCES_JSON = APPLICATION_FLIES_DOCUMENT_RESOURCES + JSON;
 
 	public static final String APPLICATION_FLIES_ACCOUNT = APPLICATION_VND_FLIES + ".account";
-	public static final String APPLICATION_FLIES_ACCOUNT_XML = APPLICATION_FLIES_DOCUMENTS + XML;
-	public static final String APPLICATION_FLIES_ACCOUNT_JSON = APPLICATION_FLIES_DOCUMENTS + JSON;
+	public static final String APPLICATION_FLIES_ACCOUNT_XML = APPLICATION_FLIES_ACCOUNT + XML;
+	public static final String APPLICATION_FLIES_ACCOUNT_JSON = APPLICATION_FLIES_ACCOUNT + JSON;
 
    /**
     * Creates a format specific MediaType string given an existing media type
