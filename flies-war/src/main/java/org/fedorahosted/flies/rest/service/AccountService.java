@@ -31,122 +31,133 @@ import org.jboss.seam.security.Identity;
 
 @Name("accountService")
 @Path("/accounts/u/{username:[a-z\\d_]{3,20}}")
-public class AccountService {
+public class AccountService
+{
 
-	@PathParam("username")
-	String username;
+   @PathParam("username")
+   String username;
 
-	@Context
-	private HttpServletRequest request;
+   @Context
+   private HttpServletRequest request;
 
-	@Context
-	private UriInfo uri;
+   @Context
+   private UriInfo uri;
 
-	Log log = Logging.getLog(AccountService.class);
-	
-	@In
-	AccountDAO accountDAO;
+   Log log = Logging.getLog(AccountService.class);
 
-	@In
-	AccountRoleDAO accountRoleDAO;
-	
-	@In Identity identity;
-		
-	public AccountService() {
-	}
+   @In
+   AccountDAO accountDAO;
 
-	public AccountService(AccountDAO accountDAO) {
-		this.accountDAO = accountDAO;
-	}
-	
-	@GET
-	@Produces({ MediaTypes.APPLICATION_FLIES_ACCOUNT_XML, MediaTypes.APPLICATION_FLIES_ACCOUNT_JSON })
-	public Response get() {
-		log.debug("HTTP GET {0}", request.getRequestURL());
-		HAccount hAccount = accountDAO.getByUsername(username);
-		if (hAccount == null) {
-			return Response.status(Status.NOT_FOUND).entity(
-			"Username not found").build();
-		}
-		Account result = new Account();
-		transfer(hAccount, result);
-		
-		log.debug("HTTP GET result :\n" + result);
-		return Response.ok(result).build();		
-	}
-	
-	
-	
-	@PUT
-	@Consumes({ MediaTypes.APPLICATION_FLIES_ACCOUNT_XML, MediaTypes.APPLICATION_FLIES_ACCOUNT_JSON })
-	public Response put(Account account) {
-		log.debug("HTTP PUT {0} : \n{1}", request.getRequestURL(), account);
-		HAccount hAccount = accountDAO.getByUsername(username);
-		ResponseBuilder response;
-		String operation;
-		
-		if (hAccount == null) {
-			// creating
-			operation = "insert";
-			response = Response.created(uri.getAbsolutePath());
-			
-			hAccount = new HAccount();
-			HPerson person = new HPerson();
-			person.setAccount(hAccount);
-			hAccount.setPerson(person);
-		} else {
-			// updating
-			operation = "update";
-			response = Response.ok();
-		}
+   @In
+   AccountRoleDAO accountRoleDAO;
 
-		transfer(account, hAccount);
-		// entity permission check
-		identity.checkPermission(hAccount, operation);
-		accountDAO.makePersistent(hAccount);
-		
-		return response.build();
-	}
+   @In
+   Identity identity;
 
-	private void transfer(Account from, HAccount to) {
-		to.setApiKey(from.getApiKey());
-		to.setEnabled(from.isEnabled());
-		to.setPasswordHash(from.getPasswordHash());
-		
-		HPerson hPerson = to.getPerson();
-		hPerson.setEmail(from.getEmail());
-		hPerson.setName(from.getName());
-		
-		to.getRoles().clear();
-		for (String role : from.getRoles())
+   public AccountService()
+   {
+   }
+
+   public AccountService(AccountDAO accountDAO)
+   {
+      this.accountDAO = accountDAO;
+   }
+
+   @GET
+   @Produces(
+   {MediaTypes.APPLICATION_FLIES_ACCOUNT_XML, MediaTypes.APPLICATION_FLIES_ACCOUNT_JSON})
+   public Response get()
+   {
+      log.debug("HTTP GET {0}", request.getRequestURL());
+      HAccount hAccount = accountDAO.getByUsername(username);
+      if (hAccount == null)
+      {
+         return Response.status(Status.NOT_FOUND).entity("Username not found").build();
+      }
+      Account result = new Account();
+      transfer(hAccount, result);
+
+      log.debug("HTTP GET result :\n" + result);
+      return Response.ok(result).build();
+   }
+
+   @PUT
+   @Consumes(
+   {MediaTypes.APPLICATION_FLIES_ACCOUNT_XML, MediaTypes.APPLICATION_FLIES_ACCOUNT_JSON})
+   public Response put(Account account)
+   {
+      log.debug("HTTP PUT {0} : \n{1}", request.getRequestURL(), account);
+      HAccount hAccount = accountDAO.getByUsername(username);
+      ResponseBuilder response;
+      String operation;
+
+      if (hAccount == null)
+      {
+         // creating
+         operation = "insert";
+         response = Response.created(uri.getAbsolutePath());
+
+         hAccount = new HAccount();
+         HPerson person = new HPerson();
+         person.setAccount(hAccount);
+         hAccount.setPerson(person);
+      }
+      else
+      {
+         // updating
+         operation = "update";
+         response = Response.ok();
+      }
+
+      transfer(account, hAccount);
+      // entity permission check
+      identity.checkPermission(hAccount, operation);
+      accountDAO.makePersistent(hAccount);
+
+      return response.build();
+   }
+
+   private void transfer(Account from, HAccount to)
+   {
+      to.setApiKey(from.getApiKey());
+      to.setEnabled(from.isEnabled());
+      to.setPasswordHash(from.getPasswordHash());
+
+      HPerson hPerson = to.getPerson();
+      hPerson.setEmail(from.getEmail());
+      hPerson.setName(from.getName());
+
+      to.getRoles().clear();
+      for (String role : from.getRoles())
       {
          HAccountRole hAccountRole = accountRoleDAO.findByName(role);
          to.getRoles().add(hAccountRole);
       }
 
-		to.setUsername(from.getUsername());
-		
-		// TODO is this maintained by a trigger?
-//		to.setVersionNum(versionNum)
-	}
+      to.setUsername(from.getUsername());
 
-	private void transfer(HAccount from, Account to) {
-		to.setApiKey(from.getApiKey());
-		to.setEnabled(from.isEnabled());
-		to.setPasswordHash(from.getPasswordHash());
-		
-		HPerson hPerson = from.getPerson();
-		to.setEmail(hPerson.getEmail());
-		to.setName(hPerson.getName());
-		
-		Set<String> roles = new HashSet<String>();
-		
-		for (HAccountRole role : from.getRoles())
+      // TODO is this maintained by a trigger?
+      //		to.setVersionNum(versionNum)
+   }
+
+   private void transfer(HAccount from, Account to)
+   {
+      to.setApiKey(from.getApiKey());
+      to.setEnabled(from.isEnabled());
+      to.setPasswordHash(from.getPasswordHash());
+
+      HPerson hPerson = from.getPerson();
+      to.setEmail(hPerson.getEmail());
+      to.setName(hPerson.getName());
+
+      Set<String> roles = new HashSet<String>();
+
+      for (HAccountRole role : from.getRoles())
       {
          roles.add(role.getName());
       }
 
-		to.setRoles(roles);
-		to.setUsername(from.getUsername());
-	}
+      to.setRoles(roles);
+      to.setUsername(from.getUsername());
+   }
 }

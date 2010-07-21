@@ -11,14 +11,17 @@ import org.fedorahosted.flies.rest.dto.Account;
 import org.jboss.resteasy.client.ClientResponse;
 
 //@Path("/accounts/u/{username}")
-public interface IAccountResource {
-	
-	@GET
-	@Produces({ MediaTypes.APPLICATION_FLIES_ACCOUNT_XML, MediaTypes.APPLICATION_FLIES_ACCOUNT_JSON })
-	public ClientResponse<Account> get();
+public interface IAccountResource
+{
 
-	@PUT
-	@Consumes({ MediaTypes.APPLICATION_FLIES_ACCOUNT_XML, MediaTypes.APPLICATION_FLIES_ACCOUNT_JSON })
-	public Response put(Account account);
+   @GET
+   @Produces(
+   {MediaTypes.APPLICATION_FLIES_ACCOUNT_XML, MediaTypes.APPLICATION_FLIES_ACCOUNT_JSON})
+   public ClientResponse<Account> get();
+
+   @PUT
+   @Consumes(
+   {MediaTypes.APPLICATION_FLIES_ACCOUNT_XML, MediaTypes.APPLICATION_FLIES_ACCOUNT_JSON})
+   public Response put(Account account);
 
 }

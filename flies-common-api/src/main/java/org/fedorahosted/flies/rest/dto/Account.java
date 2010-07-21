@@ -19,103 +19,128 @@ import org.hibernate.validator.Email;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 
-@XmlType(name="accountType", namespace=Namespaces.FLIES)
-@XmlRootElement(name="account", namespace=Namespaces.FLIES)
-@JsonIgnoreProperties(ignoreUnknown=true)
-@JsonPropertyOrder({"email", "name", "username", "password"})
+@XmlType(name = "accountType", namespace = Namespaces.FLIES)
+@XmlRootElement(name = "account", namespace = Namespaces.FLIES)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonPropertyOrder(
+{"email", "name", "username", "password"})
 @JsonWriteNullProperties(false)
-public class Account implements Serializable, HasMediaType {
-	
-	private String email;
-	private String name;
-	private String username;
-	private String passwordHash;
-	private String apiKey;
-	private boolean enabled;
-	private Set<String> roles = new HashSet<String>();
-	
-	public Account() {
-	}
-	
-	public Account(String email, String name, String username, String passwordHash) {
-		this.email = email;
-		this.name = name;
-		this.username = username;
-		this.passwordHash = passwordHash;
-	}
-	
-	@XmlAttribute(name="email", required=true)
-	@Email
-	@NotNull
-	public String getEmail() {
-		return email;
-	}
-	
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	
-	@XmlAttribute(name="name", required=true)
-	@NotEmpty
-	public String getName() {
-		return name;
-	}
-	
-	public void setName(String name) {
-		this.name = name;
-	}
+public class Account implements Serializable, HasMediaType
+{
 
-	@XmlAttribute(name="username", required=true)
-	@NotEmpty
-	public String getUsername() {
-		return username;
-	}
-	
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	
-	@XmlAttribute(name="passwordHash", required=true)
-	@NotEmpty
-	public String getPasswordHash() {
-		return passwordHash;
-	}
-	
-	public void setPasswordHash(String password) {
-		this.passwordHash = password;
-	}
+   private String email;
 
-	@XmlAttribute(name="apiKey", required=true)
-	public String getApiKey() {
-		return apiKey;
-	}
+   private String name;
 
-	public void setApiKey(String apiKey) {
-		this.apiKey = apiKey;
-	}
+   private String username;
 
-	@XmlAttribute(name="enabled", required=true)
-	@NotNull
-	public boolean isEnabled() {
-		return enabled;
-	}
+   private String passwordHash;
 
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
-	
-	@XmlElement(name="role", namespace=Namespaces.FLIES)
-	public Set<String> getRoles() {
-		return roles;
-	}
-	
-	public void setRoles(Set<String> roles) {
-		this.roles = roles;
-	}
-	
-	@Override
-	public String getMediaType(Format format) {
-		return MediaTypes.APPLICATION_FLIES_ACCOUNT + format;
-	}
-	
+   private String apiKey;
+
+   private boolean enabled;
+
+   private Set<String> roles = new HashSet<String>();
+
+   public Account()
+   {
+   }
+
+   public Account(String email, String name, String username, String passwordHash)
+   {
+      this.email = email;
+      this.name = name;
+      this.username = username;
+      this.passwordHash = passwordHash;
+   }
+
+   @XmlAttribute(name = "email", required = true)
+   @Email
+   @NotNull
+   public String getEmail()
+   {
+      return email;
+   }
+
+   public void setEmail(String email)
+   {
+      this.email = email;
+   }
+
+   @XmlAttribute(name = "name", required = true)
+   @NotEmpty
+   public String getName()
+   {
+      return name;
+   }
+
+   public void setName(String name)
+   {
+      this.name = name;
+   }
+
+   @XmlAttribute(name = "username", required = true)
+   @NotEmpty
+   public String getUsername()
+   {
+      return username;
+   }
+
+   public void setUsername(String username)
+   {
+      this.username = username;
+   }
+
+   @XmlAttribute(name = "passwordHash", required = true)
+   @NotEmpty
+   public String getPasswordHash()
+   {
+      return passwordHash;
+   }
+
+   public void setPasswordHash(String password)
+   {
+      this.passwordHash = password;
+   }
+
+   @XmlAttribute(name = "apiKey", required = true)
+   public String getApiKey()
+   {
+      return apiKey;
+   }
+
+   public void setApiKey(String apiKey)
+   {
+      this.apiKey = apiKey;
+   }
+
+   @XmlAttribute(name = "enabled", required = true)
+   @NotNull
+   public boolean isEnabled()
+   {
+      return enabled;
+   }
+
+   public void setEnabled(boolean enabled)
+   {
+      this.enabled = enabled;
+   }
+
+   @XmlElement(name = "role", namespace = Namespaces.FLIES)
+   public Set<String> getRoles()
+   {
+      return roles;
+   }
+
+   public void setRoles(Set<String> roles)
+   {
+      this.roles = roles;
+   }
+
+   @Override
+   public String getMediaType(Format format)
+   {
+      return MediaTypes.APPLICATION_FLIES_ACCOUNT + format;
+   }
+
 }
