@@ -16,6 +16,7 @@ import org.fedorahosted.flies.common.Namespaces;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.MediaTypes.Format;
 import org.hibernate.validator.Email;
+import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 
@@ -103,7 +104,8 @@ public class Account implements Serializable, HasMediaType
       this.passwordHash = password;
    }
 
-   @XmlAttribute(name = "apiKey", required = true)
+   @XmlAttribute(name = "apiKey", required = false)
+   @Length(min = 32, max = 32)
    public String getApiKey()
    {
       return apiKey;

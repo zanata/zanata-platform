@@ -48,6 +48,8 @@ public class PutUserTask extends Task implements Subcommand
    private String username;
 
    private String passwordHash;
+   
+   private String userKey;
 
    private Set<String> roles = new HashSet<String>();
 
@@ -151,6 +153,7 @@ public class PutUserTask extends Task implements Subcommand
       account.setName(name);
       account.setUsername(username);
       account.setPasswordHash(passwordHash);
+      account.setApiKey(userKey);
       account.setEnabled(!disabled);
       account.setRoles(roles);
 
@@ -217,6 +220,15 @@ public class PutUserTask extends Task implements Subcommand
       this.passwordHash = passwordHash;
    }
 
+   @Option(name = "userkey", longName = "userkey", required = true, description = "User's api key (empty for none)")
+   public void setUserKey(String userKey)
+   {
+      if (userKey == null || userKey.length() == 0)
+         this.userKey = null;
+      else
+         this.userKey = userKey;
+   }
+   
    @Option(name = "roles", longName = "roles", required = false, description = "Security roles for the user")
    public void setRoles(String roles)
    {
