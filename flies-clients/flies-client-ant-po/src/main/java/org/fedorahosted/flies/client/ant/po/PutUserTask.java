@@ -233,17 +233,19 @@ public class PutUserTask extends Task implements Subcommand
    }
    
    @Option(name = "langs", longName = "langs", required = false, description = "Language teams for the user")
-   public void setLongs(String langs)
+   public void setLangs(String langs)
    {
       this.langs.clear();
-      this.langs.addAll(Arrays.asList(langs.split(",")));
+      if (langs != null)
+         this.langs.addAll(Arrays.asList(langs.split(",")));
    }
 
    @Option(name = "roles", longName = "roles", required = false, description = "Security roles for the user")
    public void setRoles(String roles)
    {
       this.roles.clear();
-      this.roles.addAll(Arrays.asList(roles.split(",")));
+      if (roles != null)
+         this.roles.addAll(Arrays.asList(roles.split(",")));
    }
 
    @Option(name = "x", longName = "debug", description = "Enable debug mode")
