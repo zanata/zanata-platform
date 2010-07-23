@@ -18,9 +18,11 @@ import javax.ws.rs.core.Response.Status;
 
 import org.fedorahosted.flies.dao.AccountDAO;
 import org.fedorahosted.flies.dao.AccountRoleDAO;
+import org.fedorahosted.flies.dao.TribeDAO;
 import org.fedorahosted.flies.model.HAccount;
 import org.fedorahosted.flies.model.HAccountRole;
 import org.fedorahosted.flies.model.HPerson;
+import org.fedorahosted.flies.model.HTribe;
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.Account;
 import org.hibernate.Session;
@@ -52,6 +54,9 @@ public class AccountService
 
    @In
    AccountRoleDAO accountRoleDAO;
+
+   @In
+   TribeDAO tribeDAO;
 
    @In
    Identity identity;
@@ -140,9 +145,20 @@ public class AccountService
       {
          HAccountRole hAccountRole = accountRoleDAO.findByName(role);
          if (hAccountRole == null)
-            // generate error for missing roles
+            // generate error for missing role
             throw new NoLogWebApplicationException(Response.status(Status.BAD_REQUEST).entity("Invalid role '"+role+"'").build());
          to.getRoles().add(hAccountRole);
+      }
+
+      hPerson.getTribeMemberships().clear();
+      for (String tribe : from.getTribes())
+      {
+         HTribe hTribe = tribeDAO.getByLocale(tribe);
+         if (hTribe == null)
+            // generate error for missing tribe
+            throw new NoLogWebApplicationException(Response.status(Status.BAD_REQUEST).entity(
+                  "Invalid tribe '" + tribe + "'").build());
+         hPerson.getTribeMemberships().add(hTribe);
       }
 
       to.setUsername(from.getUsername());

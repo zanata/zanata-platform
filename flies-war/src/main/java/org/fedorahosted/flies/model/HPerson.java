@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -96,6 +97,11 @@ public class HPerson extends AbstractFliesEntity implements Serializable
    @JoinTable(name = "HTribe_Member", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "tribeId"))
    public Set<HTribe> getTribeMemberships()
    {
+      if (tribeMemberships == null)
+      {
+         tribeMemberships = new HashSet<HTribe>();
+         setTribeMemberships(tribeMemberships);
+      }
       return tribeMemberships;
    }
 

@@ -43,6 +43,8 @@ public class Account implements Serializable, HasMediaType
 
    private Set<String> roles = new HashSet<String>();
 
+   private Set<String> tribes = new HashSet<String>();
+
    public Account()
    {
    }
@@ -137,6 +139,17 @@ public class Account implements Serializable, HasMediaType
    public void setRoles(Set<String> roles)
    {
       this.roles = roles;
+   }
+
+   @XmlElement(name = "tribe", namespace = Namespaces.FLIES)
+   public Set<String> getTribes()
+   {
+      return tribes;
+   }
+
+   public void setTribes(Set<String> tribes)
+   {
+      this.tribes = tribes;
    }
 
    @Override

@@ -53,6 +53,8 @@ public class PutUserTask extends Task implements Subcommand
 
    private Set<String> roles = new HashSet<String>();
 
+   private Set<String> langs = new HashSet<String>();
+
    private boolean disabled;
 
    public static void main(String[] args) throws Exception
@@ -156,6 +158,7 @@ public class PutUserTask extends Task implements Subcommand
       account.setApiKey(userKey);
       account.setEnabled(!disabled);
       account.setRoles(roles);
+      account.setTribes(langs);
 
       if (debug)
       {
@@ -229,6 +232,13 @@ public class PutUserTask extends Task implements Subcommand
          this.userKey = userKey;
    }
    
+   @Option(name = "langs", longName = "langs", required = false, description = "Language teams for the user")
+   public void setLongs(String langs)
+   {
+      this.langs.clear();
+      this.langs.addAll(Arrays.asList(langs.split(",")));
+   }
+
    @Option(name = "roles", longName = "roles", required = false, description = "Security roles for the user")
    public void setRoles(String roles)
    {
