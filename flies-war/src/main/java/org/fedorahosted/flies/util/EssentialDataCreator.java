@@ -45,6 +45,7 @@ public class EssentialDataCreator
    public String password;
    public String email;
    public String name;
+   public String apiKey;
 
    @In
    AccountDAO accountDAO;
@@ -87,8 +88,10 @@ public class EssentialDataCreator
             log.info("No admin users found: creating default user 'admin'");
 
             HAccount account = accountDAO.create(username, password, true);
+            account.setApiKey(apiKey);
             account.getRoles().add(accountRoleDAO.findByName("admin"));
             account.getRoles().add(accountRoleDAO.findByName("user"));
+            accountDAO.flush();
             HPerson person = new HPerson();
             person.setAccount(account);
             person.setEmail(email);
