@@ -1,7 +1,5 @@
 package org.fedorahosted.flies.client.ant.po;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -10,18 +8,11 @@ import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.SchemaOutputResolver;
-import javax.xml.transform.Result;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.SchemaFactory;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
@@ -31,6 +22,7 @@ import org.cyclopsgroup.jcli.annotation.Option;
 import org.fedorahosted.flies.adapter.po.PoReader;
 import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.rest.JaxbUtil;
 import org.fedorahosted.flies.rest.client.ClientUtility;
 import org.fedorahosted.flies.rest.client.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.IDocumentsResource;
@@ -39,7 +31,6 @@ import org.fedorahosted.flies.rest.dto.deprecated.Documents;
 import org.jboss.resteasy.client.ClientResponse;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
 @Cli(name = "uploadpo", description = "Uploads a Publican project's PO/POT files to Flies for translation")
 public class UploadPoTask extends Task implements Subcommand
@@ -236,31 +227,7 @@ public class UploadPoTask extends Task implements Subcommand
       }
 
       if (validate)
-      {
-         final List<ByteArrayOutputStream> outs = new ArrayList<ByteArrayOutputStream>();
-         jc.generateSchema(new SchemaOutputResolver()
-         {
-            @Override
-            public Result createOutput(String namespaceUri, String suggestedFileName) throws IOException
-            {
-               ByteArrayOutputStream out = new ByteArrayOutputStream();
-               outs.add(out);
-               StreamResult streamResult = new StreamResult(out);
-               streamResult.setSystemId("");
-               return streamResult;
-            }
-         });
-         StreamSource[] sources = new StreamSource[outs.size()];
-         for (int i = 0; i < outs.size(); i++)
-         {
-            ByteArrayOutputStream out = outs.get(i);
-            //					System.out.append(new String(out.toByteArray()));
-            sources[i] = new StreamSource(new ByteArrayInputStream(out.toByteArray()), "");
-         }
-         SchemaFactory sf = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
-         m.setSchema(sf.newSchema(sources));
-         m.marshal(docs, new DefaultHandler());
-      }
+         JaxbUtil.validateXml(docs, jc);
 
       if (dst == null)
          return;

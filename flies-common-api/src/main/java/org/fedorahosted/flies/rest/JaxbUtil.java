@@ -22,27 +22,46 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public class JaxbUtil
 {
-
    public static void validateXml(Object obj, Class<?>... classes) throws ValidationException
+   {
+      int index = -1;
+      for (int i = 0; i < classes.length; i++)
+      {
+         if (obj.getClass() == classes[i])
+         {
+            index = i;
+            break;
+         }
+      }
+      if (index == -1)
+      {
+         classes = Arrays.copyOf(classes, classes.length + 1);
+         classes[classes.length - 1] = obj.getClass();
+      }
+
+      JAXBContext jc;
+      try
+      {
+         jc = JAXBContext.newInstance(classes);
+      }
+      catch (JAXBException e)
+      {
+         throw new RuntimeException(e);
+      }
+      validateXml(obj, jc);
+   }
+
+   /**
+    * Generates a schema for the JAXBContext 'jc' and validates the 
+    * Object 'obj' against that schema.
+    * @param obj
+    * @param jc
+    * @throws ValidationException
+    */
+   public static void validateXml(Object obj, JAXBContext jc) throws ValidationException
    {
       try
       {
-         int index = -1;
-         for (int i = 0; i < classes.length; i++)
-         {
-            if (obj.getClass() == classes[i])
-            {
-               index = i;
-               break;
-            }
-         }
-         if (index == -1)
-         {
-            classes = Arrays.copyOf(classes, classes.length + 1);
-            classes[classes.length - 1] = obj.getClass();
-         }
-
-         JAXBContext jc = JAXBContext.newInstance(classes);
          Marshaller m = jc.createMarshaller();
          final List<StringWriter> outs = new ArrayList<StringWriter>();
          jc.generateSchema(new SchemaOutputResolver()
@@ -62,8 +81,9 @@ public class JaxbUtil
          for (StringWriter writer : outs)
          {
             writer.flush();
-            // System.out.println(writer.toString());
-            sources[i++] = new StreamSource(new StringReader(writer.toString()), "");
+            String source = writer.toString();
+            // System.out.println(source);
+            sources[i++] = new StreamSource(new StringReader(source), "");
          }
          SchemaFactory sf = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
          m.setSchema(sf.newSchema(sources));
@@ -82,6 +102,10 @@ public class JaxbUtil
          if (e instanceof ValidationException)
          {
             throw (ValidationException) e;
+         }
+         else
+         {
+            throw new RuntimeException(e);
          }
       }
    }
