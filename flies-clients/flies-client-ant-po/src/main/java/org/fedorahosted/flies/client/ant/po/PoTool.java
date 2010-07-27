@@ -54,27 +54,27 @@ public class PoTool implements GlobalOptions
          if (command.equals("upload"))
          {
             Subcommand upload = new UploadPoTask();
-            upload.processArgs(otherArgs, this);
+            upload.processArgs(otherArgs, getGlobalOptions());
          }
          else if (command.equals("download"))
          {
             Subcommand download = new DownloadPoTask();
-            download.processArgs(otherArgs, this);
+            download.processArgs(otherArgs, getGlobalOptions());
          }
          else if (command.equals("createproj"))
          {
             Subcommand cmd = new CreateProjectTask();
-            cmd.processArgs(otherArgs, this);
+            cmd.processArgs(otherArgs, getGlobalOptions());
          }
          else if (command.equals("createiter"))
          {
             Subcommand cmd = new CreateIterationTask();
-            cmd.processArgs(otherArgs, this);
+            cmd.processArgs(otherArgs, getGlobalOptions());
          }
          else if (command.equals("putuser")) 
          {
             Subcommand cmd = new PutUserTask();
-            cmd.processArgs(otherArgs, this);
+            cmd.processArgs(otherArgs, getGlobalOptions());
          }
          else
          {
@@ -98,6 +98,11 @@ public class PoTool implements GlobalOptions
 		out.println("  For 'putuser' help: flies-publican putuser --help");
       out.println("");
       out.println();
+   }
+
+   private GlobalOptions getGlobalOptions()
+   {
+      return this;
    }
 
    @Override
