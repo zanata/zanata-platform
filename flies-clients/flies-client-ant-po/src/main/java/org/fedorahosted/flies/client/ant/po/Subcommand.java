@@ -1,8 +1,20 @@
 package org.fedorahosted.flies.client.ant.po;
 
+
 public interface Subcommand
 {
 
-   void processArgs(String[] args, GlobalOptions globals) throws Exception;
+   public String getCommandName();
 
+   public String getCommandDescription();
+
+   public boolean getErrors();
+
+   public void setErrors(boolean errors);
+
+   public boolean getHelp();
+
+   public void setHelp(boolean b);
+
+   public void process() throws Exception;
 }

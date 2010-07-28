@@ -3,9 +3,6 @@ package org.fedorahosted.flies.client.ant.po;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
@@ -16,9 +13,6 @@ import javax.xml.bind.Marshaller;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
-import org.cyclopsgroup.jcli.ArgumentProcessor;
-import org.cyclopsgroup.jcli.annotation.Cli;
-import org.cyclopsgroup.jcli.annotation.Option;
 import org.fedorahosted.flies.adapter.po.PoReader;
 import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
@@ -29,10 +23,10 @@ import org.fedorahosted.flies.rest.client.IDocumentsResource;
 import org.fedorahosted.flies.rest.dto.deprecated.Document;
 import org.fedorahosted.flies.rest.dto.deprecated.Documents;
 import org.jboss.resteasy.client.ClientResponse;
+import org.kohsuke.args4j.Option;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-@Cli(name = "uploadpo", description = "Uploads a Publican project's PO/POT files to Flies for translation")
 public class UploadPoTask extends Task implements Subcommand
 {
 
@@ -58,61 +52,20 @@ public class UploadPoTask extends Task implements Subcommand
 
    public static void main(String[] args) throws Exception
    {
-      UploadPoTask upload = new UploadPoTask();
-      upload.processArgs(args, GlobalOptions.EMPTY);
+      UploadPoTask task = new UploadPoTask();
+      ArgsUtil.processArgs(task, args, GlobalOptions.EMPTY);
    }
 
    @Override
-   public void processArgs(String[] args, GlobalOptions globals) throws IOException, JAXBException,
-         MalformedURLException, URISyntaxException
+   public String getCommandName()
    {
-      if (args.length == 0)
-      {
-         help(System.out);
-         System.exit(0);
-      }
-      ArgumentProcessor<UploadPoTask> argProcessor = ArgumentProcessor.newInstance(UploadPoTask.class);
-      argProcessor.process(args, this);
-      if (help || globals.getHelp())
-      {
-         help(System.out);
-         System.exit(0);
-      }
-
-      if (globals.getErrors())
-         errors = true;
-
-      if (srcDir == null)
-         missingOption("--src");
-      if (dst == null)
-         missingOption("--dst");
-      if (user == null)
-         missingOption("--user");
-      if (apiKey == null)
-         missingOption("--key");
-
-      try
-      {
-         process();
-      }
-      catch (Exception e)
-      {
-         Utility.handleException(e, errors);
-      }
+      return "uploadpo";
    }
 
-   private static void missingOption(String name)
+   @Override
+   public String getCommandDescription()
    {
-      System.out.println("Required option missing: " + name);
-      System.exit(1);
-   }
-
-   public static void help(PrintStream output) throws IOException
-   {
-      ArgumentProcessor<UploadPoTask> argProcessor = ArgumentProcessor.newInstance(UploadPoTask.class);
-      PrintWriter out = new PrintWriter(output);
-      argProcessor.printHelp(out);
-      out.flush();
+      return "Uploads a Publican project's PO/POT files to Flies for translation";
    }
 
    @Override
@@ -254,13 +207,13 @@ public class UploadPoTask extends Task implements Subcommand
       super.log(msg + "\n\n");
    }
 
-   @Option(name = "u", longName = "user", required = true, description = "Flies user name")
+   @Option(name = "--user", metaVar = "USER", usage = "Flies user name", required = true)
    public void setUser(String user)
    {
       this.user = user;
    }
 
-   @Option(name = "k", longName = "key", required = true, description = "Flies API key (from Flies Profile page)")
+   @Option(name = "--key", metaVar = "KEY", usage = "Flies API key (from Flies Profile page)", required = true)
    public void setApiKey(String apiKey)
    {
       this.apiKey = apiKey;
@@ -268,50 +221,62 @@ public class UploadPoTask extends Task implements Subcommand
 
    // TODO make --dst optional, and provide --flies, --proj, --iter options
 
-   @Option(name = "d", longName = "dst", required = true, description = "Destination URL for upload, eg http://flies.example.com/seam/resource/restv1/projects/p/myProject/iterations/i/myIter/documents")
+   @Option(aliases = { "-d" }, name = "--dst", metaVar = "URL", required = true, usage = "Destination URL for upload, eg http://flies.example.com/seam/resource/restv1/projects/p/myProject/iterations/i/myIter/documents")
    public void setDst(String dst)
    {
       this.dst = dst;
    }
 
-   // NB options whose longNames with "-" never get set
-   @Option(name = "s", longName = "src", required = true, description = "Base directory for publican files (with subdirectory \"pot\" and optional locale directories)")
+   @Option(aliases = { "-s" }, name = "--src", metaVar = "DIR", required = true, usage = "Base directory for publican files (with subdirectory \"pot\" and optional locale directories)")
    public void setSrcDir(File srcDir)
    {
       this.srcDir = srcDir;
    }
 
-   @Option(name = "l", longName = "srclang", required = true, description = "Language of source (defaults to en-US)")
+   @Option(aliases = { "-l" }, name = "--srclang", usage = "Language of source (defaults to en-US)")
    public void setSourceLang(String sourceLang)
    {
       this.sourceLang = sourceLang;
    }
 
-   @Option(name = "i", longName = "importpo", description = "Import translations from local PO files to Flies (DANGER!)")
+   @Option(name = "--importpo", usage = "Import translations from local PO files to Flies (DANGER!)")
    public void setImportPo(boolean importPo)
    {
       this.importPo = importPo;
    }
 
-   @Option(name = "x", longName = "debug", description = "Enable debug mode")
+   @Option(name = "--debug", aliases = { "-x" }, usage = "Enable debug mode")
    public void setDebug(boolean debug)
    {
       this.debug = debug;
    }
 
-   @Option(name = "h", longName = "help", description = "Display this help and exit")
+   @Override
+   public boolean getHelp()
+   {
+      return this.help;
+   }
+
+   @Option(name = "--help", aliases = { "-h", "-help" }, usage = "Display this help and exit")
    public void setHelp(boolean help)
    {
       this.help = help;
    }
 
-   @Option(name = "e", longName = "errors", description = "Output full execution error messages")
-   public void setErrors(boolean exceptionTrace)
+   @Override
+   public boolean getErrors()
    {
-      this.errors = exceptionTrace;
+      return this.errors;
    }
 
-   @Option(name = "v", longName = "validate", description = "Validate XML before sending request to server")
+   @Option(name = "--errors", aliases = { "-e" }, usage = "Output full execution error messages")
+   public void setErrors(boolean errors)
+   {
+      this.errors = errors;
+   }
+
+
+   @Option(name = "validate", usage = "Validate XML before sending request to server")
    public void setValidate(boolean validate)
    {
       this.validate = validate;

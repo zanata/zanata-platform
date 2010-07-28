@@ -1,9 +1,6 @@
 package org.fedorahosted.flies.client.ant.po;
 
 import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -14,15 +11,12 @@ import javax.xml.bind.Marshaller;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
-import org.cyclopsgroup.jcli.ArgumentProcessor;
-import org.cyclopsgroup.jcli.annotation.Cli;
-import org.cyclopsgroup.jcli.annotation.Option;
 import org.fedorahosted.flies.rest.client.ClientUtility;
 import org.fedorahosted.flies.rest.client.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.IProjectResource;
 import org.fedorahosted.flies.rest.dto.Project;
+import org.kohsuke.args4j.Option;
 
-@Cli(name = "createproj", description = "Creates a project in Flies")
 public class CreateProjectTask extends Task implements Subcommand
 {
 
@@ -39,63 +33,19 @@ public class CreateProjectTask extends Task implements Subcommand
    public static void main(String[] args) throws Exception
    {
       CreateProjectTask task = new CreateProjectTask();
-      task.processArgs(args, GlobalOptions.EMPTY);
+      ArgsUtil.processArgs(task, args, GlobalOptions.EMPTY);
    }
 
    @Override
-   public void processArgs(String[] args, GlobalOptions globals) throws IOException, JAXBException, MalformedURLException, URISyntaxException
+   public String getCommandName()
    {
-      if (args.length == 0)
-      {
-         help(System.out);
-         System.exit(0);
-      }
-      ArgumentProcessor<CreateProjectTask> argProcessor = ArgumentProcessor.newInstance(CreateProjectTask.class);
-      argProcessor.process(args, this);
-      if (help || globals.getHelp())
-      {
-         help(System.out);
-         System.exit(0);
-      }
-
-      if (globals.getErrors())
-         errors = true;
-
-      if (fliesUrl == null)
-         missingOption("--flies");
-      if (user == null)
-         missingOption("--user");
-      if (apiKey == null)
-         missingOption("--key");
-      if (proj == null)
-         missingOption("--proj");
-      if (name == null)
-         missingOption("--name");
-      if (desc == null)
-         missingOption("--desc");
-
-      try
-      {
-         process();
-      }
-      catch (Exception e)
-      {
-         Utility.handleException(e, errors);
-      }
+      return "createproj";
    }
 
-   private static void missingOption(String name)
+   @Override
+   public String getCommandDescription()
    {
-      System.out.println("Required option missing: " + name);
-      System.exit(1);
-   }
-
-   public static void help(PrintStream output) throws IOException
-   {
-      ArgumentProcessor<CreateProjectTask> argProcessor = ArgumentProcessor.newInstance(CreateProjectTask.class);
-      PrintWriter out = new PrintWriter(output);
-      argProcessor.printHelp(out);
-      out.flush();
+      return "Creates a project in Flies";
    }
 
    @Override
@@ -152,58 +102,71 @@ public class CreateProjectTask extends Task implements Subcommand
       super.log(msg + "\n\n");
    }
 
-   @Option(name = "u", longName = "user", required = true, description = "Flies user name")
+   @Option(name = "--user", metaVar = "USER", usage = "Flies user name", required = true)
    public void setUser(String user)
    {
       this.user = user;
    }
 
-   @Option(name = "k", longName = "key", required = true, description = "Flies API key (from Flies Profile page)")
+   @Option(name = "--key", metaVar = "KEY", usage = "Flies API key (from Flies Profile page)", required = true)
    public void setApiKey(String apiKey)
    {
       this.apiKey = apiKey;
    }
 
-   @Option(name = "f", longName = "flies", required = true, description = "Flies base URL, eg http://flies.example.com/flies")
+   @Option(name = "--flies", metaVar = "URL", usage = "Flies base URL, eg http://flies.example.com/flies", required = true)
    public void setFliesUrl(String url)
    {
       this.fliesUrl = url;
    }
 
-   @Option(name = "proj", longName = "proj", required = true, description = "Flies project ID")
+   @Option(name = "--proj", metaVar = "PROJ", usage = "Flies project ID", required = true)
    public void setProj(String id)
    {
       this.proj = id;
    }
 
-   @Option(name = "n", longName = "name", required = true, description = "Flies project name")
+   @Option(name = "--name", metaVar = "NAME", required = true, usage = "Flies project name")
    public void setName(String name)
    {
       this.name = name;
    }
 
-   @Option(name = "d", longName = "desc", required = true, description = "Flies project description")
+   @Option(name = "--desc", metaVar = "DESC", required = true, usage = "Flies project description")
    public void setDesc(String desc)
    {
       this.desc = desc;
    }
 
-   @Option(name = "x", longName = "debug", description = "Enable debug mode")
+   @Option(name = "--debug", aliases = { "-x" }, usage = "Enable debug mode")
    public void setDebug(boolean debug)
    {
       this.debug = debug;
    }
 
-   @Option(name = "h", longName = "help", description = "Display this help and exit")
+   @Override
+   public boolean getHelp()
+   {
+      return this.help;
+   }
+
+   @Option(name = "--help", aliases = { "-h", "-help" }, usage = "Display this help and exit")
    public void setHelp(boolean help)
    {
       this.help = help;
    }
 
-   @Option(name = "e", longName = "errors", description = "Output full execution error messages")
-   public void setErrors(boolean exceptionTrace)
+   @Override
+   public boolean getErrors()
    {
-      this.errors = exceptionTrace;
+      return this.errors;
    }
+
+   @Option(name = "--errors", aliases = { "-e" }, usage = "Output full execution error messages")
+   public void setErrors(boolean errors)
+   {
+      this.errors = errors;
+   }
+
 
 }

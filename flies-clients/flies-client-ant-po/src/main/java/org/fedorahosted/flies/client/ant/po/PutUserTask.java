@@ -1,9 +1,6 @@
 package org.fedorahosted.flies.client.ant.po;
 
 import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
@@ -17,15 +14,12 @@ import javax.xml.bind.Marshaller;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
-import org.cyclopsgroup.jcli.ArgumentProcessor;
-import org.cyclopsgroup.jcli.annotation.Cli;
-import org.cyclopsgroup.jcli.annotation.Option;
 import org.fedorahosted.flies.rest.client.ClientUtility;
 import org.fedorahosted.flies.rest.client.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.IAccountResource;
 import org.fedorahosted.flies.rest.dto.Account;
+import org.kohsuke.args4j.Option;
 
-@Cli(name = "putuser", description = "Creates/overwrites a user in Flies")
 public class PutUserTask extends Task implements Subcommand
 {
 
@@ -60,66 +54,19 @@ public class PutUserTask extends Task implements Subcommand
    public static void main(String[] args) throws Exception
    {
       PutUserTask task = new PutUserTask();
-      task.processArgs(args, GlobalOptions.EMPTY);
+      ArgsUtil.processArgs(task, args, GlobalOptions.EMPTY);
    }
 
    @Override
-   public void processArgs(String[] args, GlobalOptions globals) throws IOException, JAXBException,
-         MalformedURLException, URISyntaxException
+   public String getCommandName()
    {
-      if (args.length == 0)
-      {
-         help(System.out);
-         System.exit(0);
-      }
-      ArgumentProcessor<PutUserTask> argProcessor = ArgumentProcessor.newInstance(PutUserTask.class);
-      argProcessor.process(args, this);
-      if (help || globals.getHelp())
-      {
-         help(System.out);
-         System.exit(0);
-      }
-
-      if (globals.getErrors())
-         errors = true;
-
-      if (fliesURL == null)
-         missingOption("--flies");
-      if (user == null)
-         missingOption("--user");
-      if (apiKey == null)
-         missingOption("--key");
-      if (name == null)
-         missingOption("--name");
-      if (email == null)
-         missingOption("--email");
-      if (username == null)
-         missingOption("--username");
-      if (passwordHash == null)
-         missingOption("--passwordhash");
-
-      try
-      {
-         process();
-      }
-      catch (Exception e)
-      {
-         Utility.handleException(e, errors);
-      }
+      return "putuser";
    }
 
-   private static void missingOption(String name)
+   @Override
+   public String getCommandDescription()
    {
-      System.out.println("Required option missing: " + name);
-      System.exit(1);
-   }
-
-   public static void help(PrintStream output) throws IOException
-   {
-      ArgumentProcessor<PutUserTask> argProcessor = ArgumentProcessor.newInstance(PutUserTask.class);
-      PrintWriter out = new PrintWriter(output);
-      argProcessor.printHelp(out);
-      out.flush();
+      return "Creates/overwrites a user in Flies";
    }
 
    @Override
@@ -181,49 +128,49 @@ public class PutUserTask extends Task implements Subcommand
       super.log(msg + "\n\n");
    }
 
-   @Option(name = "u", longName = "user", required = true, description = "Flies user name")
+   @Option(name = "--user", metaVar = "USER", usage = "Flies user name", required = true)
    public void setUser(String user)
    {
       this.user = user;
    }
 
-   @Option(name = "k", longName = "key", required = true, description = "Flies API key (from Flies Profile page)")
+   @Option(name = "--key", metaVar = "KEY", usage = "Flies API key (from Flies Profile page)", required = true)
    public void setApiKey(String apiKey)
    {
       this.apiKey = apiKey;
    }
 
-   @Option(name = "f", longName = "flies", required = true, description = "Flies base URL, eg http://flies.example.com/flies")
+   @Option(name = "--flies", metaVar = "URL", usage = "Flies base URL, eg http://flies.example.com/flies", required = true)
    public void setFliesURL(String url)
    {
       this.fliesURL = url;
    }
 
-   @Option(name = "name", longName = "name", required = true, description = "Full name of the user")
+   @Option(name = "--name", required = true, usage = "Full name of the user")
    public void setName(String name)
    {
       this.name = name;
    }
 
-   @Option(name = "email", longName = "email", required = true, description = "Email address of the user")
+   @Option(name = "--email", required = true, usage = "Email address of the user")
    public void setEmail(String email)
    {
       this.email = email;
    }
 
-   @Option(name = "username", longName = "username", required = true, description = "Login/username")
+   @Option(name = "--username", required = true, usage = "Login/username")
    public void setUsername(String username)
    {
       this.username = username;
    }
 
-   @Option(name = "passwordhash", longName = "passwordhash", required = true, description = "User password hash")
+   @Option(name = "--passwordhash", required = true, usage = "User password hash")
    public void setPasswordHash(String passwordHash)
    {
       this.passwordHash = passwordHash;
    }
 
-   @Option(name = "userkey", longName = "userkey", required = true, description = "User's api key (empty for none)")
+   @Option(name = "--userkey", required = true, usage = "User's api key (empty for none)")
    public void setUserKey(String userKey)
    {
       if (userKey == null || userKey.length() == 0)
@@ -232,7 +179,7 @@ public class PutUserTask extends Task implements Subcommand
          this.userKey = userKey;
    }
    
-   @Option(name = "langs", longName = "langs", required = false, description = "Language teams for the user")
+   @Option(name = "--langs", required = false, usage = "Language teams for the user")
    public void setLangs(String langs)
    {
       this.langs.clear();
@@ -240,7 +187,7 @@ public class PutUserTask extends Task implements Subcommand
          this.langs.addAll(Arrays.asList(langs.split(",")));
    }
 
-   @Option(name = "roles", longName = "roles", required = false, description = "Security roles for the user")
+   @Option(name = "--roles", required = false, usage = "Security roles for the user")
    public void setRoles(String roles)
    {
       this.roles.clear();
@@ -248,28 +195,41 @@ public class PutUserTask extends Task implements Subcommand
          this.roles.addAll(Arrays.asList(roles.split(",")));
    }
 
-   @Option(name = "x", longName = "debug", description = "Enable debug mode")
-   public void setDebug(boolean debug)
-   {
-      this.debug = debug;
-   }
-
-   @Option(name = "disabled", longName = "disabled", description = "Whether the account should be disabled")
+   @Option(name = "--disabled", usage = "Whether the account should be disabled")
    public void setDisabled(boolean disabled)
    {
       this.disabled = disabled;
    }
 
-   @Option(name = "h", longName = "help", description = "Display this help and exit")
+   @Option(name = "--debug", aliases = { "-x" }, usage = "Enable debug mode")
+   public void setDebug(boolean debug)
+   {
+      this.debug = debug;
+   }
+
+   @Override
+   public boolean getHelp()
+   {
+      return this.help;
+   }
+
+   @Option(name = "--help", aliases = { "-h", "-help" }, usage = "Display this help and exit")
    public void setHelp(boolean help)
    {
       this.help = help;
    }
 
-   @Option(name = "e", longName = "errors", description = "Output full execution error messages")
-   public void setErrors(boolean exceptionTrace)
+   @Override
+   public boolean getErrors()
    {
-      this.errors = exceptionTrace;
+      return this.errors;
    }
+
+   @Option(name = "--errors", aliases = { "-e" }, usage = "Output full execution error messages")
+   public void setErrors(boolean errors)
+   {
+      this.errors = errors;
+   }
+
 
 }
