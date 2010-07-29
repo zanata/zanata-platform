@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>flies-clients</artifactId>
+    <groupId>org.fedorahosted.flies</groupId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>flies-maven-plugin</artifactId>
+  <packaging>maven-plugin</packaging>
+  <name>flies-maven-plugin Maven Mojo</name>
+  
+  <!-- 
+  NB: This description will be extracted by maven-plugin-plugin, 
+  put into the plugin descriptor, and used in the auto-generated 'help' 
+  goal). 
+  -->
+  <description>
+    Flies REST API client for managing Flies projects, publishing 
+    source text and retrieving translations.
+  </description>
+  
+  <url>http://flies.googlecode.com/</url>
+  
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-api</artifactId>
+      <version>2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-configuration</groupId>
+      <artifactId>commons-configuration</artifactId>
+      <version>1.6</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-plugin-plugin</artifactId>
+        <version>2.6</version>
+        <executions>
+          <!-- Tell maven-plugin-plugin to generate the 'help' goal -->
+          <execution>
+            <id>generated-helpmojo</id>
+            <goals>
+              <goal>helpmojo</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+			<!-- Use only java mojo extractor -->
+			<extractors>
+			    <extractor>java</extractor>
+			</extractors>
+        </configuration>
+      </plugin>
+      
+      <!-- This is just to tell Maven about our plugin prefix: -->
+<!--  But Maven 3 won't like it without a version... 
+      <plugin>
+        <groupId>org.fedorahosted.flies</groupId>
+        <artifactId>flies-maven-plugin</artifactId>
+      </plugin>
+ -->
+    </plugins>
+  </build>
+</project>

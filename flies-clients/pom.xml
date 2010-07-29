@@ -12,6 +12,7 @@
   <modules>
     <module>flies-client-ant-properties</module>
     <module>flies-client-ant-po</module>
+    <module>flies-maven-plugin</module>
   </modules>
   <dependencies>
     <dependency>

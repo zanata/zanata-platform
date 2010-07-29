@@ -14,6 +14,9 @@ bin
 localDB.log
 localDB.properties
 
+# test file
+flies-clients/flies-maven-plugin/src/main/config/flies.xml
+
 syntax: regexp
 \.jar$
 
