@@ -133,7 +133,7 @@ public class DownloadPoTask extends Task implements Subcommand
       this.dstDir = dstDir;
    }
 
-   @Option(name = "exportpot", usage = "Export source text from Flies to local POT files")
+   @Option(name = "--exportpot", usage = "Export source text from Flies to local POT files")
    public void setExportPot(boolean exportPot)
    {
       this.exportPot = exportPot;

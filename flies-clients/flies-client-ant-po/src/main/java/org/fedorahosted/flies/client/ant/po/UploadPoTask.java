@@ -276,7 +276,7 @@ public class UploadPoTask extends Task implements Subcommand
    }
 
 
-   @Option(name = "validate", usage = "Validate XML before sending request to server")
+   @Option(name = "--validate", usage = "Validate XML before sending request to server")
    public void setValidate(boolean validate)
    {
       this.validate = validate;
