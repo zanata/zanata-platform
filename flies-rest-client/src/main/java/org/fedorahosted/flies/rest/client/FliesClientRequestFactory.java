@@ -51,5 +51,10 @@ public class FliesClientRequestFactory extends ClientRequestFactory
    {
       return createProxy(IProjectsResource.class, uri);
    }
+
+   public ITranslationResources getTranslationResourcesResource(final URI uri)
+   {
+      return createProxy(ITranslationResources.class, uri);
+   }
 }
 

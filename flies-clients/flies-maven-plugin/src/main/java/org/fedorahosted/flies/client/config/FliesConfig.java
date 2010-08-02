@@ -1,3 +1,23 @@
+/*
+ * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * @author tags. See the copyright.txt file in the distribution for a full
+ * listing of individual contributors.
+ * 
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+ * site: http://www.fsf.org.
+ */
 package org.fedorahosted.flies.client.config;
 
 import java.io.Serializable;
@@ -24,13 +44,13 @@ public class FliesConfig implements Serializable
 {
 
    private List<DocSet> docSets = new ArrayList<DocSet>();
-
+   private String projectSlug;
    private URL url;
+   private String versionSlug;
 
    public FliesConfig()
    {
    }
-
 
    @XmlElement(name = "docset", namespace = Namespaces.FLIES_CONFIG)
    public List<DocSet> getDocSets()
@@ -44,14 +64,36 @@ public class FliesConfig implements Serializable
    }
 
    @XmlAttribute
+   public String getProjectSlug()
+   {
+      return projectSlug;
+   }
+
+   public void setProjectSlug(String project)
+   {
+      this.projectSlug = project;
+   }
+
+   @XmlAttribute
    public URL getUrl()
    {
       return url;
    }
 
-   public void setUrl(URL flies)
+   public void setUrl(URL url)
    {
-      this.url = flies;
+      this.url = url;
+   }
+
+   @XmlAttribute
+   public String getVersionSlug()
+   {
+      return versionSlug;
+   }
+
+   public void setVersionSlug(String version)
+   {
+      this.versionSlug = version;
    }
 
 }
