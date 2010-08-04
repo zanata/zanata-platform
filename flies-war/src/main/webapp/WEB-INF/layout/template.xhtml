@@ -36,11 +36,11 @@
           <h:outputText rendered="#{identity.loggedIn}"
             value="#{authenticatedPerson == null ? identity.username : authenticatedPerson.name} " />
           <s:fragment rendered="#{not identity.loggedIn}">
-            <s:link view="/account/login.xhtml" value="#{messages['jsf.SignIn']}" propagation="none" />
+            <s:link id="SignIn" view="/account/login.xhtml" value="#{messages['jsf.SignIn']}" propagation="none" />
             <rich:spacer width="10px" />
-            <s:link view="/account/register.xhtml" value="#{messages['jsf.Register']}" propagation="none" rendered="#{not identityStore.nukesActive}"/>
+            <s:link id="Register" view="/account/register.xhtml" value="#{messages['jsf.Register']}" propagation="none" rendered="#{not identityStore.nukesActive}"/>
           </s:fragment>
-          <s:link view="/home.xhtml" action="#{identity.logout}" value="#{messages['jsf.SignOut']}" rendered="#{identity.loggedIn}" propagation="none" />
+          <s:link id="SignOut" view="/home.xhtml" action="#{identity.logout}" value="#{messages['jsf.SignOut']}" rendered="#{identity.loggedIn}" propagation="none" />
         </div>
         <div id="loading_top_right">
           <a:status>
@@ -75,14 +75,14 @@
     </div>
     <div id="ft">
       <div id="footer">
-      #{messages['jsf.Copyright']} #{messages['jsf.CopyrightYearInfo']} 
-        <a href="http://www.redhat.com/">#{messages['jsf.ManufacturerInfo']}</a> #{messages['jsf.AndOthers']}. 
+      #{messages['jsf.Copyright']} #{messages['jsf.CopyrightYearInfo']}
+        <a href="http://www.redhat.com/">#{messages['jsf.ManufacturerInfo']}</a> #{messages['jsf.AndOthers']}.
         #{messages['jsf.PoweredBy']} <a href="http://flies.googlecode.com/">#{messages['jsf.Flies']}</a>.
         <div id="localeSelector">
             <h:form>
-                <h:selectOneMenu value="#{localeSelector.localeString}" valueChangeListener="#{localeSelector.select}" onchange="submit()" > 
+                <h:selectOneMenu value="#{localeSelector.localeString}" valueChangeListener="#{localeSelector.select}" onchange="submit()" >
                     <f:selectItems value="#{localeSelector.supportedLocales}"/>
-                </h:selectOneMenu> 
+                </h:selectOneMenu>
             </h:form>
         </div>
         <br/>#{messages['jsf.RunningVersionInfo']}

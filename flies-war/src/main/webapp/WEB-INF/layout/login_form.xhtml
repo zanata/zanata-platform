@@ -21,7 +21,7 @@
                         value="#{credentials.password}"/>
             <rich:spacer width="10px"/>
             <s:link view="/account/password_reset_request.xhtml"
-            	rendered="#{not identityStore.nukesActive}" 
+            	rendered="#{not identityStore.nukesActive}"
             	propagation="none">#{messages['jsf.ForgotYourPassword']}</s:link>
         </s:decorate>
         <s:decorate id="rememberMeField" template="edit.xhtml">
@@ -31,7 +31,7 @@
         </s:decorate>
         <div style="clear:both"/>
         <div class="actionButtons">
-            <h:commandButton value="#{messages['jsf.SignIn']}" action="#{identity.login}"/>
+            <h:commandButton id="SignIn" value="#{messages['jsf.SignIn']}" action="#{identity.login}"/>
         </div>
     </rich:panel>
 
