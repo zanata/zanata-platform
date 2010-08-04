@@ -27,6 +27,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.fedorahosted.flies.client.config.FliesConfig;
+import org.kohsuke.args4j.Option;
 
 /**
  * Base class for Flies commands which supports configuration by the user's
@@ -45,7 +46,10 @@ public abstract class ConfigurableProjectCommand extends ConfigurableCommand
    /**
     * Project configuration file for Flies client.
     */
-   protected File projectConfig;
+   // When used as a CLI command the default (here) is relative to CWD.
+   // ConfigurableProjectMojo specifies another default, which is relative to
+   // project's basedir.
+   protected File projectConfig = new File("src/main/config/flies.xml");
 
    private String projectSlug;
    private String versionSlug;
@@ -63,10 +67,21 @@ public abstract class ConfigurableProjectCommand extends ConfigurableCommand
    @Override
    public void initConfig() throws Exception
    {
-      FliesConfig fliesConfig = (FliesConfig) unmarshaller.unmarshal(projectConfig);
-      // local project config is supposed to override user's flies.ini, so we
-      // apply it first
-      applyProjectConfig(fliesConfig);
+      if (projectConfig != null)
+      {
+         if (projectConfig.exists())
+         {
+            FliesConfig fliesConfig = (FliesConfig) unmarshaller.unmarshal(projectConfig);
+            // local project config is supposed to override user's flies.ini, so
+            // we
+            // apply it first
+            applyProjectConfig(fliesConfig);
+         }
+         else
+         {
+            System.err.printf("Flies project config file '%s' not found; ignoring.", projectConfig);
+         }
+      }
       super.initConfig();
    }
 
@@ -96,11 +111,13 @@ public abstract class ConfigurableProjectCommand extends ConfigurableCommand
       return projectSlug;
    }
 
+   @Option(name = "--proj", metaVar = "PROJ", usage = "Flies project ID", required = true)
    public void setProjectSlug(String projectSlug)
    {
       this.projectSlug = projectSlug;
    }
 
+   @Option(name = "--project-config", metaVar = "FILE", usage = "Flies project configuration, eg src/main/config/flies.xml", required = false)
    public void setProjectConfig(File projectConfig)
    {
       this.projectConfig = projectConfig;
@@ -111,6 +128,7 @@ public abstract class ConfigurableProjectCommand extends ConfigurableCommand
       return versionSlug;
    }
 
+   @Option(name = "--iter", metaVar = "ITER", usage = "Flies project iteration ID", required = true)
    public void setVersionSlug(String versionSlug)
    {
       this.versionSlug = versionSlug;

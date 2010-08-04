@@ -25,6 +25,8 @@ import java.net.URL;
 
 import org.apache.commons.configuration.DataConfiguration;
 import org.apache.commons.configuration.HierarchicalINIConfiguration;
+import org.fedorahosted.flies.client.config.FliesConfig;
+import org.kohsuke.args4j.Option;
 
 /**
  * Base class for Flies commands which supports configuration by the user's
@@ -39,7 +41,7 @@ public abstract class ConfigurableCommand
    /**
     * Client configuration file for Flies.
     */
-   private File userConfig;
+   private File userConfig = new File(System.getProperty("user.home"), ".config/flies.ini");
 
    /**
     * Base URL for the Flies server. Defaults to the value in flies.xml (if
@@ -72,6 +74,7 @@ public abstract class ConfigurableCommand
    private boolean errors;
    private boolean errorsSet;
 
+   private boolean help;
 
    public ConfigurableCommand()
    {
@@ -86,9 +89,19 @@ public abstract class ConfigurableCommand
     */
    public void initConfig() throws Exception
    {
-      // TODO use a ConfigurationFactory
-      DataConfiguration dataConfig = new DataConfiguration(new HierarchicalINIConfiguration(userConfig));
-      applyConfig(dataConfig);
+      if (userConfig != null)
+      {
+         if (userConfig.exists())
+         {
+            // TODO use a ConfigurationFactory
+            DataConfiguration dataConfig = new DataConfiguration(new HierarchicalINIConfiguration(userConfig));
+            applyConfig(dataConfig);
+         }
+         else
+         {
+            System.err.printf("Flies user config file '%s' not found; ignoring.", userConfig);
+         }
+      }
    }
 
    private void applyConfig(DataConfiguration config)
@@ -110,6 +123,7 @@ public abstract class ConfigurableCommand
       return debug;
    }
 
+   @Option(name = "--debug", aliases = { "-x" }, usage = "Enable debug mode")
    public void setDebug(boolean debug)
    {
       this.debugSet = true;
@@ -121,10 +135,22 @@ public abstract class ConfigurableCommand
       return errors;
    }
 
+   @Option(name = "--errors", aliases = { "-e" }, usage = "Output full execution error messages")
    public void setErrors(boolean errors)
    {
       this.errorsSet = true;
       this.errors = errors;
+   }
+
+   public boolean getHelp()
+   {
+      return this.help;
+   }
+
+   @Option(name = "--help", aliases = { "-h", "-help" }, usage = "Display this help and exit")
+   public void setHelp(boolean help)
+   {
+      this.help = help;
    }
 
    public String getKey()
@@ -132,6 +158,7 @@ public abstract class ConfigurableCommand
       return key;
    }
 
+   @Option(name = "--key", metaVar = "KEY", usage = "Flies API key (from Flies Profile page)", required = true)
    public void setKey(String key)
    {
       this.key = key;
@@ -142,11 +169,13 @@ public abstract class ConfigurableCommand
       return url;
    }
 
+   @Option(name = "--url", metaVar = "URL", usage = "Flies base URL, eg http://flies.example.com/flies/", required = true)
    public void setUrl(URL url)
    {
       this.url = url;
    }
 
+   @Option(name = "--user-config", metaVar = "FILE", usage = "Flies user configuration, eg /home/user/.config/flies.ini", required = false)
    public void setUserConfig(File userConfig)
    {
       this.userConfig = userConfig;
@@ -157,6 +186,7 @@ public abstract class ConfigurableCommand
       return username;
    }
 
+   @Option(name = "--user", metaVar = "USER", usage = "Flies user name", required = true)
    public void setUsername(String username)
    {
       this.username = username;

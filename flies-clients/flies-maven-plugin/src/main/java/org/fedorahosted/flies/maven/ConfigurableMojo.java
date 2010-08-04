@@ -34,7 +34,6 @@ public abstract class ConfigurableMojo<C extends ConfigurableCommand> extends Ab
     * Client configuration file for Flies.
     * 
     * @parameter expression="${flies.client.config}"
-    *            default-value="${user.home}/.config/flies.ini"
     */
    @SuppressWarnings("unused")
    private File userConfig;
@@ -69,7 +68,7 @@ public abstract class ConfigurableMojo<C extends ConfigurableCommand> extends Ab
    /**
     * Whether to enable debug mode. Defaults to the value in flies.ini.
     * 
-    * @parameter expression="${flies.debug}" default-value="false"
+    * @parameter expression="${flies.debug}"
     */
    @SuppressWarnings("unused")
    private boolean debug;
