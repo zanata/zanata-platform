@@ -1,4 +1,4 @@
-<div id="iteration_list_view_item_#{_iteration.id}"
+<div id="iteration_list_view_item_#{_iteration.slug}"
    class="inline_cell_item"
    xmlns="http://www.w3.org/1999/xhtml"
    xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -16,29 +16,29 @@
       </s:link>
     </div>
   </div>
-  <rich:dataTable width="100%" value="#{memberTribes}" 
-                  var="tribe" 
+  <rich:dataTable id="data_table" width="100%" value="#{memberTribes}"
+                  var="tribe"
                   styleClass="iteration_inline_tribes"
                   rowClasses="odd,even">
-    <rich:column>#{tribe.locale.nativeName} [#{tribe.locale.id}]</rich:column>
-    <rich:column>
+    <rich:column id="locale_id">#{tribe.locale.nativeName} [#{tribe.locale.id}]</rich:column>
+    <rich:column id="status">
       <ui:param name="tstatus" value="#{projectIterationDAO.getStatisticsForContainer(_iteration.id, tribe.locale.localeId)}" />
       <ui:include src="statsbar.xhtml">
         <ui:param name="status" value="#{tstatus}" />
-      </ui:include>        
+      </ui:include>
     </rich:column>
-    <rich:column>
-      <h:outputLink 
-          rendered="#{!fliesInit.debug}" 
+    <rich:column id="translate">
+      <h:outputLink
+          rendered="#{!fliesInit.debug}"
           target="_blank"
           value="#{applicationConfiguration.serverPath}webtrans/Application.html">
 		<f:param name="project" value="#{_iteration.project.slug}"/>
 		<f:param name="iteration" value="#{_iteration.slug}"/>
 		<f:param name="localeId" value="#{tribe.locale.id}"/>
 		<f:param name="locale" value="#{locale.language}" />
-		#{messages['jsf.Translate']}  	
+		#{messages['jsf.Translate']}
       </h:outputLink>
-      <h:outputLink 
+      <h:outputLink
           rendered="#{fliesInit.debug}"
           target="_blank"
           value="#{applicationConfiguration.serverPath}webtrans/Application.html">
@@ -49,7 +49,7 @@
 		<f:param name="locale" value="#{locale.language}" />
 		#{messages['jsf.TranslateGWTDevMode']}
       </h:outputLink>
-        
+
     </rich:column>
   </rich:dataTable>
   <div style="text-align:right;font-size:77%;">
