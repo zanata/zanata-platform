@@ -52,7 +52,7 @@ public class ListRemoteCommand extends ConfigurableProjectCommand
    public void run() throws MalformedURLException, URISyntaxException
    {
       FliesClientRequestFactory factory = new FliesClientRequestFactory(getUrl().toURI(), getUsername(), getKey());
-      ITranslationResources translationResources = factory.getTranslationResourcesResource(getProjectSlug(), getVersionSlug());
+      ITranslationResources translationResources = factory.getTranslationResources(getProjectSlug(), getVersionSlug());
       ClientResponse<List<ResourceMeta>> response = translationResources.get();
       ClientUtility.checkResult(response, null);
       List<ResourceMeta> list = response.getEntity();

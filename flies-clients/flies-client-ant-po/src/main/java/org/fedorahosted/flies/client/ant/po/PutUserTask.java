@@ -119,7 +119,7 @@ public class PutUserTask extends Task implements Subcommand
       URL restURL = new URL(fliesURL + "/seam/resource/restv1/accounts/u/" + username);
       // send iter to rest api
       FliesClientRequestFactory factory = new FliesClientRequestFactory(base, user, apiKey);
-      IAccountResource iterResource = factory.getAccountResource(restURL.toURI());
+      IAccountResource iterResource = factory.getAccount(restURL.toURI());
       Response response = iterResource.put(account);
       ClientUtility.checkResult(response, restURL);
    }

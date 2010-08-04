@@ -93,7 +93,7 @@ public class CreateIterationTask extends Task implements Subcommand
       URL iterURL = new URL(fliesURL + "/seam/resource/restv1/projects/p/" + proj + "/iterations/i/" + iter);
       // send iter to rest api
       FliesClientRequestFactory factory = new FliesClientRequestFactory(base, user, apiKey);
-      IProjectIterationResource iterResource = factory.getProjectIterationResource(iterURL.toURI());
+      IProjectIterationResource iterResource = factory.getProjectIteration(iterURL.toURI());
       Response response = iterResource.put(iteration);
       ClientUtility.checkResult(response, iterURL);
    }

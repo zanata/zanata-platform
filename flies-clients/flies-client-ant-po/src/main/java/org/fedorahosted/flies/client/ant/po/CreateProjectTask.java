@@ -93,7 +93,7 @@ public class CreateProjectTask extends Task implements Subcommand
       URL projURL = new URL(fliesUrl + "/seam/resource/restv1/projects/p/" + proj);
       // send project to rest api
       FliesClientRequestFactory factory = new FliesClientRequestFactory(base, user, apiKey);
-      IProjectResource projResource = factory.getProjectResource(projURL.toURI());
+      IProjectResource projResource = factory.getProject(projURL.toURI());
       Response response = projResource.put(project);
       ClientUtility.checkResult(response, projURL);
    }

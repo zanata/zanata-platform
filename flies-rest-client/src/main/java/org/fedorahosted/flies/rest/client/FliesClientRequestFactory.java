@@ -61,43 +61,38 @@ public class FliesClientRequestFactory extends ClientRequestFactory
       return base;
    }
 
-   public IDocumentsResource getDocumentsResource(final URI uri)
-   {
-      return createProxy(IDocumentsResource.class, uri);
-   }
-
-   public IProjectIterationResource getProjectIterationResource(final URI uri)
-   {
-      return createProxy(IProjectIterationResource.class, uri);
-   }
-   
-   public IAccountResource getAccountResource(final URI uri) 
+   public IAccountResource getAccount(final URI uri)
    {
       return createProxy(IAccountResource.class, uri);
    }
 
-   public IProjectResource getProjectResource(final URI uri)
+   public IDocumentsResource getDocuments(final URI uri)
+   {
+      return createProxy(IDocumentsResource.class, uri);
+   }
+
+   public IProjectResource getProject(final URI uri)
    {
       return createProxy(IProjectResource.class, uri);
    }
 
-   public IProjectsResource getProjectsResource(final URI uri)
+   public IProjectIterationResource getProjectIteration(final URI uri)
+   {
+      return createProxy(IProjectIterationResource.class, uri);
+   }
+
+   public IProjectsResource getProjects(final URI uri)
    {
       return createProxy(IProjectsResource.class, uri);
    }
 
-   public ITranslationResources getTranslationResourcesResource(final URI uri)
-   {
-      return createProxy(ITranslationResources.class, uri);
-   }
-
-   public ITranslationResources getTranslationResourcesResource(String projectSlug, String versionSlug)
+   public ITranslationResources getTranslationResources(String projectSlug, String versionSlug)
    {
       String spec = "seam/resource/restv1/projects/p/" + projectSlug + "/iterations/i/" + versionSlug + "/r";
       try
       {
          URI uri = new URL(getBase().toURL(), spec).toURI();
-         return createProxy(ITranslationResources.class, uri);
+         return getTranslationResources(uri);
       }
       catch (MalformedURLException e)
       {
@@ -109,9 +104,14 @@ public class FliesClientRequestFactory extends ClientRequestFactory
       }
    }
 
+   public ITranslationResources getTranslationResources(final URI uri)
+   {
+      return createProxy(ITranslationResources.class, uri);
+   }
+
    public <T> T createProxy(Class<T> clazz, URI baseUri)
    {
-      log.warn("{} proxy uri: {}", clazz.getSimpleName(), baseUri);
+      log.debug("{} proxy uri: {}", clazz.getSimpleName(), baseUri);
       return super.createProxy(clazz, baseUri);
    }
 }
