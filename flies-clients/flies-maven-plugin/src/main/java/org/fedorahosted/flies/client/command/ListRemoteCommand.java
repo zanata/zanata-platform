@@ -21,13 +21,18 @@
 package org.fedorahosted.flies.client.command;
 
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
+import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
+import org.fedorahosted.flies.rest.client.ClientUtility;
 import org.fedorahosted.flies.rest.client.FliesClientRequestFactory;
+import org.fedorahosted.flies.rest.client.ITranslationResources;
+import org.fedorahosted.flies.rest.dto.resource.ResourceMeta;
+import org.jboss.resteasy.client.ClientResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Sean Flanigan <sflaniga@redhat.com>
@@ -35,6 +40,8 @@ import org.fedorahosted.flies.rest.client.FliesClientRequestFactory;
  */
 public class ListRemoteCommand extends ConfigurableProjectCommand
 {
+   private static final Logger log = LoggerFactory.getLogger(ListRemoteCommand.class);
+
 
    public ListRemoteCommand() throws JAXBException
    {
@@ -44,13 +51,12 @@ public class ListRemoteCommand extends ConfigurableProjectCommand
    @Override
    public void run() throws MalformedURLException, URISyntaxException
    {
-      // TODO ensure url ends with '/'
-      FliesClientRequestFactory factory = new FliesClientRequestFactory(getUsername(), getKey());
-      String spec = "seam/resource/restv1/projects/p/" + getProjectSlug() + "/iterations/i/" + getVersionSlug() + "/r";
-      // URL resourceURL = new URL(getUrl(), ".");
-      URL resourceURL = new URL(getUrl(), spec);
-      System.out.println(resourceURL);
-      factory.getTranslationResourcesResource(resourceURL.toURI());
+      FliesClientRequestFactory factory = new FliesClientRequestFactory(getUrl().toURI(), getUsername(), getKey());
+      ITranslationResources translationResources = factory.getTranslationResourcesResource(getProjectSlug(), getVersionSlug());
+      ClientResponse<List<ResourceMeta>> response = translationResources.get();
+      ClientUtility.checkResult(response, null);
+      List<ResourceMeta> list = response.getEntity();
+      System.out.println(list);
    }
 
 }

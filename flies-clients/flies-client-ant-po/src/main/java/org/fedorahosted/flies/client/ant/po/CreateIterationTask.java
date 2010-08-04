@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.client.ant.po;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -88,9 +89,10 @@ public class CreateIterationTask extends Task implements Subcommand
 
       if (fliesURL == null)
          return;
+      URI base = new URI(fliesURL);
       URL iterURL = new URL(fliesURL + "/seam/resource/restv1/projects/p/" + proj + "/iterations/i/" + iter);
       // send iter to rest api
-      FliesClientRequestFactory factory = new FliesClientRequestFactory(user, apiKey);
+      FliesClientRequestFactory factory = new FliesClientRequestFactory(base, user, apiKey);
       IProjectIterationResource iterResource = factory.getProjectIterationResource(iterURL.toURI());
       Response response = iterResource.put(iteration);
       ClientUtility.checkResult(response, iterURL);

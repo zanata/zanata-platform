@@ -1,7 +1,6 @@
 package org.fedorahosted.flies.rest.client;
 
 import java.util.List;
-import java.util.Set;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -15,16 +14,14 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.fedorahosted.flies.common.LocaleId;
-import org.fedorahosted.flies.rest.LanguageQualifier;
 import org.fedorahosted.flies.rest.StringSet;
-import org.fedorahosted.flies.rest.dto.resource.ResourceMeta;
-import org.fedorahosted.flies.rest.dto.resource.ResourceMetaList;
 import org.fedorahosted.flies.rest.dto.resource.Resource;
+import org.fedorahosted.flies.rest.dto.resource.ResourceMeta;
 import org.fedorahosted.flies.rest.dto.resource.TranslationsResource;
 import org.jboss.resteasy.client.ClientResponse;
 
-@Produces( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-@Consumes( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+@Produces({ MediaType.APPLICATION_XML })
+@Consumes({ MediaType.APPLICATION_XML })
 public interface ITranslationResources
 {
 
