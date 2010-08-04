@@ -74,20 +74,6 @@ class Utility
          return project.getBaseDir();
    }
 
-   public static void handleException(Exception e, boolean outputErrors)
-   {
-      System.err.println("Execution failed: " + e.getMessage());
-      if (outputErrors)
-      {
-         e.printStackTrace();
-      }
-      else
-      {
-         System.err.println("Use -e/--errors for full stack trace (or when reporting bugs)");
-      }
-      System.exit(1);
-   }
-
    public static void printJarVersion(PrintStream out) throws IOException
    {
       Class<Utility> clazz = Utility.class;

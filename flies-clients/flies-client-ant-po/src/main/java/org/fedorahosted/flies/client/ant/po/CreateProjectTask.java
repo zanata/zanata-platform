@@ -12,13 +12,16 @@ import javax.xml.bind.Marshaller;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
+import org.fedorahosted.flies.client.command.ArgsUtil;
+import org.fedorahosted.flies.client.command.FliesCommand;
+import org.fedorahosted.flies.client.command.GlobalOptions;
 import org.fedorahosted.flies.rest.client.ClientUtility;
 import org.fedorahosted.flies.rest.client.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.IProjectResource;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.kohsuke.args4j.Option;
 
-public class CreateProjectTask extends Task implements Subcommand
+public class CreateProjectTask extends Task implements FliesCommand
 {
 
    private String user;
@@ -57,7 +60,7 @@ public class CreateProjectTask extends Task implements Subcommand
       {
          // make sure RESTEasy classes will be found:
          Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-         process();
+         run();
       }
       catch (Exception e)
       {
@@ -69,7 +72,7 @@ public class CreateProjectTask extends Task implements Subcommand
       }
    }
 
-   public void process() throws JAXBException, URISyntaxException, IOException
+   public void run() throws JAXBException, URISyntaxException, IOException
    {
       JAXBContext jc = JAXBContext.newInstance(Project.class);
       Marshaller m = jc.createMarshaller();

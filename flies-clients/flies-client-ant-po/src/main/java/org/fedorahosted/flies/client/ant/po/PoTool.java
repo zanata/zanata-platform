@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.fedorahosted.flies.client.command.ArgsUtil;
+import org.fedorahosted.flies.client.command.FliesCommand;
+import org.fedorahosted.flies.client.command.GlobalOptions;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -21,7 +24,7 @@ public class PoTool implements GlobalOptions
    private List<String> arguments = new ArrayList<String>();
    private String command;
    private CmdLineParser parser = new CmdLineParser(this);
-   private LinkedHashMap<String, Class<? extends Subcommand>> commandMap = new LinkedHashMap<String, Class<? extends Subcommand>>();
+   private LinkedHashMap<String, Class<? extends FliesCommand>> commandMap = new LinkedHashMap<String, Class<? extends FliesCommand>>();
 
    public static void main(String[] args) throws Exception
    {
@@ -89,7 +92,7 @@ public class PoTool implements GlobalOptions
       String[] otherArgs = arguments.toArray(new String[0]);
       try
       {
-         Class<? extends Subcommand> taskClass = commandMap.get(command);
+         Class<? extends FliesCommand> taskClass = commandMap.get(command);
          if (taskClass == null)
          {
             System.err.println("Unknown command '" + command + "'");
@@ -98,13 +101,13 @@ public class PoTool implements GlobalOptions
          }
          else
          {
-            Subcommand task = taskClass.newInstance();
+            FliesCommand task = taskClass.newInstance();
             ArgsUtil.processArgs(task, otherArgs, getGlobalOptions());
          }
       }
       catch (Exception e)
       {
-         Utility.handleException(e, errors);
+         ArgsUtil.handleException(e, errors);
       }
    }
 

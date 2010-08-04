@@ -14,6 +14,9 @@ import javax.xml.bind.Marshaller;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.fedorahosted.flies.adapter.po.PoReader;
+import org.fedorahosted.flies.client.command.ArgsUtil;
+import org.fedorahosted.flies.client.command.FliesCommand;
+import org.fedorahosted.flies.client.command.GlobalOptions;
 import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.rest.JaxbUtil;
@@ -27,7 +30,7 @@ import org.kohsuke.args4j.Option;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-public class UploadPoTask extends Task implements Subcommand
+public class UploadPoTask extends Task implements FliesCommand
 {
 
    private String user;
@@ -76,7 +79,7 @@ public class UploadPoTask extends Task implements Subcommand
       {
          // make sure RESTEasy classes will be found:
          Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-         process();
+         run();
       }
       catch (Exception e)
       {
@@ -88,7 +91,7 @@ public class UploadPoTask extends Task implements Subcommand
       }
    }
 
-   public void process() throws JAXBException, SAXException, URISyntaxException, IOException
+   public void run() throws JAXBException, SAXException, URISyntaxException, IOException
    {
       PoReader poReader = new PoReader();
       // scan the directory for pot files

@@ -14,6 +14,9 @@ import javax.xml.bind.Unmarshaller;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.fedorahosted.flies.adapter.po.PoWriter;
+import org.fedorahosted.flies.client.command.ArgsUtil;
+import org.fedorahosted.flies.client.command.FliesCommand;
+import org.fedorahosted.flies.client.command.GlobalOptions;
 import org.fedorahosted.flies.rest.client.ClientUtility;
 import org.fedorahosted.flies.rest.client.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.IDocumentsResource;
@@ -22,7 +25,7 @@ import org.fedorahosted.flies.rest.dto.deprecated.Documents;
 import org.jboss.resteasy.client.ClientResponse;
 import org.kohsuke.args4j.Option;
 
-public class DownloadPoTask extends Task implements Subcommand
+public class DownloadPoTask extends Task implements FliesCommand
 {
 
    private String user;
@@ -60,7 +63,7 @@ public class DownloadPoTask extends Task implements Subcommand
       {
          // make sure RESTEasy classes will be found:
          Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-         process();
+         run();
       }
       catch (Exception e)
       {
@@ -72,7 +75,7 @@ public class DownloadPoTask extends Task implements Subcommand
       }
    }
 
-   public void process() throws JAXBException, IOException, URISyntaxException
+   public void run() throws JAXBException, IOException, URISyntaxException
    {
       Unmarshaller m = null;
       if (debug)

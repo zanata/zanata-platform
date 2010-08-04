@@ -1,7 +1,7 @@
-package org.fedorahosted.flies.client.ant.po;
+package org.fedorahosted.flies.client.command;
 
 
-public interface Subcommand
+public interface FliesCommand
 {
 
    public String getCommandName();
@@ -16,5 +16,5 @@ public interface Subcommand
 
    public void setHelp(boolean b);
 
-   public void process() throws Exception;
+   public void run() throws Exception;
 }

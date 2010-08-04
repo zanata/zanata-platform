@@ -1,6 +1,6 @@
-package org.fedorahosted.flies.client.ant.po;
+package org.fedorahosted.flies.client.command;
 
-interface GlobalOptions
+public interface GlobalOptions
 {
    static final GlobalOptions EMPTY = new GlobalOptions()
    {
