@@ -197,7 +197,7 @@ public class UploadPoTask extends Task implements Subcommand
          FliesClientRequestFactory factory = new FliesClientRequestFactory(user, apiKey);
          IDocumentsResource documentsResource = factory.getDocuments(dstURL.toURI());
          ClientResponse response = documentsResource.put(docs);
-         ClientUtility.checkResult(response, dstURL);
+         ClientUtility.checkResult(response, dstURL.toURI());
       }
    }
 

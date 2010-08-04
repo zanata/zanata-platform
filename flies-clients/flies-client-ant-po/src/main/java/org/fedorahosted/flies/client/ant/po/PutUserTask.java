@@ -116,12 +116,12 @@ public class PutUserTask extends Task implements Subcommand
       if (fliesURL == null)
          return;
       URI base = new URI(fliesURL);
-      URL restURL = new URL(fliesURL + "/seam/resource/restv1/accounts/u/" + username);
       // send iter to rest api
       FliesClientRequestFactory factory = new FliesClientRequestFactory(base, user, apiKey);
-      IAccountResource iterResource = factory.getAccount(restURL.toURI());
+      IAccountResource iterResource = factory.getAccount(username);
+      URI uri = factory.getAccountURI(username);
       Response response = iterResource.put(account);
-      ClientUtility.checkResult(response, restURL);
+      ClientUtility.checkResult(response, uri);
    }
 
    @Override
@@ -142,7 +142,7 @@ public class PutUserTask extends Task implements Subcommand
       this.apiKey = apiKey;
    }
 
-   @Option(name = "--flies", metaVar = "URL", usage = "Flies base URL, eg http://flies.example.com/flies", required = true)
+   @Option(name = "--flies", metaVar = "URL", usage = "Flies base URL, eg http://flies.example.com/flies/", required = true)
    public void setFliesURL(String url)
    {
       this.fliesURL = url;

@@ -3,7 +3,6 @@ package org.fedorahosted.flies.client.ant.po;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 
 import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
@@ -90,12 +89,12 @@ public class CreateIterationTask extends Task implements Subcommand
       if (fliesURL == null)
          return;
       URI base = new URI(fliesURL);
-      URL iterURL = new URL(fliesURL + "/seam/resource/restv1/projects/p/" + proj + "/iterations/i/" + iter);
       // send iter to rest api
       FliesClientRequestFactory factory = new FliesClientRequestFactory(base, user, apiKey);
-      IProjectIterationResource iterResource = factory.getProjectIteration(iterURL.toURI());
+      IProjectIterationResource iterResource = factory.getProjectIteration(proj, iter);
+      URI uri = factory.getProjectIterationURI(proj, iter);
       Response response = iterResource.put(iteration);
-      ClientUtility.checkResult(response, iterURL);
+      ClientUtility.checkResult(response, uri);
    }
 
    @Override
@@ -116,7 +115,7 @@ public class CreateIterationTask extends Task implements Subcommand
       this.apiKey = apiKey;
    }
 
-   @Option(name = "--flies", metaVar = "URL", usage = "Flies base URL, eg http://flies.example.com/flies", required = true)
+   @Option(name = "--flies", metaVar = "URL", usage = "Flies base URL, eg http://flies.example.com/flies/", required = true)
    public void setFliesURL(String url)
    {
       this.fliesURL = url;

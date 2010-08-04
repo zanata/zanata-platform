@@ -90,12 +90,12 @@ public class CreateProjectTask extends Task implements Subcommand
       if (fliesUrl == null)
          return;
       URI base = new URI(fliesUrl);
-      URL projURL = new URL(fliesUrl + "/seam/resource/restv1/projects/p/" + proj);
       // send project to rest api
       FliesClientRequestFactory factory = new FliesClientRequestFactory(base, user, apiKey);
-      IProjectResource projResource = factory.getProject(projURL.toURI());
+      IProjectResource projResource = factory.getProject(proj);
+      URI uri = factory.getProjectURI(proj);
       Response response = projResource.put(project);
-      ClientUtility.checkResult(response, projURL);
+      ClientUtility.checkResult(response, uri);
    }
 
    @Override
@@ -116,7 +116,7 @@ public class CreateProjectTask extends Task implements Subcommand
       this.apiKey = apiKey;
    }
 
-   @Option(name = "--flies", metaVar = "URL", usage = "Flies base URL, eg http://flies.example.com/flies", required = true)
+   @Option(name = "--flies", metaVar = "URL", usage = "Flies base URL, eg http://flies.example.com/flies/", required = true)
    public void setFliesUrl(String url)
    {
       this.fliesUrl = url;

@@ -93,7 +93,7 @@ public class Props2DocsTask extends BaseTask
             FliesClientRequestFactory factory = new FliesClientRequestFactory(user, apiKey);
             IDocumentsResource documentsResource = factory.getDocuments(dstURL.toURI());
             ClientResponse response = documentsResource.put(docs);
-            ClientUtility.checkResult(response, dstURL);
+            ClientUtility.checkResult(response, dstURL.toURI());
          }
 
       }

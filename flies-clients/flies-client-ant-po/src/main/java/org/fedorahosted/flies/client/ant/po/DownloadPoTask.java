@@ -96,7 +96,7 @@ public class DownloadPoTask extends Task implements Subcommand
          IDocumentsResource documentsResource = factory.getDocuments(srcURL.toURI());
          ClientResponse<Documents> response = documentsResource.getDocuments();
 
-         ClientUtility.checkResult(response, srcURL);
+         ClientUtility.checkResult(response, srcURL.toURI());
          docList = response.getEntity().getDocuments();
       }
       for (Document doc : docList)
