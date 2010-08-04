@@ -23,6 +23,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
@@ -48,12 +49,12 @@ import org.fedorahosted.flies.rest.StringSet;
 import org.fedorahosted.flies.rest.dto.extensions.PoHeader;
 import org.fedorahosted.flies.rest.dto.extensions.PotEntryHeader;
 import org.fedorahosted.flies.rest.dto.resource.Resource;
-import org.fedorahosted.flies.rest.dto.resource.AbstractResourceMeta;
 import org.fedorahosted.flies.rest.dto.resource.ResourceMeta;
-import org.fedorahosted.flies.rest.dto.resource.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.resource.TextFlow;
+import org.fedorahosted.flies.rest.dto.resource.TextFlowTarget;
 import org.fedorahosted.flies.rest.dto.resource.TranslationsResource;
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
+import org.jboss.resteasy.util.GenericType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Admin;
@@ -171,8 +172,9 @@ public class TranslationResourcesService
          }
       }
 
-      return Response.ok().entity(resources).tag(etag).build();
-
+      return Response.ok(new GenericEntity<List<ResourceMeta>>(resources, new GenericType<List<ResourceMeta>>()
+      {
+      }.getGenericType())).tag(etag).build();
    }
 
    @POST
