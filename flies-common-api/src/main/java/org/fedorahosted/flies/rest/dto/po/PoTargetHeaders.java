@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.common.LocaleId;
+import org.fedorahosted.flies.rest.dto.DTOUtil;
 
 /**
  * Represents a list of target-language translations for a single Document
@@ -40,4 +41,11 @@ public class PoTargetHeaders
 
       return null;
    }
+
+   @Override
+   public String toString()
+   {
+      return DTOUtil.toXML(this);
+   }
+
 }

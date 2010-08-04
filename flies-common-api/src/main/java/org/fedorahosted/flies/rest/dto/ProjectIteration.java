@@ -131,4 +131,10 @@ public class ProjectIteration implements Serializable, HasCollectionSample<Proje
       return MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION + format;
    }
 
+   @Override
+   public String toString()
+   {
+      return DTOUtil.toXML(this);
+   }
+
 }

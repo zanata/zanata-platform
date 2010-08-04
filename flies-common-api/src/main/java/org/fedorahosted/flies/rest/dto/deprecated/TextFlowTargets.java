@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.Namespaces;
+import org.fedorahosted.flies.rest.dto.DTOUtil;
 
 /**
  * Represents a list of target-language translations for a single TextFlow
@@ -46,7 +47,7 @@ public class TextFlowTargets
    @Override
    public String toString()
    {
-      return Utility.toXML(this);
+      return DTOUtil.toXML(this);
    }
 
 }

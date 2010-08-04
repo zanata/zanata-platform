@@ -2,10 +2,12 @@ package org.fedorahosted.flies.rest.dto.resource;
 
 import java.util.HashSet;
 
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.fedorahosted.flies.common.Namespaces;
+import org.fedorahosted.flies.rest.dto.DTOUtil;
 
+@XmlRootElement(name = "extension-set", namespace = Namespaces.FLIES)
 public class ExtensionSet extends HashSet<Extension>
 {
 
@@ -29,6 +31,12 @@ public class ExtensionSet extends HashSet<Extension>
             return clz.cast(e);
       }
       return null;
+   }
+
+   @Override
+   public String toString()
+   {
+      return DTOUtil.toXML(this);
    }
 
 }

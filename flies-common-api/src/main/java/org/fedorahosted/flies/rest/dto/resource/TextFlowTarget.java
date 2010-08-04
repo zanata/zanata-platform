@@ -17,6 +17,7 @@ import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.Namespaces;
 import org.fedorahosted.flies.rest.dto.Person;
+import org.fedorahosted.flies.rest.dto.DTOUtil;
 import org.hibernate.validator.NotEmpty;
 
 @XmlType(name = "textFlowTargetType", namespace = Namespaces.FLIES, propOrder = { "translator", "content", "extensions" })
@@ -107,6 +108,12 @@ public class TextFlowTarget implements Serializable
    public void setResId(String resId)
    {
       this.resId = resId;
+   }
+
+   @Override
+   public String toString()
+   {
+      return DTOUtil.toXML(this);
    }
 
 }

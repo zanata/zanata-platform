@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.codehaus.jackson.annotate.JsonTypeName;
+import org.fedorahosted.flies.rest.dto.DTOUtil;
 import org.fedorahosted.flies.rest.dto.resource.Extension;
 
 @XmlType(name = "poTargetHeadersExtension", namespace = PoTargetHeaders.NAMESPACE, propOrder = { "headers" })
@@ -31,4 +32,5 @@ public class PoTargetHeaders extends Extension
    {
       return headers;
    }
+
 }

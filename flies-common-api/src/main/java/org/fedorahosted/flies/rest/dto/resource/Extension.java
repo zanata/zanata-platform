@@ -10,6 +10,7 @@ import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.annotate.JsonTypeInfo.As;
 import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
 import org.fedorahosted.flies.common.Namespaces;
+import org.fedorahosted.flies.rest.dto.DTOUtil;
 import org.fedorahosted.flies.rest.dto.extensions.PoHeader;
 import org.fedorahosted.flies.rest.dto.extensions.PoTargetHeaders;
 import org.fedorahosted.flies.rest.dto.extensions.PotEntryHeader;
@@ -87,6 +88,12 @@ public abstract class Extension
       hash += hash * 31 + id.hashCode();
       hash += hash * 31 + version.hashCode();
       return hash;
+   }
+
+   @Override
+   public String toString()
+   {
+      return DTOUtil.toXML(this);
    }
 
 }
