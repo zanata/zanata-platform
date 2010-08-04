@@ -91,7 +91,7 @@ public class Props2DocsTask extends BaseTask
          {
             // send project to rest api
             FliesClientRequestFactory factory = new FliesClientRequestFactory(user, apiKey);
-            IDocumentsResource documentsResource = factory.getDocumentsResource(dstURL.toURI());
+            IDocumentsResource documentsResource = factory.getDocuments(dstURL.toURI());
             ClientResponse response = documentsResource.put(docs);
             ClientUtility.checkResult(response, dstURL);
          }

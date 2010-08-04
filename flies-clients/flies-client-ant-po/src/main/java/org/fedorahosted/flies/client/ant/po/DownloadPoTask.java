@@ -2,6 +2,7 @@ package org.fedorahosted.flies.client.ant.po;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
@@ -92,7 +93,7 @@ public class DownloadPoTask extends Task implements Subcommand
       {
          // use rest api to fetch Documents
          FliesClientRequestFactory factory = new FliesClientRequestFactory(user, apiKey);
-         IDocumentsResource documentsResource = factory.getDocumentsResource(srcURL.toURI());
+         IDocumentsResource documentsResource = factory.getDocuments(srcURL.toURI());
          ClientResponse<Documents> response = documentsResource.getDocuments();
 
          ClientUtility.checkResult(response, srcURL);

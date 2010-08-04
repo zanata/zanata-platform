@@ -13,22 +13,19 @@ public class ClientUtility
    {
       if (response.getStatus() >= 399)
       {
-         String annots = "";
-         String entity = "";
+         String annotString = "";
+         String urlString = "";
          if (response instanceof BaseClientResponse)
          {
-            BaseClientResponse resp = (BaseClientResponse) response;
-            annots = Arrays.asList(resp.getAnnotations()).toString();
-            try
-            {
-               entity = ", entity: " + resp.getEntity(String.class);
-            }
-            catch (Exception e)
-            {
-               entity = "";
-            }
+            BaseClientResponse<?> resp = (BaseClientResponse<?>) response;
+            annotString = ", annotations: " + Arrays.asList(resp.getAnnotations()).toString();
          }
-         throw new RuntimeException("operation returned " + response.getStatus() + ": " + Response.Status.fromStatusCode(response.getStatus()) + entity + ", url: " + url + ", annotations: " + annots);
+         if (url != null)
+         {
+            urlString = ", url: " + url;
+         }
+         String msg = "operation returned " + response.getStatus() + ": " + Response.Status.fromStatusCode(response.getStatus()) + urlString + annotString;
+         throw new RuntimeException(msg);
       }
    }
 }

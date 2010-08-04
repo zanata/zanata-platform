@@ -19,6 +19,7 @@ import org.fedorahosted.flies.common.Namespaces;
 import org.fedorahosted.flies.rest.dto.ContentTypeAdapter;
 import org.fedorahosted.flies.rest.dto.Links;
 import org.fedorahosted.flies.rest.dto.LocaleIdAdapter;
+import org.fedorahosted.flies.rest.dto.DTOUtil;
 import org.fedorahosted.flies.rest.dto.po.PoHeader;
 import org.fedorahosted.flies.rest.dto.po.PoTargetHeaders;
 
@@ -245,7 +246,7 @@ public class Document implements IExtensible
    @Override
    public String toString()
    {
-      return Utility.toXML(this);
+      return DTOUtil.toXML(this);
    }
 
 }

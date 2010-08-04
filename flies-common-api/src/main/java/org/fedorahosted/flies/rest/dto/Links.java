@@ -4,11 +4,13 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.fedorahosted.flies.common.Namespaces;
 
 @XmlType(name = "linksType", namespace = Namespaces.FLIES, propOrder = {})
+@XmlRootElement(name = "links", namespace = Namespaces.FLIES)
 public class Links extends ArrayList<Link>
 {
 
@@ -114,6 +116,12 @@ public class Links extends ArrayList<Link>
             foundLinks.add(link);
       }
       return foundLinks;
+   }
+
+   @Override
+   public String toString()
+   {
+      return DTOUtil.toXML(this);
    }
 
 }

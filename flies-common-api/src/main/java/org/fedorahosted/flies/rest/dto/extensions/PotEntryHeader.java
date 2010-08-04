@@ -5,9 +5,13 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
+import org.fedorahosted.flies.common.Namespaces;
+import org.fedorahosted.flies.rest.dto.DTOUtil;
 import org.fedorahosted.flies.rest.dto.resource.Extension;
 
+@XmlRootElement(name = "pot-entry-header", namespace = Namespaces.FLIES)
 public class PotEntryHeader extends Extension
 {
 

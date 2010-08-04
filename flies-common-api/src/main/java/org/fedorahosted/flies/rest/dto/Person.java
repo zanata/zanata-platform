@@ -95,4 +95,10 @@ public class Person implements Serializable, HasSample<Person>
       return new Person("me@example.com", "Mr. Example");
    }
 
+   @Override
+   public String toString()
+   {
+      return DTOUtil.toXML(this);
+   }
+
 }

@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.codehaus.jackson.annotate.JsonValue;
 import org.fedorahosted.flies.common.Namespaces;
 import org.fedorahosted.flies.rest.dto.HasSample;
+import org.fedorahosted.flies.rest.dto.DTOUtil;
 
 /**
  * 
@@ -45,4 +46,11 @@ public class ResourceMetaList implements Serializable, HasSample<ResourceMetaLis
       entity.getResources().addAll(new ResourceMeta().createSamples());
       return entity;
    }
+
+   @Override
+   public String toString()
+   {
+      return DTOUtil.toXML(this);
+   }
+
 }

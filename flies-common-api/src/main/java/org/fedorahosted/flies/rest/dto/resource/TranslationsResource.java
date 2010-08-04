@@ -19,6 +19,7 @@ import org.fedorahosted.flies.common.Namespaces;
 import org.fedorahosted.flies.rest.dto.HasSample;
 import org.fedorahosted.flies.rest.dto.Link;
 import org.fedorahosted.flies.rest.dto.Links;
+import org.fedorahosted.flies.rest.dto.DTOUtil;
 
 @XmlType(name = "translationsResourceType", namespace = Namespaces.FLIES, propOrder = { "links", "extensions", "textFlowTargets" })
 @XmlRootElement(name = "translations", namespace = Namespaces.FLIES)
@@ -93,4 +94,11 @@ public class TranslationsResource implements Serializable, HasSample<Translation
    {
       return new TranslationsResource();
    }
+
+   @Override
+   public String toString()
+   {
+      return DTOUtil.toXML(this);
+   }
+
 }

@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.fedorahosted.flies.rest.dto.DTOUtil;
 import org.fedorahosted.flies.rest.dto.deprecated.SimpleComment;
 
 @XmlType(name = "headerType", namespace = PoHeader.NAMESPACE, propOrder = { "comment", "entries" })
@@ -45,6 +46,12 @@ public class PoHeader
       if (entries == null)
          entries = new ArrayList<HeaderEntry>();
       return entries;
+   }
+
+   @Override
+   public String toString()
+   {
+      return DTOUtil.toXML(this);
    }
 
 }

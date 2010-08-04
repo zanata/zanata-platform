@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.Namespaces;
 import org.fedorahosted.flies.rest.dto.LocaleIdAdapter;
+import org.fedorahosted.flies.rest.dto.DTOUtil;
 import org.fedorahosted.flies.rest.dto.po.PotEntryData;
 
 @XmlType(name = "textFlowType", namespace = Namespaces.FLIES, propOrder = { "content", "extensions" })
@@ -183,6 +184,12 @@ public class TextFlow implements IExtensible
          getExtensions().add(targets);
       }
       targets.getTargets().add(target);
+   }
+
+   @Override
+   public String toString()
+   {
+      return DTOUtil.toXML(this);
    }
 
 }

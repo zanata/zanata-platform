@@ -44,4 +44,11 @@ public class ProjectList implements Serializable, HasSample<ProjectList>
       entity.getProjects().addAll(new Project().createSamples());
       return entity;
    }
+
+   @Override
+   public String toString()
+   {
+      return DTOUtil.toXML(this);
+   }
+
 }

@@ -6,6 +6,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
 import org.fedorahosted.flies.common.Namespaces;
+import org.fedorahosted.flies.rest.dto.DTOUtil;
 
 @XmlRootElement(name = "comment", namespace = Namespaces.FLIES)
 @XmlType(name = "simpleCommentType", namespace = Namespaces.FLIES)
@@ -47,7 +48,7 @@ public class SimpleComment
    @Override
    public String toString()
    {
-      return Utility.toXML(this);
+      return DTOUtil.toXML(this);
    }
 
 }

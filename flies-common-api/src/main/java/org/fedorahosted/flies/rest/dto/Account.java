@@ -158,4 +158,10 @@ public class Account implements Serializable, HasMediaType
       return MediaTypes.APPLICATION_FLIES_ACCOUNT + format;
    }
 
+   @Override
+   public String toString()
+   {
+      return DTOUtil.toXML(this);
+   }
+
 }

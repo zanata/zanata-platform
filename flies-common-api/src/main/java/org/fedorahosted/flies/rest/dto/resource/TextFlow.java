@@ -17,6 +17,7 @@ import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.common.Namespaces;
 import org.fedorahosted.flies.rest.dto.LocaleIdAdapter;
+import org.fedorahosted.flies.rest.dto.DTOUtil;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
@@ -117,6 +118,12 @@ public class TextFlow implements Serializable
       if (createIfNull && extensions == null)
          extensions = new ExtensionSet();
       return extensions;
+   }
+
+   @Override
+   public String toString()
+   {
+      return DTOUtil.toXML(this);
    }
 
 }

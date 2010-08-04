@@ -23,6 +23,7 @@ import org.fedorahosted.flies.common.ResourceType;
 import org.fedorahosted.flies.rest.dto.ContentTypeAdapter;
 import org.fedorahosted.flies.rest.dto.HasCollectionSample;
 import org.fedorahosted.flies.rest.dto.LocaleIdAdapter;
+import org.fedorahosted.flies.rest.dto.DTOUtil;
 import org.fedorahosted.flies.rest.dto.extensions.PoHeader;
 
 @XmlType(name = "abstractResourceMetaType", namespace = Namespaces.FLIES, propOrder = { "name", "extensions" })
@@ -112,6 +113,12 @@ public abstract class AbstractResourceMeta implements Serializable
    public void setName(String name)
    {
       this.name = name;
+   }
+
+   @Override
+   public String toString()
+   {
+      return DTOUtil.toXML(this);
    }
 
 }

@@ -182,4 +182,10 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
       return MediaTypes.APPLICATION_FLIES_PROJECT + format;
    }
 
+   @Override
+   public String toString()
+   {
+      return DTOUtil.toXML(this);
+   }
+
 }

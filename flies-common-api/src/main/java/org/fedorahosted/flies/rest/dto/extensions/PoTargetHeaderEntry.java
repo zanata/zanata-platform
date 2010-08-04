@@ -12,11 +12,13 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.rest.dto.LocaleIdAdapter;
+import org.fedorahosted.flies.rest.dto.DTOUtil;
 import org.fedorahosted.flies.rest.dto.po.HeaderEntry;
+import org.fedorahosted.flies.rest.dto.resource.Extension;
 
 @XmlType(name = "poTargetHeaderEntry", namespace = PoHeader.NAMESPACE, propOrder = { "comment", "entries" })
 @XmlRootElement(name = "po-target-header", namespace = PoHeader.NAMESPACE)
-public class PoTargetHeaderEntry
+public class PoTargetHeaderEntry extends Extension
 {
 
    private LocaleId locale;

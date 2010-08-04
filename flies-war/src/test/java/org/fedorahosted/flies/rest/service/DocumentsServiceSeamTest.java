@@ -62,8 +62,8 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest
 
    public IDocumentsResource prepareRestEasyClientFramework(String projectSlug, String iter) throws Exception
    {
-      FliesClientRequestFactory clientRequestFactory = new FliesClientRequestFactory(USERNAME, AUTH_KEY, new SeamMockClientExecutor(this));
-      return clientRequestFactory.getDocumentsResource(new URI("/restv1/projects/p/" + projectSlug + "/iterations/i/" + iter + "/documents"));
+      FliesClientRequestFactory clientRequestFactory = new FliesClientRequestFactory(new URI("http://example.com/"), USERNAME, AUTH_KEY, new SeamMockClientExecutor(this));
+      return clientRequestFactory.getDocuments(new URI("/restv1/projects/p/" + projectSlug + "/iterations/i/" + iter + "/documents"));
    }
 
    @Override

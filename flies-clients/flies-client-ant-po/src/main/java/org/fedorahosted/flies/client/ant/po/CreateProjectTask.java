@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.client.ant.po;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -88,10 +89,11 @@ public class CreateProjectTask extends Task implements Subcommand
 
       if (fliesUrl == null)
          return;
+      URI base = new URI(fliesUrl);
       URL projURL = new URL(fliesUrl + "/seam/resource/restv1/projects/p/" + proj);
       // send project to rest api
-      FliesClientRequestFactory factory = new FliesClientRequestFactory(user, apiKey);
-      IProjectResource projResource = factory.getProjectResource(projURL.toURI());
+      FliesClientRequestFactory factory = new FliesClientRequestFactory(base, user, apiKey);
+      IProjectResource projResource = factory.getProject(projURL.toURI());
       Response response = projResource.put(project);
       ClientUtility.checkResult(response, projURL);
    }

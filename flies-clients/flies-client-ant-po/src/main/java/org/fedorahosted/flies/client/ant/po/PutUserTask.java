@@ -1,6 +1,7 @@
 package org.fedorahosted.flies.client.ant.po;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
@@ -114,10 +115,11 @@ public class PutUserTask extends Task implements Subcommand
 
       if (fliesURL == null)
          return;
+      URI base = new URI(fliesURL);
       URL restURL = new URL(fliesURL + "/seam/resource/restv1/accounts/u/" + username);
       // send iter to rest api
-      FliesClientRequestFactory factory = new FliesClientRequestFactory(user, apiKey);
-      IAccountResource iterResource = factory.getAccountResource(restURL.toURI());
+      FliesClientRequestFactory factory = new FliesClientRequestFactory(base, user, apiKey);
+      IAccountResource iterResource = factory.getAccount(restURL.toURI());
       Response response = iterResource.put(account);
       ClientUtility.checkResult(response, restURL);
    }
