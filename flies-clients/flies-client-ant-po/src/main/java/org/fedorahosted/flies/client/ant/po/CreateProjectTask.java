@@ -17,6 +17,7 @@ import org.fedorahosted.flies.rest.client.IProjectResource;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.kohsuke.args4j.Option;
 
+@Deprecated
 public class CreateProjectTask extends FliesTask
 {
 

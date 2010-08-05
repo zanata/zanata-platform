@@ -62,9 +62,7 @@ public class ListRemoteCommand extends ConfigurableProjectCommand implements Fli
 
    @Override
    public void run() throws Exception
-   {// initConfig()
-    // TODO remove this
-      System.out.println("listremote");
+   {
       FliesClientRequestFactory factory = new FliesClientRequestFactory(getUrl().toURI(), getUsername(), getKey());
       ITranslationResources translationResources = factory.getTranslationResources(getProjectSlug(), getVersionSlug());
       ClientResponse<List<ResourceMeta>> response = translationResources.get();
