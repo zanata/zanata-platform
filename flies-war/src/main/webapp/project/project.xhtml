@@ -15,15 +15,15 @@
 
     <s:formattedText id="project-home-content" value="#{projectHome.instance.homeContent}"></s:formattedText>
     <h:outputText value="#{projectHome.instance.description}" rendered="#{empty projectHome.instance.homeContent}"/>
-    
+
     <br/><i>* #{messages['jsf.PleaseJoinALanguageTeamFromTheLanguagesPageToHelpTranslateThisProject']}</i>
-    
+
     <s:fragment rendered="#{projectHome.retiredIterations.size > 0}">
       <h2>#{messages['jsf.ActiveIterations']}</h2>
     </s:fragment>
-    <rich:dataGrid columns="2" 
-                   value="#{projectHome.activeIterations}" 
-                   var="_iteration" 
+    <rich:dataGrid id="data_grid" columns="2"
+                   value="#{projectHome.activeIterations}"
+                   var="_iteration"
                    columnClasses="grid_col_one_third_width"
                    >
       <ui:include src="../WEB-INF/layout/iteration_view_inline.xhtml" />
@@ -31,30 +31,30 @@
 
     <s:fragment rendered="#{projectHome.retiredIterations.size > 0}">
       <h2>#{messages['RetiredIterations']}</h2>
-      <rich:dataGrid columns="2" 
-                     value="#{projectHome.retiredIterations}" 
-                     var="_iteration" 
+      <rich:dataGrid columns="2"
+                     value="#{projectHome.retiredIterations}"
+                     var="_iteration"
                      columnClasses="grid_col_one_third_width">
         <ui:include src="../WEB-INF/layout/iteration_view_inline.xhtml" />
       </rich:dataGrid>
-    </s:fragment>    
+    </s:fragment>
 </ui:define>
 
 <ui:define name="left_content">
-  
+
   <rich:panel rendered="#{identity.loggedIn}">
     <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
     <s:link styleClass="action_link" rendered="#{s:hasPermission(projectHome.instance, 'update')}" value="#{messages['jsf.EditProject']}" view="/project/edit.xhtml" propagation="none">
       <f:param name="slug" value="#{projectHome.instance.slug}"/>
     </s:link>
-    <!-- NB: we don't check for 'insert' permission on the HProjectIteration 
+    <!-- NB: we don't check for 'insert' permission on the HProjectIteration
          because we would have to create HProjectIteration *and* set its project.
     -->
     <s:link styleClass="action_link" rendered="#{s:hasPermission(projectHome.instance, 'add-iteration')}" view="/project/add_iteration.xhtml" value="#{messages['jsf.CreateVersion']}" propagation="none">
     	<f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
     </s:link>
   </rich:panel>
-  
+
   <rich:panel>
     <f:facet name="header">#{messages['jsf.Maintainers']}</f:facet>
     <h:outputText rendered="#{empty projectHome.instance.maintainers}">#{messages['jsf.NoMaintainersDefined']}</h:outputText>
@@ -62,7 +62,7 @@
       <h:outputText value="#{maintainer.name}"/>
     </rich:dataList>
   </rich:panel>
-  
+
 </ui:define>
 
 </ui:composition>

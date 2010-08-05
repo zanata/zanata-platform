@@ -36,11 +36,11 @@
           <h:outputText rendered="#{identity.loggedIn}"
             value="#{authenticatedPerson == null ? identity.username : authenticatedPerson.name} " />
           <s:fragment rendered="#{not identity.loggedIn}">
-            <s:link id="SignIn" view="/account/login.xhtml" value="#{messages['jsf.SignIn']}" propagation="none" />
+            <s:link id="Sign_in" view="/account/login.xhtml" value="#{messages['jsf.SignIn']}" propagation="none" />
             <rich:spacer width="10px" />
             <s:link id="Register" view="/account/register.xhtml" value="#{messages['jsf.Register']}" propagation="none" rendered="#{not identityStore.nukesActive}"/>
           </s:fragment>
-          <s:link id="SignOut" view="/home.xhtml" action="#{identity.logout}" value="#{messages['jsf.SignOut']}" rendered="#{identity.loggedIn}" propagation="none" />
+          <s:link id="Sign_out" view="/home.xhtml" action="#{identity.logout}" value="#{messages['jsf.SignOut']}" rendered="#{identity.loggedIn}" propagation="none" />
         </div>
         <div id="loading_top_right">
           <a:status>

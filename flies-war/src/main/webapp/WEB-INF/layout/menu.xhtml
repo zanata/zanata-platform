@@ -13,8 +13,8 @@
       </s:link>
       <s:fragment rendered="#{authenticatedPerson != null}">
 	<ul>
-          <ui:repeat id="Project-list" value="#{authenticatedPerson.maintainerProjects}" var="project">
-	    <li id="Project-#{project.slug}">
+          <ui:repeat id="Project_list" value="#{authenticatedPerson.maintainerProjects}" var="project">
+	    <li id="Project_#{project.slug}">
 	      <s:link view="/project/project.xhtml" propagation="none">
 		  #{project.name}
 		<f:param name="slug" value="#{project.slug}"/>
@@ -32,8 +32,8 @@
         <s:fragment rendered="#{memberTribes.size != 0}">
           <rich:jQuery selector="#tab_tribes" query="addClass('ui-tabs-nav-issues')" />
           <ul>
-            <a:repeat id="Language-list" value="#{memberTribes}" var="tribe">
-	      <li id="Language-#{tribe.locale.id}">
+            <a:repeat id="Language_list" value="#{memberTribes}" var="tribe">
+	      <li id="Language_#{tribe.locale.id}">
                 <s:link view="/language/language.xhtml" propagation="none">
                   #{tribe.locale.nativeName}
                   <f:param name="id" value="#{tribe.locale.id}"/>
@@ -51,15 +51,15 @@
     </li>
     <s:fragment rendered="#{s:hasRole('admin')}">
       <li  id="tab_admin" class="ui-tabs-nav-issues">
-        <s:link id="Admininstraction" view="/admin/home.xhtml" propagation="none">
+        <s:link id="Administration" view="/admin/home.xhtml" propagation="none">
           <span><img src="#{request.contextPath}/img/silk/wrench.png"/>#{messages['jsf.Administration']} ↓</span>
         </s:link>
 	<ul>
-          <li id="Admin-ServerConfiguration"><s:link id="Admin-ServerConfiguration-a" view="/admin/server_configuration.xhtml" propagation="none">#{messages['jsf.ServerConfiguration']}</s:link></li>
-          <li id="Admin-ManageUsers"><s:link id="Admin-ManageUsers-a" view="/admin/usermanager.xhtml" propagation="none">#{messages['jsf.ManageUsers']}</s:link></li>
-          <li id="Admin-ManageRoles"><s:link id="Admin-ManageRoles-a" view="/admin/rolemanager.xhtml" propagation="none">#{messages['jsf.ManageRoles']}</s:link></li>
-          <li id="Admin-ManageLocales"><s:link id="Admin-ManageLocales-a" view="/admin/locales.xhtml" propagation="none">#{messages['jsf.ManageLocales']}</s:link></li>
-          <li id="Admin-ManageSearch"><s:link id="Admin-ManageSearch-a" view="/admin/search.xhtml" propagation="none">#{messages['jsf.ManageSearch']}</s:link></li>
+          <li id="Admin_Server_configuration"><s:link id="Admin_Server_configuration_a" view="/admin/server_configuration.xhtml" propagation="none">#{messages['jsf.ServerConfiguration']}</s:link></li>
+          <li id="Admin_Manage_users"><s:link id="Admin_Manage_users_a" view="/admin/usermanager.xhtml" propagation="none">#{messages['jsf.ManageUsers']}</s:link></li>
+          <li id="Admin_Manage_roles"><s:link id="Admin_Manage_roles_a" view="/admin/rolemanager.xhtml" propagation="none">#{messages['jsf.ManageRoles']}</s:link></li>
+          <li id="Admin_Manage_locales"><s:link id="Admin_Manage_locales_a" view="/admin/locales.xhtml" propagation="none">#{messages['jsf.ManageLocales']}</s:link></li>
+	  <li id="Admin_Manage_search"><s:link id="Admin_Manage_search_a" view="/admin/search.xhtml" propagation="none">#{messages['jsf.ManageSearch']}</s:link></li>
         </ul>
       </li>
     </s:fragment>
