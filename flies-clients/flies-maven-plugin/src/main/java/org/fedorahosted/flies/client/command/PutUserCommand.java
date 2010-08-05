@@ -17,7 +17,21 @@ public class PutUserCommand extends ConfigurableCommand
    @Override
    public void run()
    {
+      // TODO remove this
+      System.out.println("putuser");
       // TODO
+   }
+
+   @Override
+   public String getCommandName()
+   {
+      return "putuser";
+   }
+
+   @Override
+   public String getCommandDescription()
+   {
+      return "Creates or updates a Flies user.";
    }
 
 }

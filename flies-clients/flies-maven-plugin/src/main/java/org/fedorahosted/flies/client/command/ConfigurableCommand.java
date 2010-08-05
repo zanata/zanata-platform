@@ -25,7 +25,6 @@ import java.net.URL;
 
 import org.apache.commons.configuration.DataConfiguration;
 import org.apache.commons.configuration.HierarchicalINIConfiguration;
-import org.fedorahosted.flies.client.config.FliesConfig;
 import org.kohsuke.args4j.Option;
 
 /**
@@ -35,7 +34,7 @@ import org.kohsuke.args4j.Option;
  * @author Sean Flanigan <sflaniga@redhat.com>
  * 
  */
-public abstract class ConfigurableCommand
+public abstract class ConfigurableCommand implements FliesCommand
 {
 
    /**
@@ -191,6 +190,4 @@ public abstract class ConfigurableCommand
    {
       this.username = username;
    }
-
-   public abstract void run() throws Exception;
 }

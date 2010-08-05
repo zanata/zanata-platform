@@ -34,6 +34,13 @@ public abstract class ConfigurableMojo<C extends ConfigurableCommand> extends Ab
     * Client configuration file for Flies.
     * 
     * @parameter expression="${flies.client.config}"
+    *            default-value="${user.home}/.config/flies.ini"
+    */
+   /*
+    * NB the annotation 'default-value' overrides ConfigurableCommand (even
+    * though the values are virtually identical) because Mojos aren't meant to
+    * use System properties directly (since they may be sharing a VM and its
+    * System properties)
     */
    @SuppressWarnings("unused")
    private File userConfig;
@@ -92,9 +99,7 @@ public abstract class ConfigurableMojo<C extends ConfigurableCommand> extends Ab
    {
       try
       {
-         command.initConfig();
-         // TODO remove this
-         getLog().info(getClass().getSimpleName());
+         getCommand().initConfig();
          getCommand().run();
       }
       catch (Exception e)

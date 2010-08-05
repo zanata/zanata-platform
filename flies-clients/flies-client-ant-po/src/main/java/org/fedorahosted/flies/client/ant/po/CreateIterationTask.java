@@ -9,10 +9,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Task;
 import org.fedorahosted.flies.client.command.ArgsUtil;
-import org.fedorahosted.flies.client.command.FliesCommand;
 import org.fedorahosted.flies.client.command.GlobalOptions;
 import org.fedorahosted.flies.rest.client.ClientUtility;
 import org.fedorahosted.flies.rest.client.FliesClientRequestFactory;
@@ -20,7 +17,7 @@ import org.fedorahosted.flies.rest.client.IProjectIterationResource;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.kohsuke.args4j.Option;
 
-public class CreateIterationTask extends Task implements FliesCommand
+public class CreateIterationTask extends FliesTask
 {
    private String user;
    private String apiKey;
@@ -51,26 +48,6 @@ public class CreateIterationTask extends Task implements FliesCommand
       return "Creates a project iteration in Flies";
    }
 
-   @Override
-   public void execute() throws BuildException
-   {
-      ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
-      try
-      {
-         // make sure RESTEasy classes will be found:
-         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-         run();
-      }
-      catch (Exception e)
-      {
-         throw new BuildException(e);
-      }
-      finally
-      {
-         Thread.currentThread().setContextClassLoader(oldLoader);
-      }
-   }
-
    public void run() throws JAXBException, URISyntaxException, IOException
    {
       JAXBContext jc = JAXBContext.newInstance(ProjectIteration.class);
@@ -98,12 +75,6 @@ public class CreateIterationTask extends Task implements FliesCommand
       URI uri = factory.getProjectIterationURI(proj, iter);
       Response response = iterResource.put(iteration);
       ClientUtility.checkResult(response, uri);
-   }
-
-   @Override
-   public void log(String msg)
-   {
-      super.log(msg + "\n\n");
    }
 
    @Option(name = "--user", metaVar = "USER", usage = "Flies user name", required = true)

@@ -31,6 +31,14 @@ public class ArgsUtil
 
       try
       {
+         parser.setUsageWidth(Integer.parseInt(System.getenv("COLUMNS")));
+      }
+      catch (Exception e)
+      {
+         parser.setUsageWidth(120);
+      }
+      try
+      {
          parser.parseArgument(args);
       }
       catch (CmdLineException e)
@@ -53,6 +61,7 @@ public class ArgsUtil
 
       try
       {
+         cmd.initConfig();
          cmd.run();
       }
       catch (Exception e)

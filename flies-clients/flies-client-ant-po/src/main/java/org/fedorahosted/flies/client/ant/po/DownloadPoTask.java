@@ -2,7 +2,6 @@ package org.fedorahosted.flies.client.ant.po;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
@@ -11,11 +10,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Task;
 import org.fedorahosted.flies.adapter.po.PoWriter;
 import org.fedorahosted.flies.client.command.ArgsUtil;
-import org.fedorahosted.flies.client.command.FliesCommand;
 import org.fedorahosted.flies.client.command.GlobalOptions;
 import org.fedorahosted.flies.rest.client.ClientUtility;
 import org.fedorahosted.flies.rest.client.FliesClientRequestFactory;
@@ -25,7 +21,7 @@ import org.fedorahosted.flies.rest.dto.deprecated.Documents;
 import org.jboss.resteasy.client.ClientResponse;
 import org.kohsuke.args4j.Option;
 
-public class DownloadPoTask extends Task implements FliesCommand
+public class DownloadPoTask extends FliesTask
 {
 
    private String user;
@@ -53,26 +49,6 @@ public class DownloadPoTask extends Task implements FliesCommand
    public String getCommandDescription()
    {
       return "Downloads a Publican project's PO/POT files from Flies after translation, to allow document generation";
-   }
-
-   @Override
-   public void execute() throws BuildException
-   {
-      ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
-      try
-      {
-         // make sure RESTEasy classes will be found:
-         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-         run();
-      }
-      catch (Exception e)
-      {
-         throw new BuildException(e);
-      }
-      finally
-      {
-         Thread.currentThread().setContextClassLoader(oldLoader);
-      }
    }
 
    public void run() throws JAXBException, IOException, URISyntaxException
@@ -108,16 +84,6 @@ public class DownloadPoTask extends Task implements FliesCommand
          pw.write(doc, dstDir, exportPot);
       }
    }
-
-   @Override
-   public void log(String msg)
-   {
-      super.log(msg + "\n\n");
-   }
-
-   // private void logVerbose(String msg) {
-   // super.log(msg, org.apache.tools.ant.Project.MSG_VERBOSE);
-   // }
 
    @Option(name = "--key", metaVar = "KEY", usage = "Flies API key (from Flies Profile page)", required = true)
    public void setApiKey(String apiKey)

@@ -17,7 +17,21 @@ public class PutProjectCommand extends ConfigurableCommand
    @Override
    public void run()
    {
+      // TODO remove this
+      System.out.println("putproject");
       // TODO
+   }
+
+   @Override
+   public String getCommandName()
+   {
+      return "putproject";
+   }
+
+   @Override
+   public String getCommandDescription()
+   {
+      return "Creates or updates a Flies project.";
    }
 
 }
