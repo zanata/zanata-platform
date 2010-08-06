@@ -39,6 +39,12 @@ public class FliesClientRequestFactory extends ClientRequestFactory
       getPrefixInterceptors().registerInterceptor(new ApiKeyHeaderDecorator(username, apiKey));
    }
 
+   public <T> T createProxy(Class<T> clazz, URI baseUri)
+   {
+      log.debug("{} proxy uri: {}", clazz.getSimpleName(), baseUri);
+      return super.createProxy(clazz, baseUri);
+   }
+
    private static URI fixBase(URI base)
    {
       if (base != null)
@@ -61,38 +67,22 @@ public class FliesClientRequestFactory extends ClientRequestFactory
       return base;
    }
 
+   public IAccountResource getAccount(String username)
+   {
+      return getAccount(getAccountURI(username));
+   }
+
    public IAccountResource getAccount(final URI uri)
    {
       return createProxy(IAccountResource.class, uri);
    }
 
-   public IDocumentsResource getDocuments(final URI uri)
+   public URI getAccountURI(String username)
    {
-      return createProxy(IDocumentsResource.class, uri);
-   }
-
-   public IProjectResource getProject(final URI uri)
-   {
-      return createProxy(IProjectResource.class, uri);
-   }
-
-   public IProjectIterationResource getProjectIteration(final URI uri)
-   {
-      return createProxy(IProjectIterationResource.class, uri);
-   }
-
-   public IProjectsResource getProjects(final URI uri)
-   {
-      return createProxy(IProjectsResource.class, uri);
-   }
-
-   public ITranslationResources getTranslationResources(String projectSlug, String versionSlug)
-   {
-      String spec = "seam/resource/restv1/projects/p/" + projectSlug + "/iterations/i/" + versionSlug + "/r";
       try
       {
-         URI uri = new URL(getBase().toURL(), spec).toURI();
-         return getTranslationResources(uri);
+         URL url = new URL(getBase().toURL(), "seam/resource/restv1/accounts/u/" + username);
+         return url.toURI();
       }
       catch (MalformedURLException e)
       {
@@ -104,15 +94,113 @@ public class FliesClientRequestFactory extends ClientRequestFactory
       }
    }
 
+   public IDocumentsResource getDocuments(final URI uri)
+   {
+      return createProxy(IDocumentsResource.class, uri);
+   }
+
+   public URI getDocumentsURI(String proj, String iter)
+   {
+      try
+      {
+         URL url = new URL(getBase().toURL(), "seam/resource/restv1/projects/p/" + proj + "/iterations/i/" + iter + "/documents");
+         return url.toURI();
+      }
+      catch (MalformedURLException e)
+      {
+         throw new RuntimeException(e);
+      }
+      catch (URISyntaxException e)
+      {
+         throw new RuntimeException(e);
+      }
+   }
+
+   public IProjectResource getProject(String proj)
+   {
+      return getProject(getProjectURI(proj));
+   }
+
+   public IProjectResource getProject(final URI uri)
+   {
+      return createProxy(IProjectResource.class, uri);
+   }
+
+   public URI getProjectURI(String proj)
+   {
+      try
+      {
+         URL url = new URL(getBase().toURL(), "seam/resource/restv1/projects/p/" + proj);
+         return url.toURI();
+      }
+      catch (MalformedURLException e)
+      {
+         throw new RuntimeException(e);
+      }
+      catch (URISyntaxException e)
+      {
+         throw new RuntimeException(e);
+      }
+   }
+
+   public IProjectIterationResource getProjectIteration(String proj, String iter)
+   {
+      return getProjectIteration(getProjectIterationURI(proj, iter));
+   }
+
+   public IProjectIterationResource getProjectIteration(final URI uri)
+   {
+      return createProxy(IProjectIterationResource.class, uri);
+   }
+
+   public URI getProjectIterationURI(String proj, String iter)
+   {
+      try
+      {
+         URL url = new URL(getBase().toURL(), "seam/resource/restv1/projects/p/" + proj + "/iterations/i/" + iter);
+         return url.toURI();
+      }
+      catch (MalformedURLException e)
+      {
+         throw new RuntimeException(e);
+      }
+      catch (URISyntaxException e)
+      {
+         throw new RuntimeException(e);
+      }
+   }
+
+   public IProjectsResource getProjects(final URI uri)
+   {
+      return createProxy(IProjectsResource.class, uri);
+   }
+
+   public ITranslationResources getTranslationResources(String projectSlug, String versionSlug)
+   {
+      return getTranslationResources(getTranslationResourcesURI(projectSlug, versionSlug));
+   }
+
    public ITranslationResources getTranslationResources(final URI uri)
    {
       return createProxy(ITranslationResources.class, uri);
    }
 
-   public <T> T createProxy(Class<T> clazz, URI baseUri)
+   public URI getTranslationResourcesURI(String projectSlug, String versionSlug)
    {
-      log.debug("{} proxy uri: {}", clazz.getSimpleName(), baseUri);
-      return super.createProxy(clazz, baseUri);
+      String spec = "seam/resource/restv1/projects/p/" + projectSlug + "/iterations/i/" + versionSlug + "/r";
+      try
+      {
+         return new URL(getBase().toURL(), spec).toURI();
+      }
+      catch (MalformedURLException e)
+      {
+         throw new RuntimeException(e);
+      }
+      catch (URISyntaxException e)
+      {
+         throw new RuntimeException(e);
+      }
    }
+
 }
 

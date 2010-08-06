@@ -3,7 +3,6 @@ package org.fedorahosted.flies.client.ant.po;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,15 +12,15 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Task;
+import org.fedorahosted.flies.client.command.ArgsUtil;
+import org.fedorahosted.flies.client.command.GlobalOptions;
 import org.fedorahosted.flies.rest.client.ClientUtility;
 import org.fedorahosted.flies.rest.client.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.IAccountResource;
 import org.fedorahosted.flies.rest.dto.Account;
 import org.kohsuke.args4j.Option;
 
-public class PutUserTask extends Task implements Subcommand
+public class PutUserTask extends FliesTask
 {
 
    private String user;
@@ -70,27 +69,7 @@ public class PutUserTask extends Task implements Subcommand
       return "Creates/overwrites a user in Flies";
    }
 
-   @Override
-   public void execute() throws BuildException
-   {
-      ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
-      try
-      {
-         // make sure RESTEasy classes will be found:
-         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-         process();
-      }
-      catch (Exception e)
-      {
-         throw new BuildException(e);
-      }
-      finally
-      {
-         Thread.currentThread().setContextClassLoader(oldLoader);
-      }
-   }
-
-   public void process() throws JAXBException, URISyntaxException, IOException
+   public void run() throws JAXBException, URISyntaxException, IOException
    {
       JAXBContext jc = JAXBContext.newInstance(Account.class);
       Marshaller m = jc.createMarshaller();
@@ -116,18 +95,12 @@ public class PutUserTask extends Task implements Subcommand
       if (fliesURL == null)
          return;
       URI base = new URI(fliesURL);
-      URL restURL = new URL(fliesURL + "/seam/resource/restv1/accounts/u/" + username);
       // send iter to rest api
       FliesClientRequestFactory factory = new FliesClientRequestFactory(base, user, apiKey);
-      IAccountResource iterResource = factory.getAccount(restURL.toURI());
+      IAccountResource iterResource = factory.getAccount(username);
+      URI uri = factory.getAccountURI(username);
       Response response = iterResource.put(account);
-      ClientUtility.checkResult(response, restURL);
-   }
-
-   @Override
-   public void log(String msg)
-   {
-      super.log(msg + "\n\n");
+      ClientUtility.checkResult(response, uri);
    }
 
    @Option(name = "--user", metaVar = "USER", usage = "Flies user name", required = true)
@@ -142,7 +115,7 @@ public class PutUserTask extends Task implements Subcommand
       this.apiKey = apiKey;
    }
 
-   @Option(name = "--flies", metaVar = "URL", usage = "Flies base URL, eg http://flies.example.com/flies", required = true)
+   @Option(name = "--flies", metaVar = "URL", usage = "Flies base URL, eg http://flies.example.com/flies/", required = true)
    public void setFliesURL(String url)
    {
       this.fliesURL = url;

@@ -11,9 +11,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Task;
 import org.fedorahosted.flies.adapter.po.PoReader;
+import org.fedorahosted.flies.client.command.ArgsUtil;
+import org.fedorahosted.flies.client.command.GlobalOptions;
 import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.rest.JaxbUtil;
@@ -27,7 +27,7 @@ import org.kohsuke.args4j.Option;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-public class UploadPoTask extends Task implements Subcommand
+public class UploadPoTask extends FliesTask
 {
 
    private String user;
@@ -68,27 +68,7 @@ public class UploadPoTask extends Task implements Subcommand
       return "Uploads a Publican project's PO/POT files to Flies for translation";
    }
 
-   @Override
-   public void execute() throws BuildException
-   {
-      ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
-      try
-      {
-         // make sure RESTEasy classes will be found:
-         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-         process();
-      }
-      catch (Exception e)
-      {
-         throw new BuildException(e);
-      }
-      finally
-      {
-         Thread.currentThread().setContextClassLoader(oldLoader);
-      }
-   }
-
-   public void process() throws JAXBException, SAXException, URISyntaxException, IOException
+   public void run() throws JAXBException, SAXException, URISyntaxException, IOException
    {
       PoReader poReader = new PoReader();
       // scan the directory for pot files
@@ -197,14 +177,8 @@ public class UploadPoTask extends Task implements Subcommand
          FliesClientRequestFactory factory = new FliesClientRequestFactory(user, apiKey);
          IDocumentsResource documentsResource = factory.getDocuments(dstURL.toURI());
          ClientResponse response = documentsResource.put(docs);
-         ClientUtility.checkResult(response, dstURL);
+         ClientUtility.checkResult(response, dstURL.toURI());
       }
-   }
-
-   @Override
-   public void log(String msg)
-   {
-      super.log(msg + "\n\n");
    }
 
    @Option(name = "--user", metaVar = "USER", usage = "Flies user name", required = true)

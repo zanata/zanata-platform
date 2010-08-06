@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.fedorahosted.flies.client.ant.po;
+package org.fedorahosted.flies.client.command;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -17,10 +17,10 @@ import org.kohsuke.args4j.CmdLineParser;
  * @author Sean Flanigan <sflaniga@redhat.com>
  *
  */
-class ArgsUtil
+public class ArgsUtil
 {
 
-   public static void processArgs(Subcommand cmd, String[] args, GlobalOptions globals) throws IOException, JAXBException, MalformedURLException, URISyntaxException
+   public static void processArgs(FliesCommand cmd, String[] args, GlobalOptions globals) throws IOException, JAXBException, MalformedURLException, URISyntaxException
    {
       CmdLineParser parser = new CmdLineParser(cmd);
 
@@ -29,6 +29,14 @@ class ArgsUtil
       if (globals.getErrors())
          cmd.setErrors(true);
 
+      try
+      {
+         parser.setUsageWidth(Integer.parseInt(System.getenv("COLUMNS")));
+      }
+      catch (Exception e)
+      {
+         parser.setUsageWidth(120);
+      }
       try
       {
          parser.parseArgument(args);
@@ -53,19 +61,34 @@ class ArgsUtil
 
       try
       {
-         cmd.process();
+         cmd.initConfig();
+         cmd.run();
       }
       catch (Exception e)
       {
-         Utility.handleException(e, cmd.getErrors());
+         handleException(e, cmd.getErrors());
       }
    }
 
-   private static void printHelp(Subcommand cmd, PrintStream output) throws IOException
+   private static void printHelp(FliesCommand cmd, PrintStream output) throws IOException
    {
       output.println("Usage: " + cmd.getCommandName() + " [options]");
       output.println(cmd.getCommandDescription());
       output.println();
+   }
+
+   public static void handleException(Exception e, boolean outputErrors)
+   {
+      System.err.println("Execution failed: " + e.getMessage());
+      if (outputErrors)
+      {
+         e.printStackTrace();
+      }
+      else
+      {
+         System.err.println("Use -e/--errors for full stack trace (or when reporting bugs)");
+      }
+      System.exit(1);
    }
 
 }

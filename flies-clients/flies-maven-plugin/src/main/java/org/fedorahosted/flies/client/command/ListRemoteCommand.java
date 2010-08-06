@@ -20,8 +20,6 @@
  */
 package org.fedorahosted.flies.client.command;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -31,30 +29,44 @@ import org.fedorahosted.flies.rest.client.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.ITranslationResources;
 import org.fedorahosted.flies.rest.dto.resource.ResourceMeta;
 import org.jboss.resteasy.client.ClientResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Sean Flanigan <sflaniga@redhat.com>
  *
  */
-public class ListRemoteCommand extends ConfigurableProjectCommand
+public class ListRemoteCommand extends ConfigurableProjectCommand implements FliesCommand
 {
-   private static final Logger log = LoggerFactory.getLogger(ListRemoteCommand.class);
-
 
    public ListRemoteCommand() throws JAXBException
    {
       super();
    }
 
+   public static void main(String[] args) throws Exception
+   {
+      ListRemoteCommand me = new ListRemoteCommand();
+      ArgsUtil.processArgs(me, args, GlobalOptions.EMPTY);
+   }
+
    @Override
-   public void run() throws MalformedURLException, URISyntaxException
+   public String getCommandName()
+   {
+      return "listremote";
+   }
+
+   @Override
+   public String getCommandDescription()
+   {
+      return "Lists all remote documents in the configured Flies project version.";
+   }
+
+   @Override
+   public void run() throws Exception
    {
       FliesClientRequestFactory factory = new FliesClientRequestFactory(getUrl().toURI(), getUsername(), getKey());
       ITranslationResources translationResources = factory.getTranslationResources(getProjectSlug(), getVersionSlug());
       ClientResponse<List<ResourceMeta>> response = translationResources.get();
-      ClientUtility.checkResult(response, null);
+      ClientUtility.checkResult(response, factory.getTranslationResourcesURI(getProjectSlug(), getVersionSlug()));
       List<ResourceMeta> list = response.getEntity();
       System.out.println(list);
    }

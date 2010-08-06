@@ -17,7 +17,21 @@ public class PutVersionCommand extends ConfigurableCommand
    @Override
    public void run()
    {
+      // TODO remove this
+      System.out.println("putversion");
       // TODO
+   }
+
+   @Override
+   public String getCommandName()
+   {
+      return "putversion";
+   }
+
+   @Override
+   public String getCommandDescription()
+   {
+      return "Creates or updates a Flies project version.";
    }
 
 }

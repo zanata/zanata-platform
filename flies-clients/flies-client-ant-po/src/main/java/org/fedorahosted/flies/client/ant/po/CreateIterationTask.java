@@ -3,22 +3,21 @@ package org.fedorahosted.flies.client.ant.po;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 
 import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Task;
+import org.fedorahosted.flies.client.command.ArgsUtil;
+import org.fedorahosted.flies.client.command.GlobalOptions;
 import org.fedorahosted.flies.rest.client.ClientUtility;
 import org.fedorahosted.flies.rest.client.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.IProjectIterationResource;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.kohsuke.args4j.Option;
 
-public class CreateIterationTask extends Task implements Subcommand
+public class CreateIterationTask extends FliesTask
 {
    private String user;
    private String apiKey;
@@ -49,27 +48,7 @@ public class CreateIterationTask extends Task implements Subcommand
       return "Creates a project iteration in Flies";
    }
 
-   @Override
-   public void execute() throws BuildException
-   {
-      ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
-      try
-      {
-         // make sure RESTEasy classes will be found:
-         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-         process();
-      }
-      catch (Exception e)
-      {
-         throw new BuildException(e);
-      }
-      finally
-      {
-         Thread.currentThread().setContextClassLoader(oldLoader);
-      }
-   }
-
-   public void process() throws JAXBException, URISyntaxException, IOException
+   public void run() throws JAXBException, URISyntaxException, IOException
    {
       JAXBContext jc = JAXBContext.newInstance(ProjectIteration.class);
       Marshaller m = jc.createMarshaller();
@@ -90,18 +69,12 @@ public class CreateIterationTask extends Task implements Subcommand
       if (fliesURL == null)
          return;
       URI base = new URI(fliesURL);
-      URL iterURL = new URL(fliesURL + "/seam/resource/restv1/projects/p/" + proj + "/iterations/i/" + iter);
       // send iter to rest api
       FliesClientRequestFactory factory = new FliesClientRequestFactory(base, user, apiKey);
-      IProjectIterationResource iterResource = factory.getProjectIteration(iterURL.toURI());
+      IProjectIterationResource iterResource = factory.getProjectIteration(proj, iter);
+      URI uri = factory.getProjectIterationURI(proj, iter);
       Response response = iterResource.put(iteration);
-      ClientUtility.checkResult(response, iterURL);
-   }
-
-   @Override
-   public void log(String msg)
-   {
-      super.log(msg + "\n\n");
+      ClientUtility.checkResult(response, uri);
    }
 
    @Option(name = "--user", metaVar = "USER", usage = "Flies user name", required = true)
@@ -116,7 +89,7 @@ public class CreateIterationTask extends Task implements Subcommand
       this.apiKey = apiKey;
    }
 
-   @Option(name = "--flies", metaVar = "URL", usage = "Flies base URL, eg http://flies.example.com/flies", required = true)
+   @Option(name = "--flies", metaVar = "URL", usage = "Flies base URL, eg http://flies.example.com/flies/", required = true)
    public void setFliesURL(String url)
    {
       this.fliesURL = url;
