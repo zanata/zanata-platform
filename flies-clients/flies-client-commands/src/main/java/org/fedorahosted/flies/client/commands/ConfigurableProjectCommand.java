@@ -18,7 +18,7 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.fedorahosted.flies.client.command;
+package org.fedorahosted.flies.client.commands;
 
 import java.io.File;
 
@@ -28,6 +28,8 @@ import javax.xml.bind.Unmarshaller;
 
 import org.fedorahosted.flies.client.config.FliesConfig;
 import org.kohsuke.args4j.Option;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for Flies commands which supports configuration by the user's
@@ -38,6 +40,11 @@ import org.kohsuke.args4j.Option;
  */
 public abstract class ConfigurableProjectCommand extends ConfigurableCommand
 {
+
+   private static final Logger log = LoggerFactory.getLogger(ConfigurableProjectCommand.class);
+
+   // private static final Logger log =
+   // Logger.getLogger(ConfigurableProjectCommand.class);
 
    private JAXBContext jc = JAXBContext.newInstance(FliesConfig.class);
 
@@ -79,7 +86,11 @@ public abstract class ConfigurableProjectCommand extends ConfigurableCommand
          }
          else
          {
-            System.err.printf("Flies project config file '%s' not found; ignoring.", projectConfig);
+            // System.err.printf("Flies project config file '%s' not found; ignoring.\n",
+            // projectConfig);
+            log.warn("Flies project config file '{}' not found; ignoring.", projectConfig);
+            // log.warn("Flies project config file '" + projectConfig +
+            // "' not found; ignoring.");
          }
       }
       super.initConfig();

@@ -3,10 +3,14 @@ package org.fedorahosted.flies.maven;
 import java.io.File;
 import java.net.URL;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.fedorahosted.flies.client.command.ConfigurableCommand;
+import org.fedorahosted.flies.client.commands.ConfigurableCommand;
+
+import com.pyx4j.log4j.MavenLogAppender;
 
 /**
  * Base class for Flies mojos which support configuration by the user's
@@ -97,6 +101,15 @@ public abstract class ConfigurableMojo<C extends ConfigurableCommand> extends Ab
    @Override
    public void execute() throws MojoExecutionException, MojoFailureException
    {
+      // Configure log4j to use MavenLogAppender.
+      // MavenLogAppender comes with a log4j.xml file, but it may not win
+      // the classpath contest.
+      MavenLogAppender mavenLog = new MavenLogAppender();
+      mavenLog.setLayout(new PatternLayout("%m"));
+      Logger.getRootLogger().removeAllAppenders();
+      Logger.getRootLogger().addAppender(mavenLog);
+
+      MavenLogAppender.startPluginLog(this);
       try
       {
          getCommand().initConfig();
@@ -106,6 +119,10 @@ public abstract class ConfigurableMojo<C extends ConfigurableCommand> extends Ab
       {
          e.printStackTrace();
          throw new MojoExecutionException("error loading Flies user config", e);
+      }
+      finally
+      {
+         MavenLogAppender.endPluginLog(this);
       }
    }
 

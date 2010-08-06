@@ -1,6 +1,6 @@
 package org.fedorahosted.flies.maven;
 
-import org.fedorahosted.flies.client.command.PutUserCommand;
+import org.fedorahosted.flies.client.commands.PutUserCommand;
 
 /**
  * Creates or updates a Flies user.

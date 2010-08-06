@@ -21,7 +21,7 @@
         </dependency>
         <dependency>
             <groupId>org.fedorahosted.flies</groupId>
-            <artifactId>flies-maven-plugin</artifactId>
+            <artifactId>flies-client-commands</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

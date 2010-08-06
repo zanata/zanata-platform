@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.client.command;
+package org.fedorahosted.flies.client.commands;
 
 import javax.xml.bind.JAXBException;
 
@@ -6,10 +6,10 @@ import javax.xml.bind.JAXBException;
  * @author Sean Flanigan <sflaniga@redhat.com>
  *
  */
-public class PublishCommand extends ConfigurableProjectCommand
+public class PutUserCommand extends ConfigurableCommand
 {
 
-   public PublishCommand() throws JAXBException
+   public PutUserCommand() throws JAXBException
    {
       super();
    }
@@ -18,20 +18,20 @@ public class PublishCommand extends ConfigurableProjectCommand
    public void run()
    {
       // TODO remove this
-      System.out.println("publish");
-      // TODO needs DocSet support
+      System.out.println("putuser");
+      // TODO
    }
 
    @Override
    public String getCommandName()
    {
-      return "publish";
+      return "putuser";
    }
 
    @Override
    public String getCommandDescription()
    {
-      return "Publishes source text to a Flies project version.";
+      return "Creates or updates a Flies user.";
    }
 
 }

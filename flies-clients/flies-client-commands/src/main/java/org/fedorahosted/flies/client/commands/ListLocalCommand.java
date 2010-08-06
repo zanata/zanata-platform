@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.client.command;
+package org.fedorahosted.flies.client.commands;
 
 import javax.xml.bind.JAXBException;
 

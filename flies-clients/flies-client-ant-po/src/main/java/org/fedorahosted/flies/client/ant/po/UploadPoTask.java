@@ -12,8 +12,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import org.fedorahosted.flies.adapter.po.PoReader;
-import org.fedorahosted.flies.client.command.ArgsUtil;
-import org.fedorahosted.flies.client.command.GlobalOptions;
+import org.fedorahosted.flies.client.commands.ArgsUtil;
+import org.fedorahosted.flies.client.commands.GlobalOptions;
 import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.rest.JaxbUtil;

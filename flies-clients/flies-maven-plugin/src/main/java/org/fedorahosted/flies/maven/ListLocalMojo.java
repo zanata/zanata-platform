@@ -1,6 +1,6 @@
 package org.fedorahosted.flies.maven;
 
-import org.fedorahosted.flies.client.command.ListLocalCommand;
+import org.fedorahosted.flies.client.commands.ListLocalCommand;
 
 /**
  * Lists all local files in the project which are considered to be Flies

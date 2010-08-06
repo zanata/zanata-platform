@@ -11,8 +11,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.fedorahosted.flies.adapter.po.PoWriter;
-import org.fedorahosted.flies.client.command.ArgsUtil;
-import org.fedorahosted.flies.client.command.GlobalOptions;
+import org.fedorahosted.flies.client.commands.ArgsUtil;
+import org.fedorahosted.flies.client.commands.GlobalOptions;
 import org.fedorahosted.flies.rest.client.ClientUtility;
 import org.fedorahosted.flies.rest.client.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.IDocumentsResource;

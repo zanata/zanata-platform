@@ -18,7 +18,7 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.fedorahosted.flies.client.command;
+package org.fedorahosted.flies.client.commands;
 
 import java.io.File;
 import java.net.URL;
@@ -98,7 +98,7 @@ public abstract class ConfigurableCommand implements FliesCommand
          }
          else
          {
-            System.err.printf("Flies user config file '%s' not found; ignoring.", userConfig);
+            System.err.printf("Flies user config file '%s' not found; ignoring.\n", userConfig);
          }
       }
    }

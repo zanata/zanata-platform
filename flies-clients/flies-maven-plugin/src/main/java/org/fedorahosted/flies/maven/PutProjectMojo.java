@@ -1,6 +1,6 @@
 package org.fedorahosted.flies.maven;
 
-import org.fedorahosted.flies.client.command.PutProjectCommand;
+import org.fedorahosted.flies.client.commands.PutProjectCommand;
 
 /**
  * Creates or updates a Flies project.

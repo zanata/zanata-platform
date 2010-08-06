@@ -1,6 +1,6 @@
 package org.fedorahosted.flies.maven;
 
-import org.fedorahosted.flies.client.command.ListRemoteCommand;
+import org.fedorahosted.flies.client.commands.ListRemoteCommand;
 
 /**
  * Lists all remote documents in the configured Flies project version.

@@ -2,7 +2,7 @@ package org.fedorahosted.flies.maven;
 
 import java.io.File;
 
-import org.fedorahosted.flies.client.command.ConfigurableProjectCommand;
+import org.fedorahosted.flies.client.commands.ConfigurableProjectCommand;
 
 /**
  * Base class for Flies mojos which support configuration by the user's

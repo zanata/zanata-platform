@@ -2,7 +2,7 @@ package org.fedorahosted.flies.client.ant.po;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
-import org.fedorahosted.flies.client.command.FliesCommand;
+import org.fedorahosted.flies.client.commands.FliesCommand;
 
 public abstract class FliesTask extends Task implements FliesCommand
 {

@@ -66,7 +66,7 @@ public class TestFliesConfig extends TestCase
       FileConfiguration config = new HierarchicalINIConfiguration(fliesUserFile);
       config.setProperty("flies.url", new URL("http://flies.example.com/"));
       config.setProperty("flies.username", "admin");
-      config.setProperty("flies.key", "12345678901234567890123456789012");
+      config.setProperty("flies.key", "b6d7044e9ee3b2447c28fb7c50d86d98");
       config.setProperty("flies.debug", false);
       config.setProperty("flies.errors", true);
 

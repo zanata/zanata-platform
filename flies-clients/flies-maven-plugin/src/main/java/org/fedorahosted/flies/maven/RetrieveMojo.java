@@ -1,6 +1,6 @@
 package org.fedorahosted.flies.maven;
 
-import org.fedorahosted.flies.client.command.RetrieveCommand;
+import org.fedorahosted.flies.client.commands.RetrieveCommand;
 
 /**
  * Retrieves translated text from a Flies project version.

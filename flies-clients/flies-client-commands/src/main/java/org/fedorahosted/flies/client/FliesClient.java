@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.fedorahosted.flies.client.command.ArgsUtil;
-import org.fedorahosted.flies.client.command.FliesCommand;
-import org.fedorahosted.flies.client.command.GlobalOptions;
-import org.fedorahosted.flies.client.command.ListRemoteCommand;
-import org.fedorahosted.flies.client.command.PutProjectCommand;
+import org.fedorahosted.flies.client.commands.ArgsUtil;
+import org.fedorahosted.flies.client.commands.FliesCommand;
+import org.fedorahosted.flies.client.commands.GlobalOptions;
+import org.fedorahosted.flies.client.commands.ListRemoteCommand;
+import org.fedorahosted.flies.client.commands.PutProjectCommand;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -77,7 +77,7 @@ public class FliesClient implements GlobalOptions
       }
       if (version)
       {
-         Utility.printJarVersion(System.out);
+         VersionUtility.printJarVersion(System.out);
          return;
       }
       if ("help".equals(command))

@@ -1,6 +1,6 @@
 package org.fedorahosted.flies.maven;
 
-import org.fedorahosted.flies.client.command.PublishCommand;
+import org.fedorahosted.flies.client.commands.PublishCommand;
 
 /**
  * Publishes source text to a Flies project version.

@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.client.command;
+package org.fedorahosted.flies.client.commands;
 
 import javax.xml.bind.JAXBException;
 
@@ -6,10 +6,10 @@ import javax.xml.bind.JAXBException;
  * @author Sean Flanigan <sflaniga@redhat.com>
  *
  */
-public class RetrieveCommand extends ConfigurableProjectCommand
+public class PublishCommand extends ConfigurableProjectCommand
 {
 
-   public RetrieveCommand() throws JAXBException
+   public PublishCommand() throws JAXBException
    {
       super();
    }
@@ -18,20 +18,20 @@ public class RetrieveCommand extends ConfigurableProjectCommand
    public void run()
    {
       // TODO remove this
-      System.out.println("retrieve");
+      System.out.println("publish");
       // TODO needs DocSet support
    }
 
    @Override
    public String getCommandName()
    {
-      return "retrieve";
+      return "publish";
    }
 
    @Override
    public String getCommandDescription()
    {
-      return "Retrieves translated text from a Flies project version.";
+      return "Publishes source text to a Flies project version.";
    }
 
 }

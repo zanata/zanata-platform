@@ -10,14 +10,14 @@ import java.util.jar.Manifest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class Utility
+public class VersionUtility
 {
 
-   private static final Logger log = LoggerFactory.getLogger(Utility.class);
+   private static final Logger log = LoggerFactory.getLogger(VersionUtility.class);
 
    public static void printJarVersion(PrintStream out) throws IOException
    {
-      Class<Utility> clazz = Utility.class;
+      Class<VersionUtility> clazz = VersionUtility.class;
 
       String version = null;
       String buildTimestamp = null;

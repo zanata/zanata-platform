@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.fedorahosted.flies.client.command;
+package org.fedorahosted.flies.client.commands;
 
 import java.io.IOException;
 import java.io.PrintStream;
