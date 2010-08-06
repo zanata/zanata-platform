@@ -38,7 +38,7 @@ public class ProjectServiceRawSeamTest extends FliesDBUnitSeamTest
             {
                {
                   put("X-Auth-User", "admin");
-                  put("X-Auth-Token", "12345678901234567890123456789012");
+                  put("X-Auth-Token", "b6d7044e9ee3b2447c28fb7c50d86d98");
                }
             };
          }

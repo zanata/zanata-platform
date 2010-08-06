@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<dataset>
+        <HProject projecttype="iteration" 
+	          id="1"
+          versionNum="1"
+		  creationDate="2009-09-01 20:30:16"
+		  lastChanged="2009-09-01 20:30:16" 
+		  slug="sample-project" 
+		  description="An example Project"
+		  homeContent=""
+		  name="Sample Project"
+	    />
+        <HProjectIteration id="1"
+				          versionNum="1"
+                           creationDate="2009-09-01 20:30:46"
+                           lastChanged="2009-09-01 20:30:46"
+                           slug="1.0"
+                           active="TRUE"
+                           description="Initial Release"
+                           name="Version 1.0"
+                           parentId="[NULL]"
+                           project_id="1"
+        />
+	   	<HProjectIteration id="2"
+				          versionNum="1"
+                           creationDate="2009-09-01 20:31:32"
+                           lastChanged="2009-09-01 20:31:32"
+                           slug="1.1"
+                           active="TRUE"
+                           description="Next Release"
+                           name="Version 1.1"
+                           parentId="[NULL]"
+                           project_id="1"
+        />
+	    <HProject_Maintainer personId="3" 
+                             projectId="1"
+        />
+		<!-- Tell DbUnit to delete any existing documents -->
+		<HDocument />
+</dataset>
