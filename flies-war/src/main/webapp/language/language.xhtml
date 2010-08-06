@@ -14,24 +14,24 @@
         <h1>#{tribeHome.instance.locale.nativeName}</h1>
         <p>#{messages['jsf.SizeMembers']}</p>
     </ui:define>
-    
+
     <ui:define name="left_content">
       <rich:panel id="actionPanel" rendered="#{identity.loggedIn}">
         <f:facet name="header">
           #{messages['jsf.Actions']}
         </f:facet>
-        <a:form>
-          <a:commandLink styleClass="action_link" action="#{tribeHome.joinTribe}" reRender="actionPanel,tribesTabDiv" rendered="#{not memberTribes.contains(tribeHome.instance)}">
+        <a:form id="Language_team_member_toggle_form">
+          <a:commandLink id="Join" styleClass="action_link" action="#{tribeHome.joinTribe}" reRender="actionPanel,tribesTabDiv" rendered="#{not memberTribes.contains(tribeHome.instance)}">
             #{messages['jsf.JoinLanguageTeam']}
             <s:conversationId name="id" value="#{tribeHome.id}"/>
           </a:commandLink>
-          <a:commandLink styleClass="action_link" action="#{tribeHome.leaveTribe}" reRender="actionPanel,tribesTabDiv" rendered="#{memberTribes.contains(tribeHome.instance)}">
+	  <a:commandLink id="Leave" styleClass="action_link" action="#{tribeHome.leaveTribe}" reRender="actionPanel,tribesTabDiv" rendered="#{memberTribes.contains(tribeHome.instance)}">
             #{messages['jsf.LeaveLanguageTeam']}
             <s:conversationId name="id" value="#{tribeHome.id}"/>
           </a:commandLink>
         </a:form>
       </rich:panel>
     </ui:define>
-    
-    
+
+
 </ui:composition>

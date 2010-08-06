@@ -79,8 +79,8 @@
         <a href="http://www.redhat.com/">#{messages['jsf.ManufacturerInfo']}</a> #{messages['jsf.AndOthers']}.
         #{messages['jsf.PoweredBy']} <a href="http://flies.googlecode.com/">#{messages['jsf.Flies']}</a>.
         <div id="localeSelector">
-            <h:form>
-                <h:selectOneMenu value="#{localeSelector.localeString}" valueChangeListener="#{localeSelector.select}" onchange="submit()" >
+            <h:form id="localeSelector_form">
+                <h:selectOneMenu id="Select" value="#{localeSelector.localeString}" valueChangeListener="#{localeSelector.select}" onchange="submit()" >
                     <f:selectItems value="#{localeSelector.supportedLocales}"/>
                 </h:selectOneMenu>
             </h:form>
