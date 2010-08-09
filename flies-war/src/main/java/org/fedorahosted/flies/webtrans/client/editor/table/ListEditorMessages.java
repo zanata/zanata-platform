@@ -6,7 +6,7 @@ import com.google.gwt.i18n.client.LocalizableResource.Generate;
 
 @DefaultLocale
 @Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
-public interface TableEditorMessages extends Messages
+public interface ListEditorMessages extends Messages
 {
 
    @DefaultMessage("Source comment: ")

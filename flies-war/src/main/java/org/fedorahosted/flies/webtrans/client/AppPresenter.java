@@ -1,7 +1,5 @@
 package org.fedorahosted.flies.webtrans.client;
 
-import java.util.ArrayList;
-
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
@@ -9,39 +7,22 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.fedorahosted.flies.common.TransUnitCount;
 import org.fedorahosted.flies.webtrans.client.AppPresenter.Display.MainView;
-import org.fedorahosted.flies.webtrans.client.editor.HasTransUnitCount;
-import org.fedorahosted.flies.webtrans.client.editor.filter.TransFilterPresenter;
-import org.fedorahosted.flies.webtrans.client.editor.table.TableEditorPresenter;
+import org.fedorahosted.flies.webtrans.client.editor.table.ListEditorPresenter;
 import org.fedorahosted.flies.webtrans.client.events.DocumentSelectionEvent;
 import org.fedorahosted.flies.webtrans.client.events.DocumentSelectionHandler;
 import org.fedorahosted.flies.webtrans.client.events.NotificationEvent;
 import org.fedorahosted.flies.webtrans.client.events.NotificationEventHandler;
-import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
-import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
-import org.fedorahosted.flies.webtrans.client.ui.HasPager;
 import org.fedorahosted.flies.webtrans.shared.auth.Identity;
 import org.fedorahosted.flies.webtrans.shared.model.DocumentId;
 import org.fedorahosted.flies.webtrans.shared.model.DocumentInfo;
-import org.fedorahosted.flies.webtrans.shared.model.DocumentStatus;
 import org.fedorahosted.flies.webtrans.shared.model.WorkspaceContext;
-import org.fedorahosted.flies.webtrans.shared.rpc.GetProjectStatusCount;
-import org.fedorahosted.flies.webtrans.shared.rpc.GetProjectStatusCountResult;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.gen2.table.event.client.PageChangeEvent;
-import com.google.gwt.gen2.table.event.client.PageChangeHandler;
-import com.google.gwt.gen2.table.event.client.PageCountChangeEvent;
-import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -93,7 +74,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    private DocumentId selectedDocument;
 
    @Inject
-   public AppPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TableEditorPresenter tableEditorPresenter, final TranslationEditorPresenter translationEditorPresenter, final DocumentListPresenter documentListPresenter, final TransUnitNavigationPresenter transUnitNavigationPresenter, final SidePanelPresenter sidePanelPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages)
+   public AppPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final ListEditorPresenter tableEditorPresenter, final TranslationEditorPresenter translationEditorPresenter, final DocumentListPresenter documentListPresenter, final TransUnitNavigationPresenter transUnitNavigationPresenter, final SidePanelPresenter sidePanelPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages)
    {
       super(display, eventBus);
       this.identity = identity;

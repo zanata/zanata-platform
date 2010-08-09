@@ -22,7 +22,7 @@ import org.fedorahosted.flies.webtrans.shared.rpc.TransUnitUpdated;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.gen2.table.client.TableModel.Callback;
+import org.gwt.mosaic.ui.client.table.TableModel.Callback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 

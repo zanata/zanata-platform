@@ -18,7 +18,6 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>
 
    private final FlowPanel panel;
    private final Label sourceLabel;
-   private final TextArea textarea;
    private TransUnit value;
 
    private final NavigationMessages messages;
@@ -37,8 +36,6 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>
       sourceLabel.setTitle(messages.sourceCommentLabel() + value.getSourceComment());
 
       panel.add(sourceLabel);
-      textarea = new TextArea();
-      textarea.getSelectedText();
       refresh();
    }
 

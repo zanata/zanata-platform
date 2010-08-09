@@ -126,30 +126,6 @@ Removes some of the styling on the page-level splitters
 
 }
 
-.WebTransEditor-Outer tr.middle td.middleCenter {
-  height: 100%;
-  width: 100%;
-}
-.WebTransEditor-Outer tr.middle td.middleCenter div.middleCenterInner {
-  height: 100%;
-  width: 100%;
-}
-
-.WebTransEditor {
-  height: 100%;
-  width: 100%;
-}
-
-.WebTransEditorMenu {
-	background-color: #D0E4F6;
-	width: 100%;
-	height:25px;
-}
-
-.WebTransEditorMenu-left {
-	left: 0px;
-	display: inline;	
-}
 .float-right-div {
 	float: right;
 }
@@ -157,15 +133,6 @@ Removes some of the styling on the page-level splitters
 .FilterView {
 	padding-top: 2px;
 	padding-bottom: 2px;	
-}
-
-.WebTransEditorMenu-right {
-	right: 0px;
-	display: inline;
-}
-
-.TableEditor tr td{
-	vertical-align: top;
 }
 
 .TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Source{
@@ -304,6 +271,7 @@ tr.TableEditorRow.selected td {
 	background-color: #ffffcc; 
 }
 
+/* TransMemoryView */
 .TransMemoryTableColumnHeader {
 	color: Blue;
 	font-style: normal;

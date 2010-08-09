@@ -1,9 +1,8 @@
 package org.fedorahosted.flies.webtrans.client;
 
-import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.TransUnitCount;
 import org.fedorahosted.flies.webtrans.client.editor.HasTransUnitCount;
-import org.fedorahosted.flies.webtrans.client.editor.table.TableEditorPresenter;
+import org.fedorahosted.flies.webtrans.client.editor.table.ListEditorPresenter;
 import org.fedorahosted.flies.webtrans.client.events.DocumentSelectionEvent;
 import org.fedorahosted.flies.webtrans.client.events.DocumentSelectionHandler;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
@@ -22,10 +21,10 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.gen2.table.event.client.PageChangeEvent;
-import com.google.gwt.gen2.table.event.client.PageChangeHandler;
-import com.google.gwt.gen2.table.event.client.PageCountChangeEvent;
-import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
+import org.gwt.mosaic.ui.client.event.PageChangeEvent;
+import org.gwt.mosaic.ui.client.event.PageChangeHandler;
+import org.gwt.mosaic.ui.client.event.PageCountChangeEvent;
+import org.gwt.mosaic.ui.client.event.PageCountChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -65,7 +64,7 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
 
    private final TransUnitNavigationPresenter transUnitNavigationPresenter;
    private final TransMemoryPresenter transMemoryPresenter;
-   private final TableEditorPresenter tableEditorPresenter;
+   private final ListEditorPresenter tableEditorPresenter;
 
    private DocumentInfo currentDocument;
    private final TransUnitCount statusCount = new TransUnitCount();
@@ -73,7 +72,7 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    private final DispatchAsync dispatcher;
 
    @Inject
-   public TranslationEditorPresenter(Display display, EventBus eventBus, final CachingDispatchAsync dispatcher, final TransMemoryPresenter transMemoryPresenter, final TableEditorPresenter tableEditorPresenter, final TransUnitNavigationPresenter transUnitNavigationPresenter)
+   public TranslationEditorPresenter(Display display, EventBus eventBus, final CachingDispatchAsync dispatcher, final TransMemoryPresenter transMemoryPresenter, final ListEditorPresenter tableEditorPresenter, final TransUnitNavigationPresenter transUnitNavigationPresenter)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
@@ -105,7 +104,6 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
          @Override
          public void onValueChange(ValueChangeEvent<Integer> event)
          {
-            tableEditorPresenter.cancelEdit();
             tableEditorPresenter.gotoPage(event.getValue() - 1, false);
          }
       }));

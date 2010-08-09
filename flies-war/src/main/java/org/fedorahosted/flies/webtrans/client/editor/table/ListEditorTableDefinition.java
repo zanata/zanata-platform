@@ -1,21 +1,20 @@
 package org.fedorahosted.flies.webtrans.client.editor.table;
 
-import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.webtrans.client.editor.filter.ContentFilter;
 import org.fedorahosted.flies.webtrans.client.ui.HighlightingLabel;
 import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
+import org.gwt.mosaic.ui.client.table.AbstractColumnDefinition;
+import org.gwt.mosaic.ui.client.table.CellRenderer;
+import org.gwt.mosaic.ui.client.table.ColumnDefinition;
+import org.gwt.mosaic.ui.client.table.DefaultTableDefinition;
+import org.gwt.mosaic.ui.client.table.RowRenderer;
 
-import com.google.gwt.gen2.table.client.AbstractColumnDefinition;
-import com.google.gwt.gen2.table.client.CellRenderer;
-import com.google.gwt.gen2.table.client.ColumnDefinition;
-import com.google.gwt.gen2.table.client.DefaultTableDefinition;
-import com.google.gwt.gen2.table.client.RowRenderer;
 import com.google.gwt.user.client.ui.Label;
+import com.google.inject.Inject;
 
-public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit>
+public class ListEditorTableDefinition extends DefaultTableDefinition<TransUnit>
 {
 
-   // public static final int INDICATOR_COL = 0;
    public static final int SOURCE_COL = 0;
    public static final int TARGET_COL = 1;
 
@@ -54,36 +53,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       }
    };
 
-   // private final AbstractColumnDefinition<TransUnit, TransUnit>
-   // indicatorColumnDefinition =
-   // new AbstractColumnDefinition<TransUnit, TransUnit>() {
-   // @Override
-   // public TransUnit getCellValue(TransUnit rowValue) {
-   // return rowValue;
-   // }
-   //
-   // @Override
-   // public void setCellValue(TransUnit rowValue, TransUnit cellValue) {
-   // cellValue.setSource(rowValue.getSource());
-   // }
-   // };
-   //
-   // private final CellRenderer<TransUnit, TransUnit> indicatorCellRenderer =
-   // new CellRenderer<TransUnit, TransUnit>() {
-   // @Override
-   // public void renderRowValue(
-   // TransUnit rowValue,
-   // ColumnDefinition<TransUnit, TransUnit> columnDef,
-   // com.google.gwt.gen2.table.client.TableDefinition.AbstractCellView<TransUnit>
-   // view) {
-   // view.setStyleName("TableEditorCell TableEditorCell-Source");
-   // if(rowValue.getEditStatus().equals(EditState.Lock)) {
-   // Image image = new Image("../img/silk/user.png");
-   // view.setWidget(image);
-   // }
-   // }
-   // };
-
    private final AbstractColumnDefinition<TransUnit, TransUnit> sourceColumnDefinition = new AbstractColumnDefinition<TransUnit, TransUnit>()
    {
       @Override
@@ -103,7 +72,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
    private final CellRenderer<TransUnit, TransUnit> sourceCellRenderer = new CellRenderer<TransUnit, TransUnit>()
    {
       @Override
-      public void renderRowValue(TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, com.google.gwt.gen2.table.client.TableDefinition.AbstractCellView<TransUnit> view)
+      public void renderRowValue(TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, AbstractCellView<TransUnit> view)
       {
          view.setStyleName("TableEditorCell TableEditorCell-Source");
          SourcePanel sourcePanel = new SourcePanel(rowValue, messages);
@@ -146,55 +115,15 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
    private InlineTargetCellEditor targetCellEditor;
    private final NavigationMessages messages;
 
-   public TableEditorTableDefinition(final NavigationMessages messages, final RedirectingCachedTableModel<TransUnit> tableModel)
+   @Inject
+   public ListEditorTableDefinition(final NavigationMessages messages, InlineTargetCellEditor cellEditor)
    {
       this.messages = messages;
       setRowRenderer(rowRenderer);
-      // indicatorColumnDefinition.setMaximumColumnWidth(15);
-      // indicatorColumnDefinition.setPreferredColumnWidth(15);
-      // indicatorColumnDefinition.setMinimumColumnWidth(15);
-      // indicatorColumnDefinition.setCellRenderer(indicatorCellRenderer);
       sourceColumnDefinition.setCellRenderer(sourceCellRenderer);
       targetColumnDefinition.setCellRenderer(targetCellRenderer);
-      CancelCallback<TransUnit> cancelCallBack = new CancelCallback<TransUnit>()
-      {
-         @Override
-         public void onCancel(TransUnit cellValue)
-         {
-            tableModel.onCancel(cellValue);
-         }
-      };
-      EditRowCallback transValueCallBack = new EditRowCallback()
-      {
-         @Override
-         public void gotoNextRow(int row)
-         {
-            tableModel.gotoNextRow(row);
-         }
+      targetColumnDefinition.setCellEditor(cellEditor);
 
-         @Override
-         public void gotoPrevRow(int row)
-         {
-            tableModel.gotoPrevRow(row);
-         }
-
-         @Override
-         public void gotoNextFuzzy(int row, ContentState state)
-         {
-            tableModel.gotoNextFuzzy(row, state);
-         }
-
-         @Override
-         public void gotoPrevFuzzy(int row, ContentState state)
-         {
-            tableModel.gotoPrevFuzzy(row, state);
-         }
-      };
-      this.targetCellEditor = new InlineTargetCellEditor(messages, cancelCallBack, transValueCallBack);
-      targetColumnDefinition.setCellEditor(targetCellEditor);
-
-      // See _INDEX consts above if modifying!
-      // addColumnDefinition(indicatorColumnDefinition);
       addColumnDefinition(sourceColumnDefinition);
       addColumnDefinition(targetColumnDefinition);
    }
