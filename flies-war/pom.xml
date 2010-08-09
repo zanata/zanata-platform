@@ -119,6 +119,7 @@
 						<exclude>**/seam.properties</exclude>
 						<exclude>**/seam-deployment.properties</exclude>
 					</excludes>
+					<inputDirectory>src/main/resources</inputDirectory>
 					<outputDirectory>src/main/resources</outputDirectory>
 				</configuration>
 			</plugin>
