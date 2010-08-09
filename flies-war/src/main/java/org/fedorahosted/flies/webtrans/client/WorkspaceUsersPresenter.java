@@ -14,23 +14,14 @@ import org.fedorahosted.flies.webtrans.client.events.EnterWorkspaceEventHandler;
 import org.fedorahosted.flies.webtrans.client.events.ExitWorkspaceEvent;
 import org.fedorahosted.flies.webtrans.client.events.ExitWorkspaceEventHandler;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
-import org.fedorahosted.flies.webtrans.client.ui.HasFilter;
 import org.fedorahosted.flies.webtrans.shared.model.Person;
-import org.fedorahosted.flies.webtrans.shared.model.PersonId;
 import org.fedorahosted.flies.webtrans.shared.model.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.shared.rpc.GetTranslatorList;
 import org.fedorahosted.flies.webtrans.shared.rpc.GetTranslatorListResult;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.dom.client.HasMouseOverHandlers;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.inject.Inject;
 
 public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPresenter.Display>

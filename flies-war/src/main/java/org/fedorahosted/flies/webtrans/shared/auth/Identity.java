@@ -2,11 +2,8 @@ package org.fedorahosted.flies.webtrans.shared.auth;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Set;
 
 import org.fedorahosted.flies.webtrans.shared.model.Person;
-
-import com.google.gwt.user.client.Cookies;
 
 public class Identity implements Serializable
 {

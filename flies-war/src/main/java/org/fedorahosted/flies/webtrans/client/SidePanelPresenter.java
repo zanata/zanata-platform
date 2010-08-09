@@ -6,7 +6,7 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.fedorahosted.flies.webtrans.client.editor.filter.TransFilterPresenter;
+import org.fedorahosted.flies.webtrans.client.filter.TransFilterPresenter;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;

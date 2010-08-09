@@ -1,4 +1,5 @@
-package org.fedorahosted.flies.webtrans.client.auth;
+
+package org.fedorahosted.flies.webtrans.client.events;
 
 import com.google.gwt.event.shared.EventHandler;
 

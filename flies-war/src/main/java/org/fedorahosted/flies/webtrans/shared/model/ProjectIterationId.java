@@ -2,8 +2,6 @@ package org.fedorahosted.flies.webtrans.shared.model;
 
 import java.io.Serializable;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 public class ProjectIterationId implements Serializable
 {
 

@@ -3,7 +3,6 @@ package org.fedorahosted.flies.webtrans.shared.auth;
 import java.io.Serializable;
 
 import org.fedorahosted.flies.webtrans.shared.model.Identifier;
-import org.fedorahosted.flies.webtrans.shared.model.PersonId;
 
 public final class SessionId implements Identifier<String>, Serializable
 {

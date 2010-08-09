@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.webtrans.client.editor.filter;
+package org.fedorahosted.flies.webtrans.client.filter;
 
 public interface ContentFilter<T>
 {

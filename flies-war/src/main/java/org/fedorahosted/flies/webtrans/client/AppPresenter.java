@@ -8,7 +8,7 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.fedorahosted.flies.webtrans.client.AppPresenter.Display.MainView;
-import org.fedorahosted.flies.webtrans.client.editor.table.ListEditorPresenter;
+import org.fedorahosted.flies.webtrans.client.editor.ListEditorPresenter;
 import org.fedorahosted.flies.webtrans.client.events.DocumentSelectionEvent;
 import org.fedorahosted.flies.webtrans.client.events.DocumentSelectionHandler;
 import org.fedorahosted.flies.webtrans.client.events.NotificationEvent;

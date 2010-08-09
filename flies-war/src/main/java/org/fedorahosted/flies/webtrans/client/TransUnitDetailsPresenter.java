@@ -1,16 +1,16 @@
 package org.fedorahosted.flies.webtrans.client;
 
-import org.fedorahosted.flies.webtrans.client.events.TransUnitSelectionEvent;
-import org.fedorahosted.flies.webtrans.client.events.TransUnitSelectionHandler;
-import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
-
-import com.google.inject.Inject;
-
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+
+import org.fedorahosted.flies.webtrans.client.events.TransUnitSelectionEvent;
+import org.fedorahosted.flies.webtrans.client.events.TransUnitSelectionHandler;
+import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
+
+import com.google.inject.Inject;
 
 public class TransUnitDetailsPresenter extends WidgetPresenter<TransUnitDetailsPresenter.Display>
 {

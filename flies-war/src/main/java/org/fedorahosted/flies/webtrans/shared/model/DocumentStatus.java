@@ -2,7 +2,6 @@ package org.fedorahosted.flies.webtrans.shared.model;
 
 import java.io.Serializable;
 
-import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.common.TransUnitCount;
 
 public class DocumentStatus implements Serializable

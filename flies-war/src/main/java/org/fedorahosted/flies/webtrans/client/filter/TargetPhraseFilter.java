@@ -1,13 +1,13 @@
-package org.fedorahosted.flies.webtrans.client.editor.filter;
+package org.fedorahosted.flies.webtrans.client.filter;
 
 import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
 
-public class SourcePhraseFilter implements ContentFilter<TransUnit>
+public class TargetPhraseFilter implements ContentFilter<TransUnit>
 {
 
    private String phrase;
 
-   public SourcePhraseFilter(String phrase)
+   public TargetPhraseFilter(String phrase)
    {
       this.phrase = phrase;
    }
@@ -15,12 +15,12 @@ public class SourcePhraseFilter implements ContentFilter<TransUnit>
    @Override
    public boolean accept(TransUnit value)
    {
-      return value.getSource().contains(phrase);
+      return value.getTarget().contains(phrase);
    }
 
-   public static SourcePhraseFilter from(String phrase)
+   public static TargetPhraseFilter from(String phrase)
    {
-      return new SourcePhraseFilter(phrase);
+      return new TargetPhraseFilter(phrase);
    }
 
    public String getPhrase()
@@ -32,5 +32,4 @@ public class SourcePhraseFilter implements ContentFilter<TransUnit>
    {
       this.phrase = phrase;
    }
-
 }

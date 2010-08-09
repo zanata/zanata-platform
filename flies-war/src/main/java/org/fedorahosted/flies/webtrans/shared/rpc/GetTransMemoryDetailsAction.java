@@ -2,8 +2,6 @@ package org.fedorahosted.flies.webtrans.shared.rpc;
 
 import java.util.ArrayList;
 
-import org.fedorahosted.flies.webtrans.shared.model.TransUnitId;
-
 public class GetTransMemoryDetailsAction extends AbstractWorkspaceAction<TransMemoryDetailsList>
 {
 

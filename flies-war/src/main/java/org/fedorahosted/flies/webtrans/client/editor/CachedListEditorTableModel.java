@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.webtrans.client.editor.table;
+package org.fedorahosted.flies.webtrans.client.editor;
 
 import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
 import org.gwt.mosaic.ui.client.table.CachedTableModel;

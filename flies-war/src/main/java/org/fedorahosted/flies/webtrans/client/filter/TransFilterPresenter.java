@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.webtrans.client.editor.filter;
+package org.fedorahosted.flies.webtrans.client.filter;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
@@ -6,16 +6,12 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.fedorahosted.flies.webtrans.client.editor.filter.OperatorFilter.Operator;
-import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
+import org.fedorahosted.flies.webtrans.client.events.FilterDisabledEvent;
+import org.fedorahosted.flies.webtrans.client.events.FilterEnabledEvent;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 public class TransFilterPresenter extends WidgetPresenter<TransFilterPresenter.Display>

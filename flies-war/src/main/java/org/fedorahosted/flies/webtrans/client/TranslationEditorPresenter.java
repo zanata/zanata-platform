@@ -1,8 +1,15 @@
 package org.fedorahosted.flies.webtrans.client;
 
+import net.customware.gwt.dispatch.client.DispatchAsync;
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.place.Place;
+import net.customware.gwt.presenter.client.place.PlaceRequest;
+import net.customware.gwt.presenter.client.widget.WidgetDisplay;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+
 import org.fedorahosted.flies.common.TransUnitCount;
 import org.fedorahosted.flies.webtrans.client.editor.HasTransUnitCount;
-import org.fedorahosted.flies.webtrans.client.editor.table.ListEditorPresenter;
+import org.fedorahosted.flies.webtrans.client.editor.ListEditorPresenter;
 import org.fedorahosted.flies.webtrans.client.events.DocumentSelectionEvent;
 import org.fedorahosted.flies.webtrans.client.events.DocumentSelectionHandler;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
@@ -14,6 +21,10 @@ import org.fedorahosted.flies.webtrans.shared.model.DocumentInfo;
 import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
 import org.fedorahosted.flies.webtrans.shared.rpc.GetStatusCount;
 import org.fedorahosted.flies.webtrans.shared.rpc.GetStatusCountResult;
+import org.gwt.mosaic.ui.client.event.PageChangeEvent;
+import org.gwt.mosaic.ui.client.event.PageChangeHandler;
+import org.gwt.mosaic.ui.client.event.PageCountChangeEvent;
+import org.gwt.mosaic.ui.client.event.PageCountChangeHandler;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -21,20 +32,9 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import org.gwt.mosaic.ui.client.event.PageChangeEvent;
-import org.gwt.mosaic.ui.client.event.PageChangeHandler;
-import org.gwt.mosaic.ui.client.event.PageCountChangeEvent;
-import org.gwt.mosaic.ui.client.event.PageCountChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-
-import net.customware.gwt.dispatch.client.DispatchAsync;
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.place.Place;
-import net.customware.gwt.presenter.client.place.PlaceRequest;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 public class TranslationEditorPresenter extends WidgetPresenter<TranslationEditorPresenter.Display>
 {

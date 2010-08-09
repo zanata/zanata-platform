@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.webtrans.client.editor.table;
+package org.fedorahosted.flies.webtrans.client.editor;
 
 import org.fedorahosted.flies.webtrans.client.ui.HighlightingLabel;
 import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
@@ -10,8 +10,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.inject.Inject;
 
 public class SourcePanel extends Composite implements HasValue<TransUnit>
 {

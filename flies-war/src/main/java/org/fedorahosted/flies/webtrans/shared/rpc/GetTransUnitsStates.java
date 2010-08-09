@@ -1,7 +1,6 @@
 package org.fedorahosted.flies.webtrans.shared.rpc;
 
 import org.fedorahosted.flies.common.ContentState;
-import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.webtrans.shared.model.DocumentId;
 
 public class GetTransUnitsStates extends AbstractWorkspaceAction<GetTransUnitsStatesResult>

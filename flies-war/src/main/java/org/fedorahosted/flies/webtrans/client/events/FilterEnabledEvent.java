@@ -1,5 +1,6 @@
-package org.fedorahosted.flies.webtrans.client.editor.filter;
+package org.fedorahosted.flies.webtrans.client.events;
 
+import org.fedorahosted.flies.webtrans.client.filter.ContentFilter;
 import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
 
 import com.google.gwt.event.shared.GwtEvent;

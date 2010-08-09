@@ -1,7 +1,6 @@
-package org.fedorahosted.flies.webtrans.client.editor.filter;
+package org.fedorahosted.flies.webtrans.client.filter;
 
 import org.fedorahosted.flies.webtrans.client.Resources;
-import org.fedorahosted.flies.webtrans.client.editor.filter.TransFilterMessages;
 import org.fedorahosted.flies.webtrans.client.ui.ClearableTextBox;
 import org.fedorahosted.flies.webtrans.client.ui.CollapsePanel;
 import org.fedorahosted.flies.webtrans.client.ui.UiMessages;

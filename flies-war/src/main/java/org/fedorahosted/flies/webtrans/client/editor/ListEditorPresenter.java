@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.webtrans.client.editor.table;
+package org.fedorahosted.flies.webtrans.client.editor;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
@@ -6,13 +6,12 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.fedorahosted.flies.webtrans.client.editor.HasPageNavigation;
-import org.fedorahosted.flies.webtrans.client.editor.filter.FilterDisabledEvent;
-import org.fedorahosted.flies.webtrans.client.editor.filter.FilterDisabledEventHandler;
-import org.fedorahosted.flies.webtrans.client.editor.filter.FilterEnabledEvent;
-import org.fedorahosted.flies.webtrans.client.editor.filter.FilterEnabledEventHandler;
 import org.fedorahosted.flies.webtrans.client.events.DocumentSelectionEvent;
 import org.fedorahosted.flies.webtrans.client.events.DocumentSelectionHandler;
+import org.fedorahosted.flies.webtrans.client.events.FilterDisabledEvent;
+import org.fedorahosted.flies.webtrans.client.events.FilterDisabledEventHandler;
+import org.fedorahosted.flies.webtrans.client.events.FilterEnabledEvent;
+import org.fedorahosted.flies.webtrans.client.events.FilterEnabledEventHandler;
 import org.fedorahosted.flies.webtrans.client.events.NotificationEvent;
 import org.fedorahosted.flies.webtrans.client.events.NotificationEvent.Severity;
 import org.fedorahosted.flies.webtrans.client.events.TransMemoryCopyEvent;
@@ -37,9 +36,7 @@ import org.gwt.mosaic.ui.client.table.HasTableDefinition;
 import org.gwt.mosaic.ui.client.table.TableModel;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.HasScrollHandlers;
-import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;

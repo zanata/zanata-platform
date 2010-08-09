@@ -1,4 +1,4 @@
-package org.fedorahosted.flies.webtrans.client.editor.table;
+package org.fedorahosted.flies.webtrans.client.editor;
 
 import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.ImageBundle;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;

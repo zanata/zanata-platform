@@ -2,8 +2,6 @@ package org.fedorahosted.flies.webtrans.shared.model;
 
 import java.io.Serializable;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 public class DocumentInfo implements HasIdentifier<DocumentId>, Serializable
 {
    private static final long serialVersionUID = 1L;

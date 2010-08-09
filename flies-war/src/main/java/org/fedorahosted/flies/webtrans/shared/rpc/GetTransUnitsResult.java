@@ -2,12 +2,10 @@ package org.fedorahosted.flies.webtrans.shared.rpc;
 
 import java.util.ArrayList;
 
+import net.customware.gwt.dispatch.shared.Result;
+
 import org.fedorahosted.flies.webtrans.shared.model.DocumentId;
 import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
-
-import net.customware.gwt.dispatch.shared.Result;
 
 public class GetTransUnitsResult implements Result
 {

@@ -3,7 +3,6 @@ package org.fedorahosted.flies.webtrans.shared.model;
 import java.io.Serializable;
 
 import org.fedorahosted.flies.common.ContentState;
-import org.fedorahosted.flies.common.EditState;
 import org.fedorahosted.flies.common.LocaleId;
 
 import com.google.gwt.user.client.rpc.IsSerializable;

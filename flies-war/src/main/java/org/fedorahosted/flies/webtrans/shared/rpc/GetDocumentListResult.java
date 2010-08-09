@@ -7,8 +7,6 @@ import net.customware.gwt.dispatch.shared.Result;
 import org.fedorahosted.flies.webtrans.shared.model.DocumentInfo;
 import org.fedorahosted.flies.webtrans.shared.model.ProjectIterationId;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 public class GetDocumentListResult implements Result
 {
 

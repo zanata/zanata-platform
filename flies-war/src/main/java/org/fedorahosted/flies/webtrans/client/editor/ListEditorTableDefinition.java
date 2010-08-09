@@ -1,6 +1,6 @@
-package org.fedorahosted.flies.webtrans.client.editor.table;
+package org.fedorahosted.flies.webtrans.client.editor;
 
-import org.fedorahosted.flies.webtrans.client.editor.filter.ContentFilter;
+import org.fedorahosted.flies.webtrans.client.filter.ContentFilter;
 import org.fedorahosted.flies.webtrans.client.ui.HighlightingLabel;
 import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
 import org.gwt.mosaic.ui.client.table.AbstractColumnDefinition;
