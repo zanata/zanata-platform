@@ -75,8 +75,10 @@ public class ListEditorTableDefinition extends DefaultTableDefinition<TransUnit>
       public void renderRowValue(TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, AbstractCellView<TransUnit> view)
       {
          view.setStyleName("TableEditorCell TableEditorCell-Source");
-         SourcePanel sourcePanel = new SourcePanel(rowValue, messages);
-         view.setWidget(sourcePanel);
+         HighlightingLabel sourceLabel = new HighlightingLabel(rowValue.getSource());
+         sourceLabel.setStylePrimaryName("TableEditorContent");
+         sourceLabel.setTitle(messages.sourceCommentLabel() + rowValue.getSourceComment());
+         view.setWidget(sourceLabel);
       }
    };
 
