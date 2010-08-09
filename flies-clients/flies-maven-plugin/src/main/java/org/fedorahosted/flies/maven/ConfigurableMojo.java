@@ -3,8 +3,6 @@ package org.fedorahosted.flies.maven;
 import java.io.File;
 import java.net.URL;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -101,14 +99,34 @@ public abstract class ConfigurableMojo<C extends ConfigurableCommand> extends Ab
    @Override
    public void execute() throws MojoExecutionException, MojoFailureException
    {
-      // Configure log4j to use MavenLogAppender.
-      // MavenLogAppender comes with a log4j.xml file, but it may not win
-      // the classpath contest.
-      MavenLogAppender mavenLog = new MavenLogAppender();
-      mavenLog.setLayout(new PatternLayout("%m"));
-      Logger.getRootLogger().removeAllAppenders();
-      Logger.getRootLogger().addAppender(mavenLog);
+      // @formatter:off
+      /*
+       * Configure the MavenLogAppender to use this Mojo's Maven logger. NB
+       * maven-plugin-log4j.jar includes a log4j.xml to activate the
+       * MavenLogAppender. See 
+       * http://pyx4j.com/snapshot/pyx4j/pyx4j-maven-plugins/maven-plugin-log4j/index.html
+       * In case it needs to be overridden, it looks like this:
 
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE log4j:configuration PUBLIC "-//log4j//DTD//EN" "http://logging.apache.org/log4j/docs/api/org/apache/log4j/xml/log4j.dtd">
+<log4j:configuration>
+
+    <appender name="MavenLogAppender" class="com.pyx4j.log4j.MavenLogAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%m" />
+        </layout>
+    </appender>
+
+    <root>
+        <level value="debug" />
+        <appender-ref ref="MavenLogAppender" />
+    </root>
+
+</log4j:configuration>
+
+       */
+      // @formatter:on
+      
       MavenLogAppender.startPluginLog(this);
       try
       {
