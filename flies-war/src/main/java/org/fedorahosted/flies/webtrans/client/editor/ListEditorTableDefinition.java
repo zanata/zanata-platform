@@ -77,7 +77,6 @@ public class ListEditorTableDefinition extends DefaultTableDefinition<TransUnit>
          view.setStyleName("TableEditorCell TableEditorCell-Source");
          HighlightingLabel sourceLabel = new HighlightingLabel(rowValue.getSource());
          sourceLabel.setStylePrimaryName("TableEditorContent");
-         sourceLabel.setTitle(messages.sourceCommentLabel() + rowValue.getSourceComment());
          view.setWidget(sourceLabel);
       }
    };
@@ -107,8 +106,6 @@ public class ListEditorTableDefinition extends DefaultTableDefinition<TransUnit>
          view.setStyleName("TableEditorCell TableEditorCell-Target");
          final Label label = new HighlightingLabel(rowValue.getTarget());
          label.setStylePrimaryName("TableEditorContent");
-
-         // TODO label.setTitle(rowValue.getTargetComment());
 
          view.setWidget(label);
       }
