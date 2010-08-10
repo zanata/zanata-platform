@@ -92,6 +92,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       return null;
    }
 
+   private PopupPanel existingPopup;
+   
    @Override
    protected void onBind()
    {
@@ -102,13 +104,18 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          @Override
          public void onNotification(NotificationEvent event)
          {
+            if(existingPopup != null) {
+               existingPopup.hide();
+               existingPopup = null;
+            }
             PopupPanel popup = new PopupPanel(true);
             popup.addStyleDependentName("Notification");
             popup.addStyleName("Severity-" + event.getSeverity().name());
             Widget center = translationEditorPresenter.getDisplay().asWidget();
-            popup.setWidth(center.getOffsetWidth() - 40 + "px");
+            popup.setWidth(center.getOffsetWidth() - 80 + "px");
             popup.setWidget(new Label(event.getMessage()));
-            popup.setPopupPosition(center.getAbsoluteLeft() + 20, center.getAbsoluteTop() + 30);
+            popup.setPopupPosition(center.getAbsoluteLeft() + 40, 0);
+            existingPopup = popup;
             popup.show();
          }
       }));
