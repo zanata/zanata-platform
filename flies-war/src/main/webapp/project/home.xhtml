@@ -12,12 +12,12 @@
     <rich:panel rendered="#{identity.loggedIn}">
       <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
       <s:link styleClass="action_link"
-      				rendered="#{s:hasPermission(projectHome.instance, 'insert')}" 
-      				value="#{messages['jsf.CreateProject']}" 
+      				rendered="#{s:hasPermission(projectHome.instance, 'insert')}"
+      				value="#{messages['jsf.CreateProject']}"
                     view="/project/create_project.xhtml"
                     propagation="none"/>
     </rich:panel>
-  </ui:define>  
+  </ui:define>
   <ui:define name="center_content">
     <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
 
@@ -26,11 +26,11 @@
 
     <s:fragment rendered="#{not empty projects}">
       <h1>#{messages['jsf.Projects']}</h1>
-      <rich:dataGrid columns="3" 
-                     value="#{latestProjects}" 
-                     var="project" 
+      <rich:dataGrid id="dataGrid" columns="3"
+                     value="#{latestProjects}"
+                     var="project"
                      columnClasses="grid_col"
-                     styleClass="grid_style" 
+                     styleClass="grid_style"
                      rendered="#{not empty projects}">
         <ui:include src="../WEB-INF/layout/project_view_inline.xhtml" />
       </rich:dataGrid>
