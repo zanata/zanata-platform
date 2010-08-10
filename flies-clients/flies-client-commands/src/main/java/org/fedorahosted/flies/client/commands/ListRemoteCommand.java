@@ -63,12 +63,25 @@ public class ListRemoteCommand extends ConfigurableProjectCommand implements Fli
    @Override
    public void run() throws Exception
    {
+      if (getUrl() == null)
+         throw new Exception("Flies URL must be specified");
+      if (getProjectSlug() == null)
+         throw new Exception("Project slug must be specified");
+      if (getVersionSlug() == null)
+         throw new Exception("Version slug must be specified");
       FliesClientRequestFactory factory = new FliesClientRequestFactory(getUrl().toURI(), getUsername(), getKey());
       ITranslationResources translationResources = factory.getTranslationResources(getProjectSlug(), getVersionSlug());
       ClientResponse<List<ResourceMeta>> response = translationResources.get();
       ClientUtility.checkResult(response, factory.getTranslationResourcesURI(getProjectSlug(), getVersionSlug()));
+      System.out.println("Flies server: " + getUrl());
+      System.out.println("Project: " + getProjectSlug());
+      System.out.println("Version: " + getVersionSlug());
+      System.out.println("List of resources:");
       List<ResourceMeta> list = response.getEntity();
-      System.out.println(list);
+      for (ResourceMeta doc : list)
+      {
+         System.out.println(doc.getName());
+      }
    }
 
 }
