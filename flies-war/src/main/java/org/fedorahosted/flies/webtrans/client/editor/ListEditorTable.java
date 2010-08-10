@@ -1,5 +1,7 @@
 package org.fedorahosted.flies.webtrans.client.editor;
 
+import java.util.Set;
+
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
@@ -78,6 +80,27 @@ public class ListEditorTable extends PagingScrollTable<TransUnit> implements Lis
    public HandlerRegistration addRowSelectionHandler(RowSelectionHandler handler)
    {
       return getDataTable().addRowSelectionHandler(handler);
+   }
+
+   @Override
+   public void selectRow(int row)
+   {
+      getDataTable().selectRow(row, true);
+   }
+
+   @Override
+   public int getSelectedRow()
+   {
+      Set<Integer> selectedRows = getDataTable().getSelectedRows();
+      if(selectedRows.isEmpty())
+         return -1;
+      return selectedRows.iterator().next();
+   }
+
+   @Override
+   public int getRowCount()
+   {
+      return getDataTable().getRowCount();
    }
 
 }

@@ -43,6 +43,9 @@ import org.gwt.mosaic.ui.client.table.TableModel;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.HasScrollHandlers;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event;
@@ -68,6 +71,10 @@ public class ListEditorPresenter extends WidgetPresenter<ListEditorPresenter.Dis
       void setPageSize(int size);
 
       public TransUnit getRowValue(int row);
+      
+      public void selectRow(int row);
+      public int getSelectedRow();
+      public int getRowCount();
       
    }
 
@@ -102,7 +109,7 @@ public class ListEditorPresenter extends WidgetPresenter<ListEditorPresenter.Dis
    {
 
       @Override
-      public void onComplete(RowEditInfo rowEditInfo, TransUnit rowValue)
+      public void onSave(RowEditInfo rowEditInfo, TransUnit rowValue)
       {
          tableModel.setRowValue(rowEditInfo.getIndex(), rowValue);
       }
@@ -136,6 +143,57 @@ public class ListEditorPresenter extends WidgetPresenter<ListEditorPresenter.Dis
          }
       }));
 
+      registerHandler(rowEditor.addKeyUpHandler(new KeyUpHandler()
+      {
+         
+         @Override
+         public void onKeyUp(KeyUpEvent event)
+         {
+            // NB: if you change these, please change NavigationConsts too!
+            if (event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
+            {
+               rowEditor.release();
+            }
+            else if (event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE)
+            {
+               rowEditor.cancelEdit();
+            }
+            else if (event.isControlKeyDown() && event.isShiftKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN)
+            { // was alt-e
+              // handleNextState(ContentState.NeedReview);
+            }
+            else if (event.isControlKeyDown() && event.isShiftKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEUP)
+            { // was alt-m
+              // handlePrevState(ContentState.NeedReview);
+              // } else if(event.isControlKeyDown() && event.getNativeKeyCode()
+              // == KeyCodes.KEY_PAGEDOWN) { // bad in Firefox
+            }
+            else if (event.isAltKeyDown() && event.isDownArrow())
+            {
+               int row = display.getSelectedRow();
+               int rowCount = display.getRowCount();
+               if(row < rowCount-1)
+               {
+                  rowEditor.release();
+                  display.selectRow(row+1);
+               }
+            }
+            else if (event.isAltKeyDown() && event.isUpArrow())
+            {
+               // handlePrev();
+            }
+            else if (event.isAltKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN)
+            { // alt-down
+              // handleNextState(ContentState.New);
+            }
+            else if (event.isAltKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEUP)
+            { // alt-up
+              // handlePrevState(ContentState.New);
+            }
+            
+         }
+      }));
+      
       registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler()
       {
          @Override
@@ -143,7 +201,7 @@ public class ListEditorPresenter extends WidgetPresenter<ListEditorPresenter.Dis
          {
             if (!event.getDocument().getId().equals(selectedDocumentId))
             {
-               releaseEditor();
+               rowEditor.release();
                display.startProcessing();
                selectedDocumentId = event.getDocument().getId();
                tableModel.clearCache();
@@ -233,21 +291,6 @@ public class ListEditorPresenter extends WidgetPresenter<ListEditorPresenter.Dis
       display.gotoFirstPage();
    }
 
-   private void releaseEditor()
-   {
-      if (rowEditor.isActive())
-      {
-         if (rowEditor.isDirty())
-         {
-            rowEditor.acceptEdit();
-         }
-         else
-         {
-            rowEditor.cancelEdit();
-         }
-      }
-   }
-
    public TransUnit getSelectedTransUnit()
    {
       return selectedTransUnit;
@@ -278,7 +321,7 @@ public class ListEditorPresenter extends WidgetPresenter<ListEditorPresenter.Dis
    {
       if (display.getCurrentPage() != 0)
       {
-         releaseEditor();
+         rowEditor.release();
          display.gotoFirstPage();
       }
 
@@ -289,7 +332,7 @@ public class ListEditorPresenter extends WidgetPresenter<ListEditorPresenter.Dis
    {
       if (!display.isLastPage())
       {
-         releaseEditor();
+         rowEditor.release();
          display.gotoLastPage();
       }
    }
@@ -299,7 +342,7 @@ public class ListEditorPresenter extends WidgetPresenter<ListEditorPresenter.Dis
    {
       if(!display.isLastPage())
       {
-         releaseEditor();
+         rowEditor.release();
          display.gotoNextPage();
       }
    }
@@ -309,7 +352,7 @@ public class ListEditorPresenter extends WidgetPresenter<ListEditorPresenter.Dis
    {
       if(display.getCurrentPage() != page)
       {
-         releaseEditor();
+         rowEditor.release();
          display.gotoPage(page, forced);
       }
    }
@@ -319,7 +362,7 @@ public class ListEditorPresenter extends WidgetPresenter<ListEditorPresenter.Dis
    {
       if(!display.isFirstPage())
       {
-         releaseEditor();
+         rowEditor.release();
          display.gotoPreviousPage();
       }
    }

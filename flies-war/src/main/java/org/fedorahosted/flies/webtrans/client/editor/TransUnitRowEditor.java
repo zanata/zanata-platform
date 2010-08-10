@@ -1,34 +1,28 @@
 package org.fedorahosted.flies.webtrans.client.editor;
 
-import org.fedorahosted.flies.common.ContentState;
 import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
 import org.gwt.mosaic.override.client.HTMLTable;
-import org.gwt.mosaic.ui.client.table.InlineCellEditor.InlineCellEditorImages;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasKeyUpHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class TransUnitRowEditor
+public class TransUnitRowEditor implements HasKeyUpHandlers
 {
 
    public static interface Callback
    {
-      void onComplete(RowEditInfo rowEditInfo, TransUnit rowValue);
+      void onSave(RowEditInfo rowEditInfo, TransUnit rowValue);
 
       void onCancel(RowEditInfo rowEditInfo);
    }
@@ -37,41 +31,35 @@ public class TransUnitRowEditor
    {
       private final int index;
       private final HTMLTable table;
-      
+
       public RowEditInfo(HTMLTable table, int index)
       {
          this.index = index;
          this.table = table;
       }
-      
+
       public int getIndex()
       {
          return index;
       }
-      
+
       public HTMLTable getTable()
       {
          return table;
       }
-      
+
       @Override
       public boolean equals(Object obj)
       {
-         if(obj == null) return false;
-         if(obj == this) return true;
-         if(! (obj instanceof RowEditInfo) ) return false;
+         if (obj == null)
+            return false;
+         if (obj == this)
+            return true;
+         if (!(obj instanceof RowEditInfo))
+            return false;
          RowEditInfo other = (RowEditInfo) obj;
          return this.table == other.table && index == other.index;
       }
-   }
-
-   /**
-    * An {@link ImageBundle} that provides images for {@link TransUnitRowEditor}
-    * .
-    */
-   public static interface TargetCellEditorImages extends InlineCellEditorImages
-   {
-
    }
 
    /**
@@ -79,48 +67,12 @@ public class TransUnitRowEditor
     */
    public static final String DEFAULT_STYLENAME = "gwt-TargetCellEditor";
 
-   /**
-    * The click listener used to cancel.
-    */
-   private ClickHandler cancelHandler = new ClickHandler()
-   {
-      public void onClick(ClickEvent event)
-      {
-         cancelEdit();
-      }
-   };
-
-   private final CheckBox toggleFuzzy;
-
-   /**
-    * The click listener used to accept.
-    */
-   private ClickHandler acceptHandler = new ClickHandler()
-   {
-      public void onClick(ClickEvent event)
-      {
-         acceptEdit();
-      }
-   };
-
    private boolean dirty;
 
-   /**
-    * The current {@link CellEditor.Callback}.
-    */
    private Callback curCallback = null;
 
-   /**
-    * The current {@link CellEditor.CellEditInfo}.
-    */
-   private RowEditInfo curCellEditInfo = null;
-
-   /**
-    * The main grid used for layout.
-    */
-   private FlowPanel layoutTable;
-
    private Widget cellViewWidget;
+   private RowEditInfo curCellEditInfo = null;
 
    private TransUnit cellValue;
 
@@ -131,9 +83,6 @@ public class TransUnitRowEditor
     */
    private static final int MIN_HEIGHT = 48;
 
-   private final PushButton cancelButton;
-   private final PushButton acceptButton;
-
    /**
     * Construct a new {@link TransUnitRowEditor} with the specified images.
     * 
@@ -141,59 +90,10 @@ public class TransUnitRowEditor
     * @param images the images to use for the accept/cancel buttons
     */
    @Inject
-   public TransUnitRowEditor(final NavigationMessages messages, TargetCellEditorImages images)
+   public TransUnitRowEditor(final NavigationMessages messages)
    {
-      // Wrap contents in a table
-      layoutTable = new FlowPanel();
-
       textArea = new TextArea();
       textArea.setStyleName("TableEditorContent-Edit");
-      textArea.addKeyUpHandler(new KeyUpHandler()
-      {
-         @Override
-         public void onKeyUp(KeyUpEvent event)
-         {
-            // NB: if you change these, please change NavigationConsts too!
-            if (event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
-            {
-               acceptEdit();
-            }
-            else if (event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE)
-            {
-               cancelEdit();
-            }
-            else if (event.isControlKeyDown() && event.isShiftKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN)
-            { // was alt-e
-              // handleNextState(ContentState.NeedReview);
-            }
-            else if (event.isControlKeyDown() && event.isShiftKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEUP)
-            { // was alt-m
-              // handlePrevState(ContentState.NeedReview);
-              // } else if(event.isControlKeyDown() && event.getNativeKeyCode()
-              // == KeyCodes.KEY_PAGEDOWN) { // bad in Firefox
-            }
-            else if (event.isAltKeyDown() && event.isDownArrow())
-            {
-               // handleNext();
-               // } else if(event.isControlKeyDown() && event.getNativeKeyCode()
-               // == KeyCodes.KEY_PAGEUP) { // bad in Firefox
-            }
-            else if (event.isAltKeyDown() && event.isUpArrow())
-            {
-               // handlePrev();
-            }
-            else if (event.isAltKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN)
-            { // alt-down
-              // handleNextState(ContentState.New);
-            }
-            else if (event.isAltKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEUP)
-            { // alt-up
-              // handlePrevState(ContentState.New);
-            }
-         }
-
-      });
-
       textArea.addChangeHandler(new ChangeHandler()
       {
          @Override
@@ -210,33 +110,17 @@ public class TransUnitRowEditor
             checkDirtyState();
          }
       });
-
-      layoutTable.add(textArea);
-
-      HorizontalPanel operationsPanel = new HorizontalPanel();
-      operationsPanel.addStyleName("float-right-div");
-      operationsPanel.setSpacing(4);
-      layoutTable.add(operationsPanel);
-
-      // Add content widget
-      toggleFuzzy = new CheckBox(messages.fuzzy());
-      operationsPanel.add(toggleFuzzy);
-
-      cancelButton = new PushButton(new Image(images.cellEditorCancel()), cancelHandler);
-      cancelButton.setText(messages.editCancel());
-      cancelButton.setTitle(messages.editCancelShortcut());
-      operationsPanel.add(cancelButton);
-
-      acceptButton = new PushButton(new Image(images.cellEditorAccept()), acceptHandler);
-      acceptButton.setText(messages.editSave());
-      acceptButton.setTitle(messages.editSaveShortcut());
-      operationsPanel.add(acceptButton);
    }
 
    private void checkDirtyState()
    {
+      if (!isActive())
+      {
+         dirty = false;
+         return;
+      }
+
       dirty = !textArea.getText().equals(cellValue.getTarget());
-      acceptButton.setEnabled(dirty);
    }
 
    public boolean isDirty()
@@ -254,19 +138,11 @@ public class TransUnitRowEditor
 
       if (isActive())
       {
-         if ( cellEditInfo.equals(curCellEditInfo) )
+         if (cellEditInfo.equals(curCellEditInfo))
          {
             return;
          }
-         else if (isDirty())
-         {
-            acceptEdit();
-         }
-         else
-         {
-            cancelEdit();
-         }
-
+         release();
       }
 
       Log.debug("starting edit of cell");
@@ -289,9 +165,8 @@ public class TransUnitRowEditor
       int width = table.getWidget(curRow, ListEditorTableDefinition.SOURCE_COL).getOffsetWidth() - 10;
       textArea.setWidth(width + "px");
 
-      table.setWidget(curRow, ListEditorTableDefinition.TARGET_COL, layoutTable);
+      table.setWidget(curRow, ListEditorTableDefinition.TARGET_COL, textArea);
       textArea.setText(cellValue.getTarget());
-      toggleFuzzy.setValue(cellValue.getStatus() == ContentState.NeedReview);
 
       this.cellValue = TransUnit.copy(cellValue);
 
@@ -299,25 +174,27 @@ public class TransUnitRowEditor
       DOM.scrollIntoView(textArea.getElement());
    }
 
-   /**
-    * Accept the contents of the cell editor as the new cell value.
-    */
-   protected void acceptEdit()
+   public void release()
    {
-      cellValue.setTarget(textArea.getText());
-      if (cellValue.getTarget().isEmpty())
-         cellValue.setStatus(ContentState.New);
+      if (!isActive())
+         return;
+
+      if (!isDirty())
+      {
+         cancelEdit();
+      }
       else
-         cellValue.setStatus(toggleFuzzy.getValue() ? ContentState.NeedReview : ContentState.Approved);
+      {
+         cellValue.setTarget(textArea.getText());
 
-      // Send the new cell value to the callback
-      RowEditInfo cellEditInfo = curCellEditInfo;
-      TransUnit cValue = cellValue;
-      Callback callback = curCallback;
-      detach();
+         // Send the new cell value to the callback
+         RowEditInfo cellEditInfo = curCellEditInfo;
+         TransUnit cValue = cellValue;
+         Callback callback = curCallback;
+         detach();
 
-      callback.onComplete(cellEditInfo, cValue);
-
+         callback.onSave(cellEditInfo, cValue);
+      }
    }
 
    private void detach()
@@ -333,18 +210,29 @@ public class TransUnitRowEditor
       cellViewWidget = null;
       cellValue = null;
       dirty = false;
-      acceptButton.setEnabled(false);
    }
 
    /**
     * Cancel the cell edit.
     */
-   protected void cancelEdit()
+   public void cancelEdit()
    {
       RowEditInfo cellEditInfo = curCellEditInfo;
       Callback callback = curCallback;
       detach();
       callback.onCancel(cellEditInfo);
+   }
+
+   @Override
+   public void fireEvent(GwtEvent<?> event)
+   {
+      textArea.fireEvent(event);
+   }
+
+   @Override
+   public HandlerRegistration addKeyUpHandler(KeyUpHandler handler)
+   {
+      return textArea.addKeyUpHandler(handler);
    }
 
 }
