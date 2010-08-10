@@ -4,7 +4,6 @@ import java.io.File;
 import java.net.URL;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
@@ -14,7 +13,6 @@ import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.FileConfiguration;
 import org.apache.commons.configuration.HierarchicalINIConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
-import org.fedorahosted.flies.rest.GenerateSchema;
 
 // FIXME make this a real test (ie add assertions)
 public class TestFliesConfig extends TestCase
@@ -32,7 +30,7 @@ public class TestFliesConfig extends TestCase
 
    public void testGenerateSchema() throws Exception
    {
-      GenerateSchema.generateSchemaToStdout(jc);
+      // GenerateSchema.generateSchemaToStdout(jc);
    }
 
    public void testWriteReadProject() throws Exception
@@ -46,13 +44,19 @@ public class TestFliesConfig extends TestCase
       FliesConfig config = new FliesConfig();
       config.getDocSets().add(new DocSet());
       config.getDocSets().add(new DocSet());
+      config.setUrl(new URL("http://example.com"));
+      config.setProject("project");
+      config.setProjectVersion("version");
       marshaller.marshal(config, fliesProjectXml);
    }
 
-   void readProject() throws JAXBException
+   void readProject() throws Exception
    {
       FliesConfig config = (FliesConfig) unmarshaller.unmarshal(fliesProjectXml);
-      // System.out.println(config);
+      assertFalse(config.getDocSets().isEmpty());
+      assertEquals(new URL("http://example.com"), config.getUrl());
+      assertEquals("project", config.getProject());
+      assertEquals("version", config.getProjectVersion());
    }
 
    public void testWriteReadUser() throws Exception
@@ -78,10 +82,12 @@ public class TestFliesConfig extends TestCase
       CompositeConfiguration config = new CompositeConfiguration();
       config.addConfiguration(new SystemConfiguration());
       config.addConfiguration(new HierarchicalINIConfiguration(fliesUserFile));
-      String user = config.getString("flies.user");
-      System.out.println(user);
+      String user = config.getString("flies.username");
+      assertEquals("admin", user);
       boolean debug = config.getBoolean("flies.debug");
-      System.out.println(debug);
+      assertFalse(debug);
+      boolean errors = config.getBoolean("flies.errors");
+      assertTrue(errors);
    }
 
 }
