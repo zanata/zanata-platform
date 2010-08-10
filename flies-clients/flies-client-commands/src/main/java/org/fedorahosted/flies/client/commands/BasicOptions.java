@@ -1,8 +1,8 @@
 package org.fedorahosted.flies.client.commands;
 
-public interface GlobalOptions
+public interface BasicOptions
 {
-   static final GlobalOptions EMPTY = new GlobalOptions()
+   static final BasicOptions EMPTY = new BasicOptions()
    {
       @Override
       public boolean getDebug()
