@@ -26,6 +26,8 @@ import java.net.URL;
 import org.apache.commons.configuration.DataConfiguration;
 import org.apache.commons.configuration.HierarchicalINIConfiguration;
 import org.kohsuke.args4j.Option;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for Flies commands which supports configuration by the user's
@@ -36,6 +38,8 @@ import org.kohsuke.args4j.Option;
  */
 public abstract class ConfigurableCommand implements FliesCommand
 {
+
+   private static final Logger log = LoggerFactory.getLogger(ConfigurableCommand.class);
 
    /**
     * Client configuration file for Flies.
@@ -82,6 +86,12 @@ public abstract class ConfigurableCommand implements FliesCommand
     */
    private boolean help;
 
+   /**
+    * Enable quiet mode - error messages only
+    */
+   private boolean quiet;
+   private boolean quietSet;
+
    public ConfigurableCommand()
    {
    }
@@ -99,7 +109,7 @@ public abstract class ConfigurableCommand implements FliesCommand
       {
          if (userConfig.exists())
          {
-            // TODO use a ConfigurationFactory
+            log.info("Loading flies user config from {}", userConfig);
             DataConfiguration dataConfig = new DataConfiguration(new HierarchicalINIConfiguration(userConfig));
             applyConfig(dataConfig);
          }
@@ -126,6 +136,8 @@ public abstract class ConfigurableCommand implements FliesCommand
          errors = config.getBoolean("flies.errors", false);
       if (key == null)
          key = config.getString("flies.key", null);
+      if (!quietSet)
+         quiet = config.getBoolean("flies.quiet", false);
       if (url == null)
          url = config.getURL("flies.url", null);
       if (username == null)
@@ -180,6 +192,18 @@ public abstract class ConfigurableCommand implements FliesCommand
    public void setKey(String key)
    {
       this.key = key;
+   }
+
+   public boolean getQuiet()
+   {
+      return quiet;
+   }
+
+   @Option(name = "--quiet", aliases = { "-q" }, usage = "Quiet mode - error messages only")
+   public void setQuiet(boolean quiet)
+   {
+      this.quietSet = true;
+      this.quiet = quiet;
    }
 
    public URL getUrl()

@@ -21,6 +21,7 @@ public class FliesClient implements GlobalOptions
    private boolean debug;
    private boolean errors;
    private boolean help;
+   private boolean quiet;
    private boolean version;
 
    @Argument(index = 1, multiValued = true)
@@ -171,6 +172,18 @@ public class FliesClient implements GlobalOptions
    public void setErrors(boolean exceptionTrace)
    {
       this.errors = exceptionTrace;
+   }
+
+   @Override
+   public boolean getQuiet()
+   {
+      return quiet;
+   }
+
+   @Option(name = "--quiet", aliases = { "-q" }, usage = "Quiet mode - error messages only")
+   public void setQuiet(boolean quiet)
+   {
+      this.quiet = quiet;
    }
 
    @Option(name = "--version", aliases = { "-v" }, usage = "Output version information and exit")

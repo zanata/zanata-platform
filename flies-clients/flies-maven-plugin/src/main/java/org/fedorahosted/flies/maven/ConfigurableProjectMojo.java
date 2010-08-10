@@ -56,7 +56,7 @@ public abstract class ConfigurableProjectMojo<C extends ConfigurableProjectComma
 
    public void setProjectConfig(File projectConfig)
    {
-      getCommand().setProjectConfig(projectConfig);
+      getCommand().setProjectConfig(projectConfig.getPath());
    }
 
    public void setProject(String projectSlug)

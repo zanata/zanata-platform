@@ -21,10 +21,17 @@ public interface GlobalOptions
       {
          return false;
       }
+
+      @Override
+      public boolean getQuiet()
+      {
+         return false;
+      }
    };
 
    boolean getDebug();
    boolean getErrors();
    boolean getHelp();
+   boolean getQuiet();
 
 }

@@ -9,8 +9,9 @@ public abstract class FliesTask extends Task implements FliesCommand
 {
 
    private boolean debug;
-   private boolean help;
    private boolean errors;
+   private boolean help;
+   private boolean quiet;
 
    @Override
    public boolean getDebug()
@@ -19,6 +20,7 @@ public abstract class FliesTask extends Task implements FliesCommand
    }
 
    @Option(name = "--debug", aliases = { "-X" }, usage = "Enable debug logging")
+   @Override
    public void setDebug(boolean debug)
    {
       this.debug = debug;
@@ -35,6 +37,7 @@ public abstract class FliesTask extends Task implements FliesCommand
    }
 
    @Option(name = "--help", aliases = { "-h", "-help" }, usage = "Display this help and exit")
+   @Override
    public void setHelp(boolean help)
    {
       this.help = help;
@@ -47,9 +50,23 @@ public abstract class FliesTask extends Task implements FliesCommand
    }
 
    @Option(name = "--errors", aliases = { "-e" }, usage = "Output full execution error messages (stacktraces)")
+   @Override
    public void setErrors(boolean errors)
    {
       this.errors = errors;
+   }
+
+   @Override
+   public boolean getQuiet()
+   {
+      return quiet;
+   }
+
+   @Option(name = "--quiet", aliases = { "-q" }, usage = "Quiet mode - error messages only")
+   @Override
+   public void setQuiet(boolean quiet)
+   {
+      this.quiet = quiet;
    }
 
    @Override

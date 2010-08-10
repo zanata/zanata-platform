@@ -53,7 +53,7 @@ public abstract class ConfigurableProjectCommand extends ConfigurableCommand
    // When used as a CLI command, the default path (specified here) is relative
    // to CWD. ConfigurableProjectMojo specifies another default, which is
    // relative to project's basedir.
-   protected File projectConfig = new File("flies.xml");
+   protected String projectConfig = "flies.xml";
 
    private String project;
    private String projectVersion;
@@ -74,9 +74,18 @@ public abstract class ConfigurableProjectCommand extends ConfigurableCommand
    {
       if (projectConfig != null)
       {
-         if (projectConfig.exists())
+         File projectConfigFile = null;
+         String userDir = System.getProperty("user.dir");
+         File projectDir = new File(userDir);
+         while (projectDir != null && !(projectConfigFile = new File(projectDir, projectConfig)).exists())
          {
-            FliesConfig fliesConfig = (FliesConfig) unmarshaller.unmarshal(projectConfig);
+            projectDir = projectDir.getParentFile();
+         }
+
+         if (projectConfigFile.exists())
+         {
+            log.info("Loading flies project config from {}", projectConfigFile);
+            FliesConfig fliesConfig = (FliesConfig) unmarshaller.unmarshal(projectConfigFile);
             // local project config is supposed to override user's flies.ini, so
             // we
             // apply it first
@@ -84,11 +93,7 @@ public abstract class ConfigurableProjectCommand extends ConfigurableCommand
          }
          else
          {
-            // System.err.printf("Flies project config file '%s' not found; ignoring.\n",
-            // projectConfig);
-            log.warn("Flies project config file '{}' not found; ignoring.", projectConfig);
-            // log.warn("Flies project config file '" + projectConfig +
-            // "' not found; ignoring.");
+            log.warn("Flies project config file '{}' not found in '{}' or parent directories; ignoring.", projectConfig, userDir);
          }
       }
       super.initConfig();
@@ -127,8 +132,8 @@ public abstract class ConfigurableProjectCommand extends ConfigurableCommand
       this.project = projectSlug;
    }
 
-   @Option(name = "--project-config", metaVar = "FILE", usage = "Flies project configuration, eg flies.xml", required = false)
-   public void setProjectConfig(File projectConfig)
+   @Option(name = "--project-config", metaVar = "FILENAME", usage = "Flies project configuration, eg flies.xml", required = false)
+   public void setProjectConfig(String projectConfig)
    {
       this.projectConfig = projectConfig;
    }
