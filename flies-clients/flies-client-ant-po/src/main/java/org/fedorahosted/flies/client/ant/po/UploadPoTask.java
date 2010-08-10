@@ -13,7 +13,7 @@ import javax.xml.bind.Marshaller;
 
 import org.fedorahosted.flies.adapter.po.PoReader;
 import org.fedorahosted.flies.client.commands.ArgsUtil;
-import org.fedorahosted.flies.client.commands.GlobalOptions;
+import org.fedorahosted.flies.client.commands.BasicOptions;
 import org.fedorahosted.flies.common.ContentType;
 import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.rest.JaxbUtil;
@@ -47,7 +47,7 @@ public class UploadPoTask extends FliesTask
    public static void main(String[] args) throws Exception
    {
       UploadPoTask task = new UploadPoTask();
-      ArgsUtil.processArgs(task, args, GlobalOptions.EMPTY);
+      ArgsUtil.processArgs(task, args, BasicOptions.EMPTY);
    }
 
    @Override

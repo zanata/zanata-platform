@@ -23,7 +23,7 @@ public class ArgsUtil
 {
    private static final Logger log = LoggerFactory.getLogger(ArgsUtil.class);
 
-   public static void processArgs(FliesCommand cmd, String[] args, GlobalOptions globals) throws IOException, JAXBException, MalformedURLException, URISyntaxException
+   public static void processArgs(FliesCommand cmd, String[] args, BasicOptions globals) throws IOException, JAXBException, MalformedURLException, URISyntaxException
    {
       CmdLineParser parser = new CmdLineParser(cmd);
 
@@ -76,6 +76,7 @@ public class ArgsUtil
 
       try
       {
+         // while loading config, we use the global logging options
          setLogLevels(globals);
          cmd.initConfig();
       }
@@ -85,6 +86,7 @@ public class ArgsUtil
       }
       try
       {
+         // just in case the logging options were changed by a config file:
          setLogLevels(cmd);
          if (cmd.getErrors())
          {
@@ -98,7 +100,7 @@ public class ArgsUtil
       }
    }
 
-   private static void setLogLevels(GlobalOptions opts)
+   private static void setLogLevels(BasicOptions opts)
    {
       if (opts.getDebug())
       {

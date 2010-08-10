@@ -2,7 +2,7 @@ package org.fedorahosted.flies.client.commands;
 
 
 
-public interface FliesCommand extends GlobalOptions
+public interface FliesCommand extends BasicOptions
 {
 
    /**

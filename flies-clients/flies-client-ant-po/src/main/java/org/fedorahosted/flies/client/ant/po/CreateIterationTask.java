@@ -10,7 +10,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import org.fedorahosted.flies.client.commands.ArgsUtil;
-import org.fedorahosted.flies.client.commands.GlobalOptions;
+import org.fedorahosted.flies.client.commands.BasicOptions;
 import org.fedorahosted.flies.rest.client.ClientUtility;
 import org.fedorahosted.flies.rest.client.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.IProjectIterationResource;
@@ -30,7 +30,7 @@ public class CreateIterationTask extends FliesTask
    public static void main(String[] args) throws Exception
    {
       CreateIterationTask task = new CreateIterationTask();
-      ArgsUtil.processArgs(task, args, GlobalOptions.EMPTY);
+      ArgsUtil.processArgs(task, args, BasicOptions.EMPTY);
    }
 
    @Override

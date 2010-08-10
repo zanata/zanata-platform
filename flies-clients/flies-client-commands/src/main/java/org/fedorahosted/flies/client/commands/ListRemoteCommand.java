@@ -45,7 +45,7 @@ public class ListRemoteCommand extends ConfigurableProjectCommand implements Fli
    public static void main(String[] args) throws Exception
    {
       ListRemoteCommand me = new ListRemoteCommand();
-      ArgsUtil.processArgs(me, args, GlobalOptions.EMPTY);
+      ArgsUtil.processArgs(me, args, BasicOptions.EMPTY);
    }
 
    @Override

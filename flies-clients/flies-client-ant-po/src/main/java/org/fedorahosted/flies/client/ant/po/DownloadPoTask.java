@@ -12,7 +12,7 @@ import javax.xml.bind.Unmarshaller;
 
 import org.fedorahosted.flies.adapter.po.PoWriter;
 import org.fedorahosted.flies.client.commands.ArgsUtil;
-import org.fedorahosted.flies.client.commands.GlobalOptions;
+import org.fedorahosted.flies.client.commands.BasicOptions;
 import org.fedorahosted.flies.rest.client.ClientUtility;
 import org.fedorahosted.flies.rest.client.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.IDocumentsResource;
@@ -33,7 +33,7 @@ public class DownloadPoTask extends FliesTask
    public static void main(String[] args) throws Exception
    {
       DownloadPoTask task = new DownloadPoTask();
-      ArgsUtil.processArgs(task, args, GlobalOptions.EMPTY);
+      ArgsUtil.processArgs(task, args, BasicOptions.EMPTY);
    }
 
    @Override

@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.fedorahosted.flies.client.commands.ArgsUtil;
 import org.fedorahosted.flies.client.commands.FliesCommand;
-import org.fedorahosted.flies.client.commands.GlobalOptions;
+import org.fedorahosted.flies.client.commands.BasicOptions;
 import org.fedorahosted.flies.client.commands.ListRemoteCommand;
 import org.fedorahosted.flies.client.commands.PutProjectCommand;
 import org.kohsuke.args4j.Argument;
@@ -16,7 +16,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-public class FliesClient implements GlobalOptions
+public class FliesClient implements BasicOptions
 {
    private boolean debug;
    private boolean errors;
@@ -132,7 +132,7 @@ public class FliesClient implements GlobalOptions
       }
    }
 
-   private GlobalOptions getGlobalOptions()
+   private BasicOptions getGlobalOptions()
    {
       return this;
    }
