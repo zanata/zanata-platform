@@ -1,28 +1,26 @@
 package org.fedorahosted.flies.webtrans.client.editor;
 
+import net.customware.gwt.presenter.client.EventBus;
+
 import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
-import org.gwt.mosaic.ui.client.event.RowSelectionEvent;
+import org.gwt.mosaic.ui.client.event.HasRowSelectionHandlers;
 import org.gwt.mosaic.ui.client.event.RowSelectionHandler;
-import org.gwt.mosaic.ui.client.event.TableEvent.Row;
 import org.gwt.mosaic.ui.client.table.FixedWidthGridBulkRenderer;
 import org.gwt.mosaic.ui.client.table.PagingScrollTable;
 import org.gwt.mosaic.ui.client.table.ScrollTable;
 import org.gwt.mosaic.ui.client.table.SelectionGrid.SelectionPolicy;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class ListEditorTable extends PagingScrollTable<TransUnit> implements ListEditorPresenter.Display, HasSelectionHandlers<TransUnit>, HasPageNavigation
+public class ListEditorTable extends PagingScrollTable<TransUnit> implements ListEditorPresenter.Display, HasRowSelectionHandlers, HasPageNavigation
 {
 
    @Inject
-   public ListEditorTable(CachedListEditorTableModel tableModel, ListEditorTableDefinition tableDefinition)
+   public ListEditorTable(final CachedListEditorTableModel tableModel, final EventBus eventBus, final ListEditorTableDefinition tableDefinition)
    {
       super(tableModel, tableDefinition);
 
@@ -42,19 +40,6 @@ public class ListEditorTable extends PagingScrollTable<TransUnit> implements Lis
       getDataTable().setStylePrimaryName("TableEditor");
       getDataTable().setSelectionPolicy(SelectionPolicy.ONE_ROW);
       getDataTable().setCellPadding(3);
-      getDataTable().addRowSelectionHandler(new RowSelectionHandler()
-      {
-         @Override
-         public void onRowSelection(RowSelectionEvent event)
-         {
-            if (!event.getSelectedRows().isEmpty())
-            {
-               Row row = event.getSelectedRows().iterator().next();
-               TransUnit tu = getRowValue(row.getRowIndex());
-               SelectionEvent.fire(ListEditorTable.this, tu);
-            }
-         }
-      });
    }
 
    @Override
@@ -78,18 +63,6 @@ public class ListEditorTable extends PagingScrollTable<TransUnit> implements Lis
    }
 
    @Override
-   public HandlerRegistration addSelectionHandler(SelectionHandler<TransUnit> handler)
-   {
-      return addHandler(handler, SelectionEvent.getType());
-   }
-
-   @Override
-   public HasSelectionHandlers<TransUnit> getSelectionHandlers()
-   {
-      return this;
-   }
-
-   @Override
    public boolean isFirstPage()
    {
       return getCurrentPage() == 0;
@@ -99,6 +72,12 @@ public class ListEditorTable extends PagingScrollTable<TransUnit> implements Lis
    public boolean isLastPage()
    {
       return getCurrentPage() == getPageCount() - 1;
+   }
+
+   @Override
+   public HandlerRegistration addRowSelectionHandler(RowSelectionHandler handler)
+   {
+      return getDataTable().addRowSelectionHandler(handler);
    }
 
 }

@@ -63,8 +63,15 @@ td.TableEditorCell {
 	border-top: 1px solid #e0e0e0;
 }
 
+tr.TableEditorRow.selected td.TableEditorCell {
+  background-color: #fbfbfb;
+  background-image: none;
+}
+
+
 tr.TableEditorRow.highlighted td.TableEditorCell {
-  background-color: #f1f2f6;
+  background-color: #fbfbfb;
+  background-image: none;
 }
 
 tr.TableEditorRow.highlighted td.TableEditorCell-Source {  

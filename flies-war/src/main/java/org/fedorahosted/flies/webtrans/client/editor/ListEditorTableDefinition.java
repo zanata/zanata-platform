@@ -111,18 +111,13 @@ public class ListEditorTableDefinition extends DefaultTableDefinition<TransUnit>
       }
    };
 
-   private InlineTargetCellEditor targetCellEditor;
-   private final NavigationMessages messages;
-
    @Inject
-   public ListEditorTableDefinition(final NavigationMessages messages, InlineTargetCellEditor cellEditor)
+   public ListEditorTableDefinition()
    {
-      this.messages = messages;
       setRowRenderer(rowRenderer);
       sourceColumnDefinition.setCellRenderer(sourceCellRenderer);
       targetColumnDefinition.setCellRenderer(targetCellRenderer);
-      targetColumnDefinition.setCellEditor(cellEditor);
-
+      
       addColumnDefinition(sourceColumnDefinition);
       addColumnDefinition(targetColumnDefinition);
    }
@@ -140,11 +135,6 @@ public class ListEditorTableDefinition extends DefaultTableDefinition<TransUnit>
    public ContentFilter<TransUnit> getContentFilter()
    {
       return contentFilter;
-   }
-
-   public InlineTargetCellEditor getTargetCellEditor()
-   {
-      return targetCellEditor;
    }
 
 }

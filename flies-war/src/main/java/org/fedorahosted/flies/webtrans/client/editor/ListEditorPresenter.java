@@ -6,6 +6,8 @@ import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import org.fedorahosted.flies.webtrans.client.editor.TransUnitRowEditor.Callback;
+import org.fedorahosted.flies.webtrans.client.editor.TransUnitRowEditor.RowEditInfo;
 import org.fedorahosted.flies.webtrans.client.events.DocumentSelectionEvent;
 import org.fedorahosted.flies.webtrans.client.events.DocumentSelectionHandler;
 import org.fedorahosted.flies.webtrans.client.events.FilterDisabledEvent;
@@ -24,22 +26,23 @@ import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandle
 import org.fedorahosted.flies.webtrans.shared.auth.Identity;
 import org.fedorahosted.flies.webtrans.shared.model.DocumentId;
 import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
+import org.gwt.mosaic.override.client.HTMLTable;
 import org.gwt.mosaic.ui.client.event.HasPageChangeHandlers;
 import org.gwt.mosaic.ui.client.event.HasPageCountChangeHandlers;
 import org.gwt.mosaic.ui.client.event.HasPageLoadHandlers;
 import org.gwt.mosaic.ui.client.event.HasPagingFailureHandlers;
+import org.gwt.mosaic.ui.client.event.HasRowSelectionHandlers;
 import org.gwt.mosaic.ui.client.event.PageChangeHandler;
 import org.gwt.mosaic.ui.client.event.PageCountChangeEvent;
 import org.gwt.mosaic.ui.client.event.PageCountChangeHandler;
+import org.gwt.mosaic.ui.client.event.RowSelectionEvent;
+import org.gwt.mosaic.ui.client.event.RowSelectionHandler;
 import org.gwt.mosaic.ui.client.layout.HasLayoutManager;
 import org.gwt.mosaic.ui.client.table.HasTableDefinition;
 import org.gwt.mosaic.ui.client.table.TableModel;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.HasScrollHandlers;
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event;
@@ -53,10 +56,8 @@ public class ListEditorPresenter extends WidgetPresenter<ListEditorPresenter.Dis
    static final int PAGE_SIZE = 50;
    public static final Place PLACE = new Place("TableEditor");
 
-   public interface Display extends WidgetDisplay, HasLayoutManager, HasScrollHandlers, HasTableDefinition<TransUnit>, HasPageCountChangeHandlers, HasPageLoadHandlers, HasPageChangeHandlers, HasPagingFailureHandlers, HasSelectionHandlers<TransUnit>, HasPageNavigation
+   public interface Display extends WidgetDisplay, HasLayoutManager, HasScrollHandlers, HasTableDefinition<TransUnit>, HasPageCountChangeHandlers, HasPageLoadHandlers, HasPageChangeHandlers, HasPagingFailureHandlers, HasPageNavigation, HasRowSelectionHandlers
    {
-
-      HasSelectionHandlers<TransUnit> getSelectionHandlers();
 
       boolean isFirstPage();
 
@@ -66,6 +67,8 @@ public class ListEditorPresenter extends WidgetPresenter<ListEditorPresenter.Dis
 
       void setPageSize(int size);
 
+      public TransUnit getRowValue(int row);
+      
    }
 
    private DocumentId selectedDocumentId;
@@ -75,9 +78,10 @@ public class ListEditorPresenter extends WidgetPresenter<ListEditorPresenter.Dis
    private final ListEditorMessages messages;
    private final CachedListEditorTableModel tableModel;
    private final ListEditorTableDefinition tableDefinition;
+   private final TransUnitRowEditor rowEditor;
 
    @Inject
-   public ListEditorPresenter(final Display display, final EventBus eventBus, final Identity identity, final ListEditorMessages messages, final CachedListEditorTableModel tableModel, final ListEditorTableDefinition tableDefinition)
+   public ListEditorPresenter(final Display display, final EventBus eventBus, final Identity identity, final TransUnitRowEditor rowEditor, final ListEditorMessages messages, final CachedListEditorTableModel tableModel, final ListEditorTableDefinition tableDefinition)
    {
       super(display, eventBus);
 
@@ -85,6 +89,7 @@ public class ListEditorPresenter extends WidgetPresenter<ListEditorPresenter.Dis
       this.messages = messages;
       this.tableModel = tableModel;
       this.tableDefinition = tableDefinition;
+      this.rowEditor = rowEditor;
    }
 
    @Override
@@ -93,20 +98,40 @@ public class ListEditorPresenter extends WidgetPresenter<ListEditorPresenter.Dis
       return PLACE;
    }
 
+   private final Callback editRowCallback = new Callback()
+   {
+
+      @Override
+      public void onComplete(RowEditInfo rowEditInfo, TransUnit rowValue)
+      {
+         tableModel.setRowValue(rowEditInfo.getIndex(), rowValue);
+      }
+
+      @Override
+      public void onCancel(RowEditInfo rowEditInfo)
+      {
+      }
+   };
+
    @Override
    protected void onBind()
    {
       display.setPageSize(PAGE_SIZE);
-      registerHandler(display.getSelectionHandlers().addSelectionHandler(new SelectionHandler<TransUnit>()
+      registerHandler(display.addRowSelectionHandler(new RowSelectionHandler()
       {
+
          @Override
-         public void onSelection(SelectionEvent<TransUnit> event)
+         public void onRowSelection(RowSelectionEvent event)
          {
-            if (selectedTransUnit == null || !event.getSelectedItem().getId().equals(selectedTransUnit.getId()))
+            if (!event.getSelectedRows().isEmpty())
             {
-               selectedTransUnit = event.getSelectedItem();
+               int index = event.getSelectedRows().iterator().next().getRowIndex();
+               selectedTransUnit = display.getRowValue(index);
                Log.info("SelectedTransUnit " + selectedTransUnit.getId());
                eventBus.fireEvent(new TransUnitSelectionEvent(selectedTransUnit));
+
+               RowEditInfo editInfo = new RowEditInfo((HTMLTable) event.getSource(), index);
+               rowEditor.editCell(editInfo, selectedTransUnit, editRowCallback);
             }
          }
       }));
@@ -118,6 +143,7 @@ public class ListEditorPresenter extends WidgetPresenter<ListEditorPresenter.Dis
          {
             if (!event.getDocument().getId().equals(selectedDocumentId))
             {
+               releaseEditor();
                display.startProcessing();
                selectedDocumentId = event.getDocument().getId();
                tableModel.clearCache();
@@ -177,6 +203,7 @@ public class ListEditorPresenter extends WidgetPresenter<ListEditorPresenter.Dis
          @Override
          public void onTransMemoryCopy(TransMemoryCopyEvent event)
          {
+            
          }
       }));
 
@@ -187,33 +214,38 @@ public class ListEditorPresenter extends WidgetPresenter<ListEditorPresenter.Dis
          {
             return;
             /*
-            if (display.asWidget().isVisible())
-            {
-               NativeEvent nativeEvent = event.getNativeEvent();
-               String nativeEventType = nativeEvent.getType();
-               int keyCode = nativeEvent.getKeyCode();
-               boolean shiftKey = nativeEvent.getShiftKey();
-               boolean altKey = nativeEvent.getAltKey();
-               boolean ctrlKey = nativeEvent.getCtrlKey();
-               if (nativeEventType.equals("keypress") && !shiftKey && !altKey && !ctrlKey)
-               {
-                  Log.info("fired event of type " + event.getAssociatedType().getClass().getName());
-                  // PageDown key
-                  switch (keyCode)
-                  {
-                  case KeyCodes.KEY_PAGEDOWN:
-                  case KeyCodes.KEY_PAGEUP:
-                  case KeyCodes.KEY_HOME:
-                  case KeyCodes.KEY_END:
-                  default:
-                     break;
-                  }
-               }
-            }*/
+             * if (display.asWidget().isVisible()) { NativeEvent nativeEvent =
+             * event.getNativeEvent(); String nativeEventType =
+             * nativeEvent.getType(); int keyCode = nativeEvent.getKeyCode();
+             * boolean shiftKey = nativeEvent.getShiftKey(); boolean altKey =
+             * nativeEvent.getAltKey(); boolean ctrlKey =
+             * nativeEvent.getCtrlKey(); if (nativeEventType.equals("keypress")
+             * && !shiftKey && !altKey && !ctrlKey) {
+             * Log.info("fired event of type " +
+             * event.getAssociatedType().getClass().getName()); // PageDown key
+             * switch (keyCode) { case KeyCodes.KEY_PAGEDOWN: case
+             * KeyCodes.KEY_PAGEUP: case KeyCodes.KEY_HOME: case
+             * KeyCodes.KEY_END: default: break; } } }
+             */
          }
       });
 
       display.gotoFirstPage();
+   }
+
+   private void releaseEditor()
+   {
+      if (rowEditor.isActive())
+      {
+         if (rowEditor.isDirty())
+         {
+            rowEditor.acceptEdit();
+         }
+         else
+         {
+            rowEditor.cancelEdit();
+         }
+      }
    }
 
    public TransUnit getSelectedTransUnit()
@@ -244,42 +276,58 @@ public class ListEditorPresenter extends WidgetPresenter<ListEditorPresenter.Dis
    @Override
    public void gotoFirstPage()
    {
-      display.gotoFirstPage();
+      if (display.getCurrentPage() != 0)
+      {
+         releaseEditor();
+         display.gotoFirstPage();
+      }
+
    }
 
    @Override
    public void gotoLastPage()
    {
-      display.gotoLastPage();
+      if (!display.isLastPage())
+      {
+         releaseEditor();
+         display.gotoLastPage();
+      }
    }
 
    @Override
    public void gotoNextPage()
    {
-      display.gotoNextPage();
+      if(!display.isLastPage())
+      {
+         releaseEditor();
+         display.gotoNextPage();
+      }
    }
 
    @Override
    public void gotoPage(int page, boolean forced)
    {
-      display.gotoPage(page, forced);
+      if(display.getCurrentPage() != page)
+      {
+         releaseEditor();
+         display.gotoPage(page, forced);
+      }
    }
 
    @Override
    public void gotoPreviousPage()
    {
-      display.gotoPreviousPage();
+      if(!display.isFirstPage())
+      {
+         releaseEditor();
+         display.gotoPreviousPage();
+      }
    }
 
    @Override
    public HandlerRegistration addPageChangeHandler(PageChangeHandler handler)
    {
       return display.addPageChangeHandler(handler);
-   }
-
-   public DocumentId getDocumentId()
-   {
-      return selectedDocumentId;
    }
 
    @Override

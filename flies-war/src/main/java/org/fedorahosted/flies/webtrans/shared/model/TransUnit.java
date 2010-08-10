@@ -26,7 +26,7 @@ public class TransUnit implements IsSerializable, Serializable
    private TransUnit()
    {
    }
-
+   
    public TransUnit(TransUnitId id, LocaleId localeId)
    {
       this.id = id;
@@ -46,6 +46,16 @@ public class TransUnit implements IsSerializable, Serializable
       this.status = status;
    }
 
+   public TransUnit(TransUnit other)
+   {
+      this(other.id, other.localeId, other.source, other.sourceComment, other.target, other.status);
+   }
+
+   public static final TransUnit copy(TransUnit other)
+   {
+      return new TransUnit(other);
+   }
+   
    public TransUnitId getId()
    {
       return id;

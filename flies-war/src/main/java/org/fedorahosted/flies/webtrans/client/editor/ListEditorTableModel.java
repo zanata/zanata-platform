@@ -102,7 +102,9 @@ public class ListEditorTableModel extends AbstractMutableTableModel<TransUnit>
    @Override
    public boolean onSetRowValue(int row, TransUnit rowValue)
    {
-      return false;
+      eventBus.fireEvent(new NotificationEvent(Severity.Info, "Saved entry.."));
+      rowValue.setTarget( "(SAVED) " + rowValue.getTarget());
+      return true;
    }
 
 }
