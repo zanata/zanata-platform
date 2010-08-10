@@ -50,10 +50,10 @@ public abstract class ConfigurableProjectCommand extends ConfigurableCommand
    /**
     * Project configuration file for Flies client.
     */
-   // When used as a CLI command the default (here) is relative to CWD.
-   // ConfigurableProjectMojo specifies another default, which is relative to
-   // project's basedir.
-   protected File projectConfig = new File("src/main/config/flies.xml");
+   // When used as a CLI command, the default path (specified here) is relative
+   // to CWD. ConfigurableProjectMojo specifies another default, which is
+   // relative to project's basedir.
+   protected File projectConfig = new File("flies.xml");
 
    private String project;
    private String projectVersion;
@@ -127,7 +127,7 @@ public abstract class ConfigurableProjectCommand extends ConfigurableCommand
       this.project = projectSlug;
    }
 
-   @Option(name = "--project-config", metaVar = "FILE", usage = "Flies project configuration, eg src/main/config/flies.xml", required = false)
+   @Option(name = "--project-config", metaVar = "FILE", usage = "Flies project configuration, eg flies.xml", required = false)
    public void setProjectConfig(File projectConfig)
    {
       this.projectConfig = projectConfig;

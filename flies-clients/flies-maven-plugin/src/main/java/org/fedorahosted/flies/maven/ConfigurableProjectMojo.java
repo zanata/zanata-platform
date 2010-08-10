@@ -28,7 +28,7 @@ public abstract class ConfigurableProjectMojo<C extends ConfigurableProjectComma
     * Project configuration file for Flies client.
     * 
     * @parameter expression="${flies.projectConfig}"
-    *            default-value="${basedir}/src/main/config/flies.xml"
+    *            default-value="${basedir}/flies.xml"
     */
    @SuppressWarnings("unused")
    private File projectConfig;
