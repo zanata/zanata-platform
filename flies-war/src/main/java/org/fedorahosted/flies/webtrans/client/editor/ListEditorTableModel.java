@@ -12,6 +12,8 @@ import org.fedorahosted.flies.webtrans.shared.model.DocumentId;
 import org.fedorahosted.flies.webtrans.shared.model.TransUnit;
 import org.fedorahosted.flies.webtrans.shared.rpc.GetTransUnits;
 import org.fedorahosted.flies.webtrans.shared.rpc.GetTransUnitsResult;
+import org.fedorahosted.flies.webtrans.shared.rpc.UpdateTransUnit;
+import org.fedorahosted.flies.webtrans.shared.rpc.UpdateTransUnitResult;
 import org.gwt.mosaic.ui.client.table.AbstractMutableTableModel;
 import org.gwt.mosaic.ui.client.table.TableModelHelper.Request;
 import org.gwt.mosaic.ui.client.table.TableModelHelper.SerializableResponse;
@@ -43,7 +45,7 @@ public class ListEditorTableModel extends AbstractMutableTableModel<TransUnit>
             if (!event.getDocument().getId().equals(selectedDocumentId))
             {
                selectedDocumentId = event.getDocument().getId();
-               
+
             }
          }
       });
@@ -102,8 +104,23 @@ public class ListEditorTableModel extends AbstractMutableTableModel<TransUnit>
    @Override
    public boolean onSetRowValue(int row, TransUnit rowValue)
    {
-      eventBus.fireEvent(new NotificationEvent(Severity.Info, "Saved entry.."));
-      rowValue.setTarget( "(SAVED) " + rowValue.getTarget());
+      dispatcher.execute(new UpdateTransUnit(rowValue.getId(), rowValue.getTarget(), rowValue.getStatus()), new AsyncCallback<UpdateTransUnitResult>()
+      {
+
+         @Override
+         public void onFailure(Throwable caught)
+         {
+            eventBus.fireEvent(new NotificationEvent(Severity.Error, "Failed saving entry.."));
+            // TODO update UI
+         }
+
+         @Override
+         public void onSuccess(UpdateTransUnitResult result)
+         {
+            //eventBus.fireEvent(new NotificationEvent(Severity.Info, "Saved entry.."));
+         }
+
+      });
       return true;
    }
 

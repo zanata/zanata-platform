@@ -109,7 +109,9 @@ tr.TableEditorRow.selected td {
 	font-size: 14px;
 	font-family: sans-serif;
 	padding: 3px;
-	margin: 2px;	
+	margin: 2px;
+	border: none;
+	background: transparent;
 }
 
 .Severity-Error {
