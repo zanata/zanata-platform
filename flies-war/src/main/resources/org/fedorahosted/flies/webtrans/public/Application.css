@@ -18,60 +18,44 @@ Removes some of the styling on the page-level splitters
 	float: right;
 }
 
+td.TableEditorCell {
+    border: 1px solid #cccccc;
+	vertical-align: top;
+}
+
+
 .TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Source{
 	background: url(tu_bg_fuzzy_left.png) repeat-y left;
-    border-right: 3px solid #cccccc;
-    border-left: 3px solid #cccccc;
 }
 .TableEditor tr.NewStateDecoration td.TableEditorCell-Source{
 	background: url(tu_bg_new_left.png) repeat-y left;
-    border-right: 3px solid #cccccc;
-    border-left: 3px solid #cccccc;
 }
 .TableEditor tr.ApprovedStateDecoration td.TableEditorCell-Source{
 	background: url(tu_bg_approved_left.png) repeat-y left;
-    border-right: 3px solid #cccccc;
-    border-left: 3px solid #cccccc;
 }
 .TableEditor tr.ErrorStateDecoration td.TableEditorCell-Source{
     background: url(tu_bg_error_left.png) repeat-y left;
-    border-right: 3px solid #cccccc;
-    border-left: 3px solid #cccccc;
 }
 .TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Target{
 	background: url(tu_bg_fuzzy_right.png) repeat-y right;
-    border-right: 3px solid #cccccc;
-    border-left: 3px solid #cccccc;
 }
 .TableEditor tr.NewStateDecoration td.TableEditorCell-Target{
 	background: url(tu_bg_new_right.png) repeat-y right;
-    border-right: 3px solid #cccccc;
-    border-left: 3px solid #cccccc;
 }
 .TableEditor tr.ApprovedStateDecoration td.TableEditorCell-Target{
 	background: url(tu_bg_approved_right.png) repeat-y right;
-    border-right: 3px solid #cccccc;
-    border-left: 3px solid #cccccc;
 }
 .TableEditor tr.ErrorStateDecoration td.TableEditorCell-Target{
     background: url(tu_bg_error_right.png) repeat-y right;
-    border-right: 3px solid #cccccc;
-    border-left: 3px solid #cccccc;
-}
-
-td.TableEditorCell {
-	border-top: 1px solid #e0e0e0;
 }
 
 tr.TableEditorRow.selected td.TableEditorCell {
-  background-color: #fbfbfb;
-  background-image: none;
+  border: 1px solid #000000;
 }
 
 
 tr.TableEditorRow.highlighted td.TableEditorCell {
-  background-color: #fbfbfb;
-  background-image: none;
+  border: 1px solid #000000;
 }
 
 tr.TableEditorRow.highlighted td.TableEditorCell-Source {  
