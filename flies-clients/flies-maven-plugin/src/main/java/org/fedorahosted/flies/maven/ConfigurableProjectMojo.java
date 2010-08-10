@@ -36,18 +36,18 @@ public abstract class ConfigurableProjectMojo<C extends ConfigurableProjectComma
    /**
     * Project slug (id) within Flies server.
     * 
-    * @parameter expression="${flies.projectSlug}"
+    * @parameter expression="${flies.project}"
     */
    @SuppressWarnings("unused")
-   private File projectSlug;
+   private String project;
 
    /**
     * Project version slug (id) within Flies server.
     * 
-    * @parameter expression="${flies.versionSlug}"
+    * @parameter expression="${flies.projectVersion}"
     */
    @SuppressWarnings("unused")
-   private File versionSlug;
+   private String projectVersion;
 
    public ConfigurableProjectMojo(C command)
    {
@@ -59,14 +59,14 @@ public abstract class ConfigurableProjectMojo<C extends ConfigurableProjectComma
       getCommand().setProjectConfig(projectConfig);
    }
 
-   public void setProjectSlug(String projectSlug)
+   public void setProject(String projectSlug)
    {
-      getCommand().setProjectSlug(projectSlug);
+      getCommand().setProject(projectSlug);
    }
 
-   public void setVersionSlug(String versionSlug)
+   public void setProjectVersion(String versionSlug)
    {
-      getCommand().setVersionSlug(versionSlug);
+      getCommand().setProjectVersion(versionSlug);
    }
 
 }

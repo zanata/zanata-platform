@@ -43,9 +43,6 @@ public abstract class ConfigurableProjectCommand extends ConfigurableCommand
 
    private static final Logger log = LoggerFactory.getLogger(ConfigurableProjectCommand.class);
 
-   // private static final Logger log =
-   // Logger.getLogger(ConfigurableProjectCommand.class);
-
    private JAXBContext jc = JAXBContext.newInstance(FliesConfig.class);
 
    private Unmarshaller unmarshaller = jc.createUnmarshaller();
@@ -58,8 +55,8 @@ public abstract class ConfigurableProjectCommand extends ConfigurableCommand
    // project's basedir.
    protected File projectConfig = new File("src/main/config/flies.xml");
 
-   private String projectSlug;
-   private String versionSlug;
+   private String project;
+   private String projectVersion;
 
    public ConfigurableProjectCommand() throws JAXBException
    {
@@ -105,29 +102,29 @@ public abstract class ConfigurableProjectCommand extends ConfigurableCommand
     */
    private void applyProjectConfig(FliesConfig config)
    {
-      if (projectSlug == null)
+      if (project == null)
       {
-         projectSlug = config.getProjectSlug();
+         project = config.getProject();
       }
       if (getUrl() == null)
       {
          setUrl(config.getUrl());
       }
-      if (versionSlug == null)
+      if (projectVersion == null)
       {
-         versionSlug = config.getVersionSlug();
+         projectVersion = config.getProjectVersion();
       }
    }
 
-   public String getProjectSlug()
+   public String getProject()
    {
-      return projectSlug;
+      return project;
    }
 
-   @Option(name = "--proj", metaVar = "PROJ", usage = "Flies project ID.  This value is required unless specified in flies.xml.")
-   public void setProjectSlug(String projectSlug)
+   @Option(name = "--project", metaVar = "PROJ", usage = "Flies project ID/slug.  This value is required unless specified in flies.xml.")
+   public void setProject(String projectSlug)
    {
-      this.projectSlug = projectSlug;
+      this.project = projectSlug;
    }
 
    @Option(name = "--project-config", metaVar = "FILE", usage = "Flies project configuration, eg src/main/config/flies.xml", required = false)
@@ -136,15 +133,15 @@ public abstract class ConfigurableProjectCommand extends ConfigurableCommand
       this.projectConfig = projectConfig;
    }
 
-   public String getVersionSlug()
+   public String getProjectVersion()
    {
-      return versionSlug;
+      return projectVersion;
    }
 
-   @Option(name = "--iter", metaVar = "ITER", usage = "Flies project iteration ID  This value is required unless specified in flies.xml.")
-   public void setVersionSlug(String versionSlug)
+   @Option(name = "--project-version", metaVar = "VER", usage = "Flies project version ID  This value is required unless specified in flies.xml.")
+   public void setProjectVersion(String versionSlug)
    {
-      this.versionSlug = versionSlug;
+      this.projectVersion = versionSlug;
    }
 
 }

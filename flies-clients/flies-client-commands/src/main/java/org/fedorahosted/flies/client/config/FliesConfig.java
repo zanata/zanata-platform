@@ -25,7 +25,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -44,9 +43,9 @@ public class FliesConfig implements Serializable
 {
 
    private List<DocSet> docSets = new ArrayList<DocSet>();
-   private String projectSlug;
+   private String project;
    private URL url;
-   private String versionSlug;
+   private String projectVersion;
 
    public FliesConfig()
    {
@@ -63,18 +62,18 @@ public class FliesConfig implements Serializable
       this.docSets = docSets;
    }
 
-   @XmlAttribute
-   public String getProjectSlug()
+   @XmlElement(name = "project")
+   public String getProject()
    {
-      return projectSlug;
+      return project;
    }
 
-   public void setProjectSlug(String project)
+   public void setProject(String project)
    {
-      this.projectSlug = project;
+      this.project = project;
    }
 
-   @XmlAttribute
+   @XmlElement(name = "url")
    public URL getUrl()
    {
       return url;
@@ -85,15 +84,15 @@ public class FliesConfig implements Serializable
       this.url = url;
    }
 
-   @XmlAttribute
-   public String getVersionSlug()
+   @XmlElement(name = "project-version")
+   public String getProjectVersion()
    {
-      return versionSlug;
+      return projectVersion;
    }
 
-   public void setVersionSlug(String version)
+   public void setProjectVersion(String version)
    {
-      this.versionSlug = version;
+      this.projectVersion = version;
    }
 
 }

@@ -65,18 +65,18 @@ public class ListRemoteCommand extends ConfigurableProjectCommand implements Fli
    {
       if (getUrl() == null)
          throw new Exception("Flies URL must be specified");
-      if (getProjectSlug() == null)
-         throw new Exception("Project slug must be specified");
-      if (getVersionSlug() == null)
-         throw new Exception("Version slug must be specified");
-      FliesClientRequestFactory factory = new FliesClientRequestFactory(getUrl().toURI(), getUsername(), getKey());
-      ITranslationResources translationResources = factory.getTranslationResources(getProjectSlug(), getVersionSlug());
-      ClientResponse<List<ResourceMeta>> response = translationResources.get();
-      ClientUtility.checkResult(response, factory.getTranslationResourcesURI(getProjectSlug(), getVersionSlug()));
+      if (getProject() == null)
+         throw new Exception("Project must be specified");
+      if (getProjectVersion() == null)
+         throw new Exception("Project version must be specified");
       System.out.println("Flies server: " + getUrl());
-      System.out.println("Project: " + getProjectSlug());
-      System.out.println("Version: " + getVersionSlug());
+      System.out.println("Project: " + getProject());
+      System.out.println("Version: " + getProjectVersion());
       System.out.println("List of resources:");
+      FliesClientRequestFactory factory = new FliesClientRequestFactory(getUrl().toURI(), getUsername(), getKey());
+      ITranslationResources translationResources = factory.getTranslationResources(getProject(), getProjectVersion());
+      ClientResponse<List<ResourceMeta>> response = translationResources.get();
+      ClientUtility.checkResult(response, factory.getTranslationResourcesURI(getProject(), getProjectVersion()));
       List<ResourceMeta> list = response.getEntity();
       for (ResourceMeta doc : list)
       {

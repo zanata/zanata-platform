@@ -39,10 +39,10 @@ public abstract class ConfigurableMojo<C extends ConfigurableCommand> extends Ab
     *            default-value="${user.home}/.config/flies.ini"
     */
    /*
-    * NB the annotation 'default-value' overrides ConfigurableCommand (even
-    * though the values are virtually identical) because Mojos aren't meant to
-    * use System properties directly (since they may be sharing a VM and its
-    * System properties)
+    * NB the annotation 'default-value' overrides the default in
+    * ConfigurableCommand (even though the values are virtually identical)
+    * because Mojos aren't meant to use System properties directly (since they
+    * may be sharing a VM and its System properties)
     */
    @SuppressWarnings("unused")
    private File userConfig;
@@ -130,11 +130,6 @@ public abstract class ConfigurableMojo<C extends ConfigurableCommand> extends Ab
    {
       return command;
    }
-
-   // public void setDebug(boolean debug)
-   // {
-   // command.setDebug(debug);
-   // }
 
    public void setKey(String key)
    {
