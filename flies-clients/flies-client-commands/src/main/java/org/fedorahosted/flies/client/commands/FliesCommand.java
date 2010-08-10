@@ -20,6 +20,10 @@ public interface FliesCommand
     */
    public String getCommandDescription();
 
+   public boolean getDebug();
+
+   public void setDebug(boolean debug);
+
    public boolean getErrors();
 
    public void setErrors(boolean errors);

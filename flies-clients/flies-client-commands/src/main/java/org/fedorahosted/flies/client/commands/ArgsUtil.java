@@ -24,10 +24,18 @@ public class ArgsUtil
    {
       CmdLineParser parser = new CmdLineParser(cmd);
 
-      if (globals.getHelp())
-         cmd.setHelp(true);
+      if (globals.getDebug())
+      {
+         cmd.setDebug(true);
+      }
       if (globals.getErrors())
+      {
          cmd.setErrors(true);
+      }
+      if (globals.getHelp())
+      {
+         cmd.setHelp(true);
+      }
 
       try
       {
@@ -62,12 +70,31 @@ public class ArgsUtil
       try
       {
          cmd.initConfig();
+         if (cmd.getDebug())
+         {
+            enableDebugLogging();
+         }
+         if (cmd.getErrors())
+         {
+            System.out.println("+ Error stacktraces are turned on.");
+         }
          cmd.run();
       }
       catch (Exception e)
       {
          handleException(e, cmd.getErrors());
       }
+   }
+
+   /**
+    * Maven's --debug/-X flag sets the Maven LoggerManager to LEVEL_DEBUG. The
+    * slf4j framework doesn't provide any way of doing this, so we have to go to
+    * the underlying framework (assumed to be log4j).
+    */
+   private static void enableDebugLogging()
+   {
+      org.apache.log4j.Logger root = org.apache.log4j.Logger.getRootLogger();
+      root.setLevel(org.apache.log4j.Level.DEBUG);
    }
 
    private static void printHelp(FliesCommand cmd, PrintStream output) throws IOException

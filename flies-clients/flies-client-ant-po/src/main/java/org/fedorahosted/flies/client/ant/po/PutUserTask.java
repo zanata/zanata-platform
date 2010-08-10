@@ -29,12 +29,6 @@ public class PutUserTask extends FliesTask
 
    private String fliesURL;
 
-   private boolean debug;
-
-   private boolean help;
-
-   private boolean errors;
-
    private String name;
 
    private String email;
@@ -74,7 +68,7 @@ public class PutUserTask extends FliesTask
       JAXBContext jc = JAXBContext.newInstance(Account.class);
       Marshaller m = jc.createMarshaller();
       // debug
-      if (debug)
+      if (getDebug())
          m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
       Account account = new Account();
@@ -87,7 +81,7 @@ public class PutUserTask extends FliesTask
       account.setRoles(roles);
       account.setTribes(langs);
 
-      if (debug)
+      if (getDebug())
       {
          m.marshal(account, System.out);
       }
@@ -175,36 +169,5 @@ public class PutUserTask extends FliesTask
    {
       this.disabled = disabled;
    }
-
-   @Option(name = "--debug", aliases = { "-x" }, usage = "Enable debug mode")
-   public void setDebug(boolean debug)
-   {
-      this.debug = debug;
-   }
-
-   @Override
-   public boolean getHelp()
-   {
-      return this.help;
-   }
-
-   @Option(name = "--help", aliases = { "-h", "-help" }, usage = "Display this help and exit")
-   public void setHelp(boolean help)
-   {
-      this.help = help;
-   }
-
-   @Override
-   public boolean getErrors()
-   {
-      return this.errors;
-   }
-
-   @Option(name = "--errors", aliases = { "-e" }, usage = "Output full execution error messages")
-   public void setErrors(boolean errors)
-   {
-      this.errors = errors;
-   }
-
 
 }

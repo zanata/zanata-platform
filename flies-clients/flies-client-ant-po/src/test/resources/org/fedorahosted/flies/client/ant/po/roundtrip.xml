@@ -7,8 +7,8 @@
 		<mkdir dir="${out.dir}" />
 
 		<!-- run 2 way test -->
-		<uploadpo user="bob" apiKey="${bob.key}" dst="${docsUrl}" srcDir="${in.dir}" debug="true" />
-		<downloadpo user="bob" apiKey="${bob.key}" src="${docsUrl}" dstDir="${out.dir}" debug="true" />
+		<uploadpo user="bob" apiKey="${bob.key}" dst="${docsUrl}" srcDir="${in.dir}" debug="false" />
+		<downloadpo user="bob" apiKey="${bob.key}" src="${docsUrl}" dstDir="${out.dir}" debug="false" />
 
 		
 		<!-- diff (unified, recursive) to find out if input and output are same 

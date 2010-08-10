@@ -17,16 +17,15 @@ import org.fedorahosted.flies.rest.client.IProjectResource;
 import org.fedorahosted.flies.rest.dto.Project;
 import org.kohsuke.args4j.Option;
 
-@Deprecated
+/**
+ * @deprecated See PutProjectCommand
+ */
 public class CreateProjectTask extends FliesTask
 {
 
    private String user;
    private String apiKey;
    private String fliesUrl;
-   private boolean debug;
-   private boolean help;
-   private boolean errors;
    private String proj;
    private String name;
    private String desc;
@@ -54,7 +53,7 @@ public class CreateProjectTask extends FliesTask
       JAXBContext jc = JAXBContext.newInstance(Project.class);
       Marshaller m = jc.createMarshaller();
       // debug
-      if (debug)
+      if (getDebug())
          m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
       Project project = new Project();
@@ -62,7 +61,7 @@ public class CreateProjectTask extends FliesTask
       project.setName(name);
       project.setDescription(desc);
 
-      if (debug)
+      if (getDebug())
       {
          m.marshal(project, System.out);
       }
@@ -113,36 +112,5 @@ public class CreateProjectTask extends FliesTask
    {
       this.desc = desc;
    }
-
-   @Option(name = "--debug", aliases = { "-x" }, usage = "Enable debug mode")
-   public void setDebug(boolean debug)
-   {
-      this.debug = debug;
-   }
-
-   @Override
-   public boolean getHelp()
-   {
-      return this.help;
-   }
-
-   @Option(name = "--help", aliases = { "-h", "-help" }, usage = "Display this help and exit")
-   public void setHelp(boolean help)
-   {
-      this.help = help;
-   }
-
-   @Override
-   public boolean getErrors()
-   {
-      return this.errors;
-   }
-
-   @Option(name = "--errors", aliases = { "-e" }, usage = "Output full execution error messages")
-   public void setErrors(boolean errors)
-   {
-      this.errors = errors;
-   }
-
 
 }

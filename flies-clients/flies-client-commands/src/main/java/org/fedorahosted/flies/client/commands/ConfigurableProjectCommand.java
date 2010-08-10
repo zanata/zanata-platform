@@ -67,7 +67,8 @@ public abstract class ConfigurableProjectCommand extends ConfigurableCommand
 
    /**
     * Loads the config files (controlled by the properties userConfig and
-    * projectConfig) to supply any values which haven't already been set.
+    * projectConfig) to supply any values which haven't already been set via
+    * parameters.
     * 
     * @throws Exception
     */
@@ -97,7 +98,8 @@ public abstract class ConfigurableProjectCommand extends ConfigurableCommand
    }
 
    /**
-    * Applies values from the project configuration
+    * Applies values from the project configuration unless they have been set
+    * directly via parameters.
     * 
     * @param config
     */
@@ -122,7 +124,7 @@ public abstract class ConfigurableProjectCommand extends ConfigurableCommand
       return projectSlug;
    }
 
-   @Option(name = "--proj", metaVar = "PROJ", usage = "Flies project ID", required = true)
+   @Option(name = "--proj", metaVar = "PROJ", usage = "Flies project ID.  This value is required unless specified in flies.xml.")
    public void setProjectSlug(String projectSlug)
    {
       this.projectSlug = projectSlug;
@@ -139,7 +141,7 @@ public abstract class ConfigurableProjectCommand extends ConfigurableCommand
       return versionSlug;
    }
 
-   @Option(name = "--iter", metaVar = "ITER", usage = "Flies project iteration ID", required = true)
+   @Option(name = "--iter", metaVar = "ITER", usage = "Flies project iteration ID  This value is required unless specified in flies.xml.")
    public void setVersionSlug(String versionSlug)
    {
       this.versionSlug = versionSlug;

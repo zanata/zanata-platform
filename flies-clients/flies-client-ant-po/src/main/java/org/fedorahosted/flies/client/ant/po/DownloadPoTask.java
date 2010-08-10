@@ -26,11 +26,8 @@ public class DownloadPoTask extends FliesTask
 
    private String user;
    private String apiKey;
-   private boolean debug;
    private File dstDir;
    private String src;
-   private boolean help;
-   private boolean errors;
    private boolean exportPot;
 
    public static void main(String[] args) throws Exception
@@ -54,13 +51,12 @@ public class DownloadPoTask extends FliesTask
    public void run() throws JAXBException, IOException, URISyntaxException
    {
       Unmarshaller m = null;
-      if (debug)
+      URL srcURL = Utility.createURL(src, Utility.getBaseDir(getProject()));
+      if (getDebug() || "file".equals(srcURL.getProtocol()))
       {
          JAXBContext jc = JAXBContext.newInstance(Documents.class);
          m = jc.createUnmarshaller();
       }
-
-      URL srcURL = Utility.createURL(src, Utility.getBaseDir(getProject()));
 
       List<Document> docList;
       if ("file".equals(srcURL.getProtocol()))
@@ -91,12 +87,6 @@ public class DownloadPoTask extends FliesTask
       this.apiKey = apiKey;
    }
 
-   @Option(aliases = { "-x" }, name = "--debug", usage = "Enable debug mode")
-   public void setDebug(boolean debug)
-   {
-      this.debug = debug;
-   }
-
    @Option(aliases = { "-d" }, name = "--dst", metaVar = "DIR", required = true, usage = "Base directory for publican files (with subdirectory \"pot\" and optional locale directories)")
    public void setDstDir(File dstDir)
    {
@@ -121,30 +111,6 @@ public class DownloadPoTask extends FliesTask
    public void setUser(String user)
    {
       this.user = user;
-   }
-
-   @Override
-   public boolean getHelp()
-   {
-      return this.help;
-   }
-
-   @Option(name = "--help", aliases = { "-h", "-help" }, usage = "Display this help and exit")
-   public void setHelp(boolean help)
-   {
-      this.help = help;
-   }
-
-   @Override
-   public boolean getErrors()
-   {
-      return this.errors;
-   }
-
-   @Option(name = "--errors", aliases = { "-e" }, usage = "Output full execution error messages")
-   public void setErrors(boolean errors)
-   {
-      this.errors = errors;
    }
 
 }

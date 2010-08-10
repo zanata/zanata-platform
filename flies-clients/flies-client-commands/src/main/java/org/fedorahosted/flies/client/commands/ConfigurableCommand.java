@@ -61,18 +61,25 @@ public abstract class ConfigurableCommand implements FliesCommand
    private String key;
 
    /**
-    * Whether to enable debug mode. Defaults to the value in flies.ini.
+    * Whether to enable debug mode. Defaults to the value in flies.ini. This
+    * value is used by command line clients, but not by Maven (which uses its
+    * own --debug/-X flag).
     */
    private boolean debug;
    private boolean debugSet;
 
    /**
     * Whether to display full information about errors (ie exception stack
-    * traces). Defaults to the value in flies.ini.
+    * traces). Defaults to the value in flies.ini. This value is used by command
+    * line clients, but not by Maven (which uses its own --errors/-e flag).
     */
    private boolean errors;
    private boolean errorsSet;
 
+   /**
+    * Whether to display the command's usage help. Maven uses the auto-generated
+    * HelpMojo instead.
+    */
    private boolean help;
 
    public ConfigurableCommand()
@@ -103,18 +110,26 @@ public abstract class ConfigurableCommand implements FliesCommand
       }
    }
 
+   /**
+    * Applies values from the user's personal configuration unless they have
+    * been set directly by parameters or by project configuration.
+    * 
+    * @param config
+    */
    private void applyConfig(DataConfiguration config)
    {
       if (!debugSet)
-         debug = config.getBoolean("debug", false);
+         debug = config.getBoolean("flies.debug", false);
+      if (debug)
+         setErrors(true);
       if (!errorsSet)
-         errors = config.getBoolean("errors", false);
+         errors = config.getBoolean("flies.errors", false);
       if (key == null)
-         key = config.getString("key", null);
+         key = config.getString("flies.key", null);
       if (url == null)
-         url = config.getURL("url", null);
+         url = config.getURL("flies.url", null);
       if (username == null)
-         username = config.getString("username", null);
+         username = config.getString("flies.username", null);
    }
 
    public boolean getDebug()
@@ -122,11 +137,15 @@ public abstract class ConfigurableCommand implements FliesCommand
       return debug;
    }
 
-   @Option(name = "--debug", aliases = { "-x" }, usage = "Enable debug mode")
+   @Option(name = "--debug", aliases = { "-X" }, usage = "Enable debug logging")
    public void setDebug(boolean debug)
    {
       this.debugSet = true;
       this.debug = debug;
+      if (debug)
+      {
+         setErrors(true);
+      }
    }
 
    public boolean getErrors()
@@ -134,7 +153,7 @@ public abstract class ConfigurableCommand implements FliesCommand
       return errors;
    }
 
-   @Option(name = "--errors", aliases = { "-e" }, usage = "Output full execution error messages")
+   @Option(name = "--errors", aliases = { "-e" }, usage = "Output full execution error messages (stacktraces)")
    public void setErrors(boolean errors)
    {
       this.errorsSet = true;

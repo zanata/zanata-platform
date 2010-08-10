@@ -40,12 +40,6 @@ public class UploadPoTask extends FliesTask
 
    private String sourceLang = "en-US";
 
-   private boolean debug;
-
-   private boolean help;
-
-   private boolean errors;
-
    private boolean importPo;
 
    private boolean validate;
@@ -88,18 +82,23 @@ public class UploadPoTask extends FliesTask
       }
 
       // debug: print scanned files
-      if (debug)
+      if (getDebug())
       {
          System.out.println("Here are scanned files: ");
          for (File potFile : potFiles)
             System.out.println("  " + potFile);
       }
-
       JAXBContext jc = JAXBContext.newInstance(Documents.class);
-      Marshaller m = jc.createMarshaller();
+      Marshaller m = null;
+      URL dstURL = Utility.createURL(dst, Utility.getBaseDir(getProject()));
+
+      if (getDebug() || "file".equals(dstURL.getProtocol()))
+      {
+         m = jc.createMarshaller();
+      }
 
       // debug
-      if (debug)
+      if (getDebug())
          m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
       Documents docs = new Documents();
@@ -154,7 +153,7 @@ public class UploadPoTask extends FliesTask
       }
       //			progress.finished();
 
-      if (debug)
+      if (getDebug())
       {
          m.marshal(docs, System.out);
       }
@@ -166,7 +165,6 @@ public class UploadPoTask extends FliesTask
          return;
 
       // check if local or remote: write to file if local, put to server if remote
-      URL dstURL = Utility.createURL(dst, Utility.getBaseDir(getProject()));
       if ("file".equals(dstURL.getProtocol()))
       {
          m.marshal(docs, new File(dstURL.getFile()));
@@ -176,7 +174,7 @@ public class UploadPoTask extends FliesTask
          // send project to rest api
          FliesClientRequestFactory factory = new FliesClientRequestFactory(user, apiKey);
          IDocumentsResource documentsResource = factory.getDocuments(dstURL.toURI());
-         ClientResponse response = documentsResource.put(docs);
+         ClientResponse<?> response = documentsResource.put(docs);
          ClientUtility.checkResult(response, dstURL.toURI());
       }
    }
@@ -218,37 +216,6 @@ public class UploadPoTask extends FliesTask
    {
       this.importPo = importPo;
    }
-
-   @Option(name = "--debug", aliases = { "-x" }, usage = "Enable debug mode")
-   public void setDebug(boolean debug)
-   {
-      this.debug = debug;
-   }
-
-   @Override
-   public boolean getHelp()
-   {
-      return this.help;
-   }
-
-   @Option(name = "--help", aliases = { "-h", "-help" }, usage = "Display this help and exit")
-   public void setHelp(boolean help)
-   {
-      this.help = help;
-   }
-
-   @Override
-   public boolean getErrors()
-   {
-      return this.errors;
-   }
-
-   @Option(name = "--errors", aliases = { "-e" }, usage = "Output full execution error messages")
-   public void setErrors(boolean errors)
-   {
-      this.errors = errors;
-   }
-
 
    @Option(name = "--validate", usage = "Validate XML before sending request to server")
    public void setValidate(boolean validate)

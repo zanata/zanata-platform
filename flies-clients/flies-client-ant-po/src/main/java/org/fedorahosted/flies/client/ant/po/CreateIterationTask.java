@@ -22,9 +22,6 @@ public class CreateIterationTask extends FliesTask
    private String user;
    private String apiKey;
    private String fliesURL;
-   private boolean debug;
-   private boolean help;
-   private boolean errors;
    private String proj;
    private String iter;
    private String name;
@@ -53,7 +50,7 @@ public class CreateIterationTask extends FliesTask
       JAXBContext jc = JAXBContext.newInstance(ProjectIteration.class);
       Marshaller m = jc.createMarshaller();
       // debug
-      if (debug)
+      if (getDebug())
          m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
       ProjectIteration iteration = new ProjectIteration();
@@ -61,7 +58,7 @@ public class CreateIterationTask extends FliesTask
       iteration.setName(name);
       iteration.setDescription(desc);
 
-      if (debug)
+      if (getDebug())
       {
          m.marshal(iteration, System.out);
       }
@@ -117,36 +114,6 @@ public class CreateIterationTask extends FliesTask
    public void setDesc(String desc)
    {
       this.desc = desc;
-   }
-
-   @Option(name = "--debug", aliases = { "-x" }, usage = "Enable debug mode")
-   public void setDebug(boolean debug)
-   {
-      this.debug = debug;
-   }
-
-   @Override
-   public boolean getHelp()
-   {
-      return this.help;
-   }
-
-   @Option(name = "--help", aliases = { "-h", "-help" }, usage = "Display this help and exit")
-   public void setHelp(boolean help)
-   {
-      this.help = help;
-   }
-
-   @Override
-   public boolean getErrors()
-   {
-      return this.errors;
-   }
-
-   @Option(name = "--errors", aliases = { "-e" }, usage = "Output full execution error messages")
-   public void setErrors(boolean errors)
-   {
-      this.errors = errors;
    }
 
 

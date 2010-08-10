@@ -35,7 +35,7 @@ public abstract class ConfigurableMojo<C extends ConfigurableCommand> extends Ab
    /**
     * Client configuration file for Flies.
     * 
-    * @parameter expression="${flies.client.config}"
+    * @parameter expression="${flies.userConfig}"
     *            default-value="${user.home}/.config/flies.ini"
     */
    /*
@@ -73,23 +73,6 @@ public abstract class ConfigurableMojo<C extends ConfigurableCommand> extends Ab
     */
    @SuppressWarnings("unused")
    private String key;
-
-   /**
-    * Whether to enable debug mode. Defaults to the value in flies.ini.
-    * 
-    * @parameter expression="${flies.debug}"
-    */
-   @SuppressWarnings("unused")
-   private boolean debug;
-
-   /**
-    * Whether to display full information about errors (ie exception stack
-    * traces). Defaults to the value in flies.ini.
-    * 
-    * @parameter expression="${flies.errors}"
-    */
-   @SuppressWarnings("unused")
-   private boolean errors;
 
    public ConfigurableMojo(C command)
    {
@@ -135,8 +118,7 @@ public abstract class ConfigurableMojo<C extends ConfigurableCommand> extends Ab
       }
       catch (Exception e)
       {
-         e.printStackTrace();
-         throw new MojoExecutionException("error loading Flies user config", e);
+         throw new MojoExecutionException("Flies mojo exception", e);
       }
       finally
       {
@@ -149,15 +131,10 @@ public abstract class ConfigurableMojo<C extends ConfigurableCommand> extends Ab
       return command;
    }
 
-   public void setDebug(boolean debug)
-   {
-      command.setDebug(debug);
-   }
-
-   public void setErrors(boolean errors)
-   {
-      command.setErrors(errors);
-   }
+   // public void setDebug(boolean debug)
+   // {
+   // command.setDebug(debug);
+   // }
 
    public void setKey(String key)
    {

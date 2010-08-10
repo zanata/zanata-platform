@@ -5,6 +5,12 @@ public interface GlobalOptions
    static final GlobalOptions EMPTY = new GlobalOptions()
    {
       @Override
+      public boolean getDebug()
+      {
+         return false;
+      }
+
+      @Override
       public boolean getErrors()
       {
          return false;
@@ -17,8 +23,8 @@ public interface GlobalOptions
       }
    };
 
-   boolean getHelp();
-
+   boolean getDebug();
    boolean getErrors();
+   boolean getHelp();
 
 }

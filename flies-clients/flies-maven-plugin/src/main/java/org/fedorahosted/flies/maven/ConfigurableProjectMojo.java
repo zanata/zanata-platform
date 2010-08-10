@@ -27,7 +27,7 @@ public abstract class ConfigurableProjectMojo<C extends ConfigurableProjectComma
    /**
     * Project configuration file for Flies client.
     * 
-    * @parameter expression="${flies.project.config}"
+    * @parameter expression="${flies.projectConfig}"
     *            default-value="${basedir}/src/main/config/flies.xml"
     */
    @SuppressWarnings("unused")
@@ -36,7 +36,7 @@ public abstract class ConfigurableProjectMojo<C extends ConfigurableProjectComma
    /**
     * Project slug (id) within Flies server.
     * 
-    * @parameter expression="${flies.project.slug}"
+    * @parameter expression="${flies.projectSlug}"
     */
    @SuppressWarnings("unused")
    private File projectSlug;
@@ -44,7 +44,7 @@ public abstract class ConfigurableProjectMojo<C extends ConfigurableProjectComma
    /**
     * Project version slug (id) within Flies server.
     * 
-    * @parameter expression="${flies.version.slug}"
+    * @parameter expression="${flies.versionSlug}"
     */
    @SuppressWarnings("unused")
    private File versionSlug;

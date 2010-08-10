@@ -18,8 +18,9 @@ import org.kohsuke.args4j.Option;
 
 public class FliesClient implements GlobalOptions
 {
-   private boolean help;
+   private boolean debug;
    private boolean errors;
+   private boolean help;
    private boolean version;
 
    @Argument(index = 1, multiValued = true)
@@ -149,12 +150,24 @@ public class FliesClient implements GlobalOptions
    }
 
    @Override
+   public boolean getDebug()
+   {
+      return debug;
+   }
+
+   @Option(name = "--debug", aliases = { "-X" }, usage = "Enable debug logging")
+   public void setDebug(boolean debug)
+   {
+      this.debug = debug;
+   }
+
+   @Override
    public boolean getErrors()
    {
       return errors;
    }
 
-   @Option(name = "--errors", aliases = { "-e" }, usage = "Output full execution error messages")
+   @Option(name = "--errors", aliases = { "-e" }, usage = "Output full execution error messages (stacktraces)")
    public void setErrors(boolean exceptionTrace)
    {
       this.errors = exceptionTrace;
