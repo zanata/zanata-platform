@@ -22,8 +22,8 @@ public class TestFliesConfig extends TestCase
    JAXBContext jc = JAXBContext.newInstance(FliesConfig.class);
    Unmarshaller unmarshaller = jc.createUnmarshaller();
    Marshaller marshaller = jc.createMarshaller();
-   File fliesProjectXml = new File(System.getProperty("user.dir"), "src/test/resources/flies.xml");
-   File fliesUserFile = new File(System.getProperty("user.home"), ".config/flies.ini");
+   File fliesProjectXml = new File(System.getProperty("user.dir"), "target/flies.xml");
+   File fliesUserFile = new File(System.getProperty("user.dir"), "target/.config/flies.ini");
 
    public TestFliesConfig() throws Exception
    {
