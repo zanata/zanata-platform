@@ -31,7 +31,7 @@ public class RetrieveCommand extends ConfigurableProjectCommand
    @Override
    public String getCommandDescription()
    {
-      return "Retrieves translated text from a Flies project version.";
+      return "Fetches translated text from Flies.";
    }
 
 }
