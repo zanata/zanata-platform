@@ -23,9 +23,9 @@ public class PutProjectCommand extends ConfigurableCommand
 {
    private static final Logger log = LoggerFactory.getLogger(PutProjectCommand.class);
 
-   private String proj;
-   private String name;
-   private String desc;
+   private String projectSlug;
+   private String projectName;
+   private String projectDesc;
 
    public PutProjectCommand() throws JAXBException
    {
@@ -44,40 +44,40 @@ public class PutProjectCommand extends ConfigurableCommand
       return "Creates or updates a Flies project.";
    }
 
-   @Option(name = "--proj", metaVar = "PROJ", usage = "Flies project ID", required = true)
-   public void setProj(String id)
+   @Option(name = "--project-slug", metaVar = "PROJ", usage = "Flies project slug/ID", required = true)
+   public void setProjectSlug(String id)
    {
-      this.proj = id;
+      this.projectSlug = id;
    }
 
-   @Option(name = "--name", metaVar = "NAME", required = true, usage = "Flies project name")
-   public void setName(String name)
+   @Option(name = "--project-name", metaVar = "NAME", required = true, usage = "Flies project name")
+   public void setProjectName(String name)
    {
-      this.name = name;
+      this.projectName = name;
    }
 
-   @Option(name = "--desc", metaVar = "DESC", required = true, usage = "Flies project description")
-   public void setDesc(String desc)
+   @Option(name = "--project-desc", metaVar = "DESC", required = true, usage = "Flies project description")
+   public void setProjectDesc(String desc)
    {
-      this.desc = desc;
+      this.projectDesc = desc;
    }
 
    @Override
    public void run() throws JAXBException, URISyntaxException, IOException
    {
       Project project = new Project();
-      project.setId(proj);
-      project.setName(name);
-      project.setDescription(desc);
+      project.setId(projectSlug);
+      project.setName(projectName);
+      project.setDescription(projectDesc);
 
       log.debug("{}", project);
 
       URI base = getUrl().toURI();
       // send project to rest api
       FliesClientRequestFactory factory = new FliesClientRequestFactory(base, getUsername(), getKey());
-      IProjectResource projResource = factory.getProject(proj);
-      URI uri = factory.getProjectURI(proj);
-      ClientResponse response = projResource.put(project);
+      IProjectResource projResource = factory.getProject(projectSlug);
+      URI uri = factory.getProjectURI(projectSlug);
+      ClientResponse<?> response = projResource.put(project);
       ClientUtility.checkResult(response, uri);
    }
 }

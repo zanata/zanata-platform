@@ -13,9 +13,9 @@ public class PutProjectMojo extends ConfigurableMojo<PutProjectCommand>
 {
 
    /**
-    * Flies project ID
+    * Flies project slug/ID
     * 
-    * @parameter expression="${flies.projectSlug}"
+    * @parameter expression="${flies.project.slug}"
     * @required
     */
    @SuppressWarnings("unused")
@@ -24,7 +24,7 @@ public class PutProjectMojo extends ConfigurableMojo<PutProjectCommand>
    /**
     * Flies project name
     * 
-    * @parameter expression="${flies.projectName}"
+    * @parameter expression="${flies.project.name}"
     * @required
     */
    @SuppressWarnings("unused")
@@ -33,7 +33,7 @@ public class PutProjectMojo extends ConfigurableMojo<PutProjectCommand>
    /**
     * Flies project description
     * 
-    * @parameter expression="${flies.projectDesc}"
+    * @parameter expression="${flies.project.desc}"
     * @required
     */
    @SuppressWarnings("unused")
@@ -46,17 +46,17 @@ public class PutProjectMojo extends ConfigurableMojo<PutProjectCommand>
 
    public void setProjectSlug(String id)
    {
-      getCommand().setProj(id);
+      getCommand().setProjectSlug(id);
    }
 
    public void setProjectName(String name)
    {
-      getCommand().setName(name);
+      getCommand().setProjectName(name);
    }
 
    public void setProjectDesc(String desc)
    {
-      getCommand().setDesc(desc);
+      getCommand().setProjectDesc(desc);
    }
 
 }
