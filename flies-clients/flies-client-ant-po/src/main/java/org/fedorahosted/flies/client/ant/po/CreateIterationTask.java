@@ -17,6 +17,9 @@ import org.fedorahosted.flies.rest.dto.ProjectIteration;
 import org.jboss.resteasy.client.ClientResponse;
 import org.kohsuke.args4j.Option;
 
+/**
+ * @deprecated See PutVersionCommand
+ */
 public class CreateIterationTask extends FliesTask
 {
    private String user;
