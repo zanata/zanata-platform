@@ -19,7 +19,7 @@ public class PutUserMojo extends ConfigurableMojo<PutUserCommand>
     * @required
     */
    @SuppressWarnings("unused")
-   private String name;
+   private String userName;
 
    /**
     * Email address of the user
@@ -28,7 +28,7 @@ public class PutUserMojo extends ConfigurableMojo<PutUserCommand>
     * @required
     */
    @SuppressWarnings("unused")
-   private String email;
+   private String userEmail;
 
    /**
     * Login/username of the user
@@ -46,7 +46,7 @@ public class PutUserMojo extends ConfigurableMojo<PutUserCommand>
     * @required
     */
    @SuppressWarnings("unused")
-   private String passwordHash;
+   private String userPasswordHash;
 
    /**
     * User's api key (empty for none)
@@ -64,7 +64,7 @@ public class PutUserMojo extends ConfigurableMojo<PutUserCommand>
     * @required
     */
    @SuppressWarnings("unused")
-   private String roles;
+   private String userRoles;
 
    /**
     * Language teams for the user
@@ -73,7 +73,7 @@ public class PutUserMojo extends ConfigurableMojo<PutUserCommand>
     * @required
     */
    @SuppressWarnings("unused")
-   private String langs;
+   private String userLangs;
 
    /**
     * Whether the account should be disabled
@@ -82,21 +82,21 @@ public class PutUserMojo extends ConfigurableMojo<PutUserCommand>
     * @required
     */
    @SuppressWarnings("unused")
-   private boolean disabled;
+   private boolean userDisabled;
 
    public PutUserMojo() throws Exception
    {
       super(new PutUserCommand());
    }
 
-   public void setName(String name)
+   public void setUserName(String name)
    {
-      getCommand().setName(name);
+      getCommand().setUserName(name);
    }
 
-   public void setEmail(String email)
+   public void setUserEmail(String email)
    {
-      getCommand().setEmail(email);
+      getCommand().setUserEmail(email);
    }
 
    public void setUserUsername(String username)
@@ -104,9 +104,9 @@ public class PutUserMojo extends ConfigurableMojo<PutUserCommand>
       getCommand().setUserUsername(username);
    }
 
-   public void setPasswordHash(String passwordHash)
+   public void setUserPasswordHash(String passwordHash)
    {
-      getCommand().setPasswordHash(passwordHash);
+      getCommand().setUserPasswordHash(passwordHash);
    }
 
    public void setUserKey(String userKey)
@@ -114,18 +114,18 @@ public class PutUserMojo extends ConfigurableMojo<PutUserCommand>
       getCommand().setUserKey(userKey);
    }
 
-   public void setLangs(String langs)
+   public void setUserLangs(String langs)
    {
-      getCommand().setLangs(langs);
+      getCommand().setUserLangs(langs);
    }
 
-   public void setRoles(String roles)
+   public void setUserRoles(String roles)
    {
-      getCommand().setRoles(roles);
+      getCommand().setUserRoles(roles);
    }
 
-   public void setDisabled(boolean disabled)
+   public void setUserDisabled(boolean disabled)
    {
-      getCommand().setDisabled(disabled);
+      getCommand().setUserDisabled(disabled);
    }
 }

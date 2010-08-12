@@ -24,14 +24,14 @@ public class PutUserCommand extends ConfigurableCommand
 {
    private static final Logger log = LoggerFactory.getLogger(PutUserCommand.class);
 
-   private String name;
-   private String email;
+   private String userName;
+   private String userEmail;
    private String userUsername;
-   private String passwordHash;
+   private String userPasswordHash;
    private String userKey;
-   private Set<String> roles = new HashSet<String>();
-   private Set<String> langs = new HashSet<String>();
-   private boolean disabled;
+   private Set<String> userRoles = new HashSet<String>();
+   private Set<String> userLangs = new HashSet<String>();
+   private boolean userDisabled;
 
    public PutUserCommand() throws JAXBException
    {
@@ -53,34 +53,34 @@ public class PutUserCommand extends ConfigurableCommand
    public void run() throws Exception
    {
       Account account = new Account();
-      account.setEmail(email);
-      account.setName(name);
+      account.setEmail(userEmail);
+      account.setName(userName);
       account.setUsername(userUsername);
-      account.setPasswordHash(passwordHash);
+      account.setPasswordHash(userPasswordHash);
       account.setApiKey(userKey);
-      account.setEnabled(!disabled);
-      account.setRoles(roles);
-      account.setTribes(langs);
+      account.setEnabled(!userDisabled);
+      account.setRoles(userRoles);
+      account.setTribes(userLangs);
 
       log.debug("{}", account);
 
       FliesClientRequestFactory factory = new FliesClientRequestFactory(getUrl().toURI(), getUsername(), getKey());
       IAccountResource iterResource = factory.getAccount(userUsername);
       URI uri = factory.getAccountURI(userUsername);
-      ClientResponse response = iterResource.put(account);
+      ClientResponse<?> response = iterResource.put(account);
       ClientUtility.checkResult(response, uri);
    }
 
-   @Option(name = "--name", required = true, usage = "Full name of the user")
-   public void setName(String name)
+   @Option(name = "--user-name", required = true, usage = "Full name of the user")
+   public void setUserName(String name)
    {
-      this.name = name;
+      this.userName = name;
    }
 
-   @Option(name = "--email", required = true, usage = "Email address of the user")
-   public void setEmail(String email)
+   @Option(name = "--user-email", required = true, usage = "Email address of the user")
+   public void setUserEmail(String email)
    {
-      this.email = email;
+      this.userEmail = email;
    }
 
    @Option(name = "--user-username", required = true, usage = "Login/username of the user")
@@ -89,10 +89,10 @@ public class PutUserCommand extends ConfigurableCommand
       this.userUsername = username;
    }
 
-   @Option(name = "--passwordhash", required = true, usage = "User password hash")
-   public void setPasswordHash(String passwordHash)
+   @Option(name = "--user-passwordhash", required = true, usage = "User password hash")
+   public void setUserPasswordHash(String passwordHash)
    {
-      this.passwordHash = passwordHash;
+      this.userPasswordHash = passwordHash;
    }
 
    @Option(name = "--user-key", required = true, usage = "User's api key (empty for none)")
@@ -104,26 +104,26 @@ public class PutUserCommand extends ConfigurableCommand
          this.userKey = userKey;
    }
 
-   @Option(name = "--langs", required = true, usage = "Language teams for the user")
-   public void setLangs(String langs)
+   @Option(name = "--user-langs", required = true, usage = "Language teams for the user")
+   public void setUserLangs(String langs)
    {
-      this.langs.clear();
+      this.userLangs.clear();
       if (langs != null)
-         this.langs.addAll(Arrays.asList(langs.split(",")));
+         this.userLangs.addAll(Arrays.asList(langs.split(",")));
    }
 
-   @Option(name = "--roles", required = true, usage = "Security roles for the user")
-   public void setRoles(String roles)
+   @Option(name = "--user-roles", required = true, usage = "Security roles for the user")
+   public void setUserRoles(String roles)
    {
-      this.roles.clear();
+      this.userRoles.clear();
       if (roles != null)
-         this.roles.addAll(Arrays.asList(roles.split(",")));
+         this.userRoles.addAll(Arrays.asList(roles.split(",")));
    }
 
-   @Option(name = "--disabled", required = false, usage = "Whether the account should be disabled")
-   public void setDisabled(boolean disabled)
+   @Option(name = "--user-disabled", required = false, usage = "Whether the account should be disabled")
+   public void setUserDisabled(boolean disabled)
    {
-      this.disabled = disabled;
+      this.userDisabled = disabled;
    }
 
 }
