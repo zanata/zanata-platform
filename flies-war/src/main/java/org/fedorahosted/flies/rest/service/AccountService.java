@@ -145,8 +145,11 @@ public class AccountService
       {
          HAccountRole hAccountRole = accountRoleDAO.findByName(role);
          if (hAccountRole == null)
+         {
             // generate error for missing role
+            log.debug("Invalid role '{0}'", role);
             throw new NoLogWebApplicationException(Response.status(Status.BAD_REQUEST).entity("Invalid role '"+role+"'").build());
+         }
          to.getRoles().add(hAccountRole);
       }
 

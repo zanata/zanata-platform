@@ -5,16 +5,18 @@ import java.util.Arrays;
 
 import javax.ws.rs.core.Response;
 
+import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.client.core.BaseClientResponse;
 
 public class ClientUtility
 {
-   public static void checkResult(Response response, URI uri)
+   public static void checkResult(ClientResponse response, URI uri)
    {
       if (response.getStatus() >= 399)
       {
          String annotString = "";
          String uriString = "";
+         String entity = "";
          if (response instanceof BaseClientResponse)
          {
             BaseClientResponse<?> resp = (BaseClientResponse<?>) response;
@@ -24,7 +26,15 @@ public class ClientUtility
          {
             uriString = ", uri: " + uri;
          }
-         String msg = "operation returned " + response.getStatus() + ": " + Response.Status.fromStatusCode(response.getStatus()) + uriString + annotString;
+         try
+         {
+            entity = ": " + response.getEntity(String.class);
+         }
+         finally
+         {
+            // ignore
+         }
+         String msg = "operation returned " + response.getStatus() + " (" + Response.Status.fromStatusCode(response.getStatus()) + ")" + entity + uriString + annotString;
          throw new RuntimeException(msg);
       }
    }

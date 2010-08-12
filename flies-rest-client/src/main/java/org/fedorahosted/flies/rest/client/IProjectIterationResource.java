@@ -4,7 +4,6 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
 
 import org.fedorahosted.flies.rest.MediaTypes;
 import org.fedorahosted.flies.rest.dto.ProjectIteration;
@@ -20,7 +19,7 @@ public interface IProjectIterationResource
 
    @PUT
    @Consumes( { MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML, MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON })
-   public Response put(ProjectIteration project);
+   public ClientResponse put(ProjectIteration project);
 
    // @Path("/documents")
    // public IDocumentsResource getDocuments();

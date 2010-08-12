@@ -3,7 +3,6 @@ package org.fedorahosted.flies.rest.service;
 import java.io.InputStream;
 import java.io.Serializable;
 
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -14,9 +13,12 @@ import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
 import org.jboss.resteasy.spi.NoLogWebApplicationException;
 import org.jboss.seam.resteasy.SeamResteasyProviderFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RestUtils
 {
+   private static final Logger log = LoggerFactory.getLogger(RestUtils.class);
 
    /**
     * Validate Hibernate Validator based constraints.
@@ -48,6 +50,7 @@ public class RestUtils
                message.append(invalidValue.getMessage());
                message.append("\n");
             }
+            log.debug("Bad Request: {}", message);
             throw new NoLogWebApplicationException(Response.status(Status.BAD_REQUEST).entity(message.toString()).build());
          }
       }
@@ -67,6 +70,7 @@ public class RestUtils
       }
       catch (Exception e)
       {
+         log.debug("Bad Request: Unable to read request body:", e);
          throw new NoLogWebApplicationException(Response.status(Status.BAD_REQUEST).entity("Unable to read request body: " + e.getMessage()).build());
       }
 

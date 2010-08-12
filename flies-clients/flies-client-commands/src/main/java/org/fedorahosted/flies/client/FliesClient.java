@@ -7,10 +7,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.fedorahosted.flies.client.commands.ArgsUtil;
-import org.fedorahosted.flies.client.commands.FliesCommand;
 import org.fedorahosted.flies.client.commands.BasicOptions;
+import org.fedorahosted.flies.client.commands.FliesCommand;
+import org.fedorahosted.flies.client.commands.ListLocalCommand;
 import org.fedorahosted.flies.client.commands.ListRemoteCommand;
+import org.fedorahosted.flies.client.commands.PublishCommand;
 import org.fedorahosted.flies.client.commands.PutProjectCommand;
+import org.fedorahosted.flies.client.commands.PutUserCommand;
+import org.fedorahosted.flies.client.commands.PutVersionCommand;
+import org.fedorahosted.flies.client.commands.RetrieveCommand;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -38,8 +43,13 @@ public class FliesClient implements BasicOptions
 
    public FliesClient()
    {
+      getCommandMap().put("listlocal", ListLocalCommand.class);
       getCommandMap().put("listremote", ListRemoteCommand.class);
+      getCommandMap().put("publish", PublishCommand.class);
+      getCommandMap().put("retrieve", RetrieveCommand.class);
       getCommandMap().put("putproject", PutProjectCommand.class);
+      getCommandMap().put("putuser", PutUserCommand.class);
+      getCommandMap().put("putversion", PutVersionCommand.class);
    }
 
    public String getCommandName()

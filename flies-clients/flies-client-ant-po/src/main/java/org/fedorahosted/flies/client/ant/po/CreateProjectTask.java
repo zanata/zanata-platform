@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -15,6 +14,7 @@ import org.fedorahosted.flies.rest.client.ClientUtility;
 import org.fedorahosted.flies.rest.client.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.IProjectResource;
 import org.fedorahosted.flies.rest.dto.Project;
+import org.jboss.resteasy.client.ClientResponse;
 import org.kohsuke.args4j.Option;
 
 /**
@@ -73,7 +73,7 @@ public class CreateProjectTask extends FliesTask
       FliesClientRequestFactory factory = new FliesClientRequestFactory(base, user, apiKey);
       IProjectResource projResource = factory.getProject(proj);
       URI uri = factory.getProjectURI(proj);
-      Response response = projResource.put(project);
+      ClientResponse response = projResource.put(project);
       ClientUtility.checkResult(response, uri);
    }
 

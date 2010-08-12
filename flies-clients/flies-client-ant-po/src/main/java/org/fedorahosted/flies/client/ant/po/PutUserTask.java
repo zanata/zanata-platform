@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -18,8 +17,12 @@ import org.fedorahosted.flies.rest.client.ClientUtility;
 import org.fedorahosted.flies.rest.client.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.IAccountResource;
 import org.fedorahosted.flies.rest.dto.Account;
+import org.jboss.resteasy.client.ClientResponse;
 import org.kohsuke.args4j.Option;
 
+/**
+ * @deprecated See PutUserCommand
+ */
 public class PutUserTask extends FliesTask
 {
 
@@ -93,7 +96,7 @@ public class PutUserTask extends FliesTask
       FliesClientRequestFactory factory = new FliesClientRequestFactory(base, user, apiKey);
       IAccountResource iterResource = factory.getAccount(username);
       URI uri = factory.getAccountURI(username);
-      Response response = iterResource.put(account);
+      ClientResponse response = iterResource.put(account);
       ClientUtility.checkResult(response, uri);
    }
 

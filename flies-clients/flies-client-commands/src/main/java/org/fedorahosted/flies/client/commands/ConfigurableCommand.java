@@ -228,7 +228,7 @@ public abstract class ConfigurableCommand implements FliesCommand
       return username;
    }
 
-   @Option(name = "--user", metaVar = "USER", usage = "Flies user name", required = true)
+   @Option(name = "--username", metaVar = "USER", usage = "Flies user name", required = true)
    public void setUsername(String username)
    {
       this.username = username;

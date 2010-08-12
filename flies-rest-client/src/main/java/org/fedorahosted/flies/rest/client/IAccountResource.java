@@ -22,6 +22,6 @@ public interface IAccountResource
    @PUT
    @Consumes(
    {MediaTypes.APPLICATION_FLIES_ACCOUNT_XML, MediaTypes.APPLICATION_FLIES_ACCOUNT_JSON})
-   public Response put(Account account);
+   public ClientResponse put(Account account);
 
 }
