@@ -43,10 +43,10 @@ public class FliesClient implements BasicOptions
 
    public FliesClient()
    {
-      getCommandMap().put("listlocal", ListLocalCommand.class);
+      // getCommandMap().put("listlocal", ListLocalCommand.class);
       getCommandMap().put("listremote", ListRemoteCommand.class);
-      getCommandMap().put("publish", PublishCommand.class);
-      getCommandMap().put("retrieve", RetrieveCommand.class);
+      // getCommandMap().put("publish", PublishCommand.class);
+      // getCommandMap().put("retrieve", RetrieveCommand.class);
       getCommandMap().put("putproject", PutProjectCommand.class);
       getCommandMap().put("putuser", PutUserCommand.class);
       getCommandMap().put("putversion", PutVersionCommand.class);
