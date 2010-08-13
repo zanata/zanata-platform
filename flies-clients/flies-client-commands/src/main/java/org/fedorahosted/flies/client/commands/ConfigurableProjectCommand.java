@@ -42,10 +42,8 @@ public abstract class ConfigurableProjectCommand extends ConfigurableCommand
 {
 
    private static final Logger log = LoggerFactory.getLogger(ConfigurableProjectCommand.class);
-
-   private JAXBContext jc = JAXBContext.newInstance(FliesConfig.class);
-
-   private Unmarshaller unmarshaller = jc.createUnmarshaller();
+   private final JAXBContext jc;
+   private final Unmarshaller unmarshaller;
 
    /**
     * Project configuration file for Flies client.
@@ -58,8 +56,17 @@ public abstract class ConfigurableProjectCommand extends ConfigurableCommand
    private String project;
    private String projectVersion;
 
-   public ConfigurableProjectCommand() throws JAXBException
+   public ConfigurableProjectCommand()
    {
+      try
+      {
+         jc = JAXBContext.newInstance(FliesConfig.class);
+         unmarshaller = jc.createUnmarshaller();
+      }
+      catch (JAXBException e)
+      {
+         throw new RuntimeException(e);
+      }
    }
 
    /**

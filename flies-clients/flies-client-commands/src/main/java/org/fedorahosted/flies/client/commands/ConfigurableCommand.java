@@ -188,7 +188,7 @@ public abstract class ConfigurableCommand implements FliesCommand
       return key;
    }
 
-   @Option(name = "--key", metaVar = "KEY", usage = "Flies API key (from Flies Profile page)", required = true)
+   @Option(name = "--key", metaVar = "KEY", usage = "Flies API key (from Flies Profile page)")
    public void setKey(String key)
    {
       this.key = key;
@@ -211,13 +211,13 @@ public abstract class ConfigurableCommand implements FliesCommand
       return url;
    }
 
-   @Option(name = "--url", metaVar = "URL", usage = "Flies base URL, eg http://flies.example.com/flies/", required = true)
+   @Option(name = "--url", metaVar = "URL", usage = "Flies base URL, eg http://flies.example.com/flies/")
    public void setUrl(URL url)
    {
       this.url = url;
    }
 
-   @Option(name = "--user-config", metaVar = "FILE", usage = "Flies user configuration, eg /home/user/.config/flies.ini", required = false)
+   @Option(name = "--user-config", metaVar = "FILE", usage = "Flies user configuration, eg /home/user/.config/flies.ini")
    public void setUserConfig(File userConfig)
    {
       this.userConfig = userConfig;
@@ -228,7 +228,7 @@ public abstract class ConfigurableCommand implements FliesCommand
       return username;
    }
 
-   @Option(name = "--username", metaVar = "USER", usage = "Flies user name", required = true)
+   @Option(name = "--username", metaVar = "USER", usage = "Flies user name")
    public void setUsername(String username)
    {
       this.username = username;

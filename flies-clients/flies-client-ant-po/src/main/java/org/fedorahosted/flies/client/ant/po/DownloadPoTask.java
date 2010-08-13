@@ -30,7 +30,7 @@ public class DownloadPoTask extends FliesTask
    private String src;
    private boolean exportPot;
 
-   public static void main(String[] args) throws Exception
+   public static void main(String[] args)
    {
       DownloadPoTask task = new DownloadPoTask();
       ArgsUtil.processArgs(task, args, BasicOptions.EMPTY);

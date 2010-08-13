@@ -44,7 +44,7 @@ public class UploadPoTask extends FliesTask
 
    private boolean validate;
 
-   public static void main(String[] args) throws Exception
+   public static void main(String[] args)
    {
       UploadPoTask task = new UploadPoTask();
       ArgsUtil.processArgs(task, args, BasicOptions.EMPTY);

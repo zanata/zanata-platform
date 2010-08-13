@@ -15,7 +15,7 @@ public class VersionUtility
 
    private static final Logger log = LoggerFactory.getLogger(VersionUtility.class);
 
-   public static void printJarVersion(PrintStream out) throws IOException
+   public static void printJarVersion(PrintStream out)
    {
       Class<VersionUtility> clazz = VersionUtility.class;
 
@@ -25,9 +25,9 @@ public class VersionUtility
       if (codeSource != null)
       {
          String jarLocation = codeSource.getLocation().toString();
-         URL manifestUrl = new URL("jar:" + jarLocation + "!/META-INF/MANIFEST.MF");
          try
          {
+            URL manifestUrl = new URL("jar:" + jarLocation + "!/META-INF/MANIFEST.MF");
             Manifest mf = new Manifest(manifestUrl.openStream());
             Attributes atts = mf.getMainAttributes();
 

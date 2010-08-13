@@ -22,8 +22,6 @@ package org.fedorahosted.flies.client.commands;
 
 import java.util.List;
 
-import javax.xml.bind.JAXBException;
-
 import org.fedorahosted.flies.rest.client.ClientUtility;
 import org.fedorahosted.flies.rest.client.FliesClientRequestFactory;
 import org.fedorahosted.flies.rest.client.ITranslationResources;
@@ -37,12 +35,12 @@ import org.jboss.resteasy.client.ClientResponse;
 public class ListRemoteCommand extends ConfigurableProjectCommand implements FliesCommand
 {
 
-   public ListRemoteCommand() throws JAXBException
+   public ListRemoteCommand()
    {
       super();
    }
 
-   public static void main(String[] args) throws Exception
+   public static void main(String[] args)
    {
       ListRemoteCommand me = new ListRemoteCommand();
       ArgsUtil.processArgs(me, args, BasicOptions.EMPTY);

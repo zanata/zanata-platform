@@ -14,7 +14,6 @@ import org.apache.commons.configuration.FileConfiguration;
 import org.apache.commons.configuration.HierarchicalINIConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
 
-// FIXME make this a real test (ie add assertions)
 public class TestFliesConfig extends TestCase
 {
    JAXBContext jc = JAXBContext.newInstance(FliesConfig.class);

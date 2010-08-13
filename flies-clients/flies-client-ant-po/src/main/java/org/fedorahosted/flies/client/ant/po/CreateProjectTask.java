@@ -30,7 +30,7 @@ public class CreateProjectTask extends FliesTask
    private String name;
    private String desc;
 
-   public static void main(String[] args) throws Exception
+   public static void main(String[] args)
    {
       CreateProjectTask task = new CreateProjectTask();
       ArgsUtil.processArgs(task, args, BasicOptions.EMPTY);

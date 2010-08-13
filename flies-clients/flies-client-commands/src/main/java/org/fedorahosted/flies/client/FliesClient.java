@@ -1,21 +1,19 @@
 package org.fedorahosted.flies.client;
 
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.fedorahosted.flies.client.commands.AppAbortStrategy;
 import org.fedorahosted.flies.client.commands.ArgsUtil;
 import org.fedorahosted.flies.client.commands.BasicOptions;
 import org.fedorahosted.flies.client.commands.FliesCommand;
-import org.fedorahosted.flies.client.commands.ListLocalCommand;
 import org.fedorahosted.flies.client.commands.ListRemoteCommand;
-import org.fedorahosted.flies.client.commands.PublishCommand;
 import org.fedorahosted.flies.client.commands.PutProjectCommand;
 import org.fedorahosted.flies.client.commands.PutUserCommand;
 import org.fedorahosted.flies.client.commands.PutVersionCommand;
-import org.fedorahosted.flies.client.commands.RetrieveCommand;
+import org.fedorahosted.flies.client.commands.SystemExitStrategy;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -23,6 +21,7 @@ import org.kohsuke.args4j.Option;
 
 public class FliesClient implements BasicOptions
 {
+   private String command;
    private boolean debug;
    private boolean errors;
    private boolean help;
@@ -31,18 +30,28 @@ public class FliesClient implements BasicOptions
 
    @Argument(index = 1, multiValued = true)
    private final List<String> arguments = new ArrayList<String>();
-   private String command;
    private final CmdLineParser parser = new CmdLineParser(this);
-   private final LinkedHashMap<String, Class<? extends FliesCommand>> commandMap = new LinkedHashMap<String, Class<? extends FliesCommand>>();
+   private final LinkedHashMap<String, Class<? extends FliesCommand>> commandMap = createLinkedHashMap();
+   private final AppAbortStrategy abortStrategy;
+   private final PrintStream out;
+   private final PrintStream err;
 
-   public static void main(String[] args) throws Exception
+   public static void main(String[] args)
    {
-      FliesClient tool = new FliesClient();
+      FliesClient tool = new FliesClient(new SystemExitStrategy(), System.out, System.err);
       tool.processArgs(args);
    }
 
-   public FliesClient()
+   private static <K, V> LinkedHashMap<K, V> createLinkedHashMap()
    {
+      return new LinkedHashMap<K, V>();
+   }
+
+   public FliesClient(AppAbortStrategy strategy, PrintStream out, PrintStream err)
+   {
+      this.abortStrategy = strategy;
+      this.out = out;
+      this.err = err;
       // getCommandMap().put("listlocal", ListLocalCommand.class);
       getCommandMap().put("listremote", ListRemoteCommand.class);
       // getCommandMap().put("publish", PublishCommand.class);
@@ -67,7 +76,7 @@ public class FliesClient implements BasicOptions
       return commandMap;
    }
 
-   protected void processArgs(String[] args) throws Exception
+   protected void processArgs(String... args)
    {
       try
       {
@@ -77,19 +86,19 @@ public class FliesClient implements BasicOptions
       {
          if (!getHelp() && args.length != 0)
          {
-            System.err.println(e.getMessage());
-            printHelp(System.err);
-            System.exit(1);
+            err.println(e.getMessage());
+            printHelp(err);
+            abortStrategy.abort();
          }
       }
       if (getHelp() && command == null)
       {
-         printHelp(System.out);
+         printHelp(out);
          return;
       }
       if (version)
       {
-         VersionUtility.printJarVersion(System.out);
+         VersionUtility.printJarVersion(out);
          return;
       }
       if ("help".equals(command))
@@ -101,7 +110,7 @@ public class FliesClient implements BasicOptions
       }
       if (command == null)
       {
-         printHelp(System.out);
+         printHelp(out);
          return;
       }
       String[] otherArgs = arguments.toArray(new String[0]);
@@ -110,9 +119,9 @@ public class FliesClient implements BasicOptions
          Class<? extends FliesCommand> taskClass = getCommandMap().get(command);
          if (taskClass == null)
          {
-            System.err.println("Unknown command '" + command + "'");
-            printHelp(System.err);
-            System.exit(1);
+            err.println("Unknown command '" + command + "'");
+            printHelp(err);
+            abortStrategy.abort();
          }
          else
          {
@@ -122,11 +131,11 @@ public class FliesClient implements BasicOptions
       }
       catch (Exception e)
       {
-         ArgsUtil.handleException(e, errors);
+         ArgsUtil.handleException(e, errors, abortStrategy);
       }
    }
 
-   private void printHelp(PrintStream out) throws IOException
+   private void printHelp(PrintStream out)
    {
       out.println("Usage: " + getCommandName() + " [OPTION]... <command> [COMMANDOPTION]...");
       out.println(getCommandDescription());

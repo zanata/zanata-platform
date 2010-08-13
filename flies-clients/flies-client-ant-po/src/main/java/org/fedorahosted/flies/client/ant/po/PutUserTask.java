@@ -48,7 +48,7 @@ public class PutUserTask extends FliesTask
 
    private boolean disabled;
 
-   public static void main(String[] args) throws Exception
+   public static void main(String[] args)
    {
       PutUserTask task = new PutUserTask();
       ArgsUtil.processArgs(task, args, BasicOptions.EMPTY);

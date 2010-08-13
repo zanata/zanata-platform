@@ -41,7 +41,7 @@ import org.fedorahosted.flies.common.Namespaces;
 @XmlRootElement(name = "config")
 public class FliesConfig implements Serializable
 {
-
+   private static final long serialVersionUID = 1L;
    private List<DocSet> docSets = new ArrayList<DocSet>();
    private String project;
    private URL url;

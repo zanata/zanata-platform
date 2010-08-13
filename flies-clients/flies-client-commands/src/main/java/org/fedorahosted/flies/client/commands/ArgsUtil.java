@@ -3,12 +3,7 @@
  */
 package org.fedorahosted.flies.client.commands;
 
-import java.io.IOException;
 import java.io.PrintStream;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-
-import javax.xml.bind.JAXBException;
 
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -22,8 +17,19 @@ import org.slf4j.LoggerFactory;
 public class ArgsUtil
 {
    private static final Logger log = LoggerFactory.getLogger(ArgsUtil.class);
+   private final AppAbortStrategy abortStrategy;
 
-   public static void processArgs(FliesCommand cmd, String[] args, BasicOptions globals) throws IOException, JAXBException, MalformedURLException, URISyntaxException
+   public ArgsUtil(AppAbortStrategy strategy)
+   {
+      this.abortStrategy = strategy;
+   }
+
+   public static void processArgs(FliesCommand cmd, String[] args, BasicOptions globals)
+   {
+      new ArgsUtil(new SystemExitStrategy()).process(cmd, args, globals);
+   }
+
+   public void process(FliesCommand cmd, String[] args, BasicOptions globals)
    {
       CmdLineParser parser = new CmdLineParser(cmd);
 
@@ -63,7 +69,7 @@ public class ArgsUtil
             System.err.println(e.getMessage());
             printHelp(cmd, System.err);
             parser.printUsage(System.err);
-            System.exit(1);
+            abortStrategy.abort();
          }
       }
 
@@ -71,7 +77,7 @@ public class ArgsUtil
       {
          printHelp(cmd, System.out);
          parser.printUsage(System.out);
-         System.exit(0);
+         return;
       }
 
       try
@@ -82,7 +88,7 @@ public class ArgsUtil
       }
       catch (Exception e)
       {
-         handleException(e, globals.getErrors());
+         handleException(e, globals.getErrors(), abortStrategy);
       }
       try
       {
@@ -96,7 +102,7 @@ public class ArgsUtil
       }
       catch (Exception e)
       {
-         handleException(e, cmd.getErrors());
+         handleException(e, cmd.getErrors(), abortStrategy);
       }
    }
 
@@ -134,14 +140,14 @@ public class ArgsUtil
       root.setLevel(org.apache.log4j.Level.ERROR);
    }
 
-   private static void printHelp(FliesCommand cmd, PrintStream output) throws IOException
+   private static void printHelp(FliesCommand cmd, PrintStream output)
    {
       output.println("Usage: " + cmd.getCommandName() + " [options]");
       output.println(cmd.getCommandDescription());
       output.println();
    }
 
-   public static void handleException(Exception e, boolean outputErrors)
+   public static void handleException(Exception e, boolean outputErrors, AppAbortStrategy abortStrategy)
    {
       if (outputErrors)
       {
@@ -152,7 +158,7 @@ public class ArgsUtil
          log.error("Execution failed: " + e.getMessage());
          log.error("Use -e/--errors for full stack trace (or when reporting bugs)");
       }
-      System.exit(1);
+      abortStrategy.abort();
    }
 
 }

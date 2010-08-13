@@ -30,7 +30,7 @@ public class CreateIterationTask extends FliesTask
    private String name;
    private String desc;
 
-   public static void main(String[] args) throws Exception
+   public static void main(String[] args)
    {
       CreateIterationTask task = new CreateIterationTask();
       ArgsUtil.processArgs(task, args, BasicOptions.EMPTY);
