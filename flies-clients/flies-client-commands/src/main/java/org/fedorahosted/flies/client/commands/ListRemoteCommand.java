@@ -32,7 +32,7 @@ import org.jboss.resteasy.client.ClientResponse;
  * @author Sean Flanigan <sflaniga@redhat.com>
  *
  */
-public class ListRemoteCommand extends ConfigurableProjectCommand implements FliesCommand
+public class ListRemoteCommand extends ConfigurableProjectCommand
 {
 
    public ListRemoteCommand()
