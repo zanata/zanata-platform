@@ -22,6 +22,8 @@ public class TribeDAOTest extends FliesDbunitJpaTest
    {
       beforeTestOperations.add(new DataSetOperation("META-INF/testdata/AccountData.dbunit.xml",
             DatabaseOperation.CLEAN_INSERT));
+      beforeTestOperations.add(new DataSetOperation("META-INF/testdata/LocalesData.dbunit.xml",
+              DatabaseOperation.CLEAN_INSERT));
       beforeTestOperations.add(new DataSetOperation("META-INF/testdata/TribesData.dbunit.xml",
             DatabaseOperation.CLEAN_INSERT));
    }
