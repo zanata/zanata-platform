@@ -1230,20 +1230,6 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
-
-		<!-- NEW jboss.org third-party repo  -->
-		<repository>
-			<id>repository.jboss.org-thirdparty-releases</id>
-			<name>JBoss Repository thirdparty-releases</name>
-			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-				<updatePolicy>never</updatePolicy>
-			</snapshots>
-		</repository>
 	</repositories>
 
 </project>
