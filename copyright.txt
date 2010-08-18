@@ -12,4 +12,5 @@ James Ni <jni@redhat.com>                      Project Contributor
 Sean Flanigan <sflaniga@redhat.com>            Project Contributor
 Ding-Yi Chen <dchen@redhat.com>                Project Contributor
 Caius Carlos Chance <cchance@redhat.com>       Project Contributor
+Helen Ding <hding@redhat.com>                  Project Contributor
 
