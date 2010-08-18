@@ -364,7 +364,7 @@
 		<repository>
 			<id>openl10n-public-repository-group</id>
 			<name>OpenL10n Public Repository Group</name>
-			<url>http://openl10n.net/nexus/content/groups/public</url>
+			<url>http://nexus.openl10n.net/content/groups/public</url>
 			<layout>default</layout>
 			<releases>
 				<enabled>true</enabled>
@@ -380,7 +380,7 @@
 		<pluginRepository>
 			<id>openl10n-public-repository-group</id>
 			<name>OpenL10n Public Repository Group</name>
-			<url>http://openl10n.net/nexus/content/groups/public</url>
+			<url>http://nexus.openl10n.net/content/groups/public</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
