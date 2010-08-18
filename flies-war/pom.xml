@@ -1202,34 +1202,4 @@
 
 	</dependencies>
 
-	<repositories>
-
-		<repository>
-			<id>gwt-presenter-repo</id>
-			<name>gwt-presenter-repo</name>
-			<url>http://gwt-presenter.googlecode.com/svn/maven2/</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-
-		<repository>
-			<id>gwt-dispatch-repo</id>
-			<name>gwt-dispatch-repo</name>
-			<url>http://gwt-dispatch.googlecode.com/svn/maven2/</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-
-		<repository>
-			<id>openl10n-repo</id>
-			<name>openl10n-repo</name>
-			<url>http://openl10n.net/maven2/releases</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-
 </project>

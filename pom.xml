@@ -361,128 +361,33 @@
 	</dependencyManagement>
 
 	<repositories>
-
-		<!-- NEW jboss.org repo  -->
 		<repository>
-			<id>repository.jboss.org-releases</id>
-			<name>JBoss Repository (Nexus)</name>
-			<url>https://repository.jboss.org/nexus/content/repositories/releases</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-				<updatePolicy>never</updatePolicy>
-			</snapshots>
-		</repository>
-		
-		<!-- NEW jboss.org snapshot repo  -->
-		<repository>
-			<id>repository.jboss.org-snapshots</id>
-			<name>JBoss Snapshots Repository (Nexus)</name>
-			<url>https://repository.jboss.org/nexus/content/repositories/snapshots</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-			</snapshots>
-		</repository>
-
-		<!-- NEW jboss.org third-party repo  -->
-		<repository>
-			<id>repository.jboss.org-thirdparty-releases</id>
-			<name>JBoss Repository thirdparty-releases</name>
-			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-				<updatePolicy>never</updatePolicy>
-			</snapshots>
-		</repository>
-
-		<repository>
-			<name>Tennera release repository on fedorahosted.org</name>
-			<id>fhosted.tennera.svn</id>
-			<url>http://svn.fedorahosted.org/svn/tennera/m2repo/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<name>Tennera snapshot repository on fedorapeople.org</name>
-			<id>fpeople.tennera.snap</id>
-			<url>http://seanf.fedorapeople.org/maven2/snapshot/</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-
-	</repositories>
-
-	<pluginRepositories>
-
-		<pluginRepository>
-			<id>twdata-m2-repository</id>
-			<name>twdata.org Maven 2 Repository</name>
-			<url>http://twdata-m2-repository.googlecode.com/svn/</url>
-		</pluginRepository>
-
-		<pluginRepository>
-			<id>repository.jboss.org-snapshots</id>
-			<name>JBoss Repository for Maven Snapshots (Nexus)</name>
-			<url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-			</snapshots>
-		</pluginRepository>
-
-		<pluginRepository>
-			<id>repository.jboss.org-releases</id>
-			<name>Jboss Repository for Maven (Nexus)</name>
-			<url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
+			<id>openl10n-public-repository-group</id>
+			<name>OpenL10n Public Repository Group</name>
+			<url>http://openl10n.net/nexus/content/groups/public</url>
 			<layout>default</layout>
 			<releases>
 				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
 				<updatePolicy>never</updatePolicy>
-			</snapshots>
-		</pluginRepository>
-
-		<pluginRepository>
-			<id>repository.codehaus</id>
-			<name>Codehaus Repository</name>
-			<url>http://repository.codehaus.org</url>
-		</pluginRepository>
-
-		<pluginRepository>
-			<id>snapshots.repository.codehaus</id>
-			<name>Codehaus Snapshots Repository</name>
-			<url>http://snapshots.repository.codehaus.org</url>
-			<releases>
-				<enabled>false</enabled>
 			</releases>
 			<snapshots>
 				<enabled>true</enabled>
-				<updatePolicy>weekly</updatePolicy>
+				<updatePolicy>never</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>openl10n-public-repository-group</id>
+			<name>OpenL10n Public Repository Group</name>
+			<url>http://openl10n.net/nexus/content/groups/public</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
 			</snapshots>
 		</pluginRepository>
-
 	</pluginRepositories>
 
 </project>
