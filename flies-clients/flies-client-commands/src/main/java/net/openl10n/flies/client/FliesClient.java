@@ -79,6 +79,9 @@ public class FliesClient implements BasicOptions
 
    protected void processArgs(String... args)
    {
+      // FIXME remove this workaround for failing test (client used in multiple
+      // tests)
+      arguments.clear();
       try
       {
          parser.parseArgument(args);
