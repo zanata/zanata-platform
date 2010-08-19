@@ -156,11 +156,10 @@ public class TransUnitRowEditor implements HasKeyUpHandlers
 
       cellViewWidget = table.getWidget(curRow, ListEditorTableDefinition.TARGET_COL);
 
-      int height = curCellEditInfo.getTable().getWidget(curRow, ListEditorTableDefinition.SOURCE_COL).getOffsetHeight();
+      int height = curCellEditInfo.getTable().getWidget(curRow, ListEditorTableDefinition.SOURCE_COL).getOffsetHeight() - 10;
 
-      int realHeight = height > MIN_HEIGHT ? height : MIN_HEIGHT;
-
-      textArea.setHeight(realHeight + "px");
+      //int realHeight = height > MIN_HEIGHT ? height : MIN_HEIGHT;
+      textArea.setHeight(height + "px");
 
       int width = table.getWidget(curRow, ListEditorTableDefinition.SOURCE_COL).getOffsetWidth() - 10;
       textArea.setWidth(width + "px");
