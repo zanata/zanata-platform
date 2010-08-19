@@ -7,9 +7,9 @@
 
 	<test name="Seam Tests">
 		<classes>
-			<class name="org.fedorahosted.flies.rest.service.DocumentsServiceSeamTest"/>
-			<class name="org.fedorahosted.flies.rest.service.ProjectServiceRawSeamTest"/>
-			<class name="org.fedorahosted.flies.rest.service.ProjectsServiceSeamTest"/>
+			<class name="net.openl10n.flies.rest.service.DocumentsServiceSeamTest"/>
+			<class name="net.openl10n.flies.rest.service.ProjectServiceRawSeamTest"/>
+			<class name="net.openl10n.flies.rest.service.ProjectsServiceSeamTest"/>
 		</classes>
 	</test>
 

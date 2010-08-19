@@ -236,7 +236,7 @@
 
   <!-- Exceptions -->
 
-  <exception class="org.fedorahosted.flies.security.KeyNotFoundException"
+  <exception class="net.openl10n.flies.security.KeyNotFoundException"
     log-level="debug">
     <redirect view-id="/error.xhtml">
       <message severity="error">#{messages['jsf.InvalidActivationKey']}</message>

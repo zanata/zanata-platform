@@ -4,7 +4,7 @@
   <artifactId>flies-client-ant-properties</artifactId>
   <name>Flies/REST Ant task for Java Properties</name>
   <parent>
-    <groupId>org.fedorahosted.flies</groupId>
+    <groupId>net.openl10n.flies</groupId>
     <artifactId>flies-clients</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
@@ -42,12 +42,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.fedorahosted.flies</groupId>
+      <groupId>net.openl10n.flies</groupId>
       <artifactId>flies-adapter-properties</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.fedorahosted.flies</groupId>
+      <groupId>net.openl10n.flies</groupId>
       <artifactId>flies-rest-client</artifactId>
       <version>${project.version}</version>
     </dependency>

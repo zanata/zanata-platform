@@ -3,23 +3,23 @@
 
 	<test name="JPA Tests">
 		<packages>
-			<package name="org.fedorahosted.flies.model" />
-			<package name="org.fedorahosted.flies.model.po" />
+			<package name="net.openl10n.flies.model" />
+			<package name="net.openl10n.flies.model.po" />
 		</packages>
 	</test>
 
 	<test name="DAO Tests">
 		<packages>
-			<package name="org.fedorahosted.flies.dao" />
+			<package name="net.openl10n.flies.dao" />
 		</packages>
 	</test>
 
 	<test name="REST Tests">
 		<classes>
-			<class name="org.fedorahosted.flies.rest.service.ResourceUtilsTest"/>
-			<class name="org.fedorahosted.flies.rest.service.ProjectServiceTest"/>
-			<class name="org.fedorahosted.flies.rest.service.ProjectIterationServiceTest"/>
-			<class name="org.fedorahosted.flies.rest.service.TranslationResourceServiceTest"/>
+			<class name="net.openl10n.flies.rest.service.ResourceUtilsTest"/>
+			<class name="net.openl10n.flies.rest.service.ProjectServiceTest"/>
+			<class name="net.openl10n.flies.rest.service.ProjectIterationServiceTest"/>
+			<class name="net.openl10n.flies.rest.service.TranslationResourceServiceTest"/>
 		</classes>
 	</test>
 

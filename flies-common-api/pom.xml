@@ -6,7 +6,7 @@
 	<name>Flies Common API</name>
 	<parent>
 		<artifactId>root</artifactId>
-		<groupId>org.fedorahosted.flies</groupId>
+		<groupId>net.openl10n.flies</groupId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 	<packaging>jar</packaging>
@@ -29,8 +29,8 @@
 				<version>1.3</version>
 				<configuration>
 					<includes>
-						<include>**/org/fedorahosted/flies/common/*.java</include>
-						<include>**/org/fedorahosted/flies/rest/dto/**/*.java</include>
+						<include>**/net/openl10n/flies/common/*.java</include>
+						<include>**/net/openl10n/flies/rest/dto/**/*.java</include>
 					</includes>
 				</configuration>
 			</plugin>

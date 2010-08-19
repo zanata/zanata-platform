@@ -4,7 +4,7 @@
   <artifactId>flies-adapter-properties</artifactId>
   <name>Flies Adapter for Java Properties</name>
   <parent>
-    <groupId>org.fedorahosted.flies</groupId>
+    <groupId>net.openl10n.flies</groupId>
     <artifactId>flies-adapters</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>

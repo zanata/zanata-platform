@@ -44,8 +44,8 @@
   <security:rule-based-permission-resolver security-rules="#{securityRules}"/> 
    
   <security:jpa-identity-store 
-      user-class="org.fedorahosted.flies.model.HAccount"
-      role-class="org.fedorahosted.flies.model.HAccountRole" />
+      user-class="net.openl10n.flies.model.HAccount"
+      role-class="net.openl10n.flies.model.HAccountRole" />
 
   <event type="org.jboss.seam.security.notLoggedIn">
     <action execute="#{redirect.captureCurrentView}"/>
@@ -58,7 +58,7 @@
 
   <factory name="session" value="#{entityManager.delegate}" scope="STATELESS" auto-create="true"/>
 
-  <component class="org.fedorahosted.flies.FliesInit" name="fliesInit" precedence="30">
+  <component class="net.openl10n.flies.FliesInit" name="fliesInit" precedence="30">
     <property name="debug">@env.debug@</property>
     <property name="hibernateStatistics">false</property>
     <property name="authenticatedSessionTimeoutMinutes">180</property>
@@ -74,7 +74,7 @@
   <web:multipart-filter create-temp-files="true"
       max-request-size="10000000" url-pattern="*.seam"/>
 
-  <component name="essentialDataCreator" class="org.fedorahosted.flies.util.EssentialDataCreator" installed="true">
+  <component name="essentialDataCreator" class="net.openl10n.flies.util.EssentialDataCreator" installed="true">
   	<property name="username">admin</property>
   	<property name="password">admin</property>
   	<property name="apiKey">b6d7044e9ee3b2447c28fb7c50d86d98</property>
@@ -82,7 +82,7 @@
   	<property name="name">Administrator</property>
   </component>
   
-  <component name="dbunitImporter" class="org.fedorahosted.flies.util.DBUnitImporter" installed="@env.import.testdata@">
+  <component name="dbunitImporter" class="net.openl10n.flies.util.DBUnitImporter" installed="@env.import.testdata@">
     <property name="database">@env.dbunit.type@</property>
     <property name="datasourceJndiName">java:/fliesDatasource</property>
     <property name="binaryDir">META-INF/testdata</property>
@@ -92,7 +92,7 @@
         <value>META-INF/testdata/ProjectsData.dbunit.xml</value>
     </property>
   </component>
-  <component name="dbunitImporterTribes" class="org.fedorahosted.flies.util.DBUnitImporter" installed="true">
+  <component name="dbunitImporterTribes" class="net.openl10n.flies.util.DBUnitImporter" installed="true">
     <property name="database">@env.dbunit.type@</property>
     <property name="datasourceJndiName">java:/fliesDatasource</property>
     <property name="binaryDir">META-INF/testdata</property>

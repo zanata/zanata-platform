@@ -4,7 +4,7 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.fedorahosted.flies</groupId>
+		<groupId>net.openl10n.flies</groupId>
 		<artifactId>root</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
@@ -577,7 +577,7 @@
 			<id>mysql</id>
 			<properties>
 				<env.dbunit.type>MYSQL</env.dbunit.type>
-				<ds.hibernate.dialect>org.fedorahosted.flies.FliesMySQL5InnoDBDialect</ds.hibernate.dialect>
+				<ds.hibernate.dialect>net.openl10n.flies.FliesMySQL5InnoDBDialect</ds.hibernate.dialect>
 				<ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
 				<ds.connection.url>jdbc:mysql://localhost:3306/flies?characterEncoding=UTF-8</ds.connection.url>
 				<ds.user.name>root</ds.user.name>
@@ -777,7 +777,7 @@
 		<!-- Flies-specific dependencies -->
 
 		<dependency>
-			<groupId>org.fedorahosted.flies</groupId>
+			<groupId>net.openl10n.flies</groupId>
 			<artifactId>flies-common-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -1076,7 +1076,7 @@
 		<!--  Testing dependencies -->
 
 		<dependency>
-			<groupId>org.fedorahosted.flies</groupId>
+			<groupId>net.openl10n.flies</groupId>
 			<artifactId>flies-rest-client</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
