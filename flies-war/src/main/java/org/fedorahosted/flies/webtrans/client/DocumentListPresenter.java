@@ -15,13 +15,13 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.fedorahosted.flies.common.TransUnitCount;
 import org.fedorahosted.flies.webtrans.client.editor.HasTransUnitCount;
-import org.fedorahosted.flies.webtrans.client.editor.filter.ContentFilter;
 import org.fedorahosted.flies.webtrans.client.events.DocumentSelectionEvent;
 import org.fedorahosted.flies.webtrans.client.events.DocumentSelectionHandler;
 import org.fedorahosted.flies.webtrans.client.events.NotificationEvent;
+import org.fedorahosted.flies.webtrans.client.events.NotificationEvent.Severity;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import org.fedorahosted.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
-import org.fedorahosted.flies.webtrans.client.events.NotificationEvent.Severity;
+import org.fedorahosted.flies.webtrans.client.filter.ContentFilter;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.shared.model.DocumentId;
 import org.fedorahosted.flies.webtrans.shared.model.DocumentInfo;

@@ -2,18 +2,11 @@ package org.fedorahosted.flies.webtrans.server;
 
 import java.util.concurrent.ConcurrentMap;
 
-import javax.servlet.http.HttpSession;
-
-import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.webtrans.shared.auth.SessionId;
 import org.fedorahosted.flies.webtrans.shared.model.PersonId;
 import org.fedorahosted.flies.webtrans.shared.model.TransUnitId;
 import org.fedorahosted.flies.webtrans.shared.model.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.shared.rpc.SessionEventData;
-import org.jboss.seam.Component;
-import org.jboss.seam.Seam;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
@@ -26,7 +19,6 @@ import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.service.EventExecutorService;
 import de.novanic.eventservice.service.EventExecutorServiceFactory;
 import de.novanic.eventservice.service.UserTimeoutListener;
-import de.novanic.eventservice.service.registry.user.UserActivityScheduler;
 import de.novanic.eventservice.service.registry.user.UserInfo;
 import de.novanic.eventservice.service.registry.user.UserManager;
 import de.novanic.eventservice.service.registry.user.UserManagerFactory;

@@ -1,14 +1,11 @@
 package org.fedorahosted.flies.webtrans.server.rpc;
 
-import java.util.Collections;
 import java.util.HashSet;
 
-import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.fedorahosted.flies.model.HPerson;
-import org.fedorahosted.flies.model.HProjectIteration;
 import org.fedorahosted.flies.security.FliesIdentity;
 import org.fedorahosted.flies.webtrans.server.ActionHandlerFor;
 import org.fedorahosted.flies.webtrans.server.TranslationWorkspace;
@@ -19,7 +16,6 @@ import org.fedorahosted.flies.webtrans.shared.auth.Role;
 import org.fedorahosted.flies.webtrans.shared.auth.SessionId;
 import org.fedorahosted.flies.webtrans.shared.model.Person;
 import org.fedorahosted.flies.webtrans.shared.model.PersonId;
-import org.fedorahosted.flies.webtrans.shared.model.WorkspaceContext;
 import org.fedorahosted.flies.webtrans.shared.rpc.ActivateWorkspaceAction;
 import org.fedorahosted.flies.webtrans.shared.rpc.ActivateWorkspaceResult;
 import org.fedorahosted.flies.webtrans.shared.rpc.EnterWorkspace;

@@ -14,10 +14,15 @@
       
       <inherits name='net.customware.gwt.dispatch.Dispatch' />
       <inherits name='net.customware.gwt.presenter.Presenter' />
-
-      <!-- Used for the translation editor -->      
-      <inherits name='com.google.gwt.gen2.table.Table'/>
+      <!-- Inherit Mosaic Web Toolkit stuff.                          -->
+      <inherits name='org.gwt.mosaic.Mosaic' />
+      <!-- Inherit the default GWT Mosaic style sheet. You can change -->
+      <!-- the theme of your GWT Mosaic application by uncommenting   -->
+      <!-- any one of the following lines.                            -->
+      <inherits name='org.gwt.mosaic.theme.standard.Standard' />
       
+      <inherits name="org.gwt.beansbinding.BeansBinding"/>
+            
       <inherits name="org.fedorahosted.flies.Common"/>
 
       <inherits name='com.google.gwt.user.theme.standard.StandardResources' />

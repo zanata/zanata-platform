@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import net.customware.gwt.dispatch.shared.Result;
 
 import org.fedorahosted.flies.webtrans.shared.model.DocumentStatus;
-import org.fedorahosted.flies.webtrans.shared.model.ProjectIterationId;
 
 public class GetProjectStatusCountResult implements Result
 {

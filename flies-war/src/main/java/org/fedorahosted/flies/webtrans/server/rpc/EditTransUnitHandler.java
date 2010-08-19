@@ -1,6 +1,5 @@
 package org.fedorahosted.flies.webtrans.server.rpc;
 
-import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
@@ -9,7 +8,6 @@ import org.fedorahosted.flies.security.FliesIdentity;
 import org.fedorahosted.flies.webtrans.server.ActionHandlerFor;
 import org.fedorahosted.flies.webtrans.server.TranslationWorkspace;
 import org.fedorahosted.flies.webtrans.server.TranslationWorkspaceManager;
-import org.fedorahosted.flies.webtrans.shared.model.ProjectIterationId;
 import org.fedorahosted.flies.webtrans.shared.rpc.EditingTranslationAction;
 import org.fedorahosted.flies.webtrans.shared.rpc.EditingTranslationResult;
 import org.hibernate.Session;

@@ -1,7 +1,5 @@
 package org.fedorahosted.flies.webtrans.shared.rpc;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 import net.customware.gwt.dispatch.shared.Result;
 
 public class UpdateTransUnitResult implements Result

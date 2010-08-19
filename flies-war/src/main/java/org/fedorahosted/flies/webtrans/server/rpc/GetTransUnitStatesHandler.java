@@ -1,8 +1,6 @@
 package org.fedorahosted.flies.webtrans.server.rpc;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -14,10 +12,8 @@ import org.fedorahosted.flies.model.HTextFlowTarget;
 import org.fedorahosted.flies.security.FliesIdentity;
 import org.fedorahosted.flies.webtrans.server.ActionHandlerFor;
 import org.fedorahosted.flies.webtrans.server.TranslationWorkspaceManager;
-import org.fedorahosted.flies.webtrans.shared.model.TransUnitId;
 import org.fedorahosted.flies.webtrans.shared.rpc.GetTransUnitsStates;
 import org.fedorahosted.flies.webtrans.shared.rpc.GetTransUnitsStatesResult;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;

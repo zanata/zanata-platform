@@ -15,8 +15,6 @@ import org.hibernate.Session;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
@@ -30,9 +28,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.ibm.icu.util.ULocale;
-
-import de.novanic.eventservice.client.event.domain.DefaultDomain;
-import de.novanic.eventservice.client.event.domain.DomainFactory;
 
 @Scope(ScopeType.APPLICATION)
 @Name("translationWorkspaceManager")

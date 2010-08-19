@@ -11,8 +11,8 @@
 </listAttribute>
 <booleanAttribute key="org.eclipse.jdt.launching.ALLOW_TERMINATE" value="true"/>
 <mapAttribute key="org.eclipse.jdt.launching.CONNECT_MAP">
-<mapEntry key="port" value="5005"/>
 <mapEntry key="hostname" value="localhost"/>
+<mapEntry key="port" value="5005"/>
 </mapAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="flies"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_CONNECTOR_ID" value="org.eclipse.jdt.launching.socketAttachConnector"/>

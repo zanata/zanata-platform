@@ -1,12 +1,10 @@
 package org.fedorahosted.flies.webtrans.shared.rpc;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.customware.gwt.dispatch.shared.Result;
 
 import org.fedorahosted.flies.webtrans.shared.model.DocumentId;
-import org.fedorahosted.flies.webtrans.shared.model.TransUnitId;
 
 public class GetTransUnitsStatesResult implements Result
 {

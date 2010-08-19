@@ -27,11 +27,13 @@ import org.fedorahosted.flies.webtrans.client.TranslationEditorView;
 import org.fedorahosted.flies.webtrans.client.WebTransMessages;
 import org.fedorahosted.flies.webtrans.client.WorkspaceUsersPresenter;
 import org.fedorahosted.flies.webtrans.client.WorkspaceUsersView;
+import org.fedorahosted.flies.webtrans.client.editor.CachedListEditorTableModel;
 import org.fedorahosted.flies.webtrans.client.editor.HasPageNavigation;
-import org.fedorahosted.flies.webtrans.client.editor.filter.TransFilterPresenter;
-import org.fedorahosted.flies.webtrans.client.editor.filter.TransFilterView;
-import org.fedorahosted.flies.webtrans.client.editor.table.TableEditorPresenter;
-import org.fedorahosted.flies.webtrans.client.editor.table.TableEditorView;
+import org.fedorahosted.flies.webtrans.client.editor.ListEditorPresenter;
+import org.fedorahosted.flies.webtrans.client.editor.ListEditorTable;
+import org.fedorahosted.flies.webtrans.client.editor.ListEditorTableDefinition;
+import org.fedorahosted.flies.webtrans.client.filter.TransFilterPresenter;
+import org.fedorahosted.flies.webtrans.client.filter.TransFilterView;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.client.rpc.DelegatingDispatchAsync;
 import org.fedorahosted.flies.webtrans.shared.auth.Identity;
@@ -58,7 +60,12 @@ public class WebTransClientModule extends AbstractPresenterModule
       bindPresenter(AppPresenter.class, AppPresenter.Display.class, AppView.class);
       bindPresenter(DocumentListPresenter.class, DocumentListPresenter.Display.class, DocumentListView.class);
       bindPresenter(TransFilterPresenter.class, TransFilterPresenter.Display.class, TransFilterView.class);
-      bindPresenter(TableEditorPresenter.class, TableEditorPresenter.Display.class, TableEditorView.class);
+
+      bind(CachedListEditorTableModel.class).in(Singleton.class);
+      bind(ListEditorTableDefinition.class).in(Singleton.class);
+      
+      bindPresenter(ListEditorPresenter.class, ListEditorPresenter.Display.class, ListEditorTable.class);
+      
       bindPresenter(WorkspaceUsersPresenter.class, WorkspaceUsersPresenter.Display.class, WorkspaceUsersView.class);
       bindPresenter(TransMemoryPresenter.class, TransMemoryPresenter.Display.class, TransMemoryView.class);
       bindPresenter(TransMemoryDetailsPresenter.class, TransMemoryDetailsPresenter.Display.class, TransMemoryDetailsView.class);
@@ -67,7 +74,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bindPresenter(TranslationEditorPresenter.class, TranslationEditorPresenter.Display.class, TranslationEditorView.class);
       bindPresenter(TransUnitDetailsPresenter.class, TransUnitDetailsPresenter.Display.class, TransUnitDetailsView.class);
 
-      bind(HasPageNavigation.class).to(TableEditorView.class).in(Singleton.class);
+      bind(HasPageNavigation.class).to(ListEditorTable.class).in(Singleton.class);
 
       // NB: if we bind directly to SeamDispatchAsync, we can't use
       // replace-class in

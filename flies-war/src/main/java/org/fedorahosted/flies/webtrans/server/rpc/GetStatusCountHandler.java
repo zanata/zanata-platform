@@ -2,7 +2,6 @@ package org.fedorahosted.flies.webtrans.server.rpc;
 
 import java.util.List;
 
-import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 

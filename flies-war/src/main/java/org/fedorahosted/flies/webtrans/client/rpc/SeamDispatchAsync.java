@@ -1,7 +1,6 @@
 package org.fedorahosted.flies.webtrans.client.rpc;
 
 import net.customware.gwt.dispatch.shared.Action;
-
 import net.customware.gwt.dispatch.shared.Result;
 
 import org.fedorahosted.flies.webtrans.client.Application;
@@ -11,8 +10,8 @@ import org.fedorahosted.flies.webtrans.shared.auth.AuthenticationError;
 import org.fedorahosted.flies.webtrans.shared.auth.AuthorizationError;
 import org.fedorahosted.flies.webtrans.shared.auth.Identity;
 import org.fedorahosted.flies.webtrans.shared.model.WorkspaceContext;
-import org.fedorahosted.flies.webtrans.shared.rpc.WrappedAction;
 import org.fedorahosted.flies.webtrans.shared.rpc.AbstractWorkspaceAction;
+import org.fedorahosted.flies.webtrans.shared.rpc.WrappedAction;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;

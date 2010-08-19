@@ -9,8 +9,8 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.fedorahosted.flies.webtrans.client.rpc.CachingDispatchAsync;
 import org.fedorahosted.flies.webtrans.shared.model.TranslationMemoryItem;
 import org.fedorahosted.flies.webtrans.shared.rpc.GetTransMemoryDetailsAction;
-import org.fedorahosted.flies.webtrans.shared.rpc.TransMemoryDetailsList;
 import org.fedorahosted.flies.webtrans.shared.rpc.TransMemoryDetails;
+import org.fedorahosted.flies.webtrans.shared.rpc.TransMemoryDetailsList;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ChangeEvent;

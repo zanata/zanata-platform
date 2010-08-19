@@ -1,11 +1,6 @@
 package org.fedorahosted.flies.webtrans.shared.rpc;
 
-import net.customware.gwt.dispatch.shared.Action;
-
-import org.fedorahosted.flies.common.LocaleId;
 import org.fedorahosted.flies.webtrans.shared.model.PersonId;
-import org.fedorahosted.flies.webtrans.shared.model.ProjectIterationId;
-import org.fedorahosted.flies.webtrans.shared.model.WorkspaceId;
 
 public class ExitWorkspaceAction extends AbstractWorkspaceAction<ExitWorkspaceResult>
 {

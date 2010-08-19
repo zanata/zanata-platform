@@ -15,6 +15,7 @@
 	<properties>
 		<jboss.embedded.version>beta3.SP12</jboss.embedded.version>
 		<nukes.security.version>1.0</nukes.security.version>
+		<mosaic.version>0.4.0-rc4</mosaic.version>
 		<!-- application properties -->
 
 		<env.debug>false</env.debug>
@@ -1159,18 +1160,36 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.googlecode.gwtmosaic</groupId>
+			<artifactId>gwt-mosaic</artifactId>
+			<version>${mosaic.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+        <dependency>
+            <groupId>com.googlecode.gwtmosaic</groupId>
+            <artifactId>gwt-beans-binding</artifactId>
+            <version>${mosaic.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.googlecode.gwtmosaic</groupId>
+            <artifactId>gwt-dnd</artifactId>
+            <version>${mosaic.version}</version>
+        </dependency>
+               
+        <dependency>
+            <groupId>com.googlecode.gwtmosaic</groupId>
+            <artifactId>gwtx</artifactId>
+            <version>${mosaic.version}</version>
+        </dependency>
+
+		<dependency>
 			<!-- needed for GWT compilation of JAXB annotated classes -->
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
 			<version>2.2</version>
 			<classifier>sources</classifier>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-incubator</artifactId>
-			<version>2.0.1</version>
 			<scope>provided</scope>
 		</dependency>
 

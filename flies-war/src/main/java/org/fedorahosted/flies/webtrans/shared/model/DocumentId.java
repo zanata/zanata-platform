@@ -2,8 +2,6 @@ package org.fedorahosted.flies.webtrans.shared.model;
 
 import java.io.Serializable;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 //@ExposeEntity 
 public class DocumentId implements Identifier<Long>, Serializable
 {
