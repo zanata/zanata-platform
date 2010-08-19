@@ -1,0 +1,14 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:fui="urn:import:net.openl10n.flies.webtrans.client.ui">
+
+	<fui:CollapsePanel ui:field="collapsePanel" collapsedByDefault="false">
+		<g:LayoutPanel>
+			<g:layer top="0" height="20px" left="3px" right="3px">
+				<fui:ClearableTextBox ui:field="filterTextBox" />
+			</g:layer>
+		</g:LayoutPanel>
+	</fui:CollapsePanel>
+	
+</ui:UiBinder> 
