@@ -5,17 +5,14 @@ import net.openl10n.flies.webtrans.shared.model.TransUnit;
 
 import org.gwt.mosaic.override.client.HTMLTable;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.HasKeyUpHandlers;
-import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -64,11 +61,6 @@ public class TransUnitRowEditor implements HasKeyUpHandlers
       }
    }
 
-   /**
-    * Default style name.
-    */
-   public static final String DEFAULT_STYLENAME = "gwt-TargetCellEditor";
-
    private boolean dirty;
 
    private Callback curCallback = null;
@@ -79,11 +71,6 @@ public class TransUnitRowEditor implements HasKeyUpHandlers
    private TransUnit cellValue;
 
    private final ExpandingTextArea textArea;
-
-   /*
-    * The minimum height of the target editor
-    */
-   private static final int MIN_HEIGHT = 48;
 
    /**
     * Construct a new {@link TransUnitRowEditor} with the specified images.
@@ -147,8 +134,6 @@ public class TransUnitRowEditor implements HasKeyUpHandlers
          release();
       }
 
-      Log.debug("starting edit of cell");
-
       // Save the current values
       curCallback = callback;
       curCellEditInfo = cellEditInfo;
@@ -157,11 +142,6 @@ public class TransUnitRowEditor implements HasKeyUpHandlers
       int curRow = curCellEditInfo.getIndex();
 
       cellViewWidget = table.getWidget(curRow, ListEditorTableDefinition.TARGET_COL);
-
-      int height = curCellEditInfo.getTable().getWidget(curRow, ListEditorTableDefinition.SOURCE_COL).getOffsetHeight() - 10;
-
-      //int realHeight = height > MIN_HEIGHT ? height : MIN_HEIGHT;
-      textArea.setHeight(height + "px");
 
       int width = table.getWidget(curRow, ListEditorTableDefinition.SOURCE_COL).getOffsetWidth() - 10;
       textArea.setWidth(width + "px");
