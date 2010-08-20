@@ -31,7 +31,7 @@
       <h:outputLink
           rendered="#{!fliesInit.debug}"
           target="_blank"
-          value="#{applicationConfiguration.serverPath}webtrans/Application.html">
+          value="#{request.contextPath}/webtrans/Application.html">
 		<f:param name="project" value="#{_iteration.project.slug}"/>
 		<f:param name="iteration" value="#{_iteration.slug}"/>
 		<f:param name="localeId" value="#{tribe.locale.id}"/>
@@ -41,7 +41,7 @@
       <h:outputLink
           rendered="#{fliesInit.debug}"
           target="_blank"
-          value="#{applicationConfiguration.serverPath}webtrans/Application.html">
+          value="#{request.contextPath}/webtrans/Application.html">
 		<f:param name="project" value="#{_iteration.project.slug}"/>
 		<f:param name="iteration" value="#{_iteration.slug}"/>
 		<f:param name="localeId" value="#{tribe.locale.id}"/>
@@ -53,6 +53,6 @@
     </rich:column>
   </rich:dataTable>
   <div style="text-align:right;font-size:77%;">
-    [<h:outputLink value="#{applicationConfiguration.serverPath}seam/resource/restv1/projects/p/#{projectHome.instance.slug}/iterations/i/#{_iteration.slug}/documents">REST Link</h:outputLink>]
+    [<h:outputLink value="#{request.contextPath}/seam/resource/restv1/projects/p/#{projectHome.instance.slug}/iterations/i/#{_iteration.slug}/documents">REST Link</h:outputLink>]
   </div>
 </div>
