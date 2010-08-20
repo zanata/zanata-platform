@@ -9,8 +9,11 @@ import org.hibernate.validator.Validator;
 public class UrlValidator implements Validator<Url>, Serializable
 {
 
+   private boolean canEndInSlash;
+
    public void initialize(Url parameters)
    {
+      this.canEndInSlash = parameters.canEndInSlash();
    }
 
    public boolean isValid(Object value)
@@ -20,6 +23,8 @@ public class UrlValidator implements Validator<Url>, Serializable
       if (!(value instanceof String))
          return false;
       String string = (String) value;
+      if (!canEndInSlash && string.endsWith("/"))
+         return false;
 
       try
       {

@@ -36,6 +36,7 @@ public class ApplicationConfiguration
    {
       log.info("Reloading configuration");
       Map<String, String> configValues = new HashMap<String, String>();
+      setDefaults(configValues);
       ApplicationConfigurationDAO applicationConfigurationDAO = (ApplicationConfigurationDAO) Component.getInstance(ApplicationConfigurationDAO.class, ScopeType.STATELESS);
       List<HApplicationConfiguration> storedConfigValues = applicationConfigurationDAO.findAll();
       for (HApplicationConfiguration value : storedConfigValues)
@@ -44,6 +45,11 @@ public class ApplicationConfiguration
          log.debug("Setting value {0} to {1}", value.getKey(), value.getValue());
       }
       this.configValues = configValues;
+   }
+
+   private void setDefaults(Map<String, String> map)
+   {
+      map.put(KEY_HOST, "http://localhost:8080/flies");
    }
 
    public String getServerPath()

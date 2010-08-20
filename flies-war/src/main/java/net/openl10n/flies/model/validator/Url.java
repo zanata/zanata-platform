@@ -14,4 +14,6 @@ public @interface Url
 {
 
    String message() default "{validator.url}";
+
+   boolean canEndInSlash() default true;
 }

@@ -28,7 +28,7 @@ public class ServerConfigurationBean implements Serializable
 
    private String serverUrl;
 
-   @Url
+   @Url(canEndInSlash = false)
    public String getServerUrl()
    {
       return serverUrl;
@@ -36,14 +36,7 @@ public class ServerConfigurationBean implements Serializable
 
    public void setServerUrl(String serverUrl)
    {
-      if (serverUrl != null && !serverUrl.isEmpty() && !serverUrl.endsWith("/"))
-      {
-         this.serverUrl = serverUrl + "/";
-      }
-      else
-      {
-         this.serverUrl = serverUrl;
-      }
+      this.serverUrl = serverUrl;
    }
 
    @Create
