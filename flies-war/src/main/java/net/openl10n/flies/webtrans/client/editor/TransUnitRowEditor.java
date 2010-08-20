@@ -1,5 +1,6 @@
 package net.openl10n.flies.webtrans.client.editor;
 
+import net.openl10n.flies.webtrans.client.ui.ExpandingTextArea;
 import net.openl10n.flies.webtrans.shared.model.TransUnit;
 
 import org.gwt.mosaic.override.client.HTMLTable;
@@ -77,7 +78,7 @@ public class TransUnitRowEditor implements HasKeyUpHandlers
 
    private TransUnit cellValue;
 
-   private final TextArea textArea;
+   private final ExpandingTextArea textArea;
 
    /*
     * The minimum height of the target editor
@@ -93,7 +94,7 @@ public class TransUnitRowEditor implements HasKeyUpHandlers
    @Inject
    public TransUnitRowEditor(final NavigationMessages messages)
    {
-      textArea = new TextArea();
+      textArea = new ExpandingTextArea();
       textArea.setStyleName("TableEditorContent-Edit");
       textArea.addChangeHandler(new ChangeHandler()
       {
