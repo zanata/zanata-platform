@@ -9,7 +9,9 @@ import org.gwt.mosaic.ui.client.table.CellRenderer;
 import org.gwt.mosaic.ui.client.table.ColumnDefinition;
 import org.gwt.mosaic.ui.client.table.DefaultTableDefinition;
 import org.gwt.mosaic.ui.client.table.RowRenderer;
+import org.gwt.mosaic.ui.client.table.property.PreferredWidthProperty;
 
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
 import com.google.inject.Inject;
 
@@ -17,7 +19,8 @@ public class ListEditorTableDefinition extends DefaultTableDefinition<TransUnit>
 {
 
    public static final int SOURCE_COL = 0;
-   public static final int TARGET_COL = 1;
+   public static final int COPY_COL = 1;
+   public static final int TARGET_COL = 2;
 
    private ContentFilter<TransUnit> contentFilter = null;
 
@@ -82,6 +85,32 @@ public class ListEditorTableDefinition extends DefaultTableDefinition<TransUnit>
       }
    };
 
+   private final AbstractColumnDefinition<TransUnit, TransUnit> copyColumnDefinition = new AbstractColumnDefinition<TransUnit, TransUnit>()
+   {
+
+      @Override
+      public TransUnit getCellValue(TransUnit rowValue)
+      {
+         return rowValue;
+      }
+
+      @Override
+      public void setCellValue(TransUnit rowValue, TransUnit cellValue)
+      {
+      }
+
+   };
+
+   
+   private final CellRenderer<TransUnit, TransUnit> copyCellRenderer = new CellRenderer<TransUnit, TransUnit>()
+   {
+      @Override
+      public void renderRowValue(TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, AbstractCellView<TransUnit> view)
+      {
+         view.setWidget(new Button("&gt;"));
+      }
+   };
+
    private final AbstractColumnDefinition<TransUnit, TransUnit> targetColumnDefinition = new AbstractColumnDefinition<TransUnit, TransUnit>()
    {
 
@@ -104,6 +133,7 @@ public class ListEditorTableDefinition extends DefaultTableDefinition<TransUnit>
       @Override
       public void renderRowValue(TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, AbstractCellView<TransUnit> view)
       {
+         view.setStyleAttribute("width", "100%");
          view.setStyleName("TableEditorCell TableEditorCell-Target");
          final Label label = new HighlightingLabel(rowValue.getTarget());
          label.setStylePrimaryName("TableEditorContent");
@@ -117,10 +147,14 @@ public class ListEditorTableDefinition extends DefaultTableDefinition<TransUnit>
    {
       setRowRenderer(rowRenderer);
       sourceColumnDefinition.setCellRenderer(sourceCellRenderer);
+      copyColumnDefinition.setMaximumColumnWidth(35);
+      copyColumnDefinition.setCellRenderer(copyCellRenderer);
       targetColumnDefinition.setCellRenderer(targetCellRenderer);
       
       addColumnDefinition(sourceColumnDefinition);
+      addColumnDefinition(copyColumnDefinition);
       addColumnDefinition(targetColumnDefinition);
+      
    }
 
    public void clearContentFilter()
