@@ -105,7 +105,7 @@ public class HAccount extends AbstractFliesEntity implements Serializable
    }
 
    @UserRoles
-   @ManyToMany(targetEntity = HAccountRole.class, cascade = CascadeType.ALL)
+   @ManyToMany(targetEntity = HAccountRole.class)
    @JoinTable(name = "HAccountMembership", joinColumns = @JoinColumn(name = "accountId"), inverseJoinColumns = @JoinColumn(name = "memberOf"))
    public Set<HAccountRole> getRoles()
    {
