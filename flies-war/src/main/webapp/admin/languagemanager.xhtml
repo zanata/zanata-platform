@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"    
+    xmlns:rich="http://richfaces.org/rich" 
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:s="http://jboss.com/products/seam/taglib">
+
+  <ui:composition template="../WEB-INF/layout/template.xhtml">
+   
+    <ui:define name="left_content">
+        <s:link action="#{languageManagerAction.createSupportedLanguage}" 
+          value="#{messages['jsf.CreateSupportedLanguage']}"
+        />
+    </ui:define>
+   
+    <ui:define name="center_content">
+        
+      <script type="text/javascript">
+        function confirmDelete()
+        {
+          return confirm("#{messages['jsf.AreYouSureYouWishToDeleteThisLanguageThisActionCannotBeUndone']}");
+        }
+      </script>
+      <rich:panel>
+        <f:facet name="header">#{messages['jsf.LanguageManager']}</f:facet>
+
+        <h:form>
+            <s:token allowMultiplePosts="true" />
+	        <h:dataTable 
+	            id="threads"
+	            value="#{supportedLanguages}" 
+	            var="language"
+	            cellspacing="0"
+	            headerClass="columnHeader"
+	            rowClasses="odd,even"
+	            columnClasses=",,enabled,action"
+	            styleClass="fullwidth">
+	
+	          <h:column width="auto">
+	            <f:facet name="header">#{messages['jsf.Language']}</f:facet>
+	            #{language.id}
+	          </h:column>
+	          <h:column width="auto">
+	            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>          
+	            <h:commandLink value="#{messages['jsf.Edit']}" action="#{languageManagerAction.edit(languageSearchAction.selectedLanguage)}"/><span> | </span>
+	            <h:commandLink value="#{messages['jsf.Delete']}" action="#{languageManagerAction.delete(languageSearchAction.selectedLanguage)}"
+	                    onclick="return confirmDelete()"/>
+	          </h:column>
+	  	    </h:dataTable>
+        </h:form>              
+      </rich:panel>
+    </ui:define>
+    
+  </ui:composition>
+</html>
