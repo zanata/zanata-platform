@@ -70,6 +70,14 @@
     </navigation>
   </page>
 
+  <page view-id="/admin/supportedlanguagedetail.xhtml">
+    <navigation from-action="#{languageManagerAction.save}">
+      <rule if-outcome="success">
+        <redirect view-id="/admin/languagemanager.xhtml" />
+      </rule>
+    </navigation>
+  </page>
+
   <page view-id="/admin/rolemanager.xhtml" action="#{roleSearch.loadRoles}">
     <restrict>#{s:hasPermission('seam.role', 'read')}</restrict>
     <navigation from-action="#{roleAction.createRole}">
@@ -101,6 +109,15 @@
   <page view-id="/admin/server_configuration.xhtml">
     <navigation from-action="#{serverConfigurationBean.update}">
       <redirect view-id="/admin/home.xhtml" />
+    </navigation>
+  </page>
+  
+  <page view-id="/admin/languagemanager.xhtml" action="#{languageSearchAction.loadSupportedLanguage}">
+    <navigation from-action="#{languageManagerAction.createSupportedLanguage}">
+      <redirect view-id="/admin/supportedlanguagedetail.xhtml" />
+    </navigation>
+    <navigation from-action="#{languageManagerAction.edit(languageSearchAction.selectedRole)}">
+      <redirect view-id="/admin/supportedlanguagedetail.xhtml" />
     </navigation>
   </page>
 
