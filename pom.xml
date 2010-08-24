@@ -39,6 +39,7 @@
 		<tennera.version>0.6</tennera.version>
 		<guava.version>r06</guava.version>
 		<jackson.version>1.5.0</jackson.version>
+		<icu4j.version>4.4.1.1</icu4j.version>
 	</properties>
 
 	<build>
@@ -355,6 +356,18 @@
 				<groupId>commons-configuration</groupId>
 				<artifactId>commons-configuration</artifactId>
 				<version>1.6</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>com.ibm.icu</groupId>
+				<artifactId>icu4j</artifactId>
+				<version>${icu4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.ibm.icu</groupId>
+				<artifactId>icu4j</artifactId>
+				<classifier>sources</classifier>
+				<version>${icu4j.version}</version>
 			</dependency>
 
 		</dependencies>
