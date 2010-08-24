@@ -99,6 +99,12 @@
 			<version>2.3</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.ibm.icu</groupId>
+			<artifactId>icu4j</artifactId>
+			<version>4.0.1</version>
+		</dependency>
+
 
 	</dependencies>
 
