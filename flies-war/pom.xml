@@ -967,9 +967,8 @@
 		<dependency>
 			<groupId>com.ibm.icu</groupId>
 			<artifactId>icu4j</artifactId>
-			<version>4.0.1</version>
 		</dependency>
-
+		
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
@@ -1189,6 +1188,14 @@
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
 			<version>2.2</version>
+			<classifier>sources</classifier>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<!-- for gwt compilation -->
+			<groupId>com.ibm.icu</groupId>
+			<artifactId>icu4j</artifactId>
 			<classifier>sources</classifier>
 			<scope>provided</scope>
 		</dependency>
