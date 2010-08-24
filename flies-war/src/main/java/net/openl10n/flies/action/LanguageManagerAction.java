@@ -18,6 +18,8 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 
+import com.ibm.icu.util.ULocale;
+
 @Name("languageManagerAction")
 @Scope(ScopeType.EVENT)
 @Restrict("#{s:hasRole('admin')}")
@@ -27,6 +29,7 @@ public class LanguageManagerAction implements Serializable
    @In
    LocaleService localeServiceImpl;
    private String language;
+   private ULocale uLocale;
    private List<SelectItem> localeStringList;
    @Logger
    private Log log;
@@ -42,9 +45,24 @@ public class LanguageManagerAction implements Serializable
       return language;
    }
 
+   public ULocale getuLocale()
+   {
+      return uLocale;
+   }
+
+   public void setuLocale(ULocale uLocale)
+   {
+      this.uLocale = uLocale;
+   }
+
    public void setLanguage(String language)
    {
       this.language = language;
+   }
+
+   public void updateLanguage(String lan)
+   {
+      this.uLocale = new ULocale(lan);
    }
 
    public String save()

@@ -38,29 +38,6 @@ public final class LocaleId implements Serializable
       this.id = localeId.intern();
    }
 
-   public LocaleId(ULocale locale)
-   {
-      StringBuilder builder = new StringBuilder();
-      builder.append(locale.getLanguage());
-      if (!locale.getCountry().isEmpty())
-      {
-         builder.append('-');
-         builder.append(locale.getCountry());
-      }
-      if (!locale.getScript().isEmpty())
-      {
-         builder.append('-');
-         builder.append(locale.getScript());
-      }
-      if (!locale.getVariant().isEmpty())
-      {
-         builder.append('-');
-         builder.append(locale.getVariant());
-      }
-
-      this.id = builder.toString();
-   }
-
    @Override
    public boolean equals(Object obj)
    {
