@@ -5,6 +5,8 @@ import java.io.Serializable;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonValue;
 
+import com.ibm.icu.util.ULocale;
+
 public final class LocaleId implements Serializable
 {
 
@@ -34,6 +36,29 @@ public final class LocaleId implements Serializable
       if (localeId.indexOf('_') != -1)
          throw new IllegalArgumentException("expected lang[-country[-modifier]], got " + localeId);
       this.id = localeId.intern();
+   }
+
+   public LocaleId(ULocale locale)
+   {
+      StringBuilder builder = new StringBuilder();
+      builder.append(locale.getLanguage());
+      if (!locale.getCountry().isEmpty())
+      {
+         builder.append('-');
+         builder.append(locale.getCountry());
+      }
+      if (!locale.getScript().isEmpty())
+      {
+         builder.append('-');
+         builder.append(locale.getScript());
+      }
+      if (!locale.getVariant().isEmpty())
+      {
+         builder.append('-');
+         builder.append(locale.getVariant());
+      }
+
+      this.id = builder.toString();
    }
 
    @Override
@@ -67,6 +92,11 @@ public final class LocaleId implements Serializable
    public String toJavaName()
    {
       return id.replace('-', '_');
+   }
+
+   public String getId()
+   {
+      return id;
    }
 
 }
