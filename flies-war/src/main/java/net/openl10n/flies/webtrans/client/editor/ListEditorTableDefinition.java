@@ -107,6 +107,7 @@ public class ListEditorTableDefinition extends DefaultTableDefinition<TransUnit>
       @Override
       public void renderRowValue(TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, AbstractCellView<TransUnit> view)
       {
+         view.setStyleName("TableEditorCell TableEditorCell-Copy");         
          view.setWidget(new Button("&gt;"));
       }
    };
