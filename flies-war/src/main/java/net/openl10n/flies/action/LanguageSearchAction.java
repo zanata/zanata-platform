@@ -1,9 +1,9 @@
 package net.openl10n.flies.action;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
+import net.openl10n.flies.model.FliesLocalePair;
 import net.openl10n.flies.service.LocaleService;
 
 import org.jboss.seam.ScopeType;
@@ -14,7 +14,6 @@ import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.annotations.security.Restrict;
 
-import com.ibm.icu.util.ULocale;
 
 @Name("languageSearchAction")
 @Scope(ScopeType.PAGE)
@@ -25,17 +24,16 @@ public class LanguageSearchAction implements Serializable
    @In
    LocaleService localeServiceImpl;
    @DataModel
-   List<ULocale> supportedLanguages;
+   List<FliesLocalePair> supportedLanguages;
    @DataModelSelection
-   ULocale selectedLanguage;
+   FliesLocalePair selectedLanguage;
 
    public void loadSupportedLanguage()
    {
-      supportedLanguages = new ArrayList<ULocale>();
-      supportedLanguages.addAll(localeServiceImpl.getAllSupportedLanguages().keySet());
+      supportedLanguages = localeServiceImpl.getAllSupportedLanguages();
    }
 
-   public ULocale getSelectedLanguage()
+   public FliesLocalePair getSelectedLanguage()
    {
       return selectedLanguage;
    }

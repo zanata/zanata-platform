@@ -1,15 +1,13 @@
 package net.openl10n.flies.service.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.dao.SupportedLanguageDAO;
+import net.openl10n.flies.model.FliesLocalePair;
 import net.openl10n.flies.model.HSupportedLanguage;
 import net.openl10n.flies.service.LocaleService;
-import net.openl10n.flies.util.LocaleUtil;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -35,15 +33,15 @@ public class LocaleServiceImpl implements LocaleService
    @Logger
    private Log log;
 
-   public Map<ULocale, LocaleId> getAllSupportedLanguages()
+   public List<FliesLocalePair> getAllSupportedLanguages()
    {
-      Map<ULocale, LocaleId> supportedLanguage = new HashMap<ULocale, LocaleId>();
+      List<FliesLocalePair> supportedLanguage = new ArrayList<FliesLocalePair>();
       List<HSupportedLanguage> hSupportedLanguages = supportedLanguageDAO.findAll();
       if (hSupportedLanguages == null)
          return supportedLanguage;
       for (HSupportedLanguage hSupportedLanguage : hSupportedLanguages)
       {
-         supportedLanguage.put(new ULocale(hSupportedLanguage.getLocaleId().getId()), hSupportedLanguage.getLocaleId());
+         supportedLanguage.add(new FliesLocalePair(hSupportedLanguage.getLocaleId()));
          log.debug("get supported languages from table:" + hSupportedLanguage.getLocaleId());
       }
       return supportedLanguage;
@@ -70,7 +68,7 @@ public class LocaleServiceImpl implements LocaleService
       log.debug("add localeId...");
       for (ULocale locale : locales)
       {
-         LocaleId localeId = LocaleUtil.toLocaleId(locale);
+         LocaleId localeId = new FliesLocalePair(locale).getLocaleId();
          addedLocales.add(localeId);
       }
       return addedLocales;

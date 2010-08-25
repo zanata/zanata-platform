@@ -10,7 +10,7 @@
 	template="../WEB-INF/layout/template.xhtml">
 
 	<ui:define name="left_content">
-		<s:link action="#{languageManagerAction.createSupportedLanguage}"
+		<s:link view="/admin/supportedlanguagedetail.xhtml"
 			value="#{messages['jsf.CreateSupportedLanguage']}" />
 	</ui:define>
 
@@ -30,21 +30,21 @@
 				<rich:dataTable id="threads" value="#{supportedLanguages}"
 					var="language">
 
-					<rich:column sortBy="#{language.language}">
+					<rich:column sortBy="#{language.localeId.id}">
 						<f:facet name="header">#{messages['jsf.Language']}</f:facet>
-	            		#{language.language}
+	            		#{language.localeId.id}
 	        		</rich:column>
-					<rich:column sortBy="#{language.country}">
-						<f:facet name="header">#{messages['jsf.CountryCode']}</f:facet>
-	            		#{language.country}
-	        		</rich:column>
-					<rich:column sortBy="#{language.displayName}">
+					<rich:column sortBy="#{language.uLocale.displayName}">
 						<f:facet name="header">#{messages['jsf.Name']}</f:facet>
-	            		#{language.displayName}
+	            		#{language.uLocale.displayName}
+	        		</rich:column>
+					<rich:column sortBy="#{language.uLocale.variant}">
+						<f:facet name="header">#{messages['jsf.Variant']}</f:facet>
+	            		#{language.uLocale.variant}
 	        		</rich:column>
 					<rich:column >
 						<f:facet name="header">#{messages['jsf.NativeName']}</f:facet>
-	            		#{language.getDisplayName(language)}
+	            		#{language.uLocale.getDisplayName(language.uLocale)}
 	        		</rich:column>
 					<rich:column>
 						<f:facet name="header">#{messages['jsf.Actions']}</f:facet>

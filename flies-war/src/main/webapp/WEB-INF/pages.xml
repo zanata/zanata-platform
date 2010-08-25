@@ -112,14 +112,7 @@
     </navigation>
   </page>
   
-  <page view-id="/admin/languagemanager.xhtml" action="#{languageSearchAction.loadSupportedLanguage}">
-    <navigation from-action="#{languageManagerAction.createSupportedLanguage}">
-      <redirect view-id="/admin/supportedlanguagedetail.xhtml" />
-    </navigation>
-    <navigation from-action="#{languageManagerAction.edit(languageSearchAction.selectedRole)}">
-      <redirect view-id="/admin/supportedlanguagedetail.xhtml" />
-    </navigation>
-  </page>
+  <page view-id="/admin/languagemanager.xhtml" action="#{languageSearchAction.loadSupportedLanguage}" />
 
   <!-- Community -->
 

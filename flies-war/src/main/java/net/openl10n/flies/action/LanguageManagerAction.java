@@ -7,6 +7,7 @@ import java.util.List;
 import javax.faces.model.SelectItem;
 
 import net.openl10n.flies.common.LocaleId;
+import net.openl10n.flies.model.FliesLocalePair;
 import net.openl10n.flies.service.LocaleService;
 
 import org.jboss.seam.ScopeType;
@@ -30,7 +31,6 @@ public class LanguageManagerAction implements Serializable
    LocaleService localeServiceImpl;
    private String language;
    private ULocale uLocale;
-   private String nativeName;
    private List<SelectItem> localeStringList;
    @Logger
    private Log log;
@@ -39,16 +39,6 @@ public class LanguageManagerAction implements Serializable
    public void onCreate()
    {
       fectchLocaleFromJava();
-   }
-
-   public String getNativeName()
-   {
-      return nativeName;
-   }
-
-   public void setNativeName(String nativeName)
-   {
-      this.nativeName = nativeName;
    }
 
    public String getLanguage()
@@ -71,10 +61,9 @@ public class LanguageManagerAction implements Serializable
       this.language = language;
    }
 
-   public void updateLanguage(String lan)
+   public void updateLanguage()
    {
-      this.uLocale = new ULocale(lan);
-      this.nativeName = this.uLocale.getDisplayName(this.uLocale);
+      this.uLocale = new ULocale(this.language);
    }
 
    public String save()
@@ -84,15 +73,10 @@ public class LanguageManagerAction implements Serializable
       return "success";
    }
 
-   public void delete(ULocale selectedLanguage)
+   public void delete(FliesLocalePair fliesLocalePair)
    {
       log.debug("delete selected language");
-      LocaleId localeId = localeServiceImpl.getAllSupportedLanguages().get(selectedLanguage);
-      localeServiceImpl.delete(localeId);
-   }
-
-   public void createSupportedLanguage()
-   {
+      localeServiceImpl.delete(fliesLocalePair.getLocaleId());
    }
 
    public void fectchLocaleFromJava()
