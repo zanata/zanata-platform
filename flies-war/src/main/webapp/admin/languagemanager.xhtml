@@ -27,25 +27,32 @@
 
 			<h:form>
 				<s:token allowMultiplePosts="true" />
-				<h:dataTable id="threads" value="#{supportedLanguages}"
-					var="language" cellspacing="0" headerClass="columnHeader"
-					rowClasses="odd,even" columnClasses=",,enabled,action"
-					styleClass="fullwidth">
+				<rich:dataTable id="threads" value="#{supportedLanguages}"
+					var="language">
 
-					<h:column width="auto">
+					<rich:column sortBy="#{language.language}">
 						<f:facet name="header">#{messages['jsf.Language']}</f:facet>
-	            #{language.id}
-	          </h:column>
-					<h:column width="auto">
+	            		#{language.language}
+	        		</rich:column>
+					<rich:column sortBy="#{language.country}">
+						<f:facet name="header">#{messages['jsf.CountryCode']}</f:facet>
+	            		#{language.country}
+	        		</rich:column>
+					<rich:column sortBy="#{language.displayName}">
+						<f:facet name="header">#{messages['jsf.Name']}</f:facet>
+	            		#{language.displayName}
+	        		</rich:column>
+					<rich:column >
+						<f:facet name="header">#{messages['jsf.NativeName']}</f:facet>
+	            		#{language.getDisplayName(language)}
+	        		</rich:column>
+					<rich:column>
 						<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-						<h:commandLink value="#{messages['jsf.Edit']}"
-							action="#{languageManagerAction.edit(languageSearchAction.selectedLanguage)}" />
-						<span> | </span>
 						<h:commandLink value="#{messages['jsf.Delete']}"
 							action="#{languageManagerAction.delete(languageSearchAction.selectedLanguage)}"
 							onclick="return confirmDelete()" />
-					</h:column>
-				</h:dataTable>
+					</rich:column>
+				</rich:dataTable>
 			</h:form>
 		</rich:panel>
 	</ui:define>
