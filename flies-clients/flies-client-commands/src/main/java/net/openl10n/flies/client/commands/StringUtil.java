@@ -1,8 +1,14 @@
-package net.openl10n.flies.client.ant.po;
+package net.openl10n.flies.client.commands;
 
-class StringUtil
+/**
+ * 
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * 
+ */
+public class StringUtil
 {
-   static String removeFileExtension(String filename, String extension)
+   public static String removeFileExtension(String filename, String extension)
    {
       if (!filename.endsWith(extension))
          throw new IllegalArgumentException("Filename '" + filename + "' should have extension '" + extension + "'");
