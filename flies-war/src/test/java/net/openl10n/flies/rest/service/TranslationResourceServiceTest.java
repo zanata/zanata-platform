@@ -42,7 +42,7 @@ import org.testng.annotations.Test;
 public class TranslationResourceServiceTest extends FliesRestTest
 {
 
-   private final String RESOURCE_PATH = "/projects/p/sample-project/iterations/i/1.0/resources";
+   private final String RESOURCE_PATH = "/projects/p/sample-project/iterations/i/1.0/r/";
 
    @Override
    protected void prepareDBUnitOperations()

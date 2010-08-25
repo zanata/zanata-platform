@@ -33,35 +33,35 @@ public interface ITranslationResources
    public ClientResponse<String> post(Resource messageBody, @QueryParam("ext") StringSet extensions);
 
    @GET
-   @Path("/r/{id}")
+   @Path("{id}")
    public ClientResponse<Resource> getResource(@PathParam("id") String id, @QueryParam("ext") StringSet extensions);
 
    @PUT
-   @Path("/r/{id}")
+   @Path("{id}")
    public ClientResponse<String> putResource(@PathParam("id") String id, Resource messageBody);
 
    @DELETE
-   @Path("/r/{id}")
+   @Path("{id}")
    public ClientResponse<String> deleteResource(@PathParam("id") String id);
 
    @GET
-   @Path("/r/{id}/meta")
+   @Path("{id}/meta")
    public ClientResponse<ResourceMeta> getResourceMeta(@PathParam("id") String id);
 
    @PUT
-   @Path("/r/{id}/meta")
+   @Path("{id}/meta")
    public ClientResponse<String> putResourceMeta(@PathParam("id") String id, ResourceMeta messageBody);
 
    @GET
-   @Path("/r/{id}/translations/{locale}")
+   @Path("{id}/translations/{locale}")
    public ClientResponse<TranslationsResource> getTranslations(@PathParam("id") String id, @PathParam("locale") LocaleId locale);
 
    @DELETE
-   @Path("/r/{id}/translations/{locale}")
+   @Path("{id}/translations/{locale}")
    public ClientResponse<String> deleteTranslations(@PathParam("id") String id, @PathParam("locale") LocaleId locale);
 
    @PUT
-   @Path("/r/{id}/translations/{locale}")
+   @Path("{id}/translations/{locale}")
    public ClientResponse<String> putTranslations(@PathParam("id") String id, @PathParam("locale") LocaleId locale, TranslationsResource messageBody);
 
 }
