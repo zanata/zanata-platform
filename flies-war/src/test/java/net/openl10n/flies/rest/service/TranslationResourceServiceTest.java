@@ -188,6 +188,7 @@ public class TranslationResourceServiceTest extends FliesRestTest
       assertThat(response.getResponseStatus(), is(Status.OK));
 
       getResponse = client.getTranslations("my.txt", LocaleId.DE);
+      // TODO this should return an empty set of targets, possibly with metadata
       assertThat(getResponse.getResponseStatus(), is(Status.NOT_FOUND));
 
    }

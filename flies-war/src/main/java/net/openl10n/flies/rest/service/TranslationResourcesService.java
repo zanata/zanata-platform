@@ -254,6 +254,7 @@ public class TranslationResourcesService
       {
          TextFlow tf = new TextFlow(htf.getResId(), doc.getLocale());
          resourceUtils.transfer(htf, tf);
+         resourceUtils.transfer(htf, tf.getExtensions(), extensions);
          entity.getTextFlows().add(tf);
       }
 
