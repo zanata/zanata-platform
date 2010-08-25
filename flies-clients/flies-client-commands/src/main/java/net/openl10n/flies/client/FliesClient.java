@@ -10,6 +10,7 @@ import net.openl10n.flies.client.commands.ArgsUtil;
 import net.openl10n.flies.client.commands.BasicOptions;
 import net.openl10n.flies.client.commands.FliesCommand;
 import net.openl10n.flies.client.commands.ListRemoteCommand;
+import net.openl10n.flies.client.commands.PublicanPushCommand;
 import net.openl10n.flies.client.commands.PutProjectCommand;
 import net.openl10n.flies.client.commands.PutUserCommand;
 import net.openl10n.flies.client.commands.PutVersionCommand;
@@ -55,8 +56,7 @@ public class FliesClient implements BasicOptions
       this.err = err;
       // getCommandMap().put("listlocal", ListLocalCommand.class);
       getCommandMap().put("listremote", ListRemoteCommand.class);
-      // getCommandMap().put("publish", PublishCommand.class);
-      // getCommandMap().put("retrieve", RetrieveCommand.class);
+      getCommandMap().put("publican-push", PublicanPushCommand.class);
       getCommandMap().put("putproject", PutProjectCommand.class);
       getCommandMap().put("putuser", PutUserCommand.class);
       getCommandMap().put("putversion", PutVersionCommand.class);
