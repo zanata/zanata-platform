@@ -5,6 +5,7 @@ import java.io.Serializable;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonValue;
 
+
 public final class LocaleId implements Serializable
 {
 
@@ -67,6 +68,11 @@ public final class LocaleId implements Serializable
    public String toJavaName()
    {
       return id.replace('-', '_');
+   }
+
+   public String getId()
+   {
+      return id;
    }
 
 }

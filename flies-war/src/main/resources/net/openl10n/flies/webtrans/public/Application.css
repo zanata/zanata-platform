@@ -63,6 +63,12 @@ tr.TableEditorRow.highlighted td.TableEditorCell-Source {
 tr.TableEditorRow.highlighted td.TableEditorCell-Target {
 	cursor: hand;
 }
+tr.TableEditorRow td.TableEditorCell-Copy button{
+	display: none;
+}
+tr.TableEditorRow.highlighted td.TableEditorCell-Copy button{
+	display: inline;
+}
 
 tr.TableEditorRow.even-row {
 	background-color: #ffffff;
