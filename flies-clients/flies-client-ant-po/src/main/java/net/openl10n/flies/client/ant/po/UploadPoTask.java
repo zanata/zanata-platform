@@ -1,7 +1,6 @@
 package net.openl10n.flies.client.ant.po;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -14,6 +13,8 @@ import javax.xml.bind.Marshaller;
 import net.openl10n.flies.adapter.po.PoReader;
 import net.openl10n.flies.client.commands.ArgsUtil;
 import net.openl10n.flies.client.commands.BasicOptions;
+import net.openl10n.flies.client.commands.StringUtil;
+import net.openl10n.flies.client.commands.gettext.PublicanUtil;
 import net.openl10n.flies.common.ContentType;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.rest.JaxbUtil;
@@ -66,21 +67,8 @@ public class UploadPoTask extends FliesTask
    public void run() throws JAXBException, SAXException, URISyntaxException, IOException
    {
       PoReader poReader = new PoReader();
-      // scan the directory for pot files
       File potDir = new File(srcDir, "pot");
-      File[] potFiles = potDir.listFiles(new FileFilter()
-      {
-         @Override
-         public boolean accept(File pathname)
-         {
-            return pathname.isFile() && pathname.getName().endsWith(".pot");
-         }
-      });
-
-      if (potFiles == null)
-      {
-         throw new IOException("Unable to read directory \"pot\" - have you run \"publican update_pot\"?");
-      }
+      File[] potFiles = PublicanUtil.findPotFiles(potDir);
 
       // debug: print scanned files
       if (getDebug())
@@ -108,15 +96,7 @@ public class UploadPoTask extends FliesTask
       File[] localeDirs = new File[0];
       if (importPo)
       {
-         localeDirs = srcDir.listFiles(new FileFilter()
-         {
-
-            @Override
-            public boolean accept(File f)
-            {
-               return f.isDirectory() && !f.getName().equals("pot");
-            }
-         });
+         localeDirs = PublicanUtil.findLocaleDirs(srcDir);
       }
 
       // for each of the base pot files under srcdir/pot:
@@ -131,21 +111,19 @@ public class UploadPoTask extends FliesTask
          poReader.extractTemplate(doc, potInputSource, new LocaleId(sourceLang));
          docList.add(doc);
 
-         String poName = basename + ".po";
-
          // for each of the corresponding po files in the locale subdirs:
          // (The locale list should actually be empty unless importPo is enabled)
          if (importPo)
          {
-            for (int i = 0; i < localeDirs.length; i++)
+            String poName = basename + ".po";
+            for (File localeDir : localeDirs)
             {
-               File localeDir = localeDirs[i];
                File poFile = new File(localeDir, poName);
                if (poFile.exists())
                {
-                  //					progress.update(i++, files.length);
+                  // progress.update(i++, files.length);
                   InputSource inputSource = new InputSource(poFile.toURI().toString());
-                  //							System.out.println(poFile.toURI().toString());
+                  // System.out.println(poFile.toURI().toString());
                   inputSource.setEncoding("utf8");
                   poReader.extractTarget(doc, inputSource, new LocaleId(localeDir.getName()));
                }
