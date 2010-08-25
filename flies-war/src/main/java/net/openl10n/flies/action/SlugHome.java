@@ -2,7 +2,6 @@ package net.openl10n.flies.action;
 
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
-import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.framework.EntityHome;
 
 /**

@@ -70,6 +70,7 @@ public class AbstractFliesEntity
       this.lastChanged = lastChanged;
    }
 
+   @SuppressWarnings("unused")
    @PrePersist
    private void onPersist()
    {
@@ -77,6 +78,7 @@ public class AbstractFliesEntity
       lastChanged = creationDate;
    }
 
+   @SuppressWarnings("unused")
    @PreUpdate
    private void onUpdate()
    {

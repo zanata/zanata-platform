@@ -27,7 +27,6 @@ public class FliesIdentity extends Identity
 
    public static final String USER_LOGOUT_EVENT = "user.logout";
    public static final String USER_ENTER_WORKSPACE = "user.enter";
-   private String username;
 
    private static final LogProvider log = Logging.getLogProvider(FliesIdentity.class);
 

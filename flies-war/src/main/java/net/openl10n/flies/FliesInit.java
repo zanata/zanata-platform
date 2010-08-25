@@ -210,17 +210,17 @@ public class FliesInit
       ClassLoader loader = Thread.currentThread().getContextClassLoader();
       try
       {
-         NamingEnumeration ne = ctx.list("");
+         NamingEnumeration<NameClassPair> ne = ctx.list("");
          while (ne.hasMore())
          {
-            NameClassPair pair = (NameClassPair) ne.next();
+            NameClassPair pair = ne.next();
 
             String name = pair.getName();
             String className = pair.getClassName();
             boolean recursive = false;
             boolean isLinkRef = false;
             boolean isProxy = false;
-            Class c = null;
+            Class<?> c = null;
             try
             {
                c = loader.loadClass(className);
@@ -288,7 +288,7 @@ public class FliesInit
                buffer.append(" (proxy: " + pair.getClassName());
                if (c != null)
                {
-                  Class[] ifaces = c.getInterfaces();
+                  Class<?>[] ifaces = c.getInterfaces();
                   buffer.append(" implements ");
                   for (int i = 0; i < ifaces.length; i++)
                   {

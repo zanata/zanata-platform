@@ -9,7 +9,6 @@ import org.gwt.mosaic.ui.client.table.CellRenderer;
 import org.gwt.mosaic.ui.client.table.ColumnDefinition;
 import org.gwt.mosaic.ui.client.table.DefaultTableDefinition;
 import org.gwt.mosaic.ui.client.table.RowRenderer;
-import org.gwt.mosaic.ui.client.table.property.PreferredWidthProperty;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;

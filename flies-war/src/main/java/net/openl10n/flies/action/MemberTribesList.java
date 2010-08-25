@@ -8,7 +8,6 @@ import javax.persistence.EntityManager;
 
 import net.openl10n.flies.model.HAccount;
 import net.openl10n.flies.model.HTribe;
-import net.openl10n.flies.security.FliesIdentity;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;

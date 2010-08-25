@@ -1,6 +1,5 @@
 package net.openl10n.flies.dao;
 
-import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.model.HTribe;
 
 import org.hibernate.Query;

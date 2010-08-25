@@ -1,7 +1,6 @@
 package net.openl10n.flies.action;
 
 import java.io.Serializable;
-import java.security.MessageDigest;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -28,7 +27,6 @@ import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.RunAsOperation;
 import org.jboss.seam.security.management.IdentityManager;
-import org.jboss.seam.util.Hex;
 
 @Name("register")
 @Scope(ScopeType.CONVERSATION)

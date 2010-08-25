@@ -16,7 +16,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.PreUpdate;
 
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.hibernate.search.TranslatedFilterFactory;

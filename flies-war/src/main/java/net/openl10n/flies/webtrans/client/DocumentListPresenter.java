@@ -231,7 +231,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       }
       else
       {
-         long value = (long) ((translated * 100) / (fuzzy + untranslated + translated));
+         long value = (translated * 100) / (fuzzy + untranslated + translated);
          return value;
       }
 
