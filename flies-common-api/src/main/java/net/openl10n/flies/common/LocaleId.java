@@ -5,7 +5,6 @@ import java.io.Serializable;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonValue;
 
-import com.ibm.icu.util.ULocale;
 
 public final class LocaleId implements Serializable
 {
