@@ -8,18 +8,20 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import net.openl10n.flies.rest.dto.ExtensionValue;
 import net.openl10n.flies.rest.dto.po.HeaderEntry;
+import net.openl10n.flies.rest.dto.resource.AbstractResourceMeta;
 import net.openl10n.flies.rest.dto.resource.Extension;
 
 import org.codehaus.jackson.annotate.JsonTypeName;
 
 @XmlType(name = "poHeaderExtension", namespace = PoHeader.NAMESPACE, propOrder = { "comment", "entries" })
 @XmlRootElement(name = "po-header", namespace = PoHeader.NAMESPACE)
-@JsonTypeName(value = PoHeader.ID)
-public class PoHeader extends Extension
+@JsonTypeName(value = "po-header")
+public class PoHeader implements ExtensionValue<AbstractResourceMeta>
 {
 
-   public static final String ID = "gettext-pot-header";
+   public static final String ID = "gettext";
    public static final String VERSION = "1.0";
    public static final String NAMESPACE = "http://flies.openl10n.net/api/gettext/";
 
@@ -28,7 +30,6 @@ public class PoHeader extends Extension
 
    public PoHeader()
    {
-      super(ID, VERSION);
    }
 
    public PoHeader(String comment, HeaderEntry... entries)

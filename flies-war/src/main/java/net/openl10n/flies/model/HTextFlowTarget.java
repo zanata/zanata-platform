@@ -35,7 +35,7 @@ import org.hibernate.validator.NotNull;
  */
 @Entity
 @TypeDef(name = "localeId", typeClass = LocaleIdType.class)
-public class HTextFlowTarget extends AbstractFliesEntity implements ITextFlowTargetHistory
+public class HTextFlowTarget extends AbstractFliesEntity implements ITextFlowTargetHistory, HasSimpleComment
 {
 
    private static final long serialVersionUID = 302308010797605435L;

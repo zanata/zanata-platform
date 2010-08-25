@@ -20,6 +20,7 @@ import net.openl10n.flies.common.Namespaces;
 import net.openl10n.flies.common.ResourceType;
 import net.openl10n.flies.rest.dto.ContentTypeAdapter;
 import net.openl10n.flies.rest.dto.DTOUtil;
+import net.openl10n.flies.rest.dto.Extensible;
 import net.openl10n.flies.rest.dto.HasCollectionSample;
 import net.openl10n.flies.rest.dto.LocaleIdAdapter;
 import net.openl10n.flies.rest.dto.extensions.PoHeader;
@@ -28,7 +29,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 
 @XmlType(name = "abstractResourceMetaType", namespace = Namespaces.FLIES, propOrder = { "name", "extensions" })
-public abstract class AbstractResourceMeta implements Serializable
+public abstract class AbstractResourceMeta implements Serializable, Extensible<AbstractResourceMeta>
 {
 
    private String name;
@@ -39,7 +40,7 @@ public abstract class AbstractResourceMeta implements Serializable
 
    private LocaleId lang = LocaleId.EN_US;
 
-   private ExtensionSet extensions;
+   private ExtensionSet<AbstractResourceMeta> extensions;
 
    public AbstractResourceMeta()
    {
@@ -52,18 +53,18 @@ public abstract class AbstractResourceMeta implements Serializable
 
    @XmlElementWrapper(name = "extensions", namespace = Namespaces.FLIES, required = false)
    @XmlAnyElement(lax = true)
-   public ExtensionSet getExtensions()
+   public ExtensionSet<AbstractResourceMeta> getExtensions()
    {
       return extensions;
    }
 
-   public void setExtensions(ExtensionSet extensions)
+   public void setExtensions(ExtensionSet<AbstractResourceMeta> extensions)
    {
       this.extensions = extensions;
    }
 
    @JsonIgnore
-   public ExtensionSet getExtensions(boolean createIfNull)
+   public ExtensionSet<AbstractResourceMeta> getExtensions(boolean createIfNull)
    {
       if (createIfNull && extensions == null)
          extensions = new ExtensionSet();

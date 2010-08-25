@@ -6,26 +6,17 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import net.openl10n.flies.common.Namespaces;
 import net.openl10n.flies.rest.dto.DTOUtil;
+import net.openl10n.flies.rest.dto.ExtensionValue;
 
 @XmlRootElement(name = "extension-set", namespace = Namespaces.FLIES)
-public class ExtensionSet extends HashSet<Extension>
+public class ExtensionSet<T> extends HashSet<ExtensionValue<T>> 
 {
 
    private static final long serialVersionUID = 8077674295531213159L;
 
-   public Extension findById(String id)
+   public <Y extends ExtensionValue<T>> Y findByType(Class<Y> clz)
    {
-      for (Extension e : this)
-      {
-         if (e.getId().equals(id))
-            return e;
-      }
-      return null;
-   }
-
-   public <T extends Extension> T findByType(Class<T> clz)
-   {
-      for (Extension e : this)
+      for (ExtensionValue<T> e : this)
       {
          if (clz.isInstance(e))
             return clz.cast(e);

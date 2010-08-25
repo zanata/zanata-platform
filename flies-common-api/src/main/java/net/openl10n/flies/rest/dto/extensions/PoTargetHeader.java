@@ -8,16 +8,22 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.codehaus.jackson.annotate.JsonTypeName;
+
 import net.openl10n.flies.rest.dto.DTOUtil;
+import net.openl10n.flies.rest.dto.ExtensionValue;
 import net.openl10n.flies.rest.dto.po.HeaderEntry;
 import net.openl10n.flies.rest.dto.resource.Extension;
+import net.openl10n.flies.rest.dto.resource.TextFlowTarget;
+import net.openl10n.flies.rest.dto.resource.TranslationsResource;
 
 @XmlType(name = "poTargetHeader", namespace = PoHeader.NAMESPACE, propOrder = { "comment", "entries" })
 @XmlRootElement(name = "po-target-header", namespace = PoHeader.NAMESPACE)
-public class PoTargetHeader extends Extension
+@JsonTypeName(value = "po-target-header")
+public class PoTargetHeader implements ExtensionValue<TranslationsResource>
 {
 
-   public static final String ID = "gettext-target-header";
+   public static final String ID = "gettext";
    public static final String VERSION = PoHeader.VERSION;
    public static final String NAMESPACE = PoHeader.NAMESPACE;
 
@@ -26,12 +32,10 @@ public class PoTargetHeader extends Extension
 
    public PoTargetHeader()
    {
-      super(ID, VERSION);
    }
 
    public PoTargetHeader(String comment, HeaderEntry... entries)
    {
-      super(ID, VERSION);
       setComment(comment);
       for (int i = 0; i < entries.length; i++)
       {
