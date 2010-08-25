@@ -8,7 +8,27 @@ public class LocaleUtil
 {
    public static LocaleId toLocaleId(ULocale locale)
    {
-      return new LocaleId(locale.toLanguageTag());
+      StringBuilder builder = new StringBuilder();
+      builder.append(locale.getLanguage());
+      if (!locale.getCountry().isEmpty())
+      {
+         builder.append('-');
+         builder.append(locale.getCountry());
+      }
+      if (!locale.getScript().isEmpty())
+      {
+         builder.append('-');
+         builder.append(locale.getScript());
+      }
+      if (!locale.getVariant().isEmpty())
+      {
+         builder.append('-');
+         builder.append(locale.getVariant());
+      }
+
+      String id = builder.toString();
+
+      return new LocaleId(id);
    }
-   
+
 }

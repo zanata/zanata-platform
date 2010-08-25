@@ -1,12 +1,15 @@
 package net.openl10n.flies.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.dao.SupportedLanguageDAO;
 import net.openl10n.flies.model.HSupportedLanguage;
 import net.openl10n.flies.service.LocaleService;
+import net.openl10n.flies.util.LocaleUtil;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -32,15 +35,16 @@ public class LocaleServiceImpl implements LocaleService
    @Logger
    private Log log;
 
-   public List<LocaleId> getAllSupportedLanguages()
+   public Map<ULocale, LocaleId> getAllSupportedLanguages()
    {
-      List<LocaleId> supportedLanguage = new ArrayList<LocaleId>();
+      Map<ULocale, LocaleId> supportedLanguage = new HashMap<ULocale, LocaleId>();
       List<HSupportedLanguage> hSupportedLanguages = supportedLanguageDAO.findAll();
       if (hSupportedLanguages == null)
-         supportedLanguage = new ArrayList<LocaleId>();
+         return supportedLanguage;
       for (HSupportedLanguage hSupportedLanguage : hSupportedLanguages)
       {
-         supportedLanguage.add(hSupportedLanguage.getLocaleId());
+         supportedLanguage.put(new ULocale(hSupportedLanguage.getLocaleId().getId()), hSupportedLanguage.getLocaleId());
+         log.debug("get supported languages from table:" + hSupportedLanguage.getLocaleId());
       }
       return supportedLanguage;
    }
@@ -49,12 +53,13 @@ public class LocaleServiceImpl implements LocaleService
    {
       HSupportedLanguage entity = new HSupportedLanguage();
       entity.setLocaleId(localeId);
+      log.debug("save locale:" + localeId.getId());
       supportedLanguageDAO.makePersistent(entity);
    }
 
-   public void delete(LocaleId localeId)
+   public void delete(LocaleId locale)
    {
-      HSupportedLanguage entity = supportedLanguageDAO.findById(localeId, true);
+      HSupportedLanguage entity = supportedLanguageDAO.findById(locale, true);
       supportedLanguageDAO.makeTransient(entity);
    }
 
@@ -65,7 +70,7 @@ public class LocaleServiceImpl implements LocaleService
       log.debug("add localeId...");
       for (ULocale locale : locales)
       {
-         LocaleId localeId = new LocaleId(locale);
+         LocaleId localeId = LocaleUtil.toLocaleId(locale);
          addedLocales.add(localeId);
       }
       return addedLocales;

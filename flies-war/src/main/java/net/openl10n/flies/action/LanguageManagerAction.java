@@ -30,6 +30,7 @@ public class LanguageManagerAction implements Serializable
    LocaleService localeServiceImpl;
    private String language;
    private ULocale uLocale;
+   private String nativeName;
    private List<SelectItem> localeStringList;
    @Logger
    private Log log;
@@ -38,6 +39,16 @@ public class LanguageManagerAction implements Serializable
    public void onCreate()
    {
       fectchLocaleFromJava();
+   }
+
+   public String getNativeName()
+   {
+      return nativeName;
+   }
+
+   public void setNativeName(String nativeName)
+   {
+      this.nativeName = nativeName;
    }
 
    public String getLanguage()
@@ -63,6 +74,7 @@ public class LanguageManagerAction implements Serializable
    public void updateLanguage(String lan)
    {
       this.uLocale = new ULocale(lan);
+      this.nativeName = this.uLocale.getDisplayName(this.uLocale);
    }
 
    public String save()
@@ -72,14 +84,11 @@ public class LanguageManagerAction implements Serializable
       return "success";
    }
 
-   public void edit()
-   {
-
-   }
-   public void delete(LocaleId selectedLanguage)
+   public void delete(ULocale selectedLanguage)
    {
       log.debug("delete selected language");
-      localeServiceImpl.delete(selectedLanguage);
+      LocaleId localeId = localeServiceImpl.getAllSupportedLanguages().get(selectedLanguage);
+      localeServiceImpl.delete(localeId);
    }
 
    public void createSupportedLanguage()
