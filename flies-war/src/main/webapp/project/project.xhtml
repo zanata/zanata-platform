@@ -16,8 +16,6 @@
     <s:formattedText id="project-home-content" value="#{projectHome.instance.homeContent}"></s:formattedText>
     <h:outputText value="#{projectHome.instance.description}" rendered="#{empty projectHome.instance.homeContent}"/>
 
-    <br/><i>* #{messages['jsf.PleaseJoinALanguageTeamFromTheLanguagesPageToHelpTranslateThisProject']}</i>
-
     <s:fragment rendered="#{projectHome.retiredIterations.size > 0}">
       <h2>#{messages['jsf.ActiveIterations']}</h2>
     </s:fragment>
@@ -47,9 +45,6 @@
     <s:link styleClass="action_link" rendered="#{s:hasPermission(projectHome.instance, 'update')}" value="#{messages['jsf.EditProject']}" view="/project/edit.xhtml" propagation="none">
       <f:param name="slug" value="#{projectHome.instance.slug}"/>
     </s:link>
-    <!-- NB: we don't check for 'insert' permission on the HProjectIteration
-         because we would have to create HProjectIteration *and* set its project.
-    -->
     <s:link styleClass="action_link" rendered="#{s:hasPermission(projectHome.instance, 'add-iteration')}" view="/project/add_iteration.xhtml" value="#{messages['jsf.CreateVersion']}" propagation="none">
     	<f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
     </s:link>
