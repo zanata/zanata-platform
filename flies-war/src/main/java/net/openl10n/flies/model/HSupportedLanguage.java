@@ -17,9 +17,9 @@ import org.hibernate.validator.NotNull;
 public class HSupportedLanguage implements Serializable
 {
    private static final long serialVersionUID = 1L;
-   @Id
    private LocaleId localeId;
 
+   @Id
    @NotNull
    @Type(type = "localeId")
    public LocaleId getLocaleId()

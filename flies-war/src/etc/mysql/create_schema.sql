@@ -219,7 +219,7 @@
     ) ENGINE=InnoDB;
 
     create table HSupportedLanguage (
-        localeId tinyblob not null,
+        localeId varchar(255) binary not null,
         primary key (localeId)
     ) ENGINE=InnoDB;
 
@@ -569,4 +569,3 @@
         add constraint FK3BBBD5336F114A1 
         foreign key (tribeId) 
         references HTribe (id);
-
