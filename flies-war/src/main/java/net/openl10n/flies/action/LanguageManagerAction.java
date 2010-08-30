@@ -14,10 +14,8 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
 
 import com.ibm.icu.util.ULocale;
 
@@ -32,8 +30,6 @@ public class LanguageManagerAction implements Serializable
    private String language;
    private ULocale uLocale;
    private List<SelectItem> localeStringList;
-   @Logger
-   private Log log;
 
    @Create
    public void onCreate()
@@ -75,7 +71,6 @@ public class LanguageManagerAction implements Serializable
 
    public void delete(FliesLocalePair fliesLocalePair)
    {
-      log.debug("delete selected language");
       localeServiceImpl.delete(fliesLocalePair.getLocaleId());
    }
 

@@ -31,4 +31,14 @@ public class HSupportedLanguage implements Serializable
    {
       this.localeId = localeId;
    }
+
+   public HSupportedLanguage()
+   {
+
+   }
+
+   public HSupportedLanguage(LocaleId localeId)
+   {
+      this.localeId = localeId;
+   }
 }

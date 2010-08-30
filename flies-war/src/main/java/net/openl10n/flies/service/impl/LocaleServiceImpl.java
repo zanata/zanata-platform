@@ -12,10 +12,8 @@ import net.openl10n.flies.service.LocaleService;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
 
 import com.ibm.icu.util.ULocale;
 
@@ -30,8 +28,6 @@ public class LocaleServiceImpl implements LocaleService
 {
    @In
    SupportedLanguageDAO supportedLanguageDAO;
-   @Logger
-   private Log log;
 
    public List<FliesLocalePair> getAllSupportedLanguages()
    {
@@ -42,7 +38,6 @@ public class LocaleServiceImpl implements LocaleService
       for (HSupportedLanguage hSupportedLanguage : hSupportedLanguages)
       {
          supportedLanguage.add(new FliesLocalePair(hSupportedLanguage.getLocaleId()));
-         log.debug("get supported languages from table:" + hSupportedLanguage.getLocaleId());
       }
       return supportedLanguage;
    }
@@ -51,7 +46,6 @@ public class LocaleServiceImpl implements LocaleService
    {
       HSupportedLanguage entity = new HSupportedLanguage();
       entity.setLocaleId(localeId);
-      log.debug("save locale:" + localeId.getId());
       supportedLanguageDAO.makePersistent(entity);
    }
 
@@ -65,7 +59,6 @@ public class LocaleServiceImpl implements LocaleService
    {
       ULocale[] locales = ULocale.getAvailableLocales();
       List<LocaleId> addedLocales = new ArrayList<LocaleId>();
-      log.debug("add localeId...");
       for (ULocale locale : locales)
       {
          LocaleId localeId = new FliesLocalePair(locale).getLocaleId();
