@@ -1,19 +1,21 @@
-<div id="tribe_list_view_item_#{tribe.locale.id}"
-   class="inline_cell_item"
-   xmlns="http://www.w3.org/1999/xhtml"
-   xmlns:ui="http://java.sun.com/jsf/facelets"
-   xmlns:h="http://java.sun.com/jsf/html"
-   xmlns:f="http://java.sun.com/jsf/core"
-   xmlns:s="http://jboss.com/products/seam/taglib">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:s="http://jboss.com/products/seam/taglib">
 
-    <div class="inline_cell_item_top">
-	<s:link view="/language/language.xhtml" propagation="none">
-	    #{tribe.locale.nativeName}
-	    <f:param name="id" value="#{tribe.locale.id}"/>
-	</s:link>
-    </div>
-    <div class="inline_cell_item_middle">
-        <p><em>#{tribe.locale.locale.displayName}</em> [#{tribe.locale.id}] - #{tribe.members.size} #{messages['jsf.Members']}</p>
-    </div>
+	<div id="tribe_list_view_item_#{tribe.hSupportedLanguage.localeId.id}"
+		class="inline_cell_item">
 
-</div>
+	<div class="inline_cell_item_top"><s:link
+		view="/language/language.xhtml" propagation="none">
+	    #{tribe.uLocale.getDisplayName(tribe.uLocale)}
+	    <f:param name="id" value="#{tribe.hSupportedLanguage.localeId.id}" />
+	</s:link></div>
+	<div class="inline_cell_item_middle">
+	<p><em>#{tribe.uLocale.displayName}</em> [#{tribe.hSupportedLanguage.localeId.id}] -
+	#{tribe.hSupportedLanguage.members.size} #{messages['jsf.Members']}</p>
+	</div>
+
+	</div>
+</ui:composition>

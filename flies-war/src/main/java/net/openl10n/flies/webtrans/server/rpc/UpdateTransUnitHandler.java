@@ -3,9 +3,11 @@ package net.openl10n.flies.webtrans.server.rpc;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 import net.openl10n.flies.common.ContentState;
+import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.model.HTextFlow;
 import net.openl10n.flies.model.HTextFlowTarget;
 import net.openl10n.flies.security.FliesIdentity;
+import net.openl10n.flies.service.LocaleService;
 import net.openl10n.flies.webtrans.server.ActionHandlerFor;
 import net.openl10n.flies.webtrans.server.TranslationWorkspace;
 import net.openl10n.flies.webtrans.server.TranslationWorkspaceManager;
@@ -37,6 +39,9 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    @In
    TranslationWorkspaceManager translationWorkspaceManager;
 
+   @In
+   LocaleService localeServiceImpl;
+
    @Override
    public UpdateTransUnitResult execute(UpdateTransUnit action, ExecutionContext context) throws ActionException
    {
@@ -49,7 +54,12 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       ContentState prevStatus = ContentState.New;
       if (target == null)
       {
-         target = new HTextFlowTarget(hTextFlow, action.getWorkspaceId().getLocaleId());
+         LocaleId locale = action.getWorkspaceId().getLocaleId();
+         if (!localeServiceImpl.localeSupported(locale))
+         {
+            throw new ActionException("Unsupported Locale: " + locale.getId() + " within this context");
+         }
+         target = new HTextFlowTarget(hTextFlow, locale);
          hTextFlow.getTargets().put(action.getWorkspaceId().getLocaleId(), target);
       }
       else

@@ -21,7 +21,7 @@
 						template="../WEB-INF/layout/edit.xhtml">
 						<ui:define name="label">#{messages['jsf.Language']}</ui:define>
 						<h:selectOneMenu id="selectLocale"
-							value="#{languageManagerAction.language}">
+							value="#{languageManagerAction.language}" >
 							<a4j:support event="onchange" reRender="output"
 								action="#{languageManagerAction.updateLanguage()}" />
 							<f:selectItems value="#{languageManagerAction.localeStringList}" />

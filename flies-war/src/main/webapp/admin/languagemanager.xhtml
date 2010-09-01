@@ -21,6 +21,14 @@
         {
           return confirm("#{messages['jsf.AreYouSureYouWishToDeleteThisLanguageThisActionCannotBeUndone']}");
         }
+        function confirmDisable()
+        {
+          return confirm("#{messages['jsf.AreYouSureYouWishToDisableThisLanguage']}");
+        }
+        function confirmEnable()
+        {
+          return confirm("#{messages['jsf.AreYouSureYouWishToEnableThisLanguage']}");
+        }
       </script>
 		<rich:panel>
 			<f:facet name="header">#{messages['jsf.LanguageManager']}</f:facet>
@@ -30,9 +38,9 @@
 				<rich:dataTable id="threads" value="#{supportedLanguages}"
 					var="language">
 
-					<rich:column sortBy="#{language.localeId.id}">
+					<rich:column sortBy="#{language.hSupportedLanguage.localeId.id}">
 						<f:facet name="header">#{messages['jsf.Language']}</f:facet>
-	            		#{language.localeId.id}
+	            		#{language.hSupportedLanguage.localeId.id}
 	        		</rich:column>
 					<rich:column sortBy="#{language.uLocale.displayName}">
 						<f:facet name="header">#{messages['jsf.Name']}</f:facet>
@@ -46,11 +54,17 @@
 						<f:facet name="header">#{messages['jsf.NativeName']}</f:facet>
 	            		#{language.uLocale.getDisplayName(language.uLocale)}
 	        		</rich:column>
-					<rich:column>
+					<rich:column rendered="#{language.hSupportedLanguage.active}">
 						<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-						<h:commandLink value="#{messages['jsf.Delete']}"
-							action="#{languageManagerAction.delete(languageSearchAction.selectedLanguage)}"
-							onclick="return confirmDelete()" />
+						<h:commandLink value="#{messages['jsf.Disabled']}"
+							action="#{languageManagerAction.disable(languageSearchAction.selectedLanguage)}"
+							onclick="return confirmDisable()" />
+					</rich:column>
+					<rich:column rendered="#{!language.hSupportedLanguage.active}">
+						<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+						<h:commandLink value="#{messages['jsf.Enabled']}"
+							action="#{languageManagerAction.enable(languageSearchAction.selectedLanguage)}"
+							onclick="return confirmEnable()" />
 					</rich:column>
 				</rich:dataTable>
 			</h:form>

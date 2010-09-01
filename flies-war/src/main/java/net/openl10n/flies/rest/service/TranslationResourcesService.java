@@ -52,6 +52,7 @@ import net.openl10n.flies.rest.dto.resource.ResourceMeta;
 import net.openl10n.flies.rest.dto.resource.TextFlow;
 import net.openl10n.flies.rest.dto.resource.TextFlowTarget;
 import net.openl10n.flies.rest.dto.resource.TranslationsResource;
+import net.openl10n.flies.service.LocaleService;
 
 import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
@@ -112,6 +113,9 @@ public class TranslationResourcesService
 
    @In
    private PersonDAO personDAO;
+
+   @In
+   private LocaleService localeServiceImpl;
 
    public TranslationResourcesService()
    {
@@ -524,6 +528,7 @@ public class TranslationResourcesService
       HProjectIteration hProjectIteration = retrieveIteration();
 
       validateExtensions();
+      validateSupportedLanguage(locale);
 
       // TODO create valid etag
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
@@ -539,6 +544,7 @@ public class TranslationResourcesService
       {
          return Response.status(Status.NOT_FOUND).build();
       }
+
 
       TranslationsResource entity = RestUtils.unmarshall(TranslationsResource.class, messageBody, requestContentType, headers.getRequestHeaders());
 
@@ -693,6 +699,14 @@ public class TranslationResourcesService
       {
          throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity("Unsupported Extensions within this context: " + StringUtils.join(invalidExtensions, ",")).build());
 
+      }
+   }
+
+   private void validateSupportedLanguage(LocaleId locale)
+   {
+      if (!localeServiceImpl.localeSupported(locale))
+      {
+         throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity("Unsupported Locale: " + locale.getId() + " within this context").build());
       }
    }
 }

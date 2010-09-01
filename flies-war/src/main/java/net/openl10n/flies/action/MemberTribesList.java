@@ -4,11 +4,10 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
-import javax.persistence.EntityManager;
 
 import net.openl10n.flies.model.HAccount;
-import net.openl10n.flies.model.HTribe;
-import net.openl10n.flies.security.FliesIdentity;
+import net.openl10n.flies.model.HSupportedLanguage;
+import net.openl10n.flies.service.LanguageTeamService;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
@@ -30,12 +29,12 @@ public class MemberTribesList implements Serializable
    private static final long serialVersionUID = -1879925862165479255L;
 
    @In
-   protected EntityManager entityManager;
+   LanguageTeamService languageTeamServiceImpl;
 
    @Logger
    Log log;
 
-   protected List<HTribe> memberTribes;
+   protected List<HSupportedLanguage> memberTribes;
 
    @Create
    public void onCreate()
@@ -44,7 +43,7 @@ public class MemberTribesList implements Serializable
    }
 
    @Unwrap
-   public List<HTribe> getMemberTribes()
+   public List<HSupportedLanguage> getMemberTribes()
    {
       return memberTribes;
    }
@@ -52,18 +51,17 @@ public class MemberTribesList implements Serializable
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
 
-   @Observer(create = false, value = { "personJoinedTribe", "personLeftTribe", Identity.EVENT_POST_AUTHENTICATE })
+   @Observer(create = false, value = { "personJoinedTribe", "personLeftTribe", "disableLanguage", "enableLanguage", Identity.EVENT_POST_AUTHENTICATE })
    synchronized public void fetchMemberTribes()
    {
       log.info("refreshing tribes...");
       if (authenticatedAccount == null)
       {
-         memberTribes = Collections.EMPTY_LIST;
+         memberTribes = Collections.emptyList();
          return;
       }
-      // entityManager.refresh(authenticatedAccount);
 
-      memberTribes = entityManager.createQuery("select p.tribeMemberships from HPerson p where p.account.username = :username").setParameter("username", authenticatedAccount.getUsername()).getResultList();
+      memberTribes = languageTeamServiceImpl.getLanguageMemberships(authenticatedAccount.getUsername());
       log.info("now listing {0} tribes", memberTribes.size());
    }
 

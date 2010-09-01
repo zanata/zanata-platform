@@ -29,7 +29,7 @@ public class LocaleServiceImpl implements LocaleService
    @In
    SupportedLanguageDAO supportedLanguageDAO;
 
-   public List<FliesLocalePair> getAllSupportedLanguages()
+   public List<FliesLocalePair> getAllLocales()
    {
       List<FliesLocalePair> supportedLanguage = new ArrayList<FliesLocalePair>();
       List<HSupportedLanguage> hSupportedLanguages = supportedLanguageDAO.findAll();
@@ -37,22 +37,31 @@ public class LocaleServiceImpl implements LocaleService
          return supportedLanguage;
       for (HSupportedLanguage hSupportedLanguage : hSupportedLanguages)
       {
-         supportedLanguage.add(new FliesLocalePair(hSupportedLanguage.getLocaleId()));
+         FliesLocalePair fliesLocalePair = new FliesLocalePair(hSupportedLanguage);
+         supportedLanguage.add(fliesLocalePair);
       }
       return supportedLanguage;
    }
 
    public void save(LocaleId localeId)
    {
+      if (localeExists(localeId))
+         return;
       HSupportedLanguage entity = new HSupportedLanguage();
       entity.setLocaleId(localeId);
+      entity.setActive(true);
       supportedLanguageDAO.makePersistent(entity);
+      supportedLanguageDAO.flush();
    }
 
-   public void delete(LocaleId locale)
+   public void disable(HSupportedLanguage entity)
    {
-      HSupportedLanguage entity = supportedLanguageDAO.findById(locale, true);
-      supportedLanguageDAO.makeTransient(entity);
+      if (entity != null)
+      {
+         entity.setActive(false);
+         supportedLanguageDAO.makePersistent(entity);
+         supportedLanguageDAO.flush();
+      }
    }
 
    public List<LocaleId> getAllJavaLanguages()
@@ -61,10 +70,45 @@ public class LocaleServiceImpl implements LocaleService
       List<LocaleId> addedLocales = new ArrayList<LocaleId>();
       for (ULocale locale : locales)
       {
-         LocaleId localeId = new FliesLocalePair(locale).getLocaleId();
+         LocaleId localeId = new FliesLocalePair(locale).gethSupportedLanguage().getLocaleId();
          addedLocales.add(localeId);
       }
       return addedLocales;
    }
 
+   public void enable(HSupportedLanguage entity)
+   {
+      if (entity != null)
+      {
+         entity.setActive(true);
+         supportedLanguageDAO.makePersistent(entity);
+         supportedLanguageDAO.flush();
+      }
+   }
+   
+   public boolean localeExists(LocaleId locale)
+   {
+      HSupportedLanguage entity = supportedLanguageDAO.findByLocaleId(locale);
+      return entity != null;
+   }
+   
+   public List<FliesLocalePair> getSupportedLocales()
+   {
+      List<FliesLocalePair> supportedLanguage = new ArrayList<FliesLocalePair>();
+      List<HSupportedLanguage> hSupportedLanguages = supportedLanguageDAO.findAllActive();
+      if (hSupportedLanguages == null)
+         return supportedLanguage;
+      for (HSupportedLanguage hSupportedLanguage : hSupportedLanguages)
+      {
+         FliesLocalePair fliesLocalePair = new FliesLocalePair(hSupportedLanguage);
+         supportedLanguage.add(fliesLocalePair);
+      }
+      return supportedLanguage;
+   }
+
+   public boolean localeSupported(LocaleId locale)
+   {
+      HSupportedLanguage entity = supportedLanguageDAO.findByLocaleId(locale);
+      return entity != null && entity.isActive();
+   }
 }

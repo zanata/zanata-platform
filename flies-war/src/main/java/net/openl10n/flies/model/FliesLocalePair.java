@@ -9,17 +9,8 @@ import net.openl10n.flies.common.LocaleId;
 public class FliesLocalePair implements Serializable
 {
    private static final long serialVersionUID = 1L;
-   private LocaleId localeId;
+   private HSupportedLanguage hSupportedLanguage;
    private ULocale uLocale;
-   public LocaleId getLocaleId()
-   {
-      return localeId;
-   }
-
-   public void setLocaleId(LocaleId localeId)
-   {
-      this.localeId = localeId;
-   }
 
    public ULocale getuLocale()
    {
@@ -53,14 +44,25 @@ public class FliesLocalePair implements Serializable
 
       String id = builder.toString();
 
-      this.localeId = new LocaleId(id);
+      this.hSupportedLanguage = new HSupportedLanguage();
+      this.hSupportedLanguage.setLocaleId(new LocaleId(id));
       this.uLocale = locale;
    }
 
-   public FliesLocalePair(LocaleId localeId)
+   public HSupportedLanguage gethSupportedLanguage()
    {
-      this.localeId = localeId;
-      this.uLocale = new ULocale(this.localeId.getId());
+      return hSupportedLanguage;
+   }
+
+   public void sethSupportedLanguage(HSupportedLanguage hSupportedLanguage)
+   {
+      this.hSupportedLanguage = hSupportedLanguage;
+   }
+
+   public FliesLocalePair(HSupportedLanguage hSupportedLanguage)
+   {
+      this.hSupportedLanguage = hSupportedLanguage;
+      this.uLocale = new ULocale(this.hSupportedLanguage.getLocaleId().getId());
    }
 
 }

@@ -20,9 +20,9 @@
                   var="tribe"
                   styleClass="iteration_inline_tribes"
                   rowClasses="odd,even">
-    <rich:column id="locale_id">#{tribe.locale.nativeName} [#{tribe.locale.id}]</rich:column>
+    <rich:column id="locale_id">#{tribe.localeId.id} [#{tribe.localeId.id}]</rich:column>
     <rich:column id="status">
-      <ui:param name="tstatus" value="#{projectIterationDAO.getStatisticsForContainer(_iteration.id, tribe.locale.localeId)}" />
+      <ui:param name="tstatus" value="#{projectIterationDAO.getStatisticsForContainer(_iteration.id, tribe.localeId)}" />
       <ui:include src="statsbar.xhtml">
         <ui:param name="status" value="#{tstatus}" />
       </ui:include>
@@ -34,7 +34,7 @@
           value="#{request.contextPath}/webtrans/Application.html">
 		<f:param name="project" value="#{_iteration.project.slug}"/>
 		<f:param name="iteration" value="#{_iteration.slug}"/>
-		<f:param name="localeId" value="#{tribe.locale.id}"/>
+		<f:param name="localeId" value="#{tribe.localeId.id}"/>
 		<f:param name="locale" value="#{locale.language}" />
 		#{messages['jsf.Translate']}
       </h:outputLink>
@@ -44,7 +44,7 @@
           value="#{request.contextPath}/webtrans/Application.html">
 		<f:param name="project" value="#{_iteration.project.slug}"/>
 		<f:param name="iteration" value="#{_iteration.slug}"/>
-		<f:param name="localeId" value="#{tribe.locale.id}"/>
+		<f:param name="localeId" value="#{tribe.localeId.id}"/>
 		<f:param name="gwt.codesvr" value="127.0.0.1:9997"/>
 		<f:param name="locale" value="#{locale.language}" />
 		#{messages['jsf.TranslateGWTDevMode']}

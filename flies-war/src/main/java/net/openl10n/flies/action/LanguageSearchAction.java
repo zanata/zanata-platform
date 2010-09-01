@@ -30,7 +30,7 @@ public class LanguageSearchAction implements Serializable
 
    public void loadSupportedLanguage()
    {
-      supportedLanguages = localeServiceImpl.getAllSupportedLanguages();
+      supportedLanguages = localeServiceImpl.getAllLocales();
    }
 
    public FliesLocalePair getSelectedLanguage()

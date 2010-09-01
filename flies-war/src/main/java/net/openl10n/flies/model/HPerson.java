@@ -14,15 +14,18 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.Email;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 
+@NamedQueries({ @NamedQuery(name = "getLanguageMemberships", query = "select p.tribeMemberships from HPerson as p where p.account.username = :username") })
 @Entity
 public class HPerson extends AbstractFliesEntity implements Serializable
 {
-
+   private static final long serialVersionUID = 1L;
    private String name;
    private HAccount account;
 
@@ -30,9 +33,7 @@ public class HPerson extends AbstractFliesEntity implements Serializable
 
    private List<HProject> maintainerProjects;
 
-   private Set<HTribe> tribeChiefs;
-   private Set<HTribe> tribeMemberships;
-   private Set<HTribe> tribeLeaderships;
+   private Set<HSupportedLanguage> tribeMemberships;
 
    private Set<HCommunity> communityOwnerships;
    private Set<HCommunity> communityOfficerships;
@@ -94,43 +95,20 @@ public class HPerson extends AbstractFliesEntity implements Serializable
    }
 
    @ManyToMany
-   @JoinTable(name = "HTribe_Member", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "tribeId"))
-   public Set<HTribe> getTribeMemberships()
+   @JoinTable(name = "HSupportedLanguage_Member", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "supportedLanguageId"))
+   public Set<HSupportedLanguage> getTribeMemberships()
    {
       if (tribeMemberships == null)
       {
-         tribeMemberships = new HashSet<HTribe>();
+         tribeMemberships = new HashSet<HSupportedLanguage>();
          setTribeMemberships(tribeMemberships);
       }
       return tribeMemberships;
    }
 
-   public void setTribeMemberships(Set<HTribe> tribeMemberships)
+   public void setTribeMemberships(Set<HSupportedLanguage> tribeMemberships)
    {
       this.tribeMemberships = tribeMemberships;
-   }
-
-   @ManyToMany
-   @JoinTable(name = "HTribe_Leader", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "tribeId"))
-   public Set<HTribe> getTribeLeaderships()
-   {
-      return tribeLeaderships;
-   }
-
-   public void setTribeLeaderships(Set<HTribe> tribeLeaderships)
-   {
-      this.tribeLeaderships = tribeLeaderships;
-   }
-
-   @OneToMany(mappedBy = "chief")
-   public Set<HTribe> getTribeChiefs()
-   {
-      return tribeChiefs;
-   }
-
-   public void setTribeChiefs(Set<HTribe> tribeChiefs)
-   {
-      this.tribeChiefs = tribeChiefs;
    }
 
    @OneToMany(mappedBy = "owner")

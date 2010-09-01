@@ -1,9 +1,9 @@
 package net.openl10n.flies.action;
 
+import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.model.HAccount;
-import net.openl10n.flies.model.HFliesLocale;
 import net.openl10n.flies.model.HPerson;
-import net.openl10n.flies.model.HTribe;
+import net.openl10n.flies.model.HSupportedLanguage;
 
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -20,7 +20,7 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 
 @Name("tribeHome")
 @Scope(ScopeType.EVENT)
-public class TribeHome extends EntityHome<HTribe>
+public class TribeHome extends EntityHome<HSupportedLanguage>
 {
 
    private static final long serialVersionUID = 5139154491040234980L;
@@ -28,10 +28,10 @@ public class TribeHome extends EntityHome<HTribe>
    private int maxNumberOfTribeMemberships = Integer.MAX_VALUE;
 
    @Override
-   protected HTribe loadInstance()
+   protected HSupportedLanguage loadInstance()
    {
       Session session = (Session) getEntityManager().getDelegate();
-      return (HTribe) session.createCriteria(getEntityClass()).add(Restrictions.naturalId().set("locale", getEntityManager().find(HFliesLocale.class, getId()))).setCacheable(true).uniqueResult();
+      return (HSupportedLanguage) session.createCriteria(getEntityClass()).add(Restrictions.naturalId().set("localeId", new LocaleId((String) getId()))).setCacheable(true).uniqueResult();
    }
 
    public void validateSuppliedId()
@@ -67,7 +67,7 @@ public class TribeHome extends EntityHome<HTribe>
             getEntityManager().flush();
             Events.instance().raiseEvent("personJoinedTribe", currentPerson, getInstance());
             getLog().info("{0} joined tribe {1}", authenticatedAccount.getUsername(), getId());
-            FacesMessages.instance().add("You are now a member of the {0} tribe", getInstance().getLocale().getNativeName());
+            FacesMessages.instance().add("You are now a member of the {0} tribe", getInstance().getLocaleId());
          }
       }
    }
@@ -89,7 +89,7 @@ public class TribeHome extends EntityHome<HTribe>
          getEntityManager().flush();
          Events.instance().raiseEvent("personLeftTribe", currentPerson, getInstance());
          getLog().info("{0} left tribe {1}", authenticatedAccount.getUsername(), getId());
-         FacesMessages.instance().add("You have left the {0} tribe", getInstance().getLocale().getNativeName());
+         FacesMessages.instance().add("You have left the {0} tribe", getInstance().getLocaleId());
       }
    }
 

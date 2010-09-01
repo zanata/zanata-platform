@@ -1,75 +1,79 @@
-<div id="tabs"
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:s="http://jboss.com/products/seam/taglib"
-    xmlns:a="http://richfaces.org/a4j"
-    xmlns:rich="http://richfaces.org/rich">
-  <ul class="ui-tabs-nav">
-    <li id="tab_projects" class="ui-tabs-nav-issues">
-      <s:link id="Projects" view="/project/home.xhtml" propagation="none">
-        <span><img src="#{request.contextPath}/img/silk/photos.png"/>#{messages['jsf.Projects']}</span>
-      </s:link>
-      <s:fragment rendered="#{authenticatedPerson != null}">
-	<ul>
-          <ui:repeat id="Project_list" value="#{authenticatedPerson.maintainerProjects}" var="project">
-	    <li id="Project_#{project.slug}">
-	      <s:link view="/project/project.xhtml" propagation="none">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+	<div id="tabs">
+	<ul class="ui-tabs-nav">
+		<li id="tab_projects" class="ui-tabs-nav-issues"><s:link
+			id="Projects" view="/project/home.xhtml" propagation="none">
+			<span><img src="#{request.contextPath}/img/silk/photos.png" />#{messages['jsf.Projects']}</span>
+		</s:link> <s:fragment rendered="#{authenticatedPerson != null}">
+			<ul>
+				<ui:repeat id="Project_list"
+					value="#{authenticatedPerson.maintainerProjects}" var="project">
+					<li id="Project_#{project.slug}"><s:link
+						view="/project/project.xhtml" propagation="none">
 		  #{project.name}
-		<f:param name="slug" value="#{project.slug}"/>
-              </s:link>
-            </li>
-          </ui:repeat>
-        </ul>
-      </s:fragment>
-    </li>
-    <li id="tab_tribes">
-      <s:link id="Languages" view="/language/home.xhtml" propagation="none">
-        <span><img src="#{request.contextPath}/img/silk/world.png"/>#{messages['jsf.Languages']}</span>
-      </s:link>
-      <s:div id="tribesTabDiv">
-        <s:fragment rendered="#{memberTribes.size != 0}">
-          <rich:jQuery selector="#tab_tribes" query="addClass('ui-tabs-nav-issues')" />
-          <ul>
-            <a:repeat id="Language_list" value="#{memberTribes}" var="tribe">
-	      <li id="Language_#{tribe.locale.id}">
-                <s:link view="/language/language.xhtml" propagation="none">
-                  #{tribe.locale.nativeName}
-                  <f:param name="id" value="#{tribe.locale.id}"/>
-                </s:link>
-              </li>
-            </a:repeat>
-          </ul>
-        </s:fragment>
-      </s:div>
-    </li>
-    <li id="tab_communities">
-      <s:link id="Communities" view="/community/home.xhtml" propagation="none">
-        <span><img src="#{request.contextPath}/img/silk/group.png"/>#{messages['jsf.Communities']}</span>
-      </s:link>
-    </li>
-    <s:fragment rendered="#{s:hasRole('admin')}">
-      <li  id="tab_admin" class="ui-tabs-nav-issues">
-        <s:link id="Administration" view="/admin/home.xhtml" propagation="none">
-          <span><img src="#{request.contextPath}/img/silk/wrench.png"/>#{messages['jsf.Administration']} ↓</span>
-        </s:link>
-	<ul>
-          <li id="Admin_Server_configuration"><s:link id="Admin_Server_configuration_a" view="/admin/server_configuration.xhtml" propagation="none">#{messages['jsf.ServerConfiguration']}</s:link></li>
-          <li id="Admin_Manage_users"><s:link id="Admin_Manage_users_a" view="/admin/usermanager.xhtml" propagation="none">#{messages['jsf.ManageUsers']}</s:link></li>
-          <li id="Admin_Manage_roles"><s:link id="Admin_Manage_roles_a" view="/admin/rolemanager.xhtml" propagation="none">#{messages['jsf.ManageRoles']}</s:link></li>
-          <li id="Admin_Manage_languages"><s:link id="Admin_Manage_languages_a" view="/admin/languagemanager.xhtml" propagation="none">#{messages['jsf.ManageLanguage']}</s:link></li>
-          <li id="Admin_Manage_locales"><s:link id="Admin_Manage_locales_a" view="/admin/locales.xhtml" propagation="none">#{messages['jsf.ManageLocales']}</s:link></li>
-	  <li id="Admin_Manage_search"><s:link id="Admin_Manage_search_a" view="/admin/search.xhtml" propagation="none">#{messages['jsf.ManageSearch']}</s:link></li>
-        </ul>
-      </li>
-    </s:fragment>
-    <s:fragment rendered="#{identity.loggedIn}">
-      <li id="tab_profile">
-        <s:link id="MyProfile" view="/profile/view.xhtml" propagation="none">
-          <span><img src="#{request.contextPath}/img/silk/user.png"/>#{messages['jsf.MyProfile']}</span>
-        </s:link>
-      </li>
-    </s:fragment>
-  </ul>
-</div>
+		<f:param name="slug" value="#{project.slug}" />
+					</s:link></li>
+				</ui:repeat>
+			</ul>
+		</s:fragment></li>
+		<li id="tab_tribes"><s:link id="Languages"
+			view="/language/home.xhtml" propagation="none">
+			<span><img src="#{request.contextPath}/img/silk/world.png" />#{messages['jsf.Languages']}</span>
+		</s:link> <s:div id="tribesTabDiv">
+			<s:fragment rendered="#{memberTribes.size != 0}">
+				<rich:jQuery selector="#tab_tribes"
+					query="addClass('ui-tabs-nav-issues')" />
+				<ul>
+					<a:repeat id="Language_list" value="#{memberTribes}" var="tribe">
+						<li id="Language_#{tribe.localeId.id}"><s:link
+							view="/language/language.xhtml" propagation="none">
+                  #{tribe.localeId.id}
+                  <f:param name="id" value="#{tribe.localeId.id}" />
+						</s:link></li>
+					</a:repeat>
+				</ul>
+			</s:fragment>
+		</s:div></li>
+		<li id="tab_communities"><s:link id="Communities"
+			view="/community/home.xhtml" propagation="none">
+			<span><img src="#{request.contextPath}/img/silk/group.png" />#{messages['jsf.Communities']}</span>
+		</s:link></li>
+		<s:fragment rendered="#{s:hasRole('admin')}">
+			<li id="tab_admin" class="ui-tabs-nav-issues"><s:link
+				id="Administration" view="/admin/home.xhtml" propagation="none">
+				<span><img src="#{request.contextPath}/img/silk/wrench.png" />#{messages['jsf.Administration']}
+				↓</span>
+			</s:link>
+			<ul>
+				<li id="Admin_Server_configuration"><s:link
+					id="Admin_Server_configuration_a"
+					view="/admin/server_configuration.xhtml" propagation="none">#{messages['jsf.ServerConfiguration']}</s:link></li>
+				<li id="Admin_Manage_users"><s:link id="Admin_Manage_users_a"
+					view="/admin/usermanager.xhtml" propagation="none">#{messages['jsf.ManageUsers']}</s:link></li>
+				<li id="Admin_Manage_roles"><s:link id="Admin_Manage_roles_a"
+					view="/admin/rolemanager.xhtml" propagation="none">#{messages['jsf.ManageRoles']}</s:link></li>
+				<li id="Admin_Manage_languages"><s:link
+					id="Admin_Manage_languages_a" view="/admin/languagemanager.xhtml"
+					propagation="none">#{messages['jsf.ManageLanguage']}</s:link></li>
+				<li id="Admin_Manage_search"><s:link id="Admin_Manage_search_a"
+					view="/admin/search.xhtml" propagation="none">#{messages['jsf.ManageSearch']}</s:link></li>
+			</ul>
+			</li>
+		</s:fragment>
+		<s:fragment rendered="#{identity.loggedIn}">
+			<li id="tab_profile"><s:link id="MyProfile"
+				view="/profile/view.xhtml" propagation="none">
+				<span><img src="#{request.contextPath}/img/silk/user.png" />#{messages['jsf.MyProfile']}</span>
+			</s:link></li>
+		</s:fragment>
+	</ul>
+	</div>
+
+</ui:composition>

@@ -16,6 +16,7 @@ import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.core.Events;
 
 import com.ibm.icu.util.ULocale;
 
@@ -69,9 +70,16 @@ public class LanguageManagerAction implements Serializable
       return "success";
    }
 
-   public void delete(FliesLocalePair fliesLocalePair)
+   public void disable(FliesLocalePair fliesLocalePair)
    {
-      localeServiceImpl.delete(fliesLocalePair.getLocaleId());
+      localeServiceImpl.disable(fliesLocalePair.gethSupportedLanguage());
+      Events.instance().raiseEvent("disableLanguage");
+   }
+
+   public void enable(FliesLocalePair fliesLocalePair)
+   {
+      localeServiceImpl.enable(fliesLocalePair.gethSupportedLanguage());
+      Events.instance().raiseEvent("enableLanguage");
    }
 
    public void fectchLocaleFromJava()
