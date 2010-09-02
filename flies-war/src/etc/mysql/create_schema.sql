@@ -117,18 +117,6 @@
         unique (document_id, revision)
     ) ENGINE=InnoDB;
 
-    create table HFliesLocale (
-        id varchar(80) binary not null,
-        icuLocaleId varchar(255) binary not null,
-        parentId varchar(80) binary,
-        primary key (id)
-    ) ENGINE=InnoDB;
-
-    create table HFliesLocale_Friends (
-        localeId varchar(80) binary not null,
-        friendId varchar(80) binary not null
-    ) ENGINE=InnoDB;
-
     create table HPerson (
         id bigint not null auto_increment,
         creationDate datetime not null,
@@ -219,8 +207,20 @@
     ) ENGINE=InnoDB;
 
     create table HSupportedLanguage (
+        id bigint not null auto_increment,
+        creationDate datetime not null,
+        lastChanged datetime not null,
+        versionNum integer not null,
+        active bit not null,
         localeId varchar(255) binary not null,
-        primary key (localeId)
+        primary key (id),
+        unique (localeId)
+    ) ENGINE=InnoDB;
+
+    create table HSupportedLanguage_Member (
+        personId bigint not null,
+        supportedLanguageId bigint not null,
+        primary key (supportedLanguageId, personId)
     ) ENGINE=InnoDB;
 
     create table HTextFlow (
@@ -275,29 +275,6 @@
         target_id bigint,
         primary key (id),
         unique (target_id, versionNum)
-    ) ENGINE=InnoDB;
-
-    create table HTribe (
-        id bigint not null auto_increment,
-        creationDate datetime not null,
-        lastChanged datetime not null,
-        versionNum integer not null,
-        chiefId bigint,
-        localeId varchar(80) binary not null,
-        primary key (id),
-        unique (localeId)
-    ) ENGINE=InnoDB;
-
-    create table HTribe_Leader (
-        personId bigint not null,
-        tribeId bigint not null,
-        primary key (tribeId, personId)
-    ) ENGINE=InnoDB;
-
-    create table HTribe_Member (
-        personId bigint not null,
-        tribeId bigint not null,
-        primary key (tribeId, personId)
     ) ENGINE=InnoDB;
 
     alter table HAccountActivationKey 
@@ -396,24 +373,6 @@
         foreign key (last_modified_by_id) 
         references HPerson (id);
 
-    alter table HFliesLocale 
-        add index FK6CAF0A3F0F4AE7A (parentId), 
-        add constraint FK6CAF0A3F0F4AE7A 
-        foreign key (parentId) 
-        references HFliesLocale (id);
-
-    alter table HFliesLocale_Friends 
-        add index FKF87125D95617036E (friendId), 
-        add constraint FKF87125D95617036E 
-        foreign key (friendId) 
-        references HFliesLocale (id);
-
-    alter table HFliesLocale_Friends 
-        add index FKF87125D91C35082A (localeId), 
-        add constraint FKF87125D91C35082A 
-        foreign key (localeId) 
-        references HFliesLocale (id);
-
     alter table HPerson 
         add index FK6F0931BDFA68C45F (accountId), 
         add constraint FK6F0931BDFA68C45F 
@@ -480,6 +439,18 @@
         foreign key (projectId) 
         references HProject (id);
 
+    alter table HSupportedLanguage_Member 
+        add index FK7097EB5B60C55B1B (personId), 
+        add constraint FK7097EB5B60C55B1B 
+        foreign key (personId) 
+        references HPerson (id);
+
+    alter table HSupportedLanguage_Member 
+        add index FK7097EB5B68E40971 (supportedLanguageId), 
+        add constraint FK7097EB5B68E40971 
+        foreign key (supportedLanguageId) 
+        references HSupportedLanguage (id);
+
     alter table HTextFlow 
         add index FK7B40F8635383E2F0 (document_id), 
         add constraint FK7B40F8635383E2F0 
@@ -533,39 +504,3 @@
         add constraint FKF109862080727E8B 
         foreign key (target_id) 
         references HTextFlowTarget (id);
-
-    alter table HTribe 
-        add index FK7FB20BC672D3380B (chiefId), 
-        add constraint FK7FB20BC672D3380B 
-        foreign key (chiefId) 
-        references HPerson (id);
-
-    alter table HTribe 
-        add index FK7FB20BC61C35082A (localeId), 
-        add constraint FK7FB20BC61C35082A 
-        foreign key (localeId) 
-        references HFliesLocale (id);
-
-    alter table HTribe_Leader 
-        add index FK20177C260C55B1B (personId), 
-        add constraint FK20177C260C55B1B 
-        foreign key (personId) 
-        references HPerson (id);
-
-    alter table HTribe_Leader 
-        add index FK20177C236F114A1 (tribeId), 
-        add constraint FK20177C236F114A1 
-        foreign key (tribeId) 
-        references HTribe (id);
-
-    alter table HTribe_Member 
-        add index FK3BBBD5360C55B1B (personId), 
-        add constraint FK3BBBD5360C55B1B 
-        foreign key (personId) 
-        references HPerson (id);
-
-    alter table HTribe_Member 
-        add index FK3BBBD5336F114A1 (tribeId), 
-        add constraint FK3BBBD5336F114A1 
-        foreign key (tribeId) 
-        references HTribe (id);
