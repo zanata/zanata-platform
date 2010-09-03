@@ -1,55 +1,95 @@
 package net.openl10n.flies.action;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import net.openl10n.flies.model.FliesLocalePair;
+import java.io.Serializable;
+
+import net.openl10n.flies.common.LocaleId;
+import net.openl10n.flies.model.HAccount;
+import net.openl10n.flies.model.HSupportedLanguage;
+import net.openl10n.flies.service.LanguageTeamService;
 import net.openl10n.flies.service.LocaleService;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.Transactional;
+import org.jboss.seam.core.Events;
+import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.international.StatusMessage.Severity;
+import org.jboss.seam.log.Log;
+import org.jboss.seam.security.management.JpaIdentityStore;
 
 @Name("languageTeamAction")
-@Scope(ScopeType.STATELESS)
-public class LanguageTeamAction
+@Scope(ScopeType.EVENT)
+public class LanguageTeamAction implements Serializable
 {
+   private static final long serialVersionUID = 1L;
+   @In
+   LanguageTeamService languageTeamServiceImpl;
    @In
    LocaleService localeServiceImpl;
+   @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
+   HAccount authenticatedAccount;
+   @Logger
+   Log log;
 
-   static class TribeComparator implements Comparator<FliesLocalePair>
+   private String language;
+
+   public String getLanguage()
    {
-      public int compare(FliesLocalePair aFliesLocale, FliesLocalePair bFliesLocale)
+      return language;
+   }
+
+   public void setLanguage(String language)
+   {
+      this.language = language;
+   }
+
+   public HSupportedLanguage getLocale()
+   {
+      return localeServiceImpl.getLanguageByLocale(new LocaleId(language));
+   }
+
+   @Transactional
+   public void joinTribe()
+   {
+
+      if (authenticatedAccount == null)
       {
-         String aDisplayName = aFliesLocale.getuLocale().getDisplayName();
-         String bDisplayName = bFliesLocale.getuLocale().getDisplayName();
-         int comparison = aDisplayName.compareTo(bDisplayName);
-         if (comparison == 0)
+         log.error("failed to load auth person");
+         return;
+      }
+      try
+      {
+         if (languageTeamServiceImpl.joinLanguageTeam(this.language, authenticatedAccount.getPerson().getId()))
          {
-            String aNativeName = aFliesLocale.getuLocale().getDisplayName(aFliesLocale.getuLocale());
-            String bNativeName = bFliesLocale.getuLocale().getDisplayName(bFliesLocale.getuLocale());
-            comparison = aNativeName.compareTo(bNativeName);
-            if (comparison == 0)
-               // if all else fails, fall back on numerical ID sort
-               return aFliesLocale.gethSupportedLanguage().getLocaleId().getId().compareTo(bFliesLocale.gethSupportedLanguage().getLocaleId().getId());
-            return comparison;
+            Events.instance().raiseEvent("personJoinedTribe");
+            log.info("{0} joined tribe {1}", authenticatedAccount.getUsername(), this.language);
+            FacesMessages.instance().add("You are now a member of the {0} language team", getLocale().retrieveNativeName());
          }
-         return comparison;
+      }
+      catch (Exception e)
+      {
+         FacesMessages.instance().add(Severity.ERROR, e.getMessage());
       }
    }
 
-
-   public List<FliesLocalePair> getSupportedLanguages()
+   @Transactional
+   public void leaveTribe()
    {
-      // NB ULocale data isn't stored in the database, so we have
-      // to do a post-select sort.
-      List<FliesLocalePair> tribes = localeServiceImpl.getSupportedLocales();
 
-      // This Comparator isn't complete enough for general use, but it should
-      // work
-      Collections.sort(tribes, new TribeComparator());
-      return tribes;
+      if (authenticatedAccount == null)
+      {
+         log.error("failed to load auth person");
+         return;
+      }
+      if (languageTeamServiceImpl.leaveLanguageTeam(this.language, authenticatedAccount.getPerson().getId()))
+      {
+         Events.instance().raiseEvent("personLeftTribe");
+         log.info("{0} left tribe {1}", authenticatedAccount.getUsername(), this.language);
+         FacesMessages.instance().add("You have left the {0} language team", getLocale().retrieveNativeName());
+      }
    }
 
 }
