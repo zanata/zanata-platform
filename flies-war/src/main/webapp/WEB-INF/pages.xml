@@ -240,8 +240,8 @@
   <!-- Language -->
 
   <page view-id="/language/language.xhtml">
-    <param name="id" value="#{tribeHome.id}" />
-    <action execute="#{tribeHome.validateSuppliedId}" />
+    <param name="id" value="#{languageTeamAction.language}" />
+    <action execute="#{languageTeamAction.getLocale()}" />
   </page>
 
   <!-- Exceptions -->

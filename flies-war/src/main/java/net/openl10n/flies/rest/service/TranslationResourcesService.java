@@ -38,6 +38,7 @@ import net.openl10n.flies.dao.DocumentDAO;
 import net.openl10n.flies.dao.PersonDAO;
 import net.openl10n.flies.dao.ProjectIterationDAO;
 import net.openl10n.flies.dao.TextFlowTargetDAO;
+import net.openl10n.flies.exception.FliesException;
 import net.openl10n.flies.model.HDocument;
 import net.openl10n.flies.model.HPerson;
 import net.openl10n.flies.model.HProjectIteration;
@@ -706,7 +707,7 @@ public class TranslationResourcesService
    {
       if (!localeServiceImpl.localeSupported(locale))
       {
-         throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity("Unsupported Locale: " + locale.getId() + " within this context").build());
+         throw new FliesException(Status.BAD_REQUEST, "Unsupported Locale: " + locale.getId() + " within this context");
       }
    }
 }

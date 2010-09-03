@@ -35,12 +35,12 @@
 
 			<h:form>
 				<s:token allowMultiplePosts="true" />
-				<rich:dataTable id="threads" value="#{supportedLanguages}"
+				<rich:dataTable id="threads" value="#{allLanguages}"
 					var="language">
 
-					<rich:column sortBy="#{language.hSupportedLanguage.localeId.id}">
+					<rich:column sortBy="#{language.localeId.id}">
 						<f:facet name="header">#{messages['jsf.Language']}</f:facet>
-	            		#{language.hSupportedLanguage.localeId.id}
+	            		#{language.localeId.id}
 	        		</rich:column>
 					<rich:column sortBy="#{language.uLocale.displayName}">
 						<f:facet name="header">#{messages['jsf.Name']}</f:facet>
@@ -54,16 +54,16 @@
 						<f:facet name="header">#{messages['jsf.NativeName']}</f:facet>
 	            		#{language.uLocale.getDisplayName(language.uLocale)}
 	        		</rich:column>
-					<rich:column rendered="#{language.hSupportedLanguage.active}">
+					<rich:column rendered="#{language.active}">
 						<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
 						<h:commandLink value="#{messages['jsf.Disabled']}"
-							action="#{languageManagerAction.disable(languageSearchAction.selectedLanguage)}"
+							action="#{languageSearchAction.disable(languageSearchAction.selectedLanguage)}"
 							onclick="return confirmDisable()" />
 					</rich:column>
-					<rich:column rendered="#{!language.hSupportedLanguage.active}">
+					<rich:column rendered="#{!language.active}">
 						<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
 						<h:commandLink value="#{messages['jsf.Enabled']}"
-							action="#{languageManagerAction.enable(languageSearchAction.selectedLanguage)}"
+							action="#{languageSearchAction.enable(languageSearchAction.selectedLanguage)}"
 							onclick="return confirmEnable()" />
 					</rich:column>
 				</rich:dataTable>

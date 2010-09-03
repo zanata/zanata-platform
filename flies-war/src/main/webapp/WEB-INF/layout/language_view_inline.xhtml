@@ -4,17 +4,17 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:s="http://jboss.com/products/seam/taglib">
 
-	<div id="tribe_list_view_item_#{tribe.hSupportedLanguage.localeId.id}"
+	<div id="tribe_list_view_item_#{tribe.localeId.id}"
 		class="inline_cell_item">
 
 	<div class="inline_cell_item_top"><s:link
 		view="/language/language.xhtml" propagation="none">
-	    #{tribe.uLocale.getDisplayName(tribe.uLocale)}
-	    <f:param name="id" value="#{tribe.hSupportedLanguage.localeId.id}" />
+	    #{tribe.retrieveNativeName()}
+	    <f:param name="id" value="#{tribe.localeId.id}" />
 	</s:link></div>
 	<div class="inline_cell_item_middle">
-	<p><em>#{tribe.uLocale.displayName}</em> [#{tribe.hSupportedLanguage.localeId.id}] -
-	#{tribe.hSupportedLanguage.members.size} #{messages['jsf.Members']}</p>
+	<p><em>#{tribe.retrieveDisplayName()}</em> [#{tribe.localeId.id}] -
+	#{tribe.members.size} #{messages['jsf.Members']}</p>
 	</div>
 
 	</div>

@@ -11,7 +11,7 @@
 
     <ui:define name="center_content">
         <rich:jQuery selector="#tab_tribes" query="addClass('ui-tabs-selected')" />
-        <h1>#{tribeHome.instance.localeId}</h1>
+        <h1>#{languageTeamAction.locale.retrieveNativeName()}</h1>
         <p>#{messages['jsf.SizeMembers']}</p>
     </ui:define>
 
@@ -21,13 +21,13 @@
           #{messages['jsf.Actions']}
         </f:facet>
         <a:form id="Language_team_member_toggle_form">
-          <a:commandLink id="Join" styleClass="action_link" action="#{tribeHome.joinTribe}" reRender="actionPanel,tribesTabDiv" rendered="#{not memberTribes.contains(tribeHome.instance)}">
+          <a:commandLink id="Join" styleClass="action_link" action="#{languageTeamAction.joinTribe}" reRender="actionPanel,tribesTabDiv" rendered="#{not memberLanguage.contains(languageTeamAction.locale)}">
             #{messages['jsf.JoinLanguageTeam']}
-            <s:conversationId name="id" value="#{tribeHome.id}"/>
+            <s:conversationId name="id" value="#{languageTeamAction.language}"/>
           </a:commandLink>
-	  <a:commandLink id="Leave" styleClass="action_link" action="#{tribeHome.leaveTribe}" reRender="actionPanel,tribesTabDiv" rendered="#{memberTribes.contains(tribeHome.instance)}">
+	  <a:commandLink id="Leave" styleClass="action_link" action="#{languageTeamAction.leaveTribe}" reRender="actionPanel,tribesTabDiv" rendered="#{memberLanguage.contains(languageTeamAction.locale)}">
             #{messages['jsf.LeaveLanguageTeam']}
-            <s:conversationId name="id" value="#{tribeHome.id}"/>
+            <s:conversationId name="id" value="#{languageTeamAction.language}"/>
           </a:commandLink>
         </a:form>
       </rich:panel>

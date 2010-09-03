@@ -21,12 +21,12 @@ import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
 
-@Name("memberTribes")
+@Name("memberLanguage")
 @Scope(ScopeType.SESSION)
-public class MemberTribesList implements Serializable
+public class MemberLanguageList implements Serializable
 {
 
-   private static final long serialVersionUID = -1879925862165479255L;
+   private static final long serialVersionUID = 1L;
 
    @In
    LanguageTeamService languageTeamServiceImpl;
@@ -64,5 +64,6 @@ public class MemberTribesList implements Serializable
       memberTribes = languageTeamServiceImpl.getLanguageMemberships(authenticatedAccount.getUsername());
       log.info("now listing {0} tribes", memberTribes.size());
    }
+
 
 }

@@ -18,7 +18,7 @@
     <ui:define name="center_content">
         <rich:jQuery selector="#tab_tribes" query="addClass('ui-tabs-selected')" />
         <h1>#{messages['jsf.Languages']}</h1>
-        <rich:dataGrid id="latestTribes" value="#{languageTeamAction.supportedLanguages}" var="tribe" columns="3" columnClasses="grid_col" styleClass="grid_style">
+        <rich:dataGrid id="latestTribes" value="#{supportedLanguageAction.supportedLanguages}" var="tribe" columns="3" columnClasses="grid_col" styleClass="grid_style">
           <ui:include src="../WEB-INF/layout/language_view_inline.xhtml" />
         </rich:dataGrid>
     </ui:define>

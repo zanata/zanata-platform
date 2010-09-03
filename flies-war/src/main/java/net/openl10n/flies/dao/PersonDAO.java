@@ -35,11 +35,11 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
       return (HPerson) getSession().createCriteria(HPerson.class).add(Restrictions.naturalId().set("email", email)).setCacheable(true).setComment("PersonDAO.findByEmail").uniqueResult();
    }
 
-   @SuppressWarnings("unchecked")
    public List<HSupportedLanguage> getLanguageMemberships(String userName)
    {
       Query query = getSession().getNamedQuery("getLanguageMemberships").setString("username", userName);
       List<HSupportedLanguage> re = new ArrayList<HSupportedLanguage>();
+      @SuppressWarnings("unchecked")
       List<HSupportedLanguage> su = query.list();
       for (HSupportedLanguage lan : su)
       {

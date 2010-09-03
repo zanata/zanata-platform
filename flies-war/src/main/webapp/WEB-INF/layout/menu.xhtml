@@ -27,14 +27,14 @@
 			view="/language/home.xhtml" propagation="none">
 			<span><img src="#{request.contextPath}/img/silk/world.png" />#{messages['jsf.Languages']}</span>
 		</s:link> <s:div id="tribesTabDiv">
-			<s:fragment rendered="#{memberTribes.size != 0}">
+			<s:fragment rendered="#{memberLanguage.size != 0}">
 				<rich:jQuery selector="#tab_tribes"
 					query="addClass('ui-tabs-nav-issues')" />
 				<ul>
-					<a:repeat id="Language_list" value="#{memberTribes}" var="tribe">
+					<a:repeat id="Language_list" value="#{memberLanguage}" var="tribe">
 						<li id="Language_#{tribe.localeId.id}"><s:link
 							view="/language/language.xhtml" propagation="none">
-                  #{tribe.localeId.id}
+                  #{tribe.retrieveNativeName()}
                   <f:param name="id" value="#{tribe.localeId.id}" />
 						</s:link></li>
 					</a:repeat>

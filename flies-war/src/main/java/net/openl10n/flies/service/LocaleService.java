@@ -12,9 +12,9 @@ public interface LocaleService
 
    void save(LocaleId localeId);
 
-   void disable(HSupportedLanguage locale);
+   void disable(LocaleId locale);
 
-   void enable(HSupportedLanguage locale);
+   void enable(LocaleId locale);
 
    List<LocaleId> getAllJavaLanguages();
 
@@ -22,5 +22,9 @@ public interface LocaleService
    
    boolean localeSupported(LocaleId locale);
 
-   List<FliesLocalePair> getSupportedLocales();
+   List<HSupportedLanguage> getSupportedLocales();
+
+   FliesLocalePair getFliesLocale(LocaleId locale);
+
+   HSupportedLanguage getLanguageByLocale(LocaleId locale);
 }

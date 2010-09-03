@@ -9,7 +9,29 @@ import net.openl10n.flies.common.LocaleId;
 public class FliesLocalePair implements Serializable
 {
    private static final long serialVersionUID = 1L;
-   private HSupportedLanguage hSupportedLanguage;
+   private LocaleId localeId;
+   private boolean active;
+
+   public boolean isActive()
+   {
+      return active;
+   }
+
+   public void setActive(boolean active)
+   {
+      this.active = active;
+   }
+
+   public LocaleId getLocaleId()
+   {
+      return localeId;
+   }
+
+   public void setLocaleId(LocaleId localeId)
+   {
+      this.localeId = localeId;
+   }
+
    private ULocale uLocale;
 
    public ULocale getuLocale()
@@ -44,25 +66,15 @@ public class FliesLocalePair implements Serializable
 
       String id = builder.toString();
 
-      this.hSupportedLanguage = new HSupportedLanguage();
-      this.hSupportedLanguage.setLocaleId(new LocaleId(id));
+      this.localeId = new LocaleId(id);
       this.uLocale = locale;
    }
 
-   public HSupportedLanguage gethSupportedLanguage()
-   {
-      return hSupportedLanguage;
-   }
 
-   public void sethSupportedLanguage(HSupportedLanguage hSupportedLanguage)
+   public FliesLocalePair(LocaleId localeId)
    {
-      this.hSupportedLanguage = hSupportedLanguage;
-   }
-
-   public FliesLocalePair(HSupportedLanguage hSupportedLanguage)
-   {
-      this.hSupportedLanguage = hSupportedLanguage;
-      this.uLocale = new ULocale(this.hSupportedLanguage.getLocaleId().getId());
+      this.localeId = localeId;
+      this.uLocale = new ULocale(this.localeId.getId());
    }
 
 }

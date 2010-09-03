@@ -70,4 +70,16 @@ public class HSupportedLanguage extends AbstractFliesEntity implements Serializa
       this.members = members;
    }
 
+   public String retrieveNativeName()
+   {
+      FliesLocalePair fl = new FliesLocalePair(this.localeId);
+      return fl.getuLocale().getDisplayName(fl.getuLocale());
+   }
+
+   public String retrieveDisplayName()
+   {
+      FliesLocalePair fl = new FliesLocalePair(this.localeId);
+      return fl.getuLocale().getDisplayName();
+   }
+
 }

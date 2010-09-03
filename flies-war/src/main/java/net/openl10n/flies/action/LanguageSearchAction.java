@@ -13,6 +13,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.annotations.security.Restrict;
+import org.jboss.seam.core.Events;
 
 
 @Name("languageSearchAction")
@@ -24,18 +25,30 @@ public class LanguageSearchAction implements Serializable
    @In
    LocaleService localeServiceImpl;
    @DataModel
-   List<FliesLocalePair> supportedLanguages;
+   List<FliesLocalePair> allLanguages;
    @DataModelSelection
    FliesLocalePair selectedLanguage;
 
    public void loadSupportedLanguage()
    {
-      supportedLanguages = localeServiceImpl.getAllLocales();
+      allLanguages = localeServiceImpl.getAllLocales();
    }
 
    public FliesLocalePair getSelectedLanguage()
    {
       return selectedLanguage;
+   }
+
+   public void disable(FliesLocalePair fliesLocalePair)
+   {
+      localeServiceImpl.disable(fliesLocalePair.getLocaleId());
+      Events.instance().raiseEvent("disableLanguage");
+   }
+
+   public void enable(FliesLocalePair fliesLocalePair)
+   {
+      localeServiceImpl.enable(fliesLocalePair.getLocaleId());
+      Events.instance().raiseEvent("enableLanguage");
    }
 
 }

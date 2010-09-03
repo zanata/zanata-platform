@@ -58,9 +58,9 @@ public class LocaleServiceImplTest
       EasyMock.replay(mockDAO);
       List<FliesLocalePair> sup = this.testLocaleServiceImpl.getAllLocales();
       Assert.assertEquals(sup.size(), 2);
-      String loc1 = sup.get(0).gethSupportedLanguage().getLocaleId().getId();
+      String loc1 = sup.get(0).getLocaleId().getId();
       Assert.assertEquals(loc1, "as-IN");
-      String loc2 = sup.get(1).gethSupportedLanguage().getLocaleId().getId();
+      String loc2 = sup.get(1).getLocaleId().getId();
       Assert.assertEquals(loc2, "pt-BR");
       EasyMock.verify(mockDAO);
    }

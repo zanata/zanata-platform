@@ -37,7 +37,8 @@ public class LocaleServiceImpl implements LocaleService
          return supportedLanguage;
       for (HSupportedLanguage hSupportedLanguage : hSupportedLanguages)
       {
-         FliesLocalePair fliesLocalePair = new FliesLocalePair(hSupportedLanguage);
+         FliesLocalePair fliesLocalePair = new FliesLocalePair(hSupportedLanguage.getLocaleId());
+         fliesLocalePair.setActive(hSupportedLanguage.isActive());
          supportedLanguage.add(fliesLocalePair);
       }
       return supportedLanguage;
@@ -54,8 +55,9 @@ public class LocaleServiceImpl implements LocaleService
       supportedLanguageDAO.flush();
    }
 
-   public void disable(HSupportedLanguage entity)
+   public void disable(LocaleId localeId)
    {
+      HSupportedLanguage entity = supportedLanguageDAO.findByLocaleId(localeId);
       if (entity != null)
       {
          entity.setActive(false);
@@ -70,14 +72,15 @@ public class LocaleServiceImpl implements LocaleService
       List<LocaleId> addedLocales = new ArrayList<LocaleId>();
       for (ULocale locale : locales)
       {
-         LocaleId localeId = new FliesLocalePair(locale).gethSupportedLanguage().getLocaleId();
+         LocaleId localeId = new FliesLocalePair(locale).getLocaleId();
          addedLocales.add(localeId);
       }
       return addedLocales;
    }
 
-   public void enable(HSupportedLanguage entity)
+   public void enable(LocaleId localeId)
    {
+      HSupportedLanguage entity = supportedLanguageDAO.findByLocaleId(localeId);
       if (entity != null)
       {
          entity.setActive(true);
@@ -92,23 +95,24 @@ public class LocaleServiceImpl implements LocaleService
       return entity != null;
    }
    
-   public List<FliesLocalePair> getSupportedLocales()
+   public List<HSupportedLanguage> getSupportedLocales()
    {
-      List<FliesLocalePair> supportedLanguage = new ArrayList<FliesLocalePair>();
-      List<HSupportedLanguage> hSupportedLanguages = supportedLanguageDAO.findAllActive();
-      if (hSupportedLanguages == null)
-         return supportedLanguage;
-      for (HSupportedLanguage hSupportedLanguage : hSupportedLanguages)
-      {
-         FliesLocalePair fliesLocalePair = new FliesLocalePair(hSupportedLanguage);
-         supportedLanguage.add(fliesLocalePair);
-      }
-      return supportedLanguage;
+      return supportedLanguageDAO.findAllActive();
    }
 
    public boolean localeSupported(LocaleId locale)
    {
       HSupportedLanguage entity = supportedLanguageDAO.findByLocaleId(locale);
       return entity != null && entity.isActive();
+   }
+
+   public FliesLocalePair getFliesLocale(LocaleId locale)
+   {
+      return new FliesLocalePair(locale);
+   }
+
+   public HSupportedLanguage getLanguageByLocale(LocaleId locale)
+   {
+      return supportedLanguageDAO.findByLocaleId(locale);
    }
 }

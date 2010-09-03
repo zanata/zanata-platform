@@ -7,7 +7,6 @@ import java.util.List;
 import javax.faces.model.SelectItem;
 
 import net.openl10n.flies.common.LocaleId;
-import net.openl10n.flies.model.FliesLocalePair;
 import net.openl10n.flies.service.LocaleService;
 
 import org.jboss.seam.ScopeType;
@@ -16,7 +15,6 @@ import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.core.Events;
 
 import com.ibm.icu.util.ULocale;
 
@@ -68,18 +66,6 @@ public class LanguageManagerAction implements Serializable
       LocaleId locale = new LocaleId(language);
       localeServiceImpl.save(locale);
       return "success";
-   }
-
-   public void disable(FliesLocalePair fliesLocalePair)
-   {
-      localeServiceImpl.disable(fliesLocalePair.gethSupportedLanguage());
-      Events.instance().raiseEvent("disableLanguage");
-   }
-
-   public void enable(FliesLocalePair fliesLocalePair)
-   {
-      localeServiceImpl.enable(fliesLocalePair.gethSupportedLanguage());
-      Events.instance().raiseEvent("enableLanguage");
    }
 
    public void fectchLocaleFromJava()
