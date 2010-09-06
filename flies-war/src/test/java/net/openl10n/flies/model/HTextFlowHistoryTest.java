@@ -7,11 +7,11 @@ import static org.hamcrest.MatcherAssert.*;
 
 import net.openl10n.flies.FliesDbunitJpaTest;
 import net.openl10n.flies.common.ContentType;
-import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.model.HDocument;
 import net.openl10n.flies.model.HProjectIteration;
 import net.openl10n.flies.model.HTextFlow;
 import net.openl10n.flies.model.HTextFlowHistory;
+import net.openl10n.flies.service.LocaleService;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
@@ -20,6 +20,7 @@ import org.testng.annotations.Test;
 
 public class HTextFlowHistoryTest extends FliesDbunitJpaTest
 {
+   private LocaleService localeServiceImpl;
 
    protected void prepareDBUnitOperations()
    {
@@ -30,7 +31,7 @@ public class HTextFlowHistoryTest extends FliesDbunitJpaTest
    public void ensureHistoryIsRecorded()
    {
       Session session = getSession();
-      HDocument d = new HDocument("/path/to/document.txt", ContentType.TextPlain, LocaleId.EN);
+      HDocument d = new HDocument("/path/to/document.txt", ContentType.TextPlain, localeServiceImpl.getDefautLanguage());
       d.setProjectIteration((HProjectIteration) session.load(HProjectIteration.class, 1L));
       session.save(d);
       session.flush();
@@ -55,6 +56,7 @@ public class HTextFlowHistoryTest extends FliesDbunitJpaTest
 
    }
 
+   @SuppressWarnings("unchecked")
    private List<HTextFlowHistory> getHistory(HTextFlow tf)
    {
       return getSession().createCriteria(HTextFlowHistory.class).add(Restrictions.eq("textFlow", tf)).list();

@@ -6,17 +6,16 @@ import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.common.ResourceType;
 import net.openl10n.flies.model.HDocument;
+import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.model.HPerson;
 import net.openl10n.flies.model.HSimpleComment;
 import net.openl10n.flies.model.HTextFlow;
 import net.openl10n.flies.model.HTextFlowTarget;
-import net.openl10n.flies.model.po.AbstractPoHeader;
 import net.openl10n.flies.model.po.HPoHeader;
 import net.openl10n.flies.model.po.HPoTargetHeader;
 import net.openl10n.flies.model.po.HPotEntryData;
@@ -102,15 +101,15 @@ public class ResourceUtils
       return changed;
    }
 
-   public boolean transfer(Resource from, HDocument to)
+   public boolean transfer(Resource from, HDocument to, HLocale locale)
    {
       boolean changed = false;
-      changed |= transfer((AbstractResourceMeta) from, to);
+      changed |= transfer((AbstractResourceMeta) from, to, locale);
       changed |= mergeTextFlows(from.getTextFlows(), to);
       return changed;
    }
 
-   public boolean transfer(AbstractResourceMeta from, HDocument to)
+   public boolean transfer(AbstractResourceMeta from, HDocument to, HLocale locale)
    {
       boolean changed = false;
 
@@ -122,9 +121,10 @@ public class ResourceUtils
       }
 
       // locale
-      if (!equals(from.getLang(), to.getLocale()))
+      if (!equals(from.getLang(), to.getLocale().getLocaleId()))
       {
-         to.setLocale(from.getLang());
+         log.debug("locale:" + from.getLang());
+         to.setLocale(locale);
          changed = true;
       }
 
@@ -183,7 +183,7 @@ public class ResourceUtils
       return changed;
    }
 
-   public boolean transfer(ExtensionSet from, HDocument to, StringSet extensions, LocaleId locale)
+   public boolean transfer(ExtensionSet from, HDocument to, StringSet extensions, HLocale locale)
    {
       boolean changed = false;
       if (extensions.contains(PoTargetHeader.ID))
@@ -191,6 +191,7 @@ public class ResourceUtils
          PoTargetHeader fromTargetHeader = from.findByType(PoTargetHeader.class);
          if (fromTargetHeader != null)
          {
+            log.debug("locale:" + locale.getLocaleId().getId());
             HPoTargetHeader toTargetHeader = to.getPoTargetHeaders().get(locale);
             if (toTargetHeader == null)
             {
@@ -241,37 +242,6 @@ public class ResourceUtils
 
    }
 
-   private boolean transfer(PoTargetHeaderEntry from, HPoTargetHeader to)
-   {
-      boolean changed = false;
-
-      if (!equals(from.getLocale(), to.getTargetLanguage()))
-      {
-         to.setTargetLanguage(from.getLocale());
-         changed = true;
-      }
-
-      HSimpleComment comment = to.getComment();
-      if (comment == null)
-      {
-         comment = new HSimpleComment();
-      }
-      if (!equals(from.getComment(), comment.getComment()))
-      {
-         changed = true;
-         comment.setComment(from.getComment());
-         to.setComment(comment);
-      }
-
-      String entries = PoUtility.listToHeader(from.getEntries());
-      if (!equals(entries, to.getEntries()))
-      {
-         to.setEntries(entries);
-         changed = true;
-      }
-
-      return changed;
-   }
 
    private boolean transfer(PoTargetHeader from, HPoTargetHeader to)
    {
@@ -358,7 +328,7 @@ public class ResourceUtils
    {
 
       to.setName(from.getName());
-      to.setLang(from.getLocale());
+      to.setLang(from.getLocale().getLocaleId());
       to.setContentType(from.getContentType());
    }
 
@@ -384,7 +354,7 @@ public class ResourceUtils
 
    private void transfer(HPoTargetHeader from, PoTargetHeaderEntry to)
    {
-      to.setLocale(from.getTargetLanguage());
+      to.setLocale(from.getTargetLanguage().getLocaleId());
       HSimpleComment comment = from.getComment();
       if (comment != null)
       {
@@ -404,7 +374,7 @@ public class ResourceUtils
    public void transfer(HDocument from, AbstractResourceMeta to)
    {
       to.setContentType(from.getContentType());
-      to.setLang(from.getLocale());
+      to.setLang(from.getLocale().getLocaleId());
       to.setName(from.getDocId());
       // TODO ADD support within the hibernate model for multiple resource types
       to.setType(ResourceType.FILE);

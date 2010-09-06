@@ -31,7 +31,7 @@ public class ProjectsService
 {
 
    @In
-   Session session;
+   private Session session;
 
    @Logger
    Log log;
@@ -45,6 +45,7 @@ public class ProjectsService
    @Wrapped(element = "projects", namespace = Namespaces.FLIES)
    public List<Project> get()
    {
+      @SuppressWarnings("unchecked")
       List<HProject> projects = session.createQuery("from HProject p").list();
 
       List<Project> projectRefs = new ArrayList<Project>(projects.size());

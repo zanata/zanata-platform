@@ -9,15 +9,14 @@ import javax.persistence.EntityManager;
 
 import net.openl10n.flies.FliesDbunitJpaTest;
 import net.openl10n.flies.common.ContentType;
-import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.dao.DocumentDAO;
-import net.openl10n.flies.dao.ProjectDAO;
 import net.openl10n.flies.model.HDocument;
 import net.openl10n.flies.model.HIterationProject;
 import net.openl10n.flies.model.HProjectIteration;
 import net.openl10n.flies.model.HTextFlow;
 import net.openl10n.flies.model.HTextFlowTarget;
 import net.openl10n.flies.model.HTextFlowTargetHistory;
+import net.openl10n.flies.service.LocaleService;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
@@ -29,6 +28,7 @@ public class DocumentTest extends FliesDbunitJpaTest
 {
 
    private DocumentDAO dao;
+   private LocaleService localeServiceImpl;
 
    protected void prepareDBUnitOperations()
    {
@@ -62,7 +62,8 @@ public class DocumentTest extends FliesDbunitJpaTest
       HIterationProject project = em.find(HIterationProject.class, 1l);
       // assertThat( project, notNullValue() );
 
-      HDocument hdoc = new HDocument("fullpath", ContentType.TextPlain, LocaleId.EN_US);
+
+      HDocument hdoc = new HDocument("fullpath", ContentType.TextPlain, localeServiceImpl.getDefautLanguage());
       hdoc.setProjectIteration(project.getProjectIterations().get(0));
 
       List<HTextFlow> textFlows = hdoc.getTextFlows();
@@ -71,7 +72,6 @@ public class DocumentTest extends FliesDbunitJpaTest
       textFlows.add(flow1);
       textFlows.add(flow2);
       em.persist(hdoc);
-      Long docId = hdoc.getId();
       em.flush();
       // em.clear();
       // hdoc = em.find(HDocument.class, docId);
@@ -109,6 +109,7 @@ public class DocumentTest extends FliesDbunitJpaTest
       assertThat(flow2.isObsolete(), is(false));
    }
 
+   @SuppressWarnings("unchecked")
    @Test
    public void ensureHistoryOnTextFlow()
    {
@@ -116,7 +117,7 @@ public class DocumentTest extends FliesDbunitJpaTest
       HIterationProject project = em.find(HIterationProject.class, 1l);
       // assertThat( project, notNullValue() );
 
-      HDocument hdoc = new HDocument("fullpath", ContentType.TextPlain, LocaleId.EN_US);
+      HDocument hdoc = new HDocument("fullpath", ContentType.TextPlain, localeServiceImpl.getDefautLanguage());
       hdoc.setProjectIteration(project.getProjectIterations().get(0));
 
       List<HTextFlow> textFlows = hdoc.getTextFlows();
@@ -135,7 +136,7 @@ public class DocumentTest extends FliesDbunitJpaTest
 
       em.flush();
 
-      HTextFlowTarget target = new HTextFlowTarget(flow1, LocaleId.EN);
+      HTextFlowTarget target = new HTextFlowTarget(flow1, localeServiceImpl.getDefautLanguage());
       target.setContent("hello world");
       em.persist(target);
       em.flush();

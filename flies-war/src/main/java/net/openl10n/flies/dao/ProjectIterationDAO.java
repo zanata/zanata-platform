@@ -52,7 +52,7 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
    {
 
       @SuppressWarnings("unchecked")
-      List<StatusCount> stats = getSession().createQuery("select new net.openl10n.flies.model.StatusCount(tft.state, count(tft)) " + "from HTextFlowTarget tft " + "where tft.textFlow.document.projectIteration.id = :id " + "  and tft.locale = :locale " + "group by tft.state").setParameter("id", iterationId).setParameter("locale", localeId).setCacheable(true).list();
+      List<StatusCount> stats = getSession().createQuery("select new net.openl10n.flies.model.StatusCount(tft.state, count(tft)) " + "from HTextFlowTarget tft " + "where tft.textFlow.document.projectIteration.id = :id " + "  and tft.locale.localeId = :locale " + "group by tft.state").setParameter("id", iterationId).setParameter("locale", localeId).setCacheable(true).list();
 
       Long totalCount = (Long) getSession().createQuery("select count(tf) from HTextFlow tf where tf.document.projectIteration.id = :id").setParameter("id", iterationId).setCacheable(true).uniqueResult();
 

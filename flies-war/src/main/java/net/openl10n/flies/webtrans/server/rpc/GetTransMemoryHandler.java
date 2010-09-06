@@ -11,11 +11,13 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.common.LocaleId;
+import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.model.HTextFlow;
 import net.openl10n.flies.model.HTextFlowTarget;
 import net.openl10n.flies.search.DefaultNgramAnalyzer;
 import net.openl10n.flies.search.LevenshteinUtil;
 import net.openl10n.flies.security.FliesIdentity;
+import net.openl10n.flies.service.LocaleService;
 import net.openl10n.flies.util.ShortString;
 import net.openl10n.flies.webtrans.server.ActionHandlerFor;
 import net.openl10n.flies.webtrans.shared.model.TranslationMemoryItem;
@@ -49,6 +51,9 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 
    @In
    private FullTextEntityManager entityManager;
+
+   @In
+   private LocaleService localeServiceImpl;
 
    @Override
    public GetTranslationMemoryResult execute(GetTranslationMemory action, ExecutionContext context) throws ActionException
@@ -89,6 +94,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
          FullTextQuery ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlow.class);
          ftQuery.enableFullTextFilter("translated").setParameter("locale", localeID);
          ftQuery.setProjection(FullTextQuery.SCORE, FullTextQuery.THIS);
+         @SuppressWarnings("unchecked")
          List<Object[]> matches = ftQuery.setMaxResults(MAX_RESULTS).getResultList();
          Map<TMKey, TranslationMemoryItem> matchesMap = new LinkedHashMap<TMKey, TranslationMemoryItem>();
          for (Object[] match : matches)
@@ -99,7 +105,8 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
             {
                continue;
             }
-            HTextFlowTarget target = textFlow.getTargets().get(localeID);
+            HLocale hLocale = localeServiceImpl.getSupportedLanguageByLocale(localeID);
+            HTextFlowTarget target = textFlow.getTargets().get(hLocale);
             // double check in case of caching issues
             if (target.getState() != ContentState.Approved)
             {

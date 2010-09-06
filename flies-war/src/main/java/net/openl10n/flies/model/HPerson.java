@@ -33,7 +33,7 @@ public class HPerson extends AbstractFliesEntity implements Serializable
 
    private List<HProject> maintainerProjects;
 
-   private Set<HSupportedLanguage> tribeMemberships;
+   private Set<HLocale> tribeMemberships;
 
    private Set<HCommunity> communityOwnerships;
    private Set<HCommunity> communityOfficerships;
@@ -94,19 +94,19 @@ public class HPerson extends AbstractFliesEntity implements Serializable
       this.maintainerProjects = maintainerProjects;
    }
 
-   @ManyToMany
-   @JoinTable(name = "HSupportedLanguage_Member", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "supportedLanguageId"))
-   public Set<HSupportedLanguage> getTribeMemberships()
+   @ManyToMany(fetch = FetchType.LAZY)
+   @JoinTable(name = "HLocale_Member", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "supportedLanguageId"))
+   public Set<HLocale> getTribeMemberships()
    {
       if (tribeMemberships == null)
       {
-         tribeMemberships = new HashSet<HSupportedLanguage>();
+         tribeMemberships = new HashSet<HLocale>();
          setTribeMemberships(tribeMemberships);
       }
       return tribeMemberships;
    }
 
-   public void setTribeMemberships(Set<HSupportedLanguage> tribeMemberships)
+   public void setTribeMemberships(Set<HLocale> tribeMemberships)
    {
       this.tribeMemberships = tribeMemberships;
    }

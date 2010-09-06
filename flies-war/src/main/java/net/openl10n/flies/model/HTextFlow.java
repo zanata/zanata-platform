@@ -16,9 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.PreUpdate;
 
-import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.hibernate.search.TranslatedFilterFactory;
 import net.openl10n.flies.model.po.HPotEntryData;
 import net.openl10n.flies.model.po.PoUtility;
@@ -67,7 +65,7 @@ public class HTextFlow implements Serializable, ITextFlowHistory
 
    private String content;
 
-   private Map<LocaleId, HTextFlowTarget> targets;
+   private Map<HLocale, HTextFlowTarget> targets;
 
    public Map<Integer, HTextFlowHistory> history;
 
@@ -217,14 +215,14 @@ public class HTextFlow implements Serializable, ITextFlowHistory
 
    @OneToMany(cascade = CascadeType.ALL, mappedBy = "textFlow")
    @MapKey(name = "locale")
-   public Map<LocaleId, HTextFlowTarget> getTargets()
+   public Map<HLocale, HTextFlowTarget> getTargets()
    {
       if (targets == null)
-         targets = new HashMap<LocaleId, HTextFlowTarget>();
+         targets = new HashMap<HLocale, HTextFlowTarget>();
       return targets;
    }
 
-   public void setTargets(Map<LocaleId, HTextFlowTarget> targets)
+   public void setTargets(Map<HLocale, HTextFlowTarget> targets)
    {
       this.targets = targets;
    }
@@ -249,15 +247,15 @@ public class HTextFlow implements Serializable, ITextFlowHistory
          textFlow.getOrAddComment().setValue(comment.getComment());
       }
       textFlow.setContent(this.getContent());
-      textFlow.setLang(this.getDocument().getLocale());
+      textFlow.setLang(this.getDocument().getLocale().getLocaleId());
       textFlow.setRevision(this.getRevision());
 
-      for (LocaleId locale : getTargets().keySet())
+      for (HLocale locale : getTargets().keySet())
       {
          HTextFlowTarget hTextFlowTarget = this.getTargets().get(locale);
          if (hTextFlowTarget != null)
          {
-            TextFlowTarget textFlowTarget = new TextFlowTarget(textFlow, locale);
+            TextFlowTarget textFlowTarget = new TextFlowTarget(textFlow, locale.getLocaleId());
             HSimpleComment tftComment = hTextFlowTarget.getComment();
             if (tftComment != null)
             {

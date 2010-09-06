@@ -3,7 +3,7 @@ package net.openl10n.flies.action;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import net.openl10n.flies.model.HSupportedLanguage;
+import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.service.LocaleService;
 
 import org.jboss.seam.ScopeType;
@@ -16,11 +16,11 @@ import org.jboss.seam.annotations.Scope;
 public class SupportedLanguageAction
 {
    @In
-   LocaleService localeServiceImpl;
+   private LocaleService localeServiceImpl;
 
-   static class TribeComparator implements Comparator<HSupportedLanguage>
+   static class TribeComparator implements Comparator<HLocale>
    {
-      public int compare(HSupportedLanguage aFliesLocale, HSupportedLanguage bFliesLocale)
+      public int compare(HLocale aFliesLocale, HLocale bFliesLocale)
       {
          String aDisplayName = aFliesLocale.retrieveDisplayName();
          String bDisplayName = bFliesLocale.retrieveDisplayName();
@@ -40,11 +40,11 @@ public class SupportedLanguageAction
    }
 
 
-   public List<HSupportedLanguage> getSupportedLanguages()
+   public List<HLocale> getSupportedLanguages()
    {
       // NB ULocale data isn't stored in the database, so we have
       // to do a post-select sort.
-      List<HSupportedLanguage> tribes = localeServiceImpl.getSupportedLocales();
+      List<HLocale> tribes = localeServiceImpl.getSupportedLocales();
 
       // This Comparator isn't complete enough for general use, but it should
       // work

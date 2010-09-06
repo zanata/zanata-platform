@@ -13,7 +13,7 @@ import net.openl10n.flies.dao.PersonDAO;
 import net.openl10n.flies.dao.SupportedLanguageDAO;
 import net.openl10n.flies.exception.FliesException;
 import net.openl10n.flies.model.HPerson;
-import net.openl10n.flies.model.HSupportedLanguage;
+import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.service.LanguageTeamService;
 
 @Name("languageTeamServiceImpl")
@@ -21,21 +21,31 @@ import net.openl10n.flies.service.LanguageTeamService;
 @Scope(ScopeType.STATELESS)
 public class LanguageTeamServiceImpl implements LanguageTeamService
 {
+   private PersonDAO personDAO;
+
+   private SupportedLanguageDAO supportedLanguageDAO;
+
    @In
-   PersonDAO personDAO;
+   public void setPersonDAO(PersonDAO personDAO)
+   {
+      this.personDAO = personDAO;
+   }
    
    @In
-   SupportedLanguageDAO supportedLanguageDAO;
+   public void setSupportedLanguageDAO(SupportedLanguageDAO supportedLanguageDAO)
+   {
+      this.supportedLanguageDAO = supportedLanguageDAO;
+   }
    
 
-   public List<HSupportedLanguage> getLanguageMemberships(String userName)
+   public List<HLocale> getLanguageMemberships(String userName)
    {
       return personDAO.getLanguageMemberships(userName);
    }
 
    public boolean joinLanguageTeam(String locale, Long personId) throws FliesException
    {
-      HSupportedLanguage lang = supportedLanguageDAO.findByLocaleId(new LocaleId(locale));
+      HLocale lang = supportedLanguageDAO.findByLocaleId(new LocaleId(locale));
       HPerson currentPerson = personDAO.findById(personId, false);
 
       if (!lang.getMembers().contains(currentPerson))
@@ -56,7 +66,7 @@ public class LanguageTeamServiceImpl implements LanguageTeamService
 
    public boolean leaveLanguageTeam(String locale, Long personId)
    {
-      HSupportedLanguage lang = supportedLanguageDAO.findByLocaleId(new LocaleId(locale));
+      HLocale lang = supportedLanguageDAO.findByLocaleId(new LocaleId(locale));
       HPerson currentPerson = personDAO.findById(personId, false);
 
       if (lang.getMembers().contains(currentPerson))

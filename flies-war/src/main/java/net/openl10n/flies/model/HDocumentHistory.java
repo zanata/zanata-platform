@@ -9,20 +9,17 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import net.openl10n.flies.common.ContentType;
-import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.model.type.ContentTypeType;
-import net.openl10n.flies.model.type.LocaleIdType;
 
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 
 @Entity
-@TypeDefs( { @TypeDef(name = "localeId", typeClass = LocaleIdType.class), @TypeDef(name = "contentType", typeClass = ContentTypeType.class) })
+@TypeDef(name = "contentType", typeClass = ContentTypeType.class)
 @org.hibernate.annotations.Entity(mutable = false)
 public class HDocumentHistory implements IDocumentHistory
 {
@@ -32,7 +29,7 @@ public class HDocumentHistory implements IDocumentHistory
    private String path;
    private ContentType contentType;
    private Integer revision;
-   private LocaleId locale;
+   private HLocale locale;
    private HPerson lastModifiedBy;
    protected Long id;
    protected Date lastChanged;
@@ -107,14 +104,14 @@ public class HDocumentHistory implements IDocumentHistory
       this.path = path;
    }
 
-   @NotNull
-   @Type(type = "localeId")
-   public LocaleId getLocale()
+   @ManyToOne
+   @JoinColumn(name = "locale", nullable = false)
+   public HLocale getLocale()
    {
       return locale;
    }
 
-   public void setLocale(LocaleId locale)
+   public void setLocale(HLocale locale)
    {
       this.locale = locale;
    }

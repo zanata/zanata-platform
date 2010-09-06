@@ -7,11 +7,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.customware.gwt.dispatch.shared.ActionException;
 import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.dao.TextFlowDAO;
 import net.openl10n.flies.dao.TextFlowTargetDAO;
+import net.openl10n.flies.exception.FliesException;
 import net.openl10n.flies.model.HDocument;
+import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.model.HSimpleComment;
 import net.openl10n.flies.model.HTextFlow;
 import net.openl10n.flies.model.HTextFlowHistory;
@@ -32,6 +35,7 @@ import net.openl10n.flies.rest.dto.po.PoHeader;
 import net.openl10n.flies.rest.dto.po.PoTargetHeader;
 import net.openl10n.flies.rest.dto.po.PoTargetHeaders;
 import net.openl10n.flies.rest.dto.po.PotEntryData;
+import net.openl10n.flies.service.LocaleService;
 
 import org.hibernate.Session;
 import org.hibernate.validator.ClassValidator;
@@ -59,6 +63,8 @@ public class DocumentConverter
    private TextFlowTargetDAO textFlowTargetDAO;
    @In
    private Session session;
+   @In
+   private LocaleService localeServiceImpl;
 
    ClassValidator<HTextFlow> resValidator = new ClassValidator<HTextFlow>(HTextFlow.class);
    ClassValidator<HTextFlowTarget> tftValidator = new ClassValidator<HTextFlowTarget>(HTextFlowTarget.class);
@@ -73,8 +79,9 @@ public class DocumentConverter
     * 
     * @param fromDoc source Document
     * @param toHDoc destination HDocument
+    * @throws ActionException
     */
-   public void copy(Document fromDoc, HDocument toHDoc)
+   public void copy(Document fromDoc, HDocument toHDoc) throws FliesException
    {
       boolean docChanged = false;
       int nextDocRev = 1;
@@ -95,7 +102,8 @@ public class DocumentConverter
       toHDoc.setName(fromDoc.getName());
       toHDoc.setPath(fromDoc.getPath());
       toHDoc.setContentType(fromDoc.getContentType());
-      toHDoc.setLocale(fromDoc.getLang());
+      log.info("locale:" + fromDoc.getLang());
+      toHDoc.setLocale(localeServiceImpl.getSupportedLanguageByLocale(fromDoc.getLang()));
       // toHDoc.setProject(container); // this must be done by the caller
 
       // don't copy revision; we don't accept revision from the client
@@ -196,19 +204,20 @@ public class DocumentConverter
             else if (ext instanceof PoTargetHeaders)
             {
                PoTargetHeaders fromHeaders = (PoTargetHeaders) ext;
-               Map<LocaleId, HPoTargetHeader> toHeaders = toHDoc.getPoTargetHeaders();
+               Map<HLocale, HPoTargetHeader> toHeaders = toHDoc.getPoTargetHeaders();
                for (PoTargetHeader fromHeader : fromHeaders.getHeaders())
                {
                   // List<HeaderEntry> fromEntries =
                   // fromHeader.getEntries();
                   LocaleId localeId = fromHeader.getTargetLanguage();
-                  HPoTargetHeader toHeader = toHeaders.get(localeId);
+                  HLocale hLocale = localeServiceImpl.getSupportedLanguageByLocale(localeId);
+                  HPoTargetHeader toHeader = toHeaders.get(hLocale);
                   if (toHeader == null)
                   {
                      toHeader = new HPoTargetHeader();
                      toHeader.setDocument(toHDoc);
-                     toHeader.setTargetLanguage(localeId);
-                     toHeaders.put(localeId, toHeader);
+                     toHeader.setTargetLanguage(hLocale);
+                     toHeaders.put(hLocale, toHeader);
                      docChanged = true;
                   }
                   HSimpleComment toComment = toHeader.getComment();
@@ -268,8 +277,10 @@ public class DocumentConverter
 
    /**
     * Returns true if the content (or a comment) of htf was changed
+    * 
+    * @throws ActionException
     */
-   private boolean copy(TextFlow fromTf, HTextFlow htf, int nextDocRev)
+   private boolean copy(TextFlow fromTf, HTextFlow htf, int nextDocRev) throws FliesException
    {
       boolean changed = false;
       if (!fromTf.getContent().equals(htf.getContent()))
@@ -362,7 +373,8 @@ public class DocumentConverter
             if (hTarget == null)
             {
                hTarget = new HTextFlowTarget();
-               hTarget.setLocale(target.getLang());
+               log.info("locale:" + target.getLang());
+               hTarget.setLocale(localeServiceImpl.getSupportedLanguageByLocale(target.getLang()));
                hTarget.setTextFlow(htf);
                Integer tfRev;
 
@@ -380,7 +392,7 @@ public class DocumentConverter
             {
                copy(target, hTarget, htf);
             }
-            htf.getTargets().put(target.getLang(), hTarget);
+            htf.getTargets().put(localeServiceImpl.getSupportedLanguageByLocale(target.getLang()), hTarget);
             InvalidValue[] invalidValues = tftValidator.getInvalidValues(hTarget);
             if (invalidValues.length != 0)
             {
@@ -427,29 +439,15 @@ public class DocumentConverter
       return changed;
    }
 
-   /**
-    * Creates the Hibernate equivalent of the TextFlow, setting parent to
-    * 'parent', setting document to hDocument, inheriting hDocument's revision.
-    */
-   private HTextFlow create(TextFlow fromTextFlow, HDocument hDocument, int nextDocRev)
-   {
-      HTextFlow hTextFlow = new HTextFlow();
-      hTextFlow.setDocument(hDocument);
-      hTextFlow.setResId(fromTextFlow.getId());
-      hTextFlow.setRevision(nextDocRev);
-      hTextFlow.setContent(fromTextFlow.getContent());
-      // copy TextFlowTargets to HTextFlowTargets:
-      copy(fromTextFlow, hTextFlow, nextDocRev);
-      return hTextFlow;
-   }
 
-   private void copy(TextFlowTarget target, HTextFlowTarget hTarget, HTextFlow htf)
+   private void copy(TextFlowTarget target, HTextFlowTarget hTarget, HTextFlow htf) throws FliesException
    {
       boolean changed = false;
       changed |= !target.getContent().equals(hTarget.getContent());
       hTarget.setContent(target.getContent());
       changed |= !target.getLang().equals(hTarget.getLocale());
-      hTarget.setLocale(target.getLang());
+      log.info("locale:" + target.getLang());
+      hTarget.setLocale(localeServiceImpl.getSupportedLanguageByLocale(target.getLang()));
       hTarget.setTextFlowRevision(htf.getRevision());
       changed |= !target.getState().equals(hTarget.getState());
       hTarget.setState(target.getState());
@@ -482,13 +480,4 @@ public class DocumentConverter
       doc.getLinks().add(link);
    }
 
-   private static Map<String, HTextFlow> toMap(List<HTextFlow> textFlows)
-   {
-      Map<String, HTextFlow> map = new HashMap<String, HTextFlow>(textFlows.size());
-      for (HTextFlow res : textFlows)
-      {
-         map.put(res.getResId(), res);
-      }
-      return map;
-   }
 }

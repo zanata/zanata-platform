@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -18,7 +19,7 @@ import org.hibernate.validator.NotNull;
 
 @Entity
 @TypeDef(name = "localeId", typeClass = LocaleIdType.class)
-public class HSupportedLanguage extends AbstractFliesEntity implements Serializable
+public class HLocale extends AbstractFliesEntity implements Serializable
 {
    private static final long serialVersionUID = 1L;
    private LocaleId localeId;
@@ -48,18 +49,18 @@ public class HSupportedLanguage extends AbstractFliesEntity implements Serializa
       this.active = active;
    }
 
-   public HSupportedLanguage()
+   public HLocale()
    {
 
    }
 
-   public HSupportedLanguage(LocaleId localeId)
+   public HLocale(LocaleId localeId)
    {
       this.localeId = localeId;
    }
 
-   @ManyToMany
-   @JoinTable(name = "HSupportedLanguage_Member", joinColumns = @JoinColumn(name = "supportedLanguageId"), inverseJoinColumns = @JoinColumn(name = "personId"))
+   @ManyToMany(fetch = FetchType.LAZY)
+   @JoinTable(name = "HLocale_Member", joinColumns = @JoinColumn(name = "supportedLanguageId"), inverseJoinColumns = @JoinColumn(name = "personId"))
    public Set<HPerson> getMembers()
    {
       return members;

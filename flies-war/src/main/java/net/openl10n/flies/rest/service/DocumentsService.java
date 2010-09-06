@@ -30,6 +30,7 @@ import net.openl10n.flies.model.HTextFlowHistory;
 import net.openl10n.flies.rest.MediaTypes;
 import net.openl10n.flies.rest.dto.deprecated.Document;
 import net.openl10n.flies.rest.dto.deprecated.Documents;
+import net.openl10n.flies.service.LocaleService;
 
 import org.hibernate.Session;
 import org.hibernate.validator.ClassValidator;
@@ -65,6 +66,9 @@ public class DocumentsService
    private DocumentDAO documentDAO;
 
    @In
+   private LocaleService localeServiceImpl;
+
+   @In
    private ProjectIterationDAO projectIterationDAO;
 
    @In
@@ -92,7 +96,8 @@ public class DocumentsService
          if (hDoc == null)
          {
             log.info("POST creating new HDocument with id {0}", doc.getId());
-            hDoc = new HDocument(doc);
+            log.info("locale:" + doc.getLang());
+            hDoc = new HDocument(doc, localeServiceImpl.getSupportedLanguageByLocale(doc.getLang()));
             hDoc.setRevision(0);
             hDoc.setProjectIteration(hProjectIteration);
          }
@@ -163,7 +168,8 @@ public class DocumentsService
          if (hDoc == null)
          {
             log.debug("PUT creating new HDocument with id {0}", doc.getId());
-            hDoc = new HDocument(doc);
+            log.info("locale:" + doc.getLang());
+            hDoc = new HDocument(doc, localeServiceImpl.getSupportedLanguageByLocale(doc.getLang()));
             hDoc.setRevision(0);
             hDoc.setProjectIteration(hProjectIteration);
          }

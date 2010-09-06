@@ -7,16 +7,17 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.dao.TextFlowDAO;
+import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.model.HSimpleComment;
 import net.openl10n.flies.model.HTextFlow;
 import net.openl10n.flies.model.HTextFlowTarget;
 import net.openl10n.flies.security.FliesIdentity;
+import net.openl10n.flies.service.LocaleService;
 import net.openl10n.flies.webtrans.server.ActionHandlerFor;
 import net.openl10n.flies.webtrans.shared.rpc.GetTransMemoryDetailsAction;
 import net.openl10n.flies.webtrans.shared.rpc.TransMemoryDetails;
 import net.openl10n.flies.webtrans.shared.rpc.TransMemoryDetailsList;
 
-import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -34,10 +35,10 @@ public class GetTransMemoryDetailsHandler extends AbstractActionHandler<GetTrans
    private Log log;
 
    @In
-   TextFlowDAO textFlowDAO;
+   private TextFlowDAO textFlowDAO;
 
    @In
-   Session session;
+   private LocaleService localeServiceImpl;
 
    @Override
    public TransMemoryDetailsList execute(GetTransMemoryDetailsAction action, ExecutionContext context) throws ActionException
@@ -46,13 +47,14 @@ public class GetTransMemoryDetailsHandler extends AbstractActionHandler<GetTrans
       ArrayList<Long> textFlowIds = action.getTransUnitIdList();
       LocaleId locale = action.getWorkspaceId().getLocaleId();
       log.info("Fetching TM details for TFs {0} in locale {1}", textFlowIds, locale);
+      HLocale hLocale = localeServiceImpl.getSupportedLanguageByLocale(locale);
 
       List<HTextFlow> textFlows = textFlowDAO.findByIdList(textFlowIds);
       ArrayList<TransMemoryDetails> items = new ArrayList<TransMemoryDetails>(textFlows.size());
 
       for (HTextFlow tf : textFlows)
       {
-         HTextFlowTarget tft = tf.getTargets().get(locale);
+         HTextFlowTarget tft = tf.getTargets().get(hLocale);
          HSimpleComment sourceComment = tf.getComment();
          HSimpleComment targetComment = tft.getComment();
          String docId = tf.getDocument().getDocId();

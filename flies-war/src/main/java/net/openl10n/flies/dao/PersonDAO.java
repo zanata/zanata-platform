@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.openl10n.flies.model.HPerson;
-import net.openl10n.flies.model.HSupportedLanguage;
+import net.openl10n.flies.model.HLocale;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -35,13 +35,13 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
       return (HPerson) getSession().createCriteria(HPerson.class).add(Restrictions.naturalId().set("email", email)).setCacheable(true).setComment("PersonDAO.findByEmail").uniqueResult();
    }
 
-   public List<HSupportedLanguage> getLanguageMemberships(String userName)
+   public List<HLocale> getLanguageMemberships(String userName)
    {
       Query query = getSession().getNamedQuery("getLanguageMemberships").setString("username", userName);
-      List<HSupportedLanguage> re = new ArrayList<HSupportedLanguage>();
+      List<HLocale> re = new ArrayList<HLocale>();
       @SuppressWarnings("unchecked")
-      List<HSupportedLanguage> su = query.list();
-      for (HSupportedLanguage lan : su)
+      List<HLocale> su = query.list();
+      for (HLocale lan : su)
       {
          if (lan.isActive())
          {

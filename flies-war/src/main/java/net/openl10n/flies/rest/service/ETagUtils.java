@@ -8,7 +8,6 @@ import net.openl10n.flies.dao.DocumentDAO;
 import net.openl10n.flies.model.HDocument;
 import net.openl10n.flies.model.HProjectIteration;
 import net.openl10n.flies.model.po.HPoHeader;
-import net.openl10n.flies.rest.LanguageQualifier;
 import net.openl10n.flies.rest.NoSuchEntityException;
 import net.openl10n.flies.rest.StringSet;
 import net.openl10n.flies.rest.dto.extensions.PoHeader;
@@ -31,10 +30,10 @@ public class ETagUtils
 {
 
    @In
-   Session session;
+   private Session session;
 
    @In
-   DocumentDAO documentDAO;
+   private DocumentDAO documentDAO;
 
    Log log = Logging.getLog(ETagUtils.class);
 
@@ -90,12 +89,6 @@ public class ETagUtils
       String hash = HashUtil.generateHash(String.valueOf(iterationVersion));
 
       return EntityTag.valueOf(hash);
-   }
-
-   public EntityTag generateETagForDocument(HProjectIteration hProjectIteration, String id, LanguageQualifier languageQualifier, StringSet extensions)
-   {
-      // TODO implementation
-      return generateETagForDocument(hProjectIteration, id, extensions);
    }
 
    public EntityTag generateETagForDocument(HProjectIteration iteration, String id, StringSet extensions)

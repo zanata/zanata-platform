@@ -6,7 +6,7 @@ import java.util.List;
 
 
 import net.openl10n.flies.model.HAccount;
-import net.openl10n.flies.model.HSupportedLanguage;
+import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.service.LanguageTeamService;
 
 import org.jboss.seam.ScopeType;
@@ -29,12 +29,12 @@ public class MemberLanguageList implements Serializable
    private static final long serialVersionUID = 1L;
 
    @In
-   LanguageTeamService languageTeamServiceImpl;
+   private LanguageTeamService languageTeamServiceImpl;
 
    @Logger
    Log log;
 
-   protected List<HSupportedLanguage> memberTribes;
+   protected List<HLocale> memberTribes;
 
    @Create
    public void onCreate()
@@ -43,7 +43,7 @@ public class MemberLanguageList implements Serializable
    }
 
    @Unwrap
-   public List<HSupportedLanguage> getMemberTribes()
+   public List<HLocale> getMemberTribes()
    {
       return memberTribes;
    }

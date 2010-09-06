@@ -38,8 +38,8 @@ import net.openl10n.flies.dao.DocumentDAO;
 import net.openl10n.flies.dao.PersonDAO;
 import net.openl10n.flies.dao.ProjectIterationDAO;
 import net.openl10n.flies.dao.TextFlowTargetDAO;
-import net.openl10n.flies.exception.FliesException;
 import net.openl10n.flies.model.HDocument;
+import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.model.HPerson;
 import net.openl10n.flies.model.HProjectIteration;
 import net.openl10n.flies.model.HTextFlow;
@@ -59,8 +59,10 @@ import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.jboss.resteasy.util.GenericType;
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Admin;
+import org.jboss.seam.log.Log;
 
 import com.google.common.collect.Sets;
 
@@ -114,6 +116,9 @@ public class TranslationResourcesService
 
    @In
    private PersonDAO personDAO;
+
+   @Logger
+   private Log log;
 
    @In
    private LocaleService localeServiceImpl;
@@ -207,11 +212,12 @@ public class TranslationResourcesService
       }
       else
       {
-         document = new HDocument(entity.getName(), entity.getContentType());
+         document = new HDocument(entity.getName(), entity.getContentType(), localeServiceImpl.getDefautLanguage());
          document.setProjectIteration(hProjectIteration);
       }
 
-      resourceUtils.transfer(entity, document);
+      HLocale hLocale = localeServiceImpl.getSupportedLanguageByLocale(entity.getLang());
+      resourceUtils.transfer(entity, document, hLocale);
 
       document = documentDAO.makePersistent(document);
       documentDAO.flush();
@@ -257,7 +263,7 @@ public class TranslationResourcesService
 
       for (HTextFlow htf : doc.getTextFlows())
       {
-         TextFlow tf = new TextFlow(htf.getResId(), doc.getLocale());
+         TextFlow tf = new TextFlow(htf.getResId(), doc.getLocale().getLocaleId());
          resourceUtils.transfer(htf, tf);
          entity.getTextFlows().add(tf);
       }
@@ -294,7 +300,7 @@ public class TranslationResourcesService
             return response.build();
          }
          changed = true;
-         document = new HDocument(entity.getName(), entity.getContentType());
+         document = new HDocument(entity.getName(), entity.getContentType(), localeServiceImpl.getDefautLanguage());
          document.setProjectIteration(hProjectIteration);
          response = Response.created(uri.getAbsolutePath());
 
@@ -322,7 +328,8 @@ public class TranslationResourcesService
          response = Response.ok();
       }
 
-      changed |= resourceUtils.transfer(entity, document);
+      HLocale hLocale = localeServiceImpl.getSupportedLanguageByLocale(entity.getLang());
+      changed |= resourceUtils.transfer(entity, document, hLocale);
 
       // handle extensions
       changed |= resourceUtils.transfer(entity.getExtensions(true), document, extensions);
@@ -418,7 +425,8 @@ public class TranslationResourcesService
          return Response.status(Status.NOT_FOUND).build();
       }
 
-      boolean changed = resourceUtils.transfer(entity, document);
+      HLocale hLocale = localeServiceImpl.getSupportedLanguageByLocale(entity.getLang());
+      boolean changed = resourceUtils.transfer(entity, document, hLocale);
 
       // handle extensions
       changed |= resourceUtils.transfer(entity.getExtensions(true), document, extensions);
@@ -529,7 +537,6 @@ public class TranslationResourcesService
       HProjectIteration hProjectIteration = retrieveIteration();
 
       validateExtensions();
-      validateSupportedLanguage(locale);
 
       // TODO create valid etag
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
@@ -551,8 +558,9 @@ public class TranslationResourcesService
 
       boolean changed = false;
 
+      HLocale hLocale = localeServiceImpl.getSupportedLanguageByLocale(locale);
       // handle extensions
-      changed |= resourceUtils.transfer(entity.getExtensions(true), document, extensions, locale);
+      changed |= resourceUtils.transfer(entity.getExtensions(true), document, extensions, hLocale);
 
       List<HPerson> newPeople = new ArrayList<HPerson>();
       List<HTextFlowTarget> newTargets = new ArrayList<HTextFlowTarget>();
@@ -571,7 +579,7 @@ public class TranslationResourcesService
             }
             else
             {
-               HTextFlowTarget hTarget = textFlow.getTargets().get(locale);
+               HTextFlowTarget hTarget = textFlow.getTargets().get(hLocale);
                if (hTarget != null)
                {
                   removedTargets.add(hTarget);
@@ -584,13 +592,14 @@ public class TranslationResourcesService
          {
             // transfer
 
-            HTextFlowTarget hTarget = textFlow.getTargets().get(locale);
+            HTextFlowTarget hTarget = textFlow.getTargets().get(hLocale);
             boolean targetChanged = false;
             if (hTarget == null)
             {
                targetChanged = true;
-               hTarget = new HTextFlowTarget(textFlow, locale);
-               textFlow.getTargets().put(locale, hTarget);
+               log.info("locale:" + locale);
+               hTarget = new HTextFlowTarget(textFlow, localeServiceImpl.getSupportedLanguageByLocale(locale));
+               textFlow.getTargets().put(hLocale, hTarget);
                newTargets.add(hTarget);
                targetChanged |= resourceUtils.transfer(current, hTarget);
                targetChanged |= resourceUtils.transfer(current.getExtensions(true), hTarget, extensions);
@@ -624,7 +633,7 @@ public class TranslationResourcesService
          }
          else
          {
-            HTextFlowTarget hTarget = textFlow.getTargets().get(locale);
+            HTextFlowTarget hTarget = textFlow.getTargets().get(hLocale);
             if (hTarget != null)
             {
                removedTargets.add(hTarget);
@@ -703,11 +712,4 @@ public class TranslationResourcesService
       }
    }
 
-   private void validateSupportedLanguage(LocaleId locale)
-   {
-      if (!localeServiceImpl.localeSupported(locale))
-      {
-         throw new FliesException(Status.BAD_REQUEST, "Unsupported Locale: " + locale.getId() + " within this context");
-      }
-   }
 }
