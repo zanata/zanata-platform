@@ -168,7 +168,7 @@ public class TranslationResourcesService
          if (!doc.isObsolete())
          {
             ResourceMeta resource = new ResourceMeta();
-            resourceUtils.transfer(doc, resource);
+            resourceUtils.transferToAbstractResourceMeta(doc, resource);
             resources.add(resource);
          }
       }
@@ -206,16 +206,10 @@ public class TranslationResourcesService
          document.setProjectIteration(hProjectIteration);
       }
 
-      resourceUtils.transfer(entity, document);
+      resourceUtils.transferFromResource(entity, document, extensions);
 
       document = documentDAO.makePersistent(document);
       documentDAO.flush();
-
-      // handle extensions
-      if (resourceUtils.transfer(entity.getExtensions(true), document, extensions))
-      {
-         documentDAO.flush();
-      }
 
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, document.getDocId(), extensions);
 
@@ -248,18 +242,18 @@ public class TranslationResourcesService
       }
 
       Resource entity = new Resource(doc.getDocId());
-      resourceUtils.transfer(doc, entity);
+      resourceUtils.transferToResource(doc, entity);
 
       for (HTextFlow htf : doc.getTextFlows())
       {
          TextFlow tf = new TextFlow(htf.getResId(), doc.getLocale());
-         resourceUtils.transfer(htf, tf);
-         resourceUtils.transfer(htf, tf.getExtensions(), extensions);
+         resourceUtils.transferToTextFlow(htf, tf);
+         resourceUtils.transferToTextFlowExtensions(htf, tf.getExtensions(), extensions);
          entity.getTextFlows().add(tf);
       }
 
       // handle extensions
-      resourceUtils.transfer(doc, entity.getExtensions(true), extensions);
+      resourceUtils.transferToResourceExtensions(doc, entity.getExtensions(true), extensions);
 
       return Response.ok().entity(entity).tag(etag).lastModified(doc.getLastChanged()).build();
    }
@@ -318,10 +312,7 @@ public class TranslationResourcesService
          response = Response.ok();
       }
 
-      changed |= resourceUtils.transfer(entity, document);
-
-      // handle extensions
-      changed |= resourceUtils.transfer(entity.getExtensions(true), document, extensions);
+      changed |= resourceUtils.transferFromResource(entity, document, extensions);
 
       if (changed)
       {
@@ -380,10 +371,10 @@ public class TranslationResourcesService
       }
 
       ResourceMeta entity = new ResourceMeta(doc.getDocId());
-      resourceUtils.transfer(doc, entity);
+      resourceUtils.transferToAbstractResourceMeta(doc, entity);
 
       // transfer extensions
-      resourceUtils.transfer(doc, entity.getExtensions(true), extensions);
+      resourceUtils.transferToResourceExtensions(doc, entity.getExtensions(true), extensions);
 
       return Response.ok().entity(entity).tag(etag).build();
    }
@@ -414,10 +405,7 @@ public class TranslationResourcesService
          return Response.status(Status.NOT_FOUND).build();
       }
 
-      boolean changed = resourceUtils.transfer(entity, document);
-
-      // handle extensions
-      changed |= resourceUtils.transfer(entity.getExtensions(true), document, extensions);
+      boolean changed = resourceUtils.transferFromResourceMetadata(entity, document, extensions);
 
       if (changed)
       {
@@ -457,7 +445,7 @@ public class TranslationResourcesService
       List<HTextFlowTarget> hTargets = textFlowTargetDAO.findAllTranslations(document, locale);
 
       TranslationsResource translationResource = new TranslationsResource();
-      resourceUtils.transfer(document, translationResource.getExtensions(true), extensions, locale);
+      resourceUtils.transferToTranslationsResourceExtensions(document, translationResource.getExtensions(true), extensions, locale);
 
       if (hTargets.isEmpty() && translationResource.getExtensions(true).isEmpty())
       {
@@ -467,8 +455,8 @@ public class TranslationResourcesService
       for (HTextFlowTarget hTarget : hTargets)
       {
          TextFlowTarget target = new TextFlowTarget(hTarget.getTextFlow().getResId());
-         resourceUtils.transfer(hTarget, target);
-         resourceUtils.transfer(hTarget, target.getExtensions(true), extensions);
+         resourceUtils.transferToTextFlowTarget(hTarget, target);
+         resourceUtils.transferToTextFlowTargetExtensions(hTarget, target.getExtensions(true), extensions);
          translationResource.getTextFlowTargets(true).add(target);
       }
 
@@ -546,7 +534,7 @@ public class TranslationResourcesService
       boolean changed = false;
 
       // handle extensions
-      changed |= resourceUtils.transfer(entity.getExtensions(true), document, extensions, locale);
+      changed |= resourceUtils.transferFromTranslationsResourceExtensions(entity.getExtensions(true), document, extensions, locale);
 
       List<HPerson> newPeople = new ArrayList<HPerson>();
       List<HTextFlowTarget> newTargets = new ArrayList<HTextFlowTarget>();
@@ -586,13 +574,13 @@ public class TranslationResourcesService
                hTarget = new HTextFlowTarget(textFlow, locale);
                textFlow.getTargets().put(locale, hTarget);
                newTargets.add(hTarget);
-               targetChanged |= resourceUtils.transfer(current, hTarget);
-               targetChanged |= resourceUtils.transfer(current.getExtensions(true), hTarget, extensions);
+               targetChanged |= resourceUtils.transferFromTextFlowTarget(current, hTarget);
+               targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(current.getExtensions(true), hTarget, extensions);
             }
             else
             {
-               targetChanged |= resourceUtils.transfer(current, hTarget);
-               targetChanged |= resourceUtils.transfer(current.getExtensions(true), hTarget, extensions);
+               targetChanged |= resourceUtils.transferFromTextFlowTarget(current, hTarget);
+               targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(current.getExtensions(true), hTarget, extensions);
                if (targetChanged)
                {
                   changedTargets.add(hTarget);

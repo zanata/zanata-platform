@@ -67,7 +67,7 @@ public abstract class AbstractResourceMeta implements Serializable, Extensible<A
    public ExtensionSet<AbstractResourceMeta> getExtensions(boolean createIfNull)
    {
       if (createIfNull && extensions == null)
-         extensions = new ExtensionSet();
+         extensions = new ExtensionSet<AbstractResourceMeta>();
       return extensions;
    }
 

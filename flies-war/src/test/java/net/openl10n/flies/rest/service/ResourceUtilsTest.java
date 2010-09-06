@@ -23,7 +23,7 @@ public class ResourceUtilsTest
    {
       List<TextFlow> from = new ArrayList<TextFlow>();
       HDocument to = new HDocument();
-      boolean changed = documentUtils.mergeTextFlows(from, to);
+      boolean changed = documentUtils.transferFromTextFlows(from, to);
 
       assertThat(changed, is(false));
    }
@@ -37,7 +37,7 @@ public class ResourceUtilsTest
       from.add(tf1);
 
       HDocument to = new HDocument();
-      boolean changed = documentUtils.mergeTextFlows(from, to);
+      boolean changed = documentUtils.transferFromTextFlows(from, to);
 
       assertThat(changed, is(true));
    }
