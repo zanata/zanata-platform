@@ -27,6 +27,9 @@ import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 @JsonPropertyOrder( { "links", "extensions", "textFlowTargets" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
+/**
+ * Represents the translation of a document into a single locale.
+ */
 public class TranslationsResource implements Serializable, HasSample<TranslationsResource>
 {
 
