@@ -563,7 +563,11 @@ public class ResourceUtils
       to.getFlags().addAll(Arrays.asList(flags));
       String[] references = from.getReferences().split(",");
       to.getReferences().addAll(Arrays.asList(references));
-      // TODO do we need extracted comment given that we have simple comments?
+      // TODO decide how to handle extracted comments:
+      // option 1) via the comment extension: remove extractedComment
+      // from HPotEntryData.
+      // option 2) allow them in addition to the comment extension: handle them
+      // in transferToPotEntryHeader/transferFromPotEntryHeader.
    }
 
    public void transferToTextFlowTargetExtensions(HTextFlowTarget from, ExtensionSet<TextFlowTarget> to, StringSet enabledExtensions)
