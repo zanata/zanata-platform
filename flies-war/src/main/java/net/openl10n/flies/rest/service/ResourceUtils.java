@@ -3,7 +3,6 @@ package net.openl10n.flies.rest.service;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -559,10 +558,10 @@ public class ResourceUtils
    private void transferToPotEntryHeader(HPotEntryData from, PotEntryHeader to)
    {
       to.setContext(from.getContext());
-      String[] flags = from.getFlags().split(",");
-      to.getFlags().addAll(Arrays.asList(flags));
-      String[] references = from.getReferences().split(",");
-      to.getReferences().addAll(Arrays.asList(references));
+      List<String> flags = StringUtil.split(from.getFlags(), ",");
+      to.getFlags().addAll(flags);
+      List<String> refs = StringUtil.split(from.getReferences(), ",");
+      to.getReferences().addAll(refs);
       // TODO decide how to handle extracted comments:
       // option 1) via the comment extension: remove extractedComment
       // from HPotEntryData.

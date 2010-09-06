@@ -1,6 +1,8 @@
 package net.openl10n.flies.util;
 
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 public class StringUtil
 {
@@ -18,6 +20,11 @@ public class StringUtil
             sb.append(delim);
       }
       return sb.toString();
+   }
+
+   public static List<String> split(String s, String delim)
+   {
+      return Arrays.asList(s.split(","));
    }
 
 }
