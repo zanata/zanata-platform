@@ -8,9 +8,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import net.openl10n.flies.common.Namespaces;
-import net.openl10n.flies.rest.dto.DTOUtil;
 import net.openl10n.flies.rest.dto.ExtensionValue;
-import net.openl10n.flies.rest.dto.resource.Extension;
 import net.openl10n.flies.rest.dto.resource.TextFlow;
 
 @XmlRootElement(name = "pot-entry-header", namespace = Namespaces.FLIES)

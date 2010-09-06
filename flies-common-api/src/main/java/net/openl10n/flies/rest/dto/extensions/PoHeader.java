@@ -11,7 +11,6 @@ import javax.xml.bind.annotation.XmlType;
 import net.openl10n.flies.rest.dto.ExtensionValue;
 import net.openl10n.flies.rest.dto.po.HeaderEntry;
 import net.openl10n.flies.rest.dto.resource.AbstractResourceMeta;
-import net.openl10n.flies.rest.dto.resource.Extension;
 
 import org.codehaus.jackson.annotate.JsonTypeName;
 

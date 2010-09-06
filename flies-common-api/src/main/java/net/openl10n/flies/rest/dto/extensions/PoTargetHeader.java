@@ -8,14 +8,11 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.codehaus.jackson.annotate.JsonTypeName;
-
-import net.openl10n.flies.rest.dto.DTOUtil;
 import net.openl10n.flies.rest.dto.ExtensionValue;
 import net.openl10n.flies.rest.dto.po.HeaderEntry;
-import net.openl10n.flies.rest.dto.resource.Extension;
-import net.openl10n.flies.rest.dto.resource.TextFlowTarget;
 import net.openl10n.flies.rest.dto.resource.TranslationsResource;
+
+import org.codehaus.jackson.annotate.JsonTypeName;
 
 @XmlType(name = "poTargetHeader", namespace = PoHeader.NAMESPACE, propOrder = { "comment", "entries" })
 @XmlRootElement(name = "po-target-header", namespace = PoHeader.NAMESPACE)

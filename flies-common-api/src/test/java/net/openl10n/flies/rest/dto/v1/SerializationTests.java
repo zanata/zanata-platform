@@ -16,8 +16,6 @@ import net.openl10n.flies.rest.JaxbUtil;
 import net.openl10n.flies.rest.dto.Person;
 import net.openl10n.flies.rest.dto.extensions.PoHeader;
 import net.openl10n.flies.rest.dto.extensions.SimpleComment;
-import net.openl10n.flies.rest.dto.resource.AbstractResourceMeta;
-import net.openl10n.flies.rest.dto.resource.Extension;
 import net.openl10n.flies.rest.dto.resource.Resource;
 import net.openl10n.flies.rest.dto.resource.ResourceMeta;
 import net.openl10n.flies.rest.dto.resource.TextFlow;
