@@ -5,7 +5,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 
 import net.openl10n.flies.rest.dto.DTOUtil;
 import net.openl10n.flies.rest.dto.extensions.PoHeader;
-import net.openl10n.flies.rest.dto.extensions.PoTargetHeaderEntry;
+import net.openl10n.flies.rest.dto.extensions.PoTargetHeader;
 import net.openl10n.flies.rest.dto.extensions.PotEntryHeader;
 import net.openl10n.flies.rest.dto.extensions.SimpleComment;
 
@@ -16,9 +16,12 @@ import org.codehaus.jackson.annotate.JsonTypeInfo.As;
 import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
 
 //@XmlType(name="extensionType", namespace=Namespaces.FLIES)
-@XmlSeeAlso({ PoHeader.class, PotEntryHeader.class, SimpleComment.class, PoTargetHeaderEntry.class })
+@XmlSeeAlso({ PoHeader.class, PoTargetHeader.class, PotEntryHeader.class, SimpleComment.class })
 @JsonTypeInfo(use = Id.NAME, include = As.WRAPPER_OBJECT)
-@JsonSubTypes({ @JsonSubTypes.Type(PoHeader.class), @JsonSubTypes.Type(PotEntryHeader.class), @JsonSubTypes.Type(PoTargetHeaderEntry.class), @JsonSubTypes.Type(SimpleComment.class) })
+@JsonSubTypes({ @JsonSubTypes.Type(PoHeader.class), @JsonSubTypes.Type(PoTargetHeader.class), @JsonSubTypes.Type(PotEntryHeader.class), @JsonSubTypes.Type(SimpleComment.class) })
+/**
+ * @deprecated can we delete this?
+ */
 public abstract class Extension
 {
 

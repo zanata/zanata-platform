@@ -23,7 +23,6 @@ import net.openl10n.flies.rest.StringSet;
 import net.openl10n.flies.rest.dto.Person;
 import net.openl10n.flies.rest.dto.extensions.PoHeader;
 import net.openl10n.flies.rest.dto.extensions.PoTargetHeader;
-import net.openl10n.flies.rest.dto.extensions.PoTargetHeaderEntry;
 import net.openl10n.flies.rest.dto.extensions.PotEntryHeader;
 import net.openl10n.flies.rest.dto.extensions.SimpleComment;
 import net.openl10n.flies.rest.dto.resource.AbstractResourceMeta;
@@ -343,39 +342,6 @@ public class ResourceUtils
       return changed;
 
    }   
-   
-   // TODO find out if this unused method is meant to be used
-   private boolean transferFromPoTargetHeaderEntry(PoTargetHeaderEntry from, HPoTargetHeader to)
-   {
-      boolean changed = false;
-
-      if (!equals(from.getLocale(), to.getTargetLanguage()))
-      {
-         to.setTargetLanguage(from.getLocale());
-         changed = true;
-      }
-
-      HSimpleComment comment = to.getComment();
-      if (comment == null)
-      {
-         comment = new HSimpleComment();
-      }
-      if (!equals(from.getComment(), comment.getComment()))
-      {
-         changed = true;
-         comment.setComment(from.getComment());
-         to.setComment(comment);
-      }
-
-      String entries = PoUtility.listToHeader(from.getEntries());
-      if (!equals(entries, to.getEntries()))
-      {
-         to.setEntries(entries);
-         changed = true;
-      }
-
-      return changed;
-   }
 
    private boolean transferFromPoTargetHeader(PoTargetHeader from, HPoTargetHeader to)
    {
@@ -477,18 +443,6 @@ public class ResourceUtils
 
    private void transferToPoTargetHeader(HPoTargetHeader from, PoTargetHeader to)
    {
-      HSimpleComment comment = from.getComment();
-      if (comment != null)
-      {
-         to.setComment(comment.getComment());
-      }
-      to.getEntries().addAll(PoUtility.headerToList(from.getEntries()));
-
-   }
-
-   private void transferToPoTargetHeaderEntry(HPoTargetHeader from, PoTargetHeaderEntry to)
-   {
-      to.setLocale(from.getTargetLanguage());
       HSimpleComment comment = from.getComment();
       if (comment != null)
       {

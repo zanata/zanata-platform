@@ -40,7 +40,6 @@ public class ToStringTests extends TestCase
       // net.openl10n.flies.rest.dto.extensions
       test(new net.openl10n.flies.rest.dto.extensions.PoHeader());
       test(new net.openl10n.flies.rest.dto.extensions.PoTargetHeader());
-      test(new net.openl10n.flies.rest.dto.extensions.PoTargetHeaderEntry());
       test(new net.openl10n.flies.rest.dto.extensions.PotEntryHeader());
       //test(new net.openl10n.flies.rest.dto.extensions.SimpleComment());
       // net.openl10n.flies.rest.dto.po
