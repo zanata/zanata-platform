@@ -2,12 +2,10 @@ package net.openl10n.flies.rest.dto.resource;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlType;
 
-import net.openl10n.flies.common.Namespaces;
 import net.openl10n.flies.rest.dto.DTOUtil;
 import net.openl10n.flies.rest.dto.extensions.PoHeader;
-import net.openl10n.flies.rest.dto.extensions.PoTargetHeaders;
+import net.openl10n.flies.rest.dto.extensions.PoTargetHeaderEntry;
 import net.openl10n.flies.rest.dto.extensions.PotEntryHeader;
 import net.openl10n.flies.rest.dto.extensions.SimpleComment;
 
@@ -18,9 +16,9 @@ import org.codehaus.jackson.annotate.JsonTypeInfo.As;
 import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
 
 //@XmlType(name="extensionType", namespace=Namespaces.FLIES)
-@XmlSeeAlso( { PoHeader.class, PotEntryHeader.class, SimpleComment.class, PoTargetHeaders.class })
+@XmlSeeAlso({ PoHeader.class, PotEntryHeader.class, SimpleComment.class, PoTargetHeaderEntry.class })
 @JsonTypeInfo(use = Id.NAME, include = As.WRAPPER_OBJECT)
-@JsonSubTypes( { @JsonSubTypes.Type(PoHeader.class), @JsonSubTypes.Type(PotEntryHeader.class), @JsonSubTypes.Type(PoTargetHeaders.class), @JsonSubTypes.Type(SimpleComment.class) })
+@JsonSubTypes({ @JsonSubTypes.Type(PoHeader.class), @JsonSubTypes.Type(PotEntryHeader.class), @JsonSubTypes.Type(PoTargetHeaderEntry.class), @JsonSubTypes.Type(SimpleComment.class) })
 public abstract class Extension
 {
 

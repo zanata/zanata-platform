@@ -3,7 +3,6 @@ package net.openl10n.flies.rest.service;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,7 +24,6 @@ import net.openl10n.flies.rest.dto.Person;
 import net.openl10n.flies.rest.dto.extensions.PoHeader;
 import net.openl10n.flies.rest.dto.extensions.PoTargetHeader;
 import net.openl10n.flies.rest.dto.extensions.PoTargetHeaderEntry;
-import net.openl10n.flies.rest.dto.extensions.PoTargetHeaders;
 import net.openl10n.flies.rest.dto.extensions.PotEntryHeader;
 import net.openl10n.flies.rest.dto.extensions.SimpleComment;
 import net.openl10n.flies.rest.dto.resource.AbstractResourceMeta;
@@ -540,26 +538,6 @@ public class ResourceUtils
             transferToPoTargetHeader(fromHeader, poTargetHeader);
             to.add(poTargetHeader);
          }
-      }
-   }
-
-   // TODO find out if this unused method is meant to be used
-   private void transferToResourceExtensions(HDocument from, ExtensionSet to, StringSet enabledExtensions, Collection<LocaleId> locales)
-   {
-      if (enabledExtensions.contains(PoTargetHeaders.ID))
-      {
-         PoTargetHeaders poTargetHeaders = new PoTargetHeaders();
-         for (LocaleId locale : locales)
-         {
-            HPoTargetHeader fromHeader = from.getPoTargetHeaders().get(locale);
-            if (fromHeader != null)
-            {
-               PoTargetHeaderEntry header = new PoTargetHeaderEntry();
-               transferToPoTargetHeaderEntry(fromHeader, header);
-               poTargetHeaders.getHeaders().add(header);
-            }
-         }
-         to.add(poTargetHeaders);
       }
    }
 
