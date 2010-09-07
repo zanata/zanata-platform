@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.model.HAccount;
-import net.openl10n.flies.model.HSupportedLanguage;
+import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.service.LanguageTeamService;
 import net.openl10n.flies.service.LocaleService;
 
@@ -26,9 +26,9 @@ public class LanguageTeamAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
    @In
-   LanguageTeamService languageTeamServiceImpl;
+   private LanguageTeamService languageTeamServiceImpl;
    @In
-   LocaleService localeServiceImpl;
+   private LocaleService localeServiceImpl;
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
    @Logger
@@ -46,9 +46,9 @@ public class LanguageTeamAction implements Serializable
       this.language = language;
    }
 
-   public HSupportedLanguage getLocale()
+   public HLocale getLocale()
    {
-      return localeServiceImpl.getLanguageByLocale(new LocaleId(language));
+      return localeServiceImpl.getSupportedLanguageByLocale(new LocaleId(language));
    }
 
    @Transactional

@@ -18,12 +18,9 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 
 import net.openl10n.flies.common.ContentType;
-import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.model.po.HPoHeader;
 import net.openl10n.flies.model.po.HPoTargetHeader;
 import net.openl10n.flies.model.po.PoUtility;
-import net.openl10n.flies.model.type.ContentTypeType;
-import net.openl10n.flies.model.type.LocaleIdType;
 import net.openl10n.flies.rest.dto.deprecated.Document;
 import net.openl10n.flies.rest.dto.deprecated.TextFlow;
 import net.openl10n.flies.rest.dto.po.HeaderEntry;
@@ -34,8 +31,6 @@ import net.openl10n.flies.rest.dto.po.PoTargetHeaders;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 import org.hibernate.annotations.Where;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
@@ -45,7 +40,6 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.contexts.Contexts;
 
 @Entity
-@TypeDefs( { @TypeDef(name = "localeId", typeClass = LocaleIdType.class), @TypeDef(name = "contentType", typeClass = ContentTypeType.class) })
 public class HDocument extends AbstractFliesEntity implements IDocumentHistory
 {
 
@@ -54,7 +48,7 @@ public class HDocument extends AbstractFliesEntity implements IDocumentHistory
    private String path;
    private ContentType contentType;
    private Integer revision = 1;
-   private LocaleId locale;
+   private HLocale locale;
    private HPerson lastModifiedBy;
 
    private HProjectIteration projectIteration;
@@ -63,14 +57,9 @@ public class HDocument extends AbstractFliesEntity implements IDocumentHistory
    private List<HTextFlow> textFlows;
    private boolean obsolete = false;
    private HPoHeader poHeader;
-   private Map<LocaleId, HPoTargetHeader> poTargetHeaders;
+   private Map<HLocale, HPoTargetHeader> poTargetHeaders;
 
-   public HDocument(String fullPath, ContentType contentType)
-   {
-      this(fullPath, contentType, LocaleId.EN_US);
-   }
-
-   public HDocument(String fullPath, ContentType contentType, LocaleId locale)
+   public HDocument(String fullPath, ContentType contentType, HLocale locale)
    {
       int lastSepChar = fullPath.lastIndexOf('/');
       switch (lastSepChar)
@@ -93,17 +82,13 @@ public class HDocument extends AbstractFliesEntity implements IDocumentHistory
       this.locale = locale;
    }
 
-   public HDocument(String docId, String name, String path, ContentType contentType)
-   {
-      this(docId, name, path, contentType, LocaleId.EN_US, 1);
-   }
-
-   public HDocument(String docId, String name, String path, ContentType contentType, LocaleId locale)
+   public HDocument(String docId, String name, String path, ContentType contentType, HLocale locale)
    {
       this(docId, name, path, contentType, locale, 1);
    }
 
-   public HDocument(String docId, String name, String path, ContentType contentType, LocaleId locale, int revision)
+
+   public HDocument(String docId, String name, String path, ContentType contentType, HLocale locale, int revision)
    {
       this.docId = docId;
       this.name = name;
@@ -116,13 +101,13 @@ public class HDocument extends AbstractFliesEntity implements IDocumentHistory
    {
    }
 
-   public HDocument(Document docInfo)
+   public HDocument(Document docInfo, HLocale locale)
    {
       this.docId = docInfo.getId();
       this.name = docInfo.getName();
       this.path = docInfo.getPath();
       this.contentType = docInfo.getContentType();
-      this.locale = docInfo.getLang();
+      this.locale = locale;
       this.revision = docInfo.getRevision();
    }
 
@@ -170,14 +155,14 @@ public class HDocument extends AbstractFliesEntity implements IDocumentHistory
       this.path = path;
    }
 
-   @NotNull
-   @Type(type = "localeId")
-   public LocaleId getLocale()
+   @ManyToOne
+   @JoinColumn(name = "locale", nullable = false)
+   public HLocale getLocale()
    {
-      return locale;
+      return this.locale;
    }
 
-   public void setLocale(LocaleId locale)
+   public void setLocale(HLocale locale)
    {
       this.locale = locale;
    }
@@ -319,23 +304,23 @@ public class HDocument extends AbstractFliesEntity implements IDocumentHistory
       return poHeader;
    }
 
-   public void setPoTargetHeaders(Map<LocaleId, HPoTargetHeader> poTargetHeaders)
+   public void setPoTargetHeaders(Map<HLocale, HPoTargetHeader> poTargetHeaders)
    {
       this.poTargetHeaders = poTargetHeaders;
    }
 
    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "document")
    @MapKey(name = "targetLanguage")
-   public Map<LocaleId, HPoTargetHeader> getPoTargetHeaders()
+   public Map<HLocale, HPoTargetHeader> getPoTargetHeaders()
    {
       if (poTargetHeaders == null)
-         poTargetHeaders = new HashMap<LocaleId, HPoTargetHeader>();
+         poTargetHeaders = new HashMap<HLocale, HPoTargetHeader>();
       return poTargetHeaders;
    }
 
    public Document toDocument(int levels)
    {
-      Document doc = new Document(docId, name, path, contentType, revision, locale);
+      Document doc = new Document(docId, name, path, contentType, revision, locale.getLocaleId());
       if (levels != 0)
       {
          List<TextFlow> docResources = doc.getTextFlows();
@@ -363,7 +348,7 @@ public class HDocument extends AbstractFliesEntity implements IDocumentHistory
                toHeader.setComment(fromComment);
                List<HeaderEntry> toEntries = toHeader.getEntries();
                toEntries.addAll(PoUtility.headerToList(fromHeader.getEntries()));
-               toHeader.setTargetLanguage(fromHeader.getTargetLanguage());
+               toHeader.setTargetLanguage(fromHeader.getTargetLanguage().getLocaleId());
                toTargetHeaders.getHeaders().add(toHeader);
             }
          }

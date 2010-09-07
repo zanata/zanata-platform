@@ -1,6 +1,7 @@
 package net.openl10n.flies.hibernate.search;
 
 import net.openl10n.flies.common.LocaleId;
+import net.openl10n.flies.model.HLocale;
 
 import org.hibernate.search.bridge.TwoWayStringBridge;
 
@@ -10,9 +11,9 @@ public class LocaleIdBridge implements TwoWayStringBridge
    @Override
    public String objectToString(Object value)
    {
-      if (value instanceof LocaleId)
+      if (value instanceof HLocale)
       {
-         LocaleId locale = (LocaleId) value;
+         LocaleId locale = ((HLocale) value).getLocaleId();
          return locale.toString();
       }
       else
@@ -24,7 +25,7 @@ public class LocaleIdBridge implements TwoWayStringBridge
    @Override
    public Object stringToObject(String localeId)
    {
-      return new LocaleId(localeId);
+      return new HLocale(new LocaleId(localeId));
    }
 
 }

@@ -10,6 +10,7 @@ import java.util.Set;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.common.ResourceType;
 import net.openl10n.flies.model.HDocument;
+import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.model.HPerson;
 import net.openl10n.flies.model.HSimpleComment;
 import net.openl10n.flies.model.HTextFlow;
@@ -114,10 +115,10 @@ public class ResourceUtils
     * @param enabledExtensions
     * @return
     */
-   public boolean transferFromResource(Resource from, HDocument to, StringSet enabledExtensions)
+   public boolean transferFromResource(Resource from, HDocument to, StringSet enabledExtensions, HLocale locale)
    {
       boolean changed = false;
-      changed |= transferFromResourceMetadata(from, to, enabledExtensions);
+      changed |= transferFromResourceMetadata(from, to, enabledExtensions, locale);
       changed |= transferFromTextFlows(from.getTextFlows(), to, enabledExtensions);
       return changed;
    }
@@ -129,7 +130,7 @@ public class ResourceUtils
     * @param enabledExtensions
     * @return
     */
-   public boolean transferFromResourceMetadata(AbstractResourceMeta from, HDocument to, StringSet enabledExtensions)
+   public boolean transferFromResourceMetadata(AbstractResourceMeta from, HDocument to, StringSet enabledExtensions, HLocale locale)
    {
       boolean changed = false;
 
@@ -141,9 +142,10 @@ public class ResourceUtils
       }
 
       // locale
-      if (!equals(from.getLang(), to.getLocale()))
+      if (!equals(from.getLang(), to.getLocale().getLocaleId()))
       {
-         to.setLocale(from.getLang());
+         log.debug("locale:" + from.getLang());
+         to.setLocale(locale);
          changed = true;
       }
 
@@ -224,7 +226,7 @@ public class ResourceUtils
     * @param locale
     * @return
     */
-   public boolean transferFromTranslationsResourceExtensions(ExtensionSet<TranslationsResource> from, HDocument to, StringSet enabledExtensions, LocaleId locale)
+   public boolean transferFromTranslationsResourceExtensions(ExtensionSet<TranslationsResource> from, HDocument to, StringSet enabledExtensions, HLocale locale)
    {
       boolean changed = false;
       if (enabledExtensions.contains(PoTargetHeader.ID))
@@ -232,6 +234,7 @@ public class ResourceUtils
          PoTargetHeader fromTargetHeader = from.findByType(PoTargetHeader.class);
          if (fromTargetHeader != null)
          {
+            log.debug("locale:" + locale.getLocaleId().getId());
             HPoTargetHeader toTargetHeader = to.getPoTargetHeaders().get(locale);
             if (toTargetHeader == null)
             {
@@ -465,7 +468,7 @@ public class ResourceUtils
    {
 
       to.setName(from.getName());
-      to.setLang(from.getLocale());
+      to.setLang(from.getLocale().getLocaleId());
       to.setContentType(from.getContentType());
    }
 
@@ -499,7 +502,7 @@ public class ResourceUtils
    public void transferToAbstractResourceMeta(HDocument from, AbstractResourceMeta to)
    {
       to.setContentType(from.getContentType());
-      to.setLang(from.getLocale());
+      to.setLang(from.getLocale().getLocaleId());
       to.setName(from.getDocId());
       // TODO ADD support within the hibernate model for multiple resource types
       to.setType(ResourceType.FILE);

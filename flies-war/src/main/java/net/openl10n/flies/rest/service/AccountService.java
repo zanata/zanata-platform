@@ -23,7 +23,7 @@ import net.openl10n.flies.dao.SupportedLanguageDAO;
 import net.openl10n.flies.model.HAccount;
 import net.openl10n.flies.model.HAccountRole;
 import net.openl10n.flies.model.HPerson;
-import net.openl10n.flies.model.HSupportedLanguage;
+import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.rest.MediaTypes;
 import net.openl10n.flies.rest.dto.Account;
 
@@ -52,16 +52,16 @@ public class AccountService
    Log log = Logging.getLog(AccountService.class);
 
    @In
-   AccountDAO accountDAO;
+   private AccountDAO accountDAO;
 
    @In
-   AccountRoleDAO accountRoleDAO;
+   private AccountRoleDAO accountRoleDAO;
 
    @In
-   SupportedLanguageDAO supportedLanguageDAO;
+   private SupportedLanguageDAO supportedLanguageDAO;
 
    @In
-   Identity identity;
+   private Identity identity;
 
    @In
    private Session session;
@@ -158,7 +158,7 @@ public class AccountService
       hPerson.getTribeMemberships().clear();
       for (String tribe : from.getTribes())
       {
-         HSupportedLanguage hTribe = supportedLanguageDAO.findByLocaleId(new LocaleId(tribe));
+         HLocale hTribe = supportedLanguageDAO.findByLocaleId(new LocaleId(tribe));
          if (hTribe == null)
             // generate error for missing tribe
             throw new NoLogWebApplicationException(Response.status(Status.BAD_REQUEST).entity(

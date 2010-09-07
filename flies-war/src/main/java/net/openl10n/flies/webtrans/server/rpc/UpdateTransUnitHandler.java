@@ -4,6 +4,7 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.common.LocaleId;
+import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.model.HTextFlow;
 import net.openl10n.flies.model.HTextFlowTarget;
 import net.openl10n.flies.security.FliesIdentity;
@@ -40,7 +41,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    TranslationWorkspaceManager translationWorkspaceManager;
 
    @In
-   LocaleService localeServiceImpl;
+   private LocaleService localeServiceImpl;
 
    @Override
    public UpdateTransUnitResult execute(UpdateTransUnit action, ExecutionContext context) throws ActionException
@@ -50,17 +51,14 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       log.info("Updating TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), action.getWorkspaceId().getLocaleId(), action.getContentState(), action.getContent());
 
       HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, action.getTransUnitId().getValue());
-      HTextFlowTarget target = hTextFlow.getTargets().get(action.getWorkspaceId().getLocaleId());
+      LocaleId locale = action.getWorkspaceId().getLocaleId();
+      HLocale hLocale = localeServiceImpl.getSupportedLanguageByLocale(locale);
+      HTextFlowTarget target = hTextFlow.getTargets().get(hLocale);
       ContentState prevStatus = ContentState.New;
       if (target == null)
       {
-         LocaleId locale = action.getWorkspaceId().getLocaleId();
-         if (!localeServiceImpl.localeSupported(locale))
-         {
-            throw new ActionException("Unsupported Locale: " + locale.getId() + " within this context");
-         }
-         target = new HTextFlowTarget(hTextFlow, locale);
-         hTextFlow.getTargets().put(action.getWorkspaceId().getLocaleId(), target);
+         target = new HTextFlowTarget(hTextFlow, hLocale);
+         hTextFlow.getTargets().put(hLocale, target);
       }
       else
       {

@@ -1,4 +1,3 @@
-
     create table HAccount (
         id bigint not null auto_increment,
         creationDate datetime not null,
@@ -89,12 +88,12 @@
         versionNum integer not null,
         contentType varchar(255) binary not null,
         docId varchar(255) binary not null,
-        locale varchar(255) binary not null,
         name varchar(255) binary not null,
         obsolete bit not null,
         path varchar(255) binary not null,
         revision integer not null,
         last_modified_by_id bigint,
+        locale bigint not null,
         poHeader_id bigint,
         project_iteration_id bigint not null,
         primary key (id),
@@ -106,15 +105,32 @@
         contentType varchar(255) binary not null,
         docId varchar(255) binary not null,
         lastChanged datetime,
-        locale varchar(255) binary not null,
         name varchar(255) binary,
         obsolete bit not null,
         path varchar(255) binary,
         revision integer,
         document_id bigint,
         last_modified_by_id bigint,
+        locale bigint not null,
         primary key (id),
         unique (document_id, revision)
+    ) ENGINE=InnoDB;
+
+    create table HLocale (
+        id bigint not null auto_increment,
+        creationDate datetime not null,
+        lastChanged datetime not null,
+        versionNum integer not null,
+        active bit not null,
+        localeId varchar(255) binary not null,
+        primary key (id),
+        unique (localeId)
+    ) ENGINE=InnoDB;
+
+    create table HLocale_Member (
+        personId bigint not null,
+        supportedLanguageId bigint not null,
+        primary key (supportedLanguageId, personId)
     ) ENGINE=InnoDB;
 
     create table HPerson (
@@ -147,9 +163,9 @@
         lastChanged datetime not null,
         versionNum integer not null,
         entries longtext,
-        targetLanguage varchar(255) binary not null,
         comment_id bigint,
         document_id bigint,
+        targetLanguage bigint not null,
         primary key (id),
         unique (document_id, targetLanguage)
     ) ENGINE=InnoDB;
@@ -206,23 +222,6 @@
         primary key (id)
     ) ENGINE=InnoDB;
 
-    create table HSupportedLanguage (
-        id bigint not null auto_increment,
-        creationDate datetime not null,
-        lastChanged datetime not null,
-        versionNum integer not null,
-        active bit not null,
-        localeId varchar(255) binary not null,
-        primary key (id),
-        unique (localeId)
-    ) ENGINE=InnoDB;
-
-    create table HSupportedLanguage_Member (
-        personId bigint not null,
-        supportedLanguageId bigint not null,
-        primary key (supportedLanguageId, personId)
-    ) ENGINE=InnoDB;
-
     create table HTextFlow (
         id bigint not null auto_increment,
         content longtext not null,
@@ -254,11 +253,11 @@
         lastChanged datetime not null,
         versionNum integer not null,
         content longtext not null,
-        locale varchar(255) binary not null,
         state integer not null,
         tf_revision integer not null,
         comment_id bigint,
         last_modified_by_id bigint,
+        locale bigint not null,
         tf_id bigint,
         primary key (id),
         unique (locale, tf_id)
@@ -350,6 +349,12 @@
         references HPerson (id);
 
     alter table HDocument 
+        add index FKEA766D83FEA3B54A (locale), 
+        add constraint FKEA766D83FEA3B54A 
+        foreign key (locale) 
+        references HLocale (id);
+
+    alter table HDocument 
         add index FKEA766D8351ED6DFD (project_iteration_id), 
         add constraint FKEA766D8351ED6DFD 
         foreign key (project_iteration_id) 
@@ -372,6 +377,24 @@
         add constraint FK279765916C9BADC1 
         foreign key (last_modified_by_id) 
         references HPerson (id);
+
+    alter table HDocumentHistory 
+        add index FK27976591FEA3B54A (locale), 
+        add constraint FK27976591FEA3B54A 
+        foreign key (locale) 
+        references HLocale (id);
+
+    alter table HLocale_Member 
+        add index FK82DF50D760C55B1B (personId), 
+        add constraint FK82DF50D760C55B1B 
+        foreign key (personId) 
+        references HPerson (id);
+
+    alter table HLocale_Member 
+        add index FK82DF50D73A932491 (supportedLanguageId), 
+        add constraint FK82DF50D73A932491 
+        foreign key (supportedLanguageId) 
+        references HLocale (id);
 
     alter table HPerson 
         add index FK6F0931BDFA68C45F (accountId), 
@@ -396,6 +419,12 @@
         add constraint FK1BC719855383E2F0 
         foreign key (document_id) 
         references HDocument (id);
+
+    alter table HPoTargetHeader 
+        add index FK1BC719857D208AD9 (targetLanguage), 
+        add constraint FK1BC719857D208AD9 
+        foreign key (targetLanguage) 
+        references HLocale (id);
 
     alter table HPoTargetHeader 
         add index FK1BC71985B7A40DF2 (comment_id), 
@@ -439,18 +468,6 @@
         foreign key (projectId) 
         references HProject (id);
 
-    alter table HSupportedLanguage_Member 
-        add index FK7097EB5B60C55B1B (personId), 
-        add constraint FK7097EB5B60C55B1B 
-        foreign key (personId) 
-        references HPerson (id);
-
-    alter table HSupportedLanguage_Member 
-        add index FK7097EB5B68E40971 (supportedLanguageId), 
-        add constraint FK7097EB5B68E40971 
-        foreign key (supportedLanguageId) 
-        references HSupportedLanguage (id);
-
     alter table HTextFlow 
         add index FK7B40F8635383E2F0 (document_id), 
         add constraint FK7B40F8635383E2F0 
@@ -480,6 +497,12 @@
         add constraint FK1E933FD46C9BADC1 
         foreign key (last_modified_by_id) 
         references HPerson (id);
+
+    alter table HTextFlowTarget 
+        add index FK1E933FD4FEA3B54A (locale), 
+        add constraint FK1E933FD4FEA3B54A 
+        foreign key (locale) 
+        references HLocale (id);
 
     alter table HTextFlowTarget 
         add index FK1E933FD4B7A40DF2 (comment_id), 

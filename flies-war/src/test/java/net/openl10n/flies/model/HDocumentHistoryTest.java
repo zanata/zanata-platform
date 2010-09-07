@@ -13,6 +13,7 @@ import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.model.HDocument;
 import net.openl10n.flies.model.HDocumentHistory;
 import net.openl10n.flies.model.HProjectIteration;
+import net.openl10n.flies.service.LocaleService;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
@@ -21,6 +22,7 @@ import org.testng.annotations.Test;
 
 public class HDocumentHistoryTest extends FliesDbunitJpaTest
 {
+   private LocaleService localeServiceImpl;
 
    protected void prepareDBUnitOperations()
    {
@@ -31,7 +33,7 @@ public class HDocumentHistoryTest extends FliesDbunitJpaTest
    public void ensureHistoryIsRecorded()
    {
       Session session = getSession();
-      HDocument d = new HDocument("/path/to/document.txt", ContentType.TextPlain, LocaleId.EN);
+      HDocument d = new HDocument("/path/to/document.txt", ContentType.TextPlain, localeServiceImpl.getDefautLanguage());
       d.setProjectIteration((HProjectIteration) session.load(HProjectIteration.class, 1L));
       session.save(d);
       session.flush();
@@ -51,7 +53,7 @@ public class HDocumentHistoryTest extends FliesDbunitJpaTest
       assertThat(history.getContentType(), is(ContentType.TextPlain));
       assertThat(history.getLastChanged(), is(lastChanged));
       assertThat(history.getLastModifiedBy(), nullValue());
-      assertThat(history.getLocale(), is(LocaleId.EN));
+      assertThat(history.getLocale().getLocaleId(), is(LocaleId.EN));
       assertThat(history.getName(), is(d.getName()));
       assertThat(history.getPath(), is(d.getPath()));
       assertThat(history.getRevision(), is(d.getRevision() - 1));
@@ -66,6 +68,7 @@ public class HDocumentHistoryTest extends FliesDbunitJpaTest
 
    }
 
+   @SuppressWarnings("unchecked")
    private List<HDocumentHistory> loadHistory(HDocument d)
    {
       return getSession().createCriteria(HDocumentHistory.class).add(Restrictions.eq("document", d)).list();

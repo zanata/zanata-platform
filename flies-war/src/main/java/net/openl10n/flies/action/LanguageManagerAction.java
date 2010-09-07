@@ -25,7 +25,7 @@ public class LanguageManagerAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
    @In
-   LocaleService localeServiceImpl;
+   private LocaleService localeServiceImpl;
    private String language;
    private ULocale uLocale;
    private List<SelectItem> localeStringList;

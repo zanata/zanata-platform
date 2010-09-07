@@ -6,11 +6,12 @@ import java.util.List;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 import net.openl10n.flies.common.ContentState;
+import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.model.HTextFlow;
 import net.openl10n.flies.model.HTextFlowTarget;
 import net.openl10n.flies.security.FliesIdentity;
+import net.openl10n.flies.service.LocaleService;
 import net.openl10n.flies.webtrans.server.ActionHandlerFor;
-import net.openl10n.flies.webtrans.server.TranslationWorkspaceManager;
 import net.openl10n.flies.webtrans.shared.rpc.GetTransUnitsStates;
 import net.openl10n.flies.webtrans.shared.rpc.GetTransUnitsStatesResult;
 
@@ -33,9 +34,11 @@ public class GetTransUnitStatesHandler extends AbstractActionHandler<GetTransUni
    @In
    Session session;
 
-   @In
-   TranslationWorkspaceManager translationWorkspaceManager;
 
+   @In
+   private LocaleService localeServiceImpl;
+
+   @SuppressWarnings("unchecked")
    @Override
    public GetTransUnitsStatesResult execute(GetTransUnitsStates action, ExecutionContext context) throws ActionException
    {
@@ -48,11 +51,11 @@ public class GetTransUnitStatesHandler extends AbstractActionHandler<GetTransUni
          List<HTextFlowTarget> textFlowTargets = new ArrayList<HTextFlowTarget>();
          if (action.isReverse())
          {
-            textFlowTargets = session.createQuery("from HTextFlowTarget tft where tft.textFlow.document.id = :id " + " and tft.state = :state " + " and tft.textFlow.pos < :offset " + " and tft.locale = :locale " + " order by tft.textFlow.pos desc").setParameter("state", action.getState()).setParameter("offset", action.getOffset()).setParameter("locale", action.getWorkspaceId().getLocaleId()).setParameter("id", action.getDocumentId().getValue()).setMaxResults(action.getCount()).list();
+            textFlowTargets = session.createQuery("from HTextFlowTarget tft where tft.textFlow.document.id = :id " + " and tft.state = :state " + " and tft.textFlow.pos < :offset " + " and tft.locale.localeId = :locale " + " order by tft.textFlow.pos desc").setParameter("state", action.getState()).setParameter("offset", action.getOffset()).setParameter("locale", action.getWorkspaceId().getLocaleId()).setParameter("id", action.getDocumentId().getValue()).setMaxResults(action.getCount()).list();
          }
          else
          {
-            textFlowTargets = session.createQuery("from HTextFlowTarget tft where tft.textFlow.document.id = :id " + " and tft.state = :state " + " and tft.textFlow.pos > :offset " + " and tft.locale = :locale " + " order by tft.textFlow.pos").setParameter("state", action.getState()).setParameter("offset", action.getOffset()).setParameter("locale", action.getWorkspaceId().getLocaleId()).setParameter("id", action.getDocumentId().getValue()).setMaxResults(action.getCount()).list();
+            textFlowTargets = session.createQuery("from HTextFlowTarget tft where tft.textFlow.document.id = :id " + " and tft.state = :state " + " and tft.textFlow.pos > :offset " + " and tft.locale.localeId = :locale " + " order by tft.textFlow.pos").setParameter("state", action.getState()).setParameter("offset", action.getOffset()).setParameter("locale", action.getWorkspaceId().getLocaleId()).setParameter("id", action.getDocumentId().getValue()).setMaxResults(action.getCount()).list();
          }
          for (HTextFlowTarget target : textFlowTargets)
          {
@@ -72,11 +75,12 @@ public class GetTransUnitStatesHandler extends AbstractActionHandler<GetTransUni
             textFlows = session.createQuery("from HTextFlow tf where tf.document.id = :id " + " and tf.pos > :offset " + " order by tf.pos").setParameter("offset", action.getOffset()).setParameter("id", action.getDocumentId().getValue()).list();
          }
 
+         HLocale hLocale = localeServiceImpl.getSupportedLanguageByLocale(action.getWorkspaceId().getLocaleId());
          for (HTextFlow textFlow : textFlows)
          {
             if (count < action.getCount())
             {
-               HTextFlowTarget textFlowTarget = textFlow.getTargets().get(action.getWorkspaceId().getLocaleId());
+               HTextFlowTarget textFlowTarget = textFlow.getTargets().get(hLocale);
                if (textFlowTarget == null)
                {
                   results.add(new Long(textFlow.getPos()));

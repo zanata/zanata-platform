@@ -41,6 +41,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       return (HTextFlow) getSession().createCriteria(HTextFlow.class).add(Restrictions.naturalId().set("resId", id).set("document", document)).setCacheable(true).setComment("TextFlowDAO.getById").uniqueResult();
    }
 
+   @SuppressWarnings("unchecked")
    public List<HTextFlow> findByIdList(List<Long> idList)
    {
       Query query = getSession().createQuery("FROM HTextFlow WHERE id in (:idList)");
@@ -57,7 +58,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    @SuppressWarnings("unchecked")
    public List<Long> getIdsByTargetState(LocaleId locale, ContentState state)
    {
-      Query q = getSession().createQuery("select tft.textFlow.id from HTextFlowTarget tft where tft.locale=:locale and tft.state=:state");
+      Query q = getSession().createQuery("select tft.textFlow.id from HTextFlowTarget tft where tft.locale.localeId=:locale and tft.state=:state");
       q.setParameter("locale", locale);
       q.setParameter("state", state);
       q.setComment("TextFlowDAO.getIdsByTargetState");

@@ -6,12 +6,12 @@ import java.util.List;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 import net.openl10n.flies.common.ContentState;
+import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.model.HTextFlow;
 import net.openl10n.flies.model.HTextFlowTarget;
 import net.openl10n.flies.security.FliesIdentity;
+import net.openl10n.flies.service.LocaleService;
 import net.openl10n.flies.webtrans.server.ActionHandlerFor;
-import net.openl10n.flies.webtrans.server.TranslationWorkspace;
-import net.openl10n.flies.webtrans.server.TranslationWorkspaceManager;
 import net.openl10n.flies.webtrans.shared.model.TransUnit;
 import net.openl10n.flies.webtrans.shared.model.TransUnitId;
 import net.openl10n.flies.webtrans.shared.rpc.GetTransUnits;
@@ -35,11 +35,12 @@ public class GetTransUnitsHandler extends AbstractActionHandler<GetTransUnits, G
    @Logger
    Log log;
    @In
-   Session session;
+   private Session session;
 
    @In
-   TranslationWorkspaceManager translationWorkspaceManager;
+   private LocaleService localeServiceImpl;
 
+   @SuppressWarnings("unchecked")
    @Override
    public GetTransUnitsResult execute(GetTransUnits action, ExecutionContext context) throws ActionException
    {
@@ -59,11 +60,11 @@ public class GetTransUnitsHandler extends AbstractActionHandler<GetTransUnits, G
       {
 
          TransUnitId tuId = new TransUnitId(textFlow.getId());
-         TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
 
          // EditState editstate = workspace.getTransUnitStatus(tuId);
          TransUnit tu = new TransUnit(tuId, action.getWorkspaceId().getLocaleId(), textFlow.getContent(), CommentsUtil.toString(textFlow.getComment()), "", ContentState.New);
-         HTextFlowTarget target = textFlow.getTargets().get(action.getWorkspaceId().getLocaleId());
+         HLocale hLocale = localeServiceImpl.getSupportedLanguageByLocale(action.getWorkspaceId().getLocaleId());
+         HTextFlowTarget target = textFlow.getTargets().get(hLocale);
          if (target != null)
          {
             tu.setTarget(target.getContent());

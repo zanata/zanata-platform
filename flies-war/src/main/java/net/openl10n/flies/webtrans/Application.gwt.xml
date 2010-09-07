@@ -14,7 +14,8 @@
       
       <inherits name='net.customware.gwt.dispatch.Dispatch' />
       <inherits name='net.customware.gwt.presenter.Presenter' />
-      <!-- Inherit Mosaic Web Toolkit stuff.                          -->
+      <!-- Inherit Mosaic Web Toolkit stuff.                          
+      -->
       <inherits name='org.gwt.mosaic.Mosaic' />
       <!-- Inherit the default GWT Mosaic style sheet. You can change -->
       <!-- the theme of your GWT Mosaic application by uncommenting   -->

@@ -3,8 +3,9 @@ package net.openl10n.flies.service;
 import java.util.List;
 
 import net.openl10n.flies.common.LocaleId;
+import net.openl10n.flies.exception.FliesException;
 import net.openl10n.flies.model.FliesLocalePair;
-import net.openl10n.flies.model.HSupportedLanguage;
+import net.openl10n.flies.model.HLocale;
 
 public interface LocaleService
 {
@@ -20,11 +21,9 @@ public interface LocaleService
 
    boolean localeExists(LocaleId locale);
    
-   boolean localeSupported(LocaleId locale);
+   List<HLocale> getSupportedLocales();
 
-   List<HSupportedLanguage> getSupportedLocales();
+   HLocale getSupportedLanguageByLocale(LocaleId locale) throws FliesException;
 
-   FliesLocalePair getFliesLocale(LocaleId locale);
-
-   HSupportedLanguage getLanguageByLocale(LocaleId locale);
+   HLocale getDefautLanguage();
 }

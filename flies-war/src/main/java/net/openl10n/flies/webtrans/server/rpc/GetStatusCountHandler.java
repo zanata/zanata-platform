@@ -43,7 +43,8 @@ public class GetStatusCountHandler extends AbstractActionHandler<GetStatusCount,
 
       FliesIdentity.instance().checkLoggedIn();
 
-      List<StatusCount> stats = session.createQuery("select new net.openl10n.flies.model.StatusCount(tft.state, count(tft)) " + "from HTextFlowTarget tft where tft.textFlow.document.id = :id " + "  and tft.locale = :locale " + "group by tft.state").setParameter("id", action.getDocumentId().getValue()).setParameter("locale", action.getWorkspaceId().getLocaleId()).list();
+      @SuppressWarnings("unchecked")
+      List<StatusCount> stats = session.createQuery("select new net.openl10n.flies.model.StatusCount(tft.state, count(tft)) " + "from HTextFlowTarget tft where tft.textFlow.document.id = :id " + "  and tft.locale.localeId = :locale " + "group by tft.state").setParameter("id", action.getDocumentId().getValue()).setParameter("locale", action.getWorkspaceId().getLocaleId()).list();
 
       Long totalCount = (Long) session.createQuery("select count(tf) from HTextFlow tf where tf.document.id = :id").setParameter("id", action.getDocumentId().getValue()).uniqueResult();
 
@@ -54,6 +55,7 @@ public class GetStatusCountHandler extends AbstractActionHandler<GetStatusCount,
       }
 
       stat.set(ContentState.New, totalCount.intValue() - stat.get(ContentState.Approved) - stat.get(ContentState.NeedReview));
+      @SuppressWarnings("unused")
       TranslationWorkspace workspace = translationWorkspaceManager.getWorkspace(action.getWorkspaceId());
 
       return new GetStatusCountResult(action.getDocumentId(), stat);

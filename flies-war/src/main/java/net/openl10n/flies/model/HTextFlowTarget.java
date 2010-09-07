@@ -11,15 +11,12 @@ import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 import net.openl10n.flies.common.ContentState;
-import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.hibernate.search.ContentStateBridge;
 import net.openl10n.flies.hibernate.search.LocaleIdBridge;
-import net.openl10n.flies.model.type.LocaleIdType;
 import net.openl10n.flies.rest.dto.deprecated.TextFlowTarget;
 
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
@@ -34,14 +31,13 @@ import org.hibernate.validator.NotNull;
  * 
  */
 @Entity
-@TypeDef(name = "localeId", typeClass = LocaleIdType.class)
 public class HTextFlowTarget extends AbstractFliesEntity implements ITextFlowTargetHistory, HasSimpleComment
 {
 
    private static final long serialVersionUID = 302308010797605435L;
 
    private HTextFlow textFlow;
-   private LocaleId locale;
+   private HLocale locale;
 
    private String content;
    private ContentState state = ContentState.New;
@@ -54,17 +50,17 @@ public class HTextFlowTarget extends AbstractFliesEntity implements ITextFlowTar
    {
    }
 
-   public HTextFlowTarget(HTextFlow textFlow, LocaleId locale)
+   public HTextFlowTarget(HTextFlow textFlow, HLocale locale)
    {
       this.locale = locale;
       this.textFlow = textFlow;
       this.textFlowRevision = textFlow.getRevision();
    }
 
-   public HTextFlowTarget(TextFlowTarget target)
+   public HTextFlowTarget(TextFlowTarget target, HLocale locale)
    {
       this.content = target.getContent();
-      this.locale = target.getLang();
+      this.locale = locale;
       this.textFlowRevision = target.getResourceRevision();
       this.state = target.getState();
       // setTextFlow(target.getTextFlow);
@@ -91,16 +87,16 @@ public class HTextFlowTarget extends AbstractFliesEntity implements ITextFlowTar
    }
 
    @NaturalId
-   @Type(type = "localeId")
-   @NotNull
+   @ManyToOne
+   @JoinColumn(name = "locale", nullable = false)
    @Field(index = Index.UN_TOKENIZED)
    @FieldBridge(impl = LocaleIdBridge.class)
-   public LocaleId getLocale()
+   public HLocale getLocale()
    {
       return locale;
    }
 
-   public void setLocale(LocaleId locale)
+   public void setLocale(HLocale locale)
    {
       this.locale = locale;
    }

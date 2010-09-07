@@ -50,7 +50,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
    public TransUnitCount getStatistics(long docId, LocaleId localeId)
    {
       @SuppressWarnings("unchecked")
-      List<StatusCount> stats = getSession().createQuery("select new net.openl10n.flies.model.StatusCount(tft.state, count(tft)) " + "from HTextFlowTarget tft " + "where tft.textFlow.document.id = :id " + "  and tft.locale = :locale " + "  and tft.textFlow.obsolete = :obsolete " + "group by tft.state").setParameter("id", docId).setParameter("obsolete", false).setParameter("locale", localeId).setCacheable(true).list();
+      List<StatusCount> stats = getSession().createQuery("select new net.openl10n.flies.model.StatusCount(tft.state, count(tft)) " + "from HTextFlowTarget tft " + "where tft.textFlow.document.id = :id " + "  and tft.locale.localeId = :locale " + "  and tft.textFlow.obsolete = :obsolete " + "group by tft.state").setParameter("id", docId).setParameter("obsolete", false).setParameter("locale", localeId).setCacheable(true).list();
 
       Long totalCount = (Long) getSession().createQuery("select count(tf) from HTextFlow tf where tf.document.id = :id").setParameter("id", docId).setCacheable(true).uniqueResult();
 

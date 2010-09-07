@@ -5,6 +5,7 @@ import net.openl10n.flies.common.ContentType;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.common.ResourceType;
 import net.openl10n.flies.model.HDocument;
+import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.rest.StringSet;
 import net.openl10n.flies.rest.dto.extensions.PoHeader;
 import net.openl10n.flies.rest.dto.extensions.SimpleComment;
@@ -30,10 +31,12 @@ public class ResourceUtilsJpaTest extends FliesJpaTest
       from.setName("name");
       from.setType(ResourceType.FILE);
 
-      HDocument to = new HDocument("fullPath", ContentType.PO);
+      HLocale hLocale = new HLocale(LocaleId.EN_US);
+
+      HDocument to = new HDocument("fullPath", ContentType.PO, hLocale);
 
       StringSet commentExt = new StringSet(SimpleComment.ID);
-      resourceUtils.transferFromResourceMetadata(from, to, commentExt);
+      resourceUtils.transferFromResourceMetadata(from, to, commentExt, hLocale);
       // TODO check the results in 'to'
    }
 }
