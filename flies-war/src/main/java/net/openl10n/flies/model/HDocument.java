@@ -1,7 +1,6 @@
 package net.openl10n.flies.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,13 +19,8 @@ import javax.persistence.Transient;
 import net.openl10n.flies.common.ContentType;
 import net.openl10n.flies.model.po.HPoHeader;
 import net.openl10n.flies.model.po.HPoTargetHeader;
-import net.openl10n.flies.model.po.PoUtility;
 import net.openl10n.flies.rest.dto.deprecated.Document;
 import net.openl10n.flies.rest.dto.deprecated.TextFlow;
-import net.openl10n.flies.rest.dto.po.HeaderEntry;
-import net.openl10n.flies.rest.dto.po.PoHeader;
-import net.openl10n.flies.rest.dto.po.PoTargetHeader;
-import net.openl10n.flies.rest.dto.po.PoTargetHeaders;
 
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
@@ -285,13 +279,6 @@ public class HDocument extends AbstractFliesEntity implements IDocumentHistory
       this.obsolete = obsolete;
    }
 
-   public Document toDocument(boolean deep)
-   {
-      if (deep)
-         return toDocument(Integer.MAX_VALUE);
-      else
-         return toDocument(0);
-   }
 
    public void setPoHeader(HPoHeader poHeader)
    {
@@ -318,43 +305,6 @@ public class HDocument extends AbstractFliesEntity implements IDocumentHistory
       return poTargetHeaders;
    }
 
-   public Document toDocument(int levels)
-   {
-      Document doc = new Document(docId, name, path, contentType, revision, locale.getLocaleId());
-      if (levels != 0)
-      {
-         List<TextFlow> docResources = doc.getTextFlows();
-         for (HTextFlow hRes : this.getTextFlows())
-         {
-            docResources.add(hRes.toResource(levels));
-         }
-         HPoHeader fromPoHeader = this.getPoHeader();
-         if (fromPoHeader != null)
-         {
-            PoHeader toPoHeader = doc.getOrAddExtension(PoHeader.class);
-            String fromComment = fromPoHeader.getComment() != null ? fromPoHeader.getComment().getComment() : null;
-            toPoHeader.setComment(fromComment);
-            List<HeaderEntry> toEntries = toPoHeader.getEntries();
-            toEntries.addAll(PoUtility.headerToList(fromPoHeader.getEntries()));
-         }
-         Collection<HPoTargetHeader> fromTargetHeaders = this.getPoTargetHeaders().values();
-         if (!fromTargetHeaders.isEmpty())
-         {
-            PoTargetHeaders toTargetHeaders = doc.getOrAddExtension(PoTargetHeaders.class);
-            for (HPoTargetHeader fromHeader : fromTargetHeaders)
-            {
-               PoTargetHeader toHeader = new PoTargetHeader();
-               String fromComment = fromHeader.getComment() != null ? fromHeader.getComment().getComment() : null;
-               toHeader.setComment(fromComment);
-               List<HeaderEntry> toEntries = toHeader.getEntries();
-               toEntries.addAll(PoUtility.headerToList(fromHeader.getEntries()));
-               toHeader.setTargetLanguage(fromHeader.getTargetLanguage().getLocaleId());
-               toTargetHeaders.getHeaders().add(toHeader);
-            }
-         }
-      }
-      return doc;
-   }
 
    /**
     * Used for debugging

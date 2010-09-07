@@ -3,6 +3,7 @@ package net.openl10n.flies.rest.service;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ import net.openl10n.flies.rest.dto.deprecated.SimpleComment;
 import net.openl10n.flies.rest.dto.deprecated.TextFlow;
 import net.openl10n.flies.rest.dto.deprecated.TextFlowTarget;
 import net.openl10n.flies.rest.dto.deprecated.TextFlowTargets;
+import net.openl10n.flies.rest.dto.po.HeaderEntry;
 import net.openl10n.flies.rest.dto.po.PoHeader;
 import net.openl10n.flies.rest.dto.po.PoTargetHeader;
 import net.openl10n.flies.rest.dto.po.PoTargetHeaders;
@@ -83,6 +85,7 @@ public class DocumentConverter
     */
    public void copy(Document fromDoc, HDocument toHDoc) throws FliesException
    {
+      log.debug("copy Document to HDocument");
       boolean docChanged = false;
       int nextDocRev = 1;
       if (!session.contains(toHDoc))
@@ -102,7 +105,6 @@ public class DocumentConverter
       toHDoc.setName(fromDoc.getName());
       toHDoc.setPath(fromDoc.getPath());
       toHDoc.setContentType(fromDoc.getContentType());
-      log.info("locale:" + fromDoc.getLang());
       toHDoc.setLocale(localeServiceImpl.getSupportedLanguageByLocale(fromDoc.getLang()));
       // toHDoc.setProject(container); // this must be done by the caller
 
@@ -126,6 +128,7 @@ public class DocumentConverter
          if (session.contains(toHDoc))
          {
             // document already exists, see if the resource does too
+            log.debug("get HDocument from database");
             hRes = textFlowDAO.getById(toHDoc, fromRes.getId());
          }
          boolean resChanged = false;
@@ -133,6 +136,7 @@ public class DocumentConverter
          {
             resChanged = true; // this will cause res.revision to be set
             // below
+            log.debug("add HTextFlow");
             hRes = toHDoc.create(fromRes, nextDocRev);
          }
          else
@@ -140,6 +144,7 @@ public class DocumentConverter
             hRes.setObsolete(false);
          }
          hResources.add(hRes);
+         log.debug("add document");
          // session.save(hRes);
 
          resChanged |= copy(fromRes, hRes, nextDocRev);
@@ -282,6 +287,7 @@ public class DocumentConverter
     */
    private boolean copy(TextFlow fromTf, HTextFlow htf, int nextDocRev) throws FliesException
    {
+      log.debug("copy TextFlow to HTextFlow");
       boolean changed = false;
       if (!fromTf.getContent().equals(htf.getContent()))
       {
@@ -361,20 +367,23 @@ public class DocumentConverter
          }
       }
       TextFlowTargets targets = fromTf.getTargets();
+
       if (targets != null)
       {
          for (TextFlowTarget target : targets.getTargets())
          {
             HTextFlowTarget hTarget = null;
+            HLocale hLocale = localeServiceImpl.getSupportedLanguageByLocale(target.getLang());
             if (session.contains(htf))
             {
-               hTarget = textFlowTargetDAO.getByNaturalId(htf, target.getLang());
+               hTarget = textFlowTargetDAO.getByNaturalId(htf, hLocale);
             }
             if (hTarget == null)
             {
                hTarget = new HTextFlowTarget();
-               log.info("locale:" + target.getLang());
-               hTarget.setLocale(localeServiceImpl.getSupportedLanguageByLocale(target.getLang()));
+               hTarget.setLocale(hLocale);
+               log.debug("set locale:" + hTarget.getLocale().getLocaleId());
+
                hTarget.setTextFlow(htf);
                Integer tfRev;
 
@@ -385,6 +394,7 @@ public class DocumentConverter
 
                hTarget.setState(target.getState());
                hTarget.setContent(target.getContent());
+               log.debug("set TextFlowTarget:" + hTarget.getContent());
                copy(target, hTarget, htf);
                hTarget.setTextFlowRevision(tfRev);
             }
@@ -392,7 +402,8 @@ public class DocumentConverter
             {
                copy(target, hTarget, htf);
             }
-            htf.getTargets().put(localeServiceImpl.getSupportedLanguageByLocale(target.getLang()), hTarget);
+            htf.getTargets().put(hTarget.getLocale(), hTarget);
+            log.debug("check HTextFlowTarget:" + htf.getTargets().get(hTarget.getLocale()).getContent());
             InvalidValue[] invalidValues = tftValidator.getInvalidValues(hTarget);
             if (invalidValues.length != 0)
             {
@@ -442,11 +453,11 @@ public class DocumentConverter
 
    private void copy(TextFlowTarget target, HTextFlowTarget hTarget, HTextFlow htf) throws FliesException
    {
+      log.debug("copy textflowtarget to HtextFlowTarget");
       boolean changed = false;
       changed |= !target.getContent().equals(hTarget.getContent());
       hTarget.setContent(target.getContent());
       changed |= !target.getLang().equals(hTarget.getLocale());
-      log.info("locale:" + target.getLang());
       hTarget.setLocale(localeServiceImpl.getSupportedLanguageByLocale(target.getLang()));
       hTarget.setTextFlowRevision(htf.getRevision());
       changed |= !target.getState().equals(hTarget.getState());
@@ -478,6 +489,106 @@ public class DocumentConverter
       // add container relation
       link = new Link(iterationUri, Relationships.DOCUMENT_CONTAINER, MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML);
       doc.getLinks().add(link);
+   }
+
+   public TextFlow copy(HTextFlow htf)
+   {
+      log.debug("copy HTextFlow to TextFlow");
+      TextFlow textFlow = new TextFlow(htf.getResId());
+      HSimpleComment comment = htf.getComment();
+      if (comment != null)
+      {
+         textFlow.getOrAddComment().setValue(comment.getComment());
+      }
+      log.debug("get textflow:" + htf.getContent());
+      textFlow.setContent(htf.getContent());
+      textFlow.setLang(htf.getDocument().getLocale().getLocaleId());
+      textFlow.setRevision(htf.getRevision());
+
+      for (HLocale locale : htf.getTargets().keySet())
+      {
+         log.debug("get textflowtarget locale:" + locale.getLocaleId().getId());
+         log.debug(textFlowDAO.toString());
+         HTextFlowTarget hTextFlowTarget = textFlowTargetDAO.getByNaturalId(htf, locale);
+         if (hTextFlowTarget != null)
+         {
+            TextFlowTarget textFlowTarget = new TextFlowTarget(textFlow, locale.getLocaleId());
+            HSimpleComment tftComment = hTextFlowTarget.getComment();
+            if (tftComment != null)
+            {
+               textFlowTarget.getOrAddComment().setValue(tftComment.getComment());
+            }
+            log.debug("set textflowtarget:" + hTextFlowTarget.getContent());
+            textFlowTarget.setContent(hTextFlowTarget.getContent());
+            textFlowTarget.setResourceRevision(hTextFlowTarget.getTextFlowRevision());
+            textFlowTarget.setState(hTextFlowTarget.getState());
+            textFlow.addTarget(textFlowTarget);
+         }
+      }
+
+      HPotEntryData fromHPotEntryData = htf.getPotEntryData();
+      if (fromHPotEntryData != null)
+      {
+         PotEntryData toPotEntryData = textFlow.getOrAddExtension(PotEntryData.class);
+         toPotEntryData.setId(htf.getResId());
+         toPotEntryData.setContext(fromHPotEntryData.getContext());
+         HSimpleComment extractedComment = fromHPotEntryData.getExtractedComment();
+         toPotEntryData.setExtractedComment(HSimpleComment.toSimpleComment(extractedComment));
+         List<String> toFlags = toPotEntryData.getFlags();
+         toFlags.addAll(PoUtility.splitFlags(fromHPotEntryData.getFlags()));
+         List<String> toReferences = toPotEntryData.getReferences();
+         toReferences.addAll(PoUtility.splitRefs(fromHPotEntryData.getReferences()));
+      }
+
+      return textFlow;
+   }
+
+   public Document copyDocument(HDocument hDoc, int levels)
+   {
+      log.debug("copy hdocument to document");
+      Document doc = new Document(hDoc.getDocId(), hDoc.getName(), hDoc.getPath(), hDoc.getContentType(), hDoc.getRevision(), hDoc.getLocale().getLocaleId());
+      if (levels != 0)
+      {
+         List<TextFlow> docResources = doc.getTextFlows();
+         for (HTextFlow hRes : hDoc.getTextFlows())
+         {
+
+            docResources.add(copy(hRes));
+         }
+         HPoHeader fromPoHeader = hDoc.getPoHeader();
+         if (fromPoHeader != null)
+         {
+            PoHeader toPoHeader = doc.getOrAddExtension(PoHeader.class);
+            String fromComment = fromPoHeader.getComment() != null ? fromPoHeader.getComment().getComment() : null;
+            toPoHeader.setComment(fromComment);
+            List<HeaderEntry> toEntries = toPoHeader.getEntries();
+            toEntries.addAll(PoUtility.headerToList(fromPoHeader.getEntries()));
+         }
+         Collection<HPoTargetHeader> fromTargetHeaders = hDoc.getPoTargetHeaders().values();
+         if (!fromTargetHeaders.isEmpty())
+         {
+            PoTargetHeaders toTargetHeaders = doc.getOrAddExtension(PoTargetHeaders.class);
+            for (HPoTargetHeader fromHeader : fromTargetHeaders)
+            {
+               PoTargetHeader toHeader = new PoTargetHeader();
+               String fromComment = fromHeader.getComment() != null ? fromHeader.getComment().getComment() : null;
+               toHeader.setComment(fromComment);
+               List<HeaderEntry> toEntries = toHeader.getEntries();
+               toEntries.addAll(PoUtility.headerToList(fromHeader.getEntries()));
+               toHeader.setTargetLanguage(fromHeader.getTargetLanguage().getLocaleId());
+               toTargetHeaders.getHeaders().add(toHeader);
+            }
+         }
+      }
+      return doc;
+   }
+
+   public Document copyDocument(HDocument hdoc, boolean deep)
+   {
+      if (deep)
+         return copyDocument(hdoc, Integer.MAX_VALUE);
+      else
+         return copyDocument(hdoc, 0);
    }
 
 }
