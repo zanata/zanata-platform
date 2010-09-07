@@ -190,7 +190,7 @@
 					applied to
 					http://gwteventservice.googlecode.com/svn/!svn/bc/251/trunk/
 				-->
-				<version>1.2.0-20100326.075632-1</version>
+				<version>[1.2.0-20100906.075839-2,1.3.0)</version>
 			</dependency>
 
 			<dependency>

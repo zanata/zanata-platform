@@ -126,7 +126,7 @@
 
 	<servlet-mapping>
 		<servlet-name>EventService</servlet-name>
-		<url-pattern>/webtrans/gwteventservice/*</url-pattern>
+		<url-pattern>/webtrans/gwteventservice</url-pattern>
 	</servlet-mapping>
 
 	<!-- @extra.servlets@ -->
