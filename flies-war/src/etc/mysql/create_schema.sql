@@ -1,4 +1,3 @@
-
     create table HAccount (
         id bigint not null auto_increment,
         creationDate datetime not null,
