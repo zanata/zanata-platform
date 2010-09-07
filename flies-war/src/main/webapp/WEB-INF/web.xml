@@ -14,15 +14,6 @@
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>remoteLoggingService</servlet-name>
-		<servlet-class>com.google.gwt.gen2.logging.server.RemoteLoggingService</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>remoteLoggingService</servlet-name>
-		<url-pattern>/webtrans/logging</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
 		<servlet-name>remoteLoggerServiceImpl</servlet-name>
 		<servlet-class>com.allen_sauer.gwt.log.server.RemoteLoggerServiceImpl</servlet-class>
 	</servlet>

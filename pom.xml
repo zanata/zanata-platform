@@ -2,11 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.fedorahosted.flies</groupId>
+	<groupId>net.openl10n.flies</groupId>
 	<artifactId>root</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<name>Flies Root POM</name>
-	<url>http://flies.fedorahosted.org/</url>
+	<url>http://flies.openl10n.net/</url>
 	<packaging>pom</packaging>
 	<modules>
 		<module>flies-common-api</module>
@@ -39,6 +39,7 @@
 		<tennera.version>0.6</tennera.version>
 		<guava.version>r06</guava.version>
 		<jackson.version>1.5.0</jackson.version>
+		<icu4j.version>4.4.1.1</icu4j.version>
 	</properties>
 
 	<build>
@@ -164,6 +165,13 @@
 				<version>5.9</version>
 				<classifier>jdk15</classifier>
 			</dependency>
+			<dependency>
+			  <groupId>org.easymock</groupId>
+			  <artifactId>easymock</artifactId>
+			  <version>3.0</version>
+			  <scope>test</scope>
+			</dependency>
+
 			<dependency>
 				<groupId>org.hamcrest</groupId>
 				<artifactId>hamcrest-all</artifactId>
@@ -355,6 +363,18 @@
 				<groupId>commons-configuration</groupId>
 				<artifactId>commons-configuration</artifactId>
 				<version>1.6</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>com.ibm.icu</groupId>
+				<artifactId>icu4j</artifactId>
+				<version>${icu4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.ibm.icu</groupId>
+				<artifactId>icu4j</artifactId>
+				<classifier>sources</classifier>
+				<version>${icu4j.version}</version>
 			</dependency>
 
 		</dependencies>

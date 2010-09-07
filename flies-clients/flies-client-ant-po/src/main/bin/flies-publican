@@ -75,7 +75,7 @@ then
   REPO="$BASEDIR"/repo
 fi
 
-CLASSPATH="$BASEDIR"/org/fedorahosted/flies/flies-client-ant-po/1.0-SNAPSHOT/flies-client-ant-po-1.0-SNAPSHOT.jar
+CLASSPATH="$BASEDIR"/net/openl10n/flies/flies-client-ant-po/1.0-SNAPSHOT/flies-client-ant-po-1.0-SNAPSHOT.jar
 EXTRA_JVM_ARGUMENTS=""
 
 # For Cygwin, switch paths to Windows format before running java
@@ -94,5 +94,5 @@ exec "$JAVACMD" $JAVA_OPTS \
   -Dapp.pid="$$" \
   -Dapp.repo="$REPO" \
   -Dbasedir="$BASEDIR" \
-  org.fedorahosted.flies.client.ant.po.PoTool \
+  net.openl10n.flies.client.ant.po.PoTool \
   "$@"

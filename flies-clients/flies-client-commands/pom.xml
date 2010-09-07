@@ -4,21 +4,21 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>flies-clients</artifactId>
-    <groupId>org.fedorahosted.flies</groupId>
+    <groupId>net.openl10n.flies</groupId>
     <version>1.0-SNAPSHOT</version>
   </parent>
-  <groupId>org.fedorahosted.flies</groupId>
+  <groupId>net.openl10n.flies</groupId>
   <artifactId>flies-client-commands</artifactId>
   <name>flies-client-commands</name>
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
-        <groupId>org.fedorahosted.flies</groupId>
+        <groupId>net.openl10n.flies</groupId>
         <artifactId>flies-adapter-po</artifactId>
         <version>${project.version}</version>
     </dependency>
     <dependency>
-        <groupId>org.fedorahosted.flies</groupId>
+        <groupId>net.openl10n.flies</groupId>
         <artifactId>flies-rest-client</artifactId>
         <version>${project.version}</version>
     </dependency>

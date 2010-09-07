@@ -6,7 +6,7 @@
 	<name>Flies Rest client</name>
 	<parent>
 		<artifactId>root</artifactId>
-		<groupId>org.fedorahosted.flies</groupId>
+		<groupId>net.openl10n.flies</groupId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 	<packaging>jar</packaging>
@@ -14,7 +14,7 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>org.fedorahosted.flies</groupId>
+			<groupId>net.openl10n.flies</groupId>
 			<artifactId>flies-common-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>

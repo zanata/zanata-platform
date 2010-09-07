@@ -25,15 +25,6 @@
         primary key (accountId, memberOf)
     ) ENGINE=InnoDB;
 
-    create table HAccountPermission (
-        permissionId integer not null auto_increment,
-        action varchar(255) binary,
-        discriminator varchar(255) binary,
-        recipient varchar(255) binary,
-        target varchar(255) binary,
-        primary key (permissionId)
-    ) ENGINE=InnoDB;
-
     create table HAccountResetPasswordKey (
         keyHash varchar(32) binary not null,
         accountId bigint not null,
@@ -80,15 +71,15 @@
     ) ENGINE=InnoDB;
 
     create table HCommunity_Member (
-        communityId bigint not null,
         personId bigint not null,
-        primary key (personId, communityId)
+        communityId bigint not null,
+        primary key (communityId, personId)
     ) ENGINE=InnoDB;
 
     create table HCommunity_Officer (
-        communityId bigint not null,
         personId bigint not null,
-        primary key (personId, communityId)
+        communityId bigint not null,
+        primary key (communityId, personId)
     ) ENGINE=InnoDB;
 
     create table HDocument (
@@ -124,18 +115,6 @@
         last_modified_by_id bigint,
         primary key (id),
         unique (document_id, revision)
-    ) ENGINE=InnoDB;
-
-    create table HFliesLocale (
-        id varchar(80) binary not null,
-        icuLocaleId varchar(255) binary not null,
-        parentId varchar(80) binary,
-        primary key (id)
-    ) ENGINE=InnoDB;
-
-    create table HFliesLocale_Friends (
-        localeId varchar(80) binary not null,
-        friendId varchar(80) binary not null
     ) ENGINE=InnoDB;
 
     create table HPerson (
@@ -227,6 +206,23 @@
         primary key (id)
     ) ENGINE=InnoDB;
 
+    create table HSupportedLanguage (
+        id bigint not null auto_increment,
+        creationDate datetime not null,
+        lastChanged datetime not null,
+        versionNum integer not null,
+        active bit not null,
+        localeId varchar(255) binary not null,
+        primary key (id),
+        unique (localeId)
+    ) ENGINE=InnoDB;
+
+    create table HSupportedLanguage_Member (
+        personId bigint not null,
+        supportedLanguageId bigint not null,
+        primary key (supportedLanguageId, personId)
+    ) ENGINE=InnoDB;
+
     create table HTextFlow (
         id bigint not null auto_increment,
         content longtext not null,
@@ -281,295 +277,230 @@
         unique (target_id, versionNum)
     ) ENGINE=InnoDB;
 
-    create table HTribe (
-        id bigint not null auto_increment,
-        creationDate datetime not null,
-        lastChanged datetime not null,
-        versionNum integer not null,
-        chiefId bigint,
-        localeId varchar(80) binary not null,
-        primary key (id),
-        unique (localeId)
-    ) ENGINE=InnoDB;
-
-    create table HTribe_Leader (
-        personId bigint not null,
-        tribeId bigint not null,
-        primary key (tribeId, personId)
-    ) ENGINE=InnoDB;
-
-    create table HTribe_Member (
-        personId bigint not null,
-        tribeId bigint not null,
-        primary key (tribeId, personId)
-    ) ENGINE=InnoDB;
-
     alter table HAccountActivationKey 
-        add index FK86E79CA44A0EDB13 (accountId), 
-        add constraint FK86E79CA44A0EDB13 
+        add index FK86E79CA4FA68C45F (accountId), 
+        add constraint FK86E79CA4FA68C45F 
         foreign key (accountId) 
         references HAccount (id);
 
     alter table HAccountMembership 
-        add index FK9D5DB27B8AFBEC12 (memberOf), 
-        add constraint FK9D5DB27B8AFBEC12 
+        add index FK9D5DB27B3E684F5E (memberOf), 
+        add constraint FK9D5DB27B3E684F5E 
         foreign key (memberOf) 
         references HAccountRole (id);
 
     alter table HAccountMembership 
-        add index FK9D5DB27B4A0EDB13 (accountId), 
-        add constraint FK9D5DB27B4A0EDB13 
+        add index FK9D5DB27BFA68C45F (accountId), 
+        add constraint FK9D5DB27BFA68C45F 
         foreign key (accountId) 
         references HAccount (id);
 
     alter table HAccountResetPasswordKey 
-        add index FK85C9EFDA4A0EDB13 (accountId), 
-        add constraint FK85C9EFDA4A0EDB13 
+        add index FK85C9EFDAFA68C45F (accountId), 
+        add constraint FK85C9EFDAFA68C45F 
         foreign key (accountId) 
         references HAccount (id);
 
     alter table HAccountRoleGroup 
-        add index FK3321CC648AFBEC12 (memberOf), 
-        add constraint FK3321CC648AFBEC12 
+        add index FK3321CC643E684F5E (memberOf), 
+        add constraint FK3321CC643E684F5E 
         foreign key (memberOf) 
         references HAccountRole (id);
 
     alter table HAccountRoleGroup 
-        add index FK3321CC647A88DA32 (roleId), 
-        add constraint FK3321CC647A88DA32 
+        add index FK3321CC642DF53D7E (roleId), 
+        add constraint FK3321CC642DF53D7E 
         foreign key (roleId) 
         references HAccountRole (id);
 
     alter table HCommunity 
-        add index FKD3DF20814C1F95C5 (ownerId), 
-        add constraint FKD3DF20814C1F95C5 
+        add index FKD3DF208177D52F9 (ownerId), 
+        add constraint FKD3DF208177D52F9 
         foreign key (ownerId) 
         references HPerson (id);
 
     alter table HCommunity_Member 
-        add index FK8BEBF038A5679DE7 (personId), 
-        add constraint FK8BEBF038A5679DE7 
+        add index FK8BEBF03860C55B1B (personId), 
+        add constraint FK8BEBF03860C55B1B 
         foreign key (personId) 
         references HPerson (id);
 
     alter table HCommunity_Member 
-        add index FK8BEBF038ADFEE80B (communityId), 
-        add constraint FK8BEBF038ADFEE80B 
+        add index FK8BEBF038AF83AE57 (communityId), 
+        add constraint FK8BEBF038AF83AE57 
         foreign key (communityId) 
         references HCommunity (id);
 
     alter table HCommunity_Officer 
-        add index FK5CB3E758A5679DE7 (personId), 
-        add constraint FK5CB3E758A5679DE7 
+        add index FK5CB3E75860C55B1B (personId), 
+        add constraint FK5CB3E75860C55B1B 
         foreign key (personId) 
         references HPerson (id);
 
     alter table HCommunity_Officer 
-        add index FK5CB3E758ADFEE80B (communityId), 
-        add constraint FK5CB3E758ADFEE80B 
+        add index FK5CB3E758AF83AE57 (communityId), 
+        add constraint FK5CB3E758AF83AE57 
         foreign key (communityId) 
         references HCommunity (id);
 
     alter table HDocument 
-        add index FKEA766D83B13DF08D (last_modified_by_id), 
-        add constraint FKEA766D83B13DF08D 
+        add index FKEA766D836C9BADC1 (last_modified_by_id), 
+        add constraint FKEA766D836C9BADC1 
         foreign key (last_modified_by_id) 
         references HPerson (id);
 
     alter table HDocument 
-        add index FKEA766D835063A1C9 (project_iteration_id), 
-        add constraint FKEA766D835063A1C9 
+        add index FKEA766D8351ED6DFD (project_iteration_id), 
+        add constraint FKEA766D8351ED6DFD 
         foreign key (project_iteration_id) 
         references HProjectIteration (id);
 
     alter table HDocument 
-        add index FKEA766D8360005CD9 (poHeader_id), 
-        add constraint FKEA766D8360005CD9 
+        add index FKEA766D83136CC025 (poHeader_id), 
+        add constraint FKEA766D83136CC025 
         foreign key (poHeader_id) 
         references HPoHeader (id);
 
     alter table HDocumentHistory 
-        add index FK27976591F8A0A2BC (document_id), 
-        add constraint FK27976591F8A0A2BC 
+        add index FK279765915383E2F0 (document_id), 
+        add constraint FK279765915383E2F0 
         foreign key (document_id) 
         references HDocument (id);
 
     alter table HDocumentHistory 
-        add index FK27976591B13DF08D (last_modified_by_id), 
-        add constraint FK27976591B13DF08D 
+        add index FK279765916C9BADC1 (last_modified_by_id), 
+        add constraint FK279765916C9BADC1 
         foreign key (last_modified_by_id) 
         references HPerson (id);
 
-    alter table HFliesLocale 
-        add index FK6CAF0A33D884B2E (parentId), 
-        add constraint FK6CAF0A33D884B2E 
-        foreign key (parentId) 
-        references HFliesLocale (id);
-
-    alter table HFliesLocale_Friends 
-        add index FKF87125D9A2AAA022 (friendId), 
-        add constraint FKF87125D9A2AAA022 
-        foreign key (friendId) 
-        references HFliesLocale (id);
-
-    alter table HFliesLocale_Friends 
-        add index FKF87125D968C8A4DE (localeId), 
-        add constraint FKF87125D968C8A4DE 
-        foreign key (localeId) 
-        references HFliesLocale (id);
-
     alter table HPerson 
-        add index FK6F0931BD4A0EDB13 (accountId), 
-        add constraint FK6F0931BD4A0EDB13 
+        add index FK6F0931BDFA68C45F (accountId), 
+        add constraint FK6F0931BDFA68C45F 
         foreign key (accountId) 
         references HAccount (id);
 
     alter table HPoHeader 
-        add index FK9A0ABDD4F8A0A2BC (document_id), 
-        add constraint FK9A0ABDD4F8A0A2BC 
+        add index FK9A0ABDD45383E2F0 (document_id), 
+        add constraint FK9A0ABDD45383E2F0 
         foreign key (document_id) 
         references HDocument (id);
 
     alter table HPoHeader 
-        add index FK9A0ABDD42DC34DA6 (comment_id), 
-        add constraint FK9A0ABDD42DC34DA6 
+        add index FK9A0ABDD4B7A40DF2 (comment_id), 
+        add constraint FK9A0ABDD4B7A40DF2 
         foreign key (comment_id) 
         references HSimpleComment (id);
 
     alter table HPoTargetHeader 
-        add index FK1BC71985F8A0A2BC (document_id), 
-        add constraint FK1BC71985F8A0A2BC 
+        add index FK1BC719855383E2F0 (document_id), 
+        add constraint FK1BC719855383E2F0 
         foreign key (document_id) 
         references HDocument (id);
 
     alter table HPoTargetHeader 
-        add index FK1BC719852DC34DA6 (comment_id), 
-        add constraint FK1BC719852DC34DA6 
+        add index FK1BC71985B7A40DF2 (comment_id), 
+        add constraint FK1BC71985B7A40DF2 
         foreign key (comment_id) 
         references HSimpleComment (id);
 
     alter table HPotEntryData 
-        add index FK17A648CF2DC34DA6 (comment_id), 
-        add constraint FK17A648CF2DC34DA6 
+        add index FK17A648CFB7A40DF2 (comment_id), 
+        add constraint FK17A648CFB7A40DF2 
         foreign key (comment_id) 
         references HSimpleComment (id);
 
     alter table HPotEntryData 
-        add index FK17A648CF71CA5CE5 (tf_id), 
-        add constraint FK17A648CF71CA5CE5 
+        add index FK17A648CFCCAD9D19 (tf_id), 
+        add constraint FK17A648CFCCAD9D19 
         foreign key (tf_id) 
         references HTextFlow (id);
 
     alter table HProjectIteration 
-        add index FK31C1E42C4A451E5F (project_id), 
-        add constraint FK31C1E42C4A451E5F 
+        add index FK31C1E42C4BCEEA93 (project_id), 
+        add constraint FK31C1E42C4BCEEA93 
         foreign key (project_id) 
         references HProject (id);
 
     alter table HProjectIteration 
-        add index FK31C1E42C59934BEB (parentId), 
-        add constraint FK31C1E42C59934BEB 
+        add index FK31C1E42C5B1D181F (parentId), 
+        add constraint FK31C1E42C5B1D181F 
         foreign key (parentId) 
         references HProjectIteration (id);
 
     alter table HProject_Maintainer 
-        add index FK1491F2E6A5679DE7 (personId), 
-        add constraint FK1491F2E6A5679DE7 
+        add index FK1491F2E660C55B1B (personId), 
+        add constraint FK1491F2E660C55B1B 
         foreign key (personId) 
         references HPerson (id);
 
     alter table HProject_Maintainer 
-        add index FK1491F2E6B55BD1EB (projectId), 
-        add constraint FK1491F2E6B55BD1EB 
+        add index FK1491F2E665B5BB37 (projectId), 
+        add constraint FK1491F2E665B5BB37 
         foreign key (projectId) 
         references HProject (id);
 
+    alter table HSupportedLanguage_Member 
+        add index FK7097EB5B60C55B1B (personId), 
+        add constraint FK7097EB5B60C55B1B 
+        foreign key (personId) 
+        references HPerson (id);
+
+    alter table HSupportedLanguage_Member 
+        add index FK7097EB5B68E40971 (supportedLanguageId), 
+        add constraint FK7097EB5B68E40971 
+        foreign key (supportedLanguageId) 
+        references HSupportedLanguage (id);
+
     alter table HTextFlow 
-        add index FK7B40F863F8A0A2BC (document_id), 
-        add constraint FK7B40F863F8A0A2BC 
+        add index FK7B40F8635383E2F0 (document_id), 
+        add constraint FK7B40F8635383E2F0 
         foreign key (document_id) 
         references HDocument (id);
 
     alter table HTextFlow 
-        add index FK7B40F863F8DC9359 (potEntryData_id), 
-        add constraint FK7B40F863F8DC9359 
+        add index FK7B40F8638D8E70A5 (potEntryData_id), 
+        add constraint FK7B40F8638D8E70A5 
         foreign key (potEntryData_id) 
         references HPotEntryData (id);
 
     alter table HTextFlow 
-        add index FK7B40F8632DC34DA6 (comment_id), 
-        add constraint FK7B40F8632DC34DA6 
+        add index FK7B40F863B7A40DF2 (comment_id), 
+        add constraint FK7B40F863B7A40DF2 
         foreign key (comment_id) 
         references HSimpleComment (id);
 
     alter table HTextFlowHistory 
-        add index FK46C4DEB171CA5CE5 (tf_id), 
-        add constraint FK46C4DEB171CA5CE5 
+        add index FK46C4DEB1CCAD9D19 (tf_id), 
+        add constraint FK46C4DEB1CCAD9D19 
         foreign key (tf_id) 
         references HTextFlow (id);
 
     alter table HTextFlowTarget 
-        add index FK1E933FD4B13DF08D (last_modified_by_id), 
-        add constraint FK1E933FD4B13DF08D 
+        add index FK1E933FD46C9BADC1 (last_modified_by_id), 
+        add constraint FK1E933FD46C9BADC1 
         foreign key (last_modified_by_id) 
         references HPerson (id);
 
     alter table HTextFlowTarget 
-        add index FK1E933FD42DC34DA6 (comment_id), 
-        add constraint FK1E933FD42DC34DA6 
+        add index FK1E933FD4B7A40DF2 (comment_id), 
+        add constraint FK1E933FD4B7A40DF2 
         foreign key (comment_id) 
         references HSimpleComment (id);
 
     alter table HTextFlowTarget 
-        add index FK1E933FD471CA5CE5 (tf_id), 
-        add constraint FK1E933FD471CA5CE5 
+        add index FK1E933FD4CCAD9D19 (tf_id), 
+        add constraint FK1E933FD4CCAD9D19 
         foreign key (tf_id) 
         references HTextFlow (id);
 
     alter table HTextFlowTargetHistory 
-        add index FKF1098620B13DF08D (last_modified_by_id), 
-        add constraint FKF1098620B13DF08D 
+        add index FKF10986206C9BADC1 (last_modified_by_id), 
+        add constraint FKF10986206C9BADC1 
         foreign key (last_modified_by_id) 
         references HPerson (id);
 
     alter table HTextFlowTargetHistory 
-        add index FKF1098620CE3B3557 (target_id), 
-        add constraint FKF1098620CE3B3557 
+        add index FKF109862080727E8B (target_id), 
+        add constraint FKF109862080727E8B 
         foreign key (target_id) 
         references HTextFlowTarget (id);
-
-    alter table HTribe 
-        add index FK7FB20BC6B7757AD7 (chiefId), 
-        add constraint FK7FB20BC6B7757AD7 
-        foreign key (chiefId) 
-        references HPerson (id);
-
-    alter table HTribe 
-        add index FK7FB20BC668C8A4DE (localeId), 
-        add constraint FK7FB20BC668C8A4DE 
-        foreign key (localeId) 
-        references HFliesLocale (id);
-
-    alter table HTribe_Leader 
-        add index FK20177C2A5679DE7 (personId), 
-        add constraint FK20177C2A5679DE7 
-        foreign key (personId) 
-        references HPerson (id);
-
-    alter table HTribe_Leader 
-        add index FK20177C2EED54855 (tribeId), 
-        add constraint FK20177C2EED54855 
-        foreign key (tribeId) 
-        references HTribe (id);
-
-    alter table HTribe_Member 
-        add index FK3BBBD53A5679DE7 (personId), 
-        add constraint FK3BBBD53A5679DE7 
-        foreign key (personId) 
-        references HPerson (id);
-
-    alter table HTribe_Member 
-        add index FK3BBBD53EED54855 (tribeId), 
-        add constraint FK3BBBD53EED54855 
-        foreign key (tribeId) 
-        references HTribe (id);

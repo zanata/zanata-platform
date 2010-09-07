@@ -70,6 +70,14 @@
     </navigation>
   </page>
 
+  <page view-id="/admin/supportedlanguagedetail.xhtml">
+    <navigation from-action="#{languageManagerAction.save}">
+      <rule if-outcome="success">
+        <redirect view-id="/admin/languagemanager.xhtml" />
+      </rule>
+    </navigation>
+  </page>
+
   <page view-id="/admin/rolemanager.xhtml" action="#{roleSearch.loadRoles}">
     <restrict>#{s:hasPermission('seam.role', 'read')}</restrict>
     <navigation from-action="#{roleAction.createRole}">
@@ -103,6 +111,8 @@
       <redirect view-id="/admin/home.xhtml" />
     </navigation>
   </page>
+  
+  <page view-id="/admin/languagemanager.xhtml" action="#{languageSearchAction.loadSupportedLanguage}" />
 
   <!-- Community -->
 
@@ -230,13 +240,13 @@
   <!-- Language -->
 
   <page view-id="/language/language.xhtml">
-    <param name="id" value="#{tribeHome.id}" />
-    <action execute="#{tribeHome.validateSuppliedId}" />
+    <param name="id" value="#{languageTeamAction.language}" />
+    <action execute="#{languageTeamAction.getLocale()}" />
   </page>
 
   <!-- Exceptions -->
 
-  <exception class="org.fedorahosted.flies.security.KeyNotFoundException"
+  <exception class="net.openl10n.flies.security.KeyNotFoundException"
     log-level="debug">
     <redirect view-id="/error.xhtml">
       <message severity="error">#{messages['jsf.InvalidActivationKey']}</message>

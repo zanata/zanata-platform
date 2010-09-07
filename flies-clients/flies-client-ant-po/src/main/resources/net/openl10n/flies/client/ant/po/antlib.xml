@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<antlib>
+    <taskdef name="uploadpo" 
+        classname="net.openl10n.flies.client.ant.po.UploadPoTask" />
+    <taskdef name="downloadpo" 
+        classname="net.openl10n.flies.client.ant.po.DownloadPoTask" />
+</antlib>

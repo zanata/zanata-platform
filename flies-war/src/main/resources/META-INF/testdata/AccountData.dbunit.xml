@@ -77,99 +77,99 @@
 		/>
 
 		<!-- de-DE -->
-        <HTribe_Member 
-        	tribeId="3"
+        <HSupportedLanguage_Member 
+        	supportedLanguageId="3"
         	personId="1"
         />
 		<!-- es-ES -->
-        <HTribe_Member 
-        	tribeId="5"
+        <HSupportedLanguage_Member 
+        	supportedLanguageId="5"
         	personId="1"
         />
 		<!-- fr-FR -->
-        <HTribe_Member 
-        	tribeId="6"
+        <HSupportedLanguage_Member 
+        	supportedLanguageId="6"
         	personId="1"
         />
 		<!-- ja-JP -->
-        <HTribe_Member 
-        	tribeId="10"
+        <HSupportedLanguage_Member 
+        	supportedLanguageId="10"
         	personId="1"
         />
 		<!-- pt-BR -->
-        <HTribe_Member 
-        	tribeId="17"
+        <HSupportedLanguage_Member 
+        	supportedLanguageId="17"
         	personId="1"
         />
 		<!-- zh-CN -->
-        <HTribe_Member 
-        	tribeId="22"
+        <HSupportedLanguage_Member 
+        	supportedLanguageId="22"
         	personId="1"
         />
 		<!-- zh-TW -->
-        <HTribe_Member 
-        	tribeId="23"
+        <HSupportedLanguage_Member 
+        	supportedLanguageId="23"
         	personId="1"
         />
 <!--  
-        <HTribe_Member 
-        	tribeId="1"
+        <HSupportedLanguage_Member 
+        	supportedLanguageId="1"
         	personId="1"
         />
-        <HTribe_Member 
-        	tribeId="2"
+        <HSupportedLanguage_Member 
+        	supportedLanguageId="2"
         	personId="1"
         />
-        <HTribe_Member 
-        	tribeId="4"
+        <HSupportedLanguage_Member 
+        	supportedLanguageId="4"
         	personId="1"
         />
-        <HTribe_Member 
-        	tribeId="7"
+        <HSupportedLanguage_Member 
+        	supportedLanguageId="7"
         	personId="1"
         />
-        <HTribe_Member 
-        	tribeId="8"
+        <HSupportedLanguage_Member 
+        	supportedLanguageId="8"
         	personId="1"
         />
-        <HTribe_Member 
-        	tribeId="9"
+        <HSupportedLanguage_Member 
+        	supportedLanguageId="9"
         	personId="1"
         />
-        <HTribe_Member 
-        	tribeId="12"
+        <HSupportedLanguage_Member 
+        	supportedLanguageId="12"
         	personId="1"
         />
-        <HTribe_Member 
-        	tribeId="13"
+        <HSupportedLanguage_Member 
+        	supportedLanguageId="13"
         	personId="1"
         />
-        <HTribe_Member 
-        	tribeId="14"
+        <HSupportedLanguage_Member 
+        	supportedLanguageId="14"
         	personId="1"
         />
-        <HTribe_Member 
-        	tribeId="15"
+        <HSupportedLanguage_Member 
+        	supportedLanguageId="15"
         	personId="1"
         />
-        <HTribe_Member 
-        	tribeId="16"
+        <HSupportedLanguage_Member 
+        	supportedLanguageId="16"
         	personId="1"
         />
-        <HTribe_Member 
-        	tribeId="18"
+        <HSupportedLanguage_Member 
+        	supportedLanguageId="18"
         	personId="1"
         />
-        <HTribe_Member 
-        	tribeId="19"
+        <HSupportedLanguage_Member 
+        	supportedLanguageId="19"
         	personId="1"
         />
-        <HTribe_Member 
-        	tribeId="20"
+        <HSupportedLanguage_Member 
+        	supportedLanguageId="20"
         	personId="1"
         />
-        <HTribe_Member 
-        	tribeId="21"
+        <HSupportedLanguage_Member 
+        	supportedLanguageId="21"
         	personId="1"
         />
 -->

@@ -1,0 +1,74 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	template="../WEB-INF/layout/template.xhtml">
+
+	<ui:define name="left_content">
+		<s:link view="/admin/supportedlanguagedetail.xhtml"
+			value="#{messages['jsf.CreateSupportedLanguage']}" />
+	</ui:define>
+
+	<ui:define name="center_content">
+
+		<script type="text/javascript">
+        function confirmDelete()
+        {
+          return confirm("#{messages['jsf.AreYouSureYouWishToDeleteThisLanguageThisActionCannotBeUndone']}");
+        }
+        function confirmDisable()
+        {
+          return confirm("#{messages['jsf.AreYouSureYouWishToDisableThisLanguage']}");
+        }
+        function confirmEnable()
+        {
+          return confirm("#{messages['jsf.AreYouSureYouWishToEnableThisLanguage']}");
+        }
+      </script>
+		<rich:panel>
+			<f:facet name="header">#{messages['jsf.LanguageManager']}</f:facet>
+
+			<h:form>
+				<s:token allowMultiplePosts="true" />
+				<rich:dataTable id="threads" value="#{allLanguages}"
+					var="language">
+
+					<rich:column sortBy="#{language.localeId.id}">
+						<f:facet name="header">#{messages['jsf.Language']}</f:facet>
+	            		#{language.localeId.id}
+	        		</rich:column>
+					<rich:column sortBy="#{language.uLocale.displayName}">
+						<f:facet name="header">#{messages['jsf.Name']}</f:facet>
+	            		#{language.uLocale.displayName}
+	        		</rich:column>
+					<rich:column sortBy="#{language.uLocale.variant}">
+						<f:facet name="header">#{messages['jsf.Variant']}</f:facet>
+	            		#{language.uLocale.variant}
+	        		</rich:column>
+					<rich:column >
+						<f:facet name="header">#{messages['jsf.NativeName']}</f:facet>
+	            		#{language.uLocale.getDisplayName(language.uLocale)}
+	        		</rich:column>
+					<rich:column rendered="#{language.active}">
+						<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+						<h:commandLink value="#{messages['jsf.Disabled']}"
+							action="#{languageSearchAction.disable(languageSearchAction.selectedLanguage)}"
+							onclick="return confirmDisable()" />
+					</rich:column>
+					<rich:column rendered="#{!language.active}">
+						<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+						<h:commandLink value="#{messages['jsf.Enabled']}"
+							action="#{languageSearchAction.enable(languageSearchAction.selectedLanguage)}"
+							onclick="return confirmEnable()" />
+					</rich:column>
+				</rich:dataTable>
+			</h:form>
+		</rich:panel>
+	</ui:define>
+
+</ui:composition>

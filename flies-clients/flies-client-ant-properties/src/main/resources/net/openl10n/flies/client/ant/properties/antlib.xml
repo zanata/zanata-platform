@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<antlib>
+    <taskdef name="docs2props" 
+        classname="net.openl10n.flies.client.ant.properties.Docs2PropsTask" />
+    <taskdef name="props2docs" 
+        classname="net.openl10n.flies.client.ant.properties.Props2DocsTask" />
+</antlib>

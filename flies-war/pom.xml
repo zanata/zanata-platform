@@ -4,7 +4,7 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.fedorahosted.flies</groupId>
+		<groupId>net.openl10n.flies</groupId>
 		<artifactId>root</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
@@ -15,6 +15,7 @@
 	<properties>
 		<jboss.embedded.version>beta3.SP12</jboss.embedded.version>
 		<nukes.security.version>1.0</nukes.security.version>
+		<mosaic.version>0.4.0-rc4</mosaic.version>
 		<!-- application properties -->
 
 		<env.debug>false</env.debug>
@@ -324,6 +325,7 @@
 					<plugin>
 						<groupId>org.codehaus.cargo</groupId>
 						<artifactId>cargo-maven2-plugin</artifactId>
+						<version>1.0.3</version>
 						<executions>
 							<execution>
 								<phase>package</phase>
@@ -576,7 +578,7 @@
 			<id>mysql</id>
 			<properties>
 				<env.dbunit.type>MYSQL</env.dbunit.type>
-				<ds.hibernate.dialect>org.fedorahosted.flies.FliesMySQL5InnoDBDialect</ds.hibernate.dialect>
+				<ds.hibernate.dialect>net.openl10n.flies.FliesMySQL5InnoDBDialect</ds.hibernate.dialect>
 				<ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
 				<ds.connection.url>jdbc:mysql://localhost:3306/flies?characterEncoding=UTF-8</ds.connection.url>
 				<ds.user.name>root</ds.user.name>
@@ -776,7 +778,7 @@
 		<!-- Flies-specific dependencies -->
 
 		<dependency>
-			<groupId>org.fedorahosted.flies</groupId>
+			<groupId>net.openl10n.flies</groupId>
 			<artifactId>flies-common-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -966,9 +968,8 @@
 		<dependency>
 			<groupId>com.ibm.icu</groupId>
 			<artifactId>icu4j</artifactId>
-			<version>4.0.1</version>
 		</dependency>
-
+		
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
@@ -1075,7 +1076,7 @@
 		<!--  Testing dependencies -->
 
 		<dependency>
-			<groupId>org.fedorahosted.flies</groupId>
+			<groupId>net.openl10n.flies</groupId>
 			<artifactId>flies-rest-client</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
@@ -1132,6 +1133,11 @@
 		</dependency>
 
 		<dependency>
+		  <groupId>org.easymock</groupId>
+		  <artifactId>easymock</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
 			<classifier>jdk15</classifier>
@@ -1159,6 +1165,31 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.googlecode.gwtmosaic</groupId>
+			<artifactId>gwt-mosaic</artifactId>
+			<version>${mosaic.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+        <dependency>
+            <groupId>com.googlecode.gwtmosaic</groupId>
+            <artifactId>gwt-beans-binding</artifactId>
+            <version>${mosaic.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.googlecode.gwtmosaic</groupId>
+            <artifactId>gwt-dnd</artifactId>
+            <version>${mosaic.version}</version>
+        </dependency>
+               
+        <dependency>
+            <groupId>com.googlecode.gwtmosaic</groupId>
+            <artifactId>gwtx</artifactId>
+            <version>${mosaic.version}</version>
+        </dependency>
+
+		<dependency>
 			<!-- needed for GWT compilation of JAXB annotated classes -->
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
@@ -1168,9 +1199,10 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-incubator</artifactId>
-			<version>2.0.1</version>
+			<!-- for gwt compilation -->
+			<groupId>com.ibm.icu</groupId>
+			<artifactId>icu4j</artifactId>
+			<classifier>sources</classifier>
 			<scope>provided</scope>
 		</dependency>
 

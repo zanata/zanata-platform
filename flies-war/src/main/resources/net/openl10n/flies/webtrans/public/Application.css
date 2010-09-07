@@ -1,0 +1,122 @@
+/** Add css rules here for your application. */
+
+body {
+	background-color: #f8f9fa;
+}
+
+/*
+Removes some of the styling on the page-level splitters
+*/
+.PageSplitLayoutPanel>div>div.gwt-SplitLayoutPanel-HDragger {
+	background: none;
+}
+.PageSplitLayoutPanel>div>div.gwt-SplitLayoutPanel-VDragger {
+	background: none;
+}
+
+.float-right-div {
+	float: right;
+}
+
+td.TableEditorCell {
+    border: 1px solid #cccccc;
+	vertical-align: top;
+}
+
+
+.TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Source{
+	background: url(tu_bg_fuzzy_left.png) repeat-y left;
+}
+.TableEditor tr.NewStateDecoration td.TableEditorCell-Source{
+	background: url(tu_bg_new_left.png) repeat-y left;
+}
+.TableEditor tr.ApprovedStateDecoration td.TableEditorCell-Source{
+	background: url(tu_bg_approved_left.png) repeat-y left;
+}
+.TableEditor tr.ErrorStateDecoration td.TableEditorCell-Source{
+    background: url(tu_bg_error_left.png) repeat-y left;
+}
+.TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Target{
+	background: url(tu_bg_fuzzy_right.png) repeat-y right;
+}
+.TableEditor tr.NewStateDecoration td.TableEditorCell-Target{
+	background: url(tu_bg_new_right.png) repeat-y right;
+}
+.TableEditor tr.ApprovedStateDecoration td.TableEditorCell-Target{
+	background: url(tu_bg_approved_right.png) repeat-y right;
+}
+.TableEditor tr.ErrorStateDecoration td.TableEditorCell-Target{
+    background: url(tu_bg_error_right.png) repeat-y right;
+}
+
+tr.TableEditorRow.selected td.TableEditorCell {
+  border: 1px solid #000000;
+}
+
+
+tr.TableEditorRow.highlighted td.TableEditorCell {
+  border: 1px solid #000000;
+}
+
+tr.TableEditorRow.highlighted td.TableEditorCell-Source {  
+}
+tr.TableEditorRow.highlighted td.TableEditorCell-Target {
+	cursor: hand;
+}
+tr.TableEditorRow td.TableEditorCell-Copy button{
+	display: none;
+}
+tr.TableEditorRow.highlighted td.TableEditorCell-Copy button{
+	display: inline;
+}
+
+tr.TableEditorRow.even-row {
+	background-color: #ffffff;
+}
+tr.TableEditorRow.odd-row {
+	background-color: #ffffff;
+}
+
+
+tr.TableEditorRow.content-filter{
+}
+
+tr.TableEditorRow.content-filter-match{
+}
+
+tr.TableEditorRow.content-filter-nomatch{
+	filter:alpha(opacity=25);
+	-moz-opacity:0.25;
+	-khtml-opacity: 0.25;
+	opacity: 0.25;
+}
+
+tr.TableEditorRow.selected td {
+  background: #C3D9FF;
+}
+
+.TableEditorContent, .TableEditorContent-Edit {
+	font-size: 14px;
+	font-family: sans-serif;
+	padding: 3px;
+	margin: 2px;
+	border: none;
+	background: transparent;
+}
+
+.Severity-Error {
+	background-color: #ffcccc; 
+}
+.Severity-Info {
+	background-color: #eeeeff; 
+}
+.Severity-Warning {
+	background-color: #ffffcc; 
+}
+
+/* TransMemoryView */
+.TransMemoryTableColumnHeader {
+	color: Blue;
+	font-style: normal;
+	font-weight: bold
+}

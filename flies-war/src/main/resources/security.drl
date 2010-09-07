@@ -1,11 +1,11 @@
 package FliesPermissions;
 
 import java.security.Principal;
-import org.fedorahosted.flies.model.HAccount;
-import org.fedorahosted.flies.model.HCommunity;
-import org.fedorahosted.flies.model.HPerson;
-import org.fedorahosted.flies.model.HProject;
-import org.fedorahosted.flies.model.HProjectIteration;
+import net.openl10n.flies.model.HAccount;
+import net.openl10n.flies.model.HCommunity;
+import net.openl10n.flies.model.HPerson;
+import net.openl10n.flies.model.HProject;
+import net.openl10n.flies.model.HProjectIteration;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.Role;
 import org.jboss.seam.security.permission.PermissionCheck;
