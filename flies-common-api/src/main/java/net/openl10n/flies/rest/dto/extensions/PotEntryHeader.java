@@ -8,26 +8,18 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import net.openl10n.flies.common.Namespaces;
-import net.openl10n.flies.rest.dto.DTOUtil;
-import net.openl10n.flies.rest.dto.resource.Extension;
+import net.openl10n.flies.rest.dto.ExtensionValue;
+import net.openl10n.flies.rest.dto.resource.TextFlow;
 
 @XmlRootElement(name = "pot-entry-header", namespace = Namespaces.FLIES)
-public class PotEntryHeader extends Extension
+public class PotEntryHeader implements ExtensionValue<TextFlow>
 {
 
-   public static final String ID = "gettext-entry-header";
-   public static final String VERSION = PoHeader.VERSION;
-   public static final String NAMESPACE = PoHeader.NAMESPACE;
-
+   public static final String ID = "gettext";
+   
    private String context;
-   private String extractedComment;
    private List<String> flags;
    private List<String> references;
-
-   public PotEntryHeader()
-   {
-      super(ID, VERSION);
-   }
 
    @XmlElement(name = "context", namespace = PoHeader.NAMESPACE, required = false)
    public String getContext()
@@ -38,17 +30,6 @@ public class PotEntryHeader extends Extension
    public void setContext(String context)
    {
       this.context = context;
-   }
-
-   @XmlElement(name = "extracted-comment", namespace = PoHeader.NAMESPACE, required = false)
-   public String getExtractedComment()
-   {
-      return extractedComment;
-   }
-
-   public void setExtractedComment(String extractedComment)
-   {
-      this.extractedComment = extractedComment;
    }
 
    @XmlElementWrapper(name = "flags", namespace = PoHeader.NAMESPACE, required = true)

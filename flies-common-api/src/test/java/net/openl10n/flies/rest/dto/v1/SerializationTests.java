@@ -15,10 +15,10 @@ import net.openl10n.flies.common.ResourceType;
 import net.openl10n.flies.rest.JaxbUtil;
 import net.openl10n.flies.rest.dto.Person;
 import net.openl10n.flies.rest.dto.extensions.PoHeader;
-import net.openl10n.flies.rest.dto.resource.AbstractResourceMeta;
-import net.openl10n.flies.rest.dto.resource.Extension;
+import net.openl10n.flies.rest.dto.extensions.SimpleComment;
 import net.openl10n.flies.rest.dto.resource.Resource;
 import net.openl10n.flies.rest.dto.resource.ResourceMeta;
+import net.openl10n.flies.rest.dto.resource.TextFlow;
 
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -69,15 +69,17 @@ public class SerializationTests
    @Test
    public void serializeAndDeserializeExtension() throws JsonGenerationException, JsonMappingException, IOException, JAXBException
    {
-      Extension e = createPoHeader();
+      // TODO are we actually trying to test serializing an extension where the type is not known?
+      
+      PoHeader e = createPoHeader();
       JaxbUtil.validateXml(e);
 
       String output = mapper.writeValueAsString(e);
-      Extension e2 = mapper.readValue(output, Extension.class);
+      PoHeader e2 = mapper.readValue(output, PoHeader.class);
       JaxbUtil.validateXml(e2);
       assertThat(e2, instanceOf(PoHeader.class));
 
-      e2 = JaxbTestUtil.roundTripXml(e, Extension.class);
+      e2 = JaxbTestUtil.roundTripXml(e, PoHeader.class);
       assertThat(e2, instanceOf(PoHeader.class));
    }
 
@@ -112,4 +114,10 @@ public class SerializationTests
 
    }
 
+   public void createTextFlow(){
+      TextFlow tf = new TextFlow();
+      SimpleComment<TextFlow> comment = new SimpleComment<TextFlow>("test");
+      tf.getExtensions().add(comment);
+   }
+   
 }

@@ -18,22 +18,16 @@ import net.openl10n.flies.dao.DocumentDAO;
 import net.openl10n.flies.dao.PersonDAO;
 import net.openl10n.flies.dao.ProjectIterationDAO;
 import net.openl10n.flies.dao.TextFlowTargetDAO;
-import net.openl10n.flies.rest.LanguageQualifier;
 import net.openl10n.flies.rest.StringSet;
 import net.openl10n.flies.rest.client.ITranslationResources;
 import net.openl10n.flies.rest.dto.Person;
 import net.openl10n.flies.rest.dto.extensions.PoHeader;
 import net.openl10n.flies.rest.dto.po.HeaderEntry;
-import net.openl10n.flies.rest.dto.resource.AbstractResourceMeta;
 import net.openl10n.flies.rest.dto.resource.Resource;
 import net.openl10n.flies.rest.dto.resource.ResourceMeta;
-import net.openl10n.flies.rest.dto.resource.ResourceMetaList;
 import net.openl10n.flies.rest.dto.resource.TextFlow;
 import net.openl10n.flies.rest.dto.resource.TextFlowTarget;
 import net.openl10n.flies.rest.dto.resource.TranslationsResource;
-import net.openl10n.flies.rest.service.ETagUtils;
-import net.openl10n.flies.rest.service.ResourceUtils;
-import net.openl10n.flies.rest.service.TranslationResourcesService;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.resteasy.client.ClientResponse;
@@ -42,7 +36,7 @@ import org.testng.annotations.Test;
 public class TranslationResourceServiceTest extends FliesRestTest
 {
 
-   private final String RESOURCE_PATH = "/projects/p/sample-project/iterations/i/1.0/resources";
+   private final String RESOURCE_PATH = "/projects/p/sample-project/iterations/i/1.0/r/";
 
    @Override
    protected void prepareDBUnitOperations()
@@ -188,6 +182,7 @@ public class TranslationResourceServiceTest extends FliesRestTest
       assertThat(response.getResponseStatus(), is(Status.OK));
 
       getResponse = client.getTranslations("my.txt", LocaleId.DE);
+      // TODO this should return an empty set of targets, possibly with metadata
       assertThat(getResponse.getResponseStatus(), is(Status.NOT_FOUND));
 
    }

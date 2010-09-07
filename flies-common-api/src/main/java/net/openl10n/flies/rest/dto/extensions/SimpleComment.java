@@ -4,30 +4,21 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlValue;
 
 import net.openl10n.flies.common.Namespaces;
-import net.openl10n.flies.rest.dto.DTOUtil;
-import net.openl10n.flies.rest.dto.resource.Extension;
+import net.openl10n.flies.rest.dto.ExtensionValue;
 
 import org.codehaus.jackson.annotate.JsonTypeName;
 
 @XmlType(name = "simpleCommentExtension", namespace = PoHeader.NAMESPACE, propOrder = {})
 @XmlRootElement(name = "comment", namespace = PoHeader.NAMESPACE)
-@JsonTypeName(value = SimpleComment.ID)
-public class SimpleComment extends Extension
+@JsonTypeName(value = "comment")
+public class SimpleComment<T extends Commentable> implements ExtensionValue<T>
 {
 
    public static final String ID = "comment";
-   public static final String VERSION = "1.0";
-   public static final String NAMESPACE = Namespaces.FLIES;
-
+   
    private String value;
-
-   public SimpleComment()
-   {
-      super(ID, VERSION);
-   }
 
    public SimpleComment(String value)
    {

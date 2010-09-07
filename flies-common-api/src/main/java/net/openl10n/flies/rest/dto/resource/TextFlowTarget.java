@@ -13,7 +13,9 @@ import javax.xml.bind.annotation.XmlType;
 import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.common.Namespaces;
 import net.openl10n.flies.rest.dto.DTOUtil;
+import net.openl10n.flies.rest.dto.Extensible;
 import net.openl10n.flies.rest.dto.Person;
+import net.openl10n.flies.rest.dto.extensions.Commentable;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -26,14 +28,14 @@ import org.hibernate.validator.NotEmpty;
 @JsonPropertyOrder( { "resId", "state", "translator", "content", "extensions" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
-public class TextFlowTarget implements Serializable
+public class TextFlowTarget implements Serializable, Commentable, Extensible<TextFlowTarget>
 {
 
    private String resId;
    private ContentState state = ContentState.New;
    private Person translator;
    private String content;
-   private ExtensionSet extensions;
+   private ExtensionSet<TextFlowTarget> extensions;
 
    public TextFlowTarget()
    {
@@ -81,20 +83,20 @@ public class TextFlowTarget implements Serializable
 
    @XmlElementWrapper(name = "extensions", namespace = Namespaces.FLIES, required = false)
    @XmlAnyElement(lax = true)
-   public ExtensionSet getExtensions()
+   public ExtensionSet<TextFlowTarget> getExtensions()
    {
       return extensions;
    }
 
    @JsonIgnore
-   public ExtensionSet getExtensions(boolean createIfNull)
+   public ExtensionSet<TextFlowTarget> getExtensions(boolean createIfNull)
    {
       if (createIfNull && extensions == null)
-         extensions = new ExtensionSet();
+         extensions = new ExtensionSet<TextFlowTarget>();
       return extensions;
    }
 
-   public void setExtensions(ExtensionSet extensions)
+   public void setExtensions(ExtensionSet<TextFlowTarget> extensions)
    {
       this.extensions = extensions;
    }

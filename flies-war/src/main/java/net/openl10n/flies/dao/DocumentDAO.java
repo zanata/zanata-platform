@@ -43,7 +43,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
    public Set<LocaleId> getTargetLocales(HDocument hDoc)
    {
       @SuppressWarnings("unchecked")
-      List<LocaleId> locales = (List<LocaleId>) getSession().createQuery("select tft.locale from HTextFlowTarget tft where tft.textFlow.document = :document").setParameter("document", hDoc).list();
+      List<LocaleId> locales = getSession().createQuery("select tft.locale from HTextFlowTarget tft where tft.textFlow.document = :document").setParameter("document", hDoc).list();
       return new HashSet<LocaleId>(locales);
    }
 

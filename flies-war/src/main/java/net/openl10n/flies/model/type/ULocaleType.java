@@ -64,7 +64,7 @@ public class ULocaleType extends ImmutableType implements LiteralType
       return value.toString();
    }
 
-   public Class getReturnedClass()
+   public Class<ULocale> getReturnedClass()
    {
       return ULocale.class;
    }

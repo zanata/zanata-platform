@@ -16,7 +16,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.PreUpdate;
 
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.hibernate.search.TranslatedFilterFactory;
@@ -48,7 +47,7 @@ import org.hibernate.validator.NotNull;
 @Entity
 @Indexed
 @FullTextFilterDef(name = "translated", impl = TranslatedFilterFactory.class)
-public class HTextFlow implements Serializable, ITextFlowHistory
+public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComment
 {
 
    private static final long serialVersionUID = 3023080107971905435L;

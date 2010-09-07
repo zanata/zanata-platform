@@ -27,30 +27,33 @@ import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 @JsonPropertyOrder( { "links", "extensions", "textFlowTargets" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
+/**
+ * Represents the translation of a document into a single locale.
+ */
 public class TranslationsResource implements Serializable, HasSample<TranslationsResource>
 {
 
-   private ExtensionSet extensions;
+   private ExtensionSet<TranslationsResource> extensions;
    private Links links;
    private List<TextFlowTarget> textFlowTargets;
 
    @XmlElementWrapper(name = "extensions", namespace = Namespaces.FLIES, required = false)
    @XmlAnyElement(lax = true)
-   public ExtensionSet getExtensions()
+   public ExtensionSet<TranslationsResource> getExtensions()
    {
       return extensions;
    }
 
-   public void setExtensions(ExtensionSet extensions)
+   public void setExtensions(ExtensionSet<TranslationsResource> extensions)
    {
       this.extensions = extensions;
    }
 
    @JsonIgnore
-   public ExtensionSet getExtensions(boolean createIfNull)
+   public ExtensionSet<TranslationsResource> getExtensions(boolean createIfNull)
    {
       if (createIfNull && extensions == null)
-         extensions = new ExtensionSet();
+         extensions = new ExtensionSet<TranslationsResource>();
       return extensions;
    }
 

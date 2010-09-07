@@ -13,7 +13,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.common.Namespaces;
 import net.openl10n.flies.rest.dto.DTOUtil;
+import net.openl10n.flies.rest.dto.Extensible;
 import net.openl10n.flies.rest.dto.LocaleIdAdapter;
+import net.openl10n.flies.rest.dto.extensions.Commentable;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -28,7 +30,7 @@ import org.hibernate.validator.NotNull;
 @JsonPropertyOrder( { "id", "lang", "content", "extensions" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
-public class TextFlow implements Serializable
+public class TextFlow implements Extensible<TextFlow>, Serializable, Commentable
 {
 
    @NotEmpty
@@ -41,7 +43,7 @@ public class TextFlow implements Serializable
    @NotNull
    private String content;
 
-   private ExtensionSet extensions;
+   private ExtensionSet<TextFlow> extensions;
 
    /**
     * This constructor sets the lang value to en-US
@@ -103,21 +105,21 @@ public class TextFlow implements Serializable
 
    @XmlElementWrapper(name = "extensions", namespace = Namespaces.FLIES, required = false)
    @XmlAnyElement(lax = true)
-   public ExtensionSet getExtensions()
+   public ExtensionSet<TextFlow> getExtensions()
    {
       return extensions;
    }
 
-   public void setExtensions(ExtensionSet extensions)
+   public void setExtensions(ExtensionSet<TextFlow> extensions)
    {
       this.extensions = extensions;
    }
 
    @JsonIgnore
-   public ExtensionSet getExtensions(boolean createIfNull)
+   public ExtensionSet<TextFlow> getExtensions(boolean createIfNull)
    {
       if (createIfNull && extensions == null)
-         extensions = new ExtensionSet();
+         extensions = new ExtensionSet<TextFlow>();
       return extensions;
    }
 

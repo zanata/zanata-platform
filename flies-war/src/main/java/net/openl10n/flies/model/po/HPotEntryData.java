@@ -84,23 +84,33 @@ public class HPotEntryData implements Serializable
       return extractedComment;
    }
 
-   // delimited by ','
+   /**
+    * Gettext message flags, delimited by ',' (comma)
+    */
    public void setFlags(String flags)
    {
       this.flags = flags;
    }
 
+   /**
+    * Gettext message flags, delimited by ',' (comma)
+    */
    public String getFlags()
    {
       return flags;
    }
 
-   // delimited by ' '
+   /**
+    * Gettext message references, delimited by ',' (comma)
+    */
    public void setReferences(String references)
    {
       this.references = references;
    }
 
+   /**
+    * Gettext message references, delimited by ',' (comma)
+    */
    @Column(name = "refs")
    public String getReferences()
    {

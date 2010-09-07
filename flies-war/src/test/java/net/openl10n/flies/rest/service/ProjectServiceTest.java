@@ -6,30 +6,19 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.notNullValue;
 
-import java.net.URI;
-
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import net.openl10n.flies.FliesDBUnitSeamTest;
 import net.openl10n.flies.FliesRestTest;
 import net.openl10n.flies.dao.AccountDAO;
 import net.openl10n.flies.dao.DocumentDAO;
 import net.openl10n.flies.dao.ProjectDAO;
-import net.openl10n.flies.rest.client.ApiKeyHeaderDecorator;
 import net.openl10n.flies.rest.client.IProjectResource;
-import net.openl10n.flies.rest.client.IProjectsResource;
 import net.openl10n.flies.rest.dto.Project;
 import net.openl10n.flies.rest.dto.ProjectType;
-import net.openl10n.flies.rest.service.ETagUtils;
-import net.openl10n.flies.rest.service.ProjectService;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
-import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
-import org.jboss.resteasy.spi.ResteasyProviderFactory;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class ProjectServiceTest extends FliesRestTest
