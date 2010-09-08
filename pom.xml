@@ -191,7 +191,7 @@
 
 
 			<!--
-				These snapshots includes support for shared sessions
+				These snapshots include support for shared sessions
 				http://code.google.com/p/gwteventservice/issues/detail?id=15
 			-->
 			<dependency>
@@ -209,6 +209,7 @@
 				<artifactId>eventservice</artifactId>
 				<version>1.2.0-20100906.075839-2</version>
 			</dependency>
+
 
 			<dependency>
 				<groupId>com.google.gwt.inject</groupId>
