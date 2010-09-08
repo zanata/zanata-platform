@@ -13,35 +13,51 @@ import net.openl10n.flies.FliesRestTest;
 import net.openl10n.flies.dao.AccountDAO;
 import net.openl10n.flies.dao.DocumentDAO;
 import net.openl10n.flies.dao.ProjectDAO;
+import net.openl10n.flies.model.HIterationProject;
 import net.openl10n.flies.rest.client.IProjectResource;
 import net.openl10n.flies.rest.dto.Project;
 import net.openl10n.flies.rest.dto.ProjectType;
 
 import org.dbunit.operation.DatabaseOperation;
+import org.easymock.EasyMock;
+import static org.easymock.EasyMock.*;
+import org.easymock.IMocksControl;
 import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.seam.security.Credentials;
+import org.jboss.seam.security.Identity;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class ProjectServiceTest extends FliesRestTest
 {
 
    private final String RESOURCE_PATH = "/projects/p/";
+   IMocksControl mockControl = EasyMock.createControl();
+   Identity mockIdentity = mockControl.createMock(Identity.class);
+
+   @BeforeMethod
+   void reset()
+   {
+      mockControl.reset();
+   }
 
    @Override
    protected void prepareDBUnitOperations()
    {
       beforeTestOperations.add(new DataSetOperation("META-INF/testdata/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+      beforeTestOperations.add(new DataSetOperation("META-INF/testdata/AccountData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
 
    @Override
    protected void prepareResources()
    {
-
       ProjectDAO projectDAO = new ProjectDAO(getSession());
       AccountDAO accountDAO = new AccountDAO(getSession());
       DocumentDAO documentDAO = new DocumentDAO(getSession());
       ETagUtils eTagUtils = new ETagUtils(getSession(), documentDAO);
 
-      ProjectService projectService = new ProjectService(projectDAO, accountDAO, null, eTagUtils);
+      ProjectService projectService = new ProjectService(projectDAO, accountDAO, mockIdentity, eTagUtils);
 
       resources.add(projectService);
    }
@@ -69,6 +85,16 @@ public class ProjectServiceTest extends FliesRestTest
       final String PROJECT_SLUG = "my-new-project";
       final String PROJECT_NAME = "My New Project";
       final String PROJECT_DESC = "Another test project";
+
+      mockIdentity.checkPermission(anyObject(HIterationProject.class), eq("insert"));
+
+      Credentials mockCredentials = mockControl.createMock(Credentials.class);
+      EasyMock.expect(mockIdentity.getCredentials()).andReturn(mockCredentials);
+
+      EasyMock.expect(mockCredentials.getUsername()).andReturn("admin");
+
+      mockControl.replay();
+
       Project project = new Project(PROJECT_SLUG, PROJECT_NAME, ProjectType.IterationProject, PROJECT_DESC);
 
       IProjectResource projectService = getClientRequestFactory().createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve(PROJECT_SLUG));
@@ -92,6 +118,7 @@ public class ProjectServiceTest extends FliesRestTest
       assertThat(projectRes.getName(), is(PROJECT_NAME));
       assertThat(projectRes.getId(), is(PROJECT_SLUG));
       assertThat(projectRes.getDescription(), is(PROJECT_DESC));
+      mockControl.verify();
    }
 
    final String PROJECT_SLUG = "my-new-project";
@@ -114,12 +141,15 @@ public class ProjectServiceTest extends FliesRestTest
    @Test
    public void createProjectWithInvalidData()
    {
+      mockIdentity.checkPermission(anyObject(HIterationProject.class), eq("insert"));
+      mockControl.replay();
+
       IProjectResource projectService = getClientRequestFactory().createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve(PROJECT_SLUG));
       Project project1 = new Project(PROJECT_SLUG, PROJECT_NAME_INVALID, ProjectType.IterationProject, PROJECT_DESC);
       Response response1 = projectService.put(project1);
 
       assertThat(response1.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
-
+      mockControl.verify();
    }
 
    @Test
@@ -132,12 +162,14 @@ public class ProjectServiceTest extends FliesRestTest
       Response response = projectService.put(project);
 
       assertThat(response.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
-
    }
 
    @Test
    public void updateProject()
    {
+      mockIdentity.checkPermission(anyObject(HIterationProject.class), eq("update"));
+      mockControl.replay();
+
       Project project = new Project("sample-project", "My Project Update", ProjectType.IterationProject, "Update project");
 
       IProjectResource projectService = getClientRequestFactory().createProxy(IProjectResource.class, createBaseURI(RESOURCE_PATH).resolve("sample-project"));
@@ -154,6 +186,7 @@ public class ProjectServiceTest extends FliesRestTest
 
       assertThat(projectRes.getName(), is("My Project Update"));
       assertThat(projectRes.getDescription(), is("Update project"));
+      mockControl.verify();
    }
 
 }
