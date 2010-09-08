@@ -65,6 +65,7 @@ public class DocumentsService
    @In
    private DocumentDAO documentDAO;
 
+
    @In
    private LocaleService localeServiceImpl;
 
@@ -134,7 +135,7 @@ public class DocumentsService
 
       for (HDocument hDocument : hdocs)
       {
-         Document doc = hDocument.toDocument(true);
+         Document doc = documentConverter.copyDocument(hDocument, true);
 
          URI docUri = baseUri.resolve(URIHelper.getDocument(projectSlug, iterationSlug, doc.getId()));
          documentConverter.addLinks(doc, docUri, iterationUri);
@@ -165,10 +166,11 @@ public class DocumentsService
       {
          // if doc already exists, load it and update it, but don't create it
          HDocument hDoc = documentDAO.getByDocId(hProjectIteration, doc.getId());
+         log.debug("test doc id:" + doc.getId());
          if (hDoc == null)
          {
             log.debug("PUT creating new HDocument with id {0}", doc.getId());
-            log.info("locale:" + doc.getLang());
+            log.debug("locale for documents:" + doc.getLang());
             hDoc = new HDocument(doc, localeServiceImpl.getSupportedLanguageByLocale(doc.getLang()));
             hDoc.setRevision(0);
             hDoc.setProjectIteration(hProjectIteration);
@@ -194,6 +196,7 @@ public class DocumentsService
             }
             else
             {
+               log.debug("save document");
                session.save(hDoc);
             }
          }
@@ -218,6 +221,7 @@ public class DocumentsService
          hDoc.setObsolete(true);
          hDoc.setRevision(hDoc.getRevision() + 1);
          docMap.remove(hDoc.getId());
+         log.debug("mark obselete");
       }
       session.flush();
       return Response.ok(sb.toString()).build();

@@ -161,4 +161,12 @@
                 localeId="en"
                 active="TRUE"
         />
+        <HLocale id="25"
+	          versionNum="1"
+                creationDate="2009-01-14 11:39:00"
+                lastChanged="2009-01-14 11:39:00"
+                localeId="fr"
+                active="TRUE"
+        />
+        
 </dataset>

@@ -5,6 +5,7 @@ import java.util.List;
 import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.model.HDocument;
+import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.model.HTextFlow;
 import net.openl10n.flies.model.HTextFlowTarget;
 
@@ -36,9 +37,9 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
     * @param localeId
     * @return
     */
-   public HTextFlowTarget getByNaturalId(HTextFlow textFlow, LocaleId localeId)
+   public HTextFlowTarget getByNaturalId(HTextFlow textFlow, HLocale locale)
    {
-      return (HTextFlowTarget) getSession().createCriteria(HTextFlowTarget.class).add(Restrictions.naturalId().set("textFlow", textFlow).set("locale", localeId)).setCacheable(true).setComment("TextFlowTargetDAO.getByNaturalId").uniqueResult();
+      return (HTextFlowTarget) getSession().createCriteria(HTextFlowTarget.class).add(Restrictions.naturalId().set("textFlow", textFlow).set("locale", locale)).setCacheable(true).setComment("TextFlowTargetDAO.getByNaturalId").uniqueResult();
    }
 
    @SuppressWarnings("unchecked")

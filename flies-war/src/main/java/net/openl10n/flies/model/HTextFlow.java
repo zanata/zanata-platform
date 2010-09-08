@@ -2,7 +2,6 @@ package net.openl10n.flies.model;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.persistence.CascadeType;
@@ -19,10 +18,7 @@ import javax.persistence.OneToOne;
 
 import net.openl10n.flies.hibernate.search.TranslatedFilterFactory;
 import net.openl10n.flies.model.po.HPotEntryData;
-import net.openl10n.flies.model.po.PoUtility;
 import net.openl10n.flies.rest.dto.deprecated.TextFlow;
-import net.openl10n.flies.rest.dto.deprecated.TextFlowTarget;
-import net.openl10n.flies.rest.dto.po.PotEntryData;
 import net.openl10n.flies.search.DefaultNgramAnalyzer;
 
 import org.hibernate.annotations.NaturalId;
@@ -72,6 +68,7 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
    private HSimpleComment comment;
 
    private HPotEntryData potEntryData;
+   
 
    public HTextFlow()
    {
@@ -238,52 +235,6 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
       return potEntryData;
    }
 
-   public TextFlow toResource(int levels)
-   {
-      TextFlow textFlow = new TextFlow(this.getResId());
-      HSimpleComment comment = this.getComment();
-      if (comment != null)
-      {
-         textFlow.getOrAddComment().setValue(comment.getComment());
-      }
-      textFlow.setContent(this.getContent());
-      textFlow.setLang(this.getDocument().getLocale().getLocaleId());
-      textFlow.setRevision(this.getRevision());
-
-      for (HLocale locale : getTargets().keySet())
-      {
-         HTextFlowTarget hTextFlowTarget = this.getTargets().get(locale);
-         if (hTextFlowTarget != null)
-         {
-            TextFlowTarget textFlowTarget = new TextFlowTarget(textFlow, locale.getLocaleId());
-            HSimpleComment tftComment = hTextFlowTarget.getComment();
-            if (tftComment != null)
-            {
-               textFlowTarget.getOrAddComment().setValue(tftComment.getComment());
-            }
-            textFlowTarget.setContent(hTextFlowTarget.getContent());
-            textFlowTarget.setResourceRevision(hTextFlowTarget.getTextFlowRevision());
-            textFlowTarget.setState(hTextFlowTarget.getState());
-            textFlow.addTarget(textFlowTarget);
-         }
-      }
-
-      HPotEntryData fromHPotEntryData = this.getPotEntryData();
-      if (fromHPotEntryData != null)
-      {
-         PotEntryData toPotEntryData = textFlow.getOrAddExtension(PotEntryData.class);
-         toPotEntryData.setId(this.getResId());
-         toPotEntryData.setContext(fromHPotEntryData.getContext());
-         HSimpleComment extractedComment = fromHPotEntryData.getExtractedComment();
-         toPotEntryData.setExtractedComment(HSimpleComment.toSimpleComment(extractedComment));
-         List<String> toFlags = toPotEntryData.getFlags();
-         toFlags.addAll(PoUtility.splitFlags(fromHPotEntryData.getFlags()));
-         List<String> toReferences = toPotEntryData.getReferences();
-         toReferences.addAll(PoUtility.splitRefs(fromHPotEntryData.getReferences()));
-      }
-
-      return textFlow;
-   }
 
    /**
     * Used for debugging
