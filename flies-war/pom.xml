@@ -120,6 +120,7 @@
                         <exclude>**/components.properties</exclude>
                         <exclude>**/seam.properties</exclude>
                         <exclude>**/seam-deployment.properties</exclude>
+                        <exclude>**/eventservice.properties</exclude>
                     </excludes>
                     <outputDirectory>src/main/resources</outputDirectory>
                 </configuration>
