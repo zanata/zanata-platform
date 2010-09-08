@@ -10,7 +10,7 @@ import org.jboss.seam.annotations.Scope;
 
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.dao.PersonDAO;
-import net.openl10n.flies.dao.SupportedLanguageDAO;
+import net.openl10n.flies.dao.LocaleDAO;
 import net.openl10n.flies.exception.FliesException;
 import net.openl10n.flies.model.HPerson;
 import net.openl10n.flies.model.HLocale;
@@ -23,7 +23,7 @@ public class LanguageTeamServiceImpl implements LanguageTeamService
 {
    private PersonDAO personDAO;
 
-   private SupportedLanguageDAO supportedLanguageDAO;
+   private LocaleDAO supportedLanguageDAO;
 
    @In
    public void setPersonDAO(PersonDAO personDAO)
@@ -32,7 +32,7 @@ public class LanguageTeamServiceImpl implements LanguageTeamService
    }
    
    @In
-   public void setSupportedLanguageDAO(SupportedLanguageDAO supportedLanguageDAO)
+   public void setSupportedLanguageDAO(LocaleDAO supportedLanguageDAO)
    {
       this.supportedLanguageDAO = supportedLanguageDAO;
    }

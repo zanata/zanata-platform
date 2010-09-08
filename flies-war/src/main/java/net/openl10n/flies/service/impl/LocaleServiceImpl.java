@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.openl10n.flies.common.LocaleId;
-import net.openl10n.flies.dao.SupportedLanguageDAO;
+import net.openl10n.flies.dao.LocaleDAO;
 import net.openl10n.flies.exception.FliesException;
 import net.openl10n.flies.model.FliesLocalePair;
 import net.openl10n.flies.model.HLocale;
@@ -27,10 +27,10 @@ import com.ibm.icu.util.ULocale;
 @Scope(ScopeType.STATELESS)
 public class LocaleServiceImpl implements LocaleService
 {
-   private SupportedLanguageDAO supportedLanguageDAO;
+   private LocaleDAO supportedLanguageDAO;
    
    @In
-   public void setSupportedLanguageDAO(SupportedLanguageDAO supportedLanguageDAO){
+   public void setSupportedLanguageDAO(LocaleDAO supportedLanguageDAO){
       this.supportedLanguageDAO= supportedLanguageDAO;
    }
 

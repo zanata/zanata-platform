@@ -491,7 +491,7 @@ public class DocumentConverter
       doc.getLinks().add(link);
    }
 
-   public TextFlow copy(HTextFlow htf)
+   private TextFlow copyHTextFlow(HTextFlow htf)
    {
       log.debug("copy HTextFlow to TextFlow");
       TextFlow textFlow = new TextFlow(htf.getResId());
@@ -543,7 +543,7 @@ public class DocumentConverter
       return textFlow;
    }
 
-   public Document copyDocument(HDocument hDoc, int levels)
+   private Document copyDocument(HDocument hDoc, int levels)
    {
       log.debug("copy hdocument to document");
       Document doc = new Document(hDoc.getDocId(), hDoc.getName(), hDoc.getPath(), hDoc.getContentType(), hDoc.getRevision(), hDoc.getLocale().getLocaleId());
@@ -553,7 +553,7 @@ public class DocumentConverter
          for (HTextFlow hRes : hDoc.getTextFlows())
          {
 
-            docResources.add(copy(hRes));
+            docResources.add(copyHTextFlow(hRes));
          }
          HPoHeader fromPoHeader = hDoc.getPoHeader();
          if (fromPoHeader != null)
@@ -583,7 +583,7 @@ public class DocumentConverter
       return doc;
    }
 
-   public Document copyDocument(HDocument hdoc, boolean deep)
+   public Document copyHDocument(HDocument hdoc, boolean deep)
    {
       if (deep)
          return copyDocument(hdoc, Integer.MAX_VALUE);

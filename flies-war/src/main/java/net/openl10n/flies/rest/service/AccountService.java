@@ -19,7 +19,7 @@ import javax.ws.rs.core.Response.Status;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.dao.AccountDAO;
 import net.openl10n.flies.dao.AccountRoleDAO;
-import net.openl10n.flies.dao.SupportedLanguageDAO;
+import net.openl10n.flies.dao.LocaleDAO;
 import net.openl10n.flies.model.HAccount;
 import net.openl10n.flies.model.HAccountRole;
 import net.openl10n.flies.model.HPerson;
@@ -58,7 +58,7 @@ public class AccountService
    private AccountRoleDAO accountRoleDAO;
 
    @In
-   private SupportedLanguageDAO supportedLanguageDAO;
+   private LocaleDAO supportedLanguageDAO;
 
    @In
    private Identity identity;

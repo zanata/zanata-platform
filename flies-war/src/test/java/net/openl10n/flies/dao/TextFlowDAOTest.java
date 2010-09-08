@@ -25,6 +25,7 @@ public class TextFlowDAOTest extends FliesDbunitJpaTest
    protected void prepareDBUnitOperations()
    {
       beforeTestOperations.add(new DataSetOperation("net/openl10n/flies/test/model/TextFlowTestData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+      beforeTestOperations.add(new DataSetOperation("META-INF/testdata/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
 
    @BeforeMethod(firstTimeOnly = true)
