@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.openl10n.flies.common.LocaleId;
-import net.openl10n.flies.dao.SupportedLanguageDAO;
+import net.openl10n.flies.dao.LocaleDAO;
 import net.openl10n.flies.model.FliesLocalePair;
 import net.openl10n.flies.model.HLocale;
 
@@ -18,14 +18,14 @@ import org.testng.annotations.Test;
 public class LocaleServiceImplTest
 {
    private LocaleServiceImpl testLocaleServiceImpl;
-   private SupportedLanguageDAO mockDAO;
+   private LocaleDAO mockDAO;
 
 
    @BeforeMethod(firstTimeOnly = true)
    public void setup()
    {
       this.testLocaleServiceImpl = new LocaleServiceImpl();
-      this.mockDAO = EasyMock.createMock(SupportedLanguageDAO.class);
+      this.mockDAO = EasyMock.createMock(LocaleDAO.class);
       this.testLocaleServiceImpl.setSupportedLanguageDAO( mockDAO);
    }
 

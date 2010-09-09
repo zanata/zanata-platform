@@ -97,7 +97,7 @@
     <property name="datasourceJndiName">java:/fliesDatasource</property>
     <property name="binaryDir">META-INF/testdata</property>
     <property name="datasets">
-        <value>META-INF/testdata/SupportedLanguagesData.dbunit.xml</value>
+        <value>META-INF/testdata/LocalesData.dbunit.xml</value>
     </property>
   </component>
   
