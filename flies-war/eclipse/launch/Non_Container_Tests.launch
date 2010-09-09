@@ -16,7 +16,7 @@
 <listEntry value="net.openl10n.flies.webtrans.gwt"/>
 </listAttribute>
 <listAttribute key="org.testng.eclipse.SUITE_TEST_LIST">
-<listEntry value="src/test/resources/AllUnitTests.tng.xml"/>
+<listEntry value="src/test/resources/AllNonContainerTests.tng.xml"/>
 </listAttribute>
 <intAttribute key="org.testng.eclipse.TYPE" value="3"/>
 </launchConfiguration>

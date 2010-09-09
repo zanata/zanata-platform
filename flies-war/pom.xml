@@ -94,7 +94,15 @@
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<groups>unit-tests</groups>
+					<suiteXmlFiles>
+						<suiteXmlFile>src/test/resources/AllNonContainerTests.tng.xml</suiteXmlFile>
+					</suiteXmlFiles>
+<!--
+					<additionalClasspathElements>
+						<additionalClasspathElement>${project.basedir}/src/main/resources-dev</additionalClasspathElement>
+					</additionalClasspathElements>
+-->
+					<argLine xml:space="preserve">-Dsun.lang.ClassLoader.allowArraySyntax=true</argLine>
 				</configuration>
 			</plugin>
             
@@ -203,6 +211,7 @@
 										<suiteXmlFile>src/test/resources/AllIntegrationTests.tng.xml</suiteXmlFile>
 									</suiteXmlFiles>
 									<additionalClasspathElements>
+										<additionalClasspathElement>${project.basedir}/src/main/resources-dev</additionalClasspathElement>
 										<additionalClasspathElement>${project.basedir}/src/test/jboss-embedded-bootstrap</additionalClasspathElement>
 										<additionalClasspathElement>${project.build.directory}/flies</additionalClasspathElement>
 									</additionalClasspathElements>

@@ -13,6 +13,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.mock.DBUnitSeamTest;
+import org.testng.annotations.Test;
 
 /**
  * Imports some data into the database with the help of DBUnit. This allows us
@@ -25,6 +26,7 @@ import org.jboss.seam.mock.DBUnitSeamTest;
 @Name("dbunitImporter")
 @Scope(ScopeType.APPLICATION)
 @Install(false)
+@Test(groups = { "seam-tests" })
 public class DBUnitImporter extends DBUnitSeamTest
 {
 

@@ -47,6 +47,7 @@ public class ProjectsServiceSeamTest extends FliesDBUnitSeamTest
       beforeTestOperations.add(new DataSetOperation("META-INF/testdata/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
 
+   // TODO fix and re-enable this test
    @Test(enabled = false)
    public void retrieveListofProjects() throws Exception
    {

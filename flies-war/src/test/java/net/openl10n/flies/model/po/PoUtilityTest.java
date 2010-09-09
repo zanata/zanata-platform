@@ -5,11 +5,10 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import net.openl10n.flies.model.po.PoUtility;
-
 import org.fedorahosted.openprops.Properties;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
+@Test(groups = { "unit-tests" })
 public class PoUtilityTest
 {
    String lineSep = System.getProperty("line.separator");

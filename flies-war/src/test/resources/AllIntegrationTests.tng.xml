@@ -1,16 +1,27 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 <suite name="Flies Integration Tests" verbose="1">
 
+	<listeners>
+		<!-- 
+			   This ensures that all SeamTest classes 
+			   are treated as seam-tests: 
+		-->
+		<listener class-name="net.openl10n.flies.testing.SeamTestTransformer"/>
+	</listeners>
+
 	<parameter name="database" value="hsql" />
 	<parameter name="datasourceJndiName" value="java:/fliesDatasource" />
 	<parameter name="binaryDir" value="" />
 
 	<test name="Seam Tests">
-		<classes>
-			<class name="net.openl10n.flies.rest.service.DocumentsServiceSeamTest"/>
-			<class name="net.openl10n.flies.rest.service.ProjectServiceRawSeamTest"/>
-			<class name="net.openl10n.flies.rest.service.ProjectsServiceSeamTest"/>
-		</classes>
+ 		<groups>
+	 		<packages>
+	 			<package name="net.openl10n.flies.*"/>
+	 		</packages>
+ 			<run>
+ 				<include name="seam-tests"/>
+ 			</run>
+ 		</groups>
 	</test>
 
 </suite>

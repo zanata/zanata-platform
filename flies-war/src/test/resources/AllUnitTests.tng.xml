@@ -1,5 +1,5 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="Flies JPA and REST Tests" verbose="1">
+<suite name="Flies Unit Tests" verbose="1">
 
 	<listeners>
 		<!-- 
@@ -8,14 +8,13 @@
 		<listener class-name="net.openl10n.flies.testing.UnitTestTransformer"/>
 	</listeners>
 
-	<test name="Non-Seam Tests">
+	<test name="Unit Tests">
  		<groups>
 	 		<packages>
 	 			<package name="net.openl10n.flies.*"/>
 	 		</packages>
  			<run>
- 				<include name=".*"/>
- 				<exclude name="seam-tests"/>
+ 				<include name="unit-tests"/>
  			</run>
  		</groups>
 	</test>

@@ -11,9 +11,13 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.Test;
 
+@Test(groups = { "jpa-tests" })
 public abstract class FliesJpaTest
 {
+
+   private static final String PERSIST_NAME = "fliesDatabase";
 
    private static EntityManagerFactory emf;
 
@@ -51,7 +55,7 @@ public abstract class FliesJpaTest
    public void initializeEMF()
    {
       log.debug("Initializing EMF");
-      emf = Persistence.createEntityManagerFactory("fliesDatabase");
+      emf = Persistence.createEntityManagerFactory(PERSIST_NAME);
    }
 
    @AfterSuite
