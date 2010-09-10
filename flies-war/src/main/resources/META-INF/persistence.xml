@@ -57,4 +57,29 @@
     </properties>
   </persistence-unit>
   
+	<persistence-unit name="testDatabase"
+		transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<properties>
+			<property name="hibernate.hbm2ddl.auto" value="create" />
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider" />
+
+			<property name="hibernate.connection.driver_class" value="org.h2.Driver" />
+			<!-- Configure the in-memory database to be shared, and so that it
+				 doesn't disappear after it has been set up by Hibernate: -->
+			<property name="hibernate.connection.url" value="jdbc:h2:mem:flies;DB_CLOSE_DELAY=-1" />
+			<property name="hibernate.connection.username" value="sa" />
+			<property name="hibernate.connection.password" value="" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+
+			<!-- Search engine -->
+			<property name="hibernate.search.default.directory_provider"
+				value="org.hibernate.search.store.FSDirectoryProvider" />
+			<property name="hibernate.search.default.indexBase" value="fliessearchindex" />
+			<property name="hibernate.search.worker.batch_size" value="50" />
+
+		</properties>
+	</persistence-unit>
+
 </persistence>

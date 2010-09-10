@@ -59,10 +59,10 @@ import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.jboss.resteasy.util.GenericType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Admin;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.log.Logging;
 
 import com.google.common.collect.Sets;
 
@@ -117,8 +117,7 @@ public class TranslationResourcesService
    @In
    private PersonDAO personDAO;
 
-   @Logger
-   private Log log;
+   private final Log log = Logging.getLog(TranslationResourcesService.class);
 
    @In
    private LocaleService localeServiceImpl;
@@ -127,12 +126,13 @@ public class TranslationResourcesService
    {
    }
 
-   public TranslationResourcesService(ProjectIterationDAO projectIterationDAO, DocumentDAO documentDAO, PersonDAO personDAO, TextFlowTargetDAO textFlowTargetDAO, ResourceUtils resourceUtils, ETagUtils eTagUtils)
+   public TranslationResourcesService(ProjectIterationDAO projectIterationDAO, DocumentDAO documentDAO, PersonDAO personDAO, TextFlowTargetDAO textFlowTargetDAO, LocaleService localeService, ResourceUtils resourceUtils, ETagUtils eTagUtils)
    {
       this.projectIterationDAO = projectIterationDAO;
       this.documentDAO = documentDAO;
       this.personDAO = personDAO;
       this.textFlowTargetDAO = textFlowTargetDAO;
+      this.localeServiceImpl = localeService;
       this.resourceUtils = resourceUtils;
       this.eTagUtils = eTagUtils;
    }

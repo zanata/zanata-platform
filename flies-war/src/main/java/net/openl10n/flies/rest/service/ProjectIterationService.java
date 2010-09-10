@@ -17,9 +17,9 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
 
 import net.openl10n.flies.dao.ProjectDAO;
 import net.openl10n.flies.dao.ProjectIterationDAO;
@@ -81,10 +81,11 @@ public class ProjectIterationService
    {
    }
 
-   public ProjectIterationService(ProjectDAO projectDAO, ProjectIterationDAO projectIterationDAO, ETagUtils eTagUtils)
+   public ProjectIterationService(ProjectDAO projectDAO, ProjectIterationDAO projectIterationDAO, Identity identity, ETagUtils eTagUtils)
    {
       this.projectDAO = projectDAO;
       this.projectIterationDAO = projectIterationDAO;
+      this.identity = identity;
       this.eTagUtils = eTagUtils;
    }
 

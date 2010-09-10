@@ -122,6 +122,8 @@ public class LocaleServiceImpl implements LocaleService
       return hLocale;
    }
 
+   @Deprecated
+   @Override
    public HLocale getDefautLanguage()
    {
       HLocale de = null;

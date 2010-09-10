@@ -20,6 +20,10 @@ public class SimpleComment<T extends Commentable> implements ExtensionValue<T>
    
    private String value;
 
+   public SimpleComment()
+   {
+   }
+
    public SimpleComment(String value)
    {
       this.value = value;

@@ -19,13 +19,32 @@ import net.openl10n.flies.rest.service.ETagUtils;
 import net.openl10n.flies.rest.service.ProjectIterationService;
 
 import org.dbunit.operation.DatabaseOperation;
+import org.easymock.EasyMock;
+import org.easymock.IMocksControl;
 import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.seam.security.Identity;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class ProjectIterationServiceTest extends FliesRestTest
 {
 
    private final String RESOURCE_PATH = "/projects/p/sample-project/iterations/i/";
+   IMocksControl mockControl = EasyMock.createControl();
+   Identity mockIdentity = mockControl.createMock(Identity.class);
+
+   @BeforeClass
+   void beforeClass()
+   {
+      Identity.setSecurityEnabled(false);
+   }
+
+   @BeforeMethod
+   void reset()
+   {
+      mockControl.reset();
+   }
 
    @Override
    protected void prepareDBUnitOperations()
@@ -42,7 +61,7 @@ public class ProjectIterationServiceTest extends FliesRestTest
       DocumentDAO documentDAO = new DocumentDAO(getSession());
       ETagUtils eTagUtils = new ETagUtils(getSession(), documentDAO);
 
-      ProjectIterationService projectIterationService = new ProjectIterationService(projectDAO, projectIterationDAO, eTagUtils);
+      ProjectIterationService projectIterationService = new ProjectIterationService(projectDAO, projectIterationDAO, mockIdentity, eTagUtils);
 
       resources.add(projectIterationService);
    }

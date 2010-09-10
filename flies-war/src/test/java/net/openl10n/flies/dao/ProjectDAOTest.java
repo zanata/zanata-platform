@@ -1,17 +1,17 @@
 package net.openl10n.flies.dao;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import net.openl10n.flies.FliesDbunitJpaTest;
-import net.openl10n.flies.dao.ProjectDAO;
 import net.openl10n.flies.model.HProject;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
+import org.jboss.seam.security.Identity;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.*;
 
 @Test(groups = { "jpa-tests" })
 public class ProjectDAOTest extends FliesDbunitJpaTest
@@ -23,6 +23,12 @@ public class ProjectDAOTest extends FliesDbunitJpaTest
    protected void prepareDBUnitOperations()
    {
       beforeTestOperations.add(new DataSetOperation("META-INF/testdata/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+   }
+
+   @BeforeClass
+   void beforeClass()
+   {
+      Identity.setSecurityEnabled(false);
    }
 
    @BeforeMethod(firstTimeOnly = true)

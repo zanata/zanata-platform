@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -16,6 +17,8 @@ import net.openl10n.flies.rest.dto.DTOUtil;
 import net.openl10n.flies.rest.dto.Extensible;
 import net.openl10n.flies.rest.dto.LocaleIdAdapter;
 import net.openl10n.flies.rest.dto.extensions.Commentable;
+import net.openl10n.flies.rest.dto.extensions.PotEntryHeader;
+import net.openl10n.flies.rest.dto.extensions.SimpleComment;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -30,6 +33,7 @@ import org.hibernate.validator.NotNull;
 @JsonPropertyOrder( { "id", "lang", "content", "extensions" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
+@XmlSeeAlso({ SimpleComment.class, PotEntryHeader.class })
 public class TextFlow implements Extensible<TextFlow>, Serializable, Commentable
 {
 

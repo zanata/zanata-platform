@@ -10,30 +10,39 @@ import java.util.List;
 import net.openl10n.flies.FliesDbunitJpaTest;
 import net.openl10n.flies.common.ContentType;
 import net.openl10n.flies.common.LocaleId;
-import net.openl10n.flies.model.HDocument;
-import net.openl10n.flies.model.HDocumentHistory;
-import net.openl10n.flies.model.HProjectIteration;
-import net.openl10n.flies.service.LocaleService;
+import net.openl10n.flies.dao.SupportedLanguageDAO;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class HDocumentHistoryTest extends FliesDbunitJpaTest
 {
-   private LocaleService localeServiceImpl;
+   private SupportedLanguageDAO localeDAO;
+   HLocale de_DE;
 
+   @BeforeMethod(firstTimeOnly = true)
+   public void beforeMethod()
+   {
+      localeDAO = new SupportedLanguageDAO((Session) em.getDelegate());
+      de_DE = localeDAO.findByLocaleId(new LocaleId("de-DE"));
+   }
+
+   @Override
    protected void prepareDBUnitOperations()
    {
       beforeTestOperations.add(new DataSetOperation("META-INF/testdata/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+      beforeTestOperations.add(new DataSetOperation("META-INF/testdata/SupportedLanguagesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
 
+   // FIXME this test only works if resources-dev is on the classpath
    @Test
    public void ensureHistoryIsRecorded()
    {
       Session session = getSession();
-      HDocument d = new HDocument("/path/to/document.txt", ContentType.TextPlain, localeServiceImpl.getDefautLanguage());
+      HDocument d = new HDocument("/path/to/document.txt", ContentType.TextPlain, de_DE);
       d.setProjectIteration((HProjectIteration) session.load(HProjectIteration.class, 1L));
       session.save(d);
       session.flush();
@@ -53,7 +62,7 @@ public class HDocumentHistoryTest extends FliesDbunitJpaTest
       assertThat(history.getContentType(), is(ContentType.TextPlain));
       assertThat(history.getLastChanged(), is(lastChanged));
       assertThat(history.getLastModifiedBy(), nullValue());
-      assertThat(history.getLocale().getLocaleId(), is(LocaleId.EN));
+      assertThat(history.getLocale().getLocaleId(), is(de_DE.getLocaleId()));
       assertThat(history.getName(), is(d.getName()));
       assertThat(history.getPath(), is(d.getPath()));
       assertThat(history.getRevision(), is(d.getRevision() - 1));

@@ -11,11 +11,13 @@
                    http://java.sun.com/xml/ns/persistence/orm
                    http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
                  version="1.0">
+<!-- 
+ -->
   <persistence-unit-metadata>
     <persistence-unit-defaults>
       <entity-listeners>
         <entity-listener
-                class="org.jboss.seam.security.EntitySecurityListener"/>
+                class="net.openl10n.flies.security.SmartEntitySecurityListener"/>
       </entity-listeners>
     </persistence-unit-defaults>
   </persistence-unit-metadata>

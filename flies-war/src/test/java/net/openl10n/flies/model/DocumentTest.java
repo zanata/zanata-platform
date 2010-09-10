@@ -1,7 +1,10 @@
 package net.openl10n.flies.model;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.List;
 
@@ -9,17 +12,14 @@ import javax.persistence.EntityManager;
 
 import net.openl10n.flies.FliesDbunitJpaTest;
 import net.openl10n.flies.common.ContentType;
+import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.dao.DocumentDAO;
-import net.openl10n.flies.model.HDocument;
-import net.openl10n.flies.model.HIterationProject;
-import net.openl10n.flies.model.HProjectIteration;
-import net.openl10n.flies.model.HTextFlow;
-import net.openl10n.flies.model.HTextFlowTarget;
-import net.openl10n.flies.model.HTextFlowTargetHistory;
-import net.openl10n.flies.service.LocaleService;
+import net.openl10n.flies.dao.SupportedLanguageDAO;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
+import org.jboss.seam.security.Identity;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -28,17 +28,29 @@ public class DocumentTest extends FliesDbunitJpaTest
 {
 
    private DocumentDAO dao;
-   private LocaleService localeServiceImpl;
+   private SupportedLanguageDAO localeDAO;
+   HLocale en_US;
+   HLocale de_DE;
 
    protected void prepareDBUnitOperations()
    {
       beforeTestOperations.add(new DataSetOperation("META-INF/testdata/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+      beforeTestOperations.add(new DataSetOperation("META-INF/testdata/SupportedLanguagesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+   }
+
+   @BeforeClass
+   void beforeClass()
+   {
+      Identity.setSecurityEnabled(false);
    }
 
    @BeforeMethod(firstTimeOnly = true)
-   public void setup()
+   public void beforeMethod()
    {
       dao = new DocumentDAO((Session) getEm().getDelegate());
+      localeDAO = new SupportedLanguageDAO((Session) em.getDelegate());
+      en_US = localeDAO.findByLocaleId(LocaleId.EN_US);
+      de_DE = localeDAO.findByLocaleId(new LocaleId("de-DE"));
    }
 
    @Test
@@ -62,8 +74,7 @@ public class DocumentTest extends FliesDbunitJpaTest
       HIterationProject project = em.find(HIterationProject.class, 1l);
       // assertThat( project, notNullValue() );
 
-
-      HDocument hdoc = new HDocument("fullpath", ContentType.TextPlain, localeServiceImpl.getDefautLanguage());
+      HDocument hdoc = new HDocument("fullpath", ContentType.TextPlain, en_US);
       hdoc.setProjectIteration(project.getProjectIterations().get(0));
 
       List<HTextFlow> textFlows = hdoc.getTextFlows();
@@ -109,6 +120,7 @@ public class DocumentTest extends FliesDbunitJpaTest
       assertThat(flow2.isObsolete(), is(false));
    }
 
+   // FIXME this test only works if resources-dev is on the classpath
    @SuppressWarnings("unchecked")
    @Test
    public void ensureHistoryOnTextFlow()
@@ -117,7 +129,7 @@ public class DocumentTest extends FliesDbunitJpaTest
       HIterationProject project = em.find(HIterationProject.class, 1l);
       // assertThat( project, notNullValue() );
 
-      HDocument hdoc = new HDocument("fullpath", ContentType.TextPlain, localeServiceImpl.getDefautLanguage());
+      HDocument hdoc = new HDocument("fullpath", ContentType.TextPlain, en_US);
       hdoc.setProjectIteration(project.getProjectIterations().get(0));
 
       List<HTextFlow> textFlows = hdoc.getTextFlows();
@@ -136,7 +148,7 @@ public class DocumentTest extends FliesDbunitJpaTest
 
       em.flush();
 
-      HTextFlowTarget target = new HTextFlowTarget(flow1, localeServiceImpl.getDefautLanguage());
+      HTextFlowTarget target = new HTextFlowTarget(flow1, de_DE);
       target.setContent("hello world");
       em.persist(target);
       em.flush();

@@ -37,9 +37,10 @@
       
       entity-manager-factory name is also referenced in in persistence.xml 
   -->
+  <!-- FIXME fliesDatabase vs testDatabase -->
   <persistence:entity-manager-factory
       name="entityManagerFactory"
-      persistence-unit-name="fliesDatabase"
+      persistence-unit-name="testDatabase"
       installed="true"
       startup="true" />
 

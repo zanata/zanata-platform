@@ -1,5 +1,7 @@
 package net.openl10n.flies.rest.service;
 
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.eq;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.is;
@@ -20,12 +22,11 @@ import net.openl10n.flies.rest.dto.ProjectType;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.easymock.EasyMock;
-import static org.easymock.EasyMock.*;
 import org.easymock.IMocksControl;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
-import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -35,6 +36,12 @@ public class ProjectServiceTest extends FliesRestTest
    private final String RESOURCE_PATH = "/projects/p/";
    IMocksControl mockControl = EasyMock.createControl();
    Identity mockIdentity = mockControl.createMock(Identity.class);
+
+   @BeforeClass
+   void beforeClass()
+   {
+      Identity.setSecurityEnabled(false);
+   }
 
    @BeforeMethod
    void reset()

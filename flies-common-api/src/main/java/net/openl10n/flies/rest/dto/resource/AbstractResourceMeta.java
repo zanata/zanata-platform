@@ -1,15 +1,11 @@
 package net.openl10n.flies.rest.dto.resource;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -21,14 +17,13 @@ import net.openl10n.flies.common.ResourceType;
 import net.openl10n.flies.rest.dto.ContentTypeAdapter;
 import net.openl10n.flies.rest.dto.DTOUtil;
 import net.openl10n.flies.rest.dto.Extensible;
-import net.openl10n.flies.rest.dto.HasCollectionSample;
 import net.openl10n.flies.rest.dto.LocaleIdAdapter;
 import net.openl10n.flies.rest.dto.extensions.PoHeader;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonPropertyOrder;
 
 @XmlType(name = "abstractResourceMetaType", namespace = Namespaces.FLIES, propOrder = { "name", "extensions" })
+@XmlSeeAlso({ PoHeader.class })
 public abstract class AbstractResourceMeta implements Serializable, Extensible<AbstractResourceMeta>
 {
 
