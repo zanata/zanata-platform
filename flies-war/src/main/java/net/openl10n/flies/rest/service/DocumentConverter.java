@@ -13,7 +13,7 @@ import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.dao.TextFlowDAO;
 import net.openl10n.flies.dao.TextFlowTargetDAO;
-import net.openl10n.flies.exception.FliesException;
+import net.openl10n.flies.exception.FliesRestException;
 import net.openl10n.flies.model.HDocument;
 import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.model.HSimpleComment;
@@ -83,7 +83,7 @@ public class DocumentConverter
     * @param toHDoc destination HDocument
     * @throws ActionException
     */
-   public void copy(Document fromDoc, HDocument toHDoc) throws FliesException
+   public void copy(Document fromDoc, HDocument toHDoc) throws FliesRestException
    {
       log.debug("copy Document to HDocument");
       boolean docChanged = false;
@@ -285,7 +285,7 @@ public class DocumentConverter
     * 
     * @throws ActionException
     */
-   private boolean copy(TextFlow fromTf, HTextFlow htf, int nextDocRev) throws FliesException
+   private boolean copy(TextFlow fromTf, HTextFlow htf, int nextDocRev) throws FliesRestException
    {
       log.debug("copy TextFlow to HTextFlow");
       boolean changed = false;
@@ -451,7 +451,7 @@ public class DocumentConverter
    }
 
 
-   private void copy(TextFlowTarget target, HTextFlowTarget hTarget, HTextFlow htf) throws FliesException
+   private void copy(TextFlowTarget target, HTextFlowTarget hTarget, HTextFlow htf) throws FliesRestException
    {
       log.debug("copy textflowtarget to HtextFlowTarget");
       boolean changed = false;
