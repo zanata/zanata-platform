@@ -199,7 +199,7 @@
 								</goals>
 								<configuration>
 									<skip>false</skip>
-									<redirectTestOutputToFile>true</redirectTestOutputToFile>
+									<redirectTestOutputToFile>false</redirectTestOutputToFile>
 									<printSummary>true</printSummary>
 									<forkMode>always</forkMode>
 									<suiteXmlFiles>
@@ -860,6 +860,10 @@
 					<artifactId>jcl-over-slf4j</artifactId>
 				</exclusion>
 				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-simple</artifactId>
+				</exclusion>
+				<exclusion>
 					<groupId>javax.activation</groupId>
 					<artifactId>activation</artifactId>
 				</exclusion>
@@ -1056,6 +1060,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
+			<!-- we should probably use scope test -->
 		</dependency>
 
 		<dependency>
