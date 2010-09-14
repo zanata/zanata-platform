@@ -58,7 +58,7 @@ public class AccountService
    private AccountRoleDAO accountRoleDAO;
 
    @In
-   private LocaleDAO supportedLanguageDAO;
+   private LocaleDAO localeDAO;
 
    @In
    private Identity identity;
@@ -158,7 +158,7 @@ public class AccountService
       hPerson.getTribeMemberships().clear();
       for (String tribe : from.getTribes())
       {
-         HLocale hTribe = supportedLanguageDAO.findByLocaleId(new LocaleId(tribe));
+         HLocale hTribe = localeDAO.findByLocaleId(new LocaleId(tribe));
          if (hTribe == null)
             // generate error for missing tribe
             throw new NoLogWebApplicationException(Response.status(Status.BAD_REQUEST).entity(

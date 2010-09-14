@@ -27,18 +27,18 @@ import com.ibm.icu.util.ULocale;
 @Scope(ScopeType.STATELESS)
 public class LocaleServiceImpl implements LocaleService
 {
-   private LocaleDAO supportedLanguageDAO;
+   private LocaleDAO localeDAO;
    
    @In
-   public void setLocaleDAO(LocaleDAO supportedLanguageDAO)
+   public void setLocaleDAO(LocaleDAO localeDAO)
    {
-      this.supportedLanguageDAO= supportedLanguageDAO;
+      this.localeDAO= localeDAO;
    }
 
    public List<FliesLocalePair> getAllLocales()
    {
       List<FliesLocalePair> supportedLanguage = new ArrayList<FliesLocalePair>();
-      List<HLocale> hSupportedLanguages = supportedLanguageDAO.findAll();
+      List<HLocale> hSupportedLanguages = localeDAO.findAll();
       if (hSupportedLanguages == null)
          return supportedLanguage;
       for (HLocale hSupportedLanguage : hSupportedLanguages)
@@ -57,18 +57,18 @@ public class LocaleServiceImpl implements LocaleService
       HLocale entity = new HLocale();
       entity.setLocaleId(localeId);
       entity.setActive(true);
-      supportedLanguageDAO.makePersistent(entity);
-      supportedLanguageDAO.flush();
+      localeDAO.makePersistent(entity);
+      localeDAO.flush();
    }
 
    public void disable(LocaleId localeId)
    {
-      HLocale entity = supportedLanguageDAO.findByLocaleId(localeId);
+      HLocale entity = localeDAO.findByLocaleId(localeId);
       if (entity != null)
       {
          entity.setActive(false);
-         supportedLanguageDAO.makePersistent(entity);
-         supportedLanguageDAO.flush();
+         localeDAO.makePersistent(entity);
+         localeDAO.flush();
       }
    }
 
@@ -86,36 +86,36 @@ public class LocaleServiceImpl implements LocaleService
 
    public void enable(LocaleId localeId)
    {
-      HLocale entity = supportedLanguageDAO.findByLocaleId(localeId);
+      HLocale entity = localeDAO.findByLocaleId(localeId);
       if (entity != null)
       {
          entity.setActive(true);
-         supportedLanguageDAO.makePersistent(entity);
-         supportedLanguageDAO.flush();
+         localeDAO.makePersistent(entity);
+         localeDAO.flush();
       }
    }
    
    public boolean localeExists(LocaleId locale)
    {
-      HLocale entity = supportedLanguageDAO.findByLocaleId(locale);
+      HLocale entity = localeDAO.findByLocaleId(locale);
       return entity != null;
    }
    
    public List<HLocale> getSupportedLocales()
    {
-      return supportedLanguageDAO.findAllActive();
+      return localeDAO.findAllActive();
    }
 
    public boolean localeSupported(LocaleId locale)
    {
-      HLocale entity = supportedLanguageDAO.findByLocaleId(locale);
+      HLocale entity = localeDAO.findByLocaleId(locale);
       return entity != null && entity.isActive();
    }
 
    public HLocale getSupportedLanguageByLocale(LocaleId locale) throws FliesServiceException
    {
 
-      HLocale hLocale = supportedLanguageDAO.findByLocaleId(locale);
+      HLocale hLocale = localeDAO.findByLocaleId(locale);
       if (hLocale == null || !hLocale.isActive())
       {
          throw new FliesServiceException("Unsupported Locale: " + locale.getId() + " within this context");

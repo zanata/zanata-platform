@@ -23,7 +23,7 @@ public class LanguageTeamServiceImpl implements LanguageTeamService
 {
    private PersonDAO personDAO;
 
-   private LocaleDAO supportedLanguageDAO;
+   private LocaleDAO localeDAO;
 
    @In
    public void setPersonDAO(PersonDAO personDAO)
@@ -32,9 +32,9 @@ public class LanguageTeamServiceImpl implements LanguageTeamService
    }
    
    @In
-   public void setSupportedLanguageDAO(LocaleDAO supportedLanguageDAO)
+   public void setLocaleDAO(LocaleDAO localeDAO)
    {
-      this.supportedLanguageDAO = supportedLanguageDAO;
+      this.localeDAO = localeDAO;
    }
    
 
@@ -45,7 +45,7 @@ public class LanguageTeamServiceImpl implements LanguageTeamService
 
    public boolean joinLanguageTeam(String locale, Long personId) throws FliesServiceException
    {
-      HLocale lang = supportedLanguageDAO.findByLocaleId(new LocaleId(locale));
+      HLocale lang = localeDAO.findByLocaleId(new LocaleId(locale));
       HPerson currentPerson = personDAO.findById(personId, false);
 
       if (!lang.getMembers().contains(currentPerson))
@@ -57,7 +57,7 @@ public class LanguageTeamServiceImpl implements LanguageTeamService
          else
          {
             lang.getMembers().add(currentPerson);
-            supportedLanguageDAO.flush();
+            localeDAO.flush();
             return true;
          }
       }
@@ -66,13 +66,13 @@ public class LanguageTeamServiceImpl implements LanguageTeamService
 
    public boolean leaveLanguageTeam(String locale, Long personId)
    {
-      HLocale lang = supportedLanguageDAO.findByLocaleId(new LocaleId(locale));
+      HLocale lang = localeDAO.findByLocaleId(new LocaleId(locale));
       HPerson currentPerson = personDAO.findById(personId, false);
 
       if (lang.getMembers().contains(currentPerson))
       {
          lang.getMembers().remove(currentPerson);
-         supportedLanguageDAO.flush();
+         localeDAO.flush();
          return true;
       }
 

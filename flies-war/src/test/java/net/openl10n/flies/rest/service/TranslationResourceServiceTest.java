@@ -80,8 +80,8 @@ public class TranslationResourceServiceTest extends FliesRestTest
       final ETagUtils eTagUtils = new ETagUtils(getSession(), documentDAO);
 
       LocaleServiceImpl localeService = new LocaleServiceImpl();
-      LocaleDAO LocaleDAO = new LocaleDAO(getSession());
-      localeService.setLocaleDAO(LocaleDAO);
+      LocaleDAO localeDAO = new LocaleDAO(getSession());
+      localeService.setLocaleDAO(localeDAO);
       TranslationResourcesService obj = new TranslationResourcesService(projectIterationDAO, documentDAO, personDAO, textFlowTargetDAO, localeService, resourceUtils, eTagUtils);
 
       resources.add(obj);
