@@ -17,7 +17,7 @@ import org.testng.annotations.Test;
 public abstract class FliesJpaTest
 {
 
-   private static final String PERSIST_NAME = "testDatabase";
+   private static final String PERSIST_NAME = "fliesDatabase";
 
    private static EntityManagerFactory emf;
 

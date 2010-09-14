@@ -9,10 +9,13 @@
 		<listener class-name="net.openl10n.flies.testing.SeamTestTransformer"/>
 	</listeners>
 
+<!-- these default values are hard-coded into FliesDBUnitSeamTest:
 	<parameter name="database" value="hsql" />
 	<parameter name="datasourceJndiName" value="java:/fliesDatasource" />
 	<parameter name="binaryDir" value="" />
+ -->
 
+		<!-- 
 	<test name="Seam Tests">
  		<groups>
 	 		<packages>
@@ -23,5 +26,16 @@
  			</run>
  		</groups>
 	</test>
-
+		-->
+		<!-- 
+		TODO: use group seam-tests instead, but make sure TestNG 
+		executes up the @BeforeSuite method SeamTest.startSeam()  
+		 -->
+     	<test name="Seam Tests">
+     		<classes>
+    			<class name="net.openl10n.flies.rest.service.DocumentsServiceSeamTest"/>
+     			<class name="net.openl10n.flies.rest.service.ProjectServiceRawSeamTest"/>
+     			<class name="net.openl10n.flies.rest.service.ProjectsServiceSeamTest"/>
+     		</classes>
+     	</test>
 </suite>
