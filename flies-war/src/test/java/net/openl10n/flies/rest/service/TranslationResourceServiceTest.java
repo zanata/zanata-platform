@@ -19,7 +19,7 @@ import net.openl10n.flies.common.ResourceType;
 import net.openl10n.flies.dao.DocumentDAO;
 import net.openl10n.flies.dao.PersonDAO;
 import net.openl10n.flies.dao.ProjectIterationDAO;
-import net.openl10n.flies.dao.SupportedLanguageDAO;
+import net.openl10n.flies.dao.LocaleDAO;
 import net.openl10n.flies.dao.TextFlowTargetDAO;
 import net.openl10n.flies.rest.StringSet;
 import net.openl10n.flies.rest.client.ITranslationResources;
@@ -66,7 +66,7 @@ public class TranslationResourceServiceTest extends FliesRestTest
    protected void prepareDBUnitOperations()
    {
       beforeTestOperations.add(new DataSetOperation("META-INF/testdata/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-      beforeTestOperations.add(new DataSetOperation("META-INF/testdata/SupportedLanguagesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+      beforeTestOperations.add(new DataSetOperation("META-INF/testdata/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
 
    @Override
@@ -80,8 +80,8 @@ public class TranslationResourceServiceTest extends FliesRestTest
       final ETagUtils eTagUtils = new ETagUtils(getSession(), documentDAO);
 
       LocaleServiceImpl localeService = new LocaleServiceImpl();
-      SupportedLanguageDAO supportedLanguageDAO = new SupportedLanguageDAO(getSession());
-      localeService.setSupportedLanguageDAO(supportedLanguageDAO);
+      LocaleDAO LocaleDAO = new LocaleDAO(getSession());
+      localeService.setLocaleDAO(LocaleDAO);
       TranslationResourcesService obj = new TranslationResourcesService(projectIterationDAO, documentDAO, personDAO, textFlowTargetDAO, localeService, resourceUtils, eTagUtils);
 
       resources.add(obj);

@@ -11,6 +11,8 @@ import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
+import org.jboss.seam.security.Identity;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -25,6 +27,12 @@ public class LocaleDAOTest extends FliesDbunitJpaTest
    protected void prepareDBUnitOperations()
    {
       beforeTestOperations.add(new DataSetOperation("META-INF/testdata/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+   }
+
+   @BeforeClass
+   void beforeClass()
+   {
+      Identity.setSecurityEnabled(false);
    }
 
    @BeforeMethod(firstTimeOnly = true)

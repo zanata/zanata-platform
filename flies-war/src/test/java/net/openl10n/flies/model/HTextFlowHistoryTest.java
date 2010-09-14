@@ -8,7 +8,7 @@ import java.util.List;
 import net.openl10n.flies.FliesDbunitJpaTest;
 import net.openl10n.flies.common.ContentType;
 import net.openl10n.flies.common.LocaleId;
-import net.openl10n.flies.dao.SupportedLanguageDAO;
+import net.openl10n.flies.dao.LocaleDAO;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
@@ -18,13 +18,13 @@ import org.testng.annotations.Test;
 
 public class HTextFlowHistoryTest extends FliesDbunitJpaTest
 {
-   private SupportedLanguageDAO localeDAO;
+   private LocaleDAO localeDAO;
    HLocale en_US;
 
    @BeforeMethod(firstTimeOnly = true)
    public void beforeMethod()
    {
-      localeDAO = new SupportedLanguageDAO((Session) em.getDelegate());
+      localeDAO = new LocaleDAO((Session) em.getDelegate());
       en_US = localeDAO.findByLocaleId(LocaleId.EN_US);
    }
 
@@ -32,7 +32,7 @@ public class HTextFlowHistoryTest extends FliesDbunitJpaTest
    protected void prepareDBUnitOperations()
    {
       beforeTestOperations.add(new DataSetOperation("META-INF/testdata/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-      beforeTestOperations.add(new DataSetOperation("META-INF/testdata/SupportedLanguagesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+      beforeTestOperations.add(new DataSetOperation("META-INF/testdata/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
 
    // FIXME this test only works if resources-dev is on the classpath

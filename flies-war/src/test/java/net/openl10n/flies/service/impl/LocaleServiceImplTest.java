@@ -26,7 +26,7 @@ public class LocaleServiceImplTest
    {
       this.testLocaleServiceImpl = new LocaleServiceImpl();
       this.mockDAO = EasyMock.createMock(LocaleDAO.class);
-      this.testLocaleServiceImpl.setSupportedLanguageDAO( mockDAO);
+      this.testLocaleServiceImpl.setLocaleDAO(mockDAO);
    }
 
 

@@ -14,7 +14,7 @@ import net.openl10n.flies.FliesDbunitJpaTest;
 import net.openl10n.flies.common.ContentType;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.dao.DocumentDAO;
-import net.openl10n.flies.dao.SupportedLanguageDAO;
+import net.openl10n.flies.dao.LocaleDAO;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
@@ -28,14 +28,14 @@ public class DocumentTest extends FliesDbunitJpaTest
 {
 
    private DocumentDAO dao;
-   private SupportedLanguageDAO localeDAO;
+   private LocaleDAO localeDAO;
    HLocale en_US;
    HLocale de_DE;
 
    protected void prepareDBUnitOperations()
    {
       beforeTestOperations.add(new DataSetOperation("META-INF/testdata/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-      beforeTestOperations.add(new DataSetOperation("META-INF/testdata/SupportedLanguagesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+      beforeTestOperations.add(new DataSetOperation("META-INF/testdata/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
 
    @BeforeClass
@@ -48,7 +48,7 @@ public class DocumentTest extends FliesDbunitJpaTest
    public void beforeMethod()
    {
       dao = new DocumentDAO((Session) getEm().getDelegate());
-      localeDAO = new SupportedLanguageDAO((Session) em.getDelegate());
+      localeDAO = new LocaleDAO((Session) em.getDelegate());
       en_US = localeDAO.findByLocaleId(LocaleId.EN_US);
       de_DE = localeDAO.findByLocaleId(new LocaleId("de-DE"));
    }

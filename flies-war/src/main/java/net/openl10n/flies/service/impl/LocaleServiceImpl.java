@@ -30,7 +30,8 @@ public class LocaleServiceImpl implements LocaleService
    private LocaleDAO supportedLanguageDAO;
    
    @In
-   public void setSupportedLanguageDAO(LocaleDAO supportedLanguageDAO){
+   public void setLocaleDAO(LocaleDAO supportedLanguageDAO)
+   {
       this.supportedLanguageDAO= supportedLanguageDAO;
    }
 
