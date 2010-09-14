@@ -46,7 +46,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest
    private static final String AUTH_KEY = "b6d7044e9ee3b2447c28fb7c50d86d98";
    private static final String USERNAME = "admin";
    private static final String DOCUMENTS_DATA_DBUNIT_XML = "net/openl10n/flies/test/model/DocumentsData.dbunit.xml";
-   private static final String LOCALE_DATA_DBUNIT_XML = "META-INF/testdata/SupportedLanguagesData.dbunit.xml";
+   private static final String LOCALE_DATA_DBUNIT_XML = "META-INF/testdata/LocalesData.dbunit.xml";
    private static final String PROJECTS_DATA_DBUNIT_XML = "net/openl10n/flies/test/model/ProjectsData.dbunit.xml";
    private static final LocaleId DE_DE = LocaleId.fromJavaName("de_DE");
    private static final LocaleId FR = LocaleId.fromJavaName("fr");

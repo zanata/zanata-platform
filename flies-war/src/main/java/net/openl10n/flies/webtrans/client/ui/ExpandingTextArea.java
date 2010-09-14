@@ -45,11 +45,11 @@ public class ExpandingTextArea extends TextArea
    public static final int EXPAND_MIN_DEFAULT = 0;
    public static final int EXPAND_MAX_DEFAULT = 9999;
 
-   private int valLength;
-   private int boxWidth;
+   protected int valLength;
+   protected int boxWidth;
 
-   private int expandMin = EXPAND_MIN_DEFAULT;
-   private int expandMax = EXPAND_MAX_DEFAULT;
+   protected int expandMin = EXPAND_MIN_DEFAULT;
+   protected int expandMax = EXPAND_MAX_DEFAULT;
 
    /**
     * Creates an empty text area.
@@ -145,7 +145,7 @@ public class ExpandingTextArea extends TextArea
       });
    }
 
-   private void resizeToContents()
+   protected void resizeToContents()
    {
 
       int vlen = getText().length();
@@ -153,13 +153,9 @@ public class ExpandingTextArea extends TextArea
 
       Element e = getElement();
 
-      // TODO this doesn't work on msie and opera
-      // need to add browser specific implementation
-      boolean hCheck = true;
-
       if (vlen != valLength || ewidth != boxWidth)
       {
-         if (hCheck && (vlen < valLength || ewidth != boxWidth))
+         if (vlen < valLength || ewidth != boxWidth)
          {
             e.getStyle().setHeight(0, Unit.PX);
          }

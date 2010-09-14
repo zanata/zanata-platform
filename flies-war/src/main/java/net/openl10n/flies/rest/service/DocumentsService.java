@@ -65,7 +65,6 @@ public class DocumentsService
    @In
    private DocumentDAO documentDAO;
 
-
    @In
    private LocaleService localeServiceImpl;
 
@@ -135,7 +134,7 @@ public class DocumentsService
 
       for (HDocument hDocument : hdocs)
       {
-         Document doc = documentConverter.copyDocument(hDocument, true);
+         Document doc = documentConverter.copyHDocument(hDocument, true);
 
          URI docUri = baseUri.resolve(URIHelper.getDocument(projectSlug, iterationSlug, doc.getId()));
          documentConverter.addLinks(doc, docUri, iterationUri);

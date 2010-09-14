@@ -15,15 +15,15 @@ import org.jboss.seam.annotations.Scope;
 @Name("supportedLanguageDAO")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
-public class SupportedLanguageDAO extends AbstractDAOImpl<HLocale, Long>
+public class LocaleDAO extends AbstractDAOImpl<HLocale, Long>
 {
 
-   public SupportedLanguageDAO()
+   public LocaleDAO()
    {
       super(HLocale.class);
    }
 
-   public SupportedLanguageDAO(Session session)
+   public LocaleDAO(Session session)
    {
       super(HLocale.class, session);
    }

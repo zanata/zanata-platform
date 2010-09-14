@@ -13,7 +13,7 @@ import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.dao.TextFlowDAO;
 import net.openl10n.flies.dao.TextFlowTargetDAO;
-import net.openl10n.flies.exception.FliesException;
+import net.openl10n.flies.exception.FliesRestException;
 import net.openl10n.flies.model.HDocument;
 import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.model.HSimpleComment;
@@ -83,7 +83,7 @@ public class DocumentConverter
     * @param toHDoc destination HDocument
     * @throws ActionException
     */
-   public void copy(Document fromDoc, HDocument toHDoc) throws FliesException
+   public void copy(Document fromDoc, HDocument toHDoc) throws FliesRestException
    {
       log.debug("copy Document to HDocument");
       boolean docChanged = false;
@@ -285,7 +285,7 @@ public class DocumentConverter
     * 
     * @throws ActionException
     */
-   private boolean copy(TextFlow fromTf, HTextFlow htf, int nextDocRev) throws FliesException
+   private boolean copy(TextFlow fromTf, HTextFlow htf, int nextDocRev) throws FliesRestException
    {
       log.debug("copy TextFlow to HTextFlow");
       boolean changed = false;
@@ -451,7 +451,7 @@ public class DocumentConverter
    }
 
 
-   private void copy(TextFlowTarget target, HTextFlowTarget hTarget, HTextFlow htf) throws FliesException
+   private void copy(TextFlowTarget target, HTextFlowTarget hTarget, HTextFlow htf) throws FliesRestException
    {
       log.debug("copy textflowtarget to HtextFlowTarget");
       boolean changed = false;
@@ -491,7 +491,7 @@ public class DocumentConverter
       doc.getLinks().add(link);
    }
 
-   public TextFlow copy(HTextFlow htf)
+   private TextFlow copyHTextFlow(HTextFlow htf)
    {
       log.debug("copy HTextFlow to TextFlow");
       TextFlow textFlow = new TextFlow(htf.getResId());
@@ -543,7 +543,7 @@ public class DocumentConverter
       return textFlow;
    }
 
-   public Document copyDocument(HDocument hDoc, int levels)
+   private Document copyDocument(HDocument hDoc, int levels)
    {
       log.debug("copy hdocument to document");
       Document doc = new Document(hDoc.getDocId(), hDoc.getName(), hDoc.getPath(), hDoc.getContentType(), hDoc.getRevision(), hDoc.getLocale().getLocaleId());
@@ -553,7 +553,7 @@ public class DocumentConverter
          for (HTextFlow hRes : hDoc.getTextFlows())
          {
 
-            docResources.add(copy(hRes));
+            docResources.add(copyHTextFlow(hRes));
          }
          HPoHeader fromPoHeader = hDoc.getPoHeader();
          if (fromPoHeader != null)
@@ -583,7 +583,7 @@ public class DocumentConverter
       return doc;
    }
 
-   public Document copyDocument(HDocument hdoc, boolean deep)
+   public Document copyHDocument(HDocument hdoc, boolean deep)
    {
       if (deep)
          return copyDocument(hdoc, Integer.MAX_VALUE);

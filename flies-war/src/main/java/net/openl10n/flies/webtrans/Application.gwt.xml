@@ -49,6 +49,14 @@
 -->
       <set-property name="log_DivLogger" value="DISABLED" />
     
+      <replace-with class="net.openl10n.flies.webtrans.client.editor.ExpandingTextAreaIeOpera">
+        <when-type-is class="net.openl10n.flies.webtrans.client.editor.ExpandingTextArea"/>
+        <any>
+            <when-property-is name="user.agent" value="ie6"/>
+            <when-property-is name="user.agent" value="opera"/>
+        </any>
+      </replace-with>
+
       <source path="client" />
       <source path="shared" />
 

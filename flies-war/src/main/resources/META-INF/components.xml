@@ -90,17 +90,9 @@
         <value>META-INF/testdata/AccountData.dbunit.xml</value>
         <value>META-INF/testdata/CommunitiesData.dbunit.xml</value>
         <value>META-INF/testdata/ProjectsData.dbunit.xml</value>
+        <value>META-INF/testdata/LocalesData.dbunit.xml</value>
     </property>
   </component>
-  <component name="dbunitImporterTribes" class="net.openl10n.flies.util.DBUnitImporter" installed="true">
-    <property name="database">@env.dbunit.type@</property>
-    <property name="datasourceJndiName">java:/fliesDatasource</property>
-    <property name="binaryDir">META-INF/testdata</property>
-    <property name="datasets">
-        <value>META-INF/testdata/SupportedLanguagesData.dbunit.xml</value>
-    </property>
-  </component>
-  
   <!-- 
 	${components.xml.nukes}  
   <international:locale-selector cookie-enabled="true"/> 

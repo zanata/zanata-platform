@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.openl10n.flies.common.LocaleId;
-import net.openl10n.flies.dao.SupportedLanguageDAO;
-import net.openl10n.flies.exception.FliesException;
+import net.openl10n.flies.dao.LocaleDAO;
+import net.openl10n.flies.exception.FliesServiceException;
 import net.openl10n.flies.model.FliesLocalePair;
 import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.service.LocaleService;
@@ -27,10 +27,10 @@ import com.ibm.icu.util.ULocale;
 @Scope(ScopeType.STATELESS)
 public class LocaleServiceImpl implements LocaleService
 {
-   private SupportedLanguageDAO supportedLanguageDAO;
+   private LocaleDAO supportedLanguageDAO;
    
    @In
-   public void setSupportedLanguageDAO(SupportedLanguageDAO supportedLanguageDAO){
+   public void setSupportedLanguageDAO(LocaleDAO supportedLanguageDAO){
       this.supportedLanguageDAO= supportedLanguageDAO;
    }
 
@@ -111,13 +111,13 @@ public class LocaleServiceImpl implements LocaleService
       return entity != null && entity.isActive();
    }
 
-   public HLocale getSupportedLanguageByLocale(LocaleId locale) throws FliesException
+   public HLocale getSupportedLanguageByLocale(LocaleId locale) throws FliesServiceException
    {
 
       HLocale hLocale = supportedLanguageDAO.findByLocaleId(locale);
       if (hLocale == null || !hLocale.isActive())
       {
-         throw new FliesException("Unsupported Locale: " + locale.getId() + " within this context");
+         throw new FliesServiceException("Unsupported Locale: " + locale.getId() + " within this context");
       }
       return hLocale;
    }
@@ -131,7 +131,7 @@ public class LocaleServiceImpl implements LocaleService
       {
          de = getSupportedLanguageByLocale(LocaleId.EN_US);
       }
-      catch (FliesException e)
+      catch (FliesServiceException e)
       {
          de = new HLocale(LocaleId.EN_US);
       }

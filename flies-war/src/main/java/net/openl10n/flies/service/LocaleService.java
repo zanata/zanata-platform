@@ -3,7 +3,7 @@ package net.openl10n.flies.service;
 import java.util.List;
 
 import net.openl10n.flies.common.LocaleId;
-import net.openl10n.flies.exception.FliesException;
+import net.openl10n.flies.exception.FliesServiceException;
 import net.openl10n.flies.model.FliesLocalePair;
 import net.openl10n.flies.model.HLocale;
 
@@ -23,7 +23,7 @@ public interface LocaleService
    
    List<HLocale> getSupportedLocales();
 
-   HLocale getSupportedLanguageByLocale(LocaleId locale) throws FliesException;
+   HLocale getSupportedLanguageByLocale(LocaleId locale) throws FliesServiceException;
 
    @Deprecated
    HLocale getDefautLanguage();

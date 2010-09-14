@@ -102,6 +102,8 @@ tr.TableEditorRow.selected td {
 	margin: 2px;
 	border: none;
 	background: transparent;
+	resize: none;
+	outline: none;
 }
 
 .Severity-Error {
