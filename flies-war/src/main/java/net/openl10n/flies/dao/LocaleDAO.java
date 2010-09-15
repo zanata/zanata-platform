@@ -12,7 +12,7 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 
-@Name("supportedLanguageDAO")
+@Name("localeDAO")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
 public class LocaleDAO extends AbstractDAOImpl<HLocale, Long>
