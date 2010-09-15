@@ -7,17 +7,21 @@ import java.util.Set;
 
 import javax.xml.bind.JAXBException;
 
+import net.openl10n.flies.adapter.po.PoReader2;
 import net.openl10n.flies.client.commands.gettext.PublicanUtil;
+import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.rest.client.ClientUtility;
 import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 import net.openl10n.flies.rest.client.ITranslationResources;
 import net.openl10n.flies.rest.dto.resource.Resource;
 import net.openl10n.flies.rest.dto.resource.ResourceMeta;
+import net.openl10n.flies.rest.dto.resource.TranslationsResource;
 
 import org.jboss.resteasy.client.ClientResponse;
 import org.kohsuke.args4j.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.InputSource;
 
 /**
  * @author Sean Flanigan <a
@@ -124,17 +128,32 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
       {
          localeDirs = PublicanUtil.findLocaleDirs(srcDir);
       }
+
+      PoReader2 poReader = new PoReader2();
       for (String docId : localDocNames)
       {
-         Resource doc = new Resource(docId);
-         // TODO load 'doc' from pot/${docID}.pot
-         File pot = new File(potDir, docId + ".pot");
-         translationResources.putResource(docId, doc);
+         Resource srcDoc = new Resource(docId);
+         File potFile = new File(potDir, docId + ".pot");
+         InputSource potInputSource = new InputSource(potFile.toURI().toString());
+         // load 'srcDoc' from pot/${docID}.pot
+         poReader.extractTemplate(srcDoc, potInputSource, new LocaleId(sourceLang));
+         translationResources.putResource(docId, srcDoc);
          if (importPo)
          {
-            for (File loc : localeDirs)
+            for (File localeDir : localeDirs)
             {
-               String publicanLocale = loc.getName();
+               File poFile = new File(localeDir, docId + ".po");
+               if (poFile.exists())
+               {
+                  InputSource inputSource = new InputSource(poFile.toURI().toString());
+                  inputSource.setEncoding("utf8");
+                  String publicanLocale = localeDir.getName();
+                  // TODO locale mapping
+                  LocaleId locale = new LocaleId(publicanLocale);
+                  TranslationsResource targetDoc = new TranslationsResource();
+                  poReader.extractTarget(srcDoc, targetDoc, inputSource, locale);
+                  translationResources.putTranslations(docId, locale, targetDoc);
+               }
             }
          }
       }
