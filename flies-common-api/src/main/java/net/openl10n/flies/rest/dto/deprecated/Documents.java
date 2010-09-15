@@ -12,6 +12,7 @@ import net.openl10n.flies.rest.dto.DTOUtil;
 
 @XmlRootElement(name = "documents", namespace = Namespaces.FLIES)
 @XmlType(name = "documentsType", namespace = Namespaces.FLIES)
+@Deprecated
 public class Documents
 {
 

@@ -20,6 +20,7 @@ import net.openl10n.flies.rest.dto.LocaleIdAdapter;
 @XmlType(name = "textFlowTargetType", namespace = Namespaces.FLIES, propOrder = { "content", "extensions" })
 @XmlRootElement(name = "text-flow-target", namespace = Namespaces.FLIES)
 @XmlSeeAlso( { SimpleComment.class })
+@Deprecated
 public class TextFlowTarget implements IExtensible
 {
 

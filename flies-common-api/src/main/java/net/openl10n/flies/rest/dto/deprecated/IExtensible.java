@@ -2,6 +2,7 @@ package net.openl10n.flies.rest.dto.deprecated;
 
 import java.util.List;
 
+@Deprecated
 public interface IExtensible
 {
 

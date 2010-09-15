@@ -19,6 +19,7 @@ import net.openl10n.flies.rest.dto.DTOUtil;
  */
 @XmlType(name = "textFlowTargetsType", namespace = Namespaces.FLIES)
 @XmlRootElement(name = "targets", namespace = Namespaces.FLIES)
+@Deprecated
 public class TextFlowTargets
 {
 

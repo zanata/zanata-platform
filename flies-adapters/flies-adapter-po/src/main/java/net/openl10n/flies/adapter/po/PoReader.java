@@ -31,6 +31,7 @@ import org.xml.sax.InputSource;
 
 import com.google.common.collect.ImmutableSet;
 
+@Deprecated
 public class PoReader
 {
 

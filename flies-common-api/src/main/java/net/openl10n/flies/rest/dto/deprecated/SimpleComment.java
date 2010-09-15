@@ -10,6 +10,7 @@ import net.openl10n.flies.rest.dto.DTOUtil;
 
 @XmlRootElement(name = "comment", namespace = Namespaces.FLIES)
 @XmlType(name = "simpleCommentType", namespace = Namespaces.FLIES)
+@Deprecated
 public class SimpleComment
 {
 

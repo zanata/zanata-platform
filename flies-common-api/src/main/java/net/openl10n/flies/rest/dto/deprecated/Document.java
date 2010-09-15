@@ -26,6 +26,7 @@ import net.openl10n.flies.rest.dto.po.PoTargetHeaders;
 @XmlRootElement(name = "document", namespace = Namespaces.FLIES)
 @XmlType(name = "documentType", namespace = Namespaces.FLIES, propOrder = { "textFlows", "extensions", "links" })
 @XmlSeeAlso( { PoHeader.class, PoTargetHeaders.class })
+@Deprecated
 public class Document implements IExtensible
 {
 

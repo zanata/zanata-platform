@@ -13,6 +13,7 @@ import net.openl10n.flies.rest.dto.deprecated.SimpleComment;
 
 @XmlType(name = "headerType", namespace = PoHeader.NAMESPACE, propOrder = { "comment", "entries" })
 @XmlRootElement(name = "header", namespace = PoHeader.NAMESPACE)
+@Deprecated
 public class PoHeader
 {
 

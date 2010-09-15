@@ -18,6 +18,7 @@ import net.openl10n.flies.rest.dto.DTOUtil;
  */
 @XmlType(name = "poHeadersType", namespace = PoHeader.NAMESPACE)
 @XmlRootElement(name = "po-target-headers", namespace = PoHeader.NAMESPACE)
+@Deprecated
 public class PoTargetHeaders
 {
 

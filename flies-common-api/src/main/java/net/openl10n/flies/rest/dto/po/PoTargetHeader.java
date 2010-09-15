@@ -10,6 +10,7 @@ import net.openl10n.flies.rest.dto.LocaleIdAdapter;
 
 @XmlType(name = "poTargetHeaderType", namespace = PoHeader.NAMESPACE)
 @XmlRootElement(name = "po-target-header", namespace = PoHeader.NAMESPACE)
+@Deprecated
 public class PoTargetHeader extends PoHeader
 {
 

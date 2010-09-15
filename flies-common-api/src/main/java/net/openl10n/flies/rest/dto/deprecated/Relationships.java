@@ -1,5 +1,6 @@
 package net.openl10n.flies.rest.dto.deprecated;
 
+@Deprecated
 public class Relationships
 {
 

@@ -14,6 +14,7 @@ import net.openl10n.flies.rest.dto.deprecated.SimpleComment;
 
 @XmlRootElement(name = "po-entry", namespace = PoHeader.NAMESPACE)
 @XmlType(name = "poEntryType", namespace = PoHeader.NAMESPACE, propOrder = { "context", "extractedComment", "references", "flags" })
+@Deprecated
 public class PotEntryData
 {
 

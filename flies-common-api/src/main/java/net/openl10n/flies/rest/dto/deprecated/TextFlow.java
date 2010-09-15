@@ -20,6 +20,7 @@ import net.openl10n.flies.rest.dto.po.PotEntryData;
 @XmlType(name = "textFlowType", namespace = Namespaces.FLIES, propOrder = { "content", "extensions" })
 @XmlRootElement(name = "text-flow", namespace = Namespaces.FLIES)
 @XmlSeeAlso( { PotEntryData.class, TextFlowTargets.class, SimpleComment.class })
+@Deprecated
 public class TextFlow implements IExtensible
 {
 
