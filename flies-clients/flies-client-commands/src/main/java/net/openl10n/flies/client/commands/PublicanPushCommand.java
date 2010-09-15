@@ -11,6 +11,7 @@ import net.openl10n.flies.client.commands.gettext.PublicanUtil;
 import net.openl10n.flies.rest.client.ClientUtility;
 import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 import net.openl10n.flies.rest.client.ITranslationResources;
+import net.openl10n.flies.rest.dto.resource.Resource;
 import net.openl10n.flies.rest.dto.resource.ResourceMeta;
 
 import org.jboss.resteasy.client.ClientResponse;
@@ -125,10 +126,10 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
       }
       for (String docId : localDocNames)
       {
-         ResourceMeta doc = null;
+         Resource doc = new Resource(docId);
          // TODO load 'doc' from pot/${docID}.pot
          File pot = new File(potDir, docId + ".pot");
-         translationResources.putResourceMeta(docId, doc);
+         translationResources.putResource(docId, doc);
          if (importPo)
          {
             for (File loc : localeDirs)

@@ -29,9 +29,9 @@ public class ResourceMeta extends AbstractResourceMeta implements HasCollectionS
    {
    }
 
-   public ResourceMeta(String resId)
+   public ResourceMeta(String name)
    {
-      super(resId);
+      super(name);
    }
 
    @Override
