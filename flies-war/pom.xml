@@ -204,9 +204,12 @@
 									<forkMode>always</forkMode>
 									<suiteXmlFiles>
 										<!-- 
-										We run unit tests again so that their results will appear in the surefire report directory.
+										We would run unit tests again so that their results will appear in the surefire report directory,
+										but this causes unit tests and integration tests to run twice!
 										-->
+<!--
 										<suiteXmlFile>src/test/resources/AllUnitTests.tng.xml</suiteXmlFile>
+-->
 										<suiteXmlFile>src/test/resources/AllIntegrationTests.tng.xml</suiteXmlFile>
 									</suiteXmlFiles>
 									<additionalClasspathElements>
