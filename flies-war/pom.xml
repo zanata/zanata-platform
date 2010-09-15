@@ -199,6 +199,7 @@
 								</goals>
 								<configuration>
 									<skip>false</skip>
+									<argLine>-Xmx512m</argLine>
 									<redirectTestOutputToFile>false</redirectTestOutputToFile>
 									<printSummary>true</printSummary>
 									<forkMode>always</forkMode>
