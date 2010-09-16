@@ -126,6 +126,7 @@ public class TranslationResourcesService
    {
    }
 
+   // TODO break up this class (too many responsibilities)
    public TranslationResourcesService(ProjectIterationDAO projectIterationDAO, DocumentDAO documentDAO, PersonDAO personDAO, TextFlowTargetDAO textFlowTargetDAO, LocaleService localeService, ResourceUtils resourceUtils, ETagUtils eTagUtils)
    {
       this.projectIterationDAO = projectIterationDAO;
@@ -138,7 +139,7 @@ public class TranslationResourcesService
    }
 
    @HEAD
-   public Response doHead()
+   public Response head()
    {
       HProjectIteration hProjectIteration = retrieveIteration();
       validateExtensions();
@@ -158,7 +159,7 @@ public class TranslationResourcesService
     */
    @GET
    @Wrapped(element = "resources", namespace = Namespaces.FLIES)
-   public Response doGet()
+   public Response get()
    {
 
       HProjectIteration hProjectIteration = retrieveIteration();
@@ -190,7 +191,7 @@ public class TranslationResourcesService
 
    @POST
    @Admin
-   public Response doPost(InputStream messageBody)
+   public Response post(InputStream messageBody)
    {
 
       HProjectIteration hProjectIteration = retrieveIteration();
@@ -230,7 +231,7 @@ public class TranslationResourcesService
    @GET
    @Path(RESOURCE_SLUG_TEMPLATE)
    // /r/{id}
-   public Response doResourceGet(@PathParam("id") String id)
+   public Response getResource(@PathParam("id") String id)
    {
 
       HProjectIteration hProjectIteration = retrieveIteration();
@@ -273,7 +274,7 @@ public class TranslationResourcesService
    @Path(RESOURCE_SLUG_TEMPLATE)
    // /r/{id}
    @Admin
-   public Response doResourcePut(@PathParam("id") String id, InputStream messageBody)
+   public Response putResource(@PathParam("id") String id, InputStream messageBody)
    {
 
       ResponseBuilder response;
@@ -342,7 +343,7 @@ public class TranslationResourcesService
    @Path(RESOURCE_SLUG_TEMPLATE)
    // /r/{id}
    @Admin
-   public Response doResourceDelete(@PathParam("id") String id)
+   public Response deleteResource(@PathParam("id") String id)
    {
       HProjectIteration hProjectIteration = retrieveIteration();
 
@@ -363,7 +364,7 @@ public class TranslationResourcesService
    @GET
    @Path(RESOURCE_SLUG_TEMPLATE + "/meta")
    // /r/{id}/meta
-   public Response doResourceMetaGet(@PathParam("id") String id)
+   public Response getResourceMeta(@PathParam("id") String id)
    {
 
       HProjectIteration hProjectIteration = retrieveIteration();
@@ -396,7 +397,7 @@ public class TranslationResourcesService
    @Path(RESOURCE_SLUG_TEMPLATE + "/meta")
    // /r/{id}/meta
    @Admin
-   public Response doResourceMetaPut(@PathParam("id") String id, InputStream messageBody)
+   public Response putResourceMeta(@PathParam("id") String id, InputStream messageBody)
    {
 
       HProjectIteration hProjectIteration = retrieveIteration();
@@ -435,7 +436,7 @@ public class TranslationResourcesService
    @GET
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    // /r/{id}/translations/{locale}
-   public Response doTranslationsGet(@PathParam("id") String id, @PathParam("locale") LocaleId locale)
+   public Response getTranslations(@PathParam("id") String id, @PathParam("locale") LocaleId locale)
    {
 
       HProjectIteration hProjectIteration = retrieveIteration();
@@ -484,7 +485,7 @@ public class TranslationResourcesService
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    // /r/{id}/translations/{locale}
    @Admin
-   public Response doTranslationsDelete(@PathParam("id") String id, @PathParam("locale") LocaleId locale)
+   public Response deleteTranslations(@PathParam("id") String id, @PathParam("locale") LocaleId locale)
    {
 
       HProjectIteration hProjectIteration = retrieveIteration();
@@ -522,7 +523,7 @@ public class TranslationResourcesService
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    // /r/{id}/translations/{locale}
    @Admin
-   public Response doTranslationsPut(@PathParam("id") String id, @PathParam("locale") LocaleId locale, InputStream messageBody)
+   public Response putTranslations(@PathParam("id") String id, @PathParam("locale") LocaleId locale, InputStream messageBody)
    {
 
       HProjectIteration hProjectIteration = retrieveIteration();
