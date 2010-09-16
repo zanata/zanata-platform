@@ -42,7 +42,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-public class TranslationResourceServiceTest extends FliesRestTest
+public class TranslationResourceRestTest extends FliesRestTest
 {
 
    private final String RESOURCE_PATH = "/projects/p/sample-project/iterations/i/1.0/r/";

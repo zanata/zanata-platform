@@ -30,7 +30,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-public class ProjectServiceTest extends FliesRestTest
+public class ProjectRestTest extends FliesRestTest
 {
 
    private final String RESOURCE_PATH = "/projects/p/";

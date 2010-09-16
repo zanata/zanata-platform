@@ -27,7 +27,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-public class ProjectIterationServiceTest extends FliesRestTest
+public class ProjectIterationRestTest extends FliesRestTest
 {
 
    private final String RESOURCE_PATH = "/projects/p/sample-project/iterations/i/";
