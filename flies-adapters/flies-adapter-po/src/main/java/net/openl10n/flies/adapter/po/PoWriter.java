@@ -1,17 +1,10 @@
 package net.openl10n.flies.adapter.po;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import net.openl10n.flies.common.LocaleId;
@@ -22,7 +15,6 @@ import net.openl10n.flies.rest.dto.deprecated.SimpleComment;
 import net.openl10n.flies.rest.dto.deprecated.TextFlow;
 import net.openl10n.flies.rest.dto.deprecated.TextFlowTarget;
 import net.openl10n.flies.rest.dto.deprecated.TextFlowTargets;
-import net.openl10n.flies.rest.dto.po.HeaderEntry;
 import net.openl10n.flies.rest.dto.po.PoHeader;
 import net.openl10n.flies.rest.dto.po.PoTargetHeader;
 import net.openl10n.flies.rest.dto.po.PoTargetHeaders;
@@ -34,6 +26,7 @@ import org.fedorahosted.tennera.jgettext.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Deprecated
 public class PoWriter
 {
    private static final Logger log = LoggerFactory.getLogger(PoWriter.class);
@@ -75,47 +68,10 @@ public class PoWriter
 
    public void write(final Document document, OutputSource outputSource, LocaleId locale) throws IOException
    {
-
-      final Writer writer;
-
       if (document == null)
          throw new IllegalArgumentException("document");
 
-      // the writer has first priority
-      if (outputSource.getWriter() != null)
-         writer = outputSource.getWriter();
-      else if (outputSource.getOutputStream() != null)
-      { // outputstream has 2nd priority
-         if (outputSource.getEncoding() != null)
-         {
-            writer = new OutputStreamWriter(outputSource.getOutputStream(), Charset.forName(outputSource.getEncoding()));
-         }
-         else
-         {
-            writer = new OutputStreamWriter(outputSource.getOutputStream(), Charset.forName("UTF-8"));
-         }
-      }
-      else if (outputSource.getFile() != null)
-      { // file has 3rd priority
-         try
-         {
-            OutputStream os = new BufferedOutputStream(new FileOutputStream(outputSource.getFile()));
-            if (outputSource.getEncoding() != null)
-            {
-               writer = new OutputStreamWriter(os, Charset.forName(outputSource.getEncoding()));
-            }
-            else
-            {
-               writer = new OutputStreamWriter(os, Charset.forName("UTF-8"));
-            }
-         }
-         catch (FileNotFoundException fnf)
-         {
-            throw new IllegalArgumentException("localeOutputSourcePair", fnf);
-         }
-      }
-      else
-         throw new IllegalArgumentException("localeOutputSourcePair");
+      Writer writer = PoWriter2.createWriter(outputSource);
 
       // if(!document.getTargetLanguages().contains(locale))
       // throw new RuntimeException("could not find target locale");
@@ -125,11 +81,11 @@ public class PoWriter
       if (poHeader == null)
       {
          log.warn("No PO header in document with ID " + document.getId());
-         setDefaultHeaderFields(hf);
+         PoWriter2.setDefaultHeaderFields(hf);
       }
       else
       {
-         copyToHeaderFields(hf, poHeader.getEntries());
+         PoWriter2.copyToHeaderFields(hf, poHeader.getEntries());
       }
       Message headerMessage = null;
       if (locale != null)
@@ -140,7 +96,7 @@ public class PoWriter
             PoTargetHeader poTargetHeader = poTargetHeaders.getByLocale(locale);
             if (poTargetHeader != null)
             {
-               copyToHeaderFields(hf, poTargetHeader.getEntries());
+               PoWriter2.copyToHeaderFields(hf, poTargetHeader.getEntries());
                headerMessage = hf.unwrap();
                copyTargetHeaderComments(headerMessage, poTargetHeader);
             }
@@ -225,21 +181,6 @@ public class PoWriter
       for (String s : poTargetHeader.getComment().getValue().split("\n"))
       {
          headerMessage.addComment(s);
-      }
-   }
-
-   private void setDefaultHeaderFields(HeaderFields hf)
-   {
-      hf.setValue("MIME-Version", "1.0");
-      hf.setValue("Content-Type", "text/plain; charset=UTF-8");
-      hf.setValue("Content-Transfer-Encoding", "8bit");
-   }
-
-   private void copyToHeaderFields(HeaderFields hf, final List<HeaderEntry> entries)
-   {
-      for (HeaderEntry e : entries)
-      {
-         hf.setValue(e.getKey(), e.getValue());
       }
    }
 
