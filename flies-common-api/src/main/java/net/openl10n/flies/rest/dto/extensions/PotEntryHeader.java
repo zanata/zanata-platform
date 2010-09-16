@@ -11,6 +11,13 @@ import net.openl10n.flies.common.Namespaces;
 import net.openl10n.flies.rest.dto.ExtensionValue;
 import net.openl10n.flies.rest.dto.resource.TextFlow;
 
+/**
+ * Holds gettext message-level metadata for a source document.
+ * 
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * 
+ */
 @XmlRootElement(name = "pot-entry-header", namespace = Namespaces.FLIES)
 public class PotEntryHeader implements ExtensionValue<TextFlow>
 {

@@ -14,6 +14,13 @@ import net.openl10n.flies.rest.dto.resource.TranslationsResource;
 
 import org.codehaus.jackson.annotate.JsonTypeName;
 
+/**
+ * Holds gettext file headers for a target document.
+ * 
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * 
+ */
 @XmlType(name = "poTargetHeader", namespace = PoHeader.NAMESPACE, propOrder = { "comment", "entries" })
 @XmlRootElement(name = "po-target-header", namespace = PoHeader.NAMESPACE)
 @JsonTypeName(value = "po-target-header")

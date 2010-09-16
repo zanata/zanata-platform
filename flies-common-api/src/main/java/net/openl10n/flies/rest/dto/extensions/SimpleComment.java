@@ -10,6 +10,16 @@ import net.openl10n.flies.rest.dto.ExtensionValue;
 
 import org.codehaus.jackson.annotate.JsonTypeName;
 
+/**
+ * Holds source/target comments for a Java Properties item, extracted comment
+ * for a source gettext message, or translator comment for a translated gettext
+ * message.
+ * 
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * 
+ * @param <T>
+ */
 @XmlType(name = "simpleCommentExtension", namespace = PoHeader.NAMESPACE, propOrder = {})
 @XmlRootElement(name = "comment", namespace = PoHeader.NAMESPACE)
 @JsonTypeName(value = "comment")
