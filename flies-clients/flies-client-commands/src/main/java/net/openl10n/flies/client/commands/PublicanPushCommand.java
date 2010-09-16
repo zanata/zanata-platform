@@ -132,11 +132,10 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
       PoReader2 poReader = new PoReader2();
       for (String docId : localDocNames)
       {
-         Resource srcDoc = new Resource(docId);
          File potFile = new File(potDir, docId + ".pot");
          InputSource potInputSource = new InputSource(potFile.toURI().toString());
          // load 'srcDoc' from pot/${docID}.pot
-         poReader.extractTemplate(srcDoc, potInputSource, new LocaleId(sourceLang));
+         Resource srcDoc = poReader.extractTemplate(potInputSource, new LocaleId(sourceLang), docId);
          translationResources.putResource(docId, srcDoc);
          if (importPo)
          {
@@ -150,8 +149,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
                   String publicanLocale = localeDir.getName();
                   // TODO locale mapping
                   LocaleId locale = new LocaleId(publicanLocale);
-                  TranslationsResource targetDoc = new TranslationsResource();
-                  poReader.extractTarget(srcDoc, targetDoc, inputSource, locale);
+                  TranslationsResource targetDoc = poReader.extractTarget(inputSource, srcDoc);
                   translationResources.putTranslations(docId, locale, targetDoc);
                }
             }
