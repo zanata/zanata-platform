@@ -33,9 +33,10 @@ import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 
 /**
- * Represents a flow of text that should be processed as a stand-alone
+ * Represents a flow of source text that should be processed as a stand-alone
  * structural unit.
  * 
+ * @see net.openl10n.flies.rest.dto.resource.TextFlow
  * @author Asgeir Frimannsson <asgeirf@redhat.com>
  * 
  */

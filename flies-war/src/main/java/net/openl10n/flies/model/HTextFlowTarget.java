@@ -24,9 +24,10 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.NotNull;
 
 /**
- * Represents a flow of text that should be processed as a stand-alone
- * structural unit.
+ * Represents a flow of translated text that should be processed as a
+ * stand-alone structural unit.
  * 
+ * @see net.openl10n.flies.rest.dto.resource.TextFlowTarget
  * @author Asgeir Frimannsson <asgeirf@redhat.com>
  * 
  */

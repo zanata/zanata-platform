@@ -16,6 +16,8 @@ import org.hibernate.annotations.Type;
  * 
  * @author sflaniga@redhat.com
  * @see net.openl10n.flies.rest.dto.po.PoHeader
+ * @see net.openl10n.flies.rest.dto.extensions.gettext.PoHeader
+ * @see net.openl10n.flies.rest.dto.extensions.gettext.PoTargetHeader
  */
 @MappedSuperclass
 public abstract class AbstractPoHeader extends AbstractFliesEntity

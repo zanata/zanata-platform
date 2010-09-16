@@ -9,6 +9,10 @@ import net.openl10n.flies.rest.dto.deprecated.SimpleComment;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.NotNull;
 
+/**
+ * @see net.openl10n.flies.rest.dto.extensions.comment.SimpleComment
+ * 
+ */
 @Entity
 public class HSimpleComment
 {

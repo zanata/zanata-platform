@@ -14,6 +14,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
+import net.openl10n.flies.rest.dto.Person;
+
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.NaturalId;
@@ -21,6 +23,10 @@ import org.hibernate.validator.Email;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 
+/**
+ * @see Person
+ * 
+ */
 @NamedQueries({ @NamedQuery(name = "getLanguageMemberships", query = "select p.tribeMemberships from HPerson as p where p.account.username = :username") })
 @Entity
 public class HPerson extends AbstractFliesEntity implements Serializable

@@ -11,12 +11,19 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 
+import net.openl10n.flies.rest.dto.ProjectIteration;
+
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Where;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;
 import org.jboss.seam.annotations.security.Restrict;
 
+/**
+ * 
+ * @see ProjectIteration
+ * 
+ */
 @Entity
 @Restrict
 public class HProjectIteration extends AbstractSlugEntity

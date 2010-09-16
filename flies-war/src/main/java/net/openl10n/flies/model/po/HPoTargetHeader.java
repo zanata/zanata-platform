@@ -13,6 +13,7 @@ import org.hibernate.annotations.NaturalId;
  * 
  * @author sflaniga@redhat.com
  * @see net.openl10n.flies.rest.dto.po.PoTargetHeader
+ * @see net.openl10n.flies.rest.dto.extensions.gettext.PoTargetHeader
  */
 @Entity
 public class HPoTargetHeader extends AbstractPoHeader

@@ -19,6 +19,7 @@ import org.hibernate.annotations.NaturalId;
  * 
  * @author sflaniga@redhat.com
  * @see net.openl10n.flies.rest.dto.po.PotEntryData
+ * @see net.openl10n.flies.rest.dto.extensions.gettext.PotEntryHeader
  */
 @Entity
 public class HPotEntryData implements Serializable

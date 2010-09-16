@@ -21,6 +21,10 @@ import net.openl10n.flies.model.po.HPoHeader;
 import net.openl10n.flies.model.po.HPoTargetHeader;
 import net.openl10n.flies.rest.dto.deprecated.Document;
 import net.openl10n.flies.rest.dto.deprecated.TextFlow;
+import net.openl10n.flies.rest.dto.resource.AbstractResourceMeta;
+import net.openl10n.flies.rest.dto.resource.Resource;
+import net.openl10n.flies.rest.dto.resource.ResourceMeta;
+import net.openl10n.flies.rest.dto.resource.TranslationsResource;
 
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
@@ -33,6 +37,13 @@ import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.contexts.Contexts;
 
+/**
+ * @see AbstractResourceMeta
+ * @see Resource
+ * @see ResourceMeta
+ * @see TranslationsResource
+ * 
+ */
 @Entity
 public class HDocument extends AbstractFliesEntity implements IDocumentHistory
 {

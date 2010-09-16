@@ -13,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
+import net.openl10n.flies.rest.dto.Project;
+
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
@@ -20,6 +22,10 @@ import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.jboss.seam.annotations.security.Restrict;
 
+/**
+ * @see Project
+ * 
+ */
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "projecttype", discriminatorType = DiscriminatorType.STRING)

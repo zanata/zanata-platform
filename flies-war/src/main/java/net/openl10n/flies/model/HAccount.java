@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
+import net.openl10n.flies.rest.dto.Account;
 import net.openl10n.flies.security.UserApiKey;
 
 import org.hibernate.annotations.NaturalId;
@@ -24,6 +25,10 @@ import org.jboss.seam.annotations.security.management.UserPrincipal;
 import org.jboss.seam.annotations.security.management.UserRoles;
 import org.jboss.seam.security.management.PasswordHash;
 
+/**
+ * @see Account
+ * 
+ */
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "username"))
 public class HAccount extends AbstractFliesEntity implements Serializable
