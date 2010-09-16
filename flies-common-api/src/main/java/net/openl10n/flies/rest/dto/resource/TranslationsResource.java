@@ -11,12 +11,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-import net.openl10n.flies.common.Namespaces;
 import net.openl10n.flies.rest.dto.DTOUtil;
 import net.openl10n.flies.rest.dto.HasSample;
 import net.openl10n.flies.rest.dto.Link;
 import net.openl10n.flies.rest.dto.Links;
-import net.openl10n.flies.rest.dto.extensions.PoTargetHeader;
+import net.openl10n.flies.rest.dto.extensions.gettext.PoTargetHeader;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -26,8 +25,8 @@ import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 /**
  * Represents the translation of a document into a single locale.
  */
-@XmlType(name = "translationsResourceType", namespace = Namespaces.FLIES, propOrder = { "links", "extensions", "textFlowTargets" })
-@XmlRootElement(name = "translations", namespace = Namespaces.FLIES)
+@XmlType(name = "translationsResourceType", propOrder = { "links", "extensions", "textFlowTargets" })
+@XmlRootElement(name = "translations")
 @JsonPropertyOrder( { "links", "extensions", "textFlowTargets" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
@@ -39,7 +38,7 @@ public class TranslationsResource implements Serializable, HasSample<Translation
    private Links links;
    private List<TextFlowTarget> textFlowTargets;
 
-   @XmlElementWrapper(name = "extensions", namespace = Namespaces.FLIES, required = false)
+   @XmlElementWrapper(name = "extensions", required = false)
    @XmlAnyElement(lax = true)
    public ExtensionSet<TranslationsResource> getExtensions()
    {
@@ -59,7 +58,7 @@ public class TranslationsResource implements Serializable, HasSample<Translation
       return extensions;
    }
 
-   @XmlElementWrapper(name = "targets", namespace = Namespaces.FLIES, required = false)
+   @XmlElementWrapper(name = "targets", required = false)
    @XmlElementRef
    public List<TextFlowTarget> getTextFlowTargets()
    {

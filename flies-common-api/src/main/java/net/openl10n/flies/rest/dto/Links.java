@@ -7,10 +7,8 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import net.openl10n.flies.common.Namespaces;
-
-@XmlType(name = "linksType", namespace = Namespaces.FLIES, propOrder = {})
-@XmlRootElement(name = "links", namespace = Namespaces.FLIES)
+@XmlType(name = "linksType", propOrder = {})
+@XmlRootElement(name = "links")
 public class Links extends ArrayList<Link>
 {
 

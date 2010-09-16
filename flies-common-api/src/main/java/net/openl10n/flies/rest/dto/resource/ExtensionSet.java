@@ -4,11 +4,10 @@ import java.util.HashSet;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import net.openl10n.flies.common.Namespaces;
 import net.openl10n.flies.rest.dto.DTOUtil;
 import net.openl10n.flies.rest.dto.ExtensionValue;
 
-@XmlRootElement(name = "extension-set", namespace = Namespaces.FLIES)
+@XmlRootElement(name = "extension-set")
 public class ExtensionSet<T> extends HashSet<ExtensionValue<T>> 
 {
 

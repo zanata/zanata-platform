@@ -12,12 +12,11 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 import net.openl10n.flies.common.ContentState;
-import net.openl10n.flies.common.Namespaces;
 import net.openl10n.flies.rest.dto.DTOUtil;
 import net.openl10n.flies.rest.dto.Extensible;
 import net.openl10n.flies.rest.dto.Person;
-import net.openl10n.flies.rest.dto.extensions.Commentable;
-import net.openl10n.flies.rest.dto.extensions.SimpleComment;
+import net.openl10n.flies.rest.dto.extensions.comment.Commentable;
+import net.openl10n.flies.rest.dto.extensions.comment.SimpleComment;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -25,8 +24,8 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 import org.hibernate.validator.NotEmpty;
 
-@XmlType(name = "textFlowTargetType", namespace = Namespaces.FLIES, propOrder = { "translator", "content", "extensions" })
-@XmlRootElement(name = "text-flow-target", namespace = Namespaces.FLIES)
+@XmlType(name = "textFlowTargetType", propOrder = { "translator", "content", "extensions" })
+@XmlRootElement(name = "text-flow-target")
 @JsonPropertyOrder( { "resId", "state", "translator", "content", "extensions" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
@@ -71,7 +70,7 @@ public class TextFlowTarget implements Serializable, Commentable, Extensible<Tex
       this.state = state;
    }
 
-   @XmlElement(name = "content", namespace = Namespaces.FLIES, required = true)
+   @XmlElement(name = "content", required = true)
    public String getContent()
    {
       if (content == null)
@@ -84,7 +83,7 @@ public class TextFlowTarget implements Serializable, Commentable, Extensible<Tex
       this.content = content;
    }
 
-   @XmlElementWrapper(name = "extensions", namespace = Namespaces.FLIES, required = false)
+   @XmlElementWrapper(name = "extensions", required = false)
    @XmlAnyElement(lax = true)
    public ExtensionSet<TextFlowTarget> getExtensions()
    {

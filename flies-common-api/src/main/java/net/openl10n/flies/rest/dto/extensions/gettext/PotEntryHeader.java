@@ -1,4 +1,4 @@
-package net.openl10n.flies.rest.dto.extensions;
+package net.openl10n.flies.rest.dto.extensions.gettext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ import net.openl10n.flies.rest.dto.resource.TextFlow;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  * 
  */
-@XmlRootElement(name = "pot-entry-header", namespace = Namespaces.FLIES)
+@XmlRootElement(name = "pot-entry-header")
 public class PotEntryHeader implements ExtensionValue<TextFlow>
 {
 
@@ -28,7 +28,7 @@ public class PotEntryHeader implements ExtensionValue<TextFlow>
    private List<String> flags;
    private List<String> references;
 
-   @XmlElement(name = "context", namespace = PoHeader.NAMESPACE, required = false)
+   @XmlElement(name = "context", required = false)
    public String getContext()
    {
       return context;
@@ -39,8 +39,8 @@ public class PotEntryHeader implements ExtensionValue<TextFlow>
       this.context = context;
    }
 
-   @XmlElementWrapper(name = "flags", namespace = PoHeader.NAMESPACE, required = true)
-   @XmlElement(name = "flag", namespace = PoHeader.NAMESPACE)
+   @XmlElementWrapper(name = "flags", required = true)
+   @XmlElement(name = "flag")
    public List<String> getFlags()
    {
       if (flags == null)
@@ -48,8 +48,8 @@ public class PotEntryHeader implements ExtensionValue<TextFlow>
       return flags;
    }
 
-   @XmlElementWrapper(name = "source-references", namespace = PoHeader.NAMESPACE, required = true)
-   @XmlElement(name = "sourcereference", namespace = PoHeader.NAMESPACE)
+   @XmlElementWrapper(name = "source-references", required = true)
+   @XmlElement(name = "sourcereference")
    public List<String> getReferences()
    {
       if (references == null)

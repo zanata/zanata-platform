@@ -38,12 +38,12 @@ public class ToStringTests extends TestCase
       test(new net.openl10n.flies.rest.dto.deprecated.TextFlowTarget());
       test(new net.openl10n.flies.rest.dto.deprecated.TextFlowTargets());
       // net.openl10n.flies.rest.dto.extensions
-      test(new net.openl10n.flies.rest.dto.extensions.PoHeader());
-      test(new net.openl10n.flies.rest.dto.extensions.PoTargetHeader());
-      test(new net.openl10n.flies.rest.dto.extensions.PotEntryHeader());
+      test(new net.openl10n.flies.rest.dto.extensions.gettext.PoHeader());
+      test(new net.openl10n.flies.rest.dto.extensions.gettext.PoTargetHeader());
+      test(new net.openl10n.flies.rest.dto.extensions.gettext.PotEntryHeader());
       //test(new net.openl10n.flies.rest.dto.extensions.SimpleComment());
       // net.openl10n.flies.rest.dto.po
-      test(new net.openl10n.flies.rest.dto.po.HeaderEntry());
+      test(new net.openl10n.flies.rest.dto.extensions.gettext.HeaderEntry());
       test(new net.openl10n.flies.rest.dto.po.PoHeader());
       test(new net.openl10n.flies.rest.dto.po.PoTargetHeader());
       test(new net.openl10n.flies.rest.dto.po.PoTargetHeaders());

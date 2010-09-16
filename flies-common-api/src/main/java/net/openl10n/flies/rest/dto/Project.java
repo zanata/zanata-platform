@@ -5,22 +5,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.naming.ldap.HasControls;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
-import net.openl10n.flies.common.Namespaces;
 import net.openl10n.flies.rest.MediaTypes;
 import net.openl10n.flies.rest.MediaTypes.Format;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 import org.hibernate.validator.Length;
@@ -32,8 +28,8 @@ import org.hibernate.validator.NotEmpty;
  * @author asgeirf
  * 
  */
-@XmlType(name = "projectType", namespace = Namespaces.FLIES, propOrder = { "name", "description", "links", "iterations" })
-@XmlRootElement(name = "project", namespace = Namespaces.FLIES)
+@XmlType(name = "projectType", propOrder = { "name", "description", "links", "iterations" })
+@XmlRootElement(name = "project")
 @JsonPropertyOrder( { "id", "type", "name", "description", "links", "iterations" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
@@ -91,7 +87,7 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
 
    @NotEmpty
    @Length(max = 80)
-   @XmlElement(name = "name", namespace = Namespaces.FLIES, required = true)
+   @XmlElement(name = "name", required = true)
    public String getName()
    {
       return name;
@@ -103,7 +99,7 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
    }
 
    @Length(max = 80)
-   @XmlElement(name = "description", namespace = Namespaces.FLIES, required = false)
+   @XmlElement(name = "description", required = false)
    public String getDescription()
    {
       return description;
@@ -133,7 +129,7 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
       return links;
    }
 
-   @XmlElementWrapper(name = "project-iterations", namespace = Namespaces.FLIES)
+   @XmlElementWrapper(name = "project-iterations")
    @XmlElementRef
    public List<ProjectIteration> getIterations()
    {

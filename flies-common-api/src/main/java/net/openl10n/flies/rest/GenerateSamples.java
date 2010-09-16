@@ -16,7 +16,7 @@ import net.openl10n.flies.rest.dto.HasSample;
 import net.openl10n.flies.rest.dto.Project;
 import net.openl10n.flies.rest.dto.ProjectIteration;
 import net.openl10n.flies.rest.dto.ProjectList;
-import net.openl10n.flies.rest.dto.extensions.PoHeader;
+import net.openl10n.flies.rest.dto.extensions.gettext.PoHeader;
 import net.openl10n.flies.rest.dto.resource.ResourceMetaList;
 import net.openl10n.flies.rest.dto.resource.TranslationsResource;
 

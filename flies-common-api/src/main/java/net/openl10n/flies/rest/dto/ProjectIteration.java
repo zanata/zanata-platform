@@ -9,7 +9,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import net.openl10n.flies.common.Namespaces;
 import net.openl10n.flies.rest.MediaTypes;
 import net.openl10n.flies.rest.MediaTypes.Format;
 
@@ -19,8 +18,8 @@ import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 
-@XmlType(name = "projectIterationType", namespace = Namespaces.FLIES, propOrder = { "name", "description", "links" })
-@XmlRootElement(name = "project-iteration", namespace = Namespaces.FLIES)
+@XmlType(name = "projectIterationType", propOrder = { "name", "description", "links" })
+@XmlRootElement(name = "project-iteration")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
 @JsonPropertyOrder( { "id", "name", "description", "links" })
@@ -61,7 +60,7 @@ public class ProjectIteration implements Serializable, HasCollectionSample<Proje
 
    @NotEmpty
    @Length(max = 80)
-   @XmlElement(name = "name", namespace = Namespaces.FLIES, required = true)
+   @XmlElement(name = "name", required = true)
    public String getName()
    {
       return name;
@@ -73,7 +72,7 @@ public class ProjectIteration implements Serializable, HasCollectionSample<Proje
    }
 
    @Length(max = 80)
-   @XmlElement(name = "description", namespace = Namespaces.FLIES, required = false)
+   @XmlElement(name = "description", required = false)
    public String getDescription()
    {
       return description;
@@ -91,7 +90,7 @@ public class ProjectIteration implements Serializable, HasCollectionSample<Proje
     * 
     * @return set of Links managed by this resource
     */
-   @XmlElement(name = "link", namespace = Namespaces.FLIES, required = false)
+   @XmlElement(name = "link", required = false)
    public Links getLinks()
    {
       return links;

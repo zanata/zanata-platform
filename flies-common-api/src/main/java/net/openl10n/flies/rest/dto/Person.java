@@ -6,9 +6,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlValue;
-
-import net.openl10n.flies.common.Namespaces;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
@@ -17,8 +14,8 @@ import org.hibernate.validator.Email;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 
-@XmlType(name = "personType", namespace = Namespaces.FLIES)
-@XmlRootElement(name = "person", namespace = Namespaces.FLIES)
+@XmlType(name = "personType")
+@XmlRootElement(name = "person")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder( { "email", "name", "links" })
 @JsonWriteNullProperties(false)
@@ -72,7 +69,7 @@ public class Person implements Serializable, HasSample<Person>
     * 
     * @return set of Links managed by this resource
     */
-   @XmlElement(name = "link", namespace = Namespaces.FLIES, required = false)
+   @XmlElement(name = "link", required = false)
    public Links getLinks()
    {
       return links;

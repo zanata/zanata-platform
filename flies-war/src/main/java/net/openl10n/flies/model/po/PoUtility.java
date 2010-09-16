@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import net.openl10n.flies.rest.dto.po.HeaderEntry;
+import net.openl10n.flies.rest.dto.extensions.gettext.HeaderEntry;
 
 import org.fedorahosted.openprops.Properties;
 

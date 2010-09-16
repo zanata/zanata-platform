@@ -18,11 +18,11 @@ import net.openl10n.flies.rest.dto.ContentTypeAdapter;
 import net.openl10n.flies.rest.dto.DTOUtil;
 import net.openl10n.flies.rest.dto.Extensible;
 import net.openl10n.flies.rest.dto.LocaleIdAdapter;
-import net.openl10n.flies.rest.dto.extensions.PoHeader;
+import net.openl10n.flies.rest.dto.extensions.gettext.PoHeader;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-@XmlType(name = "abstractResourceMetaType", namespace = Namespaces.FLIES, propOrder = { "name", "extensions" })
+@XmlType(name = "abstractResourceMetaType", propOrder = { "name", "extensions" })
 @XmlSeeAlso({ PoHeader.class })
 public abstract class AbstractResourceMeta implements Serializable, Extensible<AbstractResourceMeta>
 {
@@ -46,7 +46,7 @@ public abstract class AbstractResourceMeta implements Serializable, Extensible<A
       this.name = name;
    }
 
-   @XmlElementWrapper(name = "extensions", namespace = Namespaces.FLIES, required = false)
+   @XmlElementWrapper(name = "extensions", required = false)
    @XmlAnyElement(lax = true)
    public ExtensionSet<AbstractResourceMeta> getExtensions()
    {
@@ -101,7 +101,7 @@ public abstract class AbstractResourceMeta implements Serializable, Extensible<A
       this.contentType = contentType;
    }
 
-   @XmlElement(name = "name", namespace = Namespaces.FLIES, required = true)
+   @XmlElement(name = "name", required = true)
    public String getName()
    {
       return name;

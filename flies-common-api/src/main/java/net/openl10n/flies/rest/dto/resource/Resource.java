@@ -8,14 +8,12 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import net.openl10n.flies.common.Namespaces;
-
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 
-@XmlType(name = "resourceType", namespace = Namespaces.FLIES, propOrder = { "textFlows" })
-@XmlRootElement(name = "resource", namespace = Namespaces.FLIES)
+@XmlType(name = "resourceType", propOrder = { "textFlows" })
+@XmlRootElement(name = "resource")
 @JsonPropertyOrder( { "name", "contentType", "lang", "extensions", "textFlows" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
@@ -33,7 +31,7 @@ public class Resource extends AbstractResourceMeta
       super(name);
    }
 
-   @XmlElementWrapper(name = "text-flows", namespace = Namespaces.FLIES, required = false)
+   @XmlElementWrapper(name = "text-flows", required = false)
    @XmlElementRef
    public List<TextFlow> getTextFlows()
    {

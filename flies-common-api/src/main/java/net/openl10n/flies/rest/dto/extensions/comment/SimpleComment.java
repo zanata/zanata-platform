@@ -1,4 +1,4 @@
-package net.openl10n.flies.rest.dto.extensions;
+package net.openl10n.flies.rest.dto.extensions.comment;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -20,8 +20,8 @@ import org.codehaus.jackson.annotate.JsonTypeName;
  * 
  * @param <T>
  */
-@XmlType(name = "simpleCommentExtension", namespace = PoHeader.NAMESPACE, propOrder = {})
-@XmlRootElement(name = "comment", namespace = PoHeader.NAMESPACE)
+@XmlType(name = "simpleCommentExtension", propOrder = {})
+@XmlRootElement(name = "comment")
 @JsonTypeName(value = "comment")
 public class SimpleComment<T extends Commentable> implements ExtensionValue<T>
 {

@@ -5,12 +5,9 @@ import java.net.URI;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlValue;
 
-import net.openl10n.flies.common.Namespaces;
-
-@XmlType(name = "linkType", namespace = Namespaces.FLIES)
-@XmlRootElement(name = "link", namespace = Namespaces.FLIES)
+@XmlType(name = "linkType")
+@XmlRootElement(name = "link")
 public class Link
 {
 

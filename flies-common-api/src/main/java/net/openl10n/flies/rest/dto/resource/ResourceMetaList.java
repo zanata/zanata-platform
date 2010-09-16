@@ -8,7 +8,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import net.openl10n.flies.common.Namespaces;
 import net.openl10n.flies.rest.dto.DTOUtil;
 import net.openl10n.flies.rest.dto.HasSample;
 
@@ -22,14 +21,14 @@ import org.codehaus.jackson.annotate.JsonValue;
  * @author asgeirf
  * 
  */
-@XmlType(name = "resourcesListType", namespace = Namespaces.FLIES, propOrder = { "resources" })
-@XmlRootElement(name = "resources", namespace = Namespaces.FLIES)
+@XmlType(name = "resourcesListType", propOrder = { "resources" })
+@XmlRootElement(name = "resources")
 public class ResourceMetaList implements Serializable, HasSample<ResourceMetaList>
 {
 
    private List<ResourceMeta> resources;
 
-   @XmlElement(name = "resource", namespace = Namespaces.FLIES, required = true)
+   @XmlElement(name = "resource", required = true)
    @JsonValue
    public List<ResourceMeta> getResources()
    {

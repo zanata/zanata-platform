@@ -7,9 +7,9 @@ import net.openl10n.flies.common.ResourceType;
 import net.openl10n.flies.model.HDocument;
 import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.rest.StringSet;
-import net.openl10n.flies.rest.dto.extensions.PoHeader;
-import net.openl10n.flies.rest.dto.extensions.SimpleComment;
-import net.openl10n.flies.rest.dto.po.HeaderEntry;
+import net.openl10n.flies.rest.dto.extensions.comment.SimpleComment;
+import net.openl10n.flies.rest.dto.extensions.gettext.HeaderEntry;
+import net.openl10n.flies.rest.dto.extensions.gettext.PoHeader;
 import net.openl10n.flies.rest.dto.resource.ResourceMeta;
 
 import org.testng.annotations.Test;

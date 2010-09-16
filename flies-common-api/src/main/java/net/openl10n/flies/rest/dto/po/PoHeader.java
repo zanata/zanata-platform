@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import net.openl10n.flies.rest.dto.DTOUtil;
 import net.openl10n.flies.rest.dto.deprecated.SimpleComment;
+import net.openl10n.flies.rest.dto.extensions.gettext.HeaderEntry;
 
 @XmlType(name = "headerType", namespace = PoHeader.NAMESPACE, propOrder = { "comment", "entries" })
 @XmlRootElement(name = "header", namespace = PoHeader.NAMESPACE)

@@ -16,9 +16,9 @@ import net.openl10n.flies.common.Namespaces;
 import net.openl10n.flies.rest.dto.DTOUtil;
 import net.openl10n.flies.rest.dto.Extensible;
 import net.openl10n.flies.rest.dto.LocaleIdAdapter;
-import net.openl10n.flies.rest.dto.extensions.Commentable;
-import net.openl10n.flies.rest.dto.extensions.PotEntryHeader;
-import net.openl10n.flies.rest.dto.extensions.SimpleComment;
+import net.openl10n.flies.rest.dto.extensions.comment.Commentable;
+import net.openl10n.flies.rest.dto.extensions.comment.SimpleComment;
+import net.openl10n.flies.rest.dto.extensions.gettext.PotEntryHeader;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -28,8 +28,8 @@ import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 
-@XmlType(name = "textFlowType", namespace = Namespaces.FLIES, propOrder = { "content", "extensions" })
-@XmlRootElement(name = "text-flow", namespace = Namespaces.FLIES)
+@XmlType(name = "textFlowType", propOrder = { "content", "extensions" })
+@XmlRootElement(name = "text-flow")
 @JsonPropertyOrder( { "id", "lang", "content", "extensions" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
@@ -94,7 +94,7 @@ public class TextFlow implements Extensible<TextFlow>, Serializable, Commentable
       this.lang = lang;
    }
 
-   @XmlElement(name = "content", namespace = Namespaces.FLIES, required = true)
+   @XmlElement(name = "content", required = true)
    public String getContent()
    {
       if (content == null)
@@ -107,7 +107,7 @@ public class TextFlow implements Extensible<TextFlow>, Serializable, Commentable
       this.content = content;
    }
 
-   @XmlElementWrapper(name = "extensions", namespace = Namespaces.FLIES, required = false)
+   @XmlElementWrapper(name = "extensions", required = false)
    @XmlAnyElement(lax = true)
    public ExtensionSet<TextFlow> getExtensions()
    {

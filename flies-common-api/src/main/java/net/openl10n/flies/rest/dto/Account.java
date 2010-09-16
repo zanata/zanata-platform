@@ -9,7 +9,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import net.openl10n.flies.common.Namespaces;
 import net.openl10n.flies.rest.MediaTypes;
 import net.openl10n.flies.rest.MediaTypes.Format;
 
@@ -21,8 +20,8 @@ import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 
-@XmlType(name = "accountType", namespace = Namespaces.FLIES)
-@XmlRootElement(name = "account", namespace = Namespaces.FLIES)
+@XmlType(name = "accountType")
+@XmlRootElement(name = "account")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder(
 {"email", "name", "username", "password"})
@@ -131,7 +130,7 @@ public class Account implements Serializable, HasMediaType
       this.enabled = enabled;
    }
 
-   @XmlElement(name = "role", namespace = Namespaces.FLIES)
+   @XmlElement(name = "role")
    public Set<String> getRoles()
    {
       return roles;
@@ -142,7 +141,7 @@ public class Account implements Serializable, HasMediaType
       this.roles = roles;
    }
 
-   @XmlElement(name = "tribe", namespace = Namespaces.FLIES)
+   @XmlElement(name = "tribe")
    public Set<String> getTribes()
    {
       return tribes;

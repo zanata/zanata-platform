@@ -9,7 +9,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import net.openl10n.flies.common.ContentType;
 import net.openl10n.flies.common.LocaleId;
-import net.openl10n.flies.common.Namespaces;
 import net.openl10n.flies.common.ResourceType;
 import net.openl10n.flies.rest.dto.HasCollectionSample;
 
@@ -17,8 +16,8 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 
-@XmlType(name = "resourceMetaType", namespace = Namespaces.FLIES)
-@XmlRootElement(name = "resource-meta", namespace = Namespaces.FLIES)
+@XmlType(name = "resourceMetaType")
+@XmlRootElement(name = "resource-meta")
 @JsonPropertyOrder( { "name", "contentType", "lang", "extensions" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)

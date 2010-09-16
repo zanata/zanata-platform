@@ -15,11 +15,11 @@ import java.util.Map;
 
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.resources.OutputSource;
-import net.openl10n.flies.rest.dto.extensions.PoHeader;
-import net.openl10n.flies.rest.dto.extensions.PoTargetHeader;
-import net.openl10n.flies.rest.dto.extensions.PotEntryHeader;
-import net.openl10n.flies.rest.dto.extensions.SimpleComment;
-import net.openl10n.flies.rest.dto.po.HeaderEntry;
+import net.openl10n.flies.rest.dto.extensions.comment.SimpleComment;
+import net.openl10n.flies.rest.dto.extensions.gettext.HeaderEntry;
+import net.openl10n.flies.rest.dto.extensions.gettext.PoHeader;
+import net.openl10n.flies.rest.dto.extensions.gettext.PoTargetHeader;
+import net.openl10n.flies.rest.dto.extensions.gettext.PotEntryHeader;
 import net.openl10n.flies.rest.dto.po.PotEntryData;
 import net.openl10n.flies.rest.dto.resource.Resource;
 import net.openl10n.flies.rest.dto.resource.TextFlow;

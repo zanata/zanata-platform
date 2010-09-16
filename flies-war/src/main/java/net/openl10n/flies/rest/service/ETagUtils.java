@@ -10,7 +10,7 @@ import net.openl10n.flies.model.HProjectIteration;
 import net.openl10n.flies.model.po.HPoHeader;
 import net.openl10n.flies.rest.NoSuchEntityException;
 import net.openl10n.flies.rest.StringSet;
-import net.openl10n.flies.rest.dto.extensions.PoHeader;
+import net.openl10n.flies.rest.dto.extensions.gettext.PoHeader;
 import net.openl10n.flies.util.HashUtil;
 
 import org.apache.commons.lang.StringUtils;

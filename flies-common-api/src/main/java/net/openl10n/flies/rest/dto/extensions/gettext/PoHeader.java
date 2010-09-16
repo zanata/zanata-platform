@@ -1,4 +1,4 @@
-package net.openl10n.flies.rest.dto.extensions;
+package net.openl10n.flies.rest.dto.extensions.gettext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,37 +9,36 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import net.openl10n.flies.rest.dto.ExtensionValue;
-import net.openl10n.flies.rest.dto.po.HeaderEntry;
-import net.openl10n.flies.rest.dto.resource.TranslationsResource;
+import net.openl10n.flies.rest.dto.resource.AbstractResourceMeta;
 
 import org.codehaus.jackson.annotate.JsonTypeName;
 
 /**
- * Holds gettext file headers for a target document.
+ * Holds gettext file headers for a source document.
  * 
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  * 
  */
-@XmlType(name = "poTargetHeader", namespace = PoHeader.NAMESPACE, propOrder = { "comment", "entries" })
-@XmlRootElement(name = "po-target-header", namespace = PoHeader.NAMESPACE)
-@JsonTypeName(value = "po-target-header")
-public class PoTargetHeader implements ExtensionValue<TranslationsResource>
+@XmlType(name = "poHeaderExtension", propOrder = { "comment", "entries" })
+@XmlRootElement(name = "po-header")
+@JsonTypeName(value = "po-header")
+public class PoHeader implements ExtensionValue<AbstractResourceMeta>
 {
 
    public static final String ID = "gettext";
-   public static final String VERSION = PoHeader.VERSION;
-   public static final String NAMESPACE = PoHeader.NAMESPACE;
+   public static final String VERSION = "1.0";
 
    private String comment;
    private List<HeaderEntry> entries;
 
-   public PoTargetHeader()
+   public PoHeader()
    {
    }
 
-   public PoTargetHeader(String comment, HeaderEntry... entries)
+   public PoHeader(String comment, HeaderEntry... entries)
    {
+      this();
       setComment(comment);
       for (int i = 0; i < entries.length; i++)
       {
@@ -47,7 +46,7 @@ public class PoTargetHeader implements ExtensionValue<TranslationsResource>
       }
    }
 
-   @XmlElement(name = "comment", namespace = PoHeader.NAMESPACE, required = true)
+   @XmlElement(name = "comment", required = true)
    public String getComment()
    {
       return comment;
@@ -58,8 +57,8 @@ public class PoTargetHeader implements ExtensionValue<TranslationsResource>
       this.comment = comment;
    }
 
-   @XmlElementWrapper(name = "entries", namespace = PoHeader.NAMESPACE, required = true)
-   @XmlElement(name = "entry", namespace = PoHeader.NAMESPACE)
+   @XmlElementWrapper(name = "entries", required = true)
+   @XmlElement(name = "entry")
    public List<HeaderEntry> getEntries()
    {
       if (entries == null)

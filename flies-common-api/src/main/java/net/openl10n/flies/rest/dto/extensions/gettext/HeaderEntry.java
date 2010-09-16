@@ -1,4 +1,4 @@
-package net.openl10n.flies.rest.dto.po;
+package net.openl10n.flies.rest.dto.extensions.gettext;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -9,8 +9,8 @@ import net.openl10n.flies.rest.dto.DTOUtil;
 
 import org.apache.commons.lang.StringUtils;
 
-@XmlType(name = "headerEntryType", namespace = PoHeader.NAMESPACE)
-@XmlRootElement(name = "header-entry", namespace = PoHeader.NAMESPACE)
+@XmlType(name = "headerEntryType")
+@XmlRootElement(name = "header-entry")
 public class HeaderEntry
 {
    private String key;

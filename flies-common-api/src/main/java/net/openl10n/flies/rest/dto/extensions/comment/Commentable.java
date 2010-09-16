@@ -1,4 +1,4 @@
-package net.openl10n.flies.rest.dto.extensions;
+package net.openl10n.flies.rest.dto.extensions.comment;
 
 /**
  * Marker interface for Extensible types which support SimpleComment

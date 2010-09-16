@@ -11,7 +11,7 @@ import net.openl10n.flies.rest.dto.deprecated.Document;
 import net.openl10n.flies.rest.dto.deprecated.SimpleComment;
 import net.openl10n.flies.rest.dto.deprecated.TextFlow;
 import net.openl10n.flies.rest.dto.deprecated.TextFlowTarget;
-import net.openl10n.flies.rest.dto.po.HeaderEntry;
+import net.openl10n.flies.rest.dto.extensions.gettext.HeaderEntry;
 import net.openl10n.flies.rest.dto.po.PoHeader;
 import net.openl10n.flies.rest.dto.po.PoTargetHeader;
 import net.openl10n.flies.rest.dto.po.PoTargetHeaders;
