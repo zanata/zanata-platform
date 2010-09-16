@@ -14,8 +14,11 @@ import net.openl10n.flies.rest.dto.deprecated.TextFlowTargets;
 import net.openl10n.flies.rest.dto.po.PoHeader;
 import net.openl10n.flies.rest.dto.po.PotEntryData;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import org.xml.sax.InputSource;
 
 public class PoReaderTests
@@ -23,7 +26,7 @@ public class PoReaderTests
 
    File file;
 
-   @Before
+   @BeforeMethod
    public void setup() throws IOException
    {
       file = File.createTempFile("poReaderTests", ".xml");
@@ -65,5 +68,7 @@ public class PoReaderTests
       Marshaller m = jaxbContext.createMarshaller();
       m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
       m.marshal(doc, System.out);
+
+      // FIXME add assertions!
    }
 }

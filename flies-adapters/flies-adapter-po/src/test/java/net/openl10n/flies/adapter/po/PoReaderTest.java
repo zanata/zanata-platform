@@ -8,8 +8,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import junit.framework.Assert;
-
 import net.openl10n.flies.adapter.po.PoReader;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.rest.dto.deprecated.Document;
@@ -18,9 +16,12 @@ import net.openl10n.flies.rest.dto.deprecated.TextFlowTargets;
 import net.openl10n.flies.rest.dto.po.PoHeader;
 import net.openl10n.flies.rest.dto.po.PotEntryData;
 
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import org.testng.annotations.Test;
 import org.xml.sax.InputSource;
 
+@Test(groups = { "unit-tests" })
 public class PoReaderTest
 {
 
@@ -58,8 +59,8 @@ public class PoReaderTest
       List<TextFlow> resources = doc.getTextFlows();
 
       TextFlow tf1 = (TextFlow) resources.get(3);
-      Assert.assertEquals("Important", tf1.getContent());
-      Assert.assertEquals("キーのインポート", tf1.getTarget(ja).getContent());
+      assertThat(tf1.getContent(), equalTo("Important"));
+      assertThat(tf1.getTarget(ja).getContent(), equalTo("キーのインポート"));
 
       // TODO test PO headers and attributes
    }
