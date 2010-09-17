@@ -4,9 +4,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.common.ContentType;
@@ -39,6 +40,9 @@ public class PoReader2
 
    public static final ImmutableSet<String> PO_HEADER_FIELDS = ImmutableSet.of(HeaderFields.KEY_PoRevisionDate, HeaderFields.KEY_LastTranslator, HeaderFields.KEY_LanguageTeam, HeaderFields.KEY_Language, "Plural-Forms", "X-Generator");
 
+   // useful for testing
+   private static final boolean GENERATE_OPAQUE_IDS = false;
+
    public PoReader2()
    {
    }
@@ -49,11 +53,12 @@ public class PoReader2
       MessageStreamParser messageParser = createParser(inputSource);
 
       List<TextFlow> resources = srcDoc.getTextFlows();
-      Set<String> textFlowIds = new HashSet<String>();
+      List<String> textFlowIds = new ArrayList<String>();
       for (TextFlow res : resources)
       {
          textFlowIds.add(res.getId());
       }
+      Map<String, TextFlowTarget> targets = new HashMap<String, TextFlowTarget>();
 
       boolean headerFound = false;
       while (messageParser.hasNext())
@@ -96,11 +101,19 @@ public class PoReader2
                tfTarget.setState(getContentState(message));
 
                // add the PO comment
-               tfTarget.getExtensions().add(new SimpleComment<TextFlowTarget>(StringUtils.join(message.getComments(), "\n")));
-               document.getTextFlowTargets(true).add(tfTarget);
+               tfTarget.getExtensions(true).add(new SimpleComment<TextFlowTarget>(StringUtils.join(message.getComments(), "\n")));
+               targets.put(id, tfTarget);
             }
          }
       }
+      // this ensures that the TextFlowTargets have the same order as the
+      // TextFlows in the Document:
+      for (String id : textFlowIds)
+      {
+         TextFlowTarget tfTarget = targets.get(id);
+         document.getTextFlowTargets(true).add(tfTarget);
+      }
+
       return document;
    }
 
@@ -185,7 +198,7 @@ public class PoReader2
             resources.add(tf);
 
             // add the entry header POT fields
-            tf.getExtensions().add(createPotEntryHeader(message));
+            tf.getExtensions(true).add(createPotEntryHeader(message));
             tf.getExtensions().add(createSimpleComment(message));
          }
       }
@@ -259,8 +272,16 @@ public class PoReader2
 
    static String createId(Message message)
    {
-      String hashBase = message.getMsgctxt() == null ? message.getMsgid() : message.getMsgctxt() + "\u0000" + message.getMsgid();
-      return generateHash(hashBase);
+      String sep;
+      if (GENERATE_OPAQUE_IDS)
+         sep = "\u0000";
+      else
+         sep = ":";
+      String hashBase = message.getMsgctxt() == null ? message.getMsgid() : message.getMsgctxt() + sep + message.getMsgid();
+      if (GENERATE_OPAQUE_IDS)
+         return generateHash(hashBase);
+      else
+         return hashBase;
    }
 
    public static String generateHash(String key)
