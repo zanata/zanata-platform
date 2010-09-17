@@ -37,6 +37,8 @@ public abstract class AbstractResourceMeta implements Serializable, Extensible<A
 
    private ExtensionSet<AbstractResourceMeta> extensions;
 
+   // TODO add Links for Resource, ResourceMeta and TranslationsResource
+
    public AbstractResourceMeta()
    {
    }
