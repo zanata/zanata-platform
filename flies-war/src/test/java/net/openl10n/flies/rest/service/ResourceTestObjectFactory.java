@@ -1,0 +1,111 @@
+package net.openl10n.flies.rest.service;
+
+
+import net.openl10n.flies.common.ContentType;
+import net.openl10n.flies.common.LocaleId;
+import net.openl10n.flies.common.ResourceType;
+import net.openl10n.flies.rest.dto.extensions.comment.SimpleComment;
+import net.openl10n.flies.rest.dto.extensions.gettext.HeaderEntry;
+import net.openl10n.flies.rest.dto.extensions.gettext.PoHeader;
+import net.openl10n.flies.rest.dto.extensions.gettext.PotEntryHeader;
+import net.openl10n.flies.rest.dto.resource.Resource;
+import net.openl10n.flies.rest.dto.resource.ResourceMeta;
+import net.openl10n.flies.rest.dto.resource.TextFlow;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class ResourceTestObjectFactory
+{
+   private static ResourceTestObjectFactory me = new ResourceTestObjectFactory();
+   private final Logger log = LoggerFactory.getLogger(ResourceTestObjectFactory.class);
+
+   private ResourceTestObjectFactory()
+   {
+
+   }
+   public static ResourceTestObjectFactory getInstance()
+   {
+      return me;
+   }
+
+   public Resource getTextFlowTest()
+   {
+      Resource sr = new Resource("test1");
+      sr.setContentType(ContentType.TextPlain);
+      sr.setLang(LocaleId.EN_US);
+      sr.setType(ResourceType.FILE);
+      // for the convenience of test only
+      sr.getExtensions(true);
+
+      TextFlow stf = new TextFlow("rest1", LocaleId.EN_US, "tf1");
+      stf.getExtensions(true);
+      sr.getTextFlows().add(stf);
+      log.debug(sr.toString());
+      return sr;
+   }
+
+   public Resource getTextFlowTest2()
+   {
+      Resource sr = new Resource("test2");
+      sr.setContentType(ContentType.TextPlain);
+      sr.setLang(LocaleId.EN_US);
+      sr.setType(ResourceType.FILE);
+      sr.getExtensions(true);
+
+      TextFlow stf = new TextFlow("tf1", LocaleId.EN_US, "tf1");
+      stf.getExtensions(true);
+      TextFlow stf2 = new TextFlow("tf2", LocaleId.EN_US, "testtf2");
+      stf2.getExtensions(true);
+      sr.getTextFlows().add(stf);
+      sr.getTextFlows().add(stf2);
+      return sr;
+   }
+
+   public Resource getPoHeaderTest()
+   {
+      Resource sr = getTextFlowTest();
+
+      PoHeader poHeaderExt = new PoHeader("comment", new HeaderEntry("h1", "v1"), new HeaderEntry("h2", "v2"));
+      sr.getExtensions(true).add(poHeaderExt);
+      return sr;
+   }
+
+   public Resource getPotEntryHeaderTest()
+   {
+      Resource sr = getTextFlowTest();
+      TextFlow stf = sr.getTextFlows().get(0);
+
+      PotEntryHeader potEntryHeader = new PotEntryHeader();
+      potEntryHeader.setContext("potentrycontext");
+
+      // /no place for flag and reference
+      stf.getExtensions(true).add(potEntryHeader);
+      return sr;
+   }
+
+   public Resource getTextFlowCommentTest()
+   {
+      Resource sr = getTextFlowTest2();
+      TextFlow stf = sr.getTextFlows().get(1);
+
+      SimpleComment<TextFlow> simpleComment = new SimpleComment<TextFlow>("textflow comment");
+
+      stf.getExtensions(true).add(simpleComment);
+      return sr;
+   }
+
+   public ResourceMeta getTestResourceMeta()
+   {
+      ResourceMeta entity = new ResourceMeta();
+      entity.setContentType(ContentType.TextPlain);
+      entity.setName("readme.txt");
+      entity.setLang(new LocaleId("en-US"));
+      entity.setType(ResourceType.FILE);
+      entity.getExtensions(true);
+      log.debug("create a new resource meta:" + entity.toString());
+      return entity;
+   }
+
+
+}
