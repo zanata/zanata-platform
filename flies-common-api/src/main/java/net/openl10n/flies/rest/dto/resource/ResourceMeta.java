@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlType;
 import net.openl10n.flies.common.ContentType;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.common.ResourceType;
+import net.openl10n.flies.rest.dto.DTOUtil;
 import net.openl10n.flies.rest.dto.HasCollectionSample;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -23,6 +24,7 @@ import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 @JsonWriteNullProperties(false)
 public class ResourceMeta extends AbstractResourceMeta implements HasCollectionSample<ResourceMeta>
 {
+   private static final long serialVersionUID = 1L;
 
    public ResourceMeta()
    {
@@ -54,6 +56,12 @@ public class ResourceMeta extends AbstractResourceMeta implements HasCollectionS
       sample2.setName("license.txt");
       elems.add(sample2);
       return elems;
+   }
+
+   @Override
+   public String toString()
+   {
+      return DTOUtil.toXML(this);
    }
 
 }

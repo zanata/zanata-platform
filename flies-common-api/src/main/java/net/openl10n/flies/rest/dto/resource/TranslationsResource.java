@@ -33,7 +33,7 @@ import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 @XmlSeeAlso({ PoTargetHeader.class })
 public class TranslationsResource implements Serializable, HasSample<TranslationsResource>
 {
-
+   private static final long serialVersionUID = 1L;
    private ExtensionSet<TranslationsResource> extensions;
    private Links links;
    private List<TextFlowTarget> textFlowTargets;
@@ -62,6 +62,10 @@ public class TranslationsResource implements Serializable, HasSample<Translation
    @XmlElementRef
    public List<TextFlowTarget> getTextFlowTargets()
    {
+      if (textFlowTargets == null)
+      {
+         textFlowTargets = new ArrayList<TextFlowTarget>();
+      }
       return textFlowTargets;
    }
 

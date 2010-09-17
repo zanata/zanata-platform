@@ -276,6 +276,7 @@ public class TranslationResourcesService
    @Admin
    public Response putResource(@PathParam("id") String id, InputStream messageBody)
    {
+      log.debug("start put resource");
 
       ResponseBuilder response;
       EntityTag etag = null;
@@ -335,6 +336,7 @@ public class TranslationResourcesService
          etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
       }
 
+      log.debug("put resource successfully");
       return response.tag(etag).build();
 
    }
@@ -366,7 +368,7 @@ public class TranslationResourcesService
    // /r/{id}/meta
    public Response getResourceMeta(@PathParam("id") String id)
    {
-
+      log.debug("start to get resource meta");
       HProjectIteration hProjectIteration = retrieveIteration();
 
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
@@ -390,6 +392,7 @@ public class TranslationResourcesService
       // transfer extensions
       resourceUtils.transferToResourceExtensions(doc, entity.getExtensions(true), extensions);
 
+      log.debug("successfuly get resource meta:" + entity);
       return Response.ok().entity(entity).tag(etag).build();
    }
 
@@ -399,7 +402,7 @@ public class TranslationResourcesService
    @Admin
    public Response putResourceMeta(@PathParam("id") String id, InputStream messageBody)
    {
-
+      log.debug("start to put resource meta");
       HProjectIteration hProjectIteration = retrieveIteration();
 
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
@@ -410,7 +413,9 @@ public class TranslationResourcesService
          return response.build();
       }
 
+      log.debug("pass evaluation");
       ResourceMeta entity = RestUtils.unmarshall(ResourceMeta.class, messageBody, requestContentType, headers.getRequestHeaders());
+      log.debug("put resource meta:" + entity);
 
       HDocument document = documentDAO.getByDocId(hProjectIteration, id);
 
@@ -429,6 +434,7 @@ public class TranslationResourcesService
          etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
       }
 
+      log.debug("put resource meta successfully");
       return Response.ok().tag(etag).lastModified(document.getLastChanged()).build();
 
    }
@@ -438,7 +444,7 @@ public class TranslationResourcesService
    // /r/{id}/translations/{locale}
    public Response getTranslations(@PathParam("id") String id, @PathParam("locale") LocaleId locale)
    {
-
+      log.debug("start to get translation");
       HProjectIteration hProjectIteration = retrieveIteration();
 
       validateExtensions();
@@ -525,10 +531,13 @@ public class TranslationResourcesService
    @Admin
    public Response putTranslations(@PathParam("id") String id, @PathParam("locale") LocaleId locale, InputStream messageBody)
    {
+      log.debug("start put translations");
 
       HProjectIteration hProjectIteration = retrieveIteration();
+      log.debug("project iteraton:" + hProjectIteration.getName());
 
       validateExtensions();
+      log.debug("validate extension");
 
       // TODO create valid etag
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
@@ -539,6 +548,7 @@ public class TranslationResourcesService
          return response.build();
       }
 
+      log.debug("pass evaluate");
       HDocument document = documentDAO.getByDocId(hProjectIteration, id);
       if (document.isObsolete())
       {
@@ -547,6 +557,7 @@ public class TranslationResourcesService
 
 
       TranslationsResource entity = RestUtils.unmarshall(TranslationsResource.class, messageBody, requestContentType, headers.getRequestHeaders());
+      log.debug("start put translations entity:" + entity.toString());
 
       boolean changed = false;
 
@@ -664,7 +675,7 @@ public class TranslationResourcesService
          // TODO create valid etag
          etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
       }
-
+      log.debug("successful put translation");
       // TODO lastChanged
       return Response.ok().tag(etag).build();
    }

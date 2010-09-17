@@ -10,9 +10,11 @@
 
 	<test name="Non-Seam Tests">
  		<groups>
+		<!-- 
 	 		<packages>
 	 			<package name="net.openl10n.flies.*"/>
 	 		</packages>
+		-->
  			<run>
  				<include name=".*"/>
  				<exclude name="seam-tests"/>
