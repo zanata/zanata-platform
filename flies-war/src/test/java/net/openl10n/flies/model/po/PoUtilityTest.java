@@ -1,12 +1,11 @@
 package net.openl10n.flies.model.po;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.fedorahosted.openprops.Properties;
 import org.testng.annotations.Test;
+import static org.testng.Assert.*;
 
 @Test(groups = { "unit-tests" })
 public class PoUtilityTest
