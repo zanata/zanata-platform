@@ -35,8 +35,6 @@ public class PoReader2
 
    public static final ContentType PO_CONTENT_TYPE = new ContentType("application/x-gettext");
 
-   public static final LocaleId PO_SOURCE_LANGUAGE = LocaleId.EN_US;
-
    public static final ImmutableSet<String> POT_HEADER_FIELDS = ImmutableSet.of(HeaderFields.KEY_ProjectIdVersion, HeaderFields.KEY_ReportMsgidBugsTo, HeaderFields.KEY_PotCreationDate, HeaderFields.KEY_MimeVersion, HeaderFields.KEY_ContentType, HeaderFields.KEY_ContentTransferEncoding);
 
    public static final ImmutableSet<String> PO_HEADER_FIELDS = ImmutableSet.of(HeaderFields.KEY_PoRevisionDate, HeaderFields.KEY_LastTranslator, HeaderFields.KEY_LanguageTeam, HeaderFields.KEY_Language, "Plural-Forms", "X-Generator");
@@ -45,8 +43,9 @@ public class PoReader2
    {
    }
 
-   public void extractTarget(Resource srcDoc, TranslationsResource document, InputSource inputSource, LocaleId targetLocaleId)
+   public TranslationsResource extractTarget(InputSource inputSource, Resource srcDoc)
    {
+      TranslationsResource document = new TranslationsResource();
       MessageStreamParser messageParser = createParser(inputSource);
 
       List<TextFlow> resources = srcDoc.getTextFlows();
@@ -102,7 +101,7 @@ public class PoReader2
             }
          }
       }
-
+      return document;
    }
 
    private static void extractPotHeader(Message message, PoHeader potHeader)
@@ -143,8 +142,9 @@ public class PoReader2
       }
    }
 
-   public void extractTemplate(Resource document, InputSource inputSource, LocaleId sourceLocaleId)
+   public Resource extractTemplate(InputSource inputSource, LocaleId sourceLocaleId, String docName)
    {
+      Resource document = new Resource(docName);
       MessageStreamParser messageParser = createParser(inputSource);
 
       document.setLang(sourceLocaleId);
@@ -188,8 +188,8 @@ public class PoReader2
             tf.getExtensions().add(createPotEntryHeader(message));
             tf.getExtensions().add(createSimpleComment(message));
          }
-
       }
+      return document;
    }
 
    private static PotEntryHeader createPotEntryHeader(Message message)
@@ -209,11 +209,6 @@ public class PoReader2
       String comment = StringUtils.join(message.getExtractedComments(), "\n");
       SimpleComment<TextFlow> result = new SimpleComment<TextFlow>(comment);
       return result;
-   }
-
-   public void extractTemplate(Resource document, InputSource inputSource)
-   {
-      extractTemplate(document, inputSource, PO_SOURCE_LANGUAGE);
    }
 
    static MessageStreamParser createParser(InputSource inputSource)

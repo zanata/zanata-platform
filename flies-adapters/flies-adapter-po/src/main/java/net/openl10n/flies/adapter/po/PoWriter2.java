@@ -20,7 +20,6 @@ import net.openl10n.flies.rest.dto.extensions.gettext.HeaderEntry;
 import net.openl10n.flies.rest.dto.extensions.gettext.PoHeader;
 import net.openl10n.flies.rest.dto.extensions.gettext.PoTargetHeader;
 import net.openl10n.flies.rest.dto.extensions.gettext.PotEntryHeader;
-import net.openl10n.flies.rest.dto.po.PotEntryData;
 import net.openl10n.flies.rest.dto.resource.Resource;
 import net.openl10n.flies.rest.dto.resource.TextFlow;
 import net.openl10n.flies.rest.dto.resource.TextFlowTarget;
@@ -56,7 +55,7 @@ public class PoWriter2
       potDir.mkdirs();
       File potFile = new File(potDir, doc.getName() + ".pot");
       OutputSource outputSource = new OutputSource(potFile);
-      write(outputSource, doc, null, null);
+      write(outputSource, doc, null);
    }
 
    /**
@@ -76,22 +75,21 @@ public class PoWriter2
       localeDir.mkdirs();
       File poFile = new File(localeDir, doc.getName() + ".po");
       OutputSource outputSource = new OutputSource(poFile);
-      write(outputSource, doc, locale, targetDoc);
+      write(outputSource, doc, targetDoc);
    }
 
    /**
     * Generates a pot or po file from a Resource and/or TranslationsResource,
-    * using the publican directory layout. If LocaleId is non-null, a po file
+    * using the publican directory layout. If targetDoc is non-null, a po file
     * will be generated from Resource+TranslationsResource, otherwise a pot file
     * will be generated from the Resource only.
     * 
     * @param outputSource
     * @param document
-    * @param locale
     * @param targetDoc
     * @throws IOException
     */
-   private void write(OutputSource outputSource, Resource document, LocaleId locale, TranslationsResource targetDoc) throws IOException
+   private void write(OutputSource outputSource, Resource document, TranslationsResource targetDoc) throws IOException
    {
       Writer writer = createWriter(outputSource);
 
@@ -107,7 +105,7 @@ public class PoWriter2
          copyToHeaderFields(hf, poHeader.getEntries());
       }
       Message headerMessage = null;
-      if (locale != null)
+      if (targetDoc != null)
       {
          PoTargetHeader poTargetHeader = targetDoc.getExtensions(true).findByType(PoTargetHeader.class);
          if (poTargetHeader != null)
@@ -124,7 +122,7 @@ public class PoWriter2
       poWriter.write(headerMessage, writer);
       writer.write("\n");
       Map<String, TextFlowTarget> targets = null;
-      if (locale != null)
+      if (targetDoc != null)
       {
          targets = new HashMap<String, TextFlowTarget>();
          for (TextFlowTarget target : targetDoc.getTextFlowTargets(true))
@@ -142,7 +140,7 @@ public class PoWriter2
          Message message = new Message();
          message.setMsgid(textFlow.getContent());
          message.setMsgstr("");
-         if (locale != null)
+         if (targetDoc != null)
          {
             TextFlowTarget contentData = targets.get(textFlow.getId());
             if (contentData != null)
