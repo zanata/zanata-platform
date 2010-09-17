@@ -10,9 +10,11 @@
 
 	<test name="Unit Tests">
  		<groups>
+		<!-- 
 	 		<packages>
 	 			<package name="net.openl10n.flies.*"/>
 	 		</packages>
+		-->
  			<run>
  				<include name="unit-tests"/>
  			</run>
