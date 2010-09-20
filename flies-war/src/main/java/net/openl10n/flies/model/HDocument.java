@@ -66,25 +66,9 @@ public class HDocument extends AbstractFliesEntity implements IDocumentHistory
 
    public HDocument(String fullPath, ContentType contentType, HLocale locale)
    {
-      int lastSepChar = fullPath.lastIndexOf('/');
-      switch (lastSepChar)
-      {
-      case -1:
-         this.path = "";
-         this.docId = this.name = fullPath;
-         break;
-      case 0:
-         this.path = "/";
-         this.docId = fullPath;
-         this.name = fullPath.substring(1);
-         break;
-      default:
-         this.path = fullPath.substring(0, lastSepChar + 1);
-         this.docId = fullPath;
-         this.name = fullPath.substring(lastSepChar + 1);
-      }
       this.contentType = contentType;
       this.locale = locale;
+      setFullPath(fullPath);
    }
 
    public HDocument(String docId, String name, String path, ContentType contentType, HLocale locale)
@@ -106,6 +90,7 @@ public class HDocument extends AbstractFliesEntity implements IDocumentHistory
    {
    }
 
+   @Deprecated
    public HDocument(Document docInfo, HLocale locale)
    {
       this.docId = docInfo.getId();
@@ -124,6 +109,26 @@ public class HDocument extends AbstractFliesEntity implements IDocumentHistory
       return tf;
    }
 
+   public void setFullPath(String fullPath)
+   {
+      this.docId = fullPath;
+      int lastSepChar = fullPath.lastIndexOf('/');
+      switch (lastSepChar)
+      {
+      case -1:
+         this.path = "";
+         this.name = fullPath;
+         break;
+      case 0:
+         this.path = "/";
+         this.name = fullPath.substring(1);
+         break;
+      default:
+         this.path = fullPath.substring(0, lastSepChar + 1);
+         this.name = fullPath.substring(lastSepChar + 1);
+      }
+   }
+
    // TODO make this case sensitive
    @NaturalId
    @Length(max = 255)
@@ -133,6 +138,10 @@ public class HDocument extends AbstractFliesEntity implements IDocumentHistory
       return docId;
    }
 
+   /**
+    * Use setFullPath to ensure consistent parsing of the document id/path
+    */
+   @Deprecated
    public void setDocId(String docId)
    {
       this.docId = docId;
@@ -144,6 +153,10 @@ public class HDocument extends AbstractFliesEntity implements IDocumentHistory
       return name;
    }
 
+   /**
+    * Use setFullPath to ensure consistent parsing of the document id/path
+    */
+   @Deprecated
    public void setName(String name)
    {
       this.name = name;
@@ -155,6 +168,10 @@ public class HDocument extends AbstractFliesEntity implements IDocumentHistory
       return path;
    }
 
+   /**
+    * Use setFullPath to ensure consistent parsing of the document id/path
+    */
+   @Deprecated
    public void setPath(String path)
    {
       this.path = path;

@@ -418,7 +418,7 @@ public class TranslationResourcesService
       log.debug("put resource meta:" + entity);
 
       HDocument document = documentDAO.getByDocId(hProjectIteration, id);
-
+      // FIXME what if document is null? (ie putting new document)
       if (document.isObsolete())
       {
          return Response.status(Status.NOT_FOUND).build();

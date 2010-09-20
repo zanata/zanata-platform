@@ -135,9 +135,9 @@ public class ResourceUtils
       boolean changed = false;
 
       // name
-      if (!equals(from.getName(), to.getName()))
+      if (!equals(from.getName(), to.getDocId()))
       {
-         to.setName(from.getName());
+         to.setFullPath(from.getName());
          changed = true;
       }
 
@@ -466,10 +466,7 @@ public class ResourceUtils
 
    public void transferToResource(HDocument from, Resource to)
    {
-
-      to.setName(from.getName());
-      to.setLang(from.getLocale().getLocaleId());
-      to.setContentType(from.getContentType());
+      transferToAbstractResourceMeta(from, to);
    }
 
    private void transferToPoHeader(HPoHeader from, PoHeader to)
