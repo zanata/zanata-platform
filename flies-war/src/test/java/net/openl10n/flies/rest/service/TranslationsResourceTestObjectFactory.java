@@ -1,6 +1,9 @@
 package net.openl10n.flies.rest.service;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.rest.dto.Person;
 import net.openl10n.flies.rest.dto.extensions.comment.SimpleComment;
@@ -11,17 +14,7 @@ import net.openl10n.flies.rest.dto.resource.TranslationsResource;
 
 public class TranslationsResourceTestObjectFactory
 {
-   private static TranslationsResourceTestObjectFactory me = new TranslationsResourceTestObjectFactory();
-
-   private TranslationsResourceTestObjectFactory()
-   {
-
-   }
-
-   public static TranslationsResourceTestObjectFactory getInstance()
-   {
-      return me;
-   }
+   private final Logger log = LoggerFactory.getLogger(TranslationsResourceTestObjectFactory.class);
 
    public TranslationsResource getTestObject()
    {
@@ -32,7 +25,7 @@ public class TranslationsResourceTestObjectFactory
       target.setTranslator(new Person("root@localhost", "Admin user"));
       // for the convenience of test
       target.getExtensions(true);
-      entity.getTextFlowTargets(true).add(target);
+      entity.getTextFlowTargets().add(target);
       entity.getExtensions(true);
       return entity;
    }
@@ -50,15 +43,16 @@ public class TranslationsResourceTestObjectFactory
       target2.setState(ContentState.Approved);
       target2.setTranslator(new Person("root@localhost", "Admin user"));
       target2.getExtensions(true);
-      entity.getTextFlowTargets(true).add(target2);
+      entity.getTextFlowTargets().add(target2);
       entity.getExtensions(true);
+      log.debug(entity.toString());
       return entity;
    }
 
    public TranslationsResource getTextFlowTargetCommentTest()
    {
       TranslationsResource sr = getTestObject();
-      TextFlowTarget stf = sr.getTextFlowTargets(true).get(0);
+      TextFlowTarget stf = sr.getTextFlowTargets().get(0);
 
       SimpleComment<TextFlowTarget> simpleComment = new SimpleComment<TextFlowTarget>("textflowtarget comment");
 
