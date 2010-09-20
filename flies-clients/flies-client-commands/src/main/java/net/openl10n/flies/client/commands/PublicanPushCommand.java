@@ -13,6 +13,7 @@ import net.openl10n.flies.adapter.po.PoReader2;
 import net.openl10n.flies.client.commands.gettext.PublicanUtil;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.rest.JaxbUtil;
+import net.openl10n.flies.rest.StringSet;
 import net.openl10n.flies.rest.client.ClientUtility;
 import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 import net.openl10n.flies.rest.client.ITranslationResources;
@@ -158,7 +159,8 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
          {
             JaxbUtil.validateXml(srcDoc, jc);
          }
-         translationResources.putResource(docId, srcDoc, null);
+         StringSet extensions = new StringSet("comment;gettext");
+         translationResources.putResource(docId, srcDoc, extensions);
          if (importPo)
          {
             for (File localeDir : localeDirs)
@@ -180,7 +182,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
                   {
                      JaxbUtil.validateXml(targetDoc, jc);
                   }
-                  translationResources.putTranslations(docId, locale, targetDoc, null);
+                  translationResources.putTranslations(docId, locale, targetDoc, extensions);
                }
             }
          }
