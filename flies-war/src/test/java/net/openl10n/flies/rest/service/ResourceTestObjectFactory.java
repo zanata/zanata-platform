@@ -17,17 +17,7 @@ import org.slf4j.LoggerFactory;
 
 public class ResourceTestObjectFactory
 {
-   private static ResourceTestObjectFactory me = new ResourceTestObjectFactory();
    private final Logger log = LoggerFactory.getLogger(ResourceTestObjectFactory.class);
-
-   private ResourceTestObjectFactory()
-   {
-
-   }
-   public static ResourceTestObjectFactory getInstance()
-   {
-      return me;
-   }
 
    public Resource getTextFlowTest()
    {
@@ -39,7 +29,7 @@ public class ResourceTestObjectFactory
       sr.getExtensions(true);
 
       TextFlow stf = new TextFlow("rest1", LocaleId.EN_US, "tf1");
-      stf.getExtensions(true);
+      // stf.getExtensions(true);
       sr.getTextFlows().add(stf);
       log.debug(sr.toString());
       return sr;
@@ -56,7 +46,7 @@ public class ResourceTestObjectFactory
       TextFlow stf = new TextFlow("tf1", LocaleId.EN_US, "tf1");
       stf.getExtensions(true);
       TextFlow stf2 = new TextFlow("tf2", LocaleId.EN_US, "testtf2");
-      stf2.getExtensions(true);
+      // stf2.getExtensions(true);
       sr.getTextFlows().add(stf);
       sr.getTextFlows().add(stf2);
       return sr;
