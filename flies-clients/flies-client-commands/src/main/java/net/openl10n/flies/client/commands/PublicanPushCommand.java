@@ -92,10 +92,10 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
          throw new Exception("Project must be specified");
       if (getProjectVersion() == null)
          throw new Exception("Project version must be specified");
-      System.out.println("Flies server: " + getUrl());
-      System.out.println("Project: " + getProject());
-      System.out.println("Version: " + getProjectVersion());
-      // System.out.println("List of resources:");
+      log.debug("Flies server: {}", getUrl());
+      log.debug("Project: {}", getProject());
+      log.debug("Version: {}", getProjectVersion());
+      // log.debug("List of resources:");
 
       // NB we don't load all the docs into a HashMap, because that would waste
       // memory
