@@ -27,7 +27,7 @@ public interface ITranslationResources
 {
 
    @GET
-   public ClientResponse<List<ResourceMeta>> get();
+   public ClientResponse<List<ResourceMeta>> get(@QueryParam("ext") StringSet extensions);
 
    @POST
    public ClientResponse<String> post(Resource messageBody, @QueryParam("ext") StringSet extensions);
@@ -38,7 +38,7 @@ public interface ITranslationResources
 
    @PUT
    @Path("{id}")
-   public ClientResponse<String> putResource(@PathParam("id") String id, Resource messageBody);
+   public ClientResponse<String> putResource(@PathParam("id") String id, Resource messageBody, @QueryParam("ext") StringSet extensions);
 
    @DELETE
    @Path("{id}")
@@ -46,15 +46,15 @@ public interface ITranslationResources
 
    @GET
    @Path("{id}/meta")
-   public ClientResponse<ResourceMeta> getResourceMeta(@PathParam("id") String id);
+   public ClientResponse<ResourceMeta> getResourceMeta(@PathParam("id") String id, @QueryParam("ext") StringSet extensions);
 
    @PUT
    @Path("{id}/meta")
-   public ClientResponse<String> putResourceMeta(@PathParam("id") String id, ResourceMeta messageBody);
+   public ClientResponse<String> putResourceMeta(@PathParam("id") String id, ResourceMeta messageBody, @QueryParam("ext") StringSet extensions);
 
    @GET
    @Path("{id}/translations/{locale}")
-   public ClientResponse<TranslationsResource> getTranslations(@PathParam("id") String id, @PathParam("locale") LocaleId locale);
+   public ClientResponse<TranslationsResource> getTranslations(@PathParam("id") String id, @PathParam("locale") LocaleId locale, @QueryParam("ext") StringSet extensions);
 
    @DELETE
    @Path("{id}/translations/{locale}")
@@ -62,6 +62,6 @@ public interface ITranslationResources
 
    @PUT
    @Path("{id}/translations/{locale}")
-   public ClientResponse<String> putTranslations(@PathParam("id") String id, @PathParam("locale") LocaleId locale, TranslationsResource messageBody);
+   public ClientResponse<String> putTranslations(@PathParam("id") String id, @PathParam("locale") LocaleId locale, TranslationsResource messageBody, @QueryParam("ext") StringSet extensions);
 
 }

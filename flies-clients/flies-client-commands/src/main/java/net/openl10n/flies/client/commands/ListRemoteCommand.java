@@ -74,7 +74,7 @@ public class ListRemoteCommand extends ConfigurableProjectCommand
       System.out.println("List of resources:");
       FliesClientRequestFactory factory = new FliesClientRequestFactory(getUrl().toURI(), getUsername(), getKey());
       ITranslationResources translationResources = factory.getTranslationResources(getProject(), getProjectVersion());
-      ClientResponse<List<ResourceMeta>> response = translationResources.get();
+      ClientResponse<List<ResourceMeta>> response = translationResources.get(null);
       ClientUtility.checkResult(response, factory.getTranslationResourcesURI(getProject(), getProjectVersion()));
       List<ResourceMeta> list = response.getEntity();
       for (ResourceMeta doc : list)

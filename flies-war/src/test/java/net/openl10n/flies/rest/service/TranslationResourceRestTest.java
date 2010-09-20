@@ -7,8 +7,6 @@ import static org.hamcrest.Matchers.notNullValue;
 
 import java.util.List;
 
-import javassist.compiler.NoFieldException;
-
 import javax.ws.rs.core.Response.Status;
 
 import net.openl10n.flies.FliesRestTest;
@@ -139,7 +137,7 @@ public class TranslationResourceRestTest extends FliesRestTest
       TextFlow stf = new TextFlow("tf1", LocaleId.EN, "tf1");
       sr.getTextFlows().add(stf);
 
-      ClientResponse<String> response = client.putResource("my.txt", sr);
+      ClientResponse<String> response = client.putResource("my.txt", sr, null);
       assertThat(response.getResponseStatus(), is(Status.CREATED));
       assertThat(response.getLocation().getHref(), endsWith("/r/my.txt"));
 
@@ -212,21 +210,21 @@ public class TranslationResourceRestTest extends FliesRestTest
       entity.getTextFlowTargets(true).add(target);
 
       LocaleId de_DE = new LocaleId("de-DE");
-      ClientResponse<String> response = client.putTranslations("my.txt", de_DE, entity);
+      ClientResponse<String> response = client.putTranslations("my.txt", de_DE, entity, null);
 
       assertThat(response.getResponseStatus(), is(Status.OK));
 
-      ClientResponse<TranslationsResource> getResponse = client.getTranslations("my.txt", de_DE);
+      ClientResponse<TranslationsResource> getResponse = client.getTranslations("my.txt", de_DE, null);
       assertThat(getResponse.getResponseStatus(), is(Status.OK));
       TranslationsResource entity2 = getResponse.getEntity();
       assertThat(entity2.getTextFlowTargets(true).size(), is(entity.getTextFlowTargets(true).size()));
 
       entity.getTextFlowTargets(true).clear();
-      response = client.putTranslations("my.txt", de_DE, entity);
+      response = client.putTranslations("my.txt", de_DE, entity, null);
 
       assertThat(response.getResponseStatus(), is(Status.OK));
 
-      getResponse = client.getTranslations("my.txt", de_DE);
+      getResponse = client.getTranslations("my.txt", de_DE, null);
       // TODO this should return an empty set of targets, possibly with metadata
       assertThat(getResponse.getResponseStatus(), is(Status.NOT_FOUND));
 
@@ -246,7 +244,7 @@ public class TranslationResourceRestTest extends FliesRestTest
    private void doGetandAssertThatResourceListContainsNItems(int n)
    {
       ITranslationResources client = getClientRequestFactory().createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
-      ClientResponse<List<ResourceMeta>> resources = client.get();
+      ClientResponse<List<ResourceMeta>> resources = client.get(null);
       assertThat(resources.getResponseStatus(), is(Status.OK));
 
       assertThat(resources.getEntity().size(), is(n));

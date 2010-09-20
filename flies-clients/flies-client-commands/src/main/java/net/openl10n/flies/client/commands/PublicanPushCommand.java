@@ -125,7 +125,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
 
       FliesClientRequestFactory factory = new FliesClientRequestFactory(getUrl().toURI(), getUsername(), getKey());
       ITranslationResources translationResources = factory.getTranslationResources(getProject(), getProjectVersion());
-      ClientResponse<List<ResourceMeta>> response = translationResources.get();
+      ClientResponse<List<ResourceMeta>> response = translationResources.get(null);
       ClientUtility.checkResult(response, factory.getTranslationResourcesURI(getProject(), getProjectVersion()));
       List<ResourceMeta> remoteList = response.getEntity();
       for (ResourceMeta doc : remoteList)
@@ -158,7 +158,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
          {
             JaxbUtil.validateXml(srcDoc, jc);
          }
-         translationResources.putResource(docId, srcDoc);
+         translationResources.putResource(docId, srcDoc, null);
          if (importPo)
          {
             for (File localeDir : localeDirs)
@@ -180,7 +180,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
                   {
                      JaxbUtil.validateXml(targetDoc, jc);
                   }
-                  translationResources.putTranslations(docId, locale, targetDoc);
+                  translationResources.putTranslations(docId, locale, targetDoc, null);
                }
             }
          }
