@@ -5,11 +5,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
 import net.openl10n.flies.adapter.po.PoReader2;
 import net.openl10n.flies.client.commands.gettext.PublicanUtil;
 import net.openl10n.flies.common.LocaleId;
+import net.openl10n.flies.rest.JaxbUtil;
 import net.openl10n.flies.rest.client.ClientUtility;
 import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 import net.openl10n.flies.rest.client.ITranslationResources;
@@ -96,6 +99,16 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
       log.debug("Project: {}", getProject());
       log.debug("Version: {}", getProjectVersion());
       // log.debug("List of resources:");
+      JAXBContext jc = null;
+      if (getDebug() || validate)
+      {
+         jc = JAXBContext.newInstance(Resource.class);
+      }
+      Marshaller m = null;
+      if (getDebug())
+      {
+         m = jc.createMarshaller();
+      }
 
       // NB we don't load all the docs into a HashMap, because that would waste
       // memory
@@ -136,6 +149,15 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
          InputSource potInputSource = new InputSource(potFile.toURI().toString());
          // load 'srcDoc' from pot/${docID}.pot
          Resource srcDoc = poReader.extractTemplate(potInputSource, new LocaleId(sourceLang), docId);
+
+         if (getDebug())
+         {
+            m.marshal(srcDoc, System.out);
+         }
+         if (validate)
+         {
+            JaxbUtil.validateXml(srcDoc, jc);
+         }
          translationResources.putResource(docId, srcDoc);
          if (importPo)
          {
@@ -150,6 +172,14 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
                   // TODO locale mapping
                   LocaleId locale = new LocaleId(publicanLocale);
                   TranslationsResource targetDoc = poReader.extractTarget(inputSource, srcDoc);
+                  if (getDebug())
+                  {
+                     m.marshal(targetDoc, System.out);
+                  }
+                  if (validate)
+                  {
+                     JaxbUtil.validateXml(targetDoc, jc);
+                  }
                   translationResources.putTranslations(docId, locale, targetDoc);
                }
             }
