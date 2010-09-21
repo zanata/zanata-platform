@@ -17,6 +17,7 @@ import net.openl10n.flies.rest.StringSet;
 import net.openl10n.flies.rest.client.ClientUtility;
 import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 import net.openl10n.flies.rest.client.ITranslationResources;
+import net.openl10n.flies.rest.client.ITranslationResourcesFactory;
 import net.openl10n.flies.rest.dto.resource.Resource;
 import net.openl10n.flies.rest.dto.resource.ResourceMeta;
 import net.openl10n.flies.rest.dto.resource.TranslationsResource;
@@ -124,7 +125,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
          localDocNames.add(docName);
       }
 
-      FliesClientRequestFactory factory = new FliesClientRequestFactory(getUrl().toURI(), getUsername(), getKey());
+      ITranslationResourcesFactory factory = new FliesClientRequestFactory(getUrl().toURI(), getUsername(), getKey());
       ITranslationResources translationResources = factory.getTranslationResources(getProject(), getProjectVersion());
       ClientResponse<List<ResourceMeta>> response = translationResources.get(null);
       ClientUtility.checkResult(response, factory.getTranslationResourcesURI(getProject(), getProjectVersion()));

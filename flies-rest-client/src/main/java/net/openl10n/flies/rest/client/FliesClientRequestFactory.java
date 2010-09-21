@@ -12,7 +12,7 @@ import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FliesClientRequestFactory extends ClientRequestFactory
+public class FliesClientRequestFactory extends ClientRequestFactory implements ITranslationResourcesFactory
 {
    static
    {
@@ -175,16 +175,18 @@ public class FliesClientRequestFactory extends ClientRequestFactory
       return createProxy(IProjectsResource.class, uri);
    }
 
+   @Override
    public ITranslationResources getTranslationResources(String projectSlug, String versionSlug)
    {
       return getTranslationResources(getTranslationResourcesURI(projectSlug, versionSlug));
    }
 
-   public ITranslationResources getTranslationResources(final URI uri)
+   private ITranslationResources getTranslationResources(final URI uri)
    {
       return createProxy(ITranslationResources.class, uri);
    }
 
+   @Override
    public URI getTranslationResourcesURI(String projectSlug, String versionSlug)
    {
       String spec = "seam/resource/restv1/projects/p/" + projectSlug + "/iterations/i/" + versionSlug + "/r";
