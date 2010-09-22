@@ -20,18 +20,20 @@ import net.openl10n.flies.model.po.HPoHeader;
 import net.openl10n.flies.model.po.HPoTargetHeader;
 import net.openl10n.flies.model.po.HPotEntryData;
 import net.openl10n.flies.model.po.PoUtility;
-import net.openl10n.flies.rest.StringSet;
 import net.openl10n.flies.rest.dto.Person;
 import net.openl10n.flies.rest.dto.extensions.comment.SimpleComment;
+import net.openl10n.flies.rest.dto.extensions.gettext.AbstractResourceMetaExtension;
 import net.openl10n.flies.rest.dto.extensions.gettext.PoHeader;
 import net.openl10n.flies.rest.dto.extensions.gettext.PoTargetHeader;
 import net.openl10n.flies.rest.dto.extensions.gettext.PotEntryHeader;
+import net.openl10n.flies.rest.dto.extensions.gettext.TextFlowExtension;
+import net.openl10n.flies.rest.dto.extensions.gettext.TextFlowTargetExtension;
+import net.openl10n.flies.rest.dto.extensions.gettext.TranslationsResourceExtension;
 import net.openl10n.flies.rest.dto.resource.AbstractResourceMeta;
 import net.openl10n.flies.rest.dto.resource.ExtensionSet;
 import net.openl10n.flies.rest.dto.resource.Resource;
 import net.openl10n.flies.rest.dto.resource.TextFlow;
 import net.openl10n.flies.rest.dto.resource.TextFlowTarget;
-import net.openl10n.flies.rest.dto.resource.TranslationsResource;
 import net.openl10n.flies.util.StringUtil;
 
 import org.apache.commons.lang.StringUtils;
@@ -59,7 +61,7 @@ public class ResourceUtils
     * @param to
     * @return
     */
-   boolean transferFromTextFlows(List<TextFlow> from, HDocument to, StringSet enabledExtensions)
+   boolean transferFromTextFlows(List<TextFlow> from, HDocument to, Set<String> enabledExtensions)
    {
       boolean changed = false;
       to.getTextFlows().clear();
@@ -115,7 +117,7 @@ public class ResourceUtils
     * @param enabledExtensions
     * @return
     */
-   public boolean transferFromResource(Resource from, HDocument to, StringSet enabledExtensions, HLocale locale)
+   public boolean transferFromResource(Resource from, HDocument to, Set<String> enabledExtensions, HLocale locale)
    {
       boolean changed = false;
       changed |= transferFromResourceMetadata(from, to, enabledExtensions, locale);
@@ -130,7 +132,7 @@ public class ResourceUtils
     * @param enabledExtensions
     * @return
     */
-   public boolean transferFromResourceMetadata(AbstractResourceMeta from, HDocument to, StringSet enabledExtensions, HLocale locale)
+   public boolean transferFromResourceMetadata(AbstractResourceMeta from, HDocument to, Set<String> enabledExtensions, HLocale locale)
    {
       boolean changed = false;
 
@@ -190,7 +192,7 @@ public class ResourceUtils
     * @param enabledExtensions
     * @return
     */
-   private boolean transferFromResourceExtensions(ExtensionSet<AbstractResourceMeta> from, HDocument to, StringSet enabledExtensions)
+   private boolean transferFromResourceExtensions(ExtensionSet<AbstractResourceMetaExtension> from, HDocument to, Set<String> enabledExtensions)
    {
       boolean changed = false;
 
@@ -226,7 +228,7 @@ public class ResourceUtils
     * @param locale
     * @return
     */
-   public boolean transferFromTranslationsResourceExtensions(ExtensionSet<TranslationsResource> from, HDocument to, StringSet enabledExtensions, HLocale locale)
+   public boolean transferFromTranslationsResourceExtensions(ExtensionSet<TranslationsResourceExtension> from, HDocument to, Set<String> enabledExtensions, HLocale locale)
    {
       boolean changed = false;
       if (enabledExtensions.contains(PoTargetHeader.ID))
@@ -264,13 +266,12 @@ public class ResourceUtils
     * @param enabledExtensions
     * @return
     */
-   public boolean transferFromTextFlowTargetExtensions(ExtensionSet<TextFlowTarget> extensions, HTextFlowTarget hTarget, StringSet enabledExtensions)
+   public boolean transferFromTextFlowTargetExtensions(ExtensionSet<TextFlowTargetExtension> extensions, HTextFlowTarget hTarget, Set<String> enabledExtensions)
    {
       boolean changed = false;
-
       if (enabledExtensions.contains(SimpleComment.ID))
       {
-         SimpleComment<TextFlowTarget> comment = extensions.findByType(SimpleComment.class);
+         SimpleComment comment = extensions.findByType(SimpleComment.class);
          if (comment != null)
          {
             changed |= transferFromComment(comment, hTarget);
@@ -287,7 +288,7 @@ public class ResourceUtils
     * @param to
     * @return
     */
-   private boolean transferFromComment(SimpleComment<?> from, HasSimpleComment to)
+   private boolean transferFromComment(SimpleComment from, HasSimpleComment to)
    {
       HSimpleComment hComment = to.getComment();
 
@@ -304,12 +305,12 @@ public class ResourceUtils
       return false;
    }
 
-   private boolean transferFromTextFlowExtensions(ExtensionSet<TextFlow> from, HTextFlow to, StringSet enabledExtensions)
+   private boolean transferFromTextFlowExtensions(ExtensionSet<TextFlowExtension> from, HTextFlow to, Set<String> enabledExtensions)
    {
       boolean changed = false;
-
       if (enabledExtensions.contains(PotEntryHeader.ID))
       {
+         log.debug("set potentryheader");
          PotEntryHeader entryHeader = from.findByType(PotEntryHeader.class);
          if (entryHeader != null)
          {
@@ -326,7 +327,8 @@ public class ResourceUtils
       }
       if (enabledExtensions.contains(SimpleComment.ID))
       {
-         SimpleComment<TextFlow> comment = from.findByType(SimpleComment.class);
+         log.debug("set comment:");
+         SimpleComment comment = from.findByType(SimpleComment.class);
          if (comment != null)
          {
             HSimpleComment hComment = to.getComment();
@@ -340,6 +342,7 @@ public class ResourceUtils
                changed = true;
                hComment.setComment(comment.getValue());
                to.setComment(hComment);
+               log.debug("set comment:{0}", comment.getValue());
             }
          }
       }
@@ -448,7 +451,7 @@ public class ResourceUtils
       return a.equals(b);
    }
 
-   private boolean transferFromTextFlow(TextFlow from, HTextFlow to, StringSet enabledExtensions)
+   private boolean transferFromTextFlow(TextFlow from, HTextFlow to, Set<String> enabledExtensions)
    {
       boolean changed = false;
       if (!equals(from.getContent(), to.getContent()))
@@ -505,7 +508,7 @@ public class ResourceUtils
       to.setType(ResourceType.FILE);
    }
 
-   public void transferToResourceExtensions(HDocument from, ExtensionSet<AbstractResourceMeta> to, StringSet enabledExtensions)
+   public void transferToResourceExtensions(HDocument from, ExtensionSet<AbstractResourceMetaExtension> to, Set<String> enabledExtensions)
    {
       if (enabledExtensions.contains(PoHeader.ID))
       {
@@ -518,7 +521,7 @@ public class ResourceUtils
       }
    }
 
-   public void transferToTranslationsResourceExtensions(HDocument from, ExtensionSet<TranslationsResource> to, StringSet enabledExtensions, LocaleId locale)
+   public void transferToTranslationsResourceExtensions(HDocument from, ExtensionSet<TranslationsResourceExtension> to, Set<String> enabledExtensions, LocaleId locale)
    {
       if (enabledExtensions.contains(PoTargetHeader.ID))
       {
@@ -532,19 +535,21 @@ public class ResourceUtils
       }
    }
 
-   public void transferToTextFlowExtensions(HTextFlow from, ExtensionSet<TextFlow> to, StringSet enabledExtensions)
+   public void transferToTextFlowExtensions(HTextFlow from, ExtensionSet<TextFlowExtension> to, Set<String> enabledExtensions)
    {
       if (enabledExtensions.contains(PotEntryHeader.ID) && from.getPotEntryData() != null)
       {
          PotEntryHeader header = new PotEntryHeader();
          transferToPotEntryHeader(from.getPotEntryData(), header);
+         log.debug("set header:{0}", from.getPotEntryData());
          to.add(header);
 
       }
 
       if (enabledExtensions.contains(SimpleComment.ID) && from.getComment() != null)
       {
-         SimpleComment<TextFlow> comment = new SimpleComment<TextFlow>(from.getComment().getComment());
+         SimpleComment comment = new SimpleComment(from.getComment().getComment());
+         log.debug("set comment:{0}", from.getComment().getComment());
          to.add(comment);
       }
 
@@ -569,11 +574,11 @@ public class ResourceUtils
       // in transferToPotEntryHeader/transferFromPotEntryHeader.
    }
 
-   public void transferToTextFlowTargetExtensions(HTextFlowTarget from, ExtensionSet<TextFlowTarget> to, StringSet enabledExtensions)
+   public void transferToTextFlowTargetExtensions(HTextFlowTarget from, ExtensionSet<TextFlowTargetExtension> to, Set<String> enabledExtensions)
    {
       if (enabledExtensions.contains(SimpleComment.ID) && from.getComment() != null)
       {
-         SimpleComment<TextFlowTarget> comment = new SimpleComment<TextFlowTarget>(from.getComment().getComment());
+         SimpleComment comment = new SimpleComment(from.getComment().getComment());
          to.add(comment);
       }
    }

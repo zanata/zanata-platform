@@ -1,6 +1,7 @@
 package net.openl10n.flies.rest.service;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.ws.rs.core.EntityTag;
 
@@ -9,7 +10,6 @@ import net.openl10n.flies.model.HDocument;
 import net.openl10n.flies.model.HProjectIteration;
 import net.openl10n.flies.model.po.HPoHeader;
 import net.openl10n.flies.rest.NoSuchEntityException;
-import net.openl10n.flies.rest.StringSet;
 import net.openl10n.flies.rest.dto.extensions.gettext.PoHeader;
 import net.openl10n.flies.util.HashUtil;
 
@@ -91,7 +91,7 @@ public class ETagUtils
       return EntityTag.valueOf(hash);
    }
 
-   public EntityTag generateETagForDocument(HProjectIteration iteration, String id, StringSet extensions)
+   public EntityTag generateETagForDocument(HProjectIteration iteration, String id, Set<String> extensions)
    {
       HDocument doc = documentDAO.getByDocId(iteration, id);
       if (doc == null)

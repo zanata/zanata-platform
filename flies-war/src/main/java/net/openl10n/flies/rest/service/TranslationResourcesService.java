@@ -45,7 +45,6 @@ import net.openl10n.flies.model.HProjectIteration;
 import net.openl10n.flies.model.HTextFlow;
 import net.openl10n.flies.model.HTextFlowTarget;
 import net.openl10n.flies.rest.NoSuchEntityException;
-import net.openl10n.flies.rest.StringSet;
 import net.openl10n.flies.rest.dto.extensions.gettext.PoHeader;
 import net.openl10n.flies.rest.dto.extensions.gettext.PotEntryHeader;
 import net.openl10n.flies.rest.dto.resource.Resource;
@@ -85,7 +84,8 @@ public class TranslationResourcesService
 
    @QueryParam("ext")
    @DefaultValue("")
-   private StringSet extensions;
+   private Set<String> extensions;
+
 
    @HeaderParam("Content-Type")
    private MediaType requestContentType;
@@ -189,6 +189,7 @@ public class TranslationResourcesService
       }.getGenericType())).tag(etag).build();
    }
 
+   @SuppressWarnings("deprecation")
    @POST
    @Admin
    public Response post(InputStream messageBody)
@@ -233,7 +234,7 @@ public class TranslationResourcesService
    // /r/{id}
    public Response getResource(@PathParam("id") String id)
    {
-
+      log.debug("start get resource");
       HProjectIteration hProjectIteration = retrieveIteration();
 
       validateExtensions(PoHeader.ID, PotEntryHeader.ID);
@@ -254,22 +255,24 @@ public class TranslationResourcesService
       }
 
       Resource entity = new Resource(doc.getDocId());
+      log.debug("get resource details {0}", entity.toString());
       resourceUtils.transferToResource(doc, entity);
 
       for (HTextFlow htf : doc.getTextFlows())
       {
          TextFlow tf = new TextFlow(htf.getResId(), doc.getLocale().getLocaleId());
          resourceUtils.transferToTextFlow(htf, tf);
-         resourceUtils.transferToTextFlowExtensions(htf, tf.getExtensions(), extensions);
+         resourceUtils.transferToTextFlowExtensions(htf, tf.getExtensions(true), extensions);
          entity.getTextFlows().add(tf);
       }
 
       // handle extensions
       resourceUtils.transferToResourceExtensions(doc, entity.getExtensions(true), extensions);
-
+      log.debug("Get resource :{0}", entity.toString());
       return Response.ok().entity(entity).tag(etag).lastModified(doc.getLastChanged()).build();
    }
 
+   @SuppressWarnings("deprecation")
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE)
    // /r/{id}
@@ -286,6 +289,7 @@ public class TranslationResourcesService
       validateExtensions();
 
       Resource entity = RestUtils.unmarshall(Resource.class, messageBody, requestContentType, headers.getRequestHeaders());
+      log.debug("resource details: {0}", entity);
 
       HDocument document = documentDAO.getByDocId(hProjectIteration, id);
 
@@ -392,7 +396,7 @@ public class TranslationResourcesService
       // transfer extensions
       resourceUtils.transferToResourceExtensions(doc, entity.getExtensions(true), extensions);
 
-      log.debug("successfuly get resource meta:" + entity);
+      log.debug("successfuly get resource meta: {0}" , entity);
       return Response.ok().entity(entity).tag(etag).build();
    }
 
@@ -415,7 +419,7 @@ public class TranslationResourcesService
 
       log.debug("pass evaluation");
       ResourceMeta entity = RestUtils.unmarshall(ResourceMeta.class, messageBody, requestContentType, headers.getRequestHeaders());
-      log.debug("put resource meta:" + entity);
+      log.debug("put resource meta: {0}", entity);
 
       HDocument document = documentDAO.getByDocId(hProjectIteration, id);
       // FIXME what if document is null? (ie putting new document)
@@ -479,7 +483,7 @@ public class TranslationResourcesService
          TextFlowTarget target = new TextFlowTarget(hTarget.getTextFlow().getResId());
          resourceUtils.transferToTextFlowTarget(hTarget, target);
          resourceUtils.transferToTextFlowTargetExtensions(hTarget, target.getExtensions(true), extensions);
-         translationResource.getTextFlowTargets(true).add(target);
+         translationResource.getTextFlowTargets().add(target);
       }
 
       // TODO lastChanged
@@ -534,10 +538,8 @@ public class TranslationResourcesService
       log.debug("start put translations");
 
       HProjectIteration hProjectIteration = retrieveIteration();
-      log.debug("project iteraton:" + hProjectIteration.getName());
 
       validateExtensions();
-      log.debug("validate extension");
 
       // TODO create valid etag
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
@@ -557,7 +559,7 @@ public class TranslationResourcesService
 
 
       TranslationsResource entity = RestUtils.unmarshall(TranslationsResource.class, messageBody, requestContentType, headers.getRequestHeaders());
-      log.debug("start put translations entity:" + entity.toString());
+      log.debug("start put translations entity:{0}" , entity);
 
       boolean changed = false;
 
@@ -570,7 +572,7 @@ public class TranslationResourcesService
       List<HTextFlowTarget> changedTargets = new ArrayList<HTextFlowTarget>();
       List<HTextFlowTarget> removedTargets = new ArrayList<HTextFlowTarget>();
 
-      Iterator<TextFlowTarget> iter = entity.getTextFlowTargets(true).iterator();
+      Iterator<TextFlowTarget> iter = entity.getTextFlowTargets().iterator();
       TextFlowTarget current = null;
       for (HTextFlow textFlow : document.getTextFlows())
       {
@@ -600,7 +602,7 @@ public class TranslationResourcesService
             if (hTarget == null)
             {
                targetChanged = true;
-               log.info("locale:" + locale);
+               log.debug("locale:" + locale);
                hTarget = new HTextFlowTarget(textFlow, localeServiceImpl.getSupportedLanguageByLocale(locale));
                textFlow.getTargets().put(hLocale, hTarget);
                newTargets.add(hTarget);
