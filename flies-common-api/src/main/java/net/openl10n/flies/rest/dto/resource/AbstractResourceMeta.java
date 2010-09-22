@@ -2,11 +2,9 @@ package net.openl10n.flies.rest.dto.resource;
 
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -18,14 +16,14 @@ import net.openl10n.flies.rest.dto.ContentTypeAdapter;
 import net.openl10n.flies.rest.dto.DTOUtil;
 import net.openl10n.flies.rest.dto.Extensible;
 import net.openl10n.flies.rest.dto.LocaleIdAdapter;
-import net.openl10n.flies.rest.dto.extensions.gettext.PoHeader;
+import net.openl10n.flies.rest.dto.extensions.gettext.AbstractResourceMetaExtension;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 @XmlType(name = "abstractResourceMetaType", propOrder = { "name", "extensions" })
-@XmlSeeAlso({ PoHeader.class })
-public abstract class AbstractResourceMeta implements Serializable, Extensible<AbstractResourceMeta>
+public abstract class AbstractResourceMeta implements Serializable, Extensible<AbstractResourceMetaExtension>
 {
+   private static final long serialVersionUID = 1L;
 
    private String name;
 
@@ -35,7 +33,7 @@ public abstract class AbstractResourceMeta implements Serializable, Extensible<A
 
    private LocaleId lang = LocaleId.EN_US;
 
-   private ExtensionSet<AbstractResourceMeta> extensions;
+   private ExtensionSet<AbstractResourceMetaExtension> extensions;
 
    // TODO add Links for Resource, ResourceMeta and TranslationsResource
 
@@ -49,22 +47,22 @@ public abstract class AbstractResourceMeta implements Serializable, Extensible<A
    }
 
    @XmlElementWrapper(name = "extensions", required = false)
-   @XmlAnyElement(lax = true)
-   public ExtensionSet<AbstractResourceMeta> getExtensions()
+   @XmlElement
+   public ExtensionSet<AbstractResourceMetaExtension> getExtensions()
    {
       return extensions;
    }
 
-   public void setExtensions(ExtensionSet<AbstractResourceMeta> extensions)
+   public void setExtensions(ExtensionSet<AbstractResourceMetaExtension> extensions)
    {
       this.extensions = extensions;
    }
 
    @JsonIgnore
-   public ExtensionSet<AbstractResourceMeta> getExtensions(boolean createIfNull)
+   public ExtensionSet<AbstractResourceMetaExtension> getExtensions(boolean createIfNull)
    {
       if (createIfNull && extensions == null)
-         extensions = new ExtensionSet<AbstractResourceMeta>();
+         extensions = new ExtensionSet<AbstractResourceMetaExtension>();
       return extensions;
    }
 

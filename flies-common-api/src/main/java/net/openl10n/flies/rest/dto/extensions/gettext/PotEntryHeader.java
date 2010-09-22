@@ -7,9 +7,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import net.openl10n.flies.common.Namespaces;
-import net.openl10n.flies.rest.dto.ExtensionValue;
-import net.openl10n.flies.rest.dto.resource.TextFlow;
 
 /**
  * Holds gettext message-level metadata for a source document.
@@ -19,7 +16,7 @@ import net.openl10n.flies.rest.dto.resource.TextFlow;
  * 
  */
 @XmlRootElement(name = "pot-entry-header")
-public class PotEntryHeader implements ExtensionValue<TextFlow>
+public class PotEntryHeader implements TextFlowExtension
 {
 
    public static final String ID = "gettext";

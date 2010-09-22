@@ -2,12 +2,10 @@ package net.openl10n.flies.rest.dto.resource;
 
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -16,9 +14,7 @@ import net.openl10n.flies.common.Namespaces;
 import net.openl10n.flies.rest.dto.DTOUtil;
 import net.openl10n.flies.rest.dto.Extensible;
 import net.openl10n.flies.rest.dto.LocaleIdAdapter;
-import net.openl10n.flies.rest.dto.extensions.comment.Commentable;
-import net.openl10n.flies.rest.dto.extensions.comment.SimpleComment;
-import net.openl10n.flies.rest.dto.extensions.gettext.PotEntryHeader;
+import net.openl10n.flies.rest.dto.extensions.gettext.TextFlowExtension;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -33,9 +29,9 @@ import org.hibernate.validator.NotNull;
 @JsonPropertyOrder( { "id", "lang", "content", "extensions" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
-@XmlSeeAlso({ SimpleComment.class, PotEntryHeader.class })
-public class TextFlow implements Extensible<TextFlow>, Serializable, Commentable
+public class TextFlow implements Extensible<TextFlowExtension>, Serializable
 {
+   private static final long serialVersionUID = 1L;
 
    @NotEmpty
    @Length(max = 255)
@@ -47,7 +43,7 @@ public class TextFlow implements Extensible<TextFlow>, Serializable, Commentable
    @NotNull
    private String content;
 
-   private ExtensionSet<TextFlow> extensions;
+   private ExtensionSet<TextFlowExtension> extensions;
 
    /**
     * This constructor sets the lang value to en-US
@@ -108,22 +104,22 @@ public class TextFlow implements Extensible<TextFlow>, Serializable, Commentable
    }
 
    @XmlElementWrapper(name = "extensions", required = false)
-   @XmlAnyElement(lax = true)
-   public ExtensionSet<TextFlow> getExtensions()
+   @XmlElement
+   public ExtensionSet<TextFlowExtension> getExtensions()
    {
       return extensions;
    }
 
-   public void setExtensions(ExtensionSet<TextFlow> extensions)
+   public void setExtensions(ExtensionSet<TextFlowExtension> extensions)
    {
       this.extensions = extensions;
    }
 
    @JsonIgnore
-   public ExtensionSet<TextFlow> getExtensions(boolean createIfNull)
+   public ExtensionSet<TextFlowExtension> getExtensions(boolean createIfNull)
    {
       if (createIfNull && extensions == null)
-         extensions = new ExtensionSet<TextFlow>();
+         extensions = new ExtensionSet<TextFlowExtension>();
       return extensions;
    }
 

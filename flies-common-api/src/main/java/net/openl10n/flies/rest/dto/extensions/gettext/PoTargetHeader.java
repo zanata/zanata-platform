@@ -8,8 +8,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import net.openl10n.flies.rest.dto.ExtensionValue;
-import net.openl10n.flies.rest.dto.resource.TranslationsResource;
 
 import org.codehaus.jackson.annotate.JsonTypeName;
 
@@ -23,7 +21,7 @@ import org.codehaus.jackson.annotate.JsonTypeName;
 @XmlType(name = "poTargetHeader", propOrder = { "comment", "entries" })
 @XmlRootElement(name = "po-target-header")
 @JsonTypeName(value = "po-target-header")
-public class PoTargetHeader implements ExtensionValue<TranslationsResource>
+public class PoTargetHeader implements TranslationsResourceExtension
 {
 
    public static final String ID = "gettext";
