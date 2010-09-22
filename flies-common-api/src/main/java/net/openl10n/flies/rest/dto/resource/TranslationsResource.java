@@ -68,15 +68,6 @@ public class TranslationsResource implements Serializable, HasSample<Translation
       return textFlowTargets;
    }
 
-   @JsonIgnore
-   public List<TextFlowTarget> getTextFlowTargets(boolean createIfNull)
-   {
-      if (createIfNull && textFlowTargets == null)
-      {
-         textFlowTargets = new ArrayList<TextFlowTarget>();
-      }
-      return textFlowTargets;
-   }
 
    @XmlElementRef(type = Link.class)
    public Links getLinks()
