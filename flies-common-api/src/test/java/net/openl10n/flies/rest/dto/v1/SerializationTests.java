@@ -15,6 +15,7 @@ import net.openl10n.flies.common.ResourceType;
 import net.openl10n.flies.rest.JaxbUtil;
 import net.openl10n.flies.rest.dto.Person;
 import net.openl10n.flies.rest.dto.extensions.comment.SimpleComment;
+import net.openl10n.flies.rest.dto.extensions.gettext.HeaderEntry;
 import net.openl10n.flies.rest.dto.extensions.gettext.PoHeader;
 import net.openl10n.flies.rest.dto.resource.Resource;
 import net.openl10n.flies.rest.dto.resource.ResourceMeta;
@@ -87,7 +88,7 @@ public class SerializationTests
    public void serializeAndDeserializeTranslationResource() throws JsonGenerationException, JsonMappingException, IOException, JAXBException
    {
       ResourceMeta res = new ResourceMeta("id");
-      res.getExtensions(true).add(new PoHeader());
+      res.getExtensions(true).add(new PoHeader("comment", new HeaderEntry("h1", "v1"), new HeaderEntry("h2", "v2")));
       JaxbUtil.validateXml(res, PoHeader.class);
 
       String output = mapper.writeValueAsString(res);
@@ -95,6 +96,7 @@ public class SerializationTests
 
       assertThat(res2.getExtensions().size(), is(1));
       assertThat(res2.getExtensions().iterator().next(), instanceOf(PoHeader.class));
+      assertThat(((PoHeader) res2.getExtensions().iterator().next()).getComment(), is("comment"));
 
       res2 = JaxbTestUtil.roundTripXml(res, PoHeader.class);
       assertThat(res2, notNullValue());
@@ -116,7 +118,7 @@ public class SerializationTests
 
    public void createTextFlow(){
       TextFlow tf = new TextFlow();
-      SimpleComment<TextFlow> comment = new SimpleComment<TextFlow>("test");
+      SimpleComment comment = new SimpleComment("test");
       tf.getExtensions().add(comment);
    }
    
