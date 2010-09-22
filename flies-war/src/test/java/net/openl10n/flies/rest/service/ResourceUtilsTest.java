@@ -1,11 +1,11 @@
 package net.openl10n.flies.rest.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.model.HDocument;
-import net.openl10n.flies.rest.StringSet;
 import net.openl10n.flies.rest.dto.resource.TextFlow;
 import net.openl10n.flies.rest.service.ResourceUtils;
 
@@ -25,7 +25,7 @@ public class ResourceUtilsTest
    {
       List<TextFlow> from = new ArrayList<TextFlow>();
       HDocument to = new HDocument();
-      boolean changed = documentUtils.transferFromTextFlows(from, to, new StringSet(""));
+      boolean changed = documentUtils.transferFromTextFlows(from, to, new HashSet<String>());
 
       assertThat(changed, is(false));
    }
@@ -39,7 +39,7 @@ public class ResourceUtilsTest
       from.add(tf1);
 
       HDocument to = new HDocument();
-      boolean changed = documentUtils.transferFromTextFlows(from, to, new StringSet(""));
+      boolean changed = documentUtils.transferFromTextFlows(from, to, new HashSet<String>());
 
       assertThat(changed, is(true));
    }

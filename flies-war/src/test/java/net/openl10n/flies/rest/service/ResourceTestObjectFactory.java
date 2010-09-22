@@ -79,9 +79,24 @@ public class ResourceTestObjectFactory
       Resource sr = getTextFlowTest2();
       TextFlow stf = sr.getTextFlows().get(1);
 
-      SimpleComment<TextFlow> simpleComment = new SimpleComment<TextFlow>("textflow comment");
+      SimpleComment simpleComment = new SimpleComment("textflow comment");
 
       stf.getExtensions(true).add(simpleComment);
+      return sr;
+   }
+
+   public Resource getPotEntryHeaderComment()
+   {
+      Resource sr = getTextFlowTest();
+      TextFlow stf = sr.getTextFlows().get(0);
+      SimpleComment simpleComment = new SimpleComment("textflow comment");
+
+      PotEntryHeader potEntryHeader = new PotEntryHeader();
+      potEntryHeader.setContext("potentrycontext");
+
+      // /no place for flag and reference
+      stf.getExtensions(true).add(simpleComment);
+      stf.getExtensions(true).add(potEntryHeader);
       return sr;
    }
 

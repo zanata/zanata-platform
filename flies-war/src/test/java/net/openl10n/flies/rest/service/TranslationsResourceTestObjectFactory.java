@@ -54,7 +54,7 @@ public class TranslationsResourceTestObjectFactory
       TranslationsResource sr = getTestObject();
       TextFlowTarget stf = sr.getTextFlowTargets().get(0);
 
-      SimpleComment<TextFlowTarget> simpleComment = new SimpleComment<TextFlowTarget>("textflowtarget comment");
+      SimpleComment simpleComment = new SimpleComment("textflowtarget comment");
 
       stf.getExtensions(true).add(simpleComment);
       return sr;
