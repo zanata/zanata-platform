@@ -62,7 +62,7 @@
 					</rich:column>
 					<rich:column rendered="#{!language.active}">
 						<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-						<h:commandLink value="#{messages['jsf.Enabled']}"
+						<h:commandLink value="#{messages['jsf.Enable']}"
 							action="#{languageSearchAction.enable(languageSearchAction.selectedLanguage)}"
 							onclick="return confirmEnable()" />
 					</rich:column>
