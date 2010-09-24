@@ -177,7 +177,6 @@ public class DocumentConverter
                {
                   toHeader = new HPoHeader();
                   toHDoc.setPoHeader(toHeader);
-                  // toHPoHeader.setDocument(toHDoc);
                   docChanged = true;
                }
                HSimpleComment toComment = toHeader.getComment();
@@ -202,7 +201,7 @@ public class DocumentConverter
                InvalidValue[] invalidValues = poValidator.getInvalidValues(toHeader);
                if (invalidValues.length != 0)
                {
-                  String message = "PO header for document '" + toHeader.getDocument().getDocId() + "' is invalid: " + Arrays.asList(invalidValues);
+                  String message = "PO header for document '" + toHDoc.getDocId() + "' is invalid: " + Arrays.asList(invalidValues);
                   log.error(message);
                }
             }

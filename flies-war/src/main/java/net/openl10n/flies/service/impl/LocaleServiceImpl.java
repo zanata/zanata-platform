@@ -123,19 +123,4 @@ public class LocaleServiceImpl implements LocaleService
       return hLocale;
    }
 
-   @Deprecated
-   @Override
-   public HLocale getDefautLanguage()
-   {
-      HLocale de = null;
-      try
-      {
-         de = getSupportedLanguageByLocale(LocaleId.EN_US);
-      }
-      catch (FliesServiceException e)
-      {
-         de = new HLocale(LocaleId.EN_US);
-      }
-      return de;
-   }
 }

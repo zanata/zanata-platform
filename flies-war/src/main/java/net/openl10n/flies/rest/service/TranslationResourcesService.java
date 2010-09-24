@@ -189,7 +189,6 @@ public class TranslationResourcesService
       }.getGenericType())).tag(etag).build();
    }
 
-   @SuppressWarnings("deprecation")
    @POST
    @Admin
    public Response post(InputStream messageBody)
@@ -214,7 +213,7 @@ public class TranslationResourcesService
       }
       else
       {
-         document = new HDocument(entity.getName(), entity.getContentType(), localeServiceImpl.getDefautLanguage());
+         document = new HDocument(entity.getName(), entity.getContentType(), localeServiceImpl.getSupportedLanguageByLocale(entity.getLang()));
          document.setProjectIteration(hProjectIteration);
       }
 
@@ -272,7 +271,6 @@ public class TranslationResourcesService
       return Response.ok().entity(entity).tag(etag).lastModified(doc.getLastChanged()).build();
    }
 
-   @SuppressWarnings("deprecation")
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE)
    // /r/{id}
@@ -301,7 +299,7 @@ public class TranslationResourcesService
             return response.build();
          }
          changed = true;
-         document = new HDocument(entity.getName(), entity.getContentType(), localeServiceImpl.getDefautLanguage());
+         document = new HDocument(entity.getName(), entity.getContentType(), localeServiceImpl.getSupportedLanguageByLocale(entity.getLang()));
          document.setProjectIteration(hProjectIteration);
          response = Response.created(uri.getAbsolutePath());
 
@@ -469,9 +467,9 @@ public class TranslationResourcesService
       }
 
       List<HTextFlowTarget> hTargets = textFlowTargetDAO.findAllTranslations(document, locale);
-
+      HLocale hLocale = localeServiceImpl.getSupportedLanguageByLocale(locale);
       TranslationsResource translationResource = new TranslationsResource();
-      resourceUtils.transferToTranslationsResourceExtensions(document, translationResource.getExtensions(true), extensions, locale);
+      resourceUtils.transferToTranslationsResourceExtensions(document, translationResource.getExtensions(true), extensions, hLocale);
 
       if (hTargets.isEmpty() && translationResource.getExtensions(true).isEmpty())
       {
@@ -603,7 +601,7 @@ public class TranslationResourcesService
             {
                targetChanged = true;
                log.debug("locale:" + locale);
-               hTarget = new HTextFlowTarget(textFlow, localeServiceImpl.getSupportedLanguageByLocale(locale));
+               hTarget = new HTextFlowTarget(textFlow, hLocale);
                textFlow.getTargets().put(hLocale, hTarget);
                newTargets.add(hTarget);
                targetChanged |= resourceUtils.transferFromTextFlowTarget(current, hTarget);

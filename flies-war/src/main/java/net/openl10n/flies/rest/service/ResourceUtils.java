@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.common.ResourceType;
 import net.openl10n.flies.model.HDocument;
 import net.openl10n.flies.model.HLocale;
@@ -204,13 +203,13 @@ public class ResourceUtils
             HPoHeader poHeader = to.getPoHeader();
             if (poHeader == null)
             {
+               log.debug("creat a new HPoHeader");
                poHeader = new HPoHeader();
             }
             changed |= transferFromPoHeader(poHeaderExt, poHeader);
 
             if (to.getPoHeader() == null && changed)
             {
-               poHeader.setDocument(to);
                to.setPoHeader(poHeader);
             }
 
@@ -242,6 +241,8 @@ public class ResourceUtils
             {
                changed = true;
                toTargetHeader = new HPoTargetHeader();
+               toTargetHeader.setTargetLanguage(locale);
+               toTargetHeader.setDocument(to);
                transferFromPoTargetHeader(fromTargetHeader, toTargetHeader);
                to.getPoTargetHeaders().put(locale, toTargetHeader);
             }
@@ -310,7 +311,6 @@ public class ResourceUtils
       boolean changed = false;
       if (enabledExtensions.contains(PotEntryHeader.ID))
       {
-         log.debug("set potentryheader");
          PotEntryHeader entryHeader = from.findByType(PotEntryHeader.class);
          if (entryHeader != null)
          {
@@ -321,13 +321,13 @@ public class ResourceUtils
                changed = true;
                hEntryHeader = new HPotEntryData();
                to.setPotEntryData(hEntryHeader);
+               log.debug("set potentryheader");
             }
             changed |= transferFromPotEntryHeader(entryHeader, hEntryHeader);
          }
       }
       if (enabledExtensions.contains(SimpleComment.ID))
       {
-         log.debug("set comment:");
          SimpleComment comment = from.findByType(SimpleComment.class);
          if (comment != null)
          {
@@ -521,14 +521,16 @@ public class ResourceUtils
       }
    }
 
-   public void transferToTranslationsResourceExtensions(HDocument from, ExtensionSet<TranslationsResourceExtension> to, Set<String> enabledExtensions, LocaleId locale)
+   public void transferToTranslationsResourceExtensions(HDocument from, ExtensionSet<TranslationsResourceExtension> to, Set<String> enabledExtensions, HLocale locale)
    {
       if (enabledExtensions.contains(PoTargetHeader.ID))
       {
+         log.debug("start set PoTargetHeader");
          PoTargetHeader poTargetHeader = new PoTargetHeader();
          HPoTargetHeader fromHeader = from.getPoTargetHeaders().get(locale);
          if (fromHeader != null)
          {
+            log.debug("set potargetheader:");
             transferToPoTargetHeader(fromHeader, poTargetHeader);
             to.add(poTargetHeader);
          }
