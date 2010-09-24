@@ -10,7 +10,7 @@ import net.openl10n.flies.rest.dto.ExtensionValue;
 public class ExtensionSet<T extends ExtensionValue> extends HashSet<T>
 {
 
-   private static final long serialVersionUID = 8077674295531213159L;
+   private static final long serialVersionUID = 1L;
 
    public <E extends T> E findByType(Class<E> clz)
    {
