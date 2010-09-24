@@ -29,7 +29,7 @@ public class ResourceTestObjectFactory
       sr.getExtensions(true);
 
       TextFlow stf = new TextFlow("rest1", LocaleId.EN_US, "tf1");
-      // stf.getExtensions(true);
+      stf.getExtensions(true);
       sr.getTextFlows().add(stf);
       log.debug(sr.toString());
       return sr;
@@ -68,16 +68,17 @@ public class ResourceTestObjectFactory
 
       PotEntryHeader potEntryHeader = new PotEntryHeader();
       potEntryHeader.setContext("potentrycontext");
-
-      // /no place for flag and reference
+      // for the convenience of test only
+      potEntryHeader.getFlags().add("");
+      potEntryHeader.getReferences().add("");
       stf.getExtensions(true).add(potEntryHeader);
       return sr;
    }
 
    public Resource getTextFlowCommentTest()
    {
-      Resource sr = getTextFlowTest2();
-      TextFlow stf = sr.getTextFlows().get(1);
+      Resource sr = getTextFlowTest();
+      TextFlow stf = sr.getTextFlows().get(0);
 
       SimpleComment simpleComment = new SimpleComment("textflow comment");
 
@@ -100,11 +101,11 @@ public class ResourceTestObjectFactory
       return sr;
    }
 
-   public ResourceMeta getTestResourceMeta()
+   public ResourceMeta getResourceMeta()
    {
       ResourceMeta entity = new ResourceMeta();
       entity.setContentType(ContentType.TextPlain);
-      entity.setName("readme.txt");
+      entity.setName("test1");
       entity.setLang(new LocaleId("en-US"));
       entity.setType(ResourceType.FILE);
       entity.getExtensions(true);
@@ -112,5 +113,12 @@ public class ResourceTestObjectFactory
       return entity;
    }
 
+   public ResourceMeta getPoHeaderResourceMeta()
+   {
+      ResourceMeta entity = getResourceMeta();
+      entity.getExtensions(true).add(new PoHeader("comment", new HeaderEntry("ref", "test ref")));
+      log.debug("create a new resource meta:" + entity.toString());
+      return entity;
+   }
 
 }

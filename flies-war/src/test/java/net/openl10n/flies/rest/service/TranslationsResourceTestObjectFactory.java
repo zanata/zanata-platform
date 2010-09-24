@@ -69,4 +69,15 @@ public class TranslationsResourceTestObjectFactory
       return sr;
    }
 
+   public TranslationsResource getAllExtension()
+   {
+      TranslationsResource sr = getPoTargetHeaderTextFlowTargetTest();
+      TextFlowTarget stf = sr.getTextFlowTargets().get(0);
+
+      SimpleComment simpleComment = new SimpleComment("textflowtarget comment");
+
+      stf.getExtensions(true).add(simpleComment);
+      return sr;
+   }
+
 }
