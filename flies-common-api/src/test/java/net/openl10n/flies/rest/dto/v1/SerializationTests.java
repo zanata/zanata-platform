@@ -18,9 +18,13 @@ import net.openl10n.flies.rest.dto.Person;
 import net.openl10n.flies.rest.dto.extensions.comment.SimpleComment;
 import net.openl10n.flies.rest.dto.extensions.gettext.HeaderEntry;
 import net.openl10n.flies.rest.dto.extensions.gettext.PoHeader;
+import net.openl10n.flies.rest.dto.extensions.gettext.PotEntryHeader;
+import net.openl10n.flies.rest.dto.extensions.gettext.TextFlowExtension;
+import net.openl10n.flies.rest.dto.extensions.gettext.TextFlowTargetExtension;
 import net.openl10n.flies.rest.dto.resource.Resource;
 import net.openl10n.flies.rest.dto.resource.ResourceMeta;
 import net.openl10n.flies.rest.dto.resource.TextFlow;
+import net.openl10n.flies.rest.dto.resource.TextFlowTarget;
 
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -129,17 +133,51 @@ public class SerializationTests
       TextFlow tf = new TextFlow();
       tf.setContent("ttff");
       SimpleComment comment = new SimpleComment("test");
+      PotEntryHeader pot = new PotEntryHeader();
+      pot.setContext("context");
+      pot.getReferences().add("fff");
       tf.getExtensions(true).add(comment);
+      tf.getExtensions(true).add(pot);
 
       JaxbUtil.validateXml(tf, TextFlow.class);
 
       String output = mapper.writeValueAsString(tf);
       TextFlow res2 = mapper.readValue(output, TextFlow.class);
 
-      assertThat(res2.getExtensions().size(), is(1));
-      assertThat(res2.getExtensions().iterator().next(), instanceOf(SimpleComment.class));
-      assertThat(((SimpleComment) res2.getExtensions().iterator().next()).getValue(), is("test"));
+      assertThat(res2.getExtensions(true).size(), is(2));
+      for (TextFlowExtension e : res2.getExtensions())
+      {
+         if (e instanceof SimpleComment)
+         {
+            assertThat(((SimpleComment) e).getValue(), is("test"));
+         }
+         if (e instanceof PotEntryHeader)
+         {
+            assertThat(((PotEntryHeader) e).getContext(), is("context"));
+         }
+      }
    }
    
+   public void createTextFlowTarget() throws ValidationException, JsonGenerationException, JsonMappingException, IOException
+   {
+      TextFlowTarget tf = new TextFlowTarget();
+      tf.setContent("ttff");
+      SimpleComment comment = new SimpleComment("testcomment");
+      tf.getExtensions(true).add(comment);
+
+      JaxbUtil.validateXml(tf, TextFlowTarget.class);
+
+      String output = mapper.writeValueAsString(tf);
+      TextFlowTarget res2 = mapper.readValue(output, TextFlowTarget.class);
+
+      assertThat(res2.getExtensions(true).size(), is(1));
+      for (TextFlowTargetExtension e : res2.getExtensions())
+      {
+         if (e instanceof SimpleComment)
+         {
+            assertThat(((SimpleComment) e).getValue(), is("testcomment"));
+         }
+      }
+   }
 
 }
