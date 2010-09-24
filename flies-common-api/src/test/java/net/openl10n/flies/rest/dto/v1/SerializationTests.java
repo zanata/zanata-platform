@@ -8,6 +8,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.ValidationException;
 
 import net.openl10n.flies.common.ContentType;
 import net.openl10n.flies.common.LocaleId;
@@ -111,15 +112,34 @@ public class SerializationTests
       sourceResource.setType(ResourceType.FILE);
       sourceResource.setContentType(ContentType.PO);
       sourceResource.setLang(LocaleId.EN);
+      sourceResource.getExtensions(true).add(new PoHeader("comment", new HeaderEntry("h1", "v1"), new HeaderEntry("h2", "v2")));
 
-      System.out.println(mapper.writeValueAsString(sourceResource));
+      JaxbUtil.validateXml(sourceResource, Resource.class);
 
+      String output = mapper.writeValueAsString(sourceResource);
+      Resource res2 = mapper.readValue(output, Resource.class);
+
+      assertThat(res2.getExtensions().size(), is(1));
+      assertThat(res2.getExtensions().iterator().next(), instanceOf(PoHeader.class));
+      assertThat(((PoHeader) res2.getExtensions().iterator().next()).getComment(), is("comment"));
    }
 
-   public void createTextFlow(){
+   public void createTextFlow() throws ValidationException, JsonGenerationException, JsonMappingException, IOException
+   {
       TextFlow tf = new TextFlow();
+      tf.setContent("ttff");
       SimpleComment comment = new SimpleComment("test");
-      tf.getExtensions().add(comment);
+      tf.getExtensions(true).add(comment);
+
+      JaxbUtil.validateXml(tf, TextFlow.class);
+
+      String output = mapper.writeValueAsString(tf);
+      TextFlow res2 = mapper.readValue(output, TextFlow.class);
+
+      assertThat(res2.getExtensions().size(), is(1));
+      assertThat(res2.getExtensions().iterator().next(), instanceOf(SimpleComment.class));
+      assertThat(((SimpleComment) res2.getExtensions().iterator().next()).getValue(), is("test"));
    }
    
+
 }
