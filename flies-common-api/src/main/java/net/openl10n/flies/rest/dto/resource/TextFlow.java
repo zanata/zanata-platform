@@ -48,12 +48,18 @@ public class TextFlow implements Extensible<TextFlowExtension>, Serializable
    /**
     * This constructor sets the lang value to en-US
     * 
-    * @param id Resource Id value
     */
+
    public TextFlow()
    {
       this.lang = LocaleId.EN_US;
    }
+
+   /**
+    * 
+    * @param id Resource Id value
+    * @param lang Locale value
+    */
 
    public TextFlow(String id, LocaleId lang)
    {
