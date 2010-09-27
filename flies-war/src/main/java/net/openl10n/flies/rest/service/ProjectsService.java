@@ -45,8 +45,6 @@ public class ProjectsService
    @Wrapped(element = "projects", namespace = Namespaces.FLIES)
    public List<Project> get()
    {
-      Runtime runtime = Runtime.getRuntime();
-      log.info("project service free memory :" + runtime.freeMemory());
       @SuppressWarnings("unchecked")
       List<HProject> projects = session.createQuery("from HProject p").list();
 

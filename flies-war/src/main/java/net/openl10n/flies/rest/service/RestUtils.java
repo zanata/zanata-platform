@@ -59,8 +59,6 @@ public class RestUtils
 
    public static <T extends Serializable> T unmarshall(Class<T> entityClass, InputStream is, MediaType requestContentType, MultivaluedMap<String, String> requestHeaders)
    {
-      Runtime runtime = Runtime.getRuntime();
-      log.info("unmrshall free memory :" + runtime.freeMemory());
       MessageBodyReader<T> reader = SeamResteasyProviderFactory.getInstance().getMessageBodyReader(entityClass, entityClass, entityClass.getAnnotations(), requestContentType);
       if (reader == null)
       {
@@ -70,7 +68,6 @@ public class RestUtils
       try
       {
          entity = reader.readFrom(entityClass, entityClass, entityClass.getAnnotations(), requestContentType, requestHeaders, is);
-         log.info("entity:" + entity.toString());
       }
       catch (Exception e)
       {
@@ -82,7 +79,6 @@ public class RestUtils
          try
          {
             is.close();
-            log.info("unmrshall free memory " + runtime.freeMemory());
          }
          catch (IOException e)
          {
