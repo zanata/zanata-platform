@@ -9,6 +9,8 @@ import net.openl10n.flies.model.HDocument;
 import net.openl10n.flies.rest.dto.resource.TextFlow;
 import net.openl10n.flies.rest.service.ResourceUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import static org.hamcrest.CoreMatchers.*;
@@ -17,12 +19,16 @@ import static org.hamcrest.MatcherAssert.*;
 @Test(groups = { "unit-tests" })
 public class ResourceUtilsTest
 {
+   private static final Logger log = LoggerFactory.getLogger(ResourceUtilsTest.class);
 
    private static ResourceUtils documentUtils = new ResourceUtils();
 
    @Test
    public void mergeNoTextFlows()
    {
+      Runtime runtime = Runtime.getRuntime();
+      log.info("total memory :" + runtime.totalMemory());
+      log.info("unit tests free memory :" + runtime.freeMemory());
       List<TextFlow> from = new ArrayList<TextFlow>();
       HDocument to = new HDocument();
       boolean changed = documentUtils.transferFromTextFlows(from, to, new HashSet<String>());
