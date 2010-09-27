@@ -1,5 +1,6 @@
 package net.openl10n.flies.rest.service;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 
@@ -72,6 +73,16 @@ public class RestUtils
       {
          log.debug("Bad Request: Unable to read request body:", e);
          throw new NoLogWebApplicationException(Response.status(Status.BAD_REQUEST).entity("Unable to read request body: " + e.getMessage()).build());
+      }
+      finally
+      {
+         try
+         {
+            is.close();
+         }
+         catch (IOException e)
+         {
+         }
       }
 
       validateEntity(entity);
