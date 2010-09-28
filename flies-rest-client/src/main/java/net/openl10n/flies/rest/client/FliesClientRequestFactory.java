@@ -31,13 +31,13 @@ public class FliesClientRequestFactory implements ITranslationResourcesFactory
    public FliesClientRequestFactory(URI base, String username, String apiKey)
    {
       crf = new ClientRequestFactory(fixBase(base));
-      crf.getPrefixInterceptors().registerInterceptor(new ApiKeyHeaderDecorator(username, apiKey));
+      registerPrefixInterceptor(new ApiKeyHeaderDecorator(username, apiKey));
    }
 
    public FliesClientRequestFactory(URI base, String username, String apiKey, ClientExecutor executor)
    {
       crf = new ClientRequestFactory(executor, null, fixBase(base));
-      crf.getPrefixInterceptors().registerInterceptor(new ApiKeyHeaderDecorator(username, apiKey));
+      registerPrefixInterceptor(new ApiKeyHeaderDecorator(username, apiKey));
    }
 
    private <T> T createProxy(Class<T> clazz, URI baseUri)
@@ -204,6 +204,15 @@ public class FliesClientRequestFactory implements ITranslationResourcesFactory
       {
          throw new RuntimeException(e);
       }
+   }
+
+   /**
+    * @see org.jboss.resteasy.client.core.ClientInterceptorRepositoryImpl#registerInterceptor(Object)
+    * @param interceptor
+    */
+   public void registerPrefixInterceptor(Object interceptor)
+   {
+      crf.getPrefixInterceptors().registerInterceptor(interceptor);
    }
 
 }
