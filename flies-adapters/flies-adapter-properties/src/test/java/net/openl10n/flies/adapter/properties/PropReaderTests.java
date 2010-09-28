@@ -11,8 +11,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import net.openl10n.flies.adapter.properties.PropReader;
-import net.openl10n.flies.adapter.properties.PropWriter;
 import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.common.ContentType;
 import net.openl10n.flies.common.LocaleId;
@@ -21,10 +19,13 @@ import net.openl10n.flies.rest.dto.deprecated.Document;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 
 public class PropReaderTests
 {
+   private static final Logger log = LoggerFactory.getLogger(PropReaderTests.class);
 
    @BeforeClass
    public static void setupContainer()
@@ -61,7 +62,7 @@ public class PropReaderTests
       StringWriter sw = new StringWriter();
       marshal.marshal(docOut, sw);
       marshal.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-      marshal.marshal(docOut, System.out);
+      log.debug("{}", sw);
 
       Unmarshaller unmarshal = jc.createUnmarshaller();
       Document docIn = (Document) unmarshal.unmarshal(new StringReader(sw.toString()));

@@ -12,7 +12,7 @@ import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FliesClientRequestFactory extends ClientRequestFactory implements ITranslationResourcesFactory
+public class FliesClientRequestFactory implements ITranslationResourcesFactory
 {
    static
    {
@@ -21,6 +21,7 @@ public class FliesClientRequestFactory extends ClientRequestFactory implements I
    }
 
    private static final Logger log = LoggerFactory.getLogger(FliesClientRequestFactory.class);
+   private final ClientRequestFactory crf;
 
    public FliesClientRequestFactory(String username, String apiKey)
    {
@@ -29,20 +30,20 @@ public class FliesClientRequestFactory extends ClientRequestFactory implements I
 
    public FliesClientRequestFactory(URI base, String username, String apiKey)
    {
-      super(fixBase(base));
-      getPrefixInterceptors().registerInterceptor(new ApiKeyHeaderDecorator(username, apiKey));
+      crf = new ClientRequestFactory(fixBase(base));
+      crf.getPrefixInterceptors().registerInterceptor(new ApiKeyHeaderDecorator(username, apiKey));
    }
 
    public FliesClientRequestFactory(URI base, String username, String apiKey, ClientExecutor executor)
    {
-      super(executor, null, fixBase(base));
-      getPrefixInterceptors().registerInterceptor(new ApiKeyHeaderDecorator(username, apiKey));
+      crf = new ClientRequestFactory(executor, null, fixBase(base));
+      crf.getPrefixInterceptors().registerInterceptor(new ApiKeyHeaderDecorator(username, apiKey));
    }
 
-   public <T> T createProxy(Class<T> clazz, URI baseUri)
+   private <T> T createProxy(Class<T> clazz, URI baseUri)
    {
       log.debug("{} proxy uri: {}", clazz.getSimpleName(), baseUri);
-      return super.createProxy(clazz, baseUri);
+      return crf.createProxy(clazz, baseUri);
    }
 
    private static URI fixBase(URI base)
@@ -72,7 +73,7 @@ public class FliesClientRequestFactory extends ClientRequestFactory implements I
       return getAccount(getAccountURI(username));
    }
 
-   public IAccountResource getAccount(final URI uri)
+   private IAccountResource getAccount(final URI uri)
    {
       return createProxy(IAccountResource.class, uri);
    }
@@ -81,7 +82,7 @@ public class FliesClientRequestFactory extends ClientRequestFactory implements I
    {
       try
       {
-         URL url = new URL(getBase().toURL(), "seam/resource/restv1/accounts/u/" + username);
+         URL url = new URL(crf.getBase().toURL(), "seam/resource/restv1/accounts/u/" + username);
          return url.toURI();
       }
       catch (MalformedURLException e)
@@ -103,7 +104,7 @@ public class FliesClientRequestFactory extends ClientRequestFactory implements I
    {
       try
       {
-         URL url = new URL(getBase().toURL(), "seam/resource/restv1/projects/p/" + proj + "/iterations/i/" + iter + "/documents");
+         URL url = new URL(crf.getBase().toURL(), "seam/resource/restv1/projects/p/" + proj + "/iterations/i/" + iter + "/documents");
          return url.toURI();
       }
       catch (MalformedURLException e)
@@ -121,7 +122,7 @@ public class FliesClientRequestFactory extends ClientRequestFactory implements I
       return getProject(getProjectURI(proj));
    }
 
-   public IProjectResource getProject(final URI uri)
+   private IProjectResource getProject(final URI uri)
    {
       return createProxy(IProjectResource.class, uri);
    }
@@ -130,7 +131,7 @@ public class FliesClientRequestFactory extends ClientRequestFactory implements I
    {
       try
       {
-         URL url = new URL(getBase().toURL(), "seam/resource/restv1/projects/p/" + proj);
+         URL url = new URL(crf.getBase().toURL(), "seam/resource/restv1/projects/p/" + proj);
          return url.toURI();
       }
       catch (MalformedURLException e)
@@ -157,7 +158,7 @@ public class FliesClientRequestFactory extends ClientRequestFactory implements I
    {
       try
       {
-         URL url = new URL(getBase().toURL(), "seam/resource/restv1/projects/p/" + proj + "/iterations/i/" + iter);
+         URL url = new URL(crf.getBase().toURL(), "seam/resource/restv1/projects/p/" + proj + "/iterations/i/" + iter);
          return url.toURI();
       }
       catch (MalformedURLException e)
@@ -170,6 +171,7 @@ public class FliesClientRequestFactory extends ClientRequestFactory implements I
       }
    }
 
+   // NB IProjectsResource is not currently used in Java
    public IProjectsResource getProjects(final URI uri)
    {
       return createProxy(IProjectsResource.class, uri);
@@ -192,7 +194,7 @@ public class FliesClientRequestFactory extends ClientRequestFactory implements I
       String spec = "seam/resource/restv1/projects/p/" + projectSlug + "/iterations/i/" + versionSlug + "/r";
       try
       {
-         return new URL(getBase().toURL(), spec).toURI();
+         return new URL(crf.getBase().toURL(), spec).toURI();
       }
       catch (MalformedURLException e)
       {

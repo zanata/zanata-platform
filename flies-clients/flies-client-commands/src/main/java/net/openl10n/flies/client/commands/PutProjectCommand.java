@@ -12,7 +12,6 @@ import net.openl10n.flies.rest.client.IProjectResource;
 import net.openl10n.flies.rest.dto.Project;
 
 import org.jboss.resteasy.client.ClientResponse;
-import org.kohsuke.args4j.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,64 +19,32 @@ import org.slf4j.LoggerFactory;
  * @author Sean Flanigan <sflaniga@redhat.com>
  *
  */
-public class PutProjectCommand extends ConfigurableCommand
+public class PutProjectCommand implements FliesCommand
 {
    private static final Logger log = LoggerFactory.getLogger(PutProjectCommand.class);
 
-   private String projectSlug;
-   private String projectName;
-   private String projectDesc;
+   private final PutProjectOptions opts;
 
-   public PutProjectCommand() throws JAXBException
+   public PutProjectCommand(PutProjectOptions opts)
    {
-      super();
-   }
-
-   @Override
-   public String getCommandName()
-   {
-      return "putproject";
-   }
-
-   @Override
-   public String getCommandDescription()
-   {
-      return "Creates or updates a Flies project.";
-   }
-
-   @Option(name = "--project-slug", metaVar = "PROJ", usage = "Flies project slug/ID", required = true)
-   public void setProjectSlug(String id)
-   {
-      this.projectSlug = id;
-   }
-
-   @Option(name = "--project-name", metaVar = "NAME", required = true, usage = "Flies project name")
-   public void setProjectName(String name)
-   {
-      this.projectName = name;
-   }
-
-   @Option(name = "--project-desc", metaVar = "DESC", required = true, usage = "Flies project description")
-   public void setProjectDesc(String desc)
-   {
-      this.projectDesc = desc;
+      this.opts = opts;
    }
 
    @Override
    public void run() throws JAXBException, URISyntaxException, IOException
    {
       Project project = new Project();
-      project.setId(projectSlug);
-      project.setName(projectName);
-      project.setDescription(projectDesc);
+      project.setId(opts.getProjectSlug());
+      project.setName(opts.getProjectName());
+      project.setDescription(opts.getProjectDesc());
 
       log.debug("{}", project);
 
-      URI base = getUrl().toURI();
+      URI base = opts.getUrl().toURI();
       // send project to rest api
-      FliesClientRequestFactory factory = new FliesClientRequestFactory(base, getUsername(), getKey());
-      IProjectResource projResource = factory.getProject(projectSlug);
-      URI uri = factory.getProjectURI(projectSlug);
+      FliesClientRequestFactory factory = new FliesClientRequestFactory(base, opts.getUsername(), opts.getKey());
+      IProjectResource projResource = factory.getProject(opts.getProjectSlug());
+      URI uri = factory.getProjectURI(opts.getProjectSlug());
       ClientResponse<?> response = projResource.put(project);
       ClientUtility.checkResult(response, uri);
    }

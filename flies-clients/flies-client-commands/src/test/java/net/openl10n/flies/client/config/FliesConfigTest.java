@@ -17,7 +17,7 @@ import org.apache.commons.configuration.FileConfiguration;
 import org.apache.commons.configuration.HierarchicalINIConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
 
-public class TestFliesConfig extends TestCase
+public class FliesConfigTest extends TestCase
 {
    JAXBContext jc = JAXBContext.newInstance(FliesConfig.class);
    Unmarshaller unmarshaller = jc.createUnmarshaller();
@@ -25,7 +25,7 @@ public class TestFliesConfig extends TestCase
    File fliesProjectXml = new File(System.getProperty("user.dir"), "target/flies.xml");
    File fliesUserFile = new File(System.getProperty("user.dir"), "target/.config/flies.ini");
 
-   public TestFliesConfig() throws Exception
+   public FliesConfigTest() throws Exception
    {
       marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
    }

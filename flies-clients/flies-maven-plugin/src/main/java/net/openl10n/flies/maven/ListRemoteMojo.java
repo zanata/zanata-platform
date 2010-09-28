@@ -9,12 +9,17 @@ import net.openl10n.flies.client.commands.ListRemoteCommand;
  * @requiresProject false
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
-public class ListRemoteMojo extends ConfigurableProjectMojo<ListRemoteCommand>
+public class ListRemoteMojo extends ConfigurableProjectMojo
 {
 
    public ListRemoteMojo() throws Exception
    {
-      super(new ListRemoteCommand());
+      super();
+   }
+
+   public ListRemoteCommand initCommand()
+   {
+      return new ListRemoteCommand(this);
    }
 
 }

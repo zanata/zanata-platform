@@ -2,6 +2,7 @@ package net.openl10n.flies.client.ant.po;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
@@ -12,7 +13,6 @@ import javax.xml.bind.Marshaller;
 
 import net.openl10n.flies.adapter.po.PoReader;
 import net.openl10n.flies.client.commands.ArgsUtil;
-import net.openl10n.flies.client.commands.BasicOptions;
 import net.openl10n.flies.client.commands.StringUtil;
 import net.openl10n.flies.client.commands.gettext.PublicanUtil;
 import net.openl10n.flies.common.ContentType;
@@ -26,11 +26,14 @@ import net.openl10n.flies.rest.dto.deprecated.Documents;
 
 import org.jboss.resteasy.client.ClientResponse;
 import org.kohsuke.args4j.Option;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public class UploadPoTask extends FliesTask
 {
+   private static final Logger log = LoggerFactory.getLogger(UploadPoTask.class);
 
    private String user;
 
@@ -49,7 +52,7 @@ public class UploadPoTask extends FliesTask
    public static void main(String[] args)
    {
       UploadPoTask task = new UploadPoTask();
-      ArgsUtil.processArgs(task, args, BasicOptions.EMPTY);
+      ArgsUtil.processArgs(args, task);
    }
 
    @Override
@@ -134,7 +137,9 @@ public class UploadPoTask extends FliesTask
 
       if (getDebug())
       {
-         m.marshal(docs, System.out);
+         StringWriter writer = new StringWriter();
+         m.marshal(docs, writer);
+         log.debug("{}", writer);
       }
 
       if (validate)

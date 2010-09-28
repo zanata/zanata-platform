@@ -3,6 +3,7 @@ package net.openl10n.flies.maven;
 import java.io.File;
 
 import net.openl10n.flies.client.commands.PublicanPushCommand;
+import net.openl10n.flies.client.commands.PublicanPushOptions;
 
 /**
  * Publishes publican source text to a Flies project version so that it can be
@@ -12,12 +13,18 @@ import net.openl10n.flies.client.commands.PublicanPushCommand;
  * @requiresProject true
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
-public class PublicanPushMojo extends ConfigurableProjectMojo<PublicanPushCommand>
+public class PublicanPushMojo extends ConfigurableProjectMojo implements PublicanPushOptions
 {
 
    public PublicanPushMojo() throws Exception
    {
-      super(new PublicanPushCommand());
+      super();
+   }
+
+   @Override
+   public PublicanPushCommand initCommand()
+   {
+      return new PublicanPushCommand(this);
    }
 
    /**
@@ -27,7 +34,6 @@ public class PublicanPushMojo extends ConfigurableProjectMojo<PublicanPushComman
     * @parameter expression="${flies.srcDir}"
     * @required
     */
-   @SuppressWarnings("unused")
    private File srcDir;
 
    /**
@@ -35,7 +41,6 @@ public class PublicanPushMojo extends ConfigurableProjectMojo<PublicanPushComman
     * 
     * @parameter expression="${flies.sourceLang}"
     */
-   @SuppressWarnings("unused")
    private String sourceLang;
 
    /**
@@ -44,7 +49,6 @@ public class PublicanPushMojo extends ConfigurableProjectMojo<PublicanPushComman
     * 
     * @parameter expression="${flies.importPo}"
     */
-   @SuppressWarnings("unused")
    private boolean importPo;
 
    /**
@@ -52,26 +56,46 @@ public class PublicanPushMojo extends ConfigurableProjectMojo<PublicanPushComman
     * 
     * @parameter expression="${flies.validate}"
     */
-   @SuppressWarnings("unused")
    private boolean validate;
+
+   public File getSrcDir()
+   {
+      return srcDir;
+   }
 
    public void setSrcDir(File srcDir)
    {
-      getCommand().setSrcDir(srcDir);
+      this.srcDir = srcDir;
+   }
+
+   public String getSourceLang()
+   {
+      return sourceLang;
    }
 
    public void setSourceLang(String sourceLang)
    {
-      getCommand().setSourceLang(sourceLang);
+      this.sourceLang = sourceLang;
+   }
+
+   public boolean getImportPo()
+   {
+      return importPo;
    }
 
    public void setImportPo(boolean importPo)
    {
-      getCommand().setImportPo(importPo);
+      this.importPo = importPo;
+   }
+
+   public boolean getValidate()
+   {
+      return validate;
    }
 
    public void setValidate(boolean validate)
    {
-      getCommand().setValidate(validate);
+      this.validate = validate;
    }
+
 }

@@ -1,6 +1,7 @@
 package net.openl10n.flies.client.ant.po;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -12,7 +13,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import net.openl10n.flies.client.commands.ArgsUtil;
-import net.openl10n.flies.client.commands.BasicOptions;
 import net.openl10n.flies.rest.client.ClientUtility;
 import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 import net.openl10n.flies.rest.client.IAccountResource;
@@ -20,12 +20,15 @@ import net.openl10n.flies.rest.dto.Account;
 
 import org.jboss.resteasy.client.ClientResponse;
 import org.kohsuke.args4j.Option;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @deprecated See PutUserCommand
  */
 public class PutUserTask extends FliesTask
 {
+   private static final Logger log = LoggerFactory.getLogger(PutUserTask.class);
 
    private String user;
 
@@ -52,7 +55,7 @@ public class PutUserTask extends FliesTask
    public static void main(String[] args)
    {
       PutUserTask task = new PutUserTask();
-      ArgsUtil.processArgs(task, args, BasicOptions.EMPTY);
+      ArgsUtil.processArgs(args, task);
    }
 
    @Override
@@ -87,7 +90,9 @@ public class PutUserTask extends FliesTask
 
       if (getDebug())
       {
-         m.marshal(account, System.out);
+         StringWriter writer = new StringWriter();
+         m.marshal(account, writer);
+         log.debug("{}", writer);
       }
 
       if (fliesURL == null)
@@ -97,7 +102,7 @@ public class PutUserTask extends FliesTask
       FliesClientRequestFactory factory = new FliesClientRequestFactory(base, user, apiKey);
       IAccountResource iterResource = factory.getAccount(username);
       URI uri = factory.getAccountURI(username);
-      ClientResponse response = iterResource.put(account);
+      ClientResponse<?> response = iterResource.put(account);
       ClientUtility.checkResult(response, uri);
    }
 

@@ -13,7 +13,7 @@ public class RemoteTest extends AbstractBuildTest
     * build.xml
     */
    @SuppressWarnings("unchecked")
-   static Class[] testedClasses = { UploadPoTask.class, DownloadPoTask.class };
+   static Class<?>[] testedClasses = { UploadPoTask.class, DownloadPoTask.class };
 
    public RemoteTest(String name)
    {

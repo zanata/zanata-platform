@@ -1,6 +1,7 @@
 package net.openl10n.flies.maven;
 
 import net.openl10n.flies.client.commands.PutUserCommand;
+import net.openl10n.flies.client.commands.PutUserOptions;
 
 /**
  * Creates or updates a Flies user.
@@ -9,7 +10,7 @@ import net.openl10n.flies.client.commands.PutUserCommand;
  * @requiresProject false
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
-public class PutUserMojo extends ConfigurableMojo<PutUserCommand>
+public class PutUserMojo extends ConfigurableMojo implements PutUserOptions
 {
 
    /**
@@ -18,7 +19,6 @@ public class PutUserMojo extends ConfigurableMojo<PutUserCommand>
     * @parameter expression="${flies.user.name}"
     * @required
     */
-   @SuppressWarnings("unused")
    private String userName;
 
    /**
@@ -27,7 +27,6 @@ public class PutUserMojo extends ConfigurableMojo<PutUserCommand>
     * @parameter expression="${flies.user.email}"
     * @required
     */
-   @SuppressWarnings("unused")
    private String userEmail;
 
    /**
@@ -36,7 +35,6 @@ public class PutUserMojo extends ConfigurableMojo<PutUserCommand>
     * @parameter expression="${flies.user.username}"
     * @required
     */
-   @SuppressWarnings("unused")
    private String userUsername;
 
    /**
@@ -45,7 +43,6 @@ public class PutUserMojo extends ConfigurableMojo<PutUserCommand>
     * @parameter expression="${flies.user.passwordhash}"
     * @required
     */
-   @SuppressWarnings("unused")
    private String userPasswordHash;
 
    /**
@@ -54,7 +51,6 @@ public class PutUserMojo extends ConfigurableMojo<PutUserCommand>
     * @parameter expression="${flies.user.key}"
     * @required
     */
-   @SuppressWarnings("unused")
    private String userKey;
 
    /**
@@ -63,7 +59,6 @@ public class PutUserMojo extends ConfigurableMojo<PutUserCommand>
     * @parameter expression="${flies.user.roles}"
     * @required
     */
-   @SuppressWarnings("unused")
    private String userRoles;
 
    /**
@@ -72,7 +67,6 @@ public class PutUserMojo extends ConfigurableMojo<PutUserCommand>
     * @parameter expression="${flies.user.langs}"
     * @required
     */
-   @SuppressWarnings("unused")
    private String userLangs;
 
    /**
@@ -81,51 +75,96 @@ public class PutUserMojo extends ConfigurableMojo<PutUserCommand>
     * @parameter expression="${flies.user.disabled}"
     * @required
     */
-   @SuppressWarnings("unused")
    private boolean userDisabled;
 
    public PutUserMojo() throws Exception
    {
-      super(new PutUserCommand());
+      super();
    }
 
-   public void setUserName(String name)
+   public PutUserCommand initCommand()
    {
-      getCommand().setUserName(name);
+      return new PutUserCommand(this);
    }
 
-   public void setUserEmail(String email)
+   public String getUserName()
    {
-      getCommand().setUserEmail(email);
+      return userName;
    }
 
-   public void setUserUsername(String username)
+   public void setUserName(String userName)
    {
-      getCommand().setUserUsername(username);
+      this.userName = userName;
    }
 
-   public void setUserPasswordHash(String passwordHash)
+   public String getUserEmail()
    {
-      getCommand().setUserPasswordHash(passwordHash);
+      return userEmail;
+   }
+
+   public void setUserEmail(String userEmail)
+   {
+      this.userEmail = userEmail;
+   }
+
+   public String getUserUsername()
+   {
+      return userUsername;
+   }
+
+   public void setUserUsername(String userUsername)
+   {
+      this.userUsername = userUsername;
+   }
+
+   public String getUserPasswordHash()
+   {
+      return userPasswordHash;
+   }
+
+   public void setUserPasswordHash(String userPasswordHash)
+   {
+      this.userPasswordHash = userPasswordHash;
+   }
+
+   public String getUserKey()
+   {
+      return userKey;
    }
 
    public void setUserKey(String userKey)
    {
-      getCommand().setUserKey(userKey);
+      this.userKey = userKey;
    }
 
-   public void setUserLangs(String langs)
+   public String getUserRoles()
    {
-      getCommand().setUserLangs(langs);
+      return userRoles;
    }
 
-   public void setUserRoles(String roles)
+   public void setUserRoles(String userRoles)
    {
-      getCommand().setUserRoles(roles);
+      this.userRoles = userRoles;
    }
 
-   public void setUserDisabled(boolean disabled)
+   public String getUserLangs()
    {
-      getCommand().setUserDisabled(disabled);
+      return userLangs;
    }
+
+   public void setUserLangs(String userLangs)
+   {
+      this.userLangs = userLangs;
+   }
+
+   public boolean isUserDisabled()
+   {
+      return userDisabled;
+   }
+
+   public void setUserDisabled(boolean userDisabled)
+   {
+      this.userDisabled = userDisabled;
+   }
+
 }

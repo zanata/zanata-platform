@@ -9,12 +9,17 @@ import net.openl10n.flies.client.commands.RetrieveCommand;
  * @requiresProject false
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
-public class RetrieveMojo extends ConfigurableProjectMojo<RetrieveCommand>
+public class RetrieveMojo extends ConfigurableProjectMojo
 {
 
    public RetrieveMojo() throws Exception
    {
-      super(new RetrieveCommand());
+      super();
+   }
+
+   public RetrieveCommand initCommand()
+   {
+      return new RetrieveCommand(this);
    }
 
 }

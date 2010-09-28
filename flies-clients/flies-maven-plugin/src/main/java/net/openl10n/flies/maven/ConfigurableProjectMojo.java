@@ -1,8 +1,6 @@
 package net.openl10n.flies.maven;
 
-import java.io.File;
-
-import net.openl10n.flies.client.commands.ConfigurableProjectCommand;
+import net.openl10n.flies.client.commands.ConfigurableProjectOptions;
 
 /**
  * Base class for Flies mojos which support configuration by the user's
@@ -11,7 +9,7 @@ import net.openl10n.flies.client.commands.ConfigurableProjectCommand;
  * @author Sean Flanigan <sflaniga@redhat.com>
  * 
  */
-public abstract class ConfigurableProjectMojo<C extends ConfigurableProjectCommand> extends ConfigurableMojo<C>
+public abstract class ConfigurableProjectMojo extends ConfigurableMojo implements ConfigurableProjectOptions
 {
 
    // @formatter:off
@@ -30,15 +28,13 @@ public abstract class ConfigurableProjectMojo<C extends ConfigurableProjectComma
     * @parameter expression="${flies.projectConfig}"
     *            default-value="${basedir}/flies.xml"
     */
-   @SuppressWarnings("unused")
-   private File projectConfig;
+   private String projectConfig;
 
    /**
     * Project slug (id) within Flies server.
     * 
     * @parameter expression="${flies.project}"
     */
-   @SuppressWarnings("unused")
    private String project;
 
    /**
@@ -46,27 +42,47 @@ public abstract class ConfigurableProjectMojo<C extends ConfigurableProjectComma
     * 
     * @parameter expression="${flies.projectVersion}"
     */
-   @SuppressWarnings("unused")
    private String projectVersion;
 
-   public ConfigurableProjectMojo(C command)
+   public ConfigurableProjectMojo()
    {
-      super(command);
+      super();
    }
 
-   public void setProjectConfig(File projectConfig)
+   @Override
+   public String getProjectConfig()
    {
-      getCommand().setProjectConfig(projectConfig.getPath());
+      return projectConfig;
    }
 
-   public void setProject(String projectSlug)
+   @Override
+   public void setProjectConfig(String projectConfig)
    {
-      getCommand().setProject(projectSlug);
+      this.projectConfig = projectConfig;
    }
 
-   public void setProjectVersion(String versionSlug)
+   @Override
+   public String getProject()
    {
-      getCommand().setProjectVersion(versionSlug);
+      return project;
+   }
+
+   @Override
+   public void setProject(String project)
+   {
+      this.project = project;
+   }
+
+   @Override
+   public String getProjectVersion()
+   {
+      return projectVersion;
+   }
+
+   @Override
+   public void setProjectVersion(String projectVersion)
+   {
+      this.projectVersion = projectVersion;
    }
 
 }

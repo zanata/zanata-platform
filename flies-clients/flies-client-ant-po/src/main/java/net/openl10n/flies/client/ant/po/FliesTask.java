@@ -1,12 +1,13 @@
 package net.openl10n.flies.client.ant.po;
 
+import net.openl10n.flies.client.commands.BasicOptions;
 import net.openl10n.flies.client.commands.FliesCommand;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.kohsuke.args4j.Option;
 
-public abstract class FliesTask extends Task implements FliesCommand
+public abstract class FliesTask extends Task implements FliesCommand, BasicOptions
 {
 
    private boolean debug;
@@ -71,6 +72,12 @@ public abstract class FliesTask extends Task implements FliesCommand
    }
 
    @Override
+   public FliesCommand initCommand()
+   {
+      return this;
+   }
+
+   @Override
    public void execute() throws BuildException
    {
       ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
@@ -78,7 +85,7 @@ public abstract class FliesTask extends Task implements FliesCommand
       {
          // make sure RESTEasy classes will be found:
          Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-         initConfig();
+         // OptionsUtil.applyConfigFiles(this);
          run();
       }
       catch (Exception e)
@@ -92,14 +99,30 @@ public abstract class FliesTask extends Task implements FliesCommand
    }
 
    @Override
-   public void initConfig()
-   {
-   }
-
-   @Override
    public void log(String msg)
    {
       super.log(msg + "\n\n");
+   }
+
+   @Override
+   public boolean isDebugSet()
+   {
+      // TODO Auto-generated method stub
+      return false;
+   }
+
+   @Override
+   public boolean isErrorsSet()
+   {
+      // TODO Auto-generated method stub
+      return false;
+   }
+
+   @Override
+   public boolean isQuietSet()
+   {
+      // TODO Auto-generated method stub
+      return false;
    }
 
 }

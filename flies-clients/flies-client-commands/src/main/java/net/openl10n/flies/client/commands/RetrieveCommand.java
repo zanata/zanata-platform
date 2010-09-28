@@ -1,29 +1,15 @@
 package net.openl10n.flies.client.commands;
 
-import javax.xml.bind.JAXBException;
 
 /**
  * @author Sean Flanigan <sflaniga@redhat.com>
  *
  */
-public class RetrieveCommand extends ConfigurableProjectCommand
+public class RetrieveCommand implements FliesCommand
 {
 
-   public RetrieveCommand() throws JAXBException
+   public RetrieveCommand(ConfigurableProjectOptions opts)
    {
-      super();
-   }
-
-   @Override
-   public String getCommandName()
-   {
-      return "retrieve";
-   }
-
-   @Override
-   public String getCommandDescription()
-   {
-      return "Fetches translated text from Flies.";
    }
 
    @Override

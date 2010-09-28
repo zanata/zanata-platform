@@ -156,12 +156,12 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
-				<version>1.5.10</version> <!-- 1.5.8? -->
+				<version>1.6.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-log4j12</artifactId>
-				<version>1.5.10</version>
+				<version>1.6.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.testng</groupId>
@@ -423,6 +423,18 @@
 				<artifactId>icu4j</artifactId>
 				<classifier>sources</classifier>
 				<version>${icu4j.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.fedorahosted.openprops</groupId>
+				<artifactId>openprops</artifactId>
+				<version>0.5</version>
+			</dependency>
+			<dependency>
+				<groupId>org.infinitest</groupId>
+				<artifactId>infinitest</artifactId>
+				<version>4.0.1</version>
+				<scope>test</scope>
 			</dependency>
 
 		</dependencies>

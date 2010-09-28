@@ -4,6 +4,7 @@ import java.io.PrintStream;
 
 import net.openl10n.flies.client.FliesClient;
 import net.openl10n.flies.client.commands.AppAbortStrategy;
+import net.openl10n.flies.client.commands.PutUserOptionsImpl;
 import net.openl10n.flies.client.commands.SystemExitStrategy;
 
 public class PoTool extends FliesClient
@@ -17,12 +18,12 @@ public class PoTool extends FliesClient
    public PoTool(AppAbortStrategy strategy, PrintStream out, PrintStream err)
    {
       super(strategy, out, err);
-      getCommandMap().clear();
-      getCommandMap().put("putuser", PutUserTask.class);
-      getCommandMap().put("createproj", CreateProjectTask.class);
-      getCommandMap().put("createiter", CreateIterationTask.class);
-      getCommandMap().put("upload", UploadPoTask.class);
-      getCommandMap().put("download", DownloadPoTask.class);
+      getOptionsMap().clear();
+      getOptionsMap().put("putuser", new PutUserOptionsImpl());
+      getOptionsMap().put("createproj", new CreateProjectTask());
+      getOptionsMap().put("createiter", new CreateIterationTask());
+      getOptionsMap().put("upload", new UploadPoTask());
+      getOptionsMap().put("download", new DownloadPoTask());
    }
 
    public String getCommandName()

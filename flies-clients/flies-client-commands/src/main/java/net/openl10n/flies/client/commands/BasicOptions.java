@@ -2,36 +2,34 @@ package net.openl10n.flies.client.commands;
 
 public interface BasicOptions
 {
-   static final BasicOptions EMPTY = new BasicOptions()
-   {
-      @Override
-      public boolean getDebug()
-      {
-         return false;
-      }
-
-      @Override
-      public boolean getErrors()
-      {
-         return false;
-      }
-
-      @Override
-      public boolean getHelp()
-      {
-         return false;
-      }
-
-      @Override
-      public boolean getQuiet()
-      {
-         return false;
-      }
-   };
+   FliesCommand initCommand();
 
    boolean getDebug();
    boolean getErrors();
    boolean getHelp();
    boolean getQuiet();
+   void setDebug(boolean debug);
+   void setErrors(boolean errors);
+   void setHelp(boolean help);
+   void setQuiet(boolean quiet);
+   boolean isDebugSet();
+   boolean isErrorsSet();
+   boolean isQuietSet();
+
+   /**
+    * Used to generate the command line interface and its usage help. This name
+    * should match the Maven Mojo's 'goal' annotation.
+    * 
+    * @return
+    */
+   public String getCommandName();
+
+   /**
+    * Used to generate CLI usage help. This description should preferably match
+    * the Maven Mojo's Javadoc description.
+    * 
+    * @return
+    */
+   public String getCommandDescription();
 
 }

@@ -1,6 +1,7 @@
 package net.openl10n.flies.client.ant.properties;
 
 import java.io.File;
+import java.io.StringWriter;
 import java.net.URL;
 import java.util.List;
 
@@ -21,9 +22,12 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.types.selectors.FileSelector;
 import org.jboss.resteasy.client.ClientResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Props2DocsTask extends BaseTask
 {
+   private static final Logger log = LoggerFactory.getLogger(Props2DocsTask.class);
 
    private String user;
    private String apiKey;
@@ -77,7 +81,9 @@ public class Props2DocsTask extends BaseTask
          progress.finished();
          if (debug)
          {
-            m.marshal(docs, System.out);
+            StringWriter writer = new StringWriter();
+            m.marshal(docs, writer);
+            log.debug("{}", writer);
          }
 
          if (dst == null)

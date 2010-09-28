@@ -10,12 +10,17 @@ import net.openl10n.flies.client.commands.ListLocalCommand;
  * @goal listlocal
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
-public class ListLocalMojo extends ConfigurableProjectMojo<ListLocalCommand>
+public class ListLocalMojo extends ConfigurableProjectMojo
 {
 
    public ListLocalMojo() throws Exception
    {
-      super(new ListLocalCommand());
+      super();
+   }
+
+   public ListLocalCommand initCommand()
+   {
+      return new ListLocalCommand(this);
    }
 
 }

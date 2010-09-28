@@ -1,6 +1,7 @@
 package net.openl10n.flies.client.ant.po;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -9,7 +10,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import net.openl10n.flies.client.commands.ArgsUtil;
-import net.openl10n.flies.client.commands.BasicOptions;
 import net.openl10n.flies.rest.client.ClientUtility;
 import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 import net.openl10n.flies.rest.client.IProjectIterationResource;
@@ -17,12 +17,16 @@ import net.openl10n.flies.rest.dto.ProjectIteration;
 
 import org.jboss.resteasy.client.ClientResponse;
 import org.kohsuke.args4j.Option;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @deprecated See PutVersionCommand
  */
 public class CreateIterationTask extends FliesTask
 {
+   private static final Logger log = LoggerFactory.getLogger(CreateIterationTask.class);
+
    private String user;
    private String apiKey;
    private String fliesURL;
@@ -34,7 +38,7 @@ public class CreateIterationTask extends FliesTask
    public static void main(String[] args)
    {
       CreateIterationTask task = new CreateIterationTask();
-      ArgsUtil.processArgs(task, args, BasicOptions.EMPTY);
+      ArgsUtil.processArgs(args, task);
    }
 
    @Override
@@ -64,7 +68,9 @@ public class CreateIterationTask extends FliesTask
 
       if (getDebug())
       {
-         m.marshal(iteration, System.out);
+         StringWriter writer = new StringWriter();
+         m.marshal(iteration, writer);
+         log.debug("{}", writer);
       }
 
       if (fliesURL == null)
@@ -74,7 +80,7 @@ public class CreateIterationTask extends FliesTask
       FliesClientRequestFactory factory = new FliesClientRequestFactory(base, user, apiKey);
       IProjectIterationResource iterResource = factory.getProjectIteration(proj, iter);
       URI uri = factory.getProjectIterationURI(proj, iter);
-      ClientResponse response = iterResource.put(iteration);
+      ClientResponse<?> response = iterResource.put(iteration);
       ClientUtility.checkResult(response, uri);
    }
 

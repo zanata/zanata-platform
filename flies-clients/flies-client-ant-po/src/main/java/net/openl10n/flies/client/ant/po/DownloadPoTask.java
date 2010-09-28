@@ -12,7 +12,6 @@ import javax.xml.bind.Unmarshaller;
 
 import net.openl10n.flies.adapter.po.PoWriter;
 import net.openl10n.flies.client.commands.ArgsUtil;
-import net.openl10n.flies.client.commands.BasicOptions;
 import net.openl10n.flies.rest.client.ClientUtility;
 import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 import net.openl10n.flies.rest.client.IDocumentsResource;
@@ -34,7 +33,7 @@ public class DownloadPoTask extends FliesTask
    public static void main(String[] args)
    {
       DownloadPoTask task = new DownloadPoTask();
-      ArgsUtil.processArgs(task, args, BasicOptions.EMPTY);
+      ArgsUtil.processArgs(args, task);
    }
 
    @Override

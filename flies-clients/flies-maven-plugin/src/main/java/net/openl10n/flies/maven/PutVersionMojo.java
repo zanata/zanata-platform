@@ -1,6 +1,7 @@
 package net.openl10n.flies.maven;
 
 import net.openl10n.flies.client.commands.PutVersionCommand;
+import net.openl10n.flies.client.commands.PutVersionOptions;
 
 /**
  * Creates or updates a Flies project version.
@@ -9,7 +10,7 @@ import net.openl10n.flies.client.commands.PutVersionCommand;
  * @requiresProject false
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
-public class PutVersionMojo extends ConfigurableMojo<PutVersionCommand>
+public class PutVersionMojo extends ConfigurableMojo implements PutVersionOptions
 {
 
    /**
@@ -18,7 +19,6 @@ public class PutVersionMojo extends ConfigurableMojo<PutVersionCommand>
     * @parameter expression="${flies.version.project}"
     * @required
     */
-   @SuppressWarnings("unused")
    private String versionProject;
 
    /**
@@ -27,7 +27,6 @@ public class PutVersionMojo extends ConfigurableMojo<PutVersionCommand>
     * @parameter expression="${flies.version.slug}"
     * @required
     */
-   @SuppressWarnings("unused")
    private String versionSlug;
 
    /**
@@ -36,7 +35,6 @@ public class PutVersionMojo extends ConfigurableMojo<PutVersionCommand>
     * @parameter expression="${flies.version.name}"
     * @required
     */
-   @SuppressWarnings("unused")
    private String versionName;
 
    /**
@@ -45,32 +43,56 @@ public class PutVersionMojo extends ConfigurableMojo<PutVersionCommand>
     * @parameter expression="${flies.version.desc}"
     * @required
     */
-   @SuppressWarnings("unused")
    private String versionDesc;
 
    public PutVersionMojo() throws Exception
    {
-      super(new PutVersionCommand());
+      super();
    }
 
-   public void setVersionProject(String id)
+   public PutVersionCommand initCommand()
    {
-      getCommand().setVersionProject(id);
+      return new PutVersionCommand(this);
    }
 
-   public void setVersionSlug(String id)
+   public String getVersionProject()
    {
-      getCommand().setVersionSlug(id);
+      return versionProject;
    }
 
-   public void setVersionName(String name)
+   public void setVersionProject(String versionProject)
    {
-      getCommand().setVersionName(name);
+      this.versionProject = versionProject;
    }
 
-   public void setVersionDesc(String desc)
+   public String getVersionSlug()
    {
-      getCommand().setVersionDesc(desc);
+      return versionSlug;
+   }
+
+   public void setVersionSlug(String versionSlug)
+   {
+      this.versionSlug = versionSlug;
+   }
+
+   public String getVersionName()
+   {
+      return versionName;
+   }
+
+   public void setVersionName(String versionName)
+   {
+      this.versionName = versionName;
+   }
+
+   public String getVersionDesc()
+   {
+      return versionDesc;
+   }
+
+   public void setVersionDesc(String versionDesc)
+   {
+      this.versionDesc = versionDesc;
    }
 
 }

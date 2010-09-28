@@ -3,7 +3,9 @@ package net.openl10n.flies.maven;
 import java.io.File;
 import java.net.URL;
 
-import net.openl10n.flies.client.commands.ConfigurableCommand;
+import net.openl10n.flies.client.commands.ConfigurableOptions;
+import net.openl10n.flies.client.commands.FliesCommand;
+import net.openl10n.flies.client.commands.OptionsUtil;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -18,10 +20,8 @@ import com.pyx4j.log4j.MavenLogAppender;
  * @author Sean Flanigan <sflaniga@redhat.com>
  * 
  */
-public abstract class ConfigurableMojo<C extends ConfigurableCommand> extends AbstractMojo
+public abstract class ConfigurableMojo extends AbstractMojo implements ConfigurableOptions
 {
-
-   private final C command;
 
    // @formatter:off
    /*
@@ -45,7 +45,6 @@ public abstract class ConfigurableMojo<C extends ConfigurableCommand> extends Ab
     * because Mojos aren't meant to use System properties directly (since they
     * may be sharing a VM and its System properties)
     */
-   @SuppressWarnings("unused")
    private File userConfig;
 
    /**
@@ -54,7 +53,6 @@ public abstract class ConfigurableMojo<C extends ConfigurableCommand> extends Ab
     * 
     * @parameter expression="${flies.url}"
     */
-   @SuppressWarnings("unused")
    private URL url;
 
    /**
@@ -63,7 +61,6 @@ public abstract class ConfigurableMojo<C extends ConfigurableCommand> extends Ab
     * 
     * @parameter expression="${flies.username}"
     */
-   @SuppressWarnings("unused")
    private String username;
 
    /**
@@ -72,12 +69,10 @@ public abstract class ConfigurableMojo<C extends ConfigurableCommand> extends Ab
     * 
     * @parameter expression="${flies.key}"
     */
-   @SuppressWarnings("unused")
    private String key;
 
-   public ConfigurableMojo(C command)
+   public ConfigurableMojo()
    {
-      this.command = command;
    }
 
    @Override
@@ -114,8 +109,9 @@ public abstract class ConfigurableMojo<C extends ConfigurableCommand> extends Ab
       MavenLogAppender.startPluginLog(this);
       try
       {
-         getCommand().initConfig();
-         getCommand().run();
+         OptionsUtil.applyConfigFiles(this);
+         FliesCommand command = initCommand();
+         command.run();
       }
       catch (Exception e)
       {
@@ -127,29 +123,137 @@ public abstract class ConfigurableMojo<C extends ConfigurableCommand> extends Ab
       }
    }
 
-   public C getCommand()
+   public abstract FliesCommand initCommand();
+
+   // These options don't apply to Mojos (since they duplicate Maven's built-in
+   // mechanisms)
+
+   @Override
+   public boolean getDebug()
    {
-      return command;
+      throw new UnsupportedOperationException();
    }
 
+   @Override
+   public void setDebug(boolean debug)
+   {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public boolean getErrors()
+   {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public void setErrors(boolean errors)
+   {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public boolean getHelp()
+   {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public void setHelp(boolean help)
+   {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public boolean getQuiet()
+   {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public void setQuiet(boolean quiet)
+   {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public boolean isDebugSet()
+   {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public boolean isErrorsSet()
+   {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public boolean isQuietSet()
+   {
+      throw new UnsupportedOperationException();
+   }
+
+   // these options only apply to the command line:
+   @Override
+   public String getCommandDescription()
+   {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public String getCommandName()
+   {
+      throw new UnsupportedOperationException();
+   }
+
+
+   @Override
+   public String getKey()
+   {
+      return key;
+   }
+
+   @Override
    public void setKey(String key)
    {
-      command.setKey(key);
+      this.key = key;
    }
 
+   @Override
+   public URL getUrl()
+   {
+      return url;
+   }
+
+   @Override
    public void setUrl(URL url)
    {
-      command.setUrl(url);
+      this.url = url;
    }
 
+   @Override
    public void setUserConfig(File userConfig)
    {
-      command.setUserConfig(userConfig);
+      this.userConfig = userConfig;
    }
 
+   @Override
+   public String getUsername()
+   {
+      return username;
+   }
+
+   @Override
    public void setUsername(String username)
    {
-      command.setUsername(username);
+      this.username = username;
+   }
+
+   @Override
+   public File getUserConfig()
+   {
+      return userConfig;
    }
 
 }

@@ -1,29 +1,29 @@
 package net.openl10n.flies.client.commands;
 
 import java.io.File;
+import java.io.StringWriter;
+import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import net.openl10n.flies.adapter.po.PoReader2;
 import net.openl10n.flies.client.commands.gettext.PublicanUtil;
+import net.openl10n.flies.client.exceptions.ConfigException;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.rest.JaxbUtil;
 import net.openl10n.flies.rest.StringSet;
 import net.openl10n.flies.rest.client.ClientUtility;
 import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 import net.openl10n.flies.rest.client.ITranslationResources;
-import net.openl10n.flies.rest.client.ITranslationResourcesFactory;
 import net.openl10n.flies.rest.dto.resource.Resource;
 import net.openl10n.flies.rest.dto.resource.ResourceMeta;
 import net.openl10n.flies.rest.dto.resource.TranslationsResource;
 
 import org.jboss.resteasy.client.ClientResponse;
-import org.kohsuke.args4j.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
@@ -33,90 +33,59 @@ import org.xml.sax.InputSource;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  * 
  */
-public class PublicanPushCommand extends ConfigurableProjectCommand
+public class PublicanPushCommand implements FliesCommand
 {
 
    private static final Logger log = LoggerFactory.getLogger(PublicanPushCommand.class);
+   private final PublicanPushOptions opts;
+   private final ITranslationResources translationResources;
+   private final URI uri;
 
-   private File srcDir;
-
-   private String sourceLang = "en-US";
-
-   private boolean importPo;
-
-   private boolean validate;
-
-   public PublicanPushCommand() throws JAXBException
+   public PublicanPushCommand(PublicanPushOptions opts, ITranslationResources translationResources, URI uri)
    {
-      super();
+      this.opts = opts;
+      this.translationResources = translationResources;
+      this.uri = uri;
+      if (opts.getProject() == null)
+         throw new ConfigException("Project must be specified");
+      if (opts.getProjectVersion() == null)
+         throw new ConfigException("Project version must be specified");
    }
 
-   @Override
-   public String getCommandName()
+   private PublicanPushCommand(PublicanPushOptions opts, FliesClientRequestFactory factory)
    {
-      return "publican-push";
+      this(opts, factory.getTranslationResources(opts.getProject(), opts.getProjectVersion()), factory.getTranslationResourcesURI(opts.getProject(), opts.getProjectVersion()));
    }
 
-   @Override
-   public String getCommandDescription()
+   public PublicanPushCommand(PublicanPushOptions opts)
    {
-      return "Publishes publican source text to a Flies project version so that it can be translated.";
+      this(opts, OptionsUtil.createRequestFactory(opts));
    }
-
-   @Option(aliases = { "-s" }, name = "--src", metaVar = "DIR", required = true, usage = "Base directory for publican files (with subdirectory \"pot\" and optional locale directories)")
-   public void setSrcDir(File srcDir)
-   {
-      this.srcDir = srcDir;
-   }
-
-   @Option(aliases = { "-l" }, name = "--src-lang", usage = "Language of source (defaults to en-US)")
-   public void setSourceLang(String sourceLang)
-   {
-      this.sourceLang = sourceLang;
-   }
-
-   @Option(name = "--import-po", usage = "Import translations from local PO files to Flies, overwriting or erasing existing translations (DANGER!)")
-   public void setImportPo(boolean importPo)
-   {
-      this.importPo = importPo;
-   }
-
-   @Option(name = "--validate", usage = "Validate XML before sending request to server")
-   public void setValidate(boolean validate)
-   {
-      this.validate = validate;
-   }
-
 
    @Override
    public void run() throws Exception
    {
-      if (getUrl() == null)
-         throw new Exception("Flies URL must be specified");
-      if (getProject() == null)
-         throw new Exception("Project must be specified");
-      if (getProjectVersion() == null)
-         throw new Exception("Project version must be specified");
-      log.debug("Flies server: {}", getUrl());
-      log.debug("Project: {}", getProject());
-      log.debug("Version: {}", getProjectVersion());
+      log.debug("Flies server: {}", opts.getUrl());
+      log.debug("Project: {}", opts.getProject());
+      log.debug("Version: {}", opts.getProjectVersion());
       // log.debug("List of resources:");
       JAXBContext jc = null;
-      if (getDebug() || validate)
+      if (log.isDebugEnabled() || opts.getValidate())
       {
-         jc = JAXBContext.newInstance(Resource.class);
+         jc = JAXBContext.newInstance(Resource.class, TranslationsResource.class);
       }
       Marshaller m = null;
-      if (getDebug())
+      if (log.isDebugEnabled())
       {
          m = jc.createMarshaller();
+         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
       }
 
       // NB we don't load all the docs into a HashMap, because that would waste
       // memory
       Set<String> localDocNames = new HashSet<String>();
       // populate localDocNames by looking in pot directory
-      File potDir = new File(srcDir, "pot");
+      File potDir = new File(opts.getSrcDir(), "pot");
       File[] potFiles = PublicanUtil.findPotFiles(potDir);
       for (File pot : potFiles)
       {
@@ -125,10 +94,8 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
          localDocNames.add(docName);
       }
 
-      ITranslationResourcesFactory factory = new FliesClientRequestFactory(getUrl().toURI(), getUsername(), getKey());
-      ITranslationResources translationResources = factory.getTranslationResources(getProject(), getProjectVersion());
       ClientResponse<List<ResourceMeta>> response = translationResources.get(null);
-      ClientUtility.checkResult(response, factory.getTranslationResourcesURI(getProject(), getProjectVersion()));
+      ClientUtility.checkResult(response, uri);
       List<ResourceMeta> remoteList = response.getEntity();
       for (ResourceMeta doc : remoteList)
       {
@@ -139,9 +106,9 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
          }
       }
       File[] localeDirs = null;
-      if (importPo)
+      if (opts.getImportPo())
       {
-         localeDirs = PublicanUtil.findLocaleDirs(srcDir);
+         localeDirs = PublicanUtil.findLocaleDirs(opts.getSrcDir());
       }
 
       PoReader2 poReader = new PoReader2();
@@ -150,19 +117,21 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
          File potFile = new File(potDir, docId + ".pot");
          InputSource potInputSource = new InputSource(potFile.toURI().toString());
          // load 'srcDoc' from pot/${docID}.pot
-         Resource srcDoc = poReader.extractTemplate(potInputSource, new LocaleId(sourceLang), docId);
+         Resource srcDoc = poReader.extractTemplate(potInputSource, new LocaleId(opts.getSourceLang()), docId);
 
-         if (getDebug())
+         if (log.isDebugEnabled())
          {
-            m.marshal(srcDoc, System.out);
+            StringWriter writer = new StringWriter();
+            m.marshal(srcDoc, writer);
+            log.debug("{}", writer);
          }
-         if (validate)
+         if (opts.getValidate())
          {
             JaxbUtil.validateXml(srcDoc, jc);
          }
          StringSet extensions = new StringSet("comment;gettext");
          translationResources.putResource(docId, srcDoc, extensions);
-         if (importPo)
+         if (opts.getImportPo())
          {
             for (File localeDir : localeDirs)
             {
@@ -175,11 +144,13 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
                   // TODO locale mapping
                   LocaleId locale = new LocaleId(publicanLocale);
                   TranslationsResource targetDoc = poReader.extractTarget(inputSource, srcDoc);
-                  if (getDebug())
+                  if (log.isDebugEnabled())
                   {
-                     m.marshal(targetDoc, System.out);
+                     StringWriter writer = new StringWriter();
+                     m.marshal(targetDoc, writer);
+                     log.debug("{}", writer);
                   }
-                  if (validate)
+                  if (opts.getValidate())
                   {
                      JaxbUtil.validateXml(targetDoc, jc);
                   }

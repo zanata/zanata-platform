@@ -1,28 +1,33 @@
 package net.openl10n.flies.adapter.po;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import net.openl10n.flies.adapter.po.PoReader2;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.rest.dto.resource.Resource;
 import net.openl10n.flies.rest.dto.resource.TextFlow;
 import net.openl10n.flies.rest.dto.resource.TextFlowTarget;
 import net.openl10n.flies.rest.dto.resource.TranslationsResource;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 import org.xml.sax.InputSource;
 
 @Test(groups = { "unit-tests" })
 public class PoReader2Test
 {
+
+   private static final Logger log = LoggerFactory.getLogger(PoReader2Test.class);
 
    LocaleId ja = new LocaleId("ja-JP");
 
@@ -55,10 +60,18 @@ public class PoReader2Test
       m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
       System.out.println("marshalling source doc");
-      m.marshal(doc, System.out);
+      {
+         StringWriter writer = new StringWriter();
+         m.marshal(doc, writer);
+         log.debug("{}", writer);
+      }
 
       System.out.println("marshalling target doc");
-      m.marshal(targetDoc, System.out);
+      {
+         StringWriter writer = new StringWriter();
+         m.marshal(targetDoc, writer);
+         log.debug("{}", writer);
+      }
 
       List<TextFlow> resources = doc.getTextFlows();
 

@@ -18,37 +18,25 @@ public class ArgsUtil
 {
    private static final Logger log = LoggerFactory.getLogger(ArgsUtil.class);
    private final AppAbortStrategy abortStrategy;
+   private final PrintStream out;
+   private final PrintStream err;
 
-   public ArgsUtil(AppAbortStrategy strategy)
+   public ArgsUtil(AppAbortStrategy strategy, PrintStream out, PrintStream err)
    {
       this.abortStrategy = strategy;
+      this.out = out;
+      this.err = err;
    }
 
-   public static void processArgs(FliesCommand cmd, String[] args, BasicOptions globals)
+   public static void processArgs(String[] args, BasicOptions opts)
    {
-      new ArgsUtil(new SystemExitStrategy()).process(cmd, args, globals);
+      new ArgsUtil(new SystemExitStrategy(), System.out, System.err).process(args, opts);
    }
 
-   public void process(FliesCommand cmd, String[] args, BasicOptions globals)
+   public void process(String[] args, BasicOptions opts)
    {
-      CmdLineParser parser = new CmdLineParser(cmd);
-
-      if (globals.getDebug())
-      {
-         cmd.setDebug(true);
-      }
-      if (globals.getErrors())
-      {
-         cmd.setErrors(true);
-      }
-      if (globals.getHelp())
-      {
-         cmd.setHelp(true);
-      }
-      if (globals.getQuiet())
-      {
-         cmd.setQuiet(true);
-      }
+      log.debug("process(args: {}, opts: {})", args, opts);
+      CmdLineParser parser = new CmdLineParser(opts);
 
       try
       {
@@ -64,37 +52,32 @@ public class ArgsUtil
       }
       catch (CmdLineException e)
       {
-         if (!cmd.getHelp() && args.length != 0)
+         if (!opts.getHelp() && args.length != 0)
          {
-            System.err.println(e.getMessage());
-            printHelp(cmd, System.err);
-            parser.printUsage(System.err);
-            abortStrategy.abort();
+            err.println(e.getMessage());
+            printHelp(opts, err);
+            parser.printUsage(err);
+            abortStrategy.abort(e);
          }
       }
 
-      if (cmd.getHelp() || args.length == 0)
+      if (opts.getHelp() || args.length == 0)
       {
-         printHelp(cmd, System.out);
-         parser.printUsage(System.out);
+         printHelp(opts, out);
+         parser.printUsage(out);
          return;
       }
+      // while loading config, we use the global logging options
+      setLogLevels(opts);
 
       try
       {
-         // while loading config, we use the global logging options
-         setLogLevels(globals);
-         cmd.initConfig();
-      }
-      catch (Exception e)
-      {
-         handleException(e, globals.getErrors(), abortStrategy);
-      }
-      try
-      {
+         if (opts instanceof ConfigurableOptions)
+            OptionsUtil.applyConfigFiles((ConfigurableOptions) opts);
+         FliesCommand cmd = opts.initCommand();
          // just in case the logging options were changed by a config file:
-         setLogLevels(cmd);
-         if (cmd.getErrors())
+         setLogLevels(opts);
+         if (opts.getErrors())
          {
             log.info("Error stacktraces are turned on.");
          }
@@ -102,7 +85,7 @@ public class ArgsUtil
       }
       catch (Exception e)
       {
-         handleException(e, cmd.getErrors(), abortStrategy);
+         handleException(e, opts.getErrors(), abortStrategy);
       }
    }
 
@@ -140,7 +123,7 @@ public class ArgsUtil
       root.setLevel(org.apache.log4j.Level.ERROR);
    }
 
-   private static void printHelp(FliesCommand cmd, PrintStream output)
+   private static void printHelp(BasicOptions cmd, PrintStream output)
    {
       output.println("Usage: " + cmd.getCommandName() + " [options]");
       output.println(cmd.getCommandDescription());
@@ -158,7 +141,7 @@ public class ArgsUtil
          log.error("Execution failed: " + e.getMessage());
          log.error("Use -e/--errors for full stack trace (or when reporting bugs)");
       }
-      abortStrategy.abort();
+      abortStrategy.abort(e);
    }
 
 }

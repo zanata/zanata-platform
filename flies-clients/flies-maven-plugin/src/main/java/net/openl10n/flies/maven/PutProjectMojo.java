@@ -1,6 +1,7 @@
 package net.openl10n.flies.maven;
 
 import net.openl10n.flies.client.commands.PutProjectCommand;
+import net.openl10n.flies.client.commands.PutProjectOptions;
 
 /**
  * Creates or updates a Flies project.
@@ -9,7 +10,7 @@ import net.openl10n.flies.client.commands.PutProjectCommand;
  * @requiresProject false
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
-public class PutProjectMojo extends ConfigurableMojo<PutProjectCommand>
+public class PutProjectMojo extends ConfigurableMojo implements PutProjectOptions
 {
 
    /**
@@ -18,7 +19,6 @@ public class PutProjectMojo extends ConfigurableMojo<PutProjectCommand>
     * @parameter expression="${flies.project.slug}"
     * @required
     */
-   @SuppressWarnings("unused")
    private String projectSlug;
 
    /**
@@ -27,7 +27,6 @@ public class PutProjectMojo extends ConfigurableMojo<PutProjectCommand>
     * @parameter expression="${flies.project.name}"
     * @required
     */
-   @SuppressWarnings("unused")
    private String projectName;
 
    /**
@@ -36,27 +35,47 @@ public class PutProjectMojo extends ConfigurableMojo<PutProjectCommand>
     * @parameter expression="${flies.project.desc}"
     * @required
     */
-   @SuppressWarnings("unused")
    private String projectDesc;
 
    public PutProjectMojo() throws Exception
    {
-      super(new PutProjectCommand());
+      super();
    }
 
-   public void setProjectSlug(String id)
+   public PutProjectCommand initCommand()
    {
-      getCommand().setProjectSlug(id);
+      return new PutProjectCommand(this);
    }
 
-   public void setProjectName(String name)
+   public String getProjectSlug()
    {
-      getCommand().setProjectName(name);
+      return projectSlug;
    }
 
-   public void setProjectDesc(String desc)
+   public void setProjectSlug(String projectSlug)
    {
-      getCommand().setProjectDesc(desc);
+      this.projectSlug = projectSlug;
    }
+
+   public String getProjectName()
+   {
+      return projectName;
+   }
+
+   public void setProjectName(String projectName)
+   {
+      this.projectName = projectName;
+   }
+
+   public String getProjectDesc()
+   {
+      return projectDesc;
+   }
+
+   public void setProjectDesc(String projectDesc)
+   {
+      this.projectDesc = projectDesc;
+   }
+
 
 }

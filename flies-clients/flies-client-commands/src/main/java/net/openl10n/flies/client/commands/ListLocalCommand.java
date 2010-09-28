@@ -1,17 +1,15 @@
 package net.openl10n.flies.client.commands;
 
-import javax.xml.bind.JAXBException;
 
 /**
  * @author Sean Flanigan <sflaniga@redhat.com>
  *
  */
-public class ListLocalCommand extends ConfigurableProjectCommand
+public class ListLocalCommand implements FliesCommand
 {
 
-   public ListLocalCommand() throws JAXBException
+   public ListLocalCommand(ConfigurableProjectOptions opts)
    {
-      super();
    }
 
    @Override
@@ -21,18 +19,6 @@ public class ListLocalCommand extends ConfigurableProjectCommand
       System.out.println("listlocal");
 
       // TODO needs DocSet support
-   }
-
-   @Override
-   public String getCommandName()
-   {
-      return "listlocal";
-   }
-
-   @Override
-   public String getCommandDescription()
-   {
-      return "Lists all local files in the project which are considered to be Flies " + "documents. These are the files which will be sent to Flies when using the " + "'publish' goal.";
    }
 
 }

@@ -63,22 +63,22 @@ public class JaxbUtil
       try
       {
          Marshaller m = jc.createMarshaller();
-         final List<StringWriter> outs = new ArrayList<StringWriter>();
+         final List<StringWriter> writers = new ArrayList<StringWriter>();
          jc.generateSchema(new SchemaOutputResolver()
          {
             @Override
             public Result createOutput(String namespaceUri, String suggestedFileName) throws IOException
             {
-               StringWriter out = new StringWriter();
-               outs.add(out);
-               StreamResult streamResult = new StreamResult(out);
+               StringWriter writer = new StringWriter();
+               writers.add(writer);
+               StreamResult streamResult = new StreamResult(writer);
                streamResult.setSystemId("");
                return streamResult;
             }
          });
-         StreamSource[] sources = new StreamSource[outs.size()];
+         StreamSource[] sources = new StreamSource[writers.size()];
          int i = 0;
-         for (StringWriter writer : outs)
+         for (StringWriter writer : writers)
          {
             writer.flush();
             String source = writer.toString();

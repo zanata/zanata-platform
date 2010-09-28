@@ -22,6 +22,12 @@
         <artifactId>flies-rest-client</artifactId>
         <version>${project.version}</version>
     </dependency>
+		<dependency>
+		  <groupId>org.easymock</groupId>
+		  <artifactId>easymock</artifactId>
+		  <scope>test</scope>
+		</dependency>
+
 	<dependency>
 		<groupId>org.testng</groupId>
 		<artifactId>testng</artifactId>
@@ -30,6 +36,12 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+        <version>1.0.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>

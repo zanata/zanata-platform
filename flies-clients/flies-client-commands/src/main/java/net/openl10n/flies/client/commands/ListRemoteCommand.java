@@ -33,49 +33,41 @@ import org.jboss.resteasy.client.ClientResponse;
  * @author Sean Flanigan <sflaniga@redhat.com>
  *
  */
-public class ListRemoteCommand extends ConfigurableProjectCommand
+public class ListRemoteCommand implements FliesCommand
 {
 
-   public ListRemoteCommand()
+   private final ConfigurableProjectOptions opts;
+
+   public ListRemoteCommand(ConfigurableProjectOptions opts)
    {
-      super();
+      this.opts = opts;
    }
 
-   public static void main(String[] args)
-   {
-      ListRemoteCommand me = new ListRemoteCommand();
-      ArgsUtil.processArgs(me, args, BasicOptions.EMPTY);
-   }
-
-   @Override
-   public String getCommandName()
-   {
-      return "listremote";
-   }
-
-   @Override
-   public String getCommandDescription()
-   {
-      return "Lists all remote documents in the configured Flies project version.";
-   }
+   // public static void main(String[] args)
+   // {
+   // ConfigurableProjectOptionsImpl opts = new
+   // ConfigurableProjectOptionsImpl();
+   // ListRemoteCommand me = new ListRemoteCommand(opts);
+   // ArgsUtil.processArgs(me, args, opts);
+   // }
 
    @Override
    public void run() throws Exception
    {
-      if (getUrl() == null)
+      if (opts.getUrl() == null)
          throw new Exception("Flies URL must be specified");
-      if (getProject() == null)
+      if (opts.getProject() == null)
          throw new Exception("Project must be specified");
-      if (getProjectVersion() == null)
+      if (opts.getProjectVersion() == null)
          throw new Exception("Project version must be specified");
-      System.out.println("Flies server: " + getUrl());
-      System.out.println("Project: " + getProject());
-      System.out.println("Version: " + getProjectVersion());
+      System.out.println("Flies server: " + opts.getUrl());
+      System.out.println("Project: " + opts.getProject());
+      System.out.println("Version: " + opts.getProjectVersion());
       System.out.println("List of resources:");
-      FliesClientRequestFactory factory = new FliesClientRequestFactory(getUrl().toURI(), getUsername(), getKey());
-      ITranslationResources translationResources = factory.getTranslationResources(getProject(), getProjectVersion());
+      FliesClientRequestFactory factory = new FliesClientRequestFactory(opts.getUrl().toURI(), opts.getUsername(), opts.getKey());
+      ITranslationResources translationResources = factory.getTranslationResources(opts.getProject(), opts.getProjectVersion());
       ClientResponse<List<ResourceMeta>> response = translationResources.get(null);
-      ClientUtility.checkResult(response, factory.getTranslationResourcesURI(getProject(), getProjectVersion()));
+      ClientUtility.checkResult(response, factory.getTranslationResourcesURI(opts.getProject(), opts.getProjectVersion()));
       List<ResourceMeta> list = response.getEntity();
       for (ResourceMeta doc : list)
       {

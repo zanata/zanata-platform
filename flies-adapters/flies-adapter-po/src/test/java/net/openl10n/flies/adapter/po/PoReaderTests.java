@@ -2,27 +2,27 @@ package net.openl10n.flies.adapter.po;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import net.openl10n.flies.adapter.po.PoReader;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.rest.dto.deprecated.Document;
 import net.openl10n.flies.rest.dto.deprecated.TextFlowTargets;
 import net.openl10n.flies.rest.dto.po.PoHeader;
 import net.openl10n.flies.rest.dto.po.PotEntryData;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.xml.sax.InputSource;
 
 public class PoReaderTests
 {
+   private static final Logger log = LoggerFactory.getLogger(PoReaderTests.class);
 
    File file;
 
@@ -67,7 +67,11 @@ public class PoReaderTests
       JAXBContext jaxbContext = JAXBContext.newInstance(Document.class, PotEntryData.class, PoHeader.class, TextFlowTargets.class);
       Marshaller m = jaxbContext.createMarshaller();
       m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-      m.marshal(doc, System.out);
+      {
+         StringWriter writer = new StringWriter();
+         m.marshal(doc, writer);
+         log.debug("{}", writer);
+      }
 
       // FIXME add assertions!
    }

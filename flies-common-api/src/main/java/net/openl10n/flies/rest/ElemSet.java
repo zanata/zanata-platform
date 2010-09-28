@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
+// NB don't add state in subclasses, or you will break the equals method
 public abstract class ElemSet<T> implements Collection<T>
 {
 
@@ -112,8 +113,9 @@ public abstract class ElemSet<T> implements Collection<T>
       return StringUtils.join(this, ";");
    }
 
+   // method is final because equals is final
    @Override
-   public int hashCode()
+   public final int hashCode()
    {
       final int prime = 31;
       int result = 1;
@@ -121,8 +123,12 @@ public abstract class ElemSet<T> implements Collection<T>
       return result;
    }
 
+   // method is final to enforce transitive mixed-type equality (we want
+   // Collections-style equals semantics).
+   // see
+   // http://www.angelikalanger.com/Articles/JavaSolutions/SecretsOfEquals/Equals.html
    @Override
-   public boolean equals(Object obj)
+   public final boolean equals(Object obj)
    {
       if (this == obj)
       {

@@ -1,6 +1,7 @@
 package net.openl10n.flies.client.ant.po;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -9,7 +10,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import net.openl10n.flies.client.commands.ArgsUtil;
-import net.openl10n.flies.client.commands.BasicOptions;
 import net.openl10n.flies.rest.client.ClientUtility;
 import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 import net.openl10n.flies.rest.client.IProjectResource;
@@ -17,12 +17,15 @@ import net.openl10n.flies.rest.dto.Project;
 
 import org.jboss.resteasy.client.ClientResponse;
 import org.kohsuke.args4j.Option;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @deprecated See PutProjectCommand
  */
 public class CreateProjectTask extends FliesTask
 {
+   private static final Logger log = LoggerFactory.getLogger(CreateProjectTask.class);
 
    private String user;
    private String apiKey;
@@ -34,7 +37,7 @@ public class CreateProjectTask extends FliesTask
    public static void main(String[] args)
    {
       CreateProjectTask task = new CreateProjectTask();
-      ArgsUtil.processArgs(task, args, BasicOptions.EMPTY);
+      ArgsUtil.processArgs(args, task);
    }
 
    @Override
@@ -64,7 +67,9 @@ public class CreateProjectTask extends FliesTask
 
       if (getDebug())
       {
-         m.marshal(project, System.out);
+         StringWriter writer = new StringWriter();
+         m.marshal(project, writer);
+         log.debug("{}", writer);
       }
 
       if (fliesUrl == null)
@@ -74,7 +79,7 @@ public class CreateProjectTask extends FliesTask
       FliesClientRequestFactory factory = new FliesClientRequestFactory(base, user, apiKey);
       IProjectResource projResource = factory.getProject(proj);
       URI uri = factory.getProjectURI(proj);
-      ClientResponse response = projResource.put(project);
+      ClientResponse<?> response = projResource.put(project);
       ClientUtility.checkResult(response, uri);
    }
 

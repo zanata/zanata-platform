@@ -1,7 +1,11 @@
 package net.openl10n.flies.adapter.po;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.Set;
 
@@ -9,7 +13,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import net.openl10n.flies.adapter.po.PoReader;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.rest.dto.deprecated.Document;
 import net.openl10n.flies.rest.dto.deprecated.TextFlow;
@@ -18,14 +21,15 @@ import net.openl10n.flies.rest.dto.deprecated.TextFlowTargets;
 import net.openl10n.flies.rest.dto.po.PoHeader;
 import net.openl10n.flies.rest.dto.po.PotEntryData;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 import org.xml.sax.InputSource;
 
 @Test(groups = { "unit-tests" })
 public class PoReaderTest
 {
+   private static final Logger log = LoggerFactory.getLogger(PoReaderTest.class);
 
    LocaleId ja = new LocaleId("ja-JP");
 
@@ -61,11 +65,15 @@ public class PoReaderTest
       JAXBContext jaxbContext = JAXBContext.newInstance(Document.class, PotEntryData.class, PoHeader.class, TextFlowTargets.class);
       Marshaller m = jaxbContext.createMarshaller();
       m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-      m.marshal(doc, System.out);
+      {
+         StringWriter writer = new StringWriter();
+         m.marshal(doc, writer);
+         log.debug("{}", writer);
+      }
 
       List<TextFlow> resources = doc.getTextFlows();
 
-      TextFlow tf1 = (TextFlow) resources.get(3);
+      TextFlow tf1 = resources.get(3);
       assertThat(tf1.getContent(), equalTo("Important"));
       assertThat(tf1.getTarget(ja).getContent(), equalTo("キーのインポート"));
 
