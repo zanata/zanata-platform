@@ -2,21 +2,18 @@ package net.openl10n.flies.rest.dto.resource;
 
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.rest.dto.DTOUtil;
 import net.openl10n.flies.rest.dto.Extensible;
 import net.openl10n.flies.rest.dto.Person;
-import net.openl10n.flies.rest.dto.extensions.comment.Commentable;
-import net.openl10n.flies.rest.dto.extensions.comment.SimpleComment;
+import net.openl10n.flies.rest.dto.extensions.gettext.TextFlowTargetExtension;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -29,15 +26,15 @@ import org.hibernate.validator.NotEmpty;
 @JsonPropertyOrder( { "resId", "state", "translator", "content", "extensions" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
-@XmlSeeAlso({ SimpleComment.class })
-public class TextFlowTarget implements Serializable, Commentable, Extensible<TextFlowTarget>
+public class TextFlowTarget implements Serializable, Extensible<TextFlowTargetExtension>
 {
 
+   private static final long serialVersionUID = 1L;
    private String resId;
    private ContentState state = ContentState.New;
    private Person translator;
    private String content;
-   private ExtensionSet<TextFlowTarget> extensions;
+   private ExtensionSet<TextFlowTargetExtension> extensions;
 
    public TextFlowTarget()
    {
@@ -84,21 +81,21 @@ public class TextFlowTarget implements Serializable, Commentable, Extensible<Tex
    }
 
    @XmlElementWrapper(name = "extensions", required = false)
-   @XmlAnyElement(lax = true)
-   public ExtensionSet<TextFlowTarget> getExtensions()
+   @XmlElement
+   public ExtensionSet<TextFlowTargetExtension> getExtensions()
    {
       return extensions;
    }
 
    @JsonIgnore
-   public ExtensionSet<TextFlowTarget> getExtensions(boolean createIfNull)
+   public ExtensionSet<TextFlowTargetExtension> getExtensions(boolean createIfNull)
    {
       if (createIfNull && extensions == null)
-         extensions = new ExtensionSet<TextFlowTarget>();
+         extensions = new ExtensionSet<TextFlowTargetExtension>();
       return extensions;
    }
 
-   public void setExtensions(ExtensionSet<TextFlowTarget> extensions)
+   public void setExtensions(ExtensionSet<TextFlowTargetExtension> extensions)
    {
       this.extensions = extensions;
    }

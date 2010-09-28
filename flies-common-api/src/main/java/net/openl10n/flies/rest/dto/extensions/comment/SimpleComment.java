@@ -6,7 +6,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import net.openl10n.flies.common.Namespaces;
-import net.openl10n.flies.rest.dto.ExtensionValue;
+import net.openl10n.flies.rest.dto.extensions.gettext.TextFlowExtension;
+import net.openl10n.flies.rest.dto.extensions.gettext.TextFlowTargetExtension;
 
 import org.codehaus.jackson.annotate.JsonTypeName;
 
@@ -18,12 +19,11 @@ import org.codehaus.jackson.annotate.JsonTypeName;
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  * 
- * @param <T>
  */
 @XmlType(name = "simpleCommentExtension", propOrder = {})
 @XmlRootElement(name = "comment")
 @JsonTypeName(value = "comment")
-public class SimpleComment<T extends Commentable> implements ExtensionValue<T>
+public class SimpleComment implements TextFlowExtension, TextFlowTargetExtension
 {
 
    public static final String ID = "comment";

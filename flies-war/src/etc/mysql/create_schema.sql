@@ -1,3 +1,4 @@
+
     create table HAccount (
         id bigint not null auto_increment,
         creationDate datetime not null,
@@ -152,9 +153,7 @@
         versionNum integer not null,
         entries longtext,
         comment_id bigint,
-        document_id bigint unique,
-        primary key (id),
-        unique (document_id)
+        primary key (id)
     ) ENGINE=InnoDB;
 
     create table HPoTargetHeader (
@@ -401,12 +400,6 @@
         add constraint FK6F0931BDFA68C45F 
         foreign key (accountId) 
         references HAccount (id);
-
-    alter table HPoHeader 
-        add index FK9A0ABDD45383E2F0 (document_id), 
-        add constraint FK9A0ABDD45383E2F0 
-        foreign key (document_id) 
-        references HDocument (id);
 
     alter table HPoHeader 
         add index FK9A0ABDD4B7A40DF2 (comment_id), 

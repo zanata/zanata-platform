@@ -125,7 +125,7 @@ public class PoWriter2
       if (targetDoc != null)
       {
          targets = new HashMap<String, TextFlowTarget>();
-         for (TextFlowTarget target : targetDoc.getTextFlowTargets(true))
+         for (TextFlowTarget target : targetDoc.getTextFlowTargets())
          {
             targets.put(target.getResId(), target);
          }
@@ -136,7 +136,7 @@ public class PoWriter2
       {
 
          PotEntryHeader entryData = textFlow.getExtensions(true).findByType(PotEntryHeader.class);
-         SimpleComment<TextFlow> srcComment = textFlow.getExtensions().findByType(SimpleComment.class);
+         SimpleComment srcComment = textFlow.getExtensions().findByType(SimpleComment.class);
          Message message = new Message();
          message.setMsgid(textFlow.getContent());
          message.setMsgstr("");
@@ -154,7 +154,7 @@ public class PoWriter2
                   throw new RuntimeException("ID from target doesn't match text-flow ID");
                }
                message.setMsgstr(contentData.getContent());
-               SimpleComment<TextFlowTarget> poComment = contentData.getExtensions().findByType(SimpleComment.class);
+               SimpleComment poComment = contentData.getExtensions().findByType(SimpleComment.class);
                if (poComment != null)
                {
                   String[] comments = poComment.getValue().split("\n");
@@ -256,7 +256,7 @@ public class PoWriter2
       }
    }
 
-   private static void copyToMessage(PotEntryHeader data, SimpleComment<TextFlow> simpleComment, Message message)
+   private static void copyToMessage(PotEntryHeader data, SimpleComment simpleComment, Message message)
    {
       if (data != null)
       {

@@ -3,7 +3,6 @@ package net.openl10n.flies.rest.service;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 
 import java.util.List;
 
@@ -19,11 +18,8 @@ import net.openl10n.flies.dao.PersonDAO;
 import net.openl10n.flies.dao.ProjectIterationDAO;
 import net.openl10n.flies.dao.LocaleDAO;
 import net.openl10n.flies.dao.TextFlowTargetDAO;
-import net.openl10n.flies.rest.StringSet;
 import net.openl10n.flies.rest.client.ITranslationResources;
 import net.openl10n.flies.rest.dto.Person;
-import net.openl10n.flies.rest.dto.extensions.gettext.HeaderEntry;
-import net.openl10n.flies.rest.dto.extensions.gettext.PoHeader;
 import net.openl10n.flies.rest.dto.resource.Resource;
 import net.openl10n.flies.rest.dto.resource.ResourceMeta;
 import net.openl10n.flies.rest.dto.resource.TextFlow;
@@ -207,7 +203,7 @@ public class TranslationResourceRestTest extends FliesRestTest
       target.setContent("hello world");
       target.setState(ContentState.Approved);
       target.setTranslator(new Person("root@localhost", "Admin user"));
-      entity.getTextFlowTargets(true).add(target);
+      entity.getTextFlowTargets().add(target);
 
       LocaleId de_DE = new LocaleId("de-DE");
       ClientResponse<String> response = client.putTranslations("my.txt", de_DE, entity, null);
@@ -217,9 +213,9 @@ public class TranslationResourceRestTest extends FliesRestTest
       ClientResponse<TranslationsResource> getResponse = client.getTranslations("my.txt", de_DE, null);
       assertThat(getResponse.getResponseStatus(), is(Status.OK));
       TranslationsResource entity2 = getResponse.getEntity();
-      assertThat(entity2.getTextFlowTargets(true).size(), is(entity.getTextFlowTargets(true).size()));
+      assertThat(entity2.getTextFlowTargets().size(), is(entity.getTextFlowTargets().size()));
 
-      entity.getTextFlowTargets(true).clear();
+      entity.getTextFlowTargets().clear();
       response = client.putTranslations("my.txt", de_DE, entity, null);
 
       assertThat(response.getResponseStatus(), is(Status.OK));

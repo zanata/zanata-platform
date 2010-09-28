@@ -4,18 +4,18 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 import net.openl10n.flies.rest.dto.DTOUtil;
+import net.openl10n.flies.rest.dto.Extensible;
 import net.openl10n.flies.rest.dto.HasSample;
 import net.openl10n.flies.rest.dto.Link;
 import net.openl10n.flies.rest.dto.Links;
-import net.openl10n.flies.rest.dto.extensions.gettext.PoTargetHeader;
+import net.openl10n.flies.rest.dto.extensions.gettext.TranslationsResourceExtension;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -30,31 +30,30 @@ import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 @JsonPropertyOrder( { "links", "extensions", "textFlowTargets" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
-@XmlSeeAlso({ PoTargetHeader.class })
-public class TranslationsResource implements Serializable, HasSample<TranslationsResource>
+public class TranslationsResource implements Serializable, HasSample<TranslationsResource>, Extensible<TranslationsResourceExtension>
 {
    private static final long serialVersionUID = 1L;
-   private ExtensionSet<TranslationsResource> extensions;
+   private ExtensionSet<TranslationsResourceExtension> extensions;
    private Links links;
    private List<TextFlowTarget> textFlowTargets;
 
    @XmlElementWrapper(name = "extensions", required = false)
-   @XmlAnyElement(lax = true)
-   public ExtensionSet<TranslationsResource> getExtensions()
+   @XmlElement
+   public ExtensionSet<TranslationsResourceExtension> getExtensions()
    {
       return extensions;
    }
 
-   public void setExtensions(ExtensionSet<TranslationsResource> extensions)
+   public void setExtensions(ExtensionSet<TranslationsResourceExtension> extensions)
    {
       this.extensions = extensions;
    }
 
    @JsonIgnore
-   public ExtensionSet<TranslationsResource> getExtensions(boolean createIfNull)
+   public ExtensionSet<TranslationsResourceExtension> getExtensions(boolean createIfNull)
    {
       if (createIfNull && extensions == null)
-         extensions = new ExtensionSet<TranslationsResource>();
+         extensions = new ExtensionSet<TranslationsResourceExtension>();
       return extensions;
    }
 
@@ -69,15 +68,6 @@ public class TranslationsResource implements Serializable, HasSample<Translation
       return textFlowTargets;
    }
 
-   @JsonIgnore
-   public List<TextFlowTarget> getTextFlowTargets(boolean createIfNull)
-   {
-      if (createIfNull && textFlowTargets == null)
-      {
-         textFlowTargets = new ArrayList<TextFlowTarget>();
-      }
-      return textFlowTargets;
-   }
 
    @XmlElementRef(type = Link.class)
    public Links getLinks()

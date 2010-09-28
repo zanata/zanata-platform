@@ -25,6 +25,4 @@ public interface LocaleService
 
    HLocale getSupportedLanguageByLocale(LocaleId locale) throws FliesServiceException;
 
-   @Deprecated
-   HLocale getDefautLanguage();
 }

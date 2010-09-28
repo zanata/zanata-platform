@@ -54,7 +54,7 @@ public class TranslationsResourceTestObjectFactory
       TranslationsResource sr = getTestObject();
       TextFlowTarget stf = sr.getTextFlowTargets().get(0);
 
-      SimpleComment<TextFlowTarget> simpleComment = new SimpleComment<TextFlowTarget>("textflowtarget comment");
+      SimpleComment simpleComment = new SimpleComment("textflowtarget comment");
 
       stf.getExtensions(true).add(simpleComment);
       return sr;
@@ -66,6 +66,17 @@ public class TranslationsResourceTestObjectFactory
       PoTargetHeader poTargetHeader = new PoTargetHeader("target header comment", new HeaderEntry("ht", "vt1"), new HeaderEntry("th2", "tv2"));
 
       sr.getExtensions(true).add(poTargetHeader);
+      return sr;
+   }
+
+   public TranslationsResource getAllExtension()
+   {
+      TranslationsResource sr = getPoTargetHeaderTextFlowTargetTest();
+      TextFlowTarget stf = sr.getTextFlowTargets().get(0);
+
+      SimpleComment simpleComment = new SimpleComment("textflowtarget comment");
+
+      stf.getExtensions(true).add(simpleComment);
       return sr;
    }
 

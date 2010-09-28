@@ -34,6 +34,11 @@ public class SeamMockClientExecutor implements ClientExecutor
       this.seamTest = seamTest;
    }
 
+   public SeamMockClientExecutor()
+   {
+
+   }
+
    @Override
    public ClientRequest createRequest(String uriTemplate)
    {
@@ -46,6 +51,7 @@ public class SeamMockClientExecutor implements ClientExecutor
       return new ClientRequest(uriBuilder, this);
    }
 
+   @SuppressWarnings("rawtypes")
    @Override
    public ClientResponse execute(final ClientRequest clientRequest) throws Exception
    {
@@ -56,6 +62,7 @@ public class SeamMockClientExecutor implements ClientExecutor
    private class RestEasyResourceRequest extends ResourceRequest
    {
 
+      @SuppressWarnings("rawtypes")
       private BaseClientResponse clientResponse;
       private final ClientRequest clientRequest;
 
@@ -65,6 +72,7 @@ public class SeamMockClientExecutor implements ClientExecutor
          this.clientRequest = clientRequest;
       }
 
+      @SuppressWarnings("unchecked")
       @Override
       protected void prepareRequest(EnhancedMockHttpServletRequest request)
       {
@@ -126,6 +134,7 @@ public class SeamMockClientExecutor implements ClientExecutor
 
       }
 
+      @SuppressWarnings("unchecked")
       @Override
       protected void onResponse(final EnhancedMockHttpServletResponse response)
       {
@@ -149,6 +158,7 @@ public class SeamMockClientExecutor implements ClientExecutor
          clientResponse.setStreamFactory(new MockClientResponseStreamFactory(response));
       }
 
+      @SuppressWarnings("rawtypes")
       public ClientResponse execute() throws Exception
       {
          clientResponse = new MockClientResponse();
@@ -182,6 +192,7 @@ public class SeamMockClientExecutor implements ClientExecutor
 
    private class MockClientResponseStreamFactory implements BaseClientResponse.BaseClientResponseStreamFactory
    {
+      @SuppressWarnings("unused")
       private final EnhancedMockHttpServletResponse response;
       private final ByteArrayInputStream inputStream;
 

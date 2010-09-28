@@ -4,10 +4,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
-import javax.persistence.Transient;
 
 import net.openl10n.flies.model.AbstractFliesEntity;
-import net.openl10n.flies.model.HDocument;
 import net.openl10n.flies.model.HSimpleComment;
 
 import org.hibernate.annotations.Type;
@@ -25,11 +23,6 @@ public abstract class AbstractPoHeader extends AbstractFliesEntity
 
    private HSimpleComment comment;
    private String entries;
-
-   public abstract void setDocument(HDocument document);
-
-   @Transient
-   public abstract HDocument getDocument();
 
    public void setComment(HSimpleComment comment)
    {
@@ -63,6 +56,6 @@ public abstract class AbstractPoHeader extends AbstractFliesEntity
    @Override
    public String toString()
    {
-      return "document:" + getDocument() + "comment:" + getComment() + "entries:" + getEntries() + "";
+      return "comment:" + getComment() + "entries:" + getEntries() + "";
    }
 }

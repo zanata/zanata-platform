@@ -101,7 +101,7 @@ public class PoReader2
                tfTarget.setState(getContentState(message));
 
                // add the PO comment
-               tfTarget.getExtensions(true).add(new SimpleComment<TextFlowTarget>(StringUtils.join(message.getComments(), "\n")));
+               tfTarget.getExtensions(true).add(new SimpleComment(StringUtils.join(message.getComments(), "\n")));
                targets.put(id, tfTarget);
             }
          }
@@ -111,7 +111,7 @@ public class PoReader2
       for (String id : textFlowIds)
       {
          TextFlowTarget tfTarget = targets.get(id);
-         document.getTextFlowTargets(true).add(tfTarget);
+         document.getTextFlowTargets().add(tfTarget);
       }
 
       return document;
@@ -217,10 +217,10 @@ public class PoReader2
       return data;
    }
 
-   private static SimpleComment<TextFlow> createSimpleComment(Message message)
+   private static SimpleComment createSimpleComment(Message message)
    {
       String comment = StringUtils.join(message.getExtractedComments(), "\n");
-      SimpleComment<TextFlow> result = new SimpleComment<TextFlow>(comment);
+      SimpleComment result = new SimpleComment(comment);
       return result;
    }
 

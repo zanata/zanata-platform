@@ -18,12 +18,15 @@ import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
 import org.jboss.seam.mock.ResourceRequestEnvironment;
 import org.jboss.seam.mock.ResourceRequestEnvironment.Method;
 import org.jboss.seam.mock.ResourceRequestEnvironment.ResourceRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 @Test(groups = { "seam-tests" })
 public class ProjectServiceRawSeamTest extends FliesDBUnitSeamTest
 {
+   private final Logger log = LoggerFactory.getLogger(ProjectServiceRawSeamTest.class);
 
    ResourceRequestEnvironment sharedEnvironment;
 
@@ -44,6 +47,9 @@ public class ProjectServiceRawSeamTest extends FliesDBUnitSeamTest
             };
          }
       };
+      Runtime runtime = Runtime.getRuntime();
+      log.info("project service raw seam test free memory :" + runtime.freeMemory());
+
    }
 
    @Override

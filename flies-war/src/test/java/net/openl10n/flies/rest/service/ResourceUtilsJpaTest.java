@@ -1,12 +1,14 @@
 package net.openl10n.flies.rest.service;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import net.openl10n.flies.FliesJpaTest;
 import net.openl10n.flies.common.ContentType;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.common.ResourceType;
 import net.openl10n.flies.model.HDocument;
 import net.openl10n.flies.model.HLocale;
-import net.openl10n.flies.rest.StringSet;
 import net.openl10n.flies.rest.dto.extensions.comment.SimpleComment;
 import net.openl10n.flies.rest.dto.extensions.gettext.HeaderEntry;
 import net.openl10n.flies.rest.dto.extensions.gettext.PoHeader;
@@ -35,7 +37,8 @@ public class ResourceUtilsJpaTest extends FliesJpaTest
 
       HDocument to = new HDocument("fullPath", ContentType.PO, hLocale);
 
-      StringSet commentExt = new StringSet(SimpleComment.ID);
+      Set<String> commentExt = new HashSet<String>();
+      commentExt.add(SimpleComment.ID);
       resourceUtils.transferFromResourceMetadata(from, to, commentExt, hLocale);
       // TODO check the results in 'to'
    }

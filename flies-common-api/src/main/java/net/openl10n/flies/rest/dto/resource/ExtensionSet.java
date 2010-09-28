@@ -2,23 +2,22 @@ package net.openl10n.flies.rest.dto.resource;
 
 import java.util.HashSet;
 
-import javax.xml.bind.annotation.XmlRootElement;
 
 import net.openl10n.flies.rest.dto.DTOUtil;
 import net.openl10n.flies.rest.dto.ExtensionValue;
 
-@XmlRootElement(name = "extension-set")
-public class ExtensionSet<T> extends HashSet<ExtensionValue<T>> 
+
+public class ExtensionSet<T extends ExtensionValue> extends HashSet<T>
 {
 
-   private static final long serialVersionUID = 8077674295531213159L;
+   private static final long serialVersionUID = 1L;
 
-   public <Y extends ExtensionValue<T>> Y findByType(Class<Y> clz)
+   public <E extends T> E findByType(Class<E> clz)
    {
-      for (ExtensionValue<T> e : this)
+      for (T e : this)
       {
          if (clz.isInstance(e))
-            return clz.cast(e);
+            return (E) clz.cast(e);
       }
       return null;
    }

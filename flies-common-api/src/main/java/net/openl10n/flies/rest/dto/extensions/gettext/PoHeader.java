@@ -8,9 +8,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import net.openl10n.flies.rest.dto.ExtensionValue;
-import net.openl10n.flies.rest.dto.resource.AbstractResourceMeta;
-
 import org.codehaus.jackson.annotate.JsonTypeName;
 
 /**
@@ -20,10 +17,10 @@ import org.codehaus.jackson.annotate.JsonTypeName;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  * 
  */
-@XmlType(name = "poHeaderExtension", propOrder = { "comment", "entries" })
 @XmlRootElement(name = "po-header")
+@XmlType(name = "poHeaderExtension", propOrder = { "comment", "entries" })
 @JsonTypeName(value = "po-header")
-public class PoHeader implements ExtensionValue<AbstractResourceMeta>
+public class PoHeader implements AbstractResourceMetaExtension
 {
 
    public static final String ID = "gettext";
