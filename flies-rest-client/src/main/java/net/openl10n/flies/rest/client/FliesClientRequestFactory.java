@@ -30,8 +30,7 @@ public class FliesClientRequestFactory implements ITranslationResourcesFactory
 
    public FliesClientRequestFactory(URI base, String username, String apiKey)
    {
-      crf = new ClientRequestFactory(fixBase(base));
-      registerPrefixInterceptor(new ApiKeyHeaderDecorator(username, apiKey));
+      this(base, username, apiKey, null);
    }
 
    public FliesClientRequestFactory(URI base, String username, String apiKey, ClientExecutor executor)
@@ -183,7 +182,15 @@ public class FliesClientRequestFactory implements ITranslationResourcesFactory
       return getTranslationResources(getTranslationResourcesURI(projectSlug, versionSlug));
    }
 
-   private ITranslationResources getTranslationResources(final URI uri)
+   /**
+    * only for testing
+    * 
+    * @param uri
+    * @return
+    * @deprecated use getTranslationResources(String projectSlug, String
+    *             versionSlug)
+    */
+   public ITranslationResources getTranslationResources(final URI uri)
    {
       return createProxy(ITranslationResources.class, uri);
    }

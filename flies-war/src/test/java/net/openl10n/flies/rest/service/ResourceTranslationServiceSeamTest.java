@@ -50,7 +50,8 @@ public abstract class ResourceTranslationServiceSeamTest extends FliesDBUnitSeam
    {
       FliesClientRequestFactory clientRequestFactory = new FliesClientRequestFactory(new URI("http://example.com/"), USERNAME, AUTH_KEY, new SeamMockClientExecutor(this));
       clientRequestFactory.registerPrefixInterceptor(new MetaTypeAccept());
-      translationResource = clientRequestFactory.getTranslationResources(projectSlug, iter);
+      // TODO this should use getTranslationResources(projectSlug, versionSlug)
+      translationResource = clientRequestFactory.getTranslationResources(new URI("/restv1/projects/p/" + projectSlug + "/iterations/i/" + iter + "/r"));
    }
 
    @Override
