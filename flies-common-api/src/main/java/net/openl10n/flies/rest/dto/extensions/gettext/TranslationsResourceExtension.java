@@ -11,7 +11,7 @@ import org.codehaus.jackson.annotate.JsonSubTypes.Type;
 import net.openl10n.flies.rest.dto.ExtensionValue;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "object-type")
-@JsonSubTypes({ @Type(value = PotEntryHeader.class, name = "po-target-header") })
+@JsonSubTypes({ @Type(value = PoTargetHeader.class, name = "po-target-header") })
 @JsonTypeName("TranslationResourceExtension")
 @XmlSeeAlso({ PoTargetHeader.class })
 @XmlTransient

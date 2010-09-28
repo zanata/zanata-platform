@@ -8,9 +8,11 @@ import javax.xml.bind.annotation.XmlValue;
 import net.openl10n.flies.rest.dto.DTOUtil;
 
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.annotate.JsonPropertyOrder;
 
 @XmlType(name = "headerEntryType")
 @XmlRootElement(name = "header-entry")
+@JsonPropertyOrder({ "key", "value" })
 public class HeaderEntry
 {
    private String key;

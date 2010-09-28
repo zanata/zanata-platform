@@ -24,6 +24,7 @@ public class PotEntryHeader implements TextFlowExtension
    private String context;
    private List<String> flags;
    private List<String> references;
+   private String extractedComment;
 
    @XmlElement(name = "context", required = false)
    public String getContext()
@@ -34,6 +35,17 @@ public class PotEntryHeader implements TextFlowExtension
    public void setContext(String context)
    {
       this.context = context;
+   }
+
+   @XmlElement(name = "extractedComment", required = false)
+   public String getExtractedComment()
+   {
+      return extractedComment;
+   }
+
+   public void setExtractedComment(String comment)
+   {
+      this.extractedComment = comment;
    }
 
    @XmlElementWrapper(name = "flags", required = true)
