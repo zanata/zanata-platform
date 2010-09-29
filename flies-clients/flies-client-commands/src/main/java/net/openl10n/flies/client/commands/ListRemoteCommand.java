@@ -20,14 +20,16 @@
  */
 package net.openl10n.flies.client.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.openl10n.flies.rest.client.ClientUtility;
-import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 import net.openl10n.flies.rest.client.ITranslationResources;
 import net.openl10n.flies.rest.dto.resource.ResourceMeta;
 
 import org.jboss.resteasy.client.ClientResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Sean Flanigan <sflaniga@redhat.com>
@@ -35,6 +37,7 @@ import org.jboss.resteasy.client.ClientResponse;
  */
 public class ListRemoteCommand extends ConfigurableProjectCommand
 {
+   private static final Logger log = LoggerFactory.getLogger(ListRemoteCommand.class);
 
    private final ConfigurableProjectOptions opts;
 
@@ -44,36 +47,22 @@ public class ListRemoteCommand extends ConfigurableProjectCommand
       this.opts = opts;
    }
 
-   // public static void main(String[] args)
-   // {
-   // ConfigurableProjectOptionsImpl opts = new
-   // ConfigurableProjectOptionsImpl();
-   // ListRemoteCommand me = new ListRemoteCommand(opts);
-   // ArgsUtil.processArgs(me, args, opts);
-   // }
-
    @Override
    public void run() throws Exception
    {
-      if (opts.getUrl() == null)
-         throw new Exception("Flies URL must be specified");
-      if (opts.getProject() == null)
-         throw new Exception("Project must be specified");
-      if (opts.getProjectVersion() == null)
-         throw new Exception("Project version must be specified");
-      System.out.println("Flies server: " + opts.getUrl());
-      System.out.println("Project: " + opts.getProject());
-      System.out.println("Version: " + opts.getProjectVersion());
-      System.out.println("List of resources:");
-      FliesClientRequestFactory factory = new FliesClientRequestFactory(opts.getUrl().toURI(), opts.getUsername(), opts.getKey());
-      ITranslationResources translationResources = factory.getTranslationResources(opts.getProject(), opts.getProjectVersion());
+      log.info("Flies server: " + opts.getUrl());
+      log.info("Project: " + opts.getProject());
+      log.info("Version: " + opts.getProjectVersion());
+      ITranslationResources translationResources = getRequestFactory().getTranslationResources(opts.getProject(), opts.getProjectVersion());
       ClientResponse<List<ResourceMeta>> response = translationResources.get(null);
-      ClientUtility.checkResult(response, factory.getTranslationResourcesURI(opts.getProject(), opts.getProjectVersion()));
+      ClientUtility.checkResult(response, getRequestFactory().getTranslationResourcesURI(opts.getProject(), opts.getProjectVersion()));
       List<ResourceMeta> list = response.getEntity();
+      List<String> docNames = new ArrayList<String>();
       for (ResourceMeta doc : list)
       {
-         System.out.println(doc.getName());
+         docNames.add(doc.getName());
       }
+      log.info("List of resources: {}", docNames);
    }
 
 }

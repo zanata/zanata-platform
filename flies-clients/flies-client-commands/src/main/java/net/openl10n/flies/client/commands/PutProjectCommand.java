@@ -7,7 +7,6 @@ import java.net.URISyntaxException;
 import javax.xml.bind.JAXBException;
 
 import net.openl10n.flies.rest.client.ClientUtility;
-import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 import net.openl10n.flies.rest.client.IProjectResource;
 import net.openl10n.flies.rest.dto.Project;
 
@@ -41,11 +40,9 @@ public class PutProjectCommand extends ConfigurableCommand
 
       log.debug("{}", project);
 
-      URI base = opts.getUrl().toURI();
       // send project to rest api
-      FliesClientRequestFactory factory = new FliesClientRequestFactory(base, opts.getUsername(), opts.getKey());
-      IProjectResource projResource = factory.getProject(opts.getProjectSlug());
-      URI uri = factory.getProjectURI(opts.getProjectSlug());
+      IProjectResource projResource = getRequestFactory().getProject(opts.getProjectSlug());
+      URI uri = getRequestFactory().getProjectURI(opts.getProjectSlug());
       ClientResponse<?> response = projResource.put(project);
       ClientUtility.checkResult(response, uri);
    }

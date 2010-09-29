@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import net.openl10n.flies.rest.client.ClientUtility;
-import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 import net.openl10n.flies.rest.client.IAccountResource;
 import net.openl10n.flies.rest.dto.Account;
 
@@ -42,9 +41,8 @@ public class PutUserCommand extends ConfigurableCommand
 
       log.debug("{}", account);
 
-      FliesClientRequestFactory factory = new FliesClientRequestFactory(opts.getUrl().toURI(), opts.getUsername(), opts.getKey());
-      IAccountResource iterResource = factory.getAccount(opts.getUserUsername());
-      URI uri = factory.getAccountURI(opts.getUserUsername());
+      IAccountResource iterResource = getRequestFactory().getAccount(opts.getUserUsername());
+      URI uri = getRequestFactory().getAccountURI(opts.getUserUsername());
       ClientResponse<?> response = iterResource.put(account);
       ClientUtility.checkResult(response, uri);
    }

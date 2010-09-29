@@ -12,7 +12,6 @@ import javax.xml.bind.Marshaller;
 
 import net.openl10n.flies.adapter.po.PoReader2;
 import net.openl10n.flies.client.commands.gettext.PublicanUtil;
-import net.openl10n.flies.client.exceptions.ConfigException;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.rest.JaxbUtil;
 import net.openl10n.flies.rest.StringSet;
@@ -35,27 +34,23 @@ import org.xml.sax.InputSource;
  */
 public class PublicanPushCommand extends ConfigurableProjectCommand
 {
-
    private static final Logger log = LoggerFactory.getLogger(PublicanPushCommand.class);
+
    private final PublicanPushOptions opts;
    private final ITranslationResources translationResources;
    private final URI uri;
 
-   public PublicanPushCommand(PublicanPushOptions opts, ITranslationResources translationResources, URI uri)
+   public PublicanPushCommand(PublicanPushOptions opts, FliesClientRequestFactory factory, ITranslationResources translationResources, URI uri)
    {
-      super(opts);
+      super(opts, factory);
       this.opts = opts;
       this.translationResources = translationResources;
       this.uri = uri;
-      if (opts.getProject() == null)
-         throw new ConfigException("Project must be specified");
-      if (opts.getProjectVersion() == null)
-         throw new ConfigException("Project version must be specified");
    }
 
    private PublicanPushCommand(PublicanPushOptions opts, FliesClientRequestFactory factory)
    {
-      this(opts, factory.getTranslationResources(opts.getProject(), opts.getProjectVersion()), factory.getTranslationResourcesURI(opts.getProject(), opts.getProjectVersion()));
+      this(opts, factory, factory.getTranslationResources(opts.getProject(), opts.getProjectVersion()), factory.getTranslationResourcesURI(opts.getProject(), opts.getProjectVersion()));
    }
 
    public PublicanPushCommand(PublicanPushOptions opts)

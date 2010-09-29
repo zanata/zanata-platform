@@ -20,6 +20,7 @@
  */
 package net.openl10n.flies.client.commands;
 
+import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 
 /**
  * Base class for Flies commands which supports configuration by the user's
@@ -31,17 +32,30 @@ package net.openl10n.flies.client.commands;
 public abstract class ConfigurableCommand implements FliesCommand
 {
    private final ConfigurableOptions opts;
+   private FliesClientRequestFactory requestFactory;
 
-   // TODO this class should own a FliesClientRequestFactory (configured by
-   // the parameters in 'opts')
-   public ConfigurableCommand(ConfigurableOptions opts)
+   public ConfigurableCommand(ConfigurableOptions opts, FliesClientRequestFactory factory)
    {
       this.opts = opts;
+      if (factory != null)
+         this.requestFactory = factory;
+      else
+         this.requestFactory = OptionsUtil.createRequestFactory(opts);
+   }
+
+   public ConfigurableCommand(ConfigurableOptions opts)
+   {
+      this(opts, null);
    }
 
    public ConfigurableOptions getOpts()
    {
       return opts;
+   }
+
+   public FliesClientRequestFactory getRequestFactory()
+   {
+      return requestFactory;
    }
 
 }

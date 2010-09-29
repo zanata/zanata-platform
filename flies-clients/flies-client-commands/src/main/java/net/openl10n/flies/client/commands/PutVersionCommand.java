@@ -3,7 +3,6 @@ package net.openl10n.flies.client.commands;
 import java.net.URI;
 
 import net.openl10n.flies.rest.client.ClientUtility;
-import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 import net.openl10n.flies.rest.client.IProjectIterationResource;
 import net.openl10n.flies.rest.dto.ProjectIteration;
 
@@ -36,9 +35,8 @@ public class PutVersionCommand extends ConfigurableCommand
       version.setDescription(opts.getVersionDesc());
       log.debug("{}", version);
 
-      FliesClientRequestFactory factory = new FliesClientRequestFactory(opts.getUrl().toURI(), opts.getUsername(), opts.getKey());
-      IProjectIterationResource iterResource = factory.getProjectIteration(opts.getVersionProject(), opts.getVersionSlug());
-      URI uri = factory.getProjectIterationURI(opts.getVersionProject(), opts.getVersionSlug());
+      IProjectIterationResource iterResource = getRequestFactory().getProjectIteration(opts.getVersionProject(), opts.getVersionSlug());
+      URI uri = getRequestFactory().getProjectIterationURI(opts.getVersionProject(), opts.getVersionSlug());
       ClientResponse<?> response = iterResource.put(version);
       ClientUtility.checkResult(response, uri);
    }

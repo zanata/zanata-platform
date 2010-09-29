@@ -9,6 +9,7 @@ import java.util.List;
 
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.rest.StringSet;
+import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 import net.openl10n.flies.rest.client.ITranslationResources;
 import net.openl10n.flies.rest.dto.resource.Resource;
 import net.openl10n.flies.rest.dto.resource.ResourceMeta;
@@ -73,9 +74,10 @@ public class PublicanPushCommandTest
       {
          EasyMock.expect(mockTranslationResources.putTranslations(eq("RPM"), eq(new LocaleId("ja-JP")), (TranslationsResource) notNull(), eq(extensionSet))).andReturn(mockOKResponse);
       }
+      FliesClientRequestFactory mockRequestFactory = EasyMock.createNiceMock(FliesClientRequestFactory.class);
 
       control.replay();
-      PublicanPushCommand cmd = new PublicanPushCommand(opts, mockTranslationResources, new URI("http://example.com/"));
+      PublicanPushCommand cmd = new PublicanPushCommand(opts, mockRequestFactory, mockTranslationResources, new URI("http://example.com/"));
       cmd.run();
       control.verify();
    }

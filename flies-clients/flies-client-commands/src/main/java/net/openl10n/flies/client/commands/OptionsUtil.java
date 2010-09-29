@@ -8,6 +8,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import net.openl10n.flies.client.config.FliesConfig;
+import net.openl10n.flies.client.exceptions.ConfigException;
 import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 
 import org.apache.commons.configuration.ConfigurationException;
@@ -137,12 +138,16 @@ public class OptionsUtil
       try
       {
          if (opts.getUrl() == null)
-            throw new RuntimeException("Flies URL must be specified");
+            throw new ConfigException("Flies URL must be specified");
+         if (opts.getUsername() == null)
+            throw new ConfigException("Flies username must be specified");
+         if (opts.getKey() == null)
+            throw new ConfigException("Flies key must be specified");
          return new FliesClientRequestFactory(opts.getUrl().toURI(), opts.getUsername(), opts.getKey());
       }
       catch (URISyntaxException e)
       {
-         throw new RuntimeException(e);
+         throw new ConfigException(e);
       }
    }
 

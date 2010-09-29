@@ -20,6 +20,8 @@
  */
 package net.openl10n.flies.client.commands;
 
+import net.openl10n.flies.client.exceptions.ConfigException;
+import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 
 /**
  * Base class for Flies commands which supports configuration by the user's
@@ -30,8 +32,17 @@ package net.openl10n.flies.client.commands;
  */
 public abstract class ConfigurableProjectCommand extends ConfigurableCommand
 {
+   public ConfigurableProjectCommand(ConfigurableProjectOptions opts, FliesClientRequestFactory factory)
+   {
+      super(opts, factory);
+      if (opts.getProject() == null)
+         throw new ConfigException("Project must be specified");
+      if (opts.getProjectVersion() == null)
+         throw new ConfigException("Project version must be specified");
+   }
+
    public ConfigurableProjectCommand(ConfigurableProjectOptions opts)
    {
-      super(opts);
+      this(opts, null);
    }
 }
