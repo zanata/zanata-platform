@@ -33,7 +33,7 @@ import org.xml.sax.InputSource;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  * 
  */
-public class PublicanPushCommand implements FliesCommand
+public class PublicanPushCommand extends ConfigurableProjectCommand
 {
 
    private static final Logger log = LoggerFactory.getLogger(PublicanPushCommand.class);
@@ -43,6 +43,7 @@ public class PublicanPushCommand implements FliesCommand
 
    public PublicanPushCommand(PublicanPushOptions opts, ITranslationResources translationResources, URI uri)
    {
+      super(opts);
       this.opts = opts;
       this.translationResources = translationResources;
       this.uri = uri;

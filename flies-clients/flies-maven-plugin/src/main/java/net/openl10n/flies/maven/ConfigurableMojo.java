@@ -179,22 +179,23 @@ public abstract class ConfigurableMojo extends AbstractMojo implements Configura
       log.info("ignoring setQuiet: use mvn -q to set quiet logging mode");
    }
 
+   // maven controls logging, so there's no point in changing these values
    @Override
    public boolean isDebugSet()
    {
-      return false;
+      return true;
    }
 
    @Override
    public boolean isErrorsSet()
    {
-      return false;
+      return true;
    }
 
    @Override
    public boolean isQuietSet()
    {
-      return false;
+      return true;
    }
 
    // these options only apply to the command line:

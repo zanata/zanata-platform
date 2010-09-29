@@ -33,13 +33,14 @@ import org.jboss.resteasy.client.ClientResponse;
  * @author Sean Flanigan <sflaniga@redhat.com>
  *
  */
-public class ListRemoteCommand implements FliesCommand
+public class ListRemoteCommand extends ConfigurableProjectCommand
 {
 
    private final ConfigurableProjectOptions opts;
 
    public ListRemoteCommand(ConfigurableProjectOptions opts)
    {
+      super(opts);
       this.opts = opts;
    }
 

@@ -5,11 +5,12 @@ package net.openl10n.flies.client.commands;
  * @author Sean Flanigan <sflaniga@redhat.com>
  *
  */
-public class RetrieveCommand implements FliesCommand
+public class RetrieveCommand extends ConfigurableProjectCommand
 {
 
    public RetrieveCommand(ConfigurableProjectOptions opts)
    {
+      super(opts);
    }
 
    @Override

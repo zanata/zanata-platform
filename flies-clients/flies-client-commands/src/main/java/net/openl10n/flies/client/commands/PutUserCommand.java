@@ -17,13 +17,14 @@ import org.slf4j.LoggerFactory;
  * @author Sean Flanigan <sflaniga@redhat.com>
  *
  */
-public class PutUserCommand implements FliesCommand
+public class PutUserCommand extends ConfigurableCommand
 {
    private static final Logger log = LoggerFactory.getLogger(PutUserCommand.class);
    private final PutUserOptions opts;
 
    public PutUserCommand(PutUserOptions opts)
    {
+      super(opts);
       this.opts = opts;
    }
 

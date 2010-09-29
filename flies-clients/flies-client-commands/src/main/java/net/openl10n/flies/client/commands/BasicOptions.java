@@ -4,16 +4,41 @@ public interface BasicOptions
 {
    FliesCommand initCommand();
 
+   /**
+    * Whether to enable debug mode. Defaults to the value in flies.ini. This
+    * value is used by command line clients, but not by Maven (which uses its
+    * own --debug/-X flag).
+    */
    boolean getDebug();
-   boolean getErrors();
-   boolean getHelp();
-   boolean getQuiet();
+
    void setDebug(boolean debug);
-   void setErrors(boolean errors);
-   void setHelp(boolean help);
-   void setQuiet(boolean quiet);
+
    boolean isDebugSet();
+
+   /**
+    * Whether to display full information about errors (ie exception stack
+    * traces). Defaults to the value in flies.ini. This value is used by command
+    * line clients, but not by Maven (which uses its own --errors/-e flag).
+    */
+   boolean getErrors();
+
+   void setErrors(boolean errors);
+
    boolean isErrorsSet();
+
+   /**
+    * Whether to display the command's usage help. Maven uses the auto-generated
+    * HelpMojo instead.
+    */
+   boolean getHelp();
+
+   void setHelp(boolean help);
+
+   /**
+    * Enable quiet mode - error messages only
+    */
+   boolean getQuiet();
+   void setQuiet(boolean quiet);
    boolean isQuietSet();
 
    /**

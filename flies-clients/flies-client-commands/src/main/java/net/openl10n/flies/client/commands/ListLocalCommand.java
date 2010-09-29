@@ -5,11 +5,13 @@ package net.openl10n.flies.client.commands;
  * @author Sean Flanigan <sflaniga@redhat.com>
  *
  */
-public class ListLocalCommand implements FliesCommand
+// FIXME not implemented yet!
+public class ListLocalCommand extends ConfigurableProjectCommand
 {
 
    public ListLocalCommand(ConfigurableProjectOptions opts)
    {
+      super(opts);
    }
 
    @Override

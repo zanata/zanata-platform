@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
  * @author Sean Flanigan <sflaniga@redhat.com>
  *
  */
-public class PutProjectCommand implements FliesCommand
+public class PutProjectCommand extends ConfigurableCommand
 {
    private static final Logger log = LoggerFactory.getLogger(PutProjectCommand.class);
 
@@ -27,6 +27,7 @@ public class PutProjectCommand implements FliesCommand
 
    public PutProjectCommand(PutProjectOptions opts)
    {
+      super(opts);
       this.opts = opts;
    }
 

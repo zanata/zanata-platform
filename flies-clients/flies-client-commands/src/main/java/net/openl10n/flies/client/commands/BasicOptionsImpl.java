@@ -32,32 +32,12 @@ import org.kohsuke.args4j.Option;
 public abstract class BasicOptionsImpl implements BasicOptions
 {
 
-   /**
-    * Whether to enable debug mode. Defaults to the value in flies.ini. This
-    * value is used by command line clients, but not by Maven (which uses its
-    * own --debug/-X flag).
-    */
-   private boolean debug;
+   private boolean debug = false;
    private boolean debugSet;
-
-   /**
-    * Whether to display full information about errors (ie exception stack
-    * traces). Defaults to the value in flies.ini. This value is used by command
-    * line clients, but not by Maven (which uses its own --errors/-e flag).
-    */
-   private boolean errors;
+   private boolean errors = false;
    private boolean errorsSet;
-
-   /**
-    * Whether to display the command's usage help. Maven uses the auto-generated
-    * HelpMojo instead.
-    */
    private boolean help;
-
-   /**
-    * Enable quiet mode - error messages only
-    */
-   private boolean quiet;
+   private boolean quiet = false;
    private boolean quietSet;
 
    public BasicOptionsImpl()
