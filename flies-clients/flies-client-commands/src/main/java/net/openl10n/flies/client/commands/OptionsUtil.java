@@ -104,19 +104,32 @@ public class OptionsUtil
    private static void applyUserConfig(ConfigurableOptions opts, DataConfiguration config)
    {
       if (!opts.isDebugSet())
-         opts.setDebug(config.getBoolean("flies.debug", false));
-      if (opts.getDebug())
-         opts.setErrors(true);
+      {
+         Boolean debug = config.getBoolean("flies.debug", null);
+         if (debug != null)
+            opts.setDebug(debug);
+      }
+
       if (!opts.isErrorsSet())
-         opts.setErrors(config.getBoolean("flies.errors", false));
-      if (opts.getKey() == null)
-         opts.setKey(config.getString("flies.key", null));
+      {
+         Boolean errors = config.getBoolean("flies.errors", null);
+         if (errors != null)
+            opts.setErrors(errors);
+      }
+
       if (!opts.isQuietSet())
-         opts.setQuiet(config.getBoolean("flies.quiet", false));
+      {
+         Boolean quiet = config.getBoolean("flies.quiet", null);
+         if (quiet != null)
+            opts.setQuiet(quiet);
+      }
+
       if (opts.getUrl() == null)
          opts.setUrl(config.getURL("flies.url", null));
       if (opts.getUsername() == null)
          opts.setUsername(config.getString("flies.username", null));
+      if (opts.getKey() == null)
+         opts.setKey(config.getString("flies.key", null));
    }
 
    public static FliesClientRequestFactory createRequestFactory(ConfigurableOptions opts)

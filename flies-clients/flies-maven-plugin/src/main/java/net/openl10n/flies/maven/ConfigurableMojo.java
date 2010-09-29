@@ -10,6 +10,8 @@ import net.openl10n.flies.client.commands.OptionsUtil;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.pyx4j.log4j.MavenLogAppender;
 
@@ -22,6 +24,7 @@ import com.pyx4j.log4j.MavenLogAppender;
  */
 public abstract class ConfigurableMojo extends AbstractMojo implements ConfigurableOptions
 {
+   private static final Logger log = LoggerFactory.getLogger(ConfigurableMojo.class);
 
    // @formatter:off
    /*
@@ -137,7 +140,7 @@ public abstract class ConfigurableMojo extends AbstractMojo implements Configura
    @Override
    public void setDebug(boolean debug)
    {
-      throw new UnsupportedOperationException();
+      log.info("ignoring setDebug: use mvn -X to control debug logging");
    }
 
    @Override
@@ -149,7 +152,7 @@ public abstract class ConfigurableMojo extends AbstractMojo implements Configura
    @Override
    public void setErrors(boolean errors)
    {
-      throw new UnsupportedOperationException();
+      log.info("ignoring setErrors: use mvn -e to control exception logging");
    }
 
    @Override
@@ -173,25 +176,25 @@ public abstract class ConfigurableMojo extends AbstractMojo implements Configura
    @Override
    public void setQuiet(boolean quiet)
    {
-      throw new UnsupportedOperationException();
+      log.info("ignoring setQuiet: use mvn -q to set quiet logging mode");
    }
 
    @Override
    public boolean isDebugSet()
    {
-      throw new UnsupportedOperationException();
+      return false;
    }
 
    @Override
    public boolean isErrorsSet()
    {
-      throw new UnsupportedOperationException();
+      return false;
    }
 
    @Override
    public boolean isQuietSet()
    {
-      throw new UnsupportedOperationException();
+      return false;
    }
 
    // these options only apply to the command line:

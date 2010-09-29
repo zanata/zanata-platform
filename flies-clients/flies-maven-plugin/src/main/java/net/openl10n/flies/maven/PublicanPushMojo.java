@@ -41,7 +41,7 @@ public class PublicanPushMojo extends ConfigurableProjectMojo implements Publica
     * 
     * @parameter expression="${flies.sourceLang}"
     */
-   private String sourceLang;
+   private String sourceLang = "en-US";
 
    /**
     * Import translations from local PO files to Flies, overwriting or erasing

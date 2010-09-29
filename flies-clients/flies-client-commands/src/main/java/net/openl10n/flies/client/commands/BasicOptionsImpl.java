@@ -78,6 +78,7 @@ public abstract class BasicOptionsImpl implements BasicOptions
       this.debug = debug;
       if (debug)
       {
+         // debug logging includes error logging
          setErrors(true);
       }
    }
