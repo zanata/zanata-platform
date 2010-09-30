@@ -20,6 +20,8 @@
  */
 package net.openl10n.flies.client.commands;
 
+import net.openl10n.flies.client.config.LocaleList;
+
 import org.kohsuke.args4j.Option;
 
 /**
@@ -42,6 +44,7 @@ public abstract class ConfigurableProjectOptionsImpl extends ConfigurableOptions
 
    private String project;
    private String projectVersion;
+   private LocaleList locales;
 
    @Override
    public String getProject()
@@ -80,6 +83,18 @@ public abstract class ConfigurableProjectOptionsImpl extends ConfigurableOptions
    public String getProjectConfig()
    {
       return projectConfig;
+   }
+
+   @Override
+   public LocaleList getLocales()
+   {
+      return locales;
+   }
+
+   @Override
+   public void setLocales(LocaleList locales)
+   {
+      this.locales = locales;
    }
 
 }

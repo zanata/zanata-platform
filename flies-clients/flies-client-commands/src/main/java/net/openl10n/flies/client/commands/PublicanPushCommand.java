@@ -5,6 +5,7 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
@@ -129,6 +130,11 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
          translationResources.putResource(docId, srcDoc, extensions);
          if (opts.getImportPo())
          {
+            // for (net.openl10n.flies.client.config.Locale locale :
+            // opts.getLocales())
+            // {
+            // File localeDir = new File(locale.getLocalLocale());
+            // }
             for (File localeDir : localeDirs)
             {
                File poFile = new File(localeDir, docId + ".po");

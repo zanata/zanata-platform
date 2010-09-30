@@ -95,11 +95,8 @@ public class OptionsUtil
       {
          opts.setProjectVersion(config.getProjectVersion());
       }
-
-      // TODO load locale list
-
-      // LocaleList locales = config.getLocales();
-
+      LocaleList locales = config.getLocales();
+      opts.setLocales(locales);
    }
 
    /**

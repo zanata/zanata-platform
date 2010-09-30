@@ -6,6 +6,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import net.openl10n.flies.rest.dto.DTOUtil;
 
@@ -53,6 +54,7 @@ public class Locale
     * BCP47 locale ID
     */
    @XmlValue
+   @XmlJavaTypeAdapter(StringTrimAdapter.class)
    public String getLocale()
    {
       return locale;
@@ -64,6 +66,7 @@ public class Locale
    }
 
    @XmlAttribute(name = "map-from", required = false)
+   @XmlJavaTypeAdapter(StringTrimAdapter.class)
    public String getMapFrom()
    {
       return mapFrom;

@@ -12,13 +12,9 @@
       <locale>ja</locale>
       <locale>zh-CN</locale>
     </locales>
-
-    <locales>
-      <locale mapping="java">zh-CN</locale>
-    </locales>
  -->
 
-    <locales attribute>
+    <locales>
         <locale map-from="ja-JP">ja</locale>
     </locales>
 

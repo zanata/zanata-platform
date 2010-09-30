@@ -1,5 +1,7 @@
 package net.openl10n.flies.client.commands;
 
+import net.openl10n.flies.client.config.LocaleList;
+
 import org.kohsuke.args4j.Option;
 
 /**
@@ -26,5 +28,9 @@ public interface ConfigurableProjectOptions extends ConfigurableOptions
    public void setProjectVersion(String versionSlug);
 
    public String getProjectConfig();
+
+   public LocaleList getLocales();
+
+   public void setLocales(LocaleList locales);
 
 }
