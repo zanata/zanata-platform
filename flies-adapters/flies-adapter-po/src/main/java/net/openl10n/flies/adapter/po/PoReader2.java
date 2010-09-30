@@ -40,8 +40,9 @@ public class PoReader2
 
    public static final ImmutableSet<String> PO_HEADER_FIELDS = ImmutableSet.of(HeaderFields.KEY_PoRevisionDate, HeaderFields.KEY_LastTranslator, HeaderFields.KEY_LanguageTeam, HeaderFields.KEY_Language, "Plural-Forms", "X-Generator");
 
-   // useful for testing
-   private static final boolean GENERATE_OPAQUE_IDS = false;
+   // non-opaque ids are useful for testing, but can be too long for the
+   // database column
+   private static final boolean GENERATE_OPAQUE_IDS = true;
 
    public PoReader2()
    {
