@@ -48,7 +48,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest
    private static final String DOCUMENTS_DATA_DBUNIT_XML = "net/openl10n/flies/test/model/DocumentsData.dbunit.xml";
    private static final String LOCALE_DATA_DBUNIT_XML = "META-INF/testdata/LocalesData.dbunit.xml";
    private static final String PROJECTS_DATA_DBUNIT_XML = "net/openl10n/flies/test/model/ProjectsData.dbunit.xml";
-   private static final LocaleId DE_DE = LocaleId.fromJavaName("de_DE");
+   private static final LocaleId DE = LocaleId.fromJavaName("de");
    private static final LocaleId FR = LocaleId.fromJavaName("fr");
 
    private final Logger log = LoggerFactory.getLogger(DocumentsServiceSeamTest.class);
@@ -164,7 +164,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest
    private Document putPo1()
    {
       Documents docs = new Documents();
-      TextFlow textflow = newTextFlow("FOOD", "Slime Mould", "POT comment", DE_DE, "Sauerkraut", "translator comment");
+      TextFlow textflow = newTextFlow("FOOD", "Slime Mould", "POT comment", DE, "Sauerkraut", "translator comment");
       PotEntryData poData = textflow.getOrAddExtension(PotEntryData.class);
       poData.setId("FOOD");
       poData.setContext("context");
@@ -187,7 +187,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest
       targetHeader.setComment("target comment");
       List<HeaderEntry> entries = targetHeader.getEntries();
       entries.add(new HeaderEntry("Project-Id-Version", "ja"));
-      targetHeader.setTargetLanguage(DE_DE);
+      targetHeader.setTargetLanguage(DE);
       targetHeaders.getHeaders().add(targetHeader);
 
       docs.getDocuments().add(doc);
@@ -200,7 +200,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest
    private Document putDoc1()
    {
       Documents docs = new Documents();
-      Document doc = newDoc("foo.properties", newTextFlow("FOOD", "Slime Mould", "slime mould comment", DE_DE, "Sauerkraut", null));
+      Document doc = newDoc("foo.properties", newTextFlow("FOOD", "Slime Mould", "slime mould comment", DE, "Sauerkraut", null));
       docs.getDocuments().add(doc);
       Response response = docsService.put(docs);
       assertThat(response.getStatus(), is(200));
@@ -242,7 +242,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest
       doc1.setRevision(1);
       TextFlow tf1 = (TextFlow) doc1.getTextFlows().get(0);
       tf1.setRevision(1);
-      TextFlowTarget tft1 = tf1.getTarget(DE_DE);
+      TextFlowTarget tft1 = tf1.getTarget(DE);
       tft1.setResourceRevision(1);
       expectDocs(true, false, doc1);
    }
@@ -255,7 +255,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest
       doc1.setRevision(1);
       TextFlow tf1 = (TextFlow) doc1.getTextFlows().get(0);
       tf1.setRevision(1);
-      TextFlowTarget tft1 = tf1.getTarget(DE_DE);
+      TextFlowTarget tft1 = tf1.getTarget(DE);
       tft1.setResourceRevision(1);
       expectDocs(true, false, doc1);
       Document doc2 = postDoc2();
@@ -275,7 +275,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest
       doc1.setRevision(1);
       TextFlow tf1 = (TextFlow) doc1.getTextFlows().get(0);
       tf1.setRevision(1);
-      TextFlowTarget tft1 = tf1.getTarget(DE_DE);
+      TextFlowTarget tft1 = tf1.getTarget(DE);
       tft1.setResourceRevision(1);
       Document doc2 = postDoc2();
       doc2.setRevision(1);
@@ -300,7 +300,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest
       doc1.setRevision(1);
       TextFlow tf1 = (TextFlow) doc1.getTextFlows().get(0);
       tf1.setRevision(1);
-      TextFlowTarget tft1 = tf1.getTarget(DE_DE);
+      TextFlowTarget tft1 = tf1.getTarget(DE);
       tft1.setResourceRevision(1);
       expectDocs(true, false, doc1);
       putZero(); // doc1 becomes obsolete, rev 2
@@ -320,7 +320,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest
       doc1.setRevision(1);
       TextFlow tf1 = (TextFlow) doc1.getTextFlows().get(0);
       tf1.setRevision(1);
-      TextFlowTarget tft1 = tf1.getTarget(DE_DE);
+      TextFlowTarget tft1 = tf1.getTarget(DE);
       tft1.setResourceRevision(1);
       expectDocs(true, false, doc1);
       putZero(); // doc1 becomes obsolete, rev 2
@@ -352,7 +352,7 @@ public class DocumentsServiceSeamTest extends FliesDBUnitSeamTest
       doc1.setRevision(1);
       TextFlow tf1 = (TextFlow) doc1.getTextFlows().get(0);
       tf1.setRevision(1);
-      TextFlowTarget tft1 = tf1.getTarget(DE_DE);
+      TextFlowTarget tft1 = tf1.getTarget(DE);
       tft1.setResourceRevision(1);
       log.info("expect doc1");
       expectDocs(true, false, doc1);

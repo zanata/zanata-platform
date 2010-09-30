@@ -25,7 +25,7 @@
 	          versionNum="1"
                 creationDate="2009-01-14 11:39:00"
                 lastChanged="2009-01-14 11:39:00"
-                localeId="en"
+                localeId="en-US"
                 active="TRUE"
         />
         <HLocale id="5" 
@@ -152,6 +152,13 @@
                 creationDate="2009-01-14 11:39:00"
                 lastChanged="2009-01-14 11:39:00"
                 localeId="zh-TW"
+                active="TRUE"
+        />
+        <HLocale id="24"
+	          versionNum="1"
+                creationDate="2009-01-14 11:39:00"
+                lastChanged="2009-01-14 11:39:00"
+                localeId="en"
                 active="TRUE"
         />
 </dataset>

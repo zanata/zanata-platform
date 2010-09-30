@@ -19,6 +19,8 @@ import org.testng.annotations.Test;
 @Test(groups = { "seam-tests" })
 public class TranslationServiceSeamTest extends ResourceTranslationServiceSeamTest
 {
+   private static final LocaleId FR = new LocaleId("fr");
+   private static final LocaleId DE = new LocaleId("de");
    private final Logger log = LoggerFactory.getLogger(TranslationServiceSeamTest.class);
    private TranslationsResourceTestObjectFactory transTestFactory = new TranslationsResourceTestObjectFactory();
    private ResourceTestObjectFactory resourceTestFactory = new ResourceTestObjectFactory();
@@ -39,11 +41,11 @@ public class TranslationServiceSeamTest extends ResourceTranslationServiceSeamTe
       Resource res = resourceTestFactory.getTextFlowTest();
       translationResource.putResource(res.getName(), res, new StringSet("gettext;comment"));
       TranslationsResource sr = transTestFactory.getTestObject();
-      translationResource.putTranslations(res.getName(), new LocaleId("de-DE"), sr, new StringSet("gettext;comment"));
-      ClientResponse<String> resourceGetResponse = translationResource.deleteTranslations(res.getName(), new LocaleId("de-DE"));
+      translationResource.putTranslations(res.getName(), DE, sr, new StringSet("gettext;comment"));
+      ClientResponse<String> resourceGetResponse = translationResource.deleteTranslations(res.getName(), DE);
       assertThat(resourceGetResponse.getResponseStatus(), is(Status.OK));
 
-      ClientResponse<String> resourceGetResponse2 = translationResource.deleteTranslations("test2", new LocaleId("fr-FR"));
+      ClientResponse<String> resourceGetResponse2 = translationResource.deleteTranslations("test2", FR);
       assertThat(resourceGetResponse2.getResponseStatus(), is(Status.NOT_FOUND));
    }
 
@@ -53,8 +55,8 @@ public class TranslationServiceSeamTest extends ResourceTranslationServiceSeamTe
       Resource res = resourceTestFactory.getTextFlowTest();
       translationResource.putResource(res.getName(), res, new StringSet("gettext;comment"));
       log.debug("successful put resource:" + res.getName());
-      translationResource.putTranslations(res.getName(), new LocaleId("de-DE"), sr, new StringSet("gettext;comment"));
-      TranslationsResource get = translationResource.getTranslations(res.getName(), new LocaleId("de-DE"), new StringSet("gettext;comment")).getEntity();
+      translationResource.putTranslations(res.getName(), DE, sr, new StringSet("gettext;comment"));
+      TranslationsResource get = translationResource.getTranslations(res.getName(), DE, new StringSet("gettext;comment")).getEntity();
       log.debug("expect:" + sr.toString());
       log.debug("actual:" + get.toString());
       assertThat(get.toString(), is(sr.toString()));
@@ -66,8 +68,8 @@ public class TranslationServiceSeamTest extends ResourceTranslationServiceSeamTe
       Resource res = resourceTestFactory.getTextFlowTest();
       translationResource.putResource(res.getName(), res, new StringSet("gettext;comment"));
       log.debug("successful put resource:" + res.getName());
-      translationResource.putTranslations(res.getName(), new LocaleId("de-DE"), sr, null);
-      TranslationsResource get = translationResource.getTranslations(res.getName(), new LocaleId("de-DE"), null).getEntity();
+      translationResource.putTranslations(res.getName(), DE, sr, null);
+      TranslationsResource get = translationResource.getTranslations(res.getName(), DE, null).getEntity();
       TranslationsResource base = transTestFactory.getTestObject();
       log.debug("expect:" + base.toString());
       log.debug("actual:" + get.toString());
@@ -80,8 +82,8 @@ public class TranslationServiceSeamTest extends ResourceTranslationServiceSeamTe
       Resource res = resourceTestFactory.getTextFlowTest();
       translationResource.putResource(res.getName(), res, new StringSet("gettext;comment"));
       log.debug("successful put resource:" + res.getName());
-      translationResource.putTranslations(res.getName(), new LocaleId("de-DE"), sr, null);
-      TranslationsResource get = translationResource.getTranslations(res.getName(), new LocaleId("de-DE"), new StringSet("gettext;comment")).getEntity();
+      translationResource.putTranslations(res.getName(), DE, sr, null);
+      TranslationsResource get = translationResource.getTranslations(res.getName(), DE, new StringSet("gettext;comment")).getEntity();
       TranslationsResource base = transTestFactory.getTestObject();
       log.debug("expect:" + base.toString());
       log.debug("actual:" + get.toString());
@@ -94,8 +96,8 @@ public class TranslationServiceSeamTest extends ResourceTranslationServiceSeamTe
       Resource res = resourceTestFactory.getTextFlowTest();
       translationResource.putResource(res.getName(), res, new StringSet("gettext;comment"));
       log.debug("successful put resource:" + res.getName());
-      translationResource.putTranslations(res.getName(), new LocaleId("de-DE"), sr, new StringSet("gettext;comment"));
-      TranslationsResource get = translationResource.getTranslations(res.getName(), new LocaleId("de-DE"), null).getEntity();
+      translationResource.putTranslations(res.getName(), DE, sr, new StringSet("gettext;comment"));
+      TranslationsResource get = translationResource.getTranslations(res.getName(), DE, null).getEntity();
       TranslationsResource base = transTestFactory.getTestObject();
       log.debug("expect:" + base.toString());
       log.debug("actual:" + get.toString());
