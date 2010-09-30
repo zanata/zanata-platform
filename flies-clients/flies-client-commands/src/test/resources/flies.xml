@@ -3,6 +3,23 @@
 	<url>http://localhost:8080/flies/</url> 
 	<project>sample-project</project> 
 	<project-version>1.1</project-version>
-    <docset/>
-    <docset/>
+
+<!-- 
+    <locales mapping="java">
+      <locale>de</locale>
+      <locale>fr</locale>
+      <locale>pt-BR</locale>
+      <locale>ja</locale>
+      <locale>zh-CN</locale>
+    </locales>
+
+    <locales>
+      <locale mapping="java">zh-CN</locale>
+    </locales>
+ -->
+
+    <locales attribute>
+        <locale map-from="ja-JP">ja</locale>
+    </locales>
+
 </config>

@@ -8,6 +8,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import net.openl10n.flies.client.config.FliesConfig;
+import net.openl10n.flies.client.config.LocaleList;
 import net.openl10n.flies.client.exceptions.ConfigException;
 import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 
@@ -94,6 +95,11 @@ public class OptionsUtil
       {
          opts.setProjectVersion(config.getProjectVersion());
       }
+
+      // TODO load locale list
+
+      // LocaleList locales = config.getLocales();
+
    }
 
    /**
