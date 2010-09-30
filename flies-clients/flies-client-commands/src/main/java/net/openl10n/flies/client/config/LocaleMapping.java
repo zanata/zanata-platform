@@ -17,13 +17,13 @@ import net.openl10n.flies.rest.dto.DTOUtil;
 @XmlType(name = "localeType")
 @XmlRootElement(name = "locale")
 @XmlAccessorOrder(XmlAccessOrder.ALPHABETICAL)
-public class Locale
+public class LocaleMapping
 {
 
    private String locale;
    private String mapFrom;
 
-   public Locale()
+   public LocaleMapping()
    {
       this(null, null);
    }
@@ -33,7 +33,7 @@ public class Locale
     * 
     * @param localeID
     */
-   public Locale(String localeID)
+   public LocaleMapping(String localeID)
    {
       this(localeID, null);
    }
@@ -44,7 +44,7 @@ public class Locale
     * @param localeID BCP47 locale ID
     * @param mapFrom locale ID used in local/client project
     */
-   public Locale(String localeID, String mapFrom)
+   public LocaleMapping(String localeID, String mapFrom)
    {
       this.locale = localeID;
       this.mapFrom = mapFrom;

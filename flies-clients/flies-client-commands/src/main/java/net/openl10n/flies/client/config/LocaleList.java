@@ -13,16 +13,48 @@ import net.openl10n.flies.rest.dto.DTOUtil;
 
 @XmlRootElement(name = "locales")
 @XmlType(name = "localesType")
-public class LocaleList implements List<Locale>
+public class LocaleList implements List<LocaleMapping>
 {
    // private String mapping;
 
-   private final List<Locale> locales = new ArrayList<Locale>();
+   private final List<LocaleMapping> locales = new ArrayList<LocaleMapping>();
 
    @Override
    public String toString()
    {
       return DTOUtil.toXML(this);
+   }
+
+   /**
+    * WARNING: slow!
+    * 
+    * @param localLocale
+    * @return
+    */
+   public String getCanonicalLocale(String localLocale)
+   {
+      for (LocaleMapping loc : locales)
+      {
+         if (loc.getLocalLocale().equals(localLocale))
+            return loc.getLocale();
+      }
+      return null;
+   }
+
+   /**
+    * WARNING: slow!
+    * 
+    * @param canonicalLocale
+    * @return
+    */
+   public String getLocalLocale(String canonicalLocale)
+   {
+      for (LocaleMapping loc : locales)
+      {
+         if (loc.getLocale().equals(canonicalLocale))
+            return loc.getLocalLocale();
+      }
+      return null;
    }
 
    public int size()
@@ -40,7 +72,7 @@ public class LocaleList implements List<Locale>
       return locales.contains(o);
    }
 
-   public Iterator<Locale> iterator()
+   public Iterator<LocaleMapping> iterator()
    {
       return locales.iterator();
    }
@@ -55,7 +87,7 @@ public class LocaleList implements List<Locale>
       return locales.toArray(a);
    }
 
-   public boolean add(Locale e)
+   public boolean add(LocaleMapping e)
    {
       return locales.add(e);
    }
@@ -70,12 +102,12 @@ public class LocaleList implements List<Locale>
       return locales.containsAll(c);
    }
 
-   public boolean addAll(Collection<? extends Locale> c)
+   public boolean addAll(Collection<? extends LocaleMapping> c)
    {
       return locales.addAll(c);
    }
 
-   public boolean addAll(int index, Collection<? extends Locale> c)
+   public boolean addAll(int index, Collection<? extends LocaleMapping> c)
    {
       return locales.addAll(index, c);
    }
@@ -105,22 +137,22 @@ public class LocaleList implements List<Locale>
       return locales.hashCode();
    }
 
-   public Locale get(int index)
+   public LocaleMapping get(int index)
    {
       return locales.get(index);
    }
 
-   public Locale set(int index, Locale element)
+   public LocaleMapping set(int index, LocaleMapping element)
    {
       return locales.set(index, element);
    }
 
-   public void add(int index, Locale element)
+   public void add(int index, LocaleMapping element)
    {
       locales.add(index, element);
    }
 
-   public Locale remove(int index)
+   public LocaleMapping remove(int index)
    {
       return locales.remove(index);
    }
@@ -135,17 +167,17 @@ public class LocaleList implements List<Locale>
       return locales.lastIndexOf(o);
    }
 
-   public ListIterator<Locale> listIterator()
+   public ListIterator<LocaleMapping> listIterator()
    {
       return locales.listIterator();
    }
 
-   public ListIterator<Locale> listIterator(int index)
+   public ListIterator<LocaleMapping> listIterator(int index)
    {
       return locales.listIterator(index);
    }
 
-   public List<Locale> subList(int fromIndex, int toIndex)
+   public List<LocaleMapping> subList(int fromIndex, int toIndex)
    {
       return locales.subList(fromIndex, toIndex);
    }

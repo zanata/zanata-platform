@@ -5,7 +5,6 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
@@ -13,6 +12,7 @@ import javax.xml.bind.Marshaller;
 
 import net.openl10n.flies.adapter.po.PoReader2;
 import net.openl10n.flies.client.commands.gettext.PublicanUtil;
+import net.openl10n.flies.client.config.LocaleMapping;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.rest.JaxbUtil;
 import net.openl10n.flies.rest.StringSet;
@@ -102,10 +102,13 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
             translationResources.deleteResource(doc.getName());
          }
       }
-      File[] localeDirs = null;
+      List<LocaleMapping> locales = null;
       if (opts.getImportPo())
       {
-         localeDirs = PublicanUtil.findLocaleDirs(opts.getSrcDir());
+         if (opts.getLocales() != null)
+            locales = PublicanUtil.findLocales(opts.getSrcDir(), opts.getLocales());
+         else
+            locales = PublicanUtil.findLocales(opts.getSrcDir());
       }
 
       PoReader2 poReader = new PoReader2();
@@ -130,21 +133,14 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
          translationResources.putResource(docId, srcDoc, extensions);
          if (opts.getImportPo())
          {
-            // for (net.openl10n.flies.client.config.Locale locale :
-            // opts.getLocales())
-            // {
-            // File localeDir = new File(locale.getLocalLocale());
-            // }
-            for (File localeDir : localeDirs)
+            for (LocaleMapping locale : locales)
             {
+               File localeDir = new File(opts.getSrcDir(), locale.getLocalLocale());
                File poFile = new File(localeDir, docId + ".po");
                if (poFile.exists())
                {
                   InputSource inputSource = new InputSource(poFile.toURI().toString());
                   inputSource.setEncoding("utf8");
-                  String publicanLocale = localeDir.getName();
-                  // TODO locale mapping
-                  LocaleId locale = new LocaleId(publicanLocale);
                   TranslationsResource targetDoc = poReader.extractTarget(inputSource, srcDoc);
                   if (log.isDebugEnabled())
                   {
@@ -156,7 +152,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
                   {
                      JaxbUtil.validateXml(targetDoc, jc);
                   }
-                  translationResources.putTranslations(docId, locale, targetDoc, extensions);
+                  translationResources.putTranslations(docId, new LocaleId(locale.getLocale()), targetDoc, extensions);
                }
             }
          }

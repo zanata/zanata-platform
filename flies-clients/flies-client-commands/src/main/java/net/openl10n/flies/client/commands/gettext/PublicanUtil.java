@@ -3,6 +3,11 @@ package net.openl10n.flies.client.commands.gettext;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.openl10n.flies.client.config.LocaleMapping;
+import net.openl10n.flies.client.config.LocaleList;
 
 /**
  * 
@@ -40,7 +45,6 @@ public class PublicanUtil
       File[] localeDirs;
       localeDirs = srcDir.listFiles(new FileFilter()
       {
-   
          @Override
          public boolean accept(File f)
          {
@@ -50,4 +54,28 @@ public class PublicanUtil
       return localeDirs;
    }
 
+   public static List<LocaleMapping> findLocales(File srcDir)
+   {
+      File[] localeDirs = findLocaleDirs(srcDir);
+      List<LocaleMapping> locales = new ArrayList<LocaleMapping>();
+      for (File dir : localeDirs)
+      {
+         locales.add(new LocaleMapping(dir.getName()));
+      }
+      return locales;
+   }
+
+   public static List<LocaleMapping> findLocales(File srcDir, LocaleList locales)
+   {
+      List<LocaleMapping> localeDirs = new ArrayList<LocaleMapping>();
+
+      for (LocaleMapping loc : locales)
+      {
+         File localeDir = new File(srcDir, loc.getLocalLocale());
+         if (localeDir.isDirectory())
+            localeDirs.add(loc);
+      }
+
+      return localeDirs;
+   }
 }

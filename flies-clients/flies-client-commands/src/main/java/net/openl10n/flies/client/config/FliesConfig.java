@@ -50,7 +50,7 @@ public class FliesConfig implements Serializable
    }
 
    @XmlElementWrapper(name = "locales", required = false)
-   @XmlElementRef(type = Locale.class, name = "locale")
+   @XmlElementRef(type = LocaleMapping.class, name = "locale")
    public LocaleList getLocales()
    {
       return locales;

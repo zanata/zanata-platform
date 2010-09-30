@@ -44,8 +44,8 @@ public class FliesConfigTest extends TestCase
       config.setUrl(new URL("http://example.com"));
       config.setProject("project");
       config.setProjectVersion("version");
-      config.getLocales().add(new Locale("fr", "fr-FR"));
-      config.getLocales().add(new Locale("  zh-CN  "));
+      config.getLocales().add(new LocaleMapping("fr", "fr-FR"));
+      config.getLocales().add(new LocaleMapping("  zh-CN  "));
       marshaller.marshal(config, fliesProjectXml);
    }
 
