@@ -1,5 +1,14 @@
 package net.openl10n.flies.util;
 
+/**
+ * ShortStrings are meant for use in logging. They don't incur the cost of
+ * shortening until toString() is called. This means they hold on to the entire
+ * string, so don't bother keeping them around in memory for long.
+ * 
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * 
+ */
 public class ShortString
 {
 
@@ -15,9 +24,14 @@ public class ShortString
    @Override
    public String toString()
    {
-      if (input.length() <= MAX_LENGTH)
-         return input;
-      return input.substring(0, MAX_LENGTH - ELLIPSIS.length()) + ELLIPSIS;
+      return shorten(input);
+   }
+
+   public static String shorten(String s)
+   {
+      if (s.length() <= MAX_LENGTH)
+         return s;
+      return s.substring(0, MAX_LENGTH - ELLIPSIS.length()) + ELLIPSIS;
    }
 
 }

@@ -4,6 +4,7 @@ import net.openl10n.flies.common.LocaleId;
 
 import com.google.common.collect.ImmutableList;
 
+@Deprecated
 public final class LocaleOutputSourceTupple
 {
 

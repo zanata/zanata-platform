@@ -4,6 +4,7 @@ import net.openl10n.flies.common.LocaleId;
 
 import org.xml.sax.InputSource;
 
+@Deprecated
 public final class LocaleInputSourcePair
 {
 
