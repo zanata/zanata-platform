@@ -99,6 +99,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
          // NB ResourceMeta.name = HDocument.docId
          if (!localDocNames.contains(doc.getName()))
          {
+            log.info("deleting resource {} from server", doc.getName());
             translationResources.deleteResource(doc.getName());
          }
       }
@@ -130,6 +131,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
             JaxbUtil.validateXml(srcDoc, jc);
          }
          StringSet extensions = new StringSet("comment;gettext");
+         log.info("pushing source document {} to server", srcDoc.getName());
          translationResources.putResource(docId, srcDoc, extensions);
          if (opts.getImportPo())
          {
@@ -152,6 +154,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
                   {
                      JaxbUtil.validateXml(targetDoc, jc);
                   }
+                  log.info("pushing target document {} [{}] to server", srcDoc.getName(), locale.getLocale());
                   translationResources.putTranslations(docId, new LocaleId(locale.getLocale()), targetDoc, extensions);
                }
             }
