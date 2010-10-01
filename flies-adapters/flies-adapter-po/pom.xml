@@ -10,6 +10,11 @@
   </parent>
   <packaging>jar</packaging>
   <dependencies>
+	<dependency>
+		<groupId>net.openl10n.flies</groupId>
+		<artifactId>flies-common-util</artifactId>
+		<version>${project.version}</version>
+	</dependency>
     <dependency>
       <groupId>org.fedorahosted.tennera</groupId>
       <artifactId>jgettext</artifactId>

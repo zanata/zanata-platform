@@ -9,6 +9,7 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>flies-common-api</module>
+		<module>flies-common-util</module>
 		<module>flies-adapters</module>
 		<module>flies-rest-client</module>
 		<module>flies-clients</module>

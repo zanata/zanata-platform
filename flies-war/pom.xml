@@ -798,6 +798,12 @@
 		</dependency>
 		
 		<dependency>
+			<groupId>net.openl10n.flies</groupId>
+			<artifactId>flies-common-util</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>org.jboss.infrastructure</groupId>
 			<artifactId>seam-jbnukes-security-api</artifactId>
 			<version>${nukes.security.version}</version>
