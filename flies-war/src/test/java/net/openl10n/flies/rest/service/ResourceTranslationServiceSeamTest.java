@@ -6,8 +6,8 @@ import java.net.URI;
 import javax.ws.rs.core.MediaType;
 
 import net.openl10n.flies.FliesDBUnitSeamTest;
-import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 import net.openl10n.flies.rest.client.ITranslationResources;
+import net.openl10n.flies.rest.dto.resource.VersionInfo;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.resteasy.client.ClientResponse;
@@ -48,10 +48,9 @@ public abstract class ResourceTranslationServiceSeamTest extends FliesDBUnitSeam
    @BeforeMethod
    public void setup() throws Exception
    {
-      FliesClientRequestFactory clientRequestFactory = new FliesClientRequestFactory(new URI("http://example.com/"), USERNAME, AUTH_KEY, new SeamMockClientExecutor(this));
+      FliesTestClientRequestFactory clientRequestFactory = new FliesTestClientRequestFactory(new URI("http://example.com/"), USERNAME, AUTH_KEY, new SeamMockClientExecutor(this), new VersionInfo("SNAPSHOT", ""));
       clientRequestFactory.registerPrefixInterceptor(new MetaTypeAccept());
-      // TODO this should use getTranslationResources(projectSlug, versionSlug)
-      translationResource = clientRequestFactory.getTranslationResources(new URI("/restv1/projects/p/" + projectSlug + "/iterations/i/" + iter + "/r"));
+      translationResource = clientRequestFactory.getTranslationResources(projectSlug, iter);
    }
 
    @Override

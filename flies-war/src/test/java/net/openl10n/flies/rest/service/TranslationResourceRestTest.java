@@ -93,6 +93,7 @@ public class TranslationResourceRestTest extends FliesRestTest
       ITranslationResources client = getClientRequestFactory().createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
 
       Resource sr = createSourceResource("my.txt");
+
       ClientResponse<String> response = client.post(sr, null);
       assertThat(response.getResponseStatus(), is(Status.CREATED));
       List<String> locationHeader = response.getHeaders().get("Location");
