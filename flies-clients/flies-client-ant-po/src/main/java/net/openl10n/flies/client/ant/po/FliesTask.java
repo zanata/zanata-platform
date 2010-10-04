@@ -2,6 +2,7 @@ package net.openl10n.flies.client.ant.po;
 
 import net.openl10n.flies.client.commands.BasicOptions;
 import net.openl10n.flies.client.commands.FliesCommand;
+import net.openl10n.flies.rest.dto.resource.VersionInfo;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
@@ -14,6 +15,7 @@ public abstract class FliesTask extends Task implements FliesCommand, BasicOptio
    private boolean errors;
    private boolean help;
    private boolean quiet;
+   protected VersionInfo versionInfo = new VersionInfo("SNAPSHOT", "");
 
    @Override
    public boolean getDebug()

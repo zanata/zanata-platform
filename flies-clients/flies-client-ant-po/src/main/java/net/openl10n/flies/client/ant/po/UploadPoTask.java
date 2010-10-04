@@ -156,7 +156,7 @@ public class UploadPoTask extends FliesTask
       else
       {
          // send project to rest api
-         FliesClientRequestFactory factory = new FliesClientRequestFactory(user, apiKey);
+         FliesClientRequestFactory factory = new FliesClientRequestFactory(user, apiKey, versionInfo);
          IDocumentsResource documentsResource = factory.getDocuments(dstURL.toURI());
          ClientResponse<?> response = documentsResource.put(docs);
          ClientUtility.checkResult(response, dstURL.toURI());

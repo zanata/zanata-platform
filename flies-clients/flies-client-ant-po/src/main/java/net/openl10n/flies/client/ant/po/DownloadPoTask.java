@@ -67,7 +67,7 @@ public class DownloadPoTask extends FliesTask
       else
       {
          // use rest api to fetch Documents
-         FliesClientRequestFactory factory = new FliesClientRequestFactory(user, apiKey);
+         FliesClientRequestFactory factory = new FliesClientRequestFactory(user, apiKey, versionInfo);
          IDocumentsResource documentsResource = factory.getDocuments(srcURL.toURI());
          ClientResponse<Documents> response = documentsResource.getDocuments();
 

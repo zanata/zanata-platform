@@ -99,7 +99,7 @@ public class PutUserTask extends FliesTask
          return;
       URI base = new URI(fliesURL);
       // send iter to rest api
-      FliesClientRequestFactory factory = new FliesClientRequestFactory(base, user, apiKey);
+      FliesClientRequestFactory factory = new FliesClientRequestFactory(base, user, apiKey, versionInfo);
       IAccountResource iterResource = factory.getAccount(username);
       URI uri = factory.getAccountURI(username);
       ClientResponse<?> response = iterResource.put(account);

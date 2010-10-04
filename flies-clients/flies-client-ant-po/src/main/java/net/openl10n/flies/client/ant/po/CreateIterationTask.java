@@ -77,7 +77,7 @@ public class CreateIterationTask extends FliesTask
          return;
       URI base = new URI(fliesURL);
       // send iter to rest api
-      FliesClientRequestFactory factory = new FliesClientRequestFactory(base, user, apiKey);
+      FliesClientRequestFactory factory = new FliesClientRequestFactory(base, user, apiKey, versionInfo);
       IProjectIterationResource iterResource = factory.getProjectIteration(proj, iter);
       URI uri = factory.getProjectIterationURI(proj, iter);
       ClientResponse<?> response = iterResource.put(iteration);

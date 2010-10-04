@@ -76,7 +76,7 @@ public class CreateProjectTask extends FliesTask
          return;
       URI base = new URI(fliesUrl);
       // send project to rest api
-      FliesClientRequestFactory factory = new FliesClientRequestFactory(base, user, apiKey);
+      FliesClientRequestFactory factory = new FliesClientRequestFactory(base, user, apiKey, versionInfo);
       IProjectResource projResource = factory.getProject(proj);
       URI uri = factory.getProjectURI(proj);
       ClientResponse<?> response = projResource.put(project);
