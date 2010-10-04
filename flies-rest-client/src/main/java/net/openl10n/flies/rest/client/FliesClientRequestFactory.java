@@ -5,6 +5,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import net.openl10n.flies.rest.dto.resource.VersionInfo;
+
 import org.jboss.resteasy.client.ClientExecutor;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
@@ -22,24 +24,31 @@ public class FliesClientRequestFactory implements ITranslationResourcesFactory
 
    private static final Logger log = LoggerFactory.getLogger(FliesClientRequestFactory.class);
    private final ClientRequestFactory crf;
+   private static final String RESOURCE_PREFIX = "seam/resource/restv1";
 
-   public FliesClientRequestFactory(String username, String apiKey)
+   public FliesClientRequestFactory(String username, String apiKey, VersionInfo ver)
    {
-      this(null, username, apiKey);
+      this(null, username, apiKey, ver);
    }
 
-   public FliesClientRequestFactory(URI base, String username, String apiKey)
+   public FliesClientRequestFactory(URI base, String username, String apiKey, VersionInfo ver)
    {
-      this(base, username, apiKey, null);
+      this(base, username, apiKey, null, ver);
    }
 
-   public FliesClientRequestFactory(URI base, String username, String apiKey, ClientExecutor executor)
+   public FliesClientRequestFactory(URI base, String username, String apiKey, ClientExecutor executor, VersionInfo ver)
    {
       crf = new ClientRequestFactory(executor, null, fixBase(base));
-      registerPrefixInterceptor(new ApiKeyHeaderDecorator(username, apiKey));
+      registerPrefixInterceptor(new ApiKeyHeaderDecorator(username, apiKey, ver.getVersionNo()));
+      IVersion iversion = getVersionInfo();
+      VersionInfo server = iversion.get();
+      if (server != null && !server.getBuildTimeStamp().equalsIgnoreCase(ver.getBuildTimeStamp()))
+      {
+         log.warn("client buildTimeStamp {} and server buildTimeStamp {} mismatch, please update your client", ver.getBuildTimeStamp(), server.getBuildTimeStamp());
+      }
    }
 
-   private <T> T createProxy(Class<T> clazz, URI baseUri)
+   public <T> T createProxy(Class<T> clazz, URI baseUri)
    {
       log.debug("{} proxy uri: {}", clazz.getSimpleName(), baseUri);
       return crf.createProxy(clazz, baseUri);
@@ -69,19 +78,14 @@ public class FliesClientRequestFactory implements ITranslationResourcesFactory
 
    public IAccountResource getAccount(String username)
    {
-      return getAccount(getAccountURI(username));
-   }
-
-   private IAccountResource getAccount(final URI uri)
-   {
-      return createProxy(IAccountResource.class, uri);
+      return createProxy(IAccountResource.class, getAccountURI(username));
    }
 
    public URI getAccountURI(String username)
    {
       try
       {
-         URL url = new URL(crf.getBase().toURL(), "seam/resource/restv1/accounts/u/" + username);
+         URL url = new URL(crf.getBase().toURL(), RESOURCE_PREFIX + "/accounts/u/" + username);
          return url.toURI();
       }
       catch (MalformedURLException e)
@@ -103,7 +107,7 @@ public class FliesClientRequestFactory implements ITranslationResourcesFactory
    {
       try
       {
-         URL url = new URL(crf.getBase().toURL(), "seam/resource/restv1/projects/p/" + proj + "/iterations/i/" + iter + "/documents");
+         URL url = new URL(crf.getBase().toURL(), RESOURCE_PREFIX + "/projects/p/" + proj + "/iterations/i/" + iter + "/documents");
          return url.toURI();
       }
       catch (MalformedURLException e)
@@ -118,19 +122,15 @@ public class FliesClientRequestFactory implements ITranslationResourcesFactory
 
    public IProjectResource getProject(String proj)
    {
-      return getProject(getProjectURI(proj));
+      return createProxy(IProjectResource.class, getProjectURI(proj));
    }
 
-   private IProjectResource getProject(final URI uri)
-   {
-      return createProxy(IProjectResource.class, uri);
-   }
 
    public URI getProjectURI(String proj)
    {
       try
       {
-         URL url = new URL(crf.getBase().toURL(), "seam/resource/restv1/projects/p/" + proj);
+         URL url = new URL(crf.getBase().toURL(), RESOURCE_PREFIX + "/projects/p/" + proj);
          return url.toURI();
       }
       catch (MalformedURLException e)
@@ -145,19 +145,14 @@ public class FliesClientRequestFactory implements ITranslationResourcesFactory
 
    public IProjectIterationResource getProjectIteration(String proj, String iter)
    {
-      return getProjectIteration(getProjectIterationURI(proj, iter));
-   }
-
-   public IProjectIterationResource getProjectIteration(final URI uri)
-   {
-      return createProxy(IProjectIterationResource.class, uri);
+      return createProxy(IProjectIterationResource.class, getProjectIterationURI(proj, iter));
    }
 
    public URI getProjectIterationURI(String proj, String iter)
    {
       try
       {
-         URL url = new URL(crf.getBase().toURL(), "seam/resource/restv1/projects/p/" + proj + "/iterations/i/" + iter);
+         URL url = new URL(crf.getBase().toURL(), RESOURCE_PREFIX + "/projects/p/" + proj + "/iterations/i/" + iter);
          return url.toURI();
       }
       catch (MalformedURLException e)
@@ -179,26 +174,14 @@ public class FliesClientRequestFactory implements ITranslationResourcesFactory
    @Override
    public ITranslationResources getTranslationResources(String projectSlug, String versionSlug)
    {
-      return getTranslationResources(getTranslationResourcesURI(projectSlug, versionSlug));
+      return createProxy(ITranslationResources.class, getTranslationResourcesURI(projectSlug, versionSlug));
    }
 
-   /**
-    * only for testing
-    * 
-    * @param uri
-    * @return
-    * @deprecated use getTranslationResources(String projectSlug, String
-    *             versionSlug)
-    */
-   public ITranslationResources getTranslationResources(final URI uri)
-   {
-      return createProxy(ITranslationResources.class, uri);
-   }
 
    @Override
    public URI getTranslationResourcesURI(String projectSlug, String versionSlug)
    {
-      String spec = "seam/resource/restv1/projects/p/" + projectSlug + "/iterations/i/" + versionSlug + "/r";
+      String spec = RESOURCE_PREFIX + "/projects/p/" + projectSlug + "/iterations/i/" + versionSlug + "/r";
       try
       {
          return new URL(crf.getBase().toURL(), spec).toURI();
@@ -221,6 +204,25 @@ public class FliesClientRequestFactory implements ITranslationResourcesFactory
    {
       crf.getPrefixInterceptors().registerInterceptor(interceptor);
    }
+   
+   public IVersion getVersionInfo()
+   {
+      URL url;
+      try
+      {
+         url = new URL(crf.getBase().toURL(), RESOURCE_PREFIX + "/version");
+         return (IVersion) createProxy(IVersion.class, url.toURI());
+      }
+      catch (MalformedURLException e)
+      {
+         throw new RuntimeException(e);
+      }
+      catch (URISyntaxException e)
+      {
+         throw new RuntimeException(e);
+      }
+   }
+
 
 }
 
