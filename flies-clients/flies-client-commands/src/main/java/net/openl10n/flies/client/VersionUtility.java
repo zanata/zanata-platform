@@ -8,7 +8,7 @@ import java.security.CodeSource;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import net.openl10n.flies.rest.dto.resource.VersionInfo;
+import net.openl10n.flies.rest.dto.VersionInfo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

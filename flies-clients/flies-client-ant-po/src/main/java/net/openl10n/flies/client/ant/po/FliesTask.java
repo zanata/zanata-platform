@@ -2,7 +2,7 @@ package net.openl10n.flies.client.ant.po;
 
 import net.openl10n.flies.client.commands.BasicOptions;
 import net.openl10n.flies.client.commands.FliesCommand;
-import net.openl10n.flies.rest.dto.resource.VersionInfo;
+import net.openl10n.flies.rest.dto.VersionInfo;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;

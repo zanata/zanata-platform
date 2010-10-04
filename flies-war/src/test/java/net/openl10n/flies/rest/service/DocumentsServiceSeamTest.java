@@ -19,6 +19,7 @@ import net.openl10n.flies.model.HDocument;
 import net.openl10n.flies.model.HProjectIteration;
 import net.openl10n.flies.model.HTextFlow;
 import net.openl10n.flies.rest.client.IDocumentsResource;
+import net.openl10n.flies.rest.dto.VersionInfo;
 import net.openl10n.flies.rest.dto.deprecated.Document;
 import net.openl10n.flies.rest.dto.deprecated.Documents;
 import net.openl10n.flies.rest.dto.deprecated.SimpleComment;
@@ -29,7 +30,6 @@ import net.openl10n.flies.rest.dto.po.PoHeader;
 import net.openl10n.flies.rest.dto.po.PoTargetHeader;
 import net.openl10n.flies.rest.dto.po.PoTargetHeaders;
 import net.openl10n.flies.rest.dto.po.PotEntryData;
-import net.openl10n.flies.rest.dto.resource.VersionInfo;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.resteasy.client.ClientResponse;

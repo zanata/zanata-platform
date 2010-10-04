@@ -11,9 +11,9 @@ import net.openl10n.flies.adapter.properties.PropWriter;
 import net.openl10n.flies.rest.client.ClientUtility;
 import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 import net.openl10n.flies.rest.client.IDocumentsResource;
+import net.openl10n.flies.rest.dto.VersionInfo;
 import net.openl10n.flies.rest.dto.deprecated.Document;
 import net.openl10n.flies.rest.dto.deprecated.Documents;
-import net.openl10n.flies.rest.dto.resource.VersionInfo;
 
 import org.apache.tools.ant.BuildException;
 import org.jboss.resteasy.client.ClientResponse;

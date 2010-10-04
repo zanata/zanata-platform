@@ -1,4 +1,4 @@
-package net.openl10n.flies.rest.dto.resource;
+package net.openl10n.flies.rest.dto;
 
 import java.io.Serializable;
 
@@ -6,7 +6,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import net.openl10n.flies.rest.dto.DTOUtil;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonTypeName;

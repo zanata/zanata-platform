@@ -14,7 +14,7 @@ import org.testng.annotations.Test;
 import net.openl10n.flies.FliesInit;
 import net.openl10n.flies.FliesRestTest;
 import net.openl10n.flies.rest.client.IVersion;
-import net.openl10n.flies.rest.dto.resource.VersionInfo;
+import net.openl10n.flies.rest.dto.VersionInfo;
 
 public class VersionRestTest extends FliesRestTest
 {

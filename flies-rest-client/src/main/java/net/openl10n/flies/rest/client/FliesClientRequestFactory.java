@@ -5,7 +5,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import net.openl10n.flies.rest.dto.resource.VersionInfo;
+import net.openl10n.flies.rest.dto.VersionInfo;
 
 import org.jboss.resteasy.client.ClientExecutor;
 import org.jboss.resteasy.client.ClientRequestFactory;

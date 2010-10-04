@@ -5,7 +5,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import net.openl10n.flies.rest.dto.resource.VersionInfo;
+import net.openl10n.flies.rest.dto.VersionInfo;
 
 
 @Produces({ MediaType.APPLICATION_XML })

@@ -7,7 +7,7 @@ import javax.ws.rs.core.MediaType;
 
 import net.openl10n.flies.FliesDBUnitSeamTest;
 import net.openl10n.flies.rest.client.ITranslationResources;
-import net.openl10n.flies.rest.dto.resource.VersionInfo;
+import net.openl10n.flies.rest.dto.VersionInfo;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.resteasy.client.ClientResponse;

@@ -12,7 +12,7 @@ import net.openl10n.flies.rest.client.IDocumentsResource;
 import net.openl10n.flies.rest.client.IProjectIterationResource;
 import net.openl10n.flies.rest.client.ITranslationResources;
 import net.openl10n.flies.rest.client.IVersion;
-import net.openl10n.flies.rest.dto.resource.VersionInfo;
+import net.openl10n.flies.rest.dto.VersionInfo;
 
 public class FliesTestClientRequestFactory extends FliesClientRequestFactory
 {

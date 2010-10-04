@@ -18,10 +18,10 @@ import org.testng.annotations.Test;
 
 import com.allen_sauer.gwt.log.client.Log;
 
+import net.openl10n.flies.rest.dto.VersionInfo;
 import net.openl10n.flies.rest.dto.resource.Resource;
 import net.openl10n.flies.rest.dto.resource.ResourceMeta;
 import net.openl10n.flies.rest.dto.resource.TranslationsResource;
-import net.openl10n.flies.rest.dto.resource.VersionInfo;
 
 public class RestUtilsTest
 {

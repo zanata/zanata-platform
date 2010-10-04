@@ -6,7 +6,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import net.openl10n.flies.FliesInit;
-import net.openl10n.flies.rest.dto.resource.VersionInfo;
+import net.openl10n.flies.rest.dto.VersionInfo;
 
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
