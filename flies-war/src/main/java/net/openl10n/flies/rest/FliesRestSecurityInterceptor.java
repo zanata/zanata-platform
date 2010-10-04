@@ -4,7 +4,6 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import net.openl10n.flies.dao.AccountDAO;
 import net.openl10n.flies.security.FliesIdentity;
 
 import org.jboss.resteasy.annotations.interception.SecurityPrecedence;
@@ -14,7 +13,6 @@ import org.jboss.resteasy.core.ServerResponse;
 import org.jboss.resteasy.spi.Failure;
 import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.interception.PreProcessInterceptor;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 
@@ -25,9 +23,6 @@ public class FliesRestSecurityInterceptor implements PreProcessInterceptor
 
    public static final String X_AUTH_TOKEN_HEADER = "X-Auth-Token";
    public static final String X_AUTH_USER_HEADER = "X-Auth-User";
-
-   @In
-   AccountDAO accountDAO;
 
    @Override
    public ServerResponse preProcess(HttpRequest request, ResourceMethod method) throws Failure, WebApplicationException
