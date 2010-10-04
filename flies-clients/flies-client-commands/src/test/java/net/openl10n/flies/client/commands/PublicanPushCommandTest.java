@@ -7,6 +7,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.openl10n.flies.client.config.LocaleList;
+import net.openl10n.flies.client.config.LocaleMapping;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.rest.StringSet;
 import net.openl10n.flies.rest.client.FliesClientRequestFactory;
@@ -33,13 +35,19 @@ public class PublicanPushCommandTest
    @Test
    public void publicanPushPot() throws Exception
    {
-      publicanPush(false);
+      publicanPush(false, false);
    }
 
    @Test
    public void publicanPushPotAndPo() throws Exception
    {
-      publicanPush(true);
+      publicanPush(true, false);
+   }
+
+   @Test
+   public void publicanPushPotAndPoWithLocaleMapping() throws Exception
+   {
+      publicanPush(true, true);
    }
 
    @BeforeMethod
@@ -48,7 +56,7 @@ public class PublicanPushCommandTest
       control.reset();
    }
 
-   private void publicanPush(boolean importPo) throws Exception
+   private void publicanPush(boolean importPo, boolean mapLocale) throws Exception
    {
       PublicanPushOptions opts = new PublicanPushOptionsImpl();
       String projectSlug = "project";
@@ -57,6 +65,12 @@ public class PublicanPushCommandTest
       opts.setProjectVersion(versionSlug);
       opts.setSrcDir(new File("src/test/resources/test1"));
       opts.setImportPo(importPo);
+      if (mapLocale)
+      {
+         LocaleList locales = new LocaleList();
+         locales.add(new LocaleMapping("ja", "ja-JP"));
+         opts.setLocales(locales);
+      }
 
       ITranslationResources mockTranslationResources = control.createMock(ITranslationResources.class);
       List<ResourceMeta> resourceMetaList = new ArrayList<ResourceMeta>();
@@ -72,7 +86,12 @@ public class PublicanPushCommandTest
 
       if (importPo)
       {
-         EasyMock.expect(mockTranslationResources.putTranslations(eq("RPM"), eq(new LocaleId("ja-JP")), (TranslationsResource) notNull(), eq(extensionSet))).andReturn(mockOKResponse);
+         LocaleId expectedLocale;
+         if (mapLocale)
+            expectedLocale = new LocaleId("ja");
+         else
+            expectedLocale = new LocaleId("ja-JP");
+         EasyMock.expect(mockTranslationResources.putTranslations(eq("RPM"), eq(expectedLocale), (TranslationsResource) notNull(), eq(extensionSet))).andReturn(mockOKResponse);
       }
       FliesClientRequestFactory mockRequestFactory = EasyMock.createNiceMock(FliesClientRequestFactory.class);
 

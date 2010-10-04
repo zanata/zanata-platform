@@ -2,6 +2,7 @@ package net.openl10n.flies.resources;
 
 import net.openl10n.flies.common.LocaleId;
 
+@Deprecated
 public final class LocaleOutputSourcePair
 {
 

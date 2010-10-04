@@ -1,6 +1,7 @@
 package net.openl10n.flies.maven;
 
 import net.openl10n.flies.client.commands.ConfigurableProjectOptions;
+import net.openl10n.flies.client.config.LocaleList;
 
 /**
  * Base class for Flies mojos which support configuration by the user's
@@ -44,6 +45,8 @@ public abstract class ConfigurableProjectMojo extends ConfigurableMojo implement
     */
    private String projectVersion;
 
+   private LocaleList locales;
+
    public ConfigurableProjectMojo()
    {
       super();
@@ -83,6 +86,18 @@ public abstract class ConfigurableProjectMojo extends ConfigurableMojo implement
    public void setProjectVersion(String projectVersion)
    {
       this.projectVersion = projectVersion;
+   }
+
+   @Override
+   public LocaleList getLocales()
+   {
+      return locales;
+   }
+
+   @Override
+   public void setLocales(LocaleList locales)
+   {
+      this.locales = locales;
    }
 
 }

@@ -12,10 +12,13 @@
       <locale>ja</locale>
       <locale>zh-CN</locale>
     </locales>
- -->
-
+    <locales>
+        <locale>ja-JP</locale>
+    </locales>
+-->
     <locales>
         <locale map-from="ja-JP">ja</locale>
     </locales>
+
 
 </config>

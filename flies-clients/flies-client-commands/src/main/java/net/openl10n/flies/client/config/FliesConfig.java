@@ -22,14 +22,12 @@ package net.openl10n.flies.client.config;
 
 import java.io.Serializable;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
-import net.openl10n.flies.common.Namespaces;
 
 /**
  * Representation of the root node of Flies configuration
@@ -37,12 +35,12 @@ import net.openl10n.flies.common.Namespaces;
  * @author Sean Flanigan <sflaniga@redhat.com>
  * 
  */
-@XmlType(name = "configType")
+@XmlType(name = "configType", propOrder = { "url", "project", "projectVersion", "locales" })
 @XmlRootElement(name = "config")
 public class FliesConfig implements Serializable
 {
    private static final long serialVersionUID = 1L;
-   private List<DocSet> docSets = new ArrayList<DocSet>();
+   private LocaleList locales = new LocaleList();
    private String project;
    private URL url;
    private String projectVersion;
@@ -51,15 +49,16 @@ public class FliesConfig implements Serializable
    {
    }
 
-   @XmlElement(name = "docset", namespace = Namespaces.FLIES_CONFIG)
-   public List<DocSet> getDocSets()
+   @XmlElementWrapper(name = "locales", required = false)
+   @XmlElementRef(type = LocaleMapping.class, name = "locale")
+   public LocaleList getLocales()
    {
-      return docSets;
+      return locales;
    }
 
-   public void setDocSets(List<DocSet> docSets)
+   public void setLocales(LocaleList locales)
    {
-      this.docSets = docSets;
+      this.locales = locales;
    }
 
    @XmlElement(name = "project")
