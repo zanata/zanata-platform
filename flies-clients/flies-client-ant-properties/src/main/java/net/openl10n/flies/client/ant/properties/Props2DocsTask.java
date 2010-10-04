@@ -17,6 +17,7 @@ import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 import net.openl10n.flies.rest.client.IDocumentsResource;
 import net.openl10n.flies.rest.dto.deprecated.Document;
 import net.openl10n.flies.rest.dto.deprecated.Documents;
+import net.openl10n.flies.rest.dto.resource.VersionInfo;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -97,7 +98,7 @@ public class Props2DocsTask extends BaseTask
          else
          {
             // send project to rest api
-            FliesClientRequestFactory factory = new FliesClientRequestFactory(user, apiKey);
+            FliesClientRequestFactory factory = new FliesClientRequestFactory(user, apiKey, new VersionInfo("SNAPSHOT", "Unknow"));
             IDocumentsResource documentsResource = factory.getDocuments(dstURL.toURI());
             ClientResponse response = documentsResource.put(docs);
             ClientUtility.checkResult(response, dstURL.toURI());

@@ -13,6 +13,7 @@ import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 import net.openl10n.flies.rest.client.IDocumentsResource;
 import net.openl10n.flies.rest.dto.deprecated.Document;
 import net.openl10n.flies.rest.dto.deprecated.Documents;
+import net.openl10n.flies.rest.dto.resource.VersionInfo;
 
 import org.apache.tools.ant.BuildException;
 import org.jboss.resteasy.client.ClientResponse;
@@ -53,7 +54,7 @@ public class Docs2PropsTask extends BaseTask
          else
          {
             // use rest api to fetch Documents
-            FliesClientRequestFactory factory = new FliesClientRequestFactory(user, apiKey);
+            FliesClientRequestFactory factory = new FliesClientRequestFactory(user, apiKey, new VersionInfo("SNAPSHOT", "Unknow"));
             IDocumentsResource documentsResource = factory.getDocuments(srcURL.toURI());
             ClientResponse<Documents> response = documentsResource.getDocuments();
 
