@@ -19,8 +19,6 @@ import javax.persistence.Transient;
 import net.openl10n.flies.common.ContentType;
 import net.openl10n.flies.model.po.HPoHeader;
 import net.openl10n.flies.model.po.HPoTargetHeader;
-import net.openl10n.flies.rest.dto.deprecated.Document;
-import net.openl10n.flies.rest.dto.deprecated.TextFlow;
 import net.openl10n.flies.rest.dto.resource.AbstractResourceMeta;
 import net.openl10n.flies.rest.dto.resource.Resource;
 import net.openl10n.flies.rest.dto.resource.ResourceMeta;
@@ -90,24 +88,6 @@ public class HDocument extends AbstractFliesEntity implements IDocumentHistory
    {
    }
 
-   @Deprecated
-   public HDocument(Document docInfo, HLocale locale)
-   {
-      this.docId = docInfo.getId();
-      this.name = docInfo.getName();
-      this.path = docInfo.getPath();
-      this.contentType = docInfo.getContentType();
-      this.locale = locale;
-      this.revision = docInfo.getRevision();
-   }
-
-   public HTextFlow create(TextFlow res, int nextDocRev)
-   {
-      HTextFlow tf = new HTextFlow(res, nextDocRev);
-      getTextFlows().add(tf);
-      tf.setDocument(this);
-      return tf;
-   }
 
    public void setFullPath(String fullPath)
    {

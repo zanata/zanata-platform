@@ -13,7 +13,6 @@ import javax.persistence.Transient;
 import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.hibernate.search.ContentStateBridge;
 import net.openl10n.flies.hibernate.search.LocaleIdBridge;
-import net.openl10n.flies.rest.dto.deprecated.TextFlowTarget;
 
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
@@ -58,16 +57,6 @@ public class HTextFlowTarget extends AbstractFliesEntity implements ITextFlowTar
       this.textFlowRevision = textFlow.getRevision();
    }
 
-   public HTextFlowTarget(TextFlowTarget target, HLocale locale)
-   {
-      this.content = target.getContent();
-      this.locale = locale;
-      this.textFlowRevision = target.getResourceRevision();
-      this.state = target.getState();
-      // setTextFlow(target.getTextFlow);
-      // setComment(target.comment);
-      // setDocumentTarget(target.documentTarget);
-   }
 
    @Id
    @GeneratedValue
@@ -81,11 +70,6 @@ public class HTextFlowTarget extends AbstractFliesEntity implements ITextFlowTar
       this.id = id;
    }
 
-   public void copy(TextFlowTarget tfTarget)
-   {
-      this.content = tfTarget.getContent();
-      this.state = tfTarget.getState();
-   }
 
    @NaturalId
    @ManyToOne

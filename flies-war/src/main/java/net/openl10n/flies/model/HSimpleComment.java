@@ -4,7 +4,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-import net.openl10n.flies.rest.dto.deprecated.SimpleComment;
 
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.NotNull;
@@ -54,11 +53,6 @@ public class HSimpleComment
       this.comment = comment;
    }
 
-   public static SimpleComment toSimpleComment(HSimpleComment comment)
-   {
-      String s = toString(comment);
-      return s != null ? new SimpleComment(s) : null;
-   }
 
    public static String toString(HSimpleComment comment)
    {

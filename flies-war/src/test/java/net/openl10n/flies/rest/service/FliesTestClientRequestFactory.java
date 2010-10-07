@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.openl10n.flies.rest.client.FliesClientRequestFactory;
-import net.openl10n.flies.rest.client.IDocumentsResource;
 import net.openl10n.flies.rest.client.IProjectIterationResource;
 import net.openl10n.flies.rest.client.ITranslationResources;
 import net.openl10n.flies.rest.client.IVersion;
@@ -43,18 +42,6 @@ public class FliesTestClientRequestFactory extends FliesClientRequestFactory
       }
    }
 
-   public IDocumentsResource getDocuments(String projectSlug, String iter)
-   {
-      try
-      {
-         return createProxy(IDocumentsResource.class, new URI("/restv1/projects/p/" + projectSlug + "/iterations/i/" + iter + "/documents"));
-      }
-      catch (URISyntaxException e)
-      {
-         log.debug("exception:" + e.getMessage());
-         throw new RuntimeException(e);
-      }
-   }
 
    public void registerPrefixInterceptor(Object interceptor)
    {

@@ -18,7 +18,6 @@ import javax.persistence.OneToOne;
 
 import net.openl10n.flies.hibernate.search.TranslatedFilterFactory;
 import net.openl10n.flies.model.po.HPotEntryData;
-import net.openl10n.flies.rest.dto.deprecated.TextFlow;
 import net.openl10n.flies.search.DefaultNgramAnalyzer;
 
 import org.hibernate.annotations.NaturalId;
@@ -83,12 +82,6 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
       this.content = content;
    }
 
-   public HTextFlow(TextFlow other, int revision)
-   {
-      this.resId = other.getId();
-      this.content = other.getContent();
-      this.revision = revision;
-   }
 
    @Id
    @GeneratedValue
