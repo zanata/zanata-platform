@@ -38,6 +38,7 @@ public class FliesTestClientRequestFactory extends FliesClientRequestFactory
       }
       catch (URISyntaxException e)
       {
+         log.debug("exception:" + e.getMessage());
          throw new RuntimeException(e);
       }
    }
@@ -50,6 +51,7 @@ public class FliesTestClientRequestFactory extends FliesClientRequestFactory
       }
       catch (URISyntaxException e)
       {
+         log.debug("exception:" + e.getMessage());
          throw new RuntimeException(e);
       }
    }
@@ -67,6 +69,7 @@ public class FliesTestClientRequestFactory extends FliesClientRequestFactory
       }
       catch (URISyntaxException e)
       {
+         log.debug("exception:" + e.getMessage());
          throw new RuntimeException(e);
       }
    }

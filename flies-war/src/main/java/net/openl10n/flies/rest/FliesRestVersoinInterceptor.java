@@ -8,6 +8,7 @@ import javax.ws.rs.core.Response.Status;
 
 import net.openl10n.flies.FliesInit;
 import net.openl10n.flies.service.impl.VersionManager;
+import net.openl10n.flies.rest.RestConstant;
 
 import org.jboss.resteasy.annotations.interception.ServerInterceptor;
 import org.jboss.resteasy.core.ResourceMethod;
@@ -17,15 +18,14 @@ import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.interception.PreProcessInterceptor;
 import org.jboss.seam.Component;
 
+
 @ServerInterceptor
 public class FliesRestVersoinInterceptor implements PreProcessInterceptor
 {
-   public final String VERSION_NO = "Version-No";
-
    @Override
    public ServerResponse preProcess(HttpRequest request, ResourceMethod method) throws Failure, WebApplicationException
    {
-      String clientVer = request.getHttpHeaders().getRequestHeaders().getFirst(VERSION_NO);
+      String clientVer = request.getHttpHeaders().getRequestHeaders().getFirst(RestConstant.HEADER_VERSION_NO);
       FliesInit fliesInit = (FliesInit) Component.getInstance(FliesInit.class, APPLICATION);
       VersionManager verManager = (VersionManager) Component.getInstance(VersionManager.class, APPLICATION);
 
