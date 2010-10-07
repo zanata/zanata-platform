@@ -1,6 +1,7 @@
 package net.openl10n.flies.rest.client;
 
 import javax.ws.rs.ext.Provider;
+import net.openl10n.flies.rest.RestConstant;
 
 
 import org.jboss.resteasy.annotations.interception.ClientInterceptor;
@@ -12,9 +13,6 @@ import org.jboss.resteasy.spi.interception.ClientExecutionInterceptor;
 @ClientInterceptor
 public class ApiKeyHeaderDecorator implements ClientExecutionInterceptor
 {
-
-   public final String VERSION_NO = "Version-No";
-   public final String BUILD_TIME_STAMP = "Build-Time-Stamp";
    private String apiKey;
    private String username;
    private String ver;
@@ -34,9 +32,9 @@ public class ApiKeyHeaderDecorator implements ClientExecutionInterceptor
    @Override
    public ClientResponse execute(ClientExecutionContext ctx) throws Exception
    {
-      ctx.getRequest().getHeaders().add("X-Auth-User", username);
-      ctx.getRequest().getHeaders().add("X-Auth-Token", apiKey);
-      ctx.getRequest().getHeaders().add(VERSION_NO, ver);
+      ctx.getRequest().getHeaders().add(RestConstant.HEADER_USERNAME, username);
+      ctx.getRequest().getHeaders().add(RestConstant.HEADER_API_KEY, apiKey);
+      ctx.getRequest().getHeaders().add(RestConstant.HEADER_VERSION_NO, ver);
       return ctx.proceed();
    }
 
