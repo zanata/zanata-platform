@@ -98,28 +98,6 @@ public class FliesClientRequestFactory implements ITranslationResourcesFactory
       }
    }
 
-   public IDocumentsResource getDocuments(final URI uri)
-   {
-      return createProxy(IDocumentsResource.class, uri);
-   }
-
-   public URI getDocumentsURI(String proj, String iter)
-   {
-      try
-      {
-         URL url = new URL(crf.getBase().toURL(), RESOURCE_PREFIX + "/projects/p/" + proj + "/iterations/i/" + iter + "/documents");
-         return url.toURI();
-      }
-      catch (MalformedURLException e)
-      {
-         throw new RuntimeException(e);
-      }
-      catch (URISyntaxException e)
-      {
-         throw new RuntimeException(e);
-      }
-   }
-
    public IProjectResource getProject(String proj)
    {
       return createProxy(IProjectResource.class, getProjectURI(proj));
