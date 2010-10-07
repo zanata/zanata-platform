@@ -60,7 +60,7 @@ public class PublicanPushCommandTest
    {
       PublicanPushOptions opts = new PublicanPushOptionsImpl();
       String projectSlug = "project";
-      opts.setProject(projectSlug);
+      opts.setProj(projectSlug);
       String versionSlug = "1.0";
       opts.setProjectVersion(versionSlug);
       opts.setSrcDir(new File("src/test/resources/test1"));

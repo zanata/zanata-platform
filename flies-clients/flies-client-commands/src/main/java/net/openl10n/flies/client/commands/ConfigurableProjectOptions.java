@@ -14,10 +14,10 @@ import org.kohsuke.args4j.Option;
 public interface ConfigurableProjectOptions extends ConfigurableOptions
 {
 
-   public String getProject();
+   public String getProj();
 
    @Option(name = "--project", metaVar = "PROJ", usage = "Flies project ID/slug.  This value is required unless specified in flies.xml.")
-   public void setProject(String projectSlug);
+   public void setProj(String projectSlug);
 
    @Option(name = "--project-config", metaVar = "FILENAME", usage = "Flies project configuration, eg flies.xml", required = false)
    public void setProjectConfig(String projectConfig);

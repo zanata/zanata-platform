@@ -84,9 +84,9 @@ public class OptionsUtil
     */
    private static void applyProjectConfig(ConfigurableProjectOptions opts, FliesConfig config)
    {
-      if (opts.getProject() == null)
+      if (opts.getProj() == null)
       {
-         opts.setProject(config.getProject());
+         opts.setProj(config.getProject());
       }
       if (opts.getUrl() == null)
       {

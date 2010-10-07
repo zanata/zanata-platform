@@ -35,7 +35,7 @@ public abstract class ConfigurableProjectCommand extends ConfigurableCommand
    public ConfigurableProjectCommand(ConfigurableProjectOptions opts, FliesClientRequestFactory factory)
    {
       super(opts, factory);
-      if (opts.getProject() == null)
+      if (opts.getProj() == null)
          throw new ConfigException("Project must be specified");
       if (opts.getProjectVersion() == null)
          throw new ConfigException("Project version must be specified");

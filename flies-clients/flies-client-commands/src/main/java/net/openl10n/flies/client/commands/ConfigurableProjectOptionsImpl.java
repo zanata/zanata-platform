@@ -47,14 +47,14 @@ public abstract class ConfigurableProjectOptionsImpl extends ConfigurableOptions
    private LocaleList locales;
 
    @Override
-   public String getProject()
+   public String getProj()
    {
       return project;
    }
 
    @Override
    @Option(name = "--project", metaVar = "PROJ", usage = "Flies project ID/slug.  This value is required unless specified in flies.xml.")
-   public void setProject(String projectSlug)
+   public void setProj(String projectSlug)
    {
       this.project = projectSlug;
    }
