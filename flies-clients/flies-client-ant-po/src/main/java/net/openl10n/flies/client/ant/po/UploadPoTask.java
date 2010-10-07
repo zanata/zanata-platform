@@ -1,46 +1,17 @@
 package net.openl10n.flies.client.ant.po;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.List;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-
-import net.openl10n.flies.adapter.po.PoReader;
-import net.openl10n.flies.client.commands.ArgsUtil;
-import net.openl10n.flies.client.commands.StringUtil;
-import net.openl10n.flies.client.commands.gettext.PublicanUtil;
-import net.openl10n.flies.common.ContentType;
-import net.openl10n.flies.common.LocaleId;
-import net.openl10n.flies.rest.JaxbUtil;
-import net.openl10n.flies.rest.client.ClientUtility;
-import net.openl10n.flies.rest.client.FliesClientRequestFactory;
-import net.openl10n.flies.rest.client.IDocumentsResource;
-import net.openl10n.flies.rest.dto.deprecated.Document;
-import net.openl10n.flies.rest.dto.deprecated.Documents;
-
-import org.jboss.resteasy.client.ClientResponse;
 import org.kohsuke.args4j.Option;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
-public class UploadPoTask extends FliesTask
+import net.openl10n.flies.client.commands.ArgsUtil;
+import net.openl10n.flies.client.commands.PublicanPushCommand;
+import net.openl10n.flies.client.commands.PublicanPushOptions;
+
+public class UploadPoTask extends ConfigurableProjectTask implements PublicanPushOptions
 {
-   private static final Logger log = LoggerFactory.getLogger(UploadPoTask.class);
-
-   private String user;
-
-   private String apiKey;
-
-   private String dst;
-
+   // private static final Logger log =
+   // LoggerFactory.getLogger(UploadPoTask.class);
    private File srcDir;
 
    private String sourceLang = "en-US";
@@ -67,120 +38,9 @@ public class UploadPoTask extends FliesTask
       return "Uploads a Publican project's PO/POT files to Flies for translation";
    }
 
-   public void run() throws JAXBException, SAXException, URISyntaxException, IOException
+   public PublicanPushCommand initCommand()
    {
-      PoReader poReader = new PoReader();
-      File potDir = new File(srcDir, "pot");
-      File[] potFiles = PublicanUtil.findPotFiles(potDir);
-
-      // debug: print scanned files
-      if (getDebug())
-      {
-         System.out.println("Here are scanned files: ");
-         for (File potFile : potFiles)
-            System.out.println("  " + potFile);
-      }
-      JAXBContext jc = JAXBContext.newInstance(Documents.class);
-      Marshaller m = null;
-      URL dstURL = Utility.createURL(dst, Utility.getBaseDir(getProject()));
-
-      if (getDebug() || "file".equals(dstURL.getProtocol()))
-      {
-         m = jc.createMarshaller();
-      }
-
-      // debug
-      if (getDebug())
-         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-      Documents docs = new Documents();
-      List<Document> docList = docs.getDocuments();
-
-      File[] localeDirs = new File[0];
-      if (importPo)
-      {
-         localeDirs = PublicanUtil.findLocaleDirs(srcDir);
-      }
-
-      // for each of the base pot files under srcdir/pot:
-      for (File potFile : potFiles)
-      {
-         //				progress.update(i++, files.length);
-         String basename = StringUtil.removeFileExtension(potFile.getName(), ".pot");
-         Document doc = new Document(basename, ContentType.TextPlain);
-         InputSource potInputSource = new InputSource(potFile.toURI().toString());
-         //				System.out.println(potFile.toURI().toString());
-         potInputSource.setEncoding("utf8");
-         poReader.extractTemplate(doc, potInputSource, new LocaleId(sourceLang));
-         docList.add(doc);
-
-         // for each of the corresponding po files in the locale subdirs:
-         // (The locale list should actually be empty unless importPo is enabled)
-         if (importPo)
-         {
-            String poName = basename + ".po";
-            for (File localeDir : localeDirs)
-            {
-               File poFile = new File(localeDir, poName);
-               if (poFile.exists())
-               {
-                  // progress.update(i++, files.length);
-                  InputSource inputSource = new InputSource(poFile.toURI().toString());
-                  // System.out.println(poFile.toURI().toString());
-                  inputSource.setEncoding("utf8");
-                  poReader.extractTarget(doc, inputSource, new LocaleId(localeDir.getName()));
-               }
-            }
-         }
-      }
-      //			progress.finished();
-
-      if (getDebug())
-      {
-         StringWriter writer = new StringWriter();
-         m.marshal(docs, writer);
-         log.debug("{}", writer);
-      }
-
-      if (validate)
-         JaxbUtil.validateXml(docs, jc);
-
-      if (dst == null)
-         return;
-
-      // check if local or remote: write to file if local, put to server if remote
-      if ("file".equals(dstURL.getProtocol()))
-      {
-         m.marshal(docs, new File(dstURL.getFile()));
-      }
-      else
-      {
-         // send project to rest api
-         FliesClientRequestFactory factory = new FliesClientRequestFactory(user, apiKey, versionInfo);
-         IDocumentsResource documentsResource = factory.getDocuments(dstURL.toURI());
-         ClientResponse<?> response = documentsResource.put(docs);
-         ClientUtility.checkResult(response, dstURL.toURI());
-      }
-   }
-
-   @Option(name = "--user", metaVar = "USER", usage = "Flies user name", required = true)
-   public void setUser(String user)
-   {
-      this.user = user;
-   }
-
-   @Option(name = "--key", metaVar = "KEY", usage = "Flies API key (from Flies Profile page)", required = true)
-   public void setApiKey(String apiKey)
-   {
-      this.apiKey = apiKey;
-   }
-
-   // TODO make --dst optional, and provide --flies, --proj, --iter options
-
-   @Option(aliases = { "-d" }, name = "--dst", metaVar = "URL", required = true, usage = "Destination URL for upload, eg http://flies.example.com/seam/resource/restv1/projects/p/myProject/iterations/i/myIter/documents")
-   public void setDst(String dst)
-   {
-      this.dst = dst;
+      return new PublicanPushCommand(this);
    }
 
    @Option(aliases = { "-s" }, name = "--src", metaVar = "DIR", required = true, usage = "Base directory for publican files (with subdirectory \"pot\" and optional locale directories)")
@@ -189,13 +49,13 @@ public class UploadPoTask extends FliesTask
       this.srcDir = srcDir;
    }
 
-   @Option(aliases = { "-l" }, name = "--srclang", usage = "Language of source (defaults to en-US)")
+   @Option(aliases = { "-l" }, name = "--src-lang", usage = "Language of source (defaults to en-US)")
    public void setSourceLang(String sourceLang)
    {
       this.sourceLang = sourceLang;
    }
 
-   @Option(name = "--importpo", usage = "Import translations from local PO files to Flies (DANGER!)")
+   @Option(name = "--import-po", usage = "Import translations from local PO files to Flies, overwriting or erasing existing translations (DANGER!)")
    public void setImportPo(boolean importPo)
    {
       this.importPo = importPo;
@@ -206,5 +66,26 @@ public class UploadPoTask extends FliesTask
    {
       this.validate = validate;
    }
+
+   public boolean getValidate()
+   {
+      return validate;
+   }
+
+   public boolean getImportPo()
+   {
+      return importPo;
+   }
+
+   public File getSrcDir()
+   {
+      return srcDir;
+   }
+
+   public String getSourceLang()
+   {
+      return sourceLang;
+   }
+
 
 }

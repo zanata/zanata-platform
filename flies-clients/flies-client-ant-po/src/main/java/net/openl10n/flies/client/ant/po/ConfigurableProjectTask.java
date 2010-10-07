@@ -1,44 +1,16 @@
 package net.openl10n.flies.client.ant.po;
 
-import net.openl10n.flies.client.commands.ArgsUtil;
-import net.openl10n.flies.client.commands.ConfigurableProjectOptions;
-import net.openl10n.flies.client.commands.FliesCommand;
-import net.openl10n.flies.client.commands.RetrieveCommand;
 import net.openl10n.flies.client.config.LocaleList;
+
 import org.kohsuke.args4j.Option;
 
-public class DownloadPoTask extends ConfigurableProjectTask implements ConfigurableProjectOptions
+public abstract class ConfigurableProjectTask extends ConfigurableTask
 {
    private String projectConfig = "flies.xml";
 
    private String project;
    private String projectVersion;
    private LocaleList locales;
-
-
-   public static void main(String[] args)
-   {
-      DownloadPoTask task = new DownloadPoTask();
-      ArgsUtil.processArgs(args, task);
-   }
-
-   @Override
-   public String getCommandName()
-   {
-      return "downloadpo";
-   }
-
-   @Override
-   public String getCommandDescription()
-   {
-      return "Downloads a Publican project's PO/POT files from Flies after translation, to allow document generation";
-   }
-
-   @Override
-   public FliesCommand initCommand()
-   {
-      return new RetrieveCommand(this);
-   }
 
    public String getProj()
    {
@@ -51,42 +23,35 @@ public class DownloadPoTask extends ConfigurableProjectTask implements Configura
       this.project = projectSlug;
    }
 
-   @Override
    @Option(name = "--project-config", metaVar = "FILENAME", usage = "Flies project configuration, eg flies.xml", required = false)
    public void setProjectConfig(String projectConfig)
    {
       this.projectConfig = projectConfig;
    }
 
-   @Override
    public String getProjectVersion()
    {
       return projectVersion;
    }
 
-   @Override
    @Option(name = "--project-version", metaVar = "VER", usage = "Flies project version ID  This value is required unless specified in flies.xml.")
    public void setProjectVersion(String versionSlug)
    {
       this.projectVersion = versionSlug;
    }
 
-   @Override
    public String getProjectConfig()
    {
       return projectConfig;
    }
 
-   @Override
    public LocaleList getLocales()
    {
       return locales;
    }
 
-   @Override
    public void setLocales(LocaleList locales)
    {
       this.locales = locales;
    }
-
 }

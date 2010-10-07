@@ -1,35 +1,16 @@
 package net.openl10n.flies.client.ant.po;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-
 import net.openl10n.flies.client.commands.ArgsUtil;
-import net.openl10n.flies.rest.client.ClientUtility;
-import net.openl10n.flies.rest.client.FliesClientRequestFactory;
-import net.openl10n.flies.rest.client.IProjectIterationResource;
-import net.openl10n.flies.rest.dto.ProjectIteration;
-
-import org.jboss.resteasy.client.ClientResponse;
+import net.openl10n.flies.client.commands.FliesCommand;
+import net.openl10n.flies.client.commands.PutVersionCommand;
+import net.openl10n.flies.client.commands.PutVersionOptions;
 import org.kohsuke.args4j.Option;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-/**
- * @deprecated See PutVersionCommand
- */
-public class CreateIterationTask extends FliesTask
+public class CreateIterationTask extends ConfigurableTask implements PutVersionOptions
 {
-   private static final Logger log = LoggerFactory.getLogger(CreateIterationTask.class);
+   // private static final Logger log =
+   // LoggerFactory.getLogger(CreateIterationTask.class);
 
-   private String user;
-   private String apiKey;
-   private String fliesURL;
    private String proj;
    private String iter;
    private String name;
@@ -53,78 +34,61 @@ public class CreateIterationTask extends FliesTask
       return "Creates a project iteration in Flies";
    }
 
-   public void run() throws JAXBException, URISyntaxException, IOException
-   {
-      JAXBContext jc = JAXBContext.newInstance(ProjectIteration.class);
-      Marshaller m = jc.createMarshaller();
-      // debug
-      if (getDebug())
-         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-      ProjectIteration iteration = new ProjectIteration();
-      iteration.setId(iter);
-      iteration.setName(name);
-      iteration.setDescription(desc);
-
-      if (getDebug())
-      {
-         StringWriter writer = new StringWriter();
-         m.marshal(iteration, writer);
-         log.debug("{}", writer);
-      }
-
-      if (fliesURL == null)
-         return;
-      URI base = new URI(fliesURL);
-      // send iter to rest api
-      FliesClientRequestFactory factory = new FliesClientRequestFactory(base, user, apiKey, versionInfo);
-      IProjectIterationResource iterResource = factory.getProjectIteration(proj, iter);
-      URI uri = factory.getProjectIterationURI(proj, iter);
-      ClientResponse<?> response = iterResource.put(iteration);
-      ClientUtility.checkResult(response, uri);
-   }
-
-   @Option(name = "--user", metaVar = "USER", usage = "Flies user name", required = true)
-   public void setUser(String user)
-   {
-      this.user = user;
-   }
-
-   @Option(name = "--key", metaVar = "KEY", usage = "Flies API key (from Flies Profile page)", required = true)
-   public void setApiKey(String apiKey)
-   {
-      this.apiKey = apiKey;
-   }
-
-   @Option(name = "--flies", metaVar = "URL", usage = "Flies base URL, eg http://flies.example.com/flies/", required = true)
-   public void setFliesURL(String url)
-   {
-      this.fliesURL = url;
-   }
 
    @Option(name = "--proj", metaVar = "PROJ", usage = "Flies project ID", required = true)
-   public void setProj(String id)
+   public void setVersionProject(String id)
    {
       this.proj = id;
    }
 
-   @Option(name = "--iter", metaVar = "ITER", usage = "Flies project iteration ID", required = true)
-   public void setIter(String id)
+   @Option(name = "--version-slug", metaVar = "VER", usage = "Flies project version ID", required = true)
+   public void setVersionSlug(String id)
    {
       this.iter = id;
    }
 
-   @Option(name = "--name", metaVar = "NAME", usage = "Flies project iteration name", required = true)
-   public void setName(String name)
+   @Option(name = "--version-name", metaVar = "NAME", usage = "Flies project version name", required = true)
+   public void setVersionName(String name)
    {
       this.name = name;
    }
 
-   @Option(name = "--desc", metaVar = "DESC", usage = "Flies project iteration description", required = true)
-   public void setDesc(String desc)
+
+   @Option(name = "--version-desc", metaVar = "DESC", usage = "Flies project version description", required = true)
+   public void setVersionDesc(String desc)
    {
       this.desc = desc;
    }
 
+
+   @Override
+   public FliesCommand initCommand()
+   {
+      return new PutVersionCommand(this);
+   }
+
+
+   public String getVersionProject()
+   {
+      return this.proj;
+   }
+
+   @Override
+   public String getVersionSlug()
+   {
+      return this.iter;
+   }
+
+   @Override
+   public String getVersionDesc()
+   {
+      return this.desc;
+   }
+
+   @Override
+   public String getVersionName()
+   {
+      return this.name;
+   }
 
 }

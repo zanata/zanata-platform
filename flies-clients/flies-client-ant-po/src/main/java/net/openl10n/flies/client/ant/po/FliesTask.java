@@ -1,14 +1,13 @@
 package net.openl10n.flies.client.ant.po;
 
 import net.openl10n.flies.client.commands.BasicOptions;
-import net.openl10n.flies.client.commands.FliesCommand;
 import net.openl10n.flies.rest.dto.VersionInfo;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.kohsuke.args4j.Option;
 
-public abstract class FliesTask extends Task implements FliesCommand, BasicOptions
+public abstract class FliesTask extends Task implements BasicOptions
 {
 
    private boolean debug;
@@ -74,12 +73,6 @@ public abstract class FliesTask extends Task implements FliesCommand, BasicOptio
    }
 
    @Override
-   public FliesCommand initCommand()
-   {
-      return this;
-   }
-
-   @Override
    public void execute() throws BuildException
    {
       ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
@@ -88,7 +81,7 @@ public abstract class FliesTask extends Task implements FliesCommand, BasicOptio
          // make sure RESTEasy classes will be found:
          Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
          // OptionsUtil.applyConfigFiles(this);
-         run();
+         this.initCommand().run();
       }
       catch (Exception e)
       {
