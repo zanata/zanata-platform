@@ -11,8 +11,9 @@
         <artifactId>flies-maven-plugin</artifactId>
         <version>1.0-SNAPSHOT</version>
         <configuration>
-<!-- for instance -->
+<!-- for instance 
           <importPo>false</importPo>
+-->
           <srcDir>.</srcDir>
         </configuration>
       </plugin>
