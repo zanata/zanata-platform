@@ -21,7 +21,7 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 import org.hibernate.validator.NotEmpty;
 
-@XmlType(name = "textFlowTargetType", propOrder = { "translator", "content", "extensions" })
+@XmlType(name = "textFlowTargetType", propOrder = { "description", "translator", "content", "extensions" })
 @XmlRootElement(name = "text-flow-target")
 @JsonPropertyOrder( { "resId", "state", "translator", "content", "extensions" })
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -34,6 +34,7 @@ public class TextFlowTarget implements Serializable, Extensible<TextFlowTargetEx
    private ContentState state = ContentState.New;
    private Person translator;
    private String content;
+   private String description;
    private ExtensionSet<TextFlowTargetExtension> extensions;
 
    public TextFlowTarget()
@@ -78,6 +79,24 @@ public class TextFlowTarget implements Serializable, Extensible<TextFlowTargetEx
    public void setContent(String content)
    {
       this.content = content;
+   }
+
+   /**
+    * Optional descriptive text to identify the TextFlowTarget, eg an
+    * abbreviated version of the source text being translated. This can be used
+    * for a more readable XML serialisation.
+    * 
+    * @return
+    */
+   @XmlElement(name = "description", required = false)
+   public String getDescription()
+   {
+      return description;
+   }
+
+   public void setDescription(String description)
+   {
+      this.description = description;
    }
 
    @XmlElementWrapper(name = "extensions", required = false)

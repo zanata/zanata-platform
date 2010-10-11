@@ -12,6 +12,7 @@ import java.util.Map;
 import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.common.ContentType;
 import net.openl10n.flies.common.LocaleId;
+import net.openl10n.flies.common.util.ShortString;
 import net.openl10n.flies.rest.dto.extensions.comment.SimpleComment;
 import net.openl10n.flies.rest.dto.extensions.gettext.HeaderEntry;
 import net.openl10n.flies.rest.dto.extensions.gettext.PoHeader;
@@ -93,8 +94,7 @@ public class PoReader2
                // add the target content (msgstr)
                TextFlowTarget tfTarget = new TextFlowTarget();
                tfTarget.setResId(id);
-               // TODO set Source COntent
-               // tfTarget.setSourceContent(message.getMsgid());
+               tfTarget.setDescription(ShortString.shorten(message.getMsgid()));
 
                tfTarget.setContent(message.getMsgstr());
                tfTarget.setState(getContentState(message));
