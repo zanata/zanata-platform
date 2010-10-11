@@ -15,9 +15,7 @@ public abstract class ConfigurableProjectMojo extends ConfigurableMojo implement
 
    // @formatter:off
    /*
-    * Note: The following fields are only here to hold Maven's @parameter 
-    * markup, since all the setter methods actually delegate to the 
-    * FliesCommand.  @parameter should work on setter methods - see
+    * @parameter should work on setter methods - see
     * http://www.sonatype.com/books/mvnref-book/reference/writing-plugins-sect-param-annot.html
     * - but it doesn't.
     */
