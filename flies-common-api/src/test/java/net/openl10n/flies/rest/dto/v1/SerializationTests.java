@@ -122,6 +122,12 @@ public class SerializationTests
       sourceResource.setType(ResourceType.FILE);
       sourceResource.setContentType(ContentType.PO);
       sourceResource.setLang(LocaleId.EN);
+      TextFlow tf = new TextFlow();
+      tf.setContent("ttff");
+      TextFlow tf2 = new TextFlow();
+      tf2.setContent("ttff2");
+      sourceResource.getTextFlows().add(tf);
+      sourceResource.getTextFlows().add(tf2);
       sourceResource.getExtensions(true).add(new PoHeader("comment", new HeaderEntry("h1", "v1"), new HeaderEntry("h2", "v2")));
 
       JaxbUtil.validateXml(sourceResource, Resource.class);

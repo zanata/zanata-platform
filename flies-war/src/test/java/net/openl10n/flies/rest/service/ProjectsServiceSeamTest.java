@@ -35,7 +35,7 @@ public class ProjectsServiceSeamTest extends FliesDBUnitSeamTest
 
       clientRequestFactory = new ClientRequestFactory(new SeamMockClientExecutor(this), new URI("/restv1/"));
 
-      clientRequestFactory.getPrefixInterceptors().registerInterceptor(new ApiKeyHeaderDecorator("admin", "b6d7044e9ee3b2447c28fb7c50d86d98"));
+      clientRequestFactory.getPrefixInterceptors().registerInterceptor(new ApiKeyHeaderDecorator("admin", "b6d7044e9ee3b2447c28fb7c50d86d98", "1.0SNAPSHOT"));
 
       projectService = clientRequestFactory.createProxy(IProjectsResource.class);
 

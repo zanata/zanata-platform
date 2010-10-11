@@ -44,6 +44,7 @@ public class FliesInit
 {
 
    public static final String EVENT_Flies_Startup = "Flies.startup";
+   public static final String UNKNOWN_VERSION = "UNKNOWN";
 
    @Logger
    static Log log;
@@ -86,6 +87,14 @@ public class FliesInit
 
          version = atts.getValue("Implementation-Version");
          buildTimestamp = atts.getValue("Implementation-Build");
+         if (version == null)
+         {
+            version = UNKNOWN_VERSION;
+         }
+         if (buildTimestamp == null)
+         {
+            buildTimestamp = UNKNOWN_VERSION;
+         }
          log.info("Version: {0}", version);
          log.info("Build: {0}", buildTimestamp);
       }

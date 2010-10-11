@@ -51,7 +51,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
 
    private PublicanPushCommand(PublicanPushOptions opts, FliesClientRequestFactory factory)
    {
-      this(opts, factory, factory.getTranslationResources(opts.getProject(), opts.getProjectVersion()), factory.getTranslationResourcesURI(opts.getProject(), opts.getProjectVersion()));
+      this(opts, factory, factory.getTranslationResources(opts.getProj(), opts.getProjectVersion()), factory.getTranslationResourcesURI(opts.getProj(), opts.getProjectVersion()));
    }
 
    public PublicanPushCommand(PublicanPushOptions opts)
@@ -63,7 +63,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
    public void run() throws Exception
    {
       log.debug("Flies server: {}", opts.getUrl());
-      log.debug("Project: {}", opts.getProject());
+      log.debug("Project: {}", opts.getProj());
       log.debug("Version: {}", opts.getProjectVersion());
       // log.debug("List of resources:");
       JAXBContext jc = null;

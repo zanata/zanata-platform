@@ -6,19 +6,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.common.LocaleId;
-import net.openl10n.flies.rest.dto.deprecated.Document;
-import net.openl10n.flies.rest.dto.deprecated.TextFlow;
-import net.openl10n.flies.rest.dto.deprecated.TextFlowTarget;
+import net.openl10n.flies.rest.dto.resource.Resource;
 
 import org.fedorahosted.openprops.Properties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 
 /**
@@ -32,9 +25,10 @@ public class PropReader
 
    public static final String PROP_CONTENT_TYPE = "text/plain";
 
-   private static final Logger log = LoggerFactory.getLogger(PropReader.class);
+   // private static final Logger log =
+   // LoggerFactory.getLogger(PropReader.class);
 
-   public void extractAll(Document doc, File basePropertiesFile, String[] locales, ContentState contentState) throws IOException
+   public void extractAll(Resource doc, File basePropertiesFile, String[] locales, ContentState contentState) throws IOException
    {
       InputStream baseInput = new BufferedInputStream(new FileInputStream(basePropertiesFile));
       try
@@ -70,63 +64,66 @@ public class PropReader
    }
 
    // pre: template already extracted
-   public void extractTarget(Document doc, InputSource inputSource, LocaleId localeId, ContentState contentState) throws IOException
+   public void extractTarget(Resource doc, InputSource inputSource, LocaleId localeId, ContentState contentState) throws IOException
    {
-      Map<String, TextFlow> textFlowMap = new HashMap<String, TextFlow>();
-      for (TextFlow resource : doc.getTextFlows())
-      {
-         textFlowMap.put(resource.getId(), resource);
-      }
-
-      Properties props = loadProps(inputSource);
-      for (String key : props.stringPropertyNames())
-      {
-         String val = props.getProperty(key);
-         String id = getID(key, val);
-
-         TextFlow textFlow = textFlowMap.get(id);
-         if (textFlow == null)
-         {
-            log.warn("Property with key {} in locale {} has no corresponding source in {}", new Object[] { key, localeId, doc.getId() });
-            continue;
-         }
-         TextFlowTarget textFlowTarget = new TextFlowTarget();
-         textFlowTarget.setContent(val);
-         textFlowTarget.setId(id);
-         textFlowTarget.setResourceRevision(textFlow.getRevision());
-         textFlowTarget.setLang(localeId);
-         textFlowTarget.setState(contentState);
-         String comment = props.getComment(key);
-         if (comment != null && comment.length() != 0)
-            textFlowTarget.getOrAddComment().setValue(comment);
-         textFlow.addTarget(textFlowTarget);
-      }
+      // Map<String, TextFlow> textFlowMap = new HashMap<String, TextFlow>();
+      // for (TextFlow resource : doc.getTextFlows())
+      // {
+      // textFlowMap.put(resource.getId(), resource);
+      // }
+      //
+      // Properties props = loadProps(inputSource);
+      // for (String key : props.stringPropertyNames())
+      // {
+      // String val = props.getProperty(key);
+      // String id = getID(key, val);
+      //
+      // TextFlow textFlow = textFlowMap.get(id);
+      // if (textFlow == null)
+      // {
+      // log.warn("Property with key {} in locale {} has no corresponding source in {}",
+      // new Object[] { key, localeId, doc.getId() });
+      // continue;
+      // }
+      // TextFlowTarget textFlowTarget = new TextFlowTarget();
+      // textFlowTarget.setContent(val);
+      // textFlowTarget.setId(id);
+      // textFlowTarget.setResourceRevision(textFlow.getRevision());
+      // textFlowTarget.setLang(localeId);
+      // textFlowTarget.setState(contentState);
+      // String comment = props.getComment(key);
+      // if (comment != null && comment.length() != 0)
+      // textFlowTarget.getOrAddComment().setValue(comment);
+      // textFlow.addTarget(textFlowTarget);
+      // }
    }
 
    // TODO allowing Readers (via InputSource) might be a bad idea
-   public void extractTemplate(Document doc, InputSource inputSource) throws IOException
+   public void extractTemplate(Resource doc, InputSource inputSource) throws IOException
    {
-      List<TextFlow> resources = doc.getTextFlows();
-      Properties props = loadProps(inputSource);
-      for (String key : props.stringPropertyNames())
-      {
-         String val = props.getProperty(key);
-         String id = getID(key, val);
-         TextFlow textFlow = new TextFlow(id);
-         textFlow.setContent(val);
-         String comment = props.getComment(key);
-         if (comment != null && comment.length() != 0)
-            textFlow.getOrAddComment().setValue(comment);
-         // textFlow.setLang(LocaleId.EN);
-         resources.add(textFlow);
-      }
+      // List<TextFlow> resources = doc.getTextFlows();
+      // Properties props = loadProps(inputSource);
+      // for (String key : props.stringPropertyNames())
+      // {
+      // String val = props.getProperty(key);
+      // String id = getID(key, val);
+      // TextFlow textFlow = new TextFlow(id);
+      // textFlow.setContent(val);
+      // String comment = props.getComment(key);
+      // if (comment != null && comment.length() != 0)
+      // textFlow.getOrAddComment().setValue(comment);
+      // // textFlow.setLang(LocaleId.EN);
+      // resources.add(textFlow);
+      // }
    }
 
+   @SuppressWarnings("unused")
    private String getID(String key, String val)
    {
       return key;
    }
 
+   @SuppressWarnings("unused")
    private Properties loadProps(InputSource inputSource) throws IOException
    {
       Properties props = new Properties();

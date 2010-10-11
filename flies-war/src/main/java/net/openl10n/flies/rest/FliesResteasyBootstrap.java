@@ -58,6 +58,7 @@ public class FliesResteasyBootstrap extends ResteasyBootstrap
    {
       super.initDispatcher();
       getDispatcher().getProviderFactory().getServerPreProcessInterceptorRegistry().register(FliesRestSecurityInterceptor.class);
+      getDispatcher().getProviderFactory().getServerPreProcessInterceptorRegistry().register(FliesRestVersoinInterceptor.class);
    }
 
    @Override

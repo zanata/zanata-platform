@@ -65,13 +65,13 @@ public abstract class ConfigurableProjectMojo extends ConfigurableMojo implement
    }
 
    @Override
-   public String getProject()
+   public String getProj()
    {
       return project;
    }
 
    @Override
-   public void setProject(String project)
+   public void setProj(String project)
    {
       this.project = project;
    }

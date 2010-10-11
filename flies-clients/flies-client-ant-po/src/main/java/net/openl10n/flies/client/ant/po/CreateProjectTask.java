@@ -1,38 +1,23 @@
 package net.openl10n.flies.client.ant.po;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 
 import net.openl10n.flies.client.commands.ArgsUtil;
-import net.openl10n.flies.rest.client.ClientUtility;
-import net.openl10n.flies.rest.client.FliesClientRequestFactory;
-import net.openl10n.flies.rest.client.IProjectResource;
-import net.openl10n.flies.rest.dto.Project;
-
-import org.jboss.resteasy.client.ClientResponse;
+import net.openl10n.flies.client.commands.FliesCommand;
+import net.openl10n.flies.client.commands.PutProjectCommand;
+import net.openl10n.flies.client.commands.PutProjectOptions;
 import org.kohsuke.args4j.Option;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-/**
- * @deprecated See PutProjectCommand
- */
-public class CreateProjectTask extends FliesTask
+public class CreateProjectTask extends ConfigurableTask implements PutProjectOptions
 {
-   private static final Logger log = LoggerFactory.getLogger(CreateProjectTask.class);
+   // private static final Logger log =
+   // LoggerFactory.getLogger(CreateProjectTask.class);
 
-   private String user;
-   private String apiKey;
-   private String fliesUrl;
    private String proj;
    private String name;
    private String desc;
+   private String projectSlug;
+   private String projectName;
+   private String projectDesc;
 
    public static void main(String[] args)
    {
@@ -52,71 +37,86 @@ public class CreateProjectTask extends FliesTask
       return "Creates a project in Flies";
    }
 
-   public void run() throws JAXBException, URISyntaxException, IOException
-   {
-      JAXBContext jc = JAXBContext.newInstance(Project.class);
-      Marshaller m = jc.createMarshaller();
-      // debug
-      if (getDebug())
-         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-      Project project = new Project();
-      project.setId(proj);
-      project.setName(name);
-      project.setDescription(desc);
-
-      if (getDebug())
-      {
-         StringWriter writer = new StringWriter();
-         m.marshal(project, writer);
-         log.debug("{}", writer);
-      }
-
-      if (fliesUrl == null)
-         return;
-      URI base = new URI(fliesUrl);
-      // send project to rest api
-      FliesClientRequestFactory factory = new FliesClientRequestFactory(base, user, apiKey);
-      IProjectResource projResource = factory.getProject(proj);
-      URI uri = factory.getProjectURI(proj);
-      ClientResponse<?> response = projResource.put(project);
-      ClientUtility.checkResult(response, uri);
-   }
-
-   @Option(name = "--user", metaVar = "USER", usage = "Flies user name", required = true)
-   public void setUser(String user)
-   {
-      this.user = user;
-   }
-
-   @Option(name = "--key", metaVar = "KEY", usage = "Flies API key (from Flies Profile page)", required = true)
-   public void setApiKey(String apiKey)
-   {
-      this.apiKey = apiKey;
-   }
-
-   @Option(name = "--flies", metaVar = "URL", usage = "Flies base URL, eg http://flies.example.com/flies/", required = true)
-   public void setFliesUrl(String url)
-   {
-      this.fliesUrl = url;
-   }
 
    @Option(name = "--proj", metaVar = "PROJ", usage = "Flies project ID", required = true)
-   public void setProj(String id)
+   public void setVersionProject(String id)
    {
       this.proj = id;
    }
 
-   @Option(name = "--name", metaVar = "NAME", required = true, usage = "Flies project name")
-   public void setName(String name)
+   @Option(name = "--version-name", metaVar = "NAME", usage = "Flies project version name", required = true)
+   public void setVersionName(String name)
    {
       this.name = name;
    }
 
-   @Option(name = "--desc", metaVar = "DESC", required = true, usage = "Flies project description")
-   public void setDesc(String desc)
+   @Option(name = "--version-desc", metaVar = "DESC", usage = "Flies project version description", required = true)
+   public void setVersionDesc(String desc)
    {
       this.desc = desc;
+   }
+
+
+   @Override
+   public FliesCommand initCommand()
+   {
+      return new PutProjectCommand(this);
+   }
+
+
+
+   public String getVersionProject()
+   {
+      return this.proj;
+   }
+
+
+   public String getVersionDesc()
+   {
+      return this.desc;
+   }
+
+   public String getVersionName()
+   {
+      return this.name;
+   }
+
+   @Option(name = "--project-slug", metaVar = "PROJ", usage = "Flies project slug/ID", required = true)
+   public void setProjectSlug(String id)
+   {
+      this.projectSlug = id;
+   }
+
+   @Override
+   @Option(name = "--project-name", metaVar = "NAME", required = true, usage = "Flies project name")
+   public void setProjectName(String name)
+   {
+      this.projectName = name;
+   }
+
+   @Override
+   @Option(name = "--project-desc", metaVar = "DESC", required = true, usage = "Flies project description")
+   public void setProjectDesc(String desc)
+   {
+      this.projectDesc = desc;
+   }
+
+   @Override
+   public String getProjectSlug()
+   {
+      return projectSlug;
+   }
+
+   @Override
+   public String getProjectDesc()
+   {
+      return projectDesc;
+   }
+
+   @Override
+   public String getProjectName()
+   {
+      return projectName;
    }
 
 }

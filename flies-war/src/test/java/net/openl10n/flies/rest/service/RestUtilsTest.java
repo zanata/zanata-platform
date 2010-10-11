@@ -18,6 +18,7 @@ import org.testng.annotations.Test;
 
 import com.allen_sauer.gwt.log.client.Log;
 
+import net.openl10n.flies.rest.dto.VersionInfo;
 import net.openl10n.flies.rest.dto.resource.Resource;
 import net.openl10n.flies.rest.dto.resource.ResourceMeta;
 import net.openl10n.flies.rest.dto.resource.TranslationsResource;
@@ -31,7 +32,7 @@ public class RestUtilsTest
    public Object[][] getResourceTestData()
    {
       return new Object[][] { new Object[] { resourceTestFactory.getPoHeaderTest() }, new Object[] { resourceTestFactory.getPotEntryHeaderTest() }, new Object[] { resourceTestFactory.getTextFlowCommentTest() }
-      // , new Object[] { resourceTestFactory.getPotEntryHeaderComment() }
+, new Object[] { resourceTestFactory.getTextFlowTest2() }
       };
    }
 
@@ -100,6 +101,13 @@ public class RestUtilsTest
    public void testUnmarshallResourceMeta(ResourceMeta res)
    {
       testRestUtilUnmarshall(res, ResourceMeta.class);
+   }
+
+   @Test
+   public void testVersion()
+   {
+      VersionInfo ver = new VersionInfo(null, null);
+      testRestUtilUnmarshall(ver, VersionInfo.class);
    }
 
 }

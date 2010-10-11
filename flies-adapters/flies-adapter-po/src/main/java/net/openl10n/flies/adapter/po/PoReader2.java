@@ -97,6 +97,7 @@ public class PoReader2
                // add the target content (msgstr)
                TextFlowTarget tfTarget = new TextFlowTarget();
                tfTarget.setResId(id);
+               // TODO set Source COntent
                // tfTarget.setSourceContent(message.getMsgid());
 
                tfTarget.setContent(message.getMsgstr());

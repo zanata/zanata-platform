@@ -51,11 +51,11 @@ public class ListRemoteCommand extends ConfigurableProjectCommand
    public void run() throws Exception
    {
       log.info("Flies server: " + opts.getUrl());
-      log.info("Project: " + opts.getProject());
+      log.info("Project: " + opts.getProj());
       log.info("Version: " + opts.getProjectVersion());
-      ITranslationResources translationResources = getRequestFactory().getTranslationResources(opts.getProject(), opts.getProjectVersion());
+      ITranslationResources translationResources = getRequestFactory().getTranslationResources(opts.getProj(), opts.getProjectVersion());
       ClientResponse<List<ResourceMeta>> response = translationResources.get(null);
-      ClientUtility.checkResult(response, getRequestFactory().getTranslationResourcesURI(opts.getProject(), opts.getProjectVersion()));
+      ClientUtility.checkResult(response, getRequestFactory().getTranslationResourcesURI(opts.getProj(), opts.getProjectVersion()));
       List<ResourceMeta> list = response.getEntity();
       List<String> docNames = new ArrayList<String>();
       for (ResourceMeta doc : list)
