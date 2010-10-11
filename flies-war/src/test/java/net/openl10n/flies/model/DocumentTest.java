@@ -50,7 +50,7 @@ public class DocumentTest extends FliesDbunitJpaTest
       dao = new DocumentDAO((Session) getEm().getDelegate());
       localeDAO = new LocaleDAO((Session) em.getDelegate());
       en_US = localeDAO.findByLocaleId(LocaleId.EN_US);
-      de_DE = localeDAO.findByLocaleId(new LocaleId("de-DE"));
+      de_DE = localeDAO.findByLocaleId(new LocaleId("de"));
    }
 
    @Test

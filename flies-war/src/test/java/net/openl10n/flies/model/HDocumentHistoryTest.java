@@ -27,7 +27,7 @@ public class HDocumentHistoryTest extends FliesDbunitJpaTest
    public void beforeMethod()
    {
       localeDAO = new LocaleDAO((Session) em.getDelegate());
-      de_DE = localeDAO.findByLocaleId(new LocaleId("de-DE"));
+      de_DE = localeDAO.findByLocaleId(new LocaleId("de"));
    }
 
    @Override

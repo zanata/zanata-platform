@@ -27,7 +27,7 @@ public class HTextFlowTargetHistoryTest extends FliesDbunitJpaTest
    {
       localeDAO = new LocaleDAO((Session) em.getDelegate());
       en_US = localeDAO.findByLocaleId(LocaleId.EN_US);
-      de_DE = localeDAO.findByLocaleId(new LocaleId("de-DE"));
+      de_DE = localeDAO.findByLocaleId(new LocaleId("de"));
    }
 
    @Override

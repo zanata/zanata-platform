@@ -36,15 +36,15 @@ public class TextFlowDAOTest extends FliesDbunitJpaTest
 
    public void getIdsWithTranslations()
    {
-      List<Long> de = dao.getIdsByTargetState(new LocaleId("de-DE"), ContentState.Approved);
+      List<Long> de = dao.getIdsByTargetState(new LocaleId("de"), ContentState.Approved);
       System.out.println(de);
       assertThat(de.size(), is(1));
 
-      List<Long> es = dao.getIdsByTargetState(new LocaleId("es-ES"), ContentState.Approved);
+      List<Long> es = dao.getIdsByTargetState(new LocaleId("es"), ContentState.Approved);
       System.out.println(es);
       assertThat(es.size(), is(0));
 
-      List<Long> fr = dao.getIdsByTargetState(new LocaleId("fr-FR"), ContentState.Approved);
+      List<Long> fr = dao.getIdsByTargetState(new LocaleId("fr"), ContentState.Approved);
       System.out.println(fr);
       assertThat(fr.size(), is(0));
    }

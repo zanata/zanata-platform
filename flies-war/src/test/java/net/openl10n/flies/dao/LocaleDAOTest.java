@@ -45,8 +45,8 @@ public class LocaleDAOTest extends FliesDbunitJpaTest
    public void testFindByLocale()
    {
       log.debug("testFindByLocale");
-      HLocale hl = dao.findByLocaleId(new LocaleId("de-DE"));
-      assertThat(hl.getLocaleId().getId(), is("de-DE"));
+      HLocale hl = dao.findByLocaleId(new LocaleId("de"));
+      assertThat(hl.getLocaleId().getId(), is("de"));
    }
 
 }
