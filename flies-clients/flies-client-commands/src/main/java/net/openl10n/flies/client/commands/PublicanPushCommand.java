@@ -107,9 +107,21 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
       if (opts.getImportPo())
       {
          if (opts.getLocales() != null)
+         {
             locales = PublicanUtil.findLocales(opts.getSrcDir(), opts.getLocales());
+            if (locales.size() == 0)
+            {
+               log.warn("option 'importPo' is set, but none of the configured locale directories was found (check flies.xml)");
+            }
+         }
          else
+         {
             locales = PublicanUtil.findLocales(opts.getSrcDir());
+            if (locales.size() == 0)
+            {
+               log.warn("option 'importPo' is set, but no locale directories were found");
+            }
+         }
       }
 
       PoReader2 poReader = new PoReader2();
