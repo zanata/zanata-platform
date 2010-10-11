@@ -20,7 +20,6 @@
  */
 package net.openl10n.flies.client.commands;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.openl10n.flies.rest.client.ClientUtility;
@@ -57,12 +56,10 @@ public class ListRemoteCommand extends ConfigurableProjectCommand
       ClientResponse<List<ResourceMeta>> response = translationResources.get(null);
       ClientUtility.checkResult(response, getRequestFactory().getTranslationResourcesURI(opts.getProj(), opts.getProjectVersion()));
       List<ResourceMeta> list = response.getEntity();
-      List<String> docNames = new ArrayList<String>();
       for (ResourceMeta doc : list)
       {
-         docNames.add(doc.getName());
+         System.out.println(doc.getName());
       }
-      log.info("List of resources: {}", docNames);
    }
 
 }
