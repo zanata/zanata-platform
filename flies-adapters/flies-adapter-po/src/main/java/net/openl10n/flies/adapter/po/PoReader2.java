@@ -40,10 +40,6 @@ public class PoReader2
 
    public static final ImmutableSet<String> PO_HEADER_FIELDS = ImmutableSet.of(HeaderFields.KEY_PoRevisionDate, HeaderFields.KEY_LastTranslator, HeaderFields.KEY_LanguageTeam, HeaderFields.KEY_Language, "Plural-Forms", "X-Generator");
 
-   // non-opaque ids are useful for testing, but can be too long for the
-   // database column
-   private static final boolean GENERATE_OPAQUE_IDS = true;
-
    public PoReader2()
    {
    }
@@ -275,16 +271,9 @@ public class PoReader2
 
    static String createId(Message message)
    {
-      String sep;
-      if (GENERATE_OPAQUE_IDS)
-         sep = "\u0000";
-      else
-         sep = ":";
+      String sep = "\u0000";
       String hashBase = message.getMsgctxt() == null ? message.getMsgid() : message.getMsgctxt() + sep + message.getMsgid();
-      if (GENERATE_OPAQUE_IDS)
-         return generateHash(hashBase);
-      else
-         return hashBase;
+      return generateHash(hashBase);
    }
 
    public static String generateHash(String key)
