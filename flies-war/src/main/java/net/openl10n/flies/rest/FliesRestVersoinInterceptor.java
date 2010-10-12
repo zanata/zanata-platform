@@ -1,6 +1,8 @@
 package net.openl10n.flies.rest;
 
 import static org.jboss.seam.ScopeType.APPLICATION;
+import org.jboss.resteasy.annotations.interception.HeaderDecoratorPrecedence;
+
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -20,6 +22,7 @@ import org.jboss.seam.Component;
 
 
 @ServerInterceptor
+@HeaderDecoratorPrecedence
 public class FliesRestVersoinInterceptor implements PreProcessInterceptor
 {
    @Override
