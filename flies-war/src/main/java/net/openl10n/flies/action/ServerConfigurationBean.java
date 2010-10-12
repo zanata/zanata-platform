@@ -5,7 +5,7 @@ import java.io.Serializable;
 import net.openl10n.flies.ApplicationConfiguration;
 import net.openl10n.flies.dao.ApplicationConfigurationDAO;
 import net.openl10n.flies.model.HApplicationConfiguration;
-import net.openl10n.flies.model.validator.Url;
+import net.openl10n.flies.model.validator.UrlNoSlash;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
@@ -28,7 +28,7 @@ public class ServerConfigurationBean implements Serializable
 
    private String serverUrl;
 
-   @Url(canEndInSlash = false)
+   @UrlNoSlash
    public String getServerUrl()
    {
       return serverUrl;
