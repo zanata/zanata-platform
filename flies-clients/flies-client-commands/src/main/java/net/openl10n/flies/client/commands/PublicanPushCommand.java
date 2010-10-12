@@ -91,16 +91,17 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
          localDocNames.add(docName);
       }
 
-      ClientResponse<List<ResourceMeta>> response = translationResources.get(null);
-      ClientUtility.checkResult(response, uri);
-      List<ResourceMeta> remoteList = response.getEntity();
-      for (ResourceMeta doc : remoteList)
+      ClientResponse<List<ResourceMeta>> getResponse = translationResources.get(null);
+      ClientUtility.checkResult(getResponse, uri);
+      List<ResourceMeta> remoteDocList = getResponse.getEntity();
+      for (ResourceMeta doc : remoteDocList)
       {
          // NB ResourceMeta.name = HDocument.docId
          if (!localDocNames.contains(doc.getName()))
          {
             log.info("deleting resource {} from server", doc.getName());
-            translationResources.deleteResource(doc.getName());
+            ClientResponse<String> deleteResponse = translationResources.deleteResource(doc.getName());
+            ClientUtility.checkResult(deleteResponse, uri);
          }
       }
       List<LocaleMapping> locales = null;
@@ -143,8 +144,10 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
             JaxbUtil.validateXml(srcDoc, jc);
          }
          StringSet extensions = new StringSet("comment;gettext");
-         log.info("pushing source document {} to server", srcDoc.getName());
-         translationResources.putResource(docId, srcDoc, extensions);
+         log.info("pushing source document [name={}] to server", srcDoc.getName());
+         ClientResponse<String> putResponse = translationResources.putResource(docId, srcDoc, extensions);
+         ClientUtility.checkResult(putResponse, uri);
+
          if (opts.getImportPo())
          {
             for (LocaleMapping locale : locales)
@@ -166,8 +169,9 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
                   {
                      JaxbUtil.validateXml(targetDoc, jc);
                   }
-                  log.info("pushing target document {} [{}] to server", srcDoc.getName(), locale.getLocale());
-                  translationResources.putTranslations(docId, new LocaleId(locale.getLocale()), targetDoc, extensions);
+                  log.info("pushing target document [name={} client-locale={}] to server [locale={}]", new Object[] { srcDoc.getName(), locale.getLocalLocale(), locale.getLocale() });
+                  ClientResponse<String> putTransResponse = translationResources.putTranslations(docId, new LocaleId(locale.getLocale()), targetDoc, extensions);
+                  ClientUtility.checkResult(putTransResponse, uri);
                }
             }
          }
