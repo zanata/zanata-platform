@@ -190,6 +190,7 @@ public class TranslationResourcesService
       }.getGenericType())).tag(etag).build();
    }
 
+
    @POST
    @Admin
    public Response post(InputStream messageBody)
@@ -202,15 +203,7 @@ public class TranslationResourcesService
       Resource entity = RestUtils.unmarshall(Resource.class, messageBody, requestContentType, headers.getRequestHeaders());
 
       HDocument document = documentDAO.getByDocId(hProjectIteration, entity.getName());
-      HLocale hLocale;
-      try
-      {
-         hLocale = localeServiceImpl.getSupportedLanguageByLocale(entity.getLang());
-      }
-      catch (FliesServiceException e)
-      {
-         return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
-      }
+      HLocale hLocale = validateLocale(entity.getLang());
       if (document != null)
       {
          if (!document.isObsolete())
@@ -280,6 +273,21 @@ public class TranslationResourcesService
       return Response.ok().entity(entity).tag(etag).lastModified(doc.getLastChanged()).build();
    }
 
+   private HLocale validateLocale(LocaleId locale)
+   {
+      HLocale hLocale;
+      try
+      {
+         hLocale = localeServiceImpl.getSupportedLanguageByLocale(locale);
+         return hLocale;
+      }
+      catch (FliesServiceException e)
+      {
+         throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build());
+      }
+
+   }
+
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE)
    // /r/{id}
@@ -299,16 +307,8 @@ public class TranslationResourcesService
       log.debug("resource details: {0}", entity);
 
       HDocument document = documentDAO.getByDocId(hProjectIteration, id);
-      HLocale hLocale;
-      try
-      {
-         hLocale = localeServiceImpl.getSupportedLanguageByLocale(entity.getLang());
-      }
-      catch (FliesServiceException e)
-      {
-         return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
-      }
-
+      LocaleId locale = entity.getLang();
+      HLocale hLocale = validateLocale(locale);
       if (document == null)
       { // must be a create operation
          response = request.evaluatePreconditions();
@@ -442,15 +442,7 @@ public class TranslationResourcesService
       {
          return Response.status(Status.NOT_FOUND).build();
       }
-      HLocale hLocale;
-      try
-      {
-         hLocale = localeServiceImpl.getSupportedLanguageByLocale(entity.getLang());
-      }
-      catch (FliesServiceException e)
-      {
-         return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
-      }
+      HLocale hLocale = validateLocale(entity.getLang());
       boolean changed = resourceUtils.transferFromResourceMetadata(entity, document, extensions, hLocale);
 
 
@@ -593,15 +585,7 @@ public class TranslationResourcesService
 
       boolean changed = false;
 
-      HLocale hLocale;
-      try
-      {
-         hLocale = localeServiceImpl.getSupportedLanguageByLocale(locale);
-      }
-      catch (FliesServiceException e)
-      {
-         return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
-      }
+      HLocale hLocale = validateLocale(locale);
       // handle extensions
       changed |= resourceUtils.transferFromTranslationsResourceExtensions(entity.getExtensions(true), document, extensions, hLocale);
 
