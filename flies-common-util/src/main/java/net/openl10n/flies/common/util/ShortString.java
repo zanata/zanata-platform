@@ -12,9 +12,9 @@ package net.openl10n.flies.common.util;
 public class ShortString
 {
 
-   private static final int MAX_LENGTH = 66;
+   static final int MAX_LENGTH = 66;
    private static final String ELLIPSIS = "…";
-   private final String input;
+   private String input;
 
    public ShortString(String input)
    {
@@ -24,7 +24,7 @@ public class ShortString
    @Override
    public String toString()
    {
-      return shorten(input);
+      return input = shorten(input);
    }
 
    public static String shorten(String s)
