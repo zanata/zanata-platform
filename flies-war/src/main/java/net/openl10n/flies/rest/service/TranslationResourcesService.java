@@ -63,6 +63,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Admin;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
+import org.jboss.seam.security.Identity;
 
 import com.google.common.collect.Sets;
 
@@ -72,6 +73,10 @@ import com.google.common.collect.Sets;
 @Consumes( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 public class TranslationResourcesService
 {
+
+   // security actions
+   private static final String ACTION_IMPORT_TEMPLATE = "import-template";
+   private static final String ACTION_IMPORT_TRANSLATION = "import-translation";
 
    public static final String RESOURCE_SLUG_TEMPLATE = "/{id:[a-zA-Z0-9]+([a-zA-Z0-9_\\-,{.}]*[a-zA-Z0-9]+)?}";
 
@@ -113,6 +118,9 @@ public class TranslationResourcesService
    private ResourceUtils resourceUtils;
 
    @In
+   Identity identity;
+
+   @In
    private ETagUtils eTagUtils;
 
    @In
@@ -128,7 +136,7 @@ public class TranslationResourcesService
    }
 
    // TODO break up this class (too many responsibilities)
-   public TranslationResourcesService(ProjectIterationDAO projectIterationDAO, DocumentDAO documentDAO, PersonDAO personDAO, TextFlowTargetDAO textFlowTargetDAO, LocaleService localeService, ResourceUtils resourceUtils, ETagUtils eTagUtils)
+   public TranslationResourcesService(ProjectIterationDAO projectIterationDAO, DocumentDAO documentDAO, PersonDAO personDAO, TextFlowTargetDAO textFlowTargetDAO, LocaleService localeService, ResourceUtils resourceUtils, Identity identity, ETagUtils eTagUtils)
    {
       this.projectIterationDAO = projectIterationDAO;
       this.documentDAO = documentDAO;
@@ -197,6 +205,8 @@ public class TranslationResourcesService
    {
 
       HProjectIteration hProjectIteration = retrieveIteration();
+
+      identity.checkPermission(hProjectIteration, ACTION_IMPORT_TEMPLATE);
 
       validateExtensions(PoHeader.ID, PotEntryHeader.ID);
 
@@ -300,6 +310,8 @@ public class TranslationResourcesService
       EntityTag etag = null;
       boolean changed = false;
       HProjectIteration hProjectIteration = retrieveIteration();
+
+      identity.checkPermission(hProjectIteration, ACTION_IMPORT_TEMPLATE);
 
       validateExtensions();
 
@@ -423,6 +435,8 @@ public class TranslationResourcesService
    {
       log.debug("start to put resource meta");
       HProjectIteration hProjectIteration = retrieveIteration();
+
+      identity.checkPermission(hProjectIteration, ACTION_IMPORT_TEMPLATE);
 
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 
@@ -560,6 +574,8 @@ public class TranslationResourcesService
       log.debug("start put translations");
 
       HProjectIteration hProjectIteration = retrieveIteration();
+
+      identity.checkPermission(hProjectIteration, ACTION_IMPORT_TRANSLATION);
 
       validateExtensions();
 

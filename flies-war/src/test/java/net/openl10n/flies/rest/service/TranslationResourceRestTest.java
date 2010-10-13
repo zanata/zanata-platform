@@ -76,7 +76,7 @@ public class TranslationResourceRestTest extends FliesRestTest
       LocaleServiceImpl localeService = new LocaleServiceImpl();
       LocaleDAO localeDAO = new LocaleDAO(getSession());
       localeService.setLocaleDAO(localeDAO);
-      TranslationResourcesService obj = new TranslationResourcesService(projectIterationDAO, documentDAO, personDAO, textFlowTargetDAO, localeService, resourceUtils, eTagUtils);
+      TranslationResourcesService obj = new TranslationResourcesService(projectIterationDAO, documentDAO, personDAO, textFlowTargetDAO, localeService, resourceUtils, mockIdentity, eTagUtils);
 
       resources.add(obj);
    }
