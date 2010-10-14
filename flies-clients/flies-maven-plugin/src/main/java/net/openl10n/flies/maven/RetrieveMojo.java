@@ -3,7 +3,7 @@ package net.openl10n.flies.maven;
 import net.openl10n.flies.client.commands.RetrieveCommand;
 
 /**
- * Retrieves translated text from a Flies project version.
+ * [NOT YET IMPLEMENTED] Retrieves translated text from a Flies project version.
  * 
  * @goal retrieve
  * @requiresProject false
