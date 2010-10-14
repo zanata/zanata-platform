@@ -40,6 +40,15 @@ public class PoWriter2
    {
    }
 
+   private void mkdirs(File dir) throws IOException
+   {
+      if (!dir.exists())
+      {
+         if (!dir.mkdirs())
+            throw new IOException("unable to create output directory: " + dir);
+      }
+   }
+
    /**
     * Generates a pot file from Resource (document), using the publican
     * directory layout.
@@ -52,7 +61,7 @@ public class PoWriter2
    {
       // write the POT file to pot/$name.pot
       File potDir = new File(baseDir, "pot");
-      potDir.mkdirs();
+      mkdirs(potDir);
       File potFile = new File(potDir, doc.getName() + ".pot");
       OutputSource outputSource = new OutputSource(potFile);
       write(outputSource, doc, null);
@@ -72,7 +81,7 @@ public class PoWriter2
    {
       // write the PO file to $locale/$name.po
       File localeDir = new File(baseDir, locale.toString());
-      localeDir.mkdirs();
+      mkdirs(localeDir);
       File poFile = new File(localeDir, doc.getName() + ".po");
       OutputSource outputSource = new OutputSource(poFile);
       write(outputSource, doc, targetDoc);
