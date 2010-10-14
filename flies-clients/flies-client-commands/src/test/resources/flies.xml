@@ -16,6 +16,7 @@
 
     <locales>
         <locale map-from="ja-JP">ja</locale>
+        <locale>zh-CN</locale>
     </locales>
 
 </config>

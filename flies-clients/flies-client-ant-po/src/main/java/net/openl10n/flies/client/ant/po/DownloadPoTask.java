@@ -1,20 +1,23 @@
 package net.openl10n.flies.client.ant.po;
 
+import java.io.File;
+
 import net.openl10n.flies.client.commands.ArgsUtil;
-import net.openl10n.flies.client.commands.ConfigurableProjectOptions;
 import net.openl10n.flies.client.commands.FliesCommand;
-import net.openl10n.flies.client.commands.RetrieveCommand;
+import net.openl10n.flies.client.commands.PublicanPullCommand;
+import net.openl10n.flies.client.commands.PublicanPullOptions;
 import net.openl10n.flies.client.config.LocaleList;
+
 import org.kohsuke.args4j.Option;
 
-public class DownloadPoTask extends ConfigurableProjectTask implements ConfigurableProjectOptions
+public class DownloadPoTask extends ConfigurableProjectTask implements PublicanPullOptions
 {
    private String projectConfig = "flies.xml";
 
    private String project;
    private String projectVersion;
    private LocaleList locales;
-
+   private File dstDir;
 
    public static void main(String[] args)
    {
@@ -37,7 +40,7 @@ public class DownloadPoTask extends ConfigurableProjectTask implements Configura
    @Override
    public FliesCommand initCommand()
    {
-      return new RetrieveCommand(this);
+      return new PublicanPullCommand(this);
    }
 
    public String getProj()
@@ -87,6 +90,18 @@ public class DownloadPoTask extends ConfigurableProjectTask implements Configura
    public void setLocales(LocaleList locales)
    {
       this.locales = locales;
+   }
+
+   @Override
+   public void setDstDir(File dstDir)
+   {
+      this.dstDir = dstDir;
+   }
+
+   @Override
+   public File getDstDir()
+   {
+      return dstDir;
    }
 
 }

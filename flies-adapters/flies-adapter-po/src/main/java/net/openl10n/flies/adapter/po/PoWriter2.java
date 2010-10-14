@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.resources.OutputSource;
 import net.openl10n.flies.rest.dto.extensions.comment.SimpleComment;
 import net.openl10n.flies.rest.dto.extensions.gettext.HeaderEntry;
@@ -77,10 +76,10 @@ public class PoWriter2
     * @param targetDoc
     * @throws IOException
     */
-   public void writePo(File baseDir, Resource doc, LocaleId locale, TranslationsResource targetDoc) throws IOException
+   public void writePo(File baseDir, Resource doc, String locale, TranslationsResource targetDoc) throws IOException
    {
       // write the PO file to $locale/$name.po
-      File localeDir = new File(baseDir, locale.toString());
+      File localeDir = new File(baseDir, locale);
       mkdirs(localeDir);
       File poFile = new File(localeDir, doc.getName() + ".po");
       OutputSource outputSource = new OutputSource(poFile);

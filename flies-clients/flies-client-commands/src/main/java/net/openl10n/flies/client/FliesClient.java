@@ -11,6 +11,7 @@ import net.openl10n.flies.client.commands.BasicOptions;
 import net.openl10n.flies.client.commands.BasicOptionsImpl;
 import net.openl10n.flies.client.commands.FliesCommand;
 import net.openl10n.flies.client.commands.ListRemoteOptionsImpl;
+import net.openl10n.flies.client.commands.PublicanPullOptionsImpl;
 import net.openl10n.flies.client.commands.PublicanPushOptionsImpl;
 import net.openl10n.flies.client.commands.PutProjectOptionsImpl;
 import net.openl10n.flies.client.commands.PutUserOptionsImpl;
@@ -63,6 +64,7 @@ public class FliesClient extends BasicOptionsImpl
       // getOptionsMap().put("listlocal", new ListLocalOptionsImpl());
       getOptionsMap().put("listremote", new ListRemoteOptionsImpl());
       getOptionsMap().put("publican-push", new PublicanPushOptionsImpl());
+      getOptionsMap().put("publican-pull", new PublicanPullOptionsImpl());
       getOptionsMap().put("putproject", new PutProjectOptionsImpl());
       getOptionsMap().put("putuser", new PutUserOptionsImpl());
       getOptionsMap().put("putversion", new PutVersionOptionsImpl());

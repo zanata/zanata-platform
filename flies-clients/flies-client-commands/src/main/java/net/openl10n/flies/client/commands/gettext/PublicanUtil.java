@@ -6,8 +6,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.openl10n.flies.client.config.LocaleMapping;
 import net.openl10n.flies.client.config.LocaleList;
+import net.openl10n.flies.client.config.LocaleMapping;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -17,6 +20,7 @@ import net.openl10n.flies.client.config.LocaleList;
  */
 public class PublicanUtil
 {
+   private static final Logger log = LoggerFactory.getLogger(PublicanUtil.class);
    private PublicanUtil()
    {
    }
@@ -74,6 +78,8 @@ public class PublicanUtil
          File localeDir = new File(srcDir, loc.getLocalLocale());
          if (localeDir.isDirectory())
             localeDirs.add(loc);
+         else
+            log.warn("configured locale {} not found; directory {} does not exist", loc.getLocale(), loc.getLocalLocale());
       }
 
       return localeDirs;
