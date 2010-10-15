@@ -24,7 +24,7 @@ public class FliesClientRequestFactory implements ITranslationResourcesFactory
 
    private static final Logger log = LoggerFactory.getLogger(FliesClientRequestFactory.class);
    private final ClientRequestFactory crf;
-   private static final String RESOURCE_PREFIX = "seam/resource/restv1";
+   private static final String RESOURCE_PREFIX = "rest";
 
    public FliesClientRequestFactory(String username, String apiKey, VersionInfo ver)
    {
