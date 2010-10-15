@@ -8,7 +8,7 @@ import net.openl10n.flies.client.commands.PublicanPullOptions;
 /**
  * [NOT YET IMPLEMENTED] Retrieves translated text from a Flies project version.
  * 
- * @goal retrieve
+ * @goal publican-pull
  * @requiresProject true
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
