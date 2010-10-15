@@ -5,7 +5,7 @@ import net.openl10n.flies.client.commands.ListLocalCommand;
 /**
  * [NOT YET IMPLEMENTED] Lists all local files in the project which are
  * considered to be Flies documents. These are the files which will be sent to
- * Flies when using the 'publish' goal.
+ * Flies when using the 'publican-push' goal.
  * 
  * @goal listlocal
  * @requiresProject true

@@ -6,7 +6,7 @@ import net.openl10n.flies.client.commands.PublicanPullCommand;
 import net.openl10n.flies.client.commands.PublicanPullOptions;
 
 /**
- * [NOT YET IMPLEMENTED] Retrieves translated text from a Flies project version.
+ * Pulls translated text from Flies.
  * 
  * @goal publican-pull
  * @requiresProject true
