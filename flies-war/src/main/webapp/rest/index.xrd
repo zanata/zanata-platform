@@ -25,5 +25,5 @@
   <!-- TranslationResourcesService -->
   <Link
     type="application/vnd.flies.project.iteration.document+xml"
-    template="projects/p/{projectSlug}/iterations/i/{iterationSlug}/{id}"/>
+    template="projects/p/{projectSlug}/iterations/i/{iterationSlug}/r"/>
 </XRD>
