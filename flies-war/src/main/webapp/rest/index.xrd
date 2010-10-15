@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<XRD xmlns='http://docs.oasis-open.org/ns/xri/xrd-1.0'>
+
+  <!-- AccountsService (not yet implemented) 
+  <Link
+    type="application/vnd.flies.accounts+xml"
+    href="accounts"/>
+  -->
+
+  <!-- ProjectsService -->
+  <Link
+    type="application/vnd.flies.projects+xml"
+    href="projects"/>
+
+  <!-- ProjectService -->
+  <Link
+    type="application/vnd.flies.project+xml"
+    template="projects/p/{projectSlug}"/>
+
+  <!-- ProjectIterationService -->
+  <Link
+    type="application/vnd.flies.project.iteration+xml"
+    template="projects/p/{projectSlug}/iterations/i/{iterationSlug}"/>
+
+  <!-- TranslationResourcesService -->
+  <Link
+    type="application/vnd.flies.project.iteration.document+xml"
+    template="projects/p/{projectSlug}/iterations/i/{iterationSlug}/{id}"/>
+</XRD>

@@ -145,4 +145,9 @@
 		<persistence-unit-name>fliesDatabase</persistence-unit-name>
 	</persistence-unit-ref>
 
+    <mime-mapping>
+        <extension>xrd</extension>
+        <mime-type>application/xrd+xml</mime-type>
+    </mime-mapping>
+        
 </web-app>

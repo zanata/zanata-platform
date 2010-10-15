@@ -138,6 +138,16 @@
     <to>/admin/home.seam</to>
   </rule>
 
+  <rule>
+    <from casesensitive="true">^/rest/$</from>
+    <to last="true">/rest/index.xrd</to>
+  </rule>  
+
+  <rule>
+    <from casesensitive="true">^/rest/(.+)$</from>
+    <to last="true">/seam/resource/restv1/$1</to>
+  </rule>
+
   <outbound-rule>
     <from>^(/.+)?/admin/server_configuration.seam</from>
     <to>$1/admin/server_configuration</to>
