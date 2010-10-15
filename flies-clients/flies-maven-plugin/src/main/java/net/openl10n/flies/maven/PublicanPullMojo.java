@@ -24,6 +24,14 @@ public class PublicanPullMojo extends ConfigurableProjectMojo implements Publica
     */
    private File dstDir;
 
+   /**
+    * Export source text from Flies to local POT files, overwriting or erasing
+    * existing POT files (DANGER!)
+    * 
+    * @parameter expression="${flies.exportPot}"
+    */
+   private boolean exportPot;
+
    public PublicanPullMojo() throws Exception
    {
       super();
@@ -44,6 +52,18 @@ public class PublicanPullMojo extends ConfigurableProjectMojo implements Publica
    public File getDstDir()
    {
       return dstDir;
+   }
+
+   @Override
+   public boolean getExportPot()
+   {
+      return exportPot;
+   }
+
+   @Override
+   public void setExportPot(boolean exportPot)
+   {
+      this.exportPot = exportPot;
    }
 
 }

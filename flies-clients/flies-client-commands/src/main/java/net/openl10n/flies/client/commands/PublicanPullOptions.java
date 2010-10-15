@@ -17,4 +17,8 @@ public interface PublicanPullOptions extends ConfigurableProjectOptions
 
    public File getDstDir();
 
+   boolean getExportPot();
+
+   void setExportPot(boolean exportPot);
+
 }

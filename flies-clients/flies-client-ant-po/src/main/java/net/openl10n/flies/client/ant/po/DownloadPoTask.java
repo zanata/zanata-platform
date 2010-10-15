@@ -18,6 +18,7 @@ public class DownloadPoTask extends ConfigurableProjectTask implements PublicanP
    private String projectVersion;
    private LocaleList locales;
    private File dstDir;
+   private boolean exportPot;
 
    public static void main(String[] args)
    {
@@ -102,6 +103,19 @@ public class DownloadPoTask extends ConfigurableProjectTask implements PublicanP
    public File getDstDir()
    {
       return dstDir;
+   }
+
+   @Override
+   public boolean getExportPot()
+   {
+      return exportPot;
+   }
+
+   @Override
+   @Option(name = "--export-pot", usage = "Export source text from Flies to local POT files")
+   public void setExportPot(boolean exportPot)
+   {
+      this.exportPot = exportPot;
    }
 
 }

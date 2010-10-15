@@ -61,7 +61,7 @@ public class PublicanPullCommand extends ConfigurableProjectCommand
       log.debug("Flies server: {}", opts.getUrl());
       log.debug("Project: {}", opts.getProj());
       log.debug("Version: {}", opts.getProjectVersion());
-      log.info("writing pot/po files to {}", opts.getDstDir());
+      log.info("writing POT/PO files to {}", opts.getDstDir());
 
       LocaleList locales = opts.getLocales();
       if (locales == null)
@@ -78,8 +78,11 @@ public class PublicanPullCommand extends ConfigurableProjectCommand
          ClientResponse<Resource> resourceResponse = translationResources.getResource(docName, extensions);
          ClientUtility.checkResult(resourceResponse, uri);
          Resource doc = resourceResponse.getEntity();
-         log.info("writing document {}", docName);
-         poWriter.writePot(opts.getDstDir(), doc);
+         if (opts.getExportPot())
+         {
+            log.info("writing POT for document {}", docName);
+            poWriter.writePot(opts.getDstDir(), doc);
+         }
 
          for (LocaleMapping locMapping : locales)
          {
@@ -89,14 +92,14 @@ public class PublicanPullCommand extends ConfigurableProjectCommand
             // ignore 404 (no translation yet for specified document)
             if (transResponse.getResponseStatus() == Response.Status.NOT_FOUND)
             {
-               log.info("no translation found in locale {} for document {}", locale, docName);
+               log.info("no translations found in locale {} for document {}", locale, docName);
                continue;
             }
             ClientUtility.checkResult(transResponse, uri);
             TranslationsResource targetDoc = transResponse.getEntity();
 
             String localeDir = locMapping.getLocalLocale();
-            log.info("writing translations in locale {} for document {}", locale, docName);
+            log.info("writing PO translations in locale {} for document {}", locale, docName);
             poWriter.writePo(opts.getDstDir(), doc, localeDir, targetDoc);
          }
       }

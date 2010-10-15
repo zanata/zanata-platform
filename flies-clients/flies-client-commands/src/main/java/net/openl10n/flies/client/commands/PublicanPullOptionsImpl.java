@@ -12,6 +12,7 @@ import org.kohsuke.args4j.Option;
 public class PublicanPullOptionsImpl extends ConfigurableProjectOptionsImpl implements PublicanPullOptions
 {
    private File dstDir;
+   private boolean exportPot;
 
    @Override
    public FliesCommand initCommand()
@@ -42,6 +43,19 @@ public class PublicanPullOptionsImpl extends ConfigurableProjectOptionsImpl impl
    public File getDstDir()
    {
       return dstDir;
+   }
+
+   @Override
+   public boolean getExportPot()
+   {
+      return exportPot;
+   }
+
+   @Override
+   @Option(name = "--export-pot", usage = "Export source text from Flies to local POT files")
+   public void setExportPot(boolean exportPot)
+   {
+      this.exportPot = exportPot;
    }
 
 }
