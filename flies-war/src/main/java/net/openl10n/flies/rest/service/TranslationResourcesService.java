@@ -144,6 +144,7 @@ public class TranslationResourcesService
       this.textFlowTargetDAO = textFlowTargetDAO;
       this.localeServiceImpl = localeService;
       this.resourceUtils = resourceUtils;
+      this.identity = identity;
       this.eTagUtils = eTagUtils;
    }
 
