@@ -27,6 +27,7 @@ import net.openl10n.flies.rest.dto.resource.TextFlowTarget;
 import net.openl10n.flies.rest.dto.resource.TranslationsResource;
 import net.openl10n.flies.service.impl.LocaleServiceImpl;
 
+import org.apache.commons.httpclient.URIException;
 import org.dbunit.operation.DatabaseOperation;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
@@ -225,6 +226,51 @@ public class TranslationResourceRestTest extends FliesRestTest
       // TODO this should return an empty set of targets, possibly with metadata
       assertThat(getResponse.getResponseStatus(), is(Status.NOT_FOUND));
 
+   }
+
+   public void getDocumentThatDoesntExist()
+   {
+      ITranslationResources transResource = getClientRequestFactory().createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
+      ClientResponse<Resource> clientResponse = transResource.getResource("my,doc,does,not,exist.txt", null);
+      assertThat(clientResponse.getResponseStatus(), is(Status.NOT_FOUND));
+      // assertThat(clientResponse.getEntity(String.class),
+      // is("Document not found"));
+   }
+
+   public void getDocument() throws URIException
+   {
+      // NB the new rest API does not map '/' to ','
+      // if a document is PUT with a '/' in the docId, there is no
+      // way to GET it back.
+      // String docUri = "/my/path/document.txt";
+      String docUri = "my,path,document.txt";
+      ITranslationResources transResource = getClientRequestFactory().createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
+      Resource resource = new Resource();
+      resource.setContentType(ContentType.TextPlain);
+      resource.setLang(LocaleId.EN_US);
+      resource.setName(docUri);
+      resource.setType(ResourceType.DOCUMENT);
+      transResource.putResource(docUri, resource, null);
+
+      ClientResponse<Resource> response = transResource.getResource(docUri, null);
+      assertThat(response.getResponseStatus(), is(Status.OK));
+      Resource doc = response.getEntity();
+      // assertThat( doc.getId(), is("/my/path/document.txt") );
+      assertThat(doc.getName(), is(docUri));
+      // assertThat(doc.getName(), is("document.txt"));
+      assertThat(doc.getContentType(), is(ContentType.TextPlain));
+      assertThat(doc.getLang(), is(LocaleId.EN_US));
+      // assertThat( doc.getRevision(), is(1) );
+
+      /*
+       * Link link = doc.getLinks().findLinkByRel(Relationships.SELF);
+       * assertThat( link, notNullValue() ); assertThat(
+       * URIUtil.decode(link.getHref().toString()), endsWith(url+docUri) );
+       * 
+       * link = doc.getLinks().findLinkByRel(Relationships.DOCUMENT_CONTAINER);
+       * assertThat( link, notNullValue() ); assertThat(
+       * link.getHref().toString(), endsWith("iterations/i/1.0") );
+       */
    }
 
    // END of tests
