@@ -241,7 +241,7 @@
 
   <page view-id="/language/language.xhtml">
     <param name="id" value="#{languageTeamAction.language}" />
-    <action execute="#{languageTeamAction.getLocale()}" />
+    <action execute="#{languageTeamAction.initLocale()}" />
   </page>
 
   <!-- Exceptions -->
