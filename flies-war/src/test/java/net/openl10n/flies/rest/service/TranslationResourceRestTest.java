@@ -233,8 +233,6 @@ public class TranslationResourceRestTest extends FliesRestTest
       ITranslationResources transResource = getClientRequestFactory().createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
       ClientResponse<Resource> clientResponse = transResource.getResource("my,doc,does,not,exist.txt", null);
       assertThat(clientResponse.getResponseStatus(), is(Status.NOT_FOUND));
-      // assertThat(clientResponse.getEntity(String.class),
-      // is("Document not found"));
    }
 
    public void getDocument() throws URIException
@@ -242,7 +240,6 @@ public class TranslationResourceRestTest extends FliesRestTest
       // NB the new rest API does not map '/' to ','
       // if a document is PUT with a '/' in the docId, there is no
       // way to GET it back.
-      // String docUri = "/my/path/document.txt";
       String docUri = "my,path,document.txt";
       ITranslationResources transResource = getClientRequestFactory().createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
       Resource resource = new Resource();
@@ -255,9 +252,7 @@ public class TranslationResourceRestTest extends FliesRestTest
       ClientResponse<Resource> response = transResource.getResource(docUri, null);
       assertThat(response.getResponseStatus(), is(Status.OK));
       Resource doc = response.getEntity();
-      // assertThat( doc.getId(), is("/my/path/document.txt") );
       assertThat(doc.getName(), is(docUri));
-      // assertThat(doc.getName(), is("document.txt"));
       assertThat(doc.getContentType(), is(ContentType.TextPlain));
       assertThat(doc.getLang(), is(LocaleId.EN_US));
       // assertThat( doc.getRevision(), is(1) );
