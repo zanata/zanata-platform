@@ -60,6 +60,7 @@ public class LanguageTeamAction implements Serializable
          if (l.equals(locale))
          {
             contained = true;
+            break;
          }
       }
       log.debug("init language:" + language);
