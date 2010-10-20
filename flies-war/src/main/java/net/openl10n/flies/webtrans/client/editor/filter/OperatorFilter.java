@@ -1,4 +1,4 @@
-package net.openl10n.flies.webtrans.client.filter;
+package net.openl10n.flies.webtrans.client.editor.filter;
 
 import java.util.ArrayList;
 

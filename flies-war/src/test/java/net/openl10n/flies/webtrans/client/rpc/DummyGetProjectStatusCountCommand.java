@@ -8,7 +8,6 @@ import net.openl10n.flies.webtrans.shared.model.DocumentStatus;
 import net.openl10n.flies.webtrans.shared.rpc.GetProjectStatusCount;
 import net.openl10n.flies.webtrans.shared.rpc.GetProjectStatusCountResult;
 
-
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 

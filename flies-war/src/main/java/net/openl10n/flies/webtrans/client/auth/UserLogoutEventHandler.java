@@ -1,5 +1,4 @@
-
-package net.openl10n.flies.webtrans.client.events;
+package net.openl10n.flies.webtrans.client.auth;
 
 import com.google.gwt.event.shared.EventHandler;
 

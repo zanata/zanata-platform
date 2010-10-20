@@ -12,15 +12,16 @@ import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+
 import net.openl10n.flies.common.TransUnitCount;
 import net.openl10n.flies.webtrans.client.editor.HasTransUnitCount;
+import net.openl10n.flies.webtrans.client.editor.filter.ContentFilter;
 import net.openl10n.flies.webtrans.client.events.DocumentSelectionEvent;
 import net.openl10n.flies.webtrans.client.events.DocumentSelectionHandler;
 import net.openl10n.flies.webtrans.client.events.NotificationEvent;
 import net.openl10n.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import net.openl10n.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
 import net.openl10n.flies.webtrans.client.events.NotificationEvent.Severity;
-import net.openl10n.flies.webtrans.client.filter.ContentFilter;
 import net.openl10n.flies.webtrans.client.rpc.CachingDispatchAsync;
 import net.openl10n.flies.webtrans.shared.model.DocumentId;
 import net.openl10n.flies.webtrans.shared.model.DocumentInfo;
@@ -30,7 +31,6 @@ import net.openl10n.flies.webtrans.shared.rpc.GetDocumentList;
 import net.openl10n.flies.webtrans.shared.rpc.GetDocumentListResult;
 import net.openl10n.flies.webtrans.shared.rpc.GetProjectStatusCount;
 import net.openl10n.flies.webtrans.shared.rpc.GetProjectStatusCountResult;
-
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
@@ -231,7 +231,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       }
       else
       {
-         long value = (translated * 100) / (fuzzy + untranslated + translated);
+         long value = (long) ((translated * 100) / (fuzzy + untranslated + translated));
          return value;
       }
 

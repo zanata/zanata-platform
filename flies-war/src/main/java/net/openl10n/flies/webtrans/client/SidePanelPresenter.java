@@ -5,8 +5,8 @@ import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
-import net.openl10n.flies.webtrans.client.filter.TransFilterPresenter;
 
+import net.openl10n.flies.webtrans.client.editor.filter.TransFilterPresenter;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;

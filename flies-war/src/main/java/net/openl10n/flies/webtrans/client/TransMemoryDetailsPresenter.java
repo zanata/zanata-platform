@@ -5,12 +5,12 @@ import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+
 import net.openl10n.flies.webtrans.client.rpc.CachingDispatchAsync;
 import net.openl10n.flies.webtrans.shared.model.TranslationMemoryItem;
 import net.openl10n.flies.webtrans.shared.rpc.GetTransMemoryDetailsAction;
-import net.openl10n.flies.webtrans.shared.rpc.TransMemoryDetails;
 import net.openl10n.flies.webtrans.shared.rpc.TransMemoryDetailsList;
-
+import net.openl10n.flies.webtrans.shared.rpc.TransMemoryDetails;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ChangeEvent;

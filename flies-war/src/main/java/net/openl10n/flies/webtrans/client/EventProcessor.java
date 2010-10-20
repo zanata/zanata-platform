@@ -3,6 +3,7 @@ package net.openl10n.flies.webtrans.client;
 import java.util.HashMap;
 
 import net.customware.gwt.presenter.client.EventBus;
+
 import net.openl10n.flies.webtrans.client.events.EnterWorkspaceEvent;
 import net.openl10n.flies.webtrans.client.events.ExitWorkspaceEvent;
 import net.openl10n.flies.webtrans.client.events.TransUnitEditEvent;
@@ -19,9 +20,9 @@ import net.openl10n.flies.webtrans.shared.rpc.SessionEventData;
 import net.openl10n.flies.webtrans.shared.rpc.TransUnitEditing;
 import net.openl10n.flies.webtrans.shared.rpc.TransUnitUpdated;
 
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.gen2.table.client.TableModel.Callback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 

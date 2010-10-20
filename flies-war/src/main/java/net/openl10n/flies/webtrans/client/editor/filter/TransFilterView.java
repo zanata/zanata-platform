@@ -1,6 +1,7 @@
-package net.openl10n.flies.webtrans.client.filter;
+package net.openl10n.flies.webtrans.client.editor.filter;
 
 import net.openl10n.flies.webtrans.client.Resources;
+import net.openl10n.flies.webtrans.client.editor.filter.TransFilterMessages;
 import net.openl10n.flies.webtrans.client.ui.ClearableTextBox;
 import net.openl10n.flies.webtrans.client.ui.CollapsePanel;
 import net.openl10n.flies.webtrans.client.ui.UiMessages;

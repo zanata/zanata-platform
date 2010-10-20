@@ -1,4 +1,4 @@
-package net.openl10n.flies.webtrans.client.filter;
+package net.openl10n.flies.webtrans.client.editor.filter;
 
 import net.openl10n.flies.webtrans.shared.model.TransUnit;
 

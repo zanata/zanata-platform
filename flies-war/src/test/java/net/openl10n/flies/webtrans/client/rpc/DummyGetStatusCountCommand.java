@@ -5,7 +5,6 @@ import net.openl10n.flies.common.TransUnitCount;
 import net.openl10n.flies.webtrans.shared.rpc.GetStatusCount;
 import net.openl10n.flies.webtrans.shared.rpc.GetStatusCountResult;
 
-
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 

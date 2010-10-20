@@ -1,7 +1,9 @@
 package net.openl10n.flies.webtrans.client.rpc;
 
 import net.customware.gwt.dispatch.shared.Action;
+
 import net.customware.gwt.dispatch.shared.Result;
+
 import net.openl10n.flies.webtrans.client.Application;
 import net.openl10n.flies.webtrans.shared.DispatchService;
 import net.openl10n.flies.webtrans.shared.DispatchServiceAsync;
@@ -9,9 +11,8 @@ import net.openl10n.flies.webtrans.shared.auth.AuthenticationError;
 import net.openl10n.flies.webtrans.shared.auth.AuthorizationError;
 import net.openl10n.flies.webtrans.shared.auth.Identity;
 import net.openl10n.flies.webtrans.shared.model.WorkspaceContext;
-import net.openl10n.flies.webtrans.shared.rpc.AbstractWorkspaceAction;
 import net.openl10n.flies.webtrans.shared.rpc.WrappedAction;
-
+import net.openl10n.flies.webtrans.shared.rpc.AbstractWorkspaceAction;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;

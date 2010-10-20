@@ -1,6 +1,5 @@
-package net.openl10n.flies.webtrans.client.events;
+package net.openl10n.flies.webtrans.client.editor.filter;
 
-import net.openl10n.flies.webtrans.client.filter.ContentFilter;
 import net.openl10n.flies.webtrans.shared.model.TransUnit;
 
 import com.google.gwt.event.shared.GwtEvent;

@@ -14,7 +14,6 @@ import net.openl10n.flies.webtrans.shared.model.TransUnitId;
 import net.openl10n.flies.webtrans.shared.rpc.GetTransUnits;
 import net.openl10n.flies.webtrans.shared.rpc.GetTransUnitsResult;
 
-
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.rpc.AsyncCallback;

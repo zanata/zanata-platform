@@ -1,13 +1,13 @@
-package net.openl10n.flies.webtrans.client.filter;
+package net.openl10n.flies.webtrans.client.editor.filter;
 
 import net.openl10n.flies.webtrans.shared.model.TransUnit;
 
-public class TargetPhraseFilter implements ContentFilter<TransUnit>
+public class SourcePhraseFilter implements ContentFilter<TransUnit>
 {
 
    private String phrase;
 
-   public TargetPhraseFilter(String phrase)
+   public SourcePhraseFilter(String phrase)
    {
       this.phrase = phrase;
    }
@@ -15,12 +15,12 @@ public class TargetPhraseFilter implements ContentFilter<TransUnit>
    @Override
    public boolean accept(TransUnit value)
    {
-      return value.getTarget().contains(phrase);
+      return value.getSource().contains(phrase);
    }
 
-   public static TargetPhraseFilter from(String phrase)
+   public static SourcePhraseFilter from(String phrase)
    {
-      return new TargetPhraseFilter(phrase);
+      return new SourcePhraseFilter(phrase);
    }
 
    public String getPhrase()
@@ -32,4 +32,5 @@ public class TargetPhraseFilter implements ContentFilter<TransUnit>
    {
       this.phrase = phrase;
    }
+
 }
