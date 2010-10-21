@@ -1,6 +1,7 @@
 package net.openl10n.flies.rest.service;
 
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -194,9 +195,11 @@ public class TranslationResourcesService
          }
       }
 
-      return Response.ok(new GenericEntity<List<ResourceMeta>>(resources, new GenericType<List<ResourceMeta>>()
+      Type genericType = new GenericType<List<ResourceMeta>>()
       {
-      }.getGenericType())).tag(etag).build();
+      }.getGenericType();
+      Object entity = new GenericEntity<List<ResourceMeta>>(resources, genericType);
+      return Response.ok(entity).tag(etag).build();
    }
 
 
@@ -230,6 +233,7 @@ public class TranslationResourcesService
          document = new HDocument(entity.getName(), entity.getContentType(), hLocale);
          document.setProjectIteration(hProjectIteration);
       }
+      hProjectIteration.getDocuments().put(entity.getName(), document);
 
       resourceUtils.transferFromResource(entity, document, extensions, hLocale);
 
@@ -333,8 +337,8 @@ public class TranslationResourcesService
          changed = true;
          document = new HDocument(entity.getName(), entity.getContentType(), hLocale);
          document.setProjectIteration(hProjectIteration);
+         hProjectIteration.getDocuments().put(id, document);
          response = Response.created(uri.getAbsolutePath());
-
       }
       else if (document.isObsolete())
       { // must also be a create operation
@@ -345,6 +349,8 @@ public class TranslationResourcesService
          }
          changed = true;
          document.setObsolete(false);
+         // not sure if this is needed
+         hProjectIteration.getDocuments().put(id, document);
          response = Response.created(uri.getAbsolutePath());
       }
       else
