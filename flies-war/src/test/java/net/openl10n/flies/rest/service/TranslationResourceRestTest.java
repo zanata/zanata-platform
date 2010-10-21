@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -33,7 +34,6 @@ import net.openl10n.flies.rest.dto.extensions.gettext.HeaderEntry;
 import net.openl10n.flies.rest.dto.extensions.gettext.PoHeader;
 import net.openl10n.flies.rest.dto.extensions.gettext.PoTargetHeader;
 import net.openl10n.flies.rest.dto.extensions.gettext.PotEntryHeader;
-import net.openl10n.flies.rest.dto.po.PotEntryData;
 import net.openl10n.flies.rest.dto.resource.AbstractResourceMeta;
 import net.openl10n.flies.rest.dto.resource.Resource;
 import net.openl10n.flies.rest.dto.resource.ResourceMeta;
@@ -59,10 +59,10 @@ public class TranslationResourceRestTest extends FliesRestTest
 {
    private static final Logger log = LoggerFactory.getLogger(TranslationResourceRestTest.class);
 
-   String projectSlug = "sample-project";
-   String iter = "1.1";
-   private final String RESOURCE_PATH = "/projects/p/sample-project/iterations/i/1.0/r/";
-   private final String BAD_RESOURCE_PATH = "/projects/p/nonexistentProject/iterations/i/99.9/r/";
+   private static final String projectSlug = "sample-project";
+   private static final String iter = "1.1";
+   private static final String RESOURCE_PATH = "/projects/p/sample-project/iterations/i/1.0/r/";
+   private static final String BAD_RESOURCE_PATH = "/projects/p/nonexistentProject/iterations/i/99.9/r/";
    private static final LocaleId DE = LocaleId.fromJavaName("de");
    private static final LocaleId FR = LocaleId.fromJavaName("fr");
 
@@ -892,7 +892,8 @@ public class TranslationResourceRestTest extends FliesRestTest
    { // FIXME!
    // HProjectIteration iteration = projectIterationDAO.getBySlug(projectSlug,
    // iter);
-   // HDocument hDocument = iteration.getAllDocuments().get(docID);
+   // Map<String, HDocument> allDocuments = iteration.getAllDocuments();
+   // HDocument hDocument = allDocuments.get(docID);
    // Assert.assertTrue(hDocument.isObsolete());
    }
 
@@ -900,7 +901,8 @@ public class TranslationResourceRestTest extends FliesRestTest
    { // FIXME!
    // HProjectIteration iteration = projectIterationDAO.getBySlug(projectSlug,
    // iter);
-   // HDocument hDocument = iteration.getAllDocuments().get(docID);
+   // Map<String, HDocument> allDocuments = iteration.getAllDocuments();
+   // HDocument hDocument = allDocuments.get(docID);
    // HTextFlow hResource = hDocument.getAllTextFlows().get(resourceID);
    // Assert.assertNotNull(hResource);
    // Assert.assertTrue(hResource.isObsolete());
