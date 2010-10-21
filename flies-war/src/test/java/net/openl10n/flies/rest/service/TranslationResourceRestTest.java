@@ -4,6 +4,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -20,8 +22,13 @@ import net.openl10n.flies.dao.PersonDAO;
 import net.openl10n.flies.dao.ProjectIterationDAO;
 import net.openl10n.flies.dao.LocaleDAO;
 import net.openl10n.flies.dao.TextFlowTargetDAO;
+import net.openl10n.flies.model.HDocument;
+import net.openl10n.flies.model.HProjectIteration;
+import net.openl10n.flies.model.HTextFlow;
 import net.openl10n.flies.rest.client.ITranslationResources;
 import net.openl10n.flies.rest.dto.Person;
+import net.openl10n.flies.rest.dto.extensions.gettext.HeaderEntry;
+import net.openl10n.flies.rest.dto.resource.AbstractResourceMeta;
 import net.openl10n.flies.rest.dto.resource.Resource;
 import net.openl10n.flies.rest.dto.resource.ResourceMeta;
 import net.openl10n.flies.rest.dto.resource.TextFlow;
@@ -35,17 +42,35 @@ import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.seam.security.Identity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class TranslationResourceRestTest extends FliesRestTest
 {
+   private static final Logger log = LoggerFactory.getLogger(TranslationResourceRestTest.class);
 
+   String projectSlug = "sample-project";
+   String iter = "1.1";
    private final String RESOURCE_PATH = "/projects/p/sample-project/iterations/i/1.0/r/";
+   private final String BAD_RESOURCE_PATH = "/projects/p/nonexistentProject/iterations/i/99.9/r/";
+   private static final LocaleId DE = LocaleId.fromJavaName("de");
+   private static final LocaleId FR = LocaleId.fromJavaName("fr");
 
    IMocksControl mockControl = EasyMock.createControl();
    Identity mockIdentity = mockControl.createMock(Identity.class);
+
+   ProjectIterationDAO projectIterationDAO;
+   DocumentDAO documentDAO;
+   PersonDAO personDAO;
+   TextFlowTargetDAO textFlowTargetDAO;
+   ResourceUtils resourceUtils;
+   ETagUtils eTagUtils;
+
+   ITranslationResources transResource;
 
    @BeforeClass
    void beforeClass()
@@ -69,12 +94,12 @@ public class TranslationResourceRestTest extends FliesRestTest
    @Override
    protected void prepareResources()
    {
-      final ProjectIterationDAO projectIterationDAO = new ProjectIterationDAO(getSession());
-      final DocumentDAO documentDAO = new DocumentDAO(getSession());
-      final PersonDAO personDAO = new PersonDAO(getSession());
-      final TextFlowTargetDAO textFlowTargetDAO = new TextFlowTargetDAO(getSession());
-      final ResourceUtils resourceUtils = new ResourceUtils();
-      final ETagUtils eTagUtils = new ETagUtils(getSession(), documentDAO);
+      this.projectIterationDAO = new ProjectIterationDAO(getSession());
+      this.documentDAO = new DocumentDAO(getSession());
+      this.personDAO = new PersonDAO(getSession());
+      this.textFlowTargetDAO = new TextFlowTargetDAO(getSession());
+      this.resourceUtils = new ResourceUtils();
+      this.eTagUtils = new ETagUtils(getSession(), documentDAO);
 
       LocaleServiceImpl localeService = new LocaleServiceImpl();
       LocaleDAO localeDAO = new LocaleDAO(getSession());
@@ -82,6 +107,12 @@ public class TranslationResourceRestTest extends FliesRestTest
       TranslationResourcesService obj = new TranslationResourcesService(projectIterationDAO, documentDAO, personDAO, textFlowTargetDAO, localeService, resourceUtils, mockIdentity, eTagUtils);
 
       resources.add(obj);
+   }
+
+   @BeforeMethod(dependsOnMethods = "prepareRestEasyFramework")
+   public void createClient()
+   {
+      this.transResource = getClientRequestFactory().createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
    }
 
    @Test
@@ -93,11 +124,9 @@ public class TranslationResourceRestTest extends FliesRestTest
    @Test
    public void createEmptyResource()
    {
-      ITranslationResources client = getClientRequestFactory().createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
-
       Resource sr = createSourceResource("my.txt");
 
-      ClientResponse<String> response = client.post(sr, null);
+      ClientResponse<String> response = transResource.post(sr, null);
       assertThat(response.getResponseStatus(), is(Status.CREATED));
       List<String> locationHeader = response.getHeaders().get("Location");
       assertThat(locationHeader.size(), is(1));
@@ -108,18 +137,16 @@ public class TranslationResourceRestTest extends FliesRestTest
    @Test
    public void createResourceWithContentUsingPost()
    {
-      ITranslationResources client = getClientRequestFactory().createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
-
       Resource sr = createSourceResource("my.txt");
 
       TextFlow stf = new TextFlow("tf1", LocaleId.EN, "tf1");
       sr.getTextFlows().add(stf);
 
-      ClientResponse<String> postResponse = client.post(sr, null);
+      ClientResponse<String> postResponse = transResource.post(sr, null);
       assertThat(postResponse.getResponseStatus(), is(Status.CREATED));
-      postResponse = client.post(sr, null);
+      postResponse = transResource.post(sr, null);
 
-      ClientResponse<Resource> resourceGetResponse = client.getResource("my.txt", null);
+      ClientResponse<Resource> resourceGetResponse = transResource.getResource("my.txt", null);
       assertThat(resourceGetResponse.getResponseStatus(), is(Status.OK));
       Resource gotSr = resourceGetResponse.getEntity();
       assertThat(gotSr.getTextFlows().size(), is(1));
@@ -130,18 +157,16 @@ public class TranslationResourceRestTest extends FliesRestTest
    @Test
    public void createResourceWithContentUsingPut()
    {
-      ITranslationResources client = getClientRequestFactory().createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
-
       Resource sr = createSourceResource("my.txt");
 
       TextFlow stf = new TextFlow("tf1", LocaleId.EN, "tf1");
       sr.getTextFlows().add(stf);
 
-      ClientResponse<String> response = client.putResource("my.txt", sr, null);
+      ClientResponse<String> response = transResource.putResource("my.txt", sr, null);
       assertThat(response.getResponseStatus(), is(Status.CREATED));
       assertThat(response.getLocation().getHref(), endsWith("/r/my.txt"));
 
-      ClientResponse<Resource> resourceGetResponse = client.getResource("my.txt", null);
+      ClientResponse<Resource> resourceGetResponse = transResource.getResource("my.txt", null);
       assertThat(resourceGetResponse.getResponseStatus(), is(Status.OK));
       Resource gotSr = resourceGetResponse.getEntity();
       assertThat(gotSr.getTextFlows().size(), is(1));
@@ -152,8 +177,6 @@ public class TranslationResourceRestTest extends FliesRestTest
    @Test
    public void createPoResourceWithPoHeader()
    {
-      ITranslationResources client = getClientRequestFactory().createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
-
       Resource sr = createSourceResource("my.txt");
 
       TextFlow stf = new TextFlow("tf1", LocaleId.EN, "tf1");
@@ -169,12 +192,12 @@ public class TranslationResourceRestTest extends FliesRestTest
       */
       // @formatter:on
 
-      ClientResponse<String> postResponse = client.post(sr, null); // new
+      ClientResponse<String> postResponse = transResource.post(sr, null); // new
                                                                    // StringSet(PoHeader.ID));
       assertThat(postResponse.getResponseStatus(), is(Status.CREATED));
       doGetandAssertThatResourceListContainsNItems(1);
 
-      ClientResponse<Resource> resourceGetResponse = client.getResource("my.txt", null);// new
+      ClientResponse<Resource> resourceGetResponse = transResource.getResource("my.txt", null);// new
                                                                                         // StringSet(PoHeader.ID));
       assertThat(resourceGetResponse.getResponseStatus(), is(Status.OK));
       Resource gotSr = resourceGetResponse.getEntity();
@@ -200,8 +223,6 @@ public class TranslationResourceRestTest extends FliesRestTest
    {
       createResourceWithContentUsingPut();
 
-      ITranslationResources client = getClientRequestFactory().createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
-
       TranslationsResource entity = new TranslationsResource();
       TextFlowTarget target = new TextFlowTarget("tf1");
       target.setContent("hello world");
@@ -210,21 +231,21 @@ public class TranslationResourceRestTest extends FliesRestTest
       entity.getTextFlowTargets().add(target);
 
       LocaleId de_DE = new LocaleId("de");
-      ClientResponse<String> response = client.putTranslations("my.txt", de_DE, entity, null);
+      ClientResponse<String> response = transResource.putTranslations("my.txt", de_DE, entity, null);
 
       assertThat(response.getResponseStatus(), is(Status.OK));
 
-      ClientResponse<TranslationsResource> getResponse = client.getTranslations("my.txt", de_DE, null);
+      ClientResponse<TranslationsResource> getResponse = transResource.getTranslations("my.txt", de_DE, null);
       assertThat(getResponse.getResponseStatus(), is(Status.OK));
       TranslationsResource entity2 = getResponse.getEntity();
       assertThat(entity2.getTextFlowTargets().size(), is(entity.getTextFlowTargets().size()));
 
       entity.getTextFlowTargets().clear();
-      response = client.putTranslations("my.txt", de_DE, entity, null);
+      response = transResource.putTranslations("my.txt", de_DE, entity, null);
 
       assertThat(response.getResponseStatus(), is(Status.OK));
 
-      getResponse = client.getTranslations("my.txt", de_DE, null);
+      getResponse = transResource.getTranslations("my.txt", de_DE, null);
       // TODO this should return an empty set of targets, possibly with metadata
       assertThat(getResponse.getResponseStatus(), is(Status.NOT_FOUND));
 
@@ -232,7 +253,6 @@ public class TranslationResourceRestTest extends FliesRestTest
 
    public void getDocumentThatDoesntExist()
    {
-      ITranslationResources transResource = getClientRequestFactory().createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
       ClientResponse<Resource> clientResponse = transResource.getResource("my,doc,does,not,exist.txt", null);
       assertThat(clientResponse.getResponseStatus(), is(Status.NOT_FOUND));
    }
@@ -243,8 +263,7 @@ public class TranslationResourceRestTest extends FliesRestTest
       // if a document is PUT with a '/' in the docId, there is no
       // way to GET it back.
       String docUri = "my,path,document.txt";
-      ITranslationResources transResource = getClientRequestFactory().createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
-      Resource resource = createSourceDoc(docUri);
+      Resource resource = createSourceDoc(docUri, false);
       transResource.putResource(docUri, resource, null);
 
       ClientResponse<ResourceMeta> response = transResource.getResourceMeta(docUri, null);
@@ -271,8 +290,7 @@ public class TranslationResourceRestTest extends FliesRestTest
    {
       LocaleId nbLocale = new LocaleId("de");
       String docUri = "my,path,document.txt";
-      ITranslationResources transResource = getClientRequestFactory().createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
-      Resource resource = createSourceDoc(docUri);
+      Resource resource = createSourceDoc(docUri, true);
       transResource.putResource(docUri, resource, null);
       TranslationsResource trans = createTargetDoc();
       transResource.putTranslations(docUri, nbLocale, trans, null);
@@ -304,8 +322,7 @@ public class TranslationResourceRestTest extends FliesRestTest
    {
       // NB the new rest API does not map '/' to ','
       String docUrl = "my,fancy,document.txt";
-      ITranslationResources transResource = getClientRequestFactory().createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
-      Resource doc = createSourceDoc(docUrl);
+      Resource doc = createSourceDoc(docUrl, false);
       Response response = transResource.putResource(docUrl, doc, null);
 
       assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
@@ -334,8 +351,7 @@ public class TranslationResourceRestTest extends FliesRestTest
    {
       // NB the new rest API does not map '/' to ','
       String docUrl = "my,fancy,document.txt";
-      ITranslationResources transResource = getClientRequestFactory().createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
-      Resource doc = createSourceDoc(docUrl);
+      Resource doc = createSourceDoc(docUrl, false);
 
       List<TextFlow> textFlows = doc.getTextFlows();
       textFlows.clear();
@@ -393,9 +409,86 @@ public class TranslationResourceRestTest extends FliesRestTest
       assertThat("should have same id", doc.getTextFlows().get(0).getId(), is("tf2"));
    }
 
+   public void getZero() throws Exception
+   {
+      // log.info("getZero()");
+      expectResourceMetas(true, new AbstractResourceMeta[0]);
+   }
+
+   public void getBadProject() throws Exception
+   {
+      log.info("getBadProject()");
+      ITranslationResources badTransResource = getClientRequestFactory().createProxy(ITranslationResources.class, createBaseURI(BAD_RESOURCE_PATH));
+      ClientResponse<List<ResourceMeta>> response = badTransResource.get(null);
+      assertThat(response.getStatus(), is(404));
+   }
+
    // END of tests
 
-   private Resource createSourceDoc(String name)
+   private void expectDocs(boolean checkRevs, boolean checkLinksIgnored, Resource... docs)
+   {
+      expectResourceMetas(checkRevs, docs);
+      // FIXME check TextFlows and/or TextFlowTargets
+   }
+
+   private void expectResourceMetas(boolean checkRevs, AbstractResourceMeta... docs)
+   {
+      ClientResponse<List<ResourceMeta>> response = transResource.get(null);
+
+      assertThat(response.getStatus(), is(200));
+      assertThat(response.getEntity(), notNullValue());
+      Set<String> expectedDocs = new TreeSet<String>();
+      for (AbstractResourceMeta doc : docs)
+      {
+         String docVal = doc.getName();
+         // FIXME
+         // if (checkRevs)
+         // docVal += ":"+doc.getRevision();
+         expectedDocs.add(docVal);
+      }
+      assertThat(response.getEntity().size(), is(docs.length));
+      Set<String> actualDocs = new TreeSet<String>();
+      for (ResourceMeta doc : response.getEntity())
+      {
+         String docVal = doc.getName();
+         // FIXME
+         // if (checkRevs)
+         // docVal += ":"+doc.getRevision();
+         actualDocs.add(docVal);
+         log.debug("actual doc: " + doc.toString());
+      }
+      assertThat(actualDocs, is(expectedDocs));
+   }
+
+   private void clearRevs(AbstractResourceMeta doc)
+   {
+      // FIXME
+      // doc.setRevision(null);
+
+      if (doc instanceof Resource)
+      {
+         Resource res = (Resource) doc;
+         final List<TextFlow> textFlows = res.getTextFlows();
+         if (textFlows != null)
+            for (TextFlow tf : textFlows)
+            {
+               // FIXME
+               // tf.setRevision(null);
+            }
+      }
+
+   }
+   //
+   // private void clearRevs(List<TextFlowTarget> tfTargets)
+   // {
+   // if (tfTargets != null)
+   // for (TextFlowTarget tft : tfTargets)
+   // {
+   // tft.setResourceRevision(null);
+   // }
+   // }
+
+   private Resource createSourceDoc(String name, boolean withTextFlow)
    {
       Resource resource = new Resource();
       resource.setContentType(ContentType.TextPlain);
@@ -403,7 +496,8 @@ public class TranslationResourceRestTest extends FliesRestTest
       resource.setName(name);
       resource.setType(ResourceType.DOCUMENT);
 
-      resource.getTextFlows().add(new TextFlow("tf1", LocaleId.EN_US, "hello world"));
+      if (withTextFlow)
+         resource.getTextFlows().add(new TextFlow("tf1", LocaleId.EN_US, "hello world"));
       return resource;
    }
 
@@ -432,11 +526,25 @@ public class TranslationResourceRestTest extends FliesRestTest
 
    private void doGetandAssertThatResourceListContainsNItems(int n)
    {
-      ITranslationResources client = getClientRequestFactory().createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
-      ClientResponse<List<ResourceMeta>> resources = client.get(null);
+      ClientResponse<List<ResourceMeta>> resources = transResource.get(null);
       assertThat(resources.getResponseStatus(), is(Status.OK));
 
       assertThat(resources.getEntity().size(), is(n));
    }
 
+   private void verifyObsoleteDocument(final String docID) throws Exception
+   {
+      HProjectIteration iteration = projectIterationDAO.getBySlug(projectSlug, iter);
+      HDocument hDocument = iteration.getAllDocuments().get(docID);
+      Assert.assertTrue(hDocument.isObsolete());
+   }
+
+   private void verifyObsoleteResource(final String docID, final String resourceID) throws Exception
+   {
+      HProjectIteration iteration = projectIterationDAO.getBySlug(projectSlug, iter);
+      HDocument hDocument = iteration.getAllDocuments().get(docID);
+      HTextFlow hResource = hDocument.getAllTextFlows().get(resourceID);
+      Assert.assertNotNull(hResource);
+      Assert.assertTrue(hResource.isObsolete());
+   }
 }
