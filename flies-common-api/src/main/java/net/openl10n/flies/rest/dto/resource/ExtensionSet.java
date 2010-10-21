@@ -28,4 +28,22 @@ public class ExtensionSet<T extends ExtensionValue> extends HashSet<T>
       return DTOUtil.toXML(this);
    }
 
+   public <E extends T> E findOrAddByType(Class<E> clz)
+   {
+      E ext = findByType(clz);
+      if (ext == null)
+      {
+         try
+         {
+            ext = clz.newInstance();
+            add(ext);
+         }
+         catch (Throwable e)
+         {
+            throw new RuntimeException("unable to create instance", e);
+         }
+      }
+      return ext;
+   }
+
 }

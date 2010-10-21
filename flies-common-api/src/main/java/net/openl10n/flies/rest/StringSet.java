@@ -14,9 +14,4 @@ public class StringSet extends ElemSet<String>
       return value;
    }
 
-   public static StringSet valueOf(String value)
-   {
-      return new StringSet(value);
-   }
-
 }
