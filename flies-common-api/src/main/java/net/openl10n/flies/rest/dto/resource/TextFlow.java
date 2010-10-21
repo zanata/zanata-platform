@@ -52,7 +52,17 @@ public class TextFlow implements Extensible<TextFlowExtension>, Serializable
 
    public TextFlow()
    {
-      this.lang = LocaleId.EN_US;
+      this(null, null, null);
+   }
+
+   /**
+    * This constructor sets the lang value to en-US
+    * 
+    */
+
+   public TextFlow(String id)
+   {
+      this(id, LocaleId.EN_US, null);
    }
 
    /**
@@ -63,13 +73,13 @@ public class TextFlow implements Extensible<TextFlowExtension>, Serializable
 
    public TextFlow(String id, LocaleId lang)
    {
-      this.id = id;
-      this.lang = lang;
+      this(id, lang, null);
    }
 
    public TextFlow(String id, LocaleId lang, String content)
    {
-      this(id, lang);
+      this.id = id;
+      this.lang = lang;
       this.content = content;
    }
 

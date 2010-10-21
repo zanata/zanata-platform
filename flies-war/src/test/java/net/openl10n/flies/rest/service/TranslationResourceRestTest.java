@@ -1,12 +1,14 @@
 package net.openl10n.flies.rest.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 import java.util.List;
 
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 
 import net.openl10n.flies.FliesRestTest;
 import net.openl10n.flies.common.ContentState;
@@ -192,8 +194,8 @@ public class TranslationResourceRestTest extends FliesRestTest
       // @formatter:on
    }
 
-   // FIXME fix this broken test: it works in Eclipse but not Maven
-   @Test(enabled = false)
+   // NB this test breaks in Maven if the dev profile is active (because of the
+   // imported testdata)
    public void publishTranslations()
    {
       createResourceWithContentUsingPut();
@@ -207,7 +209,7 @@ public class TranslationResourceRestTest extends FliesRestTest
       target.setTranslator(new Person("root@localhost", "Admin user"));
       entity.getTextFlowTargets().add(target);
 
-      LocaleId de_DE = new LocaleId("de-DE");
+      LocaleId de_DE = new LocaleId("de");
       ClientResponse<String> response = client.putTranslations("my.txt", de_DE, entity, null);
 
       assertThat(response.getResponseStatus(), is(Status.OK));
@@ -242,19 +244,16 @@ public class TranslationResourceRestTest extends FliesRestTest
       // way to GET it back.
       String docUri = "my,path,document.txt";
       ITranslationResources transResource = getClientRequestFactory().createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
-      Resource resource = new Resource();
-      resource.setContentType(ContentType.TextPlain);
-      resource.setLang(LocaleId.EN_US);
-      resource.setName(docUri);
-      resource.setType(ResourceType.DOCUMENT);
+      Resource resource = createSourceDoc(docUri);
       transResource.putResource(docUri, resource, null);
 
-      ClientResponse<Resource> response = transResource.getResource(docUri, null);
+      ClientResponse<ResourceMeta> response = transResource.getResourceMeta(docUri, null);
       assertThat(response.getResponseStatus(), is(Status.OK));
-      Resource doc = response.getEntity();
+      ResourceMeta doc = response.getEntity();
       assertThat(doc.getName(), is(docUri));
       assertThat(doc.getContentType(), is(ContentType.TextPlain));
       assertThat(doc.getLang(), is(LocaleId.EN_US));
+      // FIXME check revision!
       // assertThat( doc.getRevision(), is(1) );
 
       /*
@@ -268,7 +267,159 @@ public class TranslationResourceRestTest extends FliesRestTest
        */
    }
 
+   public void getDocumentWithResources() throws URIException
+   {
+      LocaleId nbLocale = new LocaleId("de");
+      String docUri = "my,path,document.txt";
+      ITranslationResources transResource = getClientRequestFactory().createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
+      Resource resource = createSourceDoc(docUri);
+      transResource.putResource(docUri, resource, null);
+      TranslationsResource trans = createTargetDoc();
+      transResource.putTranslations(docUri, nbLocale, trans, null);
+
+      {
+         ClientResponse<Resource> response = transResource.getResource(docUri, null);
+         assertThat(response.getResponseStatus(), is(Status.OK));
+
+         Resource doc = response.getEntity();
+         assertThat(doc.getTextFlows().size(), is(1));
+      }
+
+      ClientResponse<TranslationsResource> response = transResource.getTranslations(docUri, nbLocale, null);
+      assertThat(response.getResponseStatus(), is(Status.OK));
+
+      TranslationsResource doc = response.getEntity();
+      assertThat("should have one textFlow", doc.getTextFlowTargets().size(), is(1));
+      TextFlowTarget tft = doc.getTextFlowTargets().get(0);
+
+      assertThat(tft, notNullValue());
+      assertThat("should have a textflow with this id", tft.getResId(), is("tf1"));
+
+      assertThat("expected de target", tft, notNullValue());
+      assertThat("expected translation for de", tft.getContent(), is("hei verden"));
+
+   }
+
+   public void putNewDocument()
+   {
+      // NB the new rest API does not map '/' to ','
+      String docUrl = "my,fancy,document.txt";
+      ITranslationResources transResource = getClientRequestFactory().createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
+      Resource doc = createSourceDoc(docUrl);
+      Response response = transResource.putResource(docUrl, doc, null);
+
+      assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
+      assertThat(response.getMetadata().getFirst("Location").toString(), endsWith(RESOURCE_PATH + docUrl));
+
+      ClientResponse<Resource> documentResponse = transResource.getResource(docUrl, null);
+
+      assertThat(documentResponse.getResponseStatus(), is(Status.OK));
+
+      doc = documentResponse.getEntity();
+      // FIXME check revision!
+      // assertThat(doc.getRevision(), is(1));
+
+      /*
+       * Link link = doc.getLinks().findLinkByRel(Relationships.SELF);
+       * assertThat(link, notNullValue()); assertThat(link.getHref().toString(),
+       * endsWith(url + docUrl));
+       * 
+       * link = doc.getLinks().findLinkByRel(Relationships.DOCUMENT_CONTAINER);
+       * assertThat(link, notNullValue()); assertThat(link.getType(),
+       * is(MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML));
+       */
+   }
+
+   public void putNewDocumentWithResources() throws Exception
+   {
+      // NB the new rest API does not map '/' to ','
+      String docUrl = "my,fancy,document.txt";
+      ITranslationResources transResource = getClientRequestFactory().createProxy(ITranslationResources.class, createBaseURI(RESOURCE_PATH));
+      Resource doc = createSourceDoc(docUrl);
+
+      List<TextFlow> textFlows = doc.getTextFlows();
+      textFlows.clear();
+
+      TextFlow textFlow = new TextFlow("tf1");
+      textFlow.setContent("hello world!");
+      textFlows.add(textFlow);
+
+      TextFlow tf3 = new TextFlow("tf3");
+      tf3.setContent("more text");
+      textFlows.add(tf3);
+
+      Marshaller m = null;
+      JAXBContext jc = JAXBContext.newInstance(Resource.class);
+      m = jc.createMarshaller();
+      m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+      m.marshal(doc, System.out);
+
+      Response response = transResource.putResource(docUrl, doc, null);
+
+      assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
+      assertThat(response.getMetadata().getFirst("Location").toString(), endsWith(RESOURCE_PATH + docUrl));
+
+      ClientResponse<Resource> documentResponse = transResource.getResource(docUrl, null);
+
+      assertThat(documentResponse.getResponseStatus(), is(Status.OK));
+
+      doc = documentResponse.getEntity();
+
+      // FIXME check revision!
+      // assertThat(doc.getRevision(), is(1));
+
+      assertThat("Should have textFlows", doc.getTextFlows(), notNullValue());
+      assertThat("Should have 2 textFlows", doc.getTextFlows().size(), is(2));
+      assertThat("Should have tf1 textFlow", doc.getTextFlows().get(0).getId(), is("tf1"));
+      assertThat("Container1 should have tf3 textFlow", doc.getTextFlows().get(1).getId(), is(tf3.getId()));
+
+      textFlow = doc.getTextFlows().get(0);
+      textFlow.setId("tf2");
+
+      response = transResource.putResource(docUrl, doc, null);
+
+      // TODO this WAS testing for status 205
+      assertThat(response.getStatus(), is(200));
+
+      documentResponse = transResource.getResource(docUrl, null);
+      assertThat(documentResponse.getResponseStatus(), is(Status.OK));
+      doc = documentResponse.getEntity();
+
+      // FIXME check revision!
+      // assertThat(doc.getRevision(), is(2));
+
+      assertThat("Should have textFlows", doc.getTextFlows(), notNullValue());
+      assertThat("Should have two textFlows", doc.getTextFlows().size(), is(2));
+      assertThat("should have same id", doc.getTextFlows().get(0).getId(), is("tf2"));
+   }
+
    // END of tests
+
+   private Resource createSourceDoc(String name)
+   {
+      Resource resource = new Resource();
+      resource.setContentType(ContentType.TextPlain);
+      resource.setLang(LocaleId.EN_US);
+      resource.setName(name);
+      resource.setType(ResourceType.DOCUMENT);
+
+      resource.getTextFlows().add(new TextFlow("tf1", LocaleId.EN_US, "hello world"));
+      return resource;
+   }
+
+   private TranslationsResource createTargetDoc()
+   {
+      TranslationsResource trans = new TranslationsResource();
+      TextFlowTarget target = new TextFlowTarget();
+      target.setContent("hei verden");
+      target.setDescription("translation of hello world");
+      target.setResId("tf1");
+      target.setState(ContentState.Approved);
+      Person person = new Person("email@example.com", "Translator Name");
+      target.setTranslator(person);
+      trans.getTextFlowTargets().add(target);
+      return trans;
+   }
 
    private Resource createSourceResource(String name)
    {
