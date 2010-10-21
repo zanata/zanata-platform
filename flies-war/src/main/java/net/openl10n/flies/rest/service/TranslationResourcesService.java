@@ -642,7 +642,7 @@ public class TranslationResourcesService
             if (hTarget == null)
             {
                targetChanged = true;
-               log.debug("locale:" + locale);
+               log.debug("locale: {0}", locale);
                hTarget = new HTextFlowTarget(textFlow, hLocale);
                textFlow.getTargets().put(hLocale, hTarget);
                newTargets.add(hTarget);
