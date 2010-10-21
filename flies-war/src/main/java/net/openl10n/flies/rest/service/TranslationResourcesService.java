@@ -294,6 +294,7 @@ public class TranslationResourcesService
       }
       catch (FliesServiceException e)
       {
+         // TODO perhaps we should use status code 403 here?
          throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build());
       }
 
