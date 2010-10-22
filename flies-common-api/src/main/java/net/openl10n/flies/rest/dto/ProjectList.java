@@ -49,4 +49,43 @@ public class ProjectList implements Serializable, HasSample<ProjectList>
       return DTOUtil.toXML(this);
    }
 
+   @Override
+   public int hashCode()
+   {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((projects == null) ? 0 : projects.hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (this == obj)
+      {
+         return true;
+      }
+      if (obj == null)
+      {
+         return false;
+      }
+      if (!(obj instanceof ProjectList))
+      {
+         return false;
+      }
+      ProjectList other = (ProjectList) obj;
+      if (projects == null)
+      {
+         if (other.projects != null)
+         {
+            return false;
+         }
+      }
+      else if (!projects.equals(other.projects))
+      {
+         return false;
+      }
+      return true;
+   }
+
 }

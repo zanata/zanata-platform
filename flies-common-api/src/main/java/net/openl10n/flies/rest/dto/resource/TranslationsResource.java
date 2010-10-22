@@ -100,4 +100,67 @@ public class TranslationsResource implements Serializable, HasSample<Translation
       return DTOUtil.toXML(this);
    }
 
+   @Override
+   public int hashCode()
+   {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((extensions == null) ? 0 : extensions.hashCode());
+      result = prime * result + ((links == null) ? 0 : links.hashCode());
+      result = prime * result + ((textFlowTargets == null) ? 0 : textFlowTargets.hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (this == obj)
+      {
+         return true;
+      }
+      if (obj == null)
+      {
+         return false;
+      }
+      if (!(obj instanceof TranslationsResource))
+      {
+         return false;
+      }
+      TranslationsResource other = (TranslationsResource) obj;
+      if (extensions == null)
+      {
+         if (other.extensions != null)
+         {
+            return false;
+         }
+      }
+      else if (!extensions.equals(other.extensions))
+      {
+         return false;
+      }
+      if (links == null)
+      {
+         if (other.links != null)
+         {
+            return false;
+         }
+      }
+      else if (!links.equals(other.links))
+      {
+         return false;
+      }
+      if (textFlowTargets == null)
+      {
+         if (other.textFlowTargets != null)
+         {
+            return false;
+         }
+      }
+      else if (!textFlowTargets.equals(other.textFlowTargets))
+      {
+         return false;
+      }
+      return true;
+   }
+
 }

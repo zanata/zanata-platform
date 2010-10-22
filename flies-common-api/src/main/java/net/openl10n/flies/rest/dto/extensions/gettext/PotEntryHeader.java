@@ -7,6 +7,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import net.openl10n.flies.rest.dto.DTOUtil;
+
 
 /**
  * Holds gettext message-level metadata for a source document.
@@ -64,6 +66,87 @@ public class PotEntryHeader implements TextFlowExtension
       if (references == null)
          references = new ArrayList<String>();
       return references;
+   }
+
+   @Override
+   public int hashCode()
+   {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((context == null) ? 0 : context.hashCode());
+      result = prime * result + ((extractedComment == null) ? 0 : extractedComment.hashCode());
+      result = prime * result + ((flags == null) ? 0 : flags.hashCode());
+      result = prime * result + ((references == null) ? 0 : references.hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (this == obj)
+      {
+         return true;
+      }
+      if (obj == null)
+      {
+         return false;
+      }
+      if (!(obj instanceof PotEntryHeader))
+      {
+         return false;
+      }
+      PotEntryHeader other = (PotEntryHeader) obj;
+      if (context == null)
+      {
+         if (other.context != null)
+         {
+            return false;
+         }
+      }
+      else if (!context.equals(other.context))
+      {
+         return false;
+      }
+      if (extractedComment == null)
+      {
+         if (other.extractedComment != null)
+         {
+            return false;
+         }
+      }
+      else if (!extractedComment.equals(other.extractedComment))
+      {
+         return false;
+      }
+      if (flags == null)
+      {
+         if (other.flags != null)
+         {
+            return false;
+         }
+      }
+      else if (!flags.equals(other.flags))
+      {
+         return false;
+      }
+      if (references == null)
+      {
+         if (other.references != null)
+         {
+            return false;
+         }
+      }
+      else if (!references.equals(other.references))
+      {
+         return false;
+      }
+      return true;
+   }
+
+   @Override
+   public String toString()
+   {
+      return DTOUtil.toXML(this);
    }
 
 }

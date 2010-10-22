@@ -137,4 +137,96 @@ public class TextFlowTarget implements Serializable, Extensible<TextFlowTargetEx
       return DTOUtil.toXML(this);
    }
 
+   @Override
+   public int hashCode()
+   {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((content == null) ? 0 : content.hashCode());
+      result = prime * result + ((description == null) ? 0 : description.hashCode());
+      result = prime * result + ((extensions == null) ? 0 : extensions.hashCode());
+      result = prime * result + ((resId == null) ? 0 : resId.hashCode());
+      result = prime * result + ((state == null) ? 0 : state.hashCode());
+      result = prime * result + ((translator == null) ? 0 : translator.hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (this == obj)
+      {
+         return true;
+      }
+      if (obj == null)
+      {
+         return false;
+      }
+      if (!(obj instanceof TextFlowTarget))
+      {
+         return false;
+      }
+      TextFlowTarget other = (TextFlowTarget) obj;
+      if (content == null)
+      {
+         if (other.content != null)
+         {
+            return false;
+         }
+      }
+      else if (!content.equals(other.content))
+      {
+         return false;
+      }
+      if (description == null)
+      {
+         if (other.description != null)
+         {
+            return false;
+         }
+      }
+      else if (!description.equals(other.description))
+      {
+         return false;
+      }
+      if (extensions == null)
+      {
+         if (other.extensions != null)
+         {
+            return false;
+         }
+      }
+      else if (!extensions.equals(other.extensions))
+      {
+         return false;
+      }
+      if (resId == null)
+      {
+         if (other.resId != null)
+         {
+            return false;
+         }
+      }
+      else if (!resId.equals(other.resId))
+      {
+         return false;
+      }
+      if (state != other.state)
+      {
+         return false;
+      }
+      if (translator == null)
+      {
+         if (other.translator != null)
+         {
+            return false;
+         }
+      }
+      else if (!translator.equals(other.translator))
+      {
+         return false;
+      }
+      return true;
+   }
+
 }

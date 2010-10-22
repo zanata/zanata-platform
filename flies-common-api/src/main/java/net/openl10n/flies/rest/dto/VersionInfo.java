@@ -63,4 +63,55 @@ public final class VersionInfo implements Serializable
       return DTOUtil.toXML(this);
    }
 
+   @Override
+   public int hashCode()
+   {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((buildTimeStamp == null) ? 0 : buildTimeStamp.hashCode());
+      result = prime * result + ((versionNo == null) ? 0 : versionNo.hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (this == obj)
+      {
+         return true;
+      }
+      if (obj == null)
+      {
+         return false;
+      }
+      if (!(obj instanceof VersionInfo))
+      {
+         return false;
+      }
+      VersionInfo other = (VersionInfo) obj;
+      if (buildTimeStamp == null)
+      {
+         if (other.buildTimeStamp != null)
+         {
+            return false;
+         }
+      }
+      else if (!buildTimeStamp.equals(other.buildTimeStamp))
+      {
+         return false;
+      }
+      if (versionNo == null)
+      {
+         if (other.versionNo != null)
+         {
+            return false;
+         }
+      }
+      else if (!versionNo.equals(other.versionNo))
+      {
+         return false;
+      }
+      return true;
+   }
+
 }

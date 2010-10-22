@@ -76,4 +76,67 @@ public class Link
       return DTOUtil.toXML(this);
    }
 
+   @Override
+   public int hashCode()
+   {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((href == null) ? 0 : href.hashCode());
+      result = prime * result + ((rel == null) ? 0 : rel.hashCode());
+      result = prime * result + ((type == null) ? 0 : type.hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (this == obj)
+      {
+         return true;
+      }
+      if (obj == null)
+      {
+         return false;
+      }
+      if (!(obj instanceof Link))
+      {
+         return false;
+      }
+      Link other = (Link) obj;
+      if (href == null)
+      {
+         if (other.href != null)
+         {
+            return false;
+         }
+      }
+      else if (!href.equals(other.href))
+      {
+         return false;
+      }
+      if (rel == null)
+      {
+         if (other.rel != null)
+         {
+            return false;
+         }
+      }
+      else if (!rel.equals(other.rel))
+      {
+         return false;
+      }
+      if (type == null)
+      {
+         if (other.type != null)
+         {
+            return false;
+         }
+      }
+      else if (!type.equals(other.type))
+      {
+         return false;
+      }
+      return true;
+   }
+
 }

@@ -145,4 +145,79 @@ public class TextFlow implements Extensible<TextFlowExtension>, Serializable
       return DTOUtil.toXML(this);
    }
 
+   @Override
+   public int hashCode()
+   {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((content == null) ? 0 : content.hashCode());
+      result = prime * result + ((extensions == null) ? 0 : extensions.hashCode());
+      result = prime * result + ((id == null) ? 0 : id.hashCode());
+      result = prime * result + ((lang == null) ? 0 : lang.hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (this == obj)
+      {
+         return true;
+      }
+      if (obj == null)
+      {
+         return false;
+      }
+      if (!(obj instanceof TextFlow))
+      {
+         return false;
+      }
+      TextFlow other = (TextFlow) obj;
+      if (content == null)
+      {
+         if (other.content != null)
+         {
+            return false;
+         }
+      }
+      else if (!content.equals(other.content))
+      {
+         return false;
+      }
+      if (extensions == null)
+      {
+         if (other.extensions != null)
+         {
+            return false;
+         }
+      }
+      else if (!extensions.equals(other.extensions))
+      {
+         return false;
+      }
+      if (id == null)
+      {
+         if (other.id != null)
+         {
+            return false;
+         }
+      }
+      else if (!id.equals(other.id))
+      {
+         return false;
+      }
+      if (lang == null)
+      {
+         if (other.lang != null)
+         {
+            return false;
+         }
+      }
+      else if (!lang.equals(other.lang))
+      {
+         return false;
+      }
+      return true;
+   }
+
 }

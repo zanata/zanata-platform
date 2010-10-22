@@ -64,4 +64,19 @@ public class ResourceMeta extends AbstractResourceMeta implements HasCollectionS
       return DTOUtil.toXML(this);
    }
 
+   @Override
+   public int hashCode()
+   {
+      return super.hashCodeHelper();
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (!(obj instanceof ResourceMeta))
+         return false;
+      else
+         return super.equalsHelper((AbstractResourceMeta) obj);
+   }
+
 }

@@ -118,4 +118,87 @@ public abstract class AbstractResourceMeta implements Serializable, Extensible<A
       return DTOUtil.toXML(this);
    }
 
+   /**
+    * Helper method for equals in subclasses.This abstract class does not
+    * implement equals or hashCode, because a Resource should not be equal to a
+    * ResourceMeta.
+    */
+   protected int hashCodeHelper()
+   {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((contentType == null) ? 0 : contentType.hashCode());
+      result = prime * result + ((extensions == null) ? 0 : extensions.hashCode());
+      result = prime * result + ((lang == null) ? 0 : lang.hashCode());
+      result = prime * result + ((name == null) ? 0 : name.hashCode());
+      result = prime * result + ((type == null) ? 0 : type.hashCode());
+      return result;
+   }
+
+   /**
+    * Helper method for equals in subclasses.This abstract class does not
+    * implement equals or hashCode, because a Resource should not be equal to a
+    * ResourceMeta.
+    */
+   protected boolean equalsHelper(AbstractResourceMeta other)
+   {
+      if (this == other)
+      {
+         return true;
+      }
+      if (other == null)
+      {
+         return false;
+      }
+      if (contentType == null)
+      {
+         if (other.contentType != null)
+         {
+            return false;
+         }
+      }
+      else if (!contentType.equals(other.contentType))
+      {
+         return false;
+      }
+      if (extensions == null)
+      {
+         if (other.extensions != null)
+         {
+            return false;
+         }
+      }
+      else if (!extensions.equals(other.extensions))
+      {
+         return false;
+      }
+      if (lang == null)
+      {
+         if (other.lang != null)
+         {
+            return false;
+         }
+      }
+      else if (!lang.equals(other.lang))
+      {
+         return false;
+      }
+      if (name == null)
+      {
+         if (other.name != null)
+         {
+            return false;
+         }
+      }
+      else if (!name.equals(other.name))
+      {
+         return false;
+      }
+      if (type != other.type)
+      {
+         return false;
+      }
+      return true;
+   }
+
 }

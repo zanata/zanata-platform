@@ -9,6 +9,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
+import net.openl10n.flies.rest.dto.DTOUtil;
+
 import org.codehaus.jackson.annotate.JsonTypeName;
 
 /**
@@ -61,6 +63,63 @@ public class PoTargetHeader implements TranslationsResourceExtension
       if (entries == null)
          entries = new ArrayList<HeaderEntry>();
       return entries;
+   }
+
+   @Override
+   public String toString()
+   {
+      return DTOUtil.toXML(this);
+   }
+
+   @Override
+   public int hashCode()
+   {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((comment == null) ? 0 : comment.hashCode());
+      result = prime * result + ((entries == null) ? 0 : entries.hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (this == obj)
+      {
+         return true;
+      }
+      if (obj == null)
+      {
+         return false;
+      }
+      if (!(obj instanceof PoTargetHeader))
+      {
+         return false;
+      }
+      PoTargetHeader other = (PoTargetHeader) obj;
+      if (comment == null)
+      {
+         if (other.comment != null)
+         {
+            return false;
+         }
+      }
+      else if (!comment.equals(other.comment))
+      {
+         return false;
+      }
+      if (entries == null)
+      {
+         if (other.entries != null)
+         {
+            return false;
+         }
+      }
+      else if (!entries.equals(other.entries))
+      {
+         return false;
+      }
+      return true;
    }
 
 }
