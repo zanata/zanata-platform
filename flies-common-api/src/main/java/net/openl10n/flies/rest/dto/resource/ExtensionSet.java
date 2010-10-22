@@ -2,11 +2,12 @@ package net.openl10n.flies.rest.dto.resource;
 
 import java.util.HashSet;
 
+import javax.xml.bind.annotation.XmlRootElement;
 
 import net.openl10n.flies.rest.dto.DTOUtil;
 import net.openl10n.flies.rest.dto.ExtensionValue;
 
-
+@XmlRootElement(name = "extension-set")
 public class ExtensionSet<T extends ExtensionValue> extends HashSet<T>
 {
 
