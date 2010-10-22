@@ -187,6 +187,7 @@ public class TranslationResourcesService
 
       for (HDocument doc : hProjectIteration.getDocuments().values())
       {
+         // TODO we shouldn't need this check
          if (!doc.isObsolete())
          {
             ResourceMeta resource = new ResourceMeta();
