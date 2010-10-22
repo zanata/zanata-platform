@@ -33,6 +33,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.common.Namespaces;
 import net.openl10n.flies.dao.DocumentDAO;
@@ -525,7 +526,8 @@ public class TranslationResourcesService
 
       for (HTextFlowTarget hTarget : hTargets)
       {
-         TextFlowTarget target = new TextFlowTarget(hTarget.getTextFlow().getResId());
+         TextFlowTarget target = new TextFlowTarget();
+         target.setResId(hTarget.getTextFlow().getResId());
          resourceUtils.transferToTextFlowTarget(hTarget, target);
          resourceUtils.transferToTextFlowTargetExtensions(hTarget, target.getExtensions(true), extensions);
          translationResource.getTextFlowTargets().add(target);
@@ -643,6 +645,15 @@ public class TranslationResourcesService
          if (textFlow.getResId().equals(current.getResId()))
          {
             // transfer
+
+            if (current.getContent().isEmpty() && current.getState() != ContentState.New)
+            {
+               return Response.status(Status.FORBIDDEN).entity("empty TextFlowTarget " + current.getResId() + " must have ContentState New").build();
+            }
+            if (current.getState() == ContentState.New && !current.getContent().isEmpty())
+            {
+               return Response.status(Status.FORBIDDEN).entity("ContentState New is illegal for non-empty TextFlowTarget " + current.getResId()).build();
+            }
 
             HTextFlowTarget hTarget = textFlow.getTargets().get(hLocale);
             boolean targetChanged = false;
