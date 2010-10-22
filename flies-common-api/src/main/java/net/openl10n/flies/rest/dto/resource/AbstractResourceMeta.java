@@ -47,7 +47,7 @@ public abstract class AbstractResourceMeta implements Serializable, Extensible<A
    }
 
    @XmlElementWrapper(name = "extensions", required = false)
-   @XmlElement
+   @XmlElement(name = "extension")
    public ExtensionSet<AbstractResourceMetaExtension> getExtensions()
    {
       return extensions;

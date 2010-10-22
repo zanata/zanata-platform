@@ -38,7 +38,7 @@ public class TranslationsResource implements Serializable, HasSample<Translation
    private List<TextFlowTarget> textFlowTargets;
 
    @XmlElementWrapper(name = "extensions", required = false)
-   @XmlElement
+   @XmlElement(name = "extension")
    public ExtensionSet<TranslationsResourceExtension> getExtensions()
    {
       return extensions;

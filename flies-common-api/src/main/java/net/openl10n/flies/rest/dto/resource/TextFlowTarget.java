@@ -100,7 +100,7 @@ public class TextFlowTarget implements Serializable, Extensible<TextFlowTargetEx
    }
 
    @XmlElementWrapper(name = "extensions", required = false)
-   @XmlElement
+   @XmlElement(name = "extension")
    public ExtensionSet<TextFlowTargetExtension> getExtensions()
    {
       return extensions;

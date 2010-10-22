@@ -120,7 +120,7 @@ public class TextFlow implements Extensible<TextFlowExtension>, Serializable
    }
 
    @XmlElementWrapper(name = "extensions", required = false)
-   @XmlElement
+   @XmlElement(name = "extension")
    public ExtensionSet<TextFlowExtension> getExtensions()
    {
       return extensions;
