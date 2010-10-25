@@ -253,9 +253,10 @@ public class TranslationResourcesService
    @GET
    @Path(RESOURCE_SLUG_TEMPLATE)
    // /r/{id}
-   public Response getResource(@PathParam("id") String id)
+   public Response getResource(@PathParam("id") String idNoSlash)
    {
       log.debug("start get resource");
+      String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveIteration();
 
       validateExtensions(PoHeader.ID, PotEntryHeader.ID);
@@ -313,10 +314,10 @@ public class TranslationResourcesService
    @Path(RESOURCE_SLUG_TEMPLATE)
    // /r/{id}
    @Admin
-   public Response putResource(@PathParam("id") String id, InputStream messageBody)
+   public Response putResource(@PathParam("id") String idNoSlash, InputStream messageBody)
    {
       log.debug("start put resource");
-
+      String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       ResponseBuilder response;
       EntityTag etag = null;
       boolean changed = false;
@@ -393,8 +394,9 @@ public class TranslationResourcesService
    @Path(RESOURCE_SLUG_TEMPLATE)
    // /r/{id}
    @Admin
-   public Response deleteResource(@PathParam("id") String id)
+   public Response deleteResource(@PathParam("id") String idNoSlash)
    {
+      String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveIteration();
 
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
@@ -414,9 +416,10 @@ public class TranslationResourcesService
    @GET
    @Path(RESOURCE_SLUG_TEMPLATE + "/meta")
    // /r/{id}/meta
-   public Response getResourceMeta(@PathParam("id") String id)
+   public Response getResourceMeta(@PathParam("id") String idNoSlash)
    {
       log.debug("start to get resource meta");
+      String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveIteration();
 
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
@@ -448,9 +451,10 @@ public class TranslationResourcesService
    @Path(RESOURCE_SLUG_TEMPLATE + "/meta")
    // /r/{id}/meta
    @Admin
-   public Response putResourceMeta(@PathParam("id") String id, InputStream messageBody)
+   public Response putResourceMeta(@PathParam("id") String idNoSlash, InputStream messageBody)
    {
       log.debug("start to put resource meta");
+      String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveIteration();
 
       identity.checkPermission(hProjectIteration, ACTION_IMPORT_TEMPLATE);
@@ -493,9 +497,10 @@ public class TranslationResourcesService
    @GET
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    // /r/{id}/translations/{locale}
-   public Response getTranslations(@PathParam("id") String id, @PathParam("locale") LocaleId locale)
+   public Response getTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale)
    {
       log.debug("start to get translation");
+      String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveIteration();
 
       validateExtensions();
@@ -551,9 +556,9 @@ public class TranslationResourcesService
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    // /r/{id}/translations/{locale}
    @Admin
-   public Response deleteTranslations(@PathParam("id") String id, @PathParam("locale") LocaleId locale)
+   public Response deleteTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale)
    {
-
+      String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveIteration();
 
       // TODO find correct etag
@@ -589,10 +594,10 @@ public class TranslationResourcesService
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    // /r/{id}/translations/{locale}
    @Admin
-   public Response putTranslations(@PathParam("id") String id, @PathParam("locale") LocaleId locale, InputStream messageBody)
+   public Response putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, InputStream messageBody)
    {
       log.debug("start put translations");
-
+      String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveIteration();
 
       identity.checkPermission(hProjectIteration, ACTION_IMPORT_TRANSLATION);

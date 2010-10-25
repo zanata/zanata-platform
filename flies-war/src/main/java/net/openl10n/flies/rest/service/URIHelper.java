@@ -24,8 +24,7 @@ public final class URIHelper
 
    public static String convertFromDocumentURIId(String uriId)
    {
-
-      return "/" + uriId.replace(',', '/');
+      return uriId.replace(',', '/');
    }
 
    public static String convertToDocumentURIId(String id)
