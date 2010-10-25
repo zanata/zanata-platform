@@ -2,13 +2,17 @@ package net.openl10n.flies.client.commands.gettext;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import net.openl10n.flies.client.config.LocaleList;
 import net.openl10n.flies.client.config.LocaleMapping;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,27 +25,34 @@ import org.slf4j.LoggerFactory;
 public class PublicanUtil
 {
    private static final Logger log = LoggerFactory.getLogger(PublicanUtil.class);
+   private static final String FILESEP = System.getProperty("file.separator");
+
    private PublicanUtil()
    {
    }
 
-   public static File[] findPotFiles(File potDir) throws IOException
+   public static String[] findPotFiles(File potDir) throws IOException
    {
-      // scan the directory for pot files
-      File[] potFiles = potDir.listFiles(new FileFilter()
+      Collection<File> files = FileUtils.listFiles(potDir, new String[] { "pot" }, true);
+      String[] potFiles = new String[files.size()];
+      Iterator<File> iter = files.iterator();
+
+      for (int i = 0; i < potFiles.length; i++)
       {
-         @Override
-         public boolean accept(File pathname)
-         {
-            return pathname.isFile() && pathname.getName().endsWith(".pot");
-         }
-      });
-   
-      if (potFiles == null)
-      {
-         throw new IOException("Unable to read directory \"pot\" - have you run \"publican update_pot\"?");
+         File potFile = iter.next();
+         String relativePath = getSubPath(potDir, potFile);
+         potFiles[i] = relativePath;
       }
       return potFiles;
+   }
+
+   private static String getSubPath(File potDir, File potFile) throws IOException
+   {
+      String dirPath = potDir.getAbsolutePath();
+      String filePath = potFile.getAbsolutePath();
+      assert !dirPath.endsWith(FILESEP);
+      assert filePath.startsWith(dirPath);
+      return filePath.substring(dirPath.length() + FILESEP.length());
    }
 
    public static File[] findLocaleDirs(File srcDir)

@@ -84,10 +84,10 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
       Set<String> localDocNames = new HashSet<String>();
       // populate localDocNames by looking in pot directory
       File potDir = new File(opts.getSrcDir(), "pot");
-      File[] potFiles = PublicanUtil.findPotFiles(potDir);
-      for (File pot : potFiles)
+
+      String[] potFiles = PublicanUtil.findPotFiles(potDir);
+      for (String potName : potFiles)
       {
-         String potName = pot.getName();
          String docName = StringUtil.removeFileExtension(potName, ".pot");
          localDocNames.add(docName);
       }
