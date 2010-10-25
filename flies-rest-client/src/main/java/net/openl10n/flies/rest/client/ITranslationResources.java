@@ -34,34 +34,34 @@ public interface ITranslationResources
 
    @GET
    @Path("{id}")
-   public ClientResponse<Resource> getResource(@PathParam("id") String id, @QueryParam("ext") StringSet extensions);
+   public ClientResponse<Resource> getResource(@PathParam("id") String idNoSlash, @QueryParam("ext") StringSet extensions);
 
    @PUT
    @Path("{id}")
-   public ClientResponse<String> putResource(@PathParam("id") String id, Resource messageBody, @QueryParam("ext") StringSet extensions);
+   public ClientResponse<String> putResource(@PathParam("id") String idNoSlash, Resource messageBody, @QueryParam("ext") StringSet extensions);
 
    @DELETE
    @Path("{id}")
-   public ClientResponse<String> deleteResource(@PathParam("id") String id);
+   public ClientResponse<String> deleteResource(@PathParam("id") String idNoSlash);
 
    @GET
    @Path("{id}/meta")
-   public ClientResponse<ResourceMeta> getResourceMeta(@PathParam("id") String id, @QueryParam("ext") StringSet extensions);
+   public ClientResponse<ResourceMeta> getResourceMeta(@PathParam("id") String idNoSlash, @QueryParam("ext") StringSet extensions);
 
    @PUT
    @Path("{id}/meta")
-   public ClientResponse<String> putResourceMeta(@PathParam("id") String id, ResourceMeta messageBody, @QueryParam("ext") StringSet extensions);
+   public ClientResponse<String> putResourceMeta(@PathParam("id") String idNoSlash, ResourceMeta messageBody, @QueryParam("ext") StringSet extensions);
 
    @GET
    @Path("{id}/translations/{locale}")
-   public ClientResponse<TranslationsResource> getTranslations(@PathParam("id") String id, @PathParam("locale") LocaleId locale, @QueryParam("ext") StringSet extensions);
+   public ClientResponse<TranslationsResource> getTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, @QueryParam("ext") StringSet extensions);
 
    @DELETE
    @Path("{id}/translations/{locale}")
-   public ClientResponse<String> deleteTranslations(@PathParam("id") String id, @PathParam("locale") LocaleId locale);
+   public ClientResponse<String> deleteTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale);
 
    @PUT
    @Path("{id}/translations/{locale}")
-   public ClientResponse<String> putTranslations(@PathParam("id") String id, @PathParam("locale") LocaleId locale, TranslationsResource messageBody, @QueryParam("ext") StringSet extensions);
+   public ClientResponse<String> putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, TranslationsResource messageBody, @QueryParam("ext") StringSet extensions);
 
 }
