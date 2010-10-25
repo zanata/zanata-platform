@@ -24,6 +24,7 @@ import net.openl10n.flies.dao.LocaleDAO;
 import net.openl10n.flies.dao.TextFlowTargetDAO;
 import net.openl10n.flies.model.HDocument;
 import net.openl10n.flies.model.HProjectIteration;
+import net.openl10n.flies.rest.RestUtil;
 import net.openl10n.flies.rest.StringSet;
 import net.openl10n.flies.rest.client.ITranslationResources;
 import net.openl10n.flies.rest.dto.Person;
@@ -46,6 +47,7 @@ import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 import org.fest.assertions.Assertions;
 import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.plugins.delegates.UriHeaderDelegate;
 import org.jboss.seam.security.Identity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -187,7 +189,9 @@ public class TranslationResourceRestTest extends FliesRestTest
    @Test
    public void createPoResourceWithPoHeader()
    {
-      Resource sr = createSourceResource("my.txt");
+      String docName = "my.txt";
+      String docUri = RestUtil.convertToDocumentURIId(docName);
+      Resource sr = createSourceResource(docName);
 
       TextFlow stf = new TextFlow("tf1", LocaleId.EN, "tf1");
       sr.getTextFlows().add(stf);
@@ -207,7 +211,7 @@ public class TranslationResourceRestTest extends FliesRestTest
       assertThat(postResponse.getResponseStatus(), is(Status.CREATED));
       doGetandAssertThatResourceListContainsNItems(1);
 
-      ClientResponse<Resource> resourceGetResponse = transResource.getResource("my.txt", null);// new
+      ClientResponse<Resource> resourceGetResponse = transResource.getResource(docUri, null);// new
                                                                                         // StringSet(PoHeader.ID));
       assertThat(resourceGetResponse.getResponseStatus(), is(Status.OK));
       Resource gotSr = resourceGetResponse.getEntity();
@@ -271,17 +275,15 @@ public class TranslationResourceRestTest extends FliesRestTest
    @Test
    public void getDocument() throws URIException
    {
-      // NB the new rest API does not map '/' to ','
-      // if a document is PUT with a '/' in the docId, there is no
-      // way to GET it back.
-      String docUri = "my,path,document.txt";
-      Resource resource = createSourceDoc(docUri, false);
+      String docName = "my/path/document.txt";
+      String docUri = RestUtil.convertToDocumentURIId(docName);
+      Resource resource = createSourceDoc(docName, false);
       transResource.putResource(docUri, resource, null);
 
       ClientResponse<ResourceMeta> response = transResource.getResourceMeta(docUri, null);
       assertThat(response.getResponseStatus(), is(Status.OK));
       ResourceMeta doc = response.getEntity();
-      assertThat(doc.getName(), is(docUri));
+      assertThat(doc.getName(), is(docName));
       assertThat(doc.getContentType(), is(ContentType.TextPlain));
       assertThat(doc.getLang(), is(LocaleId.EN_US));
       assertThat(doc.getRevision(), is(1));
@@ -301,8 +303,9 @@ public class TranslationResourceRestTest extends FliesRestTest
    public void getDocumentWithResources() throws URIException
    {
       LocaleId nbLocale = new LocaleId("de");
-      String docUri = "my,path,document.txt";
-      Resource resource = createSourceDoc(docUri, true);
+      String docName = "my/path/document.txt";
+      String docUri = RestUtil.convertToDocumentURIId(docName);
+      Resource resource = createSourceDoc(docName, true);
       transResource.putResource(docUri, resource, null);
       TranslationsResource trans = createTargetDoc();
       transResource.putTranslations(docUri, nbLocale, trans, null);
@@ -332,9 +335,9 @@ public class TranslationResourceRestTest extends FliesRestTest
    @Test
    public void putNewDocument()
    {
-      // NB the new rest API does not map '/' to ','
-      String docUrl = "my,fancy,document.txt";
-      Resource doc = createSourceDoc(docUrl, false);
+      String docName = "my/fancy/document.txt";
+      String docUrl = RestUtil.convertToDocumentURIId(docName);
+      Resource doc = createSourceDoc(docName, false);
       Response response = transResource.putResource(docUrl, doc, null);
 
       assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
@@ -361,9 +364,9 @@ public class TranslationResourceRestTest extends FliesRestTest
    @Test
    public void putNewDocumentWithResources() throws Exception
    {
-      // NB the new rest API does not map '/' to ','
-      String docUrl = "my,fancy,document.txt";
-      Resource doc = createSourceDoc(docUrl, false);
+      String docName = "my/fancy/document.txt";
+      String docUrl = RestUtil.convertToDocumentURIId(docName);
+      Resource doc = createSourceDoc(docName, false);
 
       List<TextFlow> textFlows = doc.getTextFlows();
       textFlows.clear();

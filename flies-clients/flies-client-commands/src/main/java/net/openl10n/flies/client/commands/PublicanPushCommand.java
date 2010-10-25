@@ -15,6 +15,7 @@ import net.openl10n.flies.client.commands.gettext.PublicanUtil;
 import net.openl10n.flies.client.config.LocaleMapping;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.rest.JaxbUtil;
+import net.openl10n.flies.rest.RestUtil;
 import net.openl10n.flies.rest.StringSet;
 import net.openl10n.flies.rest.client.ClientUtility;
 import net.openl10n.flies.rest.client.FliesClientRequestFactory;
@@ -97,10 +98,12 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
       for (ResourceMeta doc : remoteDocList)
       {
          // NB ResourceMeta.name = HDocument.docId
-         if (!localDocNames.contains(doc.getName()))
+         String docName = doc.getName();
+         String docUri = RestUtil.convertToDocumentURIId(docName);
+         if (!localDocNames.contains(docName))
          {
-            log.info("deleting resource {} from server", doc.getName());
-            ClientResponse<String> deleteResponse = translationResources.deleteResource(doc.getName());
+            log.info("deleting resource {} from server", docName);
+            ClientResponse<String> deleteResponse = translationResources.deleteResource(docUri);
             ClientUtility.checkResult(deleteResponse, uri);
          }
       }
@@ -126,12 +129,13 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
       }
 
       PoReader2 poReader = new PoReader2();
-      for (String docId : localDocNames)
+      for (String docName : localDocNames)
       {
-         File potFile = new File(potDir, docId + ".pot");
+         String docUri = RestUtil.convertToDocumentURIId(docName);
+         File potFile = new File(potDir, docName + ".pot");
          InputSource potInputSource = new InputSource(potFile.toURI().toString());
          // load 'srcDoc' from pot/${docID}.pot
-         Resource srcDoc = poReader.extractTemplate(potInputSource, new LocaleId(opts.getSourceLang()), docId);
+         Resource srcDoc = poReader.extractTemplate(potInputSource, new LocaleId(opts.getSourceLang()), docName);
 
          if (log.isDebugEnabled())
          {
@@ -145,7 +149,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
          }
          StringSet extensions = new StringSet("comment;gettext");
          log.info("pushing source document [name={}] to server", srcDoc.getName());
-         ClientResponse<String> putResponse = translationResources.putResource(docId, srcDoc, extensions);
+         ClientResponse<String> putResponse = translationResources.putResource(docUri, srcDoc, extensions);
          ClientUtility.checkResult(putResponse, uri);
 
          if (opts.getImportPo())
@@ -153,7 +157,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
             for (LocaleMapping locale : locales)
             {
                File localeDir = new File(opts.getSrcDir(), locale.getLocalLocale());
-               File poFile = new File(localeDir, docId + ".po");
+               File poFile = new File(localeDir, docName + ".po");
                if (poFile.exists())
                {
                   InputSource inputSource = new InputSource(poFile.toURI().toString());
@@ -170,7 +174,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
                      JaxbUtil.validateXml(targetDoc, jc);
                   }
                   log.info("pushing target document [name={} client-locale={}] to server [locale={}]", new Object[] { srcDoc.getName(), locale.getLocalLocale(), locale.getLocale() });
-                  ClientResponse<String> putTransResponse = translationResources.putTranslations(docId, new LocaleId(locale.getLocale()), targetDoc, extensions);
+                  ClientResponse<String> putTransResponse = translationResources.putTranslations(docUri, new LocaleId(locale.getLocale()), targetDoc, extensions);
                   ClientUtility.checkResult(putTransResponse, uri);
                }
             }

@@ -1,5 +1,7 @@
 package net.openl10n.flies.rest.service;
 
+import net.openl10n.flies.rest.RestUtil;
+
 public final class URIHelper
 {
 
@@ -19,7 +21,7 @@ public final class URIHelper
 
    public static String getDocument(String projectSlug, String iterationSlug, String documentId)
    {
-      return getIteration(projectSlug, iterationSlug) + "/documents/d/" + convertToDocumentURIId(documentId);
+      return getIteration(projectSlug, iterationSlug) + "/documents/d/" + RestUtil.convertToDocumentURIId(documentId);
    }
 
    public static String convertFromDocumentURIId(String uriId)
@@ -27,14 +29,12 @@ public final class URIHelper
       return uriId.replace(',', '/');
    }
 
+   /**
+    * @deprecated Use {@link RestUtil#convertToDocumentURIId(String)} instead
+    */
    public static String convertToDocumentURIId(String id)
    {
-      // NB this currently prevents us from allowing ',' in file names
-      if (id.startsWith("/"))
-      {
-         return id.substring(1).replace('/', ',');
-      }
-      return id.replace('/', ',');
+      return RestUtil.convertToDocumentURIId(id);
    }
 
 }
