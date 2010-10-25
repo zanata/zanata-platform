@@ -26,6 +26,8 @@ public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
       log.debug("put resource:" + sr.toString());
       translationResource.putResource(sr.getName(), sr, new StringSet("gettext;comment"));
       Resource get = translationResource.getResource(sr.getName(), new StringSet("gettext;comment")).getEntity();
+      ResourceTestUtil.clearRevs(sr);
+      ResourceTestUtil.clearRevs(get);
       assertThat(get.toString(), is(sr.toString()));
    }
 
@@ -36,6 +38,8 @@ public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
       translationResource.putResource(sr.getName(), sr, null);
       Resource get = translationResource.getResource(sr.getName(), new StringSet("gettext;comment")).getEntity();
       Resource base = resourceTestFactory.getTextFlowTest();
+      ResourceTestUtil.clearRevs(base);
+      ResourceTestUtil.clearRevs(get);
       log.debug("expect:" + base.toString());
       log.debug("actual:" + get.toString());
       assertThat(get.toString(), is(base.toString()));
@@ -48,6 +52,8 @@ public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
       translationResource.putResource(sr.getName(), sr, new StringSet("gettext;comment"));
       Resource get = translationResource.getResource(sr.getName(), null).getEntity();
       Resource base = resourceTestFactory.getTextFlowTest();
+      ResourceTestUtil.clearRevs(base);
+      ResourceTestUtil.clearRevs(get);
       log.debug("expect:" + base.toString());
       log.debug("actual:" + get.toString());
       assertThat(get.toString(), is(base.toString()));
@@ -59,6 +65,8 @@ public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
       translationResource.putResource(sr.getName(), sr, null);
       Resource base = resourceTestFactory.getTextFlowTest();
       Resource get = translationResource.getResource(sr.getName(), null).getEntity();
+      ResourceTestUtil.clearRevs(base);
+      ResourceTestUtil.clearRevs(get);
       assertThat(get.toString(), is(base.toString()));
    }
 
@@ -68,6 +76,8 @@ public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
       translationResource.post(sr, null);
       Resource base = resourceTestFactory.getTextFlowTest();
       Resource get = translationResource.getResource(sr.getName(), null).getEntity();
+      ResourceTestUtil.clearRevs(base);
+      ResourceTestUtil.clearRevs(get);
       assertThat(get.toString(), is(base.toString()));
    }
 
@@ -76,6 +86,8 @@ public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
    {
       translationResource.post(sr, new StringSet("gettext;comment"));
       Resource get = translationResource.getResource(sr.getName(), new StringSet("gettext;comment")).getEntity();
+      ResourceTestUtil.clearRevs(sr);
+      ResourceTestUtil.clearRevs(get);
       log.debug("expect:" + sr.toString());
       log.debug("actual:" + get.toString());
       assertThat(get.toString(), is(sr.toString()));
@@ -88,6 +100,8 @@ public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
       translationResource.post(sr, null);
       Resource get = translationResource.getResource(sr.getName(), new StringSet("gettext;comment")).getEntity();
       Resource base = resourceTestFactory.getTextFlowTest();
+      ResourceTestUtil.clearRevs(base);
+      ResourceTestUtil.clearRevs(get);
       log.debug("expect:" + base.toString());
       log.debug("actual:" + get.toString());
       assertThat(get.toString(), is(base.toString()));
@@ -100,6 +114,8 @@ public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
       translationResource.post(sr, new StringSet("gettext;comment"));
       Resource get = translationResource.getResource(sr.getName(), null).getEntity();
       Resource base = resourceTestFactory.getTextFlowTest();
+      ResourceTestUtil.clearRevs(base);
+      ResourceTestUtil.clearRevs(get);
       log.debug("expect:" + base.toString());
       log.debug("actual:" + get.toString());
       assertThat(get.toString(), is(base.toString()));
@@ -126,6 +142,8 @@ public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
       log.debug("get resource meta");
       ClientResponse<ResourceMeta> resourceGetResponse = translationResource.getResourceMeta(sr.getName(), new StringSet("gettext;comment"));
       ResourceMeta get = resourceGetResponse.getEntity();
+      ResourceTestUtil.clearRevs(sr);
+      ResourceTestUtil.clearRevs(get);
       assertThat(sr.toString(), is(get.toString()));
    }
 
@@ -140,6 +158,8 @@ public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
       log.debug("get resource meta");
       ClientResponse<ResourceMeta> resourceGetResponse = translationResource.getResourceMeta(sr.getName(), new StringSet("gettext;comment"));
       ResourceMeta get = resourceGetResponse.getEntity();
+      ResourceTestUtil.clearRevs(base);
+      ResourceTestUtil.clearRevs(get);
       assertThat(get.toString(), is(base.toString()));
    }
 
@@ -154,6 +174,8 @@ public class ResourceServiceSeamTest extends ResourceTranslationServiceSeamTest
       log.debug("get resource meta");
       ClientResponse<ResourceMeta> resourceGetResponse = translationResource.getResourceMeta(sr.getName(), null);
       ResourceMeta get = resourceGetResponse.getEntity();
+      ResourceTestUtil.clearRevs(base);
+      ResourceTestUtil.clearRevs(get);
       assertThat(get.toString(), is(base.toString()));
    }
 

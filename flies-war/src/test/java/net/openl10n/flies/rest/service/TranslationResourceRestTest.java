@@ -666,12 +666,12 @@ public class TranslationResourceRestTest extends FliesRestTest
       for (Resource expectedDoc : docs)
       {
          if (!checkRevs)
-            clearRevs(expectedDoc);
+            ResourceTestUtil.clearRevs(expectedDoc);
          ClientResponse<Resource> response = transResource.getResource(expectedDoc.getName(), extGettextComment);
          assertThat(response.getStatus(), is(200));
          Resource actualDoc = response.getEntity();
          if (!checkRevs)
-            clearRevs(actualDoc);
+            ResourceTestUtil.clearRevs(actualDoc);
          createExtensionSets(expectedDoc);
          createExtensionSets(actualDoc);
          Assertions.assertThat(actualDoc).isEqualTo(expectedDoc);
@@ -715,36 +715,10 @@ public class TranslationResourceRestTest extends FliesRestTest
       expectedDoc.getExtensions(true);
       if (!checkRevs)
       {
-         clearRevs(actualDoc);
-         clearRevs(expectedDoc);
+         ResourceTestUtil.clearRevs(actualDoc);
+         ResourceTestUtil.clearRevs(expectedDoc);
       }
       Assertions.assertThat(actualDoc.toString()).isEqualTo(expectedDoc.toString());
-   }
-
-   private void clearRevs(AbstractResourceMeta doc)
-   {
-      doc.setRevision(null);
-
-      if (doc instanceof Resource)
-      {
-         Resource res = (Resource) doc;
-         final List<TextFlow> textFlows = res.getTextFlows();
-         if (textFlows != null)
-            for (TextFlow tf : textFlows)
-            {
-               tf.setRevision(null);
-            }
-      }
-
-   }
-
-   private void clearRevs(TranslationsResource doc)
-   {
-      doc.setRevision(null);
-      for (TextFlowTarget tft : doc.getTextFlowTargets())
-      {
-         tft.setTextFlowRevision(null);
-      }
    }
 
    private Resource createSourceDoc(String name, boolean withTextFlow)
