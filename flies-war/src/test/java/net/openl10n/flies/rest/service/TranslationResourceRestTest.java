@@ -24,7 +24,6 @@ import net.openl10n.flies.dao.LocaleDAO;
 import net.openl10n.flies.dao.TextFlowTargetDAO;
 import net.openl10n.flies.model.HDocument;
 import net.openl10n.flies.model.HProjectIteration;
-import net.openl10n.flies.model.HTextFlow;
 import net.openl10n.flies.rest.StringSet;
 import net.openl10n.flies.rest.client.ITranslationResources;
 import net.openl10n.flies.rest.dto.Person;
@@ -56,10 +55,6 @@ import org.testng.annotations.Test;
 
 public class TranslationResourceRestTest extends FliesRestTest
 {
-   private static final String DOC2_NAME = "test.properties";
-
-   private static final String DOC1_NAME = "foo.properties";
-
    private static final Logger log = LoggerFactory.getLogger(TranslationResourceRestTest.class);
 
    private static final String projectSlug = "sample-project";
@@ -68,6 +63,9 @@ public class TranslationResourceRestTest extends FliesRestTest
    private static final String BAD_RESOURCE_PATH = "/projects/p/nonexistentProject/iterations/i/99.9/r/";
    private static final LocaleId DE = LocaleId.fromJavaName("de");
    private static final LocaleId FR = LocaleId.fromJavaName("fr");
+
+   private static final String DOC2_NAME = "test.properties";
+   private static final String DOC1_NAME = "foo.properties";
 
    StringSet extGettextComment = new StringSet("gettext;comment");
    StringSet extComment = new StringSet("comment");
@@ -260,8 +258,6 @@ public class TranslationResourceRestTest extends FliesRestTest
       assertThat(response.getResponseStatus(), is(Status.OK));
 
       getResponse = transResource.getTranslations("my.txt", de_DE, null);
-      // TODO IMHO this should return an empty TranslationsResource, with any
-      // metadata
       assertThat(getResponse.getResponseStatus(), is(Status.NOT_FOUND));
    }
 
@@ -288,8 +284,7 @@ public class TranslationResourceRestTest extends FliesRestTest
       assertThat(doc.getName(), is(docUri));
       assertThat(doc.getContentType(), is(ContentType.TextPlain));
       assertThat(doc.getLang(), is(LocaleId.EN_US));
-      // FIXME check revision!
-      // assertThat( doc.getRevision(), is(1) );
+      assertThat(doc.getRevision(), is(1));
 
       /*
        * Link link = doc.getLinks().findLinkByRel(Relationships.SELF);
@@ -332,7 +327,6 @@ public class TranslationResourceRestTest extends FliesRestTest
 
       assertThat("expected de target", tft, notNullValue());
       assertThat("expected translation for de", tft.getContent(), is("hei verden"));
-
    }
 
    @Test
@@ -351,8 +345,7 @@ public class TranslationResourceRestTest extends FliesRestTest
       assertThat(documentResponse.getResponseStatus(), is(Status.OK));
 
       doc = documentResponse.getEntity();
-      // FIXME check revision!
-      // assertThat(doc.getRevision(), is(1));
+      assertThat(doc.getRevision(), is(1));
 
       /*
        * Link link = doc.getLinks().findLinkByRel(Relationships.SELF);
@@ -400,8 +393,7 @@ public class TranslationResourceRestTest extends FliesRestTest
 
       doc = documentResponse.getEntity();
 
-      // FIXME check revision!
-      // assertThat(doc.getRevision(), is(1));
+      assertThat(doc.getRevision(), is(1));
 
       assertThat("Should have textFlows", doc.getTextFlows(), notNullValue());
       assertThat("Should have 2 textFlows", doc.getTextFlows().size(), is(2));
@@ -413,15 +405,14 @@ public class TranslationResourceRestTest extends FliesRestTest
 
       response = transResource.putResource(docUrl, doc, null);
 
-      // TODO this WAS testing for status 205
+      // this WAS testing for status 205
       assertThat(response.getStatus(), is(200));
 
       documentResponse = transResource.getResource(docUrl, null);
       assertThat(documentResponse.getResponseStatus(), is(Status.OK));
       doc = documentResponse.getEntity();
 
-      // FIXME check revision!
-      // assertThat(doc.getRevision(), is(2));
+      assertThat(doc.getRevision(), is(2));
 
       assertThat("Should have textFlows", doc.getTextFlows(), notNullValue());
       assertThat("Should have two textFlows", doc.getTextFlows().size(), is(2));
@@ -431,22 +422,20 @@ public class TranslationResourceRestTest extends FliesRestTest
    @Test
    public void getZero() throws Exception
    {
-      // log.info("getZero()");
       expectDocs(true, false);
    }
 
    @Test
    public void put1Get() throws Exception
    {
-      log.info("putGet()");
       getZero();
       Resource doc1 = putDoc1(false);
-      // doc1.setRevision(1);
+      doc1.setRevision(1);
       TextFlow tf1 = doc1.getTextFlows().get(0);
-      // tf1.setRevision(1);
+      tf1.setRevision(1);
       TranslationsResource target1 = putTarget1();
-      // TextFlowTarget tft1 = getTextFlowTargets().get(0);
-      // tft1.setResourceRevision(1);
+      TextFlowTarget tft1 = target1.getTextFlowTargets().get(0);
+      tft1.setTextFlowRevision(1);
       expectDocs(true, false, doc1);
       expectTarget1(target1);
    }
@@ -454,24 +443,23 @@ public class TranslationResourceRestTest extends FliesRestTest
    @Test
    public void put1Post2Get() throws Exception
    {
-      log.info("putPostGet()");
       getZero();
       Resource doc1 = putDoc1(false);
-      // doc1.setRevision(1);
+      doc1.setRevision(1);
       TextFlow tf1 = doc1.getTextFlows().get(0);
-      // tf1.setRevision(1);
+      tf1.setRevision(1);
       TranslationsResource target1 = putTarget1();
-      // TextFlowTarget tft1 = getTextFlowTargets().get(0);
-      // tft1.setResourceRevision(1);
+      TextFlowTarget tft1 = target1.getTextFlowTargets().get(0);
+      tft1.setTextFlowRevision(1);
       expectDocs(true, false, doc1);
       expectTarget1(target1);
       Resource doc2 = postDoc2(false);
-      // doc2.setRevision(1);
+      doc2.setRevision(1);
       TextFlow tf2 = doc2.getTextFlows().get(0);
-      // tf2.setRevision(1);
+      tf2.setRevision(1);
       TranslationsResource target2 = putTarget2();
-      // TextFlowTarget tft2 = getTextFlowTargets().get(0);
-      // tft2.setResourceRevision(1);
+      TextFlowTarget tft2 = target2.getTextFlowTargets().get(0);
+      tft2.setTextFlowRevision(1);
       expectDocs(true, false, doc1, doc2);
       expectTarget1(target1);
       expectTarget2(target2);
@@ -480,22 +468,21 @@ public class TranslationResourceRestTest extends FliesRestTest
    @Test
    public void put1Post2Put1() throws Exception
    {
-      log.info("put2Then1()");
       getZero();
       Resource doc1 = putDoc1(false);
-      // doc1.setRevision(1);
+      doc1.setRevision(1);
       TextFlow tf1 = doc1.getTextFlows().get(0);
-      // tf1.setRevision(1);
+      tf1.setRevision(1);
       TranslationsResource target1 = putTarget1();
-      // TextFlowTarget tft1 = getTextFlowTargets().get(0);
-      // tft1.setResourceRevision(1);
+      TextFlowTarget tft1 = target1.getTextFlowTargets().get(0);
+      tft1.setTextFlowRevision(1);
       Resource doc2 = postDoc2(false);
-      // doc2.setRevision(1);
+      doc2.setRevision(1);
       TextFlow tf2 = doc2.getTextFlows().get(0);
-      // tf2.setRevision(1);
+      tf2.setRevision(1);
       TranslationsResource target2 = putTarget2();
-      // TextFlowTarget tft2 = getTextFlowTargets().get(0);
-      // tft2.setResourceRevision(1);
+      TextFlowTarget tft2 = target2.getTextFlowTargets().get(0);
+      tft2.setTextFlowRevision(1);
       expectDocs(true, false, doc1, doc2);
       expectTarget1(target1);
       expectTarget2(target2);
@@ -505,7 +492,7 @@ public class TranslationResourceRestTest extends FliesRestTest
       // should be identical to doc1 from before, including revisions
       expectDocs(true, false, doc1);
       expectTarget1(target1);
-      // TODO test that target2 is 404
+      dontExpectTarget2();
       // expectTargets(true, FR, target2);
       // use dao to check that doc2 is marked obsolete
       verifyObsoleteDocument(doc2.getName());
@@ -514,115 +501,128 @@ public class TranslationResourceRestTest extends FliesRestTest
    @Test
    public void put1Delete1Put1() throws Exception
    {
-      log.info("TEST: put1Put0Put1()");
       getZero();
       Resource doc1 = putDoc1(false);
-      // doc1.setRevision(1);
+      doc1.setRevision(1);
       TextFlow tf1 = doc1.getTextFlows().get(0);
-      // tf1.setRevision(1);
+      tf1.setRevision(1);
       TranslationsResource target1 = putTarget1();
-      // TextFlowTarget tft1 = getTextFlowTargets().get(0);
-      // tft1.setResourceRevision(1);
+      TextFlowTarget tft1 = target1.getTextFlowTargets().get(0);
+      tft1.setTextFlowRevision(1);
       expectDocs(true, false, doc1);
       expectTarget1(target1);
-      deleteDoc1(); // doc1 becomes obsolete, rev 2
+      deleteDoc1(); // doc1 becomes obsolete
       getZero();
-      // TODO test that target1 is 404
-      putDoc1(false); // doc1 resurrected, rev 3
-      // doc1.setRevision(3);
-      // tf1.setRevision(1);
-      // tft1.setResourceRevision(1);
+      dontExpectTarget1();
+      putDoc1(false); // doc1 resurrected, rev 1
+      doc1.setRevision(1);
+      tf1.setRevision(1);
+      tft1.setTextFlowRevision(1);
       expectDocs(true, false, doc1);
       expectTarget1(target1);
    }
 
    @Test
-   public void put1Delete1Put1a() throws Exception
+   public void put1Put1Again() throws Exception
    {
-      log.info("TEST: put1Put0Put1a()");
       getZero();
       Resource doc1 = putDoc1(false);
-      // doc1.setRevision(1);
+      doc1.setRevision(1);
       TextFlow tf1 = doc1.getTextFlows().get(0);
-      // tf1.setRevision(1);
+      tf1.setRevision(1);
       TranslationsResource target1 = putTarget1();
-      // TextFlowTarget tft1 = getTextFlowTargets().get(0);
-      // tft1.setResourceRevision(1);
+      TextFlowTarget tft1 = target1.getTextFlowTargets().get(0);
+      tft1.setTextFlowRevision(1);
       expectDocs(true, false, doc1);
       expectTarget1(target1);
-      deleteDoc1(); // doc1 becomes obsolete, rev 2
+      putDoc1(false); // docRev still 1
+      doc1.setRevision(1);
+      tf1.setRevision(1);
+      tft1.setTextFlowRevision(1);
+      expectDocs(true, false, doc1);
+      expectTarget1(target1);
+   }
+
+   public void put1Put1WithAnotherTextFlow()
+   {
+      // TODO make sure tft1 is still there even though the doc rev goes up
+   }
+
+   @Test
+   public void put1Delete1Put1a() throws Exception
+   {
       getZero();
-      // TODO test that target1 is 404
-      Resource doc1a = putDoc1a(false); // doc1 resurrected, rev 3
-      // doc1a.setRevision(3);
+      Resource doc1 = putDoc1(false);
+      doc1.setRevision(1);
+      TextFlow tf1 = doc1.getTextFlows().get(0);
+      tf1.setRevision(1);
+      TranslationsResource target1 = putTarget1();
+      TextFlowTarget tft1 = target1.getTextFlowTargets().get(0);
+      tft1.setTextFlowRevision(1);
+      expectDocs(true, false, doc1);
+      expectTarget1(target1);
+      deleteDoc1(); // doc1 becomes obsolete
+      getZero();
+      dontExpectTarget1();
+      Resource doc1a = putDoc1a(false); // doc1 resurrected, rev 2
+      doc1a.setRevision(2);
       TextFlow tf1a = doc1a.getTextFlows().get(0);
-      // tf1a.setRevision(3);
+      tf1a.setRevision(doc1a.getRevision());
       TranslationsResource target1a = putTarget1a();
-      // TextFlowTarget tft1a = getTextFlowTargets().get(0);
-      // tft1a.setResourceRevision(3);
+      TextFlowTarget tft1a = target1a.getTextFlowTargets().get(0);
+      tft1a.setTextFlowRevision(tf1a.getRevision());
       expectDocs(true, false, doc1a);
-      // TODO test that target1 is 404
+      dontExpectTarget1();
       expectTarget1a(target1a);
    }
 
    @Test
    public void putPoPotGet() throws Exception
    {
-      log.info("TEST: putPoPotGet()");
       getZero();
       Resource po1 = putPo1();
       expectDocs(false, false, po1);
       TranslationsResource poTarget1 = putPoTarget1();
-      expectTarget(true, po1.getName(), DE, poTarget1);
+      expectTarget(false, po1.getName(), DE, poTarget1);
    }
 
    @Test
-   public void put1Put1a() throws Exception
+   public void put1Put1aPut1() throws Exception
    {
-      log.info("TEST: put1Then1a()");
-      log.info("getZero()");
       getZero();
-      log.info("putDoc1()");
       Resource doc1 = putDoc1(false);
-      // doc1.setRevision(1);
+      doc1.setRevision(1);
       TextFlow tf1 = doc1.getTextFlows().get(0);
-      // tf1.setRevision(1);
+      tf1.setRevision(1);
       TranslationsResource target1 = putTarget1();
-      // TextFlowTarget tft1 = getTextFlowTargets().get(0);
-      // tft1.setResourceRevision(1);
-      log.info("expect doc1");
+      TextFlowTarget tft1 = target1.getTextFlowTargets().get(0);
+      tft1.setTextFlowRevision(1);
       expectDocs(true, false, doc1);
       expectTarget1(target1);
       // this should completely replace doc1's textflow FOOD with HELLO
-      log.info("putDoc1a()");
       Resource doc1a = putDoc1a(false);
-      // doc1a.setRevision(2);
+      doc1a.setRevision(2);
       TextFlow tf1a = doc1a.getTextFlows().get(0);
-      // tf1a.setRevision(2);
+      tf1a.setRevision(2);
       TranslationsResource target1a = putTarget1a();
-      // TextFlowTarget tft1a = getTextFlowTargets().get(0);
-      // tft1a.setResourceRevision(2);
-      log.info("expect doc1a");
+      TextFlowTarget tft1a = target1a.getTextFlowTargets().get(0);
+      tft1a.setTextFlowRevision(2);
       expectDocs(true, false, doc1a);
-      // TODO test that target1 is 404
+      dontExpectTarget1();
       expectTarget1a(target1a);
       // use dao to check that the HTextFlow FOOD (from doc1) is marked obsolete
-      log.info("verifyObsoleteResource");
       verifyObsoleteResource(doc1.getName(), "FOOD");
-      log.info("putDoc1() again");
       putDoc1(false); // same as original doc1, but different doc rev
-      // doc1.setRevision(3);
-      log.info("expect doc1b");
+      doc1.setRevision(3);
       expectDocs(true, false, doc1);
-      // TODO test that target1 is 404?
+      // target 1 should be resurrected
       expectTarget1(target1);
-      // TODO test that target1A is 404
+      dontExpectTarget1a();
    }
 
    @Test
    public void getBadProject() throws Exception
    {
-      log.info("getBadProject()");
       ITranslationResources badTransResource = getClientRequestFactory().createProxy(ITranslationResources.class, createBaseURI(BAD_RESOURCE_PATH));
       ClientResponse<List<ResourceMeta>> response = badTransResource.get(null);
       assertThat(response.getStatus(), is(404));
@@ -655,9 +655,8 @@ public class TranslationResourceRestTest extends FliesRestTest
          actualDocsMap.put(doc.getName(), doc);
          log.debug("actual doc: " + doc.toString());
          AbstractResourceMeta expectedDoc = expectedDocs.get(doc.getName());
-         // FIXME
-         // if (checkRevs)
-         // assertThat(doc.getRevision(), is(expectedDoc.getRevision()));
+         if (checkRevs)
+            assertThat(doc.getRevision(), is(expectedDoc.getRevision()));
       }
       assertThat(actualDocsMap.keySet(), is(expectedDocs.keySet()));
    }
@@ -688,6 +687,12 @@ public class TranslationResourceRestTest extends FliesRestTest
       }
    }
 
+   private void dontExpectTarget(String id, LocaleId locale)
+   {
+      ClientResponse<TranslationsResource> response = transResource.getTranslations(id, locale, null);
+      assertThat(response.getStatus(), is(404));
+   }
+
    private void expectTarget(boolean checkRevs, String id, LocaleId locale, TranslationsResource expectedDoc)
    {
       ClientResponse<TranslationsResource> response = transResource.getTranslations(id, locale, extGettextComment);
@@ -713,13 +718,12 @@ public class TranslationResourceRestTest extends FliesRestTest
          clearRevs(actualDoc);
          clearRevs(expectedDoc);
       }
-      assertThat(actualDoc.toString(), is(expectedDoc.toString()));
+      Assertions.assertThat(actualDoc.toString()).isEqualTo(expectedDoc.toString());
    }
 
    private void clearRevs(AbstractResourceMeta doc)
    {
-      // FIXME
-      // doc.setRevision(null);
+      doc.setRevision(null);
 
       if (doc instanceof Resource)
       {
@@ -728,8 +732,7 @@ public class TranslationResourceRestTest extends FliesRestTest
          if (textFlows != null)
             for (TextFlow tf : textFlows)
             {
-               // FIXME
-               // tf.setRevision(null);
+               tf.setRevision(null);
             }
       }
 
@@ -737,12 +740,10 @@ public class TranslationResourceRestTest extends FliesRestTest
 
    private void clearRevs(TranslationsResource doc)
    {
-      // doc.setRevision
+      doc.setRevision(null);
       for (TextFlowTarget tft : doc.getTextFlowTargets())
       {
-         // FIXME
-         // tft.setResourceRevision(null);
-         // tft.setRevision(null);
+         tft.setTextFlowRevision(null);
       }
    }
 
@@ -796,7 +797,7 @@ public class TranslationResourceRestTest extends FliesRestTest
       doc.setLang(LocaleId.EN);
       doc.setContentType(ContentType.TextPlain);
       doc.setType(ResourceType.FILE);
-      // doc.setRevision(null);
+      doc.setRevision(null);
       for (TextFlow textFlow : textFlows)
       {
          doc.getTextFlows().add(textFlow);
@@ -854,7 +855,7 @@ public class TranslationResourceRestTest extends FliesRestTest
       List<HeaderEntry> poEntries = poHeader.getEntries();
       poEntries.add(new HeaderEntry("Project-Id-Version", "en"));
 
-      log.debug(doc.toString());
+      log.debug("{}", doc);
       Response response = transResource.putResource(id, doc, extGettextComment);
       assertThat(response.getStatus(), isOneOf(200, 201));
       return doc;
@@ -900,6 +901,12 @@ public class TranslationResourceRestTest extends FliesRestTest
       return tr;
    }
 
+   private void dontExpectTarget1()
+   {
+      String id = DOC1_NAME;
+      dontExpectTarget(id, DE);
+   }
+
    private void expectTarget1(TranslationsResource target1)
    {
       String id = DOC1_NAME;
@@ -927,6 +934,12 @@ public class TranslationResourceRestTest extends FliesRestTest
       tr.getTextFlowTargets().add(target);
       transResource.putTranslations(id, FR, tr, extGettextComment);
       return tr;
+   }
+
+   private void dontExpectTarget1a()
+   {
+      String id = DOC1_NAME;
+      dontExpectTarget(id, FR);
    }
 
    private void expectTarget1a(TranslationsResource target1a)
@@ -972,6 +985,12 @@ public class TranslationResourceRestTest extends FliesRestTest
       tr.getTextFlowTargets().add(target);
       transResource.putTranslations(id, FR, tr, extGettextComment);
       return tr;
+   }
+
+   private void dontExpectTarget2()
+   {
+      String id = DOC2_NAME;
+      dontExpectTarget(id, FR);
    }
 
    private void expectTarget2(TranslationsResource target2)

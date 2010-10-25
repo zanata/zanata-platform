@@ -39,7 +39,7 @@ public class ResourceUtilsJpaTest extends FliesJpaTest
 
       Set<String> commentExt = new HashSet<String>();
       commentExt.add(SimpleComment.ID);
-      resourceUtils.transferFromResourceMetadata(from, to, commentExt, hLocale);
+      resourceUtils.transferFromResourceMetadata(from, to, commentExt, hLocale, 1);
       // TODO check the results in 'to'
    }
 }

@@ -173,7 +173,7 @@ public class HTextFlowTarget extends AbstractFliesEntity implements ITextFlowTar
    @Override
    public String toString()
    {
-      return "HTextFlowTarget(" + "content:" + getContent() + "locale:" + getLocale() + "state:" + getState() + "comment:" + getComment() + "textflow:" + getTextFlow().getContent() + ")";
+      return "HTextFlowTarget(" + "content:" + getContent() + " locale:" + getLocale() + " state:" + getState() + " comment:" + getComment() + " textflow:" + getTextFlow().getContent() + ")";
    }
 
    @Transient

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -36,6 +37,7 @@ public class TranslationsResource implements Serializable, HasSample<Translation
    private ExtensionSet<TranslationsResourceExtension> extensions;
    private Links links;
    private List<TextFlowTarget> textFlowTargets;
+   private Integer revision;
 
    @XmlElementWrapper(name = "extensions", required = false)
    @XmlElement(name = "extension")
@@ -88,6 +90,17 @@ public class TranslationsResource implements Serializable, HasSample<Translation
       return links;
    }
 
+   @XmlAttribute()
+   public Integer getRevision()
+   {
+      return revision;
+   }
+
+   public void setRevision(Integer revision)
+   {
+      this.revision = revision;
+   }
+
    @Override
    public TranslationsResource createSample()
    {
@@ -108,6 +121,7 @@ public class TranslationsResource implements Serializable, HasSample<Translation
       result = prime * result + ((extensions == null) ? 0 : extensions.hashCode());
       result = prime * result + ((links == null) ? 0 : links.hashCode());
       result = prime * result + ((textFlowTargets == null) ? 0 : textFlowTargets.hashCode());
+      result = prime * result + ((revision == null) ? 0 : revision.hashCode());
       return result;
    }
 
@@ -157,6 +171,17 @@ public class TranslationsResource implements Serializable, HasSample<Translation
          }
       }
       else if (!textFlowTargets.equals(other.textFlowTargets))
+      {
+         return false;
+      }
+      if (revision == null)
+      {
+         if (other.revision != null)
+         {
+            return false;
+         }
+      }
+      else if (!revision.equals(other.revision))
       {
          return false;
       }

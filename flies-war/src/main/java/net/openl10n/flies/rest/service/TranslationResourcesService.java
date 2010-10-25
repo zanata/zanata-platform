@@ -220,24 +220,27 @@ public class TranslationResourcesService
 
       HDocument document = documentDAO.getByDocId(hProjectIteration, entity.getName());
       HLocale hLocale = validateLocale(entity.getLang());
+      int nextDocRev;
       if (document != null)
       {
          if (!document.isObsolete())
          {
-            // updates happens through PUT on the actual resource
+            // updates must happen through PUT on the actual resource
             return Response.status(Status.CONFLICT).entity("A document with name " + entity.getName() + " already exists.").build();
          }
          // a deleted document is being created again
+         nextDocRev = document.getRevision() + 1;
          document.setObsolete(false);
       }
       else
       {
+         nextDocRev = 1;
          document = new HDocument(entity.getName(), entity.getContentType(), hLocale);
          document.setProjectIteration(hProjectIteration);
       }
       hProjectIteration.getDocuments().put(entity.getName(), document);
 
-      resourceUtils.transferFromResource(entity, document, extensions, hLocale);
+      resourceUtils.transferFromResource(entity, document, extensions, hLocale, nextDocRev);
 
       document = documentDAO.makePersistent(document);
       documentDAO.flush();
@@ -329,8 +332,10 @@ public class TranslationResourcesService
       HDocument document = documentDAO.getByDocId(hProjectIteration, id);
       LocaleId locale = entity.getLang();
       HLocale hLocale = validateLocale(locale);
+      int nextDocRev;
       if (document == null)
       { // must be a create operation
+         nextDocRev = 1;
          response = request.evaluatePreconditions();
          if (response != null)
          {
@@ -344,6 +349,7 @@ public class TranslationResourcesService
       }
       else if (document.isObsolete())
       { // must also be a create operation
+         nextDocRev = document.getRevision() + 1;
          response = request.evaluatePreconditions();
          if (response != null)
          {
@@ -357,6 +363,7 @@ public class TranslationResourcesService
       }
       else
       { // must be an update operation
+         nextDocRev = document.getRevision() + 1;
          etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
          response = request.evaluatePreconditions(etag);
          if (response != null)
@@ -367,7 +374,7 @@ public class TranslationResourcesService
          response = Response.ok();
       }
 
-      changed |= resourceUtils.transferFromResource(entity, document, extensions, hLocale);
+      changed |= resourceUtils.transferFromResource(entity, document, extensions, hLocale, nextDocRev);
 
 
       if (changed)
@@ -461,14 +468,16 @@ public class TranslationResourcesService
       log.debug("put resource meta: {0}", entity);
 
       HDocument document = documentDAO.getByDocId(hProjectIteration, id);
-      // FIXME what if document is null? (ie putting new document)
+      if (document == null)
+      {
+         return Response.status(Status.NOT_FOUND).build();
+      }
       if (document.isObsolete())
       {
          return Response.status(Status.NOT_FOUND).build();
       }
       HLocale hLocale = validateLocale(entity.getLang());
-      boolean changed = resourceUtils.transferFromResourceMetadata(entity, document, extensions, hLocale);
-
+      boolean changed = resourceUtils.transferFromResourceMetadata(entity, document, extensions, hLocale, document.getRevision() + 1);
 
       if (changed)
       {
@@ -506,7 +515,6 @@ public class TranslationResourcesService
          return Response.status(Status.NOT_FOUND).build();
       }
 
-      List<HTextFlowTarget> hTargets = textFlowTargetDAO.findAllTranslations(document, locale);
       HLocale hLocale;
       try
       {
@@ -516,6 +524,7 @@ public class TranslationResourcesService
       {
          return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
       }
+      List<HTextFlowTarget> hTargets = textFlowTargetDAO.findTranslations(document, locale);
       TranslationsResource translationResource = new TranslationsResource();
       resourceUtils.transferToTranslationsResourceExtensions(document, translationResource.getExtensions(true), extensions, hLocale);
 
@@ -662,6 +671,7 @@ public class TranslationResourcesService
                targetChanged = true;
                log.debug("locale: {0}", locale);
                hTarget = new HTextFlowTarget(textFlow, hLocale);
+               hTarget.setVersionNum(0); // incremented when content is set
                textFlow.getTargets().put(hLocale, hTarget);
                newTargets.add(hTarget);
                targetChanged |= resourceUtils.transferFromTextFlowTarget(current, hTarget);

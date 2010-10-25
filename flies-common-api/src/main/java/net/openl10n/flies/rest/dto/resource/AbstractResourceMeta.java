@@ -35,6 +35,8 @@ public abstract class AbstractResourceMeta implements Serializable, Extensible<A
 
    private ExtensionSet<AbstractResourceMetaExtension> extensions;
 
+   private Integer revision;
+
    // TODO add Links for Resource, ResourceMeta and TranslationsResource
 
    public AbstractResourceMeta()
@@ -112,6 +114,17 @@ public abstract class AbstractResourceMeta implements Serializable, Extensible<A
       this.name = name;
    }
 
+   @XmlAttribute()
+   public Integer getRevision()
+   {
+      return revision;
+   }
+
+   public void setRevision(Integer revision)
+   {
+      this.revision = revision;
+   }
+
    @Override
    public String toString()
    {
@@ -132,6 +145,7 @@ public abstract class AbstractResourceMeta implements Serializable, Extensible<A
       result = prime * result + ((lang == null) ? 0 : lang.hashCode());
       result = prime * result + ((name == null) ? 0 : name.hashCode());
       result = prime * result + ((type == null) ? 0 : type.hashCode());
+      result = prime * result + ((revision == null) ? 0 : revision.hashCode());
       return result;
    }
 
@@ -191,6 +205,17 @@ public abstract class AbstractResourceMeta implements Serializable, Extensible<A
          }
       }
       else if (!name.equals(other.name))
+      {
+         return false;
+      }
+      if (revision == null)
+      {
+         if (other.revision != null)
+         {
+            return false;
+         }
+      }
+      else if (!revision.equals(other.revision))
       {
          return false;
       }

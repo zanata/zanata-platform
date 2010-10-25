@@ -45,6 +45,8 @@ public class TextFlow implements Extensible<TextFlowExtension>, Serializable
 
    private ExtensionSet<TextFlowExtension> extensions;
 
+   private Integer revision;
+
    /**
     * This constructor sets the lang value to en-US
     * 
@@ -154,6 +156,7 @@ public class TextFlow implements Extensible<TextFlowExtension>, Serializable
       result = prime * result + ((extensions == null) ? 0 : extensions.hashCode());
       result = prime * result + ((id == null) ? 0 : id.hashCode());
       result = prime * result + ((lang == null) ? 0 : lang.hashCode());
+      result = prime * result + ((revision == null) ? 0 : revision.hashCode());
       return result;
    }
 
@@ -217,7 +220,29 @@ public class TextFlow implements Extensible<TextFlowExtension>, Serializable
       {
          return false;
       }
+      if (revision == null)
+      {
+         if (other.revision != null)
+         {
+            return false;
+         }
+      }
+      else if (!revision.equals(other.revision))
+      {
+         return false;
+      }
       return true;
+   }
+
+   @XmlAttribute()
+   public Integer getRevision()
+   {
+      return revision;
+   }
+
+   public void setRevision(Integer i)
+   {
+      revision = i;
    }
 
 }
