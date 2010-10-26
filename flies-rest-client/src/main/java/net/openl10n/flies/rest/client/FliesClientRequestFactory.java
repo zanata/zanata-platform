@@ -42,7 +42,7 @@ public class FliesClientRequestFactory implements ITranslationResourcesFactory
       registerPrefixInterceptor(new ApiKeyHeaderDecorator(username, apiKey, ver.getVersionNo()));
       IVersion iversion = getVersionInfo();
       VersionInfo server = iversion.get();
-      log.info("Flies Server Version: {0}, Flies Client Version: {1}", server.getVersionNo(), ver.getVersionNo());
+      log.info("Flies Server Version: {}, Flies Client Version: {}", server.getVersionNo(), ver.getVersionNo());
       if (!server.getBuildTimeStamp().equalsIgnoreCase(ver.getBuildTimeStamp()))
       {
          log.warn("client buildTimeStamp {} and server buildTimeStamp {} mismatch, please update your client", ver.getBuildTimeStamp(), server.getBuildTimeStamp());
