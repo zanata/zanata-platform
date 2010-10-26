@@ -29,7 +29,6 @@ import org.testng.annotations.Test;
 @Test(groups = "unit-tests")
 public class PublicanPullCommandTest
 {
-   private static String userPath;
    IMocksControl control = EasyMock.createControl();
    ITranslationResources mockTranslationResources = control.createMock(ITranslationResources.class);
 
@@ -38,19 +37,19 @@ public class PublicanPullCommandTest
    }
 
    @Test
-   public void publicanPushPot() throws Exception
+   public void publicanPullPo() throws Exception
    {
       publicanPush(false, false);
    }
 
    @Test
-   public void publicanPushPotAndPo() throws Exception
+   public void publicanPullPotAndPo() throws Exception
    {
       publicanPush(true, false);
    }
 
    @Test
-   public void publicanPushPotAndPoWithLocaleMapping() throws Exception
+   public void publicanPullPotAndPoWithLocaleMapping() throws Exception
    {
       publicanPush(true, true);
    }
@@ -59,19 +58,6 @@ public class PublicanPullCommandTest
    void beforeMethod()
    {
       control.reset();
-   }
-
-   @BeforeClass
-   static void beforeClass()
-   {
-      userPath = System.getProperty("user.dir");
-      System.setProperty("user.dir", new File(userPath, "src/test/resources/test2").getAbsolutePath());
-   }
-
-   @AfterClass
-   static void afterClass()
-   {
-      System.setProperty("user.dir", userPath);
    }
 
    private void publicanPush(boolean exportPot, boolean mapLocale) throws Exception
@@ -83,6 +69,7 @@ public class PublicanPullCommandTest
       opts.setProjectVersion(versionSlug);
       opts.setDstDir(new File("target/test-output/test2"));
       opts.setExportPot(exportPot);
+      opts.setProjectConfig("src/test/resources/test2/flies.xml");
       OptionsUtil.applyConfigFiles(opts);
       if (mapLocale)
       {
