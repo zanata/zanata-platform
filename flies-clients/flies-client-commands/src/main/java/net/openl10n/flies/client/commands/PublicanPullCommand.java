@@ -20,7 +20,6 @@ import net.openl10n.flies.rest.dto.resource.ResourceMeta;
 import net.openl10n.flies.rest.dto.resource.TranslationsResource;
 
 import org.jboss.resteasy.client.ClientResponse;
-import org.jboss.resteasy.plugins.delegates.UriHeaderDelegate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -27,6 +27,7 @@ import org.testng.annotations.Test;
 public class PublicanPushCommandTest
 {
    IMocksControl control = EasyMock.createControl();
+   ITranslationResources mockTranslationResources = control.createMock(ITranslationResources.class);
 
    public PublicanPushCommandTest() throws Exception
    {
@@ -65,6 +66,7 @@ public class PublicanPushCommandTest
       opts.setProjectVersion(versionSlug);
       opts.setSrcDir(new File("src/test/resources/test1"));
       opts.setImportPo(importPo);
+      OptionsUtil.applyConfigFiles(opts);
       if (mapLocale)
       {
          LocaleList locales = new LocaleList();
@@ -72,11 +74,10 @@ public class PublicanPushCommandTest
          opts.setLocales(locales);
       }
 
-      ITranslationResources mockTranslationResources = control.createMock(ITranslationResources.class);
       List<ResourceMeta> resourceMetaList = new ArrayList<ResourceMeta>();
       resourceMetaList.add(new ResourceMeta("obsolete"));
       resourceMetaList.add(new ResourceMeta("RPM"));
-      mockExpectGetAndReturnResponse(mockTranslationResources, resourceMetaList);
+      mockExpectGetListAndReturnResponse(resourceMetaList);
 
       final ClientResponse<String> mockOKResponse = control.createMock(ClientResponse.class);
       EasyMock.expect(mockOKResponse.getStatus()).andReturn(200).anyTimes();
@@ -97,12 +98,12 @@ public class PublicanPushCommandTest
       FliesClientRequestFactory mockRequestFactory = EasyMock.createNiceMock(FliesClientRequestFactory.class);
 
       control.replay();
-      PublicanPushCommand cmd = new PublicanPushCommand(opts, mockRequestFactory, mockTranslationResources, new URI("http://example.com/"));
+      FliesCommand cmd = new PublicanPushCommand(opts, mockRequestFactory, mockTranslationResources, new URI("http://example.com/"));
       cmd.run();
       control.verify();
    }
 
-   protected void mockExpectGetAndReturnResponse(ITranslationResources mockTranslationResources, List<ResourceMeta> entity)
+   private void mockExpectGetListAndReturnResponse(List<ResourceMeta> entity)
    {
       ClientResponse<List<ResourceMeta>> mockResponse = control.createMock(ClientResponse.class);
       EasyMock.expect(mockTranslationResources.get(null)).andReturn(mockResponse);
