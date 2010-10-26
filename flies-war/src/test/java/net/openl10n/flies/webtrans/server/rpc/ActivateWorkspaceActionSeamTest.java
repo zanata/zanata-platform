@@ -3,20 +3,24 @@ package net.openl10n.flies.webtrans.server.rpc;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 
-import net.openl10n.flies.FliesDBUnitSeamTest;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+
+import org.dbunit.operation.DatabaseOperation;
 import net.openl10n.flies.common.LocaleId;
+import net.openl10n.flies.model.HIterationProject;
+import net.openl10n.flies.model.HProjectIteration;
 import net.openl10n.flies.webtrans.server.SeamDispatch;
 import net.openl10n.flies.webtrans.shared.model.ProjectIterationId;
 import net.openl10n.flies.webtrans.shared.model.WorkspaceId;
 import net.openl10n.flies.webtrans.shared.rpc.ActivateWorkspaceAction;
 import net.openl10n.flies.webtrans.shared.rpc.ActivateWorkspaceResult;
-
-import org.dbunit.operation.DatabaseOperation;
+import org.jboss.seam.mock.DBUnitSeamTest;
 import org.testng.annotations.Test;
 
-// FIXME fix broken test
-@Test(enabled = false, groups = { "seam-tests" })
-public class ActivateWorkspaceActionSeamTest extends FliesDBUnitSeamTest
+@Test(groups = { "seam-tests" })
+public class ActivateWorkspaceActionSeamTest extends DBUnitSeamTest
 {
 
    protected void prepareDBUnitOperations()
@@ -24,8 +28,7 @@ public class ActivateWorkspaceActionSeamTest extends FliesDBUnitSeamTest
       beforeTestOperations.add(new DataSetOperation("META-INF/testdata/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
    }
 
-   // FIXME fix broken test
-   @Test(enabled = false)
+   @Test
    public void activateWorkspaceWithValidData() throws Exception
    {
       new FacesRequest()

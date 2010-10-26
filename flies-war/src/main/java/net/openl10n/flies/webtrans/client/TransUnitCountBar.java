@@ -4,7 +4,6 @@ import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.common.TransUnitCount;
 import net.openl10n.flies.webtrans.client.editor.HasTransUnitCount;
 
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;

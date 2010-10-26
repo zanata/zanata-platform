@@ -164,4 +164,120 @@ public class Account implements Serializable, HasMediaType
       return DTOUtil.toXML(this);
    }
 
+   @Override
+   public int hashCode()
+   {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((apiKey == null) ? 0 : apiKey.hashCode());
+      result = prime * result + ((email == null) ? 0 : email.hashCode());
+      result = prime * result + (enabled ? 1231 : 1237);
+      result = prime * result + ((name == null) ? 0 : name.hashCode());
+      result = prime * result + ((passwordHash == null) ? 0 : passwordHash.hashCode());
+      result = prime * result + ((roles == null) ? 0 : roles.hashCode());
+      result = prime * result + ((tribes == null) ? 0 : tribes.hashCode());
+      result = prime * result + ((username == null) ? 0 : username.hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (this == obj)
+      {
+         return true;
+      }
+      if (obj == null)
+      {
+         return false;
+      }
+      if (!(obj instanceof Account))
+      {
+         return false;
+      }
+      Account other = (Account) obj;
+      if (apiKey == null)
+      {
+         if (other.apiKey != null)
+         {
+            return false;
+         }
+      }
+      else if (!apiKey.equals(other.apiKey))
+      {
+         return false;
+      }
+      if (email == null)
+      {
+         if (other.email != null)
+         {
+            return false;
+         }
+      }
+      else if (!email.equals(other.email))
+      {
+         return false;
+      }
+      if (enabled != other.enabled)
+      {
+         return false;
+      }
+      if (name == null)
+      {
+         if (other.name != null)
+         {
+            return false;
+         }
+      }
+      else if (!name.equals(other.name))
+      {
+         return false;
+      }
+      if (passwordHash == null)
+      {
+         if (other.passwordHash != null)
+         {
+            return false;
+         }
+      }
+      else if (!passwordHash.equals(other.passwordHash))
+      {
+         return false;
+      }
+      if (roles == null)
+      {
+         if (other.roles != null)
+         {
+            return false;
+         }
+      }
+      else if (!roles.equals(other.roles))
+      {
+         return false;
+      }
+      if (tribes == null)
+      {
+         if (other.tribes != null)
+         {
+            return false;
+         }
+      }
+      else if (!tribes.equals(other.tribes))
+      {
+         return false;
+      }
+      if (username == null)
+      {
+         if (other.username != null)
+         {
+            return false;
+         }
+      }
+      else if (!username.equals(other.username))
+      {
+         return false;
+      }
+      return true;
+   }
+
 }

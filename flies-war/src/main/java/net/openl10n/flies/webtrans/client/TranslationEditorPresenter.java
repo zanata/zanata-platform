@@ -1,14 +1,9 @@
 package net.openl10n.flies.webtrans.client;
 
-import net.customware.gwt.dispatch.client.DispatchAsync;
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.place.Place;
-import net.customware.gwt.presenter.client.place.PlaceRequest;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.common.TransUnitCount;
 import net.openl10n.flies.webtrans.client.editor.HasTransUnitCount;
-import net.openl10n.flies.webtrans.client.editor.ListEditorPresenter;
+import net.openl10n.flies.webtrans.client.editor.table.TableEditorPresenter;
 import net.openl10n.flies.webtrans.client.events.DocumentSelectionEvent;
 import net.openl10n.flies.webtrans.client.events.DocumentSelectionHandler;
 import net.openl10n.flies.webtrans.client.events.TransUnitUpdatedEvent;
@@ -21,20 +16,26 @@ import net.openl10n.flies.webtrans.shared.model.TransUnit;
 import net.openl10n.flies.webtrans.shared.rpc.GetStatusCount;
 import net.openl10n.flies.webtrans.shared.rpc.GetStatusCountResult;
 
-import org.gwt.mosaic.ui.client.event.PageChangeEvent;
-import org.gwt.mosaic.ui.client.event.PageChangeHandler;
-import org.gwt.mosaic.ui.client.event.PageCountChangeEvent;
-import org.gwt.mosaic.ui.client.event.PageCountChangeHandler;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.gen2.table.event.client.PageChangeEvent;
+import com.google.gwt.gen2.table.event.client.PageChangeHandler;
+import com.google.gwt.gen2.table.event.client.PageCountChangeEvent;
+import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+
+import net.customware.gwt.dispatch.client.DispatchAsync;
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.place.Place;
+import net.customware.gwt.presenter.client.place.PlaceRequest;
+import net.customware.gwt.presenter.client.widget.WidgetDisplay;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 public class TranslationEditorPresenter extends WidgetPresenter<TranslationEditorPresenter.Display>
 {
@@ -64,7 +65,7 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
 
    private final TransUnitNavigationPresenter transUnitNavigationPresenter;
    private final TransMemoryPresenter transMemoryPresenter;
-   private final ListEditorPresenter tableEditorPresenter;
+   private final TableEditorPresenter tableEditorPresenter;
 
    private DocumentInfo currentDocument;
    private final TransUnitCount statusCount = new TransUnitCount();
@@ -72,7 +73,7 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    private final DispatchAsync dispatcher;
 
    @Inject
-   public TranslationEditorPresenter(Display display, EventBus eventBus, final CachingDispatchAsync dispatcher, final TransMemoryPresenter transMemoryPresenter, final ListEditorPresenter tableEditorPresenter, final TransUnitNavigationPresenter transUnitNavigationPresenter)
+   public TranslationEditorPresenter(Display display, EventBus eventBus, final CachingDispatchAsync dispatcher, final TransMemoryPresenter transMemoryPresenter, final TableEditorPresenter tableEditorPresenter, final TransUnitNavigationPresenter transUnitNavigationPresenter)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
@@ -104,6 +105,7 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
          @Override
          public void onValueChange(ValueChangeEvent<Integer> event)
          {
+            tableEditorPresenter.cancelEdit();
             tableEditorPresenter.gotoPage(event.getValue() - 1, false);
          }
       }));

@@ -1,28 +1,47 @@
 package net.openl10n.flies.webtrans.client;
 
+import java.util.ArrayList;
+
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+
+import net.openl10n.flies.common.TransUnitCount;
 import net.openl10n.flies.webtrans.client.AppPresenter.Display.MainView;
-import net.openl10n.flies.webtrans.client.editor.ListEditorPresenter;
+import net.openl10n.flies.webtrans.client.editor.HasTransUnitCount;
+import net.openl10n.flies.webtrans.client.editor.filter.TransFilterPresenter;
+import net.openl10n.flies.webtrans.client.editor.table.TableEditorPresenter;
 import net.openl10n.flies.webtrans.client.events.DocumentSelectionEvent;
 import net.openl10n.flies.webtrans.client.events.DocumentSelectionHandler;
 import net.openl10n.flies.webtrans.client.events.NotificationEvent;
 import net.openl10n.flies.webtrans.client.events.NotificationEventHandler;
+import net.openl10n.flies.webtrans.client.events.TransUnitUpdatedEvent;
+import net.openl10n.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
 import net.openl10n.flies.webtrans.client.rpc.CachingDispatchAsync;
+import net.openl10n.flies.webtrans.client.ui.HasPager;
 import net.openl10n.flies.webtrans.shared.auth.Identity;
 import net.openl10n.flies.webtrans.shared.model.DocumentId;
 import net.openl10n.flies.webtrans.shared.model.DocumentInfo;
+import net.openl10n.flies.webtrans.shared.model.DocumentStatus;
 import net.openl10n.flies.webtrans.shared.model.WorkspaceContext;
+import net.openl10n.flies.webtrans.shared.rpc.GetProjectStatusCount;
+import net.openl10n.flies.webtrans.shared.rpc.GetProjectStatusCountResult;
 
-
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.gen2.table.event.client.PageChangeEvent;
+import com.google.gwt.gen2.table.event.client.PageChangeHandler;
+import com.google.gwt.gen2.table.event.client.PageCountChangeEvent;
+import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -74,7 +93,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    private DocumentId selectedDocument;
 
    @Inject
-   public AppPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final ListEditorPresenter tableEditorPresenter, final TranslationEditorPresenter translationEditorPresenter, final DocumentListPresenter documentListPresenter, final TransUnitNavigationPresenter transUnitNavigationPresenter, final SidePanelPresenter sidePanelPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages)
+   public AppPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TableEditorPresenter tableEditorPresenter, final TranslationEditorPresenter translationEditorPresenter, final DocumentListPresenter documentListPresenter, final TransUnitNavigationPresenter transUnitNavigationPresenter, final SidePanelPresenter sidePanelPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages)
    {
       super(display, eventBus);
       this.identity = identity;
@@ -92,8 +111,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       return null;
    }
 
-   private PopupPanel existingPopup;
-   
    @Override
    protected void onBind()
    {
@@ -104,18 +121,13 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          @Override
          public void onNotification(NotificationEvent event)
          {
-            if(existingPopup != null) {
-               existingPopup.hide();
-               existingPopup = null;
-            }
             PopupPanel popup = new PopupPanel(true);
             popup.addStyleDependentName("Notification");
             popup.addStyleName("Severity-" + event.getSeverity().name());
             Widget center = translationEditorPresenter.getDisplay().asWidget();
-            popup.setWidth(center.getOffsetWidth() - 80 + "px");
+            popup.setWidth(center.getOffsetWidth() - 40 + "px");
             popup.setWidget(new Label(event.getMessage()));
-            popup.setPopupPosition(center.getAbsoluteLeft() + 40, 0);
-            existingPopup = popup;
+            popup.setPopupPosition(center.getAbsoluteLeft() + 20, center.getAbsoluteTop() + 30);
             popup.show();
          }
       }));

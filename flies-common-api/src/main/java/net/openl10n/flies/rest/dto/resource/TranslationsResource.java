@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -36,9 +37,10 @@ public class TranslationsResource implements Serializable, HasSample<Translation
    private ExtensionSet<TranslationsResourceExtension> extensions;
    private Links links;
    private List<TextFlowTarget> textFlowTargets;
+   private Integer revision;
 
    @XmlElementWrapper(name = "extensions", required = false)
-   @XmlElement
+   @XmlElement(name = "extension")
    public ExtensionSet<TranslationsResourceExtension> getExtensions()
    {
       return extensions;
@@ -88,6 +90,17 @@ public class TranslationsResource implements Serializable, HasSample<Translation
       return links;
    }
 
+   @XmlAttribute()
+   public Integer getRevision()
+   {
+      return revision;
+   }
+
+   public void setRevision(Integer revision)
+   {
+      this.revision = revision;
+   }
+
    @Override
    public TranslationsResource createSample()
    {
@@ -98,6 +111,81 @@ public class TranslationsResource implements Serializable, HasSample<Translation
    public String toString()
    {
       return DTOUtil.toXML(this);
+   }
+
+   @Override
+   public int hashCode()
+   {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((extensions == null) ? 0 : extensions.hashCode());
+      result = prime * result + ((links == null) ? 0 : links.hashCode());
+      result = prime * result + ((textFlowTargets == null) ? 0 : textFlowTargets.hashCode());
+      result = prime * result + ((revision == null) ? 0 : revision.hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (this == obj)
+      {
+         return true;
+      }
+      if (obj == null)
+      {
+         return false;
+      }
+      if (!(obj instanceof TranslationsResource))
+      {
+         return false;
+      }
+      TranslationsResource other = (TranslationsResource) obj;
+      if (extensions == null)
+      {
+         if (other.extensions != null)
+         {
+            return false;
+         }
+      }
+      else if (!extensions.equals(other.extensions))
+      {
+         return false;
+      }
+      if (links == null)
+      {
+         if (other.links != null)
+         {
+            return false;
+         }
+      }
+      else if (!links.equals(other.links))
+      {
+         return false;
+      }
+      if (textFlowTargets == null)
+      {
+         if (other.textFlowTargets != null)
+         {
+            return false;
+         }
+      }
+      else if (!textFlowTargets.equals(other.textFlowTargets))
+      {
+         return false;
+      }
+      if (revision == null)
+      {
+         if (other.revision != null)
+         {
+            return false;
+         }
+      }
+      else if (!revision.equals(other.revision))
+      {
+         return false;
+      }
+      return true;
    }
 
 }

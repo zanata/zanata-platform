@@ -59,6 +59,8 @@ public class TranslationServiceSeamTest extends ResourceTranslationServiceSeamTe
       TranslationsResource get = translationResource.getTranslations(res.getName(), DE, new StringSet("gettext;comment")).getEntity();
       log.debug("expect:" + sr.toString());
       log.debug("actual:" + get.toString());
+      ResourceTestUtil.clearRevs(sr);
+      ResourceTestUtil.clearRevs(get);
       assertThat(get.toString(), is(sr.toString()));
    }
 
@@ -71,6 +73,8 @@ public class TranslationServiceSeamTest extends ResourceTranslationServiceSeamTe
       translationResource.putTranslations(res.getName(), DE, sr, null);
       TranslationsResource get = translationResource.getTranslations(res.getName(), DE, null).getEntity();
       TranslationsResource base = transTestFactory.getTestObject();
+      ResourceTestUtil.clearRevs(base);
+      ResourceTestUtil.clearRevs(get);
       log.debug("expect:" + base.toString());
       log.debug("actual:" + get.toString());
       assertThat(get.toString(), is(base.toString()));
@@ -85,6 +89,8 @@ public class TranslationServiceSeamTest extends ResourceTranslationServiceSeamTe
       translationResource.putTranslations(res.getName(), DE, sr, null);
       TranslationsResource get = translationResource.getTranslations(res.getName(), DE, new StringSet("gettext;comment")).getEntity();
       TranslationsResource base = transTestFactory.getTestObject();
+      ResourceTestUtil.clearRevs(base);
+      ResourceTestUtil.clearRevs(get);
       log.debug("expect:" + base.toString());
       log.debug("actual:" + get.toString());
       assertThat(get.toString(), is(base.toString()));
@@ -99,6 +105,8 @@ public class TranslationServiceSeamTest extends ResourceTranslationServiceSeamTe
       translationResource.putTranslations(res.getName(), DE, sr, new StringSet("gettext;comment"));
       TranslationsResource get = translationResource.getTranslations(res.getName(), DE, null).getEntity();
       TranslationsResource base = transTestFactory.getTestObject();
+      ResourceTestUtil.clearRevs(base);
+      ResourceTestUtil.clearRevs(get);
       log.debug("expect:" + base.toString());
       log.debug("actual:" + get.toString());
       assertThat(get.toString(), is(base.toString()));

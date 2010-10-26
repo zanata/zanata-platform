@@ -17,6 +17,7 @@ import net.openl10n.flies.webtrans.shared.rpc.TransUnitUpdated;
 import net.openl10n.flies.webtrans.shared.rpc.UpdateTransUnit;
 import net.openl10n.flies.webtrans.shared.rpc.UpdateTransUnitResult;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -58,15 +59,36 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       if (target == null)
       {
          target = new HTextFlowTarget(hTextFlow, hLocale);
+         target.setVersionNum(0); // this will be incremented when content is
+                                  // set (below)
          hTextFlow.getTargets().put(hLocale, target);
       }
       else
       {
          prevStatus = target.getState();
       }
-      target.setState(action.getContentState());
-      target.setContent(action.getContent());
-      // TODO update last modified by
+
+      if (action.getContentState() == ContentState.New && StringUtils.isNotEmpty(action.getContent()))
+      {
+         log.error("invalid ContentState New for TransUnit {0} with content '{1}', assuming NeedReview", action.getTransUnitId(), action.getContent());
+         target.setState(ContentState.NeedReview);
+      }
+      else if (action.getContentState() != ContentState.New && StringUtils.isEmpty(action.getContent()))
+      {
+         log.error("invalid ContentState {0} for empty TransUnit {1}, assuming New", action.getContentState(), action.getTransUnitId());
+         target.setState(ContentState.New);
+      }
+      else
+      {
+         target.setState(action.getContentState());
+      }
+      if (!StringUtils.equals(action.getContent(), target.getContent()))
+      {
+         target.setContent(action.getContent());
+         target.setVersionNum(target.getVersionNum() + 1);
+         // TODO target.setLastModifiedBy(currentUser)
+      }
+
       session.flush();
 
       TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), action.getTransUnitId(), prevStatus, action.getContentState());

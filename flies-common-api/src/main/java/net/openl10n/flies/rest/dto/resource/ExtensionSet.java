@@ -2,11 +2,12 @@ package net.openl10n.flies.rest.dto.resource;
 
 import java.util.HashSet;
 
+import javax.xml.bind.annotation.XmlRootElement;
 
 import net.openl10n.flies.rest.dto.DTOUtil;
 import net.openl10n.flies.rest.dto.ExtensionValue;
 
-
+@XmlRootElement(name = "extension-set")
 public class ExtensionSet<T extends ExtensionValue> extends HashSet<T>
 {
 
@@ -26,6 +27,24 @@ public class ExtensionSet<T extends ExtensionValue> extends HashSet<T>
    public String toString()
    {
       return DTOUtil.toXML(this);
+   }
+
+   public <E extends T> E findOrAddByType(Class<E> clz)
+   {
+      E ext = findByType(clz);
+      if (ext == null)
+      {
+         try
+         {
+            ext = clz.newInstance();
+            add(ext);
+         }
+         catch (Throwable e)
+         {
+            throw new RuntimeException("unable to create instance", e);
+         }
+      }
+      return ext;
    }
 
 }

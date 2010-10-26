@@ -60,8 +60,8 @@ public class PoWriter2
    {
       // write the POT file to pot/$name.pot
       File potDir = new File(baseDir, "pot");
-      mkdirs(potDir);
       File potFile = new File(potDir, doc.getName() + ".pot");
+      mkdirs(potFile.getParentFile());
       OutputSource outputSource = new OutputSource(potFile);
       write(outputSource, doc, null);
    }
@@ -80,8 +80,8 @@ public class PoWriter2
    {
       // write the PO file to $locale/$name.po
       File localeDir = new File(baseDir, locale);
-      mkdirs(localeDir);
       File poFile = new File(localeDir, doc.getName() + ".po");
+      mkdirs(poFile.getParentFile());
       OutputSource outputSource = new OutputSource(poFile);
       write(outputSource, doc, targetDoc);
    }

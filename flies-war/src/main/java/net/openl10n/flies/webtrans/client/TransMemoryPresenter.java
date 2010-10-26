@@ -7,21 +7,23 @@ import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+
 import net.openl10n.flies.webtrans.client.events.TransUnitSelectionEvent;
 import net.openl10n.flies.webtrans.client.events.TransUnitSelectionHandler;
 import net.openl10n.flies.webtrans.client.rpc.CachingDispatchAsync;
-import net.openl10n.flies.webtrans.shared.model.TransUnit;
 import net.openl10n.flies.webtrans.shared.model.TranslationMemoryItem;
+import net.openl10n.flies.webtrans.shared.model.TransUnit;
 import net.openl10n.flies.webtrans.shared.model.WorkspaceContext;
 import net.openl10n.flies.webtrans.shared.rpc.GetTranslationMemory;
 import net.openl10n.flies.webtrans.shared.rpc.GetTranslationMemoryResult;
 import net.openl10n.flies.webtrans.shared.rpc.GetTranslationMemory.SearchType;
 
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;

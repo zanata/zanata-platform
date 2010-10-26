@@ -62,5 +62,10 @@
         <groupId>args4j</groupId>
         <artifactId>args4j</artifactId>
     </dependency>
+	<dependency>
+	  <groupId>commons-io</groupId>
+	  <artifactId>commons-io</artifactId>
+	  <version>1.4</version>
+	</dependency>
   </dependencies>
 </project>

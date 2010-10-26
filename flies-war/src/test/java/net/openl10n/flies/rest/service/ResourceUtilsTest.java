@@ -31,7 +31,7 @@ public class ResourceUtilsTest
       log.info("unit tests free memory :" + runtime.freeMemory());
       List<TextFlow> from = new ArrayList<TextFlow>();
       HDocument to = new HDocument();
-      boolean changed = documentUtils.transferFromTextFlows(from, to, new HashSet<String>());
+      boolean changed = documentUtils.transferFromTextFlows(from, to, new HashSet<String>(), 1);
 
       assertThat(changed, is(false));
    }
@@ -45,7 +45,7 @@ public class ResourceUtilsTest
       from.add(tf1);
 
       HDocument to = new HDocument();
-      boolean changed = documentUtils.transferFromTextFlows(from, to, new HashSet<String>());
+      boolean changed = documentUtils.transferFromTextFlows(from, to, new HashSet<String>(), 1);
 
       assertThat(changed, is(true));
    }

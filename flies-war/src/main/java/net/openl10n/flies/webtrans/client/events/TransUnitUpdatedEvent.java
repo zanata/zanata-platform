@@ -5,7 +5,6 @@ import net.openl10n.flies.webtrans.shared.model.DocumentId;
 import net.openl10n.flies.webtrans.shared.model.TransUnitId;
 import net.openl10n.flies.webtrans.shared.rpc.HasTransUnitUpdatedData;
 
-
 import com.google.gwt.event.shared.GwtEvent;
 
 public class TransUnitUpdatedEvent extends GwtEvent<TransUnitUpdatedEventHandler> implements HasTransUnitUpdatedData

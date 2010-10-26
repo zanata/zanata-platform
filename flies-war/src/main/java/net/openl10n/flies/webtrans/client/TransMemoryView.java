@@ -3,10 +3,10 @@ package net.openl10n.flies.webtrans.client;
 import java.util.ArrayList;
 
 import net.customware.gwt.presenter.client.EventBus;
+
 import net.openl10n.flies.webtrans.client.events.TransMemoryCopyEvent;
 import net.openl10n.flies.webtrans.client.ui.HighlightingLabel;
 import net.openl10n.flies.webtrans.shared.model.TranslationMemoryItem;
-
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
@@ -15,6 +15,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.i18n.client.LocaleInfo;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;

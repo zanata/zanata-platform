@@ -185,4 +185,96 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
       return DTOUtil.toXML(this);
    }
 
+   @Override
+   public int hashCode()
+   {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((description == null) ? 0 : description.hashCode());
+      result = prime * result + ((id == null) ? 0 : id.hashCode());
+      result = prime * result + ((iterations == null) ? 0 : iterations.hashCode());
+      result = prime * result + ((links == null) ? 0 : links.hashCode());
+      result = prime * result + ((name == null) ? 0 : name.hashCode());
+      result = prime * result + ((type == null) ? 0 : type.hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (this == obj)
+      {
+         return true;
+      }
+      if (obj == null)
+      {
+         return false;
+      }
+      if (!(obj instanceof Project))
+      {
+         return false;
+      }
+      Project other = (Project) obj;
+      if (description == null)
+      {
+         if (other.description != null)
+         {
+            return false;
+         }
+      }
+      else if (!description.equals(other.description))
+      {
+         return false;
+      }
+      if (id == null)
+      {
+         if (other.id != null)
+         {
+            return false;
+         }
+      }
+      else if (!id.equals(other.id))
+      {
+         return false;
+      }
+      if (iterations == null)
+      {
+         if (other.iterations != null)
+         {
+            return false;
+         }
+      }
+      else if (!iterations.equals(other.iterations))
+      {
+         return false;
+      }
+      if (links == null)
+      {
+         if (other.links != null)
+         {
+            return false;
+         }
+      }
+      else if (!links.equals(other.links))
+      {
+         return false;
+      }
+      if (name == null)
+      {
+         if (other.name != null)
+         {
+            return false;
+         }
+      }
+      else if (!name.equals(other.name))
+      {
+         return false;
+      }
+      if (type != other.type)
+      {
+         return false;
+      }
+      return true;
+   }
+
 }

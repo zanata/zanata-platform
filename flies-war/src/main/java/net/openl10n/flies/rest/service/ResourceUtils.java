@@ -60,7 +60,7 @@ public class ResourceUtils
     * @param to
     * @return
     */
-   boolean transferFromTextFlows(List<TextFlow> from, HDocument to, Set<String> enabledExtensions)
+   boolean transferFromTextFlows(List<TextFlow> from, HDocument to, Set<String> enabledExtensions, int nextDocRev)
    {
       boolean changed = false;
       to.getTextFlows().clear();
@@ -72,19 +72,20 @@ public class ResourceUtils
          {
             ids.remove(tf.getId());
             textFlow = to.getAllTextFlows().get(tf.getId());
-            if (transferFromTextFlow(tf, textFlow, enabledExtensions) || textFlow.isObsolete())
+            textFlow.setObsolete(false);
+            // avoid changing revision when resurrecting an unchanged TF
+            if (transferFromTextFlow(tf, textFlow, enabledExtensions))
             {
-               textFlow.setRevision(to.getRevision());
+               textFlow.setRevision(nextDocRev);
                changed = true;
                log.debug("TextFlow with id {0} has changed", tf.getId());
             }
-            textFlow.setObsolete(false);
          }
          else
          {
             textFlow = new HTextFlow();
             textFlow.setResId(tf.getId());
-            textFlow.setRevision(to.getRevision());
+            textFlow.setRevision(nextDocRev);
             transferFromTextFlow(tf, textFlow, enabledExtensions);
             changed = true;
             log.debug("TextFlow with id {0} is new", tf.getId());
@@ -105,7 +106,8 @@ public class ResourceUtils
             textFlow.setObsolete(true);
          }
       }
-
+      if (changed)
+         to.setRevision(nextDocRev);
       return changed;
    }
 
@@ -116,11 +118,11 @@ public class ResourceUtils
     * @param enabledExtensions
     * @return
     */
-   public boolean transferFromResource(Resource from, HDocument to, Set<String> enabledExtensions, HLocale locale)
+   public boolean transferFromResource(Resource from, HDocument to, Set<String> enabledExtensions, HLocale locale, int nextDocRev)
    {
       boolean changed = false;
-      changed |= transferFromResourceMetadata(from, to, enabledExtensions, locale);
-      changed |= transferFromTextFlows(from.getTextFlows(), to, enabledExtensions);
+      changed |= transferFromResourceMetadata(from, to, enabledExtensions, locale, nextDocRev);
+      changed |= transferFromTextFlows(from.getTextFlows(), to, enabledExtensions, nextDocRev);
       return changed;
    }
 
@@ -131,7 +133,7 @@ public class ResourceUtils
     * @param enabledExtensions
     * @return
     */
-   public boolean transferFromResourceMetadata(AbstractResourceMeta from, HDocument to, Set<String> enabledExtensions, HLocale locale)
+   public boolean transferFromResourceMetadata(AbstractResourceMeta from, HDocument to, Set<String> enabledExtensions, HLocale locale, int nextDocRev)
    {
       boolean changed = false;
 
@@ -158,6 +160,8 @@ public class ResourceUtils
       }
       // handle extensions
       changed |= transferFromResourceExtensions(from.getExtensions(true), to, enabledExtensions);
+      if (changed)
+         to.setRevision(nextDocRev);
       return changed;
    }
 
@@ -180,7 +184,10 @@ public class ResourceUtils
          to.setState(from.getState());
          changed = true;
       }
-
+      if (changed)
+      {
+         to.setVersionNum(to.getVersionNum() + 1);
+      }
       return changed;
    }
 
@@ -507,6 +514,7 @@ public class ResourceUtils
    public void transferToTextFlow(HTextFlow from, TextFlow to)
    {
       to.setContent(from.getContent());
+      to.setRevision(from.getRevision());
       // TODO HTextFlow should have a lang
       // to.setLang(from.get)
    }
@@ -518,6 +526,7 @@ public class ResourceUtils
       to.setName(from.getDocId());
       // TODO ADD support within the hibernate model for multiple resource types
       to.setType(ResourceType.FILE);
+      to.setRevision(from.getRevision());
    }
 
    public void transferToResourceExtensions(HDocument from, ExtensionSet<AbstractResourceMetaExtension> to, Set<String> enabledExtensions)
@@ -627,6 +636,7 @@ public class ResourceUtils
    {
       to.setContent(from.getContent());
       to.setState(from.getState());
+      to.setTextFlowRevision(from.getTextFlowRevision());
       HPerson translator = from.getLastModifiedBy();
       if (translator != null)
       {

@@ -45,6 +45,8 @@ public class TextFlow implements Extensible<TextFlowExtension>, Serializable
 
    private ExtensionSet<TextFlowExtension> extensions;
 
+   private Integer revision;
+
    /**
     * This constructor sets the lang value to en-US
     * 
@@ -52,7 +54,17 @@ public class TextFlow implements Extensible<TextFlowExtension>, Serializable
 
    public TextFlow()
    {
-      this.lang = LocaleId.EN_US;
+      this(null, null, null);
+   }
+
+   /**
+    * This constructor sets the lang value to en-US
+    * 
+    */
+
+   public TextFlow(String id)
+   {
+      this(id, LocaleId.EN_US, null);
    }
 
    /**
@@ -63,13 +75,13 @@ public class TextFlow implements Extensible<TextFlowExtension>, Serializable
 
    public TextFlow(String id, LocaleId lang)
    {
-      this.id = id;
-      this.lang = lang;
+      this(id, lang, null);
    }
 
    public TextFlow(String id, LocaleId lang, String content)
    {
-      this(id, lang);
+      this.id = id;
+      this.lang = lang;
       this.content = content;
    }
 
@@ -110,7 +122,7 @@ public class TextFlow implements Extensible<TextFlowExtension>, Serializable
    }
 
    @XmlElementWrapper(name = "extensions", required = false)
-   @XmlElement
+   @XmlElement(name = "extension")
    public ExtensionSet<TextFlowExtension> getExtensions()
    {
       return extensions;
@@ -133,6 +145,104 @@ public class TextFlow implements Extensible<TextFlowExtension>, Serializable
    public String toString()
    {
       return DTOUtil.toXML(this);
+   }
+
+   @Override
+   public int hashCode()
+   {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((content == null) ? 0 : content.hashCode());
+      result = prime * result + ((extensions == null) ? 0 : extensions.hashCode());
+      result = prime * result + ((id == null) ? 0 : id.hashCode());
+      result = prime * result + ((lang == null) ? 0 : lang.hashCode());
+      result = prime * result + ((revision == null) ? 0 : revision.hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (this == obj)
+      {
+         return true;
+      }
+      if (obj == null)
+      {
+         return false;
+      }
+      if (!(obj instanceof TextFlow))
+      {
+         return false;
+      }
+      TextFlow other = (TextFlow) obj;
+      if (content == null)
+      {
+         if (other.content != null)
+         {
+            return false;
+         }
+      }
+      else if (!content.equals(other.content))
+      {
+         return false;
+      }
+      if (extensions == null)
+      {
+         if (other.extensions != null)
+         {
+            return false;
+         }
+      }
+      else if (!extensions.equals(other.extensions))
+      {
+         return false;
+      }
+      if (id == null)
+      {
+         if (other.id != null)
+         {
+            return false;
+         }
+      }
+      else if (!id.equals(other.id))
+      {
+         return false;
+      }
+      if (lang == null)
+      {
+         if (other.lang != null)
+         {
+            return false;
+         }
+      }
+      else if (!lang.equals(other.lang))
+      {
+         return false;
+      }
+      if (revision == null)
+      {
+         if (other.revision != null)
+         {
+            return false;
+         }
+      }
+      else if (!revision.equals(other.revision))
+      {
+         return false;
+      }
+      return true;
+   }
+
+   @XmlAttribute()
+   public Integer getRevision()
+   {
+      return revision;
+   }
+
+   public void setRevision(Integer i)
+   {
+      revision = i;
    }
 
 }

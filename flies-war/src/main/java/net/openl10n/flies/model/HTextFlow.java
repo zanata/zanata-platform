@@ -236,7 +236,7 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
    @Override
    public String toString()
    {
-      return "HTextFlow(" + "resId:" + getResId() + "content:" + getContent() + "revision:" + getRevision() + "comment:" + getComment() + "obsolete:" + isObsolete() + ")";
+      return "HTextFlow(" + "resId:" + getResId() + " content:" + getContent() + " revision:" + getRevision() + " comment:" + getComment() + " obsolete:" + isObsolete() + ")";
    }
 
 }

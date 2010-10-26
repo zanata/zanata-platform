@@ -61,10 +61,11 @@ public class LanguageTeamAction implements Serializable
          if (l.equals(locale))
          {
             contained = true;
+            break;
          }
       }
-      log.info("init language:" + language);
-      log.info("init contained:" + contained);
+      log.debug("init language:" + language);
+      log.debug("init contained:" + contained);
    }
 
    public boolean getContained()
@@ -80,7 +81,7 @@ public class LanguageTeamAction implements Serializable
    @Transactional
    public void joinTribe()
    {
-      log.info("starting join tribe");
+      log.debug("starting join tribe");
       if (authenticatedAccount == null)
       {
          log.error("failed to load auth person");
@@ -102,7 +103,7 @@ public class LanguageTeamAction implements Serializable
    @Transactional
    public void leaveTribe()
    {
-      log.info("starting leave tribe");
+      log.debug("starting leave tribe");
       if (authenticatedAccount == null)
       {
          log.error("failed to load auth person");

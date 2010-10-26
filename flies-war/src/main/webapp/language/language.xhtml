@@ -20,12 +20,12 @@
         <f:facet name="header">
           #{messages['jsf.Actions']}
         </f:facet>
-        <a:form id="Language_team_member_toggle_form">
-          <a:commandLink id="Join" styleClass="action_link" action="#{languageTeamAction.joinTribe}" reRender="actionPanel,tribesTabDiv" rendered="#{not memberLanguage.contains(languageTeamAction.locale)}">
+        <a:form id="Language_team_member_toggle_form" ajaxSubmit="true" reRender="actionPanel,tribesTabDiv">
+          <a:commandLink id="Join" styleClass="action_link" action="#{languageTeamAction.joinTribe}" rendered="#{not languageTeamAction.contained}">
             #{messages['jsf.JoinLanguageTeam']}
             <s:conversationId name="id" value="#{languageTeamAction.language}"/>
           </a:commandLink>
-	  <a:commandLink id="Leave" styleClass="action_link" action="#{languageTeamAction.leaveTribe}" reRender="actionPanel,tribesTabDiv" rendered="#{memberLanguage.contains(languageTeamAction.locale)}">
+	 	  <a:commandLink id="Leave" styleClass="action_link" action="#{languageTeamAction.leaveTribe}" rendered="#{languageTeamAction.contained}">
             #{messages['jsf.LeaveLanguageTeam']}
             <s:conversationId name="id" value="#{languageTeamAction.language}"/>
           </a:commandLink>

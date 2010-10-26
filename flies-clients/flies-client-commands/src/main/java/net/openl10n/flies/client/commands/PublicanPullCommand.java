@@ -10,6 +10,7 @@ import net.openl10n.flies.client.config.LocaleList;
 import net.openl10n.flies.client.config.LocaleMapping;
 import net.openl10n.flies.client.exceptions.ConfigException;
 import net.openl10n.flies.common.LocaleId;
+import net.openl10n.flies.rest.RestUtil;
 import net.openl10n.flies.rest.StringSet;
 import net.openl10n.flies.rest.client.ClientUtility;
 import net.openl10n.flies.rest.client.FliesClientRequestFactory;
@@ -19,6 +20,7 @@ import net.openl10n.flies.rest.dto.resource.ResourceMeta;
 import net.openl10n.flies.rest.dto.resource.TranslationsResource;
 
 import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.plugins.delegates.UriHeaderDelegate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +77,9 @@ public class PublicanPullCommand extends ConfigurableProjectCommand
       for (ResourceMeta resourceMeta : resourceMetaList)
       {
          String docName = resourceMeta.getName();
-         ClientResponse<Resource> resourceResponse = translationResources.getResource(docName, extensions);
+         // TODO follow a Link
+         String docUri = RestUtil.convertToDocumentURIId(docName);
+         ClientResponse<Resource> resourceResponse = translationResources.getResource(docUri, extensions);
          ClientUtility.checkResult(resourceResponse, uri);
          Resource doc = resourceResponse.getEntity();
          if (opts.getExportPot())
@@ -88,7 +92,7 @@ public class PublicanPullCommand extends ConfigurableProjectCommand
          {
             LocaleId locale = new LocaleId(locMapping.getLocale());
 
-            ClientResponse<TranslationsResource> transResponse = translationResources.getTranslations(docName, locale, extensions);
+            ClientResponse<TranslationsResource> transResponse = translationResources.getTranslations(docUri, locale, extensions);
             // ignore 404 (no translation yet for specified document)
             if (transResponse.getResponseStatus() == Response.Status.NOT_FOUND)
             {

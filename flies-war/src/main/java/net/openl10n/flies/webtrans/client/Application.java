@@ -2,18 +2,21 @@ package net.openl10n.flies.webtrans.client;
 
 import net.customware.gwt.presenter.client.place.PlaceManager;
 import net.customware.gwt.presenter.client.place.PlaceRequestEvent;
+
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.webtrans.client.EventProcessor.StartCallback;
 import net.openl10n.flies.webtrans.client.gin.WebTransGinjector;
 import net.openl10n.flies.webtrans.shared.NoSuchWorkspaceException;
 import net.openl10n.flies.webtrans.shared.auth.AuthenticationError;
+import net.openl10n.flies.webtrans.shared.auth.AuthorizationError;
 import net.openl10n.flies.webtrans.shared.auth.Identity;
 import net.openl10n.flies.webtrans.shared.model.ProjectIterationId;
 import net.openl10n.flies.webtrans.shared.model.WorkspaceContext;
 import net.openl10n.flies.webtrans.shared.model.WorkspaceId;
 import net.openl10n.flies.webtrans.shared.rpc.ActivateWorkspaceAction;
 import net.openl10n.flies.webtrans.shared.rpc.ActivateWorkspaceResult;
-
+import net.openl10n.flies.webtrans.shared.rpc.ExitWorkspaceAction;
+import net.openl10n.flies.webtrans.shared.rpc.ExitWorkspaceResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
@@ -22,6 +25,7 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;

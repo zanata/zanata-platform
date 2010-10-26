@@ -2,7 +2,7 @@ package net.openl10n.flies.webtrans.client.rpc;
 
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;
-import net.openl10n.flies.webtrans.client.rpc.SeamDispatchAsync;
+
 import net.openl10n.flies.webtrans.shared.auth.AuthorizationError;
 import net.openl10n.flies.webtrans.shared.rpc.AbstractWorkspaceAction;
 import net.openl10n.flies.webtrans.shared.rpc.ActivateWorkspaceAction;
@@ -19,7 +19,6 @@ import net.openl10n.flies.webtrans.shared.rpc.GetTranslationMemory;
 import net.openl10n.flies.webtrans.shared.rpc.GetTranslationMemoryResult;
 import net.openl10n.flies.webtrans.shared.rpc.GetTranslatorList;
 import net.openl10n.flies.webtrans.shared.rpc.GetTranslatorListResult;
-
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;

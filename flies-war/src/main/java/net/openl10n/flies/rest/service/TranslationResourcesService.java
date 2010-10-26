@@ -1,6 +1,7 @@
 package net.openl10n.flies.rest.service;
 
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -32,6 +33,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.common.Namespaces;
 import net.openl10n.flies.dao.DocumentDAO;
@@ -144,6 +146,7 @@ public class TranslationResourcesService
       this.textFlowTargetDAO = textFlowTargetDAO;
       this.localeServiceImpl = localeService;
       this.resourceUtils = resourceUtils;
+      this.identity = identity;
       this.eTagUtils = eTagUtils;
    }
 
@@ -185,6 +188,7 @@ public class TranslationResourcesService
 
       for (HDocument doc : hProjectIteration.getDocuments().values())
       {
+         // TODO we shouldn't need this check
          if (!doc.isObsolete())
          {
             ResourceMeta resource = new ResourceMeta();
@@ -193,9 +197,11 @@ public class TranslationResourcesService
          }
       }
 
-      return Response.ok(new GenericEntity<List<ResourceMeta>>(resources, new GenericType<List<ResourceMeta>>()
+      Type genericType = new GenericType<List<ResourceMeta>>()
       {
-      }.getGenericType())).tag(etag).build();
+      }.getGenericType();
+      Object entity = new GenericEntity<List<ResourceMeta>>(resources, genericType);
+      return Response.ok(entity).tag(etag).build();
    }
 
 
@@ -214,23 +220,27 @@ public class TranslationResourcesService
 
       HDocument document = documentDAO.getByDocId(hProjectIteration, entity.getName());
       HLocale hLocale = validateLocale(entity.getLang());
+      int nextDocRev;
       if (document != null)
       {
          if (!document.isObsolete())
          {
-            // updates happens through PUT on the actual resource
+            // updates must happen through PUT on the actual resource
             return Response.status(Status.CONFLICT).entity("A document with name " + entity.getName() + " already exists.").build();
          }
          // a deleted document is being created again
+         nextDocRev = document.getRevision() + 1;
          document.setObsolete(false);
       }
       else
       {
+         nextDocRev = 1;
          document = new HDocument(entity.getName(), entity.getContentType(), hLocale);
          document.setProjectIteration(hProjectIteration);
       }
+      hProjectIteration.getDocuments().put(entity.getName(), document);
 
-      resourceUtils.transferFromResource(entity, document, extensions, hLocale);
+      resourceUtils.transferFromResource(entity, document, extensions, hLocale, nextDocRev);
 
       document = documentDAO.makePersistent(document);
       documentDAO.flush();
@@ -243,9 +253,10 @@ public class TranslationResourcesService
    @GET
    @Path(RESOURCE_SLUG_TEMPLATE)
    // /r/{id}
-   public Response getResource(@PathParam("id") String id)
+   public Response getResource(@PathParam("id") String idNoSlash)
    {
       log.debug("start get resource");
+      String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveIteration();
 
       validateExtensions(PoHeader.ID, PotEntryHeader.ID);
@@ -293,6 +304,7 @@ public class TranslationResourcesService
       }
       catch (FliesServiceException e)
       {
+         // TODO perhaps we should use status code 403 here?
          throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build());
       }
 
@@ -302,10 +314,10 @@ public class TranslationResourcesService
    @Path(RESOURCE_SLUG_TEMPLATE)
    // /r/{id}
    @Admin
-   public Response putResource(@PathParam("id") String id, InputStream messageBody)
+   public Response putResource(@PathParam("id") String idNoSlash, InputStream messageBody)
    {
       log.debug("start put resource");
-
+      String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       ResponseBuilder response;
       EntityTag etag = null;
       boolean changed = false;
@@ -321,8 +333,10 @@ public class TranslationResourcesService
       HDocument document = documentDAO.getByDocId(hProjectIteration, id);
       LocaleId locale = entity.getLang();
       HLocale hLocale = validateLocale(locale);
+      int nextDocRev;
       if (document == null)
       { // must be a create operation
+         nextDocRev = 1;
          response = request.evaluatePreconditions();
          if (response != null)
          {
@@ -331,11 +345,12 @@ public class TranslationResourcesService
          changed = true;
          document = new HDocument(entity.getName(), entity.getContentType(), hLocale);
          document.setProjectIteration(hProjectIteration);
+         hProjectIteration.getDocuments().put(id, document);
          response = Response.created(uri.getAbsolutePath());
-
       }
       else if (document.isObsolete())
       { // must also be a create operation
+         nextDocRev = document.getRevision() + 1;
          response = request.evaluatePreconditions();
          if (response != null)
          {
@@ -343,10 +358,13 @@ public class TranslationResourcesService
          }
          changed = true;
          document.setObsolete(false);
+         // not sure if this is needed
+         hProjectIteration.getDocuments().put(id, document);
          response = Response.created(uri.getAbsolutePath());
       }
       else
       { // must be an update operation
+         nextDocRev = document.getRevision() + 1;
          etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
          response = request.evaluatePreconditions(etag);
          if (response != null)
@@ -357,7 +375,7 @@ public class TranslationResourcesService
          response = Response.ok();
       }
 
-      changed |= resourceUtils.transferFromResource(entity, document, extensions, hLocale);
+      changed |= resourceUtils.transferFromResource(entity, document, extensions, hLocale, nextDocRev);
 
 
       if (changed)
@@ -376,8 +394,9 @@ public class TranslationResourcesService
    @Path(RESOURCE_SLUG_TEMPLATE)
    // /r/{id}
    @Admin
-   public Response deleteResource(@PathParam("id") String id)
+   public Response deleteResource(@PathParam("id") String idNoSlash)
    {
+      String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveIteration();
 
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
@@ -397,9 +416,10 @@ public class TranslationResourcesService
    @GET
    @Path(RESOURCE_SLUG_TEMPLATE + "/meta")
    // /r/{id}/meta
-   public Response getResourceMeta(@PathParam("id") String id)
+   public Response getResourceMeta(@PathParam("id") String idNoSlash)
    {
       log.debug("start to get resource meta");
+      String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveIteration();
 
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
@@ -431,9 +451,10 @@ public class TranslationResourcesService
    @Path(RESOURCE_SLUG_TEMPLATE + "/meta")
    // /r/{id}/meta
    @Admin
-   public Response putResourceMeta(@PathParam("id") String id, InputStream messageBody)
+   public Response putResourceMeta(@PathParam("id") String idNoSlash, InputStream messageBody)
    {
       log.debug("start to put resource meta");
+      String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveIteration();
 
       identity.checkPermission(hProjectIteration, ACTION_IMPORT_TEMPLATE);
@@ -451,14 +472,16 @@ public class TranslationResourcesService
       log.debug("put resource meta: {0}", entity);
 
       HDocument document = documentDAO.getByDocId(hProjectIteration, id);
-      // FIXME what if document is null? (ie putting new document)
+      if (document == null)
+      {
+         return Response.status(Status.NOT_FOUND).build();
+      }
       if (document.isObsolete())
       {
          return Response.status(Status.NOT_FOUND).build();
       }
       HLocale hLocale = validateLocale(entity.getLang());
-      boolean changed = resourceUtils.transferFromResourceMetadata(entity, document, extensions, hLocale);
-
+      boolean changed = resourceUtils.transferFromResourceMetadata(entity, document, extensions, hLocale, document.getRevision() + 1);
 
       if (changed)
       {
@@ -474,9 +497,10 @@ public class TranslationResourcesService
    @GET
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    // /r/{id}/translations/{locale}
-   public Response getTranslations(@PathParam("id") String id, @PathParam("locale") LocaleId locale)
+   public Response getTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale)
    {
       log.debug("start to get translation");
+      String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveIteration();
 
       validateExtensions();
@@ -496,7 +520,6 @@ public class TranslationResourcesService
          return Response.status(Status.NOT_FOUND).build();
       }
 
-      List<HTextFlowTarget> hTargets = textFlowTargetDAO.findAllTranslations(document, locale);
       HLocale hLocale;
       try
       {
@@ -506,6 +529,7 @@ public class TranslationResourcesService
       {
          return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
       }
+      List<HTextFlowTarget> hTargets = textFlowTargetDAO.findTranslations(document, locale);
       TranslationsResource translationResource = new TranslationsResource();
       resourceUtils.transferToTranslationsResourceExtensions(document, translationResource.getExtensions(true), extensions, hLocale);
 
@@ -516,7 +540,8 @@ public class TranslationResourcesService
 
       for (HTextFlowTarget hTarget : hTargets)
       {
-         TextFlowTarget target = new TextFlowTarget(hTarget.getTextFlow().getResId());
+         TextFlowTarget target = new TextFlowTarget();
+         target.setResId(hTarget.getTextFlow().getResId());
          resourceUtils.transferToTextFlowTarget(hTarget, target);
          resourceUtils.transferToTextFlowTargetExtensions(hTarget, target.getExtensions(true), extensions);
          translationResource.getTextFlowTargets().add(target);
@@ -531,9 +556,9 @@ public class TranslationResourcesService
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    // /r/{id}/translations/{locale}
    @Admin
-   public Response deleteTranslations(@PathParam("id") String id, @PathParam("locale") LocaleId locale)
+   public Response deleteTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale)
    {
-
+      String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveIteration();
 
       // TODO find correct etag
@@ -569,10 +594,10 @@ public class TranslationResourcesService
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    // /r/{id}/translations/{locale}
    @Admin
-   public Response putTranslations(@PathParam("id") String id, @PathParam("locale") LocaleId locale, InputStream messageBody)
+   public Response putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, InputStream messageBody)
    {
       log.debug("start put translations");
-
+      String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveIteration();
 
       identity.checkPermission(hProjectIteration, ACTION_IMPORT_TRANSLATION);
@@ -635,13 +660,23 @@ public class TranslationResourcesService
          {
             // transfer
 
+            if (current.getContent().isEmpty() && current.getState() != ContentState.New)
+            {
+               return Response.status(Status.FORBIDDEN).entity("empty TextFlowTarget " + current.getResId() + " must have ContentState New").build();
+            }
+            if (current.getState() == ContentState.New && !current.getContent().isEmpty())
+            {
+               return Response.status(Status.FORBIDDEN).entity("ContentState New is illegal for non-empty TextFlowTarget " + current.getResId()).build();
+            }
+
             HTextFlowTarget hTarget = textFlow.getTargets().get(hLocale);
             boolean targetChanged = false;
             if (hTarget == null)
             {
                targetChanged = true;
-               log.debug("locale:" + locale);
+               log.debug("locale: {0}", locale);
                hTarget = new HTextFlowTarget(textFlow, hLocale);
+               hTarget.setVersionNum(0); // incremented when content is set
                textFlow.getTargets().put(hLocale, hTarget);
                newTargets.add(hTarget);
                targetChanged |= resourceUtils.transferFromTextFlowTarget(current, hTarget);

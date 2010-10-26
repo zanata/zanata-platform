@@ -1,10 +1,12 @@
 package net.openl10n.flies.webtrans.client;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 import net.openl10n.flies.webtrans.client.editor.HasTransUnitCount;
-import net.openl10n.flies.webtrans.client.filter.ContentFilter;
+import net.openl10n.flies.webtrans.client.editor.filter.ContentFilter;
 import net.openl10n.flies.webtrans.client.ui.ClearableTextBox;
 import net.openl10n.flies.webtrans.client.ui.UiMessages;
 import net.openl10n.flies.webtrans.shared.model.DocumentId;
@@ -21,9 +23,11 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
