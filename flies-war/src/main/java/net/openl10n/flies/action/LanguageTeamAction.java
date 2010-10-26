@@ -41,6 +41,7 @@ public class LanguageTeamAction implements Serializable
    private HLocale locale;
    private boolean contained;
 
+
    public String getLanguage()
    {
       return language;
