@@ -233,11 +233,11 @@ public class PoWriter2
          }
          catch (FileNotFoundException fnf)
          {
-            throw new IllegalArgumentException("localeOutputSourcePair", fnf);
+            throw new IllegalArgumentException("outputSource", fnf);
          }
       }
       else
-         throw new IllegalArgumentException("localeOutputSourcePair");
+         throw new IllegalArgumentException("outputSource");
       return writer;
    }
 
