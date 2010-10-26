@@ -3,6 +3,7 @@ package net.openl10n.flies.client.commands;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.ws.rs.core.Response.Status;
@@ -21,8 +22,7 @@ import net.openl10n.flies.rest.dto.resource.TranslationsResource;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 import org.jboss.resteasy.client.ClientResponse;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -30,7 +30,9 @@ import org.testng.annotations.Test;
 public class PublicanPullCommandTest
 {
    IMocksControl control = EasyMock.createControl();
-   ITranslationResources mockTranslationResources = control.createMock(ITranslationResources.class);
+   @SuppressWarnings("rawtypes")
+   private Collection mocks = new ArrayList();
+   ITranslationResources mockTranslationResources = createMock(ITranslationResources.class);
 
    public PublicanPullCommandTest() throws Exception
    {
@@ -60,6 +62,22 @@ public class PublicanPullCommandTest
       control.reset();
    }
 
+   @AfterMethod
+   void afterMethod()
+   {
+      mocks.clear();
+   }
+
+   <T> T createMock(Class<T> toMock)
+   {
+      T mock = control.createMock(toMock);
+      // We keep a ref to the mock so that it won't be GCed and finalize()d,
+      // which really messes up expectations. See
+      // https://sourceforge.net/tracker/index.php?func=detail&aid=2710478&group_id=82958&atid=567837
+      mocks.add(mock);
+      return mock;
+   }
+
    private void publicanPush(boolean exportPot, boolean mapLocale) throws Exception
    {
       PublicanPullOptions opts = new PublicanPullOptionsImpl();
@@ -83,7 +101,7 @@ public class PublicanPullCommandTest
       resourceMetaList.add(new ResourceMeta("sub/RPM"));
       mockExpectGetListAndReturnResponse(resourceMetaList);
 
-      final ClientResponse<String> mockOKResponse = control.createMock(ClientResponse.class);
+      final ClientResponse<String> mockOKResponse = createMock(ClientResponse.class);
       EasyMock.expect(mockOKResponse.getStatus()).andReturn(200).anyTimes();
       Resource rpmResource = new Resource("RPM");
       mockExpectGetResourceAndReturnResponse(rpmResource);
@@ -109,7 +127,7 @@ public class PublicanPullCommandTest
 
    private void mockExpectGetListAndReturnResponse(List<ResourceMeta> entity)
    {
-      ClientResponse<List<ResourceMeta>> mockResponse = control.createMock(ClientResponse.class);
+      ClientResponse<List<ResourceMeta>> mockResponse = createMock(ClientResponse.class);
       EasyMock.expect(mockTranslationResources.get(null)).andReturn(mockResponse);
       EasyMock.expect(mockResponse.getStatus()).andReturn(200);
       EasyMock.expect(mockResponse.getEntity()).andReturn(entity);
@@ -118,7 +136,7 @@ public class PublicanPullCommandTest
    private void mockExpectGetResourceAndReturnResponse(Resource entity)
    {
       String id = entity.getName();
-      ClientResponse<Resource> mockResponse = control.createMock(ClientResponse.class);
+      ClientResponse<Resource> mockResponse = createMock(ClientResponse.class);
       String docUri = RestUtil.convertToDocumentURIId(id);
       StringSet ext = new StringSet("comment;gettext");
       EasyMock.expect(mockTranslationResources.getResource(docUri, ext)).andReturn(mockResponse);
@@ -128,7 +146,7 @@ public class PublicanPullCommandTest
 
    private void mockExpectGetTranslationsAndReturnResponse(String id, LocaleId locale, TranslationsResource entity)
    {
-      ClientResponse<TranslationsResource> mockResponse = control.createMock(ClientResponse.class);
+      ClientResponse<TranslationsResource> mockResponse = createMock(ClientResponse.class);
       String docUri = RestUtil.convertToDocumentURIId(id);
       StringSet ext = new StringSet("comment;gettext");
       EasyMock.expect(mockTranslationResources.getTranslations(docUri, locale, ext)).andReturn(mockResponse);
