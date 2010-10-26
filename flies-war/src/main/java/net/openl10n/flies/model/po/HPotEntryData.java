@@ -14,6 +14,7 @@ import net.openl10n.flies.model.HSimpleComment;
 import net.openl10n.flies.model.HTextFlow;
 
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.Type;
 
 /**
  * 
@@ -113,6 +114,7 @@ public class HPotEntryData implements Serializable
     * Gettext message references, delimited by ',' (comma)
     */
    @Column(name = "refs")
+   @Type(type = "text")
    public String getReferences()
    {
       return references;

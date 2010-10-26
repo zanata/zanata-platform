@@ -173,7 +173,7 @@
         id bigint not null auto_increment,
         context varchar(255) binary,
         flags varchar(255) binary,
-        refs varchar(255) binary,
+        refs longtext,
         comment_id bigint,
         tf_id bigint unique,
         primary key (id),
