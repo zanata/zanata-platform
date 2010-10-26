@@ -2,7 +2,6 @@ package net.openl10n.flies.client.commands.gettext;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,13 +45,20 @@ public class PublicanUtil
       return potFiles;
    }
 
-   private static String getSubPath(File potDir, File potFile) throws IOException
+   static String getSubPath(File potDir, File potFile) throws IOException
    {
+      // we could use canonical path here, but we don't want symlinks to be
+      // resolved
       String dirPath = potDir.getAbsolutePath();
       String filePath = potFile.getAbsolutePath();
-      assert !dirPath.endsWith(FILESEP);
-      assert filePath.startsWith(dirPath);
-      return filePath.substring(dirPath.length() + FILESEP.length());
+      if (!filePath.startsWith(dirPath))
+      {
+         throw new RuntimeException("can't find relative path from " + potDir + " to " + potFile);
+      }
+      int skipSize = dirPath.length();
+      if (!dirPath.endsWith(FILESEP))
+         skipSize++;
+      return filePath.substring(skipSize);
    }
 
    public static File[] findLocaleDirs(File srcDir)
