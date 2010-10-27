@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>net.openl10n.flies</groupId>
 		<artifactId>root</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>1.0</version>
 	</parent>
 	<artifactId>flies</artifactId>
 	<packaging>war</packaging>
@@ -36,11 +34,11 @@
 		<ds.connection.url>jdbc:h2:db/flies;AUTO_SERVER=TRUE</ds.connection.url>
 -->
 		<ds.user.name>sa</ds.user.name> <!-- *-ds.xml -->
-		<ds.password></ds.password> <!-- *-ds.xml -->
+		<ds.password /> <!-- *-ds.xml -->
 
-		<components.xml.nukes></components.xml.nukes>
+		<components.xml.nukes />
 
-		<extra.servlets></extra.servlets>
+		<extra.servlets />
 	</properties>
 
 	<build>
@@ -595,7 +593,7 @@
 				<ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
 				<ds.connection.url>jdbc:mysql://localhost:3306/flies?characterEncoding=UTF-8</ds.connection.url>
 				<ds.user.name>root</ds.user.name>
-				<ds.password></ds.password>
+				<ds.password />
 			</properties>
 			<build>
 				<resources>
@@ -716,12 +714,11 @@
 			<properties>
 				<nukes.dbUrl>jdbc:mysql://localhost:3306/jboss_nukes</nukes.dbUrl>
 				<nukes.dbUserName>root</nukes.dbUserName>
-				<nukes.dbPass></nukes.dbPass>
+				<nukes.dbPass />
 				<components.xml.nukes>
 					<![CDATA[ 
 					-->
-				    <component name="nukesSecurityService" 
-				    	class="org.jboss.infrastructure.nukes.NukesSecurityService" installed="true">
+				    <component name="nukesSecurityService" class="org.jboss.infrastructure.nukes.NukesSecurityService" installed="true">
 				        <property name="dbUrl">${nukes.dbUrl}</property>
 				        <property name="dbUserName">${nukes.dbUserName}</property>
 				        <property name="dbPass">${nukes.dbPass}</property>
