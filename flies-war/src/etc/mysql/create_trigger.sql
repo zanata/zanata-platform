@@ -8,6 +8,6 @@ CREATE TRIGGER `HTextFlow_Update` BEFORE UPDATE on `HTextFlow` FOR EACH ROW BEGI
 DELIMITER ;
 DROP TRIGGER /*!50033 IF EXISTS */ `HTextFlowTarget_Update`;
 DELIMITER $$
-CREATE TRIGGER `HTextFlowTarget_Update` BEFORE UPDATE on `HTextFlowTarget` FOR EACH ROW BEGIN IF NEW.versionNum != OLD.versionNum THEN INSERT INTO HTextFlowTarget(target_id,versionNum,content, lastChanged, last_modified_by_id, state, tf_revision) VALUES (OLD.id,OLD.versionNum,OLD.content,OLD.lastChanged,OLD.last_modified_by_id,OLD.state,OLD.tf_revision); END IF; END$$
+CREATE TRIGGER `HTextFlowTarget_Update` BEFORE UPDATE on `HTextFlowTarget` FOR EACH ROW BEGIN IF NEW.versionNum != OLD.versionNum THEN INSERT INTO HTextFlowTargetHistory (target_id,versionNum,content, lastChanged, last_modified_by_id, state, tf_revision) VALUES (OLD.id,OLD.versionNum,OLD.content,OLD.lastChanged,OLD.last_modified_by_id,OLD.state,OLD.tf_revision); END IF; END$$
 DELIMITER ;
 
