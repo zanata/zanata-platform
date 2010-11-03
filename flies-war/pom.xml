@@ -39,7 +39,6 @@
 		<components.xml.nukes />
 
 		<extra.servlets />
-		<jersey-release-version>1.5-ea03</jersey-release-version>
 	</properties>
 
 	<build>
@@ -124,120 +123,6 @@
                     </excludes>
                     <outputDirectory>src/main/resources</outputDirectory>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.4</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>javadoc</goal>
-                        </goals>
-                        <phase>deploy</phase>
-                    </execution>
-                </executions>
-
-                <configuration>
-
-                    <encoding>UTF-8</encoding>
-                    <verbose>false</verbose>
-                    <show>public</show>
-                    <subpackages>net.openl10n.flies</subpackages>
-
-                    <doclet>com.sun.jersey.wadl.resourcedoc.ResourceDoclet</doclet>
-                    <docletArtifacts>
-                        <docletArtifact>
-                            <groupId>com.sun.jersey.contribs</groupId>
-                            <artifactId>wadl-resourcedoc-doclet</artifactId>
-                            <version>${jersey-release-version}</version>
-                        </docletArtifact>
-                        <!--
-                            Also specify jersey and xerces as doclet artifacts as the ResourceDoclet
-                            uses classes provided by them to generate the resourcedoc.
-                         -->
-                        <docletArtifact>
-                            <groupId>com.sun.jersey</groupId>
-                            <artifactId>jersey-server</artifactId>
-                            <version>${jersey-release-version}</version>
-                        </docletArtifact>
-                        <docletArtifact>
-                            <groupId>xerces</groupId>
-                            <artifactId>xercesImpl</artifactId>
-                            <version>2.6.1</version>
-                        </docletArtifact>
-                    </docletArtifacts>
-                    <additionalparam>-output ${project.build.outputDirectory}/resourcedoc.xml -processors com.sun.jersey.samples.generatewadl.util.ExampleDocProcessor</additionalparam>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>com.sun.jersey.contribs</groupId>
-                <artifactId>maven-wadl-plugin</artifactId>
-                <version>${jersey-release-version}</version>
-                <executions>
-                    <execution>
-                        <id>generate</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <phase>compile</phase>
-                    </execution>
-                </executions>
-                <configuration>
-                    <wadlFile>${project.build.outputDirectory}/application.wadl</wadlFile>
-                    <formatWadlFile>true</formatWadlFile>
-                    <baseUri>http://www.example.com/api</baseUri>
-<!--
--->
-                    <packagesResourceConfig>
-                        <param>net.openl10n.flies.rest.service</param>
-                    </packagesResourceConfig>
-                    <wadlGenerators>
-                        <wadlGeneratorDescription>
-                            <className>com.sun.jersey.server.wadl.generators.WadlGeneratorApplicationDoc</className>
-                            <properties>
-                                <property>
-                                    <name>applicationDocsFile</name>
-                                    <value>${basedir}/src/main/doc/application-doc.xml</value>
-                                </property>
-                            </properties>
-                        </wadlGeneratorDescription>
-                        <wadlGeneratorDescription>
-                            <className>com.sun.jersey.server.wadl.generators.WadlGeneratorGrammarsSupport</className>
-                            <properties>
-                                <property>
-                                    <name>grammarsFile</name>
-                                    <value>${basedir}/src/main/doc/application-grammars.xml</value>
-                                </property>
-                            </properties>
-                        </wadlGeneratorDescription>
-<!--
--->
-                        <wadlGeneratorDescription>
-                            <className>com.sun.jersey.server.wadl.generators.resourcedoc.WadlGeneratorResourceDocSupport</className>
-                            <properties>
-                                <property>
-                                    <name>resourceDocFile</name>
-                                    <value>${project.build.outputDirectory}/resourcedoc.xml</value>
-                                </property>
-                            </properties>
-                        </wadlGeneratorDescription>
-                        <wadlGeneratorDescription>
-                            <className>com.sun.jersey.samples.generatewadl.util.ExampleWadlGenerator</className>
-                            <properties>
-                                <property>
-                                    <name>resourceDocFile</name>
-                                    <value>${project.build.outputDirectory}/resourcedoc.xml</value>
-                                </property>
-                            </properties>
-                        </wadlGeneratorDescription>
-<!--
--->
-                    </wadlGenerators>
-                </configuration>
-
             </plugin>
                 
 		</plugins>
@@ -890,60 +775,6 @@
 			</dependencies>
 		</profile>
 
-        <profile>
-            <id>xsltproc</id>
-            <activation>
-                <file>
-                    <exists>/usr/bin/xsltproc</exists>
-                </file>
-            </activation>
-            <build>
-                <plugins>
-                    <!--  Create/generate the application.html using xsltproc  -->
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>1.1</version>
-                        <executions>
-                            <execution>
-                                <id>copy-docs-to-builddir</id>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <phase>compile</phase>
-                                <configuration>
-                                    <executable>cp</executable>
-                                    <commandlineArgs>src/main/doc/*.xml target/classes/</commandlineArgs>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>prepare-xsltproc</id>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <phase>package</phase>
-                                <configuration>
-                                    <executable>cp</executable>
-                                    <commandlineArgs>src/main/xsd/schema.xsd target/classes/</commandlineArgs>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>exec-xsltproc: target/application.html</id>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <phase>package</phase>
-                                <configuration>
-                                    <executable>xsltproc</executable>
-                                    <commandlineArgs>-o target/application.html src/main/doc/wadl_documentation.xsl target/classes/application.wadl</commandlineArgs>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
 	</profiles>
 
 	<dependencies>
@@ -1374,37 +1205,6 @@
 
 		<!-- end of GWT related dependencies -->
 
-        <dependency>
-            <groupId>com.sun.jersey.contribs</groupId>
-            <artifactId>maven-wadl-plugin</artifactId>
-            <version>${jersey-release-version}</version>
-        </dependency>        
-        <dependency>
-            <groupId>com.sun.jersey.contribs</groupId>
-            <artifactId>wadl-resourcedoc-doclet</artifactId>
-            <version>${jersey-release-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.jettison</groupId>
-            <artifactId>jettison</artifactId>
-            <version>1.1</version>
-        </dependency>
-
 	</dependencies>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>maven2-repository.dev.java.net</id>
-            <url>http://download.java.net/maven/2</url>
-            <layout>default</layout>
-        </pluginRepository>
-    </pluginRepositories>
-    <repositories>
-        <repository>
-            <id>maven2-repository.dev.java.net</id>
-            <url>http://download.java.net/maven/2</url>
-            <layout>default</layout>
-        </repository>
-    </repositories>
 
 </project>
