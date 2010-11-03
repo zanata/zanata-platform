@@ -362,26 +362,6 @@ public class TranslationResourceRestTest extends FliesRestTest
    }
 
    @Test
-   public void putDocWithDuplicateTextFlowIds() throws Exception
-   {
-      String docName = "testDoc";
-      String docUrl = RestUtil.convertToDocumentURIId(docName);
-      Resource doc = createSourceDoc(docName, false);
-      List<TextFlow> textFlows = doc.getTextFlows();
-
-      for (int i = 0; i < 2; i++)
-      {
-         TextFlow textFlow = new TextFlow("tf1");
-         textFlow.setContent("hello world!");
-         textFlows.add(textFlow);
-      }
-      ClientResponse<?> response = transResource.putResource(docUrl, doc, null);
-      assertThat(response.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
-      String message = (String) response.getEntity();
-      assertThat(message, containsString("tf1"));
-   }
-
-   @Test
    public void putNewDocumentWithResources() throws Exception
    {
       String docName = "my/fancy/document.txt";

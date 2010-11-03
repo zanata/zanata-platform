@@ -7,11 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Response.Status;
-
 import net.openl10n.flies.common.ResourceType;
 import net.openl10n.flies.model.HDocument;
 import net.openl10n.flies.model.HLocale;
@@ -69,19 +64,13 @@ public class ResourceUtils
    {
       boolean changed = false;
       to.getTextFlows().clear();
-      Set<String> incomingIds = new HashSet<String>();
-      Set<String> previousIds = new HashSet<String>(to.getAllTextFlows().keySet());
+      Set<String> ids = new HashSet<String>(to.getAllTextFlows().keySet());
       for (TextFlow tf : from)
       {
-         if (!incomingIds.add(tf.getId()))
-         {
-            Response response = Response.status(Status.BAD_REQUEST).entity("encountered TextFlow with duplicate ID " + tf.getId()).build();
-            throw new WebApplicationException(response);
-         }
          HTextFlow textFlow;
-         if (previousIds.contains(tf.getId()))
+         if (ids.contains(tf.getId()))
          {
-            previousIds.remove(tf.getId());
+            ids.remove(tf.getId());
             textFlow = to.getAllTextFlows().get(tf.getId());
             textFlow.setObsolete(false);
             // avoid changing revision when resurrecting an unchanged TF
@@ -106,7 +95,7 @@ public class ResourceUtils
       }
 
       // set remaining textflows to obsolete.
-      for (String id : previousIds)
+      for (String id : ids)
       {
          HTextFlow textFlow = to.getAllTextFlows().get(id);
          if (!textFlow.isObsolete())
