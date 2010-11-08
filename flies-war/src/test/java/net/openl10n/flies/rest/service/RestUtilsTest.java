@@ -91,6 +91,41 @@ public class RestUtilsTest
       }
    }
 
+   @Test
+   public void testUnmarshallJasonTranslationsResource()
+   {
+      log.info("start jason");
+      InputStream messageBody = null;
+      try
+      {
+         // String testStr =
+         // "{\"resId\":\"782f49c4e93c32403ba0b51821b38b90\",\"state\":\"Approved\",\"translator\":{},\"content\":\"title: ttff\",\"extensions\":[{\"object-type\": \"comment\",\"value\": \"testcomment\", \"space\": \"preserve\"}]}";
+         String testStr = "{\"textFlowTargets\":[{\"resId\":\"rest1\",\"state\":\"Approved\",\"translator\":{\"email\":\"root@localhost\",\"name\":\"Admin user\"},\"content\": \"<title>\u8bbf\u95ee\u5b58\u53d6\u63a7\u5236\u5217\u8868</title>\"},{\"resId\":\"rest2\",\"state\":\"Approved\",\"translator\":{\"email\":\"root@localhost\",\"name\":\"Admin user\"},\"content\":\"hello world\"}]}";
+
+         messageBody = new ByteArrayInputStream(testStr.getBytes("UTF-8"));
+         TranslationsResource unmarshall = (TranslationsResource) RestUtils.unmarshall(TranslationsResource.class, messageBody, MediaType.APPLICATION_JSON_TYPE, null);
+         log.info("got:" + unmarshall.toString());
+      }
+      catch (UnsupportedEncodingException e)
+      {
+         e.printStackTrace();
+      }
+      finally
+      {
+         if (messageBody != null)
+         {
+            try
+            {
+               messageBody.close();
+            }
+            catch (IOException e)
+            {
+            }
+         }
+      }
+   }
+
+
    @Test(dataProvider = "TranslationTestData")
    public void testUnmarshallTranslation(TranslationsResource res)
    {
