@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.openl10n.flies.model.HPerson;
 import net.openl10n.flies.model.HLocale;
+import net.openl10n.flies.model.HProject;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -49,5 +50,12 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
          }
       }
       return re;
+   }
+
+   @SuppressWarnings("unchecked")
+   public List<HProject> getMaintainerProjects(String userName)
+   {
+      Query query = getSession().getNamedQuery("getMaintainerProjects").setString("username", userName);
+      return query.list();
    }
 }

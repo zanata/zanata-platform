@@ -27,7 +27,7 @@ import org.hibernate.validator.NotEmpty;
  * @see Person
  * 
  */
-@NamedQueries({ @NamedQuery(name = "getLanguageMemberships", query = "select p.tribeMemberships from HPerson as p where p.account.username = :username") })
+@NamedQueries({ @NamedQuery(name = "getLanguageMemberships", query = "select p.tribeMemberships from HPerson as p where p.account.username = :username"), @NamedQuery(name = "getMaintainerProjects", query = "select p.maintainerProjects from HPerson as p where p.account.username = :username") })
 @Entity
 public class HPerson extends AbstractFliesEntity implements Serializable
 {

@@ -14,11 +14,17 @@ import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 
 @Name("projectHome")
 public class ProjectHome extends SlugHome<HIterationProject>
 {
+
+   /**
+    * 
+    */
+   private static final long serialVersionUID = 1L;
 
    private String slug;
 
@@ -72,7 +78,7 @@ public class ProjectHome extends SlugHome<HIterationProject>
    @Override
    public String persist()
    {
-
+      String retValue = "";
       if (!validateSlug(getInstance().getSlug(), "slug"))
          return null;
 
@@ -80,10 +86,13 @@ public class ProjectHome extends SlugHome<HIterationProject>
       {
          HPerson currentPerson = getEntityManager().find(HPerson.class, authenticatedPerson.getId());
          if (currentPerson != null)
+         {
             getInstance().getMaintainers().add(currentPerson);
+            retValue = super.persist();
+            Events.instance().raiseEvent("projectAdded");
+         }
       }
 
-      String retValue = super.persist();
 
       return retValue;
    }
