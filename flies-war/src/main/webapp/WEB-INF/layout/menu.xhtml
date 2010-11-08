@@ -14,7 +14,7 @@
 		</s:link> <s:fragment rendered="#{authenticatedPerson != null}">
 			<ul>
 				<ui:repeat id="Project_list"
-					value="#{authenticatedPerson.maintainerProjects}" var="project">
+					value="#{maintainerProjectList.maintainerProjects}" var="project">
 					<li id="Project_#{project.slug}"><s:link
 						view="/project/project.xhtml" propagation="none">
 		  #{project.name}
