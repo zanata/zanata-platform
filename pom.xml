@@ -566,6 +566,11 @@
 				<scope>test</scope>
 			</dependency>
 
+			<dependency>
+				<groupId>org.liquibase</groupId>
+				<artifactId>liquibase-core</artifactId>
+				<version>1.9.5</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

@@ -16,7 +16,7 @@
 
 		<env.debug>false</env.debug>
 		<env.import.testdata>false</env.import.testdata>
-		<env.hibernate.hbm2ddl.auto>update</env.hibernate.hbm2ddl.auto>
+		<env.hibernate.hbm2ddl.auto>validate</env.hibernate.hbm2ddl.auto>
 		<env.hibernate.show_sql>false</env.hibernate.show_sql>
 		<env.hibernate.format_sql>false</env.hibernate.format_sql>
 		<env.hibernate.indexBase>fliessearchindex</env.hibernate.indexBase>
@@ -317,6 +317,15 @@
 					<scope>provided</scope>
 				</dependency>
 
+<!--
+				<dependency>
+					<groupId>xerces</groupId>
+					<artifactId>xercesImpl</artifactId>
+					<version>2.6.1</version>
+					<scope>provided</scope>
+				</dependency>
+-->
+
 			</dependencies>
 
 		</profile>
@@ -580,7 +589,14 @@
 					<artifactId>xpp3_min</artifactId>
 					<scope>provided</scope>
 				</dependency>
-			
+<!--
+				<dependency>
+					<groupId>xerces</groupId>
+					<artifactId>xercesImpl</artifactId>
+					<version>2.6.1</version>
+					<scope>provided</scope>
+				</dependency>
+-->
 			</dependencies>
 			
 		</profile>
@@ -645,13 +661,6 @@
 				<ds.password />
 			</properties>
 			<build>
-				<resources>
-					<resource>
-						<directory>src/main/resources-mysql</directory>
-						<filtering>false</filtering>
-					</resource>
-				</resources>
-
 				<plugins>
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
@@ -678,6 +687,53 @@
 								<groupId>mysql</groupId>
 								<artifactId>mysql-connector-java</artifactId>
 								<version>5.1.9</version>
+							</dependency>
+						</dependencies>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>h2export</id>
+			<properties>
+				<env.dbunit.type>HSQL</env.dbunit.type>
+				<ds.hibernate.dialect>org.hibernate.dialect.H2Dialect</ds.hibernate.dialect>
+				<ds.driver.class>org.h2.Driver</ds.driver.class>
+				<!-- Configure the in-memory database to be shared, and so that it
+					 doesn't disappear after it has been set up by Hibernate: -->
+				<ds.connection.url>jdbc:h2:mem:flies;DB_CLOSE_DELAY=-1</ds.connection.url>
+				<ds.user.name>sa</ds.user.name>
+				<ds.password />
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>hibernate3-maven-plugin</artifactId>
+						<version>2.2</version>
+						<configuration>
+							<components>
+								<component>
+									<name>hbm2ddl</name>
+									<implementation>jpaconfiguration</implementation>
+								</component>
+							</components>
+							<componentProperties>
+								<persistenceunit>fliesDatabase</persistenceunit>
+								<outputfilename>schema.ddl</outputfilename>
+								<drop>false</drop>
+								<create>true</create>
+								<export>false</export>
+								<format>true</format>
+							</componentProperties>
+						</configuration>
+						<dependencies>
+							<dependency>
+								<groupId>com.h2database</groupId>
+								<artifactId>h2</artifactId>
+								<version>1.2.134</version>
+								<scope>runtime</scope>
 							</dependency>
 						</dependencies>
 					</plugin>
@@ -1227,6 +1283,11 @@
 		</dependency>
 
 		<!-- end of GWT related dependencies -->
+
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+		</dependency>
 
 	</dependencies>
 

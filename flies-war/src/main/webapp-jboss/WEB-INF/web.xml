@@ -44,6 +44,49 @@
 		<param-value>DEFAULT</param-value>
 	</context-param>
 
+
+	<!-- 
+	Make sure Liquibase is the first listener, so that it can update the database schema before
+	anyone uses the database.
+	 -->
+
+	<context-param>
+	    <param-name>LIQUIBASE_CHANGELOG</param-name>
+	    <param-value>db/db.changelog.xml</param-value>
+	</context-param>
+	 
+	<context-param>
+	    <param-name>LIQUIBASE_DATA_SOURCE</param-name>
+	    <param-value>java:/fliesDatasource</param-value>
+	</context-param>
+	<!-- 
+	<context-param>
+	    <param-name>LIQUIBASE_HOST_EXCLUDES</param-name>
+	    <param-value>production1.example.com, production2.example.com</param-value>
+	</context-param>
+	 -->
+	 
+	<context-param>
+	    <param-name>LIQUIBASE_FAIL_ON_ERROR</param-name>
+	    <param-value>true</param-value>
+	</context-param>
+	
+	<!-- 
+	<context-param>
+	    <param-name>LIQUIBASE_CONTEXTS</param-name>
+	    <param-value>production</param-value>
+	</context-param>
+	 --> 
+<!--
+-->
+	<listener>
+	    <listener-class>liquibase.servlet.LiquibaseServletListener</listener-class>
+	</listener>
+
+
+
+
+
 	<!-- Seam -->
 
 	<listener>

@@ -1,4 +1,8 @@
-
+/*
+ * Warning: Please do not change this file!
+ * Any changes to the database schema should be added as
+ * Liquibase changeSets in db.changelog.xml
+ */
     create table HAccount (
         id bigint not null auto_increment,
         creationDate datetime not null,
