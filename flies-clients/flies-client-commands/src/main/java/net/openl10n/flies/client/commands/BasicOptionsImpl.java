@@ -23,8 +23,7 @@ package net.openl10n.flies.client.commands;
 import org.kohsuke.args4j.Option;
 
 /**
- * Base class for Flies commands which supports configuration by the user's
- * flies.ini
+ * Base class for Flies commands
  * 
  * @author Sean Flanigan <sflaniga@redhat.com>
  * 
@@ -39,6 +38,7 @@ public abstract class BasicOptionsImpl implements BasicOptions
    private boolean help;
    private boolean quiet = false;
    private boolean quietSet;
+   private boolean interactiveMode = true;
 
    public BasicOptionsImpl()
    {
@@ -102,6 +102,18 @@ public abstract class BasicOptionsImpl implements BasicOptions
    {
       quietSet = true;
       this.quiet = quiet;
+   }
+
+   @Override
+   public boolean isInteractiveMode()
+   {
+      return interactiveMode;
+   }
+
+   @Override
+   public void setInteractiveMode(boolean interactiveMode)
+   {
+      this.interactiveMode = interactiveMode;
    }
 
    @Override

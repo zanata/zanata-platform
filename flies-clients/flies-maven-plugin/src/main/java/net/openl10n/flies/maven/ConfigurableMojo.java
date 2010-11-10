@@ -74,6 +74,14 @@ public abstract class ConfigurableMojo extends AbstractMojo implements Configura
     */
    private String key;
 
+   /**
+    * Interactive mode is enabled by default, but can be disabled using Maven's
+    * -B/--batch-mode option.
+    * 
+    * @parameter default-value="${settings.interactiveMode}"
+    */
+   private boolean interactiveMode = true;
+
    public ConfigurableMojo()
    {
    }
@@ -196,6 +204,18 @@ public abstract class ConfigurableMojo extends AbstractMojo implements Configura
    public boolean isQuietSet()
    {
       return true;
+   }
+
+   @Override
+   public boolean isInteractiveMode()
+   {
+      return interactiveMode;
+   }
+
+   @Override
+   public void setInteractiveMode(boolean interactiveMode)
+   {
+      this.interactiveMode = interactiveMode;
    }
 
    // these options only apply to the command line:
