@@ -60,6 +60,7 @@ public class PublicanPushCommandTest
    private void publicanPush(boolean importPo, boolean mapLocale) throws Exception
    {
       PublicanPushOptions opts = new PublicanPushOptionsImpl();
+      opts.setInteractiveMode(false);
       String projectSlug = "project";
       opts.setProj(projectSlug);
       String versionSlug = "1.0";
