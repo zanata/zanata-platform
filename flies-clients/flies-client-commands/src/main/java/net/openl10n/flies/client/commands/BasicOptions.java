@@ -41,6 +41,10 @@ public interface BasicOptions
    void setQuiet(boolean quiet);
    boolean isQuietSet();
 
+   public boolean isInteractiveMode();
+
+   public void setInteractiveMode(boolean interactiveMode);
+
    /**
     * Used to generate the command line interface and its usage help. This name
     * should match the Maven Mojo's 'goal' annotation.

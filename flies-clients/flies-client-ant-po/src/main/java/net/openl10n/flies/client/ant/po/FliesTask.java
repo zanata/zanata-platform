@@ -14,6 +14,8 @@ public abstract class FliesTask extends Task implements BasicOptions
    private boolean errors;
    private boolean help;
    private boolean quiet;
+   private boolean interactiveMode = true;
+   // TODO shouldn't this use VersionUtility.getVersionInfo() ?
    protected VersionInfo versionInfo = new VersionInfo("SNAPSHOT", "");
 
    @Override
@@ -70,6 +72,18 @@ public abstract class FliesTask extends Task implements BasicOptions
    public void setQuiet(boolean quiet)
    {
       this.quiet = quiet;
+   }
+
+   @Override
+   public boolean isInteractiveMode()
+   {
+      return interactiveMode;
+   }
+
+   @Override
+   public void setInteractiveMode(boolean interactiveMode)
+   {
+      this.interactiveMode = interactiveMode;
    }
 
    @Override

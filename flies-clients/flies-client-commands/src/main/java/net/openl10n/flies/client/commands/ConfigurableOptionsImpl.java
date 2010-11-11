@@ -26,7 +26,7 @@ import java.net.URL;
 import org.kohsuke.args4j.Option;
 
 /**
- * Base options for Flies commands which supports configuration by the user's
+ * Base options for Flies commands which support configuration by the user's
  * flies.ini
  * 
  * @author Sean Flanigan <sflaniga@redhat.com>

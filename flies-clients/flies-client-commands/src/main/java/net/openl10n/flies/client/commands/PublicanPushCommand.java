@@ -1,6 +1,8 @@
 package net.openl10n.flies.client.commands;
 
+import java.io.Console;
 import java.io.File;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URI;
 import java.util.HashSet;
@@ -42,6 +44,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
    private final ITranslationResources translationResources;
    private final URI uri;
 
+
    public PublicanPushCommand(PublicanPushOptions opts, FliesClientRequestFactory factory, ITranslationResources translationResources, URI uri)
    {
       super(opts, factory);
@@ -66,7 +69,31 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
       log.debug("Flies server: {}", opts.getUrl());
       log.debug("Project: {}", opts.getProj());
       log.debug("Version: {}", opts.getProjectVersion());
-      // log.debug("List of resources:");
+
+      Console console = System.console();
+      if (opts.isInteractiveMode())
+      {
+         if (console == null)
+            throw new RuntimeException("console not available: please run maven from a console, or use batch mode (mvn -B)");
+      }
+
+      if (opts.getImportPo())
+      {
+         log.warn("importPo option is set: existing translations on server will be overwritten/deleted");
+         if (opts.isInteractiveMode())
+         {
+            console.printf("This will overwrite/delete any existing documents AND TRANSLATIONS on the server.\n");
+            console.printf("Are you sure (y/n)? ");
+            expectYes(console);
+         }
+      }
+      else if (opts.isInteractiveMode())
+      {
+         console.printf("This will overwrite/delete any existing documents on the server.\n");
+         console.printf("Are you sure (y/n)? ");
+         expectYes(console);
+      }
+
       JAXBContext jc = null;
       if (log.isDebugEnabled() || opts.getValidate())
       {
@@ -180,6 +207,15 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
             }
          }
       }
+   }
+
+   protected void expectYes(Console console) throws IOException
+   {
+      String line = console.readLine();
+      if (line == null)
+         throw new IOException("console stream closed");
+      if (!line.toLowerCase().equals("y") && !line.toLowerCase().equals("yes"))
+         throw new RuntimeException("operation aborted by user");
    }
 
 }
