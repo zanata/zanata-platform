@@ -26,7 +26,7 @@
     
     <ui:define name="center_content">
         <rich:jQuery selector="#tab_profile" query="addClass('ui-tabs-selected')" />
-        <h1>#{personHome.instance.name}</h1>
+        <h1>#{personHome.instance.account.username}</h1>
         <h2>#{messages['jsf.MyProjects']}</h2>
         <h:outputText value="None Available" rendered="#{empty personHome.instance.maintainerProjects}"/>
         <rich:dataGrid value="#{personHome.instance.maintainerProjects}" 

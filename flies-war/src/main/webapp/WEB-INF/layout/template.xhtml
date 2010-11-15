@@ -34,7 +34,7 @@
         <div id="flies_name"><a href="/flies/">#{messages['jsf.FliesMainDescription']}</a></div>
         <div id="header_top_right">
           <h:outputText rendered="#{identity.loggedIn}"
-            value="#{authenticatedPerson == null ? identity.username : authenticatedPerson.name} " />
+            value="#{authenticatedPerson == null ? identity.username : authenticatedPerson.account.username} " />
           <s:fragment rendered="#{not identity.loggedIn}">
             <s:link id="Sign_in" view="/account/login.xhtml" value="#{messages['jsf.SignIn']}" propagation="none" />
             <rich:spacer width="10px" />

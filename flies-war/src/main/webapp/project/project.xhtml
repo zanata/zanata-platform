@@ -48,6 +48,9 @@
     <s:link styleClass="action_link" rendered="#{s:hasPermission(projectHome.instance, 'add-iteration')}" view="/project/add_iteration.xhtml" value="#{messages['jsf.CreateVersion']}" propagation="none">
     	<f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
     </s:link>
+    <s:link styleClass="action_link" rendered="#{s:hasPermission(projectHome.instance, 'update')}" view="/project/assign_maintainer.xhtml" value="#{messages['jsf.AddMaintainer']}" propagation="none">
+    	<f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
+    </s:link>
   </rich:panel>
 
   <rich:panel>
