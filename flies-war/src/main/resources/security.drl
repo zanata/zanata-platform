@@ -149,7 +149,7 @@ when
   )
   check: PermissionCheck(
     target == $iter, 
-    action == "insert" || action == "update", action == "import-template" || action == "import-translation",
+    action == "insert" || action == "update" || action == "import-template" || action == "import-translation",
     granted == false)
 then
   check.grant();
