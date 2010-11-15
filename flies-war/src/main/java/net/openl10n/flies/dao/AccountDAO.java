@@ -2,6 +2,7 @@ package net.openl10n.flies.dao;
 
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import java.util.List;
 
 import net.openl10n.flies.model.HAccount;
 
@@ -19,7 +20,6 @@ import org.jboss.seam.util.Hex;
 @Scope(ScopeType.STATELESS)
 public class AccountDAO extends AbstractDAOImpl<HAccount, Long>
 {
-
    public AccountDAO()
    {
       super(HAccount.class);
@@ -82,11 +82,32 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long>
       // TODO add a @PasswordSalt field to HAccount
       // otherwise, Seam uses the @UserPrincipal field as salt
       String saltPhrase = username;
+      @SuppressWarnings("deprecation")
       String passwordHash = PasswordHash.instance().generateSaltedHash(password, saltPhrase, PasswordHash.ALGORITHM_MD5);
       account.setPasswordHash(passwordHash);
       account.setEnabled(enabled);
       makePersistent(account);
       return account;
+   }
+
+   // @SuppressWarnings("unchecked")
+   // public List<HAccount> searchQuery(String searchQuery) throws
+   // ParseException
+   // {
+   // log.info("start searching {0}", searchQuery);
+   // TermQuery tq = new TermQuery(new Term("username", searchQuery));
+   //
+   // FullTextQuery fullTextQuery = ((FullTextEntityManager)
+   // entityManager).createFullTextQuery(tq, HAccount.class);
+   // return fullTextQuery.getResultList();
+   // }
+
+   @SuppressWarnings("unchecked")
+   public List<HAccount> searchQuery(String searchQuery)
+   {
+      String userName = searchQuery + "%";
+      org.hibernate.Query query = getSession().getNamedQuery("getSearchLogin").setString("username", userName);
+      return query.list();
    }
 
 }

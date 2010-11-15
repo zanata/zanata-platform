@@ -1,0 +1,34 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	template="../WEB-INF/layout/template.xhtml">
+
+	<ui:define name="center_content">
+    <h:form>
+    <h:panelGrid rendered="#{s:hasPermission(projectHome.instance, 'update')}" >
+      <f:facet name="header">#{messages['jsf.AddMaintainer']}</f:facet>
+      <h:inputText id="input" value="#{accountSearch.projectMaintainer}" size="40"/>
+	  <rich:suggestionbox width="290" suggestionAction="#{accountSearch.search}" var="account" for="input">
+		  <h:column>
+			   <h:outputText value="#{account.username}"/>
+		  </h:column>
+      </rich:suggestionbox>
+    </h:panelGrid>
+				<div style="clear: both" />
+
+				<div class="actionButtons"><h:commandButton
+					value="#{messages['jsf.Save']}"
+					action="#{projectMaintainerManageAction.addMaintainers(accountSearch.projectMaintainer)}" /> 
+					<s:button
+					view="/project/assign_maintainer.xhtml"
+					value="#{messages['jsf.Cancel']}" propagation="none"  action="#{projectHome.cancel}" /></div>
+    </h:form>
+	</ui:define>
+
+</ui:composition>
