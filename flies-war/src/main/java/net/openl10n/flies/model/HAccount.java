@@ -17,7 +17,12 @@ import javax.persistence.UniqueConstraint;
 import net.openl10n.flies.rest.dto.Account;
 import net.openl10n.flies.security.UserApiKey;
 
+import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.Length;
 import org.jboss.seam.annotations.security.management.UserEnabled;
 import org.jboss.seam.annotations.security.management.UserPassword;
@@ -31,8 +36,11 @@ import org.jboss.seam.security.management.PasswordHash;
  */
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "username"))
+@Indexed
+@NamedQueries({ @NamedQuery(name = "getSearchLogin", query = "from HAccount as a where a.username like :username") })
 public class HAccount extends AbstractFliesEntity implements Serializable
 {
+   private static final long serialVersionUID = 1L;
 
    private String username;
 
@@ -59,6 +67,7 @@ public class HAccount extends AbstractFliesEntity implements Serializable
 
    @NaturalId
    @UserPrincipal
+   @Field(index = Index.TOKENIZED)
    public String getUsername()
    {
       return username;
