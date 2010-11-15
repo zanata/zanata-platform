@@ -206,6 +206,7 @@
   
   <page view-id="/project/maintainerdetail.xhtml">
     <param name="slug" value="#{projectMaintainerManageAction.slug}" />
+    <param name="slug" value="#{projectHome.slug}" />
     <navigation from-action="#{projectMaintainerManageAction.addMaintainers(accountSearch.projectMaintainer)}">
       <rule if-outcome="success">
         <redirect view-id="/project/assign_maintainer.xhtml" >
