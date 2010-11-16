@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import net.openl10n.flies.rest.RestConstant;
 import net.openl10n.flies.rest.dto.VersionInfo;
 
 import org.jboss.resteasy.client.ClientExecutor;
@@ -42,8 +43,9 @@ public class FliesClientRequestFactory implements ITranslationResourcesFactory
       registerPrefixInterceptor(new ApiKeyHeaderDecorator(username, apiKey, ver.getVersionNo()));
       IVersion iversion = getVersionInfo();
       VersionInfo server = iversion.get();
-      log.info("Flies Server Version: {}, Flies Client Version: {}", server.getVersionNo(), ver.getVersionNo());
-      if (!server.getBuildTimeStamp().equalsIgnoreCase(ver.getBuildTimeStamp()))
+      String serVer = server.getVersionNo();
+      log.info("Flies Server Version: {}, Flies Client Version: {}", serVer, ver.getVersionNo());
+      if (!serVer.contains(RestConstant.SNAPSHOT_VERSION) && !server.getBuildTimeStamp().equalsIgnoreCase(ver.getBuildTimeStamp()))
       {
          log.warn("client buildTimeStamp {} and server buildTimeStamp {} mismatch, please update your client", ver.getBuildTimeStamp(), server.getBuildTimeStamp());
       }
