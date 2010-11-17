@@ -4,9 +4,10 @@
 <jboss-web>  
     <class-loading java2ClassLoadingCompliance="false">
         <loader-repository>
-            seam.jboss.org:loader=flies
+            seam.jboss.org:loader=${war.name}
             <loader-repository-config>java2ParentDelegation=false</loader-repository-config>
         </loader-repository>
     </class-loading>
-    <depends>jboss.jca:service=DataSourceBinding,name=fliesDatasource</depends>
+    <context-root>/${war.name}</context-root>
+    <depends>jboss.jca:service=DataSourceBinding,name=${ds.jndi.name}</depends>
 </jboss-web>

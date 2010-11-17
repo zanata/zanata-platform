@@ -84,7 +84,7 @@
   
   <component name="dbunitImporter" class="net.openl10n.flies.util.DBUnitImporter" installed="@env.import.testdata@">
     <property name="database">@env.dbunit.type@</property>
-    <property name="datasourceJndiName">java:/fliesDatasource</property>
+    <property name="datasourceJndiName">java:/${ds.jndi.name}</property>
     <property name="binaryDir">META-INF/testdata</property>
     <property name="datasets">
         <value>META-INF/testdata/AccountData.dbunit.xml</value>

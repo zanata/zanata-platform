@@ -40,7 +40,7 @@
   <!-- FIXME fliesDatabase vs testDatabase -->
   <persistence:entity-manager-factory
       name="entityManagerFactory"
-      persistence-unit-name="fliesDatabase"
+      persistence-unit-name="${ds.jndi.name}"
       installed="true"
       startup="true" />
 

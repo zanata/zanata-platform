@@ -22,9 +22,10 @@
 		<env.hibernate.format_sql>false</env.hibernate.format_sql>
 		<env.hibernate.indexBase>fliessearchindex</env.hibernate.indexBase>
 
+		<war.name>flies</war.name>
 		<!-- Default database settings -->
-
 		<env.dbunit.type>HSQL</env.dbunit.type>
+		<ds.jndi.name>fliesTestDatasource</ds.jndi.name>
 		<ds.hibernate.dialect>org.hibernate.dialect.H2Dialect</ds.hibernate.dialect>
 		<ds.driver.class>org.h2.Driver</ds.driver.class>
 		<!-- Configure the in-memory database to be shared, and so that it
@@ -57,6 +58,7 @@
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
+					<warName>${war.name}</warName>
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
@@ -177,7 +179,7 @@
 							<serverName>default</serverName>
 							<fileNames>
 								<fileName>${project.build.directory}/classes/flies-ds.xml</fileName>
-								<fileName>${project.build.directory}/flies.war</fileName>
+								<fileName>${project.build.directory}/${war.name}.war</fileName>
 							</fileNames>
 						</configuration>
 					</plugin>
@@ -357,7 +359,7 @@
 							<deployer>
 								<deployables>
 									<deployable>
-										<pingURL>http://localhost:${port}/flies/</pingURL>
+										<pingURL>http://localhost:${port}/${war.name}/</pingURL>
 										<location>${project.build.directory}/flies</location>
 									</deployable>
 								</deployables>
@@ -583,6 +585,7 @@
 			<id>mysql</id>
 			<properties>
 				<env.dbunit.type>MYSQL</env.dbunit.type>
+				<ds.jndi.name>fliesDatasource</ds.jndi.name>
 				<ds.hibernate.dialect>net.openl10n.flies.FliesMySQL5InnoDBDialect</ds.hibernate.dialect>
 				<ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
 				<ds.connection.url>jdbc:mysql://localhost:3306/flies?characterEncoding=UTF-8</ds.connection.url>

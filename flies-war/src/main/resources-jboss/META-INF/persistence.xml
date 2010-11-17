@@ -4,9 +4,9 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd" 
     version="1.0">
     
-  <persistence-unit name="fliesDatabase" transaction-type="JTA">
+  <persistence-unit name="${ds.jndi.name}" transaction-type="JTA">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
-    <jta-data-source>java:fliesDatasource</jta-data-source>
+    <jta-data-source>java:${ds.jndi.name}</jta-data-source>
       
     <properties>
       <!--    

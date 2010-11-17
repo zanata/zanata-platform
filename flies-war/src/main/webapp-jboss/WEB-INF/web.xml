@@ -142,7 +142,7 @@
 
 	<persistence-unit-ref>
 		<persistence-unit-ref-name>flies/pu</persistence-unit-ref-name>
-		<persistence-unit-name>fliesDatabase</persistence-unit-name>
+		<persistence-unit-name>${ds.jndi.name}</persistence-unit-name>
 	</persistence-unit-ref>
 
     <mime-mapping>
