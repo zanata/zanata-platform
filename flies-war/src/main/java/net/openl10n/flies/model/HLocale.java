@@ -1,3 +1,16 @@
+/**
+ * Copyright (c) 2010 Red Hat, Inc.
+ * 
+ * This software is licensed to you under the GNU General Public License,
+ * version 2 (GPLv2). There is NO WARRANTY for this software, express or
+ * implied, including the implied warranties of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. You should have received a copy of GPLv2 along with this
+ * software; if not, see http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
+ * 
+ * Red Hat trademarks are not licensed under GPLv2. No permission is granted to
+ * use or replicate Red Hat trademarks that are incorporated in this software or
+ * its documentation.
+ */
 package net.openl10n.flies.model;
 
 import java.io.Serializable;
@@ -81,6 +94,35 @@ public class HLocale extends AbstractFliesEntity implements Serializable
    {
       FliesLocalePair fl = new FliesLocalePair(this.localeId);
       return fl.getuLocale().getDisplayName();
+   }
+
+   @Override
+   public int hashCode()
+   {
+      final int prime = 31;
+      int result = super.hashCode();
+      result = prime * result + ((localeId == null) ? 0 : localeId.hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (this == obj)
+         return true;
+      if (!super.equals(obj))
+         return false;
+      if (getClass() != obj.getClass())
+         return false;
+      HLocale other = (HLocale) obj;
+      if (localeId == null)
+      {
+         if (other.localeId != null)
+            return false;
+      }
+      else if (!localeId.equals(other.localeId))
+         return false;
+      return true;
    }
 
 }
