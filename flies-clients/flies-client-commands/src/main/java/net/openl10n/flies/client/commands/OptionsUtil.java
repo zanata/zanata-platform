@@ -8,14 +8,15 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import net.openl10n.flies.client.VersionUtility;
+import net.openl10n.flies.client.config.ConfigUtil;
 import net.openl10n.flies.client.config.FliesConfig;
 import net.openl10n.flies.client.config.LocaleList;
 import net.openl10n.flies.client.exceptions.ConfigException;
 import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.DataConfiguration;
 import org.apache.commons.configuration.HierarchicalINIConfiguration;
+import org.apache.commons.configuration.SubnodeConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +67,7 @@ public class OptionsUtil
          if (opts.getUserConfig().exists())
          {
             log.info("Loading flies user config from {}", opts.getUserConfig());
-            DataConfiguration dataConfig = new DataConfiguration(new HierarchicalINIConfiguration(opts.getUserConfig()));
+            HierarchicalINIConfiguration dataConfig = new HierarchicalINIConfiguration(opts.getUserConfig());
             applyUserConfig(opts, dataConfig);
          }
          else
@@ -106,7 +107,7 @@ public class OptionsUtil
     * 
     * @param config
     */
-   private static void applyUserConfig(ConfigurableOptions opts, DataConfiguration config)
+   private static void applyUserConfig(ConfigurableOptions opts, HierarchicalINIConfiguration config)
    {
       if (!opts.isDebugSet())
       {
@@ -128,13 +129,22 @@ public class OptionsUtil
          if (quiet != null)
             opts.setQuiet(quiet);
       }
-
-      if (opts.getUrl() == null)
-         opts.setUrl(config.getURL("flies.url", null));
-      if (opts.getUsername() == null)
-         opts.setUsername(config.getString("flies.username", null));
-      if (opts.getKey() == null)
-         opts.setKey(config.getString("flies.key", null));
+      if ((opts.getUsername() == null || opts.getKey() == null) && opts.getUrl() != null)
+      {
+         SubnodeConfiguration servers = config.getSection("servers");
+         String prefix = ConfigUtil.findPrefix(servers, opts.getUrl());
+         if (prefix != null)
+         {
+            if (opts.getUsername() == null)
+            {
+               opts.setUsername(servers.getString(prefix + ".username", null));
+            }
+            if (opts.getKey() == null)
+            {
+               opts.setKey(servers.getString(prefix + ".key", null));
+            }
+         }
+      }
    }
 
    public static FliesClientRequestFactory createRequestFactory(ConfigurableOptions opts)
