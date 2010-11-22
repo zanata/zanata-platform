@@ -37,8 +37,8 @@
           <ui:include src="../WEB-INF/layout/project_view_inline.xhtml" />
         </rich:dataGrid>
         <h2>#{messages['jsf.MyLanguages']}</h2>
-        <h:outputText value="None Available" rendered="#{empty supportedLanguageAction.supportedLanguages}"/>
-        <rich:dataGrid value="#{supportedLanguageAction.supportedLanguages}" 
+        <h:outputText value="None Available" rendered="#{empty personHome.instance.tribeMemberships}"/>
+        <rich:dataGrid value="#{personHome.instance.tribeMemberships.toArray()}" 
                        var="tribe" 
                        columns="3"
                        columnClasses="grid_col"
