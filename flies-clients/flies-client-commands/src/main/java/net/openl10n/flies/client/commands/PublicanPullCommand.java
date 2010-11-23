@@ -58,11 +58,19 @@ public class PublicanPullCommand extends ConfigurableProjectCommand
    @Override
    public void run() throws Exception
    {
-      // TODO needs DocSet support
-      log.debug("Flies server: {}", opts.getUrl());
-      log.debug("Project: {}", opts.getProj());
-      log.debug("Version: {}", opts.getProjectVersion());
-      log.info("writing POT/PO files to {}", opts.getDstDir());
+      log.info("Flies server: {}", opts.getUrl());
+      log.info("Project: {}", opts.getProj());
+      log.info("Version: {}", opts.getProjectVersion());
+      log.info("Username: {}", opts.getUsername());
+      log.info("Destination directory: {}", opts.getDstDir());
+      if (opts.getExportPot())
+      {
+         log.info("Exporting source and target (translation) documents");
+      }
+      else
+      {
+         log.info("Exporting target documents (translations) only");
+      }
 
       LocaleList locales = opts.getLocales();
       if (locales == null)

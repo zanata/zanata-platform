@@ -66,9 +66,20 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
    @Override
    public void run() throws Exception
    {
-      log.debug("Flies server: {}", opts.getUrl());
-      log.debug("Project: {}", opts.getProj());
-      log.debug("Version: {}", opts.getProjectVersion());
+      log.info("Flies server: {}", opts.getUrl());
+      log.info("Project: {}", opts.getProj());
+      log.info("Version: {}", opts.getProjectVersion());
+      log.info("Username: {}", opts.getUsername());
+      log.info("Source language: {}", opts.getSourceLang());
+      log.info("Source directory: {}", opts.getSrcDir());
+      if (opts.getImportPo())
+      {
+         log.info("Importing source and target documents");
+      }
+      else
+      {
+         log.info("Importing source documents only");
+      }
       File potDir = new File(opts.getSrcDir(), "pot");
 
       if (!potDir.exists())
@@ -155,6 +166,10 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
             if (locales.size() == 0)
             {
                log.warn("option 'importPo' is set, but no locale directories were found");
+            }
+            else
+            {
+               log.info("option 'importPo' is set, but no locales specified in configuration: importing " + locales.size() + " directories");
             }
          }
       }
