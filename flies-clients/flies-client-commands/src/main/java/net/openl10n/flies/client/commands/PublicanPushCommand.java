@@ -69,6 +69,12 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
       log.debug("Flies server: {}", opts.getUrl());
       log.debug("Project: {}", opts.getProj());
       log.debug("Version: {}", opts.getProjectVersion());
+      File potDir = new File(opts.getSrcDir(), "pot");
+
+      if (!potDir.exists())
+      {
+         throw new RuntimeException("directory '" + potDir + "' does not exist - is srcDir set correctly?");
+      }
 
       Console console = System.console();
       if (opts.isInteractiveMode())
@@ -110,8 +116,6 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
       // memory
       Set<String> localDocNames = new HashSet<String>();
       // populate localDocNames by looking in pot directory
-      File potDir = new File(opts.getSrcDir(), "pot");
-
       String[] potFiles = PublicanUtil.findPotFiles(potDir);
       for (String potName : potFiles)
       {
