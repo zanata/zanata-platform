@@ -184,7 +184,7 @@
     <to>$1/project/create/$2</to>
   </outbound-rule>
   <outbound-rule>
-    <from>^(/.+)?/project/project.seam\?slugaccount/=(.+)$</from>
+    <from>^(/.+)?/project/project.seam\?slug=(.+)$</from>
     <to>$1/project/view/$2</to>
   </outbound-rule>
   <outbound-rule>
