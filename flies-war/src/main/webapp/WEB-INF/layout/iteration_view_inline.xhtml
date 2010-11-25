@@ -30,7 +30,7 @@
     </rich:column>
     <rich:column id="translate">
       <h:outputLink
-          rendered="#{!fliesInit.debug}"
+          rendered="#{s:hasPermission(projectHome.instance, 'modify-translation') and !fliesInit.debug}"
           target="_blank"
           value="#{request.contextPath}/webtrans/Application.html">
 		<f:param name="project" value="#{_iteration.project.slug}"/>
@@ -40,7 +40,7 @@
 		#{messages['jsf.Translate']}
       </h:outputLink>
       <h:outputLink
-          rendered="#{fliesInit.debug}"
+          rendered="#{s:hasPermission(projectHome.instance, 'modify-translation') and fliesInit.debug}"
           target="_blank"
           value="#{request.contextPath}/webtrans/Application.html">
 		<f:param name="project" value="#{_iteration.project.slug}"/>
