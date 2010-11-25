@@ -30,8 +30,8 @@ public interface TableEditorMessages extends Messages
    @DefaultMessage("An unknown error occurred")
    String notifyUnknownError();
 
-   @DefaultMessage("Failed to update Translation Unit")
-   String notifyUpdateFailed();
+   @DefaultMessage("Failed to update Translation Unit: {0}")
+   String notifyUpdateFailed(String errorMessage);
 
    @DefaultMessage("Saved change to Translation Unit")
    String notifyUpdateSaved();
