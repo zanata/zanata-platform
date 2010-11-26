@@ -5,6 +5,7 @@ import java.io.Serializable;
 import net.openl10n.flies.ApplicationConfiguration;
 import net.openl10n.flies.dao.ApplicationConfigurationDAO;
 import net.openl10n.flies.model.HApplicationConfiguration;
+import net.openl10n.flies.model.validator.Url;
 import net.openl10n.flies.model.validator.UrlNoSlash;
 
 import org.jboss.seam.ScopeType;
@@ -26,7 +27,19 @@ public class ServerConfigurationBean implements Serializable
    @In
    ApplicationConfigurationDAO applicationConfigurationDAO;
 
+   private String helpUrl;
    private String serverUrl;
+
+   @Url
+   public String getHelpUrl()
+   {
+      return helpUrl;
+   }
+
+   public void setHelpUrl(String helpUrl)
+   {
+      this.helpUrl = helpUrl;
+   }
 
    @UrlNoSlash
    public String getServerUrl()
@@ -42,6 +55,11 @@ public class ServerConfigurationBean implements Serializable
    @Create
    public void onCreate()
    {
+      HApplicationConfiguration helpUrlValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_HELP);
+      if (helpUrlValue != null)
+      {
+         this.helpUrl = helpUrlValue.getValue();
+      }
       HApplicationConfiguration serverUrlValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_HOST);
       if (serverUrlValue != null)
       {
@@ -52,23 +70,42 @@ public class ServerConfigurationBean implements Serializable
    @Transactional
    public void update()
    {
-      HApplicationConfiguration dbValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_HOST);
-      if (dbValue != null)
+      HApplicationConfiguration helpUrlValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_HELP);
+      if (helpUrlValue != null)
       {
-         if (serverUrl == null || serverUrl.isEmpty())
+         if (helpUrl == null || helpUrl.isEmpty())
          {
-            applicationConfigurationDAO.makeTransient(dbValue);
+            applicationConfigurationDAO.makeTransient(helpUrlValue);
          }
          else
          {
-            dbValue.setValue(serverUrl);
+            helpUrlValue.setValue(helpUrl);
+         }
+      }
+      else if (helpUrl != null && !helpUrl.isEmpty())
+      {
+         helpUrlValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_HELP, helpUrl);
+         applicationConfigurationDAO.makePersistent(helpUrlValue);
+      }
+
+      HApplicationConfiguration serverUrlValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_HOST);
+      if (serverUrlValue != null)
+      {
+         if (serverUrl == null || serverUrl.isEmpty())
+         {
+            applicationConfigurationDAO.makeTransient(serverUrlValue);
+         }
+         else
+         {
+            serverUrlValue.setValue(serverUrl);
          }
       }
       else if (serverUrl != null && !serverUrl.isEmpty())
       {
-         dbValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_HOST, serverUrl);
-         applicationConfigurationDAO.makePersistent(dbValue);
+         serverUrlValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_HOST, serverUrl);
+         applicationConfigurationDAO.makePersistent(serverUrlValue);
       }
+
       applicationConfigurationDAO.flush();
       FacesMessages.instance().add("Configuration was successfully updated.");
       if (Events.exists())

@@ -24,7 +24,6 @@ import org.jboss.seam.log.Logging;
 public class ApplicationConfiguration
 {
 
-   public static final String KEY_HOST = "flies.host";
    public static final String EVENT_CONFIGURATION_CHANGED = "flies.configuration.changed";
 
    private static Log log = Logging.getLog(ApplicationConfiguration.class);
@@ -49,12 +48,18 @@ public class ApplicationConfiguration
 
    private void setDefaults(Map<String, String> map)
    {
-      map.put(KEY_HOST, "http://localhost:8080/flies");
+      map.put(HApplicationConfiguration.KEY_HELP, "http://code.google.com/p/flies/wiki/Introduction");
+      map.put(HApplicationConfiguration.KEY_HOST, "http://localhost:8080/flies");
+   }
+
+   public String getHelpPath()
+   {
+      return configValues.get(HApplicationConfiguration.KEY_HELP);
    }
 
    public String getServerPath()
    {
-      return configValues.get(KEY_HOST);
+      return configValues.get(HApplicationConfiguration.KEY_HOST);
    }
 
    public String getByKey(String key)

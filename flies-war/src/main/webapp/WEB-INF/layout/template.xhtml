@@ -41,6 +41,8 @@
             <s:link id="Register" view="/account/register.xhtml" value="#{messages['jsf.Register']}" propagation="none" rendered="#{not identityStore.nukesActive}"/>
           </s:fragment>
           <s:link id="Sign_out" view="/home.xhtml" action="#{identity.logout}" value="#{messages['jsf.SignOut']}" rendered="#{identity.loggedIn}" propagation="none" />
+            <rich:spacer width="10px" />
+          <a href="#{applicationConfiguration.helpPath}">Help</a>
         </div>
         <div id="loading_top_right">
           <a:status>
