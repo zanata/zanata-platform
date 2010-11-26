@@ -28,6 +28,7 @@ public class ServerConfigurationBean implements Serializable
    ApplicationConfigurationDAO applicationConfigurationDAO;
 
    private String helpUrl;
+   private String registerUrl;
    private String serverUrl;
 
    @Url
@@ -39,6 +40,16 @@ public class ServerConfigurationBean implements Serializable
    public void setHelpUrl(String helpUrl)
    {
       this.helpUrl = helpUrl;
+   }
+
+   public String getRegisterUrl()
+   {
+      return registerUrl;
+   }
+
+   public void setRegisterUrl(String registerUrl)
+   {
+      this.registerUrl = registerUrl;
    }
 
    @UrlNoSlash
@@ -59,6 +70,11 @@ public class ServerConfigurationBean implements Serializable
       if (helpUrlValue != null)
       {
          this.helpUrl = helpUrlValue.getValue();
+      }
+      HApplicationConfiguration registerUrlValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_REGISTER);
+      if (registerUrlValue != null)
+      {
+         this.registerUrl = registerUrlValue.getValue();
       }
       HApplicationConfiguration serverUrlValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_HOST);
       if (serverUrlValue != null)
@@ -86,6 +102,24 @@ public class ServerConfigurationBean implements Serializable
       {
          helpUrlValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_HELP, helpUrl);
          applicationConfigurationDAO.makePersistent(helpUrlValue);
+      }
+
+      HApplicationConfiguration registerUrlValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_REGISTER);
+      if (registerUrlValue != null)
+      {
+         if (registerUrl == null || registerUrl.isEmpty())
+         {
+            applicationConfigurationDAO.makeTransient(registerUrlValue);
+         }
+         else
+         {
+            registerUrlValue.setValue(registerUrl);
+         }
+      }
+      else if (registerUrl != null && !registerUrl.isEmpty())
+      {
+         registerUrlValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_REGISTER, registerUrl);
+         applicationConfigurationDAO.makePersistent(registerUrlValue);
       }
 
       HApplicationConfiguration serverUrlValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_HOST);

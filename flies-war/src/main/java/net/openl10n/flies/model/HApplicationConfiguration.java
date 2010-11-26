@@ -15,6 +15,7 @@ public class HApplicationConfiguration extends AbstractFliesEntity
 
    public static String KEY_HOST = "flies.host";
    public static String KEY_HELP = "flies.help";
+   public static String KEY_REGISTER = "flies.register";
 
    private String key;
    private String value;

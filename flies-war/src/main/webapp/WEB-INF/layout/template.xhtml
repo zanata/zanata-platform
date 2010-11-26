@@ -39,10 +39,13 @@
             <s:link id="Sign_in" view="/account/login.xhtml" value="#{messages['jsf.SignIn']}" propagation="none" />
             <rich:spacer width="10px" />
             <s:link id="Register" view="/account/register.xhtml" value="#{messages['jsf.Register']}" propagation="none" rendered="#{not identityStore.nukesActive}"/>
+            <s:fragment rendered="#{identityStore.nukesActive}">
+              <a href="#{applicationConfiguration.registerPath}">#{messages['jsf.Register']}</a>
+            </s:fragment>
           </s:fragment>
           <s:link id="Sign_out" view="/home.xhtml" action="#{identity.logout}" value="#{messages['jsf.SignOut']}" rendered="#{identity.loggedIn}" propagation="none" />
-            <rich:spacer width="10px" />
-          <a href="#{applicationConfiguration.helpPath}">Help</a>
+          <rich:spacer width="5px" />
+          <a href="#{applicationConfiguration.helpPath}">#{messages['jsf.Help']}</a>
         </div>
         <div id="loading_top_right">
           <a:status>

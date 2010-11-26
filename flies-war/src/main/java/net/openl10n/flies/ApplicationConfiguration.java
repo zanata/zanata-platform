@@ -49,12 +49,18 @@ public class ApplicationConfiguration
    private void setDefaults(Map<String, String> map)
    {
       map.put(HApplicationConfiguration.KEY_HELP, "http://code.google.com/p/flies/wiki/Introduction");
+      map.put(HApplicationConfiguration.KEY_REGISTER, "/flies/account/register");
       map.put(HApplicationConfiguration.KEY_HOST, "http://localhost:8080/flies");
    }
 
    public String getHelpPath()
    {
       return configValues.get(HApplicationConfiguration.KEY_HELP);
+   }
+
+   public String getRegisterPath()
+   {
+      return configValues.get(HApplicationConfiguration.KEY_REGISTER);
    }
 
    public String getServerPath()
