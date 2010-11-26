@@ -37,17 +37,25 @@ public class FliesClientRequestFactory implements ITranslationResourcesFactory
       this(base, username, apiKey, null, ver);
    }
 
-   public FliesClientRequestFactory(URI base, String username, String apiKey, ClientExecutor executor, VersionInfo ver)
+   public FliesClientRequestFactory(URI base, String username, String apiKey, ClientExecutor executor, VersionInfo clientVersionInfo)
    {
       crf = new ClientRequestFactory(executor, null, fixBase(base));
-      registerPrefixInterceptor(new ApiKeyHeaderDecorator(username, apiKey, ver.getVersionNo()));
-      IVersion iversion = getVersionInfo();
-      VersionInfo server = iversion.get();
-      String serVer = server.getVersionNo();
-      log.info("Flies Server Version: {}, Flies Client Version: {}", serVer, ver.getVersionNo());
-      if (!serVer.contains(RestConstant.SNAPSHOT_VERSION) && !server.getBuildTimeStamp().equalsIgnoreCase(ver.getBuildTimeStamp()))
+      registerPrefixInterceptor(new ApiKeyHeaderDecorator(username, apiKey, clientVersionInfo.getVersionNo()));
+      String clientVer = clientVersionInfo.getVersionNo();
+      String clientTimestamp = clientVersionInfo.getBuildTimeStamp();
+      IVersion iversion = createIVersion();
+      VersionInfo serverVersionInfo = iversion.get();
+      String serverVer = serverVersionInfo.getVersionNo();
+      String serverTimestamp = serverVersionInfo.getBuildTimeStamp();
+
+      log.info("Flies client version: {}, Flies server version: {}", clientVer, serverVer);
+      if (!serverVer.equals(clientVer))
       {
-         log.warn("client buildTimeStamp {} and server buildTimeStamp {} mismatch, please update your client", ver.getBuildTimeStamp(), server.getBuildTimeStamp());
+         log.warn("Note: client version is {}, but server version is {}", clientVer, serverVer);
+      }
+      else if (serverVer.contains(RestConstant.SNAPSHOT_VERSION) && !serverTimestamp.equalsIgnoreCase(clientTimestamp))
+      {
+         log.warn("Note: client timestamp is {}, but server timestamp is {}", clientTimestamp, serverTimestamp);
       }
    }
 
@@ -186,13 +194,13 @@ public class FliesClientRequestFactory implements ITranslationResourcesFactory
       crf.getPrefixInterceptors().registerInterceptor(interceptor);
    }
    
-   public IVersion getVersionInfo()
+   private IVersion createIVersion()
    {
       URL url;
       try
       {
          url = new URL(crf.getBase().toURL(), RESOURCE_PREFIX + "/version");
-         return (IVersion) createProxy(IVersion.class, url.toURI());
+         return createProxy(IVersion.class, url.toURI());
       }
       catch (MalformedURLException e)
       {
