@@ -7,7 +7,7 @@
   <parent>
     <groupId>net.openl10n.flies</groupId>
     <artifactId>root</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4-SNAPSHOT</version>
   </parent>
   <modules>
     <module>flies-client-commands</module>

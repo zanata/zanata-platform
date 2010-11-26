@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>root</artifactId>
 		<groupId>net.openl10n.flies</groupId>
-		<version>1.0.3</version>
+		<version>1.0.4-SNAPSHOT</version>
 	</parent>
 	<packaging>jar</packaging>
 
