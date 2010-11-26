@@ -41,10 +41,6 @@
 				</ul>
 			</s:fragment>
 		</s:div></li>
-		<li id="tab_communities"><s:link id="Communities"
-			view="/community/home.xhtml" propagation="none">
-			<span><img src="#{request.contextPath}/img/silk/group.png" />#{messages['jsf.Communities']}</span>
-		</s:link></li>
 		<s:fragment rendered="#{s:hasRole('admin')}">
 			<li id="tab_admin" class="ui-tabs-nav-issues"><s:link
 				id="Administration" view="/admin/home.xhtml" propagation="none">
