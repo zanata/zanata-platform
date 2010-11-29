@@ -587,7 +587,7 @@
 		</profile>
 		
 		<profile>
-			<id>authinternal</id>
+			<id>internalauthentication</id>
 			<properties>
 				<hide.register>false</hide.register>
 				<jaas.configure>default</jaas.configure>
