@@ -4,7 +4,9 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.common.LocaleId;
+import net.openl10n.flies.model.HIterationProject;
 import net.openl10n.flies.model.HLocale;
+import net.openl10n.flies.model.HProject;
 import net.openl10n.flies.model.HTextFlow;
 import net.openl10n.flies.model.HTextFlowTarget;
 import net.openl10n.flies.security.FliesIdentity;
@@ -25,18 +27,29 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.security.Identity;
 
 @Name("webtrans.gwt.UpdateTransUnitHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(UpdateTransUnit.class)
 public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUnit, UpdateTransUnitResult>
 {
+   // security actions (to be implemented)
+   // private static final String ACTION_ADD_TRANSLATION = "add-translation";
+   private static final String ACTION_MODIFY_TRANSLATION = "modify-translation";
+   // private static final String ACTION_REMOVE_TRANSLATION =
+   // "remove-translation";
+   // private static final String ACTION_APPROVE_TRANSLATION =
+   // "approve-translation";
 
    @Logger
    Log log;
 
    @In
    Session session;
+
+   @In
+   Identity identity;
 
    @In
    TranslationWorkspaceManager translationWorkspaceManager;
@@ -54,6 +67,9 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, action.getTransUnitId().getValue());
       LocaleId locale = action.getWorkspaceId().getLocaleId();
       HLocale hLocale = localeServiceImpl.getSupportedLanguageByLocale(locale);
+      HProject hProject = hTextFlow.getDocument().getProjectIteration().getProject();
+      identity.checkPermission(hProject, ACTION_MODIFY_TRANSLATION);
+
       HTextFlowTarget target = hTextFlow.getTargets().get(hLocale);
       ContentState prevStatus = ContentState.New;
       if (target == null)

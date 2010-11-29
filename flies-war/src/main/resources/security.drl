@@ -149,7 +149,7 @@ when
   )
   check: PermissionCheck(
     target == $iter, 
-    action == "insert" || action == "update", action == "import-template" || action == "import-translation",
+    action == "insert" || action == "update" || action == "import-template" || action == "import-translation",
     granted == false)
 then
   check.grant();
@@ -174,3 +174,27 @@ then
   check.grant();
 end
 */
+
+
+/*****************************************************************************************
+
+  Translation rules
+  
+******************************************************************************************/
+
+/* 'translator' can add a translation */
+rule TranslateAddTranslation
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(action == "add-translation" || action == "modify-translation", granted == false)
+  Role(name == "translator")
+then
+  check.grant();
+end
+
+/*
+TODO grant permission check: if user is a member of the language team,
+OR of project maintainers
+*/
+

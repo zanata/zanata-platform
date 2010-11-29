@@ -30,6 +30,34 @@
               </h:graphicImage>
             </s:decorate>
                 
+            <s:decorate id="registerField" template="../WEB-INF/layout/edit.xhtml">
+              <ui:define name="label">#{messages['jsf.RegisterUrl']}</ui:define>
+              <h:inputText id="url" value="#{serverConfigurationBean.registerUrl}">
+                <a4j:support event="onblur" reRender="registerField" ajaxSingle="false"/>
+              </h:inputText>
+              <h:graphicImage id="urlHelp" value="../img/msginfo.png" styleClass="input_help">
+                <rich:toolTip>
+                  #{messages['jsf.RegisterUrlToolTip']}
+                  <br/>
+                  <em><code>#{messages['jsf.RegisterUrlExample']}</code></em>
+                </rich:toolTip>
+              </h:graphicImage>
+            </s:decorate>
+                
+            <s:decorate id="helpField" template="../WEB-INF/layout/edit.xhtml">
+              <ui:define name="label">#{messages['jsf.HelpUrl']}</ui:define>
+              <h:inputText id="url" value="#{serverConfigurationBean.helpUrl}">
+                <a4j:support event="onblur" reRender="helpField" ajaxSingle="false"/>
+              </h:inputText>
+              <h:graphicImage id="urlHelp" value="../img/msginfo.png" styleClass="input_help">
+                <rich:toolTip>
+                  #{messages['jsf.HelpUrlToolTip']}
+                  <br/>
+                  <em><code>#{messages['jsf.HelpUrlExample']}</code></em>
+                </rich:toolTip>
+              </h:graphicImage>
+            </s:decorate>
+                
             <div style="clear:both"/>
 
             <div class="actionButtons">

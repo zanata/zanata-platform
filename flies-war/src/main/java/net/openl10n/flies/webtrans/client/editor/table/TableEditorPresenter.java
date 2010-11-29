@@ -483,10 +483,13 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          dispatcher.execute(new UpdateTransUnit(rowValue.getId(), rowValue.getTarget(), rowValue.getStatus()), new AsyncCallback<UpdateTransUnitResult>()
          {
             @Override
-            public void onFailure(Throwable caught)
+            public void onFailure(Throwable e)
             {
-               Log.error("UpdateTransUnit failure " + caught, caught);
-               eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUpdateFailed()));
+               Log.error("UpdateTransUnit failure " + e, e);
+               eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyUpdateFailed(e.getLocalizedMessage())));
+               // put back the old cell value
+               display.getTableModel().clearCache();
+               display.reloadPage();
             }
 
             @Override
@@ -503,6 +506,9 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             {
                Log.error("EditingTranslationAction failure " + caught, caught);
                eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyStopFailed()));
+               // put back the old cell value
+               display.getTableModel().clearCache();
+               display.reloadPage();
             }
 
             @Override

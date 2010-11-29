@@ -21,7 +21,8 @@ import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
 
 /**
- * Ensures that flies has at least one admin user
+ * Ensures that roles 'user', 'admin' and 'translator' exist, and that there is
+ * at least one admin user.
  * 
  * @author Sean Flanigan
  */
@@ -98,6 +99,14 @@ public class EssentialDataCreator
             person.setEmail(email);
             person.setName(name);
             entityManager.persist(person);
+         }
+         if (!accountRoleDAO.roleExists("translator"))
+         {
+            log.info("Creating 'translator' role");
+            if (accountRoleDAO.create("translator") == null)
+            {
+               throw new RuntimeException("Couldn't create 'translator' role");
+            }
          }
 
          prepared = true;

@@ -24,6 +24,7 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FilterCacheModeType;
 import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
@@ -41,7 +42,8 @@ import org.hibernate.validator.NotNull;
  */
 @Entity
 @Indexed
-@FullTextFilterDef(name = "translated", impl = TranslatedFilterFactory.class)
+// allow caching of filter instances, but not the set of translated textflows
+@FullTextFilterDef(name = "translated", impl = TranslatedFilterFactory.class, cache = FilterCacheModeType.INSTANCE_ONLY)
 public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComment
 {
 

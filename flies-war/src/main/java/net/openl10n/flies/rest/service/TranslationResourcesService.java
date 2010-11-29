@@ -62,7 +62,6 @@ import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.jboss.resteasy.util.GenericType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.security.Admin;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
@@ -206,7 +205,6 @@ public class TranslationResourcesService
 
 
    @POST
-   @Admin
    public Response post(InputStream messageBody)
    {
 
@@ -313,7 +311,6 @@ public class TranslationResourcesService
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE)
    // /r/{id}
-   @Admin
    public Response putResource(@PathParam("id") String idNoSlash, InputStream messageBody)
    {
       log.debug("start put resource");
@@ -393,11 +390,12 @@ public class TranslationResourcesService
    @DELETE
    @Path(RESOURCE_SLUG_TEMPLATE)
    // /r/{id}
-   @Admin
    public Response deleteResource(@PathParam("id") String idNoSlash)
    {
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveIteration();
+
+      identity.checkPermission(hProjectIteration, ACTION_IMPORT_TEMPLATE);
 
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 
@@ -450,7 +448,6 @@ public class TranslationResourcesService
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE + "/meta")
    // /r/{id}/meta
-   @Admin
    public Response putResourceMeta(@PathParam("id") String idNoSlash, InputStream messageBody)
    {
       log.debug("start to put resource meta");
@@ -555,11 +552,11 @@ public class TranslationResourcesService
    @DELETE
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    // /r/{id}/translations/{locale}
-   @Admin
    public Response deleteTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale)
    {
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveIteration();
+      identity.checkPermission(hProjectIteration, ACTION_IMPORT_TRANSLATION);
 
       // TODO find correct etag
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
@@ -593,7 +590,6 @@ public class TranslationResourcesService
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    // /r/{id}/translations/{locale}
-   @Admin
    public Response putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, InputStream messageBody)
    {
       log.debug("start put translations");
