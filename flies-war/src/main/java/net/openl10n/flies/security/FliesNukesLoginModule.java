@@ -22,27 +22,14 @@ package net.openl10n.flies.security;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.security.auth.login.LoginException;
-import javax.sql.DataSource;
-import javax.transaction.SystemException;
-import javax.transaction.Transaction;
 
-import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.log.LogProvider;
-import org.jboss.seam.log.Logging;
 import org.jboss.security.auth.spi.DatabaseServerLoginModule;
 
 public class FliesNukesLoginModule extends DatabaseServerLoginModule
 {
-   private static final LogProvider log = Logging.getLogProvider(FliesNukesLoginModule.class);
+   // private static final LogProvider log =
+   // Logging.getLogProvider(FliesNukesLoginModule.class);
    public static final String AUTHENTICATED_NUKE_USER = "authenticated.nuke.user";
    public boolean validatePassword(String inputPassword, String expectedPassword)
    {
@@ -54,7 +41,6 @@ public class FliesNukesLoginModule extends DatabaseServerLoginModule
     public boolean login() throws LoginException
     {
     boolean success = super.login();
-    getUserInfo();
     return success;
    
     }
@@ -76,100 +62,6 @@ public class FliesNukesLoginModule extends DatabaseServerLoginModule
    }
 
 
-   public void getUserInfo()
-    {
-      Context context;
-      Transaction tx = null;
-      ResultSet rs = null;
-      Connection con = null;
-      DataSource ds = null;
-      PreparedStatement ps = null;
-      if (suspendResume)
-      {
-         try
-         {
-            if (tm == null)
-               throw new IllegalStateException("Transaction Manager is null");
-            tx = tm.suspend();
-         }
-         catch (SystemException e)
-         {
-            throw new RuntimeException(e);
-         }
-      }
-
-    try
-    {
-         context = new InitialContext();
-         ds = (DataSource) context.lookup(dsJndiName);
-         con = ds.getConnection();
-         String sqlQuery = "SELECT * FROM nuke_users WHERE pn_uname = ?";
-         ps = con.prepareStatement(sqlQuery);
-         ps.setString(1, getUsername());
-
-         rs = ps.executeQuery();
-         if (rs.next())
-         {
-            if (Contexts.isSessionContextActive())
-            {
-               Contexts.getSessionContext().set(AUTHENTICATED_NUKE_USER, new NukeUser(rs.getString("pn_uname"), rs.getString("pn_pass"), rs.getString("pn_email"), rs.getString("pn_name")));
-            }
-         }
-    }
-    catch (NamingException e)
-    {
-         log.warn(e.getMessage());
-    }
-    catch (SQLException e)
-    {
-         log.warn(e.getMessage());
-    }
-      finally
-      {
-         if (rs != null)
-         {
-            try
-            {
-               rs.close();
-            }
-            catch (SQLException e)
-            {
-            }
-         }
-         if (ps != null)
-         {
-            try
-            {
-               ps.close();
-            }
-            catch (SQLException e)
-            {
-            }
-         }
-         if (con != null)
-         {
-            try
-            {
-               con.close();
-            }
-            catch (SQLException ex)
-            {
-            }
-         }
-         if (suspendResume)
-         {
-            // TransactionDemarcationSupport.resumeAnyTransaction(tx);
-            try
-            {
-               tm.resume(tx);
-            }
-            catch (Exception e)
-            {
-               throw new RuntimeException(e);
-            }
-         }
-      }
-    }
 
 
    private String toHexString(byte[] bytes)
