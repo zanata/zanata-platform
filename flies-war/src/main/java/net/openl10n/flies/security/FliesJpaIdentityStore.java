@@ -29,6 +29,7 @@ import javax.security.auth.login.LoginException;
 import net.openl10n.flies.FliesInit;
 import net.openl10n.flies.model.HAccount;
 import net.openl10n.flies.model.HPerson;
+import net.openl10n.flies.security.FliesNukesLoginModule.NukeUser;
 
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
@@ -129,18 +130,17 @@ public class FliesJpaIdentityStore extends JpaIdentityStore
    }
 
 
-   public HAccount createUser()
+   public HAccount createNewUser(String username, String password, String email, String name)
    {
       EntityManager em = (EntityManager) getEntityManager().getValue();
-      Identity identity = Identity.instance();
       HAccount account = new HAccount();
-      account.setUsername(identity.getCredentials().getUsername());
-      account.setPasswordHash(identity.getCredentials().getPassword());
+      account.setUsername(username);
+      account.setPasswordHash(password);
       account.setEnabled(true);
       HPerson person = new HPerson();
-      person.setName(identity.getCredentials().getUsername());
+      person.setName(name);
       // TODO: use null after LiquiBase integrates
-      person.setEmail(identity.getPrincipal().getName() + "@example.com");
+      person.setEmail(email);
       person.setAccount(account);
       account.setPerson(person);
       em.persist(account);
@@ -155,6 +155,8 @@ public class FliesJpaIdentityStore extends JpaIdentityStore
       Identity identity = Identity.instance();
       String username = identity.getCredentials().getUsername();
       Object user = lookupUser(username);
+      String email = username + "@example.com";
+      String name = username;
       if (user != null)
       {
          log.debug("existing Account ");
@@ -172,7 +174,19 @@ public class FliesJpaIdentityStore extends JpaIdentityStore
       else
       {
          log.debug("new Account ");
-         createUser();
+         if (Contexts.isSessionContextActive())
+         {
+            NukeUser newUser = (NukeUser) Contexts.getSessionContext().get(FliesNukesLoginModule.AUTHENTICATED_NUKE_USER);
+            if (newUser != null && newUser.email != null)
+            {
+               email = newUser.email;
+            }
+            if (newUser != null && newUser.name != null)
+            {
+               name = newUser.name;
+            }
+         }
+         user = createNewUser(username, identity.getCredentials().getPassword(), email, name);
       }
       IdentityManager identityManager = IdentityManager.instance();
       for (String role : identityManager.getImpliedRoles(identity.getCredentials().getUsername()))
