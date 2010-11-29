@@ -22,7 +22,6 @@ package net.openl10n.flies.security;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import javax.security.auth.login.LoginException;
 
 import org.jboss.security.auth.spi.DatabaseServerLoginModule;
 
@@ -37,14 +36,6 @@ public class FliesNukesLoginModule extends DatabaseServerLoginModule
       boolean result = super.validatePassword(inputPassword, expectedPassword);
       return result;
    }
-
-    public boolean login() throws LoginException
-    {
-    boolean success = super.login();
-    return success;
-   
-    }
-
 
    private String toHexString(byte[] bytes)
    {
