@@ -29,7 +29,6 @@ import javax.security.auth.login.LoginException;
 import net.openl10n.flies.FliesInit;
 import net.openl10n.flies.model.HAccount;
 import net.openl10n.flies.model.HPerson;
-import net.openl10n.flies.security.FliesNukesLoginModule.NukeUser;
 
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
@@ -156,7 +155,6 @@ public class FliesJpaIdentityStore extends JpaIdentityStore
       String username = identity.getCredentials().getUsername();
       Object user = lookupUser(username);
       String email = username + "@example.com";
-      String name = username;
       if (user != null)
       {
          log.debug("existing Account ");
@@ -174,19 +172,7 @@ public class FliesJpaIdentityStore extends JpaIdentityStore
       else
       {
          log.debug("new Account ");
-         if (Contexts.isSessionContextActive())
-         {
-            NukeUser newUser = (NukeUser) Contexts.getSessionContext().get(FliesNukesLoginModule.AUTHENTICATED_NUKE_USER);
-            if (newUser != null && newUser.email != null)
-            {
-               email = newUser.email;
-            }
-            if (newUser != null && newUser.name != null)
-            {
-               name = newUser.name;
-            }
-         }
-         user = createNewUser(username, identity.getCredentials().getPassword(), email, name);
+         user = createNewUser(username, identity.getCredentials().getPassword(), email, username);
       }
       IdentityManager identityManager = IdentityManager.instance();
       for (String role : identityManager.getImpliedRoles(identity.getCredentials().getUsername()))

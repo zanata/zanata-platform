@@ -45,24 +45,6 @@ public class FliesNukesLoginModule extends DatabaseServerLoginModule
    
     }
 
-   public static class NukeUser
-   {
-      public String username;
-      public String password;
-      public String email;
-      public String name;
-
-      public NukeUser(String username, String password, String email, String name)
-      {
-         this.username = username;
-         this.password = password;
-         this.email = email;
-         this.name = name;
-      }
-   }
-
-
-
 
    private String toHexString(byte[] bytes)
    {
