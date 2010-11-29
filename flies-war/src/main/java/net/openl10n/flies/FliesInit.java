@@ -74,16 +74,16 @@ public class FliesInit
    private int authenticatedSessionTimeoutMinutes = 0;
    private String version;
    private String buildTimestamp;
-   private boolean hideRegister;
+   private boolean internalAuthentication;
 
-   public boolean isHideRegister()
+   public boolean isInternalAuthentication()
    {
-      return hideRegister;
+      return internalAuthentication;
    }
 
-   public void setHideRegister(boolean hideRegister)
+   public void setInternalAuthentication(boolean internalAuthentication)
    {
-      this.hideRegister = hideRegister;
+      this.internalAuthentication = internalAuthentication;
    }
 
    @In(required = false)

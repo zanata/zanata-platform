@@ -64,7 +64,7 @@
   <component class="net.openl10n.flies.FliesInit" name="fliesInit" precedence="30">
     <property name="debug">@env.debug@</property>
     <property name="hibernateStatistics">false</property>
-    <property name="hideRegister">@hide.register@</property>
+    <property name="internalAuthentication">@hide.register@</property>
     <property name="authenticatedSessionTimeoutMinutes">180</property>
   </component>
 

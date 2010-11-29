@@ -68,7 +68,7 @@ public class AuthenticationEvents
    {
       log.debug("Account logged in successfully");
       FliesJpaIdentityStore authenticator = (FliesJpaIdentityStore) Component.getInstance("org.jboss.seam.security.identityStore", ScopeType.APPLICATION, true);
-      if (authenticator.isHideRegister())
+      if (!authenticator.isInternalAuthentication())
       {
          authenticator.jaasUserLoggedIn();
       }

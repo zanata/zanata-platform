@@ -38,8 +38,8 @@
           <s:fragment rendered="#{not identity.loggedIn}">
             <s:link id="Sign_in" view="/account/login.xhtml" value="#{messages['jsf.SignIn']}" propagation="none" />
             <rich:spacer width="10px" />
-            <s:link id="Register" view="/account/register.xhtml" value="#{messages['jsf.Register']}" propagation="none" rendered="#{not identityStore.hideRegister}"/>
-            <s:fragment rendered="#{identityStore.hideRegister}">
+            <s:link id="Register" view="/account/register.xhtml" value="#{messages['jsf.Register']}" propagation="none" rendered="#{identityStore.internalAuthentication}"/>
+            <s:fragment rendered="#{not identityStore.internalAuthentication}">
               <a href="#{applicationConfiguration.registerPath}">#{messages['jsf.Register']}</a>
             </s:fragment>
           </s:fragment>

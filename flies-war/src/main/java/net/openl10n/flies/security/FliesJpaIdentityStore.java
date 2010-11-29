@@ -108,10 +108,10 @@ public class FliesJpaIdentityStore extends JpaIdentityStore
 
    }
 
-   public boolean isHideRegister()
+   public boolean isInternalAuthentication()
    {
       FliesInit instance = (FliesInit) Component.getInstance(FliesInit.class, ScopeType.APPLICATION);
-      return instance.isHideRegister();
+      return instance.isInternalAuthentication();
    }
 
 
