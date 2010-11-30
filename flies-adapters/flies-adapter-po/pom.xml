@@ -6,7 +6,7 @@
   <parent>
     <groupId>net.openl10n.flies</groupId>
     <artifactId>flies-adapters</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1-alpha-1</version>
   </parent>
   <packaging>jar</packaging>
   <dependencies>
