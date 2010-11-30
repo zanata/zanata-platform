@@ -38,6 +38,8 @@ public class PublicanPullOptionsImpl extends ConfigurableProjectOptionsImpl impl
    public void setDstDir(File dstDir)
    {
       this.dstDir = dstDir;
+      if (dstDirPot == null)
+         dstDirPot = new File(dstDir, "pot");
    }
 
    @Override

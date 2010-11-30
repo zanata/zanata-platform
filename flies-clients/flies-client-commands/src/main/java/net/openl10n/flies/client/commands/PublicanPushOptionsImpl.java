@@ -48,6 +48,8 @@ public class PublicanPushOptionsImpl extends ConfigurableProjectOptionsImpl impl
    public void setSrcDir(File srcDir)
    {
       this.srcDir = srcDir;
+      if (srcDirPot == null)
+         srcDirPot = new File(srcDir, "pot");
    }
 
    @Override
