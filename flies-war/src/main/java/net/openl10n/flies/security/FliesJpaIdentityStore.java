@@ -23,13 +23,8 @@ package net.openl10n.flies.security;
 import static org.jboss.seam.ScopeType.APPLICATION;
 
 
-import javax.persistence.EntityManager;
-import javax.security.auth.login.LoginException;
 
 import net.openl10n.flies.FliesInit;
-import net.openl10n.flies.model.HAccount;
-import net.openl10n.flies.model.HPerson;
-import net.openl10n.flies.security.FliesNukesLoginModule.NukeUser;
 
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
@@ -40,8 +35,6 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.core.Events;
-import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.IdentityManagementException;
 import org.jboss.seam.security.management.IdentityManager;
@@ -60,7 +53,8 @@ public class FliesJpaIdentityStore extends JpaIdentityStore
     */
    private static final long serialVersionUID = 1L;
 
-   private static final Log log = Logging.getLog(FliesJpaIdentityStore.class);
+   // private static final Log log =
+   // Logging.getLog(FliesJpaIdentityStore.class);
 
    private AnnotatedBeanProperty<UserApiKey> userApiKeyProperty;
 
@@ -129,25 +123,13 @@ public class FliesJpaIdentityStore extends JpaIdentityStore
       }
    }
 
-
-   public HAccount createNewUser(String username, String password, String email, String name)
+   public boolean isNewUser()
    {
-      EntityManager em = (EntityManager) getEntityManager().getValue();
-      HAccount account = new HAccount();
-      account.setUsername(username);
-      account.setPasswordHash(password);
-      account.setEnabled(true);
-      HPerson person = new HPerson();
-      person.setName(name);
-      // TODO: use null after LiquiBase integrates
-      person.setEmail(email);
-      person.setAccount(account);
-      account.setPerson(person);
-      em.persist(account);
-      em.refresh(account);
-      return account;
+      Identity identity = Identity.instance();
+      String username = identity.getCredentials().getUsername();
+      Object user = lookupUser(username);
+      return user == null;
    }
-
 
 
    public void jaasUserLoggedIn()
@@ -155,39 +137,6 @@ public class FliesJpaIdentityStore extends JpaIdentityStore
       Identity identity = Identity.instance();
       String username = identity.getCredentials().getUsername();
       Object user = lookupUser(username);
-      String email = username + "@example.com";
-      String name = username;
-      if (user != null)
-      {
-         log.debug("existing Account ");
-         if (!isUserEnabled(username))
-         {
-            if (Events.exists())
-            {
-               identity.unAuthenticate();
-               LoginException ex = new LoginException("This user has been disabled");
-               Events.instance().raiseEvent(Identity.EVENT_LOGIN_FAILED, ex);
-            }
-            return;
-         }
-      }
-      else
-      {
-         log.debug("new Account ");
-         if (Contexts.isSessionContextActive())
-         {
-            NukeUser newUser = (NukeUser) Contexts.getSessionContext().get(FliesNukesLoginModule.AUTHENTICATED_NUKE_USER);
-            if (newUser != null && newUser.email != null)
-            {
-               email = newUser.email;
-            }
-            if (newUser != null && newUser.name != null)
-            {
-               name = newUser.name;
-            }
-         }
-         user = createNewUser(username, identity.getCredentials().getPassword(), email, name);
-      }
       IdentityManager identityManager = IdentityManager.instance();
       for (String role : identityManager.getImpliedRoles(identity.getCredentials().getUsername()))
       {
