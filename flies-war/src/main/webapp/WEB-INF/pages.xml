@@ -22,6 +22,10 @@
     <param name="continue" value="#{userRedirect.encodedUrl}" />
     <header name="Cache-Control" value="no-cache, no-store, max-age=0, must-revalidate" />
     <navigation from-action="#{identity.login}">
+      <rule if="#{identity.loggedIn and identityStore.newUser}">
+        <end-conversation before-redirect="true" />
+        <redirect view-id="/profile/edit.xhtml" />
+      </rule>
       <rule if="#{identity.loggedIn and not userRedirect.redirect}">
         <end-conversation before-redirect="true" />
         <redirect view-id="/home.xhtml" />
@@ -47,13 +51,13 @@
   </page>
 
   <page view-id="/account/password_reset.xhtml">
-    <restrict>#{not identityStore.nukesActive}</restrict>
+    <restrict>#{identityStore.internalAuthentication}</restrict>
     <param name="key" value="#{passwordReset.activationKey}" />
     <action execute="#{passwordReset.validateActivationKey}" />
   </page>
 
   <page view-id="/account/changepassword.xhtml" login-required="true">
-    <restrict>#{not identityStore.nukesActive}</restrict>
+    <restrict>#{identityStore.internalAuthentication}</restrict>
   </page>
 
   <!-- Admin -->
@@ -152,8 +156,25 @@
 
   <!-- Profile -->
 
-  <page view-id="/profile/edit.xhtml" login-required="true" />
-
+  <page view-id="/profile/edit.xhtml" login-required="true">
+    <navigation from-action="#{profileAction.edit}">
+      <rule if-outcome="home">
+	      <redirect view-id="/home.xhtml" />
+      </rule>
+      <rule if-outcome="updated">
+	      <redirect view-id="/profile/view.xhtml" />
+      </rule>
+    </navigation>
+    <navigation from-action="#{profileAction.cancel}">
+      <rule if-outcome="home">
+	      <redirect view-id="/home.xhtml" />
+      </rule>
+      <rule if-outcome="view">
+	      <redirect view-id="/profile/view.xhtml" />
+      </rule>
+    </navigation>
+  </page>
+  
   <page view-id="/profile/view.xhtml" login-required="true" />
 
   <!-- Project -->
