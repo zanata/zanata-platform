@@ -36,7 +36,7 @@
 		<ds.user.name>sa</ds.user.name> <!-- *-ds.xml -->
 		<ds.password /> <!-- *-ds.xml -->
 		
-		<hide.register>true</hide.register>
+		<internal.authentication>false</internal.authentication>
 		<jaas.configure>flies</jaas.configure>
 		<extra.servlets />
 	</properties>
@@ -588,8 +588,14 @@
 		
 		<profile>
 			<id>internalauthentication</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>dev</value>
+				</property>
+			</activation>
 			<properties>
-				<hide.register>false</hide.register>
+				<internal.authentication>true</internal.authentication>
 				<jaas.configure>default</jaas.configure>
 			</properties>
 		</profile>
