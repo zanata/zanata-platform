@@ -100,7 +100,7 @@ public class HLocale extends AbstractFliesEntity implements Serializable
 
    public String retrieveDisplayName()
    {
-      return asULocale().getDisplayName(asULocale());
+      return asULocale().getDisplayName();
    }
 
    public ULocale asULocale()
