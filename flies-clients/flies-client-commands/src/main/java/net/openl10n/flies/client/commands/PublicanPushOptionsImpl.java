@@ -12,6 +12,7 @@ import org.kohsuke.args4j.Option;
 public class PublicanPushOptionsImpl extends ConfigurableProjectOptionsImpl implements PublicanPushOptions
 {
    private File srcDir;
+   private File srcDirPot;
 
    private String sourceLang = "en-US";
 
@@ -47,6 +48,12 @@ public class PublicanPushOptionsImpl extends ConfigurableProjectOptionsImpl impl
    public void setSrcDir(File srcDir)
    {
       this.srcDir = srcDir;
+   }
+
+   @Override
+   public void setSrcDirPot(File srcDirPot)
+   {
+      this.srcDirPot = srcDirPot;
    }
 
    @Override
@@ -87,6 +94,12 @@ public class PublicanPushOptionsImpl extends ConfigurableProjectOptionsImpl impl
    public File getSrcDir()
    {
       return srcDir;
+   }
+
+   @Override
+   public File getSrcDirPot()
+   {
+      return srcDirPot;
    }
 
    @Override

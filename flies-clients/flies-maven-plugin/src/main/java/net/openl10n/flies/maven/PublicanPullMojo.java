@@ -17,12 +17,22 @@ public class PublicanPullMojo extends ConfigurableProjectMojo implements Publica
 
    /**
     * Base directory for publican files (with subdirectory "pot" and optional
-    * locale directories)
+    * locale directories), although the location of "pot" can be overridden with
+    * the dstDirPot option.
     * 
     * @parameter expression="${flies.dstDir}"
     * @required
     */
    private File dstDir;
+
+   /**
+    * Base directory for pot files.
+    * 
+    * @parameter expression="${flies.dstDirPot}"
+    *            default-value="${flies.dstDir}/pot"
+    * @required
+    */
+   private File dstDirPot;
 
    /**
     * Export source text from Flies to local POT files, overwriting or erasing
@@ -49,9 +59,21 @@ public class PublicanPullMojo extends ConfigurableProjectMojo implements Publica
    }
 
    @Override
+   public void setDstDirPot(File dstDirPot)
+   {
+      this.dstDirPot = dstDirPot;
+   }
+
+   @Override
    public File getDstDir()
    {
       return dstDir;
+   }
+
+   @Override
+   public File getDstDirPot()
+   {
+      return dstDirPot;
    }
 
    @Override

@@ -13,6 +13,7 @@ public class UploadPoTask extends ConfigurableProjectTask implements PublicanPus
    // private static final Logger log =
    // LoggerFactory.getLogger(UploadPoTask.class);
    private File srcDir;
+   private File srcDirPot;
 
    private String sourceLang = "en-US";
 
@@ -47,6 +48,14 @@ public class UploadPoTask extends ConfigurableProjectTask implements PublicanPus
    public void setSrcDir(File srcDir)
    {
       this.srcDir = srcDir;
+      if (srcDirPot == null)
+         srcDirPot = new File(srcDir, "pot");
+   }
+
+   @Override
+   public void setSrcDirPot(File srcDirPot)
+   {
+      this.srcDirPot = srcDirPot;
    }
 
    @Option(aliases = { "-l" }, name = "--src-lang", usage = "Language of source (defaults to en-US)")
@@ -80,6 +89,12 @@ public class UploadPoTask extends ConfigurableProjectTask implements PublicanPus
    public File getSrcDir()
    {
       return srcDir;
+   }
+
+   @Override
+   public File getSrcDirPot()
+   {
+      return srcDirPot;
    }
 
    public String getSourceLang()

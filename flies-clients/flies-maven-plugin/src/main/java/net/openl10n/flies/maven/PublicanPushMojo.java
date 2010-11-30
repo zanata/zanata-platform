@@ -29,12 +29,21 @@ public class PublicanPushMojo extends ConfigurableProjectMojo implements Publica
 
    /**
     * Base directory for publican files (with subdirectory "pot" and optional
-    * locale directories)
+    * locale directories), although the location of "pot" can be overridden with
+    * the srcDirPot option.
     * 
     * @parameter expression="${flies.srcDir}"
     * @required
     */
    private File srcDir;
+
+   /**
+    * Base directory for pot files.
+    * 
+    * @parameter expression="${flies.srcDirPot}"
+    *            default-value="${flies.srcDir}/pot"
+    */
+   private File srcDirPot;
 
    /**
     * Language of source (defaults to en-US)
@@ -66,6 +75,18 @@ public class PublicanPushMojo extends ConfigurableProjectMojo implements Publica
    public void setSrcDir(File srcDir)
    {
       this.srcDir = srcDir;
+   }
+
+   @Override
+   public File getSrcDirPot()
+   {
+      return srcDirPot;
+   }
+
+   @Override
+   public void setSrcDirPot(File srcDirPot)
+   {
+      this.srcDirPot = srcDirPot;
    }
 
    public String getSourceLang()
