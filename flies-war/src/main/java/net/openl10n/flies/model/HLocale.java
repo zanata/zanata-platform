@@ -37,6 +37,8 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.validator.NotNull;
 
+import com.ibm.icu.util.ULocale;
+
 @Entity
 @TypeDef(name = "localeId", typeClass = LocaleIdType.class)
 public class HLocale extends AbstractFliesEntity implements Serializable
@@ -93,14 +95,17 @@ public class HLocale extends AbstractFliesEntity implements Serializable
 
    public String retrieveNativeName()
    {
-      FliesLocalePair fl = new FliesLocalePair(this.localeId);
-      return fl.getuLocale().getDisplayName(fl.getuLocale());
+      return asULocale().getDisplayName(asULocale());
    }
 
    public String retrieveDisplayName()
    {
-      FliesLocalePair fl = new FliesLocalePair(this.localeId);
-      return fl.getuLocale().getDisplayName();
+      return asULocale().getDisplayName(asULocale());
+   }
+
+   public ULocale asULocale()
+   {
+      return new ULocale(this.localeId.getId());
    }
 
    @Override
