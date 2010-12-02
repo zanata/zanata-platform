@@ -35,6 +35,7 @@
 
   <!-- Login and security -->
   <security:identity jaas-config-name="@jaas.configure@" />
+  <web:identity-filter disabled="true"/>
 	
   <drools:rule-base name="securityRules">
     <drools:rule-files>

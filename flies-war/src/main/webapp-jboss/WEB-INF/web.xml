@@ -3,8 +3,11 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	version="2.5">
 
-	<!-- RichFaces -->
+	<!-- sso security -->
 
+	<!-- @spnego.security@ -->
+
+	<!-- RichFaces -->
 	<context-param>
 		<param-name>org.richfaces.SKIN</param-name>
 		<param-value>classic</param-value>
@@ -149,5 +152,5 @@
         <extension>xrd</extension>
         <mime-type>application/xrd+xml</mime-type>
     </mime-mapping>
-        
+    
 </web-app>

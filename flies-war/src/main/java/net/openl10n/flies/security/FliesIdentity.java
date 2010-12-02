@@ -23,6 +23,9 @@ package net.openl10n.flies.security;
 import static org.jboss.seam.ScopeType.SESSION;
 import static org.jboss.seam.annotations.Install.APPLICATION;
 
+import java.lang.reflect.Field;
+
+import javax.faces.context.FacesContext;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
@@ -40,6 +43,7 @@ import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Configuration;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.NotLoggedInException;
+import org.jboss.security.SecurityAssociation;
 
 @Name("org.jboss.seam.security.identity")
 @Scope(SESSION)
@@ -56,6 +60,10 @@ public class FliesIdentity extends Identity
    public static final String USER_LOGOUT_EVENT = "user.logout";
    public static final String USER_ENTER_WORKSPACE = "user.enter";
    public static final String JAAS_DEFAULT = "default";
+
+   private static final String SUBJECT = "subject";
+   private static final String PRINCIPAL = "principal";
+   private static final String LOGGED_IN = "loggedIn";
 
    private static final LogProvider log = Logging.getLogProvider(FliesIdentity.class);
 
@@ -139,5 +147,37 @@ public class FliesIdentity extends Identity
 
       return new LoginContext(JAAS_DEFAULT, getSubject(), getCredentials().createCallbackHandler(), Configuration.instance());
    }
+
+   public String spnegoLogin()
+   {
+      try
+      {
+         String spuser = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
+         if (spuser == null || spuser.isEmpty())
+            return null;
+         getCredentials().setUsername(FacesContext.getCurrentInstance().getExternalContext().getRemoteUser());
+         log.info("username: " + getCredentials().getUsername());
+         getCredentials().setPassword("");
+
+         Field field = Identity.class.getDeclaredField(PRINCIPAL);
+         field.setAccessible(true);
+         field.set(this, SecurityAssociation.getCallerPrincipal());
+
+         field = Identity.class.getDeclaredField(SUBJECT);
+         field.setAccessible(true);
+         field.set(this, SecurityAssociation.getSubject());
+
+         if (Events.exists())
+            Events.instance().raiseEvent(EVENT_LOGIN_SUCCESSFUL);
+
+         return LOGGED_IN;
+      }
+      catch (Exception e)
+      {
+         return null;
+      }
+   }
+
+
 
 }

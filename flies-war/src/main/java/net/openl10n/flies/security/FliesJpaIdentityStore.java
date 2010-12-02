@@ -35,6 +35,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.core.Events;
+import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.IdentityManagementException;
 import org.jboss.seam.security.management.IdentityManager;
@@ -137,6 +138,13 @@ public class FliesJpaIdentityStore extends JpaIdentityStore
       Identity identity = Identity.instance();
       String username = identity.getCredentials().getUsername();
       Object user = lookupUser(username);
+      if (!isUserEnabled(username))
+      {
+         FacesMessages.instance().clear();
+         FacesMessages.instance().add("User {0} has been disabled.", username);
+         identity.unAuthenticate();
+         return;
+      }
       IdentityManager identityManager = IdentityManager.instance();
       for (String role : identityManager.getImpliedRoles(identity.getCredentials().getUsername()))
       {

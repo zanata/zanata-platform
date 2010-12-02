@@ -600,6 +600,28 @@
 			</properties>
 		</profile>
 
+
+		<profile>
+			<id>kerberos</id>
+			<properties>
+				<spnego.security><![CDATA[
+				-->
+<security-constraint>
+    <web-resource-collection>
+         <web-resource-name>sign in</web-resource-name>
+         <url-pattern>/account/sign*</url-pattern>
+    </web-resource-collection>
+	<auth-constraint />
+</security-constraint>	
+
+<login-config>
+    <auth-method>SPNEGO</auth-method>
+</login-config>
+				<!--
+				]]></spnego.security>
+			</properties>
+		</profile>
+
 		<profile>
 			<id>mysql</id>
 			<properties>

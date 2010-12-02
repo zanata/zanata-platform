@@ -17,21 +17,32 @@
   </page>
 
   <!-- Account -->
+   <page view-id="/account/login.xhtml">
+    <header name="Cache-Control" value="no-cache, no-store, max-age=0, must-revalidate" />
+    <action execute="#{identity.spnegoLogin}" />
+    <navigation>
+      <rule if="#{identity.loggedIn and identityStore.newUser}">
+        <redirect view-id="/profile/edit.xhtml" />
+      </rule>
+      <rule if="#{identity.loggedIn and !identityStore.newUser}">
+        <redirect view-id="/home.xhtml" />
+      </rule>
+      <rule if="#{!identity.loggedIn }">
+        <redirect view-id="/account/login_input.xhtml" />
+      </rule>
+    </navigation>
+  </page>
 
-  <page view-id="/account/login.xhtml">
-    <param name="continue" value="#{userRedirect.encodedUrl}" />
+   <page view-id="/account/login_input.xhtml">
     <header name="Cache-Control" value="no-cache, no-store, max-age=0, must-revalidate" />
     <navigation from-action="#{identity.login}">
       <rule if="#{identity.loggedIn and identityStore.newUser}">
-        <end-conversation before-redirect="true" />
         <redirect view-id="/profile/edit.xhtml" />
       </rule>
-      <rule if="#{identity.loggedIn and not userRedirect.redirect}">
-        <end-conversation before-redirect="true" />
+      <rule if="#{identity.loggedIn and !identityStore.newUser}">
         <redirect view-id="/home.xhtml" />
       </rule>
       <rule if="#{identity.loggedIn and userRedirect.redirect}">
-        <end-conversation before-redirect="true" />
         <redirect url="#{userRedirect.url}" />
       </rule>
     </navigation>
@@ -338,7 +349,14 @@
 
   <exception class="org.jboss.seam.security.NotLoggedInException"
     log-level="debug">
-    <redirect view-id="/account/login.xhtml">
+    <redirect view-id="/account/login_input.xhtml">
+      <message severity="warn">#{messages['org.jboss.seam.NotLoggedIn']}</message>
+    </redirect>
+  </exception>
+
+  <exception class="javax.security.auth.login.LoginException"
+    log-level="debug">
+    <redirect view-id="/account/login_input.xhtml">
       <message severity="warn">#{messages['org.jboss.seam.NotLoggedIn']}</message>
     </redirect>
   </exception>
@@ -360,5 +378,6 @@
       <message severity="error">#{messages['jsf.UnexpectedErrorPleaseTryAgain']}</message>
     </redirect>
   </exception>
+
 
 </pages>
