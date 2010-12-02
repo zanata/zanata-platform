@@ -77,17 +77,19 @@ public class ProfileAction implements Serializable
    public void onCreate()
    {
       username = identity.getCredentials().getUsername();
-      HApplicationConfiguration ha = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_DOMAIN);
-      String domain = "@redhat.com";
-      if (ha != null)
+      name = !identityStore.isNewUser() ? authenticatedAccount.getPerson().getName() : identity.getCredentials().getUsername();
+      if (identityStore.isNewUser())
       {
-         if (ha.getValue() != null && !ha.getValue().isEmpty())
+         String domain = "@redhat.com";
+         HApplicationConfiguration ha = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_DOMAIN);
+         if (ha != null && ha.getValue() != null && !ha.getValue().isEmpty())
          {
             domain = ha.getValue();
          }
+         email=identity.getCredentials().getUsername() + domain;
+      }else{
+         email=authenticatedAccount.getPerson().getEmail();
       }
-      name = !identityStore.isNewUser() ? authenticatedAccount.getPerson().getName() : identity.getCredentials().getUsername();
-      email = !identityStore.isNewUser() ? authenticatedAccount.getPerson().getEmail() : identity.getCredentials().getUsername() + domain;
    }
 
    public String getName()
