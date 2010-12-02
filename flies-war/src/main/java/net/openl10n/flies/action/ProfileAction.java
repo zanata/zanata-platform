@@ -26,6 +26,7 @@ import net.openl10n.flies.dao.AccountDAO;
 import net.openl10n.flies.dao.ApplicationConfigurationDAO;
 import net.openl10n.flies.dao.PersonDAO;
 import net.openl10n.flies.model.HAccount;
+import net.openl10n.flies.model.HApplicationConfiguration;
 import net.openl10n.flies.model.HPerson;
 import net.openl10n.flies.security.FliesJpaIdentityStore;
 
@@ -76,8 +77,17 @@ public class ProfileAction implements Serializable
    public void onCreate()
    {
       username = identity.getCredentials().getUsername();
+      HApplicationConfiguration ha = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_DOMAIN);
+      String domain = "@redhat.com";
+      if (ha != null)
+      {
+         if (ha.getValue() != null && !ha.getValue().isEmpty())
+         {
+            domain = ha.getValue();
+         }
+      }
       name = !identityStore.isNewUser() ? authenticatedAccount.getPerson().getName() : identity.getCredentials().getUsername();
-      email = !identityStore.isNewUser() ? authenticatedAccount.getPerson().getEmail() : identity.getCredentials().getUsername() + "@example.com";
+      email = !identityStore.isNewUser() ? authenticatedAccount.getPerson().getEmail() : identity.getCredentials().getUsername() + domain;
    }
 
    public String getName()
