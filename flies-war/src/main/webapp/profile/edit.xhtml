@@ -27,7 +27,7 @@
             </s:decorate>
             <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml">
               <ui:define name="label">#{messages['jsf.Email']}</ui:define>
-              <h:inputText id="email" value="#{profileAction.email}" required="true" valueChangeListener="#{profileAction.verifyEmail}">
+              <h:inputText id="email" value="#{profileAction.email}" required="true">
                   <a4j:support event="onblur" reRender="emailField" ajaxSingle="true"/>
               </h:inputText>
               <h:graphicImage id="usernameHelp" value="../img/msginfo.png" styleClass="input_help">
@@ -37,6 +37,8 @@
               </h:graphicImage>
             </s:decorate>
                       
+            <div style="clear:both"/>
+
             <div class="actionButtons">
               <h:commandButton value="#{messages['jsf.Save']}" action="#{profileAction.edit}" />
               <h:commandButton value="#{messages['jsf.Cancel']}" action="#{profileAction.cancel}"/>
