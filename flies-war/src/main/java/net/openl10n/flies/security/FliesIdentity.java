@@ -26,6 +26,7 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
 import java.lang.reflect.Field;
 
 import javax.faces.context.FacesContext;
+import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
@@ -150,13 +151,19 @@ public class FliesIdentity extends Identity
 
    public String spnegoLogin()
    {
+      String spuser = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
+      if (spuser == null || spuser.isEmpty())
+         return null;
+      succeed(spuser);
+      return LOGGED_IN;
+   }
+
+   private void succeed(String username)
+   {
       try
       {
-         String spuser = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
-         if (spuser == null || spuser.isEmpty())
-            return null;
-         getCredentials().setUsername(FacesContext.getCurrentInstance().getExternalContext().getRemoteUser());
-         log.info("username: " + getCredentials().getUsername());
+         getCredentials().setUsername(username);
+         log.debug("username: " + getCredentials().getUsername());
          getCredentials().setPassword("");
 
          Field field = Identity.class.getDeclaredField(PRINCIPAL);
@@ -169,15 +176,36 @@ public class FliesIdentity extends Identity
 
          if (Events.exists())
             Events.instance().raiseEvent(EVENT_LOGIN_SUCCESSFUL);
-
-         return LOGGED_IN;
       }
       catch (Exception e)
       {
-         return null;
+         log.info(e.getMessage());
       }
    }
 
-
+   public synchronized void authenticate() throws LoginException
+   {
+      // If we're already authenticated, then don't authenticate again
+      if (isApiRequest())
+      {
+         if (!isLoggedIn() && !getCredentials().isInvalid())
+         {
+            Field field;
+            try
+            {
+               field = Identity.class.getDeclaredField(SUBJECT);
+               field.setAccessible(true);
+               field.set(this, new Subject());
+               authenticate(new LoginContext(JAAS_DEFAULT, getSubject(), getCredentials().createCallbackHandler(), Configuration.instance()));
+            }
+            catch (Exception e)
+            {
+               throw new LoginException();
+            }
+         }
+         return;
+      }
+      super.authenticate();
+   }
 
 }
