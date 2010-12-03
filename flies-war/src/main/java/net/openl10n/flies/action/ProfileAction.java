@@ -22,6 +22,8 @@ package net.openl10n.flies.action;
 
 import java.io.Serializable;
 
+import javax.faces.event.ValueChangeEvent;
+
 import net.openl10n.flies.dao.AccountDAO;
 import net.openl10n.flies.dao.ApplicationConfigurationDAO;
 import net.openl10n.flies.dao.PersonDAO;
@@ -30,6 +32,7 @@ import net.openl10n.flies.model.HApplicationConfiguration;
 import net.openl10n.flies.model.HPerson;
 import net.openl10n.flies.security.FliesJpaIdentityStore;
 
+import org.hibernate.validator.EmailValidator;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
@@ -38,6 +41,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.core.Events;
+import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
@@ -166,6 +170,23 @@ public class ProfileAction implements Serializable
       accountDAO.makePersistent(account);
       accountDAO.flush();
       return account;
+   }
+
+   public boolean validateEmail(String emailAdd, String componentId)
+   {
+      EmailValidator va = new EmailValidator();
+      boolean result = va.isValid(emailAdd);
+      if (!result)
+      {
+         FacesMessages.instance().addToControl(componentId, "The email address is invalid");
+      }
+      return result;
+   }
+
+   public void verifyEmail(ValueChangeEvent e)
+   {
+      String email = (String) e.getNewValue();
+      validateEmail(email, e.getComponent().getId());
    }
 
 }
