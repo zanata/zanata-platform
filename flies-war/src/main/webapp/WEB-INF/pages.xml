@@ -39,10 +39,10 @@
       <rule if="#{identity.loggedIn and identityStore.newUser}">
         <redirect view-id="/profile/edit.xhtml" />
       </rule>
-      <rule if="#{identity.loggedIn and !identityStore.newUser}">
+      <rule if="#{identity.loggedIn and !identityStore.newUser and !userRedirect.redirect}">
         <redirect view-id="/home.xhtml" />
       </rule>
-      <rule if="#{identity.loggedIn and userRedirect.redirect}">
+      <rule if="#{identity.loggedIn and !identityStore.newUser and userRedirect.redirect}">
         <redirect url="#{userRedirect.url}" />
       </rule>
     </navigation>

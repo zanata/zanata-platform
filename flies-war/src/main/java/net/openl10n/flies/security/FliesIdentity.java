@@ -26,7 +26,6 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
 import java.lang.reflect.Field;
 
 import javax.faces.context.FacesContext;
-import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
@@ -141,6 +140,10 @@ public class FliesIdentity extends Identity
    @Override
    public LoginContext getLoginContext() throws LoginException
    {
+      if (isApiRequest())
+      {
+         return new LoginContext(JAAS_DEFAULT, getSubject(), getCredentials().createCallbackHandler(), Configuration.instance());
+      }
       if (getJaasConfigName() != null && !getJaasConfigName().equals(JAAS_DEFAULT))
       {
          return new LoginContext(getJaasConfigName(), getSubject(), getCredentials().createCallbackHandler());
@@ -183,29 +186,5 @@ public class FliesIdentity extends Identity
       }
    }
 
-   public synchronized void authenticate() throws LoginException
-   {
-      // If we're already authenticated, then don't authenticate again
-      if (isApiRequest())
-      {
-         if (!isLoggedIn() && !getCredentials().isInvalid())
-         {
-            Field field;
-            try
-            {
-               field = Identity.class.getDeclaredField(SUBJECT);
-               field.setAccessible(true);
-               field.set(this, new Subject());
-               authenticate(new LoginContext(JAAS_DEFAULT, getSubject(), getCredentials().createCallbackHandler(), Configuration.instance()));
-            }
-            catch (Exception e)
-            {
-               throw new LoginException();
-            }
-         }
-         return;
-      }
-      super.authenticate();
-   }
 
 }

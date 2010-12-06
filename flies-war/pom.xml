@@ -609,7 +609,7 @@
 <security-constraint>
     <web-resource-collection>
          <web-resource-name>sign in</web-resource-name>
-         <url-pattern>/account/sign*</url-pattern>
+         <url-pattern>/account/*</url-pattern>
     </web-resource-collection>
 	<auth-constraint>
 		<role-name>*</role-name>
