@@ -84,8 +84,8 @@ public class LanguageTeamAction implements Serializable
          }
       }
       locale = localeServiceImpl.getSupportedLanguageByLocale(new LocaleId(language));
-      log.info("init language:" + locale.getLocaleId().getId());
-      log.info("init contained:" + contained);
+      log.debug("init language: {0}", locale.getLocaleId().getId());
+      log.debug("init contained: {0}", contained);
    }
 
    public boolean getContained()

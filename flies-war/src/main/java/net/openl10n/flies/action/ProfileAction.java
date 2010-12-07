@@ -22,8 +22,6 @@ package net.openl10n.flies.action;
 
 import java.io.Serializable;
 
-import javax.faces.event.ValueChangeEvent;
-
 import net.openl10n.flies.dao.AccountDAO;
 import net.openl10n.flies.dao.ApplicationConfigurationDAO;
 import net.openl10n.flies.dao.PersonDAO;
@@ -32,7 +30,7 @@ import net.openl10n.flies.model.HApplicationConfiguration;
 import net.openl10n.flies.model.HPerson;
 import net.openl10n.flies.security.FliesJpaIdentityStore;
 
-import org.hibernate.validator.EmailValidator;
+import org.hibernate.validator.Email;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
@@ -41,7 +39,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.core.Events;
-import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
@@ -84,13 +81,13 @@ public class ProfileAction implements Serializable
       name = !identityStore.isNewUser() ? authenticatedAccount.getPerson().getName() : identity.getCredentials().getUsername();
       if (identityStore.isNewUser())
       {
-         String domain = "@redhat.com";
+         String domain = "example.com";
          HApplicationConfiguration ha = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_DOMAIN);
          if (ha != null && ha.getValue() != null && !ha.getValue().isEmpty())
          {
             domain = ha.getValue();
          }
-         email=identity.getCredentials().getUsername() + domain;
+         email = identity.getCredentials().getUsername() + "@" + domain;
       }else{
          email=authenticatedAccount.getPerson().getEmail();
       }
@@ -106,6 +103,7 @@ public class ProfileAction implements Serializable
       this.name = name;
    }
 
+   @Email
    public String getEmail()
    {
       return email;
@@ -170,23 +168,6 @@ public class ProfileAction implements Serializable
       accountDAO.makePersistent(account);
       accountDAO.flush();
       return account;
-   }
-
-   public boolean validateEmail(String emailAdd, String componentId)
-   {
-      EmailValidator va = new EmailValidator();
-      boolean result = va.isValid(emailAdd);
-      if (!result)
-      {
-         FacesMessages.instance().addToControl(componentId, "The email address is invalid");
-      }
-      return result;
-   }
-
-   public void verifyEmail(ValueChangeEvent e)
-   {
-      String email = (String) e.getNewValue();
-      validateEmail(email, e.getComponent().getId());
    }
 
 }

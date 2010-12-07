@@ -58,6 +58,21 @@
               </h:graphicImage>
             </s:decorate>
                 
+            <s:decorate id="domainField" template="../WEB-INF/layout/edit.xhtml">
+              <ui:define name="label">#{messages['jsf.EmailDomainName']}</ui:define>
+              <h:inputText id="url" value="#{serverConfigurationBean.emailDomain}">
+                <a4j:support event="onblur" reRender="emailDomainField" ajaxSingle="false"/>
+              </h:inputText>
+              <h:graphicImage id="urlHelp" value="../img/msginfo.png" styleClass="input_help">
+                <rich:toolTip>
+                  #{messages['jsf.EmailDomainNameToolTip']}
+                  <br/>
+                  <em><code>#{messages['jsf.EmailDomainNameExample']}</code></em>
+                </rich:toolTip>
+              </h:graphicImage>
+            </s:decorate>
+
+
             <div style="clear:both"/>
 
             <div class="actionButtons">
