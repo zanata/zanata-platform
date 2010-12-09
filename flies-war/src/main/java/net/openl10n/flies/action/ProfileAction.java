@@ -25,7 +25,6 @@ import java.util.Random;
 
 
 import net.openl10n.flies.ApplicationConfiguration;
-import net.openl10n.flies.dao.AccountDAO;
 import net.openl10n.flies.dao.PersonDAO;
 import net.openl10n.flies.model.HAccount;
 import net.openl10n.flies.model.HPerson;
@@ -89,9 +88,6 @@ public class ProfileAction implements Serializable
 
    @In
    PersonDAO personDAO;
-
-   @In
-   AccountDAO accountDAO;
 
    @In
    RegisterService registerServiceImpl;
@@ -181,7 +177,6 @@ public class ProfileAction implements Serializable
       Random ran = new Random();
       String var = var1 + ";" + ran.nextInt() + ";" + var2;
       activationKey = Base64UrlSafe.encode(var);
-      log.info("generate activate key:" + activationKey);
       renderer.render("/WEB-INF/facelets/email/email_validation.xhtml");
       FacesMessages.instance().add("You will soon receive an email with a link to activate your email account change.");
    }

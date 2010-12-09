@@ -150,6 +150,11 @@ public class FliesIdentity extends Identity
       return preAuthenticated;
    }
 
+   public void setPreAuthenticated(boolean var)
+   {
+      this.preAuthenticated = var;
+   }
+
    public String login()
    {
       String result = super.login();
@@ -159,5 +164,4 @@ public class FliesIdentity extends Identity
       }
       return result;
    }
-
 }
