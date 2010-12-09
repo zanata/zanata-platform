@@ -66,6 +66,7 @@
     <property name="debug">@env.debug@</property>
     <property name="hibernateStatistics">false</property>
     <property name="internalAuthentication">@internal.authentication@</property>
+    <property name="spNego">@spNego.authentication@</property>
     <property name="authenticatedSessionTimeoutMinutes">180</property>
   </component>
 

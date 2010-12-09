@@ -24,10 +24,6 @@ import static org.jboss.seam.ScopeType.APPLICATION;
 
 
 
-import net.openl10n.flies.FliesInit;
-
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
@@ -35,10 +31,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.core.Events;
-import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.IdentityManagementException;
-import org.jboss.seam.security.management.IdentityManager;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.jboss.seam.util.AnnotatedBeanProperty;
 
@@ -103,13 +96,6 @@ public class FliesJpaIdentityStore extends JpaIdentityStore
 
    }
 
-   public boolean isInternalAuthentication()
-   {
-      FliesInit instance = (FliesInit) Component.getInstance(FliesInit.class, ScopeType.APPLICATION);
-      return instance.isInternalAuthentication();
-   }
-
-
    @Override
    public boolean authenticate(String username, String password)
    {
@@ -124,35 +110,11 @@ public class FliesJpaIdentityStore extends JpaIdentityStore
       }
    }
 
-   public boolean isNewUser()
+   public boolean isNewUser(String username)
    {
-      Identity identity = Identity.instance();
-      String username = identity.getCredentials().getUsername();
       Object user = lookupUser(username);
       return user == null;
    }
-
-
-   public void jaasUserLoggedIn()
-   {
-      Identity identity = Identity.instance();
-      String username = identity.getCredentials().getUsername();
-      Object user = lookupUser(username);
-      if (!isUserEnabled(username))
-      {
-         FacesMessages.instance().clear();
-         FacesMessages.instance().add("User {0} has been disabled.", username);
-         identity.unAuthenticate();
-         return;
-      }
-      IdentityManager identityManager = IdentityManager.instance();
-      for (String role : identityManager.getImpliedRoles(identity.getCredentials().getUsername()))
-      {
-         identity.addRole(role);
-      }
-      setAuthenticateUser(user);
-   }
-
 
    public void setAuthenticateUser(Object user)
    {

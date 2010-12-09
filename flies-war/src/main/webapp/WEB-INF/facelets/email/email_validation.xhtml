@@ -6,16 +6,16 @@
            xmlns:s="http://jboss.com/products/seam/taglib"
            charset="UTF-8" importance="normal">
   <m:from name="Flies" >#{applicationConfiguration.adminEmail}</m:from>
-  <m:to name="#{register.person.name}">#{register.person.email}</m:to>
-  <m:subject>#{messages['jsf.FliesAccountActivation']}</m:subject>
+  <m:to name="#{register.person.name}">#{profileAction.email}</m:to>
+  <m:subject>#{messages['jsf.EmailAccountChangeValidation']}</m:subject>
   <m:body>
     <html>
     <body>
     <p>#{messages['jsf.DearName']}</p>
-    <p>#{messages['jsf.PleaseClickOnTheFollowingLinkToActivateYourAccount']}</p>
+    <p>#{messages['jsf.PleaseClickOnTheFollowingLinkToActivateYourEmailAccountChange']}</p>
     <p>
-      <a href="#{applicationConfiguration.serverPath}/account/activate/#{register.activationKey}">
-      #{applicationConfiguration.serverPath}/account/activate/#{register.activationKey}
+      <a href="#{applicationConfiguration.serverPath}/account/validate_email/#{profileAction.activationKey}">
+      #{applicationConfiguration.serverPath}/account/validate_email/#{profileAction.activationKey}
       </a>
     </p>
   </body>

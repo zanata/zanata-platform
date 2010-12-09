@@ -19,30 +19,20 @@
   <!-- Account -->
    <page view-id="/account/login.xhtml">
     <header name="Cache-Control" value="no-cache, no-store, max-age=0, must-revalidate" />
-    <action execute="#{identity.spnegoLogin}" />
-    <navigation>
-      <rule if="#{identity.loggedIn and identityStore.newUser}">
-        <redirect view-id="/profile/edit.xhtml" />
-      </rule>
-      <rule if="#{identity.loggedIn and !identityStore.newUser}">
-        <redirect view-id="/home.xhtml" />
-      </rule>
-      <rule if="#{!identity.loggedIn }">
-        <redirect view-id="/account/login_input.xhtml" />
-      </rule>
-    </navigation>
+    <action execute="#{spNegoIdentity.execute}"/>
+    <action execute="#{spNegoIdentity.redirect}" />
   </page>
 
    <page view-id="/account/login_input.xhtml">
     <header name="Cache-Control" value="no-cache, no-store, max-age=0, must-revalidate" />
     <navigation from-action="#{identity.login}">
-      <rule if="#{identity.loggedIn and identityStore.newUser}">
+      <rule if="#{identity.loggedIn and fliesExternalLoginBean.newUser}">
         <redirect view-id="/profile/edit.xhtml" />
       </rule>
-      <rule if="#{identity.loggedIn and !identityStore.newUser and !userRedirect.redirect}">
+      <rule if="#{identity.loggedIn and !fliesExternalLoginBean.newUser and !userRedirect.redirect}">
         <redirect view-id="/home.xhtml" />
       </rule>
-      <rule if="#{identity.loggedIn and !identityStore.newUser and userRedirect.redirect}">
+      <rule if="#{identity.loggedIn and !fliesExternalLoginBean.newUser and userRedirect.redirect}">
         <redirect url="#{userRedirect.url}" />
       </rule>
     </navigation>
@@ -61,14 +51,19 @@
     <action execute="#{activate.activate}" />
   </page>
 
+  <page view-id="/account/email_validation.xhtml" login-required="true">
+    <param name="key" value="#{validateEmail.activationKey}" />
+    <action execute="#{validateEmail.validate}" />
+  </page>
+
   <page view-id="/account/password_reset.xhtml">
-    <restrict>#{identityStore.internalAuthentication}</restrict>
+    <restrict>#{fliesInit.internalAuthentication}</restrict>
     <param name="key" value="#{passwordReset.activationKey}" />
     <action execute="#{passwordReset.validateActivationKey}" />
   </page>
 
   <page view-id="/account/changepassword.xhtml" login-required="true">
-    <restrict>#{identityStore.internalAuthentication}</restrict>
+    <restrict>#{fliesInit.internalAuthentication}</restrict>
   </page>
 
   <!-- Admin -->
@@ -167,7 +162,8 @@
 
   <!-- Profile -->
 
-  <page view-id="/profile/edit.xhtml" login-required="true">
+  <page view-id="/profile/edit.xhtml">
+  	<restrict>#{identity.preAuthenticated}</restrict>
     <navigation from-action="#{profileAction.edit}">
       <rule if-outcome="home">
 	      <redirect view-id="/home.xhtml" />

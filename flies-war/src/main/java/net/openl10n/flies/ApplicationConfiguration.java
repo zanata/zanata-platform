@@ -51,6 +51,8 @@ public class ApplicationConfiguration
       map.put(HApplicationConfiguration.KEY_HELP, "http://code.google.com/p/flies/wiki/Introduction");
       map.put(HApplicationConfiguration.KEY_REGISTER, "/flies/account/register");
       map.put(HApplicationConfiguration.KEY_HOST, "http://localhost:8080/flies");
+      map.put(HApplicationConfiguration.KEY_DOMAIN, "example.com");
+      map.put(HApplicationConfiguration.KEY_ADMIN_EMAIL, "asgeirf@redhat.com");
    }
 
    public String getHelpPath()
@@ -72,4 +74,15 @@ public class ApplicationConfiguration
    {
       return configValues.get(key);
    }
+
+   public String getDomainName()
+   {
+      return configValues.get(HApplicationConfiguration.KEY_DOMAIN);
+   }
+
+   public String getAdminEmail()
+   {
+      return configValues.get(HApplicationConfiguration.KEY_ADMIN_EMAIL);
+   }
+
 }

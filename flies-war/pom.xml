@@ -37,6 +37,7 @@
 		<ds.password /> <!-- *-ds.xml -->
 		
 		<internal.authentication>false</internal.authentication>
+		<spNego.authentication>false</spNego.authentication>
 		<jaas.configure>flies</jaas.configure>
 		<extra.servlets />
 	</properties>
@@ -621,6 +622,7 @@
 </login-config>
 				<!--
 				]]></spnego.security>
+				<spNego.authentication>true</spNego.authentication>
 			</properties>
 		</profile>
 

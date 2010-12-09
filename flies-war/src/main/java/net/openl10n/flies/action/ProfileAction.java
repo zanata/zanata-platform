@@ -21,14 +21,18 @@
 package net.openl10n.flies.action;
 
 import java.io.Serializable;
+import java.util.Random;
 
+
+import net.openl10n.flies.ApplicationConfiguration;
 import net.openl10n.flies.dao.AccountDAO;
-import net.openl10n.flies.dao.ApplicationConfigurationDAO;
 import net.openl10n.flies.dao.PersonDAO;
 import net.openl10n.flies.model.HAccount;
-import net.openl10n.flies.model.HApplicationConfiguration;
 import net.openl10n.flies.model.HPerson;
+import net.openl10n.flies.security.FliesIdentity;
 import net.openl10n.flies.security.FliesJpaIdentityStore;
+import net.openl10n.flies.service.RegisterService;
+import net.openl10n.flies.service.impl.Base64UrlSafe;
 
 import org.hibernate.validator.Email;
 import org.jboss.seam.ScopeType;
@@ -38,9 +42,9 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.core.Events;
+import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.faces.Renderer;
 import org.jboss.seam.log.Log;
-import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
 
 @Name("profileAction")
@@ -54,16 +58,31 @@ public class ProfileAction implements Serializable
    private String name;
    private String email;
    private String username;
+   private String activationKey;
+
+   public String getActivationKey()
+   {
+      return activationKey;
+   }
+
+   public void setActivationKey(String keyHash)
+   {
+      this.activationKey = keyHash;
+   }
+
    @In
-   ApplicationConfigurationDAO applicationConfigurationDAO;
+   ApplicationConfiguration applicationConfiguration;
    @Logger
    Log log;
 
    @In
-   FliesJpaIdentityStore identityStore;
+   FliesIdentity identity;
 
    @In
-   Identity identity;
+   FliesJpaIdentityStore identityStore;
+
+   @In(create = true)
+   private Renderer renderer;
 
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
@@ -74,22 +93,26 @@ public class ProfileAction implements Serializable
    @In
    AccountDAO accountDAO;
 
+   @In
+   RegisterService registerServiceImpl;
+
+
    @Create
    public void onCreate()
    {
       username = identity.getCredentials().getUsername();
-      name = !identityStore.isNewUser() ? authenticatedAccount.getPerson().getName() : identity.getCredentials().getUsername();
-      if (identityStore.isNewUser())
+      if (identityStore.isNewUser(username))
       {
-         String domain = "example.com";
-         HApplicationConfiguration ha = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_DOMAIN);
-         if (ha != null && ha.getValue() != null && !ha.getValue().isEmpty())
-         {
-            domain = ha.getValue();
-         }
+         name = identity.getCredentials().getUsername();
+         String domain = applicationConfiguration.getDomainName();
          email = identity.getCredentials().getUsername() + "@" + domain;
+         identity.unAuthenticate();
       }else{
-         email=authenticatedAccount.getPerson().getEmail();
+         HPerson person = personDAO.findById(authenticatedAccount.getPerson().getId(), true);
+         name = person.getName();
+         email = person.getEmail();
+         authenticatedAccount.getPerson().setName(this.name);
+         authenticatedAccount.getPerson().setEmail(this.email);
       }
    }
 
@@ -117,57 +140,50 @@ public class ProfileAction implements Serializable
    @Transactional
    public String edit()
    {
-      if (!identityStore.isNewUser())
+      if (!identityStore.isNewUser(username))
       {
          HPerson person = personDAO.findById(authenticatedAccount.getPerson().getId(), true);
          person.setName(this.name);
-         person.setEmail(this.email);
          personDAO.makePersistent(person);
          personDAO.flush();
          authenticatedAccount.getPerson().setName(this.name);
-         authenticatedAccount.getPerson().setEmail(this.email);
          log.debug("updated successfully");
+         if (!authenticatedAccount.getPerson().getEmail().equals(this.email))
+         {
+            emailValidate(authenticatedAccount.getPerson().getId().toString(), this.email);
+         }
+
          return "updated";
       }
       else
       {
-         if (username != null)
-         {
-            createNewUser(username, null, email, name);
-            log.debug("create a new user:" + name + " " + email);
-            if (Events.exists())
-               Events.instance().raiseEvent(Identity.EVENT_LOGIN_SUCCESSFUL);
-         }
+         final String user = this.username;
+         String key = registerServiceImpl.register(user, "", this.name, this.email);
+         setActivationKey(key);
+         renderer.render("/WEB-INF/facelets/email/email_activation.xhtml");
+         FacesMessages.instance().add("You will soon receive an email with a link to activate your account.");
+
+         return "/home.xhtml";
       }
-      return "home";
    }
 
    public String cancel(){
-      if (identityStore.isNewUser())
+      if (identityStore.isNewUser(username))
       {
-         if (identityStore.isNewUser())
-         {
-            identity.unAuthenticate();
-         }
          return "home";
       }
       return "view";
    }
 
-   public HAccount createNewUser(String username, String password, String email, String name)
+
+   private void emailValidate(String var1, String var2)
    {
-      HAccount account = new HAccount();
-      account.setUsername(username);
-      account.setPasswordHash(password);
-      account.setEnabled(true);
-      HPerson person = new HPerson();
-      person.setName(name);
-      person.setEmail(email);
-      person.setAccount(account);
-      account.setPerson(person);
-      accountDAO.makePersistent(account);
-      accountDAO.flush();
-      return account;
+      Random ran = new Random();
+      String var = var1 + ";" + ran.nextInt() + ";" + var2;
+      activationKey = Base64UrlSafe.encode(var);
+      log.info("generate activate key:" + activationKey);
+      renderer.render("/WEB-INF/facelets/email/email_validation.xhtml");
+      FacesMessages.instance().add("You will soon receive an email with a link to activate your email account change.");
    }
 
 }

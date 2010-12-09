@@ -28,6 +28,7 @@ import net.openl10n.flies.model.HApplicationConfiguration;
 import net.openl10n.flies.model.validator.Url;
 import net.openl10n.flies.model.validator.UrlNoSlash;
 
+import org.hibernate.validator.Email;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
@@ -56,6 +57,18 @@ public class ServerConfigurationBean implements Serializable
    private String registerUrl;
    private String serverUrl;
    private String emailDomain;
+   private String adminEmail;
+
+   @Email
+   public String getAdminEmail()
+   {
+      return adminEmail;
+   }
+
+   public void setAdminEmail(String adminEmail)
+   {
+      this.adminEmail = adminEmail;
+   }
 
    public String getEmailDomain()
    {
@@ -121,6 +134,11 @@ public class ServerConfigurationBean implements Serializable
       if (emailDomainValue != null)
       {
          this.emailDomain = emailDomainValue.getValue();
+      }
+      HApplicationConfiguration adminEmailValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_ADMIN_EMAIL);
+      if (adminEmailValue != null)
+      {
+         this.adminEmail = adminEmailValue.getValue();
       }
    }
 
@@ -193,10 +211,23 @@ public class ServerConfigurationBean implements Serializable
             emailDomainValue.setValue(emailDomain);
          }
       }
-      else if (emailDomain != null && !emailDomain.isEmpty())
+
+      HApplicationConfiguration adminEmailValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_ADMIN_EMAIL);
+      if (adminEmailValue != null)
       {
-         emailDomainValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_DOMAIN, emailDomain);
-         applicationConfigurationDAO.makePersistent(emailDomainValue);
+         if (adminEmail == null || adminEmail.isEmpty())
+         {
+            applicationConfigurationDAO.makeTransient(adminEmailValue);
+         }
+         else
+         {
+            adminEmailValue.setValue(adminEmail);
+         }
+      }
+      else if (adminEmail != null && !adminEmail.isEmpty())
+      {
+         adminEmailValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_ADMIN_EMAIL, adminEmail);
+         applicationConfigurationDAO.makePersistent(adminEmailValue);
       }
 
       applicationConfigurationDAO.flush();

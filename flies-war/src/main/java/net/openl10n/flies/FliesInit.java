@@ -75,6 +75,17 @@ public class FliesInit
    private String version;
    private String buildTimestamp;
    private boolean internalAuthentication;
+   private boolean spNego;
+
+   public boolean isSpNego()
+   {
+      return spNego;
+   }
+
+   public void setSpNego(boolean var)
+   {
+      this.spNego = var;
+   }
 
    public boolean isInternalAuthentication()
    {

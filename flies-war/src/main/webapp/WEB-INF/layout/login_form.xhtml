@@ -21,7 +21,7 @@
                         value="#{credentials.password}"/>
             <rich:spacer width="10px"/>
             <s:link view="/account/password_reset_request.xhtml"
-            	rendered="#{identityStore.internalAuthentication}"
+            	rendered="#{fliesInit.internalAuthentication}"
             	propagation="none">#{messages['jsf.ForgotYourPassword']}</s:link>
         </s:decorate>
         <s:decorate id="rememberMeField" template="edit.xhtml">

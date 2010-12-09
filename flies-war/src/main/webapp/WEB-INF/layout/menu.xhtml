@@ -63,7 +63,7 @@
 			</ul>
 			</li>
 		</s:fragment>
-		<s:fragment rendered="#{identity.loggedIn and !identityStore.newUser}">
+		<s:fragment rendered="#{identity.loggedIn}">
 			<li id="tab_profile"><s:link id="MyProfile"
 				view="/profile/view.xhtml" propagation="none">
 				<span><img src="#{request.contextPath}/img/silk/user.png" />#{messages['jsf.MyProfile']}</span>
