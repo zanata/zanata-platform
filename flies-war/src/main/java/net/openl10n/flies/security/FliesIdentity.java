@@ -158,7 +158,7 @@ public class FliesIdentity extends Identity
    public String login()
    {
       String result = super.login();
-      if (result.equals("loggedIn"))
+      if (result != null && result.equals("loggedIn"))
       {
          this.preAuthenticated = true;
       }
