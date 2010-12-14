@@ -78,6 +78,13 @@ public class SpNegoIdentity implements Serializable
       }
       try
       {
+         if (identity.isLoggedIn())
+         {
+            if (Events.exists())
+               Events.instance().raiseEvent(Identity.EVENT_ALREADY_LOGGED_IN);
+            return;
+         }
+
          String username = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
          identity.getCredentials().setUsername(username);
          log.debug("username: " + identity.getCredentials().getUsername());
