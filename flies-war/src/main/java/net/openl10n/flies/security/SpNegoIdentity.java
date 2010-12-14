@@ -86,9 +86,12 @@ public class SpNegoIdentity implements Serializable
          }
 
          String username = FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
+         log.debug("remote username: " + username);
+
          identity.getCredentials().setUsername(username);
-         log.debug("username: " + identity.getCredentials().getUsername());
          identity.getCredentials().setPassword("");
+         identity.getCredentials().setInitialized(true);
+         
 
          Field field = Identity.class.getDeclaredField(PRINCIPAL);
          field.setAccessible(true);
