@@ -29,7 +29,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
@@ -50,9 +49,6 @@ public class AuthenticationEvents implements Serializable
    @Logger
    Log log;
 
-   @Out(required = false, scope = ScopeType.SESSION)
-   HPerson authenticatedPerson;
-
    @In
    FliesExternalLoginBean fliesExternalLoginBean;
 
@@ -61,7 +57,7 @@ public class AuthenticationEvents implements Serializable
    {
       log.info("Account {0} authenticated", account.getUsername());
 
-      authenticatedPerson = account.getPerson();
+      HPerson authenticatedPerson = account.getPerson();
       // insert authenticatedPerson for use in security.drl rules
       RuleBasedPermissionResolver.instance().getSecurityContext().insert(authenticatedPerson);
    }

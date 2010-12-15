@@ -25,6 +25,7 @@ import java.util.List;
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.NoResultException;
 
+import net.openl10n.flies.model.HAccount;
 import net.openl10n.flies.model.HIterationProject;
 import net.openl10n.flies.model.HPerson;
 import net.openl10n.flies.model.HProjectIteration;
@@ -33,9 +34,12 @@ import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.log.Log;
+import org.jboss.seam.security.management.JpaIdentityStore;
 
 @Name("projectHome")
 public class ProjectHome extends SlugHome<HIterationProject>
@@ -47,9 +51,11 @@ public class ProjectHome extends SlugHome<HIterationProject>
    private static final long serialVersionUID = 1L;
 
    private String slug;
+   @Logger
+   Log log;
 
-   @In(required = false)
-   HPerson authenticatedPerson;
+   @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
+   HAccount authenticatedAccount;
 
    @Override
    protected HIterationProject loadInstance()
@@ -102,9 +108,9 @@ public class ProjectHome extends SlugHome<HIterationProject>
       if (!validateSlug(getInstance().getSlug(), "slug"))
          return null;
 
-      if (authenticatedPerson != null)
+      if (authenticatedAccount != null)
       {
-         HPerson currentPerson = getEntityManager().find(HPerson.class, authenticatedPerson.getId());
+         HPerson currentPerson = getEntityManager().find(HPerson.class, authenticatedAccount.getPerson().getId());
          if (currentPerson != null)
          {
             getInstance().getMaintainers().add(currentPerson);
@@ -112,7 +118,6 @@ public class ProjectHome extends SlugHome<HIterationProject>
             Events.instance().raiseEvent("projectAdded");
          }
       }
-
 
       return retValue;
    }
