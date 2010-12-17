@@ -211,6 +211,11 @@ public class ServerConfigurationBean implements Serializable
             emailDomainValue.setValue(emailDomain);
          }
       }
+      else if (emailDomain != null && !emailDomain.isEmpty())
+      {
+         emailDomainValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_DOMAIN, emailDomain);
+         applicationConfigurationDAO.makePersistent(emailDomainValue);
+      }
 
       HApplicationConfiguration adminEmailValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_ADMIN_EMAIL);
       if (adminEmailValue != null)
