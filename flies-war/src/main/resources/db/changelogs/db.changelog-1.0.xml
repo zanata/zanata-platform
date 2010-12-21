@@ -2,10 +2,16 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
 
     <changeSet author="flies" id="mysql_baseline" dbms="mysql">
+    	<preConditions onFail="MARK_RAN">
+    	    <not><tableExists tableName="HAccount"/></not>
+    	</preConditions>
     	<comment>mysql baseline schema</comment>
     	<sqlFile path="db/mysql/mysql_baseline.sql" stripComments="true" />
     </changeSet>
     <changeSet author="flies" id="h2_baseline" dbms="h2">
+    	<preConditions onFail="MARK_RAN">
+    	    <not><tableExists tableName="HAccount"/></not>
+    	</preConditions>
     	<comment>h2 baseline schema</comment>
     	<sqlFile path="db/h2/h2_baseline.sql" stripComments="true" />
     </changeSet>
