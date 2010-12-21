@@ -94,7 +94,6 @@
     <property name="binaryDir">META-INF/testdata</property>
     <property name="datasets">
         <value>META-INF/testdata/AccountData.dbunit.xml</value>
-        <value>META-INF/testdata/CommunitiesData.dbunit.xml</value>
         <value>META-INF/testdata/ProjectsData.dbunit.xml</value>
         <value>META-INF/testdata/LocalesData.dbunit.xml</value>
     </property>

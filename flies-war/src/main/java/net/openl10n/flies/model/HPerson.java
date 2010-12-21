@@ -30,7 +30,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
@@ -61,9 +60,6 @@ public class HPerson extends AbstractFliesEntity implements Serializable
 
    private Set<HLocale> tribeMemberships;
 
-   private Set<HCommunity> communityOwnerships;
-   private Set<HCommunity> communityOfficerships;
-   private Set<HCommunity> communityMemberships;
 
    @NotEmpty
    @Length(min = 2, max = 80)
@@ -135,41 +131,6 @@ public class HPerson extends AbstractFliesEntity implements Serializable
    public void setTribeMemberships(Set<HLocale> tribeMemberships)
    {
       this.tribeMemberships = tribeMemberships;
-   }
-
-   @OneToMany(mappedBy = "owner")
-   public Set<HCommunity> getCommunityOwnerships()
-   {
-      return communityOwnerships;
-   }
-
-   public void setCommunityOwnerships(Set<HCommunity> communityOwnerships)
-   {
-      this.communityOwnerships = communityOwnerships;
-   }
-
-   @ManyToMany
-   @JoinTable(name = "HCommunity_Officer", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "communityId"))
-   public Set<HCommunity> getCommunityOfficerships()
-   {
-      return communityOfficerships;
-   }
-
-   public void setCommunityOfficerships(Set<HCommunity> communityOfficerships)
-   {
-      this.communityOfficerships = communityOfficerships;
-   }
-
-   @ManyToMany
-   @JoinTable(name = "HCommunity_Member", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "communityId"))
-   public Set<HCommunity> getCommunityMemberships()
-   {
-      return communityMemberships;
-   }
-
-   public void setCommunityMemberships(Set<HCommunity> communityMemberships)
-   {
-      this.communityMemberships = communityMemberships;
    }
 
    @Override

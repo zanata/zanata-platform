@@ -124,42 +124,6 @@
   
   <page view-id="/admin/languagemanager.xhtml" action="#{languageSearchAction.loadSupportedLanguage}" />
 
-  <!-- Community -->
-
-  <page view-id="/community/community.xhtml">
-    <param name="slug" value="#{communityHome.id}" />
-    <action execute="#{communityHome.validateSuppliedId}" />
-  </page>
-
-  <page view-id="/community/create_community.xhtml">
-    <restrict>#{s:hasPermission(communityHome.instance, 'insert')}</restrict>
-    <navigation from-action="#{communityHome.persist}">
-      <rule if="#{communityHome.managed}">
-        <redirect view-id="/community/community.xhtml">
-          <param name="slug" value="#{communityHome.instance.slug}" />
-        </redirect>
-      </rule>
-    </navigation>
-    <navigation from-action="#{communityHome.cancel}">
-      <redirect view-id="/community/home.xhtml" />
-    </navigation>
-  </page>
-
-  <page view-id="/community/edit.xhtml">
-    <param name="slug" value="#{communityHome.id}" />
-    
-    <!-- can't use <restrict> here either -->
-    <action execute="#{identity.checkPermission(communityHome.instance, 'update')}" />
-    <navigation from-action="#{communityHome.update}">
-      <redirect view-id="/community/community.xhtml"
-        include-page-params="true" />
-    </navigation>
-    <navigation from-action="#{communityHome.cancel}">
-      <redirect view-id="/community/community.xhtml"
-        include-page-params="true" />
-    </navigation>
-  </page>
-
   <!-- Profile -->
 
   <page view-id="/profile/edit.xhtml">
