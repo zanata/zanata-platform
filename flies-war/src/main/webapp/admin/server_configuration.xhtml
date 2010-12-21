@@ -58,7 +58,7 @@
               </h:graphicImage>
             </s:decorate>
                 
-            <s:decorate id="domainField" template="../WEB-INF/layout/edit.xhtml">
+            <s:decorate id="emailDomainField" template="../WEB-INF/layout/edit.xhtml">
               <ui:define name="label">#{messages['jsf.EmailDomainName']}</ui:define>
               <h:inputText id="url" value="#{serverConfigurationBean.emailDomain}">
                 <a4j:support event="onblur" reRender="emailDomainField" ajaxSingle="false"/>
