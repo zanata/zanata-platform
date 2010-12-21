@@ -16,7 +16,12 @@
 
 		<env.debug>false</env.debug>
 		<env.import.testdata>false</env.import.testdata>
-		<env.hibernate.hbm2ddl.auto>validate</env.hibernate.hbm2ddl.auto>
+
+		<!-- 
+		It would be nice to use 'validate' but it tries to validate 
+		before LiquibaseServletListener has updated the database
+		 -->
+		<env.hibernate.hbm2ddl.auto></env.hibernate.hbm2ddl.auto>
 		<env.hibernate.show_sql>false</env.hibernate.show_sql>
 		<env.hibernate.format_sql>false</env.hibernate.format_sql>
 		<env.hibernate.indexBase>fliessearchindex</env.hibernate.indexBase>
@@ -756,7 +761,6 @@
 			<properties>
 				<env.debug>false</env.debug>
 				<env.import.testdata>false</env.import.testdata>
-				<env.hibernate.hbm2ddl.auto>validate</env.hibernate.hbm2ddl.auto>
 				<env.hibernate.show_sql>false</env.hibernate.show_sql>
 				<env.hibernate.format_sql>false</env.hibernate.format_sql>
 			</properties>
@@ -773,7 +777,6 @@
 			<properties>
 				<env.debug>true</env.debug>
 				<env.import.testdata>true</env.import.testdata>
-				<env.hibernate.hbm2ddl.auto>create-drop</env.hibernate.hbm2ddl.auto>
 				<env.hibernate.show_sql>true</env.hibernate.show_sql>
 				<env.hibernate.format_sql>true</env.hibernate.format_sql>
 				<extra.servlets><![CDATA[-->
