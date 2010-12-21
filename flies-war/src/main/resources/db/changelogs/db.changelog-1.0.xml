@@ -21,8 +21,46 @@
     Don't change the author, or LiquiBase will treat it as a separate changeSet.
      -->
     <changeSet author="flies" id="mysql_triggers" runOnChange="true" dbms="mysql">
-    	<comment>mysql triggers</comment>
-    	<sqlFile path="db/mysql/create_trigger.sql" stripComments="true" endDelimiter="GO" />
+        <comment>mysql triggers</comment>
+        <sql>
+            DROP TRIGGER IF EXISTS `HDocument_Update`
+        </sql>
+        <sql splitStatements="false">
+            CREATE TRIGGER `HDocument_Update`
+               BEFORE UPDATE ON `HDocument`
+               FOR EACH ROW BEGIN
+                  IF NEW.revision != OLD.revision THEN
+                     INSERT INTO HDocumentHistory(document_id,revision,contentType,docId,locale,name,path,lastChanged,last_modified_by_id,obsolete) 
+                        VALUES (OLD.id,OLD.revision,OLD.contentType,OLD.docId,OLD.locale,OLD.name,OLD.path,OLD.lastChanged,OLD.last_modified_by_id,OLD.obsolete);
+                  END IF;
+               END
+        </sql>
+        <sql>
+            DROP TRIGGER IF EXISTS `HTextFlow_Update`
+        </sql>
+        <sql splitStatements="false">
+            CREATE TRIGGER `HTextFlow_Update`
+               BEFORE UPDATE on `HTextFlow`
+               FOR EACH ROW BEGIN
+                  IF NEW.revision != OLD.revision THEN
+                     INSERT INTO HTextFlowHistory(tf_id,revision,content, obsolete, pos)
+                        VALUES (OLD.id,OLD.revision,OLD.content,OLD.obsolete,OLD.pos);
+                  END IF;
+               END
+        </sql>
+        <sql>
+            DROP TRIGGER IF EXISTS `HTextFlowTarget_Update`
+        </sql>
+        <sql splitStatements="false">
+            CREATE TRIGGER `HTextFlowTarget_Update`
+               BEFORE UPDATE on `HTextFlowTarget`
+               FOR EACH ROW BEGIN
+                  IF NEW.versionNum != OLD.versionNum THEN
+                     INSERT INTO HTextFlowTargetHistory (target_id,versionNum,content, lastChanged, last_modified_by_id, state, tf_revision)
+                        VALUES (OLD.id,OLD.versionNum,OLD.content,OLD.lastChanged,OLD.last_modified_by_id,OLD.state,OLD.tf_revision);
+                  END IF;
+               END
+        </sql>
     </changeSet>
     <changeSet author="flies" id="h2_triggers" runOnChange="true" dbms="h2">
     	<comment>h2 triggers</comment>
