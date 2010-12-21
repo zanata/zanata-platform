@@ -1,47 +1,45 @@
+/*
+ * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * @author tags. See the copyright.txt file in the distribution for a full
+ * listing of individual contributors.
+ * 
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+ * site: http://www.fsf.org.
+ */
 package net.openl10n.flies.webtrans.client;
 
-import java.util.ArrayList;
-
-import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import net.openl10n.flies.common.TransUnitCount;
 import net.openl10n.flies.webtrans.client.AppPresenter.Display.MainView;
-import net.openl10n.flies.webtrans.client.editor.HasTransUnitCount;
-import net.openl10n.flies.webtrans.client.editor.filter.TransFilterPresenter;
-import net.openl10n.flies.webtrans.client.editor.table.TableEditorPresenter;
 import net.openl10n.flies.webtrans.client.events.DocumentSelectionEvent;
 import net.openl10n.flies.webtrans.client.events.DocumentSelectionHandler;
 import net.openl10n.flies.webtrans.client.events.NotificationEvent;
 import net.openl10n.flies.webtrans.client.events.NotificationEventHandler;
-import net.openl10n.flies.webtrans.client.events.TransUnitUpdatedEvent;
-import net.openl10n.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
 import net.openl10n.flies.webtrans.client.rpc.CachingDispatchAsync;
-import net.openl10n.flies.webtrans.client.ui.HasPager;
 import net.openl10n.flies.webtrans.shared.auth.Identity;
 import net.openl10n.flies.webtrans.shared.model.DocumentId;
 import net.openl10n.flies.webtrans.shared.model.DocumentInfo;
-import net.openl10n.flies.webtrans.shared.model.DocumentStatus;
 import net.openl10n.flies.webtrans.shared.model.WorkspaceContext;
-import net.openl10n.flies.webtrans.shared.rpc.GetProjectStatusCount;
-import net.openl10n.flies.webtrans.shared.rpc.GetProjectStatusCountResult;
-
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.gen2.table.event.client.PageChangeEvent;
-import com.google.gwt.gen2.table.event.client.PageChangeHandler;
-import com.google.gwt.gen2.table.event.client.PageCountChangeEvent;
-import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -52,7 +50,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
    public interface Display extends WidgetDisplay
    {
-
       enum MainView
       {
          Documents, Editor;
@@ -60,11 +57,9 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 
       void setDocumentListView(Widget documentListView);
 
-      void setEditorView(Widget editorView);
+      void setTranslationView(Widget translationView);
 
-      void setSidePanel(Widget sidePanel);
-
-      void showInMainView(MainView view);
+      void showInMainView(MainView editor);
 
       HasClickHandlers getSignOutLink();
 
@@ -82,10 +77,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    }
 
    private final DocumentListPresenter documentListPresenter;
-   private final TranslationEditorPresenter translationEditorPresenter;
-   private final SidePanelPresenter sidePanelPresenter;
+   private final TranslationPresenter translationPresenter;
    private final WorkspaceContext workspaceContext;
-   private final DispatchAsync dispatcher;
    private final Identity identity;
 
    private final WebTransMessages messages;
@@ -93,15 +86,13 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
    private DocumentId selectedDocument;
 
    @Inject
-   public AppPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TableEditorPresenter tableEditorPresenter, final TranslationEditorPresenter translationEditorPresenter, final DocumentListPresenter documentListPresenter, final TransUnitNavigationPresenter transUnitNavigationPresenter, final SidePanelPresenter sidePanelPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages)
+   public AppPresenter(Display display, EventBus eventBus, CachingDispatchAsync dispatcher, final TranslationPresenter translationPresenter, final DocumentListPresenter documentListPresenter, final Identity identity, final WorkspaceContext workspaceContext, final WebTransMessages messages)
    {
       super(display, eventBus);
       this.identity = identity;
       this.messages = messages;
-      this.dispatcher = dispatcher;
       this.documentListPresenter = documentListPresenter;
-      this.translationEditorPresenter = translationEditorPresenter;
-      this.sidePanelPresenter = sidePanelPresenter;
+      this.translationPresenter = translationPresenter;
       this.workspaceContext = workspaceContext;
    }
 
@@ -124,7 +115,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
             PopupPanel popup = new PopupPanel(true);
             popup.addStyleDependentName("Notification");
             popup.addStyleName("Severity-" + event.getSeverity().name());
-            Widget center = translationEditorPresenter.getDisplay().asWidget();
+            Widget center = documentListPresenter.getDisplay().asWidget();
             popup.setWidth(center.getOffsetWidth() - 40 + "px");
             popup.setWidget(new Label(event.getMessage()));
             popup.setPopupPosition(center.getAbsoluteLeft() + 20, center.getAbsoluteTop() + 30);
@@ -135,8 +126,12 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       Window.enableScrolling(false);
 
       documentListPresenter.bind();
+      translationPresenter.bind();
 
       display.setDocumentListView(documentListPresenter.getDisplay().asWidget());
+      display.setTranslationView(translationPresenter.getDisplay().asWidget());
+      display.showInMainView(MainView.Documents);
+
 
       registerHandler(eventBus.addHandler(DocumentSelectionEvent.getType(), new DocumentSelectionHandler()
       {
@@ -151,13 +146,6 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          }
       }));
 
-      translationEditorPresenter.bind();
-      display.setEditorView(translationEditorPresenter.getDisplay().asWidget());
-
-      sidePanelPresenter.bind();
-      display.setSidePanel(sidePanelPresenter.getDisplay().asWidget());
-
-      display.showInMainView(MainView.Documents);
 
       registerHandler(display.getDocumentsLink().addClickHandler(new ClickHandler()
       {

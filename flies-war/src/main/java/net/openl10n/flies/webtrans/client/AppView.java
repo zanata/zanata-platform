@@ -1,28 +1,37 @@
+/*
+ * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * @author tags. See the copyright.txt file in the distribution for a full
+ * listing of individual contributors.
+ * 
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+ * site: http://www.fsf.org.
+ */
 package net.openl10n.flies.webtrans.client;
 
-import net.openl10n.flies.webtrans.client.editor.HasTransUnitCount;
-import net.openl10n.flies.webtrans.client.editor.HasTransUnitCount.CountUnit;
-import net.openl10n.flies.webtrans.client.ui.HasPager;
-import net.openl10n.flies.webtrans.client.ui.Pager;
 import net.openl10n.flies.webtrans.shared.model.DocumentInfo;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.gen2.logging.shared.Log;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -42,16 +51,14 @@ public class AppView extends Composite implements AppPresenter.Display
    SpanElement user, selectedDocumentSpan, selectedDocumentPathSpan;
 
    @UiField
-   LayoutPanel editorContainer, sidePanelContainer, sidePanelOuterContainer;
+   LayoutPanel container;
 
    @UiField(provided = true)
    final Resources resources;
 
-   @UiField
-   SplitLayoutPanel mainSplitPanel;
-
    private Widget documentListView;
-   private Widget editorView;
+
+   private Widget translationView;
 
    final WebTransMessages messages;
 
@@ -64,7 +71,6 @@ public class AppView extends Composite implements AppPresenter.Display
       StyleInjector.inject(resources.style().getText(), true);
 
       initWidget(uiBinder.createAndBindUi(this));
-      mainSplitPanel.setWidgetMinSize(sidePanelOuterContainer, 200);
 
       helpLink.setHref(messages.hrefHelpLink());
       helpLink.setTarget("_BLANK");
@@ -92,12 +98,12 @@ public class AppView extends Composite implements AppPresenter.Display
       switch (view)
       {
       case Documents:
-         editorContainer.setWidgetTopBottom(documentListView, 0, Unit.PX, 0, Unit.PX);
-         editorContainer.setWidgetTopHeight(editorView, 0, Unit.PX, 0, Unit.PX);
+         container.setWidgetTopBottom(documentListView, 0, Unit.PX, 0, Unit.PX);
+         container.setWidgetTopHeight(translationView, 0, Unit.PX, 0, Unit.PX);
          break;
       case Editor:
-         editorContainer.setWidgetTopBottom(editorView, 0, Unit.PX, 0, Unit.PX);
-         editorContainer.setWidgetTopHeight(documentListView, 0, Unit.PX, 0, Unit.PX);
+         container.setWidgetTopBottom(translationView, 0, Unit.PX, 0, Unit.PX);
+         container.setWidgetTopHeight(documentListView, 0, Unit.PX, 0, Unit.PX);
          break;
       }
    }
@@ -105,23 +111,17 @@ public class AppView extends Composite implements AppPresenter.Display
    @Override
    public void setDocumentListView(Widget documentListView)
    {
-      this.editorContainer.add(documentListView);
+      this.container.add(documentListView);
       this.documentListView = documentListView;
    }
 
    @Override
-   public void setEditorView(Widget editorView)
+   public void setTranslationView(Widget editorView)
    {
-      this.editorContainer.add(editorView);
-      this.editorView = editorView;
+      this.container.add(editorView);
+      this.translationView = editorView;
    }
 
-   @Override
-   public void setSidePanel(Widget sidePanel)
-   {
-      sidePanelContainer.clear();
-      sidePanelContainer.add(sidePanel);
-   }
 
    @Override
    public HasClickHandlers getHelpLink()
