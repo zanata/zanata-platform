@@ -2,11 +2,26 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
     <changeSet author="sflaniga@redhat.com" id="1">
     	<comment>remove HCommunity tables</comment>
-    	<dropAllForeignKeyConstraints baseTableName="HCommunity_Member"/>
+    	
+    	<dropForeignKeyConstraints
+    		constraintName="FK8BEBF03860C55B1B"
+    		baseTableName="HCommunity_Member"/>
+    	<dropForeignKeyConstraints
+    		constraintName="FK8BEBF038AF83AE57"
+    		baseTableName="HCommunity_Member"/>
     	<dropTable tableName="HCommunity_Member"/>
-    	<dropAllForeignKeyConstraints baseTableName="HCommunity_Officer"/>
+
+    	<dropForeignKeyConstraints
+    		constraintName="FK5CB3E75860C55B1B"
+    		baseTableName="HCommunity_Officer"/>
+    	<dropForeignKeyConstraints
+    		constraintName="FK5CB3E758AF83AE57"
+    		baseTableName="HCommunity_Officer"/>
     	<dropTable tableName="HCommunity_Officer"/>
-    	<dropAllForeignKeyConstraints baseTableName="HCommunity"/>
+
+    	<dropForeignKeyConstraints
+    		constraintName="FKD3DF208177D52F9"
+    		baseTableName="HCommunity"/>
     	<dropTable tableName="HCommunity"/>
     </changeSet>
 </databaseChangeLog>
