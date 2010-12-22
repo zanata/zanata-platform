@@ -145,19 +145,23 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    public void setList(ArrayList<DocumentInfo> sortedList)
    {
       clear();
+      int count = 0;
       for (int i = 0; i < sortedList.size(); i++)
       {
          DocumentInfo doc = sortedList.get(i);
          DocumentNode node;
          if (doc.getPath() == null || doc.getPath().isEmpty())
          {
-            node = new DocumentNode(resources, messages, doc, dispatcher, documentNodeClickHandler, eventBus);
+            node = new DocumentNode(resources, messages, doc, dispatcher, documentNodeClickHandler, eventBus, count);
+            count++;
             add(node);
          }
          else
          {
             FolderNode folder = new FolderNode(resources, doc);
-            node = new DocumentNode(resources, messages, doc, dispatcher, documentNodeClickHandler, eventBus);
+            count++;
+            node = new DocumentNode(resources, messages, doc, dispatcher, documentNodeClickHandler, eventBus, count);
+            count++;
             folder.addChild(node);
             add(folder);
          }
