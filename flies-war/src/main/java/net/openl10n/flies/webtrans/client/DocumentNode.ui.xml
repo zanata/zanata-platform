@@ -42,9 +42,23 @@
 			border-top: 1px solid #f5f5f5;
 			border-bottom: 1px solid #f5f5f5;
 		}
+		
+		.unitStatus {
+			float: right;
+			width: 100px;
+			height: 1.2em;
+		}
+		
 	</ui:style>
-	<g:FlowPanel styleName='{style.body}' ui:field='rootPanel'>
-		<g:Image resource='{resources.documentImage}'  />
-		<g:Label ui:field='documentLabel' styleName="{style.label}" />
-	</g:FlowPanel>
+	<g:LayoutPanel>
+		<g:layer top='2px' height='28px' left="2px" right="104px">
+			<g:FlowPanel styleName='{style.body}' ui:field='rootPanel'>
+				<g:Image resource='{resources.documentImage}'  />
+				<g:Label ui:field='documentLabel' styleName="{style.label}" />
+			</g:FlowPanel>
+		</g:layer>
+		<g:layer top='6px' height='18px' right="2px" width="100px">
+			<f:TransUnitCountBar ui:field='transUnitCountBar' styleName="{style.unitStatus}"/>
+		</g:layer>
+	</g:LayoutPanel>
 </ui:UiBinder> 

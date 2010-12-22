@@ -1,12 +1,32 @@
+/*
+ * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * @author tags. See the copyright.txt file in the distribution for a full
+ * listing of individual contributors.
+ * 
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+ * site: http://www.fsf.org.
+ */
 package net.openl10n.flies.webtrans.client;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
 
+import net.customware.gwt.presenter.client.EventBus;
 import net.openl10n.flies.webtrans.client.editor.HasTransUnitCount;
 import net.openl10n.flies.webtrans.client.editor.filter.ContentFilter;
+import net.openl10n.flies.webtrans.client.rpc.CachingDispatchAsync;
 import net.openl10n.flies.webtrans.client.ui.ClearableTextBox;
 import net.openl10n.flies.webtrans.client.ui.UiMessages;
 import net.openl10n.flies.webtrans.shared.model.DocumentId;
@@ -23,11 +43,9 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -63,14 +81,20 @@ public class DocumentListView extends Composite implements DocumentListPresenter
 
    final WebTransMessages messages;
 
+   final CachingDispatchAsync dispatcher;
+
+   final EventBus eventBus;
+
    @Inject
-   public DocumentListView(Resources resources, WebTransMessages messages, UiMessages uiMessages)
+   public DocumentListView(Resources resources, WebTransMessages messages, UiMessages uiMessages, final CachingDispatchAsync dispatcher, EventBus eventBus)
    {
       this.resources = resources;
       this.messages = messages;
       filterTextBox = new ClearableTextBox(resources, uiMessages);
       nodes = new HashMap<DocumentId, DocumentNode>();
       transUnitCountBar = new TransUnitCountBar(messages);
+      this.dispatcher = dispatcher;
+      this.eventBus = eventBus;
       initWidget(uiBinder.createAndBindUi(this));
    }
 
@@ -111,6 +135,7 @@ public class DocumentListView extends Composite implements DocumentListPresenter
       return documentList.getWidgetCount();
    }
 
+   @SuppressWarnings("rawtypes")
    public Node getChild(int index)
    {
       return (Node) documentList.getWidget(index);
@@ -126,13 +151,13 @@ public class DocumentListView extends Composite implements DocumentListPresenter
          DocumentNode node;
          if (doc.getPath() == null || doc.getPath().isEmpty())
          {
-            node = new DocumentNode(resources, messages, doc, documentNodeClickHandler);
+            node = new DocumentNode(resources, messages, doc, dispatcher, documentNodeClickHandler, eventBus);
             add(node);
          }
          else
          {
             FolderNode folder = new FolderNode(resources, doc);
-            node = new DocumentNode(resources, messages, doc, documentNodeClickHandler);
+            node = new DocumentNode(resources, messages, doc, dispatcher, documentNodeClickHandler, eventBus);
             folder.addChild(node);
             add(folder);
          }
