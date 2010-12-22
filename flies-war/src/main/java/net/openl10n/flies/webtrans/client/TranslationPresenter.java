@@ -39,6 +39,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
 
    }
 
+   public static final Place PLACE = new Place("TranslationView");
    private final TranslationEditorPresenter translationEditorPresenter;
    private final SidePanelPresenter sidePanelPresenter;
 
@@ -73,6 +74,8 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    @Override
    protected void onUnbind()
    {
+      translationEditorPresenter.unbind();
+      sidePanelPresenter.unbind();
    }
 
    @Override
@@ -84,7 +87,6 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    @Override
    protected void onPlaceRequest(PlaceRequest request)
    {
-
    }
 
 }
