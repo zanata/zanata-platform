@@ -1,25 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
     <changeSet author="sflaniga@redhat.com" id="1">
+
+    	<validCheckSum>
+    		<comment>originally used dropAllForeignKeyConstraints</comment>
+    		cfb156591044f08e333d7ca2d5638db3
+    	</validCheckSum>
+
     	<comment>remove HCommunity tables</comment>
     	
-    	<dropForeignKeyConstraints
+    	<dropForeignKeyConstraint
     		constraintName="FK8BEBF03860C55B1B"
     		baseTableName="HCommunity_Member"/>
-    	<dropForeignKeyConstraints
+    	<dropForeignKeyConstraint
     		constraintName="FK8BEBF038AF83AE57"
     		baseTableName="HCommunity_Member"/>
     	<dropTable tableName="HCommunity_Member"/>
 
-    	<dropForeignKeyConstraints
+    	<dropForeignKeyConstraint
     		constraintName="FK5CB3E75860C55B1B"
     		baseTableName="HCommunity_Officer"/>
-    	<dropForeignKeyConstraints
+    	<dropForeignKeyConstraint
     		constraintName="FK5CB3E758AF83AE57"
     		baseTableName="HCommunity_Officer"/>
     	<dropTable tableName="HCommunity_Officer"/>
 
-    	<dropForeignKeyConstraints
+    	<dropForeignKeyConstraint
     		constraintName="FKD3DF208177D52F9"
     		baseTableName="HCommunity"/>
     	<dropTable tableName="HCommunity"/>
