@@ -182,6 +182,10 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          }
       }));
 
+      // TODO get rid of this
+      // It is fetching stats for all documents in the workspace,
+      // but then it adds them all up
+      // and discards the individual document stats.
       dispatcher.execute(new GetProjectStatusCount(), new AsyncCallback<GetProjectStatusCountResult>()
       {
          @Override
