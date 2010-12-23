@@ -33,7 +33,6 @@ import net.openl10n.flies.webtrans.shared.rpc.GetStatusCountResult;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.CssResource;
@@ -43,7 +42,6 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.impl.HyperlinkImpl;
 
@@ -68,8 +66,6 @@ public class DocumentNode extends Node<DocumentInfo>
    @UiField
    Label documentLabel;
 
-   @UiField
-   LayoutPanel layoutPanel;
 
    @UiField(provided = true)
    final Resources resources;
@@ -87,12 +83,13 @@ public class DocumentNode extends Node<DocumentInfo>
    private final TransUnitCount statusCount = new TransUnitCount();
    private final CachingDispatchAsync dispatcher;
 
-   public DocumentNode(Resources resources, WebTransMessages messages, CachingDispatchAsync dispatcher, int nd)
+   public DocumentNode(Resources resources, WebTransMessages messages, CachingDispatchAsync dispatcher)
    {
       this.resources = resources;
       this.messages = messages;
       this.transUnitCountBar = new TransUnitCountBar(messages);
       this.dispatcher = dispatcher;
+
       rootPanel = new FlowPanel()
       {
          public void onBrowserEvent(Event event)
@@ -117,21 +114,19 @@ public class DocumentNode extends Node<DocumentInfo>
       };
 
       initWidget(uiBinder.createAndBindUi(this));
-      layoutPanel.setWidgetTopHeight(rootPanel, 2.0 + nd * 28, Unit.PX, 28, Unit.PX);
-      layoutPanel.setWidgetTopHeight(transUnitCountBar, 6.0 + nd * 28, Unit.PX, 18, Unit.PX);
       rootPanel.sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT | Event.ONCLICK);
    }
 
 
-   public DocumentNode(Resources resources, WebTransMessages messages, DocumentInfo doc, CachingDispatchAsync dispatcher, int nodeCount)
+   public DocumentNode(Resources resources, WebTransMessages messages, DocumentInfo doc, CachingDispatchAsync dispatcher)
    {
-      this(resources, messages, dispatcher, nodeCount);
+      this(resources, messages, dispatcher);
       setDataItem(doc);
    }
 
-   public DocumentNode(Resources resources, WebTransMessages messages, DocumentInfo doc, CachingDispatchAsync dispatcher, ClickHandler clickHandler, EventBus eventBus, int nodeCount)
+   public DocumentNode(Resources resources, WebTransMessages messages, DocumentInfo doc, CachingDispatchAsync dispatcher, ClickHandler clickHandler, EventBus eventBus)
    {
-      this(resources, messages, doc, dispatcher, nodeCount);
+      this(resources, messages, doc, dispatcher);
       addHandler(clickHandler, ClickEvent.getType());
       eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler()
       {
