@@ -26,6 +26,7 @@ import net.openl10n.flies.model.HAccount;
 import net.openl10n.flies.model.HPerson;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
@@ -48,6 +49,9 @@ public class AuthenticationEvents implements Serializable
 
    @Logger
    Log log;
+   
+   @Out(required = false, scope = ScopeType.SESSION)
+   HAccount authenticatedAccount;
 
    @In
    FliesExternalLoginBean fliesExternalLoginBean;
@@ -56,7 +60,7 @@ public class AuthenticationEvents implements Serializable
    public void loginSuccessful(HAccount account)
    {
       log.info("Account {0} authenticated", account.getUsername());
-
+      authenticatedAccount = account;
       HPerson authenticatedPerson = account.getPerson();
       // insert authenticatedPerson for use in security.drl rules
       RuleBasedPermissionResolver.instance().getSecurityContext().insert(authenticatedPerson);
