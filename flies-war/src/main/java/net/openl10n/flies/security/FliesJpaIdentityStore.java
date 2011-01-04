@@ -120,6 +120,10 @@ public class FliesJpaIdentityStore extends JpaIdentityStore
    {
       if (Events.exists())
       {
+         if (Contexts.isEventContextActive())
+         {
+            Contexts.getEventContext().set(AUTHENTICATED_USER, user);
+         }
          if (Contexts.isSessionContextActive())
          {
             Contexts.getSessionContext().set(AUTHENTICATED_USER, user);
