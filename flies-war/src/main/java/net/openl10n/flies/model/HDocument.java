@@ -348,7 +348,7 @@ public class HDocument extends AbstractFliesEntity implements IDocumentHistory
    {
       if (Contexts.isSessionContextActive())
       {
-         HAccount account = (HAccount) Component.getInstance(JpaIdentityStore.AUTHENTICATED_USER, ScopeType.SESSION);
+         HAccount account = (HAccount) Component.getInstance("authenticatedAccount", ScopeType.SESSION);
          setLastModifiedBy(account.getPerson());
       }
    }

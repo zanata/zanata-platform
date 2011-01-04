@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import net.customware.gwt.dispatch.shared.Result;
 import net.openl10n.flies.webtrans.shared.model.DocumentStatus;
 
-
+@Deprecated
 public class GetProjectStatusCountResult implements Result
 {
    private static final long serialVersionUID = 1L;
