@@ -27,7 +27,6 @@
 		<env.hibernate.indexBase>fliessearchindex</env.hibernate.indexBase>
 
 		<war.name>flies</war.name>
-		<context.root>flies</context.root>
 		<!-- Default database settings -->
 		<env.dbunit.type>HSQL</env.dbunit.type>
 		<ds.jndi.name>fliesTestDatasource</ds.jndi.name>
@@ -365,7 +364,7 @@
 							<deployer>
 								<deployables>
 									<deployable>
-										<pingURL>http://localhost:${port}/${context.root}/</pingURL>
+										<pingURL>http://localhost:${port}/${war.name}/</pingURL>
 										<location>${project.build.directory}/flies</location>
 									</deployable>
 								</deployables>
@@ -609,7 +608,6 @@
 			<id>flies-test</id>
 			<properties>
 				<war.name>flies-test</war.name>
-				<context.root>flies-test</context.root>
 			</properties>
 		</profile>
 
