@@ -143,7 +143,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    private boolean isFocused = false;
 
-   private Image stateImage;
+   // private Image stateImage;
 
    private int curRow;
    private int curCol;
@@ -267,8 +267,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       layoutTable.add(operationsPanel);
 
       // icon as the current state of the unit
-      stateImage = new Image(resources.newUnit());
-      operationsPanel.add(stateImage);
+      // stateImage = new Image(resources.newUnit());
+      // operationsPanel.add(stateImage);
 
       // Add content widget
       toggleFuzzy = new CheckBox(messages.fuzzy());
@@ -398,18 +398,18 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       textArea.setFocus(true);
       DOM.scrollIntoView(textArea.getElement());
       toggleFuzzy.setValue(cellValue.getStatus() == ContentState.NeedReview);
-      refreshStateImage();
+      // refreshStateImage();
    }
 
-   private void refreshStateImage()
-   {
-      if (cellValue.getStatus() == ContentState.New)
-         stateImage.setUrl(resources.newUnit().getURL());
-      else if (cellValue.getStatus() == ContentState.NeedReview)
-         stateImage.setUrl(resources.fuzzyUnit().getURL());
-      else if (cellValue.getStatus() == ContentState.Approved)
-         stateImage.setUrl(resources.approvedUnit().getURL());
-   }
+   // private void refreshStateImage()
+   // {
+   // if (cellValue.getStatus() == ContentState.New)
+   // stateImage.setUrl(resources.newUnit().getURL());
+   // else if (cellValue.getStatus() == ContentState.NeedReview)
+   // stateImage.setUrl(resources.fuzzyUnit().getURL());
+   // else if (cellValue.getStatus() == ContentState.Approved)
+   // stateImage.setUrl(resources.approvedUnit().getURL());
+   // }
 
    /**
     * Accept the contents of the cell editor as the new cell value.
