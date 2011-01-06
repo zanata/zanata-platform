@@ -9,12 +9,10 @@
 	</ui:style>
 	<g:HTMLPanel>
 		<nobr>
-			<g:Image resource="{resources.prevFuzzy}" ui:field="prevFuzzy" styleName="{style.imageAnchor}"/>
-			<g:Image resource="{resources.prevUntranslated}" ui:field="prevUntranslated" styleName="{style.imageAnchor}"/>
+			<g:Image resource="{resources.prevUntranslated}" ui:field="prevFuzzyOrUntranslated" styleName="{style.imageAnchor}"/>
 			<g:Image resource="{resources.prevEntry}" ui:field="prevEntry" styleName="{style.imageAnchor}"/>
 			<g:Image resource="{resources.nextEntry}" ui:field="nextEntry" styleName="{style.imageAnchor}"/>
-			<g:Image resource="{resources.nextUntranslated}" ui:field="nextUntranslated" styleName="{style.imageAnchor}"/>
-			<g:Image resource="{resources.nextFuzzy}" ui:field="nextFuzzy" styleName="{style.imageAnchor}"/>
+			<g:Image resource="{resources.nextUntranslated}" ui:field="nextFuzzyOrUntranslated" styleName="{style.imageAnchor}"/>
 		</nobr>
 	</g:HTMLPanel>
 </ui:UiBinder> 

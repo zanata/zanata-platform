@@ -1,3 +1,23 @@
+/*
+ * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * @author tags. See the copyright.txt file in the distribution for a full
+ * listing of individual contributors.
+ * 
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+ * site: http://www.fsf.org.
+ */
 package net.openl10n.flies.webtrans.client.editor.table;
 
 import com.google.gwt.i18n.client.Messages;
@@ -24,26 +44,17 @@ public interface NavigationMessages extends Messages
    @DefaultMessage("Next Fuzzy")
    String nextFuzzy();
 
-   @DefaultMessage("Ctrl+Shift+PageDown")
-   String nextFuzzyShortcut();
-
-   @DefaultMessage("Prev Fuzzy")
-   String prevFuzzy();
-
-   @DefaultMessage("Ctrl+Shift+PageUp")
-   String prevFuzzyShortcut();
-
-   @DefaultMessage("Next Untranslated")
-   String nextUntranslated();
+   @DefaultMessage("Next Fuzzy or Untranslated")
+   String nextFuzzyOrUntranslated();
 
    @DefaultMessage("Alt+PageDown")
-   String nextUntranslatedShortcut();
+   String nextFuzzyOrUntranslatedShortcut();
 
-   @DefaultMessage("Prev Untranslated")
-   String prevUntranslated();
+   @DefaultMessage("Prev Fuzzy or Untranslated")
+   String prevFuzzyOrUntranslated();
 
    @DefaultMessage("Alt+PageUp")
-   String prevUntranslatedShortcut();
+   String prevFuzzyOrUntranslatedShortcut();
 
    @DefaultMessage("Save")
    String editSave();
