@@ -16,10 +16,13 @@ import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.hibernate.search.TranslatedFilterFactory;
 import net.openl10n.flies.model.po.HPotEntryData;
 import net.openl10n.flies.search.DefaultNgramAnalyzer;
+import net.openl10n.flies.util.OkapiUtil;
 
+import org.hibernate.annotations.AccessType;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyzer;
@@ -71,6 +74,7 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
 
    private HPotEntryData potEntryData;
    
+   private Long wordCount;
 
    public HTextFlow()
    {
@@ -79,9 +83,9 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
 
    public HTextFlow(HDocument document, String resId, String content)
    {
-      this.document = document;
-      this.resId = resId;
-      this.content = content;
+      setDocument(document);
+      setResId(resId);
+      setContent(content);
    }
 
 
@@ -184,6 +188,7 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
    @Type(type = "text")
    @Field(index = Index.TOKENIZED, analyzer = @Analyzer(impl = DefaultNgramAnalyzer.class))
    @Override
+   @AccessType("field")
    public String getContent()
    {
       return content;
@@ -192,6 +197,11 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
    public void setContent(String content)
    {
       this.content = content;
+      LocaleId docLocale = getDocument().getLocale().getLocaleId();
+      // TODO strip (eg) HTML tags before counting words. Needs more metadata
+      // about the content type.
+      long count = OkapiUtil.countWords(content, docLocale.getId());
+      setWordCount(count);
    }
 
    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "textFlow")
@@ -231,6 +241,18 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
       return potEntryData;
    }
 
+   @NotNull
+   public Long getWordCount()
+   {
+      return wordCount;
+   }
+
+   // this method is private because setContent(), and only setContent(), should
+   // be setting wordCount
+   private void setWordCount(Long wordCount)
+   {
+      this.wordCount = wordCount;
+   }
 
    /**
     * Used for debugging

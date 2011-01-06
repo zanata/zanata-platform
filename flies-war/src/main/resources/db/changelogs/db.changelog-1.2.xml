@@ -30,4 +30,21 @@
     		baseTableName="HCommunity"/>
     	<dropTable tableName="HCommunity"/>
     </changeSet>
+
+	<changeSet author="sflaniga@redhat.com" id="2">
+		<comment>add wordCount to HTextFlow</comment>
+		<addColumn tableName="HTextFlow">
+			<column name="wordCount" type="bigint" />
+		</addColumn>
+	</changeSet>
+
+	<changeSet author="sflaniga@redhat.com" id="3">
+		<comment>calculate existing word counts and enable non-null constraint on HTextFlow</comment>
+		<customChange class="net.openl10n.flies.liquibase.custom.CountWordsInHTextFlow" />
+		<modifyColumn tableName="HTextFlow">
+			<column name="wordCount" type="bigint">
+				<constraints nullable="false" />
+			</column>
+		</modifyColumn>
+	</changeSet>
 </databaseChangeLog>

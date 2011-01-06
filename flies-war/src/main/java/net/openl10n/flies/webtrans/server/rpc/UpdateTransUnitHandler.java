@@ -4,7 +4,6 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.common.LocaleId;
-import net.openl10n.flies.model.HIterationProject;
 import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.model.HProject;
 import net.openl10n.flies.model.HTextFlow;
@@ -107,7 +106,8 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
 
       session.flush();
 
-      TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), action.getTransUnitId(), prevStatus, action.getContentState());
+      long wordCount = hTextFlow.getWordCount();
+      TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), action.getTransUnitId(), wordCount, prevStatus, action.getContentState());
 
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
       workspace.publish(event);

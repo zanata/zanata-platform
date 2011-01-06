@@ -1006,6 +1006,12 @@
 			<version>0.7</version>
 		</dependency>
 
+		<dependency>
+			<groupId>net.sf.okapi.steps</groupId>
+			<artifactId>okapi-step-wordcount</artifactId>
+			<version>0.9</version>
+		</dependency>
+
 		<!-- okapi-lib-search would otherwise use lucene 3.0.0 -->
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
