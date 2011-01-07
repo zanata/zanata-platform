@@ -70,6 +70,8 @@ public class GetTransUnitStatesHandler extends AbstractActionHandler<GetTransUni
       FliesIdentity.instance().checkLoggedIn();
       List<Long> results = new ArrayList<Long>();
 
+      // TODO get rid of getFuzzy and getNew, and implement
+      // getFuzzyOrUntranslated directly
       if (action.getState().equals(NavigationType.NeedReview))
       {
          results = getFuzzy(action);
