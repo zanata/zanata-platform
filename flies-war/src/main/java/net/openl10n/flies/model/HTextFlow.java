@@ -49,7 +49,6 @@ import org.hibernate.validator.NotNull;
 @FullTextFilterDef(name = "translated", impl = TranslatedFilterFactory.class, cache = FilterCacheModeType.INSTANCE_ONLY)
 public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComment
 {
-
    private static final long serialVersionUID = 3023080107971905435L;
 
    private Long id;
@@ -170,6 +169,7 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
    public void setDocument(HDocument document)
    {
       this.document = document;
+      updateWordCount();
    }
 
    @OneToOne(optional = true, cascade = CascadeType.ALL)
@@ -197,11 +197,7 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
    public void setContent(String content)
    {
       this.content = content;
-      LocaleId docLocale = getDocument().getLocale().getLocaleId();
-      // TODO strip (eg) HTML tags before counting words. Needs more metadata
-      // about the content type.
-      long count = OkapiUtil.countWords(content, docLocale.getId());
-      setWordCount(count);
+      updateWordCount();
    }
 
    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "textFlow")
@@ -252,6 +248,20 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
    private void setWordCount(Long wordCount)
    {
       this.wordCount = wordCount;
+   }
+
+   private void updateWordCount()
+   {
+      if (document == null && content == null)
+      {
+         // come back when the not-null constraints are satisfied!
+         return;
+      }
+      LocaleId docLocale = document.getLocale().getLocaleId();
+      // TODO strip (eg) HTML tags before counting words. Needs more metadata
+      // about the content type.
+      long count = OkapiUtil.countWords(content, docLocale.getId());
+      setWordCount(count);
    }
 
    /**
