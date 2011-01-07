@@ -142,9 +142,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
    private TransUnit selectedTransUnit;
    // private int lastRowNum;
    private List<Long> transIdNextFuzzyCache = new ArrayList<Long>();
-   private List<Long> transIdNextNewCache = new ArrayList<Long>();
    private List<Long> transIdPrevFuzzyCache = new ArrayList<Long>();
-   private List<Long> transIdPrevNewCache = new ArrayList<Long>();
 
    private int curRowIndex;
    private int curPage;
@@ -181,10 +179,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                selectedTransUnit = event.getSelectedItem();
                Log.info("SelectedTransUnit " + selectedTransUnit.getId());
                // Clean the cache when we click the new entry
-               if (!transIdNextNewCache.isEmpty())
-                  transIdNextNewCache.clear();
-               if (!transIdPrevNewCache.isEmpty())
-                  transIdPrevNewCache.clear();
                if (!transIdNextFuzzyCache.isEmpty())
                   transIdNextFuzzyCache.clear();
                if (!transIdPrevFuzzyCache.isEmpty())
@@ -240,12 +234,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                // Clear the cache
                if (!transIdNextFuzzyCache.isEmpty())
                   transIdNextFuzzyCache.clear();
-               if (!transIdNextNewCache.isEmpty())
-                  transIdNextNewCache.clear();
                if (!transIdPrevFuzzyCache.isEmpty())
                   transIdPrevFuzzyCache.clear();
-               if (!transIdPrevNewCache.isEmpty())
-                  transIdPrevNewCache.clear();
                // TODO this test never succeeds
                if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnitId()))
                {
@@ -551,8 +541,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       {
          curPage = display.getCurrentPage();
          curRowIndex = curPage * 50 + row;
-         if (curRowIndex < lastRowIndex)
-            transIdNextNewCache.clear();
          int rowIndex = curPage * 50 + row + 1;
          if (rowIndex < display.getTableModel().getRowCount())
          {
@@ -696,8 +684,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             {
                if (desiredState == NavigationType.FuzzyOrUntranslated)
                   transIdNextFuzzyCache = result.getUnits();
-               if (desiredState == NavigationType.New)
-                  transIdNextNewCache = result.getUnits();
                callBack.nextFuzzy(desiredState);
             }
          }
@@ -723,8 +709,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             {
                if (desiredState == NavigationType.FuzzyOrUntranslated)
                   transIdPrevFuzzyCache = result.getUnits();
-               if (desiredState == NavigationType.New)
-                  transIdPrevNewCache = result.getUnits();
                callBack.prevFuzzy(desiredState);
             }
          }
