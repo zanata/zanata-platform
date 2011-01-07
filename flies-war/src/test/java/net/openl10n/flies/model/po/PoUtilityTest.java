@@ -3,6 +3,8 @@ package net.openl10n.flies.model.po;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import net.openl10n.flies.rest.service.PoUtility;
+
 import org.fedorahosted.openprops.Properties;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
