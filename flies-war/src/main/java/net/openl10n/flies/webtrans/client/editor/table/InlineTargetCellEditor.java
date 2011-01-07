@@ -21,6 +21,7 @@
 package net.openl10n.flies.webtrans.client.editor.table;
 
 import net.openl10n.flies.common.ContentState;
+import net.openl10n.flies.common.NavigationType;
 import net.openl10n.flies.webtrans.client.Resources;
 import net.openl10n.flies.webtrans.shared.model.TransUnit;
 
@@ -242,11 +243,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             }
             else if (event.isAltKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN)
             { // alt-pagedown
-               handleNextState(ContentState.FuzzyOrUntranslated);
+               handleNextState(NavigationType.FuzzyOrUntranslated);
             }
             else if (event.isAltKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEUP)
             { // alt-pageup
-               handlePrevState(ContentState.FuzzyOrUntranslated);
+               handlePrevState(NavigationType.FuzzyOrUntranslated);
             }
             else if (event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_HOME)
             { // ctrl-home
@@ -305,12 +306,12 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       editRowCallback.gotoPrevRow(row);
    }
 
-   private void gotoNextFuzzy(int row, ContentState state)
+   private void gotoNextFuzzy(int row, NavigationType state)
    {
       editRowCallback.gotoNextFuzzy(row, state);
    }
 
-   private void gotoPrevFuzzy(int row, ContentState state)
+   private void gotoPrevFuzzy(int row, NavigationType state)
    {
       editRowCallback.gotoPrevFuzzy(row, state);
    }
@@ -494,12 +495,12 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       gotoPrevRow(curRow);
    }
 
-   public void handleNextState(ContentState state)
+   public void handleNextState(NavigationType state)
    {
       gotoNextFuzzy(curRow, state);
    }
 
-   public void handlePrevState(ContentState state)
+   public void handlePrevState(NavigationType state)
    {
       gotoPrevFuzzy(curRow, state);
    }

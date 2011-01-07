@@ -1,6 +1,6 @@
 package net.openl10n.flies.webtrans.client.events;
 
-import net.openl10n.flies.common.ContentState;
+import net.openl10n.flies.common.NavigationType;
 
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -22,7 +22,7 @@ public class NavTransUnitEvent extends GwtEvent<NavTransUnitHandler>
       return TYPE != null ? TYPE : (TYPE = new Type<NavTransUnitHandler>());
    }
 
-   private ContentState rowType;
+   private NavigationType rowType;
    private int step;
 
    /**
@@ -31,7 +31,7 @@ public class NavTransUnitEvent extends GwtEvent<NavTransUnitHandler>
     * @param typeValue
     * @param stepValue
     */
-   public NavTransUnitEvent(ContentState typeValue, int stepValue)
+   public NavTransUnitEvent(NavigationType typeValue, int stepValue)
    {
       this.rowType = typeValue;
       this.step = stepValue;
@@ -49,7 +49,7 @@ public class NavTransUnitEvent extends GwtEvent<NavTransUnitHandler>
       return getType();
    }
 
-   public ContentState getRowType()
+   public NavigationType getRowType()
    {
       return rowType;
    }

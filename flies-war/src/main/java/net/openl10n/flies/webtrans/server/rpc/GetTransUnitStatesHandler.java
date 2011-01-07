@@ -29,6 +29,7 @@ import java.util.TreeSet;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 import net.openl10n.flies.common.ContentState;
+import net.openl10n.flies.common.NavigationType;
 import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.model.HTextFlow;
 import net.openl10n.flies.model.HTextFlowTarget;
@@ -69,15 +70,15 @@ public class GetTransUnitStatesHandler extends AbstractActionHandler<GetTransUni
       FliesIdentity.instance().checkLoggedIn();
       List<Long> results = new ArrayList<Long>();
 
-      if (action.getState().equals(ContentState.NeedReview))
+      if (action.getState().equals(NavigationType.NeedReview))
       {
          results = getFuzzy(action);
       }
-      else if (action.getState().equals(ContentState.New))
+      else if (action.getState().equals(NavigationType.New))
       {
          results = getNew(action);
       }
-      else if (action.getState().equals(ContentState.FuzzyOrUntranslated))
+      else if (action.getState().equals(NavigationType.FuzzyOrUntranslated))
       {
          Set<Long> var = new TreeSet<Long>();
          if (action.isReverse())

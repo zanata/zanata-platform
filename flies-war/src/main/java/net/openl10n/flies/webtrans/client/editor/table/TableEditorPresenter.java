@@ -20,7 +20,7 @@
  */
 package net.openl10n.flies.webtrans.client.editor.table;
 
-import static net.openl10n.flies.webtrans.client.editor.table.TableConstants.MAX_PAGE_ROW;
+import static net.openl10n.flies.webtrans.client.editor.table.TableConstants.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,9 +30,8 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
-
-import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.common.EditState;
+import net.openl10n.flies.common.NavigationType;
 import net.openl10n.flies.webtrans.client.editor.DocumentEditorPresenter;
 import net.openl10n.flies.webtrans.client.editor.HasPageNavigation;
 import net.openl10n.flies.webtrans.client.editor.filter.ContentFilter;
@@ -45,6 +44,7 @@ import net.openl10n.flies.webtrans.client.events.DocumentSelectionHandler;
 import net.openl10n.flies.webtrans.client.events.NavTransUnitEvent;
 import net.openl10n.flies.webtrans.client.events.NavTransUnitHandler;
 import net.openl10n.flies.webtrans.client.events.NotificationEvent;
+import net.openl10n.flies.webtrans.client.events.NotificationEvent.Severity;
 import net.openl10n.flies.webtrans.client.events.TransMemoryCopyEvent;
 import net.openl10n.flies.webtrans.client.events.TransMemoryCopyHandler;
 import net.openl10n.flies.webtrans.client.events.TransUnitEditEvent;
@@ -52,7 +52,6 @@ import net.openl10n.flies.webtrans.client.events.TransUnitEditEventHandler;
 import net.openl10n.flies.webtrans.client.events.TransUnitSelectionEvent;
 import net.openl10n.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import net.openl10n.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
-import net.openl10n.flies.webtrans.client.events.NotificationEvent.Severity;
 import net.openl10n.flies.webtrans.client.rpc.CachingDispatchAsync;
 import net.openl10n.flies.webtrans.shared.auth.AuthenticationError;
 import net.openl10n.flies.webtrans.shared.auth.AuthorizationError;
@@ -345,7 +344,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                }
 
                // If goto Next or Prev Fuzzy/New Trans Unit
-               if (event.getRowType() == ContentState.FuzzyOrUntranslated)
+               if (event.getRowType() == NavigationType.FuzzyOrUntranslated)
                {
                   if (step > 0)
                      editor.handleNextState(event.getRowType());
@@ -618,7 +617,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       }
 
       @Override
-      public void nextFuzzyIndex(int row, ContentState state)
+      public void nextFuzzyIndex(int row, NavigationType state)
       {
          // Convert row number to row Index in table
          curPage = display.getCurrentPage();
@@ -629,7 +628,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       }
 
       @Override
-      public void prevFuzzyIndex(int row, ContentState state)
+      public void prevFuzzyIndex(int row, NavigationType state)
       {
          // Convert row number to row Index in table
          curPage = display.getCurrentPage();
@@ -684,7 +683,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
    private int lastRowIndex;
 
-   private void cacheNextFuzzy(final ContentState desiredState, final StatesCacheCallback callBack)
+   private void cacheNextFuzzy(final NavigationType desiredState, final StatesCacheCallback callBack)
    {
       isReqComplete = false;
       dispatcher.execute(new GetTransUnitsStates(documentId, curRowIndex, 3, false, desiredState), new AsyncCallback<GetTransUnitsStatesResult>()
@@ -695,9 +694,9 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             isReqComplete = true;
             if (!result.getUnits().isEmpty())
             {
-               if (desiredState == ContentState.FuzzyOrUntranslated)
+               if (desiredState == NavigationType.FuzzyOrUntranslated)
                   transIdNextFuzzyCache = result.getUnits();
-               if (desiredState == ContentState.New)
+               if (desiredState == NavigationType.New)
                   transIdNextNewCache = result.getUnits();
                callBack.nextFuzzy(desiredState);
             }
@@ -711,7 +710,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       });
    }
 
-   private void cachePrevFuzzy(final ContentState desiredState, final StatesCacheCallback callBack)
+   private void cachePrevFuzzy(final NavigationType desiredState, final StatesCacheCallback callBack)
    {
       isReqComplete = false;
       dispatcher.execute(new GetTransUnitsStates(documentId, curRowIndex, 3, true, desiredState), new AsyncCallback<GetTransUnitsStatesResult>()
@@ -722,9 +721,9 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             isReqComplete = true;
             if (!result.getUnits().isEmpty())
             {
-               if (desiredState == ContentState.FuzzyOrUntranslated)
+               if (desiredState == NavigationType.FuzzyOrUntranslated)
                   transIdPrevFuzzyCache = result.getUnits();
-               if (desiredState == ContentState.New)
+               if (desiredState == NavigationType.New)
                   transIdPrevNewCache = result.getUnits();
                callBack.prevFuzzy(desiredState);
             }
@@ -738,10 +737,10 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       });
    }
 
-   private void gotoPrevState(ContentState desiredState)
+   private void gotoPrevState(NavigationType desiredState)
    {
       Log.info("Previous State: " + desiredState);
-      if (desiredState == ContentState.FuzzyOrUntranslated)
+      if (desiredState == NavigationType.FuzzyOrUntranslated)
       {
          // Clean the cache for Next Fuzzy to avoid issues about cache is
          // obsolete
@@ -789,23 +788,23 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
    StatesCacheCallback cacheCallback = new StatesCacheCallback()
    {
       @Override
-      public void nextFuzzy(ContentState state)
+      public void nextFuzzy(NavigationType state)
       {
          gotoNextState(state);
       }
 
       @Override
-      public void prevFuzzy(ContentState state)
+      public void prevFuzzy(NavigationType state)
       {
          gotoPrevState(state);
       }
 
    };
 
-   private void gotoNextState(ContentState desiredState)
+   private void gotoNextState(NavigationType desiredState)
    {
       Log.info("Next State: " + desiredState);
-      if (desiredState == ContentState.FuzzyOrUntranslated)
+      if (desiredState == NavigationType.FuzzyOrUntranslated)
       {
          transIdPrevFuzzyCache.clear();
          // If the cache of next fuzzy is empty, generate one

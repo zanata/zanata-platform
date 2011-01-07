@@ -1,6 +1,6 @@
 package net.openl10n.flies.webtrans.client.editor.table;
 
-import net.openl10n.flies.common.ContentState;
+import net.openl10n.flies.common.NavigationType;
 import net.openl10n.flies.webtrans.client.editor.filter.ContentFilter;
 import net.openl10n.flies.webtrans.client.ui.HighlightingLabel;
 import net.openl10n.flies.webtrans.shared.model.TransUnit;
@@ -179,13 +179,13 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          }
 
          @Override
-         public void gotoNextFuzzy(int row, ContentState state)
+         public void gotoNextFuzzy(int row, NavigationType state)
          {
             tableModel.gotoNextFuzzy(row, state);
          }
 
          @Override
-         public void gotoPrevFuzzy(int row, ContentState state)
+         public void gotoPrevFuzzy(int row, NavigationType state)
          {
             tableModel.gotoPrevFuzzy(row, state);
          }

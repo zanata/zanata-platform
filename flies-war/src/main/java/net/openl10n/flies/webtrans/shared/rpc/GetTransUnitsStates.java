@@ -1,6 +1,6 @@
 package net.openl10n.flies.webtrans.shared.rpc;
 
-import net.openl10n.flies.common.ContentState;
+import net.openl10n.flies.common.NavigationType;
 import net.openl10n.flies.webtrans.shared.model.DocumentId;
 
 
@@ -12,7 +12,7 @@ public class GetTransUnitsStates extends AbstractWorkspaceAction<GetTransUnitsSt
    private int offset;
    private int count;
    private DocumentId documentId;
-   private ContentState state;
+   private NavigationType state;
    private boolean reverse;
 
    @SuppressWarnings("unused")
@@ -20,7 +20,7 @@ public class GetTransUnitsStates extends AbstractWorkspaceAction<GetTransUnitsSt
    {
    }
 
-   public GetTransUnitsStates(DocumentId id, int offset, int count, boolean reverse, ContentState state)
+   public GetTransUnitsStates(DocumentId id, int offset, int count, boolean reverse, NavigationType state)
    {
       this.documentId = id;
       this.offset = offset;
@@ -59,12 +59,12 @@ public class GetTransUnitsStates extends AbstractWorkspaceAction<GetTransUnitsSt
       this.documentId = documentId;
    }
 
-   public void setState(ContentState state)
+   public void setState(NavigationType state)
    {
       this.state = state;
    }
 
-   public ContentState getState()
+   public NavigationType getState()
    {
       return state;
    }

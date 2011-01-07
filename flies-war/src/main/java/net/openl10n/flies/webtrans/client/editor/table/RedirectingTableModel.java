@@ -1,7 +1,6 @@
 package net.openl10n.flies.webtrans.client.editor.table;
 
-import net.openl10n.flies.common.ContentState;
-import net.openl10n.flies.webtrans.shared.model.TransUnit;
+import net.openl10n.flies.common.NavigationType;
 
 import com.google.gwt.gen2.table.client.MutableTableModel;
 import com.google.gwt.gen2.table.client.TableModelHelper.Request;
@@ -81,13 +80,13 @@ public class RedirectingTableModel<RowType> extends MutableTableModel<RowType>
          tableModelHandler.gotoPrevRow(row);
    }
 
-   public void gotoNextFuzzy(int row, ContentState state)
+   public void gotoNextFuzzy(int row, NavigationType state)
    {
       if (tableModelHandler != null)
          tableModelHandler.nextFuzzyIndex(row, state);
    }
 
-   public void gotoPrevFuzzy(int row, ContentState state)
+   public void gotoPrevFuzzy(int row, NavigationType state)
    {
       if (tableModelHandler != null)
          tableModelHandler.prevFuzzyIndex(row, state);
