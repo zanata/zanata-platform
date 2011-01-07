@@ -23,7 +23,17 @@ public class OkapiUtil
    {
       try
       {
-         long count = WordCounter.count(s, LocaleId.fromBCP47(bcp47Locale));
+         LocaleId locale;
+         try
+         {
+            locale = LocaleId.fromBCP47(bcp47Locale);
+         }
+         catch (Exception e)
+         {
+            log.error("can't understand '{}' as a BCP-47 locale; defaulting to English", bcp47Locale);
+            locale = LocaleId.ENGLISH;
+         }
+         long count = WordCounter.count(s, locale);
          return count;
       }
       catch (Exception e)

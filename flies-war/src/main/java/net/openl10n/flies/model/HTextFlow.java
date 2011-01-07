@@ -252,16 +252,23 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
 
    private void updateWordCount()
    {
-      if (document == null && content == null)
+      if (document == null || content == null)
       {
          // come back when the not-null constraints are satisfied!
          return;
       }
-      LocaleId docLocale = document.getLocale().getLocaleId();
+      String locale = toBCP47(document.getLocale());
       // TODO strip (eg) HTML tags before counting words. Needs more metadata
       // about the content type.
-      long count = OkapiUtil.countWords(content, docLocale.getId());
+      long count = OkapiUtil.countWords(content, locale);
       setWordCount(count);
+   }
+
+   private String toBCP47(HLocale hLocale)
+   {
+      HLocale docLocale = document.getLocale();
+      LocaleId docLocaleId = docLocale.getLocaleId();
+      return docLocaleId.getId();
    }
 
    /**
