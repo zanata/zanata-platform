@@ -48,7 +48,7 @@ public class AuthenticationEvents implements Serializable
 
    @Logger
    Log log;
-
+   
    @In
    FliesExternalLoginBean fliesExternalLoginBean;
 
@@ -56,7 +56,6 @@ public class AuthenticationEvents implements Serializable
    public void loginSuccessful(HAccount account)
    {
       log.info("Account {0} authenticated", account.getUsername());
-
       HPerson authenticatedPerson = account.getPerson();
       // insert authenticatedPerson for use in security.drl rules
       RuleBasedPermissionResolver.instance().getSecurityContext().insert(authenticatedPerson);

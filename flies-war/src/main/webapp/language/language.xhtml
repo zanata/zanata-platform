@@ -13,6 +13,26 @@
         <rich:jQuery selector="#tab_tribes" query="addClass('ui-tabs-selected')" />
         <h1>#{languageTeamAction.locale.retrieveNativeName()}</h1>
         <p>#{messages['jsf.SizeMembers']}</p>
+	<rich:panel id="memberPanel" rendered="#{languageTeamAction.locale.members.size != 0}">
+		<rich:dataTable 
+		    id="threads"
+		    value="#{languageTeamAction.locale.members.toArray()}" 
+		    var="member" >
+
+		  <rich:column width="auto">
+		    <f:facet name="header">#{messages['jsf.Username']}</f:facet>
+		    #{member.account.username}
+		  </rich:column>
+		  <rich:column width="auto">
+		    <f:facet name="header">#{messages['jsf.Name']}</f:facet>
+		    #{member.name}
+		  </rich:column>
+		  <rich:column width="auto">
+		    <f:facet name="header">#{messages['jsf.Email']}</f:facet>
+		    #{member.email}
+		  </rich:column>
+		</rich:dataTable>
+        </rich:panel>
     </ui:define>
 
     <ui:define name="left_content">

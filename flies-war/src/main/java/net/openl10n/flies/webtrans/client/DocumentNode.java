@@ -133,9 +133,12 @@ public class DocumentNode extends Node<DocumentInfo>
          @Override
          public void onTransUnitUpdated(TransUnitUpdatedEvent event)
          {
-            statusCount.decrement(event.getPreviousStatus());
-            statusCount.increment(event.getNewStatus());
-            getTransUnitCountBar().setCount(statusCount);
+            if (event.getDocumentId().equals(getDataItem().getId()))
+            {
+               statusCount.decrement(event.getPreviousStatus());
+               statusCount.increment(event.getNewStatus());
+               getTransUnitCountBar().setCount(statusCount);
+            }
          }
       });
    }

@@ -8,5 +8,5 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "contentStateType")
 public enum ContentState
 {
-   New, NeedReview, Approved
+   New, NeedReview, Approved, FuzzyOrUntranslated,
 }

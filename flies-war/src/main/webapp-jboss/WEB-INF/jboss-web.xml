@@ -9,6 +9,5 @@
         </loader-repository>
     </class-loading>
     <security-domain>java:/jaas/${jaas.configure}</security-domain>
-    <context-root>/${context.root}</context-root>
     <depends>jboss.jca:service=DataSourceBinding,name=${ds.jndi.name}</depends>
 </jboss-web>
