@@ -2,7 +2,6 @@ package net.openl10n.flies.webtrans.shared.model;
 
 import java.io.Serializable;
 
-//@ExposeEntity 
 public class DocumentId implements Identifier<Long>, Serializable
 {
 
@@ -10,8 +9,9 @@ public class DocumentId implements Identifier<Long>, Serializable
 
    private long id;
 
-   // for ExposeEntity
-   public DocumentId()
+   // for GWT
+   @SuppressWarnings("unused")
+   private DocumentId()
    {
    }
 

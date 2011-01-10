@@ -6,6 +6,8 @@ public class ResourceId implements IsSerializable
 {
    private Long id;
 
+   // for GWT
+   @SuppressWarnings("unused")
    private ResourceId()
    {
    }

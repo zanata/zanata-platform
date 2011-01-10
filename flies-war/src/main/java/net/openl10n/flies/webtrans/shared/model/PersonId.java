@@ -2,7 +2,6 @@ package net.openl10n.flies.webtrans.shared.model;
 
 import java.io.Serializable;
 
-//@ExposeEntity 
 public final class PersonId implements Serializable
 {
 
@@ -10,8 +9,9 @@ public final class PersonId implements Serializable
 
    private String id;
 
-   // for ExposeEntity
-   public PersonId()
+   // for GWT
+   @SuppressWarnings("unused")
+   private PersonId()
    {
    }
 

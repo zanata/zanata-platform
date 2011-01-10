@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-//@ExposeEntity 
 public class TransUnitId implements Serializable, IsSerializable, Identifier<Long>
 {
 
@@ -12,8 +11,9 @@ public class TransUnitId implements Serializable, IsSerializable, Identifier<Lon
 
    private long id;
 
-   // for ExposeEntity
-   public TransUnitId()
+   // for GWT
+   @SuppressWarnings("unused")
+   private TransUnitId()
    {
    }
 

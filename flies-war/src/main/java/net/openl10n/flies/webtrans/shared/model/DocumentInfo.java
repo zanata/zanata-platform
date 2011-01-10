@@ -9,6 +9,7 @@ public class DocumentInfo implements HasIdentifier<DocumentId>, Serializable
    private String name;
    private String path;
 
+   // for GWT
    @SuppressWarnings("unused")
    private DocumentInfo()
    {
