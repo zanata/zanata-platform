@@ -24,6 +24,8 @@ import static org.jboss.seam.ScopeType.APPLICATION;
 
 
 
+import net.openl10n.flies.model.type.UserApiKey;
+
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
