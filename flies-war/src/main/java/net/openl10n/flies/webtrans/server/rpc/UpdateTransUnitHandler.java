@@ -106,7 +106,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
 
       session.flush();
 
-      long wordCount = hTextFlow.getWordCount();
+      int wordCount = hTextFlow.getWordCount().intValue();
       TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), action.getTransUnitId(), wordCount, prevStatus, action.getContentState());
 
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());

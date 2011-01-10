@@ -1,17 +1,12 @@
 package net.openl10n.flies.webtrans.server.rpc;
 
-import java.util.List;
-
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
-import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.common.LocaleId;
-import net.openl10n.flies.common.TransUnitCount;
-import net.openl10n.flies.common.TransUnitWords;
-import net.openl10n.flies.model.StatusCount;
+import net.openl10n.flies.common.TranslationStats;
+import net.openl10n.flies.dao.DocumentDAO;
 import net.openl10n.flies.security.FliesIdentity;
 import net.openl10n.flies.webtrans.server.ActionHandlerFor;
-import net.openl10n.flies.webtrans.server.TranslationWorkspace;
 import net.openl10n.flies.webtrans.server.TranslationWorkspaceManager;
 import net.openl10n.flies.webtrans.shared.rpc.GetStatusCount;
 import net.openl10n.flies.webtrans.shared.rpc.GetStatusCountResult;
@@ -39,6 +34,9 @@ public class GetStatusCountHandler extends AbstractActionHandler<GetStatusCount,
    @In
    TranslationWorkspaceManager translationWorkspaceManager;
 
+   @In
+   DocumentDAO documentDAO;
+
    @Override
    public GetStatusCountResult execute(GetStatusCount action, ExecutionContext context) throws ActionException
    {
@@ -47,35 +45,9 @@ public class GetStatusCountHandler extends AbstractActionHandler<GetStatusCount,
 
       Long docId = action.getDocumentId().getValue();
       LocaleId localeId = action.getWorkspaceId().getLocaleId();
-      @SuppressWarnings("unchecked")
-      List<StatusCount> stats = session.createQuery("select new net.openl10n.flies.model.StatusCount(tft.state, count(tft)) " + "from HTextFlowTarget tft where tft.textFlow.document.id = :id " + "  and tft.locale.localeId = :locale " + "group by tft.state").setParameter("id", docId).setParameter("locale", localeId).list();
-      Long totalCount = (Long) session.createQuery("select count(tf) from HTextFlow tf where tf.document.id = :id").setParameter("id", docId).uniqueResult();
 
-      TransUnitCount stat = new TransUnitCount();
-      for (StatusCount count : stats)
-      {
-         stat.set(count.status, count.count.intValue());
-      }
-      long newCount = totalCount.longValue() - stat.get(ContentState.Approved) - stat.get(ContentState.NeedReview);
-      stat.set(ContentState.New, (int) newCount);
-
-      @SuppressWarnings("unused")
-      TranslationWorkspace workspace = translationWorkspaceManager.getWorkspace(action.getWorkspaceId());
-
-      @SuppressWarnings("unchecked")
-      List<StatusCount> wordStats = session.createQuery("select new net.openl10n.flies.model.StatusCount(tft.state, sum(tft.textFlow.wordCount)) " + "from HTextFlowTarget tft where tft.textFlow.document.id = :id " + "  and tft.locale.localeId = :locale " + "group by tft.state").setParameter("id", docId).setParameter("locale", localeId).list();
-      Long totalWordCount = (Long) session.createQuery("select sum(tf.wordCount) from HTextFlow tf where tf.document.id = :id").setParameter("id", docId).uniqueResult();
-
-      TransUnitWords wordCount = new TransUnitWords();
-      for (StatusCount count : wordStats)
-      {
-         wordCount.set(count.status, count.count.intValue());
-      }
-      long newWordCount = totalWordCount.longValue() - wordCount.get(ContentState.Approved) - wordCount.get(ContentState.NeedReview);
-      wordCount.set(ContentState.New, (int) newWordCount);
-
-      return new GetStatusCountResult(action.getDocumentId(), stat, wordCount);
-
+      TranslationStats transStats = documentDAO.getStatistics(docId, localeId);
+      return new GetStatusCountResult(action.getDocumentId(), transStats);
    }
 
    @Override
