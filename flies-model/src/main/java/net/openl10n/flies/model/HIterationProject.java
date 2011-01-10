@@ -35,6 +35,10 @@ import org.hibernate.search.annotations.Indexed;
 public class HIterationProject extends HProject
 {
 
+   /**
+    * 
+    */
+   private static final long serialVersionUID = 1L;
    private List<HProjectIteration> projectIterations = new ArrayList<HProjectIteration>();
 
    @OneToMany(mappedBy = "project")
