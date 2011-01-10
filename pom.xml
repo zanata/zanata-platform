@@ -11,11 +11,12 @@
 	<modules>
 		<module>flies-common-api</module>
 		<module>flies-common-util</module>
+		<module>flies-model</module>
 		<module>flies-adapters</module>
 		<module>flies-rest-client</module>
 		<module>flies-clients</module>
 		<module>flies-war</module>
-	</modules>
+  </modules>
 	
 	<scm>
 		<connection>scm:hg:http://flies.googlecode.com/hg/</connection>
