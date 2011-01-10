@@ -36,7 +36,7 @@ import net.openl10n.flies.dao.TextFlowDAO;
 import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.model.HTextFlow;
 import net.openl10n.flies.model.HTextFlowTarget;
-import net.openl10n.flies.search.DefaultNgramAnalyzer;
+import net.openl10n.flies.hibernate.search.DefaultNgramAnalyzer;
 import net.openl10n.flies.search.LevenshteinUtil;
 import net.openl10n.flies.security.FliesIdentity;
 import net.openl10n.flies.service.LocaleService;

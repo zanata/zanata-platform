@@ -31,18 +31,8 @@
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
 			</resource>
-
 		</resources>
 		<plugins>
-			<plugin>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<configuration>
-					<downloadSources>true</downloadSources>
-					<downloadJavadocs>false</downloadJavadocs>
-					<buildOutputDirectory>bin</buildOutputDirectory>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -59,12 +49,12 @@
 	</build>
 
   <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
+        <dependency>
+	      <groupId>junit</groupId>
+    	  <artifactId>junit</artifactId>
+      	  <version>3.8.1</version>
+     	  <scope>test</scope>
+        </dependency>
 
 		<dependency>
 			<groupId>net.openl10n.flies</groupId>
