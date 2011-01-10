@@ -54,6 +54,8 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Represents a flow of source text that should be processed as a stand-alone
@@ -69,6 +71,8 @@ import org.hibernate.validator.NotNull;
 @FullTextFilterDef(name = "translated", impl = TranslatedFilterFactory.class, cache = FilterCacheModeType.INSTANCE_ONLY)
 public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComment
 {
+   private static final Logger log = LoggerFactory.getLogger(HTextFlow.class);
+
    private static final long serialVersionUID = 3023080107971905435L;
 
    private Long id;
@@ -287,6 +291,12 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
    private String toBCP47(HLocale hLocale)
    {
       HLocale docLocale = document.getLocale();
+      if (docLocale == null)
+      {
+         // *should* only happen in tests
+         log.warn("null locale, assuming 'en'");
+         return "en";
+      }
       LocaleId docLocaleId = docLocale.getLocaleId();
       return docLocaleId.getId();
    }
