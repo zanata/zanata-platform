@@ -94,6 +94,7 @@ public class ResourceUtils
          else
          {
             textFlow = new HTextFlow();
+            textFlow.setDocument(to);
             textFlow.setResId(tf.getId());
             textFlow.setRevision(nextDocRev);
             transferFromTextFlow(tf, textFlow, enabledExtensions);
