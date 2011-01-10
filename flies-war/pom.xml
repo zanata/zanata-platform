@@ -16,31 +16,10 @@
 
 		<env.debug>false</env.debug>
 		<env.import.testdata>false</env.import.testdata>
-
-		<!-- 
-		It would be nice to use 'validate' but it tries to validate 
-		before LiquibaseServletListener has updated the database
-		 -->
-		<env.hibernate.hbm2ddl.auto></env.hibernate.hbm2ddl.auto>
-		<env.hibernate.show_sql>false</env.hibernate.show_sql>
-		<env.hibernate.format_sql>false</env.hibernate.format_sql>
-		<env.hibernate.indexBase>fliessearchindex</env.hibernate.indexBase>
-
+		<ds.jndi.name>fliesTestDatasource</ds.jndi.name>
 		<war.name>flies</war.name>
 		<!-- Default database settings -->
 		<env.dbunit.type>HSQL</env.dbunit.type>
-		<ds.jndi.name>fliesTestDatasource</ds.jndi.name>
-		<ds.hibernate.dialect>org.hibernate.dialect.H2Dialect</ds.hibernate.dialect>
-		<ds.driver.class>org.h2.Driver</ds.driver.class>
-		<!-- Configure the in-memory database to be shared, and so that it
-			 doesn't disappear after it has been set up by Hibernate: -->
-		<ds.connection.url>jdbc:h2:mem:flies;DB_CLOSE_DELAY=-1</ds.connection.url> <!-- *-ds.xml -->
-<!--  
-		<ds.connection.url>jdbc:h2:db/flies;AUTO_SERVER=TRUE</ds.connection.url>
--->
-		<ds.user.name>sa</ds.user.name> <!-- *-ds.xml -->
-		<ds.password /> <!-- *-ds.xml -->
-		
 		<internal.authentication>false</internal.authentication>
 		<spNego.authentication>false</spNego.authentication>
 		<jaas.configure>flies</jaas.configure>
@@ -137,7 +116,12 @@
 	</build>
 
 	<profiles>
-
+		<profile>
+			<id>mysql</id>
+			<properties>
+		        <ds.jndi.name>fliesDatasource</ds.jndi.name>
+			</properties>
+		</profile>
 		<profile>
 			<id>jboss4</id>
 			<activation>
@@ -636,50 +620,6 @@
 			</properties>
 		</profile>
 
-		<profile>
-			<id>mysql</id>
-			<properties>
-				<env.dbunit.type>MYSQL</env.dbunit.type>
-				<ds.jndi.name>fliesDatasource</ds.jndi.name>
-				<ds.hibernate.dialect>net.openl10n.flies.FliesMySQL5InnoDBDialect</ds.hibernate.dialect>
-				<ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
-				<ds.connection.url>jdbc:mysql://localhost:3306/flies?characterEncoding=UTF-8</ds.connection.url>
-				<ds.user.name>root</ds.user.name>
-				<ds.password />
-			</properties>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>hibernate3-maven-plugin</artifactId>
-						<version>2.2</version>
-						<configuration>
-							<components>
-								<component>
-									<name>hbm2ddl</name>
-									<implementation>jpaconfiguration</implementation>
-								</component>
-							</components>
-							<componentProperties>
-								<persistenceunit>fliesDatabase</persistenceunit>
-								<outputfilename>schema.ddl</outputfilename>
-								<drop>false</drop>
-								<create>true</create>
-								<export>false</export>
-								<format>true</format>
-							</componentProperties>
-						</configuration>
-						<dependencies>
-							<dependency>
-								<groupId>mysql</groupId>
-								<artifactId>mysql-connector-java</artifactId>
-								<version>5.1.9</version>
-							</dependency>
-						</dependencies>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
 
 		<profile>
 			<id>nogwt</id>
@@ -809,6 +749,11 @@
 			<version>${project.version}</version>
 		</dependency>
 		
+		<dependency>
+			<groupId>net.openl10n.flies</groupId>
+			<artifactId>flies-model</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<!-- Seam Dependencies -->
 
 		<dependency>
