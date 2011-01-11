@@ -1,6 +1,6 @@
 package net.openl10n.flies.webtrans.client;
 
-import net.openl10n.flies.webtrans.client.editor.HasTransUnitCount;
+import net.openl10n.flies.webtrans.client.editor.HasTranslationStats;
 import net.openl10n.flies.webtrans.client.ui.HasPager;
 import net.openl10n.flies.webtrans.client.ui.Pager;
 import net.openl10n.flies.webtrans.client.ui.SplitLayoutPanelHelper;
@@ -127,7 +127,7 @@ public class TranslationEditorView extends Composite implements TranslationEdito
    }
 
    @Override
-   public HasTransUnitCount getTransUnitCount()
+   public HasTranslationStats getTransUnitCount()
    {
       return transUnitCountBar;
    }

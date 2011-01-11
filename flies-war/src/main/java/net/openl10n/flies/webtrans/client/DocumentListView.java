@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.customware.gwt.presenter.client.EventBus;
-import net.openl10n.flies.webtrans.client.editor.HasTransUnitCount;
+import net.openl10n.flies.webtrans.client.editor.HasTranslationStats;
 import net.openl10n.flies.webtrans.client.editor.filter.ContentFilter;
 import net.openl10n.flies.webtrans.client.rpc.CachingDispatchAsync;
 import net.openl10n.flies.webtrans.client.ui.ClearableTextBox;
@@ -242,7 +242,7 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    }
 
    @Override
-   public HasTransUnitCount getTransUnitCountBar()
+   public HasTranslationStats getTransUnitCountBar()
    {
       return transUnitCountBar;
    }

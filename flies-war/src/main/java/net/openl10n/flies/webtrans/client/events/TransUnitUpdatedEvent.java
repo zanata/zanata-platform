@@ -14,7 +14,7 @@ public class TransUnitUpdatedEvent extends GwtEvent<TransUnitUpdatedEventHandler
    private final DocumentId documentId;
    private final ContentState previousStatus;
    private final ContentState newStatus;
-   private long wordCount;
+   private int wordCount;
 
    /**
     * Handler type.
@@ -81,7 +81,7 @@ public class TransUnitUpdatedEvent extends GwtEvent<TransUnitUpdatedEventHandler
    }
 
    @Override
-   public long getWordCount()
+   public int getWordCount()
    {
       return wordCount;
    }

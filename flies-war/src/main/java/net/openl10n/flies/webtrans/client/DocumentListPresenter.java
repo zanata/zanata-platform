@@ -14,7 +14,9 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import net.openl10n.flies.common.TransUnitCount;
-import net.openl10n.flies.webtrans.client.editor.HasTransUnitCount;
+import net.openl10n.flies.common.TransUnitWords;
+import net.openl10n.flies.common.TranslationStats;
+import net.openl10n.flies.webtrans.client.editor.HasTranslationStats;
 import net.openl10n.flies.webtrans.client.editor.filter.ContentFilter;
 import net.openl10n.flies.webtrans.client.events.DocumentSelectionEvent;
 import net.openl10n.flies.webtrans.client.events.DocumentSelectionHandler;
@@ -66,7 +68,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
 
       HasValue<String> getFilterTextBox();
 
-      HasTransUnitCount getTransUnitCountBar();
+      HasTranslationStats getTransUnitCountBar();
 
       HasSelectionHandlers<DocumentInfo> getDocumentList();
    }
@@ -75,7 +77,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
    private final WorkspaceContext workspaceContext;
    private final Map<DocumentId, DocumentStatus> statuscache = new HashMap<DocumentId, DocumentStatus>();
    private DocumentInfo currentDocument;
-   private final TransUnitCount projectCount = new TransUnitCount();
+   private final TranslationStats projectStats = new TranslationStats();
 
    private final WebTransMessages messages;
 
@@ -176,9 +178,13 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
          @Override
          public void onTransUnitUpdated(TransUnitUpdatedEvent event)
          {
+            TransUnitCount projectCount = projectStats.getUnitCount();
             projectCount.decrement(event.getPreviousStatus());
             projectCount.increment(event.getNewStatus());
-            getDisplay().getTransUnitCountBar().setCount(projectCount);
+            TransUnitWords projectWords = projectStats.getWordCount();
+            projectWords.decrement(event.getPreviousStatus(), event.getWordCount());
+            projectWords.increment(event.getNewStatus(), event.getWordCount());
+            getDisplay().getTransUnitCountBar().setStats(projectStats);
          }
       }));
 
@@ -199,10 +205,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
             ArrayList<DocumentStatus> liststatus = result.getStatus();
             for (DocumentStatus doc : liststatus)
             {
-               projectCount.add(doc.getCount());
+               projectStats.add(doc.getCount());
             }
-            display.getTransUnitCountBar().setCount(projectCount);
-
+            display.getTransUnitCountBar().setStats(projectStats);
          }
       });
 

@@ -13,8 +13,7 @@ public class TransUnitUpdated implements SessionEventData, HasTransUnitUpdatedDa
 
    private TransUnitId transUnitId;
    private DocumentId documentId;
-   // TODO consider making this an int for better JavaScript performance
-   private long wordCount;
+   private int wordCount;
    private ContentState previousStatus;
    private ContentState newStatus;
 
@@ -23,7 +22,7 @@ public class TransUnitUpdated implements SessionEventData, HasTransUnitUpdatedDa
    {
    }
 
-   public TransUnitUpdated(DocumentId documentId, TransUnitId transUnitId, long wordCount, ContentState previousStatus, ContentState newStatus)
+   public TransUnitUpdated(DocumentId documentId, TransUnitId transUnitId, int wordCount, ContentState previousStatus, ContentState newStatus)
    {
       this.documentId = documentId;
       this.transUnitId = transUnitId;
@@ -76,7 +75,7 @@ public class TransUnitUpdated implements SessionEventData, HasTransUnitUpdatedDa
       this.transUnitId = transUnitId;
    }
 
-   public long getWordCount()
+   public int getWordCount()
    {
       return wordCount;
    }

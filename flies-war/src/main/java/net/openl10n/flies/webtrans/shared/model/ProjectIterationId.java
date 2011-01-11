@@ -10,6 +10,7 @@ public class ProjectIterationId implements Serializable
    private String projectSlug;
    private String iterationSlug;
 
+   // for GWT
    @SuppressWarnings("unused")
    private ProjectIterationId()
    {

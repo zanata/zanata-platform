@@ -15,6 +15,7 @@ public class TranslationMemoryItem implements Serializable
    private float relevanceScore;
    private int similarityPercent;
 
+   // for GWT
    @SuppressWarnings("unused")
    private TranslationMemoryItem()
    {

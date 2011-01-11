@@ -16,5 +16,5 @@ public interface HasTransUnitUpdatedData
 
    TransUnitId getTransUnitId();
 
-   long getWordCount();
+   int getWordCount();
 }

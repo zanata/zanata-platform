@@ -7,6 +7,8 @@ import java.util.Set;
 import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.common.TransUnitCount;
+import net.openl10n.flies.common.TransUnitWords;
+import net.openl10n.flies.common.TranslationStats;
 import net.openl10n.flies.model.HDocument;
 import net.openl10n.flies.model.HProjectIteration;
 import net.openl10n.flies.model.HTextFlow;
@@ -47,22 +49,38 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       return new HashSet<LocaleId>(locales);
    }
 
-   public TransUnitCount getStatistics(long docId, LocaleId localeId)
+   public TranslationStats getStatistics(long docId, LocaleId localeId)
    {
-      @SuppressWarnings("unchecked")
-      List<StatusCount> stats = getSession().createQuery("select new net.openl10n.flies.model.StatusCount(tft.state, count(tft)) " + "from HTextFlowTarget tft " + "where tft.textFlow.document.id = :id " + "  and tft.locale.localeId = :locale " + "  and tft.textFlow.obsolete = :obsolete " + "group by tft.state").setParameter("id", docId).setParameter("obsolete", false).setParameter("locale", localeId).setCacheable(true).list();
+      Session session = getSession();
 
-      Long totalCount = (Long) getSession().createQuery("select count(tf) from HTextFlow tf where tf.document.id = :id").setParameter("id", docId).setCacheable(true).uniqueResult();
+      // calculate unit counts
+      @SuppressWarnings("unchecked")
+      List<StatusCount> stats = session.createQuery("select new net.openl10n.flies.model.StatusCount(tft.state, count(tft)) " + "from HTextFlowTarget tft " + "where tft.textFlow.document.id = :id " + "  and tft.locale.localeId = :locale " + "  and tft.textFlow.obsolete = :obsolete " + "group by tft.state").setParameter("id", docId).setParameter("obsolete", false).setParameter("locale", localeId).setCacheable(true).list();
+      Long totalCount = (Long) session.createQuery("select count(tf) from HTextFlow tf where tf.document.id = :id").setParameter("id", docId).setCacheable(true).uniqueResult();
 
       TransUnitCount stat = new TransUnitCount();
       for (StatusCount count : stats)
       {
          stat.set(count.status, count.count.intValue());
       }
+      int newCount = totalCount.intValue() - stat.get(ContentState.Approved) - stat.get(ContentState.NeedReview);
+      stat.set(ContentState.New, newCount);
 
-      stat.set(ContentState.New, totalCount.intValue() - stat.get(ContentState.Approved) - stat.get(ContentState.NeedReview));
+      // calculate word counts
+      @SuppressWarnings("unchecked")
+      List<StatusCount> wordStats = session.createQuery("select new net.openl10n.flies.model.StatusCount(tft.state, sum(tft.textFlow.wordCount)) " + "from HTextFlowTarget tft where tft.textFlow.document.id = :id " + "  and tft.locale.localeId = :locale " + "  and tft.textFlow.obsolete = :obsolete " + "group by tft.state").setParameter("id", docId).setParameter("obsolete", false).setParameter("locale", localeId).list();
+      Long totalWordCount = (Long) session.createQuery("select sum(tf.wordCount) from HTextFlow tf where tf.document.id = :id").setParameter("id", docId).uniqueResult();
 
-      return stat;
+      TransUnitWords wordCount = new TransUnitWords();
+      for (StatusCount count : wordStats)
+      {
+         wordCount.set(count.status, count.count.intValue());
+      }
+      long newWordCount = totalWordCount.longValue() - wordCount.get(ContentState.Approved) - wordCount.get(ContentState.NeedReview);
+      wordCount.set(ContentState.New, (int) newWordCount);
+
+      TranslationStats transStats = new TranslationStats(stat, wordCount);
+      return transStats;
    }
 
    public void syncRevisions(HDocument doc, HTextFlow... textFlows)

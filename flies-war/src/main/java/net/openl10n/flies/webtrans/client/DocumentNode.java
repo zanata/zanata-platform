@@ -22,6 +22,8 @@ package net.openl10n.flies.webtrans.client;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.openl10n.flies.common.TransUnitCount;
+import net.openl10n.flies.common.TransUnitWords;
+import net.openl10n.flies.common.TranslationStats;
 import net.openl10n.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import net.openl10n.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
 import net.openl10n.flies.webtrans.client.rpc.CachingDispatchAsync;
@@ -80,7 +82,7 @@ public class DocumentNode extends Node<DocumentInfo>
    Styles style;
 
    final WebTransMessages messages;
-   private final TransUnitCount statusCount = new TransUnitCount();
+   private final TranslationStats statusCount = new TranslationStats();
    private final CachingDispatchAsync dispatcher;
 
    public DocumentNode(Resources resources, WebTransMessages messages, CachingDispatchAsync dispatcher)
@@ -135,9 +137,13 @@ public class DocumentNode extends Node<DocumentInfo>
          {
             if (event.getDocumentId().equals(getDataItem().getId()))
             {
-               statusCount.decrement(event.getPreviousStatus());
-               statusCount.increment(event.getNewStatus());
-               getTransUnitCountBar().setCount(statusCount);
+               TransUnitCount unitCount = statusCount.getUnitCount();
+               TransUnitWords wordCount = statusCount.getWordCount();
+               unitCount.decrement(event.getPreviousStatus());
+               unitCount.increment(event.getNewStatus());
+               wordCount.decrement(event.getPreviousStatus(), event.getWordCount());
+               wordCount.increment(event.getNewStatus(), event.getWordCount());
+               getTransUnitCountBar().setStats(statusCount);
             }
          }
       });
@@ -187,7 +193,7 @@ public class DocumentNode extends Node<DocumentInfo>
          public void onSuccess(GetStatusCountResult result)
          {
             statusCount.set(result.getCount());
-            getTransUnitCountBar().setCount(statusCount);
+            getTransUnitCountBar().setStats(statusCount);
          }
       });
    }

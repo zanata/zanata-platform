@@ -21,19 +21,9 @@ public class TransUnitWords implements Serializable
       this.untranslated = untranslated;
    }
 
-   public void increment(ContentState state)
-   {
-      increment(state, 1);
-   }
-
    public void increment(ContentState state, int count)
    {
       set(state, get(state) + count);
-   }
-
-   public void decrement(ContentState state)
-   {
-      decrement(state, 1);
    }
 
    public void decrement(ContentState state, int count)

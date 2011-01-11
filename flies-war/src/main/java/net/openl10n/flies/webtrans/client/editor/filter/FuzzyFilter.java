@@ -15,7 +15,8 @@ public class FuzzyFilter implements ContentFilter<TransUnit>
    @Override
    public boolean accept(TransUnit value)
    {
-      return value.getStatus() == ContentState.NeedReview;
+      boolean valueIsFuzzy = value.getStatus() == ContentState.NeedReview;
+      return valueIsFuzzy == fuzzy;
    }
 
    private static final FuzzyFilter FUZZY = new FuzzyFilter(true);

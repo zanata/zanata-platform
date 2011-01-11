@@ -4,7 +4,7 @@ import net.openl10n.flies.webtrans.shared.model.DocumentId;
 
 public class GetStatusCount extends AbstractWorkspaceAction<GetStatusCountResult>
 {
-
+   private static final long serialVersionUID = 1L;
    private DocumentId documentId;
 
    @SuppressWarnings("unused")
