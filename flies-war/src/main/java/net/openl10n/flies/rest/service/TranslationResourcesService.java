@@ -58,6 +58,7 @@ import net.openl10n.flies.rest.dto.resource.TranslationsResource;
 import net.openl10n.flies.service.LocaleService;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Session;
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.jboss.resteasy.util.GenericType;
 import org.jboss.seam.annotations.In;
@@ -121,6 +122,9 @@ public class TranslationResourcesService
    @In
    Identity identity;
 
+   @In
+   Session session;
+   
    @In
    private ETagUtils eTagUtils;
 
@@ -242,7 +246,38 @@ public class TranslationResourcesService
 
       document = documentDAO.makePersistent(document);
       documentDAO.flush();
+      
+   // copy the latest translation
+      List<HTextFlowTarget> newTargets = new ArrayList<HTextFlowTarget>();
+      for (HTextFlow textFlow : document.getTextFlows())
+      {
+            // transfer from latest textflowtarget
+        	List<HTextFlowTarget> targets = session.createQuery("select tft from HTextFlowTarget tft where tft.textFlow.resId = :id " + " order by tft.lastChanged desc").setParameter("id", textFlow.getResId()).list();
+            if (!targets.isEmpty())
+        	{
+            	HTextFlowTarget latest = targets.get(0);
+            	HTextFlowTarget hTarget = new HTextFlowTarget(textFlow, latest.getLocale());
+                hTarget.setVersionNum(latest.getVersionNum()); // incremented when content is set
+                hTarget.setContent(latest.getContent());
+                hTarget.setState(latest.getState());
+                textFlow.getTargets().put(latest.getLocale(), hTarget);
+                newTargets.add(hTarget);	
+        	}
+            
+      }
 
+      if (!newTargets.isEmpty() )
+      {
+
+         for (HTextFlowTarget target : newTargets)
+         {
+            textFlowTargetDAO.makePersistent(target);
+         }
+         textFlowTargetDAO.flush();
+         documentDAO.flush();
+
+      }
+           
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, document.getDocId(), extensions);
 
       return Response.created(URI.create("r/" + resourceUtils.encodeDocId(document.getDocId()))).tag(etag).build();
