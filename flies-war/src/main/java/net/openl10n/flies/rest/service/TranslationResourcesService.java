@@ -123,9 +123,6 @@ public class TranslationResourcesService
    Identity identity;
 
    @In
-   Session session;
-   
-   @In
    private ETagUtils eTagUtils;
 
    @In
@@ -247,35 +244,9 @@ public class TranslationResourcesService
       document = documentDAO.makePersistent(document);
       documentDAO.flush();
       
-   // copy the latest translation
-      List<HTextFlowTarget> newTargets = new ArrayList<HTextFlowTarget>();
-      for (HTextFlow textFlow : document.getTextFlows())
+      if (extensions.contains("import"))
       {
-            // transfer from latest textflowtarget
-        	List<HTextFlowTarget> targets = session.createQuery("select tft from HTextFlowTarget tft where tft.textFlow.resId = :id " + " order by tft.lastChanged desc").setParameter("id", textFlow.getResId()).list();
-            if (!targets.isEmpty())
-        	{
-            	HTextFlowTarget latest = targets.get(0);
-            	HTextFlowTarget hTarget = new HTextFlowTarget(textFlow, latest.getLocale());
-                hTarget.setVersionNum(latest.getVersionNum()); // incremented when content is set
-                hTarget.setContent(latest.getContent());
-                hTarget.setState(latest.getState());
-                textFlow.getTargets().put(latest.getLocale(), hTarget);
-                newTargets.add(hTarget);	
-        	}
-            
-      }
-
-      if (!newTargets.isEmpty() )
-      {
-
-         for (HTextFlowTarget target : newTargets)
-         {
-            textFlowTargetDAO.makePersistent(target);
-         }
-         textFlowTargetDAO.flush();
-         documentDAO.flush();
-
+    	  copyClosestEquivalentTranslation(document);
       }
            
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, document.getDocId(), extensions);
@@ -521,6 +492,11 @@ public class TranslationResourcesService
          etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
       }
 
+      if (extensions.contains("import"))
+      {
+    	 copyClosestEquivalentTranslation(document);
+      }
+      
       log.debug("put resource meta successfully");
       return Response.ok().tag(etag).lastModified(document.getLastChanged()).build();
 
@@ -819,6 +795,41 @@ public class TranslationResourcesService
          throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity("Unsupported Extensions within this context: " + StringUtils.join(invalidExtensions, ",")).build());
 
       }
+   }
+   
+   private void copyClosestEquivalentTranslation(HDocument document) 
+   {
+	   List<HTextFlowTarget> newTargets = new ArrayList<HTextFlowTarget>();
+	   // copy the closest equivalent translation
+	   for (HTextFlow textFlow : document.getTextFlows())
+	   {
+		   // find closest equivalent textflowtarget
+	       HTextFlowTarget target = textFlowTargetDAO.findClosestEquivalentTranslation(textFlow).get(0);
+	       if (target != null)
+	       {
+	    	   HTextFlowTarget hTarget = new HTextFlowTarget(textFlow, target.getLocale());
+	    	   hTarget.setVersionNum(target.getVersionNum()); // incremented when content is set
+	    	   hTarget.setContent(target.getContent());
+	    	   hTarget.setState(target.getState());
+	    	   textFlow.getTargets().put(target.getLocale(), hTarget);
+	    	   newTargets.add(hTarget);	
+	        }
+	      
+	    }
+
+	    if (!newTargets.isEmpty() )
+	    {
+	    	
+	    	for (HTextFlowTarget target : newTargets)
+	    	{
+	           textFlowTargetDAO.makePersistent(target);
+	    	}
+	    	
+	    	textFlowTargetDAO.flush();
+	    	documentDAO.flush();
+	    	
+	    }
+	    	 
    }
 
 }

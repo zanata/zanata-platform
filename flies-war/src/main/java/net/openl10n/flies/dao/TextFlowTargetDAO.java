@@ -22,7 +22,9 @@ import org.jboss.seam.annotations.Scope;
 public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
 {
 
-   public TextFlowTargetDAO()
+   private HTextFlow textFlow;
+
+public TextFlowTargetDAO()
    {
       super(HTextFlowTarget.class);
    }
@@ -53,5 +55,12 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
    {
       return getSession().createQuery("select t from HTextFlowTarget t where " + "t.textFlow.document =:document and t.locale.localeId =:locale " + "and t.state !=:state and t.textFlow.obsolete=false " + "order by t.textFlow.pos").setParameter("document", document).setParameter("locale", locale).setParameter("state", ContentState.New).list();
    }
+   
+   @SuppressWarnings("unchecked")
+   public List<HTextFlowTarget> findClosestEquivalentTranslation(HTextFlow textFlow)
+   {
+	   return getSession().createQuery("select t from HTextFlowTarget t where " + "t.textFlow.resId =:resid and t.textFlow.document.docId =:docId "+ "and t.textFlow.document.projectIteration.project.slug =:project and t.textFlow.document.projectIteration.slug !=:iteration "+"order by t.lastChanged desc").setParameter("docId", textFlow.getDocument().getDocId()).setParameter("project", textFlow.getDocument().getProjectIteration().getProject().getSlug()).setParameter("iteration", textFlow.getDocument().getProjectIteration().getSlug()).setParameter("resid", textFlow.getResId()).setMaxResults(1).list();
+   }
+   
 
 }
