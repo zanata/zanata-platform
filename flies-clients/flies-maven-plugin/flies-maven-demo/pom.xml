@@ -3,18 +3,21 @@
   <groupId>null</groupId>
   <artifactId>null</artifactId>
   <version>0</version>
-  
+
+  <properties>
+    <flies.srcDir>.</flies.srcDir>
+  </properties>
+ 
   <build>
     <plugins>
       <plugin>
         <groupId>net.openl10n.flies</groupId>
         <artifactId>flies-maven-plugin</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.2-SNAPSHOT</version>
         <configuration>
 <!-- for instance 
           <importPo>false</importPo>
 -->
-          <srcDir>.</srcDir>
         </configuration>
       </plugin>
     </plugins>
