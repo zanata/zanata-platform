@@ -93,6 +93,10 @@ public class TranslationResourcesService
    @QueryParam("ext")
    @DefaultValue("")
    private Set<String> extensions;
+   
+   @QueryParam("copyTrans")
+   @DefaultValue("false")
+   private boolean copytrans;
 
 
    @HeaderParam("Content-Type")
@@ -208,7 +212,8 @@ public class TranslationResourcesService
    @POST
    public Response post(InputStream messageBody)
    {
-
+	  boolean firstcommit = false;
+	  
       HProjectIteration hProjectIteration = retrieveIteration();
 
       identity.checkPermission(hProjectIteration, ACTION_IMPORT_TEMPLATE);
@@ -238,13 +243,21 @@ public class TranslationResourcesService
          document.setProjectIteration(hProjectIteration);
       }
       hProjectIteration.getDocuments().put(entity.getName(), document);
-
+      
+      // Check whether or not the document contains the textflows
+      List<HTextFlow> textflows = document.getTextFlows();
+      
+      if(textflows.isEmpty())
+      {
+    	  firstcommit = true;
+      }
+      
       resourceUtils.transferFromResource(entity, document, extensions, hLocale, nextDocRev);
 
       document = documentDAO.makePersistent(document);
       documentDAO.flush();
       
-      if (extensions.contains("import"))
+      if (copytrans && firstcommit)
       {
     	  copyClosestEquivalentTranslation(document);
       }
@@ -324,6 +337,7 @@ public class TranslationResourcesService
       ResponseBuilder response;
       EntityTag etag = null;
       boolean changed = false;
+      boolean firstcommit = false;
       HProjectIteration hProjectIteration = retrieveIteration();
 
       identity.checkPermission(hProjectIteration, ACTION_IMPORT_TEMPLATE);
@@ -346,6 +360,7 @@ public class TranslationResourcesService
             return response.build();
          }
          changed = true;
+         firstcommit = true;
          document = new HDocument(entity.getName(), entity.getContentType(), hLocale);
          document.setProjectIteration(hProjectIteration);
          hProjectIteration.getDocuments().put(id, document);
@@ -388,6 +403,12 @@ public class TranslationResourcesService
          etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
       }
 
+
+      if (copytrans && firstcommit)
+      {
+    	 copyClosestEquivalentTranslation(document);
+      }
+            
       log.debug("put resource successfully");
       return response.tag(etag).build();
 
@@ -492,11 +513,6 @@ public class TranslationResourcesService
          etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
       }
 
-      if (extensions.contains("import"))
-      {
-    	 copyClosestEquivalentTranslation(document);
-      }
-      
       log.debug("put resource meta successfully");
       return Response.ok().tag(etag).lastModified(document.getLastChanged()).build();
 
@@ -797,7 +813,7 @@ public class TranslationResourcesService
       }
    }
    
-   private void copyClosestEquivalentTranslation(HDocument document) 
+   public void copyClosestEquivalentTranslation(HDocument document) 
    {
 	   List<HTextFlowTarget> newTargets = new ArrayList<HTextFlowTarget>();
 	   // copy the closest equivalent translation
