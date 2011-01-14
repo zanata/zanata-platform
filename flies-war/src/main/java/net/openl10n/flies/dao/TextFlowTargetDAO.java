@@ -59,7 +59,7 @@ public TextFlowTargetDAO()
    @SuppressWarnings("unchecked")
    public List<HTextFlowTarget> findClosestEquivalentTranslation(HTextFlow textFlow)
    {
-	   return getSession().createQuery("select t from HTextFlowTarget t where " + "t.textFlow.resId =:resid and t.textFlow.document.docId =:docId "+ "and t.textFlow.document.projectIteration.project.slug =:project and t.textFlow.document.projectIteration.slug !=:iteration "+"order by t.lastChanged desc").setParameter("docId", textFlow.getDocument().getDocId()).setParameter("project", textFlow.getDocument().getProjectIteration().getProject().getSlug()).setParameter("iteration", textFlow.getDocument().getProjectIteration().getSlug()).setParameter("resid", textFlow.getResId()).setMaxResults(1).list();
+	   return getSession().createQuery("select t from HTextFlowTarget t where " + "t.textFlow.resId =:resid and t.textFlow.document.docId =:document "+ "and t.textFlow.document.projectIteration.project =:project and t.textFlow.document.projectIteration !=:iteration "+"order by t.lastChanged desc").setParameter("document", textFlow.getDocument().getDocId()).setParameter("project", textFlow.getDocument().getProjectIteration().getProject()).setParameter("iteration", textFlow.getDocument().getProjectIteration()).setParameter("resid", textFlow.getResId()).setMaxResults(1).list();
    }
    
 
