@@ -212,7 +212,7 @@ public class TranslationResourcesService
    @POST
    public Response post(InputStream messageBody)
    {
-	  boolean firstcommit = false;
+      boolean firstcommit = false;
 	  
       HProjectIteration hProjectIteration = retrieveIteration();
 

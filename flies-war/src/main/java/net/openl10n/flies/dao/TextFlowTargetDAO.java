@@ -22,9 +22,7 @@ import org.jboss.seam.annotations.Scope;
 public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
 {
 
-   private HTextFlow textFlow;
-
-public TextFlowTargetDAO()
+   public TextFlowTargetDAO()
    {
       super(HTextFlowTarget.class);
    }
