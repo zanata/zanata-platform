@@ -38,6 +38,12 @@
 		</resources>
 
 		<plugins>
+			<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<projectNameTemplate>flies-war</projectNameTemplate>
+				</configuration>
+			</plugin>
 
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
