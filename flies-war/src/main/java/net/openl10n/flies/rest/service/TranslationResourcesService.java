@@ -45,6 +45,7 @@ import net.openl10n.flies.model.HDocument;
 import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.model.HPerson;
 import net.openl10n.flies.model.HProjectIteration;
+import net.openl10n.flies.model.HSimpleComment;
 import net.openl10n.flies.model.HTextFlow;
 import net.openl10n.flies.model.HTextFlowTarget;
 import net.openl10n.flies.rest.NoSuchEntityException;
@@ -212,8 +213,6 @@ public class TranslationResourcesService
    @POST
    public Response post(InputStream messageBody)
    {
-      boolean firstcommit = false;
-	  
       HProjectIteration hProjectIteration = retrieveIteration();
 
       identity.checkPermission(hProjectIteration, ACTION_IMPORT_TEMPLATE);
@@ -234,6 +233,8 @@ public class TranslationResourcesService
          }
          // a deleted document is being created again
          nextDocRev = document.getRevision() + 1;
+         if(!textFlowTargetDAO.findRelatedTranslations(document).isEmpty())
+             copytrans = false;
          document.setObsolete(false);
       }
       else
@@ -244,20 +245,12 @@ public class TranslationResourcesService
       }
       hProjectIteration.getDocuments().put(entity.getName(), document);
       
-      // Check whether or not the document contains the textflows
-      List<HTextFlow> textflows = document.getTextFlows();
-      
-      if(textflows.isEmpty())
-      {
-    	  firstcommit = true;
-      }
-      
       resourceUtils.transferFromResource(entity, document, extensions, hLocale, nextDocRev);
 
       document = documentDAO.makePersistent(document);
       documentDAO.flush();
       
-      if (copytrans && firstcommit)
+      if (copytrans)
       {
     	  copyClosestEquivalentTranslation(document);
       }
@@ -337,7 +330,6 @@ public class TranslationResourcesService
       ResponseBuilder response;
       EntityTag etag = null;
       boolean changed = false;
-      boolean firstcommit = false;
       HProjectIteration hProjectIteration = retrieveIteration();
 
       identity.checkPermission(hProjectIteration, ACTION_IMPORT_TEMPLATE);
@@ -360,7 +352,6 @@ public class TranslationResourcesService
             return response.build();
          }
          changed = true;
-         firstcommit = true;
          document = new HDocument(entity.getName(), entity.getContentType(), hLocale);
          document.setProjectIteration(hProjectIteration);
          hProjectIteration.getDocuments().put(id, document);
@@ -376,6 +367,8 @@ public class TranslationResourcesService
          }
          changed = true;
          document.setObsolete(false);
+         if(!textFlowTargetDAO.findRelatedTranslations(document).isEmpty())
+             copytrans = false;
          // not sure if this is needed
          hProjectIteration.getDocuments().put(id, document);
          response = Response.created(uri.getAbsolutePath());
@@ -384,6 +377,8 @@ public class TranslationResourcesService
       { // must be an update operation
          nextDocRev = document.getRevision() + 1;
          etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
+         if(!textFlowTargetDAO.findRelatedTranslations(document).isEmpty())
+             copytrans = false;
          response = request.evaluatePreconditions(etag);
          if (response != null)
          {
@@ -404,7 +399,7 @@ public class TranslationResourcesService
       }
 
 
-      if (copytrans && firstcommit)
+      if (copytrans)
       {
     	 copyClosestEquivalentTranslation(document);
       }
@@ -813,6 +808,24 @@ public class TranslationResourcesService
       }
    }
    
+   private HSimpleComment createComment(HTextFlowTarget target) 
+   {
+	   String authorname;
+	   HDocument document = target.getTextFlow().getDocument();
+	   String projectname = document.getProjectIteration().getProject().getName();
+	   String version = document.getProjectIteration().getSlug();
+	   String documentid = document.getDocId();
+	   if (document.getLastModifiedBy()!=null)
+	   {
+		   authorname = document.getLastModifiedBy().getName();
+	   }
+	   else
+	   {
+		   authorname = "";
+	   }
+	   return new HSimpleComment("translation auto-copied from project "+projectname+", version "+version+", document "+documentid+", author "+authorname);
+   }
+   
    public void copyClosestEquivalentTranslation(HDocument document) 
    {
 	   List<HTextFlowTarget> newTargets = new ArrayList<HTextFlowTarget>();
@@ -820,14 +833,16 @@ public class TranslationResourcesService
 	   for (HTextFlow textFlow : document.getTextFlows())
 	   {
 		   // find closest equivalent textflowtarget
-	       HTextFlowTarget target = textFlowTargetDAO.findClosestEquivalentTranslation(textFlow).get(0);
-	       if (target != null)
+	       HTextFlowTarget from = textFlowTargetDAO.findClosestEquivalentTranslation(textFlow).get(0);
+	       if (from != null)
 	       {
-	    	   HTextFlowTarget hTarget = new HTextFlowTarget(textFlow, target.getLocale());
-	    	   hTarget.setVersionNum(target.getVersionNum()); // incremented when content is set
-	    	   hTarget.setContent(target.getContent());
-	    	   hTarget.setState(target.getState());
-	    	   textFlow.getTargets().put(target.getLocale(), hTarget);
+	    	   HTextFlowTarget hTarget = new HTextFlowTarget(textFlow, from.getLocale());
+	    	   hTarget.setVersionNum(from.getVersionNum());
+	    	   hTarget.setContent(from.getContent());
+	    	   hTarget.setState(from.getState());
+	    	   HSimpleComment hcomment = createComment(from);
+	    	   hTarget.setComment(hcomment);
+	    	   textFlow.getTargets().put(from.getLocale(), hTarget);
 	    	   newTargets.add(hTarget);	
 	        }
 	      

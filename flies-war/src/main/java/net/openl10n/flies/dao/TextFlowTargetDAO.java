@@ -41,6 +41,12 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
    {
       return (HTextFlowTarget) getSession().createCriteria(HTextFlowTarget.class).add(Restrictions.naturalId().set("textFlow", textFlow).set("locale", locale)).setCacheable(true).setComment("TextFlowTargetDAO.getByNaturalId").uniqueResult();
    }
+   
+   @SuppressWarnings("unchecked")
+   public List<HTextFlowTarget> findRelatedTranslations(HDocument document)
+   {
+      return getSession().createQuery("select t from HTextFlowTarget t where " + "t.textFlow.document =:document ").setParameter("document", document).list();
+   }
 
    @SuppressWarnings("unchecked")
    public List<HTextFlowTarget> findAllTranslations(HDocument document, LocaleId locale)
