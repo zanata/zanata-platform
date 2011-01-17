@@ -48,13 +48,19 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       return (HProjectIteration) getSession().createCriteria(HProjectIteration.class).add(Restrictions.naturalId().set("project", project).set("slug", iterationSlug)).setCacheable(true).uniqueResult();
    }
 
+   /**
+    * @see DocumentDAO#getStatistics(long, LocaleId)
+    * @param iterationId
+    * @param localeId
+    * @return
+    */
    public TransUnitCount getStatisticsForContainer(Long iterationId, LocaleId localeId)
    {
 
       @SuppressWarnings("unchecked")
-      List<StatusCount> stats = getSession().createQuery("select new net.openl10n.flies.model.StatusCount(tft.state, count(tft)) " + "from HTextFlowTarget tft " + "where tft.textFlow.document.projectIteration.id = :id " + "  and tft.locale.localeId = :locale " + "group by tft.state").setParameter("id", iterationId).setParameter("locale", localeId).setCacheable(true).list();
+      List<StatusCount> stats = getSession().createQuery("select new net.openl10n.flies.model.StatusCount(tft.state, count(tft)) " + "from HTextFlowTarget tft " + "where tft.textFlow.document.projectIteration.id = :id " + "  and tft.locale.localeId = :locale and tft.textFlow.obsolete = :obsolete" + " group by tft.state").setParameter("id", iterationId).setParameter("locale", localeId).setParameter("obsolete", false).setCacheable(true).list();
 
-      Long totalCount = (Long) getSession().createQuery("select count(tf) from HTextFlow tf where tf.document.projectIteration.id = :id").setParameter("id", iterationId).setCacheable(true).uniqueResult();
+      Long totalCount = (Long) getSession().createQuery("select count(tf) from HTextFlow tf where tf.document.projectIteration.id = :id and tf.obsolete = :obsolete").setParameter("id", iterationId).setParameter("obsolete", false).setCacheable(true).uniqueResult();
 
       TransUnitCount stat = new TransUnitCount();
       for (StatusCount count : stats)

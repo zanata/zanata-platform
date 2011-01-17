@@ -49,6 +49,12 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       return new HashSet<LocaleId>(locales);
    }
 
+   /**
+    * @see ProjectIterationDAO#getStatisticsForContainer(Long, LocaleId)
+    * @param docId
+    * @param localeId
+    * @return
+    */
    public TranslationStats getStatistics(long docId, LocaleId localeId)
    {
       Session session = getSession();
@@ -56,7 +62,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       // calculate unit counts
       @SuppressWarnings("unchecked")
       List<StatusCount> stats = session.createQuery("select new net.openl10n.flies.model.StatusCount(tft.state, count(tft)) " + "from HTextFlowTarget tft " + "where tft.textFlow.document.id = :id " + "  and tft.locale.localeId = :locale " + "  and tft.textFlow.obsolete = :obsolete " + "group by tft.state").setParameter("id", docId).setParameter("obsolete", false).setParameter("locale", localeId).setCacheable(true).list();
-      Long totalCount = (Long) session.createQuery("select count(tf) from HTextFlow tf where tf.document.id = :id").setParameter("id", docId).setCacheable(true).uniqueResult();
+      Long totalCount = (Long) session.createQuery("select count(tf) from HTextFlow tf where tf.document.id = :id and tf.obsolete = :obsolete").setParameter("id", docId).setParameter("obsolete", false).setCacheable(true).uniqueResult();
 
       TransUnitCount stat = new TransUnitCount();
       for (StatusCount count : stats)
@@ -69,7 +75,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       // calculate word counts
       @SuppressWarnings("unchecked")
       List<StatusCount> wordStats = session.createQuery("select new net.openl10n.flies.model.StatusCount(tft.state, sum(tft.textFlow.wordCount)) " + "from HTextFlowTarget tft where tft.textFlow.document.id = :id " + "  and tft.locale.localeId = :locale " + "  and tft.textFlow.obsolete = :obsolete " + "group by tft.state").setParameter("id", docId).setParameter("obsolete", false).setParameter("locale", localeId).list();
-      Long totalWordCount = (Long) session.createQuery("select sum(tf.wordCount) from HTextFlow tf where tf.document.id = :id").setParameter("id", docId).uniqueResult();
+      Long totalWordCount = (Long) session.createQuery("select sum(tf.wordCount) from HTextFlow tf where tf.document.id = :id and tf.obsolete = :obsolete").setParameter("id", docId).setParameter("obsolete", false).uniqueResult();
 
       TransUnitWords wordCount = new TransUnitWords();
       for (StatusCount count : wordStats)
