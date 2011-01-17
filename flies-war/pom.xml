@@ -660,9 +660,30 @@
 			<!--
 			  This profile tells GWT to use an alternative GWT module which has only one permutation, and to compile in draft mode
 			-->
-			<id>gwt1</id>
+			<id>chrome</id>
 			<properties>
 			  <flies.gwt.module>net.openl10n.flies.webtrans.ApplicationSafari</flies.gwt.module>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>gwt-maven-plugin</artifactId>
+						<configuration>
+							<draftCompile>true</draftCompile>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<!--
+			  This profile tells GWT to use an alternative GWT module which has only one permutation, and to compile in draft mode
+			-->
+			<id>firefox</id>
+			<properties>
+			  <flies.gwt.module>net.openl10n.flies.webtrans.ApplicationGecko18</flies.gwt.module>
 			</properties>
 			<build>
 				<plugins>
