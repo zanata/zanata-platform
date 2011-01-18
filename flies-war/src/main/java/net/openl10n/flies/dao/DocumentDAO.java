@@ -45,7 +45,13 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
    public Set<LocaleId> getTargetLocales(HDocument hDoc)
    {
       @SuppressWarnings("unchecked")
-      List<LocaleId> locales = getSession().createQuery("select tft.locale from HTextFlowTarget tft where tft.textFlow.document = :document").setParameter("document", hDoc).list();
+      // @formatter:off
+      List<LocaleId> locales = getSession().createQuery(
+         "select tft.locale from HTextFlowTarget tft " +
+         "where tft.textFlow.document = :document")
+            .setParameter("document", hDoc)
+            .list();
+      // @formatter:on
       return new HashSet<LocaleId>(locales);
    }
 
@@ -57,12 +63,28 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
     */
    public TranslationStats getStatistics(long docId, LocaleId localeId)
    {
+      // @formatter:off
       Session session = getSession();
 
       // calculate unit counts
       @SuppressWarnings("unchecked")
-      List<StatusCount> stats = session.createQuery("select new net.openl10n.flies.model.StatusCount(tft.state, count(tft)) " + "from HTextFlowTarget tft " + "where tft.textFlow.document.id = :id " + "  and tft.locale.localeId = :locale " + "  and tft.textFlow.obsolete = :obsolete " + "group by tft.state").setParameter("id", docId).setParameter("obsolete", false).setParameter("locale", localeId).setCacheable(true).list();
-      Long totalCount = (Long) session.createQuery("select count(tf) from HTextFlow tf where tf.document.id = :id and tf.obsolete = :obsolete").setParameter("id", docId).setParameter("obsolete", false).setCacheable(true).uniqueResult();
+      List<StatusCount> stats = session.createQuery(
+         "select new net.openl10n.flies.model.StatusCount(tft.state, count(tft)) " + 
+         "from HTextFlowTarget tft " + 
+         "where tft.textFlow.document.id = :id " + 
+         "  and tft.locale.localeId = :locale " + 
+         "  and tft.textFlow.obsolete = :obsolete " + 
+         "group by tft.state")
+            .setParameter("id", docId)
+            .setParameter("obsolete", false)
+            .setParameter("locale", localeId)
+            .setCacheable(true).list();
+      Long totalCount = (Long) session.createQuery(
+         "select count(tf) from HTextFlow tf " +
+         "where tf.document.id = :id and tf.obsolete = :obsolete")
+            .setParameter("id", docId)
+            .setParameter("obsolete", false)
+            .setCacheable(true).uniqueResult();
 
       TransUnitCount stat = new TransUnitCount();
       for (StatusCount count : stats)
@@ -74,8 +96,22 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
 
       // calculate word counts
       @SuppressWarnings("unchecked")
-      List<StatusCount> wordStats = session.createQuery("select new net.openl10n.flies.model.StatusCount(tft.state, sum(tft.textFlow.wordCount)) " + "from HTextFlowTarget tft where tft.textFlow.document.id = :id " + "  and tft.locale.localeId = :locale " + "  and tft.textFlow.obsolete = :obsolete " + "group by tft.state").setParameter("id", docId).setParameter("obsolete", false).setParameter("locale", localeId).list();
-      Long totalWordCount = (Long) session.createQuery("select sum(tf.wordCount) from HTextFlow tf where tf.document.id = :id and tf.obsolete = :obsolete").setParameter("id", docId).setParameter("obsolete", false).uniqueResult();
+      List<StatusCount> wordStats = session.createQuery(
+         "select new net.openl10n.flies.model.StatusCount(tft.state, sum(tft.textFlow.wordCount)) " + 
+         "from HTextFlowTarget tft where tft.textFlow.document.id = :id " + 
+         "  and tft.locale.localeId = :locale " + 
+         "  and tft.textFlow.obsolete = :obsolete " + 
+         "group by tft.state")
+            .setParameter("id", docId)
+            .setParameter("obsolete", false)
+            .setParameter("locale", localeId)
+            .list();
+      Long totalWordCount = (Long) session.createQuery(
+         "select sum(tf.wordCount) from HTextFlow tf " +
+         "where tf.document.id = :id and tf.obsolete = :obsolete")
+            .setParameter("id", docId)
+            .setParameter("obsolete", false)
+            .uniqueResult();
 
       TransUnitWords wordCount = new TransUnitWords();
       for (StatusCount count : wordStats)
@@ -87,6 +123,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
 
       TranslationStats transStats = new TranslationStats(stat, wordCount);
       return transStats;
+      // @formatter:on
    }
 
    public void syncRevisions(HDocument doc, HTextFlow... textFlows)

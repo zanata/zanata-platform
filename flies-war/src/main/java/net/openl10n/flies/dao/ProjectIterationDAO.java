@@ -58,9 +58,27 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
    {
 
       @SuppressWarnings("unchecked")
-      List<StatusCount> stats = getSession().createQuery("select new net.openl10n.flies.model.StatusCount(tft.state, count(tft)) " + "from HTextFlowTarget tft " + "where tft.textFlow.document.projectIteration.id = :id " + "  and tft.locale.localeId = :locale and tft.textFlow.obsolete = :obsolete" + " group by tft.state").setParameter("id", iterationId).setParameter("locale", localeId).setParameter("obsolete", false).setCacheable(true).list();
+      // @formatter:off
+      List<StatusCount> stats = getSession().createQuery(
+         "select new net.openl10n.flies.model.StatusCount(tft.state, count(tft)) " + 
+         "from HTextFlowTarget tft " + 
+         "where tft.textFlow.document.projectIteration.id = :id " + 
+         "  and tft.locale.localeId = :locale" +
+         " and tft.textFlow.obsolete = :obsolete" + 
+         " group by tft.state")
+         .setParameter("id", iterationId)
+         .setParameter("locale", localeId)
+         .setParameter("obsolete", false)
+         .setCacheable(true).list();
 
-      Long totalCount = (Long) getSession().createQuery("select count(tf) from HTextFlow tf where tf.document.projectIteration.id = :id and tf.obsolete = :obsolete").setParameter("id", iterationId).setParameter("obsolete", false).setCacheable(true).uniqueResult();
+      Long totalCount = (Long) getSession().createQuery(
+         "select count(tf) from HTextFlow tf " +
+         "where tf.document.projectIteration.id = :id" +
+         " and tf.obsolete = :obsolete")
+            .setParameter("id", iterationId)
+            .setParameter("obsolete", false)
+            .setCacheable(true).uniqueResult();
+      // @formatter:on
 
       TransUnitCount stat = new TransUnitCount();
       for (StatusCount count : stats)
@@ -76,7 +94,15 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
    public EntityTag getResourcesETag(HProjectIteration projectIteration)
    {
       @SuppressWarnings("unchecked")
-      List<Integer> revisions = getSession().createQuery("select d.revision from HDocument d where d.projectIteration =:iteration " + "and d.obsolete =:obsolete").setParameter("iteration", projectIteration).setParameter("obsolete", false).list();
+      // @formatter:off
+      List<Integer> revisions = getSession().createQuery(
+         "select d.revision from HDocument d " +
+         "where d.projectIteration =:iteration " + 
+         "and d.obsolete =:obsolete")
+            .setParameter("iteration", projectIteration)
+            .setParameter("obsolete", false)
+            .list();
+      // @formatter:on
 
       int hashCode = 1;
       for (int revision : revisions)
