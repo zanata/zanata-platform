@@ -14,7 +14,7 @@ public interface WebTransMessages extends Messages
    @Description("Title of the minimized users panel")
    String nUsersOnline(@PluralCount int numUsers);
 
-   @DefaultMessage("{0}% (msgs)")
+   @DefaultMessage("{0}% (words)")
    String statusBarLabelPercentage(int approved, @Optional int needReview, @Optional int untranslated);
 
    @DefaultMessage("{0,number,#.#} hours")
