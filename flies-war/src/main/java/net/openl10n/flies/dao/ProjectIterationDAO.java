@@ -64,19 +64,19 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
          "from HTextFlowTarget tft " + 
          "where tft.textFlow.document.projectIteration.id = :id " + 
          "  and tft.locale.localeId = :locale" +
-         " and tft.textFlow.obsolete = :obsolete" + 
+         " and tft.textFlow.obsolete = false" + 
+         " and tft.textFlow.document.obsolete = false" + 
          " group by tft.state")
          .setParameter("id", iterationId)
          .setParameter("locale", localeId)
-         .setParameter("obsolete", false)
          .setCacheable(true).list();
 
       Long totalCount = (Long) getSession().createQuery(
          "select count(tf) from HTextFlow tf " +
          "where tf.document.projectIteration.id = :id" +
-         " and tf.obsolete = :obsolete")
+         " and tf.obsolete = false" +
+         " and tf.document.obsolete = false")
             .setParameter("id", iterationId)
-            .setParameter("obsolete", false)
             .setCacheable(true).uniqueResult();
       // @formatter:on
 
@@ -98,9 +98,8 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       List<Integer> revisions = getSession().createQuery(
          "select d.revision from HDocument d " +
          "where d.projectIteration =:iteration " + 
-         "and d.obsolete =:obsolete")
+         "and d.obsolete = false")
             .setParameter("iteration", projectIteration)
-            .setParameter("obsolete", false)
             .list();
       // @formatter:on
 
