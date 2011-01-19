@@ -809,67 +809,67 @@ public class TranslationResourcesService
    
    private HSimpleComment createComment(HTextFlowTarget target) 
    {
-	  String authorname;
-	  HDocument document = target.getTextFlow().getDocument();
-	  String projectname = document.getProjectIteration().getProject().getName();
-	  String version = document.getProjectIteration().getSlug();
-	  String documentid = document.getDocId();
-	  if (target.getLastModifiedBy()!=null)
-	  {
-		 authorname = target.getLastModifiedBy().getName();
-	  }
-	  else
-	  {
-		 authorname = "";
-	  }
-	  
-	  return new HSimpleComment("translation auto-copied from project "+projectname+", version "+version+", document "+documentid+", author "+authorname);
+      String authorname;
+      HDocument document = target.getTextFlow().getDocument();
+      String projectname = document.getProjectIteration().getProject().getName();
+      String version = document.getProjectIteration().getSlug();
+      String documentid = document.getDocId();
+      if (target.getLastModifiedBy()!=null)
+      {
+         authorname = target.getLastModifiedBy().getName();
+      }
+      else
+      {
+         authorname = "";
+      }
+
+      return new HSimpleComment("translation auto-copied from project "+projectname+", version "+version+", document "+documentid+", author "+authorname);
    }
    
    public void copyClosestEquivalentTranslation(HDocument document) 
    {
-	  List<HTextFlowTarget> newTargets = new ArrayList<HTextFlowTarget>();
-	  
-	  for (HTextFlow textFlow : document.getTextFlows())
-	  {
-		 // find closest equivalent textflowtarget
-		 List<HLocale> localelist = localeDAO.findAllActive();
-		 for (HLocale locale : localelist)
-		 {
-			// check whether the textFlow have textflowtarget
-			HTextFlowTarget result = textFlow.getTargets().get(locale);
-			if (result == null)
-			{
-			   HTextFlowTarget from = textFlowTargetDAO.findClosestEquivalentTranslation(textFlow, locale.getLocaleId());
-			   if (from != null)
-			   {
-				  HTextFlowTarget hTarget = new HTextFlowTarget(textFlow, from.getLocale());
-				  hTarget.setVersionNum(from.getVersionNum());
-				  hTarget.setContent(from.getContent());
-				  hTarget.setState(from.getState());
-				  HSimpleComment hcomment = createComment(from);
-				  hTarget.setComment(hcomment);
-				  textFlow.getTargets().put(from.getLocale(), hTarget);
-				  newTargets.add(hTarget);
-			   }
-			}
-		 
-		 }
-	      
-	  }
+      List<HTextFlowTarget> newTargets = new ArrayList<HTextFlowTarget>();
 
-	  if (!newTargets.isEmpty() )
-	  {
-		 
-		 for (HTextFlowTarget target : newTargets)
-		 {
-			 textFlowTargetDAO.makePersistent(target);
-		 }
-	    	
-		 textFlowTargetDAO.flush();
-		 documentDAO.flush();
-	  
-	  }
+      for (HTextFlow textFlow : document.getTextFlows())
+      {
+         // find closest equivalent textflowtarget
+         List<HLocale> localelist = localeDAO.findAllActive();
+         for (HLocale locale : localelist)
+         {
+            // check whether the textFlow have textflowtarget
+            HTextFlowTarget result = textFlow.getTargets().get(locale);
+            if (result == null)
+            {
+               HTextFlowTarget from = textFlowTargetDAO.findClosestEquivalentTranslation(textFlow, locale.getLocaleId());
+               if (from != null)
+               {
+                  HTextFlowTarget hTarget = new HTextFlowTarget(textFlow, from.getLocale());
+                  hTarget.setVersionNum(from.getVersionNum());
+                  hTarget.setContent(from.getContent());
+                  hTarget.setState(from.getState());
+                  HSimpleComment hcomment = createComment(from);
+                  hTarget.setComment(hcomment);
+                  textFlow.getTargets().put(from.getLocale(), hTarget);
+                  newTargets.add(hTarget);
+               }
+            }
+
+         }
+
+      }
+
+      if (!newTargets.isEmpty() )
+      {
+
+         for (HTextFlowTarget target : newTargets)
+         {
+            textFlowTargetDAO.makePersistent(target);
+         }
+
+         textFlowTargetDAO.flush();
+         documentDAO.flush();
+
+      }
 	    	 
    }
 
