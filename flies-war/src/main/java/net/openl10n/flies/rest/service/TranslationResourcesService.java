@@ -833,14 +833,14 @@ public class TranslationResourcesService
 	  for (HTextFlow textFlow : document.getTextFlows())
 	  {
 		 // find closest equivalent textflowtarget
-		 List<HLocale> localelist = localeDAO.findDocumentLocale(document);
+		 List<HLocale> localelist = localeDAO.findAllActive();
 		 for (HLocale locale : localelist)
 		 {
 			// check whether the textFlow have textflowtarget
 			HTextFlowTarget result = textFlow.getTargets().get(locale);
 			if (result == null)
 			{
-			   HTextFlowTarget from = textFlowTargetDAO.findClosestEquivalentTranslation(textFlow, locale.getLocaleId()).get(0);
+			   HTextFlowTarget from = textFlowTargetDAO.findClosestEquivalentTranslation(textFlow, locale.getLocaleId());
 			   if (from != null)
 			   {
 				  HTextFlowTarget hTarget = new HTextFlowTarget(textFlow, from.getLocale());

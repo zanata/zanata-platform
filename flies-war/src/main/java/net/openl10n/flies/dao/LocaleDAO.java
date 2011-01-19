@@ -38,11 +38,5 @@ public class LocaleDAO extends AbstractDAOImpl<HLocale, Long>
    {
       return findByCriteria(Restrictions.eq("active", true));
    }
-   
-   @SuppressWarnings("unchecked")
-   public List<HLocale> findDocumentLocale(HDocument document)
-   {
-	  return getSession().createQuery("select DISTINCT t.locale from HTextFlowTarget t where t.textFlow.document.docId =:document group by t.locale").setParameter("document", document.getDocId()).list();
-   }
 
 }
