@@ -87,12 +87,14 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
          "and t.locale.localeId =:localeId "+ 
          "and t.textFlow.document.projectIteration.project =:project " +
          "and t.textFlow.document.projectIteration !=:iteration "+
+         "and t.state = :state " +
          "order by t.lastChanged desc")
             .setParameter("docId", textFlow.getDocument().getDocId())
             .setParameter("localeId", localeId)
             .setParameter("project", textFlow.getDocument().getProjectIteration().getProject())
             .setParameter("iteration", textFlow.getDocument().getProjectIteration())
             .setParameter("resid", textFlow.getResId())
+            .setParameter("state", ContentState.Approved)
             .setMaxResults(1).uniqueResult();
       // @formatter:on
    }
