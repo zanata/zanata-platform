@@ -64,4 +64,24 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       q.setComment("TextFlowDAO.getIdsByTargetState");
       return q.list();
    }
+
+   @SuppressWarnings("unchecked")
+   public List<HTextFlow> getNavigationByDocumentId(Long documentId, int offset, boolean reverse)
+   {
+      Query q;
+      if (reverse)
+      {
+         q = getSession().createQuery("from HTextFlow tf where tf.document.id = :id and tf.pos < :offset order by tf.pos desc");
+      }
+      else
+      {
+         q = getSession().createQuery("from HTextFlow tf where tf.document.id = :id and tf.pos  > :offset order by tf.pos");
+      }
+      q.setParameter("id", documentId);
+      q.setParameter("offset", offset);
+      q.setComment("TextFlowDAO.getNavigationByDocumentId");
+      return q.list();
+
+   }
+
 }

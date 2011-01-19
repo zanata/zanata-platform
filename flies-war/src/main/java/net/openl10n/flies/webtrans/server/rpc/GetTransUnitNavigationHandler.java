@@ -26,6 +26,7 @@ import java.util.List;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 import net.openl10n.flies.common.ContentState;
+import net.openl10n.flies.dao.TextFlowDAO;
 import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.model.HTextFlow;
 import net.openl10n.flies.model.HTextFlowTarget;
@@ -35,7 +36,6 @@ import net.openl10n.flies.webtrans.server.ActionHandlerFor;
 import net.openl10n.flies.webtrans.shared.rpc.GetTransUnitsNavigation;
 import net.openl10n.flies.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 
-import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -52,7 +52,7 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
    @Logger
    Log log;
    @In
-   Session session;
+   private TextFlowDAO textFlowDAO;
 
 
    @In
@@ -78,15 +78,7 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
       List<Long> results = new ArrayList<Long>();
       List<HTextFlow> textFlows = new ArrayList<HTextFlow>();
       int count = 0;
-      if (action.isReverse())
-      {
-         textFlows = session.createQuery("from HTextFlow tf where tf.document.id = :id " + " and tf.pos < :offset " + " order by tf.pos desc").setParameter("offset", action.getOffset()).setParameter("id", action.getDocumentId().getValue()).list();
-      }
-      else
-      {
-         textFlows = session.createQuery("from HTextFlow tf where tf.document.id = :id " + " and tf.pos > :offset " + " order by tf.pos").setParameter("offset", action.getOffset()).setParameter("id", action.getDocumentId().getValue()).list();
-      }
-
+      textFlows = textFlowDAO.getNavigationByDocumentId(action.getDocumentId().getValue(), action.getOffset(), action.isReverse());
       HLocale hLocale = localeServiceImpl.getSupportedLanguageByLocale(action.getWorkspaceId().getLocaleId());
       for (HTextFlow textFlow : textFlows)
       {
