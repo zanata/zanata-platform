@@ -21,7 +21,6 @@
 package net.openl10n.flies.webtrans.client.editor.table;
 
 import net.openl10n.flies.common.ContentState;
-import net.openl10n.flies.common.NavigationType;
 import net.openl10n.flies.webtrans.client.Resources;
 import net.openl10n.flies.webtrans.shared.model.TransUnit;
 
@@ -243,11 +242,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             }
             else if (event.isAltKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN)
             { // alt-pagedown
-               handleNextState(NavigationType.FuzzyOrUntranslated);
+               handleNextState();
             }
             else if (event.isAltKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEUP)
             { // alt-pageup
-               handlePrevState(NavigationType.FuzzyOrUntranslated);
+               handlePrevState();
             }
             else if (event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_HOME)
             { // ctrl-home
@@ -306,14 +305,14 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       editRowCallback.gotoPrevRow(row);
    }
 
-   private void gotoNextFuzzy(int row, NavigationType state)
+   private void gotoNextFuzzy(int row)
    {
-      editRowCallback.gotoNextFuzzy(row, state);
+      editRowCallback.gotoNextFuzzy(row);
    }
 
-   private void gotoPrevFuzzy(int row, NavigationType state)
+   private void gotoPrevFuzzy(int row)
    {
-      editRowCallback.gotoPrevFuzzy(row, state);
+      editRowCallback.gotoPrevFuzzy(row);
    }
 
    private void restoreView()
@@ -495,14 +494,14 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       gotoPrevRow(curRow);
    }
 
-   public void handleNextState(NavigationType state)
+   public void handleNextState()
    {
-      gotoNextFuzzy(curRow, state);
+      gotoNextFuzzy(curRow);
    }
 
-   public void handlePrevState(NavigationType state)
+   public void handlePrevState()
    {
-      gotoPrevFuzzy(curRow, state);
+      gotoPrevFuzzy(curRow);
    }
 
    // public void handleNextNew() {

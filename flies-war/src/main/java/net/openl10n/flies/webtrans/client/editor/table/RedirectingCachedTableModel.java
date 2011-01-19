@@ -1,6 +1,5 @@
 package net.openl10n.flies.webtrans.client.editor.table;
 
-import net.openl10n.flies.common.NavigationType;
 
 import com.google.gwt.gen2.table.client.CachedTableModel;
 
@@ -39,16 +38,16 @@ public class RedirectingCachedTableModel<RowType> extends CachedTableModel<RowTy
          tableModel.gotoPrevRow(row);
    }
 
-   public void gotoNextFuzzy(int row, NavigationType state)
+   public void gotoNextFuzzy(int row)
    {
       if (tableModel != null)
-         tableModel.gotoNextFuzzy(row, state);
+         tableModel.gotoNextFuzzy(row);
    }
 
-   public void gotoPrevFuzzy(int row, NavigationType state)
+   public void gotoPrevFuzzy(int row)
    {
       if (tableModel != null)
-         tableModel.gotoPrevFuzzy(row, state);
+         tableModel.gotoPrevFuzzy(row);
    }
 
    public void setRowValueOverride(int row, RowType rowValue)
