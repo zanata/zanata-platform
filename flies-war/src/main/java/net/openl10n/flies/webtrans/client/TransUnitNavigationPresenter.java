@@ -25,8 +25,8 @@ import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
-import net.openl10n.flies.common.NavigationType;
 import net.openl10n.flies.webtrans.client.events.NavTransUnitEvent;
+import net.openl10n.flies.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import net.openl10n.flies.webtrans.client.events.NavTransUnitHandler;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -64,7 +64,7 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
          @Override
          public void onClick(ClickEvent event)
          {
-            fireEvent(new NavTransUnitEvent(null, -1));
+            fireEvent(new NavTransUnitEvent(NavigationType.PrevEntry));
          }
       });
 
@@ -73,7 +73,7 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
          @Override
          public void onClick(ClickEvent event)
          {
-            fireEvent(new NavTransUnitEvent(null, +1));
+            fireEvent(new NavTransUnitEvent(NavigationType.NextEntry));
          }
       });
 
@@ -82,7 +82,7 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
          @Override
          public void onClick(ClickEvent event)
          {
-            fireEvent(new NavTransUnitEvent(NavigationType.FuzzyOrUntranslated, -1));
+            fireEvent(new NavTransUnitEvent(NavigationType.PrevFuzzyOrUntranslated));
          }
       });
 
@@ -91,7 +91,7 @@ public class TransUnitNavigationPresenter extends WidgetPresenter<TransUnitNavig
          @Override
          public void onClick(ClickEvent event)
          {
-            fireEvent(new NavTransUnitEvent(NavigationType.FuzzyOrUntranslated, +1));
+            fireEvent(new NavTransUnitEvent(NavigationType.NextFuzzyOrUntranslated));
          }
       });
 

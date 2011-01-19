@@ -23,6 +23,7 @@
 		<internal.authentication>false</internal.authentication>
 		<spNego.authentication>false</spNego.authentication>
 		<jaas.configure>flies</jaas.configure>
+		<flies.gwt.module>net.openl10n.flies.webtrans.Application</flies.gwt.module>
 		<extra.servlets />
 	</properties>
 
@@ -38,6 +39,12 @@
 		</resources>
 
 		<plugins>
+			<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<projectNameTemplate>flies-war</projectNameTemplate>
+				</configuration>
+			</plugin>
 
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
@@ -67,10 +74,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<runTarget>
-						webtrans/Application.html
-					</runTarget>
-					<inplace>false</inplace>
+				   <module>${flies.gwt.module}</module>
 				</configuration>
 			</plugin>
 
@@ -653,6 +657,48 @@
 		</profile>
 
 		<profile>
+			<!--
+			  This profile tells GWT to use an alternative GWT module which has only one permutation, and to compile in draft mode
+			-->
+			<id>chrome</id>
+			<properties>
+			  <flies.gwt.module>net.openl10n.flies.webtrans.ApplicationSafari</flies.gwt.module>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>gwt-maven-plugin</artifactId>
+						<configuration>
+							<draftCompile>true</draftCompile>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<!--
+			  This profile tells GWT to use an alternative GWT module which has only one permutation, and to compile in draft mode
+			-->
+			<id>firefox</id>
+			<properties>
+			  <flies.gwt.module>net.openl10n.flies.webtrans.ApplicationGecko18</flies.gwt.module>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>gwt-maven-plugin</artifactId>
+						<configuration>
+							<draftCompile>true</draftCompile>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
 			<id>eclipse</id>
 			<build>
 				<finalName>flies-dev</finalName>
@@ -950,18 +996,6 @@
 			<version>0.5</version>
 		</dependency>
 
-		<dependency>
-			<groupId>net.sf.okapi.lib</groupId>
-			<artifactId>okapi-lib-search</artifactId>
-			<version>0.7</version>
-		</dependency>
-
-		<dependency>
-			<groupId>net.sf.okapi.steps</groupId>
-			<artifactId>okapi-step-wordcount</artifactId>
-			<version>0.9</version>
-		</dependency>
-
 		<!-- okapi-lib-search would otherwise use lucene 3.0.0 -->
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
@@ -1142,7 +1176,6 @@
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-incubator</artifactId>
-			<version>2.0.1</version>
 			<scope>provided</scope>
 		</dependency>
 

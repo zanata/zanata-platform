@@ -57,7 +57,7 @@
 	 
 	<context-param>
 	    <param-name>LIQUIBASE_DATA_SOURCE</param-name>
-	    <param-value>java:/fliesDatasource</param-value>
+	    <param-value>java:/${ds.jndi.name}</param-value>
 	</context-param>
 	<!-- 
 	<context-param>

@@ -6,7 +6,7 @@ import net.customware.gwt.dispatch.shared.Result;
 import net.openl10n.flies.webtrans.shared.model.DocumentId;
 
 
-public class GetTransUnitsStatesResult implements Result
+public class GetTransUnitsNavigationResult implements Result
 {
 
    private static final long serialVersionUID = 1L;
@@ -15,11 +15,11 @@ public class GetTransUnitsStatesResult implements Result
    private List<Long> units;
 
    @SuppressWarnings("unused")
-   private GetTransUnitsStatesResult()
+   private GetTransUnitsNavigationResult()
    {
    }
 
-   public GetTransUnitsStatesResult(DocumentId documentId, List<Long> units)
+   public GetTransUnitsNavigationResult(DocumentId documentId, List<Long> units)
    {
       this.documentId = documentId;
       this.units = units;

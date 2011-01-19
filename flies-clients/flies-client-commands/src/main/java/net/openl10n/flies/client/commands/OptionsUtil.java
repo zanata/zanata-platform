@@ -40,12 +40,15 @@ public class OptionsUtil
             JAXBContext jc = JAXBContext.newInstance(FliesConfig.class);
             Unmarshaller unmarshaller = jc.createUnmarshaller();
             String projectConfig = projOpts.getProjectConfig();
-            File projectConfigFile = null;
-            String userDir = System.getProperty("user.dir");
-            File projectDir = new File(userDir);
-            while (projectDir != null && !(projectConfigFile = new File(projectDir, projectConfig)).exists())
+            File projectConfigFile = new File(projectConfig);
+            if (!projectConfigFile.isAbsolute())
             {
-               projectDir = projectDir.getParentFile();
+	           String userDir = System.getProperty("user.dir");
+	           File projectDir = new File(userDir);
+	           while (projectDir != null && !(projectConfigFile = new File(projectDir, projectConfig)).exists())
+	           {
+	              projectDir = projectDir.getParentFile();
+	           }
             }
 
             if (projectConfigFile.exists())
@@ -58,7 +61,7 @@ public class OptionsUtil
             }
             else
             {
-               log.warn("Flies project config file '{}' not found in '{}' or parent directories; ignoring.", projectConfig, userDir);
+               log.warn("Flies project config file '{}' not found; ignoring.", projectConfig);
             }
          }
       }

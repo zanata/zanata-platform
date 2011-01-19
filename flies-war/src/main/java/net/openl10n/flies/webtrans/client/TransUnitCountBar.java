@@ -70,7 +70,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
       }
       else
       {
-         if (labelFormat == LabelFormat.HOURS_REMAIN || labelFormat == LabelFormat.WORD_COUNTS)
+         if (labelFormat != LabelFormat.MESSAGE_COUNTS)
          {
             approved = words.get(ContentState.Approved);
             needReview = words.get(ContentState.NeedReview);
