@@ -3,6 +3,7 @@ package net.openl10n.flies.dao;
 import java.util.List;
 
 import net.openl10n.flies.common.LocaleId;
+import net.openl10n.flies.model.HDocument;
 import net.openl10n.flies.model.HLocale;
 
 import org.hibernate.Session;
@@ -36,6 +37,12 @@ public class LocaleDAO extends AbstractDAOImpl<HLocale, Long>
    public List<HLocale> findAllActive()
    {
       return findByCriteria(Restrictions.eq("active", true));
+   }
+   
+   @SuppressWarnings("unchecked")
+   public List<HLocale> findDocumentLocale(HDocument document)
+   {
+	  return getSession().createQuery("select DISTINCT t.locale from HTextFlowTarget t where t.textFlow.document.docId =:document group by t.locale").setParameter("document", document.getDocId()).list();
    }
 
 }
