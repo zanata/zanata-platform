@@ -673,9 +673,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
    boolean isReqComplete = true;
 
-   private int lastRowIndex;
-
-   private void cacheNextFuzzy(final StatesCacheCallback callBack)
+   private void cacheNextFuzzy(final NavigationCacheCallback callBack)
    {
       isReqComplete = false;
       dispatcher.execute(new GetTransUnitsNavigation(documentId, curRowIndex, 3, false), new AsyncCallback<GetTransUnitsNavigationResult>()
@@ -699,7 +697,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       });
    }
 
-   private void cachePrevFuzzy(final StatesCacheCallback callBack)
+   private void cachePrevFuzzy(final NavigationCacheCallback callBack)
    {
       isReqComplete = false;
       dispatcher.execute(new GetTransUnitsNavigation(documentId, curRowIndex, 3, true), new AsyncCallback<GetTransUnitsNavigationResult>()
@@ -769,7 +767,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       }
       }
 
-   StatesCacheCallback cacheCallback = new StatesCacheCallback()
+   NavigationCacheCallback cacheCallback = new NavigationCacheCallback()
    {
       @Override
       public void nextFuzzy()
