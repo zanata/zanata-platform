@@ -43,53 +43,53 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
    }
 
    @SuppressWarnings("unchecked")
-   public List<HTextFlowTarget> findAllTranslations(HDocument document, LocaleId locale)
+   public List<HTextFlowTarget> findAllTranslations(HDocument document, LocaleId localeId)
    {
       // @formatter:off
       return getSession().createQuery(
          "select t from HTextFlowTarget t where " + 
          "t.textFlow.document =:document " +
-         "and t.locale.localeId =:locale " + 
+         "and t.locale.localeId =:localeId " + 
          "and t.state !=:state " + 
          "order by t.textFlow.pos")
             .setParameter("document", document)
-            .setParameter("locale", locale)
+            .setParameter("localeId", localeId)
             .setParameter("state", ContentState.New)
             .list();
       // @formatter:on
    }
 
    @SuppressWarnings("unchecked")
-   public List<HTextFlowTarget> findTranslations(HDocument document, LocaleId locale)
+   public List<HTextFlowTarget> findTranslations(HDocument document, LocaleId localeId)
    {
       // @formatter:off
       return getSession().createQuery(
          "select t from HTextFlowTarget t where " + 
          "t.textFlow.document =:document " +
-         "and t.locale.localeId =:locale " + 
+         "and t.locale.localeId =:localeId " + 
          "and t.state !=:state " +
          "and t.textFlow.obsolete=false " + 
          "order by t.textFlow.pos")
             .setParameter("document", document)
-            .setParameter("locale", locale)
+            .setParameter("localeId", localeId)
             .setParameter("state", ContentState.New)
             .list();      
       // @formatter:on
    }
    
-   public HTextFlowTarget findClosestEquivalentTranslation(HTextFlow textFlow, LocaleId locale)
+   public HTextFlowTarget findClosestEquivalentTranslation(HTextFlow textFlow, LocaleId localeId)
    {
       // @formatter:off
       return (HTextFlowTarget) getSession().createQuery(
          "select t from HTextFlowTarget t where " + 
          "t.textFlow.resId =:resid " +
-         "and t.textFlow.document.docId =:document " +
-         "and t.locale.localeId =:locale "+ 
+         "and t.textFlow.document.docId =:docId " +
+         "and t.locale.localeId =:localeId "+ 
          "and t.textFlow.document.projectIteration.project =:project " +
          "and t.textFlow.document.projectIteration !=:iteration "+
          "order by t.lastChanged desc")
-            .setParameter("document", textFlow.getDocument().getDocId())
-            .setParameter("locale", locale)
+            .setParameter("docId", textFlow.getDocument().getDocId())
+            .setParameter("localeId", localeId)
             .setParameter("project", textFlow.getDocument().getProjectIteration().getProject())
             .setParameter("iteration", textFlow.getDocument().getProjectIteration())
             .setParameter("resid", textFlow.getResId())
