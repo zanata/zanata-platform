@@ -1,3 +1,23 @@
+/*
+ * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * @author tags. See the copyright.txt file in the distribution for a full
+ * listing of individual contributors.
+ * 
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+ * site: http://www.fsf.org.
+ */
 package net.openl10n.flies.dao;
 
 import java.util.List;
@@ -7,8 +27,10 @@ import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.model.HDocument;
 import net.openl10n.flies.model.HTextFlow;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -68,19 +90,18 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    @SuppressWarnings("unchecked")
    public List<HTextFlow> getNavigationByDocumentId(Long documentId, int offset, boolean reverse)
    {
-      Query q;
+      Criteria c = getSession().createCriteria(HTextFlow.class).add(Restrictions.eq("document.id", documentId)).add(Restrictions.eq("obsolete", false)).setComment("TextFlowDAO.getNavigationByDocumentId");
+
       if (reverse)
       {
-         q = getSession().createQuery("from HTextFlow tf where tf.document.id = :id and tf.pos < :offset order by tf.pos desc");
+         c.add(Restrictions.lt("pos", offset)).addOrder(Order.desc("pos"));
       }
       else
       {
-         q = getSession().createQuery("from HTextFlow tf where tf.document.id = :id and tf.pos  > :offset order by tf.pos");
+         c.add(Restrictions.gt("pos", offset)).addOrder(Order.asc("pos"));
       }
-      q.setParameter("id", documentId);
-      q.setParameter("offset", offset);
-      q.setComment("TextFlowDAO.getNavigationByDocumentId");
-      return q.list();
+
+      return c.list();
 
    }
 
