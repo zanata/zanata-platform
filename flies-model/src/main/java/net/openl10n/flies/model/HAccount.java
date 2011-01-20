@@ -76,15 +76,29 @@ public class HAccount extends AbstractFliesEntity implements Serializable
 
    private HAccountActivationKey accountActivationKey;
 
+   private HAccountResetPasswordKey accountResetPasswordKey;
+
+
    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
-   public HAccountActivationKey getAccountKey()
+   public HAccountActivationKey getAccountActivationKey()
    {
       return accountActivationKey;
    }
 
-   public void setAccountKey(HAccountActivationKey accountKey)
+   public void setAccountActivationKey(HAccountActivationKey accountActivationKey)
    {
-      this.accountActivationKey = accountKey;
+      this.accountActivationKey = accountActivationKey;
+   }
+
+   @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+   public HAccountResetPasswordKey getAccountResetPasswordKey()
+   {
+      return accountResetPasswordKey;
+   }
+
+   public void setAccountResetPasswordKey(HAccountResetPasswordKey accountResetPasswordKey)
+   {
+      this.accountResetPasswordKey = accountResetPasswordKey;
    }
 
    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
