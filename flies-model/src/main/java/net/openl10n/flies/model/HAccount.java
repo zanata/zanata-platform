@@ -74,6 +74,19 @@ public class HAccount extends AbstractFliesEntity implements Serializable
 
    private Set<HAccountRole> roles;
 
+   private HAccountActivationKey accountActivationKey;
+
+   @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+   public HAccountActivationKey getAccountKey()
+   {
+      return accountActivationKey;
+   }
+
+   public void setAccountKey(HAccountActivationKey accountKey)
+   {
+      this.accountActivationKey = accountKey;
+   }
+
    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
    public HPerson getPerson()
    {
