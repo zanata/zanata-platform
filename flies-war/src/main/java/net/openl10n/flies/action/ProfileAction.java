@@ -145,7 +145,7 @@ public class ProfileAction implements Serializable
          if (!authenticatedAccount.getPerson().getEmail().equals(this.email))
          {
             activationKey = EmailChangeActivationService.generateActivationKey(authenticatedAccount.getPerson().getId().toString(), this.email);
-            renderer.render("/WEB-viewINF/facelets/email/email_validation.xhtml");
+            renderer.render("/WEB-INF/facelets/email/email_validation.xhtml");
             FacesMessages.instance().add("You will soon receive an email with a link to activate your email account change.");
          }
 
