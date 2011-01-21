@@ -18,7 +18,9 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package net.openl10n.flies.service.impl;
+package net.openl10n.flies.util;
+
+import net.openl10n.flies.util.Base64UrlSafe;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
