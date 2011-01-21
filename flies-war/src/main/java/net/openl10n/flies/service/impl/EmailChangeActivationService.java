@@ -20,44 +20,48 @@
  */
 package net.openl10n.flies.service.impl;
 
-import java.net.URLDecoder;
-import java.net.URLEncoder;
+import java.util.Random;
 
-import net.openl10n.flies.exception.FliesServiceException;
+import net.openl10n.flies.util.Base64UrlSafe;
 
-import org.apache.commons.codec.binary.Base64;
-
-public class Base64UrlSafe
+public class EmailChangeActivationService
 {
-   public static String encode(String var) throws FliesServiceException
+   public static class KeyParameter
    {
-      try
+      private String id;
+      private String email;
+
+      public KeyParameter(String id, String email)
       {
-         Base64 en = new Base64();
-         String enVar = new String(en.encode(var.getBytes()), "UTF-8");
-         String result = URLEncoder.encode(enVar, "UTF-8");
-         return result;
+         this.id = id;
+         this.email = email;
       }
-      catch (Exception e)
+
+      public String getId()
       {
-         throw new FliesServiceException(e.getMessage());
+         return id;
+      }
+
+      public String getEmail()
+      {
+         return email;
       }
    }
 
-   public static String decode(String var) throws FliesServiceException
+   public static String generateActivationKey(String id, String email)
    {
-      try
-      {
-         String deVar = URLDecoder.decode(var, "UTF-8");
-         Base64 en = new Base64();
-         String result = new String(en.decode(deVar.getBytes()), "UTF-8");
-         return result;
-      }
-      catch (Exception e)
-      {
-         throw new FliesServiceException(e.getMessage());
-      }
+      Random ran = new Random();
+      String var = id + ";" + ran.nextInt() + ";" + email;
+      return Base64UrlSafe.encode(var);
+   }
 
+   public static KeyParameter parseKey(String key)
+   {
+      String var = Base64UrlSafe.decode(key);
+      String[] array = var.split(";");
+      String id = array[0];
+      String email = array[2];
+      return new KeyParameter(id, email);
    }
 
 }

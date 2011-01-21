@@ -21,8 +21,6 @@
 package net.openl10n.flies.action;
 
 import java.io.Serializable;
-import java.util.Random;
-
 
 import net.openl10n.flies.ApplicationConfiguration;
 import net.openl10n.flies.dao.PersonDAO;
@@ -31,7 +29,7 @@ import net.openl10n.flies.model.HPerson;
 import net.openl10n.flies.security.FliesIdentity;
 import net.openl10n.flies.security.FliesJpaIdentityStore;
 import net.openl10n.flies.service.RegisterService;
-import net.openl10n.flies.service.impl.Base64UrlSafe;
+import net.openl10n.flies.service.impl.EmailChangeActivationService;
 
 import org.hibernate.validator.Email;
 import org.jboss.seam.ScopeType;
@@ -104,7 +102,7 @@ public class ProfileAction implements Serializable
          email = identity.getCredentials().getUsername() + "@" + domain;
          identity.unAuthenticate();
       }else{
-         HPerson person = personDAO.findById(authenticatedAccount.getPerson().getId(), true);
+         HPerson person = personDAO.findById(authenticatedAccount.getPerson().getId(), false);
          name = person.getName();
          email = person.getEmail();
          authenticatedAccount.getPerson().setName(this.name);
@@ -146,7 +144,9 @@ public class ProfileAction implements Serializable
          log.debug("updated successfully");
          if (!authenticatedAccount.getPerson().getEmail().equals(this.email))
          {
-            emailValidate(authenticatedAccount.getPerson().getId().toString(), this.email);
+            activationKey = EmailChangeActivationService.generateActivationKey(authenticatedAccount.getPerson().getId().toString(), this.email);
+            renderer.render("/WEB-viewINF/facelets/email/email_validation.xhtml");
+            FacesMessages.instance().add("You will soon receive an email with a link to activate your email account change.");
          }
 
          return "updated";
@@ -171,14 +171,5 @@ public class ProfileAction implements Serializable
       return "view";
    }
 
-
-   private void emailValidate(String var1, String var2)
-   {
-      Random ran = new Random();
-      String var = var1 + ";" + ran.nextInt() + ";" + var2;
-      activationKey = Base64UrlSafe.encode(var);
-      renderer.render("/WEB-INF/facelets/email/email_validation.xhtml");
-      FacesMessages.instance().add("You will soon receive an email with a link to activate your email account change.");
-   }
 
 }

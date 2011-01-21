@@ -27,7 +27,8 @@ import javax.security.auth.login.LoginException;
 import net.openl10n.flies.dao.PersonDAO;
 import net.openl10n.flies.model.HAccount;
 import net.openl10n.flies.model.HPerson;
-import net.openl10n.flies.service.impl.Base64UrlSafe;
+import net.openl10n.flies.service.impl.EmailChangeActivationService;
+import net.openl10n.flies.service.impl.EmailChangeActivationService.KeyParameter;
 
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -64,23 +65,20 @@ public class ValidateEmailAction implements Serializable
    {
       if (activationKey != null && !activationKey.isEmpty())
       {
-         String var = Base64UrlSafe.decode(activationKey);
-         String[] array = var.split(";");
-         String id = array[0];
-         String email = array[2];
+         KeyParameter keyPair = EmailChangeActivationService.parseKey(activationKey);
 
-         HPerson person = personDAO.findById(new Long(id), true);
+         HPerson person = personDAO.findById(new Long(keyPair.getId()), true);
          HAccount account = person.getAccount();
          if (!account.getUsername().equals(identity.getCredentials().getUsername()))
          {
             throw new LoginException();
          }
-         person.setEmail(email);
+         person.setEmail(keyPair.getEmail());
          account.setEnabled(true);
          personDAO.makePersistent(person);
          personDAO.flush();
          FacesMessages.instance().add("You have successfully changed your email account.");
-         log.info("update email address to {0}  successfully", email);
+         log.info("update email address to {0}  successfully", keyPair.getEmail());
       }
       return "/home.xhtml";
    }

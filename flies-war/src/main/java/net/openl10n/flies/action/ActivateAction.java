@@ -22,8 +22,7 @@ package net.openl10n.flies.action;
 
 import java.io.Serializable;
 
-import javax.persistence.EntityManager;
-
+import net.openl10n.flies.dao.AccountActivationKeyDAO;
 import net.openl10n.flies.model.HAccountActivationKey;
 import net.openl10n.flies.security.KeyNotFoundException;
 
@@ -50,7 +49,7 @@ public class ActivateAction implements Serializable
    Log log;
 
    @In
-   private EntityManager entityManager;
+   private AccountActivationKeyDAO accountActivationKeyDAO;
 
    @In
    private IdentityManager identityManager;
@@ -71,7 +70,7 @@ public class ActivateAction implements Serializable
       if (getActivationKey() == null)
          throw new KeyNotFoundException();
 
-      key = entityManager.find(HAccountActivationKey.class, getActivationKey());
+      key = accountActivationKeyDAO.findById(getActivationKey(), false);
 
       if (key == null)
          throw new KeyNotFoundException();
@@ -95,7 +94,7 @@ public class ActivateAction implements Serializable
          }
       }.addRole("admin").run();
 
-      entityManager.remove(key);
+      accountActivationKeyDAO.makeTransient(key);
 
       FacesMessages.instance().add("Your account was successfully activated. You can now sign in.");
 
