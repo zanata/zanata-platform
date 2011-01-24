@@ -807,7 +807,7 @@ public class TranslationResourcesService
       }
    }
    
-   private HSimpleComment createComment(HTextFlowTarget target) 
+   private String createComment(HTextFlowTarget target) 
    {
       String authorname;
       HDocument document = target.getTextFlow().getDocument();
@@ -823,54 +823,55 @@ public class TranslationResourcesService
          authorname = "";
       }
 
-      return new HSimpleComment("translation auto-copied from project "+projectname+", version "+version+", document "+documentid+", author "+authorname);
+      return "translation auto-copied from project "+projectname+", version "+version+", document "+documentid+", author "+authorname;
    }
    
    public void copyClosestEquivalentTranslation(HDocument document) 
    {
-      List<HTextFlowTarget> newTargets = new ArrayList<HTextFlowTarget>();
+      int copyCount = 0;
+      List<HLocale> localelist = localeDAO.findAllActive();
 
       for (HTextFlow textFlow : document.getTextFlows())
       {
          // find closest equivalent textflowtarget
-         List<HLocale> localelist = localeDAO.findAllActive();
          for (HLocale locale : localelist)
          {
-            // check whether the textFlow have textflowtarget
-            HTextFlowTarget result = textFlow.getTargets().get(locale);
-            if (result == null)
+            HTextFlowTarget hTarget = textFlow.getTargets().get(locale);
+            if (hTarget != null && hTarget.getState() == ContentState.Approved)
+               continue;
+
+            HTextFlowTarget oldTFT = textFlowTargetDAO.findClosestEquivalentTranslation(textFlow, locale.getLocaleId());
+            if (oldTFT != null)
             {
-               HTextFlowTarget from = textFlowTargetDAO.findClosestEquivalentTranslation(textFlow, locale.getLocaleId());
-               if (from != null)
+               if (hTarget == null)
                {
-                  HTextFlowTarget hTarget = new HTextFlowTarget(textFlow, from.getLocale());
-                  hTarget.setVersionNum(from.getVersionNum());
-                  hTarget.setContent(from.getContent());
-                  hTarget.setState(from.getState());
-                  HSimpleComment hcomment = createComment(from);
-                  hTarget.setComment(hcomment);
-                  textFlow.getTargets().put(from.getLocale(), hTarget);
-                  newTargets.add(hTarget);
+                  hTarget = new HTextFlowTarget(textFlow, locale);
+                  hTarget.setVersionNum(1);
+                  textFlow.getTargets().put(locale, hTarget);
                }
+               else
+               {
+                  // DB trigger will copy old value to history table, if we change the versionNum
+                  hTarget.setVersionNum(hTarget.getVersionNum()+1);
+               }
+               hTarget.setContent(oldTFT.getContent());
+               hTarget.setState(oldTFT.getState());
+               HSimpleComment hcomment = hTarget.getComment();
+               if (hcomment == null)
+               {
+                  hcomment = new HSimpleComment();
+                  hTarget.setComment(hcomment);
+               }
+               hcomment.setComment(createComment(oldTFT));
+               textFlowTargetDAO.makePersistent(hTarget);
+               ++copyCount;
             }
-
          }
-
       }
 
-      if (!newTargets.isEmpty() )
       {
-
-         for (HTextFlowTarget target : newTargets)
-         {
-            textFlowTargetDAO.makePersistent(target);
-         }
-
-         textFlowTargetDAO.flush();
-         documentDAO.flush();
-
+         log.info("copied {0} existing translations for document {1}{2}", copyCount, document.getPath(), document.getName());
       }
-	    	 
    }
 
 }
