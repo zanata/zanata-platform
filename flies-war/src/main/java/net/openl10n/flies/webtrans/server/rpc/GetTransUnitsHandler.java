@@ -70,7 +70,24 @@ public class GetTransUnitsHandler extends AbstractActionHandler<GetTransUnits, G
             tu.setTarget(target.getContent());
             tu.setStatus(target.getState());
          }
-         units.add(tu);
+         if (action.getPhrase() != null)
+         {
+            if (textFlow.getContent().toUpperCase().contains(action.getPhrase().toUpperCase()))
+            {
+               log.info("add translation unit:" + tu.getSource());
+               units.add(tu);
+            }
+            else if (tu.getTarget().toUpperCase().contains(action.getPhrase().toUpperCase()))
+            {
+               log.info("add translation unit:" + tu.getSource());
+               units.add(tu);
+            }
+         }
+         else
+         {
+            log.info("add translation unit:" + tu.getSource());
+            units.add(tu);
+         }
       }
 
       return new GetTransUnitsResult(action.getDocumentId(), units, size);

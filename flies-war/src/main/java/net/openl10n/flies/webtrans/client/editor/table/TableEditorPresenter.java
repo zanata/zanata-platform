@@ -40,11 +40,13 @@ import net.openl10n.flies.webtrans.client.editor.filter.FilterEnabledEvent;
 import net.openl10n.flies.webtrans.client.editor.filter.FilterEnabledEventHandler;
 import net.openl10n.flies.webtrans.client.events.DocumentSelectionEvent;
 import net.openl10n.flies.webtrans.client.events.DocumentSelectionHandler;
+import net.openl10n.flies.webtrans.client.events.FindMessageHandler;
 import net.openl10n.flies.webtrans.client.events.NavTransUnitEvent;
 import net.openl10n.flies.webtrans.client.events.NavTransUnitEvent.NavigationType;
 import net.openl10n.flies.webtrans.client.events.NavTransUnitHandler;
 import net.openl10n.flies.webtrans.client.events.NotificationEvent;
 import net.openl10n.flies.webtrans.client.events.NotificationEvent.Severity;
+import net.openl10n.flies.webtrans.client.events.FindMessageEvent;
 import net.openl10n.flies.webtrans.client.events.TransMemoryCopyEvent;
 import net.openl10n.flies.webtrans.client.events.TransMemoryCopyHandler;
 import net.openl10n.flies.webtrans.client.events.TransUnitEditEvent;
@@ -74,6 +76,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.gen2.event.shared.AbstractEvent;
 import com.google.gwt.gen2.event.shared.HandlerRegistration;
 import com.google.gwt.gen2.table.client.TableModel;
 import com.google.gwt.gen2.table.client.TableModel.Callback;
@@ -82,7 +85,10 @@ import com.google.gwt.gen2.table.client.TableModelHelper.SerializableResponse;
 import com.google.gwt.gen2.table.event.client.HasPageChangeHandlers;
 import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
 import com.google.gwt.gen2.table.event.client.PageChangeHandler;
+import com.google.gwt.gen2.table.event.client.PageCountChangeEvent;
 import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
+import com.google.gwt.gen2.table.event.client.RowCountChangeEvent;
+import com.google.gwt.gen2.table.event.client.RowCountChangeHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
@@ -133,6 +139,10 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       int getCurrentPage();
 
       int getPageSize();
+
+      int getPageCount();
+
+      void changePageCount(int oldPageCount, int pageCount);
    }
 
    private DocumentId documentId;
@@ -146,6 +156,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
    private int curRowIndex;
    private int curPage;
+
+   private String findMessage;
 
    private final TableEditorMessages messages;
 
@@ -223,6 +235,24 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             display.clearContentFilter();
          }
       }));
+      
+      
+      registerHandler(eventBus.addHandler(FindMessageEvent.getType(), new FindMessageHandler()
+      {
+
+         @Override
+         public void onFindMessage(FindMessageEvent event)
+         {
+            Log.info("Find Message: " + event.getMessage());
+            display.startProcessing();
+            findMessage = event.getMessage();
+            display.getTableModel().clearCache();
+            display.getTableModel().setRowCount(TableModel.UNKNOWN_ROW_COUNT);
+            display.gotoPage(0, true);
+            display.stopProcessing();
+         }
+
+      }));
 
       registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler()
       {
@@ -264,7 +294,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                   {
                      final int row = display.getCurrentPage() * display.getPageSize() + rowOffset;
                      Log.info("row calculated as " + row);
-                     dispatcher.execute(new GetTransUnits(documentId, row, 1), new AsyncCallback<GetTransUnitsResult>()
+                     dispatcher.execute(new GetTransUnits(documentId, row, 1, findMessage), new AsyncCallback<GetTransUnitsResult>()
                      {
                         @Override
                         public void onFailure(Throwable e)
@@ -453,7 +483,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             return;
          }
 
-         dispatcher.execute(new GetTransUnits(documentId, startRow, numRows), new AsyncCallback<GetTransUnitsResult>()
+         dispatcher.execute(new GetTransUnits(documentId, startRow, numRows, findMessage), new AsyncCallback<GetTransUnitsResult>()
          {
             @Override
             public void onSuccess(GetTransUnitsResult result)

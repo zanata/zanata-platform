@@ -16,6 +16,8 @@ import com.google.gwt.gen2.table.client.ScrollTable;
 import com.google.gwt.gen2.table.client.SelectionGrid.SelectionPolicy;
 import com.google.gwt.gen2.table.event.client.HasPageChangeHandlers;
 import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
+import com.google.gwt.gen2.table.event.client.PageCountChangeEvent;
+import com.google.gwt.gen2.table.event.client.PagingFailureEvent;
 import com.google.gwt.gen2.table.event.client.RowSelectionEvent;
 import com.google.gwt.gen2.table.event.client.RowSelectionHandler;
 import com.google.gwt.gen2.table.event.client.TableEvent.Row;
@@ -223,5 +225,11 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    {
       super.gotoPage(page, forced);
       gotoRow(0, false);
+   }
+
+   @SuppressWarnings("deprecation")
+   public void changePageCount(int oldPageCount, int pageCount)
+   {
+      fireEvent(new PageCountChangeEvent(oldPageCount, pageCount));
    }
 }
