@@ -84,8 +84,8 @@ public class PublicanPushCommandTest
       EasyMock.expect(mockOKResponse.getStatus()).andReturn(200).anyTimes();
       EasyMock.expect(mockTranslationResources.deleteResource("obsolete")).andReturn(mockOKResponse);
       StringSet extensionSet = new StringSet("gettext;comment");
-      EasyMock.expect(mockTranslationResources.putResource(eq("RPM"), (Resource) notNull(), eq(extensionSet))).andReturn(mockOKResponse);
-      EasyMock.expect(mockTranslationResources.putResource(eq("sub,RPM"), (Resource) notNull(), eq(extensionSet))).andReturn(mockOKResponse);
+      EasyMock.expect(mockTranslationResources.putResource(eq("RPM"), (Resource) notNull(), eq(extensionSet), eq(true))).andReturn(mockOKResponse);
+      EasyMock.expect(mockTranslationResources.putResource(eq("sub,RPM"), (Resource) notNull(), eq(extensionSet), eq(true))).andReturn(mockOKResponse);
 
       if (importPo)
       {
