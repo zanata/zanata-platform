@@ -28,7 +28,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
    {
    }
 
-   private LabelFormat labelFormat = LabelFormat.PERCENT_COMPLETE;
+   private LabelFormat labelFormat = LabelFormat.DEFAULT_FORMAT;
 
    @UiField
    LayoutPanel layoutPanel;
