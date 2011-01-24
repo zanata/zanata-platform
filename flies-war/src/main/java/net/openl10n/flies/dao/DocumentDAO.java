@@ -108,6 +108,8 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
          "where tf.document.id = :id and tf.obsolete = false")
             .setParameter("id", docId)
             .uniqueResult();
+      if (totalWordCount == null)
+         totalWordCount = 0L;
 
       TransUnitWords wordCount = new TransUnitWords();
       for (StatusCount count : wordStats)
