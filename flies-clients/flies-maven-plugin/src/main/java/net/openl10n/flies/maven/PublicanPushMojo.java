@@ -59,6 +59,12 @@ public class PublicanPushMojo extends ConfigurableProjectMojo implements Publica
     * @parameter expression="${flies.importPo}"
     */
    private boolean importPo;
+   
+   /**
+    * Whether Flies should copy latest translation from equivalent documents from other versions of the same project
+    * @parameter expression="${flies.copyTrans}" default-value="true"
+    */
+   private boolean copyTrans;
 
    /**
     * Validate XML before sending request to server
@@ -67,14 +73,10 @@ public class PublicanPushMojo extends ConfigurableProjectMojo implements Publica
     */
    private boolean validate;
 
+   @Override
    public File getSrcDir()
    {
       return srcDir;
-   }
-
-   public void setSrcDir(File srcDir)
-   {
-      this.srcDir = srcDir;
    }
 
    @Override
@@ -84,39 +86,26 @@ public class PublicanPushMojo extends ConfigurableProjectMojo implements Publica
    }
 
    @Override
-   public void setSrcDirPot(File srcDirPot)
-   {
-      this.srcDirPot = srcDirPot;
-   }
-
    public String getSourceLang()
    {
       return sourceLang;
    }
 
-   public void setSourceLang(String sourceLang)
-   {
-      this.sourceLang = sourceLang;
-   }
-
+   @Override
    public boolean getImportPo()
    {
       return importPo;
    }
 
-   public void setImportPo(boolean importPo)
+   @Override
+   public boolean getCopyTrans()
    {
-      this.importPo = importPo;
+      return copyTrans;
    }
 
    public boolean getValidate()
    {
       return validate;
-   }
-
-   public void setValidate(boolean validate)
-   {
-      this.validate = validate;
    }
 
 }

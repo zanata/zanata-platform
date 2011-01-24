@@ -17,7 +17,7 @@ public class PublicanPushOptionsImpl extends ConfigurableProjectOptionsImpl impl
    private String sourceLang = "en-US";
 
    private boolean importPo;
-
+   private boolean copyTrans = true;
    private boolean validate;
 
    public PublicanPushOptionsImpl()
@@ -43,7 +43,6 @@ public class PublicanPushOptionsImpl extends ConfigurableProjectOptionsImpl impl
       return new PublicanPushCommand(this);
    }
 
-   @Override
    @Option(aliases = { "-s" }, name = "--src", metaVar = "DIR", required = true, usage = "Base directory for publican files (with subdirectory \"pot\" and optional locale directories)")
    public void setSrcDir(File srcDir)
    {
@@ -52,27 +51,24 @@ public class PublicanPushOptionsImpl extends ConfigurableProjectOptionsImpl impl
          srcDirPot = new File(srcDir, "pot");
    }
 
-   @Override
+   @Option(name = "--src-pot", metaVar = "DIR", required = false, usage = "Override base directory for publican POT files (defaults to \"pot\" under --src directory)")
    public void setSrcDirPot(File srcDirPot)
    {
       this.srcDirPot = srcDirPot;
    }
 
-   @Override
    @Option(aliases = { "-l" }, name = "--src-lang", usage = "Language of source (defaults to en-US)")
    public void setSourceLang(String sourceLang)
    {
       this.sourceLang = sourceLang;
    }
 
-   @Override
    @Option(name = "--import-po", usage = "Import translations from local PO files to Flies, overwriting or erasing existing translations (DANGER!)")
    public void setImportPo(boolean importPo)
    {
       this.importPo = importPo;
    }
 
-   @Override
    @Option(name = "--validate", usage = "Validate XML before sending request to server")
    public void setValidate(boolean validate)
    {
@@ -90,6 +86,18 @@ public class PublicanPushOptionsImpl extends ConfigurableProjectOptionsImpl impl
    public boolean getImportPo()
    {
       return importPo;
+   }
+   
+   @Override
+   public boolean getCopyTrans()
+   {
+      return copyTrans;
+   }
+   
+   @Option(name = "--no-copy-trans", usage = "Don't copy latest translation from equivalent documents from other versions of the same project")
+   public void setNoCopyTrans(boolean noCopyTrans)
+   {
+      this.copyTrans = !noCopyTrans;
    }
 
    @Override

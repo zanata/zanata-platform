@@ -40,6 +40,10 @@ public interface ITranslationResources
    @Path("{id}")
    public ClientResponse<String> putResource(@PathParam("id") String idNoSlash, Resource messageBody, @QueryParam("ext") StringSet extensions);
 
+   @PUT
+   @Path("{id}")
+   public ClientResponse<String> putResource(@PathParam("id") String idNoSlash, Resource messageBody, @QueryParam("ext") StringSet extensions, @QueryParam("copyTrans") boolean copyTrans);
+   
    @DELETE
    @Path("{id}")
    public ClientResponse<String> deleteResource(@PathParam("id") String idNoSlash);

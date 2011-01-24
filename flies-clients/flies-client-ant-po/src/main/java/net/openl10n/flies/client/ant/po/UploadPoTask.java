@@ -18,7 +18,7 @@ public class UploadPoTask extends ConfigurableProjectTask implements PublicanPus
    private String sourceLang = "en-US";
 
    private boolean importPo;
-
+   private boolean copyTrans = true;
    private boolean validate;
 
    public static void main(String[] args)
@@ -52,7 +52,6 @@ public class UploadPoTask extends ConfigurableProjectTask implements PublicanPus
          srcDirPot = new File(srcDir, "pot");
    }
 
-   @Override
    public void setSrcDirPot(File srcDirPot)
    {
       this.srcDirPot = srcDirPot;
@@ -84,6 +83,17 @@ public class UploadPoTask extends ConfigurableProjectTask implements PublicanPus
    public boolean getImportPo()
    {
       return importPo;
+   }
+
+   @Override
+   public boolean getCopyTrans()
+   {
+      return copyTrans;
+   }
+   
+   public void setCopyTrans(boolean copyTrans)
+   {
+      this.copyTrans = copyTrans;
    }
 
    public File getSrcDir()

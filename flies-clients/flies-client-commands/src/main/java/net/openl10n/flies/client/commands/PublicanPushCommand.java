@@ -71,6 +71,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
       log.info("Version: {}", opts.getProjectVersion());
       log.info("Username: {}", opts.getUsername());
       log.info("Source language: {}", opts.getSourceLang());
+      log.info("Copy previous translations: {}", opts.getCopyTrans());
       if (opts.getImportPo())
       {
          log.info("Importing source and target documents");
@@ -199,7 +200,8 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
          }
          StringSet extensions = new StringSet("comment;gettext");
          log.info("pushing source document [name={}] to server", srcDoc.getName());
-         ClientResponse<String> putResponse = translationResources.putResource(docUri, srcDoc, extensions);
+         boolean copyTrans = opts.getCopyTrans();
+         ClientResponse<String> putResponse = translationResources.putResource(docUri, srcDoc, extensions, copyTrans );
          ClientUtility.checkResult(putResponse, uri);
 
          if (opts.getImportPo())
