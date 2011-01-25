@@ -50,8 +50,9 @@ public class GetTransUnitsHandler extends AbstractActionHandler<GetTransUnits, G
       log.info("Fetching Transunits for {0}", action.getDocumentId());
 
       Query query = session.createQuery("from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id order by tf.pos").setParameter("id", action.getDocumentId().getValue());
-
       int size = query.list().size();
+
+      log.info("total size:" + size);
 
       List<HTextFlow> textFlows = query.setFirstResult(action.getOffset()).setMaxResults(action.getCount()).list();
 
@@ -88,6 +89,11 @@ public class GetTransUnitsHandler extends AbstractActionHandler<GetTransUnits, G
             log.info("add translation unit:" + tu.getSource());
             units.add(tu);
          }
+      }
+
+      if (action.getPhrase() != null)
+      {
+         size = units.size();
       }
 
       return new GetTransUnitsResult(action.getDocumentId(), units, size);
