@@ -33,10 +33,12 @@ import net.openl10n.flies.rest.dto.ProjectIteration;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.security.Identity;
 
 @Name("projectIterationService")
 @Path(ProjectIterationService.SERVICE_PATH)
+@Transactional
 public class ProjectIterationService
 {
 

@@ -36,12 +36,14 @@ import net.openl10n.flies.rest.dto.ProjectIteration;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
 
 @Name("projectService")
 @Path(ProjectService.SERVICE_PATH)
+@Transactional
 public class ProjectService
 {
 

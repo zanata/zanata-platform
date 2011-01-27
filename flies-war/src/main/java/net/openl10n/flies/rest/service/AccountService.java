@@ -31,12 +31,14 @@ import org.hibernate.Session;
 import org.jboss.resteasy.spi.NoLogWebApplicationException;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
 
 @Name("accountService")
 @Path("/accounts/u/{username:[a-z\\d_]{3,20}}")
+@Transactional
 public class AccountService
 {
 
