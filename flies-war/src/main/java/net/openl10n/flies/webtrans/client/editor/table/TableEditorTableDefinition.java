@@ -19,6 +19,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
    public static final int TARGET_COL = 1;
 
    private ContentFilter<TransUnit> contentFilter = null;
+   private String findMessage;
 
    private final RowRenderer<TransUnit> rowRenderer = new RowRenderer<TransUnit>()
    {
@@ -28,11 +29,12 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          String styles = "TableEditorRow ";
          styles += view.getRowIndex() % 2 == 0 ? "odd-row" : "even-row";
 
-         if (contentFilter != null)
-         {
-            styles += " content-filter";
-            styles += contentFilter.accept(rowValue) ? " content-filter-match" : " content-filter-nomatch";
-         }
+          if (contentFilter != null)
+          {
+          styles += " content-filter";
+          styles += contentFilter.accept(rowValue) ? " content-filter-match" :
+          " content-filter-nomatch";
+          }
 
          String state = "";
          switch (rowValue.getStatus())
@@ -105,7 +107,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       public void renderRowValue(TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, com.google.gwt.gen2.table.client.TableDefinition.AbstractCellView<TransUnit> view)
       {
          view.setStyleName("TableEditorCell TableEditorCell-Source");
-         SourcePanel sourcePanel = new SourcePanel(rowValue, messages);
+         SourcePanel sourcePanel = new SourcePanel(rowValue, messages, findMessage);
          view.setWidget(sourcePanel);
       }
    };
@@ -144,6 +146,11 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
    private InlineTargetCellEditor targetCellEditor;
    private final NavigationMessages messages;
+
+   public void setFindMessage(String findMessage)
+   {
+      this.findMessage = findMessage;
+   }
 
    public TableEditorTableDefinition(final NavigationMessages messages, final RedirectingCachedTableModel<TransUnit> tableModel)
    {

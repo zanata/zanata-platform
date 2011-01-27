@@ -85,21 +85,30 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
          if (count < action.getCount())
          {
             HTextFlowTarget textFlowTarget = textFlow.getTargets().get(hLocale);
-            if (textFlowTarget == null)
+            if (action.getPhrase() != null)
             {
-               // log.info("new :" + new Long(textFlow.getPos()));
-               results.add(new Long(textFlow.getPos()));
-               count++;
-            }
-            else if (textFlowTarget.getState() == ContentState.New || textFlowTarget.getState() == ContentState.NeedReview)
-            {
-               // log.info("new or fuzzy:" + new Long(textFlow.getPos()));
-               results.add(new Long(textFlow.getPos()));
-               count++;
+               if (checkNewFuzzyState(textFlowTarget))
+               {
+                  results.add(new Long(textFlow.getPos()));
+                  count++;
+               }
             }
          }
       }
       return results;
+   }
+
+   private boolean checkNewFuzzyState(HTextFlowTarget textFlowTarget)
+   {
+      if (textFlowTarget == null)
+      {
+         return true;
+      }
+      else if (textFlowTarget.getState() == ContentState.New || textFlowTarget.getState() == ContentState.NeedReview)
+      {
+         return true;
+      }
+      return false;
    }
 
 }

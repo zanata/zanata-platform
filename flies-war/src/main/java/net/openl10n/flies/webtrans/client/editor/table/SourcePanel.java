@@ -11,7 +11,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
-import com.google.inject.Inject;
 
 public class SourcePanel extends Composite implements HasValue<TransUnit>
 {
@@ -20,13 +19,15 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>
    private final Label sourceLabel;
    private final TextArea textarea;
    private TransUnit value;
+   private String phrase;
 
    private final NavigationMessages messages;
 
-   public SourcePanel(TransUnit value, NavigationMessages messages)
+   public SourcePanel(TransUnit value, NavigationMessages messages, String phrase)
    {
       this.value = value;
       this.messages = messages;
+      this.phrase = phrase;
       panel = new FlowPanel();
       panel.setSize("100%", "100%");
       initWidget(panel);
@@ -35,6 +36,10 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>
       sourceLabel = new HighlightingLabel(value.getSource());
       sourceLabel.setStylePrimaryName("TableEditorContent");
       sourceLabel.setTitle(messages.sourceCommentLabel() + value.getSourceComment());
+      if (phrase != null)
+      {
+         ((HighlightingLabel) sourceLabel).findMessage(phrase);
+      }
 
       panel.add(sourceLabel);
       textarea = new TextArea();

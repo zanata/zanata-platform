@@ -12,18 +12,20 @@ public class GetTransUnitsNavigation extends AbstractWorkspaceAction<GetTransUni
    private int count;
    private DocumentId documentId;
    private boolean reverse;
+   private String phrase;
 
    @SuppressWarnings("unused")
    private GetTransUnitsNavigation()
    {
    }
 
-   public GetTransUnitsNavigation(DocumentId id, int offset, int count, boolean reverse)
+   public GetTransUnitsNavigation(DocumentId id, int offset, int count, boolean reverse, String phrase)
    {
       this.documentId = id;
       this.offset = offset;
       this.count = count;
       this.setReverse(reverse);
+      this.phrase = phrase;
    }
 
    public int getOffset()
@@ -64,5 +66,10 @@ public class GetTransUnitsNavigation extends AbstractWorkspaceAction<GetTransUni
    public boolean isReverse()
    {
       return reverse;
+   }
+
+   public String getPhrase()
+   {
+      return this.phrase;
    }
 }

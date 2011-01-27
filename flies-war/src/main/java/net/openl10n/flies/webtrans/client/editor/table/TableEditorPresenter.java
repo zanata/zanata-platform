@@ -76,7 +76,6 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.gen2.event.shared.AbstractEvent;
 import com.google.gwt.gen2.event.shared.HandlerRegistration;
 import com.google.gwt.gen2.table.client.TableModel;
 import com.google.gwt.gen2.table.client.TableModel.Callback;
@@ -85,10 +84,7 @@ import com.google.gwt.gen2.table.client.TableModelHelper.SerializableResponse;
 import com.google.gwt.gen2.table.event.client.HasPageChangeHandlers;
 import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
 import com.google.gwt.gen2.table.event.client.PageChangeHandler;
-import com.google.gwt.gen2.table.event.client.PageCountChangeEvent;
 import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
-import com.google.gwt.gen2.table.event.client.RowCountChangeEvent;
-import com.google.gwt.gen2.table.event.client.RowCountChangeHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
@@ -140,9 +136,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
       int getPageSize();
 
-      int getPageCount();
-
-      void changePageCount(int oldPageCount, int pageCount);
+      void setFindMessage(String findMessage);
    }
 
    private DocumentId documentId;
@@ -246,6 +240,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             Log.info("Find Message: " + event.getMessage());
             display.startProcessing();
             findMessage = event.getMessage();
+            display.setFindMessage(findMessage);
             display.getTableModel().clearCache();
             display.getTableModel().setRowCount(TableModel.UNKNOWN_ROW_COUNT);
             display.gotoPage(0, true);
@@ -475,7 +470,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
 
          int numRows = request.getNumRows();
          int startRow = request.getStartRow();
-         Log.info("Table requesting" + numRows + " starting from " + startRow);
+         Log.info("Table requesting " + numRows + " starting from " + startRow);
 
          if (documentId == null)
          {
@@ -488,8 +483,9 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             @Override
             public void onSuccess(GetTransUnitsResult result)
             {
+               Log.info("find message:" + findMessage);
                SerializableResponse<TransUnit> response = new SerializableResponse<TransUnit>(result.getUnits());
-               Log.debug("Got " + result.getUnits().size() + " rows back");
+               Log.info("Got " + result.getUnits().size() + " rows back");
                callback.onRowsReady(request, response);
                Log.info("Total of " + result.getTotalCount() + " rows available");
                display.getTableModel().setRowCount(result.getTotalCount());
@@ -706,7 +702,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
    private void cacheNextFuzzy(final NavigationCacheCallback callBack)
    {
       isReqComplete = false;
-      dispatcher.execute(new GetTransUnitsNavigation(documentId, curRowIndex, 3, false), new AsyncCallback<GetTransUnitsNavigationResult>()
+      dispatcher.execute(new GetTransUnitsNavigation(documentId, curRowIndex, 3, false, findMessage), new AsyncCallback<GetTransUnitsNavigationResult>()
       {
          @Override
          public void onSuccess(GetTransUnitsNavigationResult result)
@@ -730,7 +726,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
    private void cachePrevFuzzy(final NavigationCacheCallback callBack)
    {
       isReqComplete = false;
-      dispatcher.execute(new GetTransUnitsNavigation(documentId, curRowIndex, 3, true), new AsyncCallback<GetTransUnitsNavigationResult>()
+      dispatcher.execute(new GetTransUnitsNavigation(documentId, curRowIndex, 3, true, findMessage), new AsyncCallback<GetTransUnitsNavigationResult>()
       {
          @Override
          public void onSuccess(GetTransUnitsNavigationResult result)

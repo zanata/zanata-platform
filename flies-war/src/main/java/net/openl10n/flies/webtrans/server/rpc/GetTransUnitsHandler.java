@@ -49,10 +49,13 @@ public class GetTransUnitsHandler extends AbstractActionHandler<GetTransUnits, G
 
       log.info("Fetching Transunits for {0}", action.getDocumentId());
 
+      if (action.getPhrase() != null)
+      {
+         return getUnitsByFilter(action);
+      }
+
       Query query = session.createQuery("from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id order by tf.pos").setParameter("id", action.getDocumentId().getValue());
       int size = query.list().size();
-
-      log.info("total size:" + size);
 
       List<HTextFlow> textFlows = query.setFirstResult(action.getOffset()).setMaxResults(action.getCount()).list();
 
@@ -71,37 +74,39 @@ public class GetTransUnitsHandler extends AbstractActionHandler<GetTransUnits, G
             tu.setTarget(target.getContent());
             tu.setStatus(target.getState());
          }
-         if (action.getPhrase() != null)
-         {
-            if (textFlow.getContent().toUpperCase().contains(action.getPhrase().toUpperCase()))
-            {
-               log.info("add translation unit:" + tu.getSource());
-               units.add(tu);
-            }
-            else if (tu.getTarget().toUpperCase().contains(action.getPhrase().toUpperCase()))
-            {
-               log.info("add translation unit:" + tu.getSource());
-               units.add(tu);
-            }
-         }
-         else
-         {
-            log.info("add translation unit:" + tu.getSource());
-            units.add(tu);
-         }
+         units.add(tu);
       }
-
-      if (action.getPhrase() != null)
-      {
-         size = units.size();
-      }
-
       return new GetTransUnitsResult(action.getDocumentId(), units, size);
    }
 
    @Override
    public void rollback(GetTransUnits action, GetTransUnitsResult result, ExecutionContext context) throws ActionException
    {
+   }
+
+   private GetTransUnitsResult getUnitsByFilter(GetTransUnits action)
+   {
+      Query textFlowQuery = session.createQuery("from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id and lower(tf.content) like :content order by tf.pos").setParameter("id", action.getDocumentId().getValue()).setParameter("content", "%" + action.getPhrase().toLowerCase() + "%");
+      int size = textFlowQuery.list().size();
+
+      List<HTextFlow> textFlows = textFlowQuery.setFirstResult(action.getOffset()).setMaxResults(action.getCount()).list();
+
+      ArrayList<TransUnit> units = new ArrayList<TransUnit>();
+      for (HTextFlow textFlow : textFlows)
+      {
+
+         TransUnitId tuId = new TransUnitId(textFlow.getId());
+         TransUnit tu = new TransUnit(tuId, action.getWorkspaceId().getLocaleId(), textFlow.getContent(), CommentsUtil.toString(textFlow.getComment()), "", ContentState.New);
+         HLocale hLocale = localeServiceImpl.getSupportedLanguageByLocale(action.getWorkspaceId().getLocaleId());
+         HTextFlowTarget target = textFlow.getTargets().get(hLocale);
+         if (target != null)
+         {
+            tu.setTarget(target.getContent());
+            tu.setStatus(target.getState());
+         }
+         units.add(tu);
+      }
+      return new GetTransUnitsResult(action.getDocumentId(), units, size);
    }
 
 }

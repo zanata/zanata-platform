@@ -39,4 +39,10 @@ public class HighlightingLabel extends Label
       CodeMirror.doHighlight(text, element);
    }
 
+   public void findMessage(String findMessage)
+   {
+      Element element = getElement();
+      CodeMirror.doHighlight(findMessage, element);
+   }
+
 }

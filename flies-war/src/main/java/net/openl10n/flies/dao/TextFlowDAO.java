@@ -24,16 +24,24 @@ import java.util.List;
 
 import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.common.LocaleId;
+import net.openl10n.flies.hibernate.search.DefaultNgramAnalyzer;
 import net.openl10n.flies.model.HDocument;
 import net.openl10n.flies.model.HTextFlow;
+import net.openl10n.flies.webtrans.shared.rpc.GetTranslationMemory.SearchType;
 
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.util.Version;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.FullTextQuery;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 
@@ -42,6 +50,9 @@ import org.jboss.seam.annotations.Scope;
 @Scope(ScopeType.STATELESS)
 public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 {
+   @In
+   private FullTextEntityManager entityManager;
+
 
    public TextFlowDAO()
    {
@@ -103,6 +114,38 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 
       return c.list();
 
+   }
+
+   public List<Object[]> getSearchResult(String searchText, SearchType searchType, List<Long> translatedIds, final int maxResult) throws ParseException
+   {
+      String queryText;
+      switch (searchType)
+      {
+      case RAW:
+         queryText = searchText;
+         break;
+
+      case FUZZY:
+         // search by N-grams
+         queryText = QueryParser.escape(searchText);
+         break;
+
+      case EXACT:
+         queryText = "\"" + QueryParser.escape(searchText) + "\"";
+         break;
+
+      default:
+         throw new RuntimeException("Unknown query type: " + searchType);
+      }
+
+      QueryParser parser = new QueryParser(Version.LUCENE_29, "content", new DefaultNgramAnalyzer());
+      org.apache.lucene.search.Query textQuery = parser.parse(queryText);
+      FullTextQuery ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlow.class);
+      ftQuery.enableFullTextFilter("translated").setParameter("translatedIds", translatedIds);
+      ftQuery.setProjection(FullTextQuery.SCORE, FullTextQuery.THIS);
+      @SuppressWarnings("unchecked")
+      List<Object[]> matches = ftQuery.setMaxResults(maxResult).getResultList();
+      return matches;
    }
 
 }

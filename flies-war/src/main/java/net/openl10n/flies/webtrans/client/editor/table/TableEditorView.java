@@ -16,8 +16,6 @@ import com.google.gwt.gen2.table.client.ScrollTable;
 import com.google.gwt.gen2.table.client.SelectionGrid.SelectionPolicy;
 import com.google.gwt.gen2.table.event.client.HasPageChangeHandlers;
 import com.google.gwt.gen2.table.event.client.HasPageCountChangeHandlers;
-import com.google.gwt.gen2.table.event.client.PageCountChangeEvent;
-import com.google.gwt.gen2.table.event.client.PagingFailureEvent;
 import com.google.gwt.gen2.table.event.client.RowSelectionEvent;
 import com.google.gwt.gen2.table.event.client.RowSelectionHandler;
 import com.google.gwt.gen2.table.event.client.TableEvent.Row;
@@ -32,6 +30,12 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    private final RedirectingCachedTableModel<TransUnit> cachedTableModel;
    private final TableEditorTableDefinition tableDefinition;
    private int cachedPages = 2;
+   private String findMessage;
+
+   public void setFindMessage(String findMessage)
+   {
+      this.findMessage = findMessage;
+   }
 
    @Inject
    public TableEditorView(NavigationMessages messages)
@@ -42,7 +46,6 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    public TableEditorView(NavigationMessages messages, RedirectingTableModel<TransUnit> tableModel)
    {
       this(new RedirectingCachedTableModel<TransUnit>(tableModel), new TableEditorTableDefinition(messages, new RedirectingCachedTableModel<TransUnit>(tableModel)));
-
    }
 
    public TableEditorView(RedirectingCachedTableModel<TransUnit> tableModel, TableEditorTableDefinition tableDefinition)
@@ -50,6 +53,7 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
       super(tableModel, tableDefinition);
       this.cachedTableModel = tableModel;
       this.tableDefinition = tableDefinition;
+      this.tableDefinition.setFindMessage(this.findMessage);
       setStylePrimaryName("TableEditorWrapper");
       setSize("100%", "100%");
       setPageSize(10);
@@ -227,9 +231,4 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
       gotoRow(0, false);
    }
 
-   @SuppressWarnings("deprecation")
-   public void changePageCount(int oldPageCount, int pageCount)
-   {
-      fireEvent(new PageCountChangeEvent(oldPageCount, pageCount));
-   }
 }
