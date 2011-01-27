@@ -6,6 +6,12 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import net.openl10n.flies.rest.RestConstant;
+import net.openl10n.flies.rest.client.IAccountResource;
+import net.openl10n.flies.rest.client.IProjectIterationResource;
+import net.openl10n.flies.rest.client.IProjectResource;
+import net.openl10n.flies.rest.client.IProjectsResource;
+import net.openl10n.flies.rest.client.ITranslationResources;
+import net.openl10n.flies.rest.client.IVersion;
 import net.openl10n.flies.rest.dto.VersionInfo;
 
 import org.jboss.resteasy.client.ClientExecutor;
