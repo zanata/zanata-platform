@@ -5,11 +5,16 @@
   <name>Flies Adapter for Java Properties</name>
   <parent>
     <groupId>net.openl10n.flies</groupId>
-    <artifactId>flies-adapters</artifactId>
+    <artifactId>root</artifactId>
     <version>1.2-SNAPSHOT</version>
   </parent>
   <packaging>jar</packaging>
   <dependencies>
+    <dependency>
+      <groupId>net.openl10n.flies</groupId>
+      <artifactId>flies-common-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.fedorahosted.openprops</groupId>
       <artifactId>openprops</artifactId>

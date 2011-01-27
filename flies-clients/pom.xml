@@ -15,16 +15,4 @@
     <module>flies-client-ant-po</module>
     <module>flies-maven-plugin</module>
   </modules>
-  <dependencies>
-    <dependency>
-      <groupId>net.openl10n.flies</groupId>
-      <artifactId>flies-common-api</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
 </project>

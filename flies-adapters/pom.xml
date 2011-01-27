@@ -13,11 +13,4 @@
     <module>flies-adapter-po</module>
     <module>flies-adapter-properties</module>
   </modules>
-  <dependencies>
-    <dependency>
-      <groupId>net.openl10n.flies</groupId>
-      <artifactId>flies-common-api</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-  </dependencies>
 </project>

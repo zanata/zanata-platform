@@ -5,7 +5,7 @@
   <name>Flies/REST Ant task for Java Properties</name>
   <parent>
     <groupId>net.openl10n.flies</groupId>
-    <artifactId>flies-clients</artifactId>
+    <artifactId>root</artifactId>
     <version>1.2-SNAPSHOT</version>
   </parent>
   <dependencies>
