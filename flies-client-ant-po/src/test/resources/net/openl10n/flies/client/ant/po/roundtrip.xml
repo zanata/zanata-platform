@@ -1,0 +1,26 @@
+<!-- define ant target "roundtrip" for uni test -->
+<project>
+	<target name="_roundtrip">
+
+		<!-- setup roundtrip input and output dir -->
+		<delete dir="${out.dir}" />
+		<mkdir dir="${out.dir}" />
+
+		<!-- run 2 way test -->
+		<uploadpo user="bob" apiKey="${bob.key}" dst="${docsUrl}" srcDir="${in.dir}" debug="false" />
+		<downloadpo user="bob" apiKey="${bob.key}" src="${docsUrl}" dstDir="${out.dir}" debug="false" />
+
+		
+		<!-- diff (unified, recursive) to find out if input and output are same 
+		- disabled for now
+		<exec executable="diff" failonerror="true">
+			<arg value="-u" /> 
+			<arg value="-r" />
+			<arg value="${in.dir}" />
+			<arg value="${out.dir}" />
+		</exec>
+		-->
+		
+
+	</target>
+</project>

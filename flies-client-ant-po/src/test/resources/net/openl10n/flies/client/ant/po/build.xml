@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+
+<project basedir=".">
+	<import file="taskdefs.xml" />
+
+	<!-- local def -->
+	<property name="in.dir" value="${root}/test-input" />
+	<property name="out.dir" value="${user.dir}/target/test-output" />
+	<mkdir dir="${out.dir}" />
+
+	<!-- remote def -->
+	<property name="bob.key" value="34567890123456789012345678901234" />
+	<property name="fliesUrl" value="http://localhost:8080/flies" />
+	<property name="proj" value="sample-project" />
+	<property name="iter" value="1.1" />
+
+
+	<target name="uploadpo">
+		<ant antfile="uploadpo.xml" target="_uploadpo">
+			<property name="docsUrl" value="${out.dir}/project.xml" />
+		</ant>
+	</target>
+
+	<!--
+    <target name="downloadpo">
+        <ant antfile="downloadpo.xml" target="_downloadpo"/>
+    </target>
+	-->
+
+	<target name="roundtriplocal">
+		<ant antfile="roundtrip.xml" target="_roundtrip">
+			<property name="docsUrl" value="${out.dir}/project.xml" />
+		</ant>
+	</target>
+
+	<target name="roundtripremote">
+		<ant antfile="roundtrip.xml" target="_roundtrip">
+			<property name="docsUrl" value="${fliesUrl}/seam/resource/restv1/projects/p/${proj}/iterations/i/${iter}/documents" />
+		</ant>
+	</target>
+</project>

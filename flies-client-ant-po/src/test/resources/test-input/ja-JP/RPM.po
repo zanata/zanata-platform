@@ -1,0 +1,2152 @@
+# translation of RPM.po to Traditional Chinese
+# translation of rpm.po to
+# Copyright (C) 2003,2004, 2006, 2007 Free Software Foundation, Inc.
+#
+# Noriko Mizumoto <noriko@redhat.com>, 2003,2004, 2006.
+# Chester Cheng <ccheng@redhat.com>, 2007.
+msgid ""
+msgstr ""
+"Project-Id-Version: RPM\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2010-03-18T07:41:00\n"
+"PO-Revision-Date: 2007-07-11 12:35+1000\n"
+"Last-Translator: Chester Cheng <ccheng@redhat.com>\n"
+"Language-Team: Traditional Chinese <zh_TW@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+
+#. Tag: title
+#, no-c-format
+msgid "RPM"
+msgstr ""
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"The <firstterm>RPM Package Manager</firstterm> (RPM) is an open packaging "
+"system, which runs on &MAJOR_OS; as well as other Linux and UNIX systems. "
+"Red Hat, Inc. and the Fedora Project encourage other vendors to use RPM for "
+"their own products. RPM is distributed under the terms of the "
+"<firstterm>GPL</firstterm> (<firstterm>GNU General Public License</"
+"firstterm>)."
+msgstr ""
+"RPM Package Manager(RPM)は、誰もが利用できるオープン パッケージングシステム"
+"で、&PROD;だけでなく他のLinuxや UNIXシステム上でも動作します。 &FORMAL-RHI;で"
+"は、他のメーカーにも RPM を自社製品に使用して頂くよう奨励しています。 RPM は"
+"GPL契約 に基づいて配布されます。"
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"The RPM Package Manager only works with packages built to work with the "
+"<emphasis>RPM format</emphasis>. RPM is itself provided as a pre-installed "
+"rpm package. For the end user, RPM makes system updates easy. Installing, "
+"uninstalling and upgrading RPM packages can be accomplished with short "
+"commands. RPM maintains a database of installed packages and their files, so "
+"you can invoke powerful queries and verifications on your system. If you "
+"prefer a graphical interface, you can use the <application>PackageKit</"
+"application> GUI to perform many RPM commands. Refer to <xref linkend=\"ch-"
+"PackageKit\" /> for details."
+msgstr ""
+"エンドユーザーは、RPMによりシステムを簡単に更新することができます。RPMパッ"
+"ケージのインストール、アンインストール、アップグレードは短いコマンドで実行で"
+"きます。RPM は インストールされているパッケージやそのファイル群に関する デー"
+"タベースを維持しているので、システムで強力な問い合わせ/ 検証を実行することが"
+"できます。グラフィカルインターフェイス で使用したい場合は、"
+"<application>&RHRPMTOOL;</application> を使用して多くのRPM コマンドを実行する"
+"ことができます。 詳細は<xref linkend=\"ch-graphical-rpm\"/>を参照してくださ"
+"い。"
+
+# EXACT MATCH
+#. Tag: title
+#, fuzzy, no-c-format
+msgid "Important"
+msgstr "キーのインポート"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"When installing a package, ensure it is compatible with your operating "
+"system and processor architecture. This can usually be determined by "
+"checking the package name. Many of the following examples show RPM packages "
+"compiled for the AMD64/Intel 64 computer architectures; thus, the RPM file "
+"name ends in <filename>x86_64.rpm</filename>."
+msgstr ""
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"During upgrades, RPM handles configuration files carefully, so that you "
+"never lose your customizations—something that you cannot accomplish with "
+"regular <filename>.tar.gz</filename> files."
+msgstr ""
+"アップグレード時に、RPM は設定ファイルを慎重に処理するため カスタマイズ情報が"
+"失われることはありません &mdash; 普通の<filename moreinfo=\"none\">.tar.gz</"
+"filename>ファイルなどを使用した場合は、このような機能を実現することができませ"
+"ん。"
+
+# EXACT MATCH
+#. Tag: para
+#, no-c-format
+msgid ""
+"For the developer, RPM allows you to take software source code and package "
+"it into source and binary packages for end users. This process is quite "
+"simple and is driven from a single file and optional patches that you "
+"create. This clear delineation between <firstterm>pristine</firstterm> "
+"sources and your patches along with build instructions eases the maintenance "
+"of the package as new versions of the software are released."
+msgstr ""
+"開発者にとっては、RPM を使用することにより、ソフトウェアのソースコード を取り"
+"出し、 エンドユーザー用にソースとバイナリパッケージにパッケージ化することがで"
+"きます。このプロセスは極めて単純で、ひとつのファイルと作成するオプションの"
+"パッチから操作することができます。 ビルトの指示に加えて<firstterm>純粋な</"
+"firstterm>ソースとパッチの明確な 違いが、ソフトウェアの新しいバージョンがリ"
+"リースされたときにパッケージの管理を 容易にします。"
+
+# EXACT MATCH
+#. Tag: title
+#, no-c-format
+msgid "Note"
+msgstr "注記"
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Because RPM makes changes to your system, you must be logged in as root to "
+"install, remove, or upgrade an RPM package."
+msgstr ""
+"RPM はシステムに変更を加えるため、RPM パッケージの インストール、削除、アップ"
+"グレードを行なうには、rootになる必要があります。"
+
+# EXACT MATCH
+#. Tag: title
+#, no-c-format
+msgid "RPM Design Goals"
+msgstr "RPM の設計目標"
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"To understand how to use RPM, it can be helpful to understand the design "
+"goals of RPM:"
+msgstr ""
+"RPM の使用方法を理解するためには、RPM の設計目標を理解する とわかりやすいで"
+"しょう。"
+
+# EXACT MATCH
+#. Tag: term
+#, no-c-format
+msgid "Upgradability"
+msgstr "アップグレードの可能性"
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"With RPM, you can upgrade individual components of your system without "
+"completely reinstalling. When you get a new release of an operating system "
+"based on RPM, such as &MAJOR_OS;, you do not need to reinstall a fresh copy "
+"of the operating system your machine (as you might need to with operating "
+"systems based on other packaging systems). RPM allows intelligent, fully-"
+"automated, in-place upgrades of your system. In addition, configuration "
+"files in packages are preserved across upgrades, so you do not lose your "
+"customizations. There are no special upgrade files needed to upgrade a "
+"package because the same RPM file is used to both install and upgrade the "
+"package on your system."
+msgstr ""
+"RPMを使用すれば、コンポーネントを完全に再インストールすることなく、個別にコン"
+"ポーネントをアップグレードすることができます。RPMベースのオペレーティングシス"
+"テム(&PROD;など)の新しいリリースを入手したときに、マシンに再インストールする"
+"必要がありません(他のパッケージングシステムに基づくオペレーティングシステムの"
+"場合はその必要があります)。RPMを使用すれば、完全自動化された適切なシステムの"
+"アップグレードをスマートに行うことができます。パッケージに含まれる設定ファイ"
+"ルはアップグレード後にも保持されるので、 カスタマイズ情報が失われることはあり"
+"ません。同じRPM ファイルがシステムでのパッケージのインストール及びアップグ"
+"レードに 使用されるため、 パッケージをアップグレードするために特別なアップ グ"
+"レードファイルが必要になる ことはありません。"
+
+# EXACT MATCH
+#. Tag: term
+#, no-c-format
+msgid "Powerful Querying"
+msgstr "強力な問い合わせ"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"RPM is designed to provide powerful querying options. You can perform "
+"searches on your entire database for packages or even just certain files. "
+"You can also easily find out what package a file belongs to and from where "
+"the package came. The files an RPM package contains are in a compressed "
+"archive, with a custom binary header containing useful information about the "
+"package and its contents, allowing you to query individual packages quickly "
+"and easily."
+msgstr ""
+"RPM では、強力な問い合わせオプションが提供されて います。データベース全体を通"
+"じてパッケージを検索したり、 特定のファイル群のみを検索したりすることができま"
+"す。 あるファイルがどのパッケージに属し、パッケージがどこから 来たのかをも簡"
+"単に検索することができます。RPM パッケージ に含まれるファイルは圧縮アーカイブ"
+"形式であり、パッケージと その内容に関する有用な情報を含むカスタムバイナリヘッ"
+"ダーが 付いているため、個別のパッケージをすばやく簡単に問い合わせ することが"
+"できます。"
+
+# EXACT MATCH
+#. Tag: term
+#, no-c-format
+msgid "System Verification"
+msgstr "システムの検証"
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Another powerful RPM feature is the ability to verify packages. If you are "
+"worried that you deleted an important file for some package, you can verify "
+"the package. You are then notified of anomalies, if any—at which point you "
+"can reinstall the package, if necessary. Any configuration files that you "
+"modified are preserved during reinstallation."
+msgstr ""
+"もう1つの強力な特徴は、パッケージの検証機能です。 あるパッケージの重要ファイ"
+"ルを削除してしまった恐れがある場合は、パッケージを検証します。何か異常があれ"
+"ば通知されます。その時点で、必要であればそのパッケージを再インストールするこ"
+"とができます。 再インストールを行っても、修正した設定ファイルは保持されます。"
+
+# EXACT MATCH
+#. Tag: term
+#, no-c-format
+msgid "Pristine Sources"
+msgstr "純粋なソース"
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"A crucial design goal was to allow the use of <emphasis>pristine </emphasis> "
+"software sources, as distributed by the original authors of the software. "
+"With RPM, you have the pristine sources along with any patches that were "
+"used, plus complete build instructions. This is an important advantage for "
+"several reasons. For instance, if a new version of a program is released, "
+"you do not necessarily have to start from scratch to get it to compile. You "
+"can look at the patch to see what you <emphasis>might</emphasis> need to do. "
+"All the compiled-in defaults, and all of the changes that were made to get "
+"the software to build properly, are easily visible using this technique."
+msgstr ""
+"最終的な設計目標は、ソフトウェアのオリジナル作者によって配布されたときのまま"
+"の「純粋な」ソフトウェアソースをユーザーが利用できるようにすることでした。RPM"
+"を使用した場合、純粋なソースと適用済みのパッチ、完全なビルド命令群が入手でき"
+"ます。いくつかの理由から、これは大きなメリットとなります。たとえば、あるプロ"
+"グラムの新しいバージョンがリリースされた場合、それをコンパイルするために必ず"
+"しも最初から作業を始める必要はなくなります。パッチを見て、必要になる"
+"<emphasis>かもしれない</emphasis>作業を確かめることができます。この技術を使え"
+"ば、組み込み済みのすべてのデフォルト設定と、ソフトウェアを適切に構築するため"
+"に行われたすべての変更内容が、容易に目に見えるようになります。"
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"The goal of keeping sources pristine may seem important only for developers, "
+"but it results in higher quality software for end users, too."
+msgstr ""
+"ソースを純粋な状態に保持するという目標は、開発者にとってのみ重要なことのよう"
+"に思われるかもしれませんが、結果として、エンドユーザーにより高品質のソフト"
+"ウェアが 提供されることにもなります。"
+
+# EXACT MATCH
+#. Tag: title
+#, no-c-format
+msgid "Using RPM"
+msgstr "RPMの使用法"
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"RPM has five basic modes of operation (not counting package building): "
+"installing, uninstalling, upgrading, querying, and verifying. This section "
+"contains an overview of each mode. For complete details and options, try "
+"<command>rpm --help</command> or <command>man rpm</command>. You can also "
+"refer to <xref linkend=\"s1-rpm-additional-resources\" /> for more "
+"information on RPM."
+msgstr ""
+"RPMには、次の5つの基本的作動モードがあります(パッケージの構築はカウントしませ"
+"ん)。インストール、アンインストール、アップグレード、照会、検証の5つです。こ"
+"のセクションでは、各モードの概要を説明します。詳細な説明やオプションについて"
+"は<command>rpm --help</command>をご覧ください。RPMの詳細については<xref "
+"linkend=\"s1-rpm-additional-resources\"/>を参照してください。"
+
+# EXACT MATCH
+#. Tag: title
+#, no-c-format
+msgid "Finding RPM Packages"
+msgstr "RPM パッケージの検索"
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Before using any RPM packages, you must know where to find them. An Internet "
+"search returns many RPM repositories, but if you are looking for RPM "
+"packages built by the Fedora Project, they can be found at the following "
+"locations:"
+msgstr ""
+"RPMを使用する前に、RPMがある場所を知っておかねばなりません。 インターネット検"
+"索では数多くのRPMレポジトリを返してきますが、 &RHI;が製作したRPMパッケージを"
+"探している場合は、次の場所にあります。"
+
+#. Tag: para
+#, no-c-format
+msgid "The &MAJOR_OS; installation media contain many installable RPMs."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The initial RPM repositories provided with the YUM package manager. Refer to "
+"<xref linkend=\"ch-yum\" /> for details on how to use the official "
+"&MAJOR_OS; package repositories."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Unofficial, third-party repositories not affiliated with the Fedora Project "
+"also provide RPM packages."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"When considering third-party repositories for use with your &MAJOR_OS; "
+"system, pay close attention to the repository's web site with regard to "
+"package compatibility before adding the repository as a package source. "
+"Alternate package repositories may offer different, incompatible versions of "
+"the same software, including packages already included in the Fedora "
+"repositories."
+msgstr ""
+
+# EXACT MATCH
+#. Tag: title
+#, no-c-format
+msgid "Installing"
+msgstr "インストール"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"RPM packages typically have file names like <filename>tree-1.5.2.2-4.fc12."
+"x86_64.rpm</filename>. The file name includes the package name "
+"(<filename>tree</filename>), version (<filename>1.5.2.2</filename>), release "
+"(<filename>4</filename>), operating system major version (<filename>fc12</"
+"filename>) and CPU architecture (<filename>x86_64</filename>). Assuming the "
+"<filename>tree-1.5.2.2-4.fc12.x86_64.rpm</filename> package is in the "
+"current directory, log in as root and type the following command at a shell "
+"prompt to install it:"
+msgstr ""
+"RPM パッケージには概して<filename moreinfo=\"none\">foo-1.0-1.i386.rpm </"
+"filename>というようなファイル名が付けられています。 このファイル名は、パッ"
+"ケージ名(<filename moreinfo=\"none\">foo </filename>)、バージョン(<filename "
+"moreinfo=\"none\">1.0</filename>)、 リリース(<filename moreinfo=\"none\">1</"
+"filename>)、アーキテクチャ (<filename moreinfo=\"none\">i386</filename>)で構"
+"成されています。パッケージをインストールするには、rootでログインし、シェルプ"
+"ロンプトで以下のコマンドを入力します。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <option>-i</option> option tells <command>rpm</command> to install the "
+"package, and the <option>v</option> and <option>h</option> options, while "
+"aren't strictly necessary, increase output information and display a "
+"progress meter, respectively."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Alternatively, you can use the <option>-U</option> option, which "
+"<firstterm>upgrades</firstterm> the package if an older version is already "
+"installed, or simply installs it if not:"
+msgstr ""
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "If the installation is successful, the following output is displayed:"
+msgstr "インストールが正常に終了すると、以下のような出力が表示されます。"
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"As you can see, RPM prints out the name of the package and then prints a "
+"succession of hash marks as a progress meter while the package is installed."
+msgstr ""
+"<application>RPM</application>はパッケージ名を出力し、 パッケージのインストー"
+"ル状況をシャープ記号を使って 表示します。"
+
+# EXACT MATCH
+#. Tag: para
+#, no-c-format
+msgid ""
+"The signature of a package is checked automatically when installing or "
+"upgrading a package. The signature confirms that the package was signed by "
+"an authorized party. For example, if the verification of the signature "
+"fails, an error message such as the following is displayed:"
+msgstr ""
+"パッケージの署名は、パッケージのインストールまたはアップグレード時に自動的に"
+"チェックされます。署名により、パッケージが認証機関によって署名されたことを確"
+"認できます。たとえば、署名の検証が失敗すると、次のようなエラーメッセージが表"
+"示されます。"
+
+# EXACT MATCH
+#. Tag: para
+#, no-c-format
+msgid ""
+"If it is a new, header-only, signature, an error message such as the "
+"following is displayed:"
+msgstr "ヘッダのみの新しい署名なら、次のようなエラーメッセージが表示されます。"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"If you do not have the appropriate key installed to verify the signature, "
+"the message contains the word <computeroutput>NOKEY</computeroutput>:"
+msgstr ""
+"署名を検証するための適切なキーをインストールしていない場合は、 メッセージは以"
+"下のような<computeroutput moreinfo=\"none\">NOKEY </computeroutput>という単語"
+"を含みます。"
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Refer to <xref linkend=\"s1-check-rpm-sig\" /> for more information on "
+"checking a package's signature."
+msgstr ""
+"パッケージ署名のチェックに関する詳細情報は、 <xref linkend=\"s1-check-rpm-sig"
+"\"/>で参照してください。"
+
+# EXACT MATCH
+#. Tag: title
+#, no-c-format
+msgid "Warning"
+msgstr "警告"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If you are installing a kernel package, you should always use the "
+"<command>rpm -ivh</command> command (simple install) instead of <command>rpm "
+"-Uvh</command>. The reason for this is that <emphasis>install</emphasis> "
+"(<option>-i</option>) and <emphasis>upgrade</emphasis> (<option>-U</option>) "
+"take on specific meanings when installing kernel packages. Refer to <xref "
+"linkend=\"ch-kernel\" /> for details."
+msgstr ""
+
+# EXACT MATCH
+#. Tag: title
+#, no-c-format
+msgid "Package Already Installed"
+msgstr "すでにインストールされているパッケージ"
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"If a package of the same name and version is already installed, the "
+"following output is displayed:"
+msgstr ""
+"同じバージョンのパッケージがすでにインストールされている場合は、 以下のメッ"
+"セージが表示されます。"
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"However, if you want to install the package anyway, you can use the "
+"<command>--replacepkgs</command> option, which tells RPM to ignore the error:"
+msgstr ""
+"インストールしようとしているものと同じバージョンがすでにインストールされてい"
+"るが、とにかくパッケージをインストールするには、<command>--replacepkgs</"
+"command>オプションを使用します。このオプションはRPMにエラーを無視するよう指示"
+"します。"
+
+# EXACT MATCH
+#. Tag: para
+#, no-c-format
+msgid ""
+"This option is helpful if files installed from the RPM were deleted or if "
+"you want the original configuration files from the RPM to be installed."
+msgstr ""
+"このオプションは、RPM からインストールされた ファイルが削除された場合や、RPM "
+"からオリジナルの 設定ファイルをインストールしたい場合に便利です。"
+
+# EXACT MATCH
+#. Tag: title
+#, no-c-format
+msgid "Conflicting Files"
+msgstr "ファイルの競合"
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"If you attempt to install a package that contains a file which has already "
+"been installed by another package, the following is displayed:"
+msgstr ""
+"別のパッケージや同じパッケージの旧バージョンによってすでにインストールされて"
+"いる ファイルを含むパッケージをインストールしようとすると、 以下のメッセージ"
+"が表示されます。"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"To make RPM ignore this error, use the <command>--replacefiles</command> "
+"option:"
+msgstr ""
+"RPM にこのエラーを無視するよう指示するには、 <command moreinfo=\"none\">--"
+"replacefiles</command>オプションを 使用します。"
+
+# EXACT MATCH
+#. Tag: title
+#, no-c-format
+msgid "Unresolved Dependency"
+msgstr "未解決の依存"
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"RPM packages may sometimes depend on other packages, which means that they "
+"require other packages to be installed to run properly. If you try to "
+"install a package which has an unresolved dependency, output similar to the "
+"following is displayed:"
+msgstr ""
+"RPMパッケージは他のパッケージに<firstterm>依存する</firstterm>ことがありま"
+"す。つまり、正しく動作するために他のパッケージのインストールが必要な場合があ"
+"ります。未解決の依存関係を持つパッケージをインストールしようとすると、以下の"
+"ような出力が表示されます。"
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"If you are installing a package from the &MAJOR_OS; installation media, such "
+"as from a CD-ROM or DVD, it usually suggests the package or packages needed "
+"to resolve the dependency. Find the suggested package(s) on the &MAJOR_OS; "
+"installation media or on one of the active &MAJOR_OS; mirrors (<ulink url="
+"\"http://mirrors.fedoraproject.org/publiclist/\" />) and add it to the "
+"command:"
+msgstr ""
+"&PROD;のCD-ROMセットからパッケージをインストールしている場合は、通常、依存関"
+"係を解決するために必要なパッケージが示されます。このパッケージを &PROD; CD-"
+"ROM、または、&RH; FTP サイト(またはミラー)から見つけて、それを次のようにコマ"
+"ンドに追加します。"
+
+# EXACT MATCH
+#. Tag: para
+#, no-c-format
+msgid ""
+"If installation of both packages is successful, output similar to the "
+"following is displayed:"
+msgstr ""
+"両方のパッケージのインストールが正常に行なわれると、以下のような出力が表示さ"
+"れます。"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"If it does not suggest a package to resolve the dependency, you can try the "
+"<option>--whatprovides</option> option to determine which package contains "
+"the required file."
+msgstr ""
+"プログラムが依存関係を解決するパッケージを提示してこない場合は、<option>--"
+"redhatprovides</option> オプションでどのパッケージが必要なファイルを含んでい"
+"るか判定してみることができます。このオプションを実行するには、<filename "
+"moreinfo=\"none\">rpmdb-redhat</filename> パッケージをインストールしている必"
+"要があります。"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"If the package that contains <filename>bar.so.3</filename> is in the RPM "
+"database, the name of the package is displayed:"
+msgstr ""
+"<filename moreinfo=\"none\">bar.so.2</filename>を含むパッケージが <filename "
+"moreinfo=\"none\">rpmdb-redhat</filename> パッケージからの インストール済み"
+"データベースにある場合、その パッケージ名が表示されます。"
+
+#. Tag: title
+#, no-c-format
+msgid "Warning: Forcing Package Installation"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Although we can <emphasis>force</emphasis> <command>rpm</command> to install "
+"a package that gives us a <computeroutput>Failed dependencies</"
+"computeroutput> error (using the <option>--nodeps</option> option), this is "
+"<emphasis>not</emphasis> recommended, and will usually result in the "
+"installed package failing to run. Installing or removing packages with "
+"<command>rpm --nodeps</command> can cause applications to misbehave and/or "
+"crash, and can cause serious package management problems or, possibly, "
+"system failure. For these reasons, it is best to heed such warnings; the "
+"package manager—whether <application>RPM</application>, <application>Yum</"
+"application> or <application>PackageKit</application>—shows us these "
+"warnings and suggests possible fixes because accounting for dependencies is "
+"critical. The <application>Yum</application> package manager can perform "
+"dependency resolution and fetch dependencies from online repositories, "
+"making it safer, easier and smarter than forcing <command>rpm</command> to "
+"carry out actions without regard to resolving dependencies."
+msgstr ""
+
+# EXACT MATCH
+#. Tag: title
+#, no-c-format
+msgid "Uninstalling"
+msgstr "アンインストール"
+
+# EXACT MATCH
+#. Tag: para
+#, no-c-format
+msgid ""
+"Uninstalling a package is just as simple as installing one. Type the "
+"following command at a shell prompt:"
+msgstr ""
+"パッケージのアンインストールは、インストールと 同様、簡単に実行できます。シェ"
+"ルプロンプトで以下の コマンドを入力します。"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Notice that we used the package <emphasis>name</emphasis> <filename>foo</"
+"filename>, not the name of the original package <emphasis>file</emphasis>, "
+"<filename>foo-1.0-1.fc12.x86_64</filename>. If you attempt to uninstall a "
+"package using the <command>rpm -e</command> command and the original full "
+"file name, you will receive a package name error."
+msgstr ""
+"使用したのは、パッケージの<emphasis>名前</emphasis>である <filename moreinfo="
+"\"none\">foo</filename> であって、オリジナルパッケージの<emphasis>ファイル</"
+"emphasis>名、 <filename moreinfo=\"none\"> foo-1.0-1.i386.rpm</filename>では"
+"ないことに注意してください。 パッケージをアンインストールするには、<filename "
+"moreinfo=\"none\">foo</filename>に 実際のオリジナルパッケージのパッケージ名を"
+"入れます。"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"You can encounter dependency errors when uninstalling a package if another "
+"installed package depends on the one you are trying to remove. For example:"
+msgstr ""
+"削除しようとしているパッケージに別のインストール されているパッケージが依存し"
+"ている場合、アンインストール 時に依存関係エラーが発生することがあります。 た"
+"とえば、"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Similar to how we searched for a shared object library (i.e. a "
+"<filename><replaceable>&lt;library_name&gt;</replaceable>.so."
+"<replaceable>&lt;number&gt;</replaceable> </filename> file) in <xref linkend="
+"\"s3-rpm-unresolved-dependency\" />, we can search for a 64-bit shared "
+"object library using this exact syntax (and making sure to quote the file "
+"name):"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Although we can <emphasis>force</emphasis> <command>rpm</command> to remove "
+"a package that gives us a <computeroutput>Failed dependencies</"
+"computeroutput> error (using the <option>--nodeps</option> option), this is "
+"<emphasis>not</emphasis> recommended, and may cause harm to other installed "
+"applications. Installing or removing packages with <command>rpm --nodeps</"
+"command> can cause applications to misbehave and/or crash, and can cause "
+"serious package management problems or, possibly, system failure. For these "
+"reasons, it is best to heed such warnings; the package manager—whether "
+"<application>RPM</application>, <application>Yum</application> or "
+"<application>PackageKit</application>—shows us these warnings and suggests "
+"possible fixes because accounting for dependencies is critical. The "
+"<application>Yum</application> package manager can perform dependency "
+"resolution and fetch dependencies from online repositories, making it safer, "
+"easier and smarter than forcing <command>rpm</command> to carry out actions "
+"without regard to resolving dependencies."
+msgstr ""
+
+# EXACT MATCH
+#. Tag: title
+#, no-c-format
+msgid "Upgrading"
+msgstr "アップグレード"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Upgrading a package (using the <option>-U</option> option) is similar to "
+"installing one (the <option>-i</option> option). If we have the RPM named "
+"<filename>tree-1.5.3.0-1.fc12.x86_64.rpm</filename> in our current "
+"directory, and <filename>tree-1.5.2.2-4.fc12.x86_64.rpm</filename> is "
+"already installed on our system (<command>rpm -qi</command> will tell us "
+"which version of the <literal>tree</literal> package we have installed on "
+"our system, if any), then the following command will upgrade tree to the "
+"newer version:"
+msgstr ""
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"As part of upgrading a package, RPM automatically uninstalls any old "
+"versions of the <filename>foo</filename> package. Note that <option>-U</"
+"option> will also install a package even when there are no previous versions "
+"of the package installed."
+msgstr ""
+"パッケージアップグレードの一部として、RPM は自動的に <filename moreinfo="
+"\"none\">foo</filename>パッケージの旧バージョンをすべてアンインストールしま"
+"す。実際には、以前にどのバージョンのパッケージもインストールしたことがなくて"
+"もこのオプションは機能するため、パッケージのインストールには常に <option>-U</"
+"option> を使用するのを好む人もいます。"
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"It is not advisable to use the <option>-U</option> option for installing "
+"kernel packages because RPM completely replaces the previous kernel package. "
+"This does not affect a running system, but if the new kernel is unable to "
+"boot during your next restart, there would be no other kernel to boot "
+"instead."
+msgstr ""
+"カーネルパッケージのインストールには<option>-U</option>を使わない方がいいで"
+"しょう。RPMは旧カーネルパッケージを置換してしまいます。システムの実行には影響"
+"しませんが、新しいカーネルで再起動時にブートできない場合、代りにブートする"
+"カーネルがなくなります。"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Using the <option>-i</option> option adds the kernel to your GRUB boot menu "
+"(<filename>/etc/grub.conf</filename>). Similarly, removing an old, unneeded "
+"kernel removes the kernel from GRUB."
+msgstr ""
+"<option>-i</option>オプションを使用するとそのカーネルがGRUBブートメニューに追"
+"加されます(<filename moreinfo=\"none\">/etc/grub.conf</filename>)。同様に、必"
+"要のなくなった古いカーネルを削除するとGRUBからそのカーネルが削除されます。"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Because RPM performs intelligent upgrading of packages with configuration "
+"files, you may see one or the other of the following messages:"
+msgstr ""
+"RPMは設定ファイルを使用したパッケージのインテリジェントなアップグレードを行う"
+"ので、以下のようなメッセージが表示されることもあります。"
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"This message means that changes you made to the configuration file may not "
+"be <emphasis>forward-compatible</emphasis> with the new configuration file "
+"in the package, so RPM saved your original file and installed a new one. You "
+"should investigate the differences between the two configuration files and "
+"resolve them as soon as possible, to ensure that your system continues to "
+"function properly."
+msgstr ""
+"このメッセージは、設定ファイルに加えられた変更がパッケージ内の新しい設定ファ"
+"イルと<firstterm>前方互換</firstterm>がない可能性があるため、RPMは元のファイ"
+"ルを保存したまま新しいファイルをインストールしたという意味です。できる限り早"
+"期に、この2つのファイルの違いを調査して解決し、引き続きシステムが正しく動作す"
+"るようにしてください。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Alternatively, RPM may save the package's <emphasis>new</emphasis> "
+"configuration file as, for example, <filename>foo.conf.rpmnew</filename>, "
+"and leave the configuration file you modified untouched. You should still "
+"resolve any conflicts between your modified configuration file and the new "
+"one, usually by merging changes from the old one to the new one with a "
+"<command>diff</command> program."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If you attempt to upgrade to a package with an <emphasis>older</emphasis> "
+"version number (that is, if a higher version of the package is already "
+"installed), the output is similar to the following:"
+msgstr ""
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"To force RPM to upgrade anyway, use the <command>--oldpackage</command> "
+"option:"
+msgstr ""
+"RPMにアップグレードを強行させるには、<command moreinfo=\"none\">--"
+"oldpackage</command>オプションを使用します。"
+
+# EXACT MATCH
+#. Tag: title
+#, no-c-format
+msgid "Freshening"
+msgstr "freshenの実行"
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Freshening is similar to upgrading, except that only existent packages are "
+"upgraded. Type the following command at a shell prompt:"
+msgstr ""
+"パッケージへのfreshenの実行はアップグレード と似ています。シェルプロンプトで"
+"以下のコマンドを入力 します。"
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"RPM's freshen option checks the versions of the packages specified on the "
+"command line against the versions of packages that have already been "
+"installed on your system. When a newer version of an already-installed "
+"package is processed by RPM's freshen option, it is upgraded to the newer "
+"version. However, RPM's freshen option does not install a package if no "
+"previously-installed package of the same name exists. This differs from "
+"RPM's upgrade option, as an upgrade <emphasis>does</emphasis> install "
+"packages whether or not an older version of the package was already "
+"installed."
+msgstr ""
+"RPM のfreshenオプションにより、コマンドラインで 指定されたパッケージのバー"
+"ジョンと、すでにシステムに インストールされているパッケージのバージョンが照"
+"合 されます。インストールされているパッケージよりも 新しいバージョンのパッ"
+"ケージに対してRPM のfreshen オプションが実行されると、そのパッケージは新しい "
+"バージョンへアップグレードされます。ただし、同じ名前 でインストールされている"
+"パッケージが存在しない場合は、 RPM のfreshenオプションによるパッケージのイン"
+"ストール は実行されません。この点が、RPM のアップグレード オプションと異なり"
+"ます。アップグレードでは、古い バージョンのパッケージがインストールされている"
+"か どうかに関係なくパッケージが<emphasis>必ず</emphasis> インストールされま"
+"す。"
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Freshening works for single packages or package groups. If you have just "
+"downloaded a large number of different packages, and you only want to "
+"upgrade those packages that are already installed on your system, freshening "
+"does the job. Thus, you do not have to delete any unwanted packages from the "
+"group that you downloaded before using RPM."
+msgstr ""
+"RPMのfreshenオプションは、単一のパッケージに対しても複数のパッケージに対して"
+"も使用できます。多数の異なるパッケージをダウンロードした後で、システムにイン"
+"ストールされているパッケージのみをアップグレードしたい場合に、freshenが役に立"
+"ちます。freshenを使用する場合、RPMを使う前にダウンロードしたグループ中から不"
+"要なパッケージを削除する必要はありません。"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"In this case, issue the following with the <filename>*.rpm</filename> glob:"
+msgstr "この場合、以下のコマンドを発行します。"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"RPM then automatically upgrades only those packages that are already "
+"installed."
+msgstr ""
+"RPMはすでにインストールされているパッケージのみ自動的にアップグレードします。"
+
+# EXACT MATCH
+#. Tag: title
+#, no-c-format
+msgid "Querying"
+msgstr "問い合わせ"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The RPM database stores information about all RPM packages installed in your "
+"system. It is stored in the directory <filename>/var/lib/rpm/</filename>, "
+"and is used to query what packages are installed, what versions each package "
+"is, and to calculate any changes to any files in the package since "
+"installation, among other use cases."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"To query this database, use the <command>-q</command> option. The "
+"<command>rpm -q <replaceable>package name</replaceable> </command> command "
+"displays the package name, version, and release number of the installed "
+"package <replaceable>&lt;package_name&gt;</replaceable>. For example, using "
+"<command>rpm -q tree</command> to query installed package <filename>tree</"
+"filename> might generate the following output:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"You can also use the following <emphasis>Package Selection Options</"
+"emphasis> (which is a subheading in the RPM man page: see <command>man rpm</"
+"command> for details) to further refine or qualify your query:"
+msgstr ""
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "<command>-a</command> — queries all currently installed packages."
+msgstr ""
+"<command moreinfo=\"none\">-a</command>コマンドは、現時点で インストールされ"
+"ているすべてのパッケージの 問い合わせを実行します。"
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"<command>-f <filename><replaceable>&lt;file_name&gt;</replaceable> </"
+"filename> </command> — queries the RPM database for which package owns "
+"<filename><replaceable>&lt;file_name&gt;</replaceable> </filename>. Specify "
+"the absolute path of the file (for example, <command>rpm -qf <filename>/bin/"
+"ls</filename> </command> instead of <command>rpm -qf ls</command>)."
+msgstr ""
+"<command moreinfo=\"none\">-f <filename moreinfo=\"none\"><replaceable>&lt;"
+"file&gt;</replaceable></filename></command>は、<filename moreinfo=\"none"
+"\"><replaceable>&lt;file&gt;</replaceable></filename> の持ち主であるパッケー"
+"ジを問い合わせします。ファイルを指定するときは、そのファイルのフルパスを指定"
+"する必要があります (例、<filename moreinfo=\"none\">/bin/ls</filename>)。"
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"<command>-p <filename><replaceable>&lt;package_file&gt;</replaceable> </"
+"filename> </command> — queries the uninstalled package "
+"<filename><replaceable>&lt;package_file&gt;</replaceable> </filename>."
+msgstr ""
+"<command moreinfo=\"none\">-p <filename moreinfo=\"none\"><replaceable> &lt;"
+"packagefile&gt;</replaceable></filename> </command> は、<filename moreinfo="
+"\"none\"><replaceable>&lt;packagefile&gt; </replaceable></filename>パッケージ"
+"の問い合わせを実行 します。"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"There are a number of ways to specify what information to display about "
+"queried packages. The following options are used to select the type of "
+"information for which you are searching. These are called the "
+"<emphasis>Package Query Options</emphasis>."
+msgstr ""
+"問い合わせを行なったパッケージに関して表示する情報を指定する方法がたくさんあ"
+"ります。検索を行う情報のタイプを選択するには、以下のオプションを使用します。"
+"これらのオプションを<emphasis>情報選択オプション</emphasis>と 呼びます。"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"<command>-i</command> displays package information including name, "
+"description, release, size, build date, install date, vendor, and other "
+"miscellaneous information."
+msgstr ""
+"<command moreinfo=\"none\">-i</command>コマンドは、 パッケージ名、説明、リ"
+"リース、サイズ、構築日、 インストール日、ベンダーなど多様なパッケージ情報を "
+"表示します。"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"<command>-l</command> displays the list of files that the package contains."
+msgstr ""
+"<command moreinfo=\"none\">-l</command>コマンドは、 パッケージに含まれるファ"
+"イルの一覧を表示します。"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"<command>-s</command> displays the state of all the files in the package."
+msgstr ""
+"<command moreinfo=\"none\">-s</command>コマンドは、 パッケージに含まれるすべ"
+"てのファイルの状態を表示します。"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"<command>-d</command> displays a list of files marked as documentation (man "
+"pages, info pages, READMEs, etc.) in the package."
+msgstr ""
+"<command moreinfo=\"none\">-d</command>コマンドは、 ドキュメント(manページ、"
+"infoページ、READMEなど)として マークが付けられたファイルの一覧を表示します。"
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"<command>-c</command> displays a list of files marked as configuration "
+"files. These are the files you edit after installation to adapt and "
+"customize the package to your system (for example, <filename>sendmail.cf</"
+"filename>, <filename>passwd</filename>, <filename>inittab</filename>, etc.)."
+msgstr ""
+"<command moreinfo=\"none\">-c</command>は、 設定ファイルとしてマークが付けら"
+"れたファイルの一覧を 表示します。これは、パッケージをシステムに適合させる た"
+"めに、ユーザーがインストール後に変更を加えるファイル です(例、<filename "
+"moreinfo=\"none\">sendmail.cf</filename>、 <filename moreinfo=\"none"
+"\">passwd</filename>、<filename moreinfo=\"none\">inittab </filename>など)。"
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"For options that display lists of files, add <command>-v</command> to the "
+"command to display the lists in a familiar <command>ls -l</command> format."
+msgstr ""
+"ファイルの一覧を表示するオプションについては、コマンドに<command moreinfo="
+"\"none\">-v</command>を追加して、その一覧を使い慣れた<command moreinfo=\"none"
+"\">ls -l</command>形式で表示します。"
+
+# EXACT MATCH
+#. Tag: title
+#, no-c-format
+msgid "Verifying"
+msgstr "検証"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Verifying a package compares information about files installed from a "
+"package with the same information from the original package. Among other "
+"things, verifying compares the file size, MD5 sum, permissions, type, owner, "
+"and group of each file."
+msgstr ""
+"パッケージの検証では、パッケージからインストール されたファイルに関する情報"
+"と、元のパッケージに含まれる ファイルに関する情報が同一かどうか調べます。 検"
+"証により、各ファイルのサイズ、MD5チェックサム、 権限、タイプ、所有者、グルー"
+"プを始め、さまざまなこと が比較されます。"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"The command <command>rpm -V</command> verifies a package. You can use any of "
+"the <emphasis>Verify Options</emphasis> listed for querying to specify the "
+"packages you wish to verify. A simple use of verifying is <command>rpm -V "
+"tree</command>, which verifies that all the files in the <command>tree</"
+"command> package are as they were when they were originally installed. For "
+"example:"
+msgstr ""
+"コマンド<command moreinfo=\"none\">rpm -V</command>は、パッケージの検証を行い"
+"ます。問い合わせの説明で示した<emphasis>Package Verify Options</emphasis>を使"
+"用して、検証したいパッケージを指定することができます。簡単な使用法としては"
+"<command moreinfo=\"none\">rpm -V foo</command> というものがあります。これを"
+"実行すると、<command moreinfo=\"none\">foo</command>パッケージに含まれるすべ"
+"てのファイルが、それがインストールされた ときの状態と同じであるかどうかが検証"
+"されます。 例えば、"
+
+# EXACT MATCH
+#. Tag: para
+#, no-c-format
+msgid "To verify a package containing a particular file:"
+msgstr "特定のファイルを含むパッケージを検証するには、"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"In this example, <filename>/usr/bin/tree</filename> is the absolute path to "
+"the file used to query a package."
+msgstr ""
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"To verify ALL installed packages throughout the system (which will take some "
+"time):"
+msgstr "インストールされているすべてのパッケージを 検証するには、"
+
+# EXACT MATCH
+#. Tag: para
+#, no-c-format
+msgid "To verify an installed package against an RPM package file:"
+msgstr ""
+"インストールされているパッケージと、 RPM パッケージファイルとを検証するには、"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"This command can be useful if you suspect that your RPM database is corrupt."
+msgstr ""
+"RPM データベースが破損した疑いがある場合に、 このコマンドが役立ちます。"
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"If everything verified properly, there is no output. If there are any "
+"discrepancies, they are displayed. The format of the output is a string of "
+"eight characters (a \"<computeroutput>c</computeroutput>\" denotes a "
+"configuration file) and then the file name. Each of the eight characters "
+"denotes the result of a comparison of one attribute of the file to the value "
+"of that attribute recorded in the RPM database. A single period "
+"(<computeroutput>.</computeroutput>) means the test passed. The following "
+"characters denote specific discrepancies:"
+msgstr ""
+"すべてが正常に検証された場合は何も出力されません。 何らかの矛盾が見つかった場"
+"合はその内容が表示されます。 出力フォーマットは、8個の文字列(<computeroutput "
+"moreinfo=\"none\">c </computeroutput>は設定ファイルを示す)とファイル名です。 "
+"8個の各文字は、ファイルの1つの属性とRPM データベースに 記録されたその属性の値"
+"とを比較した結果を示します。1つのピリオド(<computeroutput moreinfo=\"none\">."
+"</computeroutput>)は、 テストに合格したことを示します。以下の文字はそれぞれ "
+"何らかのテストで不合格になったことを示しています。"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "<computeroutput>5</computeroutput> — MD5 checksum"
+msgstr ""
+"<computeroutput moreinfo=\"none\">5</computeroutput> &mdash;MD5チェックサム"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "<computeroutput>S</computeroutput> — file size"
+msgstr ""
+"<computeroutput moreinfo=\"none\">S</computeroutput> &mdash;ファイルサイズ"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "<computeroutput>L</computeroutput> — symbolic link"
+msgstr ""
+"<computeroutput moreinfo=\"none\">L</computeroutput> &mdash;シンボリックリン"
+"ク"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "<computeroutput>T</computeroutput> — file modification time"
+msgstr ""
+"<computeroutput moreinfo=\"none\">T</computeroutput> &mdash;ファイル修正時刻"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "<computeroutput>D</computeroutput> — device"
+msgstr "<computeroutput moreinfo=\"none\">D</computeroutput> &mdash;デバイス"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "<computeroutput>U</computeroutput> — user"
+msgstr "<computeroutput moreinfo=\"none\">U</computeroutput> &mdash;ユーザー"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "<computeroutput>G</computeroutput> — group"
+msgstr "<computeroutput moreinfo=\"none\">G</computeroutput> &mdash;グループ"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"<computeroutput>M</computeroutput> — mode (includes permissions and file "
+"type)"
+msgstr ""
+"<computeroutput moreinfo=\"none\">M</computeroutput> &mdash;モード(権限とファ"
+"イルタイプを含む)"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"<computeroutput>?</computeroutput> — unreadable file (file permission "
+"errors, for example)"
+msgstr ""
+"<computeroutput moreinfo=\"none\">M</computeroutput> &mdash;モード(権限とファ"
+"イルタイプを含む)"
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"If you see any output, use your best judgment to determine if you should "
+"remove the package, reinstall it, or fix the problem in another way."
+msgstr ""
+"何らかが出力された場合は、パッケージを削除する のか、再インストールするのか、"
+"あるいは別の方法で問題 を修正するのかを熟慮の上判断してください。"
+
+#. Tag: title
+#, no-c-format
+msgid "Practical and Common Examples of RPM Usage"
+msgstr ""
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"RPM is a useful tool for both managing your system and diagnosing and fixing "
+"problems. The best way to make sense of all its options is to look at some "
+"examples."
+msgstr ""
+"RPMはシステムの管理や問題の診断及び修正に役に立つ ツールです。これらのすべて"
+"のオプションを理解する 最善の方法はいくつかの例を見ることでしょう。"
+
+# EXACT MATCH
+#. Tag: para
+#, no-c-format
+msgid ""
+"Perhaps you have deleted some files by accident, but you are not sure what "
+"you deleted. To verify your entire system and see what might be missing, you "
+"could try the following command:"
+msgstr ""
+"誤って何らかのファイルを削除してしまったものの、 何を削除したかわからないとし"
+"ます。 システム全体を検証して足りないものを調べるには、以下のコマンドを試すこ"
+"とができます。"
+
+# EXACT MATCH
+#. Tag: para
+#, no-c-format
+msgid ""
+"If some files are missing or appear to have been corrupted, you should "
+"probably either re-install the package or uninstall and then re-install the "
+"package."
+msgstr ""
+"足りないファイルがあるか、壊れているファイルが あるように見える場合は、おそら"
+"くパッケージを再インストールするか、いったんアンインストールして 再インストー"
+"ルする必要があります。"
+
+# EXACT MATCH
+#. Tag: para
+#, no-c-format
+msgid ""
+"At some point, you might see a file that you do not recognize. To find out "
+"which package owns it, enter:"
+msgstr ""
+"所属先のわからないファイルを見つけたとします。そのファイルが含まれるパッケー"
+"ジを検索するには、以下のように入力します。"
+
+# EXACT MATCH
+#. Tag: para
+#, no-c-format
+msgid "The output would look like the following:"
+msgstr "出力は以下のようになります。"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"We can combine the above two examples in the following scenario. Say you are "
+"having problems with <filename>/usr/bin/paste</filename>. You would like to "
+"verify the package that owns that program, but you do not know which package "
+"owns <command>paste</command>. Enter the following command,"
+msgstr ""
+"上記2つの例を組み合わせて、次のような方法を 考えることができます。<filename "
+"moreinfo=\"none\">/usr/bin/paste </filename>に問題があるとします。このプログ"
+"ラムが 含まれるパッケージを検証しようにも、<command moreinfo=\"none\">paste "
+"</command>がどのパッケージに含まれるかがわかりません。次のコマンドを入力しま"
+"す。"
+
+# EXACT MATCH
+#. Tag: para
+#, no-c-format
+msgid "and the appropriate package is verified."
+msgstr "該当するパッケージが検証されます。"
+
+# EXACT MATCH
+#. Tag: para
+#, no-c-format
+msgid ""
+"Do you want to find out more information about a particular program? You can "
+"try the following command to locate the documentation which came with the "
+"package that owns that program:"
+msgstr ""
+"特定のプログラムに関して詳細な情報が必要 なら、次のコマンドを入力して、そのプ"
+"ログラムの入った パッケージに付随するドキュメントを検索することが できます。"
+
+# EXACT MATCH
+#. Tag: para
+#, no-c-format
+msgid "The output would be similar to the following:"
+msgstr "出力は以下のようになります。"
+
+# EXACT MATCH
+#. Tag: para
+#, no-c-format
+msgid ""
+"You may find a new RPM, but you do not know what it does. To find "
+"information about it, use the following command:"
+msgstr ""
+"新しい<application>RPM</application>パッケージ が見つかったものの、それが何で"
+"あるかがわからないと します。それに関する情報を検索するには、以下のコマンド "
+"を使用します。"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Perhaps you now want to see what files the <filename>crontabs</filename> RPM "
+"package installs. You would enter the following:"
+msgstr ""
+"RPMがインストールする<filename moreinfo=\"none\">crontabs </filename>ファイル"
+"がどのようなものか見てみましょう。 次のように入力します。"
+
+# EXACT MATCH
+#. Tag: para
+#, no-c-format
+msgid "The output is similar to the following:"
+msgstr "出力は以下のようになります。"
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"These are just a few examples. As you use RPM, you may find more uses for it."
+msgstr ""
+"以上がいくつかの例です。使用するにつれて、たくさんのRPM の用途がわかってきま"
+"す。"
+
+# EXACT MATCH
+#. Tag: title
+#, no-c-format
+msgid "Additional Resources"
+msgstr "その他のリソース"
+
+# EXACT MATCH
+#. Tag: para
+#, no-c-format
+msgid ""
+"RPM is an extremely complex utility with many options and methods for "
+"querying, installing, upgrading, and removing packages. Refer to the "
+"following resources to learn more about RPM."
+msgstr ""
+"RPM は、パッケージの問い合わせ、インストール、アップグレード、 削除を実行する"
+"ためのたくさんのオプションや方法がある 非常に複雑なユーティリティです。RPM の"
+"詳細については、 以下のリソースを参照してください。"
+
+# EXACT MATCH
+#. Tag: title
+#, no-c-format
+msgid "Installed Documentation"
+msgstr "インストールされているドキュメント"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"<command>rpm --help</command> — This command displays a quick reference of "
+"RPM parameters."
+msgstr ""
+"<command moreinfo=\"none\">rpm --help</command> &mdash; このコマンドを実行す"
+"ると、RPM のパラメータの クイックリファレンスが表示されます。"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"<command>man rpm</command> — The RPM man page gives more detail about RPM "
+"parameters than the <command>rpm --help</command> command."
+msgstr ""
+"<command moreinfo=\"none\">man rpm</command> &mdash; RPM のmanページでは、"
+"<command moreinfo=\"none\">rpm --help</command> コマンドより更に詳細なRPMのパ"
+"ラメータに関する情報が提供されています。"
+
+# EXACT MATCH
+#. Tag: title
+#, no-c-format
+msgid "Useful Websites"
+msgstr "役に立つWebサイト"
+
+# EXACT MATCH
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"The RPM website — <ulink url=\"http://www.rpm.org/\">http://www.rpm.org/</"
+"ulink>"
+msgstr ""
+"<ulink url=\"http://www.rpm.org/\">http://www.rpm.org/</ulink> &mdash;RPMの"
+"Webページ"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The RPM mailing list can be subscribed to, and its archives read from, here "
+"— <ulink url=\"http://www.redhat.com/mailman/listinfo/rpm-list/\">https://"
+"lists.rpm.org/mailman/listinfo/rpm-list</ulink>"
+msgstr ""
+
+# EXACT MATCH
+#. Tag: title
+#, no-c-format
+msgid "Related Books"
+msgstr "関連書籍"
+
+#. Tag: term
+#, no-c-format
+msgid ""
+"<citetitle>Maximum RPM</citetitle> — <ulink url=\"http://www.redhat.com/docs/"
+"books/max-rpm/\" />"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <citetitle>Maximum RPM</citetitle> book, which you can read online or "
+"download in HTML or PDF, covers everything from general RPM usage to "
+"building your own RPMs to programming with rpmlib."
+msgstr ""
+
+#. Tag: term
+#, no-c-format
+msgid ""
+"<citetitle>Red Hat RPM Guide</citetitle> — <ulink url=\"http://docs."
+"fedoraproject.org/drafts/rpm-guide-en/\" />"
+msgstr ""
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"The <citetitle>Red Hat RPM Guide</citetitle> by Eric Foster-Johnson is an "
+"excellent resource on all details of the RPM package format and the RPM "
+"package management utility."
+msgstr ""
+"<citetitle>&RH; RPM Guide</citetitle> Eric Foster-Johnson 著; Wiley, John & "
+"Sons, Incorporated &mdash; パッケージのインストールから、 RPMの構築まで、RPM"
+"の総合ガイドとなる書籍です。"
+
+# EXACT MATCH
+#~ msgid "Package Management with RPM"
+#~ msgstr "RPMによるパッケージ管理"
+
+# IGNORED
+#, fuzzy
+#~ msgid "Red Hat Package Manager"
+#~ msgstr "&RH; Package Manager"
+
+# EXACT MATCH
+#~ msgid "<see>RPM</see>"
+#~ msgstr "<see>RPM</see>"
+
+# EXACT MATCH
+#~ msgid "<primary>RPM</primary>"
+#~ msgstr "<primary>RPM</primary>"
+
+# EXACT MATCH
+#~ msgid "design goals"
+#~ msgstr "設計目標"
+
+# EXACT MATCH
+#~ msgid "using"
+#~ msgstr "使用法"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "The &RH; Errata Page available at <ulink url=\"http://www.redhat.com/apps/"
+#~ "support/errata/\">http://www.redhat.com/apps/support/errata/</ulink>"
+#~ msgstr ""
+#~ "&RH; のエラータページは、<ulink url=\"http://www.redhat.com/apps/support/"
+#~ "errata/\">http://www.redhat.com/apps/support/errata/</ulink>で ご覧くださ"
+#~ "い。"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "&RHN; &mdash; Refer to <xref linkend=\"ch-rhnetwork\"/> for more details "
+#~ "on &RHN;."
+#~ msgstr ""
+#~ "&RHN; &mdash; &RHN;に関する詳細については、<xref linkend=\"ch-rhnetwork\"/"
+#~ "> を参照してください。"
+
+# EXACT MATCH
+#~ msgid "installing"
+#~ msgstr "インストール"
+
+# EXACT MATCH
+#~ msgid "packages"
+#~ msgstr "パッケージ"
+
+# IGNORED
+#, fuzzy
+#~ msgid "<command moreinfo=\"none\">rpm -ivh foo-1.0-1.i386.rpm</command>"
+#~ msgstr ""
+#~ "<command moreinfo=\"none\">-a</command>コマンドは、現時点で インストールさ"
+#~ "れているすべてのパッケージの 問い合わせを実行します。"
+
+# IGNORED
+#, fuzzy
+#~ msgid "<command moreinfo=\"none\">rpm -Uvh foo-1.0-1.i386.rpm</command>"
+#~ msgstr ""
+#~ "<command moreinfo=\"none\">-a</command>コマンドは、現時点で インストールさ"
+#~ "れているすべてのパッケージの 問い合わせを実行します。"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "<computeroutput moreinfo=\"none\">\n"
+#~ "Preparing...                ########################################### "
+#~ "[100%]   \n"
+#~ "   1:foo                    ########################################### "
+#~ "[100%]</computeroutput>"
+#~ msgstr ""
+#~ "<computeroutput moreinfo=\"none\">U</computeroutput> &mdash;ユーザー"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "<computeroutput moreinfo=\"none\">error: V3 DSA signature: BAD, key ID "
+#~ "0352860f</computeroutput>"
+#~ msgstr ""
+#~ "<computeroutput moreinfo=\"none\">D</computeroutput> &mdash;デバイス"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "<computeroutput moreinfo=\"none\">error: Header V3 DSA signature: BAD, "
+#~ "key ID 0352860f</computeroutput>"
+#~ msgstr ""
+#~ "<computeroutput moreinfo=\"none\">D</computeroutput> &mdash;デバイス"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "<computeroutput moreinfo=\"none\">warning: V3 DSA signature: NOKEY, key "
+#~ "ID 0352860f</computeroutput>"
+#~ msgstr ""
+#~ "<computeroutput moreinfo=\"none\">D</computeroutput> &mdash;デバイス"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "If you are installing a kernel package, you should use <command moreinfo="
+#~ "\"none\">rpm -ivh</command> instead. Refer to <xref linkend=\"ch-kernel\"/"
+#~ "> for details."
+#~ msgstr ""
+#~ "カーネルパッケージをインストールしている場合は、 代わりに<command>rpm -"
+#~ "ivh</command>を使用する必要が あります。詳細は<xref linkend=\"ch-kernel\"/"
+#~ ">を参照して ください。"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "<computeroutput moreinfo=\"none\">\n"
+#~ "Preparing...                ########################################### "
+#~ "[100%] \n"
+#~ "package foo-1.0-1 is already installed</computeroutput>"
+#~ msgstr ""
+#~ "<computeroutput moreinfo=\"none\">U</computeroutput> &mdash;ユーザー"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "<command moreinfo=\"none\">rpm -ivh --replacepkgs foo-1.0-1.i386.rpm</"
+#~ "command>"
+#~ msgstr ""
+#~ "<command moreinfo=\"none\">-a</command>コマンドは、現時点で インストールさ"
+#~ "れているすべてのパッケージの 問い合わせを実行します。"
+
+# EXACT MATCH
+#~ msgid "file conflicts"
+#~ msgstr "ファイルの競合"
+
+# EXACT MATCH
+#~ msgid "resolving"
+#~ msgstr "解決"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "<computeroutput moreinfo=\"none\">\n"
+#~ "Preparing...                ########################################### "
+#~ "[100%] \n"
+#~ "file /usr/bin/foo from install of foo-1.0-1 conflicts with file from "
+#~ "package bar-2.0.20</computeroutput>"
+#~ msgstr ""
+#~ "<computeroutput moreinfo=\"none\">U</computeroutput> &mdash;ユーザー"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "<command moreinfo=\"none\">rpm -ivh --replacefiles foo-1.0-1.i386.rpm</"
+#~ "command>"
+#~ msgstr ""
+#~ "<command moreinfo=\"none\">-a</command>コマンドは、現時点で インストールさ"
+#~ "れているすべてのパッケージの 問い合わせを実行します。"
+
+# EXACT MATCH
+#~ msgid "dependencies"
+#~ msgstr "依存"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "<computeroutput moreinfo=\"none\">\n"
+#~ "error: Failed dependencies:\n"
+#~ "        bar.so.2 is needed by foo-1.0-1     \n"
+#~ "Suggested resolutions:\n"
+#~ "        bar-2.0.20-3.i386.rpm</computeroutput>"
+#~ msgstr ""
+#~ "<computeroutput moreinfo=\"none\">U</computeroutput> &mdash;ユーザー"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "<command moreinfo=\"none\">rpm -ivh foo-1.0-1.i386.rpm bar-2.0.20-3.i386."
+#~ "rpm</command>"
+#~ msgstr ""
+#~ "<command moreinfo=\"none\">-a</command>コマンドは、現時点で インストールさ"
+#~ "れているすべてのパッケージの 問い合わせを実行します。"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "<computeroutput moreinfo=\"none\">\n"
+#~ "Preparing...                ########################################### "
+#~ "[100%]    \n"
+#~ "   1:foo                    ########################################### "
+#~ "[ 50%]    \n"
+#~ "   2:bar                    ########################################### "
+#~ "[100%]</computeroutput>"
+#~ msgstr ""
+#~ "<computeroutput moreinfo=\"none\">U</computeroutput> &mdash;ユーザー"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "<command moreinfo=\"none\">rpm -q --redhatprovides bar.so.2</command>"
+#~ msgstr ""
+#~ "<command moreinfo=\"none\">-a</command>コマンドは、現時点で インストールさ"
+#~ "れているすべてのパッケージの 問い合わせを実行します。"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "<computeroutput moreinfo=\"none\">bar-2.0.20-3.i386.rpm</computeroutput>"
+#~ msgstr ""
+#~ "<computeroutput moreinfo=\"none\">U</computeroutput> &mdash;ユーザー"
+
+# EXACT MATCH
+#~ msgid ""
+#~ "To force the installation anyway (which is not recommended since the "
+#~ "package may not run correctly), use the <option>--nodeps</option> option."
+#~ msgstr ""
+#~ "とにかくインストールをそのまま強制するには(パッケージが正常には動作しない"
+#~ "場合があるので推奨されません)、<option>--nodeps</option>オプションを使用し"
+#~ "ます。"
+
+# EXACT MATCH
+#~ msgid "uninstalling"
+#~ msgstr "アンインストール"
+
+# EXACT MATCH
+#~ msgid "removing"
+#~ msgstr "取り外し"
+
+# IGNORED
+#, fuzzy
+#~ msgid "<command moreinfo=\"none\">rpm -e foo</command>"
+#~ msgstr ""
+#~ "<command moreinfo=\"none\">-a</command>コマンドは、現時点で インストールさ"
+#~ "れているすべてのパッケージの 問い合わせを実行します。"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "<computeroutput moreinfo=\"none\">\n"
+#~ "error: Failed dependencies:         \n"
+#~ "        foo is needed by (installed) bar-2.0.20-3.i386.rpm</"
+#~ "computeroutput>"
+#~ msgstr ""
+#~ "<computeroutput moreinfo=\"none\">U</computeroutput> &mdash;ユーザー"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "To make RPM ignore this error and uninstall the package anyway (which may "
+#~ "break the package dependent on it) use the <option>--nodeps</option> "
+#~ "option."
+#~ msgstr ""
+#~ "RPM にこのエラーを無視させ、強制的にパッケージをアンインストールさせるに"
+#~ "は、これに依存しているパッケージを壊してしまう可能性がありますが、"
+#~ "<option>--nodeps</option> オプションを使用します。"
+
+# EXACT MATCH
+#~ msgid "upgrading"
+#~ msgstr "アップグレード"
+
+# EXACT MATCH
+#~ msgid ""
+#~ "Upgrading a package is similar to installing one. Type the following "
+#~ "command at a shell prompt:"
+#~ msgstr ""
+#~ "パッケージのアップグレードはインストールと 似ています。シェルプロンプトで"
+#~ "以下のコマンドを 入力します。"
+
+# IGNORED
+#, fuzzy
+#~ msgid "<command moreinfo=\"none\">rpm -Uvh foo-2.0-1.i386.rpm</command>"
+#~ msgstr ""
+#~ "<command moreinfo=\"none\">-a</command>コマンドは、現時点で インストールさ"
+#~ "れているすべてのパッケージの 問い合わせを実行します。"
+
+# EXACT MATCH
+#~ msgid "<title>Tip</title>"
+#~ msgstr "<title>ヒント</title>"
+
+# EXACT MATCH
+#~ msgid "preserving configuration files"
+#~ msgstr "設定ファイルの保存"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "<computeroutput moreinfo=\"none\">saving /etc/foo.conf as /etc/foo.conf."
+#~ "rpmsave</computeroutput>"
+#~ msgstr ""
+#~ "<computeroutput moreinfo=\"none\">U</computeroutput> &mdash;ユーザー"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "<computeroutput moreinfo=\"none\">package foo-2.0-1 (which is newer than "
+#~ "foo-1.0-1) is already installed</computeroutput>"
+#~ msgstr ""
+#~ "<computeroutput moreinfo=\"none\">U</computeroutput> &mdash;ユーザー"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "<command moreinfo=\"none\">rpm -Uvh --oldpackage foo-1.0-1.i386.rpm</"
+#~ "command>"
+#~ msgstr ""
+#~ "<command moreinfo=\"none\">-a</command>コマンドは、現時点で インストールさ"
+#~ "れているすべてのパッケージの 問い合わせを実行します。"
+
+# EXACT MATCH
+#~ msgid "freshen"
+#~ msgstr "freshen"
+
+# EXACT MATCH
+#~ msgid "freshening packages"
+#~ msgstr "パッケージにfreshenを実行"
+
+# EXACT MATCH
+#~ msgid "freshening with RPM"
+#~ msgstr "RPMでfreshenを実行"
+
+# IGNORED
+#, fuzzy
+#~ msgid "<command moreinfo=\"none\">rpm -Fvh foo-1.2-1.i386.rpm</command>"
+#~ msgstr ""
+#~ "<command moreinfo=\"none\">-a</command>コマンドは、現時点で インストールさ"
+#~ "れているすべてのパッケージの 問い合わせを実行します。"
+
+# IGNORED
+#, fuzzy
+#~ msgid "<command moreinfo=\"none\">rpm -Fvh *.rpm</command>"
+#~ msgstr ""
+#~ "<command moreinfo=\"none\">-a</command>コマンドは、現時点で インストールさ"
+#~ "れているすべてのパッケージの 問い合わせを実行します。"
+
+# EXACT MATCH
+#~ msgid "querying"
+#~ msgstr "問い合わせ"
+
+# IGNORED
+#, fuzzy
+#~ msgid "<computeroutput moreinfo=\"none\">foo-2.0-1</computeroutput>"
+#~ msgstr ""
+#~ "<computeroutput moreinfo=\"none\">U</computeroutput> &mdash;ユーザー"
+
+# EXACT MATCH
+#~ msgid "verifying"
+#~ msgstr "検証"
+
+# IGNORED
+#, fuzzy
+#~ msgid "<command moreinfo=\"none\">rpm -Vf /usr/bin/foo</command>"
+#~ msgstr ""
+#~ "<command moreinfo=\"none\">-a</command>コマンドは、現時点で インストールさ"
+#~ "れているすべてのパッケージの 問い合わせを実行します。"
+
+# IGNORED
+#, fuzzy
+#~ msgid "<command moreinfo=\"none\">rpm -Va</command>"
+#~ msgstr ""
+#~ "<command moreinfo=\"none\">-a</command>コマンドは、現時点で インストールさ"
+#~ "れているすべてのパッケージの 問い合わせを実行します。"
+
+# IGNORED
+#, fuzzy
+#~ msgid "<command moreinfo=\"none\">rpm -Vp foo-1.0-1.i386.rpm</command>"
+#~ msgstr ""
+#~ "<command moreinfo=\"none\">-a</command>コマンドは、現時点で インストールさ"
+#~ "れているすべてのパッケージの 問い合わせを実行します。"
+
+# EXACT MATCH
+#~ msgid ""
+#~ "<computeroutput moreinfo=\"none\">?</computeroutput> &mdash; unreadable "
+#~ "file"
+#~ msgstr ""
+#~ "<computeroutput moreinfo=\"none\">?</computeroutput> &mdash;読み込み不可"
+#~ "ファイル"
+
+# EXACT MATCH
+#~ msgid "Checking a Package's Signature"
+#~ msgstr "パッケージの署名のチェック"
+
+# EXACT MATCH
+#~ msgid "md5sum"
+#~ msgstr "md5sum"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "If you wish to verify that a package has not been corrupted or tampered "
+#~ "with, examine only the md5sum by typing the following command at a shell "
+#~ "prompt (where <replaceable>&lt;rpm-file&gt;</replaceable> is the file "
+#~ "name of the RPM package):"
+#~ msgstr ""
+#~ "パッケージが破損したり不正に変更されたりしていないことを検査する場合、シェ"
+#~ "ルプロンプトで以下のコマンドを入力してmd5sumを調べます(<replaceable>&lt;"
+#~ "rpm-file&gt; </replaceable>の部分を実際の<application>RPM</application>"
+#~ "パッケージのファイル名に置き換えてください)。"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "<command moreinfo=\"none\">rpm -K --nosignature <replaceable>&lt;rpm-"
+#~ "file&gt;</replaceable></command>"
+#~ msgstr ""
+#~ "<command moreinfo=\"none\">-a</command>コマンドは、現時点で インストールさ"
+#~ "れているすべてのパッケージの 問い合わせを実行します。"
+
+# EXACT MATCH
+#~ msgid ""
+#~ "The message <computeroutput moreinfo=\"none\"><replaceable>&lt;rpm-"
+#~ "file&gt;</replaceable>: md5 OK</computeroutput> is displayed. This brief "
+#~ "message means that the file was not corrupted by the download. To see a "
+#~ "more verbose message, replace <option>-K</option> with <option>-Kvv</"
+#~ "option> in the command."
+#~ msgstr ""
+#~ "<computeroutput moreinfo=\"none\"><replaceable>&lt;rpm-file&gt;</"
+#~ "replaceable>: md5 OK</computeroutput>と言うメッセージが表示されます。 この"
+#~ "短いメッセージはダウンロードによるメッセージの 破損はないことを意味してい"
+#~ "ます。詳細メッセージを 表示するには、コマンド内の<option>-K</option>を "
+#~ "<option>-Kvv</option>に置き換えます。"
+
+# EXACT MATCH
+#~ msgid ""
+#~ "On the other hand, how trustworthy is the developer who created the "
+#~ "package? If the package is <firstterm>signed</firstterm> with the "
+#~ "developer's GnuPG <firstterm>key</firstterm>, you know that the developer "
+#~ "really is who they say they are."
+#~ msgstr ""
+#~ "一方、パッケージを作成した開発者はどの程度に 信用できるでしょうか。パッ"
+#~ "ケージが開発者の GnuPG <firstterm>キー</firstterm>で<firstterm>署名</"
+#~ "firstterm> されていれば、開発者が誰なのか判断できます。"
+
+# EXACT MATCH
+#~ msgid "<secondary>GnuPG</secondary>"
+#~ msgstr "<secondary>GnuPG</secondary>"
+
+# EXACT MATCH
+#~ msgid "checking package signatures"
+#~ msgstr "パッケージ署名のチェック"
+
+# EXACT MATCH
+#~ msgid "<primary>GnuPG</primary>"
+#~ msgstr "<primary>GnuPG</primary>"
+
+# EXACT MATCH
+#~ msgid "checking RPM package signatures"
+#~ msgstr "RPM パッケージ署名のチェック"
+
+# EXACT MATCH
+#~ msgid ""
+#~ "An RPM package can be signed using <firstterm>Gnu Privacy Guard</"
+#~ "firstterm> (or GnuPG), to help you make certain your downloaded package "
+#~ "is trustworthy."
+#~ msgstr ""
+#~ "RPMパッケージは<firstterm>Gnu Privacy Guard</firstterm> (GnuPG)を使用して"
+#~ "署名でき、これによりユーザーはダウンロードしたパッケージが信頼できるもので"
+#~ "あることを確認できます。"
+
+# EXACT MATCH
+#~ msgid ""
+#~ "GnuPG is a tool for secure communication; it is a complete and free "
+#~ "replacement for the encryption technology of PGP, an electronic privacy "
+#~ "program. With GnuPG, you can authenticate the validity of documents and "
+#~ "encrypt/decrypt data to and from other recipients. GnuPG is capable of "
+#~ "decrypting and verifying PGP 5.<replaceable>x</replaceable> files as well."
+#~ msgstr ""
+#~ "GnuPGは安全な通信のためのツールで、PGPの暗号化技術である電子プライバシー保"
+#~ "護プログラムを完全に無償で置き換えたものです。GnuPGを使用して、ドキュメン"
+#~ "トの正当性を認証し、他の受信者との間で送受信するデータを暗号化/解読するこ"
+#~ "とができます。GnuPGは、PGP 5.<replaceable>x</replaceable>のファイルについ"
+#~ "ても同様に 解読、認証を行うことが可能です。"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "During installation, GnuPG is installed by default. That way you can "
+#~ "immediately start using GnuPG to verify any packages that you receive "
+#~ "from Red Hat. Before doing so, you must first import &RH;'s public key."
+#~ msgstr ""
+#~ "インストール時に、GnuPGがデフォルトでインストールされます。このため、&RH;"
+#~ "から入手したパッケージの検査をGnuPGを使用してすぐに始めることができます。"
+#~ "最初に、&RH;の公開キーをインポートする必要があります。"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "To verify &RH; packages, you must import the &RH; GPG key. To do so, "
+#~ "execute the following command at a shell prompt:"
+#~ msgstr ""
+#~ "&RH;パッケージを検証するには、&RH; GPGキーをインポート する必要がありま"
+#~ "す。これを実行するには、シェルプロンプト で次のコマンドを実行します。"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "<command moreinfo=\"none\">rpm --import /usr/share/rhn/RPM-GPG-KEY</"
+#~ "command>"
+#~ msgstr ""
+#~ "<command moreinfo=\"none\">-a</command>コマンドは、現時点で インストールさ"
+#~ "れているすべてのパッケージの 問い合わせを実行します。"
+
+# EXACT MATCH
+#~ msgid ""
+#~ "To display a list of all keys installed for RPM verification, execute the "
+#~ "command:"
+#~ msgstr ""
+#~ "RPM検証用にインストールされたすべてのキーの一覧を 表示するには、次のコマン"
+#~ "ドを実行します。"
+
+# IGNORED
+#, fuzzy
+#~ msgid "<command moreinfo=\"none\">rpm -qa gpg-pubkey*</command>"
+#~ msgstr ""
+#~ "<command moreinfo=\"none\">-a</command>コマンドは、現時点で インストールさ"
+#~ "れているすべてのパッケージの 問い合わせを実行します。"
+
+# IGNORED
+#, fuzzy
+#~ msgid "For the &RH; key, the output includes:"
+#~ msgstr "&RH;キー用には、出力が次を含んでいます。"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "<computeroutput moreinfo=\"none\">gpg-pubkey-db42a60e-37ea5438</"
+#~ "computeroutput>"
+#~ msgstr ""
+#~ "<computeroutput moreinfo=\"none\">U</computeroutput> &mdash;ユーザー"
+
+# EXACT MATCH
+#~ msgid ""
+#~ "To display details about a specific key, use <command moreinfo=\"none"
+#~ "\">rpm -qi</command> followed by the output from the previous command:"
+#~ msgstr ""
+#~ "特定のキーの詳細を表示するには、<command moreinfo=\"none\">rpm -qi </"
+#~ "command>コマンドの後に、先程のコマンドの出力を 付けます。"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "<command moreinfo=\"none\">rpm -qi gpg-pubkey-db42a60e-37ea5438</command>"
+#~ msgstr ""
+#~ "<computeroutput moreinfo=\"none\">U</computeroutput> &mdash;ユーザー"
+
+# EXACT MATCH
+#~ msgid "Verifying Signature of Packages"
+#~ msgstr "パッケージ署名の検証"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "To check the GnuPG signature of an RPM file after importing the builder's "
+#~ "GnuPG key, use the following command (replace <replaceable>&lt;rpm-"
+#~ "file&gt;</replaceable> with the filename of the RPM package):"
+#~ msgstr ""
+#~ "構築者のGnuPGキーをインポートした後で、RPMファイルの GnuPG署名をチェックす"
+#~ "るには、次のコマンドを使用します (<replaceable>&lt;rpm-file&gt;</"
+#~ "replaceable>を実際の RPMパッケージのファイル名に置き換えます)。"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "<command moreinfo=\"none\">rpm -K <replaceable>&lt;rpm-file&gt;</"
+#~ "replaceable></command>"
+#~ msgstr ""
+#~ "<command moreinfo=\"none\">-a</command>コマンドは、現時点で インストールさ"
+#~ "れているすべてのパッケージの 問い合わせを実行します。"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "If all goes well, the following message is displayed: <computeroutput "
+#~ "moreinfo=\"none\">md5 gpg OK</computeroutput>. This means that the "
+#~ "signature of the package has been verified, and that it is not corrupt."
+#~ msgstr ""
+#~ "すべて問題がなければ、<computeroutput moreinfo=\"none\">md5 gpg OK </"
+#~ "computeroutput>のメッセージが表示されます。パッケージの署名が検証され、破"
+#~ "損していないという意味です。"
+
+# EXACT MATCH
+#~ msgid "tips"
+#~ msgstr "ヒント"
+
+# EXACT MATCH
+#~ msgid "finding deleted files with"
+#~ msgstr "削除したファイルを探す"
+
+# EXACT MATCH
+#~ msgid "finding deleted files from"
+#~ msgstr "削除したファイルを探す"
+
+# EXACT MATCH
+#~ msgid "determining file ownership with"
+#~ msgstr "ファイルの所属先を確定する"
+
+# IGNORED
+#, fuzzy
+#~ msgid "<command moreinfo=\"none\">rpm -qf /usr/bin/ggv</command>"
+#~ msgstr ""
+#~ "<command moreinfo=\"none\">-a</command>コマンドは、現時点で インストールさ"
+#~ "れているすべてのパッケージの 問い合わせを実行します。"
+
+# IGNORED
+#, fuzzy
+#~ msgid "<computeroutput moreinfo=\"none\">ggv-2.6.0-2</computeroutput>"
+#~ msgstr ""
+#~ "<computeroutput moreinfo=\"none\">U</computeroutput> &mdash;ユーザー"
+
+# IGNORED
+#, fuzzy
+#~ msgid "<command moreinfo=\"none\">rpm -Vf /usr/bin/paste</command>"
+#~ msgstr ""
+#~ "<command moreinfo=\"none\">-a</command>コマンドは、現時点で インストールさ"
+#~ "れているすべてのパッケージの 問い合わせを実行します。"
+
+# EXACT MATCH
+#~ msgid "documentation with"
+#~ msgstr "ドキュメント"
+
+# EXACT MATCH
+#~ msgid "locating documentation for"
+#~ msgstr "ドキュメントの検索"
+
+# EXACT MATCH
+#~ msgid "documentation"
+#~ msgstr "ドキュメント"
+
+# EXACT MATCH
+#~ msgid "finding installed"
+#~ msgstr "インストール先を探す"
+
+# IGNORED
+#, fuzzy
+#~ msgid "<command moreinfo=\"none\">rpm -qdf /usr/bin/free</command>"
+#~ msgstr ""
+#~ "<command moreinfo=\"none\">-a</command>コマンドは、現時点で インストールさ"
+#~ "れているすべてのパッケージの 問い合わせを実行します。"
+
+# EXACT MATCH
+#~ msgid "querying uninstalled packages"
+#~ msgstr "アンインストールしたパッケージの問い合わせ"
+
+# EXACT MATCH
+#~ msgid "querying uninstalled"
+#~ msgstr "アンインストールの問い合わせ"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "<command moreinfo=\"none\">rpm -qip crontabs-1.10-7.noarch.rpm</command>"
+#~ msgstr ""
+#~ "<command moreinfo=\"none\">-a</command>コマンドは、現時点で インストールさ"
+#~ "れているすべてのパッケージの 問い合わせを実行します。"
+
+# EXACT MATCH
+#~ msgid "querying for file list"
+#~ msgstr "ファイル一覧の問い合わせ"
+
+# EXACT MATCH
+#~ msgid "obtaining list of files"
+#~ msgstr "ファイル一覧の入手"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "<command moreinfo=\"none\">rpm -qlp crontabs-1.10-5.noarch.rpm</command>"
+#~ msgstr ""
+#~ "<command moreinfo=\"none\">-a</command>コマンドは、現時点で インストールさ"
+#~ "れているすべてのパッケージの 問い合わせを実行します。"
+
+# IGNORED
+#, fuzzy
+#~ msgid ""
+#~ "<computeroutput moreinfo=\"none\">\n"
+#~ "/etc/cron.daily \n"
+#~ "/etc/cron.hourly \n"
+#~ "/etc/cron.monthly \n"
+#~ "/etc/cron.weekly \n"
+#~ "/etc/crontab \n"
+#~ "/usr/bin/run-parts</computeroutput>"
+#~ msgstr ""
+#~ "<computeroutput moreinfo=\"none\">U</computeroutput> &mdash;ユーザー"
+
+# EXACT MATCH
+#~ msgid "additional resources"
+#~ msgstr "その他のリソース"
+
+# EXACT MATCH
+#~ msgid "website"
+#~ msgstr "webサイト"
+
+# EXACT MATCH
+#~ msgid ""
+#~ "<ulink url=\"http://www.redhat.com/mailman/listinfo/rpm-list/\">http://"
+#~ "www.redhat.com/mailman/listinfo/rpm-list/</ulink> &mdash; The RPM mailing "
+#~ "list is archived here. To subscribe, send mail to <email>rpm-list-"
+#~ "request@redhat.com</email> with the word <command moreinfo=\"none"
+#~ "\">subscribe</command> in the subject line."
+#~ msgstr ""
+#~ "<ulink url=\"http://www.redhat.com/mailman/listinfo/rpm-list/\">http://"
+#~ "www.redhat.com/mailman/listinfo/rpm-list/</ulink> &mdash; RPMのメーリング"
+#~ "リストがここにアーカイブされています。 講読するには、件名の欄に <command "
+#~ "moreinfo=\"none\">subscribe</command>という単語を記入して メールを"
+#~ "<email>rpm-list-request@redhat.com</email> 宛に送信します。"
+
+# EXACT MATCH
+#~ msgid "book about"
+#~ msgstr "関連書籍"

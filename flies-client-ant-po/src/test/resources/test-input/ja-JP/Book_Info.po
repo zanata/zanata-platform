@@ -1,0 +1,59 @@
+# translation of Book_Info.po to
+# translation of Book_Info.po to Japanese
+#
+# Kiyoto James Hashida <khashida@redhat.com>, 2006.
+# Noriko Mizumoto <noriko@redhat.com>, 2007.
+# Kiyoto Hashida <khashida@redhat.com>, 2007.
+msgid ""
+msgstr ""
+"Project-Id-Version: Book_Info\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2010-03-18T07:40:58\n"
+"PO-Revision-Date: 2007-07-20 14:33+1000\n"
+"Last-Translator: Kiyoto Hashida <khashida@redhat.com>\n"
+"Language-Team: Japanese <jp@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+
+# IGNORED
+#. Tag: title
+#, fuzzy, no-c-format
+msgid "Deployment Guide"
+msgstr "&PROD; 導入ガイド"
+
+#. Tag: subtitle
+#, no-c-format
+msgid "Deployment, configuration and administration of Fedora 12 (Draft)"
+msgstr ""
+
+# IGNORED
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"The Deployment Guide documents relevant information regarding the "
+"deployment, configuration and administration of Fedora 12."
+msgstr ""
+"導入ガイドは、 &PROD; 5.1.0 の導入、 設定、 及び管理に関連する情報を文書化し"
+"ています。"
+
+#~ msgid "&FORMAL-RHI;"
+#~ msgstr "&FORMAL-RHI;"
+
+#~ msgid ""
+#~ "<firstname>Michael Hideo</firstname> <surname>Smith</surname> "
+#~ "<email>mhideo@redhat.com</email>"
+#~ msgstr ""
+#~ "<firstname>Michael Hideo</firstname> <surname>Smith</surname> "
+#~ "<email>mhideo@redhat.com</email>"
+
+#, fuzzy
+#~ msgid "Resolves: #232215"
+#~ msgstr "Resolves: #245683"
+
+#~ msgid "Content Update"
+#~ msgstr "内容更新"
+
+#~ msgid "&PROD; &PRODVER;"
+#~ msgstr "&PROD; &PRODVER;"

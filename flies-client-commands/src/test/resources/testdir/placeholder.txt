@@ -1,0 +1,1 @@
+This directory is used to test ListRemoteCommand's ability to find flies.xml in a parent directory.

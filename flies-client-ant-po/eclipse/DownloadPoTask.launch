@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/flies-client-ant-po/src/main/java/net/openl10n/flies/client/ant/po/DownloadPoTask.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="net.openl10n.flies.client.ant.po.DownloadPoTask"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="--debug --user admin --key b6d7044e9ee3b2447c28fb7c50d86d98 --src http://localhost:8080/flies/seam/resource/restv1/projects/p/sample-project/iterations/i/1.1/documents --dst target/test-output"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="flies-client-ant-po"/>
+</launchConfiguration>
