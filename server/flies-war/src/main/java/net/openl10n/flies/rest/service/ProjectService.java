@@ -32,6 +32,7 @@ import net.openl10n.flies.rest.MediaTypes;
 import net.openl10n.flies.rest.dto.Link;
 import net.openl10n.flies.rest.dto.Project;
 import net.openl10n.flies.rest.dto.ProjectIteration;
+import net.openl10n.flies.rest.service.ProjectResource;
 
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
@@ -44,7 +45,7 @@ import org.jboss.seam.security.Identity;
 @Name("projectService")
 @Path(ProjectService.SERVICE_PATH)
 @Transactional
-public class ProjectService
+public class ProjectService implements ProjectResource
 {
 
    public static final String PROJECT_SLUG_TEMPLATE = "{projectSlug:" + SlugValidator.PATTERN + "}";
@@ -95,6 +96,7 @@ public class ProjectService
       this.identity = identity;
    }
 
+   @Override
    @HEAD
    @Produces( { MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaTypes.APPLICATION_FLIES_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    public Response head()
@@ -108,6 +110,7 @@ public class ProjectService
       return Response.ok().tag(etag).build();
    }
 
+   @Override
    @GET
    @Produces( { MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaTypes.APPLICATION_FLIES_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    public Response get()
@@ -126,6 +129,7 @@ public class ProjectService
       return Response.ok(project).tag(etag).build();
    }
 
+   @Override
    @PUT
    @Consumes( { MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaTypes.APPLICATION_FLIES_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    public Response put(InputStream messageBody)

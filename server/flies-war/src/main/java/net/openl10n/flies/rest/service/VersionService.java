@@ -8,6 +8,7 @@ import javax.ws.rs.Produces;
 import net.openl10n.flies.FliesInit;
 import net.openl10n.flies.rest.MediaTypes;
 import net.openl10n.flies.rest.dto.VersionInfo;
+import net.openl10n.flies.rest.service.VersionResource;
 
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -15,7 +16,7 @@ import org.jboss.seam.annotations.Name;
 
 @Name("versionService")
 @Path(VersionService.SERVICE_PATH)
-public class VersionService
+public class VersionService implements VersionResource
 {
    public static final String SERVICE_PATH = "/version";
    @In
@@ -36,6 +37,7 @@ public class VersionService
     * 
     * @return VersionInfo
     */
+   @Override
    @GET
    @Produces({ MediaTypes.APPLICATION_FLIES_VERSION_JSON, MediaTypes.APPLICATION_FLIES_VERSION_XML })
    public VersionInfo get()
