@@ -77,20 +77,22 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
       // @formatter:on
    }
    
-   public HTextFlowTarget findClosestEquivalentTranslation(HTextFlow textFlow, LocaleId localeId)
+   public HTextFlowTarget findLatestEquivalentTranslation(HTextFlow textFlow, HLocale locale)
    {
       // @formatter:off
       return (HTextFlowTarget) getSession().createQuery(
-         "select t from HTextFlowTarget t where " + 
-         "t.textFlow.resId =:resid " +
+         "select t from HTextFlowTarget t " +
+         "where t.textFlow.resId = :resid " +
+         "and t.textFlow.content = :content " +
          "and t.textFlow.document.docId =:docId " +
-         "and t.locale.localeId =:localeId "+ 
+         "and t.locale = :locale " +
          "and t.textFlow.document.projectIteration.project =:project " +
-         "and t.textFlow.document.projectIteration !=:iteration "+
+         "and t.textFlow.document.projectIteration !=:iteration " +
          "and t.state = :state " +
          "order by t.lastChanged desc")
+            .setParameter("content", textFlow.getContent())
             .setParameter("docId", textFlow.getDocument().getDocId())
-            .setParameter("localeId", localeId)
+            .setParameter("locale", locale)
             .setParameter("project", textFlow.getDocument().getProjectIteration().getProject())
             .setParameter("iteration", textFlow.getDocument().getProjectIteration())
             .setParameter("resid", textFlow.getResId())

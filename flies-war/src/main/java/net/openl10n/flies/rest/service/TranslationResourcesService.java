@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.ws.rs.Consumes;
@@ -61,7 +60,6 @@ import net.openl10n.flies.rest.dto.resource.TranslationsResource;
 import net.openl10n.flies.service.LocaleService;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.Session;
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.jboss.resteasy.util.GenericType;
 import org.jboss.seam.annotations.In;
@@ -400,7 +398,7 @@ public class TranslationResourcesService
 
       if (copytrans)
       {
-    	 copyClosestEquivalentTranslation(document);
+         copyClosestEquivalentTranslation(document);
       }
             
       log.debug("put resource successfully");
@@ -840,7 +838,7 @@ public class TranslationResourcesService
             if (hTarget != null && hTarget.getState() == ContentState.Approved)
                continue;
 
-            HTextFlowTarget oldTFT = textFlowTargetDAO.findClosestEquivalentTranslation(textFlow, locale.getLocaleId());
+            HTextFlowTarget oldTFT = textFlowTargetDAO.findLatestEquivalentTranslation(textFlow, locale);
             if (oldTFT != null)
             {
                if (hTarget == null)
@@ -854,6 +852,9 @@ public class TranslationResourcesService
                   // DB trigger will copy old value to history table, if we change the versionNum
                   hTarget.setVersionNum(hTarget.getVersionNum()+1);
                }
+               // NB we don't touch creationDate
+               hTarget.setLastChanged(oldTFT.getLastChanged());
+               hTarget.setLastModifiedBy(oldTFT.getLastModifiedBy());
                hTarget.setContent(oldTFT.getContent());
                hTarget.setState(oldTFT.getState());
                HSimpleComment hcomment = hTarget.getComment();
@@ -869,9 +870,8 @@ public class TranslationResourcesService
          }
       }
 
-      {
-         log.info("copied {0} existing translations for document {1}{2}", copyCount, document.getPath(), document.getName());
-      }
+      textFlowTargetDAO.flush();
+      log.info("copied {0} existing translations for document {1}{2}", copyCount, document.getPath(), document.getName());
    }
 
 }

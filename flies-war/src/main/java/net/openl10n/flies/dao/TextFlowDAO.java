@@ -105,4 +105,21 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
 
    }
 
+   public List<HTextFlow> findEquivalents(HTextFlow textFlow)
+   {
+      // @formatter:off
+      return getSession().createQuery(
+         "select tf from HTextFlow tf " +
+         "where tf.resId = :resid " +
+         "and tf.document.docId = :docId " +
+         "and tf.document.projectIteration.project = :project " +
+         "and tf.document.projectIteration != :iteration ")
+            .setParameter("docId", textFlow.getDocument().getDocId())
+            .setParameter("project", textFlow.getDocument().getProjectIteration().getProject())
+            .setParameter("iteration", textFlow.getDocument().getProjectIteration())
+            .setParameter("resid", textFlow.getResId())
+            .list();
+      // @formatter:on
+   }
+
 }
