@@ -9,13 +9,9 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>flies-common-api</module>
-		<module>flies-common-util</module>
-		<module>flies-model</module>
-		<module>flies-adapters</module>
-		<module>flies-rest-client</module>
-		<module>flies-clients</module>
-		<module>flies-war</module>
+		<module>common</module>
+		<module>client</module>
+		<module>server</module>
   </modules>
 	
 	<scm>
