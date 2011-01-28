@@ -36,6 +36,14 @@ public final class VersionInfo implements Serializable
 
    }
 
+   /**
+    * @param other
+    */
+   public VersionInfo(VersionInfo other)
+   {
+      this(other.versionNo, other.buildTimeStamp);
+   }
+
    @XmlElement(name = "versionNo")
    public String getVersionNo()
    {
