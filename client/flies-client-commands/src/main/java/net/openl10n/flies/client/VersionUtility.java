@@ -1,10 +1,9 @@
 package net.openl10n.flies.client;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.CodeSource;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -35,55 +34,60 @@ public class VersionUtility
 
    public static VersionInfo getVersionInfo(Class<?> clazz)
    {
+      Attributes atts = null;
       String version = null;
       String buildTimestamp = null;
-      CodeSource codeSource = clazz.getProtectionDomain().getCodeSource();
-      if (codeSource != null)
       {
-         String jarLocation = codeSource.getLocation().toString();
-         InputStream in=null;
          try
          {
-            URL manifestUrl = new URL("jar:" + jarLocation + "!/META-INF/MANIFEST.MF");
-            in=manifestUrl.openStream();
-            Manifest mf = new Manifest(in);
-            Attributes atts = mf.getMainAttributes();
-
-            version = atts.getValue("Implementation-Version");
-            buildTimestamp = atts.getValue("Implementation-Build");
+            atts = getJarAttributesForClass(clazz);
          }
          catch (IOException e)
          {
-            // ignore: probably not running from a jar
             log.debug(e.getMessage(), e);
-         }finally{
-            if (in != null)
-            {
-               try
-               {
-                  in.close();
-               }
-               catch (IOException e)
-               {
-               }
-            }
-            
          }
       }
-
+      if (atts != null)
+      {
+         version = atts.getValue("Implementation-Version");
+         buildTimestamp = atts.getValue("Implementation-Build");
+      }
+      
       // if we can't get version from the jar, try for the package version
       if (version == null)
       {
          Package pkg = clazz.getPackage();
          if (pkg != null)
             version = pkg.getImplementationVersion();
-         if (version == null)
-            version = "unknown";
       }
+      if (version == null)
+         version = "unknown";
       if (buildTimestamp == null)
          buildTimestamp = "unknown";
       VersionInfo result = new VersionInfo(version, buildTimestamp);
       return result;
+   }
+   
+   private static Attributes getJarAttributesForClass(Class<?> clazz) throws MalformedURLException, IOException
+   {
+      // thanks to http://stackoverflow.com/questions/1272648/need-to-read-own-jars-manifest-and-not-root-classloaders-manifest/1273432#1273432
+      String className = clazz.getSimpleName() + ".class";
+      String classPath = clazz.getResource(className).toString();
+      if (classPath.startsWith("vfszip:"))
+      {
+         String manifestPath = classPath.substring(0, classPath.lastIndexOf(".jar/") + ".jar/".length()) + "META-INF/MANIFEST.MF";
+         Manifest manifest = new Manifest(new URL(manifestPath).openStream());
+         Attributes attr = manifest.getMainAttributes();
+         return attr;
+      }
+      else if (classPath.startsWith("jar:")) 
+      {
+         String manifestPath = classPath.substring(0, classPath.lastIndexOf("!") + "!".length()) + "/META-INF/MANIFEST.MF";
+         Manifest manifest = new Manifest(new URL(manifestPath).openStream());
+         Attributes attr = manifest.getMainAttributes();
+         return attr;
+      }
+      return null;
    }
 
    public static void printVersions(Class<?> clientClass, PrintStream out)
@@ -95,5 +99,5 @@ public class VersionUtility
       out.println("API version: " + apiVer.getVersionNo());
       out.println("API timestamp: " + apiVer.getBuildTimeStamp());
    }
-
+   
 }
