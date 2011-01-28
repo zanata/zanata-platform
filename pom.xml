@@ -80,8 +80,8 @@
 	</mailingLists>
 
 	<organization>
-		<name>Red Hat</name>
-		<url>http://www.redhat.com/</url>
+		<name>Flies Project</name>
+		<url>http://flies.openl10n.net/</url>
 	</organization>
 
 	<developers>
@@ -134,8 +134,14 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.1</version>
+				<inherited>true</inherited>
 				<configuration>
 					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+						</manifest>
 						<manifestEntries>
 							<Implementation-Version>${project.version}</Implementation-Version>
 							<Implementation-Build>${maven.build.timestamp}</Implementation-Build>
