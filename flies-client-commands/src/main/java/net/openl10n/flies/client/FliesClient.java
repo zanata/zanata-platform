@@ -109,7 +109,8 @@ public class FliesClient extends BasicOptionsImpl
       }
       if (version)
       {
-         VersionUtility.printJarVersion(out);
+         out.println("flies-publican");
+         VersionUtility.printVersions(FliesClient.class, out);
          return;
       }
       if ("help".equals(command))

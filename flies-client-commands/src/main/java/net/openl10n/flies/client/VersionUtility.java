@@ -8,20 +8,33 @@ import java.security.CodeSource;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
+import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.rest.dto.VersionInfo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @see net.openl10n.flies.util.VersionUtility
+ */
+// FIXME merge flies.client.VersionUtility and flies.util.VersionUtility into flies.common.util.VersionUtility (must prevent GWT compilation)
 public class VersionUtility
 {
-
    private static final Logger log = LoggerFactory.getLogger(VersionUtility.class);
+   private static VersionInfo apiVersion;
 
-   public static VersionInfo getVersionInfo()
+   public static VersionInfo getAPIVersionInfo()
    {
-      Class<VersionUtility> clazz = VersionUtility.class;
+      if (apiVersion == null)
+      {
+         // LocaleId jar version (flies-common-api) is used as an "API version"
+         apiVersion = getVersionInfo(LocaleId.class);
+      }
+      return new VersionInfo(apiVersion);
+   }
 
+   public static VersionInfo getVersionInfo(Class<?> clazz)
+   {
       String version = null;
       String buildTimestamp = null;
       CodeSource codeSource = clazz.getProtectionDomain().getCodeSource();
@@ -73,12 +86,14 @@ public class VersionUtility
       return result;
    }
 
-   public static void printJarVersion(PrintStream out)
+   public static void printVersions(Class<?> clientClass, PrintStream out)
    {
-      VersionInfo ver = getVersionInfo();
-      out.println("flies-publican");
-      out.println("Version: " + ver.getVersionNo());
-      out.println("Build: " + ver.getBuildTimeStamp());
+      VersionInfo clientVer = getVersionInfo(clientClass);
+      out.println("Client version: " + clientVer.getVersionNo());
+      out.println("Client timestamp: " + clientVer.getBuildTimeStamp());
+      VersionInfo apiVer = getAPIVersionInfo();
+      out.println("API version: " + apiVer.getVersionNo());
+      out.println("API timestamp: " + apiVer.getBuildTimeStamp());
    }
 
 }
