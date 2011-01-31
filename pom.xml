@@ -8,6 +8,13 @@
 	<url>http://flies.openl10n.net/</url>
 	<packaging>pom</packaging>
 
+	<parent>
+		<groupId>net.openl10n.flies</groupId>
+		<artifactId>flies-parent</artifactId>
+		<version>1.2-SNAPSHOT</version>
+		<relativePath>flies-parent/pom.xml</relativePath>
+	</parent>
+
 	<modules>
 		<module>flies-parent</module>
 		<module>common</module>
