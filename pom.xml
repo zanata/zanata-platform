@@ -101,7 +101,7 @@
 		<gwt.version>2.1.0</gwt.version>
 		<hibernate.version>3.3.2.GA</hibernate.version>
 		<resteasy.version>2.0-beta-2</resteasy.version>
-		<seam.version>2.2.0.GA</seam.version>
+		<seam.version>2.2.1.Final</seam.version>
 		<tennera.version>0.6</tennera.version>
 		<guava.version>r06</guava.version>
 		<jackson.version>1.5.0</jackson.version>
