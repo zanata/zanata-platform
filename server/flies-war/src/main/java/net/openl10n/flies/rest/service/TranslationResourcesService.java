@@ -883,7 +883,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
       }
 
       textFlowTargetDAO.flush();
-      log.info("copied {0} existing translations for document {1}{2}", copyCount, document.getPath(), document.getName());
+      log.info("copied {0} existing translations for document \"{1}{2}\"", copyCount, document.getPath(), document.getName());
    }
 
 }
