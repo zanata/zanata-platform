@@ -7,7 +7,7 @@
 		<version>1.2-SNAPSHOT</version>
 		<relativePath>../../flies-parent/pom.xml</relativePath>
 	</parent>
-	<artifactId>flies</artifactId>
+	<artifactId>flies-war</artifactId>
 	<packaging>war</packaging>
 	<name>flies Webapp</name>
 
@@ -40,13 +40,6 @@
 		</resources>
 
 		<plugins>
-			<plugin>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<configuration>
-					<projectNameTemplate>flies-war</projectNameTemplate>
-				</configuration>
-			</plugin>
-
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
