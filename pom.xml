@@ -105,7 +105,7 @@
 		<hibernate.validator.version>3.1.0.GA</hibernate.validator.version>
 		<hibernate.annotations.version>3.4.0.GA</hibernate.annotations.version>
 		<hibernate.entitymanager.version>3.4.0.GA</hibernate.entitymanager.version>
-		<resteasy.version>2.0-beta-2</resteasy.version>
+		<resteasy.version>2.1.0.GA</resteasy.version>
 		<seam.version>2.2.1.Final</seam.version>
 		<tennera.version>0.6</tennera.version>
 		<guava.version>r06</guava.version>
