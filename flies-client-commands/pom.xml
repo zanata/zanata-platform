@@ -3,8 +3,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>net.openl10n.flies</groupId>
-    <artifactId>root</artifactId>
+    <artifactId>flies-parent</artifactId>
     <version>1.2-SNAPSHOT</version>
+    <relativePath>../../flies-parent/pom.xml</relativePath>
   </parent>
   <groupId>net.openl10n.flies</groupId>
   <artifactId>flies-client-commands</artifactId>
