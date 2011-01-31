@@ -99,7 +99,12 @@
 		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<gwt.version>2.1.0</gwt.version>
+		<!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
 		<hibernate.version>3.3.2.GA</hibernate.version>
+		<hibernate.search.version>3.1.1.GA</hibernate.search.version>
+		<hibernate.validator.version>3.1.0.GA</hibernate.validator.version>
+		<hibernate.annotations.version>3.4.0.GA</hibernate.annotations.version>
+		<hibernate.entitymanager.version>3.4.0.GA</hibernate.entitymanager.version>
 		<resteasy.version>2.0-beta-2</resteasy.version>
 		<seam.version>2.2.1.Final</seam.version>
 		<tennera.version>0.6</tennera.version>
@@ -434,7 +439,7 @@
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-search</artifactId>
-				<version>3.1.1.GA</version>
+				<version>${hibernate.search.version}</version>
 			</dependency>
 
 			<dependency>
@@ -446,19 +451,19 @@
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-validator</artifactId>
-				<version>3.1.0.GA</version>
+				<version>${hibernate.validator.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-annotations</artifactId>
-				<version>3.4.0.GA</version>
+				<version>${hibernate.annotations.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-entitymanager</artifactId>
-				<version>3.4.0.GA</version>
+				<version>${hibernate.entitymanager.version}</version>
 				<exclusions>
 					<exclusion>
 						<groupId>javassist</groupId>
