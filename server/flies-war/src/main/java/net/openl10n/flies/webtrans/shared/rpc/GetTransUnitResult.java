@@ -32,6 +32,11 @@ public class GetTransUnitResult implements Result
    private static final long serialVersionUID = 1L;
    private TransUnit tu;
 
+   @SuppressWarnings("unused")
+   private GetTransUnitResult()
+   {
+   }
+
    public GetTransUnitResult(TransUnit tu)
    {
       this.tu = tu;
