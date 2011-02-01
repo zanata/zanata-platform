@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>net.openl10n.flies</groupId>
+    <artifactId>flies-parent</artifactId>
+    <version>1.2-SNAPSHOT</version>
+    <relativePath>../../flies-parent/pom.xml</relativePath>
+  </parent>
+  <artifactId>flies-maven-plugin</artifactId>
+  <packaging>maven-plugin</packaging>
+  
+  <name>Flies Maven Plugin</name>
+  
+  <!-- 
+  NB: This description will be extracted by maven-plugin-plugin, 
+  put into the plugin descriptor, and used in the auto-generated 'help' 
+  goal). 
+  -->
+  <description>
+    Flies REST API client for managing Flies projects, publishing 
+    source text and retrieving translations.
+  </description>
+  
+  <url>http://code.google.com/p/flies/wiki/FliesMavenIntegration</url>
+  <prerequisites>
+  	<maven>2.0.8</maven>
+  </prerequisites>
+  <inceptionYear>2010</inceptionYear>
+   
+  <dependencies>
+    <dependency>
+        <groupId>net.openl10n.flies</groupId>
+        <artifactId>flies-client-commands</artifactId>
+        <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <scope>runtime</scope>
+    </dependency>
+	<dependency>
+	    <groupId>com.pyx4j</groupId>
+	    <artifactId>maven-plugin-log4j</artifactId>
+	</dependency>
+	<dependency>
+	  <groupId>org.apache.maven.plugin-testing</groupId>
+	  <artifactId>maven-plugin-testing-harness</artifactId>
+	  <version>1.2</version>
+	  <scope>test</scope>
+	</dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-plugin-plugin</artifactId>
+        <version>2.6</version>
+        <executions>
+          <!-- Tell maven-plugin-plugin to generate the 'help' goal -->
+          <execution>
+            <id>generated-helpmojo</id>
+            <goals>
+              <goal>helpmojo</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+			<!-- Use only java mojo extractor -->
+			<extractors>
+			    <extractor>java</extractor>
+			</extractors>
+        </configuration>
+      </plugin>
+      
+      <!-- This is just to tell Maven about our plugin prefix: -->
+<!--  But Maven 3 won't like it without a version... 
+      <plugin>
+        <groupId>net.openl10n.flies</groupId>
+        <artifactId>flies-maven-plugin</artifactId>
+        <version>1.0-SNAPSHOT</version>
+      </plugin>
+ -->
+
+    </plugins>
+  </build>
+
+<!-- tell maven to generate plugin documentation: -->
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-plugin-plugin</artifactId>
+        <version>2.6</version>
+      </plugin>
+    </plugins>
+  </reporting> 
+</project>
