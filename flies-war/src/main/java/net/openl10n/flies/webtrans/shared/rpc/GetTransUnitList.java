@@ -18,51 +18,50 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package net.openl10n.flies.webtrans.client.ui;
+package net.openl10n.flies.webtrans.shared.rpc;
 
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.Label;
+import net.openl10n.flies.webtrans.shared.model.DocumentId;
 
-public class HighlightingLabel extends Label
+public class GetTransUnitList extends AbstractWorkspaceAction<GetTransUnitListResult>
 {
 
-   private String plainText;
+   private static final long serialVersionUID = 1L;
+   private int offset;
+   private int count;
+   private DocumentId documentId;
+   private String phrase;
 
-   public HighlightingLabel()
+   @SuppressWarnings("unused")
+   private GetTransUnitList()
    {
    }
 
-   public HighlightingLabel(String text)
+   public GetTransUnitList(DocumentId id, int offset, int count, String phrase)
    {
-      super();
-      setText(text);
+      this.documentId = id;
+      this.offset = offset;
+      this.count = count;
+      this.phrase = phrase;
    }
 
-   @Override
-   public String getText()
+   public String getPhrase()
    {
-      return plainText;
+      return this.phrase;
    }
 
-   @Override
-   public void setText(String text)
+   public int getOffset()
    {
-      this.plainText = text;
-      super.setText(text);
-      highlight();
+      return offset;
    }
 
-   private void highlight()
+   public int getCount()
    {
-      Element element = getElement();
-      String text = plainText == null ? "" : plainText;
-      CodeMirror.doHighlight(text, element);
+      return count;
    }
 
-   public void highlightSearch(String search)
+   public DocumentId getDocumentId()
    {
-      Element element = getElement();
-      CodeMirror.highlightSearch(search, element);
+      return documentId;
    }
 
 }

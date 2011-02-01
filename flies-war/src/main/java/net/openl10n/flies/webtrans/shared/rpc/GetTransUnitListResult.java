@@ -18,51 +18,49 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package net.openl10n.flies.webtrans.client.ui;
+package net.openl10n.flies.webtrans.shared.rpc;
 
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.Label;
+import java.util.ArrayList;
 
-public class HighlightingLabel extends Label
+import net.customware.gwt.dispatch.shared.Result;
+import net.openl10n.flies.webtrans.shared.model.DocumentId;
+import net.openl10n.flies.webtrans.shared.model.TransUnit;
+
+
+public class GetTransUnitListResult implements Result
 {
 
-   private String plainText;
+   private static final long serialVersionUID = 1L;
 
-   public HighlightingLabel()
+   private DocumentId documentId;
+   private int totalCount;
+   private ArrayList<TransUnit> units;
+
+   @SuppressWarnings("unused")
+   private GetTransUnitListResult()
    {
    }
 
-   public HighlightingLabel(String text)
+   public GetTransUnitListResult(DocumentId documentId, ArrayList<TransUnit> units, int totalCount)
    {
-      super();
-      setText(text);
+      this.documentId = documentId;
+      this.units = units;
+      this.totalCount = totalCount;
    }
 
-   @Override
-   public String getText()
+   public ArrayList<TransUnit> getUnits()
    {
-      return plainText;
+      return units;
    }
 
-   @Override
-   public void setText(String text)
+   public int getTotalCount()
    {
-      this.plainText = text;
-      super.setText(text);
-      highlight();
+      return totalCount;
    }
 
-   private void highlight()
+   public DocumentId getDocumentId()
    {
-      Element element = getElement();
-      String text = plainText == null ? "" : plainText;
-      CodeMirror.doHighlight(text, element);
-   }
-
-   public void highlightSearch(String search)
-   {
-      Element element = getElement();
-      CodeMirror.highlightSearch(search, element);
+      return documentId;
    }
 
 }

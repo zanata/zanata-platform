@@ -1,3 +1,23 @@
+/*
+ * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * @author tags. See the copyright.txt file in the distribution for a full
+ * listing of individual contributors.
+ * 
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+ * site: http://www.fsf.org.
+ */
 package net.openl10n.flies.webtrans.client.editor.table;
 
 import net.openl10n.flies.webtrans.client.ui.HighlightingLabel;
@@ -10,24 +30,20 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextArea;
 
 public class SourcePanel extends Composite implements HasValue<TransUnit>
 {
 
    private final FlowPanel panel;
    private final Label sourceLabel;
-   private final TextArea textarea;
    private TransUnit value;
-   private String phrase;
 
    private final NavigationMessages messages;
 
-   public SourcePanel(TransUnit value, NavigationMessages messages, String phrase)
+   public SourcePanel(TransUnit value, NavigationMessages messages)
    {
       this.value = value;
       this.messages = messages;
-      this.phrase = phrase;
       panel = new FlowPanel();
       panel.setSize("100%", "100%");
       initWidget(panel);
@@ -36,14 +52,9 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>
       sourceLabel = new HighlightingLabel(value.getSource());
       sourceLabel.setStylePrimaryName("TableEditorContent");
       sourceLabel.setTitle(messages.sourceCommentLabel() + value.getSourceComment());
-      if (phrase != null)
-      {
-         ((HighlightingLabel) sourceLabel).findMessage(phrase);
-      }
 
       panel.add(sourceLabel);
-      textarea = new TextArea();
-      textarea.getSelectedText();
+
       refresh();
    }
 
@@ -82,4 +93,11 @@ public class SourcePanel extends Composite implements HasValue<TransUnit>
    {
       return addHandler(handler, ValueChangeEvent.getType());
    }
+   
+   public void highlightSearch(String search)
+   {
+      ((HighlightingLabel) sourceLabel).highlightSearch(search);
+   }
+   
+
 }
