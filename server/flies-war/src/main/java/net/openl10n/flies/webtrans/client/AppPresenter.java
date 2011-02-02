@@ -40,8 +40,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -74,6 +72,8 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
       void setWorkspaceNameLabel(String workspaceNameLabel);
 
       void setSelectedDocument(DocumentInfo document);
+
+      void setNotificationMessage(String var);
    }
 
    private final DocumentListPresenter documentListPresenter;
@@ -112,14 +112,7 @@ public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
          @Override
          public void onNotification(NotificationEvent event)
          {
-            PopupPanel popup = new PopupPanel(true);
-            popup.addStyleDependentName("Notification");
-            popup.addStyleName("Severity-" + event.getSeverity().name());
-            Widget center = documentListPresenter.getDisplay().asWidget();
-            popup.setWidth(center.getOffsetWidth() - 40 + "px");
-            popup.setWidget(new Label(event.getMessage()));
-            popup.setPopupPosition(center.getAbsoluteLeft() + 20, center.getAbsoluteTop() + 30);
-            popup.show();
+            display.setNotificationMessage(event.getMessage());
          }
       }));
 

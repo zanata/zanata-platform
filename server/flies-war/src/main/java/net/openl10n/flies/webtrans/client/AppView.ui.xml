@@ -38,6 +38,12 @@
 			font-weight: bold;
 			color: #ae1f23;
 		}
+
+		.notification {
+			display: inline;
+			float: right;
+			color: grey;
+		}
 		
 		.divider {
 			color: #e0e0e0;	
@@ -56,6 +62,11 @@
 			<g:LayoutPanel styleName="{style.header}">
 				<g:layer top="6px" left="6px" width="18px" height="18px">
 					<g:Image resource="{resources.logo}"/>
+				</g:layer>
+				<g:layer top="6px" right="300px" width="300px" height="18px">
+					<g:FlowPanel>
+						<g:Label ui:field="notificationMessage" styleName="{style.notification}" />
+					</g:FlowPanel>
 				</g:layer>
 				<g:layer top="6px" height="100%" left="25px" right="6px">
 					<g:FlowPanel>

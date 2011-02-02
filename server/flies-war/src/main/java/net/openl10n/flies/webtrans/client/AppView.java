@@ -31,6 +31,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -46,6 +47,9 @@ public class AppView extends Composite implements AppPresenter.Display
 
    @UiField
    Anchor signOutLink, leaveLink, helpLink, documentsLink;
+
+   @UiField
+   Label notificationMessage;
 
    @UiField
    SpanElement user, selectedDocumentSpan, selectedDocumentPathSpan;
@@ -165,5 +169,10 @@ public class AppView extends Composite implements AppPresenter.Display
       String path = document.getPath() == null || document.getPath().isEmpty() ? "" : document.getPath() + "/";
       selectedDocumentPathSpan.setInnerText(path);
       selectedDocumentSpan.setInnerText(document.getName());
+   }
+
+   public void setNotificationMessage(String var)
+   {
+      notificationMessage.setText(var);
    }
 }
