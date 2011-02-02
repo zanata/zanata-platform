@@ -24,8 +24,11 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.dao.TextFlowDAO;
+import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.model.HTextFlow;
+import net.openl10n.flies.model.HTextFlowTarget;
 import net.openl10n.flies.security.FliesIdentity;
+import net.openl10n.flies.service.LocaleService;
 import net.openl10n.flies.webtrans.server.ActionHandlerFor;
 import net.openl10n.flies.webtrans.shared.model.TransUnit;
 import net.openl10n.flies.webtrans.shared.model.TransUnitId;
@@ -50,6 +53,9 @@ public class GetTransUnitHandler extends AbstractActionHandler<GetTransUnit, Get
    @In
    private TextFlowDAO textFlowDAO;
 
+   @In
+   private LocaleService localeServiceImpl;
+
    @Override
    public GetTransUnitResult execute(GetTransUnit action, ExecutionContext context) throws ActionException
    {
@@ -60,6 +66,13 @@ public class GetTransUnitHandler extends AbstractActionHandler<GetTransUnit, Get
       HTextFlow textFlow = textFlowDAO.findById(action.getId(), false);
       TransUnitId tuId = new TransUnitId(textFlow.getId());
       TransUnit tu = new TransUnit(tuId, action.getWorkspaceId().getLocaleId(), textFlow.getContent(), CommentsUtil.toString(textFlow.getComment()), "", ContentState.New);
+      HLocale hLocale = localeServiceImpl.getSupportedLanguageByLocale(action.getWorkspaceId().getLocaleId());
+      HTextFlowTarget target = textFlow.getTargets().get(hLocale);
+      if (target != null)
+      {
+         tu.setTarget(target.getContent());
+         tu.setStatus(target.getState());
+      }
 
       return new GetTransUnitResult(tu);
    }
