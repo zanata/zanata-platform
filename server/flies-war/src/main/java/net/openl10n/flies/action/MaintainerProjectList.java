@@ -76,7 +76,7 @@ public class MaintainerProjectList implements Serializable
          return;
       }
 
-      maintainerProjects = personDAO.getMaintainerProjects(authenticatedAccount.getUsername());
+      maintainerProjects = personDAO.getMaintainerProjectByUsername(authenticatedAccount.getUsername());
       log.debug("now listing {0} projects", maintainerProjects.size());
    }
 }

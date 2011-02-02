@@ -35,9 +35,9 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
    }
 
    @SuppressWarnings("unchecked")
-   public List<HPerson> getProjectMaintainers(String slug)
+   public List<HPerson> getProjectMaintainerBySlug(String slug)
    {
-      Query query = getSession().getNamedQuery("getProjectMaintainers").setString("slug", slug);
+      Query query = getSession().createQuery("select p.maintainers from HProject as p where p.slug = :slug").setParameter("slug", slug);
       return query.list();
    }
 

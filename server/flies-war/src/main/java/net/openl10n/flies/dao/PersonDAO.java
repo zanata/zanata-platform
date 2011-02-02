@@ -56,11 +56,12 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
       return (HPerson) getSession().createCriteria(HPerson.class).add(Restrictions.naturalId().set("email", email)).setCacheable(true).setComment("PersonDAO.findByEmail").uniqueResult();
    }
 
-   public List<HLocale> getLanguageMemberships(String userName)
+   @SuppressWarnings("unchecked")
+   public List<HLocale> getLanguageMembershipByUsername(String userName)
    {
-      Query query = getSession().getNamedQuery("getLanguageMemberships").setString("username", userName);
+      Query query = getSession().createQuery("select p.tribeMemberships from HPerson as p where p.account.username = :username");
+      query.setParameter("username", userName);
       List<HLocale> re = new ArrayList<HLocale>();
-      @SuppressWarnings("unchecked")
       List<HLocale> su = query.list();
       for (HLocale lan : su)
       {
@@ -73,9 +74,10 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
    }
 
    @SuppressWarnings("unchecked")
-   public List<HProject> getMaintainerProjects(String userName)
+   public List<HProject> getMaintainerProjectByUsername(String userName)
    {
-      Query query = getSession().getNamedQuery("getMaintainerProjects").setString("username", userName);
+      Query query = getSession().createQuery("select p.maintainerProjects from HPerson as p where p.account.username = :username");
+      query.setParameter("username", userName);
       return query.list();
    }
 }

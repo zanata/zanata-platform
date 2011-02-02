@@ -20,7 +20,10 @@
  */
 package net.openl10n.flies.dao;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.common.LocaleId;
@@ -141,13 +144,14 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
       QueryParser parser = new QueryParser(Version.LUCENE_29, "content", new DefaultNgramAnalyzer());
       org.apache.lucene.search.Query textQuery = parser.parse(queryText);
       FullTextQuery ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlow.class);
-      ftQuery.enableFullTextFilter("translated").setParameter("translatedIds", translatedIds);
+      ftQuery.enableFullTextFilter("textFlowFilter").setParameter("translatedIds", translatedIds);
       ftQuery.setProjection(FullTextQuery.SCORE, FullTextQuery.THIS);
       @SuppressWarnings("unchecked")
       List<Object[]> matches = ftQuery.setMaxResults(maxResult).getResultList();
       return matches;
    }
 
+   @SuppressWarnings("unchecked")
    public List<HTextFlow> findEquivalents(HTextFlow textFlow)
    {
       // @formatter:off
@@ -163,6 +167,101 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
             .setParameter("resid", textFlow.getResId())
             .list();
       // @formatter:on
+   }
+
+   @SuppressWarnings({ "unchecked" })
+   public List<HTextFlow> getByDocument(Long documentId)
+   {
+      Query query = getSession().createQuery("from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id order by tf.pos").setParameter("id", documentId);
+      return query.list();
+   }
+
+   @SuppressWarnings("unchecked")
+   public List<HTextFlow> getOffsetListByDocument(Long documentId, int offset, int count)
+   {
+      Query query = getSession().createQuery("from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id order by tf.pos").setParameter("id", documentId);
+      return query.setFirstResult(offset).setMaxResults(count).list();
+   }
+   
+   
+   @SuppressWarnings("unchecked")
+   // TODO: use hibernate search
+   public Set<Object[]> getIdsBySearch(Long documentId, int offset, int count, String search, LocaleId localeId)
+   {
+      Query textFlowQuery = getSession().createQuery("select tf.id, tf.pos from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id and lower(tf.content) like :content order by tf.pos");
+      textFlowQuery.setParameter("id", documentId);
+      textFlowQuery.setParameter("content", "%" + search + "%");
+      List<Object[]> ids1 = textFlowQuery.list();
+      Query textFlowTargetQuery = getSession().createQuery("select tft.textFlow.id, tft.textFlow.pos from HTextFlowTarget tft where tft.textFlow.obsolete=0 and tft.textFlow.document.id = :id and lower(tft.content) like :content and tft.locale.localeId = :localeId order by tft.textFlow.pos");
+      textFlowTargetQuery.setParameter("id", documentId);
+      textFlowTargetQuery.setParameter("content", "%" + search + "%");
+      textFlowTargetQuery.setParameter("localeId", localeId);
+      List<Object[]> ids2 = textFlowTargetQuery.list();
+      Set<Object[]> idSet = new TreeSet<Object[]>(new Comparator<Object[]>()
+      {
+         @Override
+         public int compare(Object[] arg0, Object[] arg1)
+         {
+            return ((Integer) arg0[1]).compareTo((Integer) arg1[1]);
+         }
+      });
+      idSet.addAll(ids1);
+      idSet.addAll(ids2);
+      return idSet;
+   }
+
+
+   // TODO: use hibernate search
+   @SuppressWarnings("unchecked")
+   public Set<Object[]> getNavigationBy(Long documentId, String search, int offset, LocaleId localeId, boolean reverse)
+   {
+      Query textFlowQuery;
+      Query textFlowTargetQuery;
+      Set<Object[]> idSet;
+      if (reverse)
+      {
+         textFlowQuery = getSession().createQuery("select tf.id, tf.pos from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id and lower(tf.content) like :content and tf.pos < :offset  order by tf.pos desc");
+         textFlowQuery.setParameter("id", documentId);
+         textFlowQuery.setParameter("content", "%" + search + "%");
+         textFlowTargetQuery = getSession().createQuery("select tft.textFlow.id, tft.textFlow.pos from HTextFlowTarget tft where tft.textFlow.obsolete=0 and tft.textFlow.document.id = :id and lower(tft.content) like :content and tft.locale.localeId = :localeId and tft.textFlow.pos < :offset order by tft.textFlow.pos desc");
+         textFlowTargetQuery.setParameter("id", documentId);
+         textFlowTargetQuery.setParameter("content", "%" + search + "%");
+         textFlowTargetQuery.setParameter("localeId", localeId);
+         idSet = new TreeSet<Object[]>(new Comparator<Object[]>()
+         {
+            @Override
+            public int compare(Object[] arg0, Object[] arg1)
+            {
+               return ((Integer) arg1[1]).compareTo((Integer) arg0[1]);
+            }
+         });
+      }
+      else
+      {
+         textFlowQuery = getSession().createQuery("select tf.id, tf.pos from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id and lower(tf.content) like :content and tf.pos > :offset  order by tf.pos");
+         textFlowQuery.setParameter("id", documentId);
+         textFlowQuery.setParameter("content", "%" + search + "%");
+         textFlowTargetQuery = getSession().createQuery("select tft.textFlow.id, tft.textFlow.pos from HTextFlowTarget tft where tft.textFlow.obsolete=0 and tft.textFlow.document.id = :id and lower(tft.content) like :content and tft.locale.localeId = :localeId and tft.textFlow.pos > :offset order by tft.textFlow.pos");
+         textFlowTargetQuery.setParameter("id", documentId);
+         textFlowTargetQuery.setParameter("content", "%" + search + "%");
+         textFlowTargetQuery.setParameter("localeId", localeId);
+         idSet = new TreeSet<Object[]>(new Comparator<Object[]>()
+         {
+            @Override
+            public int compare(Object[] arg0, Object[] arg1)
+            {
+               return ((Integer) arg0[1]).compareTo((Integer) arg1[1]);
+            }
+         });
+      }
+      textFlowQuery.setParameter("offset", offset);
+      textFlowTargetQuery.setParameter("offset", offset);
+
+      List<Object[]> ids1 = textFlowQuery.list();
+      List<Object[]> ids2 = textFlowTargetQuery.list();
+      idSet.addAll(ids1);
+      idSet.addAll(ids2);
+      return idSet;
    }
 
 }

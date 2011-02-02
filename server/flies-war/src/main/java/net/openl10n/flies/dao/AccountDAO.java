@@ -117,10 +117,12 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long>
    // }
 
    @SuppressWarnings("unchecked")
+   // TODO: use hibernate search
    public List<HAccount> searchQuery(String searchQuery)
    {
       String userName = searchQuery + "%";
-      org.hibernate.Query query = getSession().getNamedQuery("getSearchLogin").setString("username", userName);
+      org.hibernate.Query query = getSession().createQuery("from HAccount as a where a.username like :username");
+      query.setParameter("username", userName);
       return query.list();
    }
 

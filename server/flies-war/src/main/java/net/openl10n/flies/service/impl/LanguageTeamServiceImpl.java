@@ -40,7 +40,7 @@ public class LanguageTeamServiceImpl implements LanguageTeamService
 
    public List<HLocale> getLanguageMemberships(String userName)
    {
-      return personDAO.getLanguageMemberships(userName);
+      return personDAO.getLanguageMembershipByUsername(userName);
    }
 
    public boolean joinLanguageTeam(String locale, Long personId) throws FliesServiceException

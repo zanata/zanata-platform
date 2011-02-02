@@ -21,14 +21,13 @@
 package net.openl10n.flies.webtrans.server.rpc;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 import net.openl10n.flies.common.ContentState;
+import net.openl10n.flies.dao.TextFlowDAO;
 import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.model.HTextFlow;
 import net.openl10n.flies.model.HTextFlowTarget;
@@ -40,8 +39,6 @@ import net.openl10n.flies.webtrans.shared.model.TransUnitId;
 import net.openl10n.flies.webtrans.shared.rpc.GetTransUnitList;
 import net.openl10n.flies.webtrans.shared.rpc.GetTransUnitListResult;
 
-import org.hibernate.Query;
-import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -57,38 +54,59 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
 
    @Logger
    Log log;
+
    @In
-   private Session session;
+   TextFlowDAO textFlowDAO;
 
    @In
    private LocaleService localeServiceImpl;
 
-   @SuppressWarnings("unchecked")
    @Override
    public GetTransUnitListResult execute(GetTransUnitList action, ExecutionContext context) throws ActionException
    {
 
       FliesIdentity.instance().checkLoggedIn();
 
-      log.info("Fetching Transunits for {0}", action.getDocumentId());
-
+      log.info("Fetching Transunits for document {0}", action.getDocumentId());
+      int size = 0;
+      List<HTextFlow> textFlows = new ArrayList<HTextFlow>();
       if (action.getPhrase() != null && !action.getPhrase().isEmpty())
       {
-         return getUnitsByFilter(action);
+         log.info("find message:" + action.getPhrase());
+         Set<Object[]> idSet = textFlowDAO.getIdsBySearch(action.getDocumentId().getValue(), action.getOffset(), action.getCount(), action.getPhrase(), action.getWorkspaceId().getLocaleId());
+         size = idSet.size();
+         log.info("size : {0}", size);
+         log.info("action.getOffset() : {0}", action.getOffset());
+         log.info("action.getCount() : {0}", action.getCount());
+
+         List<Object[]> subIds = new ArrayList<Object[]>();
+         if ((action.getOffset() + action.getCount()) < size)
+         {
+            subIds = new ArrayList<Object[]>(idSet).subList(action.getOffset(), action.getOffset() + action.getCount());
+         }
+         else if (action.getOffset() < size)
+         {
+            subIds = new ArrayList<Object[]>(idSet).subList(action.getOffset(), size);
+         }
+         List<Long> idList = new ArrayList<Long>();
+         for (Object[] para : subIds)
+         {
+            idList.add((Long) para[0]);
+         }
+
+         textFlows = textFlowDAO.findByIdList(idList);
       }
-
-      Query query = session.createQuery("from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id order by tf.pos").setParameter("id", action.getDocumentId().getValue());
-      int size = query.list().size();
-
-      List<HTextFlow> textFlows = query.setFirstResult(action.getOffset()).setMaxResults(action.getCount()).list();
+      else
+      {
+         size = textFlowDAO.getByDocument(action.getDocumentId().getValue()).size();
+         textFlows = textFlowDAO.getOffsetListByDocument(action.getDocumentId().getValue(), action.getOffset(), action.getCount());
+      }
 
       ArrayList<TransUnit> units = new ArrayList<TransUnit>();
       for (HTextFlow textFlow : textFlows)
       {
 
          TransUnitId tuId = new TransUnitId(textFlow.getId());
-
-         // EditState editstate = workspace.getTransUnitStatus(tuId);
          TransUnit tu = new TransUnit(tuId, action.getWorkspaceId().getLocaleId(), textFlow.getContent(), CommentsUtil.toString(textFlow.getComment()), "", ContentState.New);
          HLocale hLocale = localeServiceImpl.getSupportedLanguageByLocale(action.getWorkspaceId().getLocaleId());
          HTextFlowTarget target = textFlow.getTargets().get(hLocale);
@@ -105,72 +123,6 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
    @Override
    public void rollback(GetTransUnitList action, GetTransUnitListResult result, ExecutionContext context) throws ActionException
    {
-   }
-
-
-   @SuppressWarnings("unchecked")
-   private GetTransUnitListResult getUnitsByFilter(GetTransUnitList action)
-   {
-      log.info("find message:" + action.getPhrase());
-      Query textFlowQuery = session.createQuery("select tf.id, tf.pos from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id and lower(tf.content) like :content order by tf.pos").setParameter("id", action.getDocumentId().getValue()).setParameter("content", "%" + action.getPhrase().toLowerCase() + "%");
-      List<Object[]> ids1 = textFlowQuery.list();
-      Query textFlowTargetQuery = session.createQuery("select tft.textFlow.id, tft.textFlow.pos from HTextFlowTarget tft where tft.textFlow.obsolete=0 and tft.textFlow.document.id = :id and lower(tft.content) like :content and tft.locale.localeId = :localeId order by tft.textFlow.pos").setParameter("id", action.getDocumentId().getValue()).setParameter("content", "%" + action.getPhrase().toLowerCase() + "%").setParameter("localeId", action.getWorkspaceId().getLocaleId());
-      List<Object[]> ids2 = textFlowTargetQuery.list();
-      Set<Object[]> idSet = new TreeSet<Object[]>(new Comparator<Object[]>()
-      {
-         @Override
-         public int compare(Object[] arg0, Object[] arg1)
-         {
-            return ((Integer) arg0[1]).compareTo((Integer) arg1[1]);
-         }
-      });
-      idSet.addAll(ids1);
-      idSet.addAll(ids2);
-      int size = idSet.size();
-      log.info("size : {0}", size);
-      log.info("action.getOffset() : {0}", action.getOffset());
-      log.info("action.getCount() : {0}", action.getCount());
-
-      
-      List<Object[]> subIds = new ArrayList<Object[]>();
-      if ((action.getOffset() + action.getCount()) < size)
-      {
-         subIds = new ArrayList<Object[]>(idSet).subList(action.getOffset(), action.getOffset() + action.getCount());
-      }
-      else if (action.getOffset() < size)
-      {
-         subIds = new ArrayList<Object[]>(idSet).subList(action.getOffset(), size);
-      }
-      List<Long> idList = new ArrayList<Long>();
-      for (Object[] para : subIds)
-      {
-         log.info("add textflow : {0}", para[0]);
-         idList.add((Long) para[0]);
-      }
-
-      
-      Query query = session.createQuery("FROM HTextFlow WHERE id in (:idList) order by pos");
-      query.setParameterList("idList", idList);
-      List<HTextFlow> textFlows = query.list();
-
-      ArrayList<TransUnit> units = new ArrayList<TransUnit>();
-      for (HTextFlow textFlow : textFlows)
-      {
-
-         TransUnitId tuId = new TransUnitId(textFlow.getId());
-
-         // EditState editstate = workspace.getTransUnitStatus(tuId);
-         TransUnit tu = new TransUnit(tuId, action.getWorkspaceId().getLocaleId(), textFlow.getContent(), CommentsUtil.toString(textFlow.getComment()), "", ContentState.New);
-         HLocale hLocale = localeServiceImpl.getSupportedLanguageByLocale(action.getWorkspaceId().getLocaleId());
-         HTextFlowTarget target = textFlow.getTargets().get(hLocale);
-         if (target != null)
-         {
-            tu.setTarget(target.getContent());
-            tu.setStatus(target.getState());
-         }
-         units.add(tu);
-      }
-      return new GetTransUnitListResult(action.getDocumentId(), units, size);
    }
 
 }
