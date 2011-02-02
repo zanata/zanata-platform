@@ -37,7 +37,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import net.openl10n.flies.common.LocaleId;
-import net.openl10n.flies.hibernate.search.TranslatedFilterFactory;
+import net.openl10n.flies.hibernate.search.TextFlowFilterFactory;
 import net.openl10n.flies.model.po.HPotEntryData;
 import net.openl10n.flies.hibernate.search.DefaultNgramAnalyzer;
 import net.openl10n.flies.util.OkapiUtil;
@@ -68,7 +68,7 @@ import org.slf4j.LoggerFactory;
 @Entity
 @Indexed
 // allow caching of filter instances, but not the set of translated textflows
-@FullTextFilterDef(name = "translated", impl = TranslatedFilterFactory.class, cache = FilterCacheModeType.INSTANCE_ONLY)
+@FullTextFilterDef(name = "textFlowFilter", impl = TextFlowFilterFactory.class, cache = FilterCacheModeType.INSTANCE_ONLY)
 public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComment
 {
    private static final Logger log = LoggerFactory.getLogger(HTextFlow.class);
