@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import net.openl10n.flies.FliesRestTest;
-import net.openl10n.flies.rest.client.IVersion;
+import net.openl10n.flies.rest.VersionResource;
 import net.openl10n.flies.rest.dto.VersionInfo;
 
 public class VersionRestTest extends FliesRestTest
@@ -35,9 +35,9 @@ public class VersionRestTest extends FliesRestTest
    @Test
    public void retrieveVersionInfo()
    {
-      IVersion resource;
+      VersionResource resource;
       log.debug("setup test version service");
-      resource = getClientRequestFactory().createProxy(IVersion.class, createBaseURI(RESOURCE_PATH));
+      resource = getClientRequestFactory().createProxy(VersionResource.class, createBaseURI(RESOURCE_PATH));
 
       VersionInfo entity = resource.get();
       assertThat(entity.getVersionNo(), is(vVar));

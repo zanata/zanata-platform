@@ -12,14 +12,14 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import net.openl10n.flies.FliesDBUnitSeamTest;
-import net.openl10n.flies.rest.client.IVersion;
+import net.openl10n.flies.rest.VersionResource;
 import net.openl10n.flies.rest.dto.VersionInfo;
 
 public class VersionSeamTest extends FliesDBUnitSeamTest
 {
    private static final String AUTH_KEY = "b6d7044e9ee3b2447c28fb7c50d86d98";
    private static final String USERNAME = "admin";
-   private IVersion version;
+   private VersionResource version;
    private final Logger log = LoggerFactory.getLogger(VersionSeamTest.class);
 
    @Override

@@ -7,10 +7,10 @@ import org.jboss.resteasy.client.ClientExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.openl10n.flies.rest.VersionResource;
 import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 import net.openl10n.flies.rest.client.IProjectIterationResource;
 import net.openl10n.flies.rest.client.ITranslationResources;
-import net.openl10n.flies.rest.client.IVersion;
 import net.openl10n.flies.rest.dto.VersionInfo;
 
 public class FliesTestClientRequestFactory extends FliesClientRequestFactory
@@ -48,11 +48,11 @@ public class FliesTestClientRequestFactory extends FliesClientRequestFactory
       super.registerPrefixInterceptor(interceptor);
    }
 
-   public IVersion getVersionInfo()
+   public VersionResource getVersionInfo()
    {
       try
       {
-         return (IVersion) createProxy(IVersion.class, new URI("/restv1/version"));
+         return (VersionResource) createProxy(VersionResource.class, new URI("/restv1/version"));
       }
       catch (URISyntaxException e)
       {
