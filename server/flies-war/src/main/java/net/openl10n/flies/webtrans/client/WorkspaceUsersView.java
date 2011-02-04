@@ -47,20 +47,6 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    }
 
    @Override
-   public void startProcessing()
-   {
-      // TODO Auto-generated method stub
-
-   }
-
-   @Override
-   public void stopProcessing()
-   {
-      // TODO Auto-generated method stub
-
-   }
-
-   @Override
    public void updateUserList(ArrayList<Person> userList)
    {
       int existingCount = userListPanel.getWidgetCount();

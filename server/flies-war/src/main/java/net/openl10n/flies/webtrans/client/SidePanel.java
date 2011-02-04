@@ -147,13 +147,4 @@ public class SidePanel extends Composite implements SidePanelPresenter.Display
       return this;
    }
 
-   @Override
-   public void startProcessing()
-   {
-   }
-
-   @Override
-   public void stopProcessing()
-   {
-   }
 }

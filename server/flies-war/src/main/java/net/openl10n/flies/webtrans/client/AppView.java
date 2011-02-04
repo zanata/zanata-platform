@@ -83,16 +83,6 @@ public class AppView extends Composite implements AppPresenter.Display
    }
 
    @Override
-   public void startProcessing()
-   {
-   }
-
-   @Override
-   public void stopProcessing()
-   {
-   }
-
-   @Override
    public void showInMainView(MainView view)
    {
       switch (view)

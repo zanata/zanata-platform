@@ -92,14 +92,4 @@ public class TransUnitNavigationView extends Composite implements TransUnitNavig
       return this;
    }
 
-   @Override
-   public void startProcessing()
-   {
-   }
-
-   @Override
-   public void stopProcessing()
-   {
-   }
-
 }

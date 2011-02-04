@@ -104,16 +104,6 @@ public class DocumentListView extends Composite implements DocumentListPresenter
       return this;
    }
 
-   @Override
-   public void startProcessing()
-   {
-   }
-
-   @Override
-   public void stopProcessing()
-   {
-   }
-
    public void clear()
    {
       documentList.clear();

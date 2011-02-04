@@ -20,14 +20,12 @@
  */
 package net.openl10n.flies.webtrans.client;
 
-import com.google.gwt.user.client.ui.Widget;
-import com.google.inject.Inject;
-
 import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.place.Place;
-import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+
+import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
 
 public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.Display>
 {
@@ -39,7 +37,6 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
 
    }
 
-   public static final Place PLACE = new Place("TranslationView");
    private final TranslationEditorPresenter translationEditorPresenter;
    private final SidePanelPresenter sidePanelPresenter;
 
@@ -52,12 +49,7 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    }
 
    @Override
-   public void refreshDisplay()
-   {
-   }
-
-   @Override
-   public void revealDisplay()
+   public void onRevealDisplay()
    {
    }
 
@@ -76,17 +68,6 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
    {
       translationEditorPresenter.unbind();
       sidePanelPresenter.unbind();
-   }
-
-   @Override
-   public Place getPlace()
-   {
-      return null;
-   }
-
-   @Override
-   protected void onPlaceRequest(PlaceRequest request)
-   {
    }
 
 }

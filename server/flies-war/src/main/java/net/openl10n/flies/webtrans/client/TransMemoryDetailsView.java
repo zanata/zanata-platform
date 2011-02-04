@@ -66,16 +66,6 @@ public class TransMemoryDetailsView implements TransMemoryDetailsPresenter.Displ
    }
 
    @Override
-   public void startProcessing()
-   {
-   }
-
-   @Override
-   public void stopProcessing()
-   {
-   }
-
-   @Override
    public HasText getProjectName()
    {
       return projectName;

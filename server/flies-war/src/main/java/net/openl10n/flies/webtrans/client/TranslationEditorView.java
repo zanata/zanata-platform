@@ -117,16 +117,6 @@ public class TranslationEditorView extends Composite implements TranslationEdito
    }
 
    @Override
-   public void startProcessing()
-   {
-   }
-
-   @Override
-   public void stopProcessing()
-   {
-   }
-
-   @Override
    public HasTranslationStats getTransUnitCount()
    {
       return transUnitCountBar;

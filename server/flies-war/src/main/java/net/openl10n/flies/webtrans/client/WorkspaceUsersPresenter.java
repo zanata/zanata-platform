@@ -4,33 +4,21 @@ import java.util.ArrayList;
 
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.place.Place;
-import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
-
 import net.openl10n.flies.webtrans.client.events.EnterWorkspaceEvent;
 import net.openl10n.flies.webtrans.client.events.EnterWorkspaceEventHandler;
 import net.openl10n.flies.webtrans.client.events.ExitWorkspaceEvent;
 import net.openl10n.flies.webtrans.client.events.ExitWorkspaceEventHandler;
 import net.openl10n.flies.webtrans.client.rpc.CachingDispatchAsync;
-import net.openl10n.flies.webtrans.client.ui.HasFilter;
 import net.openl10n.flies.webtrans.shared.model.Person;
-import net.openl10n.flies.webtrans.shared.model.PersonId;
 import net.openl10n.flies.webtrans.shared.model.WorkspaceContext;
 import net.openl10n.flies.webtrans.shared.rpc.GetTranslatorList;
 import net.openl10n.flies.webtrans.shared.rpc.GetTranslatorListResult;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.dom.client.HasMouseOverHandlers;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.inject.Inject;
 
 public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPresenter.Display>
@@ -51,12 +39,6 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
       this.workspaceContext = workspaceContext;
       this.dispatcher = dispatcher;
       // loadTranslatorList();
-   }
-
-   @Override
-   public Place getPlace()
-   {
-      return null;
    }
 
    @Override
@@ -111,13 +93,6 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
    }
 
    @Override
-   protected void onPlaceRequest(PlaceRequest request)
-   {
-      // TODO Auto-generated method stub
-
-   }
-
-   @Override
    protected void onUnbind()
    {
       // TODO Auto-generated method stub
@@ -125,14 +100,7 @@ public class WorkspaceUsersPresenter extends WidgetPresenter<WorkspaceUsersPrese
    }
 
    @Override
-   public void refreshDisplay()
-   {
-      // TODO Auto-generated method stub
-
-   }
-
-   @Override
-   public void revealDisplay()
+   public void onRevealDisplay()
    {
       // TODO Auto-generated method stub
 

@@ -27,7 +27,6 @@ import java.util.List;
 
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.place.Place;
 import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.openl10n.flies.common.EditState;
@@ -62,9 +61,9 @@ import net.openl10n.flies.webtrans.shared.model.TransUnitId;
 import net.openl10n.flies.webtrans.shared.rpc.EditingTranslationAction;
 import net.openl10n.flies.webtrans.shared.rpc.EditingTranslationResult;
 import net.openl10n.flies.webtrans.shared.rpc.GetTransUnits;
-import net.openl10n.flies.webtrans.shared.rpc.GetTransUnitsResult;
 import net.openl10n.flies.webtrans.shared.rpc.GetTransUnitsNavigation;
 import net.openl10n.flies.webtrans.shared.rpc.GetTransUnitsNavigationResult;
+import net.openl10n.flies.webtrans.shared.rpc.GetTransUnitsResult;
 import net.openl10n.flies.webtrans.shared.rpc.UpdateTransUnit;
 import net.openl10n.flies.webtrans.shared.rpc.UpdateTransUnitResult;
 
@@ -91,9 +90,6 @@ import com.google.inject.Inject;
 
 public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPresenter.Display> implements HasPageNavigation, HasPageChangeHandlers, HasPageCountChangeHandlers
 {
-
-   public static final Place PLACE = new Place("TableEditor");
-
    public interface Display extends WidgetDisplay, HasPageNavigation
    {
       HasSelectionHandlers<TransUnit> getSelectionHandlers();
@@ -133,6 +129,10 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       int getCurrentPage();
 
       int getPageSize();
+      
+      void startProcessing();
+      
+      void stopProcessing();
    }
 
    private DocumentId documentId;
@@ -156,12 +156,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       this.dispatcher = dispatcher;
       this.identity = identity;
       this.messages = messages;
-   }
-
-   @Override
-   public Place getPlace()
-   {
-      return PLACE;
    }
 
    @Override
@@ -832,22 +826,12 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
    }
 
    @Override
-   protected void onPlaceRequest(PlaceRequest request)
-   {
-   }
-
-   @Override
    protected void onUnbind()
    {
    }
 
    @Override
-   public void refreshDisplay()
-   {
-   }
-
-   @Override
-   public void revealDisplay()
+   public void onRevealDisplay()
    {
    }
 

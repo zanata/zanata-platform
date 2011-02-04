@@ -1188,7 +1188,7 @@
 		<dependency>
 			<groupId>net.customware.gwt.presenter</groupId>
 			<artifactId>gwt-presenter</artifactId>
-			<version>1.0.0</version>
+			<version>1.1.1</version>
 			<scope>provided</scope>
 		</dependency>
 

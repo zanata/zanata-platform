@@ -81,18 +81,4 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       sidePanelContainer.add(sidePanel);
    }
 
-   @Override
-   public void startProcessing()
-   {
-      // TODO Auto-generated method stub
-
-   }
-
-   @Override
-   public void stopProcessing()
-   {
-      // TODO Auto-generated method stub
-
-   }
-
 }

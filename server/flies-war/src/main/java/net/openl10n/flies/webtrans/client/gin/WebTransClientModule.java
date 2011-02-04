@@ -23,8 +23,6 @@ package net.openl10n.flies.webtrans.client.gin;
 import net.customware.gwt.presenter.client.DefaultEventBus;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.gin.AbstractPresenterModule;
-import net.customware.gwt.presenter.client.place.PlaceManager;
-
 import net.openl10n.flies.webtrans.client.AppPresenter;
 import net.openl10n.flies.webtrans.client.AppView;
 import net.openl10n.flies.webtrans.client.Application;
@@ -72,7 +70,6 @@ public class WebTransClientModule extends AbstractPresenterModule
    protected void configure()
    {
       bind(EventBus.class).to(DefaultEventBus.class).in(Singleton.class);
-      bind(PlaceManager.class).in(Singleton.class);
       bind(EventProcessor.class).in(Singleton.class);
       bind(Resources.class).in(Singleton.class);
       bind(WebTransMessages.class).in(Singleton.class);

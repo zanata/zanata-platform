@@ -8,11 +8,8 @@ import java.util.Map;
 
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.place.Place;
-import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
-
 import net.openl10n.flies.common.TransUnitCount;
 import net.openl10n.flies.common.TransUnitWords;
 import net.openl10n.flies.common.TranslationStats;
@@ -21,9 +18,9 @@ import net.openl10n.flies.webtrans.client.editor.filter.ContentFilter;
 import net.openl10n.flies.webtrans.client.events.DocumentSelectionEvent;
 import net.openl10n.flies.webtrans.client.events.DocumentSelectionHandler;
 import net.openl10n.flies.webtrans.client.events.NotificationEvent;
+import net.openl10n.flies.webtrans.client.events.NotificationEvent.Severity;
 import net.openl10n.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import net.openl10n.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
-import net.openl10n.flies.webtrans.client.events.NotificationEvent.Severity;
 import net.openl10n.flies.webtrans.client.rpc.CachingDispatchAsync;
 import net.openl10n.flies.webtrans.shared.model.DocumentId;
 import net.openl10n.flies.webtrans.shared.model.DocumentInfo;
@@ -48,8 +45,6 @@ import com.google.inject.Inject;
 
 public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter.Display> implements HasDocumentSelectionHandlers
 {
-
-   public static final Place PLACE = new Place("DocumentListList");
 
    public interface Display extends WidgetDisplay
    {
@@ -90,12 +85,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
       this.messages = messages;
       Log.info("DocumentListPresenter()");
       loadDocumentList();
-   }
-
-   @Override
-   public Place getPlace()
-   {
-      return PLACE;
    }
 
    @Override
@@ -247,25 +236,12 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListPresenter
    }
 
    @Override
-   protected void onPlaceRequest(PlaceRequest request)
-   {
-      // TODO Auto-generated method stub
-
-   }
-
-   @Override
    protected void onUnbind()
    {
    }
 
    @Override
-   public void refreshDisplay()
-   {
-      loadDocumentList();
-   }
-
-   @Override
-   public void revealDisplay()
+   public void onRevealDisplay()
    {
       // TODO Auto-generated method stub
 

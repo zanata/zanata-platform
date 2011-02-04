@@ -1,6 +1,9 @@
 package net.openl10n.flies.webtrans.client;
 
-import net.openl10n.flies.common.ContentState;
+import net.customware.gwt.dispatch.client.DispatchAsync;
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.widget.WidgetDisplay;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import net.openl10n.flies.common.TransUnitCount;
 import net.openl10n.flies.common.TransUnitWords;
 import net.openl10n.flies.common.TranslationStats;
@@ -31,13 +34,6 @@ import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-
-import net.customware.gwt.dispatch.client.DispatchAsync;
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.place.Place;
-import net.customware.gwt.presenter.client.place.PlaceRequest;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 public class TranslationEditorPresenter extends WidgetPresenter<TranslationEditorPresenter.Display>
 {
@@ -82,12 +78,6 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
       this.transMemoryPresenter = transMemoryPresenter;
       this.tableEditorPresenter = tableEditorPresenter;
       this.transUnitNavigationPresenter = transUnitNavigationPresenter;
-   }
-
-   @Override
-   public Place getPlace()
-   {
-      return null;
    }
 
    @Override
@@ -224,11 +214,6 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    };
 
    @Override
-   protected void onPlaceRequest(PlaceRequest request)
-   {
-   }
-
-   @Override
    protected void onUnbind()
    {
       transMemoryPresenter.unbind();
@@ -237,12 +222,7 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    }
 
    @Override
-   public void refreshDisplay()
-   {
-   }
-
-   @Override
-   public void revealDisplay()
+   public void onRevealDisplay()
    {
    }
 

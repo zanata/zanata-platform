@@ -21,8 +21,6 @@ public interface WebTransGinjector extends Ginjector
 
    CachingDispatchAsync getDispatcher();
 
-   PlaceManager getPlaceManager();
-
    EventBus getEventBus();
 
    WorkspaceContext getWorkspaceContext();

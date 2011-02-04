@@ -46,16 +46,6 @@ public class TransUnitDetailsView extends Composite implements TransUnitDetailsP
    }
 
    @Override
-   public void startProcessing()
-   {
-   }
-
-   @Override
-   public void stopProcessing()
-   {
-   }
-
-   @Override
    public void showDetails(TransUnit transUnit)
    {
       rootPanel.setWidgetTopHeight(noDetailsLabel, 0, Unit.PX, 0, Unit.PX);

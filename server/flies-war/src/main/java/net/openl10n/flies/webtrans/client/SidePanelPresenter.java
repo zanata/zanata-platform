@@ -1,11 +1,8 @@
 package net.openl10n.flies.webtrans.client;
 
 import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.place.Place;
-import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
-
 import net.openl10n.flies.webtrans.client.editor.filter.TransFilterPresenter;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -41,12 +38,6 @@ public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Displ
    }
 
    @Override
-   public Place getPlace()
-   {
-      return null;
-   }
-
-   @Override
    protected void onBind()
    {
 
@@ -61,22 +52,12 @@ public class SidePanelPresenter extends WidgetPresenter<SidePanelPresenter.Displ
    }
 
    @Override
-   protected void onPlaceRequest(PlaceRequest request)
-   {
-   }
-
-   @Override
    protected void onUnbind()
    {
    }
 
    @Override
-   public void refreshDisplay()
-   {
-   }
-
-   @Override
-   public void revealDisplay()
+   public void onRevealDisplay()
    {
    }
 

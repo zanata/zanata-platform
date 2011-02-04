@@ -1,16 +1,13 @@
 package net.openl10n.flies.webtrans.client;
 
 import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.place.Place;
-import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
-
 import net.openl10n.flies.webtrans.client.rpc.CachingDispatchAsync;
 import net.openl10n.flies.webtrans.shared.model.TranslationMemoryItem;
 import net.openl10n.flies.webtrans.shared.rpc.GetTransMemoryDetailsAction;
-import net.openl10n.flies.webtrans.shared.rpc.TransMemoryDetailsList;
 import net.openl10n.flies.webtrans.shared.rpc.TransMemoryDetails;
+import net.openl10n.flies.webtrans.shared.rpc.TransMemoryDetailsList;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -139,18 +136,7 @@ public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDeta
    }
 
    @Override
-   public Place getPlace()
-   {
-      return null;
-   }
-
-   @Override
    protected void onBind()
-   {
-   }
-
-   @Override
-   protected void onPlaceRequest(PlaceRequest request)
    {
    }
 
@@ -160,12 +146,7 @@ public class TransMemoryDetailsPresenter extends WidgetPresenter<TransMemoryDeta
    }
 
    @Override
-   public void refreshDisplay()
-   {
-   }
-
-   @Override
-   public void revealDisplay()
+   public void onRevealDisplay()
    {
    }
 }
