@@ -367,9 +367,12 @@
 				<version>1.2.0-20100906.075839-2</version>
 			</dependency>
 
-
+			<!-- 
+			Looks like com.googlecode.gwt.inject is the canonical groupId
+			http://code.google.com/p/google-gin/issues/detail?id=45#c27
+			-->
 			<dependency>
-				<groupId>com.google.gwt.inject</groupId>
+				<groupId>com.googlecode.gwt.inject</groupId>
 				<artifactId>gin</artifactId>
 				<version>1.0</version>
 			</dependency>

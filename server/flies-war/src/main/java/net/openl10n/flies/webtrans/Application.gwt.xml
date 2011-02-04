@@ -12,6 +12,9 @@
 
       <inherits name="com.google.gwt.inject.Inject" />
       
+      <!-- This makes the GWT Designer happy -->
+      <inherits name="com.google.gwt.junit.JUnit"/>
+      
       <inherits name='net.customware.gwt.dispatch.Dispatch' />
       <inherits name='net.customware.gwt.presenter.Presenter' />
 
