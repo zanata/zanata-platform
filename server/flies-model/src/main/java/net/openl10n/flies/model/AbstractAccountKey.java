@@ -26,7 +26,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
 
-import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
 
@@ -50,8 +49,7 @@ public class AbstractAccountKey
       this.keyHash = keyHash;
    }
 
-   @NaturalId
-   @OneToOne(optional = false, fetch = FetchType.EAGER)
+   @OneToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "accountId")
    public HAccount getAccount()
    {

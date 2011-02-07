@@ -26,6 +26,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -76,7 +77,7 @@ public class HAccount extends AbstractFliesEntity implements Serializable
    private HAccountResetPasswordKey accountResetPasswordKey;
 
 
-   @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+   @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "account")
    public HAccountActivationKey getAccountActivationKey()
    {
       return accountActivationKey;
@@ -87,7 +88,7 @@ public class HAccount extends AbstractFliesEntity implements Serializable
       this.accountActivationKey = accountActivationKey;
    }
 
-   @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+   @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "account")
    public HAccountResetPasswordKey getAccountResetPasswordKey()
    {
       return accountResetPasswordKey;
