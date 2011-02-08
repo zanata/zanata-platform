@@ -151,6 +151,7 @@
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
+					<useFile>false</useFile>
 					<skipTests>${skipUnitTests}</skipTests>
 				</configuration>
 			</plugin>
