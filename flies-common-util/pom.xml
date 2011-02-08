@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>flies-parent</artifactId>
 		<groupId>net.openl10n.flies</groupId>
-		<version>1.2-SNAPSHOT</version>
+		<version>1.2-alpha-2</version>
 		<relativePath>../../flies-parent/pom.xml</relativePath>
 	</parent>
 	<packaging>jar</packaging>
