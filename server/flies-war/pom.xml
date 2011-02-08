@@ -120,6 +120,7 @@
 		        <ds.jndi.name>fliesDatasource</ds.jndi.name>
 			</properties>
 		</profile>
+
 		<profile>
 			<id>jboss4</id>
 			<activation>
@@ -176,6 +177,7 @@
 					-->
 					<plugin>
 						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.6</version>
 						<executions>
 							<execution>
 								<id>surefire-it</id>
@@ -184,7 +186,7 @@
 									<goal>test</goal>
 								</goals>
 								<configuration>
-									<skip>false</skip>
+									<skipTests>false</skipTests>
 									<argLine>-Xmx512m -XX:MaxPermSize=256m -XX:+HeapDumpOnOutOfMemoryError</argLine>
 									<redirectTestOutputToFile>false</redirectTestOutputToFile>
 									<printSummary>true</printSummary>
