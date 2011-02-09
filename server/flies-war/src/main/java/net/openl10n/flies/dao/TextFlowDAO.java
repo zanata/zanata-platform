@@ -20,6 +20,7 @@
  */
 package net.openl10n.flies.dao;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -80,6 +81,10 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long>
    @SuppressWarnings("unchecked")
    public List<HTextFlow> findByIdList(List<Long> idList)
    {
+      if (idList == null || idList.isEmpty())
+      {
+         return new ArrayList<HTextFlow>();
+      }
       Query query = getSession().createQuery("FROM HTextFlow WHERE id in (:idList)");
       query.setParameterList("idList", idList);
       query.setComment("TextFlowDAO.getByIdList");
