@@ -12,7 +12,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import net.openl10n.flies.FliesDBUnitSeamTest;
-import net.openl10n.flies.rest.VersionResource;
 import net.openl10n.flies.rest.dto.VersionInfo;
 
 public class VersionSeamTest extends FliesDBUnitSeamTest

@@ -18,11 +18,12 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package net.openl10n.flies.rest;
+package net.openl10n.flies.rest.service;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 
+import net.openl10n.flies.rest.MediaTypes;
 import net.openl10n.flies.rest.dto.VersionInfo;
 
 public interface VersionResource

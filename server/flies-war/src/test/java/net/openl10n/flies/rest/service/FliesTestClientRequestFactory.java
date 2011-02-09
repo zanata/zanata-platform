@@ -7,7 +7,6 @@ import org.jboss.resteasy.client.ClientExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.openl10n.flies.rest.VersionResource;
 import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 import net.openl10n.flies.rest.client.IProjectIterationResource;
 import net.openl10n.flies.rest.client.ITranslationResources;

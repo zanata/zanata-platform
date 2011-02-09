@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import net.openl10n.flies.FliesRestTest;
-import net.openl10n.flies.rest.VersionResource;
 import net.openl10n.flies.rest.dto.VersionInfo;
 
 public class VersionRestTest extends FliesRestTest

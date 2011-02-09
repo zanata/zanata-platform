@@ -6,7 +6,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import net.openl10n.flies.rest.MediaTypes;
-import net.openl10n.flies.rest.VersionResource;
+import net.openl10n.flies.rest.service.VersionResource;
 import net.openl10n.flies.rest.dto.VersionInfo;
 import net.openl10n.flies.util.VersionUtility;
 

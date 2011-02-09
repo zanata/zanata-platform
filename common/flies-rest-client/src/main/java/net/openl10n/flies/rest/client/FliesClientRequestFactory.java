@@ -12,7 +12,6 @@ import net.openl10n.flies.rest.client.IProjectResource;
 import net.openl10n.flies.rest.client.IProjectsResource;
 import net.openl10n.flies.rest.client.ITranslationResources;
 import net.openl10n.flies.rest.dto.VersionInfo;
-import net.openl10n.flies.rest.VersionResource;
 
 import org.jboss.resteasy.client.ClientExecutor;
 import org.jboss.resteasy.client.ClientRequestFactory;
@@ -49,7 +48,7 @@ public class FliesClientRequestFactory implements ITranslationResourcesFactory
       registerPrefixInterceptor(new ApiKeyHeaderDecorator(username, apiKey, clientApiVersion.getVersionNo()));
       String clientVer = clientApiVersion.getVersionNo();
       String clientTimestamp = clientApiVersion.getBuildTimeStamp();
-      VersionResource iversion = createVersion();
+      IVersion iversion = createVersion();
       VersionInfo serverVersionInfo = iversion.get();
       String serverVer = serverVersionInfo.getVersionNo();
       String serverTimestamp = serverVersionInfo.getBuildTimeStamp();
@@ -200,13 +199,13 @@ public class FliesClientRequestFactory implements ITranslationResourcesFactory
       crf.getPrefixInterceptors().registerInterceptor(interceptor);
    }
    
-   private VersionResource createVersion()
+   private IVersion createVersion()
    {
       URL url;
       try
       {
          url = new URL(crf.getBase().toURL(), RESOURCE_PREFIX + "/version");
-         return createProxy(VersionResource.class, url.toURI());
+         return createProxy(IVersion.class, url.toURI());
       }
       catch (MalformedURLException e)
       {
