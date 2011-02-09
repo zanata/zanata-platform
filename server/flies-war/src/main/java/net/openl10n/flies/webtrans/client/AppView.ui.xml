@@ -28,6 +28,11 @@
 			padding: 5px;
 		}
 
+		.notification {
+			color: yellow;
+			padding: 5px;
+		}
+
 		.topPanel-Workspace a{
 			color: white;
 			font-weight: bold;
@@ -37,12 +42,6 @@
 		.userName {
 			font-weight: bold;
 			color: #ae1f23;
-		}
-
-		.notification {
-			display: inline;
-			float: right;
-			color: grey;
 		}
 		
 		.divider {
@@ -55,6 +54,7 @@
 			border: 2px solid #99ccff;
 			-moz-border-radius: 10px;
 		}
+
 		
 	</ui:style>
 	<g:LayoutPanel>
@@ -62,11 +62,6 @@
 			<g:LayoutPanel styleName="{style.header}">
 				<g:layer top="6px" left="6px" width="18px" height="18px">
 					<g:Image resource="{resources.logo}"/>
-				</g:layer>
-				<g:layer top="6px" right="300px" width="300px" height="18px">
-					<g:FlowPanel>
-						<g:Label ui:field="notificationMessage" styleName="{style.notification}" />
-					</g:FlowPanel>
 				</g:layer>
 				<g:layer top="6px" height="100%" left="25px" right="6px">
 					<g:FlowPanel>
@@ -86,7 +81,9 @@
 			</g:LayoutPanel>
 		</g:layer>
 		<g:layer top="30px" height="30px">
-			<g:FlowPanel styleName="{resources.style.banner}">
+		<g:LayoutPanel ui:field='layoutPanel' styleName="{resources.style.banner}">
+			<g:layer >
+				<g:FlowPanel >
 				<g:HTMLPanel styleName="{style.topPanel-Workspace}">
 					<nobr>
 						<g:Anchor href="#" ui:field="documentsLink"><ui:msg>Documents</ui:msg></g:Anchor>
@@ -96,7 +93,12 @@
 						</em>
 					</nobr>
 				</g:HTMLPanel>
-			</g:FlowPanel>
+				</g:FlowPanel>
+			</g:layer>
+			<g:layer right="600px" width ="300px">
+					<g:Label ui:field="notificationMessage" styleName="{style.notification}"/>
+			</g:layer>
+		</g:LayoutPanel>
 		</g:layer>
 		<g:layer top="66px" bottom="0px" left='7px' right='7px' >
 		   <g:LayoutPanel ui:field="container" />

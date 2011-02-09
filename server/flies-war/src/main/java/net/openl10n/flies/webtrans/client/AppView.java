@@ -27,6 +27,8 @@ import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.layout.client.Layout.AnimationCallback;
+import com.google.gwt.layout.client.Layout.Layer;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Anchor;
@@ -45,6 +47,8 @@ public class AppView extends Composite implements AppPresenter.Display
 
    private static AppViewUiBinder uiBinder = GWT.create(AppViewUiBinder.class);
 
+   private final int NOTIFICATION_TIME = 1500;
+
    @UiField
    Anchor signOutLink, leaveLink, helpLink, documentsLink;
 
@@ -55,7 +59,7 @@ public class AppView extends Composite implements AppPresenter.Display
    SpanElement user, selectedDocumentSpan, selectedDocumentPathSpan;
 
    @UiField
-   LayoutPanel container;
+   LayoutPanel container, layoutPanel;
 
    @UiField(provided = true)
    final Resources resources;
@@ -171,8 +175,26 @@ public class AppView extends Composite implements AppPresenter.Display
       selectedDocumentSpan.setInnerText(document.getName());
    }
 
+   private final AnimationCallback callback = new AnimationCallback()
+   {
+
+      @Override
+      public void onAnimationComplete()
+      {
+         notificationMessage.setText("");
+      }
+
+      @Override
+      public void onLayout(Layer layer, double progress)
+      {
+      }
+
+   };
+
    public void setNotificationMessage(String var)
    {
+      layoutPanel.forceLayout();
       notificationMessage.setText(var);
+      layoutPanel.animate(NOTIFICATION_TIME, callback);
    }
 }
