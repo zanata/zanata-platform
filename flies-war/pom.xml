@@ -189,6 +189,7 @@
 					-->
 					<plugin>
 						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.6</version>
 						<executions>
 							<execution>
 								<id>surefire-it</id>
@@ -222,6 +223,12 @@
 									<childDelegation>true</childDelegation>
 									<useSystemClassLoader>true</useSystemClassLoader>
 									<argLine xml:space="preserve">-Dsun.lang.ClassLoader.allowArraySyntax=true</argLine>
+									<classpathDependencyExcludes>
+										<classpathDependencyExclude>
+											<!-- collides with XMLLoginConfigImpl in jboss-embedded-all -->
+											org.jboss.security:jbosssx
+										</classpathDependencyExclude>
+									</classpathDependencyExcludes>
 								</configuration>
 							</execution>
 						</executions>
