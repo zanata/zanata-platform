@@ -194,7 +194,7 @@ public class FliesClientRequestFactory implements ITranslationResourcesFactory
       crf.getPrefixInterceptors().registerInterceptor(interceptor);
    }
    
-   private IVersion createIVersion()
+   protected IVersion createIVersion()
    {
       URL url;
       try
