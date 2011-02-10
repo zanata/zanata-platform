@@ -3,7 +3,6 @@ package net.openl10n.flies.webtrans.client;
 import com.google.gwt.i18n.client.Messages;
 import com.google.gwt.i18n.client.LocalizableResource.DefaultLocale;
 import com.google.gwt.i18n.client.LocalizableResource.Generate;
-import com.google.gwt.i18n.client.Messages.DefaultMessage;
 
 @DefaultLocale
 @Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
@@ -15,10 +14,16 @@ public interface WebTransMessages extends Messages
    @Description("Title of the minimized users panel")
    String nUsersOnline(@PluralCount int numUsers);
 
-   @DefaultMessage("{0}%")
+   @DefaultMessage("{0}% (words)")
    String statusBarLabelPercentage(int approved, @Optional int needReview, @Optional int untranslated);
 
-   @DefaultMessage("{0}/{1}/{2}")
+   @DefaultMessage("{0,number,#.#} hours")
+   String statusBarLabelWork(double remainingHours);
+
+   @DefaultMessage("{0}/{1}/{2} (wds)")
+   String statusBarLabelWords(int approved, int needReview, int untranslated);
+
+   @DefaultMessage("{0}/{1}/{2} (msgs)")
    String statusBarLabelUnits(int approved, int needReview, int untranslated);
 
    @DefaultMessage("http://code.google.com/docreader/#p=flies&s=flies&t=TranslatorGuide")

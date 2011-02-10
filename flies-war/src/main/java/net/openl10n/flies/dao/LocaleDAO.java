@@ -3,6 +3,7 @@ package net.openl10n.flies.dao;
 import java.util.List;
 
 import net.openl10n.flies.common.LocaleId;
+import net.openl10n.flies.model.HDocument;
 import net.openl10n.flies.model.HLocale;
 
 import org.hibernate.Session;

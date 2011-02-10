@@ -1,3 +1,23 @@
+/*
+ * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * @author tags. See the copyright.txt file in the distribution for a full
+ * listing of individual contributors.
+ * 
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+ * site: http://www.fsf.org.
+ */
 package net.openl10n.flies.action;
 
 import java.io.Serializable;
@@ -5,8 +25,10 @@ import java.io.Serializable;
 import net.openl10n.flies.ApplicationConfiguration;
 import net.openl10n.flies.dao.ApplicationConfigurationDAO;
 import net.openl10n.flies.model.HApplicationConfiguration;
+import net.openl10n.flies.model.validator.Url;
 import net.openl10n.flies.model.validator.UrlNoSlash;
 
+import org.hibernate.validator.Email;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
@@ -23,10 +45,61 @@ import org.jboss.seam.faces.FacesMessages;
 public class ServerConfigurationBean implements Serializable
 {
 
+   /**
+    * 
+    */
+   private static final long serialVersionUID = 1L;
+
    @In
    ApplicationConfigurationDAO applicationConfigurationDAO;
 
+   private String helpUrl;
+   private String registerUrl;
    private String serverUrl;
+   private String emailDomain;
+   private String adminEmail;
+
+   @Email
+   public String getAdminEmail()
+   {
+      return adminEmail;
+   }
+
+   public void setAdminEmail(String adminEmail)
+   {
+      this.adminEmail = adminEmail;
+   }
+
+   public String getEmailDomain()
+   {
+      return emailDomain;
+   }
+
+   public void setEmailDomain(String emailDomain)
+   {
+      this.emailDomain = emailDomain;
+   }
+
+   @Url
+   public String getHelpUrl()
+   {
+      return helpUrl;
+   }
+
+   public void setHelpUrl(String helpUrl)
+   {
+      this.helpUrl = helpUrl;
+   }
+
+   public String getRegisterUrl()
+   {
+      return registerUrl;
+   }
+
+   public void setRegisterUrl(String registerUrl)
+   {
+      this.registerUrl = registerUrl;
+   }
 
    @UrlNoSlash
    public String getServerUrl()
@@ -42,33 +115,126 @@ public class ServerConfigurationBean implements Serializable
    @Create
    public void onCreate()
    {
+      HApplicationConfiguration helpUrlValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_HELP);
+      if (helpUrlValue != null)
+      {
+         this.helpUrl = helpUrlValue.getValue();
+      }
+      HApplicationConfiguration registerUrlValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_REGISTER);
+      if (registerUrlValue != null)
+      {
+         this.registerUrl = registerUrlValue.getValue();
+      }
       HApplicationConfiguration serverUrlValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_HOST);
       if (serverUrlValue != null)
       {
          this.serverUrl = serverUrlValue.getValue();
+      }
+      HApplicationConfiguration emailDomainValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_DOMAIN);
+      if (emailDomainValue != null)
+      {
+         this.emailDomain = emailDomainValue.getValue();
+      }
+      HApplicationConfiguration adminEmailValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_ADMIN_EMAIL);
+      if (adminEmailValue != null)
+      {
+         this.adminEmail = adminEmailValue.getValue();
       }
    }
 
    @Transactional
    public void update()
    {
-      HApplicationConfiguration dbValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_HOST);
-      if (dbValue != null)
+      HApplicationConfiguration helpUrlValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_HELP);
+      if (helpUrlValue != null)
       {
-         if (serverUrl == null || serverUrl.isEmpty())
+         if (helpUrl == null || helpUrl.isEmpty())
          {
-            applicationConfigurationDAO.makeTransient(dbValue);
+            applicationConfigurationDAO.makeTransient(helpUrlValue);
          }
          else
          {
-            dbValue.setValue(serverUrl);
+            helpUrlValue.setValue(helpUrl);
+         }
+      }
+      else if (helpUrl != null && !helpUrl.isEmpty())
+      {
+         helpUrlValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_HELP, helpUrl);
+         applicationConfigurationDAO.makePersistent(helpUrlValue);
+      }
+
+      HApplicationConfiguration registerUrlValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_REGISTER);
+      if (registerUrlValue != null)
+      {
+         if (registerUrl == null || registerUrl.isEmpty())
+         {
+            applicationConfigurationDAO.makeTransient(registerUrlValue);
+         }
+         else
+         {
+            registerUrlValue.setValue(registerUrl);
+         }
+      }
+      else if (registerUrl != null && !registerUrl.isEmpty())
+      {
+         registerUrlValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_REGISTER, registerUrl);
+         applicationConfigurationDAO.makePersistent(registerUrlValue);
+      }
+
+      HApplicationConfiguration serverUrlValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_HOST);
+      if (serverUrlValue != null)
+      {
+         if (serverUrl == null || serverUrl.isEmpty())
+         {
+            applicationConfigurationDAO.makeTransient(serverUrlValue);
+         }
+         else
+         {
+            serverUrlValue.setValue(serverUrl);
          }
       }
       else if (serverUrl != null && !serverUrl.isEmpty())
       {
-         dbValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_HOST, serverUrl);
-         applicationConfigurationDAO.makePersistent(dbValue);
+         serverUrlValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_HOST, serverUrl);
+         applicationConfigurationDAO.makePersistent(serverUrlValue);
       }
+
+      HApplicationConfiguration emailDomainValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_DOMAIN);
+      if (emailDomainValue != null)
+      {
+         if (emailDomain == null || emailDomain.isEmpty())
+         {
+            applicationConfigurationDAO.makeTransient(emailDomainValue);
+         }
+         else
+         {
+            emailDomainValue.setValue(emailDomain);
+         }
+      }
+      else if (emailDomain != null && !emailDomain.isEmpty())
+      {
+         emailDomainValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_DOMAIN, emailDomain);
+         applicationConfigurationDAO.makePersistent(emailDomainValue);
+      }
+
+      HApplicationConfiguration adminEmailValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_ADMIN_EMAIL);
+      if (adminEmailValue != null)
+      {
+         if (adminEmail == null || adminEmail.isEmpty())
+         {
+            applicationConfigurationDAO.makeTransient(adminEmailValue);
+         }
+         else
+         {
+            adminEmailValue.setValue(adminEmail);
+         }
+      }
+      else if (adminEmail != null && !adminEmail.isEmpty())
+      {
+         adminEmailValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_ADMIN_EMAIL, adminEmail);
+         applicationConfigurationDAO.makePersistent(adminEmailValue);
+      }
+
       applicationConfigurationDAO.flush();
       FacesMessages.instance().add("Configuration was successfully updated.");
       if (Events.exists())

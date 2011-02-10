@@ -2,7 +2,9 @@ package net.openl10n.flies.webtrans.client;
 
 import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.common.TransUnitCount;
-import net.openl10n.flies.webtrans.client.editor.HasTransUnitCount;
+import net.openl10n.flies.common.TransUnitWords;
+import net.openl10n.flies.common.TranslationStats;
+import net.openl10n.flies.webtrans.client.editor.HasTranslationStats;
 import net.openl10n.flies.webtrans.client.editor.table.TableEditorPresenter;
 import net.openl10n.flies.webtrans.client.events.DocumentSelectionEvent;
 import net.openl10n.flies.webtrans.client.events.DocumentSelectionHandler;
@@ -51,7 +53,7 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
 
       void setTmViewVisible(boolean visible);
 
-      HasTransUnitCount getTransUnitCount();
+      HasTranslationStats getTransUnitCount();
 
       HasPager getPageNavigation();
 
@@ -68,7 +70,7 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    private final TableEditorPresenter tableEditorPresenter;
 
    private DocumentInfo currentDocument;
-   private final TransUnitCount statusCount = new TransUnitCount();
+   private final TranslationStats statusCount = new TranslationStats();
 
    private final DispatchAsync dispatcher;
 
@@ -189,7 +191,7 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
          public void onSuccess(GetStatusCountResult result)
          {
             statusCount.set(result.getCount());
-            display.getTransUnitCount().setCount(statusCount);
+            display.getTransUnitCount().setStats(statusCount);
          }
       });
    }
@@ -208,10 +210,15 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
             return;
          }
 
-         statusCount.increment(event.getNewStatus());
-         statusCount.decrement(event.getPreviousStatus());
+         TransUnitCount unitCount = statusCount.getUnitCount();
+         TransUnitWords wordCount = statusCount.getWordCount();
 
-         display.getTransUnitCount().setCount(statusCount);
+         unitCount.increment(event.getNewStatus());
+         unitCount.decrement(event.getPreviousStatus());
+         wordCount.increment(event.getNewStatus(), event.getWordCount());
+         wordCount.decrement(event.getPreviousStatus(), event.getWordCount());
+
+         display.getTransUnitCount().setStats(statusCount);
 
       }
    };

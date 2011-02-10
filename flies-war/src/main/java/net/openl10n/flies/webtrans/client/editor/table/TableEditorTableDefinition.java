@@ -1,6 +1,5 @@
 package net.openl10n.flies.webtrans.client.editor.table;
 
-import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.webtrans.client.editor.filter.ContentFilter;
 import net.openl10n.flies.webtrans.client.ui.HighlightingLabel;
 import net.openl10n.flies.webtrans.shared.model.TransUnit;
@@ -179,15 +178,15 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          }
 
          @Override
-         public void gotoNextFuzzy(int row, ContentState state)
+         public void gotoNextFuzzy(int row)
          {
-            tableModel.gotoNextFuzzy(row, state);
+            tableModel.gotoNextFuzzy(row);
          }
 
          @Override
-         public void gotoPrevFuzzy(int row, ContentState state)
+         public void gotoPrevFuzzy(int row)
          {
-            tableModel.gotoPrevFuzzy(row, state);
+            tableModel.gotoPrevFuzzy(row);
          }
       };
       this.targetCellEditor = new InlineTargetCellEditor(messages, cancelCallBack, transValueCallBack);

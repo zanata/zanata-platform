@@ -1,6 +1,5 @@
 package net.openl10n.flies.webtrans.client.editor.table;
 
-import net.openl10n.flies.common.ContentState;
 
 public interface EditRowCallback
 {
@@ -8,7 +7,7 @@ public interface EditRowCallback
 
    void gotoPrevRow(int row);
 
-   void gotoNextFuzzy(int row, ContentState state);
+   void gotoNextFuzzy(int row);
 
-   void gotoPrevFuzzy(int row, ContentState state);
+   void gotoPrevFuzzy(int row);
 }

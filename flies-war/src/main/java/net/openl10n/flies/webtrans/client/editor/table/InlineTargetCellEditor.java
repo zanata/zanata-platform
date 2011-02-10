@@ -1,3 +1,23 @@
+/*
+ * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * @author tags. See the copyright.txt file in the distribution for a full
+ * listing of individual contributors.
+ * 
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+ * site: http://www.fsf.org.
+ */
 package net.openl10n.flies.webtrans.client.editor.table;
 
 import net.openl10n.flies.common.ContentState;
@@ -123,7 +143,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    private boolean isFocused = false;
 
-   private Image stateImage;
+   // private Image stateImage;
 
    private int curRow;
    private int curCol;
@@ -198,16 +218,18 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             {
                cancelEdit();
             }
-            else if (event.isControlKeyDown() && event.isShiftKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN)
-            { // was alt-e
-               handleNextState(ContentState.NeedReview);
-            }
-            else if (event.isControlKeyDown() && event.isShiftKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEUP)
-            { // was alt-m
-               handlePrevState(ContentState.NeedReview);
-               // } else if(event.isControlKeyDown() && event.getNativeKeyCode()
-               // == KeyCodes.KEY_PAGEDOWN) { // bad in Firefox
-            }
+            // else if (event.isControlKeyDown() && event.isShiftKeyDown() &&
+            // event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN)
+            // { // was alt-e
+            // handleNextState(ContentState.NeedReview);
+            // }
+            // else if (event.isControlKeyDown() && event.isShiftKeyDown() &&
+            // event.getNativeKeyCode() == KeyCodes.KEY_PAGEUP)
+            // { // was alt-m
+            // handlePrevState(ContentState.NeedReview);
+            // // } else if(event.isControlKeyDown() && event.getNativeKeyCode()
+            // // == KeyCodes.KEY_PAGEDOWN) { // bad in Firefox
+            // }
             else if (event.isAltKeyDown() && event.isDownArrow())
             {
                handleNext();
@@ -219,12 +241,12 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
                handlePrev();
             }
             else if (event.isAltKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN)
-            { // alt-down
-               handleNextState(ContentState.New);
+            { // alt-pagedown
+               handleNextState();
             }
             else if (event.isAltKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEUP)
-            { // alt-up
-               handlePrevState(ContentState.New);
+            { // alt-pageup
+               handlePrevState();
             }
             else if (event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_HOME)
             { // ctrl-home
@@ -245,8 +267,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       layoutTable.add(operationsPanel);
 
       // icon as the current state of the unit
-      stateImage = new Image(resources.newUnit());
-      operationsPanel.add(stateImage);
+      // stateImage = new Image(resources.newUnit());
+      // operationsPanel.add(stateImage);
 
       // Add content widget
       toggleFuzzy = new CheckBox(messages.fuzzy());
@@ -283,14 +305,14 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       editRowCallback.gotoPrevRow(row);
    }
 
-   private void gotoNextFuzzy(int row, ContentState state)
+   private void gotoNextFuzzy(int row)
    {
-      editRowCallback.gotoNextFuzzy(row, state);
+      editRowCallback.gotoNextFuzzy(row);
    }
 
-   private void gotoPrevFuzzy(int row, ContentState state)
+   private void gotoPrevFuzzy(int row)
    {
-      editRowCallback.gotoPrevFuzzy(row, state);
+      editRowCallback.gotoPrevFuzzy(row);
    }
 
    private void restoreView()
@@ -376,18 +398,18 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       textArea.setFocus(true);
       DOM.scrollIntoView(textArea.getElement());
       toggleFuzzy.setValue(cellValue.getStatus() == ContentState.NeedReview);
-      refreshStateImage();
+      // refreshStateImage();
    }
 
-   private void refreshStateImage()
-   {
-      if (cellValue.getStatus() == ContentState.New)
-         stateImage.setUrl(resources.newUnit().getURL());
-      else if (cellValue.getStatus() == ContentState.NeedReview)
-         stateImage.setUrl(resources.fuzzyUnit().getURL());
-      else if (cellValue.getStatus() == ContentState.Approved)
-         stateImage.setUrl(resources.approvedUnit().getURL());
-   }
+   // private void refreshStateImage()
+   // {
+   // if (cellValue.getStatus() == ContentState.New)
+   // stateImage.setUrl(resources.newUnit().getURL());
+   // else if (cellValue.getStatus() == ContentState.NeedReview)
+   // stateImage.setUrl(resources.fuzzyUnit().getURL());
+   // else if (cellValue.getStatus() == ContentState.Approved)
+   // stateImage.setUrl(resources.approvedUnit().getURL());
+   // }
 
    /**
     * Accept the contents of the cell editor as the new cell value.
@@ -472,14 +494,14 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       gotoPrevRow(curRow);
    }
 
-   public void handleNextState(ContentState state)
+   public void handleNextState()
    {
-      gotoNextFuzzy(curRow, state);
+      gotoNextFuzzy(curRow);
    }
 
-   public void handlePrevState(ContentState state)
+   public void handlePrevState()
    {
-      gotoPrevFuzzy(curRow, state);
+      gotoPrevFuzzy(curRow);
    }
 
    // public void handleNextNew() {

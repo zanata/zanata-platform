@@ -1,3 +1,23 @@
+/*
+ * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * @author tags. See the copyright.txt file in the distribution for a full
+ * listing of individual contributors.
+ * 
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+ * site: http://www.fsf.org.
+ */
 package net.openl10n.flies.action;
 
 import java.io.Serializable;
@@ -5,11 +25,8 @@ import java.io.Serializable;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
-import net.openl10n.flies.dao.AccountDAO;
-import net.openl10n.flies.model.HAccount;
-import net.openl10n.flies.model.HAccountActivationKey;
 import net.openl10n.flies.model.HPerson;
-import net.openl10n.flies.util.HashUtil;
+import net.openl10n.flies.service.RegisterService;
 
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
@@ -24,9 +41,6 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.faces.Renderer;
 import org.jboss.seam.log.Log;
-import org.jboss.seam.security.Identity;
-import org.jboss.seam.security.RunAsOperation;
-import org.jboss.seam.security.management.IdentityManager;
 
 @Name("register")
 @Scope(ScopeType.CONVERSATION)
@@ -42,13 +56,7 @@ public class RegisterAction implements Serializable
    private EntityManager entityManager;
 
    @In
-   private Identity identity;
-
-   @In
-   private AccountDAO accountDAO;
-
-   @In
-   private IdentityManager identityManager;
+   RegisterService registerServiceImpl;
 
    @In(create = true)
    private Renderer renderer;
@@ -168,27 +176,11 @@ public class RegisterAction implements Serializable
       {
          return null;
       }
-
-      new RunAsOperation()
-      {
-         public void execute()
-         {
-            identityManager.createUser(getUsername(), getPassword());
-            identityManager.disableUser(getUsername());
-         }
-      }.addRole("admin").run();
-
-      HAccount account = accountDAO.getByUsername(getUsername());
-
-      person.setAccount(account);
-      entityManager.persist(person);
-
-      HAccountActivationKey key = new HAccountActivationKey();
-      key.setAccount(account);
-      key.setKeyHash(HashUtil.generateHash(getUsername() + getPassword() + getPerson().getEmail() + getPerson().getName() + System.currentTimeMillis()));
-      entityManager.persist(key);
-
-      setActivationKey(key.getKeyHash());
+      final String user = getUsername();
+      final String pass = getPassword();
+      String key = registerServiceImpl.register(user, pass, getPerson().getName(), getPerson().getEmail());
+      setActivationKey(key);
+      log.info("get register key:" + key);
 
       renderer.render("/WEB-INF/facelets/email/activation.xhtml");
 

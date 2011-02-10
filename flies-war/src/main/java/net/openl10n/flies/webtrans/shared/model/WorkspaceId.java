@@ -12,6 +12,7 @@ public final class WorkspaceId implements Serializable
    private ProjectIterationId projectIterationId;
    private LocaleId localeId;
 
+   // for GWT
    @SuppressWarnings("unused")
    private WorkspaceId()
    {

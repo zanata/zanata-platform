@@ -11,8 +11,28 @@
 
     <ui:define name="center_content">
         <rich:jQuery selector="#tab_tribes" query="addClass('ui-tabs-selected')" />
+	<rich:panel id="memberPanel" >
         <h1>#{languageTeamAction.locale.retrieveNativeName()}</h1>
         <p>#{messages['jsf.SizeMembers']}</p>
+		<rich:dataTable 
+		    id="threads"
+		    value="#{languageTeamAction.locale.members.toArray()}" 
+		    var="member" rendered="#{languageTeamAction.locale.members.size != 0}">
+
+		  <rich:column width="auto">
+		    <f:facet name="header">#{messages['jsf.Username']}</f:facet>
+		    #{member.account.username}
+		  </rich:column>
+		  <rich:column width="auto">
+		    <f:facet name="header">#{messages['jsf.Name']}</f:facet>
+		    #{member.name}
+		  </rich:column>
+		  <rich:column width="auto">
+		    <f:facet name="header">#{messages['jsf.Email']}</f:facet>
+		    #{member.email}
+		  </rich:column>
+		</rich:dataTable>
+        </rich:panel>
     </ui:define>
 
     <ui:define name="left_content">
@@ -20,7 +40,7 @@
         <f:facet name="header">
           #{messages['jsf.Actions']}
         </f:facet>
-        <a:form id="Language_team_member_toggle_form" ajaxSubmit="true" reRender="actionPanel,tribesTabDiv">
+        <a:form id="Language_team_member_toggle_form" ajaxSubmit="true" reRender="actionPanel,tribesTabDiv,memberPanel">
           <a:commandLink id="Join" styleClass="action_link" action="#{languageTeamAction.joinTribe}" rendered="#{not languageTeamAction.contained}">
             #{messages['jsf.JoinLanguageTeam']}
             <s:conversationId name="id" value="#{languageTeamAction.language}"/>

@@ -62,15 +62,16 @@ public class PublicanPullCommand extends ConfigurableProjectCommand
       log.info("Project: {}", opts.getProj());
       log.info("Version: {}", opts.getProjectVersion());
       log.info("Username: {}", opts.getUsername());
-      log.info("Destination directory: {}", opts.getDstDir());
       if (opts.getExportPot())
       {
          log.info("Exporting source and target (translation) documents");
+         log.info("POT directory (originals): {}", opts.getDstDirPot());
       }
       else
       {
          log.info("Exporting target documents (translations) only");
       }
+      log.info("PO base directory (translations): {}", opts.getDstDir());
 
       LocaleList locales = opts.getLocales();
       if (locales == null)
@@ -92,7 +93,7 @@ public class PublicanPullCommand extends ConfigurableProjectCommand
          if (opts.getExportPot())
          {
             log.info("writing POT for document {}", docName);
-            poWriter.writePot(opts.getDstDir(), doc);
+            poWriter.writePotToDir(opts.getDstDirPot(), doc);
          }
 
          for (LocaleMapping locMapping : locales)

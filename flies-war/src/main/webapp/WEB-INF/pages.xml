@@ -17,17 +17,22 @@
   </page>
 
   <!-- Account -->
+   <page view-id="/account/login.xhtml">
+    <header name="Cache-Control" value="no-cache, no-store, max-age=0, must-revalidate" />
+    <action execute="#{spNegoIdentity.execute}"/>
+    <action execute="#{spNegoIdentity.redirect}" />
+  </page>
 
-  <page view-id="/account/login.xhtml">
-    <param name="continue" value="#{userRedirect.encodedUrl}" />
+   <page view-id="/account/login_input.xhtml">
     <header name="Cache-Control" value="no-cache, no-store, max-age=0, must-revalidate" />
     <navigation from-action="#{identity.login}">
-      <rule if="#{identity.loggedIn and not userRedirect.redirect}">
-        <end-conversation before-redirect="true" />
+      <rule if="#{identity.loggedIn and fliesExternalLoginBean.newUser}">
+        <redirect view-id="/profile/edit.xhtml" />
+      </rule>
+      <rule if="#{identity.loggedIn and !fliesExternalLoginBean.newUser and !userRedirect.redirect}">
         <redirect view-id="/home.xhtml" />
       </rule>
-      <rule if="#{identity.loggedIn and userRedirect.redirect}">
-        <end-conversation before-redirect="true" />
+      <rule if="#{identity.loggedIn and !fliesExternalLoginBean.newUser and userRedirect.redirect}">
         <redirect url="#{userRedirect.url}" />
       </rule>
     </navigation>
@@ -46,14 +51,19 @@
     <action execute="#{activate.activate}" />
   </page>
 
+  <page view-id="/account/email_validation.xhtml" login-required="true">
+    <param name="key" value="#{validateEmail.activationKey}" />
+    <action execute="#{validateEmail.validate}" />
+  </page>
+
   <page view-id="/account/password_reset.xhtml">
-    <restrict>#{not identityStore.nukesActive}</restrict>
+    <restrict>#{fliesInit.internalAuthentication}</restrict>
     <param name="key" value="#{passwordReset.activationKey}" />
     <action execute="#{passwordReset.validateActivationKey}" />
   </page>
 
   <page view-id="/account/changepassword.xhtml" login-required="true">
-    <restrict>#{not identityStore.nukesActive}</restrict>
+    <restrict>#{fliesInit.internalAuthentication}</restrict>
   </page>
 
   <!-- Admin -->
@@ -114,46 +124,28 @@
   
   <page view-id="/admin/languagemanager.xhtml" action="#{languageSearchAction.loadSupportedLanguage}" />
 
-  <!-- Community -->
-
-  <page view-id="/community/community.xhtml">
-    <param name="slug" value="#{communityHome.id}" />
-    <action execute="#{communityHome.validateSuppliedId}" />
-  </page>
-
-  <page view-id="/community/create_community.xhtml">
-    <restrict>#{s:hasPermission(communityHome.instance, 'insert')}</restrict>
-    <navigation from-action="#{communityHome.persist}">
-      <rule if="#{communityHome.managed}">
-        <redirect view-id="/community/community.xhtml">
-          <param name="slug" value="#{communityHome.instance.slug}" />
-        </redirect>
-      </rule>
-    </navigation>
-    <navigation from-action="#{communityHome.cancel}">
-      <redirect view-id="/community/home.xhtml" />
-    </navigation>
-  </page>
-
-  <page view-id="/community/edit.xhtml">
-    <param name="slug" value="#{communityHome.id}" />
-    
-    <!-- can't use <restrict> here either -->
-    <action execute="#{identity.checkPermission(communityHome.instance, 'update')}" />
-    <navigation from-action="#{communityHome.update}">
-      <redirect view-id="/community/community.xhtml"
-        include-page-params="true" />
-    </navigation>
-    <navigation from-action="#{communityHome.cancel}">
-      <redirect view-id="/community/community.xhtml"
-        include-page-params="true" />
-    </navigation>
-  </page>
-
   <!-- Profile -->
 
-  <page view-id="/profile/edit.xhtml" login-required="true" />
-
+  <page view-id="/profile/edit.xhtml">
+  	<restrict>#{identity.preAuthenticated}</restrict>
+    <navigation from-action="#{profileAction.edit}">
+      <rule if-outcome="home">
+	      <redirect view-id="/home.xhtml" />
+      </rule>
+      <rule if-outcome="updated">
+	      <redirect view-id="/profile/view.xhtml" />
+      </rule>
+    </navigation>
+    <navigation from-action="#{profileAction.cancel}">
+      <rule if-outcome="home">
+	      <redirect view-id="/home.xhtml" />
+      </rule>
+      <rule if-outcome="view">
+	      <redirect view-id="/profile/view.xhtml" />
+      </rule>
+    </navigation>
+  </page>
+  
   <page view-id="/profile/view.xhtml" login-required="true" />
 
   <!-- Project -->
@@ -317,7 +309,14 @@
 
   <exception class="org.jboss.seam.security.NotLoggedInException"
     log-level="debug">
-    <redirect view-id="/account/login.xhtml">
+    <redirect view-id="/account/login_input.xhtml">
+      <message severity="warn">#{messages['org.jboss.seam.NotLoggedIn']}</message>
+    </redirect>
+  </exception>
+
+  <exception class="javax.security.auth.login.LoginException"
+    log-level="debug">
+    <redirect view-id="/account/login_input.xhtml">
       <message severity="warn">#{messages['org.jboss.seam.NotLoggedIn']}</message>
     </redirect>
   </exception>
@@ -339,5 +338,6 @@
       <message severity="error">#{messages['jsf.UnexpectedErrorPleaseTryAgain']}</message>
     </redirect>
   </exception>
+
 
 </pages>

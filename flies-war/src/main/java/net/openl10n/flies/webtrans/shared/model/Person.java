@@ -10,6 +10,7 @@ public class Person implements HasIdentifier<PersonId>, Serializable
    private PersonId id;
    private String name;
 
+   // for GWT
    @SuppressWarnings("unused")
    private Person()
    {

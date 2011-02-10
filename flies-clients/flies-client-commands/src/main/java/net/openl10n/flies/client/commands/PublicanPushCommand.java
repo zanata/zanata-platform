@@ -71,7 +71,6 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
       log.info("Version: {}", opts.getProjectVersion());
       log.info("Username: {}", opts.getUsername());
       log.info("Source language: {}", opts.getSourceLang());
-      log.info("Source directory: {}", opts.getSrcDir());
       if (opts.getImportPo())
       {
          log.info("Importing source and target documents");
@@ -80,11 +79,16 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
       {
          log.info("Importing source documents only");
       }
-      File potDir = new File(opts.getSrcDir(), "pot");
+      log.info("POT directory (originals): {}", opts.getSrcDirPot());
+      if (opts.getImportPo())
+      {
+         log.info("PO base directory (translations): {}", opts.getSrcDir());
+      }
+      File potDir = opts.getSrcDirPot();
 
       if (!potDir.exists())
       {
-         throw new RuntimeException("directory '" + potDir + "' does not exist - is srcDir set correctly?");
+         throw new RuntimeException("directory '" + potDir + "' does not exist - check srcDir and srcDirPot options");
       }
 
       Console console = System.console();

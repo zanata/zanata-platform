@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.ws.rs.Consumes;
@@ -37,6 +38,7 @@ import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.common.Namespaces;
 import net.openl10n.flies.dao.DocumentDAO;
+import net.openl10n.flies.dao.LocaleDAO;
 import net.openl10n.flies.dao.PersonDAO;
 import net.openl10n.flies.dao.ProjectIterationDAO;
 import net.openl10n.flies.dao.TextFlowTargetDAO;
@@ -45,6 +47,7 @@ import net.openl10n.flies.model.HDocument;
 import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.model.HPerson;
 import net.openl10n.flies.model.HProjectIteration;
+import net.openl10n.flies.model.HSimpleComment;
 import net.openl10n.flies.model.HTextFlow;
 import net.openl10n.flies.model.HTextFlowTarget;
 import net.openl10n.flies.rest.NoSuchEntityException;
@@ -58,11 +61,11 @@ import net.openl10n.flies.rest.dto.resource.TranslationsResource;
 import net.openl10n.flies.service.LocaleService;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Session;
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.jboss.resteasy.util.GenericType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.security.Admin;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
@@ -93,6 +96,10 @@ public class TranslationResourcesService
    @QueryParam("ext")
    @DefaultValue("")
    private Set<String> extensions;
+   
+   @QueryParam("copyTrans")
+   @DefaultValue("false")
+   private boolean copytrans;
 
 
    @HeaderParam("Content-Type")
@@ -133,6 +140,9 @@ public class TranslationResourcesService
    @In
    private LocaleService localeServiceImpl;
 
+   @In
+   private LocaleDAO localeDAO;
+   
    public TranslationResourcesService()
    {
    }
@@ -206,10 +216,8 @@ public class TranslationResourcesService
 
 
    @POST
-   @Admin
    public Response post(InputStream messageBody)
    {
-
       HProjectIteration hProjectIteration = retrieveIteration();
 
       identity.checkPermission(hProjectIteration, ACTION_IMPORT_TEMPLATE);
@@ -239,12 +247,17 @@ public class TranslationResourcesService
          document.setProjectIteration(hProjectIteration);
       }
       hProjectIteration.getDocuments().put(entity.getName(), document);
-
+      
       resourceUtils.transferFromResource(entity, document, extensions, hLocale, nextDocRev);
 
       document = documentDAO.makePersistent(document);
       documentDAO.flush();
-
+      
+      if (copytrans)
+      {
+    	  copyClosestEquivalentTranslation(document);
+      }
+           
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, document.getDocId(), extensions);
 
       return Response.created(URI.create("r/" + resourceUtils.encodeDocId(document.getDocId()))).tag(etag).build();
@@ -313,7 +326,6 @@ public class TranslationResourcesService
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE)
    // /r/{id}
-   @Admin
    public Response putResource(@PathParam("id") String idNoSlash, InputStream messageBody)
    {
       log.debug("start put resource");
@@ -385,6 +397,12 @@ public class TranslationResourcesService
          etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
       }
 
+
+      if (copytrans)
+      {
+    	 copyClosestEquivalentTranslation(document);
+      }
+            
       log.debug("put resource successfully");
       return response.tag(etag).build();
 
@@ -393,11 +411,12 @@ public class TranslationResourcesService
    @DELETE
    @Path(RESOURCE_SLUG_TEMPLATE)
    // /r/{id}
-   @Admin
    public Response deleteResource(@PathParam("id") String idNoSlash)
    {
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveIteration();
+
+      identity.checkPermission(hProjectIteration, ACTION_IMPORT_TEMPLATE);
 
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
 
@@ -450,7 +469,6 @@ public class TranslationResourcesService
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE + "/meta")
    // /r/{id}/meta
-   @Admin
    public Response putResourceMeta(@PathParam("id") String idNoSlash, InputStream messageBody)
    {
       log.debug("start to put resource meta");
@@ -555,11 +573,11 @@ public class TranslationResourcesService
    @DELETE
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    // /r/{id}/translations/{locale}
-   @Admin
    public Response deleteTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale)
    {
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveIteration();
+      identity.checkPermission(hProjectIteration, ACTION_IMPORT_TRANSLATION);
 
       // TODO find correct etag
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, id, extensions);
@@ -593,7 +611,6 @@ public class TranslationResourcesService
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    // /r/{id}/translations/{locale}
-   @Admin
    public Response putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, InputStream messageBody)
    {
       log.debug("start put translations");
@@ -788,6 +805,72 @@ public class TranslationResourcesService
          throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity("Unsupported Extensions within this context: " + StringUtils.join(invalidExtensions, ",")).build());
 
       }
+   }
+   
+   private HSimpleComment createComment(HTextFlowTarget target) 
+   {
+	  String authorname;
+	  HDocument document = target.getTextFlow().getDocument();
+	  String projectname = document.getProjectIteration().getProject().getName();
+	  String version = document.getProjectIteration().getSlug();
+	  String documentid = document.getDocId();
+	  if (target.getLastModifiedBy()!=null)
+	  {
+		 authorname = target.getLastModifiedBy().getName();
+	  }
+	  else
+	  {
+		 authorname = "";
+	  }
+	  
+	  return new HSimpleComment("translation auto-copied from project "+projectname+", version "+version+", document "+documentid+", author "+authorname);
+   }
+   
+   public void copyClosestEquivalentTranslation(HDocument document) 
+   {
+	  List<HTextFlowTarget> newTargets = new ArrayList<HTextFlowTarget>();
+	  
+	  for (HTextFlow textFlow : document.getTextFlows())
+	  {
+		 // find closest equivalent textflowtarget
+		 List<HLocale> localelist = localeDAO.findAllActive();
+		 for (HLocale locale : localelist)
+		 {
+			// check whether the textFlow have textflowtarget
+			HTextFlowTarget result = textFlow.getTargets().get(locale);
+			if (result == null)
+			{
+			   HTextFlowTarget from = textFlowTargetDAO.findClosestEquivalentTranslation(textFlow, locale.getLocaleId());
+			   if (from != null)
+			   {
+				  HTextFlowTarget hTarget = new HTextFlowTarget(textFlow, from.getLocale());
+				  hTarget.setVersionNum(from.getVersionNum());
+				  hTarget.setContent(from.getContent());
+				  hTarget.setState(from.getState());
+				  HSimpleComment hcomment = createComment(from);
+				  hTarget.setComment(hcomment);
+				  textFlow.getTargets().put(from.getLocale(), hTarget);
+				  newTargets.add(hTarget);
+			   }
+			}
+		 
+		 }
+	      
+	  }
+
+	  if (!newTargets.isEmpty() )
+	  {
+		 
+		 for (HTextFlowTarget target : newTargets)
+		 {
+			 textFlowTargetDAO.makePersistent(target);
+		 }
+	    	
+		 textFlowTargetDAO.flush();
+		 documentDAO.flush();
+	  
+	  }
+	    	 
    }
 
 }

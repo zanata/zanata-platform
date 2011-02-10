@@ -2,7 +2,9 @@ package net.openl10n.flies.webtrans.client;
 
 import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.common.TransUnitCount;
-import net.openl10n.flies.webtrans.client.editor.HasTransUnitCount;
+import net.openl10n.flies.common.TransUnitWords;
+import net.openl10n.flies.common.TranslationStats;
+import net.openl10n.flies.webtrans.client.editor.HasTranslationStats;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
@@ -17,7 +19,7 @@ import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class TransUnitCountBar extends Composite implements HasTransUnitCount
+public class TransUnitCountBar extends Composite implements HasTranslationStats
 {
 
    private static TransUnitCountBarUiBinder uiBinder = GWT.create(TransUnitCountBarUiBinder.class);
@@ -26,10 +28,7 @@ public class TransUnitCountBar extends Composite implements HasTransUnitCount
    {
    }
 
-   private CountUnit countUnit = CountUnit.TranslationUnit;
-   private LabelFormat labelFormat = LabelFormat.Percentage;
-   private boolean toggleEnabled = true;
-   private boolean labelVisible = true;
+   private LabelFormat labelFormat = LabelFormat.PERCENT_COMPLETE;
 
    @UiField
    LayoutPanel layoutPanel;
@@ -40,7 +39,7 @@ public class TransUnitCountBar extends Composite implements HasTransUnitCount
    @UiField
    Label label;
 
-   private final TransUnitCount count = new TransUnitCount();
+   private final TranslationStats stats = new TranslationStats();
 
    private final WebTransMessages messages;
 
@@ -53,6 +52,8 @@ public class TransUnitCountBar extends Composite implements HasTransUnitCount
 
    public void refresh()
    {
+      TransUnitCount count = stats.getUnitCount();
+      TransUnitWords words = stats.getWordCount();
       int approved = count.get(ContentState.Approved);
       int needReview = count.get(ContentState.NeedReview);
       int untranslated = count.get(ContentState.New);
@@ -69,6 +70,13 @@ public class TransUnitCountBar extends Composite implements HasTransUnitCount
       }
       else
       {
+         if (labelFormat != LabelFormat.MESSAGE_COUNTS)
+         {
+            approved = words.get(ContentState.Approved);
+            needReview = words.get(ContentState.NeedReview);
+            untranslated = words.get(ContentState.New);
+            total = approved + needReview + untranslated;
+         }
          int completePx = approved * 100 / total * width / 100;
          int inProgressPx = needReview * 100 / total * width / 100;
          ;
@@ -83,27 +91,35 @@ public class TransUnitCountBar extends Composite implements HasTransUnitCount
 
          switch (labelFormat)
          {
-         case Percentage:
+         case PERCENT_COMPLETE:
             label.setText(messages.statusBarLabelPercentage(approved * 100 / total, needReview * 100 / total, untranslated * 100 / total));
             break;
-         case Unit:
+         case HOURS_REMAIN:
+            double remainHours = remainingHours(needReview, untranslated);
+            // label.setText(NumberFormat.getFormat("0.0").format(remainHours));
+            label.setText(messages.statusBarLabelWork(remainHours));
+            break;
+         case WORD_COUNTS:
+            label.setText(messages.statusBarLabelWords(approved, needReview, untranslated));
+            break;
+         case MESSAGE_COUNTS:
             label.setText(messages.statusBarLabelUnits(approved, needReview, untranslated));
             break;
+         default:
+            // error
+            label.setText("error: " + labelFormat.name());
          }
       }
 
       layoutPanel.animate(1000);
    }
 
-   public void setCountUnit(CountUnit countUnit)
+   protected double remainingHours(int fuzzyWords, int untranslatedWords)
    {
-      this.countUnit = countUnit;
-      refresh();
-   }
-
-   public CountUnit getCountUnit()
-   {
-      return countUnit;
+      double untransHours = untranslatedWords / 250.0;
+      double fuzzyHours = fuzzyWords / 500.0;
+      double remainHours = untransHours + fuzzyHours;
+      return remainHours;
    }
 
    public void setLabelFormat(LabelFormat labelFormat)
@@ -112,85 +128,16 @@ public class TransUnitCountBar extends Composite implements HasTransUnitCount
       refresh();
    }
 
-   public LabelFormat getLabelFormat()
-   {
-      return labelFormat;
-   }
-
-   @Override
-   public void setToggleEnabled(boolean toggleEnabled)
-   {
-      this.toggleEnabled = toggleEnabled;
-   }
-
-   @Override
-   public boolean isToggleEnabled()
-   {
-      return toggleEnabled;
-   }
-
-   @Override
-   public void setLabelVisible(boolean labelVisible)
-   {
-      this.labelVisible = labelVisible;
-      label.setVisible(labelVisible);
-   }
-
-   @Override
-   public boolean isLabelVisible()
-   {
-      return labelVisible;
-   }
-
    @UiHandler("label")
    public void onLabelClick(ClickEvent event)
    {
-      if (toggleEnabled)
-      {
-         switch (labelFormat)
-         {
-         case Percentage:
-            setLabelFormat(LabelFormat.Unit);
-            break;
-         case Unit:
-            setLabelFormat(LabelFormat.Percentage);
-            break;
-         }
-      }
+      setLabelFormat(labelFormat.next());
    }
 
    @Override
-   public int getTotal()
+   public void setStats(TranslationStats stats)
    {
-      return count.getTotal();
-   }
-
-   @Override
-   public int getCount(ContentState state)
-   {
-      return count.get(state);
-   }
-
-   @Override
-   public void setCount(ContentState state, int count)
-   {
-      this.count.set(state, count);
-      refresh();
-   }
-
-   @Override
-   public void setCount(int approved, int needReview, int untranslated)
-   {
-      count.set(ContentState.Approved, approved);
-      count.set(ContentState.NeedReview, needReview);
-      count.set(ContentState.New, untranslated);
-      refresh();
-   }
-
-   @Override
-   public void setCount(TransUnitCount count)
-   {
-      this.count.set(count);
+      this.stats.set(stats);
       refresh();
    }
 }

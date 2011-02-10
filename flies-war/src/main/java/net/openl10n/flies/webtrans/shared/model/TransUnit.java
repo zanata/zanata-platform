@@ -22,6 +22,7 @@ public class TransUnit implements IsSerializable, Serializable
    private String sourceComment;
    private String target;
 
+   // for GWT
    @SuppressWarnings("unused")
    private TransUnit()
    {

@@ -8,6 +8,6 @@
             <loader-repository-config>java2ParentDelegation=false</loader-repository-config>
         </loader-repository>
     </class-loading>
-    <context-root>/${war.name}</context-root>
+    <security-domain>java:/jaas/${jaas.configure}</security-domain>
     <depends>jboss.jca:service=DataSourceBinding,name=${ds.jndi.name}</depends>
 </jboss-web>

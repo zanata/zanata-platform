@@ -1,11 +1,18 @@
 package net.openl10n.flies.webtrans.client.events;
 
-import net.openl10n.flies.common.ContentState;
 
 import com.google.gwt.event.shared.GwtEvent;
 
 public class NavTransUnitEvent extends GwtEvent<NavTransUnitHandler>
 {
+   public enum NavigationType
+   {
+      PrevEntry, NextEntry, PrevFuzzyOrUntranslated, NextFuzzyOrUntranslated,
+   }
+
+   private static int DEFAULT_STEP = 1;
+   private NavigationType rowType;
+   private int step;
 
    /**
     * Handler type.
@@ -22,20 +29,27 @@ public class NavTransUnitEvent extends GwtEvent<NavTransUnitHandler>
       return TYPE != null ? TYPE : (TYPE = new Type<NavTransUnitHandler>());
    }
 
-   private ContentState rowType;
-   private int step;
+
 
    /**
-    * ContentState may be New, NeedApproved or null. stepValue may be -1 or +1.
+    * NavigationType may be PrevEntry, NextEntry, PrevFuzzyOrUntranslated or
+    * NextFuzzyOrUntranslated.
     * 
     * @param typeValue
     * @param stepValue
     */
-   public NavTransUnitEvent(ContentState typeValue, int stepValue)
+   public NavTransUnitEvent(NavigationType typeValue, int stepValue)
    {
       this.rowType = typeValue;
       this.step = stepValue;
    }
+
+   public NavTransUnitEvent(NavigationType typeValue)
+   {
+      this.rowType = typeValue;
+      this.step = DEFAULT_STEP;
+   }
+
 
    @Override
    protected void dispatch(NavTransUnitHandler handler)
@@ -49,7 +63,7 @@ public class NavTransUnitEvent extends GwtEvent<NavTransUnitHandler>
       return getType();
    }
 
-   public ContentState getRowType()
+   public NavigationType getRowType()
    {
       return rowType;
    }

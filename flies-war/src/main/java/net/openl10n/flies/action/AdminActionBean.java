@@ -3,7 +3,6 @@ package net.openl10n.flies.action;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.openl10n.flies.model.HCommunity;
 import net.openl10n.flies.model.HIterationProject;
 
 import org.hibernate.CacheMode;
@@ -46,7 +45,6 @@ public class AdminActionBean
    public void create()
    {
       indexables.addAll(StandardDeploymentStrategy.instance().getAnnotatedClasses().get(Indexed.class.getName()));
-      indexables.add(HCommunity.class);
       indexables.add(HIterationProject.class);
    }
 

@@ -11,6 +11,8 @@ public class WorkspaceContext implements Serializable
    private String workspaceName;
    private String localeName;
 
+   // for GWT
+   @SuppressWarnings("unused")
    private WorkspaceContext()
    {
    }

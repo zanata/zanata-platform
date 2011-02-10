@@ -1,0 +1,24 @@
+<m:message xmlns="http://www.w3.org/1999/xhtml"
+           xmlns:m="http://jboss.com/products/seam/mail"
+           xmlns:f="http://java.sun.com/jsf/core"
+           xmlns:h="http://java.sun.com/jsf/html"
+           xmlns:ui="http://java.sun.com/jsf/facelets"
+           xmlns:s="http://jboss.com/products/seam/taglib"
+           charset="UTF-8" importance="normal">
+  <m:from name="Flies" >#{applicationConfiguration.adminEmail}</m:from>
+  <m:to name="#{register.person.name}">#{profileAction.email}</m:to>
+  <m:subject>#{messages['jsf.EmailAccountChangeValidation']}</m:subject>
+  <m:body>
+    <html>
+    <body>
+    <p>#{messages['jsf.DearName']}</p>
+    <p>#{messages['jsf.PleaseClickOnTheFollowingLinkToActivateYourEmailAccountChange']}</p>
+    <p>
+      <a href="#{applicationConfiguration.serverPath}/account/validate_email/#{profileAction.activationKey}">
+      #{applicationConfiguration.serverPath}/account/validate_email/#{profileAction.activationKey}
+      </a>
+    </p>
+  </body>
+  </html>
+  </m:body>
+</m:message>

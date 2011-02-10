@@ -14,6 +14,7 @@ public class TransUnitUpdatedEvent extends GwtEvent<TransUnitUpdatedEventHandler
    private final DocumentId documentId;
    private final ContentState previousStatus;
    private final ContentState newStatus;
+   private int wordCount;
 
    /**
     * Handler type.
@@ -40,6 +41,7 @@ public class TransUnitUpdatedEvent extends GwtEvent<TransUnitUpdatedEventHandler
       this.newStatus = data.getNewStatus();
       this.previousStatus = data.getPreviousStatus();
       this.transUnitId = data.getTransUnitId();
+      this.wordCount = data.getWordCount();
    }
 
    @Override
@@ -76,6 +78,12 @@ public class TransUnitUpdatedEvent extends GwtEvent<TransUnitUpdatedEventHandler
    public TransUnitId getTransUnitId()
    {
       return transUnitId;
+   }
+
+   @Override
+   public int getWordCount()
+   {
+      return wordCount;
    }
 
 }

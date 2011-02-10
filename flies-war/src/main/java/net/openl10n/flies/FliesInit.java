@@ -74,16 +74,27 @@ public class FliesInit
    private int authenticatedSessionTimeoutMinutes = 0;
    private String version;
    private String buildTimestamp;
-   private boolean hideRegister;
+   private boolean internalAuthentication;
+   private boolean spNego;
 
-   public boolean isHideRegister()
+   public boolean isSpNego()
    {
-      return hideRegister;
+      return spNego;
    }
 
-   public void setHideRegister(boolean hideRegister)
+   public void setSpNego(boolean var)
    {
-      this.hideRegister = hideRegister;
+      this.spNego = var;
+   }
+
+   public boolean isInternalAuthentication()
+   {
+      return internalAuthentication;
+   }
+
+   public void setInternalAuthentication(boolean internalAuthentication)
+   {
+      this.internalAuthentication = internalAuthentication;
    }
 
    @In(required = false)

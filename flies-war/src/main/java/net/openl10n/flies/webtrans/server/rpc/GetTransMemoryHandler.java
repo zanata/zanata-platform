@@ -1,3 +1,23 @@
+/*
+ * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * @author tags. See the copyright.txt file in the distribution for a full
+ * listing of individual contributors.
+ * 
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+ * site: http://www.fsf.org.
+ */
 package net.openl10n.flies.webtrans.server.rpc;
 
 import java.util.ArrayList;
@@ -12,10 +32,11 @@ import net.customware.gwt.dispatch.shared.ActionException;
 import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.common.util.ShortString;
+import net.openl10n.flies.dao.TextFlowDAO;
 import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.model.HTextFlow;
 import net.openl10n.flies.model.HTextFlowTarget;
-import net.openl10n.flies.search.DefaultNgramAnalyzer;
+import net.openl10n.flies.hibernate.search.DefaultNgramAnalyzer;
 import net.openl10n.flies.search.LevenshteinUtil;
 import net.openl10n.flies.security.FliesIdentity;
 import net.openl10n.flies.service.LocaleService;
@@ -55,6 +76,9 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
    @In
    private LocaleService localeServiceImpl;
 
+   @In
+   private TextFlowDAO textFlowDAO;
+
    @Override
    public GetTranslationMemoryResult execute(GetTranslationMemory action, ExecutionContext context) throws ActionException
    {
@@ -92,7 +116,9 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
          QueryParser parser = new QueryParser(Version.LUCENE_29, "content", new DefaultNgramAnalyzer());
          Query textQuery = parser.parse(queryText);
          FullTextQuery ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlow.class);
-         ftQuery.enableFullTextFilter("translated").setParameter("locale", localeID);
+         List<Long> translatedIds = textFlowDAO.getIdsByTargetState(localeID, ContentState.Approved);
+         log.debug("{0} matching TF ids for locale {0}: {1}", translatedIds.size(), localeID, translatedIds);
+         ftQuery.enableFullTextFilter("translated").setParameter("translatedIds", translatedIds);
          ftQuery.setProjection(FullTextQuery.SCORE, FullTextQuery.THIS);
          @SuppressWarnings("unchecked")
          List<Object[]> matches = ftQuery.setMaxResults(MAX_RESULTS).getResultList();

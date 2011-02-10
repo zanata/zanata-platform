@@ -1,0 +1,9 @@
+<!--
+  set-property-fallback is missing from the DTD:
+  <!DOCTYPE module PUBLIC "//gwt-module/" "http://google-web-toolkit.googlecode.com/svn/tags/2.0.3/distro-source/core/src/gwt-module.dtd">
+-->
+<module rename-to="webtrans">
+	<inherits name="net.openl10n.flies.webtrans.Application"/>
+	<set-property name="user.agent" value="safari"/>
+	<set-property name="locale" value="default"/>
+</module>

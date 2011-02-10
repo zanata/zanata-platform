@@ -23,7 +23,6 @@ import net.openl10n.flies.model.HasSimpleComment;
 import net.openl10n.flies.model.po.HPoHeader;
 import net.openl10n.flies.model.po.HPoTargetHeader;
 import net.openl10n.flies.model.po.HPotEntryData;
-import net.openl10n.flies.model.po.PoUtility;
 import net.openl10n.flies.rest.dto.Person;
 import net.openl10n.flies.rest.dto.extensions.comment.SimpleComment;
 import net.openl10n.flies.rest.dto.extensions.gettext.AbstractResourceMetaExtension;
@@ -95,6 +94,7 @@ public class ResourceUtils
          else
          {
             textFlow = new HTextFlow();
+            textFlow.setDocument(to);
             textFlow.setResId(tf.getId());
             textFlow.setRevision(nextDocRev);
             transferFromTextFlow(tf, textFlow, enabledExtensions);

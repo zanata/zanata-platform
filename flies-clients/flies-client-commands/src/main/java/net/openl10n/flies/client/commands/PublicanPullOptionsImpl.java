@@ -12,6 +12,7 @@ import org.kohsuke.args4j.Option;
 public class PublicanPullOptionsImpl extends ConfigurableProjectOptionsImpl implements PublicanPullOptions
 {
    private File dstDir;
+   private File dstDirPot;
    private boolean exportPot;
 
    @Override
@@ -37,12 +38,26 @@ public class PublicanPullOptionsImpl extends ConfigurableProjectOptionsImpl impl
    public void setDstDir(File dstDir)
    {
       this.dstDir = dstDir;
+      if (dstDirPot == null)
+         dstDirPot = new File(dstDir, "pot");
    }
 
    @Override
    public File getDstDir()
    {
       return dstDir;
+   }
+
+   @Override
+   public void setDstDirPot(File dstDirPot)
+   {
+      this.dstDirPot = dstDirPot;
+   }
+
+   @Override
+   public File getDstDirPot()
+   {
+      return dstDirPot;
    }
 
    @Override

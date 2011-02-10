@@ -17,7 +17,7 @@
           <s:link styleClass="action_link" view="/profile/edit.xhtml" propagation="none">
             #{messages['jsf.EditProfile']}
           </s:link>
-          <s:link styleClass="action_link" view="/account/changepassword.xhtml" propagation="none" rendered="#{not identityStore.hideRegister}">
+          <s:link styleClass="action_link" view="/account/changepassword.xhtml" propagation="none" rendered="#{fliesInit.internalAuthentication}">
             #{messages['jsf.ChangePassword']}
           </s:link>
         </rich:panel>
@@ -45,38 +45,6 @@
                        styleClass="grid_style">
           <ui:include src="../WEB-INF/layout/language_view_inline.xhtml" />
         </rich:dataGrid>
-        <h2>#{messages['jsf.MyCommunities']}</h2>
-        <h:outputText value="None Available" rendered="#{empty personHome.instance.communityOwnerships}"/>
-        <s:div rendered="#{not empty personHome.instance.communityOwnerships}">
-          <h3>#{messages['jsf.Ownerships']}</h3>
-          <rich:dataGrid value="#{personHome.instance.communityOwnerships.toArray()}" 
-                         var="community" 
-                         columns="3"
-                         columnClasses="grid_col"
-                         styleClass="grid_style">
-            <ui:include src="../WEB-INF/layout/community_view_inline.xhtml" />
-          </rich:dataGrid>
-        </s:div>
-        <s:div rendered="#{not empty personHome.instance.communityOfficerships and not empty personHome.instance.communityOfficerships and not empty personHome.instance.communityOwnerships }">
-          <h3>#{messages['jsf.Officerships']}</h3>
-          <rich:dataGrid value="#{personHome.instance.communityOfficerships.toArray()}" 
-                         var="community" 
-                         columns="3"
-                         columnClasses="grid_col"
-                         styleClass="grid_style">
-            <ui:include src="../WEB-INF/layout/community_view_inline.xhtml" />
-          </rich:dataGrid>
-        </s:div>
-        <s:div rendered="#{not empty personHome.instance.communityMemberships}">
-          <h3>#{messages['jsf.Membership']}</h3>
-          <rich:dataGrid value="#{personHome.instance.communityMemberships.toArray()}" 
-                         var="community" 
-                         columns="3"
-                         columnClasses="grid_col"
-                         styleClass="grid_style">
-            <ui:include src="../WEB-INF/layout/community_view_inline.xhtml" />
-          </rich:dataGrid>
-        </s:div>
         <h2>#{messages['jsf.ApiKey']}</h2>
         <h:form>
           <s:token allowMultiplePosts="true" />

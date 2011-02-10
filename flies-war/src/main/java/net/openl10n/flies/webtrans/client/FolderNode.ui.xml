@@ -22,7 +22,7 @@
 		
 	</ui:style>
 	<g:FlowPanel>
-		<g:FlowPanel styleName="{style.body}">
+		<g:FlowPanel height="28px" styleName="{style.body}">
 			<g:Image resource="{resources.folderImage}"/>
 			<g:Label ui:field='folderLabel' styleName="{style.label}"/>
 		</g:FlowPanel>

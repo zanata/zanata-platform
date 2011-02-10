@@ -60,6 +60,19 @@ public class PoWriter2
    {
       // write the POT file to pot/$name.pot
       File potDir = new File(baseDir, "pot");
+      writePotToDir(potDir, doc);
+   }
+
+   /**
+    * Generates a pot file from Resource (document), in the specified directory.
+    * 
+    * @param potDir
+    * @param doc
+    * @throws IOException
+    */
+   public void writePotToDir(File potDir, Resource doc) throws IOException
+   {
+      // write the POT file to $potDir/$name.pot
       File potFile = new File(potDir, doc.getName() + ".pot");
       mkdirs(potFile.getParentFile());
       OutputSource outputSource = new OutputSource(potFile);

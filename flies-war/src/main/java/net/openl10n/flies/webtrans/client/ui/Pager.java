@@ -50,11 +50,8 @@ public class Pager extends Composite implements HasPager
 
    public static final int PAGECOUNT_UNKNOWN = -1;
 
-   private final WebTransMessages messages;
-
    public Pager(final WebTransMessages messages, final Resources resources)
    {
-      this.messages = messages;
       this.resources = resources;
       initWidget(uiBinder.createAndBindUi(this));
 

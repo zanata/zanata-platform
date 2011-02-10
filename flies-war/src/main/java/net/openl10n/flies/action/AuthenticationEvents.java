@@ -20,39 +20,43 @@
  */
 package net.openl10n.flies.action;
 
+import java.io.Serializable;
+
 import net.openl10n.flies.model.HAccount;
 import net.openl10n.flies.model.HPerson;
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.jboss.seam.security.permission.RuleBasedPermissionResolver;
 import org.jboss.seam.security.Identity;
-
-import net.openl10n.flies.security.FliesJpaIdentityStore;
+import net.openl10n.flies.security.FliesExternalLoginBean;
 
 @Name("authenticationEvents")
 @Scope(ScopeType.STATELESS)
-public class AuthenticationEvents
+public class AuthenticationEvents implements Serializable
 {
+
+   /**
+    * 
+    */
+   private static final long serialVersionUID = 1L;
 
    @Logger
    Log log;
-
-   @Out(required = false, scope = ScopeType.SESSION)
-   HPerson authenticatedPerson;
+   
+   @In
+   FliesExternalLoginBean fliesExternalLoginBean;
 
    @Observer(JpaIdentityStore.EVENT_USER_AUTHENTICATED)
    public void loginSuccessful(HAccount account)
    {
       log.info("Account {0} authenticated", account.getUsername());
-
-      authenticatedPerson = account.getPerson();
+      HPerson authenticatedPerson = account.getPerson();
       // insert authenticatedPerson for use in security.drl rules
       RuleBasedPermissionResolver.instance().getSecurityContext().insert(authenticatedPerson);
    }
@@ -67,12 +71,13 @@ public class AuthenticationEvents
    public void loginInSuccessful()
    {
       log.debug("Account logged in successfully");
-      FliesJpaIdentityStore authenticator = (FliesJpaIdentityStore) Component.getInstance("org.jboss.seam.security.identityStore", ScopeType.APPLICATION, true);
-      if (authenticator.isHideRegister())
+      if (fliesExternalLoginBean.externalLogin() && !fliesExternalLoginBean.isNewUser())
       {
-         authenticator.jaasUserLoggedIn();
+         if (!fliesExternalLoginBean.checkDisabledUser())
+         {
+            fliesExternalLoginBean.applyAuthentication();
+         }
       }
    }
-
 
 }

@@ -34,13 +34,18 @@
         <div id="flies_name"><a href="/flies/">#{messages['jsf.FliesMainDescription']}</a></div>
         <div id="header_top_right">
           <h:outputText rendered="#{identity.loggedIn}"
-            value="#{authenticatedPerson == null ? identity.username : authenticatedPerson.account.username} " />
+            value="#{identity.username} " />
           <s:fragment rendered="#{not identity.loggedIn}">
             <s:link id="Sign_in" view="/account/login.xhtml" value="#{messages['jsf.SignIn']}" propagation="none" />
             <rich:spacer width="10px" />
-            <s:link id="Register" view="/account/register.xhtml" value="#{messages['jsf.Register']}" propagation="none" rendered="#{not identityStore.hideRegister}"/>
+            <s:link id="Register" view="/account/register.xhtml" value="#{messages['jsf.Register']}" propagation="none" rendered="#{fliesInit.internalAuthentication}"/>
+            <s:fragment rendered="#{not fliesInit.internalAuthentication}">
+              <a href="#{applicationConfiguration.registerPath}">#{messages['jsf.Register']}</a>
+            </s:fragment>
           </s:fragment>
           <s:link id="Sign_out" view="/home.xhtml" action="#{identity.logout}" value="#{messages['jsf.SignOut']}" rendered="#{identity.loggedIn}" propagation="none" />
+          <rich:spacer width="5px" />
+          <a href="#{applicationConfiguration.helpPath}">#{messages['jsf.Help']}</a>
         </div>
         <div id="loading_top_right">
           <a:status>

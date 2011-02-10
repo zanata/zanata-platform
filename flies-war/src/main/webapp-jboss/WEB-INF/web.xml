@@ -3,8 +3,11 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	version="2.5">
 
-	<!-- RichFaces -->
+	<!-- sso security -->
 
+	<!-- @spnego.security@ -->
+
+	<!-- RichFaces -->
 	<context-param>
 		<param-name>org.richfaces.SKIN</param-name>
 		<param-value>classic</param-value>
@@ -40,6 +43,49 @@
 		<param-name>org.richfaces.LoadScriptStrategy</param-name>
 		<param-value>DEFAULT</param-value>
 	</context-param>
+
+
+	<!-- 
+	Make sure Liquibase is the first listener, so that it can update the database schema before
+	anyone uses the database.
+	 -->
+
+	<context-param>
+	    <param-name>LIQUIBASE_CHANGELOG</param-name>
+	    <param-value>db/db.changelog.xml</param-value>
+	</context-param>
+	 
+	<context-param>
+	    <param-name>LIQUIBASE_DATA_SOURCE</param-name>
+	    <param-value>java:/${ds.jndi.name}</param-value>
+	</context-param>
+	<!-- 
+	<context-param>
+	    <param-name>LIQUIBASE_HOST_EXCLUDES</param-name>
+	    <param-value>production1.example.com, production2.example.com</param-value>
+	</context-param>
+	 -->
+	 
+	<context-param>
+	    <param-name>LIQUIBASE_FAIL_ON_ERROR</param-name>
+	    <param-value>true</param-value>
+	</context-param>
+	
+	<!-- 
+	<context-param>
+	    <param-name>LIQUIBASE_CONTEXTS</param-name>
+	    <param-value>production</param-value>
+	</context-param>
+	 --> 
+<!--
+-->
+	<listener>
+	    <listener-class>liquibase.servlet.LiquibaseServletListener</listener-class>
+	</listener>
+
+
+
+
 
 	<!-- Seam -->
 
@@ -149,5 +195,5 @@
         <extension>xrd</extension>
         <mime-type>application/xrd+xml</mime-type>
     </mime-mapping>
-        
+    
 </web-app>

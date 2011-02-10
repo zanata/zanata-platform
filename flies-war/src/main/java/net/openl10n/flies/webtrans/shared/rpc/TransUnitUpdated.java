@@ -13,6 +13,7 @@ public class TransUnitUpdated implements SessionEventData, HasTransUnitUpdatedDa
 
    private TransUnitId transUnitId;
    private DocumentId documentId;
+   private int wordCount;
    private ContentState previousStatus;
    private ContentState newStatus;
 
@@ -21,10 +22,11 @@ public class TransUnitUpdated implements SessionEventData, HasTransUnitUpdatedDa
    {
    }
 
-   public TransUnitUpdated(DocumentId documentId, TransUnitId transUnitId, ContentState previousStatus, ContentState newStatus)
+   public TransUnitUpdated(DocumentId documentId, TransUnitId transUnitId, int wordCount, ContentState previousStatus, ContentState newStatus)
    {
       this.documentId = documentId;
       this.transUnitId = transUnitId;
+      this.wordCount = wordCount;
       this.previousStatus = previousStatus;
       this.newStatus = newStatus;
    }
@@ -71,5 +73,10 @@ public class TransUnitUpdated implements SessionEventData, HasTransUnitUpdatedDa
    public void setTransUnitId(TransUnitId transUnitId)
    {
       this.transUnitId = transUnitId;
+   }
+
+   public int getWordCount()
+   {
+      return wordCount;
    }
 }

@@ -24,23 +24,6 @@
     <to last="true">/admin/server_configuration.seam</to>
   </rule>
 
-  <!-- Community Rules -->
-
-  <rule>
-    <from casesensitive="true">^/community/create(.+)$</from>
-    <to last="true">/community/create_community.seam?$1</to>
-  </rule>
-
-  <rule>
-    <from casesensitive="true">^/community/view/(.+)$</from>
-    <to last="true">/community/community.seam\?slug=$1</to>
-  </rule>
-
-  <rule>
-    <from casesensitive="true">^/community/list(.+)?$</from>
-    <to last="true">/community/home.seam$1</to>
-  </rule>
-
   <!-- Language rules -->
 
   <rule>
@@ -84,6 +67,11 @@
   </rule>
 
   <rule>
+    <from casesensitive="true">^/account/sign_form(.+)?$</from>
+    <to last="true">/account/login_input.seam$1</to>
+  </rule>
+
+  <rule>
     <from casesensitive="true">^/account/sign_out(.+)?$</from>
     <to last="true">/account/logout.seam$1</to>
   </rule>
@@ -100,6 +88,11 @@
   <rule>
     <from casesensitive="true">^/account/activate(.+)?$</from>
     <to last="true">/account/activate.seam$1</to>
+  </rule>
+
+  <rule>
+    <from casesensitive="true">^/account/validate_email/([^?]+)(.*)$</from>
+    <to last="true">/account/email_validation.seam\?key=$1</to>
   </rule>
  
   <rule>
@@ -154,20 +147,6 @@
   </outbound-rule>
 
   <outbound-rule>
-    <from>^(/.+)?/community/create_community.seam(.+)?$</from>
-    <to>$1/community/create/$2</to>
-  </outbound-rule>
-
-  <outbound-rule>
-    <from>^(/.+)?/community/community.seam\?slug=(.+)$</from>
-    <to>$1/community/view/$2</to>
-  </outbound-rule>
-
-  <outbound-rule>
-    <from>^(/.+)?/community/home.seam(.+)?$</from>
-    <to>$1/community/list$2</to>
-  </outbound-rule>
-  <outbound-rule>
     <from>^(/.+)?/language/language.seam\?id=(.+)$</from>
     <to>$1/language/view/$2</to>
   </outbound-rule>
@@ -184,7 +163,7 @@
     <to>$1/project/create/$2</to>
   </outbound-rule>
   <outbound-rule>
-    <from>^(/.+)?/project/project.seam\?slugaccount/=(.+)$</from>
+    <from>^(/.+)?/project/project.seam\?slug=(.+)$</from>
     <to>$1/project/view/$2</to>
   </outbound-rule>
   <outbound-rule>
@@ -194,6 +173,10 @@
   <outbound-rule>
     <from>^(/.+)?/account/login.seam(.+)?$</from>
     <to>$1/account/sign_in$2</to>
+  </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/account/login_input.seam(.+)?$</from>
+    <to>$1/account/sign_form$2</to>
   </outbound-rule>
   <outbound-rule>
     <from>^(/.+)?/account/logout.seam(.+)?$</from>
@@ -210,6 +193,10 @@
   <outbound-rule>
     <from>^(/.+)?/account/activate.seam(.+)?$</from>
     <to>$1/account/activate$2</to>
+  </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/account/email_validation.seam\?key=(.+)$</from>
+    <to>$1/account/validate_email/$2</to>
   </outbound-rule>
   <outbound-rule>
     <from>^(/.+)?/account/password_reset_request.seam(.+)?$</from>

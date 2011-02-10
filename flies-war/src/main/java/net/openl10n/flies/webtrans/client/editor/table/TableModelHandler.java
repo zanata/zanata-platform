@@ -1,7 +1,5 @@
 package net.openl10n.flies.webtrans.client.editor.table;
 
-import net.openl10n.flies.common.ContentState;
-
 import com.google.gwt.gen2.table.client.TableModel.Callback;
 import com.google.gwt.gen2.table.client.TableModelHelper.Request;
 
@@ -27,8 +25,8 @@ public abstract class TableModelHandler<RowType>
 
    abstract void gotoPrevRow(int row);
 
-   abstract void nextFuzzyIndex(int row, ContentState state);
+   abstract void nextFuzzyIndex(int row);
 
-   abstract void prevFuzzyIndex(int row, ContentState state);
+   abstract void prevFuzzyIndex(int row);
 
 }

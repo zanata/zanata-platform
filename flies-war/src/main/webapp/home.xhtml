@@ -12,6 +12,11 @@
         <rich:jQuery id="tabHome" selector="#tab_home" query="addClass('ui-tabs-selected')" />
         <h1>#{messages['jsf.WelcomeToFlies']}</h1>
 
+		<br/>       
+        <h2>Getting started?</h2>
+        The documentation is <a href="#{applicationConfiguration.helpPath}">here</a>.
+		<br/>       
+
 	    <s:fragment rendered="#{not empty projects}">
 	      <h2>#{messages['jsf.LatestProjects']}</h2>
 	      <rich:dataGrid id="latestProjects" columns="3" 

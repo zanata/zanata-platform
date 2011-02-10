@@ -1,7 +1,38 @@
+/*
+ * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * @author tags. See the copyright.txt file in the distribution for a full
+ * listing of individual contributors.
+ * 
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+ * site: http://www.fsf.org.
+ */
 package net.openl10n.flies.webtrans.client;
 
+import net.customware.gwt.presenter.client.EventBus;
+import net.openl10n.flies.common.TransUnitCount;
+import net.openl10n.flies.common.TransUnitWords;
+import net.openl10n.flies.common.TranslationStats;
+import net.openl10n.flies.webtrans.client.events.TransUnitUpdatedEvent;
+import net.openl10n.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
+import net.openl10n.flies.webtrans.client.rpc.CachingDispatchAsync;
+import net.openl10n.flies.webtrans.shared.model.DocumentId;
 import net.openl10n.flies.webtrans.shared.model.DocumentInfo;
+import net.openl10n.flies.webtrans.shared.rpc.GetStatusCount;
+import net.openl10n.flies.webtrans.shared.rpc.GetStatusCountResult;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -10,6 +41,7 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -36,8 +68,12 @@ public class DocumentNode extends Node<DocumentInfo>
    @UiField
    Label documentLabel;
 
+
    @UiField(provided = true)
    final Resources resources;
+
+   @UiField(provided = true)
+   TransUnitCountBar transUnitCountBar;
 
    @UiField(provided = true)
    final FlowPanel rootPanel;
@@ -46,11 +82,15 @@ public class DocumentNode extends Node<DocumentInfo>
    Styles style;
 
    final WebTransMessages messages;
+   private final TranslationStats statusCount = new TranslationStats();
+   private final CachingDispatchAsync dispatcher;
 
-   public DocumentNode(Resources resources, WebTransMessages messages)
+   public DocumentNode(Resources resources, WebTransMessages messages, CachingDispatchAsync dispatcher)
    {
       this.resources = resources;
       this.messages = messages;
+      this.transUnitCountBar = new TransUnitCountBar(messages);
+      this.dispatcher = dispatcher;
 
       rootPanel = new FlowPanel()
       {
@@ -67,7 +107,7 @@ public class DocumentNode extends Node<DocumentInfo>
             case Event.ONCLICK:
                if (event.getButton() == NativeEvent.BUTTON_LEFT && impl.handleAsClick(event))
                {
-                  ClickEvent.fireNativeEvent(event, this);
+                  ClickEvent.fireNativeEvent(event, DocumentNode.this);
                }
             }
 
@@ -76,33 +116,55 @@ public class DocumentNode extends Node<DocumentInfo>
       };
 
       initWidget(uiBinder.createAndBindUi(this));
-
       rootPanel.sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT | Event.ONCLICK);
-
    }
 
-   public DocumentNode(Resources resources, WebTransMessages messages, DocumentInfo doc)
+
+   public DocumentNode(Resources resources, WebTransMessages messages, DocumentInfo doc, CachingDispatchAsync dispatcher)
    {
-      this(resources, messages);
+      this(resources, messages, dispatcher);
       setDataItem(doc);
    }
 
-   public DocumentNode(Resources resources, WebTransMessages messages, DocumentInfo doc, ClickHandler clickHandler)
+   public DocumentNode(Resources resources, WebTransMessages messages, DocumentInfo doc, CachingDispatchAsync dispatcher, ClickHandler clickHandler, EventBus eventBus)
    {
-      this(resources, messages, doc);
+      this(resources, messages, doc, dispatcher);
       addHandler(clickHandler, ClickEvent.getType());
+      eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler()
+      {
+         @Override
+         public void onTransUnitUpdated(TransUnitUpdatedEvent event)
+         {
+            if (event.getDocumentId().equals(getDataItem().getId()))
+            {
+               TransUnitCount unitCount = statusCount.getUnitCount();
+               TransUnitWords wordCount = statusCount.getWordCount();
+               unitCount.decrement(event.getPreviousStatus());
+               unitCount.increment(event.getNewStatus());
+               wordCount.decrement(event.getPreviousStatus(), event.getWordCount());
+               wordCount.increment(event.getNewStatus(), event.getWordCount());
+               getTransUnitCountBar().setStats(statusCount);
+            }
+         }
+      });
    }
 
    public void refresh()
    {
       rootPanel.getElement().setId("doc-#" + getDataItem().getId().toString());
       documentLabel.setText(getDataItem().getName());
+      requestStatusCount(getDataItem().getId());
    }
 
    @Override
    boolean isDocument()
    {
       return true;
+   }
+
+   public TransUnitCountBar getTransUnitCountBar()
+   {
+      return this.transUnitCountBar;
    }
 
    public void setSelected(boolean selected)
@@ -117,5 +179,23 @@ public class DocumentNode extends Node<DocumentInfo>
       }
 
    }
+   private void requestStatusCount(final DocumentId newDocumentId)
+   {
+      dispatcher.execute(new GetStatusCount(newDocumentId), new AsyncCallback<GetStatusCountResult>()
+      {
+         @Override
+         public void onFailure(Throwable caught)
+         {
+            Log.error("error fetching GetStatusCount: " + caught.getMessage());
+         }
 
+         @Override
+         public void onSuccess(GetStatusCountResult result)
+         {
+            statusCount.set(result.getCount());
+            getTransUnitCountBar().setStats(statusCount);
+         }
+      });
+   }
+   
 }

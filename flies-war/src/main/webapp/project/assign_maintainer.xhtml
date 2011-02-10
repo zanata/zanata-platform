@@ -35,8 +35,16 @@
 	            var="maintainer">
 	
 	          <rich:column width="auto">
-	            <f:facet name="header">#{messages['jsf.Maintainers']}</f:facet>
+	            <f:facet name="header">#{messages['jsf.Username']}</f:facet>
 	            #{maintainer.account.username}
+	          </rich:column>
+	          <rich:column width="auto">
+	            <f:facet name="header">#{messages['jsf.Name']}</f:facet>
+	            #{maintainer.name}
+	          </rich:column>
+	          <rich:column width="auto">
+	            <f:facet name="header">#{messages['jsf.Email']}</f:facet>
+	            #{maintainer.email}
 	          </rich:column>
 	          <rich:column width="auto">
 	            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>          

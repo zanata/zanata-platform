@@ -23,15 +23,9 @@ package net.openl10n.flies.security;
 import static org.jboss.seam.ScopeType.APPLICATION;
 
 
-import javax.persistence.EntityManager;
-import javax.security.auth.login.LoginException;
 
-import net.openl10n.flies.FliesInit;
-import net.openl10n.flies.model.HAccount;
-import net.openl10n.flies.model.HPerson;
+import net.openl10n.flies.model.type.UserApiKey;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
@@ -39,11 +33,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.core.Events;
-import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
-import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.IdentityManagementException;
-import org.jboss.seam.security.management.IdentityManager;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.jboss.seam.util.AnnotatedBeanProperty;
 
@@ -59,7 +49,8 @@ public class FliesJpaIdentityStore extends JpaIdentityStore
     */
    private static final long serialVersionUID = 1L;
 
-   private static final Log log = Logging.getLog(FliesJpaIdentityStore.class);
+   // private static final Log log =
+   // Logging.getLog(FliesJpaIdentityStore.class);
 
    private AnnotatedBeanProperty<UserApiKey> userApiKeyProperty;
 
@@ -107,13 +98,6 @@ public class FliesJpaIdentityStore extends JpaIdentityStore
 
    }
 
-   public boolean isHideRegister()
-   {
-      FliesInit instance = (FliesInit) Component.getInstance(FliesInit.class, ScopeType.APPLICATION);
-      return instance.isHideRegister();
-   }
-
-
    @Override
    public boolean authenticate(String username, String password)
    {
@@ -128,65 +112,20 @@ public class FliesJpaIdentityStore extends JpaIdentityStore
       }
    }
 
-
-   public HAccount createUser()
+   public boolean isNewUser(String username)
    {
-      EntityManager em = (EntityManager) getEntityManager().getValue();
-      Identity identity = Identity.instance();
-      HAccount account = new HAccount();
-      account.setUsername(identity.getCredentials().getUsername());
-      account.setPasswordHash(identity.getCredentials().getPassword());
-      account.setEnabled(true);
-      HPerson person = new HPerson();
-      person.setName(identity.getCredentials().getUsername());
-      // TODO: use null after LiquiBase integrates
-      person.setEmail(identity.getPrincipal().getName() + "@example.com");
-      person.setAccount(account);
-      account.setPerson(person);
-      em.persist(account);
-      em.refresh(account);
-      return account;
-   }
-
-
-
-   public void jaasUserLoggedIn()
-   {
-      Identity identity = Identity.instance();
-      String username = identity.getCredentials().getUsername();
       Object user = lookupUser(username);
-      if (user != null)
-      {
-         log.debug("existing Account ");
-         if (!isUserEnabled(username))
-         {
-            if (Events.exists())
-            {
-               identity.unAuthenticate();
-               LoginException ex = new LoginException("This user has been disabled");
-               Events.instance().raiseEvent(Identity.EVENT_LOGIN_FAILED, ex);
-            }
-            return;
-         }
-      }
-      else
-      {
-         log.debug("new Account ");
-         createUser();
-      }
-      IdentityManager identityManager = IdentityManager.instance();
-      for (String role : identityManager.getImpliedRoles(identity.getCredentials().getUsername()))
-      {
-         identity.addRole(role);
-      }
-      setAuthenticateUser(user);
+      return user == null;
    }
-
 
    public void setAuthenticateUser(Object user)
    {
       if (Events.exists())
       {
+         if (Contexts.isEventContextActive())
+         {
+            Contexts.getEventContext().set(AUTHENTICATED_USER, user);
+         }
          if (Contexts.isSessionContextActive())
          {
             Contexts.getSessionContext().set(AUTHENTICATED_USER, user);

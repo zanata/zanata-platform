@@ -22,7 +22,6 @@ package net.openl10n.flies.security;
 
 import static org.jboss.seam.ScopeType.SESSION;
 import static org.jboss.seam.annotations.Install.APPLICATION;
-
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
@@ -61,6 +60,8 @@ public class FliesIdentity extends Identity
 
    private String apiKey;
 
+   private boolean preAuthenticated;
+
    public String getApiKey()
    {
       return apiKey;
@@ -76,7 +77,7 @@ public class FliesIdentity extends Identity
    {
       return apiKey != null;
    }
-
+   
    public static FliesIdentity instance()
    {
       if (!Contexts.isSessionContextActive())
@@ -132,6 +133,10 @@ public class FliesIdentity extends Identity
    @Override
    public LoginContext getLoginContext() throws LoginException
    {
+      if (isApiRequest())
+      {
+         return new LoginContext(JAAS_DEFAULT, getSubject(), getCredentials().createCallbackHandler(), Configuration.instance());
+      }
       if (getJaasConfigName() != null && !getJaasConfigName().equals(JAAS_DEFAULT))
       {
          return new LoginContext(getJaasConfigName(), getSubject(), getCredentials().createCallbackHandler());
@@ -140,4 +145,23 @@ public class FliesIdentity extends Identity
       return new LoginContext(JAAS_DEFAULT, getSubject(), getCredentials().createCallbackHandler(), Configuration.instance());
    }
 
+   public boolean isPreAuthenticated()
+   {
+      return preAuthenticated;
+   }
+
+   public void setPreAuthenticated(boolean var)
+   {
+      this.preAuthenticated = var;
+   }
+
+   public String login()
+   {
+      String result = super.login();
+      if (result != null && result.equals("loggedIn"))
+      {
+         this.preAuthenticated = true;
+      }
+      return result;
+   }
 }

@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>net.openl10n.flies</groupId>
 		<artifactId>root</artifactId>
-		<version>1.1-SNAPSHOT</version>
+		<version>1.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>flies</artifactId>
 	<packaging>war</packaging>
@@ -16,28 +16,14 @@
 
 		<env.debug>false</env.debug>
 		<env.import.testdata>false</env.import.testdata>
-		<env.hibernate.hbm2ddl.auto>update</env.hibernate.hbm2ddl.auto>
-		<env.hibernate.show_sql>false</env.hibernate.show_sql>
-		<env.hibernate.format_sql>false</env.hibernate.format_sql>
-		<env.hibernate.indexBase>fliessearchindex</env.hibernate.indexBase>
-
+		<ds.jndi.name>fliesTestDatasource</ds.jndi.name>
 		<war.name>flies</war.name>
 		<!-- Default database settings -->
 		<env.dbunit.type>HSQL</env.dbunit.type>
-		<ds.jndi.name>fliesTestDatasource</ds.jndi.name>
-		<ds.hibernate.dialect>org.hibernate.dialect.H2Dialect</ds.hibernate.dialect>
-		<ds.driver.class>org.h2.Driver</ds.driver.class>
-		<!-- Configure the in-memory database to be shared, and so that it
-			 doesn't disappear after it has been set up by Hibernate: -->
-		<ds.connection.url>jdbc:h2:mem:flies;DB_CLOSE_DELAY=-1</ds.connection.url> <!-- *-ds.xml -->
-<!--  
-		<ds.connection.url>jdbc:h2:db/flies;AUTO_SERVER=TRUE</ds.connection.url>
--->
-		<ds.user.name>sa</ds.user.name> <!-- *-ds.xml -->
-		<ds.password /> <!-- *-ds.xml -->
-		
-		<hide.register>true</hide.register>
+		<internal.authentication>false</internal.authentication>
+		<spNego.authentication>false</spNego.authentication>
 		<jaas.configure>flies</jaas.configure>
+		<flies.gwt.module>net.openl10n.flies.webtrans.Application</flies.gwt.module>
 		<extra.servlets />
 	</properties>
 
@@ -53,6 +39,12 @@
 		</resources>
 
 		<plugins>
+			<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<projectNameTemplate>flies-war</projectNameTemplate>
+				</configuration>
+			</plugin>
 
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
@@ -82,10 +74,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<runTarget>
-						webtrans/Application.html
-					</runTarget>
-					<inplace>false</inplace>
+				   <module>${flies.gwt.module}</module>
 				</configuration>
 			</plugin>
 
@@ -131,7 +120,12 @@
 	</build>
 
 	<profiles>
-
+		<profile>
+			<id>mysql</id>
+			<properties>
+		        <ds.jndi.name>fliesDatasource</ds.jndi.name>
+			</properties>
+		</profile>
 		<profile>
 			<id>jboss4</id>
 			<activation>
@@ -322,12 +316,6 @@
 					<scope>provided</scope>
 				</dependency>
 
-				<dependency>
-					<groupId>com.h2database</groupId>
-					<artifactId>h2</artifactId>
-					<scope>provided</scope>
-				</dependency>
-
 			</dependencies>
 
 		</profile>
@@ -366,7 +354,7 @@
 							</container>
 							<configuration>
 								<type>existing</type>
-								<home>${jboss42x.home}/server/default</home>
+								<home>${jboss.home}/server/default</home>
 							</configuration>
 							<deployer>
 								<deployables>
@@ -438,6 +426,9 @@
 
 		<profile>
 			<id>jboss5</id>
+			<properties>
+				<containerId>jboss5x</containerId>
+			</properties>
 			
 			<build>
 
@@ -496,6 +487,13 @@
 				<dependency>
 					<groupId>org.hibernate</groupId>
 					<artifactId>hibernate-annotations</artifactId>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>org.hibernate</groupId>
+					<artifactId>ejb3-persistence</artifactId>
+					<version>1.0.2.GA</version>
 					<scope>provided</scope>
 				</dependency>
 		
@@ -588,70 +586,58 @@
 					<artifactId>xpp3_min</artifactId>
 					<scope>provided</scope>
 				</dependency>
-			
+
 			</dependencies>
 			
 		</profile>
 		
 		<profile>
-			<id>authinternal</id>
+			<id>internalauthentication</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>dev</value>
+				</property>
+			</activation>
 			<properties>
-				<hide.register>false</hide.register>
+				<internal.authentication>true</internal.authentication>
 				<jaas.configure>default</jaas.configure>
 			</properties>
 		</profile>
 
-		<profile>
-			<id>mysql</id>
-			<properties>
-				<env.dbunit.type>MYSQL</env.dbunit.type>
-				<ds.jndi.name>fliesDatasource</ds.jndi.name>
-				<ds.hibernate.dialect>net.openl10n.flies.FliesMySQL5InnoDBDialect</ds.hibernate.dialect>
-				<ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
-				<ds.connection.url>jdbc:mysql://localhost:3306/flies?characterEncoding=UTF-8</ds.connection.url>
-				<ds.user.name>root</ds.user.name>
-				<ds.password />
-			</properties>
-			<build>
-				<resources>
-					<resource>
-						<directory>src/main/resources-mysql</directory>
-						<filtering>false</filtering>
-					</resource>
-				</resources>
 
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>hibernate3-maven-plugin</artifactId>
-						<version>2.2</version>
-						<configuration>
-							<components>
-								<component>
-									<name>hbm2ddl</name>
-									<implementation>jpaconfiguration</implementation>
-								</component>
-							</components>
-							<componentProperties>
-								<persistenceunit>fliesDatabase</persistenceunit>
-								<outputfilename>schema.ddl</outputfilename>
-								<drop>false</drop>
-								<create>true</create>
-								<export>false</export>
-								<format>true</format>
-							</componentProperties>
-						</configuration>
-						<dependencies>
-							<dependency>
-								<groupId>mysql</groupId>
-								<artifactId>mysql-connector-java</artifactId>
-								<version>5.1.9</version>
-							</dependency>
-						</dependencies>
-					</plugin>
-				</plugins>
-			</build>
+		<profile>
+			<id>flies-test</id>
+			<properties>
+				<war.name>flies-test</war.name>
+			</properties>
 		</profile>
+
+
+		<profile>
+			<id>kerberos</id>
+			<properties>
+				<spnego.security><![CDATA[
+				-->
+<security-constraint>
+    <web-resource-collection>
+         <web-resource-name>sign in</web-resource-name>
+         <url-pattern>/account/*</url-pattern>
+    </web-resource-collection>
+	<auth-constraint>
+		<role-name>*</role-name>
+	</auth-constraint>
+</security-constraint>	
+
+<login-config>
+    <auth-method>SPNEGO</auth-method>
+</login-config>
+				<!--
+				]]></spnego.security>
+				<spNego.authentication>true</spNego.authentication>
+			</properties>
+		</profile>
+
 
 		<profile>
 			<id>nogwt</id>
@@ -671,6 +657,48 @@
 						<artifactId>gwt-maven-plugin</artifactId>
 						<configuration>
 							<skip>true</skip>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<!--
+			  This profile tells GWT to use an alternative GWT module which has only one permutation, and to compile in draft mode
+			-->
+			<id>chrome</id>
+			<properties>
+			  <flies.gwt.module>net.openl10n.flies.webtrans.ApplicationSafari</flies.gwt.module>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>gwt-maven-plugin</artifactId>
+						<configuration>
+							<draftCompile>true</draftCompile>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<!--
+			  This profile tells GWT to use an alternative GWT module which has only one permutation, and to compile in draft mode
+			-->
+			<id>firefox</id>
+			<properties>
+			  <flies.gwt.module>net.openl10n.flies.webtrans.ApplicationGecko18</flies.gwt.module>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>gwt-maven-plugin</artifactId>
+						<configuration>
+							<draftCompile>true</draftCompile>
 						</configuration>
 					</plugin>
 				</plugins>
@@ -731,7 +759,6 @@
 			<properties>
 				<env.debug>false</env.debug>
 				<env.import.testdata>false</env.import.testdata>
-				<env.hibernate.hbm2ddl.auto>validate</env.hibernate.hbm2ddl.auto>
 				<env.hibernate.show_sql>false</env.hibernate.show_sql>
 				<env.hibernate.format_sql>false</env.hibernate.format_sql>
 			</properties>
@@ -748,7 +775,6 @@
 			<properties>
 				<env.debug>true</env.debug>
 				<env.import.testdata>true</env.import.testdata>
-				<env.hibernate.hbm2ddl.auto>create-drop</env.hibernate.hbm2ddl.auto>
 				<env.hibernate.show_sql>true</env.hibernate.show_sql>
 				<env.hibernate.format_sql>true</env.hibernate.format_sql>
 				<extra.servlets><![CDATA[-->
@@ -763,12 +789,6 @@
 	</servlet-mapping>
 				<!--]]></extra.servlets>
 			</properties>
-			<dependencies>
-				<dependency>
-					<groupId>com.h2database</groupId>
-					<artifactId>h2</artifactId>
-				</dependency>
-			</dependencies>
 		</profile>
 
 	</profiles>
@@ -789,6 +809,11 @@
 			<version>${project.version}</version>
 		</dependency>
 		
+		<dependency>
+			<groupId>net.openl10n.flies</groupId>
+			<artifactId>flies-model</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<!-- Seam Dependencies -->
 
 		<dependency>
@@ -978,12 +1003,6 @@
 			<version>0.5</version>
 		</dependency>
 
-		<dependency>
-			<groupId>net.sf.okapi.lib</groupId>
-			<artifactId>okapi-lib-search</artifactId>
-			<version>0.7</version>
-		</dependency>
-
 		<!-- okapi-lib-search would otherwise use lucene 3.0.0 -->
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
@@ -1162,17 +1181,8 @@
 		</dependency>
 
 		<dependency>
-			<!-- for gwt compilation -->
-			<groupId>com.ibm.icu</groupId>
-			<artifactId>icu4j</artifactId>
-			<classifier>sources</classifier>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-incubator</artifactId>
-			<version>2.0.1</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -1201,6 +1211,11 @@
 		</dependency>
 
 		<!-- end of GWT related dependencies -->
+
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+		</dependency>
 
 	</dependencies>
 

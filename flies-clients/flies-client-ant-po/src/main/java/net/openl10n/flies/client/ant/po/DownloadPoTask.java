@@ -18,6 +18,7 @@ public class DownloadPoTask extends ConfigurableProjectTask implements PublicanP
    private String projectVersion;
    private LocaleList locales;
    private File dstDir;
+   private File dstDirPot;
    private boolean exportPot;
 
    public static void main(String[] args)
@@ -97,12 +98,26 @@ public class DownloadPoTask extends ConfigurableProjectTask implements PublicanP
    public void setDstDir(File dstDir)
    {
       this.dstDir = dstDir;
+      if (dstDirPot == null)
+         dstDirPot = new File(dstDir, "pot");
    }
 
    @Override
    public File getDstDir()
    {
       return dstDir;
+   }
+
+   @Override
+   public void setDstDirPot(File dstDirPot)
+   {
+      this.dstDirPot = dstDirPot;
+   }
+
+   @Override
+   public File getDstDirPot()
+   {
+      return dstDirPot;
    }
 
    @Override

@@ -12,6 +12,10 @@ public interface PublicanPushOptions extends ConfigurableProjectOptions
 
    public File getSrcDir();
 
+   public void setSrcDirPot(File srcDirPot);
+
+   public File getSrcDirPot();
+
    @Option(aliases = { "-l" }, name = "--src-lang", usage = "Language of source (defaults to en-US)")
    public void setSourceLang(String sourceLang);
 

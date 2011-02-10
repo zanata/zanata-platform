@@ -1,0 +1,182 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>net.openl10n.flies</groupId>
+    <artifactId>root</artifactId>
+    <version>1.2-SNAPSHOT</version>
+  </parent>
+  <artifactId>flies-model</artifactId>
+  <name>flies-model</name>
+  <packaging>jar</packaging>
+
+	<properties>
+		<env.hibernate.hbm2ddl.auto></env.hibernate.hbm2ddl.auto>
+		<env.hibernate.show_sql>false</env.hibernate.show_sql>
+		<env.hibernate.format_sql>false</env.hibernate.format_sql>
+		<env.hibernate.indexBase>fliessearchindex</env.hibernate.indexBase>
+
+		<ds.jndi.name>fliesTestDatasource</ds.jndi.name>
+		<ds.hibernate.dialect>org.hibernate.dialect.H2Dialect</ds.hibernate.dialect>
+		<ds.driver.class>org.h2.Driver</ds.driver.class>
+		<ds.connection.url>jdbc:h2:mem:flies;DB_CLOSE_DELAY=-1</ds.connection.url> <!-- *-ds.xml -->
+		<ds.user.name>sa</ds.user.name> <!-- *-ds.xml -->
+		<ds.password /> <!-- *-ds.xml -->
+	</properties>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathMavenRepositoryLayout>true</classpathMavenRepositoryLayout>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+		</plugins>
+	</build>
+
+  <dependencies>
+        <dependency>
+	      <groupId>junit</groupId>
+    	  <artifactId>junit</artifactId>
+      	  <version>3.8.1</version>
+     	  <scope>test</scope>
+        </dependency>
+
+		<dependency>
+			<groupId>net.openl10n.flies</groupId>
+			<artifactId>flies-common-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.okapi.lib</groupId>
+			<artifactId>okapi-lib-search</artifactId>
+			<version>0.7</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.okapi.steps</groupId>
+			<artifactId>okapi-step-wordcount</artifactId>
+			<version>0.9</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+
+
+		<!-- okapi-lib-search would otherwise use lucene 3.0.0 -->
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-core</artifactId>
+			<version>2.9.2</version>
+		</dependency>
+
+		<!-- Hibernate / JPA -->
+		<dependency>
+			<groupId>org.jboss.seam</groupId>
+			<artifactId>jboss-seam</artifactId>
+			<version>${seam.version}</version>
+			<type>ejb</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-search</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-annotations</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-jmx</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.ibm.icu</groupId>
+			<artifactId>icu4j</artifactId>
+		</dependency>
+
+  </dependencies>
+
+	<profiles>
+		<profile>
+			<id>mysql</id>
+			<properties>
+				<env.dbunit.type>MYSQL</env.dbunit.type>
+				<ds.jndi.name>fliesDatasource</ds.jndi.name>
+				<ds.hibernate.dialect>net.openl10n.flies.FliesMySQL5InnoDBDialect</ds.hibernate.dialect>
+				<ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
+				<ds.connection.url>jdbc:mysql://localhost:3306/flies?characterEncoding=UTF-8</ds.connection.url>
+				<ds.user.name>root</ds.user.name>
+				<ds.password />
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>hibernate3-maven-plugin</artifactId>
+						<version>2.2</version>
+						<configuration>
+							<components>
+								<component>
+									<name>hbm2ddl</name>
+									<implementation>jpaconfiguration</implementation>
+								</component>
+							</components>
+							<componentProperties>
+								<persistenceunit>fliesDatabase</persistenceunit>
+								<outputfilename>schema.ddl</outputfilename>
+								<drop>false</drop>
+								<create>true</create>
+								<export>false</export>
+								<format>true</format>
+							</componentProperties>
+						</configuration>
+						<dependencies>
+							<dependency>
+								<groupId>mysql</groupId>
+								<artifactId>mysql-connector-java</artifactId>
+								<version>5.1.9</version>
+							</dependency>
+						</dependencies>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+</project>
