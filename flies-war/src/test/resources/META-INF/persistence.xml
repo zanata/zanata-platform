@@ -4,9 +4,33 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd" 
     version="1.0">
     
-	<persistence-unit name="testDatabase"
+	<persistence-unit name="fliesTestDatasource"
 		transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		
+		<!-- NB non-jta-data-source is not compatible with JPA, but is required by seam -->
+		
+		<class>net.openl10n.flies.model.HAccountActivationKey</class>
+		<class>net.openl10n.flies.model.HAccount</class>
+		<class>net.openl10n.flies.model.HAccountResetPasswordKey</class>
+		<class>net.openl10n.flies.model.HAccountRole</class>
+		<class>net.openl10n.flies.model.HApplicationConfiguration</class>
+		<class>net.openl10n.flies.model.HasSimpleComment</class>
+		<class>net.openl10n.flies.model.HDocumentHistory</class>
+		<class>net.openl10n.flies.model.HDocument</class>
+		<class>net.openl10n.flies.model.HIterationProject</class>
+		<class>net.openl10n.flies.model.HLocale</class>
+		<class>net.openl10n.flies.model.HPerson</class>
+		<class>net.openl10n.flies.model.HProjectIteration</class>
+		<class>net.openl10n.flies.model.HProject</class>
+		<class>net.openl10n.flies.model.HSimpleComment</class>
+		<class>net.openl10n.flies.model.HTextFlowHistory</class>
+		<class>net.openl10n.flies.model.HTextFlow</class>
+		<class>net.openl10n.flies.model.HTextFlowTargetHistory</class>
+		<class>net.openl10n.flies.model.HTextFlowTarget</class>
+		<class>net.openl10n.flies.model.po.HPoHeader</class>
+		<class>net.openl10n.flies.model.po.HPoTargetHeader</class>
+		<class>net.openl10n.flies.model.po.HPotEntryData</class>
 		<properties>
 			<property name="hibernate.show_sql" value="true" />
 			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider" />
