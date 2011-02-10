@@ -21,7 +21,7 @@
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="com.google.gwt.eclipse.core.moduleClasspathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.google.gwt.dev.DevMode"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-war src/main/webapp -remoteUI &quot;${gwt_remote_ui_server_port}:${unique_id}&quot; -startupUrl webtrans/Application.html?project=sample-project&amp;iteration=1.0&amp;localeId=de -logLevel INFO -port 48880 net.openl10n.flies.webtrans.ApplicationDummy"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-codeServerPort 9997 -war src/main/webapp -remoteUI &quot;${gwt_remote_ui_server_port}:${unique_id}&quot; -startupUrl webtrans/Application.html?project=sample-project&amp;iteration=1.0&amp;localeId=de -logLevel INFO -port 48880 net.openl10n.flies.webtrans.ApplicationDummy"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="flies"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx512m -Dgwt.nowarn.legacy.tools -Dgwt.nowarn.webapp.classpath"/>
 <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:flies}"/>

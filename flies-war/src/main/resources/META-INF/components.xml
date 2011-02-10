@@ -34,12 +34,15 @@
       url-pattern="/*"/>
 
   <!-- Login and security -->
+  <security:identity jaas-config-name="@jaas.configure@" />
 	
   <drools:rule-base name="securityRules">
     <drools:rule-files>
       <value>/security.drl</value>
     </drools:rule-files>
   </drools:rule-base>
+  
+  
 
   <security:rule-based-permission-resolver security-rules="#{securityRules}"/> 
    
@@ -61,6 +64,7 @@
   <component class="net.openl10n.flies.FliesInit" name="fliesInit" precedence="30">
     <property name="debug">@env.debug@</property>
     <property name="hibernateStatistics">false</property>
+    <property name="hideRegister">@hide.register@</property>
     <property name="authenticatedSessionTimeoutMinutes">180</property>
   </component>
 
@@ -83,9 +87,6 @@
   </component>
   
 
-  <!-- 
-  <international:locale-selector cookie-enabled="true"/> 
-  -->
   
   <!-- Remember the locale selected -->
   

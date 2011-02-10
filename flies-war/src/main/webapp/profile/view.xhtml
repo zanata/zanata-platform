@@ -17,7 +17,7 @@
           <s:link styleClass="action_link" view="/profile/edit.xhtml" propagation="none">
             #{messages['jsf.EditProfile']}
           </s:link>
-          <s:link styleClass="action_link" view="/account/changepassword.xhtml" propagation="none" rendered="#{not identityStore.nukesActive}">
+          <s:link styleClass="action_link" view="/account/changepassword.xhtml" propagation="none" rendered="#{not identityStore.hideRegister}">
             #{messages['jsf.ChangePassword']}
           </s:link>
         </rich:panel>

@@ -19,7 +19,7 @@
             <ui:define name="label">#{messages['jsf.Username']}</ui:define>
             <h:inputText id="username" value="#{userAction.username}" readonly="#{identityManager.userExists(userAction.username)}"/>
           </s:decorate>
-	      <s:fragment rendered="#{not identityStore.nukesActive}">
+	      <s:fragment rendered="#{not identityStore.hideRegister}">
 	          <s:decorate id="passwordField" template="../WEB-INF/layout/edit.xhtml" >
 	            <ui:define name="label">#{messages['jsf.Password']}</ui:define>
 	            <h:inputSecret id="password" value="#{userAction.password}"/>
