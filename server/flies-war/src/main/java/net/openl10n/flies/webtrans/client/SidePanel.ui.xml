@@ -22,9 +22,6 @@
 				</g:layer>
 			</g:LayoutPanel>
 		</g:layer>
-		<g:layer bottom='20px' height='150px'>
-			<g:LayoutPanel ui:field='filterPanelContainer' />
-		</g:layer>
 		<g:layer bottom='0px' height='20px'>
 			<g:LayoutPanel ui:field="usersPanelContainer" />
 		</g:layer>

@@ -59,7 +59,7 @@ public class AppView extends Composite implements AppPresenter.Display
    SpanElement user, selectedDocumentSpan, selectedDocumentPathSpan;
 
    @UiField
-   LayoutPanel container, layoutPanel;
+   LayoutPanel container, topPanel, filterPanelContainer;
 
    @UiField(provided = true)
    final Resources resources;
@@ -67,6 +67,8 @@ public class AppView extends Composite implements AppPresenter.Display
    private Widget documentListView;
 
    private Widget translationView;
+
+   private Widget filterView;
 
    final WebTransMessages messages;
 
@@ -108,10 +110,12 @@ public class AppView extends Composite implements AppPresenter.Display
       case Documents:
          container.setWidgetTopBottom(documentListView, 0, Unit.PX, 0, Unit.PX);
          container.setWidgetTopHeight(translationView, 0, Unit.PX, 0, Unit.PX);
+         filterPanelContainer.setWidgetTopHeight(filterView, 0, Unit.PX, 0, Unit.PX);
          break;
       case Editor:
          container.setWidgetTopBottom(translationView, 0, Unit.PX, 0, Unit.PX);
          container.setWidgetTopHeight(documentListView, 0, Unit.PX, 0, Unit.PX);
+         filterPanelContainer.setWidgetTopBottom(filterView, 0, Unit.PX, 0, Unit.PX);
          break;
       }
    }
@@ -130,6 +134,13 @@ public class AppView extends Composite implements AppPresenter.Display
       this.translationView = editorView;
    }
 
+   @Override
+   public void setFilterView(Widget filterView)
+   {
+      filterPanelContainer.clear();
+      filterPanelContainer.add(filterView);
+      this.filterView = filterView;
+   }
 
    @Override
    public HasClickHandlers getHelpLink()
@@ -193,8 +204,8 @@ public class AppView extends Composite implements AppPresenter.Display
 
    public void setNotificationMessage(String var)
    {
-      layoutPanel.forceLayout();
+      topPanel.forceLayout();
       notificationMessage.setText(var);
-      layoutPanel.animate(NOTIFICATION_TIME, callback);
+      topPanel.animate(NOTIFICATION_TIME, callback);
    }
 }
