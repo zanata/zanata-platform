@@ -57,6 +57,7 @@ import net.openl10n.flies.rest.dto.resource.ResourceMeta;
 import net.openl10n.flies.rest.dto.resource.TextFlow;
 import net.openl10n.flies.rest.dto.resource.TextFlowTarget;
 import net.openl10n.flies.rest.dto.resource.TranslationsResource;
+import net.openl10n.flies.rest.service.TranslationResourcesResource;
 import net.openl10n.flies.service.LocaleService;
 
 import org.apache.commons.lang.StringUtils;
@@ -76,14 +77,12 @@ import com.google.common.collect.Sets;
 @Produces( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 @Consumes( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 @Transactional
-public class TranslationResourcesService
+public class TranslationResourcesService implements TranslationResourcesResource
 {
 
    // security actions
    private static final String ACTION_IMPORT_TEMPLATE = "import-template";
    private static final String ACTION_IMPORT_TRANSLATION = "import-translation";
-
-   public static final String RESOURCE_SLUG_TEMPLATE = "/{id:[a-zA-Z0-9]+([a-zA-Z0-9_\\-,{.}]*[a-zA-Z0-9]+)?}";
 
    public static final String SERVICE_PATH = ProjectIterationService.SERVICE_PATH + "/r";
 
@@ -160,6 +159,7 @@ public class TranslationResourcesService
       this.eTagUtils = eTagUtils;
    }
 
+   @Override
    @HEAD
    public Response head()
    {
@@ -179,6 +179,7 @@ public class TranslationResourcesService
     * 
     * @return Response.ok with ResourcesList or Response(404) if not found
     */
+   @Override
    @GET
    @Wrapped(element = "resources", namespace = Namespaces.FLIES)
    public Response get()
@@ -215,6 +216,7 @@ public class TranslationResourcesService
    }
 
 
+   @Override
    @POST
    public Response post(InputStream messageBody)
    {
@@ -263,6 +265,7 @@ public class TranslationResourcesService
       return Response.created(URI.create("r/" + resourceUtils.encodeDocId(document.getDocId()))).tag(etag).build();
    }
 
+   @Override
    @GET
    @Path(RESOURCE_SLUG_TEMPLATE)
    // /r/{id}
@@ -323,6 +326,7 @@ public class TranslationResourcesService
 
    }
 
+   @Override
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE)
    // /r/{id}
@@ -408,6 +412,7 @@ public class TranslationResourcesService
 
    }
 
+   @Override
    @DELETE
    @Path(RESOURCE_SLUG_TEMPLATE)
    // /r/{id}
@@ -432,6 +437,7 @@ public class TranslationResourcesService
       return Response.ok().build();
    }
 
+   @Override
    @GET
    @Path(RESOURCE_SLUG_TEMPLATE + "/meta")
    // /r/{id}/meta
@@ -466,6 +472,7 @@ public class TranslationResourcesService
       return Response.ok().entity(entity).tag(etag).build();
    }
 
+   @Override
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE + "/meta")
    // /r/{id}/meta
@@ -512,6 +519,7 @@ public class TranslationResourcesService
 
    }
 
+   @Override
    @GET
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    // /r/{id}/translations/{locale}
@@ -570,6 +578,7 @@ public class TranslationResourcesService
 
    }
 
+   @Override
    @DELETE
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    // /r/{id}/translations/{locale}
@@ -608,6 +617,7 @@ public class TranslationResourcesService
 
    }
 
+   @Override
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    // /r/{id}/translations/{locale}

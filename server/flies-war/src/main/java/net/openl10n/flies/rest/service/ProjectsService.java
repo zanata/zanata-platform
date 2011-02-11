@@ -17,6 +17,7 @@ import net.openl10n.flies.rest.MediaTypes;
 import net.openl10n.flies.rest.dto.Link;
 import net.openl10n.flies.rest.dto.Project;
 import net.openl10n.flies.rest.dto.ProjectType;
+import net.openl10n.flies.rest.service.ProjectsResource;
 
 import org.hibernate.Session;
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
@@ -29,7 +30,7 @@ import org.jboss.seam.log.Log;
 @Name("projectsService")
 @Path("/projects")
 @Transactional
-public class ProjectsService
+public class ProjectsService implements ProjectsResource
 {
 
    @In
@@ -42,6 +43,7 @@ public class ProjectsService
    @DefaultValue(MediaType.APPLICATION_XML)
    MediaType accept;
 
+   @Override
    @GET
    @Produces( { MediaTypes.APPLICATION_FLIES_PROJECTS_XML, MediaTypes.APPLICATION_FLIES_PROJECTS_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    @Wrapped(element = "projects", namespace = Namespaces.FLIES)

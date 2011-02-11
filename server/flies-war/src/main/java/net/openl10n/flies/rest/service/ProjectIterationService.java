@@ -29,6 +29,7 @@ import net.openl10n.flies.model.HProjectIteration;
 import net.openl10n.flies.model.validator.SlugValidator;
 import net.openl10n.flies.rest.MediaTypes;
 import net.openl10n.flies.rest.dto.ProjectIteration;
+import net.openl10n.flies.rest.service.ProjectIterationResource;
 
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
@@ -39,7 +40,7 @@ import org.jboss.seam.security.Identity;
 @Name("projectIterationService")
 @Path(ProjectIterationService.SERVICE_PATH)
 @Transactional
-public class ProjectIterationService
+public class ProjectIterationService implements ProjectIterationResource
 {
 
    public static final String ITERATION_SLUG_TEMPLATE = "{iterationSlug:" + SlugValidator.PATTERN + "}";
@@ -91,6 +92,7 @@ public class ProjectIterationService
       this.eTagUtils = eTagUtils;
    }
 
+   @Override
    @HEAD
    @Produces( { MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML, MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    public Response head()
@@ -106,6 +108,7 @@ public class ProjectIterationService
       return Response.ok().tag(etag).build();
    }
 
+   @Override
    @GET
    @Produces( { MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML, MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    public Response get()
@@ -127,6 +130,7 @@ public class ProjectIterationService
       return Response.ok(it).tag(etag).build();
    }
 
+   @Override
    @PUT
    @Consumes( { MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML, MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    public Response put(InputStream messageBody)

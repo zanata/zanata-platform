@@ -1,4 +1,4 @@
-package net.openl10n.flies.client;
+package net.openl10n.flies.util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,9 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @see net.openl10n.flies.util.VersionUtility
+ * @see net.openl10n.flies.client.VersionUtility
  */
-// FIXME merge flies.client.VersionUtility and flies.util.VersionUtility into flies.common.util.VersionUtility (must prevent GWT compilation)
+//FIXME merge flies.client.VersionUtility and flies.util.VersionUtility into flies.common.util.VersionUtility (must prevent GWT compilation)
 public class VersionUtility
 {
    private static final Logger log = LoggerFactory.getLogger(VersionUtility.class);

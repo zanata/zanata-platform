@@ -8,8 +8,8 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import net.openl10n.flies.FliesInit;
 import net.openl10n.flies.service.impl.VersionManager;
+import net.openl10n.flies.util.VersionUtility;
 import net.openl10n.flies.rest.RestConstant;
 
 import org.jboss.resteasy.annotations.interception.ServerInterceptor;
@@ -28,11 +28,11 @@ public class FliesRestVersoinInterceptor implements PreProcessInterceptor
    @Override
    public ServerResponse preProcess(HttpRequest request, ResourceMethod method) throws Failure, WebApplicationException
    {
-      String clientVer = request.getHttpHeaders().getRequestHeaders().getFirst(RestConstant.HEADER_VERSION_NO);
-      FliesInit fliesInit = (FliesInit) Component.getInstance(FliesInit.class, APPLICATION);
+      String clientApiVer = request.getHttpHeaders().getRequestHeaders().getFirst(RestConstant.HEADER_VERSION_NO);
+      String serverApiVer = VersionUtility.getAPIVersionInfo().getVersionNo();
       VersionManager verManager = (VersionManager) Component.getInstance(VersionManager.class, APPLICATION);
 
-      return verManager.checkVersion(clientVer, fliesInit.getVersion()) ? null : ServerResponse.copyIfNotServerResponse(Response.status(Status.PRECONDITION_FAILED).entity("Client Version " + clientVer + " /Server Version" + fliesInit.getVersion() + " MisMatch, Please get the latest client version").build());
+      return verManager.checkVersion(clientApiVer, serverApiVer) ? null : ServerResponse.copyIfNotServerResponse(Response.status(Status.PRECONDITION_FAILED).entity("Client API Version '" + clientApiVer + "'  and Server API Version '" + serverApiVer + "' do not match. Please update your Flies client").build());
    }
 
 }

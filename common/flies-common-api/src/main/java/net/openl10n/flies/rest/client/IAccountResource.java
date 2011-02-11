@@ -4,7 +4,6 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
 
 import net.openl10n.flies.rest.MediaTypes;
 import net.openl10n.flies.rest.dto.Account;

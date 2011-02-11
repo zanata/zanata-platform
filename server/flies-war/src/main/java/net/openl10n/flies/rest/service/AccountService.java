@@ -26,6 +26,7 @@ import net.openl10n.flies.model.HPerson;
 import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.rest.MediaTypes;
 import net.openl10n.flies.rest.dto.Account;
+import net.openl10n.flies.rest.service.AccountResource;
 
 import org.hibernate.Session;
 import org.jboss.resteasy.spi.NoLogWebApplicationException;
@@ -39,7 +40,7 @@ import org.jboss.seam.security.Identity;
 @Name("accountService")
 @Path("/accounts/u/{username:[a-z\\d_]{3,20}}")
 @Transactional
-public class AccountService
+public class AccountService implements AccountResource
 {
 
    @PathParam("username")
@@ -77,6 +78,7 @@ public class AccountService
       this.accountDAO = accountDAO;
    }
 
+   @Override
    @GET
    @Produces(
    {MediaTypes.APPLICATION_FLIES_ACCOUNT_XML, MediaTypes.APPLICATION_FLIES_ACCOUNT_JSON})
@@ -95,6 +97,7 @@ public class AccountService
       return Response.ok(result).build();
    }
 
+   @Override
    @PUT
    @Consumes(
    {MediaTypes.APPLICATION_FLIES_ACCOUNT_XML, MediaTypes.APPLICATION_FLIES_ACCOUNT_JSON})

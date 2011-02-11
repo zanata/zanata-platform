@@ -137,8 +137,8 @@ public class FliesInit
          {
             buildTimestamp = UNKNOWN_VERSION;
          }
-         log.info("Version: {0}", version);
-         log.info("Build: {0}", buildTimestamp);
+         log.info("Server version: {0}", version);
+         log.info("Server build: {0}", buildTimestamp);
       }
 
       // if (dbunitImporter != null) {

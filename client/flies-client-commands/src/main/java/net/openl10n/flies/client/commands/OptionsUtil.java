@@ -160,7 +160,7 @@ public class OptionsUtil
             throw new ConfigException("Flies username must be specified");
          if (opts.getKey() == null)
             throw new ConfigException("Flies key must be specified");
-         return new FliesClientRequestFactory(opts.getUrl().toURI(), opts.getUsername(), opts.getKey(), VersionUtility.getVersionInfo());
+         return new FliesClientRequestFactory(opts.getUrl().toURI(), opts.getUsername(), opts.getKey(), VersionUtility.getAPIVersionInfo());
       }
       catch (URISyntaxException e)
       {

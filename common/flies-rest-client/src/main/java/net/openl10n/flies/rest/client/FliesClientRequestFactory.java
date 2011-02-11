@@ -6,6 +6,12 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import net.openl10n.flies.rest.RestConstant;
+import net.openl10n.flies.rest.client.IAccountResource;
+import net.openl10n.flies.rest.client.IProjectIterationResource;
+import net.openl10n.flies.rest.client.IProjectResource;
+import net.openl10n.flies.rest.client.IProjectsResource;
+import net.openl10n.flies.rest.client.ITranslationResources;
+import net.openl10n.flies.rest.client.IVersion;
 import net.openl10n.flies.rest.dto.VersionInfo;
 
 import org.jboss.resteasy.client.ClientExecutor;
@@ -27,35 +33,35 @@ public class FliesClientRequestFactory implements ITranslationResourcesFactory
    private final ClientRequestFactory crf;
    private static final String RESOURCE_PREFIX = "rest";
 
-   public FliesClientRequestFactory(String username, String apiKey, VersionInfo ver)
+   public FliesClientRequestFactory(String username, String apiKey, VersionInfo clientApiVersion)
    {
-      this(null, username, apiKey, ver);
+      this(null, username, apiKey, clientApiVersion);
    }
 
-   public FliesClientRequestFactory(URI base, String username, String apiKey, VersionInfo ver)
+   public FliesClientRequestFactory(URI base, String username, String apiKey, VersionInfo clientApiVersion)
    {
-      this(base, username, apiKey, null, ver);
+      this(base, username, apiKey, null, clientApiVersion);
    }
 
-   public FliesClientRequestFactory(URI base, String username, String apiKey, ClientExecutor executor, VersionInfo clientVersionInfo)
+   public FliesClientRequestFactory(URI base, String username, String apiKey, ClientExecutor executor, VersionInfo clientApiVersion)
    {
       crf = new ClientRequestFactory(executor, null, fixBase(base));
-      registerPrefixInterceptor(new ApiKeyHeaderDecorator(username, apiKey, clientVersionInfo.getVersionNo()));
-      String clientVer = clientVersionInfo.getVersionNo();
-      String clientTimestamp = clientVersionInfo.getBuildTimeStamp();
+      registerPrefixInterceptor(new ApiKeyHeaderDecorator(username, apiKey, clientApiVersion.getVersionNo()));
+      String clientVer = clientApiVersion.getVersionNo();
+      String clientTimestamp = clientApiVersion.getBuildTimeStamp();
       IVersion iversion = createIVersion();
       VersionInfo serverVersionInfo = iversion.get();
       String serverVer = serverVersionInfo.getVersionNo();
       String serverTimestamp = serverVersionInfo.getBuildTimeStamp();
 
-      log.info("Flies client version: {}, Flies server version: {}", clientVer, serverVer);
+      log.info("Flies client API version: {}, Flies server API version: {}", clientVer, serverVer);
       if (!serverVer.equals(clientVer))
       {
-         log.warn("Note: client version is {}, but server version is {}", clientVer, serverVer);
+         log.warn("client API version is {}, but server API version is {}", clientVer, serverVer);
       }
       else if (serverVer.contains(RestConstant.SNAPSHOT_VERSION) && !serverTimestamp.equalsIgnoreCase(clientTimestamp))
       {
-         log.warn("Note: client timestamp is {}, but server timestamp is {}", clientTimestamp, serverTimestamp);
+         log.warn("client API timestamp is {}, but server API timestamp is {}", clientTimestamp, serverTimestamp);
       }
    }
 
