@@ -21,16 +21,16 @@ syntax: regexp
 ^.ant-targets-build.xml
 \.pages.xml.spdia$
 temp-testng-customsuite.xml$
-^flies-war/src/main/resources/.*_qc\.properties$
-^flies-war/src/test/resources/bootstrap/data
-^flies-war/src/test/jboss-embedded-bootstrap/data
+^server/flies-war/src/main/resources/.*_qc\.properties$
+^server/flies-war/src/test/resources/bootstrap/data
+^server/flies-war/src/test/jboss-embedded-bootstrap/data
 
 # eclipse and maven stuff
 \.classpath$
 \.project$
 \.settings/
 ^target
-^flies-war/profiles.xml
+^server/flies-war/profiles.xml
 \.orig$
 
 # idea
@@ -41,10 +41,10 @@ temp-testng-customsuite.xml$
 \.directory$
 
 #gwt related
-^flies-war/src/main/webapp/WEB-INF/classes/
-^flies-war/tomcat
+^server/flies-war/src/main/webapp/WEB-INF/classes/
+^server/flies-war/tomcat
 \.gwt-tmp$
-^flies-war/src/main/webapp/webtrans/
+^server/flies-war/src/main/webapp/webtrans/
 
 # vim
 .swp
