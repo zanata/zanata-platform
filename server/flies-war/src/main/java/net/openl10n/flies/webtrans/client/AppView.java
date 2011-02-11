@@ -47,7 +47,7 @@ public class AppView extends Composite implements AppPresenter.Display
 
    private static AppViewUiBinder uiBinder = GWT.create(AppViewUiBinder.class);
 
-   private final int NOTIFICATION_TIME = 1500;
+   private final int NOTIFICATION_TIME = 2500;
 
    @UiField
    Anchor signOutLink, leaveLink, helpLink, documentsLink;
