@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>net.openl10n.flies</groupId>
 		<artifactId>flies-parent</artifactId>
-		<version>1.2.1-SNAPSHOT</version>
+		<version>1.2-SNAPSHOT</version>
 		<relativePath>../../flies-parent/pom.xml</relativePath>
 	</parent>
 	<artifactId>flies-war</artifactId>

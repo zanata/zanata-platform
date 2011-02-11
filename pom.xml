@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.openl10n.flies</groupId>
 	<artifactId>root</artifactId>
-	<version>1.2.1-SNAPSHOT</version>
+	<version>1.2-SNAPSHOT</version>
 	<name>Flies Root POM</name>
 	<url>http://flies.openl10n.net/</url>
 	<packaging>pom</packaging>
@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>net.openl10n.flies</groupId>
 		<artifactId>flies-parent</artifactId>
-		<version>1.2.1-SNAPSHOT</version>
+		<version>1.2-SNAPSHOT</version>
 		<relativePath>flies-parent/pom.xml</relativePath>
 	</parent>
 
