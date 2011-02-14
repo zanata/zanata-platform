@@ -122,7 +122,6 @@
 		<guava.version>r06</guava.version>
 		<jackson.version>1.5.0</jackson.version>
 		<icu4j.version>4.4.1.1</icu4j.version>
-		<skipUnitTests>false</skipUnitTests>
 	</properties>
 
 	<build>
@@ -152,7 +151,6 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<useFile>false</useFile>
-					<skipTests>${skipUnitTests}</skipTests>
 				</configuration>
 			</plugin>
             
@@ -206,7 +204,7 @@
 				</plugin>
 				<plugin>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.5</version>
+					<version>2.7.2</version>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>

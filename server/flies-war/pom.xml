@@ -176,50 +176,44 @@
 						Configure Surefire to run in integration-test phase
 					-->
 					<plugin>
-						<artifactId>maven-surefire-plugin</artifactId>
-						<version>2.6</version>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<version>2.7.2</version>
 						<executions>
 							<execution>
-								<id>surefire-it</id>
-								<phase>integration-test</phase>
+								<id>integration-test</id>
 								<goals>
-									<goal>test</goal>
+									<goal>integration-test</goal>
 								</goals>
-								<configuration>
-									<skipTests>false</skipTests>
-									<argLine>-Xmx512m -XX:MaxPermSize=256m -XX:+HeapDumpOnOutOfMemoryError</argLine>
-									<redirectTestOutputToFile>false</redirectTestOutputToFile>
-									<printSummary>true</printSummary>
-									<forkMode>always</forkMode>
-									<suiteXmlFiles>
-										<!-- 
-										We would run unit tests again so that their results will appear in the surefire report directory,
-										but this causes unit tests and integration tests to run twice!
-										-->
-<!--
-										<suiteXmlFile>src/test/resources/AllUnitTests.tng.xml</suiteXmlFile>
--->
-										<suiteXmlFile>src/test/resources/AllIntegrationTests.tng.xml</suiteXmlFile>
-									</suiteXmlFiles>
-									<additionalClasspathElements>
-										<additionalClasspathElement>${project.basedir}/src/test/jboss-embedded-bootstrap</additionalClasspathElement>
-<!--
-										<additionalClasspathElement>${project.basedir}/src/main/resources-dev</additionalClasspathElement>
--->
-										<additionalClasspathElement>${project.build.directory}/flies</additionalClasspathElement>
-									</additionalClasspathElements>
-									<childDelegation>true</childDelegation>
-									<useSystemClassLoader>true</useSystemClassLoader>
-									<argLine xml:space="preserve">-Dsun.lang.ClassLoader.allowArraySyntax=true</argLine>
-									<classpathDependencyExcludes>
-										<classpathDependencyExclude>
-											<!-- collides with XMLLoginConfigImpl in jboss-embedded-all -->
-											org.jboss.security:jbosssx
-										</classpathDependencyExclude>
-									</classpathDependencyExcludes>
-								</configuration>
+							</execution>
+							<execution>
+								<id>verify</id>
+								<goals>
+									<goal>verify</goal>
+								</goals>
 							</execution>
 						</executions>
+						<configuration>
+							<argLine>-Xmx512m -XX:MaxPermSize=256m -XX:+HeapDumpOnOutOfMemoryError</argLine>
+							<redirectTestOutputToFile>false</redirectTestOutputToFile>
+							<printSummary>true</printSummary>
+							<forkMode>always</forkMode>
+							<suiteXmlFiles>
+								<suiteXmlFile>src/test/resources/AllIntegrationTests.tng.xml</suiteXmlFile>
+							</suiteXmlFiles>
+							<additionalClasspathElements>
+								<additionalClasspathElement>${project.basedir}/src/test/jboss-embedded-bootstrap</additionalClasspathElement>
+								<additionalClasspathElement>${project.build.directory}/flies</additionalClasspathElement>
+							</additionalClasspathElements>
+							<childDelegation>true</childDelegation>
+							<useSystemClassLoader>true</useSystemClassLoader>
+							<argLine xml:space="preserve">-Dsun.lang.ClassLoader.allowArraySyntax=true</argLine>
+							<classpathDependencyExcludes>
+								<classpathDependencyExclude>
+									<!-- collides with XMLLoginConfigImpl in jboss-embedded-all -->
+									org.jboss.security:jbosssx
+								</classpathDependencyExclude>
+							</classpathDependencyExcludes>
+						</configuration>
 					</plugin>
 
 				</plugins>
