@@ -20,50 +20,43 @@
  */
 package net.openl10n.flies.hibernate.search;
 
-import java.io.IOException;
 import java.util.List;
 
-
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.index.TermDocs;
-import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
-import org.apache.lucene.util.OpenBitSet;
-import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
+import org.hibernate.search.annotations.Factory;
+import org.hibernate.search.annotations.Key;
+import org.hibernate.search.filter.FilterKey;
+import org.hibernate.search.filter.StandardFilterKey;
 
-public class TranslatedFilter extends Filter
+public class TextFlowFilterFactory
 {
-   /**
-    * 
-    */
-   private static final long serialVersionUID = 1L;
+
+   @Factory
+   public Filter getFilter()
+   {
+      TextFlowIdFilter filter = new TextFlowIdFilter();
+      filter.setTextFlowIds(this.translatedIds);
+      return filter;
+   }
+
    private List<Long> translatedIds;
-   private static final Log log = Logging.getLog(TranslatedFilter.class);
+
+   public List<Long> getTranslatedIds()
+   {
+      return translatedIds;
+   }
 
    public void setTranslatedIds(List<Long> var)
    {
-      log.info("Setting Translated Ids");
       this.translatedIds = var;
    }
-   
-   public List<Long> getTranslatedIds()
+
+   @Key
+   public FilterKey getKey()
    {
-      return this.translatedIds;
+      StandardFilterKey key = new StandardFilterKey();
+      key.addParameter(translatedIds);
+      return key;
    }
 
-   @Override
-   public DocIdSet getDocIdSet(IndexReader reader) throws IOException
-   {
-      OpenBitSet bitSet = new OpenBitSet(reader.maxDoc());
-      for (Long tfId : translatedIds)
-      {
-         Term term = new Term("id", tfId.toString());
-         TermDocs termDocs = reader.termDocs(term);
-         while (termDocs.next())
-            bitSet.set(termDocs.doc());
-      }
-      return bitSet;
-   }
 }

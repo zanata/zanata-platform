@@ -73,4 +73,10 @@ public class RedirectingCachedTableModel<RowType> extends CachedTableModel<RowTy
       return super.onSetRowValue(row, rowValue);
    }
 
+   public void setRowCount(int rowCount)
+   {
+      super.setRowCount(rowCount);
+   }
+
+
 }

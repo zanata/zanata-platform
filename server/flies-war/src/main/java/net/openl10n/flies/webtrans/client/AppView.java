@@ -27,10 +27,13 @@ import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.layout.client.Layout.AnimationCallback;
+import com.google.gwt.layout.client.Layout.Layer;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -44,14 +47,19 @@ public class AppView extends Composite implements AppPresenter.Display
 
    private static AppViewUiBinder uiBinder = GWT.create(AppViewUiBinder.class);
 
+   private final int NOTIFICATION_TIME = 2500;
+
    @UiField
    Anchor signOutLink, leaveLink, helpLink, documentsLink;
+
+   @UiField
+   Label notificationMessage;
 
    @UiField
    SpanElement user, selectedDocumentSpan, selectedDocumentPathSpan;
 
    @UiField
-   LayoutPanel container;
+   LayoutPanel container, topPanel, filterPanelContainer;
 
    @UiField(provided = true)
    final Resources resources;
@@ -59,6 +67,8 @@ public class AppView extends Composite implements AppPresenter.Display
    private Widget documentListView;
 
    private Widget translationView;
+
+   private Widget filterView;
 
    final WebTransMessages messages;
 
@@ -90,10 +100,12 @@ public class AppView extends Composite implements AppPresenter.Display
       case Documents:
          container.setWidgetTopBottom(documentListView, 0, Unit.PX, 0, Unit.PX);
          container.setWidgetTopHeight(translationView, 0, Unit.PX, 0, Unit.PX);
+         filterPanelContainer.setWidgetTopHeight(filterView, 0, Unit.PX, 0, Unit.PX);
          break;
       case Editor:
          container.setWidgetTopBottom(translationView, 0, Unit.PX, 0, Unit.PX);
          container.setWidgetTopHeight(documentListView, 0, Unit.PX, 0, Unit.PX);
+         filterPanelContainer.setWidgetTopBottom(filterView, 0, Unit.PX, 0, Unit.PX);
          break;
       }
    }
@@ -112,6 +124,13 @@ public class AppView extends Composite implements AppPresenter.Display
       this.translationView = editorView;
    }
 
+   @Override
+   public void setFilterView(Widget filterView)
+   {
+      filterPanelContainer.clear();
+      filterPanelContainer.add(filterView);
+      this.filterView = filterView;
+   }
 
    @Override
    public HasClickHandlers getHelpLink()
@@ -155,5 +174,28 @@ public class AppView extends Composite implements AppPresenter.Display
       String path = document.getPath() == null || document.getPath().isEmpty() ? "" : document.getPath() + "/";
       selectedDocumentPathSpan.setInnerText(path);
       selectedDocumentSpan.setInnerText(document.getName());
+   }
+
+   private final AnimationCallback callback = new AnimationCallback()
+   {
+
+      @Override
+      public void onAnimationComplete()
+      {
+         notificationMessage.setText("");
+      }
+
+      @Override
+      public void onLayout(Layer layer, double progress)
+      {
+      }
+
+   };
+
+   public void setNotificationMessage(String var)
+   {
+      topPanel.forceLayout();
+      notificationMessage.setText(var);
+      topPanel.animate(NOTIFICATION_TIME, callback);
    }
 }

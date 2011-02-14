@@ -13,8 +13,8 @@ import net.openl10n.flies.webtrans.shared.rpc.GetProjectStatusCount;
 import net.openl10n.flies.webtrans.shared.rpc.GetProjectStatusCountResult;
 import net.openl10n.flies.webtrans.shared.rpc.GetStatusCount;
 import net.openl10n.flies.webtrans.shared.rpc.GetStatusCountResult;
-import net.openl10n.flies.webtrans.shared.rpc.GetTransUnits;
-import net.openl10n.flies.webtrans.shared.rpc.GetTransUnitsResult;
+import net.openl10n.flies.webtrans.shared.rpc.GetTransUnitList;
+import net.openl10n.flies.webtrans.shared.rpc.GetTransUnitListResult;
 import net.openl10n.flies.webtrans.shared.rpc.GetTranslationMemory;
 import net.openl10n.flies.webtrans.shared.rpc.GetTranslationMemoryResult;
 import net.openl10n.flies.webtrans.shared.rpc.GetTranslatorList;
@@ -48,10 +48,10 @@ public class DummyDispatchAsync extends SeamDispatchAsync
          wsAction.setSessionId(this.identity.getSessionId());
       }
 
-      if (action instanceof GetTransUnits)
+      if (action instanceof GetTransUnitList)
       {
-         GetTransUnits gtuAction = (GetTransUnits) action;
-         AsyncCallback<GetTransUnitsResult> gtuCallback = (AsyncCallback<GetTransUnitsResult>) callback;
+         GetTransUnitList gtuAction = (GetTransUnitList) action;
+         AsyncCallback<GetTransUnitListResult> gtuCallback = (AsyncCallback<GetTransUnitListResult>) callback;
          DeferredCommand.addCommand(new DummyGetTransUnitCommand(gtuAction, gtuCallback));
       }
       else if (action instanceof GetDocumentList)

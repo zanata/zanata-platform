@@ -35,8 +35,6 @@ import javax.persistence.ManyToMany;
 
 import net.openl10n.flies.rest.dto.Project;
 
-import org.hibernate.annotations.NamedQueries;
-import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
@@ -51,7 +49,6 @@ import org.jboss.seam.annotations.security.Restrict;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "projecttype", discriminatorType = DiscriminatorType.STRING)
-@NamedQueries({ @NamedQuery(name = "getProjectMaintainers", query = "select p.maintainers from HProject as p where p.slug = :slug") })
 @Restrict
 public abstract class HProject extends AbstractSlugEntity implements Serializable
 {

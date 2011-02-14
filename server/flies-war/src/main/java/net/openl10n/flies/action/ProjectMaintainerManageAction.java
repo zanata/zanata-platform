@@ -39,7 +39,7 @@ public class ProjectMaintainerManageAction implements Serializable
 
    public void loadAllMaintainers()
    {
-      allList = projectDAO.getProjectMaintainers(this.slug);
+      allList = projectDAO.getProjectMaintainerBySlug(this.slug);
    }
 
    public HPerson getSelectedPerson()

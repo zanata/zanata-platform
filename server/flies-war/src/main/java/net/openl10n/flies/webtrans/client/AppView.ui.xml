@@ -28,6 +28,11 @@
 			padding: 5px;
 		}
 
+		.notification {
+			color: yellow;
+			padding: 5px;
+		}
+
 		.topPanel-Workspace a{
 			color: white;
 			font-weight: bold;
@@ -49,6 +54,7 @@
 			border: 2px solid #99ccff;
 			-moz-border-radius: 10px;
 		}
+
 		
 	</ui:style>
 	<g:LayoutPanel>
@@ -75,7 +81,9 @@
 			</g:LayoutPanel>
 		</g:layer>
 		<g:layer top="30px" height="30px">
-			<g:FlowPanel styleName="{resources.style.banner}">
+		<g:LayoutPanel ui:field='topPanel' styleName="{resources.style.banner}">
+			<g:layer >
+				<g:FlowPanel >
 				<g:HTMLPanel styleName="{style.topPanel-Workspace}">
 					<nobr>
 						<g:Anchor href="#" ui:field="documentsLink"><ui:msg>Documents</ui:msg></g:Anchor>
@@ -85,7 +93,15 @@
 						</em>
 					</nobr>
 				</g:HTMLPanel>
-			</g:FlowPanel>
+				</g:FlowPanel>
+			</g:layer>
+			<g:layer right="600px" width ="300px">
+					<g:Label ui:field="notificationMessage" styleName="{style.notification}"/>
+			</g:layer>
+			<g:layer right="7px" width ="300px" >
+			   <g:LayoutPanel ui:field="filterPanelContainer" />
+			</g:layer>
+		</g:LayoutPanel>
 		</g:layer>
 		<g:layer top="66px" bottom="0px" left='7px' right='7px' >
 		   <g:LayoutPanel ui:field="container" />

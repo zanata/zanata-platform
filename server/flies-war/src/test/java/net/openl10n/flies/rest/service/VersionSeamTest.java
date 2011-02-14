@@ -32,7 +32,7 @@ public class VersionSeamTest extends FliesDBUnitSeamTest
    {
       log.debug("setup test version service");
       FliesTestClientRequestFactory clientRequestFactory = new FliesTestClientRequestFactory(new URI("http://example.com/"), USERNAME, AUTH_KEY, new SeamMockClientExecutor(this), new VersionInfo("SNAPSHOT", ""));
-      version = clientRequestFactory.getVersionInfo();
+      version = clientRequestFactory.createIVersion();
    }
 
    @Test

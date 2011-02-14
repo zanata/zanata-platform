@@ -36,7 +36,6 @@ import net.openl10n.flies.dao.TextFlowDAO;
 import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.model.HTextFlow;
 import net.openl10n.flies.model.HTextFlowTarget;
-import net.openl10n.flies.hibernate.search.DefaultNgramAnalyzer;
 import net.openl10n.flies.search.LevenshteinUtil;
 import net.openl10n.flies.security.FliesIdentity;
 import net.openl10n.flies.service.LocaleService;
@@ -47,11 +46,6 @@ import net.openl10n.flies.webtrans.shared.rpc.GetTranslationMemoryResult;
 import net.openl10n.flies.webtrans.shared.rpc.GetTranslationMemory.SearchType;
 
 import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.util.Version;
-import org.hibernate.search.jpa.FullTextEntityManager;
-import org.hibernate.search.jpa.FullTextQuery;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -71,9 +65,6 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
    private Log log;
 
    @In
-   private FullTextEntityManager entityManager;
-
-   @In
    private LocaleService localeServiceImpl;
 
    @In
@@ -91,37 +82,11 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
 
       LocaleId localeID = action.getLocaleId();
       ArrayList<TranslationMemoryItem> results;
-      String queryText;
-      switch (searchType)
-      {
-      case RAW:
-         queryText = searchText;
-         break;
-
-      case FUZZY:
-         // search by N-grams
-         queryText = QueryParser.escape(searchText);
-         break;
-
-      case EXACT:
-         queryText = "\"" + QueryParser.escape(searchText) + "\"";
-         break;
-
-      default:
-         throw new RuntimeException("Unknown query type: " + searchType);
-      }
 
       try
       {
-         QueryParser parser = new QueryParser(Version.LUCENE_29, "content", new DefaultNgramAnalyzer());
-         Query textQuery = parser.parse(queryText);
-         FullTextQuery ftQuery = entityManager.createFullTextQuery(textQuery, HTextFlow.class);
          List<Long> translatedIds = textFlowDAO.getIdsByTargetState(localeID, ContentState.Approved);
-         log.debug("{0} matching TF ids for locale {0}: {1}", translatedIds.size(), localeID, translatedIds);
-         ftQuery.enableFullTextFilter("translated").setParameter("translatedIds", translatedIds);
-         ftQuery.setProjection(FullTextQuery.SCORE, FullTextQuery.THIS);
-         @SuppressWarnings("unchecked")
-         List<Object[]> matches = ftQuery.setMaxResults(MAX_RESULTS).getResultList();
+         List<Object[]> matches = textFlowDAO.getSearchResult(searchText, searchType, translatedIds, MAX_RESULTS);
          Map<TMKey, TranslationMemoryItem> matchesMap = new LinkedHashMap<TMKey, TranslationMemoryItem>();
          for (Object[] match : matches)
          {
@@ -160,12 +125,12 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
       {
          if (searchType == SearchType.RAW)
          {
-            log.warn("Can't parse raw query '" + queryText + "'");
+            log.warn("Can't parse raw query '" + searchText + "'");
          }
          else
          {
             // escaping failed!
-            log.error("Can't parse query '" + queryText + "'", e);
+            log.error("Can't parse query '" + searchText + "'", e);
          }
          results = new ArrayList<TranslationMemoryItem>(0);
       }

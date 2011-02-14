@@ -11,8 +11,8 @@ import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.webtrans.shared.model.DocumentId;
 import net.openl10n.flies.webtrans.shared.model.TransUnit;
 import net.openl10n.flies.webtrans.shared.model.TransUnitId;
-import net.openl10n.flies.webtrans.shared.rpc.GetTransUnits;
-import net.openl10n.flies.webtrans.shared.rpc.GetTransUnitsResult;
+import net.openl10n.flies.webtrans.shared.rpc.GetTransUnitList;
+import net.openl10n.flies.webtrans.shared.rpc.GetTransUnitListResult;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Random;
@@ -20,10 +20,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 final class DummyGetTransUnitCommand implements Command
 {
-   private final GetTransUnits action;
-   private final AsyncCallback<GetTransUnitsResult> callback;
+   private final GetTransUnitList action;
+   private final AsyncCallback<GetTransUnitListResult> callback;
 
-   DummyGetTransUnitCommand(GetTransUnits gtuAction, AsyncCallback<GetTransUnitsResult> callback)
+   DummyGetTransUnitCommand(GetTransUnitList gtuAction, AsyncCallback<GetTransUnitListResult> callback)
    {
       this.action = gtuAction;
       this.callback = callback;
@@ -36,7 +36,7 @@ final class DummyGetTransUnitCommand implements Command
       int count = action.getCount();
       int offset = action.getOffset();
       int totalCount = count * 5;
-      GetTransUnitsResult result = new GetTransUnitsResult(documentId, generateTransUnitSampleData(action.getWorkspaceId().getLocaleId(), count, offset), totalCount);
+      GetTransUnitListResult result = new GetTransUnitListResult(documentId, generateTransUnitSampleData(action.getWorkspaceId().getLocaleId(), count, offset), totalCount);
       callback.onSuccess(result);
    }
 

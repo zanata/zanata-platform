@@ -26,6 +26,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -37,8 +38,6 @@ import javax.persistence.UniqueConstraint;
 import net.openl10n.flies.model.type.UserApiKey;
 import net.openl10n.flies.rest.dto.Account;
 
-import org.hibernate.annotations.NamedQueries;
-import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
@@ -57,7 +56,6 @@ import org.jboss.seam.security.management.PasswordHash;
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "username"))
 @Indexed
-@NamedQueries({ @NamedQuery(name = "getSearchLogin", query = "from HAccount as a where a.username like :username") })
 public class HAccount extends AbstractFliesEntity implements Serializable
 {
    private static final long serialVersionUID = 1L;
@@ -79,7 +77,7 @@ public class HAccount extends AbstractFliesEntity implements Serializable
    private HAccountResetPasswordKey accountResetPasswordKey;
 
 
-   @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+   @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "account")
    public HAccountActivationKey getAccountActivationKey()
    {
       return accountActivationKey;
@@ -90,7 +88,7 @@ public class HAccount extends AbstractFliesEntity implements Serializable
       this.accountActivationKey = accountActivationKey;
    }
 
-   @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+   @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "account")
    public HAccountResetPasswordKey getAccountResetPasswordKey()
    {
       return accountResetPasswordKey;

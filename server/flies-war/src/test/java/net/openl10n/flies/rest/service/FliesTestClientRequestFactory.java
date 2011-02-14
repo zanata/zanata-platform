@@ -28,6 +28,7 @@ public class FliesTestClientRequestFactory extends FliesClientRequestFactory
       return createProxy(IProjectIterationResource.class, uri);
    }
 
+   @Override
    public ITranslationResources getTranslationResources(String projectSlug, String versionSlug)
    {
       try
@@ -42,17 +43,18 @@ public class FliesTestClientRequestFactory extends FliesClientRequestFactory
       }
    }
 
-
+   @Override
    public void registerPrefixInterceptor(Object interceptor)
    {
       super.registerPrefixInterceptor(interceptor);
    }
 
-   public IVersion getVersionInfo()
+   @Override
+   protected IVersion createIVersion()
    {
       try
       {
-         return (IVersion) createProxy(IVersion.class, new URI("/restv1/version"));
+         return createProxy(IVersion.class, new URI("/restv1/version"));
       }
       catch (URISyntaxException e)
       {

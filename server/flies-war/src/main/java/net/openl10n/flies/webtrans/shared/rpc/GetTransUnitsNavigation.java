@@ -1,6 +1,25 @@
+/*
+ * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * @author tags. See the copyright.txt file in the distribution for a full
+ * listing of individual contributors.
+ * 
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+ * site: http://www.fsf.org.
+ */
 package net.openl10n.flies.webtrans.shared.rpc;
 
-import net.openl10n.flies.webtrans.shared.model.DocumentId;
 
 
 public class GetTransUnitsNavigation extends AbstractWorkspaceAction<GetTransUnitsNavigationResult>
@@ -8,33 +27,24 @@ public class GetTransUnitsNavigation extends AbstractWorkspaceAction<GetTransUni
 
    private static final long serialVersionUID = 1L;
 
-   private int offset;
    private int count;
-   private DocumentId documentId;
+   private Long id;
    private boolean reverse;
+   private String phrase;
 
    @SuppressWarnings("unused")
    private GetTransUnitsNavigation()
    {
    }
 
-   public GetTransUnitsNavigation(DocumentId id, int offset, int count, boolean reverse)
+   public GetTransUnitsNavigation(Long id, int count, boolean reverse, String phrase)
    {
-      this.documentId = id;
-      this.offset = offset;
+      this.id = id;
       this.count = count;
       this.setReverse(reverse);
+      this.phrase = phrase;
    }
 
-   public int getOffset()
-   {
-      return offset;
-   }
-
-   public void setOffset(int offset)
-   {
-      this.offset = offset;
-   }
 
    public int getCount()
    {
@@ -46,14 +56,14 @@ public class GetTransUnitsNavigation extends AbstractWorkspaceAction<GetTransUni
       this.count = count;
    }
 
-   public DocumentId getDocumentId()
+   public Long getId()
    {
-      return documentId;
+      return id;
    }
 
-   public void setDocumentId(DocumentId documentId)
+   public void setId(Long id)
    {
-      this.documentId = documentId;
+      this.id = id;
    }
 
    public void setReverse(boolean reverse)
@@ -64,5 +74,10 @@ public class GetTransUnitsNavigation extends AbstractWorkspaceAction<GetTransUni
    public boolean isReverse()
    {
       return reverse;
+   }
+
+   public String getPhrase()
+   {
+      return this.phrase;
    }
 }

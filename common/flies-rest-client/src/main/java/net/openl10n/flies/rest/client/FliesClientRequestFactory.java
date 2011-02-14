@@ -11,7 +11,6 @@ import net.openl10n.flies.rest.client.IProjectIterationResource;
 import net.openl10n.flies.rest.client.IProjectResource;
 import net.openl10n.flies.rest.client.IProjectsResource;
 import net.openl10n.flies.rest.client.ITranslationResources;
-import net.openl10n.flies.rest.client.IVersion;
 import net.openl10n.flies.rest.dto.VersionInfo;
 
 import org.jboss.resteasy.client.ClientExecutor;
@@ -200,7 +199,7 @@ public class FliesClientRequestFactory implements ITranslationResourcesFactory
       crf.getPrefixInterceptors().registerInterceptor(interceptor);
    }
    
-   private IVersion createIVersion()
+   protected IVersion createIVersion()
    {
       URL url;
       try

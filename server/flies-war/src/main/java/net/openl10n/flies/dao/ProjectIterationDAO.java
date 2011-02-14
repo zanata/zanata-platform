@@ -81,10 +81,17 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       // @formatter:on
 
       TransUnitCount stat = new TransUnitCount();
+
       for (StatusCount count : stats)
       {
          stat.set(count.status, count.count.intValue());
       }
+
+      if (totalCount == null)
+      {
+         totalCount = 0L;
+      }
+
 
       stat.set(ContentState.New, totalCount.intValue() - (stat.getApproved() + stat.getNeedReview()));
 
@@ -124,9 +131,15 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
       // @formatter:on
 
       TransUnitCount stat = new TransUnitCount();
+
       for (StatusCount count : stats)
       {
          stat.set(count.status, count.count.intValue());
+      }
+
+      if (totalCount == null)
+      {
+         totalCount = 0L;
       }
 
       stat.set(ContentState.New, totalCount.intValue() - (stat.getApproved() + stat.getNeedReview()));

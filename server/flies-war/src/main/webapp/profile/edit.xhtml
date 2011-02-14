@@ -7,7 +7,13 @@
 	xmlns:s="http://jboss.com/products/seam/taglib"
     template="../WEB-INF/layout/template.xhtml">
   
+    <ui:param name="showGlobalMessages" value="false"/>
     <ui:define name="center_content">
+            <div>
+	    	<h:outputText value="#{messages['jsf.FirstExternalLoginMessage']}" rendered="#{fliesExternalLoginBean.newUser}"/>
+		<br/>
+            </div>
+	
       <h1>#{messages['jsf.EditProfile']}</h1>
         <h:form>
           <s:token allowMultiplePosts="true" />

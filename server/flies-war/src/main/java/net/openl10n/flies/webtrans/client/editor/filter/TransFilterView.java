@@ -1,9 +1,28 @@
+/*
+ * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * @author tags. See the copyright.txt file in the distribution for a full
+ * listing of individual contributors.
+ * 
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+ * site: http://www.fsf.org.
+ */
 package net.openl10n.flies.webtrans.client.editor.filter;
 
 import net.openl10n.flies.webtrans.client.Resources;
 import net.openl10n.flies.webtrans.client.editor.filter.TransFilterMessages;
 import net.openl10n.flies.webtrans.client.ui.ClearableTextBox;
-import net.openl10n.flies.webtrans.client.ui.CollapsePanel;
 import net.openl10n.flies.webtrans.client.ui.UiMessages;
 
 import com.google.gwt.core.client.GWT;
@@ -23,8 +42,6 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
    {
    }
 
-   @UiField(provided = true)
-   CollapsePanel collapsePanel;
 
    @UiField(provided = true)
    ClearableTextBox filterTextBox;
@@ -35,11 +52,9 @@ public class TransFilterView extends Composite implements TransFilterPresenter.D
    public TransFilterView(final Resources resources, final TransFilterMessages messages, final UiMessages uiMessages)
    {
       this.messages = messages;
-      this.collapsePanel = new CollapsePanel(resources);
       this.filterTextBox = new ClearableTextBox(resources, uiMessages);
       filterTextBox.setEmptyText(messages.findSourceOrTargetString());
       initWidget(uiBinder.createAndBindUi(this));
-      collapsePanel.setHeading(messages.transUnitSearchesHeading());
       getElement().setId("TransFilterView");
    }
 

@@ -22,6 +22,7 @@ package net.openl10n.flies.webtrans.server.rpc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
@@ -33,6 +34,7 @@ import net.openl10n.flies.model.HTextFlowTarget;
 import net.openl10n.flies.security.FliesIdentity;
 import net.openl10n.flies.service.LocaleService;
 import net.openl10n.flies.webtrans.server.ActionHandlerFor;
+import net.openl10n.flies.webtrans.shared.model.DocumentId;
 import net.openl10n.flies.webtrans.shared.rpc.GetTransUnitsNavigation;
 import net.openl10n.flies.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 
@@ -54,7 +56,6 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
    @In
    private TextFlowDAO textFlowDAO;
 
-
    @In
    private LocaleService localeServiceImpl;
 
@@ -63,9 +64,66 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
    {
 
       FliesIdentity.instance().checkLoggedIn();
-      List<Long> results = getFuzzyOrUntranslated(action);
+      HTextFlow tf = textFlowDAO.findById(action.getId(), false);
+      List<Long> results = new ArrayList<Long>();
+      List<HTextFlow> textFlows = new ArrayList<HTextFlow>();
+      if (action.getPhrase() != null && !action.getPhrase().isEmpty())
+      {
+         log.info("find message:" + action.getPhrase());
+         Set<Object[]> idSet = textFlowDAO.getNavigationBy(tf.getDocument().getId(), action.getPhrase().toLowerCase(), tf.getPos(), action.getWorkspaceId().getLocaleId(), action.isReverse());
+         log.info("size: " + idSet.size());
+         Long step = 0L;
+         int count = 0;
 
-      return new GetTransUnitsNavigationResult(action.getDocumentId(), results);
+         for (Object[] id : idSet)
+         {
+            if (count < action.getCount())
+            {
+               Long textFlowId = (Long) id[0];
+               step++;
+               HTextFlow textFlow = textFlowDAO.findById(textFlowId, false);
+               HLocale hLocale = localeServiceImpl.getSupportedLanguageByLocale(action.getWorkspaceId().getLocaleId());
+               HTextFlowTarget textFlowTarget = textFlow.getTargets().get(hLocale);
+               if (checkNewFuzzyState(textFlowTarget))
+               {
+                  results.add(step);
+                  log.info("add navigation step: " + step);
+                  count++;
+               }
+            }
+            else
+            {
+               break;
+            }
+         }
+      }
+      else
+      {
+         textFlows = textFlowDAO.getNavigationByDocumentId(tf.getDocument().getId(), tf.getPos(), action.isReverse());
+         HLocale hLocale = localeServiceImpl.getSupportedLanguageByLocale(action.getWorkspaceId().getLocaleId());
+         int count = 0;
+         Long step = 0L;
+         for (HTextFlow textFlow : textFlows)
+         {
+            if (count < action.getCount())
+            {
+               step++;
+               HTextFlowTarget textFlowTarget = textFlow.getTargets().get(hLocale);
+               if (checkNewFuzzyState(textFlowTarget))
+               {
+                  results.add(step);
+                  log.info("add navigation step: " + step);
+                  count++;
+               }
+            }
+            else
+            {
+               break;
+            }
+         }
+      }
+
+      return new GetTransUnitsNavigationResult(new DocumentId(tf.getDocument().getId()), results);
    }
 
    @Override
@@ -73,33 +131,10 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
    {
    }
 
-   private List<Long> getFuzzyOrUntranslated(GetTransUnitsNavigation action)
+   private boolean checkNewFuzzyState(HTextFlowTarget textFlowTarget)
    {
-      List<Long> results = new ArrayList<Long>();
-      List<HTextFlow> textFlows = new ArrayList<HTextFlow>();
-      int count = 0;
-      textFlows = textFlowDAO.getNavigationByDocumentId(action.getDocumentId().getValue(), action.getOffset(), action.isReverse());
-      HLocale hLocale = localeServiceImpl.getSupportedLanguageByLocale(action.getWorkspaceId().getLocaleId());
-      for (HTextFlow textFlow : textFlows)
-      {
-         if (count < action.getCount())
-         {
-            HTextFlowTarget textFlowTarget = textFlow.getTargets().get(hLocale);
-            if (textFlowTarget == null)
-            {
-               // log.info("new :" + new Long(textFlow.getPos()));
-               results.add(new Long(textFlow.getPos()));
-               count++;
-            }
-            else if (textFlowTarget.getState() == ContentState.New || textFlowTarget.getState() == ContentState.NeedReview)
-            {
-               // log.info("new or fuzzy:" + new Long(textFlow.getPos()));
-               results.add(new Long(textFlow.getPos()));
-               count++;
-            }
-         }
-      }
-      return results;
+      return textFlowTarget == null || textFlowTarget.getState() == ContentState.New || textFlowTarget.getState() == ContentState.NeedReview;
    }
+
 
 }

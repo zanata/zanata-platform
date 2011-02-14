@@ -1,9 +1,30 @@
+/*
+ * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * @author tags. See the copyright.txt file in the distribution for a full
+ * listing of individual contributors.
+ * 
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+ * site: http://www.fsf.org.
+ */
 package net.openl10n.flies.webtrans.client.editor.table;
 
 import net.openl10n.flies.webtrans.client.editor.filter.ContentFilter;
 import net.openl10n.flies.webtrans.client.ui.HighlightingLabel;
 import net.openl10n.flies.webtrans.shared.model.TransUnit;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.gen2.table.client.AbstractColumnDefinition;
 import com.google.gwt.gen2.table.client.CellRenderer;
 import com.google.gwt.gen2.table.client.ColumnDefinition;
@@ -20,6 +41,8 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
    private ContentFilter<TransUnit> contentFilter = null;
 
+   private String findMessage;
+
    private final RowRenderer<TransUnit> rowRenderer = new RowRenderer<TransUnit>()
    {
       @Override
@@ -28,11 +51,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          String styles = "TableEditorRow ";
          styles += view.getRowIndex() % 2 == 0 ? "odd-row" : "even-row";
 
-         if (contentFilter != null)
-         {
-            styles += " content-filter";
-            styles += contentFilter.accept(rowValue) ? " content-filter-match" : " content-filter-nomatch";
-         }
 
          String state = "";
          switch (rowValue.getStatus())
@@ -106,6 +124,10 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       {
          view.setStyleName("TableEditorCell TableEditorCell-Source");
          SourcePanel sourcePanel = new SourcePanel(rowValue, messages);
+         if (findMessage != null && !findMessage.isEmpty())
+         {
+            sourcePanel.highlightSearch(findMessage);
+         }
          view.setWidget(sourcePanel);
       }
    };
@@ -136,6 +158,10 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          final Label label = new HighlightingLabel(rowValue.getTarget());
          label.setStylePrimaryName("TableEditorContent");
 
+         if (findMessage != null && !findMessage.isEmpty())
+         {
+            ((HighlightingLabel) label).highlightSearch(findMessage);
+         }
          // TODO label.setTitle(rowValue.getTargetComment());
 
          view.setWidget(label);
@@ -144,6 +170,12 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
    private InlineTargetCellEditor targetCellEditor;
    private final NavigationMessages messages;
+
+   public void setFindMessage(String findMessage)
+   {
+      Log.info("set find message: " + findMessage);
+      this.findMessage = findMessage;
+   }
 
    public TableEditorTableDefinition(final NavigationMessages messages, final RedirectingCachedTableModel<TransUnit> tableModel)
    {

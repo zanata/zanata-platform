@@ -71,12 +71,12 @@ public class RegisterServiceImpl implements RegisterService
       person.setEmail(email);
       person.setName(name);
       personDAO.makePersistent(person);
-      personDAO.flush();
 
       HAccountActivationKey key = new HAccountActivationKey();
       key.setAccount(account);
       key.setKeyHash(HashUtil.generateHash(username + password + email + name + System.currentTimeMillis()));
       accountActivationKeyDAO.makePersistent(key);
+      accountActivationKeyDAO.flush();
       return key.getKeyHash();
    }
 }

@@ -18,24 +18,53 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package net.openl10n.flies.rest.service;
+package net.openl10n.flies.webtrans.client.events;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Produces;
+import com.google.gwt.event.shared.GwtEvent;
 
-import net.openl10n.flies.rest.MediaTypes;
-import net.openl10n.flies.rest.dto.VersionInfo;
-
-public interface VersionResource
+public class FindMessageEvent extends GwtEvent<FindMessageHandler>
 {
+   private String message;
+
+   public FindMessageEvent(String message)
+   {
+      this.message = message;
+   }
+
+   public String getMessage()
+   {
+      return this.message;
+   }
 
    /**
-    * Retrieve VersionInfo
-    * 
-    * @return VersionInfo
+    * Handler type.
     */
-   @GET
-   @Produces({ MediaTypes.APPLICATION_FLIES_VERSION_JSON, MediaTypes.APPLICATION_FLIES_VERSION_XML })
-   public VersionInfo get();
+   private static Type<FindMessageHandler> TYPE;
+
+   /**
+    * Gets the type associated with this event.
+    * 
+    * @return returns the handler type
+    */
+   public static Type<FindMessageHandler> getType()
+   {
+      if (TYPE == null)
+      {
+         TYPE = new Type<FindMessageHandler>();
+      }
+      return TYPE;
+   }
+
+   @Override
+   public com.google.gwt.event.shared.GwtEvent.Type<FindMessageHandler> getAssociatedType()
+   {
+      return getType();
+   }
+
+   @Override
+   protected void dispatch(FindMessageHandler handler)
+   {
+      handler.onFindMessage(this);
+   }
 
 }

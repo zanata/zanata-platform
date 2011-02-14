@@ -7,7 +7,7 @@ import net.openl10n.flies.webtrans.shared.model.DocumentId;
 import net.openl10n.flies.webtrans.shared.model.TransUnit;
 
 
-public class GetTransUnitsResult implements Result
+public class GetTransUnitListResult implements Result
 {
 
    private static final long serialVersionUID = 1L;
@@ -17,11 +17,11 @@ public class GetTransUnitsResult implements Result
    private ArrayList<TransUnit> units;
 
    @SuppressWarnings("unused")
-   private GetTransUnitsResult()
+   private GetTransUnitListResult()
    {
    }
 
-   public GetTransUnitsResult(DocumentId documentId, ArrayList<TransUnit> units, int totalCount)
+   public GetTransUnitListResult(DocumentId documentId, ArrayList<TransUnit> units, int totalCount)
    {
       this.documentId = documentId;
       this.units = units;

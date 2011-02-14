@@ -18,24 +18,33 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package net.openl10n.flies.rest.service;
+package net.openl10n.flies.webtrans.shared.rpc;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Produces;
+import net.customware.gwt.dispatch.shared.Result;
+import net.openl10n.flies.webtrans.shared.model.TransUnit;
 
-import net.openl10n.flies.rest.MediaTypes;
-import net.openl10n.flies.rest.dto.VersionInfo;
-
-public interface VersionResource
+public class GetTransUnitResult implements Result
 {
 
    /**
-    * Retrieve VersionInfo
     * 
-    * @return VersionInfo
     */
-   @GET
-   @Produces({ MediaTypes.APPLICATION_FLIES_VERSION_JSON, MediaTypes.APPLICATION_FLIES_VERSION_XML })
-   public VersionInfo get();
+   private static final long serialVersionUID = 1L;
+   private TransUnit tu;
+
+   @SuppressWarnings("unused")
+   private GetTransUnitResult()
+   {
+   }
+
+   public GetTransUnitResult(TransUnit tu)
+   {
+      this.tu = tu;
+   }
+
+   public TransUnit getTransUnit()
+   {
+      return this.tu;
+   }
 
 }
