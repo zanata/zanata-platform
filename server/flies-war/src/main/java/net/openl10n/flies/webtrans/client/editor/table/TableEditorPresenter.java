@@ -458,11 +458,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                callback.onRowsReady(request, response);
                Log.info("Total of " + result.getTotalCount() + " rows available");
                display.getTableModel().setRowCount(result.getTotalCount());
-               // lastRowNum =
-               // display.getTableModel().getRowCount()%display.getPageSize();
-               // if(lastRowNum == 0)
-               // lastRowNum = MAX_PAGE_ROW;
-               // Log.info("Last Row of Last Page " + lastRowNum);
             }
 
             @Override
@@ -543,33 +538,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          int rowIndex = curPage * 50 + row + 1;
          if (rowIndex < display.getTableModel().getRowCount())
          {
-            int pageNum = rowIndex / (MAX_PAGE_ROW + 1);
-            int rowNum = rowIndex % (MAX_PAGE_ROW + 1);
-            if (pageNum != curPage)
-               display.gotoPage(pageNum, false);
-            selectedTransUnit = display.getTransUnitValue(rowNum);
-            display.gotoRow(rowNum);
+            gotoRow(rowIndex);
          }
-         // int nextRow = row+1;
-         // Log.info("Next Row"+nextRow);
-         // if(!display.isLastPage()) {
-         // if(nextRow <= MAX_PAGE_ROW && nextRow >= 0) {
-         // cancelEdit();
-         // selectedTransUnit = display.getTransUnitValue(nextRow);
-         // display.gotoRow(nextRow);
-         // } else if(nextRow > MAX_PAGE_ROW) {
-         // cancelEdit();
-         // display.gotoNextPage();
-         // selectedTransUnit = display.getTransUnitValue(0);
-         // display.gotoRow(0);
-         // }
-         // } else {
-         // if (nextRow <= lastRowNum-1) {
-         // cancelEdit();
-         // selectedTransUnit = display.getTransUnitValue(nextRow);
-         // display.gotoRow(nextRow);
-         // }
-         // }
       }
 
       @Override
@@ -579,28 +549,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          int rowIndex = curPage * 50 + row - 1;
          if (rowIndex >= 0)
          {
-            int pageNum = rowIndex / (MAX_PAGE_ROW + 1);
-            int rowNum = rowIndex % (MAX_PAGE_ROW + 1);
-            if (pageNum != curPage)
-               display.gotoPage(pageNum, false);
-            selectedTransUnit = display.getTransUnitValue(rowNum);
-            display.gotoRow(rowNum);
+            gotoRow(rowIndex);
          }
-         // int prevRow = row-1;
-         // Log.info("Prev Row"+prevRow);
-         // if(prevRow < MAX_PAGE_ROW && prevRow >= 0) {
-         // cancelEdit();
-         // selectedTransUnit = display.getTransUnitValue(prevRow);
-         // display.gotoRow(prevRow);
-         // } else if(prevRow < 0) {
-         // Log.info("Current page"+display.getCurrentPage());
-         // if(!display.isFirstPage()) {
-         // cancelEdit();
-         // display.gotoPreviousPage();
-         // selectedTransUnit = display.getTransUnitValue(MAX_PAGE_ROW);
-         // display.gotoRow(MAX_PAGE_ROW);
-         // }
-         // }
       }
 
       @Override
@@ -623,6 +573,17 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          Log.info("Current Row Index" + curRowIndex);
          if (curRowIndex > 0)
             gotoPrevState();
+      }
+
+      @Override
+      public void gotoRow(int rowIndex)
+      {
+         int pageNum = rowIndex / (MAX_PAGE_ROW + 1);
+         int rowNum = rowIndex % (MAX_PAGE_ROW + 1);
+         if (pageNum != curPage)
+            display.gotoPage(pageNum, false);
+         selectedTransUnit = display.getTransUnitValue(rowNum);
+         display.gotoRow(rowNum);
       }
    };
 
@@ -747,15 +708,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                int fuzzyRowIndex = transIdPrevFuzzyCache.get(i).intValue();
                if (curRowIndex > fuzzyRowIndex)
                {
-                  int pageNum = fuzzyRowIndex / (TableConstants.PAGE_SIZE);
-                  int rowNum = fuzzyRowIndex % (TableConstants.PAGE_SIZE);
-                  Log.info("Page of Next Fuzzy " + pageNum);
-                  Log.info("Row Index of Next Fuzzy " + rowNum);
                   cancelEdit();
-                  if (pageNum != curPage)
-                     display.gotoPage(pageNum, false);
-                  display.gotoRow(rowNum);
-                  selectedTransUnit = display.getTransUnitValue(rowNum);
+                  tableModelHandler.gotoRow(fuzzyRowIndex);
                   break;
                }
             }
@@ -806,15 +760,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                int fuzzyRowIndex = transIdNextFuzzyCache.get(i).intValue();
                if (curRowIndex < fuzzyRowIndex)
                {
-                  int pageNum = fuzzyRowIndex / (TableConstants.PAGE_SIZE);
-                  int rowNum = fuzzyRowIndex % (TableConstants.PAGE_SIZE);
-                  Log.info("Page of Next Fuzzy " + pageNum);
-                  Log.info("Row Index of Next Fuzzy" + rowNum);
                   cancelEdit();
-                  if (pageNum != curPage)
-                     display.gotoPage(pageNum, false);
-                  display.gotoRow(rowNum);
-                  selectedTransUnit = display.getTransUnitValue(rowNum);
+                  tableModelHandler.gotoRow(fuzzyRowIndex);
                   break;
                }
             }
