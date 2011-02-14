@@ -193,7 +193,7 @@
 							</execution>
 						</executions>
 						<configuration>
-							<argLine>-Xmx512m -XX:MaxPermSize=256m -XX:+HeapDumpOnOutOfMemoryError</argLine>
+							<argLine>-Xmx512m -XX:MaxPermSize=256m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=${project.build.directory}</argLine>
 							<redirectTestOutputToFile>false</redirectTestOutputToFile>
 							<printSummary>true</printSummary>
 							<forkMode>always</forkMode>
