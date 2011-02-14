@@ -227,6 +227,25 @@
 	
 	<profiles>
 		<profile>
+			<id>skipUnitTests</id>
+			<activation>
+				<property>
+					<name>skipUnitTests</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<skipTests>true</skipTests>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
 			<id>eclipse</id>
 			<build>
 				<plugins>
