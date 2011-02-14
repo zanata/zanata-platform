@@ -227,11 +227,19 @@
 	
 	<profiles>
 		<profile>
+			<!--
+			  This profile lets us skip unit tests (but not
+			  integration tests) with
+			  a) -PskipUnitTests, or
+			  b) -Dit.test=<integration-test-name>
+
+			  The option -DskipTests can still be used to skip
+			  all tests (unit and integration).
+			-->
 			<id>skipUnitTests</id>
 			<activation>
 				<property>
-					<name>skipUnitTests</name>
-					<value>true</value>
+					<name>it.test</name>
 				</property>
 			</activation>
 			<build>
