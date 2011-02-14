@@ -4,9 +4,10 @@
 	<artifactId>flies-common-util</artifactId>
 	<name>Flies Common Utility Code</name>
 	<parent>
-		<artifactId>root</artifactId>
+		<artifactId>flies-parent</artifactId>
 		<groupId>net.openl10n.flies</groupId>
 		<version>1.2-SNAPSHOT</version>
+		<relativePath>../../flies-parent/pom.xml</relativePath>
 	</parent>
 	<packaging>jar</packaging>
 
