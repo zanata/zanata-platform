@@ -23,7 +23,6 @@ package net.openl10n.flies.webtrans.client.editor.table;
 import java.util.List;
 
 import net.openl10n.flies.webtrans.client.editor.HasPageNavigation;
-import net.openl10n.flies.webtrans.client.editor.filter.ContentFilter;
 import net.openl10n.flies.webtrans.shared.model.TransUnit;
 
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
@@ -196,20 +195,6 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    public void setTableModelHandler(TableModelHandler<TransUnit> handler)
    {
       cachedTableModel.getTableModel().setTableModelHandler(handler);
-   }
-
-   @Override
-   public void clearContentFilter()
-   {
-      tableDefinition.clearContentFilter();
-      reloadPage();
-   }
-
-   @Override
-   public void setContentFilter(ContentFilter<TransUnit> filter)
-   {
-      tableDefinition.setContentFilter(filter);
-      reloadPage();
    }
 
    @Override

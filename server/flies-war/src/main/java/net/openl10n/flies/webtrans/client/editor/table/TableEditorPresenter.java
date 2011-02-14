@@ -27,16 +27,10 @@ import java.util.List;
 
 import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.place.PlaceRequest;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.openl10n.flies.common.EditState;
 import net.openl10n.flies.webtrans.client.editor.DocumentEditorPresenter;
 import net.openl10n.flies.webtrans.client.editor.HasPageNavigation;
-import net.openl10n.flies.webtrans.client.editor.filter.ContentFilter;
-import net.openl10n.flies.webtrans.client.editor.filter.FilterDisabledEvent;
-import net.openl10n.flies.webtrans.client.editor.filter.FilterDisabledEventHandler;
-import net.openl10n.flies.webtrans.client.editor.filter.FilterEnabledEvent;
-import net.openl10n.flies.webtrans.client.editor.filter.FilterEnabledEventHandler;
 import net.openl10n.flies.webtrans.client.events.DocumentSelectionEvent;
 import net.openl10n.flies.webtrans.client.events.DocumentSelectionHandler;
 import net.openl10n.flies.webtrans.client.events.FindMessageHandler;
@@ -109,10 +103,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       void reloadPage();
 
       void setPageSize(int size);
-
-      void setContentFilter(ContentFilter<TransUnit> filter);
-
-      void clearContentFilter();
 
       void gotoRow(int row);
 
@@ -207,26 +197,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          }
       }));
 
-      registerHandler(eventBus.addHandler(FilterEnabledEvent.getType(), new FilterEnabledEventHandler()
-      {
-         @Override
-         public void onFilterEnabled(FilterEnabledEvent event)
-         {
-            display.setContentFilter(event.getContentFilter());
-         }
-      }));
-
-      registerHandler(eventBus.addHandler(FilterDisabledEvent.getType(), new FilterDisabledEventHandler()
-      {
-
-         @Override
-         public void onFilterDisabled(FilterDisabledEvent event)
-         {
-            display.clearContentFilter();
-         }
-      }));
-      
-      
       registerHandler(eventBus.addHandler(FindMessageEvent.getType(), new FindMessageHandler()
       {
 

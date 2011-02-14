@@ -20,7 +20,6 @@
  */
 package net.openl10n.flies.webtrans.client.editor.table;
 
-import net.openl10n.flies.webtrans.client.editor.filter.ContentFilter;
 import net.openl10n.flies.webtrans.client.ui.HighlightingLabel;
 import net.openl10n.flies.webtrans.shared.model.TransUnit;
 
@@ -38,8 +37,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
    // public static final int INDICATOR_COL = 0;
    public static final int SOURCE_COL = 0;
    public static final int TARGET_COL = 1;
-
-   private ContentFilter<TransUnit> contentFilter = null;
 
    private String findMessage;
 
@@ -230,20 +227,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       addColumnDefinition(targetColumnDefinition);
    }
 
-   public void clearContentFilter()
-   {
-      this.contentFilter = null;
-   }
-
-   public void setContentFilter(ContentFilter<TransUnit> contentFilter)
-   {
-      this.contentFilter = contentFilter;
-   }
-
-   public ContentFilter<TransUnit> getContentFilter()
-   {
-      return contentFilter;
-   }
 
    public InlineTargetCellEditor getTargetCellEditor()
    {
