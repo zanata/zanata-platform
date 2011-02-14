@@ -48,7 +48,7 @@ public class FliesClientRequestFactory implements ITranslationResourcesFactory
       registerPrefixInterceptor(new ApiKeyHeaderDecorator(username, apiKey, clientApiVersion.getVersionNo()));
       String clientVer = clientApiVersion.getVersionNo();
       String clientTimestamp = clientApiVersion.getBuildTimeStamp();
-      IVersion iversion = createVersion();
+      IVersion iversion = createIVersion();
       VersionInfo serverVersionInfo = iversion.get();
       String serverVer = serverVersionInfo.getVersionNo();
       String serverTimestamp = serverVersionInfo.getBuildTimeStamp();
@@ -199,7 +199,7 @@ public class FliesClientRequestFactory implements ITranslationResourcesFactory
       crf.getPrefixInterceptors().registerInterceptor(interceptor);
    }
    
-   private IVersion createVersion()
+   protected IVersion createIVersion()
    {
       URL url;
       try

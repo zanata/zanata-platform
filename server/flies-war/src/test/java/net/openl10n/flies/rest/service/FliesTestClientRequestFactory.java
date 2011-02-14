@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 import net.openl10n.flies.rest.client.IProjectIterationResource;
 import net.openl10n.flies.rest.client.ITranslationResources;
+import net.openl10n.flies.rest.client.IVersion;
 import net.openl10n.flies.rest.dto.VersionInfo;
 
 public class FliesTestClientRequestFactory extends FliesClientRequestFactory
@@ -27,6 +28,7 @@ public class FliesTestClientRequestFactory extends FliesClientRequestFactory
       return createProxy(IProjectIterationResource.class, uri);
    }
 
+   @Override
    public ITranslationResources getTranslationResources(String projectSlug, String versionSlug)
    {
       try
@@ -41,17 +43,18 @@ public class FliesTestClientRequestFactory extends FliesClientRequestFactory
       }
    }
 
-
+   @Override
    public void registerPrefixInterceptor(Object interceptor)
    {
       super.registerPrefixInterceptor(interceptor);
    }
 
-   public VersionResource getVersionInfo()
+   @Override
+   protected IVersion createIVersion()
    {
       try
       {
-         return (VersionResource) createProxy(VersionResource.class, new URI("/restv1/version"));
+         return createProxy(IVersion.class, new URI("/restv1/version"));
       }
       catch (URISyntaxException e)
       {
