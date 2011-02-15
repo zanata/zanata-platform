@@ -193,6 +193,44 @@
 			</plugin>
             
 			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>1.0-beta-4</version>
+				<executions>
+					<execution>
+						<id>define-changeset</id>
+						<phase>initialize</phase>
+						<goals>
+							<!-- sets Maven properties changeSet and changeSetDate -->
+							<goal>hgchangeset</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- useful for debugging Maven properties
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.6</version>
+				<executions>
+					<execution>
+						<phase>initialize</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<echo>[changeSet] ${changeSet}</echo>
+								<echo>[changeSetDate] ${changeSetDate}</echo>
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			-->
+
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.3.1</version>
@@ -204,8 +242,8 @@
 							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
 						</manifest>
 						<manifestEntries>
-							<Implementation-Version>${project.version}</Implementation-Version>
 							<Implementation-Build>${maven.build.timestamp}</Implementation-Build>
+							<SCM-Changeset>${changeSet}</SCM-Changeset>
 						</manifestEntries>
 					</archive>
 				</configuration>
