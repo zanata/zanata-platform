@@ -57,6 +57,14 @@
 		</mailingList>
 
 		<mailingList>
+			<name>flies-issues</name>
+			<post>flies-issues@googlegroups.com</post>
+			<subscribe>flies-issues+subscribe@googlegroups.com</subscribe>
+			<unsubscribe>flies-issues+unsubscribe@googlegroups.com</unsubscribe>
+			<archive>http://groups.google.com/group/flies-issues</archive>
+		</mailingList>
+
+		<mailingList>
 			<name>flies-code-reviews</name>
 			<post>flies-code-reviews@googlegroups.com</post>
 			<subscribe>flies-code-reviews+subscribe@googlegroups.com</subscribe>
