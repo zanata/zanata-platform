@@ -145,6 +145,13 @@
 	</contributors>
 
 	<properties>
+		<!--
+		  MERCURIAL_REVISION is supplied by Hudson.
+		  changeSet property can be provided by
+		  buildnumber-maven-plugin, but
+		  see http://jira.codehaus.org/browse/MOJO-1432
+		-->
+		<changeSet>${env.MERCURIAL_REVISION}</changeSet>
 		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<gwt.version>2.1.0</gwt.version>
@@ -191,7 +198,8 @@
 					<useFile>false</useFile>
 				</configuration>
 			</plugin>
-            
+
+			<!-- http://jira.codehaus.org/browse/MOJO-1432
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>buildnumber-maven-plugin</artifactId>
@@ -201,12 +209,13 @@
 						<id>define-changeset</id>
 						<phase>initialize</phase>
 						<goals>
-							<!-- sets Maven properties changeSet and changeSetDate -->
+							sets Maven properties changeSet and changeSetDate
 							<goal>hgchangeset</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
+			-->
 
 			<!-- useful for debugging Maven properties
 			<plugin>
