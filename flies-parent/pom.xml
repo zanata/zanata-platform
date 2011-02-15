@@ -113,6 +113,14 @@
 			<timezone>10</timezone>
 		</developer>
 		<developer>
+			<id>jni@redhat.com</id>
+			<name>James Ni</name>
+			<email>jni@redhat.com</email>
+			<organization>Red Hat</organization>
+			<organizationUrl>http://www.redhat.com/</organizationUrl>
+			<timezone>8</timezone>
+		</developer>
+		<developer>
 			<id>sflaniga@redhat.com</id>
 			<name>Sean Flanigan</name>
 			<email>sflaniga@redhat.com</email>
@@ -121,6 +129,20 @@
 			<timezone>10</timezone>
 		</developer>
 	</developers>
+
+	<contributors>
+		<!-- in alphabetical order (by email field) -->
+		<contributor>
+			<name>Ding-Yi Chen</name>
+			<email>dchen@redhat.com</email>
+			<organization>Red Hat</organization>
+			<organizationUrl>http://www.redhat.com/</organizationUrl>
+			<roles>
+				<role>tester</role>
+			</roles>
+			<timezone>10</timezone>
+		</contributor>
+	</contributors>
 
 	<properties>
 		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
