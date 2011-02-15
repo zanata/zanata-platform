@@ -21,6 +21,7 @@ syntax: regexp
 ^.ant-targets-build.xml
 \.pages.xml.spdia$
 temp-testng-customsuite.xml$
+^server/flies-war/war
 ^server/flies-war/src/main/resources/.*_qc\.properties$
 ^server/flies-war/src/test/resources/bootstrap/data
 ^server/flies-war/src/test/jboss-embedded-bootstrap/data
