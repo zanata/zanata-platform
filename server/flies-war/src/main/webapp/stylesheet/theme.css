@@ -1,15 +1,12 @@
 /* <!-- */
 
-a {
-	color: #2222BB;	
-}
 th, td {
     border: none;
     padding: 0px;
 }
 
 html{
-	background-color: #dddddd;
+	background-color: transparent;
 }
 
 body{
@@ -21,7 +18,9 @@ body{
 }
 
 .yui-b{
-	padding: 4px;	
+	padding: 5px;
+	float: right;
+	width: 200px;
 }
 
 table{
@@ -29,7 +28,7 @@ table{
 }
 
 #main_body_content>h1, #main_body_content>h2 {
-	border-bottom: 1px dotted #f4f4f4;
+	margin: 5px 0 5px 0;
 }
 
 input, textarea {
@@ -234,17 +233,16 @@ td.action a {
 }
 
 #flies_name {
-	position: relative;
+	float: left;
 	text-align: left;
     padding-top: 30px;
-    padding-left:80px;
 }
 
 #flies_name a{
     text-align: left;
     text-shadow: 2px;
     font-family: Arial,Verdana,sans-serif;
-    font-size : 20px;
+    font-size : 40px;
     font-weight: heavy;
     color: black;
     text-decoration: none;
@@ -252,7 +250,6 @@ td.action a {
 
 #header{
 	position: relative;
-    /*background:url(../img/header_bg.png) repeat-x left top;*/
     width:100%;
     height:60px; 
 }
@@ -262,18 +259,25 @@ td.action a {
 }
 
 #headerlogo {
-	position: absolute;
-	left: 0px;
-	top: 0px;
+	float: left;
+	width: 220px;
+	height: 100px;
+}
+
+#headerlogo a {
+	display: block;
+	width: 220px;
+	height: 100px;
+}
+
+#headerlogo a h1 span {
+	display: none;
 }
 
 #header_top_right {
-	position: absolute;
-	right: 0px;
-	top: 0px;
-	padding: 10px;
+	float: right;
+	padding: 10px 20px;
 	margin: 0px;
-	font-size: 77%;
 	/*
 	background-color: #f4f4f4;
 	border-bottom: 1px solid #f4f4f4;
@@ -310,9 +314,7 @@ td.action a {
 
 /* Footer styles */
 #footer {
-	background:url(../img/footer_bg.png) repeat-x left top; 
 	width:100%; 
-	height:50px; 
 	line-height:20px; 
 	text-align:center; 
 	padding-top:10px;
@@ -321,7 +323,6 @@ td.action a {
 #localeSelector {
 	float: right;
 	padding-top: 0px;
-	padding-right: 5px;
 }
 
 /* Styles from the security-stuff in seamspace*/
@@ -413,10 +414,9 @@ table.fullwidth {
 }
 
 #search_panel {
-	position: absolute;
-	right: 5px;
-	top: 30px;
-	padding: 0px;
+	float: right;
+	clear: right;
+	padding-top: 20px;
 	color: #999999;
 	-moz-border-radius: 10px;
 		
@@ -553,6 +553,7 @@ table.fullwidth {
 	-moz-border-radius-topright: 10px;
 	-moz-border-radius-bottomleft: 10px;
     -moz-border-radius-bottomright: 10px;
+	margin-bottom: 10px;
 }
 
 .rich-panel-header {
@@ -692,6 +693,7 @@ table.fullwidth {
     -webkit-border-top-left-radius:5px;
     -moz-border-radius-topright:5px;
     -webkit-border-top-right-radius:5px; 
+	color: #045289;
 }
 
 .inline_cell_item_top span{
@@ -877,15 +879,12 @@ a.action_link:hover {
 
 body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6,pre, form, fieldset, input, textarea,blockquote, th, td { padding: 0;margin: 0;}   
 fieldset,img {border: 0;}
-a:link,a:visited{ color:#045289; text-decoration:none}
-a:hover{ color:#900; text-decoration:underline}
 .clear{ clear:both;}
 .absright{ position:absolute; top:5px; right:5px;}
 .icon{ background:url(../img/icon.png) no-repeat; padding-left:18px; border:none}
 input[type='button']{ cursor:pointer}
 
 body{ font-size:12px; font-family:Tahoma, Geneva, sans-serif;}
-.header{ background:url(../img/header_bg.png) repeat-x left top;  width:100%;}
 .logo{ background:url(../img/logo.png) no-repeat left top; width:187px; height:60px;}
 
 .content{ margin:20px auto; width:98%;}
@@ -900,6 +899,6 @@ body{ font-size:12px; font-family:Tahoma, Geneva, sans-serif;}
 .bottom_box_content a:hover{ color:#F60;}
 
 
-.footer{ background:url(../img/footer_bg.png) repeat-x left top; width:100%; height:50px; line-height:20px; text-align:center; padding-top:15px;}
+.footer{ height:50px; line-height:20px; text-align:center; padding-top:15px;}
 
 /* --> */
