@@ -7,12 +7,38 @@
 	<persistence-unit name="fliesTestDatasource"
 		transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+
+		<non-jta-data-source>java:/fliesTestDatasource</non-jta-data-source>
+
 		<!--
 			NB non-jta-data-source is not compatible with JPA tests, but is
-			needed by Seam tests.  See also
+			needed by Seam tests.  The list of classes seems to be necessary,
+			unfortunately. Please keep the list in sync between
 			flies-war/src/test/jboss-embedded-bootstrap/META-INF/persistence.xml
 			and flies-war/src/test/resources/META-INF/persistence.xml.
+			See also flies-model/src/test/resources/META-INF/persistence.xml.
 		 -->
+		<class>net.openl10n.flies.model.HAccountActivationKey</class>
+		<class>net.openl10n.flies.model.HAccount</class>
+		<class>net.openl10n.flies.model.HAccountResetPasswordKey</class>
+		<class>net.openl10n.flies.model.HAccountRole</class>
+		<class>net.openl10n.flies.model.HApplicationConfiguration</class>
+		<class>net.openl10n.flies.model.HasSimpleComment</class>
+		<class>net.openl10n.flies.model.HDocumentHistory</class>
+		<class>net.openl10n.flies.model.HDocument</class>
+		<class>net.openl10n.flies.model.HIterationProject</class>
+		<class>net.openl10n.flies.model.HLocale</class>
+		<class>net.openl10n.flies.model.HPerson</class>
+		<class>net.openl10n.flies.model.HProjectIteration</class>
+		<class>net.openl10n.flies.model.HProject</class>
+		<class>net.openl10n.flies.model.HSimpleComment</class>
+		<class>net.openl10n.flies.model.HTextFlowHistory</class>
+		<class>net.openl10n.flies.model.HTextFlow</class>
+		<class>net.openl10n.flies.model.HTextFlowTargetHistory</class>
+		<class>net.openl10n.flies.model.HTextFlowTarget</class>
+		<class>net.openl10n.flies.model.po.HPoHeader</class>
+		<class>net.openl10n.flies.model.po.HPoTargetHeader</class>
+		<class>net.openl10n.flies.model.po.HPotEntryData</class>
 		<properties>
 			<property name="hibernate.show_sql" value="true" />
 			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider" />

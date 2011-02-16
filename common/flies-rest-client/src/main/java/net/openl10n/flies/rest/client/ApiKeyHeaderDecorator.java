@@ -8,11 +8,14 @@ import org.jboss.resteasy.annotations.interception.ClientInterceptor;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.spi.interception.ClientExecutionContext;
 import org.jboss.resteasy.spi.interception.ClientExecutionInterceptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Provider
 @ClientInterceptor
 public class ApiKeyHeaderDecorator implements ClientExecutionInterceptor
 {
+   private static Logger log = LoggerFactory.getLogger(ApiKeyHeaderDecorator.class);
    private String apiKey;
    private String username;
    private String ver;
@@ -35,7 +38,22 @@ public class ApiKeyHeaderDecorator implements ClientExecutionInterceptor
       ctx.getRequest().getHeaders().add(RestConstant.HEADER_USERNAME, username);
       ctx.getRequest().getHeaders().add(RestConstant.HEADER_API_KEY, apiKey);
       ctx.getRequest().getHeaders().add(RestConstant.HEADER_VERSION_NO, ver);
-      return ctx.proceed();
+      try
+      {
+         return ctx.proceed();
+      }
+      catch (Error e)
+      {
+         // NB Seam/RestEasy doesn't log these exceptions fully for some reason 
+         log.warn("error processing request", e);
+         throw e;
+      }
+      catch (Exception e)
+      {
+         // NB Seam/RestEasy doesn't log these exceptions fully for some reason 
+         log.warn("exception processing request", e);
+         throw e;
+      }
    }
 
    public String getApiKey()
