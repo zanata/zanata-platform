@@ -140,9 +140,9 @@ public class DocumentNode extends Node<DocumentInfo>
                TransUnitCount unitCount = statusCount.getUnitCount();
                TransUnitWords wordCount = statusCount.getWordCount();
                unitCount.decrement(event.getPreviousStatus());
-               unitCount.increment(event.getNewStatus());
+               unitCount.increment(event.getTransUnit().getStatus());
                wordCount.decrement(event.getPreviousStatus(), event.getWordCount());
-               wordCount.increment(event.getNewStatus(), event.getWordCount());
+               wordCount.increment(event.getTransUnit().getStatus(), event.getWordCount());
                getTransUnitCountBar().setStats(statusCount);
             }
          }

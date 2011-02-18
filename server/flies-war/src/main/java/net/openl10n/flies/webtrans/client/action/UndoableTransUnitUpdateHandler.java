@@ -18,27 +18,11 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package net.openl10n.flies.webtrans.shared.rpc;
+package net.openl10n.flies.webtrans.client.action;
 
-public class GetTransUnit extends AbstractWorkspaceAction<GetTransUnitResult>
+
+public interface UndoableTransUnitUpdateHandler
 {
-   private static final long serialVersionUID = 1L;
-
-   private Long id;
-
-   @SuppressWarnings("unused")
-   private GetTransUnit()
-   {
-   }
-
-   public GetTransUnit(Long id)
-   {
-      this.id = id;
-   }
-
-   public Long getId()
-   {
-      return this.id;
-   }
+   void undo(UndoableTransUnitUpdateAction undoableTransUnitUpdateAction);
 
 }

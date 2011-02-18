@@ -1,8 +1,28 @@
+/*
+ * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * @author tags. See the copyright.txt file in the distribution for a full
+ * listing of individual contributors.
+ * 
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+ * site: http://www.fsf.org.
+ */
 package net.openl10n.flies.webtrans.client.events;
 
 import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.webtrans.shared.model.DocumentId;
-import net.openl10n.flies.webtrans.shared.model.TransUnitId;
+import net.openl10n.flies.webtrans.shared.model.TransUnit;
 import net.openl10n.flies.webtrans.shared.rpc.HasTransUnitUpdatedData;
 
 import com.google.gwt.event.shared.GwtEvent;
@@ -10,11 +30,11 @@ import com.google.gwt.event.shared.GwtEvent;
 public class TransUnitUpdatedEvent extends GwtEvent<TransUnitUpdatedEventHandler> implements HasTransUnitUpdatedData
 {
 
-   private final TransUnitId transUnitId;
    private final DocumentId documentId;
    private final ContentState previousStatus;
-   private final ContentState newStatus;
    private int wordCount;
+   private TransUnit tu;
+
 
    /**
     * Handler type.
@@ -38,10 +58,9 @@ public class TransUnitUpdatedEvent extends GwtEvent<TransUnitUpdatedEventHandler
    public TransUnitUpdatedEvent(HasTransUnitUpdatedData data)
    {
       this.documentId = data.getDocumentId();
-      this.newStatus = data.getNewStatus();
       this.previousStatus = data.getPreviousStatus();
-      this.transUnitId = data.getTransUnitId();
       this.wordCount = data.getWordCount();
+      this.tu = data.getTransUnit();
    }
 
    @Override
@@ -62,11 +81,6 @@ public class TransUnitUpdatedEvent extends GwtEvent<TransUnitUpdatedEventHandler
       return documentId;
    }
 
-   @Override
-   public ContentState getNewStatus()
-   {
-      return newStatus;
-   };
 
    @Override
    public ContentState getPreviousStatus()
@@ -75,15 +89,15 @@ public class TransUnitUpdatedEvent extends GwtEvent<TransUnitUpdatedEventHandler
    }
 
    @Override
-   public TransUnitId getTransUnitId()
-   {
-      return transUnitId;
-   }
-
-   @Override
    public int getWordCount()
    {
       return wordCount;
+   }
+
+   @Override
+   public TransUnit getTransUnit()
+   {
+      return this.tu;
    }
 
 }

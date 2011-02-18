@@ -79,11 +79,14 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
 
       void setShowTMViewButtonVisible(boolean visible);
 
+      void setUndoRedo(Widget undoRedoWidget);
+
    }
 
    private final TransUnitNavigationPresenter transUnitNavigationPresenter;
    private final TransMemoryPresenter transMemoryPresenter;
    private final TableEditorPresenter tableEditorPresenter;
+   private final UndoRedoPresenter undoRedoPresenter;
 
    private DocumentInfo currentDocument;
    private final TranslationStats statusCount = new TranslationStats();
@@ -91,13 +94,14 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
    private final DispatchAsync dispatcher;
 
    @Inject
-   public TranslationEditorPresenter(Display display, EventBus eventBus, final CachingDispatchAsync dispatcher, final TransMemoryPresenter transMemoryPresenter, final TableEditorPresenter tableEditorPresenter, final TransUnitNavigationPresenter transUnitNavigationPresenter)
+   public TranslationEditorPresenter(Display display, EventBus eventBus, final CachingDispatchAsync dispatcher, final TransMemoryPresenter transMemoryPresenter, final TableEditorPresenter tableEditorPresenter, final TransUnitNavigationPresenter transUnitNavigationPresenter, final UndoRedoPresenter undoRedoPresenter)
    {
       super(display, eventBus);
       this.dispatcher = dispatcher;
       this.transMemoryPresenter = transMemoryPresenter;
       this.tableEditorPresenter = tableEditorPresenter;
       this.transUnitNavigationPresenter = transUnitNavigationPresenter;
+      this.undoRedoPresenter = undoRedoPresenter;
    }
 
    @Override
@@ -111,6 +115,9 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
 
       transUnitNavigationPresenter.bind();
       display.setTransUnitNavigation(transUnitNavigationPresenter.getDisplay().asWidget());
+
+      undoRedoPresenter.bind();
+      display.setUndoRedo(undoRedoPresenter.getDisplay().asWidget());
 
       registerHandler(display.getPageNavigation().addValueChangeHandler(new ValueChangeHandler<Integer>()
       {
@@ -223,9 +230,9 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
          TransUnitCount unitCount = statusCount.getUnitCount();
          TransUnitWords wordCount = statusCount.getWordCount();
 
-         unitCount.increment(event.getNewStatus());
+         unitCount.increment(event.getTransUnit().getStatus());
          unitCount.decrement(event.getPreviousStatus());
-         wordCount.increment(event.getNewStatus(), event.getWordCount());
+         wordCount.increment(event.getTransUnit().getStatus(), event.getWordCount());
          wordCount.decrement(event.getPreviousStatus(), event.getWordCount());
 
          display.getTransUnitCount().setStats(statusCount);

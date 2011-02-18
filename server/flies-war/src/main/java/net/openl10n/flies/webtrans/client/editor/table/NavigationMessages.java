@@ -88,4 +88,10 @@ public interface NavigationMessages extends Messages
 
    @DefaultMessage("Source comment: ")
    String sourceCommentLabel();
+
+   @DefaultMessage("Undo")
+   String undoLabel();
+
+   @DefaultMessage("Redo")
+   String redoLabel();
 }

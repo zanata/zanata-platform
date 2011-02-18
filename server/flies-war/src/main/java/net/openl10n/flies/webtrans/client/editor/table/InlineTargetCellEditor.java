@@ -21,7 +21,7 @@
 package net.openl10n.flies.webtrans.client.editor.table;
 
 import net.openl10n.flies.common.ContentState;
-import net.openl10n.flies.webtrans.client.Resources;
+import net.openl10n.flies.webtrans.client.action.UndoableTransUnitUpdateAction;
 import net.openl10n.flies.webtrans.shared.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -124,6 +124,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    private EditRowCallback editRowCallback = null;
 
+   private UndoCallback<TransUnit> undoCallback = null;
+
    /**
     * The current {@link CellEditor.CellEditInfo}.
     */
@@ -148,23 +150,20 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    private int curCol;
    private HTMLTable table;
 
-   private Resources resources = GWT.create(Resources.class);
 
    /*
     * The minimum height of the target editor
     */
    private static final int MIN_HEIGHT = 48;
 
-   private final NavigationMessages messages;
-
    /**
     * Construct a new {@link InlineTargetCellEditor}.
     * 
     * @param content the {@link Widget} used to edit
     */
-   public InlineTargetCellEditor(final NavigationMessages messages, CancelCallback<TransUnit> callback, EditRowCallback tranValueCallback)
+   public InlineTargetCellEditor(final NavigationMessages messages, CancelCallback<TransUnit> callback, EditRowCallback tranValueCallback, UndoCallback<TransUnit> undoCallback)
    {
-      this(messages, GWT.<TargetCellEditorImages> create(TargetCellEditorImages.class), callback, tranValueCallback);
+      this(messages, GWT.<TargetCellEditorImages> create(TargetCellEditorImages.class), callback, tranValueCallback, undoCallback);
    }
 
    /**
@@ -173,14 +172,14 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
     * @param content the {@link Widget} used to edit
     * @param images the images to use for the accept/cancel buttons
     */
-   public InlineTargetCellEditor(final NavigationMessages messages, TargetCellEditorImages images, CancelCallback<TransUnit> callback, EditRowCallback rowCallback)
+   public InlineTargetCellEditor(final NavigationMessages messages, TargetCellEditorImages images, CancelCallback<TransUnit> callback, EditRowCallback rowCallback, UndoCallback<TransUnit> undoTransCallback)
    {
-      this.messages = messages;
       // Wrap contents in a table
       layoutTable = new FlowPanel();
 
       cancelCallback = callback;
       editRowCallback = rowCallback;
+      undoCallback = undoTransCallback;
       textArea = new TextArea();
       textArea.setStyleName("TableEditorContent-Edit");
       textArea.addBlurHandler(new BlurHandler()
@@ -420,17 +419,23 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       {
          return;
       }
+      TransUnit pre = new TransUnit(cellValue);
       cellValue.setTarget(textArea.getText());
       if (cellValue.getTarget().isEmpty())
          cellValue.setStatus(ContentState.New);
       else
          cellValue.setStatus(toggleFuzzy.getValue() ? ContentState.NeedReview : ContentState.Approved);
       restoreView();
+      TransUnit cur = new TransUnit(cellValue);
 
       // Send the new cell value to the callback
       curCallback.onComplete(curCellEditInfo, cellValue);
+      int curpage = this.undoCallback.getCurrentPage();
+      UndoableTransUnitUpdateAction undoAction = new UndoableTransUnitUpdateAction(pre, cur, curRow, curpage);
+      this.undoCallback.onUndo(undoAction);
       clearSelection();
    }
+
 
    public void clearSelection()
    {
@@ -502,17 +507,5 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
       gotoPrevFuzzy(curRow);
    }
-
-   // public void handleNextNew() {
-   // cancelEdit();
-   // incRow();
-   // gotoNextFuzzy(row, ContentState.New);
-   // }
-   //
-   // public void handlePrevNew() {
-   // cancelEdit();
-   // decRow();
-   // gotoPrevFuzzy(row, ContentState.New);
-   // }
 
 }

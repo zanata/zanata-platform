@@ -1,5 +1,7 @@
 package net.openl10n.flies.webtrans.client.editor.table;
 
+import net.openl10n.flies.webtrans.client.action.UndoableAction;
+
 import com.google.gwt.gen2.table.client.TableModel.Callback;
 import com.google.gwt.gen2.table.client.TableModelHelper.Request;
 
@@ -31,4 +33,7 @@ public abstract class TableModelHandler<RowType>
 
    abstract void gotoRow(int row);
 
+   abstract void addUndoList(UndoableAction<?> undoableAction);
+
+   abstract int getCurrentPage();
 }

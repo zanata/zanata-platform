@@ -18,33 +18,32 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package net.openl10n.flies.webtrans.shared.rpc;
+package net.openl10n.flies.webtrans.client.action;
 
-import net.customware.gwt.dispatch.shared.Result;
-import net.openl10n.flies.webtrans.shared.model.TransUnit;
-
-public class GetTransUnitResult implements Result
+public abstract class UndoableAction<E>
 {
+   private E prevState;
+   private E postState;
 
-   /**
-    * 
-    */
-   private static final long serialVersionUID = 1L;
-   private TransUnit tu;
-
-   @SuppressWarnings("unused")
-   private GetTransUnitResult()
+   public E getPreviousState()
    {
+      return this.prevState;
    }
 
-   public GetTransUnitResult(TransUnit tu)
+   public E getPostState()
    {
-      this.tu = tu;
+      return this.postState;
    }
 
-   public TransUnit getTransUnit()
+   public void setPreviousState(E prevValue)
    {
-      return this.tu;
+      this.prevState = prevValue;
    }
 
+   public void setPostState(E curValue)
+   {
+      this.postState = curValue;
+   }
+
+   public abstract void undo();
 }

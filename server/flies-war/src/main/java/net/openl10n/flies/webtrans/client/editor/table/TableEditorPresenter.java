@@ -29,6 +29,9 @@ import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.openl10n.flies.common.EditState;
+import net.openl10n.flies.webtrans.client.action.UndoableAction;
+import net.openl10n.flies.webtrans.client.action.UndoableTransUnitUpdateAction;
+import net.openl10n.flies.webtrans.client.action.UndoableTransUnitUpdateHandler;
 import net.openl10n.flies.webtrans.client.editor.DocumentEditorPresenter;
 import net.openl10n.flies.webtrans.client.editor.HasPageNavigation;
 import net.openl10n.flies.webtrans.client.events.DocumentSelectionEvent;
@@ -47,6 +50,7 @@ import net.openl10n.flies.webtrans.client.events.TransUnitEditEventHandler;
 import net.openl10n.flies.webtrans.client.events.TransUnitSelectionEvent;
 import net.openl10n.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import net.openl10n.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
+import net.openl10n.flies.webtrans.client.events.UndoAddEvent;
 import net.openl10n.flies.webtrans.client.rpc.CachingDispatchAsync;
 import net.openl10n.flies.webtrans.shared.auth.AuthenticationError;
 import net.openl10n.flies.webtrans.shared.auth.AuthorizationError;
@@ -56,8 +60,6 @@ import net.openl10n.flies.webtrans.shared.model.TransUnit;
 import net.openl10n.flies.webtrans.shared.model.TransUnitId;
 import net.openl10n.flies.webtrans.shared.rpc.EditingTranslationAction;
 import net.openl10n.flies.webtrans.shared.rpc.EditingTranslationResult;
-import net.openl10n.flies.webtrans.shared.rpc.GetTransUnit;
-import net.openl10n.flies.webtrans.shared.rpc.GetTransUnitResult;
 import net.openl10n.flies.webtrans.shared.rpc.GetTransUnitList;
 import net.openl10n.flies.webtrans.shared.rpc.GetTransUnitListResult;
 import net.openl10n.flies.webtrans.shared.rpc.GetTransUnitsNavigation;
@@ -71,7 +73,6 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.gen2.event.shared.HandlerRegistration;
 import com.google.gwt.gen2.table.client.TableModel;
 import com.google.gwt.gen2.table.client.TableModel.Callback;
 import com.google.gwt.gen2.table.client.TableModelHelper.Request;
@@ -86,7 +87,7 @@ import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
-public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPresenter.Display> implements HasPageNavigation, HasPageChangeHandlers, HasPageCountChangeHandlers
+public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPresenter.Display> implements HasPageNavigation
 {
    public interface Display extends WidgetDisplay, HasPageNavigation
    {
@@ -146,6 +147,9 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
    private String findMessage;
 
    private final TableEditorMessages messages;
+
+   private UndoableAction<?> undoInProcessing;
+
 
    @Inject
    public TableEditorPresenter(final Display display, final EventBus eventBus, final CachingDispatchAsync dispatcher, final Identity identity, final TableEditorMessages messages)
@@ -233,7 +237,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                if (!transIdPrevFuzzyCache.isEmpty())
                   transIdPrevFuzzyCache.clear();
                // TODO this test never succeeds
-               if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnitId()))
+               if (selectedTransUnit != null && selectedTransUnit.getId().equals(event.getTransUnit().getId()))
                {
                   // handle change in current selection
                   // eventBus.fireEvent(new NotificationEvent(Severity.Warning,
@@ -254,31 +258,52 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                }
                else
                {
-                  final Integer rowOffset = getRowOffset(event.getTransUnitId());
+                  final Integer rowOffset = getRowOffset(event.getTransUnit().getId());
                   // - add TU index to model
                   if (rowOffset != null)
                   {
                      final int row = display.getCurrentPage() * display.getPageSize() + rowOffset;
                      Log.info("row calculated as " + row);
-                     dispatcher.execute(new GetTransUnit(event.getTransUnitId().getId()), new AsyncCallback<GetTransUnitResult>()
+                     display.getTableModel().setRowValueOverride(row, event.getTransUnit());
+                     if (undoInProcessing != null)
                      {
-                        @Override
-                        public void onFailure(Throwable e)
+                        Log.info("check current undo");
+                        if (undoInProcessing instanceof UndoableTransUnitUpdateAction)
                         {
-                           Log.error(e.getMessage(), e);
+                           TransUnit tu = ((UndoableTransUnitUpdateAction) undoInProcessing).getPreviousState();
+                           Log.info("" + tu.getId() + " " + event.getTransUnit().getId());
+                           if (tu.getId().equals(event.getTransUnit().getId()))
+                           {
+                              Log.info("go to row:" + row);
+                              tableModelHandler.gotoRow(row);
+                              undoInProcessing = null;
+                           }
                         }
-
-                        @Override
-                        public void onSuccess(GetTransUnitResult result)
-                        {
-                           Log.info("TransUnit Id" + result.getTransUnit().getId());
-                           display.getTableModel().setRowValueOverride(row, result.getTransUnit());
-                        }
-                     });
+                     }
                   }
                   else
                   {
                      display.getTableModel().clearCache();
+                     display.getTargetCellEditor().cancelEdit();
+                     if (undoInProcessing != null)
+                     {
+                        Log.info("check current undo");
+                        if (undoInProcessing instanceof UndoableTransUnitUpdateAction)
+                        {
+                           TransUnit tu = ((UndoableTransUnitUpdateAction) undoInProcessing).getPreviousState();
+                           Log.info("" + tu.getId() + " " + event.getTransUnit().getId());
+                           if (tu.getId().equals(event.getTransUnit().getId()))
+                           {
+                              int pageNum = ((UndoableTransUnitUpdateAction) undoInProcessing).getCurrentPage();
+                              int rowNum = ((UndoableTransUnitUpdateAction) undoInProcessing).getRowNum();
+                              int row = pageNum * PAGE_SIZE + rowNum;
+                              Log.info("go to row:" + row);
+                              Log.info("go to page:" + pageNum);
+                              tableModelHandler.gotoRow(row);
+                              undoInProcessing = null;
+                           }
+                        }
+                     }
                   }
                }
             }
@@ -483,7 +508,8 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       @Override
       public boolean onSetRowValue(int row, TransUnit rowValue)
       {
-         dispatcher.execute(new UpdateTransUnit(rowValue.getId(), rowValue.getTarget(), rowValue.getStatus()), new AsyncCallback<UpdateTransUnitResult>()
+         final UpdateTransUnit updateTransUnit = new UpdateTransUnit(rowValue.getId(), rowValue.getTarget(), rowValue.getStatus());
+         dispatcher.execute(updateTransUnit, new AsyncCallback<UpdateTransUnitResult>()
          {
             @Override
             public void onFailure(Throwable e)
@@ -502,25 +528,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             }
          });
 
-         dispatcher.execute(new EditingTranslationAction(rowValue.getId(), EditState.StopEditing), new AsyncCallback<EditingTranslationResult>()
-         {
-            @Override
-            public void onFailure(Throwable caught)
-            {
-               Log.error("EditingTranslationAction failure " + caught, caught);
-               eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyStopFailed()));
-               // put back the old cell value
-               display.getTableModel().clearCache();
-               display.reloadPage();
-            }
-
-            @Override
-            public void onSuccess(EditingTranslationResult result)
-            {
-               // eventBus.fireEvent(new NotificationEvent(Severity.Warning,
-               // "TransUnit Editing is finished"));
-            }
-         });
+         stopEditing(rowValue);
 
          return true;
       }
@@ -585,6 +593,39 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          selectedTransUnit = display.getTransUnitValue(rowNum);
          display.gotoRow(rowNum);
       }
+
+      @Override
+      void addUndoList(UndoableAction<?> undoableAction)
+      {
+         if (undoableAction instanceof UndoableTransUnitUpdateAction)
+         {
+            UndoableTransUnitUpdateHandler handler = new UndoableTransUnitUpdateHandler()
+            {
+               @Override
+               public void undo(UndoableTransUnitUpdateAction action)
+               {
+                  undoInProcessing = action;
+                  if (selectedTransUnit != null)
+                  {
+                     Log.info("cancel edit");
+                     cancelEdit();
+                  }
+                  onSetRowValue(0, action.getPreviousState());
+               }
+            };
+            ((UndoableTransUnitUpdateAction) undoableAction).setHandler(handler);
+         }
+
+         Log.info("add current undo");
+         eventBus.fireEvent(new UndoAddEvent(undoableAction));
+      }
+
+      @Override
+      int getCurrentPage()
+      {
+         return display.getCurrentPage();
+      }
+
    };
 
    private void stopEditing(TransUnit rowValue)
@@ -608,24 +649,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       });
    }
 
-   private void startEditing(TransUnit rowValue)
-   {
-      // Send a START_EDIT event
-      dispatcher.execute(new EditingTranslationAction(rowValue.getId(), EditState.StartEditing), new AsyncCallback<EditingTranslationResult>()
-      {
-         @Override
-         public void onFailure(Throwable caught)
-         {
-            Log.error("EditingTranslationAction failure " + caught, caught);
-            eventBus.fireEvent(new NotificationEvent(Severity.Error, messages.notifyLockFailed()));
-         }
-
-         @Override
-         public void onSuccess(EditingTranslationResult result)
-         {
-         }
-      });
-   }
 
    boolean isReqComplete = true;
 
@@ -819,16 +842,14 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
       display.gotoPreviousPage();
    }
 
-   @Override
-   public HandlerRegistration addPageChangeHandler(PageChangeHandler handler)
+   public void addPageChangeHandler(PageChangeHandler handler)
    {
-      return display.getPageChangeHandlers().addPageChangeHandler(handler);
+      display.getPageChangeHandlers().addPageChangeHandler(handler);
    }
 
-   @Override
-   public HandlerRegistration addPageCountChangeHandler(PageCountChangeHandler handler)
+   public void addPageCountChangeHandler(PageCountChangeHandler handler)
    {
-      return display.getPageCountChangeHandlers().addPageCountChangeHandler(handler);
+      display.getPageCountChangeHandlers().addPageCountChangeHandler(handler);
    }
 
    public DocumentId getDocumentId()

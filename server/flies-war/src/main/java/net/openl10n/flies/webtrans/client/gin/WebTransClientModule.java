@@ -44,6 +44,8 @@ import net.openl10n.flies.webtrans.client.TranslationEditorPresenter;
 import net.openl10n.flies.webtrans.client.TranslationEditorView;
 import net.openl10n.flies.webtrans.client.TranslationPresenter;
 import net.openl10n.flies.webtrans.client.TranslationView;
+import net.openl10n.flies.webtrans.client.UndoRedoPresenter;
+import net.openl10n.flies.webtrans.client.UndoRedoView;
 import net.openl10n.flies.webtrans.client.WebTransMessages;
 import net.openl10n.flies.webtrans.client.WorkspaceUsersPresenter;
 import net.openl10n.flies.webtrans.client.WorkspaceUsersView;
@@ -86,6 +88,7 @@ public class WebTransClientModule extends AbstractPresenterModule
       bindPresenter(SidePanelPresenter.class, SidePanelPresenter.Display.class, SidePanel.class);
       bindPresenter(TranslationEditorPresenter.class, TranslationEditorPresenter.Display.class, TranslationEditorView.class);
       bindPresenter(TransUnitDetailsPresenter.class, TransUnitDetailsPresenter.Display.class, TransUnitDetailsView.class);
+      bindPresenter(UndoRedoPresenter.class, UndoRedoPresenter.Display.class, UndoRedoView.class);
 
       bind(HasPageNavigation.class).to(TableEditorView.class).in(Singleton.class);
 

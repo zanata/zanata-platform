@@ -20,6 +20,7 @@
  */
 package net.openl10n.flies.webtrans.client.editor.table;
 
+import net.openl10n.flies.webtrans.client.action.UndoableAction;
 import net.openl10n.flies.webtrans.client.ui.HighlightingLabel;
 import net.openl10n.flies.webtrans.shared.model.TransUnit;
 
@@ -218,7 +219,24 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             tableModel.gotoPrevFuzzy(row);
          }
       };
-      this.targetCellEditor = new InlineTargetCellEditor(messages, cancelCallBack, transValueCallBack);
+      
+      UndoCallback<TransUnit> undoCallback = new UndoCallback<TransUnit>(){
+
+         @Override
+         public void onUndo(UndoableAction<TransUnit> undoableAction)
+         {
+            tableModel.addUndoList(undoableAction);
+         }
+         
+         @Override
+         public int getCurrentPage()
+         {
+            return tableModel.getCurrentPage();
+         }
+
+      };
+      
+      this.targetCellEditor = new InlineTargetCellEditor(messages, cancelCallBack, transValueCallBack, undoCallback);
       targetColumnDefinition.setCellEditor(targetCellEditor);
 
       // See _INDEX consts above if modifying!

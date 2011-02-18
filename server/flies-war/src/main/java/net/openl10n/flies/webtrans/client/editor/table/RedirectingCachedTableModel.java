@@ -1,6 +1,8 @@
 package net.openl10n.flies.webtrans.client.editor.table;
 
 
+import net.openl10n.flies.webtrans.client.action.UndoableAction;
+
 import com.google.gwt.gen2.table.client.CachedTableModel;
 
 public class RedirectingCachedTableModel<RowType> extends CachedTableModel<RowType>
@@ -50,6 +52,12 @@ public class RedirectingCachedTableModel<RowType> extends CachedTableModel<RowTy
          tableModel.gotoPrevFuzzy(row);
    }
 
+   public void addUndoList(UndoableAction<?> undoableAction)
+   {
+      if (tableModel != null)
+         tableModel.addUndoList(undoableAction);
+   }
+
    public void setRowValueOverride(int row, RowType rowValue)
    {
       // TODO ideally, we would just replace the affected row in the cache
@@ -66,6 +74,7 @@ public class RedirectingCachedTableModel<RowType> extends CachedTableModel<RowTy
 
    }
 
+   @Override
    protected final boolean onSetRowValue(int row, RowType rowValue)
    {
       if (quiet)
@@ -76,6 +85,15 @@ public class RedirectingCachedTableModel<RowType> extends CachedTableModel<RowTy
    public void setRowCount(int rowCount)
    {
       super.setRowCount(rowCount);
+   }
+
+   public int getCurrentPage()
+   {
+      if (tableModel != null)
+      {
+         return tableModel.getCurrentPage();
+      }
+      return 1;
    }
 
 

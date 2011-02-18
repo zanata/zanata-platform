@@ -50,6 +50,9 @@
 				<g:layer top="2px" height="20px" right="100px" left="100px">
 					<g:FlowPanel ui:field="transUnitNavigationContainer" styleName="{style.centerText}"/>
 				</g:layer>
+				<g:layer top="2px" height="20px" right="200px" width="100px">
+					<g:FlowPanel ui:field="undoRedoContainer" styleName="{style.centerText}"/>
+				</g:layer>
 				<g:layer top="22px" bottom="2em">
 					<g:LayoutPanel ui:field="editor" />
 				</g:layer>
