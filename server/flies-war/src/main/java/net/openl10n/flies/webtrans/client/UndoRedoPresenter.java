@@ -31,6 +31,8 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import net.openl10n.flies.webtrans.client.action.UndoManager;
 import net.openl10n.flies.webtrans.client.action.UndoableTransUnitUpdateAction;
+import net.openl10n.flies.webtrans.client.events.FindMessageEvent;
+import net.openl10n.flies.webtrans.client.events.FindMessageHandler;
 import net.openl10n.flies.webtrans.client.events.TransUnitUpdatedEvent;
 import net.openl10n.flies.webtrans.client.events.TransUnitUpdatedEventHandler;
 import net.openl10n.flies.webtrans.client.events.UndoAddEvent;
@@ -109,6 +111,18 @@ public class UndoRedoPresenter extends WidgetPresenter<UndoRedoPresenter.Display
          public void onTransUnitUpdated(TransUnitUpdatedEvent event)
          {
          }
+      }));
+
+      registerHandler(eventBus.addHandler(FindMessageEvent.getType(), new FindMessageHandler()
+      {
+
+         @Override
+         public void onFindMessage(FindMessageEvent event)
+         {
+            display.disableUndo();
+            undoManager.clear();
+         }
+
       }));
 
    }

@@ -65,5 +65,11 @@ public class UndoManager
       history.add(event);
    }
 
+   public void clear()
+   {
+      undoList.clear();
+      history.clear();
+   }
+
 
 }
