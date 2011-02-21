@@ -10,9 +10,9 @@
 	<g:HTMLPanel>
 		<nobr>
 			<g:Image resource="{resources.undo}" ui:field="undo" styleName="{style.imageAnchor}" visible ="false"/>
-			<g:Image resource="{resources.undoDisabled}" ui:field="undoDisabled"  visible ="false" />
+			<g:Image resource="{resources.undoDisabled}" ui:field="undoDisabled"  />
 			<g:Image resource="{resources.redo}" ui:field="redo" styleName="{style.imageAnchor}" visible="false" />
-			<g:Image resource="{resources.redoDisabled}" ui:field="redoDisabled" visible ="false"/>
+			<g:Image resource="{resources.redoDisabled}" ui:field="redoDisabled" />
 		</nobr>
 	</g:HTMLPanel>
 </ui:UiBinder> 

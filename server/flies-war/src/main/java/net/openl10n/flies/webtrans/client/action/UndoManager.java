@@ -40,7 +40,8 @@ public class UndoManager
 
    public boolean canUndo()
    {
-      return !undoList.isEmpty();
+      return false;
+      // return !undoList.isEmpty();
    }
 
    public boolean canRedo()
