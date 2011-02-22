@@ -22,7 +22,7 @@
               
             <s:decorate id="nameField" template="../WEB-INF/layout/edit.xhtml">
               <ui:define name="label">#{messages['jsf.Name']}</ui:define>
-              <h:inputText id="name" value="#{profileAction.name}" required="true">
+              <h:inputText id="name" value="#{profileAction.name}" required="true" >
                 <a4j:support event="onblur" reRender="nameField" ajaxSingle="true"/>
               </h:inputText>
               <h:graphicImage id="nameHelp" value="../img/msginfo.png" styleClass="input_help">
@@ -33,7 +33,7 @@
             </s:decorate>
             <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml">
               <ui:define name="label">#{messages['jsf.Email']}</ui:define>
-              <h:inputText id="email" value="#{profileAction.email}" required="true" >
+              <h:inputText id="email" value="#{profileAction.email}" required="true" valueChangeListener="#{profileAction.verifyEmailAvailable}" >
                   <a4j:support event="onblur" reRender="emailField" ajaxSingle="true"/>
               </h:inputText>
               <h:graphicImage id="usernameHelp" value="../img/msginfo.png" styleClass="input_help">

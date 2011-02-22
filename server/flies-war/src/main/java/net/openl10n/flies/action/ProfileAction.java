@@ -22,6 +22,8 @@ package net.openl10n.flies.action;
 
 import java.io.Serializable;
 
+import javax.faces.event.ValueChangeEvent;
+
 import net.openl10n.flies.ApplicationConfiguration;
 import net.openl10n.flies.dao.PersonDAO;
 import net.openl10n.flies.model.HAccount;
@@ -131,9 +133,23 @@ public class ProfileAction implements Serializable
       this.email = email;
    }
 
+   public void verifyEmailAvailable(ValueChangeEvent e)
+   {
+      if (personDAO.findByEmail(e.getNewValue().toString()) != null)
+      {
+         FacesMessages.instance().addToControl(e.getComponent().getId(), "Duplicate email");
+      }
+   }
+
+
    @Transactional
    public String edit()
    {
+      if (personDAO.findByEmail(email) != null)
+      {
+         return null;
+      }
+
       if (!identityStore.isNewUser(username))
       {
          HPerson person = personDAO.findById(authenticatedAccount.getPerson().getId(), true);
@@ -159,7 +175,7 @@ public class ProfileAction implements Serializable
          renderer.render("/WEB-INF/facelets/email/email_activation.xhtml");
          FacesMessages.instance().add("You will soon receive an email with a link to activate your account.");
 
-         return "/home.xhtml";
+         return "home";
       }
    }
 
