@@ -10,7 +10,7 @@
     template="../WEB-INF/layout/template.xhtml">
 
   <ui:define name="center_content">
-    <a4j:form id="registerForm">
+    <a4j:form id="registerForm" rendered="#{fliesInit.internalAuthentication}">
       <s:token allowMultiplePosts="true" />
       <rich:panel>
         <f:facet name="header">#{messages['jsf.SignUp']}</f:facet>
@@ -90,7 +90,7 @@
       </rich:panel>
     </a4j:form>
     
-    <rich:modalPanel id="termsOfUse" width="640" height="480" rendered="#{not identity.loggedIn}">
+    <rich:modalPanel id="termsOfUse" width="640" height="480" rendered="#{not identity.loggedIn and fliesInit.internalAuthentication}" >
       <f:facet name="header">
         <h:panelGroup>
           <h:outputText value="#{messages['jsf.TermsOfUse']}"/>
@@ -110,7 +110,11 @@
         </a4j:form>
       </h:panelGroup>
     </rich:modalPanel>
-    
+ 
+    <rich:panel rendered="#{not fliesInit.internalAuthentication}">
+          <h:outputText value="#{messages['jsf.PleaseContactAdministrationToGetRegistrationLink']}"/>
+    </rich:panel>
+   
   </ui:define>
   
   
