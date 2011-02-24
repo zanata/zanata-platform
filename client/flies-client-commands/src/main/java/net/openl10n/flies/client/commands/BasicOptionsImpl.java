@@ -116,6 +116,12 @@ public abstract class BasicOptionsImpl implements BasicOptions
       this.interactiveMode = interactiveMode;
    }
 
+   @Option(name = "-B")
+   public void setBatchMode(boolean batchMode)
+   {
+      setInteractiveMode(!batchMode);
+   }
+
    @Override
    public boolean isDebugSet()
    {
