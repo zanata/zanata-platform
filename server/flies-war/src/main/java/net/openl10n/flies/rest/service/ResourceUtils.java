@@ -9,7 +9,6 @@ import java.util.Set;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import net.openl10n.flies.common.ResourceType;
@@ -385,18 +384,6 @@ public class ResourceUtils
          to.setContext(from.getContext());
       }
 
-      HSimpleComment hs=to.getExtractedComment();
-      if (hs == null)
-      {
-         hs = new HSimpleComment();
-      }
-      if (!equals(from.getExtractedComment(), hs.getComment()))
-      {
-         changed = true;
-         hs.setComment(from.getExtractedComment());
-         to.setExtractedComment(hs);
-      }
-         
       String flags = StringUtil.concat(from.getFlags(), ',');
       if (!equals(flags, to.getFlags()))
       {
@@ -601,10 +588,6 @@ public class ResourceUtils
       to.getFlags().addAll(flags);
       List<String> refs = StringUtil.split(from.getReferences(), ",");
       to.getReferences().addAll(refs);
-      if (from.getExtractedComment() != null)
-      {
-         to.setExtractedComment(from.getExtractedComment().getComment());
-      }
    }
 
    public void transferToTextFlowTargetExtensions(HTextFlowTarget from, ExtensionSet<TextFlowTargetExtension> to, Set<String> enabledExtensions)
