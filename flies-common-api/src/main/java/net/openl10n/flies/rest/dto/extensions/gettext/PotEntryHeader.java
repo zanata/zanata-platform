@@ -26,6 +26,7 @@ public class PotEntryHeader implements TextFlowExtension
    private String context;
    private List<String> flags;
    private List<String> references;
+   @Deprecated // use TextFlow's SimpleComment extension
    private String extractedComment;
 
    @XmlElement(name = "context", required = false)
@@ -40,11 +41,13 @@ public class PotEntryHeader implements TextFlowExtension
    }
 
    @XmlElement(name = "extractedComment", required = false)
+   @Deprecated // use TextFlow's SimpleComment extension
    public String getExtractedComment()
    {
       return extractedComment;
    }
 
+   @Deprecated // use TextFlow's SimpleComment extension
    public void setExtractedComment(String comment)
    {
       this.extractedComment = comment;
