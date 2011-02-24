@@ -51,6 +51,7 @@ public class HPotEntryData implements Serializable
    private Long id;
    private HTextFlow textFlow;
    private String context;
+   @Deprecated // use HTextFlow.comment
    private HSimpleComment extractedComment;
    private String flags;
    private String references;
@@ -94,6 +95,7 @@ public class HPotEntryData implements Serializable
       return context;
    }
 
+   @Deprecated // use HTextFlow.comment
    public void setExtractedComment(HSimpleComment extractedComment)
    {
       this.extractedComment = extractedComment;
@@ -101,6 +103,7 @@ public class HPotEntryData implements Serializable
 
    @OneToOne(optional = true, cascade = CascadeType.ALL)
    @JoinColumn(name = "comment_id")
+   @Deprecated // use HTextFlow.comment
    public HSimpleComment getExtractedComment()
    {
       return extractedComment;
