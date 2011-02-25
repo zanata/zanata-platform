@@ -136,10 +136,10 @@ public interface Resources extends ClientBundle
    @Source("net/openl10n/flies/webtrans/images/redo.png")
    ImageResource redo();
 
-   @Source("net/openl10n/flies/webtrans/images/prev_untranslated.png")
+   @Source("net/openl10n/flies/webtrans/images/undo_disabled.png")
    ImageResource undoDisabled();
 
-   @Source("net/openl10n/flies/webtrans/images/next_untranslated.png")
+   @Source("net/openl10n/flies/webtrans/images/redo_disabled.png")
    ImageResource redoDisabled();
 
 }
