@@ -71,13 +71,15 @@ public interface NavigationMessages extends Messages
    @DefaultMessage("Clone")
    String editClone();
 
-   @DefaultMessage("Ctrl+Home")
+//   @DefaultMessage("Ctrl+Home")
+   @DefaultMessage("Clone")
    String editCloneShortcut();
 
    @DefaultMessage("Clone & Save")
    String editCloneAndSave();
 
-   @DefaultMessage("Ctrl+End")
+//   @DefaultMessage("Ctrl+End")
+   @DefaultMessage("Clone & Save")
    String editCloneAndSaveShortcut();
 
    @DefaultMessage("{0} ({1})")
