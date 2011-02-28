@@ -246,14 +246,15 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             { // alt-pageup
                handlePrevState();
             }
-            else if (event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_HOME)
-            { // ctrl-home
-               cloneHandler.onClick(null);
-            }
-            else if (event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_END)
-            { // ctrl-end
-               cloneAndSaveHandler.onClick(null);
-            }
+            // these shortcuts disabled because they conflict with basic text editing:
+//            else if (event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_HOME)
+//            { // ctrl-home
+//               cloneHandler.onClick(null);
+//            }
+//            else if (event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_END)
+//            { // ctrl-end
+//               cloneAndSaveHandler.onClick(null);
+//            }
          }
 
       });
