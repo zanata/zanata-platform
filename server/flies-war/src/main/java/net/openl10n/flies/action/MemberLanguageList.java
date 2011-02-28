@@ -73,7 +73,7 @@ public class MemberLanguageList implements Serializable
    @Observer(create = false, value = { "personJoinedTribe", "personLeftTribe", "disableLanguage", "enableLanguage", JpaIdentityStore.EVENT_USER_AUTHENTICATED })
    synchronized public void fetchMemberTribes()
    {
-      log.info("refreshing tribes...");
+      log.debug("refreshing languages...");
       if (authenticatedAccount == null)
       {
          memberTribes = Collections.emptyList();
@@ -81,7 +81,7 @@ public class MemberLanguageList implements Serializable
       }
 
       memberTribes = languageTeamServiceImpl.getLanguageMemberships(authenticatedAccount.getUsername());
-      log.info("now listing {0} tribes", memberTribes.size());
+      log.info("now listing {0} languages", memberTribes.size());
    }
 
 
