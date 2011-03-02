@@ -80,4 +80,12 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long>
       query.setParameter("username", userName);
       return query.list();
    }
+
+   public HPerson findByUsername(String username)
+   {
+      Query query = getSession().createQuery("from HPerson as p where p.account.username = :username");
+      query.setParameter("username", username);
+      return (HPerson) query.uniqueResult();
+   }
+
 }

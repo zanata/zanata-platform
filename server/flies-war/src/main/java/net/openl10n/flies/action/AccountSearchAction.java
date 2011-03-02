@@ -26,7 +26,9 @@ import java.util.List;
 
 
 import net.openl10n.flies.dao.AccountDAO;
+import net.openl10n.flies.dao.PersonDAO;
 import net.openl10n.flies.model.HAccount;
+import net.openl10n.flies.model.HPerson;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -43,9 +45,14 @@ public class AccountSearchAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
    private String projectMaintainer;
+   private HPerson person;
    private List<HAccount> searchResults = new ArrayList<HAccount>();
+
    @In
    private AccountDAO accountDAO;
+   @In
+   private PersonDAO personDAO;
+
    @Logger
    Log log;
 
@@ -68,5 +75,15 @@ public class AccountSearchAction implements Serializable
    {
       String userInput = (String) input;
       return accountDAO.searchQuery(userInput);
+   }
+
+   public void update()
+   {
+      person = personDAO.findByUsername(this.projectMaintainer);
+   }
+
+   public HPerson getPerson()
+   {
+      return this.person;
    }
 }

@@ -9,26 +9,51 @@
 	xmlns:a4j="http://richfaces.org/a4j"
 	template="../WEB-INF/layout/template.xhtml">
 
-	<ui:define name="center_content">
-    <h:form>
-    <h:panelGrid rendered="#{s:hasPermission(projectHome.instance, 'update')}" >
-      <f:facet name="header">#{messages['jsf.AddMaintainer']}</f:facet>
-      <h:inputText id="input" value="#{accountSearch.projectMaintainer}" size="40"/>
-	  <rich:suggestionbox width="290" suggestionAction="#{accountSearch.search}" var="account" for="input">
-		  <h:column>
-			   <h:outputText value="#{account.username}"/>
-		  </h:column>
-      </rich:suggestionbox>
-    </h:panelGrid>
-				<div style="clear: both" />
+	<ui:define name="center_content" >
+	    <h:form>
+  	    <s:token allowMultiplePosts="true" />
+            <rich:panel rendered="#{s:hasPermission(projectHome.instance, 'update')}">
+	    <h:panelGrid>
+	      <f:facet name="header">#{messages['jsf.AddMaintainer']}</f:facet>
+		<s:decorate id="userField"
+			template="../WEB-INF/layout/edit.xhtml">
+			<ui:define name="label">#{messages['jsf.Username']}</ui:define>
+	        <h:inputText id="input" value="#{accountSearch.projectMaintainer}" size="40">
+				<a4j:support event="onblur" reRender="output" action="#{accountSearch.update}" />
+			</h:inputText>
+		  <rich:suggestionbox width="290" suggestionAction="#{accountSearch.search}" var="account" for="input">
+			  <h:column>
+				   <h:outputText value="#{account.username}"/>
+			  </h:column>
+	      </rich:suggestionbox>
+              </s:decorate>
+	    </h:panelGrid>
+				<div>
+				<h:panelGrid id="output" >
+					<s:decorate id="output1" template="../WEB-INF/layout/display.xhtml">
+						<ui:define name="label">#{messages['jsf.Name']} </ui:define>
+						<h:outputText value="#{accountSearch.person.name}" />
+					</s:decorate>
+					<s:decorate id="output2" template="../WEB-INF/layout/display.xhtml">
+						<ui:define name="label">#{messages['jsf.Email']} </ui:define>
+						<h:outputText value="#{accountSearch.person.email}" />
+					</s:decorate>
+				</h:panelGrid>
+				</div>
 
-				<div class="actionButtons"><h:commandButton
-					value="#{messages['jsf.Save']}"
-					action="#{projectMaintainerManageAction.addMaintainers(accountSearch.projectMaintainer)}" /> 
-					<s:button
-					view="/project/assign_maintainer.xhtml"
-					value="#{messages['jsf.Cancel']}" propagation="none"  action="#{projectHome.cancel}" /></div>
-    </h:form>
+
+	    <div style="clear: both" />
+
+	    <div class="actionButtons">
+		<h:commandButton
+	   		value="#{messages['jsf.Save']}"
+			action="#{projectMaintainerManageAction.addMaintainers(accountSearch.projectMaintainer)}" /> 
+		<s:button
+			view="/project/assign_maintainer.xhtml"
+			value="#{messages['jsf.Cancel']}" propagation="none"  action="#{projectHome.cancel}" />
+	    </div>
+		</rich:panel>
+	  </h:form>
 	</ui:define>
 
 </ui:composition>
