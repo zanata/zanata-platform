@@ -86,6 +86,8 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
    public static final String SERVICE_PATH = ProjectIterationService.SERVICE_PATH + "/r";
 
+   private static boolean haveLoggedCopyTransWarning = false;
+   
    @PathParam("projectSlug")
    private String projectSlug;
 
@@ -831,6 +833,13 @@ public class TranslationResourcesService implements TranslationResourcesResource
    
    public void copyClosestEquivalentTranslation(HDocument document) 
    {
+      if (!haveLoggedCopyTransWarning)
+      {
+         log.warn("Automatic copying of translations is disabled in this version of Flies. (This warning will only appear once per startup.)");
+         haveLoggedCopyTransWarning = true;
+      }
+      return;
+      /*
       int copyCount = 0;
       List<HLocale> localelist = localeDAO.findAllActive();
 
@@ -877,6 +886,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
       textFlowTargetDAO.flush();
       log.info("copied {0} existing translations for document \"{1}{2}\"", copyCount, document.getPath(), document.getName());
+      */
    }
 
 }
