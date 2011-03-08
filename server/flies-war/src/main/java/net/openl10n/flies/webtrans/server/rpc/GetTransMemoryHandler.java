@@ -81,6 +81,7 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
       log.info("Fetching TM matches({0}) for \"{1}\"", searchType, abbrev);
 
       LocaleId localeID = action.getLocaleId();
+      HLocale hLocale = localeServiceImpl.getByLocaleId(localeID);
       ArrayList<TranslationMemoryItem> results;
 
       try
@@ -96,7 +97,6 @@ public class GetTransMemoryHandler extends AbstractActionHandler<GetTranslationM
             {
                continue;
             }
-            HLocale hLocale = localeServiceImpl.getSupportedLanguageByLocale(localeID);
             HTextFlowTarget target = textFlow.getTargets().get(hLocale);
             // double check in case of caching issues
             if (target.getState() != ContentState.Approved)

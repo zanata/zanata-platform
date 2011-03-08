@@ -29,7 +29,9 @@ public class ProjectMaintainerManageAction implements Serializable
    List<HPerson> allList;
    @DataModelSelection
    HPerson selectedPerson;
+
    private String slug;
+
    @In
    ProjectDAO projectDAO;
    @In
@@ -55,6 +57,11 @@ public class ProjectMaintainerManageAction implements Serializable
    public String getSlug()
    {
       return this.slug;
+   }
+
+   public HProject getProject()
+   {
+      return projectDAO.getBySlug(this.slug);
    }
 
    public void deleteMaintainer(HPerson person)
@@ -91,6 +98,11 @@ public class ProjectMaintainerManageAction implements Serializable
       }
       FacesMessages.instance().add("This account does not exist.");
       return "failure";
+   }
+
+   public String cancel()
+   {
+      return "cancel";
    }
 
 }

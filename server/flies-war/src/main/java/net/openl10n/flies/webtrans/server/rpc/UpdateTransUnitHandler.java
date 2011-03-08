@@ -24,6 +24,7 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.common.LocaleId;
+import net.openl10n.flies.exception.FliesServiceException;
 import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.model.HProject;
 import net.openl10n.flies.model.HTextFlow;
@@ -86,7 +87,15 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
 
       HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, action.getTransUnitId().getValue());
       LocaleId locale = action.getWorkspaceId().getLocaleId();
-      HLocale hLocale = localeServiceImpl.getSupportedLanguageByLocale(locale);
+      HLocale hLocale;
+      try
+      {
+         hLocale = localeServiceImpl.validateLocaleByProjectIteration(action.getWorkspaceId().getLocaleId(), action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
+      }
+      catch (FliesServiceException e)
+      {
+         throw new ActionException(e.getMessage());
+      }
       HProject hProject = hTextFlow.getDocument().getProjectIteration().getProject();
       identity.checkPermission(hProject, ACTION_MODIFY_TRANSLATION);
 

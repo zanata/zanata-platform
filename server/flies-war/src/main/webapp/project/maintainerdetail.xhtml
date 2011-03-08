@@ -12,7 +12,7 @@
 	<ui:define name="center_content" >
 	    <h:form>
   	    <s:token allowMultiplePosts="true" />
-            <rich:panel rendered="#{s:hasPermission(projectHome.instance, 'update')}">
+            <rich:panel rendered="#{s:hasPermission(projectMaintainerManageAction.project, 'update')}">
 	    <h:panelGrid>
 	      <f:facet name="header">#{messages['jsf.AddMaintainer']}</f:facet>
 		<s:decorate id="userField"
@@ -50,7 +50,7 @@
 			action="#{projectMaintainerManageAction.addMaintainers(accountSearch.projectMaintainer)}" /> 
 		<s:button
 			view="/project/assign_maintainer.xhtml"
-			value="#{messages['jsf.Cancel']}" propagation="none"  action="#{projectHome.cancel}" />
+			value="#{messages['jsf.Cancel']}" propagation="none"  action="#{projectMaintainerManageAction.cancel}" />
 	    </div>
 		</rich:panel>
 	  </h:form>

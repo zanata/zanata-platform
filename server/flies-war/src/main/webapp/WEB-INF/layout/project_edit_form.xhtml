@@ -44,10 +44,21 @@
                 theme="advanced">
             </rich:editor>
         </s:decorate>
-
+	
         <div style="clear:both"></div>
 
     </rich:panel>
+
+
+	<div>
+		<h:selectBooleanCheckbox
+		 title="overrideLocales"
+		  value="#{projectHome.instance.overrideLocales}" >
+		</h:selectBooleanCheckbox>
+		<h:outputText
+		  value="Would you like add a customized list of locales?"/>
+	</div>
+
 
     <div class="actionButtons">
         <h:commandButton id="save"

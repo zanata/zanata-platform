@@ -25,8 +25,13 @@ import java.util.List;
 
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.dao.LocaleDAO;
+import net.openl10n.flies.dao.PersonDAO;
+import net.openl10n.flies.dao.ProjectDAO;
+import net.openl10n.flies.dao.ProjectIterationDAO;
 import net.openl10n.flies.exception.FliesServiceException;
 import net.openl10n.flies.model.HLocale;
+import net.openl10n.flies.model.HProject;
+import net.openl10n.flies.model.HProjectIteration;
 import net.openl10n.flies.service.LocaleService;
 
 import org.jboss.seam.ScopeType;
@@ -48,10 +53,34 @@ public class LocaleServiceImpl implements LocaleService
 {
    private LocaleDAO localeDAO;
    
+   private ProjectDAO projectDAO;
+
+   private ProjectIterationDAO projectIterationDAO;
+
+   private PersonDAO personDAO;
+
    @In
    public void setLocaleDAO(LocaleDAO localeDAO)
    {
       this.localeDAO= localeDAO;
+   }
+
+   @In
+   public void setProjectDAO(ProjectDAO projectDAO)
+   {
+      this.projectDAO = projectDAO;
+   }
+
+   @In
+   public void setProjectIterationDAO(ProjectIterationDAO projectIterationDAO)
+   {
+      this.projectIterationDAO = projectIterationDAO;
+   }
+
+   @In
+   public void setPersonDAO(PersonDAO personDAO)
+   {
+      this.personDAO = personDAO;
    }
 
    public List<HLocale> getAllLocales()
@@ -125,15 +154,51 @@ public class LocaleServiceImpl implements LocaleService
       return entity != null && entity.isActive();
    }
 
-   public HLocale getSupportedLanguageByLocale(LocaleId locale) throws FliesServiceException
+   @Override
+   public HLocale validateLocaleByProjectIteration(LocaleId locale, String project, String iterationSlug) throws FliesServiceException
    {
-
+      List<HLocale> allList = getSupportedLangugeByProjectIteration(project, iterationSlug);
       HLocale hLocale = localeDAO.findByLocaleId(locale);
       if (hLocale == null || !hLocale.isActive())
       {
-         throw new FliesServiceException("Unsupported Locale: " + locale.getId() + " within this context");
+         throw new FliesServiceException("Unsupported Locale: " + locale.getId() + " within this context. Please contract Admin.");
+      }
+      if (allList.contains(hLocale))
+      {
+         throw new FliesServiceException("Unsupported Locale " + locale.getId() + " for project " + project + " and version " + iterationSlug + ". Please contract Project Maintainer.");
       }
       return hLocale;
+   }
+
+   @Override
+   public HLocale getByLocaleId(LocaleId locale)
+   {
+      return localeDAO.findByLocaleId(locale);
+   }
+
+   private List<HLocale> getSupportedLangugeByProjectIteration(String project, String iterationSlug)
+   {
+      HProjectIteration iteration = projectIterationDAO.getBySlug(project, iterationSlug);
+      if (iteration.getOverrideLocales())
+      {
+         return new ArrayList<HLocale>(iteration.getCustomizedLocales());
+      }
+      HProject proj = projectDAO.getBySlug(project);
+      if (proj.getOverrideLocales())
+      {
+         return new ArrayList<HLocale>(proj.getCustomizedLocales());
+      }
+      return localeDAO.findAllActive();
+   }
+   
+   @Override
+   public List<HLocale> getTranslation(String project, String iterationSlug, String username)
+   {
+      List<HLocale> allList = getSupportedLangugeByProjectIteration(project, iterationSlug);
+
+      List<HLocale> member = personDAO.getLanguageMembershipByUsername(username);
+      member.retainAll(allList);
+      return member;
    }
 
 }

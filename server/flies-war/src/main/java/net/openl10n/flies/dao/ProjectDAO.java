@@ -41,4 +41,5 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
       return query.list();
    }
 
+
 }

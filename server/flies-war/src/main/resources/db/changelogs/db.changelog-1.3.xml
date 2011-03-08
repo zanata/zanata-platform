@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+    <changeSet author="hding@redhat.com" id="1">
+    	<comment>Add flag for project and project version to support a customized list of locales</comment>
+		<addColumn tableName="HProject">
+			<column name="overrideLocales" type="boolean" value="0">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+		<addColumn tableName="HProjectIteration">
+			<column name="overrideLocales" type="boolean" value="0">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+    </changeSet>
+	
+    <changeSet author="hding@redhat.com" id="2">
+    	<comment>Add tables to store the customized list of locales for project</comment>
+		<createTable tableName="HProject_Locale">
+			<column name="projectId" type="bigint" />
+			<column name="localeId" type="bigint" />
+		</createTable>
+		<addPrimaryKey tableName = "HProject_Locale" 
+			columnNames = "projectId, localeId"/>
+		<addForeignKeyConstraint 
+			baseTableName = "HProject_Locale" 
+			baseColumnNames = "projectId" 
+			constraintName = "FKHPROJECTLOCALEPRO"
+			referencedTableName = "HProject"
+			referencedColumnNames = "id"/>
+		<addForeignKeyConstraint 
+			baseTableName = "HProject_Locale" 
+			baseColumnNames = "localeId" 
+			constraintName = "FKHPROJECTLOCALELOC"
+			referencedTableName = "HLocale"
+			referencedColumnNames = "id"/>
+    </changeSet>
+	
+    <changeSet author="hding@redhat.com" id="3">
+    	<comment>Add tables to store the customized list of locales for project version</comment>
+		<createTable tableName="HProjectIteration_Locale">
+			<column name="projectIterationId" type="bigint" />
+			<column name="localeId" type="bigint" />
+		</createTable>
+		<addPrimaryKey tableName = "HProjectIteration_Locale" 
+			columnNames = "projectIterationId, localeId"/>
+		<addForeignKeyConstraint 
+			baseTableName = "HProjectIteration_Locale" 
+			baseColumnNames = "projectIterationId" 
+			constraintName = "FKHPROJECTITELOCPRO"
+			referencedTableName = "HProjectIteration"
+			referencedColumnNames = "id"/>
+		<addForeignKeyConstraint 
+			baseTableName = "HProjectIteration_Locale" 
+			baseColumnNames = "localeId" 
+			constraintName = "FKHPROJECTITELOCLOC"
+			referencedTableName = "HLocale"
+			referencedColumnNames = "id"/>
+    </changeSet>
+
+</databaseChangeLog>

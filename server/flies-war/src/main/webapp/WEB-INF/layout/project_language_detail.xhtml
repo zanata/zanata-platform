@@ -1,0 +1,47 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich" >
+
+				<f:facet name="header">#{messages['jsf.SupportedLanguageDetails']}</f:facet>
+				<h:panelGrid>
+					<s:decorate id="localeField"
+						template="edit.xhtml">
+						<ui:define name="label">#{messages['jsf.Language']}</ui:define>
+						<h:selectOneMenu id="selectLocale"
+							value="#{projectLocaleDetailAction.language}" >
+							<a4j:support event="onchange" reRender="output"
+								action="#{projectLocaleDetailAction.updateLanguage()}" />
+							<f:selectItems value="#{projectLocaleDetailAction.localeStringList}" />
+						</h:selectOneMenu>
+					</s:decorate>
+				</h:panelGrid>
+
+				<div><h:panelGrid id="output" >
+					<s:decorate id="output1" template="display.xhtml">
+						<ui:define name="label">#{messages['jsf.CountryCode']} </ui:define>
+						<h:outputText value="#{projectLocaleDetailAction.uLocale.country}" />
+					</s:decorate>
+					<s:decorate id="output2" template="display.xhtml">
+						<ui:define name="label">#{messages['jsf.Name']} </ui:define>
+						<h:outputText value="#{projectLocaleDetailAction.uLocale.displayName}" />
+					</s:decorate>
+					<s:decorate id="output3" template="display.xhtml">
+						<ui:define name="label">#{messages['jsf.LanguageCode']} </ui:define>
+						<h:outputText value="#{projectLocaleDetailAction.uLocale.language}" />
+					</s:decorate>
+					<s:decorate id="output4" template="display.xhtml">
+						<ui:define name="label">#{messages['jsf.Variant']} </ui:define>
+						<h:outputText value="#{projectLocaleDetailAction.uLocale.variant}" />
+					</s:decorate>
+					<s:decorate id="output5" template="display.xhtml">
+						<ui:define name="label">#{messages['jsf.NativeName']} </ui:define>
+						<h:outputText value="#{projectLocaleDetailAction.uLocale.getDisplayName(projectLocaleDetailAction.uLocale)}" />
+					</s:decorate>
+				</h:panelGrid></div>
+
+
+</ui:composition>

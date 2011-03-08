@@ -191,18 +191,18 @@
   </page>
 
   <page view-id="/project/assign_maintainer.xhtml" >
-    <param name="slug" value="#{projectMaintainerManageAction.slug}" />
-    <param name="slug" value="#{projectHome.slug}" />
+    <param name="projectSlug" value="#{projectMaintainerManageAction.slug}" />
+    <param name="projectSlug" value="#{projectHome.slug}" />
     <action execute="#{projectMaintainerManageAction.loadAllMaintainers()}" />
   </page>
   
+
   <page view-id="/project/maintainerdetail.xhtml">
     <param name="slug" value="#{projectMaintainerManageAction.slug}" />
-    <param name="slug" value="#{projectHome.slug}" />
     <navigation from-action="#{projectMaintainerManageAction.addMaintainers(accountSearch.projectMaintainer)}">
       <rule if-outcome="success">
         <redirect view-id="/project/assign_maintainer.xhtml" >
-		    <param name="slug" value="#{projectMaintainerManageAction.slug}" />
+		    <param name="projectSlug" value="#{projectMaintainerManageAction.slug}" />
         </redirect>
       </rule>
       <rule if-outcome="failure">
@@ -213,11 +213,56 @@
     </navigation>
     <navigation from-action="#{projectHome.cancel}">
       <redirect view-id="/project/assign_maintainer.xhtml" >
-	    <param name="slug" value="#{projectMaintainerManageAction.slug}" />
+	    <param name="projectSlug" value="#{projectMaintainerManageAction.slug}" />
       </redirect>
     </navigation>
   </page>
   
+  <page view-id="/project/project_locale.xhtml" >
+    <param name="projectSlug" value="#{projectLocaleManageAction.projectSlug}" />
+    <action execute="#{projectLocaleManageAction.loadCustomizedLocales()}" />
+  </page>
+
+  <page view-id="/project/project_locale_detail.xhtml">
+    <param name="projectSlug" value="#{projectLocaleManageAction.projectSlug}" />
+    <navigation from-action="#{projectLocaleManageAction.addLocale(projectLocaleDetailAction.language)}">
+      <rule if-outcome="success">
+        <redirect view-id="/project/project_locale.xhtml" >
+		    <param name="projectSlug" value="#{projectLocaleManageAction.projectSlug}" />
+        </redirect>
+      </rule>
+    </navigation>
+    <navigation from-action="#{projectLocaleManageAction.cancel}">
+      <redirect view-id="/project/project_locale.xhtml" >
+	    <param name="projectSlug" value="#{projectLocaleManageAction.projectSlug}" />
+      </redirect>
+    </navigation>
+  </page>
+
+  <page view-id="/project/iteration_locale.xhtml" >
+    <param name="projectSlug" value="#{iterationLocaleManageAction.projectSlug}" />
+    <param name="iterationSlug" value="#{iterationLocaleManageAction.iterationSlug}" />
+    <action execute="#{iterationLocaleManageAction.loadCustomizedLocales()}" />
+  </page>
+
+  <page view-id="/project/iteration_locale_detail.xhtml">
+    <param name="projectSlug" value="#{iterationLocaleManageAction.projectSlug}" />
+    <param name="iterationSlug" value="#{iterationLocaleManageAction.iterationSlug}" />
+    <navigation from-action="#{iterationLocaleManageAction.addLocale(projectLocaleDetailAction.language)}">
+      <rule if-outcome="success">
+        <redirect view-id="/project/iteration_locale.xhtml" >
+		    <param name="projectSlug" value="#{iterationLocaleManageAction.projectSlug}" />
+		    <param name="iterationSlug" value="#{iterationLocaleManageAction.iterationSlug}" />
+        </redirect>
+      </rule>
+    </navigation>
+    <navigation from-action="#{iterationLocaleManageAction.cancel}">
+      <redirect view-id="/project/iteration_locale.xhtml" >
+		    <param name="projectSlug" value="#{iterationLocaleManageAction.projectSlug}" />
+		    <param name="iterationSlug" value="#{iterationLocaleManageAction.iterationSlug}" />
+      </redirect>
+    </navigation>
+  </page>
 
   <page view-id="/project/add_iteration.xhtml">
     <param name="projectSlug" value="#{projectIterationHome.projectSlug}" />

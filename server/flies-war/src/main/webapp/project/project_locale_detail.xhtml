@@ -14,17 +14,15 @@
 
 		<h:form>
 			<s:token allowMultiplePosts="true" />
-			<rich:panel>
-			        <ui:include src="../WEB-INF/layout/language_detail.xhtml" />
+			<rich:panel rendered="#{s:hasPermission(projectLocaleManageAction.project, 'update')}">
+			        <ui:include src="../WEB-INF/layout/project_language_detail.xhtml" />
 
 				<div style="clear: both" />
 
 				<div class="actionButtons"><h:commandButton
 					value="#{messages['jsf.Save']}"
-					action="#{languageManagerAction.save}" /> <s:button
-					view="/admin/languagemanager.xhtml"
-					value="#{messages['jsf.Cancel']}" propagation="end" /></div>
-
+					action="#{projectLocaleManageAction.addLocale(projectLocaleDetailAction.language)}" /> <s:button
+					value="#{messages['jsf.Cancel']}" action="#{projectLocaleManageAction.cancel}" propagation="end" /></div>
 			</rich:panel>
 		</h:form>
 

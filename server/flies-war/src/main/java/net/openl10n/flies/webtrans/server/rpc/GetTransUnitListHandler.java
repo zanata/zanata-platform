@@ -28,6 +28,7 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.dao.TextFlowDAO;
+import net.openl10n.flies.exception.FliesServiceException;
 import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.model.HTextFlow;
 import net.openl10n.flies.model.HTextFlowTarget;
@@ -66,8 +67,18 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
    {
 
       FliesIdentity.instance().checkLoggedIn();
-
       log.info("Fetching Transunits for document {0}", action.getDocumentId());
+
+      HLocale hLocale;
+      try
+      {
+         hLocale = localeServiceImpl.validateLocaleByProjectIteration(action.getWorkspaceId().getLocaleId(), action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
+      }
+      catch (FliesServiceException e)
+      {
+         throw new ActionException(e.getMessage());
+      }
+
       int size = 0;
       List<HTextFlow> textFlows = new ArrayList<HTextFlow>();
       if (action.getPhrase() != null && !action.getPhrase().isEmpty())
@@ -108,7 +119,6 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
 
          TransUnitId tuId = new TransUnitId(textFlow.getId());
          TransUnit tu = new TransUnit(tuId, action.getWorkspaceId().getLocaleId(), textFlow.getContent(), CommentsUtil.toString(textFlow.getComment()), "", ContentState.New);
-         HLocale hLocale = localeServiceImpl.getSupportedLanguageByLocale(action.getWorkspaceId().getLocaleId());
          HTextFlowTarget target = textFlow.getTargets().get(hLocale);
          if (target != null)
          {

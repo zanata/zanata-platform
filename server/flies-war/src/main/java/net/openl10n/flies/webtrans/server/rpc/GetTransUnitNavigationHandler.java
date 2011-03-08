@@ -28,6 +28,7 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.dao.TextFlowDAO;
+import net.openl10n.flies.exception.FliesServiceException;
 import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.model.HTextFlow;
 import net.openl10n.flies.model.HTextFlowTarget;
@@ -64,6 +65,16 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
    {
 
       FliesIdentity.instance().checkLoggedIn();
+      HLocale hLocale;
+      try
+      {
+         hLocale = localeServiceImpl.validateLocaleByProjectIteration(action.getWorkspaceId().getLocaleId(), action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
+      }
+      catch (FliesServiceException e)
+      {
+         throw new ActionException(e.getMessage());
+      }
+
       HTextFlow tf = textFlowDAO.findById(action.getId(), false);
       List<Long> results = new ArrayList<Long>();
       List<HTextFlow> textFlows = new ArrayList<HTextFlow>();
@@ -82,7 +93,6 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
                Long textFlowId = (Long) id[0];
                step++;
                HTextFlow textFlow = textFlowDAO.findById(textFlowId, false);
-               HLocale hLocale = localeServiceImpl.getSupportedLanguageByLocale(action.getWorkspaceId().getLocaleId());
                HTextFlowTarget textFlowTarget = textFlow.getTargets().get(hLocale);
                if (checkNewFuzzyState(textFlowTarget))
                {
@@ -100,7 +110,6 @@ public class GetTransUnitNavigationHandler extends AbstractActionHandler<GetTran
       else
       {
          textFlows = textFlowDAO.getNavigationByDocumentId(tf.getDocument().getId(), tf.getPos(), action.isReverse());
-         HLocale hLocale = localeServiceImpl.getSupportedLanguageByLocale(action.getWorkspaceId().getLocaleId());
          int count = 0;
          Long step = 0L;
          for (HTextFlow textFlow : textFlows)

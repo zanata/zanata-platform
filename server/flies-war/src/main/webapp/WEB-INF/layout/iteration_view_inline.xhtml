@@ -10,14 +10,18 @@
   <div class="list_view_header">
     <h2>#{_iteration.name}</h2>
     <div class="menu_items">
-      <s:link view="/project/iteration_edit.xhtml" propagation="none" rendered="#{s:hasPermission(_iteration, 'update')}">
+      <s:link view="/project/iteration_locale.xhtml" propagation="none" rendered="#{s:hasPermission(_iteration, 'update') and _iteration.overrideLocales}" value="#{messages['jsf.ManageLanguage']}">
+        <f:param name="iterationSlug" value="#{_iteration.slug}"/>
+        <f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
+      </s:link>
+      <rich:spacer width="10px" />
+      <s:link view="/project/iteration_edit.xhtml" propagation="none" rendered="#{s:hasPermission(_iteration, 'update')}" value="#{messages['jsf.EditVersion']}">
         <f:param name="slug" value="#{_iteration.slug}"/>
         <f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
-        <h:graphicImage value="/img/silk/page_edit.png" />
       </s:link>
     </div>
   </div>
-  <rich:dataTable id="data_table" width="100%" value="#{memberLanguage}"
+  <rich:dataTable id="data_table" width="100%" value="#{iterationTranslationAction.getTranslationLocale(projectHome.instance.slug, _iteration.slug)}"
                   var="tribe"
                   styleClass="iteration_inline_tribes"
                   rowClasses="odd,even">

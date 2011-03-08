@@ -39,7 +39,7 @@ import org.jboss.seam.annotations.Scope;
 import com.ibm.icu.util.ULocale;
 
 @Name("languageManagerAction")
-@Scope(ScopeType.EVENT)
+@Scope(ScopeType.PAGE)
 @Restrict("#{s:hasRole('admin')}")
 public class LanguageManagerAction implements Serializable
 {

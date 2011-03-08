@@ -21,10 +21,10 @@
 package net.openl10n.flies.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -47,6 +47,9 @@ public class HLocale extends AbstractFliesEntity implements Serializable
    private LocaleId localeId;
    private boolean active;
    private Set<HPerson> members;
+   private Set<HProject> supportedProjects;
+   private Set<HProjectIteration> supportedIterations;
+   
 
    @NaturalId
    @NotNull
@@ -81,16 +84,46 @@ public class HLocale extends AbstractFliesEntity implements Serializable
       this.localeId = localeId;
    }
 
-   @ManyToMany(fetch = FetchType.LAZY)
+   @ManyToMany
    @JoinTable(name = "HLocale_Member", joinColumns = @JoinColumn(name = "supportedLanguageId"), inverseJoinColumns = @JoinColumn(name = "personId"))
    public Set<HPerson> getMembers()
    {
+      if (members == null)
+         members = new HashSet<HPerson>();
       return members;
    }
 
    public void setMembers(Set<HPerson> members)
    {
       this.members = members;
+   }
+
+   @ManyToMany
+   @JoinTable(name = "HProject_Locale", joinColumns = @JoinColumn(name = "localeId"), inverseJoinColumns = @JoinColumn(name = "projectId"))
+   public Set<HProject> getSupportedProjects()
+   {
+      if (supportedProjects == null)
+         supportedProjects = new HashSet<HProject>();
+      return supportedProjects;
+   }
+
+   public void setSupportedProjects(Set<HProject> projects)
+   {
+      this.supportedProjects = projects;
+   }
+
+   @ManyToMany
+   @JoinTable(name = "HProjectIteration_Locale", joinColumns = @JoinColumn(name = "localeId"), inverseJoinColumns = @JoinColumn(name = "projectIterationId"))
+   public Set<HProjectIteration> getSupportedIterations()
+   {
+      if (supportedIterations == null)
+         supportedIterations = new HashSet<HProjectIteration>();
+      return supportedIterations;
+   }
+
+   public void setSupportedIterations(Set<HProjectIteration> supportedIterations)
+   {
+      this.supportedIterations = supportedIterations;
    }
 
    public String retrieveNativeName()
@@ -111,10 +144,7 @@ public class HLocale extends AbstractFliesEntity implements Serializable
    @Override
    public int hashCode()
    {
-      final int prime = 31;
-      int result = super.hashCode();
-      result = prime * result + ((localeId == null) ? 0 : localeId.hashCode());
-      return result;
+      return localeId == null ? super.hashCode() : localeId.hashCode();
    }
 
    @Override
@@ -122,8 +152,6 @@ public class HLocale extends AbstractFliesEntity implements Serializable
    {
       if (this == obj)
          return true;
-      if (!super.equals(obj))
-         return false;
       if (getClass() != obj.getClass())
          return false;
       HLocale other = (HLocale) obj;

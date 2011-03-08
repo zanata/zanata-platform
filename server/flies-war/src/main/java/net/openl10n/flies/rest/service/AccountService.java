@@ -160,7 +160,7 @@ public class AccountService implements AccountResource
          to.getRoles().add(hAccountRole);
       }
 
-      hPerson.getTribeMemberships().clear();
+      hPerson.getLanguageMemberships().clear();
       for (String tribe : from.getTribes())
       {
          HLocale hTribe = localeDAO.findByLocaleId(new LocaleId(tribe));
@@ -168,7 +168,7 @@ public class AccountService implements AccountResource
             // generate error for missing tribe
             throw new NoLogWebApplicationException(Response.status(Status.BAD_REQUEST).entity(
                   "Invalid tribe '" + tribe + "'").build());
-         hPerson.getTribeMemberships().add(hTribe);
+         hPerson.getLanguageMemberships().add(hTribe);
       }
 
       to.setUsername(from.getUsername());

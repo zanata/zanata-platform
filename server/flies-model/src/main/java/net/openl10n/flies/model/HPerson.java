@@ -22,7 +22,6 @@ package net.openl10n.flies.model;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -53,9 +52,9 @@ public class HPerson extends AbstractFliesEntity implements Serializable
 
    private String email;
 
-   private List<HProject> maintainerProjects;
+   private Set<HProject> maintainerProjects;
 
-   private Set<HLocale> tribeMemberships;
+   private Set<HLocale> languageMemberships;
 
 
    @NotEmpty
@@ -103,31 +102,30 @@ public class HPerson extends AbstractFliesEntity implements Serializable
 
    @ManyToMany(fetch = FetchType.EAGER)
    @JoinTable(name = "HProject_Maintainer", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "projectId"))
-   public List<HProject> getMaintainerProjects()
+   public Set<HProject> getMaintainerProjects()
    {
+      if (maintainerProjects == null)
+         maintainerProjects = new HashSet<HProject>();
       return maintainerProjects;
    }
 
-   public void setMaintainerProjects(List<HProject> maintainerProjects)
+   public void setMaintainerProjects(Set<HProject> maintainerProjects)
    {
       this.maintainerProjects = maintainerProjects;
    }
 
-   @ManyToMany(fetch = FetchType.LAZY)
+   @ManyToMany
    @JoinTable(name = "HLocale_Member", joinColumns = @JoinColumn(name = "personId"), inverseJoinColumns = @JoinColumn(name = "supportedLanguageId"))
-   public Set<HLocale> getTribeMemberships()
+   public Set<HLocale> getLanguageMemberships()
    {
-      if (tribeMemberships == null)
-      {
-         tribeMemberships = new HashSet<HLocale>();
-         setTribeMemberships(tribeMemberships);
-      }
-      return tribeMemberships;
+      if (languageMemberships == null)
+         languageMemberships = new HashSet<HLocale>();
+      return languageMemberships;
    }
 
-   public void setTribeMemberships(Set<HLocale> tribeMemberships)
+   public void setLanguageMemberships(Set<HLocale> tribeMemberships)
    {
-      this.tribeMemberships = tribeMemberships;
+      this.languageMemberships = tribeMemberships;
    }
 
    @Override
@@ -194,13 +192,10 @@ public class HPerson extends AbstractFliesEntity implements Serializable
    {
       // TODO consider implementing business key equality and using
       // getMaintainerProjects().contains(proj)
-      if (getMaintainerProjects() != null)
+      for (HProject maintProj : getMaintainerProjects())
       {
-         for (HProject maintProj : getMaintainerProjects())
-         {
-            if (maintProj.getId().equals(proj.getId()))
-               return true;
-         }
+         if (maintProj.getId().equals(proj.getId()))
+            return true;
       }
       return false;
    }

@@ -10,9 +10,9 @@
     template="../WEB-INF/layout/template.xhtml">
    
     <ui:define name="left_content">
-		<s:link view="/project/maintainerdetail.xhtml"
-          value="#{messages['jsf.AddMaintainer']}"
-        />
+		<s:link view="/project/iteration_locale_detail.xhtml"
+          value="#{messages['jsf.CreateSupportedLanguage']}">
+        </s:link>
     </ui:define>
    
     <ui:define name="center_content">
@@ -20,35 +20,25 @@
       <script type="text/javascript">
         function confirmDelete()
         {
-          return confirm("#{messages['jsf.AreYouSureYouWishToDeleteThisPersonThisActionCannotBeUndone']}");
+          return confirm("#{messages['jsf.AreYouSureYouWishToDeleteThisLanguageThisActionCannotBeUndone']}");
         }
       </script>
-      <rich:panel rendered="#{s:hasPermission(projectHome.instance, 'update')}">
-        <f:facet name="header">#{messages['jsf.ProjectMaintainerManager']}</f:facet>
+      <rich:panel rendered="#{s:hasPermission(iterationLocaleManageAction.project, 'update')}">
+        <f:facet name="header">#{messages['jsf.LanguageManager']}</f:facet>
 		<h:messages />
 		
         <h:form>
             <s:token allowMultiplePosts="true" />
 	        <rich:dataTable 
 	            id="threads"
-	            value="#{allList}" 
-	            var="maintainer">
+	            value="#{customizedLocales}" 
+	            var="language">
 	
-	          <rich:column width="auto">
-	            <f:facet name="header">#{messages['jsf.Username']}</f:facet>
-	            #{maintainer.account.username}
-	          </rich:column>
-	          <rich:column width="auto">
-	            <f:facet name="header">#{messages['jsf.Name']}</f:facet>
-	            #{maintainer.name}
-	          </rich:column>
-	          <rich:column width="auto">
-	            <f:facet name="header">#{messages['jsf.Email']}</f:facet>
-	            #{maintainer.email}
-	          </rich:column>
+		    <ui:include src="../WEB-INF/layout/language_list.xhtml" />
+
 	          <rich:column width="auto">
 	            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>          
-	            <h:commandLink value="#{messages['jsf.Remove']}" action="#{projectMaintainerManageAction.deleteMaintainer(projectMaintainerManageAction.selectedPerson)}"
+	            <h:commandLink value="#{messages['jsf.Remove']}" action="#{iterationLocaleManageAction.deleteLocale(iterationLocaleManageAction.selectedLocale)}"
 	                      onclick="return confirmDelete()"/>
 	          </rich:column>
 	  	    </rich:dataTable>

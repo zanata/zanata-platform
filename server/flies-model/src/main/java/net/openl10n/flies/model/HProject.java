@@ -40,6 +40,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.NotNull;
 import org.jboss.seam.annotations.security.Restrict;
 
 /**
@@ -56,6 +57,8 @@ public abstract class HProject extends AbstractSlugEntity implements Serializabl
    private String name;
    private String description;
    private String homeContent;
+   private Boolean overrideLocales;
+   private Set<HLocale> customizedLocales;
 
    private Set<HPerson> maintainers;
 
@@ -70,6 +73,17 @@ public abstract class HProject extends AbstractSlugEntity implements Serializabl
    public void setName(String name)
    {
       this.name = name;
+   }
+
+   public void setOverrideLocales(Boolean var)
+   {
+      this.overrideLocales = var;
+   }
+
+   @NotNull
+   public Boolean getOverrideLocales()
+   {
+      return this.overrideLocales;
    }
 
    @Length(max = 100)
@@ -107,6 +121,20 @@ public abstract class HProject extends AbstractSlugEntity implements Serializabl
    public void setMaintainers(Set<HPerson> maintainers)
    {
       this.maintainers = maintainers;
+   }
+
+   @ManyToMany
+   @JoinTable(name = "HProject_Locale", joinColumns = @JoinColumn(name = "projectId"), inverseJoinColumns = @JoinColumn(name = "localeId"))
+   public Set<HLocale> getCustomizedLocales()
+   {
+      if (customizedLocales == null)
+         customizedLocales = new HashSet<HLocale>();
+      return customizedLocales;
+   }
+
+   public void setCustomizedLocales(Set<HLocale> locales)
+   {
+      this.customizedLocales = locales;
    }
 
    @Override

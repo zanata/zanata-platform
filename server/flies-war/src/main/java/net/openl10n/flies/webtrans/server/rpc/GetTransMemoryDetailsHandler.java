@@ -7,6 +7,7 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.dao.TextFlowDAO;
+import net.openl10n.flies.exception.FliesServiceException;
 import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.model.HSimpleComment;
 import net.openl10n.flies.model.HTextFlow;
@@ -44,11 +45,18 @@ public class GetTransMemoryDetailsHandler extends AbstractActionHandler<GetTrans
    public TransMemoryDetailsList execute(GetTransMemoryDetailsAction action, ExecutionContext context) throws ActionException
    {
       FliesIdentity.instance().checkLoggedIn();
-      ArrayList<Long> textFlowIds = action.getTransUnitIdList();
       LocaleId locale = action.getWorkspaceId().getLocaleId();
-      log.info("Fetching TM details for TFs {0} in locale {1}", textFlowIds, locale);
-      HLocale hLocale = localeServiceImpl.getSupportedLanguageByLocale(locale);
+      HLocale hLocale;
+      try{
+         hLocale = localeServiceImpl.validateLocaleByProjectIteration(locale, action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
+      }
+      catch (FliesServiceException e)
+      {
+         throw new ActionException(e.getMessage());
+      }
 
+      ArrayList<Long> textFlowIds = action.getTransUnitIdList();
+      log.info("Fetching TM details for TFs {0} in locale {1}", textFlowIds, locale);
       List<HTextFlow> textFlows = textFlowDAO.findByIdList(textFlowIds);
       ArrayList<TransMemoryDetails> items = new ArrayList<TransMemoryDetails>(textFlows.size());
 

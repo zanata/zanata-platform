@@ -50,7 +50,7 @@ public class LanguageTeamServiceImpl implements LanguageTeamService
 
       if (!lang.getMembers().contains(currentPerson))
       {
-         if (currentPerson.getTribeMemberships().size() >= MAX_NUMBER_MEMBERSHIP)
+         if (currentPerson.getLanguageMemberships().size() >= MAX_NUMBER_MEMBERSHIP)
          {
             throw new FliesServiceException("You can only be a member of up to " + MAX_NUMBER_MEMBERSHIP + " languages at one time.");
          }

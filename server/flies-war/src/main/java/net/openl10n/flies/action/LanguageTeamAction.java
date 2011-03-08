@@ -83,7 +83,7 @@ public class LanguageTeamAction implements Serializable
             break;
          }
       }
-      locale = localeServiceImpl.getSupportedLanguageByLocale(new LocaleId(language));
+      locale = localeServiceImpl.getByLocaleId(new LocaleId(language));
       log.debug("init language: {0}", locale.getLocaleId().getId());
       log.debug("init contained: {0}", contained);
    }

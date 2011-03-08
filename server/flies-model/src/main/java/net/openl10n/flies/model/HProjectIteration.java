@@ -21,12 +21,16 @@
 package net.openl10n.flies.model;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
@@ -62,6 +66,9 @@ public class HProjectIteration extends AbstractSlugEntity
    private Map<String, HDocument> documents;
    private Map<String, HDocument> allDocuments;
 
+   private Boolean overrideLocales;
+   private Set<HLocale> customizedLocales;
+
    @Length(max = 20)
    public String getName()
    {
@@ -94,6 +101,17 @@ public class HProjectIteration extends AbstractSlugEntity
       return active;
    }
 
+   public void setOverrideLocales(Boolean var)
+   {
+      this.overrideLocales = var;
+   }
+
+   @NotNull
+   public Boolean getOverrideLocales()
+   {
+      return this.overrideLocales;
+   }
+
    @ManyToOne
    @NotNull
    @NaturalId
@@ -105,6 +123,20 @@ public class HProjectIteration extends AbstractSlugEntity
    public void setProject(HIterationProject project)
    {
       this.project = project;
+   }
+
+   @ManyToMany
+   @JoinTable(name = "HProjectIteration_Locale", joinColumns = @JoinColumn(name = "projectIterationId"), inverseJoinColumns = @JoinColumn(name = "localeId"))
+   public Set<HLocale> getCustomizedLocales()
+   {
+      if (customizedLocales == null)
+         customizedLocales = new HashSet<HLocale>();
+      return customizedLocales;
+   }
+
+   public void setCustomizedLocales(Set<HLocale> locales)
+   {
+      this.customizedLocales = locales;
    }
 
    @OneToMany(mappedBy = "parent")
