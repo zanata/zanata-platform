@@ -163,7 +163,7 @@ public class LocaleServiceImpl implements LocaleService
       {
          throw new FliesServiceException("Unsupported Locale: " + locale.getId() + " within this context. Please contract Admin.");
       }
-      if (allList.contains(hLocale))
+      if (!allList.contains(hLocale))
       {
          throw new FliesServiceException("Unsupported Locale " + locale.getId() + " for project " + project + " and version " + iterationSlug + ". Please contract Project Maintainer.");
       }
