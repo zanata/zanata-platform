@@ -301,6 +301,11 @@
       </redirect>
     </navigation>
   </page>
+  
+  <page view-id="/project/iteration_status.xhtml" >
+    <param name="projectSlug" value="#{viewAllStatusAction.projectSlug}" />
+    <param name="iterationSlug" value="#{viewAllStatusAction.iterationSlug}" />
+  </page>
 
   <!-- Language -->
 

@@ -176,7 +176,8 @@ public class LocaleServiceImpl implements LocaleService
       return localeDAO.findByLocaleId(locale);
    }
 
-   private List<HLocale> getSupportedLangugeByProjectIteration(String project, String iterationSlug)
+   @Override
+   public List<HLocale> getSupportedLangugeByProjectIteration(String project, String iterationSlug)
    {
       HProjectIteration iteration = projectIterationDAO.getBySlug(project, iterationSlug);
       if (iteration.getOverrideLocales())

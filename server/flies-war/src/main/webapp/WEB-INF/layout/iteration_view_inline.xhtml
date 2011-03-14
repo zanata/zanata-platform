@@ -19,6 +19,11 @@
         <f:param name="slug" value="#{_iteration.slug}"/>
         <f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
       </s:link>
+      <rich:spacer width="10px" />
+      <s:link view="/project/iteration_status.xhtml" propagation="none" value="#{messages['jsf.ViewAllStatus']}">
+        <f:param name="iterationSlug" value="#{_iteration.slug}"/>
+        <f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
+      </s:link>
     </div>
   </div>
   <rich:dataTable id="data_table" width="100%" value="#{iterationTranslationAction.getTranslationLocale(projectHome.instance.slug, _iteration.slug)}"

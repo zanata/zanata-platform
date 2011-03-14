@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a4j="http://richfaces.org/a4j"
+    template="../WEB-INF/layout/template.xhtml">
+   
+ 
+    <ui:define name="center_content">
+        
+      <rich:panel rendered="#{identity.loggedIn}">
+        <f:facet name="header">#{messages['jsf.ViewAllStatus']}</f:facet>
+		<h:messages />
+		
+        <h:form>
+            <s:token allowMultiplePosts="true" />
+		  <rich:dataTable id="data_table" width="100%" value="#{viewAllStatusAction.getAllStatus().toArray()}" 
+                  var="language"
+                  styleClass="iteration_inline_tribes"
+                  rowClasses="odd,even">
+					<rich:column sortBy="#{language.locale}">
+						<f:facet name="header">#{messages['jsf.Language']}</f:facet>
+	            		#{language.locale}
+	        		</rich:column>
+					<rich:column sortBy="#{language.nativeName}">
+						<f:facet name="header">#{messages['jsf.Name']}</f:facet>
+	            		#{language.nativeName}
+	        		</rich:column>
+				<rich:column sortBy="#{language.per}">
+					<f:facet name="header">Percentage</f:facet>
+	            			#{language.per}%
+	        		</rich:column>
+				<rich:column>
+					<f:facet name="header">Approved (words)</f:facet>
+					#{language.words.approved}
+	        		</rich:column>
+				<rich:column>
+					<f:facet name="header">Need Review (words)</f:facet>
+					#{language.words.needReview}
+	        		</rich:column>
+				<rich:column>
+					<f:facet name="header">Untranslated (words)</f:facet>
+					#{language.words.untranslated}
+	        		</rich:column>
+  		  </rich:dataTable>
+        </h:form>              
+      </rich:panel>
+    </ui:define>
+    
+  </ui:composition>

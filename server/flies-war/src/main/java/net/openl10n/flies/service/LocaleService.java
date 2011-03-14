@@ -47,4 +47,6 @@ public interface LocaleService
    HLocale validateLocaleByProjectIteration(LocaleId locale, String project, String iterationSlug) throws FliesServiceException;
 
    List<HLocale> getTranslation(String project, String iterationSlug, String username);
+
+   List<HLocale> getSupportedLangugeByProjectIteration(String project, String iterationSlug);
 }
