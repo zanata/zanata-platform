@@ -38,6 +38,8 @@ public class HApplicationConfiguration extends AbstractFliesEntity
    public static String KEY_REGISTER = "flies.register";
    public static String KEY_DOMAIN = "flies.email.domain";
    public static String KEY_ADMIN_EMAIL = "flies.admin.email";
+   public static String KEY_HOME_CONTENT = "flies.home.content";
+   public static String KEY_HELP_CONTENT = "flies.help.content";
 
    private String key;
    private String value;
