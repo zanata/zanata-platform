@@ -10,7 +10,11 @@
       </rule>
     </navigation>
   </page>
-
+  
+  <page view-id="/edit_home_content.xhtml">
+    <restrict>#{s:hasRole('admin')}</restrict>
+  </page>
+  
   <page view-id="/search.xhtml" action="#{projectSearch.search}">
     <param name="q" value="#{projectSearch.searchQuery}" />
     <param name="page" value="#{projectSearch.currentPage}" />

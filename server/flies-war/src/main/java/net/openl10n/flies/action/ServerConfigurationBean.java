@@ -32,12 +32,14 @@ import org.hibernate.validator.Email;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.log.Log;
 
 @Name("serverConfigurationBean")
 @Scope(ScopeType.PAGE)
@@ -58,6 +60,20 @@ public class ServerConfigurationBean implements Serializable
    private String serverUrl;
    private String emailDomain;
    private String adminEmail;
+   private String homeContent;
+   @Logger
+   Log log;
+
+   public String getHomeContent()
+   {
+      HApplicationConfiguration var = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_HOME_CONTENT);
+      return var != null ? var.getValue() : "";
+   }
+
+   public void setHomeContent(String homeContent)
+   {
+      this.homeContent = homeContent;
+   }
 
    @Email
    public String getAdminEmail()
@@ -78,6 +94,34 @@ public class ServerConfigurationBean implements Serializable
    public void setEmailDomain(String emailDomain)
    {
       this.emailDomain = emailDomain;
+   }
+
+   public String updateHomeContent()
+   {
+      HApplicationConfiguration var = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_HOME_CONTENT);
+      if (var != null)
+      {
+         if (homeContent == null || homeContent.isEmpty())
+         {
+            applicationConfigurationDAO.makeTransient(var);
+         }
+         else
+         {
+            var.setValue(homeContent);
+         }
+      }
+      else if (homeContent != null && !homeContent.isEmpty())
+      {
+         HApplicationConfiguration op = new HApplicationConfiguration(HApplicationConfiguration.KEY_HOME_CONTENT, homeContent);
+         applicationConfigurationDAO.makePersistent(op);
+      }
+      applicationConfigurationDAO.flush();
+      FacesMessages.instance().add("Home content was successfully updated.");
+      if (Events.exists())
+      {
+         Events.instance().raiseTransactionSuccessEvent(ApplicationConfiguration.EVENT_CONFIGURATION_CHANGED);
+      }
+      return "/home.xhtml";
    }
 
    @Url
@@ -241,5 +285,10 @@ public class ServerConfigurationBean implements Serializable
       {
          Events.instance().raiseTransactionSuccessEvent(ApplicationConfiguration.EVENT_CONFIGURATION_CHANGED);
       }
+   }
+
+   public String cancel()
+   {
+      return "/home.xhtml";
    }
 }

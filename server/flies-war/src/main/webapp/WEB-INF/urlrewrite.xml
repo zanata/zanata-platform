@@ -58,6 +58,10 @@
     <to last="true">/project/home.seam$1</to>
   </rule>
 
+  <rule>
+    <from casesensitive="true">^/project/maintainer/(.+)?$</from>
+    <to last="true">/project/assign_maintainer.seam$1</to>
+  </rule>
 
   <!-- account / -->
 
@@ -161,6 +165,10 @@
   <outbound-rule>
     <from>^(/.+)?/project/create_project.seam(.+)?$</from>
     <to>$1/project/create/$2</to>
+  </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/project/assign_maintainer.seam(.+)?$</from>
+    <to>$1/project/maintainer/$2</to>
   </outbound-rule>
   <outbound-rule>
     <from>^(/.+)?/project/project.seam\?slug=(.+)$</from>
