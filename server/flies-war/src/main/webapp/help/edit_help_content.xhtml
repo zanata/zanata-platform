@@ -10,7 +10,7 @@
     template="/WEB-INF/layout/template.xhtml">
 
 <ui:define name="center_content" >
-    <h1>#{messages['jsf.HomepageContent']}</h1>
+    <h1>#{messages['jsf.Help']}</h1>
 
 <a4j:form>
     <s:token allowMultiplePosts="true" />
@@ -18,7 +18,7 @@
              <rich:editor id="homeContent" 
                 width="500" height="600" style="width:500px;"
                 required="false"
-                value="#{serverConfigurationBean.homeContent}"
+                value="#{serverConfigurationBean.helpContent}"
                 viewMode="visual" 
                 useSeamText="true"
                 theme="advanced">
@@ -31,8 +31,8 @@
     <div class="actionButtons">
         <h:commandButton id="update" 
                       value="#{messages['jsf.Update']}"
-                     action="#{serverConfigurationBean.updateHomeContent}" />
-        <s:button id="cancel" view="/home.xhtml"
+                     action="#{serverConfigurationBean.updateHelpContent}" />
+        <s:button id="cancel" view="/help/view.xhtml"
                         value="#{messages['jsf.Cancel']}"
                         propagation="none"
                        action="#{serverConfigurationBean.cancel}"/>

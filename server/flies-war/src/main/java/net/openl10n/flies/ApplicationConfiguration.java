@@ -110,4 +110,9 @@ public class ApplicationConfiguration
       return configValues.get(HApplicationConfiguration.KEY_HOME_CONTENT);
    }
 
+   public String getHelpContent()
+   {
+      return configValues.get(HApplicationConfiguration.KEY_HELP_CONTENT);
+   }
+
 }

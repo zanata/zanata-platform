@@ -61,6 +61,7 @@ public class ServerConfigurationBean implements Serializable
    private String emailDomain;
    private String adminEmail;
    private String homeContent;
+   private String helpContent;
    @Logger
    Log log;
 
@@ -73,6 +74,17 @@ public class ServerConfigurationBean implements Serializable
    public void setHomeContent(String homeContent)
    {
       this.homeContent = homeContent;
+   }
+
+   public String getHelpContent()
+   {
+      HApplicationConfiguration var = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_HELP_CONTENT);
+      return var != null ? var.getValue() : "";
+   }
+
+   public void setHelpContent(String helpContent)
+   {
+      this.helpContent = helpContent;
    }
 
    @Email
@@ -122,6 +134,34 @@ public class ServerConfigurationBean implements Serializable
          Events.instance().raiseTransactionSuccessEvent(ApplicationConfiguration.EVENT_CONFIGURATION_CHANGED);
       }
       return "/home.xhtml";
+   }
+
+   public String updateHelpContent()
+   {
+      HApplicationConfiguration var = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_HELP_CONTENT);
+      if (var != null)
+      {
+         if (helpContent == null || helpContent.isEmpty())
+         {
+            applicationConfigurationDAO.makeTransient(var);
+         }
+         else
+         {
+            var.setValue(helpContent);
+         }
+      }
+      else if (helpContent != null && !helpContent.isEmpty())
+      {
+         HApplicationConfiguration op = new HApplicationConfiguration(HApplicationConfiguration.KEY_HELP_CONTENT, helpContent);
+         applicationConfigurationDAO.makePersistent(op);
+      }
+      applicationConfigurationDAO.flush();
+      FacesMessages.instance().add("Help page content was successfully updated.");
+      if (Events.exists())
+      {
+         Events.instance().raiseTransactionSuccessEvent(ApplicationConfiguration.EVENT_CONFIGURATION_CHANGED);
+      }
+      return "/help/view.xhtml";
    }
 
    @Url
@@ -289,6 +329,6 @@ public class ServerConfigurationBean implements Serializable
 
    public String cancel()
    {
-      return "/home.xhtml";
+      return "cancel";
    }
 }
