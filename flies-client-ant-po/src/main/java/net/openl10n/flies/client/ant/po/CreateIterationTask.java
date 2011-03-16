@@ -13,8 +13,6 @@ public class CreateIterationTask extends ConfigurableTask implements PutVersionO
 
    private String proj;
    private String iter;
-   private String name;
-   private String desc;
 
    public static void main(String[] args)
    {
@@ -47,20 +45,6 @@ public class CreateIterationTask extends ConfigurableTask implements PutVersionO
       this.iter = id;
    }
 
-   @Option(name = "--version-name", metaVar = "NAME", usage = "Flies project version name", required = true)
-   public void setVersionName(String name)
-   {
-      this.name = name;
-   }
-
-
-   @Option(name = "--version-desc", metaVar = "DESC", usage = "Flies project version description", required = true)
-   public void setVersionDesc(String desc)
-   {
-      this.desc = desc;
-   }
-
-
    @Override
    public FliesCommand initCommand()
    {
@@ -77,18 +61,6 @@ public class CreateIterationTask extends ConfigurableTask implements PutVersionO
    public String getVersionSlug()
    {
       return this.iter;
-   }
-
-   @Override
-   public String getVersionDesc()
-   {
-      return this.desc;
-   }
-
-   @Override
-   public String getVersionName()
-   {
-      return this.name;
    }
 
 }
