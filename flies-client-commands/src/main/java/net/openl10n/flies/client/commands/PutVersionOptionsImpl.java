@@ -10,8 +10,6 @@ public class PutVersionOptionsImpl extends ConfigurableOptionsImpl implements Pu
 {
    private String versionProject;
    private String versionSlug;
-   private String versionName;
-   private String versionDesc;
 
    @Override
    public String getCommandName()
@@ -46,20 +44,6 @@ public class PutVersionOptionsImpl extends ConfigurableOptionsImpl implements Pu
    }
 
    @Override
-   @Option(name = "--version-name", metaVar = "NAME", usage = "Flies project version name", required = true)
-   public void setVersionName(String name)
-   {
-      this.versionName = name;
-   }
-
-   @Override
-   @Option(name = "--version-desc", metaVar = "DESC", usage = "Flies project version description", required = true)
-   public void setVersionDesc(String desc)
-   {
-      this.versionDesc = desc;
-   }
-
-   @Override
    public String getVersionProject()
    {
       return versionProject;
@@ -71,16 +55,5 @@ public class PutVersionOptionsImpl extends ConfigurableOptionsImpl implements Pu
       return versionSlug;
    }
 
-   @Override
-   public String getVersionDesc()
-   {
-      return versionDesc;
-   }
-
-   @Override
-   public String getVersionName()
-   {
-      return versionName;
-   }
 
 }

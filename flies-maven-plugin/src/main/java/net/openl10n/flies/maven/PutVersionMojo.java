@@ -29,21 +29,6 @@ public class PutVersionMojo extends ConfigurableMojo implements PutVersionOption
     */
    private String versionSlug;
 
-   /**
-    * Flies project version name
-    * 
-    * @parameter expression="${flies.version.name}"
-    * @required
-    */
-   private String versionName;
-
-   /**
-    * Flies project version description
-    * 
-    * @parameter expression="${flies.version.desc}"
-    * @required
-    */
-   private String versionDesc;
 
    public PutVersionMojo() throws Exception
    {
@@ -73,26 +58,6 @@ public class PutVersionMojo extends ConfigurableMojo implements PutVersionOption
    public void setVersionSlug(String versionSlug)
    {
       this.versionSlug = versionSlug;
-   }
-
-   public String getVersionName()
-   {
-      return versionName;
-   }
-
-   public void setVersionName(String versionName)
-   {
-      this.versionName = versionName;
-   }
-
-   public String getVersionDesc()
-   {
-      return versionDesc;
-   }
-
-   public void setVersionDesc(String versionDesc)
-   {
-      this.versionDesc = versionDesc;
    }
 
 }
