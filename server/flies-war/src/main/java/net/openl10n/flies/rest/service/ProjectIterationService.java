@@ -1,3 +1,23 @@
+/*
+ * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * @author tags. See the copyright.txt file in the distribution for a full
+ * listing of individual contributors.
+ * 
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+ * site: http://www.fsf.org.
+ */
 package net.openl10n.flies.rest.service;
 
 import java.io.InputStream;
@@ -179,8 +199,6 @@ public class ProjectIterationService implements ProjectIterationResource
          response = Response.ok();
       }
 
-      ProjectIteration projectIteration = RestUtils.unmarshall(ProjectIteration.class, messageBody, requestContentType, headers.getRequestHeaders());
-      changed |= transfer(projectIteration, hProjectIteration);
 
       if (changed)
       {
@@ -192,28 +210,10 @@ public class ProjectIterationService implements ProjectIterationResource
 
    }
 
-   public static boolean transfer(ProjectIteration from, HProjectIteration to)
-   {
-      boolean changed = false;
-      if (!ResourceUtils.equals(to.getName(), from.getName()))
-      {
-         to.setName(from.getName());
-         changed = true;
-      }
-      if (!ResourceUtils.equals(to.getDescription(), from.getDescription()))
-      {
-         to.setDescription(from.getDescription());
-         changed = true;
-      }
-      return changed;
-
-   }
 
    public static void transfer(HProjectIteration from, ProjectIteration to)
    {
       to.setId(from.getSlug());
-      to.setName(from.getName());
-      to.setDescription(from.getDescription());
    }
 
 }

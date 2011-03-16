@@ -31,8 +31,6 @@ public class PutVersionCommand extends ConfigurableCommand
    {
       ProjectIteration version = new ProjectIteration();
       version.setId(opts.getVersionSlug());
-      version.setName(opts.getVersionName());
-      version.setDescription(opts.getVersionDesc());
       log.debug("{}", version);
 
       IProjectIterationResource iterResource = getRequestFactory().getProjectIteration(opts.getVersionProject(), opts.getVersionSlug());

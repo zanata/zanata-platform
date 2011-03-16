@@ -66,4 +66,10 @@
 			referencedColumnNames = "id"/>
     </changeSet>
 
+	<changeSet author="hding@redhat.com" id="4">
+		<comment>drop column name and description to HProjectIteration table</comment>
+		<dropColumn tableName="HProjectIteration" columnName="name" />
+		<dropColumn tableName="HProjectIteration" columnName="description" />
+	</changeSet>
+
 </databaseChangeLog>

@@ -85,14 +85,12 @@ public class ProjectIterationRestTest extends FliesRestTest
    }
 
    private static final String SLUG = "my-new-iteration";
-   private static final String NAME = "My New Iteration";
-   private static final String DESC = "Another test iteration";
 
    @Test
    public void create()
    {
 
-      ProjectIteration iteration = new ProjectIteration(SLUG, NAME, DESC);
+      ProjectIteration iteration = new ProjectIteration(SLUG);
 
       IProjectIterationResource resource = getClientRequestFactory().createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve(SLUG));
 
@@ -110,19 +108,15 @@ public class ProjectIterationRestTest extends FliesRestTest
       ProjectIteration iterationRes = response1.getEntity();
 
       assertThat(iterationRes, notNullValue());
-      assertThat(iterationRes.getName(), is(NAME));
       assertThat(iterationRes.getId(), is(SLUG));
-      assertThat(iterationRes.getDescription(), is(DESC));
    }
 
    private static final String SLUG_INVALID = "my,new,iteration";
-   private static final String NAME_INVALID = "My test ProjectMy test ProjectMy test ProjectMy test ProjectMy test ProjectMy test Project";
-   private static final String DESC_INVALID = NAME_INVALID + NAME_INVALID + NAME_INVALID + NAME_INVALID + NAME_INVALID + NAME_INVALID;
 
    @Test
    public void createWithInvalidSlug()
    {
-      ProjectIteration iteration = new ProjectIteration(SLUG_INVALID, NAME, DESC);
+      ProjectIteration iteration = new ProjectIteration(SLUG_INVALID);
 
       IProjectIterationResource resource = getClientRequestFactory().createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve(SLUG_INVALID));
 
@@ -134,14 +128,14 @@ public class ProjectIterationRestTest extends FliesRestTest
    @Test
    public void createWithInvalidData()
    {
-      ProjectIteration iteration = new ProjectIteration(SLUG, NAME_INVALID, DESC);
+      ProjectIteration iteration = new ProjectIteration(SLUG);
 
       IProjectIterationResource resource = getClientRequestFactory().createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve(SLUG));
 
       Response response = resource.put(iteration);
       assertThat(response.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
 
-      iteration = new ProjectIteration(SLUG, NAME, DESC_INVALID);
+      iteration = new ProjectIteration(SLUG);
       response = resource.put(iteration);
       assertThat(response.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
 
@@ -151,7 +145,7 @@ public class ProjectIterationRestTest extends FliesRestTest
    public void updateWithInvalidData()
    {
       create();
-      ProjectIteration iteration = new ProjectIteration(SLUG, NAME_INVALID, DESC);
+      ProjectIteration iteration = new ProjectIteration(SLUG);
 
       IProjectIterationResource resource = getClientRequestFactory().createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve(SLUG));
 
@@ -159,14 +153,12 @@ public class ProjectIterationRestTest extends FliesRestTest
       assertThat(response.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
    }
 
-   private static final String NAME_UPDATED = "xx" + NAME + "xx";
-   private static final String DESC_UPDATED = "xx" + DESC + "xx";
 
    @Test
    public void update()
    {
       create();
-      ProjectIteration iteration = new ProjectIteration(SLUG, NAME_UPDATED, DESC_UPDATED);
+      ProjectIteration iteration = new ProjectIteration(SLUG);
 
       IProjectIterationResource resource = getClientRequestFactory().createProxy(IProjectIterationResource.class, createBaseURI(RESOURCE_PATH).resolve(SLUG));
 
@@ -176,10 +168,6 @@ public class ProjectIterationRestTest extends FliesRestTest
       ClientResponse<ProjectIteration> gotResponse = resource.get();
       assertThat(gotResponse.getStatus(), is(Status.OK.getStatusCode()));
 
-      ProjectIteration entity = gotResponse.getEntity();
-
-      assertThat(entity.getName(), is(NAME_UPDATED));
-      assertThat(entity.getDescription(), is(DESC_UPDATED));
    }
 
 }

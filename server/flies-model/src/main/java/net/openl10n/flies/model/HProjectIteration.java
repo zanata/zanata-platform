@@ -39,7 +39,6 @@ import net.openl10n.flies.rest.dto.ProjectIteration;
 
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Where;
-import org.hibernate.validator.Length;
 import org.hibernate.validator.NotNull;
 import org.jboss.seam.annotations.security.Restrict;
 
@@ -52,9 +51,6 @@ import org.jboss.seam.annotations.security.Restrict;
 @Restrict
 public class HProjectIteration extends AbstractSlugEntity
 {
-
-   private String name;
-   private String description;
 
    private HIterationProject project;
 
@@ -69,26 +65,6 @@ public class HProjectIteration extends AbstractSlugEntity
    private Boolean overrideLocales;
    private Set<HLocale> customizedLocales;
 
-   @Length(max = 20)
-   public String getName()
-   {
-      return name;
-   }
-
-   public void setName(String name)
-   {
-      this.name = name;
-   }
-
-   public String getDescription()
-   {
-      return description;
-   }
-
-   public void setDescription(String description)
-   {
-      this.description = description;
-   }
 
    public void setActive(Boolean active)
    {
@@ -195,7 +171,7 @@ public class HProjectIteration extends AbstractSlugEntity
    @Override
    public String toString()
    {
-      return super.toString() + "[name=" + name + ",project=" + project + "]";
+      return super.toString() + "project=" + project + "]";
    }
 
 }

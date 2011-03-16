@@ -11,12 +11,6 @@
 
     <s:token allowMultiplePosts="true" />
     <rich:panel>
-        <s:decorate id="nameField" template="edit.xhtml">
-            <ui:define name="label">#{messages['jsf.Name']}</ui:define>
-            <h:inputText id="name" required="true"
-                         value="#{projectIterationHome.instance.name}"/>
-        </s:decorate>
-
         <s:decorate id="slugField" template="edit.xhtml">
             <ui:define name="label">#{messages['jsf.Slug']}</ui:define>
             <h:outputText rendered="#{projectIterationHome.managed}" value="#{projectIterationHome.instance.slug}" />
@@ -26,12 +20,6 @@
                          valueChangeListener="#{projectIterationHome.verifySlugAvailable}">
               <a4j:support event="onblur" reRender="slugField" ajaxSingle="true"/>
             </h:inputText>
-        </s:decorate>
-
-        <s:decorate id="descriptionField" template="edit.xhtml">
-            <ui:define name="label">#{messages['jsf.Description']}</ui:define>
-            <h:inputText id="description" required="true"
-                         value="#{projectIterationHome.instance.description}" style="width:400px;"/>
         </s:decorate>
 
         <s:decorate id="activeField" template="edit.xhtml">

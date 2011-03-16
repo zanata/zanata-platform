@@ -66,7 +66,7 @@ public class GetTransMemoryDetailsHandler extends AbstractActionHandler<GetTrans
          HSimpleComment sourceComment = tf.getComment();
          HSimpleComment targetComment = tft.getComment();
          String docId = tf.getDocument().getDocId();
-         String iterationName = tf.getDocument().getProjectIteration().getName();
+         String iterationName = tf.getDocument().getProjectIteration().getSlug();
          String projectName = tf.getDocument().getProjectIteration().getProject().getName();
          items.add(new TransMemoryDetails(HSimpleComment.toString(sourceComment), HSimpleComment.toString(targetComment), projectName, iterationName, docId));
       }
