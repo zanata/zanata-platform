@@ -21,6 +21,7 @@
 package net.openl10n.flies.action;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 
 import net.openl10n.flies.model.HAccount;
@@ -52,6 +53,10 @@ public class IterationTranslationAction implements Serializable
 
    public List<HLocale> getTranslationLocale(String projectSlug, String iterationSlug)
    {
+      if (authenticatedAccount == null)
+      {
+         return Collections.emptyList();
+      }
       return localeServiceImpl.getTranslation(projectSlug, iterationSlug, authenticatedAccount.getUsername());
    }
 }
