@@ -8,6 +8,11 @@
 
 	<div id="tabs">
 	<ul class="ui-tabs-nav">
+		<li id="tab_home" class="ui-tabs-nav-issues"><s:link
+			id="home" view="/home.xhtml" propagation="none">
+			<span><img src="#{request.contextPath}/img/silk/tick.png" />#{messages['jsf.Home']}</span>
+		</s:link> 
+		</li>
 		<li id="tab_projects" class="ui-tabs-nav-issues"><s:link
 			id="Projects" view="/project/home.xhtml" propagation="none">
 			<span><img src="#{request.contextPath}/img/silk/photos.png" />#{messages['jsf.Projects']}</span>

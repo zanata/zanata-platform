@@ -123,6 +123,13 @@
     <from casesensitive="true">^/account/password_reset/(.+)$</from>
     <to last="true">/account/password_reset.seam\?key=$1</to>
   </rule>
+  
+  <!-- help / -->
+
+  <rule>
+    <from casesensitive="true">^/help/view(.+)?$</from>
+    <to last="true">/help/view.seam$1</to>
+  </rule>  
 
   <!-- ROOT / -->
   <rule>
@@ -232,6 +239,11 @@
   <outbound-rule>
     <from>^(/.+)?/home.seam(.+)?$</from>
     <to>$1/$2</to>
+  </outbound-rule>
+  
+  <outbound-rule>
+    <from>^(/.+)?/help/view.seam(.+)?$</from>
+    <to>$1/help/view$2</to>
   </outbound-rule>
 
 </urlrewrite>
