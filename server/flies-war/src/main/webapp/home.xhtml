@@ -10,16 +10,9 @@
     
     <ui:define name="center_content">
         <rich:jQuery id="tabHome" selector="#tab_home" query="addClass('ui-tabs-selected')" />
-        <h1>#{messages['jsf.WelcomeToFlies']}</h1>
-
-		<br/>       
-        <h2>Getting started?</h2>
-        The documentation is <a href="#{applicationConfiguration.helpPath}">here</a>.
-		<br/>       
-
-      <rich:spacer height ="20px" />
 
        <s:formattedText id="project-home-content" value="#{applicationConfiguration.homeContent}"></s:formattedText>
+
  </ui:define>
 
 <ui:define name="left_content">
