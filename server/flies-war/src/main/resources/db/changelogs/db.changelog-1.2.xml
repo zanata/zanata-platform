@@ -47,4 +47,18 @@
 			</column>
 		</modifyColumn>
 	</changeSet>
+
+	<changeSet author="sflaniga@redhat.com" id="4">
+		<comment>add unique constraint(resId,document_id) on HTextFlow</comment>
+		<addUniqueConstraint
+			tableName="HTextFlow"
+		    columnNames="resId,document_id"
+		    constraintName="UKresIddocument_id"/>
+	</changeSet>
+
+	<changeSet author="sflaniga@redhat.com" id="5">
+		<comment>remove unique constraint(document_id,resId) on HTextFlow</comment>
+		<dropUniqueConstraint tableName="HTextFlow" constraintName="document_id"/>
+	</changeSet>
+
 </databaseChangeLog>
