@@ -56,9 +56,14 @@
 		    constraintName="UKresIddocument_id"/>
 	</changeSet>
 
-	<changeSet author="sflaniga@redhat.com" id="5">
+	<changeSet author="sflaniga@redhat.com" id="5" dbms="mysql">
 		<comment>remove unique constraint(document_id,resId) on HTextFlow</comment>
 		<dropUniqueConstraint tableName="HTextFlow" constraintName="document_id"/>
+	</changeSet>
+
+	<changeSet author="sflaniga@redhat.com" id="6" dbms="h2">
+		<comment>remove unique constraint(document_id,resId) on HTextFlow</comment>
+		<dropUniqueConstraint tableName="HTextFlow" constraintName="CONSTRAINT_A6"/>
 	</changeSet>
 
 </databaseChangeLog>
