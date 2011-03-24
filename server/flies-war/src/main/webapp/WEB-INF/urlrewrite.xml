@@ -54,6 +54,11 @@
   </rule>
 
   <rule>
+    <from casesensitive="true">^/project/edit(.+)$</from>
+    <to last="true">/project/edit.seam?$1</to>
+  </rule>
+
+  <rule>
     <from casesensitive="true">^/project/list(.+)?$</from>
     <to last="true">/project/home.seam$1</to>
   </rule>
@@ -172,6 +177,10 @@
   <outbound-rule>
     <from>^(/.+)?/project/create_project.seam(.+)?$</from>
     <to>$1/project/create/$2</to>
+  </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/project/edit.seam(.+)$</from>
+    <to>$1/project/edit/$2</to>
   </outbound-rule>
   <outbound-rule>
     <from>^(/.+)?/project/assign_maintainer.seam(.+)?$</from>

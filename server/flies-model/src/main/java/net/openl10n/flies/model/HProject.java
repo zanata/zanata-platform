@@ -57,7 +57,7 @@ public abstract class HProject extends AbstractSlugEntity implements Serializabl
    private String name;
    private String description;
    private String homeContent;
-   private Boolean overrideLocales;
+   private Boolean overrideLocales = false;
    private Set<HLocale> customizedLocales;
 
    private Set<HPerson> maintainers;

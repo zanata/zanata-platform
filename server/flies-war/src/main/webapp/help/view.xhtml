@@ -9,6 +9,7 @@
     template="/WEB-INF/layout/template.xhtml">
     
     <ui:define name="center_content">
+        <rich:jQuery selector="#tab_help" query="addClass('ui-tabs-selected')" />
        <s:formattedText id="project-home-content" value="#{applicationConfiguration.helpContent}"></s:formattedText>
  </ui:define>
 

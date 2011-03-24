@@ -873,6 +873,22 @@ a.action_link:hover {
     
 }
 
+.language_list {
+    font-size: 12px;
+    height: 200px;
+    width: 300px;
+}
+.language_action_buttons {
+    width: 65px;
+    display: inline-block;
+    margin-top: 50px;
+    vertical-align: top;
+}
+.language_action_button {
+    width: 60px;
+    height: 25px;
+}
+
 /* Stylesheet from June */
 @charset "UTF-8";
 /* CSS Document */

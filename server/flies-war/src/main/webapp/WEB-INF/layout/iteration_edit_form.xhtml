@@ -32,14 +32,41 @@
 
     </rich:panel>
 
-	<div>
+	<s:div>
+		<a4j:region>
 		<h:selectBooleanCheckbox
 		 title="overrideLocales"
-		  value="#{projectIterationHome.instance.overrideLocales}" >
+		  value="#{projectIterationLocaleAction.setting}" >
+			<a4j:support event="onchange" reRender="languagelist" />
 		</h:selectBooleanCheckbox>
+		</a4j:region>
 		<h:outputText
 		  value="Would you like add a customized list of locales?"/>
-	</div>
+	</s:div>
+
+
+	<s:div id="languagelist">
+	<rich:spacer height="20px" />
+	<a4j:region renderRegionOnly="true">
+      	<h:panelGrid columns="3" id ="languagePanel" rendered="#{projectIterationLocaleAction.setting}">
+	    <h:outputText value="#{messages['jsf.AvailableLocales']}"/>
+	    <h:outputText value=""/>
+	    <h:outputText value="#{messages['jsf.SelectedLocales']}"/>
+            <h:selectManyListbox id ="languagelist2" value="#{projectIterationLocaleAction.availableList}" styleClass="language_list">
+                <f:selectItems value="#{iterationAvailableItems}"/>
+		<a4j:support event="ondblclick" reRender="languagePanel" action="#{projectIterationLocaleAction.toCustomizedLocales}"/>
+            </h:selectManyListbox>
+            <h:panelGroup id="buttons" styleClass="language_action_buttons">
+                <a4j:commandButton value="&gt;" action="#{projectIterationLocaleAction.toCustomizedLocales}" styleClass="language_action_button" reRender ="languagePanel" />
+                <a4j:commandButton value="&lt;" action="#{projectIterationLocaleAction.removeFromCustomizedLocales}" styleClass="language_action_button" reRender ="languagePanel" />
+            </h:panelGroup>
+            <h:selectManyListbox id="languagelist1" value="#{projectIterationLocaleAction.customizedLocales}" styleClass="language_list" >
+                <f:selectItems value="#{projectIterationLocaleAction.iterationCustomizedItems}"/>
+		<a4j:support event="ondblclick" reRender="languagePanel" action="#{projectIterationLocaleAction.removeFromCustomizedLocales}"/>
+            </h:selectManyListbox>
+      	</h:panelGrid>
+	</a4j:region>
+	</s:div>
 
 
     <div class="actionButtons">

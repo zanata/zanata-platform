@@ -48,7 +48,7 @@
 					<s:link id="Sign_out" view="/home.xhtml" action="#{identity.logout}"
 					value="#{messages['jsf.SignOut']}" rendered="#{identity.loggedIn}" propagation="none" />
 					<rich:spacer width="5px" />
-					<a href="#{applicationConfiguration.helpPath}">#{messages['jsf.Help']}</a>
+					<s:link id="help_url" view="/help/view.xhtml" value="#{messages['jsf.Help']}" propagation="none" />
 				</div>
 				<div id="loading_top_right">
 					<a:status>
