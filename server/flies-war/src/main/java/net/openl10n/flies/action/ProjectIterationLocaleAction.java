@@ -111,25 +111,33 @@ public class ProjectIterationLocaleAction implements Serializable
       availableList = var;
    }
 
-   public Map<String, String> getAvailableItems()
+   public Map<String, String> getIterationCustomizedItems()
    {
-      return availableItems;
+      return iterationCustomizedItems;
    }
 
-   @Factory("iterationCustomizedItems")
-   public void loadCustomizedItems()
+   @Factory("iterationAvailableItems")
+   public Map<String, String> loadItems()
    {
       log.info("load iterationCustomizedItems");
+      availableItems = new TreeMap<String, String>();
       iterationCustomizedItems = localeServiceImpl.getIterationCustomizedLocalesItems(projectSlug, iterationSlug);
       globalItems = localeServiceImpl.getIterationGlobalLocaleItems(projectSlug);
-      availableItems = new TreeMap<String, String>();
-      for (String op : globalItems.keySet())
+      if (iterationCustomizedItems.isEmpty())
       {
-         if (!iterationCustomizedItems.containsKey(op))
+         iterationCustomizedItems = globalItems;
+      }
+      else
+      {
+         for (String op : globalItems.keySet())
          {
-            availableItems.put(op, op);
+            if (!iterationCustomizedItems.containsKey(op))
+            {
+               availableItems.put(op, op);
+            }
          }
       }
+      return availableItems;
    }
 
    public String getProjectSlug()

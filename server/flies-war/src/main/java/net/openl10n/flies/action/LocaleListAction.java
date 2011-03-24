@@ -110,24 +110,32 @@ public class LocaleListAction implements Serializable
       availableList = var;
    }
 
-   public Map<String, String> getAvailableItems()
+   public Map<String, String> getCustomizedItems()
    {
-      return availableItems;
+      return customizedItems;
    }
    
-   @Factory("customizedItems")
-   public void loadCustomizedItems()
+   @Factory("availableItems")
+   public Map<String, String> loadItems()
    {
-      customizedItems = localeServiceImpl.getCustomizedLocalesItems(slug);
       availableItems = new TreeMap<String, String>();
-      for (String op : globalItems.keySet())
+      log.info("loadProjectItems");
+      customizedItems = localeServiceImpl.getCustomizedLocalesItems(slug);
+      if (customizedItems.isEmpty())
       {
-         if (!customizedItems.containsKey(op))
+         customizedItems = globalItems;
+      }
+      else
+      {
+         for (String op : globalItems.keySet())
          {
-            availableItems.put(op, op);
+            if (!customizedItems.containsKey(op))
+            {
+               availableItems.put(op, op);
+            }
          }
       }
-
+      return availableItems;
    }
 
 

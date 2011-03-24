@@ -66,20 +66,20 @@
 	<rich:spacer height="20px" />
 	<a4j:region renderRegionOnly="true">
       	<h:panelGrid columns="3" id ="languagePanel" rendered="#{localeListAction.setting}">
-	    <h:outputText value="customized list"/>
+	    <h:outputText value="#{messages['jsf.AvailableLocales']}"/>
 	    <h:outputText value=""/>
-	    <h:outputText value="available list"/>
-            <h:selectManyListbox id="languagelist1" value="#{localeListAction.customizedLocales}" styleClass="language_list" >
-                <f:selectItems value="#{customizedItems}"/>
-		<a4j:support event="ondblclick" reRender="languagePanel" action="#{localeListAction.removeFromCustomizedLocales}"/>
+	    <h:outputText value="#{messages['jsf.SelectedLocales']}"/>
+            <h:selectManyListbox id ="languagelist2" value="#{localeListAction.availableList}" styleClass="language_list">
+                <f:selectItems value="#{availableItems}"/>
+		<a4j:support event="ondblclick" reRender="languagePanel" action="#{localeListAction.toCustomizedLocales}"/>
             </h:selectManyListbox>
             <h:panelGroup id="buttons" styleClass="language_action_buttons">
-                <a4j:commandButton value="&lt;&lt;" action="#{localeListAction.toCustomizedLocales}" styleClass="language_action_button" reRender ="languagePanel" />
-                <a4j:commandButton value="&gt;&gt;" action="#{localeListAction.removeFromCustomizedLocales}" styleClass="language_action_button" reRender ="languagePanel" />
+                <a4j:commandButton value="&gt;" action="#{localeListAction.toCustomizedLocales}" styleClass="language_action_button" reRender ="languagePanel" />
+                <a4j:commandButton value="&lt;" action="#{localeListAction.removeFromCustomizedLocales}" styleClass="language_action_button" reRender ="languagePanel" />
             </h:panelGroup>
-            <h:selectManyListbox id ="languagelist2" value="#{localeListAction.availableList}" styleClass="language_list">
-                <f:selectItems value="#{localeListAction.availableItems}"/>
-		<a4j:support event="ondblclick" reRender="languagePanel" action="#{localeListAction.toCustomizedLocales}"/>
+            <h:selectManyListbox id="languagelist1" value="#{localeListAction.customizedLocales}" styleClass="language_list" >
+                <f:selectItems value="#{localeListAction.customizedItems}"/>
+		<a4j:support event="ondblclick" reRender="languagePanel" action="#{localeListAction.removeFromCustomizedLocales}"/>
             </h:selectManyListbox>
       	</h:panelGrid>
 	</a4j:region>

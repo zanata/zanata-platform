@@ -241,7 +241,7 @@ public class LocaleServiceImpl implements LocaleService
    {
       Map<String, String> customizedItems = new TreeMap<String, String>();
       HProject project = projectDAO.getBySlug(projectSlug);
-      if (project != null)
+      if (project != null && project.getOverrideLocales())
       {
          Set<HLocale> locales = project.getCustomizedLocales();
          for (HLocale op : locales)
@@ -258,7 +258,7 @@ public class LocaleServiceImpl implements LocaleService
    {
       Map<String, String> customizedItems = new TreeMap<String, String>();
       HProjectIteration iteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-      if (iteration != null)
+      if (iteration != null && iteration.getOverrideLocales())
       {
          Set<HLocale> locales = iteration.getCustomizedLocales();
          for (HLocale op : locales)
@@ -276,10 +276,8 @@ public class LocaleServiceImpl implements LocaleService
       Set<HLocale> result = new HashSet<HLocale>();
       for (String op : var.keySet())
       {
-         log.info(op);
          String[] list = op.split("\\[");
          String seVar = list[1].split("\\]")[0];
-         log.info(seVar);
          HLocale entity = localeDAO.findByLocaleId(new LocaleId(seVar));
          result.add(entity);
       }
