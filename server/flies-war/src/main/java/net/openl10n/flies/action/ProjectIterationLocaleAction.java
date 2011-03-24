@@ -119,7 +119,7 @@ public class ProjectIterationLocaleAction implements Serializable
    @Factory("iterationAvailableItems")
    public Map<String, String> loadItems()
    {
-      log.info("load iterationCustomizedItems");
+      log.debug("load iterationCustomizedItems");
       availableItems = new TreeMap<String, String>();
       iterationCustomizedItems = localeServiceImpl.getIterationCustomizedLocalesItems(projectSlug, iterationSlug);
       globalItems = localeServiceImpl.getIterationGlobalLocaleItems(projectSlug);

@@ -119,7 +119,7 @@ public class LocaleListAction implements Serializable
    public Map<String, String> loadItems()
    {
       availableItems = new TreeMap<String, String>();
-      log.info("loadProjectItems");
+      log.debug("loadProjectItems");
       customizedItems = localeServiceImpl.getCustomizedLocalesItems(slug);
       if (customizedItems.isEmpty())
       {
