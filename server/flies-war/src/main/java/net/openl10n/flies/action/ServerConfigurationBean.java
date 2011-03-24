@@ -25,7 +25,6 @@ import java.io.Serializable;
 import net.openl10n.flies.ApplicationConfiguration;
 import net.openl10n.flies.dao.ApplicationConfigurationDAO;
 import net.openl10n.flies.model.HApplicationConfiguration;
-import net.openl10n.flies.model.validator.Url;
 import net.openl10n.flies.model.validator.UrlNoSlash;
 
 import org.hibernate.validator.Email;
@@ -55,7 +54,6 @@ public class ServerConfigurationBean implements Serializable
    @In
    ApplicationConfigurationDAO applicationConfigurationDAO;
 
-   private String helpUrl;
    private String registerUrl;
    private String serverUrl;
    private String emailDomain;
@@ -164,16 +162,6 @@ public class ServerConfigurationBean implements Serializable
       return "/help/view.xhtml";
    }
 
-   @Url
-   public String getHelpUrl()
-   {
-      return helpUrl;
-   }
-
-   public void setHelpUrl(String helpUrl)
-   {
-      this.helpUrl = helpUrl;
-   }
 
    public String getRegisterUrl()
    {
@@ -199,11 +187,6 @@ public class ServerConfigurationBean implements Serializable
    @Create
    public void onCreate()
    {
-      HApplicationConfiguration helpUrlValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_HELP);
-      if (helpUrlValue != null)
-      {
-         this.helpUrl = helpUrlValue.getValue();
-      }
       HApplicationConfiguration registerUrlValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_REGISTER);
       if (registerUrlValue != null)
       {
@@ -229,24 +212,6 @@ public class ServerConfigurationBean implements Serializable
    @Transactional
    public void update()
    {
-      HApplicationConfiguration helpUrlValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_HELP);
-      if (helpUrlValue != null)
-      {
-         if (helpUrl == null || helpUrl.isEmpty())
-         {
-            applicationConfigurationDAO.makeTransient(helpUrlValue);
-         }
-         else
-         {
-            helpUrlValue.setValue(helpUrl);
-         }
-      }
-      else if (helpUrl != null && !helpUrl.isEmpty())
-      {
-         helpUrlValue = new HApplicationConfiguration(HApplicationConfiguration.KEY_HELP, helpUrl);
-         applicationConfigurationDAO.makePersistent(helpUrlValue);
-      }
-
       HApplicationConfiguration registerUrlValue = applicationConfigurationDAO.findByKey(HApplicationConfiguration.KEY_REGISTER);
       if (registerUrlValue != null)
       {
