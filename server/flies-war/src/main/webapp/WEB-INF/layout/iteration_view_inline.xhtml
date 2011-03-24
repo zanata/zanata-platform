@@ -10,18 +10,13 @@
   <div class="list_view_header">
     <h2>#{_iteration.slug}</h2>
     <div class="menu_items">
-      <s:link view="/project/iteration_locale.xhtml" propagation="none" rendered="#{s:hasPermission(_iteration, 'update') and _iteration.overrideLocales}" value="#{messages['jsf.ManageLanguage']}">
+      <s:link view="/project/iteration_status.xhtml" propagation="none" rendered="#{identity.loggedIn}" value="#{messages['jsf.ViewStatus']}">
         <f:param name="iterationSlug" value="#{_iteration.slug}"/>
         <f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
       </s:link>
       <rich:spacer width="10px" />
       <s:link view="/project/iteration_edit.xhtml" propagation="none" rendered="#{s:hasPermission(_iteration, 'update')}" value="#{messages['jsf.EditVersion']}">
         <f:param name="slug" value="#{_iteration.slug}"/>
-        <f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
-      </s:link>
-      <rich:spacer width="10px" />
-      <s:link view="/project/iteration_status.xhtml" propagation="none" rendered="#{identity.loggedIn}" value="#{messages['jsf.ViewStatus']}">
-        <f:param name="iterationSlug" value="#{_iteration.slug}"/>
         <f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
       </s:link>
     </div>

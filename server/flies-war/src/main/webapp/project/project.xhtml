@@ -51,9 +51,6 @@
     <s:link styleClass="action_link" rendered="#{s:hasPermission(projectHome.instance, 'update')}" view="/project/assign_maintainer.xhtml" value="#{messages['jsf.ManageMaintainers']}" propagation="none">
     	<f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
     </s:link>
-    <s:link styleClass="action_link" rendered="#{s:hasPermission(projectHome.instance, 'update') and projectHome.instance.overrideLocales}" view="/project/project_locale.xhtml" value="#{messages['jsf.ManageLanguage']}" propagation="none">
-    	<f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
-    </s:link>
   </rich:panel>
 
   <rich:panel>

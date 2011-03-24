@@ -49,16 +49,41 @@
 
     </rich:panel>
 
-
-	<div>
+	<s:div>
+		<a4j:region>
 		<h:selectBooleanCheckbox
 		 title="overrideLocales"
-		  value="#{projectHome.instance.overrideLocales}" >
+		  value="#{localeListAction.setting}" >
+			<a4j:support event="onchange" reRender="languagelist" />
 		</h:selectBooleanCheckbox>
+		</a4j:region>
 		<h:outputText
 		  value="Would you like add a customized list of locales?"/>
-	</div>
+	</s:div>
 
+
+	<s:div id="languagelist">
+	<rich:spacer height="20px" />
+	<a4j:region renderRegionOnly="true">
+      	<h:panelGrid columns="3" id ="languagePanel" rendered="#{localeListAction.setting}">
+	    <h:outputText value="customized list"/>
+	    <h:outputText value=""/>
+	    <h:outputText value="available list"/>
+            <h:selectManyListbox id="languagelist1" value="#{localeListAction.customizedLocales}" styleClass="language_list" >
+                <f:selectItems value="#{customizedItems}"/>
+		<a4j:support event="ondblclick" reRender="languagePanel" action="#{localeListAction.removeFromCustomizedLocales}"/>
+            </h:selectManyListbox>
+            <h:panelGroup id="buttons" styleClass="language_action_buttons">
+                <a4j:commandButton value="&lt;&lt;" action="#{localeListAction.toCustomizedLocales}" styleClass="language_action_button" reRender ="languagePanel" />
+                <a4j:commandButton value="&gt;&gt;" action="#{localeListAction.removeFromCustomizedLocales}" styleClass="language_action_button" reRender ="languagePanel" />
+            </h:panelGroup>
+            <h:selectManyListbox id ="languagelist2" value="#{localeListAction.availableList}" styleClass="language_list">
+                <f:selectItems value="#{localeListAction.availableItems}"/>
+		<a4j:support event="ondblclick" reRender="languagePanel" action="#{localeListAction.toCustomizedLocales}"/>
+            </h:selectManyListbox>
+      	</h:panelGrid>
+	</a4j:region>
+	</s:div>
 
     <div class="actionButtons">
         <h:commandButton id="save"

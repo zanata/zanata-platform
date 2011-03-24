@@ -21,14 +21,18 @@
 package net.openl10n.flies.action;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.NoResultException;
 
 import net.openl10n.flies.model.HAccount;
 import net.openl10n.flies.model.HIterationProject;
+import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.model.HPerson;
 import net.openl10n.flies.model.HProjectIteration;
+import net.openl10n.flies.service.LocaleService;
 
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
@@ -44,10 +48,6 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 @Name("projectHome")
 public class ProjectHome extends SlugHome<HIterationProject>
 {
-
-   /**
-    * 
-    */
    private static final long serialVersionUID = 1L;
 
    private String slug;
@@ -56,6 +56,12 @@ public class ProjectHome extends SlugHome<HIterationProject>
 
    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
    HAccount authenticatedAccount;
+   @In(required = false)
+   Map<String, String> customizedItems;
+   @In(required = false)
+   private Boolean overrideLocales;
+   @In
+   LocaleService localeServiceImpl;
 
    @Override
    protected HIterationProject loadInstance()
@@ -107,6 +113,14 @@ public class ProjectHome extends SlugHome<HIterationProject>
       String retValue = "";
       if (!validateSlug(getInstance().getSlug(), "slug"))
          return null;
+
+      getInstance().setOverrideLocales(overrideLocales);
+      if (customizedItems != null && overrideLocales != null && overrideLocales.booleanValue())
+      {
+         Set<HLocale> locale = localeServiceImpl.convertCustomizedLocale(customizedItems);
+         getInstance().getCustomizedLocales().clear();
+         getInstance().getCustomizedLocales().addAll(locale);
+      }
 
       if (authenticatedAccount != null)
       {
@@ -165,6 +179,19 @@ public class ProjectHome extends SlugHome<HIterationProject>
    public Object getId()
    {
       return slug;
+   }
+
+   @Override
+   public String update()
+   {
+      getInstance().setOverrideLocales(overrideLocales);
+      if (customizedItems != null && overrideLocales != null && overrideLocales.booleanValue())
+      {
+         Set<HLocale> locale = localeServiceImpl.convertCustomizedLocale(customizedItems);
+         getInstance().getCustomizedLocales().clear();
+         getInstance().getCustomizedLocales().addAll(locale);
+      }
+      return super.update();
    }
 
 }

@@ -21,7 +21,11 @@
 package net.openl10n.flies.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.dao.LocaleDAO;
@@ -37,8 +41,10 @@ import net.openl10n.flies.service.LocaleService;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.log.Log;
 
 import com.ibm.icu.util.ULocale;
 
@@ -58,6 +64,8 @@ public class LocaleServiceImpl implements LocaleService
    private ProjectIterationDAO projectIterationDAO;
 
    private PersonDAO personDAO;
+   @Logger
+   Log log;
 
    @In
    public void setLocaleDAO(LocaleDAO localeDAO)
@@ -202,4 +210,79 @@ public class LocaleServiceImpl implements LocaleService
       return member;
    }
 
+   private String getDescript(HLocale op)
+   {
+      return op.retrieveDisplayName() + " [" + op.getLocaleId().getId() + "] " + op.retrieveNativeName();
+   }
+
+   @Override
+   public Map<String, String> getGlobalLocaleItems()
+   {
+      Map<String, String> globalItems = new TreeMap<String, String>();
+      List<HLocale> locale = getSupportedLocales();
+      for (HLocale op : locale)
+      {
+         String name = getDescript(op);
+         globalItems.put(name, name);
+      }
+      return globalItems;
+   }
+
+   @Override
+   public Map<String, String> getIterationGlobalLocaleItems(String projectSlug)
+   {
+      log.info("start getIterationGlobalLocaleItems for:" + projectSlug);
+      HProject project = projectDAO.getBySlug(projectSlug);
+      return project.getOverrideLocales() ? getCustomizedLocalesItems(projectSlug) : getGlobalLocaleItems();
+   }
+
+   @Override
+   public Map<String, String> getCustomizedLocalesItems(String projectSlug)
+   {
+      Map<String, String> customizedItems = new TreeMap<String, String>();
+      HProject project = projectDAO.getBySlug(projectSlug);
+      if (project != null)
+      {
+         Set<HLocale> locales = project.getCustomizedLocales();
+         for (HLocale op : locales)
+         {
+            String name = getDescript(op);
+            customizedItems.put(name, name);
+         }
+      }
+      return customizedItems;
+   }
+
+   @Override
+   public Map<String, String> getIterationCustomizedLocalesItems(String projectSlug, String iterationSlug)
+   {
+      Map<String, String> customizedItems = new TreeMap<String, String>();
+      HProjectIteration iteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+      if (iteration != null)
+      {
+         Set<HLocale> locales = iteration.getCustomizedLocales();
+         for (HLocale op : locales)
+         {
+            String name = getDescript(op);
+            customizedItems.put(name, name);
+         }
+      }
+      return customizedItems;
+   }
+
+   @Override
+   public Set<HLocale> convertCustomizedLocale(Map<String, String> var)
+   {
+      Set<HLocale> result = new HashSet<HLocale>();
+      for (String op : var.keySet())
+      {
+         log.info(op);
+         String[] list = op.split("\\[");
+         String seVar = list[1].split("\\]")[0];
+         log.info(seVar);
+         HLocale entity = localeDAO.findByLocaleId(new LocaleId(seVar));
+         result.add(entity);
+      }
+      return result;
+   }
 }

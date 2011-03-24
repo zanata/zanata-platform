@@ -21,6 +21,8 @@
 package net.openl10n.flies.service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.exception.FliesServiceException;
@@ -49,4 +51,14 @@ public interface LocaleService
    List<HLocale> getTranslation(String project, String iterationSlug, String username);
 
    List<HLocale> getSupportedLangugeByProjectIteration(String project, String iterationSlug);
+
+   Map<String, String> getGlobalLocaleItems();
+
+   Map<String, String> getCustomizedLocalesItems(String project);
+   
+   Set<HLocale> convertCustomizedLocale(Map<String, String> var);
+   
+   Map<String, String> getIterationCustomizedLocalesItems(String projectSlug, String iterationSlug);
+   
+   Map<String, String> getIterationGlobalLocaleItems(String projectSlug);
 }

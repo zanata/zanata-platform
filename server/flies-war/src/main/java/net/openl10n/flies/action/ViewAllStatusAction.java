@@ -20,6 +20,7 @@
  */
 package net.openl10n.flies.action;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ import org.jboss.seam.log.Log;
 
 @Name("viewAllStatusAction")
 @Scope(ScopeType.PAGE)
-public class ViewAllStatusAction
+public class ViewAllStatusAction implements Serializable
 {
    private static final long serialVersionUID = 1L;
    @Logger
@@ -132,7 +133,7 @@ public class ViewAllStatusAction
          }
          else
          {
-            per = (int) (100 * words.getApproved() / words.getTotal());
+            per = (int) Math.ceil(100 * words.getApproved() / words.getTotal());
 
          }
          Status op = new Status(var.getLocaleId().getId(), var.retrieveNativeName(), words, per);

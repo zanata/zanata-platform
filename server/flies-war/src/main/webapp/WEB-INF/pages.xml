@@ -175,6 +175,7 @@
 
   <page view-id="/project/edit.xhtml" login-required="true">
     <param name="slug" value="#{projectHome.slug}" />
+    <param name="slug" value="#{localeListAction.slug}" />
     
     <!-- we can't use <restrict> on projectHome.instance because it creates
          a brand-new HProject instead of loading the existing one
@@ -221,55 +222,10 @@
       </redirect>
     </navigation>
   </page>
-  
-  <page view-id="/project/project_locale.xhtml" >
-    <param name="projectSlug" value="#{projectLocaleManageAction.projectSlug}" />
-    <action execute="#{projectLocaleManageAction.loadCustomizedLocales()}" />
-  </page>
-
-  <page view-id="/project/project_locale_detail.xhtml">
-    <param name="projectSlug" value="#{projectLocaleManageAction.projectSlug}" />
-    <navigation from-action="#{projectLocaleManageAction.addLocale(projectLocaleDetailAction.language)}">
-      <rule if-outcome="success">
-        <redirect view-id="/project/project_locale.xhtml" >
-		    <param name="projectSlug" value="#{projectLocaleManageAction.projectSlug}" />
-        </redirect>
-      </rule>
-    </navigation>
-    <navigation from-action="#{projectLocaleManageAction.cancel}">
-      <redirect view-id="/project/project_locale.xhtml" >
-	    <param name="projectSlug" value="#{projectLocaleManageAction.projectSlug}" />
-      </redirect>
-    </navigation>
-  </page>
-
-  <page view-id="/project/iteration_locale.xhtml" >
-    <param name="projectSlug" value="#{iterationLocaleManageAction.projectSlug}" />
-    <param name="iterationSlug" value="#{iterationLocaleManageAction.iterationSlug}" />
-    <action execute="#{iterationLocaleManageAction.loadCustomizedLocales()}" />
-  </page>
-
-  <page view-id="/project/iteration_locale_detail.xhtml">
-    <param name="projectSlug" value="#{iterationLocaleManageAction.projectSlug}" />
-    <param name="iterationSlug" value="#{iterationLocaleManageAction.iterationSlug}" />
-    <navigation from-action="#{iterationLocaleManageAction.addLocale(projectLocaleDetailAction.language)}">
-      <rule if-outcome="success">
-        <redirect view-id="/project/iteration_locale.xhtml" >
-		    <param name="projectSlug" value="#{iterationLocaleManageAction.projectSlug}" />
-		    <param name="iterationSlug" value="#{iterationLocaleManageAction.iterationSlug}" />
-        </redirect>
-      </rule>
-    </navigation>
-    <navigation from-action="#{iterationLocaleManageAction.cancel}">
-      <redirect view-id="/project/iteration_locale.xhtml" >
-		    <param name="projectSlug" value="#{iterationLocaleManageAction.projectSlug}" />
-		    <param name="iterationSlug" value="#{iterationLocaleManageAction.iterationSlug}" />
-      </redirect>
-    </navigation>
-  </page>
 
   <page view-id="/project/add_iteration.xhtml">
     <param name="projectSlug" value="#{projectIterationHome.projectSlug}" />
+    <param name="projectSlug" value="#{projectIterationLocaleAction.projectSlug}" />
     <action execute="#{projectIterationHome.validateProjectSlug}" />
     <!-- can't use <restrict> here either --> 
     <action execute="#{identity.checkPermission(projectIterationHome.instance, 'insert')}" />
@@ -290,6 +246,8 @@
   <page view-id="/project/iteration_edit.xhtml">
     <param name="slug" value="#{projectIterationHome.slug}" />
     <param name="projectSlug" value="#{projectIterationHome.projectSlug}" />
+    <param name="slug" value="#{projectIterationLocaleAction.iterationSlug}" />
+    <param name="projectSlug" value="#{projectIterationLocaleAction.projectSlug}" />
     <action execute="#{projectIterationHome.validateSuppliedId}" />
     <!-- can't use <restrict> here either -->
     <action execute="#{identity.checkPermission(projectIterationHome.instance, 'update')}" />
@@ -310,6 +268,7 @@
     <param name="projectSlug" value="#{viewAllStatusAction.projectSlug}" />
     <param name="iterationSlug" value="#{viewAllStatusAction.iterationSlug}" />
   </page>
+
 
   <!-- Language -->
 
