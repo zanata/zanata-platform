@@ -40,7 +40,6 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.validator.Length;
 import org.hibernate.validator.NotEmpty;
-import org.hibernate.validator.NotNull;
 import org.jboss.seam.annotations.security.Restrict;
 
 /**
@@ -57,7 +56,7 @@ public abstract class HProject extends AbstractSlugEntity implements Serializabl
    private String name;
    private String description;
    private String homeContent;
-   private Boolean overrideLocales = false;
+   private boolean overrideLocales = false;
    private Set<HLocale> customizedLocales;
 
    private Set<HPerson> maintainers;
@@ -75,13 +74,12 @@ public abstract class HProject extends AbstractSlugEntity implements Serializabl
       this.name = name;
    }
 
-   public void setOverrideLocales(Boolean var)
+   public void setOverrideLocales(boolean var)
    {
       this.overrideLocales = var;
    }
 
-   @NotNull
-   public Boolean getOverrideLocales()
+   public boolean getOverrideLocales()
    {
       return this.overrideLocales;
    }

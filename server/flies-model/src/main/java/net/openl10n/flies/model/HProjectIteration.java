@@ -54,7 +54,7 @@ public class HProjectIteration extends AbstractSlugEntity
 
    private HIterationProject project;
 
-   private Boolean active = true;
+   private boolean active = true;
 
    private HProjectIteration parent;
    private List<HProjectIteration> children;
@@ -66,24 +66,22 @@ public class HProjectIteration extends AbstractSlugEntity
    private Set<HLocale> customizedLocales;
 
 
-   public void setActive(Boolean active)
+   public void setActive(boolean active)
    {
       this.active = active;
    }
 
-   @NotNull
-   public Boolean getActive()
+   public boolean getActive()
    {
       return active;
    }
 
-   public void setOverrideLocales(Boolean var)
+   public void setOverrideLocales(boolean var)
    {
       this.overrideLocales = var;
    }
 
-   @NotNull
-   public Boolean getOverrideLocales()
+   public boolean getOverrideLocales()
    {
       return this.overrideLocales;
    }
