@@ -114,16 +114,9 @@ public class ProjectHome extends SlugHome<HIterationProject>
       if (!validateSlug(getInstance().getSlug(), "slug"))
          return null;
 
-      getInstance().setOverrideLocales(overrideLocales);
-      if (customizedItems != null && overrideLocales != null && overrideLocales.booleanValue())
-      {
-         Set<HLocale> locale = localeServiceImpl.convertCustomizedLocale(customizedItems);
-         getInstance().getCustomizedLocales().clear();
-         getInstance().getCustomizedLocales().addAll(locale);
-      }
-
       if (authenticatedAccount != null)
       {
+         updateOverrideLocales();
          HPerson currentPerson = getEntityManager().find(HPerson.class, authenticatedAccount.getPerson().getId());
          if (currentPerson != null)
          {
@@ -184,14 +177,26 @@ public class ProjectHome extends SlugHome<HIterationProject>
    @Override
    public String update()
    {
-      getInstance().setOverrideLocales(overrideLocales);
-      if (customizedItems != null && overrideLocales != null && overrideLocales.booleanValue())
-      {
-         Set<HLocale> locale = localeServiceImpl.convertCustomizedLocale(customizedItems);
-         getInstance().getCustomizedLocales().clear();
-         getInstance().getCustomizedLocales().addAll(locale);
-      }
+      updateOverrideLocales();
       return super.update();
+   }
+
+   private void updateOverrideLocales()
+   {
+      if (overrideLocales != null)
+      {
+         getInstance().setOverrideLocales(overrideLocales);
+         if (!overrideLocales.booleanValue())
+         {
+            getInstance().getCustomizedLocales().clear();
+         }
+         else if (customizedItems != null)
+         {
+            Set<HLocale> locale = localeServiceImpl.convertCustomizedLocale(customizedItems);
+            getInstance().getCustomizedLocales().clear();
+            getInstance().getCustomizedLocales().addAll(locale);
+         }
+      }
    }
 
 }

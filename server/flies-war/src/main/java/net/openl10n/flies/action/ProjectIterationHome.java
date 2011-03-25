@@ -140,13 +140,7 @@ public class ProjectIterationHome extends SlugHome<HProjectIteration>
       if (!validateSlug(getInstance().getSlug(), "slug"))
          return null;
 
-      getInstance().setOverrideLocales(iterationOverrideLocales);
-      if (iterationCustomizedItems != null && iterationOverrideLocales != null && iterationOverrideLocales.booleanValue())
-      {
-         Set<HLocale> locale = localeServiceImpl.convertCustomizedLocale(iterationCustomizedItems);
-         getInstance().getCustomizedLocales().clear();
-         getInstance().getCustomizedLocales().addAll(locale);
-      }
+      updateOverrideLocales();
 
       return super.persist();
    }
@@ -176,14 +170,27 @@ public class ProjectIterationHome extends SlugHome<HProjectIteration>
    @Override
    public String update()
    {
-      getInstance().setOverrideLocales(iterationOverrideLocales);
-      if (iterationCustomizedItems != null && iterationOverrideLocales != null && iterationOverrideLocales.booleanValue())
-      {
-         Set<HLocale> locale = localeServiceImpl.convertCustomizedLocale(iterationCustomizedItems);
-         getInstance().getCustomizedLocales().clear();
-         getInstance().getCustomizedLocales().addAll(locale);
-      }
+      updateOverrideLocales();
       return super.update();
+   }
+   
+   
+   private void updateOverrideLocales()
+   {
+      if (iterationOverrideLocales != null)
+      {
+         getInstance().setOverrideLocales(iterationOverrideLocales);
+         if (!iterationOverrideLocales.booleanValue())
+         {
+            getInstance().getCustomizedLocales().clear();
+         }
+         else if (iterationCustomizedItems != null)
+         {
+            Set<HLocale> locale = localeServiceImpl.convertCustomizedLocale(iterationCustomizedItems);
+            getInstance().getCustomizedLocales().clear();
+            getInstance().getCustomizedLocales().addAll(locale);
+         }
+      }
    }
 
 }
