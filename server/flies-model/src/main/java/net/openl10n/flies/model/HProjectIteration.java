@@ -62,7 +62,7 @@ public class HProjectIteration extends AbstractSlugEntity
    private Map<String, HDocument> documents;
    private Map<String, HDocument> allDocuments;
 
-   private Boolean overrideLocales = false;
+   private boolean overrideLocales = false;
    private Set<HLocale> customizedLocales;
 
 
