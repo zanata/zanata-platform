@@ -4,7 +4,7 @@
     "http://www.jboss.org/j2ee/dtd/jboss-ds_1_5.dtd">
 <datasources>
   <local-tx-datasource>
-	<jndi-name>fliesTestDatasource</jndi-name>
+	<jndi-name>zanataTestDatasource</jndi-name>
 	<connection-url>jdbc:h2:mem:flies;DB_CLOSE_DELAY=-1</connection-url>
     <driver-class>org.h2.Driver</driver-class>
     <user-name>sa</user-name>

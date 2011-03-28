@@ -11,7 +11,7 @@
 
 <!-- these default values are hard-coded into FliesDBUnitSeamTest:
 	<parameter name="database" value="hsql" />
-	<parameter name="datasourceJndiName" value="java:/fliesDatasource" />
+	<parameter name="datasourceJndiName" value="java:/zanataDatasource" />
 	<parameter name="binaryDir" value="" />
  -->
 

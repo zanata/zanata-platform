@@ -17,7 +17,7 @@
 		<env.hibernate.format_sql>false</env.hibernate.format_sql>
 		<env.hibernate.indexBase>fliessearchindex</env.hibernate.indexBase>
 
-		<ds.jndi.name>fliesTestDatasource</ds.jndi.name>
+		<ds.jndi.name>zanataTestDatasource</ds.jndi.name>
 		<ds.hibernate.dialect>org.hibernate.dialect.H2Dialect</ds.hibernate.dialect>
 		<ds.driver.class>org.h2.Driver</ds.driver.class>
 		<ds.connection.url>jdbc:h2:mem:flies;DB_CLOSE_DELAY=-1</ds.connection.url> <!-- *-ds.xml -->
@@ -137,12 +137,9 @@
 			<id>mysql</id>
 			<properties>
 				<env.dbunit.type>MYSQL</env.dbunit.type>
-				<ds.jndi.name>fliesDatasource</ds.jndi.name>
+				<ds.jndi.name>zanataDatasource</ds.jndi.name>
 				<ds.hibernate.dialect>net.openl10n.flies.FliesMySQL5InnoDBDialect</ds.hibernate.dialect>
 				<ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
-				<ds.connection.url>jdbc:mysql://localhost:3306/flies?characterEncoding=UTF-8</ds.connection.url>
-				<ds.user.name>root</ds.user.name>
-				<ds.password />
 			</properties>
 			<build>
 				<plugins>
