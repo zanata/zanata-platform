@@ -67,7 +67,6 @@ public class ResourceTestObjectFactory
       TextFlow stf = sr.getTextFlows().get(0);
 
       PotEntryHeader potEntryHeader = new PotEntryHeader();
-      potEntryHeader.setExtractedComment("exactedComment");
       potEntryHeader.setContext("potentrycontext");
       // for the convenience of test only
       potEntryHeader.getFlags().add("");

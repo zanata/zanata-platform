@@ -9,6 +9,7 @@
 		description="An example Project"
 		homeContent=""
 		name="Sample Project"
+ 	    overrideLocales="FALSE"
 	/>
 	<!-- Tell DbUnit to delete any existing documents -->
 	<HDocument />

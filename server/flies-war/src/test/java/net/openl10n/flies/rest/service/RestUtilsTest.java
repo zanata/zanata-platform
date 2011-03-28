@@ -23,6 +23,7 @@ import net.openl10n.flies.rest.dto.resource.Resource;
 import net.openl10n.flies.rest.dto.resource.ResourceMeta;
 import net.openl10n.flies.rest.dto.resource.TranslationsResource;
 
+@Test(groups = { "unit-tests" })
 public class RestUtilsTest
 {
    private ResourceTestObjectFactory resourceTestFactory = new ResourceTestObjectFactory();
