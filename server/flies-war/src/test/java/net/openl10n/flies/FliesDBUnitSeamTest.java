@@ -18,7 +18,7 @@ public abstract class FliesDBUnitSeamTest extends DBUnitSeamTest
    // begin config methods from DBUnitSeamTest
    @BeforeClass
    @Parameters("datasourceJndiName")
-   public void setDatasourceJndiName(@Optional("java:/fliesTestDatasource") String datasourceJndiName)
+   public void setDatasourceJndiName(@Optional("java:/zanataTestDatasource") String datasourceJndiName)
    {
       super.setDatasourceJndiName(datasourceJndiName);
    }

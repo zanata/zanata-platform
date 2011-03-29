@@ -25,6 +25,7 @@ import net.openl10n.flies.util.Base64UrlSafe;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+@Test(groups = { "unit-tests" })
 public class Base64UrlSafeTest
 {
    @Test

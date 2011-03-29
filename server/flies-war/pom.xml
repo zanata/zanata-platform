@@ -17,8 +17,8 @@
 
 		<env.debug>false</env.debug>
 		<env.import.testdata>false</env.import.testdata>
-		<ds.jndi.name>fliesTestDatasource</ds.jndi.name>
-		<war.name>flies</war.name>
+		<ds.jndi.name>zanataTestDatasource</ds.jndi.name>
+		<war.name>zanata</war.name>
 		<!-- Default database settings -->
 		<env.dbunit.type>HSQL</env.dbunit.type>
 		<internal.authentication>false</internal.authentication>
@@ -119,7 +119,7 @@
 		<profile>
 			<id>mysql</id>
 			<properties>
-		        <ds.jndi.name>fliesDatasource</ds.jndi.name>
+		        <ds.jndi.name>zanataDatasource</ds.jndi.name>
 			</properties>
 		</profile>
 
@@ -168,7 +168,7 @@
 						<configuration>
 							<serverName>default</serverName>
 							<fileNames>
-								<fileName>${project.build.directory}/classes/flies-ds.xml</fileName>
+								<fileName>${project.build.directory}/classes/zanata-ds.xml</fileName>
 								<fileName>${project.build.directory}/${war.name}.war</fileName>
 							</fileNames>
 						</configuration>
@@ -600,7 +600,7 @@
 		<profile>
 			<id>flies-test</id>
 			<properties>
-				<war.name>flies-test</war.name>
+				<war.name>zanata-test</war.name>
 			</properties>
 		</profile>
 
