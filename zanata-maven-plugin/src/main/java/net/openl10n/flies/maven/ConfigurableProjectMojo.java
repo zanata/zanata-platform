@@ -4,8 +4,8 @@ import net.openl10n.flies.client.commands.ConfigurableProjectOptions;
 import net.openl10n.flies.client.config.LocaleList;
 
 /**
- * Base class for Flies mojos which support configuration by the user's
- * flies.ini and by a project's flies.xml
+ * Base class for mojos which support configuration by the user's
+ * zanata.ini and by a project's zanata.xml
  * 
  * @author Sean Flanigan <sflaniga@redhat.com>
  * 
@@ -17,29 +17,29 @@ public abstract class ConfigurableProjectMojo extends ConfigurableMojo implement
    /*
     * @parameter should work on setter methods - see
     * http://www.sonatype.com/books/mvnref-book/reference/writing-plugins-sect-param-annot.html
-    * - but it doesn't.
+    * - but it doesn't.  So we have to put @parameter on the fields instead.
     */
    // @formatter:on  
 
    /**
-    * Project configuration file for Flies client.
+    * Zanata project configuration file.
     * 
-    * @parameter expression="${flies.projectConfig}"
-    *            default-value="${basedir}/flies.xml"
+    * @parameter expression="${zanata.projectConfig}"
+    *            default-value="${basedir}/zanata.xml"
     */
    private String projectConfig;
 
    /**
-    * Project slug (id) within Flies server.
+    * Project slug (id) within Zanata server.
     * 
-    * @parameter expression="${flies.project}"
+    * @parameter expression="${zanata.project}"
     */
    private String project;
 
    /**
-    * Project version slug (id) within Flies server.
+    * Project version slug (id) within Zanata server.
     * 
-    * @parameter expression="${flies.projectVersion}"
+    * @parameter expression="${zanata.projectVersion}"
     */
    private String projectVersion;
 

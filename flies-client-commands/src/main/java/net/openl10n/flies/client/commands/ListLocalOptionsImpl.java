@@ -4,7 +4,7 @@ public class ListLocalOptionsImpl extends ConfigurableProjectOptionsImpl
 {
 
    @Override
-   public FliesCommand initCommand()
+   public ZanataCommand initCommand()
    {
       return new ListLocalCommand(this);
    }
@@ -18,7 +18,7 @@ public class ListLocalOptionsImpl extends ConfigurableProjectOptionsImpl
    @Override
    public String getCommandDescription()
    {
-      return "Lists all local files in the project which are considered to be Flies " + "documents. These are the files which will be sent to Flies when using the " + "'publish' goal.";
+      return "Lists all local files in the project which are considered to be translatable " + "documents. These are the files which will be sent to the server when using the " + "'push' goal.";
    }
 
 }

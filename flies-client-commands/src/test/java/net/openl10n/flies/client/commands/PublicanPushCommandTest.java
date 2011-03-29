@@ -99,7 +99,7 @@ public class PublicanPushCommandTest
       FliesClientRequestFactory mockRequestFactory = EasyMock.createNiceMock(FliesClientRequestFactory.class);
 
       control.replay();
-      FliesCommand cmd = new PublicanPushCommand(opts, mockRequestFactory, mockTranslationResources, new URI("http://example.com/"));
+      ZanataCommand cmd = new PublicanPushCommand(opts, mockRequestFactory, mockTranslationResources, new URI("http://example.com/"));
       cmd.run();
       control.verify();
    }

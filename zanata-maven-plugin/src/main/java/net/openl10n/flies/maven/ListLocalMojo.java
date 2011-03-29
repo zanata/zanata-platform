@@ -4,8 +4,8 @@ import net.openl10n.flies.client.commands.ListLocalCommand;
 
 /* Javadoc disabled so that maven won't include this unfinished mojo in the plugin:
  * [NOT YET IMPLEMENTED] Lists all local files in the project which are
- * considered to be Flies documents. These are the files which will be sent to
- * Flies when using the 'publican-push' goal.
+ * considered to be Zanata documents. These are the files which will be sent to
+ * Zanata when using the 'publican-push' goal.
  * 
  * @goal listlocal
  * @requiresProject true

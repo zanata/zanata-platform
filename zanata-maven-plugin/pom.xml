@@ -7,10 +7,11 @@
     <version>1.3-SNAPSHOT</version>
     <relativePath>../../flies-parent/pom.xml</relativePath>
   </parent>
-  <artifactId>flies-maven-plugin</artifactId>
+  <groupId>org.zanata</groupId>
+  <artifactId>zanata-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
   
-  <name>Flies Maven Plugin</name>
+  <name>Zanata Maven Plugin</name>
   
   <!-- 
   NB: This description will be extracted by maven-plugin-plugin, 
@@ -18,7 +19,7 @@
   goal). 
   -->
   <description>
-    Flies REST API client for managing Flies projects, publishing 
+    Zanata client for managing projects, publishing 
     source text and retrieving translations.
   </description>
   
@@ -86,9 +87,9 @@
       <!-- This is just to tell Maven about our plugin prefix: -->
 <!--  But Maven 3 won't like it without a version... 
       <plugin>
-        <groupId>net.openl10n.flies</groupId>
-        <artifactId>flies-maven-plugin</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <groupId>${groupId}</groupId>
+        <artifactId>${artifactId}</artifactId>
+        <version>${version}</version>
       </plugin>
  -->
 

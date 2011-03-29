@@ -9,7 +9,7 @@ import net.openl10n.flies.client.commands.AppAbortStrategy;
 import net.openl10n.flies.client.commands.ArgsUtil;
 import net.openl10n.flies.client.commands.BasicOptions;
 import net.openl10n.flies.client.commands.BasicOptionsImpl;
-import net.openl10n.flies.client.commands.FliesCommand;
+import net.openl10n.flies.client.commands.ZanataCommand;
 import net.openl10n.flies.client.commands.ListRemoteOptionsImpl;
 import net.openl10n.flies.client.commands.PublicanPullOptionsImpl;
 import net.openl10n.flies.client.commands.PublicanPushOptionsImpl;
@@ -23,7 +23,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-public class FliesClient extends BasicOptionsImpl
+public class ZanataClient extends BasicOptionsImpl
 {
    private String command;
    private boolean version;
@@ -38,12 +38,12 @@ public class FliesClient extends BasicOptionsImpl
 
    public static void main(String[] args)
    {
-      FliesClient tool = new FliesClient();
+      ZanataClient tool = new ZanataClient();
       tool.processArgs(args);
    }
 
    @Override
-   public FliesCommand initCommand()
+   public ZanataCommand initCommand()
    {
       return null;
    }
@@ -51,12 +51,12 @@ public class FliesClient extends BasicOptionsImpl
    /**
     * Only for testing (allows access to optionsMap)
     */
-   public FliesClient()
+   public ZanataClient()
    {
       this(new SystemExitStrategy(), System.out, System.err);
    }
 
-   public FliesClient(AppAbortStrategy strategy, PrintStream out, PrintStream err)
+   public ZanataClient(AppAbortStrategy strategy, PrintStream out, PrintStream err)
    {
       this.abortStrategy = strategy;
       this.out = out;
@@ -72,12 +72,12 @@ public class FliesClient extends BasicOptionsImpl
 
    public String getCommandName()
    {
-      return "flies";
+      return "zanataj";
    }
 
    public String getCommandDescription()
    {
-      return "Flies command-line client";
+      return "Zanata Java command-line client";
    }
 
    protected LinkedHashMap<String, BasicOptions> getOptionsMap()
@@ -109,8 +109,8 @@ public class FliesClient extends BasicOptionsImpl
       }
       if (version)
       {
-         out.println("flies-publican");
-         VersionUtility.printVersions(FliesClient.class, out);
+         out.println(getCommandName());
+         VersionUtility.printVersions(ZanataClient.class, out);
          return;
       }
       if ("help".equals(command))

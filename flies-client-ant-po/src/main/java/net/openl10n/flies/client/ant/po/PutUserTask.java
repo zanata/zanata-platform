@@ -33,7 +33,7 @@ public class PutUserTask extends ConfigurableTask implements PutUserOptions
    @Override
    public String getCommandDescription()
    {
-      return "Creates/overwrites a user in Flies";
+      return "Creates/overwrites a user";
    }
 
 

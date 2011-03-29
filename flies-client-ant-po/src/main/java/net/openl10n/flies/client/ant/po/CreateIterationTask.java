@@ -1,7 +1,7 @@
 package net.openl10n.flies.client.ant.po;
 
 import net.openl10n.flies.client.commands.ArgsUtil;
-import net.openl10n.flies.client.commands.FliesCommand;
+import net.openl10n.flies.client.commands.ZanataCommand;
 import net.openl10n.flies.client.commands.PutVersionCommand;
 import net.openl10n.flies.client.commands.PutVersionOptions;
 import org.kohsuke.args4j.Option;
@@ -29,24 +29,24 @@ public class CreateIterationTask extends ConfigurableTask implements PutVersionO
    @Override
    public String getCommandDescription()
    {
-      return "Creates a project iteration in Flies";
+      return "Creates a project version";
    }
 
 
-   @Option(name = "--proj", metaVar = "PROJ", usage = "Flies project ID", required = true)
+   @Option(name = "--proj", metaVar = "PROJ", usage = "Project ID", required = true)
    public void setVersionProject(String id)
    {
       this.proj = id;
    }
 
-   @Option(name = "--version-slug", metaVar = "VER", usage = "Flies project version ID", required = true)
+   @Option(name = "--version-slug", metaVar = "VER", usage = "Project version ID", required = true)
    public void setVersionSlug(String id)
    {
       this.iter = id;
    }
 
    @Override
-   public FliesCommand initCommand()
+   public ZanataCommand initCommand()
    {
       return new PutVersionCommand(this);
    }

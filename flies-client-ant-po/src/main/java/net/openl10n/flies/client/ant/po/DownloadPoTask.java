@@ -3,7 +3,7 @@ package net.openl10n.flies.client.ant.po;
 import java.io.File;
 
 import net.openl10n.flies.client.commands.ArgsUtil;
-import net.openl10n.flies.client.commands.FliesCommand;
+import net.openl10n.flies.client.commands.ZanataCommand;
 import net.openl10n.flies.client.commands.PublicanPullCommand;
 import net.openl10n.flies.client.commands.PublicanPullOptions;
 import net.openl10n.flies.client.config.LocaleList;
@@ -12,7 +12,7 @@ import org.kohsuke.args4j.Option;
 
 public class DownloadPoTask extends ConfigurableProjectTask implements PublicanPullOptions
 {
-   private String projectConfig = "flies.xml";
+   private String projectConfig = "zanata.xml";
 
    private String project;
    private String projectVersion;
@@ -36,11 +36,11 @@ public class DownloadPoTask extends ConfigurableProjectTask implements PublicanP
    @Override
    public String getCommandDescription()
    {
-      return "Downloads a Publican project's PO/POT files from Flies after translation, to allow document generation";
+      return "Downloads a Publican project's PO/POT files from the server after translation, to allow document generation";
    }
 
    @Override
-   public FliesCommand initCommand()
+   public ZanataCommand initCommand()
    {
       return new PublicanPullCommand(this);
    }
@@ -50,14 +50,14 @@ public class DownloadPoTask extends ConfigurableProjectTask implements PublicanP
       return project;
    }
 
-   @Option(name = "--project", metaVar = "PROJ", usage = "Flies project ID/slug.  This value is required unless specified in flies.xml.")
+   @Option(name = "--project", metaVar = "PROJ", usage = "Project ID.  This value is required unless specified in zanata.xml.")
    public void setProj(String projectSlug)
    {
       this.project = projectSlug;
    }
 
    @Override
-   @Option(name = "--project-config", metaVar = "FILENAME", usage = "Flies project configuration, eg flies.xml", required = false)
+   @Option(name = "--project-config", metaVar = "FILENAME", usage = "Project configuration file, eg zanata.xml", required = false)
    public void setProjectConfig(String projectConfig)
    {
       this.projectConfig = projectConfig;
@@ -70,7 +70,7 @@ public class DownloadPoTask extends ConfigurableProjectTask implements PublicanP
    }
 
    @Override
-   @Option(name = "--project-version", metaVar = "VER", usage = "Flies project version ID  This value is required unless specified in flies.xml.")
+   @Option(name = "--project-version", metaVar = "VER", usage = "Project version ID  This value is required unless specified in zanata.xml.")
    public void setProjectVersion(String versionSlug)
    {
       this.projectVersion = versionSlug;
@@ -127,7 +127,7 @@ public class DownloadPoTask extends ConfigurableProjectTask implements PublicanP
    }
 
    @Override
-   @Option(name = "--export-pot", usage = "Export source text from Flies to local POT files")
+   @Option(name = "--export-pot", usage = "Export source text from the server to local POT files")
    public void setExportPot(boolean exportPot)
    {
       this.exportPot = exportPot;

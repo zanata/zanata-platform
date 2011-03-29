@@ -21,7 +21,7 @@
 		</ant>
 	</target>
 	
-	<property name="fliesUrl" value="http://localhost:8080/flies"/>
+	<property name="url" value="http://localhost:8080/zanata"/>
 	<property name="proj" value="sample-project"/>
 	<property name="iter" value="1.1"/>
 
@@ -29,7 +29,7 @@
 		<ant antfile="roundtrip.xml" target="_roundtrip">
 			<property 
 				name="docsUrl" 
-				value="${fliesUrl}/seam/resource/restv1/projects/p/${proj}/iterations/i/${iter}/documents" />
+				value="${url}/seam/resource/restv1/projects/p/${proj}/iterations/i/${iter}/documents" />
 		</ant>
 	</target>
 

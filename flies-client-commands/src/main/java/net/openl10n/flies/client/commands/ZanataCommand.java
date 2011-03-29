@@ -2,10 +2,10 @@ package net.openl10n.flies.client.commands;
 
 
 
-public interface FliesCommand
+public interface ZanataCommand
 {
    /**
-    * Executes the flies Command, using the parameters which have been
+    * Executes the command, using the parameters which have been
     * previously set. This method must be called after initConfig().
     */
    public void run() throws Exception;

@@ -22,7 +22,7 @@ public class PutProjectOptionsImpl extends ConfigurableOptionsImpl implements Pu
    @Override
    public String getCommandDescription()
    {
-      return "Creates or updates a Flies project.";
+      return "Creates or updates a Zanata project.";
    }
 
    @Override
@@ -32,21 +32,21 @@ public class PutProjectOptionsImpl extends ConfigurableOptionsImpl implements Pu
    }
 
    @Override
-   @Option(name = "--project-slug", metaVar = "PROJ", usage = "Flies project slug/ID", required = true)
+   @Option(name = "--project-slug", metaVar = "PROJ", usage = "Project ID", required = true)
    public void setProjectSlug(String id)
    {
       this.projectSlug = id;
    }
 
    @Override
-   @Option(name = "--project-name", metaVar = "NAME", required = true, usage = "Flies project name")
+   @Option(name = "--project-name", metaVar = "NAME", required = true, usage = "Project name")
    public void setProjectName(String name)
    {
       this.projectName = name;
    }
 
    @Override
-   @Option(name = "--project-desc", metaVar = "DESC", required = true, usage = "Flies project description")
+   @Option(name = "--project-desc", metaVar = "DESC", required = true, usage = "Project description")
    public void setProjectDesc(String desc)
    {
       this.projectDesc = desc;

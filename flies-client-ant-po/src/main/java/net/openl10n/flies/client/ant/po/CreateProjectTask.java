@@ -2,7 +2,7 @@ package net.openl10n.flies.client.ant.po;
 
 
 import net.openl10n.flies.client.commands.ArgsUtil;
-import net.openl10n.flies.client.commands.FliesCommand;
+import net.openl10n.flies.client.commands.ZanataCommand;
 import net.openl10n.flies.client.commands.PutProjectCommand;
 import net.openl10n.flies.client.commands.PutProjectOptions;
 import org.kohsuke.args4j.Option;
@@ -34,23 +34,23 @@ public class CreateProjectTask extends ConfigurableTask implements PutProjectOpt
    @Override
    public String getCommandDescription()
    {
-      return "Creates a project in Flies";
+      return "Creates a project";
    }
 
 
-   @Option(name = "--proj", metaVar = "PROJ", usage = "Flies project ID", required = true)
+   @Option(name = "--proj", metaVar = "PROJ", usage = "Project ID", required = true)
    public void setVersionProject(String id)
    {
       this.proj = id;
    }
 
-   @Option(name = "--version-name", metaVar = "NAME", usage = "Flies project version name", required = true)
+   @Option(name = "--version-name", metaVar = "NAME", usage = "Project version name", required = true)
    public void setVersionName(String name)
    {
       this.name = name;
    }
 
-   @Option(name = "--version-desc", metaVar = "DESC", usage = "Flies project version description", required = true)
+   @Option(name = "--version-desc", metaVar = "DESC", usage = "Project version description", required = true)
    public void setVersionDesc(String desc)
    {
       this.desc = desc;
@@ -58,7 +58,7 @@ public class CreateProjectTask extends ConfigurableTask implements PutProjectOpt
 
 
    @Override
-   public FliesCommand initCommand()
+   public ZanataCommand initCommand()
    {
       return new PutProjectCommand(this);
    }
@@ -81,21 +81,21 @@ public class CreateProjectTask extends ConfigurableTask implements PutProjectOpt
       return this.name;
    }
 
-   @Option(name = "--project-slug", metaVar = "PROJ", usage = "Flies project slug/ID", required = true)
+   @Option(name = "--project-slug", metaVar = "PROJ", usage = "Project ID", required = true)
    public void setProjectSlug(String id)
    {
       this.projectSlug = id;
    }
 
    @Override
-   @Option(name = "--project-name", metaVar = "NAME", required = true, usage = "Flies project name")
+   @Option(name = "--project-name", metaVar = "NAME", required = true, usage = "Project name")
    public void setProjectName(String name)
    {
       this.projectName = name;
    }
 
    @Override
-   @Option(name = "--project-desc", metaVar = "DESC", required = true, usage = "Flies project description")
+   @Option(name = "--project-desc", metaVar = "DESC", required = true, usage = "Project description")
    public void setProjectDesc(String desc)
    {
       this.projectDesc = desc;

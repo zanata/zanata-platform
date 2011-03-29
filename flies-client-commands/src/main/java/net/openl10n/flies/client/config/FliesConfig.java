@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * Representation of the root node of Flies configuration
+ * Representation of the root node of a project configuration
  * 
  * @author Sean Flanigan <sflaniga@redhat.com>
  * 
