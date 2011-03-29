@@ -39,13 +39,13 @@ public class OptionsUtil
          {
             JAXBContext jc = JAXBContext.newInstance(FliesConfig.class);
             Unmarshaller unmarshaller = jc.createUnmarshaller();
-            String projectConfig = projOpts.getProjectConfig();
-            File projectConfigFile = new File(projectConfig);
+            String projectConfigName = projOpts.getProjectConfig();
+            File projectConfigFile = new File(projectConfigName);
             if (!projectConfigFile.isAbsolute())
             {
 	           String userDir = System.getProperty("user.dir");
 	           File projectDir = new File(userDir);
-	           while (projectDir != null && !(projectConfigFile = new File(projectDir, projectConfig)).exists())
+	           while (projectDir != null && !(projectConfigFile = new File(projectDir, projectConfigName)).exists())
 	           {
 	              projectDir = projectDir.getParentFile();
 	           }
@@ -53,15 +53,15 @@ public class OptionsUtil
 
             if (projectConfigFile.exists())
             {
-               log.info("Loading flies project config from {}", projectConfigFile);
-               FliesConfig fliesConfig = (FliesConfig) unmarshaller.unmarshal(projectConfigFile);
-               // local project config is supposed to override user's flies.ini,
+               log.info("Loading project config from {}", projectConfigFile);
+               FliesConfig projectConfig = (FliesConfig) unmarshaller.unmarshal(projectConfigFile);
+               // local project config is supposed to override user's zanata.ini,
                // so we apply it first
-               applyProjectConfig(projOpts, fliesConfig);
+               applyProjectConfig(projOpts, projectConfig);
             }
             else
             {
-               log.warn("Flies project config file '{}' not found; ignoring.", projectConfig);
+               log.warn("Project config file '{}' not found; ignoring.", projectConfigName);
             }
          }
       }
@@ -69,13 +69,13 @@ public class OptionsUtil
       {
          if (opts.getUserConfig().exists())
          {
-            log.info("Loading flies user config from {}", opts.getUserConfig());
+            log.info("Loading user config from {}", opts.getUserConfig());
             HierarchicalINIConfiguration dataConfig = new HierarchicalINIConfiguration(opts.getUserConfig());
             applyUserConfig(opts, dataConfig);
          }
          else
          {
-            System.err.printf("Flies user config file '%s' not found; ignoring.\n", opts.getUserConfig());
+            System.err.printf("User config file '%s' not found; ignoring.\n", opts.getUserConfig());
          }
       }
    }
@@ -114,21 +114,21 @@ public class OptionsUtil
    {
       if (!opts.isDebugSet())
       {
-         Boolean debug = config.getBoolean("flies.debug", null);
+         Boolean debug = config.getBoolean("defaults.debug", null);
          if (debug != null)
             opts.setDebug(debug);
       }
 
       if (!opts.isErrorsSet())
       {
-         Boolean errors = config.getBoolean("flies.errors", null);
+         Boolean errors = config.getBoolean("defaults.errors", null);
          if (errors != null)
             opts.setErrors(errors);
       }
 
       if (!opts.isQuietSet())
       {
-         Boolean quiet = config.getBoolean("flies.quiet", null);
+         Boolean quiet = config.getBoolean("defaults.quiet", null);
          if (quiet != null)
             opts.setQuiet(quiet);
       }
@@ -155,11 +155,11 @@ public class OptionsUtil
       try
       {
          if (opts.getUrl() == null)
-            throw new ConfigException("Flies URL must be specified");
+            throw new ConfigException("Server URL must be specified");
          if (opts.getUsername() == null)
-            throw new ConfigException("Flies username must be specified");
+            throw new ConfigException("Username must be specified");
          if (opts.getKey() == null)
-            throw new ConfigException("Flies key must be specified");
+            throw new ConfigException("API key must be specified");
          return new FliesClientRequestFactory(opts.getUrl().toURI(), opts.getUsername(), opts.getKey(), VersionUtility.getAPIVersionInfo());
       }
       catch (URISyntaxException e)

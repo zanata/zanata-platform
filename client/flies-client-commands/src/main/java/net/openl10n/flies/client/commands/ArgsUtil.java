@@ -74,7 +74,7 @@ public class ArgsUtil
       {
          if (opts instanceof ConfigurableOptions)
             OptionsUtil.applyConfigFiles((ConfigurableOptions) opts);
-         FliesCommand cmd = opts.initCommand();
+         ZanataCommand cmd = opts.initCommand();
          // just in case the logging options were changed by a config file:
          setLogLevels(opts);
          if (opts.getErrors())

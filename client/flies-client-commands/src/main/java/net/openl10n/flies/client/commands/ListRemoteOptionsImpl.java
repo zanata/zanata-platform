@@ -4,7 +4,7 @@ public class ListRemoteOptionsImpl extends ConfigurableProjectOptionsImpl
 {
 
    @Override
-   public FliesCommand initCommand()
+   public ZanataCommand initCommand()
    {
       return new ListRemoteCommand(this);
    }
@@ -18,7 +18,7 @@ public class ListRemoteOptionsImpl extends ConfigurableProjectOptionsImpl
    @Override
    public String getCommandDescription()
    {
-      return "Lists all remote documents in the configured Flies project version.";
+      return "Lists all remote documents in the configured server/project/version.";
    }
 
 

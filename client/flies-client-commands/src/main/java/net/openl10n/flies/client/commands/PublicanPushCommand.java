@@ -66,7 +66,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
    @Override
    public void run() throws Exception
    {
-      log.info("Flies server: {}", opts.getUrl());
+      log.info("Server: {}", opts.getUrl());
       log.info("Project: {}", opts.getProj());
       log.info("Version: {}", opts.getProjectVersion());
       log.info("Username: {}", opts.getUsername());
@@ -162,7 +162,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
             locales = PublicanUtil.findLocales(opts.getSrcDir(), opts.getLocales());
             if (locales.size() == 0)
             {
-               log.warn("option 'importPo' is set, but none of the configured locale directories was found (check flies.xml)");
+               log.warn("option 'importPo' is set, but none of the configured locale directories was found (check zanata.xml)");
             }
          }
          else

@@ -36,7 +36,7 @@ public class UploadPoTask extends ConfigurableProjectTask implements PublicanPus
    @Override
    public String getCommandDescription()
    {
-      return "Uploads a Publican project's PO/POT files to Flies for translation";
+      return "Uploads a Publican project's PO/POT files to the server for translation";
    }
 
    public PublicanPushCommand initCommand()
@@ -63,7 +63,7 @@ public class UploadPoTask extends ConfigurableProjectTask implements PublicanPus
       this.sourceLang = sourceLang;
    }
 
-   @Option(name = "--import-po", usage = "Import translations from local PO files to Flies, overwriting or erasing existing translations (DANGER!)")
+   @Option(name = "--import-po", usage = "Import translations from local PO files to the server, overwriting or erasing existing translations (DANGER!)")
    public void setImportPo(boolean importPo)
    {
       this.importPo = importPo;

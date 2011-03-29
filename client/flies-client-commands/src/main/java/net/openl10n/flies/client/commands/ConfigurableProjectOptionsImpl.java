@@ -25,8 +25,8 @@ import net.openl10n.flies.client.config.LocaleList;
 import org.kohsuke.args4j.Option;
 
 /**
- * Base options for Flies commands which supports configuration by the user's
- * flies.ini and by a project's flies.xml
+ * Base options for commands which supports configuration by the user's
+ * zanata.ini and by a project's zanata.xml
  * 
  * @author Sean Flanigan <sflaniga@redhat.com>
  * 
@@ -35,12 +35,12 @@ public abstract class ConfigurableProjectOptionsImpl extends ConfigurableOptions
 {
 
    /**
-    * Project configuration file for Flies client.
+    * Project configuration file for Zanata client.
     */
    // When used as a CLI command, the default path (specified here) is relative
    // to CWD. ConfigurableProjectMojo specifies another default, which is
    // relative to project's basedir.
-   private String projectConfig = "flies.xml";
+   private String projectConfig = "zanata.xml";
 
    private String project;
    private String projectVersion;
@@ -53,14 +53,14 @@ public abstract class ConfigurableProjectOptionsImpl extends ConfigurableOptions
    }
 
    @Override
-   @Option(name = "--project", metaVar = "PROJ", usage = "Flies project ID/slug.  This value is required unless specified in flies.xml.")
+   @Option(name = "--project", metaVar = "PROJ", usage = "Project ID.  This value is required unless specified in zanata.xml.")
    public void setProj(String projectSlug)
    {
       this.project = projectSlug;
    }
 
    @Override
-   @Option(name = "--project-config", metaVar = "FILENAME", usage = "Flies project configuration, eg flies.xml", required = false)
+   @Option(name = "--project-config", metaVar = "FILENAME", usage = "Project configuration file, eg zanata.xml", required = false)
    public void setProjectConfig(String projectConfig)
    {
       this.projectConfig = projectConfig;
@@ -73,7 +73,7 @@ public abstract class ConfigurableProjectOptionsImpl extends ConfigurableOptions
    }
 
    @Override
-   @Option(name = "--project-version", metaVar = "VER", usage = "Flies project version ID  This value is required unless specified in flies.xml.")
+   @Option(name = "--project-version", metaVar = "VER", usage = "Project version ID  This value is required unless specified in zanata.xml.")
    public void setProjectVersion(String versionSlug)
    {
       this.projectVersion = versionSlug;

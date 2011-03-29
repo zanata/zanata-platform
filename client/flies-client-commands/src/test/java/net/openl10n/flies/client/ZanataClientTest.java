@@ -16,19 +16,19 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 
-public class FliesClientTest
+public class ZanataClientTest
 {
-   private static final Logger log = LoggerFactory.getLogger(FliesClientTest.class);
+   private static final Logger log = LoggerFactory.getLogger(ZanataClientTest.class);
    StringOutputStream out;
    StringOutputStream err;
-   FliesClient client;
+   ZanataClient client;
 
    @BeforeMethod
    void before()
    {
       out = new StringOutputStream();
       err = new StringOutputStream();
-      client = new FliesClient(new RuntimeExceptionStrategy(), new PrintStream(out), new PrintStream(err));
+      client = new ZanataClient(new RuntimeExceptionStrategy(), new PrintStream(out), new PrintStream(err));
    }
 
    @AfterMethod
@@ -45,7 +45,7 @@ public class FliesClientTest
    @DataProvider(name = "options")
    public static Object[][] createOptions() throws Exception
    {
-      return toGrid(new FliesClient().getOptionsMap().values());
+      return toGrid(new ZanataClient().getOptionsMap().values());
    }
 
    /**

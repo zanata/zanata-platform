@@ -26,7 +26,7 @@ public class PutUserOptionsImpl extends ConfigurableOptionsImpl implements PutUs
    @Override
    public String getCommandDescription()
    {
-      return "Creates or updates a Flies user.";
+      return "Creates or updates a user.";
    }
 
    @Override

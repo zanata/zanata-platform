@@ -91,7 +91,7 @@ public class PublicanPullCommandTest
       opts.setProjectVersion(versionSlug);
       opts.setDstDir(new File("target/test-output/test2"));
       opts.setExportPot(exportPot);
-      opts.setProjectConfig("src/test/resources/test2/flies.xml");
+      opts.setProjectConfig("src/test/resources/test2/zanata.xml");
       OptionsUtil.applyConfigFiles(opts);
       if (mapLocale)
       {
@@ -124,7 +124,7 @@ public class PublicanPullCommandTest
       FliesClientRequestFactory mockRequestFactory = EasyMock.createNiceMock(FliesClientRequestFactory.class);
 
       control.replay();
-      FliesCommand cmd = new PublicanPullCommand(opts, mockRequestFactory, mockTranslationResources, new URI("http://example.com/"));
+      ZanataCommand cmd = new PublicanPullCommand(opts, mockRequestFactory, mockTranslationResources, new URI("http://example.com/"));
       cmd.run();
       control.verify();
    }

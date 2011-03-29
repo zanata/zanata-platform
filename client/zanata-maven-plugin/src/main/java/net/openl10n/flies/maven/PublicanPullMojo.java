@@ -6,7 +6,7 @@ import net.openl10n.flies.client.commands.PublicanPullCommand;
 import net.openl10n.flies.client.commands.PublicanPullOptions;
 
 /**
- * Pulls translated text from Flies.
+ * Pulls translated text from Zanata.
  * 
  * @goal publican-pull
  * @requiresProject true
@@ -20,7 +20,7 @@ public class PublicanPullMojo extends ConfigurableProjectMojo implements Publica
     * locale directories), although the location of "pot" can be overridden with
     * the dstDirPot option.
     * 
-    * @parameter expression="${flies.dstDir}"
+    * @parameter expression="${zanata.dstDir}"
     * @required
     */
    private File dstDir;
@@ -28,17 +28,17 @@ public class PublicanPullMojo extends ConfigurableProjectMojo implements Publica
    /**
     * Base directory for pot files.
     * 
-    * @parameter expression="${flies.dstDirPot}"
-    *            default-value="${flies.dstDir}/pot"
+    * @parameter expression="${zanata.dstDirPot}"
+    *            default-value="${zanata.dstDir}/pot"
     * @required
     */
    private File dstDirPot;
 
    /**
-    * Export source text from Flies to local POT files, overwriting or erasing
+    * Export source text from Zanata to local POT files, overwriting or erasing
     * existing POT files (DANGER!)
     * 
-    * @parameter expression="${flies.exportPot}"
+    * @parameter expression="${zanata.exportPot}"
     */
    private boolean exportPot;
 

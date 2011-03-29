@@ -7,7 +7,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.kohsuke.args4j.Option;
 
-public abstract class FliesTask extends Task implements BasicOptions
+public abstract class ZanataTask extends Task implements BasicOptions
 {
 
    private boolean debug;

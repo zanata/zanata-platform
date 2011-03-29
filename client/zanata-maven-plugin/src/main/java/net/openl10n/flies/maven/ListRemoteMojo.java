@@ -3,7 +3,7 @@ package net.openl10n.flies.maven;
 import net.openl10n.flies.client.commands.ListRemoteCommand;
 
 /**
- * Lists all remote documents in the configured Flies project version.
+ * Lists all remote documents in the configured Zanata project version.
  * 
  * @goal listremote
  * @requiresProject false

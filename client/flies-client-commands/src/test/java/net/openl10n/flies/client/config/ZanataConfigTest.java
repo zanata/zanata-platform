@@ -14,15 +14,15 @@ import org.apache.commons.configuration.FileConfiguration;
 import org.apache.commons.configuration.HierarchicalINIConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
 
-public class FliesConfigTest extends TestCase
+public class ZanataConfigTest extends TestCase
 {
    JAXBContext jc = JAXBContext.newInstance(FliesConfig.class);
    Unmarshaller unmarshaller = jc.createUnmarshaller();
    Marshaller marshaller = jc.createMarshaller();
-   File fliesProjectXml = new File(System.getProperty("user.dir"), "target/flies.xml");
-   File fliesUserFile = new File(System.getProperty("user.dir"), "target/flies.ini");
+   File zanataProjectXml = new File(System.getProperty("user.dir"), "target/zanata.xml");
+   File zanataUserFile = new File(System.getProperty("user.dir"), "target/zanata.ini");
 
-   public FliesConfigTest() throws Exception
+   public ZanataConfigTest() throws Exception
    {
       marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
    }
@@ -46,12 +46,12 @@ public class FliesConfigTest extends TestCase
       config.setProjectVersion("version");
       config.getLocales().add(new LocaleMapping("fr", "fr-FR"));
       config.getLocales().add(new LocaleMapping("  zh-CN  "));
-      marshaller.marshal(config, fliesProjectXml);
+      marshaller.marshal(config, zanataProjectXml);
    }
 
    void readProject() throws Exception
    {
-      FliesConfig config = (FliesConfig) unmarshaller.unmarshal(fliesProjectXml);
+      FliesConfig config = (FliesConfig) unmarshaller.unmarshal(zanataProjectXml);
       assertEquals(new URL("http://example.com"), config.getUrl());
       assertEquals("project", config.getProject());
       assertEquals("version", config.getProjectVersion());
@@ -71,12 +71,12 @@ public class FliesConfigTest extends TestCase
 
    void writeUser() throws Exception
    {
-      FileConfiguration config = new HierarchicalINIConfiguration(fliesUserFile);
-      config.setProperty("flies.url", new URL("http://flies.example.com/"));
-      config.setProperty("flies.username", "admin");
-      config.setProperty("flies.key", "b6d7044e9ee3b2447c28fb7c50d86d98");
-      config.setProperty("flies.debug", false);
-      config.setProperty("flies.errors", true);
+      FileConfiguration config = new HierarchicalINIConfiguration(zanataUserFile);
+      config.setProperty("zanata.url", new URL("http://zanata.example.com/"));
+      config.setProperty("zanata.username", "admin");
+      config.setProperty("zanata.key", "b6d7044e9ee3b2447c28fb7c50d86d98");
+      config.setProperty("zanata.debug", false);
+      config.setProperty("zanata.errors", true);
 
       config.save();
    }
@@ -85,12 +85,12 @@ public class FliesConfigTest extends TestCase
    {
       CompositeConfiguration config = new CompositeConfiguration();
       config.addConfiguration(new SystemConfiguration());
-      config.addConfiguration(new HierarchicalINIConfiguration(fliesUserFile));
-      String user = config.getString("flies.username");
+      config.addConfiguration(new HierarchicalINIConfiguration(zanataUserFile));
+      String user = config.getString("zanata.username");
       assertEquals("admin", user);
-      boolean debug = config.getBoolean("flies.debug");
+      boolean debug = config.getBoolean("zanata.debug");
       assertFalse(debug);
-      boolean errors = config.getBoolean("flies.errors");
+      boolean errors = config.getBoolean("zanata.errors");
       assertTrue(errors);
    }
 
