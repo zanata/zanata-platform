@@ -24,7 +24,12 @@ public class FixedClientUidSelector extends ClientUidSelector
    @Create
    public void onCreate()
    {
-      setCookiePath(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath());
+      String requestContextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+      // workaround for https://issues.jboss.org/browse/JBSEAM-4701
+      if (requestContextPath.isEmpty()) {
+         requestContextPath = "/";
+      }
+      setCookiePath(requestContextPath);
       setCookieMaxAge(-1);
       setCookieEnabled(true);
       clientUid = getCookieValue();
@@ -34,6 +39,7 @@ public class FixedClientUidSelector extends ClientUidSelector
    {
       if (!isSet())
       {
+         // workaround for https://issues.jboss.org/browse/JBSEAM-4503
          clientUid = RandomStringUtils.random(50, true, true); // Fixed
          setCookieValueIfEnabled(clientUid);
       }
