@@ -23,7 +23,7 @@ package net.openl10n.flies.client.commands;
 import org.kohsuke.args4j.Option;
 
 /**
- * Base class for Flies commands
+ * Base class for commands
  * 
  * @author Sean Flanigan <sflaniga@redhat.com>
  * 

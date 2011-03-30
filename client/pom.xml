@@ -16,6 +16,6 @@
     <module>flies-client-commands</module>
     <module>flies-client-ant-po</module>
     <module>flies-client-ant-properties</module>
-    <module>flies-maven-plugin</module>
+    <module>zanata-maven-plugin</module>
   </modules>
 </project>

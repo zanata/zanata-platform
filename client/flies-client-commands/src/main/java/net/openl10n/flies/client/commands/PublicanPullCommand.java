@@ -58,7 +58,7 @@ public class PublicanPullCommand extends ConfigurableProjectCommand
    @Override
    public void run() throws Exception
    {
-      log.info("Flies server: {}", opts.getUrl());
+      log.info("Server: {}", opts.getUrl());
       log.info("Project: {}", opts.getProj());
       log.info("Version: {}", opts.getProjectVersion());
       log.info("Username: {}", opts.getUsername());

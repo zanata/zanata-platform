@@ -11,9 +11,9 @@ public class ConfigUtilTest extends TestCase
 {
    public void testReadUser() throws Exception
    {
-      HierarchicalINIConfiguration config = new HierarchicalINIConfiguration("src/test/resources/flies.ini");
+      HierarchicalINIConfiguration config = new HierarchicalINIConfiguration("src/test/resources/zanata.ini");
       SubnodeConfiguration servers = config.getSection("servers");
-      String url = "https://translate.jboss.org/flies/";
+      String url = "https://translate.jboss.org/";
       String username = "joe";
       String key = "1234";
       String prefix = ConfigUtil.findPrefix(servers, new URL(url));

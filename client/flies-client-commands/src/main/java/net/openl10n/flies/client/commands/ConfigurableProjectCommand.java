@@ -24,8 +24,8 @@ import net.openl10n.flies.client.exceptions.ConfigException;
 import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 
 /**
- * Base class for Flies commands which supports configuration by the user's
- * flies.ini and by a project's flies.xml
+ * Base class for commands which supports configuration by the user's
+ * zanata.ini and by a project's zanata.xml
  * 
  * @author Sean Flanigan <sflaniga@redhat.com>
  * 

@@ -23,13 +23,13 @@ package net.openl10n.flies.client.commands;
 import net.openl10n.flies.rest.client.FliesClientRequestFactory;
 
 /**
- * Base class for Flies commands which supports configuration by the user's
- * flies.ini
+ * Base class for commands which supports configuration by the user's
+ * zanata.ini
  * 
  * @author Sean Flanigan <sflaniga@redhat.com>
  * 
  */
-public abstract class ConfigurableCommand implements FliesCommand
+public abstract class ConfigurableCommand implements ZanataCommand
 {
    private final ConfigurableOptions opts;
    private FliesClientRequestFactory requestFactory;

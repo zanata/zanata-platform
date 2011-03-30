@@ -5,15 +5,15 @@
   <version>0</version>
 
   <properties>
-    <flies.srcDir>.</flies.srcDir>
+    <zanata.srcDir>.</zanata.srcDir>
   </properties>
  
   <build>
     <plugins>
       <plugin>
-        <groupId>net.openl10n.flies</groupId>
-        <artifactId>flies-maven-plugin</artifactId>
-        <version>1.2-SNAPSHOT</version>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-maven-plugin</artifactId>
+        <version>1.3-SNAPSHOT</version>
         <configuration>
 <!-- for instance 
           <importPo>false</importPo>

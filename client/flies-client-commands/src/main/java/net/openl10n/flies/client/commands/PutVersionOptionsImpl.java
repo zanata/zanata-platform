@@ -20,7 +20,7 @@ public class PutVersionOptionsImpl extends ConfigurableOptionsImpl implements Pu
    @Override
    public String getCommandDescription()
    {
-      return "Creates or updates a Flies project version.";
+      return "Creates or updates a Zanata project version.";
    }
 
    @Override
@@ -30,14 +30,14 @@ public class PutVersionOptionsImpl extends ConfigurableOptionsImpl implements Pu
    }
 
    @Override
-   @Option(name = "--version-project", metaVar = "PROJ", usage = "Flies project version's project", required = true)
+   @Option(name = "--version-project", metaVar = "PROJ", usage = "ID of Zanata project", required = true)
    public void setVersionProject(String id)
    {
       this.versionProject = id;
    }
 
    @Override
-   @Option(name = "--version-slug", metaVar = "VER", usage = "Flies project version ID", required = true)
+   @Option(name = "--version-slug", metaVar = "VER", usage = "Project version ID", required = true)
    public void setVersionSlug(String id)
    {
       this.versionSlug = id;

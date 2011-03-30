@@ -4,7 +4,7 @@ import net.openl10n.flies.client.commands.PutUserCommand;
 import net.openl10n.flies.client.commands.PutUserOptions;
 
 /**
- * Creates or updates a Flies user.
+ * Creates or updates a Zanata user.
  * 
  * @goal putuser
  * @requiresProject false
@@ -16,7 +16,7 @@ public class PutUserMojo extends ConfigurableMojo implements PutUserOptions
    /**
     * Full name of the user
     * 
-    * @parameter expression="${flies.user.name}"
+    * @parameter expression="${zanata.user.name}"
     * @required
     */
    private String userName;
@@ -24,7 +24,7 @@ public class PutUserMojo extends ConfigurableMojo implements PutUserOptions
    /**
     * Email address of the user
     * 
-    * @parameter expression="${flies.user.email}"
+    * @parameter expression="${zanata.user.email}"
     * @required
     */
    private String userEmail;
@@ -32,7 +32,7 @@ public class PutUserMojo extends ConfigurableMojo implements PutUserOptions
    /**
     * Login/username of the user
     * 
-    * @parameter expression="${flies.user.username}"
+    * @parameter expression="${zanata.user.username}"
     * @required
     */
    private String userUsername;
@@ -40,7 +40,7 @@ public class PutUserMojo extends ConfigurableMojo implements PutUserOptions
    /**
     * User password hash
     * 
-    * @parameter expression="${flies.user.passwordhash}"
+    * @parameter expression="${zanata.user.passwordhash}"
     * @required
     */
    private String userPasswordHash;
@@ -48,7 +48,7 @@ public class PutUserMojo extends ConfigurableMojo implements PutUserOptions
    /**
     * User's api key (empty for none)
     * 
-    * @parameter expression="${flies.user.key}"
+    * @parameter expression="${zanata.user.key}"
     * @required
     */
    private String userKey;
@@ -56,7 +56,7 @@ public class PutUserMojo extends ConfigurableMojo implements PutUserOptions
    /**
     * Security roles for the user
     * 
-    * @parameter expression="${flies.user.roles}"
+    * @parameter expression="${zanata.user.roles}"
     * @required
     */
    private String userRoles;
@@ -64,7 +64,7 @@ public class PutUserMojo extends ConfigurableMojo implements PutUserOptions
    /**
     * Language teams for the user
     * 
-    * @parameter expression="${flies.user.langs}"
+    * @parameter expression="${zanata.user.langs}"
     * @required
     */
    private String userLangs;
@@ -72,7 +72,7 @@ public class PutUserMojo extends ConfigurableMojo implements PutUserOptions
    /**
     * Whether the account should be disabled
     * 
-    * @parameter expression="${flies.user.disabled}"
+    * @parameter expression="${zanata.user.disabled}"
     * @required
     */
    private boolean userDisabled;

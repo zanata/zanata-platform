@@ -4,7 +4,7 @@ import net.openl10n.flies.client.commands.PutVersionCommand;
 import net.openl10n.flies.client.commands.PutVersionOptions;
 
 /**
- * Creates or updates a Flies project version.
+ * Creates or updates a Zanata project version.
  * 
  * @goal putversion
  * @requiresProject false
@@ -14,17 +14,17 @@ public class PutVersionMojo extends ConfigurableMojo implements PutVersionOption
 {
 
    /**
-    * Flies project version's project
+    * ID of Zanata project
     * 
-    * @parameter expression="${flies.version.project}"
+    * @parameter expression="${zanata.version.project}"
     * @required
     */
    private String versionProject;
 
    /**
-    * Flies project version ID
+    * Project version ID
     * 
-    * @parameter expression="${flies.version.slug}"
+    * @parameter expression="${zanata.version.slug}"
     * @required
     */
    private String versionSlug;

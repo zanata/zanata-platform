@@ -4,7 +4,7 @@ import net.openl10n.flies.client.commands.PutProjectCommand;
 import net.openl10n.flies.client.commands.PutProjectOptions;
 
 /**
- * Creates or updates a Flies project.
+ * Creates or updates a Zanata project.
  * 
  * @goal putproject
  * @requiresProject false
@@ -14,25 +14,25 @@ public class PutProjectMojo extends ConfigurableMojo implements PutProjectOption
 {
 
    /**
-    * Flies project slug/ID
+    * Project slug/ID
     * 
-    * @parameter expression="${flies.project.slug}"
+    * @parameter expression="${zanata.project.slug}"
     * @required
     */
    private String projectSlug;
 
    /**
-    * Flies project name
+    * Project name
     * 
-    * @parameter expression="${flies.project.name}"
+    * @parameter expression="${zanata.project.name}"
     * @required
     */
    private String projectName;
 
    /**
-    * Flies project description
+    * Project description
     * 
-    * @parameter expression="${flies.project.desc}"
+    * @parameter expression="${zanata.project.desc}"
     * @required
     */
    private String projectDesc;

@@ -16,7 +16,7 @@ public class PublicanPullOptionsImpl extends ConfigurableProjectOptionsImpl impl
    private boolean exportPot;
 
    @Override
-   public FliesCommand initCommand()
+   public ZanataCommand initCommand()
    {
       return new PublicanPullCommand(this);
    }
@@ -30,7 +30,7 @@ public class PublicanPullOptionsImpl extends ConfigurableProjectOptionsImpl impl
    @Override
    public String getCommandDescription()
    {
-      return "Pulls translated text from Flies.";
+      return "Pulls translated text from Zanata.";
    }
 
    @Option(aliases = { "-d" }, name = "--dst", metaVar = "DIR", required = true, usage = "Base directory for publican files (with subdirectory \"pot\" and locale directories)")
@@ -67,7 +67,7 @@ public class PublicanPullOptionsImpl extends ConfigurableProjectOptionsImpl impl
    }
 
    @Override
-   @Option(name = "--export-pot", usage = "Export source text from Flies to local POT files")
+   @Option(name = "--export-pot", usage = "Export source text from Zanata to local POT files")
    public void setExportPot(boolean exportPot)
    {
       this.exportPot = exportPot;

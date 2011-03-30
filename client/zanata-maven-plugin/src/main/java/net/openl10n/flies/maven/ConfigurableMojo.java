@@ -4,7 +4,7 @@ import java.io.File;
 import java.net.URL;
 
 import net.openl10n.flies.client.commands.ConfigurableOptions;
-import net.openl10n.flies.client.commands.FliesCommand;
+import net.openl10n.flies.client.commands.ZanataCommand;
 import net.openl10n.flies.client.commands.OptionsUtil;
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -16,8 +16,8 @@ import org.slf4j.LoggerFactory;
 import com.pyx4j.log4j.MavenLogAppender;
 
 /**
- * Base class for Flies mojos which support configuration by the user's
- * flies.ini
+ * Base class for mojos which support configuration by the user's
+ * zanata.ini
  * 
  * @author Sean Flanigan <sflaniga@redhat.com>
  * 
@@ -37,10 +37,10 @@ public abstract class ConfigurableMojo extends AbstractMojo implements Configura
    // @formatter:on  
 
    /**
-    * Client configuration file for Flies.
+    * Client configuration file for Zanata.
     * 
-    * @parameter expression="${flies.userConfig}"
-    *            default-value="${user.home}/.config/flies.ini"
+    * @parameter expression="${zanata.userConfig}"
+    *            default-value="${user.home}/.config/zanata.ini"
     */
    /*
     * NB the annotation 'default-value' overrides the default in
@@ -51,26 +51,26 @@ public abstract class ConfigurableMojo extends AbstractMojo implements Configura
    private File userConfig;
 
    /**
-    * Base URL for the Flies server. Defaults to the value in flies.xml (if
-    * present), or else to flies.ini.
+    * Base URL for the server. Defaults to the value in zanata.xml (if
+    * present), or else to zanata.ini.
     * 
-    * @parameter expression="${flies.url}"
+    * @parameter expression="${zanata.url}"
     */
    private URL url;
 
    /**
-    * Username for accessing the Flies REST API. Defaults to the value in
-    * flies.ini.
+    * Username for accessing the REST API. Defaults to the value in
+    * zanata.ini.
     * 
-    * @parameter expression="${flies.username}"
+    * @parameter expression="${zanata.username}"
     */
    private String username;
 
    /**
-    * API key for accessing the Flies REST API. Defaults to the value in
-    * flies.ini.
+    * API key for accessing the REST API. Defaults to the value in
+    * zanata.ini.
     * 
-    * @parameter expression="${flies.key}"
+    * @parameter expression="${zanata.key}"
     */
    private String key;
 
@@ -121,12 +121,12 @@ public abstract class ConfigurableMojo extends AbstractMojo implements Configura
       try
       {
          OptionsUtil.applyConfigFiles(this);
-         FliesCommand command = initCommand();
+         ZanataCommand command = initCommand();
          command.run();
       }
       catch (Exception e)
       {
-         throw new MojoExecutionException("Flies mojo exception", e);
+         throw new MojoExecutionException("Zanata mojo exception", e);
       }
       finally
       {
@@ -134,7 +134,7 @@ public abstract class ConfigurableMojo extends AbstractMojo implements Configura
       }
    }
 
-   public abstract FliesCommand initCommand();
+   public abstract ZanataCommand initCommand();
 
    // These options don't apply to Mojos (since they duplicate Maven's built-in
    // mechanisms)

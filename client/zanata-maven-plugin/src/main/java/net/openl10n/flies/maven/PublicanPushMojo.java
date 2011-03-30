@@ -6,7 +6,7 @@ import net.openl10n.flies.client.commands.PublicanPushCommand;
 import net.openl10n.flies.client.commands.PublicanPushOptions;
 
 /**
- * Publishes publican source text to a Flies project version so that it can be
+ * Publishes publican source text to a Zanata project version so that it can be
  * translated.
  * 
  * @goal publican-push
@@ -32,7 +32,7 @@ public class PublicanPushMojo extends ConfigurableProjectMojo implements Publica
     * locale directories), although the location of "pot" can be overridden with
     * the srcDirPot option.
     * 
-    * @parameter expression="${flies.srcDir}"
+    * @parameter expression="${zanata.srcDir}"
     * @required
     */
    private File srcDir;
@@ -40,36 +40,36 @@ public class PublicanPushMojo extends ConfigurableProjectMojo implements Publica
    /**
     * Base directory for pot files.
     * 
-    * @parameter expression="${flies.srcDirPot}"
-    *            default-value="${flies.srcDir}/pot"
+    * @parameter expression="${zanata.srcDirPot}"
+    *            default-value="${zanata.srcDir}/pot"
     */
    private File srcDirPot;
 
    /**
     * Language of source (defaults to en-US)
     * 
-    * @parameter expression="${flies.sourceLang}"
+    * @parameter expression="${zanata.sourceLang}"
     */
    private String sourceLang = "en-US";
 
    /**
-    * Import translations from local PO files to Flies, overwriting or erasing
+    * Import translations from local PO files to the server, overwriting or erasing
     * existing translations (DANGER!)
     * 
-    * @parameter expression="${flies.importPo}"
+    * @parameter expression="${zanata.importPo}"
     */
    private boolean importPo;
    
    /**
-    * Whether Flies should copy latest translation from equivalent documents from other versions of the same project
-    * @parameter expression="${flies.copyTrans}" default-value="true"
+    * Whether the server should copy latest translations from equivalent messages/documents in the database.
+    * @parameter expression="${zanata.copyTrans}" default-value="true"
     */
    private boolean copyTrans;
 
    /**
-    * Validate XML before sending request to server
+    * Should the client validate XML before sending request to server (debugging).
     * 
-    * @parameter expression="${flies.validate}"
+    * @parameter expression="${zanata.validate}"
     */
    private boolean validate;
 

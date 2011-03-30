@@ -34,7 +34,7 @@ public class PublicanPushOptionsImpl extends ConfigurableProjectOptionsImpl impl
    @Override
    public String getCommandDescription()
    {
-      return "Publishes publican source text to a Flies project version so that it can be translated.";
+      return "Publishes publican source text to Zanata so that it can be translated.";
    }
 
    @Override
@@ -63,7 +63,7 @@ public class PublicanPushOptionsImpl extends ConfigurableProjectOptionsImpl impl
       this.sourceLang = sourceLang;
    }
 
-   @Option(name = "--import-po", usage = "Import translations from local PO files to Flies, overwriting or erasing existing translations (DANGER!)")
+   @Option(name = "--import-po", usage = "Import translations from local PO files to Zanata, overwriting or erasing existing translations (DANGER!)")
    public void setImportPo(boolean importPo)
    {
       this.importPo = importPo;

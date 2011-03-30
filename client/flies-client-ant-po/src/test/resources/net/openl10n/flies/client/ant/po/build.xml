@@ -10,7 +10,7 @@
 
 	<!-- remote def -->
 	<property name="bob.key" value="34567890123456789012345678901234" />
-	<property name="fliesUrl" value="http://localhost:8080/flies" />
+	<property name="url" value="http://localhost:8080/zanata" />
 	<property name="proj" value="sample-project" />
 	<property name="iter" value="1.1" />
 
@@ -35,7 +35,7 @@
 
 	<target name="roundtripremote">
 		<ant antfile="roundtrip.xml" target="_roundtrip">
-			<property name="docsUrl" value="${fliesUrl}/seam/resource/restv1/projects/p/${proj}/iterations/i/${iter}/documents" />
+			<property name="docsUrl" value="${url}/seam/resource/restv1/projects/p/${proj}/iterations/i/${iter}/documents" />
 		</ant>
 	</target>
 </project>
