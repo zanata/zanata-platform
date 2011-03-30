@@ -598,7 +598,7 @@
 
 
 		<profile>
-			<id>flies-test</id>
+			<id>zanata-test</id>
 			<properties>
 				<war.name>zanata-test</war.name>
 			</properties>
