@@ -10,6 +10,25 @@
       </rule>
     </navigation>
   </page>
+ 
+  <page view-id="/openid.xhtml">
+	 <navigation evaluate="#{fedoraOpenId.loginImmediately()}">
+        <rule if-outcome="new">
+            <redirect view-id="/profile/edit.xhtml">
+            </redirect>
+        </rule>
+        <rule if-outcome="success">
+            <redirect view-id="/home.xhtml">
+            </redirect>
+        </rule>
+        <rule if-outcome="failure">
+            <redirect view-id="/home.xhtml">
+            </redirect>
+        </rule>
+     </navigation>
+  </page>
+
+ 
   
   <page view-id="/edit_home_content.xhtml">
     <restrict>#{s:hasRole('admin')}</restrict>

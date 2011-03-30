@@ -25,6 +25,7 @@
 		<spNego.authentication>false</spNego.authentication>
 		<jaas.configure>flies</jaas.configure>
 		<flies.gwt.module>net.openl10n.flies.webtrans.Application</flies.gwt.module>
+		<fedora.openId>false</fedora.openId>
 		<extra.servlets />
 	</properties>
 
@@ -593,6 +594,13 @@
 			<properties>
 				<internal.authentication>true</internal.authentication>
 				<jaas.configure>default</jaas.configure>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>fedoraOpenId</id>
+			<properties>
+				<fedora.openId>true</fedora.openId>
 			</properties>
 		</profile>
 
@@ -1212,6 +1220,41 @@
 		<dependency>
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
+		</dependency>
+
+		<!--  openid4java -->
+		<dependency>
+		  <groupId>org.htmlparser</groupId>
+		  <artifactId>htmlparser</artifactId>
+		  <version>1.6</version>
+		</dependency>				
+	
+		<dependency>
+		  <groupId>org.openid4java</groupId>
+		  <artifactId>openid4java</artifactId>
+		  <version>0.9.5</version>
+		</dependency>
+
+		<dependency>
+		  <groupId>org.openxri</groupId>
+		  <artifactId>openxri-client</artifactId>
+		  <version>1.2.0</version>
+		<exclusions>
+			<exclusion>
+				<groupId>xalan</groupId>
+				<artifactId>xalan</artifactId>
+			</exclusion>
+			<exclusion>
+				<groupId>xerces</groupId>
+				<artifactId>xercesImpl</artifactId>
+			</exclusion>
+		</exclusions>
+		</dependency>
+
+		<dependency>
+		  <groupId>org.openxri</groupId>
+		  <artifactId>openxri-syntax</artifactId>
+		  <version>1.2.0</version>
 		</dependency>
 
 	</dependencies>

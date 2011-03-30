@@ -15,7 +15,7 @@
             <h:inputText id="username"
                       value="#{credentials.username}"/>
         </s:decorate>
-        <s:decorate id="passwordField" template="edit.xhtml">
+        <s:decorate id="passwordField" template="edit.xhtml" rendered="#{!fliesInit.fedoraOpenId}">
             <ui:define name="label">#{messages['jsf.Password']}</ui:define>
             <h:inputSecret id="password"
                         value="#{credentials.password}"/>

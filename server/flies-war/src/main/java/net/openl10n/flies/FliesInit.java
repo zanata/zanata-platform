@@ -76,6 +76,7 @@ public class FliesInit
    private String buildTimestamp;
    private boolean internalAuthentication;
    private boolean spNego;
+   private boolean fedoraOpenId;
 
    public boolean isSpNego()
    {
@@ -85,6 +86,16 @@ public class FliesInit
    public void setSpNego(boolean var)
    {
       this.spNego = var;
+   }
+
+   public boolean isFedoraOpenId()
+   {
+      return fedoraOpenId;
+   }
+
+   public void setFedoraOpenId(boolean var)
+   {
+      this.fedoraOpenId = var;
    }
 
    public boolean isInternalAuthentication()

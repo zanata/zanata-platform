@@ -16,6 +16,9 @@
          <supported-locale>qc</supported-locale>
       </locale-config>
       <view-handler>com.sun.facelets.FaceletViewHandler</view-handler>
+      <lifecycle>
+    	<phase-listener>org.jboss.seam.security.openid.OpenIdPhaseListener</phase-listener>
+	  </lifecycle>
    </application>
 
 </faces-config>
