@@ -1,0 +1,10 @@
+#!/bin/sh
+set -eu
+
+# Export translations from flies to git (eg before a release)
+
+# pull latest translations into po files
+echo "Pulling latest translations from Flies server"
+mvn flies:publican-pull -e
+
+echo "Finished! Don't forget to check locale dirs into version control to record the updated PO files"
