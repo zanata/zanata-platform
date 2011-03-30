@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.openl10n.flies</groupId>
 	<artifactId>flies-parent</artifactId>
-	<version>1.3-SNAPSHOT</version>
+	<version>1.3-alpha-1</version>
 	<name>Flies Parent POM</name>
 	<url>http://flies.openl10n.net/</url>
 	<packaging>pom</packaging>
