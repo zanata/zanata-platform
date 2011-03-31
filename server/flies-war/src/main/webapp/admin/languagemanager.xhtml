@@ -33,7 +33,7 @@
 		<rich:panel>
 			<f:facet name="header">#{messages['jsf.LanguageManager']}</f:facet>
 
-			<h:form>
+			<a4j:form>
 				<s:token allowMultiplePosts="true" />
 				<rich:dataTable id="threads" value="#{allLanguages}"
 					var="language">
@@ -56,18 +56,18 @@
 	        		</rich:column>
 					<rich:column rendered="#{language.active}">
 						<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-						<h:commandLink value="#{messages['jsf.Disabled']}"
+						<h:commandButton value="#{messages['jsf.Disabled']}" 
 							action="#{languageSearchAction.disable(languageSearchAction.selectedLanguage)}"
 							onclick="return confirmDisable()" />
 					</rich:column>
 					<rich:column rendered="#{!language.active}">
 						<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-						<h:commandLink value="#{messages['jsf.Enable']}"
+						<h:commandButton value="#{messages['jsf.Enable']}" 
 							action="#{languageSearchAction.enable(languageSearchAction.selectedLanguage)}"
 							onclick="return confirmEnable()" />
 					</rich:column>
 				</rich:dataTable>
-			</h:form>
+			</a4j:form>
 		</rich:panel>
 	</ui:define>
 

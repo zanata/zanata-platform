@@ -145,7 +145,15 @@
     </navigation>
   </page>
   
-  <page view-id="/admin/languagemanager.xhtml" action="#{languageSearchAction.loadSupportedLanguage}" />
+  <page view-id="/admin/languagemanager.xhtml" >
+    <action execute="#{languageSearchAction.loadSupportedLanguage}" />
+    <navigation from-action="#{languageSearchAction.disable(languageSearchAction.selectedLanguage)}">
+      <redirect view-id="/admin/languagemanager.xhtml" />
+    </navigation>
+    <navigation from-action="#{languageSearchAction.enable(languageSearchAction.selectedLanguage)}">
+      <redirect view-id="/admin/languagemanager.xhtml" />
+    </navigation>
+  </page>
 
   <!-- Profile -->
 
