@@ -58,6 +58,7 @@ public class FedoraOpenId
    {
       if (openId.loginImmediately())
       {
+         identity.getCredentials().setInitialized(true);
          identity.setPreAuthenticated(true);
          if (!identity.isLoggedIn())
          {
@@ -96,6 +97,5 @@ public class FedoraOpenId
          throw le;
       }
    }
-
 
 }
