@@ -23,7 +23,7 @@
 		<env.dbunit.type>HSQL</env.dbunit.type>
 		<internal.authentication>false</internal.authentication>
 		<spNego.authentication>false</spNego.authentication>
-		<jaas.configure>flies</jaas.configure>
+		<jaas.configure>zanata</jaas.configure>
 		<flies.gwt.module>net.openl10n.flies.webtrans.Application</flies.gwt.module>
 		<fedora.openId>false</fedora.openId>
 		<extra.servlets />
