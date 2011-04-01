@@ -1239,7 +1239,7 @@
 		  <groupId>org.openxri</groupId>
 		  <artifactId>openxri-client</artifactId>
 		  <version>1.2.0</version>
-		<exclusions>
+		  <exclusions>
 			<exclusion>
 				<groupId>xalan</groupId>
 				<artifactId>xalan</artifactId>
@@ -1248,13 +1248,23 @@
 				<groupId>xerces</groupId>
 				<artifactId>xercesImpl</artifactId>
 			</exclusion>
-		</exclusions>
+			<exclusion>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-jcl</artifactId>
+			</exclusion>
+		  </exclusions>
 		</dependency>
 
 		<dependency>
 		  <groupId>org.openxri</groupId>
 		  <artifactId>openxri-syntax</artifactId>
 		  <version>1.2.0</version>
+		  <exclusions>
+			<exclusion>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-jcl</artifactId>
+			</exclusion>
+		 </exclusions>
 		</dependency>
 
 	</dependencies>
