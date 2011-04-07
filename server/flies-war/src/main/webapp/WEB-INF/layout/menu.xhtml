@@ -16,18 +16,7 @@
 		<li id="tab_projects" class="ui-tabs-nav-issues"><s:link
 			id="Projects" view="/project/home.xhtml" propagation="none">
 			<span><img src="#{request.contextPath}/img/silk/photos.png" />#{messages['jsf.Projects']}</span>
-		</s:link> <s:fragment rendered="#{maintainerProjectList.maintainerProjects.size !=0}">
-			<ul>
-				<ui:repeat id="Project_list"
-					value="#{maintainerProjectList.maintainerProjects}" var="project">
-					<li id="Project_#{project.slug}"><s:link
-						view="/project/project.xhtml" propagation="none">
-		  #{project.name}
-		<f:param name="slug" value="#{project.slug}" />
-					</s:link></li>
-				</ui:repeat>
-			</ul>
-		</s:fragment></li>
+		</s:link> </li>
 		<li id="tab_tribes"><s:link id="Languages"
 			view="/language/home.xhtml" propagation="none">
 			<span><img src="#{request.contextPath}/img/silk/world.png" />#{messages['jsf.Languages']}</span>
