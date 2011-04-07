@@ -77,6 +77,7 @@ public class ProjectSearch
          this.currentPage = page;
    }
 
+   @SuppressWarnings("unchecked")
    public void search()
    {
       FullTextQuery query;
@@ -92,6 +93,7 @@ public class ProjectSearch
       searchResults = query.setMaxResults(pageSize + 1).setFirstResult(pageSize * (currentPage - 1)).getResultList();
    }
 
+   @SuppressWarnings("deprecation")
    private FullTextQuery searchQuery(String searchQuery) throws ParseException
    {
       String[] projectFields = { "slug", "name", "description" };

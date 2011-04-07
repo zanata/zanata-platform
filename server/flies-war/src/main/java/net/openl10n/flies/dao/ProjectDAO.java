@@ -7,6 +7,7 @@ import net.openl10n.flies.model.HProject;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -18,6 +19,7 @@ import org.jboss.seam.annotations.Scope;
 @Scope(ScopeType.STATELESS)
 public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
 {
+   private static final String ORDERBY_TIMESTAMP = "creationDate";
 
    public ProjectDAO()
    {
@@ -41,5 +43,17 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long>
       return query.list();
    }
 
+   @SuppressWarnings("unchecked")
+   public List<HProject> getOffsetListByCreateDate(int offset, int count)
+   {
+      return getSession().createCriteria(HProject.class).addOrder(Order.desc(ORDERBY_TIMESTAMP)).setMaxResults(count).setFirstResult(offset).setComment("ProjectDAO.getOffsetListByCreateDate").list();
+   }
 
+   public int getProjectSize()
+   {
+      Long totalCount = (Long) getSession().createQuery("select count(*) from HProject").uniqueResult();
+      if (totalCount == null)
+         return 0;
+      return totalCount.intValue();
+   }
 }

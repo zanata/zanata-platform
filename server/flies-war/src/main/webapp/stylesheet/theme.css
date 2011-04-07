@@ -771,6 +771,17 @@ a.action_link {
 	text-align: center;
 }
 
+a.project_link {
+	font-size: 130%;
+	font-weight: bold;
+	padding: 4px;	
+	-moz-border-radius: 5px;
+	color: #7092C3;
+	text-decoration: none;
+	margin: 1px;
+	text-align: right;
+}
+
 a.action_link:hover {
 	background-color: #F5F8FF;
 	border: 2px solid #F6F9F7;
