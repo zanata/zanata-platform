@@ -17,7 +17,7 @@
         </s:decorate>
 
         <s:decorate id="slugField" template="edit.xhtml">
-            <ui:define name="label">#{messages['jsf.Slug']}</ui:define>
+            <ui:define name="label">#{messages['jsf.Id']}</ui:define>
             <h:outputText rendered="#{projectHome.managed}" value="#{projectHome.instance.slug}" />
             <h:inputText rendered="#{not projectHome.managed}"
                          id="slug" required="true"
@@ -25,7 +25,12 @@
                          valueChangeListener="#{projectHome.verifySlugAvailable}">
               <a4j:support event="onblur" reRender="slugField" ajaxSingle="true"/>
             </h:inputText>
-        </s:decorate>
+            <h:graphicImage id="slugHelp" value="/img/msginfo.png" styleClass="input_help">
+	        <rich:toolTip>
+	          <em><code>#{messages['jsf.ProjectIdExample']}</code></em>
+	        </rich:toolTip>
+	     </h:graphicImage>
+       </s:decorate>
 
         <s:decorate id="descriptionField" template="edit.xhtml">
             <ui:define name="label">#{messages['jsf.Description']}</ui:define>
