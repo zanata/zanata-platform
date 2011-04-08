@@ -28,7 +28,7 @@
     <s:fragment rendered="#{!projectAction.getEmpty()}">
       <a4j:form>
 	 <rich:datascroller align="center" for="projectList" maxPages="10"
-		    page="#{projectAction.scrollerPage}" id="scroller" />
+		    page="#{projectAction.scrollerPage}" id="scroller" reRender="sc2" />
 	<rich:spacer height="15" />
         <rich:dataTable id="projectList" 
             rows="#{projectAction.pageSize}"  columnsWidth="200px,200px,80px" 
