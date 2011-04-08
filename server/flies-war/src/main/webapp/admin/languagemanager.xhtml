@@ -42,13 +42,9 @@
 						<f:facet name="header">#{messages['jsf.Language']}</f:facet>
 	            		#{language.localeId.id}
 	        		</rich:column>
-					<rich:column sortBy="#{language.uLocale.displayName}">
+					<rich:column sortBy="#{language.retrieveDisplayName()}">
 						<f:facet name="header">#{messages['jsf.Name']}</f:facet>
-	            		#{language.asULocale().displayName}
-	        		</rich:column>
-					<rich:column sortBy="#{language.uLocale.variant}">
-						<f:facet name="header">#{messages['jsf.Variant']}</f:facet>
-	            		#{language.asULocale().variant}
+	            		#{language.retrieveDisplayName()}
 	        		</rich:column>
 					<rich:column >
 						<f:facet name="header">#{messages['jsf.NativeName']}</f:facet>
