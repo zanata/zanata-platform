@@ -283,4 +283,9 @@ public class LocaleServiceImpl implements LocaleService
       }
       return result;
    }
+
+   public HLocale getSourceLocale(String projectSlug, String iterationSlug)
+   {
+      return localeDAO.findByLocaleId(new LocaleId("en-US"));
+   }
 }

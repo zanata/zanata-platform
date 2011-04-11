@@ -61,4 +61,7 @@ public interface LocaleService
    Map<String, String> getIterationCustomizedLocalesItems(String projectSlug, String iterationSlug);
    
    Map<String, String> getIterationGlobalLocaleItems(String projectSlug);
+
+   HLocale getSourceLocale(String projectSlug, String iterationSlug);
+
 }
