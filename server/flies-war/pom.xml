@@ -598,7 +598,7 @@
 		</profile>
 
 		<profile>
-			<id>fedoraOpenId</id>
+			<id>fedora</id>
 			<properties>
 				<fedora.openId>true</fedora.openId>
 			</properties>
