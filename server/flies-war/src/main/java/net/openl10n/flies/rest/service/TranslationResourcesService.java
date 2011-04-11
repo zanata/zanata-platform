@@ -60,6 +60,7 @@ import net.openl10n.flies.dao.DocumentDAO;
 import net.openl10n.flies.dao.PersonDAO;
 import net.openl10n.flies.dao.ProjectIterationDAO;
 import net.openl10n.flies.dao.TextFlowTargetDAO;
+import net.openl10n.flies.dao.TextFlowTargetHistoryDAO;
 import net.openl10n.flies.exception.FliesServiceException;
 import net.openl10n.flies.model.HDocument;
 import net.openl10n.flies.model.HLocale;
@@ -153,6 +154,9 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
    @In
    private PersonDAO personDAO;
+
+   @In
+   private TextFlowTargetHistoryDAO textFlowTargetHistoryDAO;
 
    private final Log log = Logging.getLog(TranslationResourcesService.class);
 
@@ -632,7 +636,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    // /r/{id}/translations/{locale}
-   public Response putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, InputStream messageBody)
+   public Response putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, @QueryParam("merge") @DefaultValue("auto") String merge, InputStream messageBody)
    {
       log.debug("start put translations");
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
@@ -722,13 +726,50 @@ public class TranslationResourcesService implements TranslationResourcesResource
             }
             else
             {
-               targetChanged |= resourceUtils.transferFromTextFlowTarget(current, hTarget);
-               targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(current.getExtensions(true), hTarget, extensions);
-               if (targetChanged)
+               if (merge.equals("auto"))
                {
-                  changedTargets.add(hTarget);
+                  log.debug("auto merge");
+                  if (!current.getContent().isEmpty())
+                  {
+                     if (hTarget.getState() == ContentState.New)
+                     {
+                        targetChanged |= resourceUtils.transferFromTextFlowTarget(current, hTarget);
+                        targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(current.getExtensions(true), hTarget, extensions);
+                        if (targetChanged)
+                        {
+                           changedTargets.add(hTarget);
+                        }
+                     }
+                     else
+                     {
+                        log.debug("prefer new");
+                        String localContent = current.getContent();
+                        boolean matchHistory = textFlowTargetHistoryDAO.findContentInHistory(hTarget, localContent);
+                        if (!matchHistory)
+                        {
+                           targetChanged |= resourceUtils.transferFromTextFlowTarget(current, hTarget);
+                           targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(current.getExtensions(true), hTarget, extensions);
+                           if (targetChanged)
+                           {
+                              changedTargets.add(hTarget);
+                           }
+                        }
+                     }
+                  }
+               }
+
+               if (merge.equals("import"))
+               {
+                  log.debug("import merge");
+                  targetChanged |= resourceUtils.transferFromTextFlowTarget(current, hTarget);
+                  targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(current.getExtensions(true), hTarget, extensions);
+                  if (targetChanged)
+                  {
+                     changedTargets.add(hTarget);
+                  }
                }
             }
+
 
             // update translation information if applicable
             if (targetChanged && current.getTranslator() != null)
