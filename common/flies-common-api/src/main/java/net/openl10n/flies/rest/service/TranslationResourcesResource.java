@@ -99,6 +99,6 @@ public interface TranslationResourcesResource
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    // /r/{id}/translations/{locale}
-   public Response putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, InputStream messageBody);
+   public Response putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, @PathParam("merge") String merge, InputStream messageBody);
 
 }
