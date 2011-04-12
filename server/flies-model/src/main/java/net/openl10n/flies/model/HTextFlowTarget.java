@@ -34,6 +34,7 @@ import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.hibernate.search.ContentStateBridge;
 import net.openl10n.flies.hibernate.search.LocaleIdBridge;
 
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Field;
@@ -175,7 +176,9 @@ public class HTextFlowTarget extends AbstractFliesEntity implements ITextFlowTar
       this.content = content;
    }
 
+   // TODO use orphanRemoval=true: requires JPA 2.0
    @OneToOne(optional = true, cascade = CascadeType.ALL)
+   @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
    @JoinColumn(name = "comment_id")
    public HSimpleComment getComment()
    {
