@@ -12,7 +12,7 @@
   </page>
  
   <page view-id="/openid.xhtml">
-	 <navigation evaluate="#{fedoraOpenId.loginImmediately()}">
+	 <navigation evaluate="#{fedoraOpenId.loginImmediate()}">
         <rule if-outcome="new">
             <redirect view-id="/profile/edit.xhtml">
             </redirect>

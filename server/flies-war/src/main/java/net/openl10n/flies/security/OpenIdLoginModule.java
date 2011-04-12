@@ -76,13 +76,12 @@ public class OpenIdLoginModule implements LoginModule
          // Get the username and password from the callback handler
          callbackHandler.handle(new Callback[] { cbName, cbPassword });
          username = cbName.getName();
-
          FedoraOpenId openid = (FedoraOpenId) Component.getInstance(FedoraOpenId.class, ScopeType.SESSION);
          openid.login(username);
       }
       catch (Exception ex)
       {
-         log.warn("Error logging in");
+         log.error("Error logging in " + ex.getMessage());
          LoginException le = new LoginException(ex.getMessage());
          le.initCause(ex);
          throw le;
