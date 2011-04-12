@@ -25,9 +25,9 @@ import java.util.List;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.openl10n.flies.ApplicationConfiguration;
 import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.service.LocaleService;
 
@@ -53,10 +53,11 @@ public class ConfigurationAction implements Serializable
    Log log;
    @In
    LocaleService localeServiceImpl;
+   @In
+   ApplicationConfiguration applicationConfiguration;
 
    public void getData()
    {
-      HttpServletRequest request =(HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
       HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
       response.setContentType("application/xml");
       response.addHeader("Content-disposition", "attachment; filename=\"" + FILE_NAME + "\"");
@@ -65,16 +66,7 @@ public class ConfigurationAction implements Serializable
       {
          ServletOutputStream os = response.getOutputStream();
          StringBuilder var = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<config xmlns=\"http://flies.openl10n.net/config/v1/\">\n");
-         var.append("  <url>" + request.getScheme() + "://" + request.getServerName());
-         if (request.getServerPort() != 80)
-         {
-            var.append(":" + request.getServerPort());
-         }
-         if (!request.getContextPath().isEmpty())
-         {
-            var.append(request.getContextPath());
-         }
-         var.append("/</url>\n");
+         var.append("  <url>" + applicationConfiguration.getServerPath() + "/</url>\n");
          var.append("  <project>" + projectSlug + "</project>\n");
          var.append("  <project-version>" + iterationSlug + "</project-version>\n\n");
 
