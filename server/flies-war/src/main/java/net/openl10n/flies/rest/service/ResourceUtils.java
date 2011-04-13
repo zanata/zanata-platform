@@ -644,14 +644,17 @@ public class ResourceUtils
       for(HTextFlowTarget tft : hTargets)
       {
          HPerson person = tft.getLastModifiedBy();
-         Calendar lastChanged = Calendar.getInstance();
-         lastChanged.setTime(tft.getLastChanged());
-         int year = lastChanged.get(Calendar.YEAR);
-         TranslatorCredit credit = new TranslatorCredit();
-         credit.setEmail(person.getEmail());
-         credit.setName(person.getName());
-         credit.setYear(year);
-         zanataCredits.add(credit);
+         if (person != null)
+         {
+            Calendar lastChanged = Calendar.getInstance();
+            lastChanged.setTime(tft.getLastChanged());
+            int year = lastChanged.get(Calendar.YEAR);
+            TranslatorCredit credit = new TranslatorCredit();
+            credit.setEmail(person.getEmail());
+            credit.setName(person.getName());
+            credit.setYear(year);
+            zanataCredits.add(credit);
+         }
       }
       for(TranslatorCredit credit : zanataCredits)
       {
