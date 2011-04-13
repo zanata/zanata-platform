@@ -43,6 +43,7 @@ import net.openl10n.flies.hibernate.search.DefaultNgramAnalyzer;
 import net.openl10n.flies.util.OkapiUtil;
 
 import org.hibernate.annotations.AccessType;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyzer;
@@ -196,7 +197,9 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
       updateWordCount();
    }
 
+   // TODO use orphanRemoval=true: requires JPA 2.0
    @OneToOne(optional = true, cascade = CascadeType.ALL)
+   @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
    @JoinColumn(name = "comment_id")
    public HSimpleComment getComment()
    {

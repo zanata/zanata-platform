@@ -19,6 +19,7 @@ public class PublicanPushOptionsImpl extends ConfigurableProjectOptionsImpl impl
    private boolean importPo;
    private boolean copyTrans = true;
    private boolean validate;
+   private String mergeType = "auto";
 
    public PublicanPushOptionsImpl()
    {
@@ -116,6 +117,12 @@ public class PublicanPushOptionsImpl extends ConfigurableProjectOptionsImpl impl
    public String getSourceLang()
    {
       return sourceLang;
+   }
+   
+   @Override
+   public String getMergeType()
+   {
+      return mergeType;
    }
 
 }

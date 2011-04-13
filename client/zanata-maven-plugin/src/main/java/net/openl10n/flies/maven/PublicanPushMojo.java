@@ -53,7 +53,7 @@ public class PublicanPushMojo extends ConfigurableProjectMojo implements Publica
    private String sourceLang = "en-US";
 
    /**
-    * Import translations from local PO files to the server, overwriting or erasing
+    * Import/merge translations from local PO files to the server, overwriting or erasing
     * existing translations (DANGER!)
     * 
     * @parameter expression="${zanata.importPo}"
@@ -73,6 +73,13 @@ public class PublicanPushMojo extends ConfigurableProjectMojo implements Publica
     */
    private boolean validate;
 
+   /**
+    * Merge type: "auto" (default) or "import" (DANGER!).  
+    * 
+    * @parameter expression="${zanata.merge}" default-value="auto"
+    */
+   private String merge;
+   
    @Override
    public File getSrcDir()
    {
@@ -106,6 +113,12 @@ public class PublicanPushMojo extends ConfigurableProjectMojo implements Publica
    public boolean getValidate()
    {
       return validate;
+   }
+   
+   @Override
+   public String getMergeType()
+   {
+      return merge;
    }
 
 }

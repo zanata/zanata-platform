@@ -28,6 +28,7 @@ import javax.persistence.OneToOne;
 import net.openl10n.flies.model.AbstractFliesEntity;
 import net.openl10n.flies.model.HSimpleComment;
 
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Type;
 
 /**
@@ -49,7 +50,9 @@ public abstract class AbstractPoHeader extends AbstractFliesEntity
       this.comment = comment;
    }
 
+   // TODO use orphanRemoval=true: requires JPA 2.0
    @OneToOne(optional = true, cascade = CascadeType.ALL)
+   @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
    @JoinColumn(name = "comment_id")
    public HSimpleComment getComment()
    {

@@ -164,5 +164,11 @@ public class HLocale extends AbstractFliesEntity implements Serializable
          return false;
       return true;
    }
+   
+   @Override
+   public String toString()
+   {
+      return "HLocale(id="+id+" "+localeId.getId()+")";
+   }
 
 }
