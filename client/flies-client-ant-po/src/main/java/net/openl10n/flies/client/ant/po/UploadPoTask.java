@@ -20,6 +20,7 @@ public class UploadPoTask extends ConfigurableProjectTask implements PublicanPus
    private boolean importPo;
    private boolean copyTrans = true;
    private boolean validate;
+   private String mergeType = "auto";
 
    public static void main(String[] args)
    {
@@ -110,6 +111,12 @@ public class UploadPoTask extends ConfigurableProjectTask implements PublicanPus
    public String getSourceLang()
    {
       return sourceLang;
+   }
+   
+   @Override
+   public String getMergeType()
+   {
+      return mergeType;
    }
 
 

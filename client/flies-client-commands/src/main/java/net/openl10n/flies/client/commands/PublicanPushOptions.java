@@ -10,4 +10,5 @@ public interface PublicanPushOptions extends ConfigurableProjectOptions
    public boolean getImportPo();
    public boolean getCopyTrans();
    public boolean getValidate();
+   public String getMergeType();
 }
