@@ -67,5 +67,9 @@ public interface ITranslationResources
    @PUT
    @Path("{id}/translations/{locale}")
    public ClientResponse<String> putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, TranslationsResource messageBody, @QueryParam("ext") StringSet extensions);
+   
+   @PUT
+   @Path("{id}/translations/{locale}")
+   public ClientResponse<String> putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, TranslationsResource messageBody, @QueryParam("ext") StringSet extensions, @QueryParam("merge") String mergeType);
 
 }
