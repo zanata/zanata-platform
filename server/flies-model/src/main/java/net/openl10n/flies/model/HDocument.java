@@ -44,6 +44,7 @@ import net.openl10n.flies.rest.dto.resource.Resource;
 import net.openl10n.flies.rest.dto.resource.ResourceMeta;
 import net.openl10n.flies.rest.dto.resource.TranslationsResource;
 
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
@@ -320,12 +321,16 @@ public class HDocument extends AbstractFliesEntity implements IDocumentHistory
       return poHeader;
    }
 
-   public void setPoTargetHeaders(Map<HLocale, HPoTargetHeader> poTargetHeaders)
+   // private setter for Hibernate
+   @SuppressWarnings("unused")
+   private void setPoTargetHeaders(Map<HLocale, HPoTargetHeader> poTargetHeaders)
    {
       this.poTargetHeaders = poTargetHeaders;
    }
 
+   // TODO use orphanRemoval=true: requires JPA 2.0
    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "document")
+   @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
    @MapKey(name = "targetLanguage")
    public Map<HLocale, HPoTargetHeader> getPoTargetHeaders()
    {

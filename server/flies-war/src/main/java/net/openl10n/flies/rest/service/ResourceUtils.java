@@ -252,7 +252,7 @@ public class ResourceUtils
          PoTargetHeader fromTargetHeader = from.findByType(PoTargetHeader.class);
          if (fromTargetHeader != null)
          {
-            log.debug("locale:" + locale.getLocaleId().getId());
+            log.debug("found PO header for locale: {0}", locale);
             HPoTargetHeader toTargetHeader = to.getPoTargetHeaders().get(locale);
             if (toTargetHeader == null)
             {
@@ -273,7 +273,6 @@ public class ResourceUtils
             changed |= to.getPoTargetHeaders().remove(locale) != null;
          }
       }
-
       return changed;
    }
 
@@ -544,12 +543,12 @@ public class ResourceUtils
    {
       if (enabledExtensions.contains(PoTargetHeader.ID))
       {
-         log.debug("start set PoTargetHeader");
+         log.debug("PoTargetHeader requested");
          PoTargetHeader poTargetHeader = new PoTargetHeader();
          HPoTargetHeader fromHeader = from.getPoTargetHeaders().get(locale);
          if (fromHeader != null)
          {
-            log.debug("set potargetheader:");
+            log.debug("PoTargetHeader found");
             transferToPoTargetHeader(fromHeader, poTargetHeader);
             to.add(poTargetHeader);
          }
