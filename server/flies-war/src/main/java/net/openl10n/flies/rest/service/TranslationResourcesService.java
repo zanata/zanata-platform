@@ -572,7 +572,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
       List<HTextFlowTarget> hTargets = textFlowTargetDAO.findTranslations(document, locale);
       TranslationsResource translationResource = new TranslationsResource();
-      resourceUtils.transferToTranslationsResourceExtensions(document, translationResource.getExtensions(true), extensions, hLocale);
+      resourceUtils.transferToTranslationsResourceExtensions(document, translationResource.getExtensions(true), extensions, hLocale, hTargets);
 
       if (hTargets.isEmpty() && translationResource.getExtensions(true).isEmpty())
       {
@@ -636,9 +636,18 @@ public class TranslationResourcesService implements TranslationResourcesResource
    @PUT
    @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
    // /r/{id}/translations/{locale}
-   public Response putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, @QueryParam("merge") @DefaultValue("auto") String merge, InputStream messageBody)
+   public Response putTranslations(@PathParam("id") String idNoSlash, @PathParam("locale") LocaleId locale, @QueryParam("merge") @DefaultValue("auto") String _merge, InputStream messageBody)
    {
       log.debug("start put translations");
+      MergeType mergeType;
+      try
+      {
+         mergeType = MergeType.valueOf(_merge.toUpperCase());
+      }
+      catch (Exception e)
+      {
+         return Response.status(Status.BAD_REQUEST).entity("bad merge type "+_merge).build();
+      }
       String id = URIHelper.convertFromDocumentURIId(idNoSlash);
       HProjectIteration hProjectIteration = retrieveIteration();
 
@@ -670,7 +679,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
       HLocale hLocale = validateLocale(locale, projectSlug, iterationSlug);
       // handle extensions
-      changed |= resourceUtils.transferFromTranslationsResourceExtensions(entity.getExtensions(true), document, extensions, hLocale);
+      changed |= resourceUtils.transferFromTranslationsResourceExtensions(entity.getExtensions(true), document, extensions, hLocale, mergeType);
 
       List<HPerson> newPeople = new ArrayList<HPerson>();
       List<HTextFlowTarget> newTargets = new ArrayList<HTextFlowTarget>();
@@ -704,11 +713,11 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
             if (current.getContent().isEmpty() && current.getState() != ContentState.New)
             {
-               return Response.status(Status.FORBIDDEN).entity("empty TextFlowTarget " + current.getResId() + " must have ContentState New").build();
+               return Response.status(Status.BAD_REQUEST).entity("empty TextFlowTarget " + current.getResId() + " must have ContentState New").build();
             }
             if (current.getState() == ContentState.New && !current.getContent().isEmpty())
             {
-               return Response.status(Status.FORBIDDEN).entity("ContentState New is illegal for non-empty TextFlowTarget " + current.getResId()).build();
+               return Response.status(Status.BAD_REQUEST).entity("ContentState New is illegal for non-empty TextFlowTarget " + current.getResId()).build();
             }
 
             HTextFlowTarget hTarget = textFlow.getTargets().get(hLocale);
@@ -726,8 +735,9 @@ public class TranslationResourcesService implements TranslationResourcesResource
             }
             else
             {
-               if (merge.equals("auto"))
+               switch (mergeType)
                {
+               case AUTO:
                   log.debug("auto merge");
                   if (!current.getContent().isEmpty())
                   {
@@ -756,10 +766,9 @@ public class TranslationResourcesService implements TranslationResourcesResource
                         }
                      }
                   }
-               }
+                  break;
 
-               if (merge.equals("import"))
-               {
+               case IMPORT:
                   log.debug("import merge");
                   targetChanged |= resourceUtils.transferFromTextFlowTarget(current, hTarget);
                   targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(current.getExtensions(true), hTarget, extensions);
@@ -767,25 +776,34 @@ public class TranslationResourcesService implements TranslationResourcesResource
                   {
                      changedTargets.add(hTarget);
                   }
+                  break;
+
+               default:
+                  return Response.status(Status.BAD_REQUEST).entity("bad merge type "+mergeType).build();
                }
             }
-
 
             // update translation information if applicable
-            if (targetChanged && current.getTranslator() != null)
+            if (targetChanged)
             {
-               String email = current.getTranslator().getEmail();
-               HPerson hPerson = personDAO.findByEmail(email);
-               if (hPerson == null)
+               if (current.getTranslator() != null)
                {
-                  hPerson = new HPerson();
-                  hPerson.setEmail(email);
-                  hPerson.setName(current.getTranslator().getName());
-                  newPeople.add(hPerson);
+                  String email = current.getTranslator().getEmail();
+                  HPerson hPerson = personDAO.findByEmail(email);
+                  if (hPerson == null)
+                  {
+                     hPerson = new HPerson();
+                     hPerson.setEmail(email);
+                     hPerson.setName(current.getTranslator().getName());
+                     newPeople.add(hPerson);
+                  }
+                  hTarget.setLastModifiedBy(hPerson);
                }
-               hTarget.setLastModifiedBy(hPerson);
+               else
+               {
+                  hTarget.setLastModifiedBy(null);
+               }
             }
-
             current = null;
          }
          else

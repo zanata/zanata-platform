@@ -1,9 +1,16 @@
 package net.openl10n.flies.rest.service;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -53,8 +60,14 @@ import org.jboss.seam.log.Logging;
 @BypassInterceptors
 public class ResourceUtils
 {
+   /**
+    * Newline character used for multi-line comments
+    */
+   private static final char NEWLINE = '\n';
 
-   Log log = Logging.getLog(ResourceUtils.class);
+   private static final String ZANATA_TAG = "#zanata";
+
+   private static final Log log = Logging.getLog(ResourceUtils.class);
 
    
    /**
@@ -180,6 +193,7 @@ public class ResourceUtils
     * @param from
     * @param to
     * @return
+    * @todo merge with {@link #transferFromTextFlowTargetExtensions}
     */
    public boolean transferFromTextFlowTarget(TextFlowTarget from, HTextFlowTarget to)
    {
@@ -207,6 +221,7 @@ public class ResourceUtils
     * @param to
     * @param enabledExtensions
     * @return
+    * @see #transferFromResource
     */
    private boolean transferFromResourceExtensions(ExtensionSet<AbstractResourceMetaExtension> from, HDocument to, Set<String> enabledExtensions)
    {
@@ -220,7 +235,7 @@ public class ResourceUtils
             HPoHeader poHeader = to.getPoHeader();
             if (poHeader == null)
             {
-               log.debug("creat a new HPoHeader");
+               log.debug("create a new HPoHeader");
                poHeader = new HPoHeader();
             }
             changed |= transferFromPoHeader(poHeaderExt, poHeader);
@@ -242,9 +257,11 @@ public class ResourceUtils
     * @param to
     * @param enabledExtensions
     * @param locale
+    * @param mergeType 
     * @return
+    * @see #transferToTranslationsResourceExtensions
     */
-   public boolean transferFromTranslationsResourceExtensions(ExtensionSet<TranslationsResourceExtension> from, HDocument to, Set<String> enabledExtensions, HLocale locale)
+   public boolean transferFromTranslationsResourceExtensions(ExtensionSet<TranslationsResourceExtension> from, HDocument to, Set<String> enabledExtensions, HLocale locale, MergeType mergeType)
    {
       boolean changed = false;
       if (enabledExtensions.contains(PoTargetHeader.ID))
@@ -260,12 +277,12 @@ public class ResourceUtils
                toTargetHeader = new HPoTargetHeader();
                toTargetHeader.setTargetLanguage(locale);
                toTargetHeader.setDocument(to);
-               transferFromPoTargetHeader(fromTargetHeader, toTargetHeader);
+               transferFromPoTargetHeader(fromTargetHeader, toTargetHeader, MergeType.IMPORT); // return value not needed
                to.getPoTargetHeaders().put(locale, toTargetHeader);
             }
             else
             {
-               changed |= transferFromPoTargetHeader(fromTargetHeader, toTargetHeader);
+               changed |= transferFromPoTargetHeader(fromTargetHeader, toTargetHeader, mergeType);
             }
          }
          else
@@ -282,6 +299,7 @@ public class ResourceUtils
     * @param hTarget
     * @param enabledExtensions
     * @return
+    * @todo merge with {@link #transferFromTextFlowTarget}
     */
    public boolean transferFromTextFlowTargetExtensions(ExtensionSet<TextFlowTargetExtension> extensions, HTextFlowTarget hTarget, Set<String> enabledExtensions)
    {
@@ -400,22 +418,21 @@ public class ResourceUtils
       return changed;
    }
 
-   private boolean transferFromPoTargetHeader(PoTargetHeader from, HPoTargetHeader to)
+   /**
+    * 
+    * @param from
+    * @param to
+    * @param mergeType 
+    * @return
+    * @see #transferFromTranslationsResourceExtensions
+    * @see #transferToPoTargetHeader
+    */
+   private boolean transferFromPoTargetHeader(PoTargetHeader from, HPoTargetHeader to, MergeType mergeType)
    {
-      boolean changed = false;
+      boolean changed = pushPoTargetComment(from, to, mergeType);
 
-      HSimpleComment comment = to.getComment();
-      if (comment == null)
-      {
-         comment = new HSimpleComment();
-      }
-      if (!equals(from.getComment(), comment.getComment()))
-      {
-         changed = true;
-         comment.setComment(from.getComment());
-         to.setComment(comment);
-      }
-
+      // TODO we should probably block PoHeader/POT-specific entries
+      // ie POT-Creation-Date, Project-Id-Version, Report-Msgid-Bugs-To
       String entries = PoUtility.listToHeader(from.getEntries());
       if (!equals(entries, to.getEntries()))
       {
@@ -424,6 +441,101 @@ public class ResourceUtils
       }
 
       return changed;
+   }
+
+   /**
+    * 
+    * @param fromHeader
+    * @param toHeader
+    * @param mergeType 
+    * @return
+    * @see #pullPoTargetComment
+    */
+   protected boolean pushPoTargetComment(PoTargetHeader fromHeader, HPoTargetHeader toHeader, MergeType mergeType)
+   {
+      boolean changed = false;
+      HSimpleComment hComment = toHeader.getComment();
+      if (hComment == null)
+      {
+         hComment = new HSimpleComment();
+      }
+      String fromComment = fromHeader.getComment();
+      String toComment = hComment.getComment();
+      if (!equals(fromComment, toComment))
+      {
+         // skip #zanata lines
+         List<String> fromLines = splitLines(fromComment, ZANATA_TAG);
+         StringBuilder sb = new StringBuilder(fromComment.length());
+         switch (mergeType)
+         {
+         case IMPORT:
+            for (String line : fromLines)
+            {
+               if (sb.length() != 0)
+                  sb.append(NEWLINE);
+               sb.append(line);
+               changed = true;
+            }
+            break;
+
+         default: // AUTO or anything else will merge comments
+            // to merge, we just append new lines, skip old lines
+            List<String> toLines = Collections.emptyList();
+            if (toComment != null)
+            {
+               sb.append(toComment);
+               toLines = splitLines(toComment, null);
+            }
+
+            for (String line : fromLines)
+            {
+               if (!toLines.contains(line))
+               {
+                  if (sb.length() != 0)
+                     sb.append(NEWLINE);
+                  sb.append(line);
+                  changed = true;
+               }
+            }
+            break;
+         }
+         if (changed)
+         {
+            hComment.setComment(sb.toString());
+            toHeader.setComment(hComment);
+         }
+      }
+      return changed;
+   }
+   
+   /**
+    * splits s into lines, skipping any which contain tagToSkip
+    * @param s
+    * @param tagToSkip
+    * @return
+    */
+   static List<String> splitLines(String s, String tagToSkip)
+   {
+      if (s.isEmpty())
+         return Collections.emptyList();
+      try
+      {
+         List<String> lineList = new ArrayList<String>(s.length() / 40);
+         BufferedReader reader = new BufferedReader(new StringReader(s));
+         String line;
+         while ((line = reader.readLine()) != null)
+         {
+            if (tagToSkip == null || !line.contains(tagToSkip))
+            {
+               lineList.add(line);
+            }
+         }
+         return lineList;
+      }
+      catch (IOException e)
+      {
+         throw new RuntimeException(e);
+      }
    }
 
    private boolean transferFromPoHeader(PoHeader from, HPoHeader to)
@@ -497,15 +609,54 @@ public class ResourceUtils
       to.getEntries().addAll(PoUtility.headerToList(from.getEntries()));
    }
 
-   private void transferToPoTargetHeader(HPoTargetHeader from, PoTargetHeader to)
+   /**
+    * 
+    * @param from
+    * @param to
+    * @see #transferToTranslationsResourceExtensions
+    * @see #transferFromPoTargetHeader
+    */
+   private void transferToPoTargetHeader(HPoTargetHeader from, PoTargetHeader to, List<HTextFlowTarget> hTargets)
    {
-      HSimpleComment comment = from.getComment();
-      if (comment != null)
-      {
-         to.setComment(comment.getComment());
-      }
+      pullPoTargetComment(from, to, hTargets);
       to.getEntries().addAll(PoUtility.headerToList(from.getEntries()));
 
+   }
+
+   /**
+    * 
+    * @param fromHeader
+    * @param toHeader
+    * @see #pushPoTargetComment
+    */
+   protected void pullPoTargetComment(HPoTargetHeader fromHeader, PoTargetHeader toHeader, List<HTextFlowTarget> hTargets)
+   {
+      StringBuilder sb = new StringBuilder();
+      HSimpleComment comment = fromHeader.getComment();
+      if (comment != null)
+      {
+         sb.append(comment.getComment());
+      }
+      // generate #zanata credit comments
+      // TODO order by year, then alphabetically
+      Set<String> zanataCredits = new LinkedHashSet<String>();
+      for(HTextFlowTarget tft : hTargets)
+      {
+         HPerson person = tft.getLastModifiedBy();
+         Calendar lastChanged = Calendar.getInstance();
+         lastChanged.setTime(tft.getLastChanged());
+         int year = lastChanged.get(Calendar.YEAR);
+         String credit = person.getName() + " " + "<" + person.getEmail() + ">, " + year + ". " + ZANATA_TAG;
+         zanataCredits.add(credit);
+      }
+      for(String credit : zanataCredits)
+      {
+         if (sb.length() != 0)
+            sb.append(NEWLINE);
+         sb.append(credit);
+      }
+      
+      toHeader.setComment(sb.toString());
    }
 
    public void transferToTextFlow(HTextFlow from, TextFlow to)
@@ -539,7 +690,15 @@ public class ResourceUtils
       }
    }
 
-   public void transferToTranslationsResourceExtensions(HDocument from, ExtensionSet<TranslationsResourceExtension> to, Set<String> enabledExtensions, HLocale locale)
+   /**
+    * 
+    * @param from
+    * @param to
+    * @param enabledExtensions
+    * @param locale
+    * @see #transferFromTranslationsResourceExtensions
+    */
+   public void transferToTranslationsResourceExtensions(HDocument from, ExtensionSet<TranslationsResourceExtension> to, Set<String> enabledExtensions, HLocale locale, List<HTextFlowTarget> hTargets)
    {
       if (enabledExtensions.contains(PoTargetHeader.ID))
       {
@@ -549,7 +708,7 @@ public class ResourceUtils
          if (fromHeader != null)
          {
             log.debug("PoTargetHeader found");
-            transferToPoTargetHeader(fromHeader, poTargetHeader);
+            transferToPoTargetHeader(fromHeader, poTargetHeader, hTargets);
             to.add(poTargetHeader);
          }
       }
@@ -589,6 +748,13 @@ public class ResourceUtils
       to.getReferences().addAll(refs);
    }
 
+   /**
+    * 
+    * @param from
+    * @param to
+    * @param enabledExtensions
+    * @todo merge with {@link #transferToTextFlowTarget}
+    */
    public void transferToTextFlowTargetExtensions(HTextFlowTarget from, ExtensionSet<TextFlowTargetExtension> to, Set<String> enabledExtensions)
    {
       if (enabledExtensions.contains(SimpleComment.ID) && from.getComment() != null)
@@ -625,6 +791,12 @@ public class ResourceUtils
       }
    }
 
+   /**
+    * 
+    * @param from
+    * @param to
+    * @todo merge with {@link #transferToTextFlowTargetExtensions}
+    */
    public void transferToTextFlowTarget(HTextFlowTarget from, TextFlowTarget to)
    {
       to.setContent(from.getContent());
