@@ -94,7 +94,7 @@ public class PublicanPushCommandTest
             expectedLocale = new LocaleId("ja");
          else
             expectedLocale = new LocaleId("ja-JP");
-         EasyMock.expect(mockTranslationResources.putTranslations(eq("RPM"), eq(expectedLocale), (TranslationsResource) notNull(), eq(extensionSet))).andReturn(mockOKResponse);
+         EasyMock.expect(mockTranslationResources.putTranslations(eq("RPM"), eq(expectedLocale), (TranslationsResource) notNull(), eq(extensionSet), eq("auto"))).andReturn(mockOKResponse);
       }
       FliesClientRequestFactory mockRequestFactory = EasyMock.createNiceMock(FliesClientRequestFactory.class);
 

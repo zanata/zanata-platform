@@ -72,6 +72,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
       log.info("Username: {}", opts.getUsername());
       log.info("Source language: {}", opts.getSourceLang());
       log.info("Copy previous translations: {}", opts.getCopyTrans());
+      log.info("Merge type: {}", opts.getMergeType());
       if (opts.getImportPo())
       {
          log.info("Importing source and target documents");
@@ -226,7 +227,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
                      JaxbUtil.validateXml(targetDoc, jc);
                   }
                   log.info("pushing target document [name={} client-locale={}] to server [locale={}]", new Object[] { srcDoc.getName(), locale.getLocalLocale(), locale.getLocale() });
-                  ClientResponse<String> putTransResponse = translationResources.putTranslations(docUri, new LocaleId(locale.getLocale()), targetDoc, extensions);
+                  ClientResponse<String> putTransResponse = translationResources.putTranslations(docUri, new LocaleId(locale.getLocale()), targetDoc, extensions, opts.getMergeType());
                   ClientUtility.checkResult(putTransResponse, uri);
                }
             }
