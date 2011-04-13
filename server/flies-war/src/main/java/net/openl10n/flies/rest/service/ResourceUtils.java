@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -638,22 +639,27 @@ public class ResourceUtils
          sb.append(comment.getComment());
       }
       // generate #zanata credit comments
-      // TODO order by year, then alphabetically
-      Set<String> zanataCredits = new LinkedHashSet<String>();
+      // order by year, then alphabetically
+      Set<TranslatorCredit> zanataCredits = new TreeSet<TranslatorCredit>();
       for(HTextFlowTarget tft : hTargets)
       {
          HPerson person = tft.getLastModifiedBy();
          Calendar lastChanged = Calendar.getInstance();
          lastChanged.setTime(tft.getLastChanged());
          int year = lastChanged.get(Calendar.YEAR);
-         String credit = person.getName() + " " + "<" + person.getEmail() + ">, " + year + ". " + ZANATA_TAG;
+         TranslatorCredit credit = new TranslatorCredit();
+         credit.setEmail(person.getEmail());
+         credit.setName(person.getName());
+         credit.setYear(year);
          zanataCredits.add(credit);
       }
-      for(String credit : zanataCredits)
+      for(TranslatorCredit credit : zanataCredits)
       {
          if (sb.length() != 0)
             sb.append(NEWLINE);
          sb.append(credit);
+         sb.append(' ');
+         sb.append(ZANATA_TAG);
       }
       
       toHeader.setComment(sb.toString());

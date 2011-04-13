@@ -142,8 +142,8 @@ public class ResourceUtilsTest
       HPoTargetHeader fromHeader = new HPoTargetHeader();
       fromHeader.setComment(new HSimpleComment("initial comment"));
       String expectedComment = "initial comment\n" +
-            "Alice <alice@example.org>, 2011. #zanata\n" +
-      		"Alice <alice@example.org>, 2010. #zanata";
+            "Alice <alice@example.org>, 2010. #zanata\n" +
+      		"Alice <alice@example.org>, 2011. #zanata";
       PoTargetHeader toHeader = new PoTargetHeader();
       
       HPerson alice = new HPerson();
