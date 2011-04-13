@@ -10,6 +10,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -26,10 +27,14 @@ public class TransUnitDetailsView extends Composite implements TransUnitDetailsP
    CollapsePanel collapsePanel;
 
    @UiField
-   Label noDetailsLabel, sourceCommentsLabel;
+   Label noDetailsLabel, sourceLabel, lastModifiedByLabel, lastModifiedTimeLabel;
 
    @UiField
    LayoutPanel rootPanel;
+
+   @UiField
+   VerticalPanel labelPanel;
+
 
    @Inject
    public TransUnitDetailsView(WebTransMessages messages, Resources resources)
@@ -49,8 +54,20 @@ public class TransUnitDetailsView extends Composite implements TransUnitDetailsP
    public void showDetails(TransUnit transUnit)
    {
       rootPanel.setWidgetTopHeight(noDetailsLabel, 0, Unit.PX, 0, Unit.PX);
-      rootPanel.setWidgetTopBottom(sourceCommentsLabel, 0, Unit.PX, 0, Unit.PX);
-      sourceCommentsLabel.setText(transUnit.getSourceComment());
+      rootPanel.setWidgetTopBottom(labelPanel, 0, Unit.PX, 0, Unit.PX);
+      sourceLabel.setText("Source Comment: " + transUnit.getSourceComment());
+      String person = transUnit.getLastModifiedBy();
+      if (person != null && !person.isEmpty())
+      {
+         lastModifiedByLabel.setText("Last Modified By:" + person);
+      }
+      else
+      {
+         lastModifiedByLabel.setText("");
+      }
+      lastModifiedTimeLabel.setText("Last Modified Time:" + transUnit.getLastModifiedTime());
+      noDetailsLabel.setText("Select a Translation Unit to view details.");
    }
+
 
 }

@@ -21,6 +21,28 @@ public class TransUnit implements IsSerializable, Serializable
    private String source;
    private String sourceComment;
    private String target;
+   private String lastModifiedBy;
+   private String lastModifiedTime;
+
+   public String getLastModifiedBy()
+   {
+      return lastModifiedBy;
+   }
+
+   public void setLastModifiedBy(String lastModifiedBy)
+   {
+      this.lastModifiedBy = lastModifiedBy;
+   }
+
+   public String getLastModifiedTime()
+   {
+      return lastModifiedTime;
+   }
+
+   public void setLastModifiedTime(String lastModifiedTime)
+   {
+      this.lastModifiedTime = lastModifiedTime;
+   }
 
    // for GWT
    @SuppressWarnings("unused")
@@ -35,9 +57,11 @@ public class TransUnit implements IsSerializable, Serializable
       this.source = "";
       this.sourceComment = "";
       this.target = "";
+      this.lastModifiedBy = "";
+      this.lastModifiedTime = "";
    }
 
-   public TransUnit(TransUnitId id, LocaleId localeId, String source, String sourceComment, String target, ContentState status)
+   public TransUnit(TransUnitId id, LocaleId localeId, String source, String sourceComment, String target, ContentState status, String lastModifiedBy, String lastModifiedTime)
    {
       this.id = id;
       this.localeId = localeId;
@@ -45,11 +69,13 @@ public class TransUnit implements IsSerializable, Serializable
       this.sourceComment = sourceComment;
       this.target = target;
       this.status = status;
+      this.lastModifiedBy = lastModifiedBy;
+      this.lastModifiedTime = lastModifiedTime;
    }
 
    public TransUnit(TransUnit other)
    {
-      this(other.id, other.localeId, other.source, other.sourceComment, other.target, other.status);
+      this(other.id, other.localeId, other.source, other.sourceComment, other.target, other.status, other.lastModifiedBy, other.lastModifiedTime);
    }
 
    public static final TransUnit copy(TransUnit other)

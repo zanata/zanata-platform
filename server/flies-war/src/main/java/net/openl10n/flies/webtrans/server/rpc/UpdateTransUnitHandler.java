@@ -20,11 +20,15 @@
  */
 package net.openl10n.flies.webtrans.server.rpc;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 import net.openl10n.flies.common.ContentState;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.exception.FliesServiceException;
+import net.openl10n.flies.model.HAccount;
 import net.openl10n.flies.model.HLocale;
 import net.openl10n.flies.model.HProject;
 import net.openl10n.flies.model.HTextFlow;
@@ -47,8 +51,10 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
+import org.jboss.seam.security.management.JpaIdentityStore;
 
 @Name("webtrans.gwt.UpdateTransUnitHandler")
 @Scope(ScopeType.STATELESS)
@@ -77,6 +83,8 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
 
    @In
    private LocaleService localeServiceImpl;
+
+   private static SimpleDateFormat SIMPLE_FORMAT = new SimpleDateFormat();
 
    @Override
    public UpdateTransUnitResult execute(UpdateTransUnit action, ExecutionContext context) throws ActionException
@@ -127,17 +135,21 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       {
          target.setState(action.getContentState());
       }
+      HAccount authenticatedAccount = (HAccount) Contexts.getSessionContext().get(JpaIdentityStore.AUTHENTICATED_USER);
+      
+      
       if (!StringUtils.equals(action.getContent(), target.getContent()))
       {
          target.setContent(action.getContent());
          target.setVersionNum(target.getVersionNum() + 1);
-         // TODO target.setLastModifiedBy(currentUser)
+         log.info("last modified by :" + authenticatedAccount.getPerson().getName());
+         target.setLastModifiedBy(authenticatedAccount.getPerson());
       }
 
       session.flush();
 
       int wordCount = hTextFlow.getWordCount().intValue();
-      TransUnit tu = new TransUnit(action.getTransUnitId(), locale, hTextFlow.getContent(), "", action.getContent(), action.getContentState());
+      TransUnit tu = new TransUnit(action.getTransUnitId(), locale, hTextFlow.getContent(), "", action.getContent(), action.getContentState(), authenticatedAccount.getPerson().getName(), SIMPLE_FORMAT.format(new Date()));
       TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, prevStatus, tu);
 
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());

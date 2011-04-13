@@ -20,6 +20,7 @@
  */
 package net.openl10n.flies.webtrans.server.rpc;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -47,6 +48,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 
+
 @Name("webtrans.gwt.GetTransUnitListHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetTransUnitList.class)
@@ -61,6 +63,8 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
 
    @In
    private LocaleService localeServiceImpl;
+
+   private static SimpleDateFormat SIMPLE_FORMAT = new SimpleDateFormat();
 
    @Override
    public GetTransUnitListResult execute(GetTransUnitList action, ExecutionContext context) throws ActionException
@@ -118,12 +122,17 @@ public class GetTransUnitListHandler extends AbstractActionHandler<GetTransUnitL
       {
 
          TransUnitId tuId = new TransUnitId(textFlow.getId());
-         TransUnit tu = new TransUnit(tuId, action.getWorkspaceId().getLocaleId(), textFlow.getContent(), CommentsUtil.toString(textFlow.getComment()), "", ContentState.New);
+         TransUnit tu = new TransUnit(tuId, action.getWorkspaceId().getLocaleId(), textFlow.getContent(), CommentsUtil.toString(textFlow.getComment()), "", ContentState.New, "", "");
          HTextFlowTarget target = textFlow.getTargets().get(hLocale);
          if (target != null)
          {
             tu.setTarget(target.getContent());
             tu.setStatus(target.getState());
+            if (target.getLastModifiedBy() != null)
+            {
+               tu.setLastModifiedBy(target.getLastModifiedBy().getName());
+            }
+            tu.setLastModifiedTime(SIMPLE_FORMAT.format(target.getLastChanged()));
          }
          units.add(tu);
       }

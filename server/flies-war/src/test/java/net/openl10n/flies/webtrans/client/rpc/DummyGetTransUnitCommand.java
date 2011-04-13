@@ -6,7 +6,6 @@ package net.openl10n.flies.webtrans.client.rpc;
 import java.util.ArrayList;
 
 import net.openl10n.flies.common.ContentState;
-import net.openl10n.flies.common.EditState;
 import net.openl10n.flies.common.LocaleId;
 import net.openl10n.flies.webtrans.shared.model.DocumentId;
 import net.openl10n.flies.webtrans.shared.model.TransUnit;
@@ -52,7 +51,7 @@ final class DummyGetTransUnitCommand implements Command
          String target = "";
          if (state != ContentState.New)
             target = "<world> \"" + (i + 1) + "\"</world>";
-         TransUnit unit = new TransUnit(new TransUnitId(i + 1), localeId, source, sourceComment, target, state);
+         TransUnit unit = new TransUnit(new TransUnitId(i + 1), localeId, source, sourceComment, target, state, "peter", "");
          units.add(unit);
       }
       return units;
