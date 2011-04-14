@@ -128,6 +128,15 @@
     background-color: #000000; 
     display: block;
 }
+.ui-tabs-nav li.ui-tabs-selected a {
+    background-color: #1883C0;
+    color: #FFFFFF;
+    display: block;
+    height: 40px;
+    margin-top: 0;
+    position: relative;
+    z-index: 2;
+}
 .ui-tabs-nav a span {
     width: 64px; /* IE 6 treats width as min-width */
     min-width: 64px;
