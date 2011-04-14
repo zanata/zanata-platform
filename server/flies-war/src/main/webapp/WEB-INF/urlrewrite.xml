@@ -20,10 +20,9 @@
   <!-- Admin Rules -->
 
   <rule>
-    <from casesensitive="true">^/admin/([^/\?\.]+)$</from>
-    <to last="true">/admin/$1.seam</to>
+    <from casesensitive="true">^/admin/server_configuration</from>
+    <to last="true">/admin/server_configuration.seam</to>
   </rule>
-
 
   <!-- Language rules -->
 
@@ -143,6 +142,10 @@
     <to>/home.seam</to>
   </rule>
 
+  <rule>
+    <from>^/admin/$</from>
+    <to>/admin/home.seam</to>
+  </rule>
 
   <rule>
     <from casesensitive="true">^/rest/$</from>
@@ -155,8 +158,8 @@
   </rule>
 
   <outbound-rule>
-    <from>^(/.+)?/admin/(.+).seam$</from>
-    <to>$1/admin/$2</to>
+    <from>^(/.+)?/admin/server_configuration.seam</from>
+    <to>$1/admin/server_configuration</to>
   </outbound-rule>
 
   <outbound-rule>
