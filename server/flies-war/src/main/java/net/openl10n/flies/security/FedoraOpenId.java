@@ -142,7 +142,7 @@ public class FedoraOpenId
       }
       catch (OpenIDException e)
       {
-         log.warn(e);
+         log.warn(e.getMessage());
       }
 
       return null;
@@ -215,7 +215,7 @@ public class FedoraOpenId
       }
       catch (OpenIDException e)
       {
-         // present error to the user
+         log.warn(e.getMessage());
       }
 
       return null;
@@ -273,7 +273,7 @@ public class FedoraOpenId
 
    }
 
-   public void login(String username) throws LoginException
+   public void login(String username)
    {
       try
       {
@@ -285,8 +285,7 @@ public class FedoraOpenId
       catch (IOException e)
       {
          log.warn(e.getMessage());
-         LoginException le = new LoginException(e.getMessage());
-         throw le;
+         throw new RuntimeException(e.getMessage());
       }
    }
 
