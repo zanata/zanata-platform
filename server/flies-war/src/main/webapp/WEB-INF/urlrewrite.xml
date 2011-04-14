@@ -143,6 +143,11 @@
     <to>/home.seam</to>
   </rule>
 
+  <rule>
+    <from>^/admin/$</from>
+    <to>/admin/home.seam</to>
+  </rule>
+
 
   <rule>
     <from casesensitive="true">^/rest/$</from>
