@@ -25,7 +25,6 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
 
 import java.io.IOException;
 
-import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
 
 import net.openl10n.flies.ApplicationConfiguration;
@@ -36,7 +35,6 @@ import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.log.LogProvider;
@@ -65,7 +63,6 @@ import org.openid4java.message.ax.FetchRequest;
 @Scope(SESSION)
 @Install(precedence = APPLICATION)
 @BypassInterceptors
-@Startup
 /*
  * based on org.jboss.seam.security.openid.OpenId class
  */
@@ -77,6 +74,7 @@ public class FedoraOpenId
    private FliesIdentity identity;
    private FliesJpaIdentityStore identityStore;
    private ApplicationConfiguration applicationConfiguration;
+   private FliesExternalLoginBean fliesExternalLoginBean;
 
    private String id;
    private String validatedId;
@@ -243,17 +241,19 @@ public class FedoraOpenId
       identity = (FliesIdentity) Component.getInstance(FliesIdentity.class, ScopeType.SESSION);
       identityStore = (FliesJpaIdentityStore) Component.getInstance(FliesJpaIdentityStore.class, ScopeType.APPLICATION);
       applicationConfiguration = (ApplicationConfiguration) Component.getInstance(ApplicationConfiguration.class, ScopeType.APPLICATION);
+      fliesExternalLoginBean = (FliesExternalLoginBean) Component.getInstance(FliesExternalLoginBean.class, ScopeType.SESSION);
    }
    
-   public String loginImmediate() throws LoginException
+   public String loginImmediate()
    {
       if (loginImmediately())
       {
          identity.getCredentials().setInitialized(true);
          identity.setPreAuthenticated(true);
+         fliesExternalLoginBean.checkDisabledUser();
          if (!identity.isLoggedIn())
          {
-            throw new LoginException();
+            return "failure";
          }
 
          if (Events.exists())

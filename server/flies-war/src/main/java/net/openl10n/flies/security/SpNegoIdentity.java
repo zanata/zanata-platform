@@ -116,17 +116,17 @@ public class SpNegoIdentity implements Serializable
    {
       if (fliesInit.isSpNego() && identityStore.isNewUser(identity.getCredentials().getUsername()))
       {
-         return "/profile/edit.xhtml";
+         return "edit";
       }
 
       if (fliesInit.isSpNego() && !identityStore.isNewUser(identity.getCredentials().getUsername()))
       {
-         return "/home.xhtml";
+         return "home";
       }
 
       if (!fliesInit.isSpNego())
       {
-         return "/account/login_input.xhtml";
+         return "login";
       }
       return null;
    }
