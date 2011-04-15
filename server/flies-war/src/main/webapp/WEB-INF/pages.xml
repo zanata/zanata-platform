@@ -43,7 +43,17 @@
    <page view-id="/account/login.xhtml">
     <header name="Cache-Control" value="no-cache, no-store, max-age=0, must-revalidate" />
     <action execute="#{spNegoIdentity.execute}"/>
-    <action execute="#{spNegoIdentity.redirect}" />
+    <navigation evaluate="#{spNegoIdentity.redirect()}">
+      <rule if-outcome="login">
+        <redirect view-id="/account/login_input.xhtml" />
+      </rule>
+      <rule if-outcome="edit">
+        <redirect view-id="/profile/edit.xhtml" />
+      </rule>
+      <rule if-outcome="home">
+        <redirect view-id="/home.xhtml" />
+      </rule>
+	</navigation>
   </page>
 
    <page view-id="/account/login_input.xhtml">
