@@ -2,10 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
     <changeSet author="sflaniga@redhat.com" id="1">
 
-    	<validCheckSum>
-    		<comment>originally used dropAllForeignKeyConstraints</comment>
-    		cfb156591044f08e333d7ca2d5638db3
-    	</validCheckSum>
+    	<validCheckSum>cfb156591044f08e333d7ca2d5638db3</validCheckSum>
 
     	<comment>remove HCommunity tables</comment>
     	
@@ -40,14 +37,7 @@
 
 	<changeSet author="sflaniga@redhat.com" id="3">
 
-    	<validCheckSum>
-    		<comment>original classname</comment>
-    		812b19a7eead6a4a2128ca3fedd99ee6
-    	</validCheckSum>
-    	<validCheckSum>
-    		<comment>renamed package to org.zanata.liquibase.custom</comment>
-    		4a79d3b57ca227fbeb0e922b1a7fee9
-    	</validCheckSum>
+    	<validCheckSum>4a79d3b57ca227fbeb0e922b1a7fee9</validCheckSum>
 
 		<comment>calculate existing word counts and enable non-null constraint on HTextFlow</comment>
 		<customChange class="org.zanata.liquibase.custom.CountWordsInHTextFlow" />
