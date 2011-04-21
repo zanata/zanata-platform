@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd" 
+    version="1.0">
+    
+  <persistence-unit name="${ds.jndi.name}" transaction-type="JTA">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <jta-data-source>java:${ds.jndi.name}</jta-data-source>
+    <properties>
+      <!--    
+          Binds the EntityManagerFactory to JNDI where Seam can look it up. This is only relevant when 
+          the container automatically loads the persistence unit, as is the case in JBoss AS 5.   
+      --> 
+      <property name="jboss.entity.manager.factory.jndi.name" value="java:/zanataEntityManagerFactory"/>
+      
+      
+      <property name="hibernate.dialect" value="${ds.hibernate.dialect}"/>
+      <!-- Automatic schema export and drop -->
+      <property name="hibernate.hbm2ddl.auto" value="${env.hibernate.hbm2ddl.auto}"/>
+      
+      <!-- Logging -->
+      <property name="hibernate.show_sql" value="${env.hibernate.show_sql}"/>
+      <property name="hibernate.use_sql_comments" value="true"/>
+      <property name="hibernate.format_sql" value="${env.hibernate.format_sql}"/>
+      
+      <property name="hibernate.connection.useUnicode" value="true" />
+      <property name="hibernate.connection.characterEncoding" value="UTF-8"/>         
+      
+      <!-- Only relevant if Seam is loading the persistence unit (Java SE bootstrap) -->
+      <property name="hibernate.transaction.manager_lookup_class"
+               value="org.hibernate.transaction.JBossTransactionManagerLookup"/>
+      
+      
+      <!-- Search engine -->
+      <property name="hibernate.search.default.directory_provider"
+               value="org.hibernate.search.store.FSDirectoryProvider"/>
+      <property name="hibernate.search.default.indexBase" value="${env.hibernate.indexBase}"/>
+      <property name="hibernate.search.worker.batch_size" value="50"/>
+      
+      <!-- Run the Hibernate bytecode instrumentation at deployment time, for lazy loading of @ToOne and byte[] properties -->
+      <!-- TODO: That doesn't work for me, using the enhancer in build.xml manually -->
+      <property name="hibernate.ejb.use_class_enhancer" value="true"/>
+      <property name="hibernate.max_fetch_depth" value="1"/>
+      <property name="hibernate.jdbc.batch_size" value="0"/>
+      
+      <!-- Enable Hibernate statistics, needs SessionFactory in JNDI for JMX monitoring 
+      <property name="hibernate.generate_statistics" value="true"/>
+      <property name="hibernate.session_factory_name" value="SessionFactories/zanataSF"/>
+      -->
+      
+      <!-- These are the default for JBoss EJB3, but not for HEM: -->
+      <property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider"/>
+      <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.JBossTransactionManagerLookup"/>
+      
+    </properties>
+  </persistence-unit>
+  
+</persistence>

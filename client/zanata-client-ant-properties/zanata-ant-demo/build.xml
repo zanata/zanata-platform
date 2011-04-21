@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+
+<project basedir="." default="roundtripremote">
+	<import file="taskdefs.xml" />
+	<property name="out.dir" value="target/test-output" />
+
+	<property name="user" value="admin" />
+	<property name="apikey" value="a3371a7e59b340e4fd3a8cc639ee0104" />
+	<property name="bob.key" value="34567890123456789012345678901234" />
+
+
+	<property name="zanataUrl" value="http://localhost:8080/zanata"/>
+<!--
+	<property name="zanataUrl" value="http://hudson.englab.bne.redhat.com/zanata"/>
+-->
+	<property name="proj" value="sample-project"/>
+	<property name="iter" value="1.1"/>
+	<property name="docsUrl" 
+		value="${zanataUrl}/seam/resource/restv1/projects/p/${proj}/iterations/i/${iter}/documents" />
+
+	<target name="roundtripremote" depends="-init">
+		<delete dir="${out.dir}/test3a"/>
+		<delete dir="${out.dir}/test3b"/>
+		<mkdir dir="${out.dir}/test3a"/>
+		<props2docs 
+			user="${user}"
+			apiKey="${apikey}"
+			dst="${docsUrl}" 
+			srcDir="test1" 
+			sourceLang="en_US" 
+			locales="de,fr" 
+			debug="false" />
+		<docs2props 
+			user="${user}"
+			apiKey="${apikey}"
+			src="${docsUrl}" 
+			dstDir="${out.dir}/test3b" 
+			debug="true" />
+		<verifyprop dir1="test1" dir2="${out.dir}/test3b" />
+		<!-- If we get this far, the output files are considered equivalent
+		     to the source files by java.util.Properties (ignoring comments).
+		     This will test for identical text/comments as well.
+        -->
+		<exec executable="diff">
+			<arg value="--unified"/>
+			<arg value="--recursive"/>
+			<arg value="test1"/>
+			<arg value="${out.dir}/test3b"/>
+		</exec>
+	</target>
+	
+</project>

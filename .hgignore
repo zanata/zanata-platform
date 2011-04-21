@@ -5,7 +5,9 @@ syntax: glob
 *.sedbak
 */target/*
 fliessearchindex/
+zanatasearchindex/
 */fliessearchindex/*
+*/zanatasearchindex/*
 */test-output/*
 
 hs_err_pid*.log
@@ -22,9 +24,13 @@ syntax: regexp
 \.pages.xml.spdia$
 temp-testng-customsuite.xml$
 ^server/flies-war/war
+^server/zanata-war/war
 ^server/flies-war/src/main/resources/.*_qc\.properties$
+^server/zanata-war/src/main/resources/.*_qc\.properties$
 ^server/flies-war/src/test/resources/bootstrap/data
+^server/zanata-war/src/test/resources/bootstrap/data
 ^server/flies-war/src/test/jboss-embedded-bootstrap/data
+^server/zanata-war/src/test/jboss-embedded-bootstrap/data
 
 # eclipse and maven stuff
 \.classpath$
@@ -32,6 +38,7 @@ temp-testng-customsuite.xml$
 \.settings/
 ^target
 ^server/flies-war/profiles.xml
+^server/zanata-war/profiles.xml
 \.orig$
 
 # idea
@@ -43,9 +50,12 @@ temp-testng-customsuite.xml$
 
 #gwt related
 ^server/flies-war/src/main/webapp/WEB-INF/classes/
+^server/zanata-war/src/main/webapp/WEB-INF/classes/
 ^server/flies-war/tomcat
+^server/zanata-war/tomcat
 \.gwt-tmp$
 ^server/flies-war/src/main/webapp/webtrans/
+^server/zanata-war/src/main/webapp/webtrans/
 
 # vim
 .swp

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>zanata-client-ant-properties</artifactId>
+  <name>Zanata/REST Ant task for Java Properties</name>
+  <parent>
+    <groupId>org.zanata</groupId>
+    <artifactId>zanata-parent</artifactId>
+    <version>1.4-SNAPSHOT</version>
+    <relativePath>../../zanata-parent/pom.xml</relativePath>
+  </parent>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.ant</groupId>
+      <artifactId>ant</artifactId>
+      <version>1.7.1</version>
+      <scope>compile</scope>
+    </dependency>
+<!-- If only it were released! (want org.apache.ant.antunit.junit3.AntUnitSuite)
+    <dependency>
+      <groupId>org.apache.ant</groupId>
+      <artifactId>ant-antunit</artifactId>
+      <version>1.2</version>
+      <scope>test</scope>
+    </dependency>
+-->
+    <dependency>
+      <groupId>org.apache.ant</groupId>
+      <artifactId>ant-launcher</artifactId>
+      <version>1.7.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.ant</groupId>
+      <artifactId>ant-testutil</artifactId>
+      <version>1.7.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-adapter-properties</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-rest-client</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <!-- needed by the ant taskdefs.xml -->
+    <dependency>
+      <groupId>org.fedorahosted.tennera</groupId>
+      <artifactId>ant-gettext</artifactId>
+      <version>0.6</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- needed by the ant taskdefs.xml -->
+    <dependency>
+      <groupId>org.fedorahosted.tennera</groupId>
+      <artifactId>jgettext</artifactId>
+      <version>0.6</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+          <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <profile>
+        <id>runant</id>
+        <activation>
+          <property>
+            <name>runant</name>
+          </property>
+        </activation>
+        <build>
+          <plugins>
+            <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>exec-maven-plugin</artifactId>
+              <version>1.1.1</version>
+              <configuration>
+                <executable>ant</executable>
+                <workingDirectory>zanata-ant-demo</workingDirectory>
+              </configuration>
+              <executions>
+                  <execution>
+                    <id>runant</id>
+                    <!--
+                      We hook into the install phase so that our own artifacts
+                      will be available in the m2 repo.  This lets the
+                      maven ant tasks generate a classpath which includes
+                      the just-built artifacts. 
+                     -->
+                    <phase>install</phase>
+                    <goals>
+                      <goal>exec</goal>
+                    </goals>
+                  </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </build>
+    </profile>
+  </profiles>
+
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.6</version>
+        <configuration>
+          <!-- force junitrunner, not testng (doesn't understand Ant's BuildTest) -->
+          <testNGArtifactName>none:none</testNGArtifactName>
+          <excludes>
+            <exclude>**/RemoteTest.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

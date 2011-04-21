@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd" 
+    version="1.0">
+    
+	<persistence-unit name="zanataTestDatasource"
+		transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<!--
+			NB non-jta-data-source is not compatible with JPA tests, but is
+			needed by Seam tests.  See also
+			zanata-war/src/test/jboss-embedded-bootstrap/META-INF/persistence.xml
+			and zanata-war/src/test/resources/META-INF/persistence.xml.
+		 -->
+		<properties>
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider" />
+			<property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+
+			<property name="hibernate.connection.driver_class" value="org.h2.Driver" />
+			<!-- Configure the in-memory database to be shared, and so that it
+				 doesn't disappear after it has been set up by Hibernate: -->
+			<property name="hibernate.connection.url" value="jdbc:h2:mem:zanata;DB_CLOSE_DELAY=-1" />
+			<property name="hibernate.connection.username" value="sa" />
+			<property name="hibernate.connection.password" value="" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+
+			<!-- Search engine -->
+			<property name="hibernate.search.default.directory_provider"
+				value="org.hibernate.search.store.FSDirectoryProvider" />
+			<property name="hibernate.search.default.indexBase" value="zanatasearchindex" />
+			<property name="hibernate.search.worker.batch_size" value="50" />
+
+		</properties>
+	</persistence-unit>
+</persistence>

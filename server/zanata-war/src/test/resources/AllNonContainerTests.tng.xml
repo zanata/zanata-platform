@@ -1,0 +1,23 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="JPA and REST Tests" verbose="1">
+
+	<listeners>
+		<!-- 
+			   This ensures that ungrouped tests are treated as unit-tests: 
+		-->
+		<listener class-name="org.zanata.testing.UnitTestTransformer"/>
+	</listeners>
+
+	<test name="Non-Seam Tests">
+ 		<groups>
+ 			<run>
+ 				<include name=".*"/>
+ 				<exclude name="seam-tests"/>
+ 			</run>
+ 		</groups>
+ 		<packages>
+ 			<package name="org.zanata.*"/>
+ 		</packages>
+	</test>
+
+</suite>

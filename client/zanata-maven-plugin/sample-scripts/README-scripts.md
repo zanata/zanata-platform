@@ -24,7 +24,7 @@ Create the file `~/.config/zanata.ini` like this:
 [servers]
 jboss.url = https://translate.jboss.org/
 jboss.username = your_jboss_username
-jboss.key = your_API_key_from_Flies_Profile_page
+jboss.key = your_API_key_from_Zanata_Profile_page
 </pre>
 
 NB: Your key can be obtained by logging in to [Zanata](https://translate.jboss.org/), 

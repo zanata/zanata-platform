@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/zanata-client-ant-po"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="4"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.zanata.client.ant.po.UploadPoTask"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="--debug --user admin --key b6d7044e9ee3b2447c28fb7c50d86d98 --src src/test/resources/test-input --dst http://hudson.englab.bne.redhat.com/zanata/seam/resource/restv1/projects/p/sample-project/iterations/i/1.1/documents"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="zanata-client-ant-po"/>
+</launchConfiguration>

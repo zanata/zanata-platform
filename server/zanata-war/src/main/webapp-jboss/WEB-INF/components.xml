@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<components xmlns="http://jboss.com/products/seam/components"
+    xmlns:core="http://jboss.com/products/seam/core"
+    xmlns:persistence="http://jboss.com/products/seam/persistence"
+    xmlns:drools="http://jboss.com/products/seam/drools"
+    xmlns:bpm="http://jboss.com/products/seam/bpm"
+    xmlns:security="http://jboss.com/products/seam/security"
+    xmlns:mail="http://jboss.com/products/seam/mail"
+    xmlns:web="http://jboss.com/products/seam/web"
+    xmlns:framework="http://jboss.com/products/seam/framework"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:resteasy="http://jboss.com/products/seam/resteasy"
+    xsi:schemaLocation=
+        "http://jboss.com/products/seam/core http://jboss.com/products/seam/core-2.1.xsd
+         http://jboss.com/products/seam/persistence http://jboss.com/products/seam/persistence-2.1.xsd
+         http://jboss.com/products/seam/drools http://jboss.com/products/seam/drools-2.1.xsd
+         http://jboss.com/products/seam/bpm http://jboss.com/products/seam/bpm-2.1.xsd
+         http://jboss.com/products/seam/security http://jboss.com/products/seam/security-2.1.xsd
+         http://jboss.com/products/seam/mail http://jboss.com/products/seam/mail-2.1.xsd
+         http://jboss.com/products/seam/web http://jboss.com/products/seam/web-2.1.xsd
+         http://jboss.com/products/seam/components http://jboss.com/products/seam/components-2.1.xsd
+         http://jboss.com/products/seam/resteasy http://jboss.com/products/seam/resteasy-2.1.xsd">
+ 
+  <core:init
+      debug="@env.debug@"
+      transaction-management-enabled="true"
+      jndi-pattern="#{ejbName}/local" 
+      distributable="false"/>
+ 
+  <!-- Persistence stuff -->
+
+  <!-- 
+      BOOTSTRAPPING A JPA ENTITYMANAGERFACTORY, SiA-9.3.1-p362
+      installed=true for JBoss 4.2.3 or newer
+      To have Seam defer loading of the persistence unit until it's needed, perhaps for a quicker 
+      deployment turnaround, you can  disable the startup behavior of this component, SiA-9.3.1-p363
+      
+      entity-manager-factory name is also referenced in in persistence.xml 
+  -->
+  <!-- FIXME zanataDatabase vs testDatabase -->
+  <persistence:entity-manager-factory
+      name="entityManagerFactory"
+      persistence-unit-name="@persistence-unit-name@"
+      installed="true"
+      startup="true" />
+
+  <!--
+      If Seam loads the persistence unit (JBoss 4.x), the
+      EntityManagerFactory will be resolved from #{${app.entity.manager.factory.name}}. 
+      On JBoss AS 5, the EntityManagerFactory is retrieved from JNDI (the
+      binding occurs during application deployment), SiA-9.3.1-p362.
+      
+      By default, the Seam-managed persistence context components are defined with the autocreate 
+      feature disabled. By enabling this feature, you can inject these components using an 
+      @In annotation without having to supply the create attribute, SiA-9.3.2-p366.
+  -->
+  <persistence:managed-persistence-context
+      name="entityManager"
+      auto-create="true"
+      entity-manager-factory="#{entityManagerFactory}"
+      persistence-unit-jndi-name="java:/zanataEntityManagerFactory" />
+
+</components>

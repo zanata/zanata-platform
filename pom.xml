@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>net.openl10n.flies</groupId>
+	<groupId>org.zanata</groupId>
 	<artifactId>root</artifactId>
 	<version>1.4-SNAPSHOT</version>
-	<name>Flies Root POM</name>
-	<url>http://flies.openl10n.net/</url>
+	<name>Zanata Root POM</name>
+	<url>http://zanata.org/</url>
 	<packaging>pom</packaging>
 
 	<parent>
-		<groupId>net.openl10n.flies</groupId>
-		<artifactId>flies-parent</artifactId>
+		<groupId>org.zanata</groupId>
+		<artifactId>zanata-parent</artifactId>
 		<version>1.4-SNAPSHOT</version>
-		<relativePath>flies-parent/pom.xml</relativePath>
+		<relativePath>zanata-parent/pom.xml</relativePath>
 	</parent>
 
 	<modules>
-		<module>flies-parent</module>
+		<module>zanata-parent</module>
 		<module>common</module>
 		<module>client</module>
 		<module>server</module>

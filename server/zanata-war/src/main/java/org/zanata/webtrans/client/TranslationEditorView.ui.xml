@@ -1,0 +1,82 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:f="urn:import:org.zanata.webtrans.client"
+	xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
+	
+	<ui:with field="resources" type="org.zanata.webtrans.client.Resources" />
+	<ui:style>
+		.tmview{
+			padding-left: 7px;
+			padding-bottom: 7px;
+			background-color: #ffffff;
+			border: 3px solid #e0e8ee;
+			-moz-border-radius: 7px;
+			-webkit-border-radius: 7px;
+		}
+		.editor {
+			background-color: #ffffff;
+			border: 3px solid #e0e8ee;
+			-moz-border-radius: 7px;
+			-webkit-border-radius: 7px;
+		}
+		
+		.unitStatus {
+			float: right;
+			width: 100px;
+			height: 1.2em;
+		}
+		
+		.centerText{
+			text-align: center;
+		}
+		
+		.pager {
+			text-align: center;
+			display: inline;
+			}
+		
+		.imageButton {
+			cursor: pointer;
+		}
+				
+	</ui:style>
+	<g:SplitLayoutPanel ui:field="splitPanel" styleName="PageSplitLayoutPanel" >
+		<g:center>
+			<g:LayoutPanel styleName="{style.editor}">
+				<g:layer top='4px' height='18px' right="2px" width="100px">
+					<f:TransUnitCountBar ui:field='transUnitCountBar' styleName="{style.unitStatus}"/>
+				</g:layer>
+				<g:layer top="2px" height="20px" right="100px" left="100px">
+					<g:FlowPanel ui:field="transUnitNavigationContainer" styleName="{style.centerText}"/>
+				</g:layer>
+				<g:layer top="2px" height="20px" right="200px" width="100px">
+					<g:FlowPanel ui:field="undoRedoContainer" styleName="{style.centerText}"/>
+				</g:layer>
+				<g:layer top="22px" bottom="2em">
+					<g:LayoutPanel ui:field="editor" />
+				</g:layer>
+				<g:layer bottom="0px" height="2em" left="30px" right="30px">
+					<g:FlowPanel styleName="{style.pager}">
+						<fui:Pager ui:field="pager"/>
+					</g:FlowPanel>
+				</g:layer>
+				<g:layer bottom="0px" height="2em" width="30px" right="0px">
+					<g:FlowPanel>
+					<g:Image resource="{resources.tmViewButton}" ui:field="showTmViewLink" styleName="{style.imageButton}" />
+					</g:FlowPanel>
+				</g:layer>
+			</g:LayoutPanel>
+		</g:center>
+		<g:south size="150" min-size="100">
+			<g:LayoutPanel ui:field="tmPanelContainer">
+				<g:layer top="0" bottom="8px">
+					<g:LayoutPanel styleName="{style.tmview}" ui:field="tmPanel" />
+				</g:layer>
+				<g:layer right="3px" top="3px" width="15px" height="15px">
+					<g:Image resource="{resources.minimizeButton}" ui:field="tmMinimize" styleName="{style.imageButton}" />
+				</g:layer>
+			</g:LayoutPanel>
+		</g:south>
+	</g:SplitLayoutPanel>
+</ui:UiBinder> 

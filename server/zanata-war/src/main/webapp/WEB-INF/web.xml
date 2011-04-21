@@ -1,0 +1,29 @@
+<web-app>
+	<display-name>Zanata WebTrans GWT Application</display-name>
+
+	<servlet>
+		<servlet-name>EventService</servlet-name>
+		<servlet-class>
+			de.novanic.eventservice.service.EventServiceImpl
+	  </servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>EventService</servlet-name>
+		<url-pattern>/webtrans/gwteventservice</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>remoteLoggerServiceImpl</servlet-name>
+		<servlet-class>com.allen_sauer.gwt.log.server.RemoteLoggerServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>remoteLoggerServiceImpl</servlet-name>
+		<url-pattern>/webtrans/gwt-log</url-pattern>
+	</servlet-mapping>
+
+	<welcome-file-list>
+		<welcome-file>/webtrans/Application.html</welcome-file>
+	</welcome-file-list>
+
+</web-app>
