@@ -41,8 +41,12 @@
 	<changeSet author="sflaniga@redhat.com" id="3">
 
     	<validCheckSum>
-    		<comment>renamed package to org.zanata.liquibase.custom</comment>
+    		<comment>original classname</comment>
     		812b19a7eead6a4a2128ca3fedd99ee6
+    	</validCheckSum>
+    	<validCheckSum>
+    		<comment>renamed package to org.zanata.liquibase.custom</comment>
+    		4a79d3b57ca227fbeb0e922b1a7fee9
     	</validCheckSum>
 
 		<comment>calculate existing word counts and enable non-null constraint on HTextFlow</comment>
