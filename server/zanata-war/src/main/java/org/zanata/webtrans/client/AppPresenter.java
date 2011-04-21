@@ -33,7 +33,6 @@ import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 
 import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -45,8 +44,9 @@ import com.google.inject.Inject;
 
 public class AppPresenter extends WidgetPresenter<AppPresenter.Display>
 {
-
-   public interface Display extends WidgetDisplay
+   // javac seems confused about which Display is which.
+   // somehow, qualifying WidgetDisplay helps!
+   public interface Display extends net.customware.gwt.presenter.client.widget.WidgetDisplay
    {
       enum MainView
       {
