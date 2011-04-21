@@ -2,10 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>net.openl10n.flies</groupId>
-    <artifactId>flies-parent</artifactId>
+    <groupId>org.zanata</groupId>
+    <artifactId>zanata-parent</artifactId>
     <version>1.4-SNAPSHOT</version>
-    <relativePath>../../flies-parent/pom.xml</relativePath>
+    <relativePath>../../zanata-parent/pom.xml</relativePath>
   </parent>
   <groupId>org.zanata</groupId>
   <artifactId>zanata-maven-plugin</artifactId>
@@ -23,7 +23,6 @@
     source text and retrieving translations.
   </description>
   
-  <url>http://code.google.com/p/flies/wiki/FliesMavenIntegration</url>
   <prerequisites>
   	<maven>2.0.8</maven>
   </prerequisites>
@@ -31,8 +30,8 @@
    
   <dependencies>
     <dependency>
-        <groupId>net.openl10n.flies</groupId>
-        <artifactId>flies-client-commands</artifactId>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-client-commands</artifactId>
         <version>${project.version}</version>
     </dependency>
     <dependency>
