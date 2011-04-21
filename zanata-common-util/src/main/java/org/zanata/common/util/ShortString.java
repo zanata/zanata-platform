@@ -1,4 +1,4 @@
-package net.openl10n.flies.common.util;
+package org.zanata.common.util;
 
 /**
  * ShortStrings are meant for use in logging. They don't incur the cost of

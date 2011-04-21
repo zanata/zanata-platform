@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>flies-common-util</artifactId>
-	<name>Flies Common Utility Code</name>
+	<artifactId>zanata-common-util</artifactId>
+	<name>Zanata Common Utility Code</name>
 	<parent>
-		<artifactId>flies-parent</artifactId>
-		<groupId>net.openl10n.flies</groupId>
+		<artifactId>zanata-parent</artifactId>
+		<groupId>org.zanata</groupId>
 		<version>1.4-SNAPSHOT</version>
-		<relativePath>../../flies-parent/pom.xml</relativePath>
+		<relativePath>../../zanata-parent/pom.xml</relativePath>
 	</parent>
 	<packaging>jar</packaging>
 
@@ -26,7 +26,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>flies-common-api</artifactId>
+			<artifactId>zanata-common-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 

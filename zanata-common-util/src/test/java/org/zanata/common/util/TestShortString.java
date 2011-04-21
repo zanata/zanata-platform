@@ -1,8 +1,10 @@
-package net.openl10n.flies.common.util;
+package org.zanata.common.util;
 
 import static org.junit.Assert.*;
 
+
 import org.junit.Test;
+import org.zanata.common.util.ShortString;
 
 public class TestShortString
 {
