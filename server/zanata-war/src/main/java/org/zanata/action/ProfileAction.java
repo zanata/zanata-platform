@@ -22,8 +22,6 @@ package org.zanata.action;
 
 import java.io.Serializable;
 
-import javax.faces.event.ValueChangeEvent;
-
 
 import org.hibernate.validator.Email;
 import org.jboss.seam.ScopeType;
@@ -38,6 +36,7 @@ import org.jboss.seam.faces.Renderer;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.action.validator.NotDuplicateEmail;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
@@ -123,6 +122,7 @@ public class ProfileAction implements Serializable
    }
 
    @Email
+   @NotDuplicateEmail
    public String getEmail()
    {
       return email;
@@ -132,15 +132,6 @@ public class ProfileAction implements Serializable
    {
       this.email = email;
    }
-
-   public void verifyEmailAvailable(ValueChangeEvent e)
-   {
-      if (personDAO.findByEmail(e.getNewValue().toString()) != null)
-      {
-         FacesMessages.instance().addToControl(e.getComponent().getId(), "Duplicate email");
-      }
-   }
-
 
    @Transactional
    public String edit()
