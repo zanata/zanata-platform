@@ -22,9 +22,8 @@ package net.openl10n.flies.action;
 
 import java.io.Serializable;
 
-import javax.faces.event.ValueChangeEvent;
-
 import net.openl10n.flies.ApplicationConfiguration;
+import org.flies.action.validator.NotDuplicateEmail;
 import net.openl10n.flies.dao.PersonDAO;
 import net.openl10n.flies.model.HAccount;
 import net.openl10n.flies.model.HPerson;
@@ -123,6 +122,7 @@ public class ProfileAction implements Serializable
    }
 
    @Email
+   @NotDuplicateEmail
    public String getEmail()
    {
       return email;
@@ -131,14 +131,6 @@ public class ProfileAction implements Serializable
    public void setEmail(String email)
    {
       this.email = email;
-   }
-
-   public void verifyEmailAvailable(ValueChangeEvent e)
-   {
-      if (personDAO.findByEmail(e.getNewValue().toString()) != null)
-      {
-         FacesMessages.instance().addToControl(e.getComponent().getId(), "Duplicate email");
-      }
    }
 
 

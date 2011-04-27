@@ -33,10 +33,10 @@
             </s:decorate>
             <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml">
               <ui:define name="label">#{messages['jsf.Email']}</ui:define>
-              <h:inputText id="email" value="#{profileAction.email}" required="true" valueChangeListener="#{profileAction.verifyEmailAvailable}" >
-                  <a4j:support event="onblur" reRender="emailField" ajaxSingle="true"/>
+              <h:inputText id="email" value="#{profileAction.email}" required="true" >
+                  <a4j:support event="onblur" reRender="emailField" />
               </h:inputText>
-              <h:graphicImage id="usernameHelp" value="../img/msginfo.png" styleClass="input_help">
+	       <h:graphicImage id="usernameHelp" value="../img/msginfo.png" styleClass="input_help">
                 <rich:toolTip>
                   #{messages['jsf.EmailToolTip']}
                 </rich:toolTip>
