@@ -23,7 +23,7 @@ package net.openl10n.flies.action;
 import java.io.Serializable;
 
 import net.openl10n.flies.ApplicationConfiguration;
-import org.flies.action.validator.NotDuplicateEmail;
+import net.openl10n.flies.action.validator.NotDuplicateEmail;
 import net.openl10n.flies.dao.PersonDAO;
 import net.openl10n.flies.model.HAccount;
 import net.openl10n.flies.model.HPerson;
