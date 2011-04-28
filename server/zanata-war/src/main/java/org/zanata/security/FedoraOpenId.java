@@ -23,8 +23,6 @@ package org.zanata.security;
 import static org.jboss.seam.ScopeType.SESSION;
 import static org.jboss.seam.annotations.Install.APPLICATION;
 
-import java.io.IOException;
-
 import javax.servlet.http.HttpServletRequest;
 
 
@@ -93,7 +91,7 @@ public class FedoraOpenId
    }
 
 
-   public void login() throws IOException
+   public void login()
    {
       validatedId = null;
       String returnToUrl = returnToUrl();
@@ -110,7 +108,7 @@ public class FedoraOpenId
    }
 
    @SuppressWarnings("rawtypes")
-   protected String authRequest(String userSuppliedString, String returnToUrl) throws IOException
+   protected String authRequest(String userSuppliedString, String returnToUrl)
    {
       try
       {
@@ -140,7 +138,7 @@ public class FedoraOpenId
       }
       catch (OpenIDException e)
       {
-         log.warn(e.getMessage());
+         log.warn(e);
       }
 
       return null;
@@ -213,7 +211,7 @@ public class FedoraOpenId
       }
       catch (OpenIDException e)
       {
-         log.warn(e.getMessage());
+         log.warn(e);
       }
 
       return null;
@@ -282,10 +280,9 @@ public class FedoraOpenId
          log.info("openid:" + getId());
          login();
       }
-      catch (IOException e)
+      catch (Exception e)
       {
-         log.warn(e.getMessage());
-         throw new RuntimeException(e.getMessage());
+         throw new RuntimeException(e);
       }
    }
 
