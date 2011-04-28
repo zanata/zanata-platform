@@ -91,7 +91,7 @@ public class FliesExternalLoginBean implements Serializable
       if (!identityStore.isUserEnabled(username))
       {
          FacesMessages.instance().clear();
-         FacesMessages.instance().add("User {0} has been disabled. Please check your email for a validation code, or contact flies admin.", username);
+         FacesMessages.instance().add("User {0} has been disabled. Please check your email for a validation code, or contact server admin.", username);
          identity.unAuthenticate();
          return true;
       }
