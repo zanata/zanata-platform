@@ -71,7 +71,6 @@ public class FedoraOpenId
    private static final LogProvider log = Logging.getLogProvider(FedoraOpenId.class);
    private ZanataIdentity identity;
    private ApplicationConfiguration applicationConfiguration;
-   private ZanataExternalLoginBean zanataExternalLoginBean;
 
    private String id;
    private String validatedId;
@@ -237,16 +236,10 @@ public class FedoraOpenId
       }
       identity = (ZanataIdentity) Component.getInstance(ZanataIdentity.class, ScopeType.SESSION);
       applicationConfiguration = (ApplicationConfiguration) Component.getInstance(ApplicationConfiguration.class, ScopeType.APPLICATION);
-      zanataExternalLoginBean = (ZanataExternalLoginBean) Component.getInstance(ZanataExternalLoginBean.class, ScopeType.SESSION);
    }
    
-   public String loginImmediate()
+   public void loginImmediate()
    {
-      if (zanataExternalLoginBean.checkDisabledUser())
-      {
-         return "failure";
-      }
-
       if (loginImmediately())
       {
          identity.setPreAuthenticated(true);
@@ -254,19 +247,7 @@ public class FedoraOpenId
             Events.instance().raiseEvent(Identity.EVENT_POST_AUTHENTICATE, identity);
          if (Events.exists())
             Events.instance().raiseEvent(Identity.EVENT_LOGIN_SUCCESSFUL);
-
-         if (zanataExternalLoginBean.isNewUser())
-         {
-            return "new";
-         }
-
-         return "success";
       }
-      else
-      {
-         return "failure";
-      }
-
    }
 
    public void login(String username)

@@ -20,6 +20,7 @@
             <ui:define name="label">#{messages['jsf.FedoraUsername']}</ui:define>
             <h:inputText id="username"
                       value="#{credentials.username}"/>
+            <h:inputHidden id="password" value="#{credentials.password}"/>
         </s:decorate>
 
       <s:decorate id="passwordField" template="edit.xhtml" rendered="#{!zanataInit.fedoraOpenId}">

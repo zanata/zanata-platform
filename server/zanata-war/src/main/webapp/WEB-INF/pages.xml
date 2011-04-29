@@ -13,18 +13,18 @@
  
   <page view-id="/openid.xhtml">
 	 <navigation evaluate="#{fedoraOpenId.loginImmediate()}">
-        <rule if-outcome="new">
-            <redirect view-id="/profile/edit.xhtml">
-            </redirect>
-        </rule>
-        <rule if-outcome="success">
-            <redirect view-id="/home.xhtml">
-            </redirect>
-        </rule>
-        <rule if-outcome="failure">
-            <redirect view-id="/home.xhtml">
-            </redirect>
-        </rule>
+	      <rule if="#{identity.loggedIn and zanataExternalLoginBean.newUser}">
+	        <redirect view-id="/profile/edit.xhtml" />
+	      </rule>
+	      <rule if="#{identity.loggedIn and !zanataExternalLoginBean.newUser and !userRedirect.redirect}">
+	        <redirect view-id="/home.xhtml" />
+	      </rule>
+	      <rule if="#{identity.loggedIn and !zanataExternalLoginBean.newUser and userRedirect.redirect}">
+	        <redirect url="#{userRedirect.url}" />
+	      </rule>
+	      <rule if="#{!identity.loggedIn}">
+	        <redirect view-id="/account/login_input.xhtml" />
+	      </rule>
      </navigation>
   </page>
 
@@ -42,8 +42,8 @@
   <!-- Account -->
    <page view-id="/account/login.xhtml">
     <header name="Cache-Control" value="no-cache, no-store, max-age=0, must-revalidate" />
-    <action execute="#{spNegoIdentity.execute}"/>
-    <navigation evaluate="#{spNegoIdentity.redirect()}">
+    <action execute="#{zanataExternalLoginBean.spNegoExecute}"/>
+    <navigation evaluate="#{zanataExternalLoginBean.redirect()}">
       <rule if-outcome="login">
         <redirect view-id="/account/login_input.xhtml" />
       </rule>

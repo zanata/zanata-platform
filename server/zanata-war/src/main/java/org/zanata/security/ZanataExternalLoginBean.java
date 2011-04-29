@@ -25,7 +25,6 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
 
 import java.io.Serializable;
 
-
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
@@ -108,6 +107,35 @@ public class ZanataExternalLoginBean implements Serializable
       {
          applyAuthentication();
       }
+   }
+
+   public void spNegoExecute()
+   {
+      if (zanataInit.isSpNego())
+      {
+         SpNegoIdentity spNegoIdentity = (SpNegoIdentity) Component.getInstance(SpNegoIdentity.class, ScopeType.SESSION);
+         spNegoIdentity.setCredential();
+         return;
+      }
+   }
+
+   public String redirect()
+   {
+      if (zanataInit.isSpNego() && isNewUser())
+      {
+         return "edit";
+      }
+
+      if (zanataInit.isSpNego() && !isNewUser())
+      {
+         return "home";
+      }
+
+      if (!zanataInit.isSpNego())
+      {
+         return "login";
+      }
+      return null;
    }
 
 }

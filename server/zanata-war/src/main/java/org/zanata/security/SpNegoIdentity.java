@@ -29,26 +29,20 @@ import java.lang.reflect.Field;
 import javax.faces.context.FacesContext;
 
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.log.LogProvider;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
 import org.jboss.security.SecurityAssociation;
-import org.zanata.ZanataInit;
 
 @Name("org.jboss.seam.security.spNegoIdentity")
 @Scope(SESSION)
 @Install(precedence = APPLICATION)
 @BypassInterceptors
-@Startup
 public class SpNegoIdentity implements Serializable
 {
    /**
@@ -59,23 +53,9 @@ public class SpNegoIdentity implements Serializable
    private static final String PRINCIPAL = "principal";
    private static final LogProvider log = Logging.getLogProvider(SpNegoIdentity.class);
    private ZanataIdentity identity;
-   private ZanataJpaIdentityStore identityStore;
-   private ZanataInit zanataInit;
 
-   @Create
-   public void init()
+   public void setCredential()
    {
-      identity = (ZanataIdentity) Component.getInstance(ZanataIdentity.class, ScopeType.SESSION);
-      identityStore = (ZanataJpaIdentityStore) Component.getInstance(ZanataJpaIdentityStore.class, ScopeType.APPLICATION);
-      zanataInit = (ZanataInit) Component.getInstance(ZanataInit.class, ScopeType.APPLICATION);
-   }
-
-   public void execute()
-   {
-      if (!zanataInit.isSpNego())
-      {
-         return;
-      }
       try
       {
          if (identity.isLoggedIn())
@@ -92,7 +72,6 @@ public class SpNegoIdentity implements Serializable
          identity.getCredentials().setPassword("");
          identity.getCredentials().setInitialized(true);
          
-
          Field field = Identity.class.getDeclaredField(PRINCIPAL);
          field.setAccessible(true);
          field.set(identity, SecurityAssociation.getCallerPrincipal());
@@ -110,24 +89,5 @@ public class SpNegoIdentity implements Serializable
       {
          log.info(e.getMessage());
       }
-   }
-
-   public String redirect()
-   {
-      if (zanataInit.isSpNego() && identityStore.isNewUser(identity.getCredentials().getUsername()))
-      {
-         return "edit";
-      }
-
-      if (zanataInit.isSpNego() && !identityStore.isNewUser(identity.getCredentials().getUsername()))
-      {
-         return "home";
-      }
-
-      if (!zanataInit.isSpNego())
-      {
-         return "login";
-      }
-      return null;
    }
 }
