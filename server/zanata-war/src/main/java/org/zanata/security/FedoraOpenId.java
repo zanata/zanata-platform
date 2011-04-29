@@ -70,7 +70,6 @@ public class FedoraOpenId
    private static String FEDORA_HOST = ".id.fedoraproject.org/";
    private static final LogProvider log = Logging.getLogProvider(FedoraOpenId.class);
    private ZanataIdentity identity;
-   private ZanataJpaIdentityStore identityStore;
    private ApplicationConfiguration applicationConfiguration;
    private ZanataExternalLoginBean zanataExternalLoginBean;
 
@@ -237,27 +236,26 @@ public class FedoraOpenId
          throw new RuntimeException(e);
       }
       identity = (ZanataIdentity) Component.getInstance(ZanataIdentity.class, ScopeType.SESSION);
-      identityStore = (ZanataJpaIdentityStore) Component.getInstance(ZanataJpaIdentityStore.class, ScopeType.APPLICATION);
       applicationConfiguration = (ApplicationConfiguration) Component.getInstance(ApplicationConfiguration.class, ScopeType.APPLICATION);
       zanataExternalLoginBean = (ZanataExternalLoginBean) Component.getInstance(ZanataExternalLoginBean.class, ScopeType.SESSION);
    }
    
    public String loginImmediate()
    {
+      if (zanataExternalLoginBean.checkDisabledUser())
+      {
+         return "failure";
+      }
+
       if (loginImmediately())
       {
-         identity.getCredentials().setInitialized(true);
          identity.setPreAuthenticated(true);
-         zanataExternalLoginBean.checkDisabledUser();
-         if (!identity.isLoggedIn())
-         {
-            return "failure";
-         }
-
          if (Events.exists())
-            Events.instance().raiseEvent(ZanataIdentity.EVENT_LOGIN_SUCCESSFUL);
-         
-         if (identityStore.isNewUser(identity.getCredentials().getUsername()))
+            Events.instance().raiseEvent(Identity.EVENT_POST_AUTHENTICATE, identity);
+         if (Events.exists())
+            Events.instance().raiseEvent(Identity.EVENT_LOGIN_SUCCESSFUL);
+
+         if (zanataExternalLoginBean.isNewUser())
          {
             return "new";
          }

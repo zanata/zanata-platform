@@ -23,7 +23,6 @@ package org.zanata.action;
 import java.io.Serializable;
 
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
@@ -34,7 +33,6 @@ import org.jboss.seam.security.permission.RuleBasedPermissionResolver;
 import org.jboss.seam.security.Identity;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
-import org.zanata.security.ZanataExternalLoginBean;
 
 
 @Name("authenticationEvents")
@@ -50,8 +48,6 @@ public class AuthenticationEvents implements Serializable
    @Logger
    Log log;
    
-   @In
-   ZanataExternalLoginBean zanataExternalLoginBean;
 
    @Observer(JpaIdentityStore.EVENT_USER_AUTHENTICATED)
    public void loginSuccessful(HAccount account)
@@ -72,13 +68,6 @@ public class AuthenticationEvents implements Serializable
    public void loginInSuccessful()
    {
       log.debug("Account logged in successfully");
-      if (zanataExternalLoginBean.externalLogin() && !zanataExternalLoginBean.isNewUser())
-      {
-         if (!zanataExternalLoginBean.checkDisabledUser())
-         {
-            zanataExternalLoginBean.applyAuthentication();
-         }
-      }
    }
 
 }

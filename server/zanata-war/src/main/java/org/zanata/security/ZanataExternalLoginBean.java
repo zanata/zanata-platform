@@ -31,10 +31,12 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.security.Identity;
 import org.zanata.ZanataInit;
 
 @Name("zanataExternalLoginBean")
@@ -98,5 +100,14 @@ public class ZanataExternalLoginBean implements Serializable
       return false;
    }
 
+
+   @Observer(Identity.EVENT_LOGIN_SUCCESSFUL)
+   public void loginInSuccessful()
+   {
+      if (externalLogin() && !isNewUser() && !checkDisabledUser())
+      {
+         applyAuthentication();
+      }
+   }
 
 }
