@@ -60,12 +60,13 @@ public class TransUnitDetailsView extends Composite implements TransUnitDetailsP
       if (person != null && !person.isEmpty())
       {
          lastModifiedByLabel.setText("Last Modified By:" + person);
+         lastModifiedTimeLabel.setText("Last Modified Time:" + transUnit.getLastModifiedTime());
       }
       else
       {
          lastModifiedByLabel.setText("");
+         lastModifiedTimeLabel.setText("");
       }
-      lastModifiedTimeLabel.setText("Last Modified Time:" + transUnit.getLastModifiedTime());
       noDetailsLabel.setText("Select a Translation Unit to view details.");
    }
 
