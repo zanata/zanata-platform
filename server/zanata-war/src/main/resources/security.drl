@@ -1,0 +1,180 @@
+package ZanataPermissions;
+
+import java.security.Principal;
+import org.zanata.model.HAccount;
+import org.zanata.model.HPerson;
+import org.zanata.model.HProject;
+import org.zanata.model.HProjectIteration;
+import org.jboss.seam.security.Identity;
+import org.jboss.seam.security.Role;
+import org.jboss.seam.security.permission.PermissionCheck;
+import org.jboss.seam.security.permission.RoleCheck;
+
+/* admin can do anything */
+rule AdminAnything
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(granted == false)
+  Role(name == "admin")
+then
+  check.grant();
+end
+
+rule CreateAccount
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(target == "seam.account", action == "create", granted == false)
+  Role(name == "admin")
+then
+  check.grant();
+end
+
+/*****************************************************************************************
+
+  The Following Rules are for Identity Management
+  
+******************************************************************************************/
+
+rule ManageUsers
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(target == "seam.user", granted == false)
+  Role(name == "admin")
+then
+  check.grant();
+end
+
+rule ManageRoles
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(target == "seam.role", granted == false)
+  Role(name == "admin")
+then
+  check.grant();
+end
+
+
+/*****************************************************************************************
+
+  Project ownership rules
+  
+******************************************************************************************/
+
+/* admin can create/delete projects (see rule AdminAnything above) */
+
+/* anyone can read a project */
+rule ReadProject
+  no-loop
+  activation-group "permissions"
+when
+  $project: HProject()
+  check: PermissionCheck(target == $project, action == "read", granted == false)
+then
+  check.grant();
+end
+
+
+/* anyone can read a project iteration */
+rule ReadProjectIteration
+  no-loop
+  activation-group "permissions"
+when
+  $iter: HProjectIteration()
+  check: PermissionCheck(target == $iter, action == "read", granted == false)
+then
+  check.grant();
+end
+
+
+/* 
+  Project maintainers may edit (but not delete) a project, or add an iteration.
+  Note that 'add-iteration' (on a project) should be granted in the same 
+  circumstances that 'insert' is granted (on an iteration).  In other words,
+  make sure the rules agree with each other.  (NB: 'add-iteration' is used in the
+  UI to enable buttons etc, without requiring the construction of
+  HProjectIteration just to do a permission check.)   
+ */
+rule UpdateProjectOrAddIteration
+  no-loop
+  activation-group "permissions"
+when
+  authenticatedPerson: HPerson() 
+  eval(authenticatedPerson != null)
+  $project: HProject(
+    eval(authenticatedPerson.isMaintainer($project))
+  )
+  check: PermissionCheck(
+    target == $project, action == "update" || action == "add-iteration", granted == false)
+then
+  check.grant();
+end
+
+
+/* 
+  Project maintainers may create or edit (but not delete) a project iteration 
+ */
+rule InsertOrUpdateProjectIteration
+  no-loop
+  activation-group "permissions"
+when
+  authenticatedPerson: HPerson() 
+  eval(authenticatedPerson != null)
+  $iter: HProjectIteration(
+    $project: project -> 
+    (authenticatedPerson.isMaintainer($project))
+  )
+  check: PermissionCheck(
+    target == $iter, 
+    action == "insert" || action == "update" || action == "import-template" || action == "import-translation",
+    granted == false)
+then
+  check.grant();
+end
+
+
+/*
+  This rule grants 'insert' on iteration if 'add-iteration' is granted
+  on the project.  It works, but it seems like a bad idea to re-invoke
+  the rules framework recursively like this.  Instead, just make sure the rules
+  above agree with each other!
+ */
+/*
+rule GrantInsertIfAddIterationGranted
+  no-loop
+  activation-group "permissions"
+when
+  $iter: HProjectIteration()
+  check: PermissionCheck(target == $iter, action == "insert", granted == false)
+  eval(Identity.instance().hasPermission($iter.getProject(), "add-iteration"))
+then
+  check.grant();
+end
+*/
+
+
+/*****************************************************************************************
+
+  Translation rules
+  
+******************************************************************************************/
+
+/* 'translator' can add a translation */
+rule TranslateAddTranslation
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(action == "add-translation" || action == "modify-translation", granted == false)
+  Role(name == "translator")
+then
+  check.grant();
+end
+
+/*
+TODO grant permission check: if user is a member of the language team,
+OR of project maintainers
+*/
+

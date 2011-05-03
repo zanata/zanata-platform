@@ -2,20 +2,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>client</artifactId>
-  <name>Flies client modules</name>
+  <name>Zanata client modules</name>
   <packaging>pom</packaging>
   <parent>
-    <groupId>net.openl10n.flies</groupId>
-    <artifactId>flies-parent</artifactId>
+    <groupId>org.zanata</groupId>
+    <artifactId>zanata-parent</artifactId>
     <version>1.3-SNAPSHOT</version>
-    <relativePath>../flies-parent/pom.xml</relativePath>
+    <relativePath>../zanata-parent/pom.xml</relativePath>
   </parent>
   <modules>
-    <module>flies-adapter-po</module>
-    <module>flies-adapter-properties</module>
-    <module>flies-client-commands</module>
-    <module>flies-client-ant-po</module>
-    <module>flies-client-ant-properties</module>
+    <module>zanata-adapter-po</module>
+    <module>zanata-adapter-properties</module>
+    <module>zanata-client-commands</module>
+    <module>zanata-client-ant-po</module>
+    <module>zanata-client-ant-properties</module>
     <module>zanata-maven-plugin</module>
   </modules>
 </project>

@@ -1,0 +1,37 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:fui="urn:import:org.zanata.webtrans.client.ui"
+    ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+    ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+    ui:generateLocales="en">
+	<ui:style>
+		.tuDetailsInactive {
+			border: 2px dotted grey;
+			padding: 5px;
+			text-align: center;
+			display:table-cell; 
+			vertical-align:middle;
+			color: grey;
+			}
+	</ui:style>
+	<fui:CollapsePanel ui:field="collapsePanel">
+		<g:LayoutPanel ui:field="rootPanel">
+			<g:layer top="5px" bottom="5px" left="5px" right="5px">
+				<g:Label styleName="{style.tuDetailsInactive}" ui:field="noDetailsLabel">
+			</g:Label>
+			</g:layer>
+			<g:layer top="0px" height="0px" left="3px" right="3px">
+				<g:VerticalPanel ui:field="labelPanel">
+					<g:FlowPanel height="50%">
+						<g:Label ui:field="sourceLabel" />
+					</g:FlowPanel>
+					<g:FlowPanel>
+						<g:Label ui:field="lastModifiedByLabel" />
+						<g:Label ui:field="lastModifiedTimeLabel" />
+					</g:FlowPanel>
+				</g:VerticalPanel>
+			</g:layer>
+		</g:LayoutPanel>
+	</fui:CollapsePanel>
+</ui:UiBinder> 

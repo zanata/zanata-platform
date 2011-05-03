@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+    <changeSet author="sflaniga@redhat.com" id="1">
+
+    	<validCheckSum>cfb156591044f08e333d7ca2d5638db3</validCheckSum>
+
+    	<comment>remove HCommunity tables</comment>
+    	
+    	<dropForeignKeyConstraint
+    		constraintName="FK8BEBF03860C55B1B"
+    		baseTableName="HCommunity_Member"/>
+    	<dropForeignKeyConstraint
+    		constraintName="FK8BEBF038AF83AE57"
+    		baseTableName="HCommunity_Member"/>
+    	<dropTable tableName="HCommunity_Member"/>
+
+    	<dropForeignKeyConstraint
+    		constraintName="FK5CB3E75860C55B1B"
+    		baseTableName="HCommunity_Officer"/>
+    	<dropForeignKeyConstraint
+    		constraintName="FK5CB3E758AF83AE57"
+    		baseTableName="HCommunity_Officer"/>
+    	<dropTable tableName="HCommunity_Officer"/>
+
+    	<dropForeignKeyConstraint
+    		constraintName="FKD3DF208177D52F9"
+    		baseTableName="HCommunity"/>
+    	<dropTable tableName="HCommunity"/>
+    </changeSet>
+
+	<changeSet author="sflaniga@redhat.com" id="2">
+		<comment>add wordCount to HTextFlow</comment>
+		<addColumn tableName="HTextFlow">
+			<column name="wordCount" type="bigint" />
+		</addColumn>
+	</changeSet>
+
+	<changeSet author="sflaniga@redhat.com" id="3">
+
+    	<validCheckSum>4a79d3b57ca227fbeb0e922b1a7fee9</validCheckSum>
+
+		<comment>calculate existing word counts and enable non-null constraint on HTextFlow</comment>
+		<customChange class="org.zanata.liquibase.custom.CountWordsInHTextFlow" />
+		<modifyColumn tableName="HTextFlow">
+			<column name="wordCount" type="bigint">
+				<constraints nullable="false" />
+			</column>
+		</modifyColumn>
+	</changeSet>
+
+	<changeSet author="sflaniga@redhat.com" id="4">
+		<comment>add unique constraint(resId,document_id) on HTextFlow</comment>
+		<addUniqueConstraint
+			tableName="HTextFlow"
+		    columnNames="resId,document_id"
+		    constraintName="UKresIddocument_id"/>
+	</changeSet>
+
+	<changeSet author="sflaniga@redhat.com" id="5" dbms="mysql">
+		<comment>remove unique constraint(document_id,resId) on HTextFlow</comment>
+		<dropUniqueConstraint tableName="HTextFlow" constraintName="document_id"/>
+	</changeSet>
+
+	<changeSet author="sflaniga@redhat.com" id="6" dbms="h2">
+		<comment>remove unique constraint(document_id,resId) on HTextFlow</comment>
+		<dropUniqueConstraint tableName="HTextFlow" constraintName="CONSTRAINT_A6"/>
+	</changeSet>
+
+</databaseChangeLog>

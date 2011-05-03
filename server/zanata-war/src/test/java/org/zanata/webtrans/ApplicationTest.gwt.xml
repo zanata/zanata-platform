@@ -1,0 +1,5 @@
+<module rename-to="webtrans">
+  <inherits name="org.zanata.webtrans.Application"/>
+  <inherits name="com.google.gwt.junit.JUnit"/>
+  <source path="test"/>
+</module>

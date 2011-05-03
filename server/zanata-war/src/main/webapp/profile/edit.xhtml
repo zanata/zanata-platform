@@ -1,0 +1,57 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:rich="http://richfaces.org/rich"       
+    xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+    template="../WEB-INF/layout/template.xhtml">
+  
+    <ui:param name="showGlobalMessages" value="false"/>
+    <ui:define name="center_content">
+            <div>
+	    	<h:outputText value="#{messages['jsf.FirstExternalLoginMessage']}" rendered="#{zanataExternalLoginBean.newUser}"/>
+		<br/>
+            </div>
+	
+      <h1>#{messages['jsf.EditProfile']}</h1>
+        <h:form>
+          <s:token allowMultiplePosts="true" />
+          <rich:panel>
+            <f:facet name="header">#{messages['jsf.AccountDetails']}</f:facet>
+              
+            <s:decorate id="nameField" template="../WEB-INF/layout/edit.xhtml">
+              <ui:define name="label">#{messages['jsf.Name']}</ui:define>
+              <h:inputText id="name" value="#{profileAction.name}" required="true" >
+                <a4j:support event="onblur" reRender="nameField" ajaxSingle="true"/>
+              </h:inputText>
+              <h:graphicImage id="nameHelp" value="../img/msginfo.png" styleClass="input_help">
+                <rich:toolTip>
+                  #{messages['jsf.NameToolTip']}
+                </rich:toolTip>
+              </h:graphicImage>
+            </s:decorate>
+            <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml">
+              <ui:define name="label">#{messages['jsf.Email']}</ui:define>
+              <h:inputText id="email" value="#{profileAction.email}" required="true" >
+                  <a4j:support event="onblur" reRender="emailField" />
+              </h:inputText>
+	       <h:graphicImage id="usernameHelp" value="../img/msginfo.png" styleClass="input_help">
+                <rich:toolTip>
+                  #{messages['jsf.EmailToolTip']}
+                </rich:toolTip>
+              </h:graphicImage>
+            </s:decorate>
+                      
+            <div style="clear:both"></div>
+
+            <div class="actionButtons">
+              <h:commandButton value="#{messages['jsf.Save']}" action="#{profileAction.edit}" />
+              <s:button value="#{messages['jsf.Cancel']}" action="#{profileAction.cancel}"/>
+            </div>
+          </rich:panel>
+        </h:form>
+
+    </ui:define>
+    
+  </ui:composition>

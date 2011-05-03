@@ -1,18 +1,18 @@
 #!/bin/sh
 set -eu
 
-# Initial import (used when first setting up project in Flies)
+# Initial import (used when first setting up project in Zanata)
 
-# update pot and po files before importing to flies
+# update pot and po files before importing to zanata
 echo "Updating POT and PO files from DocBook XML"
 publican update_pot
 publican update_po --langs=all
 
-# push initial po and pot files to flies for translation
-echo "Note: this script should only be run against a new, empty Flies project version!"
-echo "Use the script flies_import_source for normal updates."
+# push initial po and pot files to zanata for translation
+echo "Note: this script should only be run against a new, empty Zanata project version!"
+echo "Use the script zanata_import_source for normal updates."
 echo
-echo "Pushing to Flies server."
-mvn flies:publican-push -Dflies.importPo -e
+echo "Pushing to Zanata server."
+mvn zanata:publican-push -Dzanata.importPo -e
 
 echo "Finished!  You may want to check pot and locale dirs into version control to track the updated POT/PO files"

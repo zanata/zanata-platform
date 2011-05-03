@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="com.google.gdt.eclipse.suite.webapp">
+<stringAttribute key="bad_container_name" value="/root/zanata-war/eclipse"/>
+<booleanAttribute key="com.google.gdt.eclipse.core.AUTO_PORT_SELECTION" value="true"/>
+<booleanAttribute key="com.google.gdt.eclipse.core.RUN_SERVER" value="false"/>
+<stringAttribute key="com.google.gdt.eclipse.core.SERVER_PORT" value="8080"/>
+<stringAttribute key="com.google.gdt.eclipse.suiteMainTypeProcessor.PREVIOUSLY_SET_MAIN_TYPE_NAME" value="com.google.gwt.dev.GWTShell"/>
+<booleanAttribute key="com.google.gdt.eclipse.suiteWarArgumentProcessor.IS_WAR_FROM_PROJECT_PROPERTIES" value="true"/>
+<listAttribute key="com.google.gwt.eclipse.core.ENTRY_POINT_MODULES">
+<listEntry value="org.zanata.webtrans.Application"/>
+</listAttribute>
+<stringAttribute key="com.google.gwt.eclipse.core.URL" value="http://localhost:8080/zanata/webtrans/Application.html?project=sample-project&amp;iteration=1.0&amp;localeId=de"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/zanata-war"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="4"/>
+</listAttribute>
+<mapAttribute key="org.eclipse.debug.core.environmentVariables">
+<mapEntry key="GWT_EXTERNAL_BROWSER" value="firefox"/>
+</mapAttribute>
+<listAttribute key="org.eclipse.debug.ui.favoriteGroups">
+<listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="com.google.gwt.eclipse.core.moduleClasspathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.google.gwt.dev.DevMode"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-codeServerPort 9997 -war /opt/notbackedup/sflaniga/src/workspace-zanata/root/server/zanata-war/war -remoteUI &quot;${gwt_remote_ui_server_port}:${unique_id}&quot; -startupUrl http://localhost:8080/zanata/webtrans/Application.html?project=sample-project&amp;iteration=1.0&amp;localeId=de -logLevel INFO -noserver org.zanata.webtrans.Application"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="zanata-war"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx512m"/>
+<stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:zanata-war}"/>
+</launchConfiguration>

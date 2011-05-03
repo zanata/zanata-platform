@@ -1,0 +1,41 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Integration Tests" verbose="1">
+
+	<listeners>
+		<!-- 
+			   This ensures that all SeamTest classes 
+			   are treated as seam-tests: 
+		-->
+		<listener class-name="org.zanata.testing.SeamTestTransformer"/>
+	</listeners>
+
+<!-- these default values are hard-coded into ZanataDBUnitSeamTest:
+	<parameter name="database" value="hsql" />
+	<parameter name="datasourceJndiName" value="java:/zanataDatasource" />
+	<parameter name="binaryDir" value="" />
+ -->
+
+		<!-- 
+	<test name="Seam Tests">
+ 		<groups>
+	 		<packages>
+	 			<package name="org.zanata.*"/>
+	 		</packages>
+ 			<run>
+ 				<include name="seam-tests"/>
+ 			</run>
+ 		</groups>
+	</test>
+		TODO: use group seam-tests instead, but make sure TestNG 
+		executes up the @BeforeSuite method SeamTest.startSeam()  
+		 -->
+     	<test name="Seam Tests">
+     		<classes>
+     			<class name="org.zanata.rest.service.ProjectServiceRawSeamTest"/>
+     			<class name="org.zanata.rest.service.ProjectsServiceSeamTest"/>
+     			<class name="org.zanata.rest.service.ResourceServiceSeamTest"/>
+     			<class name="org.zanata.rest.service.TranslationServiceSeamTest"/>
+     			<class name="org.zanata.rest.service.VersionSeamTest"/>
+     		</classes>
+     	</test>
+</suite>
