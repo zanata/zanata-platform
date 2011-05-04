@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.zanata</groupId>
 	<artifactId>zanata-parent</artifactId>
-	<version>1.3-SNAPSHOT</version>
+	<version>1.3-alpha-2</version>
 	<name>Zanata Parent POM</name>
 	<url>http://zanata.org/</url>
 	<packaging>pom</packaging>
