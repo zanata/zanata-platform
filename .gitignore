@@ -1,0 +1,49 @@
+
+# mostly adapted from .hgignore:
+
+*~
+*.patch
+*.sedbak
+zanatasearchindex/
+test-output/
+hs_err_pid*.log
+localDB.log
+localDB.properties
+
+*.jar
+/.pc/
+/.ant-targets-build.xml
+/.pages.xml.spdia
+temp-testng-customsuite.xml
+/server/zanata-war/war
+/server/zanata-war/src/main/resources/*_qc.properties$
+/server/zanata-war/src/test/resources/bootstrap/data/
+/server/zanata-war/src/test/jboss-embedded-bootstrap/data/
+
+# eclipse and maven stuff
+.classpath
+.metadata/
+.settings/
+.project
+bin/
+/*/*/target/
+*.orig
+
+# idea
+*.idea/
+*.iml
+
+# kde related
+*.directory
+
+#gwt related
+/server/zanata-war/src/main/webapp/WEB-INF/classes/
+/server/zanata-war/tomcat
+*.gwt-tmp
+/server/zanata-war/src/main/webapp/webtrans/
+
+# vim
+*.swp
+
+*.log
+/tmp*
