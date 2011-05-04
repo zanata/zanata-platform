@@ -124,7 +124,7 @@
 
 	<properties>
 		<!--
-		  changeSet is set by buildnumber-maven-plugin from git info
+		  buildNumber is set by buildnumber-maven-plugin from git info
 		-->
 		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -220,7 +220,7 @@
 						</manifest>
 						<manifestEntries>
 							<Implementation-Build>${maven.build.timestamp}</Implementation-Build>
-							<SCM-Changeset>${changeSet}</SCM-Changeset>
+							<SCM-Changeset>${buildNumber}</SCM-Changeset>
 						</manifestEntries>
 					</archive>
 				</configuration>
