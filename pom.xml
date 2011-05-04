@@ -9,9 +9,9 @@
 	<packaging>pom</packaging>
 
 	<scm>
-		<connection>scm:hg:http://flies.googlecode.com/hg/</connection>
-		<developerConnection>scm:hg:https://flies.googlecode.com/hg/</developerConnection>
-		<url>http://code.google.com/p/flies/source/browse/</url>
+		<connection>scm:git:git://github.com/zanata/zanata.git</connection>
+		<developerConnection>scm:git:git@github.com:zanata/zanata.git</developerConnection>
+		<url>https://github.com/zanata/zanata</url>
 	</scm>
 
 	<licenses>
@@ -124,12 +124,8 @@
 
 	<properties>
 		<!--
-		  MERCURIAL_REVISION is supplied by Hudson.
-		  changeSet property can be provided by
-		  buildnumber-maven-plugin, but
-		  see http://jira.codehaus.org/browse/MOJO-1432
+		  changeSet is set by buildnumber-maven-plugin from git info
 		-->
-		<changeSet>${env.MERCURIAL_REVISION}</changeSet>
 		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<gwt.version>2.1.0</gwt.version>
@@ -177,45 +173,39 @@
 				</configuration>
 			</plugin>
 
-			<!-- http://jira.codehaus.org/browse/MOJO-1432
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>buildnumber-maven-plugin</artifactId>
-				<version>1.0-beta-4</version>
+				<version>1.0</version>
 				<executions>
 					<execution>
 						<id>define-changeset</id>
 						<phase>initialize</phase>
 						<goals>
-							sets Maven properties changeSet and changeSetDate
-							<goal>hgchangeset</goal>
+							<!-- sets Maven property buildNumber -->
+							<goal>create</goal>
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<revisionOnScmFailure>UNKNOWN</revisionOnScmFailure>
+					<doCheck>false</doCheck>
+					<doUpdate>false</doUpdate>
+				</configuration>
 			</plugin>
-			-->
 
-			<!-- useful for debugging Maven properties
+			<!-- useful for debugging Maven properties: eg mvn initialize antrun:run
+			-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<version>1.6</version>
-				<executions>
-					<execution>
-						<phase>initialize</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<tasks>
-								<echo>[changeSet] ${changeSet}</echo>
-								<echo>[changeSetDate] ${changeSetDate}</echo>
-							</tasks>
-						</configuration>
-					</execution>
-				</executions>
+				<configuration>
+					<target>
+						<echo>[buildNumber] ${buildNumber}</echo>
+					</target>
+				</configuration>
 			</plugin>
-			-->
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -244,7 +234,6 @@
 					<allowTimestampedSnapshots>true</allowTimestampedSnapshots>
 					<autoVersionSubmodules>true</autoVersionSubmodules>
 					<localCheckout>true</localCheckout>
-					<!-- NB: pushChanges is presently ignored by the hg scm plugin -->
 					<pushChanges>false</pushChanges>
 				</configuration>
 			</plugin>
