@@ -68,7 +68,7 @@ public class ConfigurationAction implements Serializable
          ServletOutputStream os = response.getOutputStream();
          StringBuilder var = new StringBuilder(
                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-               "<config xmlns=\"" + Namespaces.FLIES_CONFIG + "\">\n");
+               "<config xmlns=\"" + Namespaces.ZANATA_CONFIG + "\">\n");
          var.append("  <url>" + applicationConfiguration.getServerPath() + "/</url>\n");
          var.append("  <project>" + projectSlug + "</project>\n");
          var.append("  <project-version>" + iterationSlug + "</project-version>\n\n");

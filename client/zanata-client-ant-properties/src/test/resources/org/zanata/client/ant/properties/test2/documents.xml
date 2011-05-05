@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<documents xmlns="http://flies.openl10n.net/api/v1/" xmlns:ns2="http://flies.openl10n.net/api/gettext/header">
+<documents xmlns="http://zanata.org/namespace/api/">
     <document path="foo/" name="foo.properties" xml:lang="en-US" id="foo/foo.properties" content-type="text/plain">
         <document-content>
             <text-flow version="1" id="FOOD">

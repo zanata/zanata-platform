@@ -148,7 +148,7 @@ public class GenerateSamples
    // if (namespaceUri == null || namespaceUri.isEmpty() ) {
    // return "";
    // }
-   // if (namespaceUri.equalsIgnoreCase(Namespaces.FLIES)) {
+   // if (namespaceUri.equalsIgnoreCase(Namespaces.ZANATA_API)) {
    // return "";
    // }
    // if (namespaceUri.equalsIgnoreCase(PoHeader.NAMESPACE)) {

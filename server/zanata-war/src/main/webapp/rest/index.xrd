@@ -3,27 +3,27 @@
 
   <!-- AccountsService (not yet implemented) 
   <Link
-    type="application/vnd.flies.accounts+xml"
+    type="application/vnd.zanata.accounts+xml"
     href="accounts"/>
   -->
 
   <!-- ProjectsService -->
   <Link
-    type="application/vnd.flies.projects+xml"
+    type="application/vnd.zanata.projects+xml"
     href="projects"/>
 
   <!-- ProjectService -->
   <Link
-    type="application/vnd.flies.project+xml"
+    type="application/vnd.zanata.project+xml"
     template="projects/p/{projectSlug}"/>
 
   <!-- ProjectIterationService -->
   <Link
-    type="application/vnd.flies.project.iteration+xml"
+    type="application/vnd.zanata.project.iteration+xml"
     template="projects/p/{projectSlug}/iterations/i/{iterationSlug}"/>
 
   <!-- TranslationResourcesService -->
   <Link
-    type="application/vnd.flies.project.iteration.document+xml"
+    type="application/vnd.zanata.project.iteration.document+xml"
     template="projects/p/{projectSlug}/iterations/i/{iterationSlug}/r"/>
 </XRD>

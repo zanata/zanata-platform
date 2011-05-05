@@ -14,13 +14,13 @@ import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.FileConfiguration;
 import org.apache.commons.configuration.HierarchicalINIConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
-import org.zanata.client.config.FliesConfig;
+import org.zanata.client.config.ZanataConfig;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 
 public class ZanataConfigTest extends TestCase
 {
-   JAXBContext jc = JAXBContext.newInstance(FliesConfig.class);
+   JAXBContext jc = JAXBContext.newInstance(ZanataConfig.class);
    Unmarshaller unmarshaller = jc.createUnmarshaller();
    Marshaller marshaller = jc.createMarshaller();
    File zanataProjectXml = new File(System.getProperty("user.dir"), "target/zanata.xml");
@@ -44,7 +44,7 @@ public class ZanataConfigTest extends TestCase
 
    void writeProject() throws Exception
    {
-      FliesConfig config = new FliesConfig();
+      ZanataConfig config = new ZanataConfig();
       config.setUrl(new URL("http://example.com"));
       config.setProject("project");
       config.setProjectVersion("version");
@@ -55,7 +55,7 @@ public class ZanataConfigTest extends TestCase
 
    void readProject() throws Exception
    {
-      FliesConfig config = (FliesConfig) unmarshaller.unmarshal(zanataProjectXml);
+      ZanataConfig config = (ZanataConfig) unmarshaller.unmarshal(zanataProjectXml);
       assertEquals(new URL("http://example.com"), config.getUrl());
       assertEquals("project", config.getProject());
       assertEquals("version", config.getProjectVersion());

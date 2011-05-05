@@ -83,7 +83,7 @@ public class ProjectServiceRawSeamTest extends ZanataDBUnitSeamTest
          @Override
          protected void prepareRequest(EnhancedMockHttpServletRequest request)
          {
-            request.addHeader("Accept", MediaTypes.APPLICATION_FLIES_PROJECTS_XML);
+            request.addHeader("Accept", MediaTypes.APPLICATION_ZANATA_PROJECTS_XML);
          }
 
          @Override

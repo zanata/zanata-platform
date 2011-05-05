@@ -45,8 +45,8 @@ public class ProjectsService implements ProjectsResource
 
    @Override
    @GET
-   @Produces( { MediaTypes.APPLICATION_FLIES_PROJECTS_XML, MediaTypes.APPLICATION_FLIES_PROJECTS_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-   @Wrapped(element = "projects", namespace = Namespaces.FLIES)
+   @Produces( { MediaTypes.APPLICATION_ZANATA_PROJECTS_XML, MediaTypes.APPLICATION_ZANATA_PROJECTS_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+   @Wrapped(element = "projects", namespace = Namespaces.ZANATA_API)
    public List<Project> get()
    {
       @SuppressWarnings("unchecked")
@@ -57,7 +57,7 @@ public class ProjectsService implements ProjectsResource
       for (HProject hProject : projects)
       {
          Project project = new Project(hProject.getSlug(), hProject.getName(), ProjectType.IterationProject);
-         project.getLinks(true).add(new Link(URI.create("p/" + hProject.getSlug()), "self", MediaTypes.createFormatSpecificType(MediaTypes.APPLICATION_FLIES_PROJECT, accept)));
+         project.getLinks(true).add(new Link(URI.create("p/" + hProject.getSlug()), "self", MediaTypes.createFormatSpecificType(MediaTypes.APPLICATION_ZANATA_PROJECT, accept)));
          projectRefs.add(project);
       }
 

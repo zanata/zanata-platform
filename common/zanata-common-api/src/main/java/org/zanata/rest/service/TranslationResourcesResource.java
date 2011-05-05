@@ -55,7 +55,7 @@ public interface TranslationResourcesResource
     * @return Response.ok with ResourcesList or Response(404) if not found
     */
    @GET
-   @Wrapped(element = "resources", namespace = Namespaces.FLIES)
+   @Wrapped(element = "resources", namespace = Namespaces.ZANATA_API)
    public Response get();
 
    @POST
