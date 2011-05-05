@@ -39,11 +39,11 @@ public interface AccountResource
 {
 
    @GET
-   @Produces({ MediaTypes.APPLICATION_FLIES_ACCOUNT_XML, MediaTypes.APPLICATION_FLIES_ACCOUNT_JSON })
+   @Produces({ MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML, MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON })
    public Response get();
 
    @PUT
-   @Consumes({ MediaTypes.APPLICATION_FLIES_ACCOUNT_XML, MediaTypes.APPLICATION_FLIES_ACCOUNT_JSON })
+   @Consumes({ MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML, MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON })
    public Response put(Account account);
 
 }

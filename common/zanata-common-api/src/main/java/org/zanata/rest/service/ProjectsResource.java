@@ -41,8 +41,8 @@ public interface ProjectsResource
 {
 
    @GET
-   @Produces({ MediaTypes.APPLICATION_FLIES_PROJECTS_XML, MediaTypes.APPLICATION_FLIES_PROJECTS_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-   @Wrapped(element = "projects", namespace = Namespaces.FLIES)
+   @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECTS_XML, MediaTypes.APPLICATION_ZANATA_PROJECTS_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+   @Wrapped(element = "projects", namespace = Namespaces.ZANATA_API)
    public List<Project> get();
 
 }

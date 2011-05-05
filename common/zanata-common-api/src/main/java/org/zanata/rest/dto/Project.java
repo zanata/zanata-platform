@@ -176,7 +176,7 @@ public class Project implements Serializable, HasCollectionSample<Project>, HasM
    @Override
    public String getMediaType(Format format)
    {
-      return MediaTypes.APPLICATION_FLIES_PROJECT + format;
+      return MediaTypes.APPLICATION_ZANATA_PROJECT + format;
    }
 
    @Override

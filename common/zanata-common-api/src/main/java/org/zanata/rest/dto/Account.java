@@ -155,7 +155,7 @@ public class Account implements Serializable, HasMediaType
    @Override
    public String getMediaType(Format format)
    {
-      return MediaTypes.APPLICATION_FLIES_ACCOUNT + format;
+      return MediaTypes.APPLICATION_ZANATA_ACCOUNT + format;
    }
 
    @Override

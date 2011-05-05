@@ -360,7 +360,7 @@ public class TranslationResourceRestTest extends ZanataRestTest
        * 
        * link = doc.getLinks().findLinkByRel(Relationships.DOCUMENT_CONTAINER);
        * assertThat(link, notNullValue()); assertThat(link.getType(),
-       * is(MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML));
+       * is(MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML));
        */
    }
 

@@ -15,11 +15,11 @@ public interface IProjectIterationResource
 {
 
    @GET
-   @Produces( { MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML, MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON })
+   @Produces( { MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON })
    public ClientResponse<ProjectIteration> get();
 
    @PUT
-   @Consumes( { MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_XML, MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION_JSON })
+   @Consumes( { MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON })
    public ClientResponse put(ProjectIteration project);
 
    // @Path("/documents")

@@ -26,7 +26,7 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("{0}/{1}/{2} (msgs)")
    String statusBarLabelUnits(int approved, int needReview, int untranslated);
 
-   @DefaultMessage("http://code.google.com/docreader/#p=flies&s=flies&t=TranslatorGuide")
+   @DefaultMessage("http://zanata.org/")
    String hrefHelpLink();
 
    @DefaultMessage("{0} to {1} - Zanata Web Translation")

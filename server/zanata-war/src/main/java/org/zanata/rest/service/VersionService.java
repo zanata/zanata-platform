@@ -38,7 +38,7 @@ public class VersionService implements VersionResource
     */
    @Override
    @GET
-   @Produces({ MediaTypes.APPLICATION_FLIES_VERSION_JSON, MediaTypes.APPLICATION_FLIES_VERSION_XML })
+   @Produces({ MediaTypes.APPLICATION_ZANATA_VERSION_JSON, MediaTypes.APPLICATION_ZANATA_VERSION_XML })
    public VersionInfo get()
    {
       return new VersionInfo(version);

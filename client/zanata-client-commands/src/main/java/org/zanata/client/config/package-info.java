@@ -23,7 +23,7 @@
  * Package-level annotations
  */
 @XmlAccessorOrder(XmlAccessOrder.ALPHABETICAL)
-@XmlSchema(namespace = Namespaces.FLIES_CONFIG, elementFormDefault = XmlNsForm.QUALIFIED)
+@XmlSchema(namespace = Namespaces.ZANATA_CONFIG, elementFormDefault = XmlNsForm.QUALIFIED)
 package org.zanata.client.config;
 
 import javax.xml.bind.annotation.XmlAccessOrder;
