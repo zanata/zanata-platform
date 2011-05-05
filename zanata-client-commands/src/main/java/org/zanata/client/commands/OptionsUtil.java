@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.VersionUtility;
 import org.zanata.client.config.ConfigUtil;
-import org.zanata.client.config.FliesConfig;
+import org.zanata.client.config.ZanataConfig;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.exceptions.ConfigException;
 import org.zanata.rest.client.ZanataProxyFactory;
@@ -37,7 +37,7 @@ public class OptionsUtil
          ConfigurableProjectOptions projOpts = (ConfigurableProjectOptions) opts;
          if (projOpts.getProjectConfig() != null)
          {
-            JAXBContext jc = JAXBContext.newInstance(FliesConfig.class);
+            JAXBContext jc = JAXBContext.newInstance(ZanataConfig.class);
             Unmarshaller unmarshaller = jc.createUnmarshaller();
             String projectConfigName = projOpts.getProjectConfig();
             File projectConfigFile = new File(projectConfigName);
@@ -54,7 +54,7 @@ public class OptionsUtil
             if (projectConfigFile.exists())
             {
                log.info("Loading project config from {}", projectConfigFile);
-               FliesConfig projectConfig = (FliesConfig) unmarshaller.unmarshal(projectConfigFile);
+               ZanataConfig projectConfig = (ZanataConfig) unmarshaller.unmarshal(projectConfigFile);
                // local project config is supposed to override user's zanata.ini,
                // so we apply it first
                applyProjectConfig(projOpts, projectConfig);
@@ -86,7 +86,7 @@ public class OptionsUtil
     * 
     * @param config
     */
-   private static void applyProjectConfig(ConfigurableProjectOptions opts, FliesConfig config)
+   private static void applyProjectConfig(ConfigurableProjectOptions opts, ZanataConfig config)
    {
       if (opts.getProj() == null)
       {
