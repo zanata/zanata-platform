@@ -136,7 +136,7 @@ public class FedoraOpenId
       }
       catch (OpenIDException e)
       {
-         log.warn(e);
+         log.warn(e, e);
       }
 
       return null;
@@ -209,7 +209,7 @@ public class FedoraOpenId
       }
       catch (OpenIDException e)
       {
-         log.warn(e);
+         log.warn(e, e);
       }
 
       return null;

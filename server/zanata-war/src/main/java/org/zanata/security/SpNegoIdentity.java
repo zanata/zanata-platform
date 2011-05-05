@@ -87,7 +87,7 @@ public class SpNegoIdentity implements Serializable
       }
       catch (Exception e)
       {
-         log.info(e.getMessage());
+         log.warn(e, e);
       }
    }
 }

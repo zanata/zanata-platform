@@ -58,7 +58,7 @@ public class FedoraOpenIdPhaseListener implements PhaseListener
          }
          catch (IOException e)
          {
-            log.warn(e);
+            log.warn(e, e);
          }
          return;
       }
