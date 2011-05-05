@@ -29,6 +29,8 @@ import java.lang.reflect.Field;
 import javax.faces.context.FacesContext;
 
 
+import org.jboss.seam.Component;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -52,12 +54,12 @@ public class SpNegoIdentity implements Serializable
    private static final String SUBJECT = "subject";
    private static final String PRINCIPAL = "principal";
    private static final LogProvider log = Logging.getLogProvider(SpNegoIdentity.class);
-   private ZanataIdentity identity;
 
    public void setCredential()
    {
       try
       {
+         ZanataIdentity identity = (ZanataIdentity) Component.getInstance(ZanataIdentity.class, ScopeType.SESSION);
          if (identity.isLoggedIn())
          {
             if (Events.exists())
