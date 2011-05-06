@@ -93,6 +93,7 @@ public class ZanataExternalLoginBean implements Serializable
       {
          FacesMessages.instance().clear();
          FacesMessages.instance().add("User {0} has been disabled. Please check your email for a validation code, or contact server admin.", username);
+         identity.setPreAuthenticated(false);
          identity.unAuthenticate();
          return true;
       }
@@ -103,6 +104,7 @@ public class ZanataExternalLoginBean implements Serializable
    @Observer(Identity.EVENT_LOGIN_SUCCESSFUL)
    public void loginInSuccessful()
    {
+      identity.setPreAuthenticated(true);
       if (externalLogin() && !isNewUser() && !checkDisabledUser())
       {
          applyAuthentication();
@@ -115,18 +117,22 @@ public class ZanataExternalLoginBean implements Serializable
       {
          SpNegoIdentity spNegoIdentity = (SpNegoIdentity) Component.getInstance(SpNegoIdentity.class, ScopeType.SESSION);
          spNegoIdentity.setCredential();
-         return;
       }
    }
 
    public String redirect()
    {
-      if (zanataInit.isSpNego() && isNewUser())
+      if (zanataInit.isSpNego() && identity.isLoggedIn() && isNewUser())
       {
          return "edit";
       }
 
-      if (zanataInit.isSpNego() && !isNewUser())
+      if (zanataInit.isSpNego() && identity.isLoggedIn() && !isNewUser())
+      {
+         return "home";
+      }
+
+      if (zanataInit.isSpNego() && !identity.isLoggedIn())
       {
          return "home";
       }
