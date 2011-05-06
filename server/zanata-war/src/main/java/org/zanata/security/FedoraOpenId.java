@@ -242,7 +242,6 @@ public class FedoraOpenId
    {
       if (loginImmediately())
       {
-         identity.setPreAuthenticated(true);
          if (Events.exists())
             Events.instance().raiseEvent(Identity.EVENT_POST_AUTHENTICATE, identity);
          if (Events.exists())
