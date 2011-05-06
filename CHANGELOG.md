@@ -1,13 +1,26 @@
 # Zanata change log summary
 
-## 1.3-alpha-1 (in development)
- * languages per project/version (http://code.google.com/p/flies/issues/detail?id=261)
+## 1.3-alpha-3
+ * finalise rebrand from flies->zanata: XML namespaces, media types, etc
+ * more logging for authentication errors
+ * bug fix for Kerberos authentication
+## 1.3-alpha-2
+ * switch source control to git on github
+ * rebrand from flies->zanata (maven artifacts, java packages, mailing lists)
+ * Fedora authentication rhbz#692011
+ * generate zanata.xml config file (http://code.google.com/p/flies/issues/detail?id=282)
+ * merge translations on import (http://code.google.com/p/flies/issues/detail?id=28)
+ * preserve and generate PO header comments for translator credits (http://code.google.com/p/flies/issues/detail?id=269)
+ * bug fixes
+## 1.3-alpha-1
+ * rebrand from flies->zanata (except URIs, maven artifacts and java packages)
+ * specify locales per project/version (http://code.google.com/p/flies/issues/detail?id=261)
  * added tab for home page, removed project list, contents editable by admin (http://code.google.com/p/flies/issues/detail?id=279)
  * added help page/tab, contents editable by admin (http://code.google.com/p/flies/issues/detail?id=280)
  * removed name and description from project version (http://code.google.com/p/flies/issues/detail?id=281)
  * stats for all languages (http://code.google.com/p/flies/issues/detail?id=275)
+ * workaround for form/login issue on Firefox 4.0 rhbz#691963
  * bug fixes
-
 ## 1.2
  * disabled bad key bindings (http://code.google.com/p/flies/issues/detail?id=262)
  * fixed python client issue with PotEntryHeader.extractedComment (http://code.google.com/p/flies/issues/detail?id=256)
