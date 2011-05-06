@@ -117,7 +117,7 @@ public class ProjectIteration implements Serializable, HasCollectionSample<Proje
    @Override
    public String getMediaType(Format format)
    {
-      return MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION + format;
+      return MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION + format;
    }
 
    @Override

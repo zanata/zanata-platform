@@ -98,7 +98,7 @@ public class ProjectService implements ProjectResource
 
    @Override
    @HEAD
-   @Produces( { MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaTypes.APPLICATION_FLIES_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+   @Produces( { MediaTypes.APPLICATION_ZANATA_PROJECT_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    public Response head()
    {
       EntityTag etag = eTagUtils.generateTagForProject(projectSlug);
@@ -112,7 +112,7 @@ public class ProjectService implements ProjectResource
 
    @Override
    @GET
-   @Produces( { MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaTypes.APPLICATION_FLIES_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+   @Produces( { MediaTypes.APPLICATION_ZANATA_PROJECT_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    public Response get()
    {
       EntityTag etag = eTagUtils.generateTagForProject(projectSlug);
@@ -131,7 +131,7 @@ public class ProjectService implements ProjectResource
 
    @Override
    @PUT
-   @Consumes( { MediaTypes.APPLICATION_FLIES_PROJECT_XML, MediaTypes.APPLICATION_FLIES_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+   @Consumes( { MediaTypes.APPLICATION_ZANATA_PROJECT_XML, MediaTypes.APPLICATION_ZANATA_PROJECT_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
    public Response put(InputStream messageBody)
    {
 
@@ -213,7 +213,7 @@ public class ProjectService implements ProjectResource
          {
             ProjectIteration iteration = new ProjectIteration();
             ProjectIterationService.transfer(pIt, iteration);
-            iteration.getLinks(true).add(new Link(URI.create("iterations/i/" + pIt.getSlug()), "self", MediaTypes.createFormatSpecificType(MediaTypes.APPLICATION_FLIES_PROJECT_ITERATION, mediaType)));
+            iteration.getLinks(true).add(new Link(URI.create("iterations/i/" + pIt.getSlug()), "self", MediaTypes.createFormatSpecificType(MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION, mediaType)));
             project.getIterations(true).add(iteration);
          }
       }

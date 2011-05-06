@@ -37,7 +37,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlType(name = "configType", propOrder = { "url", "project", "projectVersion", "locales" })
 @XmlRootElement(name = "config")
-public class FliesConfig implements Serializable
+public class ZanataConfig implements Serializable
 {
    private static final long serialVersionUID = 1L;
    private LocaleList locales = new LocaleList();
@@ -45,7 +45,7 @@ public class FliesConfig implements Serializable
    private URL url;
    private String projectVersion;
 
-   public FliesConfig()
+   public ZanataConfig()
    {
    }
 

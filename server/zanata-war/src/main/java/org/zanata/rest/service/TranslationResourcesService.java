@@ -203,7 +203,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
     */
    @Override
    @GET
-   @Wrapped(element = "resources", namespace = Namespaces.FLIES)
+   @Wrapped(element = "resources", namespace = Namespaces.ZANATA_API)
    public Response get()
    {
 

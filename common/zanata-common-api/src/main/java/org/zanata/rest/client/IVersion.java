@@ -32,7 +32,7 @@ import org.zanata.rest.dto.VersionInfo;
 public interface IVersion
 {
    @GET
-   @Produces({ MediaTypes.APPLICATION_FLIES_VERSION_XML })
+   @Produces({ MediaTypes.APPLICATION_ZANATA_VERSION_XML })
    public VersionInfo get();
 
 }

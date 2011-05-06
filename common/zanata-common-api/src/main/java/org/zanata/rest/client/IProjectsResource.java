@@ -16,7 +16,7 @@ public interface IProjectsResource
 {
 
    @GET
-   @Produces( { MediaTypes.APPLICATION_FLIES_PROJECTS_XML, MediaTypes.APPLICATION_FLIES_PROJECTS_JSON })
+   @Produces( { MediaTypes.APPLICATION_ZANATA_PROJECTS_XML, MediaTypes.APPLICATION_ZANATA_PROJECTS_JSON })
    public ClientResponse<List<Project>> get();
 
 }
