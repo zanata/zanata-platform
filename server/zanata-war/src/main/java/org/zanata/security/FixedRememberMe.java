@@ -31,11 +31,6 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.security.RememberMe;
 
-/**
- * Workaround for https://jira.jboss.org/browse/JBSEAM-4503 supplied by
- * "wolfgang geck" in
- * http://seamframework.org/Community/SeamTokenTagProblemCSRF#comment110227
- */
 @Name("org.jboss.seam.security.rememberMe")
 @Scope(SESSION)
 @Install(precedence = Install.DEPLOYMENT)
@@ -51,7 +46,7 @@ public class FixedRememberMe extends RememberMe
       if (ctx == null)
          return null;
       String requestContextPath = ctx.getExternalContext().getRequestContextPath();
-      // workaround for https://issues.jboss.org/browse/JBSEAM-4701
+      // workaround for https://issues.jboss.org/browse/SEAMSECURITY-9
       if (requestContextPath.isEmpty())
       {
          requestContextPath = "/";
