@@ -6,7 +6,7 @@ documentation and software online using a web-browser. It is
 written in Java and uses modern web technologies like JBoss, 
 Seam, GWT, Hibernate, and a REST API. It currently supports 
 translation of DocBook/Publican documentation through PO 
-files. Projects can be uploaded to and downloaded from a Flies 
+files. Projects can be uploaded to and downloaded from a Zanata 
 server using a Maven plugin or a Python client.
 
 For *developers and writers*: By using Zanata for 
