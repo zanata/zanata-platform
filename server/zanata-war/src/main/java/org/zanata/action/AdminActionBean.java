@@ -22,7 +22,9 @@ import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.deployment.StandardDeploymentStrategy;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
+import org.zanata.model.HAccount;
 import org.zanata.model.HIterationProject;
+import org.zanata.model.HTextFlow;
 
 @Name("adminAction")
 @Scope(ScopeType.APPLICATION)
@@ -44,8 +46,11 @@ public class AdminActionBean
    @Create
    public void create()
    {
-      indexables.addAll(StandardDeploymentStrategy.instance().getAnnotatedClasses().get(Indexed.class.getName()));
+      // TODO: find a version of this that works:
+//      indexables.addAll(StandardDeploymentStrategy.instance().getAnnotatedClasses().get(Indexed.class.getName()));
       indexables.add(HIterationProject.class);
+      indexables.add(HAccount.class);
+      indexables.add(HTextFlow.class);
    }
 
    /*
@@ -60,7 +65,6 @@ public class AdminActionBean
       // reindex all @Indexed entities
       for (Class<?> clazz : indexables)
       {
-         log.info("Reindexing class " + clazz.getName());
          reindex(clazz);
       }
 
