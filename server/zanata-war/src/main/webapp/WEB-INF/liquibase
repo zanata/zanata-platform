@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# convenience script to run liquibase with suitable Zanata settings
+# see http://liquibase.org/manual/command_line
+
+SCRIPT_PATH=`dirname ${BASH_SOURCE[0]}`
+war=$SCRIPT_PATH/..
+
+if [ -z $JBOSS_HOME ]; then
+  echo "Error: JBOSS_HOME not set.  For instance: export JBOSS_HOME=/opt/jboss-ewp-5.0/jboss-as-web"
+  exit 1
+fi
+
+classpath=\
+$(echo $war/WEB-INF/lib/*.jar \
+$war/WEB-INF/classes/ \
+$JBOSS_HOME/server/default/lib/mysql-connector-java*.jar \
+$JBOSS_HOME/lib/log4j-boot.jar | sed 's/ /:/g')
+
+if [ -r liquibase.properties ]; then
+  defs=
+else
+  defs=--defaultsFile=$HOME/.config/liquibase.properties
+fi
+
+java \
+-jar $war/WEB-INF/lib/liquibase-core*.jar \
+--classpath $classpath \
+--changeLogFile=db/db.changelog.xml \
+$defs \
+"$@"
+
+exit 0
+
+
+
+
+sample of liquibase.properties (put in $HOME/.config/, or current dir):
+
+driver=com.mysql.jdbc.Driver
+url=jdbc:mysql://localhost:3306/zanata?characterEncoding=UTF-8
+username=root
+password=rootpassword
