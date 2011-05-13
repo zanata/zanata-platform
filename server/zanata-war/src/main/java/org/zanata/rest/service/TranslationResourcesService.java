@@ -891,7 +891,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
    public void copyClosestEquivalentTranslation(Long docId, String name, String projectSlug, String iterationSlug)
    {
-      Events.instance().raiseTransactionSuccessEvent(EVENT_COPY_TRANS, docId, projectSlug, iterationSlug);
+      Events.instance().raiseAsynchronousEvent(EVENT_COPY_TRANS, docId, projectSlug, iterationSlug);
    }
 
 }

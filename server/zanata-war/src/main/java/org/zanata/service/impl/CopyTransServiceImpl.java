@@ -40,12 +40,13 @@ import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.service.TranslationResourcesService;
+import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 
-@Name("copyTransService")
+@Name("copyTransServiceImpl")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
-public class CopyTransService
+public class CopyTransServiceImpl implements CopyTransService
 {
    @In
    private LocaleService localeServiceImpl;
@@ -90,7 +91,7 @@ public class CopyTransService
       return "translation auto-copied from project " + projectname + ", version " + version + ", document " + documentid + ", author " + authorname;
    }
 
-   private void copyTransForLocale(HDocument document, HLocale locale)
+   public void copyTransForLocale(HDocument document, HLocale locale)
    {
       try
       {
@@ -104,7 +105,6 @@ public class CopyTransService
             HTextFlowTarget oldTFT = textFlowTargetDAO.findLatestEquivalentTranslation(textFlow, locale);
             if (oldTFT != null)
             {
-               log.info("find one:" + oldTFT.getContent());
                if (hTarget == null)
                {
                   hTarget = new HTextFlowTarget(textFlow, locale);
