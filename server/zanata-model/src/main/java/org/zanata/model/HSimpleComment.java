@@ -25,6 +25,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.NotNull;
 
@@ -33,6 +34,7 @@ import org.hibernate.validator.NotNull;
  * 
  */
 @Entity
+@BatchSize(size = 20)
 public class HSimpleComment
 {
 

@@ -38,6 +38,7 @@ import javax.persistence.OneToOne;
 
 
 import org.hibernate.annotations.AccessType;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
@@ -198,7 +199,7 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
    }
 
    // TODO use orphanRemoval=true: requires JPA 2.0
-   @OneToOne(optional = true, cascade = CascadeType.ALL)
+   @OneToOne(optional = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
    @JoinColumn(name = "comment_id")
    public HSimpleComment getComment()
@@ -241,6 +242,7 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
 
    @OneToMany(cascade = CascadeType.ALL, mappedBy = "textFlow")
    @MapKey(name = "locale")
+   @BatchSize(size = 10)
    public Map<HLocale, HTextFlowTarget> getTargets()
    {
       if (targets == null)

@@ -23,6 +23,7 @@ package org.zanata.model;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -177,7 +178,7 @@ public class HTextFlowTarget extends ModelEntityBase implements ITextFlowTargetH
    }
 
    // TODO use orphanRemoval=true: requires JPA 2.0
-   @OneToOne(optional = true, cascade = CascadeType.ALL)
+   @OneToOne(optional = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
    @JoinColumn(name = "comment_id")
    public HSimpleComment getComment()

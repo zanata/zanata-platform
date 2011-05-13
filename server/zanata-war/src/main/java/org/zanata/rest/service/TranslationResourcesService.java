@@ -60,6 +60,7 @@ import org.jboss.resteasy.util.GenericType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
+import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
@@ -105,7 +106,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
    public static final String SERVICE_PATH = ProjectIterationService.SERVICE_PATH + "/r";
 
-   private static boolean haveLoggedCopyTransWarning = false;
+   public static final String EVENT_COPY_TRANS = "org.zanata.rest.service.copyTrans";
    
    @PathParam("projectSlug")
    private String projectSlug;
@@ -118,7 +119,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
    private Set<String> extensions;
    
    @QueryParam("copyTrans")
-   @DefaultValue("false")
+   @DefaultValue("true")
    private boolean copytrans;
 
 
@@ -279,7 +280,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
       
       if (copytrans)
       {
-    	  copyClosestEquivalentTranslation(document);
+         copyClosestEquivalentTranslation(document.getId(), entity.getName(), projectSlug, iterationSlug);
       }
            
       EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration, document.getDocId(), extensions);
@@ -426,7 +427,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
       if (copytrans)
       {
-         copyClosestEquivalentTranslation(document);
+         copyClosestEquivalentTranslation(document.getId(), entity.getName(), projectSlug, iterationSlug);
       }
             
       log.debug("put resource successfully");
@@ -887,82 +888,10 @@ public class TranslationResourcesService implements TranslationResourcesResource
       }
    }
    
-   @SuppressWarnings("unused")
-   private String createComment(HTextFlowTarget target) 
+
+   public void copyClosestEquivalentTranslation(Long docId, String name, String projectSlug, String iterationSlug)
    {
-      String authorname;
-      HDocument document = target.getTextFlow().getDocument();
-      String projectname = document.getProjectIteration().getProject().getName();
-      String version = document.getProjectIteration().getSlug();
-      String documentid = document.getDocId();
-      if (target.getLastModifiedBy()!=null)
-      {
-         authorname = target.getLastModifiedBy().getName();
-      }
-      else
-      {
-         authorname = "";
-      }
-
-      return "translation auto-copied from project "+projectname+", version "+version+", document "+documentid+", author "+authorname;
-   }
-   
-   public void copyClosestEquivalentTranslation(HDocument document) 
-   {
-      if (!haveLoggedCopyTransWarning)
-      {
-         log.warn("Automatic copying of translations is disabled in this version of Zanata. (This warning will only appear once per startup.)");
-         haveLoggedCopyTransWarning = true;
-      }
-      return;
-      /*
-      int copyCount = 0;
-      List<HLocale> localelist = localeDAO.findAllActive();
-
-      for (HTextFlow textFlow : document.getTextFlows())
-      {
-         // find closest equivalent textflowtarget
-         for (HLocale locale : localelist)
-         {
-            HTextFlowTarget hTarget = textFlow.getTargets().get(locale);
-            if (hTarget != null && hTarget.getState() == ContentState.Approved)
-               continue;
-
-            HTextFlowTarget oldTFT = textFlowTargetDAO.findLatestEquivalentTranslation(textFlow, locale);
-            if (oldTFT != null)
-            {
-               if (hTarget == null)
-               {
-                  hTarget = new HTextFlowTarget(textFlow, locale);
-                  hTarget.setVersionNum(1);
-                  textFlow.getTargets().put(locale, hTarget);
-               }
-               else
-               {
-                  // DB trigger will copy old value to history table, if we change the versionNum
-                  hTarget.setVersionNum(hTarget.getVersionNum()+1);
-               }
-               // NB we don't touch creationDate
-               hTarget.setLastChanged(oldTFT.getLastChanged());
-               hTarget.setLastModifiedBy(oldTFT.getLastModifiedBy());
-               hTarget.setContent(oldTFT.getContent());
-               hTarget.setState(oldTFT.getState());
-               HSimpleComment hcomment = hTarget.getComment();
-               if (hcomment == null)
-               {
-                  hcomment = new HSimpleComment();
-                  hTarget.setComment(hcomment);
-               }
-               hcomment.setComment(createComment(oldTFT));
-               textFlowTargetDAO.makePersistent(hTarget);
-               ++copyCount;
-            }
-         }
-      }
-
-      textFlowTargetDAO.flush();
-      log.info("copied {0} existing translations for document \"{1}{2}\"", copyCount, document.getPath(), document.getName());
-      */
+      Events.instance().raiseTransactionSuccessEvent(EVENT_COPY_TRANS, docId, projectSlug, iterationSlug);
    }
 
 }
