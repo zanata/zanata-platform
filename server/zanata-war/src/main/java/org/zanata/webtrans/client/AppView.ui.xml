@@ -82,8 +82,9 @@
 		</g:layer>
 		<g:layer top="30px" height="30px">
 		<g:LayoutPanel ui:field='topPanel' styleName="{resources.style.banner}">
-			<g:layer >
-				<g:FlowPanel >
+			<g:layer left="0px" right="310px">
+			<g:HorizontalPanel width="100%">
+				<g:FlowPanel>
 				<g:HTMLPanel styleName="{style.topPanel-Workspace}">
 					<nobr>
 						<g:Anchor href="#" ui:field="documentsLink"><ui:msg>Documents</ui:msg></g:Anchor>
@@ -94,9 +95,10 @@
 					</nobr>
 				</g:HTMLPanel>
 				</g:FlowPanel>
-			</g:layer>
-			<g:layer right="600px" width ="300px">
+				<g:FlowPanel >
 					<g:Label ui:field="notificationMessage" styleName="{style.notification}"/>
+				</g:FlowPanel>
+			</g:HorizontalPanel>
 			</g:layer>
 			<g:layer right="7px" width ="300px" >
 			   <g:LayoutPanel ui:field="filterPanelContainer" />

@@ -72,6 +72,8 @@ public class AppView extends Composite implements AppPresenter.Display
 
    final WebTransMessages messages;
 
+   private boolean showMessage = true;
+
    @Inject
    public AppView(Resources resources, WebTransMessages messages)
    {
@@ -183,6 +185,7 @@ public class AppView extends Composite implements AppPresenter.Display
       public void onAnimationComplete()
       {
          notificationMessage.setText("");
+         showMessage = true;
       }
 
       @Override
@@ -194,8 +197,12 @@ public class AppView extends Composite implements AppPresenter.Display
 
    public void setNotificationMessage(String var)
    {
-      topPanel.forceLayout();
-      notificationMessage.setText(var);
-      topPanel.animate(NOTIFICATION_TIME, callback);
+      if (showMessage)
+      {
+         topPanel.forceLayout();
+         notificationMessage.setText(var);
+         showMessage = false;
+         topPanel.animate(NOTIFICATION_TIME, callback);
+      }
    }
 }
