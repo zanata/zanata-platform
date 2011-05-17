@@ -234,7 +234,7 @@
 					<allowTimestampedSnapshots>true</allowTimestampedSnapshots>
 					<autoVersionSubmodules>true</autoVersionSubmodules>
 					<localCheckout>true</localCheckout>
-					<pushChanges>false</pushChanges>
+					<pushChanges>true</pushChanges>
 				</configuration>
 			</plugin>
 
