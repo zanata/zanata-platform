@@ -787,16 +787,16 @@ We should think about using some of these reports:
   <distributionManagement>
     <repository>
       <uniqueVersion>false</uniqueVersion>
-      <id>nexus.openl10n.net-releases</id>
-      <name>OpenL10n.net Releases</name>
-      <url>http://nexus.openl10n.net/content/repositories/releases</url>
+      <id>cloudbees-private-release-repository</id>
+      <name>cloudbees-private-release-repository</name>
+      <url>https://repository-zanata.forge.cloudbees.com/release/</url>
       <layout>default</layout>
     </repository>
     <snapshotRepository>
-      <uniqueVersion>true</uniqueVersion>
-      <id>nexus.openl10n.net-snapshots</id>
-      <name>OpenL10n.net Snapshots</name>
-      <url>http://nexus.openl10n.net/content/repositories/snapshots</url>
+      <uniqueVersion>false</uniqueVersion>
+      <id>cloudbees-private-snapshot-repository</id>
+      <name>cloudbees-private-snapshot-repository</name>
+      <url>https://repository-zanata.forge.cloudbees.com/snapshot/</url>
       <layout>default</layout>
     </snapshotRepository>
   </distributionManagement>
