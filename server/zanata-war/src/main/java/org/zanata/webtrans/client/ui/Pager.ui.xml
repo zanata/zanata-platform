@@ -30,7 +30,7 @@
 	</ui:style>
 	
 	<g:HTMLPanel>
-		<nobr>
+		
            <!-- *PageDisabled g:Image are acting as disabled g:Anchor, because we could not disable anchor due to HTML limitation. -->
 			
            <g:Anchor ui:field="firstPage" styleName="{style.link}">
@@ -55,6 +55,6 @@
             <img src="{resources.lastPageImage.getURL}"/>
            </g:Anchor>
            <g:Image ui:field="lastPageDisabled" resource="{resources.lastPageDisabledImage}" visible="false" />
-		</nobr>
+		
 	</g:HTMLPanel>
 </ui:UiBinder>
