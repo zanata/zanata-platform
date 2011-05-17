@@ -10,7 +10,10 @@
   <div class="list_view_header">
     <h2>#{_iteration.slug}</h2>
     <div class="menu_items">
-      <s:link value="configure file" action="#{configurationAction.getData}">
+      <s:link
+      	value="Config file"
+      	title="Generate project configuration file (zanata.xml)"
+      	action="#{configurationAction.getData}">
 	    <f:param name="iterationSlug" value="#{_iteration.slug}"/>
         <f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
       </s:link>	
