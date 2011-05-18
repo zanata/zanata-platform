@@ -11,14 +11,14 @@
     <h2>#{_iteration.slug}</h2>
     <div class="menu_items">
       <s:link
-      	value="Config file"
-      	title="Generate project configuration file (zanata.xml)"
+      	value="#{messages['jsf.ConfigFile']}"
+      	title="#{messages['jsf.GenerateProjectConfig']}"
       	action="#{configurationAction.getData}">
 	    <f:param name="iterationSlug" value="#{_iteration.slug}"/>
         <f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
       </s:link>	
       <rich:spacer width="10px" />
-      <s:link view="/project/iteration_status.xhtml" propagation="none" rendered="#{identity.loggedIn}" value="#{messages['jsf.ViewStatus']}">
+      <s:link view="/project/iteration_status.xhtml" propagation="none" value="#{messages['jsf.Statistics']}">
         <f:param name="iterationSlug" value="#{_iteration.slug}"/>
         <f:param name="projectSlug" value="#{projectHome.instance.slug}"/>
       </s:link>
