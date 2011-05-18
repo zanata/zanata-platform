@@ -343,6 +343,13 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-webdav-jackrabbit</artifactId>
+				<version>1.0-beta-7</version>
+			</extension>
+		</extensions>
 	</build>
 	
 	<profiles>
@@ -870,14 +877,14 @@
       <uniqueVersion>false</uniqueVersion>
       <id>cloudbees-private-release-repository</id>
       <name>cloudbees-private-release-repository</name>
-      <url>https://repository-zanata.forge.cloudbees.com/release/</url>
+      <url>dav:https://repository-zanata.forge.cloudbees.com/release/</url>
       <layout>default</layout>
     </repository>
     <snapshotRepository>
       <uniqueVersion>false</uniqueVersion>
       <id>cloudbees-private-snapshot-repository</id>
       <name>cloudbees-private-snapshot-repository</name>
-      <url>https://repository-zanata.forge.cloudbees.com/snapshot/</url>
+      <url>dav:https://repository-zanata.forge.cloudbees.com/snapshot/</url>
       <layout>default</layout>
     </snapshotRepository>
   </distributionManagement>
