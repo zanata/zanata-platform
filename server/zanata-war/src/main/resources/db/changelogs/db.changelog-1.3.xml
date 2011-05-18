@@ -72,4 +72,15 @@
 		<dropColumn tableName="HProjectIteration" columnName="description" />
 	</changeSet>
 
+	<changeSet author="sflaniga@redhat.com" id="1">
+		<comment>reset and recalculate word counts</comment>
+		<!--
+		 <sql>update HTextFlow set wordCount=0</sql>
+		 -->
+		 <update tableName="HTextFlow">
+			<column name="wordCount" value="0" />
+		 </update>
+		<customChange class="org.zanata.liquibase.custom.CountWordsInHTextFlow" />
+	</changeSet>
+
 </databaseChangeLog>

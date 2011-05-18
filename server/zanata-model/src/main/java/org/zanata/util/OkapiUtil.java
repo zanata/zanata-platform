@@ -53,12 +53,18 @@ public class OkapiUtil
             log.error("can't understand '{}' as a BCP-47 locale; defaulting to English", bcp47Locale);
             locale = LocaleId.ENGLISH;
          }
-         long count = WordCounter.count(s, locale);
-         return count;
+         synchronized (WordCounter.class)
+         {
+            long count = WordCounter.count(s, locale);
+            return count;
+         }
       }
       catch (Exception e)
       {
-         log.error("unable to count words in string '{}' for locale '{}'", s, bcp47Locale);
+         Object[] args = new Object[] {s, bcp47Locale, e};
+         if (log.isInfoEnabled())
+            log.info("unable to count words in string '{}' for locale '{}'", args);
+         log.error("unable to count words in string '{}' for locale '{}': {}", args);
          return 0;
       }
    }

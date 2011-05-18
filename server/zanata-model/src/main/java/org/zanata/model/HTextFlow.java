@@ -194,8 +194,11 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
 
    public void setDocument(HDocument document)
    {
-      this.document = document;
-      updateWordCount();
+      if (this.document != document)
+      {
+         this.document = document;
+         updateWordCount();
+      }
    }
 
    // TODO use orphanRemoval=true: requires JPA 2.0
@@ -224,8 +227,11 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
 
    public void setContent(String content)
    {
-      this.content = content;
-      updateWordCount();
+      if (!this.content.equals(content))
+      {
+         this.content = content;
+         updateWordCount();
+      }
    }
 
    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "textFlow")

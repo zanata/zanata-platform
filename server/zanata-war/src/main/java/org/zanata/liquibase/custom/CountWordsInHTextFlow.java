@@ -62,13 +62,13 @@ public class CountWordsInHTextFlow implements CustomTaskChange
                String locale = rs1.getString(2);
                docToLocaleMap.put(docId, locale);
             }
-            String countSql = "select count(*) from HTextFlow where wordCount is null";
+            String countSql = "select count(*) from HTextFlow where wordCount is null or wordCount = 0";
             ResultSet rs2 = stmt.executeQuery(countSql);
             rs2.next();
             long totalRows = rs2.getLong(1);
             Logger log = LogFactory.getLogger();
             log.info("CountWordsInHTextFlow: updating " + totalRows + " rows");
-            String textFlowSql = "select id, document_id, content, wordCount from HTextFlow where wordCount is null";
+            String textFlowSql = "select id, document_id, content, wordCount from HTextFlow where wordCount is null or wordCount = 0";
             ResultSet rs3 = stmt.executeQuery(textFlowSql);
             long rowsUpdated = 0;
             while (rs3.next())
