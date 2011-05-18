@@ -83,6 +83,14 @@
 	<developers>
 		<!-- in alphabetical order (by id field) -->
 		<developer>
+			<id>aeng@redhat.com</id>
+			<name>Alex Eng</name>
+			<email>aeng@redhat.com</email>
+			<organization>Red Hat</organization>
+			<organizationUrl>http://www.redhat.com/</organizationUrl>
+			<timezone>10</timezone>
+		</developer>
+		<developer>
 			<id>hding@redhat.com</id>
 			<name>Helen Ding</name>
 			<email>hding@redhat.com</email>

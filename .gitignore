@@ -16,7 +16,10 @@ localDB.properties
 /.pages.xml.spdia
 temp-testng-customsuite.xml
 /server/zanata-war/war
-/server/zanata-war/src/main/resources/*_qc.properties$
+/server/zanata-war/src/main/resources/*_qc.properties
+/server/zanata-war/src/main/resources/org/zanata/webtrans/client/*_qc.properties
+/server/zanata-war/src/main/resources/org/zanata/webtrans/client/*/*_qc.properties
+/server/zanata-war/src/main/resources/org/zanata/webtrans/client/editor/*/*_qc.properties
 /server/zanata-war/src/test/resources/bootstrap/data/
 /server/zanata-war/src/test/jboss-embedded-bootstrap/data/
 
@@ -28,6 +31,8 @@ temp-testng-customsuite.xml
 bin/
 /*/*/target/
 *.orig
+/server/zanata-war/.gwt
+
 
 # idea
 *.idea/
