@@ -20,6 +20,8 @@
  */
 package org.zanata.model;
 
+import static org.zanata.util.ZanataUtil.equal;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +37,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-
 
 import org.hibernate.annotations.AccessType;
 import org.hibernate.annotations.BatchSize;
@@ -194,7 +195,7 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
 
    public void setDocument(HDocument document)
    {
-      if (this.document != document)
+      if (!equal(this.document, document))
       {
          this.document = document;
          updateWordCount();
@@ -227,7 +228,7 @@ public class HTextFlow implements Serializable, ITextFlowHistory, HasSimpleComme
 
    public void setContent(String content)
    {
-      if (!this.content.equals(content))
+      if (!equal(this.content, content))
       {
          this.content = content;
          updateWordCount();
