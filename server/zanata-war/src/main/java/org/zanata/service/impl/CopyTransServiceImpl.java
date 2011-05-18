@@ -61,15 +61,15 @@ public class CopyTransServiceImpl implements CopyTransService
    @Observer(TranslationResourcesService.EVENT_COPY_TRANS)
    public void execute(Long docId, String project, String iterationSlug)
    {
-      log.info("start copy trans for: " + docId);
-      List<HLocale> localelist = localeServiceImpl.getSupportedLangugeByProjectIteration(project, iterationSlug);
       HDocument document = documentDAO.findById(docId, true);
+      log.info("copyTrans start: document \"{0}\"", document.getDocId());
+      List<HLocale> localelist = localeServiceImpl.getSupportedLangugeByProjectIteration(project, iterationSlug);
 
       for (HLocale locale : localelist)
       {
-         log.info("locale:" + locale.getLocaleId().getId());
          copyTransForLocale(document, locale);
       }
+      log.info("copyTrans finished: document \"{0}\"", document.getDocId());
    }
 
    private String createComment(HTextFlowTarget target)
@@ -136,8 +136,7 @@ public class CopyTransServiceImpl implements CopyTransService
          textFlowTargetDAO.flush();
          Transaction.instance().commit();
 
-         log.info("copied {0} existing translations for document \"{1}{2}\" ", copyCount, document.getPath(), document.getName());
-
+         log.info("copyTrans: {0} {1} translations for document \"{2}{3}\" ", copyCount, locale.getLocaleId(), document.getPath(), document.getName());
       }
       catch (Exception e)
       {
