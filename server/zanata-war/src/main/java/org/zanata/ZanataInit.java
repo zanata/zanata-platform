@@ -77,6 +77,7 @@ public class ZanataInit
    private boolean internalAuthentication;
    private boolean spNego;
    private boolean fedoraOpenId;
+   private boolean enableCopyTrans = true;
 
    public boolean isSpNego()
    {
@@ -96,6 +97,16 @@ public class ZanataInit
    public void setFedoraOpenId(boolean var)
    {
       this.fedoraOpenId = var;
+   }
+
+   public boolean getEnableCopyTrans()
+   {
+      return enableCopyTrans;
+   }
+
+   public void setEnableCopyTrans(boolean enableCopyTrans)
+   {
+      this.enableCopyTrans = enableCopyTrans;
    }
 
    public boolean isInternalAuthentication()
@@ -151,6 +162,23 @@ public class ZanataInit
          log.info("Server version: {0}", version);
          log.info("Server build: {0}", buildTimestamp);
       }
+      if (isDebug())
+      {
+         log.info("debug: enabled");
+      }
+      if (isInternalAuthentication())
+      {
+         log.info("Internal authentication: enabled");
+      }
+      if (isFedoraOpenId())
+      {
+         log.info("Fedora OpenID authentication: enabled");
+      }
+      if (isSpNego())
+      {
+         log.info("SPNEGO/Kerberos authentication: enabled");
+      }
+      log.info("Enable copyTrans: {0}", getEnableCopyTrans());
 
       // if (dbunitImporter != null) {
       // log.info("Importing development test data");

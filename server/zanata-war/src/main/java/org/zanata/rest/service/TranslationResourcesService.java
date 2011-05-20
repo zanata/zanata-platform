@@ -64,6 +64,7 @@ import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
+import org.zanata.ZanataInit;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.Namespaces;
@@ -134,6 +135,9 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
    @Context
    private UriInfo uri;
+
+   @In
+   private ZanataInit zanataInit;
 
    @In
    private ProjectIterationDAO projectIterationDAO;
@@ -278,7 +282,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
       document = documentDAO.makePersistent(document);
       documentDAO.flush();
       
-      if (copytrans)
+      if (copytrans && nextDocRev == 1)
       {
          copyClosestEquivalentTranslation(document.getId(), entity.getName(), projectSlug, iterationSlug);
       }
@@ -425,7 +429,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
       }
 
 
-      if (copytrans)
+      if (copytrans && nextDocRev == 1)
       {
          copyClosestEquivalentTranslation(document.getId(), entity.getName(), projectSlug, iterationSlug);
       }
@@ -891,7 +895,10 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
    public void copyClosestEquivalentTranslation(Long docId, String name, String projectSlug, String iterationSlug)
    {
-      Events.instance().raiseTransactionSuccessEvent(EVENT_COPY_TRANS, docId, projectSlug, iterationSlug);
+      if (zanataInit.getEnableCopyTrans())
+      {
+         Events.instance().raiseTransactionSuccessEvent(EVENT_COPY_TRANS, docId, projectSlug, iterationSlug);
+      }
    }
 
 }
