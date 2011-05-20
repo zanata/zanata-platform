@@ -209,4 +209,9 @@ public class HTextFlowTarget extends ModelEntityBase implements ITextFlowTargetH
       setLastModifiedBy(null);
    }
 
+   protected boolean logPersistence()
+   {
+      return false;
+   }
+
 }

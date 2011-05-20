@@ -27,10 +27,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
+import javax.persistence.PreRemove;
 import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @MappedSuperclass
 public class ModelEntityBase
@@ -96,6 +100,22 @@ public class ModelEntityBase
    {
       creationDate = new Date();
       lastChanged = creationDate;
+      if (logPersistence())
+      {
+         Logger log = LoggerFactory.getLogger(getClass());
+         log.info("persist entity: {}", this);
+      }
+   }
+   
+   @SuppressWarnings("unused")
+   @PreRemove
+   private void onRemove()
+   {
+      if (logPersistence())
+      {
+         Logger log = LoggerFactory.getLogger(getClass());
+         log.info("remove entity: {}", this);
+      }
    }
 
    @SuppressWarnings("unused")
@@ -154,6 +174,11 @@ public class ModelEntityBase
    public String toString()
    {
       return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) + "[id=" + id + ",versionNum=" + versionNum + "]";
+   }
+
+   protected boolean logPersistence()
+   {
+      return true;
    }
 
 }
