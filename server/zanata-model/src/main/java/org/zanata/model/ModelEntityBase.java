@@ -26,6 +26,7 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.PostPersist;
 import javax.persistence.PrePersist;
 import javax.persistence.PreRemove;
 import javax.persistence.PreUpdate;
@@ -100,11 +101,6 @@ public class ModelEntityBase
    {
       creationDate = new Date();
       lastChanged = creationDate;
-      if (logPersistence())
-      {
-         Logger log = LoggerFactory.getLogger(getClass());
-         log.info("persist entity: {}", this);
-      }
    }
    
    @SuppressWarnings("unused")
@@ -123,6 +119,17 @@ public class ModelEntityBase
    private void onUpdate()
    {
       lastChanged = new Date();
+   }
+
+   @SuppressWarnings("unused")
+   @PostPersist
+   private void postPersist()
+   {
+      if (logPersistence())
+      {
+         Logger log = LoggerFactory.getLogger(getClass());
+         log.info("persist entity: {}", this);
+      }
    }
 
    @Override
