@@ -24,7 +24,7 @@
 	
 	<issueManagement>
 		<system>Bugzilla</system>
-		<url>https://bugzilla.redhat.com/buglist.cgi?product=Zanata</url>
+		<url>https://bugzilla.redhat.com/buglist.cgi?product=Zanata&amp;bug_status=__open__</url>
 	</issueManagement>
 	
 	<ciManagement>
