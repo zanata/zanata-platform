@@ -29,6 +29,8 @@ temp-testng-customsuite.xml
 .settings/
 .project
 bin/
+/target/
+/*/target/
 /*/*/target/
 *.orig
 /server/zanata-war/.gwt
