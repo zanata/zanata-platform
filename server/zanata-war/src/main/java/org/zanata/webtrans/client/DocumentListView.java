@@ -79,6 +79,8 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    private DocumentNode currentSelection;
 
    private HashMap<DocumentId, DocumentNode> nodes;
+   
+   private HashMap<String, FolderNode> folders;
 
    final WebTransMessages messages;
 
@@ -93,6 +95,7 @@ public class DocumentListView extends Composite implements DocumentListPresenter
       this.messages = messages;
       filterTextBox = new ClearableTextBox(resources, uiMessages);
       nodes = new HashMap<DocumentId, DocumentNode>();
+      folders = new HashMap<String, FolderNode>();
       transUnitCountBar = new TransUnitCountBar(messages);
       this.dispatcher = dispatcher;
       this.eventBus = eventBus;
@@ -147,10 +150,15 @@ public class DocumentListView extends Composite implements DocumentListPresenter
          }
          else
          {
-            FolderNode folder = new FolderNode(resources, doc);
+            FolderNode folder = folders.get(doc.getPath());
+            if (folder == null)
+            {
+               folder = new FolderNode(resources, doc);
+               folders.put(doc.getPath(), folder);
+               add(folder);
+            }
             node = new DocumentNode(resources, messages, doc, dispatcher, documentNodeClickHandler, eventBus);
             folder.addChild(node);
-            add(folder);
          }
          nodes.put(doc.getId(), node);
          if (filter != null)
