@@ -253,42 +253,6 @@
 					<pushChanges>true</pushChanges>
 				</configuration>
 			</plugin>
-
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>2.4</version>
-				<configuration>
-					<configuration>
-						<formats>
-							<format>xml</format>
-							<format>html</format>
-						</formats>
-					</configuration>
-					<check>
-						<!-- <totalBranchRate>${cobertura.total-branch-rate}</totalBranchRate> 
-							<totalLineRate>${cobertura.total-line-rate}</totalLineRate> -->
-						<haltOnFailure>${cobertura.halt.failure}</haltOnFailure>
-					</check>
-				</configuration>
-				<executions>
-					<execution>
-						<id>site</id>
-						<phase>site</phase>
-						<goals>
-							<goal>check</goal>
-							<goal>cobertura</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>pre-site</id>
-						<phase>pre-site</phase>
-						<goals>
-							<goal>clean</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 
 		<pluginManagement>
@@ -424,16 +388,25 @@
 			</properties>
 			<reporting>
 				<plugins>
-<!-- 					<plugin> -->
-<!-- 						<groupId>org.apache.maven.plugins</groupId> -->
-<!-- 						<artifactId>maven-project-info-reports-plugin</artifactId> -->
-<!-- 						<version>2.2</version> -->
-<!-- 						<configuration> -->
-<!-- 							these can be incredibly slow -->
-<!-- 							<dependencyDetailsEnabled>${reports-plugin.dependencyDetailsEnabled}</dependencyDetailsEnabled> -->
-<!-- 							<dependencyLocationsEnabled>${reports-plugin.dependencyLocationsEnabled}</dependencyLocationsEnabled> -->
-<!-- 						</configuration> -->
-<!-- 					</plugin> -->
+				    <plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>cobertura-maven-plugin</artifactId>
+						<version>2.4</version>
+						<configuration>
+							<configuration>
+								<formats>
+									<format>xml</format>
+									<format>html</format>
+								</formats>
+							</configuration>
+							<check>
+<!-- 								<totalBranchRate>${cobertura.total-branch-rate}</totalBranchRate>  -->
+<!-- 									<totalLineRate>${cobertura.total-line-rate}</totalLineRate> -->
+								<haltOnFailure>${cobertura.halt.failure}</haltOnFailure>
+							</check>
+						</configuration>
+					</plugin>
+			
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
@@ -441,12 +414,6 @@
 						<configuration>
 							<skip>${javadoc.skip}</skip>
 						</configuration>
-					</plugin>
-
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>cobertura-maven-plugin</artifactId>
-						<version>2.4</version>
 					</plugin>
 
 					<plugin>
