@@ -112,6 +112,7 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    {
       documentList.clear();
       nodes.clear();
+      folders.clear();
    }
 
    public void add(FolderNode folderNode)
