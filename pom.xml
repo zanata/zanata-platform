@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.zanata</groupId>
 	<artifactId>zanata-parent</artifactId>
@@ -21,12 +22,12 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-	
+
 	<issueManagement>
 		<system>Bugzilla</system>
 		<url>https://bugzilla.redhat.com/buglist.cgi?product=Zanata&amp;bug_status=__open__</url>
 	</issueManagement>
-	
+
 	<ciManagement>
 		<system>jenkins</system>
 		<notifiers>
@@ -35,7 +36,7 @@
 			</notifier>
 		</notifiers>
 	</ciManagement>
-	
+
 	<mailingLists>
 		<mailingList>
 			<name>zanata-users</name>
@@ -55,9 +56,7 @@
 
 		<mailingList>
 			<name>zanata-bugs</name>
-			<!-- users can't post messages:
-			<post>zanata-bugs@redhat.com</post>
-			-->
+			<!-- users can't post messages: <post>zanata-bugs@redhat.com</post> -->
 			<subscribe>https://www.redhat.com/mailman/listinfo/zanata-bugs/</subscribe>
 			<unsubscribe>zanata-bugs-request@redhat.com?subject=unsubscribe</unsubscribe>
 			<archive>https://www.redhat.com/archives/zanata-bugs/</archive>
@@ -65,9 +64,7 @@
 
 		<mailingList>
 			<name>zanata-commits</name>
-			<!-- users can't post messages:
-			<post>zanata-commits@redhat.com</post>
-			-->
+			<!-- users can't post messages: <post>zanata-commits@redhat.com</post> -->
 			<subscribe>https://www.redhat.com/mailman/listinfo/zanata-commits/</subscribe>
 			<unsubscribe>zanata-commits-request@redhat.com?subject=unsubscribe</unsubscribe>
 			<archive>https://www.redhat.com/archives/zanata-commits/</archive>
@@ -131,9 +128,7 @@
 	</contributors>
 
 	<properties>
-		<!--
-		  buildNumber is set by buildnumber-maven-plugin from git info
-		-->
+		<!-- buildNumber is set by buildnumber-maven-plugin from git info -->
 		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<gwt.version>2.1.0</gwt.version>
@@ -149,15 +144,20 @@
 		<guava.version>r06</guava.version>
 		<jackson.version>1.5.0</jackson.version>
 		<icu4j.version>4.4.1.1</icu4j.version>
-		
+
 		<cobertura.halt.failure>false</cobertura.halt.failure>
-		<javadoc.skip>false</javadoc.skip>
-		
+		<javadoc.skip>true</javadoc.skip>
+
 		<checkstyle.skip>false</checkstyle.skip>
-        <checkstyle.configLocation></checkstyle.configLocation>
-        <checkstyle.propertiesLocation></checkstyle.propertiesLocation>
-        <checkstyle.suppressionsLocation></checkstyle.suppressionsLocation>
-        <checkstyle.suppressionsFileExpression></checkstyle.suppressionsFileExpression>
+		<checkstyle.configLocation></checkstyle.configLocation>
+		<checkstyle.propertiesLocation></checkstyle.propertiesLocation>
+		<checkstyle.suppressionsLocation></checkstyle.suppressionsLocation>
+		<checkstyle.suppressionsFileExpression></checkstyle.suppressionsFileExpression>
+		
+		<reports-plugin.dependencyDetailsEnabled>false</reports-plugin.dependencyDetailsEnabled>
+		<reports-plugin.dependencyLocationsEnabled>false</reports-plugin.dependencyLocationsEnabled>
+							
+							
 	</properties>
 
 	<build>
@@ -211,8 +211,7 @@
 				</configuration>
 			</plugin>
 
-			<!-- useful for debugging Maven properties: eg mvn initialize antrun:run
-			-->
+			<!-- useful for debugging Maven properties: eg mvn initialize antrun:run -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
@@ -254,42 +253,42 @@
 					<pushChanges>true</pushChanges>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <configuration>
-					<formats>
-						<format>xml</format>
-						<format>html</format>
-					</formats>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<configuration>
+						<formats>
+							<format>xml</format>
+							<format>html</format>
+						</formats>
+					</configuration>
+					<check>
+						<!-- <totalBranchRate>${cobertura.total-branch-rate}</totalBranchRate> 
+							<totalLineRate>${cobertura.total-line-rate}</totalLineRate> -->
+						<haltOnFailure>${cobertura.halt.failure}</haltOnFailure>
+					</check>
 				</configuration>
-                    <check>
-                       <!--  <totalBranchRate>${cobertura.total-branch-rate}</totalBranchRate>
-                        <totalLineRate>${cobertura.total-line-rate}</totalLineRate> -->
-                        <haltOnFailure>${cobertura.halt.failure}</haltOnFailure>
-                    </check>
-                </configuration>
-               	<executions>
-                    <execution>
-                    	<id>site</id>
-                    	<phase>site</phase>
-                        <goals>
-                        	<goal>check</goal>
-                        	<goal>cobertura</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                    	<id>pre-site</id>
-                    	<phase>pre-site</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+				<executions>
+					<execution>
+						<id>site</id>
+						<phase>site</phase>
+						<goals>
+							<goal>check</goal>
+							<goal>cobertura</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>pre-site</id>
+						<phase>pre-site</phase>
+						<goals>
+							<goal>clean</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 
 		<pluginManagement>
@@ -312,7 +311,7 @@
 				</plugin>
 				<plugin>
 					<artifactId>cobertura-maven-plugin</artifactId>
-                	<version>2.4</version>
+					<version>2.4</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-checkstyle-plugin</artifactId>
@@ -324,7 +323,7 @@
 				</plugin>
 				<plugin>
 					<artifactId>maven-jxr-plugin</artifactId>
-        			<version>2.2</version>
+					<version>2.2</version>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
@@ -351,18 +350,12 @@
 			</extension>
 		</extensions>
 	</build>
-	
+
 	<profiles>
 		<profile>
-			<!--
-			  This profile lets us skip unit tests (but not
-			  integration tests) with
-			  a) -PskipUnitTests, or
-			  b) -Dit.test=<integration-test-name>
-
-			  The option -DskipTests can still be used to skip
-			  all tests (unit and integration).
-			-->
+			<!-- This profile lets us skip unit tests (but not integration tests) 
+				with a) -PskipUnitTests, or b) -Dit.test=<integration-test-name> The option 
+				-DskipTests can still be used to skip all tests (unit and integration). -->
 			<id>skipUnitTests</id>
 			<activation>
 				<property>
@@ -400,7 +393,8 @@
 			<id>maven-3</id>
 			<activation>
 				<file>
-					<!-- This exploits the fact that the basedir expression is only recognized by Maven 3.x (see MNG-2363) -->
+					<!-- This exploits the fact that the basedir expression is only recognized 
+						by Maven 3.x (see MNG-2363) -->
 					<exists>${basedir}</exists>
 				</file>
 			</activation>
@@ -419,22 +413,82 @@
 						</plugin>
 					</plugins>
 				</pluginManagement>
-<!--
-				<plugins>
-					<plugin>
-						<artifactId>maven-site-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>attach-descriptor</id>
-								<goals>
-									<goal>attach-descriptor</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
--->
+
 			</build>
+		</profile>
+
+		<profile>
+			<id>allReports</id>
+			<properties>
+				<javadoc.skip>false</javadoc.skip>
+			</properties>
+			<reporting>
+				<plugins>
+<!-- 					<plugin> -->
+<!-- 						<groupId>org.apache.maven.plugins</groupId> -->
+<!-- 						<artifactId>maven-project-info-reports-plugin</artifactId> -->
+<!-- 						<version>2.2</version> -->
+<!-- 						<configuration> -->
+<!-- 							these can be incredibly slow -->
+<!-- 							<dependencyDetailsEnabled>${reports-plugin.dependencyDetailsEnabled}</dependencyDetailsEnabled> -->
+<!-- 							<dependencyLocationsEnabled>${reports-plugin.dependencyLocationsEnabled}</dependencyLocationsEnabled> -->
+<!-- 						</configuration> -->
+<!-- 					</plugin> -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>2.7</version>
+						<configuration>
+							<skip>${javadoc.skip}</skip>
+						</configuration>
+					</plugin>
+
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>cobertura-maven-plugin</artifactId>
+						<version>2.4</version>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-checkstyle-plugin</artifactId>
+						<version>2.6</version>
+						<configuration>
+							<configLocation>${checkstyle.configLocation}</configLocation>
+							<propertiesLocation>${checkstyle.propertiesLocation}</propertiesLocation>
+							<suppressionsLocation>${checkstyle.suppressionsLocation}</suppressionsLocation>
+							<suppressionsFileExpression>${checkstyle.suppressionsFileExpression}</suppressionsFileExpression>
+							<enableRulesSummary>false</enableRulesSummary>
+							<skip>${checkstyle.skip}</skip>
+						</configuration>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-report-plugin</artifactId>
+						<version>2.6</version>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jxr-plugin</artifactId>
+						<version>2.2</version>
+						<configuration>
+							<aggregate>true</aggregate>
+						</configuration>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-pmd-plugin</artifactId>
+						<version>2.5</version>
+						<configuration>
+							<targetJdk>1.6</targetJdk>
+						</configuration>
+					</plugin>
+
+				</plugins>
+			</reporting>
 		</profile>
 	</profiles>
 
@@ -508,10 +562,7 @@
 			</dependency>
 
 
-			<!--
-				These snapshots include support for shared sessions
-				http://code.google.com/p/gwteventservice/issues/detail?id=15
-			-->
+			<!-- These snapshots include support for shared sessions http://code.google.com/p/gwteventservice/issues/detail?id=15 -->
 			<dependency>
 				<groupId>com.google.code.gwteventservice</groupId>
 				<artifactId>gwteventservice</artifactId>
@@ -528,10 +579,7 @@
 				<version>1.2.0-20100906.075839-2</version>
 			</dependency>
 
-			<!-- 
-			Looks like com.googlecode.gwt.inject is the canonical groupId
-			http://code.google.com/p/google-gin/issues/detail?id=45#c27
-			-->
+			<!-- Looks like com.googlecode.gwt.inject is the canonical groupId http://code.google.com/p/google-gin/issues/detail?id=45#c27 -->
 			<dependency>
 				<groupId>com.googlecode.gwt.inject</groupId>
 				<artifactId>gin</artifactId>
@@ -666,9 +714,7 @@
 				<artifactId>jboss-seam-resteasy</artifactId>
 				<version>${seam.version}</version>
 				<exclusions>
-					<!--
-						We use Jackson for json, so exclude the default jettison provider
-					-->
+					<!-- We use Jackson for json, so exclude the default jettison provider -->
 					<exclusion>
 						<groupId>org.jboss.resteasy</groupId>
 						<artifactId>resteasy-jettison-provider</artifactId>
@@ -714,7 +760,7 @@
 				<artifactId>resteasy-atom-provider</artifactId>
 				<version>${resteasy.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.apache.maven</groupId>
 				<artifactId>maven-plugin-api</artifactId>
@@ -735,7 +781,7 @@
 				<artifactId>commons-configuration</artifactId>
 				<version>1.6</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>com.ibm.icu</groupId>
 				<artifactId>icu4j</artifactId>
@@ -812,81 +858,28 @@
 				<version>2.2</version>
 				<configuration> 
 					<!-- these can be incredibly slow -->
-					<dependencyDetailsEnabled>false</dependencyDetailsEnabled>
-					<dependencyLocationsEnabled>false</dependencyLocationsEnabled> 
+					<dependencyDetailsEnabled>${reports-plugin.dependencyDetailsEnabled}</dependencyDetailsEnabled>
+					<dependencyLocationsEnabled>${reports-plugin.dependencyLocationsEnabled}</dependencyLocationsEnabled> 
 				</configuration> 
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.7</version>
-				<configuration>
-					<skip>${javadoc.skip}</skip>
-				</configuration>
-			</plugin>
-			
-			<plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.4</version>
-            </plugin>
-            
-            <plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>2.6</version>
-				<configuration>
-					<configLocation>${checkstyle.configLocation}</configLocation>
-          			<propertiesLocation>${checkstyle.propertiesLocation}</propertiesLocation>
-          			<suppressionsLocation>${checkstyle.suppressionsLocation}</suppressionsLocation>
-          			<suppressionsFileExpression>${checkstyle.suppressionsFileExpression}</suppressionsFileExpression>
-					<enableRulesSummary>false</enableRulesSummary>
-					<skip>${checkstyle.skip}</skip>
-				</configuration>
-			</plugin>
-			
-			<plugin>
-        		<groupId>org.apache.maven.plugins</groupId>
-        		<artifactId>maven-surefire-report-plugin</artifactId>
-        		<version>2.6</version>
-     		</plugin>
-     		
-     		<plugin>
-        		<groupId>org.apache.maven.plugins</groupId>
-        		<artifactId>maven-jxr-plugin</artifactId>
-        		<version>2.2</version>
-        		<configuration>
-					<aggregate>true</aggregate>
-				</configuration>
-      		</plugin>
-			
-			<plugin>
-        		<groupId>org.apache.maven.plugins</groupId>
-        		<artifactId>maven-pmd-plugin</artifactId>
-        		<version>2.5</version>
-        		<configuration>
-        			<targetJdk>1.6</targetJdk>
-        		</configuration>
-      		</plugin>
-      
 		</plugins>
 	</reporting>
 
-  <distributionManagement>
-    <repository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>cloudbees-private-release-repository</id>
-      <name>cloudbees-private-release-repository</name>
-      <url>dav:https://repository-zanata.forge.cloudbees.com/release/</url>
-      <layout>default</layout>
-    </repository>
-    <snapshotRepository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>cloudbees-private-snapshot-repository</id>
-      <name>cloudbees-private-snapshot-repository</name>
-      <url>dav:https://repository-zanata.forge.cloudbees.com/snapshot/</url>
-      <layout>default</layout>
-    </snapshotRepository>
-  </distributionManagement>
+	<distributionManagement>
+		<repository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>cloudbees-private-release-repository</id>
+			<name>cloudbees-private-release-repository</name>
+			<url>dav:https://repository-zanata.forge.cloudbees.com/release/</url>
+			<layout>default</layout>
+		</repository>
+		<snapshotRepository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>cloudbees-private-snapshot-repository</id>
+			<name>cloudbees-private-snapshot-repository</name>
+			<url>dav:https://repository-zanata.forge.cloudbees.com/snapshot/</url>
+			<layout>default</layout>
+		</snapshotRepository>
+	</distributionManagement>
 
 </project>
