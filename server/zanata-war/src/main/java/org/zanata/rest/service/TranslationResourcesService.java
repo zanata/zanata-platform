@@ -254,9 +254,8 @@ public class TranslationResourcesService implements TranslationResourcesResource
       validateExtensions(PoHeader.ID, PotEntryHeader.ID);
 
       Resource entity = RestUtils.unmarshall(Resource.class, messageBody, requestContentType, headers.getRequestHeaders());
-
       HDocument document = documentDAO.getByDocId(hProjectIteration, entity.getName());
-      HLocale hLocale = validateLocale(entity.getLang(), projectSlug, iterationSlug);
+      HLocale hLocale = validateSourceLocale(entity.getLang());
       int nextDocRev;
       if (document != null)
       {
@@ -337,7 +336,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
       return Response.ok().entity(entity).tag(etag).lastModified(doc.getLastChanged()).build();
    }
 
-   private HLocale validateLocale(LocaleId locale, String projectSlug, String iterationSlug)
+   private HLocale validateTargetLocale(LocaleId locale, String projectSlug, String iterationSlug)
    {
       HLocale hLocale;
       try
@@ -350,7 +349,16 @@ public class TranslationResourcesService implements TranslationResourcesResource
          // TODO perhaps we should use status code 403 here?
          throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build());
       }
+   }
 
+   private HLocale validateSourceLocale(LocaleId locale)
+   {
+      HLocale hLocale = localeServiceImpl.getByLocaleId(locale);
+      if (hLocale == null || !hLocale.isActive())
+      {
+         throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity("Unsupported Locale: " + locale.getId() + " within this context. Please contact Admin.").build());
+      }
+      return hLocale;
    }
 
    @Override
@@ -374,8 +382,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
       log.debug("resource details: {0}", entity);
 
       HDocument document = documentDAO.getByDocId(hProjectIteration, id);
-      LocaleId locale = entity.getLang();
-      HLocale hLocale = validateLocale(locale, projectSlug, iterationSlug);
+      HLocale hLocale = validateSourceLocale(entity.getLang());
       int nextDocRev;
       if (document == null)
       { // must be a create operation
@@ -532,7 +539,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
       {
          return Response.status(Status.NOT_FOUND).build();
       }
-      HLocale hLocale = validateLocale(entity.getLang(), projectSlug, iterationSlug);
+      HLocale hLocale = validateTargetLocale(entity.getLang(), projectSlug, iterationSlug);
       boolean changed = resourceUtils.transferFromResourceMetadata(entity, document, extensions, hLocale, document.getRevision() + 1);
 
       if (changed)
@@ -573,7 +580,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
          return Response.status(Status.NOT_FOUND).build();
       }
 
-      HLocale hLocale = validateLocale(locale, projectSlug, iterationSlug);
+      HLocale hLocale = validateTargetLocale(locale, projectSlug, iterationSlug);
 
       List<HTextFlowTarget> hTargets = textFlowTargetDAO.findTranslations(document, locale);
       TranslationsResource translationResource = new TranslationsResource();
@@ -682,7 +689,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
       boolean changed = false;
 
-      HLocale hLocale = validateLocale(locale, projectSlug, iterationSlug);
+      HLocale hLocale = validateTargetLocale(locale, projectSlug, iterationSlug);
       // handle extensions
       changed |= resourceUtils.transferFromTranslationsResourceExtensions(entity.getExtensions(true), document, extensions, hLocale, mergeType);
 
