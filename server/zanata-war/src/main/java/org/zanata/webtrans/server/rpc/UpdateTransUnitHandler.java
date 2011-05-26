@@ -93,7 +93,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    public UpdateTransUnitResult execute(UpdateTransUnit action, ExecutionContext context) throws ActionException
    {
       ZanataIdentity.instance().checkLoggedIn();
-      log.info("Updating TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), action.getWorkspaceId().getLocaleId(), action.getContentState(), action.getContent());
+      log.debug("Updating TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), action.getWorkspaceId().getLocaleId(), action.getContentState(), action.getContent());
 
       HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, action.getTransUnitId().getValue());
       LocaleId locale = action.getWorkspaceId().getLocaleId();
@@ -171,7 +171,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       {
          target.setContent(action.getContent());
          target.setVersionNum(target.getVersionNum() + 1);
-         log.info("last modified by :" + authenticatedAccount.getPerson().getName());
+         log.debug("last modified by :" + authenticatedAccount.getPerson().getName());
          target.setLastModifiedBy(authenticatedAccount.getPerson());
          saved = true;
       }
@@ -197,7 +197,7 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    public void rollback(UpdateTransUnit action, UpdateTransUnitResult result, ExecutionContext context) throws ActionException
    {
       ZanataIdentity.instance().checkLoggedIn();
-      log.info("revert TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), action.getWorkspaceId().getLocaleId(), action.getContentState(), action.getContent());
+      log.debug("revert TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), action.getWorkspaceId().getLocaleId(), action.getContentState(), action.getContent());
 
       HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, action.getTransUnitId().getValue());
       LocaleId locale = action.getWorkspaceId().getLocaleId();
