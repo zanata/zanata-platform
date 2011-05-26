@@ -21,19 +21,24 @@
 package org.zanata.webtrans.client;
 
 import org.zanata.webtrans.client.action.UndoManager;
-import org.zanata.webtrans.client.action.UndoableTransUnitUpdateAction;
+import org.zanata.webtrans.client.action.UndoableAction;
+import org.zanata.webtrans.client.events.EditTransUnitEvent;
+import org.zanata.webtrans.client.events.EditTransUnitEventHandler;
 import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.events.FindMessageHandler;
-import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
-import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
+import org.zanata.webtrans.client.events.RedoFailureEvent;
+import org.zanata.webtrans.client.events.RedoFailureEventHandler;
 import org.zanata.webtrans.client.events.UndoAddEvent;
 import org.zanata.webtrans.client.events.UndoAddEventHandler;
+import org.zanata.webtrans.client.events.UndoFailureEvent;
+import org.zanata.webtrans.client.events.UndoFailureEventHandler;
+import org.zanata.webtrans.client.events.UndoRedoFinishEvent;
+import org.zanata.webtrans.client.events.UndoFinishEventHandler;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.inject.Inject;
-import com.allen_sauer.gwt.log.client.Log;
 
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
@@ -54,7 +59,6 @@ public class UndoRedoPresenter extends WidgetPresenter<UndoRedoPresenter.Display
       void enableUndo();
 
       void enableRedo();
-
    }
 
    private UndoManager undoManager = new UndoManager();
@@ -68,18 +72,14 @@ public class UndoRedoPresenter extends WidgetPresenter<UndoRedoPresenter.Display
    @Override
    protected void onBind()
    {
-
       display.getUndoButton().addClickHandler(new ClickHandler()
       {
          @Override
          public void onClick(ClickEvent event)
          {
-            Log.info("undo");
             undoManager.undo();
-            if (!undoManager.canUndo())
-            {
-               display.disableUndo();
-            }
+            display.disableUndo();
+            display.disableRedo();
          }
       });
 
@@ -88,7 +88,9 @@ public class UndoRedoPresenter extends WidgetPresenter<UndoRedoPresenter.Display
          @Override
          public void onClick(ClickEvent event)
          {
-            Log.info("redo");
+            undoManager.redo();
+            display.disableUndo();
+            display.disableRedo();
          }
       });
 
@@ -97,20 +99,53 @@ public class UndoRedoPresenter extends WidgetPresenter<UndoRedoPresenter.Display
          @Override
          public void onUndoableAction(UndoAddEvent event)
          {
-            Log.info("add undoAddEvent for:" + ((UndoableTransUnitUpdateAction) event.getUndoableAction()).getRowNum());
-            undoManager.addEdit(event.getUndoableAction());
-            if (undoManager.canUndo())
-            {
-               display.enableUndo();
-            }
+            undoManager.addUndo(event.getUndoableAction());
+            undoManager.clearRedo();
+            checkUndoRedo();
          }
       }));
 
-      registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler()
+      registerHandler(eventBus.addHandler(UndoFailureEvent.getType(), new UndoFailureEventHandler()
       {
          @Override
-         public void onTransUnitUpdated(TransUnitUpdatedEvent event)
+         public void onFailure(UndoFailureEvent event)
          {
+            undoManager.clearCurrent();
+            undoManager.clearUndo();
+            checkUndoRedo();
+         }
+      }));
+
+      registerHandler(eventBus.addHandler(RedoFailureEvent.getType(), new RedoFailureEventHandler()
+      {
+         @Override
+         public void onFailure(RedoFailureEvent event)
+         {
+            undoManager.clearCurrent();
+            undoManager.clearRedo();
+            checkUndoRedo();
+         }
+      }));
+
+      registerHandler(eventBus.addHandler(UndoRedoFinishEvent.getType(), new UndoFinishEventHandler()
+      {
+         @Override
+         public void onFinish(UndoRedoFinishEvent event)
+         {
+            UndoableAction<?, ?> action = event.getAction();
+            if (action.equals(undoManager.getCurrent()))
+            {
+               undoManager.clearCurrent();
+            }
+            if (action.isUndo())
+            {
+               undoManager.addRedo(action);
+            }
+            if (action.isRedo())
+            {
+               undoManager.addUndo(action);
+            }
+            checkUndoRedo();
          }
       }));
 
@@ -120,10 +155,22 @@ public class UndoRedoPresenter extends WidgetPresenter<UndoRedoPresenter.Display
          @Override
          public void onFindMessage(FindMessageEvent event)
          {
-            display.disableUndo();
-            undoManager.clear();
+            undoManager.clearUndo();
+            undoManager.clearUndo();
+            checkUndoRedo();
          }
 
+      }));
+
+      registerHandler(eventBus.addHandler(EditTransUnitEvent.getType(), new EditTransUnitEventHandler()
+      {
+
+         @Override
+         public void onEdit(EditTransUnitEvent event)
+         {
+            undoManager.clearRedo();
+            checkUndoRedo();
+         }
       }));
 
    }
@@ -136,6 +183,26 @@ public class UndoRedoPresenter extends WidgetPresenter<UndoRedoPresenter.Display
    @Override
    protected void onRevealDisplay()
    {
+   }
+
+   public void checkUndoRedo()
+   {
+      if (undoManager.canUndo())
+      {
+         display.enableUndo();
+      }
+      else
+      {
+         display.disableUndo();
+      }
+      if (undoManager.canRedo())
+      {
+         display.enableRedo();
+      }
+      else
+      {
+         display.disableRedo();
+      }
    }
 
 }

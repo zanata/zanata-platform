@@ -27,6 +27,10 @@
 			height: 1.2em;
 		}
 		
+		.rightText{
+			text-align: right;
+		}
+
 		.centerText{
 			text-align: center;
 		}
@@ -44,14 +48,14 @@
 	<g:SplitLayoutPanel ui:field="splitPanel" styleName="PageSplitLayoutPanel" >
 		<g:center>
 			<g:LayoutPanel styleName="{style.editor}">
+				<g:layer top="2px" height="20px">
+					<g:HorizontalPanel width="90%">
+						<g:FlowPanel ui:field="transUnitNavigationContainer"  styleName="{style.rightText}"/>
+						<g:FlowPanel ui:field="undoRedoContainer" styleName="{style.centerText}"/>
+					</g:HorizontalPanel>
+				</g:layer>
 				<g:layer top='4px' height='18px' right="2px" width="100px">
 					<f:TransUnitCountBar ui:field='transUnitCountBar' styleName="{style.unitStatus}"/>
-				</g:layer>
-				<g:layer top="2px" height="20px" right="100px" left="100px">
-					<g:FlowPanel ui:field="transUnitNavigationContainer" styleName="{style.centerText}"/>
-				</g:layer>
-				<g:layer top="2px" height="20px" right="200px" width="100px">
-					<g:FlowPanel ui:field="undoRedoContainer" styleName="{style.centerText}"/>
 				</g:layer>
 				<g:layer top="22px" bottom="2em">
 					<g:LayoutPanel ui:field="editor" />

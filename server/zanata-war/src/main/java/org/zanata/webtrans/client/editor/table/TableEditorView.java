@@ -29,6 +29,7 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import net.customware.gwt.presenter.client.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.gen2.table.client.FixedWidthGridBulkRenderer;
 import com.google.gwt.gen2.table.client.PagingScrollTable;
@@ -57,14 +58,14 @@ public class TableEditorView extends PagingScrollTable<TransUnit> implements Tab
    }
 
    @Inject
-   public TableEditorView(NavigationMessages messages)
+   public TableEditorView(NavigationMessages messages, EventBus eventBus)
    {
-      this(messages, new RedirectingTableModel<TransUnit>());
+      this(messages, new RedirectingTableModel<TransUnit>(), eventBus);
    }
 
-   public TableEditorView(NavigationMessages messages, RedirectingTableModel<TransUnit> tableModel)
+   public TableEditorView(NavigationMessages messages, RedirectingTableModel<TransUnit> tableModel, EventBus eventBus)
    {
-      this(new RedirectingCachedTableModel<TransUnit>(tableModel), new TableEditorTableDefinition(messages, new RedirectingCachedTableModel<TransUnit>(tableModel)));
+      this(new RedirectingCachedTableModel<TransUnit>(tableModel), new TableEditorTableDefinition(messages, new RedirectingCachedTableModel<TransUnit>(tableModel), eventBus));
    }
 
    public TableEditorView(RedirectingCachedTableModel<TransUnit> tableModel, TableEditorTableDefinition tableDefinition)

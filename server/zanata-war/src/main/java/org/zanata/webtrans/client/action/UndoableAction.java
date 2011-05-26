@@ -19,31 +19,58 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.zanata.webtrans.client.action;
+import net.customware.gwt.dispatch.shared.Action;
+import net.customware.gwt.dispatch.shared.Result;
 
-public abstract class UndoableAction<E>
+public abstract class UndoableAction<A extends Action<R>, R extends Result>
 {
-   private E prevState;
-   private E postState;
+   private A action;
+   private R result;
+   private boolean isRedo = false;
 
-   public E getPreviousState()
+   private boolean isUndo = false;
+
+   public boolean isRedo()
    {
-      return this.prevState;
+      return isRedo;
    }
 
-   public E getPostState()
+   public void setRedo(boolean isRedo)
    {
-      return this.postState;
+      this.isRedo = isRedo;
    }
 
-   public void setPreviousState(E prevValue)
+   public boolean isUndo()
    {
-      this.prevState = prevValue;
+      return isUndo;
    }
 
-   public void setPostState(E curValue)
+   public void setUndo(boolean isUndo)
    {
-      this.postState = curValue;
+      this.isUndo = isUndo;
+   }
+
+   public A getAction()
+   {
+      return this.action;
+   }
+
+   public void setAction(A event)
+   {
+      this.action = event;
+   }
+
+   public R getResult()
+   {
+      return this.result;
+   }
+
+   public void setResult(R result)
+   {
+      this.result = result;
    }
 
    public abstract void undo();
+
+   public abstract void redo();
 }

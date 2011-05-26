@@ -9,6 +9,32 @@ public class UpdateTransUnitResult implements Result
 
    private boolean success;
 
+   private boolean saved;
+
+   private Integer currentVersionNum;
+
+   public Integer getCurrentVersionNum()
+   {
+      return currentVersionNum;
+   }
+
+   public void setCurrentVersionNum(Integer currentVersionNum)
+   {
+      this.currentVersionNum = currentVersionNum;
+   }
+
+   private UpdateTransUnit previous;
+
+   public UpdateTransUnit getPrevious()
+   {
+      return previous;
+   }
+
+   public void setPrevious(UpdateTransUnit previous)
+   {
+      this.previous = previous;
+   }
+
    @SuppressWarnings("unused")
    private UpdateTransUnitResult()
    {
@@ -22,5 +48,15 @@ public class UpdateTransUnitResult implements Result
    public boolean isSuccess()
    {
       return success;
+   }
+
+   public void setSaved(boolean var)
+   {
+      this.saved = var;
+   }
+
+   public boolean isSaved()
+   {
+      return this.saved;
    }
 }

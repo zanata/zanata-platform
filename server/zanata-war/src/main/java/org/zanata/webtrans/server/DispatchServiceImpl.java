@@ -21,5 +21,12 @@ public class DispatchServiceImpl implements DispatchService
    {
       return seamDispatch.execute(action);
    }
+   
+   @Override
+   @WebRemote
+   public void rollback(Action<Result> action, Result result) throws Exception
+   {
+      seamDispatch.rollback(action, result);
+   }
 
 }

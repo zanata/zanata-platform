@@ -13,6 +13,28 @@ public class UpdateTransUnit extends AbstractWorkspaceAction<UpdateTransUnitResu
    private TransUnitId transUnitId;
    private String content;
    private ContentState contentState;
+   private boolean isRedo = false;
+   private Integer verNum;
+
+   public Integer getVerNum()
+   {
+      return verNum;
+   }
+
+   public void setVerNum(Integer verNum)
+   {
+      this.verNum = verNum;
+   }
+
+   public boolean isRedo()
+   {
+      return isRedo;
+   }
+
+   public void setRedo(boolean isRedo)
+   {
+      this.isRedo = isRedo;
+   }
 
    @SuppressWarnings("unused")
    private UpdateTransUnit()

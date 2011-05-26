@@ -1,8 +1,6 @@
 package org.zanata.webtrans.client.editor.table;
 
 
-import org.zanata.webtrans.client.action.UndoableAction;
-
 import com.google.gwt.gen2.table.client.MutableTableModel;
 import com.google.gwt.gen2.table.client.TableModelHelper.Request;
 
@@ -91,21 +89,5 @@ public class RedirectingTableModel<RowType> extends MutableTableModel<RowType>
    {
       if (tableModelHandler != null)
          tableModelHandler.prevFuzzyIndex(row);
-   }
-   
-   
-   public void addUndoList(UndoableAction<?> undoableAction)
-   {
-      if (tableModelHandler != null)
-         tableModelHandler.addUndoList(undoableAction);
-   }
-
-   public int getCurrentPage()
-   {
-      if (tableModelHandler != null)
-      {
-         return tableModelHandler.getCurrentPage();
-      }
-      return 1;
    }
 }

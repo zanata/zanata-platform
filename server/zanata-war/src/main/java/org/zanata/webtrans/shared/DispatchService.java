@@ -9,4 +9,6 @@ public interface DispatchService extends RemoteService
 {
 
    Result execute(Action<?> action) throws Exception;
+
+   void rollback(Action<Result> action, Result result) throws Exception;
 }

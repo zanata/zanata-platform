@@ -20,11 +20,11 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
-import org.zanata.webtrans.client.action.UndoableAction;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
+import net.customware.gwt.presenter.client.EventBus;
 import com.google.gwt.gen2.table.client.AbstractColumnDefinition;
 import com.google.gwt.gen2.table.client.CellRenderer;
 import com.google.gwt.gen2.table.client.ColumnDefinition;
@@ -175,7 +175,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       this.findMessage = findMessage;
    }
 
-   public TableEditorTableDefinition(final NavigationMessages messages, final RedirectingCachedTableModel<TransUnit> tableModel)
+   public TableEditorTableDefinition(final NavigationMessages messages, final RedirectingCachedTableModel<TransUnit> tableModel, final EventBus eventBus)
    {
       this.messages = messages;
       setRowRenderer(rowRenderer);
@@ -220,23 +220,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          }
       };
       
-      UndoCallback<TransUnit> undoCallback = new UndoCallback<TransUnit>(){
-
-         @Override
-         public void onUndo(UndoableAction<TransUnit> undoableAction)
-         {
-            tableModel.addUndoList(undoableAction);
-         }
-         
-         @Override
-         public int getCurrentPage()
-         {
-            return tableModel.getCurrentPage();
-         }
-
-      };
-      
-      this.targetCellEditor = new InlineTargetCellEditor(messages, cancelCallBack, transValueCallBack, undoCallback);
+      this.targetCellEditor = new InlineTargetCellEditor(messages, cancelCallBack, transValueCallBack, eventBus);
       targetColumnDefinition.setCellEditor(targetCellEditor);
 
       // See _INDEX consts above if modifying!

@@ -895,7 +895,6 @@ public class TranslationResourcesService implements TranslationResourcesResource
       if (invalidExtensions != null)
       {
          throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity("Unsupported Extensions within this context: " + StringUtils.join(invalidExtensions, ",")).build());
-
       }
    }
    

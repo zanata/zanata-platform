@@ -9,4 +9,6 @@ public interface DispatchServiceAsync
 {
 
    void execute(Action<?> action, AsyncCallback<Result> callback);
+
+   void rollback(Action<?> action, Result result, AsyncCallback<Void> callback);
 }

@@ -20,54 +20,53 @@
  */
 package org.zanata.webtrans.client.events;
 
-
 import org.zanata.webtrans.client.action.UndoableAction;
 
 import com.google.gwt.event.shared.GwtEvent;
 
-public class UndoAddEvent extends GwtEvent<UndoAddEventHandler>
+public class UndoFailureEvent extends GwtEvent<UndoFailureEventHandler>
 {
-   private UndoableAction<?, ?> undoableAction;
+   private UndoableAction<?, ?> action;
+
+   public UndoFailureEvent(UndoableAction<?, ?> action)
+   {
+      this.action = action;
+   }
+
+   public UndoableAction<?, ?> getAction()
+   {
+      return this.action;
+   }
+
    /**
     * Handler type.
     */
-   private static Type<UndoAddEventHandler> TYPE;
+   private static Type<UndoFailureEventHandler> TYPE;
 
    /**
     * Gets the type associated with this event.
     * 
     * @return returns the handler type
     */
-   public static Type<UndoAddEventHandler> getType()
+   public static Type<UndoFailureEventHandler> getType()
    {
       if (TYPE == null)
       {
-         TYPE = new Type<UndoAddEventHandler>();
+         TYPE = new Type<UndoFailureEventHandler>();
       }
       return TYPE;
    }
 
    @Override
-   public com.google.gwt.event.shared.GwtEvent.Type<UndoAddEventHandler> getAssociatedType()
+   public com.google.gwt.event.shared.GwtEvent.Type<UndoFailureEventHandler> getAssociatedType()
    {
       return getType();
    }
 
-
    @Override
-   protected void dispatch(UndoAddEventHandler handler)
+   protected void dispatch(UndoFailureEventHandler handler)
    {
-      handler.onUndoableAction(this);
-   }
-
-   public UndoAddEvent(UndoableAction<?, ?> undoableAction)
-   {
-      this.undoableAction = undoableAction;
-   }
-
-   public UndoableAction<?, ?> getUndoableAction()
-   {
-      return this.undoableAction;
+      handler.onFailure(this);
    }
 
 }

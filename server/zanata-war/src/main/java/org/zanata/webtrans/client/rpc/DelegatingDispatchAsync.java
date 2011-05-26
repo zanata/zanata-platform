@@ -6,7 +6,6 @@ import org.zanata.webtrans.shared.model.WorkspaceContext;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import net.customware.gwt.dispatch.client.DispatchAsync;
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;
 
@@ -23,6 +22,12 @@ public class DelegatingDispatchAsync implements CachingDispatchAsync
    public <A extends Action<R>, R extends Result> void execute(A action, AsyncCallback<R> callback)
    {
       delegate.execute(action, callback);
+   }
+
+   @Override
+   public <A extends Action<R>, R extends Result> void rollback(A action, R result, AsyncCallback<Void> callback)
+   {
+      delegate.rollback(action, result, callback);
    }
 
    @Override

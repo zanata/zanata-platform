@@ -1,7 +1,5 @@
 package org.zanata.webtrans.client.editor.table;
 
-import org.zanata.webtrans.client.action.UndoableAction;
-
 import com.google.gwt.gen2.table.client.TableModel.Callback;
 import com.google.gwt.gen2.table.client.TableModelHelper.Request;
 
@@ -32,8 +30,4 @@ public abstract class TableModelHandler<RowType>
    abstract void prevFuzzyIndex(int row);
 
    abstract void gotoRow(int row);
-
-   abstract void addUndoList(UndoableAction<?> undoableAction);
-
-   abstract int getCurrentPage();
 }

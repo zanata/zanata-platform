@@ -18,13 +18,11 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.client.editor.table;
+package org.zanata.webtrans.client.events;
 
-import org.zanata.webtrans.client.action.UndoableAction;
+import com.google.gwt.event.shared.EventHandler;
 
-public interface UndoCallback<E>
+public interface EditTransUnitEventHandler extends EventHandler
 {
-   void onUndo(UndoableAction<E> undoableAction);
-
-   int getCurrentPage();
+   void onEdit(EditTransUnitEvent event);
 }

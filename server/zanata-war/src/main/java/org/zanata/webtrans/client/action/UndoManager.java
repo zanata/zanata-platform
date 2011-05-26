@@ -20,40 +20,52 @@
  */
 package org.zanata.webtrans.client.action;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Vector;
 
-import com.google.gwt.event.shared.GwtEvent;
 
 public class UndoManager
 {
    private static final int DEFAULT_LIMIT = 20;
    private int limit = DEFAULT_LIMIT;
-   private Vector<UndoableAction<?>> undoList = new Vector<UndoableAction<?>>(limit);
-   private List<GwtEvent<?>> history = new ArrayList<GwtEvent<?>>();
+   private Vector<UndoableAction<?, ?>> undoList = new Vector<UndoableAction<?, ?>>(limit);
+   private Vector<UndoableAction<?, ?>> redoList = new Vector<UndoableAction<?, ?>>(limit);
 
-   public void addEdit(UndoableAction<?> edit)
+   private UndoableAction<?, ?> current;
+
+   public void addUndo(UndoableAction<?, ?> edit)
    {
       undoList.add(edit);
    }
 
+   public void addRedo(UndoableAction<?, ?> edit)
+   {
+      redoList.add(edit);
+   }
+
    public boolean canUndo()
    {
-      return false;
-      // return !undoList.isEmpty();
+      return !undoList.isEmpty() && current == null;
    }
 
    public boolean canRedo()
    {
-      return false;
+      return !redoList.isEmpty() && current == null;
    }
 
    public void undo()
    {
-      UndoableAction<?> var = undoList.lastElement();
+      UndoableAction<?, ?> var = undoList.lastElement();
+      current = var;
       var.undo();
       undoList.remove(var);
+   }
+
+   public void redo()
+   {
+      UndoableAction<?, ?> var = redoList.lastElement();
+      current = var;
+      var.redo();
+      redoList.remove(var);
    }
 
    public void setLimit(int lim)
@@ -61,16 +73,23 @@ public class UndoManager
       this.limit = lim;
    }
 
-   public void addEvent(GwtEvent<?> event)
-   {
-      history.add(event);
-   }
-
-   public void clear()
+   public void clearUndo()
    {
       undoList.clear();
-      history.clear();
    }
 
+   public UndoableAction<?, ?> getCurrent()
+   {
+      return this.current;
+   }
 
+   public void clearCurrent()
+   {
+      this.current = null;
+   }
+
+   public void clearRedo()
+   {
+      redoList.clear();
+   }
 }

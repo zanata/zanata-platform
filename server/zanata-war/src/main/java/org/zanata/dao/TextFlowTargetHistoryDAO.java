@@ -54,4 +54,14 @@ public class TextFlowTargetHistoryDAO extends AbstractDAOImpl<HTextFlowTargetHis
       return count != 0;
    }
 
+   public boolean findConflictInHistory(HTextFlowTarget target, Integer verNum, String username)
+   {
+      Query query = getSession().createQuery("select count(*) from HTextFlowTargetHistory t where t.textFlowTarget.id =:id and t.textFlowRevision >= :ver and t.lastModifiedBy.account.username != :username");
+      query.setParameter("id", target.getId());
+      query.setParameter("ver", verNum);
+      query.setParameter("username", username);
+      Long count = (Long) query.uniqueResult();
+      return count != 0;
+   }
+
 }

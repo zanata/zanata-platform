@@ -101,4 +101,47 @@ public class SeamDispatchAsync implements CachingDispatchAsync
       this.identity = identity;
    }
 
+   @Override
+   public <A extends Action<R>, R extends Result> void rollback(final A action, final R result, final AsyncCallback<Void> callback)
+   {
+      if (action instanceof AbstractWorkspaceAction<?>)
+      {
+         AbstractWorkspaceAction<?> wsAction = (AbstractWorkspaceAction<?>) action;
+         if (workspaceContext == null || identity == null)
+         {
+            callback.onFailure(new AuthorizationError(messages.dispatcherSetupFailed()));
+            return;
+         }
+         wsAction.setSessionId(identity.getSessionId());
+         wsAction.setWorkspaceId(workspaceContext.getWorkspaceId());
+      }
+
+      String sessionId = Cookies.getCookie("JSESSIONID");
+      realService.rollback(new WrappedAction<R>(action, sessionId), result, new AsyncCallback<Void>()
+      {
+
+         public void onFailure(final Throwable caught)
+         {
+            if (caught instanceof AuthenticationError)
+            {
+               Application.redirectToLogin();
+            }
+            else if (caught instanceof AuthorizationError)
+            {
+               Log.info("RCP Authorization Error calling " + action.getClass() + ": " + caught.getMessage());
+               callback.onFailure(caught);
+            }
+            else
+            {
+               callback.onFailure(caught);
+            }
+         }
+
+         @Override
+         public void onSuccess(Void result)
+         {
+         }
+      });
+   }
+
 }

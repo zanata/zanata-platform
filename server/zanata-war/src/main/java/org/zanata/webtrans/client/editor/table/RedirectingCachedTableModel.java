@@ -1,8 +1,6 @@
 package org.zanata.webtrans.client.editor.table;
 
 
-import org.zanata.webtrans.client.action.UndoableAction;
-
 import com.google.gwt.gen2.table.client.CachedTableModel;
 
 public class RedirectingCachedTableModel<RowType> extends CachedTableModel<RowType>
@@ -52,12 +50,6 @@ public class RedirectingCachedTableModel<RowType> extends CachedTableModel<RowTy
          tableModel.gotoPrevFuzzy(row);
    }
 
-   public void addUndoList(UndoableAction<?> undoableAction)
-   {
-      if (tableModel != null)
-         tableModel.addUndoList(undoableAction);
-   }
-
    public void setRowValueOverride(int row, RowType rowValue)
    {
       // TODO ideally, we would just replace the affected row in the cache
@@ -86,15 +78,5 @@ public class RedirectingCachedTableModel<RowType> extends CachedTableModel<RowTy
    {
       super.setRowCount(rowCount);
    }
-
-   public int getCurrentPage()
-   {
-      if (tableModel != null)
-      {
-         return tableModel.getCurrentPage();
-      }
-      return 1;
-   }
-
 
 }

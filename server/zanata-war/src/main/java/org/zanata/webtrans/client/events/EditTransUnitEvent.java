@@ -20,54 +20,43 @@
  */
 package org.zanata.webtrans.client.events;
 
-
-import org.zanata.webtrans.client.action.UndoableAction;
-
 import com.google.gwt.event.shared.GwtEvent;
 
-public class UndoAddEvent extends GwtEvent<UndoAddEventHandler>
+public class EditTransUnitEvent extends GwtEvent<EditTransUnitEventHandler>
 {
-   private UndoableAction<?, ?> undoableAction;
    /**
     * Handler type.
     */
-   private static Type<UndoAddEventHandler> TYPE;
+   private static Type<EditTransUnitEventHandler> TYPE;
 
    /**
     * Gets the type associated with this event.
     * 
     * @return returns the handler type
     */
-   public static Type<UndoAddEventHandler> getType()
+   public static Type<EditTransUnitEventHandler> getType()
    {
       if (TYPE == null)
       {
-         TYPE = new Type<UndoAddEventHandler>();
+         TYPE = new Type<EditTransUnitEventHandler>();
       }
       return TYPE;
    }
 
    @Override
-   public com.google.gwt.event.shared.GwtEvent.Type<UndoAddEventHandler> getAssociatedType()
+   public com.google.gwt.event.shared.GwtEvent.Type<EditTransUnitEventHandler> getAssociatedType()
    {
       return getType();
    }
 
-
    @Override
-   protected void dispatch(UndoAddEventHandler handler)
+   protected void dispatch(EditTransUnitEventHandler handler)
    {
-      handler.onUndoableAction(this);
+      handler.onEdit(this);
    }
 
-   public UndoAddEvent(UndoableAction<?, ?> undoableAction)
+   public EditTransUnitEvent()
    {
-      this.undoableAction = undoableAction;
-   }
-
-   public UndoableAction<?, ?> getUndoableAction()
-   {
-      return this.undoableAction;
    }
 
 }

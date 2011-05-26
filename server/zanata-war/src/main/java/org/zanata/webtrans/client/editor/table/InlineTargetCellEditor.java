@@ -21,7 +21,7 @@
 package org.zanata.webtrans.client.editor.table;
 
 import org.zanata.common.ContentState;
-import org.zanata.webtrans.client.action.UndoableTransUnitUpdateAction;
+import org.zanata.webtrans.client.events.EditTransUnitEvent;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 
@@ -36,6 +36,7 @@ import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import net.customware.gwt.presenter.client.EventBus;
 import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.client.InlineCellEditor.InlineCellEditorImages;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
@@ -125,8 +126,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    private EditRowCallback editRowCallback = null;
 
-   private UndoCallback<TransUnit> undoCallback = null;
-
    /**
     * The current {@link CellEditor.CellEditInfo}.
     */
@@ -162,9 +161,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
     * 
     * @param content the {@link Widget} used to edit
     */
-   public InlineTargetCellEditor(final NavigationMessages messages, CancelCallback<TransUnit> callback, EditRowCallback tranValueCallback, UndoCallback<TransUnit> undoCallback)
+   public InlineTargetCellEditor(final NavigationMessages messages, CancelCallback<TransUnit> callback, EditRowCallback tranValueCallback, final EventBus eventBus)
    {
-      this(messages, GWT.<TargetCellEditorImages> create(TargetCellEditorImages.class), callback, tranValueCallback, undoCallback);
+      this(messages, GWT.<TargetCellEditorImages> create(TargetCellEditorImages.class), callback, tranValueCallback, eventBus);
    }
 
    /**
@@ -173,14 +172,13 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
     * @param content the {@link Widget} used to edit
     * @param images the images to use for the accept/cancel buttons
     */
-   public InlineTargetCellEditor(final NavigationMessages messages, TargetCellEditorImages images, CancelCallback<TransUnit> callback, EditRowCallback rowCallback, UndoCallback<TransUnit> undoTransCallback)
+   public InlineTargetCellEditor(final NavigationMessages messages, TargetCellEditorImages images, CancelCallback<TransUnit> callback, EditRowCallback rowCallback, final EventBus eventBus)
    {
       // Wrap contents in a table
       layoutTable = new FlowPanel();
 
       cancelCallback = callback;
       editRowCallback = rowCallback;
-      undoCallback = undoTransCallback;
       textArea = new TextArea();
       textArea.setStyleName("TableEditorContent-Edit");
       textArea.addBlurHandler(new BlurHandler()
@@ -207,6 +205,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          @Override
          public void onKeyUp(KeyUpEvent event)
          {
+            eventBus.fireEvent(new EditTransUnitEvent());
             // NB: if you change these, please change NavigationConsts too!
             if (event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
             {
@@ -421,20 +420,15 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       {
          return;
       }
-      TransUnit pre = new TransUnit(cellValue);
       cellValue.setTarget(textArea.getText());
       if (cellValue.getTarget().isEmpty())
          cellValue.setStatus(ContentState.New);
       else
          cellValue.setStatus(toggleFuzzy.getValue() ? ContentState.NeedReview : ContentState.Approved);
       restoreView();
-      TransUnit cur = new TransUnit(cellValue);
 
       // Send the new cell value to the callback
       curCallback.onComplete(curCellEditInfo, cellValue);
-      int curpage = this.undoCallback.getCurrentPage();
-      UndoableTransUnitUpdateAction undoAction = new UndoableTransUnitUpdateAction(pre, cur, curRow, curpage);
-      this.undoCallback.onUndo(undoAction);
       clearSelection();
    }
 

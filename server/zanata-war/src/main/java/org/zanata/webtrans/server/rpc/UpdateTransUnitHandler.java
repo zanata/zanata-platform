@@ -22,7 +22,6 @@ package org.zanata.webtrans.server.rpc;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
@@ -39,6 +38,7 @@ import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
+import org.zanata.dao.TextFlowTargetHistoryDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
@@ -84,18 +84,22 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
    @In
    private LocaleService localeServiceImpl;
 
+   @In
+   private TextFlowTargetHistoryDAO textFlowTargetHistoryDAO;
+
    private static SimpleDateFormat SIMPLE_FORMAT = new SimpleDateFormat();
 
    @Override
    public UpdateTransUnitResult execute(UpdateTransUnit action, ExecutionContext context) throws ActionException
    {
-
       ZanataIdentity.instance().checkLoggedIn();
       log.info("Updating TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), action.getWorkspaceId().getLocaleId(), action.getContentState(), action.getContent());
 
       HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, action.getTransUnitId().getValue());
       LocaleId locale = action.getWorkspaceId().getLocaleId();
+      HAccount authenticatedAccount = (HAccount) Contexts.getSessionContext().get(JpaIdentityStore.AUTHENTICATED_USER);
       HLocale hLocale;
+      boolean saved = false;
       try
       {
          hLocale = localeServiceImpl.validateLocaleByProjectIteration(action.getWorkspaceId().getLocaleId(), action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
@@ -108,6 +112,22 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       identity.checkPermission(hProject, ACTION_MODIFY_TRANSLATION);
 
       HTextFlowTarget target = hTextFlow.getTargets().get(hLocale);
+
+      if (action.isRedo())
+      {
+         if (target == null)
+         {
+            throw new ActionException("Redo Failure due to empty string.");
+         }
+         if (!target.getVersionNum().equals(action.getVerNum()))
+         {
+            if (!target.getLastModifiedBy().getAccount().getUsername().equals(authenticatedAccount.getUsername()) || textFlowTargetHistoryDAO.findConflictInHistory(target, action.getVerNum(), authenticatedAccount.getUsername()))
+            {
+               throw new ActionException("Find conflict, Redo Failure.");
+            }
+         }
+      }
+
       ContentState prevStatus = ContentState.New;
       if (target == null)
       {
@@ -135,15 +155,25 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       {
          target.setState(action.getContentState());
       }
-      HAccount authenticatedAccount = (HAccount) Contexts.getSessionContext().get(JpaIdentityStore.AUTHENTICATED_USER);
-      
-      
+
+      UpdateTransUnit previous;
+      if (target.getContent() == null)
+      {
+         previous = new UpdateTransUnit(action.getTransUnitId(), "", prevStatus);
+
+      }
+      else
+      {
+         previous = new UpdateTransUnit(action.getTransUnitId(), target.getContent(), prevStatus);
+      }
+
       if (!StringUtils.equals(action.getContent(), target.getContent()))
       {
          target.setContent(action.getContent());
          target.setVersionNum(target.getVersionNum() + 1);
          log.info("last modified by :" + authenticatedAccount.getPerson().getName());
          target.setLastModifiedBy(authenticatedAccount.getPerson());
+         saved = true;
       }
 
       session.flush();
@@ -155,12 +185,70 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
       workspace.publish(event);
 
-      return new UpdateTransUnitResult(true);
+      UpdateTransUnitResult result = new UpdateTransUnitResult(true);
+      result.setSaved(saved);
+      result.setPrevious(previous);
+      result.setCurrentVersionNum(target.getVersionNum());
+
+      return result;
    }
 
    @Override
    public void rollback(UpdateTransUnit action, UpdateTransUnitResult result, ExecutionContext context) throws ActionException
    {
+      ZanataIdentity.instance().checkLoggedIn();
+      log.info("revert TransUnit {0}: locale {1}, state {2}, content '{3}'", action.getTransUnitId(), action.getWorkspaceId().getLocaleId(), action.getContentState(), action.getContent());
+
+      HTextFlow hTextFlow = (HTextFlow) session.get(HTextFlow.class, action.getTransUnitId().getValue());
+      LocaleId locale = action.getWorkspaceId().getLocaleId();
+      HLocale hLocale;
+      try
+      {
+         hLocale = localeServiceImpl.validateLocaleByProjectIteration(action.getWorkspaceId().getLocaleId(), action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
+      }
+      catch (ZanataServiceException e)
+      {
+         throw new ActionException(e.getMessage());
+      }
+
+      HProject hProject = hTextFlow.getDocument().getProjectIteration().getProject();
+      identity.checkPermission(hProject, ACTION_MODIFY_TRANSLATION);
+      HAccount authenticatedAccount = (HAccount) Contexts.getSessionContext().get(JpaIdentityStore.AUTHENTICATED_USER);
+
+      HTextFlowTarget target = hTextFlow.getTargets().get(hLocale);
+
+      if (target == null)
+      {
+         throw new ActionException("Undo Failure due to empty string.");
+      }
+
+      if (!target.getVersionNum().equals(result.getCurrentVersionNum()))
+      {
+         if (!target.getLastModifiedBy().getAccount().getUsername().equals(authenticatedAccount.getUsername()) || textFlowTargetHistoryDAO.findConflictInHistory(target, result.getCurrentVersionNum(), authenticatedAccount.getUsername()))
+         {
+            throw new ActionException("Find conflict, Undo Failure.");
+         }
+      }
+
+      if (!result.isSaved())
+      {
+         return;
+      }
+
+      ContentState prevStatus = target.getState();
+      target.setState(result.getPrevious().getContentState());
+      target.setContent(result.getPrevious().getContent());
+      target.setVersionNum(target.getVersionNum() + 1);
+      target.setLastModifiedBy(authenticatedAccount.getPerson());
+
+      session.flush();
+
+      int wordCount = hTextFlow.getWordCount().intValue();
+      TransUnit tu = new TransUnit(action.getTransUnitId(), locale, hTextFlow.getContent(), CommentsUtil.toString(hTextFlow.getComment()), target.getContent(), target.getState(), target.getLastModifiedBy().getName(), SIMPLE_FORMAT.format(target.getLastChanged()));
+      TransUnitUpdated event = new TransUnitUpdated(new DocumentId(hTextFlow.getDocument().getId()), wordCount, prevStatus, tu);
+
+      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
+      workspace.publish(event);
    }
 
 }

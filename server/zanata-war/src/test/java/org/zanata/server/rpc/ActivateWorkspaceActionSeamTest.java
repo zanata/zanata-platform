@@ -3,16 +3,10 @@ package org.zanata.server.rpc;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.seam.mock.DBUnitSeamTest;
 import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
-import org.zanata.model.HIterationProject;
-import org.zanata.model.HProjectIteration;
 import org.zanata.webtrans.server.SeamDispatch;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.WorkspaceId;

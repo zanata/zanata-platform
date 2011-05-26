@@ -38,15 +38,16 @@ import org.zanata.webtrans.shared.rpc.WrappedAction;
 public class SeamDispatch implements Dispatch
 {
 
+   @SuppressWarnings("rawtypes")
    private final Map<Class<? extends Action>, Class<? extends ActionHandler<?, ?>>> handlers = new HashMap<Class<? extends Action>, Class<? extends ActionHandler<?, ?>>>();
 
    @Logger
    Log log;
 
+   @SuppressWarnings("rawtypes")
    @Create
    public void create()
    {
-
       // register all handlers with the @ActionHandlerFor annotation
       for (Class clazz : StandardDeploymentStrategy.instance().getAnnotatedClasses().get(ActionHandlerFor.class.getName()))
       {
@@ -63,7 +64,6 @@ public class SeamDispatch implements Dispatch
          }
 
       }
-
    }
 
    @SuppressWarnings("unchecked")
@@ -115,6 +115,7 @@ public class SeamDispatch implements Dispatch
 
    };
 
+   @SuppressWarnings("unchecked")
    @Override
    public <A extends Action<R>, R extends Result> R execute(A action) throws ActionException
    {
@@ -162,7 +163,7 @@ public class SeamDispatch implements Dispatch
       return handler.execute(action, ctx);
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings({ "unchecked", "rawtypes" })
    private <A extends Action<R>, R extends Result> ActionHandler<A, R> findHandler(A action) throws UnsupportedActionException
    {
 
@@ -179,6 +180,47 @@ public class SeamDispatch implements Dispatch
    {
       ActionHandler<A, R> handler = findHandler(action);
       handler.rollback(action, result, ctx);
+   }
+
+   @SuppressWarnings("unchecked")
+   public <A extends Action<R>, R extends Result> void rollback(A action, R result) throws ActionException
+   {
+      if (!(action instanceof WrappedAction<?>))
+      {
+         throw new ActionException("Invalid (non-wrapped) action received: " + action.getClass());
+      }
+      WrappedAction<?> a = (WrappedAction<?>) action;
+      HttpSession session = ServletContexts.instance().getRequest().getSession();
+      if (session != null && !session.getId().equals(a.getCsrfToken()))
+      {
+         throw new SecurityException("Blocked action without session id (CSRF attack?)");
+      }
+      DefaultExecutionContext ctx = new DefaultExecutionContext(this);
+      try
+      {
+         doRollback((A) a.getAction(), result, ctx);
+      }
+      catch (ActionException e)
+      {
+         ctx.rollback();
+         throw e;
+      }
+      catch (NotLoggedInException e)
+      {
+         ctx.rollback();
+         throw new AuthenticationError(e.getMessage());
+      }
+      catch (AuthorizationException e)
+      {
+         ctx.rollback();
+         throw new AuthorizationError(e.getMessage());
+      }
+      catch (Throwable e)
+      {
+         ctx.rollback();
+         log.error("Error dispatching action: " + e, e);
+         throw new ActionException(e.getMessage());
+      }
    }
 
 }

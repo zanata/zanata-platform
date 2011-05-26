@@ -20,20 +20,21 @@
  */
 package org.zanata.webtrans.client.action;
 
-import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
+import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
-public class UndoableTransUnitUpdateAction extends UndoableAction<TransUnit>
+public class UndoableTransUnitUpdateAction extends UndoableAction<UpdateTransUnit, UpdateTransUnitResult>
 {
    private int rowNum;
    private int curPage;
    private UndoableTransUnitUpdateHandler handler;
 
-   public UndoableTransUnitUpdateAction(TransUnit prevValue, TransUnit curValue, int rowNum, int curPage)
+   public UndoableTransUnitUpdateAction(UpdateTransUnit event, UpdateTransUnitResult result, int rowNum, int curPage)
    {
       this.rowNum = rowNum;
       this.curPage = curPage;
-      setPreviousState(prevValue);
-      setPostState(curValue);
+      setAction(event);
+      setResult(result);
    }
    
    public int getCurrentPage()
@@ -56,6 +57,15 @@ public class UndoableTransUnitUpdateAction extends UndoableAction<TransUnit>
       if (handler != null)
       {
          handler.undo(this);
+      }
+   }
+
+   @Override
+   public void redo()
+   {
+      if (handler != null)
+      {
+         handler.redo(this);
       }
    }
 
