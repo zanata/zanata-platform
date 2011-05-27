@@ -9,8 +9,6 @@ public class UpdateTransUnitResult implements Result
 
    private boolean success;
 
-   private boolean saved;
-
    private Integer currentVersionNum;
 
    public Integer getCurrentVersionNum()
@@ -50,13 +48,4 @@ public class UpdateTransUnitResult implements Result
       return success;
    }
 
-   public void setSaved(boolean var)
-   {
-      this.saved = var;
-   }
-
-   public boolean isSaved()
-   {
-      return this.saved;
-   }
 }
