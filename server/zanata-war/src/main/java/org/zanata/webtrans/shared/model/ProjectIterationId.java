@@ -54,7 +54,7 @@ public class ProjectIterationId implements Serializable
       if (obj instanceof ProjectIterationId)
       {
          ProjectIterationId other = (ProjectIterationId) obj;
-         return other.projectSlug == projectSlug && other.iterationSlug == iterationSlug;
+         return other.projectSlug.equals(projectSlug) && other.iterationSlug.equals(iterationSlug);
       }
       return false;
    }
