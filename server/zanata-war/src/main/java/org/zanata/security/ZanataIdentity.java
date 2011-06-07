@@ -103,7 +103,7 @@ public class ZanataIdentity extends Identity
 
    public void logout()
    {
-      if (Events.exists())
+      if (Events.exists() && getPrincipal() != null)
          Events.instance().raiseEvent(USER_LOGOUT_EVENT, getPrincipal().getName());
       super.logout();
    }
