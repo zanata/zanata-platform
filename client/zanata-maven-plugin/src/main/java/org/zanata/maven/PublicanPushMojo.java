@@ -5,9 +5,8 @@ import java.io.File;
 import org.zanata.client.commands.PublicanPushCommand;
 import org.zanata.client.commands.PublicanPushOptions;
 
-
 /**
- * Publishes publican source text to a Zanata project version so that it can be
+ * Pushes publican source text to a Zanata project version so that it can be
  * translated.
  * 
  * @goal publican-push
