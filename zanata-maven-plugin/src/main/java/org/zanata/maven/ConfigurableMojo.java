@@ -191,19 +191,19 @@ public abstract class ConfigurableMojo extends AbstractMojo implements Configura
    @Override
    public boolean isDebugSet()
    {
-      return true;
+      return getLog().isDebugEnabled();
    }
 
    @Override
    public boolean isErrorsSet()
    {
-      return true;
+      return getLog().isErrorEnabled();
    }
 
    @Override
    public boolean isQuietSet()
    {
-      return true;
+      return !getLog().isInfoEnabled();
    }
 
    @Override
