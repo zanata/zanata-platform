@@ -395,7 +395,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       this.cellValue = cellValue;
       textArea.setFocus(true);
-      DOM.scrollIntoView(textArea.getElement());
+      DOM.scrollIntoView(table.getCellFormatter().getElement(curRow, curCol));
       toggleFuzzy.setValue(cellValue.getStatus() == ContentState.NeedReview);
       // refreshStateImage();
    }

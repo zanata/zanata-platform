@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import org.zanata.webtrans.shared.model.Person;
 
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasMouseOverHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -51,24 +50,17 @@ public class WorkspaceUsersView extends Composite implements WorkspaceUsersPrese
    public void updateUserList(ArrayList<Person> userList)
    {
       int existingCount = userListPanel.getWidgetCount();
-      UserListItem item = null;
+      for (int i = 0; i < existingCount; i++)
+      {
+         userListPanel.remove(0);
+      }
+      
       for (int i = 0; i < userList.size(); i++)
       {
-         if (existingCount > i)
-         {
-            item = (UserListItem) userListPanel.getWidget(i);
-            item.setUser(userList.get(i));
-         }
-         else
-         {
-            item = new UserListItem(userList.get(i));
-            userListPanel.add(item);
-         }
+         UserListItem item = new UserListItem(userList.get(i));
+         userListPanel.add(item);
       }
-      for (int i = userList.size(); i < existingCount; i++)
-      {
-         userListPanel.remove(i - 1);
-      }
+
 
       headerLabel.setText(messages.nUsersOnline(userList.size()));
 

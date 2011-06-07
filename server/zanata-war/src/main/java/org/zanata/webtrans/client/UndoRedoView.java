@@ -53,6 +53,8 @@ public class UndoRedoView extends Composite implements UndoRedoPresenter.Display
 
       undo.setTitle(messages.actionToolTip(messages.undoLabel(), ""));
       redo.setTitle(messages.actionToolTip(messages.redoLabel(), ""));
+      undoDisabled.setTitle(messages.actionToolTip(messages.undoLabel(), ""));
+      redoDisabled.setTitle(messages.actionToolTip(messages.redoLabel(), ""));
    }
 
    @Override

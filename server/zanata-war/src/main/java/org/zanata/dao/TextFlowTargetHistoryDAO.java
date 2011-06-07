@@ -56,7 +56,7 @@ public class TextFlowTargetHistoryDAO extends AbstractDAOImpl<HTextFlowTargetHis
 
    public boolean findConflictInHistory(HTextFlowTarget target, Integer verNum, String username)
    {
-      Query query = getSession().createQuery("select count(*) from HTextFlowTargetHistory t where t.textFlowTarget.id =:id and t.textFlowRevision >= :ver and t.lastModifiedBy.account.username != :username");
+      Query query = getSession().createQuery("select count(*) from HTextFlowTargetHistory t where t.textFlowTarget.id =:id and t.textFlowRevision > :ver and t.lastModifiedBy.account.username != :username");
       query.setParameter("id", target.getId());
       query.setParameter("ver", verNum);
       query.setParameter("username", username);

@@ -99,7 +99,6 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       LocaleId locale = action.getWorkspaceId().getLocaleId();
       HAccount authenticatedAccount = (HAccount) Contexts.getSessionContext().get(JpaIdentityStore.AUTHENTICATED_USER);
       HLocale hLocale;
-      boolean saved = false;
       try
       {
          hLocale = localeServiceImpl.validateLocaleByProjectIteration(action.getWorkspaceId().getLocaleId(), action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
@@ -173,7 +172,6 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
          target.setVersionNum(target.getVersionNum() + 1);
          log.debug("last modified by :" + authenticatedAccount.getPerson().getName());
          target.setLastModifiedBy(authenticatedAccount.getPerson());
-         saved = true;
       }
 
       session.flush();
@@ -186,7 +184,6 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
       workspace.publish(event);
 
       UpdateTransUnitResult result = new UpdateTransUnitResult(true);
-      result.setSaved(saved);
       result.setPrevious(previous);
       result.setCurrentVersionNum(target.getVersionNum());
 
@@ -230,16 +227,15 @@ public class UpdateTransUnitHandler extends AbstractActionHandler<UpdateTransUni
          }
       }
 
-      if (!result.isSaved())
-      {
-         return;
-      }
-
       ContentState prevStatus = target.getState();
-      target.setState(result.getPrevious().getContentState());
-      target.setContent(result.getPrevious().getContent());
-      target.setVersionNum(target.getVersionNum() + 1);
-      target.setLastModifiedBy(authenticatedAccount.getPerson());
+
+      if (!StringUtils.equals(result.getPrevious().getContent(), target.getContent()))
+      {
+         target.setState(result.getPrevious().getContentState());
+         target.setContent(result.getPrevious().getContent());
+         target.setVersionNum(target.getVersionNum() + 1);
+         target.setLastModifiedBy(authenticatedAccount.getPerson());
+      }
 
       session.flush();
 
