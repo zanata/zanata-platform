@@ -12,6 +12,20 @@
       <locale>ja</locale>
       <locale>zh-CN</locale>
     </locales>
+    <locales mapping="none">
+      <locale>de</locale>
+      <locale>fr</locale>
+      <locale>pt-BR</locale>
+      <locale>ja</locale>
+      <locale>zh-CN</locale>
+    </locales>
+    <locales mapping="auto">
+      <locale>de</locale>
+      <locale>fr</locale>
+      <locale>pt-BR</locale>
+      <locale>ja</locale>
+      <locale>zh-CN</locale>
+    </locales>
     <locales>
         <locale>ja-JP</locale>
     </locales>

@@ -86,6 +86,11 @@ public class LocaleMapping
          return locale;
    }
 
+   public String getJavaLocale()
+   {
+      return getLocalLocale().replace('-', '_');
+   }
+
    @Override
    public String toString()
    {
