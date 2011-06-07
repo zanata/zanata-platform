@@ -75,6 +75,16 @@ public class PushCommand extends ConfigurableProjectCommand
       this(opts, OptionsUtil.createRequestFactory(opts));
    }
 
+   private PushStrategy getStrategy(String strategyType)
+   {
+      PushStrategy strat = strategies.get(strategyType);
+      if (strat == null)
+      {
+         throw new RuntimeException("unknown project type: " + opts.getProjectType());
+      }
+      return strat;
+   }
+
    @Override
    public void run() throws Exception
    {
@@ -116,11 +126,7 @@ public class PushCommand extends ConfigurableProjectCommand
          confirmWithUser("This will overwrite/delete any existing documents on the server.\n");
       }
 
-      PushStrategy strat = strategies.get(opts.getProjectType());
-      if (strat == null)
-      {
-         throw new RuntimeException("unknown project type: " + opts.getProjectType());
-      }
+      PushStrategy strat = getStrategy(opts.getProjectType());
 
       JAXBContext jc = null;
       if (opts.isDebugSet()) // || opts.getValidate())
