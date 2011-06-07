@@ -47,7 +47,7 @@ public class PushCommand extends ConfigurableProjectCommand
    }
 
    {
-      // strategies.put("properties", new PropertiesStrategy());
+      strategies.put("properties", new PropertiesStrategy());
       strategies.put("gettextDir", new GettextDirStrategy());
    }
 
