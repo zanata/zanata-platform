@@ -1,72 +1,75 @@
 package org.zanata.adapter.properties;
 
+import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
-
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.zanata.adapter.properties.PropReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zanata.common.ContentState;
+import org.zanata.common.LocaleId;
+import org.zanata.rest.dto.resource.Resource;
+import org.zanata.rest.dto.resource.TranslationsResource;
 
 public class PropReaderTests
 {
-   // private static final Logger log =
-   // LoggerFactory.getLogger(PropReaderTests.class);
-
-   @BeforeClass
-   public static void setupContainer()
-   {
-      // ProjectPackage.registerPartFactory(PoHeaderPart.FACTORY);
-      // ProjectPackage.registerPartFactory(PotHeaderPart.FACTORY);
-      // ProjectPackage.registerPartFactory(PotEntriesDataPart.FACTORY);
-   }
+   private static final Logger log = LoggerFactory.getLogger(PropReaderTests.class);
 
    @SuppressWarnings("deprecation")
    PropReader propReader = new PropReader();
 
-   @Before
-   public void setup() throws IOException
-   {
-   }
-
    @Test
-   public void roundtripPropsToDocXmlToProps() throws Exception
+   public void roundtripSrcPropsToDocXmlToProps() throws Exception
    {
-      // Document docOut = new Document("test.properties",
-      // ContentType.TextPlain);
-      // InputStream testStream = getResourceAsStream("test.properties");
-      //
-      // propReader.extractTemplate(docOut, new InputSource(testStream));
-      // String[] locales = new String[] { "fr" };
-      // for (String locale : locales)
-      // {
-      // InputStream targetStream = getResourceAsStream("test_" + locale +
-      // ".properties");
-      // propReader.extractTarget(docOut, new InputSource(targetStream), new
-      // LocaleId(locale), ContentState.New);
-      // }
-      // JAXBContext jc = JAXBContext.newInstance(Document.class);
-      // // JAXBContext jc = JAXBContext.newInstance(Document.class.getPackage()
-      // // .getName());
-      // Marshaller marshal = jc.createMarshaller();
-      // StringWriter sw = new StringWriter();
-      // marshal.marshal(docOut, sw);
-      // marshal.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-      // log.debug("{}", sw);
-      //
-      // Unmarshaller unmarshal = jc.createUnmarshaller();
-      // Document docIn = (Document) unmarshal.unmarshal(new
-      // StringReader(sw.toString()));
-      //
-      // PropWriter.write(docIn, new File("target/test-output"), true);
+      Resource srcDoc = new Resource("test");
+      InputStream testStream = getResourceAsStream("test.properties");
+
+      propReader.extractTemplate(srcDoc, testStream);
+      JAXBContext jc = JAXBContext.newInstance(Resource.class);
+      Marshaller marshal = jc.createMarshaller();
+      StringWriter sw = new StringWriter();
+      marshal.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+      marshal.marshal(srcDoc, sw);
+      log.debug("{}", sw);
+
+      Unmarshaller unmarshal = jc.createUnmarshaller();
+      Resource docIn = (Resource) unmarshal.unmarshal(new StringReader(sw.toString()));
+
+      PropWriter.write(docIn, new File("target/test-output"));
 
       // TODO check output files against input
    }
 
-   @SuppressWarnings("unused")
+   @Test
+   public void roundtripTransPropsToDocXmlToProps() throws Exception
+   {
+      String locale = "fr";
+      InputStream targetStream = getResourceAsStream("test_fr.properties");
+      TranslationsResource transDoc = new TranslationsResource();
+      propReader.extractTarget(transDoc, targetStream, new LocaleId(locale), ContentState.New);
+
+      JAXBContext jc = JAXBContext.newInstance(TranslationsResource.class);
+      Marshaller marshal = jc.createMarshaller();
+      StringWriter sw = new StringWriter();
+      marshal.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+      marshal.marshal(transDoc, sw);
+      log.debug("{}", sw);
+
+      Unmarshaller unmarshal = jc.createUnmarshaller();
+      TranslationsResource docIn = (TranslationsResource) unmarshal.unmarshal(new StringReader(sw.toString()));
+
+      PropWriter.write(docIn, new File("target/test-output"), "test", locale);
+
+      // TODO check output files against input
+   }
+
    private InputStream getResourceAsStream(String relativeResourceName) throws FileNotFoundException
    {
       InputStream stream = PropReaderTests.class.getResourceAsStream(relativeResourceName);
