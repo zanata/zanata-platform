@@ -2,11 +2,9 @@ package org.zanata.adapter.properties;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
 import java.util.List;
 
 import org.fedorahosted.openprops.Properties;
-import org.xml.sax.InputSource;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
@@ -27,9 +25,9 @@ public class PropReader
    public static final String PROP_CONTENT_TYPE = "text/plain";
 
    // pre: template already extracted
-   public void extractTarget(TranslationsResource doc, InputSource inputSource, LocaleId localeId, ContentState contentState) throws IOException
+   public void extractTarget(TranslationsResource doc, InputStream in, LocaleId localeId, ContentState contentState) throws IOException
    {
-      Properties props = loadProps(inputSource);
+      Properties props = loadProps(in);
       for (String key : props.stringPropertyNames())
       {
          String val = props.getProperty(key);
@@ -49,10 +47,10 @@ public class PropReader
    }
 
    // TODO allowing Readers (via InputSource) might be a bad idea
-   public void extractTemplate(Resource doc, InputSource inputSource) throws IOException
+   public void extractTemplate(Resource doc, InputStream in) throws IOException
    {
       List<TextFlow> resources = doc.getTextFlows();
-      Properties props = loadProps(inputSource);
+      Properties props = loadProps(in);
       for (String key : props.stringPropertyNames())
       {
          String val = props.getProperty(key);
@@ -75,20 +73,10 @@ public class PropReader
       return key;
    }
 
-   private Properties loadProps(InputSource inputSource) throws IOException
+   private Properties loadProps(InputStream in) throws IOException
    {
       Properties props = new Properties();
-      InputStream byteStream = inputSource.getByteStream();
-      // NB unlike SAX, we prefer the bytestream over the charstream
-      if (byteStream != null)
-      {
-         props.load(byteStream);
-      }
-      else
-      {
-         Reader reader = inputSource.getCharacterStream();
-         props.load(reader);
-      }
+      props.load(in);
       return props;
    }
 
