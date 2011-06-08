@@ -77,7 +77,14 @@ public class PushMojo extends ConfigurableProjectMojo implements PushOptions
     * @parameter expression="${zanata.merge}" default-value="auto"
     */
    private String merge;
-   
+
+   /**
+    * Name pattern of source file
+    * 
+    * @parameter expression="${zanata.sourcePattern}"
+    */
+   private String sourcePattern;
+
    @Override
    public File getSourceDir()
    {
@@ -118,6 +125,12 @@ public class PushMojo extends ConfigurableProjectMojo implements PushOptions
    public String getMergeType()
    {
       return merge;
+   }
+
+   @Override
+   public String getSourcePattern()
+   {
+      return sourcePattern;
    }
 
 }
