@@ -9,7 +9,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
@@ -26,7 +25,7 @@ import org.zanata.rest.dto.extensions.gettext.TextFlowTargetExtension;
 @JsonPropertyOrder( { "resId", "state", "translator", "content", "extensions" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
-public class TextFlowTarget implements Serializable, Extensible<TextFlowTargetExtension>
+public class TextFlowTarget extends AbstractTextFlow implements Serializable, Extensible<TextFlowTargetExtension>
 {
 
    private static final long serialVersionUID = 1L;
@@ -115,6 +114,13 @@ public class TextFlowTarget implements Serializable, Extensible<TextFlowTargetEx
       return extensions;
    }
 
+   @SuppressWarnings("rawtypes")
+   @Override
+   public ExtensionSet getExtensionsSimpleComment(boolean createIfNull)
+   {
+      return getExtensions(createIfNull);
+   }
+
    public void setExtensions(ExtensionSet<TextFlowTargetExtension> extensions)
    {
       this.extensions = extensions;
@@ -130,6 +136,13 @@ public class TextFlowTarget implements Serializable, Extensible<TextFlowTargetEx
    public void setResId(String resId)
    {
       this.resId = resId;
+   }
+
+   @Override
+   public void setId(String id)
+   {
+      this.resId = id;
+
    }
 
    @Override
@@ -253,5 +266,4 @@ public class TextFlowTarget implements Serializable, Extensible<TextFlowTargetEx
    {
       this.textFlowRevision = textFlowRevision;
    }
-
 }
