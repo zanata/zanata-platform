@@ -82,6 +82,7 @@ public class PushCommand extends ConfigurableProjectCommand
       {
          throw new RuntimeException("unknown project type: " + opts.getProjectType());
       }
+      strat.setPushOptions(opts);
       return strat;
    }
 

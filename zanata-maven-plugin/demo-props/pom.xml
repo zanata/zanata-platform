@@ -13,8 +13,11 @@
       <plugin>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-maven-plugin</artifactId>
-        <version>1.3-SNAPSHOT</version>
+        <version>1.4-SNAPSHOT</version>
         <configuration>
+           <projectType>properties</projectType>
+           <sourceDir>src</sourceDir>
+           <transDir>src</transDir>
 <!-- for instance 
           <importPo>false</importPo>
 -->
