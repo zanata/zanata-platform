@@ -12,7 +12,23 @@ import org.apache.commons.io.FilenameUtils;
  * 
  */
 
-public class PathUtil {
+public class PathUtil
+{
+   private static final String pathSeparator = System.getProperty("file.separator");
+
+   /**
+    * Get the relative path from one file to another, specifying the directory
+    * separator. If one of the provided resources does not exist, it is assumed
+    * to be a file unless it ends with '/' or '\'.
+    * 
+    * @param target targetPath is calculated to this file
+    * @param base basePath is calculated from this file
+    * @return
+    */
+   public static String getRelativePath(String targetPath, String basePath)
+   {
+      return getRelativePath(targetPath, basePath, pathSeparator);
+   }
 
     /**
      * Get the relative path from one file to another, specifying the directory separator. 
@@ -24,22 +40,28 @@ public class PathUtil {
      * @param separator directory separator. The platform default is not assumed so that we can test Unix behaviour when running on Windows (for example)
      * @return
      */
-    public static String getRelativePath(String targetPath, String basePath, String pathSeparator) {
+   public static String getRelativePath(String targetPath, String basePath, String pathSeparator)
+   {
 
         // Normalize the paths
         String normalizedTargetPath = FilenameUtils.normalizeNoEndSeparator(targetPath);
         String normalizedBasePath = FilenameUtils.normalizeNoEndSeparator(basePath);
 
         // Undo the changes to the separators made by normalization
-        if (pathSeparator.equals("/")) {
+      if (pathSeparator.equals("/"))
+      {
             normalizedTargetPath = FilenameUtils.separatorsToUnix(normalizedTargetPath);
             normalizedBasePath = FilenameUtils.separatorsToUnix(normalizedBasePath);
 
-        } else if (pathSeparator.equals("\\")) {
+      }
+      else if (pathSeparator.equals("\\"))
+      {
             normalizedTargetPath = FilenameUtils.separatorsToWindows(normalizedTargetPath);
             normalizedBasePath = FilenameUtils.separatorsToWindows(normalizedBasePath);
 
-        } else {
+      }
+      else
+      {
             throw new IllegalArgumentException("Unrecognised dir separator '" + pathSeparator + "'");
         }
 
@@ -52,12 +74,14 @@ public class PathUtil {
 
         int commonIndex = 0;
         while (commonIndex < target.length && commonIndex < base.length
-                && target[commonIndex].equals(base[commonIndex])) {
+ && target[commonIndex].equals(base[commonIndex]))
+      {
             common.append(target[commonIndex] + pathSeparator);
             commonIndex++;
         }
 
-        if (commonIndex == 0) {
+      if (commonIndex == 0)
+      {
             // No single common path element. This most
             // likely indicates differing drive letters, like C: and D:.
             // These paths cannot be relativized.
@@ -79,19 +103,24 @@ public class PathUtil {
 
         File baseResource = new File(normalizedBasePath);
 
-        if (baseResource.exists()) {
+      if (baseResource.exists())
+      {
             baseIsFile = baseResource.isFile();
 
-        } else if (basePath.endsWith(pathSeparator)) {
+      }
+      else if (basePath.endsWith(pathSeparator))
+      {
             baseIsFile = false;
         }
 
         StringBuffer relative = new StringBuffer();
 
-        if (base.length != commonIndex) {
+      if (base.length != commonIndex)
+      {
             int numDirsUp = baseIsFile ? base.length - commonIndex - 1 : base.length - commonIndex;
 
-            for (int i = 0; i < numDirsUp; i++) {
+         for (int i = 0; i < numDirsUp; i++)
+         {
                 relative.append(".." + pathSeparator);
             }
         }
@@ -100,8 +129,10 @@ public class PathUtil {
     }
 
 
-    static class PathResolutionException extends RuntimeException {
-        PathResolutionException(String msg) {
+   static class PathResolutionException extends RuntimeException
+   {
+      PathResolutionException(String msg)
+      {
             super(msg);
         }
     }    
