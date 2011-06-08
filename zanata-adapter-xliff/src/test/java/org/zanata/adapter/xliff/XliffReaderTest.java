@@ -8,10 +8,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 import org.xml.sax.InputSource;
+import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -19,7 +18,6 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 @Test(groups = { "unit-tests" })
 public class XliffReaderTest
 {
-   private static final Logger log = LoggerFactory.getLogger(XliffReaderTest.class);
    private String testDir = "src/test/resources/";
    private XliffReader reader;
 
@@ -51,8 +49,8 @@ public class XliffReaderTest
 
       File fileTarget = new File(testDir, "/StringResource_de.xml");
       InputSource inputSource = new InputSource(new FileInputStream(fileTarget));
-      TranslationsResource tr = reader.extractTarget(doc, inputSource);
-      assertThat(tr.getTextFlowTargets().size(), is(13));
+      TranslationsResource tr = reader.extractTarget(inputSource, doc);
+      assertThat(tr.getTextFlowTargets().size(), is(3708));
    }
 
    @Test
@@ -75,6 +73,6 @@ public class XliffReaderTest
 
       File file = new File(testDir, "/" + docName);
       InputSource inputSource = new InputSource(new FileInputStream(file));
-      return reader.extractTemplate(inputSource, docName);
+      return reader.extractTemplate(inputSource, LocaleId.EN_US, docName);
    }
 }
