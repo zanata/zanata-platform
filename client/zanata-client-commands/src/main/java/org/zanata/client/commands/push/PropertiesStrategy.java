@@ -37,6 +37,7 @@ import org.fedorahosted.openprops.Properties;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.LocaleId;
+import org.zanata.common.util.PathUtil;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.resource.Resource;
@@ -69,7 +70,9 @@ class PropertiesStrategy implements PushStrategy
       {
          String fileName = f.getPath();
          String baseName = removeDotProperties(fileName);
-         localDocNames.add(baseName);
+         String pathSeparator = "/";
+         String relativeName = PathUtil.getRelativePath(baseName, srcDir.getPath(), pathSeparator);
+         localDocNames.add(relativeName);
       }
       return localDocNames;
    }
