@@ -70,8 +70,7 @@ class PropertiesStrategy implements PushStrategy
       {
          String fileName = f.getPath();
          String baseName = removeDotProperties(fileName);
-         String pathSeparator = "/";
-         String relativeName = PathUtil.getRelativePath(baseName, srcDir.getPath(), pathSeparator);
+         String relativeName = PathUtil.getRelativePath(baseName, srcDir.getPath());
          localDocNames.add(relativeName);
       }
       return localDocNames;
@@ -106,7 +105,8 @@ class PropertiesStrategy implements PushStrategy
       for (String key : props.keySet())
       {
          String content = props.getProperty(key);
-         TextFlow textflow = new TextFlow(key, LocaleId.EN_US, content);
+         LocaleId sourceLoc = new LocaleId(opts.getSourceLang());
+         TextFlow textflow = new TextFlow(key, sourceLoc, content);
          String comment = props.getComment(key);
          if (comment != null)
          {
@@ -146,9 +146,9 @@ class PropertiesStrategy implements PushStrategy
       return targetDoc;
    }
 
-   private String removeDotProperties(String fileName)
+   private String removeDotProperties(String propFileName)
    {
-      return fileName.substring(0, fileName.length() - ".properties".length());
+      return propFileName.substring(0, propFileName.length() - ".properties".length());
    }
 
    @Override
