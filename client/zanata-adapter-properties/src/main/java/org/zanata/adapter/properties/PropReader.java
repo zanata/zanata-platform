@@ -1,18 +1,19 @@
 package org.zanata.adapter.properties;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-
+import java.util.List;
 
 import org.fedorahosted.openprops.Properties;
 import org.xml.sax.InputSource;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
+import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.resource.Resource;
+import org.zanata.rest.dto.resource.TextFlow;
+import org.zanata.rest.dto.resource.TextFlowTarget;
+import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
  * A PropReader. NOT THREADSAFE.
@@ -25,105 +26,55 @@ public class PropReader
 
    public static final String PROP_CONTENT_TYPE = "text/plain";
 
-   // private static final Logger log =
-   // LoggerFactory.getLogger(PropReader.class);
-
-   public void extractAll(Resource doc, File basePropertiesFile, String[] locales, ContentState contentState) throws IOException
-   {
-      InputStream baseInput = new BufferedInputStream(new FileInputStream(basePropertiesFile));
-      try
-      {
-         // System.out.println("processing base " + basePropertiesFile);
-         extractTemplate(doc, new InputSource(baseInput));
-         for (String locale : locales)
-         {
-            File localeFile = new File(dropExtension(basePropertiesFile.toString()) + "_" + locale + ".properties");
-            if (!localeFile.exists())
-               continue;
-            // System.out.println("processing " + localeFile);
-            InputStream localeInput = new BufferedInputStream(new FileInputStream(localeFile));
-            try
-            {
-               extractTarget(doc, new InputSource(localeInput), new LocaleId(locale), contentState);
-            }
-            finally
-            {
-               localeInput.close();
-            }
-         }
-      }
-      finally
-      {
-         baseInput.close();
-      }
-   }
-
-   private String dropExtension(String f)
-   {
-      return f.substring(0, f.length() - ".properties".length());
-   }
-
    // pre: template already extracted
-   public void extractTarget(Resource doc, InputSource inputSource, LocaleId localeId, ContentState contentState) throws IOException
+   public void extractTarget(TranslationsResource doc, InputSource inputSource, LocaleId localeId, ContentState contentState) throws IOException
    {
-      // Map<String, TextFlow> textFlowMap = new HashMap<String, TextFlow>();
-      // for (TextFlow resource : doc.getTextFlows())
-      // {
-      // textFlowMap.put(resource.getId(), resource);
-      // }
-      //
-      // Properties props = loadProps(inputSource);
-      // for (String key : props.stringPropertyNames())
-      // {
-      // String val = props.getProperty(key);
-      // String id = getID(key, val);
-      //
-      // TextFlow textFlow = textFlowMap.get(id);
-      // if (textFlow == null)
-      // {
-      // log.warn("Property with key {} in locale {} has no corresponding source in {}",
-      // new Object[] { key, localeId, doc.getId() });
-      // continue;
-      // }
-      // TextFlowTarget textFlowTarget = new TextFlowTarget();
-      // textFlowTarget.setContent(val);
-      // textFlowTarget.setId(id);
-      // textFlowTarget.setResourceRevision(textFlow.getRevision());
-      // textFlowTarget.setLang(localeId);
-      // textFlowTarget.setState(contentState);
-      // String comment = props.getComment(key);
-      // if (comment != null && comment.length() != 0)
-      // textFlowTarget.getOrAddComment().setValue(comment);
-      // textFlow.addTarget(textFlowTarget);
-      // }
+      Properties props = loadProps(inputSource);
+      for (String key : props.stringPropertyNames())
+      {
+         String val = props.getProperty(key);
+         String id = getID(key, val);
+         TextFlowTarget textFlowTarget = new TextFlowTarget(id);
+         textFlowTarget.setContent(val);
+         // textFlowTarget.setLang(localeId);
+         textFlowTarget.setState(contentState);
+         String comment = props.getComment(key);
+         if (comment != null && comment.length() != 0)
+         {
+            SimpleComment simpleComment = textFlowTarget.getExtensions(true).findOrAddByType(SimpleComment.class);
+            simpleComment.setValue(comment);
+         }
+         doc.getTextFlowTargets().add(textFlowTarget);
+      }
    }
 
    // TODO allowing Readers (via InputSource) might be a bad idea
    public void extractTemplate(Resource doc, InputSource inputSource) throws IOException
    {
-      // List<TextFlow> resources = doc.getTextFlows();
-      // Properties props = loadProps(inputSource);
-      // for (String key : props.stringPropertyNames())
-      // {
-      // String val = props.getProperty(key);
-      // String id = getID(key, val);
-      // TextFlow textFlow = new TextFlow(id);
-      // textFlow.setContent(val);
-      // String comment = props.getComment(key);
-      // if (comment != null && comment.length() != 0)
-      // textFlow.getOrAddComment().setValue(comment);
-      // // textFlow.setLang(LocaleId.EN);
-      // resources.add(textFlow);
-      // }
+      List<TextFlow> resources = doc.getTextFlows();
+      Properties props = loadProps(inputSource);
+      for (String key : props.stringPropertyNames())
+      {
+         String val = props.getProperty(key);
+         String id = getID(key, val);
+         TextFlow textFlow = new TextFlow(id);
+         textFlow.setContent(val);
+         String comment = props.getComment(key);
+         if (comment != null && comment.length() != 0)
+         {
+            SimpleComment simpleComment = textFlow.getExtensions(true).findOrAddByType(SimpleComment.class);
+            simpleComment.setValue(comment);
+         }
+         // textFlow.setLang(LocaleId.EN);
+         resources.add(textFlow);
+      }
    }
 
-   @SuppressWarnings("unused")
    private String getID(String key, String val)
    {
       return key;
    }
 
-   @SuppressWarnings("unused")
    private Properties loadProps(InputSource inputSource) throws IOException
    {
       Properties props = new Properties();
