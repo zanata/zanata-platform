@@ -3,14 +3,17 @@ package org.zanata.client.commands.push;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.AndFileFilter;
 import org.apache.commons.io.filefilter.NotFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang.StringUtils;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.xliff.XliffReader;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
@@ -27,8 +30,10 @@ public class XliffStrategy implements PushStrategy
 
    StringSet extensions = new StringSet("comment");
    XliffReader reader = new XliffReader();
-   WildcardFileFilter srcFileFilter;
-   NotFileFilter targetFileFilter;
+   WildcardFileFilter srcPatternFilter;
+   TargetFileFilter targetFileFilter;
+   AndFileFilter srcFileFilter;
+   Set<String> sourceFiles;
    
    private PushOptions opts;
 
@@ -48,30 +53,29 @@ public class XliffStrategy implements PushStrategy
    @Override
    public Set<String> findDocNames(File srcDir) throws IOException
    {
+      sourceFiles = new HashSet<String>();
       Set<String> localDocNames = new HashSet<String>();
-      srcFileFilter = new WildcardFileFilter(opts.getSourcePattern());
-      targetFileFilter = new NotFileFilter(srcFileFilter);
+      
+      srcPatternFilter = new WildcardFileFilter(opts.getSourcePattern());
+      targetFileFilter = new TargetFileFilter(opts.getLocales(), XML_EXTENSION);
+      srcFileFilter = new AndFileFilter(srcPatternFilter, targetFileFilter);
 
       Collection<File> files = FileUtils.listFiles(srcDir, srcFileFilter, TrueFileFilter.TRUE);
 
-      for (File f : files)
+      for (File file : files)
       {
-         String fileName = f.getPath();
-         String baseName = fileName.substring(0, fileName.length() - XML_EXTENSION.length());
-
-         String pathSeparator = "/";
-         baseName = PathUtil.getRelativePath(baseName, srcDir.getPath(), pathSeparator);
+         String baseName = file.getPath();
+         baseName = PathUtil.getRelativePath(baseName, srcDir.getPath(), "/");
+         sourceFiles.add(baseName);
+         baseName = baseName.substring(0, baseName.length() - XML_EXTENSION.length());
 
          if (baseName.contains("_"))
          {
-            for (LocaleMapping locMap : opts.getLocales())
-            {
-               String loc = locMap.getJavaLocale();
-               if (baseName.contains("_" + loc))
+               String loc = new LocaleId(opts.getSourceLang()).toJavaName();
+               if (StringUtils.containsIgnoreCase(baseName, "_" + loc))
                {
-                  baseName = baseName.replace("_" + loc, "");
+                  baseName = baseName.replaceAll("_" + loc, "");
                }
-            }
          }
          localDocNames.add(baseName);
       }
@@ -81,7 +85,13 @@ public class XliffStrategy implements PushStrategy
    @Override
    public Resource loadSrcDoc(File sourceDir, String docName) throws IOException
    {
-      File srcFile = new File(sourceDir, docName + "_" + new LocaleId(opts.getSourceLang()).toJavaName() + ".xml");
+      File srcFile = null;
+	   for(String file:sourceFiles){
+	      if(file.startsWith(docName) && file.endsWith(XML_EXTENSION)){
+	         srcFile = new File(sourceDir, file);
+	         break;
+	      }
+	   }
       InputSource srcInputSource = new InputSource(new FileInputStream(srcFile));
       return reader.extractTemplate(srcInputSource, new LocaleId(opts.getSourceLang()), docName);
    }
@@ -91,7 +101,7 @@ public class XliffStrategy implements PushStrategy
    {
       for (LocaleMapping locale : opts.getLocales())
       {
-         File transFile = new File(opts.getTransDir(), docName + "_" + locale.getJavaLocale() + ".xml");
+         File transFile = new File(opts.getTransDir(), docName + "_" + locale.getJavaLocale() + XML_EXTENSION);
          if (transFile.exists())
          {
             InputSource inputSource = new InputSource(transFile.toURI().toString());
@@ -100,6 +110,5 @@ public class XliffStrategy implements PushStrategy
             visitor.visit(locale, targetDoc);
          }
       }
-
    }
 }
