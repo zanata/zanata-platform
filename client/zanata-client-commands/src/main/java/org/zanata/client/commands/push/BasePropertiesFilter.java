@@ -63,7 +63,7 @@ public class BasePropertiesFilter implements IOFileFilter
       {
          for (LocaleMapping locMap : locales)
          {
-            String loc = locMap.getJavaLocale();
+            String loc = locMap.getJavaLocale().toLowerCase();
             if (name.endsWith("_" + loc + ".properties")) { //$NON-NLS-1$ //$NON-NLS-2$
                // log("skipping translated property file for now: "+name);
                return false;

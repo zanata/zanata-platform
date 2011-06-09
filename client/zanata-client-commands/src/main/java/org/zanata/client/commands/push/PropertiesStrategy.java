@@ -36,6 +36,7 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.fedorahosted.openprops.Properties;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.client.config.LocaleMapping;
+import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.util.PathUtil;
 import org.zanata.rest.StringSet;
@@ -135,6 +136,7 @@ class PropertiesStrategy implements PushStrategy
          String content = props.getProperty(key);
          TextFlowTarget textFlowTarget = new TextFlowTarget(key);
          textFlowTarget.setContent(content);
+         textFlowTarget.setState(ContentState.Approved);
          String comment = props.getComment(key);
          if (comment != null)
          {
