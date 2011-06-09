@@ -1,7 +1,9 @@
 package org.zanata.client.commands;
 
+import java.io.BufferedInputStream;
 import java.io.Console;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URI;
@@ -185,10 +187,19 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
       {
          String docUri = RestUtil.convertToDocumentURIId(docName);
          File potFile = new File(potDir, docName + ".pot");
-         InputSource potInputSource = new InputSource(potFile.toURI().toString());
-         // load 'srcDoc' from pot/${docID}.pot
-         Resource srcDoc = poReader.extractTemplate(potInputSource, new LocaleId(opts.getSourceLang()), docName);
-
+         Resource srcDoc;
+         BufferedInputStream bis = new BufferedInputStream(new FileInputStream(potFile));
+         try
+         {
+            InputSource potInputSource = new InputSource(bis);
+            potInputSource.setEncoding("utf8");
+            // load 'srcDoc' from pot/${docID}.pot
+            srcDoc = poReader.extractTemplate(potInputSource, new LocaleId(opts.getSourceLang()), docName);
+         }
+         finally
+         {
+            bis.close();
+         }
          if (log.isDebugEnabled())
          {
             StringWriter writer = new StringWriter();
@@ -211,11 +222,20 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
             {
                File localeDir = new File(opts.getSrcDir(), locale.getLocalLocale());
                File poFile = new File(localeDir, docName + ".po");
-               if (poFile.exists())
+               if (poFile.canRead())
                {
-                  InputSource inputSource = new InputSource(poFile.toURI().toString());
-                  inputSource.setEncoding("utf8");
-                  TranslationsResource targetDoc = poReader.extractTarget(inputSource, srcDoc);
+                  TranslationsResource targetDoc;
+                  BufferedInputStream bis2 = new BufferedInputStream(new FileInputStream(poFile));
+                  try
+                  {
+                     InputSource inputSource = new InputSource(bis2);
+                     inputSource.setEncoding("utf8");
+                     targetDoc = poReader.extractTarget(inputSource, srcDoc);
+                  }
+                  finally
+                  {
+                     bis2.close();
+                  }
                   if (log.isDebugEnabled())
                   {
                      StringWriter writer = new StringWriter();
