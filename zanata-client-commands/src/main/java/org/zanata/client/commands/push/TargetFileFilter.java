@@ -24,48 +24,46 @@ package org.zanata.client.commands.push;
 import java.io.File;
 
 import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.lang.StringUtils;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 
-/**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- *
- */
-public class BasePropertiesFilter implements IOFileFilter
+
+public class TargetFileFilter implements IOFileFilter
 {
 
    private final LocaleList locales;
+   private final String extension;
 
-   public BasePropertiesFilter(LocaleList locales)
+   public TargetFileFilter(LocaleList locales, String extension)
    {
       this.locales = locales;
+      this.extension = extension;
    }
 
    @Override
    public boolean accept(File file)
    {
-      return accept(file.getName().toLowerCase());
+      return accept(file.getName());
    }
 
    @Override
    public boolean accept(File dir, String name)
    {
-      return accept(name.toLowerCase());
+      return accept(name);
    }
 
    private boolean accept(String name)
    {
-      if (!name.endsWith(".properties"))
+      if (!StringUtils.endsWithIgnoreCase(name, extension))
          return false;
-      if (locales == null)
-         return true; // TODO or guess that anything with _ is to be skipped
       if (name.contains("_"))
       {
          for (LocaleMapping locMap : locales)
          {
             String loc = locMap.getJavaLocale();
-            if (name.endsWith("_" + loc + ".properties")) { //$NON-NLS-1$ //$NON-NLS-2$
-               // log("skipping translated property file for now: "+name);
+            if (StringUtils.endsWithIgnoreCase(name, "_" + loc + extension))
+            {
                return false;
             }
          }

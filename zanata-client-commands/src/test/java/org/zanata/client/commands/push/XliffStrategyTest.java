@@ -29,7 +29,6 @@ public class XliffStrategyTest
    @BeforeTest
    public void prepare()
    {
-      locales.add(new LocaleMapping("en-US"));
       locales.add(new LocaleMapping("de"));
       locales.add(new LocaleMapping("fr"));
    }
@@ -42,6 +41,7 @@ public class XliffStrategyTest
       mockPushOption = createMock("mockPushOption", PushOptions.class);
       EasyMock.expect(mockPushOption.getSourcePattern()).andReturn("*StringResource_en_US*");
       EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
+      EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();
 
       xliffStrategy.setPushOptions(mockPushOption);
       EasyMock.replay(mockPushOption);
