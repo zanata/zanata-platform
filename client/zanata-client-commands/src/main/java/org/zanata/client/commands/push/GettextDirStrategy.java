@@ -30,6 +30,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.po.PoReader2;
 import org.zanata.client.commands.StringUtil;
@@ -43,6 +45,8 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 
 class GettextDirStrategy implements PushStrategy
 {
+   private static final Logger log = LoggerFactory.getLogger(GettextDirStrategy.class);
+
    StringSet extensions = new StringSet("comment;gettext");
    PoReader2 poReader = new PoReader2();
    List<LocaleMapping> locales;
@@ -103,7 +107,7 @@ class GettextDirStrategy implements PushStrategy
             locales = PublicanUtil.findLocales(opts.getTransDir(), opts.getLocales());
             if (locales.size() == 0)
             {
-               PushCommand.log.warn("option 'pushTrans' is set, but none of the configured locale directories was found (check zanata.xml)");
+               log.warn("option 'pushTrans' is set, but none of the configured locale directories was found (check zanata.xml)");
             }
          }
          else
@@ -111,11 +115,11 @@ class GettextDirStrategy implements PushStrategy
             locales = PublicanUtil.findLocales(opts.getTransDir());
             if (locales.size() == 0)
             {
-               PushCommand.log.warn("option 'pushTrans' is set, but no locale directories were found");
+               log.warn("option 'pushTrans' is set, but no locale directories were found");
             }
             else
             {
-               PushCommand.log.info("option 'pushTrans' is set, but no locales specified in configuration: importing " + locales.size() + " directories");
+               log.info("option 'pushTrans' is set, but no locales specified in configuration: importing " + locales.size() + " directories");
             }
          }
       }
