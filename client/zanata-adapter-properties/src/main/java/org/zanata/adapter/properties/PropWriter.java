@@ -1,23 +1,25 @@
 package org.zanata.adapter.properties;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 
+import org.fedorahosted.openprops.Properties;
+import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.resource.Resource;
+import org.zanata.rest.dto.resource.TextFlow;
+import org.zanata.rest.dto.resource.TextFlowTarget;
+import org.zanata.rest.dto.resource.TranslationsResource;
 
-
-
-@Deprecated
 public class PropWriter
 {
 
-   @SuppressWarnings("unused")
    private static void logVerbose(String msg)
    {
       System.out.println(msg);
    }
 
-   @SuppressWarnings("unused")
    private static void makeParentDirs(File f)
    {
       File parentFile = f.getParentFile();
@@ -25,82 +27,43 @@ public class PropWriter
          parentFile.mkdirs();
    }
 
-   public static void write(final Resource doc, final File baseDir, boolean exportRoot) throws IOException
+   public static void write(final Resource doc, final File baseDir) throws IOException
    {
-      // File docDir = new File(baseDir, doc.getPath());
-      // File baseFile = new File(docDir, doc.getName());
-      // makeParentDirs(baseFile);
-      //
-      // if (exportRoot)
-      // {
-      // logVerbose("Creating base file " + baseFile);
-      // Properties props = new Properties();
-      // for (TextFlow textFlow : doc.getTextFlows())
-      // {
-      // props.setProperty(textFlow.getId(), textFlow.getContent());
-      // if (textFlow.hasComment() && textFlow.getComment().getValue() != null)
-      // props.setComment(textFlow.getId(), textFlow.getComment().getValue());
-      // }
-      // // props.store(System.out, null);
-      // PrintStream out = new PrintStream(new FileOutputStream(baseFile));
-      // props.store(out, null);
-      // }
-      //
-      // String baseName = baseFile.getName();
-      // String bundleName = baseName.substring(0, baseName.length() -
-      // ".properties".length());
-      //
-      // Map<LocaleId, Properties> targetProps = new HashMap<LocaleId,
-      // Properties>();
-      // for (TextFlow textflow : doc.getTextFlows())
-      // {
-      // for (TextFlowTarget target : getTargets(textflow))
-      // {
-      // Properties targetProp = targetProps.get(target.getLang());
-      // if (targetProp == null)
-      // {
-      // targetProp = new Properties();
-      // targetProps.put(target.getLang(), targetProp);
-      // }
-      // targetProp.setProperty(textflow.getId(), target.getContent());
-      // if (target.hasComment() && target.getComment().getValue() != null)
-      // targetProp.setComment(textflow.getId(),
-      // target.getComment().getValue());
-      // }
-      // }
-      // Set<LocaleId> targetLangs = targetProps.keySet();
-      //
-      // for (LocaleId lang : targetLangs)
-      // {
-      // File langFile = new File(docDir, bundleName + "_" + lang.toJavaName() +
-      // ".properties");
-      // logVerbose("Creating target file " + langFile);
-      // Properties targetProp = targetProps.get(lang);
-      // // targetProp.store(System.out, null);
-      // PrintStream out2 = new PrintStream(new FileOutputStream(langFile));
-      // targetProp.store(out2, null);
-      // }
+      File baseFile = new File(baseDir, doc.getName() + ".properties");
+      makeParentDirs(baseFile);
 
+      logVerbose("Creating base file " + baseFile);
+      Properties props = new Properties();
+      for (TextFlow textFlow : doc.getTextFlows())
+      {
+         props.setProperty(textFlow.getId(), textFlow.getContent());
+         SimpleComment simpleComment = textFlow.getExtensions(true).findByType(SimpleComment.class);
+         if (simpleComment != null && simpleComment.getValue() != null)
+            props.setComment(textFlow.getId(), simpleComment.getValue());
+      }
+      // props.store(System.out, null);
+      PrintStream out = new PrintStream(new FileOutputStream(baseFile));
+      props.store(out, null);
    }
 
-   /*
-    * private static Set<LocaleId> buildTargetLangs(Document doc) {
-    * Set<LocaleId> targetLangs = doc.getTargetLanguages();
-    * if(targetLangs.isEmpty()) { for (Resource resource : doc.getResources()) {
-    * for (TextFlowTarget target : getTargets(resource)) {
-    * targetLangs.add(target.getLang()); } } } return targetLangs; }
-    */
+   public static void write(final TranslationsResource doc, final File baseDir, String bundleName, String locale) throws IOException
+   {
 
-   // private static Set<TextFlowTarget> getTargets(IExtensible resource)
-   // {
-   // TextFlowTargets targets = resource.getExtension(TextFlowTargets.class);
-   // if (targets != null)
-   // {
-   // return targets.getTargets();
-   // }
-   // else
-   // {
-   // return Collections.EMPTY_SET;
-   // }
-   // }
+      Properties targetProp = new Properties();
+      for (TextFlowTarget target : doc.getTextFlowTargets())
+      {
+         targetProp.setProperty(target.getResId(), target.getContent());
+         SimpleComment simpleComment = target.getExtensions(true).findByType(SimpleComment.class);
+         if (simpleComment != null && simpleComment.getValue() != null)
+            targetProp.setComment(target.getResId(), simpleComment.getValue());
+      }
+
+      File langFile = new File(baseDir, bundleName + "_" + locale + ".properties");
+      makeParentDirs(langFile);
+      logVerbose("Creating target file " + langFile);
+      // targetProp.store(System.out, null);
+      PrintStream out2 = new PrintStream(new FileOutputStream(langFile));
+      targetProp.store(out2, null);
+   }
+
 }

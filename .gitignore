@@ -34,6 +34,8 @@ bin/
 /*/*/target/
 *.orig
 /server/zanata-war/.gwt
+# eclipse scrapbook page:
+*.jpage
 
 
 # idea

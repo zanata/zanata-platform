@@ -19,23 +19,20 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.zanata.client.commands.push;
+package org.zanata.client.commands.pull;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Set;
 
-import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
-import org.zanata.rest.StringSet;
-import org.zanata.rest.dto.resource.Resource;
+import org.zanata.client.commands.ConfigurableProjectOptions;
 
-interface PushStrategy
+/**
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ *
+ */
+public interface PullOptions extends ConfigurableProjectOptions
 {
-   void setPushOptions(PushOptions opts);
-   StringSet getExtensions();
-   Set<String> findDocNames(File srcDir) throws IOException;
-   Resource loadSrcDoc(File sourceDir, String docName) throws IOException;
-
-   // TODO remove docUri param
-   void visitTranslationResources(@Deprecated String docUri, String docName, Resource srcDoc, TranslationResourcesVisitor visitor) throws IOException;
+   File getSrcDir();
+   File getTransDir();
+   public String getProjectType();
+   boolean getPullSrc();
 }

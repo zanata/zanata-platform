@@ -19,23 +19,53 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.zanata.client.commands.push;
+package org.zanata.client.commands.pull;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Set;
 
-import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
+import org.zanata.adapter.properties.PropWriter;
+import org.zanata.client.config.LocaleMapping;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
+import org.zanata.rest.dto.resource.TranslationsResource;
 
-interface PushStrategy
+/**
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ *
+ */
+public class PropertiesStrategy implements PullStrategy
 {
-   void setPushOptions(PushOptions opts);
-   StringSet getExtensions();
-   Set<String> findDocNames(File srcDir) throws IOException;
-   Resource loadSrcDoc(File sourceDir, String docName) throws IOException;
+   StringSet extensions = new StringSet("comment");
+   private PullOptions opts;
 
-   // TODO remove docUri param
-   void visitTranslationResources(@Deprecated String docUri, String docName, Resource srcDoc, TranslationResourcesVisitor visitor) throws IOException;
+   @Override
+   public void setPullOptions(PullOptions opts)
+   {
+      this.opts = opts;
+   }
+
+   @Override
+   public StringSet getExtensions()
+   {
+      return extensions;
+   }
+
+   @Override
+   public boolean needsDocToWriteTrans()
+   {
+      return false;
+   }
+
+   @Override
+   public void writeSrcFile(Resource doc) throws IOException
+   {
+      PropWriter.write(doc, opts.getSrcDir());
+   }
+
+   @Override
+   public void writeTransFile(String docName, Resource doc, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException
+   {
+      PropWriter.write(targetDoc, opts.getTransDir(), docName, localeMapping.getJavaLocale());
+   }
+
 }

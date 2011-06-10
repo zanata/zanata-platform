@@ -831,6 +831,8 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
       if (iter.hasNext())
       {
+         // FIXME don't force the client to arrange TFTs in the same order as
+         // the TFs!
          return Response.status(Status.BAD_REQUEST).entity("Unexpected target: " + iter.next().getResId()).build();
       }
       else if (changed || !newTargets.isEmpty() || !changedTargets.isEmpty() || !removedTargets.isEmpty())

@@ -19,58 +19,56 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.zanata.client.commands.push;
+package org.zanata.client.commands.pull;
 
-import java.io.File;
+import java.io.IOException;
 
-import org.apache.commons.io.filefilter.IOFileFilter;
-import org.zanata.client.config.LocaleList;
+import org.zanata.adapter.po.PoWriter2;
 import org.zanata.client.config.LocaleMapping;
+import org.zanata.rest.StringSet;
+import org.zanata.rest.dto.resource.Resource;
+import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class BasePropertiesFilter implements IOFileFilter
+public class GettextDirStrategy implements PullStrategy
 {
+   PoWriter2 poWriter = new PoWriter2();
+   StringSet extensions = new StringSet("gettext;comment");
+   private PullOptions opts;
 
-   private final LocaleList locales;
 
-   public BasePropertiesFilter(LocaleList locales)
+   @Override
+   public void setPullOptions(PullOptions opts)
    {
-      this.locales = locales;
+      this.opts = opts;
    }
 
    @Override
-   public boolean accept(File file)
+   public StringSet getExtensions()
    {
-      return accept(file.getName().toLowerCase());
+      return extensions;
    }
 
    @Override
-   public boolean accept(File dir, String name)
+   public boolean needsDocToWriteTrans()
    {
-      return accept(name.toLowerCase());
-   }
-
-   private boolean accept(String name)
-   {
-      if (!name.endsWith(".properties"))
-         return false;
-      if (locales == null)
-         return true; // TODO or guess that anything with _ is to be skipped
-      if (name.contains("_"))
-      {
-         for (LocaleMapping locMap : locales)
-         {
-            String loc = locMap.getJavaLocale().toLowerCase();
-            if (name.endsWith("_" + loc + ".properties")) { //$NON-NLS-1$ //$NON-NLS-2$
-               // log("skipping translated property file for now: "+name);
-               return false;
-            }
-         }
-      }
       return true;
+   }
+
+   @Override
+   public void writeSrcFile(Resource doc) throws IOException
+   {
+      poWriter.writePotToDir(opts.getSrcDir(), doc);
+   }
+
+   @Override
+   public void writeTransFile(String docName, Resource doc, LocaleMapping locMapping, TranslationsResource targetDoc) throws IOException
+   {
+      String localeDir = locMapping.getLocalLocale();
+      poWriter.writePo(opts.getTransDir(), doc, localeDir, targetDoc);
    }
 
 }
