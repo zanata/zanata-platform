@@ -37,7 +37,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  */
 public class PushCommand extends ConfigurableProjectCommand
 {
-   static final Logger log = LoggerFactory.getLogger(PushCommand.class);
+   private static final Logger log = LoggerFactory.getLogger(PushCommand.class);
 
    private static final Map<String, PushStrategy> strategies = new HashMap<String, PushStrategy>();
 
@@ -119,6 +119,8 @@ public class PushCommand extends ConfigurableProjectCommand
 
       if (opts.getPushTrans())
       {
+         if (opts.getLocales() == null)
+            throw new RuntimeException("pushTrans option set, but zanata.xml contains no <locales>");
          log.warn("pushTrans option is set: existing translations on server may be overwritten/deleted");
          confirmWithUser("This will overwrite/delete any existing documents AND TRANSLATIONS on the server.\n");
       }
