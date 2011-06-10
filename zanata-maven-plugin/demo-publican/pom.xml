@@ -5,7 +5,8 @@
   <version>0</version>
 
   <properties>
-    <zanata.srcDir>.</zanata.srcDir>
+    <zanata.srcDir>pot</zanata.srcDir>
+    <zanata.transDir>.</zanata.transDir>
   </properties>
  
   <build>
@@ -16,8 +17,8 @@
         <version>1.4-SNAPSHOT</version>
         <configuration>
            <projectType>gettextDir</projectType>
-           <sourceDir>pot</sourceDir>
-           <transDir>.</transDir>
+           <srcDir>${zanata.srcDir}</srcDir>
+           <transDir>${zanata.transDir}</transDir>
 <!-- for instance 
           <importPo>false</importPo>
 -->

@@ -29,9 +29,9 @@ public class PushMojo extends ConfigurableProjectMojo implements PushOptions
    /**
     * Base directory for source-language files
     * 
-    * @parameter expression="${zanata.sourceDir}" default-value="."
+    * @parameter expression="${zanata.srcDir}" default-value="."
     */
-   private File sourceDir;
+   private File srcDir;
 
    /**
     * Base directory for target-language files (translations)
@@ -79,9 +79,9 @@ public class PushMojo extends ConfigurableProjectMojo implements PushOptions
    private String merge;
    
    @Override
-   public File getSourceDir()
+   public File getSrcDir()
    {
-      return sourceDir;
+      return srcDir;
    }
 
    @Override
