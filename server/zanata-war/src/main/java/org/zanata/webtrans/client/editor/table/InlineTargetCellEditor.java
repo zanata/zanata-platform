@@ -246,6 +246,13 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             { // alt-pageup
                handlePrevState();
             }
+            else if (event.isAltKeyDown() && event.getNativeKeyCode() == 78)
+            {
+               if (toggleFuzzy.getValue())
+                  toggleFuzzy.setValue(false);
+               else
+                  toggleFuzzy.setValue(true);
+            }
             // these shortcuts disabled because they conflict with basic text editing:
 //            else if (event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_HOME)
 //            { // ctrl-home
