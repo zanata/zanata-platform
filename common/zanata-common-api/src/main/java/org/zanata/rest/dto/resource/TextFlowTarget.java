@@ -25,7 +25,7 @@ import org.zanata.rest.dto.extensions.gettext.TextFlowTargetExtension;
 @JsonPropertyOrder( { "resId", "state", "translator", "content", "extensions" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
-public class TextFlowTarget extends AbstractTextFlow implements Serializable, Extensible<TextFlowTargetExtension>
+public class TextFlowTarget implements Serializable, Extensible<TextFlowTargetExtension>
 {
 
    private static final long serialVersionUID = 1L;
@@ -114,13 +114,6 @@ public class TextFlowTarget extends AbstractTextFlow implements Serializable, Ex
       return extensions;
    }
 
-   @SuppressWarnings("rawtypes")
-   @Override
-   public ExtensionSet getExtensionsSimpleComment(boolean createIfNull)
-   {
-      return getExtensions(createIfNull);
-   }
-
    public void setExtensions(ExtensionSet<TextFlowTargetExtension> extensions)
    {
       this.extensions = extensions;
@@ -136,13 +129,6 @@ public class TextFlowTarget extends AbstractTextFlow implements Serializable, Ex
    public void setResId(String resId)
    {
       this.resId = resId;
-   }
-
-   @Override
-   public void setId(String id)
-   {
-      this.resId = id;
-
    }
 
    @Override

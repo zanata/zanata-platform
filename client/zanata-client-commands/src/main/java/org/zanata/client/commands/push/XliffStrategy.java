@@ -2,6 +2,7 @@ package org.zanata.client.commands.push;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -97,16 +98,16 @@ public class XliffStrategy implements PushStrategy
    }
 
    @Override
-   public void visitTranslationResources(String docUri, String docName, Resource srcDoc, TranslationResourcesVisitor visitor)
+   public void visitTranslationResources(String docUri, String docName, Resource srcDoc, TranslationResourcesVisitor visitor) throws FileNotFoundException
    {
       for (LocaleMapping locale : opts.getLocales())
       {
          File transFile = new File(opts.getTransDir(), docName + "_" + locale.getJavaLocale() + XML_EXTENSION);
          if (transFile.exists())
          {
-            InputSource inputSource = new InputSource(transFile.toURI().toString());
+            InputSource inputSource = new InputSource(new FileInputStream(transFile));
             inputSource.setEncoding("utf8");
-            TranslationsResource targetDoc = reader.extractTarget(inputSource, srcDoc);
+            TranslationsResource targetDoc = reader.extractTarget(inputSource);
             visitor.visit(locale, targetDoc);
          }
       }

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<config xmlns="http://zanata.org/namespace/config/">
+	<url>http://localhost:8080/zanata/</url> 
+	<project>TEST1</project> 
+	<project-version>1.2</project-version>
+
+<!-- 
+    <locales mapping="java">
+      <locale>de</locale>
+      <locale>fr</locale>
+      <locale>pt-BR</locale>
+      <locale>ja</locale>
+      <locale>zh-CN</locale>
+    </locales>
+    <locales mapping="none">
+      <locale>de</locale>
+      <locale>fr</locale>
+      <locale>pt-BR</locale>
+      <locale>ja</locale>
+      <locale>zh-CN</locale>
+    </locales>
+    <locales mapping="auto">
+      <locale>de</locale>
+      <locale>fr</locale>
+      <locale>pt-BR</locale>
+      <locale>ja</locale>
+      <locale>zh-CN</locale>
+    </locales>
+    <locales>
+        <locale>ja-JP</locale>
+    </locales>
+-->
+    <locales>
+        <locale>de</locale>
+    </locales>
+
+
+</config>

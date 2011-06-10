@@ -28,7 +28,7 @@ import org.zanata.rest.dto.extensions.gettext.TextFlowExtension;
 @JsonPropertyOrder( { "id", "lang", "content", "extensions" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonWriteNullProperties(false)
-public class TextFlow extends AbstractTextFlow implements Extensible<TextFlowExtension>, Serializable
+public class TextFlow implements Extensible<TextFlowExtension>, Serializable
 {
    private static final long serialVersionUID = 1L;
 
@@ -138,13 +138,6 @@ public class TextFlow extends AbstractTextFlow implements Extensible<TextFlowExt
       if (createIfNull && extensions == null)
          extensions = new ExtensionSet<TextFlowExtension>();
       return extensions;
-   }
-
-   @SuppressWarnings("rawtypes")
-   @Override
-   public ExtensionSet getExtensionsSimpleComment(boolean createIfNull)
-   {
-      return getExtensions(createIfNull);
    }
 
    @Override
