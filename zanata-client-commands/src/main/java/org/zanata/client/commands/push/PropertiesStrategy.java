@@ -100,6 +100,7 @@ class PropertiesStrategy implements PushStrategy
 
    private Resource loadResource(String docName, File propFile) throws IOException
    {
+      // TODO consider using PropReader
       Resource doc = new Resource(docName);
       // doc.setContentType(contentType);
       Properties props = loadPropFile(propFile);
@@ -127,13 +128,17 @@ class PropertiesStrategy implements PushStrategy
       return loadResource(docName, propFile);
    }
 
-   private TranslationsResource loadTranslationsResource(File transFile) throws IOException
+   private TranslationsResource loadTranslationsResource(Resource srcDoc, File transFile) throws IOException
    {
+      // TODO consider using PropReader
       TranslationsResource targetDoc = new TranslationsResource();
       Properties props = loadPropFile(transFile);
-      for (String key : props.keySet())
+      for (TextFlow tf : srcDoc.getTextFlows())
       {
+         String key = tf.getId();
          String content = props.getProperty(key);
+         if (content == null)
+            continue;
          TextFlowTarget textFlowTarget = new TextFlowTarget(key);
          textFlowTarget.setContent(content);
          textFlowTarget.setState(ContentState.Approved);
@@ -168,7 +173,7 @@ class PropertiesStrategy implements PushStrategy
          File transFile = new File(opts.getTransDir(), filename);
          if (transFile.exists())
          {
-            TranslationsResource targetDoc = loadTranslationsResource(transFile);
+            TranslationsResource targetDoc = loadTranslationsResource(srcDoc, transFile);
             callback.visit(locale, targetDoc);
          }
          else
