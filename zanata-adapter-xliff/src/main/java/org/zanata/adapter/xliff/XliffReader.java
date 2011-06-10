@@ -9,11 +9,12 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.XMLEvent;
 
+import org.apache.commons.lang.StringUtils;
 import org.xml.sax.InputSource;
+import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
-import org.zanata.rest.dto.resource.AbstractTextFlow;
 import org.zanata.rest.dto.resource.ExtensionSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
@@ -34,29 +35,24 @@ public class XliffReader extends XliffCommon
       document.setContentType(ContentType.TextPlain);
       document.setLang(sourceLocaleId);
       srcLang = sourceLocaleId;
-      extractXliff(inputSource, document.getTextFlows(), null);
+      extractXliff(inputSource, document, null);
       return document;
    }
 
-   public TranslationsResource extractTarget(InputSource inputSource, Resource doc)
+   public TranslationsResource extractTarget(InputSource inputSource)
    {
       TranslationsResource document = new TranslationsResource();
-      Map<String, TextFlowTarget> targets = new HashMap<String, TextFlowTarget>();
-
-      extractXliff(inputSource, null, targets);
-
-      for (String key : targets.keySet())
-         document.getTextFlowTargets().add(targets.get(key));
-
+      extractXliff(inputSource, null, document);
       return document;
    }
 
-   private void extractXliff(InputSource inputSource, List<TextFlow> resources, Map<String, TextFlowTarget> targets)
+   private void extractXliff(InputSource inputSource, Resource document, TranslationsResource transDoc)
    {
       try
       {
          XMLInputFactory xmlif = XMLInputFactory.newInstance();
          XMLStreamReader xmlr = xmlif.createXMLStreamReader(inputSource.getByteStream());
+         
          while (xmlr.hasNext())
          {
             xmlr.next();
@@ -74,17 +70,21 @@ public class XliffReader extends XliffCommon
             }
             else if (xmlr.isStartElement() && xmlr.getLocalName().equals(ELE_TRANS_UNIT))
             {
-               if (resources != null)
+               if (document != null)
                {
                   TextFlow textFlow = new TextFlow();
                   extractTransUnit(xmlr, textFlow);
-                  resources.add(textFlow);
+                  document.getTextFlows().add(textFlow);
                }
                else
                {
                   TextFlowTarget tfTarget = new TextFlowTarget();
                   extractTransUnit(xmlr, tfTarget);
-                  targets.put(tfTarget.getResId(), tfTarget);
+                  if(!StringUtils.isEmpty(tfTarget.getContent())){
+                     tfTarget.setState(ContentState.Approved);
+                     transDoc.getTextFlowTargets().add(tfTarget);
+                  } 
+                  
                }
             }
             else if (xmlr.isEndElement() && xmlr.getLocalName().equals(ELE_FILE))
@@ -100,15 +100,8 @@ public class XliffReader extends XliffCommon
       }
    }
 
-   /**
-    * Extract <trans-unit> tag
-    * 
-    * @param xmlr
-    * @param textFlow
-    * @throws XMLStreamException
-    */
-   @SuppressWarnings("unchecked")
-   private void extractTransUnit(XMLStreamReader xmlr, AbstractTextFlow textFlow) throws XMLStreamException
+   
+   private void extractTransUnit(XMLStreamReader xmlr, TextFlow textFlow) throws XMLStreamException
    {
       Boolean endTransUnit = false;
       textFlow.setId(getAttributeValue(xmlr, ATTRI_ID));
@@ -124,17 +117,37 @@ public class XliffReader extends XliffCommon
             {
                textFlow.setContent(getElementValue(xmlr));
             }
-            else if (xmlr.isStartElement() && xmlr.getLocalName().equals(ELE_TARGET))
-            {
-               textFlow.setDescription(getElementValue(xmlr));
-            }
             else if (xmlr.isStartElement() && xmlr.getLocalName().equals(ELE_CONTEXT_GROUP))
             {
-               textFlow.getExtensionsSimpleComment(true).addAll(extractContextList(xmlr));
+               textFlow.getExtensions(true).addAll(extractContextList(xmlr));
             }
          }
       }
       textFlow.setLang(srcLang);
+   }
+   
+   private void extractTransUnit(XMLStreamReader xmlr, TextFlowTarget textFlow) throws XMLStreamException
+   {
+      Boolean endTransUnit = false;
+      textFlow.setResId(getAttributeValue(xmlr, ATTRI_ID));
+
+      while (xmlr.hasNext() && !endTransUnit)
+      {
+         xmlr.next();
+         if (xmlr.isEndElement() && xmlr.getLocalName().equals(ELE_TRANS_UNIT))
+            endTransUnit = true;
+         else
+         {
+            if (xmlr.isStartElement() && xmlr.getLocalName().equals(ELE_TARGET))
+            {
+               textFlow.setContent(getElementValue(xmlr));
+            }
+            else if (xmlr.isStartElement() && xmlr.getLocalName().equals(ELE_CONTEXT_GROUP))
+            {
+               textFlow.getExtensions(true).addAll(extractContextList(xmlr));
+            }
+         }
+      }
    }
 
    /**
