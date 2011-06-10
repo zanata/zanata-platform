@@ -143,7 +143,7 @@ public class PullCommand extends ConfigurableProjectCommand
          if (opts.getPullSrc())
          {
             log.info("writing source file for document {}", docName);
-            strat.writeSrcFile(opts.getSrcDir(), doc);
+            strat.writeSrcFile(doc);
          }
 
          for (LocaleMapping locMapping : locales)
@@ -161,7 +161,7 @@ public class PullCommand extends ConfigurableProjectCommand
             TranslationsResource targetDoc = transResponse.getEntity();
 
             log.info("writing translation file in locale {} for document {}", locMapping.getLocalLocale(), docName);
-            strat.writeTransFile(opts.getTransDir(), doc, locMapping, targetDoc);
+            strat.writeTransFile(docName, doc, locMapping, targetDoc);
          }
       }
 

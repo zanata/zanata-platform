@@ -21,9 +21,9 @@
 
 package org.zanata.client.commands.pull;
 
-import java.io.File;
 import java.io.IOException;
 
+import org.zanata.adapter.properties.PropWriter;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
@@ -35,7 +35,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  */
 public class PropertiesStrategy implements PullStrategy
 {
-   StringSet extensions = new StringSet("gettext;comment");
+   StringSet extensions = new StringSet("comment");
    private PullOptions opts;
 
    @Override
@@ -57,17 +57,15 @@ public class PropertiesStrategy implements PullStrategy
    }
 
    @Override
-   public void writeSrcFile(File sourceDir, Resource doc) throws IOException
+   public void writeSrcFile(Resource doc) throws IOException
    {
-      // TODO Auto-generated method stub
-
+      PropWriter.write(doc, opts.getSrcDir());
    }
 
    @Override
-   public void writeTransFile(File transDir, Resource doc, LocaleMapping localeMapping, TranslationsResource targetDoc)
+   public void writeTransFile(String docName, Resource doc, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException
    {
-      // TODO Auto-generated method stub
-
+      PropWriter.write(targetDoc, opts.getTransDir(), docName, localeMapping.getJavaLocale());
    }
 
 }

@@ -21,7 +21,6 @@
 
 package org.zanata.client.commands.pull;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.zanata.adapter.po.PoWriter2;
@@ -60,13 +59,13 @@ public class GettextDirStrategy implements PullStrategy
    }
 
    @Override
-   public void writeSrcFile(File sourceDir, Resource doc) throws IOException
+   public void writeSrcFile(Resource doc) throws IOException
    {
       poWriter.writePotToDir(opts.getSrcDir(), doc);
    }
 
    @Override
-   public void writeTransFile(File transDir, Resource doc, LocaleMapping locMapping, TranslationsResource targetDoc) throws IOException
+   public void writeTransFile(String docName, Resource doc, LocaleMapping locMapping, TranslationsResource targetDoc) throws IOException
    {
       String localeDir = locMapping.getLocalLocale();
       poWriter.writePo(opts.getTransDir(), doc, localeDir, targetDoc);

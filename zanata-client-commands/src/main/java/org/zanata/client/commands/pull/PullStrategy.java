@@ -1,6 +1,5 @@
 package org.zanata.client.commands.pull;
 
-import java.io.File;
 import java.io.IOException;
 
 //import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
@@ -17,18 +16,17 @@ interface PullStrategy
    boolean needsDocToWriteTrans();
 
    /**
-    * @param sourceDir
     * @param doc
     * @throws IOException
     */
-   void writeSrcFile(File sourceDir, Resource doc) throws IOException;
+   void writeSrcFile(Resource doc) throws IOException;
 
    /**
-    * @param transDir
+    * @param docName
     * @param doc
     * @param localeMapping
     * @param targetDoc
     * @throws IOException
     */
-   void writeTransFile(File transDir, Resource doc, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException;
+   void writeTransFile(String docName, Resource doc, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException;
 }

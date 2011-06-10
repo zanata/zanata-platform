@@ -6,14 +6,12 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import org.fedorahosted.openprops.Properties;
-import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
-@Deprecated
 public class PropWriter
 {
 
@@ -60,8 +58,7 @@ public class PropWriter
             targetProp.setComment(target.getResId(), simpleComment.getValue());
       }
 
-      LocaleId lang = new LocaleId(locale);
-      File langFile = new File(baseDir, bundleName + "_" + lang.toJavaName() + ".properties");
+      File langFile = new File(baseDir, bundleName + "_" + locale + ".properties");
       makeParentDirs(langFile);
       logVerbose("Creating target file " + langFile);
       // targetProp.store(System.out, null);
