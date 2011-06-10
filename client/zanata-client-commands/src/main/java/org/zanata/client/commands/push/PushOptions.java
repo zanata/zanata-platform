@@ -7,7 +7,7 @@ import org.zanata.client.commands.ConfigurableProjectOptions;
 public interface PushOptions extends ConfigurableProjectOptions
 {
    public String getSourceLang();
-   public File getSourceDir();
+   public File getSrcDir();
    public File getTransDir();
    public String getProjectType();
    public boolean getPushTrans();

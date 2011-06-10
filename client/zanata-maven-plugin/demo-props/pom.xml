@@ -5,7 +5,8 @@
   <version>0</version>
 
   <properties>
-    <zanata.srcDir>.</zanata.srcDir>
+    <zanata.srcDir>src</zanata.srcDir>
+    <zanata.transDir>src</zanata.transDir>
   </properties>
  
   <build>
@@ -16,8 +17,10 @@
         <version>1.4-SNAPSHOT</version>
         <configuration>
            <projectType>properties</projectType>
-           <sourceDir>src</sourceDir>
-           <transDir>src</transDir>
+           <srcDir>${zanata.srcDir}</srcDir>
+           <transDir>${zanata.transDir}</transDir>
+<!--
+-->
 <!-- for instance 
           <importPo>false</importPo>
 -->
