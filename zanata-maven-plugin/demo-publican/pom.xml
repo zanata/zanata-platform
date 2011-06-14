@@ -16,7 +16,7 @@
         <artifactId>zanata-maven-plugin</artifactId>
         <version>1.4-SNAPSHOT</version>
         <configuration>
-           <projectType>gettextDir</projectType>
+           <projectType>podir</projectType>
            <srcDir>${zanata.srcDir}</srcDir>
            <transDir>${zanata.transDir}</transDir>
 <!-- for instance 
