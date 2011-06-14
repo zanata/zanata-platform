@@ -5,13 +5,15 @@ import java.io.File;
 import org.zanata.client.commands.PublicanPullCommand;
 import org.zanata.client.commands.PublicanPullOptions;
 
-
 /**
- * Pulls translated text from Zanata.
+ * Pulls translated text from Zanata. DEPRECATED: please use generic "pull"
+ * goal.
  * 
  * @goal publican-pull
  * @requiresProject true
  * @author Sean Flanigan <sflaniga@redhat.com>
+ * @deprecated
+ * @see PullMojo
  */
 public class PublicanPullMojo extends ConfigurableProjectMojo implements PublicanPullOptions
 {

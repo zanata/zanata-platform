@@ -7,11 +7,13 @@ import org.zanata.client.commands.PublicanPushOptions;
 
 /**
  * Pushes publican source text to a Zanata project version so that it can be
- * translated.
+ * translated. DEPRECATED: please use generic "push" goal.
  * 
  * @goal publican-push
  * @requiresProject true
  * @author Sean Flanigan <sflaniga@redhat.com>
+ * @deprecated
+ * @see PushMojo
  */
 public class PublicanPushMojo extends ConfigurableProjectMojo implements PublicanPushOptions
 {

@@ -41,7 +41,8 @@ public class PushMojo extends ConfigurableProjectMojo implements PushOptions
    private File transDir;
 
    /**
-    * Type of project ("properties" is the only supported type at present)
+    * Type of project ("properties" = Java .properties, "podir" = publican-style
+    * gettext directories)
     * 
     * @parameter expression="${zanata.projectType}"
     * @required
