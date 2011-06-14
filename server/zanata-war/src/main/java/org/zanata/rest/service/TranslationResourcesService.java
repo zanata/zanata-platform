@@ -346,19 +346,20 @@ public class TranslationResourcesService implements TranslationResourcesResource
       }
       catch (ZanataServiceException e)
       {
-         // TODO perhaps we should use status code 403 here?
-         throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build());
+         throw new WebApplicationException(Response.status(Status.FORBIDDEN).entity(e.getMessage()).build());
       }
    }
 
    private HLocale validateSourceLocale(LocaleId locale)
    {
-      HLocale hLocale = localeServiceImpl.getByLocaleId(locale);
-      if (hLocale == null || !hLocale.isActive())
+      try
       {
-         throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity("Unsupported Locale: " + locale.getId() + " within this context. Please contact Admin.").build());
+         return localeServiceImpl.validateSourceLocale(locale);
       }
-      return hLocale;
+      catch (ZanataServiceException e)
+      {
+         throw new WebApplicationException(Response.status(Status.FORBIDDEN).entity(e.getMessage()).build());
+      }
    }
 
    @Override
@@ -791,7 +792,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
                   break;
 
                default:
-                  return Response.status(Status.BAD_REQUEST).entity("bad merge type "+mergeType).build();
+                  return Response.status(Status.INTERNAL_SERVER_ERROR).entity("unhandled merge type " + mergeType).build();
                }
             }
 

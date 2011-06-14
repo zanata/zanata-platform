@@ -169,11 +169,22 @@ public class LocaleServiceImpl implements LocaleService
       HLocale hLocale = localeDAO.findByLocaleId(locale);
       if (hLocale == null || !hLocale.isActive())
       {
-         throw new ZanataServiceException("Unsupported Locale: " + locale.getId() + " within this context. Please contact Admin.");
+         throw new ZanataServiceException("Locale " + locale.getId() + " is not enabled on this server. Please contact admin.");
       }
       if (!allList.contains(hLocale))
       {
-         throw new ZanataServiceException("Unsupported Locale " + locale.getId() + " for project " + project + " and version " + iterationSlug + ". Please contact Project Maintainer.");
+         throw new ZanataServiceException("Locale " + locale.getId() + " is not allowed for project " + project + " and version " + iterationSlug + ". Please contact project maintainer.");
+      }
+      return hLocale;
+   }
+
+   @Override
+   public HLocale validateSourceLocale(LocaleId locale) throws ZanataServiceException
+   {
+      HLocale hLocale = getByLocaleId(locale);
+      if (hLocale == null || !hLocale.isActive())
+      {
+         throw new ZanataServiceException("Locale " + locale.getId() + " is not enabled on this server. Please contact admin.");
       }
       return hLocale;
    }
