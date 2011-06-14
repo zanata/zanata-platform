@@ -51,8 +51,7 @@ public abstract class ConfigurableMojo extends AbstractMojo implements Configura
    private File userConfig;
 
    /**
-    * Base URL for the server. Defaults to the value in zanata.xml (if
-    * present), or else to zanata.ini.
+    * Base URL for the server. Defaults to the value in zanata.xml (if present).
     * 
     * @parameter expression="${zanata.url}"
     */

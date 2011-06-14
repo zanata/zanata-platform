@@ -37,6 +37,8 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  * 
+ * @deprecated
+ * @see org.zanata.client.commands.push.PushCommand
  */
 public class PublicanPushCommand extends ConfigurableProjectCommand
 {

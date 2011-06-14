@@ -8,6 +8,8 @@ import org.kohsuke.args4j.Option;
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  * 
+ * @deprecated
+ * @see org.zanata.client.commands.pull.PullOptions
  */
 public interface PublicanPullOptions extends ConfigurableProjectOptions
 {

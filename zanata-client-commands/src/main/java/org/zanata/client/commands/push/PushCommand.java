@@ -49,7 +49,7 @@ public class PushCommand extends ConfigurableProjectCommand
 
    {
       strategies.put("properties", new PropertiesStrategy());
-      strategies.put("gettextDir", new GettextDirStrategy());
+      strategies.put("podir", new GettextDirStrategy());
    }
 
    Marshaller m = null;
