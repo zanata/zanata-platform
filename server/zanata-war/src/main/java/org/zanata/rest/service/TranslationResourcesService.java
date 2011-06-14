@@ -711,10 +711,13 @@ public class TranslationResourcesService implements TranslationResourcesResource
             }
             else
             {
-               HTextFlowTarget hTarget = textFlow.getTargets().get(hLocale);
-               if (hTarget != null)
+               if (mergeType == MergeType.IMPORT)
                {
-                  removedTargets.add(hTarget);
+                  HTextFlowTarget hTarget = textFlow.getTargets().get(hLocale);
+                  if (hTarget != null)
+                  {
+                     removedTargets.add(hTarget);
+                  }
                }
                continue;
             }
@@ -819,7 +822,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
             }
             current = null;
          }
-         else
+         else if (mergeType == MergeType.IMPORT)
          {
             HTextFlowTarget hTarget = textFlow.getTargets().get(hLocale);
             if (hTarget != null)
