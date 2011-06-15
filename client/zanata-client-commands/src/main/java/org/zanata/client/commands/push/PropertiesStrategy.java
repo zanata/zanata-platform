@@ -106,18 +106,24 @@ class PropertiesStrategy implements PushStrategy
       Properties props = loadPropFile(propFile);
       for (String key : props.keySet())
       {
-         String content = props.getProperty(key);
-         LocaleId sourceLoc = new LocaleId(opts.getSourceLang());
-         TextFlow textflow = new TextFlow(key, sourceLoc, content);
-         String comment = props.getComment(key);
-         if (comment != null)
-         {
-            SimpleComment simpleComment = new SimpleComment(comment);
-            textflow.getExtensions(true).add(simpleComment);
-         }
+         TextFlow textflow = propEntryToTextFlow(props, key);
          doc.getTextFlows().add(textflow);
       }
       return doc;
+   }
+
+   private TextFlow propEntryToTextFlow(Properties props, String key)
+   {
+      String content = props.getProperty(key);
+      LocaleId sourceLoc = new LocaleId(opts.getSourceLang());
+      TextFlow textflow = new TextFlow(key, sourceLoc, content);
+      String comment = props.getComment(key);
+      if (comment != null)
+      {
+         SimpleComment simpleComment = new SimpleComment(comment);
+         textflow.getExtensions(true).add(simpleComment);
+      }
+      return textflow;
    }
 
    @Override
@@ -128,29 +134,44 @@ class PropertiesStrategy implements PushStrategy
       return loadResource(docName, propFile);
    }
 
-   private TranslationsResource loadTranslationsResource(Resource srcDoc, File transFile) throws IOException
+   private TranslationsResource loadTranslationsResource(Resource srcDoc, File transFile, boolean useSourceOrder) throws IOException
    {
       // TODO consider using PropReader
       TranslationsResource targetDoc = new TranslationsResource();
       Properties props = loadPropFile(transFile);
-      for (TextFlow tf : srcDoc.getTextFlows())
+      if (opts.getUseSourceOrder())
       {
-         String key = tf.getId();
-         String content = props.getProperty(key);
-         if (content == null)
-            continue;
-         TextFlowTarget textFlowTarget = new TextFlowTarget(key);
-         textFlowTarget.setContent(content);
-         textFlowTarget.setState(ContentState.Approved);
-         String comment = props.getComment(key);
-         if (comment != null)
+         for (TextFlow tf : srcDoc.getTextFlows())
          {
-            SimpleComment simpleComment = new SimpleComment(comment);
-            textFlowTarget.getExtensions(true).add(simpleComment);
+            String key = tf.getId();
+            addPropEntryToDoc(targetDoc, props, key);
          }
-         targetDoc.getTextFlowTargets().add(textFlowTarget);
+      }
+      else
+      {
+         for (String key : props.keySet())
+         {
+            addPropEntryToDoc(targetDoc, props, key);
+         }
       }
       return targetDoc;
+   }
+
+   private void addPropEntryToDoc(TranslationsResource targetDoc, Properties props, String key)
+   {
+      String content = props.getProperty(key);
+      if (content == null)
+         return;
+      TextFlowTarget textFlowTarget = new TextFlowTarget(key);
+      textFlowTarget.setContent(content);
+      textFlowTarget.setState(ContentState.Approved);
+      String comment = props.getComment(key);
+      if (comment != null)
+      {
+         SimpleComment simpleComment = new SimpleComment(comment);
+         textFlowTarget.getExtensions(true).add(simpleComment);
+      }
+      targetDoc.getTextFlowTargets().add(textFlowTarget);
    }
 
    private String removeDotProperties(String propFileName)
@@ -165,7 +186,7 @@ class PropertiesStrategy implements PushStrategy
    }
 
    @Override
-   public void visitTranslationResources(String docUri, String docName, Resource srcDoc, TranslationResourcesVisitor callback) throws IOException
+   public void visitTranslationResources(String docName, Resource srcDoc, TranslationResourcesVisitor callback) throws IOException
    {
       for (LocaleMapping locale : opts.getLocales())
       {
@@ -173,7 +194,7 @@ class PropertiesStrategy implements PushStrategy
          File transFile = new File(opts.getTransDir(), filename);
          if (transFile.exists())
          {
-            TranslationsResource targetDoc = loadTranslationsResource(srcDoc, transFile);
+            TranslationsResource targetDoc = loadTranslationsResource(srcDoc, transFile, opts.getUseSourceOrder());
             callback.visit(locale, targetDoc);
          }
          else

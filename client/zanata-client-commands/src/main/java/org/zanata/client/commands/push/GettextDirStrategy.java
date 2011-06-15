@@ -24,7 +24,6 @@ package org.zanata.client.commands.push;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
@@ -127,7 +126,7 @@ class GettextDirStrategy implements PushStrategy
    }
 
    @Override
-   public void visitTranslationResources(String docUri, String docName, Resource srcDoc, TranslationResourcesVisitor callback) throws IOException
+   public void visitTranslationResources(String docName, Resource srcDoc, TranslationResourcesVisitor callback) throws IOException
    {
       for (LocaleMapping locale : findLocales())
       {
@@ -140,7 +139,7 @@ class GettextDirStrategy implements PushStrategy
             {
                InputSource inputSource = new InputSource(bis);
                inputSource.setEncoding("utf8");
-               TranslationsResource targetDoc = poReader.extractTarget(inputSource, srcDoc);
+               TranslationsResource targetDoc = poReader.extractTarget(inputSource, srcDoc, opts.getUseSourceOrder());
                callback.visit(locale, targetDoc);
             }
             finally
