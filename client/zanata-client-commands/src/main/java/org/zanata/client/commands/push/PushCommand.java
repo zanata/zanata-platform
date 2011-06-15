@@ -182,6 +182,11 @@ public class PushCommand extends ConfigurableProjectCommand
                   log.info("pushing target document [name={} client-locale={}] to server [locale={}]", new Object[] { srcDoc.getName(), locale.getLocalLocale(), locale.getLocale() });
                   ClientResponse<String> putTransResponse = translationResources.putTranslations(docUri, new LocaleId(locale.getLocale()), targetDoc, extensions, opts.getMergeType());
                   ClientUtility.checkResult(putTransResponse, uri);
+                  String entity = putTransResponse.getEntity(String.class);
+                  if (entity != null && !entity.isEmpty())
+                  {
+                     log.warn("{}", entity);
+                  }
                }
             });
          }
