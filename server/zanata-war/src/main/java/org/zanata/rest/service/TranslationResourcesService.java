@@ -24,8 +24,9 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -71,6 +72,7 @@ import org.zanata.common.Namespaces;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.dao.TextFlowTargetHistoryDAO;
 import org.zanata.exception.ZanataServiceException;
@@ -144,6 +146,9 @@ public class TranslationResourcesService implements TranslationResourcesResource
 
    @In
    private DocumentDAO documentDAO;
+
+   @In
+   private TextFlowDAO textFlowDAO;
 
    @In
    private TextFlowTargetDAO textFlowTargetDAO;
@@ -695,38 +700,35 @@ public class TranslationResourcesService implements TranslationResourcesResource
       changed |= resourceUtils.transferFromTranslationsResourceExtensions(entity.getExtensions(true), document, extensions, hLocale, mergeType);
 
       List<HPerson> newPeople = new ArrayList<HPerson>();
-      List<HTextFlowTarget> newTargets = new ArrayList<HTextFlowTarget>();
-      List<HTextFlowTarget> changedTargets = new ArrayList<HTextFlowTarget>();
-      List<HTextFlowTarget> removedTargets = new ArrayList<HTextFlowTarget>();
+      // NB: removedTargets only applies for MergeType.IMPORT
+      Collection<HTextFlowTarget> removedTargets = new HashSet<HTextFlowTarget>();
+      Collection<String> unknownResIds = new LinkedHashSet<String>();
 
-      Iterator<TextFlowTarget> iter = entity.getTextFlowTargets().iterator();
-      TextFlowTarget current = null;
-      for (HTextFlow textFlow : document.getTextFlows())
+      if (mergeType == MergeType.IMPORT)
       {
-         if (current == null)
+         for (HTextFlow textFlow : document.getTextFlows())
          {
-            if (iter.hasNext())
+            HTextFlowTarget hTarget = textFlow.getTargets().get(hLocale);
+            if (hTarget != null)
             {
-               current = iter.next();
-            }
-            else
-            {
-               if (mergeType == MergeType.IMPORT)
-               {
-                  HTextFlowTarget hTarget = textFlow.getTargets().get(hLocale);
-                  if (hTarget != null)
-                  {
-                     removedTargets.add(hTarget);
-                  }
-               }
-               continue;
+               removedTargets.add(hTarget);
             }
          }
+      }
 
-         if (textFlow.getResId().equals(current.getResId()))
+      for (TextFlowTarget current : entity.getTextFlowTargets())
+      {
+         String resId = current.getResId();
+         HTextFlow textFlow = textFlowDAO.getById(document, resId);
+         if (textFlow == null)
          {
-            // transfer
-
+            // return warning for unknown resId to REST client
+            unknownResIds.add(resId);
+            log.warn("skipping TextFlowTarget with unknown resId: {0}", resId);
+            continue;
+         }
+         else
+         {
             if (current.getContent().isEmpty() && current.getState() != ContentState.New)
             {
                return Response.status(Status.BAD_REQUEST).entity("empty TextFlowTarget " + current.getResId() + " must have ContentState New").build();
@@ -745,7 +747,6 @@ public class TranslationResourcesService implements TranslationResourcesResource
                hTarget = new HTextFlowTarget(textFlow, hLocale);
                hTarget.setVersionNum(0); // incremented when content is set
                textFlow.getTargets().put(hLocale, hTarget);
-               newTargets.add(hTarget);
                targetChanged |= resourceUtils.transferFromTextFlowTarget(current, hTarget);
                targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(current.getExtensions(true), hTarget, extensions);
             }
@@ -754,44 +755,30 @@ public class TranslationResourcesService implements TranslationResourcesResource
                switch (mergeType)
                {
                case AUTO:
-                  log.debug("auto merge");
                   if (!current.getContent().isEmpty())
                   {
                      if (hTarget.getState() == ContentState.New)
                      {
                         targetChanged |= resourceUtils.transferFromTextFlowTarget(current, hTarget);
                         targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(current.getExtensions(true), hTarget, extensions);
-                        if (targetChanged)
-                        {
-                           changedTargets.add(hTarget);
-                        }
                      }
                      else
                      {
-                        log.debug("prefer new");
                         String localContent = current.getContent();
                         boolean matchHistory = textFlowTargetHistoryDAO.findContentInHistory(hTarget, localContent);
                         if (!matchHistory)
                         {
                            targetChanged |= resourceUtils.transferFromTextFlowTarget(current, hTarget);
                            targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(current.getExtensions(true), hTarget, extensions);
-                           if (targetChanged)
-                           {
-                              changedTargets.add(hTarget);
-                           }
                         }
                      }
                   }
                   break;
 
                case IMPORT:
-                  log.debug("import merge");
+                  removedTargets.remove(hTarget);
                   targetChanged |= resourceUtils.transferFromTextFlowTarget(current, hTarget);
                   targetChanged |= resourceUtils.transferFromTextFlowTargetExtensions(current.getExtensions(true), hTarget, extensions);
-                  if (targetChanged)
-                  {
-                     changedTargets.add(hTarget);
-                  }
                   break;
 
                default:
@@ -802,6 +789,7 @@ public class TranslationResourcesService implements TranslationResourcesResource
             // update translation information if applicable
             if (targetChanged)
             {
+               changed = true;
                if (current.getTranslator() != null)
                {
                   String email = current.getTranslator().getEmail();
@@ -819,40 +807,18 @@ public class TranslationResourcesService implements TranslationResourcesResource
                {
                   hTarget.setLastModifiedBy(null);
                }
+               textFlowTargetDAO.makePersistent(hTarget);
             }
             current = null;
          }
-         else if (mergeType == MergeType.IMPORT)
-         {
-            HTextFlowTarget hTarget = textFlow.getTargets().get(hLocale);
-            if (hTarget != null)
-            {
-               removedTargets.add(hTarget);
-            }
-         }
-
       }
-
-      if (iter.hasNext())
+      if (changed || !removedTargets.isEmpty())
       {
-         // FIXME don't force the client to arrange TFTs in the same order as
-         // the TFs!
-         return Response.status(Status.BAD_REQUEST).entity("Unexpected target: " + iter.next().getResId()).build();
-      }
-      else if (changed || !newTargets.isEmpty() || !changedTargets.isEmpty() || !removedTargets.isEmpty())
-      {
-
          for (HPerson person : newPeople)
          {
             personDAO.makePersistent(person);
          }
          personDAO.flush();
-
-         for (HTextFlowTarget target : newTargets)
-         {
-            textFlowTargetDAO.makePersistent(target);
-         }
-         textFlowTargetDAO.flush();
 
          for (HTextFlowTarget target : removedTargets)
          {
@@ -867,7 +833,10 @@ public class TranslationResourcesService implements TranslationResourcesResource
       }
       log.debug("successful put translation");
       // TODO lastChanged
-      return Response.ok().tag(etag).build();
+      if (unknownResIds.isEmpty())
+         return Response.ok().tag(etag).build();
+      else
+         return Response.ok("warning: unknown resIds: " + unknownResIds).tag(etag).build();
    }
 
    private HProjectIteration retrieveIteration()
