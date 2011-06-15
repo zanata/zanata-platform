@@ -51,7 +51,7 @@ public class XliffStrategyTest
       for (String docName : localDocNames)
          System.out.println("findDocNamesTest || Source doc name || " + docName);
       System.out.println("findDocNamesTest || Total source docs || " + localDocNames.size());
-      Assert.assertEquals(5, localDocNames.size());
+      Assert.assertEquals(2, localDocNames.size());
    }
 
    @Test
@@ -76,6 +76,6 @@ public class XliffStrategyTest
       System.out.println("loadSrcDocTest || Total source docs:" + localDocNames.size());
       EasyMock.verify(mockPushOption);
 
-      Assert.assertEquals(5, resourceList.size());
+      Assert.assertEquals(2, resourceList.size());
    }
 }

@@ -29,7 +29,7 @@ public class XliffReaderTest
       Resource doc = getTemplateDoc();
 
       assertThat(doc.getName(), equalTo("StringResource_en_US.xml"));
-      assertThat(doc.getTextFlows().size(), is(639));
+      assertThat(doc.getTextFlows().size(), is(3));
    }
 
    @Test
@@ -40,8 +40,8 @@ public class XliffReaderTest
       TextFlow firstTextFlow = doc.getTextFlows().get(0);
       TextFlow lastTextFlow = doc.getTextFlows().get(doc.getTextFlows().size() - 1);
 
-      assertThat(firstTextFlow.getContent(), equalTo("Queued"));
-      assertThat(lastTextFlow.getContent(), equalTo("Kickstart failed."));
+      assertThat(firstTextFlow.getContent(), equalTo("Translation Unit 1"));
+      assertThat(lastTextFlow.getContent(), equalTo("Translation Unit 3"));
    }
 
    @Test
@@ -52,7 +52,7 @@ public class XliffReaderTest
       File fileTarget = new File(testDir, "/StringResource_de.xml");
       InputSource inputSource = new InputSource(new FileInputStream(fileTarget));
       TranslationsResource tr = reader.extractTarget(inputSource);
-      assertThat(tr.getTextFlowTargets().size(), is(637));
+      assertThat(tr.getTextFlowTargets().size(), is(2));
    }
 
    @Test
@@ -67,8 +67,8 @@ public class XliffReaderTest
       TextFlowTarget firstTextFlow = tr.getTextFlowTargets().get(0);
       TextFlowTarget lastTextFlow = tr.getTextFlowTargets().get(tr.getTextFlowTargets().size() - 1);
      
-      assertThat(firstTextFlow.getContent(), equalTo("Wartend"));
-      assertThat(lastTextFlow.getContent(), equalTo("Kickstart fehlgeschlagen."));
+      assertThat(firstTextFlow.getContent(), equalTo("Translation 1"));
+      assertThat(lastTextFlow.getContent(), equalTo("Translation 3"));
    }
 
 

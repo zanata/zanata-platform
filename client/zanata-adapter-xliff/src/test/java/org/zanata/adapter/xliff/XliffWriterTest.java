@@ -36,8 +36,8 @@ public class XliffWriterTest
       TextFlow firstTextFlow = doc.getTextFlows().get(0);
       TextFlow lastTextFlow = doc.getTextFlows().get(doc.getTextFlows().size() - 1);
 
-      assertThat(firstTextFlow.getContent(), equalTo("Queued"));
-      assertThat(lastTextFlow.getContent(), equalTo("Kickstart failed."));
+      assertThat(firstTextFlow.getContent(), equalTo("Translation Unit 1"));
+      assertThat(lastTextFlow.getContent(), equalTo("Translation Unit 3"));
    }
 
    @Test
@@ -49,7 +49,7 @@ public class XliffWriterTest
       InputSource inputSource = new InputSource(new FileInputStream(generatedFile));
       Resource doc = reader.extractTemplate(inputSource, LocaleId.EN_US, generatedDocName);
 
-      assertThat(doc.getTextFlows().size(), is(639));
+      assertThat(doc.getTextFlows().size(), is(3));
    }
 
    private void prepareTemplateDoc() throws FileNotFoundException
