@@ -48,6 +48,7 @@ public class PushCommand extends ConfigurableProjectCommand
    }
 
    {
+      strategies.put("xliff", new XliffStrategy());
       strategies.put("properties", new PropertiesStrategy());
       strategies.put("podir", new GettextDirStrategy());
    }
@@ -98,6 +99,8 @@ public class PushCommand extends ConfigurableProjectCommand
       log.info("Source language: {}", opts.getSourceLang());
       log.info("Copy previous translations: {}", opts.getCopyTrans());
       log.info("Merge type: {}", opts.getMergeType());
+      log.info("Source Pattern: {}", opts.getSourcePattern());
+
       if (opts.getPushTrans())
       {
          log.info("Pushing source and target documents");

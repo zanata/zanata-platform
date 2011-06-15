@@ -65,7 +65,7 @@ class PropertiesStrategy implements PushStrategy
    public Set<String> findDocNames(File srcDir) throws IOException
    {
       Set<String> localDocNames = new HashSet<String>();
-      BasePropertiesFilter filter = new BasePropertiesFilter(opts.getLocales());
+      TargetFileFilter filter = new TargetFileFilter(opts.getLocales(), ".properties");
       Collection<File> files = FileUtils.listFiles(srcDir, filter, TrueFileFilter.TRUE);
       for (File f : files)
       {
