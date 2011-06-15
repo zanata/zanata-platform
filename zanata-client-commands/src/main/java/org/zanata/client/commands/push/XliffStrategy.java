@@ -4,14 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.AndFileFilter;
-import org.apache.commons.io.filefilter.NotFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang.StringUtils;
@@ -98,7 +96,7 @@ public class XliffStrategy implements PushStrategy
    }
 
    @Override
-   public void visitTranslationResources(String docUri, String docName, Resource srcDoc, TranslationResourcesVisitor visitor) throws FileNotFoundException
+   public void visitTranslationResources(String docName, Resource srcDoc, TranslationResourcesVisitor visitor) throws FileNotFoundException
    {
       for (LocaleMapping locale : opts.getLocales())
       {
@@ -107,6 +105,7 @@ public class XliffStrategy implements PushStrategy
          {
             InputSource inputSource = new InputSource(new FileInputStream(transFile));
             inputSource.setEncoding("utf8");
+            // TODO opts.getUseSourceOrder()
             TranslationsResource targetDoc = reader.extractTarget(inputSource);
             visitor.visit(locale, targetDoc);
          }

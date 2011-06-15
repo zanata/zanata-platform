@@ -169,7 +169,7 @@ public class PushCommand extends ConfigurableProjectCommand
 
          if (opts.getPushTrans())
          {
-            strat.visitTranslationResources(docUri, docName, srcDoc, new TranslationResourcesVisitor()
+            strat.visitTranslationResources(docName, srcDoc, new TranslationResourcesVisitor()
             {
                @Override
                public void visit(LocaleMapping locale, TranslationsResource targetDoc)

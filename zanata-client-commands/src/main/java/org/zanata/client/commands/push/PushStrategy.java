@@ -35,7 +35,5 @@ interface PushStrategy
    StringSet getExtensions();
    Set<String> findDocNames(File srcDir) throws IOException;
    Resource loadSrcDoc(File sourceDir, String docName) throws IOException;
-
-   // TODO remove docUri param
-   void visitTranslationResources(@Deprecated String docUri, String docName, Resource srcDoc, TranslationResourcesVisitor visitor) throws IOException;
+   void visitTranslationResources(String docName, Resource srcDoc, TranslationResourcesVisitor visitor) throws IOException;
 }

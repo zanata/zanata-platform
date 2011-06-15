@@ -45,18 +45,24 @@ public class PoReader2
    {
    }
 
-   public TranslationsResource extractTarget(InputSource inputSource, Resource srcDoc)
+   public TranslationsResource extractTarget(InputSource inputSource, Resource srcDoc, boolean useSourceOrder)
    {
       TranslationsResource document = new TranslationsResource();
       MessageStreamParser messageParser = createParser(inputSource);
 
       List<TextFlow> resources = srcDoc.getTextFlows();
-      List<String> textFlowIds = new ArrayList<String>();
-      for (TextFlow res : resources)
+
+      List<String> textFlowIds = null;
+      Map<String, TextFlowTarget> targets = null;
+      if (useSourceOrder)
       {
-         textFlowIds.add(res.getId());
+         textFlowIds = new ArrayList<String>();
+         for (TextFlow res : resources)
+         {
+            textFlowIds.add(res.getId());
+         }
+         targets = new HashMap<String, TextFlowTarget>();
       }
-      Map<String, TextFlowTarget> targets = new HashMap<String, TextFlowTarget>();
 
       boolean headerFound = false;
       while (messageParser.hasNext())
@@ -85,7 +91,7 @@ public class PoReader2
          else
          {
             String id = createId(message);
-            if (!textFlowIds.contains(id))
+            if (useSourceOrder && !textFlowIds.contains(id))
             {
                // TODO append obsolete
             }
@@ -101,18 +107,23 @@ public class PoReader2
 
                // add the PO comment
                tfTarget.getExtensions(true).add(new SimpleComment(StringUtils.join(message.getComments(), "\n")));
-               targets.put(id, tfTarget);
+               if (useSourceOrder)
+                  targets.put(id, tfTarget);
+               else
+                  document.getTextFlowTargets().add(tfTarget);
             }
          }
       }
-      // this ensures that the TextFlowTargets have the same order as the
-      // TextFlows in the Document:
-      for (String id : textFlowIds)
+      if (useSourceOrder)
       {
-         TextFlowTarget tfTarget = targets.get(id);
-         document.getTextFlowTargets().add(tfTarget);
+         // this ensures that the TextFlowTargets have the same order as the
+         // TextFlows in the Document:
+         for (String id : textFlowIds)
+         {
+            TextFlowTarget tfTarget = targets.get(id);
+            document.getTextFlowTargets().add(tfTarget);
+         }
       }
-
       return document;
    }
 
