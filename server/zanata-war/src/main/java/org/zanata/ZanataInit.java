@@ -166,17 +166,25 @@ public class ZanataInit
       {
          log.info("debug: enabled");
       }
+      boolean authlogged = false;
       if (isInternalAuthentication())
       {
          log.info("Internal authentication: enabled");
+         authlogged = true;
       }
       if (isFedoraOpenId())
       {
          log.info("Fedora OpenID authentication: enabled");
+         authlogged = true;
       }
       if (isSpNego())
       {
          log.info("SPNEGO/Kerberos authentication: enabled");
+         authlogged = true;
+      }
+      if (!authlogged)
+      {
+         log.info("Using JAAS authentication");
       }
       log.info("Enable copyTrans: {0}", getEnableCopyTrans());
 
