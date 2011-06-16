@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Install;
@@ -15,6 +16,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Log;
+import org.zanata.ZanataInit;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AccountRoleDAO;
 import org.zanata.model.HAccount;
@@ -85,9 +87,11 @@ public class EssentialDataCreator
             }
             adminExists = false;
          }
-         if (!adminExists)
+
+         ZanataInit zanataInit = (ZanataInit) Component.getInstance(ZanataInit.class);
+         if (!adminExists && zanataInit.isInternalAuthentication())
          {
-            log.info("No admin users found: creating default user 'admin'");
+            log.warn("No admin users found: creating default user 'admin'");
 
             HAccount account = accountDAO.create(username, password, true);
             account.setApiKey(apiKey);
