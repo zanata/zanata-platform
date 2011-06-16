@@ -143,7 +143,7 @@
 		<tennera.version>0.6</tennera.version>
 		<guava.version>r06</guava.version>
 		<jackson.version>1.5.0</jackson.version>
-		<icu4j.version>4.4.1.1</icu4j.version>
+		<icu4j.version>4.8</icu4j.version>
 
 		<cobertura.halt.failure>false</cobertura.halt.failure>
 		<javadoc.skip>true</javadoc.skip>
