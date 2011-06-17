@@ -363,3 +363,27 @@ h1, h2, h3, h4, h5, h6 {
 	background-color: #f4f4f4;
 }
 
+
+/* for the benefit of richfaces' rich:editor */
+.bold-larger {
+	font-weight:bold;
+	font-size:larger;
+}
+.bold-smaller {
+	font-weight:bold;
+	font-size:smaller;
+}
+.red-bold {
+	font-weight:bold;
+	color:red;
+}
+.red-bold-larger {
+	font-weight:bold;
+	font-size:larger;
+	color:red;
+}
+.red-bold-smaller {
+	font-weight:bold;
+	font-size:smaller;
+	color:red;
+}
