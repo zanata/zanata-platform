@@ -28,9 +28,7 @@ h1, h2, h3, h4, h5, h6 {
 #banner {
 	float: left;
 	width: 900px;
-	height: 100px;
-	background: #ffffff url('../img/zanata.png') no-repeat left top;
-
+	background: #ffffff;
 }
 
 #banner-menu {
