@@ -260,18 +260,6 @@ td.action a {
 
 #headerlogo {
 	float: left;
-	width: 220px;
-	height: 100px;
-}
-
-#headerlogo a {
-	display: block;
-	width: 220px;
-	height: 100px;
-}
-
-#headerlogo a h1 span {
-	display: none;
 }
 
 #header_top_right {
