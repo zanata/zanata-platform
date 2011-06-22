@@ -1,7 +1,5 @@
 package org.zanata.client.commands.push;
 
-import static org.easymock.EasyMock.createMock;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,12 +7,16 @@ import java.util.List;
 import java.util.Set;
 
 import org.easymock.EasyMock;
+import org.easymock.IMocksControl;
 import org.junit.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.rest.dto.resource.Resource;
+import org.zanata.rest.dto.resource.TranslationsResource;
 
 @Test(groups = "unit-tests")
 public class XliffStrategyTest
@@ -22,6 +24,7 @@ public class XliffStrategyTest
    LocaleList locales = new LocaleList();
    XliffStrategy xliffStrategy;
 
+   IMocksControl control = EasyMock.createControl();
    PushOptions mockPushOption;
 
    private final File sourceDir = new File("src/test/resources/xliffDir");
@@ -31,6 +34,18 @@ public class XliffStrategyTest
    {
       locales.add(new LocaleMapping("de"));
       locales.add(new LocaleMapping("fr"));
+   }
+
+   @BeforeMethod
+   void beforeMethod()
+   {
+      control.reset();
+   }
+
+   <T> T createMock(String name, Class<T> toMock)
+   {
+      T mock = control.createMock(name, toMock);
+      return mock;
    }
 
    @Test
@@ -47,7 +62,7 @@ public class XliffStrategyTest
       EasyMock.replay(mockPushOption);
       Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir);
 
-      EasyMock.verify(mockPushOption);
+      control.verify();
       for (String docName : localDocNames)
          System.out.println("findDocNamesTest || Source doc name || " + docName);
       System.out.println("findDocNamesTest || Total source docs || " + localDocNames.size());
@@ -61,6 +76,7 @@ public class XliffStrategyTest
 
       mockPushOption = createMock("mockPushOption", PushOptions.class);
       EasyMock.expect(mockPushOption.getSourcePattern()).andReturn("*StringResource_en_US*");
+      EasyMock.expect(mockPushOption.getTransDir()).andReturn(sourceDir).anyTimes();
       EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
       EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();
 
@@ -71,10 +87,18 @@ public class XliffStrategyTest
       for (String docName : localDocNames)
       {
          System.out.println("loadSrcDocTest || Source doc name || " + docName);
-         resourceList.add(xliffStrategy.loadSrcDoc(sourceDir, docName));
+         Resource srcDoc = xliffStrategy.loadSrcDoc(sourceDir, docName);
+         resourceList.add(srcDoc);
+
+         TranslationResourcesVisitor visitor = EasyMock.createMock("visitor" + resourceList.size(), TranslationResourcesVisitor.class);
+         // each src file in test has one trans file ('de' or 'fr'):
+         visitor.visit(EasyMock.anyObject(LocaleMapping.class), EasyMock.anyObject(TranslationsResource.class));
+         EasyMock.replay(visitor);
+         xliffStrategy.visitTranslationResources(docName, srcDoc, visitor);
+         EasyMock.verify(visitor);
       }
       System.out.println("loadSrcDocTest || Total source docs:" + localDocNames.size());
-      EasyMock.verify(mockPushOption);
+      control.verify();
 
       Assert.assertEquals(2, resourceList.size());
    }
