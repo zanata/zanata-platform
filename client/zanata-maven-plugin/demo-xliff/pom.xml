@@ -16,7 +16,7 @@
         <version>1.4-SNAPSHOT</version>
         <configuration>
            <projectType>xliff</projectType>
-           <sourceDir>src</sourceDir>
+           <srcDir>src</srcDir>
            <transDir>src</transDir>
 <!-- for instance 
           <importPo>false</importPo>
