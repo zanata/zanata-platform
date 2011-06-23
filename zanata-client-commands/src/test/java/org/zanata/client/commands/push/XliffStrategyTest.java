@@ -1,5 +1,7 @@
 package org.zanata.client.commands.push;
 
+import static org.easymock.EasyMock.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -91,8 +93,17 @@ public class XliffStrategyTest
          resourceList.add(srcDoc);
 
          TranslationResourcesVisitor visitor = EasyMock.createMock("visitor" + resourceList.size(), TranslationResourcesVisitor.class);
+         LocaleMapping loc;
          // each src file in test has one trans file ('de' or 'fr'):
-         visitor.visit(EasyMock.anyObject(LocaleMapping.class), EasyMock.anyObject(TranslationsResource.class));
+         if (srcDoc.getName().equals("dir1/StringResource"))
+         {
+            loc = new LocaleMapping("de");
+         }
+         else
+         {
+            loc = new LocaleMapping("fr");
+         }
+         visitor.visit(eq(loc), EasyMock.anyObject(TranslationsResource.class));
          EasyMock.replay(visitor);
          xliffStrategy.visitTranslationResources(docName, srcDoc, visitor);
          EasyMock.verify(visitor);
