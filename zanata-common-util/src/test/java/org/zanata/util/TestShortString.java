@@ -1,10 +1,10 @@
-package org.zanata.common.util;
+package org.zanata.util;
 
 import static org.junit.Assert.*;
 
 
 import org.junit.Test;
-import org.zanata.common.util.ShortString;
+import org.zanata.util.ShortString;
 
 public class TestShortString
 {
