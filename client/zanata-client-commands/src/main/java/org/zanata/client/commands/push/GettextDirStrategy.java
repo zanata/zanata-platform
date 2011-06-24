@@ -139,7 +139,7 @@ class GettextDirStrategy implements PushStrategy
             {
                InputSource inputSource = new InputSource(bis);
                inputSource.setEncoding("utf8");
-               TranslationsResource targetDoc = poReader.extractTarget(inputSource, srcDoc, opts.getUseSourceOrder());
+               TranslationsResource targetDoc = poReader.extractTarget(inputSource, srcDoc, opts.getUseSrcOrder());
                callback.visit(locale, targetDoc);
             }
             finally

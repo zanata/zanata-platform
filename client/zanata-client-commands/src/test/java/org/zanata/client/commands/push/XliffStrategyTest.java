@@ -56,7 +56,7 @@ public class XliffStrategyTest
       XliffStrategy xliffStrategy = new XliffStrategy();
 
       mockPushOption = createMock("mockPushOption", PushOptions.class);
-      EasyMock.expect(mockPushOption.getSourcePattern()).andReturn("*StringResource_en_US*");
+      EasyMock.expect(mockPushOption.getSrcFilePattern()).andReturn("*StringResource_en_US*");
       EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
       EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();
 
@@ -77,7 +77,7 @@ public class XliffStrategyTest
       XliffStrategy xliffStrategy = new XliffStrategy();
 
       mockPushOption = createMock("mockPushOption", PushOptions.class);
-      EasyMock.expect(mockPushOption.getSourcePattern()).andReturn("*StringResource_en_US*");
+      EasyMock.expect(mockPushOption.getSrcFilePattern()).andReturn("*StringResource_en_US*");
       EasyMock.expect(mockPushOption.getTransDir()).andReturn(sourceDir).anyTimes();
       EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
       EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();

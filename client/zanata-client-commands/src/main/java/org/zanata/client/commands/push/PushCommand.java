@@ -99,7 +99,7 @@ public class PushCommand extends ConfigurableProjectCommand
       log.info("Source language: {}", opts.getSourceLang());
       log.info("Copy previous translations: {}", opts.getCopyTrans());
       log.info("Merge type: {}", opts.getMergeType());
-      log.info("Source Pattern: {}", opts.getSourcePattern());
+      log.info("Source file pattern: {}", opts.getSrcFilePattern());
 
       if (opts.getPushTrans())
       {
