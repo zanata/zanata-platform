@@ -156,8 +156,9 @@ public class XliffWriter extends XliffCommon
       try
       {
          XMLOutputFactory output = XMLOutputFactory.newInstance();
-         mkdirs(baseDir);
          File outFile = new File(baseDir, doc.getName() + "_" + javaLocale + ".xml");
+         // FIXME getParentFile can return null
+         mkdirs(outFile.getParentFile());
          XMLStreamWriter xmlStreamWriter = output.createXMLStreamWriter(new FileWriter(outFile));
          IndentingXMLStreamWriter writer = new IndentingXMLStreamWriter(xmlStreamWriter);
 

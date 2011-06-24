@@ -5,7 +5,8 @@
   <version>0</version>
 
   <properties>
-    <zanata.srcDir>.</zanata.srcDir>
+    <zanata.srcDir>src</zanata.srcDir>
+    <zanata.transDir>src</zanata.transDir>
   </properties>
  
   <build>
@@ -16,9 +17,9 @@
         <version>1.4-SNAPSHOT</version>
         <configuration>
            <projectType>xliff</projectType>
-           <srcDir>src</srcDir>
+           <srcDir>${zanata.srcDir}</srcDir>
+           <transDir>${zanata.transDir}</transDir>
            <srcFilePattern>StringResource_en_US.xml</srcFilePattern>
-           <transDir>src</transDir>
 <!-- for instance 
           <importPo>false</importPo>
 -->
