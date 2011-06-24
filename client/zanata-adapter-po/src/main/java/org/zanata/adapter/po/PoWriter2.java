@@ -74,6 +74,7 @@ public class PoWriter2
    {
       // write the POT file to $potDir/$name.pot
       File potFile = new File(potDir, doc.getName() + ".pot");
+      // FIXME getParentFile can return null
       mkdirs(potFile.getParentFile());
       OutputSource outputSource = new OutputSource(potFile);
       write(outputSource, doc, null);
