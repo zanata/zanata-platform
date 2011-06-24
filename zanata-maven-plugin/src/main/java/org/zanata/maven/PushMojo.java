@@ -77,9 +77,9 @@ public class PushMojo extends ConfigurableProjectMojo implements PushOptions
     * strings? This is only needed for compatibility with Zanata server below
     * v1.4.
     * 
-    * @parameter expression="${zanata.useSourceOrder}" default-value="false"
+    * @parameter expression="${zanata.useSrcOrder}" default-value="false"
     */
-   private boolean useSourceOrder;
+   private boolean useSrcOrder;
 
    /**
     * Merge type: "auto" (default) or "import" (DANGER!).
@@ -89,11 +89,12 @@ public class PushMojo extends ConfigurableProjectMojo implements PushOptions
    private String merge;
 
    /**
-    * Name pattern of source file
+    * Wildcard pattern for source files. This parameter is only needed for some
+    * project types, eg XLIFF.
     * 
-    * @parameter expression="${zanata.sourcePattern}"
+    * @parameter expression="${zanata.srcFilePattern}"
     */
-   private String sourcePattern;
+   private String srcFilePattern;
 
    @Override
    public File getSrcDir()
@@ -138,15 +139,15 @@ public class PushMojo extends ConfigurableProjectMojo implements PushOptions
    }
 
    @Override
-   public String getSourcePattern()
+   public String getSrcFilePattern()
    {
-      return sourcePattern;
+      return srcFilePattern;
    }
 
    @Override
-   public boolean getUseSourceOrder()
+   public boolean getUseSrcOrder()
    {
-      return useSourceOrder;
+      return useSrcOrder;
    }
 
 }

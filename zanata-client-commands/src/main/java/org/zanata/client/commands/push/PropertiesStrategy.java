@@ -139,7 +139,7 @@ class PropertiesStrategy implements PushStrategy
       // TODO consider using PropReader
       TranslationsResource targetDoc = new TranslationsResource();
       Properties props = loadPropFile(transFile);
-      if (opts.getUseSourceOrder())
+      if (opts.getUseSrcOrder())
       {
          for (TextFlow tf : srcDoc.getTextFlows())
          {
@@ -194,7 +194,7 @@ class PropertiesStrategy implements PushStrategy
          File transFile = new File(opts.getTransDir(), filename);
          if (transFile.exists())
          {
-            TranslationsResource targetDoc = loadTranslationsResource(srcDoc, transFile, opts.getUseSourceOrder());
+            TranslationsResource targetDoc = loadTranslationsResource(srcDoc, transFile, opts.getUseSrcOrder());
             callback.visit(locale, targetDoc);
          }
          else

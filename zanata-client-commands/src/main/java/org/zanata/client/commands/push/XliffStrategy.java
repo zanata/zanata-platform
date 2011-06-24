@@ -55,7 +55,7 @@ public class XliffStrategy implements PushStrategy
       sourceFiles = new HashSet<String>();
       Set<String> localDocNames = new HashSet<String>();
       
-      srcPatternFilter = new WildcardFileFilter(opts.getSourcePattern());
+      srcPatternFilter = new WildcardFileFilter(opts.getSrcFilePattern());
       targetFileFilter = new TargetFileFilter(opts.getLocales(), XML_EXTENSION);
       srcFileFilter = new AndFileFilter(srcPatternFilter, targetFileFilter);
 
