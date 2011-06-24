@@ -206,6 +206,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          public void onKeyUp(KeyUpEvent event)
          {
             eventBus.fireEvent(new EditTransUnitEvent());
+
             // NB: if you change these, please change NavigationConsts too!
             if (event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
             {
@@ -256,6 +257,13 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             else if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
             {
                autoTextAreaSize();
+            }
+            else
+            {
+               // Remove fuzzy state for fuzzy entry when start typing
+               if (toggleFuzzy.getValue())
+                  toggleFuzzy.setValue(false);
+
             }
             // these shortcuts disabled because they conflict with basic text editing:
 //            else if (event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_HOME)
