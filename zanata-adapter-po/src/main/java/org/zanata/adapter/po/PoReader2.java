@@ -19,7 +19,7 @@ import org.xml.sax.InputSource;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
-import org.zanata.common.util.ShortString;
+import org.zanata.util.ShortString;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.extensions.gettext.HeaderEntry;
 import org.zanata.rest.dto.extensions.gettext.PoHeader;
