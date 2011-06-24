@@ -19,9 +19,9 @@ public class XliffWriterTest
 {
    private String testDir = "src/test/resources/";
    private String generateDir = "target/xliffGenerate/";
-   private String generatedDocName = "Generated_StringResource_en_US.xml";
+   private String generatedDocName = "Generated_StringResource";
+   private String generatedDocFileName = generatedDocName + "_en_US.xml";
 
-   XliffWriter writer;
    XliffReader reader;
 
    @Test
@@ -29,7 +29,7 @@ public class XliffWriterTest
    {
       prepareTemplateDoc();
 
-      File generatedFile = new File(generateDir, "/" + generatedDocName);
+      File generatedFile = new File(generateDir, "/" + generatedDocFileName);
       InputSource inputSource = new InputSource(new FileInputStream(generatedFile));
       Resource doc = reader.extractTemplate(inputSource, LocaleId.EN_US, generatedDocName);
 
@@ -45,7 +45,7 @@ public class XliffWriterTest
    {
       prepareTemplateDoc();
 
-      File generatedFile = new File(generateDir, "/" + generatedDocName);
+      File generatedFile = new File(generateDir, "/" + generatedDocFileName);
       InputSource inputSource = new InputSource(new FileInputStream(generatedFile));
       Resource doc = reader.extractTemplate(inputSource, LocaleId.EN_US, generatedDocName);
 
@@ -56,7 +56,6 @@ public class XliffWriterTest
    {
       String docName = "StringResource_en_US.xml";
 
-      writer = new XliffWriter();
       reader = new XliffReader();
 
       File file = new File(testDir, "/" + docName);
@@ -64,6 +63,6 @@ public class XliffWriterTest
       Resource doc = reader.extractTemplate(inputSource, LocaleId.EN_US, docName);
       doc.setName(generatedDocName);
 
-      writer.write(new File(generateDir), doc);
+      XliffWriter.write(new File(generateDir), doc, "en_US");
    }
 }

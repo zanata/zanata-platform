@@ -2,7 +2,7 @@ package org.zanata.adapter.xliff;
 
 public abstract class XliffCommon
 {
-   protected final String DELIMITER = "::";
+   protected static final String DELIMITER = "::";
 
    protected static final String ELE_FILE = "file";
    protected static final String ELE_TRANS_UNIT = "trans-unit";
@@ -13,9 +13,11 @@ public abstract class XliffCommon
    protected static final String ELE_BODY = "body";
 
    protected static final String ATTRI_SOURCE_LANGUAGE = "source-language";
+   protected static final String ATTRI_TARGET_LANGUAGE = "target-language";
    protected static final String ATTRI_ID = "id";
    protected static final String ATTRI_CONTEXT_TYPE = "context-type";
    protected static final String ATTRI_NAME = "name";
    protected static final String ATTRI_DATATYPE = "datatype";
+   protected static final String ATTRI_ORIGINAL = "original";
 
 }

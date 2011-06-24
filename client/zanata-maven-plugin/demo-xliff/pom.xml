@@ -17,6 +17,7 @@
         <configuration>
            <projectType>xliff</projectType>
            <srcDir>src</srcDir>
+           <sourcePattern>StringResource_en_US.xml</sourcePattern>
            <transDir>src</transDir>
 <!-- for instance 
           <importPo>false</importPo>
