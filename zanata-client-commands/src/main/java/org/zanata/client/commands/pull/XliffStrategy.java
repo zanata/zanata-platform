@@ -23,7 +23,7 @@ package org.zanata.client.commands.pull;
 
 import java.io.IOException;
 
-import org.zanata.adapter.properties.PropWriter;
+import org.zanata.adapter.xliff.XliffWriter;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
@@ -33,7 +33,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class PropertiesStrategy implements PullStrategy
+public class XliffStrategy implements PullStrategy
 {
    StringSet extensions = new StringSet("comment");
    private PullOptions opts;
@@ -53,19 +53,19 @@ public class PropertiesStrategy implements PullStrategy
    @Override
    public boolean needsDocToWriteTrans()
    {
-      return false;
+      return true;
    }
 
    @Override
    public void writeSrcFile(Resource doc) throws IOException
    {
-      PropWriter.write(doc, opts.getSrcDir());
+      XliffWriter.write(opts.getSrcDir(), doc, "en_US");
    }
 
    @Override
    public void writeTransFile(Resource doc, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException
    {
-      PropWriter.write(targetDoc, opts.getTransDir(), doc.getName(), localeMapping.getJavaLocale());
+      XliffWriter.write(opts.getTransDir(), doc, localeMapping.getJavaLocale(), targetDoc);
    }
 
 }

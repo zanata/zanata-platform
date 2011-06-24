@@ -74,7 +74,8 @@ public class PushMojo extends ConfigurableProjectMojo implements PushOptions
 
    /**
     * Should we ensure that translations appear in the same order as the source
-    * strings? This is only needed for compatibility with Zanata server < 1.4.
+    * strings? This is only needed for compatibility with Zanata server below
+    * v1.4.
     * 
     * @parameter expression="${zanata.useSourceOrder}" default-value="false"
     */

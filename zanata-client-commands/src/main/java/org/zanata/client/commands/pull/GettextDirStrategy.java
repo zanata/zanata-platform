@@ -65,7 +65,7 @@ public class GettextDirStrategy implements PullStrategy
    }
 
    @Override
-   public void writeTransFile(String docName, Resource doc, LocaleMapping locMapping, TranslationsResource targetDoc) throws IOException
+   public void writeTransFile(Resource doc, LocaleMapping locMapping, TranslationsResource targetDoc) throws IOException
    {
       String localeDir = locMapping.getLocalLocale();
       poWriter.writePo(opts.getTransDir(), doc, localeDir, targetDoc);

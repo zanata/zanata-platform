@@ -22,11 +22,10 @@ interface PullStrategy
    void writeSrcFile(Resource doc) throws IOException;
 
    /**
-    * @param docName
     * @param doc
     * @param localeMapping
     * @param targetDoc
     * @throws IOException
     */
-   void writeTransFile(String docName, Resource doc, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException;
+   void writeTransFile(Resource doc, LocaleMapping localeMapping, TranslationsResource targetDoc) throws IOException;
 }

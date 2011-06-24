@@ -44,6 +44,7 @@ public class PullCommand extends ConfigurableProjectCommand
    {
       strategies.put("properties", new PropertiesStrategy());
       strategies.put("podir", new GettextDirStrategy());
+      strategies.put("xliff", new XliffStrategy());
    }
 
    Marshaller m = null;
@@ -161,7 +162,7 @@ public class PullCommand extends ConfigurableProjectCommand
             TranslationsResource targetDoc = transResponse.getEntity();
 
             log.info("writing translation file in locale {} for document {}", locMapping.getLocalLocale(), docName);
-            strat.writeTransFile(docName, doc, locMapping, targetDoc);
+            strat.writeTransFile(doc, locMapping, targetDoc);
          }
       }
 
