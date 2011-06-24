@@ -39,7 +39,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
-import org.zanata.common.util.ShortString;
+import org.zanata.util.ShortString;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;

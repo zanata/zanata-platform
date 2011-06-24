@@ -38,7 +38,7 @@ import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
-import org.zanata.common.util.PathUtil;
+import org.zanata.util.PathUtil;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.resource.Resource;

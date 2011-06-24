@@ -1,4 +1,4 @@
-package org.zanata.common.util;
+package org.zanata.util;
 
 /**
  * ShortStrings are meant for use in logging. They don't incur the cost of

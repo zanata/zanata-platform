@@ -1,4 +1,4 @@
-package org.zanata.common.util;
+package org.zanata.util;
 
 import java.io.File;
 import java.util.regex.Pattern;
@@ -131,6 +131,8 @@ public class PathUtil
 
    static class PathResolutionException extends RuntimeException
    {
+      private static final long serialVersionUID = 1L;
+
       PathResolutionException(String msg)
       {
             super(msg);
