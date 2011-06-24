@@ -23,7 +23,7 @@
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="com.google.gwt.eclipse.core.moduleClasspathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.google.gwt.dev.DevMode"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-codeServerPort 9997 -war /home/aeng/apps/jboss-ewp-5.0/jboss-as-web/server/default/deploy/zanata.war -remoteUI &quot;${gwt_remote_ui_server_port}:${unique_id}&quot; -startupUrl http://localhost:8080/zanata/webtrans/Application.html?project=sample-project&amp;iteration=1.0&amp;localeId=de -logLevel INFO -noserver org.zanata.webtrans.Application"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-codeServerPort 9997 -war &quot;${deploy.zanata}&quot; -remoteUI &quot;${gwt_remote_ui_server_port}:${unique_id}&quot; -startupUrl http://localhost:8080/zanata/webtrans/Application.html?project=sample-project&amp;iteration=1.0&amp;localeId=de -logLevel INFO -noserver org.zanata.webtrans.Application"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="zanata-war"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx512m"/>
 <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:zanata-war}"/>
