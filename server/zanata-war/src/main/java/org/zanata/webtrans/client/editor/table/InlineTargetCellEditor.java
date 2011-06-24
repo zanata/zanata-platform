@@ -206,6 +206,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          public void onKeyUp(KeyUpEvent event)
          {
             eventBus.fireEvent(new EditTransUnitEvent());
+
             // NB: if you change these, please change NavigationConsts too!
             if (event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
             {
@@ -252,6 +253,17 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
                   toggleFuzzy.setValue(false);
                else
                   toggleFuzzy.setValue(true);
+            }
+            else if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
+            {
+               autoTextAreaSize();
+            }
+            else
+            {
+               // Remove fuzzy state for fuzzy entry when start typing
+               if (toggleFuzzy.getValue())
+                  toggleFuzzy.setValue(false);
+
             }
             // these shortcuts disabled because they conflict with basic text editing:
 //            else if (event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_HOME)
@@ -388,17 +400,21 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       cellViewWidget = table.getWidget(curRow, curCol);
 
-      int height = table.getWidget(curRow, curCol - 1).getOffsetHeight();
+      // int height = table.getWidget(curRow, curCol - 1).getOffsetHeight();
 
-      int realHeight = height > MIN_HEIGHT ? height : MIN_HEIGHT;
+      // int realHeight = height > MIN_HEIGHT ? height : MIN_HEIGHT;
 
-      textArea.setHeight(realHeight + "px");
-
+      //Disable it for autosize
+      // textArea.setHeight(realHeight + "px");
       int width = table.getWidget(curRow, curCol - 1).getOffsetWidth() - 10;
+      // layoutTable.setHeight(realHeight + "px");
       textArea.setWidth(width + "px");
 
       table.setWidget(curRow, curCol, layoutTable);
+      
       textArea.setText(cellValue.getTarget());
+
+      autoTextAreaSize();
 
       this.cellValue = cellValue;
       textArea.setFocus(true);
@@ -407,6 +423,24 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       // refreshStateImage();
    }
 
+   private void autoTextAreaSize()
+   {
+      int initLines = 2;
+      int growLines = 1;
+
+      Log.debug("autosize TextArea");
+      int rows = textArea.getVisibleLines();
+
+      while (rows > initLines)
+      {
+         textArea.setVisibleLines(--rows);
+      }
+
+      while (textArea.getElement().getScrollHeight() > textArea.getElement().getClientHeight())
+      {
+         textArea.setVisibleLines(textArea.getVisibleLines() + growLines);
+      }
+   }
    // private void refreshStateImage()
    // {
    // if (cellValue.getStatus() == ContentState.New)
