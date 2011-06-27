@@ -878,14 +878,9 @@ a.action_link:hover {
     width: 300px;
 }
 .language_action_buttons {
-    width: 65px;
-    display: inline-block;
-    margin-top: 50px;
-    vertical-align: top;
 }
 .language_action_button {
-    width: 60px;
-    height: 25px;
+    width: 70px;
 }
 
 /* Stylesheet from June */

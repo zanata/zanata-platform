@@ -57,8 +57,8 @@
 		<a4j:support event="ondblclick" reRender="languagePanel" action="#{projectIterationLocaleAction.toCustomizedLocales}"/>
             </h:selectManyListbox>
             <h:panelGroup id="buttons" styleClass="language_action_buttons">
-                <a4j:commandButton value="&gt;" action="#{projectIterationLocaleAction.toCustomizedLocales}" styleClass="language_action_button" reRender ="languagePanel" />
-                <a4j:commandButton value="&lt;" action="#{projectIterationLocaleAction.removeFromCustomizedLocales}" styleClass="language_action_button" reRender ="languagePanel" />
+                <a4j:commandButton value="#{messages['jsf.AddLocale']}" action="#{projectIterationLocaleAction.toCustomizedLocales}" styleClass="language_action_button" reRender ="languagePanel" />
+                <a4j:commandButton value="#{messages['jsf.RemoveLocale']}" action="#{projectIterationLocaleAction.removeFromCustomizedLocales}" styleClass="language_action_button" reRender ="languagePanel" />
             </h:panelGroup>
             <h:selectManyListbox id="languagelist1" value="#{projectIterationLocaleAction.customizedLocales}" styleClass="language_list" >
                 <f:selectItems value="#{projectIterationLocaleAction.iterationCustomizedItems}"/>

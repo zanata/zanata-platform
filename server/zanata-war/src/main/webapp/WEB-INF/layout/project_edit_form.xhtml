@@ -80,8 +80,8 @@
 		<a4j:support event="ondblclick" reRender="languagePanel" action="#{localeListAction.toCustomizedLocales}"/>
             </h:selectManyListbox>
             <h:panelGroup id="buttons" styleClass="language_action_buttons">
-                <a4j:commandButton value="&gt;" action="#{localeListAction.toCustomizedLocales}" styleClass="language_action_button" reRender ="languagePanel" />
-                <a4j:commandButton value="&lt;" action="#{localeListAction.removeFromCustomizedLocales}" styleClass="language_action_button" reRender ="languagePanel" />
+                <a4j:commandButton value="#{messages['jsf.AddLocale']}" action="#{localeListAction.toCustomizedLocales}" styleClass="language_action_button" reRender ="languagePanel" />
+                <a4j:commandButton value="#{messages['jsf.RemoveLocale']}" action="#{localeListAction.removeFromCustomizedLocales}" styleClass="language_action_button" reRender ="languagePanel" />
             </h:panelGroup>
             <h:selectManyListbox id="languagelist1" value="#{localeListAction.customizedLocales}" styleClass="language_list" >
                 <f:selectItems value="#{localeListAction.customizedItems}"/>
