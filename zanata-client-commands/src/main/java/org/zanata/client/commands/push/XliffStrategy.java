@@ -64,7 +64,7 @@ public class XliffStrategy implements PushStrategy
       for (File file : files)
       {
          String baseName = file.getPath();
-         baseName = PathUtil.getRelativePath(baseName, srcDir.getPath(), "/");
+         baseName = PathUtil.getRelativePath(baseName, srcDir.getPath());
          sourceFiles.add(baseName);
          baseName = baseName.substring(0, baseName.length() - XML_EXTENSION.length());
 
