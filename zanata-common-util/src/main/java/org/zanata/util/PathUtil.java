@@ -1,6 +1,7 @@
 package org.zanata.util;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
@@ -141,4 +142,15 @@ public class PathUtil
          super(msg);
       }
    }
+
+   public static boolean makeParents(File f) throws IOException
+   {
+      File parent = f.getCanonicalFile().getParentFile();
+      if (parent == null || parent.exists())
+      {
+         return false;
+      }
+      return parent.mkdirs();
+   }
+
 }
