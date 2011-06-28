@@ -53,6 +53,7 @@ import com.google.gwt.gen2.table.event.client.PageChangeHandler;
 import com.google.gwt.gen2.table.event.client.PageCountChangeEvent;
 import com.google.gwt.gen2.table.event.client.PageCountChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -117,8 +118,11 @@ public class TranslationEditorPresenter extends WidgetPresenter<TranslationEdito
       transUnitNavigationPresenter.bind();
       display.setTransUnitNavigation(transUnitNavigationPresenter.getDisplay().asWidget());
 
-      undoRedoPresenter.bind();
-      display.setUndoRedo(undoRedoPresenter.getDisplay().asWidget());
+      // undoRedoPresenter.bind();
+      // display.setUndoRedo(undoRedoPresenter.getDisplay().asWidget());
+      Label spacer = new Label();
+      spacer.setWidth("80px");
+      display.setUndoRedo(spacer);
 
       registerHandler(display.getPageNavigation().addValueChangeHandler(new ValueChangeHandler<Integer>()
       {
