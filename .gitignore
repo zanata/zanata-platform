@@ -1,5 +1,8 @@
+# NB avoid ignoring anything under src/ (especially directories or .jar files)
+# because ignoring files under these directories can make it
+# difficult to debug build problems.  At the very least, we should ensure
+# 'mvn clean' will clean such directories.
 
-# mostly adapted from .hgignore:
 
 *~
 *.patch
@@ -10,18 +13,11 @@ hs_err_pid*.log
 localDB.log
 localDB.properties
 
-*.jar
 /.pc/
 /.ant-targets-build.xml
 /.pages.xml.spdia
 temp-testng-customsuite.xml
-/server/zanata-war/war
-/server/zanata-war/src/main/resources/*_qc.properties
-/server/zanata-war/src/main/resources/org/zanata/webtrans/client/*_qc.properties
-/server/zanata-war/src/main/resources/org/zanata/webtrans/client/*/*_qc.properties
-/server/zanata-war/src/main/resources/org/zanata/webtrans/client/editor/*/*_qc.properties
-/server/zanata-war/src/test/resources/bootstrap/data/
-/server/zanata-war/src/test/jboss-embedded-bootstrap/data/
+*_qc.properties
 
 # eclipse and maven stuff
 .classpath
@@ -33,7 +29,6 @@ bin/
 /*/target/
 /*/*/target/
 *.orig
-/server/zanata-war/.gwt
 # eclipse scrapbook page:
 *.jpage
 
@@ -46,10 +41,8 @@ bin/
 *.directory
 
 #gwt related
-/server/zanata-war/src/main/webapp/WEB-INF/classes/
-/server/zanata-war/tomcat
+.gwt-log
 *.gwt-tmp
-/server/zanata-war/src/main/webapp/webtrans/
 
 # vim
 *.swp
