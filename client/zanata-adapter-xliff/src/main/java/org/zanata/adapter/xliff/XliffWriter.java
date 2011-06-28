@@ -18,20 +18,12 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.util.PathUtil;
 
 import com.sun.xml.txw2.output.IndentingXMLStreamWriter;
 
 public class XliffWriter extends XliffCommon
 {
-   private static void mkdirs(File dir) throws IOException
-   {
-      if (!dir.exists())
-      {
-         if (!dir.mkdirs())
-            throw new IOException("unable to create output directory: " + dir);
-      }
-   }
-
    // Write document header with XML, xliff, file and body tag
    private static void writeHeader(IndentingXMLStreamWriter writer, Resource doc, String targetLocale) throws XMLStreamException
    {
@@ -157,8 +149,7 @@ public class XliffWriter extends XliffCommon
       {
          XMLOutputFactory output = XMLOutputFactory.newInstance();
          File outFile = new File(baseDir, doc.getName() + "_" + javaLocale + ".xml");
-         // FIXME getParentFile can return null
-         mkdirs(outFile.getParentFile());
+         PathUtil.makeParents(outFile);
          XMLStreamWriter xmlStreamWriter = output.createXMLStreamWriter(new FileWriter(outFile));
          IndentingXMLStreamWriter writer = new IndentingXMLStreamWriter(xmlStreamWriter);
 

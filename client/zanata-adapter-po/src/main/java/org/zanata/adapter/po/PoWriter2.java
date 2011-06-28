@@ -29,6 +29,7 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.util.PathUtil;
 
 public class PoWriter2
 {
@@ -74,8 +75,7 @@ public class PoWriter2
    {
       // write the POT file to $potDir/$name.pot
       File potFile = new File(potDir, doc.getName() + ".pot");
-      // FIXME getParentFile can return null
-      mkdirs(potFile.getParentFile());
+      PathUtil.makeParents(potFile);
       OutputSource outputSource = new OutputSource(potFile);
       write(outputSource, doc, null);
    }
