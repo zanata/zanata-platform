@@ -15,7 +15,7 @@ import org.apache.commons.io.FilenameUtils;
 
 public class PathUtil
 {
-   private static final String pathSeparator = System.getProperty("file.separator");
+   private static final String FILESEP = System.getProperty("file.separator");
 
    /**
     * Get the relative path from one file to another, specifying the directory
@@ -25,10 +25,11 @@ public class PathUtil
     * @param target targetPath is calculated to this file
     * @param base basePath is calculated from this file
     * @return
+    * @throws PathResolutionException if no relative path exists
     */
-   public static String getRelativePath(String targetPath, String basePath)
+   public static String getRelativePath(String targetPath, String basePath) throws PathResolutionException
    {
-      return getRelativePath(targetPath, basePath, pathSeparator);
+      return getRelativePath(targetPath, basePath, FILESEP);
    }
 
    /**
@@ -42,8 +43,9 @@ public class PathUtil
     *           so that we can test Unix behaviour when running on Windows (for
     *           example)
     * @return
+    * @throws PathResolutionException if no relative path exists
     */
-   public static String getRelativePath(String targetPath, String basePath, String pathSeparator)
+   public static String getRelativePath(String targetPath, String basePath, String pathSeparator) throws PathResolutionException
    {
 
       // Normalize the paths
@@ -132,6 +134,31 @@ public class PathUtil
       return relative.toString();
    }
 
+   /**
+    * Returns relative path from parentDir to f. NB: assumes that f is inside
+    * parentDir.
+    * @param f a file inside parentDir
+    * @param parentDir
+    * 
+    * @return
+    * @throws IOException
+    * @throws PathResolutionException
+    */
+   public static String getSubPath(File f, File parentDir) throws IOException, PathResolutionException
+   {
+      // we could use canonical path here, but we don't want symlinks to be
+      // resolved
+      String dirPath = parentDir.getAbsolutePath();
+      String filePath = f.getAbsolutePath();
+      if (!filePath.startsWith(dirPath))
+      {
+         throw new PathResolutionException("can't find relative path from " + parentDir + " to " + f);
+      }
+      int skipSize = dirPath.length();
+      if (!dirPath.endsWith(FILESEP))
+         skipSize++;
+      return filePath.substring(skipSize);
+   }
 
    static class PathResolutionException extends RuntimeException
    {
