@@ -35,6 +35,7 @@ public class TextFlowTarget implements Serializable, Extensible<TextFlowTargetEx
    private String content;
    private String description;
    private ExtensionSet<TextFlowTargetExtension> extensions;
+   private Integer revision;
    private Integer textFlowRevision;
 
    public TextFlowTarget()
@@ -148,6 +149,7 @@ public class TextFlowTarget implements Serializable, Extensible<TextFlowTargetEx
       result = prime * result + ((resId == null) ? 0 : resId.hashCode());
       result = prime * result + ((state == null) ? 0 : state.hashCode());
       result = prime * result + ((translator == null) ? 0 : translator.hashCode());
+      result = prime * result + ((revision == null) ? 0 : revision.hashCode());
       result = prime * result + ((textFlowRevision == null) ? 0 : textFlowRevision.hashCode());
       return result;
    }
@@ -227,6 +229,17 @@ public class TextFlowTarget implements Serializable, Extensible<TextFlowTargetEx
       {
          return false;
       }
+      if (revision == null)
+      {
+         if (other.revision != null)
+         {
+            return false;
+         }
+      }
+      else if (!revision.equals(other.revision))
+      {
+         return false;
+      }
       if (textFlowRevision == null)
       {
          if (other.textFlowRevision != null)
@@ -241,7 +254,17 @@ public class TextFlowTarget implements Serializable, Extensible<TextFlowTargetEx
       return true;
    }
 
-   // TODO TFTs should probably have their own revisions too
+   @XmlAttribute(name = "revision", required = false)
+   public Integer getRevision()
+   {
+      return revision;
+   }
+
+   public void setRevision(Integer i)
+   {
+      revision = i;
+   }
+
    @XmlAttribute(name = "resourceRevision", required = false)
    public Integer getTextFlowRevision()
    {

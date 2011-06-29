@@ -810,6 +810,7 @@ public class ResourceUtils
    {
       to.setContent(from.getContent());
       to.setState(from.getState());
+      to.setRevision(from.getVersionNum());
       to.setTextFlowRevision(from.getTextFlowRevision());
       HPerson translator = from.getLastModifiedBy();
       if (translator != null)
