@@ -139,6 +139,7 @@
 		<hibernate.annotations.version>3.4.0.GA</hibernate.annotations.version>
 		<hibernate.entitymanager.version>3.4.0.GA</hibernate.entitymanager.version>
 		<resteasy.version>2.1.0.GA</resteasy.version>
+		<richfaces.version>3.3.3.Final</richfaces.version>
 		<seam.version>2.2.0.GA</seam.version>
 		<tennera.version>0.6</tennera.version>
 		<guava.version>r06</guava.version>
@@ -596,6 +597,25 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+
+			<dependency>
+				<groupId>org.richfaces.framework</groupId>
+				<artifactId>richfaces-api</artifactId>
+				<version>${richfaces.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.richfaces.framework</groupId>
+				<artifactId>richfaces-impl</artifactId>
+				<version>${richfaces.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.richfaces.ui</groupId>
+				<artifactId>richfaces-ui</artifactId>
+				<version>${richfaces.version}</version>
+			</dependency>
+
 			<dependency>
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
