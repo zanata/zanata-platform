@@ -34,6 +34,7 @@ class ResourceTestUtil
       doc.setRevision(null);
       for (TextFlowTarget tft : doc.getTextFlowTargets())
       {
+         tft.setRevision(null);
          tft.setTextFlowRevision(null);
       }
    }
