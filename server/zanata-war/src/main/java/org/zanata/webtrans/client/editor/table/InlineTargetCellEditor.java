@@ -22,8 +22,9 @@ package org.zanata.webtrans.client.editor.table;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.EditTransUnitEvent;
+import org.zanata.webtrans.client.events.TextChangeEvent;
+import org.zanata.webtrans.client.events.TextChangeEventHandler;
 import org.zanata.webtrans.shared.model.TransUnit;
-
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
@@ -46,8 +47,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PushButton;
-import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
+
 
 public class InlineTargetCellEditor implements CellEditor<TransUnit>
 {
@@ -75,6 +76,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       {
          textArea.setText(cellValue.getSource());
          textArea.setFocus(true);
+         textArea.autoSize();
          Log.info("InlineTargetCellEditor.java: Clone action.");
       }
    };
@@ -102,7 +104,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          cancelEdit();
       }
    };
-
+   
    private final CheckBox toggleFuzzy;
 
    /**
@@ -140,7 +142,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    private TransUnit cellValue;
 
-   private final TextArea textArea;
+   private final AutoSizeTextArea textArea;
 
    private boolean isFocused = false;
 
@@ -154,7 +156,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    /*
     * The minimum height of the target editor
     */
-   private static final int MIN_HEIGHT = 48;
+   // private static final int MIN_HEIGHT = 48;
 
    /**
     * Construct a new {@link InlineTargetCellEditor}.
@@ -179,7 +181,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       cancelCallback = callback;
       editRowCallback = rowCallback;
-      textArea = new TextArea();
+      textArea = new AutoSizeTextArea(3, 1);
       textArea.setStyleName("TableEditorContent-Edit");
       textArea.addBlurHandler(new BlurHandler()
       {
@@ -206,6 +208,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          public void onKeyUp(KeyUpEvent event)
          {
             eventBus.fireEvent(new EditTransUnitEvent());
+            textArea.autoSize();
 
             // NB: if you change these, please change NavigationConsts too!
             if (event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
@@ -254,16 +257,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
                else
                   toggleFuzzy.setValue(true);
             }
-            else if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
-            {
-               autoTextAreaSize();
-            }
             else
             {
                // Remove fuzzy state for fuzzy entry when start typing
-               if (toggleFuzzy.getValue())
-                  toggleFuzzy.setValue(false);
-
+               toggleFuzzyBox();
             }
             // these shortcuts disabled because they conflict with basic text editing:
 //            else if (event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_HOME)
@@ -276,6 +273,15 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 //            }
          }
 
+      });
+      textArea.addTextChangeEventHandler(new TextChangeEventHandler()
+      {
+         @Override
+         public void onTextChange(TextChangeEvent event)
+         {
+            Log.debug("TextChangeEvent");
+            toggleFuzzyBox();
+         }
       });
       layoutTable.add(textArea);
 
@@ -406,7 +412,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       //Disable it for autosize
       // textArea.setHeight(realHeight + "px");
-      int width = table.getWidget(curRow, curCol - 1).getOffsetWidth() - 10;
+      int width = table.getWidget(curRow, 0).getOffsetWidth() - 10;
       // layoutTable.setHeight(realHeight + "px");
       textArea.setWidth(width + "px");
 
@@ -414,7 +420,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       
       textArea.setText(cellValue.getTarget());
 
-      autoTextAreaSize();
+      textArea.autoSize();
 
       this.cellValue = cellValue;
       textArea.setFocus(true);
@@ -423,24 +429,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       // refreshStateImage();
    }
 
-   private void autoTextAreaSize()
-   {
-      int initLines = 2;
-      int growLines = 1;
-
-      Log.debug("autosize TextArea");
-      int rows = textArea.getVisibleLines();
-
-      while (rows > initLines)
-      {
-         textArea.setVisibleLines(--rows);
-      }
-
-      while (textArea.getElement().getScrollHeight() > textArea.getElement().getClientHeight())
-      {
-         textArea.setVisibleLines(textArea.getVisibleLines() + growLines);
-      }
-   }
    // private void refreshStateImage()
    // {
    // if (cellValue.getStatus() == ContentState.New)
@@ -543,6 +531,17 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    public void handlePrevState()
    {
       gotoPrevFuzzy(curRow);
+   }
+
+   public void setTextAreaSize()
+   {
+      textArea.autoSize();
+   }
+
+   public void toggleFuzzyBox()
+   {
+      if (toggleFuzzy.getValue())
+         toggleFuzzy.setValue(false);
    }
 
 }
