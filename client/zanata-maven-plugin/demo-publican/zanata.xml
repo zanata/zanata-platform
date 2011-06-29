@@ -27,11 +27,11 @@
       <locale>zh-CN</locale>
     </locales>
     <locales>
-        <locale>ja-JP</locale>
+        <locale map-from="ja-JP">ja</locale>
     </locales>
 -->
     <locales>
-        <locale map-from="ja-JP">ja</locale>
+        <locale map-from="zh-TW">zh-Hant</locale>
     </locales>
 
 
