@@ -188,11 +188,11 @@ public class XmlStrategy implements PushStrategy, PullStrategy
    }
 
    @Override
-   public void writeTransFile(Resource doc, LocaleMapping locale, TranslationsResource targetDoc) throws IOException
+   public void writeTransFile(Resource doc, String docName, LocaleMapping locale, TranslationsResource targetDoc) throws IOException
    {
       try
       {
-         String filename = docNameToFilename(doc.getName(), locale);
+         String filename = docNameToFilename(docName, locale);
          File transFile = new File(pullOptions.getTransDir(), filename);
          PathUtil.makeParents(transFile);
          marshaller.marshal(targetDoc, transFile);

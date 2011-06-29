@@ -164,7 +164,7 @@ public class PullCommand extends ConfigurableProjectCommand
             TranslationsResource targetDoc = transResponse.getEntity();
 
             log.info("writing translation file in locale {} for document {}", locMapping.getLocalLocale(), docName);
-            strat.writeTransFile(doc, locMapping, targetDoc);
+            strat.writeTransFile(doc, docName, locMapping, targetDoc);
          }
       }
 
