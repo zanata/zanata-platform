@@ -29,7 +29,7 @@ import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 
-interface PushStrategy
+public interface PushStrategy
 {
    void setPushOptions(PushOptions opts);
    StringSet getExtensions();

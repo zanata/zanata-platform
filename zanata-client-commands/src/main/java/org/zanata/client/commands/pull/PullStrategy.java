@@ -8,7 +8,7 @@ import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
-interface PullStrategy
+public interface PullStrategy
 {
    void setPullOptions(PullOptions opts);
    StringSet getExtensions();
