@@ -5,7 +5,15 @@ import org.zanata.webtrans.client.events.TextChangeEventHandler;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.dom.client.Style.Overflow;
-import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.HasBlurHandlers;
+import com.google.gwt.event.dom.client.HasFocusHandlers;
+import com.google.gwt.event.dom.client.HasKeyUpHandlers;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.HasHandlers;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -15,12 +23,11 @@ import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.TextArea;
 
-public class AutoSizeTextArea extends TextArea implements HasHandlers
+public class AutoSizeTextArea extends TextArea
 {
    private int initLines;
    private int growLines;
    private SimpleEventBus handlerManager = new SimpleEventBus();
-
 
    public AutoSizeTextArea(int init, int grow)
    {
@@ -68,12 +75,6 @@ public class AutoSizeTextArea extends TextArea implements HasHandlers
          });
          break;
       }
-   }
-
-   @Override
-   public void fireEvent(GwtEvent<?> event)
-   {
-      handlerManager.fireEvent(event);
    }
 
    public HandlerRegistration addTextChangeEventHandler(TextChangeEventHandler handler)

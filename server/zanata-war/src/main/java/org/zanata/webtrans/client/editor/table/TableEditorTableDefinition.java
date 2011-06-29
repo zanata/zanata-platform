@@ -30,6 +30,7 @@ import com.google.gwt.gen2.table.client.CellRenderer;
 import com.google.gwt.gen2.table.client.ColumnDefinition;
 import com.google.gwt.gen2.table.client.DefaultTableDefinition;
 import com.google.gwt.gen2.table.client.RowRenderer;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Label;
 
 public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit>
@@ -152,7 +153,10 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       @Override
       public void renderRowValue(TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, com.google.gwt.gen2.table.client.TableDefinition.AbstractCellView<TransUnit> view)
       {
+         final CheckBox fuzzyCheckBox;
          view.setStyleName("TableEditorCell TableEditorCell-Operations");
+         fuzzyCheckBox = new CheckBox(messages.fuzzy());
+         view.setWidget(fuzzyCheckBox);
       }
    };
 
@@ -211,7 +215,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       // indicatorColumnDefinition.setCellRenderer(indicatorCellRenderer);
       sourceColumnDefinition.setCellRenderer(sourceCellRenderer);
       operationsColumnDefinition.setCellRenderer(operationsCellRenderer);
-      operationsColumnDefinition.setMaximumColumnWidth(20);
+      operationsColumnDefinition.setMaximumColumnWidth(60);
       targetColumnDefinition.setCellRenderer(targetCellRenderer);
       CancelCallback<TransUnit> cancelCallBack = new CancelCallback<TransUnit>()
       {

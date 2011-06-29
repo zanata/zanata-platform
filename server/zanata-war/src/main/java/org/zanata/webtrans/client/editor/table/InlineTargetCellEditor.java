@@ -208,7 +208,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          public void onKeyUp(KeyUpEvent event)
          {
             eventBus.fireEvent(new EditTransUnitEvent());
-            textArea.autoSize();
 
             // NB: if you change these, please change NavigationConsts too!
             if (event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
@@ -262,6 +261,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
                // Remove fuzzy state for fuzzy entry when start typing
                toggleFuzzyBox();
             }
+
+            textArea.autoSize();
             // these shortcuts disabled because they conflict with basic text editing:
 //            else if (event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_HOME)
 //            { // ctrl-home
@@ -274,6 +275,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          }
 
       });
+
       textArea.addTextChangeEventHandler(new TextChangeEventHandler()
       {
          @Override
@@ -283,6 +285,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             toggleFuzzyBox();
          }
       });
+
       layoutTable.add(textArea);
 
       HorizontalPanel operationsPanel = new HorizontalPanel();
