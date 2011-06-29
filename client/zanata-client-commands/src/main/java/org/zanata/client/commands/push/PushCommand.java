@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.ConfigurableProjectCommand;
 import org.zanata.client.commands.OptionsUtil;
+import org.zanata.client.commands.strategy.XmlStrategy;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.exceptions.ConfigException;
 import org.zanata.common.LocaleId;
@@ -42,7 +43,7 @@ public class PushCommand extends ConfigurableProjectCommand
 
    private static final Map<String, PushStrategy> strategies = new HashMap<String, PushStrategy>();
 
-   static interface TranslationResourcesVisitor
+   public static interface TranslationResourcesVisitor
    {
       void visit(LocaleMapping locale, TranslationsResource targetDoc);
    }
@@ -51,6 +52,7 @@ public class PushCommand extends ConfigurableProjectCommand
       strategies.put("xliff", new XliffStrategy());
       strategies.put("properties", new PropertiesStrategy());
       strategies.put("podir", new GettextDirStrategy());
+      strategies.put("xml", new XmlStrategy());
    }
 
    Marshaller m = null;

@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.ConfigurableProjectCommand;
 import org.zanata.client.commands.OptionsUtil;
+import org.zanata.client.commands.strategy.XmlStrategy;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.exceptions.ConfigException;
@@ -45,6 +46,7 @@ public class PullCommand extends ConfigurableProjectCommand
       strategies.put("properties", new PropertiesStrategy());
       strategies.put("podir", new GettextDirStrategy());
       strategies.put("xliff", new XliffStrategy());
+      strategies.put("xml", new XmlStrategy());
    }
 
    Marshaller m = null;
