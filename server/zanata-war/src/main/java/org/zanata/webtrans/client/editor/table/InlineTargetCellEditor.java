@@ -47,6 +47,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PushButton;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -76,7 +77,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       {
          textArea.setText(cellValue.getSource());
          textArea.setFocus(true);
-         textArea.autoSize();
+         autoSize();
          Log.info("InlineTargetCellEditor.java: Clone action.");
       }
    };
@@ -142,7 +143,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    private TransUnit cellValue;
 
-   private final AutoSizeTextArea textArea;
+   private final TextArea textArea;
 
    private boolean isFocused = false;
 
@@ -181,7 +182,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       cancelCallback = callback;
       editRowCallback = rowCallback;
-      textArea = new AutoSizeTextArea(3, 1);
+      // textArea = new AutoSizeTextArea(3, 1);
+      textArea = new TextArea();
       textArea.setStyleName("TableEditorContent-Edit");
       textArea.addBlurHandler(new BlurHandler()
       {
@@ -262,7 +264,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
                toggleFuzzyBox();
             }
 
-            textArea.autoSize();
+            autoSize();
             // these shortcuts disabled because they conflict with basic text editing:
 //            else if (event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_HOME)
 //            { // ctrl-home
@@ -276,16 +278,12 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       });
 
-      textArea.addTextChangeEventHandler(new TextChangeEventHandler()
-      {
-         @Override
-         public void onTextChange(TextChangeEvent event)
-         {
-            Log.debug("TextChangeEvent");
-            toggleFuzzyBox();
-         }
-      });
-
+      /********
+       * textArea.addTextChangeEventHandler(new TextChangeEventHandler() {
+       * 
+       * @Override public void onTextChange(TextChangeEvent event) {
+       *           Log.debug("TextChangeEvent"); toggleFuzzyBox(); } });
+       *********/
       layoutTable.add(textArea);
 
       HorizontalPanel operationsPanel = new HorizontalPanel();
@@ -423,7 +421,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       
       textArea.setText(cellValue.getTarget());
 
-      textArea.autoSize();
+      autoSize();
 
       this.cellValue = cellValue;
       textArea.setFocus(true);
@@ -538,13 +536,32 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    public void setTextAreaSize()
    {
-      textArea.autoSize();
+      autoSize();
    }
 
    public void toggleFuzzyBox()
    {
       if (toggleFuzzy.getValue())
          toggleFuzzy.setValue(false);
+   }
+
+   public void autoSize()
+   {
+      int initLines = 3;
+      int growLines = 1;
+
+      Log.debug("autosize TextArea");
+      int rows = textArea.getVisibleLines();
+
+      while (rows > initLines)
+      {
+         textArea.setVisibleLines(--rows);
+      }
+
+      while (textArea.getElement().getScrollHeight() > textArea.getElement().getClientHeight())
+      {
+         textArea.setVisibleLines(textArea.getVisibleLines() + growLines);
+      }
    }
 
 }
