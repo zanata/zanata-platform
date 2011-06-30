@@ -258,7 +258,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
                else
                   toggleFuzzy.setValue(true);
             }
-            else
+            else if (!event.isAnyModifierKeyDown())
             {
                // Remove fuzzy state for fuzzy entry when start typing
                toggleFuzzyBox();
