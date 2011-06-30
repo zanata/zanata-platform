@@ -38,8 +38,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
    // public static final int INDICATOR_COL = 0;
    public static final int SOURCE_COL = 0;
-   public static final int OPERATION_COL = 1;
-   public static final int TARGET_COL = 2;
+   public static final int TARGET_COL = 1;
 
    private String findMessage;
 
@@ -132,34 +131,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       }
    };
 
-   private final AbstractColumnDefinition<TransUnit, TransUnit> operationsColumnDefinition = new AbstractColumnDefinition<TransUnit, TransUnit>()
-   {
-
-      @Override
-      public TransUnit getCellValue(TransUnit rowValue)
-      {
-         return null;
-      }
-
-      @Override
-      public void setCellValue(TransUnit rowValue, TransUnit cellValue)
-      {
-
-      }
-   };
-
-   private final CellRenderer<TransUnit, TransUnit> operationsCellRenderer = new CellRenderer<TransUnit, TransUnit>()
-   {
-      @Override
-      public void renderRowValue(TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, com.google.gwt.gen2.table.client.TableDefinition.AbstractCellView<TransUnit> view)
-      {
-         final CheckBox fuzzyCheckBox;
-         view.setStyleName("TableEditorCell TableEditorCell-Operations");
-         fuzzyCheckBox = new CheckBox(messages.fuzzy());
-         view.setWidget(fuzzyCheckBox);
-      }
-   };
-
    private final AbstractColumnDefinition<TransUnit, TransUnit> targetColumnDefinition = new AbstractColumnDefinition<TransUnit, TransUnit>()
    {
 
@@ -214,8 +185,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       // indicatorColumnDefinition.setMinimumColumnWidth(15);
       // indicatorColumnDefinition.setCellRenderer(indicatorCellRenderer);
       sourceColumnDefinition.setCellRenderer(sourceCellRenderer);
-      operationsColumnDefinition.setCellRenderer(operationsCellRenderer);
-      operationsColumnDefinition.setMaximumColumnWidth(60);
       targetColumnDefinition.setCellRenderer(targetCellRenderer);
       CancelCallback<TransUnit> cancelCallBack = new CancelCallback<TransUnit>()
       {
@@ -258,7 +227,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       // See _INDEX consts above if modifying!
       // addColumnDefinition(indicatorColumnDefinition);
       addColumnDefinition(sourceColumnDefinition);
-      addColumnDefinition(operationsColumnDefinition);
       addColumnDefinition(targetColumnDefinition);
    }
 
