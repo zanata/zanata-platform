@@ -22,8 +22,6 @@ package org.zanata.webtrans.client.editor.table;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.EditTransUnitEvent;
-import org.zanata.webtrans.client.events.TextChangeEvent;
-import org.zanata.webtrans.client.events.TextChangeEventHandler;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -210,14 +208,15 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          public void onKeyUp(KeyUpEvent event)
          {
             eventBus.fireEvent(new EditTransUnitEvent());
-
+            int keyCode = event.getNativeKeyCode();
+            
             // NB: if you change these, please change NavigationConsts too!
-            if (event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
+            if (event.isControlKeyDown() && keyCode == KeyCodes.KEY_ENTER)
             {
                acceptEdit();
                gotoNextRow(curRow);
             }
-            else if (event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE)
+            else if (keyCode == KeyCodes.KEY_ESCAPE)
             {
                cancelEdit();
             }
@@ -243,24 +242,25 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             {
                handlePrev();
             }
-            else if (event.isAltKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN)
+            else if (event.isAltKeyDown() && keyCode == KeyCodes.KEY_PAGEDOWN)
             { // alt-pagedown
                handleNextState();
             }
-            else if (event.isAltKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEUP)
+            else if (event.isAltKeyDown() && keyCode == KeyCodes.KEY_PAGEUP)
             { // alt-pageup
                handlePrevState();
             }
-            else if (event.isAltKeyDown() && event.getNativeKeyCode() == 78)
+            else if (event.isAltKeyDown() && keyCode == 78)
             {
                if (toggleFuzzy.getValue())
                   toggleFuzzy.setValue(false);
                else
                   toggleFuzzy.setValue(true);
             }
-            else if (!event.isAnyModifierKeyDown())
+            else if ((!event.isAltKeyDown() && !event.isControlKeyDown()) && ((keyCode > 46 && keyCode < 58) || (keyCode > 64 && keyCode < 91)))
             {
-               // Remove fuzzy state for fuzzy entry when start typing
+               // Remove fuzzy state for fuzzy entry when typing a-z or 0-9
+               // without pressing alt and ctrl
                toggleFuzzyBox();
             }
 
