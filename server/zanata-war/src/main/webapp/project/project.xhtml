@@ -11,7 +11,8 @@
 <ui:define name="center_content">
     <rich:jQuery selector="#tab_projects" query="addClass('ui-tabs-selected')" />
 
-    <h1>#{projectHome.instance.name}</h1>
+    <h1>#{messages['jsf.ProjectId']}: #{projectHome.instance.slug}</h1>
+    <h1>#{messages['jsf.Name']}: #{projectHome.instance.name}</h1>
 
     <s:formattedText id="project-home-content" value="#{projectHome.instance.homeContent}"></s:formattedText>
     <h:outputText value="#{projectHome.instance.description}" rendered="#{empty projectHome.instance.homeContent}"/>
