@@ -35,8 +35,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import net.customware.gwt.presenter.client.EventBus;
@@ -212,15 +210,14 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          public void onKeyUp(KeyUpEvent event)
          {
             eventBus.fireEvent(new EditTransUnitEvent());
-            int keyCode = event.getNativeKeyCode();
 
             // NB: if you change these, please change NavigationConsts too!
-            if (event.isControlKeyDown() && keyCode == KeyCodes.KEY_ENTER)
+            if (event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
             {
                acceptEdit();
                gotoNextRow(curRow);
             }
-            else if (keyCode == KeyCodes.KEY_ESCAPE)
+            else if (event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE)
             {
                cancelEdit();
             }
@@ -246,25 +243,24 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             {
                handlePrev();
             }
-            else if (event.isAltKeyDown() && keyCode == KeyCodes.KEY_PAGEDOWN)
+            else if (event.isAltKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEDOWN)
             { // alt-pagedown
                handleNextState();
             }
-            else if (event.isAltKeyDown() && keyCode == KeyCodes.KEY_PAGEUP)
+            else if (event.isAltKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_PAGEUP)
             { // alt-pageup
                handlePrevState();
             }
-            else if (event.isAltKeyDown() && keyCode == 78)
+            else if (event.isAltKeyDown() && event.getNativeKeyCode() == 78)
             {
-               // alt-n to toggle fuzzy check box
                if (toggleFuzzy.getValue())
                   toggleFuzzy.setValue(false);
                else
                   toggleFuzzy.setValue(true);
             }
-            else if ((!event.isAltKeyDown()) && (!event.isControlKeyDown()) && ((keyCode > 46 && keyCode < 58) || (keyCode > 64 && keyCode < 91)))
+            else if (!event.isAnyModifierKeyDown())
             {
-               // Remove fuzzy state for fuzzy entry when typing a-z or 0-9
+               // Remove fuzzy state for fuzzy entry when start typing
                toggleFuzzyBox();
             }
 
