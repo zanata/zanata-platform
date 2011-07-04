@@ -34,13 +34,13 @@
             rows="#{projectAction.pageSize}"  columnsWidth="200px,200px,80px" 
             value="#{projectAction.projectPagedListDataModel}" var="project">
 				<rich:column>
-					       <s:link id="project" styleClass="project_link" value="#{project.name}"  propagation="none"
+					       <s:link id="project" styleClass="project_link" value="#{project.slug}"  propagation="none"
 						     view="/project/project.xhtml"> 
 						    <f:param name="slug" value="#{project.slug}"/>
 						</s:link>
 	        		</rich:column>
 				<rich:column>
-						<h:outputText value="#{project.description}" />
+						<h:outputText value="#{project.name}" />
 	        		</rich:column>
 				<rich:column>
 						<h:outputText value="#{project.creationDate}">
