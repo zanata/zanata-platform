@@ -157,6 +157,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
     */
    // private static final int MIN_HEIGHT = 48;
 
+   private static final int KEY_G = 71;
+   private static final int KEY_J = 74;
+   private static final int KEY_K = 75;
+   private static final int KEY_N = 78;
+
    /**
     * Construct a new {@link InlineTargetCellEditor}.
     * 
@@ -232,13 +237,20 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             // // } else if(event.isControlKeyDown() && event.getNativeKeyCode()
             // // == KeyCodes.KEY_PAGEDOWN) { // bad in Firefox
             // }
-            else if (event.isAltKeyDown() && event.isDownArrow())
+            else if (event.isAltKeyDown() && keyCode == KEY_G)
+            {
+               textArea.setText(cellValue.getSource());
+               textArea.setFocus(true);
+               autoSize();
+               Log.info("InlineTargetCellEditor.java: Clone action.");
+            }
+            else if (event.isAltKeyDown() && (event.isDownArrow() || keyCode == KEY_K))
             {
                handleNext();
                // } else if(event.isControlKeyDown() && event.getNativeKeyCode()
                // == KeyCodes.KEY_PAGEUP) { // bad in Firefox
             }
-            else if (event.isAltKeyDown() && event.isUpArrow())
+            else if (event.isAltKeyDown() && (event.isUpArrow() || keyCode == KEY_J))
             {
                handlePrev();
             }
@@ -250,7 +262,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             { // alt-pageup
                handlePrevState();
             }
-            else if (event.isAltKeyDown() && keyCode == 78)
+            else if (event.isAltKeyDown() && keyCode == KEY_N)
             {
                if (toggleFuzzy.getValue())
                   toggleFuzzy.setValue(false);
