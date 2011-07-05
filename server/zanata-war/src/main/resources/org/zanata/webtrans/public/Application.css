@@ -292,6 +292,17 @@ tr.TableEditorRow.selected td {
 	font-family: sans-serif;
 	padding: 3px;
 	margin: 2px;	
+	width:99%;
+}
+
+.TableEditorContent-Empty {
+    font-size: 12px;
+    font-family: sans-serif;
+    font-style: italic;
+    padding: 3px;
+    margin: 2px; 
+    opacity: 0.5;
+    width:99%;
 }
 
 .Severity-Error {

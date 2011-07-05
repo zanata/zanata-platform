@@ -20,6 +20,8 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
+import net.customware.gwt.presenter.client.EventBus;
+
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.EditTransUnitEvent;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -35,7 +37,6 @@ import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import net.customware.gwt.presenter.client.EventBus;
 import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.client.InlineCellEditor.InlineCellEditorImages;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
@@ -44,6 +45,7 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.ImageBundle;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;

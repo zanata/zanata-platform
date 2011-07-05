@@ -20,11 +20,12 @@
  */
 package org.zanata.webtrans.client.editor.table;
 
+import net.customware.gwt.presenter.client.EventBus;
+
 import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
-import net.customware.gwt.presenter.client.EventBus;
 import com.google.gwt.gen2.table.client.AbstractColumnDefinition;
 import com.google.gwt.gen2.table.client.CellRenderer;
 import com.google.gwt.gen2.table.client.ColumnDefinition;
@@ -153,15 +154,29 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       public void renderRowValue(TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, AbstractCellView<TransUnit> view)
       {
          view.setStyleName("TableEditorCell TableEditorCell-Target");
-         final Label label = new HighlightingLabel(rowValue.getTarget());
-         label.setStylePrimaryName("TableEditorContent");
+         view.setStyleAttribute("title", "click here");
+         final Label label = new HighlightingLabel();
+
+         if (rowValue.getTarget().isEmpty())
+         {
+            label.setText("Click here to start translate");
+            label.setStylePrimaryName("TableEditorContent-Empty");
+         }
+         else
+         {
+            label.setText(rowValue.getTarget());
+            label.setStylePrimaryName("TableEditorContent");
+         }
+
 
          if (findMessage != null && !findMessage.isEmpty())
          {
             ((HighlightingLabel) label).highlightSearch(findMessage);
          }
-         // TODO label.setTitle(rowValue.getTargetComment());
 
+         label.setTitle(messages.clickHere());
+
+         // TODO label.setTitle(rowValue.getTargetComment());
          view.setWidget(label);
       }
    };
@@ -222,7 +237,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       
       this.targetCellEditor = new InlineTargetCellEditor(messages, cancelCallBack, transValueCallBack, eventBus);
       targetColumnDefinition.setCellEditor(targetCellEditor);
-
       // See _INDEX consts above if modifying!
       // addColumnDefinition(indicatorColumnDefinition);
       addColumnDefinition(sourceColumnDefinition);
