@@ -159,10 +159,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
     */
    // private static final int MIN_HEIGHT = 48;
 
-   private static final int KEY_G = 71;
-   private static final int KEY_J = 74;
-   private static final int KEY_K = 75;
-   private static final int KEY_N = 78;
+   private static final int KEY_G = 'G';
+   private static final int KEY_J = 'J';
+   private static final int KEY_K = 'K';
+   private static final int KEY_N = 'N';
 
    /**
     * Construct a new {@link InlineTargetCellEditor}.
@@ -271,10 +271,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
                else
                   toggleFuzzy.setValue(true);
             }
-            else if ((!event.isAltKeyDown() && !event.isControlKeyDown()) && ((keyCode > 46 && keyCode < 58) || (keyCode > 64 && keyCode < 91)))
+            else if (!event.isAltKeyDown() && !event.isControlKeyDown())
             {
-               // Remove fuzzy state for fuzzy entry when typing a-z or 0-9
-               // without pressing alt and ctrl
+               // toggle fuzzy state when typing and not pressing alt and ctrl
+               // key
                toggleFuzzyBox();
             }
 

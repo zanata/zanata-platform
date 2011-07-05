@@ -154,7 +154,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       public void renderRowValue(TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, AbstractCellView<TransUnit> view)
       {
          view.setStyleName("TableEditorCell TableEditorCell-Target");
-         view.setStyleAttribute("title", "click here");
+
          final Label label = new HighlightingLabel();
 
          if (rowValue.getTarget().isEmpty())
@@ -167,7 +167,6 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             label.setText(rowValue.getTarget());
             label.setStylePrimaryName("TableEditorContent");
          }
-
 
          if (findMessage != null && !findMessage.isEmpty())
          {
@@ -199,7 +198,13 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       // indicatorColumnDefinition.setMinimumColumnWidth(15);
       // indicatorColumnDefinition.setCellRenderer(indicatorCellRenderer);
       sourceColumnDefinition.setCellRenderer(sourceCellRenderer);
+      // Add Header for source column and make it unsortable
+      sourceColumnDefinition.setHeader(0, "SOURCE");
+      sourceColumnDefinition.setColumnSortable(false);
       targetColumnDefinition.setCellRenderer(targetCellRenderer);
+      // Add Header for target column and make it unsortable
+      targetColumnDefinition.setHeader(0, "TARGET");
+      targetColumnDefinition.setColumnSortable(false);
       CancelCallback<TransUnit> cancelCallBack = new CancelCallback<TransUnit>()
       {
          @Override
