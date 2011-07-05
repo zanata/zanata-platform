@@ -155,7 +155,8 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          view.setStyleName("TableEditorCell TableEditorCell-Target");
          final Label label = new HighlightingLabel(rowValue.getTarget());
          label.setStylePrimaryName("TableEditorContent");
-
+         // Add tooltip when mouse over the editor
+         label.setTitle("Click here to start translation");
          if (findMessage != null && !findMessage.isEmpty())
          {
             ((HighlightingLabel) label).highlightSearch(findMessage);
