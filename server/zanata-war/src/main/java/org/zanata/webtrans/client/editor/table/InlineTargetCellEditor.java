@@ -269,10 +269,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
                else
                   toggleFuzzy.setValue(true);
             }
-            else if ((!event.isAltKeyDown() && !event.isControlKeyDown()) && ((keyCode > 46 && keyCode < 58) || (keyCode > 64 && keyCode < 91)))
+            else if (!event.isAltKeyDown() && !event.isControlKeyDown())
             {
-               // Remove fuzzy state for fuzzy entry when typing a-z or 0-9
-               // without pressing alt and ctrl
+               // toggle fuzzy state when typing and not pressing alt and ctrl
+               // key
                toggleFuzzyBox();
             }
 
