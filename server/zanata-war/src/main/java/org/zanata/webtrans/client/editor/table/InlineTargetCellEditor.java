@@ -157,10 +157,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
     */
    // private static final int MIN_HEIGHT = 48;
 
-   private static final int KEY_G = 71;
-   private static final int KEY_J = 74;
-   private static final int KEY_K = 75;
-   private static final int KEY_N = 78;
+   private static final int KEY_G = 'G';
+   private static final int KEY_J = 'J';
+   private static final int KEY_K = 'K';
+   private static final int KEY_N = 'N';
 
    /**
     * Construct a new {@link InlineTargetCellEditor}.
