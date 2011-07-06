@@ -50,7 +50,6 @@ import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
-
 public class InlineTargetCellEditor implements CellEditor<TransUnit>
 {
 
@@ -187,7 +186,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       cancelCallback = callback;
       editRowCallback = rowCallback;
-      // textArea = new AutoSizeTextArea(3, 1);
       textArea = new TextArea();
       textArea.setStyleName("TableEditorContent-Edit");
       textArea.addBlurHandler(new BlurHandler()
@@ -273,9 +271,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             }
             else if (!event.isAltKeyDown() && !event.isControlKeyDown())
             {
-               // toggle fuzzy state when typing and not pressing alt and ctrl
+               // remove fuzzy state when typing and not pressing alt and ctrl
                // key
-               toggleFuzzyBox();
+               removeFuzzyState();
             }
 
             autoSize();
@@ -292,12 +290,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       });
 
-      /********
-       * textArea.addTextChangeEventHandler(new TextChangeEventHandler() {
-       * 
-       * @Override public void onTextChange(TextChangeEvent event) {
-       *           Log.debug("TextChangeEvent"); toggleFuzzyBox(); } });
-       *********/
       layoutTable.add(textArea);
 
       HorizontalPanel operationsPanel = new HorizontalPanel();
@@ -553,7 +545,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       autoSize();
    }
 
-   public void toggleFuzzyBox()
+   public void removeFuzzyState()
    {
       if (toggleFuzzy.getValue())
          toggleFuzzy.setValue(false);
@@ -561,20 +553,16 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    public void autoSize()
    {
-      int initLines = 3;
-      int growLines = 1;
+      int initialLines = 3;
+      int growByLines = 1;
 
       Log.debug("autosize TextArea");
-      int rows = textArea.getVisibleLines();
 
-      while (rows > initLines)
-      {
-         textArea.setVisibleLines(--rows);
-      }
+      textArea.setVisibleLines(initialLines);
 
       while (textArea.getElement().getScrollHeight() > textArea.getElement().getClientHeight())
       {
-         textArea.setVisibleLines(textArea.getVisibleLines() + growLines);
+         textArea.setVisibleLines(textArea.getVisibleLines() + growByLines);
       }
    }
 
