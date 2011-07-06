@@ -108,7 +108,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    };
    
    private final CheckBox toggleFuzzy;
-   private final PushButton acceptButton;
+   private final PushButton saveButton;
 
    /**
     * The click listener used to accept.
@@ -148,6 +148,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    private final TextArea textArea;
 
    private boolean isFocused = false;
+   private boolean isFuzzyMarked = false;
 
    // private Image stateImage;
 
@@ -222,9 +223,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             if (event.isControlKeyDown() && keyCode == KeyCodes.KEY_ENTER)
             {
                // only when accept button is visible, the shortcuts is available
-               if (acceptButton.isVisible())
+               if (saveButton.isVisible())
                   acceptEdit();
-               // gotoNextRow(curRow);
+               gotoNextRow(curRow);
             }
             else if (keyCode == KeyCodes.KEY_ESCAPE)
             {
@@ -276,9 +277,12 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             }
             else if (!event.isAltKeyDown() && !event.isControlKeyDown())
             {
-               // remove fuzzy state and show save button when start typing
-               removeFuzzyState();
+               // remove fuzzy mark only at beginning if fuzzy is marked
+               if (isFuzzyMarked)
+                  removeFuzzyMark();
+               // show save button when start typing
                showSaveButton();
+               isFuzzyMarked = false;
             }
 
             autoSize();
@@ -325,11 +329,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       cancelButton.setTitle(messages.editCancelShortcut());
       operationsPanel.add(cancelButton);
 
-      acceptButton = new PushButton(images.cellEditorAccept().createImage(), acceptHandler);
-      acceptButton.setText(messages.editSave());
-      acceptButton.setTitle(messages.editSaveShortcut());
-      acceptButton.setVisible(false);
-      operationsPanel.add(acceptButton);
+      saveButton = new PushButton(images.cellEditorAccept().createImage(), acceptHandler);
+      saveButton.setText(messages.editSave());
+      saveButton.setTitle(messages.editSaveShortcut());
+      saveButton.setVisible(false);
+      operationsPanel.add(saveButton);
    }
 
    private void gotoNextRow(int row)
@@ -439,6 +443,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       textArea.setFocus(true);
       DOM.scrollIntoView(table.getCellFormatter().getElement(curRow, curCol));
       toggleFuzzy.setValue(cellValue.getStatus() == ContentState.NeedReview);
+      if (cellValue.getStatus() == ContentState.NeedReview)
+         isFuzzyMarked = true;
       // refreshStateImage();
    }
 
@@ -463,11 +469,12 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          return;
       }
       cellValue.setTarget(textArea.getText());
+
       if (cellValue.getTarget().isEmpty())
          cellValue.setStatus(ContentState.New);
       else
-         // mark the content as approved
-         cellValue.setStatus(ContentState.Approved);
+         cellValue.setStatus(toggleFuzzy.getValue() ? ContentState.NeedReview : ContentState.Approved);
+
       restoreView();
       hideSaveButton();
 
@@ -553,7 +560,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       autoSize();
    }
 
-   public void removeFuzzyState()
+   public void removeFuzzyMark()
    {
       if (toggleFuzzy.getValue())
          toggleFuzzy.setValue(false);
@@ -561,14 +568,14 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    private void showSaveButton()
    {
-      if (!acceptButton.isVisible())
-         acceptButton.setVisible(true);
+      if (!saveButton.isVisible())
+         saveButton.setVisible(true);
    }
 
    private void hideSaveButton()
    {
-      if (acceptButton.isVisible())
-         acceptButton.setVisible(false);
+      if (saveButton.isVisible())
+         saveButton.setVisible(false);
    }
 
    public void autoSize()
