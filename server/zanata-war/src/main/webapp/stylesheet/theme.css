@@ -388,6 +388,9 @@ tr.active-row {
 	white-space: inherit;
 }
 
+#iteration-status-panel {
+    width:880px;
+}
 
 td.enabled {
 	text-align: center;
@@ -856,12 +859,13 @@ a.action_link:hover {
 
 
 .translationStatusBar{
+	float:left;
     display: block;
     padding: 3px;
     padding-right: 6px;
+    margin-right:5px;
     font-size: 12px;
     font-weight: bold;
-    color: grey;
     width: 111px;
     height: 14px;
     text-align: right;

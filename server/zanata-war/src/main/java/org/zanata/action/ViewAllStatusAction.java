@@ -22,9 +22,9 @@ package org.zanata.action;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -53,7 +53,7 @@ public class ViewAllStatusAction implements Serializable
    @In
    LocaleService localeServiceImpl;
 
-   public static class Status
+   public static class Status implements Comparable<Status>
    {
       private String locale;
       private String nativeName;
@@ -86,6 +86,12 @@ public class ViewAllStatusAction implements Serializable
       public double getPer()
       {
          return per;
+      }
+
+      @Override
+      public int compareTo(Status o)
+      {
+         return ((Double) o.getPer()).compareTo((Double) this.getPer());
       }
 
    }
@@ -139,6 +145,7 @@ public class ViewAllStatusAction implements Serializable
          Status op = new Status(var.getLocaleId().getId(), var.retrieveNativeName(), words, per);
          result.add(op);
       }
+      Collections.sort(result);
       return result;
    }
 

@@ -7,6 +7,7 @@
 
     <ui:param name="translated" value="#{status.approved}" />
     <ui:param name="untranslated" value="#{status.notApproved}" />
+    
     <ui:param name="total" value="#{status.total}" />
 	<ui:param name="pComplete" value="#{total == 0 ? 0 : 100 * translated / total}" />
 	
@@ -19,28 +20,23 @@
 	<ui:param name="vBarPos" value="#{ (total==0) ? 0 : ( (pComplete == 100 || pComplete == 0) ? -20 : -40 ) }" />
 	<ui:param name="hBarPos" value="#{ (pComplete == 100) ? 0 : ( (total == 0) ? 0 : (-120 + (120 *pComplete/100)) ) }" />
 	
-	<ui:param name="colorRed" value="#{0}" />
-	<ui:param name="colorGreen" value="#{0}" />
-	<ui:param name="colorBlue" value="#{0}" />
-	
 	<!-- 
-	RED    = rgb(200,0,0)   =   0%  
-	ORANGE = rgb(255,150,0) =  50%
-	GREEN  = rgb(0,150,0)   = 100%
-	         
+	Green(translated) Orange(untranslated) Yellow(Fuzzy)
+	#00CC00 #FF9900 #FFFF00
 	pComplete <= 50 ? RED -> ORANGE : ORANGE -> GREEN
 	-->
-	 
-	<div 
-	 title="Total: #{status.total}, Translated: #{status.approved}, Need Review #{status.needReview}"
-	 class="translationStatusBar"
-	 style="background-position: #{hBarPos}px #{vBarPos}px; color: rgb(#{colorRed},#{colorGreen},#{colorBlue});" 
-	 >
-		 <h:outputText value="#{pComplete/100}" rendered="#{status.total > 0}"> 
-			<f:convertNumber type="percent"/> 
-		 </h:outputText>
-		 <h:outputText rendered="#{status.total eq 0}"> 
-			#{messages['jsf.NoContent']}
-		 </h:outputText>
-	</div>   
+     
+     <div 
+     title="Total: #{status.total}, Translated: #{status.approved}, Need Review: #{status.needReview}"
+     class="translationStatusBar"
+     style="background-position: #{hBarPos}px #{vBarPos}px;" 
+     />
+     <div>
+     <h:outputText value="#{pComplete/100}" rendered="#{status.total > 0}"> 
+            <f:convertNumber type="percent"/>
+         </h:outputText>
+         <h:outputText rendered="#{status.total eq 0}"> 
+            #{messages['jsf.NoContent']}
+         </h:outputText>
+     </div>
 </div>

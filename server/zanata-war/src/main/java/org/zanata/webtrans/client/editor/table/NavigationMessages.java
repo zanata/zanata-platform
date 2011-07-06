@@ -96,7 +96,7 @@ public interface NavigationMessages extends Messages
 
    @DefaultMessage("Redo")
    String redoLabel();
-   
+
    @DefaultMessage("Click here to start translating")
    String clickHere();
 }
