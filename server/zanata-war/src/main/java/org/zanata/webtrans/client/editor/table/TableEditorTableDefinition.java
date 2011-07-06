@@ -159,7 +159,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
          if (rowValue.getTarget().isEmpty())
          {
-            label.setText("Click here to start translate");
+            label.setText(messages.clickHere());
             label.setStylePrimaryName("TableEditorContent-Empty");
          }
          else
