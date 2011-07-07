@@ -148,7 +148,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    private final TextArea textArea;
 
    private boolean isFocused = false;
-   private boolean isFuzzyMarked = false;
+   private boolean allowFuzzyOverwrite = false;
 
    // private Image stateImage;
 
@@ -278,11 +278,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             else if (!event.isAltKeyDown() && !event.isControlKeyDown())
             {
                // remove fuzzy mark only at beginning if fuzzy is marked
-               if (isFuzzyMarked)
+               if (allowFuzzyOverwrite)
                   removeFuzzyMark();
                // show save button when start typing
                showSaveButton();
-               isFuzzyMarked = false;
+               allowFuzzyOverwrite = false;
             }
 
             autoSize();
@@ -444,7 +444,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       DOM.scrollIntoView(table.getCellFormatter().getElement(curRow, curCol));
       toggleFuzzy.setValue(cellValue.getStatus() == ContentState.NeedReview);
       if (cellValue.getStatus() == ContentState.NeedReview)
-         isFuzzyMarked = true;
+         allowFuzzyOverwrite = true;
       // refreshStateImage();
    }
 
