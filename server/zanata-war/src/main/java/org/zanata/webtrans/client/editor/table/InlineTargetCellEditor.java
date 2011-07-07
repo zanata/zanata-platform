@@ -365,12 +365,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       }
    }
 
-   private boolean isDirty()
-   {
-      if (cellValue == null)
-         return false;
-      return !textArea.getText().equals(cellValue.getTarget());
-   }
+   /*********************
+    * private boolean isDirty() { if (cellValue == null) return false; return
+    * !textArea.getText().equals(cellValue.getTarget()); }
+    ********************/
 
    public boolean isEditing()
    {
@@ -394,10 +392,16 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
 
       // don't allow edits of two cells at once
-      if (isDirty())
+      // if (isDirty())
+      // {
+      // callback.onCancel(cellEditInfo);
+      // return;
+      // }
+      // save the content in previous cell before start new editing
+      if (this.cellValue != null && !textArea.getText().equals(this.cellValue.getTarget()))
       {
-         callback.onCancel(cellEditInfo);
-         return;
+         Log.debug("save content of previous cell");
+         acceptEdit();
       }
 
       if (isEditing())
