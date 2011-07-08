@@ -159,7 +159,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
          if (rowValue.getTarget().isEmpty())
          {
-            label.setText("Click here to start translate");
+            label.setText(messages.clickHere());
             label.setStylePrimaryName("TableEditorContent-Empty");
          }
          else
@@ -198,13 +198,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       // indicatorColumnDefinition.setMinimumColumnWidth(15);
       // indicatorColumnDefinition.setCellRenderer(indicatorCellRenderer);
       sourceColumnDefinition.setCellRenderer(sourceCellRenderer);
-      // Add Header for source column and make it unsortable
-      sourceColumnDefinition.setHeader(0, "SOURCE");
-      sourceColumnDefinition.setColumnSortable(false);
       targetColumnDefinition.setCellRenderer(targetCellRenderer);
-      // Add Header for target column and make it unsortable
-      targetColumnDefinition.setHeader(0, "TARGET");
-      targetColumnDefinition.setColumnSortable(false);
       CancelCallback<TransUnit> cancelCallBack = new CancelCallback<TransUnit>()
       {
          @Override

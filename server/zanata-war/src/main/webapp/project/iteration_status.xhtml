@@ -12,7 +12,7 @@
  
     <ui:define name="center_content">
         
-      <rich:panel>
+      <rich:panel id="iteration-status-panel">
         <f:facet name="header">#{messages['jsf.TranslationStatistics']}</f:facet>
 		<h:messages />
 		
@@ -30,10 +30,14 @@
 						<f:facet name="header">#{messages['jsf.Name']}</f:facet>
 	            		#{language.nativeName}
 	        		</rich:column>
-				<rich:column sortBy="#{language.per}">
-					<f:facet name="header">Percentage</f:facet>
-	            			#{language.per}%
-	        		</rich:column>
+	        	<rich:column sortBy="#{language.per}">
+	        	  <f:facet name="header">Percentage</f:facet>
+                  <ui:param name="tstatus" value="#{language.words}" />
+                  <ui:include src="../WEB-INF/layout/statsbar.xhtml">
+                    <ui:param name="status" value="#{tstatus}" />
+                  </ui:include>
+                </rich:column>
+    
 				<rich:column>
 					<f:facet name="header">Approved (words)</f:facet>
 					#{language.words.approved}
