@@ -858,23 +858,46 @@ a.action_link:hover {
 }
 
 
-.translationStatusBar{
+.translationStatusDiv{
 	float:left;
     display: block;
     padding: 3px;
     padding-right: 6px;
     margin-right:5px;
-    font-size: 12px;
-    font-weight: bold;
-    width: 111px;
+    width: 120px;
     height: 14px;
-    text-align: right;
-    -moz-border-radius: 6px;
+    /*text-align: right;
+     -moz-border-radius: 6px;
     -webkit-border-radius: 6px;
     background-image: url(../img/bar.png);
-    background-repeat: no-repeat;
+    background-repeat: no-repeat; */
     
 }
+.statusBar_percentage {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.translationStatusBar {
+    float:left;
+    display: block;
+    height: 14px;
+    margin:0;
+    padding:0;
+}
+
+.statusBar_approved{
+    background-color:#099b09;
+}
+
+.statusBar_needReview{
+    background-color:#ffc000;
+}
+
+.statusBar_untranslated{
+    background-color:#e5e5e5;
+}
+
 
 .language_list {
     font-size: 12px;
