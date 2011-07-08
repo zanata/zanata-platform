@@ -26,7 +26,6 @@ import java.util.Map;
 
 import javax.ws.rs.core.EntityTag;
 
-
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
@@ -192,14 +191,14 @@ public class ProjectIterationDAO extends AbstractDAOImpl<HProjectIteration, Long
          ContentState state = (ContentState) count[0];
          Long word = (Long) count[1];
          LocaleId locale = (LocaleId) count[2];
-         if (!result.containsKey(locale))
+         if (!result.containsKey(locale.getId()))
          {
             stat = new TransUnitWords();
             result.put(locale.getId(), stat);
          }
          else
          {
-            stat = result.get(locale);
+            stat = result.get(locale.getId());
          }
 
          stat.set(state, word.intValue());
