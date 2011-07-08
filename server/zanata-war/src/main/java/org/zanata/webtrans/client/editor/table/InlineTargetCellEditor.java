@@ -390,19 +390,12 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    public void editCell(CellEditInfo cellEditInfo, TransUnit cellValue, Callback<TransUnit> callback)
    {
-
       // don't allow edits of two cells at once
       // if (isDirty())
       // {
       // callback.onCancel(cellEditInfo);
       // return;
       // }
-      // save the content in previous cell before start new editing
-      if (this.cellValue != null && !textArea.getText().equals(this.cellValue.getTarget()))
-      {
-         Log.debug("save content of previous cell");
-         acceptEdit();
-      }
 
       if (isEditing())
       {
@@ -411,6 +404,13 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             return;
          }
          restoreView();
+      }
+      
+      // save the content in previous cell before start new editing
+      if (this.cellValue != null && curRow != cellEditInfo.getRowIndex() && !textArea.getText().equals(this.cellValue.getTarget()))
+      {
+         Log.debug("save content of previous cell");
+         acceptEdit();
       }
 
       Log.debug("starting edit of cell");
