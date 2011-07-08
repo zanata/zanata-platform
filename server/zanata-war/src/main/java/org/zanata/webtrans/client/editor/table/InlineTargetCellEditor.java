@@ -148,7 +148,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    private final TextArea textArea;
 
    private boolean isFocused = false;
-   private boolean isFuzzyMarked = false;
+   private boolean allowFuzzyOverride = false;
 
    // private Image stateImage;
 
@@ -278,11 +278,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             else if (!event.isAltKeyDown() && !event.isControlKeyDown())
             {
                // remove fuzzy mark only at beginning if fuzzy is marked
-               if (isFuzzyMarked)
+               if (allowFuzzyOverride)
                   removeFuzzyMark();
                // show save button when start typing
                showSaveButton();
-               isFuzzyMarked = false;
+               allowFuzzyOverride = false;
             }
 
             autoSize();
@@ -365,12 +365,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       }
    }
 
-   private boolean isDirty()
-   {
-      if (cellValue == null)
-         return false;
-      return !textArea.getText().equals(cellValue.getTarget());
-   }
+   /*********************
+    * private boolean isDirty() { if (cellValue == null) return false; return
+    * !textArea.getText().equals(cellValue.getTarget()); }
+    ********************/
 
    public boolean isEditing()
    {
@@ -394,10 +392,16 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    {
 
       // don't allow edits of two cells at once
-      if (isDirty())
+      // if (isDirty())
+      // {
+      // callback.onCancel(cellEditInfo);
+      // return;
+      // }
+      // save the content in previous cell before start new editing
+      if (this.cellValue != null && !textArea.getText().equals(this.cellValue.getTarget()))
       {
-         callback.onCancel(cellEditInfo);
-         return;
+         Log.debug("save content of previous cell");
+         acceptEdit();
       }
 
       if (isEditing())
@@ -444,7 +448,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       DOM.scrollIntoView(table.getCellFormatter().getElement(curRow, curCol));
       toggleFuzzy.setValue(cellValue.getStatus() == ContentState.NeedReview);
       if (cellValue.getStatus() == ContentState.NeedReview)
-         isFuzzyMarked = true;
+         allowFuzzyOverride = true;
       // refreshStateImage();
    }
 
