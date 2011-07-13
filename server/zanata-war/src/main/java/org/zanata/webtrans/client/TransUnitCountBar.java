@@ -1,15 +1,13 @@
 package org.zanata.webtrans.client;
 
 import org.zanata.common.ContentState;
-import org.zanata.common.TransUnitCount;
-import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
 import org.zanata.webtrans.client.editor.HasTranslationStats;
-
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -29,7 +27,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
    {
    }
 
-   private LabelFormat labelFormat = LabelFormat.DEFAULT_FORMAT;
+   LabelFormat labelFormat = LabelFormat.DEFAULT_FORMAT;
 
    @UiField
    LayoutPanel layoutPanel;
@@ -43,6 +41,8 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
    private final TranslationStats stats = new TranslationStats();
 
    private final WebTransMessages messages;
+   
+   private int totalWidth = 100;
 
    @Inject
    public TransUnitCountBar(WebTransMessages messages)
@@ -51,44 +51,48 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
       initWidget(uiBinder.createAndBindUi(this));
    }
 
+   public TransUnitCountBar(WebTransMessages messages, int totalWidth)
+   {
+      this.messages = messages;
+      this.totalWidth = totalWidth;
+   }
+
+   protected LayoutPanel setupLayoutPanel(double undefinedLeft, double undefinedWidth, double approvedLeft, double approvedWidth, double needReviewLeft, double needReviewWidth, double untranslatedLeft, double untranslatedWidth)
+   {
+      layoutPanel.setWidgetLeftWidth(undefinedPanel, undefinedLeft, Unit.PX, undefinedWidth, Unit.PX);
+      layoutPanel.setWidgetLeftWidth(approvedPanel, approvedLeft, Unit.PX, approvedWidth, Unit.PX);
+      layoutPanel.setWidgetLeftWidth(needReviewPanel, needReviewLeft, Unit.PX, needReviewWidth, Unit.PX);
+      layoutPanel.setWidgetLeftWidth(untranslatedPanel, untranslatedLeft, Unit.PX, untranslatedWidth, Unit.PX);
+      return layoutPanel;
+   }
+
    public void refresh()
    {
-      TransUnitCount count = stats.getUnitCount();
-      TransUnitWords words = stats.getWordCount();
-      int approved = count.get(ContentState.Approved);
-      int needReview = count.get(ContentState.NeedReview);
-      int untranslated = count.get(ContentState.New);
-      int total = approved + needReview + untranslated;
+      int approved = getUnitApproved();
+      int needReview = getUnitNeedReview();
+      int untranslated = getUnitUntranslated();
+      int total = getUnitTotal();
       int width = getOffsetWidth();
       layoutPanel.forceLayout();
       if (total == 0)
       {
-         layoutPanel.setWidgetLeftWidth(undefinedPanel, 0.0, Unit.PX, 100, Unit.PC);
-         layoutPanel.setWidgetLeftWidth(approvedPanel, 0.0, Unit.PX, 0, Unit.PX);
-         layoutPanel.setWidgetLeftWidth(needReviewPanel, 0.0, Unit.PX, 0, Unit.PX);
-         layoutPanel.setWidgetLeftWidth(untranslatedPanel, 0.0, Unit.PX, 0, Unit.PX);
+         setupLayoutPanel(0.0, 100, 0.0, 0, 0.0, 0, 0.0, 0);
          label.setText("");
       }
       else
       {
          if (labelFormat != LabelFormat.MESSAGE_COUNTS)
          {
-            approved = words.get(ContentState.Approved);
-            needReview = words.get(ContentState.NeedReview);
-            untranslated = words.get(ContentState.New);
-            total = approved + needReview + untranslated;
+            approved = getWordsApproved();
+            needReview = getWordsNeedReview();
+            untranslated = getWordsUntranslated();
+            total = getWordsTotal();
          }
-         int completePx = approved * 100 / total * width / 100;
-         int inProgressPx = needReview * 100 / total * width / 100;
-         ;
-         int unfinishedPx = untranslated * 100 / total * width / 100;
-         ;
+         int completePx = approved * 100 / total * width / totalWidth;
+         int inProgressPx = needReview * 100 / total * width / totalWidth;
+         int unfinishedPx = untranslated * 100 / total * width / totalWidth;
 
-         layoutPanel.setWidgetLeftWidth(undefinedPanel, 0.0, Unit.PX, 0, Unit.PX);
-
-         layoutPanel.setWidgetLeftWidth(approvedPanel, 0.0, Unit.PX, completePx, Unit.PX);
-         layoutPanel.setWidgetLeftWidth(needReviewPanel, completePx, Unit.PX, inProgressPx, Unit.PX);
-         layoutPanel.setWidgetLeftWidth(untranslatedPanel, completePx + inProgressPx, Unit.PX, unfinishedPx, Unit.PX);
+         setupLayoutPanel(0.0, 0, 0.0, completePx, completePx, inProgressPx, completePx + inProgressPx, unfinishedPx);
 
          switch (labelFormat)
          {
@@ -97,7 +101,6 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
             break;
          case HOURS_REMAIN:
             double remainHours = remainingHours(needReview, untranslated);
-            // label.setText(NumberFormat.getFormat("0.0").format(remainHours));
             label.setText(messages.statusBarLabelWork(remainHours));
             break;
          case WORD_COUNTS:
@@ -107,12 +110,61 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
             label.setText(messages.statusBarLabelUnits(approved, needReview, untranslated));
             break;
          default:
-            // error
             label.setText("error: " + labelFormat.name());
          }
       }
-
+      refreshPopupPanel();
       layoutPanel.animate(1000);
+   }
+
+   public void refreshPopupPanel()
+   {
+   }
+
+   public int getWordsTotal()
+   {
+      return getWordsApproved() + getWordsNeedReview() + getWordsUntranslated();
+   }
+
+   public int getWordsApproved()
+   {
+      return stats.getWordCount().get(ContentState.Approved);
+   }
+
+   public int getWordsNeedReview()
+   {
+      return stats.getWordCount().get(ContentState.NeedReview);
+   }
+
+   public int getWordsUntranslated()
+   {
+      return stats.getWordCount().get(ContentState.New);
+   }
+
+   public int getUnitTotal()
+   {
+      return getUnitApproved() + getUnitNeedReview() + getUnitUntranslated();
+   }
+
+   public int getUnitApproved()
+   {
+      return stats.getUnitCount().get(ContentState.Approved);
+   }
+
+   public int getUnitNeedReview()
+   {
+      return stats.getUnitCount().get(ContentState.NeedReview);
+   }
+
+   public int getUnitUntranslated()
+   {
+      return stats.getUnitCount().get(ContentState.New);
+   }
+
+   protected String getRemainingWordsHours()
+   {
+      double remainingHours = remainingHours(getWordsNeedReview(), getWordsUntranslated());
+      return NumberFormat.getFormat("#").format(remainingHours);
    }
 
    protected double remainingHours(int fuzzyWords, int untranslatedWords)

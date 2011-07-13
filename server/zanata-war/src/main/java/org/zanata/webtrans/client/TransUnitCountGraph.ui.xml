@@ -1,0 +1,73 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	
+	<ui:style type="org.zanata.webtrans.client.TransUnitCountGraph.Styles">
+	
+		.approved {
+			background: #099b09;
+			z-index: 0;
+		}
+		
+		.needReview {
+			background: #ffc000;
+			z-index: 0;
+		}
+		
+		.untranslated {
+			background: #e5e5e5;
+			z-index: 0;
+		}
+		
+		.undefined {
+			background: #f7f488;
+			z-index: 0;
+		}
+		
+		.label {
+			font-weight: bold;
+			text-align: right;
+			font-size:12px;
+		}
+		
+		.tooltipPanel {
+		  background-color:#F7F488;
+		  color:black;
+		  text-align:center;
+		  border:1px solid black;
+		  height:60px;
+		}
+		
+		.toolTipTable 
+		{
+		  text-align:center;
+		  font-size:12px
+		  
+		}
+		
+		.toolTipTable TD
+        {
+          border:1px dotted black;
+        }
+		
+	</ui:style>
+
+	<g:LayoutPanel ui:field='layoutPanel'>
+		<g:layer left='0' width='0'>
+			<g:FlowPanel ui:field='approvedPanel' styleName="{style.approved}" />
+		</g:layer>
+		<g:layer left='0' width='0'>
+			<g:FlowPanel ui:field='needReviewPanel' styleName="{style.needReview}" />
+		</g:layer>
+		<g:layer left='0' width='0'>
+			<g:FlowPanel ui:field='untranslatedPanel' styleName="{style.untranslated}" />
+		</g:layer>
+		<g:layer left='0' width='100%'>
+			<g:FlowPanel ui:field='undefinedPanel' styleName="{style.undefined}" />
+		</g:layer>
+		<g:layer right='2px' margin-left="auto" width="25px">
+			<g:Label ui:field='label' styleName='{style.label}' />
+		</g:layer>
+	</g:LayoutPanel>
+
+</ui:UiBinder> 

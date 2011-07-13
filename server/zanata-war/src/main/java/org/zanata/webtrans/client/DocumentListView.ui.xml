@@ -18,6 +18,40 @@
 			-moz-border-radius: 7px;
 			-webkit-border-radius: 7px;
 		}
+		.body {
+            padding: 5px;
+            padding-left: 20px;
+            border-top: 1px solid #f5f5f5;
+            border-bottom: 1px solid #f5f5f5;
+            height: 28px;
+        }
+        
+        .label {
+            display: inline;
+            font-size: 1.3em;
+            padding-left: 10px;
+        }
+        
+        .columnHeader {
+            float:left;
+            font-size:12px;
+            font-weight:bold;
+            font-family:Arial,Verdana,sans-serif;
+            text-align:center;
+            width:110px;
+            padding-top:4px;
+        }
+        
+        .columnSeperator {
+            float:left;
+            font-size:14px;
+            font-weight:bold;
+            font-family:Arial,Verdana,sans-serif;
+            padding-top:2px;
+        }
+        
+       
+        
 	</ui:style>
 	<g:LayoutPanel>
 		<g:layer top="0px" bottom="8px">
@@ -28,7 +62,22 @@
 				<g:layer top='4px' height='18px' right="2px" width="100px">
 					<f:TransUnitCountBar ui:field='transUnitCountBar' styleName="{style.unitStatus}"/>
 				</g:layer>
-				<g:layer top='24px' bottom="2px">
+				
+				<g:layer top="25px" height="20px" width="470px" right="0" margin-left="auto">
+				    <g:FlowPanel width="100%">
+				        <g:Label styleName="{style.columnSeperator}">|</g:Label>
+					    <g:Label styleName="{style.columnHeader}">Statistic</g:Label>
+					    <g:Label styleName="{style.columnSeperator}">|</g:Label>
+					    <g:Label styleName="{style.columnHeader}">Translated</g:Label>
+					    <g:Label styleName="{style.columnSeperator}">|</g:Label>
+					    <g:Label styleName="{style.columnHeader}">Untranslated</g:Label>
+					    <g:Label styleName="{style.columnSeperator}">|</g:Label>
+					    <g:Label styleName="{style.columnHeader}">Remaining</g:Label>
+					    <g:Label styleName="{style.columnSeperator}">|</g:Label>
+				    </g:FlowPanel>
+				</g:layer>
+                
+				<g:layer top='50px' bottom="2px">
 					<g:ScrollPanel ui:field='documentScrollPanel'>
 						<g:FlowPanel ui:field='documentList' />
 					</g:ScrollPanel>

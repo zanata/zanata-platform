@@ -7,12 +7,21 @@
 
 	<ui:style type="org.zanata.webtrans.client.DocumentNode.Styles">
 		.body {
-			padding: 5px;
-			padding-left: 20px;
+			padding-top: 5px;
 			border-top: 1px solid #f5f5f5;
 			border-bottom: 1px solid #f5f5f5;
 			height: 28px;
 		}
+		
+		.rightBody {
+            padding-left: 20px;
+            padding-top:5px;
+            border-top: 1px solid #f5f5f5;
+            border-bottom: 1px solid #f5f5f5;
+            height: 28px;
+            float:right;
+            width:470px;
+        }
 		
 		.label {
 			display: inline;
@@ -45,22 +54,54 @@
 		}
 		
 		.unitStatus {
-			float: right;
-			right: 2px;
-			top: 6px;
-			width: 100px;
+			float: left;
+			padding-right:25px;
+			width: 90px;
 			height: 1.2em;
+			top:3px;
 		}
 		
+		.columnHeader {
+            float:left;
+            font-size:12px;
+            font-weight:bold;
+            font-family:Arial,Verdana,sans-serif;
+            text-align:center;
+            width:110px;
+            padding-top:4px;
+        }
+        
+        .columnSeperator {
+            float:left;
+            font-size:14px;
+            font-weight:bold;
+            font-family:Arial,Verdana,sans-serif;
+            padding-top:2px;
+        }
+        
+        .documentNode {
+            padding-left:20px;
+        }
+		
 	</ui:style>
-	<g:HorizontalPanel width="100%">
-		<g:FlowPanel styleName='{style.body}' ui:field='rootPanel'>
-			<g:Image resource='{resources.documentImage}'  />
-			<g:Label ui:field='documentLabel' styleName="{style.label}" />
-		</g:FlowPanel>
-		<g:FlowPanel styleName='{style.body}'>
-			<f:TransUnitCountBar ui:field='transUnitCountBar' styleName="{style.unitStatus}"/>
-		</g:FlowPanel>
+	<g:HorizontalPanel width="100%" styleName='{style.documentNode}'>
+        <g:FlowPanel styleName='{style.body}' ui:field='rootPanel'>
+            <g:Image resource='{resources.documentImage}'  />
+            <g:Label ui:field='documentLabel' styleName="{style.label}" />
+        </g:FlowPanel>
+
+		<g:FlowPanel styleName='{style.rightBody}'>
+			<g:Label styleName="{style.columnSeperator}">|</g:Label>
+			<f:TransUnitCountGraph ui:field='transUnitCountGraph' styleName="{style.unitStatus}" />
+			<g:Label styleName="{style.columnSeperator}">|</g:Label>
+			<g:Label ui:field='translatedWordsLabel' styleName="{style.columnHeader}" />
+			<g:Label styleName="{style.columnSeperator}">|</g:Label>
+			<g:Label ui:field='untranslatedWordsLabel' styleName="{style.columnHeader}" />
+			<g:Label styleName="{style.columnSeperator}">|</g:Label>
+			<g:Label ui:field='hoursLeftLabel' styleName="{style.columnHeader}" />
+			<g:Label styleName="{style.columnSeperator}">|</g:Label>
+	   </g:FlowPanel>
+               
 	</g:HorizontalPanel>
 	
 </ui:UiBinder> 

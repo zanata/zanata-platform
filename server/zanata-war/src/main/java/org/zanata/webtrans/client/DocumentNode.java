@@ -20,6 +20,8 @@
  */
 package org.zanata.webtrans.client;
 
+import net.customware.gwt.presenter.client.EventBus;
+
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.common.TranslationStats;
@@ -30,8 +32,6 @@ import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.rpc.GetStatusCount;
 import org.zanata.webtrans.shared.rpc.GetStatusCountResult;
-
-import net.customware.gwt.presenter.client.EventBus;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
@@ -67,6 +67,15 @@ public class DocumentNode extends Node<DocumentInfo>
    private static final HyperlinkImpl impl = new HyperlinkImpl();
 
    @UiField
+   Label translatedWordsLabel;
+
+   @UiField
+   Label untranslatedWordsLabel;
+
+   @UiField
+   Label hoursLeftLabel;
+
+   @UiField
    Label documentLabel;
 
 
@@ -74,7 +83,7 @@ public class DocumentNode extends Node<DocumentInfo>
    final Resources resources;
 
    @UiField(provided = true)
-   TransUnitCountBar transUnitCountBar;
+   TransUnitCountGraph transUnitCountGraph;
 
    @UiField(provided = true)
    final FlowPanel rootPanel;
@@ -90,7 +99,7 @@ public class DocumentNode extends Node<DocumentInfo>
    {
       this.resources = resources;
       this.messages = messages;
-      this.transUnitCountBar = new TransUnitCountBar(messages);
+      this.transUnitCountGraph = new TransUnitCountGraph(messages);
       this.dispatcher = dispatcher;
 
       rootPanel = new FlowPanel()
@@ -144,7 +153,11 @@ public class DocumentNode extends Node<DocumentInfo>
                unitCount.increment(event.getTransUnit().getStatus());
                wordCount.decrement(event.getPreviousStatus(), event.getWordCount());
                wordCount.increment(event.getTransUnit().getStatus(), event.getWordCount());
-               getTransUnitCountBar().setStats(statusCount);
+               getTransUnitCountGraph().setStats(statusCount);
+
+               translatedWordsLabel.setText(getTransUnitCountGraph().getWordsApproved() + " words");
+               untranslatedWordsLabel.setText(getTransUnitCountGraph().getWordsUntranslated() + " words");
+               hoursLeftLabel.setText(getTransUnitCountGraph().getRemainingWordsHours() + " hours");
             }
          }
       });
@@ -163,9 +176,9 @@ public class DocumentNode extends Node<DocumentInfo>
       return true;
    }
 
-   public TransUnitCountBar getTransUnitCountBar()
+   public TransUnitCountGraph getTransUnitCountGraph()
    {
-      return this.transUnitCountBar;
+      return this.transUnitCountGraph;
    }
 
    public void setSelected(boolean selected)
@@ -194,7 +207,10 @@ public class DocumentNode extends Node<DocumentInfo>
          public void onSuccess(GetStatusCountResult result)
          {
             statusCount.set(result.getCount());
-            getTransUnitCountBar().setStats(statusCount);
+            getTransUnitCountGraph().setStats(statusCount);
+            translatedWordsLabel.setText(getTransUnitCountGraph().getWordsApproved() + " words");
+            untranslatedWordsLabel.setText(getTransUnitCountGraph().getWordsUntranslated() + " words");
+            hoursLeftLabel.setText(getTransUnitCountGraph().getRemainingWordsHours() + " hours");
          }
       });
    }

@@ -23,6 +23,8 @@ package org.zanata.webtrans.client;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import net.customware.gwt.presenter.client.EventBus;
+
 import org.zanata.webtrans.client.editor.HasTranslationStats;
 import org.zanata.webtrans.client.editor.filter.ContentFilter;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -30,8 +32,6 @@ import org.zanata.webtrans.client.ui.ClearableTextBox;
 import org.zanata.webtrans.client.ui.UiMessages;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
-
-import net.customware.gwt.presenter.client.EventBus;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
