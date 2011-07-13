@@ -22,16 +22,22 @@ package org.zanata.webtrans.client.editor.table;
 
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.zanata.common.ContentState;
+import org.zanata.webtrans.client.events.ToggleFuzzyEvent;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.table.client.AbstractColumnDefinition;
 import com.google.gwt.gen2.table.client.CellRenderer;
 import com.google.gwt.gen2.table.client.ColumnDefinition;
 import com.google.gwt.gen2.table.client.DefaultTableDefinition;
 import com.google.gwt.gen2.table.client.RowRenderer;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit>
 {
@@ -41,6 +47,8 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
    public static final int TARGET_COL = 1;
 
    private String findMessage;
+   private CheckBox toggleFuzzy;
+   private EventBus eventBus;
 
    private final RowRenderer<TransUnit> rowRenderer = new RowRenderer<TransUnit>()
    {
@@ -131,6 +139,52 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       }
    };
 
+   private final AbstractColumnDefinition<TransUnit, TransUnit> operationsColumnDefinition = new AbstractColumnDefinition<TransUnit, TransUnit>()
+   {
+      @Override
+      public TransUnit getCellValue(TransUnit rowValue)
+      {
+         return rowValue;
+      }
+
+      @Override
+      public void setCellValue(TransUnit rowValue, TransUnit cellValue)
+      {
+         cellValue.setStatus(rowValue.getStatus());
+      }
+   };
+
+   private final CellRenderer<TransUnit, TransUnit> operationsCellRenderer = new CellRenderer<TransUnit, TransUnit>()
+   {
+      @Override
+      public void renderRowValue(final TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, AbstractCellView<TransUnit> view)
+      {
+         // view.setStyleName("TableEditorCell TableEditorCell-Source");
+         VerticalPanel operationsPanel = new VerticalPanel();
+         toggleFuzzy = new CheckBox(messages.fuzzy());
+         if (rowValue.getStatus() == ContentState.NeedReview)
+            toggleFuzzy.setValue(true);
+         else
+            toggleFuzzy.setValue(false);
+         toggleFuzzy.addValueChangeHandler(new ValueChangeHandler<Boolean>()
+         {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> event)
+            {
+               if (event.getValue())
+                  rowValue.setStatus(ContentState.NeedReview);
+               else
+                  rowValue.setStatus(ContentState.New);
+
+               eventBus.fireEvent(new ToggleFuzzyEvent(rowValue));
+            }
+
+         });
+         operationsPanel.add(toggleFuzzy);
+         view.setWidget(operationsPanel);
+      }
+   };
+
    private final AbstractColumnDefinition<TransUnit, TransUnit> targetColumnDefinition = new AbstractColumnDefinition<TransUnit, TransUnit>()
    {
 
@@ -156,6 +210,11 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          view.setStyleName("TableEditorCell TableEditorCell-Target");
 
          final Label label = new HighlightingLabel();
+
+         // if editor is opening, do not render target cell, otherwise editor
+         // will be closed
+         if (targetCellEditor.isEditing())
+            return;
 
          if (rowValue.getTarget().isEmpty())
          {
@@ -192,12 +251,17 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
    public TableEditorTableDefinition(final NavigationMessages messages, final RedirectingCachedTableModel<TransUnit> tableModel, final EventBus eventBus)
    {
       this.messages = messages;
+      this.eventBus = eventBus;
       setRowRenderer(rowRenderer);
       // indicatorColumnDefinition.setMaximumColumnWidth(15);
       // indicatorColumnDefinition.setPreferredColumnWidth(15);
       // indicatorColumnDefinition.setMinimumColumnWidth(15);
       // indicatorColumnDefinition.setCellRenderer(indicatorCellRenderer);
       sourceColumnDefinition.setCellRenderer(sourceCellRenderer);
+      operationsColumnDefinition.setMaximumColumnWidth(60);
+      operationsColumnDefinition.setPreferredColumnWidth(60);
+      operationsColumnDefinition.setMinimumColumnWidth(60);
+      operationsColumnDefinition.setCellRenderer(operationsCellRenderer);
       targetColumnDefinition.setCellRenderer(targetCellRenderer);
       CancelCallback<TransUnit> cancelCallBack = new CancelCallback<TransUnit>()
       {
@@ -239,9 +303,9 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       // See _INDEX consts above if modifying!
       // addColumnDefinition(indicatorColumnDefinition);
       addColumnDefinition(sourceColumnDefinition);
+      addColumnDefinition(operationsColumnDefinition);
       addColumnDefinition(targetColumnDefinition);
    }
-
 
    public InlineTargetCellEditor getTargetCellEditor()
    {

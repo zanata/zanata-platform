@@ -24,6 +24,7 @@ import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.EditTransUnitEvent;
+import org.zanata.webtrans.client.events.ToggleFuzzyEvent;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -107,7 +108,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       }
    };
    
-   private final CheckBox toggleFuzzy;
+   // private final CheckBox toggleFuzzy;
    private final PushButton saveButton;
 
    /**
@@ -155,6 +156,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    private int curRow;
    private int curCol;
    private HTMLTable table;
+   private EventBus eventBus;
 
 
    /*
@@ -165,7 +167,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    private static final int KEY_G = 'G';
    private static final int KEY_J = 'J';
    private static final int KEY_K = 'K';
-   private static final int KEY_N = 'N';
 
    /**
     * Construct a new {@link InlineTargetCellEditor}.
@@ -188,6 +189,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       // Wrap contents in a table
       layoutTable = new FlowPanel();
 
+      this.eventBus = eventBus;
       cancelCallback = callback;
       editRowCallback = rowCallback;
       textArea = new TextArea();
@@ -268,13 +270,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             { // alt-pageup
                handlePrevState();
             }
-            else if (event.isAltKeyDown() && keyCode == KEY_N)
-            {
-               if (toggleFuzzy.getValue())
-                  toggleFuzzy.setValue(false);
-               else
-                  toggleFuzzy.setValue(true);
-            }
+            /******
+             * else if (event.isAltKeyDown() && keyCode == KEY_N) { if
+             * (toggleFuzzy.getValue()) toggleFuzzy.setValue(false); else
+             * toggleFuzzy.setValue(true); }
+             ********/
             else if (!event.isAltKeyDown() && !event.isControlKeyDown())
             {
                // remove fuzzy mark only at beginning if fuzzy is marked
@@ -311,8 +311,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       // operationsPanel.add(stateImage);
 
       // Add content widget
-      toggleFuzzy = new CheckBox(messages.fuzzy());
-      operationsPanel.add(toggleFuzzy);
+      // toggleFuzzy = new CheckBox(messages.fuzzy());
+      // operationsPanel.add(toggleFuzzy);
 
       PushButton cloneButton = new PushButton(new Image(), cloneHandler);
       cloneButton.setText(messages.editClone());
@@ -446,7 +446,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       this.cellValue = cellValue;
       textArea.setFocus(true);
       DOM.scrollIntoView(table.getCellFormatter().getElement(curRow, curCol));
-      toggleFuzzy.setValue(cellValue.getStatus() == ContentState.NeedReview);
+      // toggleFuzzy.setValue(cellValue.getStatus() == ContentState.NeedReview);
       if (cellValue.getStatus() == ContentState.NeedReview)
          allowFuzzyOverride = true;
       // refreshStateImage();
@@ -476,8 +476,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       if (cellValue.getTarget().isEmpty())
          cellValue.setStatus(ContentState.New);
-      else
-         cellValue.setStatus(toggleFuzzy.getValue() ? ContentState.NeedReview : ContentState.Approved);
+      // else
+      // cellValue.setStatus(toggleFuzzy.getValue() ? ContentState.NeedReview :
+      // ContentState.Approved);
 
       restoreView();
       hideSaveButton();
@@ -566,8 +567,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    public void removeFuzzyMark()
    {
-      if (toggleFuzzy.getValue())
-         toggleFuzzy.setValue(false);
+      cellValue.setStatus(ContentState.New);
+      eventBus.fireEvent(new ToggleFuzzyEvent(cellValue));
    }
 
    private void showSaveButton()
