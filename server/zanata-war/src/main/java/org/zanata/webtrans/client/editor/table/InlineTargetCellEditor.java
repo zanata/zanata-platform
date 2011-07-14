@@ -42,6 +42,7 @@ import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.client.InlineCellEditor.InlineCellEditorImages;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -59,7 +60,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
     */
    public static interface TargetCellEditorImages extends InlineCellEditorImages
    {
+      @Resource("org/zanata/webtrans/images/crystal_project/16x16/actions/button_save.png")
+      AbstractImagePrototype cellEditorAccept();
 
+      @Resource("org/zanata/webtrans/images/crystal_project/16x16/actions/button_cancel.png")
+      AbstractImagePrototype cellEditorCancel();
    }
 
    /**
@@ -323,13 +328,14 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       cloneAndSaveButton.setTitle(messages.editCloneAndSaveShortcut());
       operationsPanel.add(cloneAndSaveButton);
 
+      // PushButton doesn't allow to have images and text at the same time
       PushButton cancelButton = new PushButton(images.cellEditorCancel().createImage(), cancelHandler);
-      cancelButton.setText(messages.editCancel());
+      // cancelButton.setText(messages.editCancel());
       cancelButton.setTitle(messages.editCancelShortcut());
       operationsPanel.add(cancelButton);
 
       saveButton = new PushButton(images.cellEditorAccept().createImage(), acceptHandler);
-      saveButton.setText(messages.editSave());
+      // saveButton.setText(messages.editSave());
       saveButton.setTitle(messages.editSaveShortcut());
       saveButton.setEnabled(false);
       operationsPanel.add(saveButton);

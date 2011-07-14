@@ -5,6 +5,11 @@ header.
 A summary of the individual contributors is given below. Any omission should
 be sent to Sean Flanigan <sflaniga@redhat.com>.
 
+Libraries
+---------
+* Crystal Project Icons http://www.everaldo.com/crystal/ (Copyright (c)  2006-2007  Everaldo Coelho, LGPL)
+* TODO
+
 Contributor Name <email@address>               Role
 ------------------------------------------------------------------------------
 Asgeir Frimannsson <asgeirf@redhat.com>        Project Founder and Lead
