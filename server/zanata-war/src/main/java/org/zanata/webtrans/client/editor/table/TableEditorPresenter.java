@@ -456,6 +456,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             int row = display.getCurrentPage() * display.getPageSize() + rowOffset;
             Log.info("toggle Fuzzy for " + row);
             display.getTableModel().setRowValueOverride(row, event.getTransUnit());
+            display.getTargetCellEditor().enableSaveButton();
          }
 
       }));

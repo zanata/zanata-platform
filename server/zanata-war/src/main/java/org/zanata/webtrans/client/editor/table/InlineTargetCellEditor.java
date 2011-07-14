@@ -42,7 +42,6 @@ import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.client.InlineCellEditor.InlineCellEditorImages;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -78,7 +77,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          textArea.setText(cellValue.getSource());
          textArea.setFocus(true);
          autoSize();
-         showSaveButton();
+         enableSaveButton();
          Log.info("InlineTargetCellEditor.java: Clone action.");
       }
    };
@@ -104,7 +103,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       public void onClick(ClickEvent event)
       {
          cancelEdit();
-         hideSaveButton();
+         disableSaveButton();
       }
    };
    
@@ -280,8 +279,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
                // remove fuzzy mark only at beginning if fuzzy is marked
                if (allowFuzzyOverride)
                   removeFuzzyMark();
-               // show save button when start typing
-               showSaveButton();
+               // enable save button when start typing
+               enableSaveButton();
                allowFuzzyOverride = false;
             }
 
@@ -332,7 +331,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       saveButton = new PushButton(images.cellEditorAccept().createImage(), acceptHandler);
       saveButton.setText(messages.editSave());
       saveButton.setTitle(messages.editSaveShortcut());
-      saveButton.setVisible(false);
+      saveButton.setEnabled(false);
       operationsPanel.add(saveButton);
    }
 
@@ -363,6 +362,18 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          curCellEditInfo.getTable().setWidget(curRow, curCol, cellViewWidget);
          cellViewWidget.getParent().setHeight(cellViewWidget.getOffsetHeight() + "px");
       }
+   }
+
+   private void disableSaveButton()
+   {
+      if (saveButton.isEnabled())
+         saveButton.setEnabled(false);
+   }
+
+   private void removeFuzzyMark()
+   {
+      cellValue.setStatus(ContentState.New);
+      eventBus.fireEvent(new ToggleFuzzyEvent(cellValue));
    }
 
    /*********************
@@ -474,14 +485,14 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       }
       cellValue.setTarget(textArea.getText());
 
-      if (cellValue.getTarget().isEmpty())
+      // avoid changing status from fuzzy to new when target cell is empty
+      if (cellValue.getTarget().isEmpty() && cellValue.getStatus() != ContentState.NeedReview)
          cellValue.setStatus(ContentState.New);
-      // else
-      // cellValue.setStatus(toggleFuzzy.getValue() ? ContentState.NeedReview :
-      // ContentState.Approved);
+      else if (cellValue.getStatus() == ContentState.New)
+         cellValue.setStatus(ContentState.Approved);
 
       restoreView();
-      hideSaveButton();
+      disableSaveButton();
 
       // Send the new cell value to the callback
       curCallback.onComplete(curCellEditInfo, cellValue);
@@ -565,22 +576,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       autoSize();
    }
 
-   public void removeFuzzyMark()
+   public void enableSaveButton()
    {
-      cellValue.setStatus(ContentState.New);
-      eventBus.fireEvent(new ToggleFuzzyEvent(cellValue));
-   }
-
-   private void showSaveButton()
-   {
-      if (!saveButton.isVisible())
-         saveButton.setVisible(true);
-   }
-
-   private void hideSaveButton()
-   {
-      if (saveButton.isVisible())
-         saveButton.setVisible(false);
+      if (!saveButton.isEnabled())
+         saveButton.setEnabled(true);
    }
 
    public void autoSize()
