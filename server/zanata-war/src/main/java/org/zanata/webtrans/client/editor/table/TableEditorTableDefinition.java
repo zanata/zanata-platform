@@ -23,11 +23,14 @@ package org.zanata.webtrans.client.editor.table;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.common.ContentState;
+import org.zanata.webtrans.client.events.CopySourceEvent;
 import org.zanata.webtrans.client.events.ToggleFuzzyEvent;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.table.client.AbstractColumnDefinition;
@@ -37,7 +40,9 @@ import com.google.gwt.gen2.table.client.DefaultTableDefinition;
 import com.google.gwt.gen2.table.client.RowRenderer;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Image;
 
 public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit>
 {
@@ -180,6 +185,21 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             }
 
          });
+         PushButton copyButton = new PushButton(new Image());
+         copyButton.setText(messages.editClone());
+         copyButton.setTitle(messages.editCloneShortcut());
+         copyButton.addClickHandler(new ClickHandler()
+         {
+
+            @Override
+            public void onClick(ClickEvent event)
+            {
+               rowValue.setTarget(rowValue.getSource());
+               eventBus.fireEvent(new CopySourceEvent(rowValue));
+            }
+
+         });
+         operationsPanel.add(copyButton);
          operationsPanel.add(toggleFuzzy);
          view.setWidget(operationsPanel);
       }
@@ -213,7 +233,9 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
          // if editor is opening, do not render target cell, otherwise editor
          // will be closed
-         if (targetCellEditor.isEditing())
+         // targetCellEditor.isEditing not suitable since when we click the save
+         // button, cellValue is not null.
+         if (targetCellEditor.isOpened())
             return;
 
          if (rowValue.getTarget().isEmpty())

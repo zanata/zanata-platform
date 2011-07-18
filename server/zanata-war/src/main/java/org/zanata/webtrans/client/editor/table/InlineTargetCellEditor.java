@@ -45,7 +45,6 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ImageBundle;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.TextArea;
@@ -75,30 +74,21 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    /**
     * The click listener used to clone.
     */
-   private ClickHandler cloneHandler = new ClickHandler()
-   {
-      public void onClick(ClickEvent event)
-      {
-         textArea.setText(cellValue.getSource());
-         textArea.setFocus(true);
-         autoSize();
-         enableSaveButton();
-         Log.info("InlineTargetCellEditor.java: Clone action.");
-      }
-   };
-
+   /************
+    * private ClickHandler cloneHandler = new ClickHandler() { public void
+    * onClick(ClickEvent event) { textArea.setText(cellValue.getSource());
+    * textArea.setFocus(true); autoSize(); enableSaveButton();
+    * Log.info("InlineTargetCellEditor.java: Clone action."); } };
+    *************/
    /**
     * The click listener used to clone and save.
     */
-   private ClickHandler cloneAndSaveHandler = new ClickHandler()
-   {
-      public void onClick(ClickEvent event)
-      {
-         cloneHandler.onClick(null);
-         acceptHandler.onClick(null);
-         Log.info("InlineTargetCellEditor.java: Clone-and-save action (The last clone action is called by this action).");
-      }
-   };
+   /****************
+    * private ClickHandler cloneAndSaveHandler = new ClickHandler() { public
+    * void onClick(ClickEvent event) { cloneHandler.onClick(null);
+    * acceptHandler.onClick(null); Log.info("InlineTargetCellEditor.java: Clone-and-save action (The last clone action is called by this action)."
+    * ); } };
+    *****************/
 
    /**
     * The click listener used to cancel.
@@ -154,6 +144,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    private boolean isFocused = false;
    private boolean allowFuzzyOverride = false;
+   private boolean isOpened = false;
 
    // private Image stateImage;
 
@@ -318,15 +309,16 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       // toggleFuzzy = new CheckBox(messages.fuzzy());
       // operationsPanel.add(toggleFuzzy);
 
-      PushButton cloneButton = new PushButton(new Image(), cloneHandler);
-      cloneButton.setText(messages.editClone());
-      cloneButton.setTitle(messages.editCloneShortcut());
-      operationsPanel.add(cloneButton);
+      // PushButton cloneButton = new PushButton(new Image(), cloneHandler);
+      // cloneButton.setText(messages.editClone());
+      // cloneButton.setTitle(messages.editCloneShortcut());
+      // operationsPanel.add(cloneButton);
 
-      PushButton cloneAndSaveButton = new PushButton(new Image(), cloneAndSaveHandler);
-      cloneAndSaveButton.setText(messages.editCloneAndSave());
-      cloneAndSaveButton.setTitle(messages.editCloneAndSaveShortcut());
-      operationsPanel.add(cloneAndSaveButton);
+      // PushButton cloneAndSaveButton = new PushButton(new Image(),
+      // cloneAndSaveHandler);
+      // cloneAndSaveButton.setText(messages.editCloneAndSave());
+      // cloneAndSaveButton.setTitle(messages.editCloneAndSaveShortcut());
+      // operationsPanel.add(cloneAndSaveButton);
 
       // PushButton doesn't allow to have images and text at the same time
       PushButton cancelButton = new PushButton(images.cellEditorCancel().createImage(), cancelHandler);
@@ -397,6 +389,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       return isFocused;
    }
 
+   public boolean isOpened()
+   {
+      return isOpened;
+   }
+
    public void setText(String text)
    {
       if (isEditing())
@@ -462,6 +459,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       this.cellValue = cellValue;
       textArea.setFocus(true);
+      isOpened = true;
       DOM.scrollIntoView(table.getCellFormatter().getElement(curRow, curCol));
       // toggleFuzzy.setValue(cellValue.getStatus() == ContentState.NeedReview);
       if (cellValue.getStatus() == ContentState.NeedReview)
@@ -499,6 +497,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
       restoreView();
       disableSaveButton();
+      isOpened = false;
 
       // Send the new cell value to the callback
       curCallback.onComplete(curCellEditInfo, cellValue);
@@ -526,6 +525,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       }
 
       restoreView();
+      isOpened = false;
 
       // Call the callback
       if (curCallback != null)

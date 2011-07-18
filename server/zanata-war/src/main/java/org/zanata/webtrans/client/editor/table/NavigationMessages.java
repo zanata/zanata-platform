@@ -68,7 +68,7 @@ public interface NavigationMessages extends Messages
    @DefaultMessage("Esc")
    String editCancelShortcut();
 
-   @DefaultMessage("Clone")
+   @DefaultMessage("Copy")
    String editClone();
 
 //   @DefaultMessage("Ctrl+Home")

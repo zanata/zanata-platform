@@ -34,6 +34,8 @@ import org.zanata.webtrans.client.action.UndoableTransUnitUpdateAction;
 import org.zanata.webtrans.client.action.UndoableTransUnitUpdateHandler;
 import org.zanata.webtrans.client.editor.DocumentEditorPresenter;
 import org.zanata.webtrans.client.editor.HasPageNavigation;
+import org.zanata.webtrans.client.events.CopySourceEvent;
+import org.zanata.webtrans.client.events.CopySourceEventHandler;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.FindMessageEvent;
@@ -439,6 +441,7 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             {
                display.getTargetCellEditor().setText(event.getTargetResult());
                display.getTargetCellEditor().setTextAreaSize();
+               display.getTargetCellEditor().enableSaveButton();
                eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
             }
             else
@@ -456,6 +459,25 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             int row = display.getCurrentPage() * display.getPageSize() + rowOffset;
             Log.info("toggle Fuzzy for " + row);
             display.getTableModel().setRowValueOverride(row, event.getTransUnit());
+            display.getTargetCellEditor().enableSaveButton();
+         }
+
+      }));
+
+      registerHandler(eventBus.addHandler(CopySourceEvent.getType(), new CopySourceEventHandler()
+      {
+
+         @Override
+         public void onCopySource(CopySourceEvent event)
+         {
+            int rowOffset = getRowOffset(event.getTransUnit().getId());
+            int row = display.getCurrentPage() * display.getPageSize() + rowOffset;
+            display.getTableModel().setRowValueOverride(row, event.getTransUnit());
+            if (display.getTargetCellEditor().isEditing())
+            {
+               display.getTargetCellEditor().setText(event.getTransUnit().getSource());
+               display.getTargetCellEditor().setTextAreaSize();
+            }
             display.getTargetCellEditor().enableSaveButton();
          }
 
