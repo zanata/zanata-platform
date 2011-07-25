@@ -38,6 +38,8 @@ import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.client.InlineCellEditor.InlineCellEditorImages;
 import com.google.gwt.gen2.table.override.client.HTMLTable;
@@ -140,7 +142,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    private TransUnit cellValue;
 
-   private final TextArea textArea;
+   private EditorTextArea textArea;
 
    private boolean isFocused = false;
    private boolean allowFuzzyOverride = false;
@@ -187,8 +189,24 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       this.eventBus = eventBus;
       cancelCallback = callback;
       editRowCallback = rowCallback;
-      textArea = new TextArea();
+      textArea = new EditorTextArea();
       textArea.setStyleName("TableEditorContent-Edit");
+      textArea.addValueChangeHandler(new ValueChangeHandler<String>()
+      {
+
+         @Override
+         public void onValueChange(ValueChangeEvent<String> event)
+         {
+            // remove fuzzy mark only at beginning if fuzzy is marked
+            if (allowFuzzyOverride)
+               removeFuzzyMark();
+            // enable save button when start typing
+            enableSaveButton();
+            allowFuzzyOverride = false;
+            autoSize();
+         }
+
+      });
       textArea.addBlurHandler(new BlurHandler()
       {
          @Override
@@ -242,10 +260,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             // }
             else if (event.isAltKeyDown() && keyCode == KEY_G)
             {
-               textArea.setText(cellValue.getSource());
-               textArea.setFocus(true);
-               autoSize();
                Log.info("InlineTargetCellEditor.java: Clone action.");
+               textArea.setValue(cellValue.getSource(), true);
+               textArea.setFocus(true);
             }
             else if (event.isAltKeyDown() && (event.isDownArrow() || keyCode == KEY_K))
             {
@@ -265,22 +282,19 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             { // alt-pageup
                handlePrevState();
             }
-            /******
-             * else if (event.isAltKeyDown() && keyCode == KEY_N) { if
-             * (toggleFuzzy.getValue()) toggleFuzzy.setValue(false); else
-             * toggleFuzzy.setValue(true); }
-             ********/
-            else if (!event.isAltKeyDown() && !event.isControlKeyDown())
-            {
-               // remove fuzzy mark only at beginning if fuzzy is marked
-               if (allowFuzzyOverride)
-                  removeFuzzyMark();
-               // enable save button when start typing
-               enableSaveButton();
-               allowFuzzyOverride = false;
-            }
+            // else if (event.isAltKeyDown() && keyCode == KEY_N)
+            // {
+            // if (toggleFuzzy.getValue())
+            // toggleFuzzy.setValue(false);
+            // else
+            // toggleFuzzy.setValue(true);
+            // }
 
-            autoSize();
+            // else if (!event.isAltKeyDown() && !event.isControlKeyDown())
+            // {
+            // ValueChangeEvent.fire(textArea, textArea.getText());
+            // }
+
             // these shortcuts disabled because they conflict with basic text editing:
 //            else if (event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_HOME)
 //            { // ctrl-home
@@ -454,6 +468,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       table.setWidget(curRow, curCol, layoutTable);
       
       textArea.setText(cellValue.getTarget());
+      // Use timer to detect the change of content, specially for
+      // simplify/traditional Chinese
+      textArea.addTimer(cellValue.getTarget());
 
       autoSize();
 
@@ -487,6 +504,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       {
          return;
       }
+      textArea.stopTimer();
       cellValue.setTarget(textArea.getText());
 
       // avoid changing status from fuzzy to new when target cell is empty
@@ -525,6 +543,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       }
 
       restoreView();
+      textArea.stopTimer();
       isOpened = false;
 
       // Call the callback
