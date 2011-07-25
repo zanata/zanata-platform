@@ -131,7 +131,8 @@
 		<!-- buildNumber is set by buildnumber-maven-plugin from git info -->
 		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<gwt.version>2.1.0</gwt.version>
+		<gwt.version>2.2.0</gwt.version>
+		<gwt-incubator.version>2.2.0</gwt-incubator.version>
 		<!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
 		<hibernate.version>3.3.2.GA</hibernate.version>
 		<hibernate.search.version>3.1.1.GA</hibernate.search.version>
@@ -154,11 +155,11 @@
 		<checkstyle.propertiesLocation></checkstyle.propertiesLocation>
 		<checkstyle.suppressionsLocation></checkstyle.suppressionsLocation>
 		<checkstyle.suppressionsFileExpression></checkstyle.suppressionsFileExpression>
-		
+
 		<reports-plugin.dependencyDetailsEnabled>false</reports-plugin.dependencyDetailsEnabled>
 		<reports-plugin.dependencyLocationsEnabled>false</reports-plugin.dependencyLocationsEnabled>
-							
-							
+
+
 	</properties>
 
 	<build>
@@ -293,7 +294,7 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>gwt-maven-plugin</artifactId>
-					<version>2.1.0-1</version>
+					<version>2.2.0</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-eclipse-plugin</artifactId>
@@ -389,7 +390,7 @@
 			</properties>
 			<reporting>
 				<plugins>
-				    <plugin>
+					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>cobertura-maven-plugin</artifactId>
 						<version>2.4</version>
@@ -401,13 +402,13 @@
 								</formats>
 							</configuration>
 							<check>
-<!-- 								<totalBranchRate>${cobertura.total-branch-rate}</totalBranchRate>  -->
-<!-- 									<totalLineRate>${cobertura.total-line-rate}</totalLineRate> -->
+								<!-- <totalBranchRate>${cobertura.total-branch-rate}</totalBranchRate> -->
+								<!-- <totalLineRate>${cobertura.total-line-rate}</totalLineRate> -->
 								<haltOnFailure>${cobertura.halt.failure}</haltOnFailure>
 							</check>
 						</configuration>
 					</plugin>
-			
+
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
@@ -499,6 +500,12 @@
 				<groupId>org.testng</groupId>
 				<artifactId>testng</artifactId>
 				<version>5.13.1</version>
+				<exclusions>
+					<exclusion>
+						<groupId>com.google.inject</groupId>
+						<artifactId>guice</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.easymock</groupId>
@@ -526,7 +533,7 @@
 			<dependency>
 				<groupId>com.google.gwt</groupId>
 				<artifactId>gwt-incubator</artifactId>
-				<version>${gwt.version}</version>
+				<version>${gwt-incubator.version}</version>
 			</dependency>
 
 
@@ -547,11 +554,10 @@
 				<version>1.2.0-20100906.075839-2</version>
 			</dependency>
 
-			<!-- Looks like com.googlecode.gwt.inject is the canonical groupId http://code.google.com/p/google-gin/issues/detail?id=45#c27 -->
 			<dependency>
-				<groupId>com.googlecode.gwt.inject</groupId>
+				<groupId>com.google.gwt.inject</groupId>
 				<artifactId>gin</artifactId>
-				<version>1.0</version>
+				<version>1.5.0</version>
 			</dependency>
 
 			<dependency>
@@ -808,6 +814,16 @@
 	</dependencyManagement>
 
 	<repositories>
+		<!-- <repository> -->
+		<!-- <id>central</id> -->
+		<!-- <name>Maven Repository Switchboard</name> -->
+		<!-- <layout>default</layout> -->
+		<!-- <url>http://repo1.maven.org/maven2</url> -->
+		<!-- <snapshots> -->
+		<!-- <enabled>false</enabled> -->
+		<!-- </snapshots> -->
+		<!-- </repository> -->
+
 		<repository>
 			<id>openl10n-public-repository-group</id>
 			<name>OpenL10n Public Repository Group</name>
@@ -822,8 +838,35 @@
 				<updatePolicy>never</updatePolicy>
 			</snapshots>
 		</repository>
+		
+		<repository>
+            <id>zanata-cloudbees-release-repository</id>
+            <name>Zanata Cloudbees Release Repository</name>
+            <url>http://repository-zanata.forge.cloudbees.com/release</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
 	</repositories>
 	<pluginRepositories>
+		<!-- <pluginRepository> -->
+		<!-- <id>central</id> -->
+		<!-- <name>Maven Plugin Repository</name> -->
+		<!-- <url>http://repo1.maven.org/maven2</url> -->
+		<!-- <layout>default</layout> -->
+		<!-- <snapshots> -->
+		<!-- <enabled>false</enabled> -->
+		<!-- </snapshots> -->
+		<!-- <releases> -->
+		<!-- <updatePolicy>never</updatePolicy> -->
+		<!-- </releases> -->
+		<!-- </pluginRepository> -->
 		<pluginRepository>
 			<id>openl10n-public-repository-group</id>
 			<name>OpenL10n Public Repository Group</name>
@@ -835,6 +878,18 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</pluginRepository>
+		
+		<pluginRepository>
+            <id>zanata-cloudbees-release-repository</id>
+            <name>Zanata Cloudbees Release Repository</name>
+            <url>http://repository-zanata.forge.cloudbees.com/release</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
 	</pluginRepositories>
 
 	<reporting>
@@ -843,11 +898,11 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
 				<version>2.2</version>
-				<configuration> 
+				<configuration>
 					<!-- these can be incredibly slow -->
 					<dependencyDetailsEnabled>${reports-plugin.dependencyDetailsEnabled}</dependencyDetailsEnabled>
-					<dependencyLocationsEnabled>${reports-plugin.dependencyLocationsEnabled}</dependencyLocationsEnabled> 
-				</configuration> 
+					<dependencyLocationsEnabled>${reports-plugin.dependencyLocationsEnabled}</dependencyLocationsEnabled>
+				</configuration>
 			</plugin>
 		</plugins>
 	</reporting>
