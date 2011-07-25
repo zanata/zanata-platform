@@ -29,25 +29,25 @@ import org.zanata.webtrans.client.editor.HasTranslationStats;
 import org.zanata.webtrans.client.editor.filter.ContentFilter;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.ClearableTextBox;
+import org.zanata.webtrans.client.ui.DocumentListTable;
 import org.zanata.webtrans.client.ui.UiMessages;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.ListDataProvider;
 import com.google.inject.Inject;
 
 public class DocumentListView extends Composite implements DocumentListPresenter.Display, HasSelectionHandlers<DocumentInfo>
@@ -59,12 +59,6 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    {
    }
 
-   @UiField(provided = true)
-   final Resources resources;
-
-   @UiField
-   FlowPanel documentList;
-
    @UiField
    ScrollPanel documentScrollPanel;
 
@@ -74,13 +68,18 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    @UiField(provided = true)
    ClearableTextBox filterTextBox;
 
+   final Resources resources;
+
+   @UiField(provided = true)
+   final CellTable<DocumentNode> documentListTable;
+
+   private ListDataProvider<DocumentNode> dataProvider;
+
    private ContentFilter<DocumentInfo> filter;
 
    private DocumentNode currentSelection;
 
    private HashMap<DocumentId, DocumentNode> nodes;
-   
-   private HashMap<String, FolderNode> folders;
 
    final WebTransMessages messages;
 
@@ -95,10 +94,11 @@ public class DocumentListView extends Composite implements DocumentListPresenter
       this.messages = messages;
       filterTextBox = new ClearableTextBox(resources, uiMessages);
       nodes = new HashMap<DocumentId, DocumentNode>();
-      folders = new HashMap<String, FolderNode>();
       transUnitCountBar = new TransUnitCountBar(messages);
+      dataProvider = new ListDataProvider<DocumentNode>();
       this.dispatcher = dispatcher;
       this.eventBus = eventBus;
+      documentListTable = DocumentListTable.initDocumentListTable(this, resources, messages, dataProvider);
       initWidget(uiBinder.createAndBindUi(this));
    }
 
@@ -110,30 +110,16 @@ public class DocumentListView extends Composite implements DocumentListPresenter
 
    public void clear()
    {
-      documentList.clear();
+      dataProvider.getList().clear();
       nodes.clear();
-      folders.clear();
-   }
-
-   public void add(FolderNode folderNode)
-   {
-      documentList.add(folderNode);
    }
 
    public void add(DocumentNode documentNode)
    {
-      documentList.add(documentNode);
-   }
-
-   public int getChildCount()
-   {
-      return documentList.getWidgetCount();
-   }
-
-   @SuppressWarnings("rawtypes")
-   public Node getChild(int index)
-   {
-      return (Node) documentList.getWidget(index);
+      if (documentNode.isVisible())
+      {
+         dataProvider.getList().add(documentNode);
+      }
    }
 
    @Override
@@ -143,44 +129,18 @@ public class DocumentListView extends Composite implements DocumentListPresenter
       for (int i = 0; i < sortedList.size(); i++)
       {
          DocumentInfo doc = sortedList.get(i);
-         DocumentNode node;
-         if (doc.getPath() == null || doc.getPath().isEmpty())
-         {
-            node = new DocumentNode(resources, messages, doc, dispatcher, documentNodeClickHandler, eventBus);
-            add(node);
-         }
-         else
-         {
-            FolderNode folder = folders.get(doc.getPath());
-            if (folder == null)
-            {
-               folder = new FolderNode(resources, doc);
-               folders.put(doc.getPath(), folder);
-               add(folder);
-            }
-            node = new DocumentNode(resources, messages, doc, dispatcher, documentNodeClickHandler, eventBus);
-            folder.addChild(node);
-         }
+         DocumentNode node = new DocumentNode(messages, doc, dispatcher, eventBus, dataProvider);
+
          nodes.put(doc.getId(), node);
          if (filter != null)
          {
             node.setVisible(filter.accept(doc));
          }
+         add(node);
       }
+      documentListTable.setPageSize(dataProvider.getList().size());
+      dataProvider.addDataDisplay(documentListTable);
    }
-
-   /**
-    * Common click-handler for all 'translate' links
-    */
-   private final ClickHandler documentNodeClickHandler = new ClickHandler()
-   {
-      @Override
-      public void onClick(ClickEvent event)
-      {
-         DocumentNode node = (DocumentNode) event.getSource();
-         SelectionEvent.fire(DocumentListView.this, node.getDataItem());
-      }
-   };
 
    @Override
    public void clearSelection()
@@ -189,7 +149,6 @@ public class DocumentListView extends Composite implements DocumentListPresenter
       {
          return;
       }
-      currentSelection.setSelected(false);
       currentSelection = null;
    }
 
@@ -204,7 +163,6 @@ public class DocumentListView extends Composite implements DocumentListPresenter
       DocumentNode node = nodes.get(document.getId());
       if (node != null)
       {
-         node.setSelected(true);
          currentSelection = node;
       }
    }
@@ -220,19 +178,28 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    public void setFilter(ContentFilter<DocumentInfo> filter)
    {
       this.filter = filter;
+      dataProvider.getList().clear();
       for (DocumentNode docNode : nodes.values())
       {
          docNode.setVisible(filter.accept(docNode.getDataItem()));
+         if (docNode.isVisible())
+         {
+            dataProvider.getList().add(docNode);
+         }
       }
+      dataProvider.refresh();
    }
 
    @Override
    public void removeFilter()
    {
+      dataProvider.getList().clear();
       for (DocumentNode docNode : nodes.values())
       {
          docNode.setVisible(true);
+         dataProvider.getList().add(docNode);
       }
+      dataProvider.refresh();
    }
 
    @Override
@@ -258,5 +225,4 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    {
       return addHandler(handler, SelectionEvent.getType());
    }
-
 }

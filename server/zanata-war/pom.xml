@@ -1168,6 +1168,12 @@
 			<artifactId>gwt-servlet</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		
+		<dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>3.0</version>
+        </dependency>
 
 		<dependency>
 			<groupId>com.google.gwt</groupId>
@@ -1185,9 +1191,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.googlecode.gwt.inject</groupId>
+			<groupId>com.google.gwt.inject</groupId>
 			<artifactId>gin</artifactId>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -1212,7 +1217,7 @@
 		<dependency>
 			<groupId>com.google.code.gwt-log</groupId>
 			<artifactId>gwt-log</artifactId>
-			<version>3.0.0</version>
+			<version>3.1.2</version>
 		</dependency>
 
 		<dependency>

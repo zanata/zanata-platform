@@ -7,7 +7,6 @@ import org.zanata.webtrans.client.editor.HasTranslationStats;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -40,7 +39,7 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
 
    private final TranslationStats stats = new TranslationStats();
 
-   private final WebTransMessages messages;
+   protected final WebTransMessages messages;
    
    private int totalWidth = 100;
 
@@ -51,19 +50,18 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
       initWidget(uiBinder.createAndBindUi(this));
    }
 
-   public TransUnitCountBar(WebTransMessages messages, int totalWidth)
+   public TransUnitCountBar(WebTransMessages messages, boolean fromChild)
    {
       this.messages = messages;
-      this.totalWidth = totalWidth;
    }
 
-   protected LayoutPanel setupLayoutPanel(double undefinedLeft, double undefinedWidth, double approvedLeft, double approvedWidth, double needReviewLeft, double needReviewWidth, double untranslatedLeft, double untranslatedWidth)
+   private void setupLayoutPanel(double undefinedLeft, double undefinedWidth, double approvedLeft, double approvedWidth, double needReviewLeft, double needReviewWidth, double untranslatedLeft, double untranslatedWidth)
    {
+      layoutPanel.forceLayout();
       layoutPanel.setWidgetLeftWidth(undefinedPanel, undefinedLeft, Unit.PX, undefinedWidth, Unit.PX);
       layoutPanel.setWidgetLeftWidth(approvedPanel, approvedLeft, Unit.PX, approvedWidth, Unit.PX);
       layoutPanel.setWidgetLeftWidth(needReviewPanel, needReviewLeft, Unit.PX, needReviewWidth, Unit.PX);
       layoutPanel.setWidgetLeftWidth(untranslatedPanel, untranslatedLeft, Unit.PX, untranslatedWidth, Unit.PX);
-      return layoutPanel;
    }
 
    public void refresh()
@@ -73,7 +71,6 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
       int untranslated = getUnitUntranslated();
       int total = getUnitTotal();
       int width = getOffsetWidth();
-      layoutPanel.forceLayout();
       if (total == 0)
       {
          setupLayoutPanel(0.0, 100, 0.0, 0, 0.0, 0, 0.0, 0);
@@ -93,32 +90,36 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
          int unfinishedPx = untranslated * 100 / total * width / totalWidth;
 
          setupLayoutPanel(0.0, 0, 0.0, completePx, completePx, inProgressPx, completePx + inProgressPx, unfinishedPx);
-
-         switch (labelFormat)
-         {
-         case PERCENT_COMPLETE:
-            label.setText(messages.statusBarLabelPercentage(approved * 100 / total, needReview * 100 / total, untranslated * 100 / total));
-            break;
-         case HOURS_REMAIN:
-            double remainHours = remainingHours(needReview, untranslated);
-            label.setText(messages.statusBarLabelWork(remainHours));
-            break;
-         case WORD_COUNTS:
-            label.setText(messages.statusBarLabelWords(approved, needReview, untranslated));
-            break;
-         case MESSAGE_COUNTS:
-            label.setText(messages.statusBarLabelUnits(approved, needReview, untranslated));
-            break;
-         default:
-            label.setText("error: " + labelFormat.name());
-         }
+         setLabelText(total, approved, needReview, untranslated);
       }
-      refreshPopupPanel();
-      layoutPanel.animate(1000);
+      refreshDisplay(1000);
    }
 
-   public void refreshPopupPanel()
+   protected void setLabelText(int total, int approved, int needReview, int untranslated)
    {
+      switch (labelFormat)
+      {
+      case PERCENT_COMPLETE:
+         label.setText(messages.statusBarLabelPercentage(approved * 100 / total, needReview * 100 / total, untranslated * 100 / total));
+         break;
+      case HOURS_REMAIN:
+         double remainHours = remainingHours(needReview, untranslated);
+         label.setText(messages.statusBarLabelHours(remainHours));
+         break;
+      case WORD_COUNTS:
+         label.setText(messages.statusBarLabelWords(approved, needReview, untranslated));
+         break;
+      case MESSAGE_COUNTS:
+         label.setText(messages.statusBarLabelUnits(approved, needReview, untranslated));
+         break;
+      default:
+         label.setText("error: " + labelFormat.name());
+      }
+   }
+
+   protected void refreshDisplay(int duration)
+   {
+      layoutPanel.animate(duration);
    }
 
    public int getWordsTotal()
@@ -161,10 +162,9 @@ public class TransUnitCountBar extends Composite implements HasTranslationStats
       return stats.getUnitCount().get(ContentState.New);
    }
 
-   protected String getRemainingWordsHours()
+   public double getRemainingWordsHours()
    {
-      double remainingHours = remainingHours(getWordsNeedReview(), getWordsUntranslated());
-      return NumberFormat.getFormat("#").format(remainingHours);
+      return remainingHours(getWordsNeedReview(), getWordsUntranslated());
    }
 
    protected double remainingHours(int fuzzyWords, int untranslatedWords)

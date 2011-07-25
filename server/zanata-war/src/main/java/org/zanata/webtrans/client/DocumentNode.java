@@ -35,18 +35,11 @@ import org.zanata.webtrans.shared.rpc.GetStatusCountResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.impl.HyperlinkImpl;
+import com.google.gwt.view.client.ListDataProvider;
 
 public class DocumentNode extends Node<DocumentInfo>
 {
@@ -57,89 +50,34 @@ public class DocumentNode extends Node<DocumentInfo>
    {
    }
 
-   interface Styles extends CssResource
-   {
-      String mouseOver();
-
-      String selected();
-   }
-
-   private static final HyperlinkImpl impl = new HyperlinkImpl();
-
-   @UiField
-   Label translatedWordsLabel;
-
-   @UiField
-   Label untranslatedWordsLabel;
-
-   @UiField
-   Label hoursLeftLabel;
-
-   @UiField
-   Label documentLabel;
-
-
-   @UiField(provided = true)
-   final Resources resources;
-
    @UiField(provided = true)
    TransUnitCountGraph transUnitCountGraph;
-
-   @UiField(provided = true)
-   final FlowPanel rootPanel;
-
-   @UiField
-   Styles style;
 
    final WebTransMessages messages;
    private final TranslationStats statusCount = new TranslationStats();
    private final CachingDispatchAsync dispatcher;
 
-   public DocumentNode(Resources resources, WebTransMessages messages, CachingDispatchAsync dispatcher)
+   private ListDataProvider<DocumentNode> dataProvider;
+
+   public DocumentNode(WebTransMessages messages, CachingDispatchAsync dispatcher, ListDataProvider<DocumentNode> dataProvider)
    {
-      this.resources = resources;
       this.messages = messages;
-      this.transUnitCountGraph = new TransUnitCountGraph(messages);
       this.dispatcher = dispatcher;
-
-      rootPanel = new FlowPanel()
-      {
-         public void onBrowserEvent(Event event)
-         {
-            switch (event.getTypeInt())
-            {
-            case Event.ONMOUSEOVER:
-               addStyleName(style.mouseOver());
-               break;
-            case Event.ONMOUSEOUT:
-               removeStyleName(style.mouseOver());
-               break;
-            case Event.ONCLICK:
-               if (event.getButton() == NativeEvent.BUTTON_LEFT && impl.handleAsClick(event))
-               {
-                  ClickEvent.fireNativeEvent(event, DocumentNode.this);
-               }
-            }
-
-            super.onBrowserEvent(event);
-         };
-      };
+      this.transUnitCountGraph = new TransUnitCountGraph(messages);
+      this.dataProvider = dataProvider;
 
       initWidget(uiBinder.createAndBindUi(this));
-      rootPanel.sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT | Event.ONCLICK);
    }
 
-
-   public DocumentNode(Resources resources, WebTransMessages messages, DocumentInfo doc, CachingDispatchAsync dispatcher)
+   public DocumentNode(WebTransMessages messages, DocumentInfo doc, CachingDispatchAsync dispatcher, ListDataProvider<DocumentNode> dataProvider)
    {
-      this(resources, messages, dispatcher);
+      this(messages, dispatcher, dataProvider);
       setDataItem(doc);
    }
 
-   public DocumentNode(Resources resources, WebTransMessages messages, DocumentInfo doc, CachingDispatchAsync dispatcher, ClickHandler clickHandler, EventBus eventBus)
+   public DocumentNode(WebTransMessages messages, DocumentInfo doc, CachingDispatchAsync dispatcher, EventBus eventBus, ListDataProvider<DocumentNode> dataProvider)
    {
-      this(resources, messages, doc, dispatcher);
-      addHandler(clickHandler, ClickEvent.getType());
+      this(messages, doc, dispatcher, dataProvider);
       eventBus.addHandler(TransUnitUpdatedEvent.getType(), new TransUnitUpdatedEventHandler()
       {
          @Override
@@ -153,11 +91,7 @@ public class DocumentNode extends Node<DocumentInfo>
                unitCount.increment(event.getTransUnit().getStatus());
                wordCount.decrement(event.getPreviousStatus(), event.getWordCount());
                wordCount.increment(event.getTransUnit().getStatus(), event.getWordCount());
-               getTransUnitCountGraph().setStats(statusCount);
-
-               translatedWordsLabel.setText(getTransUnitCountGraph().getWordsApproved() + " words");
-               untranslatedWordsLabel.setText(getTransUnitCountGraph().getWordsUntranslated() + " words");
-               hoursLeftLabel.setText(getTransUnitCountGraph().getRemainingWordsHours() + " hours");
+               updateGraphStatus();
             }
          }
       });
@@ -165,8 +99,6 @@ public class DocumentNode extends Node<DocumentInfo>
 
    public void refresh()
    {
-      rootPanel.getElement().setId("doc-#" + getDataItem().getId().toString());
-      documentLabel.setText(getDataItem().getName());
       requestStatusCount(getDataItem().getId());
    }
 
@@ -181,18 +113,12 @@ public class DocumentNode extends Node<DocumentInfo>
       return this.transUnitCountGraph;
    }
 
-   public void setSelected(boolean selected)
+   private void updateGraphStatus()
    {
-      if (selected)
-      {
-         rootPanel.addStyleName(style.selected());
-      }
-      else
-      {
-         rootPanel.removeStyleName(style.selected());
-      }
-
+      getTransUnitCountGraph().setStats(statusCount);
+      dataProvider.refresh();
    }
+
    private void requestStatusCount(final DocumentId newDocumentId)
    {
       dispatcher.execute(new GetStatusCount(newDocumentId), new AsyncCallback<GetStatusCountResult>()
@@ -207,10 +133,7 @@ public class DocumentNode extends Node<DocumentInfo>
          public void onSuccess(GetStatusCountResult result)
          {
             statusCount.set(result.getCount());
-            getTransUnitCountGraph().setStats(statusCount);
-            translatedWordsLabel.setText(getTransUnitCountGraph().getWordsApproved() + " words");
-            untranslatedWordsLabel.setText(getTransUnitCountGraph().getWordsUntranslated() + " words");
-            hoursLeftLabel.setText(getTransUnitCountGraph().getRemainingWordsHours() + " hours");
+            updateGraphStatus();
          }
       });
    }

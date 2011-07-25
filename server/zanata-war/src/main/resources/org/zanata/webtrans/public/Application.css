@@ -1,9 +1,7 @@
 /** Add css rules here for your application. */
-
 body {
 	background-color: #f8f9fa;
 }
-
 
 /*
 Removes some of the styling on the page-level splitters
@@ -11,23 +9,24 @@ Removes some of the styling on the page-level splitters
 .PageSplitLayoutPanel>div>div.gwt-SplitLayoutPanel-HDragger {
 	background: none;
 }
+
 .PageSplitLayoutPanel>div>div.gwt-SplitLayoutPanel-VDragger {
 	background: none;
 }
 
 .CenterDiv {
-	margin-right:auto;
-	margin-left:auto;
+	margin-right: auto;
+	margin-left: auto;
 	width: auto;
 }
 
-#DocumentListView, #TransFilterView, #WorkspaceUsersView {
+#DocumentListView,#TransFilterView,#WorkspaceUsersView {
 	padding-bottom: 5px;
 	width: 100%;
 }
 
-.DocumentListViewMainPanel {
-//	width: 100%;
+.DocumentListViewMainPanel { //
+	width: 100%;
 	width: 205px;
 }
 
@@ -40,22 +39,24 @@ Removes some of the styling on the page-level splitters
 }
 
 .LeftContentNavBar {
+	
 }
 
 .LeftContentNavBar .gwt-CaptionPanel {
-	margin-bottom:3px;
+	margin-bottom: 3px;
 }
 
-.gwt-CollapsiblePanel { 
-//    width: 220px;
+.gwt-CollapsiblePanel { //
+	width: 220px;
 }
 
-.gwt-HeadingPanel .topLeftInner, .gwt-HeadingPanel .topRightInner {
-	height:40px;
-	width:5px;
+.gwt-HeadingPanel .topLeftInner,.gwt-HeadingPanel .topRightInner {
+	height: 40px;
+	width: 5px;
 	background-color: d0e4f6;
 }
-.gwt-HeadingPanel .topCenterInner{
+
+.gwt-HeadingPanel .topCenterInner {
 	height: 40px;
 	background-color: d0e4f6;
 }
@@ -67,96 +68,100 @@ Removes some of the styling on the page-level splitters
 
 .FilterTree {
 	width: 100%;
-		
 }
 
 .gwt-FilterBox {
-    font-size: 12px;
-    width: 100%;
+	font-size: 12px;
+	width: 100%;
 }
 
 .gwt-FilterBox-Vacant {
-    font-style: italic;
-    color: grey;
+	font-style: italic;
+	color: grey;
 }
 
 .gwt-FilterBox-Occupied {
-    font-style: plain;
-    color: black;
+	font-style: plain;
+	color: black;
 }
 
 .gwt-CaptionPanel-Heading {
-    font-weight: bold;
-    width: 100%;
-    background-color: d0e4f6;
-    padding-bottom: 5px;
+	font-weight: bold;
+	width: 100%;
+	background-color: d0e4f6;
+	padding-bottom: 5px;
 }
 
-.gwt-TreeItem-selected .gwt-Label{
+.gwt-TreeItem-selected .gwt-Label {
 	background-color: #C3D9FF;;
 }
+
 .gwt-TreeItem-selected {
 	background-color: #C3D9FF;;
 }
 
 .gwt-CaptionPanel-Collapse {
-    background-color: #d5e9fa;
-    border: 1px solid #c8dbec;
+	background-color: #d5e9fa;
+	border: 1px solid #c8dbec;
 	padding: 1px;
 	margin: 0px;
 	font-family: monospace;
 }
 
 .gwt-CaptionPanel tr.middle td.middleCenter {
-    width: 100%;
+	width: 100%;
 }
-.gwt-ProgressBar-shell {
-  border: 2px solid #faf9f7;
-  background-color: #AAAAAA;
-  height: 14pt;
-  width: 100%;
-}
-.gwt-ProgressBar-shell .gwt-ProgressBar-bar {
-  background-color: #67A7E3;
-}
-.gwt-ProgressBar-shell .gwt-ProgressBar-text {
-  padding: 0px;
-  margin: 0px;
-  color: white;
 
+.gwt-ProgressBar-shell {
+	border: 2px solid #faf9f7;
+	background-color: #AAAAAA;
+	height: 14pt;
+	width: 100%;
+}
+
+.gwt-ProgressBar-shell .gwt-ProgressBar-bar {
+	background-color: #67A7E3;
+}
+
+.gwt-ProgressBar-shell .gwt-ProgressBar-text {
+	padding: 0px;
+	margin: 0px;
+	color: white;
 }
 
 .WebTransEditor-Outer tr.middle td.middleCenter {
-  height: 100%;
-  width: 100%;
+	height: 100%;
+	width: 100%;
 }
+
 .WebTransEditor-Outer tr.middle td.middleCenter div.middleCenterInner {
-  height: 100%;
-  width: 100%;
+	height: 100%;
+	width: 100%;
 }
 
 .WebTransEditor {
-  height: 100%;
-  width: 100%;
+	height: 100%;
+	width: 100%;
 }
 
 .WebTransEditorMenu {
 	background-color: #D0E4F6;
 	width: 100%;
-	height:25px;
+	height: 25px;
 }
 
 .WebTransEditorMenu-left {
 	left: 0px;
-	display: inline;	
+	display: inline;
 }
+
 .float-right-div {
 	float: right;
 }
 
 .FilterView {
 	padding-top: 2px;
-	padding-bottom: 2px;	
+	padding-bottom: 2px;
 }
 
 .WebTransEditorMenu-right {
@@ -164,78 +169,85 @@ Removes some of the styling on the page-level splitters
 	display: inline;
 }
 
-.TableEditor tr td{
+.TableEditor tr td {
 	vertical-align: top;
 }
 
-.TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Source{
+.TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Source {
 	background: url(tu_bg_fuzzy_left.png) repeat-y left;
-    border-right: 3px solid #cccccc;
-    border-left: 3px solid #cccccc;
+	border-right: 3px solid #cccccc;
+	border-left: 3px solid #cccccc;
 	/* need to verify if #cccccc works for all borders first
 	border-right: 3px solid #f7dec3;
 	border-left: 3px solid #f7dec3;
 	*/
 }
-.TableEditor tr.NewStateDecoration td.TableEditorCell-Source{
+
+.TableEditor tr.NewStateDecoration td.TableEditorCell-Source {
 	background: url(tu_bg_new_left.png) repeat-y left;
-    border-right: 3px solid #cccccc;
-    border-left: 3px solid #cccccc;
-    /* need to verify if #cccccc works for all borders first
+	border-right: 3px solid #cccccc;
+	border-left: 3px solid #cccccc;
+	/* need to verify if #cccccc works for all borders first
 	border-right: 3px solid #c3e0f7;
 	border-left: 3px solid #c3e0f7;	
 	*/
 }
-.TableEditor tr.ApprovedStateDecoration td.TableEditorCell-Source{
+
+.TableEditor tr.ApprovedStateDecoration td.TableEditorCell-Source {
 	background: url(tu_bg_approved_left.png) repeat-y left;
-    border-right: 3px solid #cccccc;
-    border-left: 3px solid #cccccc;
+	border-right: 3px solid #cccccc;
+	border-left: 3px solid #cccccc;
 	/* need to verify if #cccccc works for all borders first
 	border-right: 3px solid #a8eab1;
 	border-left: 3px solid #a8eab1;
 	*/
 }
-.TableEditor tr.ErrorStateDecoration td.TableEditorCell-Source{
-    background: url(tu_bg_error_left.png) repeat-y left;
-    border-right: 3px solid #cccccc;
-    border-left: 3px solid #cccccc;
-    /* need to verify if #cccccc works for all borders first
+
+.TableEditor tr.ErrorStateDecoration td.TableEditorCell-Source {
+	background: url(tu_bg_error_left.png) repeat-y left;
+	border-right: 3px solid #cccccc;
+	border-left: 3px solid #cccccc;
+	/* need to verify if #cccccc works for all borders first
     border-right: 3px solid #f7c3c3;
     border-left: 3px solid #f7c3c3;
     */
 }
-.TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Target{
+
+.TableEditor tr.FuzzyStateDecoration td.TableEditorCell-Target {
 	background: url(tu_bg_fuzzy_right.png) repeat-y right;
-    border-right: 3px solid #cccccc;
-    border-left: 3px solid #cccccc;
-    /* need to verify if #cccccc works for all borders first
+	border-right: 3px solid #cccccc;
+	border-left: 3px solid #cccccc;
+	/* need to verify if #cccccc works for all borders first
 	border-right: 3px solid #f7dec3;
 	border-left: 3px solid #f7dec3;
     */
 }
-.TableEditor tr.NewStateDecoration td.TableEditorCell-Target{
+
+.TableEditor tr.NewStateDecoration td.TableEditorCell-Target {
 	background: url(tu_bg_new_right.png) repeat-y right;
-    border-right: 3px solid #cccccc;
-    border-left: 3px solid #cccccc;
-    /* need to verify if #cccccc works for all borders first
+	border-right: 3px solid #cccccc;
+	border-left: 3px solid #cccccc;
+	/* need to verify if #cccccc works for all borders first
 	border-right: 3px solid #c3e0f7;
 	border-left: 3px solid #c3e0f7;
 	*/
 }
-.TableEditor tr.ApprovedStateDecoration td.TableEditorCell-Target{
+
+.TableEditor tr.ApprovedStateDecoration td.TableEditorCell-Target {
 	background: url(tu_bg_approved_right.png) repeat-y right;
-    border-right: 3px solid #cccccc;
-    border-left: 3px solid #cccccc;
-    /* need to verify if #cccccc works for all borders first
+	border-right: 3px solid #cccccc;
+	border-left: 3px solid #cccccc;
+	/* need to verify if #cccccc works for all borders first
 	border-right: 3px solid #a8eab1;
 	border-left: 3px solid #a8eab1;
 	*/
 }
-.TableEditor tr.ErrorStateDecoration td.TableEditorCell-Target{
-    background: url(tu_bg_error_right.png) repeat-y right;
-    border-right: 3px solid #cccccc;
-    border-left: 3px solid #cccccc;
-    /* need to verify if #cccccc works for all borders first
+
+.TableEditor tr.ErrorStateDecoration td.TableEditorCell-Target {
+	background: url(tu_bg_error_right.png) repeat-y right;
+	border-right: 3px solid #cccccc;
+	border-left: 3px solid #cccccc;
+	/* need to verify if #cccccc works for all borders first
     border-right: 3px solid #f7c3c3;
     border-left: 3px solid #f7c3c3;
     */
@@ -246,18 +258,21 @@ td.TableEditorCell {
 }
 
 td.TableEditorCell-Source {
+	
 }
 
 td.TableEditorCell-Target {
+	
 }
-
 
 tr.TableEditorRow.highlighted td.TableEditorCell {
-  background-color: #f1f2f6;
+	background-color: #f1f2f6;
 }
 
-tr.TableEditorRow.highlighted td.TableEditorCell-Source {  
+tr.TableEditorRow.highlighted td.TableEditorCell-Source {
+	
 }
+
 tr.TableEditorRow.highlighted td.TableEditorCell-Target {
 	cursor: hand;
 }
@@ -265,58 +280,90 @@ tr.TableEditorRow.highlighted td.TableEditorCell-Target {
 tr.TableEditorRow.even-row {
 	background-color: #ffffff;
 }
+
 tr.TableEditorRow.odd-row {
 	background-color: #ffffff;
 }
 
-
-tr.TableEditorRow.content-filter{
+tr.TableEditorRow.content-filter {
+	
 }
 
-tr.TableEditorRow.content-filter-match{
+tr.TableEditorRow.content-filter-match {
+	
 }
 
-tr.TableEditorRow.content-filter-nomatch{
-	filter:alpha(opacity=25);
-	-moz-opacity:0.25;
+tr.TableEditorRow.content-filter-nomatch {
+	filter: alpha(opacity =   25);
+	-moz-opacity: 0.25;
 	-khtml-opacity: 0.25;
 	opacity: 0.25;
 }
 
 tr.TableEditorRow.selected td {
-  background: #C3D9FF;
+	background: #C3D9FF;
 }
 
-.TableEditorContent, .TableEditorContent-Edit {
+.TableEditorContent,.TableEditorContent-Edit {
 	font-size: 14px;
 	font-family: sans-serif;
 	padding: 3px;
-	margin: 2px;	
-	width:99%;
+	margin: 2px;
+	width: 99%;
 }
 
 .TableEditorContent-Empty {
-    font-size: 12px;
-    font-family: sans-serif;
-    font-style: italic;
-    padding: 3px;
-    margin: 2px; 
-    opacity: 0.5;
-    width:99%;
+	font-size: 12px;
+	font-family: sans-serif;
+	font-style: italic;
+	padding: 3px;
+	margin: 2px;
+	opacity: 0.5;
+	width: 99%;
 }
 
 .Severity-Error {
-	background-color: #ffcccc; 
+	background-color: #ffcccc;
 }
+
 .Severity-Info {
-	background-color: #eeeeff; 
+	background-color: #eeeeff;
 }
+
 .Severity-Warning {
-	background-color: #ffffcc; 
+	background-color: #ffffcc;
 }
 
 .TransMemoryTableColumnHeader {
 	color: Blue;
 	font-style: normal;
 	font-weight: bold
+}
+
+.DocumentListTable {
+	width: 100%;
+	font-size:16px;
+}
+
+.DocumentListTable td {
+    font-size:16px;
+    cursor:pointer;
+    width:16.6%;
+}
+
+.transUnitCountGraphTooltipPanel {
+	background-color: #F7F488;
+	color: black;
+	text-align: center;
+	border: 1px solid black;
+	height: 60px;
+}
+
+.transUnitCountGraphTooltipTable {
+	text-align: center;
+	font-size: 12px
+}
+
+.transUnitCountGraphTooltipTable TD {
+	border: 1px dotted black;
 }
