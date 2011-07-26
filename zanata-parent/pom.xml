@@ -838,13 +838,6 @@
 				<updatePolicy>never</updatePolicy>
 			</snapshots>
 		</repository>
-		
-		<repository>
-            <id>cloudbees-private-release-repository</id>
-            <name>cloudbees-private-release-repository</name>
-            <url>dav:https://repository-zanata.forge.cloudbees.com/release/</url>
-         </repository>
-         
 	</repositories>
 	<pluginRepositories>
 		<!-- <pluginRepository> -->
@@ -870,12 +863,6 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</pluginRepository>
-		
-		<pluginRepository>
-            <id>cloudbees-private-release-repository</id>
-            <name>cloudbees-private-release-repository</name>
-            <url>dav:https://repository-zanata.forge.cloudbees.com/release/</url>
-        </pluginRepository>
 	</pluginRepositories>
 
 	<reporting>
