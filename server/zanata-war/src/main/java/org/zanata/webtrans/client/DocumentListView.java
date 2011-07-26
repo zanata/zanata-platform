@@ -68,10 +68,10 @@ public class DocumentListView extends Composite implements DocumentListPresenter
    @UiField(provided = true)
    ClearableTextBox filterTextBox;
 
-   final Resources resources;
-
    @UiField(provided = true)
    final CellTable<DocumentNode> documentListTable;
+
+   final Resources resources;
 
    private ListDataProvider<DocumentNode> dataProvider;
 

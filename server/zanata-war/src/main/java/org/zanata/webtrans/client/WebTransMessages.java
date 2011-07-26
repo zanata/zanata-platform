@@ -10,7 +10,7 @@ public interface WebTransMessages extends Messages
 {
 
    @DefaultMessage("{0} participants")
-   @AlternateMessage({ "one", "One participant" })
+   @PluralText({ "one", "One participant" })
    @Description("Title of the minimized users panel")
    String nUsersOnline(@PluralCount int numUsers);
 
