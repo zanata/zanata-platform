@@ -29,6 +29,7 @@ import java.util.List;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
+import org.zanata.common.ContentState;
 import org.zanata.common.EditState;
 import org.zanata.webtrans.client.action.UndoableTransUnitUpdateAction;
 import org.zanata.webtrans.client.action.UndoableTransUnitUpdateHandler;
@@ -458,8 +459,22 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             int rowOffset = getRowOffset(event.getTransUnit().getId());
             int row = display.getCurrentPage() * display.getPageSize() + rowOffset;
             Log.info("toggle Fuzzy for " + row);
-            display.getTableModel().setRowValueOverride(row, event.getTransUnit());
-            display.getTargetCellEditor().enableSaveButton();
+            TransUnit rowValue = event.getTransUnit();
+            display.getTableModel().setRowValueOverride(row, rowValue);
+
+            // If cell editor is not opened, save the changes directly
+            if (display.getTargetCellEditor().isOpened())
+            {
+               display.getTargetCellEditor().enableSaveButton();
+            }
+            else
+            {
+               if (!rowValue.getTarget().isEmpty())
+                  // save the fuzzy state when target cell editor is not opened
+                  // and target is not empty
+                  tableModelHandler.onSetRowValue(row, rowValue);
+            }
+
          }
 
       }));
