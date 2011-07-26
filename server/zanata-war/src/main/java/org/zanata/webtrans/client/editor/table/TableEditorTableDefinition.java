@@ -179,7 +179,8 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
                if (event.getValue())
                   rowValue.setStatus(ContentState.NeedReview);
                else
-                  rowValue.setStatus(ContentState.New);
+                  // change status to Approved, if remove fuzzy mark
+                  rowValue.setStatus(ContentState.Approved);
 
                eventBus.fireEvent(new ToggleFuzzyEvent(rowValue));
             }

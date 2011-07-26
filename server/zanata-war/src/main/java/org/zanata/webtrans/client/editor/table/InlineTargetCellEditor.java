@@ -155,6 +155,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    private HTMLTable table;
    private EventBus eventBus;
 
+   private ContentState preStatus;
+
 
    /*
     * The minimum height of the target editor
@@ -384,7 +386,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
 
    private void removeFuzzyMark()
    {
-      cellValue.setStatus(ContentState.New);
+      cellValue.setStatus(ContentState.Approved);
       eventBus.fireEvent(new ToggleFuzzyEvent(cellValue));
    }
 
@@ -481,6 +483,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       // toggleFuzzy.setValue(cellValue.getStatus() == ContentState.NeedReview);
       if (cellValue.getStatus() == ContentState.NeedReview)
          allowFuzzyOverride = true;
+      preStatus = cellValue.getStatus();
       // refreshStateImage();
    }
 
@@ -507,8 +510,8 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       textArea.stopTimer();
       cellValue.setTarget(textArea.getText());
 
-      // avoid changing status from fuzzy to new when target cell is empty
-      if (cellValue.getTarget().isEmpty() && cellValue.getStatus() != ContentState.NeedReview)
+      // changing status to new when target cell is empty
+      if (cellValue.getTarget().isEmpty())
          cellValue.setStatus(ContentState.New);
       else if (cellValue.getStatus() == ContentState.New)
          cellValue.setStatus(ContentState.Approved);
@@ -545,6 +548,13 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       restoreView();
       textArea.stopTimer();
       isOpened = false;
+
+      // restore to previous status
+      if (cellValue != null)
+      {
+         cellValue.setStatus(preStatus);
+         eventBus.fireEvent(new ToggleFuzzyEvent(cellValue));
+      }
 
       // Call the callback
       if (curCallback != null)
