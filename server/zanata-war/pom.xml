@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.zanata</groupId>
@@ -71,7 +72,7 @@
 					</execution>
 				</executions>
 				<configuration>
-				   <module>${zanata.gwt.module}</module>
+					<module>${zanata.gwt.module}</module>
 				</configuration>
 			</plugin>
 
@@ -83,35 +84,35 @@
 					</suiteXmlFiles>
 				</configuration>
 			</plugin>
-            
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>l10n-maven-plugin</artifactId>
-                <version>1.0-alpha-2</version>
-                <executions>
-                    <execution>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>pseudo</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <pseudoLocale>qc</pseudoLocale>
-                    <includes>
-                        <include>**/*.properties</include>
-                    </includes>
-                    <excludes>
-                        <exclude>**/*_*.properties</exclude>
-                        <exclude>**/components.properties</exclude>
-                        <exclude>**/seam.properties</exclude>
-                        <exclude>**/seam-deployment.properties</exclude>
-                        <exclude>**/eventservice.properties</exclude>
-                    </excludes>
-                    <outputDirectory>src/main/resources</outputDirectory>
-                </configuration>
-            </plugin>
-                
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>l10n-maven-plugin</artifactId>
+				<version>1.0-alpha-2</version>
+				<executions>
+					<execution>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>pseudo</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<pseudoLocale>qc</pseudoLocale>
+					<includes>
+						<include>**/*.properties</include>
+					</includes>
+					<excludes>
+						<exclude>**/*_*.properties</exclude>
+						<exclude>**/components.properties</exclude>
+						<exclude>**/seam.properties</exclude>
+						<exclude>**/seam-deployment.properties</exclude>
+						<exclude>**/eventservice.properties</exclude>
+					</excludes>
+					<outputDirectory>src/main/resources</outputDirectory>
+				</configuration>
+			</plugin>
+
 		</plugins>
 
 	</build>
@@ -120,7 +121,7 @@
 		<profile>
 			<id>mysql</id>
 			<properties>
-		        <ds.jndi.name>zanataDatasource</ds.jndi.name>
+				<ds.jndi.name>zanataDatasource</ds.jndi.name>
 			</properties>
 		</profile>
 
@@ -175,9 +176,7 @@
 						</configuration>
 					</plugin>
 
-					<!--
-						Configure Surefire to run in integration-test phase
-					-->
+					<!-- Configure Surefire to run in integration-test phase -->
 					<plugin>
 						<artifactId>maven-failsafe-plugin</artifactId>
 						<version>2.7.2</version>
@@ -196,7 +195,9 @@
 							</execution>
 						</executions>
 						<configuration>
-							<argLine>-Xmx1024m -XX:MaxPermSize=512m -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=${project.build.directory}</argLine>
+							<argLine>-Xmx1024m -XX:MaxPermSize=512m -XX:+UseConcMarkSweepGC
+								-XX:+CMSClassUnloadingEnabled -XX:+HeapDumpOnOutOfMemoryError
+								-XX:HeapDumpPath=${project.build.directory}</argLine>
 							<redirectTestOutputToFile>false</redirectTestOutputToFile>
 							<printSummary>true</printSummary>
 							<forkMode>always</forkMode>
@@ -389,35 +390,13 @@
 							</execution>
 						</executions>
 					</plugin>
-<!--
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>jboss-maven-plugin</artifactId>
-						<version>1.4</version>
-						<configuration>
-							<serverName>default</serverName>
-						</configuration>
-						<executions>
-							<execution>
-								<id>deploy-ds</id>
-								<phase>package</phase>
-								<goals><goal>hard-deploy</goal></goals>
-								<configuration>
-									<fileName>${project.build.directory}/classes/zanata-ds.xml</fileName>
-								</configuration>
-							</execution>
-							<execution>
-								<id>deploy-war-unpacked</id>
-								<phase>package</phase>
-								<goals><goal>hard-deploy</goal></goals>
-								<configuration>
-	 								<fileName>${project.build.directory}/zanata.war</fileName>
-									<unpack>true</unpack>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
--->
+					<!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>jboss-maven-plugin</artifactId> 
+						<version>1.4</version> <configuration> <serverName>default</serverName> </configuration> 
+						<executions> <execution> <id>deploy-ds</id> <phase>package</phase> <goals><goal>hard-deploy</goal></goals> 
+						<configuration> <fileName>${project.build.directory}/classes/zanata-ds.xml</fileName> 
+						</configuration> </execution> <execution> <id>deploy-war-unpacked</id> <phase>package</phase> 
+						<goals><goal>hard-deploy</goal></goals> <configuration> <fileName>${project.build.directory}/zanata.war</fileName> 
+						<unpack>true</unpack> </configuration> </execution> </executions> </plugin> -->
 				</plugins>
 			</build>
 		</profile>
@@ -427,7 +406,7 @@
 			<properties>
 				<containerId>jboss5x</containerId>
 			</properties>
-			
+
 			<build>
 
 				<resources>
@@ -436,7 +415,7 @@
 						<filtering>true</filtering>
 					</resource>
 				</resources>
-				
+
 				<plugins>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
@@ -452,7 +431,7 @@
 					</plugin>
 				</plugins>
 			</build>
-						
+
 			<dependencies>
 
 				<dependency>
@@ -469,19 +448,19 @@
 						</exclusion>
 					</exclusions>
 				</dependency>
-			
+
 				<dependency>
 					<groupId>org.hibernate</groupId>
 					<artifactId>hibernate-core</artifactId>
 					<scope>provided</scope>
 				</dependency>
-				
+
 				<dependency>
 					<groupId>org.hibernate</groupId>
 					<artifactId>hibernate-validator</artifactId>
 					<scope>provided</scope>
 				</dependency>
-		
+
 				<dependency>
 					<groupId>org.hibernate</groupId>
 					<artifactId>hibernate-annotations</artifactId>
@@ -494,13 +473,13 @@
 					<version>1.0.2.GA</version>
 					<scope>provided</scope>
 				</dependency>
-		
+
 				<dependency>
 					<groupId>org.hibernate</groupId>
 					<artifactId>hibernate-entitymanager</artifactId>
 					<scope>provided</scope>
 				</dependency>
-		
+
 				<dependency>
 					<groupId>org.hibernate</groupId>
 					<artifactId>hibernate-jmx</artifactId>
@@ -586,9 +565,9 @@
 				</dependency>
 
 			</dependencies>
-			
+
 		</profile>
-		
+
 		<profile>
 			<id>internalauthentication</id>
 			<activation>
@@ -652,9 +631,7 @@
 					<value>dev</value>
 				</property>
 			</activation>
-			<!--
-				This profile allows you to skip the GWT compilation step
-			-->
+			<!-- This profile allows you to skip the GWT compilation step -->
 			<build>
 				<plugins>
 					<plugin>
@@ -669,12 +646,11 @@
 		</profile>
 
 		<profile>
-			<!--
-			  This profile tells GWT to use an alternative GWT module which has only one permutation, and to compile in draft mode
-			-->
+			<!-- This profile tells GWT to use an alternative GWT module which has 
+				only one permutation, and to compile in draft mode -->
 			<id>chrome</id>
 			<properties>
-			  <zanata.gwt.module>org.zanata.webtrans.ApplicationSafari</zanata.gwt.module>
+				<zanata.gwt.module>org.zanata.webtrans.ApplicationSafari</zanata.gwt.module>
 			</properties>
 			<build>
 				<plugins>
@@ -690,12 +666,11 @@
 		</profile>
 
 		<profile>
-			<!--
-			  This profile tells GWT to use an alternative GWT module which has only one permutation, and to compile in draft mode
-			-->
+			<!-- This profile tells GWT to use an alternative GWT module which has 
+				only one permutation, and to compile in draft mode -->
 			<id>firefox</id>
 			<properties>
-			  <zanata.gwt.module>org.zanata.webtrans.ApplicationGecko18</zanata.gwt.module>
+				<zanata.gwt.module>org.zanata.webtrans.ApplicationGecko18</zanata.gwt.module>
 			</properties>
 			<build>
 				<plugins>
@@ -768,7 +743,7 @@
 				<env.hibernate.format_sql>false</env.hibernate.format_sql>
 			</properties>
 		</profile>
-		
+
 		<profile>
 			<id>dev</id>
 			<activation>
@@ -807,13 +782,13 @@
 			<artifactId>zanata-common-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.zanata</groupId>
 			<artifactId>zanata-common-util</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.zanata</groupId>
 			<artifactId>zanata-model</artifactId>
@@ -888,15 +863,15 @@
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-xc</artifactId>
 		</dependency>
-			<dependency>
-				<groupId>org.jboss.security</groupId>
-				<artifactId>jbosssx</artifactId>
-				<version>2.0.3.SP1</version>
-			        <scope>provided</scope>
-			</dependency>
-				
+		<dependency>
+			<groupId>org.jboss.security</groupId>
+			<artifactId>jbosssx</artifactId>
+			<version>2.0.3.SP1</version>
+			<scope>provided</scope>
+		</dependency>
 
-		<!--  Drools -->
+
+		<!-- Drools -->
 
 		<dependency>
 			<groupId>org.drools</groupId>
@@ -964,7 +939,7 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!--  Other -->
+		<!-- Other -->
 
 		<dependency>
 			<groupId>org.dbunit</groupId>
@@ -980,7 +955,7 @@
 			<groupId>com.ibm.icu</groupId>
 			<artifactId>icu4j</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
@@ -1085,7 +1060,7 @@
 			<artifactId>xpp3_min</artifactId>
 		</dependency>
 
-		<!--  Testing dependencies -->
+		<!-- Testing dependencies -->
 
 		<dependency>
 			<groupId>org.zanata</groupId>
@@ -1145,8 +1120,8 @@
 		</dependency>
 
 		<dependency>
-		  <groupId>org.easymock</groupId>
-		  <artifactId>easymock</artifactId>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymock</artifactId>
 		</dependency>
 
 		<dependency>
@@ -1168,12 +1143,6 @@
 			<artifactId>gwt-servlet</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		
-		<dependency>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-            <version>3.0</version>
-        </dependency>
 
 		<dependency>
 			<groupId>com.google.gwt</groupId>
@@ -1193,6 +1162,11 @@
 		<dependency>
 			<groupId>com.google.gwt.inject</groupId>
 			<artifactId>gin</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
 		</dependency>
 
 		<dependency>
@@ -1232,49 +1206,49 @@
 			<artifactId>liquibase-core</artifactId>
 		</dependency>
 
-		<!--  openid4java -->
+		<!-- openid4java -->
 		<dependency>
-		  <groupId>org.htmlparser</groupId>
-		  <artifactId>htmlparser</artifactId>
-		  <version>1.6</version>
-		</dependency>				
-	
-		<dependency>
-		  <groupId>org.openid4java</groupId>
-		  <artifactId>openid4java</artifactId>
-		  <version>0.9.5</version>
+			<groupId>org.htmlparser</groupId>
+			<artifactId>htmlparser</artifactId>
+			<version>1.6</version>
 		</dependency>
 
 		<dependency>
-		  <groupId>org.openxri</groupId>
-		  <artifactId>openxri-client</artifactId>
-		  <version>1.2.0</version>
-		  <exclusions>
-			<exclusion>
-				<groupId>xalan</groupId>
-				<artifactId>xalan</artifactId>
-			</exclusion>
-			<exclusion>
-				<groupId>xerces</groupId>
-				<artifactId>xercesImpl</artifactId>
-			</exclusion>
-			<exclusion>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-jcl</artifactId>
-			</exclusion>
-		  </exclusions>
+			<groupId>org.openid4java</groupId>
+			<artifactId>openid4java</artifactId>
+			<version>0.9.5</version>
 		</dependency>
 
 		<dependency>
-		  <groupId>org.openxri</groupId>
-		  <artifactId>openxri-syntax</artifactId>
-		  <version>1.2.0</version>
-		  <exclusions>
-			<exclusion>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-jcl</artifactId>
-			</exclusion>
-		 </exclusions>
+			<groupId>org.openxri</groupId>
+			<artifactId>openxri-client</artifactId>
+			<version>1.2.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>xalan</groupId>
+					<artifactId>xalan</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>xerces</groupId>
+					<artifactId>xercesImpl</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-jcl</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openxri</groupId>
+			<artifactId>openxri-syntax</artifactId>
+			<version>1.2.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-jcl</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 	</dependencies>
