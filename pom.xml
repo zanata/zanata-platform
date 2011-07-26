@@ -535,6 +535,11 @@
 				<artifactId>gwt-incubator</artifactId>
 				<version>${gwt-incubator.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.google.inject</groupId>
+				<artifactId>guice</artifactId>
+				<version>3.0</version>
+			</dependency>
 
 
 			<!-- These snapshots include support for shared sessions http://code.google.com/p/gwteventservice/issues/detail?id=15 -->
