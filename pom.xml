@@ -132,7 +132,7 @@
 		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<gwt.version>2.2.0</gwt.version>
-		<gwt-incubator.version>2.2.0</gwt-incubator.version>
+		<gwt-incubator.version>2.2.0-zanata-0</gwt-incubator.version>
 		<!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
 		<hibernate.version>3.3.2.GA</hibernate.version>
 		<hibernate.search.version>3.1.1.GA</hibernate.search.version>
@@ -840,19 +840,11 @@
 		</repository>
 		
 		<repository>
-            <id>zanata-cloudbees-release-repository</id>
-            <name>Zanata Cloudbees Release Repository</name>
-            <url>http://repository-zanata.forge.cloudbees.com/release</url>
-            <layout>default</layout>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </snapshots>
-        </repository>
+            <id>cloudbees-private-release-repository</id>
+            <name>cloudbees-private-release-repository</name>
+            <url>dav:https://repository-zanata.forge.cloudbees.com/release/</url>
+         </repository>
+         
 	</repositories>
 	<pluginRepositories>
 		<!-- <pluginRepository> -->
@@ -880,15 +872,9 @@
 		</pluginRepository>
 		
 		<pluginRepository>
-            <id>zanata-cloudbees-release-repository</id>
-            <name>Zanata Cloudbees Release Repository</name>
-            <url>http://repository-zanata.forge.cloudbees.com/release</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
+            <id>cloudbees-private-release-repository</id>
+            <name>cloudbees-private-release-repository</name>
+            <url>dav:https://repository-zanata.forge.cloudbees.com/release/</url>
         </pluginRepository>
 	</pluginRepositories>
 
