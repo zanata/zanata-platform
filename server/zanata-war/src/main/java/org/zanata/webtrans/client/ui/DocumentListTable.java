@@ -34,7 +34,7 @@ public final class DocumentListTable
       }
 
       @Override
-      public void render(com.google.gwt.cell.client.Cell.Context arg0, TransUnitCountGraph arg1, SafeHtmlBuilder arg2)
+      public void render(Context arg0, TransUnitCountGraph arg1, SafeHtmlBuilder arg2)
       {
          arg2.appendHtmlConstant(arg1.getElement().getString());
       }
@@ -55,8 +55,7 @@ public final class DocumentListTable
 
    private static Column<DocumentNode, String> getFolderColumn(final Resources resources)
    {
-      IconCellDecorator<String> folderIconCell = new IconCellDecorator<String>(resources.folderImage(), new TextCell());
-      Column<DocumentNode, String> folderColumn = new Column<DocumentNode, String>(folderIconCell)
+      TextColumn<DocumentNode> folderColumn = new TextColumn<DocumentNode>()
       {
          @Override
          public String getValue(DocumentNode object)
@@ -80,7 +79,6 @@ public final class DocumentListTable
          }
       };
       docColumn.setSortable(true);
-
       return docColumn;
    }
 
@@ -95,7 +93,6 @@ public final class DocumentListTable
          }
       };
       statisticColumn.setSortable(true);
-
       return statisticColumn;
    }
 
@@ -106,11 +103,10 @@ public final class DocumentListTable
          @Override
          public String getValue(DocumentNode object)
          {
-            return messages.statusGraphLabelWords(object.getTransUnitCountGraph().getWordsApproved());
+            return String.valueOf(object.getTransUnitCountGraph().getWordsApproved());
          }
       };
       translatedColumn.setSortable(true);
-
       return translatedColumn;
    }
 
@@ -121,11 +117,10 @@ public final class DocumentListTable
          @Override
          public String getValue(DocumentNode object)
          {
-            return messages.statusGraphLabelWords(object.getTransUnitCountGraph().getWordsUntranslated());
+            return String.valueOf(object.getTransUnitCountGraph().getWordsUntranslated());
          }
       };
       unTranslatedColumn.setSortable(true);
-
       return unTranslatedColumn;
    }
 
@@ -140,7 +135,6 @@ public final class DocumentListTable
          }
       };
       remainingColumn.setSortable(true);
-
       return remainingColumn;
    }
 
@@ -182,45 +176,28 @@ public final class DocumentListTable
       {
          public int compare(DocumentNode o1, DocumentNode o2)
          {
-            if (o1.getDataItem().getPath().equals(o2.getDataItem().getPath()))
+            if (o1.getDataItem().getPath() == null || o2.getDataItem().getPath() == null)
             {
-               return 0;
+               return (o1.getDataItem().getPath() == null) ? -1 : 1;
             }
-            if (o1 != null)
+            else
             {
-               return (o2 != null) ? o1.getDataItem().getPath().compareTo(o2.getDataItem().getPath()) : 1;
+               return o1.getDataItem().getPath().compareTo(o2.getDataItem().getPath());
             }
-            return -1;
          }
       });
       columnSortHandler.setComparator(documentColumn, new Comparator<DocumentNode>()
       {
          public int compare(DocumentNode o1, DocumentNode o2)
          {
-            if (o1.getDataItem().getName().equals(o2.getDataItem().getName()))
-            {
-               return 0;
-            }
-            if (o1 != null)
-            {
-               return (o2 != null) ? o1.getDataItem().getName().compareTo(o2.getDataItem().getName()) : 1;
-            }
-            return -1;
+            return o1.getDataItem().getName().compareTo(o2.getDataItem().getName());
          }
       });
       columnSortHandler.setComparator(statisticColumn, new Comparator<DocumentNode>()
       {
          public int compare(DocumentNode o1, DocumentNode o2)
          {
-            if (o1.getTransUnitCountGraph().getLabelText().equals(o2.getTransUnitCountGraph().getLabelText()))
-            {
-               return 0;
-            }
-            if (o1 != null)
-            {
-               return (o2 != null) ? o1.getTransUnitCountGraph().getLabelText().compareTo(o2.getTransUnitCountGraph().getLabelText()) : 1;
-            }
-            return -1;
+            return o1.getTransUnitCountGraph().getLabelText().compareTo(o2.getTransUnitCountGraph().getLabelText());
          }
       });
       columnSortHandler.setComparator(translatedColumn, new Comparator<DocumentNode>()
@@ -268,10 +245,11 @@ public final class DocumentListTable
             return -1;
          }
       });
-
+      documentListTable.addColumnStyleName(documentListTable.getColumnIndex(folderColumn), "DocumentListTable_folderCol");
+      documentListTable.addColumnStyleName(documentListTable.getColumnIndex(documentColumn), "DocumentListTable_docCol");
       documentListTable.addColumnSortHandler(columnSortHandler);
 
-      documentListTable.getColumnSortList().push(statisticColumn);
+      documentListTable.getColumnSortList().push(folderColumn);
       return documentListTable;
    }
 }

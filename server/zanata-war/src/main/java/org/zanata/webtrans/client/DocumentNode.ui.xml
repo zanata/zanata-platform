@@ -9,7 +9,6 @@
 			padding-right:25px;
 			width: 120px;
 			height: 1.2em;
-			top:3px;
 		}
 		
 	</ui:style>

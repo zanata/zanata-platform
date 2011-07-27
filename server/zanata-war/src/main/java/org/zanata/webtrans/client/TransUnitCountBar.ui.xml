@@ -3,17 +3,17 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:style>
 		.approved {
-			background: #90cd95;
+			background: #099b09;
 			z-index: 0;
 		}
 		
 		.needReview {
-			background: #f7f488;
+			background: #ffc000;
 			z-index: 0;
 		}
 		
 		.untranslated {
-			background: #aecbde;
+			background: #e5e5e5;
 			z-index: 0;
 		}
 		

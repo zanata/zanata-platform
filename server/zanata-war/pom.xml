@@ -959,7 +959,6 @@
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
-			<version>2.5</version>
 		</dependency>
 
 		<dependency>
@@ -980,7 +979,6 @@
 		<dependency>
 			<groupId>org.fedorahosted.openprops</groupId>
 			<artifactId>openprops</artifactId>
-			<version>0.5</version>
 		</dependency>
 
 		<!-- okapi-lib-search would otherwise use lucene 3.0.0 -->

@@ -29,11 +29,8 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("{0}%")
    String statusGraphLabelPercentage(int approved, @Optional int needReview, @Optional int untranslated);
 
-   @DefaultMessage("{0,number,#.#} hrs")
+   @DefaultMessage("{0,number,#.#}")
    String statusGraphLabelHours(double remainingHours);
-
-   @DefaultMessage("{0} wds")
-   String statusGraphLabelWords(int stat);
 
    @DefaultMessage("http://zanata.org/")
    String hrefHelpLink();
@@ -95,12 +92,12 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Statistic")
    String columnHeaderStatistic();
 
-   @DefaultMessage("Translated")
+   @DefaultMessage("Translated words")
    String columnHeaderTranslated();
 
-   @DefaultMessage("Untranslated")
+   @DefaultMessage("Untranslated words")
    String columnHeaderUntranslated();
 
-   @DefaultMessage("Remaining")
+   @DefaultMessage("Remaining hours")
    String columnHeaderRemaining();
 }
