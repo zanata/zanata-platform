@@ -356,15 +356,24 @@ tr.TableEditorRow.selected td {
 .DocumentListTable td {
     font-size:16px;
     cursor:pointer;
-    width:16.6%;
+}
+
+.DocumentListTable_folderCol{
+	width:25%;
+}
+
+.DocumentListTable_docCol{
+    width:25%;
 }
 
 .transUnitCountGraphTooltipPanel {
 	background-color: #F7F488;
-	color: black;
+	color: #2A2A04;
 	text-align: center;
-	border: 1px solid black;
-	height: 60px;
+	border: 1px outset #999966;
+	height: 65px;
+	-moz-border-radius:8px;
+	-webkit-border-radius: 8px;
 }
 
 .transUnitCountGraphTooltipTable {
@@ -373,5 +382,8 @@ tr.TableEditorRow.selected td {
 }
 
 .transUnitCountGraphTooltipTable TD {
-	border: 1px dotted black;
+	border: 1px solid #999966;
+	width:75px;
+	-moz-border-radius:4px;
+    -webkit-border-radius: 4px;
 }

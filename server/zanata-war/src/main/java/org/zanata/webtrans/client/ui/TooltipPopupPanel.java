@@ -37,9 +37,6 @@ public class TooltipPopupPanel extends PopupPanel
       sb.append("<th>");
       sb.append("</th>");
       sb.append("<th>");
-      sb.append("Total");
-      sb.append("</th>");
-      sb.append("<th>");
       sb.append("Translated");
       sb.append("</th>");
       sb.append("<th>");
@@ -48,15 +45,15 @@ public class TooltipPopupPanel extends PopupPanel
       sb.append("<th>");
       sb.append("Untranslated");
       sb.append("</th>");
+      sb.append("<th>");
+      sb.append("Total");
+      sb.append("</th>");
       sb.append("</tr>");
 
       sb.append("<tr>");
       sb.append("<th>");
       sb.append("Words");
       sb.append("</th>");
-      sb.append("<td>");
-      sb.append(graph.getWordsTotal());
-      sb.append("</td>");
       sb.append("<td>");
       sb.append(graph.getWordsApproved());
       sb.append("</td>");
@@ -66,15 +63,15 @@ public class TooltipPopupPanel extends PopupPanel
       sb.append("<td>");
       sb.append(graph.getWordsUntranslated());
       sb.append("</td>");
+      sb.append("<td>");
+      sb.append(graph.getWordsTotal());
+      sb.append("</td>");
       sb.append("</tr>");
 
       sb.append("<tr>");
       sb.append("<th>");
       sb.append("Units");
       sb.append("</th>");
-      sb.append("<td>");
-      sb.append(graph.getUnitTotal());
-      sb.append("</td>");
       sb.append("<td>");
       sb.append(graph.getUnitApproved());
       sb.append("</td>");
@@ -83,6 +80,9 @@ public class TooltipPopupPanel extends PopupPanel
       sb.append("</td>");
       sb.append("<td>");
       sb.append(graph.getUnitUntranslated());
+      sb.append("</td>");
+      sb.append("<td>");
+      sb.append(graph.getUnitTotal());
       sb.append("</td>");
       sb.append("</tr>");
 
