@@ -68,19 +68,22 @@ public interface NavigationMessages extends Messages
    @DefaultMessage("Esc")
    String editCancelShortcut();
 
-   @DefaultMessage("Copy")
-   String editClone();
+   // @DefaultMessage("Copy")
+   // String editClone();
 
-//   @DefaultMessage("Ctrl+Home")
-   @DefaultMessage("Clone")
-   String editCloneShortcut();
+   // @DefaultMessage("Ctrl+Home")
+   // @DefaultMessage("Clone")
+   // String editCloneShortcut();
 
-   @DefaultMessage("Clone & Save")
-   String editCloneAndSave();
+   // @DefaultMessage("Clone & Save")
+   // String editCloneAndSave();
 
-//   @DefaultMessage("Ctrl+End")
-   @DefaultMessage("Clone & Save")
-   String editCloneAndSaveShortcut();
+   // @DefaultMessage("Ctrl+End")
+   // @DefaultMessage("Clone & Save")
+   // String editCloneAndSaveShortcut();
+
+   @DefaultMessage("Copy message from source language")
+   String copySourcetoTarget();
 
    @DefaultMessage("{0} ({1})")
    String actionToolTip(String actionName, String shortcut);

@@ -29,6 +29,7 @@ import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -38,11 +39,13 @@ import com.google.gwt.gen2.table.client.CellRenderer;
 import com.google.gwt.gen2.table.client.ColumnDefinition;
 import com.google.gwt.gen2.table.client.DefaultTableDefinition;
 import com.google.gwt.gen2.table.client.RowRenderer;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PushButton;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.ImageBundle;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit>
 {
@@ -54,6 +57,12 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
    private String findMessage;
    private CheckBox toggleFuzzy;
    private EventBus eventBus;
+
+   public static interface OperationsColumnImages extends ImageBundle
+   {
+      @Resource("org/zanata/webtrans/images/crystal_project/16x16/actions/2rightarrow.png")
+      AbstractImagePrototype copySrcButton();
+   }
 
    private final RowRenderer<TransUnit> rowRenderer = new RowRenderer<TransUnit>()
    {
@@ -164,8 +173,9 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
       @Override
       public void renderRowValue(final TransUnit rowValue, ColumnDefinition<TransUnit, TransUnit> columnDef, AbstractCellView<TransUnit> view)
       {
-         // view.setStyleName("TableEditorCell TableEditorCell-Source");
+         view.setStyleName("TableEditorCell TableEditorCell-Middle");
          VerticalPanel operationsPanel = new VerticalPanel();
+         operationsPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
          toggleFuzzy = new CheckBox(messages.fuzzy());
          if (rowValue.getStatus() == ContentState.NeedReview)
             toggleFuzzy.setValue(true);
@@ -186,9 +196,11 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
             }
 
          });
-         PushButton copyButton = new PushButton(new Image());
-         copyButton.setText(messages.editClone());
-         copyButton.setTitle(messages.editCloneShortcut());
+         OperationsColumnImages images = GWT.<OperationsColumnImages> create(OperationsColumnImages.class);
+         Image copyButton = images.copySrcButton().createImage();
+         copyButton.setStyleName("gwt-Button");
+         //copyButton.setText(messages.editClone());
+         copyButton.setTitle(messages.copySourcetoTarget());
          copyButton.addClickHandler(new ClickHandler()
          {
 

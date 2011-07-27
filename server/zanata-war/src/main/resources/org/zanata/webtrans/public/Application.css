@@ -261,6 +261,10 @@ td.TableEditorCell-Source {
 	
 }
 
+td.TableEditorCell-Middle {
+	
+}
+
 td.TableEditorCell-Target {
 	
 }
@@ -270,6 +274,10 @@ tr.TableEditorRow.highlighted td.TableEditorCell {
 }
 
 tr.TableEditorRow.highlighted td.TableEditorCell-Source {
+	
+}
+
+tr.TableEditorRow.highlighted td.TableEditorCell-Middle {
 	
 }
 
@@ -301,7 +309,7 @@ tr.TableEditorRow.content-filter-nomatch {
 }
 
 tr.TableEditorRow.selected td {
-	background: #C3D9FF;
+	
 }
 
 .TableEditorContent,.TableEditorContent-Edit {
