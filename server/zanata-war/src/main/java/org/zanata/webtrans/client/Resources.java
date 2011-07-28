@@ -33,10 +33,10 @@ public interface Resources extends ClientBundle
    @Source("org/zanata/webtrans/WebTransStyles.css")
    WebTransStyles style();
 
-   @Source("org/zanata/webtrans/images/crystal_project/16x16/actions/info.png")
+   @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/info.png")
    ImageResource infoButton();
 
-   @Source("org/zanata/webtrans/images/crystal_project/16x16/actions/search.png")
+   @Source("org/zanata/webtrans/images/crystal_project/_16x16/actions/search.png")
    ImageResource searchButton();
 
    @Source("org/zanata/webtrans/images/banner_bg.png")
