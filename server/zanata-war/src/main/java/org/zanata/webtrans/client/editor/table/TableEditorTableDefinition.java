@@ -60,7 +60,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
    public static interface OperationsColumnImages extends ImageBundle
    {
-      @Resource("org/zanata/webtrans/images/crystal_project/16x16/actions/2rightarrow.png")
+      @Resource("org/zanata/webtrans/images/crystal_project/_16x16/actions/2rightarrow.png")
       AbstractImagePrototype copySrcButton();
    }
 

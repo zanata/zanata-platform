@@ -59,10 +59,10 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
     */
    public static interface TargetCellEditorImages extends InlineCellEditorImages
    {
-      @Resource("org/zanata/webtrans/images/crystal_project/16x16/actions/button_save.png")
+      @Resource("org/zanata/webtrans/images/crystal_project/_16x16/actions/button_save.png")
       AbstractImagePrototype cellEditorAccept();
 
-      @Resource("org/zanata/webtrans/images/crystal_project/16x16/actions/button_cancel.png")
+      @Resource("org/zanata/webtrans/images/crystal_project/_16x16/actions/button_cancel.png")
       AbstractImagePrototype cellEditorCancel();
    }
 
