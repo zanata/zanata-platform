@@ -24,7 +24,6 @@ import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.EditTransUnitEvent;
-import org.zanata.webtrans.client.events.ToggleFuzzyEvent;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -49,7 +48,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ImageBundle;
 import com.google.gwt.user.client.ui.PushButton;
-import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
 public class InlineTargetCellEditor implements CellEditor<TransUnit>
@@ -95,14 +93,14 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    /**
     * The click listener used to cancel.
     */
-   private ClickHandler cancelHandler = new ClickHandler()
-   {
-      public void onClick(ClickEvent event)
-      {
-         cancelEdit();
-         disableSaveButton();
-      }
-   };
+   // private ClickHandler cancelHandler = new ClickHandler()
+   // {
+   // public void onClick(ClickEvent event)
+   // {
+   // cancelEdit();
+   // disableSaveButton();
+   // }
+   // };
    
    // private final CheckBox toggleFuzzy;
    private final PushButton saveButton;
@@ -145,7 +143,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    private EditorTextArea textArea;
 
    private boolean isFocused = false;
-   private boolean allowFuzzyOverride = false;
+   // private boolean allowFuzzyOverride = false;
    private boolean isOpened = false;
 
    // private Image stateImage;
@@ -153,9 +151,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
    private int curRow;
    private int curCol;
    private HTMLTable table;
-   private EventBus eventBus;
+   // private EventBus eventBus;
 
-   private ContentState preStatus;
+   // private ContentState preStatus;
 
 
    /*
@@ -188,7 +186,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       // Wrap contents in a table
       layoutTable = new FlowPanel();
 
-      this.eventBus = eventBus;
+      // this.eventBus = eventBus;
       cancelCallback = callback;
       editRowCallback = rowCallback;
       textArea = new EditorTextArea();
@@ -200,11 +198,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          public void onValueChange(ValueChangeEvent<String> event)
          {
             // remove fuzzy mark only at beginning if fuzzy is marked
-            if (allowFuzzyOverride)
-               removeFuzzyMark();
+            // if (allowFuzzyOverride)
+            // removeFuzzyMark();
             // enable save button when start typing
-            enableSaveButton();
-            allowFuzzyOverride = false;
+            // enableSaveButton();
+            // allowFuzzyOverride = false;
             autoSize();
          }
 
@@ -298,14 +296,16 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
             // }
 
             // these shortcuts disabled because they conflict with basic text editing:
-//            else if (event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_HOME)
-//            { // ctrl-home
-//               cloneHandler.onClick(null);
-//            }
-//            else if (event.isControlKeyDown() && event.getNativeKeyCode() == KeyCodes.KEY_END)
-//            { // ctrl-end
-//               cloneAndSaveHandler.onClick(null);
-//            }
+            // else if (event.isControlKeyDown() && event.getNativeKeyCode() ==
+            // KeyCodes.KEY_HOME)
+            // { // ctrl-home
+            // cloneHandler.onClick(null);
+            // }
+            // else if (event.isControlKeyDown() && event.getNativeKeyCode() ==
+            // KeyCodes.KEY_END)
+            // { // ctrl-end
+            // cloneAndSaveHandler.onClick(null);
+            // }
          }
 
       });
@@ -337,15 +337,16 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       // operationsPanel.add(cloneAndSaveButton);
 
       // PushButton doesn't allow to have images and text at the same time
-      PushButton cancelButton = new PushButton(images.cellEditorCancel().createImage(), cancelHandler);
+      // PushButton cancelButton = new
+      // PushButton(images.cellEditorCancel().createImage(), cancelHandler);
       // cancelButton.setText(messages.editCancel());
-      cancelButton.setTitle(messages.editCancelShortcut());
-      operationsPanel.add(cancelButton);
+      // cancelButton.setTitle(messages.editCancelShortcut());
+      // operationsPanel.add(cancelButton);
 
       saveButton = new PushButton(images.cellEditorAccept().createImage(), acceptHandler);
       // saveButton.setText(messages.editSave());
       saveButton.setTitle(messages.editSaveShortcut());
-      saveButton.setEnabled(false);
+      saveButton.setEnabled(true);
       operationsPanel.add(saveButton);
    }
 
@@ -376,18 +377,6 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          curCellEditInfo.getTable().setWidget(curRow, curCol, cellViewWidget);
          cellViewWidget.getParent().setHeight(cellViewWidget.getOffsetHeight() + "px");
       }
-   }
-
-   private void disableSaveButton()
-   {
-      if (saveButton.isEnabled())
-         saveButton.setEnabled(false);
-   }
-
-   private void removeFuzzyMark()
-   {
-      cellValue.setStatus(ContentState.Approved);
-      eventBus.fireEvent(new ToggleFuzzyEvent(cellValue));
    }
 
    /*********************
@@ -481,9 +470,9 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       isOpened = true;
       DOM.scrollIntoView(table.getCellFormatter().getElement(curRow, curCol));
       // toggleFuzzy.setValue(cellValue.getStatus() == ContentState.NeedReview);
-      if (cellValue.getStatus() == ContentState.NeedReview)
-         allowFuzzyOverride = true;
-      preStatus = cellValue.getStatus();
+      // if (cellValue.getStatus() == ContentState.NeedReview)
+      // allowFuzzyOverride = true;
+      // preStatus = cellValue.getStatus();
       // refreshStateImage();
    }
 
@@ -517,7 +506,7 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
          cellValue.setStatus(ContentState.Approved);
 
       restoreView();
-      disableSaveButton();
+      // disableSaveButton();
       isOpened = false;
 
       // Send the new cell value to the callback
@@ -550,11 +539,11 @@ public class InlineTargetCellEditor implements CellEditor<TransUnit>
       isOpened = false;
 
       // restore to previous status
-      if (cellValue != null)
-      {
-         cellValue.setStatus(preStatus);
-         eventBus.fireEvent(new ToggleFuzzyEvent(cellValue));
-      }
+      // if (cellValue != null)
+      // {
+      // cellValue.setStatus(preStatus);
+      // eventBus.fireEvent(new ToggleFuzzyEvent(cellValue));
+      // }
 
       // Call the callback
       if (curCallback != null)

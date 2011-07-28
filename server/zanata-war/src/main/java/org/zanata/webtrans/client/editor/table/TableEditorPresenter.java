@@ -45,8 +45,8 @@ import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NavTransUnitHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.RedoFailureEvent;
-import org.zanata.webtrans.client.events.ToggleFuzzyEvent;
-import org.zanata.webtrans.client.events.ToggleFuzzyEventHandler;
+import org.zanata.webtrans.client.events.ToggleApprovedEvent;
+import org.zanata.webtrans.client.events.ToggleApprovedEventHandler;
 import org.zanata.webtrans.client.events.TransMemoryCopyEvent;
 import org.zanata.webtrans.client.events.TransMemoryCopyHandler;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
@@ -442,7 +442,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
             {
                display.getTargetCellEditor().setText(event.getTargetResult());
                display.getTargetCellEditor().setTextAreaSize();
-               display.getTargetCellEditor().enableSaveButton();
                eventBus.fireEvent(new NotificationEvent(Severity.Info, messages.notifyCopied()));
             }
             else
@@ -450,33 +449,26 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
          }
       }));
 
-      registerHandler(eventBus.addHandler(ToggleFuzzyEvent.getType(), new ToggleFuzzyEventHandler()
+      registerHandler(eventBus.addHandler(ToggleApprovedEvent.getType(), new ToggleApprovedEventHandler()
       {
 
          @Override
-         public void onToggleFuzzy(ToggleFuzzyEvent event)
+         public void onToggleApproved(ToggleApprovedEvent event)
          {
             int rowOffset = getRowOffset(event.getTransUnit().getId());
             int row = display.getCurrentPage() * display.getPageSize() + rowOffset;
-            Log.info("toggle Fuzzy for " + row);
+            Log.info("toggle Approved for " + row);
             TransUnit rowValue = event.getTransUnit();
             display.getTableModel().setRowValueOverride(row, rowValue);
 
-            // If cell editor is not opened, save the changes directly
-            if (display.getTargetCellEditor().isOpened())
-            {
-               display.getTargetCellEditor().enableSaveButton();
-            }
-            else
+            // save the Approved state when target cell editor is not opened
+            // and target is not empty
+            if (!display.getTargetCellEditor().isOpened())
             {
                if (!rowValue.getTarget().isEmpty())
-                  // save the fuzzy state when target cell editor is not opened
-                  // and target is not empty
                   tableModelHandler.onSetRowValue(row, rowValue);
             }
-
          }
-
       }));
 
       registerHandler(eventBus.addHandler(CopySourceEvent.getType(), new CopySourceEventHandler()
@@ -493,7 +485,6 @@ public class TableEditorPresenter extends DocumentEditorPresenter<TableEditorPre
                display.getTargetCellEditor().setText(event.getTransUnit().getSource());
                display.getTargetCellEditor().setTextAreaSize();
             }
-            display.getTargetCellEditor().enableSaveButton();
          }
 
       }));

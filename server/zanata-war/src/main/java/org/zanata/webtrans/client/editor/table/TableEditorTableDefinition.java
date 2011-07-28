@@ -24,7 +24,7 @@ import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CopySourceEvent;
-import org.zanata.webtrans.client.events.ToggleFuzzyEvent;
+import org.zanata.webtrans.client.events.ToggleApprovedEvent;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
 import org.zanata.webtrans.shared.model.TransUnit;
 
@@ -55,7 +55,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
    public static final int TARGET_COL = 1;
 
    private String findMessage;
-   private CheckBox toggleFuzzy;
+   private CheckBox toggleApproved;
    private EventBus eventBus;
 
    public static interface OperationsColumnImages extends ImageBundle
@@ -176,23 +176,23 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
          view.setStyleName("TableEditorCell TableEditorCell-Middle");
          VerticalPanel operationsPanel = new VerticalPanel();
          operationsPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-         toggleFuzzy = new CheckBox(messages.fuzzy());
-         if (rowValue.getStatus() == ContentState.NeedReview)
-            toggleFuzzy.setValue(true);
+         toggleApproved = new CheckBox();
+         if (rowValue.getStatus() == ContentState.Approved)
+            toggleApproved.setValue(true);
          else
-            toggleFuzzy.setValue(false);
-         toggleFuzzy.addValueChangeHandler(new ValueChangeHandler<Boolean>()
+            toggleApproved.setValue(false);
+         toggleApproved.addValueChangeHandler(new ValueChangeHandler<Boolean>()
          {
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> event)
             {
                if (event.getValue())
-                  rowValue.setStatus(ContentState.NeedReview);
-               else
-                  // change status to Approved, if remove fuzzy mark
                   rowValue.setStatus(ContentState.Approved);
+               else
+                  // change status to Fuzzy, if remove Approved mark
+                  rowValue.setStatus(ContentState.NeedReview);
 
-               eventBus.fireEvent(new ToggleFuzzyEvent(rowValue));
+               eventBus.fireEvent(new ToggleApprovedEvent(rowValue));
             }
 
          });
@@ -213,7 +213,7 @@ public class TableEditorTableDefinition extends DefaultTableDefinition<TransUnit
 
          });
          operationsPanel.add(copyButton);
-         operationsPanel.add(toggleFuzzy);
+         operationsPanel.add(toggleApproved);
          view.setWidget(operationsPanel);
       }
    };

@@ -4,31 +4,31 @@ import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.google.gwt.event.shared.GwtEvent;
 
-public class ToggleFuzzyEvent extends GwtEvent<ToggleFuzzyEventHandler>
+public class ToggleApprovedEvent extends GwtEvent<ToggleApprovedEventHandler>
 {
 
    /**
     * Handler type.
     */
-   private static Type<ToggleFuzzyEventHandler> TYPE;
+   private static Type<ToggleApprovedEventHandler> TYPE;
 
    /**
     * Gets the type associated with this event.
     * 
     * @return returns the handler type
     */
-   public static Type<ToggleFuzzyEventHandler> getType()
+   public static Type<ToggleApprovedEventHandler> getType()
    {
       if (TYPE == null)
       {
-         TYPE = new Type<ToggleFuzzyEventHandler>();
+         TYPE = new Type<ToggleApprovedEventHandler>();
       }
       return TYPE;
    }
 
    private TransUnit value;
 
-   public ToggleFuzzyEvent(TransUnit rowValue)
+   public ToggleApprovedEvent(TransUnit rowValue)
    {
       this.value = rowValue;
    }
@@ -39,13 +39,13 @@ public class ToggleFuzzyEvent extends GwtEvent<ToggleFuzzyEventHandler>
    }
 
    @Override
-   protected void dispatch(ToggleFuzzyEventHandler handler)
+   protected void dispatch(ToggleApprovedEventHandler handler)
    {
-      handler.onToggleFuzzy(this);
+      handler.onToggleApproved(this);
    }
 
    @Override
-   public Type<ToggleFuzzyEventHandler> getAssociatedType()
+   public Type<ToggleApprovedEventHandler> getAssociatedType()
    {
       return getType();
    }
