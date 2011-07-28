@@ -8,17 +8,17 @@ http://www.oasis-open.org/committees/xliff/documents/xliff-core-1.1.xsd"
     <body>
       <trans-unit id="transunit1">
         <source>Translation Unit 1</source>
+        <target>Translation 1</target>
         <context-group name="ctx">
           <context context-type="sourcefile">/test/file1</context>
         </context-group>
-        <target>Translation 1</target>
       </trans-unit>
       <trans-unit id="transunit2">
         <source>Translation Unit 2</source>
+        <target>Translation 2</target>
         <context-group name="ctx">
           <context context-type="sourcefile">/test/file2</context>
         </context-group>
-        <target>Translation 2</target>
       </trans-unit>
       <group>
         <context-group name="ctx">
