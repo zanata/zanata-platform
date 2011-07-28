@@ -74,7 +74,7 @@ public class TranslationEditorView extends Composite implements TranslationEdito
    @UiField(provided = true)
    Resources resources;
 
-   private double southHeight = 150;
+   private double southHeight = 45;
 
    @Inject
    public TranslationEditorView(final WebTransMessages messages, final Resources resources)
@@ -103,7 +103,7 @@ public class TranslationEditorView extends Composite implements TranslationEdito
 
       initWidget(uiBinder.createAndBindUi(this));
       tmMinimize.setVisible(false);
-      splitPanel.setWidgetMinSize(tmPanelContainer, 150);
+      splitPanel.setWidgetMinSize(tmPanelContainer, (int) southHeight);
 
       showTmViewLink.setTitle(messages.showTranslationMemoryPanel());
    }

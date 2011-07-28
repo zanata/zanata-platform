@@ -54,7 +54,7 @@
 						<g:FlowPanel ui:field="undoRedoContainer" styleName="{style.centerText}"/>
 					</g:HorizontalPanel>
 				</g:layer>
-				<g:layer top='4px' height='18px' right="2px" width="100px">
+				<g:layer top='4px' height='18px' right="300px" width="100px">
 					<f:TransUnitCountBar ui:field='transUnitCountBar' styleName="{style.unitStatus}"/>
 				</g:layer>
 				<g:layer top="22px" bottom="2em">
@@ -65,14 +65,14 @@
 						<fui:Pager ui:field="pager"/>
 					</g:FlowPanel>
 				</g:layer>
-				<g:layer bottom="0px" height="2em" width="30px" right="0px">
+				<g:layer bottom="0px" height="1.6em" width="20px" right="0px">
 					<g:FlowPanel>
-					<g:Image resource="{resources.tmViewButton}" ui:field="showTmViewLink" styleName="{style.imageButton}" />
+					<g:Image resource="{resources.searchButton}" ui:field="showTmViewLink" styleName="{style.imageButton}" />
 					</g:FlowPanel>
 				</g:layer>
 			</g:LayoutPanel>
 		</g:center>
-		<g:south size="150" min-size="100">
+		<g:south size="150" min-size="45">
 			<g:LayoutPanel ui:field="tmPanelContainer">
 				<g:layer top="0" bottom="8px">
 					<g:LayoutPanel styleName="{style.tmview}" ui:field="tmPanel" />

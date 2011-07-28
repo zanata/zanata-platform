@@ -24,6 +24,9 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -34,6 +37,14 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
       void setEditorView(Widget editorView);
 
       void setSidePanel(Widget sidePanel);
+
+      void setSidePanelViewVisible(boolean visible);
+
+      HasClickHandlers getHideSidePanelViewButton();
+
+      HasClickHandlers getShowSidePanelViewButton();
+
+      void setShowSidePanelViewButtonVisible(boolean visible);
 
    }
 
@@ -61,6 +72,31 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
 
       sidePanelPresenter.bind();
       display.setSidePanel(sidePanelPresenter.getDisplay().asWidget());
+
+      registerHandler(display.getHideSidePanelViewButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            display.setSidePanelViewVisible(false);
+            // sidePanelPresenter.unbind();
+            // translationEditorPresenter.unbind();
+            display.setShowSidePanelViewButtonVisible(true);
+         }
+      }));
+
+      display.setShowSidePanelViewButtonVisible(false);
+      display.getShowSidePanelViewButton().addClickHandler(new ClickHandler()
+      {
+         @Override
+         public void onClick(ClickEvent event)
+         {
+            // sidePanelPresenter.bind();
+            // translationEditorPresenter.bind();
+            display.setSidePanelViewVisible(true);
+            display.setShowSidePanelViewButtonVisible(false);
+         }
+      });
    }
 
    @Override

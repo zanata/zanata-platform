@@ -65,6 +65,9 @@ public interface WebTransMessages extends Messages
    @DefaultMessage("Show Translation Suggestions")
    String showTranslationMemoryPanel();
 
+   @DefaultMessage("Show Translation Details")
+   String showTranslationDetailsPanel();
+
    @DefaultMessage("Find")
    String findButton();
 

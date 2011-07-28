@@ -20,11 +20,16 @@
  */
 package org.zanata.webtrans.client;
 
+import org.zanata.webtrans.client.ui.SplitLayoutPanelHelper;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.StyleInjector;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -41,13 +46,24 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    @UiField(provided = true)
    final Resources resources;
 
+   @UiField(provided = true)
+   LayoutPanel sidePanelOuterContainer;
+
    @UiField
-   LayoutPanel editorContainer, sidePanelContainer, sidePanelOuterContainer;
+   LayoutPanel editorContainer, sidePanelContainer;
 
    @UiField
    SplitLayoutPanel mainSplitPanel;
 
+   @UiField
+   Image sidePanelMinimize;
+
+   @UiField
+   Image showSidePanelViewLink;
+
    final WebTransMessages messages;
+
+   private double panelWidth = 20;
 
    @Inject
    public TranslationView(Resources resources, WebTransMessages messages)
@@ -56,10 +72,46 @@ public class TranslationView extends Composite implements TranslationPresenter.D
       this.messages = messages;
 
       StyleInjector.inject(resources.style().getText(), true);
-
+      this.sidePanelOuterContainer = new LayoutPanel()
+      {
+         public void onBrowserEvent(Event event)
+         {
+            super.onBrowserEvent(event);
+            switch (event.getTypeInt())
+            {
+            case Event.ONMOUSEOVER:
+               sidePanelMinimize.setVisible(true);
+               break;
+            case Event.ONMOUSEOUT:
+               sidePanelMinimize.setVisible(false);
+               break;
+            }
+         };
+      };
+      sidePanelOuterContainer.sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT);
       initWidget(uiBinder.createAndBindUi(this));
-      mainSplitPanel.setWidgetMinSize(sidePanelOuterContainer, 200);
 
+      sidePanelMinimize.setVisible(false);
+      mainSplitPanel.setWidgetMinSize(sidePanelOuterContainer, (int) panelWidth);
+      showSidePanelViewLink.setTitle(messages.showTranslationDetailsPanel());
+   }
+
+   @Override
+   public HasClickHandlers getHideSidePanelViewButton()
+   {
+      return sidePanelMinimize;
+   }
+
+   @Override
+   public HasClickHandlers getShowSidePanelViewButton()
+   {
+      return showSidePanelViewLink;
+   }
+
+   @Override
+   public void setShowSidePanelViewButtonVisible(boolean visible)
+   {
+      showSidePanelViewLink.setVisible(visible);
    }
 
    @Override
@@ -79,6 +131,25 @@ public class TranslationView extends Composite implements TranslationPresenter.D
    {
       sidePanelContainer.clear();
       sidePanelContainer.add(sidePanel);
+   }
+
+   @Override
+   public void setSidePanelViewVisible(boolean visible)
+   {
+      mainSplitPanel.forceLayout();
+      Widget splitter = SplitLayoutPanelHelper.getAssociatedSplitter(mainSplitPanel, sidePanelOuterContainer);
+      if (visible)
+      {
+         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, sidePanelOuterContainer, panelWidth);
+      }
+      else
+      {
+         panelWidth = mainSplitPanel.getWidgetContainerElement(sidePanelOuterContainer).getOffsetWidth();
+         SplitLayoutPanelHelper.setSplitPosition(mainSplitPanel, sidePanelOuterContainer, 0);
+      }
+      splitter.setVisible(visible);
+      mainSplitPanel.animate(500);
+
    }
 
 }
