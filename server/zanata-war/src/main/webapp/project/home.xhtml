@@ -34,15 +34,18 @@
             rows="#{projectAction.pageSize}"  columnsWidth="200px,200px,80px" 
             value="#{projectAction.projectPagedListDataModel}" var="project">
 				<rich:column>
-					       <s:link id="project" styleClass="project_link" value="#{project.slug}"  propagation="none"
+				     <f:facet name="header">Project Name</f:facet>
+					       <s:link id="project" styleClass="project_link" value="#{project.name}"  propagation="none"
 						     view="/project/project.xhtml"> 
 						    <f:param name="slug" value="#{project.slug}"/>
 						</s:link>
 	        		</rich:column>
 				<rich:column>
-						<h:outputText value="#{project.name}" />
+				        <f:facet name="header">Description</f:facet>
+						<h:outputText value="#{project.description}" />
 	        		</rich:column>
 				<rich:column>
+				        <f:facet name="header">Creation Date</f:facet>
 						<h:outputText value="#{project.creationDate}">
 						   <f:convertDateTime type="date" dateStyle="default"/>
 						</h:outputText>	            		

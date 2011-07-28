@@ -12,12 +12,26 @@
 			query="addClass('ui-tabs-selected')" />
 		<h1>#{messages['jsf.FoundResultsizeProjectsMatchingQuerySearchquery']}</h1>
 
-		<rich:dataGrid columns="3" value="#{projectSearch.searchResults}"
-			var="project" columnClasses="grid_col" styleClass="grid_style"
-			rendered="#{not empty projectSearch.searchResults}">
-			<ui:include src="./WEB-INF/layout/project_view_inline.xhtml" />
-		</rich:dataGrid>
-
+        <rich:dataTable id="searchResults" columnsWidth="200px,200px,80px" value="#{projectSearch.searchResults}" var="project">
+                <rich:column>
+                    <f:facet name="header">Project Name</f:facet>
+                    <s:link id="project" styleClass="project_link" value="#{project.name}"  propagation="none"
+                             view="/project/project.xhtml"> 
+                            <f:param name="slug" value="#{project.slug}"/>
+                    </s:link>
+                </rich:column>
+                <rich:column>
+                        <f:facet name="header">Description</f:facet>
+                        <h:outputText value="#{project.description}" />
+                </rich:column>
+                <rich:column>
+                        <f:facet name="header">Creation Date</f:facet>
+                        <h:outputText value="#{project.creationDate}">
+                           <f:convertDateTime type="date" dateStyle="default"/>
+                        </h:outputText>                     
+                </rich:column>
+        </rich:dataTable>
+        
 		<s:fragment rendered="#{projectSearch.resultSize gt projectSearch.pageSize}"> 
 			<p>#{messages['OnlyShowingFirstPagesizeResults']}</p>
 		</s:fragment>
