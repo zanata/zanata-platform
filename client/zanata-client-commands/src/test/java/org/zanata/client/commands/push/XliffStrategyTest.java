@@ -1,6 +1,6 @@
 package org.zanata.client.commands.push;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.eq;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.filefilter.AndFileFilter;
+import org.apache.commons.io.filefilter.NotFileFilter;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 import org.junit.Assert;
@@ -56,13 +59,18 @@ public class XliffStrategyTest
       XliffStrategy xliffStrategy = new XliffStrategy();
 
       mockPushOption = createMock("mockPushOption", PushOptions.class);
-      EasyMock.expect(mockPushOption.getSrcFilePattern()).andReturn("*StringResource_en_US*");
+      EasyMock.expect(mockPushOption.getIncludeFilePattern()).andReturn("*StringResource_en_US*");
       EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
       EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();
 
       xliffStrategy.setPushOptions(mockPushOption);
       EasyMock.replay(mockPushOption);
-      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir);
+     
+      AndFileFilter fileFilter = new AndFileFilter();
+      WildcardFileFilter includeFilter = new WildcardFileFilter(mockPushOption.getIncludeFilePattern());
+      fileFilter.addFileFilter(includeFilter);
+
+      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir, fileFilter);
 
       control.verify();
       for (String docName : localDocNames)
@@ -77,18 +85,22 @@ public class XliffStrategyTest
       XliffStrategy xliffStrategy = new XliffStrategy();
 
       mockPushOption = createMock("mockPushOption", PushOptions.class);
-      EasyMock.expect(mockPushOption.getSrcFilePattern()).andReturn("*StringResource_en_US*");
+      EasyMock.expect(mockPushOption.getIncludeFilePattern()).andReturn("*StringResource_en_US*");
       EasyMock.expect(mockPushOption.getTransDir()).andReturn(sourceDir).anyTimes();
       EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
       EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();
 
       xliffStrategy.setPushOptions(mockPushOption);
       EasyMock.replay(mockPushOption);
-      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir);
+
+      AndFileFilter fileFilter = new AndFileFilter();
+      WildcardFileFilter includeFilter = new WildcardFileFilter(mockPushOption.getIncludeFilePattern());
+      fileFilter.addFileFilter(includeFilter);
+
+      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir, fileFilter);
       List<Resource> resourceList = new ArrayList<Resource>();
       for (String docName : localDocNames)
       {
-         System.out.println("loadSrcDocTest || Source doc name || " + docName);
          Resource srcDoc = xliffStrategy.loadSrcDoc(sourceDir, docName);
          resourceList.add(srcDoc);
 
@@ -112,5 +124,56 @@ public class XliffStrategyTest
       control.verify();
 
       Assert.assertEquals(2, resourceList.size());
+   }
+
+   @Test
+   public void loadSrcDocTestWithExcludeOption() throws IOException
+   {
+      XliffStrategy xliffStrategy = new XliffStrategy();
+
+      mockPushOption = createMock("mockPushOption", PushOptions.class);
+      EasyMock.expect(mockPushOption.getIncludeFilePattern()).andReturn("*StringResource_en_US*");
+      EasyMock.expect(mockPushOption.getTransDir()).andReturn(sourceDir).anyTimes();
+      EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
+      EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();
+      EasyMock.expect(mockPushOption.getExcludeFilePattern()).andReturn("*zh*").anyTimes();
+
+      xliffStrategy.setPushOptions(mockPushOption);
+      EasyMock.replay(mockPushOption);
+
+      AndFileFilter fileFilter = new AndFileFilter();
+      WildcardFileFilter includeFilter = new WildcardFileFilter(mockPushOption.getIncludeFilePattern());
+      fileFilter.addFileFilter(includeFilter);
+
+      NotFileFilter excludeFilter = new NotFileFilter(new WildcardFileFilter(mockPushOption.getExcludeFilePattern()));
+      fileFilter.addFileFilter(excludeFilter);
+
+      Set<String> localDocNames = xliffStrategy.findDocNames(sourceDir, fileFilter);
+      List<Resource> resourceList = new ArrayList<Resource>();
+      for (String docName : localDocNames)
+      {
+         Resource srcDoc = xliffStrategy.loadSrcDoc(sourceDir, docName);
+         resourceList.add(srcDoc);
+
+         TranslationResourcesVisitor visitor = EasyMock.createMock("visitor" + resourceList.size(), TranslationResourcesVisitor.class);
+         LocaleMapping loc;
+         // each src file in test has one trans file ('de' or 'fr'):
+         if (srcDoc.getName().equals("dir1/StringResource"))
+         {
+            loc = new LocaleMapping("de");
+         }
+         else
+         {
+            loc = new LocaleMapping("fr");
+         }
+         visitor.visit(eq(loc), EasyMock.anyObject(TranslationsResource.class));
+         EasyMock.replay(visitor);
+         xliffStrategy.visitTranslationResources(docName, srcDoc, visitor);
+         EasyMock.verify(visitor);
+      }
+      System.out.println("loadSrcDocTestWithExclude || Total source docs:" + localDocNames.size());
+      control.verify();
+
+      Assert.assertEquals(0, resourceList.size());
    }
 }

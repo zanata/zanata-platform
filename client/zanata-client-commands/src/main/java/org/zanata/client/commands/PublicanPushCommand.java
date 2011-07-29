@@ -14,7 +14,7 @@ import java.util.Set;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
-
+import org.apache.commons.io.filefilter.AndFileFilter;
 import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +27,8 @@ import org.zanata.rest.JaxbUtil;
 import org.zanata.rest.RestUtil;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.client.ClientUtility;
-import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.rest.client.ITranslationResources;
+import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -137,7 +137,7 @@ public class PublicanPushCommand extends ConfigurableProjectCommand
       // memory
       Set<String> localDocNames = new HashSet<String>();
       // populate localDocNames by looking in pot directory
-      String[] potFiles = PublicanUtil.findPotFiles(potDir);
+      String[] potFiles = PublicanUtil.findPotFiles(potDir, new AndFileFilter());
       for (String potName : potFiles)
       {
          String docName = StringUtil.removeFileExtension(potName, ".pot");

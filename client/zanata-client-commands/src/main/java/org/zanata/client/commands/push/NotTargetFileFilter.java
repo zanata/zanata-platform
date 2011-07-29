@@ -29,13 +29,13 @@ import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 
 
-public class TargetFileFilter implements IOFileFilter
+public class NotTargetFileFilter implements IOFileFilter
 {
 
    private final LocaleList locales;
    private final String extension;
 
-   public TargetFileFilter(LocaleList locales, String extension)
+   public NotTargetFileFilter(LocaleList locales, String extension)
    {
       this.locales = locales;
       this.extension = extension;
@@ -53,6 +53,7 @@ public class TargetFileFilter implements IOFileFilter
       return accept(name);
    }
 
+   // If current file name pattern equals target file, return false
    private boolean accept(String name)
    {
       if (!StringUtils.endsWithIgnoreCase(name, extension))

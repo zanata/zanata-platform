@@ -8,8 +8,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.AndFileFilter;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.config.LocaleList;
@@ -30,9 +32,14 @@ public class PublicanUtil
    {
    }
 
-   public static String[] findPotFiles(File potDir) throws IOException
+   public static String[] findPotFiles(File potDir, AndFileFilter fileFilter) throws IOException
    {
-      Collection<File> files = FileUtils.listFiles(potDir, new String[] { "pot" }, true);
+      SuffixFileFilter extensionFilter = new SuffixFileFilter(".pot");
+      fileFilter.addFileFilter(extensionFilter);
+
+      Collection<File> files = FileUtils.listFiles(potDir, fileFilter, TrueFileFilter.TRUE);
+
+
       String[] potFiles = new String[files.size()];
       Iterator<File> iter = files.iterator();
 
