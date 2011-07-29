@@ -32,19 +32,20 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.AndFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.fedorahosted.openprops.Properties;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
-import org.zanata.util.PathUtil;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.util.PathUtil;
 
 class PropertiesStrategy implements PushStrategy
 {
@@ -62,11 +63,13 @@ class PropertiesStrategy implements PushStrategy
    }
 
    @Override
-   public Set<String> findDocNames(File srcDir) throws IOException
+   public Set<String> findDocNames(File srcDir, AndFileFilter fileFilter) throws IOException
    {
       Set<String> localDocNames = new HashSet<String>();
-      TargetFileFilter filter = new TargetFileFilter(opts.getLocales(), ".properties");
-      Collection<File> files = FileUtils.listFiles(srcDir, filter, TrueFileFilter.TRUE);
+      NotTargetFileFilter notTargetFilter = new NotTargetFileFilter(opts.getLocales(), ".properties");
+      fileFilter.addFileFilter(notTargetFilter);
+
+      Collection<File> files = FileUtils.listFiles(srcDir, fileFilter, TrueFileFilter.TRUE);
       for (File f : files)
       {
          String fileName = f.getPath();

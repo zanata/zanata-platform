@@ -19,7 +19,9 @@
            <projectType>xliff</projectType>
            <srcDir>${zanata.srcDir}</srcDir>
            <transDir>${zanata.transDir}</transDir>
-           <srcFilePattern>StringResource_en_US.xml</srcFilePattern>
+           <pushTrans>true</pushTrans>
+           <includeFilePattern>StringResource_en_US.xml</includeFilePattern>
+           <excludeFilePattern>StringResource_zh.xml</excludeFilePattern>
 <!-- for instance 
           <importPo>false</importPo>
 -->

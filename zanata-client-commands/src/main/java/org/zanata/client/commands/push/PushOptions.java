@@ -14,6 +14,7 @@ public interface PushOptions extends ConfigurableProjectOptions
    public boolean getCopyTrans();
    public boolean getUseSrcOrder();
    public String getMergeType();
-   public String getSrcFilePattern();
+   public String getIncludeFilePattern();
+   public String getExcludeFilePattern();
 }
 

@@ -89,12 +89,18 @@ public class PushMojo extends ConfigurableProjectMojo implements PushOptions
    private String merge;
 
    /**
-    * Wildcard pattern for source files. This parameter is only needed for some
-    * project types, eg XLIFF.
+    * Wildcard pattern to include files. default-value="**"
     * 
-    * @parameter expression="${zanata.srcFilePattern}"
+    * @parameter expression="${zanata.includeFilePattern}"
     */
-   private String srcFilePattern;
+   private String includeFilePattern = "**";
+
+   /**
+    * Wildcard pattern to exclude files.
+    * 
+    * @parameter expression="${zanata.excludeFilePattern}"
+    */
+   private String excludeFilePattern;
 
    @Override
    public File getSrcDir()
@@ -139,15 +145,21 @@ public class PushMojo extends ConfigurableProjectMojo implements PushOptions
    }
 
    @Override
-   public String getSrcFilePattern()
-   {
-      return srcFilePattern;
-   }
-
-   @Override
    public boolean getUseSrcOrder()
    {
       return useSrcOrder;
+   }
+
+   @Override
+   public String getIncludeFilePattern()
+   {
+      return includeFilePattern;
+   }
+
+   @Override
+   public String getExcludeFilePattern()
+   {
+      return excludeFilePattern;
    }
 
 }

@@ -11,17 +11,16 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.AndFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.xliff.XliffReader;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.LocaleId;
-import org.zanata.util.PathUtil;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.util.PathUtil;
 
 public class XliffStrategy implements PushStrategy
 {
@@ -29,9 +28,7 @@ public class XliffStrategy implements PushStrategy
 
    StringSet extensions = new StringSet("comment");
    XliffReader reader = new XliffReader();
-   WildcardFileFilter srcPatternFilter;
-   TargetFileFilter targetFileFilter;
-   AndFileFilter srcFileFilter;
+   NotTargetFileFilter notTargetFileFilter;
    Set<String> sourceFiles;
    
    private PushOptions opts;
@@ -50,24 +47,23 @@ public class XliffStrategy implements PushStrategy
    }
 
    @Override
-   public Set<String> findDocNames(File srcDir) throws IOException
+   public Set<String> findDocNames(File srcDir, AndFileFilter fileFilter) throws IOException
    {
       sourceFiles = new HashSet<String>();
       Set<String> localDocNames = new HashSet<String>();
       
-      srcPatternFilter = new WildcardFileFilter(opts.getSrcFilePattern());
-      targetFileFilter = new TargetFileFilter(opts.getLocales(), XML_EXTENSION);
-      srcFileFilter = new AndFileFilter(srcPatternFilter, targetFileFilter);
+      notTargetFileFilter = new NotTargetFileFilter(opts.getLocales(), XML_EXTENSION);
+      fileFilter.addFileFilter(notTargetFileFilter);
 
-      Collection<File> files = FileUtils.listFiles(srcDir, srcFileFilter, TrueFileFilter.TRUE);
+      Collection<File> files = FileUtils.listFiles(srcDir, fileFilter, TrueFileFilter.TRUE);
 
       for (File file : files)
       {
          String baseName = file.getPath();
+
          baseName = PathUtil.getRelativePath(baseName, srcDir.getPath());
          sourceFiles.add(baseName);
          baseName = baseName.substring(0, baseName.length() - XML_EXTENSION.length());
-
          if (baseName.contains("_"))
          {
                String loc = new LocaleId(opts.getSourceLang()).toJavaName();

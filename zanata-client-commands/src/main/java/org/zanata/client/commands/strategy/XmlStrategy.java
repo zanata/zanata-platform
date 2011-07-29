@@ -33,13 +33,14 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.AndFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.zanata.client.commands.pull.PullOptions;
 import org.zanata.client.commands.pull.PullStrategy;
+import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.client.commands.push.PushOptions;
 import org.zanata.client.commands.push.PushStrategy;
-import org.zanata.client.commands.push.TargetFileFilter;
-import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
+import org.zanata.client.commands.push.NotTargetFileFilter;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
@@ -102,11 +103,13 @@ public class XmlStrategy implements PushStrategy, PullStrategy
    }
 
    @Override
-   public Set<String> findDocNames(File srcDir) throws IOException
+   public Set<String> findDocNames(File srcDir, AndFileFilter fileFilter) throws IOException
    {
       Set<String> localDocNames = new HashSet<String>();
-      TargetFileFilter filter = new TargetFileFilter(pushOptions.getLocales(), ".xml");
-      Collection<File> files = FileUtils.listFiles(srcDir, filter, TrueFileFilter.TRUE);
+      NotTargetFileFilter targetFilter = new NotTargetFileFilter(pushOptions.getLocales(), ".xml");
+      fileFilter.addFileFilter(targetFilter);
+
+      Collection<File> files = FileUtils.listFiles(srcDir, fileFilter, TrueFileFilter.TRUE);
       for (File f : files)
       {
          String fileName = f.getPath();

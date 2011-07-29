@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.filefilter.AndFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
@@ -64,11 +65,11 @@ class GettextDirStrategy implements PushStrategy
    }
 
    @Override
-   public Set<String> findDocNames(File srcDir) throws IOException
+   public Set<String> findDocNames(File srcDir, AndFileFilter fileFilter) throws IOException
    {
       Set<String> localDocNames = new HashSet<String>();
       // populate localDocNames by looking in pot directory
-      String[] srcFiles = PublicanUtil.findPotFiles(srcDir);
+      String[] srcFiles = PublicanUtil.findPotFiles(srcDir, fileFilter);
       for (String potName : srcFiles)
       {
          String docName = StringUtil.removeFileExtension(potName, ".pot");
