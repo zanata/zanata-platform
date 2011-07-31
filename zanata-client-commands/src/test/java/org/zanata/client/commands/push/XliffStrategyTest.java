@@ -136,7 +136,7 @@ public class XliffStrategyTest
       EasyMock.expect(mockPushOption.getTransDir()).andReturn(sourceDir).anyTimes();
       EasyMock.expect(mockPushOption.getLocales()).andReturn(locales).anyTimes();
       EasyMock.expect(mockPushOption.getSourceLang()).andReturn("en-US").anyTimes();
-      EasyMock.expect(mockPushOption.getExcludeFilePattern()).andReturn("*zh*").anyTimes();
+      EasyMock.expect(mockPushOption.getExcludeFilePattern()).andReturn("*StringResource*").anyTimes();
 
       xliffStrategy.setPushOptions(mockPushOption);
       EasyMock.replay(mockPushOption);
